@@ -1,59 +1,44 @@
-# 01TodoList
+# 01 — To-do List
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.4.
+My first Angular project. A simple task manager built to learn the core concepts of Angular.
 
-## Development server
+## Learning objectives
 
-To start a local development server, run:
+- Components — how to create and use them
+- Data binding — interpolation, property binding and event binding
+- Directives — `@if` and `@for` to show and hide elements
+- Services — how to share data between components
+- Inputs and Outputs — how components communicate with each other
 
-```bash
-ng serve
-```
+## Features
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Add a new task
+- Mark a task as completed
+- Delete a task
+- Filter tasks by status (all, active, completed)
 
-## Code scaffolding
+## Tech stack
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Angular 21
+- TypeScript
+- CSS
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## How to run the project
 
 ```bash
-ng build
+git clone https://github.com/VMNunez/dev-learning.git
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
 
 ```bash
-ng test
+cd dev-learning/angular/01-todo-list
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
 
 ```bash
-ng e2e
+npm install
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+```bash
+npm start
+```
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Open your browser at `http://localhost:4200`
