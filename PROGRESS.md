@@ -23,20 +23,23 @@
 - [ ] Routing: navigate with `routerLink`
 - [ ] Routing: display pages with `RouterOutlet`np
 - [x] Data binding: interpolation `{{ }}`
-- [ ] Data binding: property binding `[]`
-- [ ] Data binding: event binding `()`
+- [x] Data binding: property binding `[]`
+- [x] Data binding: event binding `()`
 - [ ] Two-way binding: `[(ngModel)]`
 - [ ] Directives: `@if`
 - [x] Directives: `@for`
 - [ ] Directives: `@switch`
 - [x] Inputs: `input()` signal-based
 - [ ] Inputs: `@Input()` decorator-based
+- [x] Template reference variables: `#ref`
 - [ ] Outputs: `@Output()` and `EventEmitter`
 - [x] Services: `@Injectable`
 - [x] Dependency injection: `inject()`
 
 ### Intermediate
-- [ ] Signals: `signal()`
+- [x] Signals: `signal()`
+- [x] Signals: `signal.update()`
+- [ ] Signals: `signal.set()`
 - [ ] Signals: `computed()`
 - [ ] Signals: `effect()`
 - [ ] HTTP Client: `HttpClient`
