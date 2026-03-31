@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import type { Task } from '../../models/task.model';
 
 @Component({
@@ -9,4 +9,5 @@ import type { Task } from '../../models/task.model';
 })
 export class TaskItem {
   task = input.required<Task>();
+  taskToggled = output<number>();
 }

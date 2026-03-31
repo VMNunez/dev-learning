@@ -1,3 +1,1 @@
-<p>{{ task().id }}</p>
-<p>{{ task().title }}</p>
-<p>{{ task().completed }}</p>
+<div (click)="taskToggled.emit(task().id)">{{ task().title }} - {{ task().completed }}</div>
