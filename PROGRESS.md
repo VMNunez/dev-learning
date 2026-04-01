@@ -25,6 +25,7 @@
 - [x] Data binding: interpolation `{{ }}`
 - [x] Data binding: property binding `[]`
 - [x] Data binding: event binding `()`
+- [x] Data binding: class binding `[class.x]`
 - [ ] Two-way binding: `[(ngModel)]`
 - [ ] Directives: `@if`
 - [x] Directives: `@for`
@@ -32,6 +33,7 @@
 - [x] Inputs: `input()` signal-based
 - [ ] Inputs: `@Input()` decorator-based
 - [x] Template reference variables: `#ref`
+- [x] Outputs: `output()` signal-based
 - [ ] Outputs: `@Output()` and `EventEmitter`
 - [x] Services: `@Injectable`
 - [x] Dependency injection: `inject()`
@@ -82,6 +84,9 @@
 - [ ] Flexbox: `flex-direction`, `flex-wrap`, `gap`
 - [ ] Grid: `display: grid`, `grid-template-columns`, `gap`
 - [ ] Positioning: `relative`, `absolute`, `fixed`
+- [x] Pseudo-classes: `:hover`, `:focus`, `:last-child`
+- [x] CSS property: `text-decoration`
+- [x] CSS property: `opacity`
 - [ ] Responsive design: `@media` queries
 - [ ] CSS variables: `--color`, `var()`
 - [ ] Transitions and animations

@@ -1,4 +1,9 @@
-<div>
-  <div (click)="taskToggled.emit(task().id)">{{ task().title }} - {{ task().completed }}</div>
-  <button (click)="taskDeleted.emit(task().id)">Delete Task</button>
+<div class="task-item">
+  <span
+    [class.completed]="task().completed"
+    class="task-title"
+    (click)="taskToggled.emit(task().id)"
+    >{{ task().title }}</span
+  >
+  <button class="task-delete" (click)="taskDeleted.emit(task().id)">Delete Task</button>
 </div>
