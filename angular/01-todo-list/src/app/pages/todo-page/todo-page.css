@@ -1,0 +1,11 @@
+h1 {
+  font-size: 2rem;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}

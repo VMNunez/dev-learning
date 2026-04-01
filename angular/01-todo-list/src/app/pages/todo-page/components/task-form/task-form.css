@@ -1,0 +1,33 @@
+.task-form {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.task-form input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+}
+.task-form input:focus {
+  border: 1px solid var(--accent);
+}
+
+.task-form button {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.task-form button:hover {
+  opacity: 0.85;
+}
