@@ -1,2 +1,4 @@
-<input type="text" placeholder="New task..." #taskInput />
-<button (click)="addTask(taskInput.value)">Add task</button>
+<div class="task-form">
+  <input type="text" placeholder="New task..." #taskInput />
+  <button (click)="addTask(taskInput.value); taskInput.value = ''">Add task</button>
+</div>
