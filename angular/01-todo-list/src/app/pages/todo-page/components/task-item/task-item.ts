@@ -10,4 +10,5 @@ import type { Task } from '../../models/task.model';
 export class TaskItem {
   task = input.required<Task>();
   taskToggled = output<number>();
+  taskDeleted = output<number>();
 }
