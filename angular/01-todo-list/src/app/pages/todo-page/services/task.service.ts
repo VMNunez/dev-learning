@@ -21,4 +21,8 @@ export class TaskService {
       tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)),
     );
   }
+
+  deleteTask(id: number): void {
+    this.tasks.update((tasks) => tasks.filter((task) => task.id !== id));
+  }
 }

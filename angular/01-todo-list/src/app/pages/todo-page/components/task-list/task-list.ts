@@ -12,7 +12,12 @@ export class TaskList {
   private taskService: TaskService = inject(TaskService);
 
   tasks = this.taskService.tasks;
+
   toggleTask(id: number): void {
     this.taskService.toggleTask(id);
+  }
+
+  deleteTask(id: number): void {
+    this.taskService.deleteTask(id);
   }
 }
