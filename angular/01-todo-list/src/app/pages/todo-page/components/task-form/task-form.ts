@@ -11,6 +11,6 @@ export class TaskForm {
   private taskService = inject(TaskService);
 
   addTask(title: string) {
-    this.taskService.addTask(title);
+    title.trim() && this.taskService.addTask(title.trim());
   }
 }
