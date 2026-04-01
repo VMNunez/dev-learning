@@ -1,0 +1,4 @@
+<div>
+  <div (click)="taskToggled.emit(task().id)">{{ task().title }} - {{ task().completed }}</div>
+  <button (click)="taskDeleted.emit(task().id)">Delete Task</button>
+</div>
