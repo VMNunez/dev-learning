@@ -11,7 +11,7 @@
 - [x] Read the official Angular documentation (Learn Angular tutorial)
 - [x] Angular CLI installed
 - [x] First Angular project started (01-todo-list)
-- [ ] First Angular project finished
+- [x] First Angular project finished
 
 ---
 
@@ -133,7 +133,7 @@
 
 | # | Project | Key concepts | Status |
 |---|---------|--------------|--------|
-| 01 | To-do list | Components, routing, binding, directives, services | In progress |
+| 01 | To-do list | Components, routing, binding, directives, services | Done ✓ |
 
 ---
 
