@@ -41,7 +41,7 @@
 ### Intermediate
 - [x] Signals: `signal()`
 - [x] Signals: `signal.update()`
-- [ ] Signals: `signal.set()`
+- [x] Signals: `signal.set()`
 - [x] Signals: `computed()`
 - [ ] Signals: `effect()`
 - [ ] HTTP Client: `HttpClient`
