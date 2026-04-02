@@ -21,13 +21,13 @@
 - [x] Components: `@Component`, selector, template, styles
 - [x] Routing: define routes in `app.routes.ts`
 - [ ] Routing: navigate with `routerLink`
-- [ ] Routing: display pages with `RouterOutlet`np
+- [ ] Routing: display pages with `RouterOutlet`
 - [x] Data binding: interpolation `{{ }}`
 - [x] Data binding: property binding `[]`
 - [x] Data binding: event binding `()`
 - [x] Data binding: class binding `[class.x]`
 - [ ] Two-way binding: `[(ngModel)]`
-- [ ] Directives: `@if`
+- [x] Directives: `@if` and `@empty`
 - [x] Directives: `@for`
 - [ ] Directives: `@switch`
 - [x] Inputs: `input()` signal-based
@@ -42,7 +42,7 @@
 - [x] Signals: `signal()`
 - [x] Signals: `signal.update()`
 - [ ] Signals: `signal.set()`
-- [ ] Signals: `computed()`
+- [x] Signals: `computed()`
 - [ ] Signals: `effect()`
 - [ ] HTTP Client: `HttpClient`
 - [ ] RxJS: `subscribe`
@@ -78,17 +78,17 @@
 > Practised inside Angular projects — not studied separately.
 
 ### CSS Basics
-- [ ] Box model: margin, padding, border
-- [ ] Display: block, inline, inline-block
-- [ ] Flexbox: `display: flex`, `justify-content`, `align-items`
-- [ ] Flexbox: `flex-direction`, `flex-wrap`, `gap`
+- [x] Box model: margin, padding, border
+- [x] Display: block, inline, inline-block
+- [x] Flexbox: `display: flex`, `justify-content`, `align-items`
+- [x] Flexbox: `flex-direction`, `flex-wrap`, `gap`
 - [ ] Grid: `display: grid`, `grid-template-columns`, `gap`
 - [ ] Positioning: `relative`, `absolute`, `fixed`
 - [x] Pseudo-classes: `:hover`, `:focus`, `:last-child`
 - [x] CSS property: `text-decoration`
 - [x] CSS property: `opacity`
 - [ ] Responsive design: `@media` queries
-- [ ] CSS variables: `--color`, `var()`
+- [x] CSS variables: `--color`, `var()`
 - [ ] Transitions and animations
 
 ### Tailwind
