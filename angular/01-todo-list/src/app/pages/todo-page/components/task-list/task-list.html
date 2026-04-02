@@ -8,7 +8,9 @@
   </button>
 </div>
 
-<p class="task-counter">{{ pendingCount() }} of {{ totalCount() }}</p>
+@if (totalCount() > 0) {
+  <p class="task-counter">{{ pendingCount() }} pending of {{ totalCount() }} total</p>
+}
 
 @for (task of filteredTasks(); track task.id) {
   <app-task-item
