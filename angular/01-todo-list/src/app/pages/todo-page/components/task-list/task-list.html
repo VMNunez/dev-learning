@@ -1,0 +1,23 @@
+<div class="filter-buttons">
+  <button [class.active]="currentFilter() === 'all'" (click)="currentFilter.set('all')">All</button>
+  <button [class.active]="currentFilter() === 'active'" (click)="currentFilter.set('active')">
+    Active
+  </button>
+  <button [class.active]="currentFilter() === 'completed'" (click)="currentFilter.set('completed')">
+    Completed
+  </button>
+</div>
+
+@if (totalCount() > 0) {
+  <p class="task-counter">{{ pendingCount() }} pending of {{ totalCount() }} total</p>
+}
+
+@for (task of filteredTasks(); track task.id) {
+  <app-task-item
+    [task]="task"
+    (taskToggled)="toggleTask($event)"
+    (taskDeleted)="deleteTask($event)"
+  />
+} @empty {
+  <p class="empty-message">No tasks yet</p>
+}

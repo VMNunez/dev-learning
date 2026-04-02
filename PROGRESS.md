@@ -1,93 +1,139 @@
 # My Learning Progress
 
 **Goal:** Get a junior / junior-mid job as a developer (Angular + Java) → August 2026
-**Location:** Spain — everything I learn must be **focused** *(focused = concentrated on one thing)* on what Spanish companies ask for
+**Location:** Spain — everything I learn must be focused on what Spanish companies ask for
 **Previous knowledge:** React, Node, Express, TypeScript, Tailwind, CSS, HTML, JS (a bit rusty)
 
-> **Note on language:** This document is written in English on purpose.
-> I am also preparing for the Cambridge First Certificate (B2).
-> Reading and writing in English every day helps me **improve** my vocabulary and grammar.
-> Words marked with * are useful for the exam — try to **remember** them!
-
 ---
 
-## Current status *(status = the situation right now)*
+## Current status
 
 - [x] Read the official Angular documentation (Learn Angular tutorial)
-- [ ] First Angular project
-- [ ] Java — first steps
+- [x] Angular CLI installed
+- [x] First Angular project started (01-todo-list)
+- [ ] First Angular project finished
 
 ---
 
-## Angular — Concepts to learn *(concept = an idea or topic)*
+## Angular — Concepts to learn
 
-### Basics *(basics = the most important and simple things)*
-- [ ] Components: `@Component`, selector, template, styles
-- [ ] Data binding: interpolation `{{ }}`, property binding `[]`, event binding `()`
+### Basics
+- [x] Components: `@Component`, selector, template, styles
+- [x] Routing: define routes in `app.routes.ts`
+- [ ] Routing: navigate with `routerLink`
+- [ ] Routing: display pages with `RouterOutlet`
+- [x] Data binding: interpolation `{{ }}`
+- [x] Data binding: property binding `[]`
+- [x] Data binding: event binding `()`
+- [x] Data binding: class binding `[class.x]`
 - [ ] Two-way binding: `[(ngModel)]`
-- [ ] Structural directives: `@if`, `@for`, `@switch` (new Angular 17+ syntax)
-- [ ] Inputs and Outputs: `@Input()`, `@Output()`, `EventEmitter`
-- [ ] Services and dependency injection: `@Injectable`, `inject()`
-- [ ] Basic routing: `RouterModule`, `routerLink`, `RouterOutlet`
+- [x] Directives: `@if` and `@empty`
+- [x] Directives: `@for`
+- [ ] Directives: `@switch`
+- [x] Inputs: `input()` signal-based
+- [ ] Inputs: `@Input()` decorator-based
+- [x] Template reference variables: `#ref`
+- [x] Outputs: `output()` signal-based
+- [ ] Outputs: `@Output()` and `EventEmitter`
+- [x] Services: `@Injectable`
+- [x] Dependency injection: `inject()`
 
-### Intermediate *(intermediate = between basic and advanced)*
-- [ ] Signals: `signal()`, `computed()`, `effect()`
-- [ ] HTTP Client: `HttpClient` + basic RxJS (`subscribe`, `pipe`, `map`, `catchError`)
-- [ ] Reactive forms: `FormGroup`, `FormControl`, `Validators`
-- [ ] Lifecycle hooks: `ngOnInit`, `ngOnDestroy`, `ngOnChanges`
-- [ ] Pipes: built-in (`date`, `currency`, `async`) and custom pipes
+### Intermediate
+- [x] Signals: `signal()`
+- [x] Signals: `signal.update()`
+- [x] Signals: `signal.set()`
+- [x] Signals: `computed()`
+- [ ] Signals: `effect()`
+- [ ] HTTP Client: `HttpClient`
+- [ ] RxJS: `subscribe`
+- [ ] RxJS: `pipe`
+- [ ] RxJS: `map`
+- [ ] RxJS: `catchError`
+- [ ] Reactive forms: `FormGroup`
+- [ ] Reactive forms: `FormControl`
+- [ ] Reactive forms: `Validators`
+- [ ] Lifecycle hooks: `ngOnInit`
+- [ ] Lifecycle hooks: `ngOnDestroy`
+- [ ] Lifecycle hooks: `ngOnChanges`
+- [ ] Pipes: `date`
+- [ ] Pipes: `currency`
+- [ ] Pipes: `async`
+- [ ] Pipes: custom pipe
 - [ ] Route guards: `CanActivate`
 - [ ] Lazy loading routes
 
-### Advanced *(advanced = difficult, high level)*
-- [ ] Standalone components (architecture without NgModules)
-- [ ] State management with signals or NgRx
+### Advanced
+- [ ] Standalone components
+- [ ] State management with signals
+- [ ] NgRx basics
 - [ ] HTTP Interceptors
-- [ ] Basic testing: Jasmine + TestBed
+- [ ] Testing: Jasmine
+- [ ] Testing: TestBed
 - [ ] OnPush change detection
 
 ---
 
-## Java — Concepts to learn
+## CSS & Tailwind — Concepts to practise
 
-### Basics
-- [ ] Syntax, types, operators, control flow *(flow = the order in which things happen)*
-- [ ] OOP: classes, inheritance, interfaces, polymorphism, encapsulation
-- [ ] Collections: List, Map, Set
-- [ ] Exceptions: try/catch, checked vs unchecked
-- [ ] Streams and lambdas (Java 8+)
+> Practised inside Angular projects — not studied separately.
 
-### Intermediate
-- [ ] Spring Boot: REST API, `@RestController`, `@Service`, `@Repository`
-- [ ] JPA / Hibernate basics
-- [ ] Maven / Gradle
+### CSS Basics
+- [x] Box model: margin, padding, border
+- [x] Display: block, inline, inline-block
+- [x] Flexbox: `display: flex`, `justify-content`, `align-items`
+- [x] Flexbox: `flex-direction`, `flex-wrap`, `gap`
+- [ ] Grid: `display: grid`, `grid-template-columns`, `gap`
+- [ ] Positioning: `relative`, `absolute`, `fixed`
+- [x] Pseudo-classes: `:hover`, `:focus`, `:last-child`
+- [x] CSS property: `text-decoration`
+- [x] CSS property: `opacity`
+- [ ] Responsive design: `@media` queries
+- [x] CSS variables: `--color`, `var()`
+- [ ] Transitions and animations
+
+### Tailwind
+- [ ] Utility classes: spacing, colours, typography
+- [ ] Flexbox and Grid with Tailwind
+- [ ] Responsive prefixes: `sm:`, `md:`, `lg:`
+- [ ] Hover and focus states: `hover:`, `focus:`
+- [ ] Dark mode: `dark:`
+- [ ] Custom configuration: `tailwind.config`
 
 ---
 
-## SQL — Concepts to learn *(SQL = the language used to work with databases)*
+
+## SQL — Concepts to learn
 
 ### Basics
-- [ ] SELECT, FROM, WHERE — reading data from a table *(table = a set of data organised in rows and columns)*
-- [ ] ORDER BY, LIMIT — sorting and limiting results
-- [ ] INSERT, UPDATE, DELETE — creating, modifying and removing data
-- [ ] JOINs: INNER JOIN, LEFT JOIN — combining data from two tables
-- [ ] GROUP BY, COUNT, SUM, AVG — grouping and calculating data
-- [ ] Primary key, foreign key *(key = a field that identifies or links records)*
+- [ ] SELECT and FROM
+- [ ] WHERE — filter results
+- [ ] ORDER BY — sort results
+- [ ] LIMIT — limit results
+- [ ] INSERT — add data
+- [ ] UPDATE — modify data
+- [ ] DELETE — remove data
+- [ ] INNER JOIN
+- [ ] LEFT JOIN
+- [ ] GROUP BY
+- [ ] Aggregate functions: COUNT, SUM, AVG
+- [ ] Primary key
+- [ ] Foreign key
 
 ### Intermediate
-- [ ] Subqueries *(subquery = a query inside another query)*
-- [ ] Indexes — how to make queries faster
-- [ ] Transactions: COMMIT, ROLLBACK
+- [ ] Subqueries
+- [ ] Indexes
+- [ ] Transactions: COMMIT
+- [ ] Transactions: ROLLBACK
 
 > **Note:** In Spain, most junior jobs use MySQL or PostgreSQL. Practice with one of them.
 
 ---
 
-## Angular Projects *(project = a piece of work with a specific goal)*
+## Angular Projects
 
 | # | Project | Key concepts | Status |
 |---|---------|--------------|--------|
-| — | — | — | — |
+| 01 | To-do list | Components, routing, binding, directives, services | In progress |
 
 ---
 
@@ -99,16 +145,65 @@
 
 ---
 
-## Interview prep *(prep = preparation, getting ready for something)*
+## Node.js / Express — Concepts to practise
 
-> All notes are in the `interview-prep/` folder *(folder = a place where you keep files)*.
-> Topics covered there: Angular, Java, SQL, Git, and general programming questions.
+> Start in Phase 2 (May 2026) — after Angular basics are solid.
+
+### Basics (rusty — needs review)
+- [ ] Node.js: modules, require, exports
+- [ ] Express: create a server
+- [ ] Express: routes — GET, POST, PUT, DELETE
+- [ ] Express: middleware
+- [ ] Express: handle JSON body
+- [ ] Express: connect to a database
+
+### Full stack with Angular
+- [ ] CORS configuration
+- [ ] REST API consumed by Angular with HttpClient
+- [ ] Authentication: JWT basics
+
+---
+
+## Java / Spring Boot — Concepts to learn
+
+> Start in Phase 3 (after June 19 2026).
+
+### Java Basics
+- [ ] Syntax: variables, types, operators
+- [ ] Control flow: if, for, while, switch
+- [ ] Classes and objects
+- [ ] Inheritance
+- [ ] Interfaces
+- [ ] Polymorphism
+- [ ] Encapsulation
+- [ ] Collections: List
+- [ ] Collections: Map
+- [ ] Collections: Set
+- [ ] Exceptions: try/catch
+- [ ] Exceptions: checked vs unchecked
+- [ ] Streams and lambdas (Java 8+)
+
+### Spring Boot
+- [ ] Create a REST API
+- [ ] `@RestController`
+- [ ] `@Service`
+- [ ] `@Repository`
+- [ ] JPA / Hibernate: connect to a database
+- [ ] JPA / Hibernate: basic queries
+- [ ] Maven: project structure and dependencies
+
+---
+
+## Interview prep
+
+> All notes are in the `interview-prep/` folder.
+> Topics: Angular, Java, SQL, Git, and general programming questions.
 
 *Questions and answers will be added as I progress.*
 
 ---
 
-## Useful resources *(resource = something that helps you learn)*
+## Useful resources
 
 - [Official Angular tutorial](https://angular.dev/tutorials/learn-angular)
 - [Angular components guide](https://angular.dev/guide/components)
