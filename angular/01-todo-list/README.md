@@ -2,6 +2,10 @@
 
 My first Angular project. A simple task manager built to learn the core concepts of Angular.
 
+**Live demo:** https://01angulartodolist.netlify.app/
+
+![App preview](screenshots/preview.png)
+
 ## Learning objectives
 
 - Components — how to create and use them
