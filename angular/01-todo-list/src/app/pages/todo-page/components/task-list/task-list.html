@@ -1,7 +1,11 @@
+<p class="task-counter">{{ pendingCount() }} of {{ totalCount() }}</p>
+
 @for (task of tasks(); track task.id) {
   <app-task-item
     [task]="task"
     (taskToggled)="toggleTask($event)"
     (taskDeleted)="deleteTask($event)"
   />
+} @empty {
+  <p class="empty-message">No tasks yet</p>
 }
