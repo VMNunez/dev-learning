@@ -1,1 +1,2 @@
-<p>weather-page works!</p>
+<app-weather-form (cityToSearch)="onCitySearch($event)" />
+<app-weather-card [weather]="weatherResponse()" />
