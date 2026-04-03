@@ -1,0 +1,10 @@
+<app-weather-form (cityToSearch)="onCitySearch($event)" />
+
+@if (isLoading()) {
+  <p>Loading....</p>
+}
+@if (errorMessage()) {
+  <p>{{ errorMessage() }}</p>
+}
+
+<app-weather-card [weather]="weatherResponse()" />
