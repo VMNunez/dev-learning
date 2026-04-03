@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 
 @Component({
   selector: 'app-weather-form',
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './weather-form.html',
   styleUrl: './weather-form.css',
 })
-export class WeatherForm {}
+export class WeatherForm {
+  cityToSearch = output<string>();
+}

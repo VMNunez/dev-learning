@@ -1,1 +1,7 @@
-<p>weather-card works!</p>
+@if (weather()) {
+  <p>{{ weather()!.name }}</p>
+  <p>{{ weather()!.main.temp }}</p>
+  <p>{{ weather()!.main.humidity }}</p>
+  <p>{{ weather()!.weather[0].description }}</p>
+  <img [src]="getIconUrl(weather()!.weather[0].icon)" />
+}
