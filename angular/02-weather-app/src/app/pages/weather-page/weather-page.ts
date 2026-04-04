@@ -14,11 +14,22 @@ export class WeatherPage {
   private weatherService = inject(WeatherService);
 
   weatherResponse = signal<WeatherResponse | null>(null);
+  errorMessage = signal<string>('');
+  isLoading = signal<boolean>(false);
 
   onCitySearch(city: string) {
+    this.isLoading.set(true);
+    this.weatherResponse.set(null);
+    this.errorMessage.set('');
     this.weatherService.getWeather(city).subscribe({
-      next: (weatherData) => this.weatherResponse.set(weatherData),
-      error: (err) => console.log(err),
+      next: (weatherData) => {
+        this.weatherResponse.set(weatherData);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.errorMessage.set('City not found. Please try again');
+        this.isLoading.set(false);
+      },
     });
   }
 }
