@@ -44,8 +44,8 @@
 - [x] Signals: `signal.set()`
 - [x] Signals: `computed()`
 - [ ] Signals: `effect()`
-- [ ] HTTP Client: `HttpClient`
-- [ ] RxJS: `subscribe`
+- [x] HTTP Client: `HttpClient`
+- [x] RxJS: `subscribe`
 - [ ] RxJS: `pipe`
 - [ ] RxJS: `map`
 - [ ] RxJS: `catchError`
@@ -134,6 +134,7 @@
 | # | Project | Key concepts | Status |
 |---|---------|--------------|--------|
 | 01 | To-do list | Components, routing, binding, directives, services | Done ✓ |
+| 02 | Weather app | HTTP Client, RxJS subscribe, signals, error handling | In progress |
 
 ---
 
