@@ -52,9 +52,10 @@
 - [ ] Reactive forms: `FormGroup`
 - [ ] Reactive forms: `FormControl`
 - [ ] Reactive forms: `Validators`
-- [ ] Lifecycle hooks: `ngOnInit`
+- [x] Lifecycle hooks: `ngOnInit`
 - [ ] Lifecycle hooks: `ngOnDestroy`
 - [ ] Lifecycle hooks: `ngOnChanges`
+- [x] Pipes: `number` with format `'1.0-1'`
 - [ ] Pipes: `date`
 - [ ] Pipes: `currency`
 - [ ] Pipes: `async`
@@ -89,7 +90,8 @@
 - [x] CSS property: `opacity`
 - [ ] Responsive design: `@media` queries
 - [x] CSS variables: `--color`, `var()`
-- [ ] Transitions and animations
+- [x] CSS animations: `@keyframes` and `animation` property
+- [x] CSS spinner: `border-top-color` + `rotate` + `border-radius: 50%`
 
 ### Tailwind
 - [ ] Utility classes: spacing, colours, typography
