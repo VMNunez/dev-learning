@@ -6,6 +6,7 @@ export interface WeatherCondition {
 export interface WeatherMain {
   temp: number;
   humidity: number;
+  feels_like: number;
 }
 
 export interface WeatherResponse {

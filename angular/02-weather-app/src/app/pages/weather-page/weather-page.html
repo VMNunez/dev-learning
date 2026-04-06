@@ -3,7 +3,7 @@
   <app-weather-form (cityToSearch)="onCitySearch($event)" />
 
   @if (isLoading()) {
-    <p>Loading....</p>
+    <div class="spinner"></div>
   }
   @if (errorMessage()) {
     <p>{{ errorMessage() }}</p>
