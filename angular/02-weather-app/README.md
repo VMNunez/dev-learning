@@ -13,9 +13,12 @@ My second Angular project. A weather app that fetches real data from an API to l
 ## Features
 
 - Search for a city by name
-- Show current temperature, weather condition and humidity
+- Search for a city by name
+- Show current temperature, feels like temperature, weather condition and humidity
 - Show an icon for the weather condition
+- Loading spinner while fetching data
 - Handle errors when the city is not found
+- Load Madrid by default on app start
 
 ## Tech stack
 
