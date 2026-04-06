@@ -1,0 +1,53 @@
+.forecast {
+  margin-top: 1.5rem;
+}
+
+.forecast h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.forecast-list {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.forecast-item {
+  flex: 1;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 160px;
+}
+
+.forecast-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.forecast-temp {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.forecast-description {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+  margin-top: 0.25rem;
+}
+
+.forecast-item img {
+  width: 48px;
+  margin: 0 auto;
+}

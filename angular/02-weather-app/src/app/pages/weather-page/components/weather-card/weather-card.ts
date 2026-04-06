@@ -1,16 +1,16 @@
 import { Component, input } from '@angular/core';
 import type { WeatherResponse } from '../../models/weather.model';
+import { DecimalPipe } from '@angular/common';
+import { getIconUrl } from '../../utils/weather.utils';
 
 @Component({
   selector: 'app-weather-card',
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './weather-card.html',
   styleUrl: './weather-card.css',
 })
 export class WeatherCard {
-  weather = input<WeatherResponse | null>();
+  protected getIconUrl = getIconUrl;
 
-  getIconUrl(icon: string): string {
-    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
-  }
+  weather = input<WeatherResponse | null>();
 }

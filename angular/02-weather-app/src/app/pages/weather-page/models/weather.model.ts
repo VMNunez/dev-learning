@@ -6,10 +6,21 @@ export interface WeatherCondition {
 export interface WeatherMain {
   temp: number;
   humidity: number;
+  feels_like: number;
 }
 
 export interface WeatherResponse {
   name: string;
   main: WeatherMain;
   weather: WeatherCondition[];
+}
+
+export interface ForecastItem {
+  dt_txt: string;
+  main: WeatherMain;
+  weather: WeatherCondition[];
+}
+
+export interface ForecastResponse {
+  list: ForecastItem[];
 }

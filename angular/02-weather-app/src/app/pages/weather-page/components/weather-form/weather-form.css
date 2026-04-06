@@ -1,0 +1,34 @@
+.weather-form {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.weather-form input {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  font-size: 1rem;
+}
+
+.weather-form input:focus {
+  border: 1px solid var(--accent);
+}
+
+.weather-form button {
+  background-color: var(--accent);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: white;
+}
+
+.weather-form button:hover {
+  opacity: 0.85;
+}
