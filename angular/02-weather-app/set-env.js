@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+fs.mkdirSync('./src/environments', { recursive: true });
+
 const content = `export const environment = {
   apiKey: '${process.env.API_KEY}'
 };
