@@ -68,6 +68,8 @@
 - [ ] Big O notation — basics only (O(n), O(1), O(n²))
 - [ ] DRY principle — Don't Repeat Yourself
 - [ ] SOLID principles — basics (especially Single Responsibility)
+- [x] DRY principle applied — extracted shared utility function `getIconUrl`
+- [x] Single Responsibility applied — one component, one job (page fetches, card displays)
 
 ---
 
@@ -102,6 +104,7 @@
 - [ ] Signals: `effect()`
 - [x] HTTP Client: `HttpClient`
 - [x] RxJS: `subscribe`
+- [x] RxJS: `forkJoin` — run multiple HTTP requests in parallel
 - [ ] RxJS: `pipe`
 - [ ] RxJS: `map`
 - [ ] RxJS: `catchError`
@@ -112,6 +115,7 @@
 - [ ] Lifecycle hooks: `ngOnDestroy`
 - [ ] Lifecycle hooks: `ngOnChanges`
 - [x] Pipes: `number` with format `'1.0-1'`
+- [x] Pipes: `SlicePipe` — cut strings in templates
 - [ ] Pipes: `date`
 - [ ] Pipes: `currency`
 - [ ] Pipes: `async`
@@ -192,7 +196,7 @@
 | # | Project | Key concepts | Status |
 |---|---------|--------------|--------|
 | 01 | To-do list | Components, routing, binding, directives, services | Done ✓ |
-| 02 | Weather app | HTTP Client, RxJS subscribe, signals, error handling | In progress |
+| 02 | Weather app | HTTP Client, forkJoin, signals, computed, ngOnInit, pipes, CSS animations, Netlify deploy | Done ✓ |
 
 ---
 
