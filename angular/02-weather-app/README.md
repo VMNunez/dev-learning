@@ -2,6 +2,10 @@
 
 My second Angular project. A weather app that fetches real data from an API to learn HTTP Client and RxJS basics.
 
+**Live demo:** https://02angularweatherapp.netlify.app/
+
+![Weather App preview](screenshots/preview.png)
+
 ## Learning objectives
 
 - HTTP Client — how to call an external API from Angular
