@@ -14,3 +14,13 @@ export interface WeatherResponse {
   main: WeatherMain;
   weather: WeatherCondition[];
 }
+
+export interface ForecastItem {
+  dt_txt: string;
+  main: WeatherMain;
+  weather: WeatherCondition[];
+}
+
+export interface ForecastResponse {
+  list: ForecastItem[];
+}
