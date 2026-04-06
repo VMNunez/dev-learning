@@ -15,6 +15,62 @@
 
 ---
 
+## Fundamentals — Must know (language and web agnostic)
+
+> These are not tied to Angular or Java. They make you a better developer in any language.
+> In the AI era, interviewers use these to check if you *understand* code or just copy it.
+
+### JavaScript / TypeScript core
+- [ ] Data types: primitive vs reference
+- [ ] `==` vs `===` — why it matters
+- [ ] Closures — what they are and when they appear
+- [ ] The event loop — how async works in JavaScript
+- [ ] Promises and `async/await`
+- [ ] `map`, `filter`, `reduce` — how and when to use them
+- [ ] Immutability — why you avoid mutating data directly
+
+### Object-oriented programming (OOP)
+- [ ] Classes and objects
+- [ ] Encapsulation — private vs public
+- [ ] Inheritance — extends
+- [ ] Polymorphism — same method, different behaviour
+- [ ] Interfaces — define a contract
+
+### How the web works
+- [ ] HTTP — request and response cycle
+- [ ] HTTP methods: GET, POST, PUT, DELETE, PATCH
+- [ ] HTTP status codes: 200, 201, 400, 401, 403, 404, 500
+- [ ] What happens when you type a URL in the browser
+- [ ] What is a REST API
+- [ ] What is JSON and why we use it
+- [ ] CORS — what it is and why it exists
+- [ ] Cookies vs localStorage vs sessionStorage
+
+### TypeScript fundamentals
+- [ ] `type` vs `interface` — the difference and when to use each
+- [ ] Generics — what they are (you already use them: `signal<string>`)
+- [ ] Union types — `string | null`, `number | undefined`
+- [ ] `any` vs `unknown` — why `any` is dangerous
+- [ ] Optional chaining `?.` and nullish coalescing `??`
+- [ ] Type narrowing — how TypeScript checks types inside `if` blocks
+
+### Git fundamentals
+- [ ] What a commit actually is (a snapshot, not a diff)
+- [ ] What a branch is — a pointer to a commit
+- [ ] Merge vs rebase — difference and when to use each
+- [ ] How to resolve a merge conflict
+- [ ] `git stash` — save work without committing
+- [ ] `git log` and `git diff` — read your own history
+
+### General programming
+- [ ] What is a stack and a heap (memory)
+- [ ] Recursion — what it is and when to use it
+- [ ] Big O notation — basics only (O(n), O(1), O(n²))
+- [ ] DRY principle — Don't Repeat Yourself
+- [ ] SOLID principles — basics (especially Single Responsibility)
+
+---
+
 ## Angular — Concepts to learn
 
 ### Basics
@@ -52,9 +108,10 @@
 - [ ] Reactive forms: `FormGroup`
 - [ ] Reactive forms: `FormControl`
 - [ ] Reactive forms: `Validators`
-- [ ] Lifecycle hooks: `ngOnInit`
+- [x] Lifecycle hooks: `ngOnInit`
 - [ ] Lifecycle hooks: `ngOnDestroy`
 - [ ] Lifecycle hooks: `ngOnChanges`
+- [x] Pipes: `number` with format `'1.0-1'`
 - [ ] Pipes: `date`
 - [ ] Pipes: `currency`
 - [ ] Pipes: `async`
@@ -89,7 +146,8 @@
 - [x] CSS property: `opacity`
 - [ ] Responsive design: `@media` queries
 - [x] CSS variables: `--color`, `var()`
-- [ ] Transitions and animations
+- [x] CSS animations: `@keyframes` and `animation` property
+- [x] CSS spinner: `border-top-color` + `rotate` + `border-radius: 50%`
 
 ### Tailwind
 - [ ] Utility classes: spacing, colours, typography
@@ -192,6 +250,18 @@
 - [ ] JPA / Hibernate: connect to a database
 - [ ] JPA / Hibernate: basic queries
 - [ ] Maven: project structure and dependencies
+
+---
+
+## Complementary skills
+
+> These skills are practised across all projects — not studied separately.
+
+- [ ] Debugging — reading errors, using browser devtools, tracing bugs
+- [ ] Reading and reviewing PRs — understand code you didn't write
+- [ ] Security basics — API keys out of git, SQL injection awareness, XSS awareness
+- [ ] Architecture basics — REST, frontend/backend separation, databases
+- [ ] AI tools — using Copilot/Claude to work faster, reviewing AI-generated code
 
 ---
 

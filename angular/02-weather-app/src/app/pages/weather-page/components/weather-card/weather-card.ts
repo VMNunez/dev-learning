@@ -1,9 +1,10 @@
 import { Component, input } from '@angular/core';
 import type { WeatherResponse } from '../../models/weather.model';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-weather-card',
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './weather-card.html',
   styleUrl: './weather-card.css',
 })

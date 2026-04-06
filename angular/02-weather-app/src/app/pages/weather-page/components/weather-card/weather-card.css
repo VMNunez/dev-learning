@@ -11,16 +11,13 @@
   justify-content: space-between;
   align-items: center;
 }
-
 .weather-header img {
   width: 80px;
 }
-
 .city-name {
   font-size: 1.5rem;
   font-weight: 600;
 }
-
 .temperature {
   font-size: 2.5rem;
   font-weight: bold;
@@ -31,6 +28,10 @@
   text-transform: capitalize;
 }
 .humidity {
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+.feels-like {
   color: var(--text-muted);
   margin-top: 0.5rem;
 }
