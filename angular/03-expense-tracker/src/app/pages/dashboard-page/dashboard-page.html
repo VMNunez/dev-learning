@@ -1,0 +1,15 @@
+<a routerLink="/add">Add transaction</a>
+<p>Balance: {{ balance() }}</p>
+<p>Total income: {{ totalIncome() }}</p>
+<p>Total expenses: {{ totalExpense() }}</p>
+
+@for (transaction of transactions(); track transaction.id) {
+  <div>
+    <p>{{ transaction.type }}</p>
+    <p>{{ transaction.amount }}</p>
+    <p>{{ transaction.date }}</p>
+    <p>{{ transaction.description }}</p>
+  </div>
+} @empty {
+  <p>There are no transactions yet</p>
+}
