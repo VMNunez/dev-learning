@@ -9,6 +9,7 @@
     <p>{{ transaction.amount }}</p>
     <p>{{ transaction.date }}</p>
     <p>{{ transaction.description }}</p>
+    <button (click)="onDeleteTransaction(transaction.id)">Delete</button>
   </div>
 } @empty {
   <p>There are no transactions yet</p>
