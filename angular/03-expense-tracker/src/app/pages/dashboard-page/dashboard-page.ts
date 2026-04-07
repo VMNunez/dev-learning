@@ -26,4 +26,8 @@ export class DashboardPage {
   );
 
   balance = computed(() => this.totalIncome() - this.totalExpense());
+
+  onDeleteTransaction(id: number) {
+    this.transactionService.deleteTransaction(id);
+  }
 }
