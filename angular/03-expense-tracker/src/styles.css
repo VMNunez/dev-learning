@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+  --bg-primary: #f0f2f5;
+  --bg-card: #ffffff;
+  --accent: #4f46e5;
+  --income: #16a34a;
+  --expense: #dc2626;
+  --text-primary: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --shadow: rgba(0, 0, 0, 0.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

@@ -1,10 +1,11 @@
 import { Component, computed, inject } from '@angular/core';
 import { TransactionService } from '../../services/transaction.service';
 import { RouterLink } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [RouterLink],
+  imports: [RouterLink, DecimalPipe],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
 })
