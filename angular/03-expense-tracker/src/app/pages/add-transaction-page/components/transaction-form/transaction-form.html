@@ -1,4 +1,4 @@
-<form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="transaction-form">
   <div class="form-field">
     <label for="description">Description</label>
     <input type="text" id="description" formControlName="description" />
@@ -19,5 +19,5 @@
     <label for="date">Date</label>
     <input type="date" formControlName="date" />
   </div>
-  <button type="submit">Add Transaction</button>
+  <button type="submit" class="btn-submit">Add Transaction</button>
 </form>

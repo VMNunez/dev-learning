@@ -1,16 +1,48 @@
-<a routerLink="/add">Add transaction</a>
-<p>Balance: {{ balance() }}</p>
-<p>Total income: {{ totalIncome() }}</p>
-<p>Total expenses: {{ totalExpense() }}</p>
-
-@for (transaction of transactions(); track transaction.id) {
-  <div>
-    <p>{{ transaction.type }}</p>
-    <p>{{ transaction.amount }}</p>
-    <p>{{ transaction.date }}</p>
-    <p>{{ transaction.description }}</p>
-    <button (click)="onDeleteTransaction(transaction.id)">Delete</button>
+<div class="container">
+  <div class="header">
+    <h1>Expense Tracker</h1>
+    <a routerLink="/add" class="btn-add">+ Add transaction</a>
   </div>
-} @empty {
-  <p>There are no transactions yet</p>
-}
+
+  <div class="summary">
+    <div class="summary-card balance">
+      <p class="label">Balance</p>
+      <p class="amount" [class.income]="balance() >= 0" [class.expense]="balance() < 0">
+        {{ balance() | number: '1.0-2' }}€
+      </p>
+    </div>
+    <div class="summary-card income">
+      <p class="label">Income</p>
+      <p class="amount">+{{ totalIncome() | number: '1.0-2' }}€</p>
+    </div>
+    <div class="summary-card expense">
+      <p class="label">Expenses</p>
+      <p class="amount">-{{ totalExpense() | number: '1.0-2' }}€</p>
+    </div>
+  </div>
+
+  <div class="transactions">
+    <h2>Transactions</h2>
+    @for (transaction of transactions(); track transaction.id) {
+      <div class="transaction-item">
+        <div class="transaction-info">
+          <p class="transaction-description">{{ transaction.description }}</p>
+          <p class="transaction-date">{{ transaction.date }}</p>
+        </div>
+        <div class="transaction-right">
+          <p
+            class="transaction-amount"
+            [class.income]="transaction.type === 'income'"
+            [class.expense]="transaction.type === 'expense'"
+          >
+            {{ transaction.type === 'income' ? '+' : '-'
+            }}{{ transaction.amount | number: '1.0-2' }}€
+          </p>
+          <button class="btn-delete" (click)="onDeleteTransaction(transaction.id)">✕</button>
+        </div>
+      </div>
+    } @empty {
+      <p class="empty">No transactions yet</p>
+    }
+  </div>
+</div>
