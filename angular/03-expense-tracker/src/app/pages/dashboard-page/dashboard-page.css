@@ -38,6 +38,15 @@
   text-align: center;
   box-shadow: 0px 4px 12px var(--shadow);
 }
+
+.summary-card .amount.income {
+  color: var(--income);
+}
+
+.summary-card .amount.expense {
+  color: var(--expense);
+}
+
 .summary-card .label {
   font-size: 0.8rem;
   color: var(--text-muted);
@@ -65,7 +74,7 @@
   background-color: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 0.5rem 1rem;
+  padding: 1rem;
   margin-bottom: 1rem;
   box-shadow: 0px 4px 12px var(--shadow);
 }

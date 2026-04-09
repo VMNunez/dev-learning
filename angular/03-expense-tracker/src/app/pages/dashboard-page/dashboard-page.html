@@ -7,7 +7,9 @@
   <div class="summary">
     <div class="summary-card balance">
       <p class="label">Balance</p>
-      <p class="amount">{{ balance() | number: '1.0-2' }}€</p>
+      <p class="amount" [class.income]="balance() >= 0" [class.expense]="balance() < 0">
+        {{ balance() | number: '1.0-2' }}€
+      </p>
     </div>
     <div class="summary-card income">
       <p class="label">Income</p>
