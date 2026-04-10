@@ -2,22 +2,37 @@
 
 My third Angular project. A personal finance tracker to learn reactive forms, routing, and localStorage persistence.
 
-## Learning objectives
+**Live demo:** https://03angularexpensetracker.netlify.app/
 
-- Reactive forms — `FormGroup`, `FormControl`, `Validators`
-- Routing — `routerLink`, `RouterOutlet`, programmatic navigation with `Router`
-- localStorage — persist data across page refreshes
-- Signals and `computed()` — derived state for balance, income and expenses
-- TypeScript utility types — `Omit` to create `NewTransaction` from `Transaction`
-- Smart/dumb component pattern — page handles logic, form component only emits
+![App preview](screenshots/preview.png)
 
 ## Features
 
-- Add income and expense transactions with a form
-- View balance, total income and total expenses
+- Add income and expense transactions with a validated form
+- Real-time balance, total income and total expenses
+- Filter transactions by type: All, Income, Expense
 - Delete transactions
+- Form validation with error messages
 - Data persists after page refresh (localStorage)
-- Navigate between dashboard and add transaction page
+- Responsive design — works on mobile and desktop
+
+## What I learned
+
+### Angular
+- `FormGroup` and `FormControl` — reactive forms
+- `Validators.required` and `Validators.min()` — built-in validation
+- `hasError()` and `touched` — show error messages at the right moment
+- `markAllAsTouched()` — trigger all errors on submit
+- `form.reset()` — reset form to initial values after submit
+- `routerLink` and `RouterOutlet` — navigation between pages
+- `Router` service — programmatic navigation with `router.navigate()`
+- `computed()` with filters — derived state that reacts to signals
+- `Omit<T, K>` — TypeScript utility type to create `NewTransaction` from `Transaction`
+- Smart/dumb component pattern — page handles logic, form only emits
+
+### CSS
+- `position: absolute` and `position: relative` — element positioning
+- `@media (min-width)` — responsive design, mobile first approach
 
 ## Tech stack
 
