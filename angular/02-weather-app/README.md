@@ -4,25 +4,34 @@ My second Angular project. A weather app that fetches real data from an API to l
 
 **Live demo:** https://02angularweatherapp.netlify.app/
 
-![Weather App preview](screenshots/preview.png)
-
-## Learning objectives
-
-- HTTP Client — how to call an external API from Angular
-- RxJS basics — `Observable`, `subscribe`, `pipe`, `map`
-- Environment variables — how to store API keys safely
-- Lifecycle hooks — `ngOnInit` to load data when the component starts
-- Angular pipes — format data in the template (`date`, `number`)
+![App preview](screenshots/preview.png)
 
 ## Features
 
-- Search for a city by name
-- Search for a city by name
-- Show current temperature, feels like temperature, weather condition and humidity
-- Show an icon for the weather condition
+- Search weather by city name
+- Current temperature, feels like, humidity and weather condition
+- Weather condition icon
+- 5-day forecast
 - Loading spinner while fetching data
-- Handle errors when the city is not found
-- Load Madrid by default on app start
+- Error handling when the city is not found
+- Madrid loaded by default on app start
+
+## What I learned
+
+### Angular
+- `HttpClient` — call external APIs from Angular
+- `subscribe` — handle Observable responses
+- `forkJoin` — run multiple HTTP requests in parallel
+- `ngOnInit` — run logic when the component loads
+- `signal()` and `computed()` — reactive state and derived values
+- `number` pipe with format `'1.0-1'`
+- `SlicePipe` — cut strings in templates
+- Environment files — store API keys safely
+
+### CSS
+- `@keyframes` and `animation` — CSS animations
+- CSS spinner: `border-top-color` + `rotate` + `border-radius: 50%`
+- `transition` and `transform: scale()` — hover effects
 
 ## Tech stack
 
