@@ -48,3 +48,8 @@
 .btn-submit:hover {
   opacity: 0.8;
 }
+
+.error-msg {
+  font-size: 0.8rem;
+  color: var(--expense);
+}
