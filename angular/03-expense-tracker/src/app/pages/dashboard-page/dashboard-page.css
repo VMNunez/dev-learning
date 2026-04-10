@@ -127,3 +127,26 @@
 .btn-delete:hover {
   color: var(--expense);
 }
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.filter-btn.active {
+  background-color: var(--accent);
+  color: white;
+  font-weight: 600;
+}
