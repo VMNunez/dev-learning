@@ -1,29 +1,19 @@
 # dev-learning
 
-A portfolio of personal projects built while learning Angular, TypeScript and CSS.
+A portfolio of personal projects built while learning Angular and full stack development.
+Focused on the Angular + Java Spring Boot stack — the standard in Spanish companies.
 
-**Background:** React, Node.js, Express, TypeScript, Tailwind, CSS, HTML, JavaScript
+**Background:** React · Node.js · Express · TypeScript · Tailwind · CSS · HTML · JavaScript
 
 ---
 
 ## Projects
 
-| # | Project | Stack | Live |
-|---|---------|-------|------|
-| 01 | To-do list | Angular, TypeScript, CSS | [Live demo](https://01angulartodolist.netlify.app/) |
-| 02 | Weather app | Angular, TypeScript, CSS, OpenWeatherMap API | [Live demo](https://02angularweatherapp.netlify.app/) |
-| 03 | Expense tracker | Angular, TypeScript, CSS | In progress |
-
----
-
-### 01 — To-do List
-Add, complete and delete tasks · filter by status · task counter · empty state
-
-### 02 — Weather App
-Search weather by city · current conditions and 5-day forecast · loading spinner and error handling
-
-### 03 — Expense Tracker
-Track income and expenses · real-time balance · filter by type · form validation · localStorage persistence
+| # | Project | Stack | Key concepts | Live |
+|---|---------|-------|-------------|------|
+| 01 | [To-do list](angular/01-todo-list/) | Angular · CSS | Components, services, signals, directives, class binding | [Live demo](https://01angulartodolist.netlify.app/) |
+| 02 | [Weather app](angular/02-weather-app/) | Angular · CSS · OpenWeatherMap API | HTTP Client, RxJS, forkJoin, pipes, CSS animations, API integration | [Live demo](https://02angularweatherapp.netlify.app/) |
+| 03 | [Expense tracker](angular/03-expense-tracker/) | Angular · CSS | Reactive forms, validation, localStorage, computed signals, routing | [Live demo](https://03angularexpensetracker.netlify.app/) |
 
 ---
 
