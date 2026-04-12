@@ -1,5 +1,9 @@
 # SQL — Data Types
 
+Official docs: [PostgreSQL Data Types](https://neon.com/postgresql/postgresql-tutorial/postgresql-data-types)
+
+---
+
 ## Character types
 
 | Type | When to use |
