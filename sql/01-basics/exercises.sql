@@ -83,3 +83,13 @@ SELECT * FROM books WHERE price>10;
 SELECT * FROM books ORDER BY price ASC;
 -- Get the 3 most expensive books
 SELECT * FROM books ORDER BY price DESC LIMIT 3;
+-- Get all books that cost more than 10 and were published after 1980.
+SELECT * FROM books WHERE price > 10 AND year > 1980;
+-- Get all books where author_id is 11 or author_id is 12. Use OR, not IN.
+SELECT * FROM books WHERE author_id = 11 OR author_id = 12;
+-- Get all customers from Spain or Germany. Use IN.
+SELECT * FROM customers WHERE country IN ('ES','DE');
+-- Get all books whose title contains the word the — case insensitive.
+SELECT * FROM books WHERE title ILIKE '%the%';
+-- Get all books published between 1945 and 1987, ordered by year.
+SELECT * FROM books WHERE year BETWEEN 1945 AND 1987 ORDER BY year;

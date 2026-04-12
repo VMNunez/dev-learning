@@ -1,5 +1,9 @@
 # SQL — Table Relationships
 
+Official docs: [PostgreSQL Foreign Key](https://neon.com/postgresql/postgresql-tutorial/postgresql-foreign-key)
+
+---
+
 ## Types of tables
 
 ### Primary table
