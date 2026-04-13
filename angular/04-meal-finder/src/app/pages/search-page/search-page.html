@@ -1,1 +1,14 @@
-<p>search-page works!</p>
+<div class="container">
+  <label for="meal">Search a meal</label>
+
+  <input id="meal" type="text" #meal />
+
+  <button (click)="onSearchMeals(meal.value)">Search Meal</button>
+
+  @for (meal of meals(); track meal.idMeal) {
+    <div class="meal-card">
+      <p>{{ meal.strMeal }}</p>
+      <img [src]="meal.strMealThumb" />
+    </div>
+  }
+</div>
