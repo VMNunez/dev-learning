@@ -1,59 +1,48 @@
-# 04MealFinder
+# 04 — Meal Finder
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.4.
+My fourth Angular project. A recipe search app to learn route parameters, ActivatedRoute, and the effect() signal.
 
-## Development server
+**Live demo:** coming soon
 
-To start a local development server, run:
+## Features
+
+- Search meals by name using TheMealDB API
+- Browse results as cards with image and name
+- Click a meal to see the full recipe on a detail page
+- Save favourite meals (localStorage)
+
+## What I learned
+
+### Angular
+- Route parameters — `path: 'detail/:id'` to define dynamic URL segments
+- `ActivatedRoute` — read the `:id` from the URL inside a component
+- `effect()` — run side effects automatically when a signal changes
+- `signal<Type[]>([])` — typed signal for arrays
+- `subscribe` with `next` and `error` callbacks — handle Observable responses
+
+## Tech stack
+
+- Angular 21
+- TypeScript
+- CSS
+- TheMealDB API (free, no API key)
+
+## How to run the project
+
+```bash
+git clone https://github.com/VMNunez/dev-learning.git
+```
+
+```bash
+cd dev-learning/angular/04-meal-finder
+```
+
+```bash
+npm install
+```
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Open your browser at `http://localhost:4200`
