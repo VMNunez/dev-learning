@@ -1,14 +1,23 @@
 <div class="container">
-  <label for="meal">Search a meal</label>
+  <h1>Meal Finder</h1>
+  <div class="search-container">
+    <input
+      id="meal"
+      type="text"
+      #meal
+      placeholder="e.g. chicken, pasta, beef...
+"
+    />
 
-  <input id="meal" type="text" #meal />
+    <button (click)="onSearchMeals(meal.value)">Search Meal</button>
+  </div>
 
-  <button (click)="onSearchMeals(meal.value)">Search Meal</button>
-
-  @for (meal of meals(); track meal.idMeal) {
-    <div class="meal-card">
-      <p>{{ meal.strMeal }}</p>
-      <img [src]="meal.strMealThumb" />
-    </div>
-  }
+  <div class="meal-container">
+    @for (meal of meals(); track meal.idMeal) {
+      <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">
+        <p class="meal-title">{{ meal.strMeal }}</p>
+        <img class="meal-img" [src]="meal.strMealThumb" />
+      </div>
+    }
+  </div>
 </div>
