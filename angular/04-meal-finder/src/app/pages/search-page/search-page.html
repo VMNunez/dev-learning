@@ -1,1 +1,23 @@
-<p>search-page works!</p>
+<div class="container">
+  <h1>Meal Finder</h1>
+  <div class="search-container">
+    <input
+      id="meal"
+      type="text"
+      #meal
+      placeholder="e.g. chicken, pasta, beef...
+"
+    />
+
+    <button (click)="onSearchMeals(meal.value)">Search Meal</button>
+  </div>
+
+  <div class="meal-container">
+    @for (meal of meals(); track meal.idMeal) {
+      <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">
+        <p class="meal-title">{{ meal.strMeal }}</p>
+        <img class="meal-img" [src]="meal.strMealThumb" />
+      </div>
+    }
+  </div>
+</div>
