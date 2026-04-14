@@ -20,11 +20,6 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - `signal<Type[]>([])` — typed signal for arrays
 - `subscribe` with `next` and `error` callbacks — handle Observable responses
 
-### Architecture
-- Two-page app: search page (list) + detail page (one item)
-- Shared service at `app/services/` used by both pages
-- Typed API response with `MealResponse` interface — wraps `Meal[]`
-
 ## Tech stack
 
 - Angular 21
