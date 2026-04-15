@@ -12,6 +12,46 @@ Provide in `app.config.ts`:
 provideHttpClient()
 ```
 
+## Standard pattern for API calls in a component
+
+This is the pattern you use every time you call an API from a component:
+
+1. **Service** — has the method that calls the API and returns an Observable
+2. **Component** — injects the service, creates a dedicated method, calls it from `ngOnInit`
+3. **Signal** — stores the result so the template can display it
+
+```typescript
+// 1. service
+getMealById(id: string): Observable<MealResponse> {
+  return this.http.get<MealResponse>(`https://api.example.com/meal/${id}`);
+}
+
+// 2. component
+meal = signal<Meal | null>(null);
+
+ngOnInit(): void {
+  const id = this.route.snapshot.paramMap.get('id');
+  this.loadMeal(id as string);
+}
+
+loadMeal(id: string): void {
+  this.mealService.getMealById(id).subscribe({
+    next: (response) => {
+      this.meal.set(response.meals[0]);
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+}
+```
+
+**Why a separate method?** Keeps `ngOnInit` clean. Each method does one job.
+
+**Why `console.error` not `console.log`?** Errors go to `console.error` — they show in red in DevTools and are easier to spot.
+
+---
+
 ## Basic GET request
 
 ```typescript
