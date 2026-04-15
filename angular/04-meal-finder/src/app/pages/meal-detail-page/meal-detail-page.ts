@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MealService } from '../../services/meal.service';
 import type { Meal, MealResponse } from '../../models/meal.model';
 
 @Component({
   selector: 'app-meal-detail-page',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './meal-detail-page.html',
   styleUrl: './meal-detail-page.css',
 })
