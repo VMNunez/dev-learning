@@ -1,1 +1,21 @@
-<p>meal-detail-page works!</p>
+<div class="container">
+  @if (mealDetails()) {
+    <div class="meal-card">
+      <img class="meal-img" [src]="mealDetails()!.strMealThumb" />
+      <div class="meal-details">
+        <h1 class="meal-title">{{ mealDetails()!.strMeal }}</h1>
+        <div class="meal-meta">
+          <span>{{ mealDetails()!.strCategory }}</span>
+          <span>{{ mealDetails()!.strArea }}</span>
+        </div>
+        <h3>Instructions</h3>
+        <p class="meal-instructions">{{ mealDetails()!.strInstructions }}</p>
+        <a class="youtube-link" [href]="mealDetails()!.strYoutube" target="_blank">
+          Watch recipe on YouTube
+        </a>
+      </div>
+    </div>
+  } @else {
+    <p>Loading...</p>
+  }
+</div>
