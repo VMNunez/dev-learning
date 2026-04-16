@@ -6,8 +6,13 @@ Reactive forms let you manage form state in TypeScript — not in the template. 
 
 ## Import
 
+Add `ReactiveFormsModule` to the `imports` array of the component that contains the form — without it, `[formGroup]` and `formControlName` will not work.
+
 ```typescript
-imports: [ReactiveFormsModule]
+@Component({
+  imports: [ReactiveFormsModule],
+  ...
+})
 ```
 
 ## FormGroup and FormControl
@@ -26,6 +31,10 @@ transactionForm = new FormGroup({
 - Always use an explicit generic type: `FormControl<string | null>`
 
 ## Bind to the template
+
+`[formGroup]` connects the form element to your `FormGroup` object in TypeScript.
+`formControlName` connects each input to its `FormControl` by name.
+`(ngSubmit)` calls a method when the form is submitted — you must create this method in the component.
 
 ```html
 <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
@@ -52,11 +61,16 @@ new FormControl(null, [Validators.required, Validators.min(0.01)])
 
 ## Getters — access controls cleanly in the template
 
+Instead of writing `this.transactionForm.get('description')` everywhere, create a getter in the component. A getter is a method that looks like a property — you access it without `()`.
+
 ```typescript
+// in the component
 get description() {
   return this.transactionForm.get('description');
 }
 ```
+
+Now in the template you can write `description` instead of `transactionForm.get('description')`:
 
 ```html
 @if (description?.touched && description?.hasError('required')) {
@@ -64,16 +78,50 @@ get description() {
 }
 ```
 
+- `touched` — true after the user has clicked the field and left it. Use this so errors only appear after the user has interacted with the field, not immediately on page load.
+- `hasError('required')` — true if the required validator failed
+- `?.` — safe navigation operator, because `get()` can return `null` if the control does not exist
+
 ## Validation state
+
+In the examples below, `description` is a getter that returns a `FormControl`. Replace it with the name of your own getter.
 
 | Property | What it means |
 |----------|--------------|
-| `control.valid` | All validators pass |
-| `control.invalid` | At least one validator fails |
-| `control.touched` | User clicked the field and left |
-| `control.dirty` | User typed something |
-| `control.hasError('required')` | The required validator failed |
-| `control.hasError('min')` | The min validator failed |
+| `description.valid` | All validators pass |
+| `description.invalid` | At least one validator fails |
+| `description.touched` | User clicked the field and left |
+| `description.dirty` | User typed something |
+| `description.hasError('required')` | The required validator failed |
+| `description.hasError('min')` | The min validator failed |
+
+You can also check the whole form instead of a specific field:
+
+```typescript
+if (this.transactionForm.valid) {
+  // all fields pass — safe to submit
+}
+
+if (this.transactionForm.invalid) {
+  // at least one field has an error
+}
+```
+
+This is the standard check inside `onSubmit()` — if the form is invalid, stop and show errors.
+
+`valid`, `invalid`, `touched` and `dirty` all work on both individual controls and the whole form. `hasError()` only works on individual controls — the form itself does not have validators.
+
+### Error names in `hasError()`
+
+The name you pass to `hasError()` always matches the validator name in lowercase:
+
+| Validator | Error name | Example |
+|-----------|-----------|---------|
+| `Validators.required` | `'required'` | `description.hasError('required')` |
+| `Validators.min(n)` | `'min'` | `amount.hasError('min')` |
+| `Validators.max(n)` | `'max'` | `amount.hasError('max')` |
+| `Validators.minLength(n)` | `'minlength'` | `name.hasError('minlength')` |
+| `Validators.email` | `'email'` | `email.hasError('email')` |
 
 ## onSubmit — handle form submission
 

@@ -74,13 +74,50 @@ totalIncome = computed(() =>
 
 ---
 
+## effect() — side effects
+
+`effect()` runs a function automatically when a tracked signal changes. Use it for side effects — things outside Angular like localStorage, logging, or external updates.
+
+```typescript
+effect(() => {
+  localStorage.setItem('favourites', JSON.stringify(this.favourites()));
+});
+```
+
+- Runs once when the component or service is created
+- Runs again every time a signal inside it changes
+- Angular tracks which signals are used inside the function automatically
+
+### Rules
+- Never modify a signal inside `effect()` — it can create an infinite loop
+- Use `computed()` instead when you want to derive a new value from signals
+- Must be created inside a constructor or injection context
+
+```typescript
+constructor() {
+  effect(() => {
+    localStorage.setItem('favourites', JSON.stringify(this.favourites()));
+  });
+}
+```
+
+### effect() vs computed()
+
+| | `computed()` | `effect()` |
+|--|-------------|------------|
+| Returns a value | Yes | No |
+| Use for | Derived state | Side effects |
+| Example | total price, filtered list | save to localStorage, log |
+
+---
+
 ## Pattern — initialise signal from localStorage
 
 ```typescript
-private loadTasks(): Task[] {
-  const data = localStorage.getItem('tasks');
-  return data ? JSON.parse(data) : [];
-}
-
-tasks = signal<Task[]>(this.loadTasks());
+// clean one-liner with ?? operator
+favourites = signal<Meal[]>(
+  JSON.parse(localStorage.getItem('favourites') ?? '[]')
+);
 ```
+
+`??` — if `localStorage.getItem` returns `null`, use `'[]'` as the default.
