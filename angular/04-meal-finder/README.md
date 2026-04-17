@@ -24,6 +24,12 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
 - `Array.some()` — check if any item in an array matches a condition
 
+### CSS
+- `overflow: hidden` on a card — clips image corners when using `border-radius`
+- `position: absolute` + `top/right` — place a badge or button over a card
+- `transition` on the base element, not on `:hover` — correct hover lift pattern
+- `[class.active]` — Angular class binding to toggle styles reactively
+
 ## Tech stack
 
 - Angular 21
