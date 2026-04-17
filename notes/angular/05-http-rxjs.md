@@ -1,5 +1,7 @@
 # Angular — HTTP Client and RxJS
 
+Official docs: https://angular.dev/guide/http
+
 ## HttpClient — call external APIs
 
 ### 1. Register in `app.config.ts` — do this once per project

@@ -1,5 +1,7 @@
 # Angular — Components
 
+Official docs: https://angular.dev/guide/components
+
 ## What is a component?
 
 A component is a piece of the UI. Every Angular app is made of components. Each component has:

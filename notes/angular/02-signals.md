@@ -1,5 +1,7 @@
 # Angular — Signals
 
+Official docs: https://angular.dev/guide/signals
+
 ## What is a signal?
 
 A signal is a reactive value. When it changes, Angular automatically updates the template. You do not need to manually trigger change detection.

@@ -1,5 +1,7 @@
 # Angular — Services and Dependency Injection
 
+Official docs: https://angular.dev/guide/di
+
 ## What is a service?
 
 A service is a class that holds shared logic or shared state. Components use services instead of managing their own data — this keeps components clean and focused on the UI.
