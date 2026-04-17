@@ -1,5 +1,7 @@
 # Angular — Reactive Forms
 
+Official docs: https://angular.dev/guide/forms/reactive-forms
+
 ## What are reactive forms?
 
 Reactive forms let you manage form state in TypeScript — not in the template. You have full control over validation, values and state.

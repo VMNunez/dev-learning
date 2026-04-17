@@ -1,5 +1,7 @@
 # Angular — Routing
 
+Official docs: https://angular.dev/guide/routing
+
 ## What is routing?
 
 Routing lets you navigate between pages without reloading the browser. Each URL shows a different component.

@@ -3,7 +3,20 @@
     <div class="meal-card">
       <img class="meal-img" [src]="mealDetails()!.strMealThumb" />
       <div class="meal-details">
-        <h1 class="meal-title">{{ mealDetails()!.strMeal }}</h1>
+        <div class="meal-header">
+          <h1 class="meal-title">{{ mealDetails()!.strMeal }}</h1>
+          <button
+            class="favourite-btn"
+            [class.active]="isFavourite()"
+            (click)="toggleFavourite(mealDetails()!)"
+          >
+            @if (isFavourite()) {
+              ★
+            } @else {
+              ☆
+            }
+          </button>
+        </div>
         <div class="meal-meta">
           <span>{{ mealDetails()!.strCategory }}</span>
           <span>{{ mealDetails()!.strArea }}</span>
