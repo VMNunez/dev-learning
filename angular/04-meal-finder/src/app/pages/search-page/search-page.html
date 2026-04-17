@@ -15,7 +15,20 @@
   <div class="meal-container">
     @for (meal of meals(); track meal.idMeal) {
       <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">
-        <p class="meal-title">{{ meal.strMeal }}</p>
+        <div class="card-head">
+          <p class="meal-title">{{ meal.strMeal }}</p>
+          <button
+            class="favourite-btn"
+            [class.active]="isFavourite(meal.idMeal)"
+            (click)="toggleFavourite(meal, $event)"
+          >
+            @if (isFavourite(meal.idMeal)) {
+              ★
+            } @else {
+              ☆
+            }
+          </button>
+        </div>
         <img class="meal-img" [src]="meal.strMealThumb" />
       </div>
     }
