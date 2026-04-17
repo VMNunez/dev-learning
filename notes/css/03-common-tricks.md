@@ -2,6 +2,18 @@
 
 ## UI elements
 
+### Inline element with vertical margin
+
+`<a>`, `<span>` are inline — `margin-top` and `margin-bottom` don't work on them.
+Fix: add `display: inline-block` to enable vertical spacing.
+
+```css
+a {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+```
+
 ### Image inside a rounded container
 
 ```css
