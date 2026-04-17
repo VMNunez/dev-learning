@@ -17,8 +17,12 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - Route parameters — `path: 'detail/:id'` to define dynamic URL segments
 - `ActivatedRoute` — read the `:id` from the URL inside a component
 - `effect()` — run side effects automatically when a signal changes
+- `computed()` — derive a reactive value from a signal (used for `isFavourite` in the detail page)
+- `localStorage + effect()` pattern — init signal from localStorage, use effect() to keep it in sync
 - `signal<Type[]>([])` — typed signal for arrays
 - `subscribe` with `next` and `error` callbacks — handle Observable responses
+- `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
+- `Array.some()` — check if any item in an array matches a condition
 
 ## Tech stack
 
