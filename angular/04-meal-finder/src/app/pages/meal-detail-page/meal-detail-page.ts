@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MealService } from '../../services/meal.service';
 import type { Meal, MealResponse } from '../../models/meal.model';
 
 @Component({
   selector: 'app-meal-detail-page',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './meal-detail-page.html',
   styleUrl: './meal-detail-page.css',
 })
@@ -14,6 +14,8 @@ export class MealDetailPage implements OnInit {
   private mealService = inject(MealService);
   mealId: string | null = null;
   mealDetails = signal<Meal | null>(null);
+  favouriteMeals = this.mealService.favourites;
+  isFavourite = computed(() => this.favouriteMeals().some((meal) => meal.idMeal === this.mealId));
 
   ngOnInit(): void {
     this.mealId = this.activatedRoute.snapshot.paramMap.get('id');
@@ -29,5 +31,11 @@ export class MealDetailPage implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  toggleFavourite(meal: Meal) {
+    this.isFavourite()
+      ? this.mealService.deleteFavourite(this.mealId as string)
+      : this.mealService.addFavourite(meal);
   }
 }
