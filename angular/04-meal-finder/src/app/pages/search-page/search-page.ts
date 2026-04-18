@@ -12,11 +12,14 @@ import { RouterLink } from '@angular/router';
 export class SearchPage {
   private mealService = inject(MealService);
   meals = signal<Meal[]>([]);
+  hasSearched = signal<boolean>(false);
+  searchTerm = signal<string>('');
 
   onSearchMeals(meal: string) {
     this.mealService.searchMeals(meal).subscribe({
       next: (mealResponse: MealResponse) => {
         this.meals.set(mealResponse.meals);
+        this.hasSearched.set(true);
       },
       error: (error) => {
         console.error(error);
