@@ -1,7 +1,14 @@
 <div class="container">
-  <h1 class="page-title">My Favourites</h1>
+  <div class="favourites-head">
+    <a class="back-link" routerLink="/">&larr; Back</a>
+    <h1 class="page-title">My Favourites</h1>
+    <div></div>
+  </div>
+
   <div class="categories-container">
-    <button class="category-btn" (click)="onSelectedCategory('')">All</button>
+    @if (favourites().length > 0) {
+      <button class="category-btn" (click)="onSelectedCategory('')">All</button>
+    }
     @for (category of allCategories(); track category) {
       <button class="category-btn" (click)="onSelectedCategory(category)">
         {{ category }}
