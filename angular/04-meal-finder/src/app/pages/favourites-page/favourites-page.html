@@ -21,15 +21,10 @@
         <div class="favourite-head">
           <p class="favourite-title">{{ favourite.strMeal }}</p>
           <button
-            class="favourite-btn"
-            [class.active]="isFavourite(favourite.idMeal)"
+            class="remove-btn"
             (click)="toggleFavourite(favourite, $event)"
           >
-            @if (isFavourite(favourite.idMeal)) {
-              ★
-            } @else {
-              ☆
-            }
+            &times;
           </button>
         </div>
         <img class="favourite-img" [src]="favourite.strMealThumb" />

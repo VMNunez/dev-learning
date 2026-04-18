@@ -68,7 +68,7 @@
   box-shadow: 0 4px 12px var(--shadow);
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .favourite-card:hover {
@@ -86,21 +86,21 @@
   text-align: center;
 }
 
-.favourite-btn {
+.remove-btn {
   position: absolute;
   top: 50%;
   right: 0.5rem;
   transform: translateY(-50%);
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   cursor: pointer;
-  color: #ccc;
+  color: var(--text-muted);
   transition: color 0.2s ease;
 }
 
-.favourite-btn.active {
-  color: #ffd700;
+.remove-btn:hover {
+  color: var(--primary);
 }
 
 .favourite-img {
