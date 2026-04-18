@@ -11,8 +11,7 @@
       id="meal"
       type="text"
       #meal
-      placeholder="e.g. chicken, pasta, beef...
-"
+      placeholder="e.g. chicken, pasta, beef..."
     />
 
     <button (click)="onSearchMeals(meal.value)" [disabled]="!searchTerm().trim()">
@@ -21,29 +20,33 @@
   </div>
 
   <div class="meal-container">
-    @for (meal of meals(); track meal.idMeal) {
-      <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">
-        <div class="card-head">
-          <p class="meal-title">{{ meal.strMeal }}</p>
-          <button
-            class="favourite-btn"
-            [class.active]="isFavourite(meal.idMeal)"
-            (click)="toggleFavourite(meal, $event)"
-          >
-            @if (isFavourite(meal.idMeal)) {
-              ★
-            } @else {
-              ☆
-            }
-          </button>
+    @if (isLoading()) {
+      <p>Cargando...</p>
+    } @else {
+      @for (meal of meals(); track meal.idMeal) {
+        <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">
+          <div class="card-head">
+            <p class="meal-title">{{ meal.strMeal }}</p>
+            <button
+              class="favourite-btn"
+              [class.active]="isFavourite(meal.idMeal)"
+              (click)="toggleFavourite(meal, $event)"
+            >
+              @if (isFavourite(meal.idMeal)) {
+                ★
+              } @else {
+                ☆
+              }
+            </button>
+          </div>
+          <img class="meal-img" [src]="meal.strMealThumb" />
         </div>
-        <img class="meal-img" [src]="meal.strMealThumb" />
-      </div>
-    } @empty {
-      @if (hasSearched()) {
-        <p class="empty-message">No meals found</p>
-      } @else {
-        <p class="empty-message">Search for a meal to get started</p>
+      } @empty {
+        @if (hasSearched()) {
+          <p class="empty-message">No meals found</p>
+        } @else {
+          <p class="empty-message">Search for a meal to get started</p>
+        }
       }
     }
   </div>
