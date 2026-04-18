@@ -58,7 +58,40 @@ totalIncome = computed(() =>
     .filter(t => t.type === 'income')
     .reduce((acc, curr) => acc + curr.amount, 0)
 );
+
+// unique values from an array — explained below
+allCategories = computed(() =>
+  [...new Set(this.favourites().map(meal => meal.strCategory))]
+);
 ```
+
+### Pattern — unique values with Set
+
+Use this when you have an array with duplicate values and you want only the unique ones.
+`map` collects all the values (with duplicates), then `Set` makes them unique.
+
+```typescript
+// step 1 — extract one field from each object
+this.favourites().map(meal => meal.strCategory)
+// ['Chicken', 'Beef', 'Chicken', 'Dessert']
+
+// step 2 — pass to Set, which removes duplicates automatically
+new Set(['Chicken', 'Beef', 'Chicken', 'Dessert'])
+// Set {'Chicken', 'Beef', 'Dessert'}
+
+// step 3 — spread back into a normal array
+[...new Set(['Chicken', 'Beef', 'Chicken', 'Dessert'])]
+// ['Chicken', 'Beef', 'Dessert']
+```
+
+Combined in one line inside `computed()`:
+```typescript
+allCategories = computed(() =>
+  [...new Set(this.favourites().map(meal => meal.strCategory))]
+);
+```
+
+Use it whenever you need to build a list of filters, tags, or categories from an existing array of objects.
 
 ```html
 <p>{{ pendingCount() }} tasks pending</p>
