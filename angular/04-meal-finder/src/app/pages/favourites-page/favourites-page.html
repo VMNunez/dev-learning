@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="favourites-head">
+    <a class="back-link" routerLink="/">&larr; Back</a>
+    <h1 class="page-title">My Favourites</h1>
+    <div></div>
+  </div>
+
+  <div class="categories-container">
+    @if (favourites().length > 0) {
+      <button class="category-btn" (click)="onSelectedCategory('')">All</button>
+    }
+    @for (category of allCategories(); track category) {
+      <button class="category-btn" (click)="onSelectedCategory(category)">
+        {{ category }}
+      </button>
+    }
+  </div>
+  <div class="favourites-container">
+    @for (favourite of filteredFavourites(); track favourite.idMeal) {
+      <div class="favourite-card" [routerLink]="['/detail', favourite.idMeal]">
+        <div class="favourite-head">
+          <p class="favourite-title">{{ favourite.strMeal }}</p>
+          <button
+            class="remove-btn"
+            (click)="toggleFavourite(favourite, $event)"
+          >
+            &times;
+          </button>
+        </div>
+        <img class="favourite-img" [src]="favourite.strMealThumb" />
+      </div>
+    } @empty {
+      <p class="empty-message">No favourites found.</p>
+    }
+  </div>
+</div>
