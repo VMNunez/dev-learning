@@ -61,6 +61,10 @@ h1 {
 .search-container button:hover {
   opacity: 0.85;
 }
+.search-container button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .meal-container {
   display: grid;
@@ -74,7 +78,9 @@ h1 {
   box-shadow: 0 4px 12px var(--shadow);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .meal-card:hover {
@@ -111,7 +117,13 @@ h1 {
   color: #ccc;
   transition: color 0.2s ease;
 }
-
+.empty-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-muted);
+  padding: 3rem 0;
+  font-size: 1.1rem;
+}
 @media (min-width: 768px) {
   .meal-container {
     grid-template-columns: repeat(3, 1fr);
