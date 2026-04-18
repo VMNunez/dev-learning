@@ -22,7 +22,9 @@ export class FavouritesPage {
     event.stopPropagation();
     if (this.isFavourite(favourite.idMeal)) {
       this.mealService.deleteFavourite(favourite.idMeal);
-      this.filteredFavourites().length === 0 && this.selectedCategory.set('');
+      if (this.filteredFavourites().length === 0) {
+        this.selectedCategory.set('');
+      }
     } else {
       this.mealService.addFavourite(favourite);
     }

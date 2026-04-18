@@ -26,6 +26,10 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
 - `Array.some()` — check if any item in an array matches a condition
 - `[...new Set(array.map(...))]` — get unique values from an array
+- `?.` optional chaining — safely access a property that might be null or undefined
+- `(input)` event + `signal` — track input value reactively to enable/disable a button
+- `[disabled]` binding — disable a button based on a reactive condition
+- `hasSearched` signal pattern — distinguish between "not searched yet" and "no results found"
 
 ### CSS
 - `overflow: hidden` on a card — clips image corners when using `border-radius`
