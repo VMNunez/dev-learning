@@ -28,6 +28,20 @@ img {
 }
 ```
 
+### Scrollable container
+
+Makes a container scrollable when its content overflows. Requires a fixed height.
+
+```css
+.instructions {
+  max-height: 300px;
+  overflow-y: auto; /* scrollbar appears only when content exceeds max-height */
+}
+```
+
+- `overflow-y: auto` — scrollbar appears only when needed
+- `overflow-y: scroll` — scrollbar always visible even if not needed
+
 ### Input focus style
 
 ```css

@@ -74,6 +74,31 @@ grid-template-columns: 250px 1fr;
 }
 ```
 
+## Header with centered title and right action
+
+Common pattern: title in the center, a link or button on the right.
+Use a 3-column grid — the left `1fr` balances the right element so the title stays visually centered.
+
+```css
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.header-action {
+  justify-self: end; /* pushes the link/button to the right */
+}
+```
+
+```html
+<div class="header">
+  <div></div>                                   <!-- empty — balances the right side -->
+  <h1>Page Title</h1>                           <!-- auto width, visually centered -->
+  <a class="header-action" routerLink="/">Link</a>
+</div>
+```
+
 ## Navbar
 
 ```css

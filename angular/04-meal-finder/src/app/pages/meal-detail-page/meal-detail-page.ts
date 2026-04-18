@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MealService } from '../../services/meal.service';
 import type { Meal, MealResponse } from '../../models/meal.model';
 import { RouterLink } from '@angular/router';
