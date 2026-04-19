@@ -22,7 +22,9 @@
 
   <div class="meal-container">
     @if (isLoading()) {
-      <div class="load-spinner"></div>
+      <div class="spinner-container">
+        <div class="load-spinner"></div>
+      </div>
     } @else {
       @for (meal of meals(); track meal.idMeal) {
         <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">

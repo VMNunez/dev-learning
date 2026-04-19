@@ -14,6 +14,7 @@ export class MealDetailPage implements OnInit {
   private mealService = inject(MealService);
   mealId: string | null = null;
   mealDetails = signal<Meal | null>(null);
+  hasLoad = signal<boolean>(false);
   favouriteMeals = this.mealService.favourites;
   isFavourite = computed(() => this.favouriteMeals().some((meal) => meal.idMeal === this.mealId));
 
@@ -26,9 +27,11 @@ export class MealDetailPage implements OnInit {
     this.mealService.getMealById(id).subscribe({
       next: (mealResponse: MealResponse) => {
         this.mealDetails.set(mealResponse.meals[0]);
+        this.hasLoad.set(true);
       },
       error: (err) => {
         console.error(err);
+        this.hasLoad.set(true);
       },
     });
   }
