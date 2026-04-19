@@ -22,10 +22,15 @@
 
   <div class="meal-container">
     @if (isLoading()) {
+      <!-- request is in progress — show spinner, hide everything else -->
       <div class="spinner-container">
         <div class="load-spinner"></div>
       </div>
+    } @else if (hasError()) {
+      <!-- request finished but something went wrong  -->
+      <p class="empty-message">Something went wrong. Try again.</p>
     } @else {
+      <!-- request finished and no error — show results (or empty messages) -->
       @for (meal of meals(); track meal.idMeal) {
         <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">
           <div class="card-head">

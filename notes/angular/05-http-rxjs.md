@@ -111,6 +111,52 @@ In all other cases — shared state, derived values — use signals instead.
 
 ---
 
+## Pattern — loading, error, and data states
+
+Every component that calls an API should handle three states. This is the standard pattern:
+
+```typescript
+data = signal<Item[]>([]);
+isLoading = signal<boolean>(false);
+hasError = signal<boolean>(false);
+
+loadData(): void {
+  this.isLoading.set(true);
+  this.hasError.set(false); // reset on each new request
+
+  this.service.getData().subscribe({
+    next: (response) => {
+      this.data.set(response);
+      this.isLoading.set(false);
+    },
+    error: (err) => {
+      console.error(err);
+      this.hasError.set(true);
+      this.isLoading.set(false);
+    }
+  });
+}
+```
+
+In the template:
+
+```html
+@if (isLoading()) {
+  <div class="spinner"></div>
+} @else if (hasError()) {
+  <p>Something went wrong. Try again.</p>
+} @else {
+  <!-- show data -->
+}
+```
+
+The three states:
+- **Loading** — request in progress
+- **Error** — network failure, server error (5xx), timeout — only fires in `error` callback
+- **Success** — data arrived (can still be empty — that is a fourth UI state, not an error)
+
+---
+
 ## forkJoin — run multiple requests in parallel
 
 ```typescript
