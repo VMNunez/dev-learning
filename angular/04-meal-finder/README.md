@@ -30,6 +30,9 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - `(input)` event + `signal` — track input value reactively to enable/disable a button
 - `[disabled]` binding — disable a button based on a reactive condition
 - `hasSearched` signal pattern — distinguish between "not searched yet" and "no results found"
+- `hasLoad` signal pattern — track when an API request completes to show loading/error states
+- `(keyup.enter)` — trigger a method when the user presses Enter on an input
+- `@else if` — cleaner conditional rendering when there are more than two states
 
 ### CSS
 - `overflow: hidden` on a card — clips image corners when using `border-radius`
@@ -37,6 +40,7 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - `transition` on the base element, not on `:hover` — correct hover lift pattern
 - `[class.active]` — Angular class binding to toggle styles reactively
 - `display: inline-block` on `<a>` — enables vertical margin on inline elements
+- CSS spinner — `@keyframes` + `border-top-color` to create a rotating loading indicator
 
 ## Tech stack
 
