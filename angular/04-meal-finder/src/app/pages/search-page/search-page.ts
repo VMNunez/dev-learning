@@ -14,10 +14,12 @@ export class SearchPage {
   meals = signal<Meal[]>([]);
   hasSearched = signal<boolean>(false);
   searchTerm = signal<string>('');
+  hasError = signal<boolean>(false);
   isLoading = signal<boolean>(false);
 
   onSearchMeals(meal: string) {
     this.isLoading.set(true);
+    this.hasError.set(false);
     this.mealService.searchMeals(meal).subscribe({
       next: (mealResponse: MealResponse) => {
         this.meals.set(mealResponse.meals);
@@ -26,6 +28,8 @@ export class SearchPage {
       },
       error: (error) => {
         console.error(error);
+        this.hasError.set(true);
+        this.hasSearched.set(true);
         this.isLoading.set(false);
       },
     });
