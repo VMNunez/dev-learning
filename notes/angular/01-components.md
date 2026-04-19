@@ -53,7 +53,8 @@ export class TaskList {
 ### Event binding — listen to a user action
 
 ```html
-<button (click)="deleteTask(task.id)">Delete</button> <input (input)="onSearch($event)" />
+<button (click)="deleteTask(task.id)">Delete</button>
+<input (input)="onSearch($event)" />
 ```
 
 ### Template reference variables — access an element directly in the template
@@ -64,6 +65,15 @@ export class TaskList {
 ```
 
 `#meal` creates a reference to the input element. You can pass `meal.value` to a method without needing a signal or form control. Use this for simple, one-field inputs.
+
+Combine with keyboard events for a complete search input:
+
+```html
+<input #meal type="text" (keyup.enter)="onSearch(meal.value)" />
+<button (click)="onSearch(meal.value)">Search</button>
+```
+
+`keyup.enter` fires when the user releases the Enter key — no need to check `$event.key === 'Enter'` manually. Works for any key: `keyup.escape`, `keydown.arrowup`, etc.
 
 ### Class binding — apply a CSS class conditionally
 
