@@ -8,6 +8,7 @@
   <div class="search-container">
     <input
       (input)="searchTerm.set(meal.value)"
+      (keyup.enter)="onSearchMeals(meal.value)"
       id="meal"
       type="text"
       #meal
