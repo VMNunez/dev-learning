@@ -28,6 +28,28 @@ img {
 }
 ```
 
+### CSS spinner
+
+A circular loading indicator made with pure CSS — no image or library needed.
+
+```css
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);        /* full circle, light color */
+  border-top-color: var(--primary);       /* one segment in accent color */
+  border-radius: 50%;                     /* makes it a circle */
+  animation: spin 0.8s linear infinite;  /* rotates forever */
+}
+```
+
+How it works: the element is a full circle with a light border. Only the top segment uses the accent color. As it rotates, that colored segment looks like it's spinning.
+
 ### Scrollable container
 
 Makes a container scrollable when its content overflows. Requires a fixed height.

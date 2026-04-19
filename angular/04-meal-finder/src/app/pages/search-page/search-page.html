@@ -21,7 +21,7 @@
 
   <div class="meal-container">
     @if (isLoading()) {
-      <p>Cargando...</p>
+      <div class="load-spinner"></div>
     } @else {
       @for (meal of meals(); track meal.idMeal) {
         <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">
