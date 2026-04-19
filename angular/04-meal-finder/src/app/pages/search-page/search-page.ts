@@ -14,15 +14,19 @@ export class SearchPage {
   meals = signal<Meal[]>([]);
   hasSearched = signal<boolean>(false);
   searchTerm = signal<string>('');
+  isLoading = signal<boolean>(false);
 
   onSearchMeals(meal: string) {
+    this.isLoading.set(true);
     this.mealService.searchMeals(meal).subscribe({
       next: (mealResponse: MealResponse) => {
         this.meals.set(mealResponse.meals);
         this.hasSearched.set(true);
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error(error);
+        this.isLoading.set(false);
       },
     });
   }
