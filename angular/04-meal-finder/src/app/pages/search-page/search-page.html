@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="search-head">
+    <div></div>
+    <h1>Meal Finder</h1>
+    <a class="favourite-link" routerLink="/favourites"
+      >Favourites
+      @if (favouritesNumber() > 0) {
+        ({{ favouritesNumber() }})
+      }
+    </a>
+  </div>
+
+  <div class="search-container">
+    <input
+      (input)="searchTerm.set(meal.value)"
+      (keyup.enter)="onSearchMeals(meal.value)"
+      id="meal"
+      type="text"
+      #meal
+      placeholder="e.g. chicken, pasta, beef..."
+    />
+
+    <button (click)="onSearchMeals(meal.value)" [disabled]="!searchTerm().trim()">
+      Search Meal
+    </button>
+  </div>
+
+  <div class="meal-container">
+    @if (isLoading()) {
+      <!-- request is in progress — show spinner, hide everything else -->
+      <div class="spinner-container">
+        <div class="load-spinner"></div>
+      </div>
+    } @else if (hasError()) {
+      <!-- request finished but something went wrong  -->
+      <p class="empty-message">Something went wrong. Try again.</p>
+    } @else {
+      <!-- request finished and no error — show results (or empty messages) -->
+      @for (meal of meals(); track meal.idMeal) {
+        <div class="meal-card" [routerLink]="['/detail', meal.idMeal]">
+          <div class="card-head">
+            <p class="meal-title">{{ meal.strMeal }}</p>
+            <button
+              class="favourite-btn"
+              [class.active]="isFavourite(meal.idMeal)"
+              (click)="toggleFavourite(meal, $event)"
+            >
+              @if (isFavourite(meal.idMeal)) {
+                ★
+              } @else {
+                ☆
+              }
+            </button>
+          </div>
+          <img class="meal-img" [src]="meal.strMealThumb" />
+        </div>
+      } @empty {
+        @if (hasSearched()) {
+          <p class="empty-message">No meals found</p>
+        } @else {
+          <p class="empty-message">Search for a meal to get started</p>
+        }
+      }
+    }
+  </div>
+</div>

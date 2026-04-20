@@ -1,5 +1,7 @@
 # Angular — Services and Dependency Injection
 
+Official docs: https://angular.dev/guide/di
+
 ## What is a service?
 
 A service is a class that holds shared logic or shared state. Components use services instead of managing their own data — this keeps components clean and focused on the UI.
@@ -50,7 +52,45 @@ export class TaskList {
 ```
 
 - Use `private` — the template does not need direct access to the service
-- Assign the signal directly — `tasks = this.taskService.tasks` — the component reacts to changes automatically
+- Assign the signal directly — `tasks = this.taskService.tasks` — this gives the component a reference to the signal itself, not its current value. If you wrote `this.taskService.tasks()` instead, you would get the value at that moment and the template would never update when it changes.
+
+---
+
+## localStorage in a service
+
+The service is responsible for persistence — not the component. This keeps components clean.
+
+The full pattern — signal + effect + localStorage:
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class MealService {
+
+  // 1. initialise signal from localStorage
+  favourites = signal<Meal[]>(
+    JSON.parse(localStorage.getItem('favourites') ?? '[]')
+  );
+
+  // 2. save to localStorage automatically when signal changes
+  constructor() {
+    effect(() => {
+      localStorage.setItem('favourites', JSON.stringify(this.favourites()));
+    });
+  }
+
+  // 3. methods to update the signal
+  addFavourite(meal: Meal) {
+    this.favourites.update(favs => [...favs, meal]);
+  }
+
+  removeFavourite(id: string) {
+    this.favourites.update(favs => favs.filter(f => f.idMeal !== id));
+  }
+}
+```
+
+- The component only calls `addFavourite()` or `removeFavourite()` — it never touches localStorage directly
+- `effect()` handles the sync automatically
 
 ---
 
