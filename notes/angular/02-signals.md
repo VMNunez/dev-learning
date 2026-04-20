@@ -1,5 +1,7 @@
 # Angular — Signals
 
+Official docs: https://angular.dev/guide/signals
+
 ## What is a signal?
 
 A signal is a reactive value. When it changes, Angular automatically updates the template. You do not need to manually trigger change detection.
@@ -56,7 +58,40 @@ totalIncome = computed(() =>
     .filter(t => t.type === 'income')
     .reduce((acc, curr) => acc + curr.amount, 0)
 );
+
+// unique values from an array — explained below
+allCategories = computed(() =>
+  [...new Set(this.favourites().map(meal => meal.strCategory))]
+);
 ```
+
+### Pattern — unique values with Set
+
+Use this when you have an array with duplicate values and you want only the unique ones.
+`map` collects all the values (with duplicates), then `Set` makes them unique.
+
+```typescript
+// step 1 — extract one field from each object
+this.favourites().map(meal => meal.strCategory)
+// ['Chicken', 'Beef', 'Chicken', 'Dessert']
+
+// step 2 — pass to Set, which removes duplicates automatically
+new Set(['Chicken', 'Beef', 'Chicken', 'Dessert'])
+// Set {'Chicken', 'Beef', 'Dessert'}
+
+// step 3 — spread back into a normal array
+[...new Set(['Chicken', 'Beef', 'Chicken', 'Dessert'])]
+// ['Chicken', 'Beef', 'Dessert']
+```
+
+Combined in one line inside `computed()`:
+```typescript
+allCategories = computed(() =>
+  [...new Set(this.favourites().map(meal => meal.strCategory))]
+);
+```
+
+Use it whenever you need to build a list of filters, tags, or categories from an existing array of objects.
 
 ```html
 <p>{{ pendingCount() }} tasks pending</p>
@@ -74,13 +109,50 @@ totalIncome = computed(() =>
 
 ---
 
+## effect() — side effects
+
+`effect()` runs a function automatically when a tracked signal changes. Use it for side effects — things outside Angular like localStorage, logging, or external updates.
+
+```typescript
+effect(() => {
+  localStorage.setItem('favourites', JSON.stringify(this.favourites()));
+});
+```
+
+- Runs once when the component or service is created
+- Runs again every time a signal inside it changes
+- Angular tracks which signals are used inside the function automatically
+
+### Rules
+- Never modify a signal inside `effect()` — it can create an infinite loop
+- Use `computed()` instead when you want to derive a new value from signals
+- Must be created inside a constructor or injection context
+
+```typescript
+constructor() {
+  effect(() => {
+    localStorage.setItem('favourites', JSON.stringify(this.favourites()));
+  });
+}
+```
+
+### effect() vs computed()
+
+| | `computed()` | `effect()` |
+|--|-------------|------------|
+| Returns a value | Yes | No |
+| Use for | Derived state | Side effects |
+| Example | total price, filtered list | save to localStorage, log |
+
+---
+
 ## Pattern — initialise signal from localStorage
 
 ```typescript
-private loadTasks(): Task[] {
-  const data = localStorage.getItem('tasks');
-  return data ? JSON.parse(data) : [];
-}
-
-tasks = signal<Task[]>(this.loadTasks());
+// clean one-liner with ?? operator
+favourites = signal<Meal[]>(
+  JSON.parse(localStorage.getItem('favourites') ?? '[]')
+);
 ```
+
+`??` — if `localStorage.getItem` returns `null`, use `'[]'` as the default.

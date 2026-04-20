@@ -1,5 +1,7 @@
 # Angular — Components
 
+Official docs: https://angular.dev/guide/components
+
 ## What is a component?
 
 A component is a piece of the UI. Every Angular app is made of components. Each component has:
@@ -51,8 +53,27 @@ export class TaskList {
 ### Event binding — listen to a user action
 
 ```html
-<button (click)="deleteTask(task.id)">Delete</button> <input (input)="onSearch($event)" />
+<button (click)="deleteTask(task.id)">Delete</button>
+<input (input)="onSearch($event)" />
 ```
+
+### Template reference variables — access an element directly in the template
+
+```html
+<input #meal type="text" />
+<button (click)="onSearch(meal.value)">Search</button>
+```
+
+`#meal` creates a reference to the input element. You can pass `meal.value` to a method without needing a signal or form control. Use this for simple, one-field inputs.
+
+Combine with keyboard events for a complete search input:
+
+```html
+<input #meal type="text" (keyup.enter)="onSearch(meal.value)" />
+<button (click)="onSearch(meal.value)">Search</button>
+```
+
+`keyup.enter` fires when the user releases the Enter key — no need to check `$event.key === 'Enter'` manually. Works for any key: `keyup.escape`, `keydown.arrowup`, etc.
 
 ### Class binding — apply a CSS class conditionally
 
@@ -93,6 +114,13 @@ onDelete() {
 <app-task-item (taskDeleted)="onTaskDeleted($event)" />
 ```
 
+```typescript
+// parent component
+onTaskDeleted(id: number) {
+  this.taskService.deleteTask(id);
+}
+```
+
 ---
 
 ## Template directives
@@ -119,6 +147,10 @@ onDelete() {
 }
 ```
 
+`track` is required — it tells Angular which field identifies each item uniquely (usually `id`). Angular uses it to update only the items that changed, not the whole list.
+
+`@empty` renders when the array is empty. It is optional but useful to show a message when there is no data.
+
 ---
 
 ## Lifecycle hooks
@@ -134,3 +166,9 @@ export class WeatherPage implements OnInit {
 ```
 
 Use it to load data from an API when the component starts — not in the constructor.
+
+Typical uses:
+- Load data from an API when the page opens
+- Read a route parameter and call the API with it
+- Load data from localStorage into a signal
+- Set a default value based on the current user or route
