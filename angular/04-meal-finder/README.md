@@ -33,6 +33,9 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - `hasLoad` signal pattern — track when an API request completes to show loading/error states
 - `(keyup.enter)` — trigger a method when the user presses Enter on an input
 - `@else if` — cleaner conditional rendering when there are more than two states
+- `takeUntilDestroyed` — cancel HTTP subscriptions automatically when a component is destroyed
+- `DestroyRef` — Angular token injected to notify observables when the component lifecycle ends
+- `favouritesNumber` with `computed()` — show live count in the nav link
 
 ### CSS
 - `overflow: hidden` on a card — clips image corners when using `border-radius`
