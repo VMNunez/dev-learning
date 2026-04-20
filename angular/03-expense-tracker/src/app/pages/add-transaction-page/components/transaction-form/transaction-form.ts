@@ -1,6 +1,6 @@
 import { Component, output } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import type { Transaction, NewTransaction } from '../../../../models/transaction.model';
+import type { NewTransaction } from '../../../../models/transaction.model';
 
 @Component({
   selector: 'app-transaction-form',
@@ -20,13 +20,10 @@ export class TransactionForm {
 
   onSubmit() {
     this.transactionForm.markAllAsTouched();
-    console.log('valid:', this.transactionForm.valid);
-    console.log('description touched:', this.description?.touched);
-    console.log('description errors:', this.description?.errors);
 
     if (this.transactionForm.valid) {
       this.transactionSubmit.emit(this.transactionForm.value as NewTransaction);
-      this.transactionForm.reset();
+      this.transactionForm.reset({ date: new Date().toISOString().split('T')[0] });
     }
   }
 
