@@ -1,9 +1,10 @@
-import { Component, inject, signal, OnInit, computed } from '@angular/core';
+import { Component, inject, signal, OnInit, computed, DestroyRef } from '@angular/core';
 import { WeatherService } from './services/weather.service';
 import { WeatherForm } from './components/weather-form/weather-form';
 import { WeatherCard } from './components/weather-card/weather-card';
-import type { ForecastItem, ForecastResponse, WeatherResponse } from './models/weather.model';
+import type { ForecastResponse, WeatherResponse } from './models/weather.model';
 import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WeatherForecast } from './components/weather-forecast/weather-forecast';
 
 @Component({
@@ -14,6 +15,7 @@ import { WeatherForecast } from './components/weather-forecast/weather-forecast'
 })
 export class WeatherPage implements OnInit {
   private weatherService = inject(WeatherService);
+  private destroyRef = inject(DestroyRef);
 
   weatherResponse = signal<WeatherResponse | null>(null);
   forecastResponse = signal<ForecastResponse | null>(null);
@@ -32,17 +34,19 @@ export class WeatherPage implements OnInit {
     forkJoin([
       this.weatherService.getWeather(city),
       this.weatherService.getForecast(city),
-    ]).subscribe({
-      next: ([weatherData, forecastData]) => {
-        this.weatherResponse.set(weatherData);
-        this.forecastResponse.set(forecastData);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('City not found. Please try again');
-        this.isLoading.set(false);
-      },
-    });
+    ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ([weatherData, forecastData]) => {
+          this.weatherResponse.set(weatherData);
+          this.forecastResponse.set(forecastData);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.errorMessage.set('City not found. Please try again');
+          this.isLoading.set(false);
+        },
+      });
   }
 
   dailyForecast = computed(() => {
