@@ -2,7 +2,9 @@
 
 My fourth Angular project. A recipe search app to learn route parameters, ActivatedRoute, effect(), and computed() for filtering.
 
-**Live demo:** coming soon
+**Live demo:** https://04mealfinder.netlify.app/
+
+![App preview](screenshots/preview.png)
 
 ## Features
 
