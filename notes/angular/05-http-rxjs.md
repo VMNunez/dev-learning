@@ -111,6 +111,34 @@ In all other cases — shared state, derived values — use signals instead.
 
 ---
 
+## takeUntilDestroyed — cancel subscriptions when the component is destroyed
+
+When a component is destroyed (user navigates away), any active HTTP subscription keeps running in the background. When the response arrives, it tries to update signals on a component that no longer exists. This is called a **memory leak**.
+
+`takeUntilDestroyed` cancels the subscription automatically when the component is destroyed.
+
+**Always use this pattern for HTTP subscriptions in components.**
+
+```typescript
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+private destroyRef = inject(DestroyRef);
+
+loadData(): void {
+  this.service.getData()
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: (response) => { ... },
+      error: (err) => { ... }
+    });
+}
+```
+
+`.pipe()` is the RxJS method that lets you apply operators to an Observable before subscribing. `takeUntilDestroyed` is one of those operators.
+
+---
+
 ## Pattern — loading, error, and data states
 
 Every component that calls an API should handle three states. This is the standard pattern:
