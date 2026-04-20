@@ -2,7 +2,12 @@
   <div class="search-head">
     <div></div>
     <h1>Meal Finder</h1>
-    <a class="favourite-link" routerLink="/favourites">Favourites</a>
+    <a class="favourite-link" routerLink="/favourites"
+      >Favourites
+      @if (favouritesNumber() > 0) {
+        ({{ favouritesNumber() }})
+      }
+    </a>
   </div>
 
   <div class="search-container">
