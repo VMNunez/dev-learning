@@ -1,7 +1,8 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, DestroyRef } from '@angular/core';
 import { MealService } from '../../services/meal.service';
 import type { Meal, MealResponse } from '../../models/meal.model';
 import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-search-page',
@@ -11,6 +12,7 @@ import { RouterLink } from '@angular/router';
 })
 export class SearchPage {
   private mealService = inject(MealService);
+  private destroyRef = inject(DestroyRef);
   meals = signal<Meal[]>([]);
   hasSearched = signal<boolean>(false);
   searchTerm = signal<string>('');
@@ -25,19 +27,22 @@ export class SearchPage {
   onSearchMeals(meal: string) {
     this.isLoading.set(true);
     this.hasError.set(false);
-    this.mealService.searchMeals(meal).subscribe({
-      next: (mealResponse: MealResponse) => {
-        this.meals.set(mealResponse.meals);
-        this.hasSearched.set(true);
-        this.isLoading.set(false);
-      },
-      error: (error) => {
-        console.error(error);
-        this.hasError.set(true);
-        this.hasSearched.set(true);
-        this.isLoading.set(false);
-      },
-    });
+    this.mealService
+      .searchMeals(meal)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (mealResponse: MealResponse) => {
+          this.meals.set(mealResponse.meals);
+          this.hasSearched.set(true);
+          this.isLoading.set(false);
+        },
+        error: (error) => {
+          console.error(error);
+          this.hasError.set(true);
+          this.hasSearched.set(true);
+          this.isLoading.set(false);
+        },
+      });
   }
 
   isFavourite(id: string) {
