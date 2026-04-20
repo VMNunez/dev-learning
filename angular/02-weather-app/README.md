@@ -27,6 +27,8 @@ My second Angular project. A weather app that fetches real data from an API to l
 - `number` pipe with format `'1.0-1'`
 - `SlicePipe` — cut strings in templates
 - Environment files — store API keys safely
+- `takeUntilDestroyed` — cancel HTTP subscriptions automatically when a component is destroyed
+- `DestroyRef` — Angular token injected to notify observables when the component lifecycle ends
 
 ### CSS
 - `@keyframes` and `animation` — CSS animations
