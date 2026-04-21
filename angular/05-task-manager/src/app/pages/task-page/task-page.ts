@@ -1,18 +1,20 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { FilterPriority, type FilterStatus } from '../../models/task.model';
+import { TaskService } from './services/task.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { TaskService } from './services/task.service';
-import { FilterPriority, type FilterStatus, type Task } from '../../models/task.model';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-task-page',
-  imports: [MatButtonModule, MatSelectModule, MatFormFieldModule],
+  imports: [MatButtonModule, MatSelectModule, MatFormFieldModule, MatTableModule],
   templateUrl: './task-page.html',
   styleUrl: './task-page.css',
 })
 export class TaskPage {
   private taskService = inject(TaskService);
+  displayedColumns = ['name', 'status', 'priority', 'assignee', 'createdAt', 'actions'];
 
   tasks = this.taskService.tasks;
   selectedStatus = signal<FilterStatus>('all');
