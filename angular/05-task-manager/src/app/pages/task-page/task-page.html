@@ -1,7 +1,7 @@
 <div class="container">
   <header class="task-header">
     <h1>Task Manager</h1>
-    <button matButton="filled">Add Task</button>
+    <button matButton="filled" (click)="openDialog()">Add Task</button>
   </header>
 
   <app-task-filters (status)="onStatusChange($event)" (priority)="onPriorityChange($event)" />

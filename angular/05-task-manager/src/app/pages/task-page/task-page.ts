@@ -4,6 +4,8 @@ import { TaskService } from './services/task.service';
 import { MatButtonModule } from '@angular/material/button';
 import { TaskFilters } from './components/task-filters/task-filters';
 import { TaskTable } from './components/task-table/task-table';
+import { TaskDialog } from './components/task-dialog/task-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-task-page',
@@ -13,6 +15,7 @@ import { TaskTable } from './components/task-table/task-table';
 })
 export class TaskPage {
   private taskService = inject(TaskService);
+  private dialog = inject(MatDialog);
 
   tasks = this.taskService.tasks;
   selectedStatus = signal<FilterStatus>('all');
@@ -33,5 +36,11 @@ export class TaskPage {
 
   onPriorityChange(priority: FilterPriority): void {
     this.selectedPriority.set(priority);
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(TaskDialog, {
+      width: '500px',
+    });
   }
 }
