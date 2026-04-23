@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { FilterPriority, type FilterStatus } from '../../models/task.model';
+import { FilterPriority, Task, type FilterStatus } from '../../models/task.model';
 import { TaskService } from './services/task.service';
 import { MatButtonModule } from '@angular/material/button';
 import { TaskFilters } from './components/task-filters/task-filters';
@@ -38,6 +38,16 @@ export class TaskPage {
     this.selectedPriority.set(priority);
   }
 
+  onAddTask(task: Task) {
+    if (task) {
+      this.taskService.addTask(task);
+    }
+  }
+
+  onDeleteTask(id: number) {
+    this.taskService.deleteTask(id);
+  }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(TaskDialog, {
       width: '500px',
@@ -45,9 +55,7 @@ export class TaskPage {
 
     dialogRef.afterClosed().subscribe({
       next: (task) => {
-        if (task) {
-          this.taskService.addTask(task);
-        }
+        this.onAddTask(task);
       },
       error: (err) => {
         console.log(err);
