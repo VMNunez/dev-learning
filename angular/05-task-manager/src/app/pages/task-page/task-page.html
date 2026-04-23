@@ -6,5 +6,5 @@
 
   <app-task-filters (status)="onStatusChange($event)" (priority)="onPriorityChange($event)" />
 
-  <app-task-table [tasks]="filteredTasks()" />
+  <app-task-table [tasks]="filteredTasks()" (taskId)="onDeleteTask($event)" />
 </div>
