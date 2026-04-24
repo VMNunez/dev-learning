@@ -8,8 +8,8 @@ My fifth Angular project. A task management app to learn Angular Material and CR
 
 - List tasks in a Material table
 - Add and edit tasks in a modal dialog
-- Delete tasks with confirmation
-- Filter tasks by status
+- Delete tasks
+- Filter tasks by status and priority
 - Data persists with localStorage
 
 ## What I learned

@@ -1,0 +1,41 @@
+.badge {
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  display: inline-block;
+  font-size: 0.75rem;
+}
+
+.badge.pending {
+  background-color: var(--status-pending-bg);
+  color: var(--status-pending-text);
+}
+
+.badge.in-progress {
+  background-color: var(--status-progress-bg);
+  color: var(--status-progress-text);
+}
+
+.badge.done {
+  background-color: var(--status-done-bg);
+  color: var(--status-done-text);
+}
+
+.badge.low {
+  background-color: var(--priority-low-bg);
+  color: var(--priority-low-text);
+}
+
+.badge.medium {
+  background-color: var(--priority-medium-bg);
+  color: var(--priority-medium-text);
+}
+
+.badge.high {
+  background-color: var(--priority-high-bg);
+  color: var(--priority-high-text);
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
