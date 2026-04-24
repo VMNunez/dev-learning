@@ -137,6 +137,36 @@ onSubmit() {
 }
 ```
 
+## patchValue() — fill the form with existing values
+
+Use `patchValue()` when you need to pre-fill a form with data that already exists — for example, when editing a record.
+
+```typescript
+this.myForm.patchValue({
+  name: 'Fix login bug',
+  status: 'in-progress',
+});
+```
+
+Angular matches each key to the form control with the same name and sets its value. Fields you don't include stay unchanged.
+
+If the object already has the same field names as your form, you can pass it directly:
+
+```typescript
+this.myForm.patchValue(this.existingTask);
+```
+
+**`patchValue()` vs `setValue()`**
+
+| Method | Behaviour |
+|--------|-----------|
+| `patchValue()` | Only updates the fields you pass — ignores missing ones |
+| `setValue()` | Requires **all** fields — throws an error if any is missing |
+
+Use `patchValue()` when editing. Use `setValue()` only when you are sure you have every field.
+
+---
+
 ## reset()
 
 `reset()` resets all fields to their initial values (the ones you passed to `FormControl`).

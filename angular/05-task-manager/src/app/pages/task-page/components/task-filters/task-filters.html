@@ -1,0 +1,21 @@
+<div class="filter-container">
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select (selectionChange)="statusChange($event.value)">
+      <mat-option value="all">All</mat-option>
+      <mat-option value="pending">Pending</mat-option>
+      <mat-option value="in-progress">In Progress</mat-option>
+      <mat-option value="done">Done</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Priority</mat-label>
+    <mat-select (selectionChange)="priorityChange($event.value)">
+      <mat-option value="all">All</mat-option>
+      <mat-option value="low">Low</mat-option>
+      <mat-option value="medium">Medium</mat-option>
+      <mat-option value="high">High</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>
+  @if (data) {
+    Edit Task
+  } @else {
+    Add a new Task
+  }
+</h2>
+<mat-dialog-content>
+  <form [formGroup]="newTaskForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="pending">Pending</mat-option>
+        <mat-option value="in-progress">In progress</mat-option>
+        <mat-option value="done">Done</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Priority</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option value="low">Low</mat-option>
+        <mat-option value="medium">Medium</mat-option>
+        <mat-option value="high">High</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Assignee</mat-label>
+      <mat-select formControlName="assignee">
+        @for (member of members; track member) {
+          <mat-option [value]="member">{{ member }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" />
+    </mat-form-field>
+    <mat-dialog-actions align="end">
+      <button type="submit" matButton="filled">
+        @if (data) {
+          Edit Task
+        } @else {
+          Add Task
+        }
+      </button>
+      <button matButton mat-dialog-close>Cancel</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

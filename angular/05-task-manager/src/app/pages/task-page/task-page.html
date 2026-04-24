@@ -1,1 +1,14 @@
-<p>task-page works!</p>
+<div class="container">
+  <header class="task-header">
+    <h1>Task Manager</h1>
+    <button matButton="filled" (click)="openDialog()">Add Task</button>
+  </header>
+
+  <app-task-filters (status)="onStatusChange($event)" (priority)="onPriorityChange($event)" />
+
+  <app-task-table
+    [tasks]="filteredTasks()"
+    (taskId)="onDeleteTask($event)"
+    (taskToEdit)="onEditTask($event)"
+  />
+</div>
