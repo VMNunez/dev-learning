@@ -3,10 +3,10 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import type { TaskStatus, TaskPriority, Task } from '../../../../models/task.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { TaskService } from '../../services/task.service';
-import { MatAnchor } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-task-dialog',
@@ -16,7 +16,7 @@ import { MatAnchor } from '@angular/material/button';
     MatInputModule,
     MatDialogModule,
     MatSelectModule,
-    MatAnchor,
+    MatButtonModule,
   ],
   templateUrl: './task-dialog.html',
   styleUrl: './task-dialog.css',
@@ -24,7 +24,7 @@ import { MatAnchor } from '@angular/material/button';
 export class TaskDialog {
   private taskService = inject(TaskService);
   private dialogRef = inject(MatDialogRef);
-
+  data = inject<{ task: Task } | undefined>(MAT_DIALOG_DATA);
   members: string[] = this.taskService.members;
 
   newTaskForm = new FormGroup({
@@ -35,17 +35,29 @@ export class TaskDialog {
     description: new FormControl<string>('', Validators.required),
   });
 
+  constructor() {
+    if (this.data) {
+      this.newTaskForm.patchValue({
+        name: this.data.task.name,
+        status: this.data.task.status,
+        priority: this.data.task.priority,
+        description: this.data.task.description,
+        assignee: this.data.task.assignee,
+      });
+    }
+  }
+
   onSubmit() {
     if (this.newTaskForm.valid) {
       const formValue = this.newTaskForm.value;
       const task: Task = {
-        id: Date.now(),
+        id: this.data ? this.data.task.id : Date.now(),
         name: formValue.name as string,
         status: formValue.status as TaskStatus,
         priority: formValue.priority as TaskPriority,
         description: formValue.description as string,
         assignee: formValue.assignee as string,
-        createdAt: new Date().toISOString().split('T')[0],
+        createdAt: this.data ? this.data.task.createdAt : new Date().toISOString().split('T')[0],
       };
 
       this.dialogRef.close(task);
