@@ -15,6 +15,20 @@ My fifth Angular project. A task management app to learn Angular Material and CR
 ## What I learned
 
 ### Angular
+- `ng add @angular/material` — install and configure Angular Material
+- `MatButtonModule` — `matButton`, `matIconButton`, `matFab` button variants
+- `MatSelectModule` + `MatFormFieldModule` — styled dropdowns with Material styling
+- `MatTableModule` — `mat-table`, `matColumnDef`, `displayedColumns`, `*matCellDef`, `*matHeaderCellDef`
+- Multi-filter with `computed()` — `'all'` option + `||` short-circuit pattern
+- Component split — page as coordinator, child components for table and filters
+- TypeScript union types — `'pending' | 'in-progress' | 'done'` for strict typing
+- Separate filter types — `FilterStatus` and `TaskStatus` to avoid invalid values in filters
+- `MatDialogModule` + `MatDialog` — open a modal dialog from a service with `dialog.open()`
+- `MatDialogRef` — injected inside the dialog to close it and optionally return data
+- Dialog data flow — `dialogRef.close(task)` inside the dialog, `afterClosed().subscribe()` in the parent
+- `input()` / `output()` — signal-based parent-child communication, child emits events up to the page
+- Reactive forms inside a dialog — `FormGroup`, `FormControl`, `Validators`, `[formGroup]`, `formControlName`
+- CRUD pattern — add, edit, and delete tasks through a service with `signal.update()`
 
 ### CSS
 
