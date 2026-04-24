@@ -15,8 +15,13 @@ export class TaskTable {
   tasks = input<Task[]>([]);
 
   taskId = output<number>();
+  taskToEdit = output<Task>();
 
   deleteTask(id: number) {
     this.taskId.emit(id);
+  }
+
+  editTask(task: Task) {
+    this.taskToEdit.emit(task);
   }
 }

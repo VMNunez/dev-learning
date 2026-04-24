@@ -48,6 +48,19 @@ export class TaskPage {
     this.taskService.deleteTask(id);
   }
 
+  onEditTask(task: Task) {
+    const dialogRef = this.dialog.open(TaskDialog, {
+      width: '500px',
+      data: { task },
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (task) => {
+        if (task) this.taskService.editTask(task);
+      },
+    });
+  }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(TaskDialog, {
       width: '500px',
@@ -56,9 +69,6 @@ export class TaskPage {
     dialogRef.afterClosed().subscribe({
       next: (task) => {
         this.onAddTask(task);
-      },
-      error: (err) => {
-        console.log(err);
       },
     });
   }
