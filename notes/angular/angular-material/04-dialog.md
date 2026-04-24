@@ -2,103 +2,171 @@
 
 Official docs: https://material.angular.io/components/dialog/overview
 
-Add this to the component that opens the dialog:
-
-```typescript
-import { MatDialog } from '@angular/material/dialog';
-```
-
 ## How it works
 
-`MatDialog` is a service — you inject it and call `open()` to show a dialog. The dialog content is a separate component that you create yourself.
+A dialog is a modal window that appears on top of the page. Angular Material handles it through two things:
 
-## Opening a dialog
+- **`MatDialog`** — a service you inject in the parent. It opens the dialog.
+- **`MatDialogRef`** — injected inside the dialog component. It closes the dialog and can return data.
 
-```typescript
-private dialog = inject(MatDialog);
+The dialog content is a **separate Angular component** that you create yourself.
 
-openDialog(): void {
-  const dialogRef= this.dialog.open(TaskDialogComponent, {
-    width: '500px',
-    data: { task: this.selectedTask }  // optional — pass data to the dialog
-  });
-}
-```
+---
 
-`open()` returns a `MatDialogRef` — a reference to the opened dialog. You can use it to listen for when the dialog closes.
+## Build the dialog component template
 
-## Listening for the result
-
-When the dialog closes, it can return a value. Use `afterClosed()` to handle it:
+The dialog component is a normal Angular component. Start by adding the imports:
 
 ```typescript
-const dialogRef = this.dialog.open(TaskDialogComponent, { width: '500px' });
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
-dialogRef.afterClosed().subscribe((result) => {
-  if (result) {
-    this.taskService.addTask(result);
-  }
-});
+@Component({
+  imports: [MatDialogModule, MatButtonModule],
+  ...
+})
 ```
 
-`afterClosed()` returns an Observable that emits once when the dialog closes, with the value passed to `close()`.
-
-## Passing data to the dialog
-
-Pass data via the `data` option in `open()`:
+If the dialog has a form (which is almost always the case), also add:
 
 ```typescript
-this.dialog.open(TaskDialogComponent, {
-  data: { task: this.selectedTask },
-});
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 ```
 
-Inside the dialog component, read it with `MAT_DIALOG_DATA`:
+Then use these directives to structure the template:
 
-```typescript
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-
-data = inject<{ task: Task }>(MAT_DIALOG_DATA);
-```
-
-## Inside the dialog component
-
-The dialog component is a normal Angular component. Use these directives to structure it:
-
-| Directive              | Role                                                                 |
-| ---------------------- | -------------------------------------------------------------------- |
-| `mat-dialog-title`     | Applied to a heading — sets the dialog title                         |
-| `<mat-dialog-content>` | The main scrollable body of the dialog                               |
-| `<mat-dialog-actions>` | Container for buttons at the bottom                                  |
-| `mat-dialog-close`     | Applied to a button — closes the dialog, optionally passing a result |
+| Directive | Role |
+|-----------|------|
+| `mat-dialog-title` | Attribute on a heading — shows the title |
+| `<mat-dialog-content>` | The main body of the dialog (scrollable) |
+| `<mat-dialog-actions>` | Container for the buttons at the bottom |
+| `mat-dialog-close` | Attribute on a button — closes the dialog with no result |
 
 ```html
 <h2 mat-dialog-title>Add Task</h2>
 
 <mat-dialog-content>
-  <!-- form goes here -->
-</mat-dialog-content>
+  <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
 
-<mat-dialog-actions align="end">
-  <button matButton mat-dialog-close>Cancel</button>
-  <button matButton="filled" (click)="onSubmit()">Save</button>
-</mat-dialog-actions>
+    <mat-dialog-actions align="end">
+      <button type="submit" matButton="filled">Save</button>
+      <button type="button" matButton mat-dialog-close>Cancel</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>
 ```
 
-## Closing the dialog from inside it
+> `mat-dialog-actions` goes **inside** the form so that `type="submit"` works correctly. If the button is outside the `<form>` tags, `type="submit"` does nothing — you would need `(click)="onSubmit()"` as a workaround instead.
 
-Inject `MatDialogRef` inside the dialog component and call `close()`:
+> The Cancel button uses `mat-dialog-close` — no TypeScript needed. It just closes the dialog and returns nothing.
+
+---
+
+## Close the dialog and return data
+
+Inside the dialog component, inject `MatDialogRef` and call `close()` with the data you want to send back:
 
 ```typescript
+import { MatDialogRef } from '@angular/material/dialog';
+
 private dialogRef = inject(MatDialogRef);
 
 onSubmit(): void {
-  this.dialogRef.close(this.formValue); // pass result back to the opener
-}
-
-onCancel(): void {
-  this.dialogRef.close(); // close with no result
+  if (this.form.valid) {
+    this.dialogRef.close(this.form.value); // sends data back to the parent
+  }
 }
 ```
 
-The value passed to `close()` is what `afterClosed()` receives in the opener.
+Whatever you pass to `close()` is what the parent receives in `afterClosed()`.
+
+---
+
+## Open the dialog from the parent
+
+In the parent component, inject `MatDialog` and call `open()`:
+
+```typescript
+import { MatDialog } from '@angular/material/dialog';
+
+private dialog = inject(MatDialog);
+
+openDialog(): void {
+  const dialogRef = this.dialog.open(TaskDialog, {
+    width: '500px',
+  });
+
+  dialogRef.afterClosed().subscribe({
+    next: (result) => {
+      if (result) this.taskService.addTask(result);
+    },
+  });
+}
+```
+
+`open()` takes the **dialog component class** as the first argument — this is how Angular knows which component to open. The second argument is the config object (width, data, etc.).
+
+`open()` returns a `MatDialogRef`. Call `afterClosed()` on it to listen for when the dialog closes.
+
+`afterClosed()` always emits when the dialog closes — even if the user clicks Cancel or clicks outside. In those cases it emits `undefined`. That is why you always check `if (result)` before using the value.
+
+---
+
+## Edit flow — one dialog for add and edit
+
+The same dialog component can handle both adding and editing. The difference is whether you pass data when opening it.
+
+**Parent — two methods, same dialog**
+
+```typescript
+// add: no data passed
+openAddDialog(): void {
+  const dialogRef = this.dialog.open(TaskDialog, { width: '500px' });
+
+  dialogRef.afterClosed().subscribe({
+    next: (result) => {
+      if (result) this.taskService.addTask(result);
+    },
+  });
+}
+
+// edit: task passed as data
+onEditTask(task: Task): void {
+  const dialogRef = this.dialog.open(TaskDialog, {
+    width: '500px',
+    data: { task },
+  });
+
+  dialogRef.afterClosed().subscribe({
+    next: (result) => {
+      if (result) this.taskService.editTask(result);
+    },
+  });
+}
+```
+
+**Dialog — read the data and pre-fill the form**
+
+Inside the dialog, inject `MAT_DIALOG_DATA`. It is `null` when adding and contains the task when editing:
+
+```typescript
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+data = inject<{ task: Task } | null>(MAT_DIALOG_DATA);
+
+constructor() {
+  if (this.data) {
+    this.myForm.patchValue(this.data.task); // pre-fill all fields
+  }
+}
+```
+
+`patchValue()` fills each form control with the matching field from the task object. See the [reactive forms notes](../../06-reactive-forms.md) for more detail.
+
+The `onSubmit()` and `dialogRef.close()` stay exactly the same — the parent decides what to do with the result.
