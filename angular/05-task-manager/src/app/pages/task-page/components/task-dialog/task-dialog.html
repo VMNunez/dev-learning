@@ -6,15 +6,15 @@
   }
 </h2>
 <mat-dialog-content>
-  <form [formGroup]="newTaskForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="newTaskForm">
     <mat-form-field>
       <mat-label>Name</mat-label>
-      <input matInput formControlName="name" />
+      <input matInput formControlName="name" [errorStateMatcher]="errorMatcher" />
       <mat-error>Name is required</mat-error>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Assignee</mat-label>
-      <mat-select formControlName="assignee">
+      <mat-select formControlName="assignee" [errorStateMatcher]="errorMatcher">
         @for (member of members; track member) {
           <mat-option [value]="member">{{ member }}</mat-option>
         }
@@ -23,7 +23,7 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>Status</mat-label>
-      <mat-select formControlName="status">
+      <mat-select formControlName="status" [errorStateMatcher]="errorMatcher">
         <mat-option value="pending">Pending</mat-option>
         <mat-option value="in-progress">In progress</mat-option>
         <mat-option value="done">Done</mat-option>
@@ -32,7 +32,7 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>Priority</mat-label>
-      <mat-select formControlName="priority">
+      <mat-select formControlName="priority" [errorStateMatcher]="errorMatcher">
         <mat-option value="low">Low</mat-option>
         <mat-option value="medium">Medium</mat-option>
         <mat-option value="high">High</mat-option>
@@ -43,15 +43,15 @@
       <mat-label>Description</mat-label>
       <input matInput formControlName="description" />
     </mat-form-field>
-    <mat-dialog-actions align="end">
-      <button type="submit" matButton="filled">
-        @if (data) {
-          Edit Task
-        } @else {
-          Add Task
-        }
-      </button>
-      <button matButton mat-dialog-close>Cancel</button>
-    </mat-dialog-actions>
   </form>
 </mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button matButton="filled" (click)="onSubmit()">
+    @if (data) {
+      Edit Task
+    } @else {
+      Add Task
+    }
+  </button>
+  <button matButton mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

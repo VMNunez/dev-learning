@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { TaskStatus, TaskPriority, Task } from '../../../../models/task.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -7,6 +7,14 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatSelectModule } from '@angular/material/select';
 import { TaskService } from '../../services/task.service';
 import { MatButtonModule } from '@angular/material/button';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+class SubmitOnlyErrorStateMatcher implements ErrorStateMatcher {
+  submitted = false;
+  isErrorState(control: AbstractControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+    return !!(control && control.invalid && this.submitted);
+  }
+}
 
 @Component({
   selector: 'app-task-dialog',
@@ -26,6 +34,7 @@ export class TaskDialog {
   private dialogRef = inject(MatDialogRef);
   data = inject<{ task: Task } | undefined>(MAT_DIALOG_DATA);
   members: string[] = this.taskService.members;
+  errorMatcher = new SubmitOnlyErrorStateMatcher();
 
   newTaskForm = new FormGroup({
     name: new FormControl<string>('', Validators.required),
@@ -48,6 +57,7 @@ export class TaskDialog {
   }
 
   onSubmit() {
+    this.errorMatcher.submitted = true;
     if (this.newTaskForm.valid) {
       const formValue = this.newTaskForm.value;
       const task: Task = {
