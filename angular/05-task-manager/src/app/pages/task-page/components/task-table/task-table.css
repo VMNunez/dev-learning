@@ -1,3 +1,8 @@
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
 .badge {
   border-radius: 9999px;
   padding: 0.25rem 0.75rem;
@@ -38,4 +43,19 @@
 .actions {
   display: flex;
   gap: 0.5rem;
+  justify-content: center;
+}
+
+.mat-column-status,
+.mat-column-priority,
+.mat-column-assignee,
+.mat-column-createdAt,
+.mat-column-actions {
+  text-align: center;
+}
+
+.no-data-row td {
+  text-align: center;
+  padding: 2rem;
+  color: var(--mat-sys-on-surface-variant);
 }

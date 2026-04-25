@@ -3,7 +3,7 @@ export interface Task {
   name: string;
   status: TaskStatus;
   priority: TaskPriority;
-  description: string;
+  description?: string;
   createdAt: string;
   assignee: string;
 }
