@@ -5,10 +5,11 @@ import { Task } from '../../../../models/task.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-task-table',
-  imports: [MatTableModule, MatButtonModule, NgClass],
+  imports: [MatTableModule, MatButtonModule, NgClass, DatePipe],
   templateUrl: './task-table.html',
   styleUrl: './task-table.css',
 })
