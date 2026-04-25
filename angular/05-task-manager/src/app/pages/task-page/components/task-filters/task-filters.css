@@ -2,3 +2,7 @@
   display: flex;
   gap: 1rem;
 }
+
+.filter-container mat-form-field {
+  min-width: 180px;
+}
