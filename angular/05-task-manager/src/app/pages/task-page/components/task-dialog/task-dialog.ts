@@ -1,5 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  NgForm,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import type { TaskStatus, TaskPriority, Task } from '../../../../models/task.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +19,10 @@ import { ErrorStateMatcher } from '@angular/material/core';
 
 class SubmitOnlyErrorStateMatcher implements ErrorStateMatcher {
   submitted = false;
-  isErrorState(control: AbstractControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(
+    control: AbstractControl | null,
+    _form: FormGroupDirective | NgForm | null,
+  ): boolean {
     return !!(control && control.invalid && this.submitted);
   }
 }
