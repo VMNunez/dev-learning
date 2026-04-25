@@ -1,11 +1,12 @@
 import { Component, input, output } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { Task } from '../../../../models/task.model';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-task-table',
-  imports: [MatTableModule, MatButtonModule],
+  imports: [MatTableModule, MatButtonModule, NgClass],
   templateUrl: './task-table.html',
   styleUrl: './task-table.css',
 })
