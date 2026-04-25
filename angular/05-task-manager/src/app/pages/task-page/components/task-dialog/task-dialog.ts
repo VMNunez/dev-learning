@@ -32,7 +32,7 @@ export class TaskDialog {
     status: new FormControl<TaskStatus | ''>('', Validators.required),
     priority: new FormControl<TaskPriority | ''>('', Validators.required),
     assignee: new FormControl<string>('', Validators.required),
-    description: new FormControl<string>('', Validators.required),
+    description: new FormControl<string>(''),
   });
 
   constructor() {
@@ -61,6 +61,8 @@ export class TaskDialog {
       };
 
       this.dialogRef.close(task);
+    } else {
+      this.newTaskForm.markAllAsTouched();
     }
   }
 }
