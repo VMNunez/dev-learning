@@ -32,8 +32,8 @@
     <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let task">
       <div class="actions">
-        <button matButton (click)="deleteTask(task.id)">Delete</button>
-        <button matButton (click)="editTask(task)">Edit</button>
+        <button matButton="filled" (click)="deleteTask(task.id)" class="btn-danger">Delete</button>
+        <button matButton="filled" (click)="editTask(task)" class="btn-edit">Edit</button>
       </div>
     </td>
   </ng-container>
