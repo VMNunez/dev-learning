@@ -1,8 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { Task } from '../../../../models/task.model';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-task-table',
@@ -11,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './task-table.css',
 })
 export class TaskTable {
+  private dialog = inject(MatDialog);
   displayedColumns = ['name', 'status', 'priority', 'assignee', 'createdAt', 'actions'];
 
   tasks = input<Task[]>([]);
@@ -24,5 +27,21 @@ export class TaskTable {
 
   editTask(task: Task) {
     this.taskToEdit.emit(task);
+  }
+
+  openConfirmDialog(task: Task) {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '500px',
+      autoFocus: false,
+      data: { task },
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (confirmDelete) => {
+        if (confirmDelete) {
+          this.deleteTask(task.id);
+        }
+      },
+    });
   }
 }
