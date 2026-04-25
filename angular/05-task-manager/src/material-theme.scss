@@ -10,7 +10,7 @@ html {
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
+        primary: mat.$blue-palette,
         tertiary: mat.$blue-palette,
       ),
       typography: Roboto,
@@ -35,4 +35,12 @@ body {
   // Reset the user agent margin.
   margin: 0;
   height: 100%;
+}
+
+.btn-danger {
+  @include mat.theme(
+    (
+      color: mat.$red-palette,
+    )
+  );
 }
