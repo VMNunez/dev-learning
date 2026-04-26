@@ -4,7 +4,11 @@
     <button matButton="filled" (click)="openDialog()">Add Task</button>
   </header>
 
-  <app-task-filters (status)="onStatusChange($event)" (priority)="onPriorityChange($event)" />
+  <app-task-filters
+    (status)="onStatusChange($event)"
+    (priority)="onPriorityChange($event)"
+    (searchName)="onSearchName($event)"
+  />
 
   <app-task-table
     [tasks]="filteredTasks()"
