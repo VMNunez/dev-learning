@@ -35,6 +35,13 @@ My fifth Angular project. A task management app to learn Angular Material and CR
 - `*matNoDataRow` — Angular Material directive that shows a row when the table has no data
 - `mat-error` — displays a validation error inside `mat-form-field` with Material styling; pair with `hasError()` and `touched`
 - Optional TypeScript fields — `description?: string` makes a field optional in an interface (no `Validators.required` needed)
+- `MatTableDataSource` — wrapper around an array that handles sorting, filtering and pagination automatically
+- `MatSort` + `mat-sort-header` — sortable column headers; click to sort ascending, again to reverse, again to clear
+- `@ViewChild` — gets a reference to a directive or element in the template from TypeScript
+- `ngAfterViewInit` — lifecycle hook that runs after the template is ready; the earliest safe moment to use `@ViewChild` references
+- `ErrorStateMatcher` — controls when `mat-error` appears; custom implementation to show errors only on submit
+- Confirmation dialog pattern — reusable dialog that returns `true` on confirm; open it before any destructive action
+- `autoFocus: false` — disables Angular Material's default behaviour of focusing the first button when a dialog opens
 
 ### Angular Material theming
 - `mat.theme()` in `material-theme.scss` — set palette, typography and density once for the whole app
