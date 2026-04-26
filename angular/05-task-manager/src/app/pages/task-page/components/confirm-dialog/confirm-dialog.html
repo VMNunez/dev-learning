@@ -1,6 +1,10 @@
-<h2 mat-dialog-title>{{ data.task.name }}</h2>
-<mat-dialog-content> <p>Are you sure you want to delete this task?</p></mat-dialog-content>
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content>
+  <p>{{ data.message }}</p>
+</mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button matButton mat-dialog-close>Cancel</button>
-  <button matButton="outlined" class="btn-danger" (click)="confirmDelete()">Delete</button>
+  <button matButton mat-dialog-close>{{ data.cancelLabel }}</button>
+  <button matButton="outlined" [class.btn-danger]="data.danger" (click)="confirm()">
+    {{ data.confirmLabel }}
+  </button>
 </mat-dialog-actions>
