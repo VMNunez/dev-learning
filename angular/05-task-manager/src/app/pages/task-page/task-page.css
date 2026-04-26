@@ -32,6 +32,9 @@
 .stat-card:hover {
   background-color: var(--mat-sys-surface-container-high);
 }
+.stat-card.active {
+  background-color: var(--mat-sys-primary-container);
+}
 
 .stat-header {
   display: flex;

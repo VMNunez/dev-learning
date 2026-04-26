@@ -5,28 +5,40 @@
   </header>
 
   <div class="stats-row">
-    <div class="stat-card" (click)="onCardClick('all')">
+    <div class="stat-card" [class.active]="selectedStatus() === 'all'" (click)="onCardClick('all')">
       <div class="stat-header">
         <mat-icon>assignment</mat-icon>
         <span class="stat-label">Total</span>
       </div>
       <span class="stat-value">{{ totalTasks() }}</span>
     </div>
-    <div class="stat-card" (click)="onCardClick('pending')">
+    <div
+      class="stat-card"
+      (click)="onCardClick('pending')"
+      [class.active]="selectedStatus() === 'pending'"
+    >
       <div class="stat-header">
         <mat-icon>schedule</mat-icon>
         <span class="stat-label">Pending</span>
       </div>
       <span class="stat-value">{{ pendingTasks() }}</span>
     </div>
-    <div class="stat-card" (click)="onCardClick('in-progress')">
+    <div
+      class="stat-card"
+      [class.active]="selectedStatus() === 'in-progress'"
+      (click)="onCardClick('in-progress')"
+    >
       <div class="stat-header">
         <mat-icon>autorenew</mat-icon>
         <span class="stat-label">In Progress</span>
       </div>
       <span class="stat-value">{{ inProgressTasks() }}</span>
     </div>
-    <div class="stat-card" (click)="onCardClick('done')">
+    <div
+      class="stat-card"
+      [class.active]="selectedStatus() === 'done'"
+      (click)="onCardClick('done')"
+    >
       <div class="stat-header">
         <mat-icon>task_alt</mat-icon>
         <span class="stat-label">Done</span>
