@@ -6,3 +6,7 @@
 .filter-container mat-form-field {
   min-width: 180px;
 }
+
+.search-field {
+  flex: 1;
+}
