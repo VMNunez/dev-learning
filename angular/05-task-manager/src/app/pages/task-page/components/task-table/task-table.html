@@ -50,6 +50,12 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
   <tr class="no-data-row" *matNoDataRow>
-    <td [attr.colspan]="displayedColumns.length">No tasks yet</td>
+    <td [attr.colspan]="displayedColumns.length">
+      <div class="no-data-content">
+        <mat-icon>assignment</mat-icon>
+        <p>No tasks yet</p>
+        <p>Add your first task to get started</p>
+      </div>
+    </td>
   </tr>
 </table>

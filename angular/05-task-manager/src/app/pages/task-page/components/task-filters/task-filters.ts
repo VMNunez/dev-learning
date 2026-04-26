@@ -3,10 +3,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FilterPriority, type FilterStatus } from '../../../../models/task.model';
 import { MatInput } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-task-filters',
-  imports: [MatFormFieldModule, MatSelectModule, MatInput],
+  imports: [MatFormFieldModule, MatSelectModule, MatInput, MatIconModule],
   templateUrl: './task-filters.html',
   styleUrl: './task-filters.css',
 })

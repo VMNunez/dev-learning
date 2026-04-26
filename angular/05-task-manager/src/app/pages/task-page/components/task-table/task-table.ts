@@ -8,10 +8,11 @@ import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { DatePipe } from '@angular/common';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-task-table',
-  imports: [MatTableModule, MatButtonModule, NgClass, DatePipe, MatSortModule],
+  imports: [MatTableModule, MatButtonModule, NgClass, DatePipe, MatSortModule, MatIconModule],
   templateUrl: './task-table.html',
   styleUrl: './task-table.css',
 })

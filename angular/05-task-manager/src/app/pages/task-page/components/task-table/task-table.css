@@ -56,6 +56,30 @@ table {
 
 .no-data-row td {
   text-align: center;
-  padding: 2rem;
+  padding: 3rem;
   color: var(--mat-sys-on-surface-variant);
+}
+
+.no-data-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.no-data-row mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  opacity: 0.5;
+}
+
+.no-data-row p {
+  margin: 0;
+}
+tr.mat-mdc-row {
+  transition: background-color 150ms ease;
+}
+
+tr.mat-mdc-row:hover {
+  background-color: var(--mat-sys-surface-variant);
 }
