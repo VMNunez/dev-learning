@@ -53,8 +53,14 @@
     <td [attr.colspan]="displayedColumns.length">
       <div class="no-data-content">
         <mat-icon>assignment</mat-icon>
-        <p>No tasks yet</p>
-        <p>Add your first task to get started</p>
+        <p>{{ hasTasks() ? 'No tasks match your filters' : 'No tasks yet' }}</p>
+        <p>
+          {{
+            hasTasks()
+              ? 'Try adjusting your search or filters'
+              : 'Add your first task to get started'
+          }}
+        </p>
       </div>
     </td>
   </tr>
