@@ -12,6 +12,16 @@
   justify-content: space-between;
   align-items: center;
 }
+.task-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant);
+  margin-top: 0.25rem;
+}
 
 .stats-row {
   display: flex;
@@ -57,9 +67,4 @@
   font-size: 1.75rem;
   font-weight: 700;
   color: var(--mat-sys-on-surface);
-}
-
-.task-header h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
 }
