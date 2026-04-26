@@ -8,7 +8,7 @@ import {
   MatDialogClose,
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { Task } from '../../../../models/task.model';
+import type { ConfirmDialogData } from '../../../../models/task.model';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -18,9 +18,9 @@ import { Task } from '../../../../models/task.model';
 })
 export class ConfirmDialog {
   private dialogRef = inject(MatDialogRef);
-  data = inject<{ task: Task }>(MAT_DIALOG_DATA);
+  data = inject<ConfirmDialogData>(MAT_DIALOG_DATA);
 
-  confirmDelete() {
+  confirm() {
     this.dialogRef.close(true);
   }
 }

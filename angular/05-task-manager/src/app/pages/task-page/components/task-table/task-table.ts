@@ -49,7 +49,13 @@ export class TaskTable implements AfterViewInit {
     const dialogRef = this.dialog.open(ConfirmDialog, {
       width: '500px',
       autoFocus: false,
-      data: { task },
+      data: {
+        title: task.name,
+        message: 'Are you sure you want to delete this task?',
+        cancelLabel: 'Cancel',
+        confirmLabel: 'Delete',
+        danger: true,
+      },
     });
 
     dialogRef.afterClosed().subscribe({
