@@ -20,13 +20,17 @@ export class TaskPage {
   tasks = this.taskService.tasks;
   selectedStatus = signal<FilterStatus>('all');
   selectedPriority = signal<FilterPriority>('all');
+  searchTerm = signal<string>('');
 
   filteredTasks = computed(() => {
     return this.tasks().filter((task) => {
       const statusMatch = this.selectedStatus() === 'all' || task.status === this.selectedStatus();
       const priorityMatch =
         this.selectedPriority() === 'all' || task.priority === this.selectedPriority();
-      return statusMatch && priorityMatch;
+      const nameMatch =
+        this.searchTerm() === '' ||
+        task.name.toLocaleLowerCase().trim().includes(this.searchTerm().toLocaleLowerCase().trim());
+      return statusMatch && priorityMatch && nameMatch;
     });
   });
 
@@ -36,6 +40,10 @@ export class TaskPage {
 
   onPriorityChange(priority: FilterPriority): void {
     this.selectedPriority.set(priority);
+  }
+
+  onSearchName(input: string) {
+    this.searchTerm.set(input);
   }
 
   onAddTask(task: Task) {
