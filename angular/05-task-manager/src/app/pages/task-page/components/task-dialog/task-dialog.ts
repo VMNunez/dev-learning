@@ -11,11 +11,17 @@ import {
 import type { TaskStatus, TaskPriority, Task } from '../../../../models/task.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+  MatDialog,
+} from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { TaskService } from '../../services/task.service';
 import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 class SubmitOnlyErrorStateMatcher implements ErrorStateMatcher {
   submitted = false;
@@ -43,6 +49,7 @@ class SubmitOnlyErrorStateMatcher implements ErrorStateMatcher {
 export class TaskDialog {
   private taskService = inject(TaskService);
   private dialogRef = inject(MatDialogRef);
+  private dialog = inject(MatDialog);
   data = inject<{ task: Task } | undefined>(MAT_DIALOG_DATA);
   members: string[] = this.taskService.members;
   errorMatcher = new SubmitOnlyErrorStateMatcher();
@@ -82,8 +89,32 @@ export class TaskDialog {
       };
 
       this.dialogRef.close(task);
+    }
+  }
+
+  onCancel() {
+    if (this.newTaskForm.dirty) {
+      const dialogRef = this.dialog.open(ConfirmDialog, {
+        width: '500px',
+        autoFocus: false,
+        data: {
+          title: 'Discard changes',
+          message: 'You have unsaved changes. Are you sure you want to cancel?',
+          cancelLabel: 'Keep Editing',
+          confirmLabel: 'Discard Changes',
+          danger: false,
+        },
+      });
+
+      dialogRef.afterClosed().subscribe({
+        next: (confirmed) => {
+          if (confirmed) {
+            this.dialogRef.close();
+          }
+        },
+      });
     } else {
-      this.newTaskForm.markAllAsTouched();
+      this.dialogRef.close();
     }
   }
 }

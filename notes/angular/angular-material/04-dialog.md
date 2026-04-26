@@ -179,12 +179,12 @@ The `onSubmit()` and `dialogRef.close()` stay exactly the same — the parent de
 
 A confirmation dialog is a small dialog with no form — just a message and two buttons. It is used before destructive actions like delete.
 
-**The dialog component** — inject `MAT_DIALOG_DATA` for the message and `MatDialogRef` to return `true` on confirm:
+**The dialog component** — inject `MAT_DIALOG_DATA` for the message and `MatDialogRef` to return `true` on confirm. Pass `confirmLabel` so the button text can change per use case:
 
 ```typescript
 export class ConfirmDialog {
   private dialogRef = inject(MatDialogRef);
-  data = inject<{ title: string; message: string }>(MAT_DIALOG_DATA);
+  data = inject<{ title: string; message: string; confirmLabel: string }>(MAT_DIALOG_DATA);
 
   confirm() {
     this.dialogRef.close(true);
@@ -192,7 +192,7 @@ export class ConfirmDialog {
 }
 ```
 
-**The template** — Cancel first, destructive action last (Material Design convention):
+**The template** — Cancel first, confirm action last (Material Design convention):
 
 ```html
 <h2 mat-dialog-title>{{ data.title }}</h2>
@@ -201,20 +201,23 @@ export class ConfirmDialog {
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button matButton mat-dialog-close>Cancel</button>
-  <button matButton="outlined" class="btn-danger" (click)="confirm()">Delete</button>
+  <button matButton="outlined" (click)="confirm()">{{ data.confirmLabel }}</button>
 </mat-dialog-actions>
 ```
 
 > Always put the destructive action last (on the right). The user reads left to right — Cancel is the safe option and should come first.
 
+> Pass `confirmLabel` from the parent so the button says "Delete", "Discard", or whatever fits the context. This makes the component truly reusable.
+
 **The parent** — open the confirm dialog, then act only if the user confirmed:
 
 ```typescript
+// delete confirmation
 openConfirmDialog(task: Task) {
   const dialogRef = this.dialog.open(ConfirmDialog, {
     width: '400px',
-    data: { task },
     autoFocus: false,
+    data: { title: 'Delete task', message: 'Are you sure you want to delete this task?', confirmLabel: 'Delete' },
   });
 
   dialogRef.afterClosed().subscribe({
@@ -223,9 +226,30 @@ openConfirmDialog(task: Task) {
     },
   });
 }
+
+// discard changes confirmation (called from inside another dialog)
+onCancel() {
+  if (this.myForm.dirty) {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      autoFocus: false,
+      data: { title: 'Discard changes', message: 'You have unsaved changes. Are you sure you want to cancel?', confirmLabel: 'Discard' },
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (confirmed) => {
+        if (confirmed) this.dialogRef.close();
+      },
+    });
+  } else {
+    this.dialogRef.close();
+  }
+}
 ```
 
 > `autoFocus: false` — by default Angular Material focuses the first button when a dialog opens, which shows the browser focus ring on it. Disabling it looks cleaner for simple confirm dialogs.
+
+> You can open a dialog from inside another dialog — just inject `MatDialog` in the dialog component.
 
 ---
 
