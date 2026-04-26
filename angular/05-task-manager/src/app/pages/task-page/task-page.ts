@@ -65,7 +65,6 @@ export class TaskPage {
     const dialogRef = this.dialog.open(TaskDialog, {
       width: '500px',
     });
-
     dialogRef.afterClosed().subscribe({
       next: (task) => {
         this.onAddTask(task);
