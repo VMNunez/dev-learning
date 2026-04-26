@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FilterPriority, type FilterStatus } from '../../../../models/task.model';
@@ -15,6 +15,7 @@ export class TaskFilters {
   status = output<FilterStatus>();
   priority = output<FilterPriority>();
   searchName = output<string>();
+  selectedStatus = input<FilterStatus>('all');
 
   statusChange(statusValue: FilterStatus) {
     this.status.emit(statusValue);

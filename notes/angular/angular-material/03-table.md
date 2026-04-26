@@ -193,6 +193,65 @@ announceSortChange(sortState: Sort) {
 
 ---
 
+## Empty state — contextual messages
+
+The `*matNoDataRow` shows whenever there are no rows — both when the table has no data at all, and when a filter finds nothing. To show a different message in each case, pass a boolean input from the parent:
+
+```typescript
+// task-table.ts
+hasTasks = input<boolean>(false);
+```
+
+```html
+<!-- task-page.html -->
+<app-task-table [hasTasks]="totalTasks() > 0" ... />
+```
+
+```html
+<!-- task-table.html -->
+<p>{{ hasTasks() ? 'No tasks match your filters' : 'No tasks yet' }}</p>
+<p>{{ hasTasks() ? 'Try adjusting your filters' : 'Add your first task to get started' }}</p>
+```
+
+---
+
+## Centering sort header text — view encapsulation
+
+When you apply `text-align: center` to a column, it centres the data cells (`<td>`) but NOT the sort header. The sort header renders its content inside a flex container (`.mat-sort-header-container`) created by the Angular Material directive. Component CSS cannot reach it because of **Angular view encapsulation**.
+
+**What is view encapsulation?** Angular adds a unique attribute (e.g. `_ngcontent-abc-123`) to every element in a component's template, and modifies its CSS selectors to only match elements with that attribute. Elements created by directives (like `mat-sort-header`) do not get that attribute — so component CSS rules never match them.
+
+**The fix** — put the rule in **`styles.css`** (no encapsulation):
+
+```css
+/* styles.css */
+.mat-column-assignee .mat-sort-header-container,
+.mat-column-createdAt .mat-sort-header-container {
+  justify-content: center;
+}
+```
+
+> Component CSS → for your own template elements. Global `styles.css` → for Material directive internals.
+
+To also position the sort arrow close to the text (instead of at the far right), use `position: absolute` to take it out of the flex flow:
+
+```css
+.mat-column-assignee .mat-sort-header-container,
+.mat-column-createdAt .mat-sort-header-container {
+  justify-content: center;
+  position: relative;
+}
+
+.mat-column-assignee .mat-sort-header-arrow {
+  position: absolute;
+  left: calc(50% + 30px); /* adjust to match text width */
+}
+```
+
+The arrow is removed from the flex flow so it does not shift the text. `left: calc(50% + Npx)` positions it just after the text — adjust the pixel value to match the actual text width.
+
+---
+
 ## Note
 
 If `dataSource` is empty, the table renders the header but no rows — that is expected behaviour, not a bug.

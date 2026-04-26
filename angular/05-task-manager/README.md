@@ -6,10 +6,12 @@ My fifth Angular project. A task management app to learn Angular Material and CR
 
 ## Features
 
-- List tasks in a Material table
+- List tasks in a Material table with column sorting
 - Add and edit tasks in a modal dialog
-- Delete tasks
-- Filter tasks by status and priority
+- Delete tasks with confirmation dialog
+- Filter tasks by status, priority and name
+- Task statistics cards (total, pending, in progress, done)
+- Dirty check — warns before discarding unsaved changes
 - Data persists with localStorage
 
 ## What I learned
@@ -42,6 +44,10 @@ My fifth Angular project. A task management app to learn Angular Material and CR
 - `ErrorStateMatcher` — controls when `mat-error` appears; custom implementation to show errors only on submit
 - Confirmation dialog pattern — reusable dialog that returns `true` on confirm; open it before any destructive action
 - `autoFocus: false` — disables Angular Material's default behaviour of focusing the first button when a dialog opens
+- `computed()` for derived statistics — filter a signal array and return `.length` for live counts
+- `input<boolean>()` — pass context from parent to child to change child behaviour (e.g. contextual empty state message)
+- Angular view encapsulation — component CSS only applies to the component's own template; internal elements of Material directives need global `styles.css`
+- `justify-content: center` on `.mat-sort-header-container` — centers sort header text; must go in `styles.css`, not component CSS
 
 ### Angular Material theming
 - `mat.theme()` in `material-theme.scss` — set palette, typography and density once for the whole app
@@ -61,6 +67,10 @@ My fifth Angular project. A task management app to learn Angular Material and CR
 - `.mat-column-*` — auto-generated class per column; use to set width or alignment per column
 - CSS grid — `display: grid`, `grid-template-columns: 1fr 1fr`, `gap` — two-column layout for dialog forms
 - `grid-column: 1 / -1` — span a grid item across all columns (description field and dialog actions)
+- `align-items: center` on `flex-direction: column` — centers children **horizontally** (not vertically)
+- `td.class` vs `.class td` — `td.class` targets a `<td>` that has the class; `.class td` targets a `<td>` inside an element with the class
+- `position: relative` + `position: absolute` — take an element out of the flex flow so it does not affect alignment of siblings
+- Angular view encapsulation — component CSS only applies to elements in that component's own template; use `styles.css` for Material internal elements
 
 ## Tech stack
 
