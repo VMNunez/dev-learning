@@ -29,3 +29,19 @@
 body {
   min-height: 100vh;
 }
+
+.mat-column-assignee .mat-sort-header-container,
+.mat-column-createdAt .mat-sort-header-container {
+  justify-content: center;
+  position: relative;
+}
+
+.mat-column-assignee .mat-sort-header-arrow {
+  position: absolute;
+  left: calc(50% + 30px);
+}
+
+.mat-column-createdAt .mat-sort-header-arrow {
+  position: absolute;
+  left: calc(50% + 38px);
+}

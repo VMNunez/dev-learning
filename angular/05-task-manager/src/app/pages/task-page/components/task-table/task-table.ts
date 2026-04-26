@@ -25,6 +25,7 @@ export class TaskTable implements AfterViewInit {
   tasks = input<Task[]>([]);
   taskId = output<number>();
   taskToEdit = output<Task>();
+  hasTasks = input<boolean>(false);
 
   @ViewChild(MatSort) sort!: MatSort;
 

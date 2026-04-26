@@ -48,9 +48,12 @@ table {
 
 .mat-column-status,
 .mat-column-priority,
-.mat-column-assignee,
-.mat-column-createdAt,
 .mat-column-actions {
+  text-align: center;
+}
+
+td.mat-column-assignee,
+td.mat-column-createdAt {
   text-align: center;
 }
 

@@ -43,6 +43,7 @@
 
   <app-task-table
     [tasks]="filteredTasks()"
+    [hasTasks]="totalTasks() > 0"
     (taskId)="onDeleteTask($event)"
     (taskToEdit)="onEditTask($event)"
   />
