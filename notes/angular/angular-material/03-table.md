@@ -75,6 +75,124 @@ Both always reference `displayedColumns` — it is the single source of truth fo
 </table>
 ```
 
+## Empty state — *matNoDataRow
+
+To show a message when the table has no data, add a row with `*matNoDataRow`:
+
+```html
+<tr class="no-data-row" *matNoDataRow>
+  <td [attr.colspan]="displayedColumns.length">No tasks yet</td>
+</tr>
+```
+
+`[attr.colspan]` makes the cell span all columns so the message is centred across the full table width.
+
+---
+
+## MatTableDataSource — sorting and filtering
+
+Official docs: https://material.angular.io/components/table/overview#sorting
+
+Instead of passing a plain array to `[dataSource]`, use `MatTableDataSource`. It is a wrapper that handles sorting, filtering, and pagination automatically.
+
+```typescript
+import { MatTableDataSource } from '@angular/material/table';
+
+dataSource = new MatTableDataSource<Task>([]);
+```
+
+When your data comes from a signal input, use `effect()` to keep the data source in sync:
+
+```typescript
+constructor() {
+  effect(() => {
+    this.dataSource.data = this.tasks();
+  });
+}
+```
+
+Pass the data source to the table instead of the signal:
+
+```html
+<table mat-table [dataSource]="dataSource">
+```
+
+---
+
+## Sorting — MatSort
+
+Official docs: https://material.angular.io/components/sort/overview
+
+Add `MatSortModule` to the component imports. Then add `matSort` to the table and `mat-sort-header` to each sortable column header:
+
+```html
+<table mat-table [dataSource]="dataSource" matSort>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+    <td mat-cell *matCellDef="let task">{{ task.name }}</td>
+  </ng-container>
+
+</table>
+```
+
+> `mat-sort-header` goes on the `<th>` element, not on `ng-container`. The `ng-container` is just a wrapper with no visual output.
+
+> Not all columns need to be sortable. Avoid `mat-sort-header` on columns where alphabetical order is meaningless (e.g. Status, Priority with custom logic).
+
+To connect `MatSort` to the data source, use `@ViewChild` and `ngAfterViewInit`:
+
+```typescript
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
+
+export class TaskTable implements AfterViewInit {
+  @ViewChild(MatSort) sort!: MatSort;
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
+}
+```
+
+**Why `@ViewChild`?** — gets a reference to the `MatSort` directive that lives in the template. Without it, TypeScript has no way to access what is in the HTML.
+
+**Why `ngAfterViewInit`?** — `@ViewChild` references are only available after Angular builds the template. If you try to use `this.sort` in the constructor it is `undefined`. `ngAfterViewInit` runs exactly when the template is ready.
+
+### `sortActionDescription` — accessibility
+
+Add a description to each sortable header so screen readers can announce what the column sorts by:
+
+```html
+<th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+  Name
+</th>
+```
+
+### `LiveAnnouncer` — accessibility announcements
+
+`LiveAnnouncer` (from `@angular/cdk/a11y`) announces sort changes to screen readers:
+
+```typescript
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+
+private liveAnnouncer = inject(LiveAnnouncer);
+
+announceSortChange(sortState: Sort) {
+  if (sortState.direction) {
+    this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+  } else {
+    this.liveAnnouncer.announce('Sorting cleared');
+  }
+}
+```
+
+```html
+<table matSort (matSortChange)="announceSortChange($event)">
+```
+
+---
+
 ## Note
 
 If `dataSource` is empty, the table renders the header but no rows — that is expected behaviour, not a bug.
