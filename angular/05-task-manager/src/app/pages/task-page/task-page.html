@@ -62,6 +62,10 @@
     (clearAll)="onClearAll()"
   />
 
+  <p class="filter-text" [class.filter-text-active]="hasActiveFilters()">
+    Showing {{ filteredTasks().length }} of {{ totalTasks() }}
+  </p>
+
   <app-task-table
     [tasks]="filteredTasks()"
     [hasTasks]="totalTasks() > 0"

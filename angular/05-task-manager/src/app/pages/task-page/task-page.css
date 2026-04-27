@@ -69,3 +69,13 @@
   font-weight: 700;
   color: var(--mat-sys-on-surface);
 }
+
+.filter-text {
+  visibility: hidden;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.filter-text.filter-text-active {
+  visibility: visible;
+}
