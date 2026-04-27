@@ -2,6 +2,7 @@
   /* Custom — not covered by Material */
   --shadow: rgba(0, 0, 0, 0.08);
   --danger: #ef4444;
+  --text-secondary: #6b7280;
 
   /* Status badge colors */
   --status-pending-bg: #fef3c7;
