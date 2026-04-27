@@ -1,0 +1,94 @@
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.badge {
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  display: inline-block;
+  font-size: 0.75rem;
+}
+
+.badge.pending {
+  background-color: var(--status-pending-bg);
+  color: var(--status-pending-text);
+}
+
+.badge.in-progress {
+  background-color: var(--status-progress-bg);
+  color: var(--status-progress-text);
+}
+
+.badge.done {
+  background-color: var(--status-done-bg);
+  color: var(--status-done-text);
+}
+
+.badge.low {
+  background-color: var(--priority-low-bg);
+  color: var(--priority-low-text);
+}
+
+.badge.medium {
+  background-color: var(--priority-medium-bg);
+  color: var(--priority-medium-text);
+}
+
+.badge.high {
+  background-color: var(--priority-high-bg);
+  color: var(--priority-high-text);
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.mat-column-status,
+.mat-column-priority,
+.mat-column-actions {
+  text-align: center;
+}
+
+td.mat-column-assignee,
+td.mat-column-createdAt {
+  text-align: center;
+}
+
+.no-data-row td {
+  text-align: center;
+  padding: 3rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.no-data-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.no-data-row mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  opacity: 0.5;
+}
+
+.no-data-row p {
+  margin: 0;
+}
+tr.mat-mdc-row {
+  transition: background-color 150ms ease;
+}
+
+tr.mat-mdc-row:hover {
+  background-color: var(--mat-sys-surface-variant);
+}
+
+mat-paginator {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}

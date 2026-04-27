@@ -1,0 +1,48 @@
+:root {
+  /* Custom — not covered by Material */
+  --shadow: rgba(0, 0, 0, 0.08);
+  --danger: #ef4444;
+  --text-secondary: #6b7280;
+
+  /* Status badge colors */
+  --status-pending-bg: #fef3c7;
+  --status-pending-text: #92400e;
+  --status-progress-bg: #e0e7ff;
+  --status-progress-text: #3730a3;
+  --status-done-bg: #dcfce7;
+  --status-done-text: #166534;
+
+  /* Priority badge colors */
+  --priority-low-bg: #f1f5f9;
+  --priority-low-text: #475569;
+  --priority-medium-bg: #fff7ed;
+  --priority-medium-text: #c2410c;
+  --priority-high-bg: #fee2e2;
+  --priority-high-text: #991b1b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.mat-column-assignee .mat-sort-header-container,
+.mat-column-createdAt .mat-sort-header-container {
+  justify-content: center;
+  position: relative;
+}
+
+.mat-column-assignee .mat-sort-header-arrow {
+  position: absolute;
+  left: calc(50% + 30px);
+}
+
+.mat-column-createdAt .mat-sort-header-arrow {
+  position: absolute;
+  left: calc(50% + 38px);
+}
