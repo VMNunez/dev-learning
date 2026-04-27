@@ -9,10 +9,20 @@ import { DatePipe } from '@angular/common';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-task-table',
-  imports: [MatTableModule, MatButtonModule, NgClass, DatePipe, MatSortModule, MatIconModule],
+  imports: [
+    MatTableModule,
+    MatButtonModule,
+    NgClass,
+    DatePipe,
+    MatSortModule,
+    MatIconModule,
+    MatPaginator,
+    MatPaginatorModule,
+  ],
   templateUrl: './task-table.html',
   styleUrl: './task-table.css',
 })
@@ -28,6 +38,7 @@ export class TaskTable implements AfterViewInit {
   hasTasks = input<boolean>(false);
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor() {
     effect(() => {
@@ -37,6 +48,7 @@ export class TaskTable implements AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   deleteTask(id: number) {

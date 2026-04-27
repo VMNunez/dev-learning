@@ -86,3 +86,9 @@ tr.mat-mdc-row {
 tr.mat-mdc-row:hover {
   background-color: var(--mat-sys-surface-variant);
 }
+
+mat-paginator {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
