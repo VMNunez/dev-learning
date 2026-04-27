@@ -252,6 +252,48 @@ The arrow is removed from the flex flow so it does not shift the text. `left: ca
 
 ---
 
+## Pagination — MatPaginator
+
+Official docs: https://material.angular.io/components/paginator/overview
+
+`MatPaginator` works the same way as `MatSort` — you connect it to `MatTableDataSource` via `@ViewChild` in `ngAfterViewInit`.
+
+```typescript
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+
+@ViewChild(MatPaginator) paginator!: MatPaginator;
+
+ngAfterViewInit() {
+  this.dataSource.sort = this.sort;
+  this.dataSource.paginator = this.paginator;
+}
+```
+
+Add `MatPaginatorModule` to the component's `imports` array.
+
+In the template, place `<mat-paginator>` **outside and after** the `</table>` closing tag — they are separate elements:
+
+```html
+</table>
+
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 25]"
+  showFirstLastButtons
+  aria-label="Select page"
+>
+</mat-paginator>
+```
+
+| Attribute | What it does |
+|-----------|-------------|
+| `[pageSizeOptions]` | Array of page size options the user can choose |
+| `showFirstLastButtons` | Adds first/last page buttons |
+| `aria-label` | Accessibility label for screen readers |
+
+`MatTableDataSource` handles the rest automatically — when the user changes the page, the table updates.
+
+---
+
 ## Note
 
 If `dataSource` is empty, the table renders the header but no rows — that is expected behaviour, not a bug.
