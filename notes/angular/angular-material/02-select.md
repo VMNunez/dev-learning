@@ -17,6 +17,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 It does not work alone — it needs a control inside it (`mat-select`, or `input matInput` for text inputs).
 
+By default, `mat-form-field` always reserves space at the bottom for hint or error messages, even when you don't have any. This extra space makes it hard to vertically align a form field with a regular button in the same flex row.
+
+Use `subscriptSizing="dynamic"` to remove that space when there is no hint or error:
+
+```html
+<mat-form-field subscriptSizing="dynamic">
+  ...
+</mat-form-field>
+```
+
+This is useful when you mix form fields and buttons in the same flex row and want them to align correctly.
+
 ## Basic usage
 
 Three components work together:

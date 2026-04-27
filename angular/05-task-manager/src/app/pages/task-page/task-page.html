@@ -1,17 +1,90 @@
 <div class="container">
   <header class="task-header">
-    <h1>Task Manager</h1>
+    <div>
+      <h1>Task Manager</h1>
+      <p class="subtitle">Manage and track your team's tasks</p>
+    </div>
+
     <button matButton="filled" (click)="openDialog()">Add Task</button>
   </header>
 
+  <div class="stats-row">
+    <div
+      class="stat-card"
+      [class.active]="selectedStatus() === 'all'"
+      (click)="onStatusChange('all')"
+      (keydown.enter)="onStatusChange('all')"
+      role="button"
+      tabindex="0"
+    >
+      <div class="stat-header">
+        <mat-icon>assignment</mat-icon>
+        <span class="stat-label">Total</span>
+      </div>
+      <span class="stat-value">{{ totalTasks() }}</span>
+    </div>
+    <div
+      class="stat-card"
+      (click)="onStatusChange('pending')"
+      (keydown.enter)="onStatusChange('pending')"
+      [class.active]="selectedStatus() === 'pending'"
+      role="button"
+      tabindex="0"
+    >
+      <div class="stat-header">
+        <mat-icon>schedule</mat-icon>
+        <span class="stat-label">Pending</span>
+      </div>
+      <span class="stat-value">{{ pendingTasks() }}</span>
+    </div>
+    <div
+      class="stat-card"
+      [class.active]="selectedStatus() === 'in-progress'"
+      (click)="onStatusChange('in-progress')"
+      (keydown.enter)="onStatusChange('in-progress')"
+      role="button"
+      tabindex="0"
+    >
+      <div class="stat-header">
+        <mat-icon>autorenew</mat-icon>
+        <span class="stat-label">In Progress</span>
+      </div>
+      <span class="stat-value">{{ inProgressTasks() }}</span>
+    </div>
+    <div
+      class="stat-card"
+      [class.active]="selectedStatus() === 'done'"
+      (click)="onStatusChange('done')"
+      (keydown.enter)="onStatusChange('done')"
+      role="button"
+      tabindex="0"
+    >
+      <div class="stat-header">
+        <mat-icon>task_alt</mat-icon>
+        <span class="stat-label">Done</span>
+      </div>
+      <span class="stat-value">{{ doneTasks() }}</span>
+    </div>
+  </div>
+
   <app-task-filters
+    [selectedStatus]="selectedStatus()"
+    [selectedPriority]="selectedPriority()"
+    [hasActiveFilters]="hasActiveFilters()"
+    [searchValue]="searchTerm()"
     (status)="onStatusChange($event)"
     (priority)="onPriorityChange($event)"
     (searchName)="onSearchName($event)"
+    (clearAll)="onClearAll()"
   />
+
+  <p class="filter-text" [class.filter-text-active]="hasActiveFilters()">
+    Showing {{ filteredTasks().length }} of {{ totalTasks() }}
+  </p>
 
   <app-task-table
     [tasks]="filteredTasks()"
+    [hasTasks]="totalTasks() > 0"
     (taskId)="onDeleteTask($event)"
     (taskToEdit)="onEditTask($event)"
   />

@@ -97,6 +97,29 @@ Use it whenever you need to build a list of filters, tags, or categories from an
 <p>{{ pendingCount() }} tasks pending</p>
 ```
 
+### Pattern — computed() returning a boolean directly
+
+Instead of using `if` with `return true` / `return false`, return the expression directly:
+
+```typescript
+// verbose — avoid this
+hasActiveFilters = computed(() => {
+  if (this.selectedStatus() !== 'all') return true;
+  return false;
+});
+
+// clean — do this
+hasActiveFilters = computed(() =>
+  this.selectedStatus() !== 'all' ||
+  this.selectedPriority() !== 'all' ||
+  this.searchTerm() !== ''
+);
+```
+
+The expression itself is already a boolean — no need to wrap it in an `if`.
+
+---
+
 ### Pattern — multi-filter with "all" option
 
 When you have multiple filters and each can be set to `'all'` (meaning no filter), use `||` to short-circuit the check:

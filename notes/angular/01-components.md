@@ -121,6 +121,30 @@ onTaskDeleted(id: number) {
 }
 ```
 
+### output\<void\>() — when you don't need to send data
+
+Use `output<void>()` when the event itself is the signal — you don't need to pass any value. The parent just needs to know it happened.
+
+```typescript
+// child
+clearAll = output<void>();
+
+onClearAll() {
+  this.clearAll.emit();
+}
+```
+
+```typescript
+// parent
+onClearAll() {
+  this.selectedStatus.set('all');
+  this.selectedPriority.set('all');
+  this.searchTerm.set('');
+}
+```
+
+Think of it like a doorbell — it does not send information, it just signals that something happened.
+
 ---
 
 ## Template directives

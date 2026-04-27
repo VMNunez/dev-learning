@@ -48,14 +48,47 @@ table {
 
 .mat-column-status,
 .mat-column-priority,
-.mat-column-assignee,
-.mat-column-createdAt,
 .mat-column-actions {
+  text-align: center;
+}
+
+td.mat-column-assignee,
+td.mat-column-createdAt {
   text-align: center;
 }
 
 .no-data-row td {
   text-align: center;
-  padding: 2rem;
+  padding: 3rem;
   color: var(--mat-sys-on-surface-variant);
+}
+
+.no-data-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.no-data-row mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  opacity: 0.5;
+}
+
+.no-data-row p {
+  margin: 0;
+}
+tr.mat-mdc-row {
+  transition: background-color 150ms ease;
+}
+
+tr.mat-mdc-row:hover {
+  background-color: var(--mat-sys-surface-variant);
+}
+
+mat-paginator {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }

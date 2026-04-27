@@ -12,8 +12,70 @@
   justify-content: space-between;
   align-items: center;
 }
-
 .task-header h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant);
+  margin-top: 0.25rem;
+}
+
+.stats-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--mat-sys-surface-container);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 150ms ease-in-out;
+}
+.stat-card:hover {
+  background-color: var(--mat-sys-surface-container-high);
+}
+.stat-card.active {
+  background-color: var(--mat-sys-primary-container);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-card mat-icon {
+  color: var(--mat-sys-primary);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+}
+
+.filter-text {
+  visibility: hidden;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.filter-text.filter-text-active {
+  visibility: visible;
 }

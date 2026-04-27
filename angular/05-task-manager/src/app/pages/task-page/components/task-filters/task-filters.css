@@ -1,5 +1,6 @@
 .filter-container {
   display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
@@ -9,4 +10,15 @@
 
 .search-field {
   flex: 1;
+}
+
+.clear-btn {
+  visibility: hidden;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.25rem;
+}
+
+.clear-btn.active {
+  visibility: visible;
 }
