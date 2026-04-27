@@ -9,7 +9,14 @@
   </header>
 
   <div class="stats-row">
-    <div class="stat-card" [class.active]="selectedStatus() === 'all'" (click)="onCardClick('all')">
+    <div
+      class="stat-card"
+      [class.active]="selectedStatus() === 'all'"
+      (click)="onCardClick('all')"
+      (keydown.enter)="onCardClick('all')"
+      role="button"
+      tabindex="0"
+    >
       <div class="stat-header">
         <mat-icon>assignment</mat-icon>
         <span class="stat-label">Total</span>
@@ -19,7 +26,10 @@
     <div
       class="stat-card"
       (click)="onCardClick('pending')"
+      (keydown.enter)="onCardClick('pending')"
       [class.active]="selectedStatus() === 'pending'"
+      role="button"
+      tabindex="0"
     >
       <div class="stat-header">
         <mat-icon>schedule</mat-icon>
@@ -31,6 +41,9 @@
       class="stat-card"
       [class.active]="selectedStatus() === 'in-progress'"
       (click)="onCardClick('in-progress')"
+      (keydown.enter)="onCardClick('in-progress')"
+      role="button"
+      tabindex="0"
     >
       <div class="stat-header">
         <mat-icon>autorenew</mat-icon>
@@ -42,6 +55,9 @@
       class="stat-card"
       [class.active]="selectedStatus() === 'done'"
       (click)="onCardClick('done')"
+      (keydown.enter)="onCardClick('done')"
+      role="button"
+      tabindex="0"
     >
       <div class="stat-header">
         <mat-icon>task_alt</mat-icon>
