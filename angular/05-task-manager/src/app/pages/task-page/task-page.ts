@@ -22,6 +22,13 @@ export class TaskPage {
   selectedStatus = signal<FilterStatus>('all');
   selectedPriority = signal<FilterPriority>('all');
   searchTerm = signal<string>('');
+  hasActiveFilters = computed(
+    () =>
+      this.selectedStatus() !== 'all' ||
+      this.selectedPriority() !== 'all' ||
+      this.searchTerm() !== '',
+  );
+
   totalTasks = computed(() => this.tasks().length);
   doneTasks = computed(() => this.tasks().filter((task) => task.status === 'done').length);
   pendingTasks = computed(() => this.tasks().filter((task) => task.status === 'pending').length);
@@ -89,5 +96,11 @@ export class TaskPage {
         this.onAddTask(task);
       },
     });
+  }
+
+  onClearAll() {
+    this.selectedStatus.set('all');
+    this.selectedPriority.set('all');
+    this.searchTerm.set('');
   }
 }

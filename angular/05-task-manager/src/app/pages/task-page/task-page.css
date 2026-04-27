@@ -38,6 +38,7 @@
   background-color: var(--mat-sys-surface-container);
   border-radius: 12px;
   cursor: pointer;
+  transition: background-color 150ms ease-in-out;
 }
 .stat-card:hover {
   background-color: var(--mat-sys-surface-container-high);

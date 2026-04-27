@@ -53,9 +53,13 @@
 
   <app-task-filters
     [selectedStatus]="selectedStatus()"
+    [selectedPriority]="selectedPriority()"
+    [hasActiveFilters]="hasActiveFilters()"
+    [searchValue]="searchTerm()"
     (status)="onStatusChange($event)"
     (priority)="onPriorityChange($event)"
     (searchName)="onSearchName($event)"
+    (clearAll)="onClearAll()"
   />
 
   <app-task-table
