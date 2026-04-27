@@ -97,6 +97,47 @@ Use it whenever you need to build a list of filters, tags, or categories from an
 <p>{{ pendingCount() }} tasks pending</p>
 ```
 
+### Pattern — computed() returning a boolean directly
+
+Instead of using `if` with `return true` / `return false`, return the expression directly:
+
+```typescript
+// verbose — avoid this
+hasActiveFilters = computed(() => {
+  if (this.selectedStatus() !== 'all') return true;
+  return false;
+});
+
+// clean — do this
+hasActiveFilters = computed(() =>
+  this.selectedStatus() !== 'all' ||
+  this.selectedPriority() !== 'all' ||
+  this.searchTerm() !== ''
+);
+```
+
+The expression itself is already a boolean — no need to wrap it in an `if`.
+
+---
+
+### Pattern — multi-filter with "all" option
+
+When you have multiple filters and each can be set to `'all'` (meaning no filter), use `||` to short-circuit the check:
+
+```typescript
+filteredTasks = computed(() => {
+  return this.tasks().filter((task) => {
+    const statusMatch = this.selectedStatus() === 'all' || task.status === this.selectedStatus();
+    const priorityMatch = this.selectedPriority() === 'all' || task.priority === this.selectedPriority();
+    return statusMatch && priorityMatch;
+  });
+});
+```
+
+The trick: if the filter is `'all'`, the first part of `||` is `true` — so the second part is never evaluated. The task always passes that condition. If the filter has a real value, the first part is `false` — so it checks `task.status === selectedStatus()`.
+
+Both conditions must be `true` for the task to appear in the list.
+
 ---
 
 ## Signals vs regular variables

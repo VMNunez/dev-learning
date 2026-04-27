@@ -137,6 +137,69 @@ onSubmit() {
 }
 ```
 
+## patchValue() — fill the form with existing values
+
+Use `patchValue()` when you need to pre-fill a form with data that already exists — for example, when editing a record.
+
+```typescript
+this.myForm.patchValue({
+  name: 'Fix login bug',
+  status: 'in-progress',
+});
+```
+
+Angular matches each key to the form control with the same name and sets its value. Fields you don't include stay unchanged.
+
+If the object already has the same field names as your form, you can pass it directly:
+
+```typescript
+this.myForm.patchValue(this.existingTask);
+```
+
+**`patchValue()` vs `setValue()`**
+
+| Method | Behaviour |
+|--------|-----------|
+| `patchValue()` | Only updates the fields you pass — ignores missing ones |
+| `setValue()` | Requires **all** fields — throws an error if any is missing |
+
+Use `patchValue()` when editing. Use `setValue()` only when you are sure you have every field.
+
+---
+
+## Dirty check — warn before discarding changes
+
+Use `form.dirty` to detect if the user has changed anything before closing or navigating away.
+
+```typescript
+onCancel() {
+  if (this.myForm.dirty) {
+    // open a confirm dialog — only close if the user confirms
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      autoFocus: false,
+      data: {
+        title: 'Discard changes',
+        message: 'You have unsaved changes. Are you sure you want to cancel?',
+        confirmLabel: 'Discard',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (confirmed) => {
+        if (confirmed) this.dialogRef.close();
+      },
+    });
+  } else {
+    this.dialogRef.close(); // nothing changed — close immediately
+  }
+}
+```
+
+> `dirty` becomes `true` the moment the user types anything in the form. `touched` becomes `true` when a field loses focus. They are different — a field can be `touched` without being `dirty` (click and leave without typing).
+
+---
+
 ## reset()
 
 `reset()` resets all fields to their initial values (the ones you passed to `FormControl`).
@@ -173,3 +236,43 @@ export type NewTransaction = Omit<Transaction, 'id'>;
 ```
 
 Use `NewTransaction` for the form output, `Transaction` for stored data.
+
+---
+
+## Handling input events — (input) vs (change) vs (keyup)
+
+For real-time search or live filtering, use `(input)` — it fires on every character typed, pasted, or deleted:
+
+```html
+<input (input)="onSearch($event)" />
+```
+
+| Event | When it fires | Use for |
+|-------|--------------|---------|
+| `(input)` | Every keystroke, paste, delete | Real-time search, live filter |
+| `(keyup)` | Every key release, misses mouse paste | Less reliable than `(input)` |
+| `(change)` | When the field loses focus | Not useful for live filtering |
+
+### TypeScript cast — $event.target.value
+
+Angular templates do not support TypeScript type assertions (`as`). This does not work in a template:
+
+```html
+<!-- ERROR in template -->
+<input (input)="search(($event.target as HTMLInputElement).value)" />
+```
+
+Move the cast to TypeScript instead:
+
+```html
+<!-- template — pass the whole event -->
+<input (input)="search($event)" />
+```
+
+```typescript
+// TypeScript — cast here
+search(event: Event) {
+  const value = (event.target as HTMLInputElement).value;
+  this.searchTerm.set(value);
+}
+```
