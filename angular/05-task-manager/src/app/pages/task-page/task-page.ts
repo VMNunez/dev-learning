@@ -70,10 +70,6 @@ export class TaskPage {
     this.taskService.deleteTask(id);
   }
 
-  onCardClick(status: FilterStatus) {
-    this.selectedStatus.set(status);
-  }
-
   onEditTask(task: Task) {
     const dialogRef = this.dialog.open(TaskDialog, {
       width: '500px',
