@@ -10,7 +10,10 @@ My fifth Angular project. A task management app to learn Angular Material and CR
 - Add and edit tasks in a modal dialog
 - Delete tasks with confirmation dialog
 - Filter tasks by status, priority and name
-- Task statistics cards (total, pending, in progress, done)
+- Task statistics cards (total, pending, in progress, done) — clickable to filter by status
+- Clear all filters button — appears only when a filter is active, no layout jump
+- Showing X of Y tasks count when filters are active
+- Keyboard accessible stat cards — Tab, Enter and Space support
 - Dirty check — warns before discarding unsaved changes
 - Data persists with localStorage
 
