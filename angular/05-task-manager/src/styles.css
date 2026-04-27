@@ -2,6 +2,7 @@
   /* Custom — not covered by Material */
   --shadow: rgba(0, 0, 0, 0.08);
   --danger: #ef4444;
+  --text-secondary: #6b7280;
 
   /* Status badge colors */
   --status-pending-bg: #fef3c7;
@@ -28,4 +29,20 @@
 
 body {
   min-height: 100vh;
+}
+
+.mat-column-assignee .mat-sort-header-container,
+.mat-column-createdAt .mat-sort-header-container {
+  justify-content: center;
+  position: relative;
+}
+
+.mat-column-assignee .mat-sort-header-arrow {
+  position: absolute;
+  left: calc(50% + 30px);
+}
+
+.mat-column-createdAt .mat-sort-header-arrow {
+  position: absolute;
+  left: calc(50% + 38px);
 }

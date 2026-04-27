@@ -136,4 +136,50 @@ export class TaskService {
 
 ---
 
+## Pattern — clear all filters
+
+When you have multiple filters, the coordinator owns the reset logic. The child just signals that the user clicked "Clear".
+
+**Child (task-filters):**
+```typescript
+hasActiveFilters = input<boolean>(false);
+clearAll = output<void>();
+
+onClearAll() {
+  this.clearAll.emit();
+}
+```
+
+```html
+@if (hasActiveFilters()) {
+  <button matButton (click)="onClearAll()">Clear All</button>
+}
+```
+
+**Parent (task-page):**
+```typescript
+hasActiveFilters = computed(() =>
+  this.selectedStatus() !== 'all' ||
+  this.selectedPriority() !== 'all' ||
+  this.searchTerm() !== ''
+);
+
+onClearAll() {
+  this.selectedStatus.set('all');
+  this.selectedPriority.set('all');
+  this.searchTerm.set('');
+}
+```
+
+```html
+<app-task-filters
+  [hasActiveFilters]="hasActiveFilters()"
+  (clearAll)="onClearAll()"
+/>
+```
+
+The child only shows the button and emits the event. The parent resets all the signals. Each component does only its job.
+
+---
+
 ## Used in project 05 — Task Manager

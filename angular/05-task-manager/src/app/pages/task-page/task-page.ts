@@ -6,10 +6,11 @@ import { TaskFilters } from './components/task-filters/task-filters';
 import { TaskTable } from './components/task-table/task-table';
 import { TaskDialog } from './components/task-dialog/task-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-task-page',
-  imports: [MatButtonModule, TaskFilters, TaskTable],
+  imports: [MatButtonModule, TaskFilters, TaskTable, MatIconModule],
   templateUrl: './task-page.html',
   styleUrl: './task-page.css',
 })
@@ -21,6 +22,19 @@ export class TaskPage {
   selectedStatus = signal<FilterStatus>('all');
   selectedPriority = signal<FilterPriority>('all');
   searchTerm = signal<string>('');
+  hasActiveFilters = computed(
+    () =>
+      this.selectedStatus() !== 'all' ||
+      this.selectedPriority() !== 'all' ||
+      this.searchTerm() !== '',
+  );
+
+  totalTasks = computed(() => this.tasks().length);
+  doneTasks = computed(() => this.tasks().filter((task) => task.status === 'done').length);
+  pendingTasks = computed(() => this.tasks().filter((task) => task.status === 'pending').length);
+  inProgressTasks = computed(
+    () => this.tasks().filter((task) => task.status === 'in-progress').length,
+  );
 
   filteredTasks = computed(() => {
     return this.tasks().filter((task) => {
@@ -78,5 +92,11 @@ export class TaskPage {
         this.onAddTask(task);
       },
     });
+  }
+
+  onClearAll() {
+    this.selectedStatus.set('all');
+    this.selectedPriority.set('all');
+    this.searchTerm.set('');
   }
 }
