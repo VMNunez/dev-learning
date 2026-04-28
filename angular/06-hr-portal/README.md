@@ -1,59 +1,65 @@
-# 06HrPortal
+# 06 — HR Portal
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.4.
+My sixth Angular project. A role-based HR management app to learn route guards, lazy loading, HTTP interceptors, and enterprise architecture patterns.
 
-## Development server
+**Live demo:** —
 
-To start a local development server, run:
+## Features
 
-```bash
+- Simulated authentication with admin and employee roles
+- Route guards — protected routes redirect to login if not authenticated
+- Role-based access — admin-only sections blocked for employees
+- Employee management — create, edit, delete employees (admin)
+- Department management (admin)
+- Leave requests — submit and approve/reject time off
+- Global HTTP interceptor — adds auth token to every request
+- Fake REST API with json-server
+
+## What I learned
+
+### Angular
+- Route guards (`CanActivate`) — protect routes and redirect unauthenticated users
+- Role-based guards — check user role before allowing access to a route
+- Lazy loading — load feature routes only when the user navigates to them
+- HTTP interceptors — run logic before every HTTP request (auth token, loading state)
+- `Location.back()` — navigate to the previous page using browser history
+- `MatPaginator` — pagination for Material tables
+- `MatSnackBar` — toast notifications after user actions
+- `MatStepper` — multi-step forms
+- `CanDeactivate` guard — warn the user before leaving a form with unsaved changes
+- Core/Feature/Shared architecture — enterprise Angular folder structure
+
+### CSS
+- —
+
+## Tech stack
+
+- Angular 21
+- Angular Material
+- TypeScript
+- CSS
+- json-server (fake REST API)
+
+## How to run the project
+
+```
+git clone https://github.com/VMNunez/dev-learning.git
+```
+
+```
+cd dev-learning/angular/06-hr-portal
+```
+
+```
+npm install
+```
+
+```
+npm run api
+```
+
+```
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Open your browser at `http://localhost:4200`
