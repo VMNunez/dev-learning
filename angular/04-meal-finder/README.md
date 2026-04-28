@@ -27,6 +27,7 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - `(keyup.enter)` — trigger a method when the user presses Enter
 - `[disabled]` binding — disable a button based on a reactive condition
 - `hasSearched` and `hasLoad` signal patterns — distinguish between loading, no results, and not searched yet
+- `Location.back()` — navigate to the previous page in the browser history, from `@angular/common`
 
 ### CSS
 - `overflow: hidden` on a card — clips image corners with `border-radius`

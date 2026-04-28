@@ -1,12 +1,13 @@
 import { Component, inject, OnInit, signal, computed, DestroyRef } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MealService } from '../../services/meal.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { Meal, MealResponse } from '../../models/meal.model';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-meal-detail-page',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './meal-detail-page.html',
   styleUrl: './meal-detail-page.css',
 })
@@ -14,6 +15,8 @@ export class MealDetailPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private mealService = inject(MealService);
   private destroyRef = inject(DestroyRef);
+  private location = inject(Location);
+
   mealId: string | null = null;
   mealDetails = signal<Meal | null>(null);
   isLoading = signal<boolean>(false);
@@ -49,5 +52,9 @@ export class MealDetailPage implements OnInit {
     this.isFavourite()
       ? this.mealService.deleteFavourite(this.mealId as string)
       : this.mealService.addFavourite(meal);
+  }
+
+  goBack() {
+    this.location.back();
   }
 }
