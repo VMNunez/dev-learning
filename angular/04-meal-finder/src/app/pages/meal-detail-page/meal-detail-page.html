@@ -1,5 +1,5 @@
 <div class="container">
-  <a class="back-link" routerLink="/">&larr; Back</a>
+  <a class="back-link" (click)="goBack()">&larr; Back</a>
   @if (mealDetails() && hasLoad()) {
     <div class="meal-card">
       <img class="meal-img" [src]="mealDetails()!.strMealThumb" />
