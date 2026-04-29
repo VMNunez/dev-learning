@@ -4,10 +4,17 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-login-page',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+  ],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
