@@ -2,20 +2,19 @@
   <mat-form-field>
     <mat-label>Email</mat-label>
     <input matInput formControlName="email" />
-    @if (email?.hasError('required')) {
+    @if (email?.touched && email?.hasError('required')) {
       <mat-error> Email is required </mat-error>
-    }
-    @if (email?.hasError('email')) {
+    } @else if (email?.touched && email?.hasError('email')) {
       <mat-error> Enter a valid email </mat-error>
     }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Password</mat-label>
-    <input matInput formControlName="password" />
-    @if (password?.hasError('required')) {
+    <input matInput type="password" formControlName="password" />
+    @if (password?.touched && password?.hasError('required')) {
       <mat-error> Password is required </mat-error>
     }
-    @if (password?.hasError('minlength')) {
+    @if (password?.touched && password?.hasError('minlength')) {
       <mat-error> Password must have 8 characters </mat-error>
     }
   </mat-form-field>

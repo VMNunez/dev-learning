@@ -28,6 +28,7 @@ export class LoginPage {
   }
 
   onSubmit() {
+    this.loginForm.markAllAsTouched();
     if (this.loginForm.valid) {
       const formValue = this.loginForm.value;
       this.authService.login(formValue.email!, formValue.password!);

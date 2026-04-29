@@ -11,6 +11,8 @@ The coordinator pattern is a way to organise components. The idea is:
 
 This is also called **smart / dumb** components.
 
+Used in: project 05 — Task Manager
+
 ```
 TaskPage  ← coordinator (smart)
   ├── TaskFilters  ← dumb (only emits events)
@@ -27,8 +29,8 @@ The child receives data with `input()` and sends events up with `output()`:
 export class TaskTable {
   tasks = input<Task[]>([]);
 
-  taskId = output<number>();      // emits when user clicks Delete
-  taskToEdit = output<Task>();    // emits when user clicks Edit
+  taskId = output<number>(); // emits when user clicks Delete
+  taskToEdit = output<Task>(); // emits when user clicks Edit
 
   deleteTask(id: number) {
     this.taskId.emit(id);
@@ -46,6 +48,9 @@ The child does NOT call the service. It only emits. The parent decides what to d
 
 ## Parent template — bind all inputs and outputs
 
+> `[tasks]` uses `[]` — square brackets mean you are passing data INTO the child (input).
+> `(taskId)` uses `()` — parentheses mean you are listening for an event FROM the child (output).
+
 ```html
 <app-task-table
   [tasks]="filteredTasks()"
@@ -60,20 +65,25 @@ The child does NOT call the service. It only emits. The parent decides what to d
 
 ## Parent component — handles all logic
 
+The parent is the only component that knows about services, dialogs, and state. Child components never touch any of that.
+
 ```typescript
 export class TaskPage {
+  // the parent owns all services — children never inject them
   private taskService = inject(TaskService);
   private dialog = inject(MatDialog);
 
+  // called when child emits taskId — the parent decides to delete
   onDeleteTask(id: number) {
     this.taskService.deleteTask(id);
   }
 
+  // called when child emits taskToEdit — the parent decides to open the dialog
   onEditTask(task: Task) {
-    // open a dialog, call the service, etc.
     this.taskService.editTask(task);
   }
 
+  // the parent also opens dialogs directly — children never open dialogs
   openDialog(): void {
     const dialogRef = this.dialog.open(TaskDialog, { width: '500px' });
 
@@ -98,32 +108,34 @@ export class TaskService {
   tasks = signal<Task[]>(JSON.parse(localStorage.getItem('tasks') ?? '[]'));
 
   constructor() {
+    // sync to localStorage every time the signal changes
     effect(() => {
       localStorage.setItem('tasks', JSON.stringify(this.tasks()));
     });
   }
 
   addTask(task: Task): void {
+    // spread operator keeps the existing tasks and adds the new one at the end
     this.tasks.update((tasks) => [...tasks, task]);
   }
 
   deleteTask(id: number): void {
+    // filter keeps all tasks EXCEPT the one with the given id
     this.tasks.update((tasks) => tasks.filter((task) => task.id !== id));
   }
 
   editTask(updated: Task): void {
-    this.tasks.update((tasks) =>
-      tasks.map((task) => (task.id === updated.id ? updated : task))
-    );
+    // map replaces the matching task with the updated version, leaves the rest untouched
+    this.tasks.update((tasks) => tasks.map((task) => (task.id === updated.id ? updated : task)));
   }
 }
 ```
 
-| Method | Array technique | What it does |
-|--------|----------------|--------------|
-| `addTask` | spread `[...tasks, newTask]` | adds to the end |
-| `deleteTask` | `filter()` | keeps all except the deleted id |
-| `editTask` | `map()` | replaces the matching item |
+| Method       | Array technique              | What it does                    |
+| ------------ | ---------------------------- | ------------------------------- |
+| `addTask`    | spread `[...tasks, newTask]` | adds to the end                 |
+| `deleteTask` | `filter()`                   | keeps all except the deleted id |
+| `editTask`   | `map()`                      | replaces the matching item      |
 
 ---
 
@@ -138,32 +150,39 @@ export class TaskService {
 
 ## Pattern — clear all filters
 
-When you have multiple filters, the coordinator owns the reset logic. The child just signals that the user clicked "Clear".
+When you have multiple filters, the coordinator owns the reset logic. The child just signals that the user clicked "Clear". This follows the same input/output rule: the child receives `hasActiveFilters` as an input, and emits `clearAll` as an output when the button is clicked.
 
-**Child (task-filters):**
+**Child (task-filters)** — receives a boolean to know whether to show the button, emits when user clicks it:
+
 ```typescript
+// input: the parent tells the child whether any filter is active
 hasActiveFilters = input<boolean>(false);
+// output: the child tells the parent the user wants to clear
 clearAll = output<void>();
 
 onClearAll() {
-  this.clearAll.emit();
+  this.clearAll.emit(); // emit void — no data needed, just the signal
 }
 ```
 
 ```html
+<!-- only show the button when at least one filter is active -->
 @if (hasActiveFilters()) {
   <button matButton (click)="onClearAll()">Clear All</button>
 }
 ```
 
-**Parent (task-page):**
+**Parent (task-page)** — owns the filter signals and resets all of them:
+
 ```typescript
+// computed: true if ANY filter is not at its default value
 hasActiveFilters = computed(() =>
   this.selectedStatus() !== 'all' ||
   this.selectedPriority() !== 'all' ||
   this.searchTerm() !== ''
 );
 
+// resets all filter signals back to their defaults
 onClearAll() {
   this.selectedStatus.set('all');
   this.selectedPriority.set('all');
@@ -172,14 +191,8 @@ onClearAll() {
 ```
 
 ```html
-<app-task-filters
-  [hasActiveFilters]="hasActiveFilters()"
-  (clearAll)="onClearAll()"
-/>
+<!-- pass the computed down; listen for the clearAll event -->
+<app-task-filters [hasActiveFilters]="hasActiveFilters()" (clearAll)="onClearAll()" />
 ```
 
 The child only shows the button and emits the event. The parent resets all the signals. Each component does only its job.
-
----
-
-## Used in project 05 — Task Manager

@@ -15,6 +15,7 @@ tasks = signal<Task[]>([]);
 ```
 
 ### Read a signal
+
 ```typescript
 // in TypeScript
 const current = this.count();
@@ -25,22 +26,47 @@ const current = this.count();
 
 ### Update a signal
 
-```typescript
-// set — replace the value completely
-this.count.set(5);
-this.tasks.set([]);
+**`.set()` — replace the value completely**
 
-// update — derive new value from the current one
-this.count.update(current => current + 1);
-this.tasks.update(tasks => [...tasks, newTask]);
-this.tasks.update(tasks => tasks.filter(t => t.id !== id));
+Use `.set()` when you want to assign a completely new value — replacing whatever was there before.
+
+Typical use cases:
+- Reset a list to empty: `this.tasks.set([])`
+- Set a boolean flag (loading, error): `this.isLoading.set(true)`
+- Replace data after an API call: `this.tasks.set(response.items)`
+
+```typescript
+this.count.set(5);
+this.tasks.set([]);          // reset list
+this.isLoading.set(true);    // set a flag
+```
+
+**`.update()` — derive new value from the current one**
+
+Use `.update()` when the new value depends on the current one. The function receives the current value and returns the new one.
+
+Typical use cases:
+- Add an item to an array
+- Remove an item from an array
+- Increment or decrement a counter
+
+```typescript
+this.count.update((current) => current + 1);
+this.tasks.update((tasks) => [...tasks, newTask]);                   // add item
+this.tasks.update((tasks) => tasks.filter((t) => t.id !== id));     // remove item
 ```
 
 ---
 
 ## computed() — derived state
 
-A computed signal depends on other signals. It recalculates automatically when its dependencies change.
+Use `computed()` when a value depends on other signals and should update automatically. You never update it directly — Angular recalculates it when its dependencies change.
+
+Typical use cases:
+- Filter a list based on the current filter signal
+- Count items that match a condition
+- Calculate a total from an array of amounts
+- Check whether any filter is active (returns a boolean)
 
 ```typescript
 tasks = signal<Task[]>([]);
@@ -85,10 +111,9 @@ new Set(['Chicken', 'Beef', 'Chicken', 'Dessert'])
 ```
 
 Combined in one line inside `computed()`:
+
 ```typescript
-allCategories = computed(() =>
-  [...new Set(this.favourites().map(meal => meal.strCategory))]
-);
+allCategories = computed(() => [...new Set(this.favourites().map((meal) => meal.strCategory))]);
 ```
 
 Use it whenever you need to build a list of filters, tags, or categories from an existing array of objects.
@@ -109,10 +134,9 @@ hasActiveFilters = computed(() => {
 });
 
 // clean — do this
-hasActiveFilters = computed(() =>
-  this.selectedStatus() !== 'all' ||
-  this.selectedPriority() !== 'all' ||
-  this.searchTerm() !== ''
+hasActiveFilters = computed(
+  () =>
+    this.selectedStatus() !== 'all' || this.selectedPriority() !== 'all' || this.searchTerm() !== ''
 );
 ```
 
@@ -128,7 +152,8 @@ When you have multiple filters and each can be set to `'all'` (meaning no filter
 filteredTasks = computed(() => {
   return this.tasks().filter((task) => {
     const statusMatch = this.selectedStatus() === 'all' || task.status === this.selectedStatus();
-    const priorityMatch = this.selectedPriority() === 'all' || task.priority === this.selectedPriority();
+    const priorityMatch =
+      this.selectedPriority() === 'all' || task.priority === this.selectedPriority();
     return statusMatch && priorityMatch;
   });
 });
@@ -142,11 +167,11 @@ Both conditions must be `true` for the task to appear in the list.
 
 ## Signals vs regular variables
 
-| | Regular variable | Signal |
-|--|-----------------|--------|
-| Template updates automatically | No | Yes |
-| Derived state | Manual | `computed()` |
-| Used in | Simple values | Reactive state |
+|                                | Regular variable | Signal         |
+| ------------------------------ | ---------------- | -------------- |
+| Template updates automatically | No               | Yes            |
+| Derived state                  | Manual           | `computed()`   |
+| Used in                        | Simple values    | Reactive state |
 
 ---
 
@@ -165,6 +190,7 @@ effect(() => {
 - Angular tracks which signals are used inside the function automatically
 
 ### Rules
+
 - Never modify a signal inside `effect()` — it can create an infinite loop
 - Use `computed()` instead when you want to derive a new value from signals
 - Must be created inside a constructor or injection context
@@ -179,11 +205,11 @@ constructor() {
 
 ### effect() vs computed()
 
-| | `computed()` | `effect()` |
-|--|-------------|------------|
-| Returns a value | Yes | No |
-| Use for | Derived state | Side effects |
-| Example | total price, filtered list | save to localStorage, log |
+|                 | `computed()`               | `effect()`                |
+| --------------- | -------------------------- | ------------------------- |
+| Returns a value | Yes                        | No                        |
+| Use for         | Derived state              | Side effects              |
+| Example         | total price, filtered list | save to localStorage, log |
 
 ---
 
@@ -191,9 +217,7 @@ constructor() {
 
 ```typescript
 // clean one-liner with ?? operator
-favourites = signal<Meal[]>(
-  JSON.parse(localStorage.getItem('favourites') ?? '[]')
-);
+favourites = signal<Meal[]>(JSON.parse(localStorage.getItem('favourites') ?? '[]'));
 ```
 
 `??` — if `localStorage.getItem` returns `null`, use `'[]'` as the default.
