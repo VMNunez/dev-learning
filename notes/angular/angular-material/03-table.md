@@ -10,25 +10,39 @@ import { MatTableModule } from '@angular/material/table';
 
 ## Basic usage
 
+Start by adding the imports to the component:
+
+```typescript
+import { MatTableModule } from '@angular/material/table';
+
+@Component({
+  imports: [MatTableModule],
+  ...
+})
+```
+
 To create a Material table you need four things:
 
 **1. `displayedColumns` in the component** — an array of strings that defines which columns exist and in what order:
+
 ```typescript
 displayedColumns = ['name', 'status', 'priority', 'assignee', 'createdAt', 'actions'];
 ```
 
 **2. `<table mat-table>` in the template** — `mat-table` is an attribute that turns a native `<table>` into a Material table, applying Material styles and enabling the column definition system. `[dataSource]` receives the data — usually a signal or computed array. Each item in the array becomes one row:
+
 ```html
-<table mat-table [dataSource]="filteredTasks()">
+<table mat-table [dataSource]="filteredTasks()"></table>
 ```
 
 **3. One `ng-container` per column** — a `ng-container` that holds the column definition, identified by the `matColumnDef` attribute. The value of `matColumnDef` must match exactly one string in `displayedColumns`:
 
 ```html
-<ng-container matColumnDef="name">
+<ng-container matColumnDef="name"></ng-container>
 ```
 
 Inside each container:
+
 - `<th mat-header-cell *matHeaderCellDef>` — `mat-header-cell` marks this `<th>` as a Material header cell, applying the correct styles. `*matHeaderCellDef` tells Angular this is the template to use for the header of this column.
 - `<td mat-cell *matCellDef="let task">` — `mat-cell` marks this `<td>` as a Material data cell. `*matCellDef="let task"` gives you access to the current row's object as `task`, so you can display `{{ task.name }}`, `{{ task.status }}`, etc.
 
@@ -40,6 +54,7 @@ Inside each container:
 ```
 
 **4. Two `<tr>` rows at the bottom** — these tell Angular to actually render the table using the definitions above:
+
 - `<tr mat-header-row *matHeaderRowDef="displayedColumns">` — renders the header row.
 - `<tr mat-row *matRowDef="let row; columns: displayedColumns">` — renders one data row per item in `dataSource`.
 
@@ -47,7 +62,6 @@ Both always reference `displayedColumns` — it is the single source of truth fo
 
 ```html
 <table mat-table [dataSource]="filteredTasks()">
-
   <!-- One ng-container per column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Name</th>
@@ -71,11 +85,10 @@ Both always reference `displayedColumns` — it is the single source of truth fo
   <!-- Always at the bottom — renders the header and data rows -->
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
 </table>
 ```
 
-## Empty state — *matNoDataRow
+## Empty state — \*matNoDataRow
 
 To show a message when the table has no data, add a row with `*matNoDataRow`:
 
@@ -101,12 +114,15 @@ import { MatTableDataSource } from '@angular/material/table';
 dataSource = new MatTableDataSource<Task>([]);
 ```
 
-When your data comes from a signal input, use `effect()` to keep the data source in sync:
+When your data comes from a signal input, use `effect()` to keep the data source in sync. The property you always update is `dataSource.data` — that is the array `MatTableDataSource` reads internally.
 
 ```typescript
+// tasks is an input signal — data arrives from the parent component
+tasks = input<Task[]>([]);
+
 constructor() {
   effect(() => {
-    this.dataSource.data = this.tasks();
+    this.dataSource.data = this.tasks(); // always assign to .data, not to dataSource directly
   });
 }
 ```
@@ -114,7 +130,7 @@ constructor() {
 Pass the data source to the table instead of the signal:
 
 ```html
-<table mat-table [dataSource]="dataSource">
+<table mat-table [dataSource]="dataSource"></table>
 ```
 
 ---
@@ -123,53 +139,66 @@ Pass the data source to the table instead of the signal:
 
 Official docs: https://material.angular.io/components/sort/overview
 
-Add `MatSortModule` to the component imports. Then add `matSort` to the table and `mat-sort-header` to each sortable column header:
+Add `MatSortModule` to the component imports:
+
+```typescript
+import { MatSortModule } from '@angular/material/sort';
+
+@Component({
+  imports: [MatTableModule, MatSortModule],
+  ...
+})
+```
+
+Then add `matSort` to the table and `mat-sort-header` to each sortable column header:
 
 ```html
 <table mat-table [dataSource]="dataSource" matSort>
-
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
     <td mat-cell *matCellDef="let task">{{ task.name }}</td>
   </ng-container>
-
 </table>
 ```
 
 > `mat-sort-header` goes on the `<th>` element, not on `ng-container`. The `ng-container` is just a wrapper with no visual output.
 
-> Not all columns need to be sortable. Avoid `mat-sort-header` on columns where alphabetical order is meaningless (e.g. Status, Priority with custom logic).
+**Which columns make sense to sort?** Only columns where alphabetical or chronological order is meaningful. Good candidates: `name`, `createdAt`, `assignee`. Avoid sorting on `status` or `priority` if they have custom logic — a simple alphabetical sort would not put them in logical order.
 
-To connect `MatSort` to the data source, use `@ViewChild` and `ngAfterViewInit`:
+### Why @ViewChild and ngAfterViewInit?
+
+To connect `MatSort` to `MatTableDataSource`, you need a reference to the `MatSort` directive that lives in the template.
+
+**Without `@ViewChild(MatSort) sort!: MatSort`** — TypeScript cannot access anything inside the HTML template. The `sort` variable would be `undefined`.
+
+**Without `ngAfterViewInit`** — if you try to use `this.sort` in the constructor, it is `undefined` because Angular has not built the template yet. `ngAfterViewInit` runs exactly when the template is ready, so `this.sort` is guaranteed to exist.
+
+**Without `this.dataSource.sort = this.sort`** — clicking a column header changes the sort arrow visually, but the data does NOT actually re-sort. `MatTableDataSource` does not know which `MatSort` to listen to until you connect them.
 
 ```typescript
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 
 export class TaskTable implements AfterViewInit {
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatSort) sort!: MatSort; // get a reference to the MatSort in the template
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort; // now MatTableDataSource knows which MatSort to use
   }
 }
 ```
-
-**Why `@ViewChild`?** — gets a reference to the `MatSort` directive that lives in the template. Without it, TypeScript has no way to access what is in the HTML.
-
-**Why `ngAfterViewInit`?** — `@ViewChild` references are only available after Angular builds the template. If you try to use `this.sort` in the constructor it is `undefined`. `ngAfterViewInit` runs exactly when the template is ready.
 
 ### `sortActionDescription` — accessibility
 
 Add a description to each sortable header so screen readers can announce what the column sorts by:
 
 ```html
-<th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
-  Name
-</th>
+<th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">Name</th>
 ```
 
 ### `LiveAnnouncer` — accessibility announcements
+
+> You do not need to memorize this — it comes directly from the Angular Material docs example. Add it only if your app needs full screen reader accessibility.
 
 `LiveAnnouncer` (from `@angular/cdk/a11y`) announces sort changes to screen readers:
 
@@ -188,7 +217,7 @@ announceSortChange(sortState: Sort) {
 ```
 
 ```html
-<table matSort (matSortChange)="announceSortChange($event)">
+<table matSort (matSortChange)="announceSortChange($event)"></table>
 ```
 
 ---
@@ -233,23 +262,6 @@ When you apply `text-align: center` to a column, it centres the data cells (`<td
 
 > Component CSS → for your own template elements. Global `styles.css` → for Material directive internals.
 
-To also position the sort arrow close to the text (instead of at the far right), use `position: absolute` to take it out of the flex flow:
-
-```css
-.mat-column-assignee .mat-sort-header-container,
-.mat-column-createdAt .mat-sort-header-container {
-  justify-content: center;
-  position: relative;
-}
-
-.mat-column-assignee .mat-sort-header-arrow {
-  position: absolute;
-  left: calc(50% + 30px); /* adjust to match text width */
-}
-```
-
-The arrow is removed from the flex flow so it does not shift the text. `left: calc(50% + Npx)` positions it just after the text — adjust the pixel value to match the actual text width.
-
 ---
 
 ## Pagination — MatPaginator
@@ -284,16 +296,10 @@ In the template, place `<mat-paginator>` **outside and after** the `</table>` cl
 </mat-paginator>
 ```
 
-| Attribute | What it does |
-|-----------|-------------|
-| `[pageSizeOptions]` | Array of page size options the user can choose |
-| `showFirstLastButtons` | Adds first/last page buttons |
-| `aria-label` | Accessibility label for screen readers |
+| Attribute              | What it does                                   |
+| ---------------------- | ---------------------------------------------- |
+| `[pageSizeOptions]`    | Array of page size options the user can choose |
+| `showFirstLastButtons` | Adds first/last page buttons                   |
+| `aria-label`           | Accessibility label for screen readers         |
 
 `MatTableDataSource` handles the rest automatically — when the user changes the page, the table updates.
-
----
-
-## Note
-
-If `dataSource` is empty, the table renders the header but no rows — that is expected behaviour, not a bug.
