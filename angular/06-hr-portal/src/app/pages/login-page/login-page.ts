@@ -45,15 +45,16 @@ export class LoginPage {
     if (this.loginForm.valid) {
       this.isLoading.set(true);
       const formValue = this.loginForm.value;
-      this.authService.login(formValue.email!, formValue.password!);
-      if (this.authService.isLoggedIn()) {
-        this.router.navigate(['/dashboard']);
-        this.isLoading.set(false);
-        this.hasError.set(false);
-      } else {
-        this.hasError.set(true);
-        this.isLoading.set(false);
-      }
+
+      setTimeout(() => {
+        this.authService.login(formValue.email!, formValue.password!);
+        if (this.authService.isLoggedIn()) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.hasError.set(true);
+          this.isLoading.set(false);
+        }
+      }, 1000);
     }
   }
 }
