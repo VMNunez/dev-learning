@@ -25,7 +25,16 @@
               <mat-error> Password must have 8 characters </mat-error>
             }
           </mat-form-field>
-          <button type="submit" matButton="filled">Sign in</button>
+          @if (hasError()) {
+            <p class="error-msg">Invalid email or password</p>
+          }
+          <button type="submit" matButton="filled" [disabled]="isLoading()">
+            @if (isLoading()) {
+              Sign in...
+            } @else {
+              Sign in
+            }
+          </button>
         </form>
       </mat-card-content>
     </mat-card>
