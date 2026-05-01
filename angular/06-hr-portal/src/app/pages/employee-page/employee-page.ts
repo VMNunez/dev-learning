@@ -4,6 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { EmployeeService } from '../../core/services/employee.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
+import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-employee-page',
@@ -38,6 +39,22 @@ export class EmployeePage {
         if (newEmployee) {
           this.employeeService.addEmployee(newEmployee);
         }
+      },
+    });
+  }
+
+  onDelete(id: number) {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '500px',
+      data: {
+        title: 'Delete Employee',
+        message: 'Are you sure you want to delete this employee?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (confirmed) => {
+        if (confirmed) this.employeeService.deleteEmployee(id);
       },
     });
   }

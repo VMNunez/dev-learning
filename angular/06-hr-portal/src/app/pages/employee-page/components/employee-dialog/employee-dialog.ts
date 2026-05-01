@@ -7,7 +7,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Employee } from '../../../../models/employee.model';
-import { EmployeeService } from '../../../../core/services/employee.service';
 
 @Component({
   selector: 'app-employee-dialog',
