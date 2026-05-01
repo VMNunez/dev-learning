@@ -43,7 +43,7 @@
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let employee">
         <button matButton="text" (click)="onDelete(employee.id)">Delete</button>
-        <button matButton="text">Edit</button>
+        <button matButton="text" (click)="onEdit(employee)">Edit</button>
       </td>
     </ng-container>
 
