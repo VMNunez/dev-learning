@@ -6,8 +6,8 @@ Official docs: https://material.angular.io/components/dialog/overview
 
 A dialog is a modal window that appears on top of the page. Angular Material handles it through two things:
 
-- **`MatDialog`** — a service you inject in the parent. It opens the dialog.
-- **`MatDialogRef`** — injected inside the dialog component. It closes the dialog and can return data.
+- **`MatDialog`** — a service you inject in the **parent** component. It opens the dialog.
+- **`MatDialogRef`** — injected inside the **dialog** component. It closes the dialog and can return data.
 
 The dialog content is a **separate Angular component** that you create yourself.
 
@@ -15,9 +15,10 @@ The dialog content is a **separate Angular component** that you create yourself.
 
 ## Build the dialog component template
 
-The dialog component is a normal Angular component. Start by adding the imports:
+The imports below go in the **dialog component** (the child) — not in the parent that opens it.
 
 ```typescript
+// dialog component imports
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -27,22 +28,26 @@ import { MatButtonModule } from '@angular/material/button';
 })
 ```
 
-If the dialog has a form (which is almost always the case), also add:
+If the dialog has a form (which is almost always the case), also add the reactive forms and Material form imports:
 
 ```typescript
+// add these for a dialog with a form
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 ```
 
-Then use these directives to structure the template:
+Then use these directives to structure the template. Each one has a specific place:
 
-| Directive | Role |
-|-----------|------|
-| `mat-dialog-title` | Attribute on a heading — shows the title |
-| `<mat-dialog-content>` | The main body of the dialog (scrollable) |
-| `<mat-dialog-actions>` | Container for the buttons at the bottom |
-| `mat-dialog-close` | Attribute on a button — closes the dialog with no result |
+| Directive              | Where it goes                               | Role                                                     |
+| ---------------------- | ------------------------------------------- | -------------------------------------------------------- |
+| `mat-dialog-title`     | Attribute on a `<h2>` at the top            | Shows the title                                          |
+| `<mat-dialog-content>` | After the title, wraps the form or content  | The main scrollable body                                 |
+| `<mat-dialog-actions>` | After `mat-dialog-content`, at the bottom   | Container for the action buttons                         |
+| `mat-dialog-close`     | Attribute on a Cancel button                | Closes the dialog immediately with no result             |
+
+> `mat-dialog-title`, `mat-dialog-content` and `mat-dialog-actions` must be **siblings** — never nest one inside another. Material applies different padding, scroll and sticky behaviour to each block, and nesting breaks all of it.
 
 ```html
 <h2 mat-dialog-title>Add Task</h2>
@@ -62,11 +67,9 @@ Then use these directives to structure the template:
 </mat-dialog-actions>
 ```
 
-> `mat-dialog-title`, `mat-dialog-content` and `mat-dialog-actions` must be **siblings** — never nest one inside another. Material applies different padding, scroll and sticky behaviour to each block, and nesting breaks all of it.
-
 > Because the submit button is outside `<form>`, `type="submit"` does not work. Use `(click)="onSubmit()"` on the button instead, and remove `(ngSubmit)` from the form tag.
 
-> The Cancel button uses `mat-dialog-close` — no TypeScript needed. It just closes the dialog and returns nothing.
+> The Cancel button uses `mat-dialog-close` — it closes the dialog immediately and returns nothing, with no TypeScript needed. If you need to check whether the user has unsaved changes before closing, replace `mat-dialog-close` with a custom `(click)="onCancel()"` method. See the dirty check pattern in the reactive forms notes.
 
 ---
 
@@ -138,11 +141,11 @@ openAddDialog(): void {
   });
 }
 
-// edit: task passed as data
+// edit: pass the existing task as data so the dialog can pre-fill the form
 onEditTask(task: Task): void {
   const dialogRef = this.dialog.open(TaskDialog, {
     width: '500px',
-    data: { task },
+    data: { task }, // the dialog will read this with MAT_DIALOG_DATA
   });
 
   dialogRef.afterClosed().subscribe({
@@ -155,16 +158,17 @@ onEditTask(task: Task): void {
 
 **Dialog — read the data and pre-fill the form**
 
-Inside the dialog, inject `MAT_DIALOG_DATA`. It is `null` when adding and contains the task when editing:
+Inside the dialog, inject `MAT_DIALOG_DATA`. This is how the dialog reads the data passed by the parent. It is `null` when adding and contains the task when editing:
 
 ```typescript
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+// MAT_DIALOG_DATA is the token that holds whatever the parent passed in data: { task }
 data = inject<{ task: Task } | null>(MAT_DIALOG_DATA);
 
 constructor() {
   if (this.data) {
-    this.myForm.patchValue(this.data.task); // pre-fill all fields
+    this.myForm.patchValue(this.data.task); // pre-fill all fields with the existing task
   }
 }
 ```
@@ -177,22 +181,25 @@ The `onSubmit()` and `dialogRef.close()` stay exactly the same — the parent de
 
 ## Confirmation dialog pattern
 
-A confirmation dialog is a small dialog with no form — just a message and two buttons. It is used before destructive actions like delete.
+A confirmation dialog is a small reusable dialog with no form — just a message and two buttons. It is used before destructive actions like delete.
 
-**The dialog component** — inject `MAT_DIALOG_DATA` for the message and `MatDialogRef` to return `true` on confirm. Pass `confirmLabel` so the button text can change per use case:
+Because it is reusable, the parent passes the text as data — `title`, `message`, and `confirmLabel` — so the same component can say "Delete task", "Discard changes", or anything else.
+
+**The dialog component** — reads the data from the parent and returns `true` on confirm:
 
 ```typescript
 export class ConfirmDialog {
   private dialogRef = inject(MatDialogRef);
+  // title, message and confirmLabel come from the parent — this makes the dialog reusable
   data = inject<{ title: string; message: string; confirmLabel: string }>(MAT_DIALOG_DATA);
 
   confirm() {
-    this.dialogRef.close(true);
+    this.dialogRef.close(true); // return true so the parent knows the user confirmed
   }
 }
 ```
 
-**The template** — Cancel first, confirm action last (Material Design convention):
+**The template** — Cancel first, then the confirm action (Material Design convention: the safe option is always on the left):
 
 ```html
 <h2 mat-dialog-title>{{ data.title }}</h2>
@@ -209,20 +216,24 @@ export class ConfirmDialog {
 
 > Pass `confirmLabel` from the parent so the button says "Delete", "Discard", or whatever fits the context. This makes the component truly reusable.
 
-**The parent** — open the confirm dialog, then act only if the user confirmed:
+**The parent** — open the confirm dialog with the right text, then act only if the user confirmed:
 
 ```typescript
-// delete confirmation
+// delete confirmation — opens ConfirmDialog and passes the text as data
 openConfirmDialog(task: Task) {
   const dialogRef = this.dialog.open(ConfirmDialog, {
     width: '400px',
-    autoFocus: false,
-    data: { title: 'Delete task', message: 'Are you sure you want to delete this task?', confirmLabel: 'Delete' },
+    autoFocus: false, // prevents focus ring appearing on the button when the dialog opens
+    data: {
+      title: 'Delete task',
+      message: 'Are you sure you want to delete this task?',
+      confirmLabel: 'Delete',
+    },
   });
 
   dialogRef.afterClosed().subscribe({
     next: (confirmed) => {
-      if (confirmed) this.deleteTask(task.id);
+      if (confirmed) this.deleteTask(task.id); // only delete if user clicked confirm
     },
   });
 }
@@ -230,19 +241,24 @@ openConfirmDialog(task: Task) {
 // discard changes confirmation (called from inside another dialog)
 onCancel() {
   if (this.myForm.dirty) {
+    // form has unsaved changes — ask before closing
     const dialogRef = this.dialog.open(ConfirmDialog, {
       width: '400px',
       autoFocus: false,
-      data: { title: 'Discard changes', message: 'You have unsaved changes. Are you sure you want to cancel?', confirmLabel: 'Discard' },
+      data: {
+        title: 'Discard changes',
+        message: 'You have unsaved changes. Are you sure you want to cancel?',
+        confirmLabel: 'Discard',
+      },
     });
 
     dialogRef.afterClosed().subscribe({
       next: (confirmed) => {
-        if (confirmed) this.dialogRef.close();
+        if (confirmed) this.dialogRef.close(); // close the outer dialog only if confirmed
       },
     });
   } else {
-    this.dialogRef.close();
+    this.dialogRef.close(); // nothing changed — close immediately
   }
 }
 ```
@@ -259,19 +275,24 @@ Official docs: https://material.angular.io/components/input/overview#changing-wh
 
 By default, Angular Material shows a `mat-error` when a field is **invalid and touched**. A field becomes `touched` the moment it loses focus (blur). This means clicking outside the dialog or pressing Cancel can trigger errors — which looks strange.
 
-`ErrorStateMatcher` is a class that decides when to show an error. It has one method: `isErrorState()`. If it returns `true`, the error is shown.
+`ErrorStateMatcher` is a class that decides when to show an error. It has one method: `isErrorState()`. Angular Material calls this method to check whether errors should be visible. If it returns `true`, the error is shown.
 
 ### Show errors only after the user tries to submit
 
-Define a custom matcher in the same file as the dialog component:
+The idea: create a custom matcher that holds a `submitted` flag. Errors only show when `submitted` is `true`. You set `submitted = true` in `onSubmit()`.
 
 ```typescript
 import { ErrorStateMatcher } from '@angular/material/core';
 import { AbstractControl, FormGroupDirective, NgForm } from '@angular/forms';
 
 class SubmitOnlyErrorStateMatcher implements ErrorStateMatcher {
-  submitted = false;
-  isErrorState(control: AbstractControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+  submitted = false; // starts as false — no errors shown yet
+
+  isErrorState(
+    control: AbstractControl | null,
+    _form: FormGroupDirective | NgForm | null
+  ): boolean {
+    // show error only when the control is invalid AND the user has tried to submit
     return !!(control && control.invalid && this.submitted);
   }
 }
@@ -283,7 +304,7 @@ Add it to the component and set `submitted = true` when the user clicks submit:
 errorMatcher = new SubmitOnlyErrorStateMatcher();
 
 onSubmit() {
-  this.errorMatcher.submitted = true;
+  this.errorMatcher.submitted = true; // now errors will appear
   if (this.myForm.valid) {
     this.dialogRef.close(this.myForm.value);
   }
@@ -295,11 +316,9 @@ Apply it to every `matInput` and `mat-select` in the template with `[errorStateM
 ```html
 <input matInput formControlName="name" [errorStateMatcher]="errorMatcher" />
 
-<mat-select formControlName="status" [errorStateMatcher]="errorMatcher">
-  ...
-</mat-select>
+<mat-select formControlName="status" [errorStateMatcher]="errorMatcher"> ... </mat-select>
 ```
 
-> `[errorStateMatcher]` is a property that Angular Material exposes on `matInput` and `mat-select` specifically for this purpose — it is part of their official API, not a hack. You bind to it using the same standard property binding syntax you already know: `[property]="value"`. You are just passing an object instead of a string or a signal.
+> `[errorStateMatcher]` is a property that Angular Material exposes on `matInput` and `mat-select` specifically for this purpose — it is part of their official API, not a hack.
 
 Now errors only appear after the user clicks the submit button — not on blur, not on Cancel, not when clicking outside.
