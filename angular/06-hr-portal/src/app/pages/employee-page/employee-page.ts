@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { EmployeeService } from '../../core/services/employee.service';
+import { MatDialog } from '@angular/material/dialog';
+import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
 
 @Component({
   selector: 'app-employee-page',
@@ -11,6 +13,7 @@ import { EmployeeService } from '../../core/services/employee.service';
 })
 export class EmployeePage {
   private employeeService = inject(EmployeeService);
+  private dialog = inject(MatDialog);
 
   employees = this.employeeService.employees;
   displayedColumns = [
@@ -23,4 +26,19 @@ export class EmployeePage {
     'status',
     'actions',
   ];
+
+  openDialog() {
+    const dialogRef = this.dialog.open(EmployeeDialog, {
+      width: '500px',
+      autoFocus: false,
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (newEmployee) => {
+        if (newEmployee) {
+          this.employeeService.addEmployee(newEmployee);
+        }
+      },
+    });
+  }
 }

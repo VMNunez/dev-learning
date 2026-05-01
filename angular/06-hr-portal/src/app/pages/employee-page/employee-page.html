@@ -1,7 +1,7 @@
 <div class="container">
   <div class="employee-header">
     <h1>Employees</h1>
-    <button matButton="filled">Add Employee</button>
+    <button matButton="filled" (click)="openDialog()">Add Employee</button>
   </div>
   <table mat-table [dataSource]="employees()">
     <ng-container matColumnDef="firstName">

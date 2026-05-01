@@ -1,0 +1,6 @@
+.email-error {
+  color: var(--mat-sys-error);
+  font-size: 12px;
+  margin: 0;
+  padding: 0 16px;
+}
