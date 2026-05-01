@@ -5,6 +5,7 @@ import { EmployeeService } from '../../core/services/employee.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
 import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
+import { Employee } from '../../models/employee.model';
 
 @Component({
   selector: 'app-employee-page',
@@ -55,6 +56,23 @@ export class EmployeePage {
     dialogRef.afterClosed().subscribe({
       next: (confirmed) => {
         if (confirmed) this.employeeService.deleteEmployee(id);
+      },
+    });
+  }
+
+  onEdit(employee: Employee) {
+    const dialogRef = this.dialog.open(EmployeeDialog, {
+      width: '500px',
+      data: {
+        employee,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (updatedEmployee) => {
+        if (updatedEmployee) {
+          this.employeeService.editEmployee(updatedEmployee);
+        }
       },
     });
   }

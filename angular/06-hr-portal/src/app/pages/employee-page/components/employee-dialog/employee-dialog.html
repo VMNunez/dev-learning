@@ -1,4 +1,10 @@
-<h2 mat-dialog-title>New Employee</h2>
+<h2 mat-dialog-title>
+  @if (data) {
+    Edit Employee
+  } @else {
+    Add Employee
+  }
+</h2>
 
 <mat-dialog-content>
   <form [formGroup]="newEmployeeForm">
@@ -55,5 +61,11 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button matButton="filled" mat-dialog-close>Cancel</button>
-  <button matButton="filled" (click)="onSubmit()">Add Employee</button>
+  <button matButton="filled" (click)="onSubmit()">
+    @if (data) {
+      Edit Employee
+    } @else {
+      Add Employee
+    }
+  </button>
 </mat-dialog-actions>
