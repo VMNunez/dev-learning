@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 import type { User } from '../../models/user.model';
 
 @Injectable({
@@ -18,7 +18,13 @@ export class AuthService {
     },
   ];
 
-  currentUser = signal<User | null>(null);
+  currentUser = signal<User | null>(JSON.parse(localStorage.getItem('currentUser') ?? 'null'));
+
+  constructor() {
+    effect(() => {
+      localStorage.setItem('currentUser', JSON.stringify(this.currentUser()));
+    });
+  }
 
   login(email: string, password: string) {
     const user = this.users.find((user) => user.email === email && user.password === password);
@@ -38,5 +44,9 @@ export class AuthService {
 
   isLoggedIn() {
     return !!this.currentUser();
+  }
+
+  getUserRole() {
+    return this.currentUser()?.role;
   }
 }

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
-import { LoginPage } from './pages/login-page/login-page';
-import { DashboardPage } from './pages/dashboard-page/dashboard-page';
 import { authGuard } from './core/guards/auth-guard';
+import { adminGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
   {
@@ -11,12 +10,18 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginPage,
+    loadComponent: () => import('./pages/login-page/login-page').then((m) => m.LoginPage),
   },
   {
     path: 'dashboard',
     canActivate: [authGuard],
-    component: DashboardPage,
+    loadComponent: () =>
+      import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
+  },
+  {
+    path: 'admin',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () => import('./pages/admin-page/admin-page').then((m) => m.AdminPage),
   },
   {
     path: '**',
