@@ -18,6 +18,47 @@ export const routes: Routes = [
 ];
 ```
 
+### Default route and wildcard — always add these
+
+Every app needs two extra routes:
+
+**Default route** — what to show when the user visits `/` (the root URL). Use `redirectTo` to send them to a specific page.
+
+```typescript
+{ path: '', redirectTo: 'login', pathMatch: 'full' }
+```
+
+**Why `pathMatch: 'full'`?** By default, Angular matches routes by prefix — it checks if the URL *starts with* the path. An empty string `''` is a prefix of every URL, so without `pathMatch: 'full'`, `path: ''` would match `/dashboard`, `/login`, and everything else, redirecting the user to login no matter what page they visit.
+
+`pathMatch: 'full'` tells Angular to only match when the entire URL is exactly `''`.
+
+| URL          | without `pathMatch: 'full'` | with `pathMatch: 'full'` |
+| ------------ | --------------------------- | ------------------------ |
+| `/`          | matches ✓                   | matches ✓                |
+| `/dashboard` | matches ✓ (wrong!)          | does not match ✓         |
+| `/login`     | matches ✓ (wrong!)          | does not match ✓         |
+
+You only need `pathMatch: 'full'` on `path: ''`. All other routes are specific enough that prefix matching works correctly.
+
+**Wildcard route** — catches any URL that does not match any route (e.g. `/xyz`). Without it, Angular shows a blank page for unknown URLs.
+
+```typescript
+{ path: '**', redirectTo: 'login' }
+```
+
+> The wildcard `**` must always be **last** in the array. Angular checks routes in order — if `**` were first, it would match everything and no other route would ever load.
+
+A complete routes file looks like this:
+
+```typescript
+export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },  // default → redirect
+  { path: 'login', component: LoginPage },
+  { path: 'dashboard', component: DashboardPage },
+  { path: '**', redirectTo: 'login' },                   // unknown URL → redirect
+];
+```
+
 ## RouterOutlet — where Angular renders the active page
 
 ```html
@@ -222,6 +263,165 @@ In most cases `snapshot` is correct.
 
 ---
 
+---
+
+## Route guards — protect routes
+
+A route guard is a function that runs before Angular loads a route. It decides if the user is allowed to enter.
+
+Official docs: https://angular.dev/guide/routing/common-router-tasks#preventing-unauthorized-access
+
+### When to use
+
+- User tries to visit `/dashboard` without being logged in → redirect to `/login`
+- User tries to visit `/admin` without the admin role → redirect to `/dashboard`
+
+### The modern pattern — `CanActivateFn`
+
+Angular v15+ uses plain functions instead of classes. No `@Injectable`, no class — just a function.
+
+```typescript
+// core/guards/auth.guard.ts
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+
+export const authGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isLoggedIn()) {
+    return true;
+  }
+
+  return router.createUrlTree(['/login']);
+};
+```
+
+- `inject()` works inside guard functions — same as in components
+- Return `true` — route loads normally
+- Return `router.createUrlTree(['/login'])` — redirects the user
+- Do not use `return false` alone — it blocks the route but shows a blank page
+
+### Apply the guard to a route
+
+```typescript
+// app.routes.ts
+import { authGuard } from './core/guards/auth.guard';
+
+export const routes: Routes = [
+  { path: 'dashboard', component: DashboardPage, canActivate: [authGuard] },
+];
+```
+
+`canActivate` takes an array — you can stack multiple guards on the same route.
+
+### `CanActivateFn` vs `CanActivate` (class-based — old)
+
+| | `CanActivateFn` (modern) | `CanActivate` (old) |
+|---|---|---|
+| Angular version | v15+ | Before v15 |
+| Style | Plain function | Class with interface |
+| Needs `@Injectable` | No | Yes |
+| Recommended | Yes | No — deprecated |
+
+### Role-based guard
+
+A second type of guard — checks not just *if* the user is logged in, but *what role* they have.
+
+```typescript
+// core/guards/admin-guard.ts
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+
+export const adminGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  return authService.getUserRole() === 'admin'
+    ? true
+    : router.createUrlTree(['/dashboard']);
+};
+```
+
+Stack multiple guards on the same route — Angular runs them in order:
+
+```typescript
+{ path: 'admin', canActivate: [authGuard, adminGuard], loadComponent: ... }
+```
+
+`authGuard` runs first (is the user logged in?), then `adminGuard` (is the user an admin?). If either fails, the user is redirected.
+
+### Unused parameters in guards
+
+The CLI generates guards with `(route, state)` parameters. If you do not use them, remove them — unused parameters add noise:
+
+```typescript
+// generated
+export const adminGuard: CanActivateFn = (route, state) => { ... }
+
+// cleaned up
+export const adminGuard: CanActivateFn = () => { ... }
+```
+
+If you only use one, prefix the unused one with `_` to signal it is intentionally ignored:
+
+```typescript
+export const adminGuard: CanActivateFn = (_, state) => { ... }
+```
+
+---
+
+## Lazy loading
+
+By default, Angular loads all route components at startup — even pages the user may never visit. Lazy loading fixes that: a component only loads when the user navigates to its route.
+
+Use `loadComponent:` instead of `component:`:
+
+```typescript
+// component: — loads at startup (avoid in large apps)
+{ path: 'login', component: LoginPage }
+
+// loadComponent: — loads only when the user visits /login
+{ path: 'login', loadComponent: () => import('./pages/login-page/login-page').then(m => m.LoginPage) }
+```
+
+The arrow function is a **dynamic import** — Angular calls it only when needed.
+
+When you switch to `loadComponent:`, remove the static import at the top of the file. The whole point is that Angular handles the import itself — keeping a static import defeats the purpose.
+
+```typescript
+// remove these when using loadComponent:
+import { LoginPage } from './pages/login-page/login-page';
+import { DashboardPage } from './pages/dashboard-page/dashboard-page';
+```
+
+Guards like `authGuard` stay as static imports — Angular needs them at startup to know which routes to protect.
+
+A complete lazy-loaded routes file:
+
+```typescript
+import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth-guard';
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: 'login',
+    loadComponent: () => import('./pages/login-page/login-page').then(m => m.LoginPage),
+  },
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/dashboard-page/dashboard-page').then(m => m.DashboardPage),
+  },
+  { path: '**', redirectTo: 'login' },
+];
+```
+
+---
+
 ## Summary
 
 | Tool                           | When to use                                  |
@@ -232,3 +432,6 @@ In most cases `snapshot` is correct.
 | `Location.back()`              | Go back to the previous page                 |
 | `RouterOutlet`                 | Where the active page component renders      |
 | `ActivatedRoute`               | Read route parameters inside a component     |
+| `CanActivateFn`                | Protect a route — run logic before it loads  |
+| `canActivate: [g1, g2]`        | Stack multiple guards — run in order         |
+| `loadComponent:`               | Lazy load a component — only when needed     |
