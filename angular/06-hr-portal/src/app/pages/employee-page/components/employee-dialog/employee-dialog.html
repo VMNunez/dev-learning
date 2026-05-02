@@ -8,46 +8,46 @@
 
 <mat-dialog-content>
   <form [formGroup]="newEmployeeForm">
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>First Name</mat-label>
       <input type="text" matInput formControlName="firstName" />
       @if (firstName()?.touched && firstName()?.hasError('required')) {
         <mat-error>First name is required</mat-error>
       }
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Last Name</mat-label>
       <input type="text" matInput formControlName="lastName" />
       @if (lastName()?.touched && lastName()?.hasError('required')) {
         <mat-error>Last name is required</mat-error>
       }
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>
       <input type="email" matInput formControlName="email" />
       @if (email()?.hasError('required')) {
         <mat-error>Email is required</mat-error>
       } @else if (email()?.hasError('email')) {
-        <mat-error>Email not valid</mat-error>
+        <mat-error>Invalid email address</mat-error>
       } @else if (emailAlreadyExists()) {
         <p class="email-error">Email already exists</p>
       }
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Department</mat-label>
       <input type="text" matInput formControlName="department" />
       @if (department()?.touched && department()?.hasError('required')) {
         <mat-error>Department is required</mat-error>
       }
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Position</mat-label>
       <input type="text" matInput formControlName="position" />
       @if (position()?.touched && position()?.hasError('required')) {
         <mat-error>Position is required</mat-error>
       }
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
         <mat-option value="active">Active</mat-option>
@@ -60,7 +60,7 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button matButton="filled" mat-dialog-close>Cancel</button>
+  <button matButton mat-dialog-close>Cancel</button>
   <button matButton="filled" (click)="onSubmit()">
     @if (data) {
       Edit Employee
