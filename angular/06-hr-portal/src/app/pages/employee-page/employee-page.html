@@ -4,8 +4,15 @@
     <button matButton="filled" (click)="openDialog()">Add Employee</button>
   </div>
 
+  <app-employee-filters
+    [departments]="departments()"
+    (searchChange)="updateSearchTerm($event)"
+    (departmentChange)="updateDepartment($event)"
+    (statusChange)="updateStatus($event)"
+  />
+
   <app-employee-table
-    [employees]="employees()"
+    [employees]="filteredEmployees()"
     (employeeId)="onDelete($event)"
     (updatedEmployee)="onEdit($event)"
   />

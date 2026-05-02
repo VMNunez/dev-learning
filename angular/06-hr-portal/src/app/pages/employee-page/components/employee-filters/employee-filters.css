@@ -1,0 +1,13 @@
+.filters-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filter-container mat-form-field {
+  min-width: 180px;
+}
+
+.search-field {
+  flex: 1;
+}
