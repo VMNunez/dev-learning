@@ -6,10 +6,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
 import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
 import { Employee } from '../../models/employee.model';
+import { NgClass, DatePipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-employee-page',
-  imports: [MatButtonModule, MatTableModule],
+  imports: [MatButtonModule, MatTableModule, NgClass, DatePipe, MatIconModule],
   templateUrl: './employee-page.html',
   styleUrl: './employee-page.css',
 })
