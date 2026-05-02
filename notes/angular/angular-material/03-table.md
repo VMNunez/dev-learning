@@ -114,6 +114,17 @@ import { MatTableDataSource } from '@angular/material/table';
 dataSource = new MatTableDataSource<Task>([]);
 ```
 
+**What does `<Task>` mean here?**
+The generic parameter describes the type of **each item** in the datasource, not the container. `MatTableDataSource` already manages an array internally — you just tell it what type each item is. This is the same pattern as `signal<Task[]>([])` or `Array<Task>`:
+
+| Syntax | Meaning |
+|---|---|
+| `MatTableDataSource<Task>` | a datasource where each item is a `Task` |
+| `signal<Task[]>([])` | a signal that holds an array of `Task` |
+| `Array<Task>` / `Task[]` | an array where each item is a `Task` |
+
+The `[]` in `new MatTableDataSource<Task>([])` is just the initial empty data — you fill it later via `dataSource.data`.
+
 When your data comes from a signal input, use `effect()` to keep the data source in sync. The property you always update is `dataSource.data` — that is the array `MatTableDataSource` reads internally.
 
 ```typescript

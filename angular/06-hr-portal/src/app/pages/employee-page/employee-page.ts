@@ -1,13 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { EmployeeService } from '../../core/services/employee.service';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
-import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
-import { Employee } from '../../models/employee.model';
 import { NgClass, DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
+import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
+import { EmployeeService } from '../../core/services/employee.service';
+import type { Employee } from '../../models/employee.model';
 
 @Component({
   selector: 'app-employee-page',
@@ -18,8 +18,9 @@ import { MatIconModule } from '@angular/material/icon';
 export class EmployeePage {
   private employeeService = inject(EmployeeService);
   private dialog = inject(MatDialog);
-
+  datasource = new MatTableDataSource<Employee>([]);
   employees = this.employeeService.employees;
+
   displayedColumns = [
     'firstName',
     'lastName',
@@ -30,6 +31,12 @@ export class EmployeePage {
     'status',
     'actions',
   ];
+
+  constructor() {
+    effect(() => {
+      this.datasource.data = this.employees();
+    });
+  }
 
   openDialog() {
     const dialogRef = this.dialog.open(EmployeeDialog, {
