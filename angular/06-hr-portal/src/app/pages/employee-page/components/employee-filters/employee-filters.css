@@ -4,10 +4,20 @@
   gap: 1rem;
 }
 
-.filter-container mat-form-field {
+.filters-container mat-form-field {
   min-width: 180px;
 }
 
 .search-field {
   flex: 1;
+}
+
+.clear-btn {
+  display: flex;
+  justify-content: end;
+  visibility: hidden;
+}
+
+.clear-btn.active {
+  visibility: visible;
 }
