@@ -52,8 +52,16 @@
     <td [attr.colspan]="displayedColumns.length">
       <div class="not-data-content">
         <mat-icon aria-hidden="true" fontIcon="group"> </mat-icon>
-        <p>No employees yet</p>
+        <p>
+          @if (hasActiveFilters()) {
+            No employees match your filters
+          } @else {
+            No employees yet
+          }
+        </p>
       </div>
     </td>
   </tr>
 </table>
+<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page">
+</mat-paginator>

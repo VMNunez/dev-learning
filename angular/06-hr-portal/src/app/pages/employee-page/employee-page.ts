@@ -42,6 +42,11 @@ export class EmployeePage {
     return [...new Set(this.employees().map((employee) => employee.department))];
   });
 
+  hasActiveFilters = computed(
+    () =>
+      this.searchTerm() !== '' || this.selectedDepartment() !== '' || this.selectedStatus() !== '',
+  );
+
   updateSearchTerm(term: string) {
     this.searchTerm.set(term);
   }

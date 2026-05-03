@@ -13,6 +13,7 @@
 
   <app-employee-table
     [employees]="filteredEmployees()"
+    [hasActiveFilters]="hasActiveFilters()"
     (employeeId)="onDelete($event)"
     (updatedEmployee)="onEdit($event)"
   />
