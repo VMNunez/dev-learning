@@ -1,19 +1,29 @@
 import { AfterViewInit, ViewChild, Component, effect, input, output } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NgClass, DatePipe } from '@angular/common';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import type { Employee } from '../../../../models/employee.model';
 
 @Component({
   selector: 'app-employee-table',
-  imports: [MatTableModule, NgClass, DatePipe, MatIconModule, MatButtonModule, MatSortModule],
+  imports: [
+    MatTableModule,
+    NgClass,
+    DatePipe,
+    MatIconModule,
+    MatButtonModule,
+    MatSortModule,
+    MatPaginatorModule,
+  ],
   templateUrl: './employee-table.html',
   styleUrl: './employee-table.css',
 })
 export class EmployeeTable implements AfterViewInit {
-  employees = input<Employee[]>();
+  employees = input<Employee[]>([]);
+  hasActiveFilters = input<boolean>(false);
   datasource = new MatTableDataSource<Employee>([]);
   employeeId = output<number>();
   updatedEmployee = output<Employee>();
@@ -36,9 +46,11 @@ export class EmployeeTable implements AfterViewInit {
   }
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngAfterViewInit(): void {
     this.datasource.sort = this.sort;
+    this.datasource.paginator = this.paginator;
   }
 
   deleteEmployee(id: number) {
