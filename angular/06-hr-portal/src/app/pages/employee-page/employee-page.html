@@ -6,9 +6,14 @@
 
   <app-employee-filters
     [departments]="departments()"
+    [searchTerm]="searchTerm()"
+    [selectedDepartment]="selectedDepartment()"
+    [selectedStatus]="selectedStatus()"
+    [hasActiveFilters]="hasActiveFilters()"
     (searchChange)="updateSearchTerm($event)"
     (departmentChange)="updateDepartment($event)"
     (statusChange)="updateStatus($event)"
+    (clearAll)="clearFilters()"
   />
 
   <app-employee-table

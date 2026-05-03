@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
 import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
 import { EmployeeService } from '../../core/services/employee.service';
-
 import type { Employee } from '../../models/employee.model';
 import { EmployeeTable } from './components/employee-table/employee-table';
 import { EmployeeFilters } from './components/employee-filters/employee-filters';
@@ -57,6 +56,12 @@ export class EmployeePage {
 
   updateStatus(status: string) {
     this.selectedStatus.set(status);
+  }
+
+  clearFilters() {
+    this.searchTerm.set('');
+    this.selectedDepartment.set('');
+    this.selectedStatus.set('');
   }
   openDialog() {
     const dialogRef = this.dialog.open(EmployeeDialog, {

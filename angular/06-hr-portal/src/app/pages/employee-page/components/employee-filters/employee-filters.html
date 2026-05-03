@@ -1,11 +1,20 @@
 <div class="filters-container">
   <mat-form-field class="search-field" appearance="outline">
     <mat-label>Search by name</mat-label>
-    <input matInput #searchInput (input)="searchChange.emit(searchInput.value)" />
+    <input
+      matInput
+      #searchInput
+      (input)="searchChange.emit(searchInput.value)"
+      [value]="searchTerm()"
+    />
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Department</mat-label>
-    <mat-select #selectDepartment (selectionChange)="departmentChange.emit(selectDepartment.value)">
+    <mat-select
+      #selectDepartment
+      (selectionChange)="departmentChange.emit(selectDepartment.value)"
+      [value]="selectedDepartment()"
+    >
       <mat-option value="">All</mat-option>
       @for (department of departments(); track department) {
         <mat-option [value]="department">{{ department }}</mat-option>
@@ -14,10 +23,17 @@
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Status</mat-label>
-    <mat-select #selectStatus (selectionChange)="statusChange.emit(selectStatus.value)">
+    <mat-select
+      #selectStatus
+      (selectionChange)="statusChange.emit(selectStatus.value)"
+      [value]="selectedStatus()"
+    >
       <mat-option value="">All</mat-option>
       <mat-option value="active">Active</mat-option>
       <mat-option value="inactive">Inactive</mat-option>
     </mat-select>
   </mat-form-field>
+</div>
+<div class="clear-btn" [class.active]="hasActiveFilters()">
+  <button matButton="text" (click)="clearFilters()">Clear Filters</button>
 </div>
