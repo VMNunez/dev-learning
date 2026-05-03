@@ -10,6 +10,8 @@
     [selectedDepartment]="selectedDepartment()"
     [selectedStatus]="selectedStatus()"
     [hasActiveFilters]="hasActiveFilters()"
+    [totalEmployees]="totalEmployees()"
+    [totalFilteredEmployees]="totalFilteredEmployees()"
     (searchChange)="updateSearchTerm($event)"
     (departmentChange)="updateDepartment($event)"
     (statusChange)="updateStatus($event)"

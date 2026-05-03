@@ -1,5 +1,5 @@
 <div class="filters-container">
-  <mat-form-field class="search-field" appearance="outline">
+  <mat-form-field class="search-field" appearance="outline" subscriptSizing="dynamic">
     <mat-label>Search by name</mat-label>
     <input
       matInput
@@ -8,7 +8,7 @@
       [value]="searchTerm()"
     />
   </mat-form-field>
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label>Department</mat-label>
     <mat-select
       #selectDepartment
@@ -21,7 +21,7 @@
       }
     </mat-select>
   </mat-form-field>
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label>Status</mat-label>
     <mat-select
       #selectStatus
@@ -34,6 +34,8 @@
     </mat-select>
   </mat-form-field>
 </div>
-<div class="clear-btn" [class.active]="hasActiveFilters()">
+<div class="filters-footer" [class.active]="hasActiveFilters()">
+  <p>Showing {{ totalFilteredEmployees() }} of {{ totalEmployees() }}</p>
+
   <button matButton="text" (click)="clearFilters()">Clear Filters</button>
 </div>
