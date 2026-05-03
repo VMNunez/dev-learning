@@ -12,12 +12,19 @@
   flex: 1;
 }
 
-.clear-btn {
+.filters-footer {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
+  align-items: center;
   visibility: hidden;
+  margin-top: 1rem;
 }
 
-.clear-btn.active {
+.filters-footer.active {
   visibility: visible;
+}
+
+.filters-footer p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
 }

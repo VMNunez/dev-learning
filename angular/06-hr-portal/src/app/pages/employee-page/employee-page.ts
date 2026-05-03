@@ -37,6 +37,9 @@ export class EmployeePage {
     });
   });
 
+  totalEmployees = computed(() => this.employees().length);
+  totalFilteredEmployees = computed(() => this.filteredEmployees().length);
+
   departments = computed(() => {
     return [...new Set(this.employees().map((employee) => employee.department))];
   });

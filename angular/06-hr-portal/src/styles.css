@@ -4,6 +4,8 @@
   --color-inactive-bg: #f3f4f6;
   --color-inactive-text: #374151;
   --color-tr-hover: var(--mat-sys-surface-variant);
+
+  --text-secondary: var(--mat-sys-on-surface-variant);
 }
 
 * {
