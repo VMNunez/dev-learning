@@ -1,4 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-active-bg: #dcfce7;
+  --color-active-text: #166534;
+  --color-inactive-bg: #f3f4f6;
+  --color-inactive-text: #374151;
+  --color-tr-hover: var(--mat-sys-surface-variant);
+
+  --text-secondary: var(--mat-sys-on-surface-variant);
+}
+
 * {
   margin: 0;
   padding: 0;

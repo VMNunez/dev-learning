@@ -66,6 +66,18 @@ export class TaskList {
 
 `#meal` creates a reference to the input element. You can pass `meal.value` to a method without needing a signal or form control. Use this for simple, one-field inputs.
 
+**Why not `$event.target.value`?** In TypeScript strict mode, `$event.target` is typed as `EventTarget` — it has no `.value` property. Angular does not know the element is an `HTMLInputElement`. This causes a type error:
+
+```html
+<!-- ❌ TypeScript error in strict mode -->
+<input (input)="onSearch($event.target.value)" />
+
+<!-- ✅ Use a template reference variable instead -->
+<input #searchInput (input)="onSearch(searchInput.value)" />
+```
+
+The template reference variable gives you a typed `HTMLInputElement` reference directly — no casting needed.
+
 Combine with keyboard events for a complete search input:
 
 ```html
