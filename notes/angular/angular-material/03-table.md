@@ -114,6 +114,17 @@ import { MatTableDataSource } from '@angular/material/table';
 dataSource = new MatTableDataSource<Task>([]);
 ```
 
+**What does `<Task>` mean here?**
+The generic parameter describes the type of **each item** in the datasource, not the container. `MatTableDataSource` already manages an array internally — you just tell it what type each item is. This is the same pattern as `signal<Task[]>([])` or `Array<Task>`:
+
+| Syntax | Meaning |
+|---|---|
+| `MatTableDataSource<Task>` | a datasource where each item is a `Task` |
+| `signal<Task[]>([])` | a signal that holds an array of `Task` |
+| `Array<Task>` / `Task[]` | an array where each item is a `Task` |
+
+The `[]` in `new MatTableDataSource<Task>([])` is just the initial empty data — you fill it later via `dataSource.data`.
+
 When your data comes from a signal input, use `effect()` to keep the data source in sync. The property you always update is `dataSource.data` — that is the array `MatTableDataSource` reads internally.
 
 ```typescript
@@ -163,30 +174,54 @@ Then add `matSort` to the table and `mat-sort-header` to each sortable column he
 
 > `mat-sort-header` goes on the `<th>` element, not on `ng-container`. The `ng-container` is just a wrapper with no visual output.
 
+> `mat-sort-header` is always empty — never pass a value to it. Angular Material reads the column ID from `matColumnDef` automatically. The only exception is a custom sort ID, which is rare.
+
 **Which columns make sense to sort?** Only columns where alphabetical or chronological order is meaningful. Good candidates: `name`, `createdAt`, `assignee`. Avoid sorting on `status` or `priority` if they have custom logic — a simple alphabetical sort would not put them in logical order.
 
 ### Why @ViewChild and ngAfterViewInit?
 
-To connect `MatSort` to `MatTableDataSource`, you need a reference to the `MatSort` directive that lives in the template.
+Angular components have two separate worlds: the TypeScript class and the HTML template. By default, TypeScript cannot see anything that lives in the template — directives, elements, child components.
 
-**Without `@ViewChild(MatSort) sort!: MatSort`** — TypeScript cannot access anything inside the HTML template. The `sort` variable would be `undefined`.
+**`@ViewChild`** is the bridge. It finds a directive in the template and gives you a reference to it in TypeScript. Without it, `this.sort` is `undefined`.
 
-**Without `ngAfterViewInit`** — if you try to use `this.sort` in the constructor, it is `undefined` because Angular has not built the template yet. `ngAfterViewInit` runs exactly when the template is ready, so `this.sort` is guaranteed to exist.
+**`ngAfterViewInit`** runs after Angular finishes building the template. If you try to use `this.sort` in the constructor, the template does not exist yet and `this.sort` is still `undefined`. Always connect `MatSort` to the datasource inside `ngAfterViewInit`, never in the constructor.
+
+**`implements AfterViewInit`** is not required for the code to work — Angular calls `ngAfterViewInit` regardless. But declaring it is good practice:
+- TypeScript warns you if you misspell the method name
+- Other developers immediately know this component uses that lifecycle hook
 
 **Without `this.dataSource.sort = this.sort`** — clicking a column header changes the sort arrow visually, but the data does NOT actually re-sort. `MatTableDataSource` does not know which `MatSort` to listen to until you connect them.
 
 ```typescript
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+
+// imports array needs MatSortModule (includes MatSort + MatSortHeader directives for the template)
+// MatSort is still needed in the TS import for the @ViewChild type annotation
 
 export class TaskTable implements AfterViewInit {
-  @ViewChild(MatSort) sort!: MatSort; // get a reference to the MatSort in the template
+  dataSource = new MatTableDataSource<Task>([]);
+
+  @ViewChild(MatSort) sort!: MatSort; // get a reference to MatSort from the template
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort; // now MatTableDataSource knows which MatSort to use
+    this.dataSource.sort = this.sort; // connect — now MatTableDataSource knows which MatSort to use
   }
 }
 ```
+
+> **`MatSort` vs `MatSortModule`** — import both from `@angular/material/sort`. `MatSort` is needed for the `@ViewChild(MatSort)` type. `MatSortModule` is needed in the `imports` array because it includes both the `matSort` table directive and the `mat-sort-header` column directive.
+
+**Where each one goes — summary:**
+
+| | `MatSort` | `MatSortModule` |
+|---|---|---|
+| TypeScript `import` at the top | ✓ needed for `@ViewChild` type | ✓ needed for `imports` array |
+| `@Component` `imports` array | ✗ not needed | ✓ add this one |
+| `@ViewChild(???) sort!: ???` | ✓ use `MatSort` here | ✗ never use a module in @ViewChild |
+
+`MatSortModule` already includes `MatSort` inside — so you never add `MatSort` to the `imports` array. But you still need it in the TypeScript import for `@ViewChild`.
 
 ### `sortActionDescription` — accessibility
 

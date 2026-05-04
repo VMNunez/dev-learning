@@ -24,6 +24,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin-page/admin-page').then((m) => m.AdminPage),
   },
   {
+    path: 'employees',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () => import('./pages/employee-page/employee-page').then((m) => m.EmployeePage),
+  },
+  {
     path: '**',
     redirectTo: 'login',
   },
