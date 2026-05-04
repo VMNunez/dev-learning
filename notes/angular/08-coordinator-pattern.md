@@ -139,6 +139,29 @@ export class TaskService {
 
 ---
 
+## Routed pages vs dumb child components
+
+The coordinator pattern only applies **within a single route**. A routed page is never a dumb component — it always injects services itself.
+
+| Component type | Gets data from | Injects services? |
+|---|---|---|
+| Routed page (coordinator) | Services directly | Yes |
+| Dumb child component | `input()` from parent | No |
+
+A dumb child has a parent coordinator that passes data down. A routed page has no parent — the router loads it directly, so it must get its own data.
+
+```
+/departments       → DepartmentPage   ← routed page, injects DepartmentService
+                        └── DepartmentList  ← dumb child, receives input()
+
+/departments/new   → DepartmentForm   ← routed page, injects DepartmentService
+                        (no children — it is the page itself)
+```
+
+`DepartmentForm` is at its own URL, loaded directly by the router. Nobody passes data into it. So it injects `DepartmentService` and `Router` itself — even though it feels like a "form component", it is a routed page.
+
+---
+
 ## Why this pattern matters
 
 - Easy to test — child components have no dependencies
