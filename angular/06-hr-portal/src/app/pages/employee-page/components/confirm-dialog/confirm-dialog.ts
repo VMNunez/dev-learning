@@ -10,9 +10,11 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class ConfirmDialog {
   private dialogRef = inject(MatDialogRef);
-  data = inject<{ title: string; message: string }>(MAT_DIALOG_DATA);
+  data = inject<{ title: string; message: string; cancelLabel: string; confirmLabel: string }>(
+    MAT_DIALOG_DATA,
+  );
 
-  onDelete() {
+  onConfirm() {
     this.dialogRef.close(true);
   }
 }

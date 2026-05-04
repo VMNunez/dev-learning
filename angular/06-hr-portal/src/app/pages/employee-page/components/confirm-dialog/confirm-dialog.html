@@ -5,6 +5,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button matButton="filled" mat-dialog-close>Cancel</button>
-  <button matButton="filled" (click)="onDelete()">Delete</button>
+  <button matButton="text" mat-dialog-close>
+    {{ data.cancelLabel }}
+  </button>
+  <button matButton="filled" (click)="onConfirm()">{{ data.confirmLabel }}</button>
 </mat-dialog-actions>

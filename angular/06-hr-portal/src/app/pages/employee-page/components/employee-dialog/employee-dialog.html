@@ -60,7 +60,7 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button matButton mat-dialog-close>Cancel</button>
+  <button matButton (click)="onCancel()">Cancel</button>
   <button matButton="filled" (click)="onSubmit()">
     @if (data) {
       Edit Employee
