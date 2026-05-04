@@ -29,6 +29,29 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/employee-page/employee-page').then((m) => m.EmployeePage),
   },
   {
+    path: 'departments',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./pages/department-page/department-page').then((m) => m.DepartmentPage),
+  },
+  {
+    path: 'departments/new',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./pages/department-page/department-form/department-form').then(
+        (m) => m.DepartmentForm,
+      ),
+  },
+  {
+    path: 'departments/edit/:id',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./pages/department-page/department-form/department-form').then(
+        (m) => m.DepartmentForm,
+      ),
+  },
+
+  {
     path: '**',
     redirectTo: 'login',
   },
