@@ -2,10 +2,12 @@ import { Component, inject } from '@angular/core';
 import { DepartmentService } from '../../core/services/department.service';
 import { DepartmentList } from './components/department-list/department-list';
 import type { Department } from '../../models/department.model';
+import { MatAnchor } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-department-page',
-  imports: [DepartmentList],
+  imports: [DepartmentList, MatAnchor, RouterLink],
   templateUrl: './department-page.html',
   styleUrl: './department-page.css',
 })
