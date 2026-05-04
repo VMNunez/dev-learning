@@ -84,9 +84,12 @@ export class EmployeePage {
   onDelete(id: number) {
     const dialogRef = this.dialog.open(ConfirmDialog, {
       width: '500px',
+      autoFocus: false,
       data: {
         title: 'Delete Employee',
         message: 'Are you sure you want to delete this employee?',
+        cancelLabel: 'Cancel',
+        confirmLabel: 'Delete',
       },
     });
 

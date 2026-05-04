@@ -1,11 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
-import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialog,
+} from '@angular/material/dialog';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { Employee } from '../../../../models/employee.model';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-employee-dialog',
@@ -22,6 +28,7 @@ import { Employee } from '../../../../models/employee.model';
 })
 export class EmployeeDialog {
   private dialogRef = inject(MatDialogRef);
+  private dialog = inject(MatDialog);
   data = inject<{ employee: Employee } | undefined>(MAT_DIALOG_DATA);
   emailAlreadyExists = signal<boolean>(false);
 
@@ -93,6 +100,31 @@ export class EmployeeDialog {
           startDate: new Date().toISOString().split('T')[0],
         });
       }
+    }
+  }
+
+  onCancel() {
+    if (this.newEmployeeForm.dirty) {
+      const dialogRef = this.dialog.open(ConfirmDialog, {
+        width: '500px',
+        autoFocus: false,
+        data: {
+          title: 'Discard changes?',
+          message: 'You have unsaved changes. If you leave, they will be lost',
+          cancelLabel: 'Keep Editing',
+          confirmLabel: 'Discard Changes',
+        },
+      });
+
+      dialogRef.afterClosed().subscribe({
+        next: (confirmed) => {
+          if (confirmed) {
+            this.dialogRef.close();
+          }
+        },
+      });
+    } else {
+      this.dialogRef.close();
     }
   }
 }
