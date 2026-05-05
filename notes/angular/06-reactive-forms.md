@@ -19,7 +19,7 @@ Add `ReactiveFormsModule` to the `imports` array of the component that contains 
 
 ## FormGroup and FormControl
 
-//TODO: AQUI COMENTA QUE EN EL TYPESCRIPT CREAMOS EL FORM
+You define the form in the TypeScript component class — not in the template. The template only binds to it with `[formGroup]`.
 
 ```typescript
 transactionForm = new FormGroup({
@@ -108,13 +108,32 @@ onSubmit() {
 }
 ```
 
-You can also cast it to a type: //TODO: ESTA PARTE NO LA HE ENTENDIDO, QUE LO PUEDES MANDAR TODO DE GOLPE SI QUIERES? A ESO SE REFIERE?
+You can also cast it to a type and emit all values at once:
 
 ```typescript
 this.myOutput.emit(this.transactionForm.value as NewTransaction);
 ```
 
-//TODO: DESPUES DE ESTO QUIERO QUE PONGAS A MODO DE RESUMEN LAS FORMAS QUE EXISTEN DE ACCEDER A LAS PROPIEDADES DEL FORMULARIO PORQUE VEO DOS OPCIONES:this.transactionForm.get('description'); Y LA OTRA this.transactionForm.value.description o con const formValue = this.transactionForm.value y luego hacer formValue.description o directamente con const{description} = this.transactionForm.value; asi que las formas de hacer eso y sus usos las quiero aqui incluidad en una breve sección pero que incluya suficiente contexto y explicacion y casos de uso, y me diga cual se usa mas y en qué casos
+Yes — this sends all form values at once with one expression. The `as NewTransaction` is a TypeScript type assertion: it tells TypeScript "treat this object as `NewTransaction`". It does not change the data — it only satisfies the type checker. This works because the form controls match the `NewTransaction` fields exactly.
+
+---
+
+### Ways to access form values — summary
+
+| Approach | Code | When to use |
+| --- | --- | --- |
+| Get the `FormControl` | `this.form.get('name')` | Validation state — `.hasError()`, `.touched`, `.dirty` |
+| Access one value | `this.form.value.name` | Quick read of a single field |
+| Store all values | `const formValue = this.form.value` | `onSubmit()` — access multiple fields cleanly |
+| Destructure | `const { name, description } = this.form.value` | When you need several fields individually |
+
+**Which is used most?**
+
+- In `onSubmit()` → `const formValue = this.form.value` — most common and most readable
+- In the template for validation → `this.form.get('name')` via a getter
+- Destructuring → useful but rare in real projects
+
+The key difference: `get()` returns the `FormControl` object — use it for validation state. `.value` returns the actual data — use it when you need to save or emit the form content.
 
 ---
 
@@ -301,7 +320,19 @@ constructor() {
 | `patchValue()` | Only updates the fields you pass — ignores missing ones     |
 | `setValue()`   | Requires **all** fields — throws an error if any is missing |
 
-//TODO: ME HAS INCLUIDO EL SETVALUE CUANDO YO NUNCA LO HE USADO EN MIS PROYECTOS NI HE VISTO EJEMPLOS. SI CREES QUE DEBO CONOCER EL SETVALUE, AL MENOS PONME UN EJEMPLO DE USO EN MIS NOTES
+`setValue()` is useful when you are replacing the entire form state and you are sure you have every field:
+
+```typescript
+// setValue requires every field — throws an error if any is missing
+this.myForm.setValue({
+  name: task.name,
+  status: task.status,
+  priority: task.priority,
+  description: task.description,
+});
+```
+
+In practice, `patchValue()` is the safer choice because it does not throw an error if a field is missing or your interface changes. Use `setValue()` only when you are certain you have all fields.
 
 Use `patchValue()` when editing. Use `setValue()` only when you are sure you have every field.
 
@@ -309,26 +340,7 @@ Use `patchValue()` when editing. Use `setValue()` only when you are sure you hav
 
 ## TypeScript utilities
 
-> These TypeScript patterns appear throughout Angular code. They deserve their own reference file — see `notes/typescript/` (to be created). For now they live here. // TODO: DIJIMOS QUE ME TENIAS QUE CREAR NOTES/TYPESCRIPT PARA ALMACENAR LAS NOTAS DE TYPESCRIPT. LO HAS NOMBRADO AQUI Y NO LO HAS CREADO. QUIERO QUE BORRES DE ESTE ARCHIVO EL TYPESCRIPT UTILITIES PARA ALMACENARLO EN UN CARPETA PROPIA COMO YA COMENTAMOS
-
-### Omit — create a type without some fields
-
-When the form does not include all fields of an interface (e.g. `id` is generated later), create a derived type:
-
-```typescript
-export interface Transaction {
-  id: number;
-  description: string;
-  amount: number;
-  type: 'income' | 'expense';
-  date: string;
-}
-
-export type NewTransaction = Omit<Transaction, 'id'>;
-// Result: { description, amount, type, date }
-```
-
-Use `NewTransaction` for the form output, `Transaction` for stored data.
+See [`notes/typescript/01-typescript-utilities.md`](../typescript/01-typescript-utilities.md) — `Omit`, type assertions (`as`), optional fields, union types.
 
 ---
 
