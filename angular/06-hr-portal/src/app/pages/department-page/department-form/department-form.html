@@ -1,11 +1,31 @@
-<form [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
-  <mat-form-field>
-    <mat-label>Name</mat-label>
-    <input matInput formControlName="name" />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Description</mat-label>
-    <textarea matInput formControlName="description"></textarea>
-  </mat-form-field>
-  <button type="submit" matButton="filled">Add Department</button>
-</form>
+<div class="container">
+  <h1>
+    @if (editId()) {
+      Edit Department
+    } @else {
+      Add Department
+    }
+  </h1>
+  <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error>Name is required</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      <mat-error>Description is required</mat-error>
+    </mat-form-field>
+    <div class="form-actions">
+      <button type="button" matButton="text" routerLink="/departments">Cancel</button>
+      <button type="submit" matButton="filled">
+        @if (editId()) {
+          Edit Department
+        } @else {
+          Add Department
+        }
+      </button>
+    </div>
+  </form>
+</div>

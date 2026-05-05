@@ -22,13 +22,13 @@ export const routes: Routes = [
 
 Every app needs two extra routes:
 
-**Default route** — what to show when the user visits `/` (the root URL). Use `redirectTo` to send them to a specific page.
+**Default route** — what to show when the user visits `/` (the root URL). Use `redirectTo` to send them to a specific page. //TODO: COMENTA QUE ESTO SE USA PARA REDIRIGIR AL USUARIO CUANDO CARGA POR PRIMERA VEZ LA PAGINA
 
 ```typescript
 { path: '', redirectTo: 'login', pathMatch: 'full' }
 ```
 
-**Why `pathMatch: 'full'`?** By default, Angular matches routes by prefix — it checks if the URL *starts with* the path. An empty string `''` is a prefix of every URL, so without `pathMatch: 'full'`, `path: ''` would match `/dashboard`, `/login`, and everything else, redirecting the user to login no matter what page they visit.
+**Why `pathMatch: 'full'`?** By default, Angular matches routes by prefix — it checks if the URL _starts with_ the path. An empty string `''` is a prefix of every URL, so without `pathMatch: 'full'`, `path: ''` would match `/dashboard`, `/login`, and everything else, redirecting the user to login no matter what page they visit.
 
 `pathMatch: 'full'` tells Angular to only match when the entire URL is exactly `''`.
 
@@ -52,10 +52,10 @@ A complete routes file looks like this:
 
 ```typescript
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },  // default → redirect
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // default → redirect
   { path: 'login', component: LoginPage },
   { path: 'dashboard', component: DashboardPage },
-  { path: '**', redirectTo: 'login' },                   // unknown URL → redirect
+  { path: '**', redirectTo: 'login' }, // unknown URL → redirect
 ];
 ```
 
@@ -116,7 +116,7 @@ private router = inject(Router);
 
 onSubmit() {
   // after saving, go back to the dashboard
-  this.router.navigate(['/']);
+  this.router.navigate(['/']); //TODO: AQUI ESPECIFICA QUE EN EL NAVIGATE DEBE SER UN ARRAY DE STRING
 }
 ```
 
@@ -126,10 +126,10 @@ Use this when you need to navigate after an action (form submit, delete, etc).
 
 Both do the same thing — navigate to a URL. The difference is WHERE you call them.
 
-| Approach             | Where                     | When to use                                                |
-| -------------------- | ------------------------- | ---------------------------------------------------------- |
-| `routerLink`         | Template (HTML)           | Links and buttons that always navigate to the same place   |
-| `Router.navigate()`  | TypeScript (component)    | After an action — submit a form, delete a record, log in  |
+| Approach            | Where                  | When to use                                              |
+| ------------------- | ---------------------- | -------------------------------------------------------- |
+| `routerLink`        | Template (HTML)        | Links and buttons that always navigate to the same place |
+| `Router.navigate()` | TypeScript (component) | After an action — submit a form, delete a record, log in |
 
 ### Location.back() — go to the previous page
 
@@ -179,6 +179,8 @@ Route parameters always come as `string` — even if the value looks like a numb
 
 When the route has a parameter, use an array in `routerLink`:
 
+//TODO: AQUI VEO QUE LA RUTA DEBE IR ENTRE COMILLAS MIENTRAS EL MEAL.IDMEAL NO. HAZ ESO EXPLICITO EN UNA FRASE CORTA
+
 ```html
 <div [routerLink]="['/detail', meal.idMeal]">...</div>
 ```
@@ -205,7 +207,7 @@ meal = signal<Meal | null>(null); // signal because the template needs to react 
 
 ngOnInit(): void {
   const id = this.route.snapshot.paramMap.get('id'); // plain const — not a signal, the user cannot change the id while on this page
-  this.loadMeal(id as string);
+  this.loadMeal(id as string); //TODO: ME GUSTA QUE APAREZCA EL NGoNiNIT CON EL SNAPSHOR PERO AÑADE JUSTO DEBAJO UN COMENTARIO QUE DIGA ALGO COMO: SI EL ID PUEDE CAMBIAR USAMOS .PARAMSMAP SIENDO EL NGONINIT: Y PONES EL CODIGO DE COMO SERIA EL NGONINIT EN ESE CASO PARA TENER  LOS DOS A LA VISTA RAPIDAMENTE Y PODER COMPARAR. ES DECIR, DESPUES DE ESTE NGONINIT QUIERO EL OTRO TAMBIEN, SIN LA NECESIDAD DE CAMBIAR TODO EL CODIGO, SIMPELEMNTE AGREGAR ESE FRAGMENTO
 }
 
 loadMeal(id: string): void { // separate method to keep ngOnInit clean
@@ -278,6 +280,8 @@ Official docs: https://angular.dev/guide/routing/common-router-tasks#preventing-
 
 ### The modern pattern — `CanActivateFn`
 
+//TODO:AQUI TE FALTA EMPEZAR AÑADIENDO EL COMANDO PARA CREAR EL GUARD.
+
 Angular v15+ uses plain functions instead of classes. No `@Injectable`, no class — just a function.
 
 ```typescript
@@ -300,7 +304,7 @@ export const authGuard: CanActivateFn = () => {
 
 - `inject()` works inside guard functions — same as in components
 - Return `true` — route loads normally
-- Return `router.createUrlTree(['/login'])` — redirects the user
+- Return `router.createUrlTree(['/login'])` — redirects the user //TODO: POR QUE NO SE USA UN ROUTER.NAVIGATE?????? AGREGALO BREVEMENTE AQUI DICIENDO EL POR QUE SE USA EL CREATEURLTREE Y NO EL NAVIGATE
 - Do not use `return false` alone — it blocks the route but shows a blank page
 
 ### Apply the guard to a route
@@ -318,16 +322,18 @@ export const routes: Routes = [
 
 ### `CanActivateFn` vs `CanActivate` (class-based — old)
 
-| | `CanActivateFn` (modern) | `CanActivate` (old) |
-|---|---|---|
-| Angular version | v15+ | Before v15 |
-| Style | Plain function | Class with interface |
-| Needs `@Injectable` | No | Yes |
-| Recommended | Yes | No — deprecated |
+|                     | `CanActivateFn` (modern) | `CanActivate` (old)  |
+| ------------------- | ------------------------ | -------------------- |
+| Angular version     | v15+                     | Before v15           |
+| Style               | Plain function           | Class with interface |
+| Needs `@Injectable` | No                       | Yes                  |
+| Recommended         | Yes                      | No — deprecated      |
 
 ### Role-based guard
 
-A second type of guard — checks not just *if* the user is logged in, but *what role* they have.
+//TODO: TE PASA LO MISMO QUE ANTES, NO ME ESTAS PONIENDO EL COMANDO PARA GENERARLO
+
+A second type of guard — checks not just _if_ the user is logged in, but _what role_ they have.
 
 ```typescript
 // core/guards/admin-guard.ts
@@ -339,9 +345,7 @@ export const adminGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  return authService.getUserRole() === 'admin'
-    ? true
-    : router.createUrlTree(['/dashboard']);
+  return authService.getUserRole() === 'admin' ? true : router.createUrlTree(['/dashboard']);
 };
 ```
 
@@ -379,6 +383,8 @@ By default, Angular loads all route components at startup — even pages the use
 
 Use `loadComponent:` instead of `component:`:
 
+//TODO: AQUI QUIERO QUE DEJES CLARO QUE SE USA EL .THEN CUANDO TENGO EXPORT Y NO HACE FALTA EL .THEN SI TENGO EXPORT DEFAULT
+
 ```typescript
 // component: — loads at startup (avoid in large apps)
 { path: 'login', component: LoginPage }
@@ -409,12 +415,13 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
-    loadComponent: () => import('./pages/login-page/login-page').then(m => m.LoginPage),
+    loadComponent: () => import('./pages/login-page/login-page').then((m) => m.LoginPage),
   },
   {
     path: 'dashboard',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/dashboard-page/dashboard-page').then(m => m.DashboardPage),
+    loadComponent: () =>
+      import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
   },
   { path: '**', redirectTo: 'login' },
 ];

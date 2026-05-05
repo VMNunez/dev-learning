@@ -193,15 +193,15 @@ In the template:
 ```html
 <!-- if loading, show spinner -->
 @if (isLoading()) {
-  <div class="spinner"></div>
+<div class="spinner"></div>
 
 <!-- if error, show message -->
 } @else if (hasError()) {
-  <p>Something went wrong. Try again.</p>
+<p>Something went wrong. Try again.</p>
 
 <!-- otherwise, show the data -->
 } @else {
-  <!-- show data -->
+<!-- show data -->
 }
 ```
 
@@ -255,7 +255,7 @@ loadWeather(city: string): void {
 
 ---
 
-## Environment variables — store API keys safely
+## Environment variables — store API keys safely // TODO: CREO QUE ESTA PARTE DEBE ESTAR LA ULTIMA EN ESTE ARCHIVO
 
 API keys must never be committed to git. Anyone who sees your repo can steal them and use your account.
 
@@ -285,7 +285,7 @@ export const environment = {
 src/environments/
 ```
 
-This file will never be pushed to GitHub.
+This file will never be pushed to GitHub. // TODO: EL STEP 3 ESTÁ MAS ABAJO, MUEVE TODO EL BLOQUE DE Environment variables — store API keys safely DESPUÉS DEL BLOQUE DEL HTTP INTERCEPTORS, DE FORMA QUE QUEDEN TODOS LOS STEP ORDENADOS Y TODO EL BLOQUE DE VARIABLES DE ENTORNO JUNTOS
 
 ---
 
@@ -306,6 +306,8 @@ Service → HttpClient → interceptor → network → backend
 ```
 
 ### The modern pattern — `HttpInterceptorFn`
+
+//TODO: CREO QUE FALTA EL COMANDO PARA GENERAR ESE ARCHIVO. ADEMAS CREO QUE CUANDO HABLAMOS MÁS ARRIBA DE LAS LLAMADAS A LA API, ES IMPORTANTE NOMBRAR QUE NORMALMENTE SE USA LOS INTERCEPTORS QUE SE EXPLICARÁN MÁS ABAJO. tAMBIÉN PODRÍAS COMENTAR USOS TIPICOS DEE ESTOS INTERCEPTOR, AUNQUE ESTOY VIENDO LO DEL TOKEN. TAMBIÉN PODRIAS COMENTAR UN POCO MEJOR EL CODIGO CON PATRONES TIPICOS USADOS EN LOS INTERCEPTOS. POR EJEMPLO DEJAR CLARO QUE SE SUELE HACER UN CLONE DEL REQUEST
 
 Angular v15+ uses plain functions, just like guards.
 
@@ -340,14 +342,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 ### Register in `app.config.ts`
 
+// TODO: AQUI COMENTA UN POCO QUE HAY QUE AGREGARLO AL APP.CONFIG DENTRO DEL PROVIDEHTTPCLIENT.
+
 ```typescript
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
-  ],
+  providers: [provideHttpClient(withFetch(), withInterceptors([authInterceptor]))],
 };
 ```
 
@@ -355,17 +357,17 @@ export const appConfig: ApplicationConfig = {
 
 ### Interceptor vs guard
 
-| | Guard | Interceptor |
-|---|---|---|
-| Runs before | Route loads | HTTP request goes out |
-| Purpose | Control navigation | Modify requests/responses |
+|               | Guard                       | Interceptor                               |
+| ------------- | --------------------------- | ----------------------------------------- |
+| Runs before   | Route loads                 | HTTP request goes out                     |
+| Purpose       | Control navigation          | Modify requests/responses                 |
 | Registered in | `canActivate: []` in routes | `withInterceptors([])` in `app.config.ts` |
 
 ### Note on tokens in production
 
 In a real app, the backend gives you a **JWT token** (a long random string) after login. You store that token — not the user's email or password — and send it in the `Authorization` header. Never store passwords in `localStorage`.
 
-### Step 3 — use it in the service
+### Step 3 — use it in the service //TODO: CREO QUE ESTA PARTE PERTENECÍA A LAS VARIABLES DE ENTORNO. COMO HE COMENTADO ANTES, JUSTO ARRIBA DE ESTE STEP 3 DEBE ESTAR EL BLOQUE DE VARIABLES DE ENTORNO
 
 ```typescript
 import { environment } from '../../../environments/environment';

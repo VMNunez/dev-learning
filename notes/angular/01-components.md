@@ -53,18 +53,18 @@ export class TaskList {
 ### Event binding — listen to a user action
 
 ```html
-<button (click)="deleteTask(task.id)">Delete</button>
-<input (input)="onSearch($event)" />
+<button (click)="deleteTask(task.id)">Delete</button> <input (input)="onSearch($event)" />
 ```
 
 ### Template reference variables — access an element directly in the template
 
 ```html
-<input #meal type="text" />
-<button (click)="onSearch(meal.value)">Search</button>
+<input #meal type="text" /> <button (click)="onSearch(meal.value)">Search</button>
 ```
 
 `#meal` creates a reference to the input element. You can pass `meal.value` to a method without needing a signal or form control. Use this for simple, one-field inputs.
+
+//TODO: AQUI HAY QUE ACLARAR QUE ESTE CONCEPTO ESTA RELACIONADO CON EL TEMPLATE REFERENCE, PERO CREO QUE //<input (input)="onSearch($event.target)" /> ESTABA PERMITIDO SI SE TIPABA En el typescript, NO LO SE. DE TODAS FORMAS INDICA UN POCO MEJOR POR QUE SE AGREGA ESTA PARTE
 
 **Why not `$event.target.value`?** In TypeScript strict mode, `$event.target` is typed as `EventTarget` — it has no `.value` property. Angular does not know the element is an `HTMLInputElement`. This causes a type error:
 
@@ -78,7 +78,7 @@ export class TaskList {
 
 The template reference variable gives you a typed `HTMLInputElement` reference directly — no casting needed.
 
-Combine with keyboard events for a complete search input:
+Combine with keyboard events for a complete search input: //TODO: INDICA QUE ESTO ES PARA QUE PUEDA REALIZAR LA BUSQUEDA AL HACER ENTER
 
 ```html
 <input #meal type="text" (keyup.enter)="onSearch(meal.value)" />
@@ -98,7 +98,7 @@ Combine with keyboard events for a complete search input:
 
 ## Inputs and outputs
 
-### Input — receive data from a parent component
+### Input — receive data from a parent component //TODO: AQUI CREO QUE HAY QUE INDICAR QUE ES BUENA PRACTICA PORQER UN ESTADO INICIAL EN LOS INPUT
 
 ```typescript
 // child component
@@ -204,6 +204,7 @@ export class WeatherPage implements OnInit {
 Use it to load data from an API when the component starts — not in the constructor.
 
 Typical uses:
+
 - Load data from an API when the page opens
 - Read a route parameter and call the API with it
 - Load data from localStorage into a signal
