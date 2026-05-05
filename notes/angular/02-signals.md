@@ -21,7 +21,11 @@ tasks = signal<Task[]>([]);
 const current = this.count();
 
 // in template
-{{ count() }}
+{
+  {
+    count();
+  }
+}
 ```
 
 ### Update a signal
@@ -31,14 +35,15 @@ const current = this.count();
 Use `.set()` when you want to assign a completely new value — replacing whatever was there before.
 
 Typical use cases:
+
 - Reset a list to empty: `this.tasks.set([])`
 - Set a boolean flag (loading, error): `this.isLoading.set(true)`
 - Replace data after an API call: `this.tasks.set(response.items)`
 
 ```typescript
 this.count.set(5);
-this.tasks.set([]);          // reset list
-this.isLoading.set(true);    // set a flag
+this.tasks.set([]); // reset list
+this.isLoading.set(true); // set a flag
 ```
 
 **`.update()` — derive new value from the current one**
@@ -46,14 +51,15 @@ this.isLoading.set(true);    // set a flag
 Use `.update()` when the new value depends on the current one. The function receives the current value and returns the new one.
 
 Typical use cases:
+
 - Add an item to an array
 - Remove an item from an array
 - Increment or decrement a counter
 
 ```typescript
 this.count.update((current) => current + 1);
-this.tasks.update((tasks) => [...tasks, newTask]);                   // add item
-this.tasks.update((tasks) => tasks.filter((t) => t.id !== id));     // remove item
+this.tasks.update((tasks) => [...tasks, newTask]); // add item
+this.tasks.update((tasks) => tasks.filter((t) => t.id !== id)); // remove item
 ```
 
 ---
@@ -63,6 +69,7 @@ this.tasks.update((tasks) => tasks.filter((t) => t.id !== id));     // remove it
 Use `computed()` when a value depends on other signals and should update automatically. You never update it directly — Angular recalculates it when its dependencies change.
 
 Typical use cases:
+
 - Filter a list based on the current filter signal
 - Count items that match a condition
 - Calculate a total from an array of amounts
@@ -71,24 +78,18 @@ Typical use cases:
 ```typescript
 tasks = signal<Task[]>([]);
 
-completedTasks = computed(() =>
-  this.tasks().filter(t => t.done)
-);
+completedTasks = computed(() => this.tasks().filter((t) => t.done));
 
-pendingCount = computed(() =>
-  this.tasks().filter(t => !t.done).length
-);
+pendingCount = computed(() => this.tasks().filter((t) => !t.done).length);
 
 totalIncome = computed(() =>
   this.transactions()
-    .filter(t => t.type === 'income')
+    .filter((t) => t.type === 'income')
     .reduce((acc, curr) => acc + curr.amount, 0)
 );
 
 // unique values from an array — explained below
-allCategories = computed(() =>
-  [...new Set(this.favourites().map(meal => meal.strCategory))]
-);
+allCategories = computed(() => [...new Set(this.favourites().map((meal) => meal.strCategory))]);
 ```
 
 ### Pattern — unique values with Set
@@ -127,7 +128,7 @@ Use it whenever you need to build a list of filters, tags, or categories from an
 Instead of using `if` with `return true` / `return false`, return the expression directly:
 
 ```typescript
-// verbose — avoid this
+// verbose — avoid this TODO: CREO QUE ESTE PRIMER EJEMPLO LE FALTA EL selectedPriority selectedPriority
 hasActiveFilters = computed(() => {
   if (this.selectedStatus() !== 'all') return true;
   return false;
@@ -136,7 +137,9 @@ hasActiveFilters = computed(() => {
 // clean — do this
 hasActiveFilters = computed(
   () =>
-    this.selectedStatus() !== 'all' || this.selectedPriority() !== 'all' || this.searchTerm() !== ''
+    this.selectedStatus() !== 'all' ||
+    this.selectedPriority() !== 'all' ||
+    this.selectedPriority() !== ''
 );
 ```
 
@@ -176,6 +179,13 @@ Both conditions must be `true` for the task to appear in the list.
 ---
 
 ## effect() — side effects
+
+// TODO: EN MIS PROYECTOS HE USADO EL EFFECT CASI SIEMPRE PARA EL LOCALSTORAGE, PERO CREO QUE LO HABIAMOS USADO PARA OTRO CASO. constructor() {
+effect(() => {
+this.dataSource.data = this.tasks();
+});
+}
+quiero que lo añadas pero que pongas un poco en contexto en cuándo se usaba, porque creo que esto tenia que ver con Angular Material y el uso de MtTableDataSourceModule
 
 `effect()` runs a function automatically when a tracked signal changes. Use it for side effects — things outside Angular like localStorage, logging, or external updates.
 

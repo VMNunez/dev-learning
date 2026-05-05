@@ -19,6 +19,8 @@ Add `ReactiveFormsModule` to the `imports` array of the component that contains 
 
 ## FormGroup and FormControl
 
+//TODO: AQUI COMENTA QUE EN EL TYPESCRIPT CREAMOS EL FORM
+
 ```typescript
 transactionForm = new FormGroup({
   description: new FormControl<string | null>('', Validators.required),
@@ -53,23 +55,23 @@ transactionForm = new FormGroup({
 Angular provides validators for the most common cases. You pass them to `FormControl` as the second argument.
 
 ```typescript
-Validators.required        // field cannot be empty
-Validators.min(0.01)       // minimum value for numbers
-Validators.max(100)        // maximum value
-Validators.minLength(3)    // minimum text length
-Validators.email           // valid email format
+Validators.required; // field cannot be empty
+Validators.min(0.01); // minimum value for numbers
+Validators.max(100); // maximum value
+Validators.minLength(3); // minimum text length
+Validators.email; // valid email format
 ```
 
 One validator — pass it directly:
 
 ```typescript
-new FormControl('', Validators.required)
+new FormControl('', Validators.required);
 ```
 
 Multiple validators — pass an array:
 
 ```typescript
-new FormControl(null, [Validators.required, Validators.min(0.01)])
+new FormControl(null, [Validators.required, Validators.min(0.01)]);
 ```
 
 ## Accessing form values
@@ -89,7 +91,7 @@ Now in the template you can write `description` instead of `transactionForm.get(
 
 ```html
 @if (description?.touched && description?.hasError('required')) {
-  <p class="error-msg">Description is required</p>
+<p class="error-msg">Description is required</p>
 }
 ```
 
@@ -106,11 +108,13 @@ onSubmit() {
 }
 ```
 
-You can also cast it to a type:
+You can also cast it to a type: //TODO: ESTA PARTE NO LA HE ENTENDIDO, QUE LO PUEDES MANDAR TODO DE GOLPE SI QUIERES? A ESO SE REFIERE?
 
 ```typescript
 this.myOutput.emit(this.transactionForm.value as NewTransaction);
 ```
+
+//TODO: DESPUES DE ESTO QUIERO QUE PONGAS A MODO DE RESUMEN LAS FORMAS QUE EXISTEN DE ACCEDER A LAS PROPIEDADES DEL FORMULARIO PORQUE VEO DOS OPCIONES:this.transactionForm.get('description'); Y LA OTRA this.transactionForm.value.description o con const formValue = this.transactionForm.value y luego hacer formValue.description o directamente con const{description} = this.transactionForm.value; asi que las formas de hacer eso y sus usos las quiero aqui incluidad en una breve sección pero que incluya suficiente contexto y explicacion y casos de uso, y me diga cual se usa mas y en qué casos
 
 ---
 
@@ -124,7 +128,7 @@ Do not show errors immediately on page load — only after the user has interact
 
 ```html
 @if (description?.touched && description?.hasError('required')) {
-  <p class="error-msg">Description is required</p>
+<p class="error-msg">Description is required</p>
 }
 ```
 
@@ -147,6 +151,7 @@ onSubmit() {
 ```
 
 This is the standard `onSubmit` pattern:
+
 1. Mark all fields as touched (so all errors are visible)
 2. Then check `form.valid` before doing anything
 
@@ -296,13 +301,15 @@ constructor() {
 | `patchValue()` | Only updates the fields you pass — ignores missing ones     |
 | `setValue()`   | Requires **all** fields — throws an error if any is missing |
 
+//TODO: ME HAS INCLUIDO EL SETVALUE CUANDO YO NUNCA LO HE USADO EN MIS PROYECTOS NI HE VISTO EJEMPLOS. SI CREES QUE DEBO CONOCER EL SETVALUE, AL MENOS PONME UN EJEMPLO DE USO EN MIS NOTES
+
 Use `patchValue()` when editing. Use `setValue()` only when you are sure you have every field.
 
 ---
 
 ## TypeScript utilities
 
-> These TypeScript patterns appear throughout Angular code. They deserve their own reference file — see `notes/typescript/` (to be created). For now they live here.
+> These TypeScript patterns appear throughout Angular code. They deserve their own reference file — see `notes/typescript/` (to be created). For now they live here. // TODO: DIJIMOS QUE ME TENIAS QUE CREAR NOTES/TYPESCRIPT PARA ALMACENAR LAS NOTAS DE TYPESCRIPT. LO HAS NOMBRADO AQUI Y NO LO HAS CREADO. QUIERO QUE BORRES DE ESTE ARCHIVO EL TYPESCRIPT UTILITIES PARA ALMACENARLO EN UN CARPETA PROPIA COMO YA COMENTAMOS
 
 ### Omit — create a type without some fields
 
@@ -333,11 +340,11 @@ For real-time search or live filtering, use `(input)` — it fires on every char
 <input (input)="onSearch($event)" />
 ```
 
-| Event      | When it fires                          | Use for                        |
-| ---------- | -------------------------------------- | ------------------------------ |
-| `(input)`  | Every keystroke, paste, delete         | Real-time search, live filter  |
-| `(keyup)`  | Every key release — misses mouse paste | Less reliable, avoid           |
-| `(change)` | When the field loses focus             | Not useful for live filtering  |
+| Event      | When it fires                          | Use for                       |
+| ---------- | -------------------------------------- | ----------------------------- |
+| `(input)`  | Every keystroke, paste, delete         | Real-time search, live filter |
+| `(keyup)`  | Every key release — misses mouse paste | Less reliable, avoid          |
+| `(change)` | When the field loses focus             | Not useful for live filtering |
 
 `(input)` is the best choice for live filtering. `(keyup)` misses clipboard paste with the mouse. `(change)` only fires once after the user leaves the field.
 
