@@ -22,7 +22,7 @@ export const routes: Routes = [
 
 Every app needs two extra routes:
 
-**Default route** — what to show when the user visits `/` (the root URL). Use `redirectTo` to send them to a specific page. //TODO: COMENTA QUE ESTO SE USA PARA REDIRIGIR AL USUARIO CUANDO CARGA POR PRIMERA VEZ LA PAGINA
+**Default route** — redirect the user when they first open the app at `/`. Use `redirectTo` to send them to the right starting page (for example, the login page or dashboard).
 
 ```typescript
 { path: '', redirectTo: 'login', pathMatch: 'full' }
@@ -116,7 +116,7 @@ private router = inject(Router);
 
 onSubmit() {
   // after saving, go back to the dashboard
-  this.router.navigate(['/']); //TODO: AQUI ESPECIFICA QUE EN EL NAVIGATE DEBE SER UN ARRAY DE STRING
+  this.router.navigate(['/dashboard']); // takes an array — each path segment is one element
 }
 ```
 
@@ -179,7 +179,7 @@ Route parameters always come as `string` — even if the value looks like a numb
 
 When the route has a parameter, use an array in `routerLink`:
 
-//TODO: AQUI VEO QUE LA RUTA DEBE IR ENTRE COMILLAS MIENTRAS EL MEAL.IDMEAL NO. HAZ ESO EXPLICITO EN UNA FRASE CORTA
+The path goes in quotes (`'/detail'`) because it is a literal string. The variable goes without quotes (`meal.idMeal`) because it is evaluated as JavaScript — Angular reads its value at runtime.
 
 ```html
 <div [routerLink]="['/detail', meal.idMeal]">...</div>
@@ -206,8 +206,16 @@ private mealService = inject(MealService);
 meal = signal<Meal | null>(null); // signal because the template needs to react when data arrives
 
 ngOnInit(): void {
-  const id = this.route.snapshot.paramMap.get('id'); // plain const — not a signal, the user cannot change the id while on this page
-  this.loadMeal(id as string); //TODO: ME GUSTA QUE APAREZCA EL NGoNiNIT CON EL SNAPSHOR PERO AÑADE JUSTO DEBAJO UN COMENTARIO QUE DIGA ALGO COMO: SI EL ID PUEDE CAMBIAR USAMOS .PARAMSMAP SIENDO EL NGONINIT: Y PONES EL CODIGO DE COMO SERIA EL NGONINIT EN ESE CASO PARA TENER  LOS DOS A LA VISTA RAPIDAMENTE Y PODER COMPARAR. ES DECIR, DESPUES DE ESTE NGONINIT QUIERO EL OTRO TAMBIEN, SIN LA NECESIDAD DE CAMBIAR TODO EL CODIGO, SIMPELEMNTE AGREGAR ESE FRAGMENTO
+  const id = this.route.snapshot.paramMap.get('id'); // plain const — not a signal
+  this.loadMeal(id as string);
+}
+
+// If the id can change without leaving the page — use paramMap.subscribe instead:
+ngOnInit(): void {
+  this.route.paramMap.subscribe((params) => {
+    const id = params.get('id');
+    this.loadMeal(id as string);
+  });
 }
 
 loadMeal(id: string): void { // separate method to keep ngOnInit clean
@@ -280,7 +288,11 @@ Official docs: https://angular.dev/guide/routing/common-router-tasks#preventing-
 
 ### The modern pattern — `CanActivateFn`
 
-//TODO:AQUI TE FALTA EMPEZAR AÑADIENDO EL COMANDO PARA CREAR EL GUARD.
+Generate the guard with the CLI:
+
+```bash
+ng generate guard core/guards/auth
+```
 
 Angular v15+ uses plain functions instead of classes. No `@Injectable`, no class — just a function.
 
@@ -304,7 +316,7 @@ export const authGuard: CanActivateFn = () => {
 
 - `inject()` works inside guard functions — same as in components
 - Return `true` — route loads normally
-- Return `router.createUrlTree(['/login'])` — redirects the user //TODO: POR QUE NO SE USA UN ROUTER.NAVIGATE?????? AGREGALO BREVEMENTE AQUI DICIENDO EL POR QUE SE USA EL CREATEURLTREE Y NO EL NAVIGATE
+- Return `router.createUrlTree(['/login'])` — redirects the user. Use this instead of `router.navigate()` because a guard must return a value synchronously (`boolean` or `UrlTree`). `router.navigate()` is async and designed for components — inside a guard it can cause the navigation to run twice.
 - Do not use `return false` alone — it blocks the route but shows a blank page
 
 ### Apply the guard to a route
@@ -331,7 +343,11 @@ export const routes: Routes = [
 
 ### Role-based guard
 
-//TODO: TE PASA LO MISMO QUE ANTES, NO ME ESTAS PONIENDO EL COMANDO PARA GENERARLO
+Generate the guard with the CLI:
+
+```bash
+ng generate guard core/guards/admin
+```
 
 A second type of guard — checks not just _if_ the user is logged in, but _what role_ they have.
 
@@ -383,14 +399,17 @@ By default, Angular loads all route components at startup — even pages the use
 
 Use `loadComponent:` instead of `component:`:
 
-//TODO: AQUI QUIERO QUE DEJES CLARO QUE SE USA EL .THEN CUANDO TENGO EXPORT Y NO HACE FALTA EL .THEN SI TENGO EXPORT DEFAULT
+The `.then()` call is needed because Angular uses **named exports** (`export class LoginPage`). You must extract the class by name. If you used a **default export** (`export default class LoginPage`) you could skip `.then()` — but Angular uses named exports by convention, so always include `.then()`.
 
 ```typescript
 // component: — loads at startup (avoid in large apps)
 { path: 'login', component: LoginPage }
 
-// loadComponent: — loads only when the user visits /login
+// loadComponent: with named export (Angular convention — always use this)
 { path: 'login', loadComponent: () => import('./pages/login-page/login-page').then(m => m.LoginPage) }
+
+// loadComponent: with default export (less common — no .then() needed)
+{ path: 'login', loadComponent: () => import('./pages/login-page/login-page') }
 ```
 
 The arrow function is a **dynamic import** — Angular calls it only when needed.

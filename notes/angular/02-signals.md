@@ -128,9 +128,10 @@ Use it whenever you need to build a list of filters, tags, or categories from an
 Instead of using `if` with `return true` / `return false`, return the expression directly:
 
 ```typescript
-// verbose — avoid this TODO: CREO QUE ESTE PRIMER EJEMPLO LE FALTA EL selectedPriority selectedPriority
+// verbose — avoid this
 hasActiveFilters = computed(() => {
   if (this.selectedStatus() !== 'all') return true;
+  if (this.selectedPriority() !== 'all') return true;
   return false;
 });
 
@@ -180,20 +181,31 @@ Both conditions must be `true` for the task to appear in the list.
 
 ## effect() — side effects
 
-// TODO: EN MIS PROYECTOS HE USADO EL EFFECT CASI SIEMPRE PARA EL LOCALSTORAGE, PERO CREO QUE LO HABIAMOS USADO PARA OTRO CASO. constructor() {
-effect(() => {
-this.dataSource.data = this.tasks();
-});
-}
-quiero que lo añadas pero que pongas un poco en contexto en cuándo se usaba, porque creo que esto tenia que ver con Angular Material y el uso de MtTableDataSourceModule
-
 `effect()` runs a function automatically when a tracked signal changes. Use it for side effects — things outside Angular like localStorage, logging, or external updates.
 
+**Common use case 1 — sync signal state with localStorage:**
+
 ```typescript
-effect(() => {
-  localStorage.setItem('favourites', JSON.stringify(this.favourites()));
-});
+constructor() {
+  effect(() => {
+    localStorage.setItem('favourites', JSON.stringify(this.favourites()));
+  });
+}
 ```
+
+**Common use case 2 — sync a signal with `MatTableDataSource`:**
+
+Angular Material's `MatTableDataSource` is not reactive — it holds a plain array, not a signal. When your data is stored in a signal, you need `effect()` to push updates into the data source every time the signal changes:
+
+```typescript
+constructor() {
+  effect(() => {
+    this.dataSource.data = this.tasks();
+  });
+}
+```
+
+This is the standard pattern when using `MatTable` with signals. Without `effect()`, the table would not update when `tasks()` changes.
 
 - Runs once when the component or service is created
 - Runs again every time a signal inside it changes
