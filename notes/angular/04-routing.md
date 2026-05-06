@@ -393,6 +393,143 @@ export const adminGuard: CanActivateFn = (_, state) => { ... }
 
 ---
 
+## CanDeactivate guard — warn before leaving a page
+
+Official docs: https://angular.dev/api/router/CanDeactivateFn
+
+### What is it?
+
+`CanActivate` runs **before entering** a route — it decides "can this user go here?"
+
+`CanDeactivate` runs **before leaving** a route — it decides "can this user go away from here?"
+
+The most common use: a routed form with unsaved changes. If the user tries to leave without saving, show a confirmation dialog.
+
+### The key difference from CanActivate
+
+`CanDeactivate` receives the **current component instance** as its first parameter. This is because the guard needs to check the component's state — for example, whether its form is dirty.
+
+`CanActivate` only receives route info. `CanDeactivate` also receives the component being left.
+
+### Generate the guard
+
+```bash
+ng generate guard core/guards/deactivate-guard
+# select CanDeactivate when prompted
+```
+
+### The pattern
+
+```typescript
+import { CanDeactivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { map } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DepartmentForm } from '../../pages/department-page/department-form/department-form';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+
+export const deactivateGuard: CanDeactivateFn<DepartmentForm> = (component) => {
+  const dialog = inject(MatDialog);
+
+  if (!component.departmentForm.dirty) {
+    return true;
+  }
+
+  const dialogRef = dialog.open(ConfirmDialog, {
+    width: '500px',
+    autoFocus: false,
+    data: {
+      title: 'Unsaved changes',
+      message: 'You have unsaved changes. Are you sure you want to leave?',
+      cancelLabel: 'Stay',
+      confirmLabel: 'Leave',
+    },
+  });
+
+  return dialogRef.afterClosed().pipe(map((result) => !!result));
+};
+```
+
+**Key points:**
+
+- `inject()` goes at the **top of the function**, before any `if` — always
+- `component` is not a signal — access its properties directly: `component.departmentForm.dirty`
+- The component's form must not be `private` — the guard reads it from outside the class
+- In TypeScript, a class can be used as a type: `CanDeactivateFn<DepartmentForm>` is valid
+
+### Return values
+
+| What the guard returns | What Angular does |
+| ---------------------- | ----------------- |
+| `true` | Navigation happens |
+| `false` | Navigation is blocked |
+| `Observable<boolean>` | Angular waits for the observable to emit, then decides |
+
+### Why return the observable instead of subscribing?
+
+In a **component**, you call `.subscribe()` because you handle the value yourself.
+
+In a **guard**, you **return the observable** — Angular subscribes to it internally and waits for the value. You do not call `.subscribe()`.
+
+### Why `.pipe(map(result => !!result))`?
+
+`afterClosed()` emits `true` when the user confirms, or `undefined` when they cancel (or close the dialog by clicking the backdrop or pressing Escape).
+
+Angular needs a proper `boolean`. `!!` converts any value to boolean:
+
+```
+!!true      → true   (user confirmed → navigate)
+!!undefined → false  (user cancelled → stay)
+```
+
+Without `map`, the observable emits `undefined` on cancel — Angular treats it as falsy but the return type is not clean.
+
+### When does the dialog emit `undefined`?
+
+- User clicks the **cancel button** (`mat-dialog-close` with no value)
+- User clicks the **backdrop** (outside the dialog)
+- User presses **Escape**
+
+Only the confirm button emits `true` — because it calls `dialogRef.close(true)`.
+
+### The successful save problem — markAsPristine()
+
+After a successful submit, the form navigates away with `router.navigate()`. At that moment, `CanDeactivate` fires. The form is dirty (the user filled it in), so the guard would open the dialog — even though the user just saved.
+
+Fix: call `this.departmentForm.markAsPristine()` **before** `router.navigate()`. This resets the dirty state. The guard sees the form as clean and returns `true` immediately.
+
+```typescript
+onSubmit() {
+  if (this.departmentForm.valid) {
+    // ... save logic ...
+    this.departmentForm.markAsPristine(); // reset dirty state before navigating
+    this.router.navigate(['departments']); // guard fires but sees clean form → allows
+  }
+}
+```
+
+### Apply the guard to a route
+
+```typescript
+// app.routes.ts
+import { deactivateGuard } from './core/guards/deactivate-guard';
+
+{
+  path: 'departments/new',
+  canDeactivate: [deactivateGuard],
+  loadComponent: () => import('...').then((m) => m.DepartmentForm),
+},
+{
+  path: 'departments/edit/:id',
+  canDeactivate: [deactivateGuard],
+  loadComponent: () => import('...').then((m) => m.DepartmentForm),
+},
+```
+
+`canDeactivate` takes an array — same pattern as `canActivate`.
+
+---
+
 ## Lazy loading
 
 By default, Angular loads all route components at startup — even pages the user may never visit. Lazy loading fixes that: a component only loads when the user navigates to its route.
@@ -459,5 +596,8 @@ export const routes: Routes = [
 | `RouterOutlet`                 | Where the active page component renders      |
 | `ActivatedRoute`               | Read route parameters inside a component     |
 | `CanActivateFn`                | Protect a route — run logic before it loads  |
+| `CanDeactivateFn<Component>`   | Intercept navigation away — check form state |
 | `canActivate: [g1, g2]`        | Stack multiple guards — run in order         |
+| `canDeactivate: [guard]`       | Apply a deactivate guard to a route          |
+| `markAsPristine()`             | Reset form dirty state after a successful save |
 | `loadComponent:`               | Lazy load a component — only when needed     |
