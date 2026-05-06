@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import type { Employee } from '../../../../models/employee.model';
+import { Department } from '../../../../models/department.model';
 
 @Component({
   selector: 'app-employee-filters',
@@ -12,7 +12,7 @@ import type { Employee } from '../../../../models/employee.model';
   styleUrl: './employee-filters.css',
 })
 export class EmployeeFilters {
-  departments = input<string[]>([]);
+  departments = input<Department[]>([]);
   searchTerm = input<string>('');
   selectedDepartment = input<string>('');
   selectedStatus = input<string>('');
