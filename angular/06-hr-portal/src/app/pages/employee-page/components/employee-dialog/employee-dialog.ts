@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { Employee } from '../../../../models/employee.model';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import { DepartmentService } from '../../../../core/services/department.service';
 
 @Component({
   selector: 'app-employee-dialog',
@@ -27,10 +28,12 @@ import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/conf
   styleUrl: './employee-dialog.css',
 })
 export class EmployeeDialog {
+  private departmentService = inject(DepartmentService);
   private dialogRef = inject(MatDialogRef);
   private dialog = inject(MatDialog);
   data = inject<{ employee: Employee } | undefined>(MAT_DIALOG_DATA);
   emailAlreadyExists = signal<boolean>(false);
+  departments = this.departmentService.departments;
 
   newEmployeeForm = new FormGroup({
     firstName: new FormControl('', Validators.required),

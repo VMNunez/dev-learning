@@ -35,7 +35,11 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Department</mat-label>
-      <input type="text" matInput formControlName="department" />
+      <mat-select formControlName="department">
+        @for (dept of departments(); track dept.id) {
+          <mat-option [value]="dept.name">{{ dept.name }}</mat-option>
+        }
+      </mat-select>
       @if (department()?.touched && department()?.hasError('required')) {
         <mat-error>Department is required</mat-error>
       }
