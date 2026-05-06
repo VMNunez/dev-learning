@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { adminGuard } from './core/guards/admin-guard';
+import { deactivateGuard } from './core/guards/deactivate-guard';
 
 export const routes: Routes = [
   {
@@ -37,6 +38,7 @@ export const routes: Routes = [
   {
     path: 'departments/new',
     canActivate: [authGuard, adminGuard],
+    canDeactivate: [deactivateGuard],
     loadComponent: () =>
       import('./pages/department-page/department-form/department-form').then(
         (m) => m.DepartmentForm,
@@ -45,6 +47,7 @@ export const routes: Routes = [
   {
     path: 'departments/edit/:id',
     canActivate: [authGuard, adminGuard],
+    canDeactivate: [deactivateGuard],
     loadComponent: () =>
       import('./pages/department-page/department-form/department-form').then(
         (m) => m.DepartmentForm,
