@@ -32,6 +32,43 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 ### CSS
 - —
 
+## Project structure
+
+```
+src/app/
+├── core/                        ← singleton logic, no UI
+│   ├── guards/
+│   │   ├── auth-guard.ts
+│   │   └── admin-guard.ts
+│   ├── interceptors/
+│   │   └── auth-interceptor.ts
+│   └── services/
+│       ├── auth.service.ts
+│       ├── employee.service.ts
+│       └── department.service.ts
+├── pages/                       ← one folder per route (feature components)
+│   ├── login-page/
+│   ├── dashboard-page/
+│   ├── admin-page/
+│   ├── employee-page/
+│   │   └── components/
+│   │       ├── employee-dialog/
+│   │       ├── employee-filters/
+│   │       └── employee-table/
+│   └── department-page/
+│       ├── components/
+│       │   └── department-list/
+│       └── department-form/
+├── shared/                      ← reusable UI components used across features
+│   └── components/
+│       └── confirm-dialog/
+├── models/                      ← TypeScript interfaces
+│   ├── user.model.ts
+│   ├── employee.model.ts
+│   └── department.model.ts
+└── app.routes.ts
+```
+
 ## Tech stack
 
 - Angular 21
