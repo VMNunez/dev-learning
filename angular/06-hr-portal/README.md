@@ -27,6 +27,7 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 - `MatSnackBar` — toast notifications after user actions
 - `MatStepper` — multi-step forms
 - `CanDeactivate` guard — warn the user before leaving a form with unsaved changes
+- `markAsPristine()` — reset form dirty state after a successful save so the guard does not interrupt navigation
 - Core/Feature/Shared architecture — enterprise Angular folder structure
 
 ### CSS

@@ -79,3 +79,24 @@ signal<string | number>(0)
 ```
 
 Use union types to restrict what values a field can hold — better than plain `string`.
+
+---
+
+## Classes as types
+
+In TypeScript, a class can be used as a type. You do not need a separate `interface` — the class itself defines the shape.
+
+```typescript
+export class DepartmentForm {
+  departmentForm = new FormGroup({ ... });
+}
+
+// The class is used as a type parameter here
+export const deactivateGuard: CanDeactivateFn<DepartmentForm> = (component) => {
+  // component is typed as DepartmentForm
+  // so TypeScript knows about departmentForm, editId, etc.
+  return component.departmentForm.dirty;
+};
+```
+
+This is common in Angular when writing `CanDeactivate` guards — the guard receives the component instance and needs to know its shape to access its properties.
