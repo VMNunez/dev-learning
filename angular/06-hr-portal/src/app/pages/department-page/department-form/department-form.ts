@@ -69,6 +69,7 @@ export class DepartmentForm implements OnInit {
         };
         this.departmentService.addDepartment(newDepartment);
       }
+      this.departmentForm.markAsPristine();
       this.router.navigate(['departments']);
     }
   }
