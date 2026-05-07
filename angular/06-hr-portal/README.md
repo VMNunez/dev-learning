@@ -29,6 +29,8 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 - `CanDeactivate` guard — warn the user before leaving a form with unsaved changes
 - `markAsPristine()` — reset form dirty state after a successful save so the guard does not interrupt navigation
 - Core/Feature/Shared architecture — enterprise Angular folder structure
+- `setErrors({ customKey: true })` — set a custom error on a form control for service-level validation (e.g. duplicate check)
+- Duplicate check pattern — `nameExists()` / `emailExists()` in the service with optional `excludeId` for edit mode; `setErrors()` + `return` in `onSubmit()`
 
 ### CSS
 - —
