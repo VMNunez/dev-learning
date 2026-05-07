@@ -1,0 +1,38 @@
+table {
+  table-layout: fixed;
+}
+
+tr.mat-mdc-row:hover {
+  background-color: var(--color-tr-hover);
+}
+
+.mat-column-description {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mat-column-actions {
+  text-align: center;
+}
+
+.not-data-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 0;
+  gap: 0.5rem;
+}
+
+.not-data-content mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  opacity: 0.5;
+}
+
+mat-paginator {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}

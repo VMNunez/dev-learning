@@ -16,8 +16,8 @@
       [value]="selectedDepartment()"
     >
       <mat-option value="">All</mat-option>
-      @for (department of departments(); track department) {
-        <mat-option [value]="department">{{ department }}</mat-option>
+      @for (department of departments(); track department.id) {
+        <mat-option [value]="department.name">{{ department.name }}</mat-option>
       }
     </mat-select>
   </mat-form-field>

@@ -193,15 +193,15 @@ In the template:
 ```html
 <!-- if loading, show spinner -->
 @if (isLoading()) {
-  <div class="spinner"></div>
+<div class="spinner"></div>
 
 <!-- if error, show message -->
 } @else if (hasError()) {
-  <p>Something went wrong. Try again.</p>
+<p>Something went wrong. Try again.</p>
 
 <!-- otherwise, show the data -->
 } @else {
-  <!-- show data -->
+<!-- show data -->
 }
 ```
 
@@ -255,6 +255,102 @@ loadWeather(city: string): void {
 
 ---
 
+## HTTP Interceptors
+
+An interceptor is a function that runs automatically before every HTTP request. It can modify the request — for example, adding an auth header — without touching any service.
+
+In real projects, most API calls go through an interceptor to add the auth token. The services themselves do not know about authentication — that responsibility is handled once, in the interceptor.
+
+Official docs: https://angular.dev/guide/http/interceptors
+
+### Why interceptors exist
+
+Without an interceptor, you would have to add the `Authorization` header manually in every service method. With an interceptor, you write it once and it runs on every request automatically.
+
+The flow:
+
+```
+Service → HttpClient → interceptor → network → backend
+```
+
+### Typical use cases
+
+| Use case | What the interceptor does |
+| --- | --- |
+| Add auth token | Adds `Authorization: Bearer <token>` to every request |
+| Global loading indicator | Sets a loading signal to `true` before the request, `false` after |
+| Error handling | Catches 401 (Unauthorized) and redirects to login |
+| Logging | Logs every outgoing request for debugging |
+
+### The modern pattern — `HttpInterceptorFn`
+
+Generate the interceptor with the CLI:
+
+```bash
+ng generate interceptor core/interceptors/auth
+```
+
+Angular v15+ uses plain functions, just like guards.
+
+```typescript
+// core/interceptors/auth-interceptor.ts
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+  const token = authService.currentUser()?.email;
+
+  if (token) {
+    // HTTP requests are immutable — never modify req directly
+    // req.clone() creates a copy with your changes applied — this is always the pattern
+    const modifiedReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return next(modifiedReq); // send the modified request
+  }
+
+  return next(req); // no token — send the original request unchanged
+};
+```
+
+- `req` — the outgoing request (immutable — never modify it directly)
+- `next` — the function that sends the request on to the network
+- `req.clone()` — creates a copy of the request with the changes you specify. Clone, modify, send — always this pattern.
+- `setHeaders` — adds or replaces headers on the cloned request
+
+### Register in `app.config.ts`
+
+The interceptor must be added inside `provideHttpClient()`, using `withInterceptors()`:
+
+```typescript
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './core/interceptors/auth-interceptor';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideHttpClient(withFetch(), withInterceptors([authInterceptor]))],
+};
+```
+
+`withInterceptors()` takes an array — you can stack multiple interceptors in order.
+
+### Interceptor vs guard
+
+|               | Guard                       | Interceptor                               |
+| ------------- | --------------------------- | ----------------------------------------- |
+| Runs before   | Route loads                 | HTTP request goes out                     |
+| Purpose       | Control navigation          | Modify requests/responses                 |
+| Registered in | `canActivate: []` in routes | `withInterceptors([])` in `app.config.ts` |
+
+### Note on tokens in production
+
+In a real app, the backend gives you a **JWT token** (a long random string) after login. You store that token — not the user's email or password — and send it in the `Authorization` header. Never store passwords in `localStorage`.
+
+---
+
 ## Environment variables — store API keys safely
 
 API keys must never be committed to git. Anyone who sees your repo can steal them and use your account.
@@ -286,84 +382,6 @@ src/environments/
 ```
 
 This file will never be pushed to GitHub.
-
----
-
-## HTTP Interceptors
-
-An interceptor is a function that runs automatically before every HTTP request. It can modify the request — for example, adding an auth header — without touching any service.
-
-Official docs: https://angular.dev/guide/http/interceptors
-
-### Why interceptors exist
-
-Without an interceptor, you would have to add the `Authorization` header manually in every service method. With an interceptor, you write it once and it runs on every request automatically.
-
-The flow:
-
-```
-Service → HttpClient → interceptor → network → backend
-```
-
-### The modern pattern — `HttpInterceptorFn`
-
-Angular v15+ uses plain functions, just like guards.
-
-```typescript
-// core/interceptors/auth-interceptor.ts
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.currentUser()?.email;
-
-  if (token) {
-    const modifiedReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return next(modifiedReq);
-  }
-
-  return next(req);
-};
-```
-
-- `req` — the outgoing request (immutable — never modify it directly)
-- `next` — the function that sends the request on to the network
-- `req.clone()` — creates a copy of the request with the changes you specify
-- `setHeaders` — adds or replaces headers on the cloned request
-- If there is no token, pass the request unchanged with `next(req)`
-
-### Register in `app.config.ts`
-
-```typescript
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './core/interceptors/auth-interceptor';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
-  ],
-};
-```
-
-`withInterceptors()` takes an array — you can stack multiple interceptors in order.
-
-### Interceptor vs guard
-
-| | Guard | Interceptor |
-|---|---|---|
-| Runs before | Route loads | HTTP request goes out |
-| Purpose | Control navigation | Modify requests/responses |
-| Registered in | `canActivate: []` in routes | `withInterceptors([])` in `app.config.ts` |
-
-### Note on tokens in production
-
-In a real app, the backend gives you a **JWT token** (a long random string) after login. You store that token — not the user's email or password — and send it in the `Authorization` header. Never store passwords in `localStorage`.
 
 ### Step 3 — use it in the service
 

@@ -27,10 +27,50 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 - `MatSnackBar` — toast notifications after user actions
 - `MatStepper` — multi-step forms
 - `CanDeactivate` guard — warn the user before leaving a form with unsaved changes
+- `markAsPristine()` — reset form dirty state after a successful save so the guard does not interrupt navigation
 - Core/Feature/Shared architecture — enterprise Angular folder structure
+- `setErrors({ customKey: true })` — set a custom error on a form control for service-level validation (e.g. duplicate check)
+- Duplicate check pattern — `nameExists()` / `emailExists()` in the service with optional `excludeId` for edit mode; `setErrors()` + `return` in `onSubmit()`
 
 ### CSS
 - —
+
+## Project structure
+
+```
+src/app/
+├── core/                        ← singleton logic, no UI
+│   ├── guards/
+│   │   ├── auth-guard.ts
+│   │   └── admin-guard.ts
+│   ├── interceptors/
+│   │   └── auth-interceptor.ts
+│   └── services/
+│       ├── auth.service.ts
+│       ├── employee.service.ts
+│       └── department.service.ts
+├── pages/                       ← one folder per route (feature components)
+│   ├── login-page/
+│   ├── dashboard-page/
+│   ├── admin-page/
+│   ├── employee-page/
+│   │   └── components/
+│   │       ├── employee-dialog/
+│   │       ├── employee-filters/
+│   │       └── employee-table/
+│   └── department-page/
+│       ├── components/
+│       │   └── department-list/
+│       └── department-form/
+├── shared/                      ← reusable UI components used across features
+│   └── components/
+│       └── confirm-dialog/
+├── models/                      ← TypeScript interfaces
+│   ├── user.model.ts
+│   ├── employee.model.ts
+│   └── department.model.ts
+└── app.routes.ts
+```
 
 ## Tech stack
 

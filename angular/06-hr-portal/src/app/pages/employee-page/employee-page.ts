@@ -1,12 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
 import { EmployeeService } from '../../core/services/employee.service';
 import type { Employee } from '../../models/employee.model';
 import { EmployeeTable } from './components/employee-table/employee-table';
 import { EmployeeFilters } from './components/employee-filters/employee-filters';
+import { DepartmentService } from '../../core/services/department.service';
 
 @Component({
   selector: 'app-employee-page',
@@ -16,8 +17,10 @@ import { EmployeeFilters } from './components/employee-filters/employee-filters'
 })
 export class EmployeePage {
   private employeeService = inject(EmployeeService);
+  private departmentService = inject(DepartmentService);
   private dialog = inject(MatDialog);
   employees = this.employeeService.employees;
+  departments = this.departmentService.departments;
   searchTerm = signal<string>('');
   selectedDepartment = signal<string>('');
   selectedStatus = signal<string>('');
@@ -39,10 +42,6 @@ export class EmployeePage {
 
   totalEmployees = computed(() => this.employees().length);
   totalFilteredEmployees = computed(() => this.filteredEmployees().length);
-
-  departments = computed(() => {
-    return [...new Set(this.employees().map((employee) => employee.department))];
-  });
 
   hasActiveFilters = computed(
     () =>
