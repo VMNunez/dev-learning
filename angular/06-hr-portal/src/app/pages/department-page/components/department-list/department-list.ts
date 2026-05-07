@@ -5,10 +5,19 @@ import type { Department } from '../../../../models/department.model';
 import { RouterLink } from '@angular/router';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-department-list',
-  imports: [MatTableModule, MatButtonModule, RouterLink, MatPaginatorModule, MatIconModule],
+  imports: [
+    MatTableModule,
+    MatButtonModule,
+    RouterLink,
+    MatPaginatorModule,
+    MatIconModule,
+    MatSort,
+    MatSortModule,
+  ],
   templateUrl: './department-list.html',
   styleUrl: './department-list.css',
 })
@@ -24,9 +33,13 @@ export class DepartmentList implements AfterViewInit {
     });
   }
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  @ViewChild(MatPaginator)
+  paginator!: MatPaginator;
 
   ngAfterViewInit(): void {
+    this.datasource.sort = this.sort;
     this.datasource.paginator = this.paginator;
   }
 

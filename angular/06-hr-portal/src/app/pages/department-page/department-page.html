@@ -4,9 +4,5 @@
     <button matButton="filled" routerLink="/departments/new">Add Department</button>
   </div>
 
-  <mat-card appearance="outlined">
-    <mat-card-content>
-      <app-department-list [departments]="departments()" (delete)="onDelete($event)" />
-    </mat-card-content>
-  </mat-card>
+  <app-department-list [departments]="departments()" (delete)="onDelete($event)" />
 </div>
