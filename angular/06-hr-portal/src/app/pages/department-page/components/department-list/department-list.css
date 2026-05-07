@@ -1,9 +1,19 @@
 table {
-  width: 100%;
+  table-layout: fixed;
 }
 
 tr.mat-mdc-row:hover {
   background-color: var(--color-tr-hover);
+}
+
+.mat-column-description {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mat-column-actions {
+  text-align: center;
 }
 
 .not-data-content {

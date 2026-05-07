@@ -5,10 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-department-page',
-  imports: [DepartmentList, MatButtonModule, RouterLink],
+  imports: [DepartmentList, MatButtonModule, RouterLink, MatCardModule],
   templateUrl: './department-page.html',
   styleUrl: './department-page.css',
 })
