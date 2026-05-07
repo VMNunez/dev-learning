@@ -53,18 +53,18 @@ export class TaskList {
 ### Event binding — listen to a user action
 
 ```html
-<button (click)="deleteTask(task.id)">Delete</button>
-<input (input)="onSearch($event)" />
+<button (click)="deleteTask(task.id)">Delete</button> <input (input)="onSearch($event)" />
 ```
 
 ### Template reference variables — access an element directly in the template
 
 ```html
-<input #meal type="text" />
-<button (click)="onSearch(meal.value)">Search</button>
+<input #meal type="text" /> <button (click)="onSearch(meal.value)">Search</button>
 ```
 
 `#meal` creates a reference to the input element. You can pass `meal.value` to a method without needing a signal or form control. Use this for simple, one-field inputs.
+
+> **Alternative:** you can also use `$event.target` if you cast it to `HTMLInputElement` in TypeScript. This is covered in the event handling section of the reactive forms notes. Template references are simpler — you get the typed element directly in the template without any casting.
 
 **Why not `$event.target.value`?** In TypeScript strict mode, `$event.target` is typed as `EventTarget` — it has no `.value` property. Angular does not know the element is an `HTMLInputElement`. This causes a type error:
 
@@ -78,7 +78,7 @@ export class TaskList {
 
 The template reference variable gives you a typed `HTMLInputElement` reference directly — no casting needed.
 
-Combine with keyboard events for a complete search input:
+Combine `(keyup.enter)` with `(click)` so the search runs both when the user presses Enter and when they click the button:
 
 ```html
 <input #meal type="text" (keyup.enter)="onSearch(meal.value)" />
@@ -99,6 +99,8 @@ Combine with keyboard events for a complete search input:
 ## Inputs and outputs
 
 ### Input — receive data from a parent component
+
+> **Good practice:** always provide a default value for your inputs. If the parent does not pass data, the input will be `undefined` — which can crash the template. Use `input<Type>(defaultValue)` to set a safe fallback.
 
 ```typescript
 // child component
@@ -204,6 +206,7 @@ export class WeatherPage implements OnInit {
 Use it to load data from an API when the component starts — not in the constructor.
 
 Typical uses:
+
 - Load data from an API when the page opens
 - Read a route parameter and call the API with it
 - Load data from localStorage into a signal

@@ -94,6 +94,47 @@ export class MealService {
 
 ---
 
+## Duplicate check pattern
+
+When you need to prevent duplicate entries, add a method to the service that checks if a value already exists. The component calls it before saving.
+
+### The method
+
+```typescript
+nameExists(name: string, excludeId?: number): boolean {
+  return this.departments().some(
+    (dept) =>
+      dept.name.toLowerCase().trim() === name.toLowerCase().trim() &&
+      dept.id !== excludeId
+  );
+}
+```
+
+- `excludeId?` — optional. Pass it in edit mode to skip the current item (otherwise its own name is always a "duplicate").
+- `.toLowerCase().trim()` — case-insensitive and ignores accidental spaces.
+- `Array.some()` — returns `true` as soon as one match is found.
+- When `excludeId` is `undefined` (add mode), `dept.id !== undefined` is always `true`, so all departments are checked. The method works for both modes with one call.
+
+### How to call it from the component
+
+```typescript
+// add mode — no id needed
+this.departmentService.nameExists('Engineering')
+
+// edit mode — skip the department being edited
+this.departmentService.nameExists('Engineering', this.editId() as number)
+
+// covering both modes in one call:
+this.departmentService.nameExists(
+  formValue.name as string,
+  this.editId() ?? undefined   // converts null (add mode) to undefined
+)
+```
+
+`?? undefined` is needed because `editId()` returns `number | null`, but the parameter expects `number | undefined`. `??` returns the right side only when the left side is `null` or `undefined` — so `null` becomes `undefined` and any number stays as it is. See [TypeScript notes — `??`](../typescript/01-typescript-utilities.md#--nullish-coalescing-operator) for the full explanation.
+
+---
+
 ## Smart / dumb component pattern
 
 | Type | Responsibility |

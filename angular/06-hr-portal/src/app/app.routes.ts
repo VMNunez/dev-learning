@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { adminGuard } from './core/guards/admin-guard';
+import { deactivateGuard } from './core/guards/deactivate-guard';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,31 @@ export const routes: Routes = [
     canActivate: [authGuard, adminGuard],
     loadComponent: () => import('./pages/employee-page/employee-page').then((m) => m.EmployeePage),
   },
+  {
+    path: 'departments',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./pages/department-page/department-page').then((m) => m.DepartmentPage),
+  },
+  {
+    path: 'departments/new',
+    canActivate: [authGuard, adminGuard],
+    canDeactivate: [deactivateGuard],
+    loadComponent: () =>
+      import('./pages/department-page/department-form/department-form').then(
+        (m) => m.DepartmentForm,
+      ),
+  },
+  {
+    path: 'departments/edit/:id',
+    canActivate: [authGuard, adminGuard],
+    canDeactivate: [deactivateGuard],
+    loadComponent: () =>
+      import('./pages/department-page/department-form/department-form').then(
+        (m) => m.DepartmentForm,
+      ),
+  },
+
   {
     path: '**',
     redirectTo: 'login',

@@ -21,7 +21,11 @@ tasks = signal<Task[]>([]);
 const current = this.count();
 
 // in template
-{{ count() }}
+{
+  {
+    count();
+  }
+}
 ```
 
 ### Update a signal
@@ -31,14 +35,15 @@ const current = this.count();
 Use `.set()` when you want to assign a completely new value — replacing whatever was there before.
 
 Typical use cases:
+
 - Reset a list to empty: `this.tasks.set([])`
 - Set a boolean flag (loading, error): `this.isLoading.set(true)`
 - Replace data after an API call: `this.tasks.set(response.items)`
 
 ```typescript
 this.count.set(5);
-this.tasks.set([]);          // reset list
-this.isLoading.set(true);    // set a flag
+this.tasks.set([]); // reset list
+this.isLoading.set(true); // set a flag
 ```
 
 **`.update()` — derive new value from the current one**
@@ -46,14 +51,15 @@ this.isLoading.set(true);    // set a flag
 Use `.update()` when the new value depends on the current one. The function receives the current value and returns the new one.
 
 Typical use cases:
+
 - Add an item to an array
 - Remove an item from an array
 - Increment or decrement a counter
 
 ```typescript
 this.count.update((current) => current + 1);
-this.tasks.update((tasks) => [...tasks, newTask]);                   // add item
-this.tasks.update((tasks) => tasks.filter((t) => t.id !== id));     // remove item
+this.tasks.update((tasks) => [...tasks, newTask]); // add item
+this.tasks.update((tasks) => tasks.filter((t) => t.id !== id)); // remove item
 ```
 
 ---
@@ -63,6 +69,7 @@ this.tasks.update((tasks) => tasks.filter((t) => t.id !== id));     // remove it
 Use `computed()` when a value depends on other signals and should update automatically. You never update it directly — Angular recalculates it when its dependencies change.
 
 Typical use cases:
+
 - Filter a list based on the current filter signal
 - Count items that match a condition
 - Calculate a total from an array of amounts
@@ -71,24 +78,18 @@ Typical use cases:
 ```typescript
 tasks = signal<Task[]>([]);
 
-completedTasks = computed(() =>
-  this.tasks().filter(t => t.done)
-);
+completedTasks = computed(() => this.tasks().filter((t) => t.done));
 
-pendingCount = computed(() =>
-  this.tasks().filter(t => !t.done).length
-);
+pendingCount = computed(() => this.tasks().filter((t) => !t.done).length);
 
 totalIncome = computed(() =>
   this.transactions()
-    .filter(t => t.type === 'income')
+    .filter((t) => t.type === 'income')
     .reduce((acc, curr) => acc + curr.amount, 0)
 );
 
 // unique values from an array — explained below
-allCategories = computed(() =>
-  [...new Set(this.favourites().map(meal => meal.strCategory))]
-);
+allCategories = computed(() => [...new Set(this.favourites().map((meal) => meal.strCategory))]);
 ```
 
 ### Pattern — unique values with Set
@@ -130,13 +131,16 @@ Instead of using `if` with `return true` / `return false`, return the expression
 // verbose — avoid this
 hasActiveFilters = computed(() => {
   if (this.selectedStatus() !== 'all') return true;
+  if (this.selectedPriority() !== 'all') return true;
   return false;
 });
 
 // clean — do this
 hasActiveFilters = computed(
   () =>
-    this.selectedStatus() !== 'all' || this.selectedPriority() !== 'all' || this.searchTerm() !== ''
+    this.selectedStatus() !== 'all' ||
+    this.selectedPriority() !== 'all' ||
+    this.selectedPriority() !== ''
 );
 ```
 
@@ -179,11 +183,29 @@ Both conditions must be `true` for the task to appear in the list.
 
 `effect()` runs a function automatically when a tracked signal changes. Use it for side effects — things outside Angular like localStorage, logging, or external updates.
 
+**Common use case 1 — sync signal state with localStorage:**
+
 ```typescript
-effect(() => {
-  localStorage.setItem('favourites', JSON.stringify(this.favourites()));
-});
+constructor() {
+  effect(() => {
+    localStorage.setItem('favourites', JSON.stringify(this.favourites()));
+  });
+}
 ```
+
+**Common use case 2 — sync a signal with `MatTableDataSource`:**
+
+Angular Material's `MatTableDataSource` is not reactive — it holds a plain array, not a signal. When your data is stored in a signal, you need `effect()` to push updates into the data source every time the signal changes:
+
+```typescript
+constructor() {
+  effect(() => {
+    this.dataSource.data = this.tasks();
+  });
+}
+```
+
+This is the standard pattern when using `MatTable` with signals. Without `effect()`, the table would not update when `tasks()` changes.
 
 - Runs once when the component or service is created
 - Runs again every time a signal inside it changes

@@ -22,13 +22,13 @@ export const routes: Routes = [
 
 Every app needs two extra routes:
 
-**Default route** — what to show when the user visits `/` (the root URL). Use `redirectTo` to send them to a specific page.
+**Default route** — redirect the user when they first open the app at `/`. Use `redirectTo` to send them to the right starting page (for example, the login page or dashboard).
 
 ```typescript
 { path: '', redirectTo: 'login', pathMatch: 'full' }
 ```
 
-**Why `pathMatch: 'full'`?** By default, Angular matches routes by prefix — it checks if the URL *starts with* the path. An empty string `''` is a prefix of every URL, so without `pathMatch: 'full'`, `path: ''` would match `/dashboard`, `/login`, and everything else, redirecting the user to login no matter what page they visit.
+**Why `pathMatch: 'full'`?** By default, Angular matches routes by prefix — it checks if the URL _starts with_ the path. An empty string `''` is a prefix of every URL, so without `pathMatch: 'full'`, `path: ''` would match `/dashboard`, `/login`, and everything else, redirecting the user to login no matter what page they visit.
 
 `pathMatch: 'full'` tells Angular to only match when the entire URL is exactly `''`.
 
@@ -52,10 +52,10 @@ A complete routes file looks like this:
 
 ```typescript
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },  // default → redirect
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // default → redirect
   { path: 'login', component: LoginPage },
   { path: 'dashboard', component: DashboardPage },
-  { path: '**', redirectTo: 'login' },                   // unknown URL → redirect
+  { path: '**', redirectTo: 'login' }, // unknown URL → redirect
 ];
 ```
 
@@ -116,7 +116,7 @@ private router = inject(Router);
 
 onSubmit() {
   // after saving, go back to the dashboard
-  this.router.navigate(['/']);
+  this.router.navigate(['/dashboard']); // takes an array — each path segment is one element
 }
 ```
 
@@ -126,10 +126,10 @@ Use this when you need to navigate after an action (form submit, delete, etc).
 
 Both do the same thing — navigate to a URL. The difference is WHERE you call them.
 
-| Approach             | Where                     | When to use                                                |
-| -------------------- | ------------------------- | ---------------------------------------------------------- |
-| `routerLink`         | Template (HTML)           | Links and buttons that always navigate to the same place   |
-| `Router.navigate()`  | TypeScript (component)    | After an action — submit a form, delete a record, log in  |
+| Approach            | Where                  | When to use                                              |
+| ------------------- | ---------------------- | -------------------------------------------------------- |
+| `routerLink`        | Template (HTML)        | Links and buttons that always navigate to the same place |
+| `Router.navigate()` | TypeScript (component) | After an action — submit a form, delete a record, log in |
 
 ### Location.back() — go to the previous page
 
@@ -179,6 +179,8 @@ Route parameters always come as `string` — even if the value looks like a numb
 
 When the route has a parameter, use an array in `routerLink`:
 
+The path goes in quotes (`'/detail'`) because it is a literal string. The variable goes without quotes (`meal.idMeal`) because it is evaluated as JavaScript — Angular reads its value at runtime.
+
 ```html
 <div [routerLink]="['/detail', meal.idMeal]">...</div>
 ```
@@ -204,8 +206,16 @@ private mealService = inject(MealService);
 meal = signal<Meal | null>(null); // signal because the template needs to react when data arrives
 
 ngOnInit(): void {
-  const id = this.route.snapshot.paramMap.get('id'); // plain const — not a signal, the user cannot change the id while on this page
+  const id = this.route.snapshot.paramMap.get('id'); // plain const — not a signal
   this.loadMeal(id as string);
+}
+
+// If the id can change without leaving the page — use paramMap.subscribe instead:
+ngOnInit(): void {
+  this.route.paramMap.subscribe((params) => {
+    const id = params.get('id');
+    this.loadMeal(id as string);
+  });
 }
 
 loadMeal(id: string): void { // separate method to keep ngOnInit clean
@@ -278,6 +288,12 @@ Official docs: https://angular.dev/guide/routing/common-router-tasks#preventing-
 
 ### The modern pattern — `CanActivateFn`
 
+Generate the guard with the CLI:
+
+```bash
+ng generate guard core/guards/auth
+```
+
 Angular v15+ uses plain functions instead of classes. No `@Injectable`, no class — just a function.
 
 ```typescript
@@ -300,7 +316,7 @@ export const authGuard: CanActivateFn = () => {
 
 - `inject()` works inside guard functions — same as in components
 - Return `true` — route loads normally
-- Return `router.createUrlTree(['/login'])` — redirects the user
+- Return `router.createUrlTree(['/login'])` — redirects the user. Use this instead of `router.navigate()` because a guard must return a value synchronously (`boolean` or `UrlTree`). `router.navigate()` is async and designed for components — inside a guard it can cause the navigation to run twice.
 - Do not use `return false` alone — it blocks the route but shows a blank page
 
 ### Apply the guard to a route
@@ -318,16 +334,22 @@ export const routes: Routes = [
 
 ### `CanActivateFn` vs `CanActivate` (class-based — old)
 
-| | `CanActivateFn` (modern) | `CanActivate` (old) |
-|---|---|---|
-| Angular version | v15+ | Before v15 |
-| Style | Plain function | Class with interface |
-| Needs `@Injectable` | No | Yes |
-| Recommended | Yes | No — deprecated |
+|                     | `CanActivateFn` (modern) | `CanActivate` (old)  |
+| ------------------- | ------------------------ | -------------------- |
+| Angular version     | v15+                     | Before v15           |
+| Style               | Plain function           | Class with interface |
+| Needs `@Injectable` | No                       | Yes                  |
+| Recommended         | Yes                      | No — deprecated      |
 
 ### Role-based guard
 
-A second type of guard — checks not just *if* the user is logged in, but *what role* they have.
+Generate the guard with the CLI:
+
+```bash
+ng generate guard core/guards/admin
+```
+
+A second type of guard — checks not just _if_ the user is logged in, but _what role_ they have.
 
 ```typescript
 // core/guards/admin-guard.ts
@@ -339,9 +361,7 @@ export const adminGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  return authService.getUserRole() === 'admin'
-    ? true
-    : router.createUrlTree(['/dashboard']);
+  return authService.getUserRole() === 'admin' ? true : router.createUrlTree(['/dashboard']);
 };
 ```
 
@@ -373,18 +393,160 @@ export const adminGuard: CanActivateFn = (_, state) => { ... }
 
 ---
 
+## CanDeactivate guard — warn before leaving a page
+
+Official docs: https://angular.dev/api/router/CanDeactivateFn
+
+### What is it?
+
+`CanActivate` runs **before entering** a route — it decides "can this user go here?"
+
+`CanDeactivate` runs **before leaving** a route — it decides "can this user go away from here?"
+
+The most common use: a routed form with unsaved changes. If the user tries to leave without saving, show a confirmation dialog.
+
+### The key difference from CanActivate
+
+`CanDeactivate` receives the **current component instance** as its first parameter. This is because the guard needs to check the component's state — for example, whether its form is dirty.
+
+`CanActivate` only receives route info. `CanDeactivate` also receives the component being left.
+
+### Generate the guard
+
+```bash
+ng generate guard core/guards/deactivate-guard
+# select CanDeactivate when prompted
+```
+
+### The pattern
+
+```typescript
+import { CanDeactivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { map } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DepartmentForm } from '../../pages/department-page/department-form/department-form';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+
+export const deactivateGuard: CanDeactivateFn<DepartmentForm> = (component) => {
+  const dialog = inject(MatDialog);
+
+  if (!component.departmentForm.dirty) {
+    return true;
+  }
+
+  const dialogRef = dialog.open(ConfirmDialog, {
+    width: '500px',
+    autoFocus: false,
+    data: {
+      title: 'Unsaved changes',
+      message: 'You have unsaved changes. Are you sure you want to leave?',
+      cancelLabel: 'Stay',
+      confirmLabel: 'Leave',
+    },
+  });
+
+  return dialogRef.afterClosed().pipe(map((result) => !!result));
+};
+```
+
+**Key points:**
+
+- `inject()` goes at the **top of the function**, before any `if` — always
+- `component` is not a signal — access its properties directly: `component.departmentForm.dirty`
+- The component's form must not be `private` — the guard reads it from outside the class
+- In TypeScript, a class can be used as a type: `CanDeactivateFn<DepartmentForm>` is valid
+
+### Return values
+
+| What the guard returns | What Angular does |
+| ---------------------- | ----------------- |
+| `true` | Navigation happens |
+| `false` | Navigation is blocked |
+| `Observable<boolean>` | Angular waits for the observable to emit, then decides |
+
+### Why return the observable instead of subscribing?
+
+In a **component**, you call `.subscribe()` because you handle the value yourself.
+
+In a **guard**, you **return the observable** — Angular subscribes to it internally and waits for the value. You do not call `.subscribe()`.
+
+### Why `.pipe(map(result => !!result))`?
+
+`afterClosed()` emits `true` when the user confirms, or `undefined` when they cancel (or close the dialog by clicking the backdrop or pressing Escape).
+
+Angular needs a proper `boolean`. `!!` converts any value to boolean:
+
+```
+!!true      → true   (user confirmed → navigate)
+!!undefined → false  (user cancelled → stay)
+```
+
+Without `map`, the observable emits `undefined` on cancel — Angular treats it as falsy but the return type is not clean.
+
+### When does the dialog emit `undefined`?
+
+- User clicks the **cancel button** (`mat-dialog-close` with no value)
+- User clicks the **backdrop** (outside the dialog)
+- User presses **Escape**
+
+Only the confirm button emits `true` — because it calls `dialogRef.close(true)`.
+
+### The successful save problem — markAsPristine()
+
+After a successful submit, the form navigates away with `router.navigate()`. At that moment, `CanDeactivate` fires. The form is dirty (the user filled it in), so the guard would open the dialog — even though the user just saved.
+
+Fix: call `this.departmentForm.markAsPristine()` **before** `router.navigate()`. This resets the dirty state. The guard sees the form as clean and returns `true` immediately.
+
+```typescript
+onSubmit() {
+  if (this.departmentForm.valid) {
+    // ... save logic ...
+    this.departmentForm.markAsPristine(); // reset dirty state before navigating
+    this.router.navigate(['departments']); // guard fires but sees clean form → allows
+  }
+}
+```
+
+### Apply the guard to a route
+
+```typescript
+// app.routes.ts
+import { deactivateGuard } from './core/guards/deactivate-guard';
+
+{
+  path: 'departments/new',
+  canDeactivate: [deactivateGuard],
+  loadComponent: () => import('...').then((m) => m.DepartmentForm),
+},
+{
+  path: 'departments/edit/:id',
+  canDeactivate: [deactivateGuard],
+  loadComponent: () => import('...').then((m) => m.DepartmentForm),
+},
+```
+
+`canDeactivate` takes an array — same pattern as `canActivate`.
+
+---
+
 ## Lazy loading
 
 By default, Angular loads all route components at startup — even pages the user may never visit. Lazy loading fixes that: a component only loads when the user navigates to its route.
 
 Use `loadComponent:` instead of `component:`:
 
+The `.then()` call is needed because Angular uses **named exports** (`export class LoginPage`). You must extract the class by name. If you used a **default export** (`export default class LoginPage`) you could skip `.then()` — but Angular uses named exports by convention, so always include `.then()`.
+
 ```typescript
 // component: — loads at startup (avoid in large apps)
 { path: 'login', component: LoginPage }
 
-// loadComponent: — loads only when the user visits /login
+// loadComponent: with named export (Angular convention — always use this)
 { path: 'login', loadComponent: () => import('./pages/login-page/login-page').then(m => m.LoginPage) }
+
+// loadComponent: with default export (less common — no .then() needed)
+{ path: 'login', loadComponent: () => import('./pages/login-page/login-page') }
 ```
 
 The arrow function is a **dynamic import** — Angular calls it only when needed.
@@ -409,12 +571,13 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
-    loadComponent: () => import('./pages/login-page/login-page').then(m => m.LoginPage),
+    loadComponent: () => import('./pages/login-page/login-page').then((m) => m.LoginPage),
   },
   {
     path: 'dashboard',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/dashboard-page/dashboard-page').then(m => m.DashboardPage),
+    loadComponent: () =>
+      import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
   },
   { path: '**', redirectTo: 'login' },
 ];
@@ -433,5 +596,8 @@ export const routes: Routes = [
 | `RouterOutlet`                 | Where the active page component renders      |
 | `ActivatedRoute`               | Read route parameters inside a component     |
 | `CanActivateFn`                | Protect a route — run logic before it loads  |
+| `CanDeactivateFn<Component>`   | Intercept navigation away — check form state |
 | `canActivate: [g1, g2]`        | Stack multiple guards — run in order         |
+| `canDeactivate: [guard]`       | Apply a deactivate guard to a route          |
+| `markAsPristine()`             | Reset form dirty state after a successful save |
 | `loadComponent:`               | Lazy load a component — only when needed     |

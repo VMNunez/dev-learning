@@ -19,6 +19,8 @@ Add `ReactiveFormsModule` to the `imports` array of the component that contains 
 
 ## FormGroup and FormControl
 
+You define the form in the TypeScript component class — not in the template. The template only binds to it with `[formGroup]`.
+
 ```typescript
 transactionForm = new FormGroup({
   description: new FormControl<string | null>('', Validators.required),
@@ -53,23 +55,23 @@ transactionForm = new FormGroup({
 Angular provides validators for the most common cases. You pass them to `FormControl` as the second argument.
 
 ```typescript
-Validators.required        // field cannot be empty
-Validators.min(0.01)       // minimum value for numbers
-Validators.max(100)        // maximum value
-Validators.minLength(3)    // minimum text length
-Validators.email           // valid email format
+Validators.required; // field cannot be empty
+Validators.min(0.01); // minimum value for numbers
+Validators.max(100); // maximum value
+Validators.minLength(3); // minimum text length
+Validators.email; // valid email format
 ```
 
 One validator — pass it directly:
 
 ```typescript
-new FormControl('', Validators.required)
+new FormControl('', Validators.required);
 ```
 
 Multiple validators — pass an array:
 
 ```typescript
-new FormControl(null, [Validators.required, Validators.min(0.01)])
+new FormControl(null, [Validators.required, Validators.min(0.01)]);
 ```
 
 ## Accessing form values
@@ -89,7 +91,7 @@ Now in the template you can write `description` instead of `transactionForm.get(
 
 ```html
 @if (description?.touched && description?.hasError('required')) {
-  <p class="error-msg">Description is required</p>
+<p class="error-msg">Description is required</p>
 }
 ```
 
@@ -106,11 +108,49 @@ onSubmit() {
 }
 ```
 
-You can also cast it to a type:
+You can also cast it to a type and emit all values at once:
 
 ```typescript
 this.myOutput.emit(this.transactionForm.value as NewTransaction);
 ```
+
+Yes — this sends all form values at once with one expression. The `as NewTransaction` is a TypeScript type assertion: it tells TypeScript "treat this object as `NewTransaction`". It does not change the data — it only satisfies the type checker. This works because the form controls match the `NewTransaction` fields exactly.
+
+---
+
+### Ways to access form values — summary
+
+| Approach | Code | When to use |
+| --- | --- | --- |
+| Get the `FormControl` | `this.form.get('name')` | Validation state — `.hasError()`, `.touched`, `.dirty` |
+| Access one value | `this.form.value.name` | Quick read of a single field |
+| Store all values | `const formValue = this.form.value` | `onSubmit()` — access multiple fields cleanly |
+| Destructure | `const { name, description } = this.form.value` | When you need several fields individually |
+
+**Which is used most?**
+
+- In `onSubmit()` → `const formValue = this.form.value` — most common and most readable
+- In the template for validation → `this.form.get('name')` via a getter
+- Destructuring → useful but rare in real projects
+
+The key difference: `get()` returns the `FormControl` object — use it for validation state. `.value` returns the actual data — use it when you need to save or emit the form content.
+
+---
+
+## Two ways to access a FormControl in the template
+
+To call `.hasError()`, `.touched`, `.dirty`, etc. in the template, you first need to get the `FormControl` object. There are two ways:
+
+| Approach | Template code | TypeScript needed |
+|---|---|---|
+| Getter | `name?.hasError('required')` | `get name() { return this.form.get('name'); }` |
+| Direct | `departmentForm.controls.name.hasError('required')` | Nothing extra |
+
+Both do exactly the same thing. The difference is readability:
+- Use a **getter** when you access the same control in many places — the template stays short
+- Use **direct** (`controls.name`) when you only use the control once or twice — no extra code needed
+
+In both cases, use `?.` (safe navigation) because `get()` can return `null` if the control name is wrong.
 
 ---
 
@@ -124,7 +164,7 @@ Do not show errors immediately on page load — only after the user has interact
 
 ```html
 @if (description?.touched && description?.hasError('required')) {
-  <p class="error-msg">Description is required</p>
+<p class="error-msg">Description is required</p>
 }
 ```
 
@@ -147,6 +187,7 @@ onSubmit() {
 ```
 
 This is the standard `onSubmit` pattern:
+
 1. Mark all fields as touched (so all errors are visible)
 2. Then check `form.valid` before doing anything
 
@@ -296,32 +337,209 @@ constructor() {
 | `patchValue()` | Only updates the fields you pass — ignores missing ones     |
 | `setValue()`   | Requires **all** fields — throws an error if any is missing |
 
+`setValue()` is useful when you are replacing the entire form state and you are sure you have every field:
+
+```typescript
+// setValue requires every field — throws an error if any is missing
+this.myForm.setValue({
+  name: task.name,
+  status: task.status,
+  priority: task.priority,
+  description: task.description,
+});
+```
+
+In practice, `patchValue()` is the safer choice because it does not throw an error if a field is missing or your interface changes. Use `setValue()` only when you are certain you have all fields.
+
 Use `patchValue()` when editing. Use `setValue()` only when you are sure you have every field.
 
 ---
 
 ## TypeScript utilities
 
-> These TypeScript patterns appear throughout Angular code. They deserve their own reference file — see `notes/typescript/` (to be created). For now they live here.
+See [`notes/typescript/01-typescript-utilities.md`](../typescript/01-typescript-utilities.md) — `Omit`, type assertions (`as`), optional fields, union types.
 
-### Omit — create a type without some fields
+---
 
-When the form does not include all fields of an interface (e.g. `id` is generated later), create a derived type:
+## setErrors() vs signal — when to use each
+
+When you need to show an error that is not from a built-in validator, you have two tools. The choice depends on one question: **does this error belong to a specific field, or to the whole form?**
+
+### Error on a specific field → `setErrors()`
+
+Use this when the error is clearly about one input. For example: "this email is already taken" belongs to the email field — it makes sense to show it directly below that input.
 
 ```typescript
-export interface Transaction {
-  id: number;
-  description: string;
-  amount: number;
-  type: 'income' | 'expense';
-  date: string;
-}
-
-export type NewTransaction = Omit<Transaction, 'id'>;
-// Result: { description, amount, type, date }
+// in onSubmit() — after checking for duplicates
+this.form.controls.email.setErrors({ duplicateEmail: true });
+return;
 ```
 
-Use `NewTransaction` for the form output, `Transaction` for stored data.
+```html
+<!-- inside the email mat-form-field -->
+@if (email?.hasError('duplicateEmail')) {
+  <mat-error>Email already exists</mat-error>
+}
+```
+
+`mat-error` shows the message below the field automatically. The user sees exactly which field has the problem.
+
+---
+
+### Error on the whole form → signal
+
+Use this when the error is not about one field in particular. For example:
+
+- **Login failure** — "Wrong email or password." You do not want to highlight one field specifically, because you do not know which one is wrong.
+- **API or server error** — "Something went wrong. Try again." This has nothing to do with any individual field.
+- **Permission error** — "You do not have access to do this."
+
+In these cases, there is no form control to attach the error to. A signal is the right tool:
+
+```typescript
+// in the component class
+loginError = signal<string | null>(null);
+```
+
+```typescript
+// in onSubmit() — reset first, then set if something fails
+this.loginError.set(null);        // clear previous error
+// ... login attempt fails:
+this.loginError.set('Wrong email or password.');
+```
+
+```html
+<!-- outside any mat-form-field, at the top or bottom of the form -->
+@if (loginError()) {
+  <p class="error">{{ loginError() }}</p>
+}
+```
+
+Always reset the signal to `null` at the start of `onSubmit()` so old errors do not stay visible when the user tries again.
+
+---
+
+### Real examples in this project
+
+The **login page** uses the signal pattern — when credentials are wrong, one message appears below the form, not below any specific field:
+
+```typescript
+hasError = signal(false);
+```
+```html
+@if (hasError()) {
+  <p class="error">Invalid email or password</p>
+}
+```
+
+The **employee dialog** uses `setErrors()` for duplicate email — because the error belongs to the email field specifically.
+
+---
+
+### Summary
+
+| Question | Tool |
+|---|---|
+| Does the error belong to a specific field? | `setErrors()` + `mat-error` inside `mat-form-field` |
+| Is the error about the whole form or operation? | `signal` + `@if` paragraph outside the fields |
+
+---
+
+## Custom form errors — setErrors()
+
+Built-in validators (`required`, `min`, `email`) cover most cases. But sometimes you need a custom check that validators cannot do — for example, checking if a name is already taken in a database or a list.
+
+For this, Angular lets you set a custom error directly on a form control using `setErrors()`.
+
+### Setting a custom error
+
+Call `setErrors()` on the form control with an object. The key is your custom error name — you choose it.
+
+```typescript
+this.departmentForm.controls.name.setErrors({ duplicateName: true });
+```
+
+Breaking down the chain:
+
+```
+this.departmentForm            → the FormGroup (the whole form)
+  .controls                    → access all FormControls inside it
+  .name                        → the specific FormControl for the "name" field
+  .setErrors({ ... })          → set a custom error on that control
+```
+
+`.controls.name` works for any field in your form — replace `name` with `description`, `email`, or whatever your control is called.
+
+This does two things at once:
+1. Marks the control as invalid — so `mat-error` will show automatically
+2. Stores the error under the key `'duplicateName'` — so you can check it with `hasError()`
+
+### Checking a custom error in the template
+
+> **Custom error keys are case-sensitive.** The key in `setErrors()` must match exactly what you use in `hasError()`. `'duplicateName'` and `'duplicatename'` are different — the second one will never match. Use the key exactly as you declared it.
+
+`hasError()` works with custom keys exactly the same way as built-in ones:
+
+```html
+<mat-error @if (departmentForm.controls.name.hasError('required'))>
+  Name is required
+</mat-error>
+<mat-error @if (departmentForm.controls.name.hasError('duplicateName'))>
+  A department with this name already exists
+</mat-error>
+```
+
+### How errors clear automatically
+
+When the user types again, Angular re-runs all validators on the control. This **replaces the errors object** — including your custom error. So you do not need to clear `setErrors()` manually. The moment the user changes the field, the custom error disappears.
+
+---
+
+## Duplicate check pattern in onSubmit()
+
+When you have a service-level duplicate check (see [03-services.md](./03-services.md)), the standard pattern in `onSubmit()` is:
+
+1. Reset any previous error state
+2. Check for the duplicate **before** the save logic
+3. If duplicate → set the error on the control, then `return` to stop everything
+4. If not duplicate → proceed with the save normally
+
+```typescript
+onSubmit() {
+  this.departmentForm.markAllAsTouched();
+
+  if (this.departmentForm.valid) {
+    const formValue = this.departmentForm.value;
+
+    // 1. Check for duplicate — covers both add and edit with one call
+    const isDuplicate = this.departmentService.nameExists(
+      formValue.name as string,
+      this.editId() ?? undefined  // pass id in edit mode, undefined in add mode
+    );
+
+    // 2. If duplicate — mark the field as invalid and stop
+    if (isDuplicate) {
+      this.departmentForm.controls.name.setErrors({ duplicateName: true });
+      return;  // stops here — no save, no navigate, no markAsPristine
+    }
+
+    // 3. Only reaches here if no duplicate — proceed with save
+    if (this.editId()) {
+      this.departmentService.editDepartment({ id: this.editId() as number, ...data });
+    } else {
+      this.departmentService.addDepartment({ id: Date.now(), ...data });
+    }
+
+    this.departmentForm.markAsPristine();
+    this.router.navigate(['departments']);
+  }
+}
+```
+
+Key points:
+- The `return` is essential — without it, `markAsPristine()` and `router.navigate()` would still run even when a duplicate was found
+- The duplicate check runs **before** the `if (this.editId())` block so it covers both add and edit
+- `?? undefined` converts `null` (add mode) to `undefined` — `??` returns the right side only when the left side is `null` or `undefined`. See [TypeScript notes — `??`](../typescript/01-typescript-utilities.md#--nullish-coalescing-operator)
 
 ---
 
@@ -333,11 +551,11 @@ For real-time search or live filtering, use `(input)` — it fires on every char
 <input (input)="onSearch($event)" />
 ```
 
-| Event      | When it fires                          | Use for                        |
-| ---------- | -------------------------------------- | ------------------------------ |
-| `(input)`  | Every keystroke, paste, delete         | Real-time search, live filter  |
-| `(keyup)`  | Every key release — misses mouse paste | Less reliable, avoid           |
-| `(change)` | When the field loses focus             | Not useful for live filtering  |
+| Event      | When it fires                          | Use for                       |
+| ---------- | -------------------------------------- | ----------------------------- |
+| `(input)`  | Every keystroke, paste, delete         | Real-time search, live filter |
+| `(keyup)`  | Every key release — misses mouse paste | Less reliable, avoid          |
+| `(change)` | When the field loses focus             | Not useful for live filtering |
 
 `(input)` is the best choice for live filtering. `(keyup)` misses clipboard paste with the mouse. `(change)` only fires once after the user leaves the field.
 
