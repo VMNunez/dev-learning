@@ -82,6 +82,73 @@ Use union types to restrict what values a field can hold — better than plain `
 
 ---
 
+## `??` — nullish coalescing operator
+
+`??` returns the right side only if the left side is `null` or `undefined`. If the left side has any other value (including `0`, `false`, or `''`), it returns that value.
+
+```typescript
+const value = someValue ?? 'default';
+// if someValue is null or undefined → returns 'default'
+// if someValue is 0, false, or '' → returns that value (not 'default')
+```
+
+Common use — convert `null` to `undefined`:
+
+```typescript
+this.editId() ?? undefined
+// editId() returns number | null
+// if editId() is null → returns undefined
+// if editId() is a number → returns that number
+```
+
+This is useful when a function parameter expects `number | undefined` but your signal returns `number | null`. You cannot pass `null` where `undefined` is expected — `?? undefined` converts it.
+
+Another common use — safe JSON parsing from localStorage:
+
+```typescript
+JSON.parse(localStorage.getItem('key') ?? '[]')
+// if localStorage has no 'key' → getItem returns null → ?? gives '[]'
+// if localStorage has 'key' → getItem returns the string → ?? is ignored
+```
+
+### `??` vs `||`
+
+| Operator | Returns right side when left is... |
+|---|---|
+| `??` | `null` or `undefined` only |
+| `\|\|` | any falsy value (`null`, `undefined`, `0`, `false`, `''`) |
+
+Use `??` when `0`, `false`, or empty string are valid values you want to keep. Use `||` only when you want to replace all falsy values.
+
+---
+
+## `?.` — optional chaining
+
+`?.` stops evaluation and returns `undefined` if the left side is `null` or `undefined`, instead of throwing an error.
+
+```typescript
+const name = user?.profile?.name;
+// if user is null/undefined → returns undefined (no error)
+// if user.profile is null/undefined → returns undefined (no error)
+// if both exist → returns user.profile.name
+```
+
+Common in templates with getters that return `AbstractControl | null`:
+
+```typescript
+get email() {
+  return this.form.get('email'); // returns AbstractControl | null
+}
+```
+
+```html
+@if (email?.hasError('required')) { ... }
+// if email is null → skips hasError(), returns undefined → @if is false
+// if email exists → calls hasError() normally
+```
+
+---
+
 ## Classes as types
 
 In TypeScript, a class can be used as a type. You do not need a separate `interface` — the class itself defines the shape.
