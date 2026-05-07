@@ -1,2 +1,26 @@
-<a routerLink="/admin">Go to admin</a>
-<a routerLink="/employees">Go to employees</a>
+<div class="container">
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Total Employees</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <strong>{{ totalEmployees() }}</strong>
+    </mat-card-content>
+  </mat-card>
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Active Employees</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <strong>{{ activeEmployees() }}</strong>
+    </mat-card-content>
+  </mat-card>
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Total Departments</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <strong>{{ totalDepartments() }}</strong>
+    </mat-card-content>
+  </mat-card>
+</div>
