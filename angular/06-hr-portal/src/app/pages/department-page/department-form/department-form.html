@@ -10,7 +10,11 @@
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" />
-      <mat-error>Name is required</mat-error>
+      @if (name?.hasError('required')) {
+        <mat-error>Name is required</mat-error>
+      } @else if (name?.hasError('duplicateName')) {
+        <mat-error>This department already exists</mat-error>
+      }
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Description</mat-label>
