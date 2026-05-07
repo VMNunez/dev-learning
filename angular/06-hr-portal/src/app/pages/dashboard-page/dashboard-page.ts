@@ -3,19 +3,24 @@ import { RouterLink } from '@angular/router';
 import { EmployeeService } from '../../core/services/employee.service';
 import { DepartmentService } from '../../core/services/department.service';
 import { MatCardModule } from '@angular/material/card';
+import { AuthService } from '../../core/services/auth.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [MatCardModule],
+  imports: [MatCardModule, MatButtonModule, RouterLink, MatIconModule],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
 })
 export class DashboardPage {
   private employeeService = inject(EmployeeService);
   private departmentService = inject(DepartmentService);
+  private authService = inject(AuthService);
 
   employees = this.employeeService.employees;
   departments = this.departmentService.departments;
+  username = computed(() => this.authService.currentUser()?.email.split('@')[0]);
 
   totalEmployees = computed(() => {
     return this.employees().length;
