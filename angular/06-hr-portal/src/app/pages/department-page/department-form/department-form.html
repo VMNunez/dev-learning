@@ -1,4 +1,13 @@
 <div class="container">
+  <nav class="breadcrumb">
+    <a routerLink="/departments">Departments</a>
+    <span> /</span>
+    @if (editId()) {
+      <span>Edit Department</span>
+    } @else {
+      <span>New Department</span>
+    }
+  </nav>
   <h1>
     @if (editId()) {
       Edit Department
