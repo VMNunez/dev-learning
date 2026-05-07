@@ -131,7 +131,7 @@ this.departmentService.nameExists(
 )
 ```
 
-`?? undefined` is needed because `editId()` returns `number | null`. The parameter expects `number | undefined`. `??` replaces `null` with `undefined`.
+`?? undefined` is needed because `editId()` returns `number | null`, but the parameter expects `number | undefined`. `??` returns the right side only when the left side is `null` or `undefined` — so `null` becomes `undefined` and any number stays as it is. See [TypeScript notes — `??`](../typescript/01-typescript-utilities.md#--nullish-coalescing-operator) for the full explanation.
 
 ---
 

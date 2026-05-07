@@ -361,6 +361,90 @@ See [`notes/typescript/01-typescript-utilities.md`](../typescript/01-typescript-
 
 ---
 
+## setErrors() vs signal — when to use each
+
+When you need to show an error that is not from a built-in validator, you have two tools. The choice depends on one question: **does this error belong to a specific field, or to the whole form?**
+
+### Error on a specific field → `setErrors()`
+
+Use this when the error is clearly about one input. For example: "this email is already taken" belongs to the email field — it makes sense to show it directly below that input.
+
+```typescript
+// in onSubmit() — after checking for duplicates
+this.form.controls.email.setErrors({ duplicateEmail: true });
+return;
+```
+
+```html
+<!-- inside the email mat-form-field -->
+@if (email?.hasError('duplicateEmail')) {
+  <mat-error>Email already exists</mat-error>
+}
+```
+
+`mat-error` shows the message below the field automatically. The user sees exactly which field has the problem.
+
+---
+
+### Error on the whole form → signal
+
+Use this when the error is not about one field in particular. For example:
+
+- **Login failure** — "Wrong email or password." You do not want to highlight one field specifically, because you do not know which one is wrong.
+- **API or server error** — "Something went wrong. Try again." This has nothing to do with any individual field.
+- **Permission error** — "You do not have access to do this."
+
+In these cases, there is no form control to attach the error to. A signal is the right tool:
+
+```typescript
+// in the component class
+loginError = signal<string | null>(null);
+```
+
+```typescript
+// in onSubmit() — reset first, then set if something fails
+this.loginError.set(null);        // clear previous error
+// ... login attempt fails:
+this.loginError.set('Wrong email or password.');
+```
+
+```html
+<!-- outside any mat-form-field, at the top or bottom of the form -->
+@if (loginError()) {
+  <p class="error">{{ loginError() }}</p>
+}
+```
+
+Always reset the signal to `null` at the start of `onSubmit()` so old errors do not stay visible when the user tries again.
+
+---
+
+### Real examples in this project
+
+The **login page** uses the signal pattern — when credentials are wrong, one message appears below the form, not below any specific field:
+
+```typescript
+hasError = signal(false);
+```
+```html
+@if (hasError()) {
+  <p class="error">Invalid email or password</p>
+}
+```
+
+The **employee dialog** uses `setErrors()` for duplicate email — because the error belongs to the email field specifically.
+
+---
+
+### Summary
+
+| Question | Tool |
+|---|---|
+| Does the error belong to a specific field? | `setErrors()` + `mat-error` inside `mat-form-field` |
+| Is the error about the whole form or operation? | `signal` + `@if` paragraph outside the fields |
+
+---
+
 ## Custom form errors — setErrors()
 
 Built-in validators (`required`, `min`, `email`) cover most cases. But sometimes you need a custom check that validators cannot do — for example, checking if a name is already taken in a database or a list.
@@ -391,6 +475,8 @@ This does two things at once:
 2. Stores the error under the key `'duplicateName'` — so you can check it with `hasError()`
 
 ### Checking a custom error in the template
+
+> **Custom error keys are case-sensitive.** The key in `setErrors()` must match exactly what you use in `hasError()`. `'duplicateName'` and `'duplicatename'` are different — the second one will never match. Use the key exactly as you declared it.
 
 `hasError()` works with custom keys exactly the same way as built-in ones:
 
@@ -453,7 +539,7 @@ onSubmit() {
 Key points:
 - The `return` is essential — without it, `markAsPristine()` and `router.navigate()` would still run even when a duplicate was found
 - The duplicate check runs **before** the `if (this.editId())` block so it covers both add and edit
-- `?? undefined` converts `null` (add mode, where `editId()` is `null`) to `undefined` so the optional parameter works correctly
+- `?? undefined` converts `null` (add mode) to `undefined` — `??` returns the right side only when the left side is `null` or `undefined`. See [TypeScript notes — `??`](../typescript/01-typescript-utilities.md#--nullish-coalescing-operator)
 
 ---
 
