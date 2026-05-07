@@ -35,4 +35,12 @@ export class EmployeeService {
       ),
     );
   }
+
+  emailExists(email: string, excludeId?: number) {
+    return this.employees().some(
+      (employee) =>
+        employee.id !== excludeId &&
+        employee.email.toLowerCase().trim() === email.toLowerCase().trim(),
+    );
+  }
 }

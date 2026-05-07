@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   MatDialogModule,
   MAT_DIALOG_DATA,
@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Employee } from '../../../../models/employee.model';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DepartmentService } from '../../../../core/services/department.service';
+import { EmployeeService } from '../../../../core/services/employee.service';
 
 @Component({
   selector: 'app-employee-dialog',
@@ -29,10 +30,10 @@ import { DepartmentService } from '../../../../core/services/department.service'
 })
 export class EmployeeDialog {
   private departmentService = inject(DepartmentService);
+  private employeeService = inject(EmployeeService);
   private dialogRef = inject(MatDialogRef);
   private dialog = inject(MatDialog);
   data = inject<{ employee: Employee } | undefined>(MAT_DIALOG_DATA);
-  emailAlreadyExists = signal<boolean>(false);
   departments = this.departmentService.departments;
 
   newEmployeeForm = new FormGroup({
@@ -58,31 +59,41 @@ export class EmployeeDialog {
     }
   }
 
-  firstName() {
+  get firstName() {
     return this.newEmployeeForm.get('firstName');
   }
-  lastName() {
+  get lastName() {
     return this.newEmployeeForm.get('lastName');
   }
 
-  email() {
+  get email() {
     return this.newEmployeeForm.get('email');
   }
-  department() {
+  get department() {
     return this.newEmployeeForm.get('department');
   }
-  position() {
+  get position() {
     return this.newEmployeeForm.get('position');
   }
-  status() {
+  get status() {
     return this.newEmployeeForm.get('status');
   }
 
   onSubmit() {
     this.newEmployeeForm.markAllAsTouched();
-    this.emailAlreadyExists.set(false);
+
     if (this.newEmployeeForm.valid) {
       const formValue = this.newEmployeeForm.value;
+
+      const isDuplicate = this.employeeService.emailExists(
+        formValue.email as string,
+        this.data?.employee.id,
+      );
+
+      if (isDuplicate) {
+        this.newEmployeeForm.controls.email.setErrors({ duplicateEmail: true });
+        return;
+      }
       const newEmployee: Omit<Employee, 'id' | 'startDate'> = {
         firstName: formValue.firstName as string,
         lastName: formValue.lastName as string,

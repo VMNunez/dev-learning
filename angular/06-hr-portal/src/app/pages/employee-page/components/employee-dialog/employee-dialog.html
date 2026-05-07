@@ -11,26 +11,26 @@
     <mat-form-field appearance="outline">
       <mat-label>First Name</mat-label>
       <input type="text" matInput formControlName="firstName" />
-      @if (firstName()?.touched && firstName()?.hasError('required')) {
+      @if (firstName?.touched && firstName?.hasError('required')) {
         <mat-error>First name is required</mat-error>
       }
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Last Name</mat-label>
       <input type="text" matInput formControlName="lastName" />
-      @if (lastName()?.touched && lastName()?.hasError('required')) {
+      @if (lastName?.touched && lastName?.hasError('required')) {
         <mat-error>Last name is required</mat-error>
       }
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>
       <input type="email" matInput formControlName="email" />
-      @if (email()?.hasError('required')) {
+      @if (email?.hasError('required')) {
         <mat-error>Email is required</mat-error>
-      } @else if (email()?.hasError('email')) {
+      } @else if (email?.hasError('email')) {
         <mat-error>Invalid email address</mat-error>
-      } @else if (emailAlreadyExists()) {
-        <p class="email-error">Email already exists</p>
+      } @else if (email?.hasError('duplicateEmail')) {
+        <mat-error>Email already exists</mat-error>
       }
     </mat-form-field>
     <mat-form-field appearance="outline">
@@ -40,14 +40,14 @@
           <mat-option [value]="dept.name">{{ dept.name }}</mat-option>
         }
       </mat-select>
-      @if (department()?.touched && department()?.hasError('required')) {
+      @if (department?.touched && department?.hasError('required')) {
         <mat-error>Department is required</mat-error>
       }
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Position</mat-label>
       <input type="text" matInput formControlName="position" />
-      @if (position()?.touched && position()?.hasError('required')) {
+      @if (position?.touched && position?.hasError('required')) {
         <mat-error>Position is required</mat-error>
       }
     </mat-form-field>
@@ -57,7 +57,7 @@
         <mat-option value="active">Active</mat-option>
         <mat-option value="inactive">Inactive</mat-option>
       </mat-select>
-      @if (status()?.touched && status()?.hasError('required')) {
+      @if (status?.touched && status?.hasError('required')) {
         <mat-error>Status is required</mat-error>
       }
     </mat-form-field>
