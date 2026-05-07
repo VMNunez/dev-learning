@@ -1,2 +1,44 @@
-<a routerLink="/admin">Go to admin</a>
-<a routerLink="/employees">Go to employees</a>
+<div class="container">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Welcome back, {{ username() }}</p>
+  </div>
+
+  <div class="card-container">
+    <mat-card appearance="outlined" class="stat-card">
+      <mat-card-content>
+        <div class="stat-header">
+          <mat-icon>group</mat-icon>
+          <span class="stat-label">Total Employees</span>
+        </div>
+        <strong class="stat-number">{{ totalEmployees() }}</strong>
+      </mat-card-content>
+    </mat-card>
+    <mat-card appearance="outlined" class="stat-card">
+      <mat-card-content>
+        <div class="stat-header">
+          <mat-icon>how_to_reg</mat-icon>
+          <span class="stat-label">Active Employees</span>
+        </div>
+        <strong class="stat-number">{{ activeEmployees() }}</strong>
+      </mat-card-content>
+    </mat-card>
+    <mat-card appearance="outlined" class="stat-card">
+      <mat-card-content>
+        <div class="stat-header">
+          <mat-icon>corporate_fare</mat-icon>
+          <span class="stat-label">Total Departments</span>
+        </div>
+        <strong class="stat-number">{{ totalDepartments() }}</strong>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions-row">
+      <button matButton="filled" routerLink="/employees">View Employees</button>
+      <button matButton="outlined" routerLink="/departments">View Department</button>
+    </div>
+  </div>
+</div>
