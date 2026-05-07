@@ -31,6 +31,10 @@ export class DepartmentForm implements OnInit {
     description: new FormControl<string>('', Validators.required),
   });
 
+  get name() {
+    return this.departmentForm.get('name');
+  }
+
   ngOnInit(): void {
     const rawId = this.route.snapshot.paramMap.get('id');
     if (rawId) {
@@ -50,6 +54,17 @@ export class DepartmentForm implements OnInit {
 
     if (this.departmentForm.valid) {
       const formValue = this.departmentForm.value;
+
+      const isDuplicate = this.departmentService.nameExists(
+        formValue.name as string,
+        this.editId() ?? undefined,
+      );
+
+      if (isDuplicate) {
+        this.departmentForm.controls.name.setErrors({ duplicateName: true });
+        return;
+      }
+
       const departmentData: Omit<Department, 'id'> = {
         name: formValue.name as string,
         description: formValue.description as string,
@@ -67,6 +82,7 @@ export class DepartmentForm implements OnInit {
           id: Date.now(),
           ...departmentData,
         };
+
         this.departmentService.addDepartment(newDepartment);
       }
       this.departmentForm.markAsPristine();

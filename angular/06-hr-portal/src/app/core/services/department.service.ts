@@ -13,6 +13,14 @@ export class DepartmentService {
     });
   }
 
+  nameExists(name: string, excludeId?: number) {
+    return this.departments().some(
+      (department) =>
+        department.id !== excludeId &&
+        department.name.toLowerCase().trim() === name.toLowerCase().trim(),
+    );
+  }
+
   addDepartment(department: Department) {
     this.departments.update((departments) => [...departments, department]);
   }

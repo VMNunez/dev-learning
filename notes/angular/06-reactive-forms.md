@@ -137,6 +137,23 @@ The key difference: `get()` returns the `FormControl` object — use it for vali
 
 ---
 
+## Two ways to access a FormControl in the template
+
+To call `.hasError()`, `.touched`, `.dirty`, etc. in the template, you first need to get the `FormControl` object. There are two ways:
+
+| Approach | Template code | TypeScript needed |
+|---|---|---|
+| Getter | `name?.hasError('required')` | `get name() { return this.form.get('name'); }` |
+| Direct | `departmentForm.controls.name.hasError('required')` | Nothing extra |
+
+Both do exactly the same thing. The difference is readability:
+- Use a **getter** when you access the same control in many places — the template stays short
+- Use **direct** (`controls.name`) when you only use the control once or twice — no extra code needed
+
+In both cases, use `?.` (safe navigation) because `get()` can return `null` if the control name is wrong.
+
+---
+
 ## Error handling patterns
 
 There are three related patterns that work together. Understanding each one is important.
@@ -341,6 +358,102 @@ Use `patchValue()` when editing. Use `setValue()` only when you are sure you hav
 ## TypeScript utilities
 
 See [`notes/typescript/01-typescript-utilities.md`](../typescript/01-typescript-utilities.md) — `Omit`, type assertions (`as`), optional fields, union types.
+
+---
+
+## Custom form errors — setErrors()
+
+Built-in validators (`required`, `min`, `email`) cover most cases. But sometimes you need a custom check that validators cannot do — for example, checking if a name is already taken in a database or a list.
+
+For this, Angular lets you set a custom error directly on a form control using `setErrors()`.
+
+### Setting a custom error
+
+Call `setErrors()` on the form control with an object. The key is your custom error name — you choose it.
+
+```typescript
+this.departmentForm.controls.name.setErrors({ duplicateName: true });
+```
+
+Breaking down the chain:
+
+```
+this.departmentForm            → the FormGroup (the whole form)
+  .controls                    → access all FormControls inside it
+  .name                        → the specific FormControl for the "name" field
+  .setErrors({ ... })          → set a custom error on that control
+```
+
+`.controls.name` works for any field in your form — replace `name` with `description`, `email`, or whatever your control is called.
+
+This does two things at once:
+1. Marks the control as invalid — so `mat-error` will show automatically
+2. Stores the error under the key `'duplicateName'` — so you can check it with `hasError()`
+
+### Checking a custom error in the template
+
+`hasError()` works with custom keys exactly the same way as built-in ones:
+
+```html
+<mat-error @if (departmentForm.controls.name.hasError('required'))>
+  Name is required
+</mat-error>
+<mat-error @if (departmentForm.controls.name.hasError('duplicateName'))>
+  A department with this name already exists
+</mat-error>
+```
+
+### How errors clear automatically
+
+When the user types again, Angular re-runs all validators on the control. This **replaces the errors object** — including your custom error. So you do not need to clear `setErrors()` manually. The moment the user changes the field, the custom error disappears.
+
+---
+
+## Duplicate check pattern in onSubmit()
+
+When you have a service-level duplicate check (see [03-services.md](./03-services.md)), the standard pattern in `onSubmit()` is:
+
+1. Reset any previous error state
+2. Check for the duplicate **before** the save logic
+3. If duplicate → set the error on the control, then `return` to stop everything
+4. If not duplicate → proceed with the save normally
+
+```typescript
+onSubmit() {
+  this.departmentForm.markAllAsTouched();
+
+  if (this.departmentForm.valid) {
+    const formValue = this.departmentForm.value;
+
+    // 1. Check for duplicate — covers both add and edit with one call
+    const isDuplicate = this.departmentService.nameExists(
+      formValue.name as string,
+      this.editId() ?? undefined  // pass id in edit mode, undefined in add mode
+    );
+
+    // 2. If duplicate — mark the field as invalid and stop
+    if (isDuplicate) {
+      this.departmentForm.controls.name.setErrors({ duplicateName: true });
+      return;  // stops here — no save, no navigate, no markAsPristine
+    }
+
+    // 3. Only reaches here if no duplicate — proceed with save
+    if (this.editId()) {
+      this.departmentService.editDepartment({ id: this.editId() as number, ...data });
+    } else {
+      this.departmentService.addDepartment({ id: Date.now(), ...data });
+    }
+
+    this.departmentForm.markAsPristine();
+    this.router.navigate(['departments']);
+  }
+}
+```
+
+Key points:
+- The `return` is essential — without it, `markAsPristine()` and `router.navigate()` would still run even when a duplicate was found
+- The duplicate check runs **before** the `if (this.editId())` block so it covers both add and edit
+- `?? undefined` converts `null` (add mode, where `editId()` is `null`) to `undefined` so the optional parameter works correctly
 
 ---
 
