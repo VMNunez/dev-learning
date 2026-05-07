@@ -1,0 +1,23 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  gap: 1.5rem;
+}
+
+mat-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+mat-card-title {
+  text-align: center;
+}
+
+mat-card-content strong {
+  font-size: 2rem;
+  color: var(--mat-sys-primary);
+}
