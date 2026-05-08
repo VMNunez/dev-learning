@@ -1,1 +1,26 @@
-<p>leave-request-dialog works!</p>
+<h2 mat-dialog-title>Add Leave Request</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="newLeaveRequest">
+    <mat-form-field appearance="outline">
+      <mat-label>Start Date</mat-label>
+      <input matInput type="date" formControlName="startDate" />
+      <mat-error>Start date is required</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>End Date</mat-label>
+      <input matInput type="date" formControlName="endDate" />
+      <mat-error>End date is required</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Reason</mat-label>
+      <textarea matInput formControlName="reason"></textarea>
+      <mat-error>Reason is required</mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button matButton="text" mat-dialog-close>Cancel</button>
+  <button matButton="filled" (click)="onSubmit()">Submit</button>
+</mat-dialog-actions>
