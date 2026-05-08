@@ -13,8 +13,15 @@ export class LeaveRequestService {
     });
   }
 
-  addLeaveRequest(newLeaveRequest: LeaveRequest) {
-    this.leaveRequests.update((leaveRequests) => [...leaveRequests, newLeaveRequest]);
+  addLeaveRequest(newLeaveRequest: Omit<LeaveRequest, 'id' | 'status'>) {
+    this.leaveRequests.update((leaveRequests) => [
+      ...leaveRequests,
+      {
+        id: Date.now(),
+        status: 'pending',
+        ...newLeaveRequest,
+      },
+    ]);
   }
 
   updateStatus(id: number, newStatus: LeaveRequestStatus) {
