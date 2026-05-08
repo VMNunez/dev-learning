@@ -53,7 +53,12 @@ export const routes: Routes = [
         (m) => m.DepartmentForm,
       ),
   },
-
+  {
+    path: 'leave-requests',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/leave-request-page/leave-request-page').then((m) => m.LeaveRequestPage),
+  },
   {
     path: '**',
     redirectTo: 'login',
