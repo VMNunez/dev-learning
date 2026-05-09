@@ -22,6 +22,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 })
 export class LeaveRequestDialog {
   private dialogRef = inject(MatDialogRef<LeaveRequestDialog>);
+  today = new Date();
 
   newLeaveRequest = new FormGroup({
     startDate: new FormControl('', Validators.required),
