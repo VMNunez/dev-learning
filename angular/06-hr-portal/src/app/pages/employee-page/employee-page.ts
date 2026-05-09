@@ -119,6 +119,7 @@ export class EmployeePage implements OnInit {
   onEdit(employee: Employee) {
     const dialogRef = this.dialog.open(EmployeeDialog, {
       width: '500px',
+      autoFocus: false,
       data: {
         employee,
       },
