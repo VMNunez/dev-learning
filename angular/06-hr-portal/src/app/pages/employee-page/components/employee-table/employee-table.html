@@ -48,6 +48,7 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
   <tr class="not-data-row" *matNoDataRow>
     <td [attr.colspan]="displayedColumns.length">
       <div class="not-data-content">

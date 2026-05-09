@@ -1,11 +1,15 @@
 :root {
+  --color-tr-hover: var(--mat-sys-surface-variant);
+  --color-link: var(--mat-sys-primary);
+  --text-secondary: var(--mat-sys-on-surface-variant);
   --color-active-bg: #dcfce7;
   --color-active-text: #166534;
   --color-inactive-bg: #f3f4f6;
   --color-inactive-text: #374151;
-  --color-tr-hover: var(--mat-sys-surface-variant);
-  --color-link: var(--mat-sys-primary);
-  --text-secondary: var(--mat-sys-on-surface-variant);
+  --color-pending-bg: #fef9c3;
+  --color-pending-text: #854d0e;
+  --color-rejected-bg: #fee2e2;
+  --color-rejected-text: #991b1b;
 }
 
 * {
