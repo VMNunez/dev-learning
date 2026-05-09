@@ -4,10 +4,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { LeaveRequestDialog } from './components/leave-request-dialog/leave-request-dialog';
+import { LeaveRequestTable } from './components/leave-request-table/leave-request-table';
+import { LeaveRequestStatus } from '../../models/leave-request.model';
 
 @Component({
   selector: 'app-leave-request-page',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, LeaveRequestTable],
   templateUrl: './leave-request-page.html',
   styleUrl: './leave-request-page.css',
 })
@@ -44,5 +46,9 @@ export class LeaveRequestPage {
         }
       },
     });
+  }
+
+  onStatusChange(id: number, status: LeaveRequestStatus) {
+    this.leaveRequestService.updateStatus(id, status);
   }
 }

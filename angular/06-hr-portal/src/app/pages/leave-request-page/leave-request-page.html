@@ -5,4 +5,13 @@
       <button matButton="filled" (click)="openDialog()">Submit leave request</button>
     }
   </div>
+  @if (role === 'admin') {
+    <app-leave-request-table
+      [requests]="leaveRequests()"
+      [role]="role"
+      (statusChange)="onStatusChange($event.id, $event.status)"
+    />
+  } @else if (role === 'employee') {
+    <app-leave-request-table [requests]="filteredLeaveRequests()" [role]="role" />
+  }
 </div>
