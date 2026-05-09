@@ -5,7 +5,7 @@ import {
   MatDialogRef,
   MatDialog,
 } from '@angular/material/dialog';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -14,6 +14,7 @@ import { Employee } from '../../../../models/employee.model';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DepartmentService } from '../../../../core/services/department.service';
 import { EmployeeService } from '../../../../core/services/employee.service';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-employee-dialog',
@@ -24,6 +25,7 @@ import { EmployeeService } from '../../../../core/services/employee.service';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatStepperModule,
   ],
   templateUrl: './employee-dialog.html',
   styleUrl: './employee-dialog.css',
@@ -33,25 +35,32 @@ export class EmployeeDialog {
   private employeeService = inject(EmployeeService);
   private dialogRef = inject(MatDialogRef);
   private dialog = inject(MatDialog);
+  private formBuilder = inject(FormBuilder);
+  isLinear = true;
   data = inject<{ employee: Employee } | undefined>(MAT_DIALOG_DATA);
   departments = this.departmentService.departments;
 
-  newEmployeeForm = new FormGroup({
-    firstName: new FormControl('', Validators.required),
-    lastName: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    department: new FormControl('', Validators.required),
-    position: new FormControl('', Validators.required),
-    status: new FormControl('', Validators.required),
+  firstFormGroup = this.formBuilder.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+  });
+
+  secondFormGroup = this.formBuilder.group({
+    department: ['', Validators.required],
+    position: ['', Validators.required],
+    status: ['', Validators.required],
   });
 
   constructor() {
     if (this.data) {
       const { firstName, lastName, email, department, position, status } = this.data.employee;
-      this.newEmployeeForm.patchValue({
+      this.firstFormGroup.patchValue({
         firstName,
         lastName,
         email,
+      });
+      this.secondFormGroup.patchValue({
         department,
         position,
         status,
@@ -60,47 +69,49 @@ export class EmployeeDialog {
   }
 
   get firstName() {
-    return this.newEmployeeForm.get('firstName');
+    return this.firstFormGroup.get('firstName');
   }
   get lastName() {
-    return this.newEmployeeForm.get('lastName');
+    return this.firstFormGroup.get('lastName');
   }
 
   get email() {
-    return this.newEmployeeForm.get('email');
+    return this.firstFormGroup.get('email');
   }
   get department() {
-    return this.newEmployeeForm.get('department');
+    return this.secondFormGroup.get('department');
   }
   get position() {
-    return this.newEmployeeForm.get('position');
+    return this.secondFormGroup.get('position');
   }
   get status() {
-    return this.newEmployeeForm.get('status');
+    return this.secondFormGroup.get('status');
   }
 
   onSubmit() {
-    this.newEmployeeForm.markAllAsTouched();
+    this.firstFormGroup.markAllAsTouched();
+    this.secondFormGroup.markAllAsTouched();
 
-    if (this.newEmployeeForm.valid) {
-      const formValue = this.newEmployeeForm.value;
+    if (this.firstFormGroup.valid && this.secondFormGroup.valid) {
+      const firstFormValue = this.firstFormGroup.value;
+      const secondFormValue = this.secondFormGroup.value;
 
       const isDuplicate = this.employeeService.emailExists(
-        formValue.email as string,
+        firstFormValue.email as string,
         this.data?.employee.id,
       );
 
       if (isDuplicate) {
-        this.newEmployeeForm.controls.email.setErrors({ duplicateEmail: true });
+        this.firstFormGroup.controls.email.setErrors({ duplicateEmail: true });
         return;
       }
       const newEmployee: Omit<Employee, 'id' | 'startDate'> = {
-        firstName: formValue.firstName as string,
-        lastName: formValue.lastName as string,
-        email: formValue.email as string,
-        department: formValue.department as string,
-        position: formValue.position as string,
-        status: formValue.status as 'active' | 'inactive',
+        firstName: firstFormValue.firstName as string,
+        lastName: firstFormValue.lastName as string,
+        email: firstFormValue.email as string,
+        department: secondFormValue.department as string,
+        position: secondFormValue.position as string,
+        status: secondFormValue.status as 'active' | 'inactive',
       };
       if (this.data) {
         this.dialogRef.close({
@@ -118,7 +129,7 @@ export class EmployeeDialog {
   }
 
   onCancel() {
-    if (this.newEmployeeForm.dirty) {
+    if (this.firstFormGroup.dirty || this.secondFormGroup.dirty) {
       const dialogRef = this.dialog.open(ConfirmDialog, {
         width: '500px',
         autoFocus: false,
@@ -139,6 +150,12 @@ export class EmployeeDialog {
       });
     } else {
       this.dialogRef.close();
+    }
+  }
+  onNext(stepper: MatStepper) {
+    this.firstFormGroup.markAllAsTouched();
+    if (this.firstFormGroup.valid) {
+      stepper.next();
     }
   }
 }
