@@ -273,6 +273,55 @@ In most cases `snapshot` is correct.
 
 ---
 
+## Query params — optional extras in the URL
+
+Query params are the key=value pairs after a `?` in a URL, like `/employees?status=active`. They are optional and do not affect which route loads.
+
+Use query params for **filters, sorting, and pagination** — not for identity.
+
+| Type | URL example | Use for |
+| --- | --- | --- |
+| Route param | `/employees/42` | Which specific item |
+| Query param | `/employees?status=active` | Filters, sorting, optional state |
+
+### Add query params to a routerLink
+
+Use `[queryParams]` alongside `[routerLink]` or `routerLink`:
+
+```html
+<!-- navigate to /employees?status=active -->
+<mat-card routerLink="/employees" [queryParams]="{ status: 'active' }">
+  Active Employees
+</mat-card>
+```
+
+`[queryParams]` takes an object. Multiple params are also supported: `{ status: 'active', page: '2' }`.
+
+### Read query params in the target component
+
+In the component that receives the navigation, read query params in `ngOnInit` with `ActivatedRoute.snapshot.queryParamMap`:
+
+```typescript
+private route = inject(ActivatedRoute);
+
+ngOnInit(): void {
+  const status = this.route.snapshot.queryParamMap.get('status');
+  if (status) {
+    this.selectedStatus.set(status);
+  }
+}
+```
+
+- `queryParamMap.get('key')` — returns `string | null`
+- `paramMap.get('key')` — for route params like `/detail/:id`
+- `queryParamMap` — for query params like `?status=active`
+
+Do not confuse them — they are separate.
+
+### When to use `snapshot` vs `subscribe`
+
+`snapshot` is correct for query params that come from a navigation (dashboard → employees). Use `subscribe` only if the params can change while the component stays alive (rare).
+
 ---
 
 ## Route guards — protect routes
