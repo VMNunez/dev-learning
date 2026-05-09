@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe, NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import type { Role } from '../../../../models/user.model';
 
 @Component({
   selector: 'app-leave-request-table',
@@ -31,7 +32,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class LeaveRequestTable implements AfterViewInit {
   requests = input<LeaveRequest[]>([]);
-  role = input<string>('');
+  role = input<Role | undefined>(undefined);
   datasource = new MatTableDataSource<LeaveRequest>([]);
   statusChange = output<{ id: number; status: LeaveRequestStatus }>();
 

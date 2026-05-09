@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
@@ -8,6 +8,7 @@ import type { Employee } from '../../models/employee.model';
 import { EmployeeTable } from './components/employee-table/employee-table';
 import { EmployeeFilters } from './components/employee-filters/employee-filters';
 import { DepartmentService } from '../../core/services/department.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-employee-page',
@@ -15,7 +16,8 @@ import { DepartmentService } from '../../core/services/department.service';
   templateUrl: './employee-page.html',
   styleUrl: './employee-page.css',
 })
-export class EmployeePage {
+export class EmployeePage implements OnInit {
+  private route = inject(ActivatedRoute);
   private employeeService = inject(EmployeeService);
   private departmentService = inject(DepartmentService);
   private dialog = inject(MatDialog);
@@ -47,6 +49,14 @@ export class EmployeePage {
     () =>
       this.searchTerm() !== '' || this.selectedDepartment() !== '' || this.selectedStatus() !== '',
   );
+
+  ngOnInit(): void {
+    const initialStatus = this.route.snapshot.queryParamMap.get('status');
+
+    if (initialStatus) {
+      this.selectedStatus.set(initialStatus);
+    }
+  }
 
   updateSearchTerm(term: string) {
     this.searchTerm.set(term);

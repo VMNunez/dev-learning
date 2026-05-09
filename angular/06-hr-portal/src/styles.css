@@ -10,6 +10,7 @@
   --color-pending-text: #854d0e;
   --color-rejected-bg: #fee2e2;
   --color-rejected-text: #991b1b;
+  --color-card-hover: var(--mat-sys-surface-container-low);
 }
 
 * {

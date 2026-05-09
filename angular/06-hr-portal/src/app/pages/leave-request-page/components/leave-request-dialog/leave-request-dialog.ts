@@ -38,7 +38,10 @@ export class LeaveRequestDialog {
 
     if (this.newLeaveRequest.valid) {
       const formValue = this.newLeaveRequest.value;
-
+      if (formValue.endDate! < formValue.startDate!) {
+        this.newLeaveRequest.controls.endDate.setErrors({ invalidDate: true });
+        return;
+      }
       this.dialogRef.close({
         startDate: this.dateFormat(formValue.startDate as unknown as Date),
         endDate: this.dateFormat(formValue.endDate as unknown as Date),

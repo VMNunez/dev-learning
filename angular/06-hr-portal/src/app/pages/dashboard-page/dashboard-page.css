@@ -19,6 +19,12 @@
 
 .stat-card {
   flex: 1;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.stat-card:hover {
+  background-color: var(--color-card-hover);
 }
 
 .stat-card mat-card-content {
