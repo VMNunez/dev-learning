@@ -70,14 +70,52 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 
 ## Important: the value is a Date object, not a string
 
-`MatDatepicker` stores the selected date as a JavaScript `Date` object. If your model uses `string`, you need to convert it in `onSubmit()`:
+`MatDatepicker` stores the selected date as a JavaScript `Date` object. But `FormControl` is usually typed as `string | null` (because you initialise it with `''`). This mismatch means a direct `as Date` cast fails — TypeScript says the types do not overlap.
+
+The solution is a two-step cast through `unknown` (see [TypeScript notes — double assertion](../../typescript/01-typescript-utilities.md)):
 
 ```typescript
-const raw = this.form.value;
+dateFormat(date: Date): string {
+  return date.toISOString().split('T')[0]; // "2026-05-09"
+}
 
-const startDate = (raw.startDate as Date).toISOString().substring(0, 10); // "2026-05-09"
-const endDate   = (raw.endDate as Date).toISOString().substring(0, 10);
+onSubmit() {
+  const raw = this.form.value;
+  this.dialogRef.close({
+    startDate: this.dateFormat(raw.startDate as unknown as Date),
+    endDate: this.dateFormat(raw.endDate as unknown as Date),
+  });
+}
 ```
 
+- `as unknown as Date` — first cast to `unknown` (compatible with everything), then to `Date`
 - `.toISOString()` returns `"2026-05-09T00:00:00.000Z"`
-- `.substring(0, 10)` keeps only the date part: `"2026-05-09"`
+- `.split('T')[0]` keeps only the date part: `"2026-05-09"`
+
+### Date validation — end must be after start
+
+When you have two date fields, validate the range before closing the dialog:
+
+```typescript
+onSubmit() {
+  this.form.markAllAsTouched();
+  if (!this.form.valid) return;
+
+  const raw = this.form.value;
+  if (raw.endDate! < raw.startDate!) {
+    this.form.controls.endDate.setErrors({ invalidDate: true });
+    return;
+  }
+
+  this.dialogRef.close({ ... });
+}
+```
+
+In the template, add a second `mat-error` for the custom error key:
+
+```html
+<mat-error>
+  @if (form.controls.endDate.hasError('required')) { End date is required }
+  @else if (form.controls.endDate.hasError('invalidDate')) { End date must be after start date }
+</mat-error>
+```

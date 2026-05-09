@@ -135,6 +135,35 @@ onTaskDeleted(id: number) {
 }
 ```
 
+### output with an object — when you need to send multiple values
+
+Use an object type when the child needs to emit more than one piece of data at once:
+
+```typescript
+// child component
+statusChange = output<{ id: number; status: LeaveRequestStatus }>();
+
+onApprove(id: number) {
+  this.statusChange.emit({ id, status: 'approved' });
+}
+```
+
+In the parent template, unpack the object from `$event`:
+
+```html
+<!-- parent template -->
+<app-leave-request-table (statusChange)="onStatusChange($event.id, $event.status)" />
+```
+
+```typescript
+// parent component
+onStatusChange(id: number, status: LeaveRequestStatus) {
+  this.leaveRequestService.updateStatus(id, status);
+}
+```
+
+The parent method signature must match what you unpack from `$event` — not the object itself.
+
 ### output\<void\>() — when you don't need to send data
 
 Use `output<void>()` when the event itself is the signal — you don't need to pass any value. The parent just needs to know it happened.
