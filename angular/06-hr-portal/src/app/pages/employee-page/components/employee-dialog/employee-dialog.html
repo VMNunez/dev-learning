@@ -51,13 +51,6 @@
           }
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Position</mat-label>
-          <input type="text" matInput formControlName="position" />
-          @if (position?.touched && position?.hasError('required')) {
-            <mat-error>Position is required</mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field appearance="outline">
           <mat-label>Status</mat-label>
           <mat-select formControlName="status">
             <mat-option value="active">Active</mat-option>
@@ -67,23 +60,36 @@
             <mat-error>Status is required</mat-error>
           }
         </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Position</mat-label>
+          <input type="text" matInput formControlName="position" />
+          @if (position?.touched && position?.hasError('required')) {
+            <mat-error>Position is required</mat-error>
+          }
+        </mat-form-field>
       </form>
     </mat-step>
   </mat-stepper>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button matButton (click)="onCancel()">Cancel</button>
-  @if (stepper.selectedIndex === 0) {
-    <button matButton="filled" (click)="onNext(stepper)">Next</button>
-  } @else {
-    <button matButton (click)="stepper.previous()">Back</button>
-    <button matButton="filled" (click)="onSubmit()">
-      @if (data) {
-        Edit Employee
-      } @else {
-        Add Employee
-      }
-    </button>
-  }
+<mat-dialog-actions>
+  <div>
+    @if (stepper.selectedIndex === 1) {
+      <button matButton (click)="stepper.previous()">Back</button>
+    }
+  </div>
+  <div>
+    <button matButton (click)="onCancel()">Cancel</button>
+    @if (stepper.selectedIndex === 0) {
+      <button matButton="filled" (click)="onNext(stepper)">Next</button>
+    } @else {
+      <button matButton="filled" (click)="onSubmit()">
+        @if (data) {
+          Edit Employee
+        } @else {
+          Add Employee
+        }
+      </button>
+    }
+  </div>
 </mat-dialog-actions>
