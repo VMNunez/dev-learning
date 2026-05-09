@@ -27,8 +27,8 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 - `MatDatepicker` — calendar date picker with `provideNativeDateAdapter()`
 - Conditional `displayColumns` with `computed()` — show or hide table columns based on user role
 - Query params — `[queryParams]` on `routerLink`, read with `ActivatedRoute.snapshot.queryParamMap.get()`
-- `MatSnackBar` — toast notifications after user actions
-- `MatStepper` — multi-step forms
+- `MatSnackBar` — toast notifications after user actions; inject as a service, call `snackBar.open(message, action, { duration })` from the page coordinator
+- `MatStepper` — multi-step forms with `[linear]="true"`, `[stepControl]` per step, `stepper.next()` / `stepper.previous()` for navigation, `stepper.selectedIndex` to show different buttons per step
 - `CanDeactivate` guard — warn the user before leaving a form with unsaved changes
 - `markAsPristine()` — reset form dirty state after a successful save so the guard does not interrupt navigation
 - Core/Feature/Shared architecture — enterprise Angular folder structure
