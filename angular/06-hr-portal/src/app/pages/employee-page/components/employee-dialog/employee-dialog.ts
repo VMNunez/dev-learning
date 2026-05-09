@@ -96,15 +96,6 @@ export class EmployeeDialog {
       const firstFormValue = this.firstFormGroup.value;
       const secondFormValue = this.secondFormGroup.value;
 
-      const isDuplicate = this.employeeService.emailExists(
-        firstFormValue.email as string,
-        this.data?.employee.id,
-      );
-
-      if (isDuplicate) {
-        this.firstFormGroup.controls.email.setErrors({ duplicateEmail: true });
-        return;
-      }
       const newEmployee: Omit<Employee, 'id' | 'startDate'> = {
         firstName: firstFormValue.firstName as string,
         lastName: firstFormValue.lastName as string,
@@ -155,6 +146,16 @@ export class EmployeeDialog {
   onNext(stepper: MatStepper) {
     this.firstFormGroup.markAllAsTouched();
     if (this.firstFormGroup.valid) {
+      const firstFormValue = this.firstFormGroup.value;
+      const isDuplicate = this.employeeService.emailExists(
+        firstFormValue.email as string,
+        this.data?.employee.id,
+      );
+
+      if (isDuplicate) {
+        this.firstFormGroup.controls.email.setErrors({ duplicateEmail: true });
+        return;
+      }
       stepper.next();
     }
   }
