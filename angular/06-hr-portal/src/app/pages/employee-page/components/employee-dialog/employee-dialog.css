@@ -8,3 +8,7 @@ form {
 mat-dialog-actions {
   justify-content: space-between;
 }
+
+form mat-form-field:last-child {
+  grid-column: 1 / -1;
+}
