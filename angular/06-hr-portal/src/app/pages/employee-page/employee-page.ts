@@ -9,6 +9,7 @@ import { EmployeeTable } from './components/employee-table/employee-table';
 import { EmployeeFilters } from './components/employee-filters/employee-filters';
 import { DepartmentService } from '../../core/services/department.service';
 import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-employee-page',
@@ -21,6 +22,7 @@ export class EmployeePage implements OnInit {
   private employeeService = inject(EmployeeService);
   private departmentService = inject(DepartmentService);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
   employees = this.employeeService.employees;
   departments = this.departmentService.departments;
   searchTerm = signal<string>('');
@@ -75,6 +77,7 @@ export class EmployeePage implements OnInit {
     this.selectedDepartment.set('');
     this.selectedStatus.set('');
   }
+
   openDialog() {
     const dialogRef = this.dialog.open(EmployeeDialog, {
       width: '500px',
@@ -85,6 +88,7 @@ export class EmployeePage implements OnInit {
       next: (newEmployee) => {
         if (newEmployee) {
           this.employeeService.addEmployee(newEmployee);
+          this.snackBar.open('Employee added', 'Close', { duration: 3000 });
         }
       },
     });
@@ -104,7 +108,10 @@ export class EmployeePage implements OnInit {
 
     dialogRef.afterClosed().subscribe({
       next: (confirmed) => {
-        if (confirmed) this.employeeService.deleteEmployee(id);
+        if (confirmed) {
+          this.employeeService.deleteEmployee(id);
+          this.snackBar.open('Employee deleted', 'Close', { duration: 3000 });
+        }
       },
     });
   }
@@ -121,6 +128,7 @@ export class EmployeePage implements OnInit {
       next: (updatedEmployee) => {
         if (updatedEmployee) {
           this.employeeService.editEmployee(updatedEmployee);
+          this.snackBar.open('Employee updated', 'Close', { duration: 3000 });
         }
       },
     });

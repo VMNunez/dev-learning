@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { DepartmentService } from '../../../core/services/department.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Department } from '../../../models/department.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-department-form',
@@ -24,6 +25,7 @@ export class DepartmentForm implements OnInit {
   private departmentService = inject(DepartmentService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private snackBar = inject(MatSnackBar);
   editId = signal<number | null>(null);
 
   departmentForm = new FormGroup({
@@ -77,6 +79,7 @@ export class DepartmentForm implements OnInit {
         };
 
         this.departmentService.editDepartment(updateDepartment);
+        this.snackBar.open('Department updated', 'Close', { duration: 3000 });
       } else {
         const newDepartment: Department = {
           id: Date.now(),
@@ -84,6 +87,7 @@ export class DepartmentForm implements OnInit {
         };
 
         this.departmentService.addDepartment(newDepartment);
+        this.snackBar.open('Department added', 'Close', { duration: 3000 });
       }
       this.departmentForm.markAsPristine();
       this.router.navigate(['departments']);
