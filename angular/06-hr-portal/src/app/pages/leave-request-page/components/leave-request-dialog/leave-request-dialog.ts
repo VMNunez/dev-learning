@@ -4,6 +4,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-leave-request-dialog',
@@ -14,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatInputModule,
     MatDialogModule,
     MatButtonModule,
+    MatDatepickerModule,
   ],
   templateUrl: './leave-request-dialog.html',
   styleUrl: './leave-request-dialog.css',
@@ -27,6 +29,10 @@ export class LeaveRequestDialog {
     reason: new FormControl('', Validators.required),
   });
 
+  dateFormat(date: Date) {
+    return date.toISOString().split('T')[0];
+  }
+
   onSubmit() {
     this.newLeaveRequest.markAllAsTouched();
 
@@ -34,8 +40,8 @@ export class LeaveRequestDialog {
       const formValue = this.newLeaveRequest.value;
 
       this.dialogRef.close({
-        startDate: formValue.startDate as string,
-        endDate: formValue.endDate as string,
+        startDate: this.dateFormat(formValue.startDate as unknown as Date),
+        endDate: this.dateFormat(formValue.endDate as unknown as Date),
         reason: formValue.reason as string,
       });
     }

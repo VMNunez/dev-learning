@@ -29,6 +29,7 @@ export class LeaveRequestPage {
   openDialog() {
     const dialogRef = this.dialog.open(LeaveRequestDialog, {
       width: '500px',
+      autoFocus: false,
     });
 
     dialogRef.afterClosed().subscribe({
