@@ -24,6 +24,9 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 - HTTP interceptors — run logic before every HTTP request (auth token, loading state)
 - `Location.back()` — navigate to the previous page using browser history
 - `MatPaginator` — pagination for Material tables
+- `MatDatepicker` — calendar date picker with `provideNativeDateAdapter()`
+- Conditional `displayColumns` with `computed()` — show or hide table columns based on user role
+- Query params — `[queryParams]` on `routerLink`, read with `ActivatedRoute.snapshot.queryParamMap.get()`
 - `MatSnackBar` — toast notifications after user actions
 - `MatStepper` — multi-step forms
 - `CanDeactivate` guard — warn the user before leaving a form with unsaved changes
