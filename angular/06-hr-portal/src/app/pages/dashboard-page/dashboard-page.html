@@ -5,7 +5,7 @@
   </div>
 
   <div class="card-container">
-    <mat-card appearance="outlined" class="stat-card">
+    <mat-card appearance="outlined" class="stat-card" routerLink="/employees">
       <mat-card-content>
         <div class="stat-header">
           <mat-icon>group</mat-icon>
@@ -14,7 +14,12 @@
         <strong class="stat-number">{{ totalEmployees() }}</strong>
       </mat-card-content>
     </mat-card>
-    <mat-card appearance="outlined" class="stat-card">
+    <mat-card
+      appearance="outlined"
+      class="stat-card"
+      [routerLink]="'/employees'"
+      [queryParams]="{ status: 'active' }"
+    >
       <mat-card-content>
         <div class="stat-header">
           <mat-icon>how_to_reg</mat-icon>
@@ -23,7 +28,7 @@
         <strong class="stat-number">{{ activeEmployees() }}</strong>
       </mat-card-content>
     </mat-card>
-    <mat-card appearance="outlined" class="stat-card">
+    <mat-card appearance="outlined" class="stat-card" routerLink="/departments">
       <mat-card-content>
         <div class="stat-header">
           <mat-icon>corporate_fare</mat-icon>
