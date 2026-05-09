@@ -36,9 +36,9 @@ export class LeaveRequestTable implements AfterViewInit {
   statusChange = output<{ id: number; status: LeaveRequestStatus }>();
 
   displayColumns = computed(() => {
-    const cols = ['reason', 'startDate', 'endDate', 'status', 'actions'];
+    const cols = ['reason', 'startDate', 'endDate', 'status'];
 
-    return this.role() === 'admin' ? ['employeeEmail', ...cols] : cols;
+    return this.role() === 'admin' ? ['employeeEmail', ...cols, 'actions'] : cols;
   });
 
   constructor() {

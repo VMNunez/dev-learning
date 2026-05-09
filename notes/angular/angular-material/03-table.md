@@ -338,3 +338,45 @@ In the template, place `<mat-paginator>` **outside and after** the `</table>` cl
 | `aria-label`           | Accessibility label for screen readers         |
 
 `MatTableDataSource` handles the rest automatically — when the user changes the page, the table updates.
+
+---
+
+## Conditional columns — show/hide based on role or state
+
+To show or hide a column based on a condition (e.g. the user's role), make `displayColumns` a `computed()` that reacts to the condition — do NOT wrap the `ng-container` in an `@if`.
+
+**Why not `@if` around `ng-container`?** Angular Material registers column definitions when the table initialises. If a column is inside `@if`, Material may not find it and will throw an error.
+
+**The correct pattern:**
+
+```typescript
+// Always define all ng-container column definitions in the template.
+// Control visibility by including or excluding the column name from displayColumns.
+
+role = input<string>('');
+
+displayColumns = computed(() => {
+  const cols = ['reason', 'startDate', 'endDate', 'status', 'actions'];
+  return this.role() === 'admin' ? ['employeeEmail', ...cols] : cols;
+});
+```
+
+- `displayColumns` is a `computed()` because `role` is an `input()` signal — it needs to react when the value changes
+- Call it with `()` in the template: `*matHeaderRowDef="displayColumns()"` and `*matRowDef="let row; columns: displayColumns()"`
+- The `ng-container` for `employeeEmail` is always in the template — it just does not appear in the rendered table when its name is not in the array
+
+**Using `@if` inside a cell is fine** — the restriction only applies to wrapping the whole `ng-container` column definition:
+
+```html
+<!-- ✓ OK — @if inside a cell -->
+<td mat-cell *matCellDef="let request">
+  @if (request.status === 'pending') {
+    <button>Approve</button>
+  }
+</td>
+
+<!-- ✗ Avoid — @if around the whole column definition -->
+@if (role() === 'admin') {
+  <ng-container matColumnDef="employeeEmail">...</ng-container>
+}
+```

@@ -1,7 +1,7 @@
 <div class="container">
   <div class="leave-request-header">
     <h1>Leave Requests</h1>
-    @if (role === 'admin') {
+    @if (role === 'employee') {
       <button matButton="filled" (click)="openDialog()">Submit leave request</button>
     }
   </div>
