@@ -47,6 +47,22 @@ this.myOutput.emit(this.transactionForm.value as NewTransaction);
 
 Use `as` when you know more about the type than TypeScript can infer. Do not use it to silence errors you do not understand — it bypasses type safety.
 
+### Double assertion — `as unknown as Type`
+
+When two types are completely unrelated (for example `string` and `Date`), TypeScript refuses a direct cast with `as`. In that case, go through `unknown` first:
+
+```typescript
+// TypeScript refuses this — string and Date don't overlap
+const date = formValue.startDate as Date; // Error
+
+// Two-step cast through unknown — works
+const date = formValue.startDate as unknown as Date;
+```
+
+**Why it works:** `unknown` is compatible with every type. TypeScript always allows `anyType → unknown` and `unknown → anyType`. The two steps bypass the overlap check.
+
+**When to use it:** when a form control is typed as `string | null` but at runtime holds a `Date` (for example, when using `MatDatepicker` with a `FormControl('')`).
+
 ---
 
 ## Optional fields — `?`

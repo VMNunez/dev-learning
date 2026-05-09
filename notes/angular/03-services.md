@@ -148,3 +148,35 @@ DashboardPage (smart)
 ```
 
 The dumb component does not know where the data comes from. It just displays it.
+
+---
+
+## Service method design — full object vs individual parameters
+
+When writing update methods in a service, choose the parameters based on what you are changing.
+
+**Editing multiple fields → pass the full updated object**
+
+```typescript
+editEmployee(updatedEmployee: Employee) {
+  this.employees.update((employees) =>
+    employees.map((e) => (e.id === updatedEmployee.id ? updatedEmployee : e))
+  );
+}
+```
+
+The caller builds the updated object and passes it in. The method just replaces the old one.
+
+**Editing one specific field → pass the id + the new value**
+
+```typescript
+updateStatus(id: number, newStatus: LeaveRequestStatus) {
+  this.leaveRequests.update((requests) =>
+    requests.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
+  );
+}
+```
+
+The method handles the update internally with the spread operator. The caller only provides what changed.
+
+**Why this matters:** if you passed the whole object to `updateStatus`, the caller would have to build the full updated object just to change one field. That is unnecessary work. Let the method handle it.
