@@ -8,7 +8,7 @@
 
 <mat-dialog-content>
   <mat-stepper [linear]="isLinear" #stepper>
-    <mat-step [stepControl]="firstFormGroup">
+    <mat-step [stepControl]="firstFormGroup" label="Personal info">
       <form [formGroup]="firstFormGroup">
         <mat-form-field appearance="outline">
           <mat-label>First Name</mat-label>
@@ -37,7 +37,7 @@
         </mat-form-field>
       </form>
     </mat-step>
-    <mat-step [stepControl]="secondFormGroup">
+    <mat-step [stepControl]="secondFormGroup" label="Job info">
       <form [formGroup]="secondFormGroup">
         <mat-form-field appearance="outline">
           <mat-label>Department</mat-label>
