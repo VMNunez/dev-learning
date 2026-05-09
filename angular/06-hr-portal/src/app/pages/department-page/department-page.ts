@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-department-page',
@@ -15,6 +16,7 @@ import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-di
 export class DepartmentPage {
   private departmentService = inject(DepartmentService);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
   departments = this.departmentService.departments;
 
   onDelete(id: number) {
@@ -33,6 +35,7 @@ export class DepartmentPage {
       next: (confirmed) => {
         if (confirmed) {
           this.departmentService.deleteDepartment(id);
+          this.snackBar.open('Department deleted', 'Close', { duration: 3000 });
         }
       },
     });
