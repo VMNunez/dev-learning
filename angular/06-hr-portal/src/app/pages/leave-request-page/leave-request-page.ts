@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LeaveRequestDialog } from './components/leave-request-dialog/leave-request-dialog';
 import { LeaveRequestTable } from './components/leave-request-table/leave-request-table';
 import { LeaveRequestStatus } from '../../models/leave-request.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-leave-request-page',
@@ -17,6 +18,7 @@ export class LeaveRequestPage {
   private leaveRequestService = inject(LeaveRequestService);
   private authService = inject(AuthService);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
 
   currentUser = this.authService.currentUser;
   leaveRequests = this.leaveRequestService.leaveRequests;
@@ -43,6 +45,7 @@ export class LeaveRequestPage {
             endDate: data.endDate,
             reason: data.reason,
           });
+          this.snackBar.open('Leave request added', 'Close', { duration: 3000 });
         }
       },
     });
@@ -50,5 +53,6 @@ export class LeaveRequestPage {
 
   onStatusChange(id: number, status: LeaveRequestStatus) {
     this.leaveRequestService.updateStatus(id, status);
+    this.snackBar.open(`Leave request ${status}`, 'Close', { duration: 3000 });
   }
 }
