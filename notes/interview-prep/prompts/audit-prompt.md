@@ -4,7 +4,7 @@ Use in a **separate conversation**. Paste this prompt and attach the interview p
 Update the project list as new projects are completed.
 
 Files live in `notes/interview-prep/en/` (English) and `notes/interview-prep/es/` (Spanish).
-Current files: `angular.md`, `general.md`, `sql.md`, `css.md`, `git.md`. Both folders must always stay in sync.
+Current files: `angular.md`, `typescript.md`, `architecture.md`, `general.md`, `javascript.md`, `css.md`, `git.md`, `sql.md`. Both folders must always stay in sync.
 
 ---
 

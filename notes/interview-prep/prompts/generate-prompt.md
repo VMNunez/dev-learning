@@ -18,7 +18,7 @@ My projects:
 - 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
 - 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
 
-Generate interview questions for notes/interview-prep/en/[angular.md / general.md / sql.md / css.md / git.md / java.md]
+Generate interview questions for notes/interview-prep/en/[angular.md / typescript.md / architecture.md / general.md / javascript.md / css.md / git.md / sql.md / java.md]
 on this topic, ready to paste directly into the file.
 
 Important: every question must also be added to the matching file in notes/interview-prep/es/ —
