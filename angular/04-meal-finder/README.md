@@ -15,6 +15,16 @@ My fourth Angular project. A recipe search app to learn route parameters, Activa
 - View all favourites on a dedicated page
 - Filter favourites by category
 
+## Architecture decisions
+
+- **`effect()` + `localStorage` for favourites** — favourites need to persist across sessions. Using `effect()` to save the signal to `localStorage` every time it changes means there is no manual save call anywhere — the sync is automatic and impossible to forget.
+
+- **`computed()` for all filtering instead of methods** — the filtered meal list and unique category list are derived from signals. `computed()` recalculates automatically when the source changes and is memoized, so it does not run on every render cycle like a method would.
+
+- **`Location.back()` on the detail page** — the detail page can be reached from the search results or from the favourites page. A hardcoded `routerLink` would always go back to one specific page. `Location.back()` uses the browser history, so it returns to wherever the user came from.
+
+- **`hasSearched` and `hasLoad` signals for UX state** — distinguishing between "loading", "no results", and "not searched yet" requires separate flags. A single `results` signal cannot express all three states cleanly; two boolean signals make each state explicit and easy to read in the template.
+
 ## What I learned
 
 ### Angular

@@ -161,4 +161,51 @@ You can chain multiple pipes:
 
 ## Custom pipes
 
-You can create your own pipe for transformations that Angular does not provide. This is not needed for any of the current projects — come back to this when a specific use case appears.
+Create your own pipe when Angular does not have what you need — for example, truncating long text.
+
+Official docs: https://angular.dev/guide/templates/pipes#creating-pipes
+
+### Generate a pipe
+
+```bash
+ng generate pipe shared/pipes/truncate
+```
+
+### Pipe structure
+
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'truncate',
+  standalone: true,
+})
+export class TruncatePipe implements PipeTransform {
+  transform(value: string, maxLength: number = 50): string {
+    if (value.length <= maxLength) return value;
+    return value.slice(0, maxLength) + '...';
+  }
+}
+```
+
+- `name` — the string you use in the template after `|`
+- `transform()` — the method Angular calls; the first argument is always the value being piped
+- Additional arguments map to the arguments you pass in the template: `| truncate:100`
+
+### Use it in a template
+
+Import the pipe in the component, then use it in the template:
+
+```typescript
+@Component({
+  imports: [TruncatePipe],
+  ...
+})
+```
+
+```html
+{{ task.description | truncate }}
+{{ task.description | truncate:100 }}
+```
+
+The first call uses the default (`50`). The second passes `100` as `maxLength`.
