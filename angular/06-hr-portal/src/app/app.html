@@ -1,1 +1,8 @@
+@if (isLoggedIn()) {
+  <mat-toolbar>
+    <span class="app-title">HR Portal</span>
+
+    <button matButton (click)="logout()">Log out</button>
+  </mat-toolbar>
+}
 <router-outlet />
