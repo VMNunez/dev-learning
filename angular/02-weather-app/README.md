@@ -16,6 +16,14 @@ My second Angular project. A weather app that fetches real data from an API to l
 - Error handling when the city is not found
 - Madrid loaded by default on app start
 
+## Architecture decisions
+
+- **`forkJoin` for parallel requests** — the app needs current weather and the 5-day forecast at the same time; making them sequential would double the wait time for no reason. `forkJoin` fires both at once and waits for both to finish before updating the UI.
+
+- **`takeUntilDestroyed` over manual unsubscribe** — HTTP subscriptions left open after a component is destroyed cause memory leaks. `takeUntilDestroyed()` handles cleanup automatically, which avoids writing a `ngOnDestroy` hook for every component.
+
+- **Environment files for the API key** — the key cannot be committed to the repository. Environment files are excluded from git and injected at build time, which is the standard Angular pattern for secrets.
+
 ## What I learned
 
 ### Angular

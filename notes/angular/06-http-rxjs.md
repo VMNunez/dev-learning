@@ -255,6 +255,123 @@ loadWeather(city: string): void {
 
 ---
 
+## RxJS operators
+
+Operators are functions you apply inside `.pipe()` to transform, filter, or combine Observables before subscribing.
+
+```ts
+this.service.getData()
+  .pipe(
+    map(response => response.data),
+    catchError(err => of([]))
+  )
+  .subscribe(data => this.items.set(data));
+```
+
+### map — transform the emitted value
+
+```ts
+import { map } from 'rxjs/operators';
+
+this.http.get<ApiResponse>('/api/employees')
+  .pipe(map(response => response.data))  // extract just the data array
+  .subscribe(employees => this.employees.set(employees));
+```
+
+Same concept as `Array.map()` but for streams.
+
+### catchError — handle errors inside the stream
+
+```ts
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+this.http.get<Employee[]>('/api/employees')
+  .pipe(
+    catchError(err => {
+      this.hasError.set(true);
+      return of([]);  // return an empty array so the stream completes normally
+    })
+  )
+  .subscribe(employees => this.employees.set(employees));
+```
+
+`of([])` creates an Observable that immediately emits the value and completes — it replaces the failed stream so `subscribe` still receives something.
+
+### tap — side effects without modifying the stream
+
+```ts
+import { tap } from 'rxjs/operators';
+
+this.http.get<Employee[]>('/api/employees')
+  .pipe(
+    tap(() => this.isLoading.set(true)),   // side effect before
+    tap(data => console.log('Loaded:', data))  // log the response
+  )
+  .subscribe(employees => this.employees.set(employees));
+```
+
+`tap` looks at the value but does not change it — the stream continues unchanged.
+
+### switchMap — cancel the previous request, start a new one
+
+The most important operator for search-as-you-type. When a new value arrives, it cancels any in-flight Observable from the previous value and starts a fresh one.
+
+```ts
+import { switchMap, debounceTime } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+
+const input = document.querySelector('input')!;
+
+fromEvent(input, 'input')
+  .pipe(
+    debounceTime(300),                        // wait 300ms after the user stops typing
+    map(event => (event.target as HTMLInputElement).value),
+    switchMap(term => this.http.get<Employee[]>(`/api/employees?search=${term}`))
+  )
+  .subscribe(results => this.results.set(results));
+```
+
+Without `switchMap`, if the user types fast, multiple requests fire and the responses can arrive out of order — showing stale results. `switchMap` solves this by always keeping only the latest request alive.
+
+**switchMap vs mergeMap:**
+- `switchMap` — cancels the previous and starts new. Use for search, autocomplete.
+- `mergeMap` — runs all in parallel, keeps all. Use when all results matter (e.g. upload multiple files).
+
+### debounceTime — wait before emitting
+
+```ts
+import { debounceTime } from 'rxjs/operators';
+
+this.searchControl.valueChanges
+  .pipe(
+    debounceTime(300),  // wait 300ms after the user stops typing
+    switchMap(term => this.employeeService.search(term))
+  )
+  .subscribe(results => this.results.set(results));
+```
+
+Without `debounceTime`, an HTTP request fires on every keystroke. With it, you only fire after the user pauses — fewer requests, better UX.
+
+### combineLatest — combine multiple streams
+
+Emits when any of the source Observables emits, combining the latest value from each:
+
+```ts
+import { combineLatest } from 'rxjs';
+
+combineLatest([
+  this.departmentFilter.valueChanges,
+  this.statusFilter.valueChanges,
+]).pipe(
+  switchMap(([dept, status]) => this.employeeService.getFiltered(dept, status))
+).subscribe(employees => this.employees.set(employees));
+```
+
+Useful when you have multiple filter controls and want to re-fetch whenever any of them changes.
+
+---
+
 ## HTTP Interceptors
 
 An interceptor is a function that runs automatically before every HTTP request. It can modify the request — for example, adding an auth header — without touching any service.

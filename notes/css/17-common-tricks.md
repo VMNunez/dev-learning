@@ -184,3 +184,58 @@ z-index: 200;   /* dropdown menus */
 z-index: 1000;  /* modals */
 z-index: 9999;  /* tooltips, notifications */
 ```
+
+---
+
+## Text tricks
+
+### Capitalize first letter
+
+`text-transform: capitalize` makes the first letter of each word uppercase without changing the underlying data. Useful for status or priority labels stored as lowercase strings.
+
+```css
+.badge {
+  text-transform: capitalize; /* 'active' → 'Active' */
+}
+```
+
+### Truncate text with ellipsis
+
+See typography notes — requires `white-space: nowrap`, `overflow: hidden`, and `text-overflow: ellipsis` together.
+
+---
+
+## Table tricks
+
+### Equal-width columns
+
+By default, table columns resize based on content. `table-layout: fixed` makes all columns equal width and requires `width: 100%` on the table.
+
+```css
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+```
+
+### Control one column's width — `.mat-column-*`
+
+Angular Material generates a CSS class for each column automatically — `mat-column-name`, `mat-column-status`, etc. Use it to set a specific width without touching the table itself.
+
+```css
+.mat-column-actions {
+  width: 120px;
+  text-align: right;
+}
+```
+
+### `td.class` vs `.class td`
+
+These two selectors look similar but target different things:
+
+| Selector | What it targets |
+|----------|----------------|
+| `td.active` | A `<td>` that **has** the class `active` |
+| `.active td` | A `<td>` that is **inside** an element with class `active` |
+
+Angular Material table rows get the row class, not the cells — so to style a cell inside an active row, use `.active td`, not `td.active`.

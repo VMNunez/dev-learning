@@ -1,5 +1,31 @@
 # Layout Patterns
 
+## The display property
+
+`display` controls how an element participates in the layout. The most important values:
+
+| Value | Behaviour |
+|-------|-----------|
+| `block` | Takes the full width, starts on a new line — `<div>`, `<p>`, `<h1>` |
+| `inline` | Only as wide as its content, sits in a line with text — `<span>`, `<a>`, `<strong>` |
+| `inline-block` | Sits inline but accepts width, height, and vertical margin |
+| `flex` | Turns the element into a flex container — children become flex items |
+| `grid` | Turns the element into a grid container — children become grid items |
+| `none` | Removes the element completely from layout — space is gone |
+
+### `display: none` vs `visibility: hidden`
+
+Both hide the element visually, but differently:
+
+| | Space in layout | Visible |
+|-|----------------|---------|
+| `display: none` | ❌ removed | ❌ no |
+| `visibility: hidden` | ✅ kept | ❌ no |
+
+Use `visibility: hidden` when you want to hide something without shifting other elements around — for example, hiding an action button that appears on hover while keeping the row height stable.
+
+---
+
 ## Container — always the same
 
 ```css
