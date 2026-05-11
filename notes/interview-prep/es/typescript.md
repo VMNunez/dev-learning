@@ -29,6 +29,12 @@ Un generic es un parámetro de tipo que permite escribir código reutilizable qu
 **¿Cuál es la diferencia entre `any`, `unknown` y `never`?**
 `any` desactiva la comprobación de tipos por completo — el valor puede usarse como cualquier tipo sin errores. `unknown` es la alternativa segura — debes reducir el tipo antes de usarlo. `never` representa un valor que nunca puede existir — una función que siempre lanza un error tiene tipo de retorno `never`. Evito `any` en código real porque elimina todos los beneficios de TypeScript. Uso `unknown` para datos externos como resultados de `JSON.parse` y los reduzco antes de usarlos.
 
+**¿Qué hace `Partial<T>` y cuándo lo usas?**
+`Partial<T>` hace que todos los campos de un tipo sean opcionales. Lo uso cuando una función solo necesita actualizar parte de un objeto — por ejemplo, un formulario de edición que solo cambia algunos campos. Encaja de forma natural con `patchValue()` en los formularios reactivos de Angular: el método acepta `Partial<FormValue>` para que solo tengas que proporcionar los campos que quieres actualizar, no el objeto completo.
+
+**¿Qué hace `Pick<T, K>`?**
+`Pick<T, K>` crea un nuevo tipo con solo los campos que especificas — lo contrario de `Omit`. `Pick<Employee, 'id' | 'name'>` da un tipo con solo esos dos campos. Lo uso cuando un componente solo necesita un subconjunto de un modelo más grande — hace la interfaz explícita y evita pasar datos a los que el componente no debería acceder.
+
 **¿Qué es un enum y cuándo lo usas en lugar de un union type?**
 Un enum es un conjunto de constantes con nombre — `enum Role { Admin = 'admin', Employee = 'employee' }`. Lo uso cuando los valores se comparten entre muchos archivos y necesitan iterarse — `Object.values(Role)` da todas las opciones para un `<mat-select>`. Para casos locales simples uso un union type — `type Status = 'active' | 'inactive'` — es más corto y no genera JavaScript extra. La regla: union type para casos locales simples, enum para constantes compartidas y reutilizadas.
 
@@ -40,3 +46,10 @@ Cuando una variable tiene un union type, TypeScript no sabe en tiempo de ejecuci
 
 **¿Qué es el constructor shorthand en TypeScript y cómo se relaciona con Angular?**
 Declarar un parámetro con un modificador de acceso (`private`, `public`, `readonly`) en el constructor crea y asigna automáticamente una propiedad de clase. `constructor(private http: HttpClient)` es equivalente a declarar `private http: HttpClient` y escribir `this.http = http` en el cuerpo. En Angular este es el patrón estándar para la inyección de dependencias. El Angular moderno también admite `inject()` como alternativa, que elimina completamente el constructor.
+
+---
+
+## Preguntas de presión
+
+**Un compañero dice "Yo uso `any` para las respuestas de la API — TypeScript complica las cosas y enviamos más rápido." ¿Cómo respondes?**
+Entiendo la frustración — tipar estrictamente una respuesta de API desconocida puede ralentizarte al principio. Pero `any` elimina toda la seguridad de tipos para ese valor en todos los sitios por donde fluye el código. La alternativa segura es `unknown`, que te obliga a validar la forma una sola vez antes de usarla. Después de esa comprobación, TypeScript conoce el tipo y te ayuda en todos los demás sitios. Le mostraría el patrón: `const data = response as unknown; if (isEmployee(data)) { ... }` — requiere un poco más de trabajo al principio pero previene toda una categoría de bugs en runtime que son muy difíciles de depurar en producción.

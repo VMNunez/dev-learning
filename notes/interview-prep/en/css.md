@@ -77,6 +77,9 @@ A block of CSS that only applies when a condition is true — usually the screen
 
 ## Animations and transitions
 
+**What does `transform` do and why is it preferred for animations?**
+`transform` moves, scales, or rotates an element without affecting the document flow — `translate(-50%, -50%)` for centering, `scale(1.05)` for hover growth, `rotate(45deg)` for icons. The key reason to prefer it over changing `top`/`left` or `margin` is performance — `transform` is GPU-accelerated and does not trigger layout recalculation, so animations stay smooth even on lower-end devices.
+
 **What is the difference between `transition` and `@keyframes animation`?**
 `transition` is for simple state changes — hover effects, showing/hiding an element. You define start and end, CSS handles the movement. `@keyframes` is for more complex animations that loop or have multiple steps — like a loading spinner. I use `transition` for card hover effects and `@keyframes` for the CSS spinner.
 
@@ -193,6 +196,12 @@ Two common approaches. With flexbox: `display: flex; align-items: center; justif
 
 ## Pressure
 
+**The client says the app looks broken on mobile. You open DevTools. What do you check first?**
+I open the responsive mode in DevTools and set the viewport to 375px — the most common small phone width. Then I check in order: whether the layout overflows horizontally (which usually means a fixed `px` width somewhere), whether text is too small to read (missing `rem` usage or viewport meta tag), and whether touch targets like buttons are at least 44px tall. Most mobile layout issues trace back to one of these three things.
+
+**You inherit a CSS file with 15 `!important` declarations. What do you do?**
+I do not touch them immediately — removing `!important` without understanding why it was added can break things silently. I read each one and figure out the underlying specificity conflict. Most of the time the fix is restructuring the selectors so the right rule wins naturally — adding a class, removing unnecessary nesting, or moving a rule to a more appropriate location. Then I remove them one by one with tests. The lesson is that `!important` is never the real fix — it is a symptom of a specificity problem that was not resolved properly.
+
 **What CSS mistake have you made and how did you fix it?**
 What they really want to know: Can you debug CSS and learn from it, or do you just trial-and-error until something works?
 A: In the task manager I added a style targeting a Material component's internal element inside the component CSS and it had no effect. I spent time looking in the wrong place. Then I remembered Angular's view encapsulation — component CSS cannot reach inside Material components because those elements do not get the scoping attribute. I moved the rule to `styles.css` and it worked immediately. Now I always check whether the element is in my own template or rendered internally before deciding where to put the CSS.
@@ -201,6 +210,9 @@ Red flag answer: "I always check the browser until it works." — That is not de
 ---
 
 ## Angular-specific
+
+**What is the difference between Angular's `@if` and `display: none`?**
+`@if` removes the element from the DOM entirely — no HTML, no event listeners, no memory. `display: none` keeps the element in the DOM but makes it invisible. Use `@if` when the element is not needed at all — a dialog that has not been opened, a section the user does not have access to. Use `display: none` (or `visibility: hidden`) when you need to keep the element ready to appear instantly without being rebuilt — for example, a tooltip that must show immediately on hover without re-rendering.
 
 **How does Angular component style encapsulation work?**
 By default, Angular adds a unique attribute to every element in a component and scopes the component CSS to only match those attributes. Styles in `task-list.component.css` only apply inside that component — they cannot leak into other components. This prevents style conflicts in large apps.

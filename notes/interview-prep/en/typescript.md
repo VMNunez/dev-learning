@@ -29,6 +29,12 @@ A generic is a type parameter that lets you write reusable code that works with 
 **What is the difference between `any`, `unknown`, and `never`?**
 `any` disables type checking completely — the value can be used as any type with no errors. `unknown` is the safe alternative — you must narrow the type before using it. `never` represents a value that can never exist — a function that always throws has return type `never`. I avoid `any` in real code because it removes all the benefits of TypeScript. I use `unknown` for external data like `JSON.parse` results and narrow it before using.
 
+**What does `Partial<T>` do and when do you use it?**
+`Partial<T>` makes all fields of a type optional. I use it when a function only needs to update part of an object — for example, an edit form that only changes some fields. It pairs naturally with `patchValue()` in Angular reactive forms: the method accepts `Partial<FormValue>` so you only provide the fields you want to update, not the entire object.
+
+**What does `Pick<T, K>` do?**
+`Pick<T, K>` creates a new type with only the fields you specify — the opposite of `Omit`. `Pick<Employee, 'id' | 'name'>` gives a type with just those two fields. I use it when a component only needs a subset of a larger model — it makes the interface explicit and prevents passing data the component should not access.
+
 **What is an enum and when do you use it instead of a union type?**
 An enum is a set of named constants — `enum Role { Admin = 'admin', Employee = 'employee' }`. I use it when the values are shared across many files and need to be iterated — `Object.values(Role)` gives all options for a `<mat-select>`. For simple local cases I use a union type — `type Status = 'active' | 'inactive'` — it is shorter and does not generate extra JavaScript. The rule: union type for local simple cases, enum for shared reused constants.
 
@@ -40,3 +46,10 @@ When a variable has a union type, TypeScript does not know at runtime which spec
 
 **What is the constructor shorthand in TypeScript and how does it relate to Angular?**
 Declaring a parameter with an access modifier (`private`, `public`, `readonly`) in the constructor automatically creates and assigns a class property. `constructor(private http: HttpClient)` is equivalent to declaring `private http: HttpClient` and writing `this.http = http` in the body. In Angular this is the standard pattern for dependency injection. Modern Angular also supports `inject()` as an alternative, which removes the constructor entirely.
+
+---
+
+## Pressure questions
+
+**A teammate says "I just use `any` for API responses — TypeScript gets in the way and we ship faster." How do you respond?**
+I understand the frustration — strict typing on an unknown API response can slow you down at first. But `any` removes all type safety for that value everywhere it flows through the code. The safe alternative is `unknown`, which forces you to validate the shape once before using it. After that one check, TypeScript knows the type and helps you everywhere else. I would show the pattern: `const data = response as unknown; if (isEmployee(data)) { ... }` — it is slightly more work upfront but prevents entire classes of runtime bugs that are very hard to debug in production.
