@@ -108,7 +108,82 @@ Sin `ORDER BY`, la base de datos devuelve las filas en un orden no especificado 
 
 ---
 
+## JOINs
+
+**¿Qué es un JOIN y por qué lo necesitas?**
+Un JOIN combina filas de dos o más tablas basándose en una columna relacionada — normalmente una clave foránea. Sin él solo puedes consultar una tabla a la vez. En la base de datos de la librería uso JOIN para obtener el título del libro y el nombre del autor en una sola consulta en lugar de hacer dos consultas separadas.
+
+**¿Cuál es la diferencia entre INNER JOIN y LEFT JOIN?**
+`INNER JOIN` devuelve solo las filas que tienen coincidencia en ambas tablas — las filas sin coincidencia se excluyen del resultado. `LEFT JOIN` devuelve todas las filas de la tabla de la izquierda; si no hay coincidencia en el lado derecho, esas columnas vienen como NULL. Uso `INNER JOIN` cuando solo quiero datos completos y `LEFT JOIN` cuando necesito mantener todas las filas de la tabla principal, incluso las que no tienen fila relacionada.
+
+**¿Cómo encuentras filas que no tienen coincidencia en otra tabla?**
+Con un `LEFT JOIN` combinado con `WHERE tabla_derecha.id IS NULL`. Por ejemplo, para encontrar autores sin libros: hago JOIN de `authors` con `books` usando LEFT JOIN, luego filtro donde `books.id IS NULL`. El LEFT JOIN mantiene todos los autores; el filtro NULL mantiene solo los que no tienen ningún libro.
+
+**¿Qué ocurre cuando haces JOIN con tres tablas?**
+Encadenas los JOINs — cada uno añade otra tabla al resultado. Por ejemplo, para obtener el nombre del cliente, el título del libro y la cantidad de un pedido: empiezas desde `order_items`, JOIN con `orders` para obtener el ID del cliente, JOIN con `customers` para obtener el nombre, JOIN con `books` para obtener el título. Cada JOIN usa la clave foránea que conecta las dos tablas.
+
+---
+
+## Agregados y GROUP BY
+
+**¿Qué hace `COUNT(*)` y en qué se diferencia de `COUNT(columna)`?**
+`COUNT(*)` cuenta todas las filas del resultado, incluyendo las que tienen valores NULL. `COUNT(columna)` cuenta solo las filas donde esa columna no es NULL. Si una columna `price` tiene NULLs, `COUNT(*)` da el número total de filas mientras que `COUNT(price)` da el número de filas que realmente tienen un precio.
+
+**¿Qué hace `GROUP BY`?**
+Agrupa múltiples filas que comparten el mismo valor en una sola fila, para que las funciones de agregación puedan calcular por grupo. `SELECT author_id, COUNT(*) FROM books GROUP BY author_id` da una fila por autor con el recuento de sus libros — en lugar de un recuento para toda la tabla.
+
+**¿Cuál es la diferencia entre WHERE y HAVING?**
+`WHERE` filtra filas individuales antes de agrupar. `HAVING` filtra grupos después de agrupar. No puedes usar una función de agregación en `WHERE` — `WHERE COUNT(*) > 2` es un error. Esa condición va en `HAVING`. Una consulta puede usar ambas: `WHERE published_year > 2000` reduce las filas primero, luego `HAVING COUNT(*) > 1` mantiene solo los grupos de autores con más de un libro coincidente.
+
+**¿Cuál es el orden de ejecución de SQL?**
+`FROM` + `JOIN` → `WHERE` → `GROUP BY` → `HAVING` → `SELECT` → `ORDER BY` → `LIMIT`. Por eso no puedes usar un alias de `SELECT` en `WHERE` o `HAVING` — esas cláusulas se ejecutan antes que `SELECT`. Sí puedes usarlo en `ORDER BY` porque se ejecuta después.
+
+---
+
+## DML
+
+**¿Cómo insertas una fila en una tabla?**
+Con `INSERT INTO tabla (columnas) VALUES (valores)`. Solo especificas las columnas que estás estableciendo — `id` es `SERIAL` así que lo omites y la base de datos lo genera. En PostgreSQL uso `RETURNING id` al final para obtener el ID generado en la misma consulta, lo que es útil en un servicio Spring Boot cuando necesitas devolver el ID del nuevo recurso en la respuesta.
+
+**¿Cómo actualizas una fila de forma segura?**
+`UPDATE tabla SET columna = valor WHERE condición`. La cláusula WHERE es crítica — sin ella, cada fila de la tabla se actualiza. Siempre ejecuto primero un `SELECT` con el mismo WHERE para confirmar qué filas se verán afectadas, luego ejecuto el UPDATE.
+
+**¿Cómo eliminas filas y qué debes comprobar primero?**
+`DELETE FROM tabla WHERE condición`. La misma regla que UPDATE — incluye siempre una cláusula WHERE o eliminarás toda la tabla. Antes de eliminar, comprueba si otras tablas tienen una clave foránea apuntando a esa fila. Si es así, la base de datos rechazará el delete a menos que elimines primero las filas dependientes o la clave foránea esté configurada con `ON DELETE CASCADE`.
+
+**¿Cuál es la diferencia entre DELETE y TRUNCATE?**
+`DELETE` elimina filas una a una, soporta una cláusula WHERE y puede revertirse. `TRUNCATE` elimina todas las filas a la vez, es mucho más rápido en tablas grandes y resetea el contador `SERIAL`. Uso `DELETE` en el código de la aplicación porque soporta condiciones y es más seguro. `TRUNCATE` solo es útil en scripts que resetean una tabla completamente — por ejemplo, para limpiar datos de prueba antes de un test.
+
+---
+
+## Subconsultas
+
+**¿Qué es una subconsulta y cuándo usas una en lugar de un JOIN?**
+Una consulta anidada dentro de otra — la interior se ejecuta primero y su resultado es usado por la exterior. Uso una subconsulta cuando necesito el resultado de una agregación para filtrar filas, porque no puedes usar funciones de agregación directamente en WHERE: `WHERE price > (SELECT AVG(price) FROM books)`. Para la mayoría de otros casos prefiero un JOIN porque la base de datos puede optimizarlo mejor.
+
+**¿Cuál es la diferencia entre IN y EXISTS en una subconsulta?**
+`IN` recoge todos los resultados de la subconsulta primero, luego comprueba si el valor está en esa lista. `EXISTS` se detiene en cuanto encuentra una coincidencia — no construye la lista completa. En tablas grandes, `EXISTS` es más rápido. En tablas pequeñas la diferencia es insignificante. Uso `IN` cuando la subconsulta devuelve una lista corta y legible de IDs; `EXISTS` cuando solo necesito comprobar si existe una fila relacionada.
+
+---
+
+## Índices
+
+**¿Qué es un índice y qué problema resuelve?**
+Un índice es una estructura de datos que permite a la base de datos encontrar filas sin escanear toda la tabla. Sin índice, un `WHERE author_id = 5` en una tabla de un millón de filas lee cada fila. Con un índice en `author_id`, la base de datos salta directamente a las filas coincidentes. La contrapartida es que los índices ralentizan las escrituras — cada INSERT, UPDATE y DELETE debe actualizar también el índice.
+
+**¿Qué columnas deben tener un índice?**
+Las columnas usadas frecuentemente en `WHERE`, `JOIN ON` y `ORDER BY` en tablas grandes. Las columnas de clave foránea son el caso más común — `books.author_id` se usa en cada JOIN con `authors`, por lo que debería tener un índice. Las claves primarias y las columnas UNIQUE reciben un índice automáticamente. Evito indexar columnas con muy pocos valores distintos (como un estado con tres opciones) porque la base de datos suele hacer un escaneo completo de todas formas.
+
+---
+
 ## Presión
 
-**¿Qué temas de SQL todavía no has aprendido?**
-Los JOINs — combinar datos de varias tablas en una sola consulta. Las funciones de agregación como `COUNT`, `SUM` y `AVG`. `GROUP BY` para agrupar filas y calcular totales por grupo. Subconsultas e índices. Estos son los próximos temas que planeo estudiar.
+**Necesitas mostrar una lista de clientes y su gasto total. Algunos clientes nunca han hecho un pedido. ¿Cómo escribes esta consulta?**
+Uso un `LEFT JOIN` para que aparezcan todos los clientes, incluso los que no tienen pedidos. Luego `SUM(o.total_price)` calcula el total — para clientes sin pedidos devuelve NULL, que envuelvo en `COALESCE(SUM(o.total_price), 0)` para mostrar cero en lugar de NULL.
+```sql
+SELECT c.name, COALESCE(SUM(o.total_price), 0) AS total_spend
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id
+GROUP BY c.id, c.name
+ORDER BY total_spend DESC;
+```

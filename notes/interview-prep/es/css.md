@@ -77,6 +77,9 @@ Un bloque de CSS que solo se aplica cuando una condición es verdadera — norma
 
 ## Animaciones y transiciones
 
+**¿Qué hace `transform` y por qué se prefiere para las animaciones?**
+`transform` mueve, escala o rota un elemento sin afectar al flujo del documento — `translate(-50%, -50%)` para centrar, `scale(1.05)` para el crecimiento en hover, `rotate(45deg)` para iconos. La razón clave para preferirlo frente a cambiar `top`/`left` o `margin` es el rendimiento — `transform` está acelerado por GPU y no provoca recálculo del layout, por lo que las animaciones se mantienen fluidas incluso en dispositivos más lentos.
+
 **¿Cuál es la diferencia entre `transition` y una animación con `@keyframes`?**
 `transition` es para cambios de estado simples — efectos hover, mostrar/ocultar un elemento. Defines el inicio y el final, CSS maneja el movimiento. `@keyframes` es para animaciones más complejas que se repiten o tienen múltiples pasos — como un spinner de carga. Uso `transition` para efectos hover en tarjetas y `@keyframes` para el spinner CSS.
 
@@ -193,6 +196,12 @@ Dos enfoques comunes. Con flexbox: `display: flex; align-items: center; justify-
 
 ## Preguntas de presión
 
+**El cliente dice que la app se ve rota en móvil. Abres DevTools. ¿Qué compruebas primero?**
+Abro el modo responsive en DevTools y establezco el viewport a 375px — el ancho de teléfono pequeño más común. Luego compruebo en orden: si el layout desborda horizontalmente (lo que normalmente significa un ancho fijo en `px` en algún sitio), si el texto es demasiado pequeño para leer (falta de uso de `rem` o meta tag del viewport), y si los elementos táctiles como los botones tienen al menos 44px de altura. La mayoría de los problemas de layout en móvil se reducen a una de estas tres cosas.
+
+**Heredas un archivo CSS con 15 declaraciones `!important` por todo el archivo. ¿Qué haces?**
+No los toco de inmediato — eliminar `!important` sin entender por qué se añadió puede romper cosas silenciosamente. Leo cada uno y averiguo el conflicto de especificidad subyacente. La mayoría de las veces el fix consiste en reestructurar los selectores para que la regla correcta gane de forma natural — añadir una clase, eliminar anidamiento innecesario, o mover una regla a un lugar más apropiado. Luego los elimino uno a uno con pruebas. La lección es que `!important` nunca es el fix real — es un síntoma de un problema de especificidad que no se resolvió correctamente.
+
 **¿Qué error de CSS has cometido y cómo lo resolviste?**
 Lo que realmente quieren saber: ¿Puedes depurar CSS y aprender de ello, o pruebas cosas al azar hasta que algo funciona?
 R: En el task manager añadí un estilo que apuntaba a un elemento interno de un componente de Material dentro del CSS del componente y no tuvo efecto. Estuve buscando en el sitio equivocado. Entonces recordé la encapsulación de vistas de Angular — el CSS del componente no puede llegar al interior de los componentes de Material porque esos elementos no reciben el atributo de encapsulación. Moví la regla a `styles.css` y funcionó de inmediato. Ahora siempre compruebo si el elemento está en mi propia plantilla o se renderiza internamente antes de decidir dónde poner el CSS.
@@ -201,6 +210,9 @@ Respuesta mala: "Siempre pruebo en el navegador hasta que funciona." — Eso no 
 ---
 
 ## Específico de Angular
+
+**¿Cuál es la diferencia entre el `@if` de Angular y `display: none`?**
+`@if` elimina el elemento del DOM por completo — sin HTML, sin event listeners, sin memoria. `display: none` mantiene el elemento en el DOM pero lo hace invisible. Usa `@if` cuando el elemento no se necesita en absoluto — un diálogo que no se ha abierto, una sección a la que el usuario no tiene acceso. Usa `display: none` (o `visibility: hidden`) cuando necesitas que el elemento esté listo para aparecer al instante sin ser reconstruido — por ejemplo, un tooltip que debe mostrarse inmediatamente al pasar el ratón sin volver a renderizarse.
 
 **¿Cómo funciona la encapsulación de estilos de los componentes Angular?**
 Por defecto, Angular añade un atributo único a cada elemento de un componente y limita el CSS del componente para que solo coincida con esos atributos. Los estilos en `task-list.component.css` solo se aplican dentro de ese componente — no pueden filtrarse a otros componentes. Esto evita conflictos de estilos en aplicaciones grandes.
