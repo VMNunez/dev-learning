@@ -5,7 +5,7 @@ Update the project list as new projects are completed.
 
 Files live in `notes/interview-prep/en/` (English) and `notes/interview-prep/es/` (Spanish).
 Current files: `angular.md`, `typescript.md`, `architecture.md`, `general.md`, `javascript.md`, `css.md`, `git.md`, `sql.md`, `java.md`.
-Note: `java.md` only exists in `en/` for now — Java study has not started yet. Both folders must stay in sync for all other files.
+Both `en/` and `es/` have all files including `java.md`. All files must stay in sync.
 
 ---
 
