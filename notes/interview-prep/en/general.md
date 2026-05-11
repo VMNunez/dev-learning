@@ -1,34 +1,6 @@
 # General — Interview Questions
 
-## JavaScript fundamentals
-
-**What is the difference between `let`, `const`, and `var`?**
-`const` is for values that do not change — use it by default. `let` is for values that need to change. `var` is the old way — it is function-scoped and hoisted, which causes bugs. I only use `const` and `let`.
-
-**What is `Array.map()` and when do you use it?**
-Transforms every element in an array and returns a new array. I use it to convert API response objects to the format the component needs, without mutating the original data.
-
-**What is `Array.filter()` and when do you use it?**
-Returns a new array with only the elements that match a condition. In the HR portal I chain it with `computed()` — `employees().filter(e => e.status === filterStatus())` gives a live filtered list.
-
-**What is `Array.some()` and when do you use it?**
-Returns `true` if at least one element matches the condition. I use it for duplicate checks in the HR portal — `employees.some(e => e.email === newEmail)` tells me if the email already exists.
-
-**What is the spread operator (`...`) and what is it used for?**
-Copies the elements of an array or object into another. I use it to create new objects without mutating the original — `{ ...employee, status: 'inactive' }` gives a new object with only `status` changed.
-
-**What is `async/await` and how does it differ from `.then()`?**
-Both handle Promises, but `async/await` reads like synchronous code — easier to follow, especially with multiple async operations in sequence. `.then()` chains are fine for simple cases. In Angular I mostly use Observables with `subscribe()`, but `async/await` is useful in services that call `fetch` or other Promise-based APIs.
-
-**What is `JSON.stringify()` and `JSON.parse()`?**
-`stringify()` converts a JavaScript object to a JSON string for storage or sending to an API. `parse()` does the reverse. I use both in every project that persists data in `localStorage`.
-
----
-
 ## General programming
-
-**What is the difference between `==` and `===` in JavaScript?**
-`===` is strict equality — it checks value AND type. `==` does type coercion, which leads to unexpected results (`0 == false` is `true`). Always use `===`.
 
 **What is immutability and why does it matter in Angular?**
 Immutability means not modifying existing objects — instead, you create new ones with the changes. Angular's change detection works better with immutable data because it can detect changes by reference. HTTP requests are also immutable in Angular — that is why you use `req.clone()` in interceptors.

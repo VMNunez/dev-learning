@@ -9,7 +9,7 @@
 JavaScript mueve las declaraciones de variables y funciones al principio de su scope antes de ejecutar el código. Las declaraciones con `var` se elevan e inicializan como `undefined`. `let` y `const` se elevan pero no se inicializan — acceder a ellas antes de su declaración lanza un `ReferenceError` (Zona Muerta Temporal). Las declaraciones de función se elevan completamente — puedes llamarlas antes de que aparezcan en el código.
 
 **¿Qué es un closure?**
-Un closure es una función que retiene el acceso a las variables de su scope externo, incluso después de que la función exterior ha terminado de ejecutarse. En Angular uso closures cada vez que escribo `computed(() => tasks().filter(t => !t.done))` — la arrow function cierra sobre la señal `tasks`. Los patrones de fábrica y los servicios configurables también dependen de los closures.
+Un closure es una función que retiene el acceso a las variables de su scope externo, incluso después de que la función exterior ha terminado de ejecutarse. En el HR portal, cada señal `computed()` es un closure — `computed(() => this.employees().filter(e => e.department === this.selectedDept()))` cierra sobre ambas señales. Cuando cualquiera de las dos cambia, el computed se vuelve a ejecutar con los valores correctos porque mantiene una referencia al scope exterior, no una copia de los valores en el momento de creación.
 
 **¿Cuál es la diferencia entre scope de función y scope de bloque?**
 `var` crea variables con scope de función — existen en toda la función aunque se declaren dentro de un bloque `if`. `let` y `const` crean variables con scope de bloque — solo existen dentro del `{}` donde se declararon. El scope de bloque evita el acceso accidental a variables fuera de su área prevista.
@@ -51,11 +51,17 @@ Las arrow functions son más cortas y no tienen su propio `this` — heredan el 
 `find` devuelve el primer elemento que coincide o `undefined` — se usa cuando necesitas un elemento específico. `filter` siempre devuelve un array — se usa cuando necesitas todos los elementos que coinciden. Uso `find` para buscar un empleado por ID antes de editarlo, y `filter` para construir listas filtradas en la tabla.
 
 **¿Qué hace `some` y cuándo lo usas?**
-`some` devuelve `true` si al menos un elemento pasa el test. Lo uso para la comprobación de duplicados antes de guardar — `employees.some(e => e.email === newEmail)` — que es exactamente el patrón en el formulario de creación de empleados del HR portal.
+`some` devuelve `true` si al menos un elemento pasa el test. Su complemento es `every`, que devuelve `true` solo si TODOS los elementos pasan el test. Uso `some` para la comprobación de duplicados antes de guardar — `employees.some(e => e.email === newEmail)` — y `every` para comprobar si todas las tareas están completas — `tasks.every(t => t.done)`.
+
+**¿Cuál es la diferencia entre `forEach` y `map`?**
+`forEach` itera el array y ejecuta una función por cada elemento — siempre devuelve `undefined`. `map` hace lo mismo pero recoge el valor de retorno de cada llamada en un nuevo array. Usa `map` cuando necesitas una versión transformada del array. Usa `forEach` solo para efectos secundarios donde no necesitas un array nuevo — logging, actualizar el DOM o llamar a una función externa. En Angular casi siempre uso `map` porque necesito el resultado, no solo el efecto secundario.
 
 ---
 
 ## Objetos y desestructuración
+
+**¿Qué es la desestructuración y cuándo la usas?**
+La desestructuración extrae valores de arrays o propiedades de objetos en variables con nombre en una sola línea. `const { name, role } = employee` es más limpio que `const name = employee.name; const role = employee.role`. La uso constantemente en Angular — desestructurando parámetros de funciones, extrayendo valores de señales y desempaquetando resultados de `Promise.all`: `const [employees, departments] = await Promise.all([...])`.
 
 **¿Qué hace el operador spread con los objetos?**
 Crea una copia superficial del objeto. `{ ...employee, role: 'manager' }` crea un nuevo objeto con todas las propiedades de employee, con `role` sobreescrito. Lo uso para actualizar una señal de forma inmutable: `employees.update(list => list.map(e => e.id === id ? { ...e, ...changes } : e))` — sin mutación, solo un nuevo objeto con los valores actualizados.
@@ -68,7 +74,7 @@ Crea una copia superficial del objeto. `{ ...employee, role: 'manager' }` crea u
 ## Async
 
 **¿Qué es el event loop?**
-JavaScript es single-threaded — ejecuta una cosa a la vez. El event loop gestiona las operaciones asíncronas: primero se ejecuta el código síncrono, luego todas las microtareas (callbacks de Promise) y después una tarea de la cola de tareas (setTimeout, etc.). Por eso una Promise se resuelve antes que un `setTimeout` con 0ms de retraso — las Promises van a la cola de microtareas que tiene mayor prioridad.
+JavaScript es single-threaded — ejecuta una cosa a la vez. El event loop gestiona las operaciones asíncronas: primero se ejecuta el código síncrono, luego todas las microtareas (callbacks de Promise) y después una tarea de la cola de tareas (setTimeout, etc.). Por eso una Promise se resuelve antes que un `setTimeout` con 0ms de retraso — las Promises van a la cola de microtareas que tiene mayor prioridad. En Angular esto importa cuando usas `setTimeout(() => {}, 0)` para diferir algo hasta después del ciclo de renderizado actual — el event loop es la razón por la que ese truco funciona.
 
 **¿Cuál es la diferencia entre Promise y async/await?**
 `async/await` es sintaxis sobre las Promises — hace que el código asíncrono parezca síncrono. Una función marcada con `async` siempre devuelve una Promise. `await` pausa la ejecución dentro de la función async hasta que la Promise se resuelve. El resultado es el mismo que las cadenas `.then()` pero mucho más legible, y los errores se capturan con `try/catch` normal. Uso async/await en Angular cuando convierto un Observable a Promise con `firstValueFrom()`.
@@ -106,6 +112,9 @@ Los named exports permiten múltiples exports por archivo y el nombre del import
 
 ## Clases y manejo de errores
 
+**¿Qué hace `extends` y cuándo usas la herencia de clases?**
+`extends` hace que una clase herede todas las propiedades y métodos de una clase padre. `super()` llama al constructor del padre. En Angular lo uso al crear clases de error personalizadas que extienden `Error`, y cuando un componente extiende una clase base para compartir lógica común. En Java la herencia es central en el lenguaje — entenderla en JavaScript primero hace que la versión en Java sea más fácil de aprender.
+
 **¿Cuál es la diferencia entre una clase y una función normal en JavaScript?**
 Una clase es una sintaxis más limpia para crear objetos con comportamiento compartido — tiene un `constructor`, métodos y soporta `extends` para la herencia. Por debajo, las clases de JavaScript siguen usando prototipos, pero la sintaxis es mucho más cercana a Java o C#. En Angular cada componente, servicio, pipe y guard es una clase con un decorador — el decorador añade los metadatos que Angular necesita para usarla.
 
@@ -137,7 +146,30 @@ Respuesta mala: "Usaría filter." — No está mal para un caso pequeño, pero d
 
 ---
 
+## Expresiones regulares
+
+**¿Qué es una expresión regular y cómo la usas en Angular?**
+Una expresión regular es un patrón para validar, buscar o reemplazar texto. En Angular las uso con `Validators.pattern()` — por ejemplo `Validators.pattern(/^\d{9}$/)` valida que un campo de teléfono contenga exactamente 9 dígitos. Uso `.test()` cuando solo necesito una respuesta sí/no, y `.match()` cuando necesito extraer las partes que coinciden de un string.
+
+---
+
+## Eventos
+
+**¿Qué es el event bubbling y cuándo necesitas `stopPropagation()`?**
+Cuando un evento se dispara en un elemento, viaja hacia arriba a través de todos los elementos padre — eso es el bubbling. Si un botón está dentro de una card, hacer clic en el botón también dispara el manejador de clic de la card. `stopPropagation()` evita que el evento siga subiendo. Lo usé en el meal finder — hacer clic en el botón de favoritos de una card no debería abrir la página de detalle. La solución fue `event.stopPropagation()` en el manejador del botón y pasar `$event` en el template.
+
+**¿Cuál es la diferencia entre `stopPropagation` y `preventDefault`?**
+`stopPropagation` evita que el evento suba por los elementos padre. `preventDefault` cancela la acción por defecto del navegador para ese elemento — por ejemplo, evitar que un formulario recargue la página al hacer submit, o que un `<a>` navegue. Son independientes — puedes llamar a uno, a ambos o a ninguno según lo que necesites.
+
+---
+
 ## Preguntas de presión
+
+**La app falla al cargar. La consola dice `Cannot read properties of undefined (reading 'map')`. ¿Qué compruebas primero?**
+El dato sobre el que se llama a `.map()` es `undefined` — llegó como `undefined` en lugar de como un array. Compruebo tres cosas en orden: primero, si la respuesta de la API tiene la forma esperada (quizás devolvió un objeto en lugar de un array); segundo, si el dato se carga de forma asíncrona y el componente intentó renderizar antes de que llegara; tercero, si una señal o variable no se inicializó con un valor por defecto. El fix suele ser inicializar la señal como array vacío — `signal<Employee[]>([])` — para que el template tenga algo válido que renderizar antes de que carguen los datos.
+
+**Llega una PR que usa `var` en todas partes y cadenas `.then()` en lugar de `async/await`. Funciona correctamente. ¿La apruebas?**
+No — dejaría un comentario de revisión explicando el motivo. `var` tiene un scoping impredecible que causa bugs reales en bucles y callbacks asíncronos — `let` y `const` son el estándar desde ES6. Las cadenas `.then()` son más difíciles de leer y de gestionar errores que `async/await`. "Funciona" no es lo mismo que "es mantenible". Pediría al autor que lo actualizara y le ofrecería explicar el razonamiento — no como bloqueante, sino como conversación sobre el estándar del equipo.
 
 **Encuentras un `console.log` con un token de usuario sensible en una build de producción. ¿Qué haces?**
 Lo elimino inmediatamente y despliego un fix — el token está expuesto en las DevTools del navegador para cualquiera que las abra. Luego roto el token en el backend para que el antiguo deje de funcionar. En una empresa también comprobaría si alguien accedió a la app durante ese periodo y lo reportaría siguiendo el proceso de incidencias. La lección es que los `console.log` en código de producción son peligrosos — deben detectarse en la revisión de código y eliminarse antes de hacer el merge.

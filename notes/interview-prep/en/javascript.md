@@ -9,7 +9,7 @@
 JavaScript moves variable and function declarations to the top of their scope before executing the code. `var` declarations are hoisted and initialized as `undefined`. `let` and `const` are hoisted but not initialized — accessing them before their declaration throws a `ReferenceError` (Temporal Dead Zone). Function declarations are fully hoisted — you can call them before they appear in the code.
 
 **What is a closure?**
-A closure is a function that retains access to variables from its outer scope, even after the outer function has finished executing. In Angular I use closures every time I write `computed(() => tasks().filter(t => !t.done))` — the arrow function closes over the `tasks` signal. Factory patterns and configurable services also rely on closures.
+A closure is a function that retains access to variables from its outer scope, even after the outer function has finished executing. In the HR portal, every `computed()` signal is a closure — `computed(() => this.employees().filter(e => e.department === this.selectedDept()))` closes over both signals. When either signal changes, the computed re-runs with the correct values because it holds a reference to the outer scope, not a copy of the values at creation time.
 
 **What is the difference between function scope and block scope?**
 `var` creates function-scoped variables — they exist throughout the entire function even if declared inside an `if` block. `let` and `const` create block-scoped variables — they only exist inside the `{}` where they were declared. Block scope prevents accidental access to variables outside their intended area.
@@ -51,11 +51,17 @@ Arrow functions are shorter and do not have their own `this` — they inherit `t
 `find` returns the first matching element or `undefined` — used when you need one specific item. `filter` always returns an array — used when you need all items that match. I use `find` to look up an employee by ID before editing, and `filter` to build filtered lists in the table.
 
 **What does `some` do and when do you use it?**
-`some` returns `true` if at least one element passes the test. I use it for duplicate checks before saving — `employees.some(e => e.email === newEmail)` — which is exactly the pattern in the HR portal employee creation form.
+`some` returns `true` if at least one element passes the test. Its pair is `every`, which returns `true` only if ALL elements pass. I use `some` for duplicate checks before saving — `employees.some(e => e.email === newEmail)` — and `every` to check if all tasks are complete — `tasks.every(t => t.done)`.
+
+**What is the difference between `forEach` and `map`?**
+`forEach` iterates the array and runs a function for each element — it always returns `undefined`. `map` does the same but collects the return value of each call into a new array. Use `map` when you need a transformed version of the array. Use `forEach` only for side effects where you do not need a new array — logging, updating the DOM, or calling an external function. In Angular I almost always use `map` because I need the result, not just the side effect.
 
 ---
 
 ## Objects and destructuring
+
+**What is destructuring and when do you use it?**
+Destructuring extracts values from arrays or properties from objects into named variables in a single line. `const { name, role } = employee` is cleaner than `const name = employee.name; const role = employee.role`. I use it constantly in Angular — destructuring function parameters, extracting signal values, and unpacking `Promise.all` results: `const [employees, departments] = await Promise.all([...])`.
 
 **What does the spread operator do with objects?**
 It creates a shallow copy of the object. `{ ...employee, role: 'manager' }` creates a new object with all of employee's properties, with `role` overridden. I use it to update a signal immutably: `employees.update(list => list.map(e => e.id === id ? { ...e, ...changes } : e))` — no mutation, just a new object with the updated values.
@@ -68,7 +74,7 @@ It creates a shallow copy of the object. `{ ...employee, role: 'manager' }` crea
 ## Async
 
 **What is the event loop?**
-JavaScript is single-threaded — it executes one thing at a time. The event loop manages async operations: synchronous code runs first, then all microtasks (Promise callbacks), then one task from the task queue (setTimeout, etc.). This is why a Promise resolves before a `setTimeout` with 0ms delay — Promises go to the microtask queue which has higher priority.
+JavaScript is single-threaded — it executes one thing at a time. The event loop manages async operations: synchronous code runs first, then all microtasks (Promise callbacks), then one task from the task queue (setTimeout, etc.). This is why a Promise resolves before a `setTimeout` with 0ms delay — Promises go to the microtask queue which has higher priority. In Angular this matters when you use `setTimeout(() => {}, 0)` to defer something until after the current render cycle — the event loop is why that trick works.
 
 **What is the difference between a Promise and async/await?**
 `async/await` is syntax sugar on top of Promises — it makes async code look synchronous. A function marked `async` always returns a Promise. `await` pauses execution inside the async function until the Promise resolves. The result is the same as `.then()` chains but much more readable, and errors are caught with regular `try/catch`. I use async/await in Angular when converting an Observable to a Promise with `firstValueFrom()`.
@@ -106,6 +112,9 @@ Named exports allow multiple exports per file and the import name must match exa
 
 ## Classes and error handling
 
+**What does `extends` do and when do you use class inheritance?**
+`extends` makes a class inherit all properties and methods from a parent class. `super()` calls the parent constructor. In Angular I use it when creating custom error classes that extend `Error`, and when a component extends a base class to share common logic. In Java, inheritance is central to the language — understanding it in JavaScript first makes the Java version easier to learn.
+
 **What is the difference between a class and a regular function in JavaScript?**
 A class is a cleaner syntax for creating objects with shared behaviour — it has a `constructor`, methods, and supports `extends` for inheritance. Under the hood JavaScript classes still use prototypes, but the syntax is much closer to Java or C#. In Angular every component, service, pipe, and guard is a class with a decorator — the decorator adds the metadata Angular needs to use it.
 
@@ -137,7 +146,30 @@ Red flag answer: "I would use filter." — Not wrong for a small case, but shows
 
 ---
 
+## Regular expressions
+
+**What is a regular expression and how do you use one in Angular?**
+A regular expression is a pattern for matching, validating, or replacing text. In Angular I use them with `Validators.pattern()` — for example `Validators.pattern(/^\d{9}$/)` validates that a phone field contains exactly 9 digits. I use `.test()` when I only need a yes/no answer, and `.match()` when I need to extract the matching parts from a string.
+
+---
+
+## Events
+
+**What is event bubbling and when do you need `stopPropagation()`?**
+When an event fires on an element, it travels up through every parent element — that is bubbling. If a button is inside a card, clicking the button also triggers the card's click handler. `stopPropagation()` stops the event from going further up. I used this in the meal finder — clicking the favourite button on a meal card should add to favourites, not open the detail page. The solution was `event.stopPropagation()` in the button handler and passing `$event` in the template.
+
+**What is the difference between `stopPropagation` and `preventDefault`?**
+`stopPropagation` stops the event from bubbling up to parent elements. `preventDefault` stops the browser's default action for that element — for example, preventing a form from reloading the page on submit, or preventing an `<a>` from navigating. They are independent — you can call one, both, or neither depending on what you need.
+
+---
+
 ## Pressure questions
+
+**The app crashes on load. The console says `Cannot read properties of undefined (reading 'map')`. What do you check first?**
+The data that `.map()` is called on is `undefined` — meaning it arrived as `undefined` instead of an array. I check three things in order: first, whether the API response has the expected shape (maybe it returned an object instead of an array); second, whether the data is loaded asynchronously and the component tried to render before it arrived; third, whether a signal or variable was not initialized with a default value. The fix is usually initializing the signal as an empty array — `signal<Employee[]>([])` — so the template has something valid to render before the data loads.
+
+**A PR comes in that uses `var` everywhere and `.then()` chains instead of `async/await`. It works correctly. Do you approve it?**
+No — I would leave a review comment explaining why. `var` has unpredictable scoping that causes real bugs in loops and async callbacks — `let` and `const` are the standard since ES6. `.then()` chains are harder to read and harder to handle errors in than `async/await`. "It works" is not the same as "it is maintainable". I would ask the author to update it and offer to explain the reasoning — not as a blocker, but as a team standard conversation.
 
 **You find a `console.log` with a sensitive user token in a production build. What do you do?**
 Remove it immediately and deploy a fix — the token is exposed in browser DevTools to anyone who opens them. Then rotate the token on the backend so the old one stops working. In a company I would also check if anyone accessed the app during that window and report it following the incident process. The lesson is that `console.log` in production code is dangerous — it should be caught in code review and removed before merging.
