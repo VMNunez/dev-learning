@@ -50,6 +50,21 @@ List<String> mutable = new ArrayList<>(List.of("Victor", "Ana"));
 
 Use `List` in almost all cases. Use arrays only when size is fixed and performance is critical.
 
+### ArrayList vs LinkedList
+
+Both implement `List`, but they store data differently:
+
+| | ArrayList | LinkedList |
+|---|-----------|------------|
+| Internal structure | Array | Chain of nodes |
+| `get(i)` | Fast — direct index | Slow — must traverse |
+| `add` at end | Fast | Fast |
+| `add`/`remove` in middle | Slow — shifts elements | Fast — just relinks nodes |
+| Memory | Less | More (each node stores two pointers) |
+| When to use | Almost always | Rarely — only if many insertions in the middle |
+
+In practice, use `ArrayList` for everything. `LinkedList` is a theoretical answer in interviews — in real Spring Boot code you will almost never see it.
+
 ---
 
 ## Map — key-value pairs, keys are unique
@@ -141,11 +156,34 @@ Collections.frequency(numbers, 1);   // 2
 
 ---
 
-## Sorting with Comparator
+## Sorting — Comparable and Comparator
+
+### Comparable — natural order defined by the class
+
+The class itself implements `Comparable<T>` to define its default sort order:
 
 ```java
-List<Employee> employees = new ArrayList<>();
+public class Employee implements Comparable<Employee> {
+    private String name;
 
+    @Override
+    public int compareTo(Employee other) {
+        return this.name.compareTo(other.name);  // sort alphabetically by name
+    }
+}
+
+// Now you can sort a List<Employee> without passing anything
+Collections.sort(employees);
+employees.sort(null);  // uses the natural order
+```
+
+Use `Comparable` when there is one obvious default sort for the class (e.g. employees by name, products by price).
+
+### Comparator — external, flexible sorting
+
+`Comparator` is defined outside the class — you pass it to `sort()`. Useful when you need multiple sort options or cannot modify the class:
+
+```java
 // Sort by name alphabetically
 employees.sort(Comparator.comparing(Employee::getName));
 
@@ -156,6 +194,55 @@ employees.sort(Comparator.comparingInt(Employee::getAge).reversed());
 employees.sort(Comparator.comparing(Employee::getDepartment)
                          .thenComparing(Employee::getName));
 ```
+
+### Comparable vs Comparator
+
+| | Comparable | Comparator |
+|---|------------|------------|
+| Where defined | Inside the class | Outside the class |
+| Method | `compareTo()` | `compare()` |
+| Sort options | One (the natural order) | Many |
+| When to use | Default sort, you own the class | Multiple sorts, or class is not yours |
+
+---
+
+## ConcurrentModificationException
+
+This exception happens when you remove elements from a List **inside a for-each loop**:
+
+```java
+// This throws ConcurrentModificationException
+for (Employee e : employees) {
+    if (!e.isActive()) {
+        employees.remove(e);  // structural change while iterating — not allowed
+    }
+}
+```
+
+The for-each loop uses an iterator internally. The iterator tracks the list size. When `remove()` changes that size, the iterator detects a structural change and throws.
+
+### How to fix it
+
+```java
+// Option 1 — removeIf (cleanest)
+employees.removeIf(e -> !e.isActive());
+
+// Option 2 — collect first, then remove
+List<Employee> toRemove = employees.stream()
+    .filter(e -> !e.isActive())
+    .collect(Collectors.toList());
+employees.removeAll(toRemove);
+
+// Option 3 — use an explicit Iterator
+Iterator<Employee> it = employees.iterator();
+while (it.hasNext()) {
+    if (!it.next().isActive()) {
+        it.remove();  // safe — the iterator itself does the removal
+    }
+}
+```
+
+Use `removeIf()` — it is the shortest and most readable.
 
 ---
 
