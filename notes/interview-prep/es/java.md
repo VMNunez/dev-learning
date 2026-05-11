@@ -16,6 +16,19 @@ Depende del valor. Java cachea objetos `Integer` de -128 a 127, así que `Intege
 
 ---
 
+## Strings
+
+**¿Por qué no se puede usar `==` para comparar Strings en Java?**
+`==` comprueba si dos variables apuntan al mismo objeto en memoria. Dos Strings con el mismo contenido pueden ser objetos distintos, así que `==` puede devolver `false` aunque el contenido sea igual. Usa siempre `.equals()` o `.equalsIgnoreCase()`. Es el error más común de los principiantes en Java — los entrevistadores lo preguntan específicamente porque atrapa a quienes vienen de JavaScript, donde `==` sí compara el contenido.
+
+**¿Qué es la inmutabilidad de String y por qué importa?**
+Un String no puede modificarse una vez creado. Operaciones como `toUpperCase()` o `+` no cambian el original — devuelven un nuevo objeto String. Esto significa que los Strings son seguros para compartir entre hilos y la JVM puede cachearlos en el String pool. La consecuencia práctica: `String result = ""; for (...) result += name;` crea un nuevo objeto en cada iteración — por eso se usa `StringBuilder` dentro de los bucles.
+
+**¿Cuándo deberías usar `StringBuilder` en lugar de la concatenación con `+`?**
+Cuando construyes un String dentro de un bucle. Cada `+` asigna un nuevo objeto — en un bucle de 1000 iteraciones, eso son 1000 objetos String. `StringBuilder` añade a un único buffer: `sb.append(name).append(", ")`, y luego `sb.toString()` una sola vez al final. Para concatenaciones de una línea como `"Hola " + name`, el compilador lo optimiza automáticamente — solo necesitas `StringBuilder` explícitamente dentro de bucles.
+
+---
+
 ## Control de flujo
 
 **¿Cuál es la diferencia entre `==` y `.equals()` en Java?**
@@ -36,10 +49,23 @@ Un método `static` pertenece a la clase y puede llamarse sin crear un objeto: `
 
 ---
 
+## Modificadores de acceso
+
+**¿Cuáles son los cuatro modificadores de acceso en Java?**
+`private` — solo accesible dentro de la misma clase. Package-private (sin palabra clave) — accesible dentro del mismo paquete. `protected` — accesible dentro del mismo paquete y en subclases. `public` — accesible desde cualquier lugar. En Spring Boot: los campos son siempre `private`, las clases de servicio y repositorio son `public`, y los métodos auxiliares internos son `private`.
+
+**¿Por qué hacer los campos privados si vas a escribir getters públicos de todas formas?**
+Porque el getter te da control sobre el acceso de lectura, y el setter te da control sobre el acceso de escritura. Si el campo fuera `public`, cualquier código podría cambiarlo directamente — saltándose la validación. Con `private` y un setter puedes añadir reglas: `if (age < 0) throw new IllegalArgumentException(...)`. JPA también necesita los getters para mapear la entidad a JSON. La encapsulación no consiste en ocultar — consiste en tener control.
+
+---
+
 ## POO y clases
 
 **¿Qué es la encapsulación y por qué importa?**
 La encapsulación significa ocultar el estado interno de un objeto y exponerlo solo a través de métodos. Los campos son `private`; el acceso se hace mediante `getters` y `setters`. Esto te permite cambiar la lógica interna sin romper el código que usa la clase. Cada entidad JPA en Spring Boot sigue este patrón.
+
+**¿Qué significa `final` en Java?**
+Significa que algo no puede cambiarse tras su primera asignación. En un campo: `private final String name` — no puede reasignarse después de que el constructor lo establezca. En un método: no puede sobreescribirse en una subclase. En una clase: no puede extenderse — `String` es `final`. En Spring Boot, `final` en un campo señala inmutabilidad y es la misma idea que `const` en JavaScript.
 
 **¿Qué es un record en Java?**
 Un record (Java 16+) es una clase donde todos los campos se definen en el encabezado y Java genera automáticamente el constructor, getters, `equals`, `hashCode` y `toString`. Los records son inmutables — no puedes cambiar los campos después de crearlos. Son perfectos para DTOs: `public record EmployeeDTO(String name, String email) {}`.
@@ -77,11 +103,20 @@ Sobreescribir reemplaza el método del padre en una subclase — mismo nombre, m
 **¿Cuál es la diferencia entre `List`, `Set` y `Map`?**
 Un `List` es una colección ordenada que permite duplicados. Un `Set` es una colección sin orden y sin duplicados. Un `Map` almacena pares clave-valor — las claves son únicas, los valores pueden repetirse. En Spring Boot: `List<Employee>` para todos los empleados, `Set<String>` para roles únicos, `Map<Long, Employee>` para buscar por ID.
 
+**¿Cuál es la diferencia entre `ArrayList` y `LinkedList`?**
+`ArrayList` almacena los elementos en un array continuo — rápido para acceso aleatorio (`get(i)`) pero lento para inserciones en el medio. `LinkedList` almacena cada elemento como un nodo con un puntero al siguiente — rápido para inserciones al principio o en el medio pero lento para acceso aleatorio. En la práctica, usa `ArrayList` para casi todo. `LinkedList` raramente es la elección correcta en Java moderno.
+
 **¿Cuál es la diferencia entre `HashMap`, `LinkedHashMap` y `TreeMap`?**
 `HashMap` no garantiza ningún orden — el más rápido para búsquedas. `LinkedHashMap` mantiene el orden de inserción — úsalo cuando el orden importa. `TreeMap` ordena las claves alfabéticamente o por un comparador — úsalo cuando necesitas salida ordenada. En la mayoría del código Spring Boot usas `HashMap` a menos que necesites un orden específico.
 
 **¿Cuándo usarías `getOrDefault()` en un `Map`?**
 Cuando no estás seguro de si existe una clave y quieres un valor por defecto en lugar de `null`. Ejemplo: `map.getOrDefault(userId, "Desconocido")`. Esto evita un `NullPointerException` y deja clara la intención.
+
+**¿Cuál es la diferencia entre `Comparable` y `Comparator`?**
+`Comparable` lo implementa la propia clase — define el orden de clasificación natural: `class Employee implements Comparable<Employee>` con un método `compareTo()`. `Comparator` es externo — se lo pasas a `sorted()` sin modificar la clase: `Comparator.comparing(Employee::getName)`. Usa `Comparable` para el orden predeterminado. Usa `Comparator` cuando necesitas varias opciones de clasificación o cuando no puedes modificar la clase.
+
+**¿Qué es una `ConcurrentModificationException` y cómo la corriges?**
+Ocurre cuando eliminas elementos de una List dentro de un bucle for-each. El iterador rastrea la estructura de la lista y lanza la excepción cuando detecta un cambio estructural. La corrección es `removeIf()`: `employees.removeIf(e -> !e.isActive())` — una línea, seguro y legible. Como alternativa, recoge los elementos a eliminar primero y elimínalos después del bucle.
 
 ---
 
@@ -95,6 +130,9 @@ Con `@ControllerAdvice` y `@ExceptionHandler`. Creas una clase que captura tipos
 
 **¿Por qué crear una excepción personalizada en lugar de usar `IllegalArgumentException`?**
 Una excepción personalizada como `EmployeeNotFoundException` da un nombre claro al error. Al leer el código, sabes inmediatamente qué salió mal sin leer el mensaje. También permite gestionarla por separado en `@ControllerAdvice` — puedes devolver 404 para `EmployeeNotFoundException` y 400 para `IllegalArgumentException` con handlers distintos.
+
+**¿Cómo evitas `NullPointerException` en Java?**
+Tres patrones: usa `Optional<T>` en lugar de devolver `null` desde los métodos; usa `Objects.requireNonNull()` al inicio de los métodos para fallar rápido con un mensaje claro; comprueba con `str != null && !str.isEmpty()` antes de usar un String. En Spring Boot, la protección principal es `Optional` en los repositorios y la validación `@NotNull` en los DTOs de petición — cuando los datos llegan al servicio, ya están validados.
 
 ---
 
@@ -111,6 +149,9 @@ El Stream API permite procesar colecciones con un pipeline de operaciones. Empie
 
 **¿Qué hace `collect(Collectors.toList())`?**
 Termina el pipeline del stream y recoge todos los resultados en una `List`. Sin una operación terminal, el stream no hace nada — es perezoso. `collect` es la operación terminal más común en Spring Boot porque la mayoría de métodos de servicio devuelven una `List`.
+
+**¿Cuándo usarías un bucle for en lugar de un stream?**
+Cuando la lógica es compleja, necesita salir antes (`break`), o modifica estado externo de varias formas. Los streams son mejores cuando el pipeline es lineal y legible. Si necesitas un `try/catch` dentro del bucle o estás construyendo varios resultados distintos a la vez, un bucle for es más claro. La regla: los streams hacen más cortos los pipelines simples; la lógica compleja es más fácil de leer como bucle.
 
 ---
 
@@ -150,3 +191,19 @@ Con `EnumName.values()`, que devuelve un array con todas las constantes. Ejemplo
 
 **¿Cómo se establece `createdAt` automáticamente al guardar en Spring Boot?**
 Con `@PrePersist` — un método de ciclo de vida que se ejecuta justo antes de que la entidad se guarde por primera vez: `this.createdAt = LocalDateTime.now()`. Añade `updatable = false` en la anotación `@Column` para evitar que JPA lo cambie en actualizaciones posteriores.
+
+---
+
+## Presión
+
+**Estás revisando el código de un compañero y encuentras un String que se construye con `+` dentro de un bucle que se ejecuta miles de veces. ¿Qué dices?**
+Lo señalaría en la revisión de código y explicaría el problema — cada `+` crea un nuevo objeto String, así que un bucle de 10.000 iteraciones crea 10.000 objetos de vida corta que el recolector de basura tiene que limpiar. La solución es un `StringBuilder` antes del bucle y `sb.append()` en cada iteración. Explicaría el motivo y no solo el arreglo, para que el compañero entienda el patrón.
+
+**Un junior de tu equipo recibe una `ConcurrentModificationException` pero no sabe por qué. ¿Cómo lo explicas?**
+Explicaría que un bucle for-each usa un iterador internamente, y el iterador rastrea la estructura de la lista. Si llamas a `list.remove()` dentro del bucle, la estructura cambia y el iterador lo detecta como una violación — así que lanza la excepción. Luego mostraría la solución: `employees.removeIf(e -> !e.isActive())`. Una línea, seguro y legible. Sin necesidad de gestionar el iterador manualmente.
+
+**Un entrevistador dice: "Java es muy verboso. ¿Por qué no usar Node.js para el backend?" ¿Cómo respondes?**
+Java es verboso en algunas áreas, pero esa verbosidad te da cosas que importan a escala — tipado estático fuerte que detecta errores en tiempo de compilación, un ecosistema maduro para aplicaciones empresariales (Spring Boot, JPA, Spring Security), y el tipo de estabilidad a largo plazo que las grandes organizaciones necesitan. Las consultoras españolas usan Java porque sus clientes — bancos, aseguradoras, sector público — ejecutan sistemas durante 10 o 20 años. Node.js está bien para prototipos rápidos; Java es el estándar cuando el proyecto necesita ser mantenido por un equipo durante mucho tiempo.
+
+**El entrevistador te pregunta: "¿Qué es lo más confuso de Java para alguien que viene de JavaScript?"**
+Lo que más sorprende es que Java es paso por valor, pero para los objetos pasa una copia de la referencia — así que parece paso por referencia. Otro punto es que `==` comprueba identidad, no igualdad, lo que confunde a quienes están acostumbrados a la comparación laxa de JavaScript. Y el sistema de tipos es estricto — no puedes simplemente sumar un String y un número. Una vez que aceptas que Java es explícito respecto a tipos e inmutabilidad, la confusión desaparece y en realidad se siente más seguro.

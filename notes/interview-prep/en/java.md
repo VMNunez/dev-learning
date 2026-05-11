@@ -16,6 +16,19 @@ It depends on the value. Java caches `Integer` objects from -128 to 127, so `Int
 
 ---
 
+## Strings
+
+**Why can't you use `==` to compare Strings in Java?**
+`==` checks if two variables point to the same object in memory. Two Strings with the same content can be different objects, so `==` may return `false` even when the content is equal. Always use `.equals()` or `.equalsIgnoreCase()`. This is the most common Java beginner mistake — interviewers ask it specifically because it catches people who come from JavaScript, where `==` on strings compares content.
+
+**What is String immutability and why does it matter?**
+A String cannot be changed after it is created. Operations like `toUpperCase()` or `+` do not modify the original — they return a new String object. This means Strings are safe to share between threads and the JVM can cache them in the String pool. The implication: `String result = ""; for (...) result += name;` creates a new object on every iteration — which is why you use `StringBuilder` in loops.
+
+**When should you use StringBuilder instead of String `+`?**
+When you are building a String inside a loop. Each `+` allocates a new object — in a loop of 1000 iterations, that is 1000 String objects. `StringBuilder` appends to a single buffer: `sb.append(name).append(", ")`, then `sb.toString()` once at the end. For single-line concatenation like `"Hello " + name`, the compiler optimises it automatically — you only need `StringBuilder` explicitly inside loops.
+
+---
+
 ## Control flow
 
 **What is the difference between `==` and `.equals()` in Java?**
@@ -36,10 +49,23 @@ A `static` method belongs to the class and can be called without creating an obj
 
 ---
 
+## Access modifiers
+
+**What are the four access modifiers in Java?**
+`private` — only accessible within the same class. Package-private (no keyword) — accessible within the same package. `protected` — accessible within the same package and in subclasses. `public` — accessible from anywhere. In Spring Boot: fields are always `private`, service and repository classes are `public`, and internal helper methods are `private`.
+
+**Why make fields private if you are going to write public getters anyway?**
+Because the getter gives you control over read access, and the setter gives you control over write access. If the field were `public`, any code could change it directly — bypassing validation. With `private` and a setter you can add rules: `if (age < 0) throw new IllegalArgumentException(...)`. JPA also needs getters to map the entity to JSON. Encapsulation is not about hiding — it is about control.
+
+---
+
 ## OOP and classes
 
 **What is encapsulation and why does it matter?**
 Encapsulation means hiding the internal state of an object and only exposing it through methods. Fields are `private`; access goes through `getters` and `setters`. This lets you change the internal logic without breaking the code that uses the class. Every JPA entity in Spring Boot follows this pattern.
+
+**What does `final` mean in Java?**
+It means something cannot be changed after it is first assigned. On a field: `private final String name` — cannot be reassigned after the constructor sets it. On a method: it cannot be overridden in a subclass. On a class: it cannot be extended — `String` is `final`. In Spring Boot, `final` on a field signals immutability and is the same idea as `const` in JavaScript.
 
 **What is a record in Java?**
 A record (Java 16+) is a class where all fields are defined in the header and Java generates the constructor, getters, `equals`, `hashCode`, and `toString` automatically. Records are immutable — you cannot change the fields after creation. They are perfect for DTOs: `public record EmployeeDTO(String name, String email) {}`.
@@ -77,11 +103,20 @@ Overriding replaces the parent's method in a subclass — same name, same parame
 **What is the difference between `List`, `Set`, and `Map`?**
 A `List` is an ordered collection that allows duplicates. A `Set` is an unordered collection with no duplicates. A `Map` stores key-value pairs — keys are unique, values can repeat. In Spring Boot: `List<Employee>` for all employees, `Set<String>` for unique roles, `Map<Long, Employee>` to look up by ID.
 
+**What is the difference between `ArrayList` and `LinkedList`?**
+`ArrayList` stores elements in a continuous array — fast for random access (`get(i)`) but slow for insertions in the middle. `LinkedList` stores each element as a node with a pointer to the next — fast for insertions at the front or middle but slow for random access. In practice, use `ArrayList` for almost everything. `LinkedList` is rarely the right choice in modern Java.
+
 **What is the difference between `HashMap`, `LinkedHashMap`, and `TreeMap`?**
 `HashMap` has no guaranteed order — fastest for lookups. `LinkedHashMap` maintains insertion order — use when order matters. `TreeMap` sorts keys alphabetically or by a comparator — use when you need sorted output. In most Spring Boot code you use `HashMap` unless you need a specific order.
 
 **When would you use `getOrDefault()` on a `Map`?**
 When you are not sure if a key exists and you want a fallback value instead of `null`. Example: `map.getOrDefault(userId, "Unknown")`. This avoids a `NullPointerException` and makes the intent clear.
+
+**What is the difference between `Comparable` and `Comparator`?**
+`Comparable` is implemented by the class itself — it defines the natural sort order: `class Employee implements Comparable<Employee>` with a `compareTo()` method. `Comparator` is external — you pass it to `sorted()` without modifying the class: `Comparator.comparing(Employee::getName)`. Use `Comparable` for the default sort. Use `Comparator` when you need multiple sort options or when you cannot modify the class.
+
+**What is a `ConcurrentModificationException` and how do you fix it?**
+It happens when you remove elements from a List inside a for-each loop. The iterator tracks the list size and throws when it detects a structural change. The fix is `removeIf()`: `employees.removeIf(e -> !e.isActive())` — one line, safe, and readable. Alternatively, collect the items to remove first and delete them after the loop.
 
 ---
 
@@ -95,6 +130,9 @@ With `@ControllerAdvice` and `@ExceptionHandler`. You create one class that catc
 
 **Why create a custom exception instead of using `IllegalArgumentException`?**
 A custom exception like `EmployeeNotFoundException` gives a clear name to the error. When you read the code, you immediately know what went wrong without reading the message. It also lets you handle it separately in `@ControllerAdvice` — you can return 404 for `EmployeeNotFoundException` and 400 for `IllegalArgumentException` with different handlers.
+
+**How do you avoid `NullPointerException` in Java?**
+Three patterns: use `Optional<T>` instead of returning `null` from methods; use `Objects.requireNonNull()` at method entry points to fail early with a clear message; check with `str != null && !str.isEmpty()` before using a String. In Spring Boot, the main protection is `Optional` in repositories and `@NotNull` validation on request DTOs — by the time data reaches the service, it is already validated.
 
 ---
 
@@ -111,6 +149,9 @@ The Stream API lets you process collections with a pipeline of operations. You s
 
 **What does `collect(Collectors.toList())` do?**
 It ends the stream pipeline and collects all the results into a `List`. Without a terminal operation, the stream does nothing — it is lazy. `collect` is the most common terminal operation in Spring Boot because most service methods return a `List`.
+
+**When would you use a for loop instead of a stream?**
+When the logic is complex, needs to break early (`break`), or modifies external state in multiple ways. Streams are best when the pipeline is linear and readable. If you need a `try/catch` inside the loop or you are building several different results at once, a for loop is clearer. The rule: streams make simple pipelines shorter; complex logic is easier to read as a loop.
 
 ---
 
@@ -150,3 +191,19 @@ With `EnumName.values()`, which returns an array of all constants. Example: `for
 
 **How do you set `createdAt` automatically on save in Spring Boot?**
 With `@PrePersist` — a lifecycle method that runs just before the entity is saved for the first time: `this.createdAt = LocalDateTime.now()`. Add `updatable = false` on the `@Column` annotation to prevent JPA from changing it on updates.
+
+---
+
+## Pressure
+
+**You are reviewing a colleague's code and find a String being built with `+` inside a loop that runs thousands of times. What do you say?**
+I would raise it in the code review and explain the issue — each `+` creates a new String object, so a loop of 10,000 iterations creates 10,000 short-lived objects that the garbage collector has to clean up. The fix is a `StringBuilder` before the loop and `sb.append()` on each iteration. I would explain the reason, not just give the fix, so the colleague understands the pattern.
+
+**A junior on your team gets a `ConcurrentModificationException` but has no idea why. How do you explain it?**
+I would explain that a for-each loop uses an iterator internally, and the iterator tracks the list structure. If you call `list.remove()` inside the loop, the structure changes and the iterator detects it as a violation — so it throws. Then I would show the fix: `employees.removeIf(e -> !e.isActive())`. One line, safe, and readable. No need to manage the iterator manually.
+
+**An interviewer says: "Java is very verbose. Why not just use Node.js for the backend?" How do you respond?**
+Java is verbose in some areas, but that verbosity buys you things that matter at scale — strong static typing that catches bugs at compile time, a mature ecosystem for enterprise applications (Spring Boot, JPA, Spring Security), and the kind of long-term stability that large organisations need. Spanish consultancies use Java because their clients — banks, insurance companies, public sector — run systems for 10 or 20 years. Node.js is great for fast prototypes; Java is the standard when the project needs to be maintained by a team for a long time.
+
+**Your interviewer asks: "What is the most confusing part of Java for someone coming from JavaScript?"**
+The thing that surprises most people is that Java is pass-by-value, but for objects it passes a copy of the reference — so it looks like pass-by-reference. Another thing is that `==` checks identity, not equality, which trips up anyone used to JavaScript's loose comparison. And the type system is strict — you cannot just add a String and a number. Once you accept that Java is explicit about types and mutability, the confusion goes away and it actually feels safer.
