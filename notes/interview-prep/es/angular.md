@@ -188,12 +188,24 @@ Una función de plantilla que transforma un valor antes de mostrarlo. `{{ fecha 
 **¿Cómo creas un pipe personalizado?**
 Creas una clase decorada con `@Pipe({ name: 'miPipe' })` que implementa `PipeTransform`. El método `transform()` recibe el valor y los argumentos opcionales, y devuelve el resultado transformado. Por ejemplo, un pipe `truncate` que recorta texto largo a una longitud máxima y añade `...`. Lo generas con `ng generate pipe` y lo importas en el array `imports` del componente como cualquier otro pipe standalone.
 
+**¿Qué es el pipe `async` y cuándo lo usas?**
+Se suscribe a un Observable directamente en la plantilla y cancela la suscripción automáticamente cuando el componente se destruye — sin `subscribe()`, sin `takeUntilDestroyed()`. `{{ employees$ | async }}` muestra el valor en cuanto llega. Uso signals para mi propio estado, pero uso el pipe `async` cuando trabajo con Observables que no he creado yo — por ejemplo, datos de ruta o streams de un servicio compartido. Lo verás en todas partes en bases de código enterprise existentes.
+
+**¿Cómo gestionas las API keys en Angular?**
+Nunca las escribo directamente en el componente o servicio — acabarían commiteadas en git. Uso los archivos de entorno de Angular: `ng generate environments` crea `environment.ts` que se añade a `.gitignore`. El servicio importa desde ahí: `import { environment } from '../../environments/environment'`. Matiz importante: cualquier valor en el bundle del frontend es visible en el DevTools del navegador. Para claves verdaderamente sensibles, la solución correcta es hacer proxy de la llamada a través de un backend — la clave vive en el servidor, nunca en el navegador.
+
 ---
 
 ## Angular Material
 
 **¿Qué es Angular Material?**
 La librería oficial de componentes de Google para Angular basada en Material Design. Proporciona componentes accesibles y listos para usar — tablas, diálogos, formularios, botones — que siguen un sistema de diseño consistente. Es el estándar en proyectos Angular enterprise españoles.
+
+**¿Qué variantes de botón tiene Angular Material y cuándo usas cada una?**
+Seis variantes: `mat-button` (texto plano, sin fondo — acciones de baja importancia como Cancelar), `mat-raised-button` (relleno con sombra — acciones primarias), `mat-flat-button` (relleno sin sombra — acciones primarias en diseños planos), `mat-stroked-button` (contorno — acciones secundarias que necesitan más presencia que el texto plano), `mat-icon-button` (solo icono, sin texto — acciones en toolbar como borrar o cerrar), `mat-fab` (botón de acción flotante — la acción principal de una página). El atributo `color` (`primary`, `accent`, `warn`) aplica el color del tema. En el HR portal uso `mat-flat-button` para confirmar y `mat-stroked-button` para cancelar.
+
+**¿Cómo construyes un app shell con `MatToolbar`?**
+`mat-toolbar` es una barra de cabecera de altura fija. La coloco dentro de `mat-sidenav-content` para que se quede en la parte superior del área de contenido mientras el sidenav permanece a la izquierda. Material no separa los elementos del toolbar automáticamente — añado `display: flex; justify-content: space-between` para empujar el título a la izquierda y el botón de logout a la derecha. Todo el shell está envuelto en `@if (isLoggedIn())` para que solo se renderice cuando el usuario está autenticado.
 
 **¿Cómo funciona `MatSelect` dentro de un formulario reactivo?**
 Usas `<mat-select>` dentro de un `mat-form-field` y lo vinculas a un `FormControl` con `formControlName`. Las opciones van dentro de elementos `<mat-option>` — las recorres con `@for`. Cuando las opciones vienen de un servicio, las cargas en `ngOnInit` y las guardas en un signal. `mat-error` funciona igual que con cualquier otro input de Material.

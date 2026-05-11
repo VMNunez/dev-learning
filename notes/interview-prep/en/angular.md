@@ -188,12 +188,24 @@ A template function that transforms a value before displaying it. `{{ date | dat
 **How do you create a custom pipe?**
 You create a class decorated with `@Pipe({ name: 'myPipe' })` that implements `PipeTransform`. The `transform()` method receives the value and any arguments, and returns the transformed result. For example, a `truncate` pipe that cuts long text to a max length and adds `...`. You generate it with `ng generate pipe` and import it in the component's `imports` array like any other standalone pipe.
 
+**What is the `async` pipe and when do you use it?**
+It subscribes to an Observable directly in the template and automatically unsubscribes when the component is destroyed — no `subscribe()`, no `takeUntilDestroyed()`. `{{ employees$ | async }}` displays the value as soon as it arrives. I use signals for my own state, but I use the `async` pipe when working with Observables I did not create — for example, route data or streams from a shared service. You will see it everywhere in existing enterprise codebases.
+
+**How do you handle API keys in Angular?**
+Never hardcode them in the component or service — they end up committed to git. I use Angular's environment files: `ng generate environments` creates `environment.ts` which is added to `.gitignore`. The service imports from there: `import { environment } from '../../environments/environment'`. Important caveat: any value in the frontend bundle is visible in the browser DevTools. For truly sensitive keys, the correct solution is to proxy the call through a backend — the key lives on the server, never in the browser.
+
 ---
 
 ## Angular Material
 
 **What is Angular Material?**
 Google's official component library for Angular based on Material Design. It provides ready-made, accessible components — tables, dialogs, forms, buttons — that follow a consistent design system. It is the standard in Spanish enterprise Angular projects.
+
+**What button variants does Angular Material have and when do you use each?**
+Six variants: `mat-button` (plain text, no background — low-emphasis actions like Cancel), `mat-raised-button` (filled with shadow — primary actions), `mat-flat-button` (filled without shadow — primary actions in flat designs), `mat-stroked-button` (outlined — secondary actions that need more presence than plain text), `mat-icon-button` (icon only, no label — toolbar actions like delete or close), `mat-fab` (floating action button — the single main action on a page). The `color` attribute (`primary`, `accent`, `warn`) applies the theme colour. In the HR portal I use `mat-flat-button` for confirm actions and `mat-stroked-button` for cancel.
+
+**How do you build an app shell with `MatToolbar`?**
+`mat-toolbar` is a fixed-height header bar. I place it inside `mat-sidenav-content` so it stays at the top of the content area while the sidenav stays on the left. Material does not push toolbar items apart automatically — I add `display: flex; justify-content: space-between` to push the title left and the logout button right. The whole shell is wrapped in `@if (isLoggedIn())` so it only renders when the user is authenticated.
 
 **How does `MatSelect` work inside a reactive form?**
 You use `<mat-select>` inside a `mat-form-field` and bind it to a `FormControl` with `formControlName`. The options go inside `<mat-option>` elements — you loop over them with `@for`. When you need the options to come from a service, you load them in `ngOnInit` and store them in a signal. `mat-error` works the same way as with any other Material input.

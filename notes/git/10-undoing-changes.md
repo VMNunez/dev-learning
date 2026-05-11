@@ -89,3 +89,33 @@ After:  A → B → C → C'    (C' is the revert commit — it undoes C)
 | Safe on pushed commits? | No | Yes |
 | New commit created? | No | Yes |
 | Use when | Local only, not pushed | Already on GitHub |
+
+---
+
+## git reflog — your safety net
+
+`git reflog` records every position HEAD has been at — including positions you moved away from with `git reset --hard`. Git keeps this log for 90 days.
+
+```bash
+git reflog              # show the full HEAD history
+git reflog --oneline    # compact view — easier to read
+```
+
+Output looks like this:
+
+```
+a3f8c1d HEAD@{0}: reset: moving to HEAD~1
+7b2e9f4 HEAD@{1}: commit: feat: add employee form
+3d1a0c8 HEAD@{2}: commit: fix: duplicate email check
+```
+
+**Recovery after a wrong `git reset --hard`:**
+
+```bash
+git reflog                           # find the commit you lost
+git reset --hard HEAD@{1}           # go back to that position
+# or
+git reset --hard 7b2e9f4            # use the commit hash directly
+```
+
+`git reflog` is local — it only exists on your machine. This is why `git reset --hard` on a commit that others have already pulled is dangerous: you can recover your own work from reflog, but you cannot recover theirs.

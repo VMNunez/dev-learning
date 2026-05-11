@@ -16,6 +16,39 @@ CORS es una regla de seguridad del navegador que bloquea peticiones entre oríge
 
 ---
 
+## Principios SOLID
+
+**¿Qué son los principios SOLID?**
+Cinco principios de diseño que hacen el código más fácil de mantener y testear. S — Single Responsibility (una clase, una responsabilidad). O — Open/Closed (extender sin modificar). L — Liskov Substitution (los subtipos respetan el contrato del padre). I — Interface Segregation (interfaces pequeñas en lugar de una grande). D — Dependency Inversion (inyectar dependencias, no crearlas). Aplico S y D cada día tanto en Angular como en Spring Boot.
+
+**¿Qué es el principio de Responsabilidad Única y dónde lo aplicas?**
+Una clase debe tener solo una razón para cambiar. En el HR portal: `EmployeeService` es responsable de los datos, `EmployeeListComponent` es responsable de la UI — si cambia la API, solo cambia el servicio; si cambia el diseño, solo cambia el componente. Mezclar ambas responsabilidades en una clase es la violación más común en código junior.
+
+**¿Qué es la Inversión de Dependencias y cómo la aplica Angular?**
+Lo que realmente quieren saber: ¿Entiendes qué resuelve la inyección de dependencias, o simplemente la usas porque Angular lo exige?
+R: La Inversión de Dependencias significa que una clase no debe crear sus propias dependencias — debe recibirlas desde fuera. Esto hace la clase testeable porque puedes inyectar un mock en lugar de la implementación real. El `inject(EmployeeService)` de Angular y la inyección por constructor de Spring Boot son implementaciones de este principio. Sin él, no puedes escribir unit tests — la clase está vinculada a una implementación específica.
+Respuesta mala: "Significa usar `inject()` en Angular." — Ese es el mecanismo, no el principio. La respuesta real es sobre testeabilidad y desacoplamiento.
+
+---
+
+## MVC y patrones de arquitectura
+
+**¿Conoces algún patrón de diseño? ¿Has usado alguno en tus proyectos?**
+Un patrón de diseño es una solución reutilizable a un problema común de programación. Los dos que uso cada día sin siempre nombrarlos: Singleton — una sola instancia compartida en toda la app; los servicios de Angular con `providedIn: 'root'` son singletons, igual que los beans `@Service` de Spring Boot. Observer — un objeto notifica a muchos oyentes cuando cambia; los Observables de RxJS son una implementación directa de esto, y los signals de Angular funcionan con el mismo principio. Conocer los nombres me permite comunicarme con desarrolladores senior que usan el vocabulario de patrones de forma natural.
+
+**¿Qué es MVC y cómo se relaciona con Spring Boot?**
+MVC divide la app en Model (datos y lógica de negocio), View (lo que ve el usuario) y Controller (recibe la entrada y coordina los otros dos). En Spring Boot la arquitectura en capas extiende esto: el `@RestController` es el Controller, la respuesta JSON es la View, y el Service + Repository forman juntos el Model. En la práctica "MVC" y "arquitectura en capas" se refieren a la misma idea — separar responsabilidades para que cada parte pueda cambiar de forma independiente.
+
+**¿Cuál es la diferencia entre un monolito y microservicios?**
+Un monolito es una aplicación desplegada como una sola unidad — todas las features en el mismo código. Los microservicios dividen el sistema en muchos servicios pequeños, cada uno responsable de un dominio de negocio, cada uno con su propia base de datos y su propio despliegue. El monolito es más simple de desarrollar y es bueno para equipos pequeños. Los microservicios permiten a equipos grandes trabajar de forma independiente y escalar una parte sin escalar todo el sistema. El trade-off es la complejidad operacional — los microservicios necesitan infraestructura que un monolito no necesita.
+
+**¿Elegirías un monolito o microservicios para un proyecto nuevo?**
+Lo que realmente quieren saber: ¿Entiendes los trade-offs, o crees que los microservicios son siempre la respuesta?
+R: Para un proyecto nuevo con un equipo pequeño, empezaría con un monolito — es más rápido de construir, más fácil de depurar y simple de desplegar. Una vez que el dominio está bien entendido y el equipo crece, puedes extraer servicios donde tenga sentido. Empezar con microservicios antes de entender el dominio es uno de los errores de arquitectura más comunes. La mayoría de proyectos en una consultora ya serán microservicios cuando me incorpore, así que mi trabajo es entender el servicio que tengo asignado y cómo se comunica con los demás.
+Respuesta mala: "Microservicios, porque escalan mejor." — Optimización prematura. La respuesta real depende del tamaño del equipo, la complejidad del dominio y la fase del proyecto.
+
+---
+
 ## Arquitectura en capas
 
 **¿Qué es una arquitectura en capas y por qué importa?**

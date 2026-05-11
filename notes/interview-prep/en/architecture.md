@@ -16,6 +16,39 @@ CORS is a browser security rule that blocks requests between different origins. 
 
 ---
 
+## SOLID principles
+
+**What are the SOLID principles?**
+Five design principles that make code easier to maintain and test. S — Single Responsibility (one class, one job). O — Open/Closed (extend without modifying). L — Liskov Substitution (subtypes honour their parent's contract). I — Interface Segregation (small interfaces over one large one). D — Dependency Inversion (inject dependencies, don't create them). I apply S and D every day in both Angular and Spring Boot.
+
+**What is the Single Responsibility Principle and where do you apply it?**
+A class should have only one reason to change. In the HR portal: `EmployeeService` is responsible for data, `EmployeeListComponent` is responsible for the UI — if the API changes, only the service changes; if the design changes, only the component changes. Mixing both in one class is the most common violation in junior code.
+
+**What is Dependency Inversion and how does Angular apply it?**
+What they really want to know: Do you understand what dependency injection actually solves, or do you just use it because Angular requires it?
+A: Dependency Inversion means a class should not create its own dependencies — it should receive them from outside. This makes the class testable because you can inject a mock instead of the real implementation. Angular's `inject(EmployeeService)` and Spring Boot's constructor injection are both implementations of this principle. Without it, you cannot write unit tests — the class is hardwired to one specific implementation.
+Red flag answer: "It means using `inject()` in Angular." — That is the mechanism, not the principle. The real answer is about testability and decoupling.
+
+---
+
+## MVC and architecture patterns
+
+**Do you know any design patterns? Have you used any in your projects?**
+A design pattern is a reusable solution to a common programming problem. The two I use every day without always naming them: Singleton — one shared instance across the app; Angular services with `providedIn: 'root'` are singletons, as are Spring Boot `@Service` beans. Observer — an object notifies many listeners when it changes; RxJS Observables are a direct implementation of this, and Angular signals work on the same principle. Knowing the names lets me communicate with senior developers who use pattern vocabulary naturally.
+
+**What is MVC and how does it relate to Spring Boot?**
+MVC splits the app into Model (data and business logic), View (what the user sees), and Controller (receives input and coordinates the other two). In Spring Boot the layered architecture extends this: the `@RestController` is the Controller, the JSON response is the View, and the Service + Repository together form the Model. In practice "MVC" and "layered architecture" refer to the same idea — separate concerns so each part can change independently.
+
+**What is the difference between a monolith and microservices?**
+A monolith is one application deployed as a single unit — all features in the same codebase. Microservices split the system into many small services, each responsible for one business domain, each with its own database and deployment. Monolith is simpler to develop and good for small teams. Microservices let large teams work independently and let you scale one part without scaling the whole system. The trade-off is operational complexity — microservices need infrastructure a monolith does not.
+
+**Would you choose a monolith or microservices for a new project?**
+What they really want to know: Do you understand trade-offs, or do you think microservices are always the answer?
+A: For a new project with a small team, I would start with a monolith — it is faster to build, easier to debug, and simple to deploy. Once the domain is well understood and the team grows, you can extract services where it makes sense. Starting with microservices before understanding the domain is one of the most common architecture mistakes. Most projects at a consultancy will already be microservices by the time I join, so my job is to understand the service I own and how it communicates with the others.
+Red flag answer: "Microservices, because they scale better." — Premature optimization. The real answer depends on team size, domain complexity, and stage of the project.
+
+---
+
 ## Layered architecture
 
 **What is a layered architecture and why does it matter?**

@@ -103,6 +103,12 @@ Una vista compacta del historial de commits — una línea por commit con el ID 
 **¿Qué muestra `git diff` y cuál es la diferencia con `git diff --staged`?**
 `git diff` muestra los cambios en el directorio de trabajo que aún no están en staging — lo que has editado pero todavía no has hecho `git add`. `git diff --staged` muestra los cambios que están en staging y listos para commitear — lo que va a entrar en el próximo `git commit`. Uso `git diff --staged` justo antes de commitear para hacer una revisión final de exactamente qué voy a guardar.
 
+**¿Qué es `git blame` y cuándo es útil?**
+Muestra quién modificó por última vez cada línea de un archivo y en qué commit. Cuando encuentro una línea que no entiendo, ejecuto `git blame filename` para saber cuándo se añadió — luego leo ese mensaje de commit para entender por qué. En un equipo también es útil para saber a quién preguntar sobre una parte concreta del código.
+
+**¿Qué es `git cherry-pick` y cuándo lo usarías?**
+Aplica los cambios de un commit concreto sobre la rama actual, sin fusionar toda la rama — `git cherry-pick a3f8c1d`. El caso típico: se corrige un bug en una rama de funcionalidad pero necesitas ese arreglo en `main` ahora mismo, antes de que toda la funcionalidad esté lista. Haces cherry-pick solo de ese commit de corrección. Lo uso con moderación — duplica commits y puede hacer el historial confuso si se abusa de él.
+
 ---
 
 ## Preguntas de presión
