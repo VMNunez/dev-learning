@@ -254,27 +254,67 @@ You can also combine both options — track the URL, add your own class, and app
 | More control | Yes | Less |
 | Less code | No | Yes |
 
+### Known issue: active link shows gray on click instead of the active color
+
+When you click a nav link, the browser gives it focus. Material has a hidden `::before` pseudo-element (the **state layer**) whose opacity increases on focus — this gray overlay shows on top of the blue active color until you click elsewhere.
+
+**The fix:**
+
+First, make sure `routerLinkActive` has a class name — `routerLinkActive` alone adds no class:
+
+```html
+<a mat-list-item
+   routerLink="/dashboard"
+   routerLinkActive="active"
+   #rla="routerLinkActive"
+   [activated]="rla.isActive">
+  Dashboard
+</a>
+```
+
+Then in the component CSS, hide the state layer when the link is active and focused — but not when hovering, because `:focus` and `:hover` are both true at the same time after a click:
+
+```css
+a.active:focus:not(:hover)::before {
+  opacity: 0;
+}
+```
+
+| Part | Why |
+|------|-----|
+| `a.active` | Only applies when the route is active |
+| `:focus` | Only applies right after a click (browser focus) |
+| `:not(:hover)` | Keeps the hover effect working on the active link |
+| `::before` | Targets Material's state layer, not the element itself |
+| `opacity: 0` | Hides the gray layer so the blue active style shows through |
+
 ---
 
 ## Full height app shell layout
 
-When the toolbar lives **outside** `mat-drawer-container`, the drawer no longer fills the full viewport automatically. You need a flex height chain so each element passes its height down to the next.
-
-### The problem
+The goal: toolbar fixed at the top (full width), sidebar fixed on the left, only the main content area scrolls. This is the standard pattern for enterprise apps.
 
 ```
-body
-  mat-toolbar    ← takes ~64px
-  mat-drawer-container  ← has no height — collapses
+┌─────────────────────────────────────┐
+│  mat-toolbar (full width, fixed)    │
+├──────────┬──────────────────────────┤
+│          │                          │
+│ sidenav  │  mat-sidenav-content     │
+│ (fixed)  │  (scrolls here only)     │
+│          │                          │
+└──────────┴──────────────────────────┘
 ```
 
-`mat-drawer-content` and the page inside it have nothing to fill.
+### The working CSS
 
-### The solution — flex chain in `styles.css`
+**`styles.css`** (global):
 
 ```css
+html, body {
+  height: 100%;
+}
+
 body {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -283,56 +323,60 @@ app-root {
   display: flex;
   flex-direction: column;
   flex: 1;
+  overflow: hidden;
 }
 ```
 
-And in `app.css`:
+**`app.css`** (App component):
 
 ```css
-mat-drawer-container {
+mat-sidenav-container {
   flex: 1;
+  min-height: 0;
 }
-```
-
-The chain:
-```
-body (flex column, min-height: 100vh)
-  app-root (flex: 1, flex column)      ← fills body
-    mat-toolbar                         ← natural height
-    mat-drawer-container (flex: 1)      ← fills remaining space
-      mat-drawer-content (height: 100%) ← Material default
 ```
 
 ### Why each piece is needed
 
-- `body { display: flex; flex-direction: column }` — makes `app-root` a flex item so it can grow
-- `app-root { flex: 1 }` — fills the full viewport height
-- `app-root { display: flex; flex-direction: column }` — stacks toolbar and drawer vertically
-- `mat-drawer-container { flex: 1 }` — takes all remaining space after the toolbar
+| Rule | Why |
+|------|-----|
+| `html, body { height: 100% }` | Gives the page a fixed height equal to the viewport. Without `html`, `body { height: 100% }` resolves to `auto` and the chain breaks |
+| `body { display: flex; flex-direction: column }` | Stacks toolbar and sidenav-container vertically |
+| `app-root { flex: 1 }` | Makes app-root fill the full body height |
+| `app-root { overflow: hidden }` | **The key fix.** Without this, flex items with `min-height: auto` can grow beyond their allocated height when content is tall — the whole page scrolls. `overflow: hidden` clips the boundary and stops app-root from growing |
+| `mat-sidenav-container { flex: 1 }` | Fills remaining height after the toolbar |
+| `mat-sidenav-container { min-height: 0 }` | Allows the container to shrink to its flex-allocated height. Without this, `min-height: auto` can still cause overflow |
 
-> `app-root` and `mat-drawer-container` are not Angular components — they are custom elements you can target with global CSS in `styles.css`. This avoids Angular's view encapsulation.
+Material automatically applies `height: 100%; overflow: auto` to `mat-sidenav-content` — once the container has a constrained height, the content scrolls correctly with no extra CSS needed.
 
-### Filling height inside a routed page
+### The height chain
 
-A page component rendered inside `router-outlet` is a custom element (e.g. `app-login-page`). By default it is `display: inline` and has no height. For the page to fill `mat-drawer-content` and use `height: 100%` internally, add `:host` in the page's own CSS:
-
-```css
-/* login-page.css */
-:host {
-  display: block;
-  height: 100%;
-}
-
-.card-container {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+```
+html (height: 100% = viewport)
+  body (height: 100%, flex column)
+    app-root (flex: 1, overflow: hidden)  ← never grows beyond viewport
+      mat-toolbar                          ← natural height (~64px)
+      mat-sidenav-container (flex: 1, min-height: 0)  ← fills remaining space
+        mat-sidenav-content (height: 100%, overflow: auto)  ← scrolls here
 ```
 
-`:host` targets the component's own root element — the `<app-login-page>` tag itself. Setting `display: block` and `height: 100%` makes the component fill its container so its children can use percentage heights.
+### Why the page was scrolling without `overflow: hidden`
 
-### Why `height: 100%` works here but not always
+Even with `flex: 1` on `app-root`, the page was scrolling. This is the chain that caused it:
 
-`height: 100%` on a child only works when the parent has a **definite height** — either an explicit value or a flex-determined size. Every element in the chain above has a definite height, so the percentage resolves correctly all the way down to the page component.
+1. The page content was taller than the viewport
+2. `mat-sidenav-container` grew to fit the content (flex items have `min-height: auto` by default)
+3. `app-root` grew to fit `mat-sidenav-container`
+4. `body` grew to fit `app-root`
+5. The whole page scrolled — toolbar and sidebar scrolled with it
+
+`overflow: hidden` on `app-root` cuts the chain at step 3. `app-root` can no longer grow, so `body` stays at viewport height, and the scroll is forced to stay inside `mat-sidenav-content`.
+
+### Common mistakes
+
+| Mistake | Result |
+|---------|--------|
+| `min-height: 100vh` on body instead of `height: 100%` | Body can grow beyond viewport — page scrolls |
+| Missing `overflow: hidden` on `app-root` | Flex item grows with content — toolbar and sidebar scroll away |
+| Missing `min-height: 0` on `mat-sidenav-container` | Container doesn't shrink — scroll doesn't trigger inside sidenav-content |
+| `overflow: hidden` on `html` and `body` | Blocks ALL scroll including inside `mat-sidenav-content` |
