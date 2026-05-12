@@ -1,8 +1,29 @@
-@if (isLoggedIn()) {
-  <mat-toolbar>
-    <span class="app-title">HR Portal</span>
+<mat-toolbar>
+  <div class="toolbar-brand">
+    <span class="app-title" routerLink="/dashboard">HR Portal</span>
+  </div>
 
+  @if (isLoggedIn()) {
     <button matButton (click)="logout()">Log out</button>
-  </mat-toolbar>
-}
-<router-outlet />
+  }
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav mode="side" [opened]="!!isLoggedIn()">
+    <mat-nav-list role="navigation" aria-label="Main navigation">
+      @for (link of navLinks; track link.path) {
+        <a
+          mat-list-item
+          [routerLink]="link.path"
+          routerLinkActive
+          #rla="routerLinkActive"
+          [activated]="rla.isActive"
+          >{{ link.label }}</a
+        >
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>
