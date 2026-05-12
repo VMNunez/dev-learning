@@ -36,3 +36,12 @@ mat-paginator {
   justify-content: center;
   margin-top: 1rem;
 }
+
+.mat-column-name,
+.mat-column-actions {
+  white-space: nowrap;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}

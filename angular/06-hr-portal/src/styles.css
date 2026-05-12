@@ -2,6 +2,7 @@
   --color-tr-hover: var(--mat-sys-surface-variant);
   --color-link: var(--mat-sys-primary);
   --text-secondary: var(--mat-sys-on-surface-variant);
+  --color-card-hover: var(--mat-sys-surface-container-low);
   --color-active-bg: #dcfce7;
   --color-active-text: #166534;
   --color-inactive-bg: #f3f4f6;
@@ -10,7 +11,6 @@
   --color-pending-text: #854d0e;
   --color-rejected-bg: #fee2e2;
   --color-rejected-text: #991b1b;
-  --color-card-hover: var(--mat-sys-surface-container-low);
 }
 
 * {

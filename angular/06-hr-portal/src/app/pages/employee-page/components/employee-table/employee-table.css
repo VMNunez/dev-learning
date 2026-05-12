@@ -43,3 +43,12 @@ mat-paginator {
   justify-content: center;
   margin-top: 1rem;
 }
+
+th,
+td {
+  white-space: nowrap;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
