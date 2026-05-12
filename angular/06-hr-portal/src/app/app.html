@@ -12,14 +12,17 @@
   <mat-sidenav mode="side" [opened]="!!isLoggedIn()">
     <mat-nav-list role="navigation" aria-label="Main navigation">
       @for (link of navLinks; track link.path) {
-        <a
-          mat-list-item
-          [routerLink]="link.path"
-          routerLinkActive
-          #rla="routerLinkActive"
-          [activated]="rla.isActive"
-          >{{ link.label }}</a
-        >
+        <li>
+          <a
+            mat-list-item
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            #rla="routerLinkActive"
+            [activated]="rla.isActive"
+          >
+            {{ link.label }}
+          </a>
+        </li>
       }
     </mat-nav-list>
   </mat-sidenav>
