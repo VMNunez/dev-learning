@@ -15,6 +15,10 @@ mat-toolbar button {
   cursor: pointer;
 }
 
+a.active:focus:not(:hover)::before {
+  opacity: 0;
+}
+
 mat-sidenav-container {
   flex: 1;
 }
