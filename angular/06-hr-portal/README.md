@@ -51,7 +51,10 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 - Duplicate check pattern — `nameExists()` / `emailExists()` in the service with optional `excludeId` for edit mode; `setErrors()` + `return` in `onSubmit()`
 
 ### CSS
-- —
+- App shell layout — `html, body { height: 100% }` + `app-root { overflow: hidden }` + `mat-sidenav-container { flex: 1; min-height: 0 }` — keeps toolbar and sidebar fixed while only the content area scrolls
+- Material state layer — `::before` pseudo-element with `opacity: 0`; raised on focus/hover/press to show gray overlay
+- `a.active:focus:not(:hover)::before { opacity: 0 }` — hides the gray focus overlay on the active nav link without breaking hover
+- `:not()` pseudo-class — negate a selector to exclude a specific state
 
 ## Project structure
 
