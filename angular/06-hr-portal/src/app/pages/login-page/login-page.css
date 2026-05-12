@@ -1,13 +1,13 @@
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
+:host {
+  display: block;
+  height: 100%;
 }
 
-.card-container {
+.container {
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
 }
 
 .login-card {

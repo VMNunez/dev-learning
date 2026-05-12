@@ -7,7 +7,7 @@ import type { User } from '../../models/user.model';
 export class AuthService {
   private users: User[] = [
     {
-      email: 'admin@hrportal.com',
+      email: 'victornunezpradas@gmail.com',
       password: 'admin123',
       role: 'admin',
     },
