@@ -205,6 +205,50 @@ See typography notes — requires `white-space: nowrap`, `overflow: hidden`, and
 
 ---
 
+## Angular Material tricks
+
+### Fix: active sidebar link shows gray on click instead of the active color
+
+**The problem:**
+
+Angular Material list items have a hidden `::before` pseudo-element called the **state layer**. Its `opacity` is `0` by default, but Material raises it on hover, focus, and press to show a gray overlay. When you click an active nav link, the element gets browser focus — the gray focus layer shows on top of the blue active color until you click elsewhere.
+
+**Why it is hard to spot:**
+
+The element has `[activated]="true"` and looks blue when not focused. But clicking gives it `:focus`, and the state layer opacity overrides the visual result.
+
+**The fix:**
+
+```css
+a.active:focus:not(:hover)::before {
+  opacity: 0;
+}
+```
+
+**Why each part is needed:**
+
+| Part | Why |
+|------|-----|
+| `a.active` | Only applies when the route is active (class added by `routerLinkActive="active"`) |
+| `:focus` | Only applies when the element has browser focus (right after a click) |
+| `:not(:hover)` | Excludes the case where the user is hovering — without this, hover effect on the active link disappears because `:focus` and `:hover` are both true at the same time |
+| `::before` | Targets Material's state layer, not the element itself |
+| `opacity: 0` | Hides the gray layer — the blue active background shows through |
+
+**Template setup required:**
+
+The class `active` must be added by `routerLinkActive`. The directive must receive the class name — `routerLinkActive` alone does not add any class:
+
+```html
+<!-- wrong — adds no class -->
+<a routerLinkActive #rla="routerLinkActive" [activated]="rla.isActive">
+
+<!-- correct — adds class "active" when route matches -->
+<a routerLinkActive="active" #rla="routerLinkActive" [activated]="rla.isActive">
+```
+
+---
+
 ## Table tricks
 
 ### Equal-width columns
