@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { AuthService } from '../../core/services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { LeaveRequestService } from '../../core/services/leave-request.service';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -17,9 +18,12 @@ export class DashboardPage {
   private employeeService = inject(EmployeeService);
   private departmentService = inject(DepartmentService);
   private authService = inject(AuthService);
+  private leaveRequestService = inject(LeaveRequestService);
 
   employees = this.employeeService.employees;
   departments = this.departmentService.departments;
+  leaveRequests = this.leaveRequestService.leaveRequests;
+
   username = computed(() => this.authService.currentUser()?.email.split('@')[0]);
 
   totalEmployees = computed(() => {
@@ -30,5 +34,8 @@ export class DashboardPage {
   });
   totalDepartments = computed(() => {
     return this.departments().length;
+  });
+  totalPendingLeaveRequests = computed(() => {
+    return this.leaveRequests().filter((r) => r.status === 'pending').length;
   });
 }

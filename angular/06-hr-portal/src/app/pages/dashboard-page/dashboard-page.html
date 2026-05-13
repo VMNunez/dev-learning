@@ -17,7 +17,7 @@
     <mat-card
       appearance="outlined"
       class="stat-card"
-      [routerLink]="'/employees'"
+      routerLink="/employees"
       [queryParams]="{ status: 'active' }"
     >
       <mat-card-content>
@@ -37,13 +37,18 @@
         <strong class="stat-number">{{ totalDepartments() }}</strong>
       </mat-card-content>
     </mat-card>
-    <mat-card appearance="outlined" class="stat-card" routerLink="/leave-requests">
+    <mat-card
+      appearance="outlined"
+      class="stat-card"
+      routerLink="/leave-requests"
+      [queryParams]="{ status: 'pending' }"
+    >
       <mat-card-content>
         <div class="stat-header">
           <mat-icon>corporate_fare</mat-icon>
-          <span class="stat-label">Total Departments</span>
+          <span class="stat-label">Pending Leave Requests</span>
         </div>
-        <strong class="stat-number">{{ totalDepartments() }}</strong>
+        <strong class="stat-number">{{ totalPendingLeaveRequests() }}</strong>
       </mat-card-content>
     </mat-card>
   </div>

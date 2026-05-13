@@ -1,13 +1,14 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { LeaveRequestService } from '../../core/services/leave-request.service';
 import { AuthService } from '../../core/services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { LeaveRequestDialog } from './components/leave-request-dialog/leave-request-dialog';
 import { LeaveRequestTable } from './components/leave-request-table/leave-request-table';
-import type { LeaveRequest, LeaveRequestStatus } from '../../models/leave-request.model';
+import type { LeaveRequestStatus } from '../../models/leave-request.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LeaveRequestFilters } from './components/leave-request-filters/leave-request-filters';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-leave-request-page',
@@ -15,11 +16,13 @@ import { LeaveRequestFilters } from './components/leave-request-filters/leave-re
   templateUrl: './leave-request-page.html',
   styleUrl: './leave-request-page.css',
 })
-export class LeaveRequestPage {
+export class LeaveRequestPage implements OnInit {
+  private route = inject(ActivatedRoute);
   private leaveRequestService = inject(LeaveRequestService);
   private authService = inject(AuthService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+
   selectedStatus = signal<LeaveRequestStatus | 'all'>('all');
   searchTerm = signal<string>('');
   currentUser = this.authService.currentUser;
@@ -43,6 +46,14 @@ export class LeaveRequestPage {
       ? byEmail
       : byEmail.filter((r) => r.employeeEmail === this.currentUser()?.email);
   });
+
+  ngOnInit(): void {
+    const initialStatus = this.route.snapshot.queryParamMap.get('status');
+
+    if (initialStatus) {
+      this.selectedStatus.set(initialStatus as LeaveRequestStatus | 'all');
+    }
+  }
 
   openDialog() {
     const dialogRef = this.dialog.open(LeaveRequestDialog, {
