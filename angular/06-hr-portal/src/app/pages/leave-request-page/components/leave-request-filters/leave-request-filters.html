@@ -2,7 +2,12 @@
   @if (role() === 'admin') {
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Search by email</mat-label>
-      <input matInput #searchInput (input)="searchChange.emit(searchInput.value)" />
+      <input
+        matInput
+        #searchInput
+        (input)="searchChange.emit(searchInput.value)"
+        [value]="searchTerm()"
+      />
     </mat-form-field>
   }
   <mat-form-field appearance="outline">
@@ -17,4 +22,9 @@
       }
     </mat-select>
   </mat-form-field>
+</div>
+<div class="filters-footer" [class.active]="hasActiveFilters()">
+  <p>Showing {{ totalFilteredLeaveRequests() }} of {{ totalLeaveRequests() }}</p>
+
+  <button matButton="text" (click)="clearFilters()">Clear Filters</button>
 </div>

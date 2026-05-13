@@ -29,6 +29,8 @@ export class LeaveRequestPage implements OnInit {
   leaveRequests = this.leaveRequestService.leaveRequests;
   role = this.authService.getUserRole();
 
+  hasActiveFilters = computed(() => this.selectedStatus() !== 'all' || this.searchTerm() !== '');
+
   filteredLeaveRequests = computed(() => {
     const byStatus =
       this.selectedStatus() === 'all'
@@ -46,6 +48,15 @@ export class LeaveRequestPage implements OnInit {
       ? byEmail
       : byEmail.filter((r) => r.employeeEmail === this.currentUser()?.email);
   });
+
+  totalFilteredLeaveRequests = computed(() => this.filteredLeaveRequests().length);
+
+  totalLeaveRequests = computed(() => this.leaveRequests().length);
+
+  clearFilters() {
+    this.selectedStatus.set('all');
+    this.searchTerm.set('');
+  }
 
   ngOnInit(): void {
     const initialStatus = this.route.snapshot.queryParamMap.get('status');
