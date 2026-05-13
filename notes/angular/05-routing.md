@@ -422,6 +422,36 @@ Stack multiple guards on the same route — Angular runs them in order:
 
 `authGuard` runs first (is the user logged in?), then `adminGuard` (is the user an admin?). If either fails, the user is redirected.
 
+### noAuthGuard — protect the login page from authenticated users
+
+`authGuard` blocks unauthenticated users from entering protected pages.
+`noAuthGuard` does the opposite — it blocks authenticated users from going back to the login page.
+
+Without it, a logged-in user can press the browser back button and land on the login page — a confusing experience.
+
+```typescript
+// core/guards/no-auth-guard.ts
+export const noAuthGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  return authService.isLoggedIn() ? router.createUrlTree(['/dashboard']) : true;
+};
+```
+
+Apply it to the login route:
+
+```typescript
+{ path: 'login', canActivate: [noAuthGuard], loadComponent: ... }
+```
+
+| Guard | Protects | Redirects to |
+|---|---|---|
+| `authGuard` | Protected pages | `/login` if not authenticated |
+| `noAuthGuard` | Login page | `/dashboard` if already authenticated |
+
+---
+
 ### Unused parameters in guards
 
 The CLI generates guards with `(route, state)` parameters. If you do not use them, remove them — unused parameters add noise:
@@ -644,7 +674,8 @@ export const routes: Routes = [
 | `Location.back()`              | Go back to the previous page                 |
 | `RouterOutlet`                 | Where the active page component renders      |
 | `ActivatedRoute`               | Read route parameters inside a component     |
-| `CanActivateFn`                | Protect a route — run logic before it loads  |
+| `CanActivateFn` (`authGuard`)  | Protect a route — block unauthenticated users |
+| `CanActivateFn` (`noAuthGuard`)| Protect login page — redirect already-logged-in users |
 | `CanDeactivateFn<Component>`   | Intercept navigation away — check form state |
 | `canActivate: [g1, g2]`        | Stack multiple guards — run in order         |
 | `canDeactivate: [guard]`       | Apply a deactivate guard to a route          |
