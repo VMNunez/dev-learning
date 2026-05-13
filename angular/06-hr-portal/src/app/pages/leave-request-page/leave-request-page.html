@@ -6,10 +6,14 @@
     }
   </div>
 
-  <app-leave-request-filters
-    [selectedStatus]="selectedStatus()"
-    (statusChange)="onStatusFilterChange($event)"
-  />
+  @if (role === 'admin') {
+    <app-leave-request-filters
+      [selectedStatus]="selectedStatus()"
+      [role]="role"
+      (statusChange)="onStatusFilterChange($event)"
+      (searchChange)="onSearchChange($event)"
+    />
+  }
 
   <app-leave-request-table
     [requests]="filteredLeaveRequests()"
