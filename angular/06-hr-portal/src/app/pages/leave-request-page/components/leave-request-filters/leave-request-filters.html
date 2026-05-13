@@ -1,0 +1,18 @@
+<div class="filters-container">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search by email</mat-label>
+    <input matInput />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Status</mat-label>
+    <mat-select
+      #statusLeaveRequest
+      [value]="selectedStatus()"
+      (selectionChange)="statusChange.emit(statusLeaveRequest.value)"
+    >
+      @for (status of statusOptions; track status) {
+        <mat-option [value]="status">{{ status | titlecase }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
