@@ -11,7 +11,7 @@
 <mat-sidenav-container>
   <mat-sidenav mode="side" [opened]="!!isLoggedIn()">
     <mat-nav-list role="navigation" aria-label="Main navigation">
-      @for (link of navLinks; track link.path) {
+      @for (link of filteredNavLinks(); track link.path) {
         <li>
           <a
             mat-list-item
