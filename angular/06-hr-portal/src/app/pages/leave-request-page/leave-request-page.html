@@ -10,8 +10,13 @@
     <app-leave-request-filters
       [selectedStatus]="selectedStatus()"
       [role]="role"
+      [totalFilteredLeaveRequests]="totalFilteredLeaveRequests()"
+      [totalLeaveRequests]="totalLeaveRequests()"
+      [hasActiveFilters]="hasActiveFilters()"
+      [searchTerm]="searchTerm()"
       (statusChange)="onStatusFilterChange($event)"
       (searchChange)="onSearchChange($event)"
+      (clearAll)="clearFilters()"
     />
   }
 
