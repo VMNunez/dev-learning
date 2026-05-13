@@ -21,6 +21,7 @@ export class LeaveRequestPage {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   selectedStatus = signal<LeaveRequestStatus | 'all'>('all');
+  searchTerm = signal<string>('');
   currentUser = this.authService.currentUser;
   leaveRequests = this.leaveRequestService.leaveRequests;
   role = this.authService.getUserRole();
@@ -31,9 +32,16 @@ export class LeaveRequestPage {
         ? this.leaveRequests()
         : this.leaveRequests().filter((r) => r.status === this.selectedStatus());
 
+    const byEmail =
+      this.searchTerm() === ''
+        ? byStatus
+        : byStatus.filter((r) =>
+            r.employeeEmail.toLowerCase().trim().includes(this.searchTerm().toLowerCase().trim()),
+          );
+
     return this.role === 'admin'
-      ? byStatus
-      : byStatus.filter((r) => r.employeeEmail === this.currentUser()?.email);
+      ? byEmail
+      : byEmail.filter((r) => r.employeeEmail === this.currentUser()?.email);
   });
 
   openDialog() {
@@ -64,5 +72,9 @@ export class LeaveRequestPage {
 
   onStatusFilterChange(status: LeaveRequestStatus | 'all') {
     this.selectedStatus.set(status);
+  }
+
+  onSearchChange(term: string) {
+    this.searchTerm.set(term);
   }
 }

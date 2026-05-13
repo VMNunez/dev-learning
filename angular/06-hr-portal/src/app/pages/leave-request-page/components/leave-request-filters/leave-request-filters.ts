@@ -4,6 +4,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { LeaveRequestStatus } from '../../../../models/leave-request.model';
 import { TitleCasePipe } from '@angular/common';
+import { Role } from '../../../../models/user.model';
 
 @Component({
   selector: 'app-leave-request-filters',
@@ -13,6 +14,8 @@ import { TitleCasePipe } from '@angular/common';
 })
 export class LeaveRequestFilters {
   selectedStatus = input<LeaveRequestStatus | 'all'>('all');
+  role = input<Role | undefined>(undefined);
   statusChange = output<LeaveRequestStatus | 'all'>();
+  searchChange = output<string>();
   statusOptions = ['all', 'pending', 'approved', 'rejected'];
 }
