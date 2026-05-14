@@ -90,13 +90,16 @@ src/app/
 ├── core/
 │   ├── guards/
 │   │   ├── auth-guard.ts
-│   │   └── admin-guard.ts
+│   │   ├── admin-guard.ts
+│   │   ├── no-auth-guard.ts
+│   │   └── deactivate-guard.ts
 │   ├── interceptors/
 │   │   └── auth-interceptor.ts
 │   └── services/
 │       ├── auth.service.ts
 │       ├── employee.service.ts
-│       └── department.service.ts
+│       ├── department.service.ts
+│       └── leave-request.service.ts
 ├── pages/
 │   ├── login-page/
 │   ├── dashboard-page/
@@ -105,17 +108,23 @@ src/app/
 │   │       ├── employee-dialog/
 │   │       ├── employee-filters/
 │   │       └── employee-table/
-│   └── department-page/
-│       ├── components/
-│       │   └── department-list/
-│       └── department-form/
+│   ├── department-page/
+│   │   ├── components/
+│   │   │   └── department-list/
+│   │   └── department-form/
+│   └── leave-request-page/
+│       └── components/
+│           ├── leave-request-dialog/
+│           ├── leave-request-filters/
+│           └── leave-request-table/
 ├── shared/
 │   └── components/
 │       └── confirm-dialog/
 ├── models/
 │   ├── user.model.ts
 │   ├── employee.model.ts
-│   └── department.model.ts
+│   ├── department.model.ts
+│   └── leave-request.model.ts
 └── app.routes.ts
 ```
 
