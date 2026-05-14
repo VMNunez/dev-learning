@@ -497,7 +497,7 @@ When the user types again, Angular re-runs all validators on the control. This *
 
 ## Duplicate check pattern in onSubmit()
 
-When you have a service-level duplicate check (see [03-services.md](./03-services.md)), the standard pattern in `onSubmit()` is:
+When you have a service-level duplicate check (see [04-services.md](./04-services.md)), the standard pattern in `onSubmit()` is:
 
 1. Reset any previous error state
 2. Check for the duplicate **before** the save logic
@@ -582,3 +582,77 @@ search(event: Event) {
   this.searchTerm.set(value);
 }
 ```
+
+---
+
+## FormArray — dynamic lists of controls
+
+Official docs: https://angular.dev/guide/forms/reactive-forms#creating-dynamic-forms
+
+`FormGroup` holds a fixed set of named controls. `FormArray` holds a **dynamic list** of controls — you add and remove them at runtime by index.
+
+### When to use it
+
+Use `FormArray` when the number of fields is not known upfront — for example:
+- A form where the user adds multiple phone numbers
+- A list of skills or tags the user can grow
+- Any "add another" pattern
+
+For forms with a fixed set of fields (employee name, hire date, department) `FormGroup` is always enough.
+
+### Setup
+
+```typescript
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+
+// define the form
+form = new FormGroup({
+  name: new FormControl('', Validators.required),
+  phones: new FormArray([
+    new FormControl('', Validators.required)  // start with one field
+  ])
+});
+
+// getter — shortcut to avoid casting everywhere
+get phones() {
+  return this.form.get('phones') as FormArray;
+}
+```
+
+### Add and remove controls
+
+```typescript
+addPhone() {
+  this.phones.push(new FormControl('', Validators.required));
+}
+
+removePhone(index: number) {
+  this.phones.removeAt(index);
+}
+```
+
+### Template
+
+```html
+<form [formGroup]="form">
+  <input formControlName="name" />
+
+  <div formArrayName="phones">
+    @for (control of phones.controls; track $index) {
+      <div>
+        <input [formControlName]="$index" />
+        <button type="button" (click)="removePhone($index)">Remove</button>
+      </div>
+    }
+  </div>
+
+  <button type="button" (click)="addPhone()">Add phone</button>
+  <button type="submit">Save</button>
+</form>
+```
+
+Key points:
+- `formArrayName="phones"` on the container div connects it to the `FormArray`
+- Each control uses `[formControlName]="$index"` — the index is the key, not a name
+- `phones.controls` is the array you loop over in `@for`
+- Access the value in `onSubmit()` with `this.form.value.phones` — it is a plain array of values
