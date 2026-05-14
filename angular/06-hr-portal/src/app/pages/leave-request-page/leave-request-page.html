@@ -1,15 +1,15 @@
 <div class="container">
   <div class="leave-request-header">
     <h1>Leave Requests</h1>
-    @if (role === 'employee') {
+    @if (role() === 'employee') {
       <button matButton="filled" (click)="openDialog()">Submit leave request</button>
     }
   </div>
 
-  @if (role === 'admin') {
+  @if (role() === 'admin') {
     <app-leave-request-filters
       [selectedStatus]="selectedStatus()"
-      [role]="role"
+      [role]="role()"
       [totalFilteredLeaveRequests]="totalFilteredLeaveRequests()"
       [totalLeaveRequests]="totalLeaveRequests()"
       [hasActiveFilters]="hasActiveFilters()"
@@ -22,7 +22,7 @@
 
   <app-leave-request-table
     [requests]="filteredLeaveRequests()"
-    [role]="role"
+    [role]="role()"
     (statusChange)="onStatusChange($event.id, $event.status)"
   />
 </div>

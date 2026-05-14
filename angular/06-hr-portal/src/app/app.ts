@@ -24,7 +24,7 @@ export class App {
   protected readonly title = signal('06-hr-portal');
   private authService = inject(AuthService);
   private router = inject(Router);
-  isLoggedIn = this.authService.currentUser;
+  isLoggedIn = computed(() => !!this.authService.currentUser());
   isAdmin = computed(() => this.authService.currentUser()?.role === 'admin');
 
   navLinks = [
