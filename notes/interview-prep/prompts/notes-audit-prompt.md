@@ -8,7 +8,8 @@ Update the project list as new projects are completed.
 **How to use:**
 1. Fill in `[TOPIC]` — the subject to audit (e.g. Angular, CSS, JavaScript, TypeScript, SQL, Java)
 2. Fill in `[NOTE PATHS]` — the notes folder to review (e.g. `notes/angular/`)
-3. Paste the prompt below into a new chat
+3. Fill in `[FILE]` — the interview prep filename without extension (e.g. `angular`, `css`, `sql`, `java`)
+4. Paste the prompt below into a new chat
 
 ---
 
@@ -58,7 +59,7 @@ My projects:
 
 Files to audit:
 - Notes: [NOTE PATHS]
-- Interview prep: notes/interview-prep/en/[TOPIC].md and notes/interview-prep/es/[TOPIC].md
+- Interview prep: notes/interview-prep/en/[FILE].md and notes/interview-prep/es/[FILE].md
 
 ---
 
