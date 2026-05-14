@@ -7,10 +7,11 @@ import { AuthService } from '../../core/services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LeaveRequestService } from '../../core/services/leave-request.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [MatCardModule, MatButtonModule, RouterLink, MatIconModule],
+  imports: [MatCardModule, MatButtonModule, RouterLink, MatIconModule, DatePipe],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
 })
@@ -23,8 +24,17 @@ export class DashboardPage {
   employees = this.employeeService.employees;
   departments = this.departmentService.departments;
   leaveRequests = this.leaveRequestService.leaveRequests;
+  currentUser = this.authService.currentUser;
 
-  username = computed(() => this.authService.currentUser()?.email.split('@')[0]);
+  isAdmin = computed(() => this.currentUser()?.role === 'admin');
+
+  recentEmployees = computed(() => [...this.employees()].slice(-5).reverse());
+
+  myLeaveRequests = computed(() =>
+    this.leaveRequests().filter((r) => r.employeeEmail === this.currentUser()?.email),
+  );
+
+  username = computed(() => this.currentUser()?.email.split('@')[0]);
 
   totalEmployees = computed(() => {
     return this.employees().length;
@@ -35,7 +45,6 @@ export class DashboardPage {
   totalDepartments = computed(() => {
     return this.departments().length;
   });
-  totalPendingLeaveRequests = computed(() => {
-    return this.leaveRequests().filter((r) => r.status === 'pending').length;
-  });
+
+  pendingLeaveRequests = computed(() => this.leaveRequests().filter((r) => r.status === 'pending'));
 }
