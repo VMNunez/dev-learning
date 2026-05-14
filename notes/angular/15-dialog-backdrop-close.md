@@ -1,4 +1,4 @@
-# 14 — Protecting dialogs from accidental close
+# 15 — Protecting dialogs from accidental close
 
 ## The problem
 
