@@ -1,14 +1,29 @@
 # Interview Questions Generate Prompt
 
-Use in a **separate conversation**. Fill in the blanks before pasting.
+Use in a **separate conversation** after finishing a new concept or topic.
+Fill in the two blanks before pasting. Update the project list as new projects are completed.
+
+---
+
+**How to use:**
+1. Fill in `[TOPIC]` — the concept just learned (e.g. "Angular route guards and lazy loading")
+2. Fill in `[FILE]` — which interview prep file to add to (e.g. `angular`, `css`, `sql`, `java`)
+3. Paste the prompt below into a new chat
 
 ---
 
 ```
-I am Victor, 31 years old, targeting a junior Angular + Java Spring Boot position
-at Spanish consultancies (NTT Data, Capgemini, Indra) in 2026.
+I just finished learning: [TOPIC]
 
-I just finished learning: [TOPIC — e.g. "Angular route guards and lazy loading"]
+Before starting, read CLAUDE.md — it has my full profile, teaching rules, and interview
+prep format conventions.
+
+I am Victor, 31 years old, targeting a first junior developer job at Spanish IT consultancies
+(NTT Data, Capgemini, Indra, and similar) with a target date of August 2026.
+My stack: Angular + Java Spring Boot.
+My differentiator: most candidates in Spain apply with React. Angular + Java is what large
+consultancies actually use — I stand out if I demonstrate real understanding and decisions.
+I currently have an internship (Next.js + TypeScript + MySQL) as real work experience.
 
 My projects:
 - 01: todo list — components, signals, services, directives
@@ -17,24 +32,43 @@ My projects:
 - 04: meal finder — route params, ActivatedRoute, effect(), favourites
 - 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
 - 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
+- 07: finance tracker (in progress) — Spring Boot REST API, JWT auth, PostgreSQL, Angular
 
-Generate interview questions for notes/interview-prep/en/[angular.md / typescript.md / architecture.md / general.md / javascript.md / css.md / git.md / sql.md / java.md]
-on this topic, ready to paste directly into the file.
+Generate interview questions on [TOPIC] and add them directly to:
+- notes/interview-prep/en/[FILE].md
+- notes/interview-prep/es/[FILE].md
 
-Important: every question must also be added to the matching file in notes/interview-prep/es/ —
-same question, same answer, same section, translated into Spanish.
+Same questions, same answers, same section, translated. Never add to one without the other.
 
-Format for each question:
+---
+
+## Rules for every question
+
+Format:
 
 **Question as an interviewer at a Spanish consultancy would ask it?**
-Answer in 1–2 sentences. Include a real example from my projects when the question
-is about a pattern or decision.
+Answer in 1–2 sentences. Include a real example from my projects when the question is about
+a pattern or decision.
 
-Rules:
-- Group questions under a section heading: ## [topic name]
+Quality bar: every answer must pass this test — "could I explain every word of this answer
+if the interviewer pressed me?" If not, rewrite it.
+
+- Group questions under the correct section heading: ## [section name]
 - Mix of types: conceptual ("what is X?"), decision-based ("why X instead of Y?"),
   pressure ("what would you change?")
 - Target ratio: 55% conceptual / 35% decision-based / 10% pressure
-- Answers must be interview-ready — what I would actually say, not a textbook definition
-- Always reference a specific project when the question is about a pattern or decision
+- Answers must be interview-ready — what I would actually say out loud, not a textbook
+  definition
+- Always reference a specific project for pattern or decision questions
+
+For every new conceptual question, add a Junior Tip:
+
+> **Junior tip:** short advice on how to explain it clearly in an interview  (English)
+> **Consejo de entrevista:** same advice in Spanish
+
+---
+
+After adding all questions, commit on the current branch.
+Commit format: docs: add [TOPIC] interview questions to [FILE]
+Example: docs: add RxJS operators interview questions to angular
 ```
