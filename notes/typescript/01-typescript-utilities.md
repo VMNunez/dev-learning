@@ -165,6 +165,82 @@ get email() {
 
 ---
 
+## Non-null assertion — `!`
+
+`!` tells TypeScript "I know this value is not null or undefined — trust me". It removes `null` and `undefined` from the type.
+
+```ts
+const input = document.querySelector('input');
+// input is HTMLInputElement | null
+
+input.value;   // ❌ TypeScript error — could be null
+input!.value;  // ✅ you assert it exists
+```
+
+In Angular it appears in `@ViewChild`:
+
+```ts
+@ViewChild(MatSort) sort!: MatSort;
+// The ! says: "this will be set by Angular before I use it"
+```
+
+**Use with care.** If you are wrong and the value IS null, you get a runtime error with no TypeScript warning. Prefer optional chaining `?.` when you are not 100% sure, or proper null checks.
+
+---
+
+## Constructor shorthand
+
+In TypeScript, you can declare and assign class properties directly in the constructor parameters — no need to write `this.x = x` manually:
+
+```ts
+// Without shorthand — verbose
+class EmployeeService {
+  private http: HttpClient;
+  private router: Router;
+
+  constructor(http: HttpClient, router: Router) {
+    this.http = http;
+    this.router = router;
+  }
+}
+
+// With constructor shorthand — same result, much shorter
+class EmployeeService {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
+}
+```
+
+The access modifier (`private`, `public`, `protected`, `readonly`) in the parameter is what triggers the shorthand — TypeScript automatically creates and assigns the property.
+
+**In Angular this is the standard pattern for dependency injection:**
+
+```ts
+@Injectable({ providedIn: 'root' })
+export class EmployeeService {
+  constructor(private http: HttpClient) {}
+
+  getAll() {
+    return this.http.get<Employee[]>('/api/employees');
+  }
+}
+```
+
+Modern Angular (v14+) also uses `inject()` as an alternative:
+
+```ts
+@Injectable({ providedIn: 'root' })
+export class EmployeeService {
+  private http = inject(HttpClient);  // no constructor needed
+}
+```
+
+Both are valid. `inject()` is preferred in newer Angular code.
+
+---
+
 ## Classes as types
 
 In TypeScript, a class can be used as a type. You do not need a separate `interface` — the class itself defines the shape.

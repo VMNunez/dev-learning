@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { adminGuard } from './core/guards/admin-guard';
 import { deactivateGuard } from './core/guards/deactivate-guard';
+import { noAuthGuard } from './core/guards/no-auth-guard';
 
 export const routes: Routes = [
   {
@@ -11,6 +12,7 @@ export const routes: Routes = [
   },
   {
     path: 'login',
+    canActivate: [noAuthGuard],
     loadComponent: () => import('./pages/login-page/login-page').then((m) => m.LoginPage),
   },
   {
@@ -19,12 +21,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
   },
-  {
-    path: 'admin',
-    canActivate: [authGuard, adminGuard],
-    loadComponent: () => import('./pages/admin-page/admin-page').then((m) => m.AdminPage),
-  },
-  {
+{
     path: 'employees',
     canActivate: [authGuard, adminGuard],
     loadComponent: () => import('./pages/employee-page/employee-page').then((m) => m.EmployeePage),

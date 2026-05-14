@@ -82,6 +82,7 @@ export class EmployeePage implements OnInit {
     const dialogRef = this.dialog.open(EmployeeDialog, {
       width: '500px',
       autoFocus: false,
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe({
@@ -120,6 +121,7 @@ export class EmployeePage implements OnInit {
     const dialogRef = this.dialog.open(EmployeeDialog, {
       width: '500px',
       autoFocus: false,
+      disableClose: true,
       data: {
         employee,
       },

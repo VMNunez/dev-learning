@@ -1,0 +1,41 @@
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  justify-content: space-between;
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-primary);
+}
+
+mat-toolbar button {
+  color: var(--mat-sys-primary);
+}
+
+.toolbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+mat-sidenav-container {
+  flex: 1;
+  min-height: 0;
+}
+
+mat-sidenav {
+  width: 220px;
+  padding: 0 0.5rem;
+  border-radius: 0;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+a.active:focus:not(:hover)::before {
+  opacity: 0;
+}

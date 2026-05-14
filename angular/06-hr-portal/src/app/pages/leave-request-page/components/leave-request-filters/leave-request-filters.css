@@ -1,0 +1,30 @@
+.filters-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filters-container mat-form-field {
+  min-width: 180px;
+}
+
+.search-field {
+  flex: 1;
+}
+
+.filters-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  visibility: hidden;
+  margin-top: 1rem;
+}
+
+.filters-footer.active {
+  visibility: visible;
+}
+
+.filters-footer p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}

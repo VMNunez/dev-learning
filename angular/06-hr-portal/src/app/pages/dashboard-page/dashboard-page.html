@@ -4,47 +4,136 @@
     <p>Welcome back, {{ username() }}</p>
   </div>
 
-  <div class="card-container">
-    <mat-card appearance="outlined" class="stat-card" routerLink="/employees">
-      <mat-card-content>
-        <div class="stat-header">
-          <mat-icon>group</mat-icon>
-          <span class="stat-label">Total Employees</span>
-        </div>
-        <strong class="stat-number">{{ totalEmployees() }}</strong>
-      </mat-card-content>
-    </mat-card>
-    <mat-card
-      appearance="outlined"
-      class="stat-card"
-      [routerLink]="'/employees'"
-      [queryParams]="{ status: 'active' }"
-    >
-      <mat-card-content>
-        <div class="stat-header">
-          <mat-icon>how_to_reg</mat-icon>
-          <span class="stat-label">Active Employees</span>
-        </div>
-        <strong class="stat-number">{{ activeEmployees() }}</strong>
-      </mat-card-content>
-    </mat-card>
-    <mat-card appearance="outlined" class="stat-card" routerLink="/departments">
-      <mat-card-content>
-        <div class="stat-header">
-          <mat-icon>corporate_fare</mat-icon>
-          <span class="stat-label">Total Departments</span>
-        </div>
-        <strong class="stat-number">{{ totalDepartments() }}</strong>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <div class="quick-actions">
-    <h2>Quick Actions</h2>
-    <div class="actions-row">
-      <button matButton="outlined" routerLink="/employees">View Employees</button>
-      <button matButton="outlined" routerLink="/departments">View Department</button>
-      <button matButton="outlined" routerLink="/leave-requests">View Leave Requests</button>
+  @if (isAdmin()) {
+    <div class="card-container">
+      <mat-card appearance="outlined" class="stat-card" routerLink="/employees">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>group</mat-icon>
+            <span class="stat-label">Total Employees</span>
+          </div>
+          <strong class="stat-number">{{ totalEmployees() }}</strong>
+        </mat-card-content>
+      </mat-card>
+      <mat-card
+        appearance="outlined"
+        class="stat-card"
+        routerLink="/employees"
+        [queryParams]="{ status: 'active' }"
+      >
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>how_to_reg</mat-icon>
+            <span class="stat-label">Active Employees</span>
+          </div>
+          <strong class="stat-number">{{ activeEmployees() }}</strong>
+        </mat-card-content>
+      </mat-card>
+      <mat-card appearance="outlined" class="stat-card" routerLink="/departments">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>corporate_fare</mat-icon>
+            <span class="stat-label">Total Departments</span>
+          </div>
+          <strong class="stat-number">{{ totalDepartments() }}</strong>
+        </mat-card-content>
+      </mat-card>
+      <mat-card
+        appearance="outlined"
+        class="stat-card"
+        routerLink="/leave-requests"
+        [queryParams]="{ status: 'pending' }"
+      >
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>event_busy</mat-icon>
+            <span class="stat-label">Pending Leave Requests</span>
+          </div>
+          <strong class="stat-number">{{ pendingLeaveRequests().length }}</strong>
+        </mat-card-content>
+      </mat-card>
     </div>
-  </div>
+
+    <div class="panels">
+      <mat-card appearance="outlined">
+        <mat-card-header class="panel-header">
+          <mat-card-title>Recent Employees</mat-card-title>
+          <a routerLink="/employees" class="panel-header-link">View all</a>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="panel-list">
+            @for (employee of recentEmployees(); track employee.id) {
+              <div class="panel-item">
+                <div class="panel-item-info">
+                  <span class="panel-item-name">{{ employee.firstName }} {{ employee.lastName }}</span>
+                  <span class="panel-item-meta">{{ employee.department }} · {{ employee.position }}</span>
+                </div>
+              </div>
+            } @empty {
+              <p class="panel-empty">No employees yet.</p>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <mat-card-header class="panel-header">
+          <mat-card-title>Pending Leave Requests</mat-card-title>
+          <a routerLink="/leave-requests" [queryParams]="{ status: 'pending' }" class="panel-header-link">View all</a>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="panel-list">
+            @for (request of pendingLeaveRequests(); track request.id) {
+              <div class="panel-item">
+                <div class="panel-item-info">
+                  <span class="panel-item-name">{{ request.employeeEmail }}</span>
+                  <span class="panel-item-meta">{{ request.startDate | date: 'dd/MM/yyyy' }} – {{ request.endDate | date: 'dd/MM/yyyy' }} · {{ request.reason }}</span>
+                </div>
+              </div>
+            } @empty {
+              <p class="panel-empty">No pending requests.</p>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  @if (!isAdmin()) {
+    <div class="card-container">
+      <mat-card appearance="outlined" class="stat-card" routerLink="/leave-requests">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>event_note</mat-icon>
+            <span class="stat-label">My Leave Requests</span>
+          </div>
+          <strong class="stat-number">{{ myLeaveRequests().length }}</strong>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="panels panels--single">
+      <mat-card appearance="outlined">
+        <mat-card-header class="panel-header">
+          <mat-card-title>My Leave Requests</mat-card-title>
+          <a routerLink="/leave-requests" class="panel-header-link">View all</a>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="panel-list">
+            @for (request of myLeaveRequests(); track request.id) {
+              <div class="panel-item">
+                <div class="panel-item-info">
+                  <span class="panel-item-name">{{ request.startDate | date: 'dd/MM/yyyy' }} – {{ request.endDate | date: 'dd/MM/yyyy' }}</span>
+                  <span class="panel-item-meta">{{ request.reason }}</span>
+                </div>
+                <span class="status-badge status-{{ request.status }}">{{ request.status }}</span>
+              </div>
+            } @empty {
+              <p class="panel-empty">You have no leave requests.</p>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
 </div>

@@ -53,6 +53,8 @@ export class EmployeeDialog {
   });
 
   constructor() {
+    this.dialogRef.backdropClick().subscribe(() => this.onCancel());
+
     if (this.data) {
       const { firstName, lastName, email, department, position, status } = this.data.employee;
       this.firstFormGroup.patchValue({
