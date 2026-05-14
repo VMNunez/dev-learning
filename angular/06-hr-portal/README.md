@@ -2,7 +2,7 @@
 
 My sixth Angular project. A role-based HR management app to learn route guards, lazy loading, HTTP interceptors, and enterprise architecture patterns.
 
-**Live demo:** —
+**Live demo:** https://06-hr-portal.netlify.app
 
 ![Login](screenshots/login.png)
 ![Admin dashboard](screenshots/dashboard-admin.png)
