@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="leave-request-header">
+    <h1>Leave Requests</h1>
+    @if (role() === 'employee') {
+      <button matButton="filled" (click)="openDialog()">Submit leave request</button>
+    }
+  </div>
+
+  @if (role() === 'admin') {
+    <app-leave-request-filters
+      [selectedStatus]="selectedStatus()"
+      [role]="role()"
+      [totalFilteredLeaveRequests]="totalFilteredLeaveRequests()"
+      [totalLeaveRequests]="totalLeaveRequests()"
+      [hasActiveFilters]="hasActiveFilters()"
+      [searchTerm]="searchTerm()"
+      (statusChange)="onStatusFilterChange($event)"
+      (searchChange)="onSearchChange($event)"
+      (clearAll)="clearFilters()"
+    />
+  }
+
+  <app-leave-request-table
+    [requests]="filteredLeaveRequests()"
+    [role]="role()"
+    (statusChange)="onStatusChange($event.id, $event.status)"
+  />
+</div>

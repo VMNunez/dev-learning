@@ -53,20 +53,32 @@ export class TaskList {
 ### Event binding — listen to a user action
 
 ```html
-<button (click)="deleteTask(task.id)">Delete</button>
-<input (input)="onSearch($event)" />
+<button (click)="deleteTask(task.id)">Delete</button> <input (input)="onSearch($event)" />
 ```
 
 ### Template reference variables — access an element directly in the template
 
 ```html
-<input #meal type="text" />
-<button (click)="onSearch(meal.value)">Search</button>
+<input #meal type="text" /> <button (click)="onSearch(meal.value)">Search</button>
 ```
 
 `#meal` creates a reference to the input element. You can pass `meal.value` to a method without needing a signal or form control. Use this for simple, one-field inputs.
 
-Combine with keyboard events for a complete search input:
+> **Alternative:** you can also use `$event.target` if you cast it to `HTMLInputElement` in TypeScript. This is covered in the event handling section of the reactive forms notes. Template references are simpler — you get the typed element directly in the template without any casting.
+
+**Why not `$event.target.value`?** In TypeScript strict mode, `$event.target` is typed as `EventTarget` — it has no `.value` property. Angular does not know the element is an `HTMLInputElement`. This causes a type error:
+
+```html
+<!-- ❌ TypeScript error in strict mode -->
+<input (input)="onSearch($event.target.value)" />
+
+<!-- ✅ Use a template reference variable instead -->
+<input #searchInput (input)="onSearch(searchInput.value)" />
+```
+
+The template reference variable gives you a typed `HTMLInputElement` reference directly — no casting needed.
+
+Combine `(keyup.enter)` with `(click)` so the search runs both when the user presses Enter and when they click the button:
 
 ```html
 <input #meal type="text" (keyup.enter)="onSearch(meal.value)" />
@@ -87,6 +99,8 @@ Combine with keyboard events for a complete search input:
 ## Inputs and outputs
 
 ### Input — receive data from a parent component
+
+> **Good practice:** always provide a default value for your inputs. If the parent does not pass data, the input will be `undefined` — which can crash the template. Use `input<Type>(defaultValue)` to set a safe fallback.
 
 ```typescript
 // child component
@@ -120,6 +134,35 @@ onTaskDeleted(id: number) {
   this.taskService.deleteTask(id);
 }
 ```
+
+### output with an object — when you need to send multiple values
+
+Use an object type when the child needs to emit more than one piece of data at once:
+
+```typescript
+// child component
+statusChange = output<{ id: number; status: LeaveRequestStatus }>();
+
+onApprove(id: number) {
+  this.statusChange.emit({ id, status: 'approved' });
+}
+```
+
+In the parent template, unpack the object from `$event`:
+
+```html
+<!-- parent template -->
+<app-leave-request-table (statusChange)="onStatusChange($event.id, $event.status)" />
+```
+
+```typescript
+// parent component
+onStatusChange(id: number, status: LeaveRequestStatus) {
+  this.leaveRequestService.updateStatus(id, status);
+}
+```
+
+The parent method signature must match what you unpack from `$event` — not the object itself.
 
 ### output\<void\>() — when you don't need to send data
 
@@ -192,7 +235,83 @@ export class WeatherPage implements OnInit {
 Use it to load data from an API when the component starts — not in the constructor.
 
 Typical uses:
+
 - Load data from an API when the page opens
 - Read a route parameter and call the API with it
 - Load data from localStorage into a signal
 - Set a default value based on the current user or route
+
+### @ViewChild — access a child element from TypeScript
+
+`@ViewChild` gives you a reference to a child component, directive, or DOM element inside the TypeScript class.
+
+```ts
+import { ViewChild, AfterViewInit } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
+
+export class EmployeeListComponent implements AfterViewInit {
+  @ViewChild(MatSort) sort!: MatSort;
+
+  dataSource = new MatTableDataSource<Employee>();
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;  // connect MatSort after the template renders
+  }
+}
+```
+
+- The `!` tells TypeScript that Angular will set this before you use it
+- The value is only available after the template renders — use it in `ngAfterViewInit`, not in `ngOnInit`
+
+**Access a native DOM element:**
+
+```ts
+@ViewChild('searchInput') inputRef!: ElementRef<HTMLInputElement>;
+
+ngAfterViewInit() {
+  this.inputRef.nativeElement.focus();
+}
+```
+
+```html
+<input #searchInput type="text" />
+```
+
+### ngAfterViewInit — runs after the template renders
+
+Runs once, after Angular has fully rendered the component's template and all its children. This is the earliest point where `@ViewChild` references are available.
+
+```ts
+import { AfterViewInit } from '@angular/core';
+
+export class EmployeeListComponent implements AfterViewInit {
+  ngAfterViewInit() {
+    // template is ready — safe to access @ViewChild references here
+  }
+}
+```
+
+### ngOnDestroy — runs before the component is removed
+
+Use it for cleanup — cancel subscriptions, clear timers, release resources.
+
+```ts
+import { OnDestroy } from '@angular/core';
+
+export class MyComponent implements OnDestroy {
+  ngOnDestroy() {
+    // cleanup here
+  }
+}
+```
+
+In practice, `takeUntilDestroyed` handles subscription cleanup automatically — you rarely need `ngOnDestroy` for HTTP calls. You do need it for third-party libraries or manual `setInterval` cleanup.
+
+### Lifecycle order
+
+```
+constructor       → DI, no template
+ngOnInit          → inputs available, no template yet
+ngAfterViewInit   → template rendered, @ViewChild available
+ngOnDestroy       → component about to be removed
+```

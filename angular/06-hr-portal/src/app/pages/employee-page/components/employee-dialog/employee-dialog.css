@@ -1,0 +1,14 @@
+form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding-top: 1rem;
+}
+
+mat-dialog-actions {
+  justify-content: space-between;
+}
+
+form mat-form-field:last-child {
+  grid-column: 1 / -1;
+}

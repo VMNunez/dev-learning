@@ -1,0 +1,44 @@
+<div class="container">
+  <nav class="breadcrumb">
+    <a routerLink="/departments">Departments</a>
+    <span>/</span>
+    @if (editId()) {
+      <span>Edit Department</span>
+    } @else {
+      <span>New Department</span>
+    }
+  </nav>
+  <h1>
+    @if (editId()) {
+      Edit Department
+    } @else {
+      Add Department
+    }
+  </h1>
+  <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      @if (name?.hasError('required')) {
+        <mat-error>Name is required</mat-error>
+      } @else if (name?.hasError('duplicateName')) {
+        <mat-error>This department already exists</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      <mat-error>Description is required</mat-error>
+    </mat-form-field>
+    <div class="form-actions">
+      <button type="button" matButton="text" routerLink="/departments">Cancel</button>
+      <button type="submit" matButton="filled">
+        @if (editId()) {
+          Edit Department
+        } @else {
+          Add Department
+        }
+      </button>
+    </div>
+  </form>
+</div>
