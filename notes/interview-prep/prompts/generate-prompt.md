@@ -68,7 +68,7 @@ For every new conceptual question, add a Junior Tip:
 
 ---
 
-After adding all questions, commit on the current branch.
+After adding all questions, show the commit message so Victor can run it himself.
 Commit format: docs: add [TOPIC] interview questions to [FILE]
 Example: docs: add RxJS operators interview questions to angular
 ```

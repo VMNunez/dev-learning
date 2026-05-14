@@ -100,6 +100,6 @@ A section is complete when:
 - No answers are purely theoretical
 - The ratio is roughly on target for that section
 
-After all edits, commit everything on the current branch.
+After all edits, show the commit message so Victor can run it himself.
 Commit format: docs: audit [topic] interview prep — <one line summary of main fixes>
 ```
