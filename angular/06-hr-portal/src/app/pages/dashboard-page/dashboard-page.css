@@ -129,6 +129,28 @@
   text-decoration: underline;
 }
 
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.status-pending {
+  background-color: var(--color-pending-bg);
+  color: var(--color-pending-text);
+}
+
+.status-approved {
+  background-color: var(--color-active-bg);
+  color: var(--color-active-text);
+}
+
+.status-rejected {
+  background-color: var(--color-rejected-bg);
+  color: var(--color-rejected-text);
+}
+
 @media (max-width: 1024px) {
   .card-container {
     flex-wrap: wrap;

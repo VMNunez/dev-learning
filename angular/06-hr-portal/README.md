@@ -4,7 +4,12 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 
 **Live demo:** —
 
-![App preview](screenshots/preview.png)
+![Login](screenshots/login.png)
+![Admin dashboard](screenshots/dashboard-admin.png)
+![Employee dashboard](screenshots/dashboard-employee.png)
+![Employees](screenshots/employees.png)
+![Add employee dialog](screenshots/employee-dialog.png)
+![Leave requests](screenshots/leave-requests.png)
 
 ## Features
 
@@ -33,7 +38,7 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 
 - **Coordinator pattern for pages with filters and a table** → employee page and leave request page each have a filters component, a table component, and page-level state (filter signals, computed filtered list); lifting state to the page component avoids prop drilling and keeps the table and filters reusable → the page owns all state; children only receive data and emit events.
 
-- **localStorage with signals instead of a real backend** → this project focuses on Angular patterns (guards, lazy loading, interceptors); building a Spring Boot backend at the same time would have split the focus; each service uses `signal()` + `effect()` to persist to localStorage automatically → avoids coupling the Angular learning to backend setup; the HTTP interceptor works the same way as it would with a real API, which is the important pattern to learn.
+- **localStorage with signals instead of a real backend** → the focus of this project is Angular patterns — guards, lazy loading, interceptors, role-based access; each service uses `signal()` + `effect()` to persist to localStorage automatically; the HTTP interceptor is designed to work identically with a real API — swapping localStorage for Spring Boot in a future project requires no changes to the Angular layer → clean separation between the data layer and the Angular patterns being practised.
 
 - **Role-aware dashboard with `@if(isAdmin())`** → admin and employee have very different needs on the dashboard; the admin needs a company overview (total employees, departments, pending requests) while the employee only needs their own data; using a single `isAdmin()` computed signal as the switch keeps the logic in one place → avoids two separate dashboard components that would share most of their structure.
 
@@ -41,34 +46,24 @@ My sixth Angular project. A role-based HR management app to learn route guards, 
 
 ## What I learned
 
-### Angular
 - `CanActivateFn` — functional route guard (v15+); no class, no `@Injectable`
-- `adminGuard` — role-based guard that checks `currentUser().role`
-- `noAuthGuard` — redirects logged-in users away from the login page
+- Role-based guard — `adminGuard` checks `currentUser().role` after `authGuard` confirms the user is logged in
+- `noAuthGuard` — redirects already-logged-in users away from the login page
 - Lazy loading — `loadComponent` with dynamic import; component code only loads on navigation
-- Stacked guards — `canActivate: [authGuard, adminGuard]`; all must return true
-- `HttpInterceptorFn` — functional interceptor (v15+)
-- `req.clone({ setHeaders })` — HTTP requests are immutable; must clone to add headers
-- `withInterceptors([fn])` in `app.config.ts` — registers functional interceptors
-- `CanDeactivate` guard — warn the user before leaving a form with unsaved changes
-- `markAsPristine()` — reset form dirty state after save so the guard does not trigger
-- `MatStepper` — `[linear]="true"`, `[stepControl]`, `stepper.next()`, `stepper.previous()`
-- `MatSnackBar` — toast notifications; `snackBar.open(message, action, { duration })`
-- `MatSidenav` app shell — `mat-sidenav-container`, `mat-sidenav mode="side"`, `mat-sidenav-content`
-- `routerLinkActive="active"` with `#rla` and `[activated]="rla.isActive"`
-- `MatDatepicker` — calendar picker; requires `provideNativeDateAdapter()` in `app.config.ts`
-- Conditional `displayColumns` with `computed()` — show or hide table columns based on role
-- Query params — `[queryParams]` on `routerLink`, read with `ActivatedRoute.snapshot.queryParamMap.get()`
-- `setErrors({ customKey: true })` — set a custom error on a form control for service-level validation
-- Duplicate check pattern — `nameExists()` / `emailExists()` with optional `excludeId` for edit mode
-- Auth persistence — `signal(JSON.parse(localStorage.getItem(...) ?? 'null'))` + `effect()` to save on every change
-- Default and wildcard routes — `redirectTo` with `pathMatch: 'full'` and `path: '**'`
-- Role-aware UI — `computed()` for filtered nav links and dashboard content per role
-
-### CSS
-- App shell scroll layout — `html, body { height: 100% }` + `app-root { overflow: hidden }` + `mat-sidenav-container { flex: 1; min-height: 0 }` — keeps toolbar and sidebar fixed while only the content area scrolls
-- `a.active:focus:not(:hover)::before { opacity: 0 }` — hides the Material state layer on the active link after click without breaking hover
-- Responsive CSS Grid — `@media (max-width: 768px)` to stack two-column layouts on mobile
+- Stacked guards — `canActivate: [authGuard, adminGuard]`; all must pass for the route to activate
+- `HttpInterceptorFn` — functional interceptor (v15+); clones the request to add the auth header before it goes out
+- `CanDeactivate` guard — warns the user before leaving a form with unsaved changes
+- `MatStepper` — multi-step form with `[linear]="true"` and per-step form group validation
+- `MatSnackBar` — toast notifications on every key action (add, edit, delete, approve, reject)
+- `MatSidenav` app shell — persistent sidebar with role-filtered navigation links
+- `MatDatepicker` — calendar picker with `provideNativeDateAdapter()` for leave request dates
+- Conditional `displayColumns` with `computed()` — show or hide table columns based on user role
+- Query params — `[queryParams]` on `routerLink`, read with `ActivatedRoute.snapshot.queryParamMap`
+- Duplicate check pattern — `emailExists()` with optional `excludeId` to handle edit mode correctly
+- Auth persistence — `signal()` initialised from `localStorage` + `effect()` to save on every change
+- Role-aware UI — single `isAdmin()` computed signal drives both the sidebar links and the dashboard layout
+- App shell scroll layout — `overflow: hidden` on `app-root` keeps the toolbar and sidebar fixed while only the content area scrolls
+- Responsive CSS Grid — two-column dashboard panels that stack on mobile with `@media (max-width: 768px)`
 
 ## Project structure
 
@@ -117,7 +112,7 @@ src/app/
 
 ## Tech stack
 
-- Angular 19
+- Angular 21
 - Angular Material
 - TypeScript
 - CSS
@@ -143,5 +138,5 @@ ng serve
 Open your browser at `http://localhost:4200`
 
 **Test accounts:**
-- Admin: `victornunezpradas@gmail.com` / `admin123`
+- Admin: `admin@hrportal.com` / `admin123`
 - Employee: `employee@hrportal.com` / `employee123`
