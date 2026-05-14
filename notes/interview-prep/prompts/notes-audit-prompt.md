@@ -134,7 +134,7 @@ After all edits, print a final summary table:
 |------|-------|----------------|
 | [section name] | ✅ / 🔧 / ➕ | ✅ / 🔧 / ➕ |
 
-Then commit everything on the current branch with a single commit.
+Then show the commit message so Victor can run it himself.
 Commit format: docs: audit [TOPIC] notes and interview prep — <one line summary of main fixes>
 Example: docs: audit css notes and interview prep — add box model gaps and decision questions
 ```
