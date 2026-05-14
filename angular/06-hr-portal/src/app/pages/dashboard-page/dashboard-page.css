@@ -128,3 +128,19 @@
 .panel-header-link:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 1024px) {
+  .card-container {
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    min-width: calc(50% - 0.5rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .panels {
+    grid-template-columns: 1fr;
+  }
+}

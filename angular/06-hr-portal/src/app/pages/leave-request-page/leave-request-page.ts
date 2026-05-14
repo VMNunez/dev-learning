@@ -27,7 +27,7 @@ export class LeaveRequestPage implements OnInit {
   searchTerm = signal<string>('');
   currentUser = this.authService.currentUser;
   leaveRequests = this.leaveRequestService.leaveRequests;
-  role = this.authService.getUserRole();
+  role = computed(() => this.authService.currentUser()?.role);
 
   hasActiveFilters = computed(() => this.selectedStatus() !== 'all' || this.searchTerm() !== '');
 
@@ -44,7 +44,7 @@ export class LeaveRequestPage implements OnInit {
             r.employeeEmail.toLowerCase().trim().includes(this.searchTerm().toLowerCase().trim()),
           );
 
-    return this.role === 'admin'
+    return this.role() === 'admin'
       ? byEmail
       : byEmail.filter((r) => r.employeeEmail === this.currentUser()?.email);
   });
