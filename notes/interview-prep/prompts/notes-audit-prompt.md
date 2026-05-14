@@ -68,6 +68,7 @@ Read all files in [NOTE PATHS].
 
 1. Identify fundamental concepts missing that a Spanish consultancy would use to filter
    candidates in a first technical screening. One sentence per gap explaining why they ask it.
+   Skip any file named `future-learning.md` — it is a roadmap file, not a study note.
 
 2. Check if every note follows the teaching rules in CLAUDE.md:
    - Does it explain the WHY before the code?
