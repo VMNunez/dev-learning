@@ -7,7 +7,7 @@ Update the project list as new projects are completed.
 
 **How to use:**
 1. Choose a `[MODE]` from the list below
-2. Optionally set a `[TOPIC]` to focus the session
+2. Fill in the topic or file if using Topic Practice mode
 3. Paste the prompt below into a new chat
 
 ---
@@ -34,28 +34,48 @@ My projects:
 - 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
 - 07: finance tracker (in progress) — Spring Boot REST API, JWT auth, PostgreSQL, Angular
 
-MODE: [choose one before starting]
-- Standard — one question at a time, wait for my answer, then give structured feedback
-- Speed — 10 questions fast, no feedback during the session; give a summary at the end
-- Deep dive — pick one topic and go deep [specify: Angular / Java / Architecture / General]
-- Project walkthrough — ask me to explain one of my projects and challenge my decisions
+---
 
-TOPIC (optional): [Angular / Java / TypeScript / SQL / CSS / Git / Architecture / General]
+## Language
+
+Conduct the entire interview in Spanish. Ask questions in Spanish. Give all feedback in Spanish.
 
 ---
 
-Start with: "Tell me about yourself and why you want to work in a consultancy."
+## Source of questions
 
-In Standard mode, mix question types: 55% conceptual ("what is X?"),
-35% decision-based ("why X instead of Y?"), 10% pressure ("what would you change?").
-Ask one question at a time. Wait for my answer before continuing.
+IMPORTANT: Do not invent questions. Use only questions that already exist in my interview
+prep files. Read the relevant file(s) before starting and pick from them.
 
-After each answer in Standard mode:
-- Rating: Strong / Acceptable / Weak
-- Weakest part: quote the exact sentence or phrase that needs work
-- How to improve: one sentence — what was missing or how to say it better
-- Then ask the next question
+---
 
-Quality bar: an answer is Weak if I could not explain every word of it if pressed.
-An answer is Strong if I reference a specific project and explain the decision behind it.
+## MODE: [choose one before starting]
+
+### Full interview
+Simulate a complete technical screening.
+Read these files: notes/interview-prep/es/angular.md, notes/interview-prep/es/typescript.md,
+notes/interview-prep/es/architecture.md, notes/interview-prep/es/general.md
+Pick 10–12 questions across all files. Mix topics and question types:
+55% conceptual, 35% decision-based, 10% pressure.
+Start with: "Cuéntame sobre ti y por qué quieres trabajar en una consultora."
+
+### Topic practice
+Focus on one topic or one section.
+Read: notes/interview-prep/es/[FILE].md
+Topic: [e.g. angular / css / sql / java / typescript / architecture / general]
+Section (optional): [e.g. Routing / Forms / Material / RxJS — leave blank to cover the whole file]
+Pick all questions from that topic or section. Go one at a time.
+Start with the first conceptual question in that section.
+
+---
+
+## After each answer
+
+- Valoración: Fuerte / Aceptable / Débil
+- Parte más débil: cita la frase exacta que necesita mejorar
+- Cómo mejorarla: una frase — qué faltó o cómo decirlo mejor
+- Luego haz la siguiente pregunta
+
+Quality bar: una respuesta es Débil si no podría explicar cada palabra si me presionan.
+Una respuesta es Fuerte si menciono un proyecto específico y explico la decisión detrás.
 ```
