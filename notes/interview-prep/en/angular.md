@@ -22,6 +22,11 @@ A design pattern where a class receives its dependencies from outside instead of
 **What is a service in Angular?**
 A class decorated with `@Injectable` that holds shared logic or state. I use services in all my projects to separate business logic from the component — for example, the `EmployeeService` in the HR portal handles all API calls and the employee list.
 
+**What would you say to a senior developer who argues "Angular is too complex — we should switch to React"?**
+What they really want to know: Can you defend a technical choice with reasoning, not preference?
+A: I would acknowledge that Angular has more setup overhead — stricter structure, more boilerplate, TypeScript everywhere. But at a consultancy running multiple enterprise projects, that structure is the advantage. React leaves too many decisions open: which router, which state library, which HTTP tool — every team ends up with a different stack. Angular's opinions mean any Angular developer can pick up any Angular project with minimal ramp-up. If the project were a small marketing site, I might agree. For a CRUD-heavy business app with guards, interceptors, and shared services, Angular's structure pays for itself.
+Red flag answer: "Angular is just better than React." — That is a preference, not an argument. Show you can reason about trade-offs.
+
 ---
 
 ## Signals and reactivity
@@ -116,6 +121,16 @@ An operator that delays emitting a value until a set time has passed with no new
 **What is `catchError` and how do you use it?**
 An operator that intercepts an error in a stream and lets you return a safe fallback instead of crashing the Observable. I use it with `of([])` to return an empty array when an HTTP call fails — the template then shows an empty state instead of nothing.
 
+**Why did you use subscribe() with takeUntilDestroyed() instead of the async pipe in the weather app?**
+What they really want to know: Do you understand when subscribe() is the right choice over the async pipe?
+A: The async pipe works well when you want to display a single Observable value directly in the template. In the weather app I use forkJoin to fetch weather and forecast in parallel and store both in separate signals that I use in computed() values. The async pipe cannot update two signals from one subscription, and it returns null until data arrives — which means extra null checks in the template. subscribe() with takeUntilDestroyed() gives me full control over the loading and error state signals.
+Red flag answer: "async pipe is always better because it auto-unsubscribes." — That is a feature, not a reason. async pipe and subscribe() solve different problems. Saying "always" shows you have not thought about the trade-off.
+
+**When would you use catchError in the pipe chain instead of the error callback in subscribe()?**
+What they really want to know: Do you understand the difference between recovering a stream and reacting to an error?
+A: I use catchError inside pipe() when I want the Observable to complete normally after an error — returning of([]) so the template renders an empty state instead of breaking. I use the error callback in subscribe() when I just need to react to the error and there is no stream to recover. In the weather app I use catchError so a failed forecast call does not crash the whole page — the component shows an error message but stays functional. In the login page I use the error callback because the operation either succeeds or fails — there is no fallback value, I just set hasError to true.
+Red flag answer: "I always handle errors in subscribe()." — That shows you never used catchError for stream recovery. A senior developer will ask what happens to the Observable after an error if you do not handle it in the pipe.
+
 ---
 
 ## Routing
@@ -143,6 +158,16 @@ Route params are part of the URL path (`/employees/123`) and identify a specific
 
 **What is `pathMatch: 'full'` and why is it required on a redirect route?**
 It tells Angular to only match the route if the entire URL matches the path, not just the beginning. Without it, the empty path `''` would match every URL, so every route would redirect.
+
+**Why did you read route params with snapshot instead of subscribing to paramMap in the meal finder?**
+What they really want to know: Do you know when a one-time read is sufficient and when you need to react to param changes?
+A: In the meal finder, navigating to a different meal always creates a fresh MealDetailPage component — the id never changes while the component is alive. snapshot reads the URL once and is the correct choice. I would subscribe to paramMap only if the same component could display different items without being destroyed — for example a "next/previous" button that changes the id in the URL while keeping the component alive. Using subscribe() where snapshot is enough adds unnecessary complexity and a subscription to manage.
+Red flag answer: "snapshot is simpler so I always use it." — The interviewer wants to hear that you understand when subscription is needed, not that you defaulted to the easier option.
+
+**A teammate added a new admin route but forgot the route guard. How do you find it and what do you do?**
+What they really want to know: Can you audit a codebase for security gaps and think beyond just fixing the immediate problem?
+A: I check app.routes.ts for any admin route missing canActivate: [authGuard, adminGuard] — it is a quick scan. In the HR portal I review the route file whenever a new page is added because it is easy to forget the guard when focused on the feature. The fix is adding the guards to the route. The harder question is what already happened — if the route was live without a guard, I would check if anyone accessed it and decide whether to notify the team. Frontend guards are a UX layer, not the real security layer — the backend must validate permissions on every request regardless.
+Red flag answer: "I would just add the guard." — Shows you only think about the fix, not the impact. The interviewer wants to see that you consider what already happened.
 
 ---
 
@@ -218,6 +243,12 @@ A lifecycle hook that runs every time a parent updates an `@Input()` decorated p
 
 > **Junior tip:** Interviewers ask this to see if you know only the modern API or understand the history. Mention both: "Old pattern: `@Input()` + `ngOnChanges`. Modern pattern: `input()` signal + `effect()`." This shows you can read legacy code and write modern code.
 
+**Why do you call API methods in ngOnInit instead of the constructor?**
+What they really want to know: Do you understand what Angular has and has not set up at construction time?
+A: The constructor runs when Angular creates the class — at that point routing has not attached URL data, inputs are not set, and the template does not exist. ngOnInit runs after Angular finishes setting up the component: route params are readable, inputs are available, and the component is ready to display data. In the meal finder, I read the meal id from ActivatedRoute in ngOnInit — in the constructor it would be undefined and the API call would fail silently with no error visible to the user.
+
+> **Junior tip:** Connect the timing to a concrete consequence: "If I call the API in the constructor, the route param is undefined — I send a bad request and nothing renders." That is more convincing than saying "ngOnInit is the standard."
+
 ---
 
 ## Pipes
@@ -236,6 +267,12 @@ It subscribes to an Observable directly in the template and automatically unsubs
 
 **How do you handle API keys in Angular?**
 Never hardcode them in the component or service — they end up committed to git. I use Angular's environment files: `ng generate environments` creates `environment.ts` which is added to `.gitignore`. The service imports from there: `import { environment } from '../../environments/environment'`. Important caveat: any value in the frontend bundle is visible in the browser DevTools. For truly sensitive keys, the correct solution is to proxy the call through a backend — the key lives on the server, never in the browser.
+
+**When would you create a custom pipe instead of a computed() signal or a method in the template?**
+What they really want to know: Do you understand when reusability and performance justify a pipe versus simpler alternatives?
+A: A custom pipe is the right choice when the same transformation is needed across multiple components — it is imported once per component and reusable in any template. A computed() signal is better when the transformation is specific to one component and depends on other signals. A template method re-runs on every change detection cycle — a pure pipe, like computed(), only re-runs when its input changes. In a project where three different components all display truncated descriptions, a TruncatePipe is the correct call. In the HR portal I used the built-in DatePipe for leave request dates across the table and dialog — it was already available, so no custom pipe was needed.
+
+> **Junior tip:** The key distinction to mention: "A pure pipe caches its result — it only recalculates when the input changes, just like computed()." That shows you understand performance, not just how to use the pipe.
 
 ---
 
@@ -327,6 +364,11 @@ A Jasmine function that replaces a method with a fake you can control and inspec
 
 **What is `afterEach(() => httpMock.verify())` for?**
 It checks that no unexpected HTTP requests were made during the test. If a method fires a request you did not account for in your test, `verify()` fails the test — this prevents silent bugs where extra requests go unnoticed.
+
+**Why use HttpClientTestingModule instead of spying on the HttpClient methods directly?**
+What they really want to know: Do you understand what you are actually testing and what you are bypassing?
+A: Spying on HttpClient methods mocks the entire HTTP layer before it reaches your service — you would be testing that a method calls the spy, not that it builds the correct URL, uses the right HTTP verb, or maps the response correctly. HttpClientTestingModule lets the real service code run but intercepts at the network level. In an employee service test, expectOne('/api/employees') verifies the exact URL was requested, req.request.method verifies it is a GET, and flush(mockData) tests how the service handles the response. All the real logic runs — only the network is replaced.
+Red flag answer: "HttpClientTestingModule is the Angular way." — That is a convention, not a reason. Show that you understand what you are actually testing.
 
 ---
 

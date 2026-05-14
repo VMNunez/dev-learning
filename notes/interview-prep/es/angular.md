@@ -22,6 +22,11 @@ Un patrón de diseño donde una clase recibe sus dependencias desde fuera en lug
 **¿Qué es un servicio en Angular?**
 Una clase decorada con `@Injectable` que contiene lógica compartida o estado. Uso servicios en todos mis proyectos para separar la lógica de negocio del componente — por ejemplo, el `EmployeeService` en el HR portal gestiona todas las llamadas a la API y la lista de empleados.
 
+**¿Qué le dirías a un desarrollador senior que argumenta que "Angular es demasiado complejo — deberíamos cambiar a React"?**
+Lo que realmente quieren saber: ¿Puedes defender una decisión técnica con argumentos, no con preferencias?
+R: Reconocería que Angular tiene más overhead de configuración — estructura más estricta, más código repetitivo, TypeScript en todas partes. Pero en una consultora que gestiona varios proyectos enterprise, esa estructura es la ventaja. React deja demasiadas decisiones abiertas: qué router, qué librería de estado, qué herramienta HTTP — cada equipo acaba con un stack diferente. Las opiniones de Angular significan que cualquier desarrollador Angular puede incorporarse a cualquier proyecto Angular con poco tiempo de adaptación. Si el proyecto fuera una pequeña web de marketing, podría estar de acuerdo. Para una app de negocio con guards, interceptores y servicios compartidos, la estructura de Angular amortiza su coste.
+Respuesta mala: "Angular es simplemente mejor que React." — Es una preferencia, no un argumento. Demuestra que puedes razonar sobre los trade-offs.
+
 ---
 
 ## Signals y reactividad
@@ -116,6 +121,16 @@ Un operador que retrasa la emisión de un valor hasta que haya pasado un tiempo 
 **¿Qué es `catchError` y cómo lo usas?**
 Un operador que intercepta un error en el stream y te permite devolver un valor de reserva seguro en lugar de romper el Observable. Lo uso con `of([])` para devolver un array vacío cuando falla una llamada HTTP — la plantilla muestra entonces un estado vacío en lugar de nada.
 
+**¿Por qué usaste subscribe() con takeUntilDestroyed() en lugar del pipe async en la weather app?**
+Lo que realmente quieren saber: ¿Entiendes cuándo subscribe() es la elección correcta frente al pipe async?
+R: El pipe async funciona bien cuando quieres mostrar un único Observable directamente en la plantilla. En la weather app uso forkJoin para obtener el tiempo y la previsión en paralelo y los almaceno en signals separados que uso en valores computed(). El pipe async no puede actualizar dos signals desde una sola suscripción, y devuelve null hasta que llegan los datos — lo que requiere comprobaciones extra en la plantilla. subscribe() con takeUntilDestroyed() me da control total sobre los signals de estado de carga y error.
+Respuesta mala: "El pipe async es siempre mejor porque cancela la suscripción automáticamente." — Eso es una característica, no una razón. El pipe async y subscribe() resuelven problemas distintos. Decir "siempre" demuestra que no has pensado en el trade-off.
+
+**¿Cuándo usarías catchError en el pipe en lugar del callback de error en subscribe()?**
+Lo que realmente quieren saber: ¿Entiendes la diferencia entre recuperar un stream y reaccionar a un error?
+R: Uso catchError dentro de pipe() cuando quiero que el Observable complete con normalidad tras un error — devolviendo of([]) para que la plantilla renderice un estado vacío en lugar de romperse. Uso el callback de error en subscribe() cuando solo necesito reaccionar al error y no hay stream que recuperar. En la weather app uso catchError para que un fallo en la previsión no rompa toda la página — el componente muestra un mensaje de error pero sigue funcionando. En la página de login uso el callback de error porque la operación tiene éxito o falla — no hay valor de fallback, simplemente pongo hasError a true.
+Respuesta mala: "Siempre gestiono los errores en subscribe()." — Demuestra que nunca usaste catchError para recuperar un stream. Un senior preguntará inmediatamente qué le ocurre al Observable después de un error si no lo gestionas en el pipe.
+
 ---
 
 ## Routing
@@ -143,6 +158,16 @@ Los route params forman parte del path de la URL (`/employees/123`) e identifica
 
 **¿Qué es `pathMatch: 'full'` y por qué es necesario en una ruta de redirección?**
 Le dice a Angular que solo coincida con la ruta si la URL completa coincide con el path, no solo el principio. Sin él, el path vacío `''` coincidiría con cualquier URL, por lo que todas las rutas redirigirían.
+
+**¿Por qué leíste el parámetro de ruta con snapshot en lugar de suscribirte a paramMap en el meal finder?**
+Lo que realmente quieren saber: ¿Sabes cuándo basta con leer una vez y cuándo necesitas reaccionar a cambios en los parámetros?
+R: En el meal finder, navegar a una comida diferente siempre crea una nueva instancia de MealDetailPage — el id nunca cambia mientras el componente está vivo. snapshot lee la URL una sola vez y es la opción correcta. Usaría subscribe() en paramMap solo si el mismo componente pudiera mostrar diferentes elementos sin ser destruido — por ejemplo, un botón de "siguiente/anterior" que cambia el id en la URL manteniendo el componente activo. Usar subscribe() donde basta con snapshot añade complejidad innecesaria y una suscripción que gestionar.
+Respuesta mala: "snapshot es más sencillo, así que lo uso siempre." — El entrevistador quiere escuchar que sabes cuándo la suscripción es necesaria, no que elegiste la opción más fácil.
+
+**Un compañero añadió una ruta de administración nueva pero se olvidó el route guard. ¿Cómo lo encuentras y qué haces?**
+Lo que realmente quieren saber: ¿Puedes auditar una base de código en busca de brechas de seguridad y pensar más allá de la solución inmediata?
+R: Reviso app.routes.ts para ver si hay rutas de admin que no tengan canActivate: [authGuard, adminGuard] — es un análisis rápido. En el HR portal reviso el archivo de rutas cada vez que se añade una página nueva porque es fácil olvidar el guard cuando estás centrado en la funcionalidad. La solución es añadir los guards a la ruta. La pregunta más difícil es qué pasó antes — si la ruta estuvo activa sin guard, comprobaría si alguien la visitó y decidiría si informar al equipo. Los guards del frontend son una capa de UX, no la capa de seguridad real — el backend debe validar los permisos en cada petición de todos modos.
+Respuesta mala: "Añadiría el guard." — Demuestra que solo piensas en la solución, no en el impacto. El entrevistador quiere ver que consideras lo que ya ocurrió.
 
 ---
 
@@ -218,6 +243,12 @@ Un lifecycle hook que se ejecuta cada vez que un padre actualiza una propiedad d
 
 > **Consejo de entrevista:** Los entrevistadores hacen esta pregunta para ver si conoces solo la API moderna o también entiendes la historia. Menciona ambas: "Patrón antiguo: `@Input()` + `ngOnChanges`. Patrón moderno: signal `input()` + `effect()`." Esto demuestra que puedes leer código legacy y escribir código moderno.
 
+**¿Por qué llamas a los métodos de API en ngOnInit en lugar del constructor?**
+Lo que realmente quieren saber: ¿Entiendes qué ha configurado Angular y qué no cuando se ejecuta el constructor?
+R: El constructor se ejecuta cuando Angular crea la clase — en ese momento el sistema de routing aún no ha adjuntado los datos de la URL, los inputs no están establecidos y la plantilla no existe. ngOnInit se ejecuta después de que Angular termina de configurar el componente: los route params son legibles, los inputs están disponibles y el componente está listo para mostrar datos. En el meal finder, leo el id de la comida desde ActivatedRoute en ngOnInit — en el constructor estaría undefined y la llamada a la API fallaría en silencio sin ningún error visible para el usuario.
+
+> **Consejo de entrevista:** Conecta el momento con una consecuencia concreta: "Si llamo a la API en el constructor, el route param es undefined — envío una petición incorrecta y no se renderiza nada." Eso es más convincente que decir "ngOnInit es lo estándar."
+
 ---
 
 ## Pipes
@@ -236,6 +267,12 @@ Se suscribe a un Observable directamente en la plantilla y cancela la suscripci�
 
 **¿Cómo gestionas las API keys en Angular?**
 Nunca las escribo directamente en el componente o servicio — acabarían commiteadas en git. Uso los archivos de entorno de Angular: `ng generate environments` crea `environment.ts` que se añade a `.gitignore`. El servicio importa desde ahí: `import { environment } from '../../environments/environment'`. Matiz importante: cualquier valor en el bundle del frontend es visible en el DevTools del navegador. Para claves verdaderamente sensibles, la solución correcta es hacer proxy de la llamada a través de un backend — la clave vive en el servidor, nunca en el navegador.
+
+**¿Cuándo crearías un pipe personalizado en lugar de un signal computed() o un método en la plantilla?**
+Lo que realmente quieren saber: ¿Entiendes cuándo la reutilización y el rendimiento justifican crear un pipe frente a alternativas más simples?
+R: Un pipe personalizado es la opción correcta cuando la misma transformación se necesita en varios componentes — se importa una vez por componente y se reutiliza en cualquier plantilla. computed() es mejor cuando la transformación es específica de un componente y depende de signals. Un método en la plantilla se vuelve a ejecutar en cada ciclo de detección de cambios — un pipe puro, como computed(), solo se recalcula cuando cambia la entrada. En un proyecto con tres componentes diferentes que muestran descripciones truncadas, un TruncatePipe es la opción correcta. En el HR portal usé el DatePipe integrado para las fechas de solicitudes de baja en la tabla y el diálogo — ya estaba disponible, así que no necesité un pipe personalizado.
+
+> **Consejo de entrevista:** La distinción clave que debes mencionar: "Un pipe puro cachea su resultado — solo se recalcula cuando cambia la entrada, igual que computed()." Eso demuestra que entiendes el rendimiento, no solo cómo usar el pipe.
 
 ---
 
@@ -327,6 +364,11 @@ Una función de Jasmine que reemplaza un método con uno falso que puedes contro
 
 **¿Para qué sirve `afterEach(() => httpMock.verify())`?**
 Comprueba que no se hicieron peticiones HTTP inesperadas durante el test. Si un método lanza una petición que no contemplaste en tu test, `verify()` falla el test — esto evita bugs silenciosos donde peticiones extra pasan desapercibidas.
+
+**¿Por qué usar HttpClientTestingModule en lugar de espiar directamente los métodos de HttpClient?**
+Lo que realmente quieren saber: ¿Entiendes qué estás testeando realmente y qué estás evitando?
+R: Espiar los métodos de HttpClient directamente simula toda la capa HTTP antes de que llegue al servicio — estarías testeando que el método llama al spy, no que construye la URL correcta, usa el método HTTP correcto o mapea la respuesta correctamente. HttpClientTestingModule deja que el código real del servicio se ejecute pero intercepta a nivel de red. En un test del servicio de empleados, expectOne('/api/employees') verifica la URL exacta, req.request.method verifica que sea un GET, y flush(mockData) testea cómo el servicio gestiona la respuesta. Toda la lógica real se ejecuta — solo la red es falsa.
+Respuesta mala: "HttpClientTestingModule es la forma que propone Angular." — Eso es una convención, no una razón. Demuestra que sabes exactamente qué estás testeando.
 
 ---
 
