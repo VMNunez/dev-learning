@@ -1,5 +1,7 @@
 # Branches
 
+**Official docs:** [Git Branching — Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
+
 ## What is a branch?
 
 A branch is an independent line of development. Changes on one branch do not affect other branches until you explicitly merge them.

@@ -1,5 +1,7 @@
 # What is Git
 
+**Official docs:** [Getting Started — About Version Control](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control)
+
 ## Version control
 
 Version control is a system that records every change you make to your files over time. You can go back to any previous state, compare versions, and see who changed what and when.

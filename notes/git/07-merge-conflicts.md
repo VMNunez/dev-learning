@@ -1,5 +1,7 @@
 # Merge Conflicts
 
+**Official docs:** [Git Branching — Basic Branching and Merging](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)
+
 ## What is a conflict?
 
 A conflict happens when two branches modify the **same line** in the **same file**, and Git cannot automatically decide which version to keep. Git stops the merge and asks you to resolve it manually.
