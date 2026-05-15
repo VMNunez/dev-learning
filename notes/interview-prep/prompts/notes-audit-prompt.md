@@ -15,9 +15,11 @@ Use in a **separate conversation**. Fill in the three values in the configuratio
 ```
 ## Configuration — edit only this block
 
-TOPIC = [e.g. Angular]
-NOTES_PATH = [e.g. notes/angular/]
-FILE = [e.g. angular]
+TOPIC = [Angular | CSS | JavaScript | TypeScript | SQL | Java]
+NOTES_PATH = [notes/angular/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/]
+FILE = [angular | css | javascript | typescript | sql | java]
+       → notes/interview-prep/en/{FILE}.md
+       → notes/interview-prep/es/{FILE}.md
 
 Use these three values wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {FILE}.
 
