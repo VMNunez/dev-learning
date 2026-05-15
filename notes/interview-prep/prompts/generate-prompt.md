@@ -1,19 +1,28 @@
 # Interview Questions Generate Prompt
 
 Use in a **separate conversation** after finishing a new concept or topic.
-Fill in the two blanks before pasting. Update the project list as new projects are completed.
+Fill in the two values in the configuration block at the top of the prompt below, then paste everything into a new chat.
 
 ---
 
 **How to use:**
-1. Fill in `[TOPIC]` — the concept just learned (e.g. "Angular route guards and lazy loading")
-2. Fill in `[FILE]` — which interview prep file to add to (e.g. `angular`, `css`, `sql`, `java`)
-3. Paste the prompt below into a new chat
+1. Fill in `TOPIC` — the concept just learned (e.g. "Angular route guards and lazy loading")
+2. Fill in `FILE` — which interview prep file to add to (e.g. `angular`, `css`, `sql`, `java`)
+3. Paste the entire prompt below (configuration block included) into a new chat
 
 ---
 
 ```
-I just finished learning: [TOPIC]
+## Configuration — edit only this block
+
+TOPIC = [e.g. Angular route guards and lazy loading]
+FILE = [e.g. angular]
+
+Use these two values wherever the prompt refers to {TOPIC} or {FILE}.
+
+---
+
+I just finished learning: {TOPIC}
 
 Before starting, read CLAUDE.md — it has my full profile, teaching rules, and interview
 prep format conventions.
@@ -34,11 +43,19 @@ My projects:
 - 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
 - 07: finance tracker (in progress) — Spring Boot REST API, JWT auth, PostgreSQL, Angular
 
-Generate interview questions on [TOPIC] and add them directly to:
-- notes/interview-prep/en/[FILE].md
-- notes/interview-prep/es/[FILE].md
+Generate interview questions on {TOPIC} and add them directly to:
+- notes/interview-prep/en/{FILE}.md
+- notes/interview-prep/es/{FILE}.md
 
 Same questions, same answers, same section, translated. Never add to one without the other.
+
+---
+
+## How many questions to generate
+
+Generate every question a Spanish consultancy would realistically ask about {TOPIC}.
+Do not stop at 3 or 5. The goal is complete coverage of the topic — every angle a recruiter
+could explore. A thin section is a risk. Better to over-prepare than to be caught off-guard.
 
 ---
 
@@ -69,6 +86,6 @@ For every new conceptual question, add a Junior Tip:
 ---
 
 After adding all questions, show the commit message so Victor can run it himself.
-Commit format: docs: add [TOPIC] interview questions to [FILE]
+Commit format: docs: add {TOPIC} interview questions to {FILE}
 Example: docs: add RxJS operators interview questions to angular
 ```
