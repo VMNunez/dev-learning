@@ -1,5 +1,7 @@
 # Undoing Changes
 
+**Official docs:** [Git Tools — Reset Demystified](https://git-scm.com/book/en/v2/Git-Tools-Reset-Demystified)
+
 ## The HEAD notation
 
 `HEAD` is the current commit. `HEAD~1` means "one commit before HEAD". `HEAD~2` means two commits before, and so on.
