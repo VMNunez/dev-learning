@@ -85,7 +85,7 @@ public class TransactionService {
 public class TransactionService {
     private final TransactionRepository repository;
 
-    // @Autowired is optional since Spring Boot 4.3 — Spring detects the single constructor
+    // @Autowired is optional since Spring Framework 4.3 — Spring detects the single constructor
     public TransactionService(TransactionRepository repository) {
         this.repository = repository;
     }

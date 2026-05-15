@@ -145,9 +145,26 @@ Read all files in {NOTES_PATH}.
    - 🔧 Fixed — gaps found and resolved in this session
    - ➕ Added — new content created from scratch
 
-Apply all fixes directly to the note files. If a concept needs its own file, create it
-following the numbered naming convention (e.g. 16-topic-name.md) and update the
-"next file:" counter for that folder in CLAUDE.md.
+**Apply all fixes directly to the note files.**
+
+**Creating new files — proactive, not reactive.**
+Do not wait for a gap in rule #1 to justify creating a new file. After reading the existing
+notes, assess the full learning sequence as a whole:
+
+- Can Victor sit down with files 01 through N and learn the topic end-to-end without looking
+  elsewhere for the basics? If not, the missing pieces need their own files.
+- Is there a logical progression? Each file should build on the previous one. A concept that
+  depends on something not yet covered is in the wrong place.
+- Is the folder sparse? If a topic has 2 files but clearly needs 5 to be learnable, create the
+  missing 3. Do not leave holes in the sequence just because no specific "gap" was flagged.
+
+The notes/ folder is Victor's personal textbook for that topic. It should be complete enough
+that he can open file 01 and learn the topic from scratch — concise, personal, in order.
+
+When creating a new file, follow the numbered naming convention (e.g. 16-topic-name.md) and
+choose the number that fits logically in the learning sequence — not just the next available
+number. Update the "next file:" counter for that folder in CLAUDE.md after all new files are
+created.
 
 ---
 
