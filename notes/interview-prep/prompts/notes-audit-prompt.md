@@ -14,6 +14,7 @@ Use in a **separate conversation**. Fill in the three values in the configuratio
 
 ```
 ## Configuration — edit only this block
+## Replace the [ ] with your value and delete the brackets.
 
 TOPIC = [Angular | CSS | JavaScript | TypeScript | SQL | Java]
 NOTES_PATH = [notes/angular/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/]

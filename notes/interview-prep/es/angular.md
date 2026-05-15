@@ -22,6 +22,18 @@ Un patrón de diseño donde una clase recibe sus dependencias desde fuera en lug
 **¿Qué es un servicio en Angular?**
 Una clase decorada con `@Injectable` que contiene lógica compartida o estado. Uso servicios en todos mis proyectos para separar la lógica de negocio del componente — por ejemplo, el `EmployeeService` en el HR portal gestiona todas las llamadas a la API y la lista de empleados.
 
+**¿Qué es un componente standalone en Angular y qué hace el array `imports` en `@Component`?**
+Un componente standalone declara sus propias dependencias directamente en su array `imports` en lugar de depender de un NgModule. Antes de Angular 14, cada componente tenía que pertenecer a un módulo — el módulo importaba todo lo que el componente necesitaba. Con standalone (el modo por defecto desde Angular 17+), el componente es autónomo: si usas `MatButtonModule` en la plantilla, lo importas en el `imports` del propio componente. Todos mis proyectos usan standalone. Esto hace que sea obvio de un vistazo de qué depende cada componente.
+
+> **Consejo de entrevista:** La pregunta de seguimiento clásica es "¿en qué se diferencia de los NgModules?" Prepara una respuesta clara: "En una app basada en módulos, el módulo declara el componente e importa lo que necesita. En standalone, el componente lo hace él mismo." Demuestra que puedes leer ambos estilos — las bases de código enterprise aún usan módulos.
+
+Respuesta mala: "No sé qué son los NgModules." — Un junior que solo conoce la API moderna debe entender igualmente qué existía antes. Las bases de código enterprise usan módulos. Te los encontrarás.
+
+**¿Qué es `input.required()` y cuándo lo usas?**
+`input.required<T>()` crea un input signal requerido — si el padre no lo enlaza, Angular lanza un error en tiempo de compilación. En comparación: `input<T>()` sin valor por defecto es técnicamente opcional y falla en silencio en tiempo de ejecución. `input.required<Employee>()` fallará en el build si el padre olvida el binding. Lo uso en componentes hijo donde omitir el input rompería la visualización — como una tarjeta de empleado que siempre necesita un objeto empleado para renderizarse.
+
+> **Consejo de entrevista:** Sé preciso: "Es una garantía en tiempo de compilación, no solo una convención." Demuestra que entiendes por qué existe la API, no solo cómo usarla.
+
 **¿Qué le dirías a un desarrollador senior que argumenta que "Angular es demasiado complejo — deberíamos cambiar a React"?**
 Lo que realmente quieren saber: ¿Puedes defender una decisión técnica con argumentos, no con preferencias?
 R: Reconocería que Angular tiene más overhead de configuración — estructura más estricta, más código repetitivo, TypeScript en todas partes. Pero en una consultora que gestiona varios proyectos enterprise, esa estructura es la ventaja. React deja demasiadas decisiones abiertas: qué router, qué librería de estado, qué herramienta HTTP — cada equipo acaba con un stack diferente. Las opiniones de Angular significan que cualquier desarrollador Angular puede incorporarse a cualquier proyecto Angular con poco tiempo de adaptación. Si el proyecto fuera una pequeña web de marketing, podría estar de acuerdo. Para una app de negocio con guards, interceptores y servicios compartidos, la estructura de Angular amortiza su coste.
@@ -46,6 +58,20 @@ Respuesta mala: "computed() es más limpio." — El entrevistador quiere el moti
 
 **¿Qué es `effect()` y cuándo lo usas?**
 Una función que se ejecuta automáticamente cuando cambia cualquier signal que lee. La diferencia clave con `computed()` es que `effect()` realiza una acción — no devuelve un valor. En el meal finder uso `effect()` para guardar los favoritos en `localStorage` cada vez que cambia la lista — eso es un efecto secundario, no un valor derivado.
+
+**¿Qué es `toSignal()` y por qué lo usarías?**
+`toSignal()` convierte un Observable de RxJS en un signal. Angular se suscribe al Observable y mantiene el signal actualizado cada vez que emite. También cancela la suscripción automáticamente cuando el contexto se destruye — sin necesitar `takeUntilDestroyed`.
+
+```typescript
+import { toSignal } from '@angular/core/rxjs-interop';
+
+employees$ = this.employeeService.getAll();                // Observable del servicio
+employees = toSignal(this.employees$, { initialValue: [] }); // Signal para la plantilla
+```
+
+Úsalo cuando tienes un Observable de un servicio (un stream HTTP, un store) y quieres consumirlo con signals en la plantilla sin escribir `subscribe()`. La opción `initialValue` establece qué contiene el signal antes de la primera emisión.
+
+> **Consejo de entrevista:** Esto se vuelve importante en el proyecto 07 donde los métodos del servicio Spring Boot devuelven Observables pero las plantillas Angular usan signals. `toSignal()` es el puente entre los dos mundos.
 
 **¿Qué es el patrón `localStorage + effect()`?**
 Inicializar un signal desde `localStorage` para que los datos persistan al refrescar la página, y luego usar `effect()` para guardarlo de nuevo cada vez que el signal cambia. Así `localStorage` se mantiene sincronizado automáticamente sin llamadas manuales de guardado.
@@ -82,6 +108,19 @@ Binding bidireccional — lee el valor del input en una variable Y lo escribe de
 
 **¿Qué es `[ngStyle]` y cuándo lo usas?**
 Aplica estilos inline de forma dinámica: `[ngStyle]="{ 'color': isAdmin ? 'red' : 'black' }"`. Para una sola propiedad prefiero la forma más corta `[style.color]="condición ? 'red' : 'black'"`. `[ngStyle]` es útil cuando necesitas aplicar varios estilos dinámicos a la vez desde un objeto.
+
+**¿Qué es `ng-container` y cuándo lo usas en lugar de un `div`?**
+`ng-container` es un elemento de agrupación que no añade ningún elemento real al DOM. Lo usas cuando necesitas una directiva estructural en un grupo de elementos, pero un `<div>` real rompería el layout CSS. Por ejemplo, `formArrayName="phones"` necesita un elemento host en el DOM — pero añadir un `<div>` crearía un hijo extra en un flex o grid. `ng-container` le da a la directiva algo donde anclarse sin tocar el DOM. Otro uso habitual: aplicar `@if` a un grupo de elementos hermanos sin envolverlos.
+
+> **Consejo de entrevista:** Si el entrevistador pregunta "¿cuándo lo necesitarías?" — menciona el caso de `formArrayName` en formularios reactivos o envolver varios elementos con `@if` sin un div contenedor. Un caso concreto vale más que una explicación teórica.
+
+**¿Qué es `ng-template` y cuándo lo usas?**
+`ng-template` define un bloque de HTML que no se renderiza inmediatamente — es un blueprint que Angular puede instanciar condicionalmente o en varios lugares. Lo usas cuando necesitas una referencia de plantilla reutilizable, o cuando quieres definir el bloque else/loading para un `@if`. Angular usa `ng-template` internamente para todas las directivas estructurales. En la práctica lo usas principalmente para bloques else personalizados o para definir fragmentos de plantilla reutilizables que se pasan a componentes de Material.
+
+**¿Para qué sirven `@HostListener` y `@HostBinding` en una directiva?**
+Son decoradores para directivas personalizadas. `@HostListener` añade un listener de eventos al elemento host — el elemento al que se aplica la directiva. `@HostBinding` enlaza una clase, atributo o estilo directamente en el elemento host sin usar `ElementRef`. En mi directiva de resaltado personalizada, `@HostListener('mouseenter')` cambia el color de fondo y `@HostListener('mouseleave')` lo restaura. Como alternativa, `@HostBinding('style.backgroundColor')` haría lo mismo de forma declarativa — más limpio cuando solo hay una propiedad que controlar.
+
+> **Consejo de entrevista:** Muestra los dos enfoques: "Puedo escuchar eventos con `@HostListener` y actualizar vía `ElementRef`, o puedo enlazar la propiedad directamente con `@HostBinding`. `@HostBinding` es más limpio cuando solo hay una propiedad."
 
 **¿Qué es una directiva personalizada y cuándo es útil?**
 Una clase decorada con `@Directive` que añade comportamiento a un elemento host sin crear un nuevo componente. Es útil cuando el mismo comportamiento DOM debe aplicarse a muchos elementos — por ejemplo, enfocar automáticamente un input o resaltar al pasar el ratón. La directiva usa `ElementRef` para acceder al elemento y `@HostListener` para reaccionar a eventos.
@@ -200,6 +239,47 @@ Un solo interceptor gestiona todas las peticiones en un único lugar. Si el form
 **¿Qué hace `req.clone()` en un interceptor?**
 Las peticiones HTTP son inmutables, así que no puedes modificarlas directamente. `req.clone({ setHeaders: { Authorization: '...' } })` crea una copia con las nuevas cabeceras, que luego pasas a `next()`.
 
+**¿Cómo gestionarías una respuesta 401 de forma global en un interceptor?**
+Lo que realmente quieren saber: ¿Piensas en los flujos de fallo de autenticación, no solo en las peticiones salientes?
+R: El interceptor puede hacer pipe del Observable de respuesta con `catchError` para interceptar un 401 antes de que llegue a cualquier servicio:
+
+```typescript
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  return next(req).pipe(
+    catchError(err => {
+      if (err.status === 401) {
+        authService.logout();
+        router.navigate(['/login']);
+      }
+      return throwError(() => err);
+    })
+  );
+};
+```
+
+`throwError` vuelve a emitir el error después de redirigir para que el handler de error del servicio también pueda reaccionar. Con este enfoque, cualquier llamada HTTP de la app que reciba un 401 dispara el logout automáticamente — sin que ningún servicio tenga que gestionarlo individualmente.
+Respuesta mala: "Gestiono el 401 en cada servicio." — Repetitivo y frágil. Si un servicio no tiene la comprobación, el usuario puede quedarse en una página después de que su sesión expire. Un interceptor gestiona todas las llamadas.
+
+**¿Cómo añadirías un indicador de carga global usando un interceptor?**
+Inyectando un `LoadingService` y activando un signal antes de la petición y desactivándolo cuando termina. `finalize()` es el operador correcto — se ejecuta tanto en éxito como en error:
+
+```typescript
+export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
+  const loadingService = inject(LoadingService);
+  loadingService.start();
+  return next(req).pipe(
+    finalize(() => loadingService.stop())
+  );
+};
+```
+
+El loading service expone un signal que el app shell lee para mostrar u ocultar el spinner. Este es el patrón estándar en apps Angular enterprise.
+
+> **Consejo de entrevista:** `finalize()` es la clave — no `tap`. `tap` solo se ejecuta en éxito; `finalize` se ejecuta en éxito Y en error. Un spinner que nunca desaparece es un bug clásico causado por no usar `finalize` cuando una llamada HTTP falla.
+
 ---
 
 ## Formularios reactivos
@@ -224,6 +304,41 @@ Resetea `form.dirty` a false de forma programática. Lo llamo después de guarda
 
 **¿Qué es `FormArray` y cuándo lo usas?**
 Un `FormGroup` tiene un conjunto fijo de campos con nombre. Un `FormArray` tiene una lista dinámica de controles — puedes añadir y eliminar en tiempo de ejecución. El caso más común es un formulario donde el usuario puede añadir varios elementos: números de teléfono, direcciones, habilidades. Accedes a los elementos por índice, no por nombre. En mis proyectos uso `FormGroup` para los formularios de empleados y departamentos donde los campos son fijos. `FormArray` es la opción correcta cuando el número de campos no se conoce de antemano.
+
+**¿Cómo creas un validador personalizado en Angular?**
+Un validador personalizado es una función simple que recibe un `AbstractControl` y devuelve `{ claveError: true }` si el valor es inválido, o `null` si es válido. Lo pasas a `FormControl` igual que los validadores integrados.
+
+```typescript
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+
+function sinEspaciosValidator(control: AbstractControl): ValidationErrors | null {
+  if (control.value && (control.value as string).includes(' ')) {
+    return { sinEspacios: true };
+  }
+  return null;
+}
+
+// se usa igual que cualquier validador integrado
+nombre: new FormControl('', [Validators.required, sinEspaciosValidator])
+```
+
+En la plantilla lo compruebas igual que los errores integrados: `control.hasError('sinEspacios')`. Para lógica que necesita una llamada HTTP — como comprobar si un email ya está registrado — usa un validador asíncrono.
+
+> **Consejo de entrevista:** Lo que importa es el valor de retorno: `null` = válido, `{ claveError: true }` = inválido. La clave que pones en el objeto es exactamente lo que comprueba `hasError('claveError')`. Es el mismo patrón que usa Angular internamente.
+
+Respuesta mala: "Uso `setErrors()` para errores personalizados." — `setErrors()` se llama manualmente en `onSubmit()`. Un validador se ejecuta automáticamente en cada cambio de valor. Resuelven problemas distintos — un validador previene un envío inválido, `setErrors()` marca un error después de una comprobación de duplicados.
+
+**¿Qué es un validador asíncrono y cuándo lo usarías?**
+Un validador asíncrono devuelve un `Observable<ValidationErrors | null>` o `Promise<ValidationErrors | null>` en lugar de un objeto. Angular espera el resultado antes de marcar el control como válido o inválido. El caso clásico es comprobar unicidad — "¿este email ya está registrado?" — lo que requiere una llamada HTTP al backend.
+
+```typescript
+// los validadores asíncronos van como tercer argumento de FormControl
+email: new FormControl('', [Validators.required, Validators.email], [emailExisteValidator])
+```
+
+Angular muestra un estado `PENDING` mientras espera y solo aplica el error cuando el observable completa. Añade siempre `debounceTime` dentro del validador para no lanzar una petición HTTP en cada pulsación de tecla.
+
+> **Consejo de entrevista:** Los tres argumentos de `FormControl` son: `(valorInicial, validadoresSync, validadoresAsync)`. Si pones un validador asíncrono en la posición 2, no funcionará y Angular no te avisará — falla en silencio. Conocer la posición correcta demuestra experiencia real.
 
 ---
 
@@ -346,6 +461,33 @@ Angular añade un atributo único a cada elemento de la plantilla de un componen
 **¿Cuándo usas el CSS de componente versus el `styles.css` global?**
 CSS de componente para los elementos que escribiste en tu propia plantilla — `form`, `mat-form-field`, `mat-card`. `styles.css` global para los elementos internos renderizados por directivas de Material — como `.mat-sort-header-container` o `.mat-mdc-form-field-infix`. Si un estilo no funciona en el CSS del componente, lo primero que hay que comprobar es si el elemento lo renderiza Angular o un componente de Material internamente.
 
+**¿Qué es el selector `:host` en el CSS de un componente Angular?**
+`:host` apunta al elemento host del propio componente — el elemento que Angular inserta en el DOM usando el selector del componente. Por ejemplo, los elementos `app-card` son `display: inline` por defecto (todos los elementos personalizados lo son). Añadir `:host { display: block }` hace que el componente se comporte como un elemento de bloque normal. Sin `:host`, no puedes estilizar el contenedor exterior desde dentro del componente — tendrías que hacerlo desde el padre.
+
+```css
+:host {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* condicional — se aplica cuando el padre añade class="featured" al elemento */
+:host(.featured) {
+  border-left: 4px solid var(--mat-sys-primary);
+}
+```
+
+> **Consejo de entrevista:** `display: block` en `:host` es el uso más común. Menciónalo como ejemplo concreto — demuestra que lo has encontrado en la práctica.
+
+**¿Cuáles son las opciones de ViewEncapsulation en Angular y cuándo usarías `ViewEncapsulation.None`?**
+Lo que realmente quieren saber: ¿Entiendes las consecuencias de eliminar el aislamiento de estilos?
+R: Angular tiene tres modos. `Emulated` es el predeterminado — añade atributos únicos para que el CSS quede encapsulado en el componente. `ShadowDom` usa el Shadow DOM nativo del navegador para aislamiento real. `None` elimina todo el scoping — el CSS del componente pasa a ser global. Solo usaría `None` como último recurso, porque hace que todo el CSS del componente se filtre al scope global, lo que puede causar conflictos de estilos inesperados en otros componentes. En la práctica, cuando necesito sobrescribir elementos internos de Material que no puedo alcanzar de otra forma, pongo esas reglas en `styles.css` — mismo efecto, sin riesgo de filtrado.
+Respuesta mala: "Uso ViewEncapsulation.None cuando mi CSS no funciona." — Demuestra que recurriste a la solución más agresiva sin entender por qué el estilo no funcionaba ni qué daño podía causar.
+
+**¿Qué es `::ng-deep` y por qué se considera mala práctica?**
+`::ng-deep` era un combinador CSS que hacía que una regla ignorara la encapsulación de Angular — podía llegar dentro de componentes hijo y elementos internos de Material. Era no oficial, ampliamente usado, y Angular lo deprecó oficialmente. Sigue funcionando en los navegadores pero puede romperse cuando Angular actualiza los nombres de clase internos, y filtra estilos globalmente igual que `ViewEncapsulation.None`. Lo verás en casi todas las bases de código Angular enterprise construidas antes de 2022. Si lo ves en código existente: déjalo si funciona y no causa problemas. Cuando escribas código nuevo: pon las sobrescrituras globales de Material en `styles.css`.
+
+> **Consejo de entrevista:** Saber explicar TANTO "sigue funcionando" COMO "está deprecado y por qué" demuestra que conoces el ecosistema, no solo lo que dice el resultado de Google.
+
 ---
 
 ## Tests unitarios
@@ -403,6 +545,11 @@ Smart/dumb funciona bien con uno o dos componentes hijo. El coordinator es la mi
 
 **¿Por qué usar un servicio para el estado en lugar de guardarlo en el componente?**
 Los servicios son singletons — si dos páginas necesitan los mismos datos, el servicio mantiene una sola copia y ambas se sincronizan automáticamente. En el HR portal, la página de solicitudes de baja y el dashboard dependen de la lista de empleados — sin un servicio, cada uno necesitaría su propia copia y una forma de mantenerse sincronizado.
+
+**¿Cuál es la diferencia entre `providedIn: 'root'` y proporcionar un servicio a nivel de componente?**
+`providedIn: 'root'` crea una única instancia compartida para toda la app — cada componente que inyecta el servicio obtiene el mismo objeto. Es correcto para servicios como `EmployeeService` o `AuthService` donde quieres un estado compartido. Los providers a nivel de componente (`providers: [MyService]` en `@Component`) crean una nueva instancia para ese componente y todos sus hijos — la instancia se destruye cuando el componente se destruye. Usa providers a nivel de componente cuando cada ruta necesita estado aislado — por ejemplo, un asistente multi-paso donde cada página gestiona su propio estado de formulario independiente. En todos mis proyectos uso `providedIn: 'root'` porque toda la app comparte los mismos datos de empleados y solicitudes de baja.
+
+> **Consejo de entrevista:** Si te preguntan "¿por qué NO usarías `providedIn: 'root'`?" — responde con el caso del estado aislado. Demuestra que entiendes el ciclo de vida del singleton, no solo el valor por defecto.
 
 **¿Qué es `Omit<T, 'campo'>` y cuándo lo usas?**
 Un tipo utilitario de TypeScript que crea un nuevo tipo a partir de uno existente, eliminando campos específicos. Lo uso al crear una entidad nueva que todavía no tiene ID — `Omit<Employee, 'id'>` me da todos los campos excepto el ID, que genera el servidor.
