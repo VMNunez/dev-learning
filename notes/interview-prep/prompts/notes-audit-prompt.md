@@ -1,20 +1,29 @@
 # Notes + Interview Prep Deep Audit Prompt
 
-Use in a **separate conversation**. Fill in the two blanks before pasting.
-Update the project list as new projects are completed.
+Use in a **separate conversation**. Fill in the three values in the configuration block at the top of the prompt below, then paste everything into a new chat.
 
 ---
 
 **How to use:**
-1. Fill in `[TOPIC]` — the subject to audit (e.g. Angular, CSS, JavaScript, TypeScript, SQL, Java)
-2. Fill in `[NOTE PATHS]` — the notes folder to review (e.g. `notes/angular/`)
-3. Fill in `[FILE]` — the interview prep filename without extension (e.g. `angular`, `css`, `sql`, `java`)
-4. Paste the prompt below into a new chat
+1. Fill in `TOPIC` — the subject to audit (e.g. Angular, CSS, JavaScript, TypeScript, SQL, Java)
+2. Fill in `NOTES_PATH` — the notes folder to review (e.g. `notes/angular/`)
+3. Fill in `FILE` — the interview prep filename without extension (e.g. `angular`, `css`, `sql`, `java`)
+4. Paste the entire prompt below (configuration block included) into a new chat
 
 ---
 
 ```
-I want a deep technical audit of my study notes and interview prep for [TOPIC].
+## Configuration — edit only this block
+
+TOPIC = [e.g. Angular]
+NOTES_PATH = [e.g. notes/angular/]
+FILE = [e.g. angular]
+
+Use these three values wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {FILE}.
+
+---
+
+I want a deep technical audit of my study notes and interview prep for {TOPIC}.
 
 Before starting, read:
 - CLAUDE.md — for my teaching rules, note format conventions, interview prep rules,
@@ -58,14 +67,14 @@ My projects:
 - 07: finance tracker (in progress) — Spring Boot REST API, JWT auth, PostgreSQL, Angular
 
 Files to audit:
-- Notes: [NOTE PATHS]
-- Interview prep: notes/interview-prep/en/[FILE].md and notes/interview-prep/es/[FILE].md
+- Notes: {NOTES_PATH}
+- Interview prep: notes/interview-prep/en/{FILE}.md and notes/interview-prep/es/{FILE}.md
 
 ---
 
 ## Part 1 — Technical Foundation & Gaps
 
-Read all files in [NOTE PATHS].
+Read all files in {NOTES_PATH}.
 
 1. Identify fundamental concepts missing that a Spanish consultancy would use to filter
    candidates in a first technical screening. One sentence per gap explaining why they ask it.
@@ -99,15 +108,20 @@ word of this answer if the interviewer pressed me?" If not, the answer is weak.
 Target ratio: 55% conceptual / 35% decision-based / 10% pressure.
 
 After auditing each section of the interview prep file, give a section status:
-- ✅ Complete — enough coverage and question variety for the job target; no action needed
+- ✅ Complete — thorough coverage for the job target; no action needed
 - 🔧 Fixed — gaps or weak answers found and resolved in this session
 - ➕ Added — new section or questions created from scratch
 
 A section is complete when:
-- It has at least 2–3 questions
-- At least one question is decision-based or references a real project
-- No answers are purely theoretical (they all pass the "explain every word" test)
-- The ratio is roughly on target for that section
+- Every question a Spanish consultancy would realistically ask about this topic is covered
+- The ratio is on target (55% conceptual / 35% decision-based / 10% pressure)
+- Every answer passes the "explain every word" test — no purely theoretical answers
+- At least one decision-based question references a real project by name
+- There are no obvious gaps that would make Victor look unprepared in a screening
+
+Do not stop at 2 or 3 questions per section. Add as many as needed until the section is
+genuinely interview-ready. A weak junior gets filtered out because one topic was thin.
+Better to over-prepare one section than to have a gap a recruiter finds first.
 
 ---
 
@@ -117,7 +131,7 @@ Apply all fixes directly to the files. Do not just report and leave them broken.
 
 Rules for every new interview question:
 - Follow the output format from notes/interview-prep/prompts/generate-prompt.md
-- Add it to BOTH en/[TOPIC].md and es/[TOPIC].md — same question, same answer, same
+- Add it to BOTH en/{FILE}.md and es/{FILE}.md — same question, same answer, same
   section, translated. Never add to one without the other.
 - For every new conceptual question, add a Junior Tip:
 
@@ -135,6 +149,6 @@ After all edits, print a final summary table:
 | [section name] | ✅ / 🔧 / ➕ | ✅ / 🔧 / ➕ |
 
 Then show the commit message so Victor can run it himself.
-Commit format: docs: audit [TOPIC] notes and interview prep — <one line summary of main fixes>
+Commit format: docs: audit {TOPIC} notes and interview prep — <one line summary of main fixes>
 Example: docs: audit css notes and interview prep — add box model gaps and decision questions
 ```

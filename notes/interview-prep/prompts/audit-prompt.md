@@ -64,7 +64,8 @@ Target ratio: 55% conceptual / 35% decision-based / 10% pressure.
 Flag any section that is all-conceptual with no decision or pressure questions.
 
 **4. Suggested new questions**
-3 to 5 new questions not yet in the file, based on gaps found.
+All questions not yet in the file that a Spanish consultancy would realistically ask.
+Do not cap at 3–5 — add every question needed until the file is genuinely complete.
 Format for each:
 
 **Question?**
@@ -90,15 +91,19 @@ Rules for every new or updated question:
   definition. Always reference a specific project for pattern or decision questions.
 
 After auditing each section, give it a status:
-- ✅ Complete — sufficient coverage for a junior screening; no action needed
+- ✅ Complete — thorough coverage for the job target; no action needed
 - 🔧 Fixed — gaps or weak answers found and resolved in this session
 - ➕ Added — new section or questions created from scratch
 
 A section is complete when:
-- It has at least 2–3 questions
-- At least one question is decision-based or references a real project
-- No answers are purely theoretical
-- The ratio is roughly on target for that section
+- Every question a Spanish consultancy would realistically ask about this topic is covered
+- The ratio is on target (55% conceptual / 35% decision-based / 10% pressure)
+- Every answer passes the "explain every word" test — no purely theoretical answers
+- At least one decision-based question references a real project by name
+- There are no obvious gaps that would make Victor look unprepared in a screening
+
+Do not stop at 2 or 3 questions per section. Add as many as needed until the section is
+genuinely interview-ready. A weak junior gets filtered out because one topic was thin.
 
 After all edits, show the commit message so Victor can run it himself.
 Commit format: docs: audit [topic] interview prep — <one line summary of main fixes>
