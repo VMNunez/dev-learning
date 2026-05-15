@@ -25,11 +25,8 @@ Use these three values wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {
 
 I want a deep technical audit of my study notes and interview prep for {TOPIC}.
 
-Before starting, read:
-- CLAUDE.md — for my teaching rules, note format conventions, interview prep rules,
-  and full learning context
-- notes/interview-prep/prompts/audit-prompt.md — for the 4-section audit logic and format
-- notes/interview-prep/prompts/generate-prompt.md — for the output format of new questions
+Before starting, read CLAUDE.md — it has my full profile, teaching rules, note format
+conventions, and interview prep rules.
 
 ---
 
@@ -80,7 +77,7 @@ Read all files in {NOTES_PATH}.
    candidates in a first technical screening. One sentence per gap explaining why they ask it.
    Skip any file named `future-learning.md` — it is a roadmap file, not a study note.
 
-2. Check if every note follows the teaching rules in CLAUDE.md:
+2. Check if every note follows these teaching rules:
    - Does it explain the WHY before the code?
    - Does it identify repeating patterns and name them explicitly?
    - Does it link to the exact official documentation page (not just the main docs site)?
@@ -98,14 +95,42 @@ following the numbered naming convention (e.g. 16-topic-name.md) and update the
 
 ## Part 2 — Interview Prep Audit
 
-Follow the 4-section format from notes/interview-prep/prompts/audit-prompt.md exactly.
+Read notes/interview-prep/en/{FILE}.md and notes/interview-prep/es/{FILE}.md.
 
-Prioritisation rule: there must be enough conceptual questions to survive a technical
-screening. Decision-based questions linked to my projects are what stop me from sounding
-like a tutorial-only student. Every answer must pass this test: "could I explain every
-word of this answer if the interviewer pressed me?" If not, the answer is weak.
+Run a 4-section audit:
 
+**1. Missing topics**
+Topics not covered yet that Spanish consultancies would ask, given my stack and target
+companies. One sentence per topic explaining why they would ask it.
+
+**2. Weak answers**
+Answers that are too vague, too theoretical, or that do not reference a real project.
+Quote the weak part and explain what is missing.
+Quality bar: every answer must pass this test — "could I explain every word of this answer
+if the interviewer pressed me?" If not, the answer is weak.
+
+**3. Imbalances**
+Count questions by type: Conceptual / Decision-based / Pressure.
+Give the count and percentage per type.
 Target ratio: 55% conceptual / 35% decision-based / 10% pressure.
+Flag any section that is all-conceptual with no decision or pressure questions.
+
+**4. Missing questions**
+All questions not yet in the file that a Spanish consultancy would realistically ask.
+Do not cap at 3–5 — add every question needed until the file is genuinely complete.
+
+Format for each new question:
+
+**Question as an interviewer at a Spanish consultancy would ask it?**
+Answer in 1–2 sentences. Include a real example from my projects when the question is about
+a pattern or decision.
+
+> **Junior tip:** short advice on how to explain it clearly in an interview (English)
+> **Consejo de entrevista:** same advice in Spanish
+
+Red flag answer: what a weak candidate would say and why it fails.
+
+---
 
 After auditing each section of the interview prep file, give a section status:
 - ✅ Complete — thorough coverage for the job target; no action needed
@@ -129,18 +154,13 @@ Better to over-prepare one section than to have a gap a recruiter finds first.
 
 Apply all fixes directly to the files. Do not just report and leave them broken.
 
-Rules for every new interview question:
-- Follow the output format from notes/interview-prep/prompts/generate-prompt.md
-- Add it to BOTH en/{FILE}.md and es/{FILE}.md — same question, same answer, same
-  section, translated. Never add to one without the other.
-- For every new conceptual question, add a Junior Tip:
-
-  > **Junior tip:** short advice on how to explain it clearly in an interview  (English)
-  > **Consejo de entrevista:** same advice in Spanish
-
+Rules for every new or updated interview question:
+- Add to BOTH en/{FILE}.md and es/{FILE}.md — same question, same answer, same section,
+  translated. Never add to one without the other.
 - Answers must be interview-ready — what I would actually say out loud, not a textbook
   definition. Reference a specific project when the question is about a pattern or decision.
 - Group new questions under the correct section heading.
+- Add a Junior Tip to every new conceptual question (see format in Part 2 above).
 
 After all edits, print a final summary table:
 
