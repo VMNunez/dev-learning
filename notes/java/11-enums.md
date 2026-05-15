@@ -1,5 +1,7 @@
 # Enums
 
+> 📖 [Oracle Docs — Enum types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
+
 An enum is a type with a fixed set of named constants. It prevents magic strings and typos, and makes the code self-documenting.
 
 ```java

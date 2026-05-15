@@ -1,5 +1,7 @@
 # Generics and Optional
 
+> 📖 [Oracle Docs — Generics](https://docs.oracle.com/javase/tutorial/java/generics/index.html)
+
 ## Generics
 
 Generics let you write a class or method that works with any type, while keeping type safety. The type is specified when you use the class, not when you write it.

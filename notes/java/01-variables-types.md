@@ -1,5 +1,7 @@
 # Variables and Types
 
+> 📖 [Oracle Docs — Primitive types and variables](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
+
 ## Primitive types
 
 Java has 8 primitive types. These store values directly, not references.

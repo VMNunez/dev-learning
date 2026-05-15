@@ -1,5 +1,7 @@
 # Streams and Lambdas
 
+> 📖 [Oracle Docs — Streams](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html)
+
 ## Lambda expressions
 
 A lambda is a short, anonymous function. Used wherever a functional interface is expected:

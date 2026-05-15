@@ -1,5 +1,7 @@
 # OOP — Classes
 
+> 📖 [Oracle Docs — Classes](https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html)
+
 ## What is a class
 
 A class is a blueprint for creating objects. An object is one instance of that class.

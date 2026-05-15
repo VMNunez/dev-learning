@@ -1,5 +1,7 @@
 # Methods
 
+> 📖 [Oracle Docs — Defining methods](https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html)
+
 ## Method declaration
 
 ```java

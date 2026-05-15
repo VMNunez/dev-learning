@@ -1,5 +1,7 @@
 # Inheritance and Polymorphism
 
+> 📖 [Oracle Docs — Inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html)
+
 ## Inheritance — `extends`
 
 A subclass inherits all `public` and `protected` fields and methods from the parent class. It can also add its own:
