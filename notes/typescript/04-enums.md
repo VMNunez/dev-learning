@@ -1,5 +1,7 @@
 # Enums
 
+Official docs: https://www.typescriptlang.org/docs/handbook/enums.html
+
 ## What is an enum?
 
 An enum (enumeration) is a set of named constants. Instead of using magic strings or numbers scattered across the code, you define them once with a meaningful name.

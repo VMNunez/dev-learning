@@ -1,5 +1,7 @@
 # Generics
 
+Official docs: https://www.typescriptlang.org/docs/handbook/2/generics.html
+
 ## What is a generic?
 
 A generic is a placeholder type — you write the function or interface once and it works with any type, while still being type-safe.

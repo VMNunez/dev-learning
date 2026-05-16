@@ -156,6 +156,13 @@ choose the number that fits logically in the learning sequence — not just the 
 number. Update the "next file:" counter for that folder in CLAUDE.md after all new files are
 created.
 
+**Updating `future-learning.md`:**
+If during the audit a concept is identified that is real and worth knowing — but beyond Victor's
+current scope (too advanced for a junior screening, depends on Phase 3 topics, or belongs to a
+future project) — add it to `future-learning.md` in {NOTES_PATH}. Do not create a full note file
+for concepts that are not yet relevant. `future-learning.md` is the right place for anything
+that is genuine but premature. If the file already lists the concept, leave it as is.
+
 ---
 
 ## Execution
