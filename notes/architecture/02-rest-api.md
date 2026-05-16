@@ -1,6 +1,6 @@
 # REST API
 
-REST (Representational State Transfer) is the standard way for a frontend and a backend to communicate. The frontend sends an HTTP request to a URL, the backend processes it and returns a response.
+Before REST, every team designed their API differently. Some used URLs like `/getEmployee?id=1` (RPC style), some used SOAP with XML envelopes. Integrating with a new backend meant learning their private convention from scratch. REST is a shared agreement: the URL names the resource (what you are working with), the HTTP method says what you want to do with it. Any HTTP client that understands REST can work with any REST API — no custom protocol needed.
 
 Official docs: https://developer.mozilla.org/en-US/docs/Glossary/REST
 
@@ -21,6 +21,23 @@ Each method has a specific meaning. The backend decides what to do based on the 
 **GET** never sends a body. **POST** and **PUT** send the data in the request body as JSON.
 
 The difference between **PUT** and **PATCH**: PUT replaces the whole object — you must send every field. PATCH sends only the fields that changed. In practice, most Angular + Spring Boot apps use PUT for updates.
+
+> You will see tutorials that use PUT for partial updates (sending only some fields). That is technically wrong — it should be PATCH. In practice most teams use PUT anyway because the objects are small. Know the correct definition even if the convention is flexible.
+
+---
+
+## Idempotency
+
+An operation is **idempotent** if calling it multiple times gives the same result as calling it once.
+
+| Method | Idempotent? | Why |
+| --- | --- | --- |
+| `GET` | ✅ Yes | Reading never changes data |
+| `PUT` | ✅ Yes | Replacing with the same data gives the same result |
+| `DELETE` | ✅ Yes | Deleting something twice still leaves it deleted |
+| `POST` | ❌ No | Every call may create a new record |
+
+This matters when building reliable systems: if a request fails and you retry, an idempotent method is safe to call again. A POST retry might create duplicates.
 
 ---
 
@@ -83,6 +100,8 @@ public class CorsConfig implements WebMvcConfigurer {
 ```
 
 CORS is a browser restriction — it does not affect server-to-server requests or tools like Postman. If a request works in Postman but not in the browser, CORS is the likely cause.
+
+> If a colleague says "it works in Postman but not in my app", CORS is the first thing to check — not the backend logic. The backend is fine; the browser is blocking it.
 
 ---
 
