@@ -1,5 +1,9 @@
 # Reset and Variables
 
+Official docs:
+- Box model: https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model
+- CSS custom properties: https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties
+
 ## The box model
 
 Every HTML element is a rectangular box made of four layers, from inside to outside:
