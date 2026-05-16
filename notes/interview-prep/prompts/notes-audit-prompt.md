@@ -166,11 +166,23 @@ choose the number that fits logically in the learning sequence — not just the 
 number. Update the "next file:" counter for that folder in CLAUDE.md after all new files are
 created.
 
+**Cross-reference check — notes → interview prep:**
+After reviewing all note files, scan en/{FILE}.md for concepts that are covered in the notes
+but have no corresponding interview question. For each gap found, add the missing question
+to both en/{FILE}.md and es/{FILE}.md following the standard question format (see Part 2).
+The notes are the source of truth for what Victor has learned — the interview prep must cover it.
+
 ---
 
 ## Part 2 — Interview Prep Audit
 
 Read notes/interview-prep/en/{FILE}.md and notes/interview-prep/es/{FILE}.md.
+
+**Cross-reference check — interview prep → notes:**
+Before the format check, scan every question in en/{FILE}.md. If a question covers a concept
+that has no corresponding note file in {NOTES_PATH}, create the note file now (following the
+rules in Part 1). Do not leave a concept that Victor is expected to answer in an interview
+without study material to back it up.
 
 **Before the 4-section audit — mandatory format check:**
 
