@@ -1,5 +1,7 @@
 # Interfaces and Abstract Classes
 
+> 📖 [Oracle Docs — Interfaces and inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/index.html)
+
 ## Interface
 
 An interface defines a **contract** — a list of methods that any implementing class must provide. It does not contain any implementation (by default).

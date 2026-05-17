@@ -1,5 +1,7 @@
 # Common Tricks
 
+Reference: patterns collected from projects 01–06. No single official doc — each trick links back to the relevant note file.
+
 ## UI elements
 
 ### Inline element with vertical margin

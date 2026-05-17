@@ -1,5 +1,7 @@
 # .gitignore
 
+**Official docs:** [gitignore — Specifies intentionally untracked files to ignore](https://git-scm.com/docs/gitignore)
+
 ## What it does
 
 `.gitignore` is a file at the root of the repo that tells Git which files and folders to **never track**. Files listed here are invisible to Git — they will never appear in `git status`, never get staged, and never get committed.

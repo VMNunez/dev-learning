@@ -1,6 +1,6 @@
 # Layered Architecture
 
-The standard way to structure an Angular + Spring Boot application. Each layer has one responsibility and only talks to the layer directly below it.
+The simplest way to write a REST endpoint is to put everything in one class: read the request, query the database, apply the business rule, return the response. That works for one endpoint. The problem shows up when a second endpoint needs the same business rule — in a class that does everything, you either copy-paste the logic or find an awkward way to share it. Layered architecture solves this by giving each layer one job and one job only. Each layer only talks to the layer directly below it.
 
 ---
 
@@ -106,6 +106,8 @@ The repository only reads and writes data. No logic. Spring Data JPA generates t
 | Controller vs Service | Controller can change (REST today, WebSocket tomorrow) without touching business logic |
 | Service vs Repository | Database can change (PostgreSQL → MySQL) without touching business rules |
 | Frontend vs Backend | Angular can be replaced or a mobile app added without changing the backend |
+
+> The rule is: only call the layer directly below you. Controllers call services, services call repositories. Never call the repository from the controller — if you do, the business logic leaks into the HTTP layer and cannot be tested or reused independently.
 
 ---
 

@@ -108,3 +108,49 @@ if ('') console.log('truthy');   // does not print — empty string is falsy
 ```
 
 **Rule:** avoid relying on implicit coercion. Use `Number()`, `String()`, `Boolean()` for explicit conversions.
+
+---
+
+## typeof vs instanceof
+
+`typeof` — checks the **primitive type**. Returns a string. Works on any value.
+
+`instanceof` — checks if a value was created by a specific **class or constructor**. Returns a boolean. Only works on objects.
+
+```js
+typeof 'hello'      // 'string'
+typeof 42           // 'number'
+typeof true         // 'boolean'
+typeof null         // 'object'  ← the famous bug — null is NOT an object
+typeof {}           // 'object'
+typeof []           // 'object'
+typeof function(){} // 'function'
+
+[] instanceof Array    // true
+[] instanceof Object   // true — all arrays are also objects
+'hello' instanceof String  // false — 'hello' is a primitive, not a String object
+```
+
+**When to use each:**
+
+- Use `typeof` to check primitives: `typeof value === 'string'`, `typeof value === 'number'`
+- Use `instanceof` to check class instances: `error instanceof ValidationError`
+- To check for `null`, never use `typeof` — use `value === null`
+
+```js
+// In a catch block — distinguish error types
+try { ... }
+catch (error) {
+  if (error instanceof ValidationError) {
+    // show a form message
+  } else if (error instanceof HttpError) {
+    // show a server error
+  } else {
+    throw error;  // unexpected — re-throw
+  }
+}
+```
+
+> The `typeof null === 'object'` bug is a famous quirk from the first JavaScript implementation. It was never fixed because fixing it would break existing code. Every JavaScript developer knows this — mention it when asked about `typeof`.
+
+[MDN — typeof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof) | [MDN — instanceof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof)

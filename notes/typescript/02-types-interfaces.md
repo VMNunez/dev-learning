@@ -1,8 +1,12 @@
 # Types and Interfaces
 
+Official docs: https://www.typescriptlang.org/docs/handbook/2/objects.html
+
 ## Why TypeScript
 
-TypeScript adds static types to JavaScript. The benefits:
+TypeScript adds types to JavaScript — and you feel the difference immediately when you rename a field and the editor shows every file that breaks instead of finding out at runtime.
+
+The core benefits:
 - Errors are caught at compile time, not at runtime
 - Better autocomplete and refactoring in the editor
 - Code is self-documenting — you can read what a function expects without running it
@@ -44,7 +48,7 @@ const user: { name: string; age: number } = { name: 'Victor', age: 31 };
 
 ## interface
 
-Defines the shape of an object. The main tool for typing data in Angular.
+An interface defines the shape of an object. In Angular, this is your main tool for typing data models — every API response, form value, and service payload should have one.
 
 ```ts
 interface Employee {
@@ -85,7 +89,7 @@ interface Employee extends Person {
 
 ## type alias
 
-Creates a name for any type — primitives, unions, intersections, tuples, or object shapes.
+A type alias gives a name to any type — not just objects. This is what makes `type` more flexible than `interface`: you can alias primitives, unions, intersections, and tuples.
 
 ```ts
 type Role = 'admin' | 'employee' | 'manager';  // union

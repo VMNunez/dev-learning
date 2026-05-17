@@ -1,5 +1,7 @@
 # Pull Requests
 
+**Official docs:** [About pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
+
 ## What is a Pull Request?
 
 A Pull Request (PR) is a request to merge one branch into another, with a description of what changed and why. It is the main way code gets reviewed and integrated on a team.

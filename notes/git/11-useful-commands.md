@@ -1,5 +1,7 @@
 # Useful Commands
 
+**Official docs:** [git-stash](https://git-scm.com/docs/git-stash) | [git-tag](https://git-scm.com/docs/git-tag) | [git-cherry-pick](https://git-scm.com/docs/git-cherry-pick)
+
 ## Quick reference
 
 | Command | What it does |
@@ -85,3 +87,29 @@ Shows a summary of commits grouped by author — useful for seeing who contribut
 ```bash
 git shortlog -sn    # count of commits per author, sorted by number
 ```
+
+---
+
+## git tag
+
+Tags mark specific commits as important — usually release points. Companies use tags to track every version they deploy to production.
+
+```bash
+git tag                                    # list all tags
+git tag v1.0.0                             # create a lightweight tag at HEAD
+git tag -a v1.0.0 -m "Release v1.0.0"     # annotated tag — includes author, date, message
+git push origin v1.0.0                     # push a specific tag to GitHub
+git push origin --tags                     # push all tags
+git checkout v1.0.0                        # go back to the exact state of that release
+```
+
+**Lightweight vs annotated:**
+- **Lightweight** — just a pointer to a commit, like a branch that never moves
+- **Annotated** — a full Git object with author, date, and message; preferred for releases
+
+**Semantic versioning — the `vMAJOR.MINOR.PATCH` pattern:**
+- `MAJOR` — breaking change (old code stops working)
+- `MINOR` — new feature, backwards compatible
+- `PATCH` — bug fix only
+
+On a real team: a tag is created on `main` every time the project is deployed. You can always roll back to a specific tag if something breaks in production.
