@@ -106,6 +106,34 @@ Use `DELETE` in application code. Use `TRUNCATE` only in scripts that reset a ta
 
 ---
 
+## INSERT ... ON CONFLICT — upsert
+
+"Upsert" means: insert if the row does not exist, update it if it does. PostgreSQL handles this in one atomic operation with `ON CONFLICT`.
+
+```sql
+-- Insert a user, but if the email already exists, update the name instead
+INSERT INTO users (email, name)
+VALUES ('victor@email.com', 'Victor')
+ON CONFLICT (email)
+DO UPDATE SET name = EXCLUDED.name;
+```
+
+`EXCLUDED` refers to the row that would have been inserted — it lets you reference the new values inside the `DO UPDATE` clause.
+
+You can also do nothing on conflict:
+
+```sql
+-- Insert, but skip if the email already exists
+INSERT INTO users (email, name)
+VALUES ('victor@email.com', 'Victor')
+ON CONFLICT (email)
+DO NOTHING;
+```
+
+> Why not SELECT first, then INSERT or UPDATE? That approach requires two round trips to the database and has a race condition — between the SELECT and the INSERT, another request might insert the same row. `ON CONFLICT` is atomic: it handles both cases in a single statement.
+
+---
+
 ## Common mistakes
 
 ```sql

@@ -1,5 +1,7 @@
 # Layout Patterns
 
+Official docs: https://developer.mozilla.org/en-US/docs/Web/CSS/display
+
 ## The display property
 
 `display` controls how an element participates in the layout. The most important values:

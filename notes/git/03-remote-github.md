@@ -1,5 +1,7 @@
 # Remote and GitHub
 
+**Official docs:** [Git Basics — Working with Remotes](https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes)
+
 ## What is a remote?
 
 A remote is a copy of your repository hosted somewhere else — usually GitHub. When you clone a repo, Git automatically sets up a remote called `origin` that points to the URL you cloned from.

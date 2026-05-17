@@ -1,5 +1,7 @@
 # Merge and Rebase
 
+**Official docs:** [git-merge](https://git-scm.com/docs/git-merge) | [git-rebase](https://git-scm.com/docs/git-rebase) | [Git Branching — Rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
+
 ## git merge
 
 Combines two branches. The changes from one branch are brought into another.
@@ -65,6 +67,43 @@ Note: the rebased commits get new IDs (`C'`, `D'`) — they are technically new 
 | A shared branch that others are using | Always `merge` — never rebase shared branches |
 
 **The golden rule of rebase:** never rebase a branch that other people are working on. Rebasing rewrites commit IDs — anyone else who has those commits will have a broken history.
+
+---
+
+## Interactive rebase — `git rebase -i`
+
+Interactive rebase lets you edit, squash, reorder, or delete commits before pushing them. It is the standard way to clean up a messy local commit history before opening a PR.
+
+```bash
+git rebase -i HEAD~3   # open an editor to edit the last 3 commits
+```
+
+An editor opens with a list of commits, each prefixed with a command:
+
+```
+pick a3f8c1d feat: add form skeleton
+pick 7b2e9f4 fix: typo in field name
+pick c1d4a2e fix: another small fix
+
+# Commands:
+# pick   = use the commit as is
+# squash = merge into the previous commit (keeps both messages)
+# fixup  = like squash, but discard the commit message
+# reword = change the commit message only
+# drop   = delete the commit entirely
+```
+
+**Most common use — squash:** you made 3 small commits while developing and want to combine them into one clean commit before the PR.
+
+```
+pick a3f8c1d feat: add form skeleton
+squash 7b2e9f4 fix: typo in field name
+squash c1d4a2e fix: another small fix
+```
+
+The result: one single commit with a clean message that you write when Git prompts you.
+
+**The golden rule still applies:** never interactive-rebase commits that are already pushed to a shared branch. Rebasing rewrites commit IDs — anyone who has pulled those commits will have a broken history.
 
 ---
 

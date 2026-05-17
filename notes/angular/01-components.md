@@ -220,6 +220,67 @@ Think of it like a doorbell — it does not send information, it just signals th
 
 ---
 
+## Content projection — ng-content
+
+Official docs: https://angular.dev/guide/components/content-projection
+
+`ng-content` lets a parent pass HTML into a child component's template. Instead of the child controlling everything inside it, the parent injects the interior content.
+
+**When to use it:** reusable wrapper components — cards, panels, layout containers — where the interior changes depending on who uses the component.
+
+### Basic example
+
+```typescript
+// child — reusable card wrapper
+@Component({
+  selector: 'app-card',
+  template: `
+    <div class="card">
+      <ng-content />
+    </div>
+  `
+})
+export class CardComponent {}
+```
+
+```html
+<!-- parent — injects whatever it wants inside the card -->
+<app-card>
+  <h2>Employee List</h2>
+  <p>Content here is controlled by the parent, not the card component.</p>
+</app-card>
+```
+
+### Named slots — project into multiple areas
+
+Use `select` to define named projection slots:
+
+```typescript
+@Component({
+  template: `
+    <div class="card">
+      <div class="card-header">
+        <ng-content select="[slot=header]" />
+      </div>
+      <div class="card-body">
+        <ng-content />
+      </div>
+    </div>
+  `
+})
+```
+
+```html
+<app-card>
+  <h2 slot="header">Title goes here</h2>
+  <p>Body content goes in the default slot.</p>
+</app-card>
+```
+
+**When you see `ng-content` in a codebase:** the component is a layout wrapper. It does not know or control what its interior contains — that is the responsibility of whoever uses it.
+
+---
+
 ## Lifecycle hooks
 
 ### ngOnInit — runs once when the component loads
@@ -291,6 +352,32 @@ export class EmployeeListComponent implements AfterViewInit {
 }
 ```
 
+### ngOnChanges — runs when an @Input() property is updated by the parent
+
+Runs every time a parent updates an `@Input()` decorated property. Receives a `SimpleChanges` object with the previous and current values.
+
+```typescript
+import { OnChanges, SimpleChanges, Input } from '@angular/core';
+
+export class EmployeeCard implements OnChanges {
+  @Input() employee!: Employee;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['employee']) {
+      console.log('Previous:', changes['employee'].previousValue);
+      console.log('Current:', changes['employee'].currentValue);
+    }
+  }
+}
+```
+
+> **Important:** `ngOnChanges` works with `@Input()` decorators — the old API. With the modern `input()` signal-based API, use `effect()` instead — it runs whenever the signal value changes. You will see `ngOnChanges` in any existing codebase built before Angular 17+.
+
+| Pattern | API |
+|---|---|
+| Run code when a parent input changes (old) | `ngOnChanges` + `@Input()` |
+| Run code when a parent input changes (modern) | `effect()` + `input()` signal |
+
 ### ngOnDestroy — runs before the component is removed
 
 Use it for cleanup — cancel subscriptions, clear timers, release resources.
@@ -311,7 +398,8 @@ In practice, `takeUntilDestroyed` handles subscription cleanup automatically —
 
 ```
 constructor       → DI, no template
-ngOnInit          → inputs available, no template yet
+ngOnChanges       → runs first time inputs are set, then on every @Input() change
+ngOnInit          → inputs available, no template yet — runs once
 ngAfterViewInit   → template rendered, @ViewChild available
 ngOnDestroy       → component about to be removed
 ```

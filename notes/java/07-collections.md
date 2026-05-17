@@ -1,5 +1,7 @@
 # Collections
 
+> 📖 [Oracle Docs — Collections framework](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
+
 The Collections Framework provides ready-made data structures. The three you use most are `List`, `Map`, and `Set`.
 
 ---

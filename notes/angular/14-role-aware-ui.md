@@ -1,5 +1,7 @@
 # 14 — Role-aware UI
 
+Official docs: https://angular.dev/guide/signals#computed-signals
+
 ## What it is
 
 Role-aware UI means showing or hiding elements based on the logged-in user's role.

@@ -1,5 +1,7 @@
 # Type Narrowing
 
+Official docs: https://www.typescriptlang.org/docs/handbook/2/narrowing.html
+
 ## What is narrowing?
 
 When you have a union type, TypeScript does not know which specific type the value is at runtime. Narrowing is the process of using a check to reduce (narrow) the type to something more specific — TypeScript then knows what methods and properties are available.
