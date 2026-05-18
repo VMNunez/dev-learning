@@ -57,9 +57,21 @@ public class Transaction {
 - `@GeneratedValue(strategy = GenerationType.IDENTITY)` — the database auto-increments the id (`SERIAL` / `BIGSERIAL` in PostgreSQL)
 
 **Optional but common:**
-- `@Table(name = "...")` — override the default table name (useful when the table name differs from the class name)
+- `@Table(name = "...")` — override the default table name (useful when the table name differs from the class name, or when the class name is a reserved word in SQL)
 - `@Column(...)` — configure column properties: `nullable`, `length`, `name`, `updatable`
 - `@PrePersist` — runs before the entity is inserted for the first time
+
+> **Reserved word trap:** `user` is a reserved word in PostgreSQL. A class named `User` without `@Table` causes a syntax error on startup. Always use `@Table(name = "users")` for the User entity. The same applies to other reserved words like `order`, `group`, `table`. Convention: use plural table names (`users`, `projects`) — this avoids most conflicts.
+
+**`@GeneratedValue` — strategy options:**
+
+| Strategy | What it does | PostgreSQL result |
+|---|---|---|
+| `@GeneratedValue` (no strategy) | Uses `AUTO` — Hibernate picks the best strategy | Creates a shared sequence (`users_seq`) |
+| `@GeneratedValue(strategy = GenerationType.IDENTITY)` | Uses the database's own auto-increment | Uses `BIGSERIAL` column |
+| `@GeneratedValue(strategy = GenerationType.SEQUENCE)` | Uses a named sequence | More control over sequence config |
+
+`IDENTITY` is the most common choice in real projects — it uses the database's native mechanism and generates ids one at a time. `AUTO` (default) creates a sequence that increments by 50, which can leave gaps in ids.
 
 ---
 
