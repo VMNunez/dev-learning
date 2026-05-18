@@ -59,6 +59,114 @@ Every Spring Boot project at a consultancy starts the same way. The only things 
 
 ---
 
+## Adding dependencies after project creation
+
+When you need a library that was not selected in Spring Initializr, you add it manually to `pom.xml`.
+
+**How to find the correct dependency block:**
+
+1. Go to [start.spring.io](https://start.spring.io)
+2. Set the same Spring Boot version and Java version as your project
+3. Click **Add dependencies** and search for the library
+4. Click **Explore** (bottom right) — this shows the generated `pom.xml`
+5. Copy the `<dependency>` block for that library into your project's `pom.xml`
+
+If the library is not on Spring Initializr, search on [mvnrepository.com](https://mvnrepository.com) — but in that case you must add the version number manually.
+
+**Why no version for Spring Boot dependencies?** The `<parent>` block in `pom.xml` points to `spring-boot-starter-parent`, which contains a BOM (Bill of Materials) — a tested list of compatible versions. Any dependency on that list works without a version tag.
+
+---
+
+### Lombok — eliminating boilerplate code
+
+Lombok is a Java library used in almost every Spring Boot project at consultancies. It generates getters, setters, constructors, `equals()`, `hashCode()`, and `toString()` automatically — you never write them manually.
+
+**Why it is needed:**
+- JPA requires a no-args constructor to create entity objects when reading from the database
+- Jackson (the JSON serializer) requires getters to convert entities to JSON
+- Without Lombok, a class with 5 fields needs 15+ extra lines of boilerplate
+
+**Source:** [start.spring.io](https://start.spring.io) → Add dependencies → search "Lombok" → Explore
+
+**Step 1 — Add the dependency inside `<dependencies>` in `pom.xml`:**
+
+```xml
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+</dependency>
+```
+
+`<optional>true</optional>` means Lombok is not included in the final `.jar` — it is only needed at compile time to generate the code.
+
+**Step 2 — Update `spring-boot-maven-plugin` to exclude Lombok from the packaged jar:**
+
+```xml
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <excludes>
+            <exclude>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+            </exclude>
+        </excludes>
+    </configuration>
+</plugin>
+```
+
+**Step 3 — Add `maven-compiler-plugin` so Java 25 uses Lombok as an annotation processor:**
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <configuration>
+        <annotationProcessorPaths>
+            <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+            </path>
+        </annotationProcessorPaths>
+    </configuration>
+</plugin>
+```
+
+This step is required from Java 21+ — the compiler needs to know explicitly that Lombok processes annotations before compiling.
+
+**After saving `pom.xml`:** press `Ctrl + Shift + O` to reload Maven (or click the notification that appears).
+
+**Annotations used on entities:**
+
+| Annotation | What it generates |
+|---|---|
+| `@Data` | Getters, setters, `equals()`, `hashCode()`, `toString()` |
+| `@NoArgsConstructor` | Empty constructor — required by JPA |
+| `@AllArgsConstructor` | Constructor with all fields |
+
+**Example — User entity with Lombok:**
+
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String name;
+    private String email;
+}
+```
+
+---
+
 ## Project structure
 
 This is what IntelliJ shows after opening the project. The `.idea/` folder is created automatically by IntelliJ when you open the folder — it stores your project settings.
