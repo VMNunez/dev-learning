@@ -203,3 +203,51 @@ HikariPool is the connection pool Spring Boot uses by default. It opens a set of
 > - `postgresql` — the specific driver (matches the dependency in `pom.xml`)
 > - `localhost:5432` — host and port (5432 is PostgreSQL's default)
 > - `timetrack` — the database name
+
+---
+
+### Environment variables in application.properties
+
+Never commit real secrets (passwords, API keys, JWT secrets) to git. Use environment variables instead.
+
+**Syntax:**
+
+```properties
+spring.datasource.password=${DB_PASSWORD}
+```
+
+Spring Boot reads the value of `DB_PASSWORD` from the environment at startup. If the variable is not set, the app fails to start — which forces you to always set it explicitly.
+
+**With a default value:**
+
+```properties
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:timetrack}
+```
+
+The syntax `${VARIABLE:default}` uses the default if the variable is not set. Useful for values that change between environments but are not secrets — locally the defaults work, in Docker you override them.
+
+**Rule:** only secrets need env vars for security. Other values (host, port, database name) use defaults for local dev and get overridden in production.
+
+**How to set env vars in IntelliJ:**
+
+1. Top toolbar → click the dropdown next to the Run button → **Edit Configurations**
+2. Click **Modify options** → **Environment variables**
+3. Click **+** and add `Name` / `Value`
+
+The values stay on your machine — they are never committed.
+
+**Final `application.properties` for TimeTrack:**
+
+```properties
+spring.application.name=timetrack
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/timetrack
+spring.datasource.username=postgres
+spring.datasource.password=${DB_PASSWORD}
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.open-in-view=false
+```
+
+**If you accidentally commit a secret:** changing it in a new commit is not enough — the old commit is still visible in git history. The correct action is to **invalidate the credential immediately** (change the password, revoke the API key) so the leaked value becomes useless.
