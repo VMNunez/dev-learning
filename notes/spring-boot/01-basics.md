@@ -83,6 +83,20 @@ backend/
                 └── TimetrackApplicationTests.java   ← one empty test class generated
 ```
 
+### Opening the project in IntelliJ for the first time
+
+When you open the `backend` folder in IntelliJ, it does not automatically recognise the Maven project inside `timetrack/`. You need to tell it manually:
+
+1. In the left panel, find `timetrack/pom.xml`
+2. Right-click on it → **Add as Maven Project**
+3. Wait for IntelliJ to download dependencies and finish indexing
+
+After this step, IntelliJ recognises `TimetrackApplication.java` as runnable and shows a green arrow in the left margin next to `main()`.
+
+**To run the app:** right-click `TimetrackApplication.java` → **Run 'TimetrackApplication.main()'**, or use `Shift + F10` once a run configuration exists.
+
+---
+
 ### File by file
 
 **`.idea/`** — IntelliJ's own folder. It stores which files are open, run configurations, code style settings. You never touch it. Add it to `.gitignore` so it does not go to GitHub — each developer has their own settings.
@@ -147,8 +161,45 @@ The class must be in the root package so `@ComponentScan` finds all your compone
 
 `src/main/resources/application.properties` is where all environment-specific configuration goes. No hardcoded values in the Java code. Think of it like an `.env` file.
 
-**What Spring Initializr generates (just one line):**
+All properties follow a namespace pattern: `spring.[feature].[setting]`. Once you know the namespace, you can find any property in the [official appendix](https://docs.spring.io/spring-boot/appendix/application-properties/index.html) or the [data access guide](https://docs.spring.io/spring-boot/reference/data/sql.html).
+
+### Database connection — project 07 (TimeTrack)
+
+**Step 1 — Create the database in pgAdmin.** Right-click your server → Create → Database. Name it `timetrack`. Owner: `postgres`.
+
+**Step 2 — Configure `application.properties`:**
 
 ```properties
 spring.application.name=timetrack
+
+# Database connection
+spring.datasource.url=jdbc:postgresql://localhost:5432/timetrack
+spring.datasource.username=postgres
+spring.datasource.password=your_password
+
+# JPA / Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
 ```
+
+| Property | What it does |
+|---|---|
+| `spring.datasource.url` | JDBC URL — protocol + driver + host + port + database name |
+| `spring.datasource.username` | PostgreSQL user |
+| `spring.datasource.password` | PostgreSQL password — never commit the real value to GitHub |
+| `spring.jpa.hibernate.ddl-auto=update` | Creates tables if they do not exist; updates them if the entity changes. Never use `create` in production (drops and recreates tables). |
+| `spring.jpa.show-sql=true` | Prints the SQL Hibernate generates to the console — useful while learning |
+
+**How to verify the connection works:** run `TimetrackApplication.java` in IntelliJ and look for this line in the console:
+
+```
+HikariPool-1 - Start completed.
+```
+
+HikariPool is the connection pool Spring Boot uses by default. It opens a set of database connections on startup and reuses them for every request — faster than opening a new connection each time.
+
+> **JDBC URL format:** `jdbc:postgresql://localhost:5432/timetrack`
+> - `jdbc` — Java's standard protocol for database connections
+> - `postgresql` — the specific driver (matches the dependency in `pom.xml`)
+> - `localhost:5432` — host and port (5432 is PostgreSQL's default)
+> - `timetrack` — the database name
