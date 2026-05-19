@@ -156,6 +156,27 @@ The BCrypt hash must be pre-generated for a known password (e.g. `Admin2024!`).
 
 ---
 
+## Testing with Postman
+
+Test every endpoint in Postman as soon as it is created. Do not wait until the whole layer is finished.
+
+**Setup — one collection for the project:**
+- Create a collection called `TimeTrack`
+- Create folders inside it: `Users`, `Projects`, `Entries`, `Auth`
+- Add each endpoint to its folder as you build it
+
+**For each endpoint, check:**
+- Correct HTTP status code (200, 201, 204, 400, 404...)
+- Correct JSON response body
+- Error cases (missing fields, wrong id, etc.)
+
+**GET requests** — also testable in the browser (`http://localhost:8080/api/...`)
+**POST / PUT / DELETE** — Postman only
+
+**Base URL:** `http://localhost:8080`
+
+---
+
 ## REST API
 
 ### Auth — public endpoints
