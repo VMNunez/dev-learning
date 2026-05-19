@@ -220,3 +220,74 @@ public class TransactionController {
     }
 }
 ```
+
+---
+
+## Project 07 — TimeTrack (first working endpoint)
+
+This is the first Controller → Service → Repository chain built in the TimeTrack project. Step 1 returns the entity directly — DTOs are introduced in Step 2.
+
+### UserService
+
+```java
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+}
+```
+
+- `@Service` — Spring finds this class, creates one instance (a bean), and keeps it available for injection
+- `private final UserRepository userRepository` — declare the dependency; `final` because it never changes after the constructor runs
+- Constructor injection — Spring detects the single constructor and injects `UserRepository` automatically; no `@Autowired` needed
+- `userRepository.findAll()` — built-in method from `JpaRepository`; no SQL needed
+
+### UserController
+
+```java
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public List<User> getAll() {
+        return userService.getAll();
+    }
+}
+```
+
+- `@RestController` — marks this class as a REST controller; every return value is serialized to JSON automatically
+- `@RequestMapping("/api/users")` — base URL for all methods in this class
+- `@GetMapping` — responds to `GET /api/users`; no path needed because the base URL is already set on the class
+- The controller injects the service the same way the service injects the repository — same constructor injection pattern
+
+### What happens when the browser calls GET /api/users
+
+```
+Browser → GET /api/users
+  → UserController.getAll()
+    → UserService.getAll()
+      → UserRepository.findAll()
+        → Hibernate generates: SELECT id, email, name FROM users
+          → PostgreSQL returns rows
+        → returned as List<User>
+      → returned to controller
+    → Jackson serializes List<User> to JSON
+  → browser receives []  (empty array — no users yet)
+```
+
+Hibernate logs the SQL to the console because `spring.jpa.show-sql=true` is set in `application.properties`.
