@@ -57,8 +57,17 @@ public class Transaction {
 - `@GeneratedValue(strategy = GenerationType.IDENTITY)` — the database auto-increments the id (`SERIAL` / `BIGSERIAL` in PostgreSQL)
 
 **Optional but common:**
-- `@Table(name = "...")` — override the default table name (useful when the table name differs from the class name, or when the class name is a reserved word in SQL)
-- `@Column(...)` — configure column properties: `nullable`, `length`, `name`, `updatable`
+- `@Table(name = "...")` — override the default table name; **convention: always use plural lowercase** (`users`, `projects`, `time_entries`) — avoids reserved word conflicts and is the standard in real projects
+- `@Column(nullable = false)` — marks the column as NOT NULL in the database
+- `@Column(unique = true)` — adds a unique constraint; combine with `nullable = false` when the field is required and must be unique: `@Column(nullable = false, unique = true)`
+- `@Column(...)` — other properties: `length`, `name`, `updatable`
+- `@CreationTimestamp` — Hibernate annotation; sets the field automatically to the current date and time when the entity is first saved; you never set this field manually in your code
+
+**Default field values** — set directly on the field declaration; JPA respects the default when creating a new entity:
+
+```java
+private Boolean active = true;   // new projects are active by default
+```
 - `@PrePersist` — runs before the entity is inserted for the first time
 
 > **Reserved word trap:** `user` is a reserved word in PostgreSQL. A class named `User` without `@Table` causes a syntax error on startup. Always use `@Table(name = "users")` for the User entity. The same applies to other reserved words like `order`, `group`, `table`. Convention: use plural table names (`users`, `projects`) — this avoids most conflicts.

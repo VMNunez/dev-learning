@@ -61,6 +61,9 @@ Deleting a user would orphan all their time entries — the history would refere
 - `JpaRepository` — built-in CRUD methods without writing SQL
 - `@RestController`, `@RequestMapping`, `@GetMapping` — building a REST endpoint
 - Constructor injection with `@Service` — how Spring wires dependencies together
+- `@Column(nullable = false, unique = true)` — adding database constraints directly on entity fields
+- `@CreationTimestamp` — Hibernate sets the timestamp automatically on first save
+- Default field values in Java — `private Boolean active = true` sets the default at the entity level
 
 ---
 
@@ -75,6 +78,29 @@ Deleting a user would orphan all their time entries — the history would refere
 | Frontend | Angular + Angular Material |
 | Local setup | Docker + docker-compose |
 | Tests | JUnit 5 + Mockito (backend), Jasmine + TestBed (frontend) |
+
+---
+
+## Project structure
+
+```
+07-timetrack/
+├── backend/
+│   └── timetrack/                        ← Spring Boot Maven project
+│       └── src/main/java/com/victor/timetrack/
+│           ├── controller/               ← HTTP layer — receives requests, returns JSON
+│           ├── service/                  ← Business logic — validation, rules, state transitions
+│           ├── repository/               ← Database access — extends JpaRepository
+│           ├── model/                    ← JPA entities — mapped to PostgreSQL tables
+│           ├── dto/
+│           │   ├── request/              ← What the client sends (create, update payloads)
+│           │   └── response/             ← What the API returns (never the raw entity)
+│           ├── exception/                ← Global error handler and custom exceptions
+│           └── security/                 ← JWT filter, Spring Security config
+└── frontend/                             ← Angular project (added in Step 7)
+```
+
+*Each layer only calls the layer directly below it — controller calls service, service calls repository. No layer skips another.*
 
 ---
 
