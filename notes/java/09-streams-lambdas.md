@@ -153,6 +153,35 @@ String names = employees.stream()
 
 ---
 
+## Entity to DTO mapping — real project pattern
+
+When a service method returns a list, it must never return the raw entity.
+Use `.stream().map().toList()` to convert each entity into a DTO:
+
+```java
+// ProjectService — getAll()
+public List<ProjectResponse> getAll() {
+    return projectRepository.findAll()
+        .stream()
+        .map(project -> {
+            ProjectResponse response = new ProjectResponse();
+            response.setId(project.getId());
+            response.setName(project.getName());
+            response.setDescription(project.getDescription());
+            response.setActive(project.getActive());
+            response.setCreatedAt(project.getCreatedAt());
+            return response;
+        })
+        .toList();  // Java 16+ — returns immutable list
+}
+```
+
+Why `.toList()` and not `.collect(Collectors.toList())`?  
+Both work in Java 25. `.toList()` is shorter and returns an immutable list.  
+Use `.collect(Collectors.toList())` only when you need to add or remove items from the result list later.
+
+---
+
 ## Stream vs for loop
 
 ```java
