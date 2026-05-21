@@ -38,6 +38,17 @@ Es el fichero de configuración central — URL de base de datos, puerto del ser
 
 ---
 
+**¿Cuáles son las opciones de spring.jpa.hibernate.ddl-auto y cuál usas en cada entorno?**
+
+Las opciones principales son: `update` (añade columnas nuevas, nunca las elimina — seguro para desarrollo), `create` (elimina todas las tablas y las recrea cada vez que arranca la app — destruye todos los datos), `validate` (comprueba que el esquema coincide con las entidades y falla si no — útil en producción para detectar diferencias), y `none` (no hace nada — se usa cuando gestionas el esquema con una herramienta de migración como Flyway). En el proyecto 07 uso `update` durante el desarrollo para que el esquema evolucione al añadir entidades, y cambiaría a `validate` o `none` en producción.
+
+> **Junior tip:** `create` es la opción más peligrosa — borra la base de datos cada vez que la app arranca. Los entrevistadores preguntan sobre esto porque usar `create` en producción es un error clásico de junior.
+> **Consejo de entrevista:** `create` es la opción más peligrosa — borra la base de datos cada vez que la app arranca. Los entrevistadores preguntan sobre esto porque usar `create` en producción es un error clásico de junior.
+
+Respuesta de alerta: "Siempre uso `create` — es más fácil para desarrollar." Demuestra que no entiendes el riesgo de perder datos.
+
+---
+
 **¿Por qué elegiste Spring Boot en lugar de Spring puro para el proyecto 07?**
 
 Spring puro requiere configuración en XML, declaraciones explícitas de beans y un servidor instalado por separado. Spring Boot elimina todo eso — pude empezar a escribir endpoints REST inmediatamente tras generar el proyecto en start.spring.io. Para un proyecto de portfolio que demuestra habilidades full-stack, eliminar esa ceremonia es la decisión correcta.
@@ -74,6 +85,9 @@ Respuesta de alerta: "Lo pongo en el controlador." Demuestra una mala comprensi�
 **¿Qué ocurre cuando accedes a una relación LAZY fuera de una transacción?**
 
 Obtienes una LazyInitializationException — la sesión de Hibernate ya está cerrada y no puede ejecutar la consulta extra para cargar la relación. La solución correcta es convertir la entidad a DTO dentro del método @Transactional del servicio, mientras la sesión está aún abierta — no acceder a campos lazy en el controlador después de que la sesión se haya cerrado.
+
+> **Junior tip:** the fix is always "convert to DTO inside @Transactional" — never "make the relationship EAGER." Making it EAGER hides the problem and introduces a worse one: always loading data you didn't ask for, on every query.
+> **Consejo de entrevista:** la solución siempre es "convertir a DTO dentro de @Transactional" — nunca "hacer la relación EAGER." Hacerla EAGER oculta el problema e introduce uno peor: cargar datos que no pediste en cada consulta.
 
 ---
 
@@ -129,6 +143,9 @@ Respuesta de alerta: "Pongo todo en el controlador porque es más sencillo." Es 
 
 Las tres registran la clase como bean de Spring, pero la diferencia semántica importa. @Repository también traduce las excepciones de JPA a la jerarquía DataAccessException de Spring, de modo que el servicio nunca necesita gestionar errores específicos de Hibernate. Usar la anotación correcta hace el código auto-documentado — cualquier desarrollador identifica la capa inmediatamente.
 
+> **Junior tip:** @Repository's exception translation is the one real functional difference — everything else is about intent and readability. Knowing the exception translation point is what separates a thoughtful answer from a guess.
+> **Consejo de entrevista:** la traducción de excepciones de @Repository es la única diferencia funcional real — todo lo demás es sobre intención y legibilidad. Conocer ese punto es lo que separa una respuesta reflexiva de una suposición.
+
 ---
 
 **¿Por qué usar DTOs en lugar de devolver entidades JPA directamente desde el controlador?**
@@ -136,6 +153,26 @@ Las tres registran la clase como bean de Spring, pero la diferencia semántica i
 Las entidades están vinculadas al esquema de base de datos — pueden exponer campos que no debes enviar al cliente (hash de contraseña, claves foráneas internas, colecciones cargadas de forma perezosa). Los DTOs permiten controlar exactamente qué devuelve la API. En el proyecto 07 la entidad Transaction tiene un campo user con el objeto User completo — el TransactionDTO solo expone los campos que Angular necesita.
 
 Respuesta de alerta: "Devuelvo entidades porque hay menos código." Las entidades pueden causar errores de serialización en relaciones lazy y exponen la estructura de la base de datos a los clientes.
+
+---
+
+**¿Cuál es la diferencia entre @PatchMapping y @PutMapping, y cuándo usas cada uno?**
+
+@PutMapping reemplaza el recurso completo — el cliente envía todos los campos, incluso los que no cambiaron. @PatchMapping actualiza solo los campos proporcionados — el resto permanece sin cambios. En el proyecto 07 uso @PutMapping para ediciones de formulario completo donde el frontend siempre envía el objeto completo, y @PatchMapping para actualizaciones de un solo campo como marcar una transacción como conciliada. La mayoría de apps CRUD usan @PutMapping por defecto; @PatchMapping es correcto cuando solo cambia parte de los datos.
+
+> **Junior tip:** si no estás seguro, @PutMapping es la opción más segura y más común en apps CRUD. @PatchMapping demuestra que piensas en actualizaciones parciales y diseño de API.
+> **Consejo de entrevista:** si no estás seguro, @PutMapping es la opción más segura y más común en apps CRUD. Menciona @PatchMapping cuando hables de convenciones REST para demostrar que conoces la distinción.
+
+---
+
+**¿Cómo conviertes una entidad JPA a un DTO en la capa de servicio?**
+
+Creo el DTO directamente en el método del servicio usando el constructor del DTO. En el proyecto 07, como TransactionDTO es un record de Java, llamo a `new TransactionDTO(entity.getId(), entity.getAmount(), entity.getDescription(), entity.getDate(), entity.getCategory())` dentro del servicio. Si la misma conversión se necesita en varios sitios, la extraigo a un método helper privado estático en el servicio. Una clase mapper separada o MapStruct solo tiene sentido cuando las conversiones se comparten entre muchos servicios.
+
+> **Junior tip:** empieza simple — llamada directa al constructor en el servicio. Añade un mapper solo si duplicas la misma conversión en varios lugares. La abstracción prematura es un error común que hace el código más difícil de leer.
+> **Consejo de entrevista:** empieza simple — llamada directa al constructor en el servicio. Añade un mapper solo si duplicas la misma conversión en varios lugares.
+
+Respuesta de alerta: "Devuelvo la entidad directamente — hay menos código." Las entidades exponen el esquema de base de datos, pueden causar errores de serialización en relaciones lazy y filtran datos internos como hashes de contraseñas al cliente.
 
 ---
 
@@ -203,6 +240,9 @@ Cuando la lógica no puede expresarse con el nombre del método — por ejemplo,
 **¿Cómo sabe save() si debe insertar o actualizar?**
 
 save() comprueba el campo @Id. Si es null, JPA inserta una nueva fila. Si tiene un valor existente, JPA hace un merge (actualiza) la fila existente. No necesitas métodos insert() y update() separados.
+
+> **Junior tip:** "id null = insertar, id no nulo = actualizar" es la frase que responde esto. Un método para ambas operaciones — ese es el diseño. Spring Data llama a esto el patrón upsert.
+> **Consejo de entrevista:** "id null = insertar, id no nulo = actualizar" es la frase que responde esto. Un método para ambas operaciones — ese es el diseño.
 
 ---
 
@@ -306,6 +346,15 @@ Respuesta de alerta: "Lo puse en el código porque es más fácil." Eso es una v
 
 ---
 
+**¿Cuál es la diferencia entre 401 Unauthorized y 403 Forbidden, y cuándo devuelve cada uno Spring Security?**
+
+401 significa que la petición no tiene autenticación válida — no hay token, el token ha caducado o la firma es inválida. 403 significa que el usuario está autenticado (el token es válido) pero no tiene permiso para acceder a ese recurso. En el proyecto 07, una petición sin JWT a un endpoint protegido devuelve 401. Un USER que intenta acceder a un endpoint anotado con @PreAuthorize("hasRole('ADMIN')") devuelve 403. Spring Security puede devolver 403 para peticiones no autenticadas por defecto — esto se sobreescribe con un AuthenticationEntryPoint personalizado que devuelve 401.
+
+> **Junior tip:** 401 = "¿quién eres?" — 403 = "sé quién eres, pero no puedes." Esta distinción demuestra conciencia de seguridad más allá de "no funciona." Menciónala cuando hables del SecurityFilterChain.
+> **Consejo de entrevista:** 401 = "¿quién eres?" — 403 = "sé quién eres, pero no puedes." Conocer esta distinción demuestra conciencia de seguridad más allá de "no funciona."
+
+---
+
 **Tu filtro JWT rechaza tokens válidos — ¿qué compruebas primero?**
 
 Compruebo tres cosas: la clave secreta (¿es la misma que se usó para firmar el token?), la expiración del token (¿ha caducado?) y el formato de la cabecera Authorization (debe ser exactamente "Bearer token" con un espacio). También reviso la configuración de SecurityFilterChain para confirmar que el endpoint no está marcado accidentalmente como que requiere un rol que el usuario no tiene.
@@ -353,11 +402,42 @@ Sin estado significa que Spring Security no crea ni usa una sesión HTTP para re
 
 RuntimeException es no comprobada — los llamadores no necesitan declararla con throws. Las excepciones comprobadas (que extienden Exception) obligan a cada método en la pila de llamadas a gestionarlas o re-declararlas, lo que contamina el código del servicio con gestión de errores para problemas que no puede resolver. La convención en Spring Boot es: lanza excepciones no comprobadas desde el servicio, captúralas globalmente con @ControllerAdvice.
 
+> **Junior tip:** the phrase to use is "Spring Boot's convention is unchecked exceptions from the service, caught globally with @ControllerAdvice." That sentence shows you understand the full pattern, not just the syntax.
+> **Consejo de entrevista:** la frase a usar es "la convención de Spring Boot es excepciones no comprobadas desde el servicio, capturadas globalmente con @ControllerAdvice." Esa frase demuestra que entiendes el patrón completo.
+
 ---
 
 **Un compañero junior tiene un bloque try/catch en cada método del controlador — ¿qué le dices?**
 
 Le explicaría que Spring Boot tiene @ControllerAdvice para esto — defines toda la gestión de errores en una clase y Spring enruta las excepciones allí automáticamente. Elimina la duplicación, mantiene los controladores enfocados en el camino feliz y hace que las respuestas de error sean consistentes en toda la API. Le mostraría el GlobalExceptionHandler del proyecto 07 como ejemplo.
+
+---
+
+**¿Cuál es la diferencia entre MethodArgumentNotValidException y ConstraintViolationException?**
+
+MethodArgumentNotValidException se lanza cuando @Valid en un objeto @RequestBody falla — un campo del DTO viola una restricción como @NotBlank o @Positive. ConstraintViolationException se lanza cuando @Validated en la clase del controlador activa la validación en parámetros @PathVariable o @RequestParam individuales. Ambas deben gestionarse en @ControllerAdvice, pero con métodos @ExceptionHandler separados porque son tipos de excepción diferentes.
+
+> **Junior tip:** en la práctica siempre gestionas ambas en @ControllerAdvice — un handler para cada una. La distinción importa en entrevistas porque demuestra que sabes de dónde viene cada una, no solo que "falló la validación."
+> **Consejo de entrevista:** en la práctica siempre gestionas ambas en @ControllerAdvice — un handler para cada una. La distinción demuestra que entiendes el origen de cada error, no solo que algo falló.
+
+---
+
+## Transacciones
+
+**¿Qué hace @Transactional(readOnly = true) y por qué deberías usarlo en métodos de lectura?**
+
+Le dice a Hibernate que omita el dirty checking al final de la transacción — Hibernate no compara el estado de cada entidad cargada para detectar cambios, porque has declarado que no habrá cambios. Esto hace que las operaciones de lectura sean más rápidas. En el proyecto 07 anoto cada método de servicio que solo lee datos con @Transactional(readOnly = true), y cada método de escritura con @Transactional.
+
+> **Junior tip:** la regla es simple — las lecturas llevan @Transactional(readOnly = true), las escrituras llevan @Transactional. Demuestra que piensas en rendimiento, no solo en corrección. Los entrevistadores lo notan cuando un candidato conoce esta distinción.
+> **Consejo de entrevista:** la regla es simple — lecturas con readOnly = true, escrituras sin él. Demuestra que piensas en rendimiento, no solo en corrección.
+
+---
+
+**¿Por qué @Transactional no funciona en métodos privados?**
+
+@Transactional funciona a través de un proxy de Spring — Spring envuelve el bean en un objeto wrapper que intercepta las llamadas a métodos y gestiona la transacción. Un proxy solo puede interceptar métodos públicos. Cuando llamas a un método privado, lo llamas directamente en el objeto real — el proxy se omite y la anotación se ignora silenciosamente sin ningún error al arrancar. En el proyecto 07 siempre hago públicos los métodos de servicio que necesitan transacciones.
+
+Respuesta de alerta: "Lo probé y funciona." Puede parecer que funciona si el método privado es llamado por un método público con @Transactional — la transacción externa cubre ambos. Pero la propia anotación del método privado no hace nada, lo que es un bug oculto esperando aparecer.
 
 ---
 

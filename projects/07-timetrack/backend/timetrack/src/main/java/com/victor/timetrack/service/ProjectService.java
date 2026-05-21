@@ -26,5 +26,16 @@ public class ProjectService {
         }).toList();
     }
 
+    public ProjectResponse getById(Long id){
+        return projectRepository.findById(id).map(project -> {
+            ProjectResponse response = new ProjectResponse();
+            response.setId(project.getId());
+            response.setName(project.getName());
+            response.setDescription(project.getDescription());
+            response.setActive(project.getActive());
+            response.setCreatedAt(project.getCreatedAt());
+            return response;
+        }).orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
 
+    }
 }

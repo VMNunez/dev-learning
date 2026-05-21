@@ -1,21 +1,20 @@
 # Spring Boot — Future Learning Roadmap
 
-Topics to study once the numbered files (01–onwards) are solid. Nothing here is needed for the first interview — needed to grow into a mid-level developer and work on more complex backend systems.
+Topics to study once the numbered files (01–09) are solid. Nothing here is needed for the first interview — needed to grow into a mid-level developer and work on more complex backend systems.
 
 ---
 
-## What the numbered files will cover (junior goal)
+## What the numbered files cover (junior goal — all done ✓)
 
-These are the topics that will become numbered files as Victor studies Spring Boot:
-
-- Project setup — `@SpringBootApplication`, `application.properties`, Maven structure
-- REST API — `@RestController`, `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`
-- Dependency injection — `@Service`, `@Repository`, `@Component`, constructor injection
-- JPA / Hibernate — `@Entity`, `@Id`, `@GeneratedValue`, `@OneToMany`, `@ManyToOne`, `JpaRepository`
-- Request handling — `@RequestBody`, `@PathVariable`, `@RequestParam`, `ResponseEntity`
-- Exception handling — `@ControllerAdvice`, `@ExceptionHandler`, custom error responses
-- Spring Security + JWT — `SecurityFilterChain`, `UserDetailsService`, token validation
-- Testing — `JUnit 5`, `Mockito`, `@SpringBootTest`, `@WebMvcTest`
+- 01 — Project setup: `@SpringBootApplication`, `application.properties`, Maven structure, Lombok
+- 02 — REST controllers: `@RestController`, HTTP methods, `ResponseEntity`, DTOs, layered architecture
+- 03 — Dependency injection: `@Service`, `@Repository`, `@Component`, constructor injection, `@Value`
+- 04 — Spring Data JPA: `@Entity`, `JpaRepository`, derived queries, `@Query`, relationships, N+1, Pageable
+- 05 — Exception handling: `@ControllerAdvice`, `@ExceptionHandler`, custom exceptions, error response DTO
+- 06 — Spring Security + JWT: `SecurityFilterChain`, `UserDetailsService`, `OncePerRequestFilter`, BCrypt, CORS
+- 07 — Bean Validation: `@Valid`, `@NotBlank`, `@Positive`, `@Size`, `@Validated` on path variables
+- 08 — Transactions: `@Transactional`, `readOnly = true`, private method gotcha, `LazyInitializationException`, propagation
+- 09 — Testing: JUnit 5, Mockito, `@WebMvcTest`, `@SpringBootTest`, `@DataJpaTest`, layered testing strategy
 
 ---
 
@@ -51,12 +50,23 @@ public void save(Employee e) { ... }
 
 Used to avoid hitting the database repeatedly for data that does not change often.
 
-### JPA advanced
+### Application profiles
 
-- **JPQL and `@Query`** — custom queries beyond what `JpaRepository` generates automatically
-- **`FetchType.LAZY` vs `EAGER`** — control when related entities are loaded from the database
-- **N+1 problem** — what it is and how `JOIN FETCH` or `@EntityGraph` solves it
-- **Pagination** — `Pageable` and `Page<T>` for returning paginated results to the frontend
+Different configuration per environment:
+
+```properties
+# application-dev.properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/dev_db
+
+# application-prod.properties
+spring.datasource.url=${DATABASE_URL}
+```
+
+Switch with `spring.profiles.active=dev`. Every consultancy project uses this pattern to separate local development config from staging and production.
+
+### Database migrations — Flyway
+
+Instead of `ddl-auto=update`, production Spring Boot projects use Flyway to manage schema changes as versioned SQL scripts (`V1__create_users.sql`, `V2__add_transactions.sql`). Flyway runs the scripts in order on startup and tracks which ones have been applied. This is safer than Hibernate auto-update, which can silently fail on complex changes.
 
 ---
 

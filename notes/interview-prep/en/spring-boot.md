@@ -38,6 +38,17 @@ It is the central configuration file — database URL, server port, JWT secret, 
 
 ---
 
+**What are the options for spring.jpa.hibernate.ddl-auto and which one do you use in each environment?**
+
+The main options are: `update` (adds new columns, never drops — safe for development), `create` (drops all tables and recreates on every startup — destroys all data), `validate` (checks the schema matches the entity and fails if not — useful in production to catch drift), and `none` (does nothing — used when you manage the schema with a migration tool like Flyway). In project 07 I use `update` during development so the schema evolves as I add entities, and would switch to `validate` or `none` in production.
+
+> **Junior tip:** `create` is the most dangerous option — it wipes the database every time the app starts. Interviewers ask about this specifically because using `create` in production is a classic junior mistake.
+> **Consejo de entrevista:** `create` es la opción más peligrosa — borra la base de datos cada vez que la app arranca. Los entrevistadores preguntan sobre esto porque usar `create` en producción es un error clásico de junior.
+
+Red flag answer: "I always use `create` — it is easier to develop with." That shows you do not understand the risk of dropping data.
+
+---
+
 **Why did you choose Spring Boot instead of plain Spring for project 07?**
 
 Plain Spring requires XML configuration, explicit bean declarations, and a separately installed server. Spring Boot eliminates all of that — I could start writing REST endpoints immediately after generating the project on start.spring.io. For a portfolio project built to demonstrate full-stack skills, removing the setup ceremony is the right decision.
@@ -74,6 +85,9 @@ Red flag answer: "I put it on the controller." That shows a misunderstanding of 
 **What happens when you access a LAZY relationship outside a transaction?**
 
 You get a LazyInitializationException — the Hibernate session is already closed, so it cannot execute the extra query to load the relationship. The correct fix is to convert the entity to a DTO inside the @Transactional service method, while the session is still open — not to access lazy fields in the controller after the session has closed.
+
+> **Junior tip:** the fix is always "convert to DTO inside @Transactional" — never "make the relationship EAGER." Making it EAGER hides the problem and introduces a worse one: always loading data you didn't ask for, on every query.
+> **Consejo de entrevista:** la solución siempre es "convertir a DTO dentro de @Transactional" — nunca "hacer la relación EAGER." Hacerla EAGER oculta el problema e introduce uno peor: cargar datos que no pediste en cada consulta.
 
 ---
 
@@ -129,6 +143,9 @@ Red flag answer: "I put everything in the controller because it is simpler." Tha
 
 All three register the class as a Spring bean, but the semantic difference matters. @Repository also translates JPA exceptions into Spring's DataAccessException hierarchy so the service never needs to handle Hibernate-specific errors. Using the right annotation makes the code self-documenting — any developer can identify the layer immediately.
 
+> **Junior tip:** @Repository's exception translation is the one real functional difference — everything else is about intent and readability. Knowing the exception translation point is what separates a thoughtful answer from a guess.
+> **Consejo de entrevista:** la traducción de excepciones de @Repository es la única diferencia funcional real — todo lo demás es sobre intención y legibilidad. Conocer ese punto es lo que separa una respuesta reflexiva de una suposición.
+
 ---
 
 **Why use DTOs instead of returning JPA entities directly from the controller?**
@@ -136,6 +153,26 @@ All three register the class as a Spring bean, but the semantic difference matte
 Entities are tied to the database schema — they can expose fields you should not send to the client (password hash, internal foreign keys, lazy-loaded collections). DTOs let you control exactly what the API returns. In project 07 the Transaction entity has a user field with the full User object — the TransactionDTO exposes only the fields the Angular frontend actually needs.
 
 Red flag answer: "I return entities because it is less code." Entities can cause serialization errors on lazy-loaded relationships and expose database internals to clients.
+
+---
+
+**What is the difference between @PatchMapping and @PutMapping, and when do you use each?**
+
+@PutMapping replaces the entire resource — the client sends all fields, even the ones that did not change. @PatchMapping updates only the fields provided — the rest stay unchanged. In project 07 I use @PutMapping for full form edits where the frontend always sends the complete object, and @PatchMapping for single-field updates like marking a transaction as reconciled. Most CRUD apps use @PutMapping by default; @PatchMapping is correct when only part of the data is being changed.
+
+> **Junior tip:** if you are unsure which to use, @PutMapping is the safer and more common default in CRUD apps. @PatchMapping shows you think about partial updates and API design — mention it when discussing REST conventions.
+> **Consejo de entrevista:** si no estás seguro, @PutMapping es la opción más segura y más común en apps CRUD. @PatchMapping demuestra que piensas en actualizaciones parciales y diseño de API.
+
+---
+
+**How do you convert a JPA entity to a DTO in the service layer?**
+
+I create the DTO directly in the service method using the DTO's constructor. In project 07, because TransactionDTO is a Java record, I call `new TransactionDTO(entity.getId(), entity.getAmount(), entity.getDescription(), entity.getDate(), entity.getCategory())` inside the service. If the same conversion is needed in multiple places, I extract it into a private static helper method on the service. A separate mapper class or MapStruct only makes sense when conversions are shared across many services.
+
+> **Junior tip:** start simple — direct constructor call inside the service. Add a mapper only if you find yourself copying the same conversion to multiple places. Premature abstraction is a common mistake that makes the code harder to read.
+> **Consejo de entrevista:** empieza simple — llamada directa al constructor en el servicio. Añade un mapper solo si duplicas la misma conversión en varios lugares. La abstracción prematura es un error común.
+
+Red flag answer: "I return the entity directly — it is less code." Entities expose the database schema, can cause serialization errors on lazy-loaded relationships, and leak internals like password hashes to the client.
 
 ---
 
@@ -203,6 +240,9 @@ When the logic cannot be expressed through method naming — for example, joinin
 **How does save() know whether to insert or update?**
 
 save() checks the @Id field. If it is null, JPA inserts a new row. If it has an existing value, JPA merges (updates) the existing row. You do not need separate insert() and update() methods.
+
+> **Junior tip:** "null id = insert, non-null id = update" is the one sentence that answers this. One method for both operations — that is the design. Spring Data calls this the upsert pattern.
+> **Consejo de entrevista:** "id null = insertar, id no nulo = actualizar" es la frase que responde esto. Un método para ambas operaciones — ese es el diseño.
 
 ---
 
@@ -306,6 +346,15 @@ Red flag answer: "I put it in the code because it is easier." That is a security
 
 ---
 
+**What is the difference between 401 Unauthorized and 403 Forbidden, and when does Spring Security return each?**
+
+401 means the request has no valid authentication — no token, an expired token, or an invalid signature. 403 means the user is authenticated (the token is valid) but does not have permission to access that resource. In project 07, a request without a JWT to a protected endpoint returns 401. A USER trying to access an endpoint annotated with @PreAuthorize("hasRole('ADMIN')") returns 403. Spring Security can return 403 for unauthenticated requests by default — you override this with a custom AuthenticationEntryPoint that returns 401 instead.
+
+> **Junior tip:** 401 = "who are you?" — 403 = "I know who you are, but no." This distinction shows security awareness beyond just "it doesn't work." Mention it when talking about the SecurityFilterChain.
+> **Consejo de entrevista:** 401 = "¿quién eres?" — 403 = "sé quién eres, pero no puedes." Esta distinción demuestra conciencia de seguridad más allá de "no funciona."
+
+---
+
 **Your JWT filter is rejecting valid tokens — what do you check first?**
 
 I check three things: the secret key (is it the same one used to sign the token?), the token expiration (has it expired?), and the Authorization header format (must be exactly "Bearer token" with a space). I also check the SecurityFilterChain configuration to confirm the endpoint is not accidentally marked as requiring a role the user does not have.
@@ -353,11 +402,42 @@ Stateless means Spring Security does not create or use an HTTP session to rememb
 
 RuntimeException is unchecked — callers do not need to declare it with throws. Checked exceptions (extending Exception) force every method in the call stack to either handle or re-declare the exception, which clutters service code with error handling for problems it cannot fix. Spring Boot's convention is: throw unchecked exceptions from the service, catch them globally with @ControllerAdvice.
 
+> **Junior tip:** the phrase to use is "Spring Boot's convention is unchecked exceptions from the service, caught globally with @ControllerAdvice." That sentence shows you understand the full pattern, not just the syntax.
+> **Consejo de entrevista:** la frase a usar es "la convención de Spring Boot es excepciones no comprobadas desde el servicio, capturadas globalmente con @ControllerAdvice." Esa frase demuestra que entiendes el patrón completo.
+
 ---
 
 **A junior colleague has a try/catch block in every controller method — what do you tell them?**
 
 I would explain that Spring Boot has @ControllerAdvice for this — you define all error handling in one class and Spring routes exceptions there automatically. It removes duplication, keeps controllers focused on the happy path, and makes error responses consistent across the entire API. I would show them the GlobalExceptionHandler from project 07 as an example.
+
+---
+
+**What is the difference between MethodArgumentNotValidException and ConstraintViolationException?**
+
+MethodArgumentNotValidException is thrown when @Valid on a @RequestBody object fails — a field in the DTO violates a constraint like @NotBlank or @Positive. ConstraintViolationException is thrown when @Validated on the controller class triggers validation on individual @PathVariable or @RequestParam parameters. Both need to be handled in @ControllerAdvice, but with separate @ExceptionHandler methods because they are different exception types.
+
+> **Junior tip:** in practice you always handle both in @ControllerAdvice — one handler for each. The distinction matters in interviews because it shows you know where each one comes from, not just that "validation failed."
+> **Consejo de entrevista:** en la práctica siempre gestionas ambas en @ControllerAdvice — un handler para cada una. La distinción importa en entrevistas porque demuestra que sabes de dónde viene cada una, no solo que "falló la validación."
+
+---
+
+## Transactions
+
+**What does @Transactional(readOnly = true) do and why should you use it on read methods?**
+
+It tells Hibernate to skip dirty checking at the end of the transaction — Hibernate does not compare the loaded entity state to detect changes, because you declared no changes will happen. This makes read operations faster. In project 07 I annotate every service method that only reads data with @Transactional(readOnly = true), and every write method with @Transactional.
+
+> **Junior tip:** the rule is simple — reads get @Transactional(readOnly = true), writes get @Transactional. This shows you think about performance, not just correctness. Interviewers notice when a candidate knows this distinction.
+> **Consejo de entrevista:** la regla es simple — las lecturas llevan @Transactional(readOnly = true), las escrituras llevan @Transactional. Demuestra que piensas en rendimiento, no solo en corrección.
+
+---
+
+**Why does @Transactional not work on private methods?**
+
+@Transactional works through a Spring proxy — Spring wraps the bean in a wrapper object that intercepts method calls and manages the transaction. A proxy can only intercept public methods. When you call a private method, you call it directly on the real object — the proxy is bypassed and the annotation is silently ignored with no error at startup. In project 07 I always make service methods that need transactions public.
+
+Red flag answer: "I tested it and it works." It may appear to work if the private method is called by a public @Transactional method — the outer transaction covers both. But the private annotation itself does nothing, which is a hidden bug waiting to appear.
 
 ---
 

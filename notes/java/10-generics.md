@@ -136,9 +136,49 @@ result.orElseThrow(() -> new EmployeeNotFoundException(id));
 // Run action if present
 result.ifPresent(emp -> System.out.println(emp.getName()));
 
-// Transform if present
+// Transform if present — Optional.map() transforms the value inside the Optional
+// if present, and returns a new Optional. If empty, stays empty.
 Optional<String> name = result.map(Employee::getName);
+// Optional<Employee>  →  Optional<String>
 ```
+
+### Optional.map() vs Stream.map()
+
+Same concept — transform the value inside — but they work on different things:
+
+| | Works on | Returns |
+|---|---|---|
+| `Stream.map()` | each element in a stream | a new `Stream` |
+| `Optional.map()` | the value inside the Optional, if present | a new `Optional` |
+
+You do NOT need `.stream()` before `.map()` when working with an Optional.
+
+### Chaining map() + orElseThrow() — real project example
+
+This is the standard pattern in `ProjectService.getById()`:
+
+```java
+// repository.findById(id) returns Optional<Project>
+public ProjectResponse getById(Long id) {
+    return projectRepository.findById(id)
+        .map(project -> {                        // Optional<Project> → Optional<ProjectResponse>
+            ProjectResponse response = new ProjectResponse();
+            response.setId(project.getId());
+            response.setName(project.getName());
+            response.setDescription(project.getDescription());
+            response.setActive(project.getActive());
+            response.setCreatedAt(project.getCreatedAt());
+            return response;
+        })
+        .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+        // Optional<ProjectResponse> → ProjectResponse  (throws if empty)
+}
+```
+
+Step by step:
+1. `findById(id)` → `Optional<Project>` — present if found, empty if not
+2. `.map(...)` → `Optional<ProjectResponse>` — transforms the value inside, stays empty if was empty
+3. `.orElseThrow(...)` → `ProjectResponse` — unwraps the value, or throws if empty
 
 ### The most common Spring Boot pattern
 
