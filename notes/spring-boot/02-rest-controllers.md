@@ -275,6 +275,78 @@ public class UserController {
 - `@GetMapping` — responds to `GET /api/users`; no path needed because the base URL is already set on the class
 - The controller injects the service the same way the service injects the repository — same constructor injection pattern
 
+### Project 07 — ProjectService — full CRUD with DTOs and toResponse()
+
+Step 2 introduces DTOs and full CRUD. The key pattern: a private `toResponse()` helper avoids repeating the entity-to-DTO mapping in every method.
+
+```java
+@Service
+public class ProjectService {
+
+    private final ProjectRepository projectRepository;
+
+    public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
+
+    public List<ProjectResponse> getAll() {
+        return projectRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public ProjectResponse getById(Long id) {
+        return projectRepository.findById(id)
+                .map(this::toResponse)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+    }
+
+    public ProjectResponse create(CreateProjectRequest request) {
+        Project project = new Project();
+        project.setName(request.getName());
+        project.setDescription(request.getDescription());
+        Project saved = projectRepository.save(project);
+        return toResponse(saved);
+    }
+
+    public ProjectResponse update(Long id, UpdateProjectRequest request) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+        project.setName(request.getName());
+        project.setDescription(request.getDescription());
+        Project saved = projectRepository.save(project);
+        return toResponse(saved);
+    }
+
+    public void delete(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+        project.setActive(false);   // soft delete — keeps data, marks as inactive
+        projectRepository.save(project);
+    }
+
+    private ProjectResponse toResponse(Project project) {
+        ProjectResponse response = new ProjectResponse();
+        response.setId(project.getId());
+        response.setName(project.getName());
+        response.setDescription(project.getDescription());
+        response.setActive(project.getActive());
+        response.setCreatedAt(project.getCreatedAt());
+        return response;
+    }
+}
+```
+
+**Key decisions:**
+- `toResponse()` is `private` — internal detail, no other class needs it
+- `create()` starts with `new Project()` — entity does not exist yet
+- `update()` starts with `findById()` — entity must exist to be modified; `orElseThrow()` handles the "not found" case and stops the method immediately
+- `save()` handles both insert and update — JPA decides based on whether `id` is null
+- `delete()` returns `void` — nothing to return after a soft delete
+- Soft delete: `active = false` instead of removing the row — keeps historical data intact
+
+---
+
 ### What happens when the browser calls GET /api/users
 
 ```

@@ -59,6 +59,18 @@ list.forEach(System.out::println);
 | Instance method on object | `object::method` | `System.out::println` |
 | Instance method on type | `ClassName::method` | `String::toUpperCase` |
 | Constructor | `ClassName::new` | `Employee::new` |
+| Method on current class | `this::method` | `this::toResponse` |
+
+**When to use a method reference:** only when the lambda does nothing except pass the argument directly to a method.
+
+```java
+// these two are identical — use the method reference when it is readable
+.map(project -> toResponse(project))   // lambda
+.map(this::toResponse)                 // method reference
+
+// cannot use a method reference here — the lambda does extra work
+.map(project -> toResponse(project.getName()))
+```
 
 ---
 
