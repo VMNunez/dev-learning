@@ -10,7 +10,9 @@ Most production Angular apps have protected routes, role-based views, and HTTP l
 
 ---
 
-**Live demo:** https://06-hr-portal.netlify.app
+## Live demo
+
+https://06-hr-portal.netlify.app
 
 **Test accounts:**
 - Admin: `admin@hrportal.com` / `admin123`
@@ -63,6 +65,14 @@ Most production Angular apps have protected routes, role-based views, and HTTP l
 - localStorage over a real backend — the focus of this project was Angular patterns, not data persistence
 - Single `isAdmin()` computed signal over role checks scattered across components — one place to change if the role logic evolves
 - Functional guards (`CanActivateFn`) over class-based guards — Angular v15+ convention, less boilerplate
+
+---
+
+## Future improvements
+
+- Replace localStorage with a real REST API backend
+- Email notifications when leave requests are approved or rejected
+- Export leave request history to PDF or CSV
 
 ---
 
