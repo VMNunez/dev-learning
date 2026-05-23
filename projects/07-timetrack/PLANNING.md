@@ -732,6 +732,77 @@ This project uses three READMEs. See `CLAUDE.md → README format for full-stack
 
 ---
 
+## backend/README.md — planned sections
+
+Write when the backend is complete (after Step 6).
+
+**1. API endpoints table**
+| Method | URL | Role | Description |
+One row per endpoint — all routes visible at a glance.
+
+**2. Database schema**
+Entities, fields, relationships. One sentence per key decision (why ENUM for status, why soft delete, why no cascade delete).
+
+**3. Auth flow — numbered steps**
+1. Client sends `POST /api/auth/login` with email and password
+2. Service loads user from DB, verifies password with BCrypt
+3. Server generates JWT signed with the secret from environment variable
+4. Client sends JWT in `Authorization: Bearer <token>` header on every request
+5. `JwtFilter` intercepts, validates token, extracts user, sets `SecurityContext`
+6. Spring Security allows or denies based on `SecurityFilterChain` rules
+
+**4. Security considerations**
+- Passwords hashed with BCrypt — never stored in plain text
+- JWT secret loaded from environment variable — never committed to git
+- Role-based endpoint protection with `@PreAuthorize`
+- Input validation at controller boundary with `@Valid` + `@ControllerAdvice`
+
+**5. Key patterns**
+- Layered architecture — controller never calls repository
+- DTO boundary — entity never leaves the service layer
+- Soft delete — `active = false` instead of DELETE
+- `GlobalExceptionHandler` — consistent JSON error responses
+
+**6. Tradeoffs**
+- JWT over session-based auth — stateless API scales without server memory
+- Soft delete over hard delete — deleting a user would orphan all their TimeEntries
+- RuntimeException over checked exceptions — Spring Boot convention, caught globally with @ControllerAdvice
+
+**7. How to run alone**
+IntelliJ + local PostgreSQL, without Docker.
+
+---
+
+## frontend/README.md — planned sections
+
+Write when the frontend is complete (after Step 7).
+
+**1. Folder structure** — one-line explanation per folder, why it exists.
+
+**2. State management approach**
+- Signals for local component state
+- Services for shared state across pages
+- Coordinator pattern — page owns all state, child components receive and emit
+
+**3. Key patterns**
+- `authGuard` + `managerGuard` — route protection per role
+- HTTP interceptor — JWT attached automatically to every request
+- Role-aware UI — same route, different content per role
+- `forkJoin` on dashboard — parallel API calls for stat cards
+
+**4. Shared components**
+- `status-badge` — coloured badge used in entries, approvals and dashboard
+- `confirm-dialog` — reusable confirmation before any destructive action
+- `reject-dialog` — rejection note input, used in approvals
+
+**5. Tradeoffs**
+- Signals over NgRx — app complexity did not justify a state management library
+- Angular Material over custom CSS — enterprise UI library standard in Spanish consultancies
+
+**6. How to run alone** — `ng serve`
+
+---
+
 ## Architecture decisions to document in the global README
 
 Format: `[what you did] to [why it matters]` — one line each, 6-8 maximum.
