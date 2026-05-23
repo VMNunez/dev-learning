@@ -1,12 +1,12 @@
 # TimeTrack
 
-Timesheet app where employees log hours on projects and managers approve or reject every entry.
+My 7th learning project and my first full-stack app — a timesheet where employees log hours on projects and managers approve or reject every entry, with a Spring Boot REST API connected to an Angular frontend.
 
 ---
 
 ## Why this project
 
-Every Spanish consultancy uses a tool like this internally. I built it to understand how approval workflows, role-based access and a real REST API actually work together in production — not in a tutorial, but in a domain that any interviewer will immediately recognise.
+My previous six projects were Angular-only with localStorage as a fake backend. This is the step where everything connects: a real database, a real API and a real frontend talking to each other. I built it to understand how a full-stack app actually works — how Angular calls a Spring Boot API, how the server validates and protects data, and how both sides have to agree on a contract.
 
 ---
 
