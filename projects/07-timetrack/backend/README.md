@@ -159,6 +159,52 @@ private ProjectResponse toResponse(Project project) {
 
 ---
 
+## Folder structure
+
+```
+src/main/java/com/victor/timetrack/
+├── controller/
+│   ├── UserController.java          ✓
+│   ├── ProjectController.java       ✓
+│   ├── AuthController.java          (Step 3)
+│   ├── TimeEntryController.java     (Step 5)
+│   └── ReportController.java        (Step 6)
+├── service/
+│   ├── UserService.java             ✓
+│   ├── ProjectService.java          ✓
+│   ├── AuthService.java             (Step 3)
+│   ├── TimeEntryService.java        (Step 5)
+│   └── ReportService.java           (Step 6)
+├── repository/
+│   ├── UserRepository.java          ✓
+│   ├── ProjectRepository.java       ✓
+│   └── TimeEntryRepository.java     (Step 5)
+├── model/
+│   ├── User.java                    ✓
+│   ├── Project.java                 ✓
+│   ├── TimeEntry.java               (Step 5)
+│   ├── Role.java                    (Step 4 — enum: EMPLOYEE, MANAGER)
+│   └── EntryStatus.java             (Step 5 — enum: DRAFT, SUBMITTED, APPROVED, REJECTED)
+├── dto/
+│   ├── request/
+│   │   ├── CreateProjectRequest.java  ✓
+│   │   └── UpdateProjectRequest.java  ✓
+│   └── response/
+│       └── ProjectResponse.java       ✓
+├── exception/                         (Step 3)
+│   ├── GlobalExceptionHandler.java
+│   ├── ResourceNotFoundException.java
+│   └── UnauthorizedException.java
+└── security/                          (Step 3)
+    ├── JwtUtil.java
+    ├── JwtFilter.java
+    └── SecurityConfig.java
+```
+
+*Each layer only calls the one directly below it — controller calls service, service calls repository. No layer skips another.*
+
+---
+
 ## How to run alone
 
 **Requirements:** Java 25, PostgreSQL running locally, database named `timetrack`
