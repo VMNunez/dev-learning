@@ -1,6 +1,18 @@
 # TimeTrack
 
-A timesheet app where employees log hours worked on projects. Managers review, approve or reject entries.
+Timesheet app where employees log hours on projects and managers approve or reject every entry.
+
+---
+
+## Why this project
+
+Every Spanish consultancy uses a tool like this internally. I built it to understand how approval workflows, role-based access and a real REST API actually work together in production — not in a tutorial, but in a domain that any interviewer will immediately recognise.
+
+---
+
+## GIF
+
+*Coming soon — added when the Angular frontend is complete.*
 
 ---
 
@@ -12,43 +24,42 @@ A timesheet app where employees log hours worked on projects. Managers review, a
 
 ## Features
 
-- Employees log time entries with project, date, hours and description
-- DRAFT → SUBMITTED → APPROVED / REJECTED workflow for every entry
-- Manager approval dashboard with quick approve and reject actions
-- Role-based access — employees see their own data, managers see everything
-- Reports with hours grouped by project and by employee
-- Soft delete for users and projects — historical data is never lost
+- Employees log time entries with project, date, hours and a description
+- Every entry goes through a workflow: Draft → Submitted → Approved / Rejected
+- Rejected entries can be edited and resubmitted
+- Manager dashboard with pending approvals and quick approve/reject actions
+- Role-based access — employees see only their own data, managers see everything
+- Reports with hours grouped by project and by employee for any month
+- Accounts created by managers only — no public registration
 
 ---
 
 ## Architecture decisions
 
-**Manager creates employee accounts instead of public self-registration → prevents role abuse → removes the attack surface entirely**
-Self-registration would let anyone assign themselves the Manager role. Since there is no role verification at signup, the only safe approach is to have an existing manager create every account.
+- Workflow states (DRAFT → SUBMITTED → APPROVED / REJECTED) instead of a boolean to capture every step, enable the resubmit flow and give managers a clear queue of what needs attention
+- SecurityContextHolder for the current user instead of a client-supplied userId to prevent privilege escalation — the client cannot choose which user the server acts as
+- Manager-only account creation to remove the attack surface of public self-registration entirely
+- data.sql seed for the first manager account to avoid a setup endpoint that must be removed after first use
+- PATCH for status transitions (submit, approve, reject) to signal that only one field changes — PUT would replace the whole resource
+- DTO boundary between persistence and HTTP layer to control exactly what the API exposes and hides
+- Soft delete for users and projects to preserve all historical time entry data — hard delete would orphan records
+- Docker Compose to run Spring Boot and PostgreSQL together with one command
 
-**`data.sql` for the first manager account instead of a setup endpoint → simpler and safer → no endpoint to forget and leave open**
-A setup endpoint must be removed or protected after first use — it is easy to forget and becomes a security hole. A seed file runs automatically on startup, is version-controlled, and cannot be called from outside.
+---
 
-**Workflow states (DRAFT → SUBMITTED → APPROVED / REJECTED) instead of a boolean `approved` field → richer state machine → enables the resubmit flow and clear audit trail**
-A boolean only captures the final state. The workflow captures every step: employees see that their entry is pending, managers know what needs attention, and rejected entries can be corrected and resubmitted. A boolean would require extra fields to represent the same information.
+## Tradeoffs
 
-**DTOs instead of returning JPA entities directly from the API → controlled API contract → hides internal fields from the client**
-Entities contain fields that should never leave the server — password hashes, lazy-loaded relationships, internal foreign keys. DTOs let you control exactly what the API returns and receives, independent of the database schema.
+- JWT over session-based auth — stateless API requires no server memory per user
+- Soft delete over hard delete — deleting a user would orphan all their time entries
+- docker-compose over separate manual setup — one command runs the full project with no local PostgreSQL installation needed
 
-**`@PreAuthorize` instead of checking roles inside the service → separation of concerns → access control is visible at a glance**
-Role checks inside the service mix business logic with access control — two separate concerns in the same class. `@PreAuthorize` moves access control to the method signature, where it is enforced before the method body runs.
+---
 
-**`SecurityContextHolder` to get the current user instead of passing `userId` in the request body → prevents privilege escalation → the client cannot choose which user the server acts as**
-Passing `userId` in the body lets the client act as any user — a classic privilege escalation risk. `SecurityContextHolder` reads the authenticated user from the JWT token, which the server validated. The client cannot forge it.
+## Future improvements
 
-**`PATCH` for state transitions (submit, approve, reject) instead of `PUT` → correct HTTP semantics → signals that only one field changes**
-`PUT` replaces an entire resource. State transitions only change the `status` field. `PATCH` signals that a partial update is happening, which matches the intent of a workflow action.
-
-**Soft delete (`active = false`) for users and projects instead of hard delete → preserves historical data → no orphaned records**
-Deleting a user would orphan all their time entries — the history would reference a user that no longer exists. Soft delete preserves all historical data while preventing the account from being used.
-
-**Docker Compose instead of running Spring Boot and PostgreSQL separately → one command to start everything → no local PostgreSQL installation needed**
-`docker-compose up` starts the full application — database included. Anyone can run the project without installing or configuring PostgreSQL locally. This is how every consultancy runs local development.
+- Export monthly reports to PDF or Excel
+- Email notifications when entries are approved or rejected
+- Bulk approval for managers handling large teams
 
 ---
 
@@ -101,31 +112,29 @@ Deleting a user would orphan all their time entries — the history would refere
 │           ├── repository/               ← Database access — extends JpaRepository
 │           ├── model/                    ← JPA entities — mapped to PostgreSQL tables
 │           ├── dto/
-│           │   ├── request/              ← What the client sends (create, update payloads)
+│           │   ├── request/              ← What the client sends
 │           │   └── response/             ← What the API returns (never the raw entity)
 │           ├── exception/                ← Global error handler and custom exceptions
 │           └── security/                 ← JWT filter, Spring Security config
 └── frontend/                             ← Angular project (added in Step 7)
 ```
 
-*Each layer only calls the layer directly below it — controller calls service, service calls repository. No layer skips another.*
+*Each layer only calls the layer directly below it — controller calls service, service calls repository.*
 
 ---
 
 ## How to run
 
-*Full Docker setup coming in the final step. For now, run manually.*
+*Full Docker setup coming in the final step.*
 
 **Requirements:** Java 25, PostgreSQL running locally, database named `timetrack`
 
-**1. Set the database password as an environment variable**
-
-In IntelliJ: Run → Edit Configurations → Environment variables → add `DB_PASSWORD` with your PostgreSQL password.
-
-**2. Run the backend**
+Set `DB_PASSWORD` as an environment variable (IntelliJ: Run → Edit Configurations → Environment variables).
 
 Open `projects/07-timetrack/backend/timetrack/` in IntelliJ and run `TimetrackApplication.java`.
 
 API available at `http://localhost:8080`
 
-*Frontend instructions will be added when the Angular project is set up.*
+---
+
+**Full technical details:** [backend/README.md](backend/README.md) · [frontend/README.md](frontend/README.md)
