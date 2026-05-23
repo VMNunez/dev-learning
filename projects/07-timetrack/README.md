@@ -64,6 +64,14 @@ Deleting a user would orphan all their time entries — the history would refere
 - `@Column(nullable = false, unique = true)` — adding database constraints directly on entity fields
 - `@CreationTimestamp` — Hibernate sets the timestamp automatically on first save
 - Default field values in Java — `private Boolean active = true` sets the default at the entity level
+- DTOs — `CreateProjectRequest`, `UpdateProjectRequest`, `ProjectResponse` — separate API contract from the entity
+- `toResponse()` private helper — maps entity to DTO in one place, reused across all service methods
+- `ResponseEntity<T>` — controls the HTTP status code explicitly on every endpoint
+- `@PathVariable` — reads a dynamic URL segment (`/{id}`) into a method parameter
+- `@RequestBody` — converts JSON from the request body into a Java object via Jackson
+- `@PostMapping`, `@PutMapping`, `@DeleteMapping` — HTTP method annotations for full CRUD
+- `ResponseEntity.noContent().build()` — status 204 with no body, used on DELETE
+- `ResponseEntity<Void>` — return type when the response has no body
 
 ---
 
