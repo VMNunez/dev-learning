@@ -11,19 +11,19 @@ Copy the TOPIC, NOTES_PATH, and FILE values into the `auto-audit-prompt.md` conf
 
 ## Topics — recommended audit order
 
-| # | TOPIC | NOTES_PATH | FILE | Last Audited | Status | Notes |
-|---|-------|------------|------|-------------|--------|-------|
-| 1 | Angular | notes/angular/ | angular | — | ❌ Not done | Most important — audit first |
-| 2 | Angular Material | notes/angular-material/ | angular | — | ❌ Not done | No separate FILE; questions go into angular.md |
-| 3 | Architecture | notes/architecture/ | architecture | — | ❌ Not done | Covers REST, JWT, layers, SOLID |
-| 4 | TypeScript | notes/typescript/ | typescript | — | ❌ Not done | |
-| 5 | General | — | general | — | ❌ Not done | No NOTES_PATH; skip Part 1 and run Part 2 only |
-| 6 | JavaScript | notes/javascript/ | javascript | — | ❌ Not done | |
-| 7 | CSS | notes/css/ | css | — | ❌ Not done | |
-| 8 | Git | notes/git/ | git | — | ❌ Not done | |
-| 9 | SQL | notes/sql/ | sql | — | ❌ Not done | PostgreSQL — flag engine-specific behaviour |
-| 10 | Java | notes/java/ | java | — | ❌ Not done | Language concepts needed for Spring Boot only |
-| 11 | Spring Boot | notes/spring-boot/ | spring-boot | — | ❌ Not done | Also read notes/java/ (set both as NOTES_PATH) |
+| # | TOPIC | NOTES_PATH | FILE | Last Audited | Iterations | Status | Notes |
+|---|-------|------------|------|-------------|-----------|--------|-------|
+| 1 | Angular | notes/angular/ | angular | 2026-05-23 | 1 | 🔧 Fixed | Fixed format throughout (blank lines, bilingual Junior tips); added 7 new questions: provideRouter, routerLinkActive, resolver, ngOnDestroy, ErrorStateMatcher, component test, track gotcha |
+| 2 | Angular Material | notes/angular-material/ | angular | — | 0 | ❌ Not done | No separate FILE; questions go into angular.md |
+| 3 | Architecture | notes/architecture/ | architecture | — | 0 | ❌ Not done | Covers REST, JWT, layers, SOLID |
+| 4 | TypeScript | notes/typescript/ | typescript | — | 0 | ❌ Not done | |
+| 5 | General | — | general | — | 0 | ❌ Not done | No NOTES_PATH; skip Part 1 and run Part 2 only |
+| 6 | JavaScript | notes/javascript/ | javascript | — | 0 | ❌ Not done | |
+| 7 | CSS | notes/css/ | css | — | 0 | ❌ Not done | |
+| 8 | Git | notes/git/ | git | — | 0 | ❌ Not done | |
+| 9 | SQL | notes/sql/ | sql | — | 0 | ❌ Not done | PostgreSQL — flag engine-specific behaviour |
+| 10 | Java | notes/java/ | java | — | 0 | ❌ Not done | Language concepts needed for Spring Boot only |
+| 11 | Spring Boot | notes/spring-boot/ | spring-boot | — | 0 | ❌ Not done | Also read notes/java/ (set both as NOTES_PATH) |
 
 ---
 

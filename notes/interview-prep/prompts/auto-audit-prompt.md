@@ -308,7 +308,12 @@ After completing the audit, update notes/interview-prep/prompts/audit-registry.m
 
 Find the row where TOPIC = {TOPIC}.
 - Update the "Last Audited" column with today's date in YYYY-MM-DD format.
-- Update the "Status" column with the final status (✅ Complete / 🔧 Fixed / ➕ Added).
+- Increment the "Iterations" column by 1 (e.g. 0 → 1, 1 → 2).
+- Update the "Status" column:
+  - Use ✅ Complete only when every section passes all completeness criteria and no gaps remain.
+  - Use 🔧 Fixed if gaps were found and fixed but the topic may still need another pass.
+  - Use ➕ Added if new content was created from scratch.
+  - Once a topic reaches ✅ Complete, keep it as ✅ Complete in future iterations unless new gaps are found.
 - Update the "Notes" column with a short summary of the main change — one line maximum.
 
 If the row does not exist, add it.
