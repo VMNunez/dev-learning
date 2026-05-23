@@ -720,16 +720,47 @@ is better than a perfect project delivered in September. Ship early, apply in pa
 
 ---
 
-## Architecture decisions to document in the README
+## README structure
 
-These are the decisions worth explaining — they show you think, not just code.
+This project uses three READMEs. See `CLAUDE.md → README format for full-stack projects` for the full rules.
 
-- Why manager creates employee accounts instead of public self-registration (anyone could self-assign the Manager role)
-- Why `data.sql` for the first manager account instead of a setup endpoint (a setup endpoint must be removed or protected after first use — a seed file is simpler and version-controlled)
-- Why workflow states instead of a simple boolean `approved` field
-- Why DTOs instead of returning entities directly from the API
-- Why `@PreAuthorize` instead of checking roles inside the service
-- Why `SecurityContextHolder` to get the current user instead of passing `userId` in the request body
-- Why `PATCH` for state transitions instead of `PUT`
-- Why soft delete (`active = false`) for both users and projects instead of hard delete (deleting a user would orphan their TimeEntries; deleting a project would orphan its entries)
-- Why `docker-compose` instead of running Spring Boot and PostgreSQL separately
+| File | Audience | When to write |
+|---|---|---|
+| `README.md` | Recruiter | Update after each step |
+| `backend/README.md` | Technical interviewer | Write when backend is complete |
+| `frontend/README.md` | Technical interviewer | Write when frontend is complete |
+
+---
+
+## Architecture decisions to document in the global README
+
+Format: `[what you did] to [why it matters]` — one line each, 6-8 maximum.
+
+- Stateless JWT auth to keep the API independent of server state
+- DTO boundary between persistence and HTTP layer to control what the API exposes
+- PATCH for state transitions (submit, approve, reject) to signal that only status changes
+- SecurityContextHolder for current user to prevent privilege escalation from client-supplied userId
+- Soft delete for users and projects to preserve historical timesheet data
+- Workflow states (DRAFT → SUBMITTED → APPROVED / REJECTED) to support the resubmit flow and audit trail
+- Manager-only account creation to prevent self-assignment of the Manager role
+- data.sql seed for the first manager account to avoid a setup endpoint that must be removed after first use
+
+---
+
+## Tradeoffs to document in the global README
+
+Format: `[option chosen] over [option rejected] — [reason]`
+
+- JWT over session-based auth — stateless API requires no server memory per user
+- Soft delete over hard delete — deleting a user would orphan all their TimeEntries
+- docker-compose over separate manual setup — one command runs the full project locally
+
+---
+
+## Future improvements to document in the global README
+
+Domain-realistic only — max 3 bullets.
+
+- Export approval reports to PDF or Excel
+- Email notifications when entries are approved or rejected
+- Bulk approval workflow for managers handling large teams
