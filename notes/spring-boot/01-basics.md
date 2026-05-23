@@ -75,6 +75,28 @@ If the library is not on Spring Initializr, search on [mvnrepository.com](https:
 
 **Why no version for Spring Boot dependencies?** The `<parent>` block in `pom.xml` points to `spring-boot-starter-parent`, which contains a BOM (Bill of Materials) — a tested list of compatible versions. Any dependency on that list works without a version tag.
 
+**Critical step after adding any dependency: reload Maven.**
+
+Adding a `<dependency>` block to `pom.xml` does not download the jar automatically. IntelliJ needs to reload the project to trigger the download. If you skip this, the dependency is declared but not in the classpath — the app still starts but silently ignores it, with no error.
+
+Two ways to reload:
+- Press `Ctrl + Shift + O` (the shortcut appears as a notification when you save `pom.xml`)
+- Or open the Maven panel (right side, "m" icon) → right-click the project → **Reload project**
+
+**How to verify a dependency was actually downloaded:**
+
+Check that the jar exists in the local Maven cache:
+```
+C:\Users\{you}\.m2\repository\{groupId}\{artifactId}\{version}\
+```
+
+Example for Spring Security:
+```
+C:\Users\Victor\.m2\repository\org\springframework\boot\spring-boot-starter-security\4.0.6\
+```
+
+If the folder does not exist, Maven never downloaded it. Reload Maven and try again.
+
 ---
 
 ### Lombok — eliminating boilerplate code
