@@ -1,12 +1,107 @@
 # Spring Security and JWT
 
 > 📖 [Spring Security Reference](https://docs.spring.io/spring-security/reference/)
+> 📖 [Java Configuration (SecurityFilterChain)](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html)
+> 📖 [Authorize HTTP Requests (requestMatchers, permitAll)](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html)
+> 📖 [Session Management — Stateless Authentication](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html)
+
+## Dependencies — what to add to pom.xml
+
+Two separate things need to be installed: Spring Security and a JWT library.
+
+### Spring Security
+
+Search `spring-boot-starter-security` on [mvnrepository.com](https://mvnrepository.com). You do **not** need to write a version — Spring Boot manages it automatically through the parent POM.
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+
+**What it does when you add it:** immediately blocks every endpoint with a default login page and a random password printed in the console. This is Spring Security's default "deny all" behaviour — you replace it with your own `SecurityConfig`.
+
+### JJWT
+
+JJWT is a Java library for creating and validating JWT tokens. Find it on [mvnrepository.com](https://mvnrepository.com) by searching `jjwt-api` (group: `io.jsonwebtoken`).
+
+It is split into three artifacts on purpose:
+
+| Artifact | Scope | Why |
+|----------|-------|-----|
+| `jjwt-api` | (default — compile) | The public interface you import in your code |
+| `jjwt-impl` | runtime | The internal logic that creates and parses tokens — you never reference it directly |
+| `jjwt-jackson` | runtime | Handles JSON serialization inside the token — you never reference it directly |
+
+`runtime` scope means Maven includes the jar when the app runs, but does not put it on the compile classpath — your code cannot accidentally depend on internal classes.
+
+**How to pick the version:** on mvnrepository.com, look at the usages column. Pick the version with the most usages in the most recent major family — that version has been tested by the most real projects. Avoid versions released in the last few weeks (usages will be very low).
+
+```xml
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.12.6</version>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.12.6</version>
+    <scope>runtime</scope>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.12.6</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
+After adding all dependencies, reload Maven in IntelliJ: right-click `pom.xml` → Maven → Reload project (or click the elephant icon in the Maven panel).
+
+---
 
 ## The problem without security
 
 Without Spring Security, every endpoint in your API is public. Any user can call GET /transactions/1 and read someone else's financial data. Security is not an optional extra — it is the first thing you add before writing any real feature.
 
 Spring Security works as a chain of filters that every HTTP request passes through before reaching your `@RestController`. You configure that chain with one bean: `SecurityFilterChain`.
+
+---
+
+## The JWT SecurityConfig pattern — always the same three things
+
+Every Spring Boot project that uses JWT needs these three settings in `SecurityConfig`. Points 1 and 2 are always identical — only point 3 changes per project.
+
+| # | What | Why |
+|---|------|-----|
+| 1 | Disable CSRF | JWT uses headers, not cookies — CSRF attacks are impossible |
+| 2 | `STATELESS` sessions | JWT carries all information — no server session needed |
+| 3 | Route rules | Which routes are public (`permitAll`) and which require a token (`authenticated`) |
+
+The class always looks like this:
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()  // public routes
+                .anyRequest().authenticated()                 // everything else requires JWT
+            );
+        return http.build();
+    }
+}
+```
+
+During development, use `.anyRequest().permitAll()` to open everything while building the JWT logic. Switch to `.anyRequest().authenticated()` when the full JWT flow is working.
 
 ---
 
