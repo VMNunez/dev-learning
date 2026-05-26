@@ -108,11 +108,16 @@ Read all files in {NOTES_PATH}.
    - Does it read like a personal learning guide, not like documentation? Test: would this
      sentence appear word-for-word on the official docs site? If yes, rewrite it in Victor's voice.
 
-3. When creating new note files or significantly rewriting existing ones, follow the
-   notes/angular/ style — that is the reference model. Concretely:
+3. When creating new note files or significantly rewriting existing ones, follow these
+   rules. The goal is notes that work as a personal study book — clear enough to learn
+   from scratch and return to as a reference. Every concept needs enough explanation to
+   understand it, not just recognise the syntax.
 
    - **Personal, conversational voice.** Write for Victor. "You use this when..." not
      "This is used when...". "This is why it matters:" not "This is relevant because:".
+   - **Explain before the code.** Give 1–3 sentences of context before any code block —
+     what the concept is, why it exists, when you reach for it. Do not open a section
+     with a code block and no explanation.
    - **Call out gotchas and "why not X" moments.** When there is a common mistake or a
      tempting shortcut that is wrong, name it explicitly. Use a **Why not X?** subheading
      or a > blockquote. Example: "Why not just return the object directly? Because you
@@ -129,6 +134,10 @@ Read all files in {NOTES_PATH}.
    - **Do not write documentation.** If the note could be copy-pasted onto the official docs
      site unchanged, it is wrong. Notes capture what Victor learned and why it clicked —
      not a neutral description of what the framework does.
+   - **Calibrate depth to complexity.** Simple syntax (a short annotation, a method call)
+     needs one sentence. Complex concepts (JPA relationships, Spring Security filter chain,
+     JWT flow) need a paragraph. Match the explanation length to how long it actually takes
+     to understand the concept — not to a fixed template.
 
 4. For each note file, give a coverage status:
    - ✅ Complete — solid coverage for a junior screening at a Spanish consultancy

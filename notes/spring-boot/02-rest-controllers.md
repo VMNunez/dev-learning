@@ -18,9 +18,9 @@ Repository      — talks to the database
 Database
 ```
 
-**The rule:** each layer only calls the layer directly below it. A controller never imports a repository. A service never imports a controller. This is called **separation of concerns** — each class has one job.
-
-Why it matters: if the business logic changes, you only change the service. If the database changes, you only change the repository. The controller stays the same.
+- **The rule:** each layer only calls the one directly below it. Controller → Service → Repository.
+- Business logic changes → only touch the service. Database changes → only touch the repository.
+- A controller that imports a repository is a red flag in any code review.
 
 ```java
 // Controller — only knows about the service
@@ -44,9 +44,9 @@ public class TransactionController {
 
 ## @RestController
 
-`@RestController` = `@Controller` + `@ResponseBody`. Every method return value is serialized to JSON automatically. Use it for all REST API controllers.
+`@RestController` = `@Controller` + `@ResponseBody`. Every return value is serialized to JSON automatically.
 
-`@Controller` is only for apps that return HTML views (server-rendered pages). In a backend API consumed by Angular, you always use `@RestController`.
+> **`@Controller` vs `@RestController`:** `@Controller` is for server-rendered HTML views. For a REST API consumed by Angular, always use `@RestController`.
 
 ```java
 @RestController
