@@ -50,20 +50,6 @@ public void save(Employee e) { ... }
 
 Used to avoid hitting the database repeatedly for data that does not change often.
 
-### Application profiles
-
-Different configuration per environment:
-
-```properties
-# application-dev.properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/dev_db
-
-# application-prod.properties
-spring.datasource.url=${DATABASE_URL}
-```
-
-Switch with `spring.profiles.active=dev`. Every consultancy project uses this pattern to separate local development config from staging and production.
-
 ### Database migrations — Flyway
 
 Instead of `ddl-auto=update`, production Spring Boot projects use Flyway to manage schema changes as versioned SQL scripts (`V1__create_users.sql`, `V2__add_transactions.sql`). Flyway runs the scripts in order on startup and tracks which ones have been applied. This is safer than Hibernate auto-update, which can silently fail on complex changes.

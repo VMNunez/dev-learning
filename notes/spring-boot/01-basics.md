@@ -6,6 +6,14 @@
 
 ## Why Spring Boot exists
 
+Before we get into Spring Boot, three terms you will see constantly:
+
+- **Tomcat** — a web server. It is a program that listens on a network port (like 8080) and receives HTTP requests from browsers or clients. Without a web server, your Java code has no way to accept HTTP connections. Before Spring Boot, you had to download Tomcat separately, install it, configure it, and deploy your app into it.
+- **`.jar`** — a packaged Java application. It is essentially a zip file that contains all your compiled code and can be run directly with `java -jar app.jar`. When you build a Spring Boot project, Maven produces a single `.jar` that contains your code and everything it needs (including Tomcat).
+- **Bean** — an object that Spring creates and manages for you. Instead of you writing `new UserService()` everywhere, Spring creates one instance of `UserService`, stores it, and automatically gives it to any class that needs it. You just annotate a class with `@Service` and Spring handles the rest.
+
+---
+
 Plain Spring requires a lot of manual setup — XML configuration files, explicit bean declarations, and a separately installed Tomcat server. Spring Boot was created to remove that friction.
 
 Spring Boot's two core ideas:
@@ -25,37 +33,44 @@ Every Spring Boot project at a consultancy starts the same way. The only things 
 
 ### What each field means
 
-| Field | What it is | Always the same? |
-|---|---|---|
-| **Project: Maven** | Build tool — downloads libraries, compiles and packages your code. Gradle does the same job but Maven is more common in Spanish companies. | Yes, always Maven |
-| **Language: Java** | The programming language. Kotlin and Groovy also run on the JVM but enterprise Spain uses Java. | Yes, always Java |
-| **Spring Boot version** | Pick the latest stable version — the one in green with no SNAPSHOT or RC label. SNAPSHOT = unfinished. RC = nearly ready but still being tested. | Always latest stable |
-| **Group** | A namespace that identifies who owns the project. Follows the reversed domain convention: `capgemini.com` → `com.capgemini`. For personal projects: `com.victor`. | Your domain reversed |
-| **Artifact** | The name of the project. Becomes the name of the final `.jar` file. Short, lowercase, no spaces. | Changes per project |
-| **Package name** | Generated automatically from Group + Artifact. The root Java package — every class lives inside it. Never change it manually. | Auto-generated |
-| **Packaging: Jar** | The format of the output file. Jar = self-contained, includes the web server inside. War = older format, requires an external server. Always Jar. | Yes, always Jar |
-| **Configuration: Properties** | Format of the config file. Properties = `key=value` (simpler). YAML = indented format (more readable but breaks with wrong indentation). | Properties is safer |
-| **Java** | The Java version installed on your machine. Must match what you have. Run `java -version` in the terminal to check. | Match your installation |
+| Field                         | What it is                                                                                                                                                        | Always the same?        |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| **Project: Maven**            | Build tool — downloads libraries, compiles and packages your code. Gradle does the same job but Maven is more common in Spanish companies.                        | Yes, always Maven       |
+| **Language: Java**            | The programming language. Kotlin and Groovy also run on the JVM but enterprise Spain uses Java.                                                                   | Yes, always Java        |
+| **Spring Boot version**       | Pick the latest stable version — the one in green with no SNAPSHOT or RC label. SNAPSHOT = unfinished. RC = nearly ready but still being tested.                  | Always latest stable    |
+| **Group**                     | A namespace that identifies who owns the project. Follows the reversed domain convention: `capgemini.com` → `com.capgemini`. For personal projects: `com.victor`. | Your domain reversed    |
+| **Artifact**                  | The name of the project. Becomes the name of the final `.jar` file. Short, lowercase, no spaces.                                                                  | Changes per project     |
+| **Package name**              | Generated automatically from Group + Artifact. The root Java package — every class lives inside it. Never change it manually.                                     | Auto-generated          |
+| **Packaging: Jar**            | The format of the output file. Jar = self-contained, includes the web server inside. War = older format, requires an external server. Always Jar.                 | Yes, always Jar         |
+| **Configuration: Properties** | Format of the config file. Properties = `key=value` (simpler). YAML = indented format (more readable but breaks with wrong indentation).                          | Properties is safer     |
+| **Java**                      | The Java version installed on your machine. Must match what you have. Run `java -version` in the terminal to check.                                               | Match your installation |
 
 ### Settings used for project 07 (TimeTrack)
 
-| Field | Value |
-|---|---|
-| Project | Maven |
-| Language | Java |
+| Field       | Value                           |
+| ----------- | ------------------------------- |
+| Project     | Maven                           |
+| Language    | Java                            |
 | Spring Boot | 4.0.6 (latest stable, May 2026) |
-| Group | com.victor |
-| Artifact | timetrack |
-| Packaging | Jar |
-| Java | 25 |
+| Group       | com.victor                      |
+| Artifact    | timetrack                       |
+| Packaging   | Jar                             |
+| Java        | 25                              |
 
-### Dependencies added
+### Dependencies for a full Spring Boot project
 
-| Dependency | What it gives you |
-|---|---|
-| **Spring Web** | The embedded HTTP server (Tomcat) and the annotations to build REST endpoints (`@RestController`, `@GetMapping`, etc.) |
-| **Spring Data JPA** | Tools to talk to the database without writing SQL by hand. You define Java classes and Spring generates the queries. |
-| **PostgreSQL Driver** | The connector between Java and PostgreSQL. Without this, Spring cannot open a database connection. |
+These are all the dependencies a complete Spring Boot project needs. Some can be selected in Spring Initializr at setup; others (marked with *) must be added manually to `pom.xml` later because they are not on Spring Initializr.
+
+| Dependency                    | What it gives you                                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Spring Web**                | The embedded HTTP server (Tomcat) and the annotations to build REST endpoints (`@RestController`, `@GetMapping`, etc.) |
+| **Spring Data JPA**           | Tools to talk to the database without writing SQL by hand. You define Java classes and Spring generates the queries.   |
+| **PostgreSQL Driver**         | The connector between Java and PostgreSQL. Without this, Spring cannot open a database connection.                     |
+| **Spring Security**           | Authentication and authorisation. Blocks all endpoints by default until you configure which routes are public.         |
+| **Spring Boot Validation**    | Bean Validation annotations (`@NotBlank`, `@NotNull`, `@Email`, `@Min`) for validating request bodies.               |
+| **Lombok**                    | Code generation at compile time — eliminates boilerplate getters, setters, and constructors from entity classes.       |
+| **Spring Boot Test**          | JUnit 5 + Mockito + test utilities. Added automatically by Spring Initializr and used for all your tests.             |
+| **JJWT*** (manual)            | JWT library for creating and validating tokens. Must be added manually from mvnrepository.com (three artifacts).       |
 
 ---
 
@@ -80,17 +95,20 @@ If the library is not on Spring Initializr, search on [mvnrepository.com](https:
 Adding a `<dependency>` block to `pom.xml` does not download the jar automatically. IntelliJ needs to reload the project to trigger the download. If you skip this, the dependency is declared but not in the classpath — the app still starts but silently ignores it, with no error.
 
 Two ways to reload:
+
 - Press `Ctrl + Shift + O` (the shortcut appears as a notification when you save `pom.xml`)
 - Or open the Maven panel (right side, "m" icon) → right-click the project → **Reload project**
 
 **How to verify a dependency was actually downloaded:**
 
 Check that the jar exists in the local Maven cache:
+
 ```
 C:\Users\{you}\.m2\repository\{groupId}\{artifactId}\{version}\
 ```
 
 Example for Spring Security:
+
 ```
 C:\Users\Victor\.m2\repository\org\springframework\boot\spring-boot-starter-security\4.0.6\
 ```
@@ -104,6 +122,7 @@ If the folder does not exist, Maven never downloaded it. Reload Maven and try ag
 Lombok is a Java library used in almost every Spring Boot project at consultancies. It generates getters, setters, constructors, `equals()`, `hashCode()`, and `toString()` automatically — you never write them manually.
 
 **Why it is needed:**
+
 - JPA requires a no-args constructor to create entity objects when reading from the database
 - Jackson (the JSON serializer) requires getters to convert entities to JSON
 - Without Lombok, a class with 5 fields needs 15+ extra lines of boilerplate
@@ -162,11 +181,11 @@ This step is required from Java 21+ — the compiler needs to know explicitly th
 
 **Annotations used on entities:**
 
-| Annotation | What it generates |
-|---|---|
-| `@Data` | Getters, setters, `equals()`, `hashCode()`, `toString()` |
-| `@NoArgsConstructor` | Empty constructor — required by JPA |
-| `@AllArgsConstructor` | Constructor with all fields |
+| Annotation            | What it generates                                        |
+| --------------------- | -------------------------------------------------------- |
+| `@Data`               | Getters, setters, `equals()`, `hashCode()`, `toString()` |
+| `@NoArgsConstructor`  | Empty constructor — required by JPA                      |
+| `@AllArgsConstructor` | Constructor with all fields                              |
 
 **Example — User entity with Lombok:**
 
@@ -277,11 +296,11 @@ public class TimetrackApplication {
 
 `@SpringBootApplication` combines three annotations:
 
-| Annotation | What it does |
-|-----------|-------------|
-| `@Configuration` | Marks this class as a source of Spring beans |
-| `@EnableAutoConfiguration` | Activates auto-configuration based on the classpath |
-| `@ComponentScan` | Scans the current package and all sub-packages for `@Component`, `@Service`, `@Repository`, `@Controller` |
+| Annotation                 | What it does                                                                                              |
+| -------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `@Configuration`           | Marks this class as a source of Spring beans                                                              |
+| `@EnableAutoConfiguration` | Activates auto-configuration based on the classpath                                                       |
+| `@ComponentScan`           | Scans the current package and all sub-packages for `@Component`, `@Service`, `@Repository`, `@Controller` |
 
 The class must be in the root package so `@ComponentScan` finds all your components automatically.
 
@@ -312,13 +331,13 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
 
-| Property | What it does |
-|---|---|
-| `spring.datasource.url` | JDBC URL — protocol + driver + host + port + database name |
-| `spring.datasource.username` | PostgreSQL user |
-| `spring.datasource.password` | PostgreSQL password — never commit the real value to GitHub |
+| Property                               | What it does                                                                                                                            |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `spring.datasource.url`                | JDBC URL — protocol + driver + host + port + database name                                                                              |
+| `spring.datasource.username`           | PostgreSQL user                                                                                                                         |
+| `spring.datasource.password`           | PostgreSQL password — never commit the real value to GitHub                                                                             |
 | `spring.jpa.hibernate.ddl-auto=update` | Creates tables if they do not exist; updates them if the entity changes. Never use `create` in production (drops and recreates tables). |
-| `spring.jpa.show-sql=true` | Prints the SQL Hibernate generates to the console — useful while learning |
+| `spring.jpa.show-sql=true`             | Prints the SQL Hibernate generates to the console — useful while learning                                                               |
 
 **How to verify the connection works:** run `TimetrackApplication.java` in IntelliJ and look for this line in the console:
 
@@ -329,6 +348,7 @@ HikariPool-1 - Start completed.
 HikariPool is the connection pool Spring Boot uses by default. It opens a set of database connections on startup and reuses them for every request — faster than opening a new connection each time.
 
 > **JDBC URL format:** `jdbc:postgresql://localhost:5432/timetrack`
+>
 > - `jdbc` — Java's standard protocol for database connections
 > - `postgresql` — the specific driver (matches the dependency in `pom.xml`)
 > - `localhost:5432` — host and port (5432 is PostgreSQL's default)

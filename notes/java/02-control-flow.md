@@ -2,7 +2,13 @@
 
 > 📖 [Oracle Docs — Control flow statements](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html)
 
+Control flow statements decide which code runs and how many times. Java uses the same structures as JavaScript — the syntax is nearly identical, so most of this will feel familiar.
+
+---
+
 ## if / else
+
+The basic decision tool. Runs the first block whose condition is true, skips the rest. If no condition matches, the `else` block runs (if you wrote one).
 
 ```java
 if (age >= 18) {
@@ -16,17 +22,24 @@ if (age >= 18) {
 
 ### Ternary operator
 
+A one-line shortcut for a simple `if/else` when you just need to pick a value. Same syntax as JavaScript:
+
 ```java
 String label = age >= 18 ? "Adult" : "Minor";
+// condition ? valueIfTrue : valueIfFalse
 ```
 
-Same as JavaScript — condition ? valueIfTrue : valueIfFalse.
+Use it only when both values are short and the condition is easy to read. If the line becomes hard to scan, use a regular `if/else`.
 
 ---
 
 ## switch
 
+Use `switch` when you have many possible values for one variable. A chain of `if/else if` for each value becomes hard to read — `switch` gives each value its own case and is easier to scan.
+
 ### Classic switch (statement)
+
+The classic form runs code for each matching case. You must write `break` at the end of each case — without it, execution "falls through" to the next case and runs that code too, even if it does not match. This is a common bug in Java code.
 
 ```java
 switch (day) {
@@ -43,9 +56,13 @@ switch (day) {
 }
 ```
 
-### Switch expression (Java 14+) — preferred
+Two cases with no code between them (like `MONDAY` and `TUESDAY`) is intentional fall-through — a common pattern to handle multiple values the same way.
 
-Returns a value, no `break` needed, no fall-through:
+### Switch expression (Java 14+) — use this form
+
+The classic switch was a **statement** — it ran code but returned nothing. The switch **expression** returns a value directly. You can assign it to a variable.
+
+It also removes fall-through: each arm uses `->` and runs exactly one thing. No `break` needed. The compiler also warns if you forget a case.
 
 ```java
 String type = switch (day) {
@@ -55,7 +72,7 @@ String type = switch (day) {
 };
 ```
 
-Use the switch expression form — it is cleaner and avoids the fall-through bug.
+Use the switch expression form for all new code — it is cleaner, safer, and easier to read.
 
 ---
 
@@ -63,18 +80,28 @@ Use the switch expression form — it is cleaner and avoids the fall-through bug
 
 ### Classic for
 
+The most explicit form — you control the start, stop, and step yourself. Three parts, separated by semicolons: `(init; condition; step)`. Use it when you need the index number.
+
 ```java
 for (int i = 0; i < 5; i++) {
-    System.out.println(i);   // 0 1 2 3 4
+    System.out.println(i);   // prints: 0 1 2 3 4
 }
 ```
 
+- `int i = 0` — start at index 0
+- `i < 5` — keep going while this is true
+- `i++` — increment i by 1 after each iteration
+
 ### Enhanced for (for-each) — use this for collections and arrays
+
+The classic index loop is verbose and error-prone (off-by-one errors, wrong variable name). The enhanced `for` removes the index entirely and gives you each item directly. Think of it as Java's version of `for...of` in JavaScript.
+
+Syntax: `for (Type variable : collection)` — read as "for each item of this type in this collection".
 
 ```java
 String[] names = {"Ana", "Luis", "Maria"};
 for (String name : names) {
-    System.out.println(name);
+    System.out.println(name);   // Ana, Luis, Maria
 }
 
 List<Employee> employees = getEmployees();
@@ -83,9 +110,17 @@ for (Employee emp : employees) {
 }
 ```
 
+Use the enhanced for whenever you just need the items and do not need the index. In Spring Boot, this is what you will write most of the time — though streams (covered in `09-streams-lambdas.md`) are even more concise for transforming collections.
+
 ---
 
 ## while and do-while
+
+Use `while` and `do-while` when you do not know how many iterations you need in advance. A `for` loop is better when you know the range.
+
+**`while`** checks the condition first. If the condition is false from the start, the body never runs.
+
+**`do-while`** runs the body first, then checks the condition. This guarantees at least one execution — useful when you must do something before you can check whether to continue.
 
 ```java
 // while — check first, may never run
@@ -103,23 +138,34 @@ do {
 } while (j < 5);
 ```
 
+In Spring Boot you will mostly use for-each loops and streams. `while` appears more in algorithms and when reading data streams (like parsing files line by line).
+
 ---
 
 ## break and continue
 
+Both keywords change the flow inside a loop:
+
+- **`break`** exits the entire loop immediately — no more iterations happen after it.
+- **`continue`** skips the rest of the current iteration and jumps straight to the next one.
+
 ```java
 for (int i = 0; i < 10; i++) {
-    if (i == 5) break;       // exits the loop completely
-    if (i % 2 == 0) continue; // skips to the next iteration
-    System.out.println(i);    // prints 1, 3
+    if (i == 5) break;        // stop the loop entirely when i reaches 5
+    if (i % 2 == 0) continue; // skip even numbers (go to next iteration)
+    System.out.println(i);    // prints: 1, 3
 }
 ```
+
+Think of `break` as the emergency exit and `continue` as the skip button.
+
+> **`break` vs returning from a method:** in Spring Boot services, it is more common to return early from a method than to use `break`. If you are checking a condition inside a loop and want to stop all work, `return` is usually cleaner than `break`.
 
 ---
 
 ## Null checks
 
-A very common pattern in Java — always check for `null` before calling methods on an object:
+`NullPointerException` is the most common runtime error in Java. It happens when you call a method on a variable that is `null` — Java cannot find the object to run the method on. The fix is simple: always check for `null` before calling methods on anything that might not exist.
 
 ```java
 // Risk of NullPointerException
@@ -131,9 +177,9 @@ if (name != null) {
     System.out.println(name.toUpperCase());
 }
 
-// Or using Optional (covered in 10-generics.md)
+// Or using Optional (covered in 10-generics.md) — the modern approach
 Optional.ofNullable(name)
     .ifPresent(n -> System.out.println(n.toUpperCase()));
 ```
 
-`NullPointerException` is the most common runtime error in Java. The modern approach is `Optional<T>` — but you will see both patterns in real codebases.
+In Spring Boot, many methods return `Optional<T>` instead of a raw object that might be null. `repository.findById(id)` is a good example — it returns `Optional<Employee>` so you are forced to handle the "not found" case. This pattern is covered in detail in `10-generics.md`.
