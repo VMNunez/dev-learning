@@ -336,6 +336,83 @@ This requires `@EnableMethodSecurity` on the `SecurityConfig` class (shown at th
 
 ---
 
+## JwtUtil — generating and validating tokens
+
+`JwtUtil` is a `@Component` (a Spring bean with no specific role). It has two `@Value` fields that read from `application.properties`, and five methods — three public and two private.
+
+### application.properties — JWT config
+
+```properties
+app.jwt.secret=${JWT_SECRET}
+app.jwt.expiration=86400000
+```
+
+`app.jwt` is just a naming convention — you invent the property names. The `${JWT_SECRET}` pattern reads from an environment variable at startup, the same way `${DB_PASSWORD}` works. `86400000` is 24 hours in milliseconds.
+
+### Reading config values with @Value
+
+```java
+@Value("${app.jwt.secret}")
+private String secret;        // the Base64-encoded signing secret
+
+@Value("${app.jwt.expiration}")
+private long expiration;      // milliseconds — always present, never null → primitive long, not Long
+```
+
+`@Value("${property.name}")` injects the value from `application.properties` into the field at startup. The syntax `${...}` inside `@Value` is the same as in `application.properties`.
+
+### getSigningKey() — the foundation
+
+Every other method in `JwtUtil` depends on this one. jjwt cannot use a plain `String` as a key — it needs a `SecretKey` object built from the raw bytes of the secret.
+
+```java
+private SecretKey getSigningKey() {
+    byte[] keyBytes = Decoders.BASE64.decode(secret);  // Base64 string → raw bytes
+    return Keys.hmacShaKeyFor(keyBytes);               // raw bytes → SecretKey (HMAC-SHA256)
+}
+```
+
+- `Decoders.BASE64.decode(secret)` — converts the Base64 string back to the raw bytes it represents
+- `Keys.hmacShaKeyFor(keyBytes)` — creates a `SecretKey` from those bytes using the HMAC-SHA algorithm; this is what `HS256` in the JWT header refers to
+
+**Imports:**
+```java
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import javax.crypto.SecretKey;
+```
+
+### Full JwtUtil class (built step by step)
+
+```java
+@Component
+public class JwtUtil {
+
+    @Value("${app.jwt.secret}")
+    private String secret;
+
+    @Value("${app.jwt.expiration}")
+    private long expiration;
+
+    // --- public methods ---
+
+    public String generateToken(String email) { ... }       // step 3 — after login
+    public String extractEmail(String token) { ... }        // step 3 — reads sub from payload
+    public boolean isValid(String token, String email) { }  // step 3 — used in JwtFilter
+
+    // --- private helpers ---
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private Claims parseClaims(String token) { ... }        // step 3 — parses and verifies
+}
+```
+
+---
+
 ## Common mistakes
 
 **Forgetting `SessionCreationPolicy.STATELESS`** — Spring creates HTTP sessions by default. Without this, you get sessions AND JWT, which conflict with each other and waste memory.

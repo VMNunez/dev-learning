@@ -83,6 +83,11 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - `@PostMapping`, `@PutMapping`, `@DeleteMapping` — HTTP method annotations for full CRUD
 - `ResponseEntity.noContent().build()` — status 204 with no body, used on DELETE
 - `ResponseEntity<Void>` — return type when the response has no body
+- `@Value("${property.name}")` — injects a value from `application.properties` into a class field
+- `@Component` — registers a utility class as a Spring bean with no specific role
+- `long` vs `Long` — primitive when value is always present; wrapper class when `null` is meaningful
+- JWT structure — header (algorithm) + payload (sub, iat, exp claims) + signature (HMAC using the secret key)
+- `getSigningKey()` — converts a Base64 secret string to a `SecretKey` using `Decoders.BASE64.decode()` + `Keys.hmacShaKeyFor()`
 
 ---
 

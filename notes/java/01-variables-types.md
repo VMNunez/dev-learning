@@ -90,6 +90,24 @@ Each primitive type has a corresponding wrapper class. You use wrapper classes w
 
 **Another case:** wrapper classes can be `null`. A primitive `int` cannot be null, but `Integer` can. In Spring Boot, database IDs are often typed as `Long` (not `long`) because Hibernate sets them to `null` until the entity is saved for the first time.
 
+### When to use each — the practical rule
+
+Use the **wrapper class** when `null` is a meaningful value.
+Use the **primitive** when the value is always present.
+
+```java
+// Long (wrapper) — because the id does not exist until JPA saves the entity
+@Id
+@GeneratedValue
+private Long id;
+
+// long (primitive) — because expiration is always 86400000, never null
+@Value("${app.jwt.expiration}")
+private long expiration;
+```
+
+In practice: JPA entity ids → always `Long`. Configuration values, counters, calculations → always `long`.
+
 | Primitive | Wrapper     |
 | --------- | ----------- |
 | `int`     | `Integer`   |
