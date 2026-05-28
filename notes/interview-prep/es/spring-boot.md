@@ -346,6 +346,14 @@ Respuesta de alerta: "Lo puse en el código porque es más fácil." Eso es una v
 
 ---
 
+**¿Qué hay dentro de un token JWT y cómo lo construye JwtUtil.generateToken()?**
+
+Un JWT tiene tres partes: header (algoritmo de firma), payload (los datos) y signature (la prueba de que no ha sido modificado). El payload en el proyecto 07 contiene tres campos estándar: `sub` (el email del usuario), `iat` (cuándo se creó el token) y `exp` (cuándo caduca). `generateToken()` usa el builder de JJWT para establecer esos tres campos, firma el resultado con la clave secreta y llama a `.compact()` para producir el string final `header.payload.signature`. La expiración se calcula como `System.currentTimeMillis() + expiration`, donde `expiration` es 86400000 (24 horas en milisegundos) leído de `application.properties`.
+
+> **Consejo de entrevista:** los entrevistadores suelen preguntar "¿qué hay dentro del token?" — la mayoría de candidatos junior dice "los datos del usuario" sin ser específicos. Nombrar `sub`, `iat` y `exp` demuestra que conoces el estándar JWT, no solo que usaste una librería.
+
+---
+
 **¿Cuál es la diferencia entre 401 Unauthorized y 403 Forbidden, y cuándo devuelve cada uno Spring Security?**
 
 401 significa que la petición no tiene autenticación válida — no hay token, el token ha caducado o la firma es inválida. 403 significa que el usuario está autenticado (el token es válido) pero no tiene permiso para acceder a ese recurso. En el proyecto 07, una petición sin JWT a un endpoint protegido devuelve 401. Un USER que intenta acceder a un endpoint anotado con @PreAuthorize("hasRole('ADMIN')") devuelve 403. Spring Security puede devolver 403 para peticiones no autenticadas por defecto — esto se sobreescribe con un AuthenticationEntryPoint personalizado que devuelve 401.

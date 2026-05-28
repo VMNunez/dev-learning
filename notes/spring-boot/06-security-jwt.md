@@ -382,6 +382,32 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 ```
 
+### generateToken() — building the signed token
+
+Called after a successful login. Takes the user's email (or any unique identifier) and returns the final JWT string ready to send to the client.
+
+```java
+// Takes the user's email and returns a signed JWT string
+public String generateToken(String username) {
+    return Jwts.builder()
+            .subject(username)                                              // who the token belongs to — stored as "sub" in the payload
+            .issuedAt(new Date())                                           // timestamp of when the token was created — stored as "iat"
+            .expiration(new Date(System.currentTimeMillis() + expiration)) // when the token expires — "exp" = now + 86400000ms (24h from application.properties)
+            .signWith(getSigningKey())                                      // signs the header + payload with our secret key — this is what prevents tampering
+            .compact();                                                     // builds everything and returns the final "header.payload.signature" string
+}
+```
+
+**Imports:**
+```java
+import io.jsonwebtoken.Jwts;
+import java.util.Date;
+```
+
+**Why `System.currentTimeMillis() + expiration`** — `new Date(long)` takes a timestamp in milliseconds since January 1, 1970. `currentTimeMillis()` gives you now. Adding `expiration` (86400000 = 24 hours in ms) gives you the exact moment 24 hours from now.
+
+---
+
 ### Full JwtUtil class (built step by step)
 
 ```java
@@ -396,9 +422,17 @@ public class JwtUtil {
 
     // --- public methods ---
 
-    public String generateToken(String email) { ... }       // step 3 — after login
-    public String extractEmail(String token) { ... }        // step 3 — reads sub from payload
-    public boolean isValid(String token, String email) { }  // step 3 — used in JwtFilter
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public String extractUsername(String token) { ... }      // reads "sub" from the payload — added with JwtFilter
+    public boolean isValid(String token, String email) { }   // full validation check — added with JwtFilter
 
     // --- private helpers ---
 
@@ -407,7 +441,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private Claims parseClaims(String token) { ... }        // step 3 — parses and verifies
+    private Claims parseClaims(String token) { ... }         // parses and verifies signature — added with JwtFilter
 }
 ```
 
