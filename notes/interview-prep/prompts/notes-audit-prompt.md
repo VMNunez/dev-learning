@@ -319,7 +319,12 @@ After all edits, print a final summary table:
 |------|-------|----------------|
 | [section name] | ✅ / 🔧 / ➕ | ✅ / 🔧 / ➕ |
 
-Then show the commit message so Victor can run it himself.
-Commit format: docs: audit {TOPIC} notes and interview prep — <one line summary of main fixes>
-Example: docs: audit angular notes and interview prep — add lazy loading gaps and decision questions
+Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
+
+```
+git add <files changed>
+```
+```
+git commit -m "docs: audit {TOPIC} notes and interview prep — <one line summary of main fixes>"
+```
 ```

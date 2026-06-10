@@ -194,7 +194,12 @@ Do not stop at 2 or 3 questions. Add as many as needed until the section is genu
 interview-ready. A weak junior gets filtered out because one topic was thin.
 Better to over-prepare one section than to have a gap a recruiter finds first.
 
-After all edits, show the commit message so Victor can run it himself.
-Commit format: docs: audit {FILE} interview prep — <one line summary of main fixes>
-Example: docs: audit angular interview prep — add routing decision questions and fix weak guards answers
+After all edits, show the commit message so Victor can run it himself. Always use this format — one command per code block:
+
+```
+git add <files changed>
+```
+```
+git commit -m "docs: audit {FILE} interview prep — <one line summary of main fixes>"
+```
 ```
