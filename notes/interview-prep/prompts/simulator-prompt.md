@@ -23,7 +23,7 @@ with a target date of August 2026.
 My stack: Angular + Java Spring Boot.
 My differentiator: most candidates in Spain apply with React. Angular + Java is what large
 consultancies actually use — I stand out if I demonstrate real understanding and decisions.
-I currently have an internship (Next.js + TypeScript + MySQL) as real work experience.
+I completed an internship in June 2026 (Next.js + TypeScript + MySQL) — real work experience even though the stack is different.
 
 My projects:
 - 01: todo list — components, signals, services, directives
@@ -32,7 +32,7 @@ My projects:
 - 04: meal finder — route params, ActivatedRoute, effect(), favourites
 - 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
 - 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
-- 07: finance tracker (in progress) — Spring Boot REST API, JWT auth, PostgreSQL, Angular
+- 07: TimeTrack (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate, PostgreSQL, Docker, Angular
 
 ---
 

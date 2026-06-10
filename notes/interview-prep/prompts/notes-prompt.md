@@ -50,8 +50,8 @@ My differentiator: most candidates in Spain apply with React. I am going with An
 Boot, which is what large consultancies actually use internally — this makes me stand out if
 I can demonstrate real understanding and real decisions, not just syntax knowledge.
 
-I currently have an internship (Next.js + TypeScript + MySQL) which counts as real work
-experience on my CV even though the stack is different.
+I completed an internship in June 2026 (Next.js + TypeScript + MySQL) — real work experience
+on my CV even though the stack is different.
 
 Level: Junior to Junior-Mid. I need to sound like someone who makes decisions and can explain
 them — not someone who followed a tutorial and memorised the steps.
@@ -71,7 +71,7 @@ My projects:
 - 04: meal finder — route params, ActivatedRoute, effect(), favourites
 - 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
 - 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
-- 07: finance tracker (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate, PostgreSQL, Docker, Angular
+- 07: TimeTrack (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate, PostgreSQL, Docker, Angular
 
 Notes to audit: {NOTES_PATH}
 
@@ -138,6 +138,11 @@ Read all files in {NOTES_PATH}.
      needs one sentence. Complex concepts (JPA relationships, Spring Security filter chain,
      JWT flow) need a paragraph. Match the explanation length to how long it actually takes
      to understand the concept — not to a fixed template.
+   - **Code concept sections (methods, classes, annotations):** start with a `Purpose:` line —
+     one sentence: who calls it, when, and why. Then explain each important call or line with a
+     bold item — what it does and why it matters, in plain language. Never include an Imports
+     section — IntelliJ handles imports automatically. Full format in the "Notes style for code
+     concept sections" section of CLAUDE.md.
 
 4. For each note file, give a coverage status:
    - ✅ Complete — solid coverage for a junior screening at a Spanish consultancy

@@ -62,7 +62,7 @@ My projects:
 - 04: meal finder — route params, ActivatedRoute, effect(), favourites
 - 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
 - 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
-- 07: finance tracker (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate, PostgreSQL, Docker, Angular
+- 07: TimeTrack (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate, PostgreSQL, Docker, Angular
 
 ---
 
