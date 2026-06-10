@@ -34,6 +34,8 @@ This is what a complete feature looks like from database to HTTP response.
 
 ### 1. Entity
 
+**File:** `model/Transaction.java`
+
 | Annotation | What it does |
 |---|---|
 | `@Entity` | Marks the class as a database table |
@@ -80,6 +82,8 @@ public class Transaction {
 
 ### 2. Repository
 
+**File:** `repository/TransactionRepository.java`
+
 | Annotation / pattern | What it does |
 |---|---|
 | `extends JpaRepository<Entity, IdType>` | Gives you `findAll()`, `findById()`, `save()`, `deleteById()` for free |
@@ -99,6 +103,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
 ### 3. DTO
 
+**File:** `dto/request/TransactionRequest.java` and `dto/response/TransactionResponse.java`
+
 | Annotation | What it does |
 |---|---|
 | `@Data` | Lombok — generates getters, setters, `equals`, `hashCode`, `toString` |
@@ -112,8 +118,8 @@ Two types of DTOs — keep them separate:
 - **Request DTO** — what the client sends (has validation annotations)
 - **Response DTO** — what the server returns (no validation needed — you build it yourself)
 
+`dto/request/TransactionRequest.java` — what the API receives (POST body)
 ```java
-// What the API receives (POST body)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -128,8 +134,10 @@ public class TransactionRequest {
     @NotBlank
     private String type;
 }
+```
 
-// What the API returns (response body)
+`dto/response/TransactionResponse.java` — what the API returns (response body)
+```java
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -143,6 +151,8 @@ public class TransactionResponse {
 ```
 
 ### 4. Service
+
+**File:** `service/TransactionService.java`
 
 | Annotation | What it does |
 |---|---|
@@ -190,6 +200,8 @@ public class TransactionService {
 ```
 
 ### 5. Controller
+
+**File:** `controller/TransactionController.java`
 
 | Annotation | What it does |
 |---|---|
