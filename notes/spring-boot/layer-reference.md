@@ -110,8 +110,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 | `@Data` | Lombok — generates getters, setters, `equals`, `hashCode`, `toString` |
 | `@NoArgsConstructor` | Lombok — required for Jackson to deserialize JSON into the object |
 | `@AllArgsConstructor` | Lombok — useful for building response DTOs in the service |
-| `@NotBlank` | Validation — field must not be null or empty string |
-| `@NotNull` | Validation — field must not be null (allows empty string) |
+> `@NotBlank`, `@NotNull`, and `@Positive` require the `spring-boot-starter-validation` dependency in `pom.xml`. If IntelliJ does not suggest them, this dependency is missing.
+
+| `@NotBlank` | Validation — field must not be null, empty `""`, or blank `"   "` — use this for text fields |
+| `@NotNull` | Validation — field must not be null, but allows `""` — use this for numbers and objects |
 | `@Positive` | Validation — number must be greater than zero |
 
 Two types of DTOs — keep them separate:
