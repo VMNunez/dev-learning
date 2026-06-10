@@ -115,8 +115,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 | `@Positive` | Validation — number must be greater than zero |
 
 Two types of DTOs — keep them separate:
-- **Request DTO** — what the client sends (has validation annotations)
-- **Response DTO** — what the server returns (no validation needed — you build it yourself)
+- **Request DTO** — what the client sends. You cannot trust what arrives, so you validate it with `@NotBlank`, `@NotNull`, etc. before it reaches the service.
+- **Response DTO** — what the server returns. You build it yourself in the service, so you control every field. No validation needed.
+
+> Rule: validate on the way in, trust on the way out.
 
 `dto/request/TransactionRequest.java` — what the API receives (POST body)
 ```java
