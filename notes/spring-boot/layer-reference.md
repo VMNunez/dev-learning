@@ -86,10 +86,12 @@ public class Transaction {
 
 | Annotation / pattern | What it does |
 |---|---|
-| `extends JpaRepository<Entity, IdType>` | Gives you `findAll()`, `findById()`, `save()`, `deleteById()` for free |
+| `extends JpaRepository<Entity, IdType>` | Gives you `findAll()`, `findById()`, `save()`, `deleteById()` for free — no need to declare these |
 | `@Repository` | Optional — `JpaRepository` already marks it as a Spring bean |
 | `findByUserId(Long userId)` | Spring reads the method name and generates the SQL automatically |
 | `findByUserIdAndType(Long userId, String type)` | Combine fields with `And` — Spring generates `WHERE user_id = ? AND type = ?` |
+
+> `JpaRepository` is generic — it only knows about the primary key (`findById`). It has no idea your entity has an `email` or `userId` field. For anything beyond the primary key, declare the method yourself and Spring generates the SQL from the name.
 
 ```java
 @Repository
