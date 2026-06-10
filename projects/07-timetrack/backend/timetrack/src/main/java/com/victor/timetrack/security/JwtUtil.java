@@ -1,5 +1,7 @@
 package com.victor.timetrack.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,11 +20,6 @@ public class JwtUtil {
     @Value("${app.jwt.expiration}")
     private long expiration;
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
     public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username)
@@ -30,9 +27,33 @@ public class JwtUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
                 .compact();
+
     }
 
+    public String extractUsername(String token){
+        return parseClaims(token).getSubject();
+    }
 
+    public boolean isValid(String token,String email){
+        try{
+            return extractUsername(token).equals(email);
+        } catch (JwtException e){
+            return false;
+        }
+    }
+
+    private Claims parseClaims(String token){
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 
 }
 
