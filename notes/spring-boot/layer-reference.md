@@ -28,58 +28,25 @@ HTTP response
 
 ---
 
-## Annotations at a glance
-
-### Entity
-
-| Annotation | What it does |
-|---|---|
-| `@Entity` | Marks the class as a database table |
-| `@Table(name = "transactions")` | Sets the table name (optional — defaults to class name) |
-| `@Id` | Marks the primary key field |
-| `@GeneratedValue(strategy = GenerationType.IDENTITY)` | Auto-increment — the database assigns the ID |
-| `@Column(name = "amount")` | Maps a field to a column (optional — defaults to field name) |
-| `@Column(nullable = false)` | Adds a NOT NULL constraint |
-| `@ManyToOne` / `@OneToMany` | Defines a relationship between two entities |
-| `@JoinColumn(name = "user_id")` | The foreign key column |
-| `@CreationTimestamp` | Sets the field to the current time when the row is inserted |
-
-### Repository
-
-| Annotation | What it does |
-|---|---|
-| `@Repository` | Marks the interface as a Spring bean (optional — JpaRepository adds it automatically) |
-| `extends JpaRepository<Entity, IdType>` | Gives you `findAll()`, `findById()`, `save()`, `deleteById()` for free |
-
-### Service
-
-| Annotation | What it does |
-|---|---|
-| `@Service` | Marks the class as a Spring bean — Spring creates one instance and injects it wherever needed |
-| `@Transactional` | Wraps the method in a database transaction — if something fails, everything rolls back |
-
-### Controller
-
-| Annotation | What it does |
-|---|---|
-| `@RestController` | Every return value is serialized to JSON automatically |
-| `@RequestMapping("/api/transactions")` | Base URL path for all methods in this controller |
-| `@GetMapping` | Handles `GET /api/transactions` |
-| `@GetMapping("/{id}")` | Handles `GET /api/transactions/1` |
-| `@PostMapping` | Handles `POST /api/transactions` |
-| `@PutMapping("/{id}")` | Handles `PUT /api/transactions/1` |
-| `@DeleteMapping("/{id}")` | Handles `DELETE /api/transactions/1` |
-| `@PathVariable` | Reads `{id}` from the URL |
-| `@RequestBody` | Reads the JSON body and maps it to a Java object |
-| `@Valid` | Triggers bean validation on the request body |
-
----
-
 ## Full vertical slice — Transaction feature
 
 This is what a complete feature looks like from database to HTTP response.
 
 ### 1. Entity
+
+| Annotation | What it does |
+|---|---|
+| `@Entity` | Marks the class as a database table |
+| `@Table(name = "...")` | Sets the table name (optional — defaults to class name in lowercase) |
+| `@Id` | Marks the primary key field |
+| `@GeneratedValue(strategy = GenerationType.IDENTITY)` | Auto-increment — the database assigns the ID |
+| `@Column(nullable = false)` | Adds a NOT NULL constraint |
+| `@ManyToOne` | This entity belongs to one of another entity (many transactions → one user) |
+| `@JoinColumn(name = "user_id")` | The foreign key column that links to the other table |
+| `@CreationTimestamp` | Sets the field to the current time when the row is inserted — Hibernate does this automatically |
+| `@Data` | Lombok — generates getters, setters, `equals`, `hashCode`, `toString` |
+| `@NoArgsConstructor` | Lombok — generates an empty constructor (required by JPA) |
+| `@AllArgsConstructor` | Lombok — generates a constructor with all fields |
 
 ```java
 @Entity
@@ -113,6 +80,13 @@ public class Transaction {
 
 ### 2. Repository
 
+| Annotation / pattern | What it does |
+|---|---|
+| `extends JpaRepository<Entity, IdType>` | Gives you `findAll()`, `findById()`, `save()`, `deleteById()` for free |
+| `@Repository` | Optional — `JpaRepository` already marks it as a Spring bean |
+| `findByUserId(Long userId)` | Spring reads the method name and generates the SQL automatically |
+| `findByUserIdAndType(Long userId, String type)` | Combine fields with `And` — Spring generates `WHERE user_id = ? AND type = ?` |
+
 ```java
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
@@ -124,6 +98,19 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 ```
 
 ### 3. DTO
+
+| Annotation | What it does |
+|---|---|
+| `@Data` | Lombok — generates getters, setters, `equals`, `hashCode`, `toString` |
+| `@NoArgsConstructor` | Lombok — required for Jackson to deserialize JSON into the object |
+| `@AllArgsConstructor` | Lombok — useful for building response DTOs in the service |
+| `@NotBlank` | Validation — field must not be null or empty string |
+| `@NotNull` | Validation — field must not be null (allows empty string) |
+| `@Positive` | Validation — number must be greater than zero |
+
+Two types of DTOs — keep them separate:
+- **Request DTO** — what the client sends (has validation annotations)
+- **Response DTO** — what the server returns (no validation needed — you build it yourself)
 
 ```java
 // What the API receives (POST body)
@@ -156,6 +143,11 @@ public class TransactionResponse {
 ```
 
 ### 4. Service
+
+| Annotation | What it does |
+|---|---|
+| `@Service` | Marks the class as a Spring bean — Spring creates one instance and injects it wherever needed |
+| `@Transactional` | Wraps the method in a database transaction — if anything fails, all database changes roll back |
 
 ```java
 @Service
@@ -198,6 +190,17 @@ public class TransactionService {
 ```
 
 ### 5. Controller
+
+| Annotation | What it does |
+|---|---|
+| `@RestController` | Every return value is serialized to JSON automatically |
+| `@RequestMapping("/api/...")` | Base URL path for all methods in this controller |
+| `@GetMapping` / `@PostMapping` / `@PutMapping` / `@DeleteMapping` | Maps a method to an HTTP verb |
+| `@GetMapping("/{id}")` | The `{id}` part becomes a variable you can read |
+| `@PathVariable` | Reads `{id}` from the URL path |
+| `@RequestBody` | Reads the JSON body and maps it to a Java object |
+| `@Valid` | Runs all validation annotations (`@NotBlank`, etc.) on the request body before the method runs |
+| `ResponseEntity<T>` | Lets you control the HTTP status code and the response body |
 
 ```java
 @RestController
