@@ -8,6 +8,8 @@
 | Configure the filter chain (SecurityFilterChain)       | [Java Configuration](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html)                         |
 | Set route-level permissions (permitAll, authenticated) | [Authorize HTTP Requests](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html) |
 | Configure STATELESS sessions for JWT                   | [Session Management](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html)          |
+| Password hashing with BCrypt                           | [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) |
+| How UserDetailsService fits into login                 | [DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) |
 | Full Spring Security reference                         | [Spring Security Reference](https://docs.spring.io/spring-security/reference/)                                                 |
 
 ---
@@ -74,6 +76,64 @@ After adding all dependencies, reload Maven in IntelliJ: right-click `pom.xml` �
 Without Spring Security, every endpoint in your API is public. Any user can call GET /entries/1 and read someone else's data. Security is not an optional extra — it is the first thing you add before writing any real feature.
 
 Spring Security works as a chain of filters that every HTTP request passes through before reaching your `@RestController`. You configure that chain with one bean: `SecurityFilterChain`.
+
+---
+
+## The full login flow — how all the pieces connect
+
+Docs: [DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html)
+
+There are two separate flows. Understand both — they are different.
+
+**Flow 1 — Initial login (POST /api/auth/login)**
+
+This is what happens when the user sends their email and password for the first time:
+
+```
+1. Request arrives → JwtFilter runs, sees no token → passes through immediately
+2. SecurityFilterChain checks the route → /api/auth/** is permitAll() → allows it
+3. AuthController receives the request → calls AuthService.login()
+4. AuthService calls AuthenticationManager.authenticate()
+5. AuthenticationManager delegates to DaoAuthenticationProvider
+6. DaoAuthenticationProvider calls UserDetailsService.loadUserByUsername(email)
+   → goes to the database, returns a UserDetails object
+7. DaoAuthenticationProvider calls PasswordEncoder.matches(rawPassword, hashedPassword)
+   → compares what the user sent with what is stored in the database
+8. If both checks pass → authentication is successful
+9. AuthService calls JwtUtil.generateToken(email) → returns a signed JWT
+10. AuthController returns AuthResponse with the token
+```
+
+The client receives the token and stores it (e.g. in `localStorage`).
+
+**Flow 2 — Every subsequent request (any protected route)**
+
+This is what happens on every request after the user is logged in:
+
+```
+1. Request arrives with header: Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+2. JwtFilter runs → extracts the token from the header
+3. JwtFilter calls JwtUtil.extractUsername(token) → gets the email
+4. JwtFilter calls UserDetailsService.loadUserByUsername(email) → loads user from DB
+5. JwtFilter calls JwtUtil.isValid(token, email) → checks signature + expiry
+6. If valid → JwtFilter puts the user in SecurityContextHolder
+7. SecurityFilterChain checks the route → requires authenticated() → user is in context → allowed
+8. Request reaches the controller
+```
+
+Spring Security knows who is making the request from the `SecurityContextHolder` — no password check needed, just the token.
+
+**Why each class exists:**
+
+| Class | Role in the flow |
+|---|---|
+| `JwtUtil` | Creates and validates JWT tokens |
+| `UserDetailsServiceImpl` | Loads a user from the database by email |
+| `AuthService` | Orchestrates login: calls `AuthenticationManager`, generates token |
+| `AuthController` | Receives the HTTP request, returns the token |
+| `JwtFilter` | Intercepts every subsequent request and validates the token |
+| `SecurityConfig` | Configures which routes are public, which are protected, and registers all the beans above |
+| `AuthenticationManager` | Spring Security's internal coordinator — receives the login attempt and delegates to `DaoAuthenticationProvider`. Registered as a `@Bean` in `SecurityConfig` |
 
 ---
 
@@ -369,13 +429,28 @@ passwordEncoder.matches(rawPasswordFromRequest, user.getPassword()); // returns 
 
 ## UserDetailsService — teaching Spring where your users are
 
-Docs: [Spring Security — UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html)
+Docs: [Spring Security — UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html) · [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider)
 
 File: `src/main/java/com/victor/timetrack/security/UserDetailsServiceImpl.java`
 
-Spring Security does not know how to find users in your database. `UserDetailsService` is an interface with one method — `loadUserByUsername()` — that you implement to tell it where to look.
+From the DaoAuthenticationProvider flow (see "The full login flow" section above):
 
-Spring Security calls `loadUserByUsername()` automatically inside `JwtFilter` — you do not call it yourself. Your only job is to implement it correctly.
+- **Step 3** — `DaoAuthenticationProvider` calls `UserDetailsService.loadUserByUsername(email)` to load the user from your database
+- **Step 4** — `DaoAuthenticationProvider` takes the `UserDetails` object returned by step 3 and uses `PasswordEncoder` to compare the stored hash with what the user sent
+
+This means `UserDetailsService` has one job: receive an email, go to the database, return a `UserDetails` object. `DaoAuthenticationProvider` handles the password check itself — you do not do that here.
+
+You never call `loadUserByUsername()` yourself. Spring Security calls it automatically during login. Your only job is to implement it correctly and register the class as a `@Service` so Spring finds it.
+
+**What is `UserDetails`?**
+
+`UserDetails` is a Spring Security interface that represents a user. It has four things Spring Security needs to work:
+- `getUsername()` — the login identifier (email in your case)
+- `getPassword()` — the hashed password stored in the database
+- `getAuthorities()` — the roles/permissions (e.g. `ROLE_USER`, `ROLE_MANAGER`)
+- Three boolean flags — `isEnabled()`, `isAccountNonExpired()`, `isAccountNonLocked()`
+
+Spring Security does not know about your `User` entity — it only works with `UserDetails`. Your job is to take your entity and convert it into a `UserDetails` object. That is what the `User.withUsername(...).build()` builder does at the end of `loadUserByUsername()`.
 
 ```java
 @Service
@@ -395,7 +470,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
             .withUsername(user.getEmail())
             .password(user.getPassword())
-            .roles(user.getRole().name())
+            .roles("USER") // placeholder — replaced in Step 4 when role is added to the User entity
             .build();
     }
 }
@@ -403,11 +478,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 **`implements UserDetailsService`** — this is a Spring Security interface with one required method. Implementing it is how Spring discovers your custom user lookup logic.
 
+**`private final UserRepository userRepository` + constructor**  — `private final` means the field cannot change after the object is created. The constructor receives the dependency from Spring (constructor injection). This is the recommended pattern over `@Autowired` — it makes dependencies explicit and the class easier to test.
+
 **`loadUserByUsername(String username)`** — despite the name, `username` here is the email. Spring Security uses "username" as a generic term for "the identifier used to log in". The method signature is fixed by the interface — you cannot rename the parameter.
+
+**`throws UsernameNotFoundException`** — this is part of the interface contract. It tells Java that this method is allowed to throw that exception. The actual throw happens inside with `.orElseThrow()` — but you must declare it in the signature because the interface requires it.
 
 **`.orElseThrow(() -> new UsernameNotFoundException(...))`** — if no user is found in the database, throw `UsernameNotFoundException`. Spring Security catches this and converts it to a 401 response automatically.
 
-**`User.withUsername(...).password(...).roles(...).build()`** — this is Spring Security's own `User` builder (not your `User` entity). It creates a `UserDetails` object — the type Spring Security works with internally. `.roles()` automatically adds the `ROLE_` prefix that Spring Security expects (so `"MANAGER"` becomes `"ROLE_MANAGER"`).
+**`org.springframework.security.core.userdetails.User.withUsername(...).password(...).roles(...).build()`** — this is Spring Security's own `User` builder, not your `User` entity. It creates a `UserDetails` object — the type Spring Security works with internally. `.roles()` automatically adds the `ROLE_` prefix that Spring Security expects (so `"MANAGER"` becomes `"ROLE_MANAGER"`).
+
+> **Import conflict to avoid:** Spring Security has its own class called `User` (`org.springframework.security.core.userdetails.User`). Your entity is also called `User`. If you import the Spring Security one, the variable on the left side (`User user = userRepository.findByEmail(...)`) will fail with a type mismatch. Fix: import your entity (`com.victor.timetrack.model.User`) and use the full qualified path for the Spring Security builder (`org.springframework.security.core.userdetails.User.withUsername(...)`).
 
 ---
 
