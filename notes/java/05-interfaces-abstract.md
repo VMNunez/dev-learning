@@ -1,6 +1,7 @@
 # Interfaces and Abstract Classes
 
 > 📖 [Oracle Docs — Interfaces and inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/index.html)
+> 📖 [Spring Security — DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) — how `UserDetailsService` fits into the full login flow
 
 ## Interface
 
@@ -154,10 +155,48 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 }
 
 // UserDetailsService is an interface — you implement it for authentication
-public class AuthService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) { ... }
 }
 ```
 
 When you write `implements JpaRepository` or `implements UserDetailsService`, you are following the interface contract that Spring Boot expects.
+
+### Why `UserDetailsService` exists — the plug and socket
+
+Spring Security needs to load a user when a request comes in. But Spring Security has no idea about your database — it does not know you have a `User` entity or a `UserRepository`.
+
+So Spring Security defines an interface with one method:
+
+```java
+public interface UserDetailsService {
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+}
+```
+
+This is the **socket**. Spring Security knows how to call it, but it does not provide the implementation.
+
+Your job is to build the **plug** — a class that implements this interface and connects it to your database:
+
+```java
+@Service
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+}
+```
+
+When Spring Security needs a user, it calls `loadUserByUsername` on your implementation — and your code goes to the database to find it.
+
+> `username` in Spring Security means the login identifier. In TimeTrack that is the email — not a separate username field. The parameter name is fixed by the interface; what it actually contains depends on your app.
