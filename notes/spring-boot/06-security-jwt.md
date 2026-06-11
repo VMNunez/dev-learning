@@ -1,5 +1,320 @@
 # Spring Security and JWT
 
+## What we are building — and why
+
+### The problem
+
+Without security, your API is completely open. Anyone who knows the URL can call `GET /api/entries/1` and read someone else's data, or `DELETE /api/users/5` and destroy it. Security is not a feature — it is the foundation.
+
+There are two separate concepts that are often confused:
+
+**Authentication** — who are you? The server checks your identity. Example: you send your email and password, the server confirms you exist.
+
+**Authorization** — what are you allowed to do? The server checks your permissions. Example: you are authenticated, but you are an employee — you cannot access the manager-only endpoints.
+
+This file covers both. Flow 1 is authentication (login). Flow 2 + `@PreAuthorize` is authorization (roles).
+
+---
+
+### Other ways to implement authentication
+
+Before choosing JWT, it is worth understanding the alternatives. Every approach has trade-offs.
+
+**1. Session-based authentication** (the classic approach)
+
+```
+Client sends email + password
+    ↓
+Server verifies credentials
+    ↓
+Server creates a session in memory (e.g. session ID: "abc123")
+    ↓
+Server sends a cookie with the session ID to the client
+    ↓
+Client sends the cookie on every future request
+    ↓
+Server looks up "abc123" in its session store → finds the user → allows access
+```
+
+The session is stored **on the server** (in memory or a database). The client only holds a reference (the session ID in the cookie).
+
+**Problem:** if you have multiple servers (horizontal scaling), each server has its own session store. A request that goes to Server 2 does not find the session created by Server 1. You need shared session storage (Redis, database) — extra infrastructure.
+
+---
+
+**2. JWT — JSON Web Token** (what we are implementing)
+
+```
+Client sends email + password
+    ↓
+Server verifies credentials
+    ↓
+Server generates a signed token containing the user's email (and later, role)
+    ↓
+Server sends the token to the client
+    ↓
+Client stores the token in localStorage and sends it in the Authorization header on every request
+    ↓
+Server validates the token's signature — no database lookup needed
+```
+
+The token is stored **on the client**. The server is stateless — it holds no memory of who is logged in.
+
+**Advantage:** any server can validate a JWT because the signature uses a shared secret. No shared session storage needed. This is why APIs that need to scale use JWT.
+
+**Disadvantage:** you cannot invalidate a token before it expires (unless you build a token blacklist). Session-based auth can invalidate a session instantly by deleting it from the store.
+
+---
+
+**3. OAuth2 / OpenID Connect** (third-party login)
+
+Used when the application delegates authentication to a third party: "Log in with Google", "Log in with GitHub". The third party confirms the user's identity and sends a token back. Common in consumer apps. More complex to implement — not used here.
+
+---
+
+**4. API Keys** (for machine-to-machine communication)
+
+A long random string (`sk-abc123...`) sent in a header on every request. No login flow — the key is generated once and stored. Used for internal services or developer APIs (Stripe, SendGrid). Not suitable for user authentication.
+
+---
+
+**5. Basic Auth** (username + password on every request)
+
+The client sends `email:password` encoded in Base64 on every request. Simple, but the password travels on every request — even with HTTPS this is considered a bad practice for user-facing APIs. Used sometimes for internal admin tools.
+
+---
+
+### Why JWT for this project
+
+| Criterion             | Session-based               | JWT                    |
+| --------------------- | --------------------------- | ---------------------- |
+| Stateless             | No — server stores sessions | Yes — no server memory |
+| Scales horizontally   | Needs shared session store  | Works out of the box   |
+| Invalidate instantly  | Yes                         | No (wait for expiry)   |
+| Standard in REST APIs | Less common                 | Standard               |
+| Complexity            | Simpler to understand       | Slightly more complex  |
+
+We chose JWT because this is a REST API that Angular will consume. REST APIs are designed to be stateless — each request carries everything the server needs to process it. JWT fits naturally. Session-based auth would require managing server-side state, which contradicts the REST principle.
+
+Spanish consultancies build stateless REST APIs as standard. JWT is what you will see in every Spring Boot project in a real company.
+
+---
+
+### JWT signing algorithms — why HS256
+
+A JWT is signed to prevent tampering. The algorithm determines how that signature is produced and verified. Three algorithms are commonly used:
+
+| Algorithm | Full name    | Key type                | Use case                                            |
+| --------- | ------------ | ----------------------- | --------------------------------------------------- |
+| **HS256** | HMAC-SHA256  | One shared secret       | Single server or trusted backend — simple, fast     |
+| **RS256** | RSA-SHA256   | Public/private key pair | Multiple services — public key can be shared safely |
+| **ES256** | ECDSA-SHA256 | Public/private key pair | Same as RS256 but smaller keys, faster verification |
+
+**HS256** uses one secret key to both sign and verify. Everyone who knows the secret can create and validate tokens — which means the secret must never leave the server. This is the simplest option and the right choice when there is only one backend service.
+
+**RS256 / ES256** use asymmetric keys. The private key signs the token (only the server holds it). The public key verifies it (can be shared with anyone). This is used when multiple services need to verify tokens independently — for example, a microservices architecture where Service A issues tokens and Service B validates them without sharing a secret.
+
+We use **HS256** because this is a single Spring Boot backend. One secret, one place. RS256 would add complexity with no benefit here.
+
+---
+
+### AuthenticationProvider — why DaoAuthenticationProvider
+
+`AuthenticationManager` is designed to be flexible. It does not verify credentials itself — it delegates to an `AuthenticationProvider`. Spring Security includes several providers, each designed for a different type of authentication:
+
+| Provider                            | What it does                                                                                   | When you use it                                                                  |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **`DaoAuthenticationProvider`**     | Loads user from a database via `UserDetailsService`, compares passwords with `PasswordEncoder` | Standard login with email + password stored in your own database — what we use   |
+| `LdapAuthenticationProvider`        | Authenticates against LDAP / Active Directory                                                  | Large corporations where IT manages users centrally (not a database you control) |
+| `JwtAuthenticationProvider`         | Spring's built-in JWT provider, part of the OAuth2 Resource Server module                      | When you are consuming tokens issued by a third party (e.g. Keycloak, Auth0)     |
+| `OAuth2LoginAuthenticationProvider` | Handles "Login with Google / GitHub" flows                                                     | Consumer apps with social login                                                  |
+| `RememberMeAuthenticationProvider`  | Handles "remember me" cookies                                                                  | Session-based apps with persistent login                                         |
+
+`AuthenticationManager` loops through all registered providers when a login attempt arrives. It picks the one that can handle the type of token passed. If none can handle it, it throws an exception.
+
+**Why `DaoAuthenticationProvider` for this project:**
+Our users are stored in PostgreSQL and log in with email + password. `DaoAuthenticationProvider` is built exactly for this case. You give it a `UserDetailsService` (how to load the user from the database) and a `PasswordEncoder` (how to compare passwords), and it handles the full verification. You write less than 10 lines of configuration and the whole login mechanism works.
+
+The other providers exist for different infrastructure that most junior projects will never need. In Spanish consultancies, `DaoAuthenticationProvider` with a PostgreSQL user table is the standard pattern for internal apps.
+
+---
+
+### This is a reusable pattern
+
+The JWT security layer is a **boilerplate pattern** — the structure does not change between projects. Once you understand it and implement it once, you copy it to every future Spring Boot app that needs JWT auth.
+
+**Files that are always identical:**
+
+- `JwtUtil.java` — no changes ever
+- `JwtFilter.java` — no changes ever
+- `GlobalExceptionHandler.java` — no changes ever
+- `AuthService.java` — no changes ever
+- `AuthController.java` — no changes ever
+- `LoginRequest.java` + `AuthResponse.java` — no changes ever
+
+**Files where only small details change:**
+
+| File                          | What changes                                                    |
+| ----------------------------- | --------------------------------------------------------------- |
+| `SecurityConfig.java`         | The route rules — which paths are public, which are protected   |
+| `UserDetailsServiceImpl.java` | The field used to find the user (email, username) and the roles |
+| `JwtUtil.java` (optional)     | Extra claims added to the token — e.g. role, userId             |
+
+This is why senior developers implement JWT auth quickly — they are not thinking, they are copying a known pattern and adjusting two or three things. After TimeTrack, you will do the same.
+
+---
+
+### The two flows — overview
+
+Everything in this file serves one of two flows. Read this before writing any code — it is the map.
+
+---
+
+**Flow 1 — Initial login** `POST /api/auth/login`
+
+```
+Client: sends { "email": "...", "password": "..." }
+    ↓
+[JwtFilter]                     → no token → filterChain.doFilter(): "pass to next filter"
+    ↓
+[SecurityFilterChain]           → /api/auth/** is permitAll() → allowed without token
+    ↓
+[AuthController]                → reads JSON body, calls AuthService.login()
+    ↓
+[AuthService]                   → calls AuthenticationManager.authenticate(email, rawPassword)
+    ↓
+[AuthenticationManager]         → delegates to DaoAuthenticationProvider
+    ↓
+[DaoAuthenticationProvider]     → calls UserDetailsServiceImpl.loadUserByUsername(email)
+    ↓
+[UserDetailsServiceImpl]        → queries database → returns UserDetails (hashed password + roles)
+    ↓
+[DaoAuthenticationProvider]     → calls BCryptPasswordEncoder.matches(rawPassword, hashedPassword)
+    ↓
+[DaoAuthenticationProvider]     → if match: authentication succeeds / if not: throws BadCredentialsException
+    ↓
+[AuthService]                   → calls JwtUtil.generateToken(email) → builds and signs the JWT
+    ↓
+[AuthController]                → returns { "token": "eyJ..." } with status 200
+    ↓
+Client: stores the token in localStorage
+```
+
+**If it fails:** `GlobalExceptionHandler` catches `BadCredentialsException` → returns `{ "error": "Invalid email or password" }` with status 401.
+
+---
+
+**Flow 2 — Every subsequent request** (any protected route)
+
+```
+Client: sends request with header → Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+    ↓
+[JwtFilter]                     → token found → strips "Bearer " prefix
+    ↓
+[JwtFilter] calls               → JwtUtil.extractUsername(token)
+                                  decodes token → reads "sub" claim → returns email
+    ↓
+[JwtFilter] calls               → UserDetailsServiceImpl.loadUserByUsername(email)
+                                  queries database → returns UserDetails (hash + roles)
+    ↓
+[JwtFilter] calls               → JwtUtil.isValid(token, email)
+                                  checks signature (not tampered) + expiry (not expired)
+    ↓
+[JwtFilter]                     → puts the user in SecurityContextHolder (marks request as authenticated)
+    ↓
+[SecurityFilterChain]           → route requires authenticated() → user is in context → allowed
+    ↓
+[@RestController]               → request reaches the controller, processes normally
+```
+
+**If the token is invalid or missing:** `JwtFilter` skips setting authentication → `SecurityFilterChain` finds no user in context → returns 403.
+
+---
+
+**Both flows combined — the complete picture**
+
+```
+        POST /api/auth/login              GET /api/any-protected-route
+        { email, password }               Authorization: Bearer eyJ...
+                │                                      │
+                └──────────────────┬───────────────────┘
+                                   │
+                              [JwtFilter]
+                                   │
+                  ┌────────────────┴─────────────────┐
+             no token                            token found
+                  │                                   │
+  filterChain.doFilter()             [JwtFilter] calls JwtUtil.extractUsername()
+  "pass to next filter"
+                  │                                   │
+       [SecurityFilterChain]           [JwtFilter] calls UserDetailsServiceImpl
+       /api/auth/** → permitAll()           loads user from DB
+                  │                                   │
+          [AuthController]             [JwtFilter] calls JwtUtil.isValid()
+                  │                         signature + expiry
+          [AuthService]                             │
+                  │                     [JwtFilter] → SecurityContextHolder
+       [AuthenticationManager]            sets authenticated user
+                  │                                   │
+       [DaoAuthenticationProvider]        [SecurityFilterChain]
+           ╱              ╲               authenticated() → OK
+[UserDetailsServiceImpl]  [BCryptPasswordEncoder]       │
+   loads user from DB     matches(raw, hash)            │
+           ╲              ╱                     [@RestController]
+         both OK?                               request is processed
+              │
+  [JwtUtil.generateToken()]
+              │
+    { "token": "eyJ..." }
+              │
+           CLIENT
+           stores token in localStorage
+```
+
+---
+
+**What each class is responsible for:**
+
+| Class | Flow | Responsibility |
+|---|---|---|
+| `SecurityConfig` | Both | Configures all rules: routes, filter registration, CORS |
+| `JwtUtil` | Both | Creates tokens (Flow 1) and validates them (Flow 2) |
+| `UserDetailsServiceImpl` | Both | Loads a user from the database by email |
+| `BCryptPasswordEncoder` | Flow 1 only | Compares raw password against stored hash |
+| `AuthService` | Flow 1 only | Orchestrates login — calls authenticate(), then generateToken() |
+| `AuthController` | Flow 1 only | Receives the login HTTP request, returns the token |
+| `JwtFilter` | Flow 2 only | Intercepts every request, validates JWT, sets SecurityContextHolder |
+| `GlobalExceptionHandler` | Both | Converts exceptions into clean JSON error responses |
+
+---
+
+### Why the creation order is not the flow order
+
+The flow reads **top-down** — a request enters at `AuthController` and goes deeper toward `JwtUtil`.
+The creation order reads **bottom-up** — you build the deepest dependency first, because each class needs the classes below it to compile.
+
+```
+Flow order (top-down)          Creation order (bottom-up)
+
+AuthController                 1. SecurityConfig skeleton  ← open all routes to unblock testing
+    ↓                          2. JwtUtil
+AuthService                    3. UserDetailsServiceImpl
+    ↓                          4. SecurityConfig beans (PasswordEncoder, AuthManager)
+DaoAuthenticationProvider      5. DTOs (LoginRequest, AuthResponse)
+    ↓                          6. AuthService
+UserDetailsServiceImpl         7. AuthController
+    ↓                          8. GlobalExceptionHandler
+JwtUtil                        9. JwtFilter
+    ↓                         10. SecurityConfig final (register JwtFilter, protect routes)
+SecurityFilterChain
+```
+
+`SecurityConfig` is special: it appears **first** (as a skeleton that opens all routes) and **last** (as the final version that closes them). You open routes at the start so you can test each class as you build it. If you locked the routes at step 1, nothing would work until step 10.
+
+Every other class follows the dependency rule: if `AuthService` calls `JwtUtil`, then `JwtUtil` must exist first.
+
+---
+
 ## Documentation
 
 | What you need to do                                    | Read this                                                                                                                                       |
@@ -73,11 +388,21 @@ After adding all dependencies, reload Maven in IntelliJ: right-click `pom.xml` �
 
 ---
 
-## The problem without security
+## How Spring Security works — the filter chain
 
-Without Spring Security, every endpoint in your API is public. Any user can call GET /entries/1 and read someone else's data. Security is not an optional extra — it is the first thing you add before writing any real feature.
+Spring Security does not live inside your controllers. It works as a chain of filters that sits in front of them. Every HTTP request passes through this chain before it can reach any `@RestController`. If a request fails a security check, it is rejected there — the controller never runs.
 
-Spring Security works as a chain of filters that every HTTP request passes through before reaching your `@RestController`. You configure that chain with one bean: `SecurityFilterChain`.
+You configure the chain with one bean: `SecurityFilterChain`. Your `JwtFilter` is one link in that chain. Spring Security provides the others.
+
+```
+HTTP request
+    ↓
+[JwtFilter] ← your custom filter — reads and validates the JWT
+    ↓
+[SecurityFilterChain rules] ← checks route permissions (permitAll vs authenticated)
+    ↓
+[@RestController] ← only reached if all checks passed
+```
 
 ---
 
@@ -88,6 +413,7 @@ Docs: [DaoAuthenticationProvider](https://docs.spring.io/spring-security/referen
 There are two separate flows. Understand both — they are different.
 
 **When does each flow happen?**
+
 - **Flow 1** — when the user logs in: they send email + password and receive a token. This happens on first login, or when a previous token has expired.
 - **Flow 2** — every request after login: the user already has a token and sends it in the header to access protected routes.
 
@@ -95,7 +421,8 @@ There are two separate flows. Understand both — they are different.
 
 **Flow 1 — Initial login (POST /api/auth/login)**
 
-*Quick summary:*
+_Quick summary:_
+
 ```
 1. Request arrives → JwtFilter runs, sees no token → passes through
 2. SecurityFilterChain checks the route → /api/auth/** is permitAll() → allows it
@@ -109,7 +436,7 @@ There are two separate flows. Understand both — they are different.
 10. AuthController returns AuthResponse with the token
 ```
 
-*Step by step:*
+_Step by step:_
 
 **1. Request arrives → JwtFilter runs, sees no token → passes through**
 `security/JwtFilter.java` — Every request passes through `JwtFilter` first. It looks for an `Authorization: Bearer <token>` header. On login, the user does not have a token yet, so the header is missing. `JwtFilter` detects this and does nothing — it simply passes the request to the next step.
@@ -145,7 +472,8 @@ Spring Security internal — `AuthenticationManager` does not verify anything it
 
 **Flow 2 — Every subsequent request (any protected route)**
 
-*Quick summary:*
+_Quick summary:_
+
 ```
 1. Request arrives with header: Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 2. JwtFilter runs → extracts the token from the header
@@ -157,7 +485,7 @@ Spring Security internal — `AuthenticationManager` does not verify anything it
 8. Request reaches the controller
 ```
 
-*Step by step:*
+_Step by step:_
 
 **1. Request arrives with header: `Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...`**
 Angular interceptor (frontend) — The client sends the token it stored after login. It goes in a header — not in the body, not in a cookie.
@@ -626,7 +954,7 @@ public class AuthService {
 
 **`request.getEmail()` and `request.getPassword()`** — `LoginRequest` uses Lombok's `@Data` annotation, which generates standard getters automatically. So you call `request.getEmail()` instead of accessing the field directly. If `LoginRequest` were a Java record instead, you would call `request.email()` — but with Lombok classes, always use the `get` prefix.
 
-**`jwtUtil.generateToken(request.email())`** — called only after `authenticate()` returns without throwing. At that point the credentials are verified — it is safe to generate the signed JWT. The email goes into the token's `sub` claim, exactly as documented in the `JwtUtil` section above.
+**`jwtUtil.generateToken(request.getEmail())`** — called only after `authenticate()` returns without throwing. At that point the credentials are verified — it is safe to generate the signed JWT. The email goes into the token's `sub` claim, exactly as documented in the `JwtUtil` section above.
 
 **`new AuthResponse(token)`** — wraps the token string in the DTO. `AuthController` will receive this object and Spring will serialize it to JSON automatically before sending it to the client.
 
@@ -829,8 +1157,6 @@ If all three cases work — 200, 401, 400 — Flow 1 is fully working.
 
 ---
 
----
-
 ## 🔒 Flow 2 starts here — protected requests
 
 Everything below this line validates the JWT token that was issued in Flow 1. The classes above build the login endpoint. The classes below protect every other endpoint.
@@ -903,7 +1229,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
 **`UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())`** — creates the authentication object that goes into `SecurityContextHolder`. The three arguments are: the principal (who), the credentials (null — no password needed here), and the authorities (roles). Once this is in the `SecurityContextHolder`, Spring Security considers the user authenticated for this request.
 
-**`filterChain.doFilter(request, response)`** — always called at the end (whether the token was valid or not) to pass the request to the next filter or to the controller. Never skip this — if you do, the request is dropped silently.
+**`filterChain.doFilter(request, response)`** — `filterChain` is the ordered list of all filters in the chain. Calling `.doFilter()` means: "I am done — pass this request to the next filter in the chain". Every filter that does not want to block a request must call this, otherwise the request is dropped silently.
+
+`JwtFilter` calls it in two places:
+
+1. **Early return (no token):** `JwtFilter` has nothing to do — it calls `filterChain.doFilter()` immediately and returns. The request continues through the chain and eventually reaches `SecurityFilterChain`, which checks the route rules.
+
+2. **At the end (after processing):** whether the token was valid or not, `JwtFilter` always calls `filterChain.doFilter()` at the very end. This is important: `JwtFilter`'s job is not to block requests — it only sets (or does not set) the user in `SecurityContextHolder`. Blocking is `SecurityFilterChain`'s job. If the token was invalid and nothing was set in `SecurityContextHolder`, `SecurityFilterChain` will reject the request because `authenticated()` is not satisfied.
 
 ---
 
@@ -980,7 +1312,7 @@ public class SecurityConfig {
 
 **`@EnableMethodSecurity`** — enables `@PreAuthorize` on individual methods. Without this annotation, `@PreAuthorize` is silently ignored — no error, just no protection.
 
-**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/`(login, register) without a token. The`\*\*` matches any path below that prefix.
+**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/` (login, register) without a token. The `/**` matches any path below that prefix.
 
 **`.anyRequest().authenticated()`** — every other URL requires a valid JWT. Order matters: `requestMatchers` rules are checked first, in the order they are declared. `.anyRequest()` is always last — it is the catch-all.
 
@@ -1023,7 +1355,7 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 **`setAllowCredentials(true)`** — allows cookies and `Authorization` headers to be sent cross-origin. Required for JWT to work.
 
-**`source.registerCorsConfiguration("/**", config)`\*\* — applies this CORS config to every URL in the API.
+**`source.registerCorsConfiguration("/**", config)`** — applies this CORS config to every URL in the API.
 
 > The CORS error only appears in the browser — it is not a backend bug. The browser blocks the response, not the request. The fix is always on the server.
 
