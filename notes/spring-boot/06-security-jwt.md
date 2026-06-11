@@ -400,60 +400,6 @@ public class JwtUtil {
 
 ---
 
-## BCryptPasswordEncoder — never store plain text passwords
-
-Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — read only the **BCryptPasswordEncoder** section (scroll past DelegatingPasswordEncoder)
-
-File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java` (defined as a `@Bean`)
-
-If the database is ever compromised, plain text passwords expose every user immediately. BCrypt is a one-way hashing algorithm — you cannot reverse a hash back to the original password. Each hash also includes a random "salt", so two users with the same password produce different hashes.
-
-```java
-// SecurityConfig — define the bean once
-@Bean
-public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-}
-
-// AuthService — compare raw password against the stored hash on login
-passwordEncoder.matches(rawPasswordFromRequest, user.getPassword()); // returns true or false
-```
-
-**`new BCryptPasswordEncoder()`** — creates an encoder using BCrypt with the default strength (10 rounds). Higher rounds = slower hashing = harder to brute-force. The default is a good balance for most apps.
-
-**`.matches(raw, encoded)`** — hashes the `raw` string and checks if it matches the stored `encoded` hash. You never need to decode the hash — BCrypt is designed to only go in one direction.
-
-> Never call `.encode()` on a password that is already hashed — you would hash the hash. Always pass only the raw password that came from the user.
-
----
-
-## AuthenticationManager bean — exposing the login coordinator
-
-File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
-
-Docs: [Spring Security — AuthenticationManager](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authenticationmanager) — read only the **AuthenticationManager** section
-
-Spring Boot auto-configures an `AuthenticationManager` internally — it wires it with your `UserDetailsService` and `PasswordEncoder` automatically. But it does not expose it as a Spring bean by default.
-
-`AuthService` needs to inject it to call `.authenticate()` during login. For that injection to work, you must expose it explicitly with `@Bean`.
-
-```java
-@Bean
-public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-    return config.getAuthenticationManager();
-}
-```
-
-**`AuthenticationConfiguration config`** — Spring injects this automatically. It is a Spring class that holds the already-configured `AuthenticationManager` — the one wired with your `UserDetailsService` and `PasswordEncoder` beans.
-
-**`config.getAuthenticationManager()`** — retrieves the pre-configured `AuthenticationManager`. You do not build it yourself — Spring already built it using your beans. You just expose it so other classes can inject it.
-
-**`throws Exception`** — required because `getAuthenticationManager()` is declared with `throws Exception` in Spring's source code. You must declare it in your method signature too.
-
-> You never call `authenticationManager()` directly. Spring injects it into `AuthService` automatically. The `@Bean` annotation is what makes injection possible.
-
----
-
 ## UserDetailsService — teaching Spring where your users are
 
 Docs: [Spring Security — UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html) · [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider)
@@ -516,6 +462,112 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 **`org.springframework.security.core.userdetails.User.withUsername(...).password(...).roles(...).build()`** — this is Spring Security's own `User` builder, not your `User` entity. It creates a `UserDetails` object — the type Spring Security works with internally. `.roles()` automatically adds the `ROLE_` prefix that Spring Security expects (so `"MANAGER"` becomes `"ROLE_MANAGER"`).
 
 > **Import conflict to avoid:** Spring Security has its own class called `User` (`org.springframework.security.core.userdetails.User`). Your entity is also called `User`. If you import the Spring Security one, the variable on the left side (`User user = userRepository.findByEmail(...)`) will fail with a type mismatch. Fix: import your entity (`com.victor.timetrack.model.User`) and use the full qualified path for the Spring Security builder (`org.springframework.security.core.userdetails.User.withUsername(...)`).
+
+---
+
+## BCryptPasswordEncoder — never store plain text passwords
+
+Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — read only the **BCryptPasswordEncoder** section (scroll past DelegatingPasswordEncoder)
+
+File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java` (defined as a `@Bean`)
+
+If the database is ever compromised, plain text passwords expose every user immediately. BCrypt is a one-way hashing algorithm — you cannot reverse a hash back to the original password. Each hash also includes a random "salt", so two users with the same password produce different hashes.
+
+```java
+// SecurityConfig — define the bean once
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+
+// AuthService — compare raw password against the stored hash on login
+passwordEncoder.matches(rawPasswordFromRequest, user.getPassword()); // returns true or false
+```
+
+**`new BCryptPasswordEncoder()`** — creates an encoder using BCrypt with the default strength (10 rounds). Higher rounds = slower hashing = harder to brute-force. The default is a good balance for most apps.
+
+**`.matches(raw, encoded)`** — hashes the `raw` string and checks if it matches the stored `encoded` hash. You never need to decode the hash — BCrypt is designed to only go in one direction.
+
+> Never call `.encode()` on a password that is already hashed — you would hash the hash. Always pass only the raw password that came from the user.
+
+---
+
+## AuthenticationManager bean — exposing the login coordinator
+
+File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
+
+Docs: [Spring Security — AuthenticationManager](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authenticationmanager) — read only the **AuthenticationManager** section
+
+Spring Boot auto-configures an `AuthenticationManager` internally — it wires it with your `UserDetailsService` and `PasswordEncoder` automatically. But it does not expose it as a Spring bean by default.
+
+`AuthService` needs to inject it to call `.authenticate()` during login. For that injection to work, you must expose it explicitly with `@Bean`.
+
+```java
+@Bean
+public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    return config.getAuthenticationManager();
+}
+```
+
+**`AuthenticationConfiguration config`** — Spring injects this automatically. It is a Spring class that holds the already-configured `AuthenticationManager` — the one wired with your `UserDetailsService` and `PasswordEncoder` beans.
+
+**`config.getAuthenticationManager()`** — retrieves the pre-configured `AuthenticationManager`. You do not build it yourself — Spring already built it using your beans. You just expose it so other classes can inject it.
+
+**`throws Exception`** — required because `getAuthenticationManager()` is declared with `throws Exception` in Spring's source code. You must declare it in your method signature too.
+
+> You never call `authenticationManager()` directly. Spring injects it into `AuthService` automatically. The `@Bean` annotation is what makes injection possible.
+
+---
+
+## AuthService — orchestrating the login
+
+File: `src/main/java/com/victor/timetrack/service/AuthService.java`
+
+Docs: [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider) — read the **DaoAuthenticationProvider** section
+
+**Purpose:** called by `AuthController` when a login request arrives. It coordinates the full login: verifies credentials via `AuthenticationManager`, generates a JWT via `JwtUtil`, and returns an `AuthResponse` with the token.
+
+### Why these two dependencies?
+
+`AuthService` needs exactly two things injected:
+
+**`AuthenticationManager`** — you exposed this as a `@Bean` in `SecurityConfig` precisely so it can be injected here. Without that `@Bean` definition, Spring cannot inject it and throws an error at startup. This is the object that coordinates the whole login: it calls `UserDetailsService` to load the user and `PasswordEncoder` to compare passwords.
+
+**`JwtUtil`** — created in Step 1 with `@Component`. Spring already manages it. `AuthService` uses it to generate the token after login succeeds. Both dependencies arrive via the constructor — same pattern as every other class in this project.
+
+```java
+@Service
+public class AuthService {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
+
+    public AuthResponse login(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
+        String token = jwtUtil.generateToken(request.getEmail());
+        return new AuthResponse(token);
+    }
+}
+```
+
+**`authenticationManager.authenticate(...)`** — triggers the full Spring Security login flow internally: calls `UserDetailsService.loadUserByUsername()` to load the user from the database, then `PasswordEncoder.matches()` to compare the raw password against the stored hash. If either check fails, it throws `BadCredentialsException` — you do not catch it here. `GlobalExceptionHandler` will handle it and return a clean JSON error.
+
+**`new UsernamePasswordAuthenticationToken(email, password)`** — a Spring Security class that acts as a simple data carrier for a login attempt. It holds two values: the email (principal) and the raw password (credentials). You create it with `new` because it is not a Spring bean — it is just an object you pass to `authenticate()`. `AuthenticationManager` reads the email and password from it and passes them to `DaoAuthenticationProvider`.
+
+**`request.getEmail()` and `request.getPassword()`** — `LoginRequest` uses Lombok's `@Data` annotation, which generates standard getters automatically. So you call `request.getEmail()` instead of accessing the field directly. If `LoginRequest` were a Java record instead, you would call `request.email()` — but with Lombok classes, always use the `get` prefix.
+
+**`jwtUtil.generateToken(request.email())`** — called only after `authenticate()` returns without throwing. At that point the credentials are verified — it is safe to generate the signed JWT. The email goes into the token's `sub` claim, exactly as documented in the `JwtUtil` section above.
+
+**`new AuthResponse(token)`** — wraps the token string in the DTO. `AuthController` will receive this object and Spring will serialize it to JSON automatically before sending it to the client.
+
+> `AuthService` never touches the database directly. It delegates all credential checks to `AuthenticationManager` and all token logic to `JwtUtil`. No `UserRepository` injection here — that separation is intentional.
 
 ---
 
