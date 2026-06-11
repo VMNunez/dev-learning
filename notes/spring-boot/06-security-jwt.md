@@ -402,7 +402,7 @@ public class JwtUtil {
 
 ## BCryptPasswordEncoder — never store plain text passwords
 
-Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html)
+Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — read only the **BCryptPasswordEncoder** section (scroll past DelegatingPasswordEncoder)
 
 File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java` (defined as a `@Bean`)
 
@@ -424,6 +424,33 @@ passwordEncoder.matches(rawPasswordFromRequest, user.getPassword()); // returns 
 **`.matches(raw, encoded)`** — hashes the `raw` string and checks if it matches the stored `encoded` hash. You never need to decode the hash — BCrypt is designed to only go in one direction.
 
 > Never call `.encode()` on a password that is already hashed — you would hash the hash. Always pass only the raw password that came from the user.
+
+---
+
+## AuthenticationManager bean — exposing the login coordinator
+
+File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
+
+Docs: [Spring Security — AuthenticationManager](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authenticationmanager) — read only the **AuthenticationManager** section
+
+Spring Boot auto-configures an `AuthenticationManager` internally — it wires it with your `UserDetailsService` and `PasswordEncoder` automatically. But it does not expose it as a Spring bean by default.
+
+`AuthService` needs to inject it to call `.authenticate()` during login. For that injection to work, you must expose it explicitly with `@Bean`.
+
+```java
+@Bean
+public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    return config.getAuthenticationManager();
+}
+```
+
+**`AuthenticationConfiguration config`** — Spring injects this automatically. It is a Spring class that holds the already-configured `AuthenticationManager` — the one wired with your `UserDetailsService` and `PasswordEncoder` beans.
+
+**`config.getAuthenticationManager()`** — retrieves the pre-configured `AuthenticationManager`. You do not build it yourself — Spring already built it using your beans. You just expose it so other classes can inject it.
+
+**`throws Exception`** — required because `getAuthenticationManager()` is declared with `throws Exception` in Spring's source code. You must declare it in your method signature too.
+
+> You never call `authenticationManager()` directly. Spring injects it into `AuthService` automatically. The `@Bean` annotation is what makes injection possible.
 
 ---
 
