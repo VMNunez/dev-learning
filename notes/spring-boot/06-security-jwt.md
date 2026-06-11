@@ -676,6 +676,167 @@ public class AuthController {
 
 ---
 
+## GlobalExceptionHandler — clean error responses
+
+File: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
+
+Docs: [Spring — @ControllerAdvice](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-advice.html)
+
+**Purpose:** catches exceptions thrown anywhere in the application and converts them into clean JSON responses with the correct HTTP status code. Without this, Spring returns a generic HTML error page or a confusing 500 — the client has no idea what went wrong.
+
+When `AuthService` calls `authenticationManager.authenticate()` and the credentials are wrong, Spring Security throws `BadCredentialsException`. That exception travels up the call stack until something catches it. `GlobalExceptionHandler` is that thing.
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleBadCredentials(BadCredentialsException e) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", "Invalid email or password"));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation failed");
+        return ResponseEntity.badRequest().body(Map.of("error", message));
+    }
+}
+```
+
+**`@RestControllerAdvice`** — marks this class as a global exception handler for all `@RestController` classes. Equivalent to `@ControllerAdvice` + `@ResponseBody`. Spring scans for this annotation at startup and registers the handlers automatically.
+
+**`@ExceptionHandler(BadCredentialsException.class)`** — tells Spring: "when this exception is thrown anywhere in a controller flow, run this method instead of the default error handling". The method parameter receives the exception object. `BadCredentialsException` is thrown by Spring Security when email or password is wrong — it does not tell you which one, for security reasons.
+
+**`HttpStatus.UNAUTHORIZED`** — the correct status code for failed authentication. 401 means "you are not authenticated". 403 means "you are authenticated but not allowed" — that is a different case.
+
+**`Map.of("error", "Invalid email or password")`** — a simple JSON response body. `Map.of()` creates an immutable map. Spring serializes it to `{ "error": "Invalid email or password" }` automatically.
+
+**`@ExceptionHandler(MethodArgumentNotValidException.class)`** — catches validation failures from `@Valid` on `LoginRequest`. Extracts the first field error and returns a 400 with a readable message. Without this, Spring returns a verbose 400 body that is hard to read.
+
+**`.getBindingResult().getFieldErrors().stream().map(...).findFirst()`** — `getBindingResult()` returns all validation errors. `.getFieldErrors()` filters to field-level errors (not global ones). `.stream().map(...).findFirst()` picks the first one and formats it as `"fieldName: error message"`.
+
+> `GlobalExceptionHandler` does not catch `UsernameNotFoundException` directly. Spring Security converts it to `BadCredentialsException` internally — this is intentional. If the API told the client "user not found", an attacker could enumerate valid email addresses. Returning the same error for both cases prevents that.
+
+---
+
+## ✅ Flow 1 complete — test it in Postman
+
+Flow 1 needs all these classes to exist: `JwtUtil`, `UserDetailsServiceImpl`, `SecurityConfig` (with `PasswordEncoder`, `AuthenticationManager`, `SecurityFilterChain`, `CorsConfigurationSource`), `AuthService`, `AuthController`, `GlobalExceptionHandler`. If any is missing, the app will not start or the login will not work.
+
+### Step 1 — start the app and check for errors
+
+Run the app in IntelliJ (green play button or Shift + F10). Watch the console — it should end with:
+
+```
+Started TimetrackApplication in X seconds
+```
+
+If you see a red error instead, read the first line of the stack trace. That is always the real cause. Fix it before moving on.
+
+### Step 2 — generate a BCrypt hash for your test password
+
+Go to [bcrypt.online](https://bcrypt.online), type `password123` as the plain text, keep the cost factor at 12, and click "Hash". Copy the result — it looks like `$2a$12$...`.
+
+You cannot reverse a BCrypt hash. The app calls `PasswordEncoder.matches("password123", storedHash)` on every login to compare them — it never decodes.
+
+### Step 3 — insert a test user in pgAdmin
+
+Open pgAdmin → your database → right-click the database → Query Tool. Run:
+
+```sql
+INSERT INTO users (name, email, password)
+VALUES ('Test User', 'test@test.com', '$2a$12$PASTE_YOUR_HASH_HERE');
+```
+
+Replace `$2a$12$PASTE_YOUR_HASH_HERE` with the full hash you copied in step 2. Then run this to confirm the user is there:
+
+```sql
+SELECT * FROM users;
+```
+
+### Step 4 — test the happy path in Postman
+
+Open Postman. Click **New → HTTP Request**.
+
+- Set the method to **POST** (dropdown on the left of the URL bar)
+- Enter the URL: `http://localhost:8080/api/auth/login`
+- Click the **Body** tab → select **raw** → change the format dropdown from "Text" to **JSON**
+- Paste this into the body:
+
+```json
+{
+  "email": "test@test.com",
+  "password": "password123"
+}
+```
+
+Click **Send**. Expected response — status **200 OK**:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+**Copy the full token value** — you will need it to test Flow 2.
+
+### Step 5 — test the error path
+
+Send the same request but with the wrong password:
+
+```json
+{
+  "email": "test@test.com",
+  "password": "wrongpassword"
+}
+```
+
+Expected response — status **401 Unauthorized**:
+
+```json
+{
+  "error": "Invalid email or password"
+}
+```
+
+If you get a 401 with your custom message, `GlobalExceptionHandler` is working correctly. If you get a long JSON with `"status": 401` and a `"path"` field, Spring's default error handler is still running — check that `@RestControllerAdvice` is on the class.
+
+### Step 6 — test validation
+
+Send a request with an empty email:
+
+```json
+{
+  "email": "",
+  "password": "password123"
+}
+```
+
+Expected response — status **400 Bad Request**:
+
+```json
+{
+  "error": "email: must not be blank"
+}
+```
+
+If all three cases work — 200, 401, 400 — Flow 1 is fully working.
+
+---
+
+---
+
+## 🔒 Flow 2 starts here — protected requests
+
+Everything below this line validates the JWT token that was issued in Flow 1. The classes above build the login endpoint. The classes below protect every other endpoint.
+
+---
+
 ## OncePerRequestFilter — the JWT filter
 
 File: `src/main/java/com/victor/timetrack/security/JwtFilter.java`
@@ -826,6 +987,8 @@ public class SecurityConfig {
 **`.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)`** — inserts your `JwtFilter` into the filter chain, just before Spring's default authentication filter. This ensures the JWT is validated before Spring tries its own (form-based) authentication logic.
 
 **`.cors(cors -> cors.configurationSource(corsConfigurationSource()))`** — applies the CORS rules defined in the `corsConfigurationSource()` bean. CORS must be configured inside Spring Security — not with `@CrossOrigin` — so the Security layer handles it before blocking the request.
+
+> The code block above omits `authenticationManager()` and `corsConfigurationSource()` for clarity. Both must be inside the same `SecurityConfig` class. `authenticationManager()` was defined in the previous step. `corsConfigurationSource()` is defined in the CORS section below — add it after `authenticationManager()`.
 
 ---
 
