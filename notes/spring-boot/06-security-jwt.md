@@ -2,15 +2,15 @@
 
 ## Documentation
 
-| What you need to do                                    | Read this                                                                                                                      |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Generate and parse JWT tokens in Java                  | [jjwt — Quickstart](https://github.com/jwtk/jjwt#quickstart) · [Reading a JWT](https://github.com/jwtk/jjwt#reading-a-jwt)     |
-| Configure the filter chain (SecurityFilterChain)       | [Java Configuration](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html)                         |
-| Set route-level permissions (permitAll, authenticated) | [Authorize HTTP Requests](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html) |
-| Configure STATELESS sessions for JWT                   | [Session Management](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html)          |
-| Password hashing with BCrypt                           | [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) |
+| What you need to do                                    | Read this                                                                                                                                       |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Generate and parse JWT tokens in Java                  | [jjwt — Quickstart](https://github.com/jwtk/jjwt#quickstart) · [Reading a JWT](https://github.com/jwtk/jjwt#reading-a-jwt)                      |
+| Configure the filter chain (SecurityFilterChain)       | [Java Configuration](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html)                                          |
+| Set route-level permissions (permitAll, authenticated) | [Authorize HTTP Requests](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html)                  |
+| Configure STATELESS sessions for JWT                   | [Session Management](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html)                           |
+| Password hashing with BCrypt                           | [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html)            |
 | How UserDetailsService fits into login                 | [DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) |
-| Full Spring Security reference                         | [Spring Security Reference](https://docs.spring.io/spring-security/reference/)                                                 |
+| Full Spring Security reference                         | [Spring Security Reference](https://docs.spring.io/spring-security/reference/)                                                                  |
 
 ---
 
@@ -43,7 +43,9 @@ It is split into three artifacts on purpose:
 | `jjwt-impl`    | runtime             | The internal logic that creates and parses tokens — you never reference it directly |
 | `jjwt-jackson` | runtime             | Handles JSON serialization inside the token — you never reference it directly       |
 
-`runtime` scope means the jar is only available when the app runs, not when it compiles. Your code only imports from `jjwt-api`. If you accidentally try to import an internal class from `jjwt-impl`, Maven blocks it at compile time — it forces you to use only the public API.
+A **JAR** (Java ARchive) is a file that contains compiled Java code — think of it as a ZIP file of `.class` files. When you add a dependency in `pom.xml`, Maven downloads the corresponding JAR and makes the code inside available to your project. Every library you use (jjwt, Spring Security, Lombok) arrives as a JAR.
+
+`runtime` scope means the JAR is only available when the app runs, not when it compiles. Your code only imports from `jjwt-api`. If you accidentally try to import an internal class from `jjwt-impl`, Maven blocks it at compile time — it forces you to use only the public API.
 
 **How to pick the version:** on mvnrepository.com, look at the usages column. Pick the version with the most usages in the most recent major family — that version has been tested by the most real projects. Avoid versions released in the last few weeks (usages will be very low).
 
@@ -85,31 +87,65 @@ Docs: [DaoAuthenticationProvider](https://docs.spring.io/spring-security/referen
 
 There are two separate flows. Understand both — they are different.
 
+**When does each flow happen?**
+- **Flow 1** — when the user logs in: they send email + password and receive a token. This happens on first login, or when a previous token has expired.
+- **Flow 2** — every request after login: the user already has a token and sends it in the header to access protected routes.
+
+---
+
 **Flow 1 — Initial login (POST /api/auth/login)**
 
-This is what happens when the user sends their email and password for the first time:
-
+*Quick summary:*
 ```
-1. Request arrives → JwtFilter runs, sees no token → passes through immediately
+1. Request arrives → JwtFilter runs, sees no token → passes through
 2. SecurityFilterChain checks the route → /api/auth/** is permitAll() → allows it
 3. AuthController receives the request → calls AuthService.login()
 4. AuthService calls AuthenticationManager.authenticate()
 5. AuthenticationManager delegates to DaoAuthenticationProvider
 6. DaoAuthenticationProvider calls UserDetailsService.loadUserByUsername(email)
-   → goes to the database, returns a UserDetails object
 7. DaoAuthenticationProvider calls PasswordEncoder.matches(rawPassword, hashedPassword)
-   → compares what the user sent with what is stored in the database
 8. If both checks pass → authentication is successful
 9. AuthService calls JwtUtil.generateToken(email) → returns a signed JWT
 10. AuthController returns AuthResponse with the token
 ```
 
-The client receives the token and stores it (e.g. in `localStorage`).
+*Step by step:*
+
+**1. Request arrives → JwtFilter runs, sees no token → passes through**
+`security/JwtFilter.java` — Every request passes through `JwtFilter` first. It looks for an `Authorization: Bearer <token>` header. On login, the user does not have a token yet, so the header is missing. `JwtFilter` detects this and does nothing — it simply passes the request to the next step.
+
+**2. SecurityFilterChain checks the route → `/api/auth/**` is `permitAll()` → allows it**
+`security/SecurityConfig.java` — `SecurityFilterChain` is the set of security rules you configured. `permitAll()` means "no authentication required for this URL". Since you marked `/api/auth/**` as public, the login endpoint is allowed through.
+
+**3. AuthController receives the request → calls AuthService.login()**
+`controller/AuthController.java` — The request reaches your controller, which reads the JSON body (email + password) and calls the service.
+
+**4. AuthService calls AuthenticationManager.authenticate()**
+`service/AuthService.java` — Passes the email and raw password to Spring Security's coordinator. This triggers the whole verification process.
+
+**5. AuthenticationManager delegates to DaoAuthenticationProvider**
+Spring Security internal — `AuthenticationManager` does not verify anything itself. It delegates to `DaoAuthenticationProvider`, which is Spring Security's internal class for username/password logins. You do not write this class.
+
+**6. DaoAuthenticationProvider calls UserDetailsService.loadUserByUsername(email)**
+`security/UserDetailsServiceImpl.java` — Goes to the database, finds the user by email, and returns a `UserDetails` object with the stored hashed password and roles.
+
+**7. DaoAuthenticationProvider calls PasswordEncoder.matches(rawPassword, hashedPassword)**
+`security/SecurityConfig.java` (the `passwordEncoder()` bean) — Compares the plain text password the user sent with the BCrypt hash stored in the database. If it does not match, `BadCredentialsException` is thrown.
+
+**8. If both checks pass → authentication is successful**
+`authenticate()` returns without throwing. This means: the user exists in the database AND the password is correct.
+
+**9. AuthService calls JwtUtil.generateToken(email) → returns a signed JWT**
+`service/AuthService.java` + `security/JwtUtil.java` — Now that the credentials are verified, generate the token. The email goes into the `sub` claim and it is signed with the secret key.
+
+**10. AuthController returns AuthResponse with the token**
+`controller/AuthController.java` — The response is a JSON object `{ "token": "eyJ..." }`. The client (Angular) stores it in `localStorage` and sends it on every future request.
+
+---
 
 **Flow 2 — Every subsequent request (any protected route)**
 
-This is what happens on every request after the user is logged in:
-
+*Quick summary:*
 ```
 1. Request arrives with header: Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 2. JwtFilter runs → extracts the token from the header
@@ -121,19 +157,45 @@ This is what happens on every request after the user is logged in:
 8. Request reaches the controller
 ```
 
+*Step by step:*
+
+**1. Request arrives with header: `Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...`**
+Angular interceptor (frontend) — The client sends the token it stored after login. It goes in a header — not in the body, not in a cookie.
+
+**2. JwtFilter runs → extracts the token from the header**
+`security/JwtFilter.java` — Detects the `Authorization` header, strips the `Bearer ` prefix (7 characters), and gets the raw token string.
+
+**3. JwtFilter calls JwtUtil.extractUsername(token) → gets the email**
+`security/JwtFilter.java` + `security/JwtUtil.java` — Reads the `sub` claim from the token payload. This is the email of the user who logged in.
+
+**4. JwtFilter calls UserDetailsService.loadUserByUsername(email) → loads user from DB**
+`security/JwtFilter.java` + `security/UserDetailsServiceImpl.java` — Even though the token already contains the email, Spring Security requires loading the full `UserDetails` to get the current roles and confirm the account is still active.
+
+**5. JwtFilter calls JwtUtil.isValid(token, email) → checks signature + expiry**
+`security/JwtFilter.java` + `security/JwtUtil.java` — Verifies that the token was signed with the correct secret key (not tampered with) and has not expired.
+
+**6. If valid → JwtFilter puts the user in SecurityContextHolder**
+`security/JwtFilter.java` — `SecurityContextHolder` is a thread-local storage that Spring Security reads throughout the request lifecycle. Putting the user here tells Spring: "this request is authenticated as this user".
+
+**7. SecurityFilterChain checks the route → requires authenticated() → user is in context → allowed**
+`security/SecurityConfig.java` — Since `SecurityContextHolder` has a valid user, the route rule `authenticated()` is satisfied. The request is allowed through.
+
+**8. Request reaches the controller**
+Any controller — The controller can now call `SecurityContextHolder.getContext().getAuthentication()` to know who is making the request, without checking the database again.
+
 Spring Security knows who is making the request from the `SecurityContextHolder` — no password check needed, just the token.
 
 **Why each class exists:**
 
-| Class | Role in the flow |
-|---|---|
-| `JwtUtil` | Creates and validates JWT tokens |
-| `UserDetailsServiceImpl` | Loads a user from the database by email |
-| `AuthService` | Orchestrates login: calls `AuthenticationManager`, generates token |
-| `AuthController` | Receives the HTTP request, returns the token |
-| `JwtFilter` | Intercepts every subsequent request and validates the token |
-| `SecurityConfig` | Configures which routes are public, which are protected, and registers all the beans above |
-| `AuthenticationManager` | Spring Security's internal coordinator — receives the login attempt and delegates to `DaoAuthenticationProvider`. Registered as a `@Bean` in `SecurityConfig` |
+| Class                    | Role in the flow                                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `JwtUtil`                | Creates and validates JWT tokens                                                                                                                              |
+| `UserDetailsServiceImpl` | Loads a user from the database by email                                                                                                                       |
+| `AuthService`            | Orchestrates login: calls `AuthenticationManager`, generates token                                                                                            |
+| `AuthController`         | Receives the HTTP request, returns the token                                                                                                                  |
+| `JwtFilter`              | Intercepts every subsequent request and validates the token                                                                                                   |
+| `SecurityConfig`         | Configures which routes are public, which are protected, and registers all the beans above                                                                    |
+| `AuthenticationManager`  | Spring Security's internal coordinator — receives the login attempt and delegates to `DaoAuthenticationProvider`. Registered as a `@Bean` in `SecurityConfig` |
 
 ---
 
@@ -418,6 +480,7 @@ You never call `loadUserByUsername()` yourself. Spring Security calls it automat
 **What is `UserDetails`?**
 
 `UserDetails` is a Spring Security interface that represents a user. It has four things Spring Security needs to work:
+
 - `getUsername()` — the login identifier (email in your case)
 - `getPassword()` — the hashed password stored in the database
 - `getAuthorities()` — the roles/permissions (e.g. `ROLE_USER`, `ROLE_MANAGER`)
@@ -451,7 +514,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 **`implements UserDetailsService`** — this is a Spring Security interface with one required method. Implementing it is how Spring discovers your custom user lookup logic.
 
-**`private final UserRepository userRepository` + constructor**  — `private final` means the field cannot change after the object is created. The constructor receives the dependency from Spring (constructor injection). This is the recommended pattern over `@Autowired` — it makes dependencies explicit and the class easier to test.
+**`private final UserRepository userRepository` + constructor** — `private final` means the field cannot change after the object is created. The constructor receives the dependency from Spring (constructor injection). This is the recommended pattern over `@Autowired` — it makes dependencies explicit and the class easier to test.
 
 **`loadUserByUsername(String username)`** — despite the name, `username` here is the email. Spring Security uses "username" as a generic term for "the identifier used to log in". The method signature is fixed by the interface — you cannot rename the parameter.
 
@@ -568,6 +631,48 @@ public class AuthService {
 **`new AuthResponse(token)`** — wraps the token string in the DTO. `AuthController` will receive this object and Spring will serialize it to JSON automatically before sending it to the client.
 
 > `AuthService` never touches the database directly. It delegates all credential checks to `AuthenticationManager` and all token logic to `JwtUtil`. No `UserRepository` injection here — that separation is intentional.
+
+---
+
+## AuthController — the login endpoint
+
+File: `src/main/java/com/victor/timetrack/controller/AuthController.java`
+
+Docs: [Spring — @RequestMapping](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-requestmapping.html) — read only the **Explicit Registrations** and **URI patterns** sections
+
+**Purpose:** receives `POST /api/auth/login`, passes the request to `AuthService`, and returns the token as JSON. This is the only public endpoint in the API — everything else requires a valid JWT.
+
+```java
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+}
+```
+
+**`@RestController`** — marks the class as a controller that returns JSON automatically. Equivalent to `@Controller` + `@ResponseBody` on every method.
+
+**`@RequestMapping("/api/auth")`** — sets the base URL for all endpoints in this class. Every method inside will be under `/api/auth`. Combined with `@PostMapping("/login")`, the full URL is `POST /api/auth/login`.
+
+**`@PostMapping("/login")`** — maps this method to `POST /api/auth/login`. `@PostMapping` is a shortcut for `@RequestMapping(method = RequestMethod.POST)`.
+
+**`@RequestBody LoginRequest request`** — tells Spring to read the JSON body of the request and convert it into a `LoginRequest` object automatically. Spring uses Jackson (included with Spring Boot) to do the conversion.
+
+**`@Valid`** — triggers the validation annotations on `LoginRequest` (`@NotBlank` on email and password). If validation fails, Spring returns a 400 error automatically before the method runs — `AuthService` is never called.
+
+**`ResponseEntity<AuthResponse>`** — the return type that lets you control the HTTP status code. `ResponseEntity.ok(body)` returns status 200 with the body serialized as JSON. Using `ResponseEntity` is the standard in Spring Boot controllers — it makes the status code explicit and visible in the code.
+
+> `AuthController` has no logic — it only receives the request, delegates to `AuthService`, and wraps the result in a `ResponseEntity`. All business logic lives in the service layer.
 
 ---
 
@@ -714,7 +819,7 @@ public class SecurityConfig {
 
 **`@EnableMethodSecurity`** — enables `@PreAuthorize` on individual methods. Without this annotation, `@PreAuthorize` is silently ignored — no error, just no protection.
 
-**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/` (login, register) without a token. The `**` matches any path below that prefix.
+**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/`(login, register) without a token. The`\*\*` matches any path below that prefix.
 
 **`.anyRequest().authenticated()`** — every other URL requires a valid JWT. Order matters: `requestMatchers` rules are checked first, in the order they are declared. `.anyRequest()` is always last — it is the catch-all.
 
@@ -755,7 +860,7 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 **`setAllowCredentials(true)`** — allows cookies and `Authorization` headers to be sent cross-origin. Required for JWT to work.
 
-**`source.registerCorsConfiguration("/**", config)`** — applies this CORS config to every URL in the API.
+**`source.registerCorsConfiguration("/**", config)`\*\* — applies this CORS config to every URL in the API.
 
 > The CORS error only appears in the browser — it is not a backend bug. The browser blocks the response, not the request. The fix is always on the server.
 
