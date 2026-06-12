@@ -28,8 +28,7 @@ Notes on specific topics:
   that does not appear in a Spring Boot context (GUI, threads, streams, advanced collections).
 - SQL: database is PostgreSQL. Include PostgreSQL-specific syntax and behaviour where it differs
   from standard SQL.
-- General: covers HTTP, JSON, env vars, testing concepts, SOLID, code principles. Cross-cutting
-  concepts not specific to one technology.
+- General: covers HTTP, JSON, env vars, testing concepts, SOLID, code principles.
 - Security: covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
 
 Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
@@ -43,19 +42,21 @@ subfolder structure for notes/.
 
 ---
 
-## Who I am and what this coverage is for
+## Who I am
 
-I am Victor, 31 years old. I am preparing for my first junior developer job at Spanish IT
-consultancies (NTT Data, Capgemini, Indra, Sopra Steria, and similar) with a target date of
-August 2026.
+I am Victor, 31 years old. I am in a career transition — my background is React, Node.js, and
+TypeScript, but I retrained to target Angular + Spring Boot, which is the dominant stack at
+Spanish IT consultancies.
 
-My stack: Angular (frontend) + Spring Boot (backend, Java) + PostgreSQL (database).
-
-I completed an internship in June 2026 (Next.js + TypeScript + MySQL) — real work experience
-on my CV even though the stack is different.
-
-Level: Junior to Junior-Mid. I need to sound like someone who makes decisions and can explain
-them — not someone who followed a tutorial and memorised the steps.
+My situation:
+- Full-time studying since June 2, 2026 — this is not a side project, it is my main job right now
+- Completed an internship in June 2026 (Next.js + TypeScript + MySQL) — this is real work
+  experience and it goes on my CV, even though the stack is different from my target
+- Target: land my first developer job at a Spanish IT consultancy by August–September 2026
+- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, and similar large consultancies
+- My differentiator: most candidates in Spain apply with React; I am going with Angular +
+  Spring Boot, which is what consultancies use internally — this makes me stand out if I
+  can demonstrate real understanding, not just syntax knowledge
 
 My projects:
 - 01: todo list — components, signals, services, directives
@@ -67,125 +68,202 @@ My projects:
 - 07: TimeTrack (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate,
   PostgreSQL, Docker, Angular
 
-The `coverage.md` file is the single source of truth for what I must learn and be able to
-explain for this topic. It is used by audit prompts to check that notes and interview prep
-are complete. Every item in `coverage.md` is a required topic — not optional, not bonus.
+---
+
+## The Spanish job market in 2026
+
+Large consultancies (NTT Data, Capgemini, Indra, Sopra Steria) hire juniors through a
+standard 5-stage process:
+
+1. **CV screening** — stack match, projects, internship. Filtered out if the CV is generic.
+2. **HR call** — motivation, availability, salary expectation. 15–20 minutes.
+3. **Technical test** — take-home mini-project (Angular mini-app or Spring Boot mini-API),
+   typically 2–4 hours. Filtered out if the code is not clean, not structured, or not
+   explainable.
+4. **Technical interview** — live review of the take-home code: explain every decision,
+   defend architecture choices, answer conceptual questions on the spot. The most important
+   stage. Filtered out if the candidate cannot explain what they wrote.
+5. **Offer** — salary and contract terms.
+
+What gets a junior filtered out at stage 4:
+- Cannot explain why a pattern was chosen (only knows how to write it)
+- Cannot read code written by someone else and explain what it does
+- No tests — signals the candidate only follows tutorials
+- Does not know the difference between similar concepts (e.g. `PATCH` vs `PUT`,
+  `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, `Subject` vs `BehaviorSubject`)
+- Gives textbook definitions instead of real examples from their own projects
+
+At junior level, companies are not expecting a senior. They want someone who:
+- Can explain every line of code they wrote
+- Can justify at least one architectural decision
+- Knows the basics of their stack and is not faking it
+- Can be productive within a few months
+
+---
+
+## The AI factor in 2026
+
+AI writes boilerplate. This has changed what technical interviewers test.
+
+Before AI: "Can you write the code?" — enough to pass.
+Now: "Can you explain the code, justify the decision, and catch a bug in code you did not write?"
+
+This means:
+- A candidate who generates code without understanding it is filtered out faster than before
+- Testing knowledge is now a stronger filter — tests show real understanding because AI
+  struggles to write meaningful tests for code it doesn't understand
+- Architecture questions have become more common — "why did you structure it this way?" is
+  harder to answer with AI-generated code
+- Code review questions are now standard — the interviewer shows a snippet and asks what
+  is wrong or why it was written that way
+
+For coverage, this means: any concept that is easy to generate with AI but hard to explain
+belongs in coverage. The bar for "a junior must know this" is now "a junior must be able to
+explain and defend this without AI help."
+
+---
+
+## What coverage.md is
+
+`coverage.md` is the **single source of truth** for everything Victor must learn about {TOPIC}.
+
+It is NOT derived from the notes. It is derived from what the job requires.
+The notes are then written to cover every item in coverage — not the other way around.
+
+If an item is in coverage but not in the notes yet, that is a gap in the notes.
+If the notes cover something that is not in coverage, that is extra material — fine to keep
+in the notes, but not required.
+
+The audit prompts (`notes-prompt.md`, `auto-audit-prompt.md`) use `coverage.md` as their
+baseline. Every item in coverage is a required topic that must be covered by at least one
+note file. No exceptions.
 
 ---
 
 ## Step 1 — Read the existing state
 
-Before making any decision about what belongs in coverage, read these files:
+Read these files before making any decision:
 
-1. The existing `{NOTES_PATH}coverage.md` — if it exists, use it as the starting point.
-   Do not delete sections without a reason.
-2. All numbered note files in {NOTES_PATH} — these define what has already been studied.
+1. `{NOTES_PATH}coverage.md` — if it exists, use it as the starting point. Do not remove
+   items without a clear reason.
+2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
+   in-scope given Victor's current project and objective.
+3. All numbered note files in {NOTES_PATH} — read them to understand what has been studied
+   and what examples already exist. This is context, not the source of coverage decisions.
    Skip `future-learning.md` and `coverage.md` in this pass.
-3. The existing `{NOTES_PATH}future-learning.md` — check if any concept listed there
-   has now become in-scope (see the bidirectional check below).
 
 ---
 
-## Step 2 — Decide what goes in coverage
+## Step 2 — Derive coverage from the job, not the notes
 
-The scope test for a coverage item: **Would a Spanish consultancy test this in a
-technical interview for a junior Angular + Spring Boot role by August 2026?**
+Think from the perspective of a technical interviewer at NTT Data or Capgemini who has
+30 minutes with a junior Angular + Spring Boot candidate.
 
-A concept is IN coverage if:
-- A junior at NTT Data, Capgemini, or Indra would be expected to explain it out loud
-- A junior would be expected to write it or recognise it in a code review
-- It appears in real project code at Victor's level (projects 01–07)
-- Skipping it would make Victor look underprepared in a screening
+Ask yourself: "What would I ask this person to test whether they really know {TOPIC}?"
+The answers to that question are the items that belong in coverage.
 
-A concept goes to `future-learning.md` if:
-- It is real and worth learning — but only relevant after landing the first job
-- It is too advanced for a junior screening (mid-level architecture, advanced performance tuning)
-- It belongs to a future project or a post-hire growth area
-- A junior who doesn't know it would not be filtered out
+Then apply the scope filter:
 
-If a concept does not fit either — it is not needed at all and should be ignored.
+**IN coverage — must be there:**
+- A junior is expected to explain it confidently out loud
+- A junior is expected to write it, read it, or recognise it in a real codebase
+- Not knowing it would cause the interviewer to doubt the candidate's competence
+- It appeared in projects 01–07 or is needed to understand them
 
-**The AI factor (2026):** Companies have raised the bar slightly because AI writes boilerplate.
-What they now test:
-- Can you explain every line, not just write it?
-- Did you make decisions, or did you copy code?
-- Can you read and review code written by someone else or by AI?
-- Can you write and understand tests?
+**OUT of coverage → goes to `future-learning.md`:**
+- Real and worth learning, but only relevant after landing the first job
+- Too advanced for a junior screening (mid-level architecture, performance tuning, distributed
+  systems, complex patterns only used by seniors)
+- Belongs to a future project or a post-hire growth stage
+- A junior who doesn't know it would not be filtered out in 2026
 
-Let this shape what "a junior must know" means. A concept that is easy to generate with AI
-but hard to explain belongs in coverage — because explaining it is exactly what separates
-Victor from a weaker candidate.
+If a concept fits neither category, it is not needed at all. Do not add it anywhere.
 
 ---
 
-## Step 3 — The bidirectional check with future-learning.md
+## Step 3 — Apply the AI factor
+
+For each concept you are deciding whether to include, ask:
+
+- Is this easy to generate with AI but hard to explain? → **must be in coverage**
+- Is this the kind of thing an interviewer would show as a snippet and ask "what does this do
+  and why?" → **must be in coverage**
+- Is this something only a mid-level developer would need to know, and AI makes it irrelevant
+  at junior level? → **future-learning**
+
+Pairs of similar concepts that are easy to confuse deserve special attention — they are a
+standard interview filter. Examples: `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`,
+`PUT` vs `PATCH`, `Subject` vs `BehaviorSubject`. Include both sides of the pair with a
+description that explains the difference.
+
+---
+
+## Step 4 — The bidirectional check with future-learning.md
 
 **Promote from future-learning → coverage:**
-Read the existing `future-learning.md`. For each concept listed, ask: is this now in scope,
-given Victor's current project (07: Spring Boot + JWT + JPA + Docker) and his objective
-(junior at a Spanish consultancy by August 2026)?
+For each concept in `future-learning.md`: is it now in scope, given Victor's current project
+(07: Spring Boot + JWT + JPA + Docker) and his August 2026 deadline?
 If yes: add it to coverage and remove it from `future-learning.md`.
 
 **Demote from coverage → future-learning:**
-If coverage currently contains something too advanced for a junior screening, move it to
-`future-learning.md` with a short explanation of why it belongs there.
+If coverage currently contains something too advanced for a junior screening, move it.
+Write a short explanation in `future-learning.md` of why it is post-junior scope.
 
-**Add to future-learning:**
-If during this process you identify a concept that is real and worth knowing — but is still
-beyond junior scope — add it to `future-learning.md`. If it is already listed there, leave it.
+**Add new entries to future-learning:**
+If you identify a concept that is real and worth knowing post-hire — and it is not already
+in `future-learning.md` — add it. Do not create a full note file for it.
 
 ---
 
-## Step 4 — Write or update coverage.md
+## Step 5 — Write or update coverage.md
 
 Write the file at `{NOTES_PATH}coverage.md`.
 
 **File structure:**
 
-```
+```markdown
 # Minimum Coverage — {TOPIC}
 
-[One or two sentences explaining what this coverage is for and what the scope is.
-Anchor it to the job target. Do not make it generic.]
+[One or two sentences. State what this file defines and anchor it to the job target.
+Example: "Topics a junior must know to pass a technical screening at NTT Data, Capgemini,
+or Indra in 2026. Every item must be explainable with a real example from one of the projects."]
 
 ## [Section name]
-- concept — why it matters / what the interviewer expects
+- concept — why it matters and what the interviewer is testing
 
 ## [Section name]
-...
+- ...
 ```
 
 **Exact format rules:**
 
-- Plain `- ` bullet points. No checkboxes (`[ ]`). No numbered lists.
-- Each item: `concept or syntax — one sentence explaining why it matters or what the
-  interviewer is testing`. The "why it matters" part is mandatory — it is what makes
-  coverage useful as a study guide, not just a list of names.
-- No code blocks inside coverage.md — concept names only, no implementation.
-- Sections grouped by theme, not alphabetical. Order sections from most important
-  (highest filtering risk in an interview) to least.
+- Plain `- ` bullets. No checkboxes (`[ ]`). No numbered lists.
+- Each item: `concept name or syntax — one sentence anchored to interview context`.
+  The description is mandatory. It must answer: "why does this belong in coverage?"
+  Use language like: "interviewers ask...", "tested in every technical screening",
+  "asked when discussing...", "the most common source of bugs in junior code", etc.
+  Never write a tutorial definition — write the signal the interviewer is probing for.
+- No code blocks — concept names and annotations only, no implementation.
+- Sections grouped by theme. Order from highest filtering risk (most likely to cause rejection
+  if unknown) to lowest.
 - Items within a section: foundational first, then more specific.
-- The description after the dash must be interview-anchored: "interviewers ask...",
-  "used in...", "tested in every technical interview", "asked when discussing..."
-  Not a tutorial definition — a signal of what the interviewer is probing.
 
 **Section design:**
 
-Do not create one giant flat list. Group related concepts under a clear section heading.
-Good section names are functional, not generic — "Spring Data JPA", "Bean validation",
-"Smart / dumb pattern" are better than "Annotations", "Testing", "Patterns".
+Use functional, specific section names. "Spring Data JPA", "Bean validation", "Smart/dumb
+pattern" are good. "Annotations", "Patterns", "Basics" are too vague.
 
-Aim for 6–12 items per section. If a section has 20+ items, split it.
-If a section has 2 items, consider merging it into a related section.
+Aim for 5–10 items per section. More than 12: split. Fewer than 3: merge into a related section.
 
 ---
 
-## Step 5 — Update future-learning.md
+## Step 6 — Update future-learning.md
 
 After writing coverage.md:
-- Remove any concept from `future-learning.md` that was promoted to coverage.
-- Add any concept that was demoted or newly identified as post-junior scope.
-- Do not rewrite the whole file — only touch the entries that changed.
+- Remove concepts promoted to coverage
+- Add concepts demoted from coverage or newly identified as post-junior
+- Do not rewrite the whole file — only touch the entries that changed
+- Preserve the phased structure (Phase 1, Phase 2, Phase 3) if it already exists
 
 ---
 
@@ -195,13 +273,14 @@ Apply all changes directly to the files. Do not describe what you would write �
 
 After all edits, print a short summary:
 
-- What was added to coverage
-- What was promoted from future-learning (if any)
-- What was demoted to future-learning (if any)
-- What stayed unchanged
+| Change | Detail |
+|--------|--------|
+| Added to coverage | [list of new items] |
+| Promoted from future-learning | [list or "none"] |
+| Demoted to future-learning | [list or "none"] |
+| Removed from future-learning | [list or "none"] |
 
-Then show the commit message so Victor can run it himself. Always use this format —
-one command per code block:
+Then show the commit message so Victor can run it himself. Always one command per code block:
 
 ```
 
