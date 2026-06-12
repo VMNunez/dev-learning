@@ -193,7 +193,11 @@ Client: sends { "email": "...", "password": "..." }
     ↓
 [DaoAuthenticationProvider]     → calls UserDetailsServiceImpl.loadUserByUsername(email)
     ↓
-[UserDetailsServiceImpl]        → queries database → returns UserDetails (hashed password + roles)
+[UserDetailsServiceImpl]        → queries database → returns UserDetails {
+                                    getUsername()    = email
+                                    getPassword()    = BCrypt hash  ← used here
+                                    getAuthorities() = [ROLE_USER]
+                                  }
     ↓
 [DaoAuthenticationProvider]     → calls BCryptPasswordEncoder.matches(rawPassword, hashedPassword)
     ↓
@@ -221,9 +225,13 @@ Client: sends request with header → Authorization: Bearer eyJhbGciOiJIUzI1NiJ9
                                   decodes token → reads "sub" claim → returns email
     ↓
 [JwtFilter] calls               → UserDetailsServiceImpl.loadUserByUsername(email)
-                                  queries database → returns UserDetails (hash + roles)
+                                  queries database → returns UserDetails {
+                                    getUsername()    = email          → isValid()
+                                    getPassword()    = BCrypt hash    → not used here
+                                    getAuthorities() = [ROLE_MANAGER] → setAuth()
+                                  }
     ↓
-[JwtFilter] calls               → JwtUtil.isValid(token, email)
+[JwtFilter] calls               → JwtUtil.isValid(token, userDetails.getUsername())
                                   checks signature (not tampered) + expiry (not expired)
     ↓
 [JwtFilter]                     → puts the user in SecurityContextHolder (marks request as authenticated)
@@ -805,7 +813,7 @@ public class JwtUtil {
 
 Docs: [Spring Security — UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html) · [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider)
 
-File: `src/main/java/com/victor/timetrack/security/UserDetailsServiceImpl.java`
+File: `src/main/java/com/victor/timetrack/service/UserDetailsServiceImpl.java`
 
 From the DaoAuthenticationProvider flow (see "The full login flow" section above):
 
