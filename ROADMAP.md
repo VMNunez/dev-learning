@@ -183,7 +183,7 @@ Planned together with Claude based on what PROGRESS.md shows is still weak. The 
 **Stage 2 — Technical test simulation:**
 Simulate real consultancy tests: write a Spring Boot endpoint from scratch, build an Angular form with validation, write a SQL query against an unfamiliar schema — all under time pressure. This is what the actual tests look like.
 
-**Minimum target: 15 simulations before applying seriously** — split by type:
+**Minimum target: 15 simulations before applying seriously** — all tests are in `simulations/` with a tracker at `simulations/TRACKER.md`. Split by type:
 
 | Type | Minimum | What it covers |
 |------|---------|---------------|
@@ -197,11 +197,11 @@ Simulate real consultancy tests: write a Spring Boot endpoint from scratch, buil
 - When time is up, review with Claude: what was wrong, what was slow, what you could not recall
 
 **Where to get the tests:**
-Claude provides them. At the start of the 12:30 block, open a new chat and write:
+All 15 tests are already written in `simulations/` — 5 Angular, 5 Spring Boot, 5 SQL. Check `simulations/TRACKER.md` for the full list and your progress.
 
-> *"Give me a technical test simulation — [Spring Boot / Angular / SQL]. I have 90 minutes. No hints until time is up."*
+To do a simulation: open the spec file, set a timer, and build. No notes, no AI. When time is up, open a new chat and write:
 
-Claude will give you a realistic scenario with requirements, a schema or spec, and will review your solution when you submit it.
+> *"Review my solution for [simulations/angular/01-task-form.md]. Here is my code: [paste code]. Tell me what is wrong, what is missing, and what I would score."*
 
 **Stage 3 — LeetCode Easy (only if all of the following are complete):**
 
