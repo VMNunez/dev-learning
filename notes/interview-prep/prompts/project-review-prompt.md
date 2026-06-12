@@ -7,6 +7,7 @@ This prompt reviews a project for code quality, patterns, and README quality. At
 ---
 
 **How to use:**
+
 1. Fill in `PROJECT_PATH` — the folder path relative to the learning root
 2. Fill in `PROJECT_TYPE` — `angular` or `fullstack`
 3. Paste the entire prompt below into a new chat
@@ -70,28 +71,73 @@ My projects:
 
 Read {PROJECT_PATH}/README.md.
 
-For ANGULAR projects, check every rule in the "README format for Angular projects" section of
-CLAUDE.md. Review each section:
+For ANGULAR projects, check each section against these rules:
 
-1. **Title + one sentence** — plain language? No tech jargon? Project number included?
-2. **Why this project** — explains the learning motivation? Connected to reality? No forced mentions of consultancies?
-3. **Live demo** — has its own `## Live demo` heading? URL present?
-4. **Screenshots** — exactly four? Single column? Bold caption above each one? Not a 2x2 table?
-5. **Features** — 5-6 bullets? Written from the user's perspective? No technical terms?
-6. **Architecture decisions** — 6-8 maximum? One line per decision? Format: `[what] to [why]`?
-7. **Tradeoffs** — 3-4 bullets? Format: `[chose] over [rejected] — [reason]`?
-8. **Future improvements** — max 3? Realistic for the domain? No AI or microservices?
-9. **What I learned** — one bullet per concept? No explanations? Details in notes/?
-10. **Tech stack** — table format? Not a bullet list?
-11. **Project structure** — folder tree? One-line explanation per folder?
-12. **How to run** — one command per code block? In order: clone → cd → install → start?
+1. **Title + one sentence** — plain language, no tech words, project number included.
+   - Bad: "A role-based HR app to learn route guards."
+   - Good: "My 6th learning project — HR portal where admins manage employees and leave requests."
 
-For FULLSTACK projects, also check the three-README system:
-- Global README — audience: recruiter. Goal: make them want to talk to you.
-- Backend README — audience: technical interviewer. Goal: trust your backend knowledge.
-- Frontend README — audience: technical interviewer. Goal: trust your Angular knowledge.
+2. **Why this project** — one paragraph, connected to reality, no forced consultancy mentions.
+   - Bad: "Built to practice Angular guards and interceptors."
+   - Good: "Most production Angular apps have protected routes — I built this to understand how they work in practice."
 
-Check each README against its section rules in CLAUDE.md.
+3. **Live demo** — must have its own `## Live demo` heading. URL present. Include test accounts if the app has auth.
+
+4. **Screenshots** — exactly four, single column, bold caption above each one. Never a 2x2 table (images compress on GitHub).
+
+5. **Features** — 5–6 bullets from the user's perspective, no technical terms.
+   - Bad: "Uses CanActivateFn to protect routes."
+   - Good: "Protected routes redirect unauthenticated users to login."
+
+6. **Architecture decisions** — 6–8 maximum, one line each. Format: `[what you did] to [why it matters]`
+   - Bad: "Used coordinator pattern."
+   - Good: "Coordinator pattern to centralise page state and keep table and filters reusable."
+
+7. **Tradeoffs** — 3–4 bullets. Format: `[chose] over [rejected] — [reason]`
+   - Good: "localStorage over a real backend — focus of the project was Angular patterns, not data persistence."
+
+8. **Future improvements** — 3 maximum, realistic for the domain only. No AI, no microservices.
+
+9. **What I learned** — one bullet per concept, no explanations. Details belong in notes/.
+
+10. **Tech stack** — always a table, never a bullet list.
+
+11. **Project structure** — folder tree with one-line explanation per folder.
+
+12. **How to run** — one command per code block. Order: clone → cd → npm install → npm start.
+
+For FULLSTACK projects, check the three-README system — never mix audiences:
+
+| README | Location | Audience | Goal |
+|--------|----------|----------|------|
+| Global | `projects/07-x/README.md` | Recruiter | Makes them want to talk to you |
+| Backend | `backend/README.md` | Technical interviewer | Makes them trust your backend knowledge |
+| Frontend | `frontend/README.md` | Technical interviewer | Makes them trust your Angular knowledge |
+
+**Global README** — same rules as Angular for title, why, screenshots, features, architecture decisions, tradeoffs, future improvements, tech stack, what I learned. Add:
+- GIF: one critical flow only (e.g. login → submit → approval), max 5MB
+- How to run: `docker-compose up` when Docker is ready
+- Links at the end: "Full technical details: [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md)"
+
+**Backend README** — must include in this order:
+1. API endpoints table — method, URL, role required, description
+2. Database schema — entities, fields, relationships; one sentence per key decision
+3. Auth flow — numbered steps: login → BCrypt → JWT → filter → SecurityContext
+4. Security considerations — minimum four bullets: BCrypt passwords, JWT secret from env var, @PreAuthorize, @Valid + @ControllerAdvice
+5. Folder structure — annotated tree (controller/service/repository/model/dto/security)
+6. Key patterns — layered architecture, DTOs, GlobalExceptionHandler; why each was used
+7. Tradeoffs — JWT vs sessions, soft delete vs hard delete; one line each
+8. How to run alone — without Docker, for development
+
+**Frontend README** — must include in this order:
+1. Folder structure — one-line explanation per folder
+2. State management approach — signals for local state, services for shared state, coordinator for page-level
+3. Key patterns — auth guard, interceptor, role-aware UI; why each was needed
+4. Shared components — list with reason each is shared
+5. Tradeoffs — Signals over NgRx and similar decisions; one line each
+6. How to run alone — `ng serve`
+
+One rule that matters most: every section must answer "does this make the reader trust me more?" If not, cut it.
 
 For each issue found: describe the problem and show a fixed version.
 Apply all fixes directly to the README files.

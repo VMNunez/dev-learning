@@ -6,6 +6,7 @@ Update the project list as new projects are completed.
 ---
 
 **How to use:**
+
 1. Choose a `[MODE]` from the list below
 2. Fill in the topic or file if using Topic Practice mode
 3. Paste the prompt below into a new chat
@@ -62,7 +63,7 @@ Start with: "Cuéntame sobre ti y por qué quieres trabajar en una consultora."
 ### Topic practice
 Focus on one topic or one section.
 Read: notes/interview-prep/es/[FILE].md
-Topic: [e.g. angular / css / sql / java / typescript / architecture / general]
+Topic: [e.g. angular / css / sql / java / typescript / architecture / general / security]
 Section (optional): [e.g. Routing / Forms / Material / RxJS — leave blank to cover the whole file]
 Pick all questions from that topic or section. Go one at a time.
 Start with the first conceptual question in that section.

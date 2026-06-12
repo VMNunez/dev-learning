@@ -7,6 +7,7 @@ This prompt is the smart version of `notes-audit-prompt.md`. It reads `audit-reg
 ---
 
 **How to use:**
+
 1. Open `audit-registry.md` and find the next row with `❌ Not done` or `⚠️ Needs re-audit`
 2. Copy its TOPIC, NOTES_PATH, and FILE values
 3. Fill in the configuration block below
@@ -18,19 +19,22 @@ This prompt is the smart version of `notes-audit-prompt.md`. It reads `audit-reg
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General]
-NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/]
-FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general]
+TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
+FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
        → notes/interview-prep/en/{FILE}.md
        → notes/interview-prep/es/{FILE}.md
 
 Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/java/ AND notes/spring-boot/ — read both.
 - Angular Material: set FILE = angular — questions go into angular.md, not a separate file.
-- General: no NOTES_PATH — skip Part 1 and run Part 2 (interview prep audit) only.
+- General: NOTES_PATH = notes/general/ — covers HTTP, JSON, env vars, testing concepts, SOLID.
+  Uses conversational mode.
 - Java: focus on language concepts needed to write Spring Boot code. Skip anything that
   does not appear in a Spring Boot context.
 - SQL: database is PostgreSQL. Flag any PostgreSQL-specific behaviour consultancies ask about.
+- Security: NOTES_PATH = notes/security/ — covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF.
+  Uses conversational mode.
 
 Use these three values wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {FILE}.
 
@@ -52,8 +56,7 @@ Check the "Last Audited" column:
 
 I want a deep technical audit of my study notes and interview prep for {TOPIC}.
 
-Before starting Part 1, read CLAUDE.md — it has my full profile, teaching rules, note format
-conventions, and interview prep rules.
+Before starting Part 1, read CLAUDE.md — it has the full project context, teaching rules, and subfolder structure.
 
 ---
 
@@ -152,11 +155,11 @@ Read all files in {NOTES_PATH}.
    - **Do not write documentation.** If the note could be copy-pasted onto the official docs
      site unchanged, it is wrong. Notes capture what Victor learned and why it clicked —
      not a neutral description of what the framework does.
-   - **Code concept sections (methods, classes, annotations):** start with a `Purpose:` line —
-     one sentence: who calls it, when, and why. Then explain each important call or line with a
-     bold item — what it does and why it matters, in plain language. Never include an Imports
-     section — IntelliJ handles imports automatically. Full format in the "Notes style for code
-     concept sections" section of CLAUDE.md.
+   - **Code concept sections (methods, classes, annotations):** *(structured mode — notes/java/
+     and notes/spring-boot/ only)* start with a `Purpose:` line — one sentence: who calls it,
+     when, and why. Then explain each important call or line with a bold item — what it does and
+     why it matters, in plain language. Never include an Imports section — IntelliJ handles
+     imports automatically.
 
 4. For each note file, give a coverage status:
    - ✅ Complete — solid coverage for a junior screening at a Spanish consultancy
@@ -326,9 +329,15 @@ If the row does not exist, add it.
 Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
 
 ```
+
 git add <files changed>
+
 ```
+
 ```
+
 git commit -m "docs: audit {TOPIC} notes and interview prep — <one line summary of main fixes>"
+
 ```
+
 ```

@@ -5,6 +5,7 @@ Use in a **separate conversation**. Fill in the two values in the configuration 
 ---
 
 **How to use:**
+
 1. Fill in `FILE` — the interview prep filename without extension
 2. Fill in `SECTION` — which section to audit (`all` for the full file, or the exact heading like `## Routing`)
 3. Paste the entire prompt below into a new chat
@@ -39,8 +40,7 @@ Use FILE and SECTION wherever the prompt refers to {FILE} or {SECTION}.
 You are auditing my interview preparation files for a junior Angular + Java Spring Boot
 position at Spanish IT consultancies (NTT Data, Capgemini, Indra, and similar) in 2026.
 
-Before starting, read CLAUDE.md — it has my full profile, teaching rules, note format
-conventions, and interview prep rules.
+Before starting, read CLAUDE.md — it has the full project context, teaching rules, and subfolder structure.
 
 ---
 
@@ -197,9 +197,15 @@ Better to over-prepare one section than to have a gap a recruiter finds first.
 After all edits, show the commit message so Victor can run it himself. Always use this format — one command per code block:
 
 ```
+
 git add <files changed>
+
 ```
+
 ```
+
 git commit -m "docs: audit {FILE} interview prep — <one line summary of main fixes>"
+
 ```
+
 ```
