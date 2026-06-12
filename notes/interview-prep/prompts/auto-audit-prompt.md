@@ -187,12 +187,17 @@ choose the number that fits logically in the learning sequence — not just the 
 number. Update the "next file:" counter for that folder in CLAUDE.md after all new files are
 created.
 
-**Updating `future-learning.md`:**
-If during the audit a concept is identified that is real and worth knowing — but beyond Victor's
-current scope (too advanced for a junior screening, depends on Phase 3 topics, or belongs to a
-future project) — add it to `future-learning.md` in {NOTES_PATH}. Do not create a full note file
-for concepts that are not yet relevant. `future-learning.md` is the right place for anything
-that is genuine but premature. If the file already lists the concept, leave it as is.
+**`future-learning.md` — bidirectional check:**
+
+Start by reading the existing `future-learning.md` in {NOTES_PATH}. For each concept listed,
+assess whether it is now within scope — given Victor's current project (07: Spring Boot + JWT +
+JPA + Docker) and his objective (junior at a Spanish consultancy with Angular + Spring Boot).
+If a concept is now relevant, create a full note file for it and remove it from `future-learning.md`.
+
+Then, if during the audit a concept is identified that is real and worth knowing — but still
+beyond Victor's current scope (too advanced for a junior screening, or belongs to a future
+project) — add it to `future-learning.md`. Do not create a full note file for concepts that
+are still premature. If the file already lists the concept, leave it as is.
 
 **Cross-reference check — notes → interview prep:**
 After reviewing all note files, scan en/{FILE}.md for concepts that are covered in the notes
