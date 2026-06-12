@@ -1,61 +1,63 @@
 # Minimum Coverage — Architecture
 
-Patterns and decisions a junior at a Spanish consultancy must be able to explain.
+Patterns and decisions a junior at a Spanish consultancy must explain confidently.
 Not just what they are — but why they were chosen and what the tradeoff is.
 Every answer must be anchored to a real example from Victor's projects.
 
 ## REST
-- [ ] REST principles: stateless, resources, HTTP verbs, uniform interface
-- [ ] Resource naming: plural nouns, hierarchy, no verbs in URLs (`/api/projects`, not `/api/getProjects`)
-- [ ] Idempotency — GET, PUT, DELETE are idempotent; POST is not — what this means in practice
-- [ ] Why REST and not GraphQL or RPC — the tradeoff consultancies want you to explain
+- REST principles: stateless, resources, HTTP verbs, uniform interface — the four constraints that define REST; interviewers ask "is your API RESTful and how do you know?"
+- Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action
+- Idempotency — GET, PUT, DELETE are idempotent; POST is not; interviewers ask "what happens if the client sends the same DELETE request twice?"
+- `PATCH` vs `PUT` — `PUT` replaces the whole resource; `PATCH` changes one part; used in TimeTrack for status transitions (submit, approve, reject)
+- Why REST and not GraphQL or RPC — the standard for Spanish consultancy APIs; REST is simpler to implement and understand at junior level
 
 ## Layered architecture
-- [ ] Controller → Service → Repository — what each layer owns and what it must not do
-- [ ] Why business logic belongs in the service, not the controller
-- [ ] Why database queries belong in the repository, not the service
-- [ ] Why the controller must not call the repository directly
+- Controller → Service → Repository — what each layer owns and what it must not do; interviewers ask "where does business logic live?"
+- Why business logic belongs in the service — the controller must not decide; the repository must not know the rules; the service is the only place
+- Why the controller must not call the repository directly — bypasses the business rules layer; makes the code impossible to test in isolation
+- MVC vs Layered Architecture — MVC is for apps that render HTML (controller returns a View); Layered Architecture is for REST APIs (controller returns JSON, the View is a separate SPA)
+- State machine pattern — a workflow where status transitions follow fixed rules (DRAFT → SUBMITTED → APPROVED/REJECTED); the service enforces which transitions are valid
 
 ## DTO pattern
-- [ ] Why not expose entities directly from the controller (coupling, over-fetching, security)
-- [ ] Request DTO vs Response DTO — separating input shape from output shape
-- [ ] Where mapping happens — in the service layer, not the controller
-- [ ] What changes when you add a field to the entity but not the DTO (or vice versa)
+- Why not expose entities directly — the entity belongs to the database layer; exposing it couples your API shape to your DB schema; a field rename breaks all clients
+- Request DTO vs Response DTO — validating on the way in (client data is untrusted); controlling what goes out (you built it, you trust it)
+- Where mapping happens — in the service layer, not the controller; the controller never sees the entity
+- What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
 
 ## Auth design
-- [ ] JWT vs session-based auth — stateless vs stateful, the tradeoff
-- [ ] Why stateless auth matters for APIs consumed by Angular (no server-side session needed)
-- [ ] Access token vs refresh token — why they have different lifetimes
-- [ ] Where to store the JWT in the browser — localStorage vs HttpOnly cookie, the security tradeoff
+- JWT vs session-based auth — JWT is stateless (no server memory per user); session is stateful (server stores session); JWT scales better for APIs consumed by multiple clients
+- Why stateless auth matters for APIs consumed by Angular — no shared session state; the API can run on multiple servers without sticky sessions
+- Access token vs refresh token — access token is short-lived (minutes to hours); refresh token is long-lived and used only to get a new access token; limits damage if a token is stolen
+- Where to store the JWT in the browser — localStorage is simple but vulnerable to XSS; HttpOnly cookie is safer but vulnerable to CSRF; localStorage is the common choice for SPAs that already prevent XSS
 
 ## Data access decisions
-- [ ] **N+1 problem** — what it is, how JPA causes it silently, how to detect and fix it
-- [ ] Soft delete vs hard delete — why production apps rarely delete rows permanently
-- [ ] Pagination design — why you always paginate in production; what happens without it at scale
-- [ ] `@Transactional` as a design decision — when a service method needs a transaction boundary
+- N+1 problem — when JPA loads a list of entities and fires one extra query per entity to load a related field; causes serious performance problems silently; fix with `JOIN FETCH` or `@EntityGraph`
+- Soft delete vs hard delete — `active = false` instead of `DELETE FROM`; preserves historical data, prevents orphaned records, allows recovery
+- Pagination — why you always paginate list endpoints in production; returning 100,000 rows crashes the server and the client
+- `@Transactional` as a design decision — when a service method writes to two tables, both operations must succeed or both must roll back
 
 ## Angular patterns
-- [ ] Smart / dumb component pattern — what each owns, why the split makes testing easier
-- [ ] Coordinator pattern — a smart component that delegates display to dumb children
-- [ ] When a coordinator grows too large — the signal to extract a service or split the page
-- [ ] HTTP interceptor as a cross-cutting concern — one place for auth headers and error handling
+- Smart / dumb component pattern — the smart component fetches data and handles events; the dumb component only displays and emits; separation makes testing easier and code more readable
+- Coordinator pattern — a smart page that delegates display to multiple dumb children; all state lives in the coordinator; interviewers ask "how do you manage state in Angular?"
+- HTTP interceptor as a cross-cutting concern — one interceptor adds auth headers and handles global errors for the entire app; the alternative (doing it in every service) breaks DRY
+- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
 
 ## Testing strategy
-- [ ] Unit test vs integration test — what each tests and what it costs
-- [ ] Why you test the service layer independently of the controller
-- [ ] What a mock is and what it hides — the risk of over-mocking
-- [ ] Test pyramid — many unit tests, fewer integration tests, even fewer E2E tests
+- Unit test vs integration test — unit tests one method in isolation (fast, no context); integration test loads the full stack (slow, catches wiring issues)
+- Why you test the service layer independently — business rules live there; testing them directly without HTTP gives fast, focused feedback
+- What a mock is and what it hides — a controlled replacement for a real dependency; the risk is that the mock behaves differently from the real thing
+- Test pyramid — many unit tests, fewer integration tests, very few E2E tests; the shape that balances speed and confidence
 
-## Monolith vs Microservices (concept only — no implementation needed)
-- [ ] What a monolith is — one codebase, one deployable unit, simpler to build and debug
-- [ ] What microservices are — independent services, each owning one domain and its own database
-- [ ] The tradeoff — monolith: simple to start, hard to scale teams; microservices: complex to run, needed when teams deploy independently
-- [ ] What to say in an interview — when to start with a monolith, why microservices are not always better
-- [ ] What it means for a junior joining a consultancy — you work in one service, communicate via REST with others
+## Monolith vs microservices (concept only — no implementation needed)
+- What a monolith is — one codebase, one deployable unit; simpler to build, debug, and deploy; what most junior projects are
+- What microservices are — independent services, each owning one domain and its own database; needed when teams deploy independently
+- The tradeoff — monolith: simple to start, hard to scale teams; microservices: complex to run, powerful when teams are large
+- What to say in an interview — "I would start with a monolith and extract services when the team or traffic demands it; most junior projects do not need microservices"
+- What it means for a junior at a consultancy — you work in one service and communicate with other services via REST; you do not design the whole system
 
-## SOLID (brief — enough for an interview)
-- [ ] Single Responsibility — one reason to change; applied to controllers and services daily
-- [ ] Open/Closed — extend without modifying; how Spring beans apply this
-- [ ] Liskov Substitution — subtypes honour the contract; why `JpaRepository` can be swapped
-- [ ] Interface Segregation — specific interfaces over fat ones
-- [ ] Dependency Inversion — depend on abstractions; the entire Spring DI model relies on this
+## SOLID
+- Single Responsibility — one class, one reason to change; controllers handle HTTP, services handle rules, repositories handle data
+- Open/Closed — extend behaviour without modifying existing code; add a new feature by adding new code, not changing existing code
+- Liskov Substitution — a subtype can replace its parent without breaking the caller; why `JpaRepository` implementations are interchangeable
+- Interface Segregation — prefer small specific interfaces over one large one; `UserDetailsService` has one method, not fifteen
+- Dependency Inversion — depend on abstractions, not concrete classes; the entire Spring DI model and Angular's `inject()` are built on this principle

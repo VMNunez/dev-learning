@@ -1,57 +1,57 @@
 # Minimum Coverage — Java
 
-Only the Java concepts needed to write and understand Spring Boot code.
-Every item must be explainable by referencing a real example from Victor's projects.
+Java language concepts needed to write and understand Spring Boot code.
+Nothing beyond what appears in a real Spring Boot project — not a general Java course.
 
 ## Classes and objects
-- [ ] Classes, fields, constructors — defining and instantiating objects
-- [ ] `private final` fields — why Spring Boot services use them (immutability, easier to test)
-- [ ] Access modifiers: `public`, `private`, `protected` — what each restricts
-- [ ] `this` keyword — when it appears in Spring Boot code
+- Classes, fields, constructors — every Spring component is a class; interviewers ask "what is an object in the context of a Spring bean?"
+- `private final` fields — why Spring Boot services use them: dependencies cannot change after construction, easier to unit test
+- Access modifiers: `public`, `private`, `protected` — what each restricts and why Spring Boot services use `private` for fields and `public` for methods
+- `this` keyword — disambiguates between a field and a constructor parameter; appears in Lombok-generated code and custom constructors
 
 ## Interfaces and inheritance
-- [ ] Interfaces: how to define and implement — why Spring uses them everywhere (`JpaRepository`, `UserDetailsService`)
-- [ ] Implementing multiple interfaces — common in Spring Security (`UserDetails` + your entity)
-- [ ] `@Override` — what it means, when it appears
-- [ ] Why Spring Boot prefers interfaces over concrete classes for dependencies
+- Interfaces: how to define and implement — why Spring uses them everywhere (`JpaRepository`, `UserDetailsService`); interviewers ask "why does Spring prefer interfaces over concrete classes?"
+- Implementing multiple interfaces — common in Spring Security (`UserDetails` combined with your entity class)
+- `@Override` — marks a method that implements an interface or overrides a parent; the compiler catches mismatches; appears in `loadUserByUsername()`
+- Why Spring Boot prefers interfaces for dependencies — you can swap implementations without changing the caller; the foundation of testable code
 
 ## Annotations
-- [ ] What annotations are — metadata on classes, methods, and fields that Spring reads at runtime
-- [ ] Meta-annotations — annotations that annotate other annotations (`@Service` is a `@Component`)
-- [ ] How to read an unfamiliar annotation in Spring code without panic
+- What annotations are — metadata attached to a class, method, or field that Spring reads at runtime to configure behaviour
+- Meta-annotations — annotations that annotate other annotations; `@Service` is a `@Component` with a semantic label; explains why `@Service` and `@Component` behave the same way
+- How to read an unfamiliar annotation — look at what it is composed of, what it enables, and which layer it belongs to
 
 ## Generics
-- [ ] `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` — reading and using typed containers
-- [ ] Why generics exist — catching type errors at compile time
-- [ ] `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()`
-- [ ] Why `Optional` is preferred over returning `null` in Spring Boot services
+- `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` — reading and writing typed containers in Spring Boot code
+- Why generics exist — catch type errors at compile time instead of at runtime
+- `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()` — the correct way to handle a value that might not exist
+- Why returning `null` is a problem — forces every caller to null-check; `Optional` makes the absence explicit in the return type; interviewers ask "why Optional instead of null?"
 
 ## Enums
-- [ ] Defining an enum — used for status, role, type fields throughout Spring Boot
-- [ ] Using enums in `switch` expressions
-- [ ] `@Enumerated(EnumType.STRING)` — storing enum name in the database instead of ordinal
+- Defining an enum — used for `Role` (EMPLOYEE, MANAGER) and `EntryStatus` (DRAFT, SUBMITTED, APPROVED, REJECTED) in TimeTrack
+- Using enums in `switch` expressions — the clean way to handle each status in a service method
+- `@Enumerated(EnumType.STRING)` — stores the name in the database instead of the ordinal position; interviewers ask why `STRING` is safer than the default
 
 ## Exceptions
-- [ ] Checked vs unchecked exceptions — why Spring Boot uses unchecked (`RuntimeException` subclasses)
-- [ ] `try` / `catch` / `throws` — reading Spring Boot exception handling code
-- [ ] Creating a custom exception: `extends RuntimeException`, constructors, message
-- [ ] `throw new SomeException()` — how it propagates up to `@RestControllerAdvice`
+- Checked vs unchecked exceptions — why Spring Boot uses unchecked (`RuntimeException` subclasses): they do not need to be declared in the method signature and propagate freely to `@RestControllerAdvice`
+- `try` / `catch` / `throws` — reading Spring Boot exception handling code
+- Creating a custom exception: `extends RuntimeException`, constructor that accepts a message, why you name it after what went wrong (`ResourceNotFoundException`)
+- `throw new SomeException()` — how it propagates up the call stack until `@RestControllerAdvice` catches it and returns a JSON error
 
 ## Collections
-- [ ] `List` — ordered, allows duplicates; used in repository results and service return types
-- [ ] `Map` — key-value; `Map.of("key", "value")` for quick immutable error response bodies
-- [ ] `Set` — no duplicates; used in many-to-many relationships
-- [ ] When to use each in a Spring Boot context
+- `List` — ordered, allows duplicates; used in repository results and service return types (`List<User>`)
+- `Map` — key-value; `Map.of("message", "Not found")` for quick immutable error response bodies; Spring serialises it to JSON automatically
+- `Set` — no duplicates; used in many-to-many relationships (e.g. a user's set of roles or permissions)
+- When to use each in a Spring Boot context — `List` for ordered results, `Map` for ad-hoc response bodies, `Set` for relationship collections
 
 ## Modern Java used in Spring Boot code
-- [ ] Records — `record CreateUserRequest(String name, String email) {}` — immutable DTO alternative
-- [ ] `var` — local type inference; IntelliJ uses it, you will see it in code reviews
-- [ ] Lambda expressions — `list.stream().filter(x -> x.isActive()).collect(Collectors.toList())`
-- [ ] Stream basics: `filter()`, `map()`, `collect()`, `findFirst()`, `anyMatch()` — reading service logic
-- [ ] Method references: `User::getName`, `this::convert` — shorthand for simple lambdas
+- Records — `record CreateUserRequest(String name, String email) {}` — immutable DTO alternative; Java 16+; interviewers ask "have you seen records used as DTOs?"
+- `var` — local type inference; IntelliJ suggests it; you will see it in code reviews even if you do not write it yourself
+- Lambda expressions — `list.stream().filter(x -> x.isActive()).collect(Collectors.toList())` — the syntax you see in service methods
+- Stream basics: `filter()`, `map()`, `collect()`, `findFirst()`, `anyMatch()` — reading and writing stream pipelines in service logic
+- Method references: `User::getName`, `this::toResponse` — shorthand for simple one-method lambdas; appear in code reviews
 
 ## Maven
-- [ ] `pom.xml` structure: `groupId`, `artifactId`, `version`, `dependencies`, `build`, `plugins`
-- [ ] How to add a dependency: search Maven Central, copy the `<dependency>` block
-- [ ] Build lifecycle: `clean`, `compile`, `test`, `package`, `install` — what `mvn clean install` does
-- [ ] Dependency scopes: `compile` (default), `test`, `provided` — when each is used
+- `pom.xml` structure: `groupId`, `artifactId`, `version`, `dependencies`, `build` — what each section does and where to add a new library
+- How to add a dependency — search Maven Central, copy the `<dependency>` block, Maven downloads it automatically
+- Build lifecycle: `clean`, `compile`, `test`, `package`, `install` — what `mvn clean install` does and why it is the standard command
+- Dependency scopes: `compile` (default, always available), `test` (only in tests), `provided` (available at runtime but not packaged) — why `spring-boot-starter-test` uses `test` scope
