@@ -32,6 +32,7 @@ CSS as used in Angular projects with Tailwind. Focus on concepts that appear in 
 - [ ] `em` — relative to the element's own font size
 - [ ] `rem` — relative to the root font size, the safer choice
 - [ ] `vw`, `vh` — relative to the viewport
+- [ ] `calc()` — mixing units: `calc(100% - 64px)` — used constantly in real layouts
 
 ## Responsive design
 - [ ] Media queries: `@media (max-width: ...)` — mobile-first vs desktop-first
@@ -44,6 +45,7 @@ CSS as used in Angular projects with Tailwind. Focus on concepts that appear in 
 ## Selectors and specificity
 - [ ] Combinators: descendant ` `, child `>`, sibling `~`, adjacent `+`
 - [ ] Pseudo-classes: `:hover`, `:focus`, `:nth-child`, `:first-child`, `:last-child`
+- [ ] `:not()` — excluding elements from a rule: `li:not(:last-child) { border-bottom: 1px solid; }`
 - [ ] Pseudo-elements: `::before`, `::after` — what they create and why
 - [ ] Specificity rules — why a style is not being applied
 

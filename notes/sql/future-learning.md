@@ -1,32 +1,10 @@
 # SQL — Future Learning Roadmap
 
-Topics to study once the current 10 files are solid. Nothing here is needed for the first interview — needed to work comfortably with databases in a professional team and grow into a mid-level developer.
+Topics to study once the current files are solid. CTEs, window functions, and PostgreSQL-specific syntax are part of the **current junior goal** — see `coverage.md`.
 
 ---
 
 ## Phase 1 — After landing the first job
-
-### Common Table Expressions (CTEs) — `WITH`
-
-A named subquery at the top of a query. Easier to read than nested subqueries, and can be referenced multiple times:
-
-```sql
-WITH author_stats AS (
-  SELECT author_id, COUNT(*) AS book_count
-  FROM books
-  GROUP BY author_id
-),
-top_authors AS (
-  SELECT author_id
-  FROM author_stats
-  WHERE book_count > 2
-)
-SELECT a.name
-FROM authors a
-JOIN top_authors t ON a.id = t.author_id;
-```
-
-CTEs are especially useful in complex reports — each CTE is a named step that the final query assembles together.
 
 ### Transactions — `BEGIN`, `COMMIT`, `ROLLBACK`
 
@@ -55,24 +33,6 @@ EXPLAIN ANALYZE SELECT * FROM books WHERE author_id = 5;
 ---
 
 ## Phase 2 — After 6–12 months
-
-### Window functions
-
-Calculations across a set of rows related to the current row — without collapsing them like GROUP BY:
-
-```sql
--- Rank books by price within each genre
-SELECT title, genre, price,
-  RANK() OVER (PARTITION BY genre ORDER BY price DESC) AS price_rank
-FROM books;
-
--- Running total of sales per day
-SELECT sale_date, amount,
-  SUM(amount) OVER (ORDER BY sale_date) AS running_total
-FROM sales;
-```
-
-Common functions: `RANK()`, `ROW_NUMBER()`, `LAG()`, `LEAD()`, `SUM() OVER`, `AVG() OVER`. Very useful for reporting queries.
 
 ### Database normalisation (1NF, 2NF, 3NF)
 

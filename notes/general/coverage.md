@@ -35,6 +35,18 @@ Cross-cutting concepts that appear in interviews regardless of stack.
 - [ ] Test coverage — what it measures and what it does not guarantee
 - [ ] TDD — what it is conceptually, even if not practised daily
 
+## Base64
+- [ ] What Base64 is — encoding binary data as ASCII text (not encryption, not compression)
+- [ ] When it appears: `Authorization: Basic <base64>` headers, image data URIs, JWT payload encoding
+- [ ] `btoa()` / `atob()` in JavaScript — encoding and decoding in the browser
+
+## Browser storage
+- [ ] `localStorage` — persists after the tab closes; string key-value pairs; no expiry
+- [ ] `sessionStorage` — cleared when the tab closes
+- [ ] Cookies — sent with every HTTP request automatically; can be `HttpOnly` (not accessible to JS)
+- [ ] When to use each — localStorage for JWT tokens in SPAs; HttpOnly cookies for more secure token storage
+- [ ] The security tradeoff: localStorage is vulnerable to XSS; HttpOnly cookies are vulnerable to CSRF
+
 ## SOLID (brief — enough for an interview)
 - [ ] Single Responsibility
 - [ ] Open/Closed

@@ -21,6 +21,11 @@ PostgreSQL. Focus on what appears in consultancy technical tests and interviews.
 - [ ] `HAVING` — filtering after aggregation (vs `WHERE` which filters before)
 - [ ] The difference between `WHERE` and `HAVING` and when to use each
 
+## Conditional logic
+- [ ] `CASE WHEN condition THEN value ELSE value END` — conditional column values in SELECT
+- [ ] Conditional aggregation: `SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END)` — pivot-style aggregates
+- [ ] `COALESCE` in aggregation context — replacing NULL with a default in results
+
 ## Subqueries and CTEs
 - [ ] Subquery in `WHERE`: `WHERE id IN (SELECT ...)`
 - [ ] Subquery in `FROM`: using a query as a table

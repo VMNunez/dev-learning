@@ -18,9 +18,10 @@ How HTTPS works — public/private key pairs, certificates, the TLS handshake. K
 
 ## JWT — advanced topics
 
-- Refresh tokens — short-lived access token + long-lived refresh token
-- Token revocation — how to invalidate a JWT before it expires (token blacklist, short expiry)
-- JWE (JSON Web Encryption) — encrypted JWT payload, used when the payload must not be readable
+Access tokens and refresh tokens are part of the current junior goal — see `coverage.md`. The advanced topics below go further:
+
+- Token revocation — how to invalidate a JWT before it expires (token blacklist, short expiry + rotation strategy)
+- JWE (JSON Web Encryption) — encrypted JWT payload, used when the payload must not be readable by the client
 
 ---
 

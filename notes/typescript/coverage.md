@@ -22,11 +22,13 @@ TypeScript as used in Angular — not a general TypeScript course.
 - [ ] `Partial<T>` — all properties optional (used in update DTOs)
 - [ ] `Readonly<T>` — immutable version
 - [ ] `Pick<T, K>` and `Omit<T, K>` — selecting or removing fields from a type
+- [ ] `Record<K, V>` — key-value map type: `Record<string, number>` — used for lookup maps and dictionaries in Angular services
 
 ## Narrowing and guards
 - [ ] `typeof`, `instanceof` — narrowing inside conditionals
 - [ ] Optional chaining `?.` and nullish coalescing `??`
 - [ ] Non-null assertion `!` — when to use it and why it is dangerous
+- [ ] Type assertion with `as` — telling TypeScript "I know better than you"; when it is safe and when it hides bugs
 
 ## Functions
 - [ ] Arrow functions vs function declarations — the `this` difference
