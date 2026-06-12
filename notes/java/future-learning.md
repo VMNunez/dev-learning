@@ -29,10 +29,11 @@ Spring Boot topics live in `spring-boot/future-learning.md`.
 
 ### Java 17+ features
 
-- **Records** — immutable data classes: `record Point(int x, int y) {}`
 - **Sealed classes** — restrict which classes can extend a type
 - **Text blocks** — multi-line strings with `""" ... """`
 - **Pattern matching for instanceof** — `if (obj instanceof String s) { s.length(); }`
+
+Records are already part of the current junior goal — see `coverage.md`.
 
 ### Java concurrency basics
 

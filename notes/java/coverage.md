@@ -1,47 +1,57 @@
 # Minimum Coverage — Java
 
 Only the Java concepts needed to write and understand Spring Boot code.
-Skip anything that does not appear in a Spring Boot context.
+Every item must be explainable by referencing a real example from Victor's projects.
 
 ## Classes and objects
-- [ ] Classes, fields, constructors — how to define and instantiate
-- [ ] Access modifiers: `public`, `private`, `protected` — what each one restricts
-- [ ] `this` keyword — when and why to use it
+- [ ] Classes, fields, constructors — defining and instantiating objects
+- [ ] `private final` fields — why Spring Boot services use them (immutability, easier to test)
+- [ ] Access modifiers: `public`, `private`, `protected` — what each restricts
+- [ ] `this` keyword — when it appears in Spring Boot code
 
 ## Interfaces and inheritance
-- [ ] Interfaces: how to define and implement — why Spring uses them everywhere
-- [ ] `@Override` — what it does and when it appears in Spring Boot code
-- [ ] Abstract classes vs interfaces — when each is appropriate
+- [ ] Interfaces: how to define and implement — why Spring uses them everywhere (`JpaRepository`, `UserDetailsService`)
+- [ ] Implementing multiple interfaces — common in Spring Security (`UserDetails` + your entity)
+- [ ] `@Override` — what it means, when it appears
+- [ ] Why Spring Boot prefers interfaces over concrete classes for dependencies
 
 ## Annotations
-- [ ] What annotations are — metadata that Spring reads at runtime
-- [ ] How to read an annotation in Spring code without panicking
-- [ ] Marker annotations vs annotations with values (`@Entity` vs `@Column(name = "user_id")`)
+- [ ] What annotations are — metadata on classes, methods, and fields that Spring reads at runtime
+- [ ] Meta-annotations — annotations that annotate other annotations (`@Service` is a `@Component`)
+- [ ] How to read an unfamiliar annotation in Spring code without panic
 
 ## Generics
-- [ ] `List<String>`, `Optional<T>`, `Page<T>` — reading and using generics
-- [ ] Why `Optional` exists and how to use it: `orElseThrow`, `isPresent`, `map`
-
-## Exceptions
-- [ ] Checked vs unchecked exceptions — why Spring Boot prefers unchecked
-- [ ] `try/catch`, `throws` — reading exception handling in Spring code
-- [ ] Creating a custom exception class
+- [ ] `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` — reading and using typed containers
+- [ ] Why generics exist — catching type errors at compile time
+- [ ] `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()`
+- [ ] Why `Optional` is preferred over returning `null` in Spring Boot services
 
 ## Enums
-- [ ] Defining an enum — used everywhere in Spring Boot (status, role, type)
-- [ ] Using enums in `switch` statements and JPA `@Enumerated`
+- [ ] Defining an enum — used for status, role, type fields throughout Spring Boot
+- [ ] Using enums in `switch` expressions
+- [ ] `@Enumerated(EnumType.STRING)` — storing enum name in the database instead of ordinal
+
+## Exceptions
+- [ ] Checked vs unchecked exceptions — why Spring Boot uses unchecked (`RuntimeException` subclasses)
+- [ ] `try` / `catch` / `throws` — reading Spring Boot exception handling code
+- [ ] Creating a custom exception: `extends RuntimeException`, constructors, message
+- [ ] `throw new SomeException()` — how it propagates up to `@RestControllerAdvice`
 
 ## Collections
-- [ ] `List`, `Map`, `Set` — basic operations (add, get, put, contains, stream)
-- [ ] When to use each in a Spring Boot service
+- [ ] `List` — ordered, allows duplicates; used in repository results and service return types
+- [ ] `Map` — key-value; `Map.of("key", "value")` for quick immutable error response bodies
+- [ ] `Set` — no duplicates; used in many-to-many relationships
+- [ ] When to use each in a Spring Boot context
 
-## Modern Java (used in Spring Boot code)
-- [ ] Records — compact DTOs, immutable data carriers
-- [ ] `var` — local variable type inference
-- [ ] Stream basics: `filter`, `map`, `collect` — reading service layer logic
-- [ ] Lambda expressions — used in stream chains and Mockito
+## Modern Java used in Spring Boot code
+- [ ] Records — `record CreateUserRequest(String name, String email) {}` — immutable DTO alternative
+- [ ] `var` — local type inference; IntelliJ uses it, you will see it in code reviews
+- [ ] Lambda expressions — `list.stream().filter(x -> x.isActive()).collect(Collectors.toList())`
+- [ ] Stream basics: `filter()`, `map()`, `collect()`, `findFirst()`, `anyMatch()` — reading service logic
+- [ ] Method references: `User::getName`, `this::convert` — shorthand for simple lambdas
 
 ## Maven
-- [ ] `pom.xml` structure: `groupId`, `artifactId`, `version`, `dependencies`, `plugins`
-- [ ] How to add a dependency from Maven Central
-- [ ] Build lifecycle: `clean`, `compile`, `test`, `package`, `install`
+- [ ] `pom.xml` structure: `groupId`, `artifactId`, `version`, `dependencies`, `build`, `plugins`
+- [ ] How to add a dependency: search Maven Central, copy the `<dependency>` block
+- [ ] Build lifecycle: `clean`, `compile`, `test`, `package`, `install` — what `mvn clean install` does
+- [ ] Dependency scopes: `compile` (default), `test`, `provided` — when each is used

@@ -50,10 +50,6 @@ public void save(Employee e) { ... }
 
 Used to avoid hitting the database repeatedly for data that does not change often.
 
-### Database migrations — Flyway
-
-Instead of `ddl-auto=update`, production Spring Boot projects use Flyway to manage schema changes as versioned SQL scripts (`V1__create_users.sql`, `V2__add_transactions.sql`). Flyway runs the scripts in order on startup and tracks which ones have been applied. This is safer than Hibernate auto-update, which can silently fail on complex changes.
-
 ---
 
 ## Phase 2 — After 6–12 months
