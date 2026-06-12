@@ -271,6 +271,9 @@ Client: sends request with header → Authorization: Bearer eyJhbGciOiJIUzI1NiJ9
               │
   [JwtUtil.generateToken()]
               │
+      [AuthController]
+    ResponseEntity.ok()
+              │
     { "token": "eyJ..." }
               │
            CLIENT

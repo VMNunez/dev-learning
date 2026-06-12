@@ -35,7 +35,7 @@ Server sends a cookie with the session ID
     ↓
 Client sends the cookie on every future request
     ↓
-Server looks up "abc123" in its session store → finds the user
+Server reads the session ID from the cookie → looks it up in the session store → finds the user
 ```
 
 The session lives **on the server**. Problem: if you have multiple servers, each has its own session store. You need shared session storage (Redis) — extra infrastructure.
@@ -147,8 +147,9 @@ POST /api/auth/login
 ┌─────────────────────────────────────────────────────────┐
 │ [DaoAuthenticationProvider]  ← Spring internal         │
 │                                                         │
-│   step 1: calls UserDetailsServiceImpl                 │
-│           .loadUserByUsername(email)                   │
+│   step 1: to verify the password it needs the stored  │
+│           hash from the DB — so it calls              │
+│           UserDetailsServiceImpl.loadUserByUsername()  │
 │           → queries DB → returns UserDetails           │
 │              (stored hash + roles)                     │
 │                                                         │
@@ -162,7 +163,14 @@ POST /api/auth/login
 │ [AuthService]                                           │
 │   calls JwtUtil.generateToken(email)                   │
 │   → builds header + payload + signature                │
-│   → returns "eyJ..."                                   │
+│   → returns AuthResponse(token) to AuthController      │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [AuthController]                                        │
+│   receives AuthResponse from AuthService               │
+│   → ResponseEntity.ok(authResponse)                    │
 └─────────────────────────────────────────────────────────┘
          │
          ▼
@@ -272,21 +280,24 @@ Authorization: Bearer eyJ...
               │
   [JwtUtil.generateToken()]
               │
+      [AuthController]
+    ResponseEntity.ok()
+              │
     { "token": "eyJ..." }
 ```
 
 **What each class is responsible for:**
 
-| Class | Flow | Responsibility |
-|---|---|---|
-| `SecurityConfig` | Both | Configures all rules: routes, filter registration, CORS |
-| `JwtUtil` | Both | Creates tokens (Flow 1) and validates them (Flow 2) |
-| `UserDetailsServiceImpl` | Both | Loads a user from the database by email |
-| `BCryptPasswordEncoder` | Flow 1 only | Compares raw password against stored hash |
-| `AuthService` | Flow 1 only | Orchestrates login — calls authenticate(), then generateToken() |
-| `AuthController` | Flow 1 only | Receives the login HTTP request, returns the token |
-| `JwtFilter` | Flow 2 only | Intercepts every request, validates JWT, sets SecurityContextHolder |
-| `GlobalExceptionHandler` | Both | Converts exceptions into clean JSON error responses |
+| Class                    | Flow        | Responsibility                                                      |
+| ------------------------ | ----------- | ------------------------------------------------------------------- |
+| `SecurityConfig`         | Both        | Configures all rules: routes, filter registration, CORS             |
+| `JwtUtil`                | Both        | Creates tokens (Flow 1) and validates them (Flow 2)                 |
+| `UserDetailsServiceImpl` | Both        | Loads a user from the database by email                             |
+| `BCryptPasswordEncoder`  | Flow 1 only | Compares raw password against stored hash                           |
+| `AuthService`            | Flow 1 only | Orchestrates login — calls authenticate(), then generateToken()     |
+| `AuthController`         | Flow 1 only | Receives the login HTTP request, returns the token                  |
+| `JwtFilter`              | Flow 2 only | Intercepts every request, validates JWT, sets SecurityContextHolder |
+| `GlobalExceptionHandler` | Both        | Converts exceptions into clean JSON error responses                 |
 
 ---
 
@@ -627,12 +638,12 @@ public class SecurityConfig {
 }
 ```
 
-| Setting | Why |
-|---------|-----|
-| `csrf().disable()` | JWT uses headers, not cookies — CSRF attacks do not apply here (explained below) |
-| `SessionCreationPolicy.STATELESS` | No HTTP sessions. Each request carries its own JWT |
-| `addFilterBefore(jwtFilter, ...)` | Your JWT filter runs before Spring's default authentication filter |
-| `@EnableMethodSecurity` | Enables `@PreAuthorize` — without this it is silently ignored |
+| Setting                           | Why                                                                              |
+| --------------------------------- | -------------------------------------------------------------------------------- |
+| `csrf().disable()`                | JWT uses headers, not cookies — CSRF attacks do not apply here (explained below) |
+| `SessionCreationPolicy.STATELESS` | No HTTP sessions. Each request carries its own JWT                               |
+| `addFilterBefore(jwtFilter, ...)` | Your JWT filter runs before Spring's default authentication filter               |
+| `@EnableMethodSecurity`           | Enables `@PreAuthorize` — without this it is silently ignored                    |
 
 **Why CSRF is disabled:** CSRF (Cross-Site Request Forgery) is an attack where a malicious website tricks your browser into making a request to your API. It works because browsers automatically include cookies with every request to a domain — if your API uses session cookies, an attacker can forge a request and the browser sends the cookie without the user knowing. JWT does not use cookies. The token lives in `localStorage` and is attached manually by Angular in the `Authorization` header. Browsers never send custom headers automatically to other domains, so the attack does not work. CSRF protection is not needed.
 
@@ -880,7 +891,7 @@ HTTP 403 Forbidden
 
 ---
 
-## 16. Common mistakes  
+## 16. Common mistakes
 
 **Forgetting `SessionCreationPolicy.STATELESS`** — Spring creates HTTP sessions by default. Without this, you get sessions AND JWT, which conflict and waste memory.
 
@@ -909,9 +920,9 @@ The JWT security layer is boilerplate — the structure does not change between 
 
 **Files where only small details change:**
 
-| File | What changes |
-|---|---|
-| `SecurityConfig.java` | Route rules — which paths are public, which are protected |
+| File                          | What changes                                                    |
+| ----------------------------- | --------------------------------------------------------------- |
+| `SecurityConfig.java`         | Route rules — which paths are public, which are protected       |
 | `UserDetailsServiceImpl.java` | The field used to find the user (email, username) and the roles |
 
 After TimeTrack, implementing JWT in the next project will take less than an hour.
