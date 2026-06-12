@@ -42,7 +42,7 @@ Use these three values wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {
 
 ## Step 0 — Registry Check
 
-Before doing anything else, read notes/interview-prep/prompts/audit-registry.md.
+Before doing anything else, read notes/prompts/audit-registry.md.
 
 Find the row where TOPIC = {TOPIC}.
 
@@ -324,7 +324,7 @@ After all edits, print a final summary table:
 
 ## Final Step — Update Registry
 
-After completing the audit, update notes/interview-prep/prompts/audit-registry.md.
+After completing the audit, update notes/prompts/audit-registry.md.
 
 Find the row where TOPIC = {TOPIC}.
 - Update the "Last Audited" column with today's date in YYYY-MM-DD format.
