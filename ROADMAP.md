@@ -298,3 +298,18 @@ Recruiters at consultancies check both before calling you. If they are not updat
 | Open source contribution | When stable | Real collaboration outside the company project |
 
 Each `notes/` folder has a `future-learning.md` — concepts that are real but beyond junior scope now. They become the next study plan after landing the job.
+
+**Spring Framework — when to start (post-job gate):**
+
+Spring Framework (without Boot) is what Boot is built on top of. Learning it deepens your understanding of everything you already know. But it is only useful when you can see the gap — when you encounter code that Boot does not explain.
+
+Start when all of the following are true:
+
+| Gate | Why |
+|------|-----|
+| 2–3 months into the job and delivery work feels manageable | You need mental space — don't add a study track during onboarding |
+| You have seen `@Configuration`, `@Bean`, or XML bean wiring at work and couldn't explain it | That's the signal — Boot hid something real and you noticed |
+| Spring Boot notes and interview prep are complete and solid | No gaps to fill first |
+| Your team lead or a senior agrees to answer questions as you study | You need someone to connect theory to your real project |
+
+The trigger is almost always: *you see something at work you cannot explain*. That is the right moment to open the Spring Framework docs — not before.
