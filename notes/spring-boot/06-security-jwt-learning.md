@@ -12,6 +12,24 @@ Without Spring Security, every endpoint in your API is public. Any user can call
 
 Spring Security works as a chain of filters that every HTTP request passes through before reaching your `@RestController`. You configure that chain with one bean: `SecurityFilterChain`.
 
+```
+Angular (localhost:4200)
+         │
+         │  HTTP + "Authorization: Bearer <token>"
+         ▼
+┌──────────────────────────────────────────┐
+│            Spring Security               │
+│                                          │
+│  1. CORS check  → allowed origin?        │
+│  2. JwtAuthFilter → token valid?         │
+│  3. SecurityFilterChain → auth rules     │
+│  4. @PreAuthorize → role check           │
+└──────────────────────────────────────────┘
+         │
+         ▼
+   @RestController method
+```
+
 ---
 
 ## 2. JWT — what the token is
@@ -21,8 +39,13 @@ Before you see how Spring handles tokens, you need to understand what a JWT actu
 JWT (JSON Web Token) is a signed, self-contained token. It has three parts separated by dots:
 
 ```
-header.payload.signature
-eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIn0.abc123
+eyJhbGciOiJIUzI1NiJ9 . eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIn0 . abc123
+─────────────────────   ──────────────────────────────────────   ──────
+      HEADER                         PAYLOAD                    SIGNATURE
+  { alg: "HS256" }        { sub: "user@example.com",           HMAC of
+                             role: "USER",                     header +
+                             exp: 1234567890 }                 payload +
+                                                               secret key
 ```
 
 - **Header** — which signing algorithm was used (e.g. HS256)
@@ -105,6 +128,37 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 Now you know what a JWT is and how users are stored. This filter is what actually checks the token on every request.
 
 `OncePerRequestFilter` is the correct base class — Spring guarantees it runs exactly once per request, never twice.
+
+```
+Request arrives
+      │
+      ▼
+Has "Authorization" header?
+  NO ────────────────────────→ pass through
+      │                        (Spring rejects if endpoint needs auth)
+  YES
+      ▼
+Starts with "Bearer "?
+  NO ────────────────────────→ pass through
+      │
+  YES
+      ▼
+Extract token → extract email from payload
+      │
+      ▼
+Load user from DB (UserDetailsService)
+      │
+      ▼
+Token valid? (not expired, signature correct)
+  NO ────────────────────────→ pass through (request rejected by Spring)
+      │
+  YES
+      ▼
+Set auth in SecurityContextHolder
+      │
+      ▼
+Continue to controller
+```
 
 ```java
 @Component
@@ -270,13 +324,62 @@ This requires `@EnableMethodSecurity` on the `SecurityConfig` class (shown in se
 
 ## The full flow in plain English
 
-This is what you should be able to say in an interview:
+This is what you should be able to say in an interview.
 
-1. Angular sends a request with `Authorization: Bearer <token>` in the header
-2. `JwtAuthFilter` reads the header and extracts the token
-3. `JwtService` validates the token and extracts the email from the payload
-4. `UserDetailsService` loads the user from the database by that email
-5. If the token is valid, `SecurityContextHolder` stores the authenticated user
-6. `SecurityFilterChain` checks the rules — is this endpoint public or protected?
-7. If protected and authenticated, the request reaches the controller
-8. `@PreAuthorize` checks the role before the method runs
+**Login flow** — happens once, gives the client a token:
+
+```
+POST /api/auth/login  { email, password }
+          │
+          ▼
+     AuthService
+          │
+          ▼
+UserDetailsService.loadUserByUsername(email)
+    (finds user in DB)
+          │
+          ▼
+BCrypt.verify(rawPassword, storedHash)
+          │ matches
+          ▼
+JwtService.generateToken(user)
+    (signs email + role + expiry with secret key)
+          │
+          ▼
+  return { token: "eyJ..." }   ← Angular stores this
+```
+
+**Every subsequent request** — token is verified without hitting the DB for auth:
+
+```
+GET /api/timesheets
+Authorization: Bearer eyJ...
+          │
+          ▼
+    JwtAuthFilter
+    reads the header
+          │
+          ▼
+JwtService.extractEmail(token)
+JwtService.isTokenValid(token)
+          │ valid
+          ▼
+UserDetailsService.loadUserByUsername(email)
+    (loads user + role from DB)
+          │
+          ▼
+SecurityContextHolder.setAuthentication(...)
+    (Spring now knows who this is)
+          │
+          ▼
+SecurityFilterChain rules
+    → /api/auth/** ? permitAll
+    → anything else ? must be authenticated  ✓
+          │
+          ▼
+@PreAuthorize("hasRole('ADMIN')")
+    → role matches? ✓
+          │
+          ▼
+  Controller method runs
+```
