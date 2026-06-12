@@ -151,6 +151,10 @@ Read these files before making any decision:
 3. All numbered note files in {NOTES_PATH} — read them to understand what has been studied
    and what examples already exist. This is context, not the source of coverage decisions.
    Skip `future-learning.md` and `coverage.md` in this pass.
+4. One existing coverage file from another topic as a quality anchor — for example,
+   `notes/spring-boot/coverage.md` or `notes/angular/coverage.md`. Use it to calibrate
+   the expected depth, tone, and level of detail for each item. Do not copy its structure —
+   use it to understand what "good" looks like before writing.
 
 ---
 
@@ -163,6 +167,12 @@ Ask yourself: "What would I ask this person to test whether they really know {TO
 The answers to that question are the items that belong in coverage.
 
 Then apply the scope filter:
+
+**Important — the notes are not the source of coverage:**
+The state of the notes does not limit what goes in coverage. If the notes are sparse,
+incomplete, or do not exist yet, derive coverage entirely from your knowledge of what
+Spanish consultancies test at junior level. A gap in the notes means the notes need to
+be written — it does not mean the topic can be left out of coverage.
 
 **IN coverage — must be there:**
 - A junior is expected to explain it confidently out loud
@@ -243,10 +253,25 @@ or Indra in 2026. Every item must be explainable with a real example from one of
   Use language like: "interviewers ask...", "tested in every technical screening",
   "asked when discussing...", "the most common source of bugs in junior code", etc.
   Never write a tutorial definition — write the signal the interviewer is probing for.
+
+  **Good vs bad item — example:**
+  - ❌ `@Transactional — manages database transactions`
+  - ✅ `@Transactional — ensures multiple DB writes either all succeed or all roll back;
+    interviewers ask where it belongs (service layer) and what happens if you put it on
+    a private method (silently ignored — Spring cannot proxy it)`
+
+  The bad item is a dictionary definition. The good item tells you what the interviewer
+  is actually testing and names the gotcha a junior is likely to miss.
+
 - No code blocks — concept names and annotations only, no implementation.
 - Sections grouped by theme. Order from highest filtering risk (most likely to cause rejection
   if unknown) to lowest.
 - Items within a section: foundational first, then more specific.
+
+**Completeness check — before writing the file, answer this question:**
+"If Victor studied only the items in this coverage.md and nothing else, would he be ready
+to pass a technical interview at NTT Data for a junior Angular + Spring Boot role?"
+If the answer is no, something is missing. Find it before writing.
 
 **Section design:**
 
