@@ -1,4 +1,10 @@
-# Spring Security and JWT
+# Spring Security and JWT — Implementation reference
+
+> Open this file when **implementing**. Open `06-security-jwt-learning.md` when **studying**.
+>
+> This file is ordered for building — each class depends on the ones above it (creation order). The learning file is ordered for understanding — concept before code, simplest piece first.
+
+---
 
 ## What we are building — and why
 
@@ -543,6 +549,8 @@ eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIn0.abc123
 - **Signature** — HMAC of header + payload using the secret key — proves the token was not tampered with
 
 Any server with the same secret key can verify the token without calling the database. This is the whole point — no session, no shared state, just a signed token the client carries on every request.
+
+One important limitation: you cannot invalidate a JWT before it expires. Once issued, the token is valid until its `exp` claim passes — there is no server-side state to delete. If a user logs out or their account is banned, the token keeps working until expiry. The practical solution is a short expiry time (15–60 minutes). The workaround is a token blacklist stored in Redis, but that introduces server-side state and partially defeats the purpose of stateless auth.
 
 **A claim is a key-value pair stored in the payload.** Standard claims: `sub` (subject = who the token belongs to), `iat` (issued at), `exp` (expiration). You read them back when validating the token.
 
@@ -1227,6 +1235,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
 **`SecurityContextHolder.getContext().getAuthentication() == null`** — only set the authentication if it has not been set already. Prevents processing the same request twice if it passes through the filter more than once.
 
+**Why load the user from the database if the token already has the email?** The token was signed at login and cannot be modified — but the user's state in the database can change after the token was issued. The account might have been deleted, banned, or had its role changed. Loading `UserDetails` from the database ensures you are working with the current state of the account, not a snapshot from when the token was created.
+
 **`UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())`** — creates the authentication object that goes into `SecurityContextHolder`. The three arguments are: the principal (who), the credentials (null — no password needed here), and the authorities (roles). Once this is in the `SecurityContextHolder`, Spring Security considers the user authenticated for this request.
 
 **`filterChain.doFilter(request, response)`** — `filterChain` is the ordered list of all filters in the chain. Calling `.doFilter()` means: "I am done — pass this request to the next filter in the chain". Every filter that does not want to block a request must call this, otherwise the request is dropped silently.
@@ -1315,6 +1325,8 @@ public class SecurityConfig {
 **`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/` (login, register) without a token. The `/**` matches any path below that prefix.
 
 **`.anyRequest().authenticated()`** — every other URL requires a valid JWT. Order matters: `requestMatchers` rules are checked first, in the order they are declared. `.anyRequest()` is always last — it is the catch-all.
+
+**`.csrf(csrf -> csrf.disable())`** — CSRF (Cross-Site Request Forgery) is an attack where a malicious website tricks your browser into making a request to your API. It works because browsers automatically include cookies with every request to a domain. JWT does not use cookies — the token lives in `localStorage` and is attached manually by Angular in the `Authorization` header. Browsers never send custom headers automatically to other domains, so the attack does not apply. CSRF protection is not needed and disabling it removes a source of confusing 403 errors.
 
 **`.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)`** — inserts your `JwtFilter` into the filter chain, just before Spring's default authentication filter. This ensures the JWT is validated before Spring tries its own (form-based) authentication logic.
 
