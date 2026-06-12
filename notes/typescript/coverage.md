@@ -15,6 +15,11 @@ Every concept must be explainable in the context of a real Angular file from one
 - Readonly properties — the value cannot be changed after the object is created; signals immutability in models and DTOs
 - Extending interfaces — `interface AdminUser extends User` adds new fields to an existing shape; used in Angular models with inheritance
 
+## Enums
+- TypeScript enums — `enum Status { DRAFT = 'DRAFT', SUBMITTED = 'SUBMITTED' }` — used in Angular models that mirror Java enums from the backend
+- String enums vs union types — `type Status = 'DRAFT' | 'SUBMITTED'` is often preferred in TypeScript because it generates less compiled code and is simpler to use; string enums are used when the values need to be iterable
+- When you see enums in consultancy code — many existing Angular projects use enums for status, role, and type fields; you need to read and write both styles
+
 ## Generics
 - `Array<T>`, `Observable<T>`, `Signal<T>` — reading generic types in Angular code; the `T` tells you what the container holds
 - Writing a simple generic function or interface — when you want the same logic to work for different types without repeating the code

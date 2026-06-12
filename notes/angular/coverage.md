@@ -23,6 +23,7 @@ Every item must be explainable with a real example from at least one of the six 
 - `@Injectable({ providedIn: 'root' })` — what dependency injection is, what a singleton service means, and why Angular uses it instead of importing classes directly
 - `inject()` — the modern way to inject a service; no constructor needed in Angular 17+
 - `HttpClient` — making GET, POST, PUT, DELETE, PATCH calls with typed responses; interviewers ask "how do you call a REST API from Angular?"
+- `HttpParams` — building query parameters programmatically for filtered API calls; used in TimeTrack for `?month=2025-05&status=SUBMITTED` on the entries endpoint
 - Error handling: `catchError` + loading/error signal pattern — how to show loading state and handle a failed HTTP call without crashing the app
 
 ## RxJS
@@ -82,3 +83,6 @@ Every item must be explainable with a real example from at least one of the six 
 - `*ngIf` and `*ngFor` — legacy structural directives; still widely used; `*ngFor` does not require `track` but performs worse without it
 - Zone.js and default change detection — what it means conceptually; why signals and `OnPush` reduce unnecessary re-renders
 - `OnPush` change detection strategy — the component only re-renders when an input reference changes or an event fires; senior devs use it and will ask if you understand it
+- `ngOnChanges` — lifecycle hook that fires every time an `@Input` value changes; receives a `SimpleChanges` object with the previous and current value; the signals equivalent is `effect()`
+- Template-driven forms: `ngModel`, `FormsModule` — the older form approach using two-way binding in the template; simpler than reactive forms but less control; still widely used in existing consultancy codebases
+- `BehaviorSubject` / `Subject` — RxJS-based shared state used before signals; `BehaviorSubject` holds a current value and emits it to new subscribers; you will see these in almost every existing Angular service at a consultancy

@@ -54,3 +54,9 @@ CSS as used in Angular projects. Focus on concepts that appear in real UI work a
 
 ## Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content and is the key to the Angular app shell scroll pattern; `auto` shows scrollbars only when needed
+
+## Angular-specific CSS
+- View encapsulation — Angular scopes component styles by adding a unique attribute to every element; styles in `component.scss` only apply to that component's own template, not to child components; interviewers ask "why does your style not apply to the child?"
+- `:host` selector — targets the component's root element from within the component's own styles; used to set `display: block` or add margin to the component itself
+- When to use `styles.css` vs component styles — `styles.css` for global rules (body, html, Angular Material overrides); component styles for everything specific to one component
+- `::ng-deep` — deprecated but still widely used in consultancy codebases; pierces view encapsulation to style child component internals (e.g. Material component internals that cannot be reached any other way)

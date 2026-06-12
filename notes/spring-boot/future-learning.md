@@ -24,20 +24,6 @@ Topics to study once the numbered files (01–09) are solid. Nothing here is nee
 
 Health checks, metrics, and management endpoints that ops teams use to monitor the app in production. Automatically exposes `/actuator/health`, `/actuator/info`, and more. Essential in any production-deployed Spring Boot app.
 
-### Application profiles
-
-Different configuration per environment:
-
-```properties
-# application-dev.properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/dev_db
-
-# application-prod.properties
-spring.datasource.url=${DATABASE_URL}
-```
-
-Switch with `spring.profiles.active=dev`. Every consultancy project uses this pattern.
-
 ### Spring Boot Caching
 
 ```java

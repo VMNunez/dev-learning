@@ -9,6 +9,8 @@ Every item must be explainable with a real code example from the TimeTrack proje
 - Profiles: `application-dev.properties`, `spring.profiles.active` — separating config per environment; asked in any interview about real-world deployment
 - Maven: `pom.xml` structure, adding a dependency, `mvn clean install` — how the project is built and how new libraries are pulled in
 - Lombok: `@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor`, `@RequiredArgsConstructor` — what each generates and why it removes boilerplate
+- `@Slf4j` (Lombok) — generates a `log` field on the class; `log.info()`, `log.warn()`, `log.error()` — the standard way to add logging in Spring Boot; seen in every production codebase and code review
+- `data.sql` — Spring Boot runs this file on startup to seed the database; used in TimeTrack to create the first manager account; interviewers ask "how did you create the first user if there is no register endpoint?"
 
 ## REST controllers
 - `@RestController`, `@RequestMapping` — marks the class as an HTTP handler; combines `@Controller` and `@ResponseBody` so every method returns JSON
@@ -18,6 +20,7 @@ Every item must be explainable with a real code example from the TimeTrack proje
 - HTTP status conventions: 200 GET, 201 POST, 204 DELETE, 400 validation error, 401 missing or invalid token, 403 forbidden (authenticated but not allowed), 404 not found — tested in every technical interview
 - Request DTO vs Response DTO — why you never expose the entity directly from the API (coupling, security, over-fetching); interviewers always ask this
 - `toResponse()` mapping pattern — entity-to-DTO conversion in one place in the service layer; keeps the controller free of mapping logic
+- `@JsonIgnore` — prevents a field from appearing in the JSON response; used on the `password` field so the API never returns hashed passwords; interviewers ask "why doesn't your API expose the password?"
 
 ## Dependency injection
 - `@Service`, `@Repository`, `@Component`, `@Controller` — what each tells Spring and which layer each belongs to
@@ -77,6 +80,7 @@ Every item must be explainable with a real code example from the TimeTrack proje
 - `@ExtendWith(MockitoExtension.class)` — activates Mockito in a plain JUnit test without loading the Spring context
 - `@WebMvcTest` — loads only the controller layer and mocks the service; tests HTTP request/response without a real database
 - `@SpringBootTest` — full integration test; loads the whole context; slow but catches wiring issues
+- `@DataJpaTest` — tests only the repository layer against an in-memory H2 database; does not load the full context; used to test custom JPA queries
 - Layered testing strategy — unit tests for services (fast, isolated), `@WebMvcTest` for controllers; consultancies ask "how do you test your backend?"
 
 ## Tooling

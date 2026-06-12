@@ -48,3 +48,12 @@ Focus on what appears in consultancy technical tests.
 - What an index is — a sorted data structure that speeds up reads on a column at the cost of slower writes; created automatically on primary keys and unique columns
 - `EXPLAIN` — shows the query plan and whether an index is being used; used to diagnose slow queries
 - When NOT to use `SELECT *` — fetches all columns including large ones you do not need; breaks when column names change; always specify the columns you need
+
+## Schema design
+- Primary key — uniquely identifies each row; usually `BIGSERIAL` in PostgreSQL; every table needs exactly one; interviewers ask "what is the primary key of your `time_entries` table?"
+- Foreign key — a column that references the primary key of another table; enforces referential integrity; PostgreSQL rejects an INSERT if the referenced row does not exist
+- `NOT NULL` constraint — the column must always have a value; used on required fields like `email`, `password`, and `status`
+- `UNIQUE` constraint — no two rows can have the same value in that column; used on `email` to prevent duplicate accounts
+- `CHECK` constraint — validates a condition on insert or update; `CHECK (hours > 0 AND hours <= 24)` on the `hours` column
+- Normalization concept — why you store `project_id` in `time_entries` instead of copying `project_name`; avoids duplication and keeps data consistent; changing the project name requires only one UPDATE in one place
+- Reading a schema — being able to describe the TimeTrack data model out loud: "there are three tables; `users` and `projects` are independent; `time_entries` links to both via foreign keys"; interviewers ask "explain your database structure"

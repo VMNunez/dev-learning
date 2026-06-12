@@ -10,6 +10,7 @@ Every answer must be anchored to a real example from Victor's projects.
 - Idempotency — GET, PUT, DELETE are idempotent; POST is not; interviewers ask "what happens if the client sends the same DELETE request twice?"
 - `PATCH` vs `PUT` — `PUT` replaces the whole resource; `PATCH` changes one part; used in TimeTrack for status transitions (submit, approve, reject)
 - Why REST and not GraphQL or RPC — the standard for Spanish consultancy APIs; REST is simpler to implement and understand at junior level
+- Query parameters for filtering and pagination — `GET /api/entries?month=2025-05&status=SUBMITTED`; query params carry optional filtering; the backend reads them with `@RequestParam`, the frontend sends them with `HttpParams`; never use a request body on GET requests
 
 ## Layered architecture
 - Controller → Service → Repository — what each layer owns and what it must not do; interviewers ask "where does business logic live?"

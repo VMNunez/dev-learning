@@ -19,16 +19,17 @@ COMMIT;
 
 In Spring Boot, `@Transactional` manages this automatically — but understanding what it does at the SQL level makes debugging much easier. A transaction that was not committed leaves the database unchanged, which is why Spring Boot's `@Transactional` is on service methods, not on individual queries.
 
-### `EXPLAIN` and `EXPLAIN ANALYZE`
+### `EXPLAIN ANALYZE`
 
-Show how PostgreSQL executes a query:
+`EXPLAIN` (reading the query plan) is part of the junior goal — see `coverage.md`.
+
+`EXPLAIN ANALYZE` goes further: it actually runs the query and shows real execution times alongside the plan. Use it when `EXPLAIN` alone does not tell you why a query is slow.
 
 ```sql
-EXPLAIN SELECT * FROM books WHERE author_id = 5;
-EXPLAIN ANALYZE SELECT * FROM books WHERE author_id = 5;
+EXPLAIN ANALYZE SELECT * FROM time_entries WHERE user_id = 5;
 ```
 
-`EXPLAIN` shows the plan without running the query. `EXPLAIN ANALYZE` runs it and shows real timing. Look for `Seq Scan` on large tables — it means no index is being used and a full table scan is happening.
+Look for `Seq Scan` on large tables — it means no index is being used. The `actual time=` values show where the bottleneck is.
 
 ---
 

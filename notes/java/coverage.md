@@ -43,6 +43,13 @@ Nothing beyond what appears in a real Spring Boot project — not a general Java
 - `Set` — no duplicates; used in many-to-many relationships (e.g. a user's set of roles or permissions)
 - When to use each in a Spring Boot context — `List` for ordered results, `Map` for ad-hoc response bodies, `Set` for relationship collections
 
+## Date and time
+- `LocalDate` — a date without time (`2025-05-14`); used for the `date` field on TimeEntry; immutable and thread-safe unlike the legacy `java.util.Date`
+- `LocalDateTime` — a date with time (`2025-05-14T09:30:00`); used for `createdAt` and `updatedAt` timestamps; also immutable
+- Why not `java.util.Date` — it is mutable, poorly designed, and replaced by the `java.time` API in Java 8; interviewers ask this directly when they see date fields in your project
+- `DateTimeFormatter` — formatting a date for display or for an API response; `DateTimeFormatter.ISO_LOCAL_DATE` for standard ISO format
+- JPA mapping — Spring Boot serialises `LocalDate` and `LocalDateTime` to JSON automatically via Jackson when `jackson-datatype-jsr310` is on the classpath (included with `spring-boot-starter-web`)
+
 ## Modern Java used in Spring Boot code
 - Records — `record CreateUserRequest(String name, String email) {}` — immutable DTO alternative; Java 16+; interviewers ask "have you seen records used as DTOs?"
 - `var` — local type inference; IntelliJ suggests it; you will see it in code reviews even if you do not write it yourself
