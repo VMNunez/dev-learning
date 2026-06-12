@@ -263,10 +263,25 @@ or Indra in 2026. Every item must be explainable with a real example from one of
   The bad item is a dictionary definition. The good item tells you what the interviewer
   is actually testing and names the gotcha a junior is likely to miss.
 
-- No code blocks — concept names and annotations only, no implementation.
+- One concept per item — never group multiple concepts in one bullet. If an item lists
+  `@Entity`, `@Table`, `@Id` together, split them. The audit prompt checks each item
+  individually against the notes — a grouped item cannot be checked properly.
+- Inline backticks for annotations, class names, and method names are fine and encouraged
+  (`` `@Transactional` ``, `` `JpaRepository` ``). What is not allowed is fenced code blocks
+  (triple backtick) — no implementation, no method bodies, no examples.
 - Sections grouped by theme. Order from highest filtering risk (most likely to cause rejection
   if unknown) to lowest.
 - Items within a section: foundational first, then more specific.
+
+**Confusable pairs check — before closing each section:**
+Scan the section for concepts that are easy to confuse with something similar. If both
+sides of a pair are not already present, add them. Examples by topic:
+- Spring Boot: `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, private method + `@Transactional`
+- Angular: `Subject` vs `BehaviorSubject`, `signal()` vs `computed()`, `ngIf` vs `@if`
+- SQL: `WHERE` vs `HAVING`, `JOIN` vs `LEFT JOIN`, `COUNT(*)` vs `COUNT(column)`
+- TypeScript: `interface` vs `type`, `any` vs `unknown`, `?.` vs `??`
+- Architecture: `PUT` vs `PATCH`, unit test vs integration test, `401` vs `403`
+Apply the same logic to whatever {TOPIC} is — do not limit yourself to these examples.
 
 **Completeness check — before writing the file, answer this question:**
 "If Victor studied only the items in this coverage.md and nothing else, would he be ready
