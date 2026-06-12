@@ -134,11 +134,18 @@ If no TODOs are found, skip this section and move directly to the audit.
 
 ## Audit — Technical Foundation & Gaps
 
+**Before reading note files — check coverage.md:**
+If a `coverage.md` file exists in {NOTES_PATH}, read it first. It defines the minimum topics
+that must be covered for Victor's objective (junior at a Spanish consultancy with Angular +
+Spring Boot). Every item in that file is a required topic. Use it as the baseline alongside
+rule 1 — any item not covered by an existing note file must be addressed during this audit.
+Skip `coverage.md` when checking note quality in rule 2 — it is a checklist, not a study note.
+
 Read all files in {NOTES_PATH}.
 
 1. Identify fundamental concepts missing that a Spanish consultancy would use to filter
    candidates in a first technical screening. One sentence per gap explaining why they ask it.
-   Skip any file named `future-learning.md` — it is a roadmap file, not a study note.
+   Skip any file named `future-learning.md` or `coverage.md` — these are reference files, not study notes.
 
 2. Check if every note follows these teaching rules:
    - Does it explain the WHY before the code?
