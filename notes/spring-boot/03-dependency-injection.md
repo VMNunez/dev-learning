@@ -101,6 +101,52 @@ public class TransactionService {
 
 ---
 
+## @Bean — beans from library classes
+
+`@Component`, `@Service`, and `@Repository` work when you own the class. When you need a bean from a library class (one you can't annotate), you use `@Bean` on a method inside a `@Configuration` class:
+
+```java
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();  // library class — can't add @Component to it
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+}
+```
+
+Spring calls these methods at startup and stores the returned objects as beans. After this, any class that has `PasswordEncoder` as a constructor parameter receives the `BCryptPasswordEncoder` instance automatically.
+
+---
+
+## How Spring wires everything at startup
+
+```
+Spring scans all classes in com.victor.timetrack.*
+        ↓
+Finds @Component on JwtUtil          → creates JwtUtil bean
+Finds @Component on JwtFilter        → needs JwtUtil and UserDetailsService
+Finds @Service on UserDetailsServiceImpl → needs UserRepository
+Finds @Service on AuthService        → needs AuthenticationManager, JwtUtil
+Finds @Configuration on SecurityConfig → calls @Bean methods
+   → passwordEncoder()          → creates BCryptPasswordEncoder bean
+   → authenticationManager()    → creates AuthenticationManager bean
+        ↓
+Spring wires all dependencies via constructor injection
+        ↓
+Application ready — all beans created and connected
+```
+
+If any bean is missing (e.g. you forgot `@Service` on `AuthService`), Spring throws `NoSuchBeanDefinitionException` at startup — not at runtime.
+
+---
+
 ## @Qualifier and @Primary — multiple implementations
 
 If two classes implement the same interface, Spring does not know which to inject:
