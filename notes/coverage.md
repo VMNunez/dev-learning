@@ -151,6 +151,7 @@ Angular Material is standard in Spanish consultancies — interviewers expect yo
 ### Select and options
 - `mat-select` + `mat-option` — styled dropdown inside `mat-form-field`; interviewers ask the difference between `value="pending"` (literal string) and `[value]="status"` (property binding)
 - `(selectionChange)` vs `[(value)]` — `selectionChange` fires on user pick; `[(value)]` is two-way binding; interviewers ask when to use each
+- `mat-optgroup` — groups options under a label; interviewers may ask how to visually separate options without disabling them
 - `multiple` attribute on `mat-select` — makes the value an array; interviewers ask what changes in the form value when `multiple` is enabled
 
 ### Table
@@ -160,6 +161,7 @@ Angular Material is standard in Spanish consultancies — interviewers expect yo
 - `*matHeaderRowDef` / `*matRowDef` — render the header row and one data row per item; both reference `displayedColumns`
 - `*matNoDataRow` — empty state row shown when `dataSource` has no items; use `[attr.colspan]="displayedColumns.length"` to span all columns
 - `MatTableDataSource` — wrapper around an array that handles sorting, filtering, and pagination; interviewers ask why you use it instead of a plain array
+- `MatTableDataSource` with `effect()` — when data comes from a signal input, use `effect()` to assign `dataSource.data = tasks()` and keep the source in sync
 - `@if` vs `computed()` for conditional columns — wrapping `ng-container matColumnDef` in `@if` causes a Material error because the column is never registered; correct pattern is `displayColumns = computed(...)` that includes or excludes the column name
 
 ### Sorting
@@ -356,6 +358,7 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - Classes, fields, constructors — every Spring component is a class; interviewers ask "what is an object in the context of a Spring bean?"
 - `private final` fields — why Spring Boot services use them: dependencies cannot change after construction, makes the class easier to unit test
 - Access modifiers: `public`, `private`, `protected` — what each restricts and why Spring Boot services use `private` for fields and `public` for methods
+- `this` keyword — disambiguates between a field and a constructor parameter; appears in Lombok-generated code and custom constructors
 - `static` methods and fields — belong to the class, not to any instance; `Map.of()`, `Integer.parseInt()`, utility factory methods are all `static`
 - `instanceof` — checks the runtime type of an object; appears in `equals()` overrides and in exception handlers
 - `equals()` and `hashCode()` — always override both together; `HashMap` and `HashSet` use `hashCode()` to find the bucket and `equals()` to confirm the match; Lombok `@Data` generates both
@@ -371,6 +374,7 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `@Override` — marks a method that implements an interface or overrides a parent; the compiler catches mismatches
 - Overriding vs overloading — overriding: same method name and signature in a subclass (decided at runtime); overloading: same method name with different parameters in the same class (decided at compile time)
 - Functional interfaces — an interface with exactly one abstract method; what makes lambda syntax possible; built-ins: `Predicate<T>`, `Function<T, R>`, `Consumer<T>`, `Supplier<T>`
+- Why Spring Boot prefers interfaces for dependencies — you can swap implementations without changing the caller; the foundation of testable, loosely coupled code
 
 ### Generics
 - `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` — reading and writing typed containers in Spring Boot code
@@ -384,14 +388,17 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - Stream pipeline: `filter()`, `map()`, `collect()` — `filter` keeps matching elements, `map` transforms each element, `collect` builds the result
 - `findFirst()` — returns `Optional<T>`; the safe way to get one item from a filtered stream without throwing
 - `anyMatch()` / `allMatch()` — return a boolean; used instead of a for loop when you only need to check a condition across a list
+- `mapToInt().sum()` — pattern for summing a numeric field across a list: `employees.stream().mapToInt(Employee::getAge).sum()`; interviewers may ask you to refactor a for loop that sums a field
 - `Collectors.groupingBy()` — groups elements into `Map<Key, List<Value>>`; used when a service must return data organised by a field
 - `.toList()` vs `collect(Collectors.toList())` — `.toList()` is Java 16+ and returns an immutable list; if the next line calls `.add()` on the result, `.toList()` will throw
+- Stream vs for loop — streams express intent clearly (`filter` + `map`); for loops are clearer when the logic is complex or when you need early exit with `break`; know when to choose each
 
 ### Exceptions
 - Checked vs unchecked exceptions — why Spring Boot uses unchecked (`RuntimeException` subclasses): they do not need to be declared in the method signature and propagate freely to `@RestControllerAdvice`
 - `RuntimeException` vs `Exception` — `RuntimeException` is unchecked; `Exception` is checked; always extend `RuntimeException` for custom exceptions in Spring Boot
 - `try` / `catch` / `throws` — reading Spring Boot exception handling code; `throws` in a method signature declares a contract
 - Creating a custom exception: `extends RuntimeException`, constructor that accepts a message, named after what went wrong (`ResourceNotFoundException`)
+- `throw new SomeException()` — how it propagates up the call stack until `@RestControllerAdvice` catches it and returns a JSON error response
 
 ### Collections
 - `List` — ordered, allows duplicates; used in repository results and service return types
@@ -414,6 +421,8 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `LocalDateTime` — a date with time; used for `createdAt` and `updatedAt` timestamps; also immutable
 - `LocalDate` vs `LocalDateTime` — use `LocalDate` when time is not relevant; use `LocalDateTime` when you need the exact moment; they are different types — mixing them causes a compile error
 - Why not `java.util.Date` — it is mutable, poorly designed, and replaced by the `java.time` API in Java 8
+- `DateTimeFormatter` — formatting a date for display or for an API response; `DateTimeFormatter.ISO_LOCAL_DATE` produces the standard `2025-05-14` format
+- JPA mapping — Spring Boot serialises `LocalDate` and `LocalDateTime` to JSON automatically via Jackson when `jackson-datatype-jsr310` is on the classpath (included with `spring-boot-starter-web`)
 
 ### Maven
 - `pom.xml` structure: `groupId`, `artifactId`, `version`, `dependencies`, `build` — what each section does and where to add a new library
@@ -438,6 +447,7 @@ Every answer must be anchored to a real example from Victor's projects.
 - `401 Unauthorized` vs `403 Forbidden` — 401 means no valid credentials; 403 means valid credentials but insufficient permissions; interviewers ask this because it tests authentication vs authorisation understanding
 - CORS — a browser security rule that blocks requests from a different origin; the fix is always on the server, never in the browser or client code; if Postman works but Angular does not, CORS is the cause
 - Query parameters for filtering and pagination — `GET /api/entries?month=2025-05&status=SUBMITTED`; never use a request body on `GET` requests
+- Why REST and not GraphQL or RPC — the standard for Spanish consultancy APIs; REST is simpler to implement and understand at junior level; knowing this question exists shows awareness of alternatives
 
 ### Layered architecture
 - Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; they communicate only through HTTP; Angular never queries the database directly
@@ -605,6 +615,17 @@ Every item must be explainable with a real example from one of the projects.
 - `as const` on objects — makes all properties `readonly` and infers literal types instead of widened ones; interviewers ask what two things `as const` does (readonly + literal type inference)
 - `as const` on arrays — turns an array into a `readonly` tuple with exact element types
 
+### Arrow functions and functions
+- Arrow functions vs function declarations — arrow functions inherit `this` from the surrounding scope at definition time; function declarations have their own `this`; matters when writing callbacks inside Angular class methods where you need to access `this`
+- Default parameters, rest parameters — reduce function overloads; `...args: string[]` collects remaining arguments into an array; common in Angular utility functions and service methods
+- Return type annotations — make the function's contract explicit; the compiler catches when the actual return does not match the declared type; interviewers ask when TypeScript can infer the return type and when you must declare it
+
+### Modules and decorators
+- `import` / `export` — named exports (multiple per file) vs default export (one per file); Angular uses named exports for components and services; interviewers ask why Angular avoids default exports (named exports keep the name fixed at the source, making refactoring safer)
+- Barrel files (`index.ts`) — re-export multiple symbols from a folder so callers import from the folder path, not individual files; common in large consultancy Angular projects in shared module folders
+- What a decorator is in Angular's context — `@Component`, `@Injectable`, `@Pipe` attach metadata to a class that Angular reads at startup; without the decorator, Angular does not know the class is a component
+- How TypeScript decorators work conceptually — a function that receives the class and can modify or annotate it; you use them everywhere in Angular but rarely write custom ones at junior level; interviewers test that you know they are functions, not language keywords
+
 ---
 
 ## JavaScript
@@ -628,6 +649,7 @@ Every item must be explainable with a real example from one of the projects, not
 - Closures — a function that retains access to variables from its outer scope even after the outer function has returned; appears in Angular `computed()`, event handlers, and services
 
 ### Functions and `this`
+- Function declarations vs expressions vs arrow functions — declarations are hoisted; arrow functions are expressions and are not hoisted; the key choice in practice is declaration vs arrow, not declaration vs expression
 - `this` in regular functions — refers to the caller at runtime; in a standalone function call it is `undefined` (strict mode) or `window` (non-strict)
 - Arrow functions and `this` — arrow functions inherit `this` from the surrounding scope at definition time; why Angular uses arrow functions in class properties and callbacks
 - `bind`, `call`, `apply` — explicitly set `this` on a function; `bind` returns a new function; `call` and `apply` invoke it immediately
@@ -652,16 +674,23 @@ Every item must be explainable with a real example from one of the projects, not
 - Method chaining — `filter().map().sort()` — each method receives the output of the previous one
 
 ### Objects and JSON
-- Object destructuring — `const { name, role } = user`; rename with `{ name: userName }`; destructuring in function parameters `function display({ name, role })`
-- Spread in objects — `{ ...obj, key: newValue }` creates a shallow copy; nested objects are still references, not new copies
-- `Object.keys`, `Object.values`, `Object.entries` — iterate over an object's properties as arrays; `Object.entries` gives key-value pairs
+- Object literals, shorthand properties, computed keys — `{ name }` instead of `{ name: name }`; `{ [key]: value }` for dynamic keys; interviewers expect shorthand as natural everyday syntax
+- Object destructuring — `const { name, role } = user`; rename with `{ name: userName }`; default value with `{ city = 'Madrid' }`; destructuring in function parameters `function display({ name, role })`
+- Array destructuring — `const [first, second] = items`; skip elements with `[, , third]`; swap variables with `[a, b] = [b, a]`; used when consuming tuple-like return values
+- Spread in objects — `{ ...obj, key: newValue }` creates a shallow copy; nested objects are still references, not new copies; used for immutable state updates in Angular signals
+- `Object.keys`, `Object.values`, `Object.entries` — iterate over an object's properties as arrays; `Object.entries` gives key-value pairs; `Object.fromEntries` converts them back
+- `Object.assign` vs spread — both merge objects; `Object.assign` mutates the target object; spread creates a new object; both produce a shallow copy; prefer spread in modern code
+- `Object.freeze` — makes an object's top-level properties immutable; shallow — nested objects inside a frozen object are still mutable
 - `JSON.stringify` / `JSON.parse` — `stringify` silently drops `undefined` values and functions; `JSON.parse` throws `SyntaxError` on invalid input
 
 ### Strings and regular expressions
+- String immutability — strings cannot be changed in place; every method returns a new string; `str[0] = 'x'` does nothing silently; a common source of confusion when coming from a mutable mindset
 - Template literals — backtick strings with `${}` interpolation; support multiline; interviewers expect template literals as the default over string concatenation
-- Search methods: `includes`, `startsWith`, `endsWith`, `indexOf` — boolean checks for presence and position
-- Transformation methods: `slice`, `split`, `trim`, `replace`, `toLowerCase`, `toUpperCase`
+- Search methods: `includes`, `startsWith`, `endsWith`, `indexOf` — boolean checks for presence and position; `indexOf` returns -1 if not found
+- Transformation methods: `slice`, `split`, `trim`, `replace`, `toLowerCase`, `toUpperCase` — `replace` replaces the first match by default; interviewers may ask how to split a CSV string into an array
+- Regex pattern syntax — `/pattern/flags`; common flags: `i` (case insensitive), `g` (global — find all matches, not just the first)
 - `.test(str)` — returns a boolean; used in `Validators.pattern()` for Angular form validation
+- `.match(regex)` and `str.replace(regex, replacement)` — `match` returns the matching parts as an array; `replace` with the `g` flag replaces all occurrences; without `g` only the first match is replaced — a common source of bugs
 
 ### Sets and Maps
 - `Set` — collection of unique values; `has()` is O(1) while `Array.includes()` is O(n)
@@ -679,15 +708,24 @@ Every item must be explainable with a real example from one of the projects, not
 - Promise vs Observable in Angular — Promises emit one value and start immediately; Observables are lazy, can emit multiple values, and can be cancelled
 
 ### Modules
-- Named exports vs default export — Angular uses only named exports; named exports are safer to refactor
+- Named exports vs default export — Angular uses only named exports; named exports are safer to refactor because editors auto-rename them; default exports let the importer choose any name, which makes automated refactoring unreliable
+- `import { name as alias }` and `import * as namespace` — renaming to avoid naming conflicts; namespace import bundles all exports into one object; used when consuming libraries that export many things at once
 - Barrel pattern — an `index.ts` file that re-exports everything from a folder so imports stay clean
 - Dynamic imports and lazy loading — `import('./module').then(m => m.Class)` loads code only when needed; Angular uses this in `loadComponent:`
 - Tree-shaking — the bundler removes exported code that is never imported anywhere; only works reliably with named exports
 
 ### Error handling
-- `try` / `catch` / `finally` — `finally` guarantees execution even if `catch` also throws
+- `try` / `catch` / `finally` — `try` is the code that might throw; `catch` receives the error object; `finally` guarantees execution even if `catch` also throws; use `finally` for cleanup (hide a spinner, close a connection)
+- `Error` object: `message`, `name`, `stack` — `stack` shows the full call chain that led to the error; essential for debugging; `name` distinguishes error types before `instanceof` is possible
 - Custom error classes — extending `Error` to create `ValidationError`, `HttpError`, etc.; use `instanceof` in `catch` to handle different error types differently
-- Silently swallowing errors — catching an error and doing nothing is the most common junior mistake; always either handle fully or re-throw
+- Silently swallowing errors — catching an error and doing nothing is the most common junior mistake; always either handle fully or re-throw with `throw error`
+- Error handling with `async`/`await` — `try/catch` catches both synchronous errors and rejected Promises inside an `async` function; the correct pattern for Angular services that call `firstValueFrom()` or `fetch()`
+
+### Loops and iteration
+- `for...of` vs `for...in` — `for...of` iterates the values of any iterable (arrays, strings, Sets, Maps); `for...in` iterates the string keys of an object; using `for...in` on an array gives `'0'`, `'1'`, `'2'` as strings, not values
+- When to use a loop vs array methods — `map`, `filter`, `reduce` are preferred for data transformation; `for...of` is the right choice when you need early exit with `break` or when the loop body contains `await`
+- `break` and `continue` — `break` exits the loop immediately; `continue` skips the rest of the current iteration; the main reason to choose `for...of` over `forEach` when early exit is needed
+- `while` loop — repeats while a condition is true; use when the number of iterations is not known in advance
 
 ### DOM events
 - Event bubbling — a click on a child also triggers click handlers on every ancestor element
@@ -698,6 +736,7 @@ Every item must be explainable with a real example from one of the projects, not
 ### Modern syntax (ES6+)
 - Optional chaining `?.` — safely accesses a nested property that might be `null` or `undefined`
 - Nullish coalescing `??` vs `||` — `??` falls back only when the left side is `null` or `undefined`; `||` also triggers on `0`, `false`, and `''`
+- Logical assignment: `||=`, `&&=`, `??=` — shorthand for conditional assignment; `a ??= 'default'` assigns only if `a` is `null` or `undefined`; interviewers may show these to test whether the candidate can read modern JavaScript they did not write
 - Debouncing concept — delaying a function call until after a rapid burst of events stops; used in Angular with RxJS `debounceTime()` on search inputs
 
 ---
@@ -772,6 +811,7 @@ Every item must be explainable with a real example from one of the Angular proje
 
 ### Typography
 - `font-size` with `rem` — `px` ignores the user's browser font size preference and breaks accessibility
+- `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight
 - `line-height` unitless value — `1.5` means 1.5× the current font size; a unitless value scales correctly when font size changes
 - Text truncation — `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present
 - `text-transform` — `capitalize` displays stored lowercase values as capitalised without changing the data
@@ -779,11 +819,13 @@ Every item must be explainable with a real example from one of the Angular proje
 ### CSS variables
 - `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours
 - `:root` vs component scope — declaring on `:root` makes the variable globally available; scoping to a specific selector limits it to that element's subtree
-- CSS variables are live at runtime — a CSS variable can be changed by JavaScript with `element.style.setProperty()`, enabling runtime theming
+- CSS variables are live at runtime — a CSS variable can be changed by JavaScript with `element.style.setProperty()`, enabling runtime theming without recompiling
+- `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 
 ### Colors and transparency
-- Color formats: `hex`, `rgb()`, `hsl()` — `rgba()` adds transparency and is preferred for overlays and shadows
-- `opacity` vs `rgba` transparency — `opacity` affects the element AND all its children; `rgba` only affects the specific property it is applied to
+- Color formats: `hex`, `rgb()`, `hsl()` — `hex` is most common for fixed colors; `rgba()` adds transparency and is preferred for overlays and shadows; `hsl` makes color variations easy (just change the lightness value)
+- `opacity` vs `rgba` transparency — `opacity` affects the element AND all its children; `rgba` only affects the specific property it is applied to; classic question: "why does `opacity: 0.5` on a card fade the text too, but `background: rgba(0,0,0,0.5)` does not?"
+- `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value
 - `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync
 
 ### Borders, shadows, and backgrounds
@@ -791,18 +833,22 @@ Every item must be explainable with a real example from one of the Angular proje
 - `border-radius: 50%` vs `border-radius: 9999px` — `50%` makes a circle but only when the element is square; `9999px` creates a pill shape at any aspect ratio — a confusable pair
 - `background-size: cover` vs `background-size: contain` — `cover` fills and may crop; `contain` fits the whole image
 - `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair
+- `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it
 
 ### Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; `auto` only shows scrollbars when content overflows; `scroll` always shows them; `auto` vs `scroll` is a confusable pair
+- `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport
 - Scrollable container pattern — `overflow-y: auto` with a fixed `max-height` creates a scroll area without triggering a page scroll
 
 ### CSS functions
-- `calc()` — mixes different units in one expression; spaces around `+` and `-` are required
+- `calc()` — mixes different units in one expression; `calc(100% - 64px)` subtracts a fixed header height from the full viewport; spaces around `+` and `-` are required
 - `clamp(min, preferred, max)` — creates a value that scales fluidly between limits; `font-size: clamp(1rem, 2.5vw, 2rem)` replaces multiple breakpoint overrides
+- `min()` and `max()` — `min(100%, 600px)` is equivalent to `max-width: 600px; width: 100%`; useful for containers that should be fluid on mobile and capped on desktop
 
 ### BEM naming
-- Block, element (`__`), modifier (`--`) — `.card`, `.card__title`, `.card--featured`; makes class names predictable in global stylesheets
-- Why BEM keeps specificity low — each rule is a single class selector; nested selectors raise specificity and become hard to override
+- Block, element (`__`), modifier (`--`) — `.card`, `.card__title`, `.card--featured`; makes class names predictable in global stylesheets; interviewers at consultancies ask about CSS organisation because shared CSS becomes unmaintainable without a convention
+- Why BEM keeps specificity low — each rule is a single class selector (`0-1-0`); nested selectors like `.card .card__title` raise specificity and become hard to override; BEM avoids nesting in the CSS file
+- The flat element rule — BEM elements never nest in the class name; even if `.card__body` contains a title, the class is `.card__title`, not `.card__body__title`; depth lives in the HTML, not in the class name — a common mistake when first learning BEM
 - When BEM applies in Angular — needed for global styles in `styles.css` and shared components in `shared/` where Angular encapsulation does not help
 
 ---
@@ -837,21 +883,28 @@ Every item must be explainable with a real query — from the bookstore exercise
 - `CASE WHEN` in `SELECT` vs inside an aggregate — in `SELECT` it produces a new column per row; inside `SUM(CASE WHEN ...)` it filters which rows contribute to the aggregate
 - `SELECT DISTINCT` — removes duplicate rows from the result
 - `DISTINCT ON` — PostgreSQL-specific; keeps one row per group; the column inside `DISTINCT ON (...)` must be leftmost in `ORDER BY`
+- `ORDER BY` with `NULLS FIRST` / `NULLS LAST` — PostgreSQL treats `NULL` as the largest value by default; `ASC` puts `NULL` last, `DESC` puts `NULL` first; override with `NULLS FIRST` or `NULLS LAST`
 - `LIMIT` always with `ORDER BY` — without `ORDER BY`, `LIMIT` returns an arbitrary set of rows that can change between queries
+- `OFFSET` for pagination — `LIMIT 10 OFFSET 20` skips 20 rows and returns the next 10; formula: `OFFSET = (page − 1) × page_size`
 
 ### Filtering and NULL handling
 - `WHERE` cannot use aliases — `WHERE` runs before `SELECT`, so column aliases do not exist yet
-- `IS NULL` vs `= NULL` — `WHERE price = NULL` never matches any row; always use `IS NULL` and `IS NOT NULL`
+- `IS NULL` vs `= NULL` — `WHERE price = NULL` never matches any row because `NULL` is not a value; always use `IS NULL` and `IS NOT NULL`
+- `AND` / `OR` with `NULL` — `true AND NULL` returns `NULL`, but `false AND NULL` returns `false`; a `WHERE` filter without an `IS NULL` check can silently exclude rows
 - `COALESCE(value, fallback)` — returns the first non-`NULL` value; used to replace `NULL` with a default so the application never has to handle `NULL`
 - `NULLIF(a, b)` — returns `NULL` if `a = b`; most common use: avoid division by zero with `SUM(...) / NULLIF(COUNT(*), 0)`
 - `LIKE` vs `ILIKE` — `LIKE` is case-sensitive; `ILIKE` is PostgreSQL-specific and case-insensitive
 - `IN` vs multiple `OR` — `IN (list)` is cleaner and optimized internally by PostgreSQL
+- `BETWEEN` with timestamps — `BETWEEN '2024-01-01' AND '2024-06-30'` silently excludes events after midnight on June 30; safer to cast before comparing: `created_at::date BETWEEN ...`
 
 ### Subqueries, CTEs, and views
-- Subquery in `WHERE` — `WHERE price > (SELECT AVG(price) FROM books)` — the subquery runs first and its result is used by the outer query
-- Subquery in `FROM` (derived table) — a query used as a table; must have an alias; used to filter on an aggregated result
+- Subquery in `WHERE` — `WHERE price > (SELECT AVG(price) FROM books)` — the subquery runs first and its result is used by the outer query; you cannot use `AVG` directly in `WHERE`
+- Subquery in `FROM` (derived table) — a query used as a table; must have an alias; used to filter on an aggregated result because `WHERE` cannot use aggregate functions
+- Scalar subquery in `SELECT` — returns exactly one value used as a column in the result; runs once per row and can be slow on large tables; interviewers ask when this would cause a performance problem
 - `IN` vs `EXISTS` — `IN` collects all results first; `EXISTS` stops as soon as it finds one match and is faster on large tables
-- `WITH` (CTE) — names a subquery so it can be referenced by name in the same query; makes multi-step queries readable
+- Subquery vs `JOIN` — most `WHERE` subqueries can be rewritten as a `JOIN`, which the database can optimize better; prefer a `JOIN` when readable; use a subquery when you need an aggregate in a filter
+- `WITH` (CTE) — names a subquery so it can be referenced by name in the same query; makes multi-step queries readable; interviewers ask "when would you use a CTE instead of a subquery?"
+- Multiple CTEs — chain CTEs with commas; each CTE can reference the ones defined before it; used to build complex queries step by step without nesting
 - `CREATE VIEW` — saves a query in the database with a name; queried like a table but runs the underlying query live on every access
 - View vs materialized view — a regular view runs live; a materialized view stores the result on disk and must be refreshed manually
 
@@ -867,6 +920,7 @@ Every item must be explainable with a real query — from the bookstore exercise
 - `BEGIN` / `COMMIT` / `ROLLBACK` — groups multiple statements so they either all succeed or all fail; the SQL-level mechanism that `@Transactional` wraps in Spring Boot
 - ACID properties — Atomicity, Consistency, Isolation, Durability; interviewers ask what ACID stands for when discussing `@Transactional`
 - `@Transactional` connection — Spring Boot wraps the method in `BEGIN` / `COMMIT` and automatically issues `ROLLBACK` on an unchecked exception
+- `SAVEPOINT` — a named checkpoint inside a transaction; `ROLLBACK TO name` undoes only the work since that checkpoint; used internally by Hibernate; good to know it exists without needing to write it yourself
 
 ### Window functions
 - `ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)` — assigns a sequential number to each row within a partition; used to get "the latest time entry per user"
@@ -881,7 +935,9 @@ Every item must be explainable with a real query — from the bookstore exercise
 - `NOT NULL` constraint — the column must always have a value
 - `UNIQUE` constraint — no two rows can have the same value; automatically creates an index in PostgreSQL
 - `CHECK` constraint — validates a condition on insert or update; rejects invalid data at the database level, not just the application level
+- Relationship types — one-to-many (1:N) is the most common; the foreign key always goes on the "many" side; many-to-many (N:M) needs a junction table (e.g. `order_items` linking `orders` and `books`)
 - Normalization concept — storing `project_id` instead of copying `project_name` avoids duplication; changing the name requires only one `UPDATE`
+- Reading a schema out loud — describing the TimeTrack data model: "three tables; `users` and `projects` are independent; `time_entries` links to both via foreign keys"; interviewers ask "explain your database structure"
 
 ### Data types
 - `VARCHAR(n)` vs `TEXT` — identical storage performance in PostgreSQL; `VARCHAR(n)` documents an intended maximum length
@@ -897,6 +953,7 @@ Every item must be explainable with a real query — from the bookstore exercise
 - `RETURNING` — `INSERT`, `UPDATE`, and `DELETE` can return the affected rows in a single statement; not standard SQL
 - `DATE_TRUNC('month', date)` — truncates a timestamp to the start of the month; used to `GROUP BY` month in reports
 - `NOW()` vs `CURRENT_DATE` — `NOW()` returns the current timestamp including time; `CURRENT_DATE` returns today's date with no time
+- `INTERVAL` — `NOW() - INTERVAL '30 days'` filters recent data; used in `WHERE` clauses and CTEs for relative date ranges
 
 ### Performance basics
 - What an index is — a sorted data structure that speeds up reads at the cost of slower writes; primary keys and `UNIQUE` columns are indexed automatically
@@ -949,6 +1006,7 @@ Focus on daily workflow, team collaboration, and the concepts that come up in co
 - What causes a conflict — two branches modify the same line of the same file; conflicts are not errors, they are Git asking for a human decision
 - Conflict markers (`<<<<`, `====`, `>>>>`) — `<<<< HEAD` is your version; `>>>> branch-name` is the incoming version; delete all three markers after resolving
 - `git merge --abort` — cancels an in-progress merge and returns to the state before you ran `git merge`
+- Avoiding conflicts — pull from the target branch frequently; keep feature branches short-lived; communicate with teammates about which files each person is touching
 
 ### Stash
 - `git stash`, `git stash pop` — saves uncommitted changes to a temporary stack; `pop` restores and removes the stash
