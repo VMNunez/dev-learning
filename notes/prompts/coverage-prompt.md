@@ -148,11 +148,6 @@ Read these files before making any decision:
 3. All numbered note files in {NOTES_PATH} — read them to understand what has been studied
    and what examples already exist. This is context, not the source of coverage decisions.
    Skip `future-learning.md` and `coverage.md` in this pass.
-4. One existing coverage file from another topic as a quality anchor — for example,
-   `notes/spring-boot/coverage.md` or `notes/angular/coverage.md`. Use it to calibrate
-   the expected depth, tone, and level of detail for each item. Do not copy its structure —
-   use it to understand what "good" looks like before writing.
-   If no other coverage.md exists yet, skip this step.
 
 ---
 
