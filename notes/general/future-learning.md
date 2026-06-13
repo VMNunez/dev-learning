@@ -57,3 +57,9 @@ Time and space complexity. Needed for LeetCode Medium+ problems. Start after Ang
 ## Functional programming concepts
 
 Pure functions, immutability, function composition, monads. You already use lambdas and streams in Java and arrow functions in TypeScript. A formal study of FP concepts comes after the OOP foundation is secure.
+
+---
+
+## OpenAPI / Swagger
+
+Documentation format for describing REST APIs. Spring Boot integrates with Springdoc (`springdoc-openapi-starter-webmvc-ui`) to generate interactive API docs at `/swagger-ui.html` automatically from your controllers and annotations. Used at most consultancies to document internal APIs. Not needed to land the junior role, but you will work with it from day one on the job.
