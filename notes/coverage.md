@@ -214,6 +214,7 @@ Angular Material is standard in Spanish consultancies — interviewers expect yo
 - `[linear]="true"` + `[stepControl]="formGroup"` — forces the user to complete each step in order; `[linear]="true"` without `[stepControl]` allows skipping
 - `stepper.next()` does not validate — you must call `markAllAsTouched()` and check `form.valid` manually before calling it
 - `stepper.selectedIndex` — used to show different buttons per step
+- `FormBuilder.group({ field: ['default', validators] })` — shorthand for creating form groups; interviewers ask what the array syntax means (first element is the default value, second is validators)
 
 ---
 
@@ -381,6 +382,7 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - Why generics exist — catch type errors at compile time instead of at runtime
 - `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()` — the correct way to handle a value that might not exist
 - `Optional.get()` vs `Optional.orElseThrow()` — `get()` throws `NoSuchElementException` with no useful message; `orElseThrow()` lets you throw a meaningful exception; interviewers treat `get()` as a red flag in code review
+- Why returning `null` is a problem — forces every caller to null-check; `Optional` makes the absence explicit in the return type; interviewers ask "why Optional instead of null?"
 
 ### Streams and lambdas
 - Lambda expressions — anonymous functions used wherever a functional interface is expected; `e -> e.isActive()` is the most common form
@@ -404,6 +406,7 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `List` — ordered, allows duplicates; used in repository results and service return types
 - `Map` — key-value pairs; `Map.of("message", "Not found")` for quick immutable error response bodies; Spring serialises it to JSON automatically
 - `Set` — no duplicates; used in many-to-many relationships
+- When to use each in a Spring Boot context — `List` for ordered results from queries, `Map` for ad-hoc response bodies, `Set` for relationship collections where duplicates are meaningless
 - `Comparator.comparing()` — sorts a list by a field: `list.stream().sorted(Comparator.comparing(Employee::getName))`
 
 ### Enums
@@ -497,6 +500,7 @@ Every answer must be anchored to a real example from Victor's projects.
 - What microservices are — independent services, each owning one domain and its own database; needed when teams deploy independently
 - The tradeoff — monolith: simple to start, hard to scale teams; microservices: complex to run, powerful when teams are large
 - What to say in an interview — "I would start with a monolith and extract services when the team or traffic demands it"
+- What it means for a junior at a consultancy — you work in one service and communicate with other services via REST; you do not design the whole system
 
 ### SOLID
 - Single Responsibility — one class, one reason to change; controllers handle HTTP, services handle rules, repositories handle data
@@ -697,6 +701,7 @@ Every item must be explainable with a real example from one of the projects, not
 - Deduplication pattern: `[...new Set(array)]` — the most common Set use case; interviewers ask "how would you remove duplicates from an array?"
 - `Map` — key-value collection where keys can be any type; insertion order is guaranteed
 - `Map` vs plain object — plain objects accept only string and Symbol keys; Maps accept any type as key
+- `Set` vs `Array` — use Set when uniqueness matters or when you need fast `has()` lookups; use Array when index access or method chaining (map/filter) is needed; use `[...new Set(arr)]` to convert back to an array
 
 ### Async JavaScript
 - Promises: `then`, `catch`, `finally` — `then` runs on resolve; `catch` runs on reject; `finally` always runs regardless of outcome
@@ -872,6 +877,7 @@ Every item must be explainable with a real query — from the bookstore exercise
 - `COUNT(*)` vs `COUNT(column)` — `COUNT(*)` counts all rows including those with `NULL`; `COUNT(column)` counts only non-`NULL` values; interviewers ask this difference explicitly
 - `SUM`, `AVG`, `MIN`, `MAX` — all ignore `NULL` values automatically; `AVG` on `[10, NULL, 30]` returns `20`, not `13.33`
 - `GROUP BY` rule — every column in `SELECT` must either appear in `GROUP BY` or be inside an aggregate function; the most common GROUP BY mistake
+- `GROUP BY` with `LEFT JOIN` — when joining before grouping, include all non-aggregated columns from the joined table in `GROUP BY`; use `LEFT JOIN` so groups with zero matches still appear with `COUNT = 0`
 - `HAVING` — filters groups after aggregation; `WHERE` filters rows before grouping; `WHERE` cannot use aggregate functions, `HAVING` can; interviewers always ask the difference
 - Conditional aggregation with `CASE WHEN` — `SUM(CASE WHEN status = 'approved' THEN hours ELSE 0 END)` aggregates only a subset of rows
 - `FILTER (WHERE ...)` — PostgreSQL shorthand for conditional aggregation; same result as `CASE WHEN` but cleaner
