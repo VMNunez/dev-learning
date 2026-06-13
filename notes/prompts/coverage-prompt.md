@@ -22,8 +22,9 @@ TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/java/ AND notes/spring-boot/ — read both; the coverage.md
-  lives in notes/spring-boot/ but must include Java concepts that appear in Spring Boot code.
+- Spring Boot: set NOTES_PATH = notes/spring-boot/ — coverage.md is written there.
+  Additionally read notes/java/ when reading existing notes (Step 1.3), because Spring Boot
+  coverage must include Java language concepts that appear in Spring Boot code.
 - Java: focus on language concepts needed to write and understand Spring Boot code. Skip anything
   that does not appear in a Spring Boot context (GUI, threads, streams, advanced collections).
 - SQL: database is PostgreSQL. Include PostgreSQL-specific syntax and behaviour where it differs
