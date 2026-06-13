@@ -20,6 +20,16 @@ provideRouter(routes, withPreloading(PreloadAllModules))
 
 `PreloadAllModules` downloads all lazy routes after the initial load. You can also write a custom strategy that only preloads specific routes. Relevant for production apps where perceived performance matters.
 
+### ChangeDetectorRef — manual change detection control
+
+In most Angular apps with signals you will never need this. But in existing codebases, third-party libraries often update data outside Angular's awareness. `ChangeDetectorRef` lets you trigger a check manually:
+
+- `cdr.detectChanges()` — force an immediate check of this component
+- `cdr.markForCheck()` — mark the component dirty so Angular checks it on the next cycle
+- `cdr.detach()` — remove the component from the change detection tree entirely (advanced, rarely needed)
+
+You will encounter this in legacy code that integrates charting libraries, Google Maps, or WebSockets. With signals, the need is rare — signals always notify Angular automatically.
+
 ### Angular CDK — Component Dev Kit
 
 The lower-level toolkit from the Angular Material team. Does not have visual components — it has primitives:
