@@ -1,23 +1,10 @@
 # SQL — Future Learning Roadmap
 
-Topics to study once the current files are solid. CTEs, window functions, and PostgreSQL-specific syntax are part of the **current junior goal** — see `coverage.md`.
+Topics to study once the current files are solid. CTEs, window functions, transactions, DML, views, and PostgreSQL-specific syntax are part of the **current junior goal** — see `coverage.md`.
 
 ---
 
 ## Phase 1 — After landing the first job
-
-### Transactions — `BEGIN`, `COMMIT`, `ROLLBACK`
-
-A group of SQL statements that succeed or fail together. If any statement fails, everything is rolled back:
-
-```sql
-BEGIN;
-  UPDATE accounts SET balance = balance - 100 WHERE id = 1;
-  UPDATE accounts SET balance = balance + 100 WHERE id = 2;
-COMMIT;
-```
-
-In Spring Boot, `@Transactional` manages this automatically — but understanding what it does at the SQL level makes debugging much easier. A transaction that was not committed leaves the database unchanged, which is why Spring Boot's `@Transactional` is on service methods, not on individual queries.
 
 ### `EXPLAIN ANALYZE`
 
