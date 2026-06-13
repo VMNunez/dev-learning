@@ -1,53 +1,84 @@
 # Minimum Coverage — TypeScript
 
-TypeScript as used in Angular — not a general TypeScript course.
-Every concept must be explainable in the context of a real Angular file from one of the projects.
+TypeScript as used in Angular and Spring Boot full-stack projects. Every item must be explainable with a real example from one of the projects. Interviewers test whether you understand why a feature exists and what the gotchas are, not just whether you can write the syntax.
 
 ## Types
-- Primitive types: `string`, `number`, `boolean`, `null`, `undefined`, `void` — the building blocks; `void` is used for functions that return nothing
-- `any` vs `unknown` — `any` disables type checking completely; `unknown` forces you to narrow the type before using it; interviewers ask why `any` is a code smell
-- Union types: `string | number`, `'admin' | 'user'` — a value that can be one of several types; used for roles, status, and API responses
-- Type inference — TypeScript guesses the type from the assigned value; you do not always need to declare it explicitly
 
-## Interfaces and types
-- `interface` vs `type` — both define a shape; `interface` is preferred for objects and models; `type` is needed for unions and computed types
-- Optional properties: `name?: string` — the field is not required when creating the object; used in Angular models for nullable API fields
-- Readonly properties — the value cannot be changed after the object is created; signals immutability in models and DTOs
-- Extending interfaces — `interface AdminUser extends User` adds new fields to an existing shape; used in Angular models with inheritance
+- Primitive types: `string`, `number`, `boolean`, `null`, `undefined`, `void` — the building blocks; interviewers ask what `void` means for function return types and the difference between `null` (explicit absence) and `undefined` (not yet assigned)
+- Type inference — TypeScript guesses the type from the assigned value; interviewers ask when you still need to declare the type explicitly (function parameters, complex structures, return types that are not obvious)
+- `any` vs `unknown` — `any` disables type checking completely; `unknown` forces you to check the type before using it; interviewers ask why `any` is a code smell and when `unknown` is the right choice (external API responses, user input)
+- `never` — the type for values that can never exist; used in exhaustive switch checks and functions that always throw; shows you understand the type system beyond everyday usage
+- Union types: `string | number`, `'admin' | 'user'` — a value that can be one of several types; used constantly for roles, status fields, and nullable signals (`Employee | null`)
+- Intersection types: `Employee & { permissions: string[] }` — the result must satisfy all combined types; the `type` equivalent of `interface extends`; interviewers ask the difference between intersection and extension
+- Literal types: `type Direction = 'left' | 'right'` — restricts a field to specific constant values; interviewers ask the difference between `string` and `'admin' | 'user'` (the literal type catches typos at compile time)
+
+## Interfaces and type aliases
+
+- `interface` vs `type` — both define an object shape; `interface` is preferred for data models (supports `extends` and declaration merging); `type` is required for unions, intersections, and computed types; tested in every TypeScript screening
+- Optional properties: `name?: string` — the field can be `undefined`; interviewers ask how this affects form validation (optional fields do not need `Validators.required`) and how `name?: string` differs from `name: string | undefined`
+- `readonly` properties — the value cannot be changed after the object is created; interviewers ask the difference between `readonly` (property constraint) and `const` (variable constraint)
+- Extending interfaces: `interface AdminUser extends User` — adds new fields to an existing shape; interviewers contrast this with the `&` intersection approach on type aliases
 
 ## Enums
-- TypeScript enums — `enum Status { DRAFT = 'DRAFT', SUBMITTED = 'SUBMITTED' }` — used in Angular models that mirror Java enums from the backend
-- String enums vs union types — `type Status = 'DRAFT' | 'SUBMITTED'` is often preferred in TypeScript because it generates less compiled code and is simpler to use; string enums are used when the values need to be iterable
-- When you see enums in consultancy code — many existing Angular projects use enums for status, role, and type fields; you need to read and write both styles
+
+- TypeScript enums: `enum Status { DRAFT = 'DRAFT', SUBMITTED = 'SUBMITTED' }` — used in Angular models that mirror Java backend enums; interviewers ask how to expose an enum in a template (must be assigned to a class property — templates cannot access imports directly)
+- `const enum` vs regular `enum` — `const enum` is erased at compile time and inlined as raw values (smaller bundle, no runtime object); regular `enum` keeps the runtime object and supports `Object.values()`; interviewers ask which to use when you need to iterate the values
+- String enums vs union types — both restrict a field to a set of values; union types (`type Status = 'DRAFT' | 'SUBMITTED'`) generate less compiled code; string enums are used when values need to be iterated with `Object.values()`; a common confusable pair in Angular interviews
 
 ## Generics
-- `Array<T>`, `Observable<T>`, `Signal<T>` — reading generic types in Angular code; the `T` tells you what the container holds
-- Writing a simple generic function or interface — when you want the same logic to work for different types without repeating the code
-- Why generics exist — catch type errors at compile time; `Observable<User>` means you will always get a `User`, not `any`
+
+- `Array<T>`, `Observable<T>`, `Signal<T>` — generics appear everywhere in Angular; the `T` tells you what the container holds; interviewers ask you to read a type signature out loud and explain what it means
+- Writing a generic function or interface — `function getFirst<T>(arr: T[]): T` — write the logic once and it works for any type while remaining type-safe; tested when discussing reusable utility functions in services
+- Generic constraints: `function findById<T extends { id: number }>(items: T[], id: number)` — restricts which types are allowed; interviewers ask why constraints exist and what error TypeScript gives when the constraint is not met
+- Why generics exist — `http.get<Employee[]>('/api/employees')` means you get `Employee[]`, not `any`; type errors are caught at compile time, not at runtime; interviewers ask why calling `http.get()` without a type parameter is a problem
 
 ## Utility types
-- `Partial<T>` — all properties become optional; used in update request objects where not every field is required
-- `Readonly<T>` — all properties become readonly; used to prevent accidental mutation
-- `Pick<T, K>` — creates a new type with only the selected fields; used when you need a subset of a model
-- `Omit<T, K>` — creates a new type without the excluded fields; used in create forms that do not include the `id`
-- `Record<K, V>` — a key-value map type; `Record<string, number>` used for lookup maps and dictionaries in Angular services
+
+- `Partial<T>` vs `Required<T>` — `Partial` makes all properties optional (used in update/PATCH request objects); `Required` makes all properties required (the opposite); interviewers ask which fits a PATCH endpoint vs a POST endpoint
+- `Readonly<T>` — all properties become readonly; prevents accidental mutation; used to signal immutability in DTOs and config objects passed around the app
+- `Pick<T, K>` vs `Omit<T, K>` — `Pick` keeps only the named fields; `Omit` removes the named fields; the most commonly confused utility pair; `Omit<Employee, 'id'>` is the canonical create-form pattern where the id is generated by the backend
+- `Record<K, V>` — a typed key-value map; `Record<string, number>` used for lookup tables and dictionaries in services; interviewers ask when to use `Record` vs a plain interface or a `Map`
 
 ## Narrowing and type guards
-- `typeof` and `instanceof` — narrowing inside conditionals when a value could be one of several types
-- Optional chaining `?.` — safely access a property that might be `null` or `undefined`; used constantly in Angular templates and services
-- Nullish coalescing `??` — use the right side only when the left is `null` or `undefined`; safer than `||` which also triggers on `0` and `""`
-- Non-null assertion `!` — tells TypeScript the value is not null; use only when you are certain; hides bugs if used carelessly
-- Type assertion `as` — tells TypeScript "I know more than you"; used in Angular forms where the type cannot be inferred automatically
 
-## Functions
-- Arrow functions vs function declarations — arrow functions inherit `this` from the surrounding context; regular functions have their own `this`; matters in class methods
-- Default parameters, rest parameters — reducing overloads and handling variable argument lists
-- Return type annotations — makes the function's contract explicit; the compiler catches when the actual return does not match
+- `typeof` narrowing — works for primitive types (`'string'`, `'number'`, `'boolean'`); the classic gotcha: `typeof null === 'object'` — always check `=== null` separately when a value could be null
+- `instanceof` narrowing — works for class instances; used in catch blocks with custom error classes; interviewers ask when to use `typeof` vs `instanceof` (primitives vs class instances)
+- `in` narrowing — checks if a property exists on an object; used to distinguish between two interfaces in a union when the types share some but not all properties
+- Truthiness narrowing — a simple `if (value)` check narrows out `null` and `undefined`; gotcha: `0`, `false`, and `''` are also falsy — use `!= null` explicitly when those are valid values you want to keep
+- Discriminated unions — a shared property with a unique literal value (`status: 'loading' | 'success' | 'error'`) lets TypeScript narrow automatically inside a switch; the standard pattern for async states in Angular; interviewers ask how this differs from a plain union
+- Custom type guards: `user is Employee` — a function whose return type is a type predicate; tells TypeScript to narrow the type if the function returns `true`; tested when discussing services that work with complex union types
+- Exhaustiveness check with `never` — assign an unhandled switch case to `never` in the default branch; TypeScript errors if a new union variant is added without a handler; shows understanding of the type system beyond everyday patterns
 
-## Decorators
-- What a decorator is in Angular's context — `@Component`, `@Injectable`, `@Pipe` are decorators; they attach metadata to a class that Angular reads at runtime
-- How TypeScript decorators work conceptually — a function that receives the class and can modify or annotate it; you use them everywhere but rarely write custom ones at junior level
+## Null safety and type assertions
 
-## Modules
-- `import` / `export` — named exports (multiple per file) vs default export (one per file); Angular uses named exports for components and services
-- Barrel files (`index.ts`) — re-export from a folder's `index.ts` so callers import from the folder, not the specific file; you will see these in large consultancy projects
+- `?.` optional chaining — stops evaluation and returns `undefined` if the left side is `null` or `undefined`; used constantly in Angular templates with nullable signals; interviewers ask when to prefer `?.` over `!` (when you are not 100% certain the value exists)
+- `??` vs `||` — `??` returns the right side only when the left is `null` or `undefined`; `||` also triggers on `0`, `false`, and `''`; always use `??` when `0` or empty string is a valid value you want to keep
+- `!` non-null assertion — removes `null` and `undefined` from the type without any runtime check; if the value is actually null, you get a runtime crash with no TypeScript warning; interviewers ask why `?.` is usually safer
+- `as` type assertion — tells TypeScript "I know the type better than you"; does not validate or convert the data; used in Angular forms where the compiler cannot infer the exact type; gotcha: a wrong assertion fails silently at runtime
+- `as unknown as T` double assertion — used when two types have no overlap and TypeScript refuses a direct `as` cast; `formValue.startDate as unknown as Date` is the pattern from `MatDatepicker`; interviewers ask why it goes through `unknown` (every type is assignable to and from `unknown`)
+
+## Classes and access modifiers
+
+- `public`, `private`, `protected`, `readonly` — `private` restricts access to the same class; `protected` also allows subclasses; `readonly` is about immutability, not visibility; interviewers ask the difference between `private` and `protected` and when to use each
+- `private` vs `readonly` — confusable pair: `private` controls who can access the property; `readonly` controls whether it can be reassigned; both can be combined (`private readonly`) and often are for injected dependencies
+- Constructor shorthand — `constructor(private http: HttpClient) {}` declares, creates, and assigns a class property in one step; the standard DI pattern in older Angular code; you must read it instantly when reviewing existing codebases
+- Classes as types — a TypeScript class can be used as a type without a separate interface; the `CanDeactivateFn<MyComponent>` pattern relies on this; interviewers may show this pattern and ask what type the component parameter has
+
+## `as const`
+
+- Type widening problem — TypeScript widens object property types by default: `{ mode: 'edit' }` infers `{ mode: string }` not `{ mode: 'edit' }`, even with `const`; `const` only prevents reassigning the variable, not mutating properties; interviewers ask why `const` alone is not enough
+- `as const` on objects — makes all properties `readonly` and infers literal types instead of widened ones; used for nav config objects and shared constants; interviewers ask what two things `as const` does (readonly + literal type inference)
+- `as const` on arrays — turns an array into a `readonly` tuple with exact element types; without it TypeScript only knows `string[]` and loses the actual values; with it TypeScript knows each exact element
+
+## Arrow functions and functions
+
+- Arrow functions vs function declarations — arrow functions inherit `this` from the surrounding scope; function declarations have their own `this`; matters when writing callbacks inside Angular class methods where you need to access `this`
+- Default parameters, rest parameters — reduce function overloads; `...args: string[]` collects remaining arguments into an array; common in Angular utility functions and service methods
+- Return type annotations — make the function's contract explicit; the compiler catches when the actual return does not match the declared type; interviewers ask when TypeScript can infer the return type and when you must declare it
+
+## Modules and decorators
+
+- `import` / `export` — named exports (multiple per file) vs default export (one per file); Angular uses named exports for components and services; interviewers ask why Angular avoids default exports (named exports keep the name fixed at the source, making refactoring safer)
+- Barrel files (`index.ts`) — re-export multiple symbols from a folder so callers import from the folder path, not individual files; common in large consultancy Angular projects in shared module folders; you will encounter these when reading existing code
+- What a decorator is in Angular's context — `@Component`, `@Injectable`, `@Pipe` attach metadata to a class that Angular reads at startup; without the decorator, Angular does not know the class is a component
+- How TypeScript decorators work conceptually — a function that receives the class and can modify or annotate it; you use them everywhere in Angular but rarely write custom ones at junior level; interviewers test that you know they are functions, not language keywords
