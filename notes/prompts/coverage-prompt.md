@@ -31,6 +31,9 @@ Notes on specific topics:
   from standard SQL.
 - General: covers HTTP, JSON, env vars, testing concepts, SOLID, code principles.
 - Security: covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
+- Architecture: in scope — REST principles, layered architecture, MVC, coordinator pattern,
+  smart/dumb components, service layer, repository pattern. Out of scope (future-learning) —
+  microservices, event-driven architecture, DDD, CQRS, distributed systems.
 
 Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
 
