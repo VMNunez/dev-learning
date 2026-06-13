@@ -172,7 +172,8 @@ be written — it does not mean the topic can be left out of coverage.
 - A junior is expected to explain it confidently out loud
 - A junior is expected to write it, read it, or recognise it in a real codebase
 - Not knowing it would cause the interviewer to doubt the candidate's competence
-- It appeared in projects 01–07 or is needed to understand them
+- It appeared in any of Victor's completed projects or is needed to understand them
+  (read CLAUDE.md or PROGRESS.md for the current project list)
 
 **OUT of coverage → goes to `future-learning.md`:**
 - Real and worth learning, but only relevant after landing the first job
@@ -205,8 +206,8 @@ description that explains the difference.
 ## Step 4 — The bidirectional check with future-learning.md
 
 **Promote from future-learning → coverage:**
-For each concept in `future-learning.md`: is it now in scope, given Victor's current project
-(07: Spring Boot + JWT + JPA + Docker) and his August 2026 deadline?
+For each concept in `future-learning.md`: is it now in scope, given Victor's current active
+project (read CLAUDE.md for the current project and stack) and his August 2026 deadline?
 If yes: add it to coverage and remove it from `future-learning.md`.
 
 **Demote from coverage → future-learning:**
