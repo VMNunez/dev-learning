@@ -58,15 +58,8 @@ My situation:
   Spring Boot, which is what consultancies use internally — this makes me stand out if I
   can demonstrate real understanding, not just syntax knowledge
 
-My projects:
-- 01: todo list — components, signals, services, directives
-- 02: weather app — HttpClient, RxJS, forkJoin, API integration
-- 03: expense tracker — reactive forms, routing, localStorage, smart/dumb pattern
-- 04: meal finder — route params, ActivatedRoute, effect(), favourites
-- 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
-- 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
-- 07: TimeTrack (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate,
-  PostgreSQL, Docker, Angular
+My projects: read CLAUDE.md, PROGRESS.md, or ROADMAP.md for the current and complete list —
+these files stay up to date as new projects are completed. Do not rely on a hardcoded list here.
 
 ---
 
@@ -155,6 +148,7 @@ Read these files before making any decision:
    `notes/spring-boot/coverage.md` or `notes/angular/coverage.md`. Use it to calibrate
    the expected depth, tone, and level of detail for each item. Do not copy its structure —
    use it to understand what "good" looks like before writing.
+   If no other coverage.md exists yet, skip this step.
 
 ---
 
@@ -319,6 +313,9 @@ After all edits, print a short summary:
 | Promoted from future-learning | [list or "none"] |
 | Demoted to future-learning | [list or "none"] |
 | Removed from future-learning | [list or "none"] |
+
+If coverage.md did not exist before and was created from scratch, only show the
+"Added to coverage" row grouped by section. Skip the promoted/demoted rows.
 
 Then show the commit message so Victor can run it himself. Always one command per code block:
 
