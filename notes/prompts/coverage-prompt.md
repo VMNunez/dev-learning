@@ -291,6 +291,37 @@ Aim for 5–10 items per section. More than 12: split. Fewer than 3: merge into 
 
 ---
 
+## Step 5b — Keep notes/coverage.md in sync
+
+`notes/coverage.md` is a combined file that mirrors all 12 topic `coverage.md` files in one
+place, for cross-topic analysis. It must always contain **exactly the same content** as each
+topic file — never a paraphrase, a shortened version, or a summary.
+
+Whenever `{NOTES_PATH}coverage.md` is created or edited in Step 5, immediately apply the same
+change to its section inside `notes/coverage.md`:
+
+1. Find the section for {TOPIC} in `notes/coverage.md` — it starts at the line `## {TOPIC}`
+   and ends right before the next `## ` heading (or end of file if {TOPIC} is General, the
+   last section).
+2. Replace that whole section with the new content from `{NOTES_PATH}coverage.md`, transformed
+   like this:
+   - The title line `# Minimum Coverage — {TOPIC}` becomes `## {TOPIC}` (drop the
+     "Minimum Coverage — " prefix, keep one heading level deeper than the source).
+   - The description paragraph right after the title is copied verbatim, word for word.
+   - Every `## [Section name]` in the source becomes `### [Section name]` (one heading level
+     deeper) — content and order stay otherwise identical, including any `---` separators
+     between subsections if the source file uses them.
+3. Keep the `---` separator before and after the section so it stays cleanly divided from the
+   topics before and after it in the study-priority order (Angular → Angular Material →
+   Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git →
+   General).
+
+Do this for every edit, not just full rewrites — if only one bullet changes in
+`{NOTES_PATH}coverage.md`, change that same bullet in `notes/coverage.md` too. The two files
+must never drift apart.
+
+---
+
 ## Step 6 — Update future-learning.md
 
 After writing coverage.md:
@@ -321,7 +352,7 @@ Then show the commit message so Victor can run it himself. Always one command pe
 
 ```
 
-git add {NOTES_PATH}coverage.md {NOTES_PATH}future-learning.md
+git add {NOTES_PATH}coverage.md {NOTES_PATH}future-learning.md notes/coverage.md
 
 ```
 
