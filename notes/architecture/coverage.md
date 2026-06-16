@@ -20,9 +20,12 @@ Every answer must be anchored to a real example from Victor's projects.
 
 - Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; they communicate only through HTTP; Angular never queries the database directly; the backend controls what data is exposed and who can access it
 - Controller → Service → Repository — what each layer owns and what it must not do; interviewers ask "where does business logic live?"
+- Service layer — the class (`@Service`) that holds business rules, validation beyond bean validation, and orchestration between repositories; interviewers ask "why not put this logic in the controller?" — because the controller would then be impossible to reuse from another entry point (a scheduled job, a CLI command) and impossible to unit test without starting the whole web layer
+- Repository pattern — an interface (`JpaRepository<Entity, Id>`) that hides how data is actually fetched from the database behind method calls like `findByEmail()`; interviewers ask "what does the repository pattern give you?" — the service does not know or care if the data comes from PostgreSQL, an in-memory list, or a different ORM; this is what makes the service testable with a mock repository
 - Why business logic belongs in the service — the controller must not decide; the repository must not know the rules; the service is the only place
 - Why the controller must not call the repository directly — bypasses the business rules layer; makes the code impossible to test in isolation
-- MVC vs Layered Architecture — MVC is for apps that render HTML (controller returns a View); Layered Architecture is for REST APIs (controller returns JSON, the View is a separate SPA)
+- MVC — Model (data + business logic), View (what the user sees), Controller (receives input, coordinates the other two); interviewers ask "do you know MVC?" expecting you to map it onto your own stack, not recite the textbook triangle
+- MVC vs Layered Architecture — MVC is for apps that render HTML (controller returns a View); Layered Architecture is for REST APIs (controller returns JSON, the View is a separate SPA); layered architecture is really MVC with the Model split into Service (business logic) and Repository (data access) because one combined Model layer gets too large for a real application
 - State machine pattern — a workflow where status transitions follow fixed rules (DRAFT → SUBMITTED → APPROVED/REJECTED); the service enforces which transitions are valid
 
 ## DTO pattern
@@ -65,14 +68,6 @@ Every answer must be anchored to a real example from Victor's projects.
 - Why you test the service layer independently — business rules live there; testing them directly without HTTP gives fast, focused feedback
 - What a mock is and what it hides — a controlled replacement for a real dependency; the risk is that the mock behaves differently from the real thing
 - Test pyramid — many unit tests, fewer integration tests, very few E2E tests; the shape that balances speed and confidence
-
-## Monolith vs microservices (concept only — no implementation needed)
-
-- What a monolith is — one codebase, one deployable unit; simpler to build, debug, and deploy; what most junior projects are
-- What microservices are — independent services, each owning one domain and its own database; needed when teams deploy independently
-- The tradeoff — monolith: simple to start, hard to scale teams; microservices: complex to run, powerful when teams are large
-- What to say in an interview — "I would start with a monolith and extract services when the team or traffic demands it; most junior projects do not need microservices"
-- What it means for a junior at a consultancy — you work in one service and communicate with other services via REST; you do not design the whole system
 
 ## SOLID
 

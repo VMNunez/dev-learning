@@ -131,9 +131,9 @@ If an item is in coverage but not in the notes yet, that is a gap in the notes.
 If the notes cover something that is not in coverage, that is extra material — fine to keep
 in the notes, but not required.
 
-The audit prompts (`notes-prompt.md`, `auto-audit-prompt.md`) use `coverage.md` as their
-baseline. Every item in coverage is a required topic that must be covered by at least one
-note file. No exceptions.
+The audit prompts (`notes-by-topic-prompt.md`, `notes-and-interview-prep-prompt.md`) use
+`coverage.md` as their baseline. Every item in coverage is a required topic that must be
+covered by at least one note file. No exceptions.
 
 ---
 

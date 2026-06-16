@@ -21,6 +21,9 @@ Concepts that are real and worth knowing, but not needed to pass a junior screen
 - **`MatChips`** — tag input for multi-value fields (e.g. skills, tags, filters); common in enterprise UIs but not in the projects done so far
 - **`MatAutocomplete`** — search input with live dropdown suggestions; useful in large forms but requires integration with an API or a large dataset to be meaningful
 - **`MatBottomSheet`** — like `MatDialog` but slides up from the bottom; mobile-first pattern; not common in desktop enterprise apps
+- **`MatTabs`** — splits content into labelled tab panels; useful for dashboards with multiple views but not asked as a junior screening filter the way table/dialog/form are
+- **`MatExpansionPanel`** — collapsible accordion sections; common in settings pages and FAQ-style UIs; lower interview priority than the core form and table components
+- **`MatBadge`** — small numeric or status indicator overlaid on an icon (e.g. notification count); cosmetic addition, not a junior interview topic
 
 ---
 

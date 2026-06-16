@@ -1,4 +1,4 @@
-# Interview Prep Audit Prompt
+# Interview Prep by Topic Prompt
 
 Use in a **separate conversation**. Fill in the two values in the configuration block, then paste everything into a new chat.
 

@@ -1,8 +1,8 @@
-# Notes Audit Prompt
+# Notes by Topic Prompt
 
 Use in a **separate conversation**. Fill in the two values in the configuration block, then paste everything into a new chat.
 
-Useful after a study session when you want to check and improve the notes for one topic — without running a full interview prep audit. For a combined notes + interview prep audit, use `notes-audit-prompt.md` instead.
+Useful after a study session when you want to check and improve the notes for one topic — without running a full interview prep audit. For a combined notes + interview prep audit, use `notes-and-interview-prep-prompt.md` instead.
 
 ---
 

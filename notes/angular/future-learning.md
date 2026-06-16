@@ -43,6 +43,19 @@ The lower-level toolkit from the Angular Material team. Does not have visual com
 
 Relevant when your team builds custom UI components beyond what Material provides.
 
+### `resource()` API — signal-based async data loading
+
+A newer Angular API (still maturing through experimental/developer-preview stages across recent versions) that wraps an async loader function and exposes its result, loading state, and error as signals — without manually writing `toSignal()` + `catchError()` + a separate loading signal.
+
+```typescript
+userResource = resource({
+  request: () => this.userId(),
+  loader: ({ request }) => fetch(`/api/users/${request}`).then(r => r.json()),
+});
+```
+
+Why to wait: the API is still settling and most consultancy codebases in 2026 are not using it yet — `HttpClient` + `toSignal()` is still the pattern you will see and be asked about. Revisit once it stabilizes and appears in real project work.
+
 ### `@defer` blocks — template-level lazy loading
 
 Angular 17+ syntax that delays loading a heavy component until it is needed:

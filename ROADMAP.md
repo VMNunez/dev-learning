@@ -296,6 +296,7 @@ Recruiters at consultancies check both before calling you. If they are not updat
 | Docker + Kubernetes basics | First year | Standard in enterprise CI/CD |
 | LeetCode Medium | When stable | For future senior interviews or tech-company moves |
 | Open source contribution | When stable | Real collaboration outside the company project |
+| Full AI-assisted development practice | When fundamentals are solid — see gate below | Learn to build faster with AI tools without losing the ability to explain and defend every line |
 
 Each `notes/` folder has a `future-learning.md` — concepts that are real but beyond junior scope now. They become the next study plan after landing the job.
 
@@ -313,3 +314,17 @@ Start when all of the following are true:
 | Your team lead or a senior agrees to answer questions as you study | You need someone to connect theory to your real project |
 
 The trigger is almost always: *you see something at work you cannot explain*. That is the right moment to open the Spring Framework docs — not before.
+
+**Full AI-assisted development — when to start (fundamentals gate):**
+
+Right now, Claude guides and Victor implements — this is the active learning mode. Building a project mostly or fully with AI (Copilot, Cursor, agentic tools) is a different skill: using AI to move fast while still reviewing, understanding, and defending every line. It is valuable for real consultancy work, but only once the fundamentals are solid enough that AI speed does not hide gaps in understanding.
+
+Start when all of the following are true:
+
+| Gate | Why |
+|------|-----|
+| Project 07 and 08 are done, tested, and explainable line by line | AI speed should not replace understanding you have not built yet |
+| Angular, Spring Boot, Java, and architecture notes are complete and solid | You need a strong base to judge whether AI output is correct |
+| You can already spot mistakes in AI-generated code without help | This is the actual skill being tested — review, not generation |
+
+When the gate is met, the practice itself is simple: pick a small project, build it with heavy AI assistance, but require yourself to explain every line before committing — same rule as "AI-assisted development" in CLAUDE.md, just applied at full project scale instead of snippet by snippet.
