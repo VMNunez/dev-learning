@@ -148,6 +148,9 @@ Read these files before making any decision:
 3. All numbered note files in {NOTES_PATH} — read them to understand what has been studied
    and what examples already exist. This is context, not the source of coverage decisions.
    Skip `future-learning.md` and `coverage.md` in this pass.
+4. When updating an existing `coverage.md`, touch only the items that are new, wrong, or
+   being promoted/demoted. Leave correct existing bullets untouched, word for word — an
+   unprompted reword of unrelated items makes the resulting commit noisy and hard to review.
 
 ---
 
@@ -320,6 +323,19 @@ Do this for every edit, not just full rewrites — if only one bullet changes in
 `{NOTES_PATH}coverage.md`, change that same bullet in `notes/coverage.md` too. The two files
 must never drift apart.
 
+**Cross-topic overlap check:**
+Before finalizing, scan the other sections of `notes/coverage.md` for items that overlap with
+what you just added or changed (e.g. REST status codes or "service layer" could plausibly sit
+under Architecture, Spring Boot, or Angular). If the same concept already exists elsewhere,
+keep it in the topic where an interviewer is most likely to ask it, and mention the overlap in
+the final summary instead of duplicating the item.
+
+**Verify the sync before reporting done:**
+Re-read the {TOPIC} section in `notes/coverage.md` and the full content of
+`{NOTES_PATH}coverage.md` side by side. Confirm every bullet matches exactly — only the
+heading levels should differ (`#` → `##`, `##` → `###`). If anything differs, fix
+`notes/coverage.md` now, before moving to Step 6.
+
 ---
 
 ## Step 6 — Update future-learning.md
@@ -342,8 +358,8 @@ After all edits, print a short summary:
 |--------|--------|
 | Added to coverage | [list of new items] |
 | Promoted from future-learning | [list or "none"] |
-| Demoted to future-learning | [list or "none"] |
-| Removed from future-learning | [list or "none"] |
+| Demoted to future-learning | [item — one-line reason it no longer belongs in coverage, or "none"] |
+| Removed from future-learning | [item — one-line reason it was removed, or "none"] |
 
 If coverage.md did not exist before and was created from scratch, only show the
 "Added to coverage" row grouped by section. Skip the promoted/demoted rows.
