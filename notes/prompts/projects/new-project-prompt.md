@@ -1,44 +1,63 @@
-# New Project Planning Prompt
+# Project Planning Prompt
 
-Use in a **separate conversation**. No configuration to fill in — paste the whole prompt into a new chat as it is.
+Use in a **separate conversation**. Fill in the two values in the configuration block, then paste everything into a new chat.
 
-Run this prompt when a full-stack project is complete and it is time to plan the next one. It reads your current progress and knowledge gaps, picks the best project from the ROADMAP.md candidates list, and writes a complete `PLANNING.md` that is ready to use on day one of the new project.
+Two modes:
 
-What it produces:
+- **`new`** — use when a project is complete and it is time to plan the next one. Reads your progress and knowledge gaps, picks the best next project from ROADMAP.md, and writes a complete PLANNING.md ready to use on day one.
+- **`review`** — use at the start of a session, or any time the existing plan feels unclear or out of date. Points at an existing PLANNING.md and audits every section for missing content, vague done conditions, and internal inconsistencies.
 
-- A gap analysis: what concepts are still missing from your knowledge, filtered to what matters for junior interviews at Spanish consultancies
-- A project choice with a justification: which candidate from ROADMAP.md best closes those gaps
-- A complete `PLANNING.md` at `projects/0X-projectname/PLANNING.md` — so detailed that at the start of each session you only need to read this file to know exactly what to do
+**How to use:**
+1. Fill in `MODE` — `new` or `review`
+2. Fill in `PROJECT`:
+   - `new` mode: leave blank — the prompt auto-detects the next project from PROGRESS.md
+   - `review` mode: write the project folder name (e.g. `07-timetrack`)
+3. Paste the entire prompt below into a new chat
 
-The `PLANNING.md` produced follows the format of `projects/07-timetrack/PLANNING.md`. Read that file before running this prompt to see the expected depth and style.
+What `new` mode produces:
+- A gap analysis filtered to what matters for junior interviews at Spanish consultancies
+- A project choice with a written justification
+- A complete PLANNING.md — so detailed that at the start of each session you only need to read one section to know exactly what to do next
+
+What `review` mode produces:
+- A section-by-section audit of the existing PLANNING.md
+- Specific problems: missing sections, vague done conditions, thin entity definitions, mismatches between sections
+- Proposed rewrites for every section that needs improvement
 
 ---
 
-```
-I want you to plan my next full-stack project and write a complete PLANNING.md for it.
+````
+## Configuration — edit only this block
+## Replace the [ ] with your value and delete the brackets.
 
-Before starting, read CLAUDE.md at the root of the learning folder — it has my profile, tech
-stack, teaching rules, and all project conventions. Do not skip this.
+MODE    = [new | review]
+PROJECT = [blank when MODE=new | folder name when MODE=review, e.g. 07-timetrack]
+
+Use MODE and PROJECT wherever the prompt refers to {MODE} and {PROJECT}.
 
 ---
 
-## Who I am
+## Context
 
-I am Victor, 31 years old, learning Angular + Java Spring Boot to get a junior developer job at
-a Spanish consultancy (NTT Data, Capgemini, Indra) by August–September 2026. My stack is
-Angular + Spring Boot + PostgreSQL + Docker. I learn concept by concept through real projects,
-guided by Claude. The goal is not just to build something — it is to be able to explain every
-line and every decision in an interview.
+I am Victor, 31 years old, learning Angular + Java Spring Boot to get a junior developer
+job at a Spanish consultancy (NTT Data, Capgemini, Indra) by August–September 2026. My
+stack is Angular + Spring Boot + PostgreSQL + Docker. I learn concept by concept through
+real projects, guided by Claude. The goal is not just to build something — it is to be
+able to explain every line and every decision in an interview.
 
-My completed projects:
-- 01: to-do list — Angular fundamentals (components, signals, services, directives)
-- 02: weather app — HttpClient, RxJS, forkJoin, API integration, environment files
-- 03: expense tracker — reactive forms, routing, localStorage, smart/dumb pattern
-- 04: meal finder — route params, ActivatedRoute, effect(), favourites
-- 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
-- 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access
-- 07: TimeTrack — full-stack: Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate,
-  PostgreSQL, Angular frontend, JUnit 5 + Mockito, Docker Compose
+Before starting, read these files in order:
+1. `CLAUDE.md` — profile, tech stack, teaching rules, testing rules, and all conventions.
+   Focus on: "Current study progress", "Java/Spring Boot" section, "Testing rules".
+2. `PROGRESS.md` — completed projects and all concepts actually learned so far.
+3. `ROADMAP.md` — career plan, current phase, and candidate ideas for the next project.
+
+---
+
+<!-- ============================================================ -->
+<!-- BRANCH A — run these steps only when MODE = new             -->
+<!-- ============================================================ -->
+
+## MODE = new — Plan the next project
 
 ---
 
@@ -57,11 +76,12 @@ Read these files in this order. They are the inputs to every decision this promp
 
 4. `ROADMAP.md` — the career plan. Read:
    - Phase table (current phase, what is next)
-   - "Project 08 candidate ideas" section
-   - "What 'ready' means by September" gate list
+   - Candidate project ideas section for the next project
+   - "What 'ready' means" gate list
 
-5. `projects/07-timetrack/PLANNING.md` — the reference format. The PLANNING.md you
-   will write must match its depth and structure exactly.
+5. The last completed project's PLANNING.md — check PROGRESS.md for the project number,
+   then read `projects/0X-projectname/PLANNING.md`. This is the reference format. The
+   PLANNING.md you will write must match its depth and structure exactly.
 
 ---
 
@@ -79,8 +99,8 @@ Compare `notes/coverage.md` against `PROGRESS.md` to find what is not yet learne
 - Post-junior scope (CQRS, microservices, Kubernetes, JVM tuning, zone.js internals)
 - Theory-only (cannot be demonstrated through a project)
 
-**Identify review concepts.** These are concepts that appear in PROGRESS.md but that the
-new project should reinforce because:
+**Identify review concepts.** These are concepts already in PROGRESS.md that the new project
+should reinforce because:
 - They were learned once but not used since (risk of forgetting)
 - They are important enough for interviews that repetition is valuable
   (e.g. JWT flow, soft delete, coordinator pattern)
@@ -93,7 +113,7 @@ new project should reinforce because:
 
 ## Step 3 — Choose the project
 
-Read the candidate ideas in ROADMAP.md's "Project 08 candidate ideas" section.
+Read the candidate ideas section in ROADMAP.md for the next project.
 
 For each candidate, count how many of the significant gaps from Step 2 it covers.
 
@@ -105,10 +125,11 @@ Choose the candidate that:
    realistic enterprise work (not a toy app)
 5. Includes meaningful business rules — not just CRUD (if every project is just CRUD,
    the portfolio is weak)
-6. Introduces at least one JPA relationship or pattern NOT already practiced in project 07
+6. Introduces at least one JPA relationship or pattern NOT already practiced in the
+   previous project
 
 If none of the candidates covers the most important gaps well, propose a new candidate
-and explain why it fits better. Any new candidate must meet all five criteria above.
+and explain why it fits better. Any new candidate must meet all criteria above.
 
 Write a one-paragraph justification for the chosen project:
 - Why this project over the others
@@ -125,7 +146,8 @@ Think through each subsection in order. Do not skip any.
 ### 4a — Domain and business rules
 
 Choose a domain that:
-- Is immediately recognisable to a Spanish consultancy interviewer (they work with enterprise clients)
+- Is immediately recognisable to a Spanish consultancy interviewer (they work with
+  enterprise clients)
 - Has a realistic workflow — approval steps, role restrictions, state transitions
 - Would make sense in a real company
 
@@ -176,12 +198,29 @@ HTTP status code conventions to follow:
 
 ### 4d — Security design
 
-Define:
+**Endpoint access rules:**
 - Which endpoints are public (no token required)
 - Which endpoints require a valid JWT
 - Which endpoints require a specific role (with `@PreAuthorize`)
 - How the first admin account is created (data.sql seed — no public register endpoint)
 - CORS: which origins are allowed
+
+**Input validation strategy:**
+- Which DTO fields need `@NotBlank`, `@NotNull`, `@Positive`, or other annotations
+- Validation runs at the DTO level (request DTOs only), never on entities
+- What the validation error response looks like (field name + message)
+
+**GlobalExceptionHandler design:**
+- Which custom exception classes exist and what each one represents
+- Which exception maps to which HTTP status code (400 validation, 401 auth, 403 role,
+  404 not found, 409 conflict/business rule)
+- Response body format: `{ "error": "message" }` used consistently for all error responses
+
+**JWT configuration:**
+- Token expiration time and the reason for it
+- JWT secret must be loaded from an environment variable (`${JWT_SECRET}`) — never
+  hardcoded in `application.properties`
+- Which claims are included in the payload (sub, role, iat, exp) and why each one is there
 
 ### 4e — Spring Boot folder structure
 
@@ -223,7 +262,7 @@ Define a complete color palette as a table:
 - Usage (where and why this color appears)
 
 Choose colors that work well together and follow Material Design conventions.
-The primary color and accent must be different from project 07 (indigo) to avoid all
+The primary color and accent must be different from the previous project to avoid all
 projects looking the same.
 
 **Material components used:**
@@ -258,6 +297,18 @@ Choose a short, descriptive folder name: `0X-projectname` (e.g. `08-invoice-mana
 
 **Required sections — in this exact order:**
 
+### 0. Session quick reference
+
+A living table — updated at the start of every session. Write it with dashes to start;
+the first session will fill it in.
+
+| | |
+|---|---|
+| **Current step** | — |
+| **Done condition** | — |
+| **Phase** | — |
+| **Last updated** | — |
+
 ### 1. Project title and one-line description
 
 ### 2. Why this project
@@ -265,7 +316,7 @@ Choose a short, descriptive folder name: `0X-projectname` (e.g. `08-invoice-mana
 - What domain problem it solves
 - What technical gaps it closes (reference the gap analysis)
 - Why a recruiter at NTT Data or Capgemini would recognise it as real enterprise work
-- What it adds that project 07 does not cover
+- What it adds that the previous project does not cover
 
 ### 3. New concepts
 A table of every concept that will be learned for the first time in this project:
@@ -292,10 +343,15 @@ A table: Layer | Technology | Notes
 ### 6. Architecture
 Explain the architecture in plain language. Include an ASCII diagram showing the layers:
 Browser → Angular → HTTP → Spring Boot (Controller → Service → Repository) → PostgreSQL.
-Explain what is NOT classic MVC and why (same explanation style as project 07 PLANNING.md).
+Explain what is NOT classic MVC and why.
+
+Then identify which new architectural patterns this project introduces compared to the
+previous one. For each new pattern: explain where it fits in the layer model and why it
+is designed that way. If all patterns are the same as the previous project, say so
+explicitly — do not invent gaps.
 
 ### 7. Entities
-For each entity: a table of fields (field name | type | notes/constraints).
+For each entity: a table of fields with columns — Field | Java type | SQL type | Constraints | Notes.
 Then a Relationships section explaining all foreign keys and JPA annotations.
 
 ### 8. Business rules
@@ -307,55 +363,95 @@ The first admin/manager account data.sql content. Any other data that must exist
 
 ### 10. REST API
 All endpoints. Group by resource (one section per controller).
-Use the same format as project 07 PLANNING.md.
+Use the same format as the previous project's PLANNING.md.
 
-### 11. Spring Boot folder structure
+### 11. Postman setup
+- Collection name: `0X - ProjectName` (e.g. `08 - Invoice Manager`)
+- Folders inside the collection: one folder per controller (e.g. `auth`, `invoices`)
+- For each folder: list which endpoints it contains
+
+### 12. Spring Boot folder structure
 The complete annotated folder tree (from Step 4e).
 
-### 12. Angular folder structure
+### 13. Angular folder structure
 The complete annotated folder tree (from Step 4f).
 Followed by the Angular routes table.
 
-### 13. UI design
+### 14. UI design
 In this order:
 1. Color palette table
 2. Material components table
 3. View-by-view wireframes (one ASCII wireframe per page)
 4. Visual inspiration (2–3 real apps worth looking at for reference)
 
-### 14. Progressive learning plan
+### 15. Progressive learning plan
+
 List every step of the development plan. Each step must:
 - Have a short title (e.g. "Step 3 — JWT auth and protected endpoints")
 - List what is built in this step (2–4 bullet points)
 - State which NEW concepts from Section 3 are introduced in this step
 - State which REVIEW concepts from Section 4 are reinforced in this step
-- Define a concrete "done" condition: a specific, testable outcome that confirms the step is
-  complete (e.g. "Postman returns 401 for all endpoints except /api/auth/login" or
-  "`ng serve` loads the entries page and shows a filtered list from the real API")
+- Define a concrete done condition
+
+**Done condition format — every done condition must follow one of these exactly:**
+- `Postman: [METHOD] [path] returns [status] — [key field or body fragment]`
+- `Browser: [what is visible or interactive] at [route]`
+- `Terminal: [test command] passes — [count] tests, [key assertion named]`
+- `pgAdmin: [query or visible table state]`
+
+These are the only valid formats. Never use vague conditions like "the feature works",
+"it renders correctly", or "the API is ready" — these are not testable.
 
 Steps must be in learning order — each step introduces one major concept at a time.
-Do not group unrelated concepts into one step. A step that teaches pagination should not
-also teach @ManyToMany — split them.
+Do not group unrelated concepts into one step.
 
-### 15. Key rule
+The plan must include these three steps explicitly — do not skip any:
+- A dedicated backend tests step (JUnit 5 + Mockito — one test per service method,
+  edge cases covered, not just the happy path)
+- A dedicated Angular tests step — read the "Testing rules" section in CLAUDE.md to
+  determine which testing level is new in this project; describe what that test checks
+  and why it is different from the previous testing level
+- A SQL complement step: after the main JPA queries are working, write the equivalent SQL
+  by hand in `sql/` — this reinforces what Hibernate generates automatically and connects
+  the ORM layer to raw SQL already practiced in the 12:30 daily block
+
+### 16. Testing plan
+List what will be tested and at what level.
+
+**Backend (JUnit 5 + Mockito):**
+- Which service methods will have unit tests
+- Which edge cases must be covered (not just the happy path — e.g. entity not found,
+  business rule violation, role check)
+
+**Angular — services (Jasmine + TestBed):**
+- Which services will have unit tests
+- What each test verifies (HTTP call made, signal updated, error handled)
+
+**Angular — components (Jasmine + TestBed):**
+- Read the "Testing rules" section in CLAUDE.md to determine if component tests are new
+  or already introduced — plan accordingly
+- Which components will have at least one TestBed test
+- What each test verifies: rendering, interaction, or input/output behaviour
+
+For each new testing concept introduced, add one interview question to
+`notes/interview-prep/en/` and `notes/interview-prep/es/` (both files, same question).
+
+### 17. Key rule
 One paragraph: what is the single most important thing to remember about this project.
-(Same style as project 07 PLANNING.md — "A half-finished project with good architecture
-decisions and real tests is better than..." etc.)
 
-### 16. README structure
+### 18. README structure
 A table: README file | Audience | When to write it.
 Follow the three-README system from CLAUDE.md (global README, backend README, frontend README).
+Then for each README: list the planned sections.
 
-Then for each README: list the planned sections (as in project 07 PLANNING.md).
-
-### 17. Architecture decisions to document in the global README
+### 19. Architecture decisions to document in the global README
 6–8 one-line decisions. Format: `[what you did] to [why it matters]`
 
-### 18. Tradeoffs to document in the global README
+### 20. Tradeoffs to document in the global README
 3–4 one-line tradeoffs. Format: `[option chosen] over [option rejected] — [reason]`
 
-### 19. Future improvements
-3 maximum. Domain-realistic only — no AI, no microservices. These go in the README.
+### 21. Future improvements
+3 maximum. Domain-realistic only — no AI, no microservices.
 
 ---
 
@@ -364,11 +460,9 @@ Then for each README: list the planned sections (as in project 07 PLANNING.md).
 After writing PLANNING.md, make these two small updates:
 
 **ROADMAP.md:**
-In the "Project 08 candidate ideas" section (or whichever section lists candidates), mark
-the chosen project as selected. Replace the existing bullet with:
+In the candidate ideas section, mark the chosen project as selected:
 `- **[Project Name]** ← selected — PLANNING.md written at projects/0X-projectname/PLANNING.md`
-
-Leave the other candidates unchanged — they may be useful for project 09.
+Leave the other candidates unchanged — they may be useful for the project after this one.
 
 **PROGRESS.md:**
 Add one row to the projects table for the new project:
@@ -386,11 +480,10 @@ Print a short summary:
 List the specific concepts from Step 2's gap analysis that this project addresses.
 
 **Gaps NOT closed by this project:**
-List important gaps that remain after this project. These become input for project 09.
+List important gaps that remain. These become input for the project after this one.
 
 **New concepts count:** X new concepts (listed in PLANNING.md Section 3)
 **Review concepts count:** X concepts reinforced (listed in PLANNING.md Section 4)
-
 **Step count:** X steps in the progressive learning plan
 
 Then show the commit message:
@@ -402,4 +495,175 @@ git add projects/0X-projectname/PLANNING.md ROADMAP.md PROGRESS.md
 ```
 git commit -m "docs: add PLANNING.md for project 0X [project-name] — closes [main gap], introduces [key new concept]"
 ```
+
+---
+
+<!-- ============================================================ -->
+<!-- BRANCH B — run these steps only when MODE = review          -->
+<!-- ============================================================ -->
+
+## MODE = review — Audit an existing plan
+
+---
+
+## Step A — Read files
+
+Read these files:
+1. `CLAUDE.md` — for conventions, testing rules, and project standards
+2. `PROGRESS.md` — to understand what has been learned and what phase the project is at
+3. `projects/{PROJECT}/PLANNING.md` — the file to audit
+
+---
+
+## Step B — Section coverage check
+
+Check which of the 22 required sections (0–21) are present in the PLANNING.md.
+
+Required sections:
+0. Session quick reference
+1. Project title and one-line description
+2. Why this project
+3. New concepts
+4. Review concepts
+5. Tech stack
+6. Architecture
+7. Entities
+8. Business rules
+9. Seed data
+10. REST API
+11. Postman setup
+12. Spring Boot folder structure
+13. Angular folder structure
+14. UI design
+15. Progressive learning plan
+16. Testing plan
+17. Key rule
+18. README structure
+19. Architecture decisions
+20. Tradeoffs
+21. Future improvements
+
+Report each section as ✅ present or ❌ missing.
+Missing sections are critical issues — they block the project from starting clearly.
+
+---
+
+## Step C — Quality audit
+
+For each present section, check quality using these specific rules:
+
+**Section 0 — Session quick reference:**
+- Is it present?
+- If the project is in progress: is the current step filled in with a real step name?
+- Is the done condition filled in and specific (not a dash)?
+- Does the done condition follow the valid format? (see Step D)
+
+**Section 3 — New concepts:**
+- Is each concept specific? ("pagination with Pageable" = good; "Spring Boot" = too vague)
+- Does every concept have a reason in the "Why this project teaches it" column?
+
+**Section 7 — Entities:**
+- Does every field have: field name, Java type, SQL type, constraints, and a note?
+- Are all relationships defined with fetch type and cascade decision?
+
+**Section 8 — Business rules:**
+- Are there any vague rules like "admins can do more" without specifics?
+- Are there any "TBD" placeholders?
+- If the domain has state transitions, is there an ASCII diagram?
+
+**Section 10 — REST API:**
+- Does every endpoint have: method, path, role, description, request body (if applicable),
+  query parameters (if applicable), response status, and response body shape?
+- Are the HTTP status codes consistent with the conventions in this prompt?
+
+**Section 15 — Progressive learning plan:**
+- Does every step have a done condition?
+- Does every done condition follow the valid format? (see Step D)
+- Does each step introduce at most one major new concept?
+- Are there dedicated steps for: backend tests, Angular tests, SQL complement?
+
+**Section 16 — Testing plan:**
+- Are specific service method names listed (not just "test the service")?
+- Are edge cases defined for each test (not just the happy path)?
+
+---
+
+## Step D — Done condition format check
+
+A valid done condition must follow one of these formats exactly:
+- `Postman: [METHOD] [path] returns [status] — [key field or body fragment]`
+- `Browser: [what is visible or interactive] at [route]`
+- `Terminal: [test command] passes — [count] tests, [key assertion named]`
+- `pgAdmin: [query or visible table state]`
+
+For every done condition in Section 15, mark it as:
+- ✅ valid — matches one of the formats above
+- ⚠️ vague — needs rewriting (quote the current text + write the proposed replacement)
+
+---
+
+## Step E — Internal consistency check
+
+Cross-check between sections:
+
+1. **Entities vs folder structure:** every entity in Section 7 should have a corresponding
+   repository file in Section 12. List any that are missing.
+
+2. **API vs folder structure:** every resource group in Section 10 should have a
+   corresponding controller and service file in Section 12. List any that are missing.
+
+3. **Angular pages vs wireframes:** every page component in Section 13 should have a
+   wireframe in Section 14. List any that are missing.
+
+4. **New concepts vs learning plan:** every concept in Section 3 should appear in at least
+   one step in Section 15. List any that are never taught.
+
+5. **Testing plan vs learning plan:** the testing step(s) in Section 15 should match the
+   scope described in Section 16. Flag any mismatch.
+
+---
+
+## Step F — Output report
+
+Print the full audit in this format:
+
+---
+
+**Audit — projects/{PROJECT}/PLANNING.md**
+
+**Summary:** X critical issues · Y quality issues · Z consistency issues
+
+---
+
+**Critical issues (missing sections):**
+[list each missing section by number and name]
+
+---
+
+**Quality issues:**
+[for each section with problems: section number + title, then a bulleted list of specific
+issues. For each issue: quote the current text, then write the proposed replacement.]
+
+---
+
+**Consistency issues:**
+[cross-section mismatches found in Step E]
+
+---
+
+**Proposed rewrites:**
+[for each section that needs improvement: write the full corrected version, ready to
+copy directly into the file]
+
+---
+
+Then show the commit message for applying the fixes:
+
 ```
+git add projects/{PROJECT}/PLANNING.md
+```
+
+```
+git commit -m "docs: improve PLANNING.md for {PROJECT} — fix done conditions, add missing sections"
+```
+````
