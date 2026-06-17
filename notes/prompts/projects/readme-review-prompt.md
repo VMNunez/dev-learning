@@ -30,7 +30,7 @@ PROJECT_TYPE = [angular | fullstack]
 I am Victor, 31 years old. I am preparing for a junior developer job at Spanish IT consultancies
 (NTT Data, Capgemini, Indra) by August 2026. My stack: Angular + Spring Boot + PostgreSQL.
 
-Before starting, read CLAUDE.md — it has my full profile and learning objectives per project.
+Before starting, read `c:\Users\Victor\Documents\main\dev\learning\CLAUDE.md` — it has my full profile and learning objectives per project.
 
 ---
 
@@ -41,6 +41,26 @@ Before checking any README, read `{PROJECT_PATH}/PLANNING.md`.
 Extract: the app concept, the learning objectives, and the key patterns listed in the plan.
 Use this to check that the README reflects what was actually built and learned — not just
 what sounded good to write.
+
+---
+
+## Step 1 — Scan for in-progress markers
+
+Before checking any section, scan every README in this project for:
+- "coming soon"
+- "to be added"
+- "in progress"
+- "Step X — coming soon"
+- "Updated as each step is completed"
+- Progress markers like `✓` or `(Step 3)` inline in section content
+
+If the section the marker refers to is now complete: remove the marker and fill the section.
+If the section is genuinely not yet built: leave one clean placeholder per section (e.g.
+`*Coming soon — added when the Angular frontend is complete.*`). Never leave multiple
+scattered "coming soon" fragments inside a single section.
+
+For the top-level note "This README is updated after each step. Steps marked ✓ are complete." —
+remove it entirely. It reads as a working note, not a portfolio README.
 
 ---
 
@@ -159,8 +179,10 @@ Read all three READMEs. They serve different audiences — never mix content bet
 | Frontend | `{PROJECT_PATH}/frontend/README.md` | Technical interviewer | Makes them trust your Angular knowledge |
 
 **Global README** — apply the same 12 rules as Angular above, plus these additions:
-- One GIF showing the critical flow (login → submit entry → approval), max 5 MB.
-  If Docker is not yet ready, this can be a placeholder. If the frontend exists, the GIF must exist.
+- Visuals: 1 GIF + 3 screenshots, stacked vertically (4 visuals total — the GIF replaces one
+  screenshot). Order: GIF first (critical flow: login → submit entry → approval), then 3
+  screenshots of other key screens. Max 5 MB for the GIF.
+  If the frontend is not yet built, leave a placeholder for the GIF. Never exceed 4 visuals total.
 - How to run: `docker-compose up` when Docker is ready; `mvn spring-boot:run` + `ng serve`
   in separate terminals before Docker exists.
 - Final line: "Full technical details: [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md)"
@@ -239,26 +261,6 @@ Read all three READMEs. They serve different audiences — never mix content bet
 
 ---
 
-## In-progress markers — cleanup rule
-
-Before applying any fix, scan the README for:
-- "coming soon"
-- "to be added"
-- "in progress"
-- "Step X — coming soon"
-- "Updated as each step is completed"
-- Progress markers like `✓` or `(Step 3)` inline in section content
-
-If the section the marker refers to is now complete: remove the marker and fill the section.
-If the section is genuinely not yet built: leave one clean placeholder per section (e.g.
-`*Coming soon — added when the Angular frontend is complete.*`). Never leave multiple
-scattered "coming soon" fragments inside a single section.
-
-For the top-level note "This README is updated after each step. Steps marked ✓ are complete." —
-remove it entirely. It reads as a working note, not a portfolio README.
-
----
-
 ## What to do with issues found
 
 For every section that is missing: add it.
@@ -266,6 +268,14 @@ For every section that is present but wrong: describe the problem in one line, t
 Apply all fixes directly to the README files — do not just report the issues.
 
 Do not rewrite sections that are already correct. Only touch what needs to change.
+
+---
+
+## Summary of changes
+
+After applying all fixes, list every change made before showing the commit message.
+Format: one line per section changed: `[Section name] — what was wrong → what was fixed`
+This lets Victor review what changed before running the commit.
 
 ---
 
