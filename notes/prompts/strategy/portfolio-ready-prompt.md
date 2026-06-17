@@ -146,8 +146,23 @@ what would break if the test were removed — omit this section if the project h
 
 ## Step 3 — Final verdict
 
+### Check 1 — Feature completeness (PLANNING.md)
+
+Read `{PROJECT_PATH}/PLANNING.md`. Find the step-by-step plan (Section 0 or the steps list).
+
+Check whether all steps are marked as complete.
+- If any steps are incomplete → **❌ Not ready**. List the incomplete steps.
+  Do not check the backlog — a partially built project is not portfolio-ready regardless of code quality.
+
+### Check 2 — Code quality (PROJECT-BACKLOG.md)
+
+Only run this check if all steps in PLANNING.md are complete.
+
 Read `PROJECT-BACKLOG.md` at the root of the learning folder.
 Find the section for {PROJECT_PATH} and check for open tasks (unchecked `[ ]` items).
+
+If the section for {PROJECT_PATH} does not exist in PROJECT-BACKLOG.md: stop and report —
+"PROJECT-BACKLOG.md has no review for this project. Run `project-review-prompt` first."
 
 Apply this logic:
 
@@ -158,16 +173,13 @@ Apply this logic:
 - No open High or Medium tasks → ✅ Ready. The project can be shown to a recruiter today.
 - Open **Low** priority tasks do not affect the verdict — ignore them.
 
-If the section for {PROJECT_PATH} does not exist in PROJECT-BACKLOG.md: stop and report —
-"PROJECT-BACKLOG.md has no recent review for this project. Run `project-review-prompt` first."
+**✅ Ready** — all steps complete, no open High or Medium tasks. Include this project in the CV and LinkedIn now.
 
-**✅ Ready** — no open High or Medium tasks. Include this project in the CV and LinkedIn now.
-
-**⚠️ Almost ready** — open Medium tasks remain. List them:
+**⚠️ Almost ready** — all steps complete, open Medium tasks remain. List them:
 - [ ] Task description *(Effort: Small/Medium/Large)*
 
-**❌ Not ready** — open High priority tasks exist. List them:
-- [ ] Task description *(Effort: Small/Medium/Large)*
+**❌ Not ready** — incomplete steps or open High priority tasks exist. List them:
+- [ ] Task description or step name *(Effort: Small/Medium/Large)*
 
 ---
 
