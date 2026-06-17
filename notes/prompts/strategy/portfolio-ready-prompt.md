@@ -5,6 +5,8 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 Run this once per project — when you think it is finished and ready to show to a recruiter.
 `readme-review-prompt` and `project-review-prompt` must have been run first — this prompt assumes the README is already correct and the code has already been reviewed for quality.
 
+Before running: make sure all tasks you have already fixed are checked off (✅) in `PROJECT-BACKLOG.md`. The verdict in Step 3 reads the backlog directly — unchecked tasks count as open even if the code is already fixed.
+
 It gives you: architecture decisions polished for the portfolio lens, a bank of project-specific interview questions saved to `notes/interview-prep/projects/`, a go/no-go verdict, a CV bullet, and a GitHub description.
 
 ---
@@ -45,7 +47,11 @@ For ANGULAR projects:
 - {PROJECT_PATH}/PLANNING.md
 - {PROJECT_PATH}/README.md
 - {PROJECT_PATH}/src/app/app.routes.ts
-- Key page components and services (check PLANNING.md folder structure for the right paths)
+- {PROJECT_PATH}/src/app/app.config.ts
+- {PROJECT_PATH}/src/app/pages/ or features/ — all page components (check PLANNING.md Section 5 for the folder structure)
+- {PROJECT_PATH}/src/app/core/services/ — all services
+- {PROJECT_PATH}/src/app/core/guards/ — all guards (if the project has routing guards)
+- {PROJECT_PATH}/src/app/core/interceptors/ — all interceptors (if the project has auth)
 
 For FULLSTACK projects:
 - {PROJECT_PATH}/PLANNING.md
@@ -87,6 +93,9 @@ Generate as many questions as there are real decisions and patterns to defend in
 Do not cap at 5 — cover every decision, every pattern, every business rule that could come up
 in a 30-minute technical interview. A thin file here means a gap the interviewer will find.
 
+These questions are saved regardless of the verdict in Step 3 — they are useful interview
+preparation even if the project is not yet portfolio-ready.
+
 Save the questions to `notes/interview-prep/projects/{PROJECT_NAME}.md`.
 {PROJECT_NAME} is the last segment of {PROJECT_PATH} — e.g. `07-timetrack`, `06-hr-portal`.
 
@@ -116,6 +125,11 @@ Use these alongside the topic-based files in interview-prep/en/ and es/.
 ## Technical Decisions
 
 [questions about DTOs, PATCH vs PUT, soft delete, etc.]
+
+## Testing
+
+[questions about what is tested, why that service or edge case was chosen, what the mock does,
+what would break if the test were removed — omit this section if the project has no tests]
 ```
 
 ---
@@ -170,6 +184,10 @@ Example: "Full-stack time tracker — Spring Boot + Angular + PostgreSQL + JWT. 
 
 Draft one option.
 
+Once the CV bullet and GitHub description are chosen:
+- Use `cv-prompt` to integrate the bullet into the full CV.
+- Update the GitHub repo description manually in the repository settings.
+
 ---
 
 ## Final output format
@@ -177,8 +195,8 @@ Draft one option.
 Print in this order:
 1. Questions saved to `notes/interview-prep/projects/{PROJECT_NAME}.md`
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready**
-3. CV bullet (two options)
-4. GitHub description (one option)
+3. CV bullet (two options) — **omit if verdict is ❌ Not ready**
+4. GitHub description (one option) — **omit if verdict is ❌ Not ready**
 5. Commit message
 
 ```
