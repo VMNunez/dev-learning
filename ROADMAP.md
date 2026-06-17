@@ -157,7 +157,7 @@ No project is finished without tests. Tests are not a step — they are part of 
 
 ### Project 08 — after 07
 
-Planned using `notes/prompts/new-project-prompt.md` — paste it into a new chat when project 07 is complete. It reads `notes/coverage.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project. Run it once, get a full plan.
+Planned using `notes/prompts/projects/new-project-prompt.md` — paste it into a new chat when project 07 is complete. It reads `notes/coverage.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project. Run it once, get a full plan.
 
 **Project 08 candidate ideas:**
 
