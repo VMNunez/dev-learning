@@ -218,10 +218,11 @@ project) — add it to `future-learning.md`. Do not create a full note file for 
 are still premature. If the file already lists the concept, leave it as is.
 
 **Cross-reference check — notes → interview prep:**
-After reviewing all note files, scan en/{FILE}.md for concepts that are covered in the notes
+After reviewing all note files, scan es/{FILE}.md for concepts that are covered in the notes
 but have no corresponding interview question. For each gap found, add the missing question
-to both en/{FILE}.md and es/{FILE}.md following the standard question format (see Part 2).
+to BOTH en/{FILE}.md and es/{FILE}.md following the standard question format (see Part 2).
 The notes are the source of truth for what Victor has learned — the interview prep must cover it.
+Both language files must always stay in sync: every question that exists in one must exist in the other.
 
 ---
 
@@ -235,10 +236,10 @@ for all question format, answer quality, section balance, and writing rules. The
 are an inline summary for convenience, but if there is any conflict, the source file wins.
 
 **Cross-reference check — interview prep → notes:**
-Before the format check, scan every question in en/{FILE}.md. If a question covers a concept
-that has no corresponding note file in {NOTES_PATH}, create the note file now (following the
-rules in Part 1). Do not leave a concept that Victor is expected to answer in an interview
-without study material to back it up.
+Before the format check, scan every question in es/{FILE}.md — that is the file Victor
+actively studies. If a question covers a concept that has no corresponding note file in
+{NOTES_PATH}, create the note file now (following the rules in Part 1). Do not leave a
+concept that Victor is expected to answer in an interview without study material to back it up.
 
 **Before the 4-section audit — mandatory format check:**
 
@@ -328,8 +329,9 @@ Better to over-prepare one section than to have a gap a recruiter finds first.
 Apply all fixes directly to the files. Do not just report and leave them broken.
 
 Rules for every new or updated interview question:
-- Add to BOTH en/{FILE}.md and es/{FILE}.md — same question, same answer, same section,
-  translated. Never add to one without the other.
+- Always write to BOTH en/{FILE}.md and es/{FILE}.md — same question, same answer, same
+  section, translated. Never add or edit one without doing the same in the other. Victor
+  studies in Spanish, but both files are always kept in sync. This rule has no exceptions.
 - Answers must be interview-ready — what I would actually say out loud, not a textbook
   definition. Reference a specific project when the question is about a pattern or decision.
 - Group new questions under the correct section heading.
