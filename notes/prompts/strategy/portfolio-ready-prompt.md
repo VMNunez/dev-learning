@@ -46,6 +46,9 @@ rules, and what Spanish consultancies look for in a portfolio project.
 
 Read these files (all of them before evaluating anything):
 
+For ALL projects:
+- ROADMAP.md (at the root of the learning folder) — for target companies, interview expectations, and what Spanish consultancies look for
+
 For ANGULAR projects:
 - {PROJECT_PATH}/PLANNING.md
 - {PROJECT_PATH}/README.md
@@ -72,8 +75,7 @@ For FULLSTACK projects:
 
 ## Step 2 — Project interview questions
 
-Using the files read in Step 1, focus on PLANNING.md Sections 3 (new concepts), 4 (review concepts),
-8 (business rules), and 19 (architecture decisions).
+Using the files read in Step 1, look in PLANNING.md for the sections about: new concepts the project introduces, review concepts from previous projects, business rules and domain logic, and architecture decisions and tradeoffs. Use ROADMAP.md to target the questions to the companies and interview context listed there.
 
 Generate every question a technical interviewer at NTT Data or Capgemini would realistically
 ask about THIS specific project — not generic technology questions, but questions about the
@@ -156,8 +158,7 @@ Apply this logic:
 - No open High or Medium tasks → ✅ Ready. The project can be shown to a recruiter today.
 - Open **Low** priority tasks do not affect the verdict — ignore them.
 
-If the section for {PROJECT_PATH} does not exist in PROJECT-BACKLOG.md, or the last review
-date is more than 30 days ago: stop and report —
+If the section for {PROJECT_PATH} does not exist in PROJECT-BACKLOG.md: stop and report —
 "PROJECT-BACKLOG.md has no recent review for this project. Run `project-review-prompt` first."
 
 **✅ Ready** — no open High or Medium tasks. Include this project in the CV and LinkedIn now.
