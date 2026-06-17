@@ -112,10 +112,18 @@ Include test accounts if the app has auth — one per role, format: `email / pas
 If no live demo exists: flag it as missing — do not skip the section.
 
 **4. Screenshots**
-Exactly four. Use plain markdown images stacked vertically — never a 2×2 table (images compress
-badly on GitHub). Bold caption above each screenshot. No captions below.
-If the project has fewer than four screenshots: flag each missing one as a placeholder with a note
-like `*(screenshot — [screen name] — to be added)*`. Never silently skip this rule.
+Choose the optimal number of visuals based on the project — no fixed count.
+Read PLANNING.md and the Features section to identify every distinct screen or flow.
+Then decide: which screens are essential for a recruiter or interviewer to understand what the app does?
+Use plain markdown images stacked vertically — never a 2×2 table (images compress badly on GitHub).
+Bold caption above each screenshot. No captions below.
+
+After deciding, output a **Visual brief** for Victor before writing the placeholders:
+- One line per screenshot: "Screenshot — [screen name]: show [what must be visible]"
+
+For each visual not yet captured, add a placeholder:
+`*(screenshot — [screen name] — to be added)*`
+Never silently skip this step.
 
 **5. Features**
 5–6 bullets, written from the user's perspective. No technical terms in any bullet.
@@ -199,10 +207,16 @@ If any section is out of order, move it to the correct position.
 - Rule 12 (How to run) content: `docker-compose up` when Docker is ready;
   `mvn spring-boot:run` + `ng serve` in separate terminals before Docker exists.
   Do not apply the Angular rule 12 to this README.
-- Visuals: 1 GIF + 3 screenshots, stacked vertically (4 visuals total — the GIF replaces one
-  screenshot). Order: GIF first (critical flow: login → submit entry → approval), then 3
-  screenshots of other key screens. Max 5 MB for the GIF.
-  If the frontend is not yet built, leave a placeholder for the GIF. Never exceed 4 visuals total.
+- Visuals: choose the optimal mix of GIFs and screenshots based on the project — no fixed count.
+  Read PLANNING.md and the Features section to identify the critical flows and key screens.
+  Decide: which flows need a GIF (multi-step interactions that a static image cannot show),
+  and which screens are best as screenshots (dashboards, forms, empty states, role differences).
+  Use plain markdown images stacked vertically. GIFs go before screenshots. Max 5 MB per GIF.
+  If the frontend is not yet built, leave placeholders for all visuals.
+
+  After deciding, output a **Visual brief** for Victor before writing the placeholders:
+  - One line per GIF: "GIF — [name]: show [step 1] → [step 2] → [step 3]"
+  - One line per screenshot: "Screenshot — [screen name]: show [what must be visible]"
 - Final line: "Full technical details: [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md)"
   This line must always be present. Check that both paths resolve correctly.
 - If the project has tests, add a Testing row to the Tech Stack table (e.g. `Testing | JUnit 5 + Mockito (backend)`).
