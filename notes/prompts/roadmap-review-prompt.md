@@ -1,0 +1,169 @@
+# Roadmap Review Prompt
+
+Use in a **separate conversation**. No configuration to fill in — paste the whole prompt into a new chat as it is.
+
+This prompt checks that `ROADMAP.md` is accurate and complete: phase status matches real progress, the SQL/notes/testing tables match `notes/coverage.md`, and nothing has drifted out of sync with `PROGRESS.md` or `CLAUDE.md`. Run it whenever a phase ends, a project finishes, `notes/coverage.md` changes, or it has just been a while since the last check.
+
+---
+
+```
+I want you to review ROADMAP.md and update it so it reflects my real, current situation.
+
+Before starting, read CLAUDE.md — it has my daily schedule, teaching rules, the study order
+for notes/, and the gates (testing rules, LeetCode gates). The profile context — who I am,
+career target, market — is already in ROADMAP.md itself under "Who you are and where you stand".
+
+---
+
+## Who I am
+
+I am Victor, 31 years old. I am in a career transition — my background is React, Node.js, and
+TypeScript, but I retrained to target Angular + Spring Boot, the dominant stack at Spanish IT
+consultancies.
+
+My situation:
+- Full-time studying since June 2, 2026 — this is my main job right now
+- Target: land my first developer job at a Spanish IT consultancy by August–September 2026
+- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, and similar large consultancies
+
+My projects and current progress: read CLAUDE.md and PROGRESS.md for the current and complete
+state — these files stay up to date as work happens. Do not rely on a hardcoded list here.
+
+---
+
+## What ROADMAP.md is — and what it is not
+
+ROADMAP.md is the forward-looking strategy document: phases, daily schedule, market analysis,
+hiring process, applications strategy, GitHub/LinkedIn checklist, English prep, post-job growth.
+It answers "given everything I know now, what is the plan and where am I in it."
+
+It is NOT:
+- A chronological log of concepts learned — that is PROGRESS.md
+- A per-topic checklist of what must be known — that is notes/*/coverage.md and notes/coverage.md
+- A duplicate of either — if a fact already lives in PROGRESS.md or coverage.md, ROADMAP.md
+  should reference it, not repeat it
+
+Do not let this review turn ROADMAP.md into a concept list. Its job is status and plan, not detail.
+
+---
+
+## Step 1 — Read the current state
+
+Read, in this order. If you need detail on what a specific completed project was supposed to teach, its PLANNING.md is the source (e.g. `projects/07-timetrack/PLANNING.md` or `angular/06-hr-portal/PLANNING.md`) — but PROGRESS.md is the summary, so start there.
+
+1. `ROADMAP.md` itself — the current plan, as written.
+2. `CLAUDE.md` — the "Current study progress" section, the daily schedule, the current project,
+   and any gates (e.g. testing rules, LeetCode gates).
+3. `PROGRESS.md` — the project status table and which project step is currently in progress.
+4. `notes/coverage.md` — the global merged coverage file. This is the **target**: everything
+   I am supposed to learn. `PROGRESS.md` (read in step 3) is the **actual**: what I have
+   learned so far. Comparing the two is how you find real gaps — coverage.md alone only says
+   what is required, PROGRESS.md alone only says what is done; the gap between them is what
+   ROADMAP's plan should be steering me toward next. Use this comparison to check:
+   - whether the SQL stage table (topics, gates) matches the SQL section of coverage.md
+   - what specific knowledge gaps remain: concepts in coverage.md not yet reflected in
+     PROGRESS.md; then check whether the project 08 candidate list addresses those gaps;
+     if gaps exist that no candidate covers, flag them — they become input for the project
+     proposals in Step 5
+5. Simulation progress — check `PROGRESS.md` first (that is the preferred tracker); if no
+   simulations section exists there yet, check `simulations/TRACKER.md`. Compare actual count
+   and type split against the minimum target stated in ROADMAP.md.
+6. `PLANNING.md` of the currently active project (e.g. `projects/07-timetrack/PLANNING.md`, or
+   the relevant `angular/0X-project-name/PLANNING.md` if an Angular-only project is active).
+   PLANNING.md is the single source of truth for that project's scope and step order — confirm
+   ROADMAP's description of "what it covers" for the active project still matches it. If
+   PLANNING.md changed (steps added, removed, or reordered), ROADMAP is now stale.
+7. Current git branch and the last ~15 commits (`git log --oneline -15`,
+   `git branch --show-current`) — to catch phase or project transitions that happened but were
+   never reflected in ROADMAP.md.
+
+Today's date is available in the session context — use it to judge whether phase date ranges
+(e.g. "June 2–14") are in the past, current, or future.
+
+---
+
+## Step 2 — Find drift
+
+Compare what ROADMAP.md claims against what the other files show. Look specifically for:
+
+- **Status markers (✅ / ⏳ / 🔜) that no longer match reality** — a phase whose date range has
+  passed, and whose milestone is already met according to CLAUDE.md or PROGRESS.md, but is still
+  marked 🔜 or ⏳ in ROADMAP.
+- **Dates that have passed without the phase being closed out** — if today is past a phase's end
+  date, that phase needs a ✅, or an explicit note in the table about why it slipped and what the
+  new target is.
+- **SQL gate table mismatches** — topics marked 🔜 in ROADMAP that coverage.md/PROGRESS.md show
+  as done, or the reverse.
+- **Next-project gap list staleness** — gaps listed as uncovered that the current project or
+  coverage.md now show as addressed. Decide per gap: keep, reword, or remove.
+- **Simulation count drift** — the "minimum N simulations" gate and its type split should reflect
+  real progress (from `PROGRESS.md` or `simulations/TRACKER.md`), not stay static.
+- **Project scope mismatches** — ROADMAP's description of what the active project covers must
+  match its `PLANNING.md`. If `PLANNING.md` changed scope, ROADMAP's project section is stale.
+- **Any statement in ROADMAP that contradicts CLAUDE.md's "Current study progress" section** —
+  CLAUDE.md is the source of truth; flag the conflict and fix ROADMAP.
+
+---
+
+## Step 3 — Decide what to update vs. leave alone
+
+- ROADMAP's stable strategic sections (market analysis, AI factor, hiring process, applications
+  strategy, GitHub/LinkedIn checklist, English prep, post-job growth) are reference material.
+  Touch them only if something in them is now factually wrong — not to reword or "improve" them.
+- The phase table, daily schedule status, SQL stage table, and project 08 planning section are
+  the living parts — these are what usually drift and deserve the closest attention.
+- Never duplicate content that already lives in PROGRESS.md or coverage.md. Reference it with a
+  short cross-reference line instead, the same way CLAUDE.md points to other files rather than
+  repeating their contents.
+
+---
+
+## Step 4 — Apply the updates
+
+Edit ROADMAP.md directly. Do not just describe the changes — write them. For every change made,
+confirm:
+
+- Status markers are accurate as of today's date.
+- No fact in ROADMAP.md contradicts CLAUDE.md or PROGRESS.md.
+- New gaps revealed by a coverage.md update are reflected in the project 08 planning section;
+  if no existing candidate covers a significant gap, add a new project idea to the candidate list.
+- The file stays a forward-looking plan, not a growing concept list.
+
+---
+
+## Step 5 — Report and remind
+
+Print a short table of what changed:
+
+| Section | Change | Why |
+|---------|--------|-----|
+| ... | ... | ... |
+
+Also print a gap analysis summary:
+
+**Knowledge gaps found** (concepts in coverage.md not yet in PROGRESS.md, grouped by topic):
+
+**Project proposals** (for uncovered gaps that the current project 08 candidates do not address):
+For each significant gap, propose a concrete project: name, what it covers technically, and
+what gap it closes. Focus on projects that are full-stack, testable, and recognisable to
+Spanish consultancy recruiters.
+
+If a phase was closed out for the first time (newly marked ✅), remind me:
+"Phase X is now closed — if this also means a project finished, update PROGRESS.md's project
+table and CLAUDE.md's 'Current study progress' section too, per CLAUDE.md's instructions."
+
+Then show the commit message so I can run it myself. One command per code block:
+
+```
+
+git add ROADMAP.md
+
+```
+
+```
+
+git commit -m "docs: update roadmap — <one line summary of main changes>"
+
+```
+
+```
