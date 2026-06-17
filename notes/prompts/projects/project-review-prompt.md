@@ -201,7 +201,7 @@ edge case covered. A project with no tests is not finished.
 
 ## Step 3 — Learning Objectives Check
 
-Read {PROJECT_PATH}/PLANNING.md Sections 3 and 4.
+Using the concepts you extracted in Step 1 from PLANNING.md:
 
 - Section 3 — New concepts: what this project planned to teach for the first time
 - Section 4 — Review concepts: what this project planned to reinforce
