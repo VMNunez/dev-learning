@@ -67,6 +67,12 @@ Extract and keep in mind:
 
 Also read CLAUDE.md — it has Victor's full profile, teaching rules, and learning objectives per project.
 
+**Scope limit — apply before reviewing any code:**
+Look at Section 0 (Session quick reference) to find the current step.
+Only review code that belongs to completed steps.
+For steps not yet started, write "Step X — not yet built, out of scope" and move on.
+Never flag a missing feature as an issue if it belongs to a future step.
+
 ---
 
 ## Who I am
@@ -149,10 +155,6 @@ Angular:
 - Bad: component constructor calls `this.http.get('/api/tasks').subscribe(...)` — HTTP logic belongs in a service, not a component
 - Good: component calls `this.taskService.getTasks()` — HTTP stays in the service; component stays testable and single-responsibility
 
-Spring Boot:
-- Bad: controller method contains `if (result.isEmpty()) throw new RuntimeException("Not found")` — business logic in the wrong layer
-- Good: exception thrown in the service, caught by `@RestControllerAdvice` — controller only handles HTTP and delegates
-
 **Angular-specific:**
 - No memory leaks? (takeUntilDestroyed used with subscriptions)
 - No unnecessary `ngOnInit` when `inject()` in the constructor body works?
@@ -164,6 +166,8 @@ Spring Boot:
 
 Architecture:
 - Controller only handles HTTP — no business logic in controllers?
+  Bad: controller method contains `if (result.isEmpty()) throw new RuntimeException("Not found")` — business logic in the wrong layer
+  Good: exception thrown in the service, caught by `@RestControllerAdvice` — controller only handles HTTP and delegates
 - Services contain business logic — no SQL queries in services?
 - DTOs used at the HTTP boundary — entities not returned directly?
 - `@Valid` on request bodies? `@ControllerAdvice` for global error handling?
@@ -186,6 +190,10 @@ Business rules (check against PLANNING.md Section 8):
   Common gaps: future date check, hours range, inactive project check, DRAFT-only edit/delete,
   role-based data filtering (employee sees own entries, manager sees all).
   Each missing rule is a High priority issue — the app looks correct but has silent violations.
+
+Seed data (fullstack, only if data.sql exists):
+- Does the file use `ON CONFLICT DO NOTHING` so it is safe to re-run on every startup?
+- Is the password a pre-generated BCrypt hash — not plain text?
 
 Docker (fullstack, when docker-compose.yml exists):
 - Does the compose file include both services? (Spring Boot app + PostgreSQL)
