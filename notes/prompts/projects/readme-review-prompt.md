@@ -231,6 +231,12 @@ Read all three READMEs. They serve different audiences — never mix content bet
 6. **How to run alone** — `ng serve` with the API URL pointing to the backend.
    If an environment variable is needed for the API base URL, include the step to set it.
 
+7. **Tests** — list the services that have unit tests. One bullet per class:
+   `ClassName` — one sentence describing what the test verifies.
+   Include the test tool: Jasmine + TestBed. If no tests exist yet, mark this section as
+   `*(planned)*`. Do not omit the section — tests are a differentiator for junior roles
+   in Spanish consultancies.
+
 ---
 
 ## In-progress markers — cleanup rule
