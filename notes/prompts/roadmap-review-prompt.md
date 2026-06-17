@@ -10,24 +10,8 @@ This prompt checks that `ROADMAP.md` is accurate and complete: phase status matc
 I want you to review ROADMAP.md and update it so it reflects my real, current situation.
 
 Before starting, read CLAUDE.md — it has my daily schedule, teaching rules, the study order
-for notes/, and the gates (testing rules, LeetCode gates). The profile context — who I am,
-career target, market — is already in ROADMAP.md itself under "Who you are and where you stand".
-
----
-
-## Who I am
-
-I am Victor, 31 years old. I am in a career transition — my background is React, Node.js, and
-TypeScript, but I retrained to target Angular + Spring Boot, the dominant stack at Spanish IT
-consultancies.
-
-My situation:
-- Full-time studying since June 2, 2026 — this is my main job right now
-- Target: land my first developer job at a Spanish IT consultancy by August–September 2026
-- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, and similar large consultancies
-
-My projects and current progress: read CLAUDE.md and PROGRESS.md for the current and complete
-state — these files stay up to date as work happens. Do not rely on a hardcoded list here.
+for notes/, and the gates (testing rules, LeetCode gates). My profile and career target are in
+ROADMAP.md under "Who you are and where you stand" — read it there.
 
 ---
 
@@ -113,12 +97,22 @@ Compare what ROADMAP.md claims against what the other files show. Look specifica
   and CLAUDE.md show its gate conditions are clearly met, promote it to ✅; do not wait for a
   calendar date to confirm it. If the gate conditions are only partially met, leave the marker
   and add a short note on what is still missing.
+- **Date scan** — do a literal search of ROADMAP.md for month names (January through December)
+  and year patterns (2025, 2026). For every match found: if it is inside the applications
+  strategy section or the daily schedule header, it is intentional — leave it. If it is anywhere
+  else (a project milestone, a "hard deadline", a "CV rule"), convert it to a gate condition.
+  List every match found in the changes table, even those left unchanged.
 - **SQL gate table mismatches** — topics marked 🔜 in ROADMAP that coverage.md/PROGRESS.md show
   as done, or the reverse.
+- **LeetCode gate drift** — the five gate conditions listed in ROADMAP's LeetCode section must
+  match what CLAUDE.md defines. If CLAUDE.md's gate list changed, update the table.
 - **Next-project gap list staleness** — gaps listed as uncovered that the current project or
   coverage.md now show as addressed. Decide per gap: keep, reword, or remove.
-- **Simulation count drift** — the "minimum N simulations" gate and its type split should reflect
-  real progress (from `PROGRESS.md` or `simulations/TRACKER.md`), not stay static.
+- **Simulation count drift** — ROADMAP stores the minimum target gate (15 simulations, 5 per
+  type) — this is a gate definition, not a counter. Do not copy the actual count from PROGRESS.md
+  into ROADMAP. The drift check is: confirm the gate definition still makes sense given what
+  PROGRESS.md and simulations/TRACKER.md show. If no simulations have been done at all, confirm
+  that the applications phase gate makes clear this block is not yet enterable.
 - **Project scope mismatches** — ROADMAP's description of what the active project covers must
   match its `PLANNING.md`. If `PLANNING.md` changed scope, ROADMAP's project section is stale.
 - **Any statement in ROADMAP that contradicts CLAUDE.md's "Current study progress" section** —
@@ -127,10 +121,6 @@ Compare what ROADMAP.md claims against what the other files show. Look specifica
   then interview prep, then CV/applications. Check that ROADMAP's description of this block
   matches that order exactly. If ROADMAP skips the notes stage or shows a different sequence,
   fix it.
-- **Calendar dates in project sections** — any date tied to a project milestone (e.g. "hard
-  deadline June X", "update CV in Month Y") must be converted to a gate condition: a statement
-  that is either true or false based on what is done, not on what day it is. Dates are only
-  valid in the applications strategy section and the daily schedule header.
 
 ---
 
@@ -143,15 +133,15 @@ Compare what ROADMAP.md claims against what the other files show. Look specifica
   the living parts — these are what usually drift and deserve the closest attention.
 - When updating project sections, convert any remaining calendar dates to gate conditions.
   A gate is a concrete, verifiable state: "login returns a JWT and Postman confirms it" is a
-  gate; "done by June 14" is not. The applications strategy section is the one place dates
-  are intentional — do not touch those.
+  gate; "done by June 14" is not. The applications strategy section and the daily schedule
+  header are the two places where dates are intentional — do not convert those to gates.
 - Never duplicate content that already lives in PROGRESS.md or coverage.md. Reference it with a
   short cross-reference line instead, the same way CLAUDE.md points to other files rather than
   repeating their contents.
-- When a project section closes (its phase marked ✅ for the first time in this review),
-  condense that project's detail section to a 2-line summary — what it covered and what the
-  gate condition was — and link to PLANNING.md for the full step history. Remove the
-  step-by-step breakdown. Do not keep both the summary and the full breakdown.
+- When a project section is marked ✅ — whether promoted in this review or already marked — and
+  its step-by-step breakdown has not been condensed yet, condense it now: replace the detail
+  section with a 2-line summary (what it covered and what the gate condition was) and link to
+  PLANNING.md for the full step history. Remove the step-by-step breakdown. Do not keep both.
 
 ---
 
@@ -160,7 +150,8 @@ Compare what ROADMAP.md claims against what the other files show. Look specifica
 Edit ROADMAP.md directly. Do not just describe the changes — write them. For every change made,
 confirm:
 
-- Status markers are accurate as of today's date.
+- Status markers reflect whether each phase's gate conditions are met, as verified against
+  PROGRESS.md and CLAUDE.md — not the calendar date.
 - No fact in ROADMAP.md contradicts CLAUDE.md or PROGRESS.md.
 - The currently active project section has a concrete, verifiable gate — a specific testable
   condition (e.g. "login returns a JWT and Postman confirms it"), not a vague phrase like
@@ -179,18 +170,31 @@ Print a short table of what changed:
 |---------|--------|-----|
 | ... | ... | ... |
 
+**Pace check:** given the phases still marked ⏳/🔜 and today's date, estimate whether the
+remaining work fits the time before September. If the pace looks tight, name the specific
+critical-path gate that is most at risk, and propose one concrete trade-off Victor could make
+(e.g. reduce project 08 scope, cut a non-essential coverage topic, start applications earlier).
+
 Also print a gap analysis summary:
 
-**Knowledge gaps found** — concepts in coverage.md not yet in PROGRESS.md, filtered to those
-that would come up in a junior Angular + Spring Boot interview at a Spanish consultancy.
-Group by topic, max 3 gaps per topic. Skip deep internals that are beyond junior scope —
-focus on what a junior is actually asked in a technical screening.
+**Knowledge gaps found** — concepts in coverage.md not yet in PROGRESS.md, filtered to what
+actually comes up in junior Angular + Spring Boot interviews at Spanish consultancies.
+Group by topic, max 3 gaps per topic.
+
+Include: reactive forms, HTTP/interceptors, JWT flow, JPA relationships (OneToMany, ManyToOne),
+REST conventions, SQL JOINs/GROUP BY/subqueries, route guards, lazy loading, Angular lifecycle
+hooks, error handling patterns, DTO design.
+
+Skip: advanced design patterns (CQRS, event sourcing), JVM tuning, Kubernetes internals,
+streams/lambdas theory, Angular zone.js internals, LeetCode-style algorithms.
 
 **New project candidates added** — list only the candidates added to ROADMAP.md in Step 4
 (those that were not in the candidate list before this review). For each one, include: project
 name, what it covers technically, what gap it closes, and one sentence on why a recruiter at
-NTT Data or Capgemini would recognise it as valuable. If Step 4 added no new candidates,
-write "No new candidates added — existing candidates cover all significant gaps."
+NTT Data or Capgemini would recognise it as valuable. If Step 4 added no new candidates, either
+write "No new candidates added — existing candidates cover all significant gaps" (if true), or
+"No new candidates added — the following gaps are not covered by any existing candidate:
+[list them]" if uncovered gaps remain.
 Only propose projects that are full-stack (Spring Boot + Angular + PostgreSQL), testable, and
 realistic to build in 2–4 weeks of full-time study.
 
@@ -209,7 +213,5 @@ git add ROADMAP.md
 ```
 
 git commit -m "docs: update roadmap — <one line summary of main changes>"
-
-```
 
 ```
