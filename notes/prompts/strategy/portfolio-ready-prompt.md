@@ -7,7 +7,7 @@ Run this once per project — when you think it is finished and ready to show to
 
 Before running: make sure all tasks you have already fixed are checked off (✅) in `PROJECT-BACKLOG.md`. The verdict in Step 3 reads the backlog directly — unchecked tasks count as open even if the code is already fixed.
 
-It gives you: architecture decisions polished for the portfolio lens, a bank of project-specific interview questions saved to `notes/interview-prep/projects/`, a go/no-go verdict, a CV bullet, and a GitHub description.
+It gives you: a bank of project-specific interview questions saved to `notes/interview-prep/projects/`, a go/no-go verdict, a CV bullet, and a GitHub description.
 
 ---
 
@@ -65,8 +65,8 @@ For FULLSTACK projects:
 
 ## Step 2 — Project interview questions
 
-Read PLANNING.md Sections 3 (new concepts), 4 (review concepts), 8 (business rules), and 19
-(architecture decisions). Read the actual source code.
+Using the files read in Step 1, focus on PLANNING.md Sections 3 (new concepts), 4 (review concepts),
+8 (business rules), and 19 (architecture decisions).
 
 Generate every question a technical interviewer at NTT Data or Capgemini would realistically
 ask about THIS specific project — not generic technology questions, but questions about the
@@ -100,7 +100,8 @@ Save the questions to `notes/interview-prep/projects/{PROJECT_NAME}.md`.
 {PROJECT_NAME} is the last segment of {PROJECT_PATH} — e.g. `07-timetrack`, `06-hr-portal`.
 
 If the file already exists, append any questions that are not already there.
-Do not duplicate existing questions.
+Do not add a question that covers the same decision or code path as an existing question,
+even if the wording is different.
 
 File format:
 
@@ -144,7 +145,9 @@ Apply this logic:
 - Any open **High** priority task → ❌ Not ready. List every blocking task as a checkbox.
   Do not proceed to CV bullet or GitHub description — fix these first.
 - Only open **Medium** priority tasks → ⚠️ Almost ready. List the open tasks so Victor knows what remains.
+  The project can be shown to a recruiter but mention these limitations if asked directly.
 - No open High or Medium tasks → ✅ Ready. The project can be shown to a recruiter today.
+- Open **Low** priority tasks do not affect the verdict — ignore them.
 
 If the section for {PROJECT_PATH} does not exist in PROJECT-BACKLOG.md, or the last review
 date is more than 30 days ago: stop and report —
