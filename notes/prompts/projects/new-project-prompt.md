@@ -45,15 +45,6 @@ stack is Angular + Spring Boot + PostgreSQL + Docker. I learn concept by concept
 real projects, guided by Claude. The goal is not just to build something — it is to be
 able to explain every line and every decision in an interview.
 
-Before starting, read these files in order:
-1. `CLAUDE.md` — profile, tech stack, teaching rules, testing rules, and all conventions.
-   Focus on: "Current study progress", "Java/Spring Boot" section, "Testing rules".
-2. `PROGRESS.md` — the master record of all completed projects and every concept learned.
-   All Angular projects (01–06) and full-stack projects (07–) are summarised here — this
-   is the single source of truth for Victor's history. Do not infer project history from
-   CLAUDE.md or ROADMAP.md alone.
-3. `ROADMAP.md` — career plan, current phase, and candidate ideas for the next project.
-
 ---
 
 <!-- ============================================================ -->
