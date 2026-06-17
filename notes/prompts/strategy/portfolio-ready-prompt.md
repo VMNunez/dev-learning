@@ -57,28 +57,7 @@ For FULLSTACK projects:
 
 ---
 
-## Step 2 — Architecture decisions quality
-
-Read every architecture decision in the README(s).
-
-For each one, ask: "Could a junior who copied this from a tutorial write this exact sentence?"
-- If yes → it is a description, not a decision. Rewrite it to explain the WHY.
-- If no → it is a real decision. Mark it as strong.
-
-Decisions that are never acceptable as "real":
-- "Used Angular Material for the UI." (everyone does, no decision was made)
-- "Used PostgreSQL as the database." (it was given in the requirements)
-- "Used JWT for authentication." (no explanation of why JWT over the alternatives)
-
-Format: `[what you chose] to [why it matters]`
-- Bad: "Used coordinator pattern."
-- Good: "Coordinator pattern to centralise page state so the table and filters stay independently reusable."
-
-Rewrite any weak decision in place. Show the before and after for each one rewritten.
-
----
-
-## Step 3 — Project interview questions
+## Step 2 — Project interview questions
 
 Read PLANNING.md Sections 3 (new concepts), 4 (review concepts), 8 (business rules), and 19
 (architecture decisions). Read the actual source code.
@@ -141,7 +120,7 @@ Use these alongside the topic-based files in interview-prep/en/ and es/.
 
 ---
 
-## Step 4 — Final verdict
+## Step 3 — Final verdict
 
 Based on Steps 2 and 3, and assuming `readme-review-prompt` and `project-review-prompt` have
 already been run, give a verdict:
@@ -157,7 +136,7 @@ this project to anyone.
 
 ---
 
-## Step 5 — CV bullet
+## Step 4 — CV bullet
 
 Draft a one-line CV bullet for this project. Format:
 
@@ -171,7 +150,7 @@ Draft two options and let Victor choose.
 
 ---
 
-## Step 6 — GitHub repo description
+## Step 5 — GitHub repo description
 
 Draft a one-line GitHub repo description (160 characters max, no markdown):
 
@@ -186,16 +165,11 @@ Draft one option.
 ## Final output format
 
 Print in this order:
-1. Architecture decisions rewritten (before/after for each one changed, or "All decisions are strong")
-2. Questions saved to `notes/interview-prep/projects/{PROJECT_NAME}.md`
-3. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready**
-4. CV bullet (two options)
-5. GitHub description (one option)
-6. Commit message for any README changes and the new questions file
-
-```
-git add {PROJECT_PATH}/README.md
-```
+1. Questions saved to `notes/interview-prep/projects/{PROJECT_NAME}.md`
+2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready**
+3. CV bullet (two options)
+4. GitHub description (one option)
+5. Commit message
 
 ```
 git add notes/interview-prep/projects/{PROJECT_NAME}.md
