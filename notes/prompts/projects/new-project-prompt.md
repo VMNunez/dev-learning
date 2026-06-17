@@ -48,7 +48,10 @@ able to explain every line and every decision in an interview.
 Before starting, read these files in order:
 1. `CLAUDE.md` — profile, tech stack, teaching rules, testing rules, and all conventions.
    Focus on: "Current study progress", "Java/Spring Boot" section, "Testing rules".
-2. `PROGRESS.md` — completed projects and all concepts actually learned so far.
+2. `PROGRESS.md` — the master record of all completed projects and every concept learned.
+   All Angular projects (01–06) and full-stack projects (07–) are summarised here — this
+   is the single source of truth for Victor's history. Do not infer project history from
+   CLAUDE.md or ROADMAP.md alone.
 3. `ROADMAP.md` — career plan, current phase, and candidate ideas for the next project.
 
 ---
@@ -68,8 +71,10 @@ Read these files in this order. They are the inputs to every decision this promp
 1. `CLAUDE.md` — profile, tech stack, teaching rules, and how projects are structured.
    Focus on: "Current study progress", "Java/Spring Boot" section, "Testing rules".
 
-2. `PROGRESS.md` — what has actually been learned. Read the full Spring Boot section and
-   Angular section. These are the concepts that exist in Victor's head right now.
+2. `PROGRESS.md` — the master record of every project completed and every concept learned.
+   All Angular projects (01–06), full-stack projects (07–), SQL exercises, and CSS practice
+   are summarised here. This is the single source of truth — do not infer project history
+   from CLAUDE.md or ROADMAP.md alone. Read the full Angular, Spring Boot, and SQL sections.
 
 3. `notes/coverage.md` — the target: every concept Victor must know before applying.
    This is the master list. Every item not yet in PROGRESS.md is a gap.
@@ -286,6 +291,45 @@ For every page, specify:
 - What the smart component (page) does vs what the dumb child components do
 - Which components open dialogs and what those dialogs contain
 
+### 4i — Professional implementation order
+
+Before writing Section 15, define the order in which the project will be built.
+Every full-stack project must follow this sequence. Do not rearrange steps unless there
+is a specific architectural reason — and if you do, explain why in the PLANNING.md.
+
+**Required implementation sequence:**
+
+1. **Project setup** — Spring Initializr + `ng new` + PostgreSQL database creation +
+   git branch + Postman collection. This is always Step 1. No code until the environment
+   runs. Done when: Spring Boot starts, Angular loads, database exists.
+2. **Entity layer** — JPA entities, relationships, `@Column` constraints, enums, seed data.
+3. **Repository layer** — `JpaRepository` interfaces and custom finder methods.
+4. **Service layer** — all business logic methods; no security yet; use `Optional<T>` and
+   throw custom exceptions for not-found and business rule violations.
+5. **Controller layer** — REST endpoints, DTOs, `ResponseEntity`; no auth yet.
+6. **Manual backend test without auth** — test every endpoint in Postman without a token.
+   Every endpoint must return the correct status code and body before moving on.
+7. **Security layer** — Spring Security config, JWT filter, `UserDetailsService`,
+   `BCryptPasswordEncoder`, `@PreAuthorize`.
+8. **Manual backend test with auth** — login → get JWT → test every endpoint with the
+   correct token and role; test 401 (no token) and 403 (wrong role) cases explicitly.
+9. **Frontend scaffolding** — Angular routing, TypeScript interfaces (mirroring backend
+   DTOs), auth service, HTTP interceptor, route guards.
+10. **Feature pages** — one page at a time, in dependency order: login page first, then
+    the simplest resource, then more complex pages that depend on others.
+11. **Backend tests** — JUnit 5 + Mockito; one step per service class; happy path and
+    edge cases (entity not found, business rule violation, role violation).
+12. **Angular tests** — services first (HttpClientTestingModule); components if project 08+.
+13. **SQL complement** — write by hand in `sql/` the SQL that Hibernate generates for the
+    main queries; links what the ORM does to the raw SQL already practiced daily.
+14. **Docker** — `docker-compose.yml` with the database service; add the app image if time
+    allows. This step is late by design — Docker wraps a working app, not a work in progress.
+15. **README** — write all three READMEs (global, backend, frontend) after the project works.
+
+The steps in Section 15 must map to this sequence. Each step in the learning plan should
+be traceable to one or more items from this list. If two items are combined into one step,
+explain why (e.g. "repository has no custom logic so it is combined with the entity step").
+
 ---
 
 ## Step 5 — Write PLANNING.md
@@ -402,7 +446,21 @@ List every step of the development plan. Each step must:
 These are the only valid formats. Never use vague conditions like "the feature works",
 "it renders correctly", or "the API is ready" — these are not testable.
 
-Steps must be in learning order — each step introduces one major concept at a time.
+Steps must follow the professional implementation order defined in Step 4i. The order is
+not arbitrary — it reflects how a real developer builds a full-stack project:
+- Backend before frontend (the frontend has nothing to call until the API exists)
+- Manual testing before security (easier to debug endpoints without auth in the way)
+- Security after basic endpoints work (so you know the endpoints themselves are correct)
+- Tests after features work (so you understand what you are actually testing)
+- Docker and README last (they wrap and document a working app, not a work in progress)
+
+**Step 1 is always "Project setup".** It must cover: create Spring Boot project in Spring
+Initializr, create PostgreSQL database, run `ng new`, create the git branch, create the
+Postman collection. No business logic is written in this step. The done condition must
+confirm the Spring Boot app starts (`Terminal: mvn spring-boot:run — started on port 8080`)
+and the Angular app loads (`Browser: app loads at localhost:4200`).
+
+Steps must introduce one major concept at a time.
 Do not group unrelated concepts into one step.
 
 The plan must include these three steps explicitly — do not skip any:
