@@ -269,9 +269,9 @@ Replaces interview prep when all main topics are solid.
 
 ---
 
-## GitHub and LinkedIn — visibility before applications
+## GitHub, LinkedIn, and CV — visibility before applications
 
-Recruiters at consultancies check both before calling you. If they are not updated, you are invisible even with a good CV.
+Recruiters at consultancies check all three before calling you. If they are not updated, you are invisible even with a good technical foundation.
 
 ### GitHub
 
@@ -282,13 +282,22 @@ Recruiters at consultancies check both before calling you. If they are not updat
 
 ### LinkedIn
 
-- **Headline:** `Junior Angular + Spring Boot Developer | Java | PostgreSQL | Docker`
-- **About:** 3–4 sentences — background, stack, what you are building, what you are looking for
-- **Experience:** internship with a specific result — _built X that does Y_, not just _developed a SaaS_
-- **Projects:** TimeTrack (with GitHub link) — 2–3 bullets on what it covers technically
-- **Skills:** Angular, Spring Boot, Java, PostgreSQL, Docker, TypeScript, SQL, Git
-- **Open to work:** turn it on — visible to recruiters searching for Angular + Java profiles in Spain
-- **Activity:** react to or share one technical post per week — it keeps your profile visible in feeds
+The full writing process — all sections, text, posts, and skill order — is in `notes/prompts/strategy/linkedin-prompt.md`. Run it in a separate conversation when you are ready to update your profile.
+
+What matters most for recruiter visibility:
+- Keyword match in the headline and skills — `Angular`, `Spring Boot`, `Java` must appear
+- Active profile — last post or activity within 30 days ranks higher in recruiter searches
+- "Open to work" turned on and configured with the right job titles and location preferences
+
+### CV
+
+The full writing process — format, bullets, ATS keywords, and length check — is in `notes/prompts/strategy/cv-prompt.md`. Run it in a separate conversation when you are ready to write or update your CV.
+
+What matters most:
+- One page maximum — non-negotiable for junior roles at Spanish consultancies
+- Every bullet has a concrete result — "built X that does Y", not "developed a feature"
+- ATS keywords present naturally: `Angular`, `Spring Boot`, `Java`, `PostgreSQL`, `Docker`, `JWT`
+- Cambridge First Certificate listed under languages — a concrete certification, not self-reported
 
 ---
 
