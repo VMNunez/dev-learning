@@ -3,10 +3,9 @@
 Use in a **separate conversation**. Fill in the configuration block, then paste everything into a new chat.
 
 Run this once per project — when you think it is finished and ready to show to a recruiter.
-This is NOT a code review (`project-review-prompt` does that). This is a final gate check:
-ready to apply with this project or not?
+`readme-review-prompt` and `project-review-prompt` must have been run first — this prompt assumes the README is already correct and the code has already been reviewed for quality.
 
-It gives you a verdict, a list of blockers if any, a CV bullet, and a GitHub description ready to copy.
+It gives you: architecture decisions polished for the portfolio lens, a bank of project-specific interview questions saved to `notes/interview-prep/projects/`, a go/no-go verdict, a CV bullet, and a GitHub description.
 
 ---
 
@@ -20,7 +19,7 @@ It gives you a verdict, a list of blockers if any, a CV bullet, and a GitHub des
 ````
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | ... | projects/07-timetrack]
+PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker | angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal | projects/07-timetrack]
 PROJECT_TYPE = [angular | fullstack]
 
 ---
@@ -43,60 +42,22 @@ rules, and what Spanish consultancies look for in a portfolio project.
 Read these files (all of them before evaluating anything):
 
 For ANGULAR projects:
-- {PROJECT_PATH}/README.md
 - {PROJECT_PATH}/PLANNING.md
+- {PROJECT_PATH}/README.md
 - {PROJECT_PATH}/src/app/app.routes.ts
 - Key page components and services (check PLANNING.md folder structure for the right paths)
 
 For FULLSTACK projects:
+- {PROJECT_PATH}/PLANNING.md
 - {PROJECT_PATH}/README.md (global)
 - {PROJECT_PATH}/backend/README.md
 - {PROJECT_PATH}/frontend/README.md
-- {PROJECT_PATH}/PLANNING.md
 - {PROJECT_PATH}/backend/src/main/java — controller, service, security folders
 - {PROJECT_PATH}/frontend/src/app — pages, services, core folders
 
 ---
 
-## Step 2 — README recruiter test
-
-Imagine you are a non-technical recruiter at NTT Data. You have 60 seconds to decide if
-this candidate is worth a call. You open the README.
-
-Check:
-
-**Clarity (can a non-developer understand this?):**
-- Does the title describe what the app does in plain language?
-- Do the features read from a user perspective, not a developer perspective?
-  - Bad: "Uses CanActivateFn to protect routes."
-  - Good: "Employees can only see their own data — admins see everyone."
-- Is the "Why this project" section human and motivated, or does it read like a tutorial summary?
-
-**Architecture decisions (do they sound like real engineering judgment?):**
-- Each decision must follow the format: `[what you did] to [why it matters]`
-- Bad: "Used JWT for authentication."
-- Good: "JWT over sessions — the API is stateless, so a token that travels with each request
-  fits better than server-side session storage."
-- Are there at least 5 decisions? Are they real decisions or just descriptions of what was done?
-
-**Tradeoffs (do they show critical thinking?):**
-- Each tradeoff must follow: `[chose X] over [Y] — [reason]`
-- Are they honest about the limitations of the chosen approach?
-
-**Visual proof:**
-- ANGULAR: are there 4 screenshots with bold captions?
-- FULLSTACK: is there a GIF of the main flow? Or at least screenshots?
-- Are screenshots actually in the repo (not broken links)?
-
-**Live access:**
-- Is there a live demo URL? Or clear instructions to run locally?
-
-For each issue found: describe the problem and the fix.
-Apply the fixes directly to the README files.
-
----
-
-## Step 3 — Architecture decisions quality
+## Step 2 — Architecture decisions quality
 
 Read every architecture decision in the README(s).
 
@@ -109,88 +70,108 @@ Decisions that are never acceptable as "real":
 - "Used PostgreSQL as the database." (it was given in the requirements)
 - "Used JWT for authentication." (no explanation of why JWT over the alternatives)
 
-Rewrite any weak decision in place. Show the before and after.
+Format: `[what you chose] to [why it matters]`
+- Bad: "Used coordinator pattern."
+- Good: "Coordinator pattern to centralise page state so the table and filters stay independently reusable."
+
+Rewrite any weak decision in place. Show the before and after for each one rewritten.
 
 ---
 
-## Step 4 — Explainability check
+## Step 3 — Project interview questions
 
-Pick 5 specific questions about the code — not generic concepts, but questions about THIS
-project's actual implementation. These are the questions a technical interviewer would ask
-after the recruiter passes your CV.
+Read PLANNING.md Sections 3 (new concepts), 4 (review concepts), 8 (business rules), and 19
+(architecture decisions). Read the actual source code.
 
-Ask the questions here, one by one. Wait for Victor to answer each one in the chat before
-asking the next. After all 5 are answered, evaluate: Confident / Needs review / Unclear.
+Generate every question a technical interviewer at NTT Data or Capgemini would realistically
+ask about THIS specific project — not generic technology questions, but questions about the
+actual implementation choices made here.
 
-Examples of the kind of questions to ask (adapt to the actual code):
-- "In your auth guard, what happens if the token exists but has expired? Walk me through the code."
-- "Why does your UserService use `private final` + constructor injection instead of @Autowired?"
-- "Your coordinator component holds all the state. What is the benefit of that vs. each child
-  managing its own state?"
+Examples of the kind of question to generate (adapt to the actual code):
+- "In TimeTrack, why does the service use SecurityContextHolder instead of getting the userId from the request body?"
+- "Your HR portal has three route guards. Walk me through when each one fires and why you split them."
+- "Why does this project use PATCH for status transitions instead of PUT?"
+- "What happens in your JWT filter if the token is expired? Where exactly does the request stop?"
 
-Do NOT ask questions Victor cannot answer by reading the code. The goal is to confirm he can
-explain every line — not to trick him.
+Quality bar for each question:
+- It must be answerable only by someone who actually wrote or understands this specific code
+- It must target a decision, a pattern, or a potential gotcha — not just "what is X"
+- The model answer must reference the actual code, not a textbook definition
 
-After all answers: print the verdict for explainability.
+Format for each question:
+
+**[Question as an interviewer would ask it?]**
+
+[Model answer — 2–4 sentences. References the actual implementation. Uses "I chose" or "I decided" — not "it is used".]
+
+Generate as many questions as there are real decisions and patterns to defend in the project.
+Do not cap at 5 — cover every decision, every pattern, every business rule that could come up
+in a 30-minute technical interview. A thin file here means a gap the interviewer will find.
+
+Save the questions to `notes/interview-prep/projects/{PROJECT_NAME}.md`.
+{PROJECT_NAME} is the last segment of {PROJECT_PATH} — e.g. `07-timetrack`, `06-hr-portal`.
+
+If the file already exists, append any questions that are not already there.
+Do not duplicate existing questions.
+
+File format:
+
+```markdown
+# Interview Questions — {PROJECT_NAME}
+
+Questions specific to the implementation decisions made in this project.
+Use these alongside the topic-based files in interview-prep/en/ and es/.
+
+## Architecture & Patterns
+
+[questions about coordinator, smart/dumb, layered architecture, etc.]
+
+## Security & Auth
+
+[questions about JWT, SecurityContextHolder, BCrypt, etc.]
+
+## Business Rules
+
+[questions about domain logic — status transitions, validation, access control, etc.]
+
+## Technical Decisions
+
+[questions about DTOs, PATCH vs PUT, soft delete, etc.]
+```
 
 ---
 
-## Step 5 — Tests check
+## Step 4 — Final verdict
 
-Check:
+Based on Steps 2 and 3, and assuming `readme-review-prompt` and `project-review-prompt` have
+already been run, give a verdict:
 
-**Existence:**
-- Are there test files in the project?
-- For FULLSTACK: at least one JUnit 5 test in the backend, at least one Jasmine test in the
-  frontend
-
-**Quality:**
-- Do the tests verify real behaviour, or just that a method was called?
-  - Weak: `verify(service, times(1)).save(any())` — only checks that something was called
-  - Strong: `assertEquals(expected, result)` — checks the actual output
-- Are edge cases covered? (entity not found, business rule violation, role violation)
-- For Angular services: does the test verify the HTTP call was made AND the data was handled?
-
-If tests are missing or weak: flag it as a blocker. No project is portfolio-ready without
-meaningful tests from project 07 onwards.
-
----
-
-## Step 6 — Final verdict
-
-Based on Steps 2–5, give a verdict:
-
-**✅ Ready** — the project can be shown to a recruiter today. README is clear, decisions are
-real, tests exist, Victor can explain every line. Include it in the CV and LinkedIn now.
+**✅ Ready** — the project can be shown to a recruiter today. Architecture decisions are real,
+the interview question bank is solid. Include it in the CV and LinkedIn now.
 
 **⚠️ Almost ready** — one or two specific blockers. List them as checkboxes:
-- [ ] Blocker 1 (e.g. "3 of 6 architecture decisions are descriptions — needs rewriting")
-- [ ] Blocker 2 (e.g. "no tests in the Angular frontend")
-Complete these and the project is ready.
+- [ ] Blocker description
 
-**❌ Not ready** — significant gaps. List the main gaps and what needs to be done before
-this project can be shown to anyone. Do not rush to mark a project as portfolio-ready —
-a weak project on a CV does more damage than a missing one.
+**❌ Not ready** — significant gaps remain. List the main gaps and what to do before showing
+this project to anyone.
 
 ---
 
-## Step 7 — CV bullet
+## Step 5 — CV bullet
 
 Draft a one-line CV bullet for this project. Format:
 
 `Built [what it is] with [key technologies] — [one specific result or decision that shows depth]`
 
 Examples:
-- "Built a full-stack time tracking app with Spring Boot + Angular + JWT auth — including
-  role-based access control and soft delete to preserve audit history."
-- "Built an HR portal with Angular route guards and lazy loading — three user roles with
-  completely separate navigation and data access."
+- "Built a full-stack time tracking app with Spring Boot + Angular + JWT — role-based access control and soft delete to preserve audit history."
+- "Built an HR portal with Angular route guards and lazy loading — three user roles with completely separate navigation and data access."
 
 Draft two options and let Victor choose.
 
 ---
 
-## Step 8 — GitHub repo description
+## Step 6 — GitHub repo description
 
 Draft a one-line GitHub repo description (160 characters max, no markdown):
 
@@ -205,20 +186,22 @@ Draft one option.
 ## Final output format
 
 Print in this order:
-1. README fixes applied (or "README is good — no changes needed")
-2. Architecture decisions rewritten (or "All decisions are strong")
-3. Explainability verdict: Confident / Needs review / Unclear
-4. Tests verdict: Strong / Missing / Weak
-5. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready**
-6. CV bullet (two options)
-7. GitHub description (one option)
-8. Commit message for any README changes made
+1. Architecture decisions rewritten (before/after for each one changed, or "All decisions are strong")
+2. Questions saved to `notes/interview-prep/projects/{PROJECT_NAME}.md`
+3. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready**
+4. CV bullet (two options)
+5. GitHub description (one option)
+6. Commit message for any README changes and the new questions file
 
 ```
 git add {PROJECT_PATH}/README.md
 ```
 
 ```
-git commit -m "docs: polish {PROJECT_PATH} README — portfolio ready"
+git add notes/interview-prep/projects/{PROJECT_NAME}.md
+```
+
+```
+git commit -m "docs: portfolio-ready {PROJECT_NAME} — <one line summary>"
 ```
 ````
