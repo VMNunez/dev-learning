@@ -180,7 +180,7 @@ Examples:
 
 Draft two options.
 
-Then save both options to `notes/cv/cv-bullets.md` at the root of the learning folder.
+Then save both options to `notes/cv/cv-bullets.md`.
 Find the section for {PROJECT_PATH}. If it exists, replace it. If it does not exist, create it.
 
 Format for the entry:
