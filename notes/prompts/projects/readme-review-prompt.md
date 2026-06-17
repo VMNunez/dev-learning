@@ -34,6 +34,21 @@ Before starting, read CLAUDE.md — it has my full profile and learning objectiv
 
 ---
 
+## Quality filter — apply this to every section as you check it
+
+"Does this section make the reader trust me more?"
+
+If a section adds no trust — it is noise. Cut it or rewrite it until it earns its place.
+
+---
+
+## Apply PROJECT_TYPE
+
+- If PROJECT_TYPE = angular → follow Rules for ANGULAR projects only, skip the fullstack section
+- If PROJECT_TYPE = fullstack → follow Rules for FULLSTACK projects only, skip the angular section
+
+---
+
 ## Rules for ANGULAR projects
 
 Read {PROJECT_PATH}/README.md and check every section against these rules.
@@ -53,7 +68,7 @@ Must have its own `## Live demo` heading. URL present and working.
 Include test accounts if the app has auth (email + password, one per role).
 
 **4. Screenshots**
-Exactly four. Single column layout — never a 2×2 table (images compress badly on GitHub).
+Exactly four. Use plain markdown images stacked vertically — never a 2×2 table (images compress badly on GitHub).
 Bold caption above each screenshot. No captions below.
 
 **5. Features**
@@ -62,7 +77,7 @@ Bold caption above each screenshot. No captions below.
 - Good: "Protected routes redirect unauthenticated users to the login page."
 
 **6. Architecture decisions**
-6–8 maximum. One line each. Format strictly: `[what you did] to [why it matters]`
+Up to 8, minimum 3. One line each. Never pad — only decisions worth explaining. Format strictly: `[what you did] to [why it matters]`
 - Bad: "Used coordinator pattern."
 - Good: "Coordinator pattern to centralise page state and keep the table and filters independently reusable."
 
@@ -85,6 +100,7 @@ Folder tree with one-line explanation per folder.
 
 **12. How to run**
 One command per code block. Order: clone → cd → npm install → ng serve (or npm start).
+If the project uses environment variables, add a step: copy `.env.example` to `.env` and fill in the required values (e.g. API key).
 
 ---
 
@@ -120,15 +136,6 @@ Read all three READMEs. They serve different audiences — never mix content bet
 4. Shared components — list with one-line reason why each is shared
 5. Tradeoffs — Signals over NgRx and similar decisions; one line each
 6. How to run alone — `ng serve`
-
----
-
-## Quality rule
-
-Before fixing anything, apply this test to every section:
-"Does this section make the reader trust me more?"
-
-If a section adds no trust — it is noise. Cut it or rewrite it until it earns its place.
 
 ---
 
