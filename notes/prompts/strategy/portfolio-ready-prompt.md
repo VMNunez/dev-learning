@@ -20,9 +20,12 @@ It gives you: a bank of project-specific interview questions saved to `notes/int
 
 ````
 ## Configuration — edit only this block
+## Replace the [ ] with your value and delete the brackets.
 
 PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker | angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal | projects/07-timetrack]
 PROJECT_TYPE = [angular | fullstack]
+
+Use these values wherever the prompt refers to {PROJECT_PATH} or {PROJECT_TYPE}.
 
 ---
 
@@ -59,7 +62,9 @@ For FULLSTACK projects:
 - {PROJECT_PATH}/backend/README.md
 - {PROJECT_PATH}/frontend/README.md
 - {PROJECT_PATH}/backend/src/main/java — controller, service, security folders
+- {PROJECT_PATH}/backend/src/test/java — all test files (if they exist)
 - {PROJECT_PATH}/frontend/src/app — pages, services, core folders
+- {PROJECT_PATH}/frontend/src/**/*.spec.ts — all spec files (if they exist)
 
 ---
 
@@ -117,7 +122,7 @@ Use these alongside the topic-based files in interview-prep/en/ and es/.
 
 ## Security & Auth
 
-[questions about JWT, SecurityContextHolder, BCrypt, etc.]
+[questions about JWT, SecurityContextHolder, BCrypt, etc. — omit this section if the project has no authentication]
 
 ## Business Rules
 
