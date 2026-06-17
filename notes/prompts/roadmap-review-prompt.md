@@ -45,6 +45,22 @@ It is NOT:
 
 Do not let this review turn ROADMAP.md into a concept list. Its job is status and plan, not detail.
 
+**Gate-based sequencing — project sections never use dates:**
+Project phases are structured as sequential goals: "first do X; when X is done, start Y."
+Calendar dates do NOT belong in project milestone sections — they create false pressure and
+become stale the moment they pass without being met.
+
+Dates are allowed only in two places:
+1. The applications strategy section (July → Fridays only, August → equal priority, September → full push).
+2. The daily schedule header (the full-time study window started June 2).
+
+If a date appears anywhere else — a project milestone, a "hard deadline", a "CV rule: update in
+Month X" — replace it with a gate condition that is true or false regardless of the date.
+
+Examples of correct gate language:
+- ❌ "Hard deadline June 14: backend demonstrable" → ✅ "Backend gate: login endpoint returns a valid JWT, one protected endpoint rejects requests without a token — testable in Postman"
+- ❌ "CV rule: update in July" → ✅ "Update CV when project 07 is live on GitHub with a README that includes at least one architecture decision"
+
 ---
 
 ## Step 1 — Read the current state
@@ -102,6 +118,10 @@ Compare what ROADMAP.md claims against what the other files show. Look specifica
   match its `PLANNING.md`. If `PLANNING.md` changed scope, ROADMAP's project section is stale.
 - **Any statement in ROADMAP that contradicts CLAUDE.md's "Current study progress" section** —
   CLAUDE.md is the source of truth; flag the conflict and fix ROADMAP.
+- **Calendar dates in project sections** — any date tied to a project milestone (e.g. "hard
+  deadline June X", "update CV in Month Y") must be converted to a gate condition: a statement
+  that is either true or false based on what is done, not on what day it is. Dates are only
+  valid in the applications strategy section and the daily schedule header.
 
 ---
 
@@ -112,6 +132,10 @@ Compare what ROADMAP.md claims against what the other files show. Look specifica
   Touch them only if something in them is now factually wrong — not to reword or "improve" them.
 - The phase table, daily schedule status, SQL stage table, and project 08 planning section are
   the living parts — these are what usually drift and deserve the closest attention.
+- When updating project sections, convert any remaining calendar dates to gate conditions.
+  A gate is a concrete, verifiable state: "login returns a JWT and Postman confirms it" is a
+  gate; "done by June 14" is not. The applications strategy section is the one place dates
+  are intentional — do not touch those.
 - Never duplicate content that already lives in PROGRESS.md or coverage.md. Reference it with a
   short cross-reference line instead, the same way CLAUDE.md points to other files rather than
   repeating their contents.
