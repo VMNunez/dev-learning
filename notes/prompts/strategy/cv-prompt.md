@@ -75,6 +75,17 @@ Preferred keywords (add if they appear in your experience):
 
 ---
 
+## Mode handling
+
+**If MODE = create:** proceed directly to Step 1.
+
+**If MODE = review:** before Step 1, read the CV pasted at the end of this chat.
+- Note which projects are included → use them as the starting point for Step 1 instead of choosing from scratch
+- Note which bullets are weak, missing a result, or use filler language → flag them so Step 3 rewrites them
+- The output of Step 2 is a rewrite of each existing section, not a blank draft — show before/after for every section that changes
+
+---
+
 ## Step 1 — Choose the projects to include
 
 If PROJECTS = auto: read PROGRESS.md and choose the 3 strongest projects based on:

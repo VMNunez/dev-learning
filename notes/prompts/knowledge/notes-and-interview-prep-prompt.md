@@ -128,6 +128,10 @@ Read all files in {NOTES_PATH}.
    - Does it read like a personal learning guide, not like documentation? Test: would this
      sentence appear word-for-word on the official docs site? If yes, rewrite it in Victor's voice.
 
+  **Bad note:** "`HttpClient` is a service that performs HTTP requests. It provides methods for all HTTP verbs including GET, POST, PUT, and DELETE."
+  **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a service (never a component) and it returns an Observable you subscribe to. Without it you would have to use the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project 02 to call the weather API."
+  The bad note reads like the official docs. The good note explains WHY you use it, WHERE it lives, and references a real project.
+
 3. When creating new note files or significantly rewriting existing ones, follow these
    rules. The goal is notes that work as a personal study book — clear enough to learn
    from scratch and return to as a reference. Every concept needs enough explanation to
@@ -256,6 +260,10 @@ Answers that are too vague, too theoretical, or that do not reference a real pro
 Quote the weak part and explain what is missing.
 Quality bar: every answer must pass this test — "could I explain every word of this answer
 if the interviewer pressed me?" If not, the answer is weak.
+
+  **Weak:** "¿Qué es un interceptor en Angular? — Es una clase que intercepta las peticiones HTTP y permite modificarlas."
+  **Strong:** "¿Qué es un interceptor en Angular? — Es una función que se ejecuta antes de cada petición HTTP. La usé en el proyecto 06 para añadir el token JWT automáticamente a todas las cabeceras — sin el interceptor, tendría que añadirlo manualmente en cada llamada al servicio."
+  The strong answer references a real project, explains the problem it solves, and uses "I used it" — not "it is used".
 
 **3. Imbalances**
 Count questions by type: Conceptual / Decision-based / Pressure.

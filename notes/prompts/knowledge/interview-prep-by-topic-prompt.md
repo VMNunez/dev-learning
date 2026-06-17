@@ -142,6 +142,10 @@ Quote the weak part and explain what is missing.
 Quality bar: every answer must pass this test — "could I explain every word of this answer
 if the interviewer pressed me?" If not, the answer is weak.
 
+  **Weak:** "¿Qué es un interceptor en Angular? — Es una clase que intercepta las peticiones HTTP y permite modificarlas."
+  **Strong:** "¿Qué es un interceptor en Angular? — Es una función que se ejecuta antes de cada petición HTTP. La usé en el proyecto 06 para añadir el token JWT automáticamente a todas las cabeceras — sin el interceptor, tendría que añadirlo manualmente en cada llamada al servicio."
+  The strong answer references a real project, explains the problem it solves, and uses "I used it" — not "it is used".
+
 **3. Imbalances**
 Count questions by type: Conceptual / Decision-based / Pressure.
 Give the count and percentage per type.

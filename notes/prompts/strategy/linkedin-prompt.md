@@ -212,4 +212,16 @@ Print each section in this order, ready to copy directly into LinkedIn:
 ---
 
 No commit message needed — this content goes directly into LinkedIn, not into the repo.
+
+---
+
+## Profile ready when
+
+- Headline contains `Angular`, `Spring Boot`, and `Java`
+- About section opens with a specific sentence — no "apasionado" or "entusiasta"
+- Every experience bullet starts with a past-tense action verb and includes a concrete result
+- At least 2 projects listed with working GitHub links
+- All required skills added in the correct priority order
+- "Open to work" configured with the right job titles and Spain as location
+- At least one post drafted and ready to publish when applications start
 ````

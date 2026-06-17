@@ -112,6 +112,20 @@ Review for:
 - Does the app handle error states? (hasError signal pattern)
 - Are HTTP errors caught?
 
+**What a code quality issue looks like — bad vs good:**
+
+TypeScript:
+- Bad: `getUser(): any { return this.http.get('/api/user'); }` — `any` loses all type safety; the compiler cannot help you
+- Good: `getUser(): Observable<UserResponse> { return this.http.get<UserResponse>('/api/user'); }`
+
+Angular:
+- Bad: component constructor calls `this.http.get('/api/tasks').subscribe(...)` — HTTP logic belongs in a service, not a component
+- Good: component calls `this.taskService.getTasks()` — HTTP stays in the service; component stays testable and single-responsibility
+
+Spring Boot:
+- Bad: controller method contains `if (result.isEmpty()) throw new RuntimeException("Not found")` — business logic in the wrong layer
+- Good: exception thrown in the service, caught by `@RestControllerAdvice` — controller only handles HTTP and delegates
+
 **Angular-specific:**
 - No memory leaks? (takeUntilDestroyed used with subscriptions)
 - No unnecessary `ngOnInit` when `inject()` in the constructor body works?

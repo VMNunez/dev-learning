@@ -50,6 +50,16 @@ prep files. Read the relevant file(s) before starting and pick from them.
 
 ---
 
+## Interview flow
+
+1. Read the source files for the selected MODE.
+2. Select questions following the mode rules — never invent or paraphrase.
+3. Open with the starting question defined in the MODE section — no introduction or preamble.
+4. After each answer: give the structured feedback (see "After each answer" below), then immediately ask the next question.
+5. After the last question: print a short summary table — one row per question with question number, topic, and Valoración.
+
+---
+
 ## MODE: [choose one before starting]
 
 ### Full interview
