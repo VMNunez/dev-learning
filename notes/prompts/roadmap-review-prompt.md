@@ -86,18 +86,20 @@ Read, in this order. If you need detail on what a specific completed project was
    simulations section exists there yet, check `simulations/TRACKER.md`. Compare actual count
    and type split against the minimum target stated in ROADMAP.md. If no simulations have been
    done at all, flag it explicitly — applying before completing any simulations is a readiness
-   gap that ROADMAP's phase gate for Stage 2 should reflect.
+   gap that the applications phase gate should reflect.
 6. `PLANNING.md` of the currently active project (e.g. `projects/07-timetrack/PLANNING.md`, or
    the relevant `angular/0X-project-name/PLANNING.md` if an Angular-only project is active).
    PLANNING.md is the single source of truth for that project's scope and step order — confirm
    ROADMAP's description of "what it covers" for the active project still matches it. If
    PLANNING.md changed (steps added, removed, or reordered), ROADMAP is now stale.
-7. Current git branch and the last ~15 commits (`git log --oneline -15`,
-   `git branch --show-current`) — to catch phase or project transitions that happened but were
-   never reflected in ROADMAP.md.
+7. Current branch (`git branch --show-current`) — to confirm which project is active. Use this
+   only if PROGRESS.md's project table is ambiguous about whether a project has just finished
+   or a new one has just started.
 
 Today's date is available in the session context — use it to judge whether the applications
-strategy dates (July, August, September) are still in the future or already active.
+strategy dates (July, August, September) are still in the future or already active. If a date
+has already passed or is now active, add a note in the changes table flagging that the phase
+is now live — but do not edit the applications strategy section itself.
 
 ---
 
@@ -121,6 +123,10 @@ Compare what ROADMAP.md claims against what the other files show. Look specifica
   match its `PLANNING.md`. If `PLANNING.md` changed scope, ROADMAP's project section is stale.
 - **Any statement in ROADMAP that contradicts CLAUDE.md's "Current study progress" section** —
   CLAUDE.md is the source of truth; flag the conflict and fix ROADMAP.
+- **13:30 block stage mismatch** — CLAUDE.md defines three stages for this block: notes first,
+  then interview prep, then CV/applications. Check that ROADMAP's description of this block
+  matches that order exactly. If ROADMAP skips the notes stage or shows a different sequence,
+  fix it.
 - **Calendar dates in project sections** — any date tied to a project milestone (e.g. "hard
   deadline June X", "update CV in Month Y") must be converted to a gate condition: a statement
   that is either true or false based on what is done, not on what day it is. Dates are only
@@ -142,6 +148,10 @@ Compare what ROADMAP.md claims against what the other files show. Look specifica
 - Never duplicate content that already lives in PROGRESS.md or coverage.md. Reference it with a
   short cross-reference line instead, the same way CLAUDE.md points to other files rather than
   repeating their contents.
+- When a project section closes (its phase marked ✅ for the first time in this review),
+  condense that project's detail section to a 2-line summary — what it covered and what the
+  gate condition was — and link to PLANNING.md for the full step history. Remove the
+  step-by-step breakdown. Do not keep both the summary and the full breakdown.
 
 ---
 
@@ -173,12 +183,14 @@ Also print a gap analysis summary:
 
 **Knowledge gaps found** — concepts in coverage.md not yet in PROGRESS.md, filtered to those
 that would come up in a junior Angular + Spring Boot interview at a Spanish consultancy.
-Group by topic, one line per gap, max 8 gaps total. Skip deep internals that are beyond junior
-scope — focus on what a junior is actually asked in a technical screening.
+Group by topic, max 3 gaps per topic. Skip deep internals that are beyond junior scope —
+focus on what a junior is actually asked in a technical screening.
 
-**Project proposals** — for uncovered gaps that the current project 08 candidates do not address.
-For each proposal, include: project name, what it covers technically, what gap it closes, and
-one sentence on why a recruiter at NTT Data or Capgemini would recognise it as valuable.
+**New project candidates added** — list only the candidates added to ROADMAP.md in Step 4
+(those that were not in the candidate list before this review). For each one, include: project
+name, what it covers technically, what gap it closes, and one sentence on why a recruiter at
+NTT Data or Capgemini would recognise it as valuable. If Step 4 added no new candidates,
+write "No new candidates added — existing candidates cover all significant gaps."
 Only propose projects that are full-stack (Spring Boot + Angular + PostgreSQL), testable, and
 realistic to build in 2–4 weeks of full-time study.
 
