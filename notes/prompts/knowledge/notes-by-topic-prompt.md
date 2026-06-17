@@ -76,6 +76,22 @@ in a project, check the relevant notes file:
   — do not add a second example for the same concept
 - Never duplicate examples across files in the same folder
 
+**IMPORTANT — existing text is final unless marked with TODO:**
+
+Do not rewrite, rephrase, restructure, or change any text that already exists in a note file.
+Victor has already refined that text to his taste. You may:
+- Add new note files
+- Add new sections to an existing file
+- Resolve TODO markers (see Pre-audit section)
+
+You may NOT:
+- Reword sentences that are already written
+- Change the structure or order of existing sections
+- "Improve" or "update" existing text unless there is a TODO marker asking for it
+
+If rule 2 of the audit identifies a note that does not follow teaching rules, report it in the
+summary — but do not change the text. Victor decides whether to rewrite it.
+
 ---
 
 ## Who I am and what I need
@@ -158,7 +174,7 @@ Read all files in {NOTES_PATH}.
   **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a service (never a component) and it returns an Observable you subscribe to. Without it you would have to use the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project 02 to call the weather API."
   The bad note reads like the official docs. The good note explains WHY you use it, WHERE it lives, and references a real project.
 
-3. When creating new note files or significantly rewriting existing ones, follow these
+3. When creating new note files or adding new sections to existing files, follow these
    rules. The goal is notes that work as a personal study book — clear enough to learn
    from scratch and return to as a reference. Every concept needs enough explanation to
    understand it, not just recognise the syntax.
@@ -235,6 +251,9 @@ are still premature. If the file already lists the concept, leave it as is.
 ---
 
 ## Execution
+
+**Reminder:** only apply changes to existing text if there is a TODO marker. New files and new
+sections are always allowed. Do not edit existing text without a TODO — even if it could be improved.
 
 Apply all fixes directly to the files. Do not just report and leave them broken.
 
