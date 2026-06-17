@@ -132,8 +132,12 @@ Read all files in {NOTES_PATH}.
   **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a service (never a component) and it returns an Observable you subscribe to. Without it you would have to use the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project 02 to call the weather API."
   The bad note reads like the official docs. The good note explains WHY you use it, WHERE it lives, and references a real project.
 
-3. When creating new note files or significantly rewriting existing ones, follow these
-   rules. The goal is notes that work as a personal study book — clear enough to learn
+3. When creating new note files or adding new sections to existing files, read
+   `notes/prompts/knowledge/notes-by-topic-prompt.md` first — it is the source of truth
+   for all note format, voice, structure, and writing rules. The rules below are an inline
+   summary for convenience, but if there is any conflict, the source file wins.
+
+   The goal is notes that work as a personal study book — clear enough to learn
    from scratch and return to as a reference. Every concept needs enough explanation to
    understand it, not just recognise the syntax.
 
@@ -172,6 +176,13 @@ Read all files in {NOTES_PATH}.
    - ✅ Complete — solid coverage for a junior screening at a Spanish consultancy
    - 🔧 Fixed — gaps found and resolved in this session
    - ➕ Added — new content created from scratch
+
+**IMPORTANT — existing note text is final unless marked with TODO:**
+Do not rewrite, rephrase, restructure, or change any text that already exists in a note file.
+You may add new note files and add new sections to existing files. You may NOT touch text that
+is already written — even if it could be improved. If rule 2 identifies a note that does not
+follow teaching rules, report it in the summary but do not change the text. Only a TODO marker
+from Victor authorises editing existing content.
 
 **Apply all fixes directly to the note files.**
 
@@ -217,6 +228,11 @@ The notes are the source of truth for what Victor has learned — the interview 
 ## Part 2 — Interview Prep Audit
 
 Read notes/interview-prep/en/{FILE}.md and notes/interview-prep/es/{FILE}.md.
+
+When creating or updating any interview prep question, read
+`notes/prompts/knowledge/interview-prep-by-topic-prompt.md` first — it is the source of truth
+for all question format, answer quality, section balance, and writing rules. The rules below
+are an inline summary for convenience, but if there is any conflict, the source file wins.
 
 **Cross-reference check — interview prep → notes:**
 Before the format check, scan every question in en/{FILE}.md. If a question covers a concept
