@@ -76,9 +76,12 @@ Read, in this order. If you need detail on what a specific completed project was
    PLANNING.md is the single source of truth for that project's scope and step order — confirm
    ROADMAP's description of "what it covers" for the active project still matches it. If
    PLANNING.md changed (steps added, removed, or reordered), ROADMAP is now stale.
-7. Current branch (`git branch --show-current`) — to confirm which project is active. Use this
-   only if PROGRESS.md's project table is ambiguous about whether a project has just finished
-   or a new one has just started.
+7. Current branch — run `git branch` to list all local branches and identify the active
+   project-level branch (pattern: `projects/0X-name` or `angular/0X-name`). Feature branches
+   (`feat/...`) are sub-branches of the project branch and do not identify the project on their
+   own. `sql/practice` is always a parallel independent branch for SQL exercises — it does not
+   indicate the active project. Use this only if PROGRESS.md's project table is ambiguous about
+   whether a project has just finished or a new one has just started.
 
 Today's date is available in the session context — use it to judge whether the applications
 strategy dates (July, August, September) are still in the future or already active. If a date
@@ -213,5 +216,7 @@ git add ROADMAP.md
 ```
 
 git commit -m "docs: update roadmap — <one line summary of main changes>"
+
+```
 
 ```
