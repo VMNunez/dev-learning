@@ -62,7 +62,9 @@ For FULLSTACK projects:
 - {PROJECT_PATH}/backend/README.md
 - {PROJECT_PATH}/frontend/README.md
 - {PROJECT_PATH}/backend/src/main/java — controller, service, security folders
+- {PROJECT_PATH}/backend/src/main/resources/application.properties (or application.yml)
 - {PROJECT_PATH}/backend/src/test/java — all test files (if they exist)
+- {PROJECT_PATH}/docker-compose.yml (if it exists)
 - {PROJECT_PATH}/frontend/src/app — pages, services, core folders
 - {PROJECT_PATH}/frontend/src/**/*.spec.ts — all spec files (if they exist)
 
@@ -228,7 +230,7 @@ Once the CV bullet and GitHub description are chosen:
 ## Final output format
 
 Print in this order:
-1. Questions saved to `notes/interview-prep/projects/{PROJECT_NAME}.md`
+1. One confirmation line: "Saved X questions to notes/interview-prep/projects/{PROJECT_NAME}.md" — do not reprint the questions here, they were already shown in Step 2
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready**
 3. CV bullet (two options saved to `notes/cv/cv-bullets.md`) — **omit if verdict is ❌ Not ready**
 4. GitHub description (one option) — **omit if verdict is ❌ Not ready**
