@@ -178,7 +178,32 @@ Examples:
 - "Built a full-stack time tracking app with Spring Boot + Angular + JWT — role-based access control and soft delete to preserve audit history."
 - "Built an HR portal with Angular route guards and lazy loading — three user roles with completely separate navigation and data access."
 
-Draft two options and let Victor choose.
+Draft two options.
+
+Then save both options to `CV-BULLETS.md` at the root of the learning folder.
+Find the section for {PROJECT_PATH}. If it exists, replace it. If it does not exist, create it.
+
+Format for the entry:
+
+```markdown
+## {PROJECT_PATH}
+
+*(choose one — delete the other before committing)*
+
+- [Option A]
+- [Option B]
+```
+
+If `CV-BULLETS.md` does not exist yet, create it with this header first:
+
+```markdown
+# CV Bullets
+
+One bullet per project. Edit each entry to keep only your chosen option.
+Used by `cv-prompt` when drafting the Projects section of your CV.
+
+---
+```
 
 ---
 
@@ -203,9 +228,22 @@ Once the CV bullet and GitHub description are chosen:
 Print in this order:
 1. Questions saved to `notes/interview-prep/projects/{PROJECT_NAME}.md`
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready**
-3. CV bullet (two options) — **omit if verdict is ❌ Not ready**
+3. CV bullet (two options saved to `CV-BULLETS.md`) — **omit if verdict is ❌ Not ready**
 4. GitHub description (one option) — **omit if verdict is ❌ Not ready**
-5. Commit message
+5. Note (only if verdict is ✅ or ⚠️): "Edit `CV-BULLETS.md` to keep only your chosen bullet before committing."
+6. Commit message
+
+If verdict is ✅ or ⚠️:
+
+```
+git add notes/interview-prep/projects/{PROJECT_NAME}.md CV-BULLETS.md
+```
+
+```
+git commit -m "docs: portfolio-ready {PROJECT_NAME} — <one line summary>"
+```
+
+If verdict is ❌ (CV-BULLETS.md was not written):
 
 ```
 git add notes/interview-prep/projects/{PROJECT_NAME}.md
