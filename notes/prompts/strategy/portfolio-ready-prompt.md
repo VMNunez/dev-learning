@@ -122,17 +122,27 @@ Use these alongside the topic-based files in interview-prep/en/ and es/.
 
 ## Step 3 — Final verdict
 
-Based on Steps 2 and 3, and assuming `readme-review-prompt` and `project-review-prompt` have
-already been run, give a verdict:
+Read `PROJECT-BACKLOG.md` at the root of the learning folder.
+Find the section for {PROJECT_PATH} and check for open tasks (unchecked `[ ]` items).
 
-**✅ Ready** — the project can be shown to a recruiter today. Architecture decisions are real,
-the interview question bank is solid. Include it in the CV and LinkedIn now.
+Apply this logic:
 
-**⚠️ Almost ready** — one or two specific blockers. List them as checkboxes:
-- [ ] Blocker description
+- Any open **High** priority task → ❌ Not ready. List every blocking task as a checkbox.
+  Do not proceed to CV bullet or GitHub description — fix these first.
+- Only open **Medium** priority tasks → ⚠️ Almost ready. List the open tasks so Victor knows what remains.
+- No open High or Medium tasks → ✅ Ready. The project can be shown to a recruiter today.
 
-**❌ Not ready** — significant gaps remain. List the main gaps and what to do before showing
-this project to anyone.
+If the section for {PROJECT_PATH} does not exist in PROJECT-BACKLOG.md, or the last review
+date is more than 30 days ago: stop and report —
+"PROJECT-BACKLOG.md has no recent review for this project. Run `project-review-prompt` first."
+
+**✅ Ready** — no open High or Medium tasks. Include this project in the CV and LinkedIn now.
+
+**⚠️ Almost ready** — open Medium tasks remain. List them:
+- [ ] Task description *(Effort: Small/Medium/Large)*
+
+**❌ Not ready** — open High priority tasks exist. List them:
+- [ ] Task description *(Effort: Small/Medium/Large)*
 
 ---
 
