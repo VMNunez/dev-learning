@@ -180,7 +180,7 @@ Examples:
 
 Draft two options.
 
-Then save both options to `CV-BULLETS.md` at the root of the learning folder.
+Then save both options to `notes/cv/cv-bullets.md` at the root of the learning folder.
 Find the section for {PROJECT_PATH}. If it exists, replace it. If it does not exist, create it.
 
 Format for the entry:
@@ -194,7 +194,7 @@ Format for the entry:
 - [Option B]
 ```
 
-If `CV-BULLETS.md` does not exist yet, create it with this header first:
+If `notes/cv/cv-bullets.md` does not exist yet, create it with this header first:
 
 ```markdown
 # CV Bullets
@@ -228,22 +228,22 @@ Once the CV bullet and GitHub description are chosen:
 Print in this order:
 1. Questions saved to `notes/interview-prep/projects/{PROJECT_NAME}.md`
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready**
-3. CV bullet (two options saved to `CV-BULLETS.md`) — **omit if verdict is ❌ Not ready**
+3. CV bullet (two options saved to `notes/cv/cv-bullets.md`) — **omit if verdict is ❌ Not ready**
 4. GitHub description (one option) — **omit if verdict is ❌ Not ready**
-5. Note (only if verdict is ✅ or ⚠️): "Edit `CV-BULLETS.md` to keep only your chosen bullet before committing."
+5. Note (only if verdict is ✅ or ⚠️): "Edit `notes/cv/cv-bullets.md` to keep only your chosen bullet before committing."
 6. Commit message
 
 If verdict is ✅ or ⚠️:
 
 ```
-git add notes/interview-prep/projects/{PROJECT_NAME}.md CV-BULLETS.md
+git add notes/interview-prep/projects/{PROJECT_NAME}.md notes/cv/cv-bullets.md
 ```
 
 ```
 git commit -m "docs: portfolio-ready {PROJECT_NAME} — <one line summary>"
 ```
 
-If verdict is ❌ (CV-BULLETS.md was not written):
+If verdict is ❌ (notes/cv/cv-bullets.md was not written):
 
 ```
 git add notes/interview-prep/projects/{PROJECT_NAME}.md

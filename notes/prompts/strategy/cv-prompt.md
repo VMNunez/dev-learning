@@ -95,11 +95,11 @@ If PROJECTS = auto: read PROGRESS.md and choose the 3 strongest projects based o
 
 If PROJECTS is a specific list: use those exact projects, in that order.
 
-For each chosen project, read `CV-BULLETS.md` at the root of the learning folder.
-- If the project has an entry in `CV-BULLETS.md`, use that bullet as the primary bullet
+For each chosen project, read `notes/cv/cv-bullets.md` at the root of the learning folder.
+- If the project has an entry in `notes/cv/cv-bullets.md`, use that bullet as the primary bullet
   for the project section in Step 2. It was already polished by `portfolio-ready-prompt`
   against the portfolio lens — do not rewrite it, use it as-is.
-- If the project does not have an entry in `CV-BULLETS.md`, read its README.md to find
+- If the project does not have an entry in `notes/cv/cv-bullets.md`, read its README.md to find
   the architecture decisions and "What I learned" section, and draft the primary bullet yourself.
 
 In both cases, read the README.md to find supporting details for the 2nd and 3rd bullets
