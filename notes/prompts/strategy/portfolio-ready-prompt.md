@@ -170,6 +170,8 @@ date is more than 30 days ago: stop and report —
 
 ## Step 4 — CV bullet
 
+**Skip Steps 4 and 5 if the verdict from Step 3 is ❌ Not ready. Jump directly to the Final output format.**
+
 Draft a one-line CV bullet for this project. Format:
 
 `Built [what it is] with [key technologies] — [one specific result or decision that shows depth]`
