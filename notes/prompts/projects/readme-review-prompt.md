@@ -142,7 +142,9 @@ explain what you gave up and why that tradeoff made sense for this project.
 
 **8. Future improvements**
 3 maximum. Realistic for the domain — no AI features, no microservices, no blockchain.
-Each one must be something that would genuinely improve the app for its users.
+Each one must be something that would genuinely improve the app for its users, and
+framed as a feature that would make the app more production-ready (e.g. pagination,
+email notifications, file export) — not a learning goal for the developer.
 
 **9. What I learned**
 One bullet per concept. Format strictly: `` `ConceptName` — one-line reminder of what it does
@@ -183,13 +185,24 @@ Read all three READMEs. They serve different audiences — never mix content bet
 | Frontend | `{PROJECT_PATH}/frontend/README.md` | Technical interviewer | Makes them trust your Angular knowledge |
 
 **Global README** — apply the same 12 rules as Angular above, plus these additions:
+
+Section order: Title → Why this project → How to run (replaces Live demo — see below) →
+Screenshots → Features → Architecture decisions → Tradeoffs → Future improvements →
+What I learned → Tech stack → Project structure → Backend and frontend details.
+If any section is out of order, move it to the correct position.
+
+- Rule 3 (Live demo) is replaced for fullstack: fullstack projects in this portfolio are
+  local-only — they are not deployed to a live URL. Replace the Live demo section with a
+  short "How to run" note (`docker-compose up` when Docker is ready; `mvn spring-boot:run`
+  + `ng serve` in separate terminals before Docker exists) and point to the How to run
+  section for full instructions. Do not flag this section as missing.
+- Rule 12 (How to run) content: `docker-compose up` when Docker is ready;
+  `mvn spring-boot:run` + `ng serve` in separate terminals before Docker exists.
+  Do not apply the Angular rule 12 to this README.
 - Visuals: 1 GIF + 3 screenshots, stacked vertically (4 visuals total — the GIF replaces one
   screenshot). Order: GIF first (critical flow: login → submit entry → approval), then 3
   screenshots of other key screens. Max 5 MB for the GIF.
   If the frontend is not yet built, leave a placeholder for the GIF. Never exceed 4 visuals total.
-- Rule 12 (How to run) is replaced by: `docker-compose up` when Docker is ready;
-  `mvn spring-boot:run` + `ng serve` in separate terminals before Docker exists.
-  Do not apply the Angular rule 12 to this README.
 - Final line: "Full technical details: [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md)"
   This line must always be present. Check that both paths resolve correctly.
 - If the project has tests, add a Testing row to the Tech Stack table (e.g. `Testing | JUnit 5 + Mockito (backend)`).
@@ -211,9 +224,10 @@ Read all three READMEs. They serve different audiences — never mix content bet
    SecurityContextHolder → endpoint executes.
    Each step must be one sentence. No code blocks here — prose only.
 
-4. **Security considerations** — minimum four bullets:
-   BCrypt password hashing, JWT secret from environment variable (never committed),
-   role-based endpoint protection with `@PreAuthorize`, input validation with `@Valid` + `@RestControllerAdvice`.
+4. **Security considerations** — minimum four bullets. Cover every security measure
+   actually implemented in this project — at minimum: password hashing strategy,
+   secret management (no committed credentials), authorization enforcement,
+   and input validation with error handling. Only list what is actually in the code.
 
 5. **Folder structure** — annotated tree showing every package:
    controller / service / repository / model / dto (request + response) / exception / security.
@@ -224,8 +238,10 @@ Read all three READMEs. They serve different audiences — never mix content bet
    Code snippets are allowed and encouraged here — the audience is a technical interviewer.
 
 7. **Tradeoffs** — same format as Angular: `[X] over [Y] — [reason]`
-   Must include at least: JWT vs sessions, soft delete vs hard delete.
-   Each tradeoff must be answerable in a technical interview — "why JWT?" must have a real answer.
+   Must include the 3 most important tradeoffs for this specific project.
+   Each one must be answerable in a technical interview — "why did you choose X?" must have
+   a real answer in the line itself. "Because it is simpler" is not a reason — explain what
+   you gave up and why that tradeoff made sense for this project.
 
 8. **How to run alone** — without Docker, for local development.
    Include: Java version required, how to set the DB_PASSWORD environment variable (IntelliJ path),
