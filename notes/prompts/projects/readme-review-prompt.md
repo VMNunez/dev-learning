@@ -88,6 +88,10 @@ this portfolio — the goal is to get hired at a consultancy that asks technical
 ## Rules for ANGULAR projects
 
 Read `{PROJECT_PATH}/README.md` and check every section against these rules.
+Also verify that sections appear in this order: Title → Why this project → Live demo →
+Screenshots → Features → Architecture decisions → Tradeoffs → Future improvements →
+What I learned → Tech stack → Project structure → How to run.
+If any section is out of order, move it to the correct position.
 
 **1. Title + one sentence**
 Plain language, no tech words. Project number included. The sentence must say what the app
@@ -183,8 +187,9 @@ Read all three READMEs. They serve different audiences — never mix content bet
   screenshot). Order: GIF first (critical flow: login → submit entry → approval), then 3
   screenshots of other key screens. Max 5 MB for the GIF.
   If the frontend is not yet built, leave a placeholder for the GIF. Never exceed 4 visuals total.
-- How to run: `docker-compose up` when Docker is ready; `mvn spring-boot:run` + `ng serve`
-  in separate terminals before Docker exists.
+- Rule 12 (How to run) is replaced by: `docker-compose up` when Docker is ready;
+  `mvn spring-boot:run` + `ng serve` in separate terminals before Docker exists.
+  Do not apply the Angular rule 12 to this README.
 - Final line: "Full technical details: [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md)"
   This line must always be present. Check that both paths resolve correctly.
 - If the project has tests, add a Testing row to the Tech Stack table (e.g. `Testing | JUnit 5 + Mockito (backend)`).
@@ -264,7 +269,7 @@ Read all three READMEs. They serve different audiences — never mix content bet
 ## What to do with issues found
 
 For every section that is missing: add it.
-For every section that is present but wrong: describe the problem in one line, then rewrite the section in place.
+For every section that is present but wrong: fix it directly. Do not narrate while fixing — record what changed in the Summary of changes step at the end.
 Apply all fixes directly to the README files — do not just report the issues.
 
 Do not rewrite sections that are already correct. Only touch what needs to change.
@@ -289,10 +294,19 @@ git add {PROJECT_PATH}/README.md
 git commit -m "docs: update {PROJECT_PATH} README — [one line summary of main changes]"
 ```
 
-For fullstack projects with multiple READMEs changed:
+For fullstack projects, only add the READMEs that were actually changed — not all three by default.
+One command per file:
 
 ```
-git add {PROJECT_PATH}/README.md {PROJECT_PATH}/backend/README.md {PROJECT_PATH}/frontend/README.md
+git add {PROJECT_PATH}/README.md
+```
+
+```
+git add {PROJECT_PATH}/backend/README.md
+```
+
+```
+git add {PROJECT_PATH}/frontend/README.md
 ```
 
 ```
