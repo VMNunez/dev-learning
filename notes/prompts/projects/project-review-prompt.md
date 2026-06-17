@@ -145,6 +145,12 @@ Review for:
 - Does the app handle error states? (hasError signal pattern)
 - Are HTTP errors caught?
 
+**Code cleanliness:**
+- Any `console.log` statements left in the code? (High priority — signals the developer never cleaned up)
+- Any blocks of commented-out code? (Remove or explain with a comment why it is kept)
+- Any TODO or FIXME comments that were never resolved?
+- Any hardcoded values that should be constants or configuration? (magic numbers, URLs, strings)
+
 **What a code quality issue looks like — bad vs good:**
 
 TypeScript:
@@ -179,6 +185,12 @@ Security:
   Never trust a `userId` from the request body — a client can send any userId they want.
   Bad: `public TimeEntry create(CreateEntryRequest req) { ... req.getUserId() ... }` — privilege escalation risk
   Good: `String email = SecurityContextHolder.getContext().getAuthentication().getName();` — the server decides who the user is
+
+application.properties / application.yml:
+- Is `DB_PASSWORD` (or any database credential) read from an environment variable — not hardcoded?
+- Is `spring.jpa.hibernate.ddl-auto` set to `update` or `validate` — never `create-drop`?
+  `create-drop` drops and recreates the entire schema on every restart — instant data loss in any real environment.
+- Is `spring.jpa.show-sql=true` intentional? Flag it if left on — it floods logs in production.
 
 HTTP verbs:
 - Are state transitions (submit, approve, reject) using PATCH?
@@ -267,7 +279,13 @@ Format for each task:
 After completing the section, preserve any tasks that were already checked off (✅) — do not
 delete completed items. Only update or add new ones.
 
-Then show the commit message so Victor can run it himself.
-Commit format: docs: review {PROJECT_PATH} — <one line summary of main findings>
-Example: docs: review angular/06-hr-portal — fix README tradeoffs section, add error state tasks
+Then show the commit message so Victor can run it himself. Always one command per code block:
+
+```
+git add PROJECT-BACKLOG.md
+```
+
+```
+git commit -m "docs: review {PROJECT_PATH} — <one line summary of main findings>"
+```
 ```
