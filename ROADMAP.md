@@ -106,8 +106,8 @@ In order of impact:
 | --- | ------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------------- | ---------- |
 | 1   | Angular foundation + CSS/Tailwind solid           | Angular 01–04 + CSS/Tailwind                                       | SELECT, WHERE, ORDER BY                                           | Angular notes                                 | ✅ Done    |
 | 2   | Angular complete + Java foundation                | Angular 05–06 + RxJS + Java foundation                             | SQL basics continued                                              | Angular notes + interview prep started        | ✅ Done    |
-| 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | JOINs                                                             | Spring Boot notes                             | ⏳ Current |
-| 3b  | Project 07 complete with tests and Docker         | Project 07 full — Angular frontend, tests, Docker                  | GROUP BY, aggregates, subqueries                                  | Java + Architecture notes                     | 🔜         |
+| 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | JOINs                                                             | Spring Boot notes                             | ✅ Done    |
+| 3b  | Project 07 complete with tests and Docker         | Project 07 full — Angular frontend, tests, Docker                  | GROUP BY, aggregates, subqueries                                  | Java + Architecture notes                     | ⏳ Current |
 | 4   | Project 08 done + Friday applications             | Project 08 + more if time allows + Friday applications             | CTEs, window functions → SQL complete → technical test simulation | TypeScript + CSS notes + interview prep (es/) | 🔜         |
 | 5   | Interview ready — full application push           | Final project polish + applications every day                      | Technical test simulation                                         | Interview prep full focus                     | 🔜         |
 | 6   | After the job — depends on outcome                | Branches by outcome — see "After September — three possible paths" | Depends on path                                                   | Depends on path                               | 🔜         |
@@ -137,11 +137,13 @@ _This schedule is fixed for the full-time study window only — June 2 → Septe
 
 ### Now — Project 07 TimeTrack
 
-**Hard deadline June 14:** API runnable locally with login + one protected endpoint. Demonstrable in an interview, not necessarily finished.
+**Backend gate (Phase 3a — closed):** Login endpoint returns a valid JWT; protected endpoints reject requests without a token — confirmed in Postman. See `projects/07-timetrack/PLANNING.md` for the full step history.
 
-**Covers:** REST API, JWT auth, JPA + Hibernate, role-based endpoints, Angular consuming the API, JUnit 5 + Mockito, Docker Compose, architecture README.
+**Covers:** REST API, JWT auth, role-based authorization, JPA + Hibernate, TimeEntry workflow (DRAFT → SUBMITTED → APPROVED / REJECTED), reports, Angular frontend, JUnit 5 + Mockito, Jasmine + TestBed, Docker Compose, architecture README.
 
-**CV rule:** update in July. The internship bullet must say _built X that does Y_ — not just _developed a SaaS_.
+**Full project gate (Phase 3b):** Angular frontend live, all services have at least one unit test, `docker-compose up` runs everything, README includes at least one architecture decision with a real tradeoff — and every line is explainable out loud in an interview.
+
+**CV gate:** Update CV when project 07 is live on GitHub with a README that includes at least one architecture decision — not before.
 
 ### Tests — permanent rule from project 07 — complete and production-quality
 
@@ -226,15 +228,16 @@ If all five are done before September — start LeetCode Easy. If not — skip i
 
 ---
 
-## 13:30–14:30 block — Interview prep
+## 13:30–14:30 block — Notes then interview prep
 
-Notes are read naturally during project work — you open them when you need something. This block skips passive reading and goes directly to active recall, which is more useful in less time.
+**Stage 1 — Notes:**
+Study in priority order: `angular → spring-boot → java → architecture → typescript → sql → javascript → css → git`. SQL is last — it is already practiced daily in the 12:30 block. Move to Stage 2 when notes for the high-priority topics are well understood.
 
-**Stage 1 — Interview prep:**
-Active recall with `notes/interview-prep/es/`. Order: `angular → spring-boot → java → architecture → typescript → sql → javascript → css → git`. Use the simulator prompt for mock interviews.
+**Stage 2 — Interview prep:**
+Active recall with `notes/interview-prep/es/`. Same order as Stage 1. Use the simulator prompt for mock interviews.
 
-**Stage 2 — CV + LinkedIn + active applications:**
-Replaces interview prep when topics are solid.
+**Stage 3 — CV + LinkedIn + active applications:**
+Replaces interview prep when all main topics are solid.
 
 ---
 
@@ -250,6 +253,7 @@ Replaces interview prep when topics are solid.
 
 - Project 07 live, documented, explainable line by line
 - Project 08 live or well advanced
+- At least 15 simulations completed (5 Spring Boot, 5 Angular, 5 SQL) — tracker at `simulations/TRACKER.md`
 - All interview prep files solid — every question answered with a project example
 - CV with specific results: _built X that does Y_
 - LinkedIn updated with project summaries and the internship bullet
