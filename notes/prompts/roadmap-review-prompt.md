@@ -50,9 +50,10 @@ Project phases are structured as sequential goals: "first do X; when X is done, 
 Calendar dates do NOT belong in project milestone sections — they create false pressure and
 become stale the moment they pass without being met.
 
-Dates are allowed only in two places:
+Dates are allowed only in these places:
 1. The applications strategy section (July → Fridays only, August → equal priority, September → full push).
-2. The daily schedule header (the full-time study window started June 2).
+2. The daily schedule header and schedule notes (e.g. "fixed from June 2", "Friday rule from July").
+3. Any section that is explicitly about when to apply for jobs — not about when a technical goal is met.
 
 If a date appears anywhere else — a project milestone, a "hard deadline", a "CV rule: update in
 Month X" — replace it with a gate condition that is true or false regardless of the date.
@@ -83,7 +84,9 @@ Read, in this order. If you need detail on what a specific completed project was
      proposals in Step 5
 5. Simulation progress — check `PROGRESS.md` first (that is the preferred tracker); if no
    simulations section exists there yet, check `simulations/TRACKER.md`. Compare actual count
-   and type split against the minimum target stated in ROADMAP.md.
+   and type split against the minimum target stated in ROADMAP.md. If no simulations have been
+   done at all, flag it explicitly — applying before completing any simulations is a readiness
+   gap that ROADMAP's phase gate for Stage 2 should reflect.
 6. `PLANNING.md` of the currently active project (e.g. `projects/07-timetrack/PLANNING.md`, or
    the relevant `angular/0X-project-name/PLANNING.md` if an Angular-only project is active).
    PLANNING.md is the single source of truth for that project's scope and step order — confirm
@@ -93,8 +96,8 @@ Read, in this order. If you need detail on what a specific completed project was
    `git branch --show-current`) — to catch phase or project transitions that happened but were
    never reflected in ROADMAP.md.
 
-Today's date is available in the session context — use it to judge whether phase date ranges
-(e.g. "June 2–14") are in the past, current, or future.
+Today's date is available in the session context — use it to judge whether the applications
+strategy dates (July, August, September) are still in the future or already active.
 
 ---
 
@@ -102,12 +105,12 @@ Today's date is available in the session context — use it to judge whether pha
 
 Compare what ROADMAP.md claims against what the other files show. Look specifically for:
 
-- **Status markers (✅ / ⏳ / 🔜) that no longer match reality** — a phase whose date range has
-  passed, and whose milestone is already met according to CLAUDE.md or PROGRESS.md, but is still
-  marked 🔜 or ⏳ in ROADMAP.
-- **Dates that have passed without the phase being closed out** — if today is past a phase's end
-  date, that phase needs a ✅, or an explicit note in the table about why it slipped and what the
-  new target is.
+- **Status markers (✅ / ⏳ / 🔜) that no longer match reality** — a phase whose goal is clearly
+  met according to CLAUDE.md or PROGRESS.md, but is still marked 🔜 or ⏳ in ROADMAP.
+- **Gate conditions met but phase not promoted** — if a phase is marked ⏳ or 🔜 but PROGRESS.md
+  and CLAUDE.md show its gate conditions are clearly met, promote it to ✅; do not wait for a
+  calendar date to confirm it. If the gate conditions are only partially met, leave the marker
+  and add a short note on what is still missing.
 - **SQL gate table mismatches** — topics marked 🔜 in ROADMAP that coverage.md/PROGRESS.md show
   as done, or the reverse.
 - **Next-project gap list staleness** — gaps listed as uncovered that the current project or
@@ -149,6 +152,9 @@ confirm:
 
 - Status markers are accurate as of today's date.
 - No fact in ROADMAP.md contradicts CLAUDE.md or PROGRESS.md.
+- The currently active project section has a concrete, verifiable gate — a specific testable
+  condition (e.g. "login returns a JWT and Postman confirms it"), not a vague phrase like
+  "when the project is done" or a calendar date.
 - New gaps revealed by a coverage.md update are reflected in the project 08 planning section;
   if no existing candidate covers a significant gap, add a new project idea to the candidate list.
 - The file stays a forward-looking plan, not a growing concept list.
@@ -165,12 +171,16 @@ Print a short table of what changed:
 
 Also print a gap analysis summary:
 
-**Knowledge gaps found** (concepts in coverage.md not yet in PROGRESS.md, grouped by topic):
+**Knowledge gaps found** — concepts in coverage.md not yet in PROGRESS.md, filtered to those
+that would come up in a junior Angular + Spring Boot interview at a Spanish consultancy.
+Group by topic, one line per gap, max 8 gaps total. Skip deep internals that are beyond junior
+scope — focus on what a junior is actually asked in a technical screening.
 
-**Project proposals** (for uncovered gaps that the current project 08 candidates do not address):
-For each significant gap, propose a concrete project: name, what it covers technically, and
-what gap it closes. Focus on projects that are full-stack, testable, and recognisable to
-Spanish consultancy recruiters.
+**Project proposals** — for uncovered gaps that the current project 08 candidates do not address.
+For each proposal, include: project name, what it covers technically, what gap it closes, and
+one sentence on why a recruiter at NTT Data or Capgemini would recognise it as valuable.
+Only propose projects that are full-stack (Spring Boot + Angular + PostgreSQL), testable, and
+realistic to build in 2–4 weeks of full-time study.
 
 If a phase was closed out for the first time (newly marked ✅), remind me:
 "Phase X is now closed — if this also means a project finished, update PROGRESS.md's project
