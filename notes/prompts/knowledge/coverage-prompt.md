@@ -30,6 +30,13 @@ Notes on specific topics:
 - SQL: database is PostgreSQL. Include PostgreSQL-specific syntax and behaviour where it differs
   from standard SQL.
 - General: covers HTTP, JSON, env vars, testing concepts, SOLID, code principles.
+- Angular Material: focus on components used in Victor's projects and likely to appear in a
+  technical test or interview (MatTable, MatDialog, MatFormField, MatButton, etc.). Scope =
+  understanding each component's purpose, key inputs/outputs, and typical usage patterns.
+  Theming (how to customise colours in v19+) is in scope. Internal implementation and
+  rarely-used components are not. The boundary with notes/angular/ is: if the concept is
+  about Angular itself (directives, signals, routing), it belongs in angular/; if it is
+  specific to a Material component's API or behaviour, it belongs here.
 - Security: covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
 - Architecture: in scope — REST principles, layered architecture, MVC, coordinator pattern,
   smart/dumb components, service layer, repository pattern. Out of scope (future-learning) —
@@ -303,6 +310,10 @@ topic file — never a paraphrase, a shortened version, or a summary.
 Whenever `{NOTES_PATH}coverage.md` is created or edited in Step 5, immediately apply the same
 change to its section inside `notes/coverage.md`:
 
+0. If the section for {TOPIC} does not yet exist in `notes/coverage.md`, insert it at the
+   correct position following the study-priority order: Angular → Angular Material →
+   Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL →
+   Git → General. Add a `---` separator before and after the new section.
 1. Find the section for {TOPIC} in `notes/coverage.md` — it starts at the line `## {TOPIC}`
    and ends right before the next `## ` heading (or end of file if {TOPIC} is General, the
    last section).
@@ -345,6 +356,9 @@ After writing coverage.md:
 - Add concepts demoted from coverage or newly identified as post-junior
 - Do not rewrite the whole file — only touch the entries that changed
 - Preserve the phased structure (Phase 1, Phase 2, Phase 3) if it already exists
+- If `future-learning.md` does not exist yet for this topic, create it with a short intro
+  line and at least one `## Phase` section grouping concepts by when they become relevant
+  (during the job, 6–12 months in, senior level)
 
 ---
 
@@ -360,6 +374,7 @@ After all edits, print a short summary:
 | Promoted from future-learning | [list or "none"] |
 | Demoted to future-learning | [item — one-line reason it no longer belongs in coverage, or "none"] |
 | Removed from future-learning | [item — one-line reason it was removed, or "none"] |
+| Synced to notes/coverage.md | [yes — X bullets changed / no changes needed] |
 
 If coverage.md did not exist before and was created from scratch, only show the
 "Added to coverage" row grouped by section. Skip the promoted/demoted rows.
@@ -375,7 +390,5 @@ git add {NOTES_PATH}coverage.md {NOTES_PATH}future-learning.md notes/coverage.md
 ```
 
 git commit -m "docs: update {TOPIC} coverage — <one line summary of main changes>"
-
-```
 
 ```
