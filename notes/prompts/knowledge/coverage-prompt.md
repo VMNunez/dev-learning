@@ -25,6 +25,9 @@ Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/spring-boot/ — coverage.md is written there.
   Additionally read notes/java/ when reading existing notes (Step 1.3), because Spring Boot
   coverage must include Java language concepts that appear in Spring Boot code.
+  Also read notes/spring-boot/layer-reference.md — it defines what belongs in each layer
+  (controller, service, repository) and is directly relevant for coverage decisions about
+  where annotations and logic should live.
   Testing (JUnit 5, Mockito — what each does, what to mock, what `@ExtendWith` enables,
   the difference between a unit test and an integration test) is always in scope for
   Spring Boot — interviewers use it as a hard filter because almost no junior candidate has it.
@@ -73,7 +76,7 @@ My situation:
 - Completed an internship in June 2026 (Next.js + TypeScript + MySQL) — this is real work
   experience and it goes on my CV, even though the stack is different from my target
 - Target: land my first developer job at a Spanish IT consultancy by August–September 2026
-- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, and similar large consultancies
+- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI, and similar large consultancies
 - My differentiator: most candidates in Spain apply with React; I am going with Angular +
   Spring Boot, which is what consultancies use internally — this makes me stand out if I
   can demonstrate real understanding, not just syntax knowledge
@@ -275,6 +278,11 @@ Write a short explanation in `future-learning.md` of why it is post-junior scope
 If you identify a concept that is real and worth knowing post-hire — and it is not already
 in `future-learning.md` — add it. Do not create a full note file for it.
 
+**Remove entries from future-learning entirely:**
+If an entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated,
+or not needed in any future phase — delete it. Do not move it anywhere; simply remove it.
+Note this in the summary table under "Removed from future-learning".
+
 ---
 
 ## Step 5 — Write or update coverage.md
@@ -432,13 +440,14 @@ After all edits, print a short summary:
 | Change | Detail |
 |--------|--------|
 | Added to coverage | [list of new items] |
+| Modified in coverage | [list of updated items — one line per change, or "none"] |
 | Promoted from future-learning | [list or "none"] |
 | Demoted to future-learning | [item — one-line reason it no longer belongs in coverage, or "none"] |
 | Removed from future-learning | [item — one-line reason it was removed, or "none"] |
 | Synced to notes/coverage.md | [yes — X bullets changed / no changes needed] |
 
 If coverage.md did not exist before and was created from scratch, only show the
-"Added to coverage" row grouped by section. Skip the promoted/demoted/removed rows.
+"Added to coverage" row grouped by section. Skip the promoted/demoted/modified/removed rows.
 The "Synced to notes/coverage.md" row always appears, even when creating from scratch.
 
 "Promoted from future-learning" = concept moved into coverage (now in scope).
