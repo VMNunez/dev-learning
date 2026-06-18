@@ -88,8 +88,8 @@ Do not use the project list to decide what belongs in coverage.
 
 ## The Spanish job market in 2026
 
-Large consultancies (NTT Data, Capgemini, Indra, Sopra Steria) hire juniors through a
-standard 5-stage process:
+Large consultancies (NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI)
+hire juniors through a standard 5-stage process:
 
 1. **CV screening** — stack match, projects, internship. Filtered out if the CV is generic.
 2. **HR call** — motivation, availability, salary expectation. 15–20 minutes.
@@ -423,6 +423,7 @@ heading levels should differ (`#` → `##`, `##` → `###`). If anything differs
 After writing coverage.md:
 - Remove concepts promoted to coverage
 - Add concepts demoted from coverage or newly identified as post-junior
+- Remove entries identified in Step 4 as no longer relevant at all (wrong topic, outdated, or not needed in any future phase) — simply delete them
 - Do not rewrite the whole file — only touch the entries that changed
 - Preserve the phased structure (Phase 1, Phase 2, Phase 3) if it already exists
 - If `future-learning.md` does not exist yet for this topic, create it with a short intro
