@@ -29,7 +29,10 @@ Notes on specific topics:
   that does not appear in a Spring Boot context (GUI, threads, streams, advanced collections).
 - SQL: database is PostgreSQL. Include PostgreSQL-specific syntax and behaviour where it differs
   from standard SQL.
-- General: covers HTTP, JSON, env vars, testing concepts, SOLID, code principles.
+- General: covers HTTP, JSON, env vars, testing concepts, SOLID, code principles, Docker basics
+  (`docker-compose up`, what a container is, environment variables in Compose, why containerisation
+  matters in a consultancy project). Docker is moving from "nice to have" to baseline expectation
+  at Spanish consultancies in 2026 — include it.
 - Angular Material: focus on components used in Victor's projects and likely to appear in a
   technical test or interview (MatTable, MatDialog, MatFormField, MatButton, etc.). Scope =
   understanding each component's purpose, key inputs/outputs, and typical usage patterns.
@@ -167,6 +170,9 @@ covered by at least one note file. No exceptions.
 ---
 
 ## Step 1 — Read the existing state
+
+Before reading any file, re-read the configuration block above — some topics have additional
+reading instructions (e.g. Spring Boot requires reading `notes/java/` in step 1.3 as well).
 
 Read these files before making any decision:
 
@@ -324,6 +330,15 @@ sides of a pair are not already present, add them. Examples by topic:
 - TypeScript: `interface` vs `type`, `any` vs `unknown`, `?.` vs `??`
 - Architecture: `PUT` vs `PATCH`, unit test vs integration test, `401` vs `403`
 Apply the same logic to whatever {TOPIC} is — do not limit yourself to these examples.
+
+**Three-types check — before closing each section:**
+Confirm the section has at least one item of each type:
+- **Conceptual** — "what is X and how does it work?"
+- **Decision** — "why X instead of Y?"
+- **Pressure** — a gotcha or edge case that exposes shallow understanding
+
+If any type is missing, add one item before moving on. Do not close a section with only
+conceptual items — that is the most common gap and the one interviewers use to filter juniors.
 
 **Completeness check — before writing the file, answer this question:**
 "If Victor studied only the items in this coverage.md and nothing else, would he be able
