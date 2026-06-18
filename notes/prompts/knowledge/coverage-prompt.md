@@ -25,6 +25,12 @@ Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/spring-boot/ — coverage.md is written there.
   Additionally read notes/java/ when reading existing notes (Step 1.3), because Spring Boot
   coverage must include Java language concepts that appear in Spring Boot code.
+  Testing (JUnit 5, Mockito — what each does, what to mock, what `@ExtendWith` enables,
+  the difference between a unit test and an integration test) is always in scope for
+  Spring Boot — interviewers use it as a hard filter because almost no junior candidate has it.
+- Angular: testing concepts (Jasmine, TestBed, what `HttpClientTestingModule` does, the
+  difference between a spy and a mock, how to test a service vs a component) are always
+  in scope — same reason as Spring Boot: rare at junior level, strong differentiator.
 - Java: focus on language concepts needed to write and understand Spring Boot code. Skip anything
   that does not appear in a Spring Boot context (GUI, threads, streams, advanced collections).
 - SQL: database is PostgreSQL. Include PostgreSQL-specific syntax and behaviour where it differs
