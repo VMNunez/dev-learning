@@ -92,16 +92,28 @@ standard 5-stage process:
 What gets a junior filtered out at stage 4:
 - Cannot explain why a pattern was chosen (only knows how to write it)
 - Cannot read code written by someone else and explain what it does
-- No tests — signals the candidate only follows tutorials
+- No tests in the project — in 2026 this is a hard filter at most large consultancies, not
+  a minor gap. A junior with tests is rare and immediately stands out
 - Does not know the difference between similar concepts (e.g. `PATCH` vs `PUT`,
   `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, `Subject` vs `BehaviorSubject`)
 - Gives textbook definitions instead of real examples from their own projects
+- Cannot explain an architectural decision: "why JWT?", "why DTOs?", "why soft delete?" —
+  these are standard questions in the technical interview review step
+
+What has specifically changed in 2026:
+- Technical tests increasingly include a code-review step: the candidate is shown a snippet
+  (sometimes AI-generated) and asked to find the bug or explain what is wrong
+- Docker/containerisation is moving from "nice to have" to baseline expectation — a candidate
+  who cannot explain what `docker-compose up` does is visibly behind
+- Testing has become a real differentiator: almost no junior candidate has tests. Having
+  JUnit 5 + Mockito on the backend is now worth more than an extra feature
 
 At junior level, companies are not expecting a senior. They want someone who:
 - Can explain every line of code they wrote
-- Can justify at least one architectural decision
+- Can justify at least one architectural decision with a real reason, not a tutorial answer
 - Knows the basics of their stack and is not faking it
 - Can be productive within a few months
+- Can review code — including AI-generated code — and spot obvious mistakes
 
 ---
 
@@ -121,9 +133,19 @@ This means:
 - Code review questions are now standard — the interviewer shows a snippet and asks what
   is wrong or why it was written that way
 
+There is a second layer that is new in 2026: companies now expect juniors to USE AI tools
+(Copilot, Cursor) while still understanding and reviewing the output. The question is no
+longer only "can you explain the code you wrote?" — it is also "can you spot what the AI
+got wrong?" Common AI mistakes at junior level that interviewers test for:
+- Hardcoded secrets or tokens instead of environment variables
+- `@Transactional` placed on the wrong layer (controller instead of service)
+- Missing validation edge cases (`@NotBlank` used where `@NotNull` was needed, or vice versa)
+- Tests that always pass but never catch a real bug (no meaningful assertion)
+- N+1 queries from missing `LAZY`/`EAGER` configuration
+
 For coverage, this means: any concept that is easy to generate with AI but hard to explain
 belongs in coverage. The bar for "a junior must know this" is now "a junior must be able to
-explain and defend this without AI help."
+explain, defend, and review this without AI help."
 
 ---
 
@@ -190,6 +212,22 @@ be written — it does not mean the topic can be left out of coverage.
 - A junior who doesn't know it would not be filtered out in 2026
 
 If a concept fits neither category, it is not needed at all. Do not add it anywhere.
+
+**Three types of coverage items — every section should have all three:**
+
+Coverage items are not all the same type. The interview prep system that consumes this file
+generates three kinds of questions: conceptual (55%), decision (35%), and pressure (10%).
+When writing or reviewing items, check that each section contains all three types:
+
+- **Conceptual** — "what is X and how does it work?" e.g. `@Transactional — what it does
+  and at which layer it belongs`
+- **Decision** — "why X instead of Y?" e.g. `JWT vs sessions — when to choose each and
+  the tradeoff for a stateless REST API`
+- **Pressure** — a gotcha or edge case that exposes shallow understanding e.g.
+  `@Transactional on a private method — silently ignored because Spring cannot proxy it`
+
+If a section only has conceptual items, it is incomplete — add at least one decision item
+and one pressure item before closing the section.
 
 ---
 
@@ -266,8 +304,10 @@ or Indra in 2026. Every item must be explainable with a real example from one of
   is actually testing and names the gotcha a junior is likely to miss.
 
 - One concept per item — never group multiple concepts in one bullet. If an item lists
-  `@Entity`, `@Table`, `@Id` together, split them. The audit prompt checks each item
-  individually against the notes — a grouped item cannot be checked properly.
+  `@Entity`, `@Table`, `@Id` together, split them. This is not a style rule — it is a
+  functional requirement: notes are audited per item, interview questions are generated per
+  item, and project gap analysis maps per item. A grouped bullet breaks all three downstream
+  steps.
 - Inline backticks for annotations, class names, and method names are fine and encouraged
   (`` `@Transactional` ``, `` `JpaRepository` ``). What is not allowed is fenced code blocks
   (triple backtick) — no implementation, no method bodies, no examples.
