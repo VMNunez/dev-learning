@@ -69,8 +69,8 @@ My situation:
   Spring Boot, which is what consultancies use internally — this makes me stand out if I
   can demonstrate real understanding, not just syntax knowledge
 
-My projects: read CLAUDE.md, PROGRESS.md, or ROADMAP.md for the current and complete list —
-these files stay up to date as new projects are completed. Do not rely on a hardcoded list here.
+Projects are a vehicle to practise coverage items — they do not define coverage scope.
+Do not use the project list to decide what belongs in coverage.
 
 ---
 
@@ -151,7 +151,7 @@ Read these files before making any decision:
 1. `{NOTES_PATH}coverage.md` — if it exists, use it as the starting point. Do not remove
    items without a clear reason.
 2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
-   in-scope given Victor's current project and objective.
+   in-scope given Victor's job objective and August 2026 deadline.
 3. All numbered note files in {NOTES_PATH} — read them to understand what has been studied
    and what examples already exist. This is context, not the source of coverage decisions.
    Skip `future-learning.md` and `coverage.md` in this pass.
@@ -181,8 +181,6 @@ be written — it does not mean the topic can be left out of coverage.
 - A junior is expected to explain it confidently out loud
 - A junior is expected to write it, read it, or recognise it in a real codebase
 - Not knowing it would cause the interviewer to doubt the candidate's competence
-- It appeared in any of Victor's completed projects or is needed to understand them
-  (read CLAUDE.md or PROGRESS.md for the current project list)
 
 **OUT of coverage → goes to `future-learning.md`:**
 - Real and worth learning, but only relevant after landing the first job
@@ -202,8 +200,7 @@ For each concept you are deciding whether to include, ask:
 - Is this easy to generate with AI but hard to explain? → **must be in coverage**
 - Is this the kind of thing an interviewer would show as a snippet and ask "what does this do
   and why?" → **must be in coverage**
-- Is this something only a mid-level developer would need to know, and AI makes it irrelevant
-  at junior level? → **future-learning**
+- Is this something only a mid-level developer would need to know, regardless of AI? → **future-learning**
 
 Pairs of similar concepts that are easy to confuse deserve special attention — they are a
 standard interview filter. Examples: `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`,
@@ -215,8 +212,9 @@ description that explains the difference.
 ## Step 4 — The bidirectional check with future-learning.md
 
 **Promote from future-learning → coverage:**
-For each concept in `future-learning.md`: is it now in scope, given Victor's current active
-project (read CLAUDE.md for the current project and stack) and his August 2026 deadline?
+For each concept in `future-learning.md`: is it now in scope, given Victor's job objective
+(junior Angular + Spring Boot at a Spanish consultancy) and his August 2026 deadline?
+Apply the same criteria from Steps 2 and 3.
 If yes: add it to coverage and remove it from `future-learning.md`.
 
 **Demote from coverage → future-learning:**
@@ -288,8 +286,9 @@ sides of a pair are not already present, add them. Examples by topic:
 Apply the same logic to whatever {TOPIC} is — do not limit yourself to these examples.
 
 **Completeness check — before writing the file, answer this question:**
-"If Victor studied only the items in this coverage.md and nothing else, would he be ready
-to pass a technical interview at NTT Data for a junior Angular + Spring Boot role?"
+"If Victor studied only the items in this coverage.md and nothing else, would he be able
+to confidently answer any interview question about {TOPIC} at a junior Angular + Spring Boot
+screening at NTT Data or Capgemini?"
 If the answer is no, something is missing. Find it before writing.
 
 **Section design:**
@@ -310,10 +309,11 @@ topic file — never a paraphrase, a shortened version, or a summary.
 Whenever `{NOTES_PATH}coverage.md` is created or edited in Step 5, immediately apply the same
 change to its section inside `notes/coverage.md`:
 
-0. If the section for {TOPIC} does not yet exist in `notes/coverage.md`, insert it at the
-   correct position following the study-priority order: Angular → Angular Material →
-   Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL →
-   Git → General. Add a `---` separator before and after the new section.
+**If the section for {TOPIC} does not yet exist in `notes/coverage.md`:** insert it at the
+correct position following the study-priority order: Angular → Angular Material →
+Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL →
+Git → General. Add a `---` separator before and after the new section.
+
 1. Find the section for {TOPIC} in `notes/coverage.md` — it starts at the line `## {TOPIC}`
    and ends right before the next `## ` heading (or end of file if {TOPIC} is General, the
    last section).
@@ -377,7 +377,12 @@ After all edits, print a short summary:
 | Synced to notes/coverage.md | [yes — X bullets changed / no changes needed] |
 
 If coverage.md did not exist before and was created from scratch, only show the
-"Added to coverage" row grouped by section. Skip the promoted/demoted rows.
+"Added to coverage" row grouped by section. Skip the promoted/demoted/removed rows.
+The "Synced to notes/coverage.md" row always appears, even when creating from scratch.
+
+"Promoted from future-learning" = concept moved into coverage (now in scope).
+"Removed from future-learning" = concept deleted entirely because it is no longer relevant
+(wrong topic, outdated, or not needed anywhere — not just post-junior).
 
 Then show the commit message so Victor can run it himself. Always one command per code block:
 
@@ -386,6 +391,8 @@ Then show the commit message so Victor can run it himself. Always one command pe
 git add {NOTES_PATH}coverage.md {NOTES_PATH}future-learning.md notes/coverage.md
 
 ```
+
+If `{NOTES_PATH}future-learning.md` was not modified, remove it from the git add command.
 
 ```
 
