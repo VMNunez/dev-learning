@@ -73,8 +73,9 @@ These rules apply both when auditing existing notes and when creating new ones.
 - All other folders — **conversational mode**: the file opens with a general `Docs:` link to
   the main reference page for the whole topic; each section has a `Docs:` link that points to
   the exact sub-section to study and states what to read (e.g. `Docs: https://... → read:
-  "Template syntax — Built-in control flow"`); no `Purpose:` or `File:` lines; inline
-  explanations after code blocks
+  "Template syntax — Built-in control flow"`); no `Purpose:` or `File:` lines; prose
+  explanations with code blocks — explanation comes before the code, not in dedicated
+  metadata fields
 
 **Living document rules:**
 
@@ -244,7 +245,7 @@ Read all files in {NOTES_PATH}.
    - 🔧 Fixed — gaps found and resolved in this session
    - ➕ Added — new content created from scratch
 
-**Apply all fixes directly to the note files.**
+**Apply all fixes to new content and TODO resolutions directly to the note files.**
 
 **Creating new files — proactive, not reactive.**
 Do not wait for a gap in rule #1 to justify creating a new file. After reading the existing
@@ -267,15 +268,18 @@ created.
 
 **`future-learning.md` — bidirectional check:**
 
-Start by reading the existing `future-learning.md` in {NOTES_PATH}. For each concept listed,
-assess whether it is now within scope — given Victor's current active project (find it in
-CLAUDE.md) and his objective (junior at a Spanish consultancy with Angular + Spring Boot).
+Start by reading the existing `future-learning.md` in {NOTES_PATH}. If it does not exist
+yet, skip the promotion check and go directly to the demote/add step below. For each concept
+listed, assess whether it is now within scope — given Victor's current active project (find
+it in CLAUDE.md) and his objective (junior at a Spanish consultancy with Angular + Spring Boot).
 If a concept is now relevant, create a full note file for it and remove it from `future-learning.md`.
 
 Then, if during the audit a concept is identified that is real and worth knowing — but still
 beyond Victor's current scope (too advanced for a junior screening, or belongs to a future
-project) — add it to `future-learning.md`. Do not create a full note file for concepts that
-are still premature. If the file already lists the concept, leave it as is.
+project) — add it to `future-learning.md`. If the file does not exist yet, create it with a
+short intro line and at least one `## Phase` section grouping concepts by when they become
+relevant. Do not create a full note file for concepts that are still premature. If the file
+already lists the concept, leave it as is.
 
 ---
 
