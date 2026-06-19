@@ -146,6 +146,12 @@ add a new project idea to the candidate list.
 - New candidates must be full-stack (Spring Boot + Angular + PostgreSQL), testable,
   and buildable in 2–4 weeks of full-time study
 
+**Phase table:** After updating the project sections, also update the phase table at the
+top of ROADMAP.md. Each row corresponds to a phase — promote it to ✅ if its gate
+conditions are clearly met per PROGRESS.md, mark it ⏳ if it is the active phase, and
+🔜 if it has not started. Do not leave a phase marked ⏳ if PROGRESS.md shows its goals
+are already complete.
+
 ---
 
 ## Step 4 — Check the study block tables
@@ -161,6 +167,13 @@ The study order must be:
 `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
 Confirm ROADMAP's version of this block matches exactly. If CLAUDE.md defines a different
 order, CLAUDE.md wins — update ROADMAP to match.
+
+**LeetCode gate conditions:**
+ROADMAP.md has a section listing 5 gate conditions that must all be met before starting
+LeetCode. One condition references the notes study order ("notes complete for X topics").
+Verify that the topics listed in that gate match the current study order exactly — if the
+order changed (e.g. security was added), update that gate condition to include all topics.
+Do not change the other 4 gate conditions unless they are factually wrong per PROGRESS.md.
 
 ---
 
