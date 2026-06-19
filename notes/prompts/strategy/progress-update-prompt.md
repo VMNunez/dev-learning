@@ -6,6 +6,8 @@ Run this when PROGRESS.md feels out of sync: after finishing a project, after a 
 
 What this prompt does: reads every completed project's PLANNING.md, checks the SQL exercises folder, checks the simulation tracker, and writes a complete, accurate PROGRESS.md.
 
+**This prompt does NOT read `notes/coverage.md`.** Coverage tracks what Victor must learn — PROGRESS.md tracks what he has already learned. A stale or incomplete `notes/coverage.md` does not affect this prompt's results.
+
 ---
 
 ````
@@ -95,11 +97,17 @@ a `**Concept learned:**` line. There is no separate Section 3 table.
 
 **For the in-progress project (⏳) in Format B:**
 1. Read the PLANNING.md "Progressive learning plan". Look for step headings marked with ✅
-   (e.g. `### Step 3 — Spring Security + JWT ✅`). If ✅ markers are present, use them
-   as the source of truth for which steps are complete — they are more reliable than
-   PROGRESS.md because they are updated during sessions before PROGRESS.md is.
-   If no ✅ markers are found in PLANNING.md, fall back to the PROGRESS.md project summary
-   line (e.g. "Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳").
+   (e.g. `### Step 3 — Spring Security + JWT ✅`).
+   - If NO step has a ✅ marker anywhere in the file: fall back to the PROGRESS.md project
+     summary line. The format of this line may vary — examples: "Steps 1–3 done, Step 4 in
+     progress" or "Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳". Parse it flexibly
+     to extract which steps are complete and which are in progress.
+   - If AT LEAST ONE step has a ✅ marker: use the ✅ markers as the primary source. Steps
+     without ✅ are treated as not complete. However, also check the PROGRESS.md summary
+     line — if PROGRESS.md shows MORE steps as done than the ✅ markers indicate (e.g.
+     PLANNING.md has ✅ on Steps 1–2 only but PROGRESS.md says Steps 1–3 are done), prefer
+     the higher count. In-session updates may have added concepts to PROGRESS.md without
+     the corresponding ✅ being added to PLANNING.md.
 2. In the PLANNING.md, read the "Progressive learning plan". For each step confirmed as
    complete, extract the concepts from its `**Concept learned:**` line.
 3. For the step marked "in progress": do NOT add its concepts — they will be added when
@@ -108,10 +116,25 @@ a `**Concept learned:**` line. There is no separate Section 3 table.
    leave it as-is, do not remove it.
 4. For each concept extracted from completed steps: check if it already appears in the
    relevant technology section of PROGRESS.md. To determine the section, use the concept:
-   - Spring Boot annotations, beans, security, JPA → Spring Boot section
-   - Pure Java language constructs (`Optional<T>`, `@Value`, `long` vs `Long`…) → Java section (create it if it does not exist)
+   - Spring Boot annotations, beans, security, JPA → Spring Boot section. This includes
+     Spring-specific annotations like `@Value`, `@Component`, `@Configuration`, `@Bean`.
+   - Pure Java language constructs (`Optional<T>`, `long` vs `Long`, wrapper classes,
+     `try/catch`, access modifiers…) → Java section (create it if it does not exist).
+     A concept is "pure Java" if it exists in Java regardless of Spring — not if it is
+     a Spring annotation that happens to appear in a Java file.
    - Angular code → Angular section
+   - Docker, containerisation, `docker-compose` → General section (create it if it does
+     not exist, using the same heading + bullet format as other sections)
 5. Note every concept from completed steps that is missing from PROGRESS.md.
+
+**Important — `**Concept learned:**` lines are high-level summaries.** PROGRESS.md typically
+has more granular entries than these lines (e.g. the line says "JWT flow" but PROGRESS.md
+already has 10+ detailed bullets covering JWT internals). Before adding a concept:
+- If the `**Concept learned:**` line contains a summary label (e.g. "JWT flow", "layered
+  architecture") and PROGRESS.md already has detailed bullets that cover that topic,
+  treat the summary as already accounted for — do NOT add it as a new one-line bullet.
+- Only add an entry if a specific, concrete concept from the step is genuinely absent from
+  PROGRESS.md with no equivalent entry.
 
 **For a project marked Done ✓ in Format B:**
 All steps are complete. Apply the same extraction to every step in the learning plan,
