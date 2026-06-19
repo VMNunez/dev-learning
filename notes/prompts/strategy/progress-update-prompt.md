@@ -148,31 +148,44 @@ Project paths to check (in order):
 
 ## Step 3 — Audit SQL exercises
 
-Read the sql/ folder. Check what subfolders exist and what exercise files are inside them.
+Read the sql/ folder. List every subfolder that exists (e.g. `sql/01-basics/`, `sql/02-joins/`).
+For each subfolder that contains an `exercises.sql` file, read that file and count the exercises
+by counting comment headers of the form `-- Exercise N:`. This gives the accurate exercise count
+per topic — do not estimate.
 
-Cross-check against the SQL section in PROGRESS.md:
-- Is the exercises-completed line accurate? (count and topic description)
-- Are there topic sections in sql/ that are not mentioned in PROGRESS.md yet?
+The SQL section in PROGRESS.md has two distinct parts — keep both:
 
-Update the SQL section in PROGRESS.md to reflect what is actually in sql/. Use this format:
+**Part A — SQL concepts learned** (bullets like `SELECT DISTINCT`, `ORDER BY`, `IS NULL`…)
+These come from actual SQL knowledge practiced, not from the exercises folder. Do not touch
+this sub-section in Step 3 — it is audited only if a project's PLANNING.md introduced SQL
+concepts (Step 2). Leave it exactly as it is.
+
+**Part B — Exercises tracker**
+This is what Step 3 updates. Find the exercises sub-section in PROGRESS.md (usually under
+a heading like `### Exercises completed` or similar) and update it using this format:
 
 ```
-## SQL
+### Exercises completed
 
-Exercises completed: X exercises across Y topics (joins, group-by, ...)
+X total exercises across Y topics
 
-Topics covered:
-- joins — solid ✅
-- group-by — in progress ⏳
-- subqueries — not started 🔜
+| Topic | Folder | Exercises | Status |
+|-------|--------|-----------|--------|
+| basics / SELECT | sql/01-basics/ | N | solid ✅ |
+| joins | sql/02-joins/ | N | in progress ⏳ |
+| group-by | sql/03-group-by/ | N | not started 🔜 |
 ```
 
-Only list topics that have a folder in sql/. For topic status:
-- Keep any topic already marked solid ✅ in the current PROGRESS.md — do not downgrade it.
-- For topics that appear in sql/ but are not yet in PROGRESS.md, mark them as in progress ⏳.
-  Victor manually upgrades a topic to solid ✅ after reviewing his scores in a sql-exercises-prompt session.
-If a SQL section already exists in PROGRESS.md, keep its format — only update the counts
-and topic statuses that have changed.
+Only list topics that have a folder in sql/. For each topic:
+- Count: read the `exercises.sql` file and count `-- Exercise N:` headers
+- Status rules:
+  - Keep any topic already marked solid ✅ in the current PROGRESS.md — do not downgrade it
+  - For topics that appear in sql/ but are not yet in PROGRESS.md, mark them as in progress ⏳
+  - Victor upgrades a topic to solid ✅ manually after a sql-exercises-prompt review session scores above 80%
+
+If the exercises sub-section does not exist yet in PROGRESS.md, create it with the table above.
+If it already exists in a different format, rewrite it using the table format above — this is
+one of the cases where reformatting is allowed.
 
 ---
 
