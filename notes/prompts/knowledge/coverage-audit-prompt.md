@@ -147,7 +147,7 @@ If a type is missing, add at least one item of that type before moving to the ne
 Scan for concepts that are easy to confuse with something similar. Both sides of every confusable pair must be present as separate items. Examples by topic (not exhaustive — apply the same logic to every topic):
 - Spring Boot: `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, `@Component` vs `@Bean`, `@Service` vs `@Repository` vs `@Component`, `findById` returns `Optional` vs throws exception, `save()` vs `saveAndFlush()`
 - Angular: `Subject` vs `BehaviorSubject`, `signal()` vs `computed()`, `ngIf` vs `@if`, `async pipe` vs manual subscribe, `Observable` vs `Promise`, `constructor` vs `ngOnInit`
-- Java: `==` vs `.equals()` — reference comparison vs value equality; classic trap with String comparisons
+- Java: `==` vs `.equals()` — reference comparison vs value equality; classic trap with String comparisons, `checked` vs `unchecked exceptions` — when to use each and why Spring Boot prefers unchecked (RuntimeException subclasses)
 - SQL: `WHERE` vs `HAVING`, `JOIN` vs `LEFT JOIN`, `COUNT(*)` vs `COUNT(column)`, `TRUNCATE` vs `DELETE`, `UNION` vs `UNION ALL`, `EXISTS` vs `IN`
 - TypeScript: `interface` vs `type`, `any` vs `unknown`, `?.` vs `??`
 - Architecture: `PUT` vs `PATCH`, `401` vs `403`, unit test vs integration test, `DTO` vs entity, soft delete vs hard delete
