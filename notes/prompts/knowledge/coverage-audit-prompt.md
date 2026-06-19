@@ -96,7 +96,7 @@ Read these files before making any decision:
 Then list all existing subdirectories under `notes/` (excluding `interview-prep/`, `prompts/`). These are the current topic folders.
 
 **Pre-audit sync check:**
-For each topic folder found, read `notes/{topic}/coverage.md` (if it exists) and compare it to its corresponding section in `notes/coverage.md`. If they differ, `notes/coverage.md` is the authoritative source — correct the topic file immediately before proceeding. Note any files corrected in the final summary under "Sync corrections (pre-audit)".
+For each topic folder found, read `notes/{topic}/coverage.md` (if it exists) and compare it to its corresponding section in `notes/coverage.md`. If they differ in shared items, `notes/coverage.md` is the authoritative source — correct the topic file immediately before proceeding. If `notes/coverage.md` is missing the section entirely but the topic file has it, add the section to `notes/coverage.md` (apply the heading level transformation: topic `#` → `##`, topic `##` → `###`). Note any files corrected or added in the final summary under "Sync corrections (pre-audit)".
 
 ---
 
@@ -111,9 +111,9 @@ Compare the current topic folders against what Victor's objective requires.
 
 **Questions to answer:**
 
-Is **Testing** missing as a dedicated topic? At project 07 onwards, JUnit 5 + Mockito (backend) and Jasmine + TestBed (frontend) are permanent requirements with their own interview questions. Decide: does this warrant its own folder `notes/testing/`, or does it fit cleanly inside `notes/general/`? Apply the three criteria above to decide.
+Is **Testing** missing as a dedicated topic? At project 07 onwards, JUnit 5 + Mockito (backend) and Jasmine + TestBed (frontend) are permanent requirements. Apply the three criteria above. Testing has its own distinct interview questions at Spanish consultancies ("how do you write a unit test?", "what is Mockito?", "how does TestBed work?"), has well over 5 distinct coverage items (JUnit 5 structure, Mockito mocking, meaningful assertions, TestBed setup, integration vs unit test), and is clearly separate from `notes/general/`. It almost certainly meets all three criteria — confirm and, if so, create `notes/testing/`. If created, place it after the Security section in `notes/coverage.md`.
 
-Is **Docker** missing as a topic? Victor uses Docker Compose in project 07. Decide: is there enough junior-level content for a dedicated `notes/docker/` folder (5+ distinct coverage items), or do the relevant concepts belong in `notes/architecture/` or `notes/general/`?
+Is **Docker** missing as a topic? Victor uses Docker Compose in project 07. Decide: is there enough junior-level content for a dedicated `notes/docker/` folder (5+ distinct coverage items), or do the relevant concepts belong in `notes/architecture/` or `notes/general/`? If created, place it after the General section in `notes/coverage.md` (last in the order).
 
 Are there any other topics that a Spanish consultancy would interview a junior Angular + Spring Boot developer about that are not represented in the current folder structure?
 
@@ -145,12 +145,13 @@ If a type is missing, add at least one item of that type before moving to the ne
 **Check 2 — Confusable pairs:**
 
 Scan for concepts that are easy to confuse with something similar. Both sides of every confusable pair must be present as separate items. Examples by topic (not exhaustive — apply the same logic to every topic):
-- Spring Boot: `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, `@Component` vs `@Bean`, `findById` returns `Optional` vs throws exception
-- Angular: `Subject` vs `BehaviorSubject`, `signal()` vs `computed()`, `ngIf` vs `@if`, `async pipe` vs manual subscribe
-- SQL: `WHERE` vs `HAVING`, `JOIN` vs `LEFT JOIN`, `COUNT(*)` vs `COUNT(column)`, `TRUNCATE` vs `DELETE`
+- Spring Boot: `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, `@Component` vs `@Bean`, `@Service` vs `@Repository` vs `@Component`, `findById` returns `Optional` vs throws exception, `save()` vs `saveAndFlush()`
+- Angular: `Subject` vs `BehaviorSubject`, `signal()` vs `computed()`, `ngIf` vs `@if`, `async pipe` vs manual subscribe, `Observable` vs `Promise`, `constructor` vs `ngOnInit`
+- Java: `==` vs `.equals()` — reference comparison vs value equality; classic trap with String comparisons
+- SQL: `WHERE` vs `HAVING`, `JOIN` vs `LEFT JOIN`, `COUNT(*)` vs `COUNT(column)`, `TRUNCATE` vs `DELETE`, `UNION` vs `UNION ALL`, `EXISTS` vs `IN`
 - TypeScript: `interface` vs `type`, `any` vs `unknown`, `?.` vs `??`
-- Architecture: `PUT` vs `PATCH`, `401` vs `403`, unit test vs integration test, `DTO` vs entity
-- Security: authentication vs authorisation, hashing vs encryption, `XSS` vs `CSRF`
+- Architecture: `PUT` vs `PATCH`, `401` vs `403`, unit test vs integration test, `DTO` vs entity, soft delete vs hard delete
+- Security: authentication vs authorisation, hashing vs encryption, `XSS` vs `CSRF`, access token vs refresh token
 
 **Check 3 — AI-exploitable gaps:**
 
