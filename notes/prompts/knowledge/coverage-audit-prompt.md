@@ -95,6 +95,9 @@ Read these files before making any decision:
 
 Then list all existing subdirectories under `notes/` (excluding `interview-prep/`, `prompts/`). These are the current topic folders.
 
+**Pre-audit sync check:**
+For each topic folder found, read `notes/{topic}/coverage.md` (if it exists) and compare it to its corresponding section in `notes/coverage.md`. If they differ, `notes/coverage.md` is the authoritative source — correct the topic file immediately before proceeding. Note any files corrected in the final summary under "Sync corrections (pre-audit)".
+
 ---
 
 ## Step 2 — Audit topic completeness
@@ -216,6 +219,7 @@ Print the summary:
 
 | Change | Detail |
 |--------|--------|
+| Sync corrections (pre-audit) | [topic — what differed] |
 | New topic folders created | [list or "none"] |
 | Sections with gaps filled | [topic — what was added] |
 | Items split (grouped → atomic) | [list or "none"] |
