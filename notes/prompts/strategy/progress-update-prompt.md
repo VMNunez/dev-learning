@@ -53,9 +53,11 @@ Never add multi-line explanations. If a concept needs more than one line, it bel
 Read these files:
 
 1. `PROGRESS.md` — the current version. Understand the structure, sections, and format exactly.
-   Note which projects are in the table and what status they have.
-2. `CLAUDE.md` — "Current study progress" section. This is the authoritative source for which
-   project is active and what phase it is in.
+   Note which projects are in the table and what status they have. Treat this as a starting
+   point only — actual project statuses will be verified in Step 2 by reading each PLANNING.md.
+2. `CLAUDE.md` — "Current study progress" section. Use this for general orientation (which project
+   is active, what phase). Do not treat it as authoritative — it is updated manually and may lag
+   behind the actual state. Project statuses are confirmed in Step 2.
 
 ---
 
@@ -92,8 +94,25 @@ Cross-check against the SQL section in PROGRESS.md:
 - Is the exercises-completed line accurate? (count and topic description)
 - Are there topic sections in sql/ that are not mentioned in PROGRESS.md yet?
 
-Do not add topic detail to PROGRESS.md — just update the "Exercises completed" summary line
-to reflect what is actually in the sql/ folder.
+Update the SQL section in PROGRESS.md to reflect what is actually in sql/. Use this format:
+
+```
+## SQL
+
+Exercises completed: X exercises across Y topics (joins, group-by, ...)
+
+Topics covered:
+- joins — solid ✅
+- group-by — in progress ⏳
+- subqueries — not started 🔜
+```
+
+Only list topics that have a folder in sql/. For topic status:
+- Keep any topic already marked solid ✅ in the current PROGRESS.md — do not downgrade it.
+- For topics that appear in sql/ but are not yet in PROGRESS.md, mark them as in progress ⏳.
+  Victor manually upgrades a topic to solid ✅ after reviewing his scores in a sql-exercises-prompt session.
+If a SQL section already exists in PROGRESS.md, keep its format — only update the counts
+and topic statuses that have changed.
 
 ---
 
@@ -127,10 +146,14 @@ Write the complete updated PROGRESS.md.
 Rules:
 - Keep the exact same structure and section order as the current PROGRESS.md
 - Add missing concepts to the correct technology section (Angular concept → Angular section)
+- If a technology section does not yet exist in PROGRESS.md and concepts need to be added to it,
+  create it following the same format as the existing sections (heading + one-line bullet list)
 - Keep existing content — do not remove anything unless it is factually wrong
 - Do not reformat entries that are already correct
 - Do not add explanations or expand entries — one line per concept maximum
-- Update the projects table: fix any status markers that do not match CLAUDE.md
+- Update the projects table: fix any status markers that do not match what Step 2 found
+  in each project's PLANNING.md (Done ✓ if all Section 15 steps are complete; ⏳ if partially
+  complete; 🔜 if not started)
 
 After writing, print a short diff summary:
 
