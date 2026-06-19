@@ -76,7 +76,8 @@ These rules apply both when auditing existing notes and when creating new ones.
   the exact sub-section to study and states what to read (e.g. `Docs: https://... → read:
   "Template syntax — Built-in control flow"`); no `Purpose:` or `File:` lines; prose
   explanations with code blocks — explanation comes before the code, not in dedicated
-  metadata fields
+  metadata fields; use `##` for top-level topic sections and `###` for sub-concepts within
+  them — when adding a section to an existing file, match the heading level already in use
 
 **Living document rules:**
 
@@ -175,6 +176,8 @@ that must be covered for Victor's objective (junior at a Spanish consultancy wit
 Spring Boot). Every item in that file is a required topic. Use it as the baseline alongside
 rule 1 — any item not covered by an existing note file must be addressed during this audit.
 Skip `coverage.md` when checking note quality in rule 2 — it is a checklist, not a study note.
+If no `coverage.md` exists yet, skip this step and rely on rule 1 and your knowledge of what
+junior Angular + Spring Boot interviews at Spanish consultancies require.
 
 Read all files in {NOTES_PATH}.
 
@@ -278,6 +281,9 @@ notes, assess the full learning sequence as a whole:
 - Is the folder sparse? If a topic has 2 files but clearly needs 5 to be learnable, create the
   missing 3. Do not leave holes in the sequence just because no specific "gap" was flagged.
 
+Use `coverage.md` as the ceiling — do not create files for topics not listed there. The
+proactive check is about sequence completeness, not scope expansion.
+
 The notes/ folder is Victor's personal textbook for that topic. It should be complete enough
 that he can open file 01 and learn the topic from scratch — concise, personal, in order.
 
@@ -328,7 +334,7 @@ Then show the commit message so Victor can run it himself. Always use this forma
 
 ```
 
-git add <files changed>
+git add <list every file you created or modified by exact path — no wildcards or "." — include CLAUDE.md if you updated the "next file:" counter>
 
 ```
 
