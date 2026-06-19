@@ -168,6 +168,14 @@ For each TODO found:
 
 If no TODOs are found, skip this section and move directly to the audit.
 
+**Pattern detection — after resolving all TODOs:**
+If 2 or more TODOs reflect the same type of correction (e.g., always changing passive to
+active voice, always adding a "Why not X?" callout, always shortening code examples), this
+is a personal preference that should become a permanent rule — not a repeated manual fix.
+In that case, report it in the summary as a recommended prompt change: one specific sentence
+to add to rule 3 that would prevent the same correction from being needed in future runs.
+Do not add the rule yourself — Victor decides whether to accept it.
+
 ---
 
 ## Audit — Technical Foundation & Gaps
