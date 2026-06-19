@@ -23,7 +23,8 @@ NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/java
 
 Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/java/ AND notes/spring-boot/ — read both, because Spring Boot
-  code uses Java language concepts. Both folders use structured mode.
+  code uses Java language concepts. Both folders use structured mode. coverage.md lives in
+  notes/spring-boot/ only — read it from there, not from notes/java/.
 - Java: focus on language concepts needed to write Spring Boot code — classes, interfaces,
   annotations, generics, exceptions, Maven. Skip Java concepts that don't appear in a Spring Boot context.
 - SQL: database is PostgreSQL. Focus on PostgreSQL syntax and behaviour. Flag any PostgreSQL-specific
@@ -191,6 +192,14 @@ Read all files in {NOTES_PATH}.
      sentence appear word-for-word on the official docs site? If yes, report it in the summary
      — do not change the text; Victor decides whether to add a TODO and rewrite it.
 
+  **Action rules for rule 2 violations:**
+  - Missing `Docs:` links (file-level or section-level) → **add them directly**. They are
+    new content, not modifications to existing text, so the "existing text is final" rule
+    does not apply.
+  - All other violations (wrong voice, wrong format mode, missing WHY, missing patterns)
+    → **report in the summary only**. Do not change the text. Victor decides whether to
+    add a TODO and fix it.
+
   **Bad note:** "`HttpClient` is a service that performs HTTP requests. It provides methods for all HTTP verbs including GET, POST, PUT, and DELETE."
   **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a service (never a component) and it returns an Observable you subscribe to. Without it you would have to use the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project 02 to call the weather API."
   The bad note reads like the official docs. The good note explains WHY you use it, WHERE it lives, and references a real project.
@@ -288,7 +297,8 @@ already lists the concept, leave it as is.
 **Reminder:** only apply changes to existing text if there is a TODO marker. New files and new
 sections are always allowed. Do not edit existing text without a TODO — even if it could be improved.
 
-Apply all fixes directly to the files. Do not just report and leave them broken.
+Apply all new content and TODO resolutions directly to the files. For issues in existing
+text, report them in the summary — do not change the text.
 
 After all edits, print a final summary table:
 
