@@ -22,9 +22,9 @@ TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/java/ AND notes/spring-boot/ — read both, because Spring Boot
-  code uses Java language concepts. Both folders use structured mode. coverage.md lives in
-  notes/spring-boot/ only — read it from there, not from notes/java/.
+- Spring Boot: set NOTES_PATH = notes/java/, notes/spring-boot/ (comma-separated — read both,
+  because Spring Boot code uses Java language concepts). Both folders use structured mode.
+  coverage.md lives in notes/spring-boot/ only — read it from there, not from notes/java/.
 - Java: focus on language concepts needed to write Spring Boot code — classes, interfaces,
   annotations, generics, exceptions, Maven. Skip Java concepts that don't appear in a Spring Boot context.
 - SQL: database is PostgreSQL. Focus on PostgreSQL syntax and behaviour. Flag any PostgreSQL-specific
@@ -144,6 +144,9 @@ My projects:
 - 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
 - 07: TimeTrack (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate, PostgreSQL, Docker, Angular
 
+*(CLAUDE.md is authoritative for the current active project — if this list is outdated,
+use what CLAUDE.md and PROGRESS.md say instead.)*
+
 Notes to audit: {NOTES_PATH}
 
 ---
@@ -177,7 +180,12 @@ Read all files in {NOTES_PATH}.
 
 1. Identify fundamental concepts missing that a Spanish consultancy would use to filter
    candidates in a first technical screening. One sentence per gap explaining why they ask it.
-   Skip any file named `future-learning.md` or `coverage.md` — these are reference files, not study notes.
+   Skip any file named `future-learning.md`, `coverage.md`, or `layer-reference.md` — these
+   are reference files, not study notes. In general: skip any file in {NOTES_PATH} whose
+   name does not start with a two-digit number.
+
+   For each gap found, apply rule 3 to create the missing content — either as a new file
+   or as a new section in the most appropriate existing file.
 
 2. Check if every note follows these teaching rules:
    - Does it explain the WHY before the code?
@@ -195,10 +203,13 @@ Read all files in {NOTES_PATH}.
   **Action rules for rule 2 violations:**
   - Missing `Docs:` links (file-level or section-level) → **add them directly**. They are
     new content, not modifications to existing text, so the "existing text is final" rule
-    does not apply.
-  - All other violations (wrong voice, wrong format mode, missing WHY, missing patterns)
-    → **report in the summary only**. Do not change the text. Victor decides whether to
-    add a TODO and fix it.
+    does not apply. Only add a link if you are certain of the correct URL and sub-section —
+    if not, write `Docs: TODO — add link` instead of guessing. A wrong URL is worse than
+    no link.
+  - All other violations **in existing text** (wrong voice, wrong format mode, missing WHY,
+    missing patterns) → **report in the summary only**. Do not change the text. Victor
+    decides whether to add a TODO and fix it. New content you are creating must always
+    follow rule 3 fully — these action rules only apply to existing text.
 
   **Bad note:** "`HttpClient` is a service that performs HTTP requests. It provides methods for all HTTP verbs including GET, POST, PUT, and DELETE."
   **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a service (never a component) and it returns an Observable you subscribe to. Without it you would have to use the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project 02 to call the weather API."
@@ -270,10 +281,10 @@ notes, assess the full learning sequence as a whole:
 The notes/ folder is Victor's personal textbook for that topic. It should be complete enough
 that he can open file 01 and learn the topic from scratch — concise, personal, in order.
 
-When creating a new file, follow the numbered naming convention (e.g. 16-topic-name.md) and
-choose the number that fits logically in the learning sequence — not just the next available
-number. Update the "next file:" counter for that folder in CLAUDE.md after all new files are
-created.
+When creating new files, follow the numbered naming convention (e.g. 16-topic-name.md). Start
+from the next available number listed in CLAUDE.md for that folder. If creating multiple files
+in one session, assign numbers in the order they should be studied — not the order you happen
+to write them. Update the "next file:" counter in CLAUDE.md after all new files are created.
 
 **`future-learning.md` — bidirectional check:**
 
@@ -305,6 +316,13 @@ After all edits, print a final summary table:
 | File | Status |
 |------|--------|
 | [filename] | ✅ / 🔧 / ➕ |
+
+If any issues were found in existing text that could not be changed, list them here:
+
+**Reported issues — existing text (require a TODO to fix):**
+- `[filename]` — [description of the issue and which rule it violates; Victor adds a TODO marker to get it fixed next run]
+
+If no issues in existing text were found, omit this section.
 
 Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
 
