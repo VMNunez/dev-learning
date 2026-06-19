@@ -70,7 +70,8 @@ These rules apply both when auditing existing notes and when creating new ones.
   concept, then confirm in that project's PLANNING.md; if no project covers it yet, use a
   representative generic path or omit entirely), and `Docs:` (link to the exact sub-section
   to study with a note on what to read, e.g. `https://... → read: "Declaring Transactions"`);
-  per-call explanations as bold items (`**.methodName()**`)
+  per-call explanations as bold items (`**.methodName()**`); use `##` to introduce each
+  concept section
 - All other folders — **conversational mode**: the file opens with a general `Docs:` link to
   the main reference page for the whole topic; each section has a `Docs:` link that points to
   the exact sub-section to study and states what to read (e.g. `Docs: https://... → read:
@@ -282,7 +283,9 @@ notes, assess the full learning sequence as a whole:
   missing 3. Do not leave holes in the sequence just because no specific "gap" was flagged.
 
 Use `coverage.md` as the ceiling — do not create files for topics not listed there. The
-proactive check is about sequence completeness, not scope expansion.
+proactive check is about sequence completeness, not scope expansion. If no `coverage.md`
+exists, limit new files to concepts you identified as gaps in rule 1 — do not generate
+additional files beyond those.
 
 The notes/ folder is Victor's personal textbook for that topic. It should be complete enough
 that he can open file 01 and learn the topic from scratch — concise, personal, in order.
