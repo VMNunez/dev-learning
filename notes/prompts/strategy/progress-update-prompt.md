@@ -123,6 +123,10 @@ a `**Concept learned:**` line. There is no separate Section 3 table.
      A concept is "pure Java" if it exists in Java regardless of Spring — not if it is
      a Spring annotation that happens to appear in a Java file.
    - Angular code → Angular section
+   - Backend testing concepts (JUnit 5, Mockito, `@ExtendWith`, `@Mock`, `@InjectMocks`…)
+     → Spring Boot section
+   - Frontend testing concepts (Jasmine, TestBed, `HttpClientTestingModule`, spies…)
+     → Angular section
    - Docker, containerisation, `docker-compose` → General section (create it if it does
      not exist, using the same heading + bullet format as other sections)
 5. Note every concept from completed steps that is missing from PROGRESS.md.
