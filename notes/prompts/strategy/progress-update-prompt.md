@@ -4,7 +4,7 @@ Use in a **separate conversation**. No configuration needed — paste the whole 
 
 Run this when PROGRESS.md feels out of sync: after finishing a project, after a long block of sessions, or before running the `new-project-prompt` (which uses PROGRESS.md as its main input for gap analysis). If PROGRESS.md is incomplete, the gap analysis is wrong.
 
-What this prompt does: reads every completed project's PLANNING.md and README, checks the SQL exercises folder, checks the simulation tracker, and writes a complete, accurate PROGRESS.md.
+What this prompt does: reads every completed project's PLANNING.md, checks the SQL exercises folder, checks the simulation tracker, and writes a complete, accurate PROGRESS.md.
 
 ---
 
@@ -70,9 +70,12 @@ For every project marked Done ✓ in the projects table:
 3. Note every concept that is in PLANNING.md Section 3 but NOT in PROGRESS.md.
 
 For the in-progress project (⏳):
-1. Read its `PLANNING.md`. Find which steps are marked as complete.
-2. For each completed step, check Section 3 for the concepts introduced in that step.
-3. Apply the same check: in PLANNING.md but not in PROGRESS.md → add it.
+1. Read its `PLANNING.md`. Find which steps in Section 15 (the learning plan) are marked as complete.
+2. For each completed step in Section 15, read the "New concepts introduced" list inside that step —
+   each item references a specific concept from Section 3. Use the "Topic" column in Section 3 to
+   determine which technology section in PROGRESS.md the concept belongs to (e.g. Topic = "Spring Boot"
+   → Spring Boot section in PROGRESS.md).
+3. Apply the same check: concept listed in a completed step but not yet in PROGRESS.md → add it.
 
 Project paths to check (in order):
 - Angular projects: angular/01-todo-list, angular/02-weather-app, angular/03-expense-tracker,
@@ -136,7 +139,13 @@ After writing, print a short diff summary:
 |---------|-------|-----------|---------|
 | Projects table | | | |
 | Angular | | | |
+| Java | | | |
 | Spring Boot | | | |
+| CSS | | | |
+| TypeScript | | | |
+| Architecture | | | |
+| Security | | | |
+| General | | | |
 | SQL | | | |
 | Simulations | | | |
 
@@ -144,7 +153,7 @@ After writing, print a short diff summary:
 "Corrected" = entries that were wrong (e.g. wrong project number, stale status)
 "Removed" = entries that were duplicates or factually wrong
 
-If nothing changed in a section: write "—".
+If nothing changed in a section: write "—". Skip rows for sections that do not yet exist in PROGRESS.md.
 
 ---
 
