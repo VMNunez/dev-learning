@@ -61,28 +61,88 @@ Read these files:
 
 ---
 
-## Step 2 — Audit each completed project
+## Step 2 — Audit each project
 
-For every project marked Done ✓ in the projects table:
+PLANNING.md files use three different formats depending on when the project was created.
+Before reading any PLANNING.md, identify which format it uses — then follow the matching
+instructions below.
 
-1. Read `{project-path}/PLANNING.md`. Find Section 3 ("New concepts") — the table of concepts
-   this project was supposed to teach for the first time.
-2. For each concept in Section 3: check if it already appears in the relevant technology section
-   of PROGRESS.md (e.g. an Angular concept should be in the Angular section).
-3. Note every concept that is in PLANNING.md Section 3 but NOT in PROGRESS.md.
+---
 
-For the in-progress project (⏳):
-1. Read its `PLANNING.md`. Find which steps in Section 15 (the learning plan) are marked as complete.
-2. For each completed step in Section 15, read the "New concepts introduced" list inside that step —
-   each item references a specific concept from Section 3. Use the "Topic" column in Section 3 to
-   determine which technology section in PROGRESS.md the concept belongs to (e.g. Topic = "Spring Boot"
-   → Spring Boot section in PROGRESS.md).
-3. Apply the same check: concept listed in a completed step but not yet in PROGRESS.md → add it.
+### Format A — Old format (projects 01–06)
+
+These PLANNING.md files have a section called **"Key patterns introduced"** — a table with
+two columns: `| Pattern | Where used |`. There is no numbered Section 3.
+
+**For every project marked Done ✓ in Format A:**
+1. Read the "Key patterns introduced" table. Every row is a new concept for that project.
+2. Also read the "Key features" and "State management" sections — they sometimes mention
+   patterns (e.g. `localStorage + effect()`, `computed()` for derived values) not listed
+   in the patterns table.
+3. For each concept found: check if it already appears in PROGRESS.md.
+   To decide which technology section it belongs to, use this mapping:
+   - Angular API (`@Component`, `signal()`, `HttpClient`, `MatTable`, guards, pipes…) → Angular section
+   - CSS properties, layout techniques, animations → CSS section
+   - TypeScript utility types (`Omit`, `??`, `?.`…) → TypeScript utility types (sub-section of Angular or a dedicated TypeScript section, whichever exists)
+4. Note every concept present in the PLANNING.md but missing from PROGRESS.md.
+
+---
+
+### Format B — Transitional format (project 07 and any project without a numbered Section 3)
+
+These PLANNING.md files have a **"Progressive learning plan"** where each step ends with
+a `**Concept learned:**` line. There is no separate Section 3 table.
+
+**For the in-progress project (⏳) in Format B:**
+1. Read the PROGRESS.md project summary line for this project — it states which steps are
+   done (e.g. "Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳"). This is the only
+   reliable source for step completion status.
+2. In the PLANNING.md, read the "Progressive learning plan". For each step marked as
+   complete in PROGRESS.md, extract the concepts from its `**Concept learned:**` line.
+3. For the step marked "in progress": also check if any sub-tasks are explicitly described
+   as done in the PROGRESS.md technology sections. If a concept appears there, it was learned
+   even if the step is not fully complete — do not re-add it.
+4. For each concept extracted: check if it already appears in the relevant technology section
+   of PROGRESS.md. To determine the section, use the concept itself as a signal:
+   - Spring Boot annotations, beans, security, JPA → Spring Boot section
+   - Pure Java language constructs (`Optional<T>`, `@Value`, `long` vs `Long`…) → Java section (create it if it does not exist)
+   - Angular code → Angular section
+5. Note every concept that should be in PROGRESS.md but is not.
+
+**For a project marked Done ✓ in Format B:**
+All steps are complete. Apply the same extraction to every step in the learning plan,
+then follow the same check as above.
+
+---
+
+### Format C — New format (projects 08 and later, created by new-project-prompt)
+
+These PLANNING.md files have a numbered **Section 3 ("New concepts")** — a table with
+columns `| Concept | Topic | Why this project teaches it |` — and a **Section 15**
+("Progressive learning plan") where each step explicitly lists which Section 3 concepts
+it introduces.
+
+**For every project marked Done ✓ in Format C:**
+1. Read Section 3. Every row is a new concept. Use the "Topic" column to determine which
+   technology section in PROGRESS.md it belongs to.
+2. For each concept: check if it already appears in PROGRESS.md.
+3. Note every concept in Section 3 but missing from PROGRESS.md.
+
+**For the in-progress project (⏳) in Format C:**
+1. Read Section 15. Find which steps are marked as complete (✅).
+2. For each completed step, read its "New concepts introduced" list — these reference
+   specific items from Section 3. Use the "Topic" column in Section 3 to determine the
+   correct PROGRESS.md section.
+3. Apply the same check: concept in a completed step but not in PROGRESS.md → add it.
+
+---
 
 Project paths to check (in order):
-- Angular projects: angular/01-todo-list, angular/02-weather-app, angular/03-expense-tracker,
-  angular/04-meal-finder, angular/05-task-manager, angular/06-hr-portal
-- Full-stack projects: projects/07-timetrack (and any later ones in PROGRESS.md)
+- Angular projects (Format A): angular/01-todo-list, angular/02-weather-app,
+  angular/03-expense-tracker, angular/04-meal-finder, angular/05-task-manager,
+  angular/06-hr-portal
+- Full-stack projects: projects/07-timetrack (Format B) and any later ones in PROGRESS.md
+  (use Format C if they have a numbered Section 3, Format B if they do not)
 
 ---
 
@@ -151,9 +211,10 @@ Rules:
 - Keep existing content — do not remove anything unless it is factually wrong
 - Do not reformat entries that are already correct
 - Do not add explanations or expand entries — one line per concept maximum
-- Update the projects table: fix any status markers that do not match what Step 2 found
-  in each project's PLANNING.md (Done ✓ if all Section 15 steps are complete; ⏳ if partially
-  complete; 🔜 if not started)
+- Update the projects table: fix any status markers that do not match what Step 2 found.
+  A project is Done ✓ when all its learning steps are complete (all steps in the learning
+  plan for Format A/B, or all Section 15 steps for Format C). It is ⏳ if at least one
+  step is still in progress. It is 🔜 if it has not started.
 
 After writing, print a short diff summary:
 
