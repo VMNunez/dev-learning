@@ -62,10 +62,17 @@ These rules apply both when auditing existing notes and when creating new ones.
 
 **Format modes:**
 
-- `notes/java/` and `notes/spring-boot/` — **structured mode**: each section has `Purpose:`,
-  `File:`, `Docs:` lines; per-call explanations as bold items (`**.methodName()**`)
-- All other folders — **conversational mode**: inline explanations after code blocks; no
-  `Purpose:` or `File:` lines; `Docs:` link per section
+- `notes/java/` and `notes/spring-boot/` — **structured mode**: the file opens with a general
+  `Docs:` link to the main reference page for the whole topic; each section has a `Purpose:`
+  line, a `File:` line (path to the project file where this code lives — omit if the concept
+  has no associated project file), and a section-level `Docs:` link that points to the exact
+  sub-section to study and states what to read (e.g. `Docs: https://... → read: "Declaring
+  Transactions"`); per-call explanations as bold items (`**.methodName()**`)
+- All other folders — **conversational mode**: the file opens with a general `Docs:` link to
+  the main reference page for the whole topic; each section has a `Docs:` link that points to
+  the exact sub-section to study and states what to read (e.g. `Docs: https://... → read:
+  "Template syntax — Built-in control flow"`); no `Purpose:` or `File:` lines; inline
+  explanations after code blocks
 
 **Living document rules:**
 
@@ -166,7 +173,12 @@ Read all files in {NOTES_PATH}.
 2. Check if every note follows these teaching rules:
    - Does it explain the WHY before the code?
    - Does it identify repeating patterns and name them explicitly?
-   - Does it link to the exact official documentation page (not just the main docs site)?
+   - Is it in the correct format mode for its folder? (`notes/java/` and `notes/spring-boot/`
+     → structured mode; all other folders → conversational mode)
+   - Does the file open with a general `Docs:` link to the main reference page for the topic?
+   - Does each section have a `Docs:` link that points to the exact sub-section to study and
+     states what to read — not just a homepage link? (e.g. `Docs: https://... → read:
+     "Declaring Transactions"`)
    - Does it read like a personal learning guide, not like documentation? Test: would this
      sentence appear word-for-word on the official docs site? If yes, rewrite it in Victor's voice.
 
@@ -205,10 +217,13 @@ Read all files in {NOTES_PATH}.
      JWT flow) need a paragraph. Match the explanation length to how long it actually takes
      to understand the concept — not to a fixed template.
    - **Code concept sections (methods, classes, annotations):** *(structured mode — notes/java/
-     and notes/spring-boot/ only)* start with a `Purpose:` line — one sentence: who calls it,
-     when, and why. Then explain each important call or line with a bold item — what it does and
-     why it matters, in plain language. Never include an Imports section — IntelliJ handles
-     imports automatically.
+     and notes/spring-boot/ only)* each section starts with three metadata lines: `Purpose:` —
+     one sentence: who calls it, when, and why; `File:` — path to the project file where this
+     code is written (e.g. `src/main/java/.../service/UserService.java`) — omit if the concept
+     has no associated project file; `Docs:` — link to the exact sub-section to study with a
+     note on what to read (e.g. `https://... → read: "Declaring Transactions"`). Then explain
+     each important call or line with a bold item — what it does and why it matters, in plain
+     language. Never include an Imports section — IntelliJ handles imports automatically.
 
 4. For each note file, give a coverage status:
    - ✅ Complete — solid coverage for a junior screening at a Spanish consultancy
@@ -239,8 +254,8 @@ created.
 **`future-learning.md` — bidirectional check:**
 
 Start by reading the existing `future-learning.md` in {NOTES_PATH}. For each concept listed,
-assess whether it is now within scope — given Victor's current project (07: Spring Boot + JWT +
-JPA + Docker) and his objective (junior at a Spanish consultancy with Angular + Spring Boot).
+assess whether it is now within scope — given Victor's current active project (find it in
+CLAUDE.md) and his objective (junior at a Spanish consultancy with Angular + Spring Boot).
 If a concept is now relevant, create a full note file for it and remove it from `future-learning.md`.
 
 Then, if during the audit a concept is identified that is real and worth knowing — but still
