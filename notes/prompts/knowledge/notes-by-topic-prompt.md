@@ -63,12 +63,13 @@ These rules apply both when auditing existing notes and when creating new ones.
 **Format modes:**
 
 - `notes/java/` and `notes/spring-boot/` — **structured mode**: the file opens with a general
-  `Docs:` link to the main reference page for the whole topic; each section has a `Purpose:`
-  line, a `File:` line — the real path to the file where this code was applied; check PROGRESS.md
-  to find which project covers this concept, then confirm in that project's PLANNING.md;
-  if no project covers it yet, use a representative generic path or omit entirely, and a section-level `Docs:` link that points to the exact
-  sub-section to study and states what to read (e.g. `Docs: https://... → read: "Declaring
-  Transactions"`); per-call explanations as bold items (`**.methodName()**`)
+  `Docs:` link to the main reference page for the whole topic; each section has three fields:
+  `Purpose:` (one sentence — who calls it, when, and why), `File:` (real path to the project
+  file where this code was applied — check PROGRESS.md to find which project covers this
+  concept, then confirm in that project's PLANNING.md; if no project covers it yet, use a
+  representative generic path or omit entirely), and `Docs:` (link to the exact sub-section
+  to study with a note on what to read, e.g. `https://... → read: "Declaring Transactions"`);
+  per-call explanations as bold items (`**.methodName()**`)
 - All other folders — **conversational mode**: the file opens with a general `Docs:` link to
   the main reference page for the whole topic; each section has a `Docs:` link that points to
   the exact sub-section to study and states what to read (e.g. `Docs: https://... → read:
@@ -80,14 +81,19 @@ These rules apply both when auditing existing notes and when creating new ones.
 Notes are not written once and forgotten. After each concept is learned and the code is written
 in a project, check the relevant notes file:
 - If the concept is not documented, add it with a real code example from the current project
-- If a section already exists with a code example, update it if the project adds something new
-  — do not add a second example for the same concept
+- If a section already exists with a code example, add a new sub-section within that file if
+  the project introduces something meaningfully new — do not replace or edit the existing
+  example, and do not add a duplicate for the same concept
 - Never duplicate examples across files in the same folder
 
 **IMPORTANT — existing text is final unless marked with TODO:**
 
 Do not rewrite, rephrase, restructure, or change any text that already exists in a note file.
-Victor has already refined that text to his taste. You may:
+There are two reasons for this rule: either Victor has already read that section and the text
+is exactly how he wants it, or he has not read it yet and should read the original — not a
+version rewritten by AI. In both cases, the text stays untouched.
+
+You may:
 - Add new note files
 - Add new sections to an existing file
 - Resolve TODO markers (see Pre-audit section)
@@ -181,7 +187,8 @@ Read all files in {NOTES_PATH}.
      states what to read — not just a homepage link? (e.g. `Docs: https://... → read:
      "Declaring Transactions"`)
    - Does it read like a personal learning guide, not like documentation? Test: would this
-     sentence appear word-for-word on the official docs site? If yes, rewrite it in Victor's voice.
+     sentence appear word-for-word on the official docs site? If yes, report it in the summary
+     — do not change the text; Victor decides whether to add a TODO and rewrite it.
 
   **Bad note:** "`HttpClient` is a service that performs HTTP requests. It provides methods for all HTTP verbs including GET, POST, PUT, and DELETE."
   **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a service (never a component) and it returns an Observable you subscribe to. Without it you would have to use the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project 02 to call the weather API."
