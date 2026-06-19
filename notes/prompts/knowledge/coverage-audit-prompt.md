@@ -25,7 +25,7 @@ My situation:
 - Full-time studying since June 2, 2026 — this is my main job right now
 - Completed an internship in June 2026 (Next.js + TypeScript + MySQL) — real work experience, different stack, goes on the CV
 - Target: land my first developer job at a Spanish IT consultancy by August–September 2026
-- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, and similar large consultancies
+- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI, and similar large consultancies
 - Differentiator: most candidates in Spain apply with React; I am going with Angular + Spring Boot, which is what consultancies use internally
 
 Projects and notes are vehicles to reach the job objective — they do not define scope. Scope is defined entirely by what the job requires.
@@ -34,7 +34,7 @@ Projects and notes are vehicles to reach the job objective — they do not defin
 
 ## The Spanish job market in 2026
 
-Large consultancies (NTT Data, Capgemini, Indra, Sopra Steria) hire juniors through a 5-stage process: CV screening → HR call → technical test → technical interview → offer.
+Large consultancies (NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI) hire juniors through a 5-stage process: CV screening → HR call → technical test → technical interview → offer.
 
 The technical interview (stage 4) is where candidates are filtered. The interviewer reviews the candidate's test code live and asks conceptual questions on the spot.
 
@@ -118,7 +118,7 @@ Are there any other topics that a Spanish consultancy would interview a junior A
 1. Create `notes/{topic}/coverage.md` following the same format rules as `coverage-prompt.md` Step 5 — every item must be interview-anchored, one concept per item, sections named specifically
 2. Create `notes/{topic}/future-learning.md` with a short intro line and at least one `## Phase` section grouping post-junior concepts by when they become relevant (during the job, 6–12 months in, senior level)
 3. Do NOT create note files (the numbered `01-...` files) — those are written in separate guided sessions
-4. Add the new section to `notes/coverage.md` in study-priority order, with a `---` separator before and after
+4. Add the new section to `notes/coverage.md` in study-priority order, with a `---` separator before and after. Apply the heading level transformation: `# Minimum Coverage — {TOPIC}` becomes `## {TOPIC}`, and each `## Section name` in the source becomes `### Section name` in `notes/coverage.md`
 
 **If a concept belongs under an existing topic instead:**
 Add it to the correct section in that topic's coverage, and sync to `notes/coverage.md`.
@@ -186,6 +186,9 @@ If a concept is in the wrong topic (e.g. a TypeScript-specific item sitting in J
 **Scope check:**
 If any item in an existing section is clearly post-junior (too advanced for a junior screening, belongs to mid-level architecture or senior performance work), demote it to `notes/{topic}/future-learning.md` and remove it from coverage.
 
+**Future-learning promotion check:**
+For each `notes/{topic}/future-learning.md` corresponding to a section you reviewed: are any concepts listed there now in scope for a junior Angular + Spring Boot role in August 2026? Apply the same criteria from Step 3. If yes: add the concept to the correct section in `notes/coverage.md` and the corresponding `notes/{topic}/coverage.md`, and remove it from `future-learning.md`. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
+
 ---
 
 ## Step 5 — Apply all changes
@@ -195,7 +198,7 @@ Apply every change identified in Steps 2, 3, and 4 directly to the files.
 **Files to update:**
 - `notes/coverage.md` — the primary file
 - Each `notes/{topic}/coverage.md` that was changed — must mirror its section in `notes/coverage.md` exactly (heading levels shifted back: `##` → `#`, `###` → `##`)
-- Each `notes/{topic}/future-learning.md` that received demoted items
+- Each `notes/{topic}/future-learning.md` that changed — received demoted items, had promoted items removed, or had entries deleted entirely
 
 **Do NOT:**
 - Reword bullets that are already correct — only touch what is new, wrong, restructured, or moved
@@ -218,7 +221,9 @@ Print the summary:
 | Items split (grouped → atomic) | [list or "none"] |
 | Items moved between topics | [concept — from → to] |
 | Items fixed (definition → interview-anchored) | [list or "none"] |
+| Items promoted from future-learning | [topic — concept] |
 | Items demoted to future-learning | [item — reason] |
+| Items removed from future-learning | [item — reason it was deleted entirely] |
 | Sync verified | [yes — all topic files match notes/coverage.md] |
 
 Then answer explicitly:
