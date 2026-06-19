@@ -94,11 +94,14 @@ These PLANNING.md files have a **"Progressive learning plan"** where each step e
 a `**Concept learned:**` line. There is no separate Section 3 table.
 
 **For the in-progress project (⏳) in Format B:**
-1. Read the PROGRESS.md project summary line for this project — it states which steps are
-   done (e.g. "Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳"). This is the only
-   reliable source for step completion status.
-2. In the PLANNING.md, read the "Progressive learning plan". For each step marked as
-   complete in PROGRESS.md, extract the concepts from its `**Concept learned:**` line.
+1. Read the PLANNING.md "Progressive learning plan". Look for step headings marked with ✅
+   (e.g. `### Step 3 — Spring Security + JWT ✅`). If ✅ markers are present, use them
+   as the source of truth for which steps are complete — they are more reliable than
+   PROGRESS.md because they are updated during sessions before PROGRESS.md is.
+   If no ✅ markers are found in PLANNING.md, fall back to the PROGRESS.md project summary
+   line (e.g. "Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳").
+2. In the PLANNING.md, read the "Progressive learning plan". For each step confirmed as
+   complete, extract the concepts from its `**Concept learned:**` line.
 3. For the step marked "in progress": do NOT add its concepts — they will be added when
    the step is fully complete. The only exception is if a concept from that step already
    appears in the PROGRESS.md technology sections (it was learned early) — in that case
@@ -149,10 +152,13 @@ Project paths to check (in order):
 
 ## Step 3 — Audit SQL exercises
 
-Read the sql/ folder. List every subfolder that exists (e.g. `sql/01-basics/`, `sql/02-joins/`).
-For each subfolder that contains an `exercises.sql` file, read that file and count the exercises
-by counting comment headers of the form `-- Exercise N:`. This gives the accurate exercise count
-per topic — do not estimate.
+Read the sql/ folder. Two file formats may exist — check for both:
+
+- **Flat file** (e.g. `sql/01-basics.sql`): a `.sql` file directly in the `sql/` folder
+- **Subfolder** (e.g. `sql/02-joins/exercises.sql`): a folder containing an `exercises.sql` file
+
+For every file found in either format, count the exercises by counting comment headers of the
+form `-- Exercise N:`. This gives the accurate exercise count per topic — do not estimate.
 
 The SQL section in PROGRESS.md has two distinct parts — keep both:
 
@@ -172,17 +178,20 @@ X total exercises across Y topics
 
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
-| basics / SELECT | sql/01-basics/ | N | solid ✅ |
+| basics / SELECT | sql/01-basics.sql | N | solid ✅ |
 | joins | sql/02-joins/ | N | in progress ⏳ |
 | group-by | sql/03-group-by/ | N | in progress ⏳ |
 ```
 
-Only list topics that have a folder in sql/. A folder's existence means exercises have
+Use the actual path in the Folder column: `sql/01-basics.sql` for flat files,
+`sql/02-joins/` for subfolders.
+
+Only list topics that have a file or folder in sql/. Their existence means exercises have
 been generated — "not started" never applies here. For each topic:
-- Count: read the `exercises.sql` file and count `-- Exercise N:` headers
+- Count: read the file and count `-- Exercise N:` headers
 - Status rules:
   - Keep any topic already marked solid ✅ in the current PROGRESS.md — do not downgrade it
-  - Any topic with a folder that is not yet in PROGRESS.md gets in progress ⏳
+  - Any topic with a file or folder not yet in PROGRESS.md gets in progress ⏳
   - Victor upgrades a topic to solid ✅ manually after a sql-exercises-prompt review scores above 80%
 
 If the exercises sub-section does not exist yet in PROGRESS.md, create it with the table above.
