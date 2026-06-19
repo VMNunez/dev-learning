@@ -98,10 +98,18 @@ a `**Concept learned:**` line. There is no separate Section 3 table.
 **For the in-progress project (⏳) in Format B:**
 1. Read the PLANNING.md "Progressive learning plan". Look for step headings marked with ✅
    (e.g. `### Step 3 — Spring Security + JWT ✅`).
-   - If NO step has a ✅ marker anywhere in the file: fall back to the PROGRESS.md project
-     summary line. The format of this line may vary — examples: "Steps 1–3 done, Step 4 in
-     progress" or "Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳". Parse it flexibly
-     to extract which steps are complete and which are in progress.
+   - If NO step has a ✅ marker anywhere in the file: fall back to PROGRESS.md. Check
+     these three sources and pick the one that shows the most steps done:
+     (a) The `### Project XX — ProjectName` heading in the per-project summaries section
+         (the block of `### Project NN` headings before any technology section begins).
+         Format varies — e.g. "(in progress — Steps 1–3 done, Step 4 in progress)".
+     (b) Any `### Project XX` sub-heading inside a technology section (e.g. the Spring
+         Boot section may have `### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓
+         Step 4 in progress ⏳)`). This sub-heading tracks step status per-section and is
+         often more current than the project summary heading.
+     (c) The concepts already present in the technology sections — if concepts from a
+         given step clearly appear in PROGRESS.md, treat that step as done.
+     Parse all sources flexibly and prefer the highest step count found across them.
    - If AT LEAST ONE step has a ✅ marker: use the ✅ markers as the primary source. Steps
      without ✅ are treated as not complete. However, also check the PROGRESS.md summary
      line — if PROGRESS.md shows MORE steps as done than the ✅ markers indicate (e.g.
@@ -128,7 +136,11 @@ a `**Concept learned:**` line. There is no separate Section 3 table.
    - Frontend testing concepts (Jasmine, TestBed, `HttpClientTestingModule`, spies…)
      → Angular section
    - Docker, containerisation, `docker-compose` → General section (create it if it does
-     not exist, using the same heading + bullet format as other sections)
+     not exist, using the same heading + bullet format as other sections). **Not Deployment**
+     — the Deployment section covers cloud hosting and build configuration (Netlify, env
+     vars, CI/CD). General is for dev tooling and cross-cutting concepts that apply
+     regardless of where the app runs (`json-server`, Docker, etc.). If creating General
+     for the first time, place it after the SQL section.
 5. Note every concept from completed steps that is missing from PROGRESS.md.
 
 **Important — `**Concept learned:**` lines are high-level summaries.** PROGRESS.md typically
@@ -184,8 +196,27 @@ Read the sql/ folder. Two file formats may exist — check for both:
 - **Flat file** (e.g. `sql/01-basics.sql`): a `.sql` file directly in the `sql/` folder
 - **Subfolder** (e.g. `sql/02-joins/exercises.sql`): a folder containing an `exercises.sql` file
 
-For every file found in either format, count the exercises by counting comment headers of the
-form `-- Exercise N:`. This gives the accurate exercise count per topic — do not estimate.
+**Branch warning — SQL files live on `sql/practice`, not the project branch.**
+SQL exercises are committed on the `sql/practice` branch; the project branch (e.g.
+`feat/spring-foundation`) may have an older or sparser version of the `sql/` folder.
+This means the file count you read might be lower than what PROGRESS.md already shows.
+Apply this rule: if the file count is LOWER than the count already in PROGRESS.md for
+that topic, you are on the wrong branch — keep the PROGRESS.md count unchanged and note
+it as "branch — not updated" in the diff. Only update the count if the file count is
+HIGHER than what PROGRESS.md shows (new exercises were added to `sql/practice` and
+PROGRESS.md has not caught up yet).
+
+For every file found in either format, count the exercises by counting numbered exercise
+headers. Two formats exist depending on when the file was created:
+
+- `-- Exercise N:` at the start of a line — used by sql-exercises-prompt (topics 2+:
+  joins, group-by, subqueries, etc.)
+- `-- #N |` at the start of a line (where N is one or more digits — e.g. `-- #1 |`,
+  `-- #01 |`, `-- #40 |`) — used in the basics file (`01-basics.sql`), which was created
+  manually before the sql-exercises-prompt was written
+
+Count lines matching either pattern. This gives the accurate exercise count per topic —
+do not estimate.
 
 The SQL section in PROGRESS.md has two distinct parts — keep both:
 
@@ -215,10 +246,15 @@ Use the actual path in the Folder column: `sql/01-basics.sql` for flat files,
 
 Only list topics that have a file or folder in sql/. Their existence means exercises have
 been generated — "not started" never applies here. For each topic:
-- Count: read the file and count `-- Exercise N:` headers
+- Count: read the file and count lines matching either header pattern:
+  `-- Exercise N:` (for topics created by sql-exercises-prompt) or `-- #N |`
+  (for the basics file); do not mix them up or miss one
 - Status rules:
   - Keep any topic already marked solid ✅ in the current PROGRESS.md — do not downgrade it
-  - Any topic with a file or folder not yet in PROGRESS.md gets in progress ⏳
+  - Any topic already in PROGRESS.md as prose (being converted to table format for the first
+    time) gets in progress ⏳ — solid status requires an explicit sql-exercises-prompt review
+    scoring above 80%; it cannot be inferred from the prose description
+  - Any topic with a file or folder not yet in PROGRESS.md at all gets in progress ⏳
   - Victor upgrades a topic to solid ✅ manually after a sql-exercises-prompt review scores above 80%
 
 If the exercises sub-section does not exist yet in PROGRESS.md, create it with the table above.
@@ -258,7 +294,15 @@ Rules:
 - Keep the exact same structure and section order as the current PROGRESS.md
 - Add missing concepts to the correct technology section (Angular concept → Angular section)
 - If a technology section does not yet exist in PROGRESS.md and concepts need to be added to it,
-  create it following the same format as the existing sections (heading + one-line bullet list)
+  create it following the same format as the existing sections (heading + one-line bullet list).
+  Exception — Java section: if creating the Java section for the first time, first scan the
+  Spring Boot section for any entries that are pure Java language constructs (those matching
+  the 'pure Java' definition from Step 2 — constructs that exist in Java regardless of Spring,
+  e.g. `Optional<T>`, `long` vs `Long`, primitive/wrapper types, `try/catch`, access modifiers,
+  default field values like `private Boolean active = true`). Move those entries to the new Java
+  section: remove them from Spring Boot and add them to Java. In the diff table, log each moved
+  entry as Removed under Spring Boot and Added under Java. Only after this cleanup, add any
+  remaining new Java concepts that are not yet anywhere in PROGRESS.md.
 - Keep existing content — do not remove anything unless it is factually wrong
 - Do not reformat entries that are already correct
 - Do not add explanations or expand entries — one line per concept maximum
@@ -267,11 +311,23 @@ Rules:
   plan for Format A/B, or all Section 15 steps for Format C). It is ⏳ if at least one
   step is still in progress. It is 🔜 if it has not started.
 - Update each project's summary entry (the `### Project XX` section in PROGRESS.md):
-  - Completed projects: only touch if the heading or `**New concepts:**` line is factually
-    wrong (e.g. wrong step count, a concept missing that all steps clearly show).
-  - In-progress project: update the heading to reflect the actual step status found in
-    Step 2 (e.g. "Steps 1–3 done, Step 4 in progress"), and verify that the `**New
-    concepts:**` line includes every concept extracted from completed steps.
+  - Already-completed projects (Done ✓ before this run): only touch if the heading or
+    `**New concepts:**` line is factually wrong (e.g. wrong step count, a concept missing
+    that all steps clearly show).
+  - In-progress project (still ⏳ after this run): update the heading to reflect the actual
+    step status found in Step 2 (e.g. "Steps 1–3 done, Step 4 in progress"), and verify
+    that the `**New concepts:**` line includes every concept extracted from completed steps.
+  - **Newly completed project (was ⏳, is now Done ✓ this run):** remove the step-tracking
+    parenthetical from the heading entirely. The correct format after completion matches
+    projects 01–06: `### Project NN — Name` with no parenthetical.
+- **Technology section sub-headings:** if PROGRESS.md has a `### Project NN` sub-heading
+  inside a technology section (the Spring Boot section currently uses `### Project 07 —
+  TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳)` to group concepts by
+  project), update its parenthetical to match the step status found in Step 2. Use this
+  canonical format: `(Step 1 ✓ Step 2 ✓ ... Step N in progress ⏳)`. If the project just
+  became Done ✓ this run, remove the parenthetical entirely — format becomes `### Project
+  NN — Name`. The project summary heading and the technology sub-headings must always be
+  in sync after every run.
 
 After writing, print a short diff summary:
 
@@ -283,6 +339,7 @@ After writing, print a short diff summary:
 | Java | | | |
 | Spring Boot | | | |
 | CSS | | | |
+| Deployment | | | |
 | TypeScript | | | |
 | Architecture | | | |
 | Security | | | |
@@ -291,8 +348,12 @@ After writing, print a short diff summary:
 | Simulations | | | |
 
 "Added" = anything added to PROGRESS.md that was not there before — missing concepts from PLANNING.md, updated SQL exercise counts, updated simulation counts, new per-project summary data
-"Corrected" = entries that were wrong (e.g. wrong project number, stale step status)
+"Corrected" = entries that were wrong (e.g. wrong project number, stale step status, exercise count updated to higher value from file)
 "Removed" = entries that were duplicates or factually wrong
+
+Special cases:
+- SQL branch warning triggered (file count lower than PROGRESS.md): write "branch — count preserved" in the SQL row under Corrected
+- Java section created for the first time with entries moved from Spring Boot: log each moved entry as Removed under Spring Boot and Added under Java
 
 If nothing changed in a section: write "—". Skip rows for sections that do not yet exist in PROGRESS.md.
 
