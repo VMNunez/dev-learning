@@ -64,8 +64,9 @@ These rules apply both when auditing existing notes and when creating new ones.
 
 - `notes/java/` and `notes/spring-boot/` — **structured mode**: the file opens with a general
   `Docs:` link to the main reference page for the whole topic; each section has a `Purpose:`
-  line, a `File:` line (path to the project file where this code lives — omit if the concept
-  has no associated project file), and a section-level `Docs:` link that points to the exact
+  line, a `File:` line — the real path to the file where this code was applied; check PROGRESS.md
+  to find which project covers this concept, then confirm in that project's PLANNING.md;
+  if no project covers it yet, use a representative generic path or omit entirely, and a section-level `Docs:` link that points to the exact
   sub-section to study and states what to read (e.g. `Docs: https://... → read: "Declaring
   Transactions"`); per-call explanations as bold items (`**.methodName()**`)
 - All other folders — **conversational mode**: the file opens with a general `Docs:` link to
@@ -207,8 +208,12 @@ Read all files in {NOTES_PATH}.
    - **Inline tips for non-obvious things.** Use > blockquote callouts for things that are
      easy to get wrong or that only make sense after you've hit them in practice. These are
      the notes a senior would whisper to a junior during a code review.
-   - **Reference real projects.** If the concept was used in project 05 or 06, say so.
-     "This is the same pattern as MatDialog.open() in project 05 — same idea, different layer."
+   - **Reference real projects.** If a concept was practiced in one of Victor's projects,
+     reference it with a real code fragment — not a fabricated example. To find it: check
+     PROGRESS.md to identify which project covers this concept, then read that project's
+     PLANNING.md to confirm, then search the project source code for the relevant fragment.
+     (e.g. "This is the same pattern as MatDialog.open() in project 05 — same idea,
+     different layer.")
    - **Do not write documentation.** If the note could be copy-pasted onto the official docs
      site unchanged, it is wrong. Notes capture what Victor learned and why it clicked —
      not a neutral description of what the framework does.
@@ -218,9 +223,11 @@ Read all files in {NOTES_PATH}.
      to understand the concept — not to a fixed template.
    - **Code concept sections (methods, classes, annotations):** *(structured mode — notes/java/
      and notes/spring-boot/ only)* each section starts with three metadata lines: `Purpose:` —
-     one sentence: who calls it, when, and why; `File:` — path to the project file where this
-     code is written (e.g. `src/main/java/.../service/UserService.java`) — omit if the concept
-     has no associated project file; `Docs:` — link to the exact sub-section to study with a
+     one sentence: who calls it, when, and why; `File:` — real path to the file where this
+     code was applied (e.g. `src/main/java/.../service/UserService.java`); check PROGRESS.md
+     to find which project covers this concept, then confirm in that project's PLANNING.md,
+     then locate the actual file; if no project covers it yet, use a representative generic
+     path or omit entirely; `Docs:` — link to the exact sub-section to study with a
      note on what to read (e.g. `https://... → read: "Declaring Transactions"`). Then explain
      each important call or line with a bold item — what it does and why it matters, in plain
      language. Never include an Imports section — IntelliJ handles imports automatically.
