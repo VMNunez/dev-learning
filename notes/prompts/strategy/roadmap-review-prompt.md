@@ -178,8 +178,11 @@ order, CLAUDE.md wins — update ROADMAP to match.
 **LeetCode gate conditions:**
 ROADMAP.md has a section listing 5 gate conditions that must all be met before starting
 LeetCode. One condition references the notes study order ("notes complete for X topics").
-Verify that the topics listed in that gate match the current study order exactly — if the
-order changed (e.g. security was added), update that gate condition to include all topics.
+Verify that the topics listed in that gate match the high-priority topics in the current
+study order — angular, spring-boot, java, architecture, and any topics added between
+architecture and typescript (e.g. security). If a topic was added in that range and is
+missing from the gate, add it. Do not add typescript, sql, javascript, css, or git —
+those are lower priority and the gate must remain reachable before September.
 Do not change the other 4 gate conditions unless they are factually wrong per PROGRESS.md.
 
 ---
