@@ -4,6 +4,8 @@ Use in a **separate conversation**. No configuration to fill in — paste the wh
 
 This prompt updates `ROADMAP.md` so it shows the optimal path from current progress to full coverage of `notes/coverage.md` — through projects, study blocks, and practice. Run it whenever a project finishes, `notes/coverage.md` changes significantly, or it has been a while since the last check.
 
+**Prerequisite:** PROGRESS.md must be current before running this prompt — the gap analysis in Step 2 reads it directly. If you have finished a project or significant study sessions since the last PROGRESS.md update, run `progress-update-prompt` first. A stale PROGRESS.md will make the gap analysis produce wrong results.
+
 ---
 
 ````
@@ -138,6 +140,11 @@ update, fix ROADMAP to match it.
 **Next (🔜):** Check the candidate list — does at least one candidate address the most
 significant uncovered gaps from Step 2? If a significant gap has no candidate that covers it,
 add a new project idea to the candidate list.
+
+**Stale candidate removal:** For each candidate already in the list, check whether all the
+gaps it was designed to close are now covered by completed projects in PROGRESS.md. If a
+candidate's primary coverage areas are all already covered and it adds no uncovered gap,
+remove it from the list. Note each removal in the changes table with the reason.
 
 **Rules for project sections:**
 - Sequential gate language only: "complete project 07, which covers X and Y; then start
