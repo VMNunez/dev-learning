@@ -231,7 +231,7 @@ If all five are done before September — start LeetCode Easy. If not — skip i
 ## 13:30–14:30 block — Notes then interview prep
 
 **Stage 1 — Notes:**
-Study in priority order: `angular → spring-boot → java → architecture → typescript → sql → javascript → css → git`. SQL is last — it is already practiced daily in the 12:30 block. Move to Stage 2 when notes for the high-priority topics are well understood.
+Study in priority order: `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`. SQL is last — it is already practiced daily in the 12:30 block. Move to Stage 2 when notes for the high-priority topics are well understood.
 
 **Stage 2 — Interview prep:**
 Active recall with `notes/interview-prep/es/`. Same order as Stage 1. Use the simulator prompt for mock interviews.
