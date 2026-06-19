@@ -96,7 +96,7 @@ Read these files before making any decision:
 Then list all existing subdirectories under `notes/` (excluding `interview-prep/`, `prompts/`). These are the current topic folders.
 
 **Pre-audit sync check:**
-For each topic folder found, read `notes/{topic}/coverage.md` (if it exists) and compare it to its corresponding section in `notes/coverage.md`. If they differ in shared items, `notes/coverage.md` is the authoritative source — correct the topic file immediately before proceeding. If `notes/coverage.md` is missing the section entirely but the topic file has it, add the section to `notes/coverage.md` (apply the heading level transformation: topic `#` → `##`, topic `##` → `###`). Note any files corrected or added in the final summary under "Sync corrections (pre-audit)".
+For each topic folder found, read `notes/{topic}/coverage.md` (if it exists) and compare it to its corresponding section in `notes/coverage.md`. If they differ, `notes/{topic}/coverage.md` is the authoritative source — correct `notes/coverage.md` to match, applying the heading level transformation (topic `#` → `##`, topic `##` → `###`). Note any corrections in the final summary under "Sync corrections (pre-audit)".
 
 ---
 
