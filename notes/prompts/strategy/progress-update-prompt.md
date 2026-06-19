@@ -99,15 +99,16 @@ a `**Concept learned:**` line. There is no separate Section 3 table.
    reliable source for step completion status.
 2. In the PLANNING.md, read the "Progressive learning plan". For each step marked as
    complete in PROGRESS.md, extract the concepts from its `**Concept learned:**` line.
-3. For the step marked "in progress": also check if any sub-tasks are explicitly described
-   as done in the PROGRESS.md technology sections. If a concept appears there, it was learned
-   even if the step is not fully complete — do not re-add it.
-4. For each concept extracted: check if it already appears in the relevant technology section
-   of PROGRESS.md. To determine the section, use the concept itself as a signal:
+3. For the step marked "in progress": do NOT add its concepts — they will be added when
+   the step is fully complete. The only exception is if a concept from that step already
+   appears in the PROGRESS.md technology sections (it was learned early) — in that case
+   leave it as-is, do not remove it.
+4. For each concept extracted from completed steps: check if it already appears in the
+   relevant technology section of PROGRESS.md. To determine the section, use the concept:
    - Spring Boot annotations, beans, security, JPA → Spring Boot section
    - Pure Java language constructs (`Optional<T>`, `@Value`, `long` vs `Long`…) → Java section (create it if it does not exist)
    - Angular code → Angular section
-5. Note every concept that should be in PROGRESS.md but is not.
+5. Note every concept from completed steps that is missing from PROGRESS.md.
 
 **For a project marked Done ✓ in Format B:**
 All steps are complete. Apply the same extraction to every step in the learning plan,
@@ -173,15 +174,16 @@ X total exercises across Y topics
 |-------|--------|-----------|--------|
 | basics / SELECT | sql/01-basics/ | N | solid ✅ |
 | joins | sql/02-joins/ | N | in progress ⏳ |
-| group-by | sql/03-group-by/ | N | not started 🔜 |
+| group-by | sql/03-group-by/ | N | in progress ⏳ |
 ```
 
-Only list topics that have a folder in sql/. For each topic:
+Only list topics that have a folder in sql/. A folder's existence means exercises have
+been generated — "not started" never applies here. For each topic:
 - Count: read the `exercises.sql` file and count `-- Exercise N:` headers
 - Status rules:
   - Keep any topic already marked solid ✅ in the current PROGRESS.md — do not downgrade it
-  - For topics that appear in sql/ but are not yet in PROGRESS.md, mark them as in progress ⏳
-  - Victor upgrades a topic to solid ✅ manually after a sql-exercises-prompt review session scores above 80%
+  - Any topic with a folder that is not yet in PROGRESS.md gets in progress ⏳
+  - Victor upgrades a topic to solid ✅ manually after a sql-exercises-prompt review scores above 80%
 
 If the exercises sub-section does not exist yet in PROGRESS.md, create it with the table above.
 If it already exists in a different format, rewrite it using the table format above — this is
@@ -228,6 +230,12 @@ Rules:
   A project is Done ✓ when all its learning steps are complete (all steps in the learning
   plan for Format A/B, or all Section 15 steps for Format C). It is ⏳ if at least one
   step is still in progress. It is 🔜 if it has not started.
+- Update each project's summary entry (the `### Project XX` section in PROGRESS.md):
+  - Completed projects: only touch if the heading or `**New concepts:**` line is factually
+    wrong (e.g. wrong step count, a concept missing that all steps clearly show).
+  - In-progress project: update the heading to reflect the actual step status found in
+    Step 2 (e.g. "Steps 1–3 done, Step 4 in progress"), and verify that the `**New
+    concepts:**` line includes every concept extracted from completed steps.
 
 After writing, print a short diff summary:
 
@@ -246,8 +254,8 @@ After writing, print a short diff summary:
 | SQL | | | |
 | Simulations | | | |
 
-"Added" = concepts that were in PLANNING.md but missing from PROGRESS.md
-"Corrected" = entries that were wrong (e.g. wrong project number, stale status)
+"Added" = anything added to PROGRESS.md that was not there before — missing concepts from PLANNING.md, updated SQL exercise counts, updated simulation counts, new per-project summary data
+"Corrected" = entries that were wrong (e.g. wrong project number, stale step status)
 "Removed" = entries that were duplicates or factually wrong
 
 If nothing changed in a section: write "—". Skip rows for sections that do not yet exist in PROGRESS.md.
