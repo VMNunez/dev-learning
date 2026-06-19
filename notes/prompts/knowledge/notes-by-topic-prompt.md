@@ -14,7 +14,7 @@ Useful after a study session when you want to check and improve the notes for on
 
 ---
 
-```
+````
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
@@ -63,8 +63,9 @@ These rules apply both when auditing existing notes and when creating new ones.
 
 **Format modes:**
 
-- `notes/java/` and `notes/spring-boot/` — **structured mode**: the file opens with a general
-  `Docs:` link to the main reference page for the whole topic; each section has three fields:
+- `notes/java/` and `notes/spring-boot/` — **structured mode**: the file opens with a
+  `# [Topic Name]` title followed by a general `Docs:` link to the main reference page
+  for the whole topic; each section has three fields:
   `Purpose:` (one sentence — who calls it, when, and why), `File:` (real path to the project
   file where this code was applied — check PROGRESS.md to find which project covers this
   concept, then confirm in that project's PLANNING.md; if no project covers it yet, use a
@@ -72,8 +73,8 @@ These rules apply both when auditing existing notes and when creating new ones.
   to study with a note on what to read, e.g. `https://... → read: "Declaring Transactions"`);
   per-call explanations as bold items (`**.methodName()**`); use `##` to introduce each
   concept section
-- All other folders — **conversational mode**: the file opens with a general `Docs:` link to
-  the main reference page for the whole topic; each section has a `Docs:` link that points to
+- All other folders — **conversational mode**: the file opens with a `# [Topic Name]` title
+  followed by a general `Docs:` link to the main reference page for the whole topic; each section has a `Docs:` link that points to
   the exact sub-section to study and states what to read (e.g. `Docs: https://... → read:
   "Template syntax — Built-in control flow"`); no `Purpose:` or `File:` lines; prose
   explanations with code blocks — explanation comes before the code, not in dedicated
@@ -188,8 +189,10 @@ Read all files in {NOTES_PATH}.
    are reference files, not study notes. In general: skip any file in {NOTES_PATH} whose
    name does not start with a two-digit number.
 
-   For each gap found, apply rule 3 to create the missing content — either as a new file
-   or as a new section in the most appropriate existing file.
+   For each gap found, create the missing content using rule 3's writing standards. Create
+   a new file if the concept covers multiple sub-topics or is independently searchable;
+   add a section to an existing file if the concept is a direct extension of something
+   already covered there.
 
 2. Check if every note follows these teaching rules:
    - Does it explain the WHY before the code?
@@ -282,10 +285,17 @@ notes, assess the full learning sequence as a whole:
 - Is the folder sparse? If a topic has 2 files but clearly needs 5 to be learnable, create the
   missing 3. Do not leave holes in the sequence just because no specific "gap" was flagged.
 
+If rule 1 already created a file or section for a concept in this session, do not address
+it again here.
+
 Use `coverage.md` as the ceiling — do not create files for topics not listed there. The
 proactive check is about sequence completeness, not scope expansion. If no `coverage.md`
 exists, limit new files to concepts you identified as gaps in rule 1 — do not generate
 additional files beyond those.
+
+If the total number of new files to create in one session exceeds 3, create the first 3
+in study-sequence order and report the remaining gaps in the summary — address them in
+the next run.
 
 The notes/ folder is Victor's personal textbook for that topic. It should be complete enough
 that he can open file 01 and learn the topic from scratch — concise, personal, in order.
@@ -299,9 +309,10 @@ to write them. Update the "next file:" counter in CLAUDE.md after all new files 
 
 Start by reading the existing `future-learning.md` in {NOTES_PATH}. If it does not exist
 yet, skip the promotion check and go directly to the demote/add step below. For each concept
-listed, assess whether it is now within scope — given Victor's current active project (find
-it in CLAUDE.md) and his objective (junior at a Spanish consultancy with Angular + Spring Boot).
-If a concept is now relevant, create a full note file for it and remove it from `future-learning.md`.
+listed, assess whether it is now within scope. A concept is in scope if it appears in
+`coverage.md` OR if the active project's `PLANNING.md` lists it as a learning objective
+for a completed step. If in scope, create a full note file for it and remove it from
+`future-learning.md`.
 
 Then, if during the audit a concept is identified that is real and worth knowing — but still
 beyond Victor's current scope (too advanced for a junior screening, or belongs to a future
@@ -347,4 +358,4 @@ git commit -m "docs: audit {TOPIC} notes — <one line summary of main fixes>"
 
 ```
 
-```
+````
