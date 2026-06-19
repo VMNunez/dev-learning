@@ -245,19 +245,11 @@ Stable means: every topic for Victor's objective is represented, every section h
 
 Apply all changes directly to the files. Do not describe what you would write — write it.
 
-Then show the commit message. Always one command per code block:
+Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
 
 ```
 
-git add notes/coverage.md
-
-```
-
-Add each changed topic file on its own line in the git add command. If `future-learning.md` was not modified for a topic, exclude it. Example:
-
-```
-
-git add notes/coverage.md notes/spring-boot/coverage.md notes/angular/coverage.md notes/testing/coverage.md notes/testing/future-learning.md
+git add <all files changed>
 
 ```
 
