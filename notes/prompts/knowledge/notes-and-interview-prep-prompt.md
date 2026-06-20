@@ -241,6 +241,25 @@ actively studies. If a question covers a concept that has no corresponding note 
 {NOTES_PATH}, create the note file now (following the rules in Part 1). Do not leave a
 concept that Victor is expected to answer in an interview without study material to back it up.
 
+**Existing interview prep content is final unless marked with TODO:**
+Do not rewrite, rephrase, or change any question or answer that already exists in these files.
+Victor may have already studied it and likes it as written. In either case, the text stays untouched.
+
+You may do the following without a TODO:
+- Resolve TODO markers
+- Add new questions (always allowed)
+- Fix structural format violations (missing blank lines between question and answer)
+- Add a Junior tip to an existing Conceptual question that is missing one
+- Add a Red flag to an existing Decision-based or Pressure question that is missing one
+
+You may NOT do the following without a TODO:
+- Change the wording of existing questions
+- Rewrite or rephrase existing answers
+- "Strengthen" or "improve" existing content on your own judgment
+
+If audit section 2 identifies a weak answer that has no TODO, report it in the summary —
+do not change it. Victor adds a TODO marker, and the fix is applied on the next run.
+
 **Before the 4-section audit — mandatory format check:**
 
 Every question in the file must follow this exact structure:
@@ -274,7 +293,9 @@ companies. One sentence per topic explaining why they would ask it.
 
 **2. Weak answers**
 Answers that are too vague, too theoretical, or that do not reference a real project.
-Quote the weak part and explain what is missing.
+Quote the weak part and explain what is missing. Do not rewrite the answer — report it in
+the summary instead. Victor adds a TODO marker in the file, and the fix is applied on the
+next run.
 Quality bar: every answer must pass this test — "could I explain every word of this answer
 if the interviewer pressed me?" If not, the answer is weak.
 
@@ -314,7 +335,7 @@ After auditing each section of the interview prep file, give a section status:
 A section is complete when:
 - Every question a Spanish consultancy would realistically ask about this topic is covered
 - The ratio is on target (55% conceptual / 35% decision-based / 10% pressure)
-- Every answer passes the "explain every word" test — no purely theoretical answers
+- Every answer either passes the "explain every word" test, or has a TODO marker flagging it for rewrite
 - At least one decision-based question references a real project by name
 - There are no obvious gaps that would make Victor look unprepared in a screening
 
@@ -327,6 +348,11 @@ Better to over-prepare one section than to have a gap a recruiter finds first.
 ## Part 3 — Execution
 
 Apply all fixes directly to the files. Do not just report and leave them broken.
+
+**Reminder — existing interview prep content is final:** only change existing question or
+answer text if there is a TODO marker. New questions, structural format fixes (blank lines),
+Junior tips, and Red flags are allowed without a TODO. For weak answers in existing text with
+no TODO, report them in the summary — do not change the text.
 
 Rules for every new or updated interview question:
 - Always write to BOTH en/{FILE}.md and es/{FILE}.md — same question, same answer, same
@@ -359,6 +385,10 @@ After all edits, print a final summary table:
 | Area | Notes | Interview Prep |
 |------|-------|----------------|
 | [section name] | ✅ / 🔧 / ➕ | ✅ / 🔧 / ➕ |
+
+**Weak answers found** (existing answers that did not pass the quality check — add a TODO marker
+in the file at that question to get it fixed on the next run):
+- `[question text]` — [what is missing; what a strong answer would include]
 
 Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
 
