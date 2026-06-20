@@ -52,8 +52,11 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
 | `practice/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises by topic. `review` mode: grades my answers and scores them. | `notes/sql/coverage.md`, `PROGRESS.md`, `sql/{topic}/exercises.sql` | `sql/{topic}/exercises.sql`; the SQL table in `PROGRESS.md`; `interview-prep/en/sql.md` + `es/sql.md` |
+| `practice/simulation-generator-prompt.md` | Creates new timed test specs (Angular / Spring Boot / SQL) in the existing format — the producer for the simulation bank. | `simulations/{type}/` (existing specs), `simulations/TRACKER.md` | new `simulations/{type}/NN-*.md`; rows + counts in `simulations/TRACKER.md` |
 | `practice/simulation-review-prompt.md` | Grades a finished timed simulation, gives a 3-score ideal solution, adds interview questions. `hint` mode guides mid-test. | the simulation spec in `simulations/{type}/`, `simulations/TRACKER.md`, + my pasted code | `simulations/TRACKER.md`, the spec's header, `interview-prep/en/{topic}.md` + `es/{topic}.md` |
-| `practice/simulator-prompt.md` | Runs a live mock interview from my Q&A bank, scores each answer, tracks weak areas across sessions. | `interview-prep/{lang}/*.md`, `interview-prep/projects/*`, `interview-prep/SESSION-LOG.md` | `interview-prep/SESSION-LOG.md` |
+| `practice/code-review-prompt.md` | Generates a flawed snippet (often AI-style) for me to critique, then grades what I found / missed / over-flagged. Trains the stage-3 code-review step. | (snippet generated fresh; no spec file needed) | `interview-prep/en/{type}.md` + `es/{type}.md` (questions for my gaps) |
+| `practice/simulator-prompt.md` | Runs a live mock **technical** interview from my Q&A bank, scores each answer, tracks weak areas across sessions. | `interview-prep/{lang}/*.md`, `interview-prep/projects/*`, `interview-prep/SESSION-LOG.md` | `interview-prep/SESSION-LOG.md` |
+| `practice/hr-screen-prompt.md` | Runs a live mock **HR** call (stage 2): motivation, career-change story, availability, salary, "why us". Non-technical. | profile + situation from `_shared-context.md`, `ROADMAP.md` | optional `interview-prep/hr-screen.md` (polished answers) |
 
 ### Strategy — keep the plan accurate and apply
 
@@ -89,12 +92,15 @@ Each generated file, with who writes it and who depends on it:
 - **`notes/cv/cv-bullets.md`** — written by `portfolio-ready` → read by `cv-prompt` (one polished
   bullet per project, reused as-is).
 - **`interview-prep/en/*.md` + `es/*.md`** — written by `interview-prep-by-topic`,
-  `notes-and-interview-prep`, `simulation-review`, `sql-exercises` → read by `simulator`.
+  `notes-and-interview-prep`, `simulation-review`, `sql-exercises`, `code-review` → read by `simulator`.
 - **`interview-prep/projects/*.md`** — written by `portfolio-ready` → read by `simulator`.
-- **`simulations/TRACKER.md`** — written by `simulation-review` → read by `progress-update` and by
-  `simulation-review` itself (recurring-weakness check).
+- **`simulations/{type}/NN-*.md`** (the test specs) — written by `simulation-generator` (and the
+  original bank by hand) → read by `simulation-review` (and by me, to take the test).
+- **`simulations/TRACKER.md`** — written by `simulation-generator` (new rows) and `simulation-review`
+  (status) → read by `progress-update` and by `simulation-review` itself (recurring-weakness check).
 - **`interview-prep/SESSION-LOG.md`** — written and read by `simulator` (tracks weak areas between
   sessions).
+- **`interview-prep/hr-screen.md`** — optionally written by `hr-screen` (polished stage-2 answers).
 
 Pipeline view:
 
@@ -144,35 +150,19 @@ Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
 
 ---
 
-## Gaps — prompts that may be missing for my objective
+## Gaps — closed, and what is left
 
-Detected against the goal (junior Angular + Spring Boot at a Spanish consultancy by Aug–Sep 2026)
-and the market analysis in `_shared-context.md`. None of the 16 current prompts covers these:
+The three gaps detected against the goal (junior Angular + Spring Boot at a Spanish consultancy by
+Aug–Sep 2026, per the market analysis in `_shared-context.md`) are now **built**:
 
-1. **Code-review / find-the-bug practice — HIGH.**
-   The market analysis says 2026 technical tests now include a code-review step: you are shown a
-   flawed snippet (often AI-generated) and asked to find the bug or explain what is wrong. Nothing
-   trains this. `simulator` tests recall; `simulation-review` grades code I wrote; the simulations
-   make me build from scratch — but no prompt hands me broken code to critique. This is one of the
-   newest and most explicit filters, and it is a blind spot.
-   *Proposed: `practice/code-review-prompt.md` — generates a snippet (Angular, Spring Boot, or SQL)
-   with planted issues, I write my review, it grades my findings and adds an interview question.*
+- ✅ **`practice/code-review-prompt.md`** — trains the stage-3 code-review step (critique a flawed,
+  often AI-style snippet). Was the biggest blind spot: nothing else hands me broken code to review.
+- ✅ **`practice/simulation-generator-prompt.md`** — produces new timed test specs in the existing
+  format, so the bank is no longer fixed at 15 and I can drill a weak type on demand.
+- ✅ **`practice/hr-screen-prompt.md`** — covers the non-technical stage-2 HR call (motivation,
+  career-change story, availability, salary), which only had a one-line touch in `simulator`.
 
-2. **Technical-test simulation generator — MEDIUM.**
-   The 15 simulation specs in `simulations/` are hand-written and fixed. `simulation-review` can
-   tell me "do more of type X" after a weak result, but nothing produces more specs in the same
-   format. `sql-exercises` covers SQL drilling, not full timed Angular/Spring-Boot task specs.
-   Once the bank is used up — or when one type proves weak — I cannot generate fresh tests.
-   *Proposed: `practice/simulation-generator-prompt.md` — creates new timed specs by type and
-   difficulty, in the existing format, and registers them in `TRACKER.md`.*
-
-3. **HR / behavioural screen prep (stage 2) — MEDIUM.**
-   The hiring process has 5 stages; stage 2 is a non-technical HR call (motivation, "why this
-   company", availability, salary expectation). `simulator` only touches "tell me about yourself".
-   As a 31-year-old career-changer, the salary/availability/"why the switch" answers matter and
-   are currently untrained.
-   *Proposed: `practice/hr-screen-prompt.md` — mock HR call in Spanish: motivation, salary range
-   for a Spanish junior, availability, and the career-change narrative, with feedback.*
-
-Lower priority / probably not worth a prompt: an application tracker (a simple file + the ROADMAP
-applications section already cover this).
+Still intentionally **not** a prompt:
+- **Application tracker** — a simple file plus the ROADMAP applications section already cover this;
+  a dedicated prompt would be overhead.
+- **English / Cambridge prep** — tracked in a separate private repo, out of scope for this folder.
