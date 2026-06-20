@@ -24,10 +24,14 @@ FILE       = [angular | css | javascript | typescript | sql | java | spring-boot
              → notes/interview-prep/es/{FILE}.md
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/spring-boot/ — also read notes/java/ for language-level
-  concepts that appear in Spring Boot code. Before marking a JWT or security question as
+- Spring Boot: set NOTES_PATH = notes/spring-boot/, notes/java/ (comma-separated — read both;
+  Spring Boot code uses Java language concepts). Before marking a JWT or security question as
   unbacked, also check notes/security/ — JWT design and token invalidation concepts live
   there by folder convention.
+- Angular Material: set NOTES_PATH = notes/angular-material/, FILE = angular. For direction 2,
+  check only questions under Angular Material sections of angular.md — questions in other
+  sections (Components, Signals, Routing, Forms, etc.) are backed by notes/angular/ and are
+  out of scope for this run.
 - Java: focus on language concepts needed to write Spring Boot code only.
 - SQL: database is PostgreSQL.
 
@@ -69,18 +73,26 @@ idea. Do not require a one-to-one match with a heading; one question can cover s
 related sub-sections.
 
 For each uncovered concept:
-1. Write the question and add it to the correct section in both `en/{FILE}.md` and
-   `es/{FILE}.md` — never one without the other.
+1. Write the question and answer in English and add it to the correct section in
+   `en/{FILE}.md`; translate both to Spanish and add to the same section in `es/{FILE}.md`
+   — never one without the other. If no section exists for this concept in the prep file,
+   create the section heading in both files before adding the question.
 2. Follow the question format defined in `interview-prep-by-topic-prompt.md` exactly:
    bold question + priority marker + blank line + answer + optional element based on type:
    — Conceptual (asks "what is X?" or "how does X work?") → add a Junior tip.
-   — Decision-based (asks "why X?" or "when X instead of Y?") → add a Red flag.
-   — Pressure (a gotcha, edge case, or unusual condition) → add a Red flag.
-   Junior tip syntax — two consecutive blockquote lines, English then Spanish:
+   — Decision-based (asks "why X?" or "when X instead of Y?") → add a Red flag (encouraged).
+   — Pressure (a gotcha, edge case, or unusual condition) → add a Red flag (encouraged).
+   Junior tip syntax — blank line, then two consecutive blockquote lines, English then Spanish:
    > **Junior tip:** [one line of advice in English]
    > **Consejo de entrevista:** [same advice in Spanish]
+   Red flag syntax — one line after a blank line:
+   Red flag answer: [what a weak candidate would say and why it fails]
+   Priority: ⭐⭐⭐ if not knowing this would filter the candidate in a first screening;
+   ⭐⭐ if it comes up when the interviewer goes deeper; ⭐ for niche details.
 3. Reference a real project in the answer when the concept was practiced in one.
-4. Note it in the summary as "notes → prep — added".
+4. After adding questions to a section, reorder within that section so ⭐⭐⭐ come first,
+   then ⭐⭐, then ⭐.
+5. Note it in the summary as "notes → prep — added".
 
 ---
 
@@ -95,7 +107,8 @@ note file. Use judgment — exact name matching is not required.
 For each unbacked question:
 1. Create a new note file or add a section to an existing file following the format defined
    in `notes-by-topic-prompt.md` exactly: conversational mode for all folders except
-   `notes/java/` and `notes/spring-boot/` (structured mode).
+   `notes/java/` and `notes/spring-boot/` (structured mode). If adding to an existing file,
+   choose the file whose topic is most closely related — check the headings read in Step 1.
 2. Follow the numbered naming convention for new files — start from the next available
    number in CLAUDE.md for that folder. If creating multiple files in one run, assign
    numbers in study-sequence order.
