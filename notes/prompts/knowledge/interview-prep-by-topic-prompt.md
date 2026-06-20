@@ -117,6 +117,10 @@ You may NOT do the following without a TODO:
 If audit section 2 identifies a weak answer that has no TODO, report it in the summary —
 do not change it. Victor adds a TODO marker, and the fix is applied on the next run.
 
+Exception: if Victor explicitly asks you to improve the weak answers after seeing the
+summary (in the same conversation), you may rewrite those answers — even without a TODO.
+Apply the fix to both en/{FILE}.md and es/{FILE}.md.
+
 ---
 
 ## Question types — definitions
