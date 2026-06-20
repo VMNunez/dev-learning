@@ -21,11 +21,16 @@ Run this after you finish a timed simulation — no notes, no AI, timer stopped.
 
 SIMULATION_FILE = [e.g. simulations/angular/01-task-form.md]
 TIME_USED       = [minutes used — exact, no rounding — e.g. 74]
+MODE            = [review | hint — leave blank for review]
 
 TYPE is auto-detected from SIMULATION_FILE — do not fill it in:
 - path contains /angular/     → angular
 - path contains /spring-boot/ → spring-boot
 - path contains /sql/         → sql
+
+MODE behaviour:
+- review (default, blank): run after finishing the simulation — full scoring, feedback, ideal solution, interview questions, TRACKER update
+- hint: run when stuck mid-simulation — reads your partial code and guides you one step at a time; skip to the Hint mode section at the end of this prompt
 
 ---
 
@@ -39,6 +44,10 @@ at Spanish consultancies (NTT Data, Capgemini, Indra) by August 2026.
 
 I just completed the simulation at {SIMULATION_FILE} under real conditions: no notes,
 no documentation, no AI. {TIME_USED} minutes used. My code is pasted at the end of this chat.
+
+**If MODE = hint:** skip Steps 1–5 and go directly to the Hint mode section at the end of
+this prompt. Ignore TIME_USED.
+**If MODE = review or blank:** continue with Step 1 below.
 
 ---
 
@@ -141,6 +150,12 @@ the weakest dimensions were: [list dimensions that scored 1 or 2 from Step 2]. P
 before the next one."
 If fewer than 2 previous completed simulations of this type exist, skip this check.
 
+**Ideal solution:**
+Write a complete, clean solution that scores 3 on every dimension — all files needed to
+satisfy every requirement. Add a brief inline comment on each non-obvious decision (why
+this approach, not what the code does). This is the reference Victor compares against his
+own version.
+
 ---
 
 ## Step 4 — Interview questions
@@ -210,6 +225,33 @@ git add {SIMULATION_FILE} simulations/TRACKER.md notes/interview-prep/
 ```
 git commit -m "docs: simulation {SIMULATION_FILE} — [Pass/Borderline/Fail], {TIME_USED}min"
 ```
+
+---
+
+## Hint mode
+
+*This section only runs when MODE = hint. Victor is mid-simulation and needs help to advance.
+Do not run Steps 1–5. Do not score, do not update TRACKER.md, do not add interview questions.*
+
+**H1 — Read the spec**
+Read {SIMULATION_FILE}. List every requirement, numbered — the same way Step 1 would.
+
+**H2 — Read the partial code**
+Read the code pasted at the end of this chat. For each requirement from H1, mark:
+- ✅ done — implemented correctly
+- ⚠️ started — attempt exists but has a problem (describe the problem in one sentence)
+- ❌ missing — not attempted yet
+
+**H3 — Guide the next step**
+Pick the first ⚠️ or ❌ item. For that item only:
+- If ⚠️: name the mistake in one sentence, explain why it is wrong, then ask Victor to fix it
+- If ❌: explain the concept behind this requirement in 2–3 sentences, name the exact file
+  or class where to write it, then ask Victor to try it
+
+Do not write the code. Do not address any other requirement in this run.
+Victor pastes the updated code and runs this prompt again for the next step.
+
+---
 
 [paste your solution below this line]
 ````
