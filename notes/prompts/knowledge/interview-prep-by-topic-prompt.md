@@ -12,11 +12,11 @@ Use in a **separate conversation**. Fill in the two values in the configuration 
 
 ---
 
-```
+````
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general]
+FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
        → notes/interview-prep/en/{FILE}.md
        → notes/interview-prep/es/{FILE}.md
 
@@ -32,6 +32,7 @@ Notes on specific files:
 - sql: database is PostgreSQL. Flag any PostgreSQL-specific behaviour consultancies would ask about
   (e.g. sequences vs AUTO_INCREMENT, RETURNING clause).
 - general: questions that don't belong to a specific technology (debugging, teamwork, process, git workflow).
+- security: covers authentication vs authorisation, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
 
 Use FILE and SECTION wherever the prompt refers to {FILE} or {SECTION}.
 
@@ -69,7 +70,7 @@ What Spanish consultancies actually look for in 2026:
 - Do you have any real project or work experience?
 - Can you write and understand tests?
 
-My projects:
+My projects (CLAUDE.md and PROGRESS.md are authoritative — use them if this list is outdated):
 - 01: todo list — components, signals, services, directives
 - 02: weather app — HttpClient, RxJS, forkJoin, API integration
 - 03: expense tracker — reactive forms, routing, localStorage, smart/dumb pattern
@@ -83,23 +84,90 @@ Files to audit:
 - notes/interview-prep/es/{FILE}.md
 - If SECTION is not "all", locate the {SECTION} heading in both files and audit only the content
   under that heading (up to the next ## heading).
+- If {SECTION} is not found in one file: create it as an empty section in that file before
+  proceeding.
+- If {SECTION} is not found in either file: create it in both files as empty sections, then
+  move directly to audit section 1 to populate it from scratch.
+
+---
+
+## Question types — definitions
+
+Every question belongs to one of three types. Use these definitions throughout the audit to
+classify existing questions, assign Junior tips, decide on Red flags, and count ratios.
+
+- **Conceptual** — asks "what is X?" or "how does X work?" Tests whether the candidate
+  understands a concept, not just its syntax. Example: "What is @Transactional and what
+  does it do?" Only Conceptual questions get a Junior tip block.
+- **Decision-based** — asks "why did you choose X?" or "when would you use X instead of Y?"
+  Tests whether the candidate can justify architectural decisions and knows tradeoffs.
+  Example: "Why did you use JWT instead of sessions?" Encouraged to have a Red flag answer.
+- **Pressure** — a gotcha, an edge case, or a code snippet with a bug. Tests depth of
+  understanding and exposes shallow knowledge. Example: "What happens if you put @Transactional
+  on a private method?" Encouraged to have a Red flag answer.
+
+Target ratio per section: 55% Conceptual / 35% Decision-based / 10% Pressure.
+
+---
+
+## Pre-audit — Sync check
+
+Before doing anything else, check that en/{FILE}.md and es/{FILE}.md are in sync.
+
+List the sections and question count from each file side by side. If a section exists in one
+file but not the other, or if the question count for any section differs:
+1. Report the mismatch clearly.
+2. Bring the files into sync: create the missing section or questions in the file that is
+   behind, based on the content in the more complete file (translated).
+3. Only after both files are in sync, move on to the TODO step.
+
+If the files are already in sync, skip this step and move directly to the TODO step.
 
 ---
 
 ## Pre-audit — Resolve TODOs
 
-Before starting, scan {SECTION} in both en/{FILE}.md and es/{FILE}.md for any TODO markers.
+Scan {SECTION} in both en/{FILE}.md and es/{FILE}.md for any TODO markers.
 These can appear as `TODO:`, `<!-- TODO: ... -->`, or `// TODO` — Victor adds them while
 reading to mark things he wants corrected or improved.
 
 For each TODO found:
-1. Identify exactly what Victor wants changed
-2. Apply the fix to the en/ file at that exact location
-3. Apply the same fix (translated) to the es/ file at the same position
-4. Remove the TODO marker after fixing
-5. Report what was changed before moving on
+1. Identify exactly what Victor wants changed.
+2. Apply the fix to the en/ file at that exact location.
+3. Apply the same fix (translated) to the es/ file at the same position.
+4. Remove the TODO marker after fixing.
+5. Report what was changed before moving on.
 
-If no TODOs are found, skip this section and move directly to the format check.
+If no TODOs are found, skip this section and move directly to the coverage.md check.
+
+**Pattern detection — after resolving all TODOs:**
+If 2 or more TODOs reflect the same type of correction (e.g. always rewriting passive answers
+to use "I used", always adding a project reference, always removing theoretical definitions),
+this is a personal preference that should become a permanent rule — not a repeated manual fix.
+Report it in the Summary section at the end as a recommended prompt change: one specific
+sentence to add that would prevent the same correction from being needed in future runs.
+Do not add the rule yourself — Victor decides whether to accept it.
+
+---
+
+## Pre-audit — coverage.md check
+
+Before reading the interview prep files, read the coverage.md for this topic:
+- For most files: `notes/{FILE}/coverage.md`
+- For spring-boot: `notes/spring-boot/coverage.md`
+- For java: `notes/java/coverage.md`
+
+If coverage.md exists:
+- List every concept it contains.
+- As you audit {SECTION}, verify that every concept from that list has at least one question.
+- Concepts in coverage.md with no question are required additions — treat them the same as
+  missing topics in audit section 1, regardless of whether you would have thought of them
+  independently.
+- When you add a question for a concept that was in coverage.md, note it as
+  "coverage.md concept — added" in your report.
+
+If coverage.md does not exist, skip this step and rely on your knowledge of what junior
+Angular + Spring Boot interviews at Spanish consultancies require.
 
 ---
 
@@ -107,7 +175,7 @@ If no TODOs are found, skip this section and move directly to the format check.
 
 Every question in the file must follow this exact structure:
 
-**Question as an interviewer at a Spanish consultancy would ask it?**
+**Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
 
 Answer in 1–2 sentences. Include a real example from my projects when the question is about
 a pattern or decision.
@@ -121,8 +189,10 @@ Rules:
 - There must be a blank line between the bold question and the answer.
 - There must be a blank line between the answer and the Junior tip block.
 - The Junior tip block uses `>` blockquote syntax — one line for English, one for Spanish.
-- Not every question needs a Junior tip — only conceptual questions.
-- Red flag answers are optional but encouraged for decision-based and pressure questions.
+- Only **Conceptual** questions get a Junior tip (see "Question types" above for the definition).
+- Red flag answers are optional but encouraged for Decision-based and Pressure questions.
+- Every question must have a priority marker (⭐⭐⭐, ⭐⭐, or ⭐) at the end of the bold
+  question line, after the question mark.
 
 Scan every question in {SECTION} of both en/{FILE}.md and es/{FILE}.md.
 Fix any violation immediately before moving on to the audit. Apply the same fix to both files.
@@ -130,15 +200,49 @@ Report what was fixed.
 
 ---
 
+## Priority markers — assign and order
+
+Every question must carry a priority marker indicating how often this question is asked at
+Spanish consultancies in a junior interview for {FILE}:
+
+- ⭐⭐⭐ — Asked in almost every interview for this topic. A candidate who cannot answer this
+  would be filtered out immediately.
+- ⭐⭐ — Asked often. Worth knowing well. A candidate who cannot answer it leaves a weak impression.
+- ⭐ — Asked sometimes. Good to have, but missing it is not a dealbreaker.
+
+**Criteria for ⭐⭐⭐:**
+- The concept is foundational — it appears in any non-trivial project using this technology.
+- The concept is commonly misunderstood or often confused with something similar.
+- Not knowing it would cause the interviewer to doubt the candidate's basic competence.
+
+**Apply to all questions in {SECTION}:**
+1. Every question that already exists without a marker gets one assigned now.
+2. Every new question added in this session gets a marker from the start.
+3. Within each section, reorder questions so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
+   Reorder only within a section — never move questions across sections.
+
+Place the marker at the end of the bold question line, after the question mark:
+
+**What is @Transactional and what does it do?** ⭐⭐⭐
+
+---
+
 ## Audit — 4 sections
 
 **1. Missing topics**
-Topics not covered in {SECTION} that Spanish consultancies would ask, given my stack and target
-companies. One sentence per topic explaining why they would ask it.
+Topics not covered in {SECTION} that Spanish consultancies would ask, given my stack and
+target companies. Include any concept from coverage.md (if it exists) that has no question yet.
+One sentence per topic explaining why they would ask it.
+
+When a topic you identify is NOT in coverage.md, flag it with `[coverage gap]` so Victor can
+add it to coverage.md in a separate run.
 
 **2. Weak answers**
-Answers that are too vague, too theoretical, or that do not reference a real project.
-Quote the weak part and explain what is missing.
+Answers that are too vague, too theoretical, or that do not reference a real project when
+the question is about a pattern or decision.
+Quote the weak part, explain what is missing, then rewrite the answer directly in both
+en/ and es/ files. Do not leave a weak answer in place after identifying it.
+
 Quality bar: every answer must pass this test — "could I explain every word of this answer
 if the interviewer pressed me?" If not, the answer is weak.
 
@@ -147,18 +251,23 @@ if the interviewer pressed me?" If not, the answer is weak.
   The strong answer references a real project, explains the problem it solves, and uses "I used it" — not "it is used".
 
 **3. Imbalances**
-Count questions by type: Conceptual / Decision-based / Pressure.
-Give the count and percentage per type.
-Target ratio: 55% conceptual / 35% decision-based / 10% pressure.
-Flag any section that is all-conceptual with no decision or pressure questions.
+Count questions by type using the definitions in the "Question types" section above.
+
+When SECTION = "all": report the count and percentage per type for each section separately.
+When SECTION is a specific heading: report the count and percentage for that section only.
+
+Target ratio per section: 55% Conceptual / 35% Decision-based / 10% Pressure.
+Flag any section where Decision-based or Pressure questions are completely absent.
 
 **4. Missing questions**
 All questions not yet in {SECTION} that a Spanish consultancy would realistically ask.
 Do not cap at 3–5 — add every question needed until the section is genuinely complete.
+Assign a priority marker to each new question.
+Flag any new question whose concept is not in coverage.md with `[coverage gap]`.
 
 Format for each new question:
 
-**Question as an interviewer at a Spanish consultancy would ask it?**
+**Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
 
 Answer in 1–2 sentences. Include a real example from my projects when the question is about
 a pattern or decision.
@@ -180,29 +289,50 @@ Rules for every new or updated question:
 - Answers must be interview-ready — what I would actually say out loud, not a textbook
   definition. Reference a specific project when the question is about a pattern or decision.
 - Group new questions under the correct section heading.
-- Add a Junior Tip to every new conceptual question.
+- Add a Junior tip to every new Conceptual question (see "Question types" for the definition).
+- Every question must have a priority marker (⭐⭐⭐, ⭐⭐, or ⭐).
+- After adding new questions, reorder the section so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
 
 After auditing {SECTION}, give it a status:
 - ✅ Complete — thorough coverage for the job target; no action needed
 - 🔧 Fixed — gaps or weak answers found and resolved in this session
 - ➕ Added — new section or questions created from scratch
 
-A section is complete when:
+A section is complete when ALL of these are true:
+- Every concept in coverage.md for this topic has at least one question
 - Every question a Spanish consultancy would realistically ask about this topic is covered
-- The ratio is on target (55% conceptual / 35% decision-based / 10% pressure)
+- The ratio is on target (55% Conceptual / 35% Decision-based / 10% Pressure) per section
 - Every answer passes the "explain every word" test — no purely theoretical answers
-- At least one decision-based question references a real project by name
+- At least one Decision-based question references a real project by name
+- Every question has a priority marker (⭐⭐⭐, ⭐⭐, or ⭐)
+- Within each section, questions are ordered ⭐⭐⭐ → ⭐⭐ → ⭐
 - There are no obvious gaps that would make Victor look unprepared in a screening
 
 Do not stop at 2 or 3 questions. Add as many as needed until the section is genuinely
 interview-ready. A weak junior gets filtered out because one topic was thin.
 Better to over-prepare one section than to have a gap a recruiter finds first.
 
+---
+
+## Summary
+
+After all edits, report the following. Omit any section that has nothing to report.
+
+**Coverage gaps found** (concepts added that are not yet in coverage.md — add them there in a
+separate run using coverage-prompt.md):
+- [concept] — [one sentence: why it belongs in coverage]
+
+**TODO patterns detected** (recommended prompt rule additions):
+- [pattern] — [one specific sentence to add to this prompt to prevent the same correction
+  from being needed again]
+
+---
+
 After all edits, show the commit message so Victor can run it himself. Always use this format — one command per code block:
 
 ```
 
-git add <files changed>
+git add notes/interview-prep/en/{FILE}.md notes/interview-prep/es/{FILE}.md
 
 ```
 
@@ -211,5 +341,4 @@ git add <files changed>
 git commit -m "docs: audit {FILE} interview prep — <one line summary of main fixes>"
 
 ```
-
-```
+````
