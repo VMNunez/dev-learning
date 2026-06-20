@@ -72,6 +72,10 @@ A concept is "covered" if any question in the prep — regardless of wording —
 idea. Do not require a one-to-one match with a heading; one question can cover several
 related sub-sections.
 
+Exception: a sub-section that describes a gotcha, an edge case, a "why not X?" scenario, or
+a comparison between two alternatives always needs its own question — it cannot be counted
+as covered by a general question about the parent concept.
+
 For each uncovered concept:
 1. Write the question and answer in English and add it to the correct section in
    `en/{FILE}.md`; translate both to Spanish and add to the same section in `es/{FILE}.md`
@@ -107,8 +111,12 @@ note file. Use judgment — exact name matching is not required.
 For each unbacked question:
 1. Create a new note file or add a section to an existing file following the format defined
    in `notes-by-topic-prompt.md` exactly: conversational mode for all folders except
-   `notes/java/` and `notes/spring-boot/` (structured mode). If adding to an existing file,
-   choose the file whose topic is most closely related — check the headings read in Step 1.
+   `notes/java/` and `notes/spring-boot/` (structured mode). Write in a personal learning
+   voice ("You use this when…", not "This is used when…"). Start with the problem the concept
+   solves before introducing the concept itself. Include at least one sentence of context
+   before any code block. Do not write documentation — if the text could appear on the
+   official docs site unchanged, it is wrong. If adding to an existing file, choose the file
+   whose topic is most closely related — check the headings read in Step 1.
 2. Follow the numbered naming convention for new files — start from the next available
    number in CLAUDE.md for that folder. If creating multiple files in one run, assign
    numbers in study-sequence order.
