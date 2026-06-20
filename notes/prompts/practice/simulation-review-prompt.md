@@ -53,11 +53,8 @@ MODE behaviour:
 
 ## Context
 
-Before starting, read CLAUDE.md — it has my full profile, teaching rules, and what Spanish
-consultancies look for.
-
-I am Victor, 31 years old. I am preparing for a junior Angular + Java Spring Boot position
-at Spanish consultancies (NTT Data, Capgemini, Indra) by August 2026.
+Before starting, read CLAUDE.md (teaching rules) and `notes/prompts/_shared-context.md`
+(my profile, and what Spanish consultancies look for).
 
 I just completed the simulation at {SIMULATION_FILE} under real conditions: no notes,
 no documentation, no AI. {TIME_USED} minutes used. My code is pasted at the end of this chat.

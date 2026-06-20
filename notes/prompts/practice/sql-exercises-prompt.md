@@ -44,8 +44,7 @@ Validation — check these before doing anything else:
 - `PROGRESS.md` — the SQL section shows which topics are already solid.
 - `notes/sql/coverage.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
-I am Victor, 31 years old. I am preparing for a junior Angular + Java Spring Boot position
-at Spanish consultancies (NTT Data, Capgemini, Indra) by August–September 2026.
+My profile is in `notes/prompts/_shared-context.md`.
 
 My daily SQL block is 12:30–13:30. I write answers directly in the SQL file in pgAdmin
 (PostgreSQL), then paste it into review mode. This block feeds into Stage 2: technical test
