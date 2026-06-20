@@ -1,407 +1,138 @@
-# Notes + Interview Prep Deep Audit Prompt
+# Notes ↔ Interview Prep Cross-Reference Prompt
 
-Use in a **separate conversation**. Fill in the three values in the configuration block at the top of the prompt below, then paste everything into a new chat.
+Use in a **separate conversation**. Fill in the configuration block, then paste everything into a new chat.
+
+**Prerequisites:** run `notes-by-topic-prompt` and `interview-prep-by-topic-prompt` first. This prompt assumes both sides are already quality-checked — it only finds and fixes gaps between them.
 
 ---
 
 **How to use:**
 
-1. Fill in `TOPIC` — the subject to audit (e.g. Angular, CSS, JavaScript, TypeScript, SQL, Java, Spring Boot)
-2. Fill in `NOTES_PATH` — the notes folder to review (e.g. `notes/angular/`, `notes/java/spring-boot/`)
-3. Fill in `FILE` — the interview prep filename without extension (e.g. `angular`, `css`, `sql`, `java`)
-4. Paste the entire prompt below (configuration block included) into a new chat
+1. Fill in `TOPIC`, `NOTES_PATH`, and `FILE`
+2. Paste the entire prompt into a new chat
 
 ---
 
-```
+````
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
-FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
-       → notes/interview-prep/en/{FILE}.md
-       → notes/interview-prep/es/{FILE}.md
+FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
+             → notes/interview-prep/en/{FILE}.md
+             → notes/interview-prep/es/{FILE}.md
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/java/ AND notes/spring-boot/ — read both, because Spring Boot
-  code uses Java language concepts. Set FILE = spring-boot.
-- General: NOTES_PATH = notes/general/ — covers HTTP, JSON, env vars, testing concepts, SOLID.
-  Uses conversational mode.
-- Java: focus on language concepts only. Spring Boot framework questions live in spring-boot.md, not java.md.
-- Security: NOTES_PATH = notes/security/ — covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF.
-  Uses conversational mode.
+- Spring Boot: set NOTES_PATH = notes/spring-boot/ — also read notes/java/ for language-level
+  concepts that appear in Spring Boot code.
+- Java: focus on language concepts needed to write Spring Boot code only.
+- SQL: database is PostgreSQL.
 
-Use these three values wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {FILE}.
+Use TOPIC, NOTES_PATH, and FILE wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {FILE}.
 
 ---
 
-I want a deep technical audit of my study notes and interview prep for {TOPIC}.
+## Purpose
 
-Before starting, read CLAUDE.md — it has the full project context, teaching rules, and subfolder structure.
+This prompt does one thing: find and fix gaps between notes and interview prep — in both
+directions. It does not audit quality, fix formatting, or resolve TODOs. Run the individual
+prompts first for that.
 
----
-
-## Who I am and what I need
-
-I am Victor, 31 years old. I am preparing for my first junior developer job at Spanish IT
-consultancies (NTT Data, Capgemini, Indra, and similar) with a target date of August 2026.
-
-My stack: Angular (frontend) + Spring Boot (backend, Java) + PostgreSQL (database).
-Spring Boot is the primary backend target — not just Java generically. If the topic is Java,
-focus on what is needed to understand and write Spring Boot code: classes, interfaces,
-annotations, generics, exceptions, Maven. Skip Java concepts that do not appear in a
-Spring Boot context.
-If the topic is SQL, the database is PostgreSQL. Focus on PostgreSQL syntax and behaviour.
-At junior level most SQL is the same across engines, but flag any PostgreSQL-specific detail
-that consultancies would ask (e.g. sequences vs AUTO_INCREMENT, RETURNING clause).
-
-My differentiator: most candidates in Spain apply with React. I am going with Angular + Spring
-Boot, which is what large consultancies actually use internally — this makes me stand out if
-I can demonstrate real understanding and real decisions, not just syntax knowledge.
-
-I completed an internship in June 2026 (Next.js + TypeScript + MySQL) — real work experience
-on my CV even though the stack is different.
-
-Level: Junior to Junior-Mid. I need to sound like someone who makes decisions and can explain
-them — not someone who followed a tutorial and memorised the steps.
-
-What Spanish consultancies actually look for in 2026:
-- Can you explain every line of code you wrote? (AI writes boilerplate; juniors who can't
-  explain it get filtered out immediately)
-- Did you make architectural decisions, or did you just follow a tutorial?
-- Can you read and understand code written by someone else?
-- Do you have any real project or work experience?
-- Can you write and understand tests?
-
-My projects:
-- 01: todo list — components, signals, services, directives
-- 02: weather app — HttpClient, RxJS, forkJoin, API integration
-- 03: expense tracker — reactive forms, routing, localStorage, smart/dumb pattern
-- 04: meal finder — route params, ActivatedRoute, effect(), favourites
-- 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
-- 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
-- 07: TimeTrack (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate, PostgreSQL, Docker, Angular
-
-Files to audit:
-- Notes: {NOTES_PATH}
-- Interview prep: notes/interview-prep/en/{FILE}.md and notes/interview-prep/es/{FILE}.md
+Before starting, read CLAUDE.md — it has my full profile, teaching rules, and subfolder structure.
 
 ---
 
-## Pre-audit — Resolve TODOs
+## Step 1 — Read the source files
 
-Before starting Part 1, scan both en/{FILE}.md and es/{FILE}.md for any TODO markers.
-These can appear as `TODO:`, `<!-- TODO: ... -->`, or `// TODO` — Victor adds them while
-reading to mark things he wants corrected or improved.
+Read in this order:
+1. All numbered note files in {NOTES_PATH} — skip `future-learning.md`, `coverage.md`,
+   and `layer-reference.md`
+2. `notes/interview-prep/en/{FILE}.md`
+3. `notes/interview-prep/es/{FILE}.md`
 
-For each TODO found:
-1. Identify exactly what Victor wants changed
-2. Apply the fix to the en/ file at that exact location
-3. Apply the same fix (translated) to the es/ file at the same position
-4. Remove the TODO marker after fixing
-5. Report what was changed before moving on to Part 1
-
-If no TODOs are found, skip this section and move directly to Part 1.
+Build a mental map of:
+- Every concept section covered in the notes (## and ### headings)
+- Every concept covered by at least one question in the prep files
 
 ---
 
-## Part 1 — Technical Foundation & Gaps
+## Step 2 — Notes → Interview prep
 
-**Before reading note files — check coverage.md:**
-If a `coverage.md` file exists in {NOTES_PATH}, read it first. It defines the minimum topics
-that must be covered for Victor's objective (junior at a Spanish consultancy with Angular +
-Spring Boot). Every item in that file is a required topic. Use it as the baseline alongside
-rule 1 — any item not covered by an existing note file must be addressed during this audit.
-Skip `coverage.md` when checking note quality in rule 2 — it is a checklist, not a study note.
+For every concept covered in the notes: is there at least one question in the interview
+prep that covers it?
 
-Read all files in {NOTES_PATH}.
+A concept is "covered" if any question in the prep — regardless of wording — tests the same
+idea. Do not require a one-to-one match with a heading; one question can cover several
+related sub-sections.
 
-1. Identify fundamental concepts missing that a Spanish consultancy would use to filter
-   candidates in a first technical screening. One sentence per gap explaining why they ask it.
-   Skip any file named `future-learning.md` or `coverage.md` — these are reference files, not study notes.
-
-2. Check if every note follows these teaching rules:
-   - Does it explain the WHY before the code?
-   - Does it identify repeating patterns and name them explicitly?
-   - Does it link to the exact official documentation page (not just the main docs site)?
-   - Does it read like a personal learning guide, not like documentation? Test: would this
-     sentence appear word-for-word on the official docs site? If yes, rewrite it in Victor's voice.
-
-  **Bad note:** "`HttpClient` is a service that performs HTTP requests. It provides methods for all HTTP verbs including GET, POST, PUT, and DELETE."
-  **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a service (never a component) and it returns an Observable you subscribe to. Without it you would have to use the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project 02 to call the weather API."
-  The bad note reads like the official docs. The good note explains WHY you use it, WHERE it lives, and references a real project.
-
-3. When creating new note files or adding new sections to existing files, read
-   `notes/prompts/knowledge/notes-by-topic-prompt.md` first — it is the source of truth
-   for all note format, voice, structure, and writing rules. The rules below are an inline
-   summary for convenience, but if there is any conflict, the source file wins.
-
-   The goal is notes that work as a personal study book — clear enough to learn
-   from scratch and return to as a reference. Every concept needs enough explanation to
-   understand it, not just recognise the syntax.
-
-   - **Personal, conversational voice.** Write for Victor. "You use this when..." not
-     "This is used when...". "This is why it matters:" not "This is relevant because:".
-   - **Explain before the code.** Give 1–3 sentences of context before any code block —
-     what the concept is, why it exists, when you reach for it. Do not open a section
-     with a code block and no explanation.
-   - **Call out gotchas and "why not X" moments.** When there is a common mistake or a
-     tempting shortcut that is wrong, name it explicitly. Use a **Why not X?** subheading
-     or a > blockquote. Example: "Why not just return the object directly? Because you
-     always get 200, even when you created something (which should be 201)."
-   - **Write in learning order — start with the problem, not the concept.** The concept
-     exists because something was painful without it. Lead with that pain. "Before Spring
-     Boot, you had to configure Tomcat separately and write XML to wire beans. Spring Boot
-     removes all of that." Not: "Spring Boot is a framework that provides auto-configuration."
-   - **Inline tips for non-obvious things.** Use > blockquote callouts for things that are
-     easy to get wrong or that only make sense after you've hit them in practice. These are
-     the notes a senior would whisper to a junior during a code review.
-   - **Reference real projects.** If the concept was used in project 05 or 06, say so.
-     "This is the same pattern as MatDialog.open() in project 05 — same idea, different layer."
-   - **Do not write documentation.** If the note could be copy-pasted onto the official docs
-     site unchanged, it is wrong. Notes capture what Victor learned and why it clicked —
-     not a neutral description of what the framework does.
-   - **Calibrate depth to complexity.** Simple syntax (a short annotation, a method call)
-     needs one sentence. Complex concepts (JPA relationships, Spring Security filter chain,
-     JWT flow) need a paragraph. Match the explanation length to how long it actually takes
-     to understand the concept — not to a fixed template.
-   - **Code concept sections (methods, classes, annotations):** *(structured mode — notes/java/
-     and notes/spring-boot/ only)* start with a `Purpose:` line — one sentence: who calls it,
-     when, and why. Then explain each important call or line with a bold item — what it does and
-     why it matters, in plain language. Never include an Imports section — IntelliJ handles
-     imports automatically.
-
-4. For each note file, give a coverage status:
-   - ✅ Complete — solid coverage for a junior screening at a Spanish consultancy
-   - 🔧 Fixed — gaps found and resolved in this session
-   - ➕ Added — new content created from scratch
-
-**IMPORTANT — existing note text is final unless marked with TODO:**
-Do not rewrite, rephrase, restructure, or change any text that already exists in a note file.
-You may add new note files and add new sections to existing files. You may NOT touch text that
-is already written — even if it could be improved. If rule 2 identifies a note that does not
-follow teaching rules, report it in the summary but do not change the text. Only a TODO marker
-from Victor authorises editing existing content.
-
-**Apply all fixes directly to the note files.**
-
-**Creating new files — proactive, not reactive.**
-Do not wait for a gap in rule #1 to justify creating a new file. After reading the existing
-notes, assess the full learning sequence as a whole:
-
-- Can Victor sit down with files 01 through N and learn the topic end-to-end without looking
-  elsewhere for the basics? If not, the missing pieces need their own files.
-- Is there a logical progression? Each file should build on the previous one. A concept that
-  depends on something not yet covered is in the wrong place.
-- Is the folder sparse? If a topic has 2 files but clearly needs 5 to be learnable, create the
-  missing 3. Do not leave holes in the sequence just because no specific "gap" was flagged.
-
-The notes/ folder is Victor's personal textbook for that topic. It should be complete enough
-that he can open file 01 and learn the topic from scratch — concise, personal, in order.
-
-When creating a new file, follow the numbered naming convention (e.g. 16-topic-name.md) and
-choose the number that fits logically in the learning sequence — not just the next available
-number. Update the "next file:" counter for that folder in CLAUDE.md after all new files are
-created.
-
-**`future-learning.md` — bidirectional check:**
-
-Start by reading the existing `future-learning.md` in {NOTES_PATH}. For each concept listed,
-assess whether it is now within scope — given Victor's current project (07: Spring Boot + JWT +
-JPA + Docker) and his objective (junior at a Spanish consultancy with Angular + Spring Boot).
-If a concept is now relevant, create a full note file for it and remove it from `future-learning.md`.
-
-Then, if during the audit a concept is identified that is real and worth knowing — but still
-beyond Victor's current scope (too advanced for a junior screening, or belongs to a future
-project) — add it to `future-learning.md`. Do not create a full note file for concepts that
-are still premature. If the file already lists the concept, leave it as is.
-
-**Cross-reference check — notes → interview prep:**
-After reviewing all note files, scan es/{FILE}.md for concepts that are covered in the notes
-but have no corresponding interview question. For each gap found, add the missing question
-to BOTH en/{FILE}.md and es/{FILE}.md following the standard question format (see Part 2).
-The notes are the source of truth for what Victor has learned — the interview prep must cover it.
-Both language files must always stay in sync: every question that exists in one must exist in the other.
+For each uncovered concept:
+1. Write the question and add it to the correct section in both `en/{FILE}.md` and
+   `es/{FILE}.md` — never one without the other.
+2. Follow the question format defined in `interview-prep-by-topic-prompt.md` exactly:
+   bold question + priority marker + blank line + answer + Junior tip (if Conceptual)
+   or Red flag (if Decision-based or Pressure).
+3. Reference a real project in the answer when the concept was practiced in one.
+4. Note it in the summary as "notes → prep — added".
 
 ---
 
-## Part 2 — Interview Prep Audit
+## Step 3 — Interview prep → Notes
 
-Read notes/interview-prep/en/{FILE}.md and notes/interview-prep/es/{FILE}.md.
+For every question in `es/{FILE}.md`: is there at least one note file in {NOTES_PATH}
+that covers the concept this question is about?
 
-When creating or updating any interview prep question, read
-`notes/prompts/knowledge/interview-prep-by-topic-prompt.md` first — it is the source of truth
-for all question format, answer quality, section balance, and writing rules. The rules below
-are an inline summary for convenience, but if there is any conflict, the source file wins.
+A question is "backed" if the concept appears as a section or sub-section in any numbered
+note file. Use judgment — exact name matching is not required.
 
-**Cross-reference check — interview prep → notes:**
-Before the format check, scan every question in es/{FILE}.md — that is the file Victor
-actively studies. If a question covers a concept that has no corresponding note file in
-{NOTES_PATH}, create the note file now (following the rules in Part 1). Do not leave a
-concept that Victor is expected to answer in an interview without study material to back it up.
+For each unbacked question:
+1. Create a new note file or add a section to an existing file following the format defined
+   in `notes-by-topic-prompt.md` exactly: conversational mode for all folders except
+   `notes/java/` and `notes/spring-boot/` (structured mode).
+2. Follow the numbered naming convention for new files — start from the next available
+   number in CLAUDE.md for that folder. If creating multiple files in one run, assign
+   numbers in study-sequence order.
+3. Update the "next file:" counter in CLAUDE.md after creating new files.
+4. Note it in the summary as "prep → notes — added".
 
-**Existing interview prep content is final unless marked with TODO:**
-Do not rewrite, rephrase, or change any question or answer that already exists in these files.
-Victor may have already studied it and likes it as written. In either case, the text stays untouched.
-
-You may do the following without a TODO:
-- Resolve TODO markers
-- Add new questions (always allowed)
-- Fix structural format violations (missing blank lines between question and answer)
-- Add a Junior tip to an existing Conceptual question that is missing one
-- Add a Red flag to an existing Decision-based or Pressure question that is missing one
-
-You may NOT do the following without a TODO:
-- Change the wording of existing questions
-- Rewrite or rephrase existing answers
-- "Strengthen" or "improve" existing content on your own judgment
-
-If audit section 2 identifies a weak answer that has no TODO, report it in the summary —
-do not change it. Victor adds a TODO marker, and the fix is applied on the next run.
-
-**Before the 4-section audit — mandatory format check:**
-
-Every question in the file must follow this exact structure:
-
-**Question?**
-
-Answer text here.
-
-> **Junior tip:** short advice (English)
-> **Consejo de entrevista:** same advice (Spanish)
-
-Red flag answer: what a weak answer looks like and why it fails.
-
-Rules:
-- There must be a blank line between the bold question and the answer.
-- There must be a blank line between the answer and the Junior tip block.
-- The Junior tip block uses `>` blockquote syntax — one line for English, one for Spanish.
-- Not every question needs a Junior tip — only conceptual questions.
-- Red flag answers are optional but encouraged for decision-based and pressure questions.
-
-Scan every question in both en/{FILE}.md and es/{FILE}.md. Fix any violation immediately
-before moving on to the 4-section audit. Apply the same fix to both files.
+If more than 3 new note files need to be created: create the first 3 in study-sequence
+order and report the rest in the summary — address them in the next run.
 
 ---
 
-Run a 4-section audit:
+## Execution
 
-**1. Missing topics**
-Topics not covered yet that Spanish consultancies would ask, given my stack and target
-companies. One sentence per topic explaining why they would ask it.
-
-**2. Weak answers**
-Answers that are too vague, too theoretical, or that do not reference a real project.
-Quote the weak part and explain what is missing. Do not rewrite the answer — report it in
-the summary instead. Victor adds a TODO marker in the file, and the fix is applied on the
-next run.
-Quality bar: every answer must pass this test — "could I explain every word of this answer
-if the interviewer pressed me?" If not, the answer is weak.
-
-  **Weak:** "¿Qué es un interceptor en Angular? — Es una clase que intercepta las peticiones HTTP y permite modificarlas."
-  **Strong:** "¿Qué es un interceptor en Angular? — Es una función que se ejecuta antes de cada petición HTTP. La usé en el proyecto 06 para añadir el token JWT automáticamente a todas las cabeceras — sin el interceptor, tendría que añadirlo manualmente en cada llamada al servicio."
-  The strong answer references a real project, explains the problem it solves, and uses "I used it" — not "it is used".
-
-**3. Imbalances**
-Count questions by type: Conceptual / Decision-based / Pressure.
-Give the count and percentage per type.
-Target ratio: 55% conceptual / 35% decision-based / 10% pressure.
-Flag any section that is all-conceptual with no decision or pressure questions.
-
-**4. Missing questions**
-All questions not yet in the file that a Spanish consultancy would realistically ask.
-Do not cap at 3–5 — add every question needed until the file is genuinely complete.
-
-Format for each new question:
-
-**Question as an interviewer at a Spanish consultancy would ask it?**
-
-Answer in 1–2 sentences. Include a real example from my projects when the question is about
-a pattern or decision.
-
-> **Junior tip:** short advice on how to explain it clearly in an interview (English)
-> **Consejo de entrevista:** same advice in Spanish
-
-Red flag answer: what a weak candidate would say and why it fails.
+Apply all changes directly to the files. Do not report and leave gaps open.
 
 ---
 
-After auditing each section of the interview prep file, give a section status:
-- ✅ Complete — thorough coverage for the job target; no action needed
-- 🔧 Fixed — gaps or weak answers found and resolved in this session
-- ➕ Added — new section or questions created from scratch
+## Summary
 
-A section is complete when:
-- Every question a Spanish consultancy would realistically ask about this topic is covered
-- The ratio is on target (55% conceptual / 35% decision-based / 10% pressure)
-- Every answer either passes the "explain every word" test, or has a TODO marker flagging it for rewrite
-- At least one decision-based question references a real project by name
-- There are no obvious gaps that would make Victor look unprepared in a screening
+After all edits, report:
 
-Do not stop at 2 or 3 questions per section. Add as many as needed until the section is
-genuinely interview-ready. A weak junior gets filtered out because one topic was thin.
-Better to over-prepare one section than to have a gap a recruiter finds first.
+**Notes → prep gaps closed:**
+- `[concept]` — `[question added, with priority marker]`
 
----
+**Prep → notes gaps closed:**
+- `[question topic]` — `[file or section created]`
 
-## Part 3 — Execution
+**Deferred note files** (more than 3 needed — address in next run):
+- `[concept]` — needs a note file
 
-Apply all fixes directly to the files. Do not just report and leave them broken.
-
-**Reminder — existing interview prep content is final:** only change existing question or
-answer text if there is a TODO marker. New questions, structural format fixes (blank lines),
-Junior tips, and Red flags are allowed without a TODO. For weak answers in existing text with
-no TODO, report them in the summary — do not change the text.
-
-Rules for every new or updated interview question:
-- Always write to BOTH en/{FILE}.md and es/{FILE}.md — same question, same answer, same
-  section, translated. Never add or edit one without doing the same in the other. Victor
-  studies in Spanish, but both files are always kept in sync. This rule has no exceptions.
-- Answers must be interview-ready — what I would actually say out loud, not a textbook
-  definition. Reference a specific project when the question is about a pattern or decision.
-- Group new questions under the correct section heading.
-- Add a Junior Tip to every new conceptual question (see format in Part 2 above).
-
-Question format — use this exact structure for every new or updated question:
-
-**Question?**
-
-Answer text here. One or two sentences. Reference a project when relevant.
-
-> **Junior tip:** short advice (English)
-> **Consejo de entrevista:** same advice (Spanish)
-
-Red flag answer: what a weak answer looks like and why it fails.
-
-The blank line between the question and the answer is required — it keeps the .md readable
-in both raw and rendered view.
-
-Normalize existing questions too: if any question in the file has no blank line between the
-bold question and the answer, add it. Apply the same normalization to both en/ and es/.
-
-After all edits, print a final summary table:
-
-| Area | Notes | Interview Prep |
-|------|-------|----------------|
-| [section name] | ✅ / 🔧 / ➕ | ✅ / 🔧 / ➕ |
-
-**Weak answers found** (existing answers that did not pass the quality check — add a TODO marker
-in the file at that question to get it fixed on the next run):
-- `[question text]` — [what is missing; what a strong answer would include]
-
-Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
+Then show the commit message. Replace {FILE} and {TOPIC} with the actual values.
+Always one command per code block:
 
 ```
+git add notes/interview-prep/en/{FILE}.md notes/interview-prep/es/{FILE}.md <note files created or modified>
+```
 
-git add <files changed>
+If CLAUDE.md was updated (new file counter), add it separately:
 
+```
+git add CLAUDE.md
 ```
 
 ```
-
-git commit -m "docs: audit {TOPIC} notes and interview prep — <one line summary of main fixes>"
-
+git commit -m "docs: cross-reference {TOPIC} notes ↔ interview prep — <one line summary>"
 ```
-
-```
+````
