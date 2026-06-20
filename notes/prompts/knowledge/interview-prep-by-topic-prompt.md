@@ -94,6 +94,30 @@ Files to audit:
 
 ---
 
+## Existing content is final unless marked with TODO
+
+Do not rewrite, rephrase, or change any question or answer that already exists in these files.
+Victor may have already studied it and likes it as written. In either case, the text stays untouched.
+
+You may do the following without a TODO:
+- Resolve TODO markers
+- Add new questions (always allowed)
+- Assign priority markers (⭐⭐⭐/⭐⭐/⭐) to existing questions
+- Reorder existing questions by priority within a section
+- Fix structural format violations (missing blank lines between question and answer)
+- Add a Junior tip to an existing Conceptual question that is missing one
+- Add a Red flag to an existing Decision-based or Pressure question that is missing one
+
+You may NOT do the following without a TODO:
+- Change the wording of existing questions
+- Rewrite or rephrase existing answers
+- "Strengthen" or "improve" existing content on your own judgment
+
+If audit section 2 identifies a weak answer that has no TODO, report it in the summary —
+do not change it. Victor adds a TODO marker, and the fix is applied on the next run.
+
+---
+
 ## Question types — definitions
 
 Every question belongs to one of three types. Use these definitions throughout the audit to
@@ -269,8 +293,9 @@ so Victor can add it to coverage.md in a separate run.
 **2. Weak answers**
 Answers that are too vague, too theoretical, or that do not reference a real project when
 the question is about a pattern or decision.
-Quote the weak part, explain what is missing, then rewrite the answer directly in both
-en/ and es/ files. Do not leave a weak answer in place after identifying it.
+Quote the weak part and explain what is missing. Do not rewrite the answer — report it in
+the summary instead. Victor adds a TODO marker in the file, and the fix is applied on the
+next run.
 
 Quality bar: every answer must pass this test — "could I explain every word of this answer
 if the interviewer pressed me?" If not, the answer is weak.
@@ -313,6 +338,11 @@ Then add the optional elements based on type:
 
 Apply all fixes directly to the files. Do not just report and leave them broken.
 
+**Reminder — existing content is final:** only change existing question or answer text if
+there is a TODO marker. New questions, priority markers, ordering, blank lines, Junior tips,
+and Red flags are always allowed without a TODO. For weak answers in existing text with no
+TODO, report them in the summary — do not change the text.
+
 Rules for every new or updated question:
 - Add to BOTH en/{FILE}.md and es/{FILE}.md — same question, same answer, same section,
   translated. Never add to one without the other.
@@ -332,7 +362,7 @@ A section is complete when ALL of these are true:
 - Every coverage.md concept that belongs in this section has at least one question
 - Every question a Spanish consultancy would realistically ask about this topic is covered
 - The ratio is on target (55% Conceptual / 35% Decision-based / 10% Pressure) per section
-- Every answer passes the "explain every word" test — no purely theoretical answers
+- Every answer either passes the "explain every word" test, or has a TODO marker flagging it for rewrite
 - At least one Decision-based question references a real project by name
 - Every question has a priority marker (⭐⭐⭐, ⭐⭐, or ⭐)
 - Within each section, questions are ordered ⭐⭐⭐ → ⭐⭐ → ⭐
@@ -357,6 +387,10 @@ When SECTION = "all", include a status table first:
 
 When SECTION is a specific heading, the section status was already given in the Execution
 step — do not repeat it here.
+
+**Weak answers found** (existing answers that did not pass the quality check — add a TODO marker
+in the file at that question to get it fixed on the next run):
+- `[question text]` — [what is missing; what a strong answer would include]
 
 **Coverage gaps found** (concepts added that are not yet in coverage.md — add them there in a
 separate run using coverage-prompt.md):
