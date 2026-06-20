@@ -25,7 +25,9 @@ FILE       = [angular | css | javascript | typescript | sql | java | spring-boot
 
 Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/spring-boot/ — also read notes/java/ for language-level
-  concepts that appear in Spring Boot code.
+  concepts that appear in Spring Boot code. Before marking a JWT or security question as
+  unbacked, also check notes/security/ — JWT design and token invalidation concepts live
+  there by folder convention.
 - Java: focus on language concepts needed to write Spring Boot code only.
 - SQL: database is PostgreSQL.
 
@@ -70,8 +72,13 @@ For each uncovered concept:
 1. Write the question and add it to the correct section in both `en/{FILE}.md` and
    `es/{FILE}.md` — never one without the other.
 2. Follow the question format defined in `interview-prep-by-topic-prompt.md` exactly:
-   bold question + priority marker + blank line + answer + Junior tip (if Conceptual)
-   or Red flag (if Decision-based or Pressure).
+   bold question + priority marker + blank line + answer + optional element based on type:
+   — Conceptual (asks "what is X?" or "how does X work?") → add a Junior tip.
+   — Decision-based (asks "why X?" or "when X instead of Y?") → add a Red flag.
+   — Pressure (a gotcha, edge case, or unusual condition) → add a Red flag.
+   Junior tip syntax — two consecutive blockquote lines, English then Spanish:
+   > **Junior tip:** [one line of advice in English]
+   > **Consejo de entrevista:** [same advice in Spanish]
 3. Reference a real project in the answer when the concept was practiced in one.
 4. Note it in the summary as "notes → prep — added".
 
@@ -79,7 +86,7 @@ For each uncovered concept:
 
 ## Step 3 — Interview prep → Notes
 
-For every question in `es/{FILE}.md`: is there at least one note file in {NOTES_PATH}
+For every question in `en/{FILE}.md`: is there at least one note file in {NOTES_PATH}
 that covers the concept this question is about?
 
 A question is "backed" if the concept appears as a section or sub-section in any numbered
@@ -119,11 +126,13 @@ After all edits, report:
 **Deferred note files** (more than 3 needed — address in next run):
 - `[concept]` — needs a note file
 
-Then show the commit message. Replace {FILE} and {TOPIC} with the actual values.
-Always one command per code block:
+If no gaps were found in either direction, print: "Files already in sync — no commit needed." and stop.
+
+Otherwise, show the commit message. Replace {FILE} and {TOPIC} with the actual values.
+List only files that were actually modified. Always one command per code block:
 
 ```
-git add notes/interview-prep/en/{FILE}.md notes/interview-prep/es/{FILE}.md <note files created or modified>
+git add <list only modified files — include en/{FILE}.md and es/{FILE}.md only if questions were added; include note files only if created or modified>
 ```
 
 If CLAUDE.md was updated (new file counter), add it separately:
