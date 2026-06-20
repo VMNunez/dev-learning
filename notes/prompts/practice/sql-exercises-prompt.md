@@ -39,8 +39,10 @@ Validation — check these before doing anything else:
 
 ## Context
 
-Before starting, read CLAUDE.md — it has my full profile, target job, daily schedule,
-and what Spanish consultancies look for in a junior in 2026.
+**Before starting, read these three files:**
+- `CLAUDE.md` — my full profile, target job, daily schedule, and what Spanish consultancies look for in a junior in 2026.
+- `PROGRESS.md` — the SQL section shows which topics are already solid.
+- `notes/sql/coverage.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
 I am Victor, 31 years old. I am preparing for a junior Angular + Java Spring Boot position
 at Spanish consultancies (NTT Data, Capgemini, Indra) by August–September 2026.
@@ -57,10 +59,6 @@ Study order (matches ROADMAP.md):
 JOINs (02) → GROUP BY (03) → NULLs (04) → subqueries (05) → CTEs (06) → DML (07)
 → transactions (12) → window functions (10) → normalization (08) → schema design (09)
 → data types (13) → PostgreSQL specifics (14) → indexes (11)
-
-Before starting, read two files:
-- `PROGRESS.md` — the SQL section shows which topics are already solid.
-- `notes/sql/coverage.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
 ---
 
@@ -150,6 +148,13 @@ Stop and wait for Victor's response.
 
 Skip this step if the file already exists.
 
+**Self-contained topics — no bookstore setup block:** for `normalization`, `schema-design`,
+and `data-types`, do NOT generate the bookstore setup block. Each exercise in these topics
+carries its own table definitions. For a new file of one of these topics, generate only the
+header comment and the `-- EXERCISES: {TOPIC}` banner, then go straight to Step 3. The rest
+of this step applies only to the bookstore-based topics (joins, group-by, nulls, subqueries,
+ctes, dml, transactions, window-functions, postgresql-specifics, indexes).
+
 Generate a complete setup block that Victor can paste and run in pgAdmin.
 
 Format:
@@ -238,13 +243,20 @@ the distribution applies to batch positions, not to the absolute exercise number
 Example for COUNT=12 (exercises N+1 through N+12): first 3 positions [Intro], next 6 [Standard], last 3 [Challenge].
 Example for COUNT=6 (exercises N+1 through N+6): first 2 positions [Intro], next 3 [Standard], last 1 [Challenge].
 
+**Guard — never leave Challenge empty:** because both Intro and Standard round up, some counts
+leave Challenge at 0 (e.g. COUNT=5 → 2 Intro, 3 Standard, 0 Challenge). If the remainder for
+Challenge is 0, move one exercise from Standard to Challenge so every batch has at least one
+Challenge exercise. (COUNT=5 → 2 Intro, 2 Standard, 1 Challenge.)
+
 Label each exercise with its level: `-- Exercise N [Intro]:`, `[Standard]:`, `[Challenge]:`.
 
-**Cross-topic integration rule:** for topics after GROUP BY (nulls, subqueries, CTEs,
-window functions, indexes), at least one Challenge exercise must combine the current topic
-with a concept from an earlier topic. Examples: a subquery Challenge that also requires a
-JOIN; a CTEs Challenge that uses GROUP BY inside a CTE; a window functions Challenge that
-filters with a WHERE clause using IS NULL.
+**Cross-topic integration rule:** for the bookstore-based query topics from nulls onward
+(nulls, subqueries, ctes, transactions, window-functions, postgresql-specifics, indexes),
+at least one Challenge exercise must combine the current topic with a concept from an earlier
+topic. Examples: a subquery Challenge that also requires a JOIN; a CTEs Challenge that uses
+GROUP BY inside a CTE; a window functions Challenge that filters with a WHERE clause using
+IS NULL. This rule does not apply to the self-contained design topics (normalization,
+schema-design, data-types) — they have no shared query schema to integrate with.
 
 **Format for each exercise:**
 ```sql
@@ -458,9 +470,10 @@ If the folder does not exist, create it using the path above.
 For a **new file**: write the complete file (setup block + exercises).
 For **append**: read the existing file, then append the new exercises after the last line. Do not modify any existing content.
 
-After saving, print:
-- New file: "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Ábrelo en pgAdmin, ejecuta el bloque SETUP primero, y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
-- Append: "Listo. {COUNT} ejercicios añadidos a [path]. Total en el archivo: {N+COUNT}. El setup ya está hecho de la sesión anterior. Abre el archivo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:' nuevo. Luego pégalo en el modo review."
+After saving, print the message matching the case:
+- New file, bookstore-based topic: "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Ábrelo en pgAdmin, ejecuta el bloque SETUP primero, y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
+- New file, self-contained topic (normalization, schema-design, data-types): "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Cada ejercicio es independiente — no hay bloque SETUP. Ábrelo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
+- Append: "Listo. {COUNT} ejercicios añadidos a [path]. Total en el archivo: {N+COUNT}. Abre el archivo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:' nuevo. Luego pégalo en el modo review."
 
 ---
 
@@ -492,7 +505,9 @@ This is normal when reviewing a new append batch.
 ### Step 2 — Check each answer
 
 Run each query mentally against the schema defined in the setup block.
-For schema design and normalization exercises, evaluate the design against the requirements.
+For the self-contained design topics (schema-design, normalization, data-types), there is no
+shared setup block — evaluate each answer's table design and type choices against the
+requirements stated in that exercise.
 
 Mark each answer with one of these:
 
@@ -514,8 +529,11 @@ inside an aggregate, using DISTINCT ON instead of a subquery). Skip for minor st
 - Correct query in a code block
 - Explain the concept behind the correct approach in one sentence
 
-**For DML exercises:** a missing ROLLBACK is flagged as ⚠️ Partial even if the DML
+**For dml-topic exercises:** a missing ROLLBACK is flagged as ⚠️ Partial even if the DML
 statement itself is correct — resetting data after each exercise is part of the skill.
+This applies only to the `dml` topic. In the `transactions` topic, COMMIT is the correct
+ending for exercises that test the COMMIT path — do not flag a missing ROLLBACK there;
+instead apply the transactions checklist below.
 
 **For normalization exercises:** check:
 - Are the functional dependencies correctly identified?
