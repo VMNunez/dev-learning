@@ -10,16 +10,33 @@ Run this after you finish a timed simulation — no notes, no AI, timer stopped.
 
 **How to use:**
 
-1. Fill in `SIMULATION_FILE` and `TIME_USED`
-2. Paste the entire prompt into a new chat
-3. Paste your code below it — after the last line of the prompt
+1. In the configuration block: delete all `SIMULATION_FILE` lines except the one you are reviewing
+2. Fill in `TIME_USED` and `MODE`
+3. Paste the entire prompt into a new chat
+4. Paste your code below it — after the last line of the prompt
 
 ---
 
 ````
 ## Configuration — edit only this block
 
-SIMULATION_FILE = [e.g. simulations/angular/01-task-form.md]
+SIMULATION_FILE = simulations/angular/01-task-form.md
+SIMULATION_FILE = simulations/angular/02-user-search.md
+SIMULATION_FILE = simulations/angular/03-product-filter.md
+SIMULATION_FILE = simulations/angular/04-login-form.md
+SIMULATION_FILE = simulations/angular/05-expense-dashboard.md
+SIMULATION_FILE = simulations/spring-boot/01-task-api.md
+SIMULATION_FILE = simulations/spring-boot/02-product-api.md
+SIMULATION_FILE = simulations/spring-boot/03-user-api.md
+SIMULATION_FILE = simulations/spring-boot/04-order-api.md
+SIMULATION_FILE = simulations/spring-boot/05-employee-api.md
+SIMULATION_FILE = simulations/sql/01-bookstore.md
+SIMULATION_FILE = simulations/sql/02-employees.md
+SIMULATION_FILE = simulations/sql/03-ecommerce.md
+SIMULATION_FILE = simulations/sql/04-university.md
+SIMULATION_FILE = simulations/sql/05-inventory.md
+← delete all lines above except the one you are reviewing
+
 TIME_USED       = [minutes used — exact, no rounding — e.g. 74]
 MODE            = [review | hint — leave blank for review]
 
@@ -144,11 +161,13 @@ Only mention real strengths — no false positives. If nothing stands out, skip 
 
 **Pattern check — before closing this step:**
 Read simulations/TRACKER.md. Count completed simulations for the same TYPE (angular / spring-boot / sql)
-that show ❌ Fail or ⚠️ Borderline status. If 2 or more exist, flag it:
+that show ❌ Fail or ⚠️ Borderline status. Then add 1 if the current verdict is also ❌ Fail or
+⚠️ Borderline. If the combined total is 2 or more, flag it:
 "Recurring pattern: [N] of your [TYPE] simulations resulted in Borderline or Fail. In this session
 the weakest dimensions were: [list dimensions that scored 1 or 2 from Step 2]. Prioritise these
 before the next one."
-If fewer than 2 previous completed simulations of this type exist, skip this check.
+If no previous completed simulations of this type exist in TRACKER.md (this is the first one),
+skip this check.
 
 **Ideal solution:**
 Write a complete, clean solution that scores 3 on every dimension — all files needed to
@@ -163,9 +182,9 @@ own version.
 **If verdict is Borderline or Fail:** write 2–3 questions targeting the specific gaps in this
 solution — not generic questions about the technology.
 
-**If verdict is Pass:** write 1 question. If Step 3 flagged any issues (dimensions scored 2),
-target the most important gap. If no issues were flagged, write a reinforcement question about
-the strongest pattern applied correctly in this solution.
+**If verdict is Pass:** write 1 question. If the Step 2 scorecard shows any dimension scored 1
+or 2, target the most important gap. If every dimension scored 3, write a reinforcement question
+about the strongest pattern applied correctly in this solution.
 
 Add them to the right files. Always add to BOTH at the same time — never one without the other:
 - Angular → notes/interview-prep/en/angular.md AND notes/interview-prep/es/angular.md
@@ -181,6 +200,9 @@ Each question must follow the full format used in these files:
 
 Answer in 1–2 sentences. Reference a real project or this simulation if the question is about
 a pattern or decision. Use "I used" or "I chose" — not "it is used".
+
+Rules: there must be a blank line between the bold question and the answer, and a blank line
+between the answer and any optional element below.
 
 Then add the optional element based on question type:
 - **Conceptual** (asks "what is X?" or "how does X work?") → add a Junior tip:

@@ -271,6 +271,19 @@ schema-design, data-types) — they have no shared query schema to integrate wit
 
 Leave a blank line after "-- Your answer:" so Victor has space to write.
 
+**Self-explanation on Challenge exercises:** every Challenge exercise adds one extra line
+after the answer space, so Victor practises justifying his choice — the single most important
+skill in a technical interview ("explain every line, not just write it"):
+```sql
+-- Your answer:
+
+
+-- Why I chose this approach (one line — e.g. "LEFT JOIN keeps authors with zero books; INNER would drop them"):
+
+```
+Do NOT add this line to Intro or Standard exercises — keep those frictionless. It is Challenge-only,
+where the reasoning is deepest and most worth explaining out loud.
+
 **Topic-specific focus:**
 
 JOINS
