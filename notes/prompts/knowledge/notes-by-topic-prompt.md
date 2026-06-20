@@ -111,6 +111,9 @@ You may NOT:
 If rule 2 of the audit identifies a note that does not follow teaching rules, report it in the
 summary — but do not change the text. Victor decides whether to rewrite it.
 
+Exception: if Victor explicitly asks you to fix the reported issues after seeing the
+summary (in the same conversation), you may rewrite those sections — even without a TODO.
+
 ---
 
 ## Who I am and what I need
@@ -337,7 +340,9 @@ already lists the concept, leave it as is.
 sections are always allowed. Do not edit existing text without a TODO — even if it could be improved.
 
 Apply all new content and TODO resolutions directly to the files. For issues in existing
-text, report them in the summary — do not change the text.
+text, report them in the summary — do not change the text. Exception: if Victor explicitly
+asks you to fix the reported issues after seeing the summary (in the same conversation),
+you may rewrite those sections — even without a TODO.
 
 After all edits, print a final summary table:
 
