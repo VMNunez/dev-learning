@@ -39,11 +39,8 @@ Use MODE and PROJECT wherever the prompt refers to {MODE} and {PROJECT}.
 
 ## Context
 
-I am Victor, 31 years old, learning Angular + Java Spring Boot to get a junior developer
-job at a Spanish consultancy (NTT Data, Capgemini, Indra) by August–September 2026. My
-stack is Angular + Spring Boot + PostgreSQL + Docker. I learn concept by concept through
-real projects, guided by Claude. The goal is not just to build something — it is to be
-able to explain every line and every decision in an interview.
+My profile and projects are in `notes/prompts/_shared-context.md`. The goal is not just to
+build something — it is to be able to explain every line and every decision in an interview.
 
 ---
 

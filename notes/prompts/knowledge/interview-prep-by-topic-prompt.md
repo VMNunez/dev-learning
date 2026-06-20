@@ -50,37 +50,9 @@ Before starting, read CLAUDE.md — it has the full project context, teaching ru
 
 ## Who I am and what I need
 
-I am Victor, 31 years old. I am preparing for my first junior developer job at Spanish IT
-consultancies (NTT Data, Capgemini, Indra, and similar) with a target date of August 2026.
-
-My stack: Angular (frontend) + Spring Boot (backend, Java) + PostgreSQL (database).
-
-My differentiator: most candidates in Spain apply with React. I am going with Angular + Spring
-Boot, which is what large consultancies actually use internally — this makes me stand out if
-I can demonstrate real understanding and real decisions, not just syntax knowledge.
-
-I completed an internship in June 2026 (Next.js + TypeScript + MySQL) — real work experience
-on my CV even though the stack is different.
-
-Level: Junior to Junior-Mid. I need to sound like someone who makes decisions and can explain
-them — not someone who followed a tutorial and memorised the steps.
-
-What Spanish consultancies actually look for in 2026:
-- Can you explain every line of code you wrote? (AI writes boilerplate; juniors who can't
-  explain it get filtered out immediately)
-- Did you make architectural decisions, or did you just follow a tutorial?
-- Can you read and understand code written by someone else?
-- Do you have any real project or work experience?
-- Can you write and understand tests?
-
-My projects (CLAUDE.md and PROGRESS.md are authoritative — use them if this list is outdated):
-- 01: todo list — components, signals, services, directives
-- 02: weather app — HttpClient, RxJS, forkJoin, API integration
-- 03: expense tracker — reactive forms, routing, localStorage, smart/dumb pattern
-- 04: meal finder — route params, ActivatedRoute, effect(), favourites
-- 05: task manager — Angular Material, MatTable, MatDialog, coordinator pattern
-- 06: HR portal — route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate
-- 07: TimeTrack (in progress) — Spring Boot REST API, JWT auth, Spring Data JPA + Hibernate, PostgreSQL, Docker, Angular
+My profile, my projects, the **Spanish job market 2026**, and the **AI factor** are in
+`notes/prompts/_shared-context.md` — read it before auditing. Every answer is judged against
+what a Spanish consultancy interviewer would actually filter on, so that context matters here.
 
 Files to audit:
 - notes/interview-prep/en/{FILE}.md

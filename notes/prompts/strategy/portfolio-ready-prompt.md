@@ -31,14 +31,12 @@ Use these values wherever the prompt refers to {PROJECT_PATH} or {PROJECT_TYPE}.
 
 ## Context
 
-I am Victor, 31 years old. I am preparing for a junior Angular + Java Spring Boot position
-at Spanish consultancies (NTT Data, Capgemini, Indra) by August 2026.
-
 I want to know if the project at {PROJECT_PATH} is ready to show to a recruiter and to
 reference in a job application right now. Not "ready eventually" — ready today.
 
-Before starting, read CLAUDE.md — it has my full profile, README format rules, teaching
-rules, and what Spanish consultancies look for in a portfolio project.
+Before starting, read CLAUDE.md (README format rules, teaching rules) and
+`notes/prompts/_shared-context.md` (my profile, projects, and what Spanish consultancies
+look for in a portfolio project).
 
 ---
 

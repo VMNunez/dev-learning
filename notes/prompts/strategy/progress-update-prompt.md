@@ -13,8 +13,7 @@ What this prompt does: reads every completed project's PLANNING.md, checks the S
 ````
 ## Context
 
-I am Victor, 31 years old. I am learning Angular + Java Spring Boot for a junior developer
-job at Spanish consultancies (NTT Data, Capgemini, Indra) by August 2026.
+My profile is in `notes/prompts/_shared-context.md`.
 
 PROGRESS.md is the master record of every project completed and every concept learned.
 It is the single source of truth for my history — other prompts (new-project-prompt,

@@ -33,8 +33,7 @@ PROJECTS   = [comma-separated list of projects to include — e.g. "07-timetrack
 
 ## Context
 
-I am Victor, 31 years old. I am looking for a junior Angular + Java Spring Boot position at
-Spanish IT consultancies (NTT Data, Capgemini, Indra, Sopra Steria, Accenture) by August–September 2026.
+My profile, internship details, and target companies are in `notes/prompts/_shared-context.md`.
 
 Before starting, read these files:
 1. `CLAUDE.md` — my full profile, stack, internship details, and what Spanish consultancies look for

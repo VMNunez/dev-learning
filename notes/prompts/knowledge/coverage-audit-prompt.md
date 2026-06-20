@@ -17,58 +17,16 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 
 ---
 
-## Who I am
+## Context — read first
 
-I am Victor, 31 years old. I am in a career transition — my background is React, Node.js, and TypeScript, but I retrained to target Angular + Spring Boot, which is the dominant stack at Spanish IT consultancies.
+Read `notes/prompts/_shared-context.md` for my profile, the **Spanish job market 2026**, and
+the **AI factor 2026**. This audit decides what belongs in coverage based entirely on what the
+job requires — Steps 2, 3, and 4 below apply those market and AI criteria directly.
 
-My situation:
-- Full-time studying since June 2, 2026 — this is my main job right now
-- Completed an internship in June 2026 (Next.js + TypeScript + MySQL) — real work experience, different stack, goes on the CV
-- Target: land my first developer job at a Spanish IT consultancy by August–September 2026
-- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI, and similar large consultancies
-- Differentiator: most candidates in Spain apply with React; I am going with Angular + Spring Boot, which is what consultancies use internally
+Note for this audit: projects and notes are vehicles to reach the job objective — they do not
+define scope. Scope is defined entirely by what the job requires.
 
-Projects and notes are vehicles to reach the job objective — they do not define scope. Scope is defined entirely by what the job requires.
-
----
-
-## The Spanish job market in 2026
-
-Large consultancies (NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI) hire juniors through a 5-stage process: CV screening → HR call → technical test → technical interview → offer.
-
-The technical interview (stage 4) is where candidates are filtered. The interviewer reviews the candidate's test code live and asks conceptual questions on the spot.
-
-What gets a junior filtered out:
-- Cannot explain why a pattern was chosen (only knows how to write it)
-- No tests in the project — in 2026 this is a hard filter, not a minor gap. A junior with tests is rare and immediately stands out
-- Cannot explain an architectural decision: "why JWT?", "why DTOs?", "why soft delete?" — standard questions in the review step
-- Does not know the difference between similar concepts (`PATCH` vs `PUT`, `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`)
-- Gives textbook definitions instead of real examples from their own project
-- Cannot read code they did not write and explain what it does
-
-What has specifically changed in 2026:
-- Technical tests increasingly include a code-review step: the candidate is shown a snippet (sometimes AI-generated) and asked to find the bug or explain what is wrong
-- Docker/containerisation is moving from "nice to have" to baseline expectation
-- Testing is now a real differentiator — almost no junior candidate has tests; having JUnit 5 + Mockito is worth more than an extra feature
-
----
-
-## The AI factor in 2026
-
-AI writes boilerplate. This has raised the bar for what juniors must know.
-
-In 2026 there are two layers:
-1. **Explain what AI generates** — "can you explain the code you wrote?"
-2. **Review AI output** — "can you spot what the AI got wrong?" Companies expect juniors to USE AI tools (Copilot, Cursor) and review the output critically
-
-Common AI mistakes at junior level that interviewers now test for:
-- Hardcoded secrets or tokens instead of environment variables
-- `@Transactional` placed on the wrong layer (controller instead of service)
-- `@NotBlank` vs `@NotNull` confusion
-- Tests that always pass but never catch a real bug (no meaningful assertion)
-- N+1 queries from missing `LAZY`/`EAGER` configuration
-
-For coverage: any concept that is easy to generate with AI but hard to explain, defend, or review belongs in coverage. The bar is now "a junior must be able to explain, defend, and review this without AI help."
+(CLAUDE.md and ROADMAP.md are read in Step 1.)
 
 ---
 

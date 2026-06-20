@@ -60,104 +60,14 @@ Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
 
 I want you to create or update the coverage.md file for {TOPIC}.
 
-Before starting, read CLAUDE.md — it has my full profile, target job, teaching rules, and the
-subfolder structure for notes/.
+Before starting, read two files:
+- `CLAUDE.md` — teaching rules and the notes/ subfolder structure.
+- `notes/prompts/_shared-context.md` — my profile, my projects, the **Spanish job market 2026**,
+  and the **AI factor 2026**. The market and AI sections define what counts as "in scope" for a
+  junior — Steps 2 and 3 below depend on them directly.
 
----
-
-## Who I am
-
-I am Victor, 31 years old. I am in a career transition — my background is React, Node.js, and
-TypeScript, but I retrained to target Angular + Spring Boot, which is the dominant stack at
-Spanish IT consultancies.
-
-My situation:
-- Full-time studying since June 2, 2026 — this is not a side project, it is my main job right now
-- Completed an internship in June 2026 (Next.js + TypeScript + MySQL) — this is real work
-  experience and it goes on my CV, even though the stack is different from my target
-- Target: land my first developer job at a Spanish IT consultancy by August–September 2026
-- Target companies: NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI, and similar large consultancies
-- My differentiator: most candidates in Spain apply with React; I am going with Angular +
-  Spring Boot, which is what consultancies use internally — this makes me stand out if I
-  can demonstrate real understanding, not just syntax knowledge
-
-Projects are a vehicle to practise coverage items — they do not define coverage scope.
-Do not use the project list to decide what belongs in coverage.
-
----
-
-## The Spanish job market in 2026
-
-Large consultancies (NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI)
-hire juniors through a standard 5-stage process:
-
-1. **CV screening** — stack match, projects, internship. Filtered out if the CV is generic.
-2. **HR call** — motivation, availability, salary expectation. 15–20 minutes.
-3. **Technical test** — take-home mini-project (Angular mini-app or Spring Boot mini-API),
-   typically 2–4 hours. Filtered out if the code is not clean, not structured, or not
-   explainable.
-4. **Technical interview** — live review of the take-home code: explain every decision,
-   defend architecture choices, answer conceptual questions on the spot. The most important
-   stage. Filtered out if the candidate cannot explain what they wrote.
-5. **Offer** — salary and contract terms.
-
-What gets a junior filtered out at stage 4:
-- Cannot explain why a pattern was chosen (only knows how to write it)
-- Cannot read code written by someone else and explain what it does
-- No tests in the project — in 2026 this is a hard filter at most large consultancies, not
-  a minor gap. A junior with tests is rare and immediately stands out
-- Does not know the difference between similar concepts (e.g. `PATCH` vs `PUT`,
-  `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, `Subject` vs `BehaviorSubject`)
-- Gives textbook definitions instead of real examples from their own projects
-- Cannot explain an architectural decision: "why JWT?", "why DTOs?", "why soft delete?" —
-  these are standard questions in the technical interview review step
-
-What has specifically changed in 2026:
-- Technical tests increasingly include a code-review step: the candidate is shown a snippet
-  (sometimes AI-generated) and asked to find the bug or explain what is wrong
-- Docker/containerisation is moving from "nice to have" to baseline expectation — a candidate
-  who cannot explain what `docker-compose up` does is visibly behind
-- Testing has become a real differentiator: almost no junior candidate has tests. Having
-  JUnit 5 + Mockito on the backend is now worth more than an extra feature
-
-At junior level, companies are not expecting a senior. They want someone who:
-- Can explain every line of code they wrote
-- Can justify at least one architectural decision with a real reason, not a tutorial answer
-- Knows the basics of their stack and is not faking it
-- Can be productive within a few months
-- Can review code — including AI-generated code — and spot obvious mistakes
-
----
-
-## The AI factor in 2026
-
-AI writes boilerplate. This has changed what technical interviewers test.
-
-Before AI: "Can you write the code?" — enough to pass.
-Now: "Can you explain the code, justify the decision, and catch a bug in code you did not write?"
-
-This means:
-- A candidate who generates code without understanding it is filtered out faster than before
-- Testing knowledge is now a stronger filter — tests show real understanding because AI
-  struggles to write meaningful tests for code it doesn't understand
-- Architecture questions have become more common — "why did you structure it this way?" is
-  harder to answer with AI-generated code
-- Code review questions are now standard — the interviewer shows a snippet and asks what
-  is wrong or why it was written that way
-
-There is a second layer that is new in 2026: companies now expect juniors to USE AI tools
-(Copilot, Cursor) while still understanding and reviewing the output. The question is no
-longer only "can you explain the code you wrote?" — it is also "can you spot what the AI
-got wrong?" Common AI mistakes at junior level that interviewers test for:
-- Hardcoded secrets or tokens instead of environment variables
-- `@Transactional` placed on the wrong layer (controller instead of service)
-- Missing validation edge cases (`@NotBlank` used where `@NotNull` was needed, or vice versa)
-- Tests that always pass but never catch a real bug (no meaningful assertion)
-- N+1 queries from missing `LAZY`/`EAGER` configuration
-
-For coverage, this means: any concept that is easy to generate with AI but hard to explain
-belongs in coverage. The bar for "a junior must know this" is now "a junior must be able to
-explain, defend, and review this without AI help."
+Note for coverage: projects are a vehicle to practise coverage items — they do not define
+coverage scope. Do not use the project list to decide what belongs in coverage.
 
 ---
 

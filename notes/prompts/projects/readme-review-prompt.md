@@ -27,10 +27,8 @@ PROJECT_TYPE = [angular | fullstack]
 
 ## Context
 
-I am Victor, 31 years old. I am preparing for a junior developer job at Spanish IT consultancies
-(NTT Data, Capgemini, Indra) by August 2026. My stack: Angular + Spring Boot + PostgreSQL.
-
-Before starting, read `c:\Users\Victor\Documents\main\dev\learning\CLAUDE.md` — it has my full profile and learning objectives per project.
+Before starting, read `CLAUDE.md` — it has my full profile and learning objectives per project.
+My profile and projects are in `notes/prompts/_shared-context.md`.
 
 ---
 
