@@ -103,13 +103,18 @@ If the spec explicitly requires tests, add this row:
 | PostgreSQL features used where they help (ILIKE, ::, DISTINCT ON) | | |
 
 **Overall verdict:**
-- **Pass** — all requirements met, no core dimension scored 1
-- **Borderline** — most requirements met, one or two core dimensions scored 1
-- **Fail** — core requirements missing, or more than two core dimensions scored 1
+- **Pass** — Requirements met scored 2 or 3, and no other core dimension scored 1
+- **Borderline** — Requirements met scored 2 or 3, and exactly 1 other core dimension scored 1
+- **Fail** — Requirements met scored 1, OR both other core dimensions scored 1
 
-If {TIME_USED} exceeded the spec time limit, note which parts took the most time and why.
-Distinguish between time lost on syntax (fixable with practice) vs time lost on design decisions
-(requires deeper project experience).
+"Other" means the 2 core dimensions besides Requirements met — each simulation type has exactly 2 of them. If Requirements met = 1, the verdict is always Fail regardless of other scores.
+
+Compare {TIME_USED} to the spec time limit:
+- If exceeded: note which parts took the most time and why. Distinguish between time lost on
+  syntax (fixable with practice) vs time lost on design decisions (requires deeper project
+  experience).
+- If under or on time: note it briefly — finishing within the limit signals confidence in the
+  material.
 
 ---
 
@@ -125,13 +130,16 @@ For every dimension scored 1:
 - Explain why it is wrong (one sentence)
 - Show the corrected version
 
-If the solution was strong overall: name one or two things done well. One line each.
-Only mention real strengths — no false positives.
+Name 1–2 things done well (applies to any verdict, not just Pass). One line each.
+Only mention real strengths — no false positives. If nothing stands out, skip this.
 
 **Pattern check — before closing this step:**
-Read simulations/TRACKER.md. Look at past results for the same TYPE (angular / spring-boot / sql).
-If the same weakness dimension appears in 2 or more previous simulations of the same type, flag it:
-"Recurring weakness: [dimension] — seen in [N] previous simulations. Prioritise this before the next one."
+Read simulations/TRACKER.md. Count completed simulations for the same TYPE (angular / spring-boot / sql)
+that show ❌ Fail or ⚠️ Borderline status. If 2 or more exist, flag it:
+"Recurring pattern: [N] of your [TYPE] simulations resulted in Borderline or Fail. In this session
+the weakest dimensions were: [list dimensions that scored 1 or 2 from Step 2]. Prioritise these
+before the next one."
+If fewer than 2 previous completed simulations of this type exist, skip this check.
 
 ---
 
@@ -140,8 +148,9 @@ If the same weakness dimension appears in 2 or more previous simulations of the 
 **If verdict is Borderline or Fail:** write 2–3 questions targeting the specific gaps in this
 solution — not generic questions about the technology.
 
-**If verdict is Pass with no significant issues:** write 1 question about the most important
-pattern used correctly in this solution — to reinforce the decision behind it.
+**If verdict is Pass:** write 1 question. If Step 3 flagged any issues (dimensions scored 2),
+target the most important gap. If no issues were flagged, write a reinforcement question about
+the strongest pattern applied correctly in this solution.
 
 Add them to the right files. Always add to BOTH at the same time — never one without the other:
 - Angular → notes/interview-prep/en/angular.md AND notes/interview-prep/es/angular.md
@@ -179,20 +188,27 @@ then ⭐⭐, then ⭐.
 
 ## Step 5 — Update the tracker
 
-Read simulations/TRACKER.md. Find the row for {SIMULATION_FILE} and update two columns only:
+Update two files:
+
+**simulations/TRACKER.md** — find the row for {SIMULATION_FILE} and update:
 - **Status:** ✅ Pass / ⚠️ Borderline / ❌ Fail (from Step 2 verdict)
 - **Date:** today's date
 
-Leave **Self-assessment** untouched — Victor fills that himself before running this prompt.
+**{SIMULATION_FILE}** — update the header fields at the top of the spec:
+- **Status:** same value as TRACKER.md
+- **Date completed:** today's date
+
+Leave **Self-assessment** untouched in both files — Victor fills that himself before running
+this prompt.
 
 Then show the commit message:
 
 ```
-git add simulations/TRACKER.md notes/interview-prep/
+git add {SIMULATION_FILE} simulations/TRACKER.md notes/interview-prep/
 ```
 
 ```
-git commit -m "chore: simulation {SIMULATION_FILE} — [Pass/Borderline/Fail], {TIME_USED}min"
+git commit -m "docs: simulation {SIMULATION_FILE} — [Pass/Borderline/Fail], {TIME_USED}min"
 ```
 
 [paste your solution below this line]
