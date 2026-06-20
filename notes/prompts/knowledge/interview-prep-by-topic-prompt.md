@@ -210,6 +210,10 @@ Spanish consultancies in a junior interview for {FILE}:
 - A niche detail, edge case, or subtlety that only the most thorough interviewers probe.
 - Missing it would not cause a filter-out at junior level.
 
+**Proportion check:** in a typical section of 8–12 questions, expect roughly 3–4 ⭐⭐⭐,
+4–5 ⭐⭐, and 1–2 ⭐. If more than half the questions in a section are marked ⭐⭐⭐,
+reconsider — only the truly essential ones earn that mark.
+
 **Apply to all existing questions in {SECTION} now, before the format check:**
 1. Every question that already exists without a marker gets one assigned.
 2. Within each section, reorder questions so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
@@ -225,32 +229,26 @@ New questions added during the audit also get a marker — this is enforced in t
 
 ## Format check — mandatory before the audit
 
-Every question in the file must follow this exact structure:
+Every question in the file must follow this structure. The mandatory elements are:
 
 **Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
 
 Answer in 1–2 sentences. Include a real example from my projects when the question is about
 a pattern or decision.
 
-Note: the `[...]` labels below are instructions — do not write them in the files.
-
-[Conceptual questions only:]
-> **Junior tip:** short advice on how to explain it clearly in an interview (English)
-> **Consejo de entrevista:** same advice in Spanish
-
-[Decision-based and Pressure questions — optional but encouraged:]
-Red flag answer: what a weak candidate would say and why it fails.
-
-Rules:
+Rules for mandatory elements:
 - There must be a blank line between the bold question and the answer.
-- There must be a blank line between the answer and the Junior tip block (when present).
-- The Junior tip block uses `>` blockquote syntax — one line for English, one for Spanish.
-- Only **Conceptual** questions get a Junior tip (see "Question types" above for the definition).
-- Red flag answers are optional but encouraged for Decision-based and Pressure questions.
-- There must be a blank line between the answer and the Red flag answer (when present).
 - Every question must have a priority marker (⭐⭐⭐, ⭐⭐, or ⭐) at the end of the bold
   question line, after the question mark. Markers were assigned in the previous step — if
   any question is still missing one, assign it now using the criteria above.
+
+Optional elements added after the answer, based on question type:
+- **Conceptual questions only:** a blank line, then a Junior tip block using `>` blockquote
+  syntax — one English line then one Spanish line:
+  > **Junior tip:** short advice on how to explain it clearly in an interview
+  > **Consejo de entrevista:** same advice in Spanish
+- **Decision-based and Pressure questions (encouraged):** a blank line, then a Red flag:
+  Red flag answer: what a weak candidate would say and why it fails.
 
 Scan every question in {SECTION} of both en/{FILE}.md and es/{FILE}.md.
 Fix any violation immediately before moving on to the audit. Apply the same fix to both files.
@@ -289,6 +287,8 @@ When SECTION is a specific heading: report the count and percentage for that sec
 
 Target ratio per section: 55% Conceptual / 35% Decision-based / 10% Pressure.
 Flag any section where Decision-based or Pressure questions are completely absent.
+Use these flags in section 4 — if a type was flagged absent, specifically look for
+questions of that type to add.
 
 **4. Missing questions**
 All questions not yet in {SECTION} that a Spanish consultancy would realistically ask.
@@ -296,19 +296,16 @@ Do not cap at 3–5 — add every question needed until the section is genuinely
 Assign a priority marker to each new question.
 If coverage.md exists, flag any new question whose concept is not in it with `[coverage gap]`.
 
-Format for each new question (the `[...]` labels are instructions — do not write them in the files):
+Format for each new question — follow the structure defined in the Format check section:
 
 **Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
 
 Answer in 1–2 sentences. Include a real example from my projects when the question is about
 a pattern or decision.
 
-[Conceptual questions only:]
-> **Junior tip:** short advice on how to explain it clearly in an interview (English)
-> **Consejo de entrevista:** same advice in Spanish
-
-[Decision-based and Pressure questions — optional but encouraged:]
-Red flag answer: what a weak candidate would say and why it fails.
+Then add the optional elements based on type:
+- Conceptual: add a Junior tip block (see Format check for exact syntax)
+- Decision-based and Pressure: add a Red flag answer (encouraged)
 
 ---
 
@@ -332,7 +329,7 @@ After auditing {SECTION}, give it a status:
 - ➕ Added — new section or questions created from scratch
 
 A section is complete when ALL of these are true:
-- Every concept in coverage.md for this topic has at least one question
+- Every coverage.md concept that belongs in this section has at least one question
 - Every question a Spanish consultancy would realistically ask about this topic is covered
 - The ratio is on target (55% Conceptual / 35% Decision-based / 10% Pressure) per section
 - Every answer passes the "explain every word" test — no purely theoretical answers
@@ -357,6 +354,9 @@ When SECTION = "all", include a status table first:
 | Section | Status |
 |---------|--------|
 | ## [section heading] | ✅ / 🔧 / ➕ |
+
+When SECTION is a specific heading, the section status was already given in the Execution
+step — do not repeat it here.
 
 **Coverage gaps found** (concepts added that are not yet in coverage.md — add them there in a
 separate run using coverage-prompt.md):
