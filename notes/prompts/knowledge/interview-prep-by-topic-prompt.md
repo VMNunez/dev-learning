@@ -33,6 +33,9 @@ Notes on specific files:
   (e.g. sequences vs AUTO_INCREMENT, RETURNING clause).
 - general: questions that don't belong to a specific technology (debugging, teamwork, process, git workflow).
 - security: covers authentication vs authorisation, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
+- architecture: covers REST principles, layered architecture, MVC, coordinator pattern, smart/dumb
+  components, service layer, repository pattern. Does not cover framework internals — those belong
+  in spring-boot.md or angular.md.
 
 Use FILE and SECTION wherever the prompt refers to {FILE} or {SECTION}.
 
@@ -114,14 +117,19 @@ Target ratio per section: 55% Conceptual / 35% Decision-based / 10% Pressure.
 
 Before doing anything else, check that en/{FILE}.md and es/{FILE}.md are in sync.
 
-List the sections and question count from each file side by side. If a section exists in one
-file but not the other, or if the question count for any section differs:
+Scope of the sync check:
+- When SECTION = "all": check sync across the full file.
+- When SECTION is a specific heading: check only that section for sync. Mismatches in other
+  sections are outside the scope of this run — do not touch them.
+
+For the relevant scope, list sections and question counts from each file side by side.
+If a section exists in one file but not the other, or if the question count differs:
 1. Report the mismatch clearly.
 2. Bring the files into sync: create the missing section or questions in the file that is
    behind, based on the content in the more complete file (translated).
 3. Only after both files are in sync, move on to the TODO step.
 
-If the files are already in sync, skip this step and move directly to the TODO step.
+If the files are already in sync for the relevant scope, move directly to the TODO step.
 
 ---
 
@@ -133,8 +141,8 @@ reading to mark things he wants corrected or improved.
 
 For each TODO found:
 1. Identify exactly what Victor wants changed.
-2. Apply the fix to the en/ file at that exact location.
-3. Apply the same fix (translated) to the es/ file at the same position.
+2. Apply the fix to the file where the TODO was found.
+3. Apply the equivalent fix (translated if needed) to the other file at the corresponding position.
 4. Remove the TODO marker after fixing.
 5. Report what was changed before moving on.
 
@@ -159,7 +167,11 @@ Before reading the interview prep files, read the coverage.md for this topic:
 
 If coverage.md exists:
 - List every concept it contains.
-- As you audit {SECTION}, verify that every concept from that list has at least one question.
+- Scope of the check:
+  - When SECTION = "all": verify that every concept in coverage.md has at least one question
+    somewhere in the file.
+  - When SECTION is a specific heading: verify only the concepts that logically belong in
+    that section have at least one question there. Skip concepts that belong in other sections.
 - Concepts in coverage.md with no question are required additions — treat them the same as
   missing topics in audit section 1, regardless of whether you would have thought of them
   independently.
@@ -171,36 +183,7 @@ Angular + Spring Boot interviews at Spanish consultancies require.
 
 ---
 
-## Format check — mandatory before the audit
-
-Every question in the file must follow this exact structure:
-
-**Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
-
-Answer in 1–2 sentences. Include a real example from my projects when the question is about
-a pattern or decision.
-
-> **Junior tip:** short advice on how to explain it clearly in an interview (English)
-> **Consejo de entrevista:** same advice in Spanish
-
-Red flag answer: what a weak candidate would say and why it fails.
-
-Rules:
-- There must be a blank line between the bold question and the answer.
-- There must be a blank line between the answer and the Junior tip block.
-- The Junior tip block uses `>` blockquote syntax — one line for English, one for Spanish.
-- Only **Conceptual** questions get a Junior tip (see "Question types" above for the definition).
-- Red flag answers are optional but encouraged for Decision-based and Pressure questions.
-- Every question must have a priority marker (⭐⭐⭐, ⭐⭐, or ⭐) at the end of the bold
-  question line, after the question mark.
-
-Scan every question in {SECTION} of both en/{FILE}.md and es/{FILE}.md.
-Fix any violation immediately before moving on to the audit. Apply the same fix to both files.
-Report what was fixed.
-
----
-
-## Priority markers — assign and order
+## Pre-audit — Priority markers
 
 Every question must carry a priority marker indicating how often this question is asked at
 Spanish consultancies in a junior interview for {FILE}:
@@ -215,15 +198,48 @@ Spanish consultancies in a junior interview for {FILE}:
 - The concept is commonly misunderstood or often confused with something similar.
 - Not knowing it would cause the interviewer to doubt the candidate's basic competence.
 
-**Apply to all questions in {SECTION}:**
-1. Every question that already exists without a marker gets one assigned now.
-2. Every new question added in this session gets a marker from the start.
-3. Within each section, reorder questions so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
+**Apply to all existing questions in {SECTION} now, before the format check:**
+1. Every question that already exists without a marker gets one assigned.
+2. Within each section, reorder questions so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
    Reorder only within a section — never move questions across sections.
 
 Place the marker at the end of the bold question line, after the question mark:
 
 **What is @Transactional and what does it do?** ⭐⭐⭐
+
+New questions added during the audit also get a marker — this is enforced in the Execution rules.
+
+---
+
+## Format check — mandatory before the audit
+
+Every question in the file must follow this exact structure:
+
+**Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
+
+Answer in 1–2 sentences. Include a real example from my projects when the question is about
+a pattern or decision.
+
+[Conceptual questions only:]
+> **Junior tip:** short advice on how to explain it clearly in an interview (English)
+> **Consejo de entrevista:** same advice in Spanish
+
+[Decision-based and Pressure questions — optional but encouraged:]
+Red flag answer: what a weak candidate would say and why it fails.
+
+Rules:
+- There must be a blank line between the bold question and the answer.
+- There must be a blank line between the answer and the Junior tip block (when present).
+- The Junior tip block uses `>` blockquote syntax — one line for English, one for Spanish.
+- Only **Conceptual** questions get a Junior tip (see "Question types" above for the definition).
+- Red flag answers are optional but encouraged for Decision-based and Pressure questions.
+- Every question must have a priority marker (⭐⭐⭐, ⭐⭐, or ⭐) at the end of the bold
+  question line, after the question mark. Markers were assigned in the previous step — if
+  any question is still missing one, assign it now using the criteria above.
+
+Scan every question in {SECTION} of both en/{FILE}.md and es/{FILE}.md.
+Fix any violation immediately before moving on to the audit. Apply the same fix to both files.
+Report what was fixed.
 
 ---
 
@@ -272,9 +288,11 @@ Format for each new question:
 Answer in 1–2 sentences. Include a real example from my projects when the question is about
 a pattern or decision.
 
+[Conceptual questions only:]
 > **Junior tip:** short advice on how to explain it clearly in an interview (English)
 > **Consejo de entrevista:** same advice in Spanish
 
+[Decision-based and Pressure questions — optional but encouraged:]
 Red flag answer: what a weak candidate would say and why it fails.
 
 ---
@@ -290,8 +308,8 @@ Rules for every new or updated question:
   definition. Reference a specific project when the question is about a pattern or decision.
 - Group new questions under the correct section heading.
 - Add a Junior tip to every new Conceptual question (see "Question types" for the definition).
-- Every question must have a priority marker (⭐⭐⭐, ⭐⭐, or ⭐).
-- After adding new questions, reorder the section so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
+- Assign a priority marker (⭐⭐⭐, ⭐⭐, or ⭐) to every new question.
+- After adding new questions to a section, reorder so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
 
 After auditing {SECTION}, give it a status:
 - ✅ Complete — thorough coverage for the job target; no action needed
@@ -306,6 +324,7 @@ A section is complete when ALL of these are true:
 - At least one Decision-based question references a real project by name
 - Every question has a priority marker (⭐⭐⭐, ⭐⭐, or ⭐)
 - Within each section, questions are ordered ⭐⭐⭐ → ⭐⭐ → ⭐
+- en/{FILE}.md and es/{FILE}.md are in sync — same sections, same questions, same order
 - There are no obvious gaps that would make Victor look unprepared in a screening
 
 Do not stop at 2 or 3 questions. Add as many as needed until the section is genuinely
@@ -316,7 +335,13 @@ Better to over-prepare one section than to have a gap a recruiter finds first.
 
 ## Summary
 
-After all edits, report the following. Omit any section that has nothing to report.
+After all edits, report the following. Omit any block that has nothing to report.
+
+When SECTION = "all", include a status table first:
+
+| Section | Status |
+|---------|--------|
+| ## [section heading] | ✅ / 🔧 / ➕ |
 
 **Coverage gaps found** (concepts added that are not yet in coverage.md — add them there in a
 separate run using coverage-prompt.md):
