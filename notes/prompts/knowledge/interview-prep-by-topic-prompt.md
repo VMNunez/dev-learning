@@ -109,6 +109,9 @@ classify existing questions, assign Junior tips, decide on Red flags, and count 
   understanding and exposes shallow knowledge. Example: "What happens if you put @Transactional
   on a private method?" Encouraged to have a Red flag answer.
 
+Edge case: if a question asks "what is the difference between X and Y?" and the answer
+implies choosing one over the other, classify it as Decision-based — not Conceptual.
+
 Target ratio per section: 55% Conceptual / 35% Decision-based / 10% Pressure.
 
 ---
@@ -198,6 +201,15 @@ Spanish consultancies in a junior interview for {FILE}:
 - The concept is commonly misunderstood or often confused with something similar.
 - Not knowing it would cause the interviewer to doubt the candidate's basic competence.
 
+**Criteria for ⭐⭐:**
+- The concept is tested when the interviewer goes deeper than the basics.
+- The candidate can survive without it in a first screen, but not knowing it leaves a weak
+  impression in a full technical interview.
+
+**Criteria for ⭐:**
+- A niche detail, edge case, or subtlety that only the most thorough interviewers probe.
+- Missing it would not cause a filter-out at junior level.
+
 **Apply to all existing questions in {SECTION} now, before the format check:**
 1. Every question that already exists without a marker gets one assigned.
 2. Within each section, reorder questions so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
@@ -220,6 +232,8 @@ Every question in the file must follow this exact structure:
 Answer in 1–2 sentences. Include a real example from my projects when the question is about
 a pattern or decision.
 
+Note: the `[...]` labels below are instructions — do not write them in the files.
+
 [Conceptual questions only:]
 > **Junior tip:** short advice on how to explain it clearly in an interview (English)
 > **Consejo de entrevista:** same advice in Spanish
@@ -233,6 +247,7 @@ Rules:
 - The Junior tip block uses `>` blockquote syntax — one line for English, one for Spanish.
 - Only **Conceptual** questions get a Junior tip (see "Question types" above for the definition).
 - Red flag answers are optional but encouraged for Decision-based and Pressure questions.
+- There must be a blank line between the answer and the Red flag answer (when present).
 - Every question must have a priority marker (⭐⭐⭐, ⭐⭐, or ⭐) at the end of the bold
   question line, after the question mark. Markers were assigned in the previous step — if
   any question is still missing one, assign it now using the criteria above.
@@ -250,8 +265,8 @@ Topics not covered in {SECTION} that Spanish consultancies would ask, given my s
 target companies. Include any concept from coverage.md (if it exists) that has no question yet.
 One sentence per topic explaining why they would ask it.
 
-When a topic you identify is NOT in coverage.md, flag it with `[coverage gap]` so Victor can
-add it to coverage.md in a separate run.
+If coverage.md exists and a topic you identify is NOT in it, flag it with `[coverage gap]`
+so Victor can add it to coverage.md in a separate run.
 
 **2. Weak answers**
 Answers that are too vague, too theoretical, or that do not reference a real project when
@@ -279,9 +294,9 @@ Flag any section where Decision-based or Pressure questions are completely absen
 All questions not yet in {SECTION} that a Spanish consultancy would realistically ask.
 Do not cap at 3–5 — add every question needed until the section is genuinely complete.
 Assign a priority marker to each new question.
-Flag any new question whose concept is not in coverage.md with `[coverage gap]`.
+If coverage.md exists, flag any new question whose concept is not in it with `[coverage gap]`.
 
-Format for each new question:
+Format for each new question (the `[...]` labels are instructions — do not write them in the files):
 
 **Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
 
