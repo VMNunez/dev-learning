@@ -4,6 +4,8 @@ Use in a **separate conversation**. Fill in the configuration block, paste the p
 
 Run this after you finish a timed simulation — no notes, no AI, timer stopped. You get the kind of feedback a real consultancy test reviewer would give.
 
+**Before running this prompt:** fill in your own `Self-assessment` column in TRACKER.md (✅ Solid / 🔧 Good / ⚠️ Weak / ❌ Failed). The prompt updates `Status` and `Date` — it does not touch `Self-assessment`.
+
 ---
 
 **How to use:**
@@ -48,7 +50,7 @@ data or constraints given, and expected output or behaviour.
 Do not look at my code yet. First, list the requirements as you understand them — numbered,
 one per line. This list is the scoring basis for Step 2.
 
-Also note the time limit stated in the spec. You will compare it against {TIME_USED} in Step 2.
+Note the time limit stated in the spec — you will compare it against {TIME_USED} in Step 2.
 
 ---
 
@@ -61,45 +63,53 @@ Score each dimension:
 - **2 — Acceptable:** works but has noticeable issues a reviewer would flag
 - **1 — Weak:** missing, broken, or fundamentally wrong approach
 
+Core dimensions are marked *(core)*. A score of 1 in any core dimension triggers Borderline or Fail.
+Secondary dimensions affect quality but not the overall verdict on their own.
+
 **Angular simulations:**
 | Dimension | Score (1–3) | Notes |
 |-----------|-------------|-------|
-| Requirements met (X/Y from Step 1) | | |
-| Reactive forms — FormGroup, validators, error messages wired | | |
-| HTTP service — correct method, URL, error handled | | |
+| Requirements met (X/Y from Step 1) *(core)* | | |
+| Reactive forms — FormGroup, validators, error messages wired *(core)* | | |
+| HTTP service — correct method, URL, error handled *(core)* | | |
 | TypeScript — interfaces defined, no `any` | | |
 | Patterns — service for HTTP, smart/dumb split where relevant | | |
 | Edge cases — loading state, empty state, error state | | |
-| Tests — written and meaningful | | Only include this row if tests appear in the spec requirements |
+
+If the spec explicitly requires tests, add this row:
+| Tests — written and meaningful | | |
 
 **Spring Boot simulations:**
 | Dimension | Score (1–3) | Notes |
 |-----------|-------------|-------|
-| Requirements met (X/Y from Step 1) | | |
-| Layered architecture — controller handles HTTP only | | |
-| DTOs — request and response separate from entity | | |
+| Requirements met (X/Y from Step 1) *(core)* | | |
+| Layered architecture — controller handles HTTP only *(core)* | | |
+| DTOs — request and response separate from entity *(core)* | | |
 | Validation — @Valid, @NotBlank, @NotNull on request DTOs | | |
 | Error handling — @RestControllerAdvice or manual try/catch in service | | |
 | HTTP conventions — correct status codes (201, 204, 404, 400, 409) | | |
-| Tests — written and meaningful | | Only include this row if tests appear in the spec requirements |
+
+If the spec explicitly requires tests, add this row:
+| Tests — written and meaningful | | |
 
 **SQL simulations:**
 | Dimension | Score (1–3) | Notes |
 |-----------|-------------|-------|
-| Requirements met (X/Y from Step 1) | | |
-| Query correctness — right result returned | | |
-| JOIN type correct for each query | | |
+| Requirements met (X/Y from Step 1) *(core)* | | |
+| Query correctness — right result returned *(core)* | | |
+| JOIN type correct for each query *(core)* | | |
 | Aggregates and GROUP BY / HAVING used correctly | | |
 | NULL handling — IS NULL, COALESCE where needed | | |
 | PostgreSQL features used where they help (ILIKE, ::, DISTINCT ON) | | |
 
 **Overall verdict:**
-- **Pass** — requirements met, no core dimension scored 1
-- **Borderline** — most requirements met, one or two dimensions scored 1
-- **Fail** — core requirements missing, or patterns fundamentally wrong
+- **Pass** — all requirements met, no core dimension scored 1
+- **Borderline** — most requirements met, one or two core dimensions scored 1
+- **Fail** — core requirements missing, or more than two core dimensions scored 1
 
 If {TIME_USED} exceeded the spec time limit, note which parts took the most time and why.
-Not knowing the API vs. not knowing the design are different problems.
+Distinguish between time lost on syntax (fixable with practice) vs time lost on design decisions
+(requires deeper project experience).
 
 ---
 
@@ -119,21 +129,27 @@ If the solution was strong overall: name one or two things done well. One line e
 Only mention real strengths — no false positives.
 
 **Pattern check — before closing this step:**
-Read simulations/TRACKER.md. Look at past results for the same type (angular / spring-boot / sql).
-If the same weakness appears in 2 or more previous simulations of the same type, flag it explicitly:
+Read simulations/TRACKER.md. Look at past results for the same TYPE (angular / spring-boot / sql).
+If the same weakness dimension appears in 2 or more previous simulations of the same type, flag it:
 "Recurring weakness: [dimension] — seen in [N] previous simulations. Prioritise this before the next one."
 
 ---
 
 ## Step 4 — Interview questions
 
-Based on what was wrong or missing, write 2–3 questions a real consultancy interviewer would ask.
-Target the specific gaps in this solution — not generic questions.
+**If verdict is Borderline or Fail:** write 2–3 questions targeting the specific gaps in this
+solution — not generic questions about the technology.
+
+**If verdict is Pass with no significant issues:** write 1 question about the most important
+pattern used correctly in this solution — to reinforce the decision behind it.
 
 Add them to the right files. Always add to BOTH at the same time — never one without the other:
 - Angular → notes/interview-prep/en/angular.md AND notes/interview-prep/es/angular.md
 - Spring Boot → notes/interview-prep/en/spring-boot.md AND notes/interview-prep/es/spring-boot.md
 - SQL → notes/interview-prep/en/sql.md AND notes/interview-prep/es/sql.md
+
+Before adding each question, scan the relevant file. If the same concept already has a question
+there, skip it — do not add a duplicate.
 
 Each question must follow the full format used in these files:
 
@@ -163,10 +179,11 @@ then ⭐⭐, then ⭐.
 
 ## Step 5 — Update the tracker
 
-Read simulations/TRACKER.md. Find the row for {SIMULATION_FILE} and update these three columns:
+Read simulations/TRACKER.md. Find the row for {SIMULATION_FILE} and update two columns only:
 - **Status:** ✅ Pass / ⚠️ Borderline / ❌ Fail (from Step 2 verdict)
 - **Date:** today's date
-- **Self-assessment:** one-line summary of the main issue, or "—" if Pass with no significant issue
+
+Leave **Self-assessment** untouched — Victor fills that himself before running this prompt.
 
 Then show the commit message:
 
