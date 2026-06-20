@@ -44,7 +44,7 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
 | `projects/new-project-prompt.md` | `new` mode: gap-analyses PROGRESS vs coverage, picks the next project, writes a full PLANNING.md. `review` mode: audits an existing PLANNING.md. | `PROGRESS.md`, `notes/coverage.md`, `ROADMAP.md`, last project's `PLANNING.md` | `{project}/PLANNING.md`; adds a row to `PROGRESS.md`; marks the choice in `ROADMAP.md` |
-| `projects/readme-review-prompt.md` | The single source of README rules; writes/fixes every README section. Run before review and portfolio gate. | `{project}/PLANNING.md`, the existing README(s) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for fullstack) |
+| `projects/readme-review-prompt.md` | The single source of README rules; writes/fixes every README section. Run before review and portfolio gate. | `{project}/PLANNING.md`, the existing README(s) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack) |
 | `projects/project-review-prompt.md` | Reviews code quality, patterns, and learning objectives against the plan; writes improvement tasks. | `{project}/PLANNING.md`, the source code, `PROJECT-BACKLOG.md` | `PROJECT-BACKLOG.md` (per-project task list + "Last reviewed" date) |
 
 ### Practice — active recall and timed tests (daily blocks)
@@ -147,6 +147,23 @@ Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
 **Applying**
 1. `portfolio-ready` on each finished project (produces cv-bullets)
 2. `cv-prompt` → one-page CV · `linkedin-prompt` → profile + posts
+
+---
+
+## Batch mode — run a prompt on every target at once
+
+Per-target prompts (one topic / file / project / type at a time) also accept **`all`** in their
+target field, so you don't have to run them folder by folder. Set the field to `all` and the prompt
+processes every target in order, one commit per target. Full rules: `notes/prompts/_batch-mode.md`.
+
+- **Supports `all`:** `coverage-prompt`, `notes-by-topic`, `interview-prep-by-topic`,
+  `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-review`, `project-review`,
+  `portfolio-ready` (`PROJECT_PATH = all`); `sql-exercises` (`TOPIC = all`, **practice mode only**),
+  `simulation-generator`, `code-review` (`TYPE = all`).
+- **Already global (no `all` needed):** `coverage-audit`, `progress-update`, `roadmap-review`, `cv`,
+  `linkedin`, and `simulator` full mode — these cover everything in one run by design.
+- **Single-shot (not batchable):** `simulation-review` and `hr-screen` — each needs your pasted code
+  or a live back-and-forth, so they run one at a time.
 
 ---
 

@@ -17,11 +17,15 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
 FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
              → notes/interview-prep/en/{FILE}.md
              → notes/interview-prep/es/{FILE}.md
+
+## TOPIC = all runs every topic in turn (NOTES_PATH and FILE derived per topic) —
+## see notes/prompts/_batch-mode.md. Order: Angular, Angular Material, Spring Boot, Java,
+## Architecture, Security, TypeScript, JavaScript, CSS, SQL, Git, General.
 
 Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/spring-boot/, notes/java/ (comma-separated — read both;

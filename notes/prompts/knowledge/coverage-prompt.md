@@ -18,8 +18,13 @@ Use this prompt when you want to create a new `coverage.md` for a notes folder, 
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
+
+## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
+## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
+## (also reads notes/java/), Java, Architecture, Security, TypeScript, JavaScript, CSS, SQL,
+## Git, General.
 
 Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/spring-boot/ — coverage.md is written there.

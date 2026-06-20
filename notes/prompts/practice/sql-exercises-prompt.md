@@ -23,7 +23,12 @@ Two modes:
 ## Configuration — edit only this block
 
 MODE  = [practice | review]
-TOPIC = [joins | group-by | nulls | subqueries | ctes | dml | transactions | window-functions | normalization | schema-design | data-types | postgresql-specifics | indexes]
+TOPIC = [joins | group-by | nulls | subqueries | ctes | dml | transactions | window-functions | normalization | schema-design | data-types | postgresql-specifics | indexes | all]
+
+## TOPIC = all (practice mode only) generates exercises for every SQL topic in turn —
+## see notes/prompts/_batch-mode.md. Order: joins, group-by, nulls, subqueries, ctes, dml,
+## transactions, window-functions, normalization, schema-design, data-types,
+## postgresql-specifics, indexes. Review mode stays one file at a time — it needs your pasted answers.
 COUNT = [number of exercises to generate — default: 12 — only used in practice mode]
 FOCUS = [specific concept to practise — optional, practice mode only]
         Example: FOCUS = LEFT JOIN, FULL OUTER JOIN
@@ -40,7 +45,7 @@ Validation — check these before doing anything else:
 ## Context
 
 **Before starting, read these three files:**
-- `CLAUDE.md` — my full profile, target job, daily schedule, and what Spanish consultancies look for in a junior in 2026.
+- `CLAUDE.md` — daily schedule and teaching context (my profile and the market are in `notes/prompts/_shared-context.md`).
 - `PROGRESS.md` — the SQL section shows which topics are already solid.
 - `notes/sql/coverage.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 

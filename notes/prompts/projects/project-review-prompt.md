@@ -30,8 +30,14 @@ Run `readme-review-prompt.md` before this one. This prompt assumes the README is
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker | angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal | projects/07-timetrack]
+PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker | angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal | projects/07-timetrack | all]
 PROJECT_TYPE = [angular | fullstack]
+
+## PROJECT_PATH = all runs this prompt on every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT_TYPE is derived per project: angular for 01–06, fullstack for projects/07-timetrack.
+## Order: angular/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder,
+## 05-task-manager, 06-hr-portal, projects/07-timetrack.
+## The 30-day "Last Reviewed" gate still applies per project — recently reviewed ones are skipped.
 
 Use these values wherever the prompt refers to {PROJECT_PATH} or {PROJECT_TYPE}.
 
@@ -75,8 +81,8 @@ does not restrict anything for them.
 
 **`CLAUDE.md`**
 
-Contains Victor's full profile, teaching rules, learning objectives per project, and what Spanish
-consultancies look for in a junior portfolio.
+Contains the teaching rules, learning objectives per project, and folder structure. (Victor's
+profile and what Spanish consultancies look for are in `notes/prompts/_shared-context.md`.)
 
 **Scope limit — apply before reviewing any code:**
 Look at Section 0 (Session quick reference) to find the current step.
@@ -146,7 +152,7 @@ Angular:
 - Where the project uses parallel API calls (e.g. dashboard stat cards): is `forkJoin` used?
   Using multiple sequential `.subscribe()` calls where `forkJoin` would work is a quality issue.
 
-**Backend-specific (fullstack only):**
+**Backend-specific (full-stack only):**
 
 Architecture:
 - Controller only handles HTTP — no business logic in controllers?
@@ -181,11 +187,11 @@ Business rules (check against PLANNING.md Section 8):
   role-based data filtering (employee sees own entries, manager sees all).
   Each missing rule is a High priority issue — the app looks correct but has silent violations.
 
-Seed data (fullstack, only if data.sql exists):
+Seed data (full-stack, only if data.sql exists):
 - Does the file use `ON CONFLICT DO NOTHING` so it is safe to re-run on every startup?
 - Is the password a pre-generated BCrypt hash — not plain text?
 
-Docker (fullstack, when docker-compose.yml exists):
+Docker (full-stack, when docker-compose.yml exists):
 - Does the compose file include both services? (Spring Boot app + PostgreSQL)
 - Is the database service using a named volume so data survives container restarts?
 - Is the JWT secret passed as an environment variable in the compose file — not hardcoded?

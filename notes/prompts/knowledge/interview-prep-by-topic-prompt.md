@@ -16,9 +16,12 @@ Use in a **separate conversation**. Fill in the two values in the configuration 
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
+FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security | all]
        → notes/interview-prep/en/{FILE}.md
        → notes/interview-prep/es/{FILE}.md
+       → FILE = all audits every file (with SECTION = all) — see notes/prompts/_batch-mode.md.
+         Order: angular, spring-boot, java, architecture, security, typescript, sql, javascript,
+         css, git, general.
 
 SECTION = [all | ## Routing | ## Forms | ## JOINs | ...]
           → "all" audits every section in the file

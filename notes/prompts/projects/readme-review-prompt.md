@@ -20,14 +20,19 @@ date. Run it before `portfolio-ready-prompt` — that prompt assumes the README 
 ````
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker | angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal | projects/07-timetrack]
+PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker | angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal | projects/07-timetrack | all]
 PROJECT_TYPE = [angular | fullstack]
+
+## PROJECT_PATH = all runs this prompt on every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT_TYPE is derived per project: angular for 01–06, fullstack for projects/07-timetrack.
+## Order: angular/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder,
+## 05-task-manager, 06-hr-portal, projects/07-timetrack.
 
 ---
 
 ## Context
 
-Before starting, read `CLAUDE.md` — it has my full profile and learning objectives per project.
+Before starting, read `CLAUDE.md` — it has the learning objectives per project and teaching rules.
 My profile and projects are in `notes/prompts/_shared-context.md`.
 
 ---
@@ -197,7 +202,7 @@ Screenshots → Features → Architecture decisions → Tradeoffs → Future imp
 What I learned → Tech stack → Project structure → Backend and frontend details.
 If any section is out of order, move it to the correct position.
 
-- Rule 3 (Live demo) is replaced for fullstack: fullstack projects in this portfolio are
+- Rule 3 (Live demo) is replaced for full-stack: full-stack projects in this portfolio are
   local-only — they are not deployed to a live URL. Replace the Live demo section with a
   short "How to run" note (`docker-compose up` when Docker is ready; `mvn spring-boot:run`
   + `ng serve` in separate terminals before Docker exists) and point to the How to run
@@ -322,7 +327,7 @@ git add {PROJECT_PATH}/README.md
 git commit -m "docs: update {PROJECT_PATH} README — [one line summary of main changes]"
 ```
 
-For fullstack projects, only add the READMEs that were actually changed — not all three by default.
+For full-stack projects, only add the READMEs that were actually changed — not all three by default.
 One command per file:
 
 ```

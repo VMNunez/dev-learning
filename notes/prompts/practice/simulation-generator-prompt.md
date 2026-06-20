@@ -20,7 +20,9 @@ It is the producer; `simulation-review-prompt` is the consumer that grades what 
 ````
 ## Configuration — edit only this block
 
-TYPE       = [angular | spring-boot | sql]
+TYPE       = [angular | spring-boot | sql | all]
+             → TYPE = all generates for every type in turn — see notes/prompts/_batch-mode.md
+               (order: angular, spring-boot, sql)
 COUNT      = [how many new tests to generate]   → default: 2
 DIFFICULTY = [standard | challenge]             → default: standard
              (challenge = more business rules, more entities/queries, tighter time)

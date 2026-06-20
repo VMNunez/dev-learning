@@ -13,8 +13,9 @@ I want you to review and update ROADMAP.md so it shows the optimal path from my 
 progress to full coverage of everything in notes/coverage.md — through projects, study
 blocks, and practice.
 
-Before starting, read CLAUDE.md — it has my full profile, target job, daily schedule, and
-teaching rules. How the prompts connect to each other is documented in `notes/prompts/README.md`.
+Before starting, read CLAUDE.md (daily schedule, teaching rules) and
+`notes/prompts/_shared-context.md` (my profile, target job, and the market). How the prompts
+connect to each other is documented in `notes/prompts/README.md`.
 
 ---
 

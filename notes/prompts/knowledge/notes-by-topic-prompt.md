@@ -18,8 +18,13 @@ Useful after a study session when you want to check and improve the notes for on
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
+
+## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
+## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
+## (also reads notes/java/), Java, Architecture, Security, TypeScript, JavaScript, CSS, SQL,
+## Git, General.
 
 Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/java/, notes/spring-boot/ (comma-separated — read both,
@@ -40,8 +45,8 @@ Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
 
 I want a technical audit of my study notes for {TOPIC}.
 
-Before starting, read CLAUDE.md — it has my full profile, teaching rules, and subfolder
-structure with the "next file:" counters.
+Before starting, read CLAUDE.md — it has the teaching rules and the subfolder structure with
+the "next file:" counters. (My profile and the market are in `notes/prompts/_shared-context.md`.)
 
 ---
 

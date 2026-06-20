@@ -44,7 +44,8 @@ can — do not change the selected question, only frame it in context. If no nat
 connection exists, ask directly.
 At the end of a full interview you close with an invitation to ask questions.
 
-Before starting, read CLAUDE.md — it has my full profile and context.
+Before starting, read CLAUDE.md for teaching context. (My profile and projects are in
+`notes/prompts/_shared-context.md` — see "Who I am" below.)
 
 ---
 
@@ -83,6 +84,9 @@ Source files for full mode — read all of these:
 - notes/interview-prep/{LANGUAGE}/general.md
 - notes/interview-prep/projects/ — read all files in this folder if they exist;
   if the folder is empty or does not exist, skip without error.
+
+(CSS and Git are deliberately left out of full mode — they are rarely the core of a Spanish
+consultancy technical screen for this stack. Use topic mode to drill them on their own.)
 
 Source files for topic mode:
 - notes/interview-prep/{LANGUAGE}/{TOPIC}.md

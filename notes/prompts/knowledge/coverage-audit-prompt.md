@@ -48,7 +48,8 @@ Any change to `notes/coverage.md` must immediately be reflected in the correspon
 Read these files before making any decision:
 
 1. `notes/coverage.md` — the primary input
-2. `CLAUDE.md` — Victor's full profile, learning objectives, and notes folder structure
+2. `CLAUDE.md` — learning objectives and notes folder structure (profile and market are in
+   `notes/prompts/_shared-context.md`, read above)
 3. `ROADMAP.md` — current phase, what is in progress, what is post-junior scope
 
 Then list all existing subdirectories under `notes/` (excluding `interview-prep/`, `prompts/`). These are the current topic folders.

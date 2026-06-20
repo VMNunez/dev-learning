@@ -13,7 +13,7 @@ The output is ready-to-paste text for every section — no rewriting needed, jus
 My profile, internship details, and target companies are in `notes/prompts/_shared-context.md`.
 
 Before starting, read these files:
-1. `CLAUDE.md` — my full profile, stack, internship details
+1. `CLAUDE.md` — stack and study context (profile and internship are in `notes/prompts/_shared-context.md`)
 2. `PROGRESS.md` — all completed projects and what each one demonstrates
 3. `ROADMAP.md` — the LinkedIn checklist (GitHub and LinkedIn section) and career target
 

@@ -22,8 +22,14 @@ It gives you: a bank of project-specific interview questions saved to `notes/int
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker | angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal | projects/07-timetrack]
+PROJECT_PATH = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker | angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal | projects/07-timetrack | all]
 PROJECT_TYPE = [angular | fullstack]
+
+## PROJECT_PATH = all runs this gate on every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT_TYPE is derived per project: angular for 01–06, fullstack for projects/07-timetrack.
+## Order: angular/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder,
+## 05-task-manager, 06-hr-portal, projects/07-timetrack. (An unfinished project simply gets a
+## ❌ Not ready verdict — that is expected, not an error.)
 
 Use these values wherever the prompt refers to {PROJECT_PATH} or {PROJECT_TYPE}.
 

@@ -24,7 +24,9 @@ mistake, and turns your gaps into interview questions.
 ````
 ## Configuration — edit only this block
 
-TYPE        = [angular | spring-boot | sql]
+TYPE        = [angular | spring-boot | sql | all]
+              → TYPE = all runs one snippet per type in turn — see notes/prompts/_batch-mode.md
+                (order: angular, spring-boot, sql; finish reviewing one before the next starts)
 DIFFICULTY  = [intro | standard | challenge]   → default: standard
 ISSUE_COUNT = [number of issues to plant]       → default: 4
 FOCUS       = [optional — a concept to centre the snippet on, e.g. "JWT filter", "reactive forms",
