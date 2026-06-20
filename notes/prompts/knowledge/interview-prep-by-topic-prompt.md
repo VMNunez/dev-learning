@@ -90,7 +90,8 @@ Files to audit:
 - If {SECTION} is not found in one file: create it as an empty section in that file before
   proceeding.
 - If {SECTION} is not found in either file: create it in both files as empty sections, then
-  move directly to audit section 1 to populate it from scratch.
+  run the coverage.md pre-audit check to identify required topics, then move to audit
+  section 1 to populate the section from scratch.
 
 ---
 
@@ -136,7 +137,17 @@ classify existing questions, assign Junior tips, decide on Red flags, and count 
 Edge case: if a question asks "what is the difference between X and Y?" and the answer
 implies choosing one over the other, classify it as Decision-based — not Conceptual.
 
+Edge case: if a question asks "what happens when X?" — classify as Pressure if X is an
+unusual condition or edge case that would surprise a developer (e.g. "what happens if you
+put @Transactional on a private method?"). Classify as Conceptual if X describes the
+normal expected behaviour of the technology (e.g. "what happens when the JWT expires and
+the user is redirected to login?").
+
 Target ratio per section: 55% Conceptual / 35% Decision-based / 10% Pressure.
+Note: for sections with fewer than 5 questions the exact ratio is not achievable — treat
+it as a direction, not a hard target. The practical floor: every section must have at
+least 1 Decision-based question. A section with zero Decision-based questions is always
+flagged, regardless of size.
 
 ---
 
@@ -150,10 +161,18 @@ Scope of the sync check:
   sections are outside the scope of this run — do not touch them.
 
 For the relevant scope, list sections and question counts from each file side by side.
-If a section exists in one file but not the other, or if the question count differs:
+The files are out of sync if any of the following is true:
+- A section exists in one file but not the other
+- A section has a different question count in each file
+- A section has the same count but different questions (e.g. a question exists in en/ but
+  not in es/, or vice versa — same count, different content)
+
+For each mismatch:
 1. Report the mismatch clearly.
-2. Bring the files into sync: create the missing section or questions in the file that is
-   behind, based on the content in the more complete file (translated).
+2. Bring the files into sync: for missing sections or missing questions, add the content
+   from the file that has it — translated if adding to es/, in English if adding to en/.
+   en/ is the master file: if the same question exists in different forms in both files,
+   keep the en/ version and update es/ to match (translated).
 3. Only after both files are in sync, move on to the TODO step.
 
 If the files are already in sync for the relevant scope, move directly to the TODO step.
@@ -236,7 +255,8 @@ Spanish consultancies in a junior interview for {FILE}:
 
 **Proportion check:** in a typical section of 8–12 questions, expect roughly 3–4 ⭐⭐⭐,
 4–5 ⭐⭐, and 1–2 ⭐. If more than half the questions in a section are marked ⭐⭐⭐,
-reconsider — only the truly essential ones earn that mark.
+downgrade the excess: keep ⭐⭐⭐ only for the 3–4 most foundational ones and reassign
+the rest to ⭐⭐. Run this check after assigning all markers, before the format check.
 
 **Apply to all existing questions in {SECTION} now, before the format check:**
 1. Every question that already exists without a marker gets one assigned.
@@ -312,8 +332,10 @@ When SECTION is a specific heading: report the count and percentage for that sec
 
 Target ratio per section: 55% Conceptual / 35% Decision-based / 10% Pressure.
 Flag any section where Decision-based or Pressure questions are completely absent.
-Use these flags in section 4 — if a type was flagged absent, specifically look for
-questions of that type to add.
+Use these flags in section 4 — if a type was flagged absent, add enough questions to
+reach the practical floor: at least 1 Pressure question if Pressure was absent, at least
+2 Decision-based questions if the section had none. Do not add more than the floor —
+quality over quantity.
 
 **4. Missing questions**
 All questions not yet in {SECTION} that a Spanish consultancy would realistically ask.
@@ -348,10 +370,15 @@ Rules for every new or updated question:
   translated. Never add to one without the other.
 - Answers must be interview-ready — what I would actually say out loud, not a textbook
   definition. Reference a specific project when the question is about a pattern or decision.
-- Group new questions under the correct section heading.
+- Group new questions under the correct section heading. If SECTION is a specific heading
+  and a new question logically belongs in a different section, do not add it to that
+  other section in this run — note it in the summary as an out-of-scope gap so it is
+  addressed when that section is audited.
 - Add a Junior tip to every new Conceptual question (see "Question types" for the definition).
 - Assign a priority marker (⭐⭐⭐, ⭐⭐, or ⭐) to every new question.
 - After adding new questions to a section, reorder so ⭐⭐⭐ come first, then ⭐⭐, then ⭐.
+  (New questions arrive after the initial reorder in the priority markers step — this
+  second reorder merges them into the correct position.)
 
 After auditing {SECTION}, give it a status:
 - ✅ Complete — thorough coverage for the job target; no action needed
@@ -361,7 +388,9 @@ After auditing {SECTION}, give it a status:
 A section is complete when ALL of these are true:
 - Every coverage.md concept that belongs in this section has at least one question
 - Every question a Spanish consultancy would realistically ask about this topic is covered
-- The ratio is on target (55% Conceptual / 35% Decision-based / 10% Pressure) per section
+- The ratio is approximately on target per section (55% Conceptual / 35% Decision / 10%
+  Pressure) — for sections with fewer than 5 questions, the floor is: at least 1
+  Decision-based question present
 - Every answer either passes the "explain every word" test, or has a TODO marker flagging it for rewrite
 - At least one Decision-based question references a real project by name
 - Every question has a priority marker (⭐⭐⭐, ⭐⭐, or ⭐)
@@ -402,7 +431,8 @@ separate run using coverage-prompt.md):
 
 ---
 
-After all edits, show the commit message so Victor can run it himself. Always use this format — one command per code block:
+After all edits, show the commit message so Victor can run it himself. Replace {FILE} with
+the actual file name (e.g. angular, spring-boot, java). Always use this format — one command per code block:
 
 ```
 
