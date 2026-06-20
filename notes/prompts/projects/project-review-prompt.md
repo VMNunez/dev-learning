@@ -67,6 +67,12 @@ Extract and keep in mind:
 - The test plan — which services and edge cases are required (Section 16)
 - The architecture decisions already committed to (Section 19)
 
+**PLANNING.md format:** the section numbers above apply to projects 07+ (the format written by
+`new-project-prompt`). Projects 01–06 (Angular-only) use the old format with no numbered sections —
+for those, read the "Key patterns introduced" table and the listed learning objectives instead, and
+map the checks below onto them. All steps in 01–06 are already complete, so the "Scope limit" below
+does not restrict anything for them.
+
 **`CLAUDE.md`**
 
 Contains Victor's full profile, teaching rules, learning objectives per project, and what Spanish

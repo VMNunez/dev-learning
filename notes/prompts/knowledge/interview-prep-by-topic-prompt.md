@@ -411,14 +411,10 @@ After all edits, show the commit message so Victor can run it himself. Replace {
 the actual file name (e.g. angular, spring-boot, java). Always use this format — one command per code block:
 
 ```
-
 git add notes/interview-prep/en/{FILE}.md notes/interview-prep/es/{FILE}.md
-
 ```
 
 ```
-
 git commit -m "docs: audit {FILE} interview prep — <one line summary of main fixes>"
-
 ```
 ````

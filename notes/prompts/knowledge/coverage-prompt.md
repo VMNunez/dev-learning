@@ -98,7 +98,7 @@ Read these files before making any decision:
 1. `{NOTES_PATH}coverage.md` — if it exists, use it as the starting point. Do not remove
    items without a clear reason.
 2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
-   in-scope given Victor's job objective and August 2026 deadline.
+   in-scope given Victor's job objective and August–September 2026 deadline.
 3. All numbered note files in {NOTES_PATH} — read them to understand what has been studied
    and what examples already exist. This is context, not the source of coverage decisions.
    Skip `future-learning.md` and `coverage.md` in this pass.
@@ -176,7 +176,7 @@ description that explains the difference.
 
 **Promote from future-learning → coverage:**
 For each concept in `future-learning.md`: is it now in scope, given Victor's job objective
-(junior Angular + Spring Boot at a Spanish consultancy) and his August 2026 deadline?
+(junior Angular + Spring Boot at a Spanish consultancy) and his August–September 2026 deadline?
 Apply the same criteria from Steps 2 and 3.
 If yes: add it to coverage and remove it from `future-learning.md`.
 
@@ -368,15 +368,11 @@ The "Synced to notes/coverage.md" row always appears, even when creating from sc
 Then show the commit message so Victor can run it himself. Always one command per code block:
 
 ```
-
 git add {NOTES_PATH}coverage.md {NOTES_PATH}future-learning.md notes/coverage.md
-
 ```
 
 If `{NOTES_PATH}future-learning.md` was not modified, remove it from the git add command.
 
 ```
-
 git commit -m "docs: update {TOPIC} coverage — <one line summary of main changes>"
-
 ```

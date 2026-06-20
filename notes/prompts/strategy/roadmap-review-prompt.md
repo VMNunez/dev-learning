@@ -244,15 +244,11 @@ CLAUDE.md's 'Current study progress' section too, per CLAUDE.md's instructions."
 Commit message — one command per block:
 
 ```
-
 git add ROADMAP.md
-
 ```
 
 ```
-
 git commit -m "docs: update roadmap — <one-line summary of main changes>"
-
 ```
 
 ````

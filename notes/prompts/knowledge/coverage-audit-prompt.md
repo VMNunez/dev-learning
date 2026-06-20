@@ -207,13 +207,9 @@ Apply all changes directly to the files. Do not describe what you would write �
 Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
 
 ```
-
 git add <all files changed>
-
 ```
 
 ```
-
 git commit -m "docs: global coverage audit — <one line summary of main changes>"
-
 ```

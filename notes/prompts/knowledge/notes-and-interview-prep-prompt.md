@@ -45,7 +45,8 @@ This prompt does one thing: find and fix gaps between notes and interview prep â
 directions. It does not audit quality, fix formatting, or resolve TODOs. Run the individual
 prompts first for that.
 
-Before starting, read CLAUDE.md â€” it has my full profile, teaching rules, and subfolder structure.
+Before starting, read CLAUDE.md (teaching rules, subfolder structure) and
+`notes/prompts/_shared-context.md` (my profile and the market context).
 
 ---
 

@@ -329,15 +329,11 @@ If no issues in existing text were found, omit this section.
 Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
 
 ```
-
 git add <list every file you created or modified by exact path — no wildcards or "." — include CLAUDE.md if you updated the "next file:" counter>
-
 ```
 
 ```
-
 git commit -m "docs: audit {TOPIC} notes — <one line summary of main fixes>"
-
 ```
 
 ````

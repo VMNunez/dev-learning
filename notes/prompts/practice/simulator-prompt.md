@@ -78,6 +78,8 @@ Source files for full mode — read all of these:
 - notes/interview-prep/{LANGUAGE}/java.md
 - notes/interview-prep/{LANGUAGE}/typescript.md
 - notes/interview-prep/{LANGUAGE}/architecture.md
+- notes/interview-prep/{LANGUAGE}/security.md
+- notes/interview-prep/{LANGUAGE}/sql.md
 - notes/interview-prep/{LANGUAGE}/general.md
 - notes/interview-prep/projects/ — read all files in this folder if they exist;
   if the folder is empty or does not exist, skip without error.

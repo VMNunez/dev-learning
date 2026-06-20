@@ -511,8 +511,9 @@ In the candidate ideas section, mark the chosen project as selected:
 Leave the other candidates unchanged — they may be useful for the project after this one.
 
 **PROGRESS.md:**
-Add one row to the projects table for the new project:
-`| 0X | [Project name] | [tech stack summary] | Not started 🔜 | — |`
+Add one row to the projects table for the new project. The table columns are
+`# | Project | Key concepts | Status | Live` — match them exactly:
+`| 0X | [Project name] | [main concepts the project introduces] | Not started 🔜 | — |`
 
 ---
 
