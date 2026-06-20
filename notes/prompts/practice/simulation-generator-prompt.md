@@ -133,6 +133,6 @@ git add simulations/{TYPE}/ simulations/TRACKER.md
 git commit -m "docs: add {COUNT} {TYPE} simulation(s) — [main skill targeted]"
 ```
 
-> Branch note: simulations live on `main` / the active branch, not on `sql/practice`. SQL *exercises*
-> (the `sql/` folder) are the ones tied to `sql/practice` — SQL *simulations* are not.
+> Branch note: both these simulation specs and the `sql/` exercises live on `main` — there is no
+> separate SQL branch. Commit on `main`.
 ````

@@ -702,8 +702,8 @@ section exists, create one. Within the section, maintain priority order: ⭐⭐�
 
 ### Step 6 — Commit message
 
-**Branch check:** SQL exercises live on the `sql/practice` branch. Before committing, confirm
-you are on that branch — not the active Spring Boot or Angular branch.
+**Branch:** SQL exercises and PROGRESS.md both live on `main` (there is no separate SQL branch).
+Commit on `main`.
 
 List only files that were actually modified. Always one command per code block.
 

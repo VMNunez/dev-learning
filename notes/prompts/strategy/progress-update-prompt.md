@@ -195,15 +195,10 @@ Read the sql/ folder. Two file formats may exist — check for both:
 - **Flat file** (e.g. `sql/01-basics.sql`): a `.sql` file directly in the `sql/` folder
 - **Subfolder** (e.g. `sql/02-joins/exercises.sql`): a folder containing an `exercises.sql` file
 
-**Branch warning — SQL files live on `sql/practice`, not the project branch.**
-SQL exercises are committed on the `sql/practice` branch; the project branch (e.g.
-`feat/spring-foundation`) may have an older or sparser version of the `sql/` folder.
-This means the file count you read might be lower than what PROGRESS.md already shows.
-Apply this rule: if the file count is LOWER than the count already in PROGRESS.md for
-that topic, you are on the wrong branch — keep the PROGRESS.md count unchanged and note
-it as "branch — not updated" in the diff. Only update the count if the file count is
-HIGHER than what PROGRESS.md shows (new exercises were added to `sql/practice` and
-PROGRESS.md has not caught up yet).
+**Branch note — SQL and PROGRESS.md both live on `main`.** There is no separate SQL branch, so the
+`sql/` folder and PROGRESS.md are always on the same branch and cannot drift. Run this prompt on
+`main` and the exercise counts you read are authoritative. (If an old `sql/practice` branch still
+exists, it predates this decision — merge it into `main` and delete it; see CLAUDE.md.)
 
 For every file found in either format, count the exercises by counting numbered exercise
 headers. Two formats exist depending on when the file was created:
@@ -351,7 +346,6 @@ After writing, print a short diff summary:
 "Removed" = entries that were duplicates or factually wrong
 
 Special cases:
-- SQL branch warning triggered (file count lower than PROGRESS.md): write "branch — count preserved" in the SQL row under Corrected
 - Java section created for the first time with entries moved from Spring Boot: log each moved entry as Removed under Spring Boot and Added under Java
 
 If nothing changed in a section: write "—". Skip rows for sections that do not yet exist in PROGRESS.md.
