@@ -11,13 +11,11 @@ Before we get into Spring Boot, three terms you will see constantly:
 - **Tomcat** — a web server. It is a program that listens on a network port (like 8080) and receives HTTP requests from browsers or clients. Without a web server, your Java code has no way to accept HTTP connections. Before Spring Boot, you had to download Tomcat separately, install it, configure it, and deploy your app into it.
 - **`.jar`** — a packaged Java application. It is essentially a zip file that contains all your compiled code and can be run directly with `java -jar app.jar`. When you build a Spring Boot project, Maven produces a single `.jar` that contains your code and everything it needs (including Tomcat).
 - **Bean** — an object that Spring creates and manages for you. Instead of you writing `new UserService()` everywhere, Spring creates one instance of `UserService`, stores it, and automatically gives it to any class that needs it. You just annotate a class with `@Service` and Spring handles the rest.
-  //TODO: EXPLICA AQUI LO QUE ES EL JACKSON
+- **Jackson** — the library Spring Boot uses to convert between Java objects and JSON. When a controller returns a Java object, Jackson turns it into the JSON the client receives; when a request arrives with a JSON body, Jackson turns it back into a Java object. It runs automatically — it reads your public getters (or the ones Lombok generates) to decide which fields to include. You never call it yourself; Spring Boot wires it in.
 
 ---
 
-Plain Spring requires a lot of manual setup — XML configuration files, explicit bean declarations, and a separately installed Tomcat server. Spring Boot was created to remove that friction.
-
-Spring Boot's two core ideas: // TODO: esos dos puntos repiten lo que hay arriba
+Plain Spring requires a lot of manual setup and a separately installed server. Spring Boot was created to remove that friction. It does it with two core ideas:
 
 1. **Auto-configuration** — Spring Boot reads your dependencies and configures beans for you automatically. Add `spring-boot-starter-data-jpa` to the pom.xml and Spring Boot configures the database connection, EntityManager, and transaction support without any extra code.
 2. **Embedded server** — Spring Boot includes Tomcat inside the `.jar`. You run `java -jar app.jar` and the server starts. No separate server installation needed.
@@ -68,9 +66,9 @@ These are all the dependencies a complete Spring Boot project needs. Some can be
 | **Spring Data JPA**                                                                     | Tools to talk to the database without writing SQL by hand. You define Java classes and Spring generates the queries.   |
 | **PostgreSQL Driver**                                                                   | The connector between Java and PostgreSQL. Without this, Spring cannot open a database connection.                     |
 | **Spring Security**                                                                     | Authentication and authorisation. Blocks all endpoints by default until you configure which routes are public.         |
-| **Spring Boot Validation** //TODO: ESTA NO LA ENCUENTRO, TAL VEZ SE LLAME DE OTRA FORMA | Bean Validation annotations (`@NotBlank`, `@NotNull`, `@Email`, `@Min`) for validating request bodies.                 |
+| **Validation** (this is the exact name to search on Initializr — artifact `spring-boot-starter-validation`) | Bean Validation annotations (`@NotBlank`, `@NotNull`, `@Email`, `@Min`) for validating request bodies.                 |
 | **Lombok**                                                                              | Code generation at compile time — eliminates boilerplate getters, setters, and constructors from entity classes.       |
-| **Spring Boot Test** //TODO: ESTA NO LA ENCUENTRO, TAL VEZ SE LLAME DE OTRA FORMA       | JUnit 5 + Mockito + test utilities. Added automatically by Spring Initializr and used for all your tests.              |
+| **Spring Boot Starter Test** (not a checkbox — Initializr always adds it automatically) | JUnit 5 + Mockito + test utilities. Already in every generated `pom.xml`; you never add it by hand.              |
 | **JJWT\*** (manual)                                                                     | JWT library for creating and validating tokens. Must be added manually from mvnrepository.com (three artifacts).       |
 
 ---
@@ -102,7 +100,7 @@ Two ways to reload:
 
 **How to verify a dependency was actually downloaded:**
 
-Check that the jar exists in the local Maven cache: //TODO: C:\Users\Victor\.m2\repository\org\springframework\boot es decir deberia aparecer en esta carpeta no?
+Check that the jar exists in the local Maven cache. Maven stores every downloaded library under `C:\Users\Victor\.m2\repository\`, organised by group and artifact — yes, this is the folder to look in:
 
 Example for Spring Security:
 
@@ -181,8 +179,8 @@ This step is required from Java 21+ — the compiler needs to know explicitly th
 | Annotation            | What it generates                                                                        |
 | --------------------- | ---------------------------------------------------------------------------------------- |
 | `@Data`               | Getters, setters, `equals()`, `hashCode()`, `toString()`                                 |
-| `@NoArgsConstructor`  | Empty constructor — required by JPA //TODO: PON UNA BREVE EJEMPLO DE USO AQUI. UNA LINEA |
-| `@AllArgsConstructor` | Constructor with all fields //TODO: PON UNA BREVE EJEMPLO DE USO AQUI. UNA LINEA         |
+| `@NoArgsConstructor`  | Empty constructor — required by JPA (lets Hibernate call `new User()` when building an entity from a database row) |
+| `@AllArgsConstructor` | Constructor with every field (e.g. `new User(1L, "Ana", "ana@x.com")`) |
 
 **Example — User entity with Lombok:**
 
@@ -257,13 +255,13 @@ After this step, IntelliJ recognises `TimetrackApplication.java` as runnable and
 
 **`TimetrackApplication.java`** — the entry point. Has the `main()` method. You never touch this file.
 
-**`application.properties`** — where all configuration goes: database URL, port, JWT secret, etc. Like an `.env` file in Node. Right now it only has one line.//TODO: NOMBRA QUE MAS ABAJO ESTA MAS DESARROLLADO Y EXPLICADO
+**`application.properties`** — where all configuration goes: database URL, port, JWT secret, etc. Like an `.env` file in Node. Right now it only has one line — the "application.properties — central configuration" section further down develops it fully (database connection, JPA settings, and environment variables).
 
 **`TimetrackApplicationTests.java`** — one empty test class. The starting point for your tests.
 
 ---
 
-## @SpringBootApplication — the entry point // NOMBRA EL ARCHIVO DONDE SE ENCUENTRA ESTA NOTACION
+## @SpringBootApplication — the entry point (in `TimetrackApplication.java`)
 
 Every Spring Boot application has exactly one class with `@SpringBootApplication`. This is what Spring Initializr generated for TimeTrack:
 
@@ -318,15 +316,17 @@ All properties follow a namespace pattern: `spring.[feature].[setting]`. Once yo
 ```properties
 spring.application.name=timetrack
 
-# Database connection //TODO: PON AQUI EL ENLACE DE LA DOC OFICIAL DE DONDE ESTO SALE
+# Database connection
 spring.datasource.url=jdbc:postgresql://localhost:5432/timetrack
 spring.datasource.username=postgres
 spring.datasource.password=your_password
 
-# JPA / Hibernate //TODO: PON AQUI EL ENLACE DE LA DOC OFICIAL DE DONDE ESTO SALE
+# JPA / Hibernate
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
+
+Docs: datasource keys (`spring.datasource.*`) and JPA keys (`spring.jpa.*`) are listed in the official appendix → https://docs.spring.io/spring-boot/appendix/application-properties/index.html — read: "Data Properties". The `ddl-auto` values (`update`, `create`, `validate`, `none`) are explained at https://docs.spring.io/spring-boot/how-to/data-initialization.html → read: "Initialize a Database Using Hibernate".
 
 | Property                               | What it does                                                                                                                            |
 | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |

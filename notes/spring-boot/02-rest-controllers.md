@@ -27,27 +27,35 @@ Database
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
-    private final TransactionService service; // TODO: VEO QUE UNA CAPA IMPORTA A LA SIGUIENTE NO? Y QUE LO HACES CON PRIVATE FINAL SIEEMPRE
+    private final TransactionService service;
 
-    public TransactionController(TransactionService service) { // TODO: AQUI TABMIEN EXPLICA QUE EL CONSTRUCTOR DE LA CLASE DEBE SER PUEBLICO Y QUE SE TIENE QUE LLAMAR IGUAL QUE LA CLASE. TAMBIEN EXPLICA A QUE SE REFIERE CON EL THIS.
+    public TransactionController(TransactionService service) {
         this.service = service;
     }
 
-    @GetMapping // AQUI NADA MAS EMPEZARA EXPLICAR EL CONTROLLER YA ESTAS USANDO LOS DTO. AL MENOS HAZ UNA REFERENCIA AL ARCHIVO O EL LUGAR DONDE SE EXPLICA MEJOR ESTO
-    public ResponseEntity<List<TransactionDTO>> getAll() {
+    @GetMapping
+    public ResponseEntity<List<TransactionResponse>> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 }
 ```
 
+A few things to read off this example:
+
+- **Yes — each layer holds a reference to the one below it.** The controller declares `private final TransactionService service`. `private` because no other class needs it; `final` because once Spring sets it in the constructor it never changes. You will see this exact `private final` dependency line in every controller, service, and repository-using class.
+- **The constructor is `public` and must be named exactly like the class** (`TransactionController`). That is the Java rule for any constructor. Spring calls it at startup and passes in the `TransactionService` bean automatically (constructor injection — see [03-dependency-injection.md](./03-dependency-injection.md)).
+- **`this.service = service`** — the parameter and the field share the name `service`. `this.service` means "the field of this object"; the bare `service` is the parameter. The line copies the injected parameter into the field so the rest of the class can use it.
+- **`TransactionResponse` is a DTO** (Data Transfer Object) — the shape the API sends back instead of the raw entity. DTOs are explained fully in the "DTOs" section below and in [layer-reference.md](./layer-reference.md).
+
 ---
 
-## @RestController
+## @RestController and @RequestMapping
 
-//TODO: AQUI TAMBIEN EXPLICA EL REQUETMAPPING. TAMBIEN EXPLICA UN POCO MAS CLARO EL RESTCONTROLLER
-`@RestController` = `@Controller` + `@ResponseBody`. Every return value is serialized to JSON automatically.
+`@RestController` tells Spring "this class handles HTTP requests, and every value I return should be sent straight back to the client as JSON". It is shorthand for `@Controller` + `@ResponseBody`: `@Controller` registers the class as a web component, and `@ResponseBody` is what serialises the return value to JSON (via Jackson) instead of treating it as the name of an HTML page.
 
-> **`@Controller` vs `@RestController`:** `@Controller` is for server-rendered HTML views. For a REST API consumed by Angular, always use `@RestController`.
+> **`@Controller` vs `@RestController`:** `@Controller` is for server-rendered HTML views (it returns the name of a template to render). For a REST API consumed by Angular, always use `@RestController` so you get JSON.
+
+`@RequestMapping("/api/transactions")` on the class sets the **base URL path** shared by every method inside it. Each method-level annotation (`@GetMapping`, `@PostMapping`…) then only adds the part that differs. So `@GetMapping("/{id}")` inside this class answers `GET /api/transactions/{id}`.
 
 ```java
 @RestController
@@ -67,37 +75,53 @@ public class TransactionController { ... }
 | `@PatchMapping`  | PATCH       | Update part of a resource  | Yes       |
 | `@DeleteMapping` | DELETE      | Remove a resource          | No        |
 
-```java // TODO: AQUI EXPLICA UN POCO MEJOR ESO DE LOS PARAMETROS COMO ID, UN POCO MAS CLARO. Y SI HUBIERA ALGO MAS A PARTE DE ESOS PARAMETROS QUE DEBA SABER Y TENER CLARO ME LO PONES
-@GetMapping              // GET /api/transactions
-@GetMapping("/{id}")     // GET /api/transactions/42
-@PostMapping             // POST /api/transactions
-@PutMapping("/{id}")     // PUT /api/transactions/42
+```java
+@GetMapping              // GET    /api/transactions
+@GetMapping("/{id}")     // GET    /api/transactions/42
+@PostMapping             // POST   /api/transactions
+@PutMapping("/{id}")     // PUT    /api/transactions/42
 @DeleteMapping("/{id}")  // DELETE /api/transactions/42
 ```
+
+The string inside the annotation is appended to the class-level `@RequestMapping` base path. `"/{id}"` is **not** a literal word — the `{id}` part is a *path placeholder*: a slot that matches any value (`/42`, `/7`, …) and captures it. How you read that captured value inside the method is the next section (`@PathVariable`).
 
 ---
 
 ## ResponseEntity — controlling the HTTP response
 
-//TODO: EXPLICA MAS SENCILLO SU USO. ES ESTO UN DTO???? REALMENTE ESTO SIRVE SOLO PARA DEVOLVER EN EL BODY ALGO? EXPLICA BIEN LO QUE DEVUELVE CADA EJEMPLO DE CODIGO QUE HAS PUESTO Y EXPLICA LA RELACION CON LOS RESTCONTROLLERS
-`ResponseEntity<T>` wraps your return value with an HTTP status code. This matters because a REST API must communicate what happened, not just return data.
+`ResponseEntity<T>` is **not** a DTO. It is a wrapper a controller method returns to control two things at once: the **HTTP status code** and the **response body**. The `<T>` is the type of the body it carries (often a DTO, e.g. `ResponseEntity<TransactionResponse>`). You reach for it because a REST API must communicate *what happened* (created? not found? deleted?), not just hand back data — and the status code is how it says that.
+
+Without `ResponseEntity`, every method would return plain `200 OK`, even a `POST` that should say `201 Created` or a `DELETE` that should say `204 No Content`.
+
+Each line below builds a different response — same idea, different status + body:
 
 ```java
-// 200 OK with body
+// 200 OK, body = the transaction object (serialised to JSON)
 return ResponseEntity.ok(transaction);
 
-// 201 Created with body (resource was just created)
+// 201 Created, body = the resource that was just created
 return ResponseEntity.status(201).body(created);
 
-// 204 No Content — success but nothing to return (common for DELETE)
+// 204 No Content — success, empty body (common for DELETE)
 return ResponseEntity.noContent().build();
 
-// 404 Not Found
+// 404 Not Found — empty body
 return ResponseEntity.notFound().build();
 
-// 400 Bad Request
+// 400 Bad Request, body = an error message
 return ResponseEntity.badRequest().body("Invalid input");
 ```
+
+The relation to `@RestController`: the controller method returns the `ResponseEntity`, and Spring reads the status from it and serialises the body to JSON with Jackson before sending it to the client.
+
+**Two shortcuts you will use constantly:**
+
+- `ResponseEntity.ok(value)` is exactly `ResponseEntity.status(200).body(value)` — GET and PUT use it, and it *does* include a body (the JSON object or array). These two lines are identical:
+  ```java
+  return ResponseEntity.ok(projectService.getAll());
+  return ResponseEntity.status(200).body(projectService.getAll());
+  ```
+- `ResponseEntity.noContent().build()` is status 204 with an empty body — DELETE uses it. Every `ResponseEntity` ends in either `.body(value)` (finish with a body) or `.build()` (finish with no body). `noContent()` is just a named shortcut for status 204, the same way `ok()` is for 200.
 
 **Key status codes to know:**
 
@@ -117,49 +141,85 @@ return ResponseEntity.badRequest().body("Invalid input");
 
 ## Reading input — @PathVariable, @RequestParam, @RequestBody
 
-### @PathVariable — three things to understand //TODO: EXPLICA ANTES QUE ES UNA PATHVARIABLE PORQUE ME LO PONES ASI DIRECTAMENTE Y NO SE SABE, INDICA POR EJEMPLO: A VECES LA URL TIENE UNA VARIABLE QUE....
+### @PathVariable — read a value from the URL path
 
-**1. The `{}` are not optional.**
-They tell Spring "this part of the URL is a variable, not a literal word".
+Sometimes the URL itself carries a value — *which* resource you want. `GET /api/projects/42` means "the project with id 42". The `42` is not a fixed word; it changes per request. `@PathVariable` is how the controller reads that value out of the path and into a method parameter. Three things to be clear about:
 
-```java // TODO: PON EJEMPLOS DONDE SE VEA @RequestMapping("/api/transactions")  Y USAS ESOS DOS ID HACIENDO LA DIFERENCIA DE QUE UNO SIRVE PARA RUTAS ESTATICAS Y OTRO DINAMICA Y QUE SE VEA CLARAMENTE ESA DIFERENCIA
-@GetMapping("/id")    // matches the literal URL /api/projects/id — never what you want
-@GetMapping("/{id}")  // matches /api/projects/1, /api/projects/42, etc.
-```
-
-**2. The name inside `{}` must match the parameter name.**
-Spring maps `{id}` to the parameter named `id`. If they don't match, Spring throws an error at startup.
+**1. The `{}` mark a placeholder, not a literal word.** In the mapping, `"/{id}"` tells Spring "this segment is a variable". Compare it with a static segment on the same base path `@RequestMapping("/api/projects")`:
 
 ```java
-@GetMapping("/{id}") //TODO: AQUI VEO QUE PATHVARIABLE LO USAS COMO ARGUMENTO, LEES LA VARIABLE ID DE LA URL Y LA PASAS COMO ARGUMENTO A UN METODO, PERO ESO QUE YO ESTOY INTUYENDO EXPLICALO BIEN AQUI
-public ProjectResponse getById(@PathVariable Long id) { ... }  // ✓ names match
-
-// If the names must differ, be explicit:
-@GetMapping("/{id}")
-public ProjectResponse getById(@PathVariable("id") Long projectId) { ... }  // ✓ explicit mapping
+@GetMapping("/active")   // STATIC  → matches only the literal URL /api/projects/active
+@GetMapping("/{id}")     // DYNAMIC → matches /api/projects/1, /api/projects/42, ...
 ```
 
-// TODO: TAMBIEN VEO QUE SI LA VARIABLE SE LLAMA ID IGUAL QUE HEMOS DEFINIDO EN LA RUTA PODEMOS USAR @PathVariable Long id PERO QUE SI QUIERO PONERLE OTRO NOMBRE SE USA @PathVariable("id") Long projectId. EN ESE EJEMPLO A LA VARIABLE ID LA QUIERE RENOMBRAR COMO PROJECTID. AUNQUE YO LO ESTE VIENDO Y SE VEA EN EL CODIGO, SE UN POCO MAS EXPLICITO CON ESO PARA QUE AL LEERLO DE LA PRIMERA PASADA ME QUEDE CLARO
+`/active` is a fixed word — it matches that exact text and nothing else. `/{id}` matches any value and captures it.
 
-**3. `{id}` is a placeholder — never a literal.**
-When a client calls `GET /api/projects/42`, Spring puts `42` into the `id` parameter. The URL is never literally `/api/projects/id`.
+**2. `@PathVariable` reads the captured value and passes it to the method as an argument.** Spring takes whatever matched `{id}` in the URL and injects it into the parameter, so you use it like a normal variable:
 
 ```java
-// From the URL path: GET /api/transactions/42
+// client calls GET /api/projects/42  →  Spring puts 42 into `id`
 @GetMapping("/{id}")
-public ResponseEntity<TransactionDTO> getById(@PathVariable Long id) { ... }
+public ResponseEntity<ProjectResponse> getById(@PathVariable Long id) {
+    return ResponseEntity.ok(projectService.getById(id)); // use it like any argument
+}
+```
 
-// From query parameters: GET /api/transactions?category=food&page=1 //TODO: ESTE EJEMPLO LO HAS METIDO AQUI SIN HABER EXPLICADO ANTES ABSOLUTAMENTE NADA DE LOS REQUESTPARAM NI USAR ABOSLUTAMENTE NADA DE CONTEXTO SOBRE ESO, NO PUEDE SER, DEBES EXPLICAR ESE CONCEPTO TAN CLARAMENTE COMO HAS EXPLICADO EL PATHVALUE.
+**3. The name in `{}` must match the parameter name** — that is how Spring knows which placeholder fills which parameter. If you want the parameter to have a different name, state the path name explicitly inside `@PathVariable("...")`:
+
+```java
+// names match → no argument needed
+@GetMapping("/{id}")
+public ProjectResponse getById(@PathVariable Long id) { ... }
+
+// rename: the URL placeholder is still {id}, but the parameter is called projectId
+@GetMapping("/{id}")
+public ProjectResponse getById(@PathVariable("id") Long projectId) { ... }
+```
+
+In the second case, `@PathVariable("id")` says "take the `{id}` from the path and put it in `projectId`". Without the explicit `("id")`, Spring would look for a placeholder named `projectId`, not find it, and fail at startup. **That is why `@PathVariable` has to exist at all:** a method can have several parameters, and the annotation is the explicit link that tells Spring "this one comes from the URL path".
+
+---
+
+### @RequestParam — read a value from the query string
+
+Query parameters are the optional `key=value` pairs after the `?` in a URL: `GET /api/entries?month=2025-05&status=SUBMITTED`. They are the right tool for **optional filters, sorting, and pagination** — not for the resource identity (that is `@PathVariable`). `@RequestParam` reads one of them into a method parameter, the same way `@PathVariable` reads from the path:
+
+```java
+// GET /api/entries?month=2025-05&page=0
 @GetMapping
-public ResponseEntity<List<TransactionDTO>> getFiltered(
-    @RequestParam(required = false) String category,
+public ResponseEntity<List<EntryResponse>> getFiltered(
+    @RequestParam(required = false) String month,
     @RequestParam(defaultValue = "0") int page
 ) { ... }
-
-// From the request body: POST /api/transactions { ... }
-@PostMapping // TODO: LO MISMO ME OCURRE EN ESTE EJEMPLO QUE EN EL ANTERIOR CON REQUESTPARAM, NECESITO MAS CONTEXTO Y EXPLICACION. CUANDO CORRIJAS TODO LO REFERENTE AL PATHVALUE PUEDES USAR EL MISMO FORMATO PARA EXPLICARME ESTO . ADEMAS PUEDES USAR EJEMPLOS DE MI PROYECTO DONDE YO VEA POR COMPLETO EL USO
-public ResponseEntity<TransactionDTO> create(@Valid @RequestBody TransactionCreateDTO dto) { ... }
 ```
+
+- `required = false` — the parameter is optional; if the client omits it the value is `null` and the request still works
+- `defaultValue = "0"` — if omitted, Spring uses `"0"` instead of `null` (setting a default also makes it optional)
+
+> **`@PathVariable` vs `@RequestParam`:** path variable = *which* resource (`/projects/42`), mandatory, part of the address. Query param = *how* to filter the result (`?status=active`), usually optional, an extra on top of the address.
+
+---
+
+### @RequestBody — read the JSON body sent by the client
+
+For `POST` and `PUT`, the client sends data in the **body** of the request as JSON. `@RequestBody` tells Spring "take that JSON, convert it into this Java object (Jackson does the conversion), and give it to me as a parameter":
+
+```java
+// POST /api/projects  with body { "name": "...", "description": "..." }
+@PostMapping
+public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectRequest request) {
+    return ResponseEntity.status(201).body(projectService.create(request));
+}
+```
+
+`@RequestBody` is only about *receiving* — it is the mirror image of the response. Do not confuse the two directions:
+
+|                              | Direction       | Where it appears                          |
+| ---------------------------- | --------------- | ----------------------------------------- |
+| `@RequestBody`               | client → server | a method parameter — what you receive     |
+| `ResponseEntity.body(value)` | server → client | the return statement — what you send back |
+
+`@Valid` next to `@RequestBody` triggers Bean Validation on the incoming object — if the DTO's `@NotBlank` / `@NotNull` fields fail, Spring returns 400 automatically before your method body runs (see [07-validation.md](./07-validation.md)).
 
 **When to use each one — the simple rule:**
 
@@ -180,76 +240,6 @@ DELETE /api/projects/42     → @PathVariable
 **The pattern:** use `@PathVariable` for the resource identifier (it is mandatory — no ID, no resource). Use `@RequestParam` for optional filters. Use `@RequestBody` when the client sends JSON in the body.
 
 `@Valid` triggers Bean Validation on the `@RequestBody` — if the DTO has `@NotNull` or `@NotBlank` fields and the input fails them, Spring returns 400 automatically.
-
----
-
-### Why does @PathVariable need to exist at all? // TODO: QUIERO QUE LA PARTE DE @PATHVARIABLE SE PONGA CUANDO SE EXPLIQUE PATHVARIABLE
-
-Spring sees a method with several parameters — `Long id`, `UpdateProjectRequest request`, etc. Without `@PathVariable`, Spring does not know which parameter should come from the URL. The annotation is the explicit connection between `{id}` in the path and `Long id` in the method.
-
-```java
-// Spring reads @PathVariable and knows: "fill id with whatever is in {id} in the URL"
-@PutMapping("/{id}")
-public ResponseEntity<ProjectResponse> update(@PathVariable Long id, @RequestBody UpdateProjectRequest request)
-```
-
-That is why the names must match — Spring reads `@PathVariable`, looks for `{id}` in the URL template, and puts that value into `id`.
-
----
-
-### @RequestBody is only about receiving — not returning // TODO: QUIERO QUE LA PARTE DE @RequestBody SE PONGA CUANDO SE EXPLIQUE RequestBody. ADEMAS DESARROLLALO MAS DICIENDO: REQUESTBODY ES LO QUE TE LLEGA DEL CLIENTE CUANDO HACE... Y RESPONSEENTITIYT ES LO QUE EL SERVIDOR(NOSOTROS) LE MANDAMOS AL CLIENTE COMO RESPUESTA...
-
-`@RequestBody` and `ResponseEntity.body()` look similar but they are opposite directions:
-
-|                              | Direction       | Used on                               |
-| ---------------------------- | --------------- | ------------------------------------- |
-| `@RequestBody`               | Client → Server | Method parameter — what you receive   |
-| `ResponseEntity.body(value)` | Server → Client | Return statement — what you send back |
-
-```java
-// @RequestBody = you receive JSON from the client and Spring converts it to a Java object
-public ResponseEntity<ProjectResponse> create(@RequestBody CreateProjectRequest request)
-
-// .body() = you send a Java object back to the client and Spring converts it to JSON
-return ResponseEntity.status(201).body(projectService.create(request));
-```
-
-`@RequestBody` has nothing to do with what you return.
-
----
-
-### ResponseEntity.ok() does include a body //TODO: ESTO SE DEBE EXPLICAR CUANDO SE EXPLIQUEN LAS RESPUESTAS QUE PODEMOS DAR, NO ME GUSTA TENER LAS COSAS POR SEPARADO PORQUE MENTALMENTE ME ORDENO MEJOR
-
-`.ok(value)` is a shortcut for `.status(200).body(value)`. GET methods do return a body — the JSON array or object. The client receives it the same way.
-
-```java
-// These two are identical:
-return ResponseEntity.ok(projectService.getAll());
-return ResponseEntity.status(200).body(projectService.getAll());
-```
-
-The only case with no body is 204 (DELETE):
-
-```java
-return ResponseEntity.noContent().build(); // status 204, empty body
-```
-
----
-
-### noContent() and .build() //TODO: ESTO SE DEBE EXPLICAR CUANDO SE EXPLIQUEN LAS RESPUESTAS QUE PODEMOS DAR, NO ME GUSTA TENER LAS COSAS POR SEPARADO PORQUE MENTALMENTE ME ORDENO MEJOR
-
-`ResponseEntity` always needs two things: a status and a body. When there is a body you use `.body(value)`. When there is no body you use `.build()` — it tells Spring "build the response with nothing in the body".
-
-```java
-// With body — status + body
-ResponseEntity.status(201).body(projectService.create(request));
-ResponseEntity.ok(projectService.getAll());   // ok() = status(200) + body in one step
-
-// No body — status + build
-ResponseEntity.noContent().build();           // noContent() = status(204), no body
-```
-
-`noContent()` is a named shortcut for status 204, the same way `ok()` is a shortcut for 200.
 
 ---
 
@@ -280,40 +270,46 @@ public ResponseEntity<Void> delete(@PathVariable Long id) {
 
 ---
 
-## DTOs — never expose JPA entities directly //TODO: EXPLICA LO QUE SIGNIFICA DTO
+## DTOs — never expose JPA entities directly
 
-**Why:** entities are tied to the database schema. They can contain fields you should not expose (password hash, internal foreign keys, lazy-loaded collections). DTOs let you control exactly what the API sends and receives.
-//TODO: ADEMAS EXPLICA CLARAMENTE QUE LSO DTO SE USAN PARA DAR FORMA A LAS RESPUESTAS Y ASI NO DEVOLVER UNA ENTITIE DIRECTAMENTE PARA NO EXPLINER DATOS SENSIBLES. DEBEMOS CREAR EL DTO ANTES DE CREAR EL CONTROLLER O EL SERVICE ( NO LO SE). ADEMAS EN EL EJEMPLO DE CODIGO PON EL ARCHIVO AL QUE PERTENECE CADA FAGMENTO Y PON COMO EJEMPLO, COSAS REALES QUE HAYAMOS USADO EN MIS PROYECTOS PORQUE AHI ME HAS PUESTO PUBLIC RECORD QUE YO NO HE USADO NUNCA
+A **DTO** (Data Transfer Object) is a plain class whose only job is to define the *shape* of the data that crosses the API boundary — what the client sends in, and what you send back. It is not a database table and it holds no business logic: just fields. DTOs are how you give a clean shape to your responses instead of returning the raw entity.
+
+**Why not return the JPA entity directly?** The entity is tied to the database schema and can hold fields the client must never see — a password hash, internal foreign keys, lazy-loaded collections. Returning it leaks those fields and couples your public API to your tables: change a column and you accidentally change the API. A DTO lets you control exactly which fields go out and which come in.
+
+> **When do you create the DTO?** Before the service and controller that use it — they name its type in their method signatures, so it has to exist first. The order for a feature is: entity → repository → **DTO** → service → controller (the same flow as [layer-reference.md](./layer-reference.md)).
+
+You keep two DTOs per resource — one per direction:
+
+**`dto/request/CreateProjectRequest.java`** — what the client sends. You validate it, because you can never trust incoming data:
 
 ```java
-// Entity — database representation (never send this directly to the frontend)
-@Entity
-public class Transaction {
-    @Id private Long id;
-    private BigDecimal amount;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateProjectRequest {
+    @NotBlank
+    private String name;
+
     private String description;
-    @ManyToOne private User user;   // contains password hash — never expose
 }
-
-// Response DTO — what the API returns (only the fields the frontend needs)
-public record TransactionDTO(
-    Long id,
-    BigDecimal amount,
-    String description,
-    LocalDate date,
-    String category
-) {}
-
-// Create DTO — what the frontend sends when creating
-public record TransactionCreateDTO(
-    @NotNull BigDecimal amount,
-    @NotBlank String description,
-    @NotBlank String category,
-    @NotNull LocalDate date
-) {}
 ```
 
-The service converts between entities and DTOs. The controller only deals with DTOs.
+**`dto/response/ProjectResponse.java`** — what the API returns. You build it yourself in the service, so it needs no validation:
+
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProjectResponse {
+    private Long id;
+    private String name;
+    private String description;
+    private Boolean active;
+    private LocalDateTime createdAt;
+}
+```
+
+The **service** converts between the entity and these DTOs; the **controller** only ever deals with DTOs, never the entity. These are the real class-based DTOs from the TimeTrack `projects` feature — `@Data` with Lombok, the style used across the project (not Java `record`s).
 
 ---
 
@@ -370,7 +366,16 @@ public class TransactionController {
 
 //TODO: ESTE PUNTO PONLO ANTES QUE A complete controller example, CREO QUE TIENE MAS SENTIDI
 This is the first Controller → Service → Repository chain built in the TimeTrack project. Step 1 returns the entity directly — DTOs are introduced in Step 2.
-//TODO: PON EL USERREPOSITORY ANTES QUE USERSERVICE
+
+### UserRepository
+
+The repository comes first because the service depends on it. It is just an interface that extends `JpaRepository<User, Long>` — that alone gives you `findAll()`, `findById()`, `save()`, and `deleteById()` with no implementation to write:
+
+```java
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+}
+```
 
 ### UserService
 
