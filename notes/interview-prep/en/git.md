@@ -29,6 +29,12 @@ HEAD is a pointer to the commit you are currently on — usually the tip of the 
 **What is the difference between `git init` and `git clone`?**
 `git init` creates a new empty repository on your machine from scratch — you use it when starting a new project locally. `git clone` downloads an existing repository from GitHub to your machine, including the full commit history and the remote already set up. In practice: `git init` when I start fresh, `git clone` when the project already exists on GitHub.
 
+**What is `origin` in Git?**
+`origin` is the default name (alias) Git gives to the remote repository you cloned from or connected to — it points to the remote URL, like `https://github.com/user/repo.git`. It is not a branch and not special: it is just a shorthand so you type `git push origin main` instead of the full URL every time. A repo can have several remotes with different names (for example `origin` and `upstream` when working with forks), but most projects have only `origin`.
+
+> **Junior tip:** The trap is thinking `origin` is a branch. Say clearly: "`origin` is the remote, `main` is the branch — `git push origin main` means push the main branch to the origin remote."
+> **Consejo de entrevista:** La trampa es pensar que `origin` es una rama. Di con claridad: "`origin` es el remoto, `main` es la rama — `git push origin main` significa enviar la rama main al remoto origin."
+
 ---
 
 ## Branches
@@ -84,6 +90,18 @@ Red flag answer: "I commit everything to main" — immediately disqualifying at 
 When the feature does exactly what it was supposed to do, the commits are clean and atomic, and there are no obvious bugs. I do a self-review first — I read my own diff as if I am a reviewer seeing it for the first time. If there are "fix typo" commits from development, I squash them with interactive rebase before opening the PR. The PR description is the last check — if I cannot explain the "Why" clearly, the feature is not ready.
 
 Red flag answer: "When it compiles" — compiling is the minimum bar, not a quality check.
+
+**What is the difference between `git branch -d` and `git branch -D`?**
+`-d` is a safe delete — it refuses to delete a branch that has commits not yet merged anywhere, so you cannot accidentally lose work. `-D` is a force delete — it removes the branch regardless. I use `-d` by default to delete merged feature branches after their PR lands; I only reach for `-D` when I deliberately want to throw away an experimental branch I never merged.
+
+> **Junior tip:** "lowercase d is safe, uppercase D forces it." Mention that `-d` failing is Git protecting you from losing unmerged commits — that shows you read the warning instead of just forcing past it.
+> **Consejo de entrevista:** "la d minúscula es segura, la D mayúscula la fuerza." Menciona que el fallo de `-d` es Git protegiéndote de perder commits sin mergear.
+
+**A merge conflict happens during a rebase. How is resolving it different from a normal merge conflict?**
+A rebase replays your commits one at a time on top of the target branch, so the conflict can pause on each conflicting commit, not just once. You fix the file, `git add` it, then run `git rebase --continue` to move on to the next commit — you may resolve several in a row. If it gets too messy, `git rebase --abort` cancels the whole rebase and returns you to exactly where you started. A normal merge, by contrast, surfaces all conflicts at once and you resolve them in a single commit.
+
+> **Junior tip:** The key contrast: "merge conflicts happen once; rebase conflicts can happen per commit, so I use `--continue` after each and `--abort` to bail out safely." That shows you understand rebase replays commits individually.
+> **Consejo de entrevista:** El contraste clave: "los conflictos de merge ocurren una vez; los de rebase pueden ocurrir por commit, así que uso `--continue` tras cada uno y `--abort` para salir con seguridad."
 
 ---
 
@@ -209,6 +227,18 @@ Red flag answer: "I have never used tags" without explaining what they are — s
 I use `git stash` when I need to switch context immediately and I know I will come back to the same work soon. A WIP commit would pollute the history with a message like "wip: unfinished form" — it is better to stash and never commit unfinished code. The rule: if I am coming back in minutes or hours to the same branch, stash. If the interruption will last more than a day, a separate WIP branch is safer than relying on stash.
 
 Red flag answer: "I commit everything with a wip message and rewrite it later" — messy history, risks amending pushed commits, and shows stash is not understood.
+
+**You committed a `.env` file by mistake before adding it to `.gitignore`. How do you fix it?**
+Adding it to `.gitignore` now is not enough — Git keeps tracking a file it already tracks. You run `git rm --cached .env` to stop tracking it (the flag keeps the file on disk, it only removes it from Git's index), add `.env` to `.gitignore`, then commit. From then on Git ignores it. The important caveat: the secret is still in the previous commit's history, so if the repo was pushed I also rotate the key — removing it from the latest commit does not erase it from the history.
+
+> **Junior tip:** Two parts win this: "`git rm --cached` stops tracking without deleting the file" AND "the secret is still in history, so rotate the key." The second half shows real security awareness.
+> **Consejo de entrevista:** Dos partes ganan esto: "`git rm --cached` deja de rastrear sin borrar el archivo" Y "el secreto sigue en el historial, así que rota la clave." La segunda mitad demuestra conciencia de seguridad real.
+
+**What is the difference between `git stash pop` and `git stash apply`?**
+Both restore the changes you saved with `git stash`, but `pop` also removes that stash from the stash list, while `apply` leaves it in the list. I use `pop` for the normal case — restore my work and clear the stash. I use `apply` when I want to restore the same stashed changes onto more than one branch, so the stash stays available until I drop it manually with `git stash drop`.
+
+> **Junior tip:** "pop restores and deletes; apply restores and keeps." Mention `git stash list` to inspect multiple stashes — it shows you have used stash beyond the one-off case.
+> **Consejo de entrevista:** "pop restaura y borra; apply restaura y conserva." Menciona `git stash list` para inspeccionar varios stashes — demuestra que has usado stash más allá del caso puntual.
 
 ---
 

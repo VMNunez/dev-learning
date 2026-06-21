@@ -29,6 +29,12 @@ HEAD es un puntero al commit en el que estás actualmente — normalmente la pun
 **¿Cuál es la diferencia entre `git init` y `git clone`?**
 `git init` crea un repositorio nuevo y vacío en tu máquina desde cero — lo usas cuando empiezas un proyecto nuevo en local. `git clone` descarga un repositorio existente de GitHub a tu máquina, incluyendo el historial completo de commits y el remote ya configurado. En la práctica: `git init` cuando empiezo de cero, `git clone` cuando el proyecto ya existe en GitHub.
 
+**¿Qué es `origin` en Git?**
+`origin` es el nombre (alias) por defecto que Git da al repositorio remoto desde el que clonaste o al que te conectaste — apunta a la URL del remoto, como `https://github.com/user/repo.git`. No es una rama ni nada especial: es solo una abreviatura para que escribas `git push origin main` en lugar de la URL completa cada vez. Un repo puede tener varios remotos con nombres distintos (por ejemplo `origin` y `upstream` al trabajar con forks), pero la mayoría de proyectos solo tienen `origin`.
+
+> **Junior tip:** The trap is thinking `origin` is a branch — "`origin` is the remote, `main` is the branch."
+> **Consejo de entrevista:** La trampa es pensar que `origin` es una rama. Di con claridad: "`origin` es el remoto, `main` es la rama — `git push origin main` significa enviar la rama main al remoto origin."
+
 ---
 
 ## Ramas
@@ -84,6 +90,18 @@ Respuesta señal de alerta: "Hago commit directamente en main" — descalificant
 Cuando la funcionalidad hace exactamente lo que debía, los commits son limpios y atómicos, y no hay bugs obvios. Primero hago una autorevisión — leo mi propio diff como si fuera un revisor que lo ve por primera vez. Si hay commits de "fix typo" del desarrollo, los combino con rebase interactivo antes de abrir el PR. La descripción del PR es la última comprobación — si no puedo explicar el "Por qué" con claridad, la funcionalidad no está lista.
 
 Respuesta señal de alerta: "Cuando compila" — que compile es el mínimo exigible, no un control de calidad.
+
+**¿Cuál es la diferencia entre `git branch -d` y `git branch -D`?**
+`-d` es un borrado seguro — se niega a borrar una rama que tiene commits aún no mergeados en ningún sitio, así no pierdes trabajo por accidente. `-D` es un borrado forzado — elimina la rama sin importar nada. Uso `-d` por defecto para borrar ramas de feature ya mergeadas cuando su PR aterriza; solo recurro a `-D` cuando quiero descartar a propósito una rama experimental que nunca mergeé.
+
+> **Junior tip:** "lowercase d is safe, uppercase D forces it."
+> **Consejo de entrevista:** "la d minúscula es segura, la D mayúscula la fuerza." Menciona que el fallo de `-d` es Git protegiéndote de perder commits sin mergear.
+
+**Ocurre un conflicto de merge durante un rebase. ¿En qué se diferencia resolverlo de un conflicto de merge normal?**
+Un rebase reaplica tus commits de uno en uno sobre la rama destino, así que el conflicto puede pausarse en cada commit conflictivo, no solo una vez. Arreglas el archivo, le haces `git add`, y luego ejecutas `git rebase --continue` para pasar al siguiente commit — puedes resolver varios seguidos. Si se complica demasiado, `git rebase --abort` cancela todo el rebase y te devuelve exactamente a donde empezaste. Un merge normal, en cambio, saca todos los conflictos a la vez y los resuelves en un único commit.
+
+> **Junior tip:** "merge conflicts happen once; rebase conflicts can happen per commit — use `--continue` after each and `--abort` to bail out."
+> **Consejo de entrevista:** El contraste clave: "los conflictos de merge ocurren una vez; los de rebase pueden ocurrir por commit, así que uso `--continue` tras cada uno y `--abort` para salir con seguridad."
 
 ---
 
@@ -209,6 +227,18 @@ Respuesta señal de alerta: "Nunca he usado tags" sin explicar qué son — mues
 Uso `git stash` cuando necesito cambiar de contexto inmediatamente y sé que volvere al mismo trabajo pronto. Un commit WIP contaminaría el historial con un mensaje como "wip: formulario sin terminar" — es mejor hacer stash y nunca commitear código inacabado. La regla: si voy a volver en minutos u horas a la misma rama, stash. Si la interrupción va a durar más de un día, una rama WIP separada es más segura que depender del stash.
 
 Respuesta señal de alerta: "Hago commit de todo con un mensaje wip y lo reescribo después" — historial desordenado, riesgo de hacer amend a commits pusheados, y muestra que no se entiende el stash.
+
+**Has commiteado un archivo `.env` por error antes de añadirlo a `.gitignore`. ¿Cómo lo arreglas?**
+Añadirlo ahora a `.gitignore` no basta — Git sigue rastreando un archivo que ya rastrea. Ejecutas `git rm --cached .env` para dejar de rastrearlo (el flag mantiene el archivo en el disco, solo lo quita del índice de Git), añades `.env` a `.gitignore`, y luego commiteas. A partir de ahí Git lo ignora. El matiz importante: el secreto sigue en el historial del commit anterior, así que si el repo se pusheó también roto la clave — quitarlo del último commit no lo borra del historial.
+
+> **Junior tip:** "`git rm --cached` stops tracking without deleting the file" AND "the secret is still in history, so rotate the key."
+> **Consejo de entrevista:** Dos partes ganan esto: "`git rm --cached` deja de rastrear sin borrar el archivo" Y "el secreto sigue en el historial, así que rota la clave." La segunda mitad demuestra conciencia de seguridad real.
+
+**¿Cuál es la diferencia entre `git stash pop` y `git stash apply`?**
+Ambos restauran los cambios que guardaste con `git stash`, pero `pop` además elimina ese stash de la lista de stashes, mientras que `apply` lo deja en la lista. Uso `pop` para el caso normal — restaurar mi trabajo y limpiar el stash. Uso `apply` cuando quiero restaurar los mismos cambios guardados en más de una rama, así el stash sigue disponible hasta que lo elimino manualmente con `git stash drop`.
+
+> **Junior tip:** "pop restores and deletes; apply restores and keeps." Mention `git stash list`.
+> **Consejo de entrevista:** "pop restaura y borra; apply restaura y conserva." Menciona `git stash list` para inspeccionar varios stashes — demuestra que has usado stash más allá del caso puntual.
 
 ---
 
