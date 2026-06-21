@@ -59,6 +59,20 @@ A: I would acknowledge that Angular has more setup overhead — stricter structu
 
 Red flag answer: "Angular is just better than React." — That is a preference, not an argument. Show you can reason about trade-offs.
 
+**What are the types of data binding in Angular, and what is the difference between `{{ }}` and `[ ]`?** ⭐⭐⭐
+
+Four types: interpolation `{{ value }}` (writes a value into text as a string), property binding `[src]="url"` (binds to a DOM property and keeps the real type — boolean, object, number), event binding `(click)="save()"` (listens to an event), and two-way binding `[(ngModel)]="name"` (combines property and event). The key difference: `{{ }}` always produces a string, so `[disabled]="true"` actually disables a button but `disabled="{{ true }}"` passes the string `"true"` — which is also truthy and can hide bugs. I use property binding for anything that is not plain text.
+
+> **Junior tip:** The trap is `[disabled]` vs `disabled="{{}}"`. Mention it — it shows you understand that interpolation stringifies everything, which is exactly what the interviewer is probing.
+> **Consejo de entrevista:** La trampa es `[disabled]` vs `disabled="{{}}"`. Menciónala — demuestra que entiendes que la interpolación convierte todo en string.
+
+**What is the difference between `ng serve` and `ng build`?** ⭐⭐
+
+`ng serve` starts a local development server with live reload — it compiles in memory, watches your files, and refreshes the browser on every change. You use it while developing. `ng build` produces an optimized production bundle in the `dist/` folder — minified, tree-shaken, ahead-of-time compiled — which is what you actually deploy. `ng build` does not serve anything; a real web server (or a Docker container) hosts the output. I scaffold features with `ng generate component/service/guard` and run `ng serve` to develop them.
+
+> **Junior tip:** The deploy detail matters: "`ng serve` is never used in production — you deploy the `ng build` output." Saying that shows you understand the dev/prod split, which ties into Docker in TimeTrack.
+> **Consejo de entrevista:** El matiz del deploy importa: "`ng serve` nunca se usa en producción — despliegas la salida de `ng build`."
+
 ---
 
 ## Signals and reactivity
@@ -108,6 +122,19 @@ Initialize a signal from `localStorage` so the data persists across page refresh
 **Why use signals instead of RxJS subjects for local component state?**
 
 Signals are simpler to read, write, and debug — you do not need to subscribe, unsubscribe, or manage memory. In the HR portal, all filter state (status, department, search text) uses signals — I never wrote a single `unsubscribe()` call for any of them. RxJS is still the right choice for HTTP calls and async streams.
+
+**What is the difference between `signal.set()` and `signal.update()`?** ⭐⭐⭐
+
+`set()` replaces the value completely; `update()` derives the new value from the current one. When adding an item to an array you need the current value, so `update()` is correct: `this.items.update(list => [...list, newItem])`. The important detail with signals and OnPush: you must return a NEW array or object reference — mutating the existing one with `.push()` will not trigger an update because the reference did not change.
+
+> **Junior tip:** Tie it to immutability: "`update(list => [...list, item])`, never `list.push(item)`." That one line shows you understand why signals re-render and why OnPush stays correct.
+> **Consejo de entrevista:** Conéctalo con la inmutabilidad: "`update(list => [...list, item])`, nunca `list.push(item)`."
+
+**What is the difference between `service.data` and `service.data()` when reading a signal?** ⭐⭐
+
+`service.data` (no parentheses) is the signal itself — a live reference that stays reactive. `service.data()` (with parentheses) reads the value once at that moment. If you store the snapshot in a component property — `items = this.service.data()` — it never updates again, because you captured a value, not the signal. To stay reactive you keep the reference: `items = this.service.data` and call `items()` in the template. This is a classic bug: the data loads but the UI never refreshes.
+
+Red flag answer: "They are the same." — They are not. Storing `data()` in a property freezes the value and the template stops updating — a bug that looks like change detection is broken.
 
 ---
 
@@ -187,6 +214,20 @@ A class decorated with `@Directive` that adds behavior to a host element without
 > **Junior tip:** Interviewers sometimes ask "how do you show which nav link is active?" — this is the answer. Mention the prefix matching gotcha — it shows real experience, not just tutorial knowledge.
 > **Consejo de entrevista:** Los entrevistadores preguntan "¿cómo muestras qué enlace de navegación está activo?" — esta es la respuesta. Menciona el comportamiento de prefix matching — demuestra experiencia real.
 
+**What is `@switch` and when do you use it instead of multiple `@if` blocks?** ⭐⭐
+
+`@switch` checks one value against several fixed options, like a status field: `@switch (status()) { @case ('active') {...} @case ('pending') {...} @default {...} }`. It replaces a chain of `@if`/`@else if` and reads more clearly once there are three or more branches. I would use it for an employee status badge that renders differently for active, on-leave, and terminated states.
+
+> **Junior tip:** The decision rule is readability: "Two states, an `@if`. Three or more fixed options on one value, `@switch`." That shows you choose for clarity, not habit.
+> **Consejo de entrevista:** La regla es la legibilidad: "Dos estados, un `@if`. Tres o más opciones fijas sobre un valor, `@switch`."
+
+**What is `@let` and what problem does it solve?** ⭐
+
+`@let` declares a local variable inside a template: `@let total = price() * quantity();`. You then reuse `total` across that template block without recalculating the expression each time. Before `@let`, calling the same `computed()` or method several times in one template repeated the work; `@let` names the result once. It is read-only and scoped to the template where it is declared.
+
+> **Junior tip:** Frame it as avoiding repetition: "Instead of calling `cart.total()` three times in the template, I name it once with `@let`." Concrete beats abstract.
+> **Consejo de entrevista:** Plantéalo como evitar repetición: "En vez de llamar a `cart.total()` tres veces en la plantilla, lo nombro una vez con `@let`."
+
 ---
 
 ## HTTP and observables
@@ -239,6 +280,20 @@ What they really want to know: Do you understand the difference between recoveri
 A: I use catchError inside pipe() when I want the Observable to complete normally after an error — returning of([]) so the template renders an empty state instead of breaking. I use the error callback in subscribe() when I just need to react to the error and there is no stream to recover. In the weather app I use catchError so a failed forecast call does not crash the whole page — the component shows an error message but stays functional. In the login page I use the error callback because the operation either succeeds or fails — there is no fallback value, I just set hasError to true.
 
 Red flag answer: "I always handle errors in subscribe()." — That shows you never used catchError for stream recovery. A senior developer will ask what happens to the Observable after an error if you do not handle it in the pipe.
+
+**What is the difference between `Subject` and `BehaviorSubject`?** ⭐⭐⭐
+
+Both are RxJS multicast streams you push values into with `.next()`. The difference is the current value: a `BehaviorSubject` needs an initial value and always replays the latest value immediately to any new subscriber; a plain `Subject` has no current value and only delivers values emitted AFTER you subscribe — late subscribers miss earlier emissions. So `BehaviorSubject` is the classic choice for shared state (a current user, a cart) where a component subscribing later still needs the current value; `Subject` fits one-time events (a "saved" notification). Signals replaced most `BehaviorSubject` state in my projects, but every enterprise codebase still uses it.
+
+> **Junior tip:** The one-liner that lands: "`BehaviorSubject` has a current value and replays it; `Subject` does not." Then add "signals do the same job for state now" to show you know the modern equivalent.
+> **Consejo de entrevista:** La frase que funciona: "`BehaviorSubject` tiene un valor actual y lo reemite; `Subject` no." Luego añade que los signals hacen ese trabajo hoy.
+
+**How do you add query parameters to an HTTP request in Angular?** ⭐⭐
+
+With `HttpParams`, built up immutably and passed in the options object: `new HttpParams().set('month', '2025-05').set('status', 'SUBMITTED')`. Each `.set()` returns a new instance, so you chain them. Angular serializes it to `?month=2025-05&status=SUBMITTED` and encodes the values for you — safer than concatenating the URL by hand. In TimeTrack I use it on the entries endpoint to filter by month and status.
+
+> **Junior tip:** Mention that `HttpParams` is immutable — `.set()` returns a new object, so `params.set(...)` on its own line does nothing unless you reassign. Knowing that gotcha signals real use.
+> **Consejo de entrevista:** Menciona que `HttpParams` es inmutable — `.set()` devuelve un objeto nuevo, así que `params.set(...)` en una línea suelta no hace nada si no reasignas.
 
 ---
 
@@ -717,6 +772,13 @@ A: I apply `OnPush` to pure presentational components — ones that only receive
 
 Red flag answer: "I use OnPush everywhere for better performance." — Applying it without understanding the signal/immutable-data contract can cause components to miss updates when you mutate objects directly instead of replacing them.
 
+**What is Zone.js and how does it relate to change detection?** ⭐⭐
+
+Zone.js is a library Angular uses to know when something might have changed. It patches async APIs — `setTimeout`, event listeners, HTTP calls — so that after any of them runs, Angular automatically triggers change detection across the component tree. That is convenient but wasteful: it re-checks every component even when nothing relevant changed. Signals and `OnPush` reduce this — with signals, Angular knows exactly which component depends on the value that changed and checks only that one. Newer Angular is moving toward "zoneless" change detection driven entirely by signals.
+
+> **Junior tip:** You do not need deep internals. Say: "Zone.js tells Angular when to check; signals tell Angular exactly what changed, so it checks less." That contrast is the whole point of the question.
+> **Consejo de entrevista:** No necesitas el detalle interno. Di: "Zone.js le dice a Angular cuándo comprobar; los signals le dicen exactamente qué cambió, así comprueba menos."
+
 ---
 
 ## Architecture and patterns
@@ -754,6 +816,12 @@ What they really want to know: Are you aware that NgModules exist and can you wo
 A: NgModules were the standard before Angular 14. Every module declared components, imported other modules, and provided services. Standalone components, which became the default in Angular 17+, remove most of that boilerplate — each component declares its own imports. New projects use standalone. But existing enterprise codebases still use modules heavily, and I understand the pattern. I would need time to get productive in a large module-based codebase, but the concepts are not new to me — I know what a module does and why it existed.
 
 Red flag answer: "I don't know what NgModules are." — A junior who has only read modern docs can say this. Show that you know the history and can read old code.
+
+**How do you show or hide UI elements based on the user's role, and how is that different from a route guard?** ⭐⭐
+
+I expose a computed signal — `isAdmin = computed(() => this.auth.currentUser()?.role === 'admin')` — and gate elements in the template with `@if (isAdmin())`. In the HR portal the "Add employee" button and admin nav links are wrapped this way. The key difference from a guard: a route guard blocks navigation to a whole page, while role-aware UI cleans up the interface inside a page the user is allowed to see. They work together — the guard stops an employee reaching the admin route, the computed signal hides admin-only buttons on shared pages. Neither is real security: the backend must still authorize every request.
+
+Red flag answer: "I use a guard for that." — A guard protects routes, not individual buttons on a shared page. Confusing the two shows you do not understand where each belongs.
 
 ---
 

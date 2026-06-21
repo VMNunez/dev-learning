@@ -59,6 +59,20 @@ R: Reconocería que Angular tiene más overhead de configuración — estructura
 
 Respuesta mala: "Angular es simplemente mejor que React." — Es una preferencia, no un argumento. Demuestra que puedes razonar sobre los trade-offs.
 
+**¿Cuáles son los tipos de data binding en Angular y cuál es la diferencia entre `{{ }}` y `[ ]`?** ⭐⭐⭐
+
+Cuatro tipos: interpolación `{{ valor }}` (escribe un valor como texto, siempre como string), property binding `[src]="url"` (enlaza a una propiedad del DOM y conserva el tipo real — booleano, objeto, número), event binding `(click)="save()"` (escucha un evento) y binding bidireccional `[(ngModel)]="nombre"` (combina property y event). La diferencia clave: `{{ }}` siempre produce un string, así que `[disabled]="true"` deshabilita el botón de verdad pero `disabled="{{ true }}"` pasa el string `"true"` — que también es truthy y puede esconder bugs. Uso property binding para todo lo que no sea texto plano.
+
+> **Consejo de entrevista:** La trampa es `[disabled]` vs `disabled="{{}}"`. Menciónala — demuestra que entiendes que la interpolación convierte todo en string.
+> **Junior tip:** The trap is `[disabled]` vs `disabled="{{}}"` — interpolation stringifies everything.
+
+**¿Cuál es la diferencia entre `ng serve` y `ng build`?** ⭐⭐
+
+`ng serve` arranca un servidor de desarrollo local con recarga en vivo — compila en memoria, vigila tus archivos y refresca el navegador en cada cambio. Lo usas mientras desarrollas. `ng build` genera un bundle de producción optimizado en la carpeta `dist/` — minificado, con tree-shaking y compilación AOT — que es lo que realmente despliegas. `ng build` no sirve nada; un servidor web real (o un contenedor Docker) aloja la salida. Genero features con `ng generate component/service/guard` y uso `ng serve` para desarrollarlas.
+
+> **Consejo de entrevista:** El matiz del deploy importa: "`ng serve` nunca se usa en producción — despliegas la salida de `ng build`."
+> **Junior tip:** "`ng serve` is never used in production — you deploy the `ng build` output."
+
 ---
 
 ## Signals y reactividad
@@ -108,6 +122,19 @@ Inicializar un signal desde `localStorage` para que los datos persistan al refre
 **¿Por qué usar signals en vez de subjects de RxJS para el estado local de un componente?**
 
 Los signals son más simples de leer, escribir y depurar — no necesitas suscribirte, desuscribirte ni gestionar memoria. En el HR portal, todo el estado de los filtros (estado, departamento, texto de búsqueda) usa signals — nunca escribí ni una sola llamada a `unsubscribe()`. RxJS sigue siendo la opción correcta para llamadas HTTP y streams asíncronos.
+
+**¿Cuál es la diferencia entre `signal.set()` y `signal.update()`?** ⭐⭐⭐
+
+`set()` reemplaza el valor por completo; `update()` deriva el nuevo valor a partir del actual. Al añadir un elemento a un array necesitas el valor actual, así que `update()` es lo correcto: `this.items.update(list => [...list, newItem])`. El detalle importante con signals y OnPush: debes devolver una NUEVA referencia de array u objeto — mutar el existente con `.push()` no disparará una actualización porque la referencia no cambió.
+
+> **Consejo de entrevista:** Conéctalo con la inmutabilidad: "`update(list => [...list, item])`, nunca `list.push(item)`."
+> **Junior tip:** Tie it to immutability — return a new reference, never mutate.
+
+**¿Cuál es la diferencia entre `service.data` y `service.data()` al leer un signal?** ⭐⭐
+
+`service.data` (sin paréntesis) es el signal en sí — una referencia viva que se mantiene reactiva. `service.data()` (con paréntesis) lee el valor una sola vez en ese momento. Si guardas el snapshot en una propiedad del componente — `items = this.service.data()` — nunca se vuelve a actualizar, porque capturaste un valor, no el signal. Para seguir siendo reactivo guardas la referencia: `items = this.service.data` y llamas a `items()` en la plantilla. Es un bug clásico: los datos cargan pero la UI nunca se refresca.
+
+Respuesta mala: "Son lo mismo." — No lo son. Guardar `data()` en una propiedad congela el valor y la plantilla deja de actualizarse — un bug que parece que la detección de cambios está rota.
 
 ---
 
@@ -187,6 +214,20 @@ Una clase decorada con `@Directive` que añade comportamiento a un elemento host
 > **Consejo de entrevista:** Los entrevistadores preguntan "¿cómo muestras qué enlace de navegación está activo?" — esta es la respuesta. Menciona el comportamiento de coincidencia por prefijo — demuestra experiencia real, no solo conocimiento de tutoriales.
 > **Junior tip:** Mention the prefix matching gotcha — it shows real experience.
 
+**¿Qué es `@switch` y cuándo lo usas en lugar de varios bloques `@if`?** ⭐⭐
+
+`@switch` comprueba un valor contra varias opciones fijas, como un campo de estado: `@switch (status()) { @case ('active') {...} @case ('pending') {...} @default {...} }`. Reemplaza una cadena de `@if`/`@else if` y se lee con más claridad cuando hay tres o más ramas. Lo usaría para una insignia de estado de empleado que se renderiza distinto según activo, de baja o dado de baja.
+
+> **Consejo de entrevista:** La regla es la legibilidad: "Dos estados, un `@if`. Tres o más opciones fijas sobre un valor, `@switch`."
+> **Junior tip:** Two states → `@if`. Three or more fixed options on one value → `@switch`.
+
+**¿Qué es `@let` y qué problema resuelve?** ⭐
+
+`@let` declara una variable local dentro de una plantilla: `@let total = price() * quantity();`. Luego reutilizas `total` en ese bloque de plantilla sin recalcular la expresión cada vez. Antes de `@let`, llamar al mismo `computed()` o método varias veces en una plantilla repetía el trabajo; `@let` nombra el resultado una sola vez. Es de solo lectura y su alcance es la plantilla donde se declara.
+
+> **Consejo de entrevista:** Plantéalo como evitar repetición: "En vez de llamar a `cart.total()` tres veces en la plantilla, lo nombro una vez con `@let`."
+> **Junior tip:** Name a repeated expression once instead of recalculating it across the template.
+
 ---
 
 ## HTTP y Observables
@@ -239,6 +280,20 @@ Lo que realmente quieren saber: ¿Entiendes la diferencia entre recuperar un str
 R: Uso catchError dentro de pipe() cuando quiero que el Observable complete con normalidad tras un error — devolviendo of([]) para que la plantilla renderice un estado vacío en lugar de romperse. Uso el callback de error en subscribe() cuando solo necesito reaccionar al error y no hay stream que recuperar. En la weather app uso catchError para que un fallo en la previsión no rompa toda la página — el componente muestra un mensaje de error pero sigue funcionando. En la página de login uso el callback de error porque la operación tiene éxito o falla — no hay valor de fallback, simplemente pongo hasError a true.
 
 Respuesta mala: "Siempre gestiono los errores en subscribe()." — Demuestra que nunca usaste catchError para recuperar un stream. Un senior preguntará inmediatamente qué le ocurre al Observable después de un error si no lo gestionas en el pipe.
+
+**¿Cuál es la diferencia entre `Subject` y `BehaviorSubject`?** ⭐⭐⭐
+
+Ambos son streams multicast de RxJS donde empujas valores con `.next()`. La diferencia es el valor actual: un `BehaviorSubject` necesita un valor inicial y siempre reemite el último valor inmediatamente a cualquier nuevo suscriptor; un `Subject` normal no tiene valor actual y solo entrega valores emitidos DESPUÉS de suscribirte — los suscriptores tardíos se pierden las emisiones anteriores. Por eso `BehaviorSubject` es la opción clásica para estado compartido (el usuario actual, un carrito) donde un componente que se suscribe más tarde sigue necesitando el valor actual; `Subject` encaja en eventos puntuales (una notificación de "guardado"). Los signals reemplazaron casi todo el estado con `BehaviorSubject` en mis proyectos, pero toda base de código enterprise lo sigue usando.
+
+> **Consejo de entrevista:** La frase que funciona: "`BehaviorSubject` tiene un valor actual y lo reemite; `Subject` no." Luego añade que los signals hacen ese trabajo hoy.
+> **Junior tip:** "`BehaviorSubject` has a current value and replays it; `Subject` does not." Add that signals do this job now.
+
+**¿Cómo añades parámetros de consulta (query params) a una petición HTTP en Angular?** ⭐⭐
+
+Con `HttpParams`, construido de forma inmutable y pasado en el objeto de opciones: `new HttpParams().set('month', '2025-05').set('status', 'SUBMITTED')`. Cada `.set()` devuelve una instancia nueva, así que los encadenas. Angular lo serializa a `?month=2025-05&status=SUBMITTED` y codifica los valores por ti — más seguro que concatenar la URL a mano. En TimeTrack lo uso en el endpoint de entradas para filtrar por mes y estado.
+
+> **Consejo de entrevista:** Menciona que `HttpParams` es inmutable — `.set()` devuelve un objeto nuevo, así que `params.set(...)` en una línea suelta no hace nada si no reasignas.
+> **Junior tip:** `HttpParams` is immutable — `.set()` returns a new object, you must reassign or chain.
 
 ---
 
@@ -717,6 +772,13 @@ R: Aplico `OnPush` a los componentes presentacionales puros — los que solo rec
 
 Respuesta mala: "Uso OnPush en todos los componentes para más rendimiento." — Aplicarlo sin entender el contrato signal/datos inmutables puede hacer que los componentes se pierdan actualizaciones cuando mutamos objetos directamente en lugar de reemplazarlos.
 
+**¿Qué es Zone.js y cómo se relaciona con la detección de cambios?** ⭐⭐
+
+Zone.js es una librería que Angular usa para saber cuándo algo podría haber cambiado. Parchea las APIs asíncronas — `setTimeout`, listeners de eventos, llamadas HTTP — para que, tras ejecutarse cualquiera de ellas, Angular dispare automáticamente la detección de cambios en todo el árbol de componentes. Es cómodo pero ineficiente: vuelve a comprobar cada componente aunque no haya cambiado nada relevante. Los signals y `OnPush` reducen esto — con signals, Angular sabe exactamente qué componente depende del valor que cambió y comprueba solo ese. Las versiones nuevas de Angular avanzan hacia detección "zoneless" impulsada por signals.
+
+> **Consejo de entrevista:** No necesitas el detalle interno. Di: "Zone.js le dice a Angular cuándo comprobar; los signals le dicen exactamente qué cambió, así comprueba menos."
+> **Junior tip:** "Zone.js tells Angular when to check; signals tell Angular exactly what changed."
+
 ---
 
 ## Arquitectura y patrones
@@ -754,6 +816,12 @@ Lo que realmente quieren saber: ¿Sabes que existen los NgModules y puedes traba
 R: Los NgModules eran el estándar antes de Angular 14. Cada módulo declaraba componentes, importaba otros módulos y proporcionaba servicios. Los componentes standalone, que pasaron a ser los predeterminados en Angular 17+, eliminan casi todo ese código repetitivo — cada componente declara sus propias importaciones. Los proyectos nuevos usan standalone. Pero las bases de código enterprise existentes siguen usando módulos, y entiendo el patrón. Necesitaría tiempo para ser productivo en una base de código grande basada en módulos, pero los conceptos no son nuevos para mí — sé lo que hace un módulo y por qué existía.
 
 Respuesta mala: "No sé qué son los NgModules." — Un junior que solo ha leído documentación moderna puede decir esto. Hay que demostrar que conoces la historia y puedes leer código antiguo.
+
+**¿Cómo muestras u ocultas elementos de la UI según el rol del usuario, y en qué se diferencia de un route guard?** ⭐⭐
+
+Expongo un signal computed — `isAdmin = computed(() => this.auth.currentUser()?.role === 'admin')` — y condiciono elementos en la plantilla con `@if (isAdmin())`. En el HR portal el botón "Añadir empleado" y los enlaces de navegación de admin van envueltos así. La diferencia clave con un guard: un route guard bloquea la navegación a una página entera, mientras que la UI según rol limpia la interfaz dentro de una página que el usuario sí puede ver. Trabajan juntos — el guard impide que un empleado llegue a la ruta de admin, el signal computed oculta los botones solo-admin en páginas compartidas. Ninguno es seguridad real: el backend debe autorizar cada petición igualmente.
+
+Respuesta mala: "Uso un guard para eso." — Un guard protege rutas, no botones individuales en una página compartida. Confundir ambos demuestra que no entiendes dónde encaja cada uno.
 
 ---
 
