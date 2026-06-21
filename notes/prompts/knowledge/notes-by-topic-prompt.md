@@ -9,8 +9,9 @@ Useful after a study session when you want to check and improve the notes for on
 **How to use:**
 
 1. Fill in `TOPIC` — the subject to audit (e.g. Angular, SQL, Java, Spring Boot)
-2. Fill in `NOTES_PATH` — the notes folder to review (e.g. `notes/angular/`), **or a single file** (e.g. `notes/angular/06-http-rxjs.md`) to correct just that file — see "Mode" in the prompt
-3. Paste the entire prompt below into a new chat
+2. Fill in `NOTES_PATH` — for `full` a folder (e.g. `notes/angular/`); for `single-file` the exact file (e.g. `notes/angular/06-http-rxjs.md`)
+3. Fill in `MODE` — `full` for the whole-topic audit, or `single-file` to correct just that one file (see "Mode")
+4. Paste the entire prompt below into a new chat
 
 ---
 
@@ -21,9 +22,12 @@ Useful after a study session when you want to check and improve the notes for on
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
 
-## NOTES_PATH can also be a SINGLE FILE, e.g. notes/angular/06-http-rxjs.md — this runs a focused
-## pass on just that file (TODOs + quality + Docs links + completing that file) and skips the
-## folder-level steps (topic gap analysis, new-file creation, counter, future-learning). See "Mode" below.
+MODE = [full | single-file]
+       → full (default): NOTES_PATH is a folder; audit the whole topic — coverage gap analysis,
+         proactive new files, the "next file:" counter, and the future-learning check.
+       → single-file: NOTES_PATH is one .md file (e.g. notes/angular/06-http-rxjs.md); a focused
+         pass on just that file (TODOs + quality + Docs links + completing that file) that skips
+         the folder-level steps. See "Mode" below.
 
 ## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
 ## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
@@ -43,7 +47,7 @@ Notes on specific topics:
 - Security: covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
   Uses conversational mode.
 
-Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
+Use TOPIC, NOTES_PATH, and MODE wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {MODE}.
 
 ---
 
@@ -135,12 +139,12 @@ Notes to audit: {NOTES_PATH}
 
 ---
 
-## Mode — full folder vs single file
+## Mode — full vs single-file
 
-`{NOTES_PATH}` can be either a **folder** (`notes/angular/`) or a **single file** (`notes/angular/06-http-rxjs.md`). Check which it is before doing anything else.
+`{MODE}` decides how much this run does. Check it before doing anything else. (`full` expects `{NOTES_PATH}` to be a folder; `single-file` expects it to be one `.md` file.)
 
-- **Folder mode (default):** run the whole prompt as written. The coverage gap analysis, proactive file creation, the "next file:" counter, and the `future-learning` check all apply to the whole topic.
-- **Single-file mode:** when `{NOTES_PATH}` points to one `.md` file, audit **only that file**. This is the "I just wrote this file — correct it" pass. Do this and nothing else:
+- **full (default):** run the whole prompt as written. The coverage gap analysis, proactive file creation, the "next file:" counter, and the `future-learning` check all apply to the whole topic.
+- **single-file:** `{NOTES_PATH}` points to one `.md` file — audit **only that file**. This is the "I just wrote this file — correct it" pass. Do this and nothing else:
   1. **Resolve TODOs** in that file (the Pre-audit section below).
   2. **Quality audit (rule 2)** of that file — WHY before the code, named repeating patterns, correct format mode, and `Docs:` links (file-level and section-level): add missing links directly; report other existing-text issues without changing them.
   3. **Complete the file (rule 3 standards)** — if a sub-concept this file clearly should cover is missing, add it as a new section **within this file only**.
