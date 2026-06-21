@@ -2,14 +2,14 @@
 
 Use in a **separate conversation**. Fill in the two values in the configuration block, then paste everything into a new chat.
 
-Useful after a study session when you want to check and improve the notes for one topic — without running a full interview prep audit. For a combined notes + interview prep audit, use `notes-and-interview-prep-prompt.md` instead.
+Useful after a study session when you want to check and improve the notes for one topic — without running a full interview prep audit. You can also point it at a **single file** to correct just that file as you write it (see "Mode" below). For a combined notes + interview prep audit, use `notes-and-interview-prep-prompt.md` instead.
 
 ---
 
 **How to use:**
 
 1. Fill in `TOPIC` — the subject to audit (e.g. Angular, SQL, Java, Spring Boot)
-2. Fill in `NOTES_PATH` — the notes folder to review (e.g. `notes/angular/`, `notes/sql/`)
+2. Fill in `NOTES_PATH` — the notes folder to review (e.g. `notes/angular/`), **or a single file** (e.g. `notes/angular/06-http-rxjs.md`) to correct just that file — see "Mode" in the prompt
 3. Paste the entire prompt below into a new chat
 
 ---
@@ -20,6 +20,10 @@ Useful after a study session when you want to check and improve the notes for on
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
+
+## NOTES_PATH can also be a SINGLE FILE, e.g. notes/angular/06-http-rxjs.md — this runs a focused
+## pass on just that file (TODOs + quality + Docs links + completing that file) and skips the
+## folder-level steps (topic gap analysis, new-file creation, counter, future-learning). See "Mode" below.
 
 ## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
 ## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
@@ -128,6 +132,21 @@ My profile, my projects, the **Spanish job market 2026**, and the **AI factor** 
 what Spanish consultancies filter juniors on, so that context matters here.
 
 Notes to audit: {NOTES_PATH}
+
+---
+
+## Mode — full folder vs single file
+
+`{NOTES_PATH}` can be either a **folder** (`notes/angular/`) or a **single file** (`notes/angular/06-http-rxjs.md`). Check which it is before doing anything else.
+
+- **Folder mode (default):** run the whole prompt as written. The coverage gap analysis, proactive file creation, the "next file:" counter, and the `future-learning` check all apply to the whole topic.
+- **Single-file mode:** when `{NOTES_PATH}` points to one `.md` file, audit **only that file**. This is the "I just wrote this file — correct it" pass. Do this and nothing else:
+  1. **Resolve TODOs** in that file (the Pre-audit section below).
+  2. **Quality audit (rule 2)** of that file — WHY before the code, named repeating patterns, correct format mode, and `Docs:` links (file-level and section-level): add missing links directly; report other existing-text issues without changing them.
+  3. **Complete the file (rule 3 standards)** — if a sub-concept this file clearly should cover is missing, add it as a new section **within this file only**.
+  4. **Report + commit** for that one file.
+
+  In single-file mode, **skip** every folder-level step: the rule-1 coverage gap analysis for the whole topic, "Creating new files — proactive", the `future-learning.md` promotion check, and the "next file:" counter update (you are not adding numbered files). You may still *read* `coverage.md` to confirm this file's own concept is fully covered — but never create files for other missing topics. If you spot a gap that belongs in a different file, mention it in the summary instead of acting on it.
 
 ---
 
