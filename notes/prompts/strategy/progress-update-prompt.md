@@ -232,9 +232,8 @@ Therefore, do NOT count from the working-tree files. Count from the `main` versi
 The `main` counts are authoritative. If `git show main:...` and the working-tree file disagree,
 trust `main`.
 
-**PROGRESS.md and CLAUDE.md are private, local-only files** — both are listed in `.gitignore` and
-were removed from the public repo on purpose. They are the same physical file on every branch,
-never committed, and cannot drift. There is nothing to commit for PROGRESS.md (see Step 6).
+**PROGRESS.md is a tracked file** (it lives on `main` with the other study materials — see
+CLAUDE.md). This prompt updates it; save your changes and commit them (see Step 6).
 
 For every file found in either format, count the exercises by counting numbered exercise
 headers. Two formats exist depending on when the file was created:
@@ -388,12 +387,15 @@ If nothing changed in a section: write "—". Skip rows for sections that do not
 
 ---
 
-## Step 6 — Save (no commit needed)
+## Step 6 — Show the commit message
 
-PROGRESS.md is a **private, local-only file** — it is listed in `.gitignore` and was removed from
-the public repo on purpose. There is nothing to commit: just save the updated file in place.
+PROGRESS.md is a tracked file — study materials live on `main` per CLAUDE.md, so commit it there:
 
-`git add PROGRESS.md` will be rejected as ignored (`The following paths are ignored by one of your
-.gitignore files: PROGRESS.md`) — that is expected. Do NOT force it with `git add -f`; that would
-put your private progress tracker back into the public repo.
+```
+git add PROGRESS.md
+```
+
+```
+git commit -m "docs: refresh PROGRESS.md — [main change, e.g. 'add project 07 Spring Boot concepts, fix projects table']"
+```
 ````
