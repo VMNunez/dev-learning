@@ -111,6 +111,30 @@ The repository only reads and writes data. No logic. Spring Data JPA generates t
 
 ---
 
+## State machine pattern — the service enforces valid transitions
+
+Some resources have a **status that can only move in fixed ways**. A TimeTrack entry goes `DRAFT → SUBMITTED → APPROVED`, or `SUBMITTED → REJECTED` — but never `APPROVED → DRAFT`, and an employee cannot approve their own entry. This is a *state machine*: a set of states plus the rules for moving between them.
+
+The key decision: **the service owns these rules — not the controller, not the database.** The controller just receives `PATCH /api/entries/42/submit`; the service checks the current status and decides whether the transition is allowed:
+
+```java
+public EntryResponse submit(Long id) {
+    Entry entry = repository.findById(id).orElseThrow(...);
+
+    if (entry.getStatus() != EntryStatus.DRAFT) {
+        throw new IllegalStateException("Only DRAFT entries can be submitted");
+    }
+    entry.setStatus(EntryStatus.SUBMITTED);
+    return toDTO(repository.save(entry));
+}
+```
+
+Why it belongs in the service: if the controller decided, every entry point (REST, a scheduled job, an import) would repeat the rule. If the database decided (via a trigger), the rule would be invisible to the Java code and impossible to unit-test. The service is the single place that knows the workflow — one source of truth, and you can test each transition with a mock repository.
+
+> This is also why `PATCH` is the right verb for status changes (submit, approve, reject): you are changing *one part* of the resource (its status) following a rule, not replacing the whole thing with `PUT`.
+
+---
+
 ## DTO — Data Transfer Object
 
 A DTO is a simple class that carries data between layers. It is not the database entity — it is what you send over the network.
