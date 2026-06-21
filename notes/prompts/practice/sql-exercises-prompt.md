@@ -131,7 +131,7 @@ reviews     id SERIAL PK | book_id INT FK→books | customer_id INT FK→custome
 
 ### Step 1 — Check existing state
 
-**PROGRESS.md:** read the SQL section. Find the `### SQL exercises` table and look for a row
+**PROGRESS.md:** read the SQL section. Find the `### Exercises completed` table and look for a row
 where Topic = {TOPIC}. If that row shows `solid ✅`, print:
 "Este tema ya está marcado como sólido en PROGRESS.md. ¿Quieres más ejercicios de todos modos?
 Responde sí para continuar, o no para salir."
@@ -630,28 +630,35 @@ Then proceed to Steps 4 and 5.
 
 ### Step 4 — Update PROGRESS.md
 
-Read PROGRESS.md. Find the `## SQL` section. Within it, look for a `### SQL exercises` table.
+Read PROGRESS.md. Find the `## SQL` section. Within it, look for a `### Exercises completed` table.
 
-The table format is:
+The table format is (4 columns — shared with `progress-update-prompt`):
 
 ```markdown
-### SQL exercises
+### Exercises completed
 
-| Topic | Status | Total exercises |
-|-------|--------|----------------|
-| joins | solid ✅ | 24 |
-| group-by | in progress ⏳ | 12 |
+50 total exercises across 2 topics
+
+| Topic | Folder | Exercises | Status |
+|-------|--------|-----------|--------|
+| basics / SELECT | sql/01-basics.sql | 40 | in progress ⏳ |
+| joins | sql/02-joins.sql | 24 | solid ✅ |
 ```
 
-**If the table exists:** find the row for {TOPIC} and update both columns:
+**If the table exists:** find the row for {TOPIC} and update the `Exercises` and `Status` columns:
 - Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
-- Total exercises: count all exercises in the reviewed file, including any previous batches
+- Exercises: count all exercises in the reviewed file, including any previous batches
+- Leave the `Folder` column as-is (it is the file path, e.g. `sql/02-joins.sql`)
+- Then refresh the `X total exercises across Y topics` summary line above the table to match the
+  new column totals
 
-**If the row for {TOPIC} does not exist in the table:** add it with the values above.
+**If the row for {TOPIC} does not exist in the table:** add it. Fill `Folder` with the file's
+path (`sql/<NN>-<topic>.sql` for a flat file, `sql/<NN>-<topic>/` for a subfolder).
 
-**If the `### SQL exercises` table does not exist in PROGRESS.md:** create it under a new
-`### SQL exercises` heading. Insert it at the end of the `## SQL` section — after the last
-existing `###` heading in that section and before the next `##` heading.
+**If the `### Exercises completed` table does not exist in PROGRESS.md:** create it under a new
+`### Exercises completed` heading, with the 4-column format and the summary line above. Insert it
+at the end of the `## SQL` section — after the last existing `###` heading in that section and
+before the next `##` heading.
 
 ---
 
