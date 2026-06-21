@@ -8,7 +8,8 @@ Use in a **separate conversation**. Fill in the two values in the configuration 
 
 1. Fill in `FILE` — the interview prep filename without extension
 2. Fill in `SECTION` — which section to audit (`all` for the full file, or the exact heading like `## Routing`)
-3. Paste the entire prompt below into a new chat
+3. Fill in `MODE` — `full` for the complete audit, or `correct` to just fix and sync what you wrote (see "Mode")
+4. Paste the entire prompt below into a new chat
 
 ---
 
@@ -26,6 +27,15 @@ FILE = [angular | css | javascript | typescript | sql | java | spring-boot | arc
 SECTION = [all | ## Routing | ## Forms | ## JOINs | ...]
           → "all" audits every section in the file
           → Use the exact section heading to audit only that part (e.g. "## Transactions")
+
+MODE = [full | correct]
+       → full (default): the complete audit — sync, TODOs, coverage check, missing topics,
+         weak-answer report, imbalance fixes, and adding missing questions.
+       → correct: a focused "I just wrote/edited this file — correct it" pass. Does ONLY the
+         en/es sync check, TODO resolution (mirrored to both languages), the always-allowed
+         format/priority tidy, and the weak-answer report. SKIPS the coverage.md check and
+         audit sections 1, 3, and 4 — it does not hunt for missing topics or add new questions.
+         See "Mode" below.
 
 Notes on specific files:
 - spring-boot: questions about the Spring Boot framework (auto-configuration, controllers, beans, JPA).
@@ -67,6 +77,31 @@ Files to audit:
 - If {SECTION} is not found in either file: create it in both files as empty sections, then
   run the coverage.md pre-audit check to identify required topics, then move to audit
   section 1 to populate the section from scratch.
+
+---
+
+## Mode — full vs correct
+
+`{MODE}` decides how much this run does. Check it before anything else.
+
+- **full (default):** run the whole prompt as written — every pre-audit step and all four audit
+  sections, including adding missing questions until the section is interview-ready.
+- **correct:** the "I just wrote/edited this file — correct it" pass. Cheaper and focused. Run
+  ONLY these steps, in order, then stop:
+  1. **Pre-audit — Sync check** — keep en/ and es/ aligned.
+  2. **Pre-audit — Resolve TODOs** — apply each fix and mirror it to the other language file at
+     the matching position (this is the en/es sync). en/ stays the master file.
+  3. **Format check** — the always-allowed tidy only: a blank line between question and answer,
+     and a priority marker on any question missing one. Do not reorder or rewrite beyond this.
+  4. **Audit section 2 — Weak answers**, report only (never rewrite without a TODO).
+
+  In correct mode, **skip** the coverage.md check, audit section 1 (missing topics), audit
+  section 3 (imbalances), and audit section 4 (missing questions). You are correcting what is
+  there, not expanding the topic. If you notice a real gap, mention it in the summary instead
+  of adding questions.
+
+Whichever mode you run, **every change to one language file is mirrored in the other** (translated)
+— the two files never drift apart.
 
 ---
 
