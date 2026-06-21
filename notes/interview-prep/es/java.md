@@ -14,6 +14,16 @@ Depende del valor. Java cachea objetos `Integer` de -128 a 127, así que `Intege
 **¿Qué es `var` en Java?**
 `var` es inferencia de tipo para variables locales, introducida en Java 10. El compilador deduce el tipo del lado derecho: `var name = "Victor"` es igual que `String name = "Victor"`. Solo funciona para variables locales — no para parámetros ni tipos de retorno. No hace Java dinámico; el tipo sigue siendo fijo en tiempo de compilación.
 
+**¿Qué tipo de Java usarías para un campo de dinero o precio, y por qué no `double`?** ⭐⭐⭐
+`BigDecimal`. Un `double` almacena números en coma flotante binaria, así que valores como `0.1` no se pueden representar de forma exacta — tras unas pocas sumas obtienes errores de redondeo como `0.30000000000000004`, inaceptable para dinero. `BigDecimal` hace aritmética decimal exacta. El truco: debes crearlo desde un String (`new BigDecimal("0.1")`), no desde un double, y comparar con `.compareTo()` en lugar de `==`. En una funcionalidad financiera mapearía una columna de importe a `BigDecimal`.
+
+> **Consejo de entrevista:** la regla es "double para medidas, BigDecimal para dinero". Menciona que `0.1 + 0.2 != 0.3` con doubles — ese ejemplo concreto demuestra que entiendes el problema.
+
+**¿Por qué el ID de una entidad JPA usa `Long` y no el primitivo `long`?** ⭐⭐
+Porque antes del primer guardado la entidad no tiene ID — JPA lo deja en `null` y la base de datos lo asigna al insertar. Un primitivo `long` no puede ser `null` (su valor por defecto es `0`), así que JPA no podría distinguir una entidad nueva de una ya guardada. La clase wrapper `Long` sí puede ser `null`, que es justo lo que necesita `@GeneratedValue`. Recuerda también el sufijo `L` en literales grandes (`1_000_000_000L`) — sin él el compilador lo trata como un `int` y puede desbordar.
+
+> **Consejo de entrevista:** la frase clave: "el ID es null hasta que la base de datos lo asigna, y un primitivo no puede ser null." Esa sola frase responde toda la pregunta.
+
 ---
 
 ## Strings
@@ -33,6 +43,11 @@ La JVM mantiene un pool de literales String. Cuando escribes `String a = "hello"
 > **Consejo de entrevista:** Menciona el pool para demostrar que entiendes POR QUÉ importa la inmutabilidad en Java, no solo QUÉ significa.
 
 Respuesta que falla: "Los Strings son inmutables porque Java lo decidió así" — sin explicar qué habilita la inmutabilidad.
+
+**¿Cuál es la diferencia entre `String.isEmpty()` y `String.isBlank()`?** ⭐⭐
+`isEmpty()` es true solo cuando la longitud es exactamente 0 (`""`). `isBlank()` (Java 11+) también es true cuando el string contiene solo espacios en blanco (`"   "`). Esto se relaciona directamente con la validación: `@NotEmpty` rechaza null y vacío pero acepta espacios, mientras que `@NotBlank` rechaza null, vacío Y solo-espacios — por eso `@NotBlank` es la opción correcta para campos de texto obligatorios como un nombre. Un usuario que escribe tres espacios no debería pasar la validación.
+
+> **Consejo de entrevista:** conéctalo con las anotaciones — "isBlank es a @NotBlank lo que isEmpty es a @NotEmpty." Ese vínculo demuestra que entiendes la validación, no solo la API de String.
 
 ---
 
@@ -251,6 +266,16 @@ Respuesta que falla: Confundir `flatMap` con `map` o no saber que existe — dem
 
 Respuesta que falla: "Escribiría un GROUP BY en SQL" — demuestra que no conoce cuándo la capa de servicio gestiona la agrupación.
 
+**¿Cuál es la diferencia entre `.toList()` y `collect(Collectors.toList())`?** ⭐⭐
+`.toList()` (Java 16+) es la forma más corta y devuelve una lista **inmutable** — llamar a `.add()` sobre ella lanza `UnsupportedOperationException`. `collect(Collectors.toList())` devuelve una lista mutable que aún puedes modificar. La mayoría de las veces `.toList()` es lo que quieres al final de un pipeline de servicio, pero si la siguiente línea necesita añadir al resultado debes usar la forma con `Collectors` o envolverlo en `new ArrayList<>(...)`. Parecen intercambiables hasta que algo intenta mutar el resultado.
+
+> **Consejo de entrevista:** la trampa es la mutabilidad — di "`.toList()` es inmutable, así que si necesito añadir después uso `collect(Collectors.toList())`." Eso demuestra que te has encontrado con el `UnsupportedOperationException`.
+
+**¿Qué operaciones de stream devuelven un `Optional` o un `boolean` en lugar de una lista?** ⭐
+`findFirst()` y `findAny()` devuelven `Optional<T>` — la forma segura de sacar un elemento de un stream filtrado sin arriesgar una excepción cuando no hay coincidencias; encadenas `.orElseThrow()` o `.orElse()`. `anyMatch()`, `allMatch()` y `noneMatch()` devuelven un `boolean` — úsalos en lugar de un for cuando solo necesitas comprobar una condición en una lista, como `employees.stream().anyMatch(Employee::isAdmin)`. Para sumar un campo numérico está `mapToInt(Employee::getAge).sum()`.
+
+> **Consejo de entrevista:** agrúpalas por tipo de retorno: "find* devuelve Optional, *Match devuelve boolean." Conocer el tipo de retorno de la operación terminal es lo que evita recurrir a un for innecesario.
+
 ---
 
 ## Genéricos
@@ -267,6 +292,11 @@ Los genéricos permiten escribir una clase o método que funcione con cualquier 
 > **Consejo de entrevista:** "orElse siempre se ejecuta; orElseGet solo cuando está vacío. Usa orElseGet cuando el valor por defecto es costoso."
 
 Respuesta que falla: "Los dos devuelven un valor por defecto — uso el que sea" — demuestra no entender la evaluación perezosa.
+
+**¿Por qué se considera un code smell llamar a `Optional.get()` y qué usas en su lugar?** ⭐⭐
+`get()` devuelve el valor pero lanza `NoSuchElementException` — un error genérico y sin mensaje — si el Optional está vacío. Es el mismo problema que un `NullPointerException`: no te dice nada sobre qué faltaba. `orElseThrow(() -> new ResourceNotFoundException(id))` lanza una excepción con contexto que `@RestControllerAdvice` mapea a un 404. En una revisión de código, un `get()` sin comprobar es una señal de alerta porque anula todo el sentido de usar `Optional`. Siempre uso `orElseThrow` o `orElse`.
+
+Respuesta que falla: "Compruebo `isPresent()` y luego llamo a `get()`." — Funciona pero es solo una comprobación de null verbosa; `orElseThrow` expresa lo mismo en una línea y fuerza una excepción con significado.
 
 ---
 
@@ -350,6 +380,11 @@ Busca la librería en `mvnrepository.com`, copia el bloque `<dependency>` y pég
 > **Consejo de entrevista:** "Copia siempre de mvnrepository.com — nunca escribas un bloque de dependencia a mano. Un error en el groupId o artifactId rompe la construcción de forma silenciosa."
 
 Respuesta que falla: "Descargaría el jar y lo añadiría al proyecto manualmente" — ese es el método anterior a Maven; elimina completamente su propósito.
+
+**¿Qué son los scopes de dependencias en Maven y qué scope usa una librería de testing?** ⭐
+Un scope le dice a Maven cuándo está disponible una dependencia. `compile` (el valor por defecto) significa que está en el classpath en todas partes — al compilar, al testear y en runtime. `test` significa que solo está disponible en los tests y no se empaqueta en el jar final — `spring-boot-starter-test` y JUnit lo usan. `provided` significa que se necesita para compilar pero la suministra el entorno de ejecución (como un contenedor de servlets), así que no se empaqueta. Usar scope `test` mantiene las librerías de solo-test fuera del artefacto de producción.
+
+> **Consejo de entrevista:** el punto práctico: "una librería de testing va en scope `test` para que nunca acabe en el jar de producción." Ese ejemplo demuestra que entiendes para qué sirve el scope.
 
 ---
 

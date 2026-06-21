@@ -14,6 +14,16 @@ It depends on the value. Java caches `Integer` objects from -128 to 127, so `Int
 **What is `var` in Java?**
 `var` is a local variable type inference introduced in Java 10. The compiler infers the type from the right side: `var name = "Victor"` is the same as `String name = "Victor"`. It only works for local variables — not for method parameters or return types. It does not make Java dynamic; the type is still fixed at compile time.
 
+**What Java type would you use for a money or price field, and why not `double`?** ⭐⭐⭐
+`BigDecimal`. A `double` stores numbers in binary floating point, so values like `0.1` cannot be represented exactly — after a few additions you get rounding errors like `0.30000000000000004`, which is unacceptable for money. `BigDecimal` does exact decimal arithmetic. The catch: you must create it from a String (`new BigDecimal("0.1")`), not from a double, and compare with `.compareTo()` instead of `==`. In a finance feature I would map an amount column to `BigDecimal`.
+
+> **Junior tip:** "double for measurements, BigDecimal for money" is the rule. Mention that `0.1 + 0.2 != 0.3` with doubles — that concrete example proves you understand the problem.
+
+**Why does a JPA entity ID use `Long` and not the primitive `long`?** ⭐⭐
+Because before the first save the entity has no ID — JPA leaves it `null` and the database assigns it on insert. A primitive `long` cannot be `null` (it defaults to `0`), so JPA could not tell a brand-new entity from a saved one. The wrapper class `Long` can be `null`, which is exactly what `@GeneratedValue` needs. Also remember the `L` suffix on large literals (`1_000_000_000L`) — without it the compiler treats it as an `int` and can overflow.
+
+> **Junior tip:** the one-liner: "the ID is null until the database assigns it, and a primitive can't be null." That single sentence answers the whole question.
+
 ---
 
 ## Strings
@@ -33,6 +43,11 @@ The JVM maintains a pool of String literals. When you write `String a = "hello";
 > **Junior tip:** Mention the pool to show you understand WHY immutability matters in Java, not just WHAT it means.
 
 Red flag answer: "Strings are immutable because Java decided that" — no explanation of what immutability enables.
+
+**What is the difference between `String.isEmpty()` and `String.isBlank()`?** ⭐⭐
+`isEmpty()` is true only when the length is exactly 0 (`""`). `isBlank()` (Java 11+) is also true when the string contains only whitespace (`"   "`). This maps directly to validation: `@NotEmpty` rejects null and empty but accepts spaces, while `@NotBlank` rejects null, empty, AND whitespace-only — which is why `@NotBlank` is the right choice for required text fields like a name. A user typing three spaces should not pass validation.
+
+> **Junior tip:** connect it to the annotations — "isBlank is to @NotBlank what isEmpty is to @NotEmpty." That link shows you understand validation, not just the String API.
 
 ---
 
@@ -251,6 +266,16 @@ Red flag answer: Confusing `flatMap` with `map` or not knowing it exists — sho
 
 Red flag answer: "I would write a SQL GROUP BY instead" — shows no knowledge of when the service layer handles grouping.
 
+**What is the difference between `.toList()` and `collect(Collectors.toList())`?** ⭐⭐
+`.toList()` (Java 16+) is the shorter form and returns an **immutable** list — calling `.add()` on it throws `UnsupportedOperationException`. `collect(Collectors.toList())` returns a mutable list you can still modify. Most of the time `.toList()` is what you want at the end of a service pipeline, but if the next line needs to add to the result you must use the `Collectors` form or wrap it in `new ArrayList<>(...)`. They look interchangeable until something tries to mutate the result.
+
+> **Junior tip:** the trap is mutability — say "`.toList()` is immutable, so if I need to add afterwards I use `collect(Collectors.toList())`." That shows you have hit the `UnsupportedOperationException`.
+
+**Which stream operations return an `Optional` or a `boolean` instead of a list?** ⭐
+`findFirst()` and `findAny()` return `Optional<T>` — the safe way to pull one element out of a filtered stream without risking an exception when nothing matches; you chain `.orElseThrow()` or `.orElse()`. `anyMatch()`, `allMatch()`, and `noneMatch()` return a `boolean` — use them instead of a for loop when you only need to check a condition across a list, like `employees.stream().anyMatch(Employee::isAdmin)`. To sum a numeric field there is `mapToInt(Employee::getAge).sum()`.
+
+> **Junior tip:** group them by return type: "find* returns Optional, *Match returns boolean." Knowing the terminal operation's return type is what stops you reaching for a for loop unnecessarily.
+
 ---
 
 ## Generics
@@ -267,6 +292,11 @@ Generics let you write a class or method that works with any type while keeping 
 > **Junior tip:** "orElse always runs; orElseGet only runs when empty. Use orElseGet when the default is expensive."
 
 Red flag answer: "They both return a default — I use whichever" — shows no understanding of lazy evaluation.
+
+**Why is calling `Optional.get()` considered a code smell, and what do you use instead?** ⭐⭐
+`get()` returns the value but throws `NoSuchElementException` — a generic, message-less error — if the Optional is empty. That is the same problem as a `NullPointerException`: it tells you nothing about what was missing. `orElseThrow(() -> new ResourceNotFoundException(id))` throws a meaningful exception with context that `@RestControllerAdvice` maps to a 404. In a code review, an unchecked `get()` is a red flag because it defeats the whole point of using `Optional`. I always use `orElseThrow` or `orElse`.
+
+Red flag answer: "I check `isPresent()` and then call `get()`." — That works but it is just a verbose null check; `orElseThrow` expresses the same thing in one line and forces a meaningful exception.
 
 ---
 
@@ -350,6 +380,11 @@ Search `mvnrepository.com` for the library, copy the `<dependency>` block, and p
 > **Junior tip:** "Always copy from mvnrepository.com — never type a dependency block by hand. Getting the groupId or artifactId wrong by one character breaks the build silently."
 
 Red flag answer: "I would download the jar and add it to the project manually" — that is the pre-Maven way; it defeats the purpose entirely.
+
+**What are Maven dependency scopes, and which scope does a testing library use?** ⭐
+A scope tells Maven when a dependency is available. `compile` (the default) means it is on the classpath everywhere — compiling, testing, and at runtime. `test` means it is only available in tests and is not packaged into the final jar — `spring-boot-starter-test` and JUnit use this. `provided` means it is needed to compile but supplied by the runtime environment (like a servlet container) so it is not bundled. Using `test` scope keeps test-only libraries out of the production artifact.
+
+> **Junior tip:** the practical point: "a testing library is `test` scope so it never ships in the production jar." That one example shows you understand what scope is for.
 
 ---
 
