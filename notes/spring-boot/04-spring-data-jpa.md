@@ -84,6 +84,34 @@ private Boolean active = true;   // new projects are active by default
 
 ---
 
+## Automatic timestamps — @CreationTimestamp, @UpdateTimestamp, @PrePersist
+
+You almost never set `createdAt` / `updatedAt` by hand. There are two ways to fill them automatically — a Hibernate shortcut and the JPA-standard callback.
+
+Docs: https://docs.jboss.org/hibernate/orm/current/javadocs/org/hibernate/annotations/CreationTimestamp.html → read: "@CreationTimestamp" and "@UpdateTimestamp"
+
+```java
+@CreationTimestamp                 // Hibernate sets it once, on the first insert
+private LocalDateTime createdAt;
+
+@UpdateTimestamp                   // Hibernate refreshes it on every update
+private LocalDateTime updatedAt;
+```
+
+- `@CreationTimestamp` / `@UpdateTimestamp` are **Hibernate** annotations (not JPA). Hibernate fills the field for you — `createdAt` once when the row is inserted, `updatedAt` on every save.
+- `@PrePersist` (and `@PreUpdate`) are the **JPA-standard** equivalents — lifecycle callbacks you write yourself:
+
+```java
+@PrePersist
+public void onCreate() {
+    this.createdAt = LocalDateTime.now();
+}
+```
+
+> Which to use? `@CreationTimestamp` is less code and is the common choice in Spring Boot projects. `@PrePersist` is portable (pure JPA, works on any provider) and lets you run extra logic, not just set a timestamp. Interviewers ask "did you set `createdAt` manually?" — the good answer is "no, `@CreationTimestamp` does it", and knowing `@PrePersist` is the standard alternative.
+
+---
+
 ## JpaRepository — what you get for free
 
 The repeating pattern: you define an interface; Spring generates the implementation.
@@ -154,6 +182,40 @@ List<Transaction> findByUserIdAndYear(@Param("userId") Long userId, @Param("year
 
 ---
 
+## Pagination — Pageable and Page<T>
+
+Returning every row is fine in a demo and dangerous in production. `repository.findAll()` on a table with 100,000 rows loads all of them into memory and serialises them to JSON in one response — slow, and it can crash the app. The interview question is exactly this: "what happens if you call `findAll()` on a huge table?"
+
+Docs: https://docs.spring.io/spring-data/jpa/reference/repositories/query-methods-details.html → read: "Paging, Iterating Large Results, Sorting & Limiting"
+
+The fix is built into `JpaRepository`: accept a `Pageable` and return a `Page<T>`.
+
+```java
+// repository — JpaRepository already declares findAll(Pageable); derived queries can take it too
+Page<Transaction> findByType(TransactionType type, Pageable pageable);
+```
+
+```java
+// controller — Spring builds the Pageable from ?page=0&size=20&sort=date,desc automatically
+@GetMapping
+public Page<TransactionResponse> getAll(Pageable pageable) {
+    return service.getAll(pageable);
+}
+
+// service — Page has a map() so you convert entities to DTOs without losing the metadata
+public Page<TransactionResponse> getAll(Pageable pageable) {
+    return repository.findAll(pageable).map(this::toResponse);
+}
+```
+
+- `Pageable` describes *which* page: page number, page size, and sort order. Spring builds it automatically from the query string (`?page=0&size=20&sort=date,desc`), so you parse nothing yourself.
+- `Page<T>` is the result: the rows for that page **plus** metadata — `getTotalElements()`, `getTotalPages()`, `getNumber()`. The Angular client uses that metadata to render its paginator.
+- `PageRequest.of(0, 20)` is how you build a `Pageable` by hand when there is no request (a test, a scheduled job).
+
+> Under the hood Spring Data runs two queries: a `LIMIT ... OFFSET ...` for the page rows and a `COUNT(*)` for the total — that is how `Page` knows `getTotalPages()`. On a massive table you can return `Slice<T>` instead (no count query) when you only need "is there a next page?".
+
+---
+
 ## Relationships — @ManyToOne and @OneToMany
 
 One user has many transactions. In the database, the `transactions` table has a `user_id` foreign key column. The rule: **the entity whose table has the FK column gets `@ManyToOne`**.
@@ -180,6 +242,51 @@ public class User {
 `mappedBy = "user"` tells JPA that the `user` field in `Transaction` owns the relationship. JPA reads the FK column from there, not from the `User` side.
 
 `cascade = CascadeType.ALL` — when you save/delete a User, the operation cascades to their transactions automatically.
+
+### cascade vs orphanRemoval
+
+These look similar but answer different questions:
+
+- **`cascade = CascadeType.ALL`** — propagates an operation on the parent to its children. Save the user → its transactions are saved too; delete the user → its transactions are deleted too.
+- **`orphanRemoval = true`** — deletes a child when it is *removed from the parent's collection*, even if you never delete the parent: `user.getTransactions().remove(t)` → that transaction row is deleted.
+
+> The distinction interviewers want: `cascade` is about operations flowing parent → child; `orphanRemoval` is about a child that no longer belongs to any parent being deleted. Use `orphanRemoval` for true parent-owned children (a project and its time entries). Be careful with `cascade = ALL` on `@ManyToOne` — you rarely want deleting one transaction to delete its user.
+
+---
+
+## @ManyToMany — relationships through a join table
+
+`@ManyToOne` / `@OneToMany` model "one user has many transactions". `@ManyToMany` is for "many on both sides" — a `Project` can have many `User`s and a `User` can work on many `Project`s. Neither table can hold the foreign key, so JPA needs a third table — a **join table** — that just stores pairs of ids.
+
+Docs: https://jakarta.ee/specifications/persistence/3.1/apidocs/jakarta.persistence/jakarta/persistence/manytomany → read: "@ManyToMany" and "@JoinTable"
+
+```java
+@Entity
+@Table(name = "projects")
+public class Project {
+
+    @ManyToMany
+    @JoinTable(
+        name = "project_members",                          // the join table
+        joinColumns = @JoinColumn(name = "project_id"),    // this entity's FK in the join table
+        inverseJoinColumns = @JoinColumn(name = "user_id") // the other entity's FK
+    )
+    private List<User> members = new ArrayList<>();
+}
+
+@Entity
+@Table(name = "users")
+public class User {
+
+    @ManyToMany(mappedBy = "members")  // inverse side — points to the field above
+    private List<Project> projects = new ArrayList<>();
+}
+```
+
+- The side with `@JoinTable` is the **owning** side — it controls the join table. The side with `mappedBy` is the inverse side (same `mappedBy` rule as `@OneToMany`).
+- The join table (`project_members`) has only two columns: `project_id` and `user_id`. In the simple case you never create an entity for it.
+
+> **The gotcha interviewers reach for:** the moment the link itself needs data — *when* a user joined a project, or their role on it — `@ManyToMany` is not enough. You replace it with a real join entity (`ProjectMembership` with its own `@Id`, `joinedAt`, `role`) and two `@ManyToOne` relationships pointing at it. "What if the relationship has attributes?" is the standard follow-up.
 
 ---
 
