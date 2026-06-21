@@ -292,58 +292,8 @@ The **service** converts between the entity and these DTOs; the **controller** o
 
 ---
 
-## A complete controller example
-
-```java
-@RestController
-@RequestMapping("/api/transactions")
-public class TransactionController {
-
-    private final TransactionService service;
-
-    public TransactionController(TransactionService service) {
-        this.service = service;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<TransactionDTO>> getAll() {
-        return ResponseEntity.ok(service.getAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<TransactionDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
-        // service throws ResourceNotFoundException if not found
-        // @ControllerAdvice maps that to 404 — see 05-exception-handling.md
-    }
-
-    @PostMapping
-    public ResponseEntity<TransactionDTO> create(@Valid @RequestBody TransactionCreateDTO dto) {
-        TransactionDTO created = service.create(dto);
-        return ResponseEntity.status(201).body(created);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<TransactionDTO> update(
-        @PathVariable Long id,
-        @Valid @RequestBody TransactionCreateDTO dto
-    ) {
-        return ResponseEntity.ok(service.update(id, dto));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-}
-```
-
----
-
 ## Project 07 — TimeTrack (first working endpoint)
 
-//TODO: ESTE PUNTO PONLO ANTES QUE A complete controller example, CREO QUE TIENE MAS SENTIDI
 This is the first Controller → Service → Repository chain built in the TimeTrack project. Step 1 returns the entity directly — DTOs are introduced in Step 2.
 
 ### UserRepository
@@ -548,4 +498,53 @@ Browser → GET /api/users
 
 Hibernate logs the SQL to the console because `spring.jpa.show-sql=true` is set in `application.properties`.
 
-// TODO: REVISA LO QUE REALMENTE DEBE PERTENECER A ESTE ARCHIVO Y LO QUE NO
+---
+
+## A complete controller example — generic reference
+
+After building it up step by step with TimeTrack above, here is a clean, all-in-one CRUD controller to keep as a template. It is a generic `Transaction` example — the same shape as the real `ProjectController`, with every verb in one place.
+
+```java
+@RestController
+@RequestMapping("/api/transactions")
+public class TransactionController {
+
+    private final TransactionService service;
+
+    public TransactionController(TransactionService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TransactionDTO>> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TransactionDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
+        // service throws ResourceNotFoundException if not found
+        // @ControllerAdvice maps that to 404 — see 05-exception-handling.md
+    }
+
+    @PostMapping
+    public ResponseEntity<TransactionDTO> create(@Valid @RequestBody TransactionCreateDTO dto) {
+        TransactionDTO created = service.create(dto);
+        return ResponseEntity.status(201).body(created);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TransactionDTO> update(
+        @PathVariable Long id,
+        @Valid @RequestBody TransactionCreateDTO dto
+    ) {
+        return ResponseEntity.ok(service.update(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+```
