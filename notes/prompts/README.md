@@ -158,7 +158,8 @@ processes every target in order, one commit per target. Full rules: `notes/promp
 
 - **Supports `all`:** `coverage-prompt`, `notes-by-topic`, `interview-prep-by-topic`,
   `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-review`, `project-review`,
-  `portfolio-ready` (`PROJECT_PATH = all`); `sql-exercises` (`TOPIC = all`, **practice mode only**),
+  `portfolio-ready` (`PROJECT_PATH = all`); `new-project` (`PROJECT = all`, **review mode only**);
+  `sql-exercises` (`TOPIC = all`, **practice mode only**),
   `simulation-generator`, `code-review` (`TYPE = all`).
 - **Already global (no `all` needed):** `coverage-audit`, `progress-update`, `roadmap-review`, `cv`,
   `linkedin`, and `simulator` full mode — these cover everything in one run by design.

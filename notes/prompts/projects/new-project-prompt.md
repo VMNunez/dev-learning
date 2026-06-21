@@ -5,13 +5,14 @@ Use in a **separate conversation**. Fill in the two values in the configuration 
 Two modes:
 
 - **`new`** — use when a project is complete and it is time to plan the next one. Reads your progress and knowledge gaps, picks the best next project from ROADMAP.md, and writes a complete PLANNING.md ready to use on day one.
-- **`review`** — use at the start of a session, or any time the existing plan feels unclear or out of date. Points at an existing PLANNING.md and audits every section for missing content, vague done conditions, and internal inconsistencies.
+- **`review`** — use at the start of a session, or any time the existing plan feels unclear or out of date. Points at an existing PLANNING.md and audits every section for missing content, vague done conditions, and internal inconsistencies. Audits **one project** when `PROJECT` is a folder name, or **every project in one run** when `PROJECT = all` (see the Batch targets note in the configuration block).
 
 **How to use:**
 1. Fill in `MODE` — `new` or `review`
 2. Fill in `PROJECT`:
    - `new` mode: leave blank — the prompt auto-detects the next project from PROGRESS.md
-   - `review` mode: write the project folder name (e.g. `07-timetrack`)
+   - `review` mode: write the project folder name (e.g. `07-timetrack`) to audit a single project,
+     or `all` to audit every project in turn
 3. Paste the entire prompt below into a new chat
 
 What `new` mode produces:
@@ -31,9 +32,20 @@ What `review` mode produces:
 ## Replace the [ ] with your value and delete the brackets.
 
 MODE    = [new | review]
-PROJECT = [blank when MODE=new | folder name when MODE=review, e.g. 07-timetrack]
+PROJECT = [blank when MODE=new | folder name OR all when MODE=review, e.g. 07-timetrack | all]
 
 Use MODE and PROJECT wherever the prompt refers to {MODE} and {PROJECT}.
+
+## Batch targets (MODE = review only)
+## PROJECT = all runs the audit on every project in turn — see notes/prompts/_batch-mode.md.
+## Order: angular/01-todo-list, angular/02-weather-app, angular/03-expense-tracker,
+## angular/04-meal-finder, angular/05-task-manager, angular/06-hr-portal, projects/07-timetrack.
+## The section set is derived per project type — do not ask:
+##   - full-stack projects (07+): audit against the full 22-section template (Steps B–F below).
+##   - angular projects (01–06): they use a simpler PLANNING.md, so do NOT flag the full-stack-only
+##     sections as missing. Audit only the sections they actually have, plus the universal checks:
+##     done-condition format in the learning plan (Step D), vague rules / TBD placeholders,
+##     and internal consistency between the sections that are present (Step E).
 
 ---
 
@@ -555,10 +567,18 @@ git commit -m "docs: add PLANNING.md for project 0X [project-name] — closes [m
 
 ## Step A — Read files
 
+**If `PROJECT = all`:** follow `notes/prompts/_batch-mode.md`. Expand `all` into the ordered project
+list from the Batch targets note above and run Steps A–F **once per project**, fully finishing one
+(including its commit) before starting the next. Put each project's report under a `### [project]`
+heading and derive its section set from the project type as the Batch targets note describes
+(full-stack → full 22-section audit; angular → present-sections + universal checks only). End with
+the final summary table from `_batch-mode.md`. The rest of this branch describes a single audit.
+
 Read these files:
 1. `CLAUDE.md` — for conventions, testing rules, and project standards
 2. `PROGRESS.md` — to understand what has been learned and what phase the project is at
-3. `projects/{PROJECT}/PLANNING.md` — the file to audit
+3. `{PROJECT}/PLANNING.md` — the file to audit. Note the path prefix differs by project:
+   angular projects live at `angular/0X-name/PLANNING.md`, full-stack at `projects/0X-name/PLANNING.md`
 
 ---
 
@@ -704,10 +724,11 @@ copy directly into the file]
 
 ---
 
-Then show the commit message for applying the fixes:
+Then show the commit message for applying the fixes (use the project's real path prefix —
+`angular/` for 01–06, `projects/` for 07+). In `all` mode, show one commit per project, in order:
 
 ```
-git add projects/{PROJECT}/PLANNING.md
+git add {path}/{PROJECT}/PLANNING.md
 ```
 
 ```
