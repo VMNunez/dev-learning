@@ -20,6 +20,7 @@ Every item must be explainable with a real example from at least one of the six 
 ## Lifecycle and tooling
 - `@ViewChild` — accessing a child element or component from the class after the view is built; needed for `MatSort` and `MatPaginator` in `ngAfterViewInit`
 - Lifecycle hooks: `ngOnInit` (run logic on load), `ngAfterViewInit` (first safe moment to use `@ViewChild`), `ngOnDestroy` (cleanup) — interviewers ask when each fires and why
+- `constructor` vs `ngOnInit` — the constructor only wires up dependency injection and runs before Angular has set the component's inputs; `ngOnInit` runs once after the first input binding, so data fetching and any logic that reads an `input()`/`@Input()` value belongs there, not in the constructor; interviewers ask "why fetch data in `ngOnInit` and not the constructor?"
 - Angular CLI essentials — `ng generate component/service/guard`, `ng serve`, `ng build` — interviewers ask how you scaffold a new feature and what the difference is between `ng serve` (dev server with live reload) and `ng build` (production bundle)
 
 ## Signals
