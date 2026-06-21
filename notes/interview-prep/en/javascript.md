@@ -60,6 +60,18 @@ Red flag answer: "They are basically the same." — They are only the same when 
 
 > **Junior tip:** Mention the `typeof null === 'object'` quirk — it always comes up and shows you know the real language, not just the theory. Every JavaScript developer is expected to know this one.
 
+**What does implicit type coercion do, and what is `'5' + 3` versus `'5' - 3`?** ⭐⭐⭐
+
+Implicit coercion is JavaScript automatically converting one type to another in an operation. The trap is the `+` operator: if either side is a string, it concatenates, so `'5' + 3` is `'53'`. Every other arithmetic operator forces numbers, so `'5' - 3` is `2` and `'5' * 2` is `10`. This is why `===` matters and why I never rely on coercion — `'5' + 3` producing a string is a classic source of bugs when a value sneaks in from an input field as text.
+
+> **Junior tip:** The line that proves you get it: "`+` concatenates if either side is a string; every other operator converts to number." Give `'5' + 3 = '53'` vs `'5' - 3 = 2` as the example.
+
+**What do the logical assignment operators `||=`, `&&=`, and `??=` do?** ⭐
+
+They combine a logical check with an assignment. `a ||= b` assigns `b` only if `a` is falsy; `a &&= b` assigns only if `a` is truthy; `a ??= b` assigns only if `a` is `null` or `undefined`. The most useful is `??=` for setting a default without overwriting a valid `0` or `''`: `config.timeout ??= 3000`. You mostly need to *read* these — they show up in modern code you did not write, and `??=` mirrors the `??` vs `||` distinction.
+
+> **Junior tip:** Tie `??=` back to `??`: "it only assigns when the value is null or undefined, so a valid `0` survives." That connects it to the falsy-value trap interviewers already test with `??` vs `||`.
+
 ---
 
 ## Functions
@@ -81,6 +93,18 @@ Red flag answer: "this is the current object." — Too vague. The point is that 
 When I need a function that has its own `this` — for example, a method in a class or a generator function. Arrow functions cannot be used as constructors (`new arrowFn()` throws) and do not have an `arguments` object. In Angular, all component class methods use regular method syntax and TypeScript handles `this` correctly inside the class. Arrow functions are for callbacks and one-liners.
 
 Red flag answer: "I always use arrow functions." — Shows no awareness of when regular functions are the right tool. Arrow functions cannot be used as constructors, and the `arguments` object is unavailable inside them.
+
+**What do `bind`, `call`, and `apply` do?** ⭐⭐
+
+All three set `this` explicitly on a function. `call` invokes it immediately with arguments listed one by one — `fn.call(obj, a, b)`. `apply` is the same but takes the arguments as an array — `fn.apply(obj, [a, b])`. `bind` does not invoke; it returns a *new* function with `this` permanently fixed — `const bound = fn.bind(obj)`. Before arrow functions, `this.handler = this.handler.bind(this)` was how you kept `this` in a callback. Modern code uses arrow functions instead, but you still see `bind`/`call`/`apply` in older Angular and library code.
+
+> **Junior tip:** The memory hook: "call and apply invoke now (call = comma-separated args, apply = array); bind returns a new function for later." Mention arrow functions made manual binding mostly unnecessary.
+
+**What is a higher-order function?** ⭐⭐
+
+A higher-order function is one that takes another function as an argument, returns a function, or both. `map`, `filter`, and `reduce` are all higher-order — you pass them a function. Every RxJS operator and every Angular guard factory works the same way. The concept is the foundation of functional-style JavaScript: I pass behaviour as a value. `employees.filter(e => e.active)` passes the test function `e => e.active` into `filter` — that is a higher-order function in action.
+
+> **Junior tip:** Give a concrete one immediately — "`map` is a higher-order function: I pass it the transform function." Naming `map`/`filter`/`reduce` shows you use the concept daily, not just know the term.
 
 ---
 
@@ -224,6 +248,12 @@ Because JavaScript uses 64-bit floating point (IEEE 754), and some decimals cann
 
 > **Junior tip:** The key move is to say it is not a JavaScript bug — it affects Java, Python, and most languages. Then give the practical fix: `.toFixed(2)` for display, integer arithmetic for calculations. That shows you think about solutions, not just problems.
 
+**Why is `NaN === NaN` false, and how do you check for `NaN` correctly?** ⭐⭐
+
+`NaN` ("not a number") is the only value in JavaScript that is not equal to itself, so `NaN === NaN` is `false` — you cannot test for it with `===`. The correct check is `Number.isNaN(value)`. Avoid the old global `isNaN()`: it coerces its argument to a number first, so `isNaN('hello')` is `true` (misleading), whereas `Number.isNaN('hello')` is `false` because it does not coerce. I use `Number.isNaN()` after a `parseInt`/`Number()` conversion to detect a failed parse.
+
+> **Junior tip:** Two facts win this: "`NaN` is not equal to itself" and "use `Number.isNaN`, not the global `isNaN`, because the global one coerces." That pair shows real depth.
+
 ---
 
 ## Objects and modules
@@ -285,6 +315,18 @@ A class is a cleaner syntax for creating objects with shared behaviour — it ha
 When the caller needs to distinguish between different types of errors. A `ValidationError` and an `HttpError` both extend `Error`, but in the `catch` block I can check `error instanceof ValidationError` and handle them differently — show a form validation message vs. a generic server error message. In Spring Boot (which I am also learning), the same pattern exists — you create custom exceptions that the controller advice maps to specific HTTP status codes.
 
 Red flag answer: "I would just use `new Error()` with a descriptive message." — Shows no awareness that the `catch` block might need to distinguish error types. Custom error classes are the tool for that.
+
+**What is the difference between a `#` private field and TypeScript's `private` keyword?** ⭐⭐
+
+A `#field` is a true private field enforced by the JavaScript engine at runtime — code outside the class physically cannot read `obj.#salary`, it throws. TypeScript's `private` is only a compile-time check: it errors during compilation but is erased in the output, so the field is still accessible at runtime (and via bracket access). In Angular services I use TypeScript `private` because it is the convention and works with the tooling, but the `#` syntax is the only one that guarantees true runtime privacy.
+
+> **Junior tip:** The distinction interviewers want: "`#` is enforced at runtime by the engine; TypeScript `private` is compile-time only and disappears in the JavaScript." That shows you know what survives compilation.
+
+**Why is catching an error and doing nothing a bad idea?** ⭐⭐
+
+Silently swallowing an error — an empty `catch {}` — means the operation failed but nothing in the code or the UI shows it. The user sees a blank screen or stale data with no explanation, and you get no log to debug from. The rule is: a `catch` must either *handle* the error fully (show a message, set an error signal, return a safe fallback) or *re-throw* it so a higher layer can. In the HR portal my `catch` sets a `hasError` signal so the template can show a message — it never just disappears.
+
+> **Junior tip:** State the rule out loud: "every catch either handles the error visibly or re-throws it — never an empty catch." That single principle is what separates careful juniors from careless ones in a code review.
 
 ---
 

@@ -60,6 +60,18 @@ Respuesta mala: "Son básicamente lo mismo." — Solo son iguales cuando el lado
 
 > **Consejo de entrevista:** Menciona el caso de `typeof null === 'object'` — siempre sale y demuestra que conoces el lenguaje real, no solo la teoría. Todo desarrollador de JavaScript debería saber este caso.
 
+**¿Qué hace la coerción de tipos implícita, y cuánto es `'5' + 3` frente a `'5' - 3`?** ⭐⭐⭐
+
+La coerción implícita es JavaScript convirtiendo automáticamente un tipo en otro dentro de una operación. La trampa es el operador `+`: si alguno de los lados es un string, concatena, así que `'5' + 3` es `'53'`. Cualquier otro operador aritmético fuerza números, así que `'5' - 3` es `2` y `'5' * 2` es `10`. Por esto importa `===` y por esto nunca confío en la coerción — que `'5' + 3` produzca un string es una fuente clásica de bugs cuando un valor entra desde un campo de input como texto.
+
+> **Consejo de entrevista:** La frase que demuestra que lo entiendes: "`+` concatena si algún lado es string; cualquier otro operador convierte a número." Da `'5' + 3 = '53'` vs `'5' - 3 = 2` como ejemplo.
+
+**¿Qué hacen los operadores de asignación lógica `||=`, `&&=` y `??=`?** ⭐
+
+Combinan una comprobación lógica con una asignación. `a ||= b` asigna `b` solo si `a` es falsy; `a &&= b` asigna solo si `a` es truthy; `a ??= b` asigna solo si `a` es `null` o `undefined`. El más útil es `??=` para establecer un valor por defecto sin sobrescribir un `0` o `''` válido: `config.timeout ??= 3000`. Sobre todo necesitas *leerlos* — aparecen en código moderno que no escribiste tú, y `??=` refleja la distinción `??` vs `||`.
+
+> **Consejo de entrevista:** Conecta `??=` con `??`: "solo asigna cuando el valor es null o undefined, así que un `0` válido sobrevive." Eso lo enlaza con la trampa de los valores falsy.
+
 ---
 
 ## Funciones
@@ -81,6 +93,18 @@ Respuesta mala: "this es el objeto actual." — Demasiado vago. El punto es que 
 Cuando necesito una función que tenga su propio `this` — por ejemplo, un método en una clase o una función generadora. Las arrow functions no se pueden usar como constructores (`new arrowFn()` lanza un error) y no tienen objeto `arguments`. En Angular, todos los métodos de clase de los componentes usan la sintaxis de método normal y TypeScript gestiona `this` correctamente dentro de la clase. Las arrow functions son para callbacks y funciones de una sola línea.
 
 Respuesta mala: "Siempre uso arrow functions." — Demuestra que no sabes cuándo las funciones normales son la herramienta correcta. Las arrow functions no se pueden usar como constructores y el objeto `arguments` no está disponible en ellas.
+
+**¿Qué hacen `bind`, `call` y `apply`?** ⭐⭐
+
+Los tres establecen `this` explícitamente en una función. `call` la invoca de inmediato con los argumentos listados uno a uno — `fn.call(obj, a, b)`. `apply` es lo mismo pero toma los argumentos como un array — `fn.apply(obj, [a, b])`. `bind` no invoca; devuelve una *nueva* función con `this` fijado permanentemente — `const bound = fn.bind(obj)`. Antes de las arrow functions, `this.handler = this.handler.bind(this)` era la forma de mantener `this` en un callback. El código moderno usa arrow functions en su lugar, pero todavía ves `bind`/`call`/`apply` en código Angular y librerías antiguas.
+
+> **Consejo de entrevista:** La regla mnemotécnica: "call y apply invocan ahora (call = argumentos separados por comas, apply = array); bind devuelve una función nueva para después." Menciona que las arrow functions hicieron el binding manual casi innecesario.
+
+**¿Qué es una función de orden superior (higher-order function)?** ⭐⭐
+
+Una función de orden superior es la que recibe otra función como argumento, devuelve una función, o ambas. `map`, `filter` y `reduce` son todas de orden superior — les pasas una función. Cada operador de RxJS y cada factory de guard en Angular funcionan igual. El concepto es la base del JavaScript de estilo funcional: paso comportamiento como un valor. `employees.filter(e => e.active)` pasa la función de test `e => e.active` a `filter` — eso es una función de orden superior en acción.
+
+> **Consejo de entrevista:** Da una concreta de inmediato — "`map` es una función de orden superior: le paso la función de transformación." Nombrar `map`/`filter`/`reduce` demuestra que usas el concepto a diario.
 
 ---
 
@@ -224,6 +248,12 @@ Porque JavaScript usa coma flotante de 64 bits (IEEE 754), y algunos decimales n
 
 > **Consejo de entrevista:** El movimiento clave es decir que no es un bug de JavaScript — afecta a Java, Python y la mayoría de lenguajes. Luego da la solución práctica: `.toFixed(2)` para mostrar, aritmética con enteros para cálculos. Eso demuestra que piensas en soluciones, no solo en problemas.
 
+**¿Por qué `NaN === NaN` es false, y cómo compruebas `NaN` correctamente?** ⭐⭐
+
+`NaN` ("not a number") es el único valor en JavaScript que no es igual a sí mismo, así que `NaN === NaN` es `false` — no puedes comprobarlo con `===`. La comprobación correcta es `Number.isNaN(value)`. Evita el viejo `isNaN()` global: convierte (coacciona) su argumento a número primero, así que `isNaN('hello')` es `true` (engañoso), mientras que `Number.isNaN('hello')` es `false` porque no coacciona. Uso `Number.isNaN()` después de una conversión con `parseInt`/`Number()` para detectar un parseo fallido.
+
+> **Consejo de entrevista:** Dos hechos ganan esto: "`NaN` no es igual a sí mismo" y "usa `Number.isNaN`, no el `isNaN` global, porque el global coacciona." Ese par demuestra profundidad.
+
 ---
 
 ## Objetos y módulos
@@ -285,6 +315,18 @@ Una clase es una sintaxis más limpia para crear objetos con comportamiento comp
 Cuando el que llama necesita distinguir entre diferentes tipos de errores. Un `ValidationError` y un `HttpError` ambos extienden `Error`, pero en el bloque `catch` puedo comprobar `error instanceof ValidationError` y manejarlos de forma diferente — mostrar un mensaje de validación del formulario vs. un mensaje de error del servidor genérico. En Spring Boot (que también estoy aprendiendo), el mismo patrón existe — creas excepciones personalizadas que el controller advice mapea a códigos HTTP específicos.
 
 Respuesta mala: "Usaría `new Error()` con un mensaje descriptivo." — Demuestra que no sabes que el bloque `catch` puede necesitar distinguir tipos de errores. Las clases de error personalizadas son la herramienta para eso.
+
+**¿Cuál es la diferencia entre un campo privado `#` y la palabra clave `private` de TypeScript?** ⭐⭐
+
+Un `#field` es un campo privado real impuesto por el motor de JavaScript en runtime — el código fuera de la clase físicamente no puede leer `obj.#salary`, lanza error. El `private` de TypeScript es solo una comprobación en tiempo de compilación: da error al compilar pero se borra en la salida, así que el campo sigue siendo accesible en runtime (y mediante acceso por corchetes). En los servicios de Angular uso el `private` de TypeScript porque es la convención y funciona con las herramientas, pero la sintaxis `#` es la única que garantiza privacidad real en runtime.
+
+> **Consejo de entrevista:** La distinción que buscan: "`#` lo impone el motor en runtime; el `private` de TypeScript es solo en compilación y desaparece en el JavaScript." Eso demuestra que sabes qué sobrevive a la compilación.
+
+**¿Por qué capturar un error y no hacer nada es una mala idea?** ⭐⭐
+
+Tragar un error en silencio — un `catch {}` vacío — significa que la operación falló pero nada en el código ni en la UI lo muestra. El usuario ve una pantalla en blanco o datos obsoletos sin explicación, y tú no tienes ningún log para depurar. La regla es: un `catch` debe o bien *gestionar* el error por completo (mostrar un mensaje, poner un signal de error, devolver un fallback seguro) o bien *relanzarlo* para que una capa superior lo haga. En el HR portal mi `catch` pone un signal `hasError` para que la plantilla muestre un mensaje — nunca desaparece sin más.
+
+> **Consejo de entrevista:** Di la regla en voz alta: "cada catch o gestiona el error de forma visible o lo relanza — nunca un catch vacío." Ese principio separa a los juniors cuidadosos de los descuidados en una revisión de código.
 
 ---
 
