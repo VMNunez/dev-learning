@@ -185,6 +185,35 @@ img {
 
 ---
 
+## Dark mode — prefers-color-scheme
+
+`@media (prefers-color-scheme: dark)` applies styles when the user's **operating system** is set to dark mode. You do not build a toggle for this — the browser reports the user's system preference and you respond to it.
+
+The clean way is to put your colours in CSS variables on `:root`, then override only the variable *values* inside the media query — every rule that uses `var(--...)` updates automatically, with no duplicated rules:
+
+```css
+:root {
+  --bg: #ffffff;
+  --text: #1a1a1a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1a;
+    --text: #f5f5f5;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+```
+
+> This follows only the *system* setting. A manual in-app theme switcher (a button the user clicks) needs JavaScript to change the variables at runtime with `element.style.setProperty('--bg', ...)` — see the CSS variables notes. Dark-mode support is increasingly expected in 2026, so interviewers ask how you would add it.
+
+---
+
 ## Testing responsive design
 
 In Chrome DevTools:
