@@ -174,36 +174,11 @@ This step is required from Java 21+ — the compiler needs to know explicitly th
 
 **After saving `pom.xml`:** press `Ctrl + Shift + O` to reload Maven (or click the notification that appears).
 
-**Annotations used on entities:** // TODO: PONLO EN MAYUSCULAS Y BIEN CLARO PARA IDENTIFICAR QUE SON PATRONES USUALES EN ENTITIES. CREO QUE EN LA TABLA HAY ANOTACIONES QUE NO HAS PUESTO Y APARECEN EN MI EJEMPLO Y CREO QUE MI EJEMPLO NO ES COMPLETO PORQUE RECUERDO HACER ALGUNOS EJEMPLOS CON @COLUMN ETC ADEMAS CREO QUE ESTA PARTE DE ENTITIES NO DEBE ESTAR AQUI PORQUE NO TIENE SENTIDO, PORQUE EN ESTE ARCHIVO ESTAS ESCRIBIENDO SOLAMENTE LA CONFIGURACION. LO QUE ES ENTITIE, REPOSITORY ETC DEBE ESTAR EN OTRO ARCHIVO
-
-| Annotation            | What it generates                                                                        |
-| --------------------- | ---------------------------------------------------------------------------------------- |
-| `@Data`               | Getters, setters, `equals()`, `hashCode()`, `toString()`                                 |
-| `@NoArgsConstructor`  | Empty constructor — required by JPA (lets Hibernate call `new User()` when building an entity from a database row) |
-| `@AllArgsConstructor` | Constructor with every field (e.g. `new User(1L, "Ana", "ana@x.com")`) |
-
-**Example — User entity with Lombok:**
-
-```java
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    private String name;
-    private String email;
-}
-```
+The three Lombok annotations you will use most: **`@Data`** (getters, setters, `equals()`, `hashCode()`, `toString()`), **`@NoArgsConstructor`** (the empty constructor JPA needs to build an entity from a database row), and **`@AllArgsConstructor`** (a constructor with every field). You put them on entities and DTOs — see them on a real entity in [04-spring-data-jpa.md](./04-spring-data-jpa.md) and [layer-reference.md](./layer-reference.md). Entities, repositories, and DTOs are documented there; this file stays focused on project setup and configuration.
 
 ---
 
-## Project structure // TODO: CREO QUE ESTE PUNTO DEBE APARECER ANTES QUE Annotations used on entities
+## Project structure
 
 This is what IntelliJ shows after opening the project. The `.idea/` folder is created automatically by IntelliJ when you open the folder — it stores your project settings.
 

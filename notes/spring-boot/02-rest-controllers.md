@@ -243,30 +243,9 @@ DELETE /api/projects/42     → @PathVariable
 
 ---
 
-### void vs Void //TODO: NO ME GUSTA TENER LAS COSAS POR SEPARADO PORQUE MENTALMENTE ME ORDENO MEJOR. NO SE SI ESTO DEBE ESTAR EN OTRO LUGAR EXPLICADO( MAS GENERICO QUE EN CONTROLLERS, PORQUE ESTO CREO QUE TAL VEZ DEBE ESTAR EN TIPOS DE JAVA O ALGO ASI, AUNQUE NO LO SE BIEN Y ERES TU QUIEN DEBE DECIDIR DONDE PONERLO). ADEMAS ME DIJISTE QUE USAMOS void SI NO DEVOLVEMOS NADA Y Void si puede ser nulo o no devolver nada????? explica mejor toda esta parte de void en su lugar apropiado
+### void vs Void
 
-`void` (lowercase) is a Java keyword — it means a method returns nothing. Used in method signatures:
-
-```java
-public void delete(Long id) { ... }  // the method returns nothing
-```
-
-`Void` (uppercase) is a class. Used as a generic type parameter when you need to say "this generic has no value". Java only accepts classes inside `<>`, not keywords:
-
-```java
-ResponseEntity<Void>   // ✓ — Void is a class
-ResponseEntity<void>   // ✗ — void is a keyword, not valid inside <>
-```
-
-This pattern appears in `delete` — the service returns nothing, but the controller still returns a `ResponseEntity` so Spring can send the 204 status to the client:
-
-```java
-@DeleteMapping("/{id}")
-public ResponseEntity<Void> delete(@PathVariable Long id) {
-    projectService.delete(id);          // void — returns nothing
-    return ResponseEntity.noContent().build();  // 204, no body
-}
-```
+`delete` returns `ResponseEntity<Void>` because the `<>` needs a *class* and there is no value to send back. The full explanation of the keyword `void` vs the class `Void` lives in the Java notes — see [java/03-methods.md](../java/03-methods.md#void-vs-void).
 
 ---
 
@@ -427,8 +406,11 @@ public class UserController {
 
 ### Project 07 — ProjectService — full CRUD with DTOs and toResponse()
 
-//TODO: TAL VEZ NO NECESITE TENER EL EJEMPLO ANTERIOR Y ESTE, TAL VEZ CON ESTE EJEMPLO COMPLETO SEA SUFICIENTE PERO TENIENDO EN CUENTA LOS ARCHIVOS DE CADA FRAGMENTO DE CODIGO ETC. TAMBIEN EXPLICA POR QUE SE USA THIS::TORESPONSE. ADEMAS AQUI ESTAS PONIENDO EL PROJECTSERVICE ETC , TODO EL CRUD. ESO NO LO HAS PUESTO YA EN LAYER-REFERENCE? . ESTE ARCHIVO ES REST-CONTROLLER. ADEMAS EL private ProjectResponse toResponse EXPLICA QUE SE PONE AL FINAL DEL ARCHIVO Y QUE SIRVE PARA... ETC
-Step 2 introduces DTOs and full CRUD. The key pattern: a private `toResponse()` helper avoids repeating the entity-to-DTO mapping in every method.
+Step 2 introduces DTOs and full CRUD. The key pattern: a private `toResponse()` helper, placed at the **bottom of the class**, avoids repeating the entity-to-DTO mapping in every method.
+
+> This is the *worked, explained* version of the vertical slice. [layer-reference.md](./layer-reference.md) has the same flow as a quick-reference set of tables (using a `Transaction` example) — open that when you just need to recall the structure; read this when you want the reasoning behind each line.
+
+**Why `.map(this::toResponse)`?** `this::toResponse` is a *method reference* — shorthand for the lambda `project -> this.toResponse(project)` (see [java/09-streams-lambdas.md](../java/09-streams-lambdas.md)). `stream().map(...)` calls it once per entity, turning each `Project` into a `ProjectResponse`, and `toList()` collects the results. The `this::` form works because the helper is a method on this same class.
 
 ```java
 @Service
@@ -490,7 +472,7 @@ public class ProjectService {
 
 **Key decisions:**
 
-- `toResponse()` is `private` — internal detail, no other class needs it
+- `toResponse()` is `private` and sits at the **bottom of the class** — it converts a `Project` entity into a `ProjectResponse` DTO; no other class needs it, so it goes after the public methods that call it
 - `create()` starts with `new Project()` — entity does not exist yet
 - `update()` starts with `findById()` — entity must exist to be modified; `orElseThrow()` handles the "not found" case and stops the method immediately
 - `save()` handles both insert and update — JPA decides based on whether `id` is null

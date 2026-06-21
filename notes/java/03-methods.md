@@ -61,6 +61,35 @@ public List<Employee> findAll() { ... }          // returns a collection
 
 ---
 
+## void vs Void
+
+`void` (lowercase) is a Java **keyword** — it means a method returns nothing:
+
+```java
+public void delete(Long id) { ... }  // returns nothing
+```
+
+`Void` (uppercase) is a **class**. You use it as a generic type argument when something generic needs *a type* in its `<>` but there is no real value to carry. Java only accepts a class inside `<>`, never the `void` keyword:
+
+```java
+ResponseEntity<Void>   // ✓ — Void is a class
+ResponseEntity<void>   // ✗ — void is a keyword, not valid inside < >
+```
+
+> **Clearing up the confusion:** it is *not* "`void` if nothing, `Void` if maybe-null". Both mean "no value" — they just live in different places. Use the keyword `void` for a method's return type; use the class `Void` only when a generic (`ResponseEntity<T>`, `Callable<T>`) forces you to put a type in the `<>` and there is nothing to return.
+
+This is exactly the Spring Boot `delete` pattern — the service returns `void`, but the controller returns `ResponseEntity<Void>` so it can still send a 204 status with no body (see [spring-boot/02-rest-controllers.md](../spring-boot/02-rest-controllers.md)):
+
+```java
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> delete(@PathVariable Long id) {
+    projectService.delete(id);                  // void — returns nothing
+    return ResponseEntity.noContent().build();  // 204, no body
+}
+```
+
+---
+
 ## Static methods
 
 A `static` method belongs to the class, not to an instance. You call it on the class name, not on an object:
