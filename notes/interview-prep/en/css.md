@@ -22,6 +22,13 @@ Because `*` only selects real DOM elements — pseudo-elements like `::before` a
 
 Red flag answer: "I just use `*` — same thing." — It is not. If you use `::before` for decorative lines or the CSS spinner, those pseudo-elements would have a different box model than the rest of the page.
 
+**What are collapsing margins?** ⭐⭐
+
+When two vertical margins meet — like the bottom margin of one paragraph and the top margin of the next — they do not add up; they *collapse* into a single margin equal to the larger of the two. So a `40px` bottom margin next to a `20px` top margin produces `40px` of space, not `60px`. It only happens with vertical (block) margins, never horizontal ones, and it surprises people who expect the gap to be the sum. A common fix when you do not want it is to use `padding` on a container, or `gap` in a flex/grid layout instead of margins.
+
+> **Junior tip:** State the rule precisely: "vertical margins collapse to the larger value, not the sum — and only vertical ones." Mentioning `gap` as the modern way to avoid the whole problem shows current practice.
+> **Consejo de entrevista:** Di la regla con precisión: "los márgenes verticales colapsan al mayor, no a la suma — y solo los verticales." Mencionar `gap` como la forma moderna de evitar el problema demuestra práctica actual.
+
 ---
 
 ## CSS variables
@@ -45,6 +52,13 @@ Variables you define once and reuse anywhere — `--primary: #e8572a` in `:root`
 Because in every project I have 10–15 places using the same color. If the design changes from `#e8572a` to a slightly different orange, without variables you chase every rule manually and miss some. With `--primary: #e8572a` in `:root`, you change one line and every element updates. I also use them for shadows and borders — `var(--shadow)` is more readable than `rgba(0,0,0,0.08)` written in 20 places.
 
 Red flag answer: "It is best practice." — That says nothing. You need to explain what breaks without variables and why that is a real problem in a project.
+
+**How would you implement a dark mode or a theme switcher with CSS?** ⭐⭐
+
+Declare the colours as CSS custom properties on `:root`, then change the variable *values* — every element using `var(--bg)` updates automatically. Two ways to trigger it: `@media (prefers-color-scheme: dark) { :root { --bg: #111; } }` to follow the system setting, or a manual toggle where JavaScript flips the values at runtime with `document.documentElement.style.setProperty('--bg', '#111')`. The key point is that CSS variables are live — unlike hardcoded hex values, they can be changed after load without recompiling, which is exactly what a theme switcher needs.
+
+> **Junior tip:** The two facts that land: "variables on `:root`, and they are live at runtime so JS can change them." Mention `prefers-color-scheme` for automatic dark mode — it is increasingly expected in 2026.
+> **Consejo de entrevista:** Los dos hechos clave: "variables en `:root`, y son dinámicas en runtime, así que JS puede cambiarlas." Menciona `prefers-color-scheme` para el modo oscuro automático — cada vez más esperado en 2026.
 
 ---
 
@@ -89,6 +103,13 @@ In a flex container, `margin-left: auto` on an item absorbs all remaining space 
 Without it, when the container is narrow, both the input and the button shrink proportionally and the button becomes too small to read or click. With `flex-shrink: 0` on the button and `flex: 1` on the input, the button always keeps its natural width and the input fills the rest of the space. I use this pattern in the search bar in projects 02 and 04.
 
 Red flag answer: "I gave the button a fixed `width`." — A fixed pixel width breaks at different font sizes and different button labels. The `flex-shrink: 0` approach is correct and adapts naturally.
+
+**What does `flex-wrap` do?** ⭐⭐
+
+By default a flex container is `nowrap` — all items stay on one line and shrink to fit, even past the point of being readable. `flex-wrap: wrap` lets items move onto a new line when they run out of space instead of shrinking. It is what turns a single row of cards into a responsive grid that reflows as the screen narrows. Combined with `gap` and a `flex-basis` (or `min-width`) on the items, you get a wrapping layout without media queries.
+
+> **Junior tip:** Connect it to responsive cards: "without `flex-wrap: wrap`, cards squash into one line; with it, they reflow onto new rows." That shows you have built a real responsive layout, not just centered a navbar.
+> **Consejo de entrevista:** Conéctalo con tarjetas responsive: "sin `flex-wrap: wrap`, las tarjetas se aplastan en una línea; con él, fluyen a nuevas filas." Demuestra que has construido un layout responsive real.
 
 ---
 
@@ -208,6 +229,13 @@ When the size should scale smoothly with the viewport rather than jumping at a b
 
 Red flag answer: "I always use media queries." — That is not wrong, but it shows you do not know when the simpler tool works better.
 
+**How do you stop an image from overflowing its container?** ⭐⭐
+
+`max-width: 100%; height: auto` on the `img`. `max-width: 100%` caps the image at the width of its container so a large image never pushes past it, and `height: auto` lets the height follow proportionally so the aspect ratio is preserved. This is part of every CSS reset and is the standard fix for the classic beginner bug where a big image breaks the layout and forces a horizontal scrollbar on mobile.
+
+> **Junior tip:** It is a recognisable "do you know the basics" check. Say the pair together — `max-width: 100%` for the cap, `height: auto` to keep the ratio — and mention it belongs in the reset.
+> **Consejo de entrevista:** Es una comprobación de "¿conoces lo básico?". Di el par junto — `max-width: 100%` para el límite, `height: auto` para mantener la proporción — y menciona que va en el reset.
+
 ---
 
 ## Animations and transitions
@@ -323,6 +351,13 @@ Pseudo-classes (single colon: `:hover`, `:focus`, `:nth-child`) target an elemen
 > **Junior tip:** The double colon `::` is the modern syntax for pseudo-elements. Some older code uses `:before` with a single colon — that still works for backwards compatibility, but `::before` is correct.
 > **Consejo de entrevista:** El doble dos puntos `::` es la sintaxis moderna para pseudo-elementos. El código antiguo usa `:before` con un colon — sigue funcionando, pero `::before` es lo correcto.
 
+**What is the difference between `:focus` and `:focus-visible`?** ⭐⭐
+
+`:focus` matches an element whenever it is focused — including after a mouse click, which is why a clicked button can show an "ugly" focus ring that designers dislike. `:focus-visible` only matches when the browser judges that a focus indicator is genuinely useful — typically keyboard navigation (Tab), not a mouse click. So the modern accessible pattern is to style `:focus-visible` for the keyboard ring and leave mouse clicks clean, instead of removing the outline entirely with `outline: none` and breaking keyboard accessibility.
+
+> **Junior tip:** The accessibility framing wins: "`:focus-visible` gives keyboard users the ring without showing it on mouse click — so I never have to do `outline: none`, which would hurt accessibility." That answers the "ugly focus ring" question correctly.
+> **Consejo de entrevista:** El enfoque de accesibilidad gana: "`:focus-visible` da el anillo a los usuarios de teclado sin mostrarlo al hacer clic con ratón — así nunca tengo que usar `outline: none`, que dañaría la accesibilidad."
+
 ---
 
 ## Specificity
@@ -381,6 +416,13 @@ Red flag answer: "I do not use BEM because Angular handles it." — Partially ri
 Use `50%` for a perfect circle, but only when the element is square — if the element is not square, `50%` gives an oval. For pill shapes (buttons, badges with padding), use `9999px` — it always gives a clean pill regardless of the element's width-to-height ratio, because the browser clamps the actual radius to what fits.
 
 Red flag answer: "I use `50%` for everything rounded." — That only works for circles. For badges and buttons, `9999px` is the correct trick.
+
+**What does `aspect-ratio` do and what problem does it solve?** ⭐⭐
+
+`aspect-ratio: 16 / 9` locks an element's width-to-height proportion, so when only one dimension is known (a fluid width, for example) the other follows automatically without distortion. Its main value is preventing layout shift: you can reserve the correct space for an image or video *before* it loads, so the page does not jump when the media arrives. It replaces the old "padding-top percentage" hack that developers used for responsive video embeds.
+
+> **Junior tip:** Mention layout shift (CLS): "`aspect-ratio` reserves the space before the image loads, so the content below does not jump." That connects it to a real performance metric, not just sizing.
+> **Consejo de entrevista:** Menciona el layout shift (CLS): "`aspect-ratio` reserva el espacio antes de que la imagen cargue, así el contenido de abajo no salta." Eso lo conecta con una métrica de rendimiento real.
 
 ---
 

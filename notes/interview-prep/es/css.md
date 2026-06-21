@@ -22,6 +22,13 @@ Porque `*` solo selecciona elementos reales del DOM — los pseudo-elementos com
 
 Respuesta mala: "Solo uso `*` — es lo mismo." — No lo es. Si usas `::before` para líneas decorativas o el spinner CSS, esos pseudo-elementos tendrían un box model diferente al resto de la página.
 
+**¿Qué son los márgenes colapsados (collapsing margins)?** ⭐⭐
+
+Cuando dos márgenes verticales se encuentran — como el margen inferior de un párrafo y el margen superior del siguiente — no se suman; *colapsan* en un único margen igual al mayor de los dos. Así que un margen inferior de `40px` junto a un margen superior de `20px` produce `40px` de espacio, no `60px`. Solo ocurre con márgenes verticales (de bloque), nunca horizontales, y sorprende a quien espera que el hueco sea la suma. Una solución común cuando no lo quieres es usar `padding` en un contenedor, o `gap` en un layout flex/grid en lugar de márgenes.
+
+> **Junior tip:** "vertical margins collapse to the larger value, not the sum — and only vertical ones."
+> **Consejo de entrevista:** Di la regla con precisión: "los márgenes verticales colapsan al mayor, no a la suma — y solo los verticales." Mencionar `gap` como la forma moderna de evitar el problema demuestra práctica actual.
+
 ---
 
 ## CSS variables
@@ -45,6 +52,13 @@ Variables que defines una vez y reutilizas en cualquier parte — `--primary: #e
 Porque en cada proyecto tengo 10–15 sitios usando el mismo color. Si el diseño cambia de `#e8572a` a un naranja ligeramente diferente, sin variables tienes que buscar cada regla manualmente y es fácil perderte alguna. Con `--primary: #e8572a` en `:root`, cambias una línea y todos los elementos se actualizan. También los uso para sombras y bordes — `var(--shadow)` es más legible que `rgba(0,0,0,0.08)` escrito en 20 sitios.
 
 Respuesta mala: "Es una buena práctica." — Eso no dice nada. Necesitas explicar qué se rompe sin variables y por qué eso es un problema real en un proyecto.
+
+**¿Cómo implementarías un modo oscuro o un selector de tema con CSS?** ⭐⭐
+
+Declara los colores como CSS custom properties en `:root`, y luego cambia los *valores* de las variables — cada elemento que usa `var(--bg)` se actualiza automáticamente. Dos formas de activarlo: `@media (prefers-color-scheme: dark) { :root { --bg: #111; } }` para seguir el ajuste del sistema, o un toggle manual donde JavaScript cambia los valores en runtime con `document.documentElement.style.setProperty('--bg', '#111')`. La clave es que las variables CSS son dinámicas — a diferencia de los valores hex hardcodeados, se pueden cambiar después de cargar sin recompilar, que es justo lo que necesita un selector de tema.
+
+> **Junior tip:** "variables on `:root`, and they are live at runtime so JS can change them." Mention `prefers-color-scheme` for automatic dark mode.
+> **Consejo de entrevista:** Los dos hechos clave: "variables en `:root`, y son dinámicas en runtime, así que JS puede cambiarlas." Menciona `prefers-color-scheme` para el modo oscuro automático — cada vez más esperado en 2026.
 
 ---
 
@@ -89,6 +103,13 @@ En un contenedor flex, `margin-left: auto` en un elemento absorbe todo el espaci
 Sin él, cuando el contenedor es estrecho, tanto el input como el botón se encogen proporcionalmente y el botón queda demasiado pequeño para leer o hacer clic. Con `flex-shrink: 0` en el botón y `flex: 1` en el input, el botón siempre mantiene su ancho natural y el input ocupa el espacio restante. Uso este patrón en la barra de búsqueda de los proyectos 02 y 04.
 
 Respuesta mala: "Le di al botón un `width` fijo." — Un ancho en píxeles se rompe con diferentes tamaños de fuente y etiquetas de botón. El enfoque `flex-shrink: 0` es correcto y se adapta de forma natural.
+
+**¿Qué hace `flex-wrap`?** ⭐⭐
+
+Por defecto un contenedor flex es `nowrap` — todos los elementos se quedan en una línea y se encogen para caber, incluso más allá de ser legibles. `flex-wrap: wrap` permite que los elementos pasen a una nueva línea cuando se quedan sin espacio en lugar de encogerse. Es lo que convierte una sola fila de tarjetas en un grid responsive que se reorganiza al estrecharse la pantalla. Combinado con `gap` y un `flex-basis` (o `min-width`) en los elementos, obtienes un layout que se ajusta sin media queries.
+
+> **Junior tip:** "without `flex-wrap: wrap`, cards squash into one line; with it, they reflow onto new rows."
+> **Consejo de entrevista:** Conéctalo con tarjetas responsive: "sin `flex-wrap: wrap`, las tarjetas se aplastan en una línea; con él, fluyen a nuevas filas." Demuestra que has construido un layout responsive real.
 
 ---
 
@@ -208,6 +229,13 @@ Cuando el tamaño debe escalar suavemente con el viewport en lugar de saltar en 
 
 Respuesta mala: "Siempre uso media queries." — No es incorrecto, pero demuestra que no sabes cuándo la herramienta más simple funciona mejor.
 
+**¿Cómo evitas que una imagen se desborde de su contenedor?** ⭐⭐
+
+`max-width: 100%; height: auto` en la `img`. `max-width: 100%` limita la imagen al ancho de su contenedor para que una imagen grande nunca lo sobrepase, y `height: auto` deja que la altura siga proporcionalmente para conservar la relación de aspecto. Esto forma parte de cada CSS reset y es la solución estándar para el bug clásico de principiante donde una imagen grande rompe el layout y fuerza una barra de scroll horizontal en móvil.
+
+> **Junior tip:** the pair — `max-width: 100%` for the cap, `height: auto` to keep the ratio — and it belongs in the reset.
+> **Consejo de entrevista:** Es una comprobación de "¿conoces lo básico?". Di el par junto — `max-width: 100%` para el límite, `height: auto` para mantener la proporción — y menciona que va en el reset.
+
 ---
 
 ## Animaciones y transiciones
@@ -323,6 +351,13 @@ Las pseudo-clases (dos puntos simples: `:hover`, `:focus`, `:nth-child`) selecci
 > **Junior tip:** El doble dos puntos `::` es la sintaxis moderna para pseudo-elementos. El código antiguo usa `:before` con un solo colon — sigue funcionando, pero `::before` es lo correcto.
 > **Consejo de entrevista:** `::` doble es la sintaxis moderna. El código antiguo con `:before` sigue funcionando por compatibilidad, pero usa `::before`.
 
+**¿Cuál es la diferencia entre `:focus` y `:focus-visible`?** ⭐⭐
+
+`:focus` coincide con un elemento siempre que está enfocado — incluso tras un clic de ratón, por lo que un botón al que se hace clic puede mostrar un anillo de foco "feo" que disgusta a los diseñadores. `:focus-visible` solo coincide cuando el navegador juzga que un indicador de foco es realmente útil — normalmente la navegación por teclado (Tab), no un clic de ratón. Así que el patrón moderno y accesible es estilizar `:focus-visible` para el anillo de teclado y dejar limpios los clics de ratón, en lugar de eliminar el outline por completo con `outline: none` y romper la accesibilidad por teclado.
+
+> **Junior tip:** "`:focus-visible` gives keyboard users the ring without showing it on mouse click — so I never have to do `outline: none`."
+> **Consejo de entrevista:** El enfoque de accesibilidad gana: "`:focus-visible` da el anillo a los usuarios de teclado sin mostrarlo al hacer clic con ratón — así nunca tengo que usar `outline: none`, que dañaría la accesibilidad."
+
 ---
 
 ## Especificidad
@@ -381,6 +416,13 @@ Respuesta mala: "No uso BEM porque Angular lo gestiona." — Parcialmente correc
 Usa `50%` para un círculo perfecto, pero solo cuando el elemento es cuadrado — si no lo es, `50%` da un óvalo. Para formas pill (botones, badges con padding), usa `9999px` — siempre da un pill limpio sin importar la proporción ancho/alto, porque el navegador limita el radio real a lo que cabe.
 
 Respuesta mala: "Uso `50%` para todo lo redondeado." — Solo funciona para círculos. Para badges y botones, `9999px` es el truco correcto.
+
+**¿Qué hace `aspect-ratio` y qué problema resuelve?** ⭐⭐
+
+`aspect-ratio: 16 / 9` fija la proporción ancho-alto de un elemento, así que cuando solo se conoce una dimensión (un ancho fluido, por ejemplo) la otra se ajusta automáticamente sin distorsión. Su principal valor es prevenir el layout shift: puedes reservar el espacio correcto para una imagen o vídeo *antes* de que cargue, así la página no salta cuando llega el medio. Reemplaza el viejo truco del "padding-top en porcentaje" que los desarrolladores usaban para incrustar vídeos responsive.
+
+> **Junior tip:** Mention layout shift (CLS): "`aspect-ratio` reserves the space before the image loads, so the content below does not jump."
+> **Consejo de entrevista:** Menciona el layout shift (CLS): "`aspect-ratio` reserva el espacio antes de que la imagen cargue, así el contenido de abajo no salta." Eso lo conecta con una métrica de rendimiento real.
 
 ---
 
