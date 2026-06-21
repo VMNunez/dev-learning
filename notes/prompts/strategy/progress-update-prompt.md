@@ -1,16 +1,32 @@
 # Progress Update Prompt
 
-Use in a **separate conversation**. No configuration needed — paste the whole prompt into a new chat.
+Use in a **separate conversation**. One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
 
-Run this when PROGRESS.md feels out of sync: after finishing a project, after a long block of sessions, or before running the `new-project-prompt` (which uses PROGRESS.md as its main input for gap analysis). If PROGRESS.md is incomplete, the gap analysis is wrong.
+Run this when PROGRESS.md feels out of sync: after finishing a step or a project, after a long block of sessions, or before running the `new-project-prompt` (which uses PROGRESS.md as its main input for gap analysis). If PROGRESS.md is incomplete, the gap analysis is wrong.
 
-What this prompt does: reads every completed project's PLANNING.md, checks the SQL exercises folder, checks the simulation tracker, and writes a complete, accurate PROGRESS.md.
+What this prompt does: audits the project(s) in scope (all projects, or just the active one — set by `MODE`), checks the SQL exercises on `main`, checks the simulation tracker, and writes a complete, accurate PROGRESS.md.
 
 **This prompt does NOT read `notes/coverage.md`.** Coverage tracks what Victor must learn — PROGRESS.md tracks what he has already learned. A stale or incomplete `notes/coverage.md` does not affect this prompt's results.
 
 ---
 
 ````
+## Mode — choose the audit scope
+
+Set `MODE` at the top of your request. It controls **which projects Step 2 audits**. SQL (Step 3)
+and simulations (Step 4) always run, in both modes.
+
+- **`MODE: active`** (default) — audit ONLY the current in-progress project. Completed projects are
+  assumed already recorded and are skipped in Step 2. This is the fast, everyday refresh after
+  finishing a step or a session block.
+- **`MODE: all`** — full sweep: audit every project in Step 2 (all completed projects AND the active
+  one). Use this periodically, after several steps, or before running `new-project-prompt`, to catch
+  anything missed in completed projects.
+
+If no `MODE` is given, default to `active`.
+
+---
+
 ## Context
 
 My profile is in `notes/prompts/_shared-context.md`.
@@ -63,6 +79,12 @@ Read these files:
 ---
 
 ## Step 2 — Audit each project
+
+**Scope (set by `MODE`):**
+- **`MODE: active`** — audit ONLY the in-progress project (⏳). Find it in the PROGRESS.md projects
+  table or the CLAUDE.md "Active project" line, then apply the matching format's in-progress
+  instructions below. Skip every project marked Done ✓ — do not read their PLANNING.md.
+- **`MODE: all`** — audit every project below, completed and in-progress.
 
 PLANNING.md files use three different formats depending on when the project was created.
 Before reading any PLANNING.md, identify which format it uses — then follow the matching
@@ -179,7 +201,8 @@ it introduces.
 
 ---
 
-Project paths to check (in order):
+Project paths to check (in order). In `MODE: all` check every path; in `MODE: active` check only
+the in-progress project:
 - Angular projects (Format A): angular/01-todo-list, angular/02-weather-app,
   angular/03-expense-tracker, angular/04-meal-finder, angular/05-task-manager,
   angular/06-hr-portal
@@ -190,15 +213,28 @@ Project paths to check (in order):
 
 ## Step 3 — Audit SQL exercises
 
-Read the sql/ folder. Two file formats may exist — check for both:
+Read the `sql/` folder **as it exists on `main`** (see Branch note below — the working tree is
+usually behind). Two file formats may exist — check for both:
 
 - **Flat file** (e.g. `sql/01-basics.sql`): a `.sql` file directly in the `sql/` folder
 - **Subfolder** (e.g. `sql/02-joins/exercises.sql`): a folder containing an `exercises.sql` file
 
-**Branch note — SQL and PROGRESS.md both live on `main`.** There is no separate SQL branch, so the
-`sql/` folder and PROGRESS.md are always on the same branch and cannot drift. Run this prompt on
-`main` and the exercise counts you read are authoritative. (If an old `sql/practice` branch still
-exists, it predates this decision — merge it into `main` and delete it; see CLAUDE.md.)
+**Branch note — the `sql/` exercises live on `main`; you are usually NOT on `main`.**
+SQL study materials are committed only on `main`. During an active project you work on a feature
+branch (e.g. `feat/spring-foundation`) that was created BEFORE the latest SQL commits landed on
+`main` — so the `sql/` files in your current working tree are stale and **undercount** the exercises.
+
+Therefore, do NOT count from the working-tree files. Count from the `main` version of each file
+(these are read-only git commands — safe to run):
+- List the SQL files on main:  `git ls-tree -r --name-only main -- sql/`
+- Read each file from main:     `git show main:sql/<file>`  — count the headers in that output.
+
+The `main` counts are authoritative. If `git show main:...` and the working-tree file disagree,
+trust `main`.
+
+**PROGRESS.md and CLAUDE.md are private, local-only files** — both are listed in `.gitignore` and
+were removed from the public repo on purpose. They are the same physical file on every branch,
+never committed, and cannot drift. There is nothing to commit for PROGRESS.md (see Step 6).
 
 For every file found in either format, count the exercises by counting numbered exercise
 headers. Two formats exist depending on when the file was created:
@@ -240,8 +276,8 @@ Use the actual path in the Folder column: `sql/01-basics.sql` for flat files,
 
 Only list topics that have a file or folder in sql/. Their existence means exercises have
 been generated — "not started" never applies here. For each topic:
-- Count: read the file and count lines matching either header pattern:
-  `-- Exercise N:` (for topics created by sql-exercises-prompt) or `-- #N |`
+- Count: read the file's `main` version (`git show main:sql/<file>`) and count lines matching
+  either header pattern: `-- Exercise N:` (for topics created by sql-exercises-prompt) or `-- #N |`
   (for the basics file); do not mix them up or miss one
 - Status rules:
   - Keep any topic already marked solid ✅ in the current PROGRESS.md — do not downgrade it
@@ -352,13 +388,12 @@ If nothing changed in a section: write "—". Skip rows for sections that do not
 
 ---
 
-## Step 6 — Show the commit message
+## Step 6 — Save (no commit needed)
 
-```
-git add PROGRESS.md
-```
+PROGRESS.md is a **private, local-only file** — it is listed in `.gitignore` and was removed from
+the public repo on purpose. There is nothing to commit: just save the updated file in place.
 
-```
-git commit -m "docs: refresh PROGRESS.md — [main change, e.g. 'add project 07 Spring Boot concepts, fix projects table']"
-```
+`git add PROGRESS.md` will be rejected as ignored (`The following paths are ignored by one of your
+.gitignore files: PROGRESS.md`) — that is expected. Do NOT force it with `git add -f`; that would
+put your private progress tracker back into the public repo.
 ````
