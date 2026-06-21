@@ -44,6 +44,13 @@ Una operación es idempotente si llamarla varias veces produce el mismo resultad
 > **Junior tip:** You will not implement idempotency logic in a junior project, but knowing the concept shows you understand REST at a deeper level than just using `http.get()`.
 > **Consejo de entrevista:** No implementarás lógica de idempotencia en un proyecto junior, pero conocer el concepto demuestra que entiendes REST a un nivel más profundo que solo usar `http.get()`.
 
+**¿Por qué tu proyecto usa REST en lugar de GraphQL o RPC?** ⭐
+
+REST es el estándar para el tipo de APIs de negocio que construyen las consultoras españolas — es simple, toda herramienta lo entiende y cualquier desarrollador puede leer los endpoints sin aprender un nuevo lenguaje de consulta. GraphQL brilla cuando los clientes necesitan obtener formas de datos muy distintas y quieres evitar el over-fetching, pero añade un esquema, una capa de resolvers y complejidad de caché que una app CRUD no necesita. RPC acopla el cliente a nombres de métodos en lugar de a recursos. Para el dominio CRUD del proyecto 07, REST es el nivel de simplicidad adecuado.
+
+> **Junior tip:** Frame it as fit, not fashion: "REST matches a CRUD domain; GraphQL solves an over-fetching problem I don't have."
+> **Consejo de entrevista:** Plantéalo como adecuación, no moda: "REST encaja con un dominio CRUD; GraphQL resuelve un problema de over-fetching que no tengo."
+
 ---
 
 ## Principios SOLID
@@ -84,6 +91,13 @@ Si la clase B extiende la clase A, deberías poder usar B en cualquier lugar don
 
 > **Junior tip:** LSP violations show up as surprises — you call a method expecting one behaviour and the subclass does something different. If that can happen, break the inheritance apart.
 > **Consejo de entrevista:** Las violaciones de LSP se manifiestan como sorpresas — llamas a un método esperando un comportamiento y la subclase hace algo diferente. Si eso puede ocurrir, rompe la herencia.
+
+**¿Qué es el Principio de Segregación de Interfaces (Interface Segregation)?** ⭐⭐
+
+Una clase no debería verse obligada a depender de métodos que no usa — es mejor tener varias interfaces pequeñas y enfocadas que una grande de propósito general. El ejemplo clásico en Spring Security es `UserDetailsService`: tiene un solo método, `loadUserByUsername()`, así que cualquier cosa que lo implemente solo asume exactamente lo que necesita. Una interfaz enorme con quince métodos obliga a cada implementador a proporcionar los quince, incluso los irrelevantes, y un cambio en cualquiera de ellos se propaga a todos. Las interfaces pequeñas mantienen bajo el acoplamiento.
+
+> **Junior tip:** Use `UserDetailsService` as your example — one method, one responsibility.
+> **Consejo de entrevista:** Usa `UserDetailsService` como ejemplo — un método, una responsabilidad. Demuestra que has visto el ISP en código Spring real, no solo en el libro.
 
 ---
 
@@ -167,6 +181,20 @@ El estándar en las consultoras españolas es Core/Feature/Shared: `core/` tiene
 
 Respuesta mala: "Pongo todo en una carpeta components." — Funciona para proyectos pequeños, se convierte en un desastre cuando la app crece. Las consultoras usan estructura por features para que los equipos puedan ser dueños de slices independientes sin pisarse.
 
+**¿Qué es el patrón repository y qué te aporta?** ⭐⭐⭐
+
+El repositorio es una interfaz que oculta cómo se obtienen realmente los datos detrás de llamadas a métodos sencillos como `findByEmail()`. El servicio pide datos al repositorio y no sabe ni le importa si vienen de PostgreSQL, de una lista en memoria o de otro ORM. En Spring Boot extiendes `JpaRepository<Entity, Id>` y Spring genera la implementación. La ventaja real es la testeabilidad y el desacoplamiento: puedo testear unitariamente un servicio pasándole un repositorio mock, y si la base de datos cambia, solo cambia la capa de repositorio — la lógica de negocio queda intacta.
+
+> **Junior tip:** "the service doesn't know where the data comes from" — that decoupling is what makes the service testable with a mock.
+> **Consejo de entrevista:** El beneficio a nombrar es "el servicio no sabe de dónde vienen los datos." Ese desacoplamiento es lo que hace el servicio testeable con un mock.
+
+**¿Qué es una máquina de estados (state machine) y dónde la usarías en un backend?** ⭐⭐
+
+Una máquina de estados modela una entidad que se mueve por un conjunto fijo de estados siguiendo reglas sobre qué transiciones están permitidas. Una entrada de horas pasa de `DRAFT → SUBMITTED → APPROVED` o `REJECTED`, pero nunca puede saltar de `DRAFT` directamente a `APPROVED`. La capa de servicio impone estas reglas — antes de cambiar el estado comprueba que la transición sea válida y la rechaza si no lo es. Esto evita estados inválidos que un endpoint del tipo "pon el estado a lo que envíe el cliente" permitiría. En el proyecto 07 el estado de la entrada sigue exactamente este tipo de flujo.
+
+> **Junior tip:** The SERVICE enforces the transitions, not the client.
+> **Consejo de entrevista:** Lo clave es que el SERVICIO impone las transiciones, no el cliente. Decir "valido qué cambio de estado está permitido antes de aplicarlo" demuestra que proteges la integridad en la capa correcta.
+
 ---
 
 ## Autenticación
@@ -231,6 +259,24 @@ Por defecto, Spring Boot devuelve un objeto JSON de error con `timestamp`, `stat
 
 ---
 
+## Estrategia de testing
+
+**¿Qué es la pirámide de tests (test pyramid)?** ⭐⭐
+
+La pirámide de tests describe la proporción saludable de tipos de test: muchos tests unitarios rápidos en la base, menos tests de integración en el medio y muy pocos tests end-to-end lentos en la cima. La forma equilibra velocidad y confianza — los unitarios dan feedback rápido sobre la lógica de negocio, los de integración detectan problemas de conexión entre capas y un puñado de E2E confirman los flujos críticos de usuario. El "cono de helado" (mayoría E2E, pocos unitarios) es el antipatrón: lento, frágil y difícil de depurar.
+
+> **Junior tip:** "lots of unit tests because they are fast, few E2E because they are slow and brittle."
+> **Consejo de entrevista:** Nombra la forma y la razón: "muchos tests unitarios porque son rápidos, pocos E2E porque son lentos y frágiles."
+
+**¿Cuál es la diferencia entre un test unitario y un test de integración?** ⭐⭐
+
+Un test unitario ejercita un método o clase de forma aislada, con sus dependencias reemplazadas por mocks — es rápido y te dice exactamente qué se rompió. Un test de integración carga varios componentes reales juntos (en Spring Boot, `@SpringBootTest` carga el contexto completo incluida la base de datos) — es más lento pero detecta problemas que solo aparecen cuando las piezas interactúan, como un `@Transactional` olvidado o un cableado de beans incorrecto. Testeas las reglas de negocio con tests unitarios por velocidad y reservas los de integración para los caminos críticos de extremo a extremo.
+
+> **Junior tip:** unit = fast and isolated but mocks can hide reality; integration = slow but realistic.
+> **Consejo de entrevista:** El trade-off a decir: unitario = rápido y aislado pero los mocks pueden ocultar la realidad; integración = lento pero realista. Saber por qué necesitas ambos es lo importante.
+
+---
+
 ## Preguntas de presión
 
 **¿Qué cambiarías de la arquitectura de uno de tus proyectos si empezaras de nuevo?**
@@ -240,3 +286,9 @@ En el HR portal extraería la gestión del estado de autenticación en un módul
 **¿Cuál fue la decisión de arquitectura más difícil que tomaste y por qué?**
 
 En el proyecto 05 (task manager), decidir entre smart/dumb y el patrón coordinator. Empecé con smart/dumb — un padre, una tabla hija. Cuando añadí la barra de filtros, tres hermanos necesitaban la misma lista de tareas. Actualizar al coordinator fue lo correcto pero requirió elevar estado que ya estaba en el componente de tabla. La lección: empieza con el patrón más simple que funcione, y promueve a uno más estructurado cuando la complejidad lo justifique — no sobre-diseñes demasiado pronto.
+
+**¿Cómo justificas una decisión de arquitectura en una entrevista técnica?** ⭐⭐
+
+Con la fórmula "qué + por qué + resultado": qué elegí, por qué lo elegí frente a una alternativa real, y qué problema evita o habilita. Por ejemplo: "En el proyecto 05 usé el patrón coordinator (qué) porque tres componentes hermanos necesitaban la misma lista de tareas (por qué), lo que me permitió mantener una única fuente de verdad y evitar la comunicación incómoda entre hermanos (resultado)." Una decisión solo existe cuando había una alternativa real — así que estoy listo para el seguimiento "¿por qué no la opción más simple?" con un trade-off concreto, no una preferencia general.
+
+Respuesta mala: "Usé el coordinator porque la página era grande." — Sin alternativa, sin trade-off, sin resultado. Es una descripción, no una justificación — y las entrevistas de fase 4 filtran exactamente por esto.
