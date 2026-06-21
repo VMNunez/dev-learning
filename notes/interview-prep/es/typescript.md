@@ -66,6 +66,20 @@ TypeScript infiere tipos a partir de la asignación en variables, a partir del r
 > **Junior tip:** In practice you use `private` the most in Angular services. Say "I mark injected services as `private` so that only the class itself can use them — it is the same idea as encapsulation in OOP."
 > **Consejo de entrevista:** En la práctica usas `private` con más frecuencia en los servicios de Angular. Di "marco los servicios inyectados como `private` para que solo la propia clase pueda usarlos — es la misma idea que la encapsulación en OOP."
 
+**¿Cuál es la diferencia entre `null` y `undefined` en TypeScript?** ⭐⭐
+
+`undefined` significa que nunca se asignó un valor — una variable declarada pero no establecida, o una propiedad opcional que no se proporcionó. `null` significa una ausencia *intencional* — lo pusiste a propósito en "nada". En la práctica se comportan de forma similar y `??` trata a ambos igual, pero la distinción importa por la intención: un campo de API que es `undefined` probablemente nunca se envió, mientras que `null` se envió explícitamente como vacío. El relacionado `void` es el tipo de retorno de una función que no devuelve nada.
+
+> **Junior tip:** "undefined = never set, null = deliberately empty." `strictNullChecks` forces you to handle both.
+> **Consejo de entrevista:** "undefined = nunca asignado, null = vacío a propósito." Añade que `strictNullChecks` (activado por defecto en Angular) es lo que te obliga a gestionar ambos.
+
+**¿Cuál es la diferencia entre una arrow function y una función normal en cuanto a `this`?** ⭐⭐
+
+Una función normal tiene su propio `this`, decidido por cómo se llama — lo que significa que dentro de un callback `this` a menudo no es lo que esperas. Una arrow function no tiene su propio `this`; captura el `this` del ámbito que la rodea donde se definió. Por eso dentro de un componente Angular escribes los callbacks como arrow functions — `items.forEach(i => this.process(i))` mantiene `this` apuntando al componente. Una función normal ahí perdería `this` y fallaría.
+
+> **Junior tip:** "use arrow functions for callbacks so `this` stays the component."
+> **Consejo de entrevista:** La regla que importa en Angular: "usa arrow functions para callbacks para que `this` siga siendo el componente." Esa frase conecta la característica del lenguaje con un bug real que evitas.
+
 ---
 
 ## Aserciones de tipo y operadores
@@ -109,6 +123,13 @@ Devuelve el lado derecho solo si el lado izquierdo es `null` o `undefined`. Es d
 
 Red flag answer: "Uso `!` cuando TypeScript sigue quejándose de null" — este es exactamente el uso incorrecto. Silencia TypeScript pero no soluciona el problema y causará un crash en runtime si la suposición es incorrecta.
 
+**¿Qué es una doble aserción (`as unknown as T`) y por qué pasa por `unknown`?** ⭐⭐
+
+Cuando dos tipos no tienen solapamiento, TypeScript rechaza un cast directo con `as` porque asume que cometiste un error. Una doble aserción lo fuerza: `value as unknown as Date`. Funciona porque *todo* tipo es asignable a `unknown` y `unknown` es asignable a cualquier tipo, así que pasar por él elimina el error de "sin solapamiento". Me topé con esto con `MatDatepicker` — el valor del formulario está tipado de forma laxa pero sé que es un `Date`, así que `formValue.startDate as unknown as Date`. Es un último recurso y una señal de que los tipos de más arriba podrían ser mejores.
+
+> **Junior tip:** "every type is assignable to and from `unknown`, so it is the legal stepping stone between two unrelated types."
+> **Consejo de entrevista:** Explica *por qué* `unknown` es el puente: "todo tipo es asignable a y desde `unknown`, así que es el escalón legal entre dos tipos sin relación." Y señala que necesitarlo a menudo indica un problema de tipado que conviene arreglar.
+
 ---
 
 ## Utility types
@@ -147,6 +168,13 @@ Red flag answer: "Siempre creo una nueva interface manualmente" — muestra que 
 > **Junior tip:** Think of it as "a typed dictionary". Say: "I use it when I need a map from one type to another — all keys the same type, all values the same type." That is enough for a junior screening.
 > **Consejo de entrevista:** Piénsalo como "un diccionario tipado". Di: "Lo uso cuando necesito un mapa de un tipo a otro — todas las claves del mismo tipo, todos los valores del mismo tipo." Con eso es suficiente para una primera entrevista de junior.
 
+**¿Qué es `Required<T>` y cómo se combina con `Partial<T>` para peticiones POST vs PATCH?** ⭐⭐
+
+`Required<T>` hace que toda propiedad sea obligatoria — lo opuesto exacto de `Partial<T>`, que las hace todas opcionales. El mapeo natural a REST: un POST que crea un recurso necesita todos los campos, así que encaja con un tipo totalmente requerido; un PATCH que actualiza solo algunos campos encaja con `Partial<T>`, donde el cliente envía solo los campos que quiere cambiar. `Readonly<T>` es el tercero de la familia — hace cada propiedad inmutable, útil para objetos de configuración que pasas pero nunca mutas.
+
+> **Junior tip:** "`Partial` for PATCH (some fields), full/`Required` type for POST (all fields)."
+> **Consejo de entrevista:** Asocia cada uno a un verbo HTTP: "`Partial` para PATCH (algunos campos), tipo completo/`Required` para POST (todos)." Mapear utility types a REST demuestra que piensas en el contrato de la API.
+
 ---
 
 ## Genéricos
@@ -165,6 +193,13 @@ Una generic constraint limita qué tipos están permitidos como parámetro de ti
 > **Junior tip:** Say "the constraint is what the function needs to be able to do its job — if it needs to read `.id`, the constraint says `T must have an id`." That makes the concept concrete and easy to follow.
 > **Consejo de entrevista:** Di "la constraint es lo que la función necesita para poder hacer su trabajo — si necesita leer `.id`, la constraint dice `T debe tener un id`." Eso hace el concepto concreto y fácil de entender.
 
+**¿Qué es `keyof` y cómo lo usan utility types como `Pick`?** ⭐⭐
+
+`keyof T` produce un union de todos los nombres de propiedad de `T` como literales de string — `keyof Employee` es `'id' | 'name' | 'email' | ...`. Su valor es que el union se mantiene sincronizado con el tipo automáticamente: renombra un campo y el union de `keyof` se actualiza. Así es como las utilidades integradas se mantienen seguras — `Pick<T, K extends keyof T>` restringe `K` a *solo nombres de propiedad reales de `T`*, así que `Pick<Employee, 'naem'>` es un error de compilación en lugar de no hacer nada en silencio. Convierte "cualquier string" en "un string que debe ser una clave real."
+
+> **Junior tip:** "`keyof` is what makes `Pick` and `Omit` reject typos — `K` must be a real key, not any string."
+> **Consejo de entrevista:** El punto a transmitir: "`keyof` es lo que hace que `Pick` y `Omit` rechacen erratas — `K` debe ser una clave real, no cualquier string."
+
 ---
 
 ## Enums y union types
@@ -175,6 +210,13 @@ Un enum es un conjunto de constantes con nombre — `enum Role { Admin = 'admin'
 
 > **Junior tip:** The iteration point is what separates enum from union type in practice. Say "I use `Object.values(MyEnum)` to build the options list in a mat-select — that is something a union type cannot do without defining a separate array."
 > **Consejo de entrevista:** El punto de la iteración es lo que separa el enum del union type en la práctica. Di "uso `Object.values(MyEnum)` para construir la lista de opciones de un mat-select — eso es algo que un union type no puede hacer sin definir un array separado."
+
+**¿Cuál es la diferencia entre un `const enum` y un `enum` normal?** ⭐
+
+Un `enum` normal compila a un objeto JavaScript real que existe en runtime, así que puedes iterarlo con `Object.values()`. Un `const enum` se borra en tiempo de compilación — sus usos se insertan (inline) como valores en bruto, sin dejar objeto, lo que produce un bundle más pequeño pero significa que no puedes iterarlo. La regla: usa un `enum` normal cuando necesitas recorrer los valores (por ejemplo para construir un `<mat-select>`), y un `const enum` solo cuando únicamente referencias valores individuales y quieres coste cero en runtime.
+
+> **Junior tip:** "if I need `Object.values()`, it must be a regular enum; `const enum` disappears at runtime."
+> **Consejo de entrevista:** El factor decisivo es la iteración: "si necesito `Object.values()`, debe ser un enum normal; el `const enum` desaparece en runtime."
 
 ---
 
