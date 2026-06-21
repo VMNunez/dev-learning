@@ -91,6 +91,33 @@ You get a LazyInitializationException — the Hibernate session is already close
 
 ---
 
+**What does Lombok's `@Data` generate, and which Lombok annotation do you use on a service class?** ⭐⭐⭐
+
+`@Data` generates getters, setters, `toString()`, `equals()`, and `hashCode()` for all fields — it removes the boilerplate from DTOs. On a service class I use `@RequiredArgsConstructor` instead: it generates a constructor with only the `private final` fields, which is exactly what constructor injection needs — Spring injects the dependencies through it with no `@Autowired`. I also use `@Slf4j` to get a ready `log` field for `log.info()` / `log.error()`. In project 07 entities use `@Getter`/`@Setter`, services use `@RequiredArgsConstructor`.
+
+> **Junior tip:** the trap with `@Data` on a JPA entity is that the generated `equals()`/`hashCode()` use every field, including lazy relationships — that can trigger queries or recursion. On entities prefer `@Getter`/`@Setter`; keep `@Data` for DTOs.
+> **Consejo de entrevista:** la trampa de `@Data` en una entidad JPA es que el `equals()`/`hashCode()` generado usa todos los campos, incluidas relaciones lazy — puede disparar consultas o recursión. En entidades prefiere `@Getter`/`@Setter`; deja `@Data` para DTOs.
+
+---
+
+**What is a `@Bean` method in a `@Configuration` class and why did you need one for `BCryptPasswordEncoder`?** ⭐⭐
+
+`@Bean` registers an object Spring should manage when you cannot put `@Component` on the class — typically a class from a library. `BCryptPasswordEncoder` comes from Spring Security, so I cannot annotate its source; instead I write a method that returns `new BCryptPasswordEncoder()` and annotate the method with `@Bean` inside `SecurityConfig`. Spring then injects that single instance anywhere a `PasswordEncoder` is needed. I do the same for the `AuthenticationManager`.
+
+> **Junior tip:** the distinction is "`@Component` for your own classes, `@Bean` for library classes you cannot edit." That one line answers the follow-up cleanly.
+> **Consejo de entrevista:** la distinción es "`@Component` para tus clases, `@Bean` para clases de librería que no puedes editar."
+
+---
+
+**How do you keep different configuration for development and production in Spring Boot?** ⭐⭐
+
+With profiles: `application.properties` holds shared config, and `application-dev.properties` / `application-prod.properties` hold per-environment overrides. You activate one with `spring.profiles.active=dev`. Production secrets are not written in any file — they come from environment variables referenced as `${JWT_SECRET}`, and the app fails fast at startup if the variable is missing, which is safer than a silent null at runtime. This lets the same jar run in any environment without recompiling.
+
+> **Junior tip:** mention the "fail fast" point — `${VAR}` with no value stops startup with a clear error, far better than discovering a null secret when the first user logs in.
+> **Consejo de entrevista:** menciona el "fail fast" — `${VAR}` sin valor detiene el arranque con un error claro, mucho mejor que descubrir un secreto null cuando el primer usuario inicia sesión.
+
+---
+
 ## REST controllers
 
 **What is the difference between @Controller and @RestController?**
@@ -202,6 +229,15 @@ Common annotations: @NotNull (value cannot be null), @NotBlank (string cannot be
 
 ---
 
+**How do you stop your API from ever returning the password hash in the JSON response?** ⭐⭐
+
+Two layers. The main one is using DTOs — the response DTO simply has no password field, so it cannot leak. As a defensive backup on the entity itself, `@JsonIgnore` on the `password` field tells Jackson to never serialize it, even if an entity is accidentally returned somewhere. In project 07 the User entity's password is hashed with BCrypt and never appears in any response DTO.
+
+> **Junior tip:** lead with DTOs, mention `@JsonIgnore` as the safety net. Saying "I just rely on `@JsonIgnore`" is weaker — DTOs are the real boundary, the annotation is defence in depth.
+> **Consejo de entrevista:** empieza por los DTOs y menciona `@JsonIgnore` como red de seguridad. Decir "solo confío en `@JsonIgnore`" es más débil — los DTOs son la frontera real.
+
+---
+
 ## Spring Data JPA
 
 **What is the difference between JPA and Hibernate?**
@@ -292,6 +328,41 @@ Pageable lets you load a slice of data instead of the full table — you pass a 
 > **Consejo de entrevista:** cualquier app real con datos crecientes necesita paginación. "Cargamos todo con findAll()" es una señal de alerta en cualquier entrevista.
 
 Red flag answer: "I just call findAll() — the list is not that long yet." That shows no awareness of how data grows in production.
+
+---
+
+**How do you map an enum field to the database, and why is `@Enumerated(EnumType.STRING)` the safe choice?** ⭐⭐⭐
+
+You annotate the field with `@Enumerated`. The default is `EnumType.ORDINAL`, which stores the enum's position number (0, 1, 2). The problem: if you later insert a new value in the middle of the enum, every existing row's number now points to the wrong constant — the data is silently corrupted. `EnumType.STRING` stores the name (`DRAFT`, `SUBMITTED`), so reordering or inserting values is safe. I always use `@Enumerated(EnumType.STRING)`.
+
+> **Junior tip:** the killer detail is "ORDINAL corrupts existing rows when you reorder the enum." Saying that, not just "STRING is clearer," is what proves you understand the risk.
+> **Consejo de entrevista:** el detalle clave es "ORDINAL corrompe las filas existentes si reordenas el enum." Decir eso, y no solo "STRING es más claro," demuestra que entiendes el riesgo.
+
+---
+
+**Why does your `User` entity need `@Table(name = "users")`?** ⭐⭐
+
+Because `user` is a reserved word in PostgreSQL — a table literally called `user` clashes with the built-in keyword and the queries fail. `@Table(name = "users")` sets an explicit table name and avoids the conflict. My convention is plural lowercase names for every table (`users`, `projects`, `time_entries`), which sidesteps reserved words and reads consistently.
+
+> **Junior tip:** this is a PostgreSQL-specific gotcha consultancies like because it shows real database experience — mention that `user` is reserved and that you name tables in the plural.
+> **Consejo de entrevista:** es una trampa específica de PostgreSQL que gusta en las consultoras porque demuestra experiencia real con bases de datos — menciona que `user` es reservada y que nombras las tablas en plural.
+
+---
+
+**What is the difference between `cascade = CascadeType.ALL` and `orphanRemoval = true`?** ⭐⭐
+
+`cascade` propagates operations from parent to child: saving or deleting the parent also saves or deletes its children automatically. `orphanRemoval = true` goes further — it deletes a child the moment it is removed from the parent's collection, even if the parent itself is not deleted. So `cascade` is about operations flowing down; `orphanRemoval` is about cleaning up children that no longer belong to any parent. You combine both when a child has no meaning without its parent — like a project's time entries.
+
+> **Junior tip:** the one-line contrast: "cascade deletes children when the parent is deleted; orphanRemoval deletes a child when you just take it out of the list." Different triggers.
+> **Consejo de entrevista:** el contraste en una línea: "cascade borra los hijos cuando se borra el padre; orphanRemoval borra un hijo cuando solo lo quitas de la lista." Disparadores distintos.
+
+---
+
+**What is a soft delete and when would you use it instead of actually deleting the row?** ⭐⭐
+
+A soft delete sets a flag — `active = false` — instead of running `DELETE`. The row stays in the database but is filtered out of normal queries. You use it whenever the data has historical or audit value: in project 07, deleting a project must not erase the time entries already logged against it, so the project is deactivated, not removed. A hard delete would break the foreign keys and lose history. The trade-off is that every query must remember to filter `active = true`.
+
+Red flag answer: "I always use deleteById()." — In a business app that destroys audit history and can violate foreign keys. The interviewer wants to hear you considered what happens to related data.
 
 ---
 
@@ -395,6 +466,22 @@ Stateless means Spring Security does not create or use an HTTP session to rememb
 
 ---
 
+**Why did you choose JWT instead of server-side sessions?** ⭐⭐⭐
+
+A session stores authentication state on the server and hands the client a session id in a cookie; a JWT stores the state inside the token on the client and the server keeps nothing. JWT fits a REST API because it is stateless — any instance of the backend can validate the token without a shared session store, which scales horizontally and matches the stateless principle of REST. Sessions are easier to revoke instantly but tie the user to one server or need a shared session cache. For project 07's Angular + Spring Boot split, JWT is the natural fit.
+
+Red flag answer: "JWT is more modern." — That is fashion, not a reason. The interviewer wants the stateless/scaling argument and the awareness that JWT gives up instant revocation.
+
+---
+
+**Once you have issued a JWT, can you invalidate it before it expires?** ⭐⭐
+
+Not directly — a JWT is valid until its `exp` claim passes, because the server stores no state about it; it just verifies the signature. So a "logout" on the client only deletes the token locally; the token itself would still pass validation until it expires. The practical mitigations are a short expiry (15–60 minutes), and if you truly need instant revocation, a server-side blacklist (e.g. in Redis) — but that reintroduces the server state JWT was meant to avoid. In project 07 I rely on a short expiry.
+
+Red flag answer: "Yes, I delete it on logout." — Deleting the client copy does not invalidate the token; anyone who still holds it can use it until `exp`. Not knowing this is a common security gap.
+
+---
+
 ## Exception handling
 
 **What is @ControllerAdvice and when do you use it?**
@@ -449,6 +536,14 @@ Red flag answer: "I tested it and it works." It may appear to work if the privat
 
 ---
 
+**What happens if you catch a `RuntimeException` inside a `@Transactional` method and do not re-throw it?** ⭐⭐
+
+The transaction commits. `@Transactional` only rolls back when an unchecked exception propagates OUT of the method — if you catch it and swallow it, Spring sees a normal return and commits whatever was written before the failure. So the operation "failed" but the half-finished data is persisted. If I need to handle the exception but still roll back, I either re-throw it, or call `TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()`. In project 07 I let service exceptions propagate to the `@RestControllerAdvice` rather than catching them locally.
+
+Red flag answer: "Catching it is safer." — It silently commits partial data — the opposite of safe. The interviewer is testing whether you know rollback depends on the exception escaping the method.
+
+---
+
 ## Testing
 
 **What is @SpringBootTest and when do you use it?**
@@ -492,3 +587,23 @@ The HTTP layer is correct — the controller, request mapping, and response form
 
 > **Junior tip:** test each layer in isolation — @WebMvcTest for controllers, @DataJpaTest for repositories, @SpringBootTest for full integration. Each one catches a different kind of bug.
 > **Consejo de entrevista:** prueba cada capa de forma aislada — @WebMvcTest para controladores, @DataJpaTest para repositorios, @SpringBootTest para la integración completa.
+
+---
+
+## Tooling
+
+**How do you containerise a Spring Boot application, and how does someone run your project without installing PostgreSQL?** ⭐⭐⭐
+
+I write a `Dockerfile` that starts from a JDK base image (`FROM eclipse-temurin:25-jdk`), copies the built jar (`COPY target/*.jar app.jar`), and sets `ENTRYPOINT ["java","-jar","app.jar"]`. Then a `docker-compose.yml` runs two services together — the Spring Boot container and a `postgres` container — on a shared network, so `docker compose up` starts the whole stack with one command. Nobody needs PostgreSQL installed locally; the database runs in its own container. In project 07 this is how the backend and database run together.
+
+> **Junior tip:** in 2026 Docker is baseline, not bonus. Be ready to say what each part does — the Dockerfile builds the app image, docker-compose wires the app to the database — and that `docker compose up` is the single command to run everything.
+> **Consejo de entrevista:** en 2026 Docker es lo básico, no un extra. Ten claro qué hace cada parte — el Dockerfile construye la imagen, docker-compose conecta la app con la base de datos — y que `docker compose up` es el único comando para levantarlo todo.
+
+---
+
+**Why would a team use Flyway instead of `spring.jpa.hibernate.ddl-auto=update`?** ⭐⭐
+
+`ddl-auto=update` lets Hibernate alter the schema automatically by comparing entities to the tables — convenient in development, but dangerous in production because the changes are implicit, unreviewable, and can silently alter or lock a live table. Flyway makes each schema change an explicit, versioned SQL script (`V1__init.sql`, `V2__add_status.sql`) that lives in git, is reviewed in a PR, and runs in order exactly once. The team controls and audits every migration. In production you set `ddl-auto=validate` and let Flyway own the schema.
+
+> **Junior tip:** the phrase that lands: "migrations are reviewable and versioned; `ddl-auto=update` is implicit magic you cannot review." That shows production awareness, which consultancies probe for.
+> **Consejo de entrevista:** la frase que funciona: "las migraciones son revisables y versionadas; `ddl-auto=update` es magia implícita que no puedes revisar."
