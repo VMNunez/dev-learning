@@ -149,6 +149,13 @@ Because the database enforces referential integrity even when multiple services,
 
 Red flag answer: "Foreign keys slow down the database." There is a small write cost, but the data integrity guarantee is always worth it at junior level.
 
+**What is normalization and what problem does it solve?** ⭐⭐
+
+Normalization means storing each piece of data once and linking to it, instead of copying it. In the bookstore, a book stores `author_id`, not the author's full name — the name lives in one row of `authors`. The problem it solves is update anomalies and duplication: if the author's name were copied into every book, renaming them would mean updating dozens of rows and risking inconsistency. With `author_id`, you change the name in one place. The trade-off is that reading the name back needs a JOIN.
+
+> **Junior tip:** The one-line answer: "store it once, reference it by id — so a change is one UPDATE, not many." Mention the JOIN cost to show you know the trade-off, not just the rule.
+> **Consejo de entrevista:** La respuesta en una línea: "guárdalo una vez, referéncialo por id — así un cambio es un UPDATE, no muchos." Menciona el coste del JOIN para mostrar que conoces el trade-off.
+
 ---
 
 ## SELECT
@@ -170,6 +177,20 @@ It removes duplicate rows from the result. When you use multiple columns, it rem
 
 > **Junior tip:** DISTINCT is mostly a diagnostic tool — "how many unique values does this column have?" In production queries you usually control the data well enough not to need it.
 > **Consejo de entrevista:** DISTINCT es principalmente una herramienta de diagnóstico — "¿cuántos valores únicos tiene esta columna?" En consultas de producción normalmente controlas los datos lo suficiente como para no necesitarlo.
+
+**How do you add a conditional label column to a result with `CASE WHEN`?** ⭐⭐
+
+`CASE WHEN` produces a value per row based on a condition: `SELECT name, CASE WHEN price > 20 THEN 'Premium' ELSE 'Standard' END AS tier FROM books`. It is SQL's equivalent of an if/else inside `SELECT`. You can chain several `WHEN` branches and end with `ELSE` for the default. I use it to turn a raw column (a status code, a boolean) into a human-readable label in the query result.
+
+> **Junior tip:** Note that the SAME `CASE WHEN` behaves very differently inside an aggregate — `SUM(CASE WHEN ... THEN 1 ELSE 0 END)` filters which rows contribute. In `SELECT` it labels each row; inside `SUM` it counts a subset.
+> **Consejo de entrevista:** El MISMO `CASE WHEN` se comporta muy distinto dentro de un agregado — `SUM(CASE WHEN ... THEN 1 ELSE 0 END)` filtra qué filas cuentan. En `SELECT` etiqueta cada fila; dentro de `SUM` cuenta un subconjunto.
+
+**What is the difference between `UNION` and `UNION ALL`?** ⭐⭐
+
+Both stack the rows of two queries that have the same columns, one result on top of the other. `UNION` removes duplicate rows from the combined result; `UNION ALL` keeps every row, duplicates included. `UNION` is slower because it has to scan for and remove duplicates. So when you know the two result sets cannot overlap — or you actually want the duplicates — use `UNION ALL` to avoid paying for a duplicate check you do not need.
+
+> **Junior tip:** The decision rule: "`UNION ALL` by default; `UNION` only when I specifically need duplicates removed." Both queries must return the same number of columns with compatible types — mention that to show you know the constraint.
+> **Consejo de entrevista:** La regla: "`UNION ALL` por defecto; `UNION` solo cuando necesito eliminar duplicados." Ambas consultas deben devolver el mismo número de columnas con tipos compatibles.
 
 ---
 
@@ -265,6 +286,13 @@ When I need all rows from the main table, even ones with no related data. For ex
 
 Red flag answer: "I always use LEFT JOIN to be safe." That is wrong — LEFT JOIN adds NULLs for unmatched rows and can produce unexpected results if you are not aware of it.
 
+**What is a self JOIN and when would you use one?** ⭐⭐
+
+A self JOIN is a table joined to itself using two different aliases, so you can compare rows within the same table. The classic cases: "which employees share the same manager?" or "find customers with the same email." You write `FROM employees e1 JOIN employees e2 ON e1.manager_id = e2.manager_id AND e1.id <> e2.id` — the two aliases let SQL treat one physical table as two logical ones. The `id <> id` condition stops a row from matching itself.
+
+> **Junior tip:** The thing that makes it click: "it is a normal JOIN — the only trick is two aliases so the table can be on both sides." Mention the `e1.id <> e2.id` guard to avoid each row pairing with itself.
+> **Consejo de entrevista:** Lo que lo aclara: "es un JOIN normal — el único truco son dos alias para que la tabla esté en ambos lados." Menciona el guard `e1.id <> e2.id` para evitar que cada fila se empareje consigo misma.
+
 ---
 
 ## Aggregates and GROUP BY
@@ -300,6 +328,13 @@ It collapses multiple rows that share the same value into one row, so aggregate 
 
 > **Junior tip:** COALESCE is most common in aggregate queries — SUM and AVG return NULL when there are no matching rows. Wrap them in COALESCE to show 0 instead of NULL in the result.
 > **Consejo de entrevista:** COALESCE es más común en consultas de agregación — SUM y AVG devuelven NULL cuando no hay filas. Envuélvelos en COALESCE para mostrar 0 en lugar de NULL en el resultado.
+
+**How would you count only the approved entries per project in a single query?** ⭐⭐⭐
+
+With conditional aggregation. Two equivalent ways in PostgreSQL: `SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END)`, or the cleaner PostgreSQL shorthand `COUNT(*) FILTER (WHERE status = 'approved')`. Both let you aggregate a *subset* of rows inside a single `GROUP BY` — so you can return total entries and approved entries side by side per project, without running two queries or two passes over the data.
+
+> **Junior tip:** Show you know both forms: `CASE WHEN` is portable across databases, `FILTER (WHERE ...)` is the PostgreSQL shorthand and reads better. Naming both signals real PostgreSQL experience.
+> **Consejo de entrevista:** Demuestra que conoces ambas formas: `CASE WHEN` es portable entre bases de datos, `FILTER (WHERE ...)` es el atajo de PostgreSQL y se lee mejor. Nombrar las dos señala experiencia real con PostgreSQL.
 
 ---
 
@@ -359,6 +394,24 @@ A query nested inside another query — the inner one runs first and its result 
 **What is the difference between IN and EXISTS in a subquery?**
 
 `IN` collects all results from the subquery first, then checks if the value is in that list. `EXISTS` stops as soon as it finds one match — it does not build the full list. For large tables, `EXISTS` is faster. For small tables the difference is negligible. I use `IN` when the subquery returns a short, readable list of IDs; `EXISTS` when I only need to check whether a related row exists.
+
+---
+
+## Window functions
+
+**What does `ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)` do, and what is it used for?** ⭐⭐
+
+A window function computes a value across a set of rows *related to the current row* without collapsing them like `GROUP BY` does. `ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC)` numbers each user's rows from newest to oldest. The classic use is "the latest record per group": you wrap it in a subquery or CTE and filter `WHERE row_num = 1`. Unlike `GROUP BY`, every original row is kept — the function just adds a numbered column.
+
+> **Junior tip:** The mental model: "GROUP BY collapses rows into one; a window function keeps all rows and adds a column." The latest-per-group pattern (`ROW_NUMBER` then `WHERE row_num = 1`) is the one to have ready.
+> **Consejo de entrevista:** El modelo mental: "GROUP BY colapsa las filas en una; una window function mantiene todas las filas y añade una columna." Ten preparado el patrón "lo más reciente por grupo".
+
+**What is the difference between `RANK()` and `ROW_NUMBER()`?** ⭐
+
+Both number rows within a partition, but they handle ties differently. `ROW_NUMBER()` always gives a unique sequential number even when two rows are equal in the `ORDER BY` (1, 2, 3, 4). `RANK()` gives tied rows the same number and then skips the next ones (1, 1, 3, 4) — like sports rankings where two people share second place and there is no third. When you need exactly one row per group, use `ROW_NUMBER()`; when you genuinely want a ranking with ties, use `RANK()`.
+
+> **Junior tip:** The tie behaviour is the whole answer: "ROW_NUMBER is always unique; RANK repeats and skips on ties." If you only need one row per group, ROW_NUMBER is the safe choice.
+> **Consejo de entrevista:** El comportamiento ante empates es toda la respuesta: "ROW_NUMBER siempre es único; RANK repite y salta en los empates." Si solo necesitas una fila por grupo, ROW_NUMBER es la opción segura.
 
 ---
 
@@ -465,6 +518,31 @@ Red flag answer: "A view stores a copy of the data." Wrong — a regular view al
 Readability. A CTE gives the subquery a name, which makes the main query easier to understand and review. I use a subquery when it is a one-liner and the intent is clear; I switch to a CTE when the logic is complex enough that a name would explain what it does. In team code, CTEs are easier to debug and modify.
 
 Red flag answer: "CTEs are faster than subqueries." Not true in most cases — the query planner treats them similarly. The benefit is clarity, not speed.
+
+---
+
+## PostgreSQL specifics
+
+**How do you group rows by month for a report in PostgreSQL?** ⭐⭐
+
+With `DATE_TRUNC('month', created_at)` — it truncates a timestamp down to the first day of its month, so all timestamps in the same month collapse to the same value and can be grouped: `SELECT DATE_TRUNC('month', created_at) AS month, SUM(total) FROM orders GROUP BY month ORDER BY month`. `DATE_TRUNC('year', ...)` and `'day'` work the same way. It is the standard way to build monthly or yearly summaries.
+
+> **Junior tip:** `DATE_TRUNC` is the answer to any "sales per month / per year" reporting question. Mention it proactively when discussing reports — it shows you have written real aggregations, not just `COUNT(*)`.
+> **Consejo de entrevista:** `DATE_TRUNC` es la respuesta a cualquier pregunta de informes "por mes / por año". Menciónalo de forma proactiva al hablar de informes.
+
+**What does `STRING_AGG` do and when is it useful?** ⭐
+
+`STRING_AGG(column, separator)` concatenates values from many rows into one string per group — `STRING_AGG(name, ', ')` turns a group of project names into `"Alpha, Beta, Gamma"` on a single line. It is an aggregate like `SUM` or `COUNT`, so it works with `GROUP BY`. I use it in reports when I want one row per user with all their related items listed in a single column instead of one row per item.
+
+> **Junior tip:** Frame it as "the opposite of a JOIN that explodes rows" — `STRING_AGG` collapses many related rows into one readable column. PostgreSQL-specific (MySQL calls it `GROUP_CONCAT`).
+> **Consejo de entrevista:** Plantéalo como "lo contrario de un JOIN que multiplica filas" — `STRING_AGG` colapsa muchas filas relacionadas en una columna legible. Es específico de PostgreSQL (MySQL lo llama `GROUP_CONCAT`).
+
+**What does the `::` cast operator do in PostgreSQL?** ⭐
+
+`::` converts a value from one type to another — `created_at::date` drops the time part of a timestamp, `'5'::int` turns a string into an integer. It is PostgreSQL's shorthand for the standard `CAST(value AS type)`. The most common real use is comparing a timestamp column to a date: `WHERE created_at::date = '2025-05-14'` matches the whole day regardless of the time.
+
+> **Junior tip:** The everyday use is `timestamp::date` in a `WHERE` clause — it avoids the classic bug where `created_at = '2025-05-14'` matches nothing because the stored value has a time component.
+> **Consejo de entrevista:** El uso diario es `timestamp::date` en un `WHERE` — evita el bug clásico donde `created_at = '2025-05-14'` no coincide con nada porque el valor guardado tiene hora.
 
 ---
 
