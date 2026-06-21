@@ -36,6 +36,14 @@ The payload is Base64-encoded, not encrypted — anyone can read it. Never put s
 
 ---
 
+## How the signature proves the token is genuine
+
+The signature is an **HMAC** — a hash of the header + payload computed with the server's secret key. Verification is simple: when a token arrives, the server recomputes the HMAC of the received header + payload using its own secret, and compares it to the signature inside the token. If they match, the token is genuine and untouched.
+
+This is why **you cannot fake a JWT without the secret**: change one character of the payload (`"role":"USER"` → `"role":"ADMIN"`) and the recomputed HMAC no longer matches the signature — the server rejects it. Since you do not hold the secret, you cannot compute a valid new signature for your tampered payload either. No database lookup is needed; the secret alone proves authenticity.
+
+---
+
 ## Authentication flow
 
 ```

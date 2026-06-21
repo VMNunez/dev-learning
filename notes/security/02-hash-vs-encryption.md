@@ -36,6 +36,21 @@ BCrypt.matches(rawPassword, userDetails.getPassword())
 
 ---
 
+## Salting — why two identical passwords get different hashes
+
+A plain hash has a weakness: the same input always produces the same output. If two users both choose `password123`, their stored hashes are identical — and an attacker can precompute hashes of common passwords (a "rainbow table") and match them in bulk.
+
+A **salt** is a random value added to the password before hashing. Each user gets a different salt, so identical passwords produce completely different hashes:
+
+```
+"password123" + salt_A  →  BCrypt  →  "$2a$10$AAA..."
+"password123" + salt_B  →  BCrypt  →  "$2a$10$BBB..."
+```
+
+You never manage the salt yourself — **BCrypt generates a random salt automatically and stores it inside the hash string** (it is part of the `$2a$10$...` output). On login, BCrypt reads the salt back out of the stored hash to verify the password. This is another reason BCrypt is the standard: salting is built in, so you cannot forget it.
+
+---
+
 ## Encryption — two way
 
 ```

@@ -66,6 +66,23 @@ The naming is confusing — "Unauthorized" actually means "unauthenticated". But
 
 ---
 
+## Generic authentication errors — prevent user enumeration
+
+When login fails, return **one generic message** — "Invalid email or password" — never "email not found" or "wrong password". A specific message lets an attacker enumerate your users: they try an email, and if the error says "wrong password" rather than "email not found", they now know that email is registered. Repeat with a list of emails and they have a list of real accounts to target.
+
+This is why Spring Security throws a single `BadCredentialsException` for both cases — wrong email *and* wrong password — and why `GlobalExceptionHandler` maps it to one 401 with a generic body:
+
+```java
+@ExceptionHandler(BadCredentialsException.class)
+public ResponseEntity<Map<String, String>> handle(BadCredentialsException e) {
+    return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
+}
+```
+
+> Interview answer to "why one generic message?": to prevent **user enumeration** — leaking which emails are registered.
+
+---
+
 ## The key difference in one sentence
 
 Authentication proves you are who you claim to be. Authorization decides what you are allowed to do once your identity is confirmed.

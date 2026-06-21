@@ -70,6 +70,39 @@ userRepository.findByEmail(email);
 
 ---
 
+## Mass assignment — why you never bind the request body to the entity
+
+If a controller binds the incoming JSON straight to the `@Entity`, a malicious client can set fields it should never control, just by adding them to the body:
+
+```json
+// the client sends this to POST /api/users
+{ "email": "me@x.com", "password": "...", "role": "MANAGER", "active": true }
+```
+
+If you bind that JSON directly to the `User` entity, the attacker just made themselves a manager. This is **mass assignment**.
+
+The fix is the **request DTO**: it declares *only* the fields a client is allowed to send. There is no `role` or `active` field on `CreateUserRequest`, so even if the attacker adds them to the JSON, Jackson has nowhere to put them and they are ignored:
+
+```java
+public class CreateUserRequest {
+    @NotBlank private String email;
+    @NotBlank private String password;
+    // no role, no active — the client cannot set these
+}
+```
+
+> Interview answer to "what could go wrong if you bind the entity directly?": mass assignment — the client could set privileged fields like `role` or `active`.
+
+---
+
+## Always validate on the server — the client is never the boundary
+
+Client-side validation (Angular `Validators`, disabled buttons) is for **user experience** — instant feedback, no wasted round-trips. It is **not** security. Anyone can bypass the Angular app entirely and call your API directly with Postman, `curl`, or the browser DevTools, sending whatever they like.
+
+The server is the only boundary you control, so every rule must be enforced there too — `@NotBlank` / `@Valid` on the DTO, plus the business rules in the service. The Angular validation and the Spring Boot validation are not duplication: one is UX, the other is the real defence.
+
+---
+
 ## Summary
 
 | Attack | How it works | Main protection |
