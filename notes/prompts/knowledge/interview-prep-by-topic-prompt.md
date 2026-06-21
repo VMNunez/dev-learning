@@ -20,6 +20,9 @@ Use in a **separate conversation**. Fill in the two values in the configuration 
 FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security | all]
        → notes/interview-prep/en/{FILE}.md
        → notes/interview-prep/es/{FILE}.md
+       → FILE can also be a path to ONE language file (e.g. notes/interview-prep/en/angular.md):
+         derive the topic from it and audit it together with its twin in the other language.
+         Pair it with MODE = correct to just fix that file's TODOs and mirror them to the twin.
        → FILE = all audits every file (with SECTION = all) — see notes/prompts/_batch-mode.md.
          Order: angular, spring-boot, java, architecture, security, typescript, sql, javascript,
          css, git, general.
@@ -70,6 +73,9 @@ what a Spanish consultancy interviewer would actually filter on, so that context
 Files to audit:
 - notes/interview-prep/en/{FILE}.md
 - notes/interview-prep/es/{FILE}.md
+- If {FILE} is given as a path to one language file (e.g. notes/interview-prep/en/angular.md),
+  derive the topic name from it and audit both that file and its twin in the other language
+  folder — never just the one you were handed; the two always stay in sync.
 - If SECTION is not "all", locate the {SECTION} heading in both files and audit only the content
   under that heading (up to the next ## heading).
 - If {SECTION} is not found in one file: create it as an empty section in that file before
