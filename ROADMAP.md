@@ -176,6 +176,7 @@ Planned using `notes/prompts/projects/new-project-prompt.md` — paste it into a
 | SELECT, WHERE, operators, ORDER BY, LIMIT                              | ✅ Done |
 | JOINs (INNER, LEFT, RIGHT, FULL OUTER, self JOIN)                     | 🔜      |
 | GROUP BY, HAVING, aggregate functions                                  | 🔜      |
+| CASE expressions, UNION / UNION ALL                                    | 🔜      |
 | Filtering and NULL handling (IS NULL, COALESCE, NULLIF, LIKE, IN)     | 🔜      |
 | Subqueries, CTEs, and views                                            | 🔜      |
 | DML — INSERT, UPDATE, DELETE, RETURNING, ON CONFLICT                  | 🔜      |
@@ -221,7 +222,7 @@ To do a simulation: open the spec file, set a timer, and build. No notes, no AI.
 | SQL all topics solid (JOINs, GROUP BY, subqueries, CTEs, window functions) | SQL is more likely to appear in tests than algorithms                                                                                                                                                                                                                                        |
 | Project 07 live, documented, and explainable line by line                  | This is the main differentiator — it must be solid first                                                                                                                                                                                                                                     |
 | Project 07 has tests (JUnit 5 + Mockito + Jasmine)                         | Tests are a stronger signal than LeetCode for consultancies                                                                                                                                                                                                                                  |
-| Notes complete for Angular, Spring Boot, Java, Architecture                | Interview prep gaps matter more than algorithm practice                                                                                                                                                                                                                                      |
+| Notes complete for Angular, Spring Boot, Java, Architecture, Security      | Interview prep gaps matter more than algorithm practice                                                                                                                                                                                                                                      |
 | Interview prep (es/) solid for the main topics                             | Active recall ready before adding a new track                                                                                                                                                                                                                                                |
 
 If all five are done before September — start LeetCode Easy. If not — skip it and use that time to strengthen whatever gate is not yet complete.
