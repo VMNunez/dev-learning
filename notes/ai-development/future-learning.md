@@ -513,6 +513,226 @@ The combination of AI-generated scenarios and your own review catches more edge 
 
 ---
 
+## Phase 7 — Web scraping and data extraction
+
+Web scraping is the practice of extracting data from websites programmatically. It covers a wide range of use cases: price monitoring, lead generation, data pipelines for AI, news aggregation, competitive intelligence, and feeding RAG systems with up-to-date content. It is a skill that comes up in consultancy projects more often than people expect, and it sits naturally at the intersection of backend development and AI.
+
+The field has two very distinct tracks depending on the target site: **static scraping** (the server returns plain HTML — fast, lightweight, no browser needed) and **dynamic scraping** (the page is rendered by JavaScript in the browser — you need a real browser engine). You have to diagnose which track applies before choosing a tool.
+
+---
+
+### Static scraping — HTTP + HTML parsing
+
+The simplest case: send an HTTP request, receive HTML, parse it. No browser involved.
+
+**jsoup (Java)** — the standard HTML parser for Java. It parses HTML into a DOM tree and lets you query it with CSS selectors, just like jQuery. Integrates naturally with Spring Boot.
+
+```java
+Document doc = Jsoup.connect("https://example.com/products").get();
+Elements prices = doc.select(".product-card .price");
+prices.forEach(el -> System.out.println(el.text()));
+```
+
+Key jsoup concepts: `Document`, `Element`, `Elements`, `select(cssSelector)`, `attr(attributeName)`, `text()`, `connect().userAgent().timeout().get()`.
+
+**cheerio (Node.js/TypeScript)** — the equivalent for the JavaScript ecosystem. Parses HTML and exposes a jQuery-like API. Lighter than running a full browser.
+
+```typescript
+import * as cheerio from "cheerio";
+import axios from "axios";
+
+const { data } = await axios.get("https://example.com/products");
+const $ = cheerio.load(data);
+$(".product-card .price").each((_, el) => console.log($(el).text()));
+```
+
+**When static scraping is enough:** the page content is already in the HTML returned by the server (check with `curl` or the browser's "View page source" — if you can see the data there, you do not need a browser).
+
+---
+
+### Dynamic scraping — browser-based extraction
+
+Many modern sites are Single Page Applications (SPAs) or load their data via API calls after the initial HTML. The server returns a near-empty HTML shell, and JavaScript fills in the content. A plain HTTP request only gets the shell — you need a real browser to run the JavaScript.
+
+**Playwright for scraping** (not just testing) is the modern tool of choice. The same API you use for E2E tests works for scraping: navigate, wait for the content to appear, extract.
+
+```typescript
+import { chromium } from "playwright";
+
+const browser = await chromium.launch();
+const page = await browser.newPage();
+await page.goto("https://example.com/products");
+
+await page.waitForSelector(".product-card");
+
+const products = await page.$$eval(".product-card", (cards) =>
+  cards.map((card) => ({
+    name: card.querySelector(".name")?.textContent?.trim(),
+    price: card.querySelector(".price")?.textContent?.trim(),
+  }))
+);
+
+console.log(products);
+await browser.close();
+```
+
+`$$eval` runs a function inside the browser context and returns a serialisable value. It is the most efficient way to extract multiple elements in one call.
+
+**Playwright vs Puppeteer for scraping:** Puppeteer (Google) was the pioneer but only supports Chromium. Playwright supports Chromium, Firefox, and WebKit, and its API is cleaner. All new scraping projects should use Playwright.
+
+---
+
+### Crawlee — production-grade scraping infrastructure
+
+For anything beyond a one-off script, you need queuing, retries, concurrency control, and storage. **Crawlee** (from Apify, open-source) is the modern Node.js framework that handles all of this. It wraps Playwright (or Cheerio for static pages) and adds:
+
+- **Request queue** — a persistent queue so the scraper survives restarts and does not revisit URLs it has already processed
+- **Autoscaling** — adjusts concurrency automatically based on CPU and memory to stay within safe limits
+- **Dataset storage** — saves results to a structured store (local JSON files or Apify's cloud)
+- **Session pool** — rotates cookies and headers to reduce the chance of being blocked
+
+```typescript
+import { PlaywrightCrawler } from "crawlee";
+
+const crawler = new PlaywrightCrawler({
+  async requestHandler({ page, request, enqueueLinks }) {
+    const products = await page.$$eval(".product-card", (cards) =>
+      cards.map((c) => ({ name: c.querySelector(".name")?.textContent }))
+    );
+    await crawler.pushData(products);
+    await enqueueLinks({ selector: "a.next-page" });
+  },
+});
+
+await crawler.run(["https://example.com/products"]);
+```
+
+`enqueueLinks` is the key feature for crawling: it finds all links matching a selector and adds them to the queue. This lets you scrape paginated lists or entire websites without writing any pagination logic.
+
+---
+
+### Anti-bot measures and how to handle them
+
+Sites actively try to detect and block scrapers. Understanding these measures helps you scrape ethically and effectively.
+
+| Measure | What it does | Defence |
+|---|---|---|
+| **User-Agent check** | blocks requests that look like bots | set a realistic UA string |
+| **Rate limiting** | blocks IPs that make too many requests per second | add delays, use `Crawlee`'s autoscaling |
+| **IP banning** | blocks an IP after suspicious activity | proxy rotation |
+| **Cloudflare / reCAPTCHA** | full bot-detection layer | harder; often means the site does not want to be scraped |
+| **Dynamic class names** | CSS classes change on every build to break selectors | use text content, aria labels, or data attributes instead |
+| **Honeypot fields** | invisible form fields; submitting them flags you as a bot | never interact with hidden elements |
+
+The general rule: **respect `robots.txt`**, add delays between requests, and check the site's terms of service before scraping. If a site actively blocks you, take it as a signal that scraping is not permitted.
+
+---
+
+### AI-assisted extraction — the modern approach
+
+This is where scraping and AI intersect most powerfully. Instead of writing brittle CSS selectors that break when the site redesigns, you send the raw HTML (or its text content) to Claude and ask it to extract the data in a structured format.
+
+```typescript
+const html = await page.content();
+
+const response = await anthropic.messages.create({
+  model: "claude-sonnet-4-6",
+  max_tokens: 1024,
+  messages: [
+    {
+      role: "user",
+      content: `Extract all products from this HTML. Return a JSON array with fields: name, price, availability.\n\nHTML:\n${html}`,
+    },
+  ],
+});
+```
+
+Use the **tool use trick** (from Phase 2) to force a structured JSON response instead of free text. This makes extraction far more reliable than prompt-based JSON.
+
+The main trade-off is cost: sending a full HTML page to Claude consumes many tokens. Pre-process the page first — strip `<script>`, `<style>`, and navigation elements, keep only the content area — to reduce token usage significantly.
+
+---
+
+### Firecrawl — convert any website to LLM-ready content
+
+**Firecrawl** is an API service (also open-source for self-hosting) that takes a URL and returns clean Markdown, removing boilerplate, ads, navigation, and scripts. It handles JavaScript rendering, anti-bot measures, and pagination automatically. The output is optimised for feeding into LLMs.
+
+```typescript
+import FirecrawlApp from "@mendable/firecrawl-js";
+
+const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+const result = await app.scrapeUrl("https://docs.spring.io/spring-boot/docs/current/reference/html/", {
+  formats: ["markdown"],
+});
+
+console.log(result.markdown); // clean text, ready to inject into a Claude prompt
+```
+
+Firecrawl also has a `crawl` endpoint that follows links and returns an entire site as Markdown. This is the fastest way to build a RAG knowledge base from a documentation site — scrape once, embed, query forever.
+
+**Jina AI Reader** is the free alternative: prefix any URL with `https://r.jina.ai/` and it returns the page as clean Markdown, no API key needed. Useful for quick prototypes.
+
+---
+
+### Stagehand — AI-driven browser control
+
+**Stagehand** (from Browserbase) is the next level: it combines Playwright with an LLM to let you describe what to do on a page in natural language instead of writing selectors.
+
+```typescript
+const stagehand = new Stagehand({ env: "LOCAL" });
+await stagehand.init();
+
+await stagehand.page.goto("https://example.com/products");
+await stagehand.act({ action: "click the button that adds the first product to the cart" });
+
+const result = await stagehand.extract({
+  instruction: "extract the cart total",
+  schema: z.object({ total: z.string() }),
+});
+```
+
+`act` lets Claude decide which element to interact with, based on the visual and semantic content of the page. `extract` runs a structured extraction using a Zod schema. This eliminates the need for CSS selectors entirely — the model figures out the DOM for you.
+
+Stagehand is the cutting edge as of 2026. It is expensive (each action calls the LLM) and slower than direct selectors, but it handles sites that change their structure constantly and pages that are genuinely hard to scrape any other way.
+
+---
+
+### Spring Boot integration — scheduled scraping
+
+A scraping job in Spring Boot is a service annotated with `@Scheduled` that runs periodically, stores results in the database, and exposes them via a REST endpoint.
+
+```java
+@Service
+public class PriceScraper {
+
+    @Scheduled(fixedDelay = 3_600_000) // every hour
+    public void scrape() {
+        Document doc = Jsoup.connect("https://example.com/prices")
+            .userAgent("Mozilla/5.0")
+            .get();
+        String price = doc.selectFirst(".price").text();
+        priceRepository.save(new PriceEntry(price, LocalDateTime.now()));
+    }
+}
+```
+
+Enable scheduling with `@EnableScheduling` on the main class. For production jobs, replace `@Scheduled` with Spring Batch or a proper job scheduler (Quartz) to get retry logic, failure tracking, and parallel execution.
+
+---
+
+### Legal and ethical checklist
+
+Before scraping any site:
+
+- **Check `robots.txt`** (`https://example.com/robots.txt`) — if your target path is listed under `Disallow`, the site is asking you not to scrape it
+- **Read the terms of service** — many sites explicitly prohibit automated access
+- **Never scrape personal data without a lawful basis** — under GDPR, collecting names, emails, or any identifier from EU residents without consent is a data protection violation
+- **Add delays** — do not hammer a server with requests. Add 1–5 seconds between requests as a baseline
+- **Identify yourself** — set a descriptive User-Agent that includes contact information or your project name so the site owner can reach you
+- **Use the API if one exists** — if the site has a public API for the data you need, use it. Scraping when an API is available is both riskier and less reliable
+
+---
+
 ## What NOT to study prematurely
 
 - **Fine-tuning** — training your own version of a model on custom data. Rarely needed in practice; RAG solves most domain-knowledge problems more cheaply and flexibly. Study only if you hit a clear use case fine-tuning solves and RAG cannot.
