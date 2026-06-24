@@ -395,6 +395,124 @@ Defences:
 
 ---
 
+## Phase 6 — Browser automation and E2E testing
+
+End-to-end (E2E) tests drive a real browser, click through the UI, and verify that the full stack — Angular frontend, Spring Boot API, PostgreSQL database — works together the way a user would experience it. They complement unit tests (which test a single method) and integration tests (which test a service in isolation). They are slower and more brittle, but they catch whole categories of bugs that lower-level tests cannot.
+
+This phase covers the two tools you will encounter in professional projects: **Playwright** (the modern standard) and **Selenium** (the enterprise standard in Java shops).
+
+---
+
+### Playwright
+
+Playwright is Microsoft's browser automation library. It drives real browsers (Chromium, Firefox, WebKit/Safari) from TypeScript, JavaScript, Python, Java, or .NET. For your Angular + Spring Boot stack, it covers the frontend side: spin up the app, interact with it like a user, and assert that the right things appear on screen.
+
+**Why Playwright won over older tools:**
+
+- **Auto-waiting** — Playwright waits automatically for elements to appear, for network requests to finish, and for animations to complete before acting. You never write `sleep(2000)` in a test.
+- **Reliable locators** — you target elements by their accessible role, label, or test id rather than by fragile CSS selectors that break when the UI is restyled
+- **Parallel test execution** — tests run in parallel across browsers by default; a suite of 100 tests does not have to run one by one
+- **Built-in test runner** — `@playwright/test` is a full test framework with assertions, fixtures, and hooks; no need to install Jest or Mocha separately
+- **`codegen`** — a CLI tool that records your manual actions in a browser and generates the equivalent Playwright test code automatically
+
+**Core API to learn (TypeScript):**
+
+```typescript
+import { test, expect } from "@playwright/test";
+
+test("user can log in and see their projects", async ({ page }) => {
+  await page.goto("http://localhost:4200/login");
+
+  await page.getByLabel("Email").fill("test@example.com");
+  await page.getByLabel("Password").fill("secret");
+  await page.getByRole("button", { name: "Log in" }).click();
+
+  await expect(page.getByRole("heading", { name: "My Projects" })).toBeVisible();
+});
+```
+
+The key locator methods — `getByLabel`, `getByRole`, `getByText`, `getByTestId` — mirror how a real user or screen reader finds elements. They are more resilient than `page.$('.submit-btn')`.
+
+**Angular integration:** Playwright is the recommended E2E tool for Angular 17+ projects. It replaces Protractor, which was deprecated in 2022 and removed from the Angular CLI. Adding it to a project is one command:
+
+```
+ng add @playwright/test
+```
+
+This sets up the config file, the example test, and the `e2e` script in `package.json`.
+
+**Playwright MCP server:** There is an official MCP server (`@playwright/mcp`) that exposes Playwright as a tool Claude can call. With it, Claude can browse a live URL, click through a UI, take screenshots, and report what it sees — without you having to describe every interaction manually. This is how Claude Code's verify skill works under the hood when it checks that a UI change looks correct.
+
+---
+
+### Selenium
+
+Selenium is the older browser automation standard — the tool that defined the field. It is still widely deployed in enterprise Java projects, and you will very likely encounter it at a consultancy like NTT Data or Capgemini that has legacy test suites. Understanding Selenium is a professional necessity in the Spanish enterprise market.
+
+**How it works:** Selenium drives browsers via the **WebDriver protocol** (now a W3C standard). Each browser has its own driver executable (ChromeDriver for Chrome, GeckoDriver for Firefox). Your test code talks to the driver, which talks to the browser.
+
+```java
+WebDriver driver = new ChromeDriver();
+driver.get("http://localhost:8080/login");
+
+driver.findElement(By.id("email")).sendKeys("test@example.com");
+driver.findElement(By.id("password")).sendKeys("secret");
+driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+WebElement heading = driver.findElement(By.tagName("h1"));
+assertEquals("My Projects", heading.getText());
+
+driver.quit();
+```
+
+**Selenium + Spring Boot:** The classic Java E2E pattern is `@SpringBootTest(webEnvironment = RANDOM_PORT)` + a Selenium WebDriver bean injected into the test. Spring starts the entire application context, Selenium drives the browser, and the test goes through the full stack.
+
+**Selenium Grid:** A server that distributes tests across multiple machines and browsers simultaneously. Used in CI pipelines at large companies where tests need to run against Chrome, Firefox, and Edge in parallel on separate nodes.
+
+**Key difference from Playwright:** Selenium does not auto-wait. You have to write explicit waits yourself using `WebDriverWait` and `ExpectedConditions`. This is the main source of flakiness in Selenium test suites and the reason most new projects choose Playwright.
+
+```java
+WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+WebElement element = wait.until(
+    ExpectedConditions.visibilityOfElementLocated(By.id("dashboard"))
+);
+```
+
+---
+
+### Playwright vs Selenium — when to use which
+
+| | Playwright | Selenium |
+|---|---|---|
+| Language fit | TypeScript / Angular projects | Java / Spring Boot projects |
+| Auto-waiting | Built in | Manual (`WebDriverWait`) |
+| New projects | Preferred | Legacy or explicit Java requirement |
+| Enterprise Java | Rare | Very common |
+| Browser coverage | Chromium, Firefox, WebKit | Chrome, Firefox, Edge, Safari |
+| CI setup | Simple (`npx playwright test`) | Needs driver management or Selenium Grid |
+| Codegen tool | Yes (`playwright codegen`) | No |
+| MCP server | Yes | No |
+
+**In practice for your stack:**
+- Angular E2E tests → Playwright (modern, TypeScript, integrated with the Angular CLI)
+- Spring Boot integration tests that need a browser → Selenium WebDriver (Java, fits naturally in the Maven/JUnit ecosystem)
+- Both live in the same project; they test at different layers
+
+---
+
+### AI-assisted E2E testing
+
+This is where the two topics in this file come together. Once you know Playwright or Selenium, you can use Claude to generate test scenarios, not just test code. The workflow:
+
+1. Describe a user story ("a logged-in user can create a project, add a time entry, and see the total on the dashboard")
+2. Claude generates the Playwright test, including edge cases you might not have thought of
+3. You review every line before running it — you must understand what it tests before committing it
+4. Run `playwright codegen` for flows that are hard to describe in words, then let Claude clean up the generated code
+
+The combination of AI-generated scenarios and your own review catches more edge cases than either approach alone. This is a genuine productivity multiplier once you have the testing fundamentals in place.
+
+---
+
 ## What NOT to study prematurely
 
 - **Fine-tuning** — training your own version of a model on custom data. Rarely needed in practice; RAG solves most domain-knowledge problems more cheaply and flexibly. Study only if you hit a clear use case fine-tuning solves and RAG cannot.
