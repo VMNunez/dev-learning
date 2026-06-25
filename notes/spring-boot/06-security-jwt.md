@@ -918,7 +918,7 @@ app.jwt.expiration=86400000
 
 **The JWT_SECRET must always be a Base64-encoded string.** Why? Because environment variables are text-only — you cannot store raw binary bytes in them. A cryptographic key is binary data (just a sequence of bytes). Base64 converts those bytes into a safe text string you can store anywhere. When the app starts, `getSigningKey()` decodes it back to the raw bytes to build the actual cryptographic key.
 
-Both options do exactly the same thing: they produce a Base64 string. You copy that string and save it as the `JWT_SECRET` environment variable in IntelliJ. The two options are just different tools to generate the same result.
+You need to generate that Base64 string once, and there are two ways to do it — `openssl` or a tiny jjwt snippet, both shown right below. They produce the same kind of result: a Base64 string that you copy and save as the `JWT_SECRET` environment variable in IntelliJ. Pick whichever is handier — the two options are just different tools for the exact same job.
 
 **Option 1 — openssl** (simplest):
 
@@ -979,6 +979,8 @@ private String secret;        // Spring reads app.jwt.secret and assigns it here
 private long expiration;      // Spring reads app.jwt.expiration and assigns it here
                               // primitive long (not Long) — this value is always present, never null
 ```
+
+> **`long` vs `Long`?** `long` (lowercase) is a *primitive* — a plain number that always holds a value and can never be `null`. `Long` (capital) is the object wrapper around it, which *can* be `null`. Here you want `long` because the expiration always comes from `application.properties`, so it is guaranteed to be present — using the primitive documents that intent and avoids an accidental `null`. Full primitives-vs-wrappers explanation in [java/01-variables-types.md](../java/01-variables-types.md).
 
 ### getSigningKey() — the foundation
 
@@ -1160,7 +1162,7 @@ You never call `loadUserByUsername()` yourself. Spring Security calls it automat
 - `getUsername()` — the login identifier (email in your case)
 - `getPassword()` — the hashed password stored in the database
 - `getAuthorities()` — the roles/permissions (e.g. `ROLE_USER`, `ROLE_MANAGER`)
-- Three boolean flags — `isEnabled()`, `isAccountNonExpired()`, `isAccountNonLocked()`
+- Four boolean flags — `isEnabled()`, `isAccountNonExpired()`, `isAccountNonLocked()`, `isCredentialsNonExpired()` — each is an account-status check, and if any returns `false`, Spring Security blocks the login (for example, a disabled or locked account). Spring's `User.builder()` defaults all four to `true`, so you only override the ones you actually need.
 
 Spring Security does not know about your `User` entity — it only works with `UserDetails`. Your job is to take your entity and convert it into a `UserDetails` object. That is what the `User.withUsername(...).build()` builder does at the end of `loadUserByUsername()`.
 
@@ -1233,6 +1235,8 @@ userRepository.save(user);
 ```
 
 **`new BCryptPasswordEncoder()`** — creates an encoder using BCrypt with the default strength (10 rounds). Higher rounds = slower hashing = harder to brute-force. The default is a good balance for most apps.
+
+> **The cost factor lives inside the hash.** A BCrypt hash starts with `$2a$10$...` — that `10` is the cost it was generated with. `.matches()` reads the cost straight from the stored hash, so login works even when the hash was created with a *different* cost than the encoder's default. That is why the test steps further down can hash a password at cost 12 (and the seed file at cost 10) and both still verify against a default-10 encoder — the number you choose when generating a hash does not have to match the encoder's. So don't worry if the cost factors look inconsistent: each hash carries its own.
 
 **`.matches(raw, encoded)`** — hashes the `raw` string and checks if it matches the stored `encoded` hash. You never need to decode the hash — BCrypt is designed to only go in one direction.
 
@@ -1408,7 +1412,7 @@ public class AuthController {
 }
 ```
 
-**`@RestController`** — marks the class as a controller that returns JSON automatically. Equivalent to `@Controller` + `@ResponseBody` on every method.
+**`@RestController`** — marks the class as a controller that returns JSON automatically. Under the hood it bundles two older annotations so you don't write them by hand: `@Controller` (this class handles incoming web requests) and `@ResponseBody` (whatever a method returns becomes the response body as JSON, instead of being treated as the name of an HTML page to render).
 
 **`@RequestMapping("/api/auth")`** — sets the base URL for all endpoints in this class. Every method inside will be under `/api/auth`. Combined with `@PostMapping("/login")`, the full URL is `POST /api/auth/login`.
 
@@ -1462,7 +1466,7 @@ public class GlobalExceptionHandler {
 
 **`HttpStatus.UNAUTHORIZED`** — the correct status code for failed authentication. 401 means "you are not authenticated". 403 means "you are authenticated but not allowed" — that is a different case.
 
-**`Map.of("error", "Invalid email or password")`** — a simple JSON response body. `Map.of()` creates an immutable map. Spring serializes it to `{ "error": "Invalid email or password" }` automatically.
+**`Map.of("error", "Invalid email or password")`** — a simple JSON response body. `Map.of()` creates an immutable map (one you cannot add to or change after it is built — perfectly fine here, since the error body never changes). Spring serializes it to `{ "error": "Invalid email or password" }` automatically.
 
 **`@ExceptionHandler(MethodArgumentNotValidException.class)`** — catches validation failures from `@Valid` on `LoginRequest`. Extracts the first field error and returns a 400 with a readable message. Without this, Spring returns a verbose 400 body that is hard to read.
 
@@ -1471,6 +1475,8 @@ public class GlobalExceptionHandler {
 > **New to the `.stream().map(...).findFirst()` chain?** This is the **Stream API** — a pipeline that processes a list step by step: `.stream()` opens the list, `.map(err -> ...)` transforms each error into a `"field: message"` string (that `err -> ...` is a lambda again), `.findFirst()` takes the first result as an `Optional`, and `.orElse("Validation failed")` supplies a fallback if the list was empty. Full walkthrough in [java/09-streams-lambdas.md — Stream API](../java/09-streams-lambdas.md#stream-api).
 
 > `GlobalExceptionHandler` does not catch `UsernameNotFoundException` directly. Spring Security converts it to `BadCredentialsException` internally — this is intentional. If the API told the client "user not found", an attacker could enumerate valid email addresses. Returning the same error for both cases prevents that.
+
+> **This class only handles the exceptions you register.** Right now that is exactly two: `BadCredentialsException` (→ 401) and `MethodArgumentNotValidException` (→ 400). Any other exception you have not written an `@ExceptionHandler` for still falls through to Spring's default handler and becomes a generic 500. It is not a catch-all — as the app grows you add one handler method per exception type you want to control (you do this for your own custom exceptions in later steps).
 
 ---
 
@@ -1892,6 +1898,8 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 **`setAllowCredentials(true)`** — allows cookies and `Authorization` headers to be sent cross-origin. Required for JWT to work.
 
+> **Why not just allow every origin with `"*"`?** Because `setAllowCredentials(true)` and `setAllowedOrigins(List.of("*"))` cannot be used together — Spring throws an error at startup and the browser rejects the response. The wildcard `"*"` means "anyone", and "anyone **plus** send credentials" is a security hole the CORS spec forbids. If you ever genuinely need a wildcard with credentials, the replacement is `setAllowedOriginPatterns(List.of("*"))`. In this project you list the exact Angular origin, so the trap never bites — but it is the single most common CORS mistake juniors hit, so it's worth recognising.
+
 **`source.registerCorsConfiguration("/**", config)`\*\* — applies this CORS config to every URL in the API.
 
 > The CORS error only appears in the browser — it is not a backend bug. The browser blocks the response, not the request. The fix is always on the server.
@@ -1920,6 +1928,8 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 **`hasRole('MANAGER')`** — checks that the authenticated user has the `ROLE_MANAGER` authority. Spring Security adds the `ROLE_` prefix automatically, so you write `'MANAGER'` here and `.roles("MANAGER")` in `UserDetailsServiceImpl`.
 
 **`hasAuthority('ROLE_MANAGER')`** — the same check, but you write the full string including `ROLE_`. Both work — `hasRole` is the shorter version.
+
+> The method body returns `ResponseEntity.noContent().build()` — HTTP **204 No Content**, the standard reply for a successful `DELETE` that has nothing to send back. (Full status-code guidance in [02-rest-controllers.md](./02-rest-controllers.md).)
 
 ---
 
@@ -1976,7 +1986,7 @@ private Role role;
 private Boolean active = true;
 ```
 
-`active` defaults to `true` — a new account is active unless explicitly deactivated. Soft delete sets it to `false`.
+`active` defaults to `true` — a new account is active unless explicitly deactivated. *Soft delete* sets it to `false`: instead of removing the row from the database (a *hard delete*), you just flag it as inactive. The record stays for history and can be reactivated later, and the login check in `UserDetailsServiceImpl` refuses any account whose `active` is `false`.
 
 ### UserDetailsServiceImpl — using the real role
 
