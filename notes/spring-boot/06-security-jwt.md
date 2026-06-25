@@ -894,6 +894,16 @@ One important limitation: you cannot invalidate a JWT before it expires. Once is
 
 ---
 
+## Build order — create the SecurityConfig skeleton first
+
+The sections below explain each class in **concept order** — simplest and most standalone first, starting with `JwtUtil`. But you do not *build* them in that order. You build them in the 10-step **creation order** from [Why the creation order is not the flow order](#why-the-creation-order-is-not-the-flow-order) above — and step 1 there is **not** `JwtUtil`, it is the `SecurityConfig` skeleton.
+
+Why first? The moment you added `spring-boot-starter-security`, Spring locked every endpoint behind a default login page. Until a `SecurityConfig` opens the routes, you cannot test anything in Postman. So before writing `JwtUtil`, create the development skeleton shown in [SecurityFilterChain → During development](#during-development--open-everything-while-building-jwt) (the version with `anyRequest().permitAll()`). It opens all routes so every class you build next is testable straight away. In the very last step you replace it with the locked-down final version.
+
+> **In short:** read the sections top to bottom to *understand* each class, but *assemble* them in the numbered creation order. The `SecurityConfig` skeleton is step 1 even though its code lives near the bottom of this file — don't wait until you reach that section to create it.
+
+---
+
 ## JwtUtil — generating and validating tokens
 
 File: `src/main/java/com/victor/timetrack/security/JwtUtil.java`
@@ -1214,6 +1224,8 @@ Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-secur
 
 File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java` (defined as a `@Bean`)
 
+> **This `@Bean` lives *inside* the `SecurityConfig` class.** If you haven't created that class yet, that's expected — it's step 1 of the creation order, but its full code is near the bottom of this file. Use the [development skeleton](#during-development--open-everything-while-building-jwt) and add this method inside it. The `AuthenticationManager` bean in the next section goes in the same class — both beans share the one `SecurityConfig`.
+
 If the database is ever compromised, plain text passwords expose every user immediately. BCrypt is a one-way hashing algorithm — you cannot reverse a hash back to the original password. Each hash also includes a random "salt", so two users with the same password produce different hashes.
 
 ```java
@@ -1483,6 +1495,8 @@ public class GlobalExceptionHandler {
 ## ✅ Flow 1 complete — test it in Postman
 
 Flow 1 needs all these classes to exist: `JwtUtil`, `UserDetailsServiceImpl`, `SecurityConfig` (with `PasswordEncoder`, `AuthenticationManager`, `SecurityFilterChain`, `CorsConfigurationSource`), `AuthService`, `AuthController`, `GlobalExceptionHandler`. If any is missing, the app will not start or the login will not work.
+
+> **`SecurityConfig` is the one to double-check here.** The login route only works if a `SecurityFilterChain` permits `/api/auth/**` — or, in the skeleton, permits everything. If you've been reading top to bottom, the `SecurityFilterChain` and `CorsConfigurationSource` code is taught in the two sections *below* this test, so make sure you already created the [development skeleton](#during-development--open-everything-while-building-jwt) (step 1 of the build order) with your `PasswordEncoder` and `AuthenticationManager` beans inside it. Without it, login returns Spring's default login page or a 401 — not your token. For the Flow 1 test, the skeleton (`anyRequest().permitAll()`) is enough; you don't need the locked-down final version or CORS until Flow 2.
 
 ### Step 1 — start the app and check for errors
 
