@@ -176,106 +176,263 @@ Everything in this file serves one of two flows. Read this before writing any co
 
 ---
 
-**Flow 1 — Initial login** `POST /api/auth/login`
+### Flow 1 — Initial login (complete)
 
 ```
-Client: sends { "email": "...", "password": "..." }
-    ↓
-[JwtFilter]                     → no token → filterChain.doFilter(): "pass to next filter"
-    ↓
-[SecurityFilterChain]           → /api/auth/** is permitAll() → allowed without token
-    ↓
-[AuthController]                → reads JSON body, calls AuthService.login()
-    ↓
-[AuthService]                   → calls AuthenticationManager.authenticate(email, rawPassword)
-    ↓
-[AuthenticationManager]         → delegates to DaoAuthenticationProvider
-    ↓
-[DaoAuthenticationProvider]     → calls UserDetailsServiceImpl.loadUserByUsername(email)
-    ↓
-[UserDetailsServiceImpl]        → queries database → returns UserDetails {
-                                    getUsername()    = email
-                                    getPassword()    = BCrypt hash  ← used here
-                                    getAuthorities() = [ROLE_USER]
-                                  }
-    ↓
-[DaoAuthenticationProvider]     → calls BCryptPasswordEncoder.matches(rawPassword, hashedPassword)
-    ↓
-[DaoAuthenticationProvider]     → if match: authentication succeeds / if not: throws BadCredentialsException
-    ↓
-[AuthService]                   → calls JwtUtil.generateToken(email) → builds and signs the JWT
-    ↓
-[AuthController]                → returns { "token": "eyJ..." } with status 200
-    ↓
-Client: stores the token in localStorage
-```
+─ ─ ─ ─ ─ ─ AT STARTUP — runs once when app starts ─ ─ ─
+┌─────────────────────────────────────────────────────────┐
+│ [SecurityConfig]                                        │
+│   creates CORS filter  (corsConfigurationSource)        │
+│   creates SecurityFilterChain with route rules          │
+│     permitAll: /api/auth/**                             │
+│     authenticated: everything else                      │
+│     STATELESS sessions — CSRF disabled                  │
+│   registers JwtFilter before the default Spring filter  │
+│   exposes PasswordEncoder bean  (BCrypt)                │
+│   exposes AuthenticationManager bean                    │
+└─────────────────────────────────────────────────────────┘
+─ ─ ─ ─ ─ ─ PER REQUEST — runs on every HTTP call ─ ─ ─
 
-**If it fails:** `GlobalExceptionHandler` catches `BadCredentialsException` → returns `{ "error": "Invalid email or password" }` with status 401.
+POST /api/auth/login
+{ "email": "...",
+  "password": "..." }
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [CORS filter]  (browser only — Postman skips this)      │
+│   Origin: http://localhost:4200                         │
+│   POST triggers preflight OPTIONS ("is this allowed?")  │
+│   Spring: YES, 4200 is in allowedOrigins                │
+│   → browser sends the real POST request                 │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [JwtFilter]                                             │
+│   reads Authorization header                            │
+│   → header is null → no token                          │
+│   → filterChain.doFilter() — passes to next filter      │
+│     (next in chain: SecurityFilterChain)                │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [SecurityFilterChain]                                   │
+│   /api/auth/** → permitAll()                            │
+│   → /api/auth/login is in the permitAll list            │
+│     no token required → request reaches AuthController  │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [AuthController]                                        │
+│   @Valid → email: @NotBlank — password: @NotBlank       │
+│   invalid → GlobalExceptionHandler → HTTP 400           │
+│             { "error": "field: must not be blank" }     │
+│   valid → calls AuthService.login(request)              │
+└─────────────────────────────────────────────────────────┘
+         │ valid
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [AuthService]                                           │
+│   calls authenticationManager.authenticate(email, pwd)  │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [AuthenticationManager]                                 │
+│   receives the login attempt                            │
+│   routes to the right provider for this auth type       │
+│   → delegates to DaoAuthenticationProvider             │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [DaoAuthenticationProvider]  ← Spring internal         │
+│                                                         │
+│   step 1: to verify the password it needs the stored   │
+│           hash from the DB — so it calls               │
+│           UserDetailsServiceImpl.loadUserByUsername()   │
+│           → queries DB → returns UserDetails {          │
+│                getUsername()    = email                 │
+│                getPassword()    = BCrypt hash  ← used   │
+│                getAuthorities() = [ROLE_MANAGER]        │
+│             }                                           │
+│                                                         │
+│   step 2: BCrypt.matches(rawPassword,                   │
+│             userDetails.getPassword())                  │
+│           no match → GlobalExceptionHandler → HTTP 401  │
+│                       { "error": "Invalid email         │
+│                          or password" }                 │
+│           match → authentication succeeds               │
+└─────────────────────────────────────────────────────────┘
+         │ match
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [AuthService]                                           │
+│   calls JwtUtil.generateToken(email)                    │
+│   → builds header + payload + signature                 │
+│   → returns AuthResponse(token) to AuthController       │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [AuthController]                                        │
+│   receives AuthResponse from AuthService                │
+│   → ResponseEntity.ok(authResponse)                     │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+         { "token": "eyJ..." }  HTTP 200
+         │
+         ▼
+Angular stores token in localStorage
+```
 
 ---
 
-**Flow 2 — Every subsequent request** (any protected route)
+### Flow 2 — Every subsequent request (complete)
 
 ```
-Client: sends request with header → Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
-    ↓
-[JwtFilter]                     → token found → strips "Bearer " prefix
-    ↓
-[JwtFilter] calls               → JwtUtil.extractUsername(token)
-                                  decodes token → reads "sub" claim → returns email
-    ↓
-[JwtFilter] calls               → UserDetailsServiceImpl.loadUserByUsername(email)
-                                  queries database → returns UserDetails {
-                                    getUsername()    = email          → isValid()
-                                    getPassword()    = BCrypt hash    → not used here
-                                    getAuthorities() = [ROLE_MANAGER] → setAuth()
-                                  }
-    ↓
-[JwtFilter] calls               → JwtUtil.isValid(token, userDetails.getUsername())
-                                  checks signature (not tampered) + expiry (not expired)
-    ↓
-[JwtFilter]                     → puts the user in SecurityContextHolder (marks request as authenticated)
-    ↓
-[SecurityFilterChain]           → route requires authenticated() → user is in context → allowed
-    ↓
-[@RestController]               → request reaches the controller, processes normally
-```
+─ ─ ─ ─ ─ ─ SecurityConfig already ran at startup ─ ─ ─
+─ ─ ─ ─ ─ ─ PER REQUEST — runs on every HTTP call ─ ─ ─
 
-**If the token is invalid or missing:** `JwtFilter` skips setting authentication → `SecurityFilterChain` finds no user in context → returns 403.
+GET /api/projects
+Authorization: Bearer eyJ...
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [CORS filter]  (browser only — Postman skips this)      │
+│   Origin: http://localhost:4200                         │
+│   is this in allowedOrigins? YES                        │
+│   Authorization header is non-simple → preflight sent   │
+│   Spring approves → real request continues              │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [JwtFilter]                                             │
+│   reads Authorization header                            │
+│   → "Bearer eyJ..." → strips prefix → raw token        │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [JwtUtil.extractUsername(token)]                        │
+│   parseClaims() → reads "sub" claim → returns email     │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [UserDetailsServiceImpl.loadUserByUsername(email)]      │
+│   queries DB → returns UserDetails {                    │
+│      getUsername()    = email          → isValid()      │
+│      getPassword()    = BCrypt hash    → not used here  │
+│      getAuthorities() = [ROLE_MANAGER] → setAuth()      │
+│   }                                                     │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [JwtUtil.isValid(token, userDetails.getUsername())]     │
+│   signature OK + not expired?                           │
+│   false → setAuthentication() never called              │
+│           JwtFilter still calls filterChain.doFilter()  │
+│           SecurityFilterChain: no auth found → HTTP 403 │
+│   true → continue                                       │
+└─────────────────────────────────────────────────────────┘
+         │ true
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [SecurityContextHolder]                                 │
+│   thread-local storage — holds the authenticated user   │
+│   for the duration of this request only                 │
+│   setAuthentication(                                    │
+│     new UsernamePasswordAuthenticationToken(            │
+│       userDetails,              ← who the user is       │
+│       null,                     ← JWT proved identity   │
+│       userDetails.getAuthorities() ← roles              │
+│     )                                                   │
+│   )                                                     │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [JwtFilter] → filterChain.doFilter()                    │
+│   JwtFilter's only job: set (or not) the auth context   │
+│   it never blocks — always passes request onward        │
+│   SecurityFilterChain decides: allow or deny            │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [SecurityFilterChain]                                   │
+│   reads SecurityContextHolder                           │
+│   .anyRequest().authenticated()                         │
+│   user in context → request is allowed                  │
+│   no user in context → HTTP 403 Forbidden               │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [@PreAuthorize("hasRole('MANAGER')")]  ← if present     │
+│   reads SecurityContextHolder                           │
+│   wrong role → AccessDeniedException → HTTP 403         │
+│   role OK → method runs                                 │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ [@RestController method]                                │
+│   all checks passed — business logic runs here          │
+│   getProjects(), createProject(), etc.                  │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+         HTTP 200 + response data
+```
 
 ---
 
-**Both flows combined — the complete picture**
+### Both flows combined — the complete picture
 
 ```
+─ ─ ─ AT STARTUP ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+[SecurityConfig] → creates CORS filter, SecurityFilterChain,
+                   registers JwtFilter, exposes beans
+─ ─ ─ PER REQUEST ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
         POST /api/auth/login              GET /api/any-protected-route
         { email, password }               Authorization: Bearer eyJ...
                 │                                      │
                 └──────────────────┬───────────────────┘
+                                   │
+                           [CORS filter]
+                      origin allowed? YES → continue
                                    │
                               [JwtFilter]
                                    │
                   ┌────────────────┴─────────────────┐
              no token                            token found
                   │                                   │
-  filterChain.doFilter()             [JwtFilter] calls JwtUtil.extractUsername()
-  "pass to next filter"
-                  │                                   │
-       [SecurityFilterChain]           [JwtFilter] calls UserDetailsServiceImpl
-       /api/auth/** → permitAll()           loads user from DB
-                  │                                   │
-          [AuthController]             [JwtFilter] calls JwtUtil.isValid()
-                  │                         signature + expiry
-          [AuthService]                             │
-                  │                     [JwtFilter] → SecurityContextHolder
-       [AuthenticationManager]            sets authenticated user
-                  │                                   │
-       [DaoAuthenticationProvider]        [SecurityFilterChain]
-           ╱              ╲               authenticated() → OK
-[UserDetailsServiceImpl]  [BCryptPasswordEncoder]       │
-   loads user from DB     matches(raw, hash)            │
-           ╲              ╱                     [@RestController]
-         both OK?                               request is processed
+  filterChain.doFilter()             extractUsername() → email
+  "pass through"                     loadUserByUsername(email)
+                  │                  isValid(token) → OK
+       [SecurityFilterChain]         SecurityContextHolder ← set
+       /api/auth/** → permitAll()    filterChain.doFilter()
+                  │                       [SecurityFilterChain]
+          [AuthController]                authenticated() → OK
+                  │                                  │
+          [AuthService]                      [@PreAuthorize]
+                  │                           role check → OK
+       [AuthenticationManager]                        │
+                  │                         [@RestController]
+       [DaoAuthenticationProvider]          request is processed
+           ╱              ╲
+[UserDetailsServiceImpl]  [BCrypt]
+   loads user from DB     matches()
+           ╲              ╱
+         both OK?
               │
   [JwtUtil.generateToken()]
               │
@@ -283,10 +440,101 @@ Client: sends request with header → Authorization: Bearer eyJhbGciOiJIUzI1NiJ9
     ResponseEntity.ok()
               │
     { "token": "eyJ..." }
-              │
-           CLIENT
-           stores token in localStorage
+
+error path → [GlobalExceptionHandler]
+  @Valid fails       → HTTP 400  { "error": "field: ..." }
+  wrong password     → HTTP 401  { "error": "Invalid email or password" }
+  bad/expired token  → HTTP 403  (no auth set, Spring rejects)
+  wrong role         → HTTP 403  (AccessDeniedException)
 ```
+
+---
+
+### Error flows — what happens when things go wrong
+
+**Wrong password:**
+
+```
+POST /api/auth/login { email: ok, password: wrong }
+         │
+         ▼
+AuthService → authenticationManager.authenticate()
+         │
+         ▼
+DaoAuthenticationProvider → BCrypt.matches() → NO MATCH
+         │
+         ▼
+throws BadCredentialsException
+         │
+         ▼
+GlobalExceptionHandler.handleBadCredentials()
+         │
+         ▼
+HTTP 401  { "error": "Invalid email or password" }
+```
+
+> Spring Security also converts `UsernameNotFoundException` to `BadCredentialsException` internally — so a wrong email and a wrong password return the same 401 message. Intentional: if the API returned different errors, an attacker could enumerate valid emails.
+
+---
+
+**Expired or tampered token:**
+
+```
+GET /api/projects
+Authorization: Bearer <expired-or-fake-token>
+         │
+         ▼
+JwtFilter → JwtUtil.extractUsername(token)
+         │
+         ▼
+parseClaims() → parseSignedClaims() throws JwtException
+   (ExpiredJwtException if expired, SignatureException if tampered)
+         │
+         ▼
+isValid() catches JwtException → returns false
+         │
+         ▼
+SecurityContextHolder NOT set  (no authenticated user for this request)
+         │
+         ▼
+filterChain.doFilter() continues
+         │
+         ▼
+SecurityFilterChain: .anyRequest().authenticated()
+    → no user in SecurityContextHolder → DENIED
+         │
+         ▼
+HTTP 403 Forbidden
+```
+
+---
+
+**Authenticated but wrong role:**
+
+```
+POST /api/projects
+Authorization: Bearer <valid-employee-token>
+         │
+         ▼
+JwtFilter validates token → sets EMPLOYEE in SecurityContextHolder
+         │
+         ▼
+SecurityFilterChain: authenticated() → OK  (user is authenticated)
+         │
+         ▼
+@PreAuthorize("hasRole('MANAGER')") reads SecurityContextHolder
+    current role: EMPLOYEE
+    required role: MANAGER
+    → EMPLOYEE ≠ MANAGER
+         │
+         ▼
+throws AccessDeniedException
+         │
+         ▼
+HTTP 403 Forbidden
+```
+
+> Note the difference: a missing/invalid token returns 403 because Spring Security's default behaviour maps unauthenticated requests to 403. A wrong role also returns 403. Both are 403 but for different reasons — authentication failure vs authorisation failure. Ideally an invalid token should return 401. You fix this with a custom `AuthenticationEntryPoint` (advanced — out of scope for now).
 
 ---
 
@@ -311,24 +559,46 @@ The flow reads **top-down** — a request enters at `AuthController` and goes de
 The creation order reads **bottom-up** — you build the deepest dependency first, because each class needs the classes below it to compile.
 
 ```
-Flow order (top-down)          Creation order (bottom-up)
+Flow order (top-down)          Creation order (bottom-up)        Why this order
 
-AuthController                 1. SecurityConfig skeleton  ← open all routes to unblock testing
-    ↓                          2. JwtUtil
-AuthService                    3. UserDetailsServiceImpl
-    ↓                          4. SecurityConfig beans (PasswordEncoder, AuthManager)
-DaoAuthenticationProvider      5. DTOs (LoginRequest, AuthResponse)
-    ↓                          6. AuthService
-UserDetailsServiceImpl         7. AuthController
-    ↓                          8. GlobalExceptionHandler
-JwtUtil                        9. JwtFilter
-    ↓                         10. SecurityConfig final (register JwtFilter, protect routes)
-SecurityFilterChain
+AuthController                 1. SecurityConfig skeleton    ← open ALL routes so you can
+    ↓                             (anyRequest().permitAll())    test each class as you build it
+AuthService                                                      without needing a token yet
+    ↓                          2. JwtUtil                   ← no dependencies — standalone
+DaoAuthenticationProvider                                        utility class; builds first
+    ↓                          3. UserDetailsServiceImpl    ← depends on UserRepository
+UserDetailsServiceImpl            (reads role from User)         (already exists)
+    ↓                          
+JwtUtil                        4. SecurityConfig beans      ← PasswordEncoder + AuthManager
+    ↓                             (PasswordEncoder,              exposed here so AuthService
+SecurityFilterChain               AuthenticationManager)         can inject AuthManager
+                               
+                               5. DTOs                      ← LoginRequest + AuthResponse
+                                  (LoginRequest,                 plain classes, no dependencies
+                                   AuthResponse)            
+                               
+                               6. AuthService               ← depends on AuthManager (step 4)
+                                                                 and JwtUtil (step 2)
+                               
+                               7. AuthController            ← depends on AuthService (step 6)
+                               
+                               8. GlobalExceptionHandler    ← no dependencies — standalone
+                                                                 intercepts exceptions globally
+                               
+                               9. JwtFilter                 ← depends on JwtUtil (step 2)
+                                                                 and UserDetailsServiceImpl (step 3)
+                               
+                              10. SecurityConfig final      ← depends on JwtFilter (step 9)
+                                  (register JwtFilter,          closes routes — /api/auth/**
+                                   protect routes,              permitAll, everything else
+                                   add CORS config)             authenticated()
 ```
 
 `SecurityConfig` is special: it appears **first** (as a skeleton that opens all routes) and **last** (as the final version that closes them). You open routes at the start so you can test each class as you build it. If you locked the routes at step 1, nothing would work until step 10.
 
 Every other class follows the dependency rule: if `AuthService` calls `JwtUtil`, then `JwtUtil` must exist first.
+
+**Test after each step** — do not wait until step 10 to run the app. After step 7, test Flow 1 in Postman (login + get token). After step 10, test Flow 2 (use the token to call a protected route). Catching problems early is much easier than debugging a chain of 10 classes at once.
 
 ---
 
@@ -1267,6 +1537,65 @@ Docs: [Spring Security — Filter Chain Architecture](https://docs.spring.io/spr
 
 Every HTTP request passes through this filter before reaching any controller. The filter reads the JWT from the `Authorization` header, validates it, and — if valid — sets the authentication in `SecurityContextHolder`. Once that is set, Spring Security knows who is making the request and applies the route rules from `SecurityFilterChain`.
 
+**Decision flow — what happens inside every request:**
+
+```
+Request arrives
+      │
+      ▼
+Has "Authorization" header?
+  NO ────────────────────────→ filterChain.doFilter() → pass through
+      │                        (SecurityFilterChain rejects if auth required)
+  YES
+      ▼
+Starts with "Bearer "?
+  NO ────────────────────────→ filterChain.doFilter() → pass through
+      │
+  YES → strip "Bearer " prefix (7 chars) → raw token
+      ▼
+JwtUtil.extractUsername(token) → get email from "sub" claim
+      │
+      ▼
+Already authenticated this request? (getAuthentication() != null)
+  YES ───────────────────────→ skip — already processed
+      │
+  NO
+      ▼
+UserDetailsService.loadUserByUsername(email) → loads user from DB
+      │
+      ▼
+JwtUtil.isValid(token, email)?
+  NO ────────────────────────→ filterChain.doFilter() → pass through
+      │                        (SecurityFilterChain blocks: no auth set → 403)
+  YES
+      ▼
+SecurityContextHolder.setAuthentication(
+  new UsernamePasswordAuthenticationToken(userDetails, null, authorities)
+)
+      │
+      ▼
+filterChain.doFilter() → continues to SecurityFilterChain → controller
+```
+
+**SecurityContextHolder — lifecycle per request:**
+
+```
+Request arrives
+      │
+      ▼
+JwtFilter sets SecurityContextHolder   ← thread-local storage
+      │                                   (isolated per thread — each request
+      ▼                                    has its own copy, never shared)
+SecurityFilterChain  ──reads──┐
+@PreAuthorize        ──reads──┤  all read the same SecurityContextHolder
+@RestController      ──reads──┘
+      │
+      ▼
+Request ends → SecurityContextHolder is cleared automatically
+```
+
+It is **thread-local** — each request runs on its own thread. The next request from the same user starts fresh and goes through `JwtFilter` again. This is why the `getAuthentication() == null` check is safe — you are never reading another user's auth by accident.
+
 ```java
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -1429,6 +1758,46 @@ Docs: [Spring Security — CORS](https://docs.spring.io/spring-security/referenc
 CORS (Cross-Origin Resource Sharing) is a browser security policy that blocks JavaScript from calling a server on a different origin. When Angular (localhost:4200) calls Spring Boot (localhost:8080), the browser blocks it — different ports = different origins.
 
 Configure CORS inside `SecurityConfig` — not with `@CrossOrigin` on every controller. That way the Security layer handles it consistently for every endpoint.
+
+**How the preflight works:**
+
+```
+Angular sends POST /api/auth/login
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ Browser — same-origin check                             │
+│   Angular is on localhost:4200                          │
+│   Spring Boot is on localhost:8080                      │
+│   different port = different origin → CORS applies      │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ Browser sends preflight OPTIONS request first           │
+│   Origin: http://localhost:4200                         │
+│   Access-Control-Request-Method: POST                   │
+│   Access-Control-Request-Headers: Authorization         │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ Spring Boot CORS filter (corsConfigurationSource)       │
+│   is "http://localhost:4200" in allowedOrigins? YES     │
+│   responds with:                                        │
+│     Access-Control-Allow-Origin: http://localhost:4200  │
+│     Access-Control-Allow-Methods: GET, POST, PUT, ...   │
+│     Access-Control-Allow-Headers: *                     │
+└─────────────────────────────────────────────────────────┘
+         │
+         ▼
+Browser receives OK → sends the real POST request
+         │
+         ▼
+Spring processes the request normally
+```
+
+> The CORS error only appears in the **browser** — Postman never sends a preflight, so CORS errors are invisible in Postman. If your Angular app gets a CORS error but Postman works, the fix is always on the server.
 
 ```java
 @Bean
