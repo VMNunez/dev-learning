@@ -6,6 +6,24 @@
 
 ---
 
+## Java syntax you'll meet in this file — read this first
+
+If you have never written Java, a handful of syntax shapes here will look like magic before you even reach the security logic. None of them are Spring — they are everyday Java, and each one has a full explanation in your own Java notes. Skim this table once, then come back to it whenever a symbol confuses you. If a line in this file looks strange, it is almost always one of these seven rows.
+
+| Syntax you'll see | What it actually is | Where it's explained in your notes |
+| --- | --- | --- |
+| `auth -> auth.anyRequest()...` · `() -> new Something()` | A **lambda** — a short, nameless function passed as an argument. The part before `->` is the input the method hands you; the part after is what you do with it. Spring Security's config methods take lambdas so you can describe each rule inline. | [java/09-streams-lambdas.md — Lambda expressions](../java/09-streams-lambdas.md#lambda-expressions) |
+| `findByEmail(email).orElseThrow(...)` | The method returns an **`Optional<User>`** — a box that either holds a user or is empty. `.orElseThrow()` opens the box, or throws if it's empty. This is how Spring Data avoids ever returning `null`. | [java/10-generics.md — `Optional<T>`](../java/10-generics.md#optionalt) |
+| `ResponseEntity<AuthResponse>` · `Map<String, String>` · `List.of(...)` | **Generics** — the `<...>` says what type lives inside a container. `List<String>` is a list of strings; `ResponseEntity<AuthResponse>` is an HTTP response carrying an `AuthResponse`. | [java/10-generics.md — Generics](../java/10-generics.md#generics) |
+| `.stream().map(...).findFirst()` | The **Stream API** — a pipeline that transforms a collection step by step. It shows up once here, inside `GlobalExceptionHandler`. | [java/09-streams-lambdas.md — Stream API](../java/09-streams-lambdas.md#stream-api) |
+| `Jwts.builder().subject(...).signWith(...).compact()` | The **builder pattern** — chain methods to configure an object, then a final call (`.build()` / `.compact()`) produces it. jjwt and Spring use it everywhere. | explained line by line in the `JwtUtil` section below |
+| `@Component` · `@Service` · `@Bean` · `@Override` | **Annotations** — metadata you stick on a class or method to tell Spring (or the compiler) how to treat it. | [java/13-annotations.md](../java/13-annotations.md) |
+| `private final JwtUtil jwtUtil;` + constructor | **Constructor injection** — Spring passes dependencies in through the constructor. `final` means the field is set once and never reassigned. | [spring-boot/03-dependency-injection.md](./03-dependency-injection.md) |
+
+> Two more Java rules you'll hit: `throws Exception` / `throws UsernameNotFoundException` in a method signature is Java's **checked-exception** rule — you must declare an exception a method might throw ([java/08-exceptions.md](../java/08-exceptions.md)). And `enum Role { EMPLOYEE, MANAGER }` (Step 4) is a type with a fixed set of named values ([java/11-enums.md](../java/11-enums.md)).
+
+---
+
 ## What we are building — and why
 
 ### The problem
@@ -679,6 +697,39 @@ After adding all dependencies, reload Maven in IntelliJ: right-click `pom.xml` �
 
 ---
 
+## Where each file goes — the package structure
+
+Before writing any class, you need to know where it lives. IntelliJ does **not** create packages for you — you create each one yourself, then put the class inside. A "package" is just a folder under `src/main/java/com/victor/timetrack/`, and the convention is one folder per role (one for controllers, one for services, and so on). Java's only hard rule: the `package` line at the top of every file must match the folder it sits in, or it won't compile. IntelliJ writes that line for you when you create the class in the right place.
+
+These are the packages this feature touches — some already exist from earlier steps:
+
+```
+src/main/java/com/victor/timetrack/
+├── security/
+│   ├── JwtUtil.java                ← creates & validates tokens
+│   ├── JwtFilter.java              ← runs on every request
+│   └── SecurityConfig.java         ← all security rules + beans
+├── service/
+│   ├── UserDetailsServiceImpl.java ← loads the user from the DB
+│   └── AuthService.java            ← orchestrates login
+├── controller/
+│   └── AuthController.java         ← POST /api/auth/login
+├── dto/
+│   ├── request/
+│   │   └── LoginRequest.java       ← what the client sends
+│   └── response/
+│       └── AuthResponse.java       ← what the server returns back
+├── exception/
+│   └── GlobalExceptionHandler.java ← turns exceptions into clean JSON
+└── model/
+    ├── User.java                   ← entity (already exists)
+    └── Role.java                   ← enum, added in Step 4
+```
+
+> The `File:` line at the top of each section below repeats the exact path for that class, so you never have to guess where to put it. In IntelliJ: right-click the parent folder → New → Package to create a folder, then right-click the package → New → Java Class. The packaging idea (one folder per layer) is the same pattern as [layer-reference.md](./layer-reference.md).
+
+---
+
 ## How Spring Security works — the filter chain
 
 Spring Security does not live inside your controllers. It works as a chain of filters that sits in front of them. Every HTTP request passes through this chain before it can reach any `@RestController`. If a request fails a security check, it is rejected there — the controller never runs.
@@ -1148,6 +1199,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 > **Import conflict to avoid:** Spring Security has its own class called `User` (`org.springframework.security.core.userdetails.User`). Your entity is also called `User`. If you import the Spring Security one, the variable on the left side (`User user = userRepository.findByEmail(...)`) will fail with a type mismatch. Fix: import your entity (`com.victor.timetrack.model.User`) and use the full qualified path for the Spring Security builder (`org.springframework.security.core.userdetails.User.withUsername(...)`).
 
+> **New to Java? Three things on the lines above.** `findByEmail(username)` returns an **`Optional<User>`** — a box that may or may not contain a user — and `.orElseThrow(...)` opens the box or throws when it's empty ([java/10-generics.md — the most common Spring Boot pattern](../java/10-generics.md#the-most-common-spring-boot-pattern)). The `() -> new UsernameNotFoundException(...)` inside it is a **lambda** — a nameless function Spring runs *only if* the box is empty ([java/09-streams-lambdas.md](../java/09-streams-lambdas.md#lambda-expressions)). And `throws UsernameNotFoundException` in the signature is the **checked-exception** rule — Java forces you to declare it ([java/08-exceptions.md](../java/08-exceptions.md)).
+
 ---
 
 ## BCryptPasswordEncoder — never store plain text passwords
@@ -1411,6 +1464,8 @@ public class GlobalExceptionHandler {
 **`@ExceptionHandler(MethodArgumentNotValidException.class)`** — catches validation failures from `@Valid` on `LoginRequest`. Extracts the first field error and returns a 400 with a readable message. Without this, Spring returns a verbose 400 body that is hard to read.
 
 **`.getBindingResult().getFieldErrors().stream().map(...).findFirst()`** — `getBindingResult()` returns all validation errors. `.getFieldErrors()` filters to field-level errors (not global ones). `.stream().map(...).findFirst()` picks the first one and formats it as `"fieldName: error message"`.
+
+> **New to the `.stream().map(...).findFirst()` chain?** This is the **Stream API** — a pipeline that processes a list step by step: `.stream()` opens the list, `.map(err -> ...)` transforms each error into a `"field: message"` string (that `err -> ...` is a lambda again), `.findFirst()` takes the first result as an `Optional`, and `.orElse("Validation failed")` supplies a fallback if the list was empty. Full walkthrough in [java/09-streams-lambdas.md — Stream API](../java/09-streams-lambdas.md#stream-api).
 
 > `GlobalExceptionHandler` does not catch `UsernameNotFoundException` directly. Spring Security converts it to `BadCredentialsException` internally — this is intentional. If the API told the client "user not found", an attacker could enumerate valid email addresses. Returning the same error for both cases prevents that.
 
@@ -1697,6 +1752,8 @@ public class SecurityConfig {
     }
 }
 ```
+
+> **What is `csrf -> csrf.disable()`?** Each of these is a **lambda** — a mini-function you hand to Spring Security to describe one rule. Read `csrf -> csrf.disable()` as: "Spring gives you the `csrf` config object; call `.disable()` on it." The exact same shape repeats for `session -> ...`, `auth -> ...` and `cors -> ...` in the final version below — the word before `->` is just a name *you* pick for the object Spring passes in, so `auth` and `csrf` are not keywords, only labels. Full explanation in [java/09-streams-lambdas.md — Lambda expressions](../java/09-streams-lambdas.md#lambda-expressions).
 
 ### Final version — protect all routes, add JWT filter
 
