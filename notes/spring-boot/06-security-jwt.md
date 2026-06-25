@@ -19,6 +19,7 @@ If you have never written Java, a handful of syntax shapes here will look like m
 | `Jwts.builder().subject(...).signWith(...).compact()` | The **builder pattern** — chain methods to configure an object, then a final call (`.build()` / `.compact()`) produces it. jjwt and Spring use it everywhere. | explained line by line in the `JwtUtil` section below |
 | `@Component` · `@Service` · `@Bean` · `@Override` | **Annotations** — metadata you stick on a class or method to tell Spring (or the compiler) how to treat it. | [java/13-annotations.md](../java/13-annotations.md) |
 | `private final JwtUtil jwtUtil;` + constructor | **Constructor injection** — Spring passes dependencies in through the constructor. `final` means the field is set once and never reassigned. | [spring-boot/03-dependency-injection.md](./03-dependency-injection.md) |
+| `@Bean` method vs `@Component` / `@Service` class · the word *bean* | A **bean** is simply an object that Spring creates and manages for you, so it can inject it wherever it's needed. You mark *your own* classes with `@Component` / `@Service`. For objects from *library* classes you don't own (like `PasswordEncoder`), you write a `@Bean` method inside a config class instead. Both end up as beans — same result, two ways in. | [spring-boot/03-dependency-injection.md — Spring beans](./03-dependency-injection.md#spring-beans--what-spring-manages) |
 
 > Two more Java rules you'll hit: `throws Exception` / `throws UsernameNotFoundException` in a method signature is Java's **checked-exception** rule — you must declare an exception a method might throw ([java/08-exceptions.md](../java/08-exceptions.md)). And `enum Role { EMPLOYEE, MANAGER }` (Step 4) is a type with a fixed set of named values ([java/11-enums.md](../java/11-enums.md)).
 
@@ -883,6 +884,8 @@ eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIn0.abc123
 - **Payload** — the claims: user data stored as key-value pairs (`sub` = email, `iat` = issued at, `exp` = expiration)
 - **Signature** — HMAC of header + payload using the secret key — proves the token was not tampered with
 
+> **What is HMAC?** Hash-based Message Authentication Code. In plain words: it runs the header + payload through a one-way hash **mixed with your secret key** to produce a short fingerprint — the signature. Anyone can recompute it, but only someone who knows the secret can produce the *correct* fingerprint. So if even one character of the payload changes, the recomputed signature no longer matches and the token is rejected. That is exactly what `.signWith()` (creating) and `.verifyWith()` (reading) do in `JwtUtil` below.
+
 Any server with the same secret key can verify the token without calling the database. This is the whole point — no session, no shared state, just a signed token the client carries on every request.
 
 One important limitation: you cannot invalidate a JWT before it expires. Once issued, the token is valid until its `exp` claim passes — there is no server-side state to delete. If a user logs out or their account is banned, the token keeps working until expiry. The practical solution is a short expiry time (15–60 minutes). The workaround is a token blacklist stored in Redis, but that introduces server-side state and partially defeats the purpose of stateless auth.
@@ -1651,6 +1654,8 @@ Request ends → SecurityContextHolder is cleared automatically
 
 It is **thread-local** — each request runs on its own thread. The next request from the same user starts fresh and goes through `JwtFilter` again. This is why the `getAuthentication() == null` check is safe — you are never reading another user's auth by accident.
 
+> **What is a "thread" here?** When a request reaches the server, Spring runs it from start to finish on one worker thread (think of a thread as one worker handling one request at a time). *Thread-local* storage means every thread gets its own private copy of the `SecurityContextHolder`. So even if 50 users hit the API at the same moment — 50 threads running in parallel — none of them can see another user's data, because each reads only its own copy. When the request finishes, Spring clears that copy automatically.
+
 ```java
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -1696,6 +1701,8 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 }
 ```
+
+> **The three method parameters first.** `HttpServletRequest request` is Java's raw incoming-request object — you read headers, the body and the URL from it. `HttpServletResponse response` is the raw outgoing-response object — you write the status and headers to it. `FilterChain filterChain` is the ordered list of the remaining filters; calling `filterChain.doFilter(...)` hands the request to the next one (fully explained at the end of this section).
 
 **`request.getHeader("Authorization")`** — reads the `Authorization` header. The Angular interceptor sends `Bearer <token>` here on every request.
 
@@ -1752,6 +1759,12 @@ public class SecurityConfig {
     }
 }
 ```
+
+**`@Configuration`** — marks this class as a place where beans are defined. At startup, Spring reads the class and runs every `@Bean` method inside it, registering what they return.
+
+**`@EnableWebSecurity`** — switches on Spring Security's filter chain and tells Spring to use *your* `SecurityFilterChain` bean instead of its default one. Without this annotation, your security rules are never applied.
+
+**`HttpSecurity http`** — you do not create this object; Spring passes it into the method for you. You call its chained methods (`.csrf()`, `.sessionManagement()`, `.authorizeHttpRequests()`, …) to describe the rules step by step, and `http.build()` turns all of that into the finished filter chain that gets returned.
 
 > **What is `csrf -> csrf.disable()`?** Each of these is a **lambda** — a mini-function you hand to Spring Security to describe one rule. Read `csrf -> csrf.disable()` as: "Spring gives you the `csrf` config object; call `.disable()` on it." The exact same shape repeats for `session -> ...`, `auth -> ...` and `cors -> ...` in the final version below — the word before `->` is just a name *you* pick for the object Spring passes in, so `auth` and `csrf` are not keywords, only labels. Full explanation in [java/09-streams-lambdas.md — Lambda expressions](../java/09-streams-lambdas.md#lambda-expressions).
 
@@ -1901,6 +1914,8 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
     return ResponseEntity.noContent().build();
 }
 ```
+
+> **Why is there code inside a string?** The text inside `@PreAuthorize("...")` is **SpEL** (Spring Expression Language), not Java. Spring evaluates it at runtime, right before the method runs. `hasRole(...)`, `hasAuthority(...)` and `authentication` are built-in helpers Spring gives you for security checks — you can only use them inside these security annotation strings, not in normal Java code.
 
 **`hasRole('MANAGER')`** — checks that the authenticated user has the `ROLE_MANAGER` authority. Spring Security adds the `ROLE_` prefix automatically, so you write `'MANAGER'` here and `.roles("MANAGER")` in `UserDetailsServiceImpl`.
 
