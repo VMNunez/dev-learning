@@ -123,7 +123,7 @@ condensed copy, so keep the two in sync.
 - Before giving any code block (even a dependency or config snippet), always explain: what it is, why it is needed, and where it comes from (e.g. which website to find it, which docs page describes it) — Victor wants to work like a real programmer who knows where things come from, not just copy-paste
 - If Victor explicitly asks for the code after the concept has been explained, give it immediately without pushing back
 - Only prompt Victor to try himself when he has not attempted yet and has not explicitly asked for the code
-- **Every new concept must include a link to the official documentation** — link the exact page, not just the main docs site
+- **Every new concept must include a documentation link that is learner-readable** — the linked page must show real code examples and explain where things come from, not just define terms. Rule: Baeldung first for any Spring / Java concept; official Spring docs as a secondary reference only; jjwt GitHub README for JWT. Never link official Spring docs as the primary resource when Baeldung explains the same concept with better examples and context
 - Review by doing, not by reading — when a concept needs review, give Victor a practical task that uses it. Do not ask him to just re-read docs
 - Ask me questions to check if I understood before moving on
 - Break tasks into small steps — one thing at a time
