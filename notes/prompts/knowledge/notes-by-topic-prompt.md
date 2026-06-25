@@ -221,6 +221,15 @@ Read all files in {NOTES_PATH}.
     does not apply. Only add a link if you are certain of the correct URL and sub-section —
     if not, write `Docs: TODO — add link` instead of guessing. A wrong URL is worse than
     no link.
+    **Link priority by topic:** the linked page must show real code examples and explain
+    where things come from — not just define terms. Rule: for Spring Boot and Java concepts,
+    prefer Baeldung (baeldung.com) as the primary link — it has full working code, step-by-step
+    context, and clear explanations of why each piece exists. Add the official Spring docs as
+    a secondary link only. For JWT, prefer the jjwt GitHub README (github.com/jwtk/jjwt) — it
+    has direct examples. For Angular, the official Angular docs (angular.dev) are clear and
+    learner-friendly — use them as primary. For CSS and JavaScript, MDN (developer.mozilla.org)
+    is primary. Never link the official Spring docs as the sole reference for a concept that
+    Baeldung explains better with examples.
   - All other violations **in existing text** (wrong voice, wrong format mode, missing WHY,
     missing patterns) → **report in the summary only**. Do not change the text. Victor
     decides whether to add a TODO and fix it. New content you are creating must always
