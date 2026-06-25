@@ -292,16 +292,16 @@ Client: sends request with header → Authorization: Bearer eyJhbGciOiJIUzI1NiJ9
 
 **What each class is responsible for:**
 
-| Class | Flow | Responsibility |
-|---|---|---|
-| `SecurityConfig` | Both | Configures all rules: routes, filter registration, CORS |
-| `JwtUtil` | Both | Creates tokens (Flow 1) and validates them (Flow 2) |
-| `UserDetailsServiceImpl` | Both | Loads a user from the database by email |
-| `BCryptPasswordEncoder` | Flow 1 only | Compares raw password against stored hash |
-| `AuthService` | Flow 1 only | Orchestrates login — calls authenticate(), then generateToken() |
-| `AuthController` | Flow 1 only | Receives the login HTTP request, returns the token |
-| `JwtFilter` | Flow 2 only | Intercepts every request, validates JWT, sets SecurityContextHolder |
-| `GlobalExceptionHandler` | Both | Converts exceptions into clean JSON error responses |
+| Class                    | Flow        | Responsibility                                                      |
+| ------------------------ | ----------- | ------------------------------------------------------------------- |
+| `SecurityConfig`         | Both        | Configures all rules: routes, filter registration, CORS             |
+| `JwtUtil`                | Both        | Creates tokens (Flow 1) and validates them (Flow 2)                 |
+| `UserDetailsServiceImpl` | Both        | Loads a user from the database by email                             |
+| `BCryptPasswordEncoder`  | Flow 1 only | Compares raw password against stored hash                           |
+| `AuthService`            | Flow 1 only | Orchestrates login — calls authenticate(), then generateToken()     |
+| `AuthController`         | Flow 1 only | Receives the login HTTP request, returns the token                  |
+| `JwtFilter`              | Flow 2 only | Intercepts every request, validates JWT, sets SecurityContextHolder |
+| `GlobalExceptionHandler` | Both        | Converts exceptions into clean JSON error responses                 |
 
 ---
 
@@ -342,7 +342,11 @@ Every other class follows the dependency rule: if `AuthService` calls `JwtUtil`,
 | Configure STATELESS sessions for JWT                   | [Session Management](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html)                           |
 | Password hashing with BCrypt                           | [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html)            |
 | How UserDetailsService fits into login                 | [DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) |
+| Method-level role checks (@PreAuthorize)               | [Spring Security — Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html)                |
+| SecurityContextHolder — reading the current user       | [Spring Security — SecurityContextHolder](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-securitycontextholder) |
 | Full Spring Security reference                         | [Spring Security Reference](https://docs.spring.io/spring-security/reference/)                                                                  |
+
+> **Practical companion — Baeldung (baeldung.com):** the official docs are reference-style — they define what each piece is, not how to wire it together. For every concept in this file, search `baeldung <concept>` (e.g. "baeldung spring security jwt", "baeldung userdetailsservice", "baeldung preauthorize"). Baeldung articles show real code examples and explain the why behind each step. Use both: official docs for the authoritative definition, Baeldung for the practical implementation guide.
 
 ---
 
@@ -458,8 +462,7 @@ _Step by step:_
 **1. Request arrives → JwtFilter runs, sees no token → passes through**
 `security/JwtFilter.java` — Every request passes through `JwtFilter` first. It looks for an `Authorization: Bearer <token>` header. On login, the user does not have a token yet, so the header is missing. `JwtFilter` detects this and does nothing — it simply passes the request to the next step.
 
-**2. SecurityFilterChain checks the route → `/api/auth/**` is `permitAll()` → allows it**
-`security/SecurityConfig.java` — `SecurityFilterChain` is the set of security rules you configured. `permitAll()` means "no authentication required for this URL". Since you marked `/api/auth/**` as public, the login endpoint is allowed through.
+**2. SecurityFilterChain checks the route → `/api/auth/**`is`permitAll()`→ allows it**`security/SecurityConfig.java`—`SecurityFilterChain`is the set of security rules you configured.`permitAll()`means "no authentication required for this URL". Since you marked`/api/auth/\*\*` as public, the login endpoint is allowed through.
 
 **3. AuthController receives the request → calls AuthService.login()**
 `controller/AuthController.java` — The request reaches your controller, which reads the JSON body (email + password) and calls the service.
@@ -721,7 +724,7 @@ private Claims parseClaims(String token) {
 
 **`.verifyWith(getSigningKey())`** — sets the secret key the parser will use to check the signature. Must be the same key used in `generateToken()` — if it is different, the signature does not match and `.parseSignedClaims()` throws.
 
-**`.build()`** — locks in the configuration (key, settings) and creates the actual parser object. You only configure the parser once — after `.build()` you just call parse methods on it.
+**`.build()`** — locks the parser configuration and returns a ready-to-use `JwtParser`. The builder pattern separates setup from use: you set options (like the signing key) before `.build()`, and after `.build()` you only call parse methods. The returned parser is immutable — safe to reuse across multiple requests without reconfiguring it each time. This is the same `.build()` pattern used in `Jwts.builder()` on the generation side: configure first, then use.
 
 **`.parseSignedClaims(token)`** — does all the work in one call: checks the signature, checks that the token has not expired, and parses the payload. If anything is wrong — wrong signature, expired, malformed string — it throws `JwtException` immediately. You only get a result back if everything is valid.
 
@@ -813,6 +816,8 @@ public class JwtUtil {
 
 Docs: [Spring Security — UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html) · [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider)
 
+> **The official docs are reference-style — they explain what each piece is, not how to wire them together.** For a practical walkthrough with code examples, search **"baeldung spring security userdetailsservice"** — Baeldung (baeldung.com) is the go-to practical companion for Spring developers. Every concept in this file has a Baeldung article next to the official docs. Use both: official docs for the authoritative definition, Baeldung for the "how do I actually write this" example.
+
 File: `src/main/java/com/victor/timetrack/service/UserDetailsServiceImpl.java`
 
 From the DaoAuthenticationProvider flow (see "The full login flow" section above):
@@ -877,21 +882,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 ## BCryptPasswordEncoder — never store plain text passwords
 
-Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — read only the **BCryptPasswordEncoder** section (scroll past DelegatingPasswordEncoder)
+Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — read only the **BCryptPasswordEncoder** section (scroll past DelegatingPasswordEncoder). The official page is confusing because it leads with `DelegatingPasswordEncoder`, which is a more complex wrapper you do not use here. Skip straight to BCrypt. For a clearer explanation with examples, search **"baeldung bcrypt spring security"**.
 
 File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java` (defined as a `@Bean`)
 
 If the database is ever compromised, plain text passwords expose every user immediately. BCrypt is a one-way hashing algorithm — you cannot reverse a hash back to the original password. Each hash also includes a random "salt", so two users with the same password produce different hashes.
 
 ```java
-// SecurityConfig — define the bean once
+// SecurityConfig.java — define the bean once
 @Bean
 public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
 }
+```
 
-// AuthService — compare raw password against the stored hash on login
-passwordEncoder.matches(rawPasswordFromRequest, user.getPassword()); // returns true or false
+You do not call `.matches()` yourself. `DaoAuthenticationProvider` calls it internally when you call `authenticationManager.authenticate(...)` in `AuthService`. You only need the bean — Spring Security does the rest.
+
+When you create a new user account (e.g. in `UserService.create()`), you call `.encode()` yourself to hash the password before saving it:
+
+```java
+// UserService.java — hash the password before saving a new user
+user.setPassword(passwordEncoder.encode(request.getPassword()));
+userRepository.save(user);
 ```
 
 **`new BCryptPasswordEncoder()`** — creates an encoder using BCrypt with the default strength (10 rounds). Higher rounds = slower hashing = harder to brute-force. The default is a good balance for most apps.
@@ -926,6 +938,69 @@ public AuthenticationManager authenticationManager(AuthenticationConfiguration c
 **`throws Exception`** — required because `getAuthenticationManager()` is declared with `throws Exception` in Spring's source code. You must declare it in your method signature too.
 
 > You never call `authenticationManager()` directly. Spring injects it into `AuthService` automatically. The `@Bean` annotation is what makes injection possible.
+
+---
+
+## DTOs — LoginRequest and AuthResponse
+
+DTOs (Data Transfer Objects) are plain classes that define the shape of data crossing the HTTP boundary — what the client sends in the request body, and what the server sends back in the response. They are not entities and they do not interact with the database.
+
+Both use Lombok annotations to avoid writing boilerplate getters, setters, and constructors by hand.
+
+### LoginRequest
+
+File: `src/main/java/com/victor/timetrack/dto/request/LoginRequest.java`
+
+What the client sends in the body of `POST /api/auth/login`:
+
+```json
+{ "email": "user@test.com", "password": "password123" }
+```
+
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginRequest {
+
+    @NotBlank(message = "Email is required")
+    private String email;
+
+    @NotBlank(message = "Password is required")
+    private String password;
+}
+```
+
+**`@Data`** (Lombok) — generates `getEmail()`, `getPassword()`, `setEmail()`, `setPassword()`, `equals()`, `hashCode()`, and `toString()` automatically. You never write these by hand.
+
+**`@NoArgsConstructor`** (Lombok) — generates a constructor with no arguments. Jackson (the JSON library Spring Boot uses) needs this to deserialize the JSON body into a `LoginRequest` object.
+
+**`@AllArgsConstructor`** (Lombok) — generates a constructor that takes all fields. Useful for tests.
+
+**`@NotBlank`** — a Bean Validation annotation. `@NotBlank` means: not null, not empty, and not just whitespace. When `@Valid` is present on the controller method parameter, Spring validates all `@NotBlank` fields before the method runs. If validation fails, `MethodArgumentNotValidException` is thrown and `GlobalExceptionHandler` returns a 400.
+
+### AuthResponse
+
+File: `src/main/java/com/victor/timetrack/dto/response/AuthResponse.java`
+
+What the server sends back after a successful login:
+
+```json
+{ "token": "eyJhbGciOiJIUzI1NiJ9..." }
+```
+
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthResponse {
+    private String token;
+}
+```
+
+This is the simplest possible DTO — one field. Spring serializes it to JSON automatically via Jackson when the controller returns it inside a `ResponseEntity`.
+
+> Neither DTO extends any class or implements any interface. They are just plain Java classes. Lombok handles the boilerplate; validation annotations handle the input rules.
 
 ---
 
@@ -1333,7 +1408,7 @@ public class SecurityConfig {
 
 **`@EnableMethodSecurity`** — enables `@PreAuthorize` on individual methods. Without this annotation, `@PreAuthorize` is silently ignored — no error, just no protection.
 
-**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/` (login, register) without a token. The `/**` matches any path below that prefix.
+**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/`(login, register) without a token. The`/\*\*` matches any path below that prefix.
 
 **`.anyRequest().authenticated()`** — every other URL requires a valid JWT. Order matters: `requestMatchers` rules are checked first, in the order they are declared. `.anyRequest()` is always last — it is the catch-all.
 
@@ -1378,7 +1453,7 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 **`setAllowCredentials(true)`** — allows cookies and `Authorization` headers to be sent cross-origin. Required for JWT to work.
 
-**`source.registerCorsConfiguration("/**", config)`** — applies this CORS config to every URL in the API.
+**`source.registerCorsConfiguration("/**", config)`\*\* — applies this CORS config to every URL in the API.
 
 > The CORS error only appears in the browser — it is not a backend bug. The browser blocks the response, not the request. The fix is always on the server.
 
@@ -1418,3 +1493,144 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 **Returning 403 instead of 401** — 401 means "not authenticated" (no token or invalid). 403 means "authenticated but not allowed" (wrong role). Spring Security returns 403 for unauthenticated requests by default — override with a custom `AuthenticationEntryPoint` if you need a proper 401.
 
 **`@PreAuthorize` silently ignored** — if you forget `@EnableMethodSecurity` on `SecurityConfig`, the annotation does nothing and every role can access the protected endpoint. No error — the protection just does not exist.
+
+---
+
+## Step 4 — Role-based authorization
+
+Steps 1–3 built authentication: any authenticated user could call any endpoint. Step 4 adds authorization: only users with the right role can call specific endpoints.
+
+Three things change in Step 4:
+
+| What changes | Why |
+|---|---|
+| `User` entity gets `role` and `active` fields | The role must be stored in the database |
+| `UserDetailsServiceImpl` uses the real role | The JWT filter sets authorities from `UserDetails` — it must reflect the actual role |
+| `@PreAuthorize` on write endpoints | Spring Security enforces the role check before the method runs |
+| `data.sql` seed file | Without a manager account in the database, nobody can log in as a manager to test |
+
+### Role enum
+
+File: `src/main/java/com/victor/timetrack/model/Role.java`
+
+```java
+public enum Role {
+    EMPLOYEE,
+    MANAGER
+}
+```
+
+A Java `enum` is a type with a fixed set of named constants. Using an enum instead of a plain `String` means the compiler catches typos — `Role.MANAGGER` is a compile error; `"MANAGGER"` in a string field is not.
+
+### User entity — adding role and active
+
+The `User` entity needs two new fields. `role` maps to a `VARCHAR` column using `@Enumerated(STRING)`, which tells Hibernate to store the enum name (`"EMPLOYEE"`, `"MANAGER"`) rather than its ordinal position (0, 1). Storing the name is safer — if you reorder the enum values later, ordinal positions shift and all existing data breaks.
+
+```java
+@Enumerated(EnumType.STRING)
+@Column(nullable = false)
+private Role role;
+
+@Column(nullable = false)
+private Boolean active = true;
+```
+
+`active` defaults to `true` — a new account is active unless explicitly deactivated. Soft delete sets it to `false`.
+
+### UserDetailsServiceImpl — using the real role
+
+The placeholder `.roles("USER")` must be replaced with the actual role from the database. The `JwtFilter` loads `UserDetails` on every request and puts the authorities into `SecurityContextHolder` — if the role here is wrong, `@PreAuthorize` checks will also be wrong.
+
+```java
+return org.springframework.security.core.userdetails.User
+    .withUsername(user.getEmail())
+    .password(user.getPassword())
+    .roles(user.getRole().name())  // "EMPLOYEE" or "MANAGER" → Spring adds ROLE_ prefix automatically
+    .build();
+```
+
+**`user.getRole().name()`** — `.name()` is a built-in method on every Java enum that returns the constant name as a `String`. `Role.MANAGER.name()` returns `"MANAGER"`. `.roles()` then stores it as `"ROLE_MANAGER"` in the `UserDetails` authorities.
+
+You should also block inactive users from logging in. Add a check before returning:
+
+```java
+if (!user.getActive()) {
+    throw new UsernameNotFoundException("Account is disabled: " + username);
+}
+```
+
+### data.sql — the first manager account
+
+File: `src/main/resources/data.sql`
+
+There is no public register endpoint — accounts are created by a manager from the Team page. But the first manager cannot log in because no manager exists yet. `data.sql` is Spring Boot's solution: it runs this SQL file automatically on every startup, before the application is ready. `ON CONFLICT DO NOTHING` makes it idempotent — safe to run multiple times without creating duplicates.
+
+```sql
+INSERT INTO users (name, email, password, role, active, created_at)
+VALUES (
+    'Admin',
+    'admin@timetrack.com',
+    '$2a$10$REPLACE_WITH_REAL_BCRYPT_HASH',
+    'MANAGER',
+    true,
+    NOW()
+)
+ON CONFLICT (email) DO NOTHING;
+```
+
+**How to generate the BCrypt hash for the seed password:**
+
+Go to [bcrypt.online](https://bcrypt.online), type `Admin2024!` as the plain text, keep the cost factor at 10, and click Hash. Copy the result and replace the placeholder above.
+
+**One important `application.properties` setting** — by default Spring Boot only runs `data.sql` when it creates the schema (i.e. when `spring.jpa.hibernate.ddl-auto=create` or `create-drop`). To run it on every startup regardless:
+
+```properties
+spring.sql.init.mode=always
+```
+
+Without this line, `data.sql` is silently ignored when `ddl-auto=update` or `validate`.
+
+### @PreAuthorize on write endpoints
+
+With `@EnableMethodSecurity` already on `SecurityConfig`, you can now protect individual methods. Add the annotation above any method that should be MANAGER only:
+
+```java
+@PostMapping
+@PreAuthorize("hasRole('MANAGER')")
+public ResponseEntity<ProjectResponse> create(@RequestBody CreateProjectRequest request) {
+    return ResponseEntity.status(201).body(projectService.create(request));
+}
+```
+
+Apply it to POST, PUT, and DELETE in both `ProjectController` and `UserController`. GET stays open to both roles — employees need to read the project list to select a project when logging hours.
+
+### SecurityContextHolder — reading the current user inside a service
+
+Docs: [Spring Security — SecurityContextHolder](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-securitycontextholder)
+
+`SecurityContextHolder` is a thread-local store that holds the authenticated user for the current request. The `JwtFilter` puts the user there on every request. Any class — service, controller — can read it without needing the user's ID passed in as a parameter.
+
+```java
+// Inside any @Service method — get the email of the currently logged-in user
+String email = SecurityContextHolder.getContext()
+        .getAuthentication()
+        .getName();  // returns the value set in .withUsername() — the email
+```
+
+You use this in Step 5 when `TimeEntryService` needs to know which user is creating an entry, or when `GET /api/entries` needs to filter results by the current user. The key point: **never trust a `userId` sent by the client** — always read it from the security context. A client can send any `userId` they want; the `SecurityContext` reflects who actually logged in.
+
+```java
+// Full pattern — load the User entity from the security context
+String email = SecurityContextHolder.getContext().getAuthentication().getName();
+User currentUser = userRepository.findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+```
+
+### Done condition for Step 4
+
+```
+Postman: POST /api/projects with EMPLOYEE token → 403 Forbidden
+Postman: POST /api/projects with MANAGER token  → 201 Created
+```
+
+To get an EMPLOYEE token: add a user with `role = 'EMPLOYEE'` in pgAdmin and log in via Postman. To get a MANAGER token: log in with the `admin@timetrack.com` account seeded by `data.sql`.

@@ -93,7 +93,7 @@ condensed copy, so keep the two in sync.
 
 ## Language rules — IMPORTANT
 
-- **Always respond in English**, even if Victor writes in Spanish
+- **Always respond in English**, even if Victor writes in Spanish — **exception: if Victor explicitly asks for an explanation in Spanish, respond in Spanish for that message**
 - Use **B2 / Cambridge First (FCE) level English** — natural phrasing, common phrasal verbs,
   collocations, and linking words an FCE candidate is expected to handle. Clear and direct, not
   academic or flowery
