@@ -795,7 +795,7 @@ _Step by step:_
 Spring Security internal — `AuthenticationManager` does not verify anything itself. It delegates to `DaoAuthenticationProvider`, which is Spring Security's internal class for username/password logins. You do not write this class.
 
 **6. DaoAuthenticationProvider calls UserDetailsService.loadUserByUsername(email)**
-`security/UserDetailsServiceImpl.java` — Goes to the database, finds the user by email, and returns a `UserDetails` object with the stored hashed password and roles.
+`service/UserDetailsServiceImpl.java` — Goes to the database, finds the user by email, and returns a `UserDetails` object with the stored hashed password and roles.
 
 **7. DaoAuthenticationProvider calls PasswordEncoder.matches(rawPassword, hashedPassword)**
 `security/SecurityConfig.java` (the `passwordEncoder()` bean) — Compares the plain text password the user sent with the BCrypt hash stored in the database. If it does not match, `BadCredentialsException` is thrown.
@@ -838,7 +838,7 @@ Angular interceptor (frontend) — The client sends the token it stored after lo
 `security/JwtFilter.java` + `security/JwtUtil.java` — Reads the `sub` claim from the token payload. This is the email of the user who logged in.
 
 **4. JwtFilter calls UserDetailsService.loadUserByUsername(email) → loads user from DB**
-`security/JwtFilter.java` + `security/UserDetailsServiceImpl.java` — Even though the token already contains the email, Spring Security requires loading the full `UserDetails` to get the current roles and confirm the account is still active.
+`security/JwtFilter.java` + `service/UserDetailsServiceImpl.java` — Even though the token already contains the email, Spring Security requires loading the full `UserDetails` to get the current roles and confirm the account is still active.
 
 **5. JwtFilter calls JwtUtil.isValid(token, email) → checks signature + expiry**
 `security/JwtFilter.java` + `security/JwtUtil.java` — Verifies that the token was signed with the correct secret key (not tampered with) and has not expired.
@@ -1135,7 +1135,7 @@ public class JwtUtil {
 
 ## UserDetailsService — teaching Spring where your users are
 
-Docs: [Spring Security — UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html) · [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider)
+Docs: [Baeldung — Database-backed UserDetailsService](https://www.baeldung.com/spring-security-authentication-with-a-database) (start here — full working example) · [Spring Security — UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html) · [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider)
 
 > **The official docs are reference-style — they explain what each piece is, not how to wire them together.** For a practical walkthrough with code examples, search **"baeldung spring security userdetailsservice"** — Baeldung (baeldung.com) is the go-to practical companion for Spring developers. Every concept in this file has a Baeldung article next to the official docs. Use both: official docs for the authoritative definition, Baeldung for the "how do I actually write this" example.
 
@@ -1205,7 +1205,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 ## BCryptPasswordEncoder — never store plain text passwords
 
-Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — read only the **BCryptPasswordEncoder** section (scroll past DelegatingPasswordEncoder). The official page is confusing because it leads with `DelegatingPasswordEncoder`, which is a more complex wrapper you do not use here. Skip straight to BCrypt. For a clearer explanation with examples, search **"baeldung bcrypt spring security"**.
+Docs: [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — read only the **BCryptPasswordEncoder** section (scroll past DelegatingPasswordEncoder). The official page is confusing because it leads with `DelegatingPasswordEncoder`, which is a more complex wrapper you do not use here. Skip straight to BCrypt. For a clearer explanation with examples, start with [Baeldung — BCrypt password encoding](https://www.baeldung.com/spring-security-registration-password-encoding-bcrypt).
 
 File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java` (defined as a `@Bean`)
 
@@ -1241,7 +1241,7 @@ userRepository.save(user);
 
 File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
 
-Docs: [Spring Security — AuthenticationManager](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authenticationmanager) — read only the **AuthenticationManager** section
+Docs: [Baeldung — AuthenticationProvider in Spring Security](https://www.baeldung.com/spring-security-authentication-provider) (how the manager delegates to a provider) · [Spring Security — AuthenticationManager](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authenticationmanager) — read only the **AuthenticationManager** section
 
 Spring Boot auto-configures an `AuthenticationManager` internally — it wires it with your `UserDetailsService` and `PasswordEncoder` automatically. But it does not expose it as a Spring bean by default.
 
@@ -1331,7 +1331,7 @@ This is the simplest possible DTO — one field. Spring serializes it to JSON au
 
 File: `src/main/java/com/victor/timetrack/service/AuthService.java`
 
-Docs: [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider) — read the **DaoAuthenticationProvider** section
+Docs: [Baeldung — Spring Security form login](https://www.baeldung.com/spring-security-login) (the `authenticate()` flow end to end) · [DaoAuthenticationProvider — full flow](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider) — read the **DaoAuthenticationProvider** section
 
 **Purpose:** called by `AuthController` when a login request arrives. It coordinates the full login: verifies credentials via `AuthenticationManager`, generates a JWT via `JwtUtil`, and returns an `AuthResponse` with the token.
 
@@ -1723,7 +1723,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
 
-Docs: [Java Configuration](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html) · [Authorize HTTP Requests](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html)
+Docs: [Baeldung — adding a custom filter to the chain](https://www.baeldung.com/spring-security-custom-filter) (the `addFilterBefore` pattern, with code) · [Java Configuration](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html) · [Authorize HTTP Requests](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html)
 
 `SecurityFilterChain` is the single bean that configures all security rules for your API. Every JWT app needs the same three things:
 
@@ -1810,7 +1810,7 @@ public class SecurityConfig {
 
 ## CORS — allowing Angular to call the API
 
-Docs: [Spring Security — CORS](https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html)
+Docs: [Baeldung — CORS with Spring](https://www.baeldung.com/spring-cors) (start here — clear, full example) · [Spring Security — CORS](https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html)
 
 CORS (Cross-Origin Resource Sharing) is a browser security policy that blocks JavaScript from calling a server on a different origin. When Angular (localhost:4200) calls Spring Boot (localhost:8080), the browser blocks it — different ports = different origins.
 
@@ -1887,7 +1887,7 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 ## @PreAuthorize — method-level authorization
 
-Docs: [Spring Security — Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html)
+Docs: [Baeldung — Spring Method Security](https://www.baeldung.com/spring-security-method-security) (`@PreAuthorize` with `hasRole`, full example) · [Spring Security — Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html)
 
 Requires `@EnableMethodSecurity` on `SecurityConfig` — without it, `@PreAuthorize` is silently ignored.
 
