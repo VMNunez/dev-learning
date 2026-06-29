@@ -1,5 +1,6 @@
 # Spring Boot — Herramientas: Docker y Flyway
 
+> 📖 [Baeldung — Dockerizing a Spring Boot Application](https://www.baeldung.com/dockerizing-spring-boot-application) · [Baeldung — Database Migrations with Flyway](https://www.baeldung.com/database-migrations-with-flyway)
 > 📖 [Spring Boot — Container Images](https://docs.spring.io/spring-boot/reference/packaging/container-images/index.html) · [Flyway](https://documentation.red-gate.com/flyway)
 
 Estas son herramientas de despliegue, no código de aplicación, pero las consultoras españolas preguntan sobre ellas en cualquier entrevista orientada a producción: "¿cómo contenedorizas tu app?" y "¿cómo gestionas los cambios en la base de datos?". TimeTrack (proyecto 07) está construido para ejecutarse con Docker, así que esta es la referencia para eso.

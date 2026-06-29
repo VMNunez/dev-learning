@@ -1,5 +1,6 @@
 # Testing in Spring Boot
 
+> 📖 [Baeldung — Testing in Spring Boot](https://www.baeldung.com/spring-boot-testing)
 > 📖 [Spring Boot Testing Reference](https://docs.spring.io/spring-boot/reference/testing/)
 
 ## The problem without tests

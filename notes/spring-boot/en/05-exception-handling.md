@@ -1,5 +1,6 @@
 # Exception Handling in Spring Boot
 
+> 📖 [Baeldung — Error Handling for REST with Spring](https://www.baeldung.com/exception-handling-for-rest-with-spring)
 > 📖 [@ControllerAdvice](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-advice.html)
 
 ## The problem — without a global handler

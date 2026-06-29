@@ -1,5 +1,6 @@
 # Bean Validation
 
+> 📖 [Baeldung — Validation with Spring Boot](https://www.baeldung.com/spring-boot-bean-validation)
 > 📖 [Spring Boot — Validation](https://docs.spring.io/spring-boot/reference/io/validation.html)
 
 ## La dependencia requerida

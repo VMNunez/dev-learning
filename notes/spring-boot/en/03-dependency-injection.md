@@ -1,5 +1,6 @@
 # Dependency Injection and Spring Beans
 
+> 📖 [Baeldung — Intro to Inversion of Control and DI with Spring](https://www.baeldung.com/inversion-control-and-dependency-injection-in-spring)
 > 📖 [Spring IoC Container](https://docs.spring.io/spring-framework/reference/core/beans.html)
 
 ## Why dependency injection exists

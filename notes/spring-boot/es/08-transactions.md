@@ -1,5 +1,6 @@
 # Transacciones — @Transactional
 
+> 📖 [Baeldung — Transactions with Spring and JPA](https://www.baeldung.com/transaction-configuration-with-jpa-and-spring)
 > 📖 [Spring Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html)
 
 ## Qué es una transacción

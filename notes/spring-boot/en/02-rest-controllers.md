@@ -1,10 +1,11 @@
 # REST Controllers
 
+> 📖 [Baeldung — Building a REST API with Spring Boot](https://www.baeldung.com/building-a-restful-web-service-with-spring-and-java-based-configuration)
 > 📖 [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
 
 ## The three-layer architecture — the most important pattern
 
-Every Spring Boot API follows three layers. This is the first thing a interviewer will ask about.
+Every Spring Boot API follows three layers. This is the first thing an interviewer will ask about.
 
 ```
 HTTP request

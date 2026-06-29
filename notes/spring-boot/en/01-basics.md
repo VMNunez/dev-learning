@@ -1,5 +1,6 @@
 # Spring Boot — Basics
 
+> 📖 [Baeldung — Bootstrap a Simple Application](https://www.baeldung.com/spring-boot-start)
 > 📖 [Spring Boot Reference Documentation](https://docs.spring.io/spring-boot/reference/)
 
 ---

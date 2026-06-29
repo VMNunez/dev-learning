@@ -1,5 +1,6 @@
 # REST Controllers
 
+> 📖 [Baeldung — Building a REST API with Spring Boot](https://www.baeldung.com/building-a-restful-web-service-with-spring-and-java-based-configuration)
 > 📖 [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
 
 ## La arquitectura de tres capas — el patrón más importante

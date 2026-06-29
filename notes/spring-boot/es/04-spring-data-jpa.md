@@ -1,5 +1,6 @@
 # Spring Data JPA
 
+> 📖 [Baeldung — Introduction to Spring Data JPA](https://www.baeldung.com/the-persistence-layer-with-spring-data-jpa)
 > 📖 [Spring Data JPA Reference](https://docs.spring.io/spring-data/jpa/reference/)
 
 ## JPA vs Hibernate — la especificación vs la implementación
