@@ -1,5 +1,6 @@
 # Date and Time
 
+> 📖 [Baeldung — Introduction to the Java 8 Date/Time API](https://www.baeldung.com/java-8-date-time-intro)
 > 📖 [Oracle Docs — Date and Time API](https://docs.oracle.com/javase/tutorial/datetime/index.html)
 
 Java has a modern date/time API since Java 8 (`java.time` package). The old `Date` and `Calendar` classes still exist but are avoided in new code — they are mutable and confusing.

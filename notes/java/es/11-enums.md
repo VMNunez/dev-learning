@@ -1,5 +1,6 @@
 # Enums
 
+> 📖 [Baeldung — A Guide to Java Enums](https://www.baeldung.com/a-guide-to-java-enums)
 > 📖 [Oracle Docs — Enum types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
 
 Un enum es un tipo con un conjunto fijo de constantes con nombre. Previene los strings mágicos y los typos, y hace que el código se documente a sí mismo.

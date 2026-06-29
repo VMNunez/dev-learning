@@ -1,5 +1,6 @@
 # Annotations
 
+> 📖 [Baeldung — Java Annotations](https://www.baeldung.com/java-annotations)
 > 📖 [Oracle Docs — Annotations](https://docs.oracle.com/javase/tutorial/java/annotations/index.html)
 
 An annotation is metadata added to code — a label that gives extra information to the compiler or to a framework. Annotations do not execute on their own. They are signals that something else reads and acts on.
