@@ -48,12 +48,12 @@ public class GlobalExceptionHandler { ... }
 
 ---
 
-## @ControllerAdvice — the global exception handler
+## @RestControllerAdvice — the global exception handler
 
-`@ControllerAdvice` marks a class whose `@ExceptionHandler` methods apply to **all controllers**. Spring automatically calls the right handler when an exception is thrown anywhere:
+`@RestControllerAdvice` marks a class whose `@ExceptionHandler` methods apply to **all controllers**. Spring automatically calls the right handler when an exception is thrown anywhere:
 
 ```java
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
