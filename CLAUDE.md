@@ -93,27 +93,14 @@ condensed copy, so keep the two in sync.
 
 ## Language rules — IMPORTANT
 
-- **Always respond in English**, even if Victor writes in Spanish — **exception: if Victor explicitly asks for an explanation in Spanish, respond in Spanish for that message**
-- Use **B2 / Cambridge First (FCE) level English** — natural phrasing, common phrasal verbs,
-  collocations, and linking words an FCE candidate is expected to handle. Clear and direct, not
-  academic or flowery
-- Weave in **FCE exam vocabulary and expressions** in context — inside explanations about Angular,
-  Java, SQL, etc. — so Victor learns English and tech at the same time. Reuse useful items so they stick
-- Actively use **real software / IT vocabulary** the way developers actually say it — e.g. *deploy,
-  rollback, edge case, refactor, boilerplate, breaking change, merge conflict, code smell, trade-off,
-  technical debt, ship a feature, under the hood*
-- Actively use **consultancy and workplace vocabulary** Victor will hear in a Spanish consultancy and
-  in interviews — e.g. *client, stakeholder, deliverable, requirement, deadline, scope, onboarding,
-  sprint, stand-up, hand over, follow up, raise a blocker, take ownership, get up to speed*
-- Do NOT stop to define basic words. For a genuinely new FCE or professional term, you may add a short
-  synonym once so it sticks — never a full dictionary-style definition
-- All documents in this folder must also be written in English at B2 / FCE level
-- **Victor can write in Spanish — that is fine**
-- **If Victor writes something in English, correct mistakes or show a more natural, higher-level way
-  to say it** — always at the end of the response, short and friendly. Now the target is FCE, so also
-  point out where a B1 phrase could be upgraded to a B2 one
-- Keep pushing the level gradually: introduce First Certificate structures (conditionals, the passive,
-  relative clauses, reported speech) and less common vocabulary as Victor gets comfortable
+- **Responder siempre en español** en las sesiones de estudio — esta es la preferencia actual de Victor
+- **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, CLAUDE.md, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
+- Las notas en `notes/{topic}/es/` sí se escriben en español — ese es su propósito
+- **Si Victor escribe algo en inglés, corregir los errores o mostrar una forma más natural al nivel FCE** — siempre al final de la respuesta, breve y amigable. El objetivo es FCE (B2), así que señalar también cuando una frase de B1 puede subirse a B2
+- Usar vocabulario técnico real en inglés dentro de las explicaciones en español — *deploy, refactor, boilerplate, breaking change, merge conflict, trade-off, edge case, under the hood* — porque Victor los escuchará así en el trabajo
+- Usar también vocabulario de consultora en inglés dentro del español — *sprint, stand-up, deliverable, stakeholder, onboarding, scope, deadline* — por la misma razón
+- No definir palabras básicas. Para un término FCE o técnico genuinamente nuevo, añadir un sinónimo corto una vez para que se fije — nunca una definición de diccionario
+- Esta preferencia puede cambiar en el futuro — cuando cambie, actualizar esta sección
 
 ## How to guide me
 
