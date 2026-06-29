@@ -1,10 +1,21 @@
 # Métodos
 
-> 📖 [Oracle Docs — Defining methods](https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html)
+> 📖 [Baeldung — Guide to Methods in Java](https://www.baeldung.com/java-methods) → leer el artículo completo
+> 📖 [Oracle Docs — Defining methods](https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html) (referencia oficial)
 
 ## Declaración de un método
 
-Un método es un bloque de código con nombre que realiza una tarea concreta. Lo defines una vez y lo llamas desde cualquier parte del programa. Tiene cuatro partes: un modificador de acceso (quién puede usarlo), el tipo de lo que devuelve, su nombre y sus parámetros de entrada.
+> **¿Dónde viven los métodos?** Siempre dentro de una clase — no pueden existir fuera de una clase en Java. Los explicamos aquí antes de ver las clases completas porque ya los has encontrado en los ejemplos de control de flujo. La estructura completa de una clase (campos, constructores, encapsulación) se cubre en [04-oop-clases.md](04-oop-clases.md).
+
+Un método es un bloque de código con nombre que realiza una tarea concreta. Lo defines una vez y lo llamas desde cualquier parte del programa.
+
+```java
+public int add(int a, int b) {
+    return a + b;
+}
+```
+
+Este método tiene cuatro partes: `public` es el modificador de acceso (quién puede llamarlo), `int` es el tipo que devuelve, `add` es su nombre, e `int a, int b` son los parámetros de entrada. La estructura general queda así:
 
 ```java
 modificadorDeAcceso tipoRetorno nombreMetodo(parámetros) {
@@ -13,20 +24,9 @@ modificadorDeAcceso tipoRetorno nombreMetodo(parámetros) {
 }
 ```
 
-Aquí tienes el esquema con ejemplos concretos:
-
-| Parte          | Ejemplo               | Significado                      |
-| -------------- | --------------------- | -------------------------------- |
-| `public`       | modificador de acceso | quién puede llamar a este método |
-| `int`          | tipo de retorno       | qué tipo devuelve el método      |
-| `add`          | nombre del método     | cómo lo llamas                   |
-| `int a, int b` | parámetros            | valores de entrada con sus tipos |
+Más ejemplos:
 
 ```java
-public int add(int a, int b) {
-    return a + b;
-}
-
 public void printName(String name) {
     System.out.println(name);
     // sin return — los métodos void no devuelven nada
@@ -52,7 +52,30 @@ Un modificador de acceso controla desde dónde se puede llamar a un método (o a
 
 En Spring Boot usarás principalmente `public` para endpoints REST y métodos de servicio, y `private` para métodos auxiliares internos.
 
----
+```java
+public class UserService {
+    // public — cualquier clase puede llamar a findById
+    public User findById(Long id) {
+        return validate(findRaw(id));
+    }
+
+    // private — solo accesible dentro de UserService; el mundo exterior no sabe que existen
+    private User findRaw(Long id) { ... }
+    private User validate(User user) { ... }
+}
+
+// protected — útil en herencia (cubierta en 06-herencia-polimorfismo.md):
+// las subclases pueden acceder, el mundo exterior no
+public class Animal {
+    protected String sound;
+}
+
+public class Dog extends Animal {
+    public void bark() {
+        System.out.println(this.sound);  // ✓ — Dog hereda de Animal y puede ver sound
+    }
+}
+```
 
 ## Tipos de retorno
 
@@ -77,14 +100,14 @@ public List<Employee> findAll() { ... }           // devuelve una colección
 public void delete(Long id) { ... }  // no devuelve nada
 ```
 
-`Void` (mayúsculas) es una **clase**. ¿Por qué existe? Porque en algunos sitios de Java tienes que poner un tipo entre `<>` — por ejemplo, `ResponseEntity<T>` o `Callable<T>`. El problema es que Java no acepta la palabra clave `void` dentro de `<>`, solo acepta clases. `Void` es la clase que significa "nada" y que sí cabe dentro de `<>`:
+`Void` (mayúsculas) es una **clase**. Técnicamente es la clase wrapper de `void` — igual que `Integer` es la clase wrapper de `int`. Pero a diferencia de `Integer`, no tiene ningún valor útil que guardar: solo existe para que los genéricos puedan escribir `<Void>` cuando no hay nada que devolver. ¿Por qué es necesario? Porque en algunos sitios de Java tienes que poner un tipo entre `<>` — por ejemplo, `ResponseEntity<T>` o `Callable<T>` — y Java solo acepta clases dentro de `<>`, nunca la palabra clave `void`:
 
 ```java
 ResponseEntity<Void>   // ✓ — Void es una clase, cabe dentro de < >
 ResponseEntity<void>   // ✗ — void es una palabra clave, no válida dentro de < >
 ```
 
-> **Resumen claro:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando algo genérico te obliga a poner un tipo entre `<>` y no hay nada real que devolver. No es "void si no hay nada, Void si podría ser null" — ambas significan "sin valor", solo que viven en lugares distintos del lenguaje.
+> **Resumen claro:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando algo genérico te obliga a poner un tipo entre `<>` y no hay nada real que devolver. La distinción no tiene nada que ver con null — ambas significan "sin valor". La diferencia es de contexto: `void` es la palabra clave para tipos de retorno, y `Void` es la clase para cuando un genérico exige un tipo.
 
 > **Vista previa — Spring Boot:** El ejemplo a continuación usa `ResponseEntity`, una clase de Spring Boot que aún no has estudiado. Léelo para ver dónde importa la diferencia entre `void` y `Void` en la práctica — lo implementarás tú mismo en las notas de Spring Boot.
 
@@ -104,7 +127,7 @@ public ResponseEntity<Void> delete(@PathVariable Long id) {
 
 Para entender `static`, primero necesitas entender la diferencia entre una **clase** y un **objeto** (también llamado instancia). La clase es el molde — la definición de cómo son los objetos. Los objetos son las copias concretas creadas a partir de ese molde.
 
-Un método normal (de instancia) pertenece a cada objeto individual. Cada `Employee` que crees tiene su propio `getName()`, porque devuelve el nombre de *ese* empleado en concreto — necesita el objeto para funcionar.
+Un método normal (de instancia) pertenece a cada objeto individual. Cada `Employee` que crees tiene su propio `getName()`, porque devuelve el nombre de _ese_ empleado en concreto — necesita el objeto para funcionar.
 
 Un método `static` pertenece a la **clase en sí**, no a ningún objeto individual. No necesitas crear un objeto para llamarlo — lo llamas directamente sobre el nombre de la clase:
 
@@ -141,20 +164,20 @@ add(1.5, 2.5);     // llama a la segunda versión — devuelve 4.0
 add(1, 2, 3);      // llama a la tercera versión — devuelve 6
 ```
 
-Nota: cambiar solo el tipo de retorno no es suficiente para sobrecargar un método. Los parámetros deben ser distintos — ahí es donde Java mira para decidir qué versión llamar.
+Java decide qué versión llamar mirando los **parámetros** — su número y sus tipos. El tipo de retorno no cuenta para esa decisión. Si defines dos métodos con los mismos parámetros pero distinto tipo de retorno, Java no puede distinguirlos y el compilador dará error: al llamar al método no hay forma de saber cuál de los dos quieres.
 
 ---
 
 ## Varargs — número variable de argumentos
 
-Normalmente, cuando defines un método con dos parámetros, tienes que pasarle exactamente dos argumentos. Con varargs (`...`) puedes pasarle cualquier cantidad — cero, uno, cinco o los que quieras. Java los recoge en un array internamente.
+Normalmente, cuando defines un método con dos parámetros, tienes que pasarle exactamente dos argumentos. Con varargs (`...`) puedes pasarle cualquier cantidad — cero, uno, cinco o los que quieras. Java los recoge en un array internamente. Lo encontrarás en métodos de logging (`log.info("User {} logged in", username)`) y en utilidades como `String.format()` — el mismo patrón que el `.formatted()` que viste en [01-variables-tipos.md](01-variables-tipos.md).
 
 La sintaxis es `Tipo... nombre`. Debe ser el último parámetro del método, porque si hubiera más parámetros después Java no sabría dónde termina la lista variable y empieza el siguiente argumento fijo.
 
 ```java
 public int sum(int... numbers) {
     int total = 0;
-    for (int n : numbers) total += n;
+    for (int n : numbers) total += n;  // sí — numbers es un array, puedes recorrerlo con for-each exactamente igual que con cualquier array
     return total;
 }
 
@@ -173,8 +196,9 @@ Antes de ver cómo se llama a un método, veamos un ejemplo completo — primero
 
 ```java
 public class Calculator {
-    private String name;
+    private String name;  // campo de la clase (no variable de un método) — los campos se cubren en 04-oop-clases.md
 
+    // constructor — se ejecuta cuando haces new Calculator("MyCalc"); se cubre en detalle en 04-oop-clases.md
     public Calculator(String name) {
         this.name = name;
     }
@@ -204,7 +228,7 @@ String name = calc.getName();          // "MyCalc"
 // Método estático — se llama directamente sobre la clase, sin objeto
 double squared = Calculator.square(5); // 25.0
 
-// Method chaining — cada método devuelve un string nuevo y puedes encadenar las llamadas
+// Method chaining — cada método devuelve un String nuevo sobre el que puedes llamar otro método directamente
 String result2 = "  hello  "
     .trim()
     .toUpperCase()

@@ -22,7 +22,7 @@ if (age >= 18) {
 
 ### Operador ternario
 
-Un atajo de una línea para un `if/else` simple cuando solo necesitas elegir un valor. La misma sintaxis que en JavaScript:
+Es un atajo de una línea para un `if/else` simple cuando solo necesitas elegir un valor. La misma sintaxis que en JavaScript:
 
 ```java
 String label = age >= 18 ? "Adult" : "Minor";
@@ -96,7 +96,7 @@ for (int i = 0; i < 5; i++) {
 
 ### Enhanced for (for-each) — úsalo para colecciones y arrays
 
-El `for` clásico con índice tiene dos problemas frecuentes: es más largo de escribir, y es fácil cometer errores de rango — por ejemplo, poner `i <= names.length` en vez de `i < names.length` y salirse del array por uno (a esto se le llama error *off-by-one*, que viene a ser "pasarse por uno"). El `for` mejorado elimina el índice completamente y te da cada elemento directamente. Piensa en él como la versión Java del `for...of` de JavaScript.
+El `for` clásico con índice tiene dos problemas frecuentes: es más largo de escribir, y es fácil cometer errores de rango — por ejemplo, poner `i <= names.length` en vez de `i < names.length` y salirse del array por uno (a esto se le llama error _off-by-one_, que viene a ser "pasarse por uno"). El `for` mejorado elimina el índice completamente y te da cada elemento directamente. Piensa en él como la versión Java del `for...of` de JavaScript.
 
 Sintaxis: `for (Tipo variable : colección)` — se lee como "para cada elemento de este tipo en esta colección".
 
@@ -167,7 +167,7 @@ Piensa en `break` como la salida de emergencia y en `continue` como el botón de
 
 ## Comprobaciones de null
 
-> **¿Qué es un error en runtime?** Es un error que no ocurre al compilar el código, sino cuando el programa ya está corriendo y llega a esa línea. El compilador no lo detecta de antemano — simplemente falla en el momento en que se ejecuta.
+> **¿Qué es un error en runtime?** Es un error que no ocurre al compilar el código, sino cuando el programa ya está corriendo y llega a esa línea. El compilador no lo detecta de antemano — simplemente falla en el momento en que se ejecuta. (La explicación completa de compile time vs runtime está en la sección `var` de [01-variables-tipos.md](01-variables-tipos.md).)
 
 `NullPointerException` es el error en runtime más común en Java. Ocurre cuando llamas a un método sobre una variable que es `null` — Java no puede encontrar el objeto en el que ejecutar el método. La solución es simple: comprueba siempre si es `null` antes de llamar métodos sobre algo que podría no existir.
 

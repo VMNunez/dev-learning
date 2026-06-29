@@ -165,6 +165,8 @@ Think of `break` as the emergency exit and `continue` as the skip button.
 
 ## Null checks
 
+**Runtime error:** an error that does not happen when Java compiles the code, but when the program is already running and reaches that line. The compiler does not catch it in advance. (For the full explanation of compile time vs runtime, see the `var` section in [01-variables-types.md](01-variables-types.md).)
+
 `NullPointerException` is the most common runtime error in Java. It happens when you call a method on a variable that is `null` — Java cannot find the object to run the method on. The fix is simple: always check for `null` before calling methods on anything that might not exist.
 
 ```java

@@ -4,7 +4,7 @@
 
 ## Primitive types
 
-Java has 8 primitive types. These store values directly — not references to objects.
+Java has 8 primitive types. These store values directly — not references to objects. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
 
 | Type      | Size   | What it holds               | Example                  |
 | --------- | ------ | --------------------------- | ------------------------ |
@@ -30,7 +30,7 @@ In practice you use `int`, `long`, `double`, and `boolean` for almost everything
 - `double` — the default choice for decimals. Higher precision.
 - `float` — half the precision of `double`. Use only if memory is critical (almost never in web development). Notice the `f` suffix: `0.21f`.
 
-> **Money in Spring Boot:** never use `double` or `float` for financial values. Use `BigDecimal` — it avoids rounding errors that floating-point types produce. `double` cannot represent 0.1 exactly in binary — after a few operations, you get `0.09999999...`. `BigDecimal` does exact arithmetic.
+> **Money in Spring Boot:** never use `double` or `float` for financial values. Use `BigDecimal` — it is a plain Java class (`java.math` package, not Spring Boot) that does exact arithmetic. `double` cannot represent 0.1 exactly in binary because computers express numbers as sums of powers of 2 (1/2, 1/4, 1/8…), and 0.1 cannot be expressed as a finite sum of those powers — just like 1/3 cannot be written exactly in decimal (0.333…). The processor stores the closest approximation it can, and that small error accumulates across operations until you get `0.09999999...` instead of `0.1`. `BigDecimal` avoids this by operating on the actual digits, without the representation error.
 
 **Boolean** — for flags and conditions:
 - `boolean` — holds only `true` or `false`. Used for `isActive`, `hasRole`, `isEmpty`.
@@ -78,7 +78,7 @@ long bigNumber = 1234567890123L;
 int smaller = (int) bigNumber;  // may overflow if the number is too large for int
 ```
 
-The `(int)` before the variable is the cast. Java does not do this automatically because you might lose data — you have to opt in. If the number does not fit, Java does not throw an error — it wraps around silently, which is why narrowing can produce unexpected results.
+The `(int)` before the variable is the cast. Java does not do this automatically because you might lose data — you have to write it explicitly to signal that you accept the possible loss. If the number does not fit, Java does not throw an error — it wraps around silently, which is why narrowing can produce unexpected results.
 
 ---
 
@@ -86,7 +86,7 @@ The `(int)` before the variable is the cast. Java does not do this automatically
 
 Each primitive type has a corresponding wrapper class. You use wrapper classes when a method requires an **object** instead of a primitive.
 
-**The most common case:** Java collections (`List`, `Map`, `Set`) only work with objects, not primitives. So `List<int>` does not compile — you use `List<Integer>` instead.
+**The most common case:** Java collections (`List`, `Map`, `Set`) only work with objects, not primitives. So `List<int>` does not compile — you use `List<Integer>` instead. Collections are covered in detail in [07-collections.md](07-collections.md) — for now, just know they are Java's main data structures and they all require object types.
 
 **Another case:** wrapper classes can be `null`. A primitive `int` cannot be null, but `Integer` can. In Spring Boot, database IDs are often typed as `Long` (not `long`) because Hibernate sets them to `null` until the entity is saved for the first time.
 
@@ -133,6 +133,8 @@ int first = ids.get(0);   // unboxing — Java unwraps it back to int
 
 ### Useful wrapper methods
 
+**Static methods** belong to the class itself, not to any specific object — that is why you call them on the class name (`Integer.parseInt("42")`) without creating an object with `new`. Static methods are covered in detail in [03-methods.md](03-methods.md).
+
 These static methods are genuinely useful in everyday code:
 
 ```java
@@ -159,6 +161,8 @@ The `.formatted()` method replaces placeholders in the string. `%s` means "a str
 ```java
 "User %s has %d points".formatted("Victor", 100);  // "User Victor has 100 points"
 ```
+
+For decimals, use `%f`. You can control how many decimal places to show with `.Nf` (N = number of digits): `"Price is %.2f euros".formatted(19.99)` → `"Price is 19.99 euros"`.
 
 ### Common methods
 
@@ -198,7 +202,7 @@ a.equals(b)   // true — always use this for String comparison
 
 The problem: `String` is **immutable** — once created, it cannot be changed. Every time you do `str += something`, Java does not modify the original string. It creates a brand new `String` object with the combined content. In a loop with 1000 iterations, you create 1000 objects — slow and wasteful.
 
-`StringBuilder` solves this. It is a mutable buffer you modify in place. When you are done building the string, you call `.toString()` to get the final result.
+`StringBuilder` solves this. A **buffer** is a space in memory where you accumulate data while you are still building it — think of it as a whiteboard where you keep writing pieces until you have the final result. `StringBuilder` is that space for strings: you modify it in place without creating new objects, and when you are done you call `.toString()` to get the finished string.
 
 |                 | Immutable? | Thread-safe? | When to use                             |
 | --------------- | ---------- | ------------ | --------------------------------------- |
@@ -235,7 +239,9 @@ var age = 31;                           // Java infers: int
 var employees = new ArrayList<Employee>();  // Java infers: ArrayList<Employee>
 ```
 
-This does **not** make Java dynamic like JavaScript's `var`. The type is still fixed at compile time — Java just figures it out for you so you do not have to write it twice.
+This does **not** make Java dynamic like JavaScript's `var`. In JavaScript, a variable can change type while the program runs (`var x = 1; x = "hello"` is fine). In Java that is not possible.
+
+Two concepts help here: **compile time** is when Java translates your source code to bytecode — before the program runs. **Runtime** is when the program is actually executing. With `var`, Java figures out the type during compilation: it sees `"Victor"` on the right side and decides the type is `String`. That type is locked in the bytecode and never changes — exactly as if you had written `String name = "Victor"` yourself.
 
 Only works for local variables (inside methods). Cannot be used for fields, method parameters, or return types.
 

@@ -41,6 +41,9 @@ REWRITE_MODE = [standard | first-pass]
          TODOs are still resolved as normal. After rewriting, the file is considered validated
          — standard mode applies from the next run onwards.
          Use this only once per file, when you know the content was auto-generated and untrusted.
+         The full audit still runs in this mode (TODOs → gap analysis → rule 2 → rule 3). The
+         only difference from standard is that rule 2 violations in existing text are fixed
+         directly instead of just reported in the summary.
 
 ## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
 ## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
@@ -180,7 +183,9 @@ was refined and have not been validated by Victor. Rewrite freely:
   official documentation
 - Resolve all TODO markers as normal
 - Keep all code blocks and structural labels unchanged — only rewrite prose
-- Do NOT restructure the file or change the order of sections unless a TODO asks for it
+- You MAY reorder or restructure sections if a different order is more logical for learning
+  — always moving from foundational concepts to more complex ones. If you reorder, note it
+  in the summary with a one-line justification
 
 After a `first-pass` run, the file is considered validated. Note this in the summary so Victor
 knows to switch back to `standard` mode for future runs on these files.
@@ -247,21 +252,36 @@ Before starting, scan all files in {NOTES_PATH} for any TODO markers.
 These can appear as `TODO:`, `<!-- TODO: ... -->`, or `// TODO` — Victor adds them while
 reading to mark things he wants corrected or improved.
 
+TODOs can take two forms:
+
+- **Instruction TODOs** — a direct correction or task (e.g. `TODO: add example`, `TODO: rewrite this paragraph`). Apply the fix literally.
+- **Question TODOs** — Victor writes a doubt or question he wants clarified (e.g. `TODO: why does Spring create a new context here?`, `TODO: is this the same as X?`). These are not Q&A requests. Resolve the doubt by weaving the answer into the surrounding prose of the paragraph it appears in — the question itself must never appear in the notes. The result should read as if the explanation was always there. Never add a "Q:" / "A:" block or a subheading for the question. The test: after the fix, a reader who did not see the TODO should not be able to tell there was ever a question there — they should simply find the concept well explained.
+
 For each TODO found:
-1. Identify exactly what Victor wants changed
-2. Apply the fix at that exact location in the file
+1. Identify exactly what Victor wants changed (instruction) or what he wants understood (question)
+2. Apply the fix at that exact location in the file — weaving answers into narrative prose for question TODOs
 3. Remove the TODO marker after fixing
 4. Report what was changed before moving on
 
 If no TODOs are found, skip this section and move directly to the audit.
 
 **Pattern detection — after resolving all TODOs:**
-If 2 or more TODOs reflect the same type of correction (e.g., always changing passive to
-active voice, always adding a "Why not X?" callout, always shortening code examples), this
-is a personal preference that should become a permanent rule — not a repeated manual fix.
-In that case, report it in the summary as a recommended prompt change: one specific sentence
-to add to rule 3 that would prevent the same correction from being needed in future runs.
-Do not add the rule yourself — Victor decides whether to accept it.
+If 2 or more TODOs reflect the same type of correction or question, this reveals a
+systematic gap — either in how a type of section is written, or in what the notes tend
+to leave unexplained. Look for patterns across both TODO types:
+
+- **Instruction patterns** (e.g. always changing passive to active voice, always adding a
+  "Why not X?" callout, always shortening code examples) → a personal writing preference
+  that should become a permanent rule so it never needs manual fixing again.
+- **Question patterns** (e.g. Victor always asks *why* something behaves a certain way in
+  async sections, always asks about exception cases in error handling, always wants a
+  comparison with another approach) → a signal that notes on that type of concept
+  systematically skip something he needs. The fix is a writing rule that forces future
+  notes to address it upfront.
+
+In both cases, report it in the summary as a recommended prompt change: one specific
+sentence to add to rule 3 that would prevent the same correction or question from being
+needed in future runs. Do not add the rule yourself — Victor decides whether to accept it.
 
 ---
 
@@ -338,6 +358,10 @@ Read all files in {NOTES_PATH}.
    from scratch and return to as a reference. Every concept needs enough explanation to
    understand it, not just recognise the syntax.
 
+   **Target reader:** write for someone who has never seen this concept before. A complete
+   file is one that takes that person from zero to "I understand what this is and why it
+   exists" without needing to look anything else up.
+
    - **Personal, conversational voice.** Write for Victor. "You use this when..." not
      "This is used when...". "This is why it matters:" not "This is relevant because:".
    - **Explain before the code.** Give 1–3 sentences of context before any code block —
@@ -384,6 +408,13 @@ Read all files in {NOTES_PATH}.
      to sections explicitly labelled "Spring Boot connection". A reader who is studying
      files in sequence must never encounter an unexplained class or annotation without a
      clear signal that it belongs to a different topic they haven't reached yet.
+   - **Link to other note files when a concept depends on something already covered elsewhere.**
+     Use a markdown link to the relevant file (e.g. `see [08-generics.md](08-generics.md)`).
+     After the link, add one sentence of reminder — short enough that the reader can continue
+     without opening the other file if they roughly remember the concept. Example: "This uses
+     generics (see [08-generics.md](08-generics.md)) — the `<T>` is a type placeholder so the
+     method works with any type, not just one specific class." The link is for deep review; the
+     sentence is so the flow of the current file is never broken.
    - **Code concept sections (methods, classes, annotations):** *(structured mode — notes/java/en/
      and notes/spring-boot/en/ only)* each section starts with three metadata lines: `Purpose:` —
      one sentence: who calls it, when, and why; `File:` — real path to the file where this
