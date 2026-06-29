@@ -433,6 +433,26 @@ Read all files in {NOTES_PATH}.
 
 **Apply all fixes to new content and TODO resolutions directly to the note files.**
 
+**Every topic must have a `00-intro-{topic}.md` file.**
+
+Before checking for gaps, check whether a `00-intro-*.md` file exists in `{NOTES_PATH}`. This
+file must come before all numbered files and cover:
+
+- What the technology is and how it works at a high level (the mental model before the details)
+- Key concepts that appear everywhere in the topic and must be understood first (e.g. compile
+  time vs runtime for Java, the component tree for Angular, the box model for CSS)
+- How it differs from technologies Victor already knows — frame the comparison against
+  JavaScript/TypeScript/React where relevant, since those are his reference points
+- A one-paragraph map of what the rest of the notes cover and in what order
+
+If the intro file is missing, create it as the first action of this run — before addressing
+any other gaps. If it already exists, check whether it covers the four points above and add
+any missing section directly.
+
+The intro file uses a `00-` prefix (not a numbered sequence prefix) and is never listed in
+`coverage.md` — it is structural scaffolding for the topic, not a learning objective in itself.
+Create the Spanish counterpart in `es/` at the same time.
+
 **Creating new files — proactive, not reactive.**
 Do not wait for a gap in rule #1 to justify creating a new file. After reading the existing
 notes, assess the full learning sequence as a whole:
