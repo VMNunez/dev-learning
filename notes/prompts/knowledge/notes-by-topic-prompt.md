@@ -23,12 +23,19 @@ Useful after a study session when you want to check and improve the notes for on
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/en/ | notes/security/en/]
 
-MODE = [full | single-file]
+MODE = [full | single-file | multi-file]
        → full (default): NOTES_PATH is a folder; audit the whole topic — coverage gap analysis,
          proactive new files, the "next file:" counter, and the future-learning check.
        → single-file: NOTES_PATH is one .md file (e.g. notes/angular/en/06-http-rxjs.md); a focused
          pass on just that file (TODOs + quality + Docs links + completing that file) that skips
          the folder-level steps. See "Mode" below.
+       → multi-file: NOTES_PATH is a folder and FILES lists the specific files to audit
+         (e.g. FILES = 01-variables-tipos.md, 03-methods.md). Same pass as single-file but
+         repeated for each file in the list. Skips all folder-level steps. See "Mode" below.
+
+FILES = [comma-separated filenames, e.g. 01-variables-tipos.md, 03-methods.md]
+        Only used when MODE = multi-file. Filenames only — no path prefix needed.
+        Leave blank or omit when MODE is full or single-file.
 
 REWRITE_MODE = [standard | first-pass]
        → standard (default): existing text is final unless marked with a TODO. Do not reword,
@@ -202,18 +209,27 @@ Notes to audit: {NOTES_PATH}
 
 ---
 
-## Mode — full vs single-file
+## Mode — full vs single-file vs multi-file
 
-`{MODE}` decides how much this run does. Check it before doing anything else. (`full` expects `{NOTES_PATH}` to be a folder; `single-file` expects it to be one `.md` file.)
+`{MODE}` decides how much this run does. Check it before doing anything else.
 
-- **full (default):** run the whole prompt as written. The coverage gap analysis, proactive file creation, the "next file:" counter, and the `future-learning` check all apply to the whole topic.
+- **full (default):** `{NOTES_PATH}` is a folder. Run the whole prompt as written — coverage gap analysis, proactive file creation, the "next file:" counter, and the `future-learning` check all apply to the whole topic.
+
 - **single-file:** `{NOTES_PATH}` points to one `.md` file — audit **only that file**. This is the "I just wrote this file — correct it" pass. Do this and nothing else:
   1. **Resolve TODOs** in that file (the Pre-audit section below).
   2. **Quality audit (rule 2)** of that file — WHY before the code, named repeating patterns, correct format mode, and `Docs:` links (file-level and section-level): add missing links directly; report other existing-text issues without changing them.
   3. **Complete the file (rule 3 standards)** — if a sub-concept this file clearly should cover is missing, add it as a new section **within this file only**.
   4. **Report + commit** for that one file.
 
-  In single-file mode, **skip** every folder-level step: the rule-1 coverage gap analysis for the whole topic, "Creating new files — proactive", the `future-learning.md` promotion check, and the "next file:" counter update (you are not adding numbered files). You may still *read* `coverage.md` to confirm this file's own concept is fully covered — but never create files for other missing topics. If you spot a gap that belongs in a different file, mention it in the summary instead of acting on it.
+- **multi-file:** `{NOTES_PATH}` is the topic folder and `{FILES}` lists the specific filenames to audit (e.g. `01-variables-tipos.md, 03-methods.md`). Apply the same single-file pass to each file in the list, in order. Derive the full path as `{NOTES_PATH}{filename}` for `en/` and the `es/` equivalent for the Spanish counterpart.
+
+  Do this and nothing else for each file:
+  1. **Resolve TODOs** — scan the `es/` counterpart first (that is where Victor reads and adds markers), then the `en/` file. Apply fixes to `es/` first, then mirror to `en/`.
+  2. **Quality audit (rule 2)** of that file.
+  3. **Complete the file (rule 3 standards)** — missing sub-concepts added as new sections within that file only.
+  4. After all files are processed, produce one combined **Report + commit** covering all files.
+
+In both **single-file** and **multi-file** mode, **skip** every folder-level step: the rule-1 coverage gap analysis for the whole topic, "Creating new files — proactive", the `future-learning.md` promotion check, and the "next file:" counter update. You may still *read* `coverage.md` to confirm a file's own concept is fully covered — but never create files for other missing topics. If you spot a gap that belongs in a different file, mention it in the summary instead of acting on it.
 
 ---
 
