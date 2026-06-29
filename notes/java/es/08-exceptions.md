@@ -16,7 +16,7 @@ Una excepción es un evento que interrumpe el flujo normal de un programa. En Ja
 | Cuándo | Problemas esperados (fichero no encontrado, timeout de red) | Errores de programación (puntero nulo, índice fuera de rango) |
 | Ejemplos | `IOException`, `SQLException` | `NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException` |
 
-En Spring Boot casi siempre trabajas con excepciones no comprobadas — las lanzas cuando algo va mal y dejas que Spring las maneje con `@ControllerAdvice`.
+En Spring Boot casi siempre trabajas con excepciones no comprobadas — las lanzas cuando algo va mal y dejas que Spring las maneje con `@RestControllerAdvice`.
 
 ---
 
@@ -129,7 +129,7 @@ public Employee findById(Long id) {
 }
 
 // 2. Capturarla globalmente y devolver una respuesta HTTP correcta
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmployeeNotFoundException.class)

@@ -16,7 +16,7 @@ An exception is an event that interrupts the normal flow of a program. In Java, 
 | When | Expected problems (file not found, network timeout) | Programming errors (null pointer, array out of bounds) |
 | Examples | `IOException`, `SQLException` | `NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException` |
 
-In Spring Boot you almost always work with unchecked exceptions — you throw them when something goes wrong and let Spring handle them with `@ControllerAdvice`.
+In Spring Boot you almost always work with unchecked exceptions — you throw them when something goes wrong and let Spring handle them with `@RestControllerAdvice`.
 
 ---
 
@@ -129,7 +129,7 @@ public Employee findById(Long id) {
 }
 
 // 2. Catch it globally and return a proper HTTP response
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmployeeNotFoundException.class)
