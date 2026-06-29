@@ -373,3 +373,88 @@ spring.jpa.open-in-view=false
 ```
 
 **If you accidentally commit a secret:** changing it in a new commit is not enough — the old commit is still visible in git history. The correct action is to **invalidate the credential immediately** (change the password, revoke the API key) so the leaked value becomes useless.
+
+---
+
+## Spring profiles — per-environment configuration
+
+Purpose: Spring profiles let you have one config file per environment (local, staging, production) without changing the code. The right file is loaded automatically based on which profile is active.
+
+Docs: https://docs.spring.io/spring-boot/reference/features/profiles.html → read: "Adding Active Profiles" and the properties file naming convention
+
+File: `src/main/resources/`
+
+You create additional properties files named `application-{profile}.properties`. The profile name in the filename is the key:
+
+```
+src/main/resources/
+├── application.properties          ← shared settings (always loaded)
+├── application-dev.properties      ← dev-only overrides (local database, show-sql)
+└── application-prod.properties     ← production overrides (real credentials, no show-sql)
+```
+
+To activate the dev profile in IntelliJ: Run → Edit Configurations → Environment variables → add `SPRING_PROFILES_ACTIVE=dev`. Spring loads `application.properties` first, then overlays `application-dev.properties` on top. Values in the profile file win over the base file.
+
+> **Why interviewers ask this:** "How do you avoid shipping development settings to production?" — profiles are the standard answer. Without them you either commit production credentials into the repo or manually edit the config before every deploy.
+
+---
+
+## @Slf4j — structured logging
+
+Purpose: Lombok annotation that generates a `log` field on the class. You use `log.info()`, `log.warn()`, `log.error()` to write to the application log instead of `System.out.println()`.
+
+Docs: https://www.baeldung.com/slf4j-with-log4j2-logback → read: "SLF4J — a logging facade" and the `@Slf4j` example
+
+File: any service or component class, e.g. `src/main/java/com/victor/timetrack/service/ProjectService.java`
+
+```java
+@Slf4j
+@Service
+public class ProjectService {
+
+    public ProjectResponse create(CreateProjectRequest request) {
+        log.info("Creating project: {}", request.getName());  // {} is a placeholder for the value
+        // ...
+        log.warn("Project name is very long: {}", request.getName());
+        log.error("Failed to create project", e);  // second arg is the exception — prints stack trace
+    }
+}
+```
+
+`@Slf4j` replaces this boilerplate: `private static final Logger log = LoggerFactory.getLogger(ProjectService.class)`. You see `@Slf4j` on every service class in real codebases — interviewers will ask about it during code review questions.
+
+**`.info()` vs `.warn()` vs `.error()`:**
+
+| Method | Use for |
+|---|---|
+| `log.info()` | Normal operations: "created resource X", "user logged in" |
+| `log.warn()` | Unexpected but recoverable: "retry attempt 2/3", "deprecated path called" |
+| `log.error()` | Something broke: pass the exception as the second argument to include the stack trace |
+
+> The `{}` placeholder is SLF4J's lazy formatting — it does not build the string unless the log level is active, so it has no performance cost at high log levels.
+
+---
+
+## data.sql — seeding the database on startup
+
+Purpose: Spring Boot runs `data.sql` automatically after creating the schema. Used to insert the first manager account when there is no registration endpoint for managers.
+
+Docs: https://docs.spring.io/spring-boot/how-to/data-initialization.html → read: "Initialize a Database"
+
+File: `src/main/resources/data.sql`
+
+```sql
+-- Insert the first manager account — password is BCrypt hash of "admin123"
+-- Generate the hash with: new BCryptPasswordEncoder().encode("admin123")
+INSERT INTO users (email, password, name, role, active)
+VALUES ('manager@timetrack.com',
+        '$2a$10$example_bcrypt_hash_here',
+        'Admin Manager',
+        'MANAGER',
+        true)
+ON CONFLICT (email) DO NOTHING;
+```
+
+`ON CONFLICT (email) DO NOTHING` prevents a duplicate key error if the app restarts — Spring Boot runs `data.sql` every time the app starts, not just the first time.
+
+> **The interview question:** "How did you create the first manager if there is no registration endpoint for managers?" — `data.sql` with a pre-hashed BCrypt password is the standard answer. You generate the hash once (with a small `main` method or an online tool) and commit it. The raw password is never in the source code.

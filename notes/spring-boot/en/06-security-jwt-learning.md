@@ -421,9 +421,10 @@ public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
 }
 
-//todo:aqui di que ese enconder se  va a usar en el service para comparar las compraseñas
-// AuthService — compare raw password against the stored hash on login
-passwordEncoder.matches(rawPasswordFromRequest, user.getPassword()); // returns true or false
+// You NEVER call .matches() directly — DaoAuthenticationProvider calls it internally
+// when AuthService calls authenticationManager.authenticate(email, password).
+// The only time you call .encode() yourself is when creating a new user:
+// UserService.create() → passwordEncoder.encode(request.getPassword()) → save hashed to DB
 ```
 
 **`new BCryptPasswordEncoder()`** — creates an encoder with the default strength (10 rounds). Higher rounds = slower hashing = harder to brute-force.

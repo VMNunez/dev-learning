@@ -24,6 +24,30 @@ The solution: one central class that handles all exceptions for the entire API.
 
 ---
 
+## @RestControllerAdvice vs @ControllerAdvice
+
+Purpose: both mark a class as a global exception handler, but `@RestControllerAdvice` is the correct choice for a REST API. It combines `@ControllerAdvice` (intercept exceptions from all controllers) and `@ResponseBody` (serialise the return value to JSON automatically).
+
+Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → read: "@RestControllerAdvice"
+
+File: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
+
+Without `@ResponseBody`, `@ControllerAdvice` returns the handler's return value as the name of an HTML view to render — not as JSON. In a REST API there is no template engine, so Spring returns a 500 instead of your clean error body. `@RestControllerAdvice` fixes this with no extra configuration.
+
+```java
+// Correct — use @RestControllerAdvice in a REST API
+@RestControllerAdvice
+public class GlobalExceptionHandler { ... }
+
+// Wrong — returns HTML or a 500, not JSON
+@ControllerAdvice
+public class GlobalExceptionHandler { ... }
+```
+
+> **Interview trap:** `@ControllerAdvice` is seen in many older tutorials and textbooks. Interviewers specifically check which annotation you used and ask "why not `@ControllerAdvice`?" — the expected answer is the `@ResponseBody` distinction.
+
+---
+
 ## @ControllerAdvice — the global exception handler
 
 `@ControllerAdvice` marks a class whose `@ExceptionHandler` methods apply to **all controllers**. Spring automatically calls the right handler when an exception is thrown anywhere:

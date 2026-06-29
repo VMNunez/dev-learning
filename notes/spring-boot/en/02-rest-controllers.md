@@ -249,6 +249,28 @@ DELETE /api/projects/42     → @PathVariable
 
 ---
 
+## @JsonIgnore — preventing fields from appearing in JSON
+
+Purpose: `@JsonIgnore` tells Jackson to skip that field when serialising to JSON. Used on entity fields that must never travel over the API — most importantly the `password` field on `User`.
+
+Docs: https://www.baeldung.com/jackson-annotations → read: "@JsonIgnore"
+
+File: `src/main/java/com/victor/timetrack/model/User.java`
+
+```java
+@Entity
+@Table(name = "users")
+public class User {
+
+    @JsonIgnore
+    private String password;  // never appears in any JSON response from any endpoint
+}
+```
+
+This is a defence-in-depth measure. The right approach is DTOs (described below), which give you full control over what goes out. But if code ever accidentally returns a `User` entity directly, `@JsonIgnore` ensures the hash is not exposed. Interviewers ask: "Why doesn't your `/api/users` endpoint return the password?" — either DTOs or `@JsonIgnore` is the expected answer. Using DTOs is better; `@JsonIgnore` is the backup.
+
+---
+
 ## DTOs — never expose JPA entities directly
 
 A **DTO** (Data Transfer Object) is a plain class whose only job is to define the *shape* of the data that crosses the API boundary — what the client sends in, and what you send back. It is not a database table and it holds no business logic: just fields. DTOs are how you give a clean shape to your responses instead of returning the raw entity.

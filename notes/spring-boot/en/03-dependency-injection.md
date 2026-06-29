@@ -191,3 +191,52 @@ public class JwtService {
 The `${}` syntax matches the key in `application.properties`. If the key does not exist, Spring fails at startup — better than a `NullPointerException` at runtime.
 
 This is how you avoid hardcoding secrets in the code. The value comes from the config file, which is not committed to git in production (it uses environment variables instead).
+
+---
+
+## @ConfigurationProperties — binding grouped config to a class
+
+Purpose: when you have several related config values (e.g. `app.jwt.secret` and `app.jwt.expiration`), bind them all at once to a dedicated class instead of writing a separate `@Value` for each field.
+
+Docs: https://www.baeldung.com/configuration-properties-in-spring-boot → read: "Simple Properties" and "Nested Properties"
+
+File: `src/main/java/com/victor/timetrack/config/JwtProperties.java`
+
+```properties
+# application.properties
+app.jwt.secret=${JWT_SECRET}
+app.jwt.expiration=86400000
+app.jwt.issuer=timetrack-api
+```
+
+```java
+@ConfigurationProperties(prefix = "app.jwt")
+public class JwtProperties {
+    private String secret;
+    private long expiration;
+    private String issuer;
+    // Lombok @Data generates getters/setters — required for binding
+}
+```
+
+```java
+// In your @Configuration class or the main application class:
+@EnableConfigurationProperties(JwtProperties.class)
+
+// Then inject it as a regular bean:
+@Service
+public class JwtUtil {
+    private final JwtProperties jwtProperties;
+    public JwtUtil(JwtProperties jwtProperties) { this.jwtProperties = jwtProperties; }
+}
+```
+
+**`@Value` vs `@ConfigurationProperties`:**
+
+| | `@Value` | `@ConfigurationProperties` |
+|---|---|---|
+| When to use | One or two isolated values | A group of related values |
+| Type safety | No — just a string injection | Yes — fields are typed |
+| Testability | Hard to override in tests | Easy — just construct the class |
+
+> **Why interviewers ask this:** once you have more than three `@Value` injections for the same prefix, the code starts to smell. `@ConfigurationProperties` is the production pattern. "How do you manage grouped configuration?" — this is the expected answer for senior junior candidates.

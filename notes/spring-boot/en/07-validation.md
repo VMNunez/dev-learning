@@ -2,6 +2,25 @@
 
 > 📖 [Spring Boot — Validation](https://docs.spring.io/spring-boot/reference/io/validation.html)
 
+## The required dependency
+
+Purpose: Bean Validation annotations (`@NotBlank`, `@Email`, `@Positive`) compile and run without errors even when the dependency is missing — but they are completely ignored at runtime. You must add `spring-boot-starter-validation` explicitly.
+
+Docs: https://docs.spring.io/spring-boot/reference/io/validation.html → read: "Validating Method Arguments"
+
+File: `pom.xml`
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+```
+
+No version needed — managed by `spring-boot-starter-parent`. This is a silent failure trap: annotations compile, code runs, but invalid input is never rejected. Always add the dependency before adding validation annotations.
+
+---
+
 ## The problem without validation
 
 Without validation, clients can send anything: a negative amount, an empty email, a null date. You either write manual `if` checks in every service method, or you let bad data reach the database. Both are wrong.
@@ -110,3 +129,44 @@ String password;
 ```
 
 Default messages (like "must not be blank") are technical. Custom messages are user-friendly. Always use custom messages on public-facing DTOs.
+
+---
+
+## ConstraintViolationException vs MethodArgumentNotValidException
+
+Purpose: two different exception types are thrown depending on WHERE validation fires. You need a separate `@ExceptionHandler` for each in `GlobalExceptionHandler`.
+
+Docs: https://www.baeldung.com/spring-mvc-custom-validator → read: "Spring Boot Controller-Level Validation"
+
+File: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
+
+| Trigger | Exception thrown |
+|---|---|
+| `@Valid` on `@RequestBody` (DTO) | `MethodArgumentNotValidException` |
+| `@Validated` on path variable / query param | `ConstraintViolationException` |
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    // Handles @Valid on @RequestBody
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .findFirst().orElse("Validation failed");
+        return ResponseEntity.badRequest().body(new ErrorResponse(400, message));
+    }
+
+    // Handles @Validated on path variables / query params
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException e) {
+        String message = e.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .findFirst().orElse("Constraint violation");
+        return ResponseEntity.badRequest().body(new ErrorResponse(400, message));
+    }
+}
+```
+
+Without the second handler, a negative `@PathVariable` id passes `ConstraintViolationException` up the chain and hits the generic 500 fallback — the client receives an unhelpful error instead of a clear 400.

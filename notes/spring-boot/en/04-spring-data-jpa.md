@@ -84,6 +84,43 @@ private Boolean active = true;   // new projects are active by default
 
 ---
 
+## @Enumerated(EnumType.STRING) — safe enum persistence
+
+Purpose: controls how JPA stores an enum value in the database. `STRING` stores the name (`"MANAGER"`); `ORDINAL` (the default) stores the position number (`0`, `1`, `2`). Always use `STRING`.
+
+Docs: https://www.baeldung.com/jpa-enumerated-type → read: "Mapping Enum to String" and the ordinal gotcha
+
+File: `src/main/java/com/victor/timetrack/model/User.java` and `TimeEntry.java`
+
+```java
+@Enumerated(EnumType.STRING)   // stores "MANAGER" or "EMPLOYEE" in the column
+@Column(nullable = false)
+private Role role;
+
+@Enumerated(EnumType.STRING)   // stores "DRAFT", "SUBMITTED", "APPROVED", "REJECTED"
+private EntryStatus status;
+```
+
+**Why `ORDINAL` is dangerous — the classic trap:**
+
+```java
+// Your enum today:
+enum Role { EMPLOYEE, MANAGER }
+// Stored as: 0=EMPLOYEE, 1=MANAGER
+
+// You add a new role in the middle next week:
+enum Role { EMPLOYEE, ADMIN, MANAGER }
+// Now: 0=EMPLOYEE, 1=ADMIN, 2=MANAGER
+// But the database still has rows with value 1 — they now mean ADMIN, not MANAGER!
+// Every existing MANAGER became an ADMIN. Silent data corruption, no error.
+```
+
+With `STRING`, the stored value is `"MANAGER"` — adding a new enum value in the middle never changes what the existing rows mean.
+
+> **Interviewers ask:** "Why did you use `EnumType.STRING` and not the default?" — explain the ordinal corruption risk. This is one of the questions that separates candidates who understand JPA from those who just followed a tutorial.
+
+---
+
 ## Automatic timestamps — @CreationTimestamp, @UpdateTimestamp, @PrePersist
 
 You almost never set `createdAt` / `updatedAt` by hand. There are two ways to fill them automatically — a Hibernate shortcut and the JPA-standard callback.
