@@ -248,9 +248,12 @@ List every file created in `es/` in the summary under "Spanish files created".
 
 ## Pre-audit — Resolve TODOs
 
-Before starting, scan all files in {NOTES_PATH} for any TODO markers.
-These can appear as `TODO:`, `<!-- TODO: ... -->`, or `// TODO` — Victor adds them while
-reading to mark things he wants corrected or improved.
+**Victor studies from the `es/` files — that is where he adds TODO markers.**
+Scan the `es/` counterpart folder (e.g. if `{NOTES_PATH}` is `notes/java/en/`, scan
+`notes/java/es/`) for TODO markers first. Then also scan `{NOTES_PATH}` (`en/`) in case
+any TODOs exist there too. In practice almost all TODOs will be in `es/`.
+
+TODO markers can appear as `TODO:`, `<!-- TODO: ... -->`, or `// TODO`.
 
 TODOs can take two forms:
 
@@ -259,11 +262,12 @@ TODOs can take two forms:
 
 For each TODO found:
 1. Identify exactly what Victor wants changed (instruction) or what he wants understood (question)
-2. Apply the fix at that exact location in the file — weaving answers into narrative prose for question TODOs
-3. Remove the TODO marker after fixing
-4. Report what was changed before moving on
+2. Apply the fix at that exact location in the `es/` file — weaving answers into narrative prose for question TODOs
+3. Mirror the equivalent fix to the `en/` counterpart file (same content, translated back to English)
+4. Remove the TODO marker in both files after fixing
+5. Report what was changed before moving on
 
-If no TODOs are found, skip this section and move directly to the audit.
+If no TODOs are found in either folder, skip this section and move directly to the audit.
 
 **Pattern detection — after resolving all TODOs:**
 If 2 or more TODOs reflect the same type of correction or question, this reveals a
