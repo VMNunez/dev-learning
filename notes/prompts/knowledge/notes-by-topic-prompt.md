@@ -302,6 +302,12 @@ Read all files in {NOTES_PATH}.
    - Does it read like a personal learning guide, not like documentation? Test: would this
      sentence appear word-for-word on the official docs site? If yes, report it in the summary
      — do not change the text; Victor decides whether to add a TODO and rewrite it.
+   - Does it use any syntax, class, or annotation from a later file in the same topic (forward
+     reference) without a one-line note pointing to where it is explained? If yes, add the
+     inline note directly — it is new content, not a modification of existing text.
+   - Does it use any class, annotation, or pattern from a different topic folder (cross-topic
+     reference) without a preview callout blockquote? If yes, add the callout directly — same
+     reasoning: it is new content.
 
   **Action rules for rule 2 violations:**
   - Missing `Docs:` links (file-level or section-level) → **add them directly**. They are
@@ -361,6 +367,23 @@ Read all files in {NOTES_PATH}.
      needs one sentence. Complex concepts (JPA relationships, Spring Security filter chain,
      JWT flow) need a paragraph. Match the explanation length to how long it actually takes
      to understand the concept — not to a fixed template.
+   - **Mark forward references within the same topic.** If an example in file N uses a
+     concept that is not explained until file M (M > N), add a one-line note inline:
+     "The `X::Y` syntax is a method reference — covered in full in `09-streams-lambdas.md`.
+     For now, read it as 'the `Y` method of `X`.'" Never leave syntax the reader hasn't
+     seen yet unexplained and unmarked, even if it appears as a minor part of an example.
+   - **Add a preview callout for every cross-topic reference.** When a section uses classes,
+     annotations, or patterns from a different topic folder — for example, Java language
+     notes mentioning `@Entity`, `JpaRepository`, `ResponseEntity`, or `@Service` — open
+     that section with a blockquote callout:
+     `> **Preview — Spring Boot:** The examples below use Spring Boot classes you haven't
+     studied yet. Read this to see where this Java concept appears in practice — you'll
+     implement it in the Spring Boot notes.`
+     Adapt the topic name and description to the actual cross-topic reference. This rule
+     applies to every section that mixes the current topic with an external one — not only
+     to sections explicitly labelled "Spring Boot connection". A reader who is studying
+     files in sequence must never encounter an unexplained class or annotation without a
+     clear signal that it belongs to a different topic they haven't reached yet.
    - **Code concept sections (methods, classes, annotations):** *(structured mode — notes/java/en/
      and notes/spring-boot/en/ only)* each section starts with three metadata lines: `Purpose:` —
      one sentence: who calls it, when, and why; `File:` — real path to the file where this
