@@ -32,9 +32,9 @@ Notes on specific topics:
   Spring Boot code uses Java language concepts). Before marking a JWT or security question as
   unbacked, also check notes/security/en/ — JWT design and token invalidation concepts live
   there by folder convention.
-- Angular Material: set NOTES_PATH = notes/angular-material/, FILE = angular. For direction 2,
+- Angular Material: set NOTES_PATH = notes/angular-material/en/, FILE = angular. For direction 2,
   check only questions under Angular Material sections of angular.md — questions in other
-  sections (Components, Signals, Routing, Forms, etc.) are backed by notes/angular/ and are
+  sections (Components, Signals, Routing, Forms, etc.) are backed by notes/angular/en/ and are
   out of scope for this run.
 - Java: focus on language concepts needed to write Spring Boot code only.
 - SQL: database is PostgreSQL.

@@ -25,13 +25,13 @@ NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | n
 MODE = [full | single-file]
        → full (default): NOTES_PATH is a folder; audit the whole topic — coverage gap analysis,
          proactive new files, the "next file:" counter, and the future-learning check.
-       → single-file: NOTES_PATH is one .md file (e.g. notes/angular/06-http-rxjs.md); a focused
+       → single-file: NOTES_PATH is one .md file (e.g. notes/angular/en/06-http-rxjs.md); a focused
          pass on just that file (TODOs + quality + Docs links + completing that file) that skips
          the folder-level steps. See "Mode" below.
 
 ## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
 ## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
-## (also reads notes/java/), Java, Architecture, Security, TypeScript, JavaScript, CSS, SQL,
+## (also reads notes/java/en/), Java, Architecture, Security, TypeScript, JavaScript, CSS, SQL,
 ## Git, General.
 
 Notes on specific topics:
@@ -66,17 +66,17 @@ These rules apply both when auditing existing notes and when creating new ones.
 
 | Concept type | Correct folder |
 |---|---|
-| Security concepts (CORS, XSS, JWT design, AuthN/AuthZ) | notes/security/ |
-| Cross-cutting concepts (HTTP, JSON, env vars, testing, SOLID) | notes/general/ |
-| Spring Boot implementation (annotations, filters, config, JPA) | notes/spring-boot/ |
-| Pure Java language concepts | notes/java/ |
-| Angular patterns and framework concepts | notes/angular/ |
-| Angular Material components | notes/angular-material/ |
-| Architecture patterns (REST, layered, MVC) | notes/architecture/ |
+| Security concepts (CORS, XSS, JWT design, AuthN/AuthZ) | notes/security/en/ |
+| Cross-cutting concepts (HTTP, JSON, env vars, testing, SOLID) | notes/general/en/ |
+| Spring Boot implementation (annotations, filters, config, JPA) | notes/spring-boot/en/ |
+| Pure Java language concepts | notes/java/en/ |
+| Angular patterns and framework concepts | notes/angular/en/ |
+| Angular Material components | notes/angular-material/en/ |
+| Architecture patterns (REST, layered, MVC) | notes/architecture/en/ |
 
 **Format modes:**
 
-- `notes/java/` and `notes/spring-boot/` — **structured mode**: the file opens with a
+- `notes/java/en/` and `notes/spring-boot/en/` — **structured mode**: the file opens with a
   `# [Topic Name]` title followed by a general `Docs:` link to the main reference page
   for the whole topic; each section has three fields:
   `Purpose:` (one sentence — who calls it, when, and why), `File:` (real path to the project
@@ -220,7 +220,7 @@ Read all files in {NOTES_PATH}.
 2. Check if every note follows these teaching rules:
    - Does it explain the WHY before the code?
    - Does it identify repeating patterns and name them explicitly?
-   - Is it in the correct format mode for its folder? (`notes/java/` and `notes/spring-boot/`
+   - Is it in the correct format mode for its folder? (`notes/java/en/` and `notes/spring-boot/en/`
      → structured mode; all other folders → conversational mode)
    - Does the file open with a general `Docs:` link to the main reference page for the topic?
    - Does each section have a `Docs:` link that points to the exact sub-section to study and
@@ -288,8 +288,8 @@ Read all files in {NOTES_PATH}.
      needs one sentence. Complex concepts (JPA relationships, Spring Security filter chain,
      JWT flow) need a paragraph. Match the explanation length to how long it actually takes
      to understand the concept — not to a fixed template.
-   - **Code concept sections (methods, classes, annotations):** *(structured mode — notes/java/
-     and notes/spring-boot/ only)* each section starts with three metadata lines: `Purpose:` —
+   - **Code concept sections (methods, classes, annotations):** *(structured mode — notes/java/en/
+     and notes/spring-boot/en/ only)* each section starts with three metadata lines: `Purpose:` —
      one sentence: who calls it, when, and why; `File:` — real path to the file where this
      code was applied (e.g. `src/main/java/.../service/UserService.java`); check PROGRESS.md
      to find which project covers this concept, then confirm in that project's PLANNING.md,

@@ -28,7 +28,7 @@ NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/java
 
 Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/spring-boot/ — coverage.md is written there.
-  Additionally read notes/java/ when reading existing notes (Step 1.3), because Spring Boot
+  Additionally read notes/java/en/ when reading existing notes (Step 1.3), because Spring Boot
   coverage must include Java language concepts that appear in Spring Boot code.
   Also read notes/spring-boot/layer-reference.md — it defines what belongs in each layer
   (controller, service, repository) and is directly relevant for coverage decisions about
@@ -104,9 +104,10 @@ Read these files before making any decision:
    items without a clear reason.
 2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
    in-scope given Victor's job objective and August–September 2026 deadline.
-3. All numbered note files in {NOTES_PATH} — read them to understand what has been studied
+3. All numbered note files in `{NOTES_PATH}en/` — read them to understand what has been studied
    and what examples already exist. This is context, not the source of coverage decisions.
-   Skip `future-learning.md` and `coverage.md` in this pass.
+   Skip `future-learning.md` and `coverage.md` in this pass. (Note: the numbered files live in
+   the `en/` subfolder; `coverage.md` and `future-learning.md` live in the topic root.)
 4. When updating an existing `coverage.md`, touch only the items that are new, wrong, or
    being promoted/demoted. Leave correct existing bullets untouched, word for word — an
    unprompted reword of unrelated items makes the resulting commit noisy and hard to review.
