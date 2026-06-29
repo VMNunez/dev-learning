@@ -232,7 +232,10 @@ notes/java/
 ```
 
 **Rules:**
-- When a note file is created or meaningfully updated (in a session or by a prompt), the Spanish version must also be created or updated. Never add or change one without the other.
+- **Never modify an `en/` file without checking its `es/` counterpart.** The rule covers three cases:
+  - New file created in `en/` → create the full Spanish version in `es/` with the same filename
+  - New section added to an existing `en/` file → if the `es/` counterpart exists, add the translated section there too; if not, note it but don't create the whole file
+  - TODO resolved in an `en/` file → apply the same fix in `es/` if the counterpart exists
 - Spanish versions use the same structure and code blocks — only the prose is translated. Code comments may be translated too.
 - Not every existing English file has a Spanish translation yet. Victor requests which topics to translate; do not create Spanish files proactively unless asked.
 - When Victor asks to create a Spanish version of a specific file or topic, write it directly without asking to confirm each section.

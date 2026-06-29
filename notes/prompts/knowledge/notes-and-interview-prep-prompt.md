@@ -118,7 +118,7 @@ note file. Use judgment — exact name matching is not required.
 For each unbacked question:
 1. Create a new note file or add a section to an existing file following the format defined
    in `notes-by-topic-prompt.md` exactly: conversational mode for all folders except
-   `notes/java/` and `notes/spring-boot/` (structured mode). Write in a personal learning
+   `notes/java/en/` and `notes/spring-boot/en/` (structured mode). Write in a personal learning
    voice ("You use this when…", not "This is used when…"). Start with the problem the concept
    solves before introducing the concept itself. Include at least one sentence of context
    before any code block. Do not write documentation — if the text could appear on the

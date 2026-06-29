@@ -100,13 +100,21 @@ Each topic folder has `en/` and `es/` subfolders. {NOTES_PATH} always points to 
 The Spanish counterpart lives at the same relative path but under `es/` (e.g. `notes/java/es/09-streams-lambdas.md`).
 `coverage.md`, `future-learning.md`, and `layer-reference.md` live in the topic root — never inside `en/` or `es/`.
 
-- When creating a new note file in `en/`, also create the Spanish version in `es/` with the same filename.
+Every change made to an `en/` file must be mirrored in the corresponding `es/` file. The rule is simple:
+**never modify an `en/` file without checking its `es/` counterpart**. Specifically:
+
+- **New file in `en/`** → also create the full Spanish version in `es/` with the same filename.
   Same structure, same code blocks — only the prose is in Spanish. Code comments may also be translated.
-- When resolving a TODO in an existing English file, check whether a Spanish counterpart exists in `es/` and apply
-  the equivalent change there too. If it does not exist yet, do not create it — leave a note in the summary.
-- When running in `single-file` mode, check whether the Spanish counterpart exists. If it does, apply the
-  same TODO resolutions and quality fixes there too.
-- Include all `es/` files created or modified in the final `git add` and in the summary table.
+- **New section added to an existing `en/` file** (from a gap found in rule 1, or from the proactive
+  coverage check) → check whether the `es/` counterpart exists. If it does, add the translated section
+  there too. If it does not exist yet, note it in the summary but do not create the whole file — only add
+  the specific new section.
+- **TODO resolved in an `en/` file** → check whether the `es/` counterpart exists and apply the equivalent
+  fix there too. If it does not exist yet, leave a note in the summary.
+- **Single-file mode** → check whether the Spanish counterpart exists. If it does, apply all the same
+  changes (TODO resolutions, new sections, quality fixes) there too.
+
+Include all `es/` files created or modified in the final `git add` and in the summary table.
 
 **Living document rules:**
 
