@@ -113,6 +113,8 @@ La anotación le dice a Spring que gestione esta clase como un bean. El construc
 
 ## Anotaciones de Spring Boot que usarás cada día
 
+> **Vista previa — Spring Boot:** Todo lo que viene a partir de aquí es territorio de Spring Boot. Aún no has estudiado Spring Boot — lee esto como un mapa de lo que está por venir. Cada anotación tiene su propia sección dedicada en las notas de Spring Boot, donde la implementarás en código real.
+
 ### Anotaciones de bean — registrar una clase como objeto gestionado por Spring
 
 ```java

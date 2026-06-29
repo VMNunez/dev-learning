@@ -86,6 +86,8 @@ ResponseEntity<void>   // ✗ — void es una palabra clave, no válida dentro d
 
 > **Resumen claro:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando algo genérico te obliga a poner un tipo entre `<>` y no hay nada real que devolver. No es "void si no hay nada, Void si podría ser null" — ambas significan "sin valor", solo que viven en lugares distintos del lenguaje.
 
+> **Vista previa — Spring Boot:** El ejemplo a continuación usa `ResponseEntity`, una clase de Spring Boot que aún no has estudiado. Léelo para ver dónde importa la diferencia entre `void` y `Void` en la práctica — lo implementarás tú mismo en las notas de Spring Boot.
+
 Este es exactamente el patrón de Spring Boot para `delete` — el servicio devuelve `void`, pero el controlador devuelve `ResponseEntity<Void>` para poder enviar un estado 204 sin cuerpo (ver [spring-boot/02-rest-controllers.md](../spring-boot/02-rest-controllers.md)):
 
 ```java

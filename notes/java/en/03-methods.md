@@ -78,6 +78,8 @@ ResponseEntity<void>   // ✗ — void is a keyword, not valid inside < >
 
 > **Clearing up the confusion:** it is *not* "`void` if nothing, `Void` if maybe-null". Both mean "no value" — they just live in different places. Use the keyword `void` for a method's return type; use the class `Void` only when a generic (`ResponseEntity<T>`, `Callable<T>`) forces you to put a type in the `<>` and there is nothing to return.
 
+> **Preview — Spring Boot:** The example below uses `ResponseEntity`, a Spring Boot class you haven't studied yet. Read it to see where `void` vs `Void` matters in practice — you'll implement this yourself in the Spring Boot notes.
+
 This is exactly the Spring Boot `delete` pattern — the service returns `void`, but the controller returns `ResponseEntity<Void>` so it can still send a 204 status with no body (see [spring-boot/02-rest-controllers.md](../spring-boot/02-rest-controllers.md)):
 
 ```java

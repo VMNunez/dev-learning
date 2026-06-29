@@ -122,6 +122,8 @@ if (role.equals(Role.ADMIN)) { ... } // also works but unnecessary
 
 ## Spring Boot connection
 
+> **Preview — Spring Boot:** This section uses `@Entity`, `@Enumerated`, and Spring Security concepts you haven't studied yet. Read it to see where enums appear in a real application — you'll implement this in the Spring Boot notes.
+
 Enums appear constantly in Spring Boot applications:
 
 ### In an entity

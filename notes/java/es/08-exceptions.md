@@ -119,6 +119,8 @@ El recurso debe implementar `AutoCloseable`. Las conexiones de base de datos en 
 
 ## Conexión con Spring Boot
 
+> **Vista previa — Spring Boot:** Esta sección usa `@RestControllerAdvice`, `@ExceptionHandler` y `ResponseEntity` — clases de Spring Boot que aún no has estudiado. Léela para ver cómo las excepciones Java se conectan a una API web. Construirás exactamente este patrón en las notas de Spring Boot.
+
 El patrón estándar en Spring Boot:
 
 ```java

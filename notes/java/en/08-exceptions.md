@@ -119,6 +119,8 @@ The resource must implement `AutoCloseable`. Database connections in Spring Boot
 
 ## Spring Boot connection
 
+> **Preview — Spring Boot:** This section uses `@RestControllerAdvice`, `@ExceptionHandler`, and `ResponseEntity` — all Spring Boot classes you haven't studied yet. Read it to see how Java exceptions plug into a web API. You'll build this exact pattern in the Spring Boot notes.
+
 The standard pattern in Spring Boot:
 
 ```java

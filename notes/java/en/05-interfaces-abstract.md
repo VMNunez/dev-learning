@@ -146,6 +146,8 @@ You will use these every time you work with streams and lambdas.
 
 ## Spring Boot connection
 
+> **Preview — Spring Boot:** This section uses Spring Boot and Spring Security classes (`JpaRepository`, `UserDetailsService`, `UserDetails`, `@Service`) that you haven't studied yet. Read it to see how interfaces work in a real project. You'll implement all of this in the Spring Boot notes — come back then for full understanding.
+
 Spring Boot uses interfaces extensively:
 
 ```java

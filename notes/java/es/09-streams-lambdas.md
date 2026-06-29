@@ -20,10 +20,10 @@ Cada uno de esos pasos se escribe con un pipeline de stream y una lambda. Sin en
 
 ## El problema que resuelven las lambdas
 
-Antes de Java 8, si querías pasar un trozo de comportamiento a un método — por ejemplo, "ordena esta lista por nombre" — tenías que crear una clase entera o una clase anónima solo para contener esa línea de lógica. Era verboso y difícil de leer.
+Antes de Java 8, si querías pasarle una operación concreta a un método — por ejemplo, "ordena esta lista por nombre" — tenías que crear una clase entera o una clase anónima solo para albergar esa lógica. Era verboso y difícil de leer.
 
 ```java
-// Forma antigua — clase anónima solo para definir un trozo de comportamiento
+// Forma antigua — clase anónima para encapsular una única operación
 List<String> names = Arrays.asList("Luis", "Ana", "Victor");
 
 Collections.sort(names, new Comparator<String>() {
@@ -138,7 +138,7 @@ El resultado es una nueva `List<String>`. La lista original `employees` nunca se
 
 ## Operaciones intermedias vs terminales
 
-**Operaciones intermedias** — cada una devuelve un nuevo stream, así que puedes encadenarlas. También son **lazy**: no se ejecutan realmente hasta que se llama a una operación terminal. Java espera hasta conocer el pipeline completo antes de hacer cualquier trabajo.
+**Operaciones intermedias** — cada una devuelve un nuevo stream, así que puedes encadenarlas. También son **lazy**: no se ejecutan hasta que una operación terminal las activa. Java espera a tener el pipeline completo antes de hacer cualquier trabajo.
 
 | Operación                         | Qué hace                                                         |
 | --------------------------------- | ---------------------------------------------------------------- |
@@ -167,7 +167,7 @@ El resultado es una nueva `List<String>`. La lista original `employees` nunca se
 
 ## Optional — qué devuelve findFirst y por qué
 
-`findFirst()` no devuelve `T` directamente — devuelve `Optional<T>`. Un `Optional` es un contenedor que o bien tiene un valor o está vacío. Te obliga a manejar el caso en que no se encontró nada, en lugar de obtener una `NullPointerException`.
+`findFirst()` no devuelve `T` directamente — devuelve `Optional<T>`. Un `Optional` es un contenedor que puede tener un valor o estar vacío. Te obliga a gestionar el caso en que no se encontró nada, en lugar de llevarte una `NullPointerException`.
 
 ```java
 Optional<Employee> found = employees.stream()
@@ -312,7 +312,7 @@ Usa un stream cuando el pipeline es claro y cada paso cabe en una o dos líneas.
 
 ## Referencia rápida de Collectors
 
-`Collectors` es una clase de utilidad que proporciona estrategias ya hechas para la operación terminal `collect()`.
+`Collectors` es una clase de utilidad con las implementaciones más habituales listas para usar en la operación terminal `collect()`.
 
 ```java
 // Recoger en una List

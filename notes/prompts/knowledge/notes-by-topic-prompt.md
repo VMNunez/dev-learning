@@ -11,7 +11,8 @@ Useful after a study session when you want to check and improve the notes for on
 1. Fill in `TOPIC` — the subject to audit (e.g. Angular, SQL, Java, Spring Boot)
 2. Fill in `NOTES_PATH` — for `full` a folder (e.g. `notes/angular/`); for `single-file` the exact file (e.g. `notes/angular/06-http-rxjs.md`)
 3. Fill in `MODE` — `full` for the whole-topic audit, or `single-file` to correct just that one file (see "Mode")
-4. Paste the entire prompt below into a new chat
+4. Fill in `REWRITE_MODE` — `standard` to protect existing text (default), or `first-pass` to allow full rewrites (see below)
+5. Paste the entire prompt below into a new chat
 
 ---
 
@@ -28,6 +29,18 @@ MODE = [full | single-file]
        → single-file: NOTES_PATH is one .md file (e.g. notes/angular/en/06-http-rxjs.md); a focused
          pass on just that file (TODOs + quality + Docs links + completing that file) that skips
          the folder-level steps. See "Mode" below.
+
+REWRITE_MODE = [standard | first-pass]
+       → standard (default): existing text is final unless marked with a TODO. Do not reword,
+         restructure, or improve text that is already written. Report quality issues in the
+         summary — Victor adds a TODO if he wants a fix.
+       → first-pass: the notes were generated before the prompt was refined and have not been
+         validated by Victor yet. Existing text is NOT protected. You may rewrite any section
+         that has quality problems: poor translation, awkward phrasing, missing explanation,
+         wrong voice, or translation that follows the English sentence structure too closely.
+         TODOs are still resolved as normal. After rewriting, the file is considered validated
+         — standard mode applies from the next run onwards.
+         Use this only once per file, when you know the content was auto-generated and untrusted.
 
 ## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
 ## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
@@ -129,7 +142,11 @@ in a project, check the relevant notes file:
   example, and do not add a duplicate for the same concept
 - Never duplicate examples across files in the same folder
 
-**IMPORTANT — existing text is final unless marked with TODO:**
+**IMPORTANT — existing text protection (depends on {REWRITE_MODE}):**
+
+Check `{REWRITE_MODE}` before touching any existing text.
+
+**If `{REWRITE_MODE}` = `standard` (default):**
 
 Do not rewrite, rephrase, restructure, or change any text that already exists in a note file.
 There are two reasons for this rule: either Victor has already read that section and the text
@@ -151,6 +168,22 @@ summary — but do not change the text. Victor decides whether to rewrite it.
 
 Exception: if Victor explicitly asks you to fix the reported issues after seeing the
 summary (in the same conversation), you may rewrite those sections — even without a TODO.
+
+**If `{REWRITE_MODE}` = `first-pass`:**
+
+Existing text is NOT protected in this run. The notes were auto-generated before the prompt
+was refined and have not been validated by Victor. Rewrite freely:
+- Fix any section where the translation sounds robotic, follows English sentence structure too
+  closely, or uses calque vocabulary (e.g. "escanear" instead of "leer", "bandera" instead of
+  "indicador o flag", etc.)
+- Fix any section that is missing the WHY, opens with code before explanation, or reads like
+  official documentation
+- Resolve all TODO markers as normal
+- Keep all code blocks and structural labels unchanged — only rewrite prose
+- Do NOT restructure the file or change the order of sections unless a TODO asks for it
+
+After a `first-pass` run, the file is considered validated. Note this in the summary so Victor
+knows to switch back to `standard` mode for future runs on these files.
 
 ---
 
@@ -397,13 +430,14 @@ already lists the concept, leave it as is.
 
 ## Execution
 
-**Reminder:** only apply changes to existing text if there is a TODO marker. New files and new
-sections are always allowed. Do not edit existing text without a TODO — even if it could be improved.
+**Reminder:** check `{REWRITE_MODE}` before touching existing text.
+- `standard`: only apply changes to existing text if there is a TODO marker. New files and new
+  sections are always allowed. Do not edit existing text without a TODO — even if it could be improved.
+  For issues in existing text, report them in the summary — do not change the text.
+- `first-pass`: apply quality rewrites freely to existing text (see above). Resolve all TODOs.
+  New files and sections are always allowed.
 
-Apply all new content and TODO resolutions directly to the files. For issues in existing
-text, report them in the summary — do not change the text. Exception: if Victor explicitly
-asks you to fix the reported issues after seeing the summary (in the same conversation),
-you may rewrite those sections — even without a TODO.
+Apply all new content and TODO resolutions directly to the files.
 
 After all edits, print a final summary table:
 

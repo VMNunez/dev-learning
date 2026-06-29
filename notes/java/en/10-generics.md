@@ -24,6 +24,8 @@ String s = list.get(0);   // no cast — compiler knows the type
 
 ## Generic class
 
+You write the type parameter `<T>` after the class name. `T` is a placeholder — when someone creates an instance they replace `T` with the actual type they need:
+
 ```java
 public class Box<T> {
     private T value;
@@ -57,6 +59,8 @@ ageBox.getValue();    // 31 — Integer
 ---
 
 ## Generic method
+
+A method can also have its own type parameter, independent of the class. You declare it before the return type: `<T> ReturnType methodName(...)`.
 
 ```java
 public static <T> T getFirst(List<T> list) {
@@ -198,6 +202,8 @@ public Employee getEmployee(Long id) {
 ---
 
 ## Generics in Spring Boot
+
+> **Preview — Spring Boot:** The examples below use `JpaRepository`, `ResponseEntity`, and stream operations — Spring Boot and Java concepts you may not have studied yet. Read this to see how `<T>` appears everywhere in Spring Boot's API. It will make much more sense once you are in the Spring Boot notes.
 
 You will see and use generics constantly:
 

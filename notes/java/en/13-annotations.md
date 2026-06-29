@@ -113,6 +113,8 @@ The annotation tells Spring to manage this class as a bean. The constructor tell
 
 ## Spring Boot annotations you will use every day
 
+> **Preview — Spring Boot:** Everything from this section onwards is Spring Boot territory. You haven't studied Spring Boot yet — read this as a map of what's coming. Each annotation below has its own dedicated section in the Spring Boot notes where you'll implement it in real code.
+
 ### Bean annotations — register a class as a Spring-managed object
 
 ```java

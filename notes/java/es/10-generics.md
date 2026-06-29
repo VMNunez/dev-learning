@@ -24,6 +24,8 @@ String s = list.get(0);   // sin cast — el compilador conoce el tipo
 
 ## Clase genérica
 
+Escribes el parámetro de tipo `<T>` después del nombre de la clase. `T` es un marcador de posición — cuando alguien crea una instancia, reemplaza `T` con el tipo real que necesita:
+
 ```java
 public class Box<T> {
     private T value;
@@ -57,6 +59,8 @@ ageBox.getValue();    // 31 — Integer
 ---
 
 ## Método genérico
+
+Un método también puede tener su propio parámetro de tipo, independiente de la clase. Se declara antes del tipo de retorno: `<T> TipoRetorno nombreMetodo(...)`.
 
 ```java
 public static <T> T getFirst(List<T> list) {
@@ -93,15 +97,15 @@ sum(List.of(1.5, 2.5));        // funciona — Double extiende Number
 
 ## `Optional<T>`
 
-`Optional<T>` es un contenedor que o bien tiene un valor o está vacío. Te obliga a manejar el caso "sin valor" explícitamente, en lugar de devolver `null` y esperar que el llamador lo compruebe.
+`Optional<T>` es un contenedor que puede tener un valor o estar vacío. Te obliga a gestionar el caso "sin valor" de forma explícita, en lugar de devolver `null` y esperar que quien lo use se acuerde de comprobarlo.
 
 ```java
-// Devolver null — el llamador podría olvidar comprobarlo
+// Devolver null — es fácil olvidar comprobarlo y llevarse una NullPointerException
 public Employee findById(Long id) {
     return database.get(id);   // podría devolver null
 }
 
-// Devolver Optional — el llamador debe manejar el caso vacío
+// Devolver Optional — quien lo use tiene que manejar el caso vacío
 public Optional<Employee> findById(Long id) {
     Employee emp = database.get(id);
     return Optional.ofNullable(emp);
@@ -198,6 +202,8 @@ public Employee getEmployee(Long id) {
 ---
 
 ## Generics en Spring Boot
+
+> **Vista previa — Spring Boot:** Los ejemplos a continuación usan `JpaRepository`, `ResponseEntity` y operaciones con streams — conceptos de Spring Boot y Java que puede que aún no hayas estudiado. Léelo para ver cómo `<T>` aparece por todas partes en la API de Spring Boot. Tendrá mucho más sentido una vez que estés en las notas de Spring Boot.
 
 Verás y usarás generics constantemente:
 

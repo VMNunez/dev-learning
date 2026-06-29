@@ -186,7 +186,9 @@ public record Employee(String name, String email, int age) {}
 // - equals(), hashCode(), toString()
 ```
 
-Los records son inmutables — sin setters. Úsalos para DTOs (Data Transfer Objects) en Spring Boot — objetos que transportan datos entre capas y no deben cambiar.
+Los records son inmutables — sin setters. Son perfectos para transportar datos entre capas de una aplicación web (este patrón se llama DTO — Data Transfer Object).
+
+> **Vista previa — Spring Boot:** El ejemplo a continuación usa un `repository` y un `controlador`, que son conceptos de Spring Boot que aún no has estudiado. Léelo para ver cómo encajan los records en un proyecto real — lo construirás en las notas de Spring Boot.
 
 ```java
 // Patrón DTO clásico en Spring Boot

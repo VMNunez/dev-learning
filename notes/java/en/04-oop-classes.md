@@ -178,7 +178,9 @@ public record Employee(String name, String email, int age) {}
 // - equals(), hashCode(), toString()
 ```
 
-Records are immutable — no setters. Use them for DTOs (Data Transfer Objects) in Spring Boot — objects that carry data between layers and should not change.
+Records are immutable — no setters. They are perfect for carrying data between layers in a web application (this pattern is called a DTO — Data Transfer Object).
+
+> **Preview — Spring Boot:** The example below uses a `repository` and a `controller`, which are Spring Boot concepts you haven't studied yet. Read it to see how records fit into a real project — you'll build this in the Spring Boot notes.
 
 ```java
 // Classic DTO pattern in Spring Boot

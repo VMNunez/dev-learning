@@ -172,6 +172,8 @@ Object obj = new Employee("Victor");  // valid — everything is an Object
 
 ## Spring Boot connection
 
+> **Preview — Spring Boot:** This section uses `JpaRepository` and `RuntimeException` in a Spring Boot context. `JpaRepository` is explained in the Spring Boot notes. `RuntimeException` is a Java class covered in `08-exceptions.md` — if you haven't read that file yet, come back here after.
+
 Inheritance appears constantly in Spring Boot:
 
 ```java
