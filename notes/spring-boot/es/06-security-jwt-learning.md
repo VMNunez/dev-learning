@@ -330,7 +330,7 @@ ruta de error → [GlobalExceptionHandler]
 
 ## 5. BCryptPasswordEncoder — cómo se almacenan las contraseñas
 
-File: `security/SecurityConfig.java` — definido como `@Bean` dentro de SecurityConfig
+Archivo: `security/SecurityConfig.java` — definido como `@Bean` dentro de SecurityConfig
 
 Este es el primer concepto que entender porque todas las demás clases asumen que las contraseñas se almacenan como hashes BCrypt.
 
@@ -359,7 +359,7 @@ public PasswordEncoder passwordEncoder() {
 
 ## 6. UserDetailsService — enseñarle a Spring dónde están tus usuarios
 
-File: `service/UserDetailsServiceImpl.java`
+Archivo: `service/UserDetailsServiceImpl.java`
 
 Spring Security no sabe cómo encontrar usuarios en tu base de datos. Implementas `UserDetailsService` para enseñarle. Este es el puente entre Spring Security y tu entidad `User`.
 
@@ -415,7 +415,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 ## 7. JwtUtil — crear y validar tokens
 
-File: `security/JwtUtil.java` · config: `src/main/resources/application.properties`
+Archivo: `security/JwtUtil.java` · config: `src/main/resources/application.properties`
 
 Ahora entiendes qué es un JWT (sección 3) y cómo se almacenan los usuarios (secciones 5-6). `JwtUtil` es lo que crea y valida los tokens reales.
 
@@ -525,7 +525,7 @@ public boolean isValid(String token, String email) {
 
 ## 8. JwtFilter — validar cada request
 
-File: `security/JwtFilter.java`
+Archivo: `security/JwtFilter.java`
 
 Ahora sabes qué es un JWT, cómo se almacenan los usuarios y cómo validar un token. `JwtFilter` es lo que lo une todo en cada request entrante.
 
@@ -643,7 +643,7 @@ Es **thread-local** — cada request se ejecuta en su propio hilo y tiene su pro
 
 ## 9. SecurityFilterChain — conectar todo
 
-File: `security/SecurityConfig.java`
+Archivo: `security/SecurityConfig.java`
 
 Ahora que sabes lo que hacen `JwtFilter` y `UserDetailsService`, la configuración tiene sentido. Aquí es donde registras cada pieza y estableces las reglas de ruta.
 
@@ -722,7 +722,7 @@ public class SecurityConfig {
 
 ## 10. CORS — permitir que Angular llame al API
 
-File: `security/SecurityConfig.java` — método `corsConfigurationSource()`
+Archivo: `security/SecurityConfig.java` — método `corsConfigurationSource()`
 
 CORS es una política de seguridad del navegador. Cuando Angular (localhost:4200) llama a Spring Boot (localhost:8080), el navegador lo bloquea — puertos diferentes = origins diferentes.
 
@@ -751,7 +751,7 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 ## 11. AuthService — orquestar el login
 
-File: `service/AuthService.java`
+Archivo: `service/AuthService.java`
 
 Con BCrypt (5), UserDetailsService (6), JwtUtil (7) y SecurityFilterChain (9) en su lugar, `AuthService` puede coordinar el login completo en tres líneas:
 
@@ -789,7 +789,7 @@ public class AuthService {
 
 ## 12. AuthController — el endpoint de login
 
-File: `controller/AuthController.java` · DTOs: `dto/request/LoginRequest.java` · `dto/response/AuthResponse.java`
+Archivo: `controller/AuthController.java` · DTOs: `dto/request/LoginRequest.java` · `dto/response/AuthResponse.java`
 
 ```java
 @RestController
@@ -823,7 +823,7 @@ public class AuthController {
 
 ## 13. GlobalExceptionHandler — respuestas de error limpias
 
-File: `exception/GlobalExceptionHandler.java`
+Archivo: `exception/GlobalExceptionHandler.java`
 
 Sin esto, Spring devuelve una página HTML de error genérica o un confuso 500. Esta clase captura excepciones y las convierte en JSON limpio.
 
@@ -861,7 +861,7 @@ public class GlobalExceptionHandler {
 
 ## 14. @PreAuthorize — restringir el acceso por rol
 
-File: anotación usada en cualquier método `@RestController` — sin archivo dedicado
+Archivo: anotación usada en cualquier método `@RestController` — sin archivo dedicado
 
 Después de que el filtro JWT establece el `SecurityContext`, puedes restringir el acceso a nivel de método:
 

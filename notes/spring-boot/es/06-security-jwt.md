@@ -572,7 +572,7 @@ Cualquier servidor con la misma clave secreta puede verificar el token sin llama
 
 ## JwtUtil — generar y validar tokens
 
-File: `src/main/java/com/victor/timetrack/security/JwtUtil.java`
+Archivo: `src/main/java/com/victor/timetrack/security/JwtUtil.java`
 
 ### application.properties — config JWT
 
@@ -703,7 +703,7 @@ public class JwtUtil {
 
 Docs: [Baeldung — Database-backed UserDetailsService](https://www.baeldung.com/spring-security-authentication-with-a-database)
 
-File: `src/main/java/com/victor/timetrack/service/UserDetailsServiceImpl.java`
+Archivo: `src/main/java/com/victor/timetrack/service/UserDetailsServiceImpl.java`
 
 `UserDetailsService` tiene un trabajo: recibe un email, va a la base de datos, devuelve un objeto `UserDetails`. `DaoAuthenticationProvider` gestiona la comprobación de contraseña él mismo — tú no lo haces aquí.
 
@@ -739,7 +739,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 ## BCryptPasswordEncoder — nunca almacenes contraseñas en texto plano
 
-File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java` (definido como `@Bean`)
+Archivo: `src/main/java/com/victor/timetrack/security/SecurityConfig.java` (definido como `@Bean`)
 
 ```java
 @Bean
@@ -761,7 +761,7 @@ userRepository.save(user);
 
 ## Bean AuthenticationManager — exponer el coordinador de login
 
-File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
+Archivo: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
 
 Spring Boot auto-configura un `AuthenticationManager` internamente pero no lo expone como bean de Spring por defecto. `AuthService` necesita inyectarlo para llamar a `.authenticate()` durante el login:
 
@@ -778,7 +778,7 @@ public AuthenticationManager authenticationManager(AuthenticationConfiguration c
 
 ### LoginRequest
 
-File: `src/main/java/com/victor/timetrack/dto/request/LoginRequest.java`
+Archivo: `src/main/java/com/victor/timetrack/dto/request/LoginRequest.java`
 
 ```java
 @Data
@@ -796,7 +796,7 @@ public class LoginRequest {
 
 ### AuthResponse
 
-File: `src/main/java/com/victor/timetrack/dto/response/AuthResponse.java`
+Archivo: `src/main/java/com/victor/timetrack/dto/response/AuthResponse.java`
 
 ```java
 @Data
@@ -811,7 +811,7 @@ public class AuthResponse {
 
 ## AuthService — orquestar el login
 
-File: `src/main/java/com/victor/timetrack/service/AuthService.java`
+Archivo: `src/main/java/com/victor/timetrack/service/AuthService.java`
 
 ```java
 @Service
@@ -843,7 +843,7 @@ public class AuthService {
 
 ## AuthController — el endpoint de login
 
-File: `src/main/java/com/victor/timetrack/controller/AuthController.java`
+Archivo: `src/main/java/com/victor/timetrack/controller/AuthController.java`
 
 ```java
 @RestController
@@ -869,7 +869,7 @@ public class AuthController {
 
 ## GlobalExceptionHandler — respuestas de error limpias
 
-File: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
+Archivo: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
 
 ```java
 @RestControllerAdvice
@@ -914,7 +914,7 @@ public class GlobalExceptionHandler {
 
 ## OncePerRequestFilter — el filtro JWT
 
-File: `src/main/java/com/victor/timetrack/security/JwtFilter.java`
+Archivo: `src/main/java/com/victor/timetrack/security/JwtFilter.java`
 
 ```java
 @Component
@@ -970,7 +970,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 ## SecurityFilterChain — un lugar para todas las reglas de seguridad
 
-File: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
+Archivo: `src/main/java/com/victor/timetrack/security/SecurityConfig.java`
 
 ### Durante el desarrollo — abre todo mientras construyes JWT
 
@@ -1109,7 +1109,7 @@ Tres cosas cambian en el Paso 4:
 
 ### Enum Role
 
-File: `src/main/java/com/victor/timetrack/model/Role.java`
+Archivo: `src/main/java/com/victor/timetrack/model/Role.java`
 
 ```java
 public enum Role {
@@ -1151,7 +1151,7 @@ if (!user.getActive()) {
 
 ### data.sql — la primera cuenta de manager
 
-File: `src/main/resources/data.sql`
+Archivo: `src/main/resources/data.sql`
 
 ```sql
 INSERT INTO users (name, email, password, role, active, created_at)

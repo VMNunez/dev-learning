@@ -251,11 +251,11 @@ DELETE /api/projects/42     → @PathVariable
 
 ## @JsonIgnore — evitar que campos aparezcan en el JSON
 
-Purpose: `@JsonIgnore` le dice a Jackson que omita ese campo al serializar a JSON. Se usa en campos de entidad que nunca deben viajar por el API — sobre todo el campo `password` en `User`.
+Propósito: `@JsonIgnore` le dice a Jackson que omita ese campo al serializar a JSON. Se usa en campos de entidad que nunca deben viajar por el API — sobre todo el campo `password` en `User`.
 
 Docs: https://www.baeldung.com/jackson-annotations → leer: "@JsonIgnore"
 
-File: `src/main/java/com/victor/timetrack/model/User.java`
+Archivo: `src/main/java/com/victor/timetrack/model/User.java`
 
 ```java
 @Entity

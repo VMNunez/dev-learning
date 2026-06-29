@@ -86,11 +86,11 @@ private Boolean active = true;   // los nuevos proyectos están activos por defe
 
 ## @Enumerated(EnumType.STRING) — persistencia segura de enums
 
-Purpose: controla cómo JPA almacena un valor de enum en la base de datos. `STRING` guarda el nombre (`"MANAGER"`); `ORDINAL` (el valor por defecto) guarda el número de posición (`0`, `1`, `2`). Usa siempre `STRING`.
+Propósito: controla cómo JPA almacena un valor de enum en la base de datos. `STRING` guarda el nombre (`"MANAGER"`); `ORDINAL` (el valor por defecto) guarda el número de posición (`0`, `1`, `2`). Usa siempre `STRING`.
 
 Docs: https://www.baeldung.com/jpa-enumerated-type → leer: "Mapping Enum to String" y el gotcha del ordinal
 
-File: `src/main/java/com/victor/timetrack/model/User.java` y `TimeEntry.java`
+Archivo: `src/main/java/com/victor/timetrack/model/User.java` y `TimeEntry.java`
 
 ```java
 @Enumerated(EnumType.STRING)   // guarda "MANAGER" o "EMPLOYEE" en la columna

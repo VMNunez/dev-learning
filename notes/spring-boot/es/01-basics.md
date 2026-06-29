@@ -378,11 +378,11 @@ spring.jpa.open-in-view=false
 
 ## Spring profiles — configuración por entorno
 
-Purpose: los perfiles de Spring te permiten tener un archivo de config por entorno (local, staging, producción) sin cambiar el código. El archivo correcto se carga automáticamente según qué perfil está activo.
+Propósito: los perfiles de Spring te permiten tener un archivo de config por entorno (local, staging, producción) sin cambiar el código. El archivo correcto se carga automáticamente según qué perfil está activo.
 
 Docs: https://docs.spring.io/spring-boot/reference/features/profiles.html → leer: "Adding Active Profiles" y la convención de nombrado de archivos properties
 
-File: `src/main/resources/`
+Archivo: `src/main/resources/`
 
 Creas archivos de propiedades adicionales con el nombre `application-{profile}.properties`. El nombre del perfil en el nombre del archivo es la clave:
 
@@ -401,11 +401,11 @@ Para activar el perfil dev en IntelliJ: Run → Edit Configurations → Environm
 
 ## @Slf4j — logging estructurado
 
-Purpose: anotación de Lombok que genera un campo `log` en la clase. Usas `log.info()`, `log.warn()`, `log.error()` para escribir al log de la aplicación en lugar de `System.out.println()`.
+Propósito: anotación de Lombok que genera un campo `log` en la clase. Usas `log.info()`, `log.warn()`, `log.error()` para escribir al log de la aplicación en lugar de `System.out.println()`.
 
 Docs: https://www.baeldung.com/slf4j-with-log4j2-logback → leer: "SLF4J — a logging facade" y el ejemplo de `@Slf4j`
 
-File: cualquier clase service o componente, p.ej. `src/main/java/com/victor/timetrack/service/ProjectService.java`
+Archivo: cualquier clase service o componente, p.ej. `src/main/java/com/victor/timetrack/service/ProjectService.java`
 
 ```java
 @Slf4j
@@ -437,11 +437,11 @@ public class ProjectService {
 
 ## data.sql — poblar la base de datos al arrancar
 
-Purpose: Spring Boot ejecuta `data.sql` automáticamente después de crear el esquema. Se usa para insertar la primera cuenta de manager cuando no hay endpoint de registro para managers.
+Propósito: Spring Boot ejecuta `data.sql` automáticamente después de crear el esquema. Se usa para insertar la primera cuenta de manager cuando no hay endpoint de registro para managers.
 
 Docs: https://docs.spring.io/spring-boot/how-to/data-initialization.html → leer: "Initialize a Database"
 
-File: `src/main/resources/data.sql`
+Archivo: `src/main/resources/data.sql`
 
 ```sql
 -- Insert the first manager account — password is BCrypt hash of "admin123"

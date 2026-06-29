@@ -196,11 +196,11 @@ Así es como evitas hardcodear secretos en el código. El valor viene del archiv
 
 ## @ConfigurationProperties — vincular configuración agrupada a una clase
 
-Purpose: cuando tienes varios valores de configuración relacionados (p.ej. `app.jwt.secret` y `app.jwt.expiration`), vincúlalos todos a la vez a una clase dedicada en lugar de escribir un `@Value` separado para cada campo.
+Propósito: cuando tienes varios valores de configuración relacionados (p.ej. `app.jwt.secret` y `app.jwt.expiration`), vincúlalos todos a la vez a una clase dedicada en lugar de escribir un `@Value` separado para cada campo.
 
 Docs: https://www.baeldung.com/configuration-properties-in-spring-boot → leer: "Simple Properties" y "Nested Properties"
 
-File: `src/main/java/com/victor/timetrack/config/JwtProperties.java`
+Archivo: `src/main/java/com/victor/timetrack/config/JwtProperties.java`
 
 ```properties
 # application.properties

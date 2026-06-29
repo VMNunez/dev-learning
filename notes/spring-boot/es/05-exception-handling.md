@@ -26,11 +26,11 @@ La solución: una clase central que gestiona todas las excepciones de toda la AP
 
 ## @RestControllerAdvice vs @ControllerAdvice
 
-Purpose: ambas marcan una clase como handler global de excepciones, pero `@RestControllerAdvice` es la elección correcta para una REST API. Combina `@ControllerAdvice` (interceptar excepciones de todos los controladores) y `@ResponseBody` (serializar el valor de retorno a JSON automáticamente).
+Propósito: ambas marcan una clase como handler global de excepciones, pero `@RestControllerAdvice` es la elección correcta para una REST API. Combina `@ControllerAdvice` (interceptar excepciones de todos los controladores) y `@ResponseBody` (serializar el valor de retorno a JSON automáticamente).
 
 Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → leer: "@RestControllerAdvice"
 
-File: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
+Archivo: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
 
 Sin `@ResponseBody`, `@ControllerAdvice` devuelve el valor de retorno del handler como el nombre de una vista HTML a renderizar — no como JSON. En una REST API no hay motor de plantillas, así que Spring devuelve un 500 en lugar del error limpio que definiste. `@RestControllerAdvice` lo soluciona sin configuración extra.
 

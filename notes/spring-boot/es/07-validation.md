@@ -4,11 +4,11 @@
 
 ## La dependencia requerida
 
-Purpose: las anotaciones de Bean Validation (`@NotBlank`, `@Email`, `@Positive`) compilan y no dan error aunque falte la dependencia — pero en tiempo de ejecución son completamente ignoradas. Hay que añadir `spring-boot-starter-validation` de forma explícita.
+Propósito: las anotaciones de Bean Validation (`@NotBlank`, `@Email`, `@Positive`) compilan y no dan error aunque falte la dependencia — pero en tiempo de ejecución son completamente ignoradas. Hay que añadir `spring-boot-starter-validation` de forma explícita.
 
 Docs: https://docs.spring.io/spring-boot/reference/io/validation.html → leer: "Validating Method Arguments"
 
-File: `pom.xml`
+Archivo: `pom.xml`
 
 ```xml
 <dependency>
@@ -134,11 +134,11 @@ Los mensajes por defecto (como "must not be blank") son técnicos. Los mensajes 
 
 ## ConstraintViolationException vs MethodArgumentNotValidException
 
-Purpose: se lanzan dos tipos de excepción diferentes según DÓNDE se active la validación. Necesitas un `@ExceptionHandler` separado para cada uno en `GlobalExceptionHandler`.
+Propósito: se lanzan dos tipos de excepción diferentes según DÓNDE se active la validación. Necesitas un `@ExceptionHandler` separado para cada uno en `GlobalExceptionHandler`.
 
 Docs: https://www.baeldung.com/spring-mvc-custom-validator → leer: "Spring Boot Controller-Level Validation"
 
-File: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
+Archivo: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
 
 | Disparador | Excepción lanzada |
 |---|---|
