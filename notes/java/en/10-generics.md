@@ -1,5 +1,7 @@
 # Generics and Optional
 
+> 📖 [Baeldung — Generics in Java](https://www.baeldung.com/java-generics)
+> 📖 [Baeldung — Guide to Optional](https://www.baeldung.com/java-optional)
 > 📖 [Oracle Docs — Generics](https://docs.oracle.com/javase/tutorial/java/generics/index.html)
 
 ## Generics

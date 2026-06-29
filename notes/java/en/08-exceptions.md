@@ -1,5 +1,6 @@
 # Exceptions
 
+> 📖 [Baeldung — Exception Handling in Java](https://www.baeldung.com/java-exceptions)
 > 📖 [Oracle Docs — Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html)
 
 An exception is an event that interrupts the normal flow of a program. In Java, exceptions are objects — they carry a message and a stack trace.
