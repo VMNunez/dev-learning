@@ -20,7 +20,7 @@ Useful after a study session when you want to check and improve the notes for on
 ## Replace the [ ] with your value and delete the brackets.
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
-NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
+NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/en/ | notes/security/en/]
 
 MODE = [full | single-file]
        → full (default): NOTES_PATH is a folder; audit the whole topic — coverage gap analysis,
@@ -35,9 +35,9 @@ MODE = [full | single-file]
 ## Git, General.
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/java/, notes/spring-boot/ (comma-separated — read both,
+- Spring Boot: set NOTES_PATH = notes/java/en/, notes/spring-boot/en/ (comma-separated — read both,
   because Spring Boot code uses Java language concepts). Both folders use structured mode.
-  coverage.md lives in notes/spring-boot/ only — read it from there, not from notes/java/.
+  coverage.md lives in notes/spring-boot/ root only — read it from there, not from notes/java/.
 - Java: focus on language concepts needed to write Spring Boot code — classes, interfaces,
   annotations, generics, exceptions, Maven. Skip Java concepts that don't appear in a Spring Boot context.
 - SQL: database is PostgreSQL. Focus on PostgreSQL syntax and behaviour. Flag any PostgreSQL-specific
@@ -96,13 +96,15 @@ These rules apply both when auditing existing notes and when creating new ones.
 
 **Bilingual notes — English and Spanish:**
 
-Every topic folder has an `es/` subfolder for Spanish translations (e.g. `notes/java/es/`).
+Each topic folder has `en/` and `es/` subfolders. {NOTES_PATH} always points to `en/`.
+The Spanish counterpart lives at the same relative path but under `es/` (e.g. `notes/java/es/09-streams-lambdas.md`).
+`coverage.md`, `future-learning.md`, and `layer-reference.md` live in the topic root — never inside `en/` or `es/`.
 
-- When creating a new note file, also create the Spanish version at `{NOTES_PATH}es/{filename}.md`.
+- When creating a new note file in `en/`, also create the Spanish version in `es/` with the same filename.
   Same structure, same code blocks — only the prose is in Spanish. Code comments may also be translated.
-- When resolving a TODO in an existing file, check whether a Spanish version exists in `es/` and apply
+- When resolving a TODO in an existing English file, check whether a Spanish counterpart exists in `es/` and apply
   the equivalent change there too. If it does not exist yet, do not create it — leave a note in the summary.
-- When running in `single-file` mode, check whether `es/{filename}.md` exists. If it does, apply the
+- When running in `single-file` mode, check whether the Spanish counterpart exists. If it does, apply the
   same TODO resolutions and quality fixes there too.
 - Include all `es/` files created or modified in the final `git add` and in the summary table.
 
@@ -193,7 +195,8 @@ Do not add the rule yourself — Victor decides whether to accept it.
 ## Audit — Technical Foundation & Gaps
 
 **Before reading note files — check coverage.md:**
-If a `coverage.md` file exists in {NOTES_PATH}, read it first. It defines the minimum topics
+`coverage.md` lives in the topic root, not inside `en/`. For example, for `NOTES_PATH = notes/java/en/`,
+read `notes/java/coverage.md`. If it exists, read it first. It defines the minimum topics
 that must be covered for Victor's objective (junior at a Spanish consultancy with Angular +
 Spring Boot). Every item in that file is a required topic. Use it as the baseline alongside
 rule 1 — any item not covered by an existing note file must be addressed during this audit.
@@ -336,7 +339,7 @@ to write them. Update the "next file:" counter in CLAUDE.md after all new files 
 
 **`future-learning.md` — bidirectional check:**
 
-Start by reading the existing `future-learning.md` in {NOTES_PATH}. If it does not exist
+Start by reading the existing `future-learning.md` in the topic root (not inside `en/` — e.g. `notes/java/future-learning.md`). If it does not exist
 yet, skip the promotion check and go directly to the demote/add step below. For each concept
 listed, assess whether it is now within scope. A concept is in scope if it appears in
 `coverage.md` OR if the active project's `PLANNING.md` lists it as a learning objective

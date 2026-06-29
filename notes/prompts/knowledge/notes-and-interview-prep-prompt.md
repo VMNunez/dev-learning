@@ -18,7 +18,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 ## Replace the [ ] with your value and delete the brackets.
 
 TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
-NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
+NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/en/ | notes/security/en/]
 FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
              → notes/interview-prep/en/{FILE}.md
              → notes/interview-prep/es/{FILE}.md
@@ -28,9 +28,9 @@ FILE       = [angular | css | javascript | typescript | sql | java | spring-boot
 ## Architecture, Security, TypeScript, JavaScript, CSS, SQL, Git, General.
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/spring-boot/, notes/java/ (comma-separated — read both;
+- Spring Boot: set NOTES_PATH = notes/spring-boot/en/, notes/java/en/ (comma-separated — read both;
   Spring Boot code uses Java language concepts). Before marking a JWT or security question as
-  unbacked, also check notes/security/ — JWT design and token invalidation concepts live
+  unbacked, also check notes/security/en/ — JWT design and token invalidation concepts live
   there by folder convention.
 - Angular Material: set NOTES_PATH = notes/angular-material/, FILE = angular. For direction 2,
   check only questions under Angular Material sections of angular.md — questions in other
@@ -57,11 +57,12 @@ Before starting, read CLAUDE.md (teaching rules, subfolder structure) and
 ## Step 1 — Read the source files
 
 Read in this order:
-1. All numbered note files in {NOTES_PATH} — skip `future-learning.md`, `coverage.md`,
-   and `layer-reference.md`
-2. All numbered note files in `{NOTES_PATH}es/` (Spanish translations) — same exclusion rules
+1. All numbered note files in {NOTES_PATH} (the `en/` folder) — skip any non-numbered files
+2. The Spanish counterpart: replace `en/` with `es/` in {NOTES_PATH} and read those files too — same exclusion rules
 3. `notes/interview-prep/en/{FILE}.md`
 4. `notes/interview-prep/es/{FILE}.md`
+
+Note: `coverage.md` and `future-learning.md` live in the topic root (e.g. `notes/java/`), not inside `en/` or `es/`.
 
 Build a mental map of:
 - Every concept section covered in the notes (## and ### headings)
@@ -123,11 +124,11 @@ For each unbacked question:
    before any code block. Do not write documentation — if the text could appear on the
    official docs site unchanged, it is wrong. If adding to an existing file, choose the file
    whose topic is most closely related — check the headings read in Step 1.
-2. Also create or update the Spanish version at `{NOTES_PATH}es/{filename}.md` — same
-   structure and code blocks, prose in Spanish. If adding to an existing English file that
-   already has a Spanish counterpart, add the Spanish translation of the new section too.
-   If no Spanish counterpart exists yet, note it in the summary but do not create it from scratch —
-   only create the specific section that backs the missing question.
+2. Also create or update the Spanish version — replace `en/` with `es/` in the path (e.g.
+   `notes/java/es/09-streams-lambdas.md`). Same structure and code blocks, prose in Spanish.
+   If adding to an existing English file that already has a Spanish counterpart, add the Spanish
+   translation of the new section too. If no Spanish counterpart exists yet, note it in the
+   summary but do not create it from scratch — only create the specific section that backs the missing question.
 3. Follow the numbered naming convention for new files — start from the next available
    number in CLAUDE.md for that folder. If creating multiple files in one run, assign
    numbers in study-sequence order.
