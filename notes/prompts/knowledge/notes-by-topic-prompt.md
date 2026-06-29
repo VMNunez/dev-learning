@@ -94,6 +94,18 @@ These rules apply both when auditing existing notes and when creating new ones.
   metadata fields; use `##` for top-level topic sections and `###` for sub-concepts within
   them — when adding a section to an existing file, match the heading level already in use
 
+**Bilingual notes — English and Spanish:**
+
+Every topic folder has an `es/` subfolder for Spanish translations (e.g. `notes/java/es/`).
+
+- When creating a new note file, also create the Spanish version at `{NOTES_PATH}es/{filename}.md`.
+  Same structure, same code blocks — only the prose is in Spanish. Code comments may also be translated.
+- When resolving a TODO in an existing file, check whether a Spanish version exists in `es/` and apply
+  the equivalent change there too. If it does not exist yet, do not create it — leave a note in the summary.
+- When running in `single-file` mode, check whether `es/{filename}.md` exists. If it does, apply the
+  same TODO resolutions and quality fixes there too.
+- Include all `es/` files created or modified in the final `git add` and in the summary table.
+
 **Living document rules:**
 
 Notes are not written once and forgotten. After each concept is learned and the code is written

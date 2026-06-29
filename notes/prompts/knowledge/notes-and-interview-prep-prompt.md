@@ -59,8 +59,9 @@ Before starting, read CLAUDE.md (teaching rules, subfolder structure) and
 Read in this order:
 1. All numbered note files in {NOTES_PATH} — skip `future-learning.md`, `coverage.md`,
    and `layer-reference.md`
-2. `notes/interview-prep/en/{FILE}.md`
-3. `notes/interview-prep/es/{FILE}.md`
+2. All numbered note files in `{NOTES_PATH}es/` (Spanish translations) — same exclusion rules
+3. `notes/interview-prep/en/{FILE}.md`
+4. `notes/interview-prep/es/{FILE}.md`
 
 Build a mental map of:
 - Every concept section covered in the notes (## and ### headings)
@@ -122,11 +123,16 @@ For each unbacked question:
    before any code block. Do not write documentation — if the text could appear on the
    official docs site unchanged, it is wrong. If adding to an existing file, choose the file
    whose topic is most closely related — check the headings read in Step 1.
-2. Follow the numbered naming convention for new files — start from the next available
+2. Also create or update the Spanish version at `{NOTES_PATH}es/{filename}.md` — same
+   structure and code blocks, prose in Spanish. If adding to an existing English file that
+   already has a Spanish counterpart, add the Spanish translation of the new section too.
+   If no Spanish counterpart exists yet, note it in the summary but do not create it from scratch —
+   only create the specific section that backs the missing question.
+3. Follow the numbered naming convention for new files — start from the next available
    number in CLAUDE.md for that folder. If creating multiple files in one run, assign
    numbers in study-sequence order.
-3. Update the "next file:" counter in CLAUDE.md after creating new files.
-4. Note it in the summary as "prep → notes — added".
+4. Update the "next file:" counter in CLAUDE.md after creating new files.
+5. Note it in the summary as "prep → notes — added".
 
 If more than 3 new note files need to be created: create the first 3 in study-sequence
 order and report the rest in the summary — address them in the next run.

@@ -218,20 +218,33 @@ Not the main focus now, but keep them in mind. How Claude applies each one in pr
 
 All format, structure, writing style, and organisation rules → `notes/prompts/knowledge/notes-by-topic-prompt.md`. Read it before writing or editing any notes file. Claude can write notes files directly (Markdown docs, and code notes for Angular/SQL/Java) — Victor does not need to write these himself.
 
+### Bilingual notes — English and Spanish
+
+Notes exist in two languages, mirroring the interview-prep convention:
+
+- **English** — the primary version; lives in the topic folder as always (e.g. `notes/java/09-streams-lambdas.md`)
+- **Spanish** — the translation; lives in an `es/` subfolder with the **same filename** (e.g. `notes/java/es/09-streams-lambdas.md`)
+
+**Rules:**
+- When a note file is created or meaningfully updated (in a session or by a prompt), the Spanish version must also be created or updated. Never add or change one without the other.
+- Spanish versions use the same structure and code blocks — only the prose is translated. Code comments may be translated too.
+- Not every existing English file has a Spanish translation yet. Victor requests which topics to translate; do not create Spanish files proactively unless asked.
+- When Victor asks to create a Spanish version of a specific file or topic, write it directly without asking to confirm each section.
+
 ### Subfolders and their purpose
 
-- `notes/git/` — git concepts in study order (01 to 11); git-workflow.md is the index; next file: `12-...`; future-learning.md is a non-numbered roadmap file
-- `notes/javascript/` — JavaScript core concepts in study order (01 to 15); next file: `16-...`; future-learning.md is a non-numbered roadmap file
-- `notes/typescript/` — TypeScript concepts in study order (01 to 07); next file: `08-...`; future-learning.md is a non-numbered roadmap file
-- `notes/css/` — CSS properties, layout patterns, tricks; next file: `18-...`; future-learning.md is a non-numbered roadmap file
-- `notes/sql/` — SQL concepts in study order (01 to 14); next file: `15-...`; future-learning.md is a non-numbered roadmap file
-- `notes/architecture/` — REST, layered architecture, MVC, architecture decisions, component patterns; next file: `06-...`; `future-learning.md` is a non-numbered roadmap file (includes microservices as a concept-only entry)
-- `notes/angular/` — Angular concepts in study order (01 to 18); next file: `19-...`; `future-learning.md` is a non-numbered roadmap file
-- `notes/java/` — Java language concepts in study order (01 to 14); next file: `15-...`; future-learning.md is a non-numbered roadmap file
-- `notes/spring-boot/` — Spring Boot concepts in study order (01 to 10); next file: `11-...`; `future-learning.md` is a non-numbered roadmap file; `layer-reference.md` is a non-numbered reference file
-- `notes/angular-material/` — one file per Material component; next file: `16-...`
-- `notes/general/` — cross-cutting concepts: HTTP fundamentals, JSON, environment variables, Base64, error handling, SOLID, browser storage, testing concepts, code principles (DRY/KISS/YAGNI), Docker, logging; next file: `12-...`; `future-learning.md` is a non-numbered roadmap file
-- `notes/security/` — auth vs authz, hash vs encryption, JWT auth design, CORS, security vulnerabilities (XSS/CSRF/SQL injection); next file: `06-...`; `future-learning.md` is a non-numbered roadmap file
+- `notes/git/` — git concepts in study order (01 to 11); git-workflow.md is the index; next file: `12-...`; future-learning.md is a non-numbered roadmap file; `es/` subfolder for Spanish translations
+- `notes/javascript/` — JavaScript core concepts in study order (01 to 15); next file: `16-...`; future-learning.md is a non-numbered roadmap file; `es/` subfolder for Spanish translations
+- `notes/typescript/` — TypeScript concepts in study order (01 to 07); next file: `08-...`; future-learning.md is a non-numbered roadmap file; `es/` subfolder for Spanish translations
+- `notes/css/` — CSS properties, layout patterns, tricks; next file: `18-...`; future-learning.md is a non-numbered roadmap file; `es/` subfolder for Spanish translations
+- `notes/sql/` — SQL concepts in study order (01 to 14); next file: `15-...`; future-learning.md is a non-numbered roadmap file; `es/` subfolder for Spanish translations
+- `notes/architecture/` — REST, layered architecture, MVC, architecture decisions, component patterns; next file: `06-...`; `future-learning.md` is a non-numbered roadmap file (includes microservices as a concept-only entry); `es/` subfolder for Spanish translations
+- `notes/angular/` — Angular concepts in study order (01 to 18); next file: `19-...`; `future-learning.md` is a non-numbered roadmap file; `es/` subfolder for Spanish translations
+- `notes/java/` — Java language concepts in study order (01 to 14); next file: `15-...`; future-learning.md is a non-numbered roadmap file; `es/` subfolder for Spanish translations
+- `notes/spring-boot/` — Spring Boot concepts in study order (01 to 10); next file: `11-...`; `future-learning.md` is a non-numbered roadmap file; `layer-reference.md` is a non-numbered reference file; `es/` subfolder for Spanish translations
+- `notes/angular-material/` — one file per Material component; next file: `16-...`; `es/` subfolder for Spanish translations
+- `notes/general/` — cross-cutting concepts: HTTP fundamentals, JSON, environment variables, Base64, error handling, SOLID, browser storage, testing concepts, code principles (DRY/KISS/YAGNI), Docker, logging; next file: `12-...`; `future-learning.md` is a non-numbered roadmap file; `es/` subfolder for Spanish translations
+- `notes/security/` — auth vs authz, hash vs encryption, JWT auth design, CORS, security vulnerabilities (XSS/CSRF/SQL injection); next file: `06-...`; `future-learning.md` is a non-numbered roadmap file; `es/` subfolder for Spanish translations
 - `notes/interview-prep/en/` and `notes/interview-prep/es/` — Q&A study files, one file per topic: `angular.md`, `typescript.md`, `architecture.md`, `general.md`, `javascript.md`, `css.md`, `git.md`, `sql.md`, `java.md`, `spring-boot.md`, `security.md`
 - `notes/interview-prep/projects/` — one file per project with specific questions about that project's implementation decisions; generated by `portfolio-ready-prompt`
 - `notes/prompts/` — the prompt system (see "The study system" below); `notes/prompts/README.md` is the index
