@@ -2,9 +2,17 @@
 
 > 📖 [Oracle Docs — Classes](https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html)
 
+## ¿Qué es la programación orientada a objetos?
+
+La **programación orientada a objetos** (OOP) es una forma de organizar el código agrupando datos y comportamiento en unidades llamadas **objetos**. En lugar de tener funciones sueltas que manipulan variables sueltas, defines **clases** que encapsulan ambas cosas juntas.
+
+Por ejemplo: un `Employee` no es solo un nombre y un email flotando por ahí — es un objeto que tiene esos datos *y* los métodos para trabajar con ellos (`getName()`, `setEmail()`, `isActive()`).
+
+Java es un lenguaje orientado a objetos casi al 100%: casi todo lo que escribes vive dentro de una clase.
+
 ## Qué es una clase
 
-Una clase es un blueprint para crear objetos. Un objeto es una instancia de esa clase.
+Una clase es el molde (blueprint) para crear objetos. El objeto es la copia concreta creada a partir de ese molde.
 
 ```java
 // Blueprint

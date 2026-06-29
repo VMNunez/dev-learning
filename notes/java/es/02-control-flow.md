@@ -8,7 +8,7 @@ Las sentencias de control de flujo deciden qué código se ejecuta y cuántas ve
 
 ## if / else
 
-La herramienta de decisión básica. Ejecuta el primer bloque cuya condición sea verdadera y omite el resto. Si ninguna condición coincide, se ejecuta el bloque `else` (si lo escribiste).
+Ejecuta el bloque cuya condición sea verdadera y omite los demás. Si escribes varios `else if`, Java los evalúa de arriba a abajo y ejecuta el primero que se cumpla. Si ninguna condición se cumple y hay un `else`, ese bloque se ejecuta como opción por defecto.
 
 ```java
 if (age >= 18) {
@@ -29,17 +29,17 @@ String label = age >= 18 ? "Adult" : "Minor";
 // condición ? valorSiTrue : valorSiFalse
 ```
 
-Úsalo solo cuando ambos valores sean cortos y la condición sea fácil de leer. Si la línea se vuelve difícil de escanear, usa un `if/else` normal.
+Úsalo solo cuando ambos valores sean cortos y la condición sea fácil de entender de un vistazo. Si la línea se vuelve complicada de leer, usa un `if/else` normal.
 
 ---
 
 ## switch
 
-Usa `switch` cuando tienes muchos posibles valores para una variable. Una cadena de `if/else if` para cada valor se vuelve difícil de leer — `switch` da a cada valor su propio caso y es más fácil de escanear.
+Usa `switch` cuando tienes muchos posibles valores para una variable. Una cadena larga de `if/else if` para cada valor se vuelve difícil de leer — `switch` da a cada valor su propio caso y el código queda más claro.
 
 ### switch clásico (sentencia)
 
-La forma clásica ejecuta el código para cada caso que coincide. Debes escribir `break` al final de cada caso — sin él, la ejecución "cae" al caso siguiente y ejecuta ese código también, aunque no coincida. Este es un bug común en código Java.
+La forma clásica ejecuta el código del caso que coincide. Debes escribir `break` al final de cada caso — sin él, la ejecución cae al caso siguiente y ejecuta ese código también, aunque no coincida. A esto se le llama **fall-through** (literalmente "caída hacia abajo"): el control "cae" de un caso al siguiente sin detenerse. Este es un bug común en código Java.
 
 ```java
 switch (day) {
@@ -56,7 +56,7 @@ switch (day) {
 }
 ```
 
-Dos casos sin código entre ellos (como `MONDAY` y `TUESDAY`) es fall-through intencional — un patrón común para manejar varios valores del mismo modo.
+Dos casos sin código entre ellos (como `MONDAY` y `TUESDAY`) es fall-through intencional — un patrón habitual para manejar varios valores del mismo modo.
 
 ### Switch expression (Java 14+) — usa esta forma
 
@@ -82,6 +82,8 @@ Usa la forma de switch expression para todo el código nuevo — es más limpia,
 
 La forma más explícita — controlas tú mismo el inicio, el final y el paso. Tres partes, separadas por puntos y coma: `(inicio; condición; paso)`. Úsalo cuando necesitas el número de índice.
 
+> **¿Qué es el "paso"?** Es cuánto avanza el contador en cada iteración. `i++` es el paso más habitual: incrementa `i` en 1. Pero podrías usar `i += 2` para ir de 2 en 2, o `i--` para contar hacia atrás.
+
 ```java
 for (int i = 0; i < 5; i++) {
     System.out.println(i);   // imprime: 0 1 2 3 4
@@ -94,7 +96,7 @@ for (int i = 0; i < 5; i++) {
 
 ### Enhanced for (for-each) — úsalo para colecciones y arrays
 
-El bucle de índice clásico es verboso y propenso a errores (errores off-by-one, nombre de variable incorrecto). El `for` mejorado elimina el índice completamente y te da cada elemento directamente. Piensa en él como la versión Java del `for...of` de JavaScript.
+El `for` clásico con índice tiene dos problemas frecuentes: es más largo de escribir, y es fácil cometer errores de rango — por ejemplo, poner `i <= names.length` en vez de `i < names.length` y salirse del array por uno (a esto se le llama error *off-by-one*, que viene a ser "pasarse por uno"). El `for` mejorado elimina el índice completamente y te da cada elemento directamente. Piensa en él como la versión Java del `for...of` de JavaScript.
 
 Sintaxis: `for (Tipo variable : colección)` — se lee como "para cada elemento de este tipo en esta colección".
 
@@ -147,7 +149,7 @@ En Spring Boot usarás principalmente bucles for-each y streams. `while` aparece
 Ambas palabras clave cambian el flujo dentro de un bucle:
 
 - **`break`** sale del bucle entero inmediatamente — no ocurren más iteraciones después de él.
-- **`continue`** salta el resto de la iteración actual y salta directamente a la siguiente.
+- **`continue`** salta el resto de la iteración actual y pasa directamente a la siguiente.
 
 ```java
 for (int i = 0; i < 10; i++) {
@@ -159,11 +161,13 @@ for (int i = 0; i < 10; i++) {
 
 Piensa en `break` como la salida de emergencia y en `continue` como el botón de saltar.
 
-> **`break` vs retornar de un método:** en los servicios de Spring Boot, es más común retornar pronto de un método que usar `break`. Si compruebas una condición dentro de un bucle y quieres detener todo el trabajo, `return` suele ser más limpio que `break`.
+> **`break` en servicios de Spring Boot:** en la práctica, dentro de los métodos de un servicio es más habitual usar `return` para salir antes que usar `break`. Si encuentras la condición que buscabas dentro de un bucle y quieres detener todo el trabajo del método, `return` suele quedar más limpio.
 
 ---
 
 ## Comprobaciones de null
+
+> **¿Qué es un error en runtime?** Es un error que no ocurre al compilar el código, sino cuando el programa ya está corriendo y llega a esa línea. El compilador no lo detecta de antemano — simplemente falla en el momento en que se ejecuta.
 
 `NullPointerException` es el error en runtime más común en Java. Ocurre cuando llamas a un método sobre una variable que es `null` — Java no puede encontrar el objeto en el que ejecutar el método. La solución es simple: comprueba siempre si es `null` antes de llamar métodos sobre algo que podría no existir.
 
@@ -177,7 +181,8 @@ if (name != null) {
     System.out.println(name.toUpperCase());
 }
 
-// O usando Optional (cubierto en 10-generics.md) — el enfoque moderno
+// O usando Optional — el enfoque moderno (cubierto en 10-generics.md)
+// No te preocupes si aún no entiendes esta sintaxis — lo verás en detalle más adelante
 Optional.ofNullable(name)
     .ifPresent(n -> System.out.println(n.toUpperCase()));
 ```
