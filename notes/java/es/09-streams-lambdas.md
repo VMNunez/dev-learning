@@ -239,6 +239,8 @@ String names = employees.stream()
 
 ## Mapeo de entidad a DTO — el patrón que usarás en cada servicio
 
+> **Vista previa — Spring Boot:** Esta sección usa `projectRepository`, `ProjectResponse` y patrones de servicio de Spring Boot que aún no has estudiado. Léela para ver los streams aplicados a un proyecto real — implementarás exactamente este patrón en las notas de Spring Boot.
+
 En Spring Boot, un método de servicio nunca debe devolver la entidad cruda de la base de datos — devuelve un DTO (Data Transfer Object) que solo expone los campos que necesita la API. La forma estándar de convertir una lista de entidades en una lista de DTOs es un pipeline de stream:
 
 ```java

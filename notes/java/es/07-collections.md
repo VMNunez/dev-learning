@@ -184,7 +184,9 @@ Usa `Comparable` cuando hay una ordenación por defecto obvia para la clase (por
 
 ### Comparator — ordenación externa y flexible
 
-`Comparator` se define fuera de la clase — lo pasas a `sort()`. Útil cuando necesitas múltiples opciones de ordenación o no puedes modificar la clase:
+`Comparator` se define fuera de la clase — lo pasas a `sort()`. Útil cuando necesitas múltiples opciones de ordenación o no puedes modificar la clase.
+
+La sintaxis `Employee::getName` se llama **referencia a método** — una forma más corta de escribir `e -> e.getName()`. Se explica en detalle en `09-streams-lambdas.md`. Por ahora, léela simplemente como "el método `getName` de `Employee`".
 
 ```java
 // Ordenar por nombre alfabéticamente

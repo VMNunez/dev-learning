@@ -128,6 +128,8 @@ d.toMinutes();  // 510
 
 ## Spring Boot connection
 
+> **Preview — Spring Boot:** This section uses `@Entity`, `@Column`, and `@PrePersist` — JPA annotations you haven't studied yet. Read it to see how Java dates appear in a real database entity — you'll implement this in the Spring Boot notes.
+
 ### In a JPA entity
 
 ```java

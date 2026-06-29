@@ -239,6 +239,8 @@ String names = employees.stream()
 
 ## Entity to DTO mapping — the pattern you will use in every service
 
+> **Preview — Spring Boot:** This section uses `projectRepository`, `ProjectResponse`, and Spring Boot service patterns you haven't studied yet. Read it to see streams applied to a real project — you'll implement this exact pattern in the Spring Boot notes.
+
 In Spring Boot, a service method must never return the raw entity from the database — it returns a DTO (Data Transfer Object) that only exposes the fields the API needs. The standard way to convert a list of entities to a list of DTOs is a stream pipeline:
 
 ```java

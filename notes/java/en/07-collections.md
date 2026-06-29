@@ -184,7 +184,9 @@ Use `Comparable` when there is one obvious default sort for the class (e.g. empl
 
 ### Comparator — external, flexible sorting
 
-`Comparator` is defined outside the class — you pass it to `sort()`. Useful when you need multiple sort options or cannot modify the class:
+`Comparator` is defined outside the class — you pass it to `sort()`. Useful when you need multiple sort options or cannot modify the class.
+
+The `Employee::getName` syntax is called a **method reference** — a shorter way to write `e -> e.getName()`. It is covered in full in `09-streams-lambdas.md`. For now, just read `Employee::getName` as "the `getName` method of `Employee`."
 
 ```java
 // Sort by name alphabetically

@@ -130,7 +130,9 @@ new Employee("Victor", "admin");   // name="Victor", role="admin"
 
 ## `toString()`
 
-Override `toString()` to get a readable representation of the object. Java calls it automatically when you print an object:
+Override `toString()` to get a readable representation of the object. Java calls it automatically when you print an object.
+
+`@Override` is a Java annotation — it tells the compiler "I am replacing this method from a parent class." If you make a typo in the method name, the compiler catches it instead of silently creating a new unrelated method. You will learn annotations properly in `13-annotations.md` — for now, just know that `@Override` goes above any method you are intentionally replacing.
 
 ```java
 @Override

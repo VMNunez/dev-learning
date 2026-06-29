@@ -91,7 +91,11 @@ public class EmployeeNotFoundException extends RuntimeException {
         super("Employee not found with id: " + id);
     }
 }
+```
 
+El ejemplo de uso a continuación llama a `repository.findById(id)` — `repository` es un concepto de Spring Boot que aún no has estudiado. Léelo para ver por qué existen las excepciones personalizadas; escribirás exactamente este patrón en las notas de Spring Boot.
+
+```java
 // Uso
 public Employee findById(Long id) {
     return repository.findById(id)

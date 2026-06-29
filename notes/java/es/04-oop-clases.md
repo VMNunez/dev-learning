@@ -138,7 +138,9 @@ new Employee("Victor", "admin");   // name="Victor", role="admin"
 
 ## `toString()`
 
-Sobreescribe `toString()` para obtener una representación legible del objeto. Java lo llama automáticamente cuando imprimes un objeto:
+Sobreescribe `toString()` para obtener una representación legible del objeto. Java lo llama automáticamente cuando imprimes un objeto.
+
+`@Override` es una anotación de Java — le dice al compilador "estoy reemplazando este método de una clase padre". Si cometes un error tipográfico en el nombre del método, el compilador lo detecta en lugar de crear silenciosamente un método nuevo sin relación. Aprenderás las anotaciones en detalle en `13-annotations.md` — por ahora, recuerda que `@Override` va encima de cualquier método que estés reemplazando intencionalmente.
 
 ```java
 @Override

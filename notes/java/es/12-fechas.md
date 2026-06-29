@@ -128,6 +128,8 @@ d.toMinutes();  // 510
 
 ## Conexión con Spring Boot
 
+> **Vista previa — Spring Boot:** Esta sección usa `@Entity`, `@Column` y `@PrePersist` — anotaciones JPA que aún no has estudiado. Léela para ver cómo aparecen las fechas Java en una entidad de base de datos real — lo implementarás en las notas de Spring Boot.
+
 ### En una entidad JPA
 
 ```java
