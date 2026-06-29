@@ -229,7 +229,7 @@ Notes to audit: {NOTES_PATH}
   3. **Complete the file (rule 3 standards)** — missing sub-concepts added as new sections within that file only.
   4. After all files are processed, produce one combined **Report + commit** covering all files.
 
-In both **single-file** and **multi-file** mode, **skip** every folder-level step: the rule-1 coverage gap analysis for the whole topic, "Creating new files — proactive", the `future-learning.md` promotion check, and the "next file:" counter update. You may still *read* `coverage.md` to confirm a file's own concept is fully covered — but never create files for other missing topics. If you spot a gap that belongs in a different file, mention it in the summary instead of acting on it.
+In both **single-file** and **multi-file** mode, **skip** every folder-level step: the rule-1 coverage gap analysis for the whole topic, "Creating new files — proactive", the `future-learning.md` promotion check, the "next file:" counter update, and **`coverage.md` — do not read it**. If you spot a gap that belongs in a different file, mention it in the summary instead of acting on it.
 
 ---
 
@@ -307,15 +307,19 @@ needed in future runs. Do not add the rule yourself — Victor decides whether t
 
 ## Audit — Technical Foundation & Gaps
 
-**Before reading note files — check coverage.md:**
-`coverage.md` lives in the topic root, not inside `en/`. For example, for `NOTES_PATH = notes/java/en/`,
-read `notes/java/coverage.md`. If it exists, read it first. It defines the minimum topics
-that must be covered for Victor's objective (junior at a Spanish consultancy with Angular +
-Spring Boot). Every item in that file is a required topic. Use it as the baseline alongside
-rule 1 — any item not covered by an existing note file must be addressed during this audit.
-Skip `coverage.md` when checking note quality in rule 2 — it is a checklist, not a study note.
-If no `coverage.md` exists yet, skip this step and rely on rule 1 and your knowledge of what
-junior Angular + Spring Boot interviews at Spanish consultancies require.
+**Before reading note files — check coverage.md (full mode only):**
+Only read `coverage.md` when `{MODE}` is `full`. In `single-file` and `multi-file` mode, skip
+this step entirely — do not open or consult `coverage.md`.
+
+When in `full` mode: `coverage.md` lives in the topic root, not inside `en/`. For example,
+for `NOTES_PATH = notes/java/en/`, read `notes/java/coverage.md`. If it exists, read it first.
+It defines the minimum topics that must be covered for Victor's objective (junior at a Spanish
+consultancy with Angular + Spring Boot). Every item in that file is a required topic. Use it
+as the baseline alongside rule 1 — any item not covered by an existing note file must be
+addressed during this audit. Skip `coverage.md` when checking note quality in rule 2 — it is
+a checklist, not a study note. If no `coverage.md` exists yet, skip this step and rely on
+rule 1 and your knowledge of what junior Angular + Spring Boot interviews at Spanish
+consultancies require.
 
 Read all files in {NOTES_PATH}.
 
