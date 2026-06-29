@@ -106,13 +106,11 @@ Every change made to an `en/` file must be mirrored in the corresponding `es/` f
 - **New file in `en/`** → also create the full Spanish version in `es/` with the same filename.
   Same structure, same code blocks — only the prose is in Spanish. Code comments may also be translated.
 - **New section added to an existing `en/` file** (from a gap found in rule 1, or from the proactive
-  coverage check) → check whether the `es/` counterpart exists. If it does, add the translated section
-  there too. If it does not exist yet, note it in the summary but do not create the whole file — only add
-  the specific new section.
-- **TODO resolved in an `en/` file** → check whether the `es/` counterpart exists and apply the equivalent
-  fix there too. If it does not exist yet, leave a note in the summary.
-- **Single-file mode** → check whether the Spanish counterpart exists. If it does, apply all the same
-  changes (TODO resolutions, new sections, quality fixes) there too.
+  coverage check) → add the translated section to the `es/` counterpart too. The `es/` file must
+  always exist (Step 0 guarantees this), so there is no "if it exists" check needed here.
+- **TODO resolved in an `en/` file** → apply the equivalent fix in the `es/` counterpart too.
+- **Single-file mode** → apply all the same changes (TODO resolutions, new sections, quality fixes)
+  to the Spanish counterpart too.
 
 Include all `es/` files created or modified in the final `git add` and in the summary table.
 
@@ -173,6 +171,34 @@ Notes to audit: {NOTES_PATH}
   4. **Report + commit** for that one file.
 
   In single-file mode, **skip** every folder-level step: the rule-1 coverage gap analysis for the whole topic, "Creating new files — proactive", the `future-learning.md` promotion check, and the "next file:" counter update (you are not adding numbered files). You may still *read* `coverage.md` to confirm this file's own concept is fully covered — but never create files for other missing topics. If you spot a gap that belongs in a different file, mention it in the summary instead of acting on it.
+
+---
+
+## Step 0 — Folder setup and file migration (full mode only)
+
+Before doing anything else, check whether the bilingual folder structure is in place.
+
+**1. Check that `en/` exists.**
+If `{NOTES_PATH}` does not exist as a folder yet (i.e. the topic still has files directly in the
+topic root with no `en/` subfolder):
+- Create the `en/` subfolder.
+- Move every numbered `.md` file from the topic root into `en/` using `git mv` so git tracks the rename.
+  Non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) stay in the root — do not move them.
+- Report every file moved in the summary.
+- After moving, {NOTES_PATH} now correctly points to the `en/` subfolder — continue the audit from there.
+
+If `en/` already exists, skip this step.
+
+**2. Check that `es/` exists.**
+If the `es/` subfolder does not exist inside the topic folder, create it now as an empty folder.
+Do not populate it — Victor decides which files to translate (see bilingual rules above).
+If `es/` already exists, skip this step.
+
+**3. Sync `es/` with `en/`.**
+For each numbered file that exists in `en/`: check whether the same filename exists in `es/`.
+If a file is missing in `es/`, create it immediately — same structure and code blocks as the `en/`
+version, all prose translated to Spanish. The two folders must always contain exactly the same files.
+List every file created in `es/` in the summary under "Spanish files created".
 
 ---
 

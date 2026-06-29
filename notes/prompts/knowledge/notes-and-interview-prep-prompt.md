@@ -126,9 +126,8 @@ For each unbacked question:
    whose topic is most closely related — check the headings read in Step 1.
 2. Also create or update the Spanish version — replace `en/` with `es/` in the path (e.g.
    `notes/java/es/09-streams-lambdas.md`). Same structure and code blocks, prose in Spanish.
-   If adding to an existing English file that already has a Spanish counterpart, add the Spanish
-   translation of the new section too. If no Spanish counterpart exists yet, note it in the
-   summary but do not create it from scratch — only create the specific section that backs the missing question.
+   The `es/` counterpart must always exist and must always match the `en/` file. If the `es/`
+   file does not exist yet, create the full translation before adding the new section.
 3. Follow the numbered naming convention for new files — start from the next available
    number in CLAUDE.md for that folder. If creating multiple files in one run, assign
    numbers in study-sequence order.

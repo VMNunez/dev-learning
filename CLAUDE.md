@@ -237,8 +237,8 @@ notes/java/
   - New section added to an existing `en/` file → if the `es/` counterpart exists, add the translated section there too; if not, note it but don't create the whole file
   - TODO resolved in an `en/` file → apply the same fix in `es/` if the counterpart exists
 - Spanish versions use the same structure and code blocks — only the prose is translated. Code comments may be translated too.
-- Not every existing English file has a Spanish translation yet. Victor requests which topics to translate; do not create Spanish files proactively unless asked.
-- When Victor asks to create a Spanish version of a specific file or topic, write it directly without asking to confirm each section.
+- `en/` and `es/` must always contain exactly the same files. Whenever a file is created in `en/`, create the Spanish version in `es/` immediately. Whenever a section is added or a TODO is resolved in an `en/` file, apply the same change in `es/`. The two folders are never allowed to be out of sync.
+- If the `en/` or `es/` subfolder does not exist yet, create it before writing any files into it. If numbered files are still in the topic root (not yet migrated), move them to `en/` with `git mv` and create the Spanish counterparts in `es/` — non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) always stay in the root.
 - `coverage.md`, `future-learning.md`, and `layer-reference.md` are not translated — they live only in the topic root.
 
 ### Subfolders and their purpose
