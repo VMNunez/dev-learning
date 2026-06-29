@@ -105,6 +105,11 @@ Every change made to an `en/` file must be mirrored in the corresponding `es/` f
 
 - **New file in `en/`** → also create the full Spanish version in `es/` with the same filename.
   Same structure, same code blocks — only the prose is in Spanish. Code comments may also be translated.
+  **The Spanish prose must read as natural Spanish, not as a literal word-for-word translation of the English.**
+  The content and message must be identical across both languages, but each version should read as if it were
+  written natively in that language — same idea, same emphasis, different words where the language demands it.
+  Awkward or robotic translations that follow the English sentence structure too closely are not acceptable.
+  Structural labels (`Purpose:`, `File:`) must be translated to `Propósito:`, `Archivo:`. `Docs:` stays as-is.
 - **New section added to an existing `en/` file** (from a gap found in rule 1, or from the proactive
   coverage check) → add the translated section to the `es/` counterpart too. The `es/` file must
   always exist (Step 0 guarantees this), so there is no "if it exists" check needed here.

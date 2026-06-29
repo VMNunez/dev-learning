@@ -6,19 +6,19 @@
 
 ---
 
-## Sintaxis Java que encontrarás en este archivo — lee esto primero
+## Sintaxis Java en este archivo — empieza aquí
 
-Si nunca has escrito Java, un puñado de formas de sintaxis aquí parecerán magia antes de llegar siquiera a la lógica de seguridad. Ninguna de ellas es Spring — son Java de todos los días, y cada una tiene una explicación completa en tus propias notas de Java. Echa un vistazo a esta tabla una vez, luego vuelve a ella cuando un símbolo te confunda. Si una línea de este archivo parece extraña, casi siempre es una de estas siete filas.
+Si nunca has escrito Java, algunos patrones de sintaxis de este archivo parecerán magia antes de llegar siquiera a la lógica de seguridad. Ninguno de ellos es Spring — son Java de todos los días, y cada uno tiene una explicación completa en tus propias notas de Java. Echa un vistazo a esta tabla una vez y vuelve a ella cuando algo te confunda. Si una línea de este archivo parece extraña, casi siempre es uno de estos siete casos.
 
-| Sintaxis que verás | Qué es realmente | Dónde se explica en tus notas |
-|---|---|---|
-| `auth -> auth.anyRequest()...` · `() -> new Something()` | Un **lambda** — una función corta y sin nombre pasada como argumento. La parte antes de `->` es la entrada que el método te da; la parte después es lo que haces con ella. Los métodos de config de Spring Security toman lambdas para que puedas describir cada regla inline. | [java/09-streams-lambdas.md — Lambda expressions](../../java/es/09-streams-lambdas.md#lambda-expressions) |
-| `findByEmail(email).orElseThrow(...)` | El método devuelve un **`Optional<User>`** — una caja que o contiene un usuario o está vacía. `.orElseThrow()` abre la caja, o lanza si está vacía. Así es como Spring Data evita devolver `null`. | [java/10-generics.md — `Optional<T>`](../../java/es/10-generics.md#optionalt) |
-| `ResponseEntity<AuthResponse>` · `Map<String, String>` · `List.of(...)` | **Generics** — el `<...>` dice qué tipo vive dentro de un contenedor. `List<String>` es una lista de strings; `ResponseEntity<AuthResponse>` es una respuesta HTTP que lleva un `AuthResponse`. | [java/10-generics.md — Generics](../../java/es/10-generics.md#generics) |
-| `.stream().map(...).findFirst()` | El **Stream API** — un pipeline que transforma una colección paso a paso. Aparece una vez aquí, dentro de `GlobalExceptionHandler`. | [java/09-streams-lambdas.md — Stream API](../../java/es/09-streams-lambdas.md#stream-api) |
-| `Jwts.builder().subject(...).signWith(...).compact()` | El **patrón builder** — encadena métodos para configurar un objeto, y luego una llamada final (`.build()` / `.compact()`) lo produce. jjwt y Spring lo usan en todas partes. | explicado línea por línea en la sección `JwtUtil` abajo |
-| `@Component` · `@Service` · `@Bean` · `@Override` | **Anotaciones** — metadatos que pones en una clase o método para decirle a Spring (o al compilador) cómo tratarlo. | [java/13-annotations.md](../../java/es/13-annotations.md) |
-| `private final JwtUtil jwtUtil;` + constructor | **Inyección por constructor** — Spring pasa las dependencias a través del constructor. `final` significa que el campo se establece una vez y nunca se reasigna. | [spring-boot/03-dependency-injection.md](./03-dependency-injection.md) |
+| Sintaxis que verás                                                      | Qué es realmente                                                                                                                                                                                                                                                               | Dónde se explica en tus notas                                                                             |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `auth -> auth.anyRequest()...` · `() -> new Something()`                | Un **lambda** — una función corta y sin nombre pasada como argumento. La parte antes de `->` es la entrada que el método te da; la parte después es lo que haces con ella. Los métodos de config de Spring Security toman lambdas para que puedas describir cada regla inline. | [java/09-streams-lambdas.md — Lambda expressions](../../java/es/09-streams-lambdas.md#sintaxis-de-lambdas) |
+| `findByEmail(email).orElseThrow(...)`                                   | El método devuelve un **`Optional<User>`** — una caja que o contiene un usuario o está vacía. `.orElseThrow()` abre la caja, o lanza si está vacía. Así es como Spring Data evita devolver `null`.                                                                             | [java/10-generics.md — `Optional<T>`](../../java/es/10-generics.md#optionalt)                             |
+| `ResponseEntity<AuthResponse>` · `Map<String, String>` · `List.of(...)` | **Generics** — el `<...>` dice qué tipo vive dentro de un contenedor. `List<String>` es una lista de strings; `ResponseEntity<AuthResponse>` es una respuesta HTTP que lleva un `AuthResponse`.                                                                                | [java/10-generics.md — Generics](../../java/es/10-generics.md#generics)                                   |
+| `.stream().map(...).findFirst()`                                        | El **Stream API** — un pipeline que transforma una colección paso a paso. Aparece una vez aquí, dentro de `GlobalExceptionHandler`.                                                                                                                                            | [java/09-streams-lambdas.md — Stream API](../../java/es/09-streams-lambdas.md#qué-es-un-stream)                 |
+| `Jwts.builder().subject(...).signWith(...).compact()`                   | El **patrón builder** — encadena métodos para configurar un objeto, y luego una llamada final (`.build()` / `.compact()`) lo produce. jjwt y Spring lo usan en todas partes.                                                                                                   | explicado línea por línea en la sección `JwtUtil` abajo                                                   |
+| `@Component` · `@Service` · `@Bean` · `@Override`                       | **Anotaciones** — metadatos que pones en una clase o método para decirle a Spring (o al compilador) cómo tratarlo.                                                                                                                                                             | [java/13-annotations.md](../../java/es/13-annotations.md)                                                 |
+| `private final JwtUtil jwtUtil;` + constructor                          | **Inyección por constructor** — Spring pasa las dependencias a través del constructor. `final` significa que el campo se establece una vez y nunca se reasigna.                                                                                                                | [spring-boot/03-dependency-injection.md](./03-dependency-injection.md)                                    |
 
 > Dos reglas Java más con las que te toparás: `throws Exception` / `throws UsernameNotFoundException` en la firma de un método es la regla de **excepciones comprobadas** de Java — debes declarar una excepción que un método puede lanzar ([java/08-exceptions.md](../../java/es/08-exceptions.md)). Y `enum Role { EMPLOYEE, MANAGER }` (Paso 4) es un tipo con un conjunto fijo de valores con nombre ([java/11-enums.md](../../java/es/11-enums.md)).
 
@@ -110,13 +110,13 @@ El cliente envía `email:password` codificado en Base64 en cada request. Simple,
 
 ### Por qué JWT para este proyecto
 
-| Criterio | Basado en sesión | JWT |
-|---|---|---|
-| Stateless | No — el servidor almacena sesiones | Sí — sin memoria en servidor |
-| Escala horizontalmente | Necesita session store compartido | Funciona de inmediato |
-| Invalidar instantáneamente | Sí | No (esperar a que expire) |
-| Estándar en REST APIs | Menos común | Estándar |
-| Complejidad | Más simple de entender | Ligeramente más complejo |
+| Criterio                   | Basado en sesión                   | JWT                          |
+| -------------------------- | ---------------------------------- | ---------------------------- |
+| Stateless                  | No — el servidor almacena sesiones | Sí — sin memoria en servidor |
+| Escala horizontalmente     | Necesita session store compartido  | Funciona de inmediato        |
+| Invalidar instantáneamente | Sí                                 | No (esperar a que expire)    |
+| Estándar en REST APIs      | Menos común                        | Estándar                     |
+| Complejidad                | Más simple de entender             | Ligeramente más complejo     |
 
 Elegimos JWT porque este es un REST API que Angular consumirá. Las REST APIs están diseñadas para ser stateless — cada request lleva todo lo que el servidor necesita para procesarlo. JWT encaja naturalmente. La autenticación basada en sesión requeriría gestionar estado en el lado del servidor, lo que contradice el principio REST.
 
@@ -128,11 +128,11 @@ Las consultoras españolas construyen REST APIs stateless como estándar. JWT es
 
 Un JWT se firma para prevenir manipulaciones. El algoritmo determina cómo se produce y verifica esa firma. Se usan tres algoritmos habitualmente:
 
-| Algoritmo | Nombre completo | Tipo de clave | Caso de uso |
-|---|---|---|---|
-| **HS256** | HMAC-SHA256 | Un secret compartido | Un solo servidor o backend de confianza — simple, rápido |
-| **RS256** | RSA-SHA256 | Par clave pública/privada | Múltiples servicios — la clave pública puede compartirse con seguridad |
-| **ES256** | ECDSA-SHA256 | Par clave pública/privada | Igual que RS256 pero claves más pequeñas, verificación más rápida |
+| Algoritmo | Nombre completo | Tipo de clave             | Caso de uso                                                            |
+| --------- | --------------- | ------------------------- | ---------------------------------------------------------------------- |
+| **HS256** | HMAC-SHA256     | Un secret compartido      | Un solo servidor o backend de confianza — simple, rápido               |
+| **RS256** | RSA-SHA256      | Par clave pública/privada | Múltiples servicios — la clave pública puede compartirse con seguridad |
+| **ES256** | ECDSA-SHA256    | Par clave pública/privada | Igual que RS256 pero claves más pequeñas, verificación más rápida      |
 
 **HS256** usa una clave secreta para tanto firmar como verificar. Cualquiera que conozca el secret puede crear y validar tokens — lo que significa que el secret nunca debe salir del servidor. Esta es la opción más simple y la elección correcta cuando solo hay un servicio backend.
 
@@ -146,13 +146,13 @@ Usamos **HS256** porque este es un único backend Spring Boot. Un secret, un lug
 
 `AuthenticationManager` está diseñado para ser flexible. No verifica credenciales él mismo — delega en un `AuthenticationProvider`. Spring Security incluye varios proveedores, cada uno diseñado para un tipo diferente de autenticación:
 
-| Proveedor | Qué hace | Cuándo lo usas |
-|---|---|---|
-| **`DaoAuthenticationProvider`** | Carga el usuario de una BD via `UserDetailsService`, compara contraseñas con `PasswordEncoder` | Login estándar con email + contraseña almacenados en tu propia BD — lo que usamos |
-| `LdapAuthenticationProvider` | Autentica contra LDAP / Active Directory | Grandes corporaciones donde IT gestiona los usuarios centralmente |
-| `JwtAuthenticationProvider` | Proveedor JWT incorporado de Spring, parte del módulo OAuth2 Resource Server | Cuando consumes tokens emitidos por un tercero (p.ej. Keycloak, Auth0) |
-| `OAuth2LoginAuthenticationProvider` | Gestiona flujos "Login with Google / GitHub" | Apps de consumidores con social login |
-| `RememberMeAuthenticationProvider` | Gestiona cookies "remember me" | Apps basadas en sesión con login persistente |
+| Proveedor                           | Qué hace                                                                                       | Cuándo lo usas                                                                    |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **`DaoAuthenticationProvider`**     | Carga el usuario de una BD via `UserDetailsService`, compara contraseñas con `PasswordEncoder` | Login estándar con email + contraseña almacenados en tu propia BD — lo que usamos |
+| `LdapAuthenticationProvider`        | Autentica contra LDAP / Active Directory                                                       | Grandes corporaciones donde IT gestiona los usuarios centralmente                 |
+| `JwtAuthenticationProvider`         | Proveedor JWT incorporado de Spring, parte del módulo OAuth2 Resource Server                   | Cuando consumes tokens emitidos por un tercero (p.ej. Keycloak, Auth0)            |
+| `OAuth2LoginAuthenticationProvider` | Gestiona flujos "Login with Google / GitHub"                                                   | Apps de consumidores con social login                                             |
+| `RememberMeAuthenticationProvider`  | Gestiona cookies "remember me"                                                                 | Apps basadas en sesión con login persistente                                      |
 
 `AuthenticationManager` recorre todos los proveedores registrados cuando llega un intento de login. Elige el que puede gestionar el tipo de token pasado. Si ninguno puede gestionarlo, lanza una excepción.
 
@@ -168,11 +168,11 @@ La capa de seguridad JWT es un **patrón boilerplate** — la estructura no camb
 
 **Archivos donde solo cambian pequeños detalles:**
 
-| Archivo | Qué cambia |
-|---|---|
-| `SecurityConfig.java` | Las reglas de ruta — qué paths son públicos, cuáles protegidos |
+| Archivo                       | Qué cambia                                                             |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `SecurityConfig.java`         | Las reglas de ruta — qué paths son públicos, cuáles protegidos         |
 | `UserDetailsServiceImpl.java` | El campo usado para encontrar al usuario (email, username) y los roles |
-| `JwtUtil.java` (opcional) | Claims extra añadidos al token — p.ej. rol, userId |
+| `JwtUtil.java` (opcional)     | Claims extra añadidos al token — p.ej. rol, userId                     |
 
 ---
 
@@ -396,16 +396,16 @@ POST /api/projects  Authorization: Bearer <token-empleado-válido>
 
 ### Qué es responsable cada clase
 
-| Clase | Flujo | Responsabilidad |
-|---|---|---|
-| `SecurityConfig` | Ambos | Configura todas las reglas: rutas, registro de filtros, CORS |
-| `JwtUtil` | Ambos | Crea tokens (Flujo 1) y los valida (Flujo 2) |
-| `UserDetailsServiceImpl` | Ambos | Carga un usuario de la base de datos por email |
-| `BCryptPasswordEncoder` | Solo Flujo 1 | Compara contraseña raw contra hash almacenado |
-| `AuthService` | Solo Flujo 1 | Orquesta el login — llama a authenticate(), luego a generateToken() |
-| `AuthController` | Solo Flujo 1 | Recibe el request HTTP de login, devuelve el token |
-| `JwtFilter` | Solo Flujo 2 | Intercepta cada request, valida JWT, establece SecurityContextHolder |
-| `GlobalExceptionHandler` | Ambos | Convierte excepciones en respuestas JSON limpias |
+| Clase                    | Flujo        | Responsabilidad                                                      |
+| ------------------------ | ------------ | -------------------------------------------------------------------- |
+| `SecurityConfig`         | Ambos        | Configura todas las reglas: rutas, registro de filtros, CORS         |
+| `JwtUtil`                | Ambos        | Crea tokens (Flujo 1) y los valida (Flujo 2)                         |
+| `UserDetailsServiceImpl` | Ambos        | Carga un usuario de la base de datos por email                       |
+| `BCryptPasswordEncoder`  | Solo Flujo 1 | Compara contraseña raw contra hash almacenado                        |
+| `AuthService`            | Solo Flujo 1 | Orquesta el login — llama a authenticate(), luego a generateToken()  |
+| `AuthController`         | Solo Flujo 1 | Recibe el request HTTP de login, devuelve el token                   |
+| `JwtFilter`              | Solo Flujo 2 | Intercepta cada request, valida JWT, establece SecurityContextHolder |
+| `GlobalExceptionHandler` | Ambos        | Convierte excepciones en respuestas JSON limpias                     |
 
 ---
 
@@ -447,15 +447,15 @@ SecurityFilterChain
 
 ## Documentación
 
-| Lo que necesitas hacer | Lee esto |
-|---|---|
-| Generar y parsear tokens JWT en Java | [jjwt — Quickstart](https://github.com/jwtk/jjwt#quickstart) |
-| Configurar la filter chain (SecurityFilterChain) | [Java Configuration](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html) |
-| Establecer permisos a nivel de ruta (permitAll, authenticated) | [Authorize HTTP Requests](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html) |
-| Configurar sesiones STATELESS para JWT | [Session Management](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html) |
-| Hashing de contraseñas con BCrypt | [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) |
-| Cómo encaja UserDetailsService en el login | [DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) |
-| Comprobaciones de rol a nivel de método (@PreAuthorize) | [Spring Security — Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html) |
+| Lo que necesitas hacer                                         | Lee esto                                                                                                                                        |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Generar y parsear tokens JWT en Java                           | [jjwt — Quickstart](https://github.com/jwtk/jjwt#quickstart)                                                                                    |
+| Configurar la filter chain (SecurityFilterChain)               | [Java Configuration](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html)                                          |
+| Establecer permisos a nivel de ruta (permitAll, authenticated) | [Authorize HTTP Requests](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html)                  |
+| Configurar sesiones STATELESS para JWT                         | [Session Management](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html)                           |
+| Hashing de contraseñas con BCrypt                              | [Spring Security — Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html)            |
+| Cómo encaja UserDetailsService en el login                     | [DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) |
+| Comprobaciones de rol a nivel de método (@PreAuthorize)        | [Spring Security — Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html)                |
 
 > **Companion práctico — Baeldung:** para cada concepto de este archivo, busca `baeldung <concepto>` (p.ej. "baeldung spring security jwt", "baeldung userdetailsservice", "baeldung preauthorize"). Baeldung muestra ejemplos de código reales y explica el por qué detrás de cada paso.
 
@@ -478,11 +478,11 @@ SecurityFilterChain
 
 JJWT es una librería Java para crear y validar tokens JWT. Está dividido en tres artifacts a propósito:
 
-| Artifact | Scope | Por qué |
-|---|---|---|
-| `jjwt-api` | (por defecto — compile) | La interfaz pública que importas en tu código |
-| `jjwt-impl` | runtime | La lógica interna que crea y parsea tokens — nunca la referencias directamente |
-| `jjwt-jackson` | runtime | Gestiona la serialización JSON dentro del token — nunca la referencias directamente |
+| Artifact       | Scope                   | Por qué                                                                             |
+| -------------- | ----------------------- | ----------------------------------------------------------------------------------- |
+| `jjwt-api`     | (por defecto — compile) | La interfaz pública que importas en tu código                                       |
+| `jjwt-impl`    | runtime                 | La lógica interna que crea y parsea tokens — nunca la referencias directamente      |
+| `jjwt-jackson` | runtime                 | Gestiona la serialización JSON dentro del token — nunca la referencias directamente |
 
 ```xml
 <dependency>
@@ -1100,12 +1100,12 @@ Los Pasos 1-3 construyeron la autenticación: cualquier usuario autenticado pod�
 
 Tres cosas cambian en el Paso 4:
 
-| Qué cambia | Por qué |
-|---|---|
-| La entidad `User` obtiene los campos `role` y `active` | El rol debe almacenarse en la BD |
-| `UserDetailsServiceImpl` usa el rol real | El filtro JWT establece authorities desde `UserDetails` — debe reflejar el rol real |
-| `@PreAuthorize` en endpoints de escritura | Spring Security aplica la comprobación de rol antes de que el método se ejecute |
-| Archivo seed `data.sql` | Sin una cuenta de manager en la BD, nadie puede loguearse como manager para probar |
+| Qué cambia                                             | Por qué                                                                             |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| La entidad `User` obtiene los campos `role` y `active` | El rol debe almacenarse en la BD                                                    |
+| `UserDetailsServiceImpl` usa el rol real               | El filtro JWT establece authorities desde `UserDetails` — debe reflejar el rol real |
+| `@PreAuthorize` en endpoints de escritura              | Spring Security aplica la comprobación de rol antes de que el método se ejecute     |
+| Archivo seed `data.sql`                                | Sin una cuenta de manager en la BD, nadie puede loguearse como manager para probar  |
 
 ### Enum Role
 
@@ -1129,7 +1129,7 @@ private Role role;
 private Boolean active = true;
 ```
 
-`active` por defecto `true` — una cuenta nueva está activa a menos que se desactive explícitamente. El *soft delete* lo establece a `false`.
+`active` por defecto `true` — una cuenta nueva está activa a menos que se desactive explícitamente. El _soft delete_ lo establece a `false`.
 
 ### UserDetailsServiceImpl — usar el rol real
 
