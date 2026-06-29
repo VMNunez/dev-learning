@@ -178,20 +178,21 @@ Notes to audit: {NOTES_PATH}
 
 Before doing anything else, check whether the bilingual folder structure is in place.
 
-**1. Check that `en/` exists.**
-If `{NOTES_PATH}` does not exist as a folder yet (i.e. the topic still has files directly in the
-topic root with no `en/` subfolder):
-- Create the `en/` subfolder.
-- Move every numbered `.md` file from the topic root into `en/` using `git mv` so git tracks the rename.
-  Non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) stay in the root — do not move them.
-- Report every file moved in the summary.
-- After moving, {NOTES_PATH} now correctly points to the `en/` subfolder — continue the audit from there.
+**1. Migrate numbered files from the topic root to `en/`.**
 
-If `en/` already exists, skip this step.
+Check whether there are numbered `.md` files sitting directly in the topic root (e.g. `notes/java/01-variables-types.md`). These are files that have not been migrated yet — they contain Victor's refined content and must be preserved exactly.
+
+- If numbered files exist in the root: create `en/` if it does not exist yet, then run `git mv` for each file to move it into `en/`. Do NOT copy or recreate — `git mv` only, so git tracks the rename and the content is preserved.
+- Non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) always stay in the root — never move them.
+- Report every file moved in the summary.
+- After moving, `{NOTES_PATH}` now correctly points to the `en/` subfolder — continue the audit from there.
+
+If no numbered files exist in the root (they are already inside `en/`), skip the migration and verify `en/` exists as a folder.
+
+**CRITICAL — never create files in `en/` if they already exist or if you are about to move the originals there. `git mv` is the only correct way to get files into `en/` during migration. Writing new files with the same names would overwrite Victor's refined content.**
 
 **2. Check that `es/` exists.**
 If the `es/` subfolder does not exist inside the topic folder, create it now as an empty folder.
-Do not populate it — Victor decides which files to translate (see bilingual rules above).
 If `es/` already exists, skip this step.
 
 **3. Sync `es/` with `en/`.**
