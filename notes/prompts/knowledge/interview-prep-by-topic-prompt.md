@@ -201,9 +201,9 @@ If the files are already in sync for the relevant scope, move directly to the TO
 
 ## Pre-audit — Resolve TODOs
 
-Scan {SECTION} in both en/{FILE}.md and es/{FILE}.md for any TODO markers.
-These can appear as `TODO:`, `<!-- TODO: ... -->`, or `// TODO` — Victor adds them while
-reading to mark things he wants corrected or improved.
+**Victor studies from the `es/` files — that is where he adds TODO markers.**
+Scan {SECTION} in es/{FILE}.md first, then en/{FILE}.md.
+TODO markers can appear as `TODO:`, `<!-- TODO: ... -->`, or `// TODO`.
 
 For each TODO found:
 1. Identify exactly what Victor wants changed.
