@@ -3,13 +3,13 @@
 > 📖 [Baeldung — Java Collections](https://www.baeldung.com/java-collections)
 > 📖 [Oracle Docs — Collections framework](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
 
-Before collections existed, you had to manage your own arrays — fixed size, no built-in search, no add/remove. The Collections Framework gives you ready-made data structures for the things you do constantly in any application: ordered lists of items, key-value lookups, and sets of unique values. The three you will reach for in almost every Spring Boot service are `List`, `Map`, and `Set`.
+Before collections existed, you had to manage your own arrays — fixed size, no built-in search, no add/remove. The Collections Framework is a set of interfaces and classes that ships with every JDK installation (in the `java.util` package) — nothing to download, it is already there. It gives you ready-made data structures for the things you do constantly in any application: ordered lists of items, key-value lookups, and sets of unique values. The three you will reach for in almost every Spring Boot service are `List`, `Map`, and `Set`.
 
 ---
 
 ## List — ordered, allows duplicates
 
-A `List` is the go-to choice whenever you need an ordered, growable sequence — like the rows returned from a database query. Unlike an array, it resizes automatically and gives you methods like `add`, `remove`, and `contains` out of the box.
+A `List` is the go-to choice whenever you need an ordered, growable sequence — like the rows returned from a database query. Unlike an array, it resizes automatically as you add or remove elements. The methods you will use most are: `add(value)` to append to the end, `get(index)` to read by position, `remove(value)` or `remove(index)` to delete, `contains(value)` to check whether an element exists, `size()` to count elements, and `isEmpty()` to check whether the list has anything in it.
 
 ```java
 import java.util.ArrayList;
@@ -17,32 +17,48 @@ import java.util.List;
 
 List<String> names = new ArrayList<>();
 
-// Adding
-names.add("Victor");
-names.add("Ana");
-names.add("Luis");
+// Adding — add() always appends to the end
+names.add("Victor");   // → ["Victor"]
+names.add("Ana");      // → ["Victor", "Ana"]
+names.add("Luis");     // → ["Victor", "Ana", "Luis"]
 
 // Reading
-names.get(0);          // "Victor" — index access
-names.size();          // 3
-names.isEmpty();       // false
-names.contains("Ana"); // true
+names.get(0);          // "Victor" — indices start at 0
+names.size();          // 3 — number of elements
+names.isEmpty();       // false — there is at least one element
+names.contains("Ana"); // true — "Ana" is in the list
 
 // Removing
-names.remove("Ana");        // remove by value
-names.remove(0);            // remove by index
+names.remove("Ana");   // removes the first occurrence of the value "Ana"
+names.remove(0);       // removes the element at position 0
 
-// Iterating
+// Iterating — go through all elements in order
 for (String name : names) {
     System.out.println(name);
 }
-
-// Creating with values (immutable — cannot add/remove)
-List<String> fixed = List.of("Victor", "Ana", "Luis");
-
-// Creating mutable from List.of
-List<String> mutable = new ArrayList<>(List.of("Victor", "Ana"));
 ```
+
+### List.of() — immutable list vs ArrayList — mutable list
+
+There are two ways to create a list with initial values and it matters which one you reach for.
+
+`List.of()` creates an **immutable** list — you cannot add or remove elements after it is created. If you try, Java throws `UnsupportedOperationException` at runtime:
+
+```java
+List<String> fixed = List.of("Victor", "Ana", "Luis");
+fixed.add("Pedro");    // ❌ UnsupportedOperationException — this list cannot be modified
+fixed.remove("Ana");   // ❌ same — immutable means it never changes
+```
+
+If you want a list you can modify but that already has starting values, wrap `List.of()` inside `new ArrayList<>()`. This creates a mutable copy with the same elements:
+
+```java
+List<String> mutable = new ArrayList<>(List.of("Victor", "Ana"));
+mutable.add("Luis");    // ✅ works — this one is modifiable
+mutable.remove("Ana");  // ✅ works
+```
+
+Use `List.of()` when the data will not change (for example, a fixed list of values in a test). Use `new ArrayList<>()` when you need to add or remove elements later.
 
 ### List vs Array
 
@@ -57,7 +73,11 @@ Use `List` in almost all cases. Use arrays only when size is fixed and performan
 
 ### ArrayList vs LinkedList
 
-Both implement `List`, but they store data differently:
+Both implement `List`, but they store data in memory in a completely different way — and that affects performance depending on what you do with them.
+
+`ArrayList` is internally an array that grows automatically. When you create an `ArrayList`, Java allocates a contiguous block of memory positions. Reading an element by index (`get(0)`, `get(5)`) is instant because Java calculates the exact memory position directly. The problem appears when you insert or remove in the middle: it has to shift all subsequent elements one position.
+
+`LinkedList` is internally a chain of nodes. Each node stores the element's value plus two references: one to the previous node and one to the next. To read the element at position 5, Java has to traverse 5 nodes from the start — that is why index access is slow. But inserting or removing in the middle is fast: you only update two references, nothing else moves.
 
 | | ArrayList | LinkedList |
 |---|-----------|------------|
@@ -65,7 +85,7 @@ Both implement `List`, but they store data differently:
 | `get(i)` | Fast — direct index | Slow — must traverse |
 | `add` at end | Fast | Fast |
 | `add`/`remove` in middle | Slow — shifts elements | Fast — just relinks nodes |
-| Memory | Less | More (each node stores two pointers) |
+| Memory | Less | More (each node stores two references) |
 | When to use | Almost always | Rarely — only if many insertions in the middle |
 
 In practice, use `ArrayList` for everything. `LinkedList` is a theoretical answer in interviews — in real Spring Boot code you will almost never see it.
@@ -74,40 +94,56 @@ In practice, use `ArrayList` for everything. `LinkedList` is a theoretical answe
 
 ## Map — key-value pairs, keys are unique
 
-Use a `Map` when you need instant lookup by a unique identifier — for example, grouping employees by department, or caching a result so you don't have to search a list every time. Each key maps to exactly one value; putting a new value under an existing key replaces the old one.
+A `Map` is the structure you reach for when you need to look something up by a unique identifier instead of scanning a whole list. Think of it like a dictionary: you give a word (the key) and get its definition (the value) instantly, without reading page by page.
+
+This is useful, for example, when you want to **cache** a result — that is, store something you already computed or fetched so you do not have to repeat that work. If you have a list of 1000 employees and need to look up the same employee by ID multiple times, you store the results in a `Map<Integer, Employee>` and retrieve them in constant time, instead of scanning the list each time.
+
+`Map<String, Integer>` reads like this: the first type inside `<>` is the key type (`String` — the employee name) and the second is the value type (`Integer` — the score). You always declare the key type first and the value type second.
 
 ```java
 import java.util.HashMap;
 import java.util.Map;
 
+// Map<K, V>: K = key type, V = value type
 Map<String, Integer> scores = new HashMap<>();
 
-// Adding / updating
-scores.put("Victor", 95);
-scores.put("Ana", 88);
-scores.put("Victor", 97);   // replaces the previous value for "Victor"
+// Adding / updating — put(key, value)
+scores.put("Victor", 95);       // adds entry: "Victor" → 95
+scores.put("Ana", 88);          // adds entry: "Ana" → 88
+scores.put("Victor", 97);       // "Victor" already exists → replaces 95 with 97
 
 // Reading
-scores.get("Victor");                    // 97
-scores.getOrDefault("Luis", 0);          // 0 — key does not exist, returns default
-scores.containsKey("Ana");              // true
-scores.containsValue(88);              // true
-scores.size();                          // 2
+scores.get("Victor");           // 97 — returns the value for key "Victor"
+scores.getOrDefault("Luis", 0); // 0 — "Luis" does not exist, returns the default
+scores.containsKey("Ana");      // true — does this key exist in the map?
+scores.containsValue(88);       // true — does this value exist in any entry?
+scores.size();                  // 2 — number of entries (remember: "Victor" replaced, not added)
 
 // Removing
-scores.remove("Ana");
+scores.remove("Ana");           // removes the entry with key "Ana"
 
-// Iterating
+// Iterating — go through all entries (key + value)
 for (Map.Entry<String, Integer> entry : scores.entrySet()) {
     System.out.println(entry.getKey() + ": " + entry.getValue());
+    // prints: Victor: 97
 }
 
 // Just keys or just values
-scores.keySet();    // Set of keys
-scores.values();    // Collection of values
+scores.keySet();    // Set<String> of all keys
+scores.values();    // Collection<Integer> of all values
 ```
 
+> `Map.Entry<String, Integer>` represents a single map entry (one key and its value together). `.entrySet()` gives you the set of all entries so you can iterate over them.
+
 ### HashMap vs LinkedHashMap vs TreeMap
+
+There are three `Map` implementations you will see in interviews and in real code. All three store key-value pairs, but they differ in the **order** in which they store and iterate their entries.
+
+`HashMap` is the default implementation. Internally it uses a **hash table** — a technique that converts the key into a number to calculate where in an internal array to store the entry. The result is very fast insertion and lookup (constant time), but with no guaranteed order: if you iterate over a `HashMap`, elements can come out in any order.
+
+`LinkedHashMap` works the same as `HashMap` internally (same speed), but also maintains a linked list that remembers insertion order. When you iterate, elements come out in the same order you added them.
+
+`TreeMap` sorts keys automatically — alphabetically for `String`, numerically for numbers. Internally it uses a balanced binary search tree, which makes insertion and lookup slightly slower than `HashMap`.
 
 | | HashMap | LinkedHashMap | TreeMap |
 |---|---------|---------------|---------|
@@ -120,6 +156,10 @@ scores.values();    // Collection of values
 ## Set — unique values, no duplicates
 
 Use a `Set` when duplicates would be a bug — for example, a list of roles a user has, or a set of tags on an article. Adding a duplicate value silently does nothing, which is exactly what you want.
+
+The default implementation is `HashSet`, which works internally the same way as `HashMap` — it converts each value into a number (hash) to know where to store it, which makes `contains()` instant even with thousands of elements. The trade-off is that iterating has no guaranteed order.
+
+If you need insertion order, use `LinkedHashSet`. If you need values sorted alphabetically or numerically, use `TreeSet`. In practice, `HashSet` covers 95% of cases.
 
 ```java
 import java.util.HashSet;
@@ -150,6 +190,8 @@ List<String> deduplicated = new ArrayList<>(unique);
 
 ## Collections utility methods
 
+`Collections` (with an s) is a utility class in the JDK — distinct from the `Collection` interface (without an s). You never instantiate it; you just call its static methods on lists you already have. It gives you operations you need frequently but that `List` does not include directly: sorting, reversing, shuffling, and finding the max or min.
+
 ```java
 import java.util.Collections;
 
@@ -167,7 +209,11 @@ Collections.frequency(numbers, 1);   // 2
 
 ## Sorting — Comparable and Comparator
 
+When you call `Collections.sort(employees)` or `employees.sort(...)`, Java needs to know how to compare two `Employee` objects to decide which comes first. With `String` or `Integer` it already knows — they have an obvious natural order. With your own classes, you have to tell it. That is what `Comparable` and `Comparator` are for: two mechanisms for defining sort rules in Java.
+
 ### Comparable — natural order defined by the class
+
+You implement `Comparable<T>` directly in your class when there is one obvious default order — the one anyone would expect when sorting a list of that type. The `compareTo()` method receives another object of the same type and returns a negative number if `this` comes first, zero if they are equal, and positive if `this` comes after.
 
 The class itself implements `Comparable<T>` to define its default sort order:
 
@@ -190,7 +236,7 @@ Use `Comparable` when there is one obvious default sort for the class (e.g. empl
 
 ### Comparator — external, flexible sorting
 
-`Comparator` is defined outside the class — you pass it to `sort()`. Useful when you need multiple sort options or cannot modify the class.
+The problem with `Comparable` is that you can only define one sort order per class. If you want to sort employees by name on one screen and by hire date on another, `Comparable` is not enough. `Comparator` solves this: you define the sort rule outside the class, on the fly, and pass it directly to `sort()`. You can have as many `Comparator` instances as you want for the same class.
 
 The `Employee::getName` syntax is called a **method reference** — a shorter way to write `e -> e.getName()`. It is covered in full in `09-streams-lambdas.md`. For now, just read `Employee::getName` as "the `getName` method of `Employee`."
 
@@ -219,7 +265,9 @@ employees.sort(Comparator.comparing(Employee::getDepartment)
 
 ## ConcurrentModificationException
 
-This exception happens when you remove elements from a List **inside a for-each loop**:
+This is a classic Java trap that catches everyone the first time. It seems completely logical to loop over a list and remove the elements you do not want — but Java does not allow it and throws `ConcurrentModificationException`.
+
+The reason: the for-each loop uses an iterator internally. That iterator stores a version counter of the list at the moment it starts iterating. Every time you call `remove()` directly on the list, that counter changes. On the next iteration, the iterator compares its counter with the list's counter, sees they differ, and throws — because it cannot know whether the indices are still valid.
 
 ```java
 // This throws ConcurrentModificationException
@@ -229,8 +277,6 @@ for (Employee e : employees) {
     }
 }
 ```
-
-The for-each loop uses an iterator internally. The iterator tracks the list size. When `remove()` changes that size, the iterator detects a structural change and throws.
 
 ### How to fix it
 
