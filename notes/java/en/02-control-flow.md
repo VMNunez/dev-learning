@@ -1,5 +1,6 @@
 # Control Flow
 
+> 📖 [Baeldung — Control structures in Java](https://www.baeldung.com/java-control-structures) → read: "If-Else Statement", "Switch Statement" and "Loops"
 > 📖 [Oracle Docs — Control flow statements](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html)
 
 Control flow statements decide which code runs and how many times. Java uses the same structures as JavaScript — the syntax is nearly identical, so most of this will feel familiar.

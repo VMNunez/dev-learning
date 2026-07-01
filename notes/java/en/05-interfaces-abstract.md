@@ -1,5 +1,6 @@
 # Interfaces and Abstract Classes
 
+> 📖 [Baeldung — Interfaces in Java](https://www.baeldung.com/java-interfaces) → read: "What Are Interfaces in Java?" and "Default Methods in Java 8"
 > 📖 [Oracle Docs — Interfaces and inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/index.html)
 > 📖 [Spring Security — DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) — how `UserDetailsService` fits into the full login flow
 

@@ -1,12 +1,13 @@
 # Inheritance and Polymorphism
 
+> 📖 [Baeldung — Guide to Java inheritance](https://www.baeldung.com/java-inheritance) → read: "Types of Inheritance" and "Polymorphism"
 > 📖 [Oracle Docs — Inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html)
 
 You reach for inheritance when two or more classes are the same *kind* of thing and share most of their behaviour, but differ in a few specific methods. Without it, you'd write the same `eat()`, `breathe()`, and `sleep()` methods in every animal class — and when you need to change one, you'd update every copy separately. Inheritance lets you write shared behaviour once in a **parent class**, and every **subclass** gets it automatically.
 
 ## Inheritance — `extends`
 
-A subclass inherits all `public` and `protected` fields and methods from the parent class and can also add its own:
+A subclass inherits all `public` and `protected` fields and methods from the parent class and can also add its own. `private` fields from the parent technically live inside the subclass object — they occupy memory — but the subclass cannot access them directly: only through the getters and setters the parent exposes. `protected` is the modifier you choose precisely when you want subclasses to read the field directly without a getter — which is why you see `protected` fields in parent classes in inheritance examples. The parent class does not have to be abstract: if it makes sense to create instances of it directly (`new Animal()`), leave it as a regular class. You declare it abstract only when it makes no sense to instantiate it directly — when `Animal` is too generic and no concrete object should be "just an Animal" without being a more specific type:
 
 ```java
 public class Animal {
@@ -62,6 +63,8 @@ public void eat() {
 }
 ```
 
+In practice, `super.method()` appears when you want to extend the parent's behaviour, not replace it entirely. The most common Spring Boot case is when you extend a configuration class: you call `super.configure(...)` so the parent applies its base configuration, then you add your own rules on top. You also see this pattern at the end of this file: `super("Employee not found: " + id)` in the `EmployeeNotFoundException` constructor calls the `RuntimeException` constructor to initialise the standard error message — you only add the custom part. When you want to replace behaviour completely, you override without calling `super` — that is the most common case in business logic.
+
 ---
 
 ## Method overriding — `@Override`
@@ -94,6 +97,8 @@ public class Cat extends Animal {
 
 ### Overriding vs Overloading
 
+**Overriding** is what you just saw: a subclass replaces a parent method with the same name and the exact same signature. The decision of which version to run happens at runtime — Java looks at the real type of the object, not the type of the variable. **Overloading** (covered in [03-methods.md](03-methods.md)) is different: multiple methods with the same name in the same class, each with different parameters — different number or different types. Java resolves overloading at compile time by looking at the arguments you pass. Both reuse the same method name, but they are entirely separate concepts.
+
 | | Overriding | Overloading |
 |---|-----------|-------------|
 | Where | Subclass | Same class |
@@ -105,7 +110,15 @@ public class Cat extends Animal {
 
 ## Polymorphism
 
-The real payoff of inheritance comes when you have code that works with the parent type and you want it to handle any subclass automatically — without changing it every time you add a new one. That is polymorphism: a parent-type variable can hold a subclass object, and the method that runs is always the subclass's version:
+The problem polymorphism solves: you have a list of related but different types (`Dog`, `Cat`, `Bird`) and you need to call the same method on all of them. Without polymorphism you'd write an `if` check for every type — and every time you add a new type, you modify that `if`. With polymorphism, you declare all of them as `Animal` and call `speak()` once: Java picks the right version for each object automatically.
+
+The key is that the type of the **variable** and the type of the **object** can be different:
+
+```java
+Animal a = new Dog("Rex", "Labrador");  // variable: Animal  /  actual object: Dog
+```
+
+When you call `a.speak()`, Java does not look at the variable type (`Animal`) — it looks at the actual type of the object in memory (`Dog`) and runs `Dog`'s version. This is called **dynamic dispatch**: the decision of which method to run happens at runtime, not at compile time.
 
 ```java
 Animal a1 = new Dog("Rex", "Labrador");
@@ -113,18 +126,39 @@ Animal a2 = new Cat("Whiskers");
 
 a1.speak();   // "Woof!" — Dog's version
 a2.speak();   // "Meow!" — Cat's version
+```
 
-// Store different types in one list
+The case that makes it click is a list of mixed types. Without polymorphism you check every type manually — and the code breaks every time you add a new one:
+
+```java
+// Without polymorphism — fragile: every new type forces a change here
+for (Animal a : animals) {
+    if (a instanceof Dog) System.out.println("Woof!");
+    else if (a instanceof Cat) System.out.println("Meow!");
+    // adding Bird? come back here and add another else if
+}
+
+// With polymorphism — extensible: add Bird and this loop never changes
 List<Animal> animals = new ArrayList<>();
 animals.add(new Dog("Rex", "Labrador"));
 animals.add(new Cat("Whiskers"));
 
 for (Animal a : animals) {
-    System.out.println(a.speak());  // calls the right version for each
+    System.out.println(a.speak());  // Dog → "Woof!", Cat → "Meow!" — no if needed
 }
 ```
 
-This is powerful in Spring Boot — a service method that accepts `Animal` works with `Dog`, `Cat`, or any future subclass.
+**In Spring Boot** this pattern is fundamental. Imagine you have several notification types — `EmailNotification`, `SmsNotification`, `PushNotification` — all implementing a `Notification` interface with a `send()` method. The service that uses them does not need to know which type each one is:
+
+```java
+public void notifyAll(List<Notification> notifications) {
+    for (Notification n : notifications) {
+        n.send();  // Email, SMS, or Push — Java picks the right version at runtime
+    }
+}
+```
+
+If you add `WhatsAppNotification` tomorrow, this service does not change a single line.
 
 ---
 

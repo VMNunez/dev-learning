@@ -1,12 +1,13 @@
 # Herencia y Polimorfismo
 
+> 📖 [Baeldung — Guide to Java inheritance](https://www.baeldung.com/java-inheritance) → leer: "Types of Inheritance" y "Polymorphism"
 > 📖 [Oracle Docs — Inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html)
 
-Usas la herencia cuando dos o más clases son del mismo *tipo* de cosa y comparten la mayor parte de su comportamiento, pero difieren en algunos métodos concretos. Sin ella, escribirías los mismos métodos `eat()`, `breathe()` y `sleep()` en cada clase animal — y al cambiar uno, tendrías que actualizarlo en todas las copias. La herencia te permite escribir el comportamiento compartido una sola vez en una **clase padre**, y cada **subclase** lo hereda automáticamente.
+Usas la herencia cuando dos o más clases son del mismo _tipo_ de cosa y comparten la mayor parte de su comportamiento, pero difieren en algunos métodos concretos. Sin ella, escribirías los mismos métodos `eat()`, `breathe()` y `sleep()` en cada clase animal — y al cambiar uno, tendrías que actualizarlo en todas las copias. La herencia te permite escribir el comportamiento compartido una sola vez en una **clase padre**, y cada **subclase** lo hereda automáticamente.
 
 ## Herencia — `extends`
 
-Una subclase hereda todos los campos y métodos `public` y `protected` de la clase padre y también puede añadir los suyos propios:
+Una subclase hereda todos los campos y métodos `public` y `protected` de la clase padre y también puede añadir los suyos propios. Los campos `private` del padre técnicamente forman parte del objeto — ocupan espacio en memoria — pero la subclase no puede acceder a ellos directamente: solo a través de los getters y setters que el padre exponga. `protected` es el modificador que eliges cuando quieres que las subclases lean el campo directamente sin necesidad de un getter — por eso en los ejemplos de herencia verás campos `protected` en la clase padre. La clase padre no tiene que ser abstracta necesariamente: si tiene sentido crear instancias directas de ella (`new Animal()`), déjala como clase normal. La declaras abstracta solo cuando no tiene sentido instanciarla directamente — cuando `Animal` es un concepto demasiado genérico y ningún objeto concreto debería ser "solo un Animal" sin ser un tipo más específico:
 
 ```java
 public class Animal {
@@ -54,6 +55,8 @@ public Dog(String name, String breed) {
     this.breed = breed;
 }
 
+En la práctica, `super.method()` aparece cuando quieres ampliar el comportamiento del padre, no sustituirlo completamente. El caso más habitual en Spring Boot es cuando extiendes una clase de configuración: llamas a `super.configure(...)` para que el padre aplique su configuración base y luego añades tus propias reglas encima. También lo verás en la sección final de este archivo: `super("Employee not found: " + id)` en el constructor de `EmployeeNotFoundException` llama al constructor de `RuntimeException` para que este inicialice el mensaje de error estándar — tú solo añades el mensaje personalizado. Cuando quieres sustituir el comportamiento por completo, sobreescribes el método sin llamar a `super` — eso es lo más habitual en la lógica de negocio.
+
 // super.method() — llama al método del padre
 @Override
 public void eat() {
@@ -94,37 +97,68 @@ public class Cat extends Animal {
 
 ### Overriding vs Overloading
 
-| | Overriding | Overloading |
-|---|-----------|-------------|
-| Dónde | Subclase | Misma clase |
-| Firma | Debe coincidir exactamente | Parámetros distintos |
-| Herencia | Sí | No |
-| Runtime | Se decide en tiempo de ejecución | Se decide en tiempo de compilación |
+**Overriding** (sobreescritura) es lo que acabas de ver: una subclase reemplaza un método del padre con el mismo nombre y la misma firma exacta. La decisión de qué versión ejecutar ocurre en runtime — Java mira el tipo real del objeto, no el tipo de la variable. **Overloading** (sobrecarga) ya lo viste en [03-methods.md](03-methods.md): varios métodos con el mismo nombre dentro de la misma clase, cada uno con parámetros distintos en número o tipo. Java los distingue en tiempo de compilación — elige el método correcto mirando los argumentos que le pasas. Son dos conceptos distintos que solo comparten que ambos reutilizan el mismo nombre de método.
+
+|          | Overriding                       | Overloading                        |
+| -------- | -------------------------------- | ---------------------------------- |
+| Dónde    | Subclase                         | Misma clase                        |
+| Firma    | Debe coincidir exactamente       | Parámetros distintos               |
+| Herencia | Sí                               | No                                 |
+| Runtime  | Se decide en tiempo de ejecución | Se decide en tiempo de compilación |
 
 ---
 
 ## Polimorfismo
 
-La verdadera ventaja de la herencia aparece cuando tienes código que trabaja con el tipo padre y quieres que funcione con cualquier subclase automáticamente, sin tener que modificarlo cada vez que añades una nueva. Eso es el polimorfismo: una variable de tipo padre puede almacenar un objeto de subclase, y el método que se ejecuta es siempre la versión de la subclase:
+El problema que resuelve el polimorfismo: tienes una lista con objetos de tipos distintos pero relacionados (`Dog`, `Cat`, `Bird`) y necesitas llamar al mismo método en todos ellos. Sin polimorfismo tendrías que escribir un `if` para cada tipo — y cada vez que añades un tipo nuevo, modificas ese `if`. Con polimorfismo, declaras todos como `Animal` y llamas a `speak()` una sola vez: Java se encarga de ejecutar la versión correcta de cada objeto.
+
+La clave es entender que el tipo de la **variable** y el tipo del **objeto** pueden ser distintos:
+
+```java
+Animal a = new Dog("Rex", "Labrador");  // variable: Animal  /  objeto real: Dog
+```
+
+Cuando llamas a `a.speak()`, Java no mira el tipo de la variable (`Animal`) — mira el tipo del objeto real en memoria (`Dog`) y ejecuta la versión de `Dog`. A esto se le llama **dispatch dinámico**: la decisión de qué método ejecutar ocurre en runtime, no en tiempo de compilación.
 
 ```java
 Animal a1 = new Dog("Rex", "Labrador");
 Animal a2 = new Cat("Whiskers");
 
-a1.speak();   // "Woof!" — la versión de Dog
-a2.speak();   // "Meow!" — la versión de Cat
+a1.speak();   // "Woof!" — versión de Dog
+a2.speak();   // "Meow!" — versión de Cat
+```
 
-// Almacenar distintos tipos en una lista
+El caso que más aclara la idea es una lista de tipos mixtos. Sin polimorfismo necesitas comprobar el tipo de cada objeto a mano — y el código se rompe cada vez que añades un tipo nuevo:
+
+```java
+// Sin polimorfismo — frágil: cada tipo nuevo exige modificar este bucle
+for (Animal a : animals) {
+    if (a instanceof Dog) System.out.println("Woof!");
+    else if (a instanceof Cat) System.out.println("Meow!");
+    // ¿añades Bird? tienes que venir aquí y añadir otro else if
+}
+
+// Con polimorfismo — extensible: añades Bird y no tocas este bucle
 List<Animal> animals = new ArrayList<>();
 animals.add(new Dog("Rex", "Labrador"));
 animals.add(new Cat("Whiskers"));
 
 for (Animal a : animals) {
-    System.out.println(a.speak());  // llama a la versión correcta para cada uno
+    System.out.println(a.speak());  // Dog → "Woof!", Cat → "Meow!" — sin if ninguno
 }
 ```
 
-Esto es muy potente en Spring Boot — un método de servicio que acepta `Animal` funciona con `Dog`, `Cat`, o cualquier subclase futura.
+**En Spring Boot** este patrón es fundamental. Imagina que tienes varios tipos de notificación — `EmailNotification`, `SmsNotification`, `PushNotification` — todos implementando una interfaz `Notification` con un método `send()`. El servicio que los usa no necesita saber de qué tipo es cada uno:
+
+```java
+public void notifyAll(List<Notification> notifications) {
+    for (Notification n : notifications) {
+        n.send();  // Email, SMS o Push — Java elige la versión correcta en runtime
+    }
+}
+```
+
+Si mañana añades `WhatsAppNotification`, el servicio no cambia ni una línea.
 
 ---
 

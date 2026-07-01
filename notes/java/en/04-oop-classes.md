@@ -1,5 +1,6 @@
 # OOP — Classes
 
+> 📖 [Baeldung — A guide to Java classes and objects](https://www.baeldung.com/java-classes-objects) → read: "Creating a Class" and "Constructors"
 > 📖 [Oracle Docs — Classes](https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html)
 
 ## What is a class

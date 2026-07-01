@@ -1,5 +1,6 @@
 # Flujo de control
 
+> 📖 [Baeldung — Control structures in Java](https://www.baeldung.com/java-control-structures) → leer: "If-Else Statement", "Switch Statement" y "Loops"
 > 📖 [Oracle Docs — Control flow statements](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html)
 
 Las sentencias de control de flujo deciden qué código se ejecuta y cuántas veces. Java usa las mismas estructuras que JavaScript — la sintaxis es casi idéntica, así que la mayoría te resultará familiar.

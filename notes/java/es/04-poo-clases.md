@@ -1,5 +1,6 @@
 # OOP — Clases
 
+> 📖 [Baeldung — A guide to Java classes and objects](https://www.baeldung.com/java-classes-objects) → leer: "Creating a Class" y "Constructors"
 > 📖 [Oracle Docs — Classes](https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html)
 
 ## ¿Qué es la programación orientada a objetos?
