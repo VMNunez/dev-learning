@@ -136,7 +136,7 @@ for (Map.Entry<String, Integer> entry : scores.entrySet()) {
 }
 ```
 
-If you only need the keys, `scores.keySet()` returns a `Set<String>` — useful when you want to loop over just the names without needing their scores. If you only need the values, `scores.values()` returns a `Collection<Integer>` — useful when you want to operate on all values, like summing them or finding the max, without caring which key each one belongs to:
+If you only need the keys, `scores.keySet()` returns a `Set<String>` — useful when you want to loop over just the names without needing their scores. If you only need the values, `scores.values()` returns a `Collection<Integer>`. `Collection` is the root interface that `List`, `Set`, and other framework structures extend — `values()` uses it because the map does not guarantee any specific order for values, so it cannot commit to returning a `List`. In practice it makes no difference: you can loop over it with a for-each just like any other collection. This is useful when you want to operate on all values — summing them, finding the max — without caring which key each one belongs to:
 
 ```java
 // keySet() — loop over keys only
