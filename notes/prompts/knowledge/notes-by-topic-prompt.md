@@ -189,7 +189,10 @@ rewrite it directly — do not report it, fix it. After the checklist, resolve a
 as normal.
 
 **Rules that apply to the rewrite:**
-- Keep all code blocks and structural labels (`Purpose:`, `File:`, `Docs:`) unchanged — only rewrite prose
+- Keep all code blocks and the `Purpose:` and `Docs:` labels unchanged — only rewrite prose.
+  Exception: if a `File:` line points to a path that does not exist in any project, correct it
+  following the `File:` rule (real project path, a representative generic path, or omit it).
+  Do not touch a `File:` line whose path is already valid.
 - You MAY reorder or restructure sections if a different order is more logical for learning —
   always moving from foundational concepts to more complex ones; note it in the summary with a one-line justification
 
