@@ -201,6 +201,8 @@ as normal.
 
 **First-pass checklist — run on every section:**
 
+> **IMPORTANT:** The checklist runs on **every section unconditionally** — including sections that have no TODO markers. TODOs and the first-pass checklist are two independent passes. Resolving all TODOs does not complete the first-pass run. After finishing TODOs, continue with the checklist on every remaining section of the file.
+
 **Voice and person**
 - Does the section address Victor directly ("you use this when…", "you reach for this when…")?
   Passive voice and neutral third person ("this is used when…", "it is recommended to…") must be rewritten.
