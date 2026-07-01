@@ -65,7 +65,7 @@ public interface Printable {
 
 ## Abstract class
 
-An abstract class is a **partial implementation** — it can have both concrete methods (with body) and abstract methods (without body). It cannot be instantiated directly.
+Use an abstract class when several classes share the same *implementation* — not just the same contract. An interface says "you must have this method"; an abstract class says "here is part of the implementation, fill in the rest." You cannot create an instance of an abstract class directly — it only exists to be extended.
 
 ```java
 public abstract class Animal {
@@ -110,6 +110,8 @@ A class can only extend **one** abstract class. This is the key difference with 
 
 ## Interface vs Abstract class
 
+The decision comes down to one question: are you defining a *capability* a class can have, or a *base type* that classes derive from? Use an interface when unrelated classes need to share a contract (`Printable` can be implemented by `Employee`, `Invoice`, or `Report` — they have nothing else in common). Use an abstract class when a group of related classes share actual implementation code that would otherwise be duplicated.
+
 | | Interface | Abstract class |
 |---|-----------|----------------|
 | Methods | Abstract by default; can have `default` | Can have both abstract and concrete |
@@ -125,7 +127,9 @@ A class can only extend **one** abstract class. This is the key difference with 
 
 ## Functional interfaces (Java 8+)
 
-An interface with exactly **one** abstract method. Used with lambdas:
+Before Java 8, passing behaviour to a method meant creating a whole class just to hold one line of logic. Functional interfaces make that possible without the boilerplate: any interface with exactly **one** abstract method can be implemented by a lambda instead of a class. The single method is what Java targets when you write the lambda — it knows which method to call because there is only one.
+
+> The `@FunctionalInterface` annotation is optional, but use it: the compiler will give you an error if you accidentally add a second abstract method and break the contract.
 
 ```java
 @FunctionalInterface

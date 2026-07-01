@@ -65,7 +65,7 @@ public interface Printable {
 
 ## Clase abstracta
 
-Una clase abstracta es una **implementación parcial** — puede tener métodos concretos (con cuerpo) y métodos abstractos (sin cuerpo). No se puede instanciar directamente.
+Usa una clase abstracta cuando varias clases comparten la misma *implementación* — no solo el mismo contrato. Una interfaz dice "debes tener este método"; una clase abstracta dice "aquí tienes parte de la implementación, rellena el resto". No puedes crear una instancia de una clase abstracta directamente — solo existe para ser extendida.
 
 ```java
 public abstract class Animal {
@@ -110,6 +110,8 @@ Una clase solo puede extender **una** clase abstracta. Esta es la diferencia cla
 
 ## Interface vs Clase abstracta
 
+La decisión se reduce a una pregunta: ¿estás definiendo una *capacidad* que una clase puede tener, o un *tipo base* del que derivan otras clases? Usa una interfaz cuando clases sin relación entre sí necesitan compartir un contrato (`Printable` puede implementarlo `Employee`, `Invoice` o `Report` — no tienen nada más en común). Usa una clase abstracta cuando un grupo de clases relacionadas comparten código de implementación real que de otro modo se duplicaría.
+
 |             | Interface                                       | Clase abstracta                            |
 | ----------- | ----------------------------------------------- | ------------------------------------------ |
 | Métodos     | Abstractos por defecto; pueden tener `default`  | Puede tener abstractos y concretos         |
@@ -125,7 +127,9 @@ Una clase solo puede extender **una** clase abstracta. Esta es la diferencia cla
 
 ## Interfaces funcionales (Java 8+)
 
-Una interfaz con exactamente **un** método abstracto. Se usa con lambdas:
+Antes de Java 8, pasar comportamiento a un método implicaba crear una clase entera para contener una sola línea de lógica. Las interfaces funcionales hacen posible eso sin tanto código: cualquier interfaz con exactamente **un** método abstracto puede implementarse con una lambda en lugar de con una clase. El método único es el que Java usa como destino cuando escribes la lambda — sabe a qué método llamar porque solo hay uno.
+
+> La anotación `@FunctionalInterface` es opcional, pero úsala: el compilador te dará un error si añades accidentalmente un segundo método abstracto y rompes el contrato.
 
 ```java
 @FunctionalInterface
