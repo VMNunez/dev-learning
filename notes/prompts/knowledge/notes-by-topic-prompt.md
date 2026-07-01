@@ -41,16 +41,13 @@ REWRITE_MODE = [standard | first-pass]
        → standard (default): existing text is final unless marked with a TODO. Do not reword,
          restructure, or improve text that is already written. Report quality issues in the
          summary — Victor adds a TODO if he wants a fix.
-       → first-pass: the notes were generated before the prompt was refined and have not been
-         validated by Victor yet. Existing text is NOT protected. You may rewrite any section
-         that has quality problems: poor translation, awkward phrasing, missing explanation,
-         wrong voice, or translation that follows the English sentence structure too closely.
-         TODOs are still resolved as normal. After rewriting, the file is considered validated
-         — standard mode applies from the next run onwards.
-         Use this only once per file, when you know the content was auto-generated and untrusted.
-         The full audit still runs in this mode (TODOs → gap analysis → rule 2 → rule 3). The
-         only difference from standard is that rule 2 violations in existing text are fixed
-         directly instead of just reported in the summary.
+       → first-pass: existing text is NOT protected. Run the mandatory per-section checklist
+         defined in "First-pass checklist" below — for every section, check voice, learning
+         order, documentation test, completeness, depth, and translation quality; rewrite
+         directly if anything fails. TODOs are resolved as normal. Rule 2 violations in
+         existing text are fixed directly (the checklist takes precedence over "report only").
+         Use this only once per file, on auto-generated content Victor has not validated yet.
+         After the run, the file is considered validated — use standard from that point on.
 
 ## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
 ## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
@@ -263,7 +260,7 @@ Notes to audit: {NOTES_PATH}
 
 - **single-file:** `{NOTES_PATH}` points to one `.md` file — audit **only that file**. This is the "I just wrote this file — correct it" pass. Do this and nothing else:
   1. **Resolve TODOs** in that file (the Pre-audit section below).
-  2. **Quality audit (rule 2)** of that file — WHY before the code, named repeating patterns, correct format mode, and `Docs:` links (file-level and section-level): add missing links directly; report other existing-text issues without changing them.
+  2. **Quality audit (rule 2)** of that file — WHY before the code, named repeating patterns, correct format mode, and `Docs:` links (file-level and section-level): add missing links directly; in `standard` mode report other existing-text issues without changing them; in `first-pass` mode apply the "First-pass checklist" to every section and rewrite directly.
   3. **Complete the file (rule 3 standards)** — if a sub-concept this file clearly should cover is missing, add it as a new section **within this file only**.
   4. **Report + commit** for that one file.
 
@@ -271,7 +268,7 @@ Notes to audit: {NOTES_PATH}
 
   Do this and nothing else for each file:
   1. **Resolve TODOs** — scan the `es/` counterpart first (that is where Victor reads and adds markers), then the `en/` file. Apply fixes to `es/` first, then mirror to `en/`.
-  2. **Quality audit (rule 2)** of that file.
+  2. **Quality audit (rule 2)** of that file — in `standard` mode report existing-text issues; in `first-pass` mode apply the "First-pass checklist" to every section and rewrite directly.
   3. **Complete the file (rule 3 standards)** — missing sub-concepts added as new sections within that file only.
   4. After all files are processed, produce one combined **Report + commit** covering all files.
 
@@ -405,11 +402,10 @@ Read all files in {NOTES_PATH}.
      reasoning: it is new content.
 
   **Action rules for rule 2 violations:**
-  - Missing `Docs:` links (file-level or section-level) → **add them directly**. They are
-    new content, not modifications to existing text, so the "existing text is final" rule
-    does not apply. Only add a link if you are certain of the correct URL and sub-section —
-    if not, write `Docs: TODO — add link` instead of guessing. A wrong URL is worse than
-    no link.
+  - Missing `Docs:` links (file-level or section-level) → **add them directly** in both modes.
+    They are new content, not modifications to existing text, so the "existing text is final"
+    rule does not apply. Only add a link if you are certain of the correct URL and sub-section —
+    if not, write `Docs: TODO — add link` instead of guessing. A wrong URL is worse than no link.
     **Link priority by topic:** the linked page must show real code examples and explain
     where things come from — not just define terms. Rule: for Spring Boot and Java concepts,
     prefer Baeldung (baeldung.com) as the primary link — it has full working code, step-by-step
@@ -420,9 +416,11 @@ Read all files in {NOTES_PATH}.
     is primary. Never link the official Spring docs as the sole reference for a concept that
     Baeldung explains better with examples.
   - All other violations **in existing text** (wrong voice, wrong format mode, missing WHY,
-    missing patterns) → **report in the summary only**. Do not change the text. Victor
-    decides whether to add a TODO and fix it. New content you are creating must always
-    follow rule 3 fully — these action rules only apply to existing text.
+    missing patterns):
+    - In **`standard` mode** → report in the summary only. Do not change the text. Victor
+      decides whether to add a TODO and fix it.
+    - In **`first-pass` mode** → the "First-pass checklist" takes precedence. Fix the violation
+      directly — do not report it. New content you are creating must always follow rule 3 fully.
 
   **Bad note:** "`HttpClient` is a service that performs HTTP requests. It provides methods for all HTTP verbs including GET, POST, PUT, and DELETE."
   **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a service (never a component) and it returns an Observable you subscribe to. Without it you would have to use the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project 02 to call the weather API."
