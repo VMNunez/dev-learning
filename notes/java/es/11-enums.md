@@ -3,21 +3,23 @@
 > 📖 [Baeldung — A Guide to Java Enums](https://www.baeldung.com/a-guide-to-java-enums)
 > 📖 [Oracle Docs — Enum types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
 
-Un enum es un tipo con un conjunto fijo de constantes con nombre. Previene los strings mágicos y los typos, y hace que el código se documente a sí mismo.
+Imagina que tienes un rol de usuario que solo puede ser `ADMIN`, `EMPLOYEE` o `MANAGER`. Si lo almacenas como un `String`, se acepta cualquier valor — un typo como `"ADNIM"` compila sin problemas y se convierte en un bug silencioso que solo aparece en runtime. Un enum soluciona esto haciendo que los valores válidos formen parte del tipo en sí. Solo las constantes declaradas son válidas, y un typo es un error de compilación en lugar de un bug en runtime.
 
 ```java
 // Sin enum — cualquier string puede pasarse, los typos son bugs silenciosos
 public void setRole(String role) { ... }
-setRole("ADNIM");  // typo — sin error de compilación
+setRole("ADNIM");  // typo — sin error de compilación, el bug se oculta hasta runtime
 
 // Con enum — solo se permiten valores válidos
 public void setRole(Role role) { ... }
-setRole(Role.ADMIN);  // error de compilación si escribes Role.ADNIM
+setRole(Role.ADMIN);  // error de compilación si escribes Role.ADNIM — se detecta de inmediato
 ```
 
 ---
 
 ## Enum básico
+
+Un enum se declara con `enum` en lugar de `class`. Cada constante se escribe en UPPER_SNAKE_CASE por convención. Para usar una constante, la prefijes con el nombre del enum: `Role.ADMIN`. Los enums se comparan con `==` (explicado en la sección "Comparar enums" más abajo).
 
 ```java
 public enum Role {
@@ -73,6 +75,8 @@ Status.PENDING.getLabel();   // "Pending review"
 
 ## Métodos built-in de enum
 
+Todo enum en Java hereda automáticamente un conjunto de métodos útiles. No necesitas escribirlos — vienen gratis. Los más importantes son `name()` (devuelve el nombre de la constante como string), `values()` (devuelve todas las constantes como un array) y `valueOf()` (convierte un string de vuelta a la constante del enum).
+
 ```java
 Role role = Role.ADMIN;
 
@@ -96,6 +100,8 @@ for (Role r : Role.values()) {
 ---
 
 ## Enum en switch expression
+
+Los enums son el compañero ideal de las switch expressions. El compilador conoce todos los valores posibles del enum, así que puede avisarte si te olvidas un caso — algo que no puede hacer con un switch sobre un `String` normal.
 
 ```java
 String message = switch (status) {

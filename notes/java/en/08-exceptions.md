@@ -9,6 +9,8 @@ Without exceptions, every method would need to return a special value (like `-1`
 
 ## Checked vs unchecked exceptions
 
+Java divides exceptions into two families. **Checked exceptions** represent problems the caller is expected to anticipate — like a file not found or a network timeout. The compiler forces you to either catch them or declare that your method might throw them. **Unchecked exceptions** (subclasses of `RuntimeException`) represent programming errors — null pointers, bad indexes, wrong arguments. The compiler does not enforce anything; they propagate up until something catches them or the app crashes.
+
 | | Checked | Unchecked |
 |---|---------|-----------|
 | Extends | `Exception` | `RuntimeException` |
@@ -159,6 +161,8 @@ This way, the service throws exceptions cleanly and the controller advice handle
 ---
 
 ## Exception hierarchy
+
+Every exception in Java extends `Throwable`. The two direct subclasses are `Error` (JVM-level failures you should never catch — out of memory, stack overflow) and `Exception` (problems your application can handle). `RuntimeException` is the unchecked branch under `Exception`. Your custom exceptions always extend `RuntimeException` in Spring Boot — they go in that bottom group.
 
 ```
 Throwable

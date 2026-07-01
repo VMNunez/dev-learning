@@ -3,21 +3,23 @@
 > 📖 [Baeldung — A Guide to Java Enums](https://www.baeldung.com/a-guide-to-java-enums)
 > 📖 [Oracle Docs — Enum types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
 
-An enum is a type with a fixed set of named constants. It prevents magic strings and typos, and makes the code self-documenting.
+Imagine you have a user role that can only be `ADMIN`, `EMPLOYEE`, or `MANAGER`. If you store it as a `String`, any value is accepted — a typo like `"ADNIM"` compiles fine and becomes a silent bug that only shows up at runtime. An enum solves this by making the valid values part of the type itself. Only the declared constants are valid, and a typo is a compile error instead of a runtime bug.
 
 ```java
 // Without enum — any string can be passed, typos are silent bugs
 public void setRole(String role) { ... }
-setRole("ADNIM");  // typo — no compile error
+setRole("ADNIM");  // typo — no compile error, the bug hides until runtime
 
 // With enum — only valid values are allowed
 public void setRole(Role role) { ... }
-setRole(Role.ADMIN);  // compile error if you type Role.ADNIM
+setRole(Role.ADMIN);  // compile error if you type Role.ADNIM — caught immediately
 ```
 
 ---
 
 ## Basic enum
+
+An enum is declared with `enum` instead of `class`. Each constant is written in UPPER_SNAKE_CASE by convention. You use the constant by prefixing with the enum name: `Role.ADMIN`. You compare enums with `==` (explained in the "Comparing enums" section below).
 
 ```java
 public enum Role {
@@ -73,6 +75,8 @@ Status.PENDING.getLabel();   // "Pending review"
 
 ## Built-in enum methods
 
+Every enum in Java automatically inherits a set of useful methods. You do not need to write these — they come for free. The most important ones are `name()` (returns the constant name as a string), `values()` (returns all constants as an array), and `valueOf()` (converts a string back to the enum constant).
+
 ```java
 Role role = Role.ADMIN;
 
@@ -96,6 +100,8 @@ Useful for populating a dropdown or select list — same pattern you used in Ang
 ---
 
 ## Enum in switch expression
+
+Enums are the ideal companion to switch expressions. The compiler knows all possible values of the enum, so it can warn you if you forget a case — something it cannot do with a plain `String` switch.
 
 ```java
 String message = switch (status) {

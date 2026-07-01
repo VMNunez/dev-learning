@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Java Annotations](https://www.baeldung.com/java-annotations)
 > 📖 [Oracle Docs — Annotations](https://docs.oracle.com/javase/tutorial/java/annotations/index.html)
 
-An annotation is metadata added to code — a label that gives extra information to the compiler or to a framework. Annotations do not execute on their own. They are signals that something else reads and acts on.
+Before Spring Boot, you configured the framework in XML files — hundreds of lines just to register services and wire up dependencies. Annotations replaced all of that. Instead of a separate configuration file, you put a label directly on the class or method and the framework reads it. That is what an annotation is: metadata attached to code that a compiler or a framework reads and acts on. Annotations do not execute on their own — they are signals that something else processes.
 
 ---
 
@@ -116,6 +116,8 @@ The annotation tells Spring to manage this class as a bean. The constructor tell
 > **Preview — Spring Boot:** Everything from this section onwards is Spring Boot territory. You haven't studied Spring Boot yet — read this as a map of what's coming. Each annotation below has its own dedicated section in the Spring Boot notes where you'll implement it in real code.
 
 ### Bean annotations — register a class as a Spring-managed object
+
+When Spring starts your application it scans all packages looking for classes annotated with any of these. It creates one instance of each (a bean) and manages it — wiring in dependencies, handling transactions, and so on. The four stereotypes below are all variations of `@Component`; they differ only in which layer they mark, which helps both Spring and developers understand the role of each class.
 
 ```java
 @Component   // generic Spring bean

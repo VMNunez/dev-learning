@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Java Annotations](https://www.baeldung.com/java-annotations)
 > 📖 [Oracle Docs — Annotations](https://docs.oracle.com/javase/tutorial/java/annotations/index.html)
 
-Una anotación es metadata añadida al código — una etiqueta que da información extra al compilador o a un framework. Las anotaciones no se ejecutan por sí solas. Son señales que algo más lee y sobre las que actúa.
+Antes de Spring Boot, configurabas el framework en ficheros XML — cientos de líneas solo para registrar servicios y conectar dependencias. Las anotaciones reemplazaron todo eso. En lugar de un fichero de configuración separado, pones una etiqueta directamente en la clase o el método y el framework la lee. Eso es exactamente lo que es una anotación: metadata pegada al código que un compilador o un framework lee y procesa. Las anotaciones no se ejecutan por sí solas — son señales que algo más interpreta.
 
 ---
 
@@ -116,6 +116,8 @@ La anotación le dice a Spring que gestione esta clase como un bean. El construc
 > **Vista previa — Spring Boot:** Todo lo que viene a partir de aquí es territorio de Spring Boot. Aún no has estudiado Spring Boot — lee esto como un mapa de lo que está por venir. Cada anotación tiene su propia sección dedicada en las notas de Spring Boot, donde la implementarás en código real.
 
 ### Anotaciones de bean — registrar una clase como objeto gestionado por Spring
+
+Cuando Spring arranca tu aplicación, escanea todos los paquetes buscando clases anotadas con cualquiera de estas. Crea una instancia de cada una (un bean) y la gestiona — conectando dependencias, gestionando transacciones, etc. Los cuatro estereotipos siguientes son variaciones de `@Component`; solo se diferencian en qué capa marcan, lo que ayuda tanto a Spring como a los desarrolladores a entender el rol de cada clase.
 
 ```java
 @Component   // bean genérico de Spring

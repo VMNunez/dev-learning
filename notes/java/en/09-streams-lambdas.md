@@ -187,6 +187,8 @@ In Spring Boot services you will see `.orElseThrow()` constantly — it is the s
 
 ## Common patterns you will write every day
 
+These are the stream pipelines you will write most often in a Spring Boot service. The method references (`Employee::isActive`, `Employee::getEmail`) are the short form — each is equivalent to a lambda like `e -> e.isActive()`. For the full explanation of method references, see the "Method references" section above.
+
 ```java
 List<Employee> employees = getEmployees();
 

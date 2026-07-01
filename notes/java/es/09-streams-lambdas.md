@@ -187,6 +187,8 @@ En los servicios de Spring Boot verás `.orElseThrow()` constantemente — es el
 
 ## Patrones comunes que escribirás cada día
 
+Estos son los pipelines de stream que escribirás con más frecuencia en un servicio Spring Boot. Las referencias a método (`Employee::isActive`, `Employee::getEmail`) son la forma corta — cada una equivale a una lambda como `e -> e.isActive()`. Para la explicación completa de las referencias a método, consulta la sección "Method references" más arriba.
+
 ```java
 List<Employee> employees = getEmployees();
 

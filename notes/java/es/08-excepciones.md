@@ -9,6 +9,8 @@ Sin excepciones, cada método tendría que devolver un valor especial (como `-1`
 
 ## Excepciones comprobadas vs no comprobadas
 
+Java divide las excepciones en dos familias. Las **excepciones comprobadas** (_checked_) representan problemas que el llamador debería anticipar — como un fichero no encontrado o un timeout de red. El compilador te obliga a capturarlas o a declarar que tu método puede lanzarlas. Las **excepciones no comprobadas** (_unchecked_, subclases de `RuntimeException`) representan errores de programación — punteros nulos, índices incorrectos, argumentos inválidos. El compilador no exige nada; se propagan hacia arriba hasta que algo las captura o la aplicación se rompe.
+
 | | Comprobadas (checked) | No comprobadas (unchecked) |
 |---|---------|-----------|
 | Extiende | `Exception` | `RuntimeException` |
@@ -159,6 +161,8 @@ De este modo, el servicio lanza excepciones limpiamente y el controller advice g
 ---
 
 ## Jerarquía de excepciones
+
+Toda excepción en Java extiende `Throwable`. Las dos subclases directas son `Error` (fallos a nivel JVM que nunca debes capturar — memoria agotada, stack overflow) y `Exception` (problemas que tu aplicación puede manejar). `RuntimeException` es la rama no comprobada bajo `Exception`. Tus excepciones personalizadas siempre extienden `RuntimeException` en Spring Boot — van en ese grupo inferior.
 
 ```
 Throwable

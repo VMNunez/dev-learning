@@ -6,18 +6,20 @@
 
 ## Generics
 
-Generics let you write a class or method that works with any type, while keeping type safety. The type is specified when you use the class, not when you write it.
+Before generics existed, a `List` could hold anything — you put a `String` in and got back an `Object`. To use the value you had to cast it manually, and if you put the wrong type in, the cast failed at runtime with a `ClassCastException`. You had no protection at compile time.
+
+Generics fix this by letting you declare what type a class or method works with. You specify the type when you use the class, not when you write it — so `List<String>` is a list that only accepts strings, and the compiler enforces that. The cast disappears because the compiler already knows the type.
 
 ```java
 // Without generics — must cast and can cause ClassCastException
 List list = new ArrayList();
 list.add("hello");
-String s = (String) list.get(0);   // cast required
+String s = (String) list.get(0);   // cast required — will crash if the element is not a String
 
 // With generics — type is fixed, no cast needed
 List<String> list = new ArrayList<>();
 list.add("hello");
-String s = list.get(0);   // no cast — compiler knows the type
+String s = list.get(0);   // no cast — compiler knows it is a String
 ```
 
 ---
@@ -76,7 +78,7 @@ Integer num  = getFirst(List.of(1, 2, 3));          // 1
 
 ## Bounded type parameters
 
-Restrict which types are allowed with `extends`:
+Sometimes you need a generic method to work with multiple types but not just any type — for example, a method that sums a list of numbers must be able to call `.doubleValue()` on each element, which only makes sense for number types. You restrict which types are accepted using `extends`. The type parameter `<T extends Number>` means "T can be any type, as long as it is a subclass of `Number`" — which covers `Integer`, `Double`, `Long`, and all other numeric wrapper types.
 
 ```java
 // Only accepts Number and its subclasses (Integer, Double, Long...)

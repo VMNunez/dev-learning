@@ -22,6 +22,8 @@ Cuando construyes un proyecto Spring Boot:
 
 ## Estructura de pom.xml
 
+Todo proyecto Maven tiene un único `pom.xml` en la raíz. Tiene cuatro secciones principales: las **coordenadas** que identifican de forma única tu proyecto (groupId, artifactId, version), el **parent** que hereda la gestión de versiones de Spring Boot, el bloque de **dependencias** donde listas las librerías que necesitas, y el bloque de **build** con el plugin que hace la app ejecutable. La mayor parte del tiempo la pasarás en el bloque `<dependencies>` — el resto lo genera Spring Initializr y rara vez lo tocas.
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
@@ -145,6 +147,8 @@ Ejemplo — añadir soporte JWT para el proyecto 07:
 
 ## Scopes de dependencias
 
+No todas las librerías necesitan estar disponibles en cada fase del build. Un driver de base de datos solo hace falta cuando la aplicación realmente se ejecuta — no cuando el compilador comprueba tipos. Una librería de tests nunca debería acabar en el JAR de producción. El sistema de scopes de Maven controla esto: cada dependencia declara cuándo se necesita, y Maven la incluye solo en esas fases.
+
 | Scope | Disponible cuándo | Uso común |
 |-------|-------------------|-----------|
 | `compile` (por defecto) | Siempre | La mayoría de librerías |
@@ -175,6 +179,8 @@ Las fases del ciclo de vida se ejecutan **en orden** — ejecutar `package` ejec
 
 ## Maven vs Gradle
 
+Gradle es la otra herramienta de build popular para Java. Ambas hacen lo mismo — gestionar dependencias, compilar, testear, empaquetar — pero usan formatos de configuración distintos y tienen diferentes niveles de adopción. Para tus proyectos en España, Maven es la opción por defecto más segura.
+
 | | Maven | Gradle |
 |---|-------|--------|
 | Formato de configuración | XML (`pom.xml`) | Groovy o Kotlin (`build.gradle`) |
@@ -188,6 +194,8 @@ Para tus proyectos, **Maven es la opción más segura** — es lo que usan la ma
 ---
 
 ## Estructura de carpetas de Maven (generada por Spring Initializr)
+
+Spring Initializr crea esta estructura por ti. Nunca la crearás a mano. La convención importante: el código fuente va en `src/main/java`, los tests en `src/test/java`, y la carpeta `target/` (donde Maven pone el output compilado y el JAR) siempre está en `.gitignore` porque se regenera en cada build.
 
 ```
 project/

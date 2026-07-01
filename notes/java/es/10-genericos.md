@@ -6,18 +6,20 @@
 
 ## Generics
 
-Los generics te permiten escribir una clase o método que funcione con cualquier tipo, manteniendo la seguridad de tipos. El tipo se especifica cuando usas la clase, no cuando la escribes.
+Antes de que existieran los generics, una `List` podía contener cualquier cosa — metías un `String` y recibías un `Object`. Para usar el valor tenías que hacer un cast manual, y si habías metido el tipo equivocado, el cast fallaba en runtime con una `ClassCastException`. No tenías ninguna protección en tiempo de compilación.
+
+Los generics resuelven esto permitiéndote declarar con qué tipo trabaja una clase o un método. Especificas el tipo cuando usas la clase, no cuando la escribes — así que `List<String>` es una lista que solo acepta strings, y el compilador lo fuerza. El cast desaparece porque el compilador ya sabe el tipo.
 
 ```java
 // Sin generics — hay que hacer cast y puede causar ClassCastException
 List list = new ArrayList();
 list.add("hello");
-String s = (String) list.get(0);   // cast obligatorio
+String s = (String) list.get(0);   // cast obligatorio — falla en runtime si el elemento no es un String
 
 // Con generics — el tipo está fijo, no se necesita cast
 List<String> list = new ArrayList<>();
 list.add("hello");
-String s = list.get(0);   // sin cast — el compilador conoce el tipo
+String s = list.get(0);   // sin cast — el compilador sabe que es un String
 ```
 
 ---
@@ -76,7 +78,7 @@ Integer num  = getFirst(List.of(1, 2, 3));          // 1
 
 ## Parámetros de tipo acotados
 
-Restringe qué tipos están permitidos con `extends`:
+A veces necesitas que un método genérico funcione con varios tipos pero no con cualquiera — por ejemplo, un método que suma una lista de números tiene que poder llamar a `.doubleValue()` en cada elemento, lo que solo tiene sentido para tipos numéricos. Restringes qué tipos se aceptan usando `extends`. El parámetro de tipo `<T extends Number>` significa "T puede ser cualquier tipo, siempre que sea una subclase de `Number`" — lo que incluye `Integer`, `Double`, `Long` y todos los demás wrappers numéricos.
 
 ```java
 // Solo acepta Number y sus subclases (Integer, Double, Long...)

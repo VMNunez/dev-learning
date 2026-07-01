@@ -21,6 +21,8 @@ You have three classes depending on what you need to represent. The most importa
 
 ## Creating values
 
+All three classes follow the same creation pattern: `.now()` for the current moment, `.of(...)` for a specific date or time, and `.parse()` for a date coming in as a string (common when the client sends a date in the request body). Note that months in `java.time` are 1-indexed — January is 1, not 0.
+
 ```java
 // Current date and time
 LocalDate today = LocalDate.now();               // 2026-05-11
@@ -41,6 +43,8 @@ LocalDate parsed = LocalDate.parse("11/05/2026",
 ---
 
 ## Reading values
+
+Once you have a `LocalDate` or `LocalDateTime`, you extract individual parts with getter methods. These are useful when you need to display a date in pieces — for example, showing the year in a header or the day of the week in a calendar.
 
 ```java
 LocalDate date = LocalDate.of(2026, 5, 11);
@@ -89,6 +93,8 @@ date.minusMonths(2); // 2026-03-11
 ---
 
 ## Comparing dates
+
+Never use `==` to compare `LocalDate` or `LocalDateTime` objects — `==` compares references, not values, just like with `String`. Use the purpose-built methods: `isBefore()`, `isAfter()`, and `isEqual()`. For sorting, `compareTo()` works the same way as `String.compareTo()` — negative if the first date comes before, zero if equal, positive if after.
 
 ```java
 LocalDate a = LocalDate.of(2026, 1, 1);
