@@ -386,6 +386,19 @@ Read all files in {NOTES_PATH}.
    file is one that takes that person from zero to "I understand what this is and why it
    exists" without needing to look anything else up.
 
+   **Zero-assumption rule — this is the most important rule in this section:**
+   Never assume the reader knows anything about the topic being covered. Every term,
+   every concept, every annotation, every method introduced in a section must be explained
+   in that same section — what it is, why it exists, and what problem it solves. If you
+   introduce a word and the next sentence does not clarify what it means and why it matters,
+   that is a gap. The test: could a developer who knows JavaScript but has never touched
+   this technology read this section and understand every word without Googling anything?
+   If not, something is missing.
+
+   This rule overrides "calibrate depth to complexity" — there is no such thing as a concept
+   too simple to explain. What feels obvious to an experienced developer is often exactly
+   what a beginner gets stuck on. When in doubt, explain more, not less.
+
    - **Personal, conversational voice.** Write for Victor. "You use this when..." not
      "This is used when...". "This is why it matters:" not "This is relevant because:".
    - **Explain before the code.** Give 1–3 sentences of context before any code block —
