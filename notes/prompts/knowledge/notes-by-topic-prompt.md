@@ -62,7 +62,8 @@ Notes on specific topics:
 - Security: covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
   Uses conversational mode.
 
-Use TOPIC, NOTES_PATH, and MODE wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {MODE}.
+Use TOPIC, NOTES_PATH, MODE, FILES, and REWRITE_MODE wherever the prompt refers to {TOPIC},
+{NOTES_PATH}, {MODE}, {FILES}, or {REWRITE_MODE}.
 
 ---
 
