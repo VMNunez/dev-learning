@@ -24,14 +24,9 @@ TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java
 NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/en/ | notes/security/en/]
 
 MODE = [full | single-file | multi-file]
-       → full (default): NOTES_PATH is a folder; audit the whole topic — coverage gap analysis,
-         proactive new files, the "next file:" counter, and the future-learning check.
-       → single-file: NOTES_PATH is one .md file (e.g. notes/angular/en/06-http-rxjs.md); a focused
-         pass on just that file (TODOs + quality + Docs links + completing that file) that skips
-         the folder-level steps. See "Mode" below.
-       → multi-file: NOTES_PATH is a folder and FILES lists the specific files to audit
-         (e.g. FILES = 01-variables-tipos.md, 03-methods.md). Same pass as single-file but
-         repeated for each file in the list. Skips all folder-level steps. See "Mode" below.
+       full (default) audits a whole folder; single-file corrects one .md file; multi-file
+       corrects the specific files listed in FILES. Full definition of each mode — including
+       which steps run and which are skipped — is in the "Mode" section below. Read it there.
 
 FILES = [comma-separated filenames, e.g. 01-variables-tipos.md, 03-methods.md]
         Only used when MODE = multi-file. Filenames only — no path prefix needed.
