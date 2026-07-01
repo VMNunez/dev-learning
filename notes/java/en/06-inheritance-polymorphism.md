@@ -173,6 +173,8 @@ When working with polymorphism, you may at some point need to access a method th
 If you try to call `animal.fetch()` directly, the compiler rejects it — `Animal` does not have that method. To call it, you need to **cast** — tell the compiler «treat this variable as a `Dog`». But if the object is not actually a `Dog`, the cast would throw a `ClassCastException` at runtime. `instanceof` exists precisely to avoid that error: it checks the real type before the cast.
 
 ```java
+Animal animal = new Dog("Rex", "Labrador");  // variable type: Animal — actual object in memory: Dog
+
 // Classic form (up to Java 15)
 if (animal instanceof Dog) {
     Dog dog = (Dog) animal;  // explicit cast — we already know it is safe
@@ -198,7 +200,7 @@ if (animal instanceof Dog dog) {
 - `final field` — the field can only be assigned once; normally in the constructor or at declaration. After that, its value cannot change
 
 ```java
-public final class String { ... }  // String cannot be subclassed
+public final class String { ... }  // no class can inherit from String
 
 public class Animal {
     public final void breathe() { ... }  // no subclass can override this
@@ -227,14 +229,20 @@ The three that appear most often in real projects are:
 - **`equals()`** — compares whether two objects are «equal». Without overriding it, Java compares memory references: two different objects with the same data are not equal even if they represent the same entity. You override it when you want the comparison to be based on field values.
 - **`hashCode()`** — used internally by `HashMap` and `HashSet` to organise objects in memory. The rule is: if you override `equals()`, you must always override `hashCode()` too — otherwise your objects will behave unexpectedly inside collections.
 
+Overriding all three is very common in real projects: `toString()` almost always, because it makes debugging much easier when printing objects; `equals()` and `hashCode()` together when objects are compared by value or used as keys in a `HashMap`. In Spring Boot, Lombok can generate all of them automatically with `@Data` or `@EqualsAndHashCode`, so you rarely write them by hand.
+
 ```java
 Object obj = new User("Victor");  // valid — User implicitly extends Object
 
-// Without @Override on toString() → "com.victor.timetrack.model.User@6d06d69c"
-// With @Override on toString()    → "User{name='Victor', email='...'}"
+// Without overriding toString() — Java uses Object's implementation, which returns the class
+// name and a memory address that tells you nothing useful:
+// System.out.println(user)  →  "com.victor.timetrack.model.User@6d06d69c"
+
+// With toString() overridden — you decide what information is shown:
+// System.out.println(user)  →  "User{name='Victor', email='victor@example.com'}"
 ```
 
-IntelliJ can generate `equals()`, `hashCode()`, and `toString()` for you automatically: `Alt+Insert` → "equals() and hashCode()" / "toString()".
+IntelliJ can generate `equals()`, `hashCode()`, and `toString()` for you automatically without writing them by hand: press `Alt+Insert` inside the class to open the *Generate* menu, pick *equals() and hashCode()* or *toString()*, and the IDE writes the code for you.
 
 ---
 

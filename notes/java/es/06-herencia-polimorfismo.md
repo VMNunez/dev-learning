@@ -105,12 +105,12 @@ public class Cat extends Animal {
 
 La fila «Herencia» de la tabla indica si el concepto requiere una jerarquía de clases: la sobreescritura sí la necesita — sin una subclase que extienda a otra, no hay nada que sobreescribir; la sobrecarga no requiere herencia — puedes definir `calcular(int x)` y `calcular(double x)` en la misma clase sin extender ninguna otra.
 
-|          | Overriding                       | Overloading                              |
-| -------- | -------------------------------- | ---------------------------------------- |
-| Dónde    | Subclase                         | Misma clase                              |
-| Firma    | Debe coincidir exactamente       | Parámetros distintos en tipo o número    |
-| Herencia | Sí (requiere subclase)           | No                                       |
-| Runtime  | Se decide en tiempo de ejecución | Se decide en tiempo de compilación       |
+|          | Overriding                       | Overloading                           |
+| -------- | -------------------------------- | ------------------------------------- |
+| Dónde    | Subclase                         | Misma clase                           |
+| Firma    | Debe coincidir exactamente       | Parámetros distintos en tipo o número |
+| Herencia | Sí (requiere subclase)           | No                                    |
+| Runtime  | Se decide en tiempo de ejecución | Se decide en tiempo de compilación    |
 
 ---
 
@@ -134,7 +134,7 @@ a1.speak();   // "Woof!" — versión de Dog
 a2.speak();   // "Meow!" — versión de Cat
 ```
 
-No siempre. Declaras la variable con el tipo padre (`Animal a = new Dog(...)`) cuando quieres tratar objetos de distintos tipos de forma uniforme — eso es aprovechar el polimorfismo. Pero si en ese momento necesitas comportamiento específico de `Dog`, declara directamente `Dog dog = new Dog(...)`. La regla práctica es usar el tipo más general que todavía te dé lo que necesitas.
+Debes declarar la variable con el tipo padre (`Animal a = new Dog(...)`) cuando quieres tratar objetos de distintos tipos de forma uniforme — eso es aprovechar el polimorfismo. Pero si en ese momento necesitas comportamiento específico de `Dog`, declara directamente `Dog dog = new Dog(...)`. La regla práctica es usar el tipo más general que todavía te dé lo que necesitas.
 
 El caso que más aclara la idea es una lista de tipos mixtos. Sin polimorfismo necesitas comprobar el tipo de cada objeto a mano — y el código se rompe cada vez que añades un tipo nuevo:
 
@@ -177,6 +177,8 @@ Cuando trabajas con polimorfismo, puede que en algún punto necesites acceder a 
 Si intentas llamar a `animal.fetch()` directamente, el compilador te lo rechaza — `Animal` no tiene ese método. Para poder llamarlo, necesitas hacer un **cast** — decirle al compilador «trata esta variable como `Dog`». Pero si el objeto no es realmente un `Dog`, el cast lanzaría una `ClassCastException` en runtime. `instanceof` existe precisamente para evitar ese error: comprueba el tipo real antes de hacer el cast.
 
 ```java
+Animal animal = new Dog("Rex", "Labrador");  // tipo de la variable: Animal — objeto real en memoria: Dog
+
 // Forma clásica (hasta Java 15)
 if (animal instanceof Dog) {
     Dog dog = (Dog) animal;  // cast explícito — ya sabemos que es seguro
@@ -202,10 +204,10 @@ if (animal instanceof Dog dog) {
 - `final field` — el campo solo puede asignarse una vez; normalmente se inicializa en el constructor o en la propia declaración. A partir de ese momento su valor no puede cambiar
 
 ```java
-public final class String { ... }  // String no puede subclasificarse
+public final class String { ... }  // ninguna clase puede heredar de String
 
 public class Animal {
-    public final void breathe() { ... }  // ninguna subclase puede sobreescribir esto
+    public final void breathe() { ... }  // ninguna subclase puede sobreescribir este método
 }
 
 public class Circle {
@@ -231,14 +233,20 @@ Los tres que más aparecen en proyectos reales son:
 - **`equals()`** — compara si dos objetos son «iguales». Sin sobreescribirlo, Java compara referencias de memoria: dos objetos distintos con los mismos datos no son iguales aunque representen la misma entidad. Lo sobreescribes cuando quieres que la comparación se base en los valores de los campos.
 - **`hashCode()`** — usado internamente por `HashMap` y `HashSet` para organizar objetos en memoria. La regla es: si sobreescribes `equals()`, siempre debes sobreescribir `hashCode()` también — si no, tus objetos se comportarán de forma inesperada dentro de colecciones.
 
+Sobreescribir los tres es muy habitual en proyectos reales: `toString()` casi siempre, porque facilita el debugging al imprimir objetos; `equals()` y `hashCode()` juntos cuando los objetos se comparan por valor o se usan como claves en un `HashMap`. En Spring Boot, Lombok puede generarlos automáticamente con `@Data` o `@EqualsAndHashCode`, así que rara vez los escribes a mano.
+
 ```java
 Object obj = new User("Victor");  // válido — User extiende Object implícitamente
 
-// Sin @Override de toString() → "com.victor.timetrack.model.User@6d06d69c"
-// Con @Override de toString() → "User{name='Victor', email='...'}"
+// Sin sobreescribir toString() — Java usa la implementación de Object, que devuelve el nombre
+// de la clase y una dirección de memoria que no te dice nada útil:
+// System.out.println(user)  →  "com.victor.timetrack.model.User@6d06d69c"
+
+// Sobreescribiendo toString() — tú decides qué información se muestra:
+// System.out.println(user)  →  "User{name='Victor', email='victor@example.com'}"
 ```
 
-IntelliJ puede generar `equals()`, `hashCode()` y `toString()` automáticamente: `Alt+Insert` → "equals() and hashCode()" / "toString()".
+IntelliJ puede generar `equals()`, `hashCode()` y `toString()` automáticamente sin que los escribas a mano: pulsa `Alt+Insert` dentro de la clase para abrir el menú *Generate*, elige *equals() and hashCode()* o *toString()*, y el IDE escribe el código por ti.
 
 ---
 
