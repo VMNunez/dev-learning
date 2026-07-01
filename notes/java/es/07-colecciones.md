@@ -125,7 +125,7 @@ scores.size();                  // 2 — número de entradas (recordatorio: "Vic
 scores.remove("Ana");           // elimina la entrada con clave "Ana"
 ```
 
-Para iterar sobre todas las entradas del mapa necesitas `Map.Entry<K, V>`, que es el tipo que Java usa para representar un par clave-valor concreto. `scores.entrySet()` devuelve un `Set<Map.Entry<String, Integer>>` — cada elemento de ese conjunto es un par completo (clave y valor juntos). Por eso en el for-each se declara `Map.Entry<String, Integer> entry`: es el tipo de cada elemento que el bucle va sacando del conjunto.
+Para iterar sobre todas las entradas del mapa necesitas `Map.Entry<K, V>`, que es el tipo que Java usa para representar un par clave-valor concreto. `scores.entrySet()` devuelve un `Set<Map.Entry<String, Integer>>` — es decir, un conjunto de pares clave-valor, donde cada elemento del conjunto es un par completo (clave y valor juntos). Por eso en el for-each se declara `Map.Entry<String, Integer> entry`: es el tipo de cada elemento que el bucle va sacando de ese conjunto (`scores.entrySet()`).
 
 Dentro del bucle, `entry` ya tiene la clave y el valor en el mismo objeto, así que no necesitas volver al mapa a buscar nada. `entry.getKey()` te da la clave que tiene ese par, y `entry.getValue()` te da su valor directamente. `scores.get("Victor")` funciona cuando ya tienes la clave y quieres el valor — pero al iterar con `entrySet()` tienes los dos a la vez, y los métodos `getKey()` / `getValue()` son los que los extraen de ese objeto par:
 
@@ -134,10 +134,13 @@ for (Map.Entry<String, Integer> entry : scores.entrySet()) {
     System.out.println(entry.getKey() + ": " + entry.getValue());
     // imprime: Victor: 97
 }
+```
 
-// Solo claves o solo valores
-scores.keySet();    // Set<String> con todas las claves
-scores.values();    // Collection<Integer> con todos los valores
+Si solo necesitas las claves, `scores.keySet()` te devuelve un `Set<String>` — útil cuando quieres saber qué claves existen sin importar sus valores (por ejemplo, para comprobar si un nombre concreto está en el mapa). Si solo necesitas los valores, `scores.values()` te devuelve una `Collection<Integer>` — útil cuando quieres procesar todos los valores sin importar a qué clave pertenece cada uno (por ejemplo, sumarlos o filtrarlos):
+
+```java
+scores.keySet();    // Set<String>         — todas las claves:  ["Victor", "Ana"]
+scores.values();    // Collection<Integer> — todos los valores: [97, 88]
 ```
 
 ### HashMap vs LinkedHashMap vs TreeMap

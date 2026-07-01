@@ -125,7 +125,7 @@ scores.size();                  // 2 — number of entries (remember: "Victor" r
 scores.remove("Ana");           // removes the entry with key "Ana"
 ```
 
-To iterate over all entries you need `Map.Entry<K, V>`, which is the type Java uses to represent one key-value pair. `scores.entrySet()` returns a `Set<Map.Entry<String, Integer>>` — each element in that set is a complete pair (key and value together). That is why the for-each declares `Map.Entry<String, Integer> entry`: it is the type of each element the loop pulls out of the set.
+To iterate over all entries you need `Map.Entry<K, V>`, which is the type Java uses to represent one key-value pair. `scores.entrySet()` returns a `Set<Map.Entry<String, Integer>>` — in other words, a set of key-value pairs, where each element is a complete pair (key and value together). That is why the for-each declares `Map.Entry<String, Integer> entry`: it is the type of each element the loop pulls out of that set (`scores.entrySet()`).
 
 Inside the loop, `entry` already holds both the key and the value in the same object, so you do not need to go back to the map to look anything up. `entry.getKey()` gives you the key of that pair, and `entry.getValue()` gives you its value directly. `scores.get("Victor")` works when you already have the key and want the value — but when iterating with `entrySet()` you have both at once, and `getKey()` / `getValue()` are the methods that extract them from the pair object:
 
@@ -134,10 +134,13 @@ for (Map.Entry<String, Integer> entry : scores.entrySet()) {
     System.out.println(entry.getKey() + ": " + entry.getValue());
     // prints: Victor: 97
 }
+```
 
-// Just keys or just values
-scores.keySet();    // Set<String> of all keys
-scores.values();    // Collection<Integer> of all values
+If you only need the keys, `scores.keySet()` returns a `Set<String>` — useful when you want to know which keys exist without caring about their values (for example, to check whether a specific name is in the map). If you only need the values, `scores.values()` returns a `Collection<Integer>` — useful when you want to process all values without caring which key each one belongs to (for example, to sum them or filter them):
+
+```java
+scores.keySet();    // Set<String>         — all keys:   ["Victor", "Ana"]
+scores.values();    // Collection<Integer> — all values: [97, 88]
 ```
 
 ### HashMap vs LinkedHashMap vs TreeMap
