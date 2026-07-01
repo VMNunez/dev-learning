@@ -69,7 +69,7 @@ public interface Printable {
 
 Usa una clase abstracta cuando varias clases comparten la misma _implementación_ — no solo el mismo contrato. Una interfaz dice "debes tener este método"; una clase abstracta dice "aquí tienes parte de la implementación, rellena el resto". No puedes crear una instancia de una clase abstracta directamente — solo existe para ser extendida.
 
-Tu razonamiento es correcto: una clase abstracta es esencialmente una clase padre que agrupa campos y métodos compartidos por todas sus subclases — eso es herencia. La clave está en la palabra `abstract` delante de un método: significa que ese método **no tiene cuerpo en la clase padre**. La clase abstracta solo declara que el método existe, sin implementarlo. Cada subclase tiene que escribir su propia versión. Piénsalo como un contrato interno: "yo te doy `breathe()` ya implementado, pero tú debes implementar `makeSound()` porque solo cada animal sabe cuál es su propio sonido."
+Una clase abstracta es esencialmente una clase padre que agrupa campos y métodos compartidos por todas sus subclases — eso es herencia. La palabra `abstract` delante de un método: significa que ese método **no tiene cuerpo en la clase padre**. La clase abstracta solo declara que el método existe, sin implementarlo. Cada subclase tiene que escribir su propia versión. Piénsalo como un contrato interno: "yo te doy `breathe()` ya implementado, pero tú debes implementar `makeSound()` porque solo cada animal sabe cuál es su propio sonido." Un método `abstract` solo puede declararse dentro de una clase abstracta — si intentas añadir `abstract` a un método en una clase normal, el compilador da error. Y al revés: si añades aunque sea un método `abstract` a una clase, esa clase obligatoriamente debe declararse también `abstract`.
 
 ```java
 public abstract class Animal {
@@ -108,9 +108,7 @@ dog.breathe();      // "Rex is breathing"  — de Animal
 dog.makeSound();    // "Rex says: Woof!"   — de Dog
 ```
 
-> **`super(name)`** llama al constructor de la clase padre. Cuando creas un objeto `Dog`, Java necesita inicializar primero la parte `Animal` — sus campos y su constructor. `super(...)` hace exactamente eso: ejecuta el constructor del padre con los argumentos que le pases. Siempre debe ser la primera línea del constructor de la subclase.
-
-> **Sobre los tipos en Java:** cuando escribes `Dog dog = new Dog("Rex")`, `Dog` es el tipo porque tú definiste la clase `Dog`. En Java, cualquier clase que defines se convierte en un tipo válido — no hay inferencia ni magia del compilador. Es exactamente igual que `String name = "Rex"` o `int count = 5`, solo que usando tu propia clase como tipo.
+> **`super(name)`** llama al constructor de la clase padre. Cuando creas un objeto `Dog`, Java necesita inicializar primero la parte `Animal` — sus campos y su constructor. `super(...)` hace exactamente eso: ejecuta el constructor del padre con los argumentos que le pases. Siempre debe ser la primera línea del constructor de la subclase. Después de `super(...)`, el constructor de la subclase puede añadir sus propios campos e inicializaciones — se cubre con ejemplo en la sección "Constructores en subclases" más adelante.
 
 Una clase solo puede extender **una** clase abstracta. Esta es la diferencia clave con las interfaces.
 
@@ -118,9 +116,9 @@ Una clase solo puede extender **una** clase abstracta. Esta es la diferencia cla
 
 ## Interface vs Clase abstracta
 
-La decisión se reduce a una pregunta: ¿estás definiendo una _capacidad_ que una clase puede tener, o un _tipo base_ del que derivan otras clases? Usa una interfaz cuando clases sin relación entre sí necesitan compartir un contrato (`Printable` puede implementarlo `Employee`, `Invoice` o `Report` — no tienen nada más en común). Usa una clase abstracta cuando un grupo de clases relacionadas comparten código de implementación real que de otro modo se duplicaría.
+La decisión se reduce a una pregunta: ¿estás definiendo una _capacidad_ que una clase puede tener, o un _tipo base_ del que derivan otras clases? Usa una interfaz cuando clases sin relación entre sí necesitan compartir un contrato (`Printable` puede implementarlo otras clases como `Employee`, `Invoice` o `Report` — no tienen nada más en común). Usa una clase abstracta cuando un grupo de clases relacionadas comparten código de implementación real que de otro modo se duplicaría.
 
-Sí: una clase puede extender una clase abstracta e implementar varias interfaces al mismo tiempo. El orden en el código es fijo — primero `extends`, luego `implements`:
+Además, una clase puede extender una clase abstracta e implementar varias interfaces al mismo tiempo. El orden en el código es fijo — primero `extends`, luego `implements`:
 
 ```java
 public class Dog extends Animal implements Printable, Auditable {
@@ -143,9 +141,9 @@ public class Dog extends Animal implements Printable, Auditable {
 
 ---
 
-## ¿Puede una subclase añadir su propio constructor?
+## Constructores en subclases
 
-Sí, y es lo más habitual. Cuando una subclase define su propio constructor, puede añadir sus propios campos además de los del padre. La única condición es que `super(...)` debe ser la primera línea, para que el padre quede inicializado antes de añadir lo propio:
+Cuando una subclase define su propio constructor, puede añadir sus propios campos además de los del padre. La única condición es que `super(...)` debe ser la primera línea, para que el padre quede inicializado antes de añadir lo propio:
 
 ```java
 public class Dog extends Animal {
@@ -240,7 +238,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 }
 ```
 
-> **¿Por qué `EmployeeRepository` usa `extends` y no `implements`?** Porque en Java, las interfaces no implementan otras interfaces — las *extienden*. `extends` entre interfaces significa herencia de interfaz: `EmployeeRepository` hereda todas las firmas de método de `JpaRepository`. Solo las clases usan `implements`.
+> **¿Por qué `EmployeeRepository` usa `extends` y no `implements`?** Porque en Java, las interfaces no implementan otras interfaces — las _extienden_. `extends` entre interfaces significa herencia de interfaz: `EmployeeRepository` hereda todas las firmas de método de `JpaRepository`. Solo las clases usan `implements`.
 
 Cuando escribes `extends JpaRepository` o `implements UserDetailsService`, estás siguiendo el contrato de interfaz que Spring Boot espera. `JpaRepository` te da operaciones de base de datos sin escribir SQL. `UserDetailsService` le da a Spring Security la forma de encontrar un usuario por su identificador de login — sin esto, Spring Security no sabría cómo llegar a tu base de datos.
 

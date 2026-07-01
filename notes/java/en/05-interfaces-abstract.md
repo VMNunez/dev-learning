@@ -69,7 +69,7 @@ public interface Printable {
 
 Use an abstract class when several classes share the same *implementation* — not just the same contract. An interface says "you must have this method"; an abstract class says "here is part of the implementation, fill in the rest." You cannot create an instance of an abstract class directly — it only exists to be extended.
 
-An abstract class is essentially a parent class that groups fields and methods shared by all its subclasses — that is inheritance. The key is the `abstract` keyword in front of a method: it means that method **has no body in the parent class**. The abstract class only declares that the method exists, without implementing it. Each subclass must write its own version. Think of it as an internal contract: "I give you `breathe()` already implemented, but you must implement `makeSound()` because only each animal knows what its own sound is."
+An abstract class is essentially a parent class that groups fields and methods shared by all its subclasses — that is inheritance. The key is the `abstract` keyword in front of a method: it means that method **has no body in the parent class**. The abstract class only declares that the method exists, without implementing it. Each subclass must write its own version. Think of it as an internal contract: "I give you `breathe()` already implemented, but you must implement `makeSound()` because only each animal knows what its own sound is." An `abstract` method can only be declared inside an abstract class — if you try to add `abstract` to a method in a regular class, the compiler gives you an error. The reverse is also true: if a class has even one `abstract` method, that class must be declared `abstract` too.
 
 ```java
 public abstract class Animal {
@@ -108,7 +108,7 @@ dog.breathe();      // "Rex is breathing"  — from Animal
 dog.makeSound();    // "Rex says: Woof!"   — from Dog
 ```
 
-> **`super(name)`** calls the parent class's constructor. When you create a `Dog` object, Java needs to initialise the `Animal` part first — its fields and constructor. `super(...)` does exactly that: it runs the parent constructor with the arguments you pass. It must always be the first line of the subclass constructor.
+> **`super(name)`** calls the parent class's constructor. When you create a `Dog` object, Java needs to initialise the `Animal` part first — its fields and constructor. `super(...)` does exactly that: it runs the parent constructor with the arguments you pass. It must always be the first line of the subclass constructor. After `super(...)`, the subclass constructor can add its own fields and initialisations — covered with an example in the "Subclass constructors" section below.
 
 > **About types in Java:** when you write `Dog dog = new Dog("Rex")`, `Dog` is the type because you defined the class `Dog`. In Java, any class you define becomes a valid type — there is no inference or compiler magic. It is exactly the same as `String name = "Rex"` or `int count = 5`, just using your own class as the type instead of a primitive or a standard library type.
 
@@ -143,9 +143,9 @@ public class Dog extends Animal implements Printable, Auditable {
 
 ---
 
-## Can a subclass add its own constructor?
+## Subclass constructors
 
-Yes, and it is the most common pattern. When a subclass defines its own constructor, it can add its own fields on top of the parent's. The only rule is that `super(...)` must be the first line, so the parent is fully initialised before adding anything of its own:
+When a subclass defines its own constructor, it can add its own fields on top of the parent's. The only rule is that `super(...)` must be the first line, so the parent is fully initialised before adding anything of its own:
 
 ```java
 public class Dog extends Animal {
