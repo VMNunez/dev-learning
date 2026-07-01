@@ -190,17 +190,55 @@ summary (in the same conversation), you may rewrite those sections — even with
 **If `{REWRITE_MODE}` = `first-pass`:**
 
 Existing text is NOT protected in this run. The notes were auto-generated before the prompt
-was refined and have not been validated by Victor. Rewrite freely:
-- Fix any section where the translation sounds robotic, follows English sentence structure too
-  closely, or uses calque vocabulary (e.g. "escanear" instead of "leer", "bandera" instead of
-  "indicador o flag", etc.)
-- Fix any section that is missing the WHY, opens with code before explanation, or reads like
-  official documentation
-- Resolve all TODO markers as normal
-- Keep all code blocks and structural labels unchanged — only rewrite prose
-- You MAY reorder or restructure sections if a different order is more logical for learning
-  — always moving from foundational concepts to more complex ones. If you reorder, note it
-  in the summary with a one-line justification
+was refined and have not been validated by Victor.
+
+For **every section** of the file, run this mandatory checklist. If a section fails any point,
+rewrite it directly — do not report it, fix it. After the checklist, resolve all TODO markers
+as normal.
+
+**Rules that apply to the rewrite:**
+- Keep all code blocks and structural labels (`Purpose:`, `File:`, `Docs:`) unchanged — only rewrite prose
+- You MAY reorder or restructure sections if a different order is more logical for learning —
+  always moving from foundational concepts to more complex ones; note it in the summary with a one-line justification
+
+---
+
+**First-pass checklist — run on every section:**
+
+**Voice and person**
+- Does the section address Victor directly ("you use this when…", "you reach for this when…")?
+  Passive voice and neutral third person ("this is used when…", "it is recommended to…") must be rewritten.
+
+**Learning order**
+- Does the opening sentence explain the *problem* this concept solves, not just what the concept
+  is? If it opens with a definition or a neutral description, rewrite to lead with the pain:
+  "Before X existed, you had to…" or "The problem is that without X, you end up with…"
+- Is there at least 1–3 sentences of context before any code block? If code appears before any
+  explanation, move the explanation first.
+
+**Documentation test**
+- Could this section be copy-pasted word-for-word onto the official docs site? If yes, it reads
+  like documentation, not a personal guide. Rewrite so it explains *why it matters*, *where it
+  appears in a real project*, and *what would break without it*.
+
+**Completeness of explanation — zero-assumption rule**
+- Does every term, annotation, or method introduced in the section get explained in that same
+  section — what it is, why it exists, what problem it solves? If something is introduced and
+  the next sentence does not clarify it, add the explanation inline.
+- Is there an obvious common mistake or a "why not X?" moment that is not mentioned? If yes,
+  add it as a `> blockquote` callout.
+
+**Depth calibration**
+- Is the length of the explanation proportional to how hard the concept actually is?
+  A simple annotation → one sentence. A complex concept (filter chain, transaction scope,
+  JWT flow) → a full paragraph. Adjust in both directions — trim padding, expand thin sections.
+
+**Translation quality (Spanish files only)**
+- Does the prose read as natural Spanish, not as a word-for-word translation of the English?
+  Fix calque vocabulary (e.g. "escanear" → "leer", "retornar" → "devolver") and sentence
+  structures that follow English word order instead of Spanish.
+
+---
 
 After a `first-pass` run, the file is considered validated. Note this in the summary so Victor
 knows to switch back to `standard` mode for future runs on these files.
