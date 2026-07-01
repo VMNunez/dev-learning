@@ -258,9 +258,16 @@ You use `Comparable` when there is one obvious default order for your class — 
 
 To implement it, your class adds `implements Comparable<Employee>` and defines the `compareTo()` method. Java calls this method internally when sorting the list — you never call it directly. The method compares `this` (the current object) with `other` (the object it is being compared against) and returns: a negative number if `this` should come first, zero if they are equal, and a positive number if `this` should come after.
 
-In practice you almost never calculate that number by hand — you delegate to `String`'s own `compareTo()`, which already knows alphabetical order:
+In practice you almost never calculate that number by hand — you delegate to `String`'s own `compareTo()`, which already knows alphabetical order.
+
+`compareTo()` does not sort any list — it defines how two `Employee` objects compare to each other. The list is external: when you call `employees.sort()`, Java takes the list and internally calls `compareTo()` on each pair of employees to decide who comes first. The comparison rule lives in the class; the list just uses it. Think of it this way: the list asks "who goes first?" and the `Employee` answers "ask me — I'll tell you."
 
 ```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+// 1. The class defines how two Employee objects compare to each other
 public class Employee implements Comparable<Employee> {
     private String name;
     private int age;
@@ -278,18 +285,15 @@ public class Employee implements Comparable<Employee> {
         return this.name.compareTo(other.name);  // delegates to String's compareTo
     }
 }
-```
 
-Once the class implements `Comparable`, you can sort a `List<Employee>` without passing any extra rule — Java knows `Employee` already carries its own order:
-
-```java
+// 2. The list uses that rule when sorting — you pass nothing extra
 List<Employee> employees = new ArrayList<>();
 employees.add(new Employee("Luis", 30));
 employees.add(new Employee("Ana", 25));
 employees.add(new Employee("Victor", 28));
 
-Collections.sort(employees);   // uses compareTo() — result: Ana, Luis, Victor
-employees.sort(null);          // same thing: null means "use the natural Comparable order"
+Collections.sort(employees);   // calls compareTo() internally — result: Ana, Luis, Victor
+employees.sort(null);          // equivalent: null = "use the natural Comparable order"
 ```
 
 `employees.sort(null)` may look odd, but `null` here means: "I am not passing an external rule — use the one the class already has." It is equivalent to `Collections.sort(employees)`.

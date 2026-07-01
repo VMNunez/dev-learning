@@ -211,14 +211,14 @@ List<String> deduplicated = new ArrayList<>(unique);
 
 Las tres estructuras comparten un conjunto de operaciones básicas porque las tres implementan la interfaz `Collection`. `Map` usa nombres ligeramente distintos para algunas porque necesita diferenciar entre claves y valores, pero la idea es la misma:
 
-| Operación          | List                  | Set                   | Map                        |
-| ------------------ | --------------------- | --------------------- | -------------------------- |
-| Añadir             | `add(valor)`          | `add(valor)`          | `put(clave, valor)`        |
-| Eliminar           | `remove(valor)`       | `remove(valor)`       | `remove(clave)`            |
-| Comprobar si existe | `contains(valor)`    | `contains(valor)`     | `containsKey(clave)`       |
-| Número de elementos | `size()`             | `size()`              | `size()`                   |
-| ¿Está vacío?       | `isEmpty()`           | `isEmpty()`           | `isEmpty()`                |
-| Vaciar             | `clear()`             | `clear()`             | `clear()`                  |
+| Operación           | List              | Set               | Map                  |
+| ------------------- | ----------------- | ----------------- | -------------------- |
+| Añadir              | `add(valor)`      | `add(valor)`      | `put(clave, valor)`  |
+| Eliminar            | `remove(valor)`   | `remove(valor)`   | `remove(clave)`      |
+| Comprobar si existe | `contains(valor)` | `contains(valor)` | `containsKey(clave)` |
+| Número de elementos | `size()`          | `size()`          | `size()`             |
+| ¿Está vacío?        | `isEmpty()`       | `isEmpty()`       | `isEmpty()`          |
+| Vaciar              | `clear()`         | `clear()`         | `clear()`            |
 
 ---
 
@@ -260,9 +260,16 @@ Usas `Comparable` cuando hay un orden por defecto obvio para tu clase — uno qu
 
 Para implementarlo, tu clase añade `implements Comparable<Employee>` y define el método `compareTo()`. Java llama a ese método internamente cuando ordena la lista — tú no lo llamas directamente. El método compara `this` (el objeto actual) con `other` (el objeto con el que se compara) y devuelve: un número negativo si `this` debe ir antes, cero si son iguales, y un número positivo si `this` debe ir después.
 
-En la práctica casi nunca calculas ese número a mano — delegas en el `compareTo()` de `String`, que ya sabe ordenar alfabéticamente:
+En la práctica casi nunca calculas ese número a mano — delegas en el `compareTo()` de `String`, que ya sabe ordenar alfabéticamente.
+
+`compareTo()` no ordena ninguna lista — define cómo se comparan dos objetos `Employee` entre sí. La lista sigue siendo externa: cuando llamas a `employees.sort()`, Java toma la lista e internamente llama a `compareTo()` sobre cada par de empleados para decidir quién va antes. La regla de comparación vive en la clase; la lista solo la usa. Piénsalo así: la lista pregunta "¿quién va primero?" y el `Employee` responde "pregúntame a mí — yo te lo digo".
 
 ```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+// 1. La clase define cómo se comparan dos Employee entre sí
 public class Employee implements Comparable<Employee> {
     private String name;
     private int age;
@@ -280,18 +287,15 @@ public class Employee implements Comparable<Employee> {
         return this.name.compareTo(other.name);  // delega en el compareTo de String
     }
 }
-```
 
-Una vez que la clase implementa `Comparable`, puedes ordenar una `List<Employee>` sin pasar ninguna regla adicional — Java sabe que `Employee` ya lleva su propio orden:
-
-```java
+// 2. La lista usa esa regla al ordenar — sin que tú pases nada
 List<Employee> employees = new ArrayList<>();
 employees.add(new Employee("Luis", 30));
 employees.add(new Employee("Ana", 25));
 employees.add(new Employee("Victor", 28));
 
-Collections.sort(employees);   // ordena usando compareTo() — resultado: Ana, Luis, Victor
-employees.sort(null);          // lo mismo: null significa "usa el orden natural de Comparable"
+Collections.sort(employees);   // llama a compareTo() internamente — resultado: Ana, Luis, Victor
+employees.sort(null);          // equivalente: null = "usa el orden natural de Comparable"
 ```
 
 `employees.sort(null)` puede parecer extraño, pero `null` aquí significa: "no te estoy pasando una regla externa, usa la que la propia clase tiene definida". Es equivalente a `Collections.sort(employees)`.
