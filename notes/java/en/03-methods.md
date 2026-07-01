@@ -44,7 +44,7 @@ public static double calculateTax(double price, double rate) {
 | Modifier | Who can access it |
 |----------|------------------|
 | `public` | Everyone |
-| `private` | Only inside the same class |
+| `private` | Only inside the same class (subclasses cannot access it either) |
 | `protected` | Same class + subclasses + same package |
 | (none) | Same package only |
 
@@ -105,7 +105,7 @@ ResponseEntity<Void>   // ✓ — Void is a class
 ResponseEntity<void>   // ✗ — void is a keyword, not valid inside < >
 ```
 
-> **Clearing up the confusion:** the distinction has nothing to do with null — both mean "no value". The difference is context: `void` is the keyword for return types; `Void` is the class for when a generic forces you to put a type in `<>` and there is nothing to return.
+> **Clearing up the confusion:** the distinction has nothing to do with null — both mean "no value". The difference is context: `void` is the keyword for return types; `Void` is the class for when a generic forces you to put a type in the **angle brackets** (`<>`) and there is nothing to return.
 
 > **Preview — Spring Boot:** The example below uses `ResponseEntity`, a Spring Boot class you haven't studied yet. Read it to see where `void` vs `Void` matters in practice — you'll implement this yourself in the Spring Boot notes.
 
@@ -136,7 +136,7 @@ public class MathUtils {
 int result = MathUtils.square(5);   // 25
 ```
 
-You have already used static methods — `Integer.parseInt("42")` and `String.valueOf(42)` are static.
+You have already used static methods — `Integer.parseInt("42")` and `String.valueOf(42)` are static. And yes: wrapper classes (`Integer`, `Long`, `Boolean`…) are actual Java classes. That is what distinguishes them from a primitive `int` — they are objects, they have methods, and they can be `null`. The name "wrapper" is literal: they wrap a primitive value inside an object.
 
 In Spring Boot, service and repository methods are instance methods (called on injected objects). Utility methods that do not need state are good candidates for `static`.
 
@@ -181,6 +181,26 @@ Inside the method, `numbers` behaves like an array.
 ---
 
 ## Calling methods
+
+```java
+// ⚠ This method does not use any field of the class — it should technically be static.
+// It is here to show declaration syntax; the real instance method example is getName() below.
+public int add(int a, int b) {
+    return a + b;
+}
+
+// Static method — no object needed
+public static double square(double n) {
+    return n * n;
+}
+
+// Real instance method — needs the object because it accesses this.name
+public String getName() {
+    return this.name;
+}
+```
+
+Calling them:
 
 ```java
 // Instance method — called on an object

@@ -4,20 +4,24 @@
 
 ## Tipos primitivos
 
-Java tiene 8 tipos primitivos. Son los tipos más básicos del lenguaje — almacenan el valor directamente en memoria, no una referencia a un objeto. Cada uno ocupa un tamaño fijo y tiene un rango de valores posibles.
+En Java hay dos formas de almacenar datos en memoria. La primera es guardar el **valor directamente** — el número 42 o el booleano `true` se guardan en el sitio exacto donde está la variable. La segunda es guardar una **referencia** — en lugar del dato en sí, la variable guarda una dirección de memoria que apunta a donde está el objeto real, como un enlace. Los **tipos primitivos** usan la primera forma: almacenan el valor directamente, sin referencias. Los **objetos** (como `String`, `Employee`, o cualquier clase) usan la segunda.
+
+Java tiene 8 tipos primitivos. Cada uno ocupa un tamaño fijo y tiene un rango de valores posibles.
 
 Los rangos son útiles para saber cuándo necesitas cambiar de tipo: si un contador puede superar los 2.147 millones, esa es la señal de que `int` se queda corto y debes usar `long`.
 
 | Tipo      | Tamaño  | Rango aproximado                         | Ejemplo                  |
 | --------- | ------- | ---------------------------------------- | ------------------------ |
-| `int`     | 32 bits | −2,147,483,648 a 2,147,483,647           | `int age = 31;`          |
-| `long`    | 64 bits | −9.2 × 10¹⁸ a 9.2 × 10¹⁸                 | `long id = 1234567890L;` |
-| `double`  | 64 bits | ±1.7 × 10³⁰⁸ (~15 cifras significativas) | `double price = 19.99;`  |
+| `byte`    | 8 bits  | ±1.27 × 10²                              | `byte level = 5;`        |
+| `short`   | 16 bits | ±3.27 × 10⁴                              | `short year = 2025;`     |
+| `int`     | 32 bits | ±2.14 × 10⁹                              | `int age = 31;`          |
+| `long`    | 64 bits | ±9.2 × 10¹⁸                              | `long id = 1234567890L;` |
 | `float`   | 32 bits | ±3.4 × 10³⁸ (~7 cifras significativas)   | `float tax = 0.21f;`     |
+| `double`  | 64 bits | ±1.7 × 10³⁰⁸ (~15 cifras significativas) | `double price = 19.99;`  |
 | `boolean` | 1 bit   | `true` o `false`                         | `boolean active = true;` |
 | `char`    | 16 bits | Cualquier carácter Unicode (0 a 65,535)  | `char grade = 'A';`      |
-| `byte`    | 8 bits  | −128 a 127                               | `byte level = 5;`        |
-| `short`   | 16 bits | −32,768 a 32,767                         | `short year = 2025;`     |
+
+Un **carácter Unicode** es cualquier símbolo de cualquier escritura del mundo: letras latinas, chinas, árabes, emojis, signos matemáticos. El estándar Unicode asigna un número único a cada símbolo — `char` almacena ese número, que va del 0 al 65,535 (16 bits). En la práctica, en desarrollo web apenas usarás `char` directamente — los textos completos van en `String`.
 
 En la práctica usas `int`, `long`, `double` y `boolean` para casi todo. `float` y `byte` raramente se necesitan.
 
@@ -25,16 +29,16 @@ En la práctica usas `int`, `long`, `double` y `boolean` para casi todo. `float`
 
 **Números enteros** — para contar, IDs, edades, cantidades:
 
+- `byte` y `short` — son enteros igual que `int` y `long`, solo que con un rango mucho más pequeño. No pueden almacenar decimales. En la práctica los verás en código antiguo o al trabajar con datos binarios.
 - `int` — tu número entero de uso diario. Úsalo por defecto.
 - `long` — cuando `int` no es suficientemente grande. Los IDs de base de datos suelen ser `Long` porque crecen mucho. Fíjate en el sufijo `L`: `1234567890L` — sin él Java trata el número como `int` y puede rechazarlo.
-- `byte` y `short` — son enteros igual que `int` y `long`, solo que con un rango mucho más pequeño. No pueden almacenar decimales. En la práctica los verás en código antiguo o al trabajar con datos binarios.
 
 **Números decimales** — para precios, porcentajes, tasas:
 
-- `double` — la opción por defecto para decimales. Tiene más precisión: puede representar hasta ~15 cifras significativas. Por ejemplo, `3.141592653589793` cabe bien en un `double`.
 - `float` — la mitad de precisión que `double`: solo ~7 cifras significativas. Si necesitas `3.141592653589793`, un `float` lo almacena como `3.1415927` — pierdes dígitos. Úsalo solo si la memoria es crítica (casi nunca en desarrollo web). Fíjate en el sufijo `f`: `0.21f`.
+- `double` — la opción por defecto para decimales. Tiene más precisión: puede representar hasta ~15 cifras significativas. Por ejemplo, `3.141592653589793` cabe bien en un `double`.
 
-> **Dinero en Spring Boot:** nunca uses `double` o `float` para valores financieros. Usa `BigDecimal` — es una clase de Java pura (del paquete `java.math`, no de Spring Boot) que hace aritmética exacta. `double` no puede representar 0.1 exactamente en binario porque los ordenadores expresan los números como sumas de potencias de 2 (1/2, 1/4, 1/8…), y el 0.1 decimal no puede escribirse como una suma finita de esas potencias — igual que 1/3 no puede escribirse exactamente en decimal (0.333…). El procesador guarda la aproximación más cercana posible, y ese pequeño error se acumula operación tras operación, hasta que obtienes `0.09999999...` donde esperabas `0.1`. `BigDecimal` evita esto operando con las cifras reales, sin error de representación.
+> **Dinero en Spring Boot:** nunca uses `double` o `float` para valores financieros. Usa `BigDecimal` — es una clase de Java pura (del paquete `java.math`, no de Spring Boot) que hace aritmética exacta. `double` no puede representar 0.1 exactamente en binario porque los ordenadores expresan los números como sumas de potencias de 2, y el 0.1 decimal no puede escribirse como una suma finita de esas potencias — igual que 1/3 no puede escribirse exactamente en decimal (0.333…). El procesador guarda la aproximación más cercana posible, y ese pequeño error se acumula operación tras operación, hasta que obtienes `0.09999999...` donde esperabas `0.1`. `BigDecimal` evita esto operando con las cifras reales, sin error de representación.
 
 **Boolean** — para indicadores y condiciones:
 
@@ -48,9 +52,11 @@ En la práctica usas `int`, `long`, `double` y `boolean` para casi todo. `float`
 
 ## Variables
 
+Una variable es un espacio con nombre en memoria donde guardas un dato. En Java siempre tienes que declarar el tipo antes del nombre — el compilador necesita saber qué tipo de dato va a entrar ahí. Puedes declarar y asignar en la misma línea, o declarar primero y asignar después:
+
 ```java
-int age = 31;           // declarar y asignar
-int count;              // solo declarar (debes asignar antes de usar)
+int age = 31;           // declarar y asignar en la misma línea
+int count;              // solo declarar (debes asignar antes de usar — el compilador lo exige)
 count = 0;              // asignar después
 
 final int MAX = 100;    // constante — no se puede reasignar (como const en JS)
@@ -64,7 +70,7 @@ final int MAX = 100;    // constante — no se puede reasignar (como const en JS
 
 ### Widening (automático)
 
-Tipo más pequeño → tipo más grande. Sin pérdida de datos. Java lo hace automáticamente:
+Cuando conviertes un tipo más pequeño a uno más grande, no hay pérdida de datos — Java lo hace solo, sin que tengas que escribir nada:
 
 ```java
 int x = 42;
@@ -74,7 +80,7 @@ double z = x;      // int → double — automático
 
 ### Narrowing (manual)
 
-Tipo más grande → tipo más pequeño. Debes indicarle a Java explícitamente que aceptas la posible pérdida de datos. La sintaxis es `(tipoDestino) valor` — pones el tipo destino entre paréntesis antes del valor:
+Cuando conviertes un tipo más grande a uno más pequeño, puede haber pérdida de datos — Java te obliga a indicarlo explícitamente escribiendo el tipo destino entre paréntesis antes del valor:
 
 ```java
 double price = 19.99;
@@ -84,7 +90,7 @@ long bigNumber = 1234567890123L;
 int smaller = (int) bigNumber;  // puede desbordarse si el número es demasiado grande para int
 ```
 
-El `(int)` antes de la variable es el cast. Java no lo hace automáticamente porque podrías perder datos — tienes que escribirlo explícitamente en el código para dejar claro que aceptas esa posible pérdida.
+El `(int)` antes de la variable es el cast. Java no lo hace automáticamente porque podrías perder datos — tienes que escribirlo explícitamente para dejar claro que aceptas esa posible pérdida. La pérdida ocurre concretamente cuando el número más grande no cabe en el tipo más pequeño: si el valor supera el rango del tipo destino, se produce un wraparound silencioso (descrito abajo) en lugar de un error.
 
 > **Wraparound silencioso:** si el número no cabe en el tipo destino, Java no lanza un error — simplemente "da la vuelta". Imagina un cuentakilómetros que llega a 999,999 y vuelve a 000,000: exactamente eso pasa con los enteros. Si el valor máximo de `int` es 2,147,483,647 y le sumas 1, obtienes −2,147,483,648. Por eso el narrowing puede producir resultados inesperados y silenciosos.
 
@@ -94,15 +100,13 @@ El `(int)` antes de la variable es el cast. Java no lo hace automáticamente por
 
 Cada tipo primitivo tiene una clase wrapper correspondiente. Las usas cuando un método requiere un **objeto** en lugar de un primitivo.
 
-**El caso más común:** las colecciones de Java (`List`, `Map`, `Set`) solo funcionan con objetos, no con primitivos. Así que `List<int>` no compila — usas `List<Integer>` en su lugar. Las colecciones (`List`, `Map`, `Set`) se explican en detalle en [07-collections.md](07-collections.md) — de momento quédate con que son las estructuras de datos principales de Java y todas exigen tipos objeto, no primitivos.
+**El caso más común:** las colecciones de Java (`List`, `Map`, `Set`) solo funcionan con objetos, no con primitivos. `List<int>` no compila — el compilador da un error de tipo: `Type argument int is not within bounds of type-variable E`. Usas `List<Integer>` en su lugar. Las colecciones (`List`, `Map`, `Set`) se explican en detalle en [07-collections.md](07-collections.md) — de momento quédate con que son las estructuras de datos principales de Java y todas exigen tipos objeto, no primitivos.
 
 **Otro caso:** las clases wrapper pueden ser `null`. Un `int` primitivo no puede ser null, pero `Integer` sí. En Spring Boot, los IDs de base de datos suelen tipificarse como `Long` (no `long`) porque Hibernate los establece a `null` hasta que la entidad se guarda por primera vez.
 
 ### Cuándo usar cada uno — la regla práctica
 
-Usa el **wrapper** cuando `null` es un valor con significado (algo que todavía no existe o que es desconocido). Usa el **primitivo** cuando el valor siempre está presente y nunca puede ser null.
-
-En la práctica, el wrapper aparece en dos situaciones concretas: (1) campos de entidades JPA que pueden ser null antes de guardarse, y (2) colecciones, porque `List<int>` no existe en Java.
+Usa el **wrapper** en dos situaciones: (1) cuando `null` es un valor con significado — un ID de entidad JPA es `null` hasta que se guarda por primera vez, así que el campo va como `Long`, no como `long`; (2) cuando usas colecciones, porque `List<int>` no existe en Java y debes escribir `List<Integer>`. En cualquier otro caso, usa el **primitivo** — el valor siempre está presente y nunca puede ser null.
 
 ```java
 // Long (wrapper) — porque el id no existe hasta que JPA guarda la entidad
@@ -125,7 +129,7 @@ private long expiration;
 
 ### Autoboxing y unboxing
 
-A veces necesitas convertir entre un tipo primitivo y su wrapper, o al revés. Antes de Java 5, tenías que hacerlo manualmente con `Integer.valueOf(42)`. Ahora Java lo hace solo: esto se llama **autoboxing** (de primitivo a wrapper) y **unboxing** (de wrapper a primitivo).
+El autoboxing ocurre cada vez que añades un `int` a un `List<Integer>` o asignas un `int` a una variable `Integer` — situaciones que aparecen constantemente en el código real. Antes de Java 5, el compilador rechazaba eso y tenías que hacer la conversión a mano: `list.add(Integer.valueOf(42))`. Con Java 5 en adelante, Java hace esa conversión automáticamente. Esto se llama **autoboxing** (de primitivo a wrapper) y **unboxing** (de wrapper a primitivo).
 
 En la práctica, casi nunca piensas en ello. Java lo gestiona:
 
@@ -210,9 +214,26 @@ a.equals(b)   // true — usa siempre esto para comparar Strings
 
 El problema: `String` es **inmutable** — una vez creado, no puede modificarse. Cada vez que haces `str += something`, Java no modifica el string original. Crea un nuevo objeto `String` con el contenido combinado. En un bucle de 1000 iteraciones, creas 1000 objetos — lento y costoso.
 
-`StringBuilder` resuelve esto. Un **buffer** es un espacio en memoria donde vas acumulando datos mientras los estás construyendo — como una pizarra donde escribes trozo a trozo hasta que tienes el resultado completo. `StringBuilder` es ese espacio para strings: lo modificas en el sitio sin crear objetos nuevos, y cuando terminas llamas a `.toString()` para obtener el string definitivo.
+`StringBuilder` usa un **buffer** para resolver esto — un espacio en memoria donde va acumulando los trozos del string mientras los construyes, como una pizarra donde escribes trozo a trozo hasta tener el resultado completo. Lo modificas en el sitio sin crear objetos nuevos, y cuando terminas llamas a `.toString()` para obtener el string definitivo.
 
-> **¿Qué significa thread-safe?** Un **hilo** (thread) es una tarea que corre en paralelo con otras dentro del mismo programa. En una API REST, Spring Boot asigna un hilo distinto a cada petición HTTP que llega — así puede atender varias a la vez sin esperar a que termine la primera. **Thread-safe** significa que varios hilos pueden usar el mismo objeto simultáneamente sin que uno corrompa el trabajo del otro. `String` y `StringBuffer` son thread-safe; `StringBuilder` no. En la práctica, el riesgo no existe si creas el `StringBuilder` dentro de un método local — ese objeto es tuyo y ningún otro hilo lo toca. El problema solo aparecería si declararas un `StringBuilder` como campo compartido de un bean de Spring (algo que casi nunca querrás hacer, porque los beans son singletons que todos los hilos comparten).
+El motivo por el que se introduce **thread-safe** aquí es que `StringBuilder` no lo es — y en Spring Boot esto es relevante porque cada petición HTTP llega en un hilo distinto. Si declararas un `StringBuilder` como campo compartido de un bean de Spring (que es un singleton), varios hilos podrían escribir en él a la vez y corromper el resultado. Por ejemplo:
+
+```java
+// MAL — campo compartido entre todos los hilos (nunca hagas esto con StringBuilder)
+@Service
+public class ReportService {
+    private StringBuilder sharedBuilder = new StringBuilder();  // ← todos los hilos lo comparten
+}
+
+// BIEN — local al método, solo existe durante esa petición
+public String buildReport(List<String> lines) {
+    StringBuilder sb = new StringBuilder();  // ← solo este hilo lo ve
+    for (String line : lines) sb.append(line).append("\n");
+    return sb.toString();
+}
+```
+
+> **¿Qué significa thread-safe?** Un **hilo** (thread) es una tarea que corre en paralelo con otras dentro del mismo programa. En una API REST, Spring Boot asigna un hilo distinto a cada petición HTTP que llega — así puede atender varias a la vez sin esperar a que termine la primera. **Thread-safe** significa que varios hilos pueden usar el mismo objeto simultáneamente sin que uno corrompa el trabajo del otro. `String` y `StringBuffer` son thread-safe; `StringBuilder` no. En la práctica, el riesgo no existe si creas el `StringBuilder` dentro de un método local — ese objeto es tuyo y ningún otro hilo lo toca.
 
 |                 | ¿Inmutable? | ¿Thread-safe? | Cuándo usar                                 |
 | --------------- | ----------- | ------------- | ------------------------------------------- |

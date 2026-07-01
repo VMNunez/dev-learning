@@ -56,7 +56,7 @@ switch (day) {
 }
 ```
 
-Dos casos sin código entre ellos (como `MONDAY` y `TUESDAY`) es fall-through intencional — un patrón habitual para manejar varios valores del mismo modo.
+Dos casos sin código entre ellos (como `MONDAY` y `TUESDAY`) es fall-through intencional — un patrón habitual para manejar varios valores del mismo modo. El bloque `default` no es obligatorio, pero es buena práctica incluirlo siempre: actúa como red de seguridad para los valores inesperados y evita bugs silenciosos cuando algún valor no coincide con ningún caso.
 
 ### Switch expression (Java 14+) — usa esta forma
 
@@ -146,7 +146,7 @@ En Spring Boot usarás principalmente bucles for-each y streams. `while` aparece
 
 ## break y continue
 
-Ambas palabras clave cambian el flujo dentro de un bucle:
+Ambas palabras clave cambian el flujo dentro de un bucle. Son válidas en `for`, `while` y `do-while` — los tres tipos de bucle que has visto. En la práctica las verás más en bucles `for` y `while`. En `switch`, `break` también se usa para evitar el fall-through (como has visto arriba), pero `continue` no aplica ahí.
 
 - **`break`** sale del bucle entero inmediatamente — no ocurren más iteraciones después de él.
 - **`continue`** salta el resto de la iteración actual y pasa directamente a la siguiente.
@@ -169,7 +169,7 @@ Piensa en `break` como la salida de emergencia y en `continue` como el botón de
 
 > **¿Qué es un error en runtime?** Es un error que no ocurre al compilar el código, sino cuando el programa ya está corriendo y llega a esa línea. El compilador no lo detecta de antemano — simplemente falla en el momento en que se ejecuta. (La explicación completa de compile time vs runtime está en la sección `var` de [01-variables-tipos.md](01-variables-tipos.md).)
 
-`NullPointerException` es el error en runtime más común en Java. Ocurre cuando llamas a un método sobre una variable que es `null` — Java no puede encontrar el objeto en el que ejecutar el método. La solución es simple: comprueba siempre si es `null` antes de llamar métodos sobre algo que podría no existir.
+`NullPointerException` es el error en runtime más común en Java. Ocurre cuando llamas a un método sobre una variable que es `null` — Java no puede encontrar el objeto en el que ejecutar el método. Solo los **objetos** tienen métodos: `String`, wrappers (`Integer`, `Long`…), y cualquier clase que definas. Los **primitivos** (`int`, `long`, `double`…) no son objetos y no tienen métodos — no pueden ser `null` y no puedes llamar `.algo()` sobre ellos. Por eso nunca verás una `NullPointerException` en una variable `int`. En [01-variables-tipos.md](01-variables-tipos.md) ya tienes los métodos útiles de los wrappers y de `String` — esas son las clases sobre las que sí puedes llamar métodos. La solución es simple: comprueba siempre si es `null` antes de llamar métodos sobre algo que podría no existir.
 
 ```java
 // Riesgo de NullPointerException

@@ -4,31 +4,35 @@
 
 ## Primitive types
 
-Java has 8 primitive types. These store values directly — not references to objects. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
+In Java there are two ways to store data in memory. The first is to store the **value directly** — the number 42 or the boolean `true` is stored exactly where the variable lives. The second is to store a **reference** — instead of the data itself, the variable holds a memory address that points to where the real object is, like a link. **Primitive types** use the first form: they store the value directly, no references. **Objects** (like `String`, `Employee`, or any class) use the second.
 
-| Type      | Size   | What it holds               | Example                  |
-| --------- | ------ | --------------------------- | ------------------------ |
-| `int`     | 32 bit | Whole numbers (−2B to 2B)   | `int age = 31;`          |
-| `long`    | 64 bit | Large whole numbers         | `long id = 1234567890L;` |
-| `double`  | 64 bit | Decimal numbers             | `double price = 19.99;`  |
-| `float`   | 32 bit | Decimal, less precision     | `float tax = 0.21f;`     |
-| `boolean` | 1 bit  | `true` or `false`           | `boolean active = true;` |
-| `char`    | 16 bit | One character               | `char grade = 'A';`      |
-| `byte`    | 8 bit  | Small numbers (−128 to 127) | `byte level = 5;`        |
-| `short`   | 16 bit | Medium numbers              | `short year = 2025;`     |
+Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
+
+| Type      | Size   | Approximate range                          | Example                  |
+| --------- | ------ | ------------------------------------------ | ------------------------ |
+| `byte`    | 8 bit  | ±1.27 × 10²                                | `byte level = 5;`        |
+| `short`   | 16 bit | ±3.27 × 10⁴                                | `short year = 2025;`     |
+| `int`     | 32 bit | ±2.14 × 10⁹                                | `int age = 31;`          |
+| `long`    | 64 bit | ±9.2 × 10¹⁸                                | `long id = 1234567890L;` |
+| `float`   | 32 bit | ±3.4 × 10³⁸ (~7 significant digits)        | `float tax = 0.21f;`     |
+| `double`  | 64 bit | ±1.7 × 10³⁰⁸ (~15 significant digits)      | `double price = 19.99;`  |
+| `boolean` | 1 bit  | `true` or `false`                          | `boolean active = true;` |
+| `char`    | 16 bit | Any Unicode character (0 to 65,535)        | `char grade = 'A';`      |
+
+A **Unicode character** is any symbol from any writing system in the world: Latin letters, Chinese, Arabic, emojis, mathematical symbols. The Unicode standard assigns a unique number to every symbol — `char` stores that number, which goes from 0 to 65,535. In practice you rarely use `char` directly in web development — full text goes in `String`.
 
 In practice you use `int`, `long`, `double`, and `boolean` for almost everything. `float` and `byte` are rarely needed.
 
 ### Types by category
 
 **Integer numbers** — for counting, IDs, ages, quantities:
+- `byte` and `short` — very rarely used in practice. You will see them in old code or when working with binary data.
 - `int` — your everyday whole number. Use this by default.
 - `long` — when `int` is not big enough. Database IDs are often `Long` because they grow very large. Notice the `L` suffix: `1234567890L` — without it Java treats the number as `int` and may reject it.
-- `byte` and `short` — very rarely used in practice. You will see them in old code or when working with binary data.
 
 **Decimal numbers** — for prices, percentages, rates:
-- `double` — the default choice for decimals. Higher precision.
-- `float` — half the precision of `double`. Use only if memory is critical (almost never in web development). Notice the `f` suffix: `0.21f`.
+- `float` — half the precision of `double`: only ~7 significant digits. Use only if memory is critical (almost never in web development). Notice the `f` suffix: `0.21f`.
+- `double` — the default choice for decimals. Higher precision: up to ~15 significant digits.
 
 > **Money in Spring Boot:** never use `double` or `float` for financial values. Use `BigDecimal` — it is a plain Java class (`java.math` package, not Spring Boot) that does exact arithmetic. `double` cannot represent 0.1 exactly in binary because computers express numbers as sums of powers of 2 (1/2, 1/4, 1/8…), and 0.1 cannot be expressed as a finite sum of those powers — just like 1/3 cannot be written exactly in decimal (0.333…). The processor stores the closest approximation it can, and that small error accumulates across operations until you get `0.09999999...` instead of `0.1`. `BigDecimal` avoids this by operating on the actual digits, without the representation error.
 
@@ -42,9 +46,11 @@ In practice you use `int`, `long`, `double`, and `boolean` for almost everything
 
 ## Variables
 
+A variable is a named space in memory where you store a piece of data. In Java you always have to declare the type before the name — the compiler needs to know what type of data will go in there. You can declare and assign in the same line, or declare first and assign later:
+
 ```java
-int age = 31;           // declare and assign
-int count;              // declare only (must assign before use)
+int age = 31;           // declare and assign in the same line
+int count;              // declare only (must assign before use — the compiler enforces this)
 count = 0;              // assign later
 
 final int MAX = 100;    // constant — cannot be reassigned (like const in JS)
@@ -58,7 +64,7 @@ final int MAX = 100;    // constant — cannot be reassigned (like const in JS)
 
 ### Widening (automatic)
 
-Smaller type → larger type. No data loss. Java does it automatically:
+When you convert a smaller type to a larger one, there is no data loss — Java does it automatically, no extra syntax needed:
 
 ```java
 int x = 42;
@@ -68,7 +74,7 @@ double z = x;      // int → double — automatic
 
 ### Narrowing (manual)
 
-Larger type → smaller type. You must tell Java explicitly that you accept potential data loss. The syntax is `(targetType) value` — you put the target type in parentheses before the value:
+When you convert a larger type to a smaller one, there can be data loss — Java forces you to say so explicitly by writing the target type in parentheses before the value:
 
 ```java
 double price = 19.99;
@@ -78,7 +84,7 @@ long bigNumber = 1234567890123L;
 int smaller = (int) bigNumber;  // may overflow if the number is too large for int
 ```
 
-The `(int)` before the variable is the cast. Java does not do this automatically because you might lose data — you have to write it explicitly to signal that you accept the possible loss. If the number does not fit, Java does not throw an error — it wraps around silently, which is why narrowing can produce unexpected results.
+The `(int)` before the variable is the cast. Java does not do this automatically because you might lose data — you have to write it explicitly to signal that you accept the possible loss. The loss happens specifically when the larger number does not fit in the smaller type: if the value exceeds the destination type's range, Java wraps around silently instead of throwing an error — which is why narrowing can produce unexpected results.
 
 ---
 
@@ -86,14 +92,13 @@ The `(int)` before the variable is the cast. Java does not do this automatically
 
 Each primitive type has a corresponding wrapper class. You use wrapper classes when a method requires an **object** instead of a primitive.
 
-**The most common case:** Java collections (`List`, `Map`, `Set`) only work with objects, not primitives. So `List<int>` does not compile — you use `List<Integer>` instead. Collections are covered in detail in [07-collections.md](07-collections.md) — for now, just know they are Java's main data structures and they all require object types.
+**The most common case:** Java collections (`List`, `Map`, `Set`) only work with objects, not primitives. `List<int>` does not compile — the compiler throws a type error: `Type argument int is not within bounds of type-variable E`. You use `List<Integer>` instead. Collections are covered in detail in [07-collections.md](07-collections.md) — for now, just know they are Java's main data structures and they all require object types.
 
 **Another case:** wrapper classes can be `null`. A primitive `int` cannot be null, but `Integer` can. In Spring Boot, database IDs are often typed as `Long` (not `long`) because Hibernate sets them to `null` until the entity is saved for the first time.
 
 ### When to use each — the practical rule
 
-Use the **wrapper class** when `null` is a meaningful value.
-Use the **primitive** when the value is always present.
+Use the **wrapper** in two situations: (1) when `null` is a meaningful value — a JPA entity ID is `null` until it is saved for the first time, so the field goes as `Long`, not `long`; (2) when using collections, because `List<int>` does not exist in Java and you must write `List<Integer>`. In any other case, use the **primitive** — the value is always present and never null.
 
 ```java
 // Long (wrapper) — because the id does not exist until JPA saves the entity
@@ -106,8 +111,6 @@ private Long id;
 private long expiration;
 ```
 
-In practice: JPA entity ids → always `Long`. Configuration values, counters, calculations → always `long`.
-
 | Primitive | Wrapper     |
 | --------- | ----------- |
 | `int`     | `Integer`   |
@@ -118,7 +121,7 @@ In practice: JPA entity ids → always `Long`. Configuration values, counters, c
 
 ### Autoboxing and unboxing
 
-Normally, converting between `int` and `Integer` would require an explicit call like `Integer.valueOf(42)`. Java does this conversion automatically when it needs to — this is called **autoboxing** (primitive → wrapper) and **unboxing** (wrapper → primitive).
+Autoboxing happens every time you add an `int` to a `List<Integer>` or assign an `int` to an `Integer` variable — situations that appear constantly in real code. Before Java 5, the compiler rejected that and you had to do the conversion by hand: `list.add(Integer.valueOf(42))`. From Java 5 onwards, Java does that conversion automatically. This is called **autoboxing** (primitive → wrapper) and **unboxing** (wrapper → primitive).
 
 In practice, you almost never think about it. Java just handles it:
 
@@ -202,7 +205,24 @@ a.equals(b)   // true — always use this for String comparison
 
 The problem: `String` is **immutable** — once created, it cannot be changed. Every time you do `str += something`, Java does not modify the original string. It creates a brand new `String` object with the combined content. In a loop with 1000 iterations, you create 1000 objects — slow and wasteful.
 
-`StringBuilder` solves this. A **buffer** is a space in memory where you accumulate data while you are still building it — think of it as a whiteboard where you keep writing pieces until you have the final result. `StringBuilder` is that space for strings: you modify it in place without creating new objects, and when you are done you call `.toString()` to get the finished string.
+`StringBuilder` uses a **buffer** to solve this — a space in memory where it accumulates the pieces of the string while you are building it, like a whiteboard where you keep writing until you have the final result. You modify it in place without creating new objects, and when you are done you call `.toString()` to get the finished string.
+
+The reason **thread-safety** is mentioned here is that `StringBuilder` is not thread-safe — and in Spring Boot this matters because each HTTP request arrives on a separate thread. If you declared a `StringBuilder` as a shared field on a Spring bean (which is a singleton), multiple threads could write to it at the same time and corrupt the result. For example:
+
+```java
+// BAD — shared across all threads (never do this with StringBuilder)
+@Service
+public class ReportService {
+    private StringBuilder sharedBuilder = new StringBuilder();  // ← all threads share this
+}
+
+// GOOD — local to the method, only exists during that one request
+public String buildReport(List<String> lines) {
+    StringBuilder sb = new StringBuilder();  // ← only this thread sees it
+    for (String line : lines) sb.append(line).append("\n");
+    return sb.toString();
+}
+```
 
 |                 | Immutable? | Thread-safe? | When to use                             |
 | --------------- | ---------- | ------------ | --------------------------------------- |

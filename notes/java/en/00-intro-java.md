@@ -6,7 +6,7 @@ Docs: [Baeldung — Introduction to Java](https://www.baeldung.com/java-tutorial
 
 ## How Java works — source code to running program
 
-Most languages are either **compiled** (translated to machine code before running) or **interpreted** (read and executed line by line at runtime). Java is both, and that is what makes it special.
+Most languages are either **compiled** (translated to machine code before running) or **interpreted** (read and executed line by line at runtime). Java combines both phases: first your code is compiled to bytecode (that is the compiled part), and then the JVM reads and interprets that bytecode to run it (that is the interpreted part). What makes this combination special is that bytecode is not tied to any operating system — the same `.class` file runs on Windows, Linux, and Mac without recompiling.
 
 When you write Java code, two things happen:
 
@@ -89,7 +89,7 @@ Each keyword has a reason:
 | `main` | The name the JVM looks for by convention |
 | `String[] args` | Command-line arguments passed when starting the program |
 
-> **In Spring Boot you never write `main` yourself.** Spring Initializr generates one `Application.java` with a `main` that calls `SpringApplication.run()`. That one line starts the whole framework — it bootstraps the application context, discovers all your beans, and starts the embedded server. You will not touch `main` again after that.
+> **In Spring Boot you never write `main` yourself.** Spring Initializr generates one `Application.java` with a `main` that calls `SpringApplication.run()`. That one line starts the whole framework — it bootstraps the application context, discovers all your beans, and starts the **embedded server** — Tomcat by default, which Spring Boot carries bundled inside the JAR itself. You do not install Tomcat separately; it comes included. You will not touch `main` again after that.
 
 ---
 
@@ -129,15 +129,49 @@ Car yourCar = new Car();  // creates a different object — same blueprint, diff
 
 Java's OOP is built on four principles. You do not need to master them now — just know what each word means when you encounter it.
 
-**Encapsulation** — hide internal details; expose only what the outside needs. Fields are `private`; you access them through methods (`getSpeed()`, not `car.speed` directly). This is why Spring Boot services have `private` fields and `public` methods.
+**Encapsulation** — hide internal details; expose only what the outside needs. Fields are almost always `private`, no exceptions. Methods, on the other hand, can be `public` (if called from outside) or `private` (internal helpers that no one outside the class needs to know about). You will see this combination constantly in Spring Boot: `private` fields, `public` service methods, `private` helper methods. You always access fields through methods (`getSpeed()`, not `car.speed` directly).
 
-**Inheritance** — a class can extend another class and reuse its code. `Dog extends Animal` — Dog gets everything Animal has, plus its own additions. In Spring Boot you see this in custom exceptions (`extends RuntimeException`) and Spring Security (`extends WebSecurityConfigurerAdapter`).
+**Inheritance** — a class can extend another class and reuse its code. The child class gets everything the parent has, plus its own additions:
 
-**Polymorphism** — one interface, many implementations. You can treat a `Dog` as an `Animal` and call `.makeSound()` — the JVM decides at runtime which version to run. This is the mechanism behind Spring's dependency injection: you inject an interface, and Spring decides which implementation to use.
+```java
+public class Animal {
+    protected String name;
+    public Animal(String name) { this.name = name; }
+    public void breathe() { System.out.println(name + " breathes"); }
+}
 
-**Abstraction** — expose what a thing does, hide how it does it. `JpaRepository.save(entity)` saves to the database — you do not need to know about the SQL it generates. The interface is the abstraction; the implementation is hidden.
+public class Dog extends Animal {
+    public Dog(String name) { super(name); }
+    public void bark() { System.out.println(name + " barks"); }
+}
 
-> **In TimeTrack:** your `ProjectService` class is encapsulation in action — the controller calls `projectService.findAll()` without knowing anything about the repository or the database query underneath. Each Spring Boot layer abstracts the one below it.
+Dog dog = new Dog("Rex");
+dog.breathe();  // "Rex breathes"  — inherited from Animal
+dog.bark();     // "Rex barks"     — Dog's own method
+```
+
+In Spring Boot you see this in custom exceptions (`extends RuntimeException`) and Spring Security.
+
+**Polymorphism** — the same code can work with different types of objects. If you have a variable of type `Animal`, you can store a `Dog`, a `Cat`, or any other animal in it. When you call a method, the JVM decides at runtime which version to run based on the actual object:
+
+```java
+Animal a = new Dog("Rex");   // Dog extends Animal — fits perfectly in the variable
+a.breathe();                 // the JVM runs the breathe() that matches the real object
+```
+
+Interfaces (covered in [05-interfaces-abstract.md](05-interfaces-abstract.md)) take this further. It is the mechanism behind Spring's dependency injection: you declare the type as an interface, and the framework injects the concrete implementation at runtime.
+
+**Abstraction** — expose what a thing does, hide how it does it. The distinction from encapsulation is subtle: encapsulation protects the internal state of an object; abstraction hides internal behaviour to simplify what the outside needs to know. It is the controller that practises abstraction — it calls `projectService.findAll()` without knowing anything about how that method retrieves the data:
+
+```java
+// The controller only knows findAll() returns projects — not how it does it
+List<Project> projects = projectService.findAll();
+
+// save() stores to the database — you do not know what SQL it generates
+repository.save(entity);
+```
+
+> **In TimeTrack:** the call `projectService.findAll()` from the controller is abstraction in action — the controller knows nothing about the repository or the SQL query underneath. The `private` fields of `ProjectService` are encapsulation. Each Spring Boot layer abstracts the one below it.
 
 Docs: [Baeldung — OOP Concepts in Java](https://www.baeldung.com/java-oop) → read: "What is OOP", "Encapsulation", "Inheritance", "Polymorphism"
 

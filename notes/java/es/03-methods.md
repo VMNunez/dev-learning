@@ -44,9 +44,9 @@ public static double calculateTax(double price, double rate) {
 Un modificador de acceso controla desde dónde se puede llamar a un método (o acceder a un campo). Es la forma en que Java protege el código interno de una clase y decide qué partes son visibles desde fuera.
 
 | Modificador | Quién puede acceder                     |
-| ----------- | --------------------------------------- |
+| ----------- | --------------------------------------- | --------------------------------------------------------- |
 | `public`    | Todos                                   |
-| `private`   | Solo dentro de la misma clase           |
+| `private`   | Solo dentro de la misma clase (las subclases tampoco pueden acceder) |
 | `protected` | Misma clase + subclases + mismo paquete |
 | (ninguno)   | Solo el mismo paquete                   |
 
@@ -107,7 +107,7 @@ ResponseEntity<Void>   // ✓ — Void es una clase, cabe dentro de < >
 ResponseEntity<void>   // ✗ — void es una palabra clave, no válida dentro de < >
 ```
 
-> **Resumen claro:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando algo genérico te obliga a poner un tipo entre `<>` y no hay nada real que devolver. La distinción no tiene nada que ver con null — ambas significan "sin valor". La diferencia es de contexto: `void` es la palabra clave para tipos de retorno, y `Void` es la clase para cuando un genérico exige un tipo.
+> **Resumen claro:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando un genérico te obliga a poner un tipo entre los **angle brackets** (en inglés) o **diamantes** (como los llama la mayoría de desarrolladores en español) — los `<>` — y no hay nada real que devolver. La distinción no tiene nada que ver con null — ambas significan "sin valor". La diferencia es de contexto: `void` es la palabra clave para tipos de retorno, y `Void` es la clase para cuando un genérico exige un tipo.
 
 > **Vista previa — Spring Boot:** El ejemplo a continuación usa `ResponseEntity`, una clase de Spring Boot que aún no has estudiado. Léelo para ver dónde importa la diferencia entre `void` y `Void` en la práctica — lo implementarás tú mismo en las notas de Spring Boot.
 
@@ -144,7 +144,7 @@ int result = MathUtils.square(5);   // 25
 
 ¿Cuándo tiene sentido usar `static`? Cuando el método realiza una operación que no depende de ningún dato concreto de un objeto — solo de los parámetros que le pasas. `MathUtils.square(5)` no necesita saber nada de ningún `Employee` ni de ninguna otra clase.
 
-Ya has usado métodos estáticos sin saberlo: `Integer.parseInt("42")` y `String.valueOf(42)` son estáticos — los llamas sobre la clase `Integer` o `String`, no sobre un objeto concreto.
+Ya has usado métodos estáticos sin saberlo: `Integer.parseInt("42")` y `String.valueOf(42)` son estáticos — los llamas sobre la clase `Integer` o `String`, no sobre un objeto concreto. Exacto: los wrappers (`Integer`, `Long`, `Boolean`…) son clases de Java. Lo que los distingue de un `int` primitivo es precisamente eso — son objetos, tienen métodos, y pueden ser `null`. Por eso se llaman "wrappers" (envolturas): envuelven el valor primitivo en un objeto.
 
 > **En Spring Boot:** los métodos de tus services y repositories son métodos de instancia — los llamas sobre objetos que Spring inyecta (`employeeService.findAll()`, `employeeRepository.save(emp)`). Necesitan el objeto porque trabajan con datos internos (la conexión a base de datos, la configuración, etc.). Los métodos `static` aparecen en clases de utilidad pura, como `JwtUtils.generateToken(username)` — operaciones sin estado que solo dependen de los argumentos que les pasas.
 
@@ -177,7 +177,7 @@ La sintaxis es `Tipo... nombre`. Debe ser el último parámetro del método, por
 ```java
 public int sum(int... numbers) {
     int total = 0;
-    for (int n : numbers) total += n;  // sí — numbers es un array, puedes recorrerlo con for-each exactamente igual que con cualquier array
+    for (int n : numbers) total += n;  // numbers es un array, puedes recorrerlo con for-each exactamente igual que con cualquier array
     return total;
 }
 
@@ -196,14 +196,15 @@ Antes de ver cómo se llama a un método, veamos un ejemplo completo — primero
 
 ```java
 public class Calculator {
-    private String name;  // campo de la clase (no variable de un método) — los campos se cubren en 04-oop-clases.md
+    private String name;  // campo de la clase — los campos se cubren en 04-oop-clases.md
 
     // constructor — se ejecuta cuando haces new Calculator("MyCalc"); se cubre en detalle en 04-oop-clases.md
     public Calculator(String name) {
         this.name = name;
     }
 
-    // Método de instancia — necesita el objeto para funcionar
+    // ⚠ Este método no usa ningún campo de la clase — técnicamente debería ser static.
+    // Está aquí para mostrar la sintaxis de declaración; el ejemplo real de instancia es getName() abajo.
     public int add(int a, int b) {
         return a + b;
     }
@@ -213,6 +214,7 @@ public class Calculator {
         return n * n;
     }
 
+    // Método de instancia real — necesita el objeto porque accede a this.name
     public String getName() {
         return this.name;
     }

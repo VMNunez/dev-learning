@@ -5,14 +5,18 @@
 
 ## Interface
 
-Una interfaz define un **contrato** — una lista de métodos que cualquier clase que la implemente debe proporcionar. No contiene ninguna implementación (por defecto).
+Imagina que quieres escribir un método que pueda imprimir cualquier cosa — un empleado, un pedido, un informe. No sabes qué tipo de objeto le llegará, pero sí sabes que necesita tener un método `print()`. Las interfaces resuelven exactamente este problema.
+
+Una interfaz define un **contrato**: una lista de métodos que cualquier clase que la implemente está obligada a tener. La interfaz no dice cómo se implementan esos métodos — solo exige que existan. Piénsalo como una promesa escrita: "cualquier clase que firme este contrato garantiza que tiene estos métodos."
 
 ```java
 public interface Printable {
-    void print();        // sin cuerpo — solo la firma
-    String getSummary(); // cualquier clase que implemente Printable debe tener estos dos métodos
+    void print();        // sin cuerpo — solo la firma del método
+    String getSummary(); // cualquier clase que implemente Printable DEBE tener estos dos
 }
 ```
+
+Cuando una clase implementa una interfaz con `implements`, **debe** proporcionar todos los métodos declarados en ella — sin excepción. No puedes implementar la interfaz y dejar algún método sin escribir: el compilador te da error. La única excepción son los métodos `default` (ver más abajo), que ya tienen implementación propia y son opcionales de sobreescribir.
 
 Una clase que implementa la interfaz debe proporcionar todos los métodos:
 
@@ -36,13 +40,16 @@ public class Employee implements Printable {
 
 ```java
 public class Employee implements Printable, Exportable, Auditable {
-    // debe implementar todos los métodos de las tres interfaces
+    // debe implementar TODOS los métodos de las tres interfaces — sin excepción
+    // (salvo los que tengan implementación default, que son opcionales)
 }
 ```
 
 ### Métodos default (Java 8+)
 
-Las interfaces pueden tener una implementación por defecto. Las clases pueden sobreescribirla o usarla tal cual:
+Antes de Java 8, las interfaces solo podían tener métodos sin implementación. Java 8 introdujo los métodos `default`: métodos con implementación dentro de la interfaz que las clases que la implementan **no están obligadas a sobreescribir**. Si la clase no lo sobreescribe, usa la implementación de la interfaz tal cual. Si lo sobreescribe, usa la suya propia.
+
+Esto permite añadir nuevos métodos a una interfaz sin romper todas las clases que ya la implementan — si añades un método `default`, las clases existentes lo heredan sin tener que cambiar nada:
 
 ```java
 public interface Printable {
@@ -103,12 +110,12 @@ Una clase solo puede extender **una** clase abstracta. Esta es la diferencia cla
 
 ## Interface vs Clase abstracta
 
-| | Interface | Clase abstracta |
-|---|-----------|----------------|
-| Métodos | Abstractos por defecto; pueden tener `default` | Puede tener abstractos y concretos |
-| Campos | Solo constantes `public static final` | Puede tener cualquier campo |
-| ¿Múltiples? | Una clase puede implementar muchas | Una clase solo puede extender una |
-| Constructor | No | Sí |
+|             | Interface                                       | Clase abstracta                            |
+| ----------- | ----------------------------------------------- | ------------------------------------------ |
+| Métodos     | Abstractos por defecto; pueden tener `default`  | Puede tener abstractos y concretos         |
+| Campos      | Solo constantes `public static final`           | Puede tener cualquier campo                |
+| ¿Múltiples? | Una clase puede implementar muchas              | Una clase solo puede extender una          |
+| Constructor | No                                              | Sí                                         |
 | Cuándo usar | Definir una capacidad que una clase puede tener | Definir un tipo base con lógica compartida |
 
 **Interface:** "Esta clase puede hacer X" — `Printable`, `Exportable`, `Comparable`
@@ -133,12 +140,12 @@ emailValidator.validate("test@email.com");   // true
 
 Las interfaces funcionales más comunes ya disponibles:
 
-| Interface | Método | Usada para |
-|-----------|--------|------------|
-| `Predicate<T>` | `boolean test(T t)` | filtrar — `list.stream().filter(e -> e.isActive())` |
-| `Function<T, R>` | `R apply(T t)` | transformar — `list.stream().map(e -> e.getName())` |
-| `Consumer<T>` | `void accept(T t)` | consumir — `list.forEach(e -> save(e))` |
-| `Supplier<T>` | `T get()` | producir — `() -> new Employee()` |
+| Interface        | Método              | Usada para                                          |
+| ---------------- | ------------------- | --------------------------------------------------- |
+| `Predicate<T>`   | `boolean test(T t)` | filtrar — `list.stream().filter(e -> e.isActive())` |
+| `Function<T, R>` | `R apply(T t)`      | transformar — `list.stream().map(e -> e.getName())` |
+| `Consumer<T>`    | `void accept(T t)`  | consumir — `list.forEach(e -> save(e))`             |
+| `Supplier<T>`    | `T get()`           | producir — `() -> new Employee()`                   |
 
 Las usarás cada vez que trabajes con streams y lambdas.
 

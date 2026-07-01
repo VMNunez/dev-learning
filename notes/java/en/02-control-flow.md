@@ -56,7 +56,7 @@ switch (day) {
 }
 ```
 
-Two cases with no code between them (like `MONDAY` and `TUESDAY`) is intentional fall-through — a common pattern to handle multiple values the same way.
+Two cases with no code between them (like `MONDAY` and `TUESDAY`) is intentional fall-through — a common pattern to handle multiple values the same way. The `default` block is not required, but it is good practice to always include it: it acts as a safety net for unexpected values and avoids silent bugs when no case matches.
 
 ### Switch expression (Java 14+) — use this form
 
@@ -144,7 +144,7 @@ In Spring Boot you will mostly use for-each loops and streams. `while` appears m
 
 ## break and continue
 
-Both keywords change the flow inside a loop:
+Both keywords change the flow inside a loop. They work in `for`, `while`, and `do-while` — all three loop types you have seen. In practice you will see them most in `for` and `while` loops. In `switch`, `break` also appears to stop fall-through (as you saw above), but `continue` does not apply there.
 
 - **`break`** exits the entire loop immediately — no more iterations happen after it.
 - **`continue`** skips the rest of the current iteration and jumps straight to the next one.
@@ -167,7 +167,7 @@ Think of `break` as the emergency exit and `continue` as the skip button.
 
 **Runtime error:** an error that does not happen when Java compiles the code, but when the program is already running and reaches that line. The compiler does not catch it in advance. (For the full explanation of compile time vs runtime, see the `var` section in [01-variables-types.md](01-variables-types.md).)
 
-`NullPointerException` is the most common runtime error in Java. It happens when you call a method on a variable that is `null` — Java cannot find the object to run the method on. The fix is simple: always check for `null` before calling methods on anything that might not exist.
+`NullPointerException` is the most common runtime error in Java. It happens when you call a method on a variable that is `null` — Java cannot find the object to run the method on. Only **objects** have methods: `String`, wrapper classes (`Integer`, `Long`…), and any class you define. **Primitives** (`int`, `long`, `double`…) are not objects and have no methods — they cannot be `null` and you cannot call `.something()` on them. That is why you will never see a `NullPointerException` on an `int` variable. The useful methods for wrappers and `String` are already in [01-variables-types.md](01-variables-types.md) — those are the classes you call methods on. The fix is simple: always check for `null` before calling methods on anything that might not exist.
 
 ```java
 // Risk of NullPointerException

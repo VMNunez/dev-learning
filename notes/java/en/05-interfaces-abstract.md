@@ -5,14 +5,18 @@
 
 ## Interface
 
-An interface defines a **contract** — a list of methods that any implementing class must provide. It does not contain any implementation (by default).
+Imagine you want to write a method that can print anything — an employee, an order, a report. You do not know what type of object will arrive, but you do know it needs to have a `print()` method. Interfaces solve exactly this problem.
+
+An interface defines a **contract**: a list of methods that any implementing class is required to have. The interface does not say how those methods are implemented — it only demands that they exist. Think of it as a written promise: "any class that signs this contract guarantees it has these methods."
 
 ```java
 public interface Printable {
-    void print();        // no body — just the signature
-    String getSummary(); // any class that implements Printable must have these two methods
+    void print();        // no body — just the method signature
+    String getSummary(); // any class that implements Printable MUST have both of these
 }
 ```
+
+When a class implements an interface with `implements`, it **must** provide every method declared in it — no exceptions. You cannot implement the interface and leave a method unwritten: the compiler gives you an error. The only exception is `default` methods (see below), which already have their own implementation and are optional to override.
 
 A class that implements the interface must provide all the methods:
 
@@ -36,13 +40,16 @@ public class Employee implements Printable {
 
 ```java
 public class Employee implements Printable, Exportable, Auditable {
-    // must implement all methods from all three interfaces
+    // must implement ALL methods from all three interfaces — no exceptions
+    // (except methods with a default implementation, which are optional to override)
 }
 ```
 
 ### Default methods (Java 8+)
 
-Interfaces can have a default implementation. Classes can override it or use it as-is:
+Before Java 8, interfaces could only have methods without implementation. Java 8 introduced `default` methods: methods with an implementation inside the interface that classes are **not required to override**. If the class does not override it, it inherits the interface's implementation. If it does override it, it uses its own.
+
+This allows adding new methods to an interface without breaking all the classes that already implement it — if you add a `default` method, existing classes inherit it without needing any changes:
 
 ```java
 public interface Printable {
