@@ -3,19 +3,19 @@
 > 📖 [Baeldung — Introduction to the Java 8 Date/Time API](https://www.baeldung.com/java-8-date-time-intro)
 > 📖 [Oracle Docs — Date and Time API](https://docs.oracle.com/javase/tutorial/datetime/index.html)
 
-Java has a modern date/time API since Java 8 (`java.time` package). The old `Date` and `Calendar` classes still exist but are avoided in new code — they are mutable and confusing.
+Before Java 8, working with dates was painful. The `Date` class stored milliseconds since 1970 and its month was 0-indexed (January = 0). `Calendar` was the "fix" but was verbose and mutable — you could accidentally change a date you passed to another method and create subtle bugs. Java 8 introduced the `java.time` package, which is immutable (every operation returns a new object), self-documenting, and does not have the indexing quirks. You will use it in every project from day one.
 
 ---
 
 ## The three main types
+
+You have three classes depending on what you need to represent. The most important thing to understand: **none of these store a timezone**. They represent civil time — the date and time as you would write it on a calendar or a clock, without any timezone attached. Use them for business logic like employee hire dates, task deadlines, and timestamps.
 
 | Class | What it represents | Example |
 |-------|-------------------|---------|
 | `LocalDate` | A date with no time | `2026-05-11` |
 | `LocalTime` | A time with no date | `14:30:00` |
 | `LocalDateTime` | A date and time together | `2026-05-11T14:30:00` |
-
-No timezone. Use these for most business logic — employee birthday, contract start date, task deadline.
 
 ---
 
@@ -73,6 +73,8 @@ date.format(long);  // "11 May 2026"
 
 ## Adding and subtracting
 
+All `java.time` classes are immutable — `plusDays` and `minusDays` do not change the original, they return a new object. Always assign the result:
+
 ```java
 LocalDate date = LocalDate.of(2026, 5, 11);
 
@@ -83,8 +85,6 @@ date.plusYears(1);   // 2027-05-11
 date.minusDays(3);   // 2026-05-08
 date.minusMonths(2); // 2026-03-11
 ```
-
-`LocalDate` is immutable — these methods return a new object, they do not change the original.
 
 ---
 
@@ -104,6 +104,8 @@ a.compareTo(b); // negative number — a is before b (same as String.compareTo)
 ---
 
 ## Period and Duration
+
+When you need to know *how much time has passed* between two dates or times, use `Period` (for calendar-based differences in days/months/years) or `Duration` (for precise differences in hours, minutes, seconds):
 
 ```java
 // Period — difference in years, months, days (for dates)

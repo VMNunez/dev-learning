@@ -2,9 +2,11 @@
 
 > 📖 [Oracle Docs — Inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html)
 
+Usas la herencia cuando dos o más clases son del mismo *tipo* de cosa y comparten la mayor parte de su comportamiento, pero difieren en algunos métodos concretos. Sin ella, escribirías los mismos métodos `eat()`, `breathe()` y `sleep()` en cada clase animal — y al cambiar uno, tendrías que actualizarlo en todas las copias. La herencia te permite escribir el comportamiento compartido una sola vez en una **clase padre**, y cada **subclase** lo hereda automáticamente.
+
 ## Herencia — `extends`
 
-Una subclase hereda todos los campos y métodos `public` y `protected` de la clase padre. También puede añadir los suyos propios:
+Una subclase hereda todos los campos y métodos `public` y `protected` de la clase padre y también puede añadir los suyos propios:
 
 ```java
 public class Animal {
@@ -43,7 +45,7 @@ Java solo permite **herencia simple** — una clase solo puede extender una clas
 
 ## `super`
 
-Llama al constructor o a los métodos de la clase padre:
+Cuando una subclase tiene su propio constructor, normalmente necesita que el padre inicialice primero sus propios campos. `super()` activa esa inicialización — y debe ser siempre la primera línea:
 
 ```java
 // super() — llama al constructor del padre
@@ -64,7 +66,7 @@ public void eat() {
 
 ## Sobreescritura de métodos — `@Override`
 
-Una subclase puede reemplazar un método del padre con su propia versión. La firma del método debe coincidir exactamente:
+El comportamiento que una subclase hereda del padre no siempre es el adecuado para ese tipo concreto. La sobreescritura te permite reemplazar un método del padre por una versión adaptada a la subclase, manteniendo el mismo nombre — de modo que cualquier código que trabaje con el tipo padre sigue funcionando sin cambios. La firma del método debe coincidir exactamente:
 
 ```java
 public class Animal {
@@ -103,7 +105,7 @@ public class Cat extends Animal {
 
 ## Polimorfismo
 
-Una variable de tipo padre puede almacenar un objeto de subclase. El método que se ejecuta depende del tipo real del objeto en tiempo de ejecución — no del tipo de la variable:
+La verdadera ventaja de la herencia aparece cuando tienes código que trabaja con el tipo padre y quieres que funcione con cualquier subclase automáticamente, sin tener que modificarlo cada vez que añades una nueva. Eso es el polimorfismo: una variable de tipo padre puede almacenar un objeto de subclase, y el método que se ejecuta es siempre la versión de la subclase:
 
 ```java
 Animal a1 = new Dog("Rex", "Labrador");
@@ -128,7 +130,7 @@ Esto es muy potente en Spring Boot — un método de servicio que acepta `Animal
 
 ## `instanceof` y pattern matching
 
-Comprueba el tipo real de un objeto en tiempo de ejecución:
+A veces tienes una variable tipada como `Animal` pero necesitas llamar a un método que solo tiene `Dog`. `instanceof` te permite comprobar el tipo real en tiempo de ejecución antes de intentar el cast:
 
 ```java
 // Clásico
@@ -146,6 +148,8 @@ if (animal instanceof Dog dog) {
 ---
 
 ## Clases y métodos `final`
+
+Usa `final` cuando necesites proteger una clase o un método para que ninguna subclase los pueda modificar — por ejemplo, para blindar lógica crítica que debe comportarse siempre igual independientemente del subtipo:
 
 - `final class` — no puede ser extendida
 - `final method` — no puede ser sobreescrita por una subclase

@@ -3,11 +3,13 @@
 > 📖 [Baeldung — Java Collections](https://www.baeldung.com/java-collections)
 > 📖 [Oracle Docs — Collections framework](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
 
-The Collections Framework provides ready-made data structures. The three you use most are `List`, `Map`, and `Set`.
+Before collections existed, you had to manage your own arrays — fixed size, no built-in search, no add/remove. The Collections Framework gives you ready-made data structures for the things you do constantly in any application: ordered lists of items, key-value lookups, and sets of unique values. The three you will reach for in almost every Spring Boot service are `List`, `Map`, and `Set`.
 
 ---
 
 ## List — ordered, allows duplicates
+
+A `List` is the go-to choice whenever you need an ordered, growable sequence — like the rows returned from a database query. Unlike an array, it resizes automatically and gives you methods like `add`, `remove`, and `contains` out of the box.
 
 ```java
 import java.util.ArrayList;
@@ -72,6 +74,8 @@ In practice, use `ArrayList` for everything. `LinkedList` is a theoretical answe
 
 ## Map — key-value pairs, keys are unique
 
+Use a `Map` when you need instant lookup by a unique identifier — for example, grouping employees by department, or caching a result so you don't have to search a list every time. Each key maps to exactly one value; putting a new value under an existing key replaces the old one.
+
 ```java
 import java.util.HashMap;
 import java.util.Map;
@@ -114,6 +118,8 @@ scores.values();    // Collection of values
 ---
 
 ## Set — unique values, no duplicates
+
+Use a `Set` when duplicates would be a bug — for example, a list of roles a user has, or a set of tags on an article. Adding a duplicate value silently does nothing, which is exactly what you want.
 
 ```java
 import java.util.HashSet;
@@ -265,6 +271,8 @@ Use `removeIf()` — it is the shortest and most readable.
 ---
 
 ## Spring Boot connection
+
+> **Preview — Spring Boot:** This section uses `JpaRepository` methods and service patterns you haven't studied yet. Read it to see how collections appear throughout a real application — you'll implement this in the Spring Boot notes.
 
 Collections are everywhere in Spring Boot:
 

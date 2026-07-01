@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Exception Handling in Java](https://www.baeldung.com/java-exceptions)
 > 📖 [Oracle Docs — Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html)
 
-Una excepción es un evento que interrumpe el flujo normal de un programa. En Java, las excepciones son objetos — llevan un mensaje y un stack trace.
+Sin excepciones, cada método tendría que devolver un valor especial (como `-1` o `null`) para señalar que algo salió mal — y cada llamador tendría que comprobar ese valor. Ese convenio se rompe rápido: los llamadores se olvidan de comprobarlo, la señal se pierde tras unas pocas llamadas y los errores se convierten en bugs silenciosos. Java usa excepciones en su lugar: cuando algo falla, el método *lanza* un objeto que sube por la pila de llamadas hasta que algo lo *captura*. La pila de llamadas — el rastro completo de cada método que estaba en ejecución cuando ocurrió el error — es lo que ves en la consola cuando la aplicación se rompe. Las excepciones son objetos en Java, así que llevan tanto el mensaje como el stack trace completo.
 
 ---
 
@@ -21,6 +21,8 @@ En Spring Boot casi siempre trabajas con excepciones no comprobadas — las lanz
 ---
 
 ## try / catch / finally
+
+Envuelves el código arriesgado en un bloque `try` y gestionas cada posible fallo en su propio bloque `catch`. `finally` se ejecuta siempre, pase lo que pase — úsalo para cerrar conexiones o liberar recursos incluso cuando se produce una excepción:
 
 ```java
 try {
@@ -54,6 +56,8 @@ try {
 
 ## throw — lanzar una excepción manualmente
 
+Usas `throw` cuando detectas un estado inválido en tu propio código y quieres detener la ejecución de inmediato con una explicación clara — por ejemplo, cuando el llamador pasa un valor que no tiene ningún sentido:
+
 ```java
 public void setAge(int age) {
     if (age < 0) {
@@ -69,7 +73,7 @@ Lanza siempre con un mensaje que explique qué salió mal y qué valor lo causó
 
 ## throws — declarar excepciones comprobadas
 
-Si un método puede lanzar una excepción comprobada y no la maneja, debe declararla:
+Las excepciones comprobadas deben declararse en la firma del método para que el compilador obligue a cada llamador a decidir: gestionarla aquí o propagarla hacia arriba. Si un método puede lanzar una excepción comprobada y no la captura, debe declararla con `throws`:
 
 ```java
 public String readFile(String path) throws IOException {

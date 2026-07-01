@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Exception Handling in Java](https://www.baeldung.com/java-exceptions)
 > 📖 [Oracle Docs — Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html)
 
-An exception is an event that interrupts the normal flow of a program. In Java, exceptions are objects — they carry a message and a stack trace.
+Without exceptions, every method would need to return a special value (like `-1` or `null`) to signal that something went wrong — and every caller would need to check that value. That convention breaks down quickly: callers forget to check, the signal gets lost after a few method calls, and errors become silent bugs. Java uses exceptions instead: when something goes wrong, the method *throws* an object that travels up the call stack until something *catches* it. The call stack — the full trace of every method that was running when the error happened — is what you see in the console when your app crashes. Exceptions are objects in Java, so they carry both a message and the full stack trace.
 
 ---
 
@@ -21,6 +21,8 @@ In Spring Boot you almost always work with unchecked exceptions — you throw th
 ---
 
 ## try / catch / finally
+
+You wrap the risky code in a `try` block and handle each possible failure in its own `catch` block. `finally` runs no matter what — use it to close connections or release resources even when an exception occurs:
 
 ```java
 try {
@@ -54,6 +56,8 @@ try {
 
 ## throw — manually throw an exception
 
+You use `throw` when you detect an invalid state in your own code and want to stop execution immediately with a clear explanation — for example, when a caller passes a value that makes no sense:
+
 ```java
 public void setAge(int age) {
     if (age < 0) {
@@ -69,7 +73,7 @@ Always throw with a message that explains what went wrong and what value caused 
 
 ## throws — declare checked exceptions
 
-If a method can throw a checked exception and does not handle it, it must declare it:
+Checked exceptions must be declared at the method signature level so the compiler forces every caller to decide: handle it here, or pass it up. If a method can throw a checked exception and does not catch it, it must declare it with `throws`:
 
 ```java
 public String readFile(String path) throws IOException {

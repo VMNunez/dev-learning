@@ -3,11 +3,13 @@
 > 📖 [Baeldung — Java Collections](https://www.baeldung.com/java-collections)
 > 📖 [Oracle Docs — Collections framework](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
 
-El Collections Framework proporciona estructuras de datos ya construidas. Las tres que más usas son `List`, `Map` y `Set`.
+Antes de que existieran las colecciones, tenías que gestionar tus propios arrays — tamaño fijo, sin búsqueda integrada, sin forma de añadir ni eliminar elementos. El Collections Framework te da estructuras de datos ya hechas para lo que haces constantemente en cualquier aplicación: listas ordenadas de elementos, búsquedas por clave y conjuntos de valores únicos. Las tres que usarás en casi todos los servicios Spring Boot son `List`, `Map` y `Set`.
 
 ---
 
 ## List — ordenada, permite duplicados
+
+`List` es la elección por defecto cuando necesitas una secuencia ordenada y dinámica — como las filas que devuelve una consulta a la base de datos. A diferencia de un array, se redimensiona automáticamente y te da métodos como `add`, `remove` y `contains` desde el primer momento.
 
 ```java
 import java.util.ArrayList;
@@ -72,6 +74,8 @@ En la práctica, usa `ArrayList` para todo. `LinkedList` es una respuesta teóri
 
 ## Map — pares clave-valor, las claves son únicas
 
+Usa un `Map` cuando necesitas búsqueda instantánea por un identificador único — por ejemplo, agrupar empleados por departamento o cachear un resultado para no recorrer una lista cada vez. Cada clave apunta exactamente a un valor; poner un nuevo valor bajo una clave existente reemplaza el anterior.
+
 ```java
 import java.util.HashMap;
 import java.util.Map;
@@ -114,6 +118,8 @@ scores.values();    // Collection de valores
 ---
 
 ## Set — valores únicos, sin duplicados
+
+Usa un `Set` cuando los duplicados serían un error — por ejemplo, la lista de roles que tiene un usuario o el conjunto de etiquetas de un artículo. Añadir un valor duplicado no hace nada en silencio, que es exactamente lo que quieres.
 
 ```java
 import java.util.HashSet;
@@ -265,6 +271,8 @@ Usa `removeIf()` — es la más corta y legible.
 ---
 
 ## Conexión con Spring Boot
+
+> **Vista previa — Spring Boot:** Esta sección usa métodos de `JpaRepository` y patrones de servicio que aún no has estudiado. Léela para ver cómo aparecen las colecciones en una aplicación real — lo implementarás en las notas de Spring Boot.
 
 Las colecciones están en todas partes en Spring Boot:
 
