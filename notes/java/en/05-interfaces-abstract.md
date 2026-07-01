@@ -156,6 +156,10 @@ public class Dog extends Animal {
         this.breed = breed; // then your own fields
     }
 }
+
+// When creating the object, you pass both constructors' arguments in one call
+Dog dog = new Dog("Rex", "Labrador");
+dog.breathe();  // "Rex is breathing"  — method inherited from Animal
 ```
 
 ---
@@ -175,12 +179,28 @@ public interface Validator {
 }
 ```
 
-A lambda is an anonymous function written inline. The basic syntax is `parameter -> expression`: what is on the left of the arrow is the input parameter, and what is on the right is what gets returned. So `value -> value.contains("@")` is equivalent to writing a class that implements `Validator` with a body that does `return value.contains("@");`. Java knows which method it targets because the interface only has one:
+A lambda is an anonymous function written inline. Before Java 8, to implement a functional interface you had to create a whole anonymous class. With lambdas, that collapses to a single line:
 
 ```java
-// Used with a lambda
+// Without a lambda — an anonymous class that implements Validator
+Validator emailValidator = new Validator() {
+    @Override
+    public boolean validate(String value) {
+        return value.contains("@");
+    }
+};
+
+// With a lambda — exactly the same in one line
 Validator emailValidator = value -> value.contains("@");
+```
+
+The syntax is `parameter -> expression`: what is on the left of the arrow is the input parameter, and what is on the right is what gets returned. Java knows which method it targets because the interface only has one — in this case `validate(String value)`.
+
+Once the lambda is assigned, `emailValidator` is of type `Validator`, so you can call any method the interface declares — in this case `validate()`:
+
+```java
 emailValidator.validate("test@email.com");   // true
+emailValidator.validate("no-at-sign");        // false
 ```
 
 The most common built-in functional interfaces already come with Java — you do not define them, you just use them. They are generic contracts for the four patterns that repeat everywhere with streams and lambdas:
@@ -197,7 +217,7 @@ The `T` and `R` are generics — they mean "any type". `Predicate<Employee>` is 
 Concrete examples without streams, to see how each one works on its own:
 
 ```java
-// Predicate — returns true or false
+// Predicate<String> — the generic type tells you what it receives: here it receives a String
 Predicate<String> isLong = s -> s.length() > 10;
 isLong.test("Hi");            // false
 isLong.test("Hello, World!"); // true
@@ -223,44 +243,46 @@ You will use these every time you work with streams and lambdas.
 
 > **Preview — Spring Boot:** This section uses Spring Boot and Spring Security classes (`JpaRepository`, `UserDetailsService`, `UserDetails`, `@Service`) that you haven't studied yet. Read it to see how interfaces work in a real project. You'll implement all of this in the Spring Boot notes — come back then for full understanding.
 
-Spring Boot uses interfaces extensively. There are two main patterns: interfaces you define (and Spring generates the implementation), and Spring interfaces you implement (and Spring calls your code).
+This section exists because interfaces are the central mechanism of Spring Boot — not theory you use once and forget. Every time you access the database or configure security in TimeTrack, you are following interface contracts. There are two distinct patterns: in the first you define the interface and Spring generates the implementation; in the second Spring defines the interface and you write the implementation.
+
+---
+
+### Pattern 1 — You define the interface, Spring generates the implementation
+
+JPA (Java Persistence API) is the Java standard for working with databases using objects instead of raw SQL. `JpaRepository` is a Spring Data JPA interface that, when you extend it, causes Spring to automatically generate all the database access code at startup.
 
 ```java
-// JpaRepository is a Spring Data interface — Spring generates the implementation automatically
-// It gives you save(), findById(), findAll(), delete() and more without writing any SQL
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    List<Employee> findByDepartment(String department);
-}
-
-// UserDetailsService is a Spring Security interface — you implement it
-// to tell Spring how to find a user in YOUR database
-public class UserDetailsServiceImpl implements UserDetailsService {
-    @Override
-    public UserDetails loadUserByUsername(String username) { ... }
+// projects/07-timetrack/src/main/java/com/timetrack/repository/UserRepository.java
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 }
 ```
 
-> **Why does `EmployeeRepository` use `extends` instead of `implements`?** Because in Java, interfaces do not implement other interfaces — they *extend* them. `extends` between interfaces means interface inheritance: `EmployeeRepository` inherits all the method signatures from `JpaRepository`. Only classes use `implements`.
+`JpaRepository<User, Long>` tells Spring this repository works with the `User` entity and that its primary key is of type `Long`. From this interface you inherit `save()`, `findById()`, `findAll()`, `delete()` and more — without writing a single line of SQL.
 
-When you write `extends JpaRepository` or `implements UserDetailsService`, you are following the interface contract that Spring Boot expects. `JpaRepository` gives you database operations without writing SQL. `UserDetailsService` gives Spring Security a way to find a user by their login identifier — without this, Spring Security has no way to reach your database.
+`findByEmail` has no body: Spring Data reads the method name and generates the SQL `SELECT * FROM users WHERE email = ?` automatically. The convention is `findBy` followed by the exact field name in the entity — `findByEmail` searches by `email`, `findByName` would search by `name`, `findByEmailAndStatus` would generate `WHERE email = ? AND status = ?`. Spring Data parses the name and builds the query; if the field does not exist in the entity, the project fails to start.
 
-### Why `UserDetailsService` exists — the plug and socket
+> In Java, interfaces extend other interfaces with `extends`, never with `implements` — that keyword is only for classes. That is why `UserRepository extends JpaRepository` and not `implements JpaRepository`.
 
-Spring Security needs to load a user when a request comes in. But Spring Security has no idea about your database — it does not know you have a `User` entity or a `UserRepository`.
+---
 
-So Spring Security defines an interface with one method. This interface is part of the `spring-security-core` dependency you added in `pom.xml` — you do not write it:
+### Pattern 2 — Spring defines the interface, you write the implementation
+
+`UserDetailsService` is a Spring Security interface — it comes in the `spring-security-core` dependency from `pom.xml`. You will not find it in your project files because it lives inside the Spring jar; you can open it in IntelliJ by Ctrl+clicking its name.
 
 ```java
+// Defined by Spring Security — not in your project files
 public interface UserDetailsService {
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }
 ```
 
-This is the **socket**: Spring Security knows how to call this method when a login request arrives, but it does not provide the implementation because it does not know your database. The socket defines the shape of the plug; you build the plug.
+`throws UsernameNotFoundException` means the method can throw that exception if no user is found. Exceptions are explained in detail in [08-exceptions.md](08-exceptions.md) — for now read it as "this method can fail with this type of error."
 
-Your job is to build the **plug** — a class that implements this interface and connects Spring Security to your database:
+Spring Security knows how to call `loadUserByUsername` when a login request arrives, but it cannot provide the implementation because it does not know your database. Your job is to write that implementation:
 
 ```java
+// projects/07-timetrack/src/main/java/com/timetrack/security/UserDetailsServiceImpl.java
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -278,8 +300,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 }
 ```
 
-`UserRepository` is your own JPA repository (the one that extends `JpaRepository`). When you call `userRepository.findByEmail(username)`, Spring Data automatically generates the SQL `SELECT * FROM users WHERE email = ?` from the method name. Spring Security knows nothing about this — it only calls `loadUserByUsername()` on your class and receives the result.
+The name `UserDetailsServiceImpl` is a convention — the `Impl` suffix means "implementation." Spring does not look for it by name; it finds it because the class is annotated with `@Service` and implements `UserDetailsService`.
 
-When Spring Security needs a user, it calls `loadUserByUsername` on your implementation — and your code goes to the database to find it.
+`findByEmail(username)` returns an `Optional<User>` — a container that may hold the user or be empty. `.orElseThrow()` opens it: if there is a user it returns it; if it is empty it throws the exception you pass. `Optional` is explained in [08-generics.md](08-generics.md).
+
+---
+
+### The full flow
+
+When a login request arrives, Spring Security calls `loadUserByUsername(email)` on your `UserDetailsServiceImpl`. This calls `userRepository.findByEmail(email)`, which goes to the database. The result is returned to Spring Security, which verifies the password and decides whether the login is valid.
 
 > `username` in Spring Security means the login identifier. In TimeTrack that is the email — not a separate username field. The parameter name is fixed by the interface; what it actually contains depends on your app.

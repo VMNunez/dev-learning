@@ -114,6 +114,25 @@ Una clase solo puede extender **una** clase abstracta. Esta es la diferencia cla
 
 ---
 
+## Constructores en subclases
+
+Cuando una subclase define su propio constructor, puede añadir sus propios campos además de los del padre. La única condición es que `super(...)` debe ser la primera línea, para que el padre quede inicializado antes de añadir lo propio:
+
+```java
+public class Dog extends Animal {
+    private String breed;   // campo propio de Dog, no existe en Animal
+
+    public Dog(String name, String breed) {
+        super(name);        // primero inicializas al padre
+        this.breed = breed; // luego tus propios campos
+    }
+}
+
+// Al crear el objeto, pasas los argumentos de ambos constructores en uno
+Dog dog = new Dog("Rex", "Labrador");
+dog.breathe();  // "Rex is breathing"  — método heredado de Animal
+```
+
 ## Interface vs Clase abstracta
 
 La decisión se reduce a una pregunta: ¿estás definiendo una _capacidad_ que una clase puede tener, o un _tipo base_ del que derivan otras clases? Usa una interfaz cuando clases sin relación entre sí necesitan compartir un contrato (`Printable` puede implementarlo otras clases como `Employee`, `Invoice` o `Report` — no tienen nada más en común). Usa una clase abstracta cuando un grupo de clases relacionadas comparten código de implementación real que de otro modo se duplicaría.
@@ -137,24 +156,8 @@ public class Dog extends Animal implements Printable, Auditable {
 | Cuándo usar | Definir una capacidad que una clase puede tener | Definir un tipo base con lógica compartida |
 
 **Interface:** "Esta clase puede hacer X" — `Printable`, `Exportable`, `Comparable`
+
 **Clase abstracta:** "Esta clase ES un tipo de X" — `Animal`, `Shape`, `BaseService`
-
----
-
-## Constructores en subclases
-
-Cuando una subclase define su propio constructor, puede añadir sus propios campos además de los del padre. La única condición es que `super(...)` debe ser la primera línea, para que el padre quede inicializado antes de añadir lo propio:
-
-```java
-public class Dog extends Animal {
-    private String breed;   // campo propio de Dog, no existe en Animal
-
-    public Dog(String name, String breed) {
-        super(name);        // primero inicializas al padre
-        this.breed = breed; // luego tus propios campos
-    }
-}
-```
 
 ---
 
@@ -173,12 +176,28 @@ public interface Validator {
 }
 ```
 
-Una lambda es una función anónima en línea. La sintaxis básica es `parámetro -> expresión`: lo que está a la izquierda de la flecha es el parámetro de entrada, y lo que está a la derecha es lo que devuelve. Así, `value -> value.contains("@")` es equivalente a escribir una clase que implementa `Validator` con un cuerpo que hace `return value.contains("@");`. Java sabe a qué método apunta porque la interfaz solo tiene uno:
+Una lambda es una función anónima en línea. Antes de Java 8, para implementar una interfaz funcional tenías que crear una clase anónima con toda su estructura. Con lambdas, eso se reduce a una sola línea:
 
 ```java
-// Se usa con una lambda
+// Sin lambda — una clase anónima que implementa Validator
+Validator emailValidator = new Validator() {
+    @Override
+    public boolean validate(String value) {
+        return value.contains("@");
+    }
+};
+
+// Con lambda — exactamente lo mismo en una línea
 Validator emailValidator = value -> value.contains("@");
+```
+
+La sintaxis es `parámetro -> expresión`: lo que está a la izquierda de la flecha es el parámetro de entrada, y lo que está a la derecha es lo que devuelve. Java sabe a qué método apunta porque la interfaz solo tiene uno — en este caso `validate(String value)`.
+
+Una vez asignada la lambda, `emailValidator` es de tipo `Validator`, por lo que puedes llamar a cualquier método que declare esa interfaz — en este caso `validate()`:
+
+```java
 emailValidator.validate("test@email.com");   // true
+emailValidator.validate("sin-arroba");        // false
 ```
 
 Las interfaces funcionales más comunes ya vienen en Java — no las defines tú, simplemente las usas. Son contratos genéricos para los cuatro patrones que se repiten siempre con streams y lambdas:
@@ -195,7 +214,7 @@ La `T` y la `R` son genéricos — significan "cualquier tipo". `Predicate<Emplo
 Ejemplos concretos de uso sin streams, para ver cómo funciona cada una por sí sola:
 
 ```java
-// Predicate — devuelve true o false
+// Predicate<String> — el tipo genérico indica lo que recibe: aquí recibe un String
 Predicate<String> isLong = s -> s.length() > 10;
 isLong.test("Hola");          // false
 isLong.test("Hello, World!"); // true
@@ -221,44 +240,46 @@ Las usarás cada vez que trabajes con streams y lambdas.
 
 > **Vista previa — Spring Boot:** Esta sección usa clases de Spring Boot y Spring Security (`JpaRepository`, `UserDetailsService`, `UserDetails`, `@Service`) que aún no has estudiado. Léela para ver cómo funcionan las interfaces en un proyecto real. Lo implementarás todo en las notas de Spring Boot — vuelve entonces para entenderlo en profundidad.
 
-Spring Boot usa interfaces extensivamente. Hay dos patrones principales: interfaces que tú defines (y Spring genera la implementación), e interfaces de Spring que tú implementas (y Spring llama a tu código).
+Esta sección existe porque las interfaces son el mecanismo central de Spring Boot — no teoría que nunca vuelves a usar. Cada vez que accedes a la base de datos o configuras seguridad en una app, estás siguiendo contratos de interfaz. Hay dos patrones distintos: en el primero tú defines la interfaz y Spring genera la implementación; en el segundo Spring define la interfaz y tú escribes la implementación.
+
+---
+
+### Patrón 1 — Tú defines la interfaz, Spring genera la implementación
+
+JPA (Java Persistence API) es el estándar de Java para trabajar con bases de datos usando objetos en lugar de SQL directo. `JpaRepository` es una interfaz de Spring Data JPA que, cuando la extiendes, hace que Spring genere automáticamente todo el código de acceso a la base de datos en tiempo de arranque.
 
 ```java
-// JpaRepository es una interfaz de Spring Data — Spring genera la implementación automáticamente
-// Te da save(), findById(), findAll(), delete() y más sin escribir SQL
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    List<Employee> findByDepartment(String department);
-}
-
-// UserDetailsService es una interfaz de Spring Security — tú la implementas
-// para decirle a Spring cómo encontrar un usuario en TU base de datos
-public class UserDetailsServiceImpl implements UserDetailsService {
-    @Override
-    public UserDetails loadUserByUsername(String username) { ... }
+// projects/07-timetrack/src/main/java/com/timetrack/repository/UserRepository.java
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 }
 ```
 
-> **¿Por qué `EmployeeRepository` usa `extends` y no `implements`?** Porque en Java, las interfaces no implementan otras interfaces — las _extienden_. `extends` entre interfaces significa herencia de interfaz: `EmployeeRepository` hereda todas las firmas de método de `JpaRepository`. Solo las clases usan `implements`.
+`JpaRepository<User, Long>` indica que este repositorio trabaja con la entidad `User` y que su clave primaria es de tipo `Long`. De esta interfaz heredas `save()`, `findById()`, `findAll()`, `delete()` y más — sin escribir una sola línea de SQL.
 
-Cuando escribes `extends JpaRepository` o `implements UserDetailsService`, estás siguiendo el contrato de interfaz que Spring Boot espera. `JpaRepository` te da operaciones de base de datos sin escribir SQL. `UserDetailsService` le da a Spring Security la forma de encontrar un usuario por su identificador de login — sin esto, Spring Security no sabría cómo llegar a tu base de datos.
+`findByEmail` no tiene cuerpo: Spring Data lee el nombre del método y genera el SQL `SELECT * FROM users WHERE email = ?` automáticamente. La convención es `findBy` seguido del nombre exacto del campo en la entidad — `findByEmail` busca por `email`, `findByName` buscaría por `name`, `findByEmailAndStatus` generaría `WHERE email = ? AND status = ?`. Spring Data interpreta el nombre y construye la consulta; si el campo no existe en la entidad, el proyecto no arranca.
 
-### Por qué existe `UserDetailsService` — el enchufe y el tomacorriente
+> En Java, las interfaces extienden otras interfaces con `extends`, nunca con `implements` — esa palabra solo la usan las clases. Por eso `UserRepository extends JpaRepository` y no `implements JpaRepository`.
 
-Spring Security necesita cargar un usuario cuando llega una petición. Pero Spring Security no sabe nada de tu base de datos — no sabe que tienes una entidad `User` o un `UserRepository`.
+---
 
-Así que Spring Security define una interfaz con un método. Esta interfaz forma parte de la dependencia `spring-security-core` que añadiste en el `pom.xml` — no la escribes tú:
+### Patrón 2 — Spring define la interfaz, tú escribes la implementación
+
+`UserDetailsService` es una interfaz de Spring Security — viene en la dependencia `spring-security-core` del `pom.xml`. No la encontrarás en los archivos de tu proyecto porque está dentro del jar de Spring; puedes abrirla en IntelliJ haciendo Ctrl+clic sobre su nombre.
 
 ```java
+// Definida por Spring Security — no está en los archivos de tu proyecto
 public interface UserDetailsService {
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }
 ```
 
-Este es el **tomacorriente**: Spring Security sabe llamar a este método cuando llega una petición de login, pero no proporciona la implementación porque no conoce tu base de datos. El tomacorriente define la forma del enchufe; tú construyes el enchufe.
+`throws UsernameNotFoundException` significa que el método puede lanzar esa excepción si no encuentra al usuario. Las excepciones se explican en detalle en [08-exceptions.md](../en/08-exceptions.md) — por ahora, léelo como "este método puede fallar con este tipo de error".
 
-Tu trabajo es construir el **enchufe** — una clase que implemente esta interfaz y conecte Spring Security a tu base de datos:
+Spring Security sabe llamar a `loadUserByUsername` cuando llega una petición de login, pero no puede proporcionar la implementación porque no conoce tu base de datos. Tu trabajo es escribir esa implementación:
 
 ```java
+// projects/07-timetrack/src/main/java/com/timetrack/security/UserDetailsServiceImpl.java
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -276,8 +297,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 }
 ```
 
-`UserRepository` es tu propio repositorio JPA (el que extiende `JpaRepository`). Cuando llamas a `userRepository.findByEmail(username)`, Spring Data genera automáticamente el SQL `SELECT * FROM users WHERE email = ?` a partir del nombre del método. Spring Security no sabe nada de esto — solo llama a `loadUserByUsername()` en tu clase y recibe el resultado.
+El nombre `UserDetailsServiceImpl` es una convención — el sufijo `Impl` significa "implementation". Spring no la busca por ese nombre, sino porque está anotada con `@Service` e implementa `UserDetailsService`.
 
-Cuando Spring Security necesita un usuario, llama a `loadUserByUsername` en tu implementación — y tu código va a la base de datos a buscarlo.
+`findByEmail(username)` devuelve un `Optional<User>` — un contenedor que puede tener el usuario o estar vacío. `.orElseThrow()` lo abre: si hay usuario lo devuelve; si está vacío lanza la excepción que le pases. Los `Optional` se explican en [08-generics.md](../en/08-generics.md).
+
+---
+
+### El flujo completo
+
+Cuando llega una petición de login, Spring Security llama a `loadUserByUsername(email)` en tu `UserDetailsServiceImpl`. Esta llama a `userRepository.findByEmail(email)`, que va a la base de datos. El resultado se devuelve a Spring Security, que verifica la contraseña y decide si el login es correcto.
 
 > `username` en Spring Security significa el identificador de login. En TimeTrack ese es el email — no un campo username separado. El nombre del parámetro está fijado por la interfaz; lo que contiene realmente depende de tu aplicación.
