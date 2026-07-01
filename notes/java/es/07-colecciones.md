@@ -58,7 +58,7 @@ mutable.add("Luis");    // ✅ funciona — esta sí es modificable
 mutable.remove("Ana");  // ✅ funciona
 ```
 
-Usa `List.of()` cuando los datos no van a cambiar (por ejemplo, una lista fija de valores en un test). Usa `new ArrayList<>()` cuando vayas a añadir o quitar elementos después.
+Usa `List.of()` cuando los datos no van a cambiar (por ejemplo, una lista fija de valores en un test). Usa `new ArrayList<>()` cuando vayas a añadir o quitar elementos después. La inmutabilidad solo bloquea las operaciones de *modificación estructural* — `add()`, `remove()`, `set()` y `clear()`. Los métodos de solo lectura (`get()`, `contains()`, `size()`, iterar con for-each) funcionan perfectamente en listas creadas con `List.of()`.
 
 ### List vs Array
 
@@ -98,7 +98,9 @@ Un `Map` es la estructura que usas cuando necesitas buscar algo por un identific
 
 Esto es útil, por ejemplo, cuando quieres **cachear** un resultado — es decir, guardar algo que ya calculaste o recuperaste para no repetir ese trabajo. Si tienes una lista de 1000 empleados y necesitas buscar el mismo empleado varias veces por ID, guardas los resultados en un `Map<Integer, Employee>` y los recuperas en tiempo constante, en lugar de recorrer la lista cada vez.
 
-`Map<String, Integer>` se lee así: el primer tipo entre los `<>` es el tipo de la clave (`String` — el nombre del empleado) y el segundo es el tipo del valor (`Integer` — la puntuación). Siempre declares el tipo de la clave primero y el del valor segundo.
+`Map<String, Integer>` se lee así: el primer tipo entre los `<>` es el tipo de la clave (`String` — el nombre del empleado) y el segundo es el tipo del valor (`Integer` — la puntuación). Siempre declaras el tipo de la clave primero y el del valor segundo.
+
+Creas un `Map` con `new HashMap<>()` — la interfaz es `Map<K, V>` y la implementación concreta es `HashMap`, igual que con `List` y `ArrayList`. Los métodos que más usarás son: `put(clave, valor)` para añadir o actualizar una entrada (si la clave ya existe, `put()` reemplaza el valor anterior en lugar de añadir una segunda entrada), `get(clave)` para recuperar el valor de una clave, `getOrDefault(clave, valorPorDefecto)` para leer con un fallback si la clave no existe, `containsKey(clave)` para saber si una clave está en el mapa, `containsValue(valor)` para saber si un valor concreto aparece en alguna entrada, `remove(clave)` para eliminar una entrada, y `size()` para contar cuántas hay.
 
 ```java
 import java.util.HashMap;
@@ -121,8 +123,11 @@ scores.size();                  // 2 — número de entradas (recordatorio: "Vic
 
 // Eliminar
 scores.remove("Ana");           // elimina la entrada con clave "Ana"
+```
 
-// Iterar — recorrer todas las entradas (clave + valor)
+Para iterar sobre todas las entradas del mapa necesitas `Map.Entry<K, V>`, que representa un par clave-valor concreto. El método `.entrySet()` te devuelve el conjunto completo de entradas para que puedas recorrerlas. Dentro del bucle, `entry.getKey()` te da la clave y `entry.getValue()` te da el valor:
+
+```java
 for (Map.Entry<String, Integer> entry : scores.entrySet()) {
     System.out.println(entry.getKey() + ": " + entry.getValue());
     // imprime: Victor: 97
@@ -132,8 +137,6 @@ for (Map.Entry<String, Integer> entry : scores.entrySet()) {
 scores.keySet();    // Set<String> con todas las claves
 scores.values();    // Collection<Integer> con todos los valores
 ```
-
-> `Map.Entry<String, Integer>` representa una única entrada del mapa (una clave y su valor juntos). `.entrySet()` te devuelve el conjunto de todas las entradas para poder iterar sobre ellas.
 
 ### HashMap vs LinkedHashMap vs TreeMap
 

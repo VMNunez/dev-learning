@@ -58,7 +58,7 @@ mutable.add("Luis");    // ✅ works — this one is modifiable
 mutable.remove("Ana");  // ✅ works
 ```
 
-Use `List.of()` when the data will not change (for example, a fixed list of values in a test). Use `new ArrayList<>()` when you need to add or remove elements later.
+Use `List.of()` when the data will not change (for example, a fixed list of values in a test). Use `new ArrayList<>()` when you need to add or remove elements later. Immutability only blocks *structural modification* operations — `add()`, `remove()`, `set()`, and `clear()`. Read-only methods (`get()`, `contains()`, `size()`, iterating with for-each) work perfectly fine on lists created with `List.of()`.
 
 ### List vs Array
 
@@ -100,6 +100,8 @@ This is useful, for example, when you want to **cache** a result — that is, st
 
 `Map<String, Integer>` reads like this: the first type inside `<>` is the key type (`String` — the employee name) and the second is the value type (`Integer` — the score). You always declare the key type first and the value type second.
 
+You create a `Map` with `new HashMap<>()` — the interface is `Map<K, V>` and the concrete implementation is `HashMap`, the same pattern as `List` and `ArrayList`. The methods you will use most are: `put(key, value)` to add or update an entry (if the key already exists, `put()` replaces the previous value instead of adding a second entry), `get(key)` to retrieve a value, `getOrDefault(key, defaultValue)` to read with a fallback when the key does not exist, `containsKey(key)` to check whether a key is in the map, `containsValue(value)` to check whether a specific value appears in any entry, `remove(key)` to delete an entry, and `size()` to count how many entries there are.
+
 ```java
 import java.util.HashMap;
 import java.util.Map;
@@ -121,8 +123,11 @@ scores.size();                  // 2 — number of entries (remember: "Victor" r
 
 // Removing
 scores.remove("Ana");           // removes the entry with key "Ana"
+```
 
-// Iterating — go through all entries (key + value)
+To iterate over all entries you need `Map.Entry<K, V>`, which represents one key-value pair. The `.entrySet()` method gives you the full set of entries to loop over. Inside the loop, `entry.getKey()` gives you the key and `entry.getValue()` gives you the value:
+
+```java
 for (Map.Entry<String, Integer> entry : scores.entrySet()) {
     System.out.println(entry.getKey() + ": " + entry.getValue());
     // prints: Victor: 97
@@ -132,8 +137,6 @@ for (Map.Entry<String, Integer> entry : scores.entrySet()) {
 scores.keySet();    // Set<String> of all keys
 scores.values();    // Collection<Integer> of all values
 ```
-
-> `Map.Entry<String, Integer>` represents a single map entry (one key and its value together). `.entrySet()` gives you the set of all entries so you can iterate over them.
 
 ### HashMap vs LinkedHashMap vs TreeMap
 
