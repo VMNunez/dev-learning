@@ -242,7 +242,7 @@ System.out.println(u1 == u2);       // → false — different references in mem
 System.out.println(u1.equals(u2));  // → false — without override, equals also compares references
 ```
 
-Overriding all three (IntelliJ generates this for you with `Alt+Insert`):
+Overriding all three (IntelliJ generates this for you with `Alt+Insert`): IntelliJ writes all the code — the `@Override`, the method signature, and all the internal logic (`if (this == o)`, the `instanceof`, the cast, `Objects.equals()`, `Objects.hash()`). The only thing you do is choose which fields to include in the comparison or in the output text — in this case, `name` and `email`.
 
 ```java
 public class User {

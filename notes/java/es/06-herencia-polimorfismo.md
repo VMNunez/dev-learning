@@ -246,7 +246,7 @@ System.out.println(u1 == u2);  // → false — referencias distintas en memoria
 System.out.println(u1.equals(u2));  // → false — sin override, equals también compara referencias
 ```
 
-Sobreescribiendo los tres (IntelliJ lo genera por ti con `Alt+Insert`):
+Sobreescribiendo los tres (IntelliJ lo genera por ti con `Alt+Insert`): IntelliJ escribe todo el código — el `@Override`, la firma del método, y toda la lógica interna (`if (this == o)`, el `instanceof`, el cast, `Objects.equals()`, `Objects.hash()`). Lo único que haces tú es elegir qué campos quieres incluir en la comparación o en el texto — en este caso, `name` y `email`.
 
 ```java
 public class User {
