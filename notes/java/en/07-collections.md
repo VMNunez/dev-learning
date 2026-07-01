@@ -287,6 +287,8 @@ public class Employee implements Comparable<Employee> {
 }
 
 // 2. The list uses that rule when sorting — you pass nothing extra
+// In Spring Boot this block would live inside a service method:
+// the employees would come from repository.findAll(), not added by hand
 List<Employee> employees = new ArrayList<>();
 employees.add(new Employee("Luis", 30));
 employees.add(new Employee("Ana", 25));
@@ -300,7 +302,7 @@ The empty `<>` in `new ArrayList<>()` is called the **diamond operator** and is 
 
 The reading of the code is correct: `List<Employee> employees` creates an empty list that can only hold objects of the `Employee` class (the one defined just above). Each `employees.add(new Employee("Luis", 30))` creates an `Employee` object and adds it to that list. That is the list `Collections.sort()` then sorts by calling `compareTo()` on each pair of employees.
 
-`employees.sort(null)` may look odd, but `null` here means: "I am not passing an external rule — use the one the class already has." It is equivalent to `Collections.sort(employees)`.
+`employees.sort(null)` may look odd, but `null` here means: "I am not passing an external rule — use the one the class already has." It is equivalent to `Collections.sort(employees)`. `employees.sort()` with no arguments does not exist — `sort()` requires exactly one argument: either a `Comparator` with the rule, or `null` to mean "use the natural `Comparable` order." There is no way to call it with zero arguments.
 
 ### Comparator — a sort rule defined outside the class
 
@@ -311,20 +313,35 @@ The problem with `Comparable` is that you can only define one sort order per cla
 - **`Comparator.comparing(function)`** — sorts by the field the function returns. Use it for `String` or objects.
 - **`Comparator.comparingInt(function)`** — same but optimised for `int` fields (avoids boxing the primitive `int` to an `Integer` object). Use it for age, price, quantity.
 - **`.reversed()`** — chains onto the previous comparator to flip the order (largest to smallest instead of smallest to largest).
-- **`.thenComparing(function)`** — tie-breaker: when two elements are equal under the first criterion, applies a second one.
+- **`.thenComparing(function)`** — tie-breaker: when two elements are equal under the first criterion, applies a second one. For `int` fields, `.thenComparingInt(function)` also exists — the optimised variant for primitives, same as `comparingInt`.
 
-The `Employee::getName` syntax is called a **method reference** — a shorter way to write `e -> e.getName()`. It is covered in `09-streams-lambdas.md`. For now read it as "the `getName` method of `Employee`":
+The `Employee::getName` syntax is called a **method reference** — a shorter way to write `e -> e.getName()`. It is covered in `09-streams-lambdas.md`. For now read it as "the `getName` method of `Employee`."
+
+In Spring Boot, this code would live inside a service method — the list would come from `repository.findAll()` and you would sort it before returning it:
 
 ```java
-// Sort by name alphabetically
-employees.sort(Comparator.comparing(Employee::getName));
-// result: Ana, Luis, Victor
+// In a Spring Boot service
+public List<Employee> getEmployeesSortedByName() {
+    List<Employee> employees = repository.findAll(); // comes from the database
 
-// Sort by age from highest to lowest
-employees.sort(Comparator.comparingInt(Employee::getAge).reversed());
-// result: Luis (30), Victor (28), Ana (25)
+    // Option 1 — sort by name alphabetically (A → Z)
+    employees.sort(Comparator.comparing(Employee::getName));
+    // result: Ana, Luis, Victor
 
-// Sort by name, and if names are equal, by age
+    return employees;
+}
+
+public List<Employee> getEmployeesSortedByAgeDesc() {
+    List<Employee> employees = repository.findAll();
+
+    // Option 2 — sort by age from highest to lowest
+    employees.sort(Comparator.comparingInt(Employee::getAge).reversed());
+    // result: Luis (30), Victor (28), Ana (25)
+
+    return employees;
+}
+
+// Outside a service — sort by name and use age as a tie-breaker if names are equal
 employees.sort(Comparator.comparing(Employee::getName)
                          .thenComparingInt(Employee::getAge));
 ```

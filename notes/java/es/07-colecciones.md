@@ -289,6 +289,8 @@ public class Employee implements Comparable<Employee> {
 }
 
 // 2. La lista usa esa regla al ordenar — sin que tú pases nada
+// En Spring Boot este bloque iría dentro de un método de servicio:
+// los empleados vendrían de repository.findAll(), no añadidos a mano
 List<Employee> employees = new ArrayList<>();
 employees.add(new Employee("Luis", 30));
 employees.add(new Employee("Ana", 25));
@@ -300,9 +302,9 @@ employees.sort(null);          // equivalente: null = "usa el orden natural de C
 
 El `<>` vacío en `new ArrayList<>()` se llama **operador diamante** y es una abreviatura: Java puede deducir el tipo genérico a partir de la declaración de la variable (`List<Employee>`), así que no hace falta repetirlo. `new ArrayList<>()` y `new ArrayList<Employee>()` son exactamente lo mismo — la segunda forma existía antes de Java 7; desde entonces se usa el diamante vacío para no repetir el tipo.
 
-Tu lectura del código es correcta: `List<Employee> employees` crea una lista vacía que solo puede contener objetos de la clase `Employee` (la que defines justo arriba). Cada `employees.add(new Employee("Luis", 30))` crea un objeto `Employee` y lo añade a esa lista. Esa es la lista que `Collections.sort()` ordena llamando a `compareTo()` sobre cada par de empleados.
+`List<Employee> employees` crea una lista vacía que solo puede contener objetos de la clase `Employee` (la que defines justo arriba). Cada `employees.add(new Employee("Luis", 30))` crea un objeto `Employee` y lo añade a esa lista. Esa es la lista que `Collections.sort()` ordena llamando a `compareTo()` sobre cada par de empleados.
 
-`employees.sort(null)` puede parecer extraño, pero `null` aquí significa: "no te estoy pasando una regla externa, usa la que la propia clase tiene definida". Es equivalente a `Collections.sort(employees)`.
+`employees.sort(null)` puede parecer extraño, pero `null` aquí significa: "no te estoy pasando una regla externa, usa la que la propia clase tiene definida". Es equivalente a `Collections.sort(employees)`. `employees.sort()` sin argumentos no existe — `sort()` exige exactamente un argumento: o un `Comparator` con la regla, o `null` para indicar "usa el orden natural de `Comparable`". No hay forma de llamarlo vacío.
 
 ### Comparator — una regla de ordenación definida fuera de la clase
 
@@ -313,20 +315,35 @@ El problema con `Comparable` es que solo puedes definir un orden por clase. Si q
 - **`Comparator.comparing(función)`** — ordena por el campo que devuelve la función. Úsalo para `String` u objetos.
 - **`Comparator.comparingInt(función)`** — igual pero optimizado para campos `int` (evita convertir el primitivo `int` a objeto `Integer`). Úsalo para edad, precio, cantidad.
 - **`.reversed()`** — encadena al comparator anterior para invertir el orden (de mayor a menor en lugar de menor a mayor).
-- **`.thenComparing(función)`** — desempate: cuando dos elementos son iguales según el primer criterio, aplica un segundo criterio.
+- **`.thenComparing(función)`** — desempate: cuando dos elementos son iguales según el primer criterio, aplica un segundo criterio. Para campos `int` existe `.thenComparingInt(función)`, igual que `comparingInt` — es la variante optimizada para primitivos.
 
-La sintaxis `Employee::getName` se llama **referencia a método** — una forma corta de escribir `e -> e.getName()`. Se explica en `09-streams-lambdas.md`. Por ahora léela como "el método `getName` de `Employee`":
+La sintaxis `Employee::getName` se llama **referencia a método** — una forma corta de escribir `e -> e.getName()`. Se explica en `09-streams-lambdas.md`. Por ahora léela como "el método `getName` de `Employee`".
+
+En Spring Boot, este código iría dentro de un método de servicio — la lista llegaría de `repository.findAll()` y tú la ordenarías antes de devolverla:
 
 ```java
-// Ordenar por nombre alfabéticamente
-employees.sort(Comparator.comparing(Employee::getName));
-// resultado: Ana, Luis, Victor
+// En un servicio de Spring Boot
+public List<Employee> getEmployeesSortedByName() {
+    List<Employee> employees = repository.findAll(); // viene de la base de datos
 
-// Ordenar por edad de mayor a menor
-employees.sort(Comparator.comparingInt(Employee::getAge).reversed());
-// resultado: Luis (30), Victor (28), Ana (25)
+    // Opción 1 — ordenar por nombre alfabéticamente (A → Z)
+    employees.sort(Comparator.comparing(Employee::getName));
+    // resultado: Ana, Luis, Victor
 
-// Ordenar por nombre, y si el nombre es igual, por edad
+    return employees;
+}
+
+public List<Employee> getEmployeesSortedByAgeDesc() {
+    List<Employee> employees = repository.findAll();
+
+    // Opción 2 — ordenar por edad de mayor a menor
+    employees.sort(Comparator.comparingInt(Employee::getAge).reversed());
+    // resultado: Luis (30), Victor (28), Ana (25)
+
+    return employees;
+}
+
+// Fuera de un servicio — ordenar por nombre y desempatar por edad si los nombres son iguales
 employees.sort(Comparator.comparing(Employee::getName)
                          .thenComparingInt(Employee::getAge));
 ```
