@@ -125,7 +125,9 @@ scores.size();                  // 2 — number of entries (remember: "Victor" r
 scores.remove("Ana");           // removes the entry with key "Ana"
 ```
 
-To iterate over all entries you need `Map.Entry<K, V>`, which represents one key-value pair. The `.entrySet()` method gives you the full set of entries to loop over. Inside the loop, `entry.getKey()` gives you the key and `entry.getValue()` gives you the value:
+To iterate over all entries you need `Map.Entry<K, V>`, which is the type Java uses to represent one key-value pair. `scores.entrySet()` returns a `Set<Map.Entry<String, Integer>>` — each element in that set is a complete pair (key and value together). That is why the for-each declares `Map.Entry<String, Integer> entry`: it is the type of each element the loop pulls out of the set.
+
+Inside the loop, `entry` already holds both the key and the value in the same object, so you do not need to go back to the map to look anything up. `entry.getKey()` gives you the key of that pair, and `entry.getValue()` gives you its value directly. `scores.get("Victor")` works when you already have the key and want the value — but when iterating with `entrySet()` you have both at once, and `getKey()` / `getValue()` are the methods that extract them from the pair object:
 
 ```java
 for (Map.Entry<String, Integer> entry : scores.entrySet()) {
