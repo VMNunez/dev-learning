@@ -136,11 +136,20 @@ for (Map.Entry<String, Integer> entry : scores.entrySet()) {
 }
 ```
 
-If you only need the keys, `scores.keySet()` returns a `Set<String>` — useful when you want to know which keys exist without caring about their values (for example, to check whether a specific name is in the map). If you only need the values, `scores.values()` returns a `Collection<Integer>` — useful when you want to process all values without caring which key each one belongs to (for example, to sum them or filter them):
+If you only need the keys, `scores.keySet()` returns a `Set<String>` — useful when you want to loop over just the names without needing their scores. If you only need the values, `scores.values()` returns a `Collection<Integer>` — useful when you want to operate on all values, like summing them or finding the max, without caring which key each one belongs to:
 
 ```java
-scores.keySet();    // Set<String>         — all keys:   ["Victor", "Ana"]
-scores.values();    // Collection<Integer> — all values: [97, 88]
+// keySet() — loop over keys only
+for (String name : scores.keySet()) {
+    System.out.println("Employee: " + name);  // prints: Victor, Ana
+}
+
+// values() — operate on all values
+int total = 0;
+for (int score : scores.values()) {
+    total += score;
+}
+System.out.println("Total: " + total);  // 185
 ```
 
 ### HashMap vs LinkedHashMap vs TreeMap
