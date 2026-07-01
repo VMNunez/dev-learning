@@ -298,6 +298,10 @@ Collections.sort(employees);   // llama a compareTo() internamente — resultado
 employees.sort(null);          // equivalente: null = "usa el orden natural de Comparable"
 ```
 
+El `<>` vacío en `new ArrayList<>()` se llama **operador diamante** y es una abreviatura: Java puede deducir el tipo genérico a partir de la declaración de la variable (`List<Employee>`), así que no hace falta repetirlo. `new ArrayList<>()` y `new ArrayList<Employee>()` son exactamente lo mismo — la segunda forma existía antes de Java 7; desde entonces se usa el diamante vacío para no repetir el tipo.
+
+Tu lectura del código es correcta: `List<Employee> employees` crea una lista vacía que solo puede contener objetos de la clase `Employee` (la que defines justo arriba). Cada `employees.add(new Employee("Luis", 30))` crea un objeto `Employee` y lo añade a esa lista. Esa es la lista que `Collections.sort()` ordena llamando a `compareTo()` sobre cada par de empleados.
+
 `employees.sort(null)` puede parecer extraño, pero `null` aquí significa: "no te estoy pasando una regla externa, usa la que la propia clase tiene definida". Es equivalente a `Collections.sort(employees)`.
 
 ### Comparator — una regla de ordenación definida fuera de la clase
