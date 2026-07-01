@@ -231,6 +231,56 @@ The three that appear most often in real projects are:
 
 Overriding all three is very common in real projects: `toString()` almost always, because it makes debugging much easier when printing objects; `equals()` and `hashCode()` together when objects are compared by value or used as keys in a `HashMap`. In Spring Boot, Lombok can generate all of them automatically with `@Data` or `@EqualsAndHashCode`, so you rarely write them by hand.
 
+To see what overriding looks like in practice, think of a `User` class from TimeTrack. Without any `@Override`, printing a user or comparing two users with the same data does not behave the way you'd expect:
+
+```java
+User u1 = new User("Victor", "victor@example.com");
+User u2 = new User("Victor", "victor@example.com");
+
+System.out.println(u1);             // → "com.victor.timetrack.model.User@3a4b5c" — useless in logs
+System.out.println(u1 == u2);       // → false — different references in memory
+System.out.println(u1.equals(u2));  // → false — without override, equals also compares references
+```
+
+Overriding all three (IntelliJ generates this for you with `Alt+Insert`):
+
+```java
+public class User {
+    private String name;
+    private String email;
+
+    // toString() — so that logs and debugging are readable
+    @Override
+    public String toString() {
+        return "User{name='" + name + "', email='" + email + "'}";
+    }
+
+    // equals() — two Users are equal if they have the same email
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User other = (User) o;
+        return Objects.equals(email, other.email);
+    }
+
+    // hashCode() — required whenever you override equals()
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
+    }
+}
+```
+
+Now the behaviour is what you expect:
+
+```java
+System.out.println(u1);             // → "User{name='Victor', email='victor@example.com'}"
+System.out.println(u1.equals(u2));  // → true — same email, same user
+```
+
+In real Spring Boot projects, JPA entities almost always have these three methods — or use Lombok's `@Data` to generate them automatically.
+
 ```java
 Object obj = new User("Victor");  // valid — User implicitly extends Object
 

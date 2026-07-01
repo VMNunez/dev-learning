@@ -235,18 +235,74 @@ Los tres que más aparecen en proyectos reales son:
 
 Sobreescribir los tres es muy habitual en proyectos reales: `toString()` casi siempre, porque facilita el debugging al imprimir objetos; `equals()` y `hashCode()` juntos cuando los objetos se comparan por valor o se usan como claves en un `HashMap`. En Spring Boot, Lombok puede generarlos automáticamente con `@Data` o `@EqualsAndHashCode`, así que rara vez los escribes a mano.
 
+Para ver cómo se sobreescriben en la práctica, imagina una clase `User` de TimeTrack. Sin ningún `@Override`, imprimir el usuario o comparar dos usuarios con los mismos datos no funciona como esperas:
+
 ```java
-Object obj = new User("Victor");  // válido — User extiende Object implícitamente
+User u1 = new User("Victor", "victor@example.com");
+User u2 = new User("Victor", "victor@example.com");
 
-// Sin sobreescribir toString() — Java usa la implementación de Object, que devuelve el nombre
-// de la clase y una dirección de memoria que no te dice nada útil:
-// System.out.println(user)  →  "com.victor.timetrack.model.User@6d06d69c"
-
-// Sobreescribiendo toString() — tú decides qué información se muestra:
-// System.out.println(user)  →  "User{name='Victor', email='victor@example.com'}"
+System.out.println(u1);        // → "com.victor.timetrack.model.User@3a4b5c" — inútil en logs
+System.out.println(u1 == u2);  // → false — referencias distintas en memoria
+System.out.println(u1.equals(u2));  // → false — sin override, equals también compara referencias
 ```
 
-IntelliJ puede generar `equals()`, `hashCode()` y `toString()` automáticamente sin que los escribas a mano: pulsa `Alt+Insert` dentro de la clase para abrir el menú *Generate*, elige *equals() and hashCode()* o *toString()*, y el IDE escribe el código por ti.
+Sobreescribiendo los tres (IntelliJ lo genera por ti con `Alt+Insert`):
+
+```java
+public class User {
+    private String name;
+    private String email;
+
+    // toString() — para que los logs y el debugging sean legibles
+    @Override
+    public String toString() {
+        return "User{name='" + name + "', email='" + email + "'}";
+    }
+
+    // equals() — dos User son iguales si tienen el mismo email
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User other = (User) o;
+        return Objects.equals(email, other.email);
+    }
+
+    // hashCode() — obligatorio cuando overrides equals()
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
+    }
+}
+```
+
+Ahora el comportamiento es el esperado:
+
+```java
+System.out.println(u1);             // → "User{name='Victor', email='victor@example.com'}"
+System.out.println(u1.equals(u2));  // → true — mismo email, mismo usuario
+```
+
+En proyectos reales con Spring Boot verás que las entidades JPA casi siempre tienen estos tres métodos — o usan `@Data` de Lombok para que los genere automáticamente.
+
+```java
+Object obj = new User("Victor");  // válido — User extiende Object implícitamente
+```
+
+Sin sobreescribir toString() — Java usa la implementación de Object, que devuelve el nombre de la clase y una dirección de memoria que no te dice nada útil:
+
+```java
+
+System.out.println(user)  →  "com.victor.timetrack.model.User@6d06d69c"
+```
+
+Sobreescribiendo toString() — tú decides qué información se muestra:
+
+```java
+System.out.println(user) → "User{name='Victor', email='victor@example.com'}"
+```
+
+IntelliJ puede generar `equals()`, `hashCode()` y `toString()` automáticamente sin que los escribas a mano: pulsa `Alt+Insert` dentro de la clase para abrir el menú _Generate_, elige _equals() and hashCode()_ o _toString()_, y el IDE escribe el código por ti.
 
 ---
 
