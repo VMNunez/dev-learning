@@ -272,7 +272,7 @@ Notes to audit: {NOTES_PATH}
   3. **Complete the file (rule 3 standards)** — missing sub-concepts added as new sections within that file only.
   4. After all files are processed, produce one combined **Report + commit** covering all files.
 
-In both **single-file** and **multi-file** mode, **skip** every folder-level step: the rule-1 coverage gap analysis for the whole topic, "Creating new files — proactive", the `future-learning.md` promotion check, the "next file:" counter update, and **`coverage.md` — do not read it**. If you spot a gap that belongs in a different file, mention it in the summary instead of acting on it.
+In both **single-file** and **multi-file** mode, **skip** every folder-level step: the rule-1 coverage gap analysis for the whole topic, the `00-intro-{topic}.md` existence check, "Creating new files — proactive", the `future-learning.md` promotion check, the "next file:" counter update, and **`coverage.md` — do not read it**. If you spot a gap that belongs in a different file, mention it in the summary instead of acting on it.
 
 ---
 
