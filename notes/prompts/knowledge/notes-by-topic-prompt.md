@@ -120,13 +120,21 @@ These rules apply both when auditing existing notes and when creating new ones.
 **Bilingual notes — English and Spanish:**
 
 Each topic folder has `en/` and `es/` subfolders. {NOTES_PATH} always points to `en/`.
-The Spanish counterpart lives at the same relative path but under `es/` (e.g. `notes/java/es/09-streams-lambdas.md`).
 `coverage.md`, `future-learning.md`, and `layer-reference.md` live in the topic root — never inside `en/` or `es/`.
+
+**File naming convention — this is mandatory:**
+- Files in `en/` use English names: `03-methods.md`, `07-collections.md`, `08-exceptions.md`
+- Files in `es/` use Spanish names: `03-metodos.md`, `07-colecciones.md`, `08-excepciones.md`
+- The number prefix is always the same across both languages — it is the only shared part of the name
+- Technical proper names with no Spanish equivalent keep the same name in both folders: `maven`, `enums`, `streams`, `lambdas`
+- The `es/` counterpart of `en/XX-some-name.md` is `es/XX-nombre-en-español.md` — never a copy of the English filename
+
+The Spanish counterpart of a file is identified by its **number prefix**, not its full name. For example, `en/09-streams-lambdas.md` → `es/09-streams-lambdas.md` (technical terms unchanged) and `en/08-exceptions.md` → `es/08-excepciones.md`.
 
 Every change made to an `en/` file must be mirrored in the corresponding `es/` file. The rule is simple:
 **never modify an `en/` file without checking its `es/` counterpart**. Specifically:
 
-- **New file in `en/`** → also create the full Spanish version in `es/` with the same filename.
+- **New file in `en/`** → also create the full Spanish version in `es/` with a **Spanish filename** (translated, same number prefix).
   Same structure, same code blocks — only the prose is in Spanish. Code comments may also be translated.
   **The Spanish prose must read as natural Spanish, not as a literal word-for-word translation of the English.**
   The content and message must be identical across both languages, but each version should read as if it were
@@ -255,10 +263,15 @@ If the `es/` subfolder does not exist inside the topic folder, create it now as 
 If `es/` already exists, skip this step.
 
 **3. Sync `es/` with `en/`.**
-For each numbered file that exists in `en/`: check whether the same filename exists in `es/`.
+For each numbered file that exists in `en/`: check whether a file with the **same number prefix** exists in `es/`.
+The `es/` filename must use a Spanish name (e.g. `en/08-exceptions.md` → `es/08-excepciones.md`).
 If a file is missing in `es/`, create it immediately — same structure and code blocks as the `en/`
-version, all prose translated to Spanish. The two folders must always contain exactly the same files.
+version, all prose translated to Spanish, filename translated to Spanish.
+The two folders must always contain exactly the same **number of files**, one per number prefix.
 List every file created in `es/` in the summary under "Spanish files created".
+
+**Never give an `es/` file the same English name as its `en/` counterpart** — that is a naming error.
+If you find `es/` files with English names (e.g. `es/08-exceptions.md`), rename them to Spanish using `git mv` before proceeding.
 
 ---
 
