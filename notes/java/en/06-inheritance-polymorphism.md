@@ -7,7 +7,7 @@ You reach for inheritance when two or more classes are the same *kind* of thing 
 
 ## Inheritance — `extends`
 
-A subclass inherits all `public` and `protected` fields and methods from the parent class and can also add its own. `private` fields from the parent technically live inside the subclass object — they occupy memory — but the subclass cannot access them directly: only through the getters and setters the parent exposes. `protected` is the modifier you choose precisely when you want subclasses to read the field directly without a getter — which is why you see `protected` fields in parent classes in inheritance examples. The parent class does not have to be abstract: if it makes sense to create instances of it directly (`new Animal()`), leave it as a regular class. You declare it abstract only when it makes no sense to instantiate it directly — when `Animal` is too generic and no concrete object should be "just an Animal" without being a more specific type:
+A subclass inherits all `public` and `protected` fields and methods from the parent class and can also add its own. `private` fields from the parent technically live inside the subclass object — they occupy memory — but the subclass cannot access them directly: only through the getters and setters the parent exposes. `protected` is the modifier you choose precisely when you want subclasses to read the field directly without a getter — which is why you see `protected` fields in parent classes in inheritance examples. The parent class does not have to be abstract: if it makes sense to create instances of it directly (`new Animal()`), leave it as a regular class. You declare it abstract only when it makes no sense to instantiate it directly — when `Animal` is too generic and no concrete object should be "just an Animal" without being a more specific type. In TimeTrack it makes sense to create `new User()` directly — a user is a concrete object with real data. In contrast, a `BaseEntity` class holding only `id`, `createdAt`, and `updatedAt` should be abstract: you would never create `new BaseEntity()` because no object in the system is «just a base entity» — it is always a `User`, a `Project`, or something similar:
 
 ```java
 public class Animal {
@@ -97,20 +97,22 @@ public class Cat extends Animal {
 
 ### Overriding vs Overloading
 
-**Overriding** is what you just saw: a subclass replaces a parent method with the same name and the exact same signature. The decision of which version to run happens at runtime — Java looks at the real type of the object, not the type of the variable. **Overloading** (covered in [03-methods.md](03-methods.md)) is different: multiple methods with the same name in the same class, each with different parameters — different number or different types. Java resolves overloading at compile time by looking at the arguments you pass. Both reuse the same method name, but they are entirely separate concepts.
+**Overriding** is what you just saw: a subclass replaces a parent method with the same name and the exact same signature. What Java decides at runtime is not the type of the variable but the real type of the object in memory: if you store a `Dog` in an `Animal` variable, Java runs `Dog`'s version, not `Animal`'s. **Overloading** (covered in [03-methods.md](03-methods.md)) is different: multiple methods with the same name in the same class, each with different parameters — different number or different types. Java resolves overloading at compile time by looking at the arguments you pass. Both reuse the same method name, but they are entirely separate concepts.
+
+The «Inheritance» row in the table indicates whether the concept requires a class hierarchy: overriding does — without a subclass extending another, there is nothing to override; overloading does not require inheritance — you can define `calculate(int x)` and `calculate(double x)` in the same class without extending anything.
 
 | | Overriding | Overloading |
 |---|-----------|-------------|
 | Where | Subclass | Same class |
-| Signature | Must match exactly | Different parameters |
-| Inheritance | Yes | No |
+| Signature | Must match exactly | Different number of parameters or different types |
+| Inheritance | Yes (requires subclass) | No |
 | Runtime | Decided at runtime | Decided at compile time |
 
 ---
 
 ## Polymorphism
 
-The problem polymorphism solves: you have a list of related but different types (`Dog`, `Cat`, `Bird`) and you need to call the same method on all of them. Without polymorphism you'd write an `if` check for every type — and every time you add a new type, you modify that `if`. With polymorphism, you declare all of them as `Animal` and call `speak()` once: Java picks the right version for each object automatically.
+The problem polymorphism solves: you have a list of related but different types — `Dog`, `Cat`, and `Bird`, all subclasses of `Animal` — and you need to call the same method on all of them. Without polymorphism you'd write an `if` check for every type — and every time you add a new type, you modify that `if`. With polymorphism, you declare all of them as `Animal` and call `speak()` once: Java picks the right version for each object automatically.
 
 The key is that the type of the **variable** and the type of the **object** can be different:
 
@@ -118,7 +120,7 @@ The key is that the type of the **variable** and the type of the **object** can 
 Animal a = new Dog("Rex", "Labrador");  // variable: Animal  /  actual object: Dog
 ```
 
-When you call `a.speak()`, Java does not look at the variable type (`Animal`) — it looks at the actual type of the object in memory (`Dog`) and runs `Dog`'s version. This is called **dynamic dispatch**: the decision of which method to run happens at runtime, not at compile time.
+When you call `a.speak()`, Java does not look at the variable type (`Animal`) — it looks at the actual type of the object in memory (`Dog`) and runs `Dog`'s version of `speak()`. This is called **dynamic dispatch**: the decision of which method to run happens at runtime, not at compile time.
 
 ```java
 Animal a1 = new Dog("Rex", "Labrador");
@@ -127,6 +129,8 @@ Animal a2 = new Cat("Whiskers");
 a1.speak();   // "Woof!" — Dog's version
 a2.speak();   // "Meow!" — Cat's version
 ```
+
+You do not always have to declare the variable as the parent type. You use `Animal a = new Dog(...)` when you want to treat different types uniformly — that is where polymorphism pays off. If you need Dog-specific behaviour right away, declare it as `Dog dog = new Dog(...)`. The practical rule: use the most general type that still gives you what you need.
 
 The case that makes it click is a list of mixed types. Without polymorphism you check every type manually — and the code breaks every time you add a new one:
 
@@ -164,29 +168,34 @@ If you add `WhatsAppNotification` tomorrow, this service does not change a singl
 
 ## `instanceof` and pattern matching
 
-Sometimes you have a variable typed as `Animal` but you need to call a method that only `Dog` has. `instanceof` lets you check the real type at runtime before attempting the cast:
+When working with polymorphism, you may at some point need to access a method that only exists in a concrete subclass — not in the parent. For example, you have an `Animal` variable that actually holds a `Dog`, and you need to call `fetch()`, which only `Dog` has.
+
+If you try to call `animal.fetch()` directly, the compiler rejects it — `Animal` does not have that method. To call it, you need to **cast** — tell the compiler «treat this variable as a `Dog`». But if the object is not actually a `Dog`, the cast would throw a `ClassCastException` at runtime. `instanceof` exists precisely to avoid that error: it checks the real type before the cast.
 
 ```java
-// Classic
+// Classic form (up to Java 15)
 if (animal instanceof Dog) {
-    Dog dog = (Dog) animal;  // cast to access Dog-specific methods
+    Dog dog = (Dog) animal;  // explicit cast — we already know it is safe
     dog.fetch();
 }
 
-// Pattern matching (Java 16+) — cleaner
+// Pattern matching (Java 16+) — cleaner, casts automatically
 if (animal instanceof Dog dog) {
-    dog.fetch();   // dog is already cast and ready to use
+    dog.fetch();   // dog is already available as Dog, no manual cast needed
 }
 ```
 
+> That said, if you find yourself using `instanceof` frequently, it is a signal that the design could improve — polymorphism is meant precisely to avoid these manual type checks.
+
 ---
 
-## `final` class and methods
+## `final` classes, methods, and fields
 
-Use `final` when you need to protect a class or a method from being changed by subclasses — for example, to guard critical logic that must always behave the same way regardless of the subtype:
+`final` can apply to three different things, each with a different meaning:
 
-- `final class` — cannot be extended
-- `final method` — cannot be overridden by a subclass
+- `final class` — the class cannot be extended: no subclass can inherit from it
+- `final method` — the method cannot be overridden by any subclass
+- `final field` — the field can only be assigned once; normally in the constructor or at declaration. After that, its value cannot change
 
 ```java
 public final class String { ... }  // String cannot be subclassed
@@ -194,17 +203,38 @@ public final class String { ... }  // String cannot be subclassed
 public class Animal {
     public final void breathe() { ... }  // no subclass can override this
 }
+
+public class Circle {
+    private final double radius;  // can only be assigned once
+
+    public Circle(double radius) {
+        this.radius = radius;  // the only allowed assignment
+    }
+}
 ```
+
+In Spring Boot you will see `final` frequently on fields in service classes when dependencies are injected through the constructor — it is the recommended way to write beans.
 
 ---
 
 ## The Object class
 
-Every Java class implicitly extends `Object`. This is why every class has `toString()`, `equals()`, and `hashCode()` — they are defined in `Object`. When you override them, you replace the default `Object` implementation.
+There is one class at the very top of every inheritance hierarchy in Java: `Object`. All classes extend it automatically, even if you do not declare it. This means every object you create carries a set of methods inherited from `Object` — whether you defined them or not.
+
+The three that appear most often in real projects are:
+
+- **`toString()`** — called automatically when you print an object with `System.out.println(obj)` or concatenate it into a `String`. Without overriding it you get something like `com.victor.timetrack.model.User@1a2b3c` — the class name and a memory address, which tells you nothing useful. You override it to return something readable like `"User{name='Victor'}"`.
+- **`equals()`** — compares whether two objects are «equal». Without overriding it, Java compares memory references: two different objects with the same data are not equal even if they represent the same entity. You override it when you want the comparison to be based on field values.
+- **`hashCode()`** — used internally by `HashMap` and `HashSet` to organise objects in memory. The rule is: if you override `equals()`, you must always override `hashCode()` too — otherwise your objects will behave unexpectedly inside collections.
 
 ```java
-Object obj = new Employee("Victor");  // valid — everything is an Object
+Object obj = new User("Victor");  // valid — User implicitly extends Object
+
+// Without @Override on toString() → "com.victor.timetrack.model.User@6d06d69c"
+// With @Override on toString()    → "User{name='Victor', email='...'}"
 ```
+
+IntelliJ can generate `equals()`, `hashCode()`, and `toString()` for you automatically: `Alt+Insert` → "equals() and hashCode()" / "toString()".
 
 ---
 
