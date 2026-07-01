@@ -172,7 +172,9 @@ Hay tres implementaciones de `Map` que verás en entrevistas y en código real. 
 
 ## Set — valores únicos, sin duplicados
 
-Usa un `Set` cuando los duplicados serían un error — por ejemplo, la lista de roles que tiene un usuario o el conjunto de etiquetas de un artículo. Añadir un valor duplicado no hace nada en silencio, que es exactamente lo que quieres.
+Usa un `Set` cuando los duplicados serían un error — por ejemplo, la lista de roles que tiene un usuario o el conjunto de etiquetas de un artículo. Un `Set` no es una `List` sin duplicados — es una estructura distinta. La diferencia clave: `Set` no tiene acceso por índice, no existe `get(0)` ni `get(2)`. Está diseñado para una sola pregunta: ¿existe este valor? Cuando intentas añadir un valor que ya está en el set, Java simplemente lo ignora sin lanzar ninguna excepción. Nada explota, nada se avisa — de ahí "en silencio". Eso es exactamente lo que quieres: los duplicados desaparecen solos sin que tengas que comprobarlos tú antes de cada `add()`.
+
+Los métodos que usarás son: `add(valor)` para añadir (si ya existe, se ignora), `remove(valor)` para eliminar, `contains(valor)` para comprobar si un valor existe — esto es lo que más se usa, `size()` para contar cuántos elementos hay, e `isEmpty()` para saber si está vacío.
 
 La implementación por defecto es `HashSet`, que internamente funciona igual que un `HashMap` — convierte cada valor en un número (hash) para saber dónde guardarlo, lo que hace que `contains()` sea instantáneo aunque tengas miles de elementos. A cambio, no garantiza ningún orden al iterar.
 
@@ -205,9 +207,31 @@ List<String> deduplicated = new ArrayList<>(unique);
 
 ---
 
+## Métodos comunes — List, Map y Set
+
+Las tres estructuras comparten un conjunto de operaciones básicas porque las tres implementan la interfaz `Collection`. `Map` usa nombres ligeramente distintos para algunas porque necesita diferenciar entre claves y valores, pero la idea es la misma:
+
+| Operación          | List                  | Set                   | Map                        |
+| ------------------ | --------------------- | --------------------- | -------------------------- |
+| Añadir             | `add(valor)`          | `add(valor)`          | `put(clave, valor)`        |
+| Eliminar           | `remove(valor)`       | `remove(valor)`       | `remove(clave)`            |
+| Comprobar si existe | `contains(valor)`    | `contains(valor)`     | `containsKey(clave)`       |
+| Número de elementos | `size()`             | `size()`              | `size()`                   |
+| ¿Está vacío?       | `isEmpty()`           | `isEmpty()`           | `isEmpty()`                |
+| Vaciar             | `clear()`             | `clear()`             | `clear()`                  |
+
+---
+
 ## Métodos de utilidad de Collections
 
-`Collections` (con s) es una clase de utilidad del JDK — distinta de la interfaz `Collection` (sin s). No creas instancias de ella, simplemente llamas a sus métodos estáticos sobre listas que ya tienes. Te da operaciones que necesitas con frecuencia pero que `List` no incluye directamente: ordenar, invertir, barajar, y buscar el máximo o mínimo.
+`Collections` (con s) es una clase de utilidad del JDK — distinta de la interfaz `Collection` (sin s). No creas instancias de ella, simplemente llamas a sus métodos estáticos. Los métodos más habituales son:
+
+- `Collections.sort(lista)` — ordena la lista de menor a mayor. **Solo funciona con `List`** — `Set` y `Map` no tienen orden posicional.
+- `Collections.reverse(lista)` — invierte el orden de los elementos. **Solo `List`**.
+- `Collections.shuffle(lista)` — mezcla los elementos en orden aleatorio. **Solo `List`**.
+- `Collections.max(colección)` — devuelve el elemento mayor. Funciona con `List` y `Set`.
+- `Collections.min(colección)` — devuelve el elemento menor. Funciona con `List` y `Set`.
+- `Collections.frequency(colección, valor)` — cuenta cuántas veces aparece un valor. Funciona con `List` y `Set`.
 
 ```java
 import java.util.Collections;
@@ -226,47 +250,77 @@ Collections.frequency(numbers, 1);   // 2
 
 ## Ordenación — Comparable y Comparator
 
-Cuando llamas a `Collections.sort(employees)` o `employees.sort(...)`, Java necesita saber cómo comparar dos objetos `Employee` para decidir cuál va antes. Con `String` o `Integer` ya sabe — tienen un orden natural obvio. Con tus propias clases, tienes que decírselo tú. Para eso existen `Comparable` y `Comparator`: dos mecanismos para definir reglas de ordenación en Java.
+Cuando ordenas una lista de `String` o `Integer`, Java ya sabe cómo compararlos — "Ana" va antes que "Luis", el 3 va antes que el 7. Pero si tienes una `List<Employee>` y llamas a `sort()`, Java no sabe por qué campo comparar a dos empleados. ¿Por nombre? ¿Por edad? ¿Por departamento? Para eso existen `Comparable` y `Comparator`: dos mecanismos distintos para enseñarle a Java cómo ordenar tus propias clases.
 
-### Comparable — orden natural definido por la clase
+> Hay dos formas equivalentes de ordenar una lista: `Collections.sort(employees)` y `employees.sort(...)`. Las dos hacen lo mismo — la segunda es más moderna (añadida en Java 8) y es la que más verás en código Spring Boot actual. Puedes usar cualquiera de las dos.
 
-Implementas `Comparable<T>` directamente en tu clase cuando hay un orden por defecto obvio — el que cualquiera esperaría al ordenar una lista de ese tipo. El método `compareTo()` recibe otro objeto del mismo tipo y devuelve un número negativo si `this` va antes, cero si son iguales, y positivo si `this` va después.
+### Comparable — la clase sabe ordenarse a sí misma
 
-La propia clase implementa `Comparable<T>` para definir su orden de clasificación por defecto:
+Usas `Comparable` cuando hay un orden por defecto obvio para tu clase — uno que cualquiera esperaría. Por ejemplo, empleados ordenados por nombre. Lo implementas dentro de la propia clase y solo puedes definir uno.
+
+Para implementarlo, tu clase añade `implements Comparable<Employee>` y define el método `compareTo()`. Java llama a ese método internamente cuando ordena la lista — tú no lo llamas directamente. El método compara `this` (el objeto actual) con `other` (el objeto con el que se compara) y devuelve: un número negativo si `this` debe ir antes, cero si son iguales, y un número positivo si `this` debe ir después.
+
+En la práctica casi nunca calculas ese número a mano — delegas en el `compareTo()` de `String`, que ya sabe ordenar alfabéticamente:
 
 ```java
 public class Employee implements Comparable<Employee> {
     private String name;
+    private int age;
+
+    public Employee(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() { return name; }
+    public int getAge()     { return age; }
 
     @Override
     public int compareTo(Employee other) {
-        return this.name.compareTo(other.name);  // ordenar alfabéticamente por nombre
+        return this.name.compareTo(other.name);  // delega en el compareTo de String
     }
 }
-
-// Ahora puedes ordenar un List<Employee> sin pasar nada
-Collections.sort(employees);
-employees.sort(null);  // usa el orden natural
 ```
 
-Usa `Comparable` cuando hay una ordenación por defecto obvia para la clase (por ejemplo, empleados por nombre, productos por precio).
+Una vez que la clase implementa `Comparable`, puedes ordenar una `List<Employee>` sin pasar ninguna regla adicional — Java sabe que `Employee` ya lleva su propio orden:
 
-### Comparator — ordenación externa y flexible
+```java
+List<Employee> employees = new ArrayList<>();
+employees.add(new Employee("Luis", 30));
+employees.add(new Employee("Ana", 25));
+employees.add(new Employee("Victor", 28));
 
-El problema con `Comparable` es que solo puedes definir un orden por clase. Si quieres ordenar empleados por nombre en una pantalla y por fecha de alta en otra, `Comparable` no es suficiente. `Comparator` resuelve esto: defines la regla de ordenación fuera de la clase, al vuelo, y se la pasas directamente a `sort()`. Puedes tener tantos `Comparator` como quieras para la misma clase.
+Collections.sort(employees);   // ordena usando compareTo() — resultado: Ana, Luis, Victor
+employees.sort(null);          // lo mismo: null significa "usa el orden natural de Comparable"
+```
 
-La sintaxis `Employee::getName` se llama **referencia a método** — una forma más corta de escribir `e -> e.getName()`. Se explica en detalle en `09-streams-lambdas.md`. Por ahora, léela simplemente como "el método `getName` de `Employee`".
+`employees.sort(null)` puede parecer extraño, pero `null` aquí significa: "no te estoy pasando una regla externa, usa la que la propia clase tiene definida". Es equivalente a `Collections.sort(employees)`.
+
+### Comparator — una regla de ordenación definida fuera de la clase
+
+El problema con `Comparable` es que solo puedes definir un orden por clase. Si quieres ordenar empleados por nombre en una pantalla y por edad en otra, `Comparable` no es suficiente — solo tienes uno. `Comparator` resuelve esto: defines la regla fuera de la clase y se la pasas directamente a `sort()`. Puedes crear tantos `Comparator` distintos como quieras para la misma clase.
+
+`Comparator` tiene tres métodos de fábrica que usarás siempre:
+
+- **`Comparator.comparing(función)`** — ordena por el campo que devuelve la función. Úsalo para `String` u objetos.
+- **`Comparator.comparingInt(función)`** — igual pero optimizado para campos `int` (evita convertir el primitivo `int` a objeto `Integer`). Úsalo para edad, precio, cantidad.
+- **`.reversed()`** — encadena al comparator anterior para invertir el orden (de mayor a menor en lugar de menor a mayor).
+- **`.thenComparing(función)`** — desempate: cuando dos elementos son iguales según el primer criterio, aplica un segundo criterio.
+
+La sintaxis `Employee::getName` se llama **referencia a método** — una forma corta de escribir `e -> e.getName()`. Se explica en `09-streams-lambdas.md`. Por ahora léela como "el método `getName` de `Employee`":
 
 ```java
 // Ordenar por nombre alfabéticamente
 employees.sort(Comparator.comparing(Employee::getName));
+// resultado: Ana, Luis, Victor
 
-// Ordenar por edad descendente
+// Ordenar por edad de mayor a menor
 employees.sort(Comparator.comparingInt(Employee::getAge).reversed());
+// resultado: Luis (30), Victor (28), Ana (25)
 
-// Ordenar por múltiples campos
-employees.sort(Comparator.comparing(Employee::getDepartment)
-                         .thenComparing(Employee::getName));
+// Ordenar por nombre, y si el nombre es igual, por edad
+employees.sort(Comparator.comparing(Employee::getName)
+                         .thenComparingInt(Employee::getAge));
 ```
 
 ### Comparable vs Comparator
