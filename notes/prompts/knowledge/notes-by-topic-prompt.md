@@ -241,9 +241,11 @@ with the exact doubts he keeps raising in TODOs. Check all four:
 - **Scope.** When a rule or method only applies to part of what the file covers, does the text say
   so explicitly (e.g. "`sort()` only exists on `List`")? Generic statements the reader has to
   narrow down on their own must be tightened.
-- **JS/TS anchor.** When a concept has a direct equivalent in JavaScript/TypeScript, is it anchored
-  in one phrase (`final` = `const`)? When it differs in a misleading way, is the difference flagged
-  (Java's `var` is not dynamic like JS's)? Add the anchor if it is missing.
+- **JS/TS anchor — only when truly equivalent.** When a concept has a direct functional equivalent
+  in JavaScript/TypeScript (`final` = `const`, try/catch), is it anchored in one phrase? Are
+  misleading pseudo-equivalences flagged as differences instead (exception types in Java are not
+  like Error classes in JS; Java's `var` is not dynamic like JS's)? Avoid anchoring when the
+  concept only looks similar but serves a fundamentally different purpose.
 
 **Depth calibration**
 - Is the length of the explanation proportional to how hard the concept actually is?
@@ -490,12 +492,17 @@ Read all files in {NOTES_PATH}.
      the file covers, say so explicitly ("`sort()` only exists on `List`"; "`Collections.sort()`
      is List only — `Set` and `Map` have no positional order"). Never leave a generic statement
      the reader has to narrow down on their own.
-   - **Anchor against JavaScript/TypeScript.** When a concept has a direct equivalent in JS/TS,
-     anchor it in one phrase (`final` = `const`, for-each = `for...of`, `.formatted()` = template
-     literals). When it differs in a misleading way, flag the difference (Java's `var` is not
-     dynamic like JS's; Java has single inheritance, unlike TS type intersections). This applies
-     per section, not just in the `00-intro` file — Victor's reference points are JS/TS and he
-     wants the bridge wherever it helps.
+   - **Anchor against JavaScript/TypeScript — but only when equivalent is truly functional.** Anchor
+     only when the equivalence is direct and transparent — where using them is functionally the
+     same in both languages (e.g. `final` = `const`, for-each = `for...of`, try/catch syntax is
+     identical, `.formatted()` = template literals). Do NOT anchor when a concept exists in JS/TS
+     but serves a fundamentally different purpose or requires different mental context — for
+     example, exception types in Java (checked/unchecked, compile-time enforcement, type hierarchy)
+     are not comparable to JS error objects (runtime-only, informal, no type distinctions). When
+     the JS version is only superficially similar, acknowledge the difference explicitly instead
+     of suggesting they are equivalent. This applies per section, not just in the `00-intro` file.
+     When in doubt, it is better to acknowledge that JS/TS has no equivalent than to force a
+     misleading comparison.
 
    - **Personal, conversational voice.** Write for Victor. "You use this when..." not
      "This is used when...". "This is why it matters:" not "This is relevant because:".
