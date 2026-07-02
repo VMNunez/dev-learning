@@ -18,6 +18,8 @@ Cuando `methodB()` termina (ejecuta su `return`), se quita de la pila — desapa
 
 El **stack trace** es la _foto_ de esa pila justo en el instante del error: el texto que ves impreso en la consola con la lista de métodos activos en ese momento. Como las excepciones son objetos normales en Java, llevan dentro tanto el mensaje de error como ese stack trace completo — así sabes exactamente dónde ocurrió el problema y por qué métodos pasó la excepción hasta llegar hasta ahí.
 
+> La frase "se propaga hacia arriba de la pila" es la que verás en la documentación oficial, pero no te la imagines como una flecha subiendo en el diagrama de arriba. "Arriba" aquí significa "hacia el método que la llamó", que en el diagrama se dibuja hacia *abajo* — el mismo camino que sigue un `return`, solo que interrumpido por un error en vez de un valor normal.
+
 Con estos dos conceptos claros, así es como viaja una excepción. Java lanza un objeto que representa el error justo en el método donde ocurre el fallo — que siempre es el que está en la cima de la pila en ese instante, porque solo el método que se está ejecutando _ahora mismo_ puede fallar en ese momento. Desde ahí, el objeto se propaga **hacia el llamador** (el método que lo llamó), siguiendo el mismo camino LIFO de salida que un `return` normal seguiría, con una diferencia clave: en vez de devolver su valor normal, lo que le llega a cada llamador es el objeto de la excepción. Así, `methodB()` sale con la excepción en vez de con un valor de retorno; si `methodA()` no la captura con un `catch`, también sale hacia `main()`.
 
 Si `main()` tampoco la captura, ahí se acaba el camino — `main()` es siempre el primer método de la pila, así que no hay ningún llamador a quien seguir propagando el error. La aplicación termina y Java imprime en consola el stack trace: la lista de los métodos que estaban activos cuando ocurrió el error (`methodB()`, `methodA()`, `main()`) y por los que la excepción se fue propagando sin que nadie la capturara.
@@ -25,6 +27,8 @@ Si `main()` tampoco la captura, ahí se acaba el camino — `main()` es siempre 
 ---
 
 ## Excepciones comprobadas vs no comprobadas
+
+> Docs: https://www.baeldung.com/java-exceptions → read: "Checked Exception" y "Unchecked Exception"
 
 Java divide las excepciones en dos familias, y la diferencia no es solo de nombre — es una regla que el compilador impone activamente sobre una familia y no sobre la otra.
 
@@ -94,6 +98,8 @@ JavaScript no tiene nada parecido a esta división — todo error en JS es, en l
 
 ## try / catch / finally
 
+> Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/handling.html → read: "Catching and Handling Exceptions"
+
 Envuelves el código arriesgado en un bloque `try` y gestionas cada posible fallo en su propio bloque `catch`. `finally` se ejecuta siempre, pase lo que pase — úsalo para cerrar conexiones o liberar recursos incluso cuando se produce una excepción. La sintaxis te resultará familiar: `try`/`catch`/`finally` funciona igual en JavaScript — la diferencia en Java está en qué puedes capturar y qué te exige declarar el compilador (ver comprobadas vs no comprobadas más arriba):
 
 ```java
@@ -116,6 +122,21 @@ try {
 
 > **¿Por qué no dejar un bloque `catch` vacío?** Un `catch` vacío se traga el error en silencio — el programa sigue como si nada y pierdes tanto el mensaje como el stack trace, así que el bug se vuelve invisible. Como mínimo registra la excepción; nunca escribas `catch (Exception e) {}`.
 
+> **¿Por qué importa el orden de los `catch`? ¿Qué pasa si me equivoco?** Java comprueba los bloques `catch` de arriba a abajo y ejecuta el *primero* cuyo tipo coincida con la excepción lanzada — nunca sigue comprobando, aunque un bloque posterior también encajaría. Si las dos excepciones no tienen relación (como `IOException` y `NumberFormatException` arriba), el orden es solo cuestión de estilo. Pero si una es superclase de la otra — por ejemplo `Exception` e `IOException` — y pones la superclase (`Exception`) primero, el código directamente no compila: `catch (IOException e)` se queda inalcanzable, porque cualquier `IOException` ya coincide con el `catch (Exception e)` de encima. El error exacto es `exception IOException has already been caught`. Por eso la regla es "la más específica primero": no es una preferencia de estilo, es lo único que hace que ambos bloques sean alcanzables.
+
+> **¿Se ejecuta `finally` aunque el bloque `try` tenga un `return`?** Sí — es el gotcha clásico de entrevista de Java. `finally` se ejecuta *antes* de que el método devuelva de verdad, incluso si `try` ya llegó a un `return`:
+> ```java
+> public int test() {
+>     try {
+>         return 1;
+>     } finally {
+>         System.out.println("finally se ejecuta primero"); // se imprime antes de que el método devuelva
+>     }
+> }
+> // test() sigue devolviendo 1 — pero solo después de imprimir "finally se ejecuta primero"
+> ```
+> La trampa que hay que evitar: si `finally` *también* tiene un `return`, sobreescribe en silencio el valor que venía de `try` — el `return 1` del bloque `try` se descarta y se reemplaza. Se considera mala práctica precisamente por eso, porque esconde un cambio de valor de retorno dentro del código de limpieza; nunca pongas un `return` dentro de `finally`.
+
 ### Capturar múltiples excepciones en un solo bloque
 
 ```java
@@ -126,9 +147,13 @@ try {
 }
 ```
 
+> El multi-catch solo acepta tipos de excepción que no tengan relación padre-hijo entre sí. `IOException | SQLException` funciona porque ninguna extiende a la otra. `IOException | FileNotFoundException` no compilaría, porque `FileNotFoundException` ya extiende `IOException` — el compilador lo rechaza por redundante, ya que capturar `IOException` sola ya la cubre.
+
 ---
 
 ## throw — lanzar una excepción manualmente
+
+> Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/throwing.html → read: "Throwing Exceptions"
 
 Usas `throw` cuando detectas un estado inválido en tu propio código y quieres detener la ejecución de inmediato con una explicación clara — por ejemplo, cuando el llamador pasa un valor que no tiene ningún sentido:
 
@@ -149,6 +174,8 @@ Lanza siempre con un mensaje que explique qué salió mal y qué valor lo causó
 
 ## throws — declarar excepciones comprobadas
 
+> Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/declaring.html → read: "Specifying the Exceptions Thrown by a Method"
+
 Las excepciones comprobadas deben declararse en la firma del método para que el compilador obligue a cada llamador a decidir: gestionarla aquí o propagarla hacia arriba. Si un método puede lanzar una excepción comprobada y no la captura, debe declararla con `throws`:
 
 ```java
@@ -164,6 +191,8 @@ JavaScript no tiene nada equivalente a `throws` — no existe forma de declarar 
 
 ## Excepciones personalizadas
 
+> Docs: https://www.baeldung.com/java-exceptions → read: "Custom Exception"
+
 Crea tu propia clase de excepción para dar nombres significativos a los errores:
 
 ```java
@@ -174,6 +203,8 @@ public class EmployeeNotFoundException extends RuntimeException {
     }
 }
 ```
+
+`super("Employee not found with id: " + id)` llama al propio constructor de `RuntimeException` — el que guarda un mensaje — pasándole el string que construyes aquí. Es el mismo `super()` que ya usas para invocar el constructor de la clase padre en cualquier subclase; esta vez el padre simplemente es `RuntimeException`. Ese mensaje es lo que devuelve `e.getMessage()` más tarde, tanto en un bloque `catch` como en un `@ExceptionHandler`.
 
 JavaScript te deja hacer algo que parece similar (`class NotFoundError extends Error {}`), pero no es el mismo mecanismo. En JS es una convención sin ninguna imposición — nada te impide lanzar un simple string en su lugar, y no hay ningún compilador comprobando el tipo. En Java, extender `RuntimeException` conecta la clase con la jerarquía de tipos real: `catch (EmployeeNotFoundException e)` solo coincide con ese tipo exacto (o sus subclases), y `@ExceptionHandler(EmployeeNotFoundException.class)` en Spring Boot se apoya en esa jerarquía para dirigir cada error al manejador correcto.
 
@@ -190,6 +221,8 @@ public Employee findById(Long id) {
 ---
 
 ## try-with-resources
+
+> Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html → read: "The try-with-resources Statement"
 
 Cierra automáticamente los recursos (ficheros, conexiones de base de datos) cuando el bloque try termina — sin necesidad de `finally`:
 
@@ -208,6 +241,8 @@ JavaScript no tiene un equivalente directo — lo más parecido que has hecho es
 ---
 
 ## Conexión con Spring Boot
+
+> Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → read: "Using @ControllerAdvice" y "The Handler Methods"
 
 > **Vista previa — Spring Boot:** Esta sección usa `@RestControllerAdvice`, `@ExceptionHandler` y `ResponseEntity` — clases de Spring Boot que aún no has estudiado. Léela para ver cómo las excepciones Java se conectan a una API web. Construirás exactamente este patrón en las notas de Spring Boot.
 
@@ -242,7 +277,11 @@ De este modo, el servicio lanza excepciones limpiamente y el controller advice g
 
 ## Jerarquía de excepciones
 
+> Docs: https://www.baeldung.com/java-exceptions → read: "Exception Hierarchy"
+
 Toda excepción en Java extiende `Throwable`. Las dos subclases directas son `Error` (fallos a nivel JVM que nunca debes capturar — memoria agotada, stack overflow) y `Exception` (problemas que tu aplicación puede manejar). `RuntimeException` es la rama no comprobada bajo `Exception`. Tus excepciones personalizadas siempre extienden `RuntimeException` en Spring Boot — van en ese grupo inferior.
+
+> **¿Por qué no capturar `Error`?** Cuando se lanza un `Error` como `OutOfMemoryError` o `StackOverflowError`, la JVM ya está en un estado roto — no queda memoria libre para ejecutar tu bloque `catch` de forma fiable, o la propia pila de llamadas acaba de desbordarse. Capturarlo no arregla nada; solo retrasa un crash que va a pasar de todas formas, y puede esconder el problema real en vez de dejar que la aplicación falle rápido y de forma visible.
 
 ```
 Throwable
