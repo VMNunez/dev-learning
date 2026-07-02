@@ -24,11 +24,13 @@ Java divides exceptions into two families. **Checked exceptions** represent prob
 
 In Spring Boot you almost always work with unchecked exceptions — you throw them when something goes wrong and let Spring handle them with `@RestControllerAdvice`.
 
+JavaScript has nothing like this split — every JS error is effectively "unchecked": there's no compiler forcing you to catch or declare anything. The checked/unchecked distinction is Java-specific, and it's exactly the kind of thing a JS developer trips over the first time the compiler refuses to build because a `catch` is missing.
+
 ---
 
 ## try / catch / finally
 
-You wrap the risky code in a `try` block and handle each possible failure in its own `catch` block. `finally` runs no matter what — use it to close connections or release resources even when an exception occurs:
+You wrap the risky code in a `try` block and handle each possible failure in its own `catch` block. `finally` runs no matter what — use it to close connections or release resources even when an exception occurs. The syntax itself will feel familiar: `try`/`catch`/`finally` works the same way in JavaScript — the difference in Java is what you're allowed to catch and what the compiler requires you to declare (see checked vs unchecked above):
 
 ```java
 try {
@@ -77,6 +79,8 @@ public void setAge(int age) {
 
 Always throw with a message that explains what went wrong and what value caused it.
 
+`throw` is the same keyword you already know from JavaScript — the difference is what you throw. JS lets you throw any value (a string, a number, a plain object); Java only lets you throw an object whose class extends `Throwable`, which is why every exception you throw has to be a real exception class.
+
 ---
 
 ## throws — declare checked exceptions
@@ -89,6 +93,8 @@ public String readFile(String path) throws IOException {
     return Files.readString(Path.of(path));
 }
 ```
+
+JavaScript has no equivalent to `throws` — there's no way to declare in a function signature that it might throw, and nothing forces a caller to handle it. `throws` only exists in Java to satisfy the checked-exception rule above; you'll never write it for an unchecked exception.
 
 ---
 
@@ -104,6 +110,8 @@ public class EmployeeNotFoundException extends RuntimeException {
     }
 }
 ```
+
+JavaScript lets you do something that looks similar (`class NotFoundError extends Error {}`), but it's not the same mechanism. In JS this is a convention with no enforcement — nothing stops you from throwing a plain string instead, and there's no compiler checking the type. In Java, extending `RuntimeException` plugs the class into the real type hierarchy: `catch (EmployeeNotFoundException e)` only matches that exact type (or its subclasses), and `@ExceptionHandler(EmployeeNotFoundException.class)` in Spring Boot relies on that hierarchy to route errors to the right handler.
 
 The usage example below calls `repository.findById(id)` — `repository` is a Spring Boot concept you haven't studied yet. Read it to see why custom exceptions exist; you will write this exact pattern in the Spring Boot notes.
 
@@ -130,6 +138,8 @@ try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
 ```
 
 The resource must implement `AutoCloseable`. Database connections in Spring Boot are managed automatically — you will not write try-with-resources for database work, but you will see it in file and network operations.
+
+JavaScript has no direct equivalent — the closest you've done is manually closing a resource inside `finally`. `try-with-resources` just automates that `finally`-based cleanup and guarantees it happens even if the `try` block throws.
 
 ---
 
