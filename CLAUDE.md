@@ -205,6 +205,11 @@ Not the main focus now, but keep them in mind. How Claude applies each one in pr
 
 All format, structure, writing style, and organisation rules → `notes/prompts/knowledge/notes-by-topic-prompt.md`. Read it before writing or editing any notes file. Claude can write notes files directly (Markdown docs, and code notes for Angular/SQL/Java) — Victor does not need to write these himself.
 
+**Detail standard — applies to every notes file written in a session, not only in the audit prompt.** Victor's quality bar is high for every topic; the best reference is the first section of `notes/java/es/08-excepciones.md`. Two rules carry most of the weight:
+- **Explain the mechanism, not just the behaviour.** State *why* something works the way it does, under the hood, step by step — not only what it does. Describing behaviour without tracing the mechanism is the number-one reason Victor has to add TODOs (e.g. don't say "the exception travels up the stack" without explaining what the stack is, how methods are stacked, and why "up" means "toward the caller").
+- **Anticipate his "why?" before he asks it.** Before finalizing a section, simulate the chained "why does this work?" / "does this mean that?" questions he would ask and make sure the prose already answers them. Never mention an action in the abstract ("you can rethrow it") without the concrete code snippet.
+- The signature texture of a finished note: open with the pain not the definition; one worked example carried through the whole section; ASCII diagrams for anything structural; real-world analogies; abundant `> blockquote` callouts (roughly one per non-obvious sub-concept); a sentence explaining how to read every table; exact error messages; MAL/BIEN labelled examples.
+
 ### Bilingual notes — English and Spanish
 
 Notes exist in two languages. Each topic folder contains two subfolders — `en/` and `es/` — mirroring the interview-prep convention:

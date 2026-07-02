@@ -562,6 +562,30 @@ Read all files in {NOTES_PATH}.
      — `// MAL` / `// BIEN` (or ✅ / ❌ inline). Seeing the broken version next to the correct one is
      what makes the lesson stick (the shared-vs-local `StringBuilder`, the `if`-chain vs polymorphism).
 
+   **Anticipate-the-TODO pass — the single highest-impact step (run before finalizing every section):**
+   This is the step that actually reduces how many TODOs Victor has to add. Half of his TODOs are
+   the same kind of doubt: **mechanism questions** — he asks *why* something works the way it does,
+   not what it does. The root cause is always the same: the draft describes *behaviour* ("the
+   exception travels up the stack") without tracing the *mechanism* ("what the stack is, how each
+   method is stacked, in what order it leaves, why 'up' means 'toward the caller'"). When the
+   step-by-step mechanism is missing, he asks — every time. Before finalizing a section, run this:
+   - **Mechanism before behaviour.** For every statement of *what* something does, ask: "have I
+     explained *why* it behaves that way, under the hood?" If the text states the behaviour but not
+     the mechanism that causes it, that is a guaranteed TODO — trace it now, step by step, before he
+     has to ask. Describing the *what* without the *why-under-the-hood* is the number-one source of
+     his TODOs.
+   - **Simulate his chained "why?" questions.** Victor's TODOs are literally "¿por qué X?" /
+     "¿esto significa Y?" / "¿en qué orden / dirección?". For each section, generate the chain of
+     "why does this work?" and "does this mean that?" questions a rigorous reader would ask, and
+     verify the prose already answers each one. If any is unanswered, answer it in the text (as a
+     statement of fact — never leave the question visible; see the question-TODO rule).
+   - **Never mention an action in the abstract without its code.** If the text says "you can rethrow
+     it", "you can wrap it", "you configure it" — the concrete code snippet must be right there.
+     An abstract mention with no example is a guaranteed "quiero ver un ejemplo" TODO.
+   - **Re-read for contradictions.** Check every claim against the other paragraphs and against any
+     diagram in the same section. The "propagates up" vs a diagram drawn top-down is exactly the
+     kind of contradiction he catches — resolve it before he does.
+
    - **Personal, conversational voice.** Write for Victor. "You use this when..." not
      "This is used when...". "This is why it matters:" not "This is relevant because:".
    - **Explain before the code.** Give 1–3 sentences of context before any code block —
