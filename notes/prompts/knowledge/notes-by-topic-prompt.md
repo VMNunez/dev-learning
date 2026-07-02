@@ -568,7 +568,13 @@ Read all files in {NOTES_PATH}.
    not what it does. The root cause is always the same: the draft describes *behaviour* ("the
    exception travels up the stack") without tracing the *mechanism* ("what the stack is, how each
    method is stacked, in what order it leaves, why 'up' means 'toward the caller'"). When the
-   step-by-step mechanism is missing, he asks — every time. Before finalizing a section, run this:
+   step-by-step mechanism is missing, he asks — every time.
+
+   **Do this actively, not passively.** For each section, actually *write out* 3–5 TODOs that
+   Victor would add (phrased in his voice: "¿por qué…?", "¿esto significa…?", "¿en qué orden…?"),
+   then resolve each one in the prose, then delete the list before delivering. Writing the
+   questions down forces the gap to surface; merely "keeping them in mind" does not. The checks
+   below are what to look for when generating that list:
    - **Mechanism before behaviour.** For every statement of *what* something does, ask: "have I
      explained *why* it behaves that way, under the hood?" If the text states the behaviour but not
      the mechanism that causes it, that is a guaranteed TODO — trace it now, step by step, before he
@@ -585,6 +591,35 @@ Read all files in {NOTES_PATH}.
    - **Re-read for contradictions.** Check every claim against the other paragraphs and against any
      diagram in the same section. The "propagates up" vs a diagram drawn top-down is exactly the
      kind of contradiction he catches — resolve it before he does.
+
+   **Worked exemplar — what the transformation looks like (this is the calibration target).**
+   This is a real case from Victor's notes. Study the *shape* of the move from draft to finished,
+   not just the topic — apply the same transformation to whatever concept you are writing.
+
+   *Poor draft (describes behaviour, no mechanism):*
+   > "When something fails, the method throws an exception. The object travels up the call stack
+   > until something catches it. If nothing catches it, the app stops and the error is printed."
+
+   *TODOs Victor added to that draft (all mechanism questions — these are the real ones):*
+   > - ¿el objeto va pasando de un método a otro? ¿si nadie lo captura me sale el error?
+   > - ¿qué significa "cada método encima del anterior"? ¿los nuevos arriba y los viejos abajo?
+   > - ¿"termina y devuelve"? ¿en qué orden se quita de la pila?
+   > - ¿por qué dices que sube si en el diagrama va hacia abajo? ¿es una contradicción?
+
+   *Finished version (traces the mechanism step by step, pre-empting every one of those):*
+   > Defines the call stack as a live LIFO structure with an ASCII diagram
+   > (`[top] methodB() / methodA() / main() [bottom]`); walks through how each method is stacked on
+   > call and removed on return; states the error is always born at the top because only the method
+   > executing right now can fail right now; explains that the exception exits toward the caller
+   > following the same path a `return` takes; and adds a `> blockquote` clarifying that "up" is the
+   > standard wording but means "toward the caller", drawn downward in the diagram — killing the
+   > contradiction before it is raised.
+
+   The lesson of the exemplar: the draft was not *wrong*, it was *behaviour-only*. Every TODO
+   disappeared once the mechanism was traced with a diagram, a worked example, and a callout for the
+   misleading word. That is the transformation to apply everywhere. The full finished text is the
+   first section of `notes/java/es/08-excepciones.md` — read it before writing a new file to
+   calibrate.
 
    - **Personal, conversational voice.** Write for Victor. "You use this when..." not
      "This is used when...". "This is why it matters:" not "This is relevant because:".
