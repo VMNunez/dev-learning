@@ -247,17 +247,12 @@ with the exact doubts he keeps raising in TODOs. Check all four:
   like Error classes in JS; Java's `var` is not dynamic like JS's)? Avoid anchoring when the
   concept only looks similar but serves a fundamentally different purpose.
 
-**Depth calibration — against Victor's bar, not the concept's difficulty**
-- The target is not "proportional to how hard the concept is" — it is the standard of the
-  validated files (esp. `08-excepciones.md` section 1): enough depth to *truly understand* the
-  concept, for every topic. A genuinely trivial one-liner can stay short, but a thin section on a
-  non-trivial concept is a failure even if the concept isn't "complex" in the abstract. Expand
-  under-explained sections; only trim genuine padding.
-- Does the section carry the **signature elements** to the level of the surrounding validated
-  sections (worked example carried through, ASCII diagram where there's structure, real-world
-  analogy, abundant `> blockquote` callouts, a sentence explaining each table, exact error
-  messages, MAL/BIEN labelled examples)? See "Signature elements" in rule 3. If neighbouring
-  sections have this texture and this one doesn't, raise it to match.
+**Depth calibration**
+- Apply the "Calibrate depth to Victor's bar" rule and the "Signature elements" block, both in
+  rule 3 below — same standard, same checks. The audit-specific addition: compare this section
+  against its *neighbours in the same file*. If they carry the signature texture (diagram,
+  worked example, callouts, table explained) and this section doesn't, raise it to match — a file
+  should not visibly shift standard halfway through.
 
 **Translation quality (Spanish files only)**
 - Does the prose read as natural Spanish, not as a word-for-word translation of the English?
