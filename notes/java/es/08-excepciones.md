@@ -5,9 +5,20 @@
 
 Sin excepciones, cada método tendría que devolver un valor especial (como `-1` o `null`) para avisar de que algo salió mal, y el código que llama a ese método tendría que acordarse de comprobar ese valor cada vez. Ese sistema se rompe enseguida: es fácil olvidarse de la comprobación, la señal de error se pierde después de pasar por unas cuantas llamadas, y al final tienes bugs silenciosos que nadie detecta.
 
-Java resuelve esto con las excepciones. Cuando algo falla, el método _lanza_ (throw) un objeto que representa el error. Ese objeto viaja automáticamente hacia arriba por la pila de llamadas — pasa de un método a otro, saliendo de cada uno en orden inverso a como entraron — hasta que algún método lo _captura_ (catch) y decide qué hacer con él. Si nadie lo captura en todo el camino, la aplicación se detiene, y el error aparece impreso en la consola.
+Java resuelve esto con las excepciones. Cuando algo falla, el método _lanza_ (throw) un objeto que representa el error. Ese objeto viaja automáticamente hacia arriba por la pila de llamadas — pasa de un método a otro en orden inverso al que entraron, porque el último método que se ejecutó es el primero que termina. Hasta que algún método lo _captura_ (catch) y decide qué hacer con él. Si nadie lo captura en todo el camino, la aplicación se detiene, y el error aparece impreso en la consola.
 
-Un apunte sobre dos términos que se confunden con facilidad. La **pila de llamadas** (_call stack_) es la estructura viva que Java mantiene mientras el programa corre. Cada vez que un método llama a otro, el método nuevo se coloca _encima_ del anterior en la pila — es decir, los métodos que se están ejecutando en ese momento se apilan en el orden en que fueron llamados. Cuando un método termina y devuelve, se quita de la pila. El **stack trace** es la _foto_ de esa pila justo en el instante del error: el texto que ves impreso en la consola con la lista de métodos activos en ese momento. Uno es la estructura dinámica que cambia constantemente, el otro es la copia impresa de esa estructura en un momento concreto. Como las excepciones son objetos normales en Java, llevan dentro tanto el mensaje de error como ese stack trace completo.
+Un apunte sobre dos términos que se confunden con facilidad. La **pila de llamadas** (_call stack_) es la estructura viva que Java mantiene mientras el programa corre, como una pila de platos en una cocina. Cada vez que un método llama a otro, el método nuevo se coloca _encima_ del anterior — los métodos nuevos quedan más arriba en la pila y los viejos más abajo. Por ejemplo, si `main()` llama a `methodA()`, y `methodA()` llama a `methodB()`, la pila se ve así:
+
+```
+[top]    methodB()  ← el que se está ejecutando ahora
+         methodA()
+         main()
+[bottom]
+```
+
+Cuando `methodB()` termina (ejecuta su `return`), se quita de la pila de arriba a abajo — desaparece el de arriba primero. Luego `methodA()` termina y se quita. Por último `main()`. Este orden es lo que significa "salen en orden inverso a como entraron": el último que entró es el primero que sale. En inglés se llama LIFO (Last In, First Out).
+
+El **stack trace** es la _foto_ de esa pila justo en el instante del error: es el texto que ves impreso en la consola con la lista de métodos activos en ese momento. El `call stack` es la estructura dinámica que cambia constantemente mientras el programa corre — métodos que entran, métodos que salen. El `stack trace` es la copia impresa de esa estructura en un momento concreto (cuando ocurre el error). Como las excepciones son objetos normales en Java, llevan dentro tanto el mensaje de error como ese stack trace completo — así sabes exactamente dónde ocurrió el problema y por qué camino de métodos llegó hasta ahí.
 
 ---
 

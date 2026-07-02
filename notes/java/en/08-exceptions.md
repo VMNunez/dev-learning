@@ -5,9 +5,20 @@
 
 Without exceptions, every method would have to return a special value (like `-1` or `null`) to signal that something went wrong, and the code that calls that method would have to remember to check that value every single time. That approach breaks down fast: it's easy to forget the check, the error signal gets lost after passing through a few calls, and you end up with silent bugs nobody notices.
 
-Java solves this with exceptions. When something fails, the method *throws* an object that represents the error. That object automatically travels upward through the call stack — passing from one method to the next, exiting each in reverse order of how they were entered — until some method *catches* it and decides what to do with it. If nothing catches it all the way up, the app stops and the error is printed to the console.
+Java solves this with exceptions. When something fails, the method *throws* an object that represents the error. That object automatically travels upward through the call stack — passing from one method to the next in reverse order of how they were called, because the last method that started executing is the first one to finish. Until some method *catches* it and decides what to do with it. If nothing catches it all the way up, the app stops and the error is printed to the console.
 
-A note on two terms people mix up. The **call stack** is the live structure Java keeps while the program runs. Every time one method calls another, the new method is placed *on top* of the previous one on the stack — that is, the methods currently executing at that moment are stacked in the order they were called. When a method returns, it is removed from the stack. The **stack trace** is a *snapshot* of that stack at the instant of the error: the text you see printed in the console listing the active methods at that moment. One is the dynamic structure that changes constantly; the other is the printed copy of it at a specific moment. Because exceptions are ordinary objects in Java, they carry both the error message and that full stack trace inside them.
+A note on two terms people mix up. The **call stack** is the live structure Java keeps while the program runs — like a stack of plates in a kitchen. Every time one method calls another, the new method is placed *on top* of the previous one — new methods end up higher on the stack and older ones lower. For example, if `main()` calls `methodA()`, and `methodA()` calls `methodB()`, the stack looks like this:
+
+```
+[top]    methodB()  ← currently executing
+         methodA()
+         main()
+[bottom]
+```
+
+When `methodB()` finishes (executes its `return`), it is removed from the top of the stack — the one on top disappears first. Then `methodA()` finishes and is removed. Finally `main()`. This order is what "exiting in reverse order" means: the last one that entered is the first one that exits. In other words, LIFO (Last In, First Out).
+
+The **stack trace** is a *snapshot* of that stack at the instant of the error: the text you see printed in the console listing the active methods at that moment. The `call stack` is the dynamic structure that changes constantly while the program runs — methods entering, methods leaving. The `stack trace` is the printed copy of that structure at one specific moment (when the error occurs). Because exceptions are ordinary objects in Java, they carry both the error message and that full stack trace inside them — so you know exactly where the problem happened and what path of method calls led to it.
 
 ---
 
