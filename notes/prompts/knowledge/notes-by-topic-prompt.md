@@ -247,10 +247,17 @@ with the exact doubts he keeps raising in TODOs. Check all four:
   like Error classes in JS; Java's `var` is not dynamic like JS's)? Avoid anchoring when the
   concept only looks similar but serves a fundamentally different purpose.
 
-**Depth calibration**
-- Is the length of the explanation proportional to how hard the concept actually is?
-  A simple annotation → one sentence. A complex concept (filter chain, transaction scope,
-  JWT flow) → a full paragraph. Adjust in both directions — trim padding, expand thin sections.
+**Depth calibration — against Victor's bar, not the concept's difficulty**
+- The target is not "proportional to how hard the concept is" — it is the standard of the
+  validated files (esp. `08-excepciones.md` section 1): enough depth to *truly understand* the
+  concept, for every topic. A genuinely trivial one-liner can stay short, but a thin section on a
+  non-trivial concept is a failure even if the concept isn't "complex" in the abstract. Expand
+  under-explained sections; only trim genuine padding.
+- Does the section carry the **signature elements** to the level of the surrounding validated
+  sections (worked example carried through, ASCII diagram where there's structure, real-world
+  analogy, abundant `> blockquote` callouts, a sentence explaining each table, exact error
+  messages, MAL/BIEN labelled examples)? See "Signature elements" in rule 3. If neighbouring
+  sections have this texture and this one doesn't, raise it to match.
 
 **Translation quality (Spanish files only)**
 - Does the prose read as natural Spanish, not as a word-for-word translation of the English?
@@ -514,6 +521,47 @@ Read all files in {NOTES_PATH}.
      When in doubt, it is better to acknowledge that JS/TS has no equivalent than to force a
      misleading comparison.
 
+   **Signature elements — the texture of a finished note (this is Victor's actual bar):**
+   The rules above make a note *correct*. These make it match the standard Victor has actually
+   validated — the level of the early Java notes (`01-variables-tipos.md`,
+   `06-herencia-polimorfismo.md`, `07-colecciones.md`) and above all **the first section of
+   `08-excepciones.md`, which is the single best reference for what a finished note looks like**.
+   This bar is the same for every topic — it is NOT Java-specific. Notes in other folders
+   (e.g. Angular) that currently sit below it are a backlog to raise, never a lower target to
+   match. When writing or auditing any section, these are the elements that take it from "correct"
+   to "Victor's standard". Not every element fits every section, but a finished note visibly uses
+   most of them:
+   - **One worked example carried through the whole section.** Pick a single concrete example and
+     follow it from start to finish, rather than scattering unrelated fragments. `Animal/Dog/Cat`
+     runs through all of the inheritance section; `main() → methodA() → methodB()` runs through the
+     entire call-stack explanation in `08`. The reader should be able to trace one story, not
+     re-orient at every code block.
+   - **ASCII diagrams for anything with spatial or structural shape.** When the concept has a shape
+     — a stack, a tree, a memory layout, a request flow — draw it. The call-stack diagram in `08`
+     (`[top] methodB() / methodA() / main() [bottom]`) is the model. A diagram is often worth more
+     than a paragraph for structure.
+   - **Real-world analogies for abstract mechanisms.** Anchor an abstract idea to a physical one:
+     the call stack as "a stack of plates", integer overflow as "an odometer rolling over",
+     `StringBuilder` as "a whiteboard you write on piece by piece". One good analogy per hard concept.
+   - **Abundant `> blockquote` callouts — roughly one per non-obvious sub-concept.** Victor's
+     validated notes are dense with these (five in the first `01` file alone). Every time there is a
+     "why does it work this way?", a "what does this word mean?", or a "why not the obvious
+     alternative?", it becomes a callout. Do not ration them — under-using callouts is the most
+     common way a draft falls below his bar. Resolve the doubt as a statement of fact (see the
+     question-TODO rule) — never phrase the heading as a literal question.
+   - **Every comparison table gets a sentence on how to read it.** After any table, add a line that
+     explains what a non-obvious column or row actually means and how to use it — e.g. "The
+     `Parent class` column is what determines whether the compiler treats it as checked or
+     unchecked." A table Victor has to decode on his own is below standard; he has explicitly asked
+     for this ("no entiendo por qué pone Extiende").
+   - **Show the exact error message.** When a mistake produces a specific compiler or runtime error,
+     quote it verbatim (`unreported exception IOException; must be caught or declared to be thrown`,
+     `Type argument int is not within bounds of type-variable E`). The real string is what he'll
+     recognize later in IntelliJ, and it makes the note concrete instead of abstract.
+   - **Label wrong-vs-right examples.** When there is a tempting wrong way, show both and label them
+     — `// MAL` / `// BIEN` (or ✅ / ❌ inline). Seeing the broken version next to the correct one is
+     what makes the lesson stick (the shared-vs-local `StringBuilder`, the `if`-chain vs polymorphism).
+
    - **Personal, conversational voice.** Write for Victor. "You use this when..." not
      "This is used when...". "This is why it matters:" not "This is relevant because:".
    - **Explain before the code.** Give 1–3 sentences of context before any code block —
@@ -539,10 +587,17 @@ Read all files in {NOTES_PATH}.
    - **Do not write documentation.** If the note could be copy-pasted onto the official docs
      site unchanged, it is wrong. Notes capture what Victor learned and why it clicked —
      not a neutral description of what the framework does.
-   - **Calibrate depth to complexity.** Simple syntax (a short annotation, a method call)
-     needs one sentence. Complex concepts (JPA relationships, Spring Security filter chain,
-     JWT flow) need a paragraph. Match the explanation length to how long it actually takes
-     to understand the concept — not to a fixed template.
+   - **Calibrate depth to Victor's bar, not to the concept's difficulty.** The floor is never
+     "how hard is this concept" — it is "how much does it take to *truly understand* it", which is
+     the standard set by the validated files (esp. `08-excepciones.md` section 1). A genuinely
+     trivial one-liner (a self-explanatory annotation) can stay short, but the default assumption
+     is that a concept deserves the full treatment: mechanism, a worked example, a callout for the
+     non-obvious part. Do not write a thin two-paragraph section just because the concept isn't
+     "complex" in the abstract — if the surrounding sections in the same file have diagrams, tables,
+     worked examples and callouts, this section matches that texture too. Under-explaining is the
+     failure mode here, not padding. (This is exactly the miss that made Victor ask for "el mismo
+     nivel de detalle" mid-session — the fix is to treat his established bar as the target, never
+     the objective hardness of the topic.)
    - **Mark forward references within the same topic.** If an example in file N uses a
      concept that is not explained until file M (M > N), add a one-line note inline:
      "The `X::Y` syntax is a method reference — covered in full in `09-streams-lambdas.md`.
