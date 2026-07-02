@@ -219,12 +219,31 @@ as normal.
   like documentation, not a personal guide. Rewrite so it explains *why it matters*, *where it
   appears in a real project*, and *what would break without it*.
 
-**Completeness of explanation — zero-assumption rule**
+**Completeness of explanation — zero-assumption rule (first order)**
 - Does every term, annotation, or method introduced in the section get explained in that same
   section — what it is, why it exists, what problem it solves? If something is introduced and
   the next sentence does not clarify it, add the explanation inline.
 - Is there an obvious common mistake or a "why not X?" moment that is not mentioned? If yes,
   add it as a `> blockquote` callout.
+
+**Completeness of explanation — second order (this is where drafts fail most often)**
+Passing the first-order check is not enough. A note can define every term and still leave Victor
+with the exact doubts he keeps raising in TODOs. Check all four:
+- **Mechanism.** Does the concept have a counter-intuitive behaviour or depend on how it works
+  under the hood (memory layout, references, an internal counter, binary representation)? If yes,
+  is the *mechanism* explained — not just the usage? The reader must understand *why* it behaves
+  that way, not only how to call it. (e.g. `modCount` + iterator for `ConcurrentModificationException`,
+  contiguous slots vs node chain for `ArrayList`/`LinkedList`, why `double` cannot store 0.1.)
+- **Confusable pairs.** Does the section introduce two items with a similar name or role
+  (`void`/`Void`, `Collection`/`Collections`, `==`/`equals`, overriding/overloading,
+  `Comparable`/`Comparator`)? If yes, is there a direct contrast — which is which, how they differ,
+  when to use each? If the contrast is missing, add it as a short sub-section or `> blockquote`.
+- **Scope.** When a rule or method only applies to part of what the file covers, does the text say
+  so explicitly (e.g. "`sort()` only exists on `List`")? Generic statements the reader has to
+  narrow down on their own must be tightened.
+- **JS/TS anchor.** When a concept has a direct equivalent in JavaScript/TypeScript, is it anchored
+  in one phrase (`final` = `const`)? When it differs in a misleading way, is the difference flagged
+  (Java's `var` is not dynamic like JS's)? Add the anchor if it is missing.
 
 **Depth calibration**
 - Is the length of the explanation proportional to how hard the concept actually is?
@@ -448,6 +467,35 @@ Read all files in {NOTES_PATH}.
    This rule overrides "calibrate depth to complexity" — there is no such thing as a concept
    too simple to explain. What feels obvious to an experienced developer is often exactly
    what a beginner gets stuck on. When in doubt, explain more, not less.
+
+   **Second-order completeness — the four rules that separate a draft from a finished note:**
+   The zero-assumption rule above ("define every term") is first order — it is satisfiable by a
+   note that still leaves every doubt below open. These four rules are where auto-generated drafts
+   consistently fall short and where Victor ends up adding TODOs by hand. Apply all four when
+   writing any new section, and check them when auditing an existing one:
+
+   - **Explain the mechanism, not just the usage.** When a concept has a counter-intuitive
+     behaviour or depends on how it works under the hood — memory layout, references, an internal
+     counter, binary representation — explain *why* it behaves that way, not only how to call it.
+     Defining what it is and showing the syntax is not enough if the behaviour is surprising.
+     (e.g. explain the `modCount` + iterator interaction behind `ConcurrentModificationException`,
+     the contiguous memory slots of `ArrayList` vs the node chain of `LinkedList`, why `double`
+     cannot represent 0.1 exactly.)
+   - **Contrast confusable pairs explicitly.** When a section introduces two elements with a
+     similar name or role — `void`/`Void`, `Collection`/`Collections`, `==`/`equals`,
+     overriding/overloading, `Comparable`/`Comparator`, `compareTo`/`compare`/`comparing` —
+     add a short sub-section or a `> blockquote` that contrasts them directly: which is which,
+     how they differ, and when to use each. Do not leave the reader to infer the distinction.
+   - **State the exact scope of every rule.** When a rule or method only applies to part of what
+     the file covers, say so explicitly ("`sort()` only exists on `List`"; "`Collections.sort()`
+     is List only — `Set` and `Map` have no positional order"). Never leave a generic statement
+     the reader has to narrow down on their own.
+   - **Anchor against JavaScript/TypeScript.** When a concept has a direct equivalent in JS/TS,
+     anchor it in one phrase (`final` = `const`, for-each = `for...of`, `.formatted()` = template
+     literals). When it differs in a misleading way, flag the difference (Java's `var` is not
+     dynamic like JS's; Java has single inheritance, unlike TS type intersections). This applies
+     per section, not just in the `00-intro` file — Victor's reference points are JS/TS and he
+     wants the bridge wherever it helps.
 
    - **Personal, conversational voice.** Write for Victor. "You use this when..." not
      "This is used when...". "This is why it matters:" not "This is relevant because:".
