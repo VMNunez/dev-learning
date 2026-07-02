@@ -26,18 +26,69 @@ Si `main()` tampoco la captura, ahí se acaba el camino — `main()` es siempre 
 
 ## Excepciones comprobadas vs no comprobadas
 
-Java divide las excepciones en dos familias. Las **excepciones comprobadas** (_checked_) representan problemas que el llamador debería anticipar — como un fichero no encontrado o un timeout de red. El compilador te obliga a capturarlas o a declarar que tu método puede lanzarlas. Las **excepciones no comprobadas** (_unchecked_, subclases de `RuntimeException`) representan errores de programación — punteros nulos, índices incorrectos, argumentos inválidos. El compilador no exige nada; se propagan hacia arriba hasta que algo las captura o la aplicación se rompe.
+Java divide las excepciones en dos familias, y la diferencia no es solo de nombre — es una regla que el compilador impone activamente sobre una familia y no sobre la otra.
 
-|                       | Comprobadas (checked)                                       | No comprobadas (unchecked)                                                      |
-| --------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Extiende              | `Exception`                                                 | `RuntimeException`                                                              |
-| ¿Hay que declararlas? | Sí — `throws` o `try/catch`                                 | No                                                                              |
-| Cuándo                | Problemas esperados (fichero no encontrado, timeout de red) | Errores de programación (puntero nulo, índice fuera de rango)                   |
-| Ejemplos              | `IOException`, `SQLException`                               | `NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException` |
+Las **excepciones comprobadas** (_checked_) representan problemas que el llamador debería anticipar porque dependen de algo externo al propio código — un fichero que puede no existir, una conexión de red que puede caerse, una base de datos que puede estar caída. Son fallos que pueden pasar aunque tu lógica esté perfectamente escrita. Por eso el compilador te obliga a hacer algo con ellas: o las capturas con `try/catch`, o declaras en la firma del método que tu método puede lanzarlas con `throws` (esto se explica a fondo en la sección `throws` más abajo). Si no haces ninguna de las dos cosas, el código directamente no compila:
 
-En Spring Boot casi siempre trabajas con excepciones no comprobadas — las lanzas cuando algo va mal y dejas que Spring las maneje con `@RestControllerAdvice`.
+```java
+public void readConfig() {
+    Files.readString(Path.of("config.txt")); // ERROR de compilación
+    // Files.readString() declara "throws IOException" —
+    // este método no la captura ni la declara, así que Java se niega a compilar
+}
+```
 
-JavaScript no tiene nada parecido a esta división — todo error en JS es, en la práctica, "no comprobado": no hay ningún compilador que te obligue a capturar o declarar nada. La distinción entre comprobadas y no comprobadas es específica de Java, y es justo el tipo de cosa con la que tropieza un desarrollador de JS la primera vez que el compilador se niega a compilar porque falta un `catch`.
+Java se niega a compilar precisamente porque ese fichero puede no existir en tiempo de ejecución, y el compilador no te deja ignorar esa posibilidad. El error que ves en ese caso no es una excepción en tiempo de ejecución (el programa ni siquiera llega a arrancar) — es un error de compilación con un mensaje característico: `unreported exception IOException; must be caught or declared to be thrown`. Solo cuando arreglas eso (con `try/catch` o con `throws`) el código compila; y si eliges `try/catch`, el error real que verías en tiempo de ejecución si el fichero no existiera sería un objeto `IOException` (o su subclase más específica, `FileNotFoundException`) entregado a tu bloque `catch`.
+
+Aquí tienes el mismo contraste con código real, checked y unchecked lado a lado:
+
+```java
+// CHECKED — el compilador te obliga a manejarla
+public String loadFile(String path) throws IOException {
+    return Files.readString(Path.of(path)); // puede fallar por algo externo: el fichero no existe
+}
+
+// UNCHECKED — nada te obliga a declararla, es un bug si ocurre
+public int divide(int a, int b) {
+    return a / b; // si b es 0, lanza ArithmeticException sin previo aviso — nadie te lo exige declarar
+}
+```
+
+Las **excepciones no comprobadas** (_unchecked_, subclases de `RuntimeException`) representan errores de programación — un `null` que no debería serlo, un índice que se sale del array, un argumento que no tiene sentido. Son bugs, no eventos externos: si tu código estuviera bien escrito, nunca deberían pasar. Por eso el compilador no exige nada — no tendría sentido obligarte a declarar en la firma de cada método todos los bugs posibles que podrías llegar a cometer. Se propagan libremente hacia el llamador (el mismo camino LIFO que ya conoces de la sección anterior) hasta que algo las captura o la aplicación se rompe.
+
+> Aquí es fácil volver a caer en la misma trampa de antes: "se propagan hacia arriba" es la expresión estándar en toda la documentación de Java, pero como ya viste, "arriba" significa "hacia el método que llamó", no "hacia arriba en el diagrama de la pila" — donde en realidad se dibuja hacia abajo. La pila de la sección anterior está bien representada; es la expresión "hacia arriba" la que es engañosa si la tomas literalmente. A partir de aquí vas a ver las dos formas en la documentación real (inglés: *"propagates up the stack"*) — cuando la veas, tradúcela mentalmente como "hacia el llamador".
+
+| | Comprobadas (checked) | No comprobadas (unchecked) |
+| --------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Clase padre (`extends`) | `Exception` | `RuntimeException` |
+| ¿Hay que declararlas? | Sí — `throws` o `try/catch` | No |
+| Representan | Problemas externos esperables — el fichero no existe, la conexión a la base de datos se cae, el timeout de una llamada a otra API | Errores de programación — bugs que no deberían ocurrir si el código está bien escrito |
+| Ejemplos (situación real) | `IOException` (leyendo un fichero que no existe), `SQLException` (la base de datos rechaza la query o se cae la conexión) | `NullPointerException` (llamas a un método sobre algo que es `null`), `IllegalArgumentException` (pasas un valor que no tiene sentido, como una edad negativa), `IndexOutOfBoundsException` (accedes a la posición 10 de una lista de 3 elementos) |
+
+La columna "Clase padre" indica de qué clase hereda cada tipo de excepción — es lo que determina si el compilador la trata como comprobada o no: toda excepción que extienda `Exception` (pero no `RuntimeException`) es comprobada; toda excepción que extienda `RuntimeException` es no comprobada. La jerarquía completa se explica más abajo en "Jerarquía de excepciones".
+
+En Spring Boot casi siempre trabajas con excepciones no comprobadas — incluso cuando el problema real es "externo" (por ejemplo, un recurso no encontrado en la base de datos), la convención es lanzar una excepción no comprobada propia (como ves en `EmployeeNotFoundException` más abajo) y dejar que Spring la capture globalmente con `@RestControllerAdvice`, en lugar de forzar a cada controller a declarar `throws` y llenar el código de `try/catch` repetidos.
+
+Relanzar una excepción comprobada como no comprobada — lo que se conoce como "envolver" (_wrap_) — se hace así en la práctica:
+
+```java
+public String loadFile(String path) {
+    try {
+        return Files.readString(Path.of(path));
+    } catch (IOException e) {
+        // "envuelves" la excepción comprobada dentro de una no comprobada
+        throw new RuntimeException("No se pudo leer el fichero: " + path, e);
+        //                                                                 ^ el segundo argumento
+        //                          es la "cause" — la excepción original queda guardada dentro
+    }
+}
+```
+
+`RuntimeException` (igual que casi todas las excepciones de Java) tiene un constructor que acepta un `Throwable` como segunda posición — la excepción original (`e`) se guarda como **cause** dentro de la nueva. Esto es importante: no pierdes información, el stack trace de la excepción original sigue disponible dentro de la nueva (verás algo como `Caused by: java.io.IOException...` al final del stack trace impreso). La ventaja es que `loadFile()` ya no necesita `throws IOException` en su firma — el llamador ya no está obligado por el compilador a manejarla, aunque sigue pudiendo hacerlo si quiere con `catch (RuntimeException e)`.
+
+> **Cuidado con "envolver" una excepción comprobada.** Es un patrón válido y muy común en Spring Boot, pero pierde la garantía del compilador — a partir de ahí, nadie te obliga a acordarte de gestionarla. Hazlo con intención (normalmente porque quieres simplificar la firma de tus métodos y dejar que un `@RestControllerAdvice` maneje el error de forma centralizada), no por evitar escribir `throws` sin pensarlo.
+
+JavaScript no tiene nada parecido a esta división — todo error en JS es, en la práctica, "no comprobado": no hay ningún compilador que te obligue a capturar o declarar nada, ni un `throws` en la firma de una función, ni un error de compilación si te olvidas de un `catch`. La distinción entre comprobadas y no comprobadas es específica de Java (también existe, con matices distintos, en otros lenguajes tipados como C# — aunque C# tampoco la impone en tiempo de compilación), y es justo el tipo de cosa con la que tropieza un desarrollador de JS la primera vez que el compilador se niega a compilar porque falta un `catch`.
 
 ---
 
