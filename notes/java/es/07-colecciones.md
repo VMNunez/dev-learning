@@ -9,7 +9,7 @@ Antes de que existieran las colecciones, tenías que gestionar tus propios array
 
 ## List — ordenada, permite duplicados
 
-`List` es la elección por defecto cuando necesitas una secuencia ordenada y dinámica — como las filas que devuelve una consulta a la base de datos. A diferencia de un array, se redimensiona automáticamente a medida que añades o eliminas elementos. Los métodos que más usarás son: `add(valor)` para añadir al final, `get(índice)` para leer por posición, `remove(valor)` o `remove(índice)` para eliminar, `contains(valor)` para comprobar si un elemento existe, `size()` para saber cuántos elementos hay, e `isEmpty()` para saber si está vacía.
+`List` es la elección por defecto cuando necesitas una secuencia ordenada y dinámica — como las filas que devuelve una consulta a la base de datos. A diferencia de un array, se redimensiona automáticamente a medida que añades o eliminas elementos. Un array tiene **tamaño fijo**: cuando lo creas reservas de golpe un número concreto de posiciones en memoria (`new String[5]` aparta cinco huecos contiguos) y ese número ya no puede cambiar — si luego necesitas un sexto elemento, tienes que crear un array nuevo más grande y copiar todos los valores a mano. Esos huecos ocupan memoria estén llenos o vacíos: un array de 100 posiciones con 3 valores sigue reservando las 100. Una `List` es **dinámica**: por dentro gestiona ese redimensionado por ti — pide más memoria y copia los elementos cuando se llena — de forma que desde fuera solo llamas a `add()` y la estructura crece sola. Los métodos que más usarás son: `add(valor)` para añadir al final, `get(índice)` para leer por posición, `remove(valor)` o `remove(índice)` para eliminar, `contains(valor)` para comprobar si un elemento existe, `size()` para saber cuántos elementos hay, e `isEmpty()` para saber si está vacía.
 
 ```java
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ Un `Map` es la estructura que usas cuando necesitas buscar algo por un identific
 
 Esto es útil, por ejemplo, cuando quieres **cachear** un resultado — es decir, guardar algo que ya calculaste o recuperaste para no repetir ese trabajo. Si tienes una lista de 1000 empleados y necesitas buscar el mismo empleado varias veces por ID, guardas los resultados en un `Map<Integer, Employee>` y los recuperas en tiempo constante, en lugar de recorrer la lista cada vez.
 
-`Map<String, Integer>` se lee así: el primer tipo entre los `<>` es el tipo de la clave (`String` — el nombre del empleado) y el segundo es el tipo del valor (`Integer` — la puntuación). Siempre declaras el tipo de la clave primero y el del valor segundo.
+`Map<String, Integer>` se lee así: el primer tipo entre los `<>` (esos ángulos son la sintaxis de **genéricos** de Java — no es un operador con nombre propio; sirven para decirle a la clase con qué tipos va a trabajar, y se explican a fondo en [10-generics.md](10-generics.md)) es el tipo de la clave (`String` — el nombre del empleado) y el segundo es el tipo del valor (`Integer` — la puntuación). Siempre declaras el tipo de la clave primero y el del valor segundo.
 
 Creas un `Map` con `new HashMap<>()` — la interfaz es `Map<K, V>` y la implementación concreta es `HashMap`. Los métodos que más usarás son: `put(clave, valor)` para añadir o actualizar una entrada (si la clave ya existe, `put()` reemplaza el valor anterior en lugar de añadir una segunda entrada), `get(clave)` para recuperar el valor de una clave, `getOrDefault(clave, valorPorDefecto)` para leer con un fallback si la clave no existe, `containsKey(clave)` para saber si una clave está en el mapa, `containsValue(valor)` para saber si un valor concreto aparece en alguna entrada, `remove(clave)` para eliminar una entrada, y `size()` para contar cuántas hay.
 
@@ -125,7 +125,7 @@ scores.size();                  // 2 — número de entradas (recordatorio: "Vic
 scores.remove("Ana");           // elimina la entrada con clave "Ana"
 ```
 
-Para iterar sobre todas las entradas del mapa necesitas `Map.Entry<K, V>`, que es el tipo que Java usa para representar un par clave-valor concreto. `scores.entrySet()` devuelve un `Set<Map.Entry<String, Integer>>` — es decir, un conjunto de pares clave-valor, donde cada elemento del conjunto es un par completo (clave y valor juntos). Por eso en el for-each se declara `Map.Entry<String, Integer> entry`: es el tipo de cada elemento que el bucle va sacando de ese conjunto (`scores.entrySet()`).
+Para iterar sobre todas las entradas del mapa necesitas `Map.Entry<K, V>`, que es el tipo que Java usa para representar un par clave-valor concreto. `scores.entrySet()` devuelve un `Set<Map.Entry<String, Integer>>` — es decir, un conjunto de pares clave-valor. Un `Set` no es una lista ni un array: es una colección de elementos **únicos, sin duplicados y sin acceso por índice** (lo ves en detalle más abajo). Devuelve un `Set` precisamente porque las claves de un mapa ya son únicas, así que los pares también lo son; no tiene nada que ver con permitir o no repetidos en el resultado. Cada elemento del conjunto es un par completo (clave y valor juntos). Por eso en el for-each se declara `Map.Entry<String, Integer> entry`: es el tipo de cada elemento que el bucle va sacando de ese conjunto (`scores.entrySet()`).
 
 Dentro del bucle, `entry` ya tiene la clave y el valor en el mismo objeto, así que no necesitas volver al mapa a buscar nada. `entry.getKey()` te da la clave que tiene ese par, y `entry.getValue()` te da su valor directamente. `scores.get("Victor")` funciona cuando ya tienes la clave y quieres el valor — pero al iterar con `entrySet()` tienes los dos a la vez, y los métodos `getKey()` / `getValue()` son los que los extraen de ese objeto par:
 
@@ -136,7 +136,7 @@ for (Map.Entry<String, Integer> entry : scores.entrySet()) {
 }
 ```
 
-Si solo necesitas las claves, `scores.keySet()` te devuelve un `Set<String>` — útil cuando quieres recorrer solo los nombres sin necesitar sus puntuaciones. Si solo necesitas los valores, `scores.values()` te devuelve una `Collection<Integer>`. `Collection` es la interfaz raíz de la que heredan `List`, `Set` y otras estructuras del framework — `values()` la usa porque el mapa no garantiza un orden concreto para los valores, así que no puede comprometerse a devolver una `List`. En la práctica no cambia nada: puedes recorrerla con un for-each igual que cualquier otra colección. Esto es útil cuando quieres operar sobre todos los valores — sumarlos, buscar el máximo — sin importar a qué clave pertenece cada uno:
+Las tres opciones —`entrySet()`, `keySet()` y `values()`— sí son formas de **recorrer** el mapa; lo que cambia es qué parte necesitas en cada caso. Usas `entrySet()` cuando necesitas la clave y el valor a la vez. Si solo necesitas las claves, `scores.keySet()` te devuelve un `Set<String>` — útil cuando quieres recorrer solo los nombres sin necesitar sus puntuaciones. Si solo necesitas los valores, `scores.values()` te devuelve una `Collection<Integer>`. `Collection` es la interfaz raíz de la que heredan `List`, `Set` y otras estructuras del Collections Framework del JDK — `values()` la usa porque el mapa no garantiza un orden concreto para los valores, así que no puede comprometerse a devolver una `List`. En la práctica no cambia nada: puedes recorrerla con un for-each igual que cualquier otra colección. Esto es útil cuando quieres operar sobre todos los valores — sumarlos, buscar el máximo — sin importar a qué clave pertenece cada uno:
 
 ```java
 // keySet() — recorrer solo las claves
@@ -172,13 +172,11 @@ Hay tres implementaciones de `Map` que verás en entrevistas y en código real. 
 
 ## Set — valores únicos, sin duplicados
 
-Usa un `Set` cuando los duplicados serían un error — por ejemplo, la lista de roles que tiene un usuario o el conjunto de etiquetas de un artículo. Un `Set` no es una `List` sin duplicados — es una estructura distinta. La diferencia clave: `Set` no tiene acceso por índice, no existe `get(0)` ni `get(2)`. Está diseñado para una sola pregunta: ¿existe este valor? Cuando intentas añadir un valor que ya está en el set, Java simplemente lo ignora sin lanzar ninguna excepción. Nada explota, nada se avisa — de ahí "en silencio". Eso es exactamente lo que quieres: los duplicados desaparecen solos sin que tengas que comprobarlos tú antes de cada `add()`.
+Usa un `Set` cuando los duplicados serían un error — por ejemplo, la lista de roles que tiene un usuario o el conjunto de etiquetas de un artículo. Un `Set` no es una `List` sin duplicados — es una estructura distinta. La diferencia clave: `Set` no tiene acceso por índice, no existe `get(0)` ni `get(2)`. Está diseñado para una sola pregunta: ¿existe este valor? Cuando intentas añadir un valor que ya está en el set, Java simplemente lo ignora **en silencio**: no lanza ninguna excepción, nada explota y nada te avisa. Eso es exactamente lo que quieres: los duplicados desaparecen solos sin que tengas que comprobarlos tú antes de cada `add()`.
 
 Los métodos que usarás son: `add(valor)` para añadir (si ya existe, se ignora), `remove(valor)` para eliminar, `contains(valor)` para comprobar si un valor existe — esto es lo que más se usa, `size()` para contar cuántos elementos hay, e `isEmpty()` para saber si está vacío.
 
-La implementación por defecto es `HashSet`, que internamente funciona igual que un `HashMap` — convierte cada valor en un número (hash) para saber dónde guardarlo, lo que hace que `contains()` sea instantáneo aunque tengas miles de elementos. A cambio, no garantiza ningún orden al iterar.
-
-Si necesitas orden de inserción, usa `LinkedHashSet`. Si necesitas los valores ordenados alfabéticamente o numéricamente, usa `TreeSet`. En la práctica, `HashSet` cubre el 95% de los casos.
+La implementación por defecto es `HashSet`. Debajo tienes los métodos típicos; las tres implementaciones de `Set` y cuándo elegir cada una las verás justo después del código.
 
 ```java
 import java.util.HashSet;
@@ -205,22 +203,43 @@ Set<String> unique = new HashSet<>(withDuplicates);
 List<String> deduplicated = new ArrayList<>(unique);
 ```
 
+### HashSet vs LinkedHashSet vs TreeSet
+
+Igual que con `Map`, hay tres implementaciones de `Set` y la diferencia entre ellas es el **orden** en que recorren los elementos.
+
+`HashSet` es la implementación por defecto. Internamente funciona igual que un `HashMap` — convierte cada valor en un número (hash) para saber dónde guardarlo, lo que hace que `contains()` sea instantáneo aunque tengas miles de elementos. A cambio, no garantiza ningún orden al iterar.
+
+`LinkedHashSet` funciona igual de rápido que `HashSet`, pero además recuerda el orden de inserción: cuando lo recorres, los valores salen en el mismo orden en que los añadiste. Úsalo cuando necesites recuperar los elementos en el orden en que los insertaste.
+
+`TreeSet` mantiene los valores ordenados automáticamente — alfabéticamente si son `String`, numéricamente si son números. Internamente usa un árbol binario de búsqueda equilibrado, lo que hace la inserción y la búsqueda algo más lentas que `HashSet`.
+
+|             | HashSet             | LinkedHashSet                | TreeSet                     |
+| ----------- | ------------------- | ---------------------------- | --------------------------- |
+| Orden       | Sin orden           | Orden de inserción           | Ordenado por valor          |
+| Velocidad   | Más rápido          | Ligeramente más lento        | Más lento (ordenación)      |
+| Cuándo usar | La mayoría de casos | Necesitas orden de inserción | Necesitas valores ordenados |
+
+En la práctica, `HashSet` cubre el 95% de los casos.
+
 ---
 
 ## Métodos comunes — List, Map y Set
 
 Las tres estructuras comparten un conjunto de operaciones básicas porque las tres implementan la interfaz `Collection`. `Map` usa nombres ligeramente distintos para algunas porque necesita diferenciar entre claves y valores, pero la idea es la misma:
 
-| Operación           | List              | Set               | Map                  |
-| ------------------- | ----------------- | ----------------- | -------------------- |
-| Añadir              | `add(valor)`      | `add(valor)`      | `put(clave, valor)`  |
-| Eliminar            | `remove(valor)`   | `remove(valor)`   | `remove(clave)`      |
-| Comprobar si existe | `contains(valor)` | `contains(valor)` | `containsKey(clave)` |
-| Número de elementos | `size()`          | `size()`          | `size()`             |
-| ¿Está vacío?        | `isEmpty()`       | `isEmpty()`       | `isEmpty()`          |
-| Vaciar              | `clear()`         | `clear()`         | `clear()`            |
+| Operación                   | List              | Set               | Map                                    |
+| --------------------------- | ----------------- | ----------------- | -------------------------------------- |
+| Añadir                      | `add(valor)`      | `add(valor)`      | `put(clave, valor)`                    |
+| Eliminar                    | `remove(valor)`   | `remove(valor)`   | `remove(clave)`                        |
+| Comprobar si existe         | `contains(valor)` | `contains(valor)` | `containsKey(clave)`                   |
+| Número de elementos         | `size()`          | `size()`          | `size()`                               |
+| ¿Está vacío?                | `isEmpty()`       | `isEmpty()`       | `isEmpty()`                            |
+| Vaciar                      | `clear()`         | `clear()`         | `clear()`                              |
+| Leer por posición / clave   | `get(índice)`     | —                 | `get(clave)`                           |
+| Leer con valor por defecto  | —                 | —                 | `getOrDefault(clave, def)`             |
+| Recorrer                    | for-each          | for-each          | `entrySet()` / `keySet()` / `values()` |
 
----
+En `Map`, `remove(clave)` elimina **por clave**, no por valor: le pasas la clave y borra el par entero. No hay un método que borre "el primer par cuyo valor sea X" recorriendo el mapa; si necesitas eso, tienes que localizar tú la clave primero. (Existe una variante `remove(clave, valor)` que solo borra si esa clave tiene exactamente ese valor, pero sigue encontrando la entrada por la clave.) En `List` y `Set`, en cambio, `remove(valor)` sí elimina por el propio valor.
 
 ## Métodos de utilidad de Collections
 
@@ -250,19 +269,19 @@ Collections.frequency(numbers, 1);   // 2
 
 ## Ordenación — Comparable y Comparator
 
-Cuando ordenas una lista de `String` o `Integer`, Java ya sabe cómo compararlos — "Ana" va antes que "Luis", el 3 va antes que el 7. Pero si tienes una `List<Employee>` y llamas a `sort()`, Java no sabe por qué campo comparar a dos empleados. ¿Por nombre? ¿Por edad? ¿Por departamento? Para eso existen `Comparable` y `Comparator`: dos mecanismos distintos para enseñarle a Java cómo ordenar tus propias clases.
+Cuando ordenas una lista de `String` o `Integer`, Java ya sabe cómo compararlos — "Ana" va antes que "Luis", el 3 va antes que el 7. Pero si tienes una `List<Employee>` y llamas a `sort()`, Java no sabe por qué campo comparar a dos empleados. ¿Por nombre? ¿Por edad? ¿Por departamento? Para eso existen `Comparable` y `Comparator`: dos mecanismos distintos para enseñarle a Java cómo ordenar tus propias clases. Es decir, sirven para ordenar colecciones de objetos tuyos —una `List<Employee>`, no una lista de primitivos— por alguna de sus propiedades (nombre, edad, etc.). `sort()` solo existe en `List`, así que la ordenación explícita que ves aquí es cosa de listas. `Set` y `Map` no se ordenan con `sort()`: si necesitas un conjunto o un mapa siempre ordenado, usas `TreeSet` o `TreeMap`, que se apoyan en este mismo `Comparable`/`Comparator` para saber cómo colocar cada elemento.
 
 > Hay dos formas equivalentes de ordenar una lista: `Collections.sort(employees)` y `employees.sort(...)`. Las dos hacen lo mismo — la segunda es más moderna (añadida en Java 8) y es la que más verás en código Spring Boot actual. Puedes usar cualquiera de las dos.
 
 ### Comparable — la clase sabe ordenarse a sí misma
 
-Usas `Comparable` cuando hay un orden por defecto obvio para tu clase — uno que cualquiera esperaría. Por ejemplo, empleados ordenados por nombre. Lo implementas dentro de la propia clase y solo puedes definir uno.
+Usas `Comparable` cuando hay un orden por defecto obvio para tu clase — uno que cualquiera esperaría. Por ejemplo, empleados ordenados por nombre. Lo implementas dentro de la propia clase y solo puedes definir uno: ese único orden —el campo que elijas en `compareTo()`— pasa a ser el orden "natural" de la clase, el que se usa siempre que ordenes sin especificar otra regla.
 
-Para implementarlo, tu clase añade `implements Comparable<Employee>` y define el método `compareTo()`. Java llama a ese método internamente cuando ordena la lista — tú no lo llamas directamente. El método compara `this` (el objeto actual) con `other` (el objeto con el que se compara) y devuelve: un número negativo si `this` debe ir antes, cero si son iguales, y un número positivo si `this` debe ir después.
+Para implementarlo, tu clase añade `implements Comparable<Employee>` y define el método `compareTo()`. Java llama a ese método internamente cuando ordena la lista — tú no lo llamas directamente. El método compara `this` (el objeto actual) con `other` (el otro objeto de la lista con el que Java lo está comparando en ese momento — no lo creas tú ni lo pasas: durante la ordenación Java va tomando los elementos de la lista de dos en dos y le entrega el segundo a tu método como `other`) y devuelve: un número negativo si `this` debe ir antes, cero si son iguales, y un número positivo si `this` debe ir después.
 
-En la práctica casi nunca calculas ese número a mano — delegas en el `compareTo()` de `String`, que ya sabe ordenar alfabéticamente.
+En la práctica casi nunca calculas ese número a mano — delegas en el `compareTo()` de `String`, que ya sabe ordenar alfabéticamente. Y esa es justo la razón por la que tú tienes que escribir `compareTo()` en `Employee`: `String` e `Integer` ya lo traen implementado de fábrica (por eso Java sabe ordenar listas de textos o números sin que hagas nada), pero tu clase `Employee` es nueva para Java y no tiene ningún orden por defecto, así que eres tú quien lo define implementando el método. Puedes comparar por más de un campo si quieres —por ejemplo, por nombre y, en caso de empate, por edad— encadenando comparaciones dentro de `compareTo()`; más abajo verás que `Comparator` hace esto mismo de forma más limpia con `thenComparing()`.
 
-`compareTo()` no ordena ninguna lista — define cómo se comparan dos objetos `Employee` entre sí. La lista sigue siendo externa: cuando llamas a `employees.sort()`, Java toma la lista e internamente llama a `compareTo()` sobre cada par de empleados para decidir quién va antes. La regla de comparación vive en la clase; la lista solo la usa. Piénsalo así: la lista pregunta "¿quién va primero?" y el `Employee` responde "pregúntame a mí — yo te lo digo".
+`compareTo()` no ordena ninguna lista — define cómo se comparan dos objetos `Employee` entre sí. La lista sigue siendo externa: cuando llamas a `employees.sort()`, Java toma la lista e internamente llama a `compareTo()` sobre pares de empleados para decidir quién va antes. Lo hace automáticamente: el algoritmo de ordenación va comparando elementos de dos en dos (no siempre los dos contiguos —eso depende del algoritmo—, pero siempre de dos en dos: uno hace de `this` y el otro de `other`) y, según el número que devuelve tu `compareTo()`, los coloca en la posición correcta. La regla de comparación vive en la clase; la lista solo la usa. Piénsalo así: la lista pregunta "¿quién va primero?" y el `Employee` responde "pregúntame a mí — yo te lo digo".
 
 ```java
 import java.util.ArrayList;
@@ -343,19 +362,21 @@ public List<Employee> getEmployeesSortedByAgeDesc() {
     return employees;
 }
 
-// Fuera de un servicio — ordenar por nombre y desempatar por edad si los nombres son iguales
+// Combinar dos criterios — ordenar por nombre y, si los nombres son iguales, desempatar por edad
 employees.sort(Comparator.comparing(Employee::getName)
                          .thenComparingInt(Employee::getAge));
 ```
 
 ### Comparable vs Comparator
 
-|                        | Comparable                                     | Comparator                                    |
-| ---------------------- | ---------------------------------------------- | --------------------------------------------- |
-| Dónde se define        | Dentro de la clase                             | Fuera de la clase                             |
+|                        | Comparable                                     | Comparator                                                                |
+| ---------------------- | ---------------------------------------------- | ------------------------------------------------------------------------- |
+| Dónde se define        | Dentro de la clase                             | Fuera de la clase                                                         |
 | Método                 | `compareTo()`                                  | `compare()`                                   |
 | Opciones de ordenación | Una (el orden natural)                         | Muchas                                        |
 | Cuándo usar            | Ordenación por defecto, eres dueño de la clase | Múltiples ordenaciones, o la clase no es tuya |
+
+Ojo con el nombre del método: el que define la interfaz `Comparator` se llama `compare(a, b)` — recibe los dos objetos y devuelve el número negativo/cero/positivo, igual que `compareTo()`. `comparing()` y `comparingInt()` son otra cosa: métodos de fábrica estáticos que **construyen** un `Comparator` por ti a partir de un campo, y por dentro son ellos los que implementan ese `compare()`. Por eso en la tabla el método es `compare()` — es el que de verdad hace la comparación; `comparing()` solo es el atajo para crearlo.
 
 ---
 
@@ -363,7 +384,7 @@ employees.sort(Comparator.comparing(Employee::getName)
 
 Esta es una trampa clásica de Java que cae todo el mundo la primera vez. Parece totalmente lógico recorrer una lista y eliminar los elementos que no quieres — pero Java no lo permite y lanza `ConcurrentModificationException`.
 
-El motivo: el bucle for-each usa un iterador internamente. Ese iterador guarda un contador de versión de la lista en el momento en que empieza a recorrerla. Cada vez que llamas a `remove()` directamente sobre la lista, ese contador cambia. En la siguiente iteración, el iterador compara su contador con el de la lista, los ve distintos, y lanza la excepción — porque no puede saber si los índices siguen siendo válidos.
+El motivo: el bucle for-each usa un iterador internamente. Ese contador de versión (Java lo llama `modCount`) es simplemente un número entero que la lista guarda por dentro y aumenta en uno cada vez que su estructura cambia — cada `add()` o `remove()`. El iterador anota ese número en el momento en que empieza a recorrer la lista. Cada vez que llamas a `remove()` directamente sobre la lista, ese contador cambia. En la siguiente iteración, el iterador compara su contador con el de la lista, los ve distintos, y lanza la excepción — porque no puede saber si los índices siguen siendo válidos.
 
 ```java
 // Esto lanza ConcurrentModificationException
@@ -376,17 +397,26 @@ for (Employee e : employees) {
 
 ### Cómo solucionarlo
 
-```java
-// Opción 1 — removeIf (la más limpia)
-employees.removeIf(e -> !e.isActive());
+Hay tres formas de eliminar mientras recorres sin provocar la excepción. Van de la más recomendable a la más manual.
 
-// Opción 2 — recopilar primero, luego eliminar
+**Opción 1 — `removeIf()` (la más limpia).** Es un método de la propia `List` que recibe una condición y borra todos los elementos que la cumplen, en una sola línea. Por dentro usa un iterador correctamente, así que no hay riesgo de excepción — y no tienes que escribir el bucle tú. La `e -> !e.isActive()` es una expresión lambda: "para cada empleado `e`, bórralo si no está activo" (las lambdas se explican en [09-streams-lambdas.md](09-streams-lambdas.md)).
+
+```java
+employees.removeIf(e -> !e.isActive());
+```
+
+**Opción 2 — recopilar primero y borrar después.** El truco es no tocar la lista mientras la recorres: primero construyes una lista aparte (`toRemove`) con los que quieres quitar, y solo cuando has terminado de recorrer llamas a `removeAll()` para borrarlos de golpe. `stream()` abre un flujo sobre la lista, `filter()` se queda con los que cumplen la condición y `collect()` los junta en una nueva lista (todo esto es de streams — [09-streams-lambdas.md](09-streams-lambdas.md)). Como el borrado ocurre fuera del recorrido, no hay conflicto.
+
+```java
 List<Employee> toRemove = employees.stream()
     .filter(e -> !e.isActive())
     .collect(Collectors.toList());
 employees.removeAll(toRemove);
+```
 
-// Opción 3 — usar un Iterator explícito
+**Opción 3 — usar un `Iterator` explícito.** Es la versión "a mano" de lo que `removeIf()` hace por dentro, y ayuda a entender por qué funciona. En vez del for-each, pides el iterador a la lista con `iterator()` y lo manejas tú: `hasNext()` pregunta si quedan elementos, `next()` te da el siguiente y avanza, y —esta es la clave— `it.remove()` borra a través del **propio iterador**, no de la lista. Al borrar por el iterador, este actualiza su contador de versión a la vez que el de la lista, así que nunca se descuadran y no salta la excepción.
+
+```java
 Iterator<Employee> it = employees.iterator();
 while (it.hasNext()) {
     if (!it.next().isActive()) {
@@ -395,7 +425,7 @@ while (it.hasNext()) {
 }
 ```
 
-Usa `removeIf()` — es la más corta y legible.
+Usa `removeIf()` — es la más corta y legible. Las otras dos son útiles cuando ya tienes un stream montado (opción 2) o cuando necesitas más control durante el recorrido (opción 3).
 
 ---
 
@@ -416,7 +446,7 @@ Usa `removeIf()` — es la más corta y legible.
 
 > **Vista previa — Spring Boot:** Esta sección usa métodos de `JpaRepository` y patrones de servicio que aún no has estudiado. Léela para ver cómo aparecen las colecciones en una aplicación real — lo implementarás en las notas de Spring Boot.
 
-Las colecciones están en todas partes en Spring Boot:
+Las colecciones no son un tema aparte que estudias y luego olvidas: son el tipo con el que se mueven los datos por toda una aplicación Spring Boot. Cuando consultas la base de datos, el repositorio te devuelve los resultados en una `List` — una fila por elemento. Esa `List` sube a la capa de servicio, donde normalmente la transformas: la recorres con un `stream()` para convertir cada entidad `Employee` en un `EmployeeDTO` (el objeto "de salida" que expones al cliente, sin los campos internos), y vuelves a juntar el resultado en otra `List` con `collect()`. Los `Map` aparecen cuando necesitas agrupar o indexar datos por una clave, y los `Set` cuando modelas algo que no admite duplicados, como los roles de un usuario. En otras palabras: casi todo lo que devuelve o procesa un servicio es una de estas tres estructuras.
 
 ```java
 // El repositorio devuelve una List
