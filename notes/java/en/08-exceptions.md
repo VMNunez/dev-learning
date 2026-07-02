@@ -3,7 +3,11 @@
 > 📖 [Baeldung — Exception Handling in Java](https://www.baeldung.com/java-exceptions)
 > 📖 [Oracle Docs — Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html)
 
-Without exceptions, every method would need to return a special value (like `-1` or `null`) to signal that something went wrong — and every caller would need to check that value. That convention breaks down quickly: callers forget to check, the signal gets lost after a few method calls, and errors become silent bugs. Java uses exceptions instead: when something goes wrong, the method *throws* an object that travels up the call stack until something *catches* it. The call stack — the full trace of every method that was running when the error happened — is what you see in the console when your app crashes. Exceptions are objects in Java, so they carry both a message and the full stack trace.
+Without exceptions, every method would have to return a special value (like `-1` or `null`) to signal that something went wrong, and the code that calls that method would have to remember to check that value every single time. That approach breaks down fast: it's easy to forget the check, the error signal gets lost after passing through a few calls, and you end up with silent bugs nobody notices.
+
+Java solves this with exceptions. When something fails, the method *throws* an object that represents the error. That object automatically travels up the call stack — the list of methods that were running at that moment — until some method *catches* it and decides what to do with it. If nothing catches it, the app stops and the error is printed to the console.
+
+A note on two terms people mix up. The **call stack** is the live structure Java keeps while the program runs, with every open method placed on top of the previous one. The **stack trace** is a *snapshot* of that stack at the instant of the error: the text you see printed in the console listing those methods. One is the structure, the other is the printed copy of it at a specific moment. Because exceptions are ordinary objects in Java, they carry both the error message and that full stack trace inside them.
 
 ---
 
@@ -43,6 +47,8 @@ try {
 - `catch` receives the exception object — use `e.getMessage()` for the message, `e.printStackTrace()` for the full trace
 - Multiple `catch` blocks are checked from top to bottom — put more specific exceptions before more general ones
 - `finally` always runs — used to close files, database connections, etc.
+
+> **Why not leave a `catch` block empty?** An empty `catch` swallows the error silently — the program carries on as if nothing happened and you lose both the message and the stack trace, so the bug becomes invisible. At the very least log the exception; never write `catch (Exception e) {}`.
 
 ### Catching multiple exceptions in one block
 

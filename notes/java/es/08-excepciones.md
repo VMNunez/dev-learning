@@ -3,7 +3,11 @@
 > 📖 [Baeldung — Exception Handling in Java](https://www.baeldung.com/java-exceptions)
 > 📖 [Oracle Docs — Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html)
 
-Sin excepciones, cada método tendría que devolver un valor especial (como `-1` o `null`) para señalar que algo salió mal — y cada llamador tendría que comprobar ese valor. Ese convenio se rompe rápido: los llamadores se olvidan de comprobarlo, la señal se pierde tras unas pocas llamadas y los errores se convierten en bugs silenciosos. Java usa excepciones en su lugar: cuando algo falla, el método *lanza* un objeto que sube por la pila de llamadas hasta que algo lo *captura*. La pila de llamadas — el rastro completo de cada método que estaba en ejecución cuando ocurrió el error — es lo que ves en la consola cuando la aplicación se rompe. Las excepciones son objetos en Java, así que llevan tanto el mensaje como el stack trace completo.
+Sin excepciones, cada método tendría que devolver un valor especial (como `-1` o `null`) para avisar de que algo salió mal, y el código que llama a ese método tendría que acordarse de comprobar ese valor cada vez. Ese sistema se rompe enseguida: es fácil olvidarse de la comprobación, la señal de error se pierde después de pasar por unas cuantas llamadas, y al final tienes bugs silenciosos que nadie detecta.
+
+Java resuelve esto con las excepciones. Cuando algo falla, el método _lanza_ (throw) un objeto que representa el error. Ese objeto sube automáticamente por la pila de llamadas —la lista de métodos que estaban en marcha en ese momento— hasta que algún método lo _captura_ (catch) y decide qué hacer con él. Si nadie lo captura, la aplicación se detiene y el error aparece impreso en la consola.
+
+Un apunte sobre dos términos que se confunden con facilidad. La **pila de llamadas** (_call stack_) es la estructura viva que Java mantiene mientras el programa corre, con cada método abierto colocado encima del anterior. El **stack trace** es la _foto_ de esa pila justo en el instante del error: el texto que ves impreso en la consola con la lista de métodos. Uno es la estructura, el otro es la copia impresa de esa estructura en un momento concreto. Como las excepciones son objetos normales en Java, llevan dentro tanto el mensaje de error como ese stack trace completo.
 
 ---
 
@@ -11,12 +15,12 @@ Sin excepciones, cada método tendría que devolver un valor especial (como `-1`
 
 Java divide las excepciones en dos familias. Las **excepciones comprobadas** (_checked_) representan problemas que el llamador debería anticipar — como un fichero no encontrado o un timeout de red. El compilador te obliga a capturarlas o a declarar que tu método puede lanzarlas. Las **excepciones no comprobadas** (_unchecked_, subclases de `RuntimeException`) representan errores de programación — punteros nulos, índices incorrectos, argumentos inválidos. El compilador no exige nada; se propagan hacia arriba hasta que algo las captura o la aplicación se rompe.
 
-| | Comprobadas (checked) | No comprobadas (unchecked) |
-|---|---------|-----------|
-| Extiende | `Exception` | `RuntimeException` |
-| ¿Hay que declararlas? | Sí — `throws` o `try/catch` | No |
-| Cuándo | Problemas esperados (fichero no encontrado, timeout de red) | Errores de programación (puntero nulo, índice fuera de rango) |
-| Ejemplos | `IOException`, `SQLException` | `NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException` |
+|                       | Comprobadas (checked)                                       | No comprobadas (unchecked)                                                      |
+| --------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Extiende              | `Exception`                                                 | `RuntimeException`                                                              |
+| ¿Hay que declararlas? | Sí — `throws` o `try/catch`                                 | No                                                                              |
+| Cuándo                | Problemas esperados (fichero no encontrado, timeout de red) | Errores de programación (puntero nulo, índice fuera de rango)                   |
+| Ejemplos              | `IOException`, `SQLException`                               | `NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException` |
 
 En Spring Boot casi siempre trabajas con excepciones no comprobadas — las lanzas cuando algo va mal y dejas que Spring las maneje con `@RestControllerAdvice`.
 
@@ -43,6 +47,8 @@ try {
 - `catch` recibe el objeto de excepción — usa `e.getMessage()` para el mensaje, `e.printStackTrace()` para el trace completo
 - Los bloques `catch` múltiples se comprueban de arriba a abajo — pon las excepciones más específicas antes que las más generales
 - `finally` siempre se ejecuta — usado para cerrar ficheros, conexiones de base de datos, etc.
+
+> **¿Por qué no dejar un bloque `catch` vacío?** Un `catch` vacío se traga el error en silencio — el programa sigue como si nada y pierdes tanto el mensaje como el stack trace, así que el bug se vuelve invisible. Como mínimo registra la excepción; nunca escribas `catch (Exception e) {}`.
 
 ### Capturar múltiples excepciones en un solo bloque
 
