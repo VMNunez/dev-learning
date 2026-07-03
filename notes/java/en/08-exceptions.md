@@ -284,15 +284,16 @@ You don't always need to create your own exception class for this — Java alrea
 
 Always throw with a message that explains what went wrong and what value caused it — that's exactly what `"Age cannot be negative: " + age` does in the example: throwing the right exception type isn't enough by itself, that message is what whoever reads the stack trace or calls `e.getMessage()` in an `@ExceptionHandler` will see, so it has to say exactly what happened. You don't need to capture or attach the stack trace yourself — Java builds it automatically the instant the exception object is created with `new`, even before `throw` runs — that's why, by the time the exception reaches the console or a `catch` block, the stack trace is already complete and reflects the call stack exactly as it was at the moment of that `new IllegalArgumentException(...)`, with no extra work on your part to capture it.
 
-`throw` is the same keyword you already know from JavaScript — the difference is what you throw. JS lets you throw any value (a string, a number, a plain object); Java only lets you throw an object whose class extends `Throwable`, which is why every exception you throw has to be a real exception class.
+`throw` is the same keyword you already know from JavaScript — the difference is what you throw. JS lets you throw any value (a string, a number, a plain object); Java requires that the object you throw be, somewhere in its inheritance tree, a `Throwable` — not necessarily a subclass of `Exception` specifically, but any class descending from `Throwable` (which in practice always means `Exception`, `RuntimeException`, or a subclass of either, since `Error` is the other branch and you don't throw it by hand). That's why, unlike JS, you can't throw a plain string or number: the compiler rejects anything that doesn't meet that condition.
 
 ---
 
 ## throws — declare checked exceptions
 
-> Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/declaring.html → read: "Specifying the Exceptions Thrown by a Method"
+> Docs: https://www.baeldung.com/java-exceptions → read: "Throws Keyword"
+> 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/declaring.html → read: "Specifying the Exceptions Thrown by a Method"
 
-Checked exceptions must be declared at the method signature level so the compiler forces every caller to decide: handle it here, or pass it up. If a method can throw a checked exception and does not catch it, it must declare it with `throws`:
+Unlike `throw` — which you use to throw a custom or generic exception yourself the moment you detect a problem (seen in the previous section) — `throws` doesn't throw anything: it just declares in the method signature that a checked exception might occur inside it that wasn't caught right there. You use it when you call a method that itself already declares `throws` for a checked exception (or when you detect and throw a checked one yourself with `throw`, which is rare in practice) and decide not to catch it at that point, letting whoever calls you decide what to do instead — the same "who has more context to decide" idea you saw in the "when to use `throws` vs. `try/catch`" callout earlier.
 
 ```java
 public String readFile(String path) throws IOException {
@@ -301,15 +302,22 @@ public String readFile(String path) throws IOException {
 }
 ```
 
-JavaScript has no equivalent to `throws` — there's no way to declare in a function signature that it might throw, and nothing forces a caller to handle it. `throws` only exists in Java to satisfy the checked-exception rule above; you'll never write it for an unchecked exception.
+This is where the question of which methods throw checked exceptions "by default" comes in — that is, without you doing anything, just by calling them. `Files.readString()` is one of them: its own signature in the JDK already declares `throws IOException`, so the moment you call it inside `readFile()`, the compiler forces you to either catch it right there or repeat `throws IOException` on your own method, as done above — it's exactly the same "catch it or declare it" rule you saw at the start of this note, just that here the exception isn't born in your code, it's born inside a standard library method you're merely calling. Other common methods that do the same: nearly all of the `java.io`/`java.nio` family (`FileReader`, `BufferedReader.readLine()`), `Class.forName()` (throws `ClassNotFoundException` if the class doesn't exist on the classpath), and `Thread.sleep()` (throws `InterruptedException`, checked, even though it has nothing to do with files or network).
+
+In a typical Spring Boot project, though, you'll write `throws` a lot less than this list suggests. The reason is the same one you saw in the "wrapping" section: Spring already converts most of these low-level checked exceptions into unchecked ones before they reach your service code — for example, `SQLException` (checked in raw JDBC) reaches you already converted into `DataAccessException` (unchecked) when you use Spring Data. Where you'll genuinely find yourself writing `throws` by hand is direct file or network work (`Files.readString()`, `URL.openConnection()`) when it doesn't pass through any Spring layer that wraps it for you first.
 
 ---
 
 ## Custom exceptions
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Custom Exception"
+> 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/creating.html → read: "Creating Exception Classes"
 
-Create your own exception class to give meaningful names to errors:
+You create your own exception class when you want to give a domain-specific name to an error, instead of throwing a generic Java exception like a plain `IllegalArgumentException` — the same criterion you already saw in the `throw` section: it's worth it when you want to document the problem better, or when you need an `@ExceptionHandler` to tell that specific case apart from any other. Here's the step-by-step recipe, generalized for any custom exception you write, not just `EmployeeNotFoundException`:
+
+1. **Extend the right parent class.** Almost always `RuntimeException`, so it's unchecked — the Spring Boot convention you already saw above. If you ever wanted a checked exception of your own you'd extend `Exception` instead, but that's a rare case in a typical Spring Boot project, where almost everything is modeled as unchecked.
+2. **Give it a constructor that takes whatever you need to build a good error message.** There's no fixed signature — you decide based on what data you have available at the moment you're going to throw it. Here it's the `id` that wasn't found; in another exception it could be a file name, an error code, or several values at once.
+3. **Call `super(...)` with the message already built.** It's the same `super()` call you already use to invoke a parent class's constructor in any subclass — here the parent is simply `RuntimeException`, and its constructor that takes a `String` is the one that stores that message inside the exception object.
 
 ```java
 // Unchecked — extends RuntimeException (most common in Spring Boot)
@@ -320,29 +328,38 @@ public class EmployeeNotFoundException extends RuntimeException {
 }
 ```
 
-`super("Employee not found with id: " + id)` calls `RuntimeException`'s own constructor — the one that stores a message — passing it the string you build here. That's the same `super()` call you already use to invoke a parent class's constructor in any subclass; `RuntimeException` just happens to be the parent this time. That message is what `e.getMessage()` returns later in a `catch` block or an `@ExceptionHandler`.
+You already saw this same class in the same depth in the `throw` section above — here it is again, this time as a general template for the whole pattern: extend, define the constructor, call `super(...)`. The message `super(...)` stores is what `e.getMessage()` returns later, both in an ordinary `catch` block and in a Spring Boot `@ExceptionHandler` — the same message traveling down either of the two possible capture paths.
 
-JavaScript lets you do something that looks similar (`class NotFoundError extends Error {}`), but it's not the same mechanism. In JS this is a convention with no enforcement — nothing stops you from throwing a plain string instead, and there's no compiler checking the type. In Java, extending `RuntimeException` plugs the class into the real type hierarchy: `catch (EmployeeNotFoundException e)` only matches that exact type (or its subclasses), and `@ExceptionHandler(EmployeeNotFoundException.class)` in Spring Boot relies on that hierarchy to route errors to the right handler.
-
-The usage example below calls `repository.findById(id)` — `repository` is a Spring Boot concept you haven't studied yet. Read it to see why custom exceptions exist; you will write this exact pattern in the Spring Boot notes.
-
-```java
-// Usage
-public Employee findById(Long id) {
-    return repository.findById(id)
-        .orElseThrow(() -> new EmployeeNotFoundException(id));
-}
-```
+Once defined, you use it exactly like any other unchecked exception: a `throw new EmployeeNotFoundException(...)` at the point in the code where you detect the problem, with no need to declare anything in the method signature (see the `throw` section for the general case, and the "wrapping" section for when this step is NOT needed). In Spring Boot, this exception's usual destination is the same one you saw with the wrapping pattern: you let it propagate uncaught at every intermediate point, until a single `@RestControllerAdvice` catches it (you'll see the full code in the "Spring Boot connection" section below) and decides which HTTP status to return. The `findById()` example with `orElseThrow()` throwing it was already shown in full in the `throw` section above.
 
 ---
 
 ## try-with-resources
 
-> Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html → read: "The try-with-resources Statement"
+> Docs: https://www.baeldung.com/java-try-with-resources → read: "Try-With-Resources"
+> 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html → read: "The try-with-resources Statement"
 
-Automatically closes resources (files, database connections) when the try block ends — no `finally` needed:
+Before this syntax existed, closing a resource like an open file meant writing your own `finally` block that called `reader.close()` — and `close()` itself can throw an exception, so a "correct" `finally` ended up needing its own nested `try/catch` inside:
 
 ```java
+// BAD — works, but noisy and easy to get wrong
+BufferedReader reader = new BufferedReader(new FileReader("data.txt"));
+try {
+    String line = reader.readLine();
+    System.out.println(line);
+} finally {
+    try {
+        reader.close();
+    } catch (IOException e) {
+        System.out.println("Error closing the file: " + e.getMessage());
+    }
+}
+```
+
+`try-with-resources` is the syntax that automates exactly that pattern. You declare the resource inside parentheses after `try`, and Java takes care of calling its `close()` for you when the block ends — whether it ends normally or because of an exception:
+
+```java
+// GOOD — Java calls reader.close() for you, no matter what
 try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
     String line = reader.readLine();
     System.out.println(line);
@@ -350,9 +367,21 @@ try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
 // reader is closed automatically here, even if an exception occurred
 ```
 
-The resource must implement `AutoCloseable`. Database connections in Spring Boot are managed automatically — you will not write try-with-resources for database work, but you will see it in file and network operations.
+For a resource to go inside those parentheses, its class has to implement the `AutoCloseable` interface — that's what guarantees the object has a `close()` method Java can call without knowing anything else about that particular class. `BufferedReader`, `FileReader`, and JDBC's database objects (`Connection`, `Statement`, `ResultSet`) are common examples that already implement this interface.
 
-JavaScript has no direct equivalent — the closest you've done is manually closing a resource inside `finally`. `try-with-resources` just automates that `finally`-based cleanup and guarantees it happens even if the `try` block throws.
+You can declare several resources separated by `;` inside the same parentheses, and Java closes them in reverse order of declaration — the same LIFO principle you already know from the *call stack* at the start of this note: the last resource opened is the first one closed, because it usually depends on the ones before it (for example, a `BufferedReader` wrapping a `FileReader` needs the `FileReader` to stay open while it closes, so the outer one closes first):
+
+```java
+try (FileReader fileReader = new FileReader("data.txt");
+     BufferedReader reader = new BufferedReader(fileReader)) {
+    System.out.println(reader.readLine());
+}
+// "reader" closes first, then "fileReader" — reverse order of declaration
+```
+
+> **What happens if both the code inside `try` and the automatic `close()` throw an exception?** This is a detail that tends to come up in interviews. Java keeps the exception thrown by the code inside `try` — that's the one you see as the main exception — and the exception thrown by `close()` isn't discarded, it's stored inside the main one as **suppressed** (a suppressed exception), retrievable with `mainException.getSuppressed()`. It's the same concept as the `cause` you saw in the "wrapping" section — one exception linked to another without losing information — but here in the opposite direction: here the extra information travels "attached" to the one you already had, instead of being the one wrapping the original.
+
+Database connections in Spring Boot are managed automatically by the framework — you will not write try-with-resources for database work, but you will see it in file and network operations, which is where you genuinely have to open and close resources yourself.
 
 ---
 
