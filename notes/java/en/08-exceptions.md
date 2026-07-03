@@ -118,16 +118,7 @@ That's the stack trace from earlier in this note: the first line (`Exception in 
 
 The "Parent class" column shows which class each exception type inherits from — that's what determines whether the compiler treats it as checked or unchecked: any exception that extends `Exception` (but not `RuntimeException`) is checked; any exception that extends `RuntimeException` is unchecked. The full hierarchy is explained below in "Exception hierarchy."
 
-In Spring Boot you almost always work with unchecked exceptions — even when the underlying problem is "external" in the same sense you saw above (an employee missing from the database is exactly the kind of expectable failure that, in theory, would qualify as checked). The reason for not doing it that way is architectural, not about the error type itself: a typical REST API has several stacked layers (`repository` → `service` → `controller`), and if `EmployeeNotFoundException` were checked, every one of those layers would need to declare `throws EmployeeNotFoundException` or wrap it in its own `try/catch` — repeating the same boilerplate in every controller that calls that service, just to compile. With an unchecked exception, on the other hand, the compiler imposes nothing: the object propagates freely upward (the same LIFO path as always) without any intermediate layer having to touch it, until it reaches a single centralized point — the `@RestControllerAdvice` class you'll see below — that catches it and decides which HTTP status to return. That's why the Spring Boot convention is to throw your own unchecked exception (like `EmployeeNotFoundException` below) and let that `@RestControllerAdvice` handle it in one place, instead of forcing every controller to declare `throws` and fill the code with repeated `try/catch` blocks. Throwing it is as simple as any other `throw` — no need to declare anything in the method signature, precisely because it's unchecked. The code below throws it inside an `orElseThrow()` because in this specific case the value comes wrapped in an `Optional` (returned by `repository.findById(id)`, a Spring Boot method you'll see later) — `orElseThrow()` is just the way to pull the value out of that `Optional`, or throw the exception if there's nothing inside; anywhere else in your code you throw `EmployeeNotFoundException` like any other exception, with a plain `throw new EmployeeNotFoundException(...)`, with no `orElseThrow()` involved:
-
-```java
-public Employee findById(Long id) {
-    return repository.findById(id)
-        .orElseThrow(() -> new EmployeeNotFoundException(id));
-}
-```
-
-Here's the full class you're throwing above:
+In Spring Boot you almost always work with unchecked exceptions — even when the underlying problem is "external" in the same sense you saw above (an employee missing from the database is exactly the kind of expectable failure that, in theory, would qualify as checked). The reason for not doing it that way is architectural, not about the error type itself: a typical REST API has several stacked layers (`repository` → `service` → `controller`), and if `EmployeeNotFoundException` were checked, every one of those layers would need to declare `throws EmployeeNotFoundException` or wrap it in its own `try/catch` — repeating the same boilerplate in every controller that calls that service, just to compile. With an unchecked exception, on the other hand, the compiler imposes nothing: the object propagates freely upward (the same LIFO path as always) without any intermediate layer having to touch it, until it reaches a single centralized point — the `@RestControllerAdvice` class you'll see below — that catches it and decides which HTTP status to return. That's why the Spring Boot convention is to throw your own unchecked exception (like `EmployeeNotFoundException` below) and let that `@RestControllerAdvice` handle it in one place, instead of forcing every controller to declare `throws` and fill the code with repeated `try/catch` blocks. To throw a custom exception, the first thing you need is the class that represents it — it extends `RuntimeException` (unchecked, as you already know) and gets a constructor:
 
 ```java
 public class EmployeeNotFoundException extends RuntimeException {
@@ -137,7 +128,29 @@ public class EmployeeNotFoundException extends RuntimeException {
 }
 ```
 
-It extends `RuntimeException` directly — that's why it's unchecked from the moment you write it, regardless of whether there's a checked exception anywhere further down the stack. The constructor takes the `id` that wasn't found and calls `super(...)`, `RuntimeException`'s own constructor, passing it the already-built message; that message is exactly what `e.getMessage()` returns later inside the `@ExceptionHandler` you saw a few lines above. The fact that the missing data is "external" — a row that doesn't exist in the database — doesn't require wrapping anything: wrapping is only needed when you're calling someone else's method that the compiler already treats as checked, like `Files.readString()` in the example below. There's no external method throwing a checked exception here — you decide to create `EmployeeNotFoundException` from scratch as unchecked, so there's no prior checked exception to convert. You'll see this same class again, with more context, in the "Custom exceptions" section below.
+It extends `RuntimeException` directly — that's why it's unchecked from the moment you write it, regardless of whether there's a checked exception anywhere further down the stack. The constructor takes the `id` that wasn't found and calls `super(...)`, `RuntimeException`'s own constructor, passing it the already-built message; that message is exactly what `e.getMessage()` returns later inside an `@ExceptionHandler` (you'll see one below). The fact that the missing data is "external" — a row that doesn't exist in the database — doesn't require wrapping anything: wrapping is only needed when you're calling someone else's method that the compiler already treats as checked, like `Files.readString()` in the example below. There's no external method throwing a checked exception here — you decide to create `EmployeeNotFoundException` from scratch as unchecked, so there's no prior checked exception to convert. You'll see this same class again, with more context, in the "Custom exceptions" section below.
+
+With the class defined, throwing it is as simple as any other `throw` — no need to declare anything in the method signature, precisely because it's unchecked:
+
+```java
+public void setManager(Employee employee) {
+    if (employee == null) {
+        throw new EmployeeNotFoundException(-1L);
+    }
+    // ...
+}
+```
+
+That's the general case — a plain `throw new EmployeeNotFoundException(...)`, in the middle of any method, nothing special around it. In the project, though, you'll almost always throw it from a method that returns an `Optional`, like `repository.findById(id)` (a Spring Boot method you'll see later). `Optional` is the type Spring Data uses to say "there might be a value, there might not" instead of returning a plain `null`, and its `orElseThrow()` method does exactly that: if the `Optional` has a value inside, it returns it; if it's empty, it runs the function you pass it and throws whatever that function returns. That's why you see this pattern so often:
+
+```java
+public Employee findById(Long id) {
+    return repository.findById(id)
+        .orElseThrow(() -> new EmployeeNotFoundException(id));
+}
+```
+
+It's not a different syntax for throwing exceptions — it's the same `throw new EmployeeNotFoundException(id)` from above, just wrapped in the `() -> ...` lambda that `orElseThrow()` expects to receive, so it can run it only if it's actually needed.
 
 The "wrapping" pattern is for rethrowing an exception that's genuinely checked — like `IOException` or `SQLException` — as an unchecked one. This is a different case from `EmployeeNotFoundException` above, even though both represent an "external" problem in the sense of depending on data that might be missing: `EmployeeNotFoundException` has never been a checked exception — you define it yourself by extending `RuntimeException` directly from the start, so the compiler never treated it as checked and there's nothing to wrap. Wrapping is only needed when the compiler does require `throws` or `try/catch` because the original exception — like `IOException` — extends `Exception` and not `RuntimeException`. The example below uses `Files.readString()`, which does throw a checked `IOException`, to show the pattern in practice:
 

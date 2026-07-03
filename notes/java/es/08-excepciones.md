@@ -115,16 +115,7 @@ La fila "Clase padre" indica de qué clase hereda cada tipo de excepción — es
 
 En Spring Boot casi siempre trabajas con excepciones no comprobadas — incluso cuando el problema real es "externo" en el mismo sentido que viste arriba (un empleado que no existe en la base de datos es justo el tipo de fallo esperable que, en teoría, encajaría como comprobada). La razón para no hacerlo así es de arquitectura, no del tipo de error en sí: una API REST típica tiene varias capas apiladas (`repository` → `service` → `controller`), y si `EmployeeNotFoundException` fuera comprobada, cada una de esas capas tendría que declarar `throws EmployeeNotFoundException` o envolverla en su propio `try/catch` — repitiendo el mismo boilerplate en cada controller que llama a ese servicio, solo para poder compilar. Con una excepción no comprobada, en cambio, no hay ninguna obligación del compilador: el objeto se propaga libremente hacia arriba (el mismo camino LIFO de siempre) sin que ninguna capa intermedia tenga que tocarlo, hasta que llega a un único punto centralizado — la clase `@RestControllerAdvice` que ves más abajo — que lo captura y decide qué código HTTP devolver. Por eso la convención en Spring Boot es lanzar una excepción no comprobada propia (como `EmployeeNotFoundException` más abajo) y dejar que ese `@RestControllerAdvice` la gestione en un solo sitio, en lugar de forzar a cada controller a declarar `throws` y llenar el código de `try/catch` repetidos.
 
-Lanzarla es tan simple como cualquier otro `throw` — no hace falta declarar nada en la firma del método, precisamente porque es no comprobada. El código de abajo la lanza dentro de un `orElseThrow()` porque en este caso concreto el valor viene envuelto en un `Optional` (lo devuelve `repository.findById(id)`, un método de Spring Boot que verás más adelante) — `orElseThrow()` es solo la forma de sacar el valor de ese `Optional` o lanzar la excepción si no hay nada dentro; en cualquier otro sitio del código lanzas `EmployeeNotFoundException` igual que cualquier otra excepción, con un `throw new EmployeeNotFoundException(...)` normal, sin que tenga que ir dentro de un `orElseThrow()`(//TODO: TAMBIEN QUIERO QUE PONGAS EL EJEMPLO DE LANZARLA SIN UN ORELSETHROW PARA ENTENDER A LO QUE TE REFIERES):
-
-```java
-public Employee findById(Long id) {
-    return repository.findById(id)
-        .orElseThrow(() -> new EmployeeNotFoundException(id));
-}
-```
-
-Esta es la clase completa que estás lanzando arriba: //TODO: PREFIERO QUE ESTA PARTE VAYA ANTES QUE EL OTRO BLOQUE DE CODIGO PORQUE ESTO ES LO PRIMERO QUE TENEMOS QUE DEFINIR. ME DICES QUE PARA LANZAR UNA EXCEPCION PROPIA PRIMERO CREAMOS LA CLASE QUE EXTIENDA TUNTIMEEXEPTION CON UN CONSTRUCTOR Y USAS SUPER PORQUE...ETC ES DECIR LO QUIERO EXPLICADO. AL CONOCER ESTO YA PODEMOS USARLA EN EL BLOQUE DE CODIGO DE ARRIBA.
+Para lanzar una excepción propia, lo primero es definir la clase que la representa — extiende `RuntimeException` (no comprobada, como ya sabes) y le das un constructor:
 
 ```java
 public class EmployeeNotFoundException extends RuntimeException {
@@ -134,7 +125,29 @@ public class EmployeeNotFoundException extends RuntimeException {
 }
 ```
 
-Extiende `RuntimeException` directamente — por eso es no comprobada desde el mismo momento en que la escribes, sin depender de si hay o no una excepción comprobada más abajo en la pila. El constructor recibe el `id` que no se encontró y llama a `super(...)`, el constructor de `RuntimeException`, pasándole el mensaje ya formado; ese mensaje es justo lo que `e.getMessage()` te devuelve más tarde dentro del `@ExceptionHandler` que viste unas líneas más abajo. Que el dato que falta sea "externo" — una fila que no existe en la base de datos — no obliga a envolver nada: envolver solo hace falta cuando estás llamando a un método ajeno que el compilador ya trata como comprobado, como `Files.readString()` en el ejemplo de más abajo. Aquí no hay ningún método externo lanzando una excepción comprobada de por medio — tú mismo decides crear `EmployeeNotFoundException` desde cero como no comprobada, así que no hay ninguna excepción comprobada previa que convertir. Vuelves a ver esta misma clase, con más contexto todavía, en la sección "Excepciones personalizadas" más abajo.
+Extiende `RuntimeException` directamente — por eso es no comprobada desde el mismo momento en que la escribes, sin depender de si hay o no una excepción comprobada más abajo en la pila. El constructor recibe el `id` que no se encontró y llama a `super(...)`, el constructor de `RuntimeException`, pasándole el mensaje ya formado; ese mensaje es justo lo que `e.getMessage()` te devuelve más tarde dentro de un `@ExceptionHandler` (lo verás más abajo). Que el dato que falta sea "externo" — una fila que no existe en la base de datos — no obliga a envolver nada: envolver solo hace falta cuando estás llamando a un método ajeno que el compilador ya trata como comprobado, como `Files.readString()` en el ejemplo de más abajo. Aquí no hay ningún método externo lanzando una excepción comprobada de por medio — tú mismo decides crear `EmployeeNotFoundException` desde cero como no comprobada, así que no hay ninguna excepción comprobada previa que convertir. Vuelves a ver esta misma clase, con más contexto todavía, en la sección "Excepciones personalizadas" más abajo.
+
+Con la clase ya definida, lanzarla es tan simple como cualquier otro `throw` — no hace falta declarar nada en la firma del método, precisamente porque es no comprobada:
+
+```java
+public void setManager(Employee employee) {
+    if (employee == null) {
+        throw new EmployeeNotFoundException(-1L);
+    }
+    // ...
+}
+```
+
+Este es el caso general — un `throw new EmployeeNotFoundException(...)` normal, en medio de cualquier método, sin nada especial alrededor. En el proyecto, sin embargo, la vas a lanzar casi siempre desde un método que devuelve un `Optional`, como `repository.findById(id)` (un método de Spring Boot que verás más adelante). `Optional` es el tipo que usa Spring Data para decir "puede que haya un valor, puede que no" en vez de devolver directamente `null`, y su método `orElseThrow()` hace justo eso: si el `Optional` tiene un valor dentro, lo devuelve; si está vacío, ejecuta la función que le pasas y lanza lo que esa función devuelva. Por eso ves este patrón tan a menudo:
+
+```java
+public Employee findById(Long id) {
+    return repository.findById(id)
+        .orElseThrow(() -> new EmployeeNotFoundException(id));
+}
+```
+
+No es una sintaxis distinta para lanzar excepciones — es el mismo `throw new EmployeeNotFoundException(id)` de arriba, solo que envuelto en la lambda `() -> ...` que `orElseThrow()` espera recibir, para poder ejecutarla únicamente si de verdad hace falta.
 
 El patrón de "envolver" (_wrap_) sirve para relanzar una excepción que es comprobada — como `IOException` o `SQLException` — convirtiéndola en no comprobada. No es el mismo caso que `EmployeeNotFoundException` de más arriba, aunque las dos representen un problema "externo" en el sentido de depender de un dato que puede faltar: `EmployeeNotFoundException` nunca ha sido una excepción comprobada — la defines tú mismo extendiendo `RuntimeException` directamente desde el principio, así que el compilador jamás la trató como comprobada y no hay nada que envolver. El wrap solo hace falta cuando el compilador sí exige `throws` o `try/catch` porque la excepción original — como `IOException` — extiende `Exception` y no `RuntimeException`. El ejemplo siguiente usa `Files.readString()`, que sí lanza `IOException` comprobada, para mostrar el patrón en la práctica:
 
