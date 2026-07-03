@@ -207,7 +207,8 @@ JavaScript has nothing like this split — every JS error is effectively "unchec
 
 ## try / catch / finally
 
-> Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/handling.html → read: "Catching and Handling Exceptions"
+> Docs: https://www.baeldung.com/java-exceptions → read: "Try, Catch and Finally"
+> 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/handling.html → read: "Catching and Handling Exceptions"
 
 You wrap the code that might fail in a `try` block and handle each possible failure in its own `catch` block. `finally` runs no matter what — use it to close connections or release resources even when an exception occurs. The syntax itself will feel familiar: `try`/`catch`/`finally` works the same way in JavaScript — the difference in Java is what you're allowed to catch and what the compiler requires you to declare (see checked vs unchecked above):
 
@@ -263,9 +264,12 @@ try {
 
 ## throw — manually throw an exception
 
-> Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/throwing.html → read: "Throwing Exceptions"
+> Docs: https://www.baeldung.com/java-exceptions → read: "Throwing an Exception"
+> 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/throwing.html → read: "Throwing Exceptions"
 
-You use `throw` when you detect an invalid state in your own code and want to stop execution immediately with a clear explanation — for example, when a caller passes a value that makes no sense:
+You already saw `throw` in action earlier, in the `EmployeeNotFoundException` example: there you used it to throw a custom exception. `throw` isn't exclusive to exceptions you define yourself — it's the general keyword for throwing any exception, custom or built into Java, right at the point in the code where you detect something is wrong.
+
+You reach for it mainly for two things: validating that the data a method receives makes sense before moving on — known as *fail fast*: stopping execution the moment you detect the invalid value, with a clear message, instead of letting that bad value keep flowing through the program and cause a confusing error much later, far from where it actually originated — or to signal that an object's internal state doesn't allow the operation being requested. The typical case of the first use is validating a parameter right at the start of a method, like `setAge` here:
 
 ```java
 public void setAge(int age) {
@@ -276,7 +280,9 @@ public void setAge(int age) {
 }
 ```
 
-Always throw with a message that explains what went wrong and what value caused it.
+You don't always need to create your own exception class for this — Java already ships several generic unchecked exceptions built for exactly these cases: `IllegalArgumentException` (an argument with the right type but a value that makes no sense, like here), `IllegalStateException` (the object is in a state where that operation can't be performed), or `NullPointerException` (though Java usually throws this one for you when accessing a `null`, not you by hand). It's only worth creating your own class like `EmployeeNotFoundException` when you want a domain-specific name that better documents the problem, or when an `@ExceptionHandler` needs to tell that specific case apart from any other generic `IllegalArgumentException`.
+
+Always throw with a message that explains what went wrong and what value caused it — that's exactly what `"Age cannot be negative: " + age` does in the example: throwing the right exception type isn't enough by itself, that message is what whoever reads the stack trace or calls `e.getMessage()` in an `@ExceptionHandler` will see, so it has to say exactly what happened. You don't need to capture or attach the stack trace yourself — Java builds it automatically the instant the exception object is created with `new`, even before `throw` runs — that's why, by the time the exception reaches the console or a `catch` block, the stack trace is already complete and reflects the call stack exactly as it was at the moment of that `new IllegalArgumentException(...)`, with no extra work on your part to capture it.
 
 `throw` is the same keyword you already know from JavaScript — the difference is what you throw. JS lets you throw any value (a string, a number, a plain object); Java only lets you throw an object whose class extends `Throwable`, which is why every exception you throw has to be a real exception class.
 
