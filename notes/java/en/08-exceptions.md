@@ -30,35 +30,82 @@ If `main()` doesn't catch it either, that's the end of the road — `main()` is 
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Checked Exception" and "Unchecked Exception"
 
-Java divides exceptions into two families, and the difference isn't just naming — it's a rule the compiler actively enforces on one family and not the other.
+Java divides exceptions into two families — checked and unchecked — and what separates them isn't the name: the compiler actively watches one of the two families, forcing you to declare or catch its errors, while it leaves the other one free to propagate without asking anything of you.
 
 **Checked exceptions** represent problems the caller is expected to anticipate because they depend on something external to the code itself — a file that might not exist, a network connection that might drop, a database that might be down. They're failures that can happen even if your logic is written perfectly. That's why the compiler forces you to do something about them: either catch them with `try/catch`, or declare in the method signature that your method might throw them using `throws` (covered in full in the `throws` section below). If you do neither, the code simply doesn't compile:
 
 ```java
 public void readConfig() {
     Files.readString(Path.of("config.txt")); // COMPILE ERROR
-    // Files.readString() declares "throws IOException" —
-    // this method neither catches it nor declares it, so Java refuses to compile
+    // Files.readString() already carries "throws IOException" in ITS OWN signature —
+    // it's not "readConfig" that declares it, it's the method it calls inside.
+    // That's why it falls on you to decide what to do with that borrowed exception.
 }
 ```
 
-Java refuses to compile exactly because that file might not exist at runtime, and the compiler won't let you ignore that possibility. The error you see here isn't a runtime exception (the program never even starts) — it's a compile error with a characteristic message: `unreported exception IOException; must be caught or declared to be thrown`. Only once you fix that (with `try/catch` or `throws`) does the code compile; and if you choose `try/catch`, the actual runtime error you'd see if the file didn't exist would be an `IOException` object (or its more specific subclass, `FileNotFoundException`) delivered to your `catch` block.
+Java refuses to compile exactly because that file might not exist at runtime, and the compiler won't let you ignore that possibility. The error you see here isn't a runtime exception (the program never even starts) — it's a compile error with a characteristic message: `unreported exception IOException; must be caught or declared to be thrown`. Only once you fix that (with `try/catch` or `throws`) does the code compile.
 
-Here's the same contrast with real code, checked and unchecked side by side:
+> **When to use `throws` vs. `try/catch`.** Both, but in different places — they're not interchangeable alternatives. Use `try/catch` when the method you're in *can* do something sensible with the failure right there — show a message, fall back to a default value, retry. Use `throws` when that method isn't the right place to decide what to do — for example, a low-level method that just reads a file has no idea whether it should show an error to the user or retry the operation; that decision belongs to whoever calls it, which has more context. In a real app the typical chain is several methods declaring `throws` and passing the exception up to each other, until a method that actually knows what to do with it (usually close to the UI, or in Spring Boot the `@RestControllerAdvice` you'll see below) finally catches it with `try/catch`.
+
+Here are the two ways to fix the example above:
 
 ```java
-// CHECKED — the compiler forces you to handle it
-public String loadFile(String path) throws IOException {
-    return Files.readString(Path.of(path)); // can fail for an external reason: the file doesn't exist
+// Fixed with throws — the decision of what to do moves to whoever calls readConfig()
+public void readConfig() throws IOException {
+    Files.readString(Path.of("config.txt"));
 }
+```
 
+```java
+// Fixed with try/catch — you handle it right here; nobody outside this method ever finds out it happened
+public void readConfig() {
+    try {
+        Files.readString(Path.of("config.txt"));
+    } catch (IOException e) {
+        System.out.println("Could not read the file: " + e.getMessage());
+    }
+}
+```
+
+> **Why `throws` and `try/catch` don't produce the same result at runtime.** The *compile* error disappears either way — that's the only thing `throws` and `try/catch` have in common. But at runtime they're not the same. With `try/catch`, if the file doesn't exist, your own `catch` block receives the `IOException` object (or its more specific subclass, `FileNotFoundException`) and decides what to do with it — here, printing a message — and the program keeps running normally afterward. With `throws`, on the other hand, you catch nothing inside `readConfig()`: the exception leaves that method unhandled and follows the same LIFO path you saw at the start of this note — if whoever calls `readConfig()` doesn't catch it either, it keeps climbing until something handles it or it reaches `main()`, and there you'd see the exact same unhandled stack trace you'd get if `readConfig()` had never had a `try/catch` at all.
+
+These are the most typical checked exceptions you'll run into, together with the exact scenario that triggers each one:
+
+- `IOException` — an input/output operation fails: reading or writing a file that doesn't exist or that you don't have permission for, or that gets cut off mid-read. `Files.readString(Path.of("config.txt"))` throws it if `config.txt` isn't at that path.
+- `SQLException` — something fails while talking to the database: the connection drops, the query has a syntax error, or the database rejects the operation (e.g. a duplicate unique key). Any JDBC method that runs a query can throw it — JDBC is Java's standard API for connecting to relational databases and running SQL from Java code; Spring Boot uses JDBC underneath even though you'll usually work through a higher-level layer like JPA.
+
+Both are in the table below.
+
+**Unchecked exceptions** (subclasses of `RuntimeException`) represent programming errors — a `null` that shouldn't be, an index that falls outside an array, an argument that makes no sense. The phrase "subclasses of `RuntimeException`" means exactly what it sounds like: these are distinct error types, but they all inherit from the same parent class, `RuntimeException` — that shared inheritance is exactly what the compiler uses to decide none of them need declaring (you'll see it drawn out in the "Exception hierarchy" diagram below). These are bugs, not external events: "external event" here is the opposite of what you saw with checked exceptions — it's not "the file doesn't exist" (something outside your control that can happen even with perfectly written code), it's a failure that happens *only* because your own code has a bug in it. If your code were written correctly, they should never happen. That's why the compiler doesn't enforce anything — it wouldn't make sense to force you to declare every possible bug you might write in the signature of every method. They propagate freely toward the caller (the same LIFO path you already know from the section above) until something catches them or the app crashes.
+
+These are the most typical `RuntimeException` subclasses you'll run into constantly in Java (and in technical interviews), together with the exact scenario that triggers each one:
+
+- `NullPointerException` — you call a method or access a field on a variable that's `null`: `String s = null; s.length();` blows up because there's no real object behind `s` to run `length()` on.
+- `IllegalArgumentException` — a method receives a value that, while it has the right type, makes no sense for what that method does: passing `-5` to `setAge(int age)` compiles fine (it's a valid `int`), but a negative age isn't a logical value.
+- `IndexOutOfBoundsException` — you access a position of a list or array that doesn't exist: `list.get(10)` when `list` only has 3 elements, because valid positions run from `0` to `2`.
+
+`ArithmeticException` joins these three — you'll see it right below in the `divide()` example — and the four together are the ones you'll run into most in practice.
+
+Here's what that looks like in real code:
+
+```java
 // UNCHECKED — nothing forces you to declare it, it's a bug if it happens
 public int divide(int a, int b) {
     return a / b; // if b is 0, throws ArithmeticException with no warning — nothing requires declaring it
 }
 ```
 
-**Unchecked exceptions** (subclasses of `RuntimeException`) represent programming errors — a `null` that shouldn't be, an index that falls outside an array, an argument that makes no sense. These are bugs, not expectable external events: if your code were written correctly, they should never happen. That's why the compiler doesn't enforce anything — it wouldn't make sense to force you to declare every possible bug you might write in the signature of every method. They propagate freely toward the caller (the same LIFO path you already know from the section above) until something catches them or the app crashes.
+If you call it as `divide(10, 0)` and nobody catches the error, the console prints something like this:
+
+```
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+    at ExceptionDemo.divide(ExceptionDemo.java:6)
+    at ExceptionDemo.main(ExceptionDemo.java:2)
+```
+
+That's the stack trace from earlier in this note: the first line (`Exception in thread "main" ...`) gives you the exception type and message; the `at ...` lines are the snapshot of the stack at the instant of the failure — the method where it was thrown (`divide`, line 6) and the method it passed through, uncaught, on its way to `main` (line 2).
+
+> **Why no `try/catch` or `throw` is required to "fix" this.** Unlike checked exceptions, the compiler never forces anything here: `divide()` compiles perfectly fine as it is, even though `b` might end up being `0` at runtime. Adding handling for this is a design decision you make, not a compiler requirement — you can wrap the call in a `try/catch` to catch the failure after it happens, or check the condition beforehand with `if (b == 0) throw new IllegalArgumentException("b cannot be 0")` to catch it yourself with a clearer message before Java throws its own `ArithmeticException`. Neither is mandatory; `IOException` was mandatory because the compiler watches it, `ArithmeticException` isn't because nobody watches it but you.
 
 > It's easy to fall into the same trap from earlier here: "propagates up" is the standard phrase in Java's documentation, but as you already saw, "up" means "toward the calling method," not "up in the stack diagram" — which is actually drawn going down. The stack in the earlier section is drawn correctly; it's the phrase "up" that's misleading if you take it literally. From here on you'll see both forms in real documentation (*"propagates up the stack"*) — when you see it, mentally translate it as "toward the caller."
 
@@ -71,9 +118,9 @@ public int divide(int a, int b) {
 
 The "Parent class" column shows which class each exception type inherits from — that's what determines whether the compiler treats it as checked or unchecked: any exception that extends `Exception` (but not `RuntimeException`) is checked; any exception that extends `RuntimeException` is unchecked. The full hierarchy is explained below in "Exception hierarchy."
 
-In Spring Boot you almost always work with unchecked exceptions — even when the underlying problem is "external" (say, a resource missing from the database), the convention is to throw your own unchecked exception (like `EmployeeNotFoundException` below) and let Spring catch it globally with `@RestControllerAdvice`, instead of forcing every controller to declare `throws` and fill the code with repeated `try/catch` blocks.
+In Spring Boot you almost always work with unchecked exceptions — even when the underlying problem is "external" in the same sense you saw above (an employee missing from the database is exactly the kind of expectable failure that, in theory, would qualify as checked). The reason for not doing it that way is architectural, not about the error type itself: a typical REST API has several stacked layers (`repository` → `service` → `controller`), and if `EmployeeNotFoundException` were checked, every one of those layers would need to declare `throws EmployeeNotFoundException` or wrap it in its own `try/catch` — repeating the same boilerplate in every controller that calls that service, just to compile. With an unchecked exception, on the other hand, the compiler imposes nothing: the object propagates freely upward (the same LIFO path as always) without any intermediate layer having to touch it, until it reaches a single centralized point — the `@RestControllerAdvice` class you'll see below — that catches it and decides which HTTP status to return. That's why the Spring Boot convention is to throw your own unchecked exception (like `EmployeeNotFoundException` below) and let that `@RestControllerAdvice` handle it in one place, instead of forcing every controller to declare `throws` and fill the code with repeated `try/catch` blocks.
 
-Rethrowing a checked exception as unchecked — known as "wrapping" — looks like this in practice:
+The "wrapping" pattern is for rethrowing an exception that's genuinely checked — like `IOException` or `SQLException` — as an unchecked one. This is a different case from `EmployeeNotFoundException` above: you define that one yourself by extending `RuntimeException` directly, so it's never checked and never needs this step. The example below uses `Files.readString()`, which does throw a checked `IOException`, to show the pattern in practice:
 
 ```java
 public String loadFile(String path) {
@@ -88,9 +135,9 @@ public String loadFile(String path) {
 }
 ```
 
-`RuntimeException` (like almost every Java exception) has a constructor that accepts a `Throwable` as its second argument — the original exception (`e`) is stored as the **cause** inside the new one. This matters: you don't lose information, the original exception's stack trace is still available inside the new one (you'll see something like `Caused by: java.io.IOException...` at the bottom of the printed stack trace). The benefit is that `loadFile()` no longer needs `throws IOException` in its signature — the caller is no longer forced by the compiler to handle it, though it still can if it wants to with `catch (RuntimeException e)`.
+`RuntimeException` (like almost every Java exception) has a constructor that accepts a `Throwable` as its second argument. Watch the word "wrap" here: you're not rethrowing the same `IOException` object — you create a brand new object, of type `RuntimeException`, and pass the original exception (`e`) as the second argument to its constructor; that original object is stored inside the new one as its **cause**, retrievable afterward with `newException.getCause()`. This matters: you don't lose information, the original exception's stack trace is still available inside the new one (you'll see something like `Caused by: java.io.IOException...` at the bottom of the printed stack trace). The benefit is that `loadFile()` no longer needs `throws IOException` in its signature — the caller is no longer forced by the compiler to handle it, though it still can if it wants to with `catch (RuntimeException e)`.
 
-> **Be careful "wrapping" a checked exception.** This is a valid and very common pattern in Spring Boot, but it drops the compiler's guarantee — from that point on, nothing forces you to remember to handle it. Do it deliberately (usually because you want to simplify your method signatures and let a `@RestControllerAdvice` handle the error centrally), not just to avoid writing `throws` without thinking about it.
+> **Be careful "wrapping" a checked exception.** This is a valid and very common pattern in Spring Boot, but it drops the compiler's guarantee — from that point on, nothing forces you to remember to handle it. Do it deliberately (usually because you want to simplify your method signatures and let a `@RestControllerAdvice` handle the error centrally), not just to avoid writing `throws` without thinking about it. You'll find that `@RestControllerAdvice` shown in full, working code further down in the "Spring Boot connection" section.
 
 JavaScript has nothing like this split — every JS error is effectively "unchecked": there's no compiler forcing you to catch or declare anything, no `throws` in a function signature, no compile error if you forget a `catch`. The checked/unchecked distinction is Java-specific (it also exists, with different nuances, in other typed languages like C# — though C# doesn't enforce it at compile time either), and it's exactly the kind of thing a JS developer trips over the first time the compiler refuses to build because a `catch` is missing.
 

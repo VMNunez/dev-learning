@@ -14,11 +14,11 @@ Un apunte sobre dos términos que se confunden con facilidad, antes de ver cómo
 [bottom]
 ```
 
-Cuando `methodB()` termina (ejecuta su `return`), se quita de la pila — desaparece el de arriba primero. Luego `methodA()` termina y se quita. Por último `main()`. Este orden es lo que significa "salen en orden inverso a como entraron": el último que entró (`methodB()`) es el primero que sale. En inglés se llama LIFO (Last In, First Out).
+Cuando `methodB()` termina (ejecuta su `return`), se quita de la pila — desaparece el de arriba primero. Luego `methodA()` comienza a ejecutarse y cuando termina se quita del stack. Este proceso se repite para todos los métodos, siendo `main()` el último en ejecutarse. Este orden es lo que significa "salen en orden inverso a como entraron": el último que entró (`methodB()`) es el primero que sale. En inglés se llama LIFO (Last In, First Out).
 
 El **stack trace** es la _foto_ de esa pila justo en el instante del error: el texto que ves impreso en la consola con la lista de métodos activos en ese momento. Como las excepciones son objetos normales en Java, llevan dentro tanto el mensaje de error como ese stack trace completo — así sabes exactamente dónde ocurrió el problema y por qué métodos pasó la excepción hasta llegar hasta ahí.
 
-> La frase "se propaga hacia arriba de la pila" es la que verás en la documentación oficial, pero no te la imagines como una flecha subiendo en el diagrama de arriba. "Arriba" aquí significa "hacia el método que la llamó", que en el diagrama se dibuja hacia *abajo* — el mismo camino que sigue un `return`, solo que interrumpido por un error en vez de un valor normal.
+> La frase "se propaga hacia arriba de la pila" es la que verás en la documentación oficial, pero no te la imagines como una flecha subiendo en el diagrama de arriba. "Arriba" aquí significa "hacia el método que la llamó", que en el diagrama se dibuja hacia _abajo_ — el mismo camino que sigue un `return`, solo que interrumpido por un error en vez de un valor normal.
 
 Con estos dos conceptos claros, así es como viaja una excepción. Java lanza un objeto que representa el error justo en el método donde ocurre el fallo — que siempre es el que está en la cima de la pila en ese instante, porque solo el método que se está ejecutando _ahora mismo_ puede fallar en ese momento. Desde ahí, el objeto se propaga **hacia el llamador** (el método que lo llamó), siguiendo el mismo camino LIFO de salida que un `return` normal seguiría, con una diferencia clave: en vez de devolver su valor normal, lo que le llega a cada llamador es el objeto de la excepción. Así, `methodB()` sale con la excepción en vez de con un valor de retorno; si `methodA()` no la captura con un `catch`, también sale hacia `main()`.
 
@@ -30,50 +30,92 @@ Si `main()` tampoco la captura, ahí se acaba el camino — `main()` es siempre 
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Checked Exception" y "Unchecked Exception"
 
-Java divide las excepciones en dos familias, y la diferencia no es solo de nombre — es una regla que el compilador impone activamente sobre una familia y no sobre la otra.
+Java divide las excepciones en dos familias — comprobadas y no comprobadas — y lo que las diferencia no es el nombre, sino que el compilador vigila activamente a una de las dos: te obliga a declarar o capturar sus errores, mientras que a la otra la deja circular libremente sin pedirte nada.
 
 Las **excepciones comprobadas** (_checked_) representan problemas que el llamador debería anticipar porque dependen de algo externo al propio código — un fichero que puede no existir, una conexión de red que puede caerse, una base de datos que puede estar caída. Son fallos que pueden pasar aunque tu lógica esté perfectamente escrita. Por eso el compilador te obliga a hacer algo con ellas: o las capturas con `try/catch`, o declaras en la firma del método que tu método puede lanzarlas con `throws` (esto se explica a fondo en la sección `throws` más abajo). Si no haces ninguna de las dos cosas, el código directamente no compila:
 
 ```java
 public void readConfig() {
     Files.readString(Path.of("config.txt")); // ERROR de compilación
-    // Files.readString() declara "throws IOException" —
-    // este método no la captura ni la declara, así que Java se niega a compilar
 }
 ```
 
-Java se niega a compilar precisamente porque ese fichero puede no existir en tiempo de ejecución, y el compilador no te deja ignorar esa posibilidad. El error que ves en ese caso no es una excepción en tiempo de ejecución (el programa ni siquiera llega a arrancar) — es un error de compilación con un mensaje característico: `unreported exception IOException; must be caught or declared to be thrown`. Solo cuando arreglas eso (con `try/catch` o con `throws`) el código compila; y si eliges `try/catch`, el error real que verías en tiempo de ejecución si el fichero no existiera sería un objeto `IOException` (o su subclase más específica, `FileNotFoundException`) entregado a tu bloque `catch`.
+Java se niega a compilar precisamente porque ese fichero puede no existir en tiempo de ejecución, y el compilador no te deja ignorar esa posibilidad. El error que ves en ese caso no es una excepción en tiempo de ejecución (el programa ni siquiera llega a arrancar) — es un error de compilación con un mensaje característico: `unreported exception IOException; must be caught or declared to be thrown`. Solo cuando arreglas eso (con `try/catch` o con `throws`) el código compila.
 
-Aquí tienes el mismo contraste con código real, checked y unchecked lado a lado:
+> **Cuándo usar `throws` y cuándo `try/catch`.** Se usan los dos, pero en sitios distintos, no como alternativas intercambiables. Usa `try/catch` cuando el método donde estás _puede_ hacer algo razonable con el fallo ahí mismo — mostrar un mensaje, usar un valor por defecto, reintentar. Usa `throws` cuando ese método no es el lugar adecuado para decidir qué hacer — por ejemplo, un método de bajo nivel que solo lee un fichero no sabe si hay que mostrarle un error al usuario o reintentar la operación; esa decisión le corresponde a quien lo llama, que tiene más contexto. En una aplicación real la cadena típica es varios métodos declarando `throws` y pasándose la excepción unos a otros, hasta que un método que sí sabe qué hacer con ella (normalmente cerca de la interfaz de usuario, o en Spring Boot el `@RestControllerAdvice` que verás más abajo) la captura por fin con `try/catch`.
+
+Aquí tienes las dos formas de arreglar el ejemplo de arriba:
 
 ```java
-// CHECKED — el compilador te obliga a manejarla
-public String loadFile(String path) throws IOException {
-    return Files.readString(Path.of(path)); // puede fallar por algo externo: el fichero no existe
-}
-
-// UNCHECKED — nada te obliga a declararla, es un bug si ocurre
-public int divide(int a, int b) {
-    return a / b; // si b es 0, lanza ArithmeticException sin previo aviso — nadie te lo exige declarar
+// Arreglada con throws — la decisión de qué hacer pasa al llamador de readConfig()
+public void readConfig() throws IOException {
+    Files.readString(Path.of("config.txt"));
 }
 ```
 
-Las **excepciones no comprobadas** (_unchecked_, subclases de `RuntimeException`) representan errores de programación — un `null` que no debería serlo, un índice que se sale del array, un argumento que no tiene sentido. Son bugs, no eventos externos: si tu código estuviera bien escrito, nunca deberían pasar. Por eso el compilador no exige nada — no tendría sentido obligarte a declarar en la firma de cada método todos los bugs posibles que podrías llegar a cometer. Se propagan libremente hacia el llamador (el mismo camino LIFO que ya conoces de la sección anterior) hasta que algo las captura o la aplicación se rompe.
+```java
+// Arreglada con try/catch — la gestionas aquí mismo; nadie fuera de este método se entera de que pasó
+public void readConfig() {
+    try {
+        Files.readString(Path.of("config.txt"));
+    } catch (IOException e) {
+        System.out.println("No se pudo leer el fichero: " + e.getMessage());
+    }
+}
+```
 
-> Aquí es fácil volver a caer en la misma trampa de antes: "se propagan hacia arriba" es la expresión estándar en toda la documentación de Java, pero como ya viste, "arriba" significa "hacia el método que llamó", no "hacia arriba en el diagrama de la pila" — donde en realidad se dibuja hacia abajo. La pila de la sección anterior está bien representada; es la expresión "hacia arriba" la que es engañosa si la tomas literalmente. A partir de aquí vas a ver las dos formas en la documentación real (inglés: *"propagates up the stack"*) — cuando la veas, tradúcela mentalmente como "hacia el llamador".
+> **Por qué `throws` y `try/catch` no dan el mismo resultado en tiempo de ejecución.** El error de _compilación_ desaparece en los dos casos — eso es lo único que `throws` y `try/catch` tienen en común. Pero en tiempo de ejecución no son lo mismo. Con `try/catch`, si el fichero no existe, tu propio bloque `catch` recibe el objeto `IOException` (o su subclase más específica, `FileNotFoundException`) y decide qué hacer con él — aquí, imprimir un mensaje — y el programa sigue funcionando con normalidad después. Con `throws`, en cambio, no capturas nada dentro de `readConfig()`: la excepción sale de ese método sin gestionar y sigue el mismo camino LIFO que viste al principio de la nota — si quien llama a `readConfig()` tampoco la captura, sigue subiendo hasta que alguien la gestione o hasta `main()`, y ahí verías exactamente el mismo stack trace sin gestionar que verías si `readConfig()` nunca hubiera tenido ningún `try/catch`.
 
-| | Comprobadas (checked) | No comprobadas (unchecked) |
-| --------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Clase padre (`extends`) | `Exception` | `RuntimeException` |
-| ¿Hay que declararlas? | Sí — `throws` o `try/catch` | No |
-| Representan | Problemas externos esperables — el fichero no existe, la conexión a la base de datos se cae, el timeout de una llamada a otra API | Errores de programación — bugs que no deberían ocurrir si el código está bien escrito |
-| Ejemplos (situación real) | `IOException` (leyendo un fichero que no existe), `SQLException` (la base de datos rechaza la query o se cae la conexión) | `NullPointerException` (llamas a un método sobre algo que es `null`), `IllegalArgumentException` (pasas un valor que no tiene sentido, como una edad negativa), `IndexOutOfBoundsException` (accedes a la posición 10 de una lista de 3 elementos) |
+Estas son las excepciones comprobadas más típicas que te vas a encontrar, junto con el escenario exacto que las dispara:
 
-La columna "Clase padre" indica de qué clase hereda cada tipo de excepción — es lo que determina si el compilador la trata como comprobada o no: toda excepción que extienda `Exception` (pero no `RuntimeException`) es comprobada; toda excepción que extienda `RuntimeException` es no comprobada. La jerarquía completa se explica más abajo en "Jerarquía de excepciones".
+- `IOException` — falla una operación de entrada/salida: leer o escribir un fichero que no existe o al que no tienes permiso, o que se corta a mitad de la lectura. `Files.readString(Path.of("config.txt"))` la lanza si `config.txt` no está en esa ruta.
+- `SQLException` — falla algo al hablar con la base de datos: la conexión se cae, la query tiene un error de sintaxis, o la base de datos rechaza la operación (por ejemplo, una clave única duplicada). La lanza cualquier método de JDBC — la API estándar de Java para conectar con bases de datos relacionales y ejecutar SQL desde código Java — que ejecute una consulta; Spring Boot usa JDBC por debajo aunque tú trabajes casi siempre con una capa más alta como JPA.
 
-En Spring Boot casi siempre trabajas con excepciones no comprobadas — incluso cuando el problema real es "externo" (por ejemplo, un recurso no encontrado en la base de datos), la convención es lanzar una excepción no comprobada propia (como ves en `EmployeeNotFoundException` más abajo) y dejar que Spring la capture globalmente con `@RestControllerAdvice`, en lugar de forzar a cada controller a declarar `throws` y llenar el código de `try/catch` repetidos.
+Ambas están en la tabla de aquí abajo.
 
-Relanzar una excepción comprobada como no comprobada — lo que se conoce como "envolver" (_wrap_) — se hace así en la práctica:
+Las **excepciones no comprobadas** (_unchecked_, subclases de `RuntimeException`) representan errores de programación — un `null` que no debería serlo, un índice que se sale del array, un argumento que no tiene sentido. La frase "subclases de `RuntimeException`" quiere decir que son tipos de error distintos entre sí, pero todos heredan de la misma clase padre, `RuntimeException` — es exactamente esa herencia común la que el compilador usa para decidir que no hace falta declararlas (lo verás dibujado en el diagrama de "Jerarquía de excepciones" más abajo). Las excepciones no comprobadas son bugs, no eventos externos (algo fuera de tu control, que puede pasar aunque el código esté perfectamente escrito), sino que son fallos que ocurren _solo_ porque tu propio código tiene un error. Si tu código estuviera bien escrito, nunca deberían fallar. Por eso el compilador no exige nada — no tendría sentido obligarte a declarar en la firma de cada método todos los bugs posibles que podrías llegar a cometer. Estas excepciones se propagan libremente hacia el llamador (el mismo camino LIFO que ya conoces de la sección anterior) hasta que algo las captura o la aplicación se rompe.
+
+Estas son las subclases de `RuntimeException` más típicas que te vas a encontrar constantemente en Java (y en entrevistas técnicas), junto con el escenario exacto que dispara cada una:
+
+- `NullPointerException` — llamas a un método o accedes a un campo sobre una variable que vale `null`: `String s = null; s.length();` revienta porque no hay ningún objeto real detrás de `s` sobre el que ejecutar `length()`.
+- `IllegalArgumentException` — un método recibe un valor que, aunque tiene el tipo correcto, no tiene sentido para lo que ese método hace: pasar `-5` a `setAge(int age)` compila perfectamente (es un `int` válido), pero una edad negativa no es un valor lógico.
+- `IndexOutOfBoundsException` — accedes a una posición de una lista o array que no existe: `list.get(10)` cuando `list` solo tiene 3 elementos, porque las posiciones válidas van de `0` a `2`.
+
+A estas tres se suma `ArithmeticException`, la que ves justo debajo en el ejemplo de `divide()` — las cuatro juntas son las que más te vas a encontrar en la práctica.
+
+Aquí tienes un ejemplo de código real:
+
+```java
+// UNCHECKED — nada te obliga a declararla, es un bug si ocurre
+public int divide(int a, int b) {
+    return a / b; // si b es 0, lanza ArithmeticException sin ningún aviso — nada exige declararla
+}
+```
+
+Si la llamas con `divide(10, 0)` y nadie captura el error, la consola imprime algo así:
+
+```
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+    at ExceptionDemo.divide(ExceptionDemo.java:6)
+    at ExceptionDemo.main(ExceptionDemo.java:2)
+```
+
+Ese es el stack trace del que hablábamos al principio de la nota: la primera línea (`Exception in thread "main" ...`) te da el tipo de excepción y el mensaje; las líneas `at ...` son la foto de la pila en el instante del fallo — el método donde se lanzó (`divide`, línea 6) y el método por el que pasó antes de llegar, sin que nadie la capturara, hasta `main` (línea 2).
+
+> **Por qué no hace falta ningún `try/catch` ni `throw` para "arreglar" esto.** A diferencia de las comprobadas, el compilador nunca te obliga a nada aquí: `divide()` compila perfectamente tal como está, aunque `b` pueda llegar a valer `0` en tiempo de ejecución. Añadir gestión de este error es una decisión de diseño tuya, no una exigencia del compilador — puedes envolver la llamada en un `try/catch` para capturar el fallo después de que ocurra, o comprobar la condición antes con un `if (b == 0) throw new IllegalArgumentException("b no puede ser 0")` para detectarlo tú mismo con un mensaje más claro antes de que Java lance su propio `ArithmeticException`. Ninguna de las dos es obligatoria; `IOException` sí lo era porque el compilador la vigila, `ArithmeticException` no porque nadie la vigila salvo tú.
+
+|                           | Comprobadas (checked)                                                                                                             | No comprobadas (unchecked)                                                                                                                                                                                                                         |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Clase padre (`extends`)   | `Exception`                                                                                                                       | `RuntimeException`                                                                                                                                                                                                                                 |
+| ¿Hay que declararlas?     | Sí — `throws` o `try/catch`                                                                                                       | No                                                                                                                                                                                                                                                 |
+| Representan               | Problemas externos esperables — el fichero no existe, la conexión a la base de datos se cae, el timeout de una llamada a otra API | Errores de programación — bugs que no deberían ocurrir si el código está bien escrito                                                                                                                                                              |
+| Ejemplos (situación real) | `IOException` (leyendo un fichero que no existe), `SQLException` (la base de datos rechaza la query o se cae la conexión)         | `NullPointerException` (llamas a un método sobre algo que es `null`), `IllegalArgumentException` (pasas un valor que no tiene sentido, como una edad negativa), `IndexOutOfBoundsException` (accedes a la posición 10 de una lista de 3 elementos) |
+
+La fila "Clase padre" indica de qué clase hereda cada tipo de excepción — es lo que determina si el compilador la trata como comprobada o no: toda excepción que extienda `Exception` es comprobada; toda excepción que extienda `RuntimeException` es no comprobada. La jerarquía completa se explica más abajo en "Jerarquía de excepciones".
+
+En Spring Boot casi siempre trabajas con excepciones no comprobadas — incluso cuando el problema real es "externo" en el mismo sentido que viste arriba (un empleado que no existe en la base de datos es justo el tipo de fallo esperable que, en teoría, encajaría como comprobada). La razón para no hacerlo así es de arquitectura, no del tipo de error en sí: una API REST típica tiene varias capas apiladas (`repository` → `service` → `controller`), y si `EmployeeNotFoundException` fuera comprobada, cada una de esas capas tendría que declarar `throws EmployeeNotFoundException` o envolverla en su propio `try/catch` — repitiendo el mismo boilerplate en cada controller que llama a ese servicio, solo para poder compilar. Con una excepción no comprobada, en cambio, no hay ninguna obligación del compilador: el objeto se propaga libremente hacia arriba (el mismo camino LIFO de siempre) sin que ninguna capa intermedia tenga que tocarlo, hasta que llega a un único punto centralizado — la clase `@RestControllerAdvice` que ves más abajo — que lo captura y decide qué código HTTP devolver. Por eso la convención en Spring Boot es lanzar una excepción no comprobada propia (como `EmployeeNotFoundException` más abajo) y dejar que ese `@RestControllerAdvice` la gestione en un solo sitio, en lugar de forzar a cada controller a declarar `throws` y llenar el código de `try/catch` repetidos.
+
+El patrón de "envolver" (_wrap_) sirve para relanzar una excepción que de verdad es comprobada — como `IOException` o `SQLException` — convirtiéndola en no comprobada. No es el mismo caso que `EmployeeNotFoundException` de más arriba: esa la defines tú mismo extendiendo `RuntimeException` directamente, así que nunca pasa por comprobada y nunca necesita este paso. El ejemplo siguiente usa `Files.readString()`, que sí lanza `IOException` comprobada, para mostrar el patrón en la práctica:
 
 ```java
 public String loadFile(String path) {
@@ -88,11 +130,9 @@ public String loadFile(String path) {
 }
 ```
 
-`RuntimeException` (igual que casi todas las excepciones de Java) tiene un constructor que acepta un `Throwable` como segunda posición — la excepción original (`e`) se guarda como **cause** dentro de la nueva. Esto es importante: no pierdes información, el stack trace de la excepción original sigue disponible dentro de la nueva (verás algo como `Caused by: java.io.IOException...` al final del stack trace impreso). La ventaja es que `loadFile()` ya no necesita `throws IOException` en su firma — el llamador ya no está obligado por el compilador a manejarla, aunque sigue pudiendo hacerlo si quiere con `catch (RuntimeException e)`.
+`RuntimeException` (igual que casi todas las excepciones de Java) tiene un constructor que acepta un `Throwable` como segundo argumento. Ojo con la palabra "envolver": no relanzas la misma excepción `IOException` — creas un objeto completamente nuevo, de tipo `RuntimeException`, y le pasas la excepción original (`e`) como segundo argumento de su constructor; ese objeto original queda guardado dentro del nuevo como su **cause**, accesible después con `nuevaExcepcion.getCause()`. Esto es importante: no pierdes información, el stack trace de la excepción original sigue disponible dentro de la nueva (verás algo como `Caused by: java.io.IOException...` al final del stack trace impreso). La ventaja es que `loadFile()` ya no necesita `throws IOException` en su firma — el llamador ya no está obligado por el compilador a manejarla, aunque sigue pudiendo hacerlo si quiere con `catch (RuntimeException e)`.
 
-> **Cuidado con "envolver" una excepción comprobada.** Es un patrón válido y muy común en Spring Boot, pero pierde la garantía del compilador — a partir de ahí, nadie te obliga a acordarte de gestionarla. Hazlo con intención (normalmente porque quieres simplificar la firma de tus métodos y dejar que un `@RestControllerAdvice` maneje el error de forma centralizada), no por evitar escribir `throws` sin pensarlo.
-
-JavaScript no tiene nada parecido a esta división — todo error en JS es, en la práctica, "no comprobado": no hay ningún compilador que te obligue a capturar o declarar nada, ni un `throws` en la firma de una función, ni un error de compilación si te olvidas de un `catch`. La distinción entre comprobadas y no comprobadas es específica de Java (también existe, con matices distintos, en otros lenguajes tipados como C# — aunque C# tampoco la impone en tiempo de compilación), y es justo el tipo de cosa con la que tropieza un desarrollador de JS la primera vez que el compilador se niega a compilar porque falta un `catch`.
+> **Cuidado con "envolver" una excepción comprobada.** Es un patrón válido y muy común en Spring Boot, pero pierde la garantía del compilador — a partir de ahí, nadie te obliga a acordarte de gestionarla. Hazlo con intención (normalmente porque quieres simplificar la firma de tus métodos y dejar que un `@RestControllerAdvice` maneje el error de forma centralizada), no por evitar escribir `throws` sin pensarlo. Tienes el código completo de ese `@RestControllerAdvice` en acción más abajo, en la sección "Conexión con Spring Boot".
 
 ---
 
@@ -122,9 +162,10 @@ try {
 
 > **¿Por qué no dejar un bloque `catch` vacío?** Un `catch` vacío se traga el error en silencio — el programa sigue como si nada y pierdes tanto el mensaje como el stack trace, así que el bug se vuelve invisible. Como mínimo registra la excepción; nunca escribas `catch (Exception e) {}`.
 
-> **¿Por qué importa el orden de los `catch`? ¿Qué pasa si me equivoco?** Java comprueba los bloques `catch` de arriba a abajo y ejecuta el *primero* cuyo tipo coincida con la excepción lanzada — nunca sigue comprobando, aunque un bloque posterior también encajaría. Si las dos excepciones no tienen relación (como `IOException` y `NumberFormatException` arriba), el orden es solo cuestión de estilo. Pero si una es superclase de la otra — por ejemplo `Exception` e `IOException` — y pones la superclase (`Exception`) primero, el código directamente no compila: `catch (IOException e)` se queda inalcanzable, porque cualquier `IOException` ya coincide con el `catch (Exception e)` de encima. El error exacto es `exception IOException has already been caught`. Por eso la regla es "la más específica primero": no es una preferencia de estilo, es lo único que hace que ambos bloques sean alcanzables.
+> **¿Por qué importa el orden de los `catch`? ¿Qué pasa si me equivoco?** Java comprueba los bloques `catch` de arriba a abajo y ejecuta el _primero_ cuyo tipo coincida con la excepción lanzada — nunca sigue comprobando, aunque un bloque posterior también encajaría. Si las dos excepciones no tienen relación (como `IOException` y `NumberFormatException` arriba), el orden es solo cuestión de estilo. Pero si una es superclase de la otra — por ejemplo `Exception` e `IOException` — y pones la superclase (`Exception`) primero, el código directamente no compila: `catch (IOException e)` se queda inalcanzable, porque cualquier `IOException` ya coincide con el `catch (Exception e)` de encima. El error exacto es `exception IOException has already been caught`. Por eso la regla es "la más específica primero": no es una preferencia de estilo, es lo único que hace que ambos bloques sean alcanzables.
 
-> **¿Se ejecuta `finally` aunque el bloque `try` tenga un `return`?** Sí — es el gotcha clásico de entrevista de Java. `finally` se ejecuta *antes* de que el método devuelva de verdad, incluso si `try` ya llegó a un `return`:
+> **¿Se ejecuta `finally` aunque el bloque `try` tenga un `return`?** Sí — es el gotcha clásico de entrevista de Java. `finally` se ejecuta _antes_ de que el método devuelva de verdad, incluso si `try` ya llegó a un `return`:
+>
 > ```java
 > public int test() {
 >     try {
@@ -135,7 +176,8 @@ try {
 > }
 > // test() sigue devolviendo 1 — pero solo después de imprimir "finally se ejecuta primero"
 > ```
-> La trampa que hay que evitar: si `finally` *también* tiene un `return`, sobreescribe en silencio el valor que venía de `try` — el `return 1` del bloque `try` se descarta y se reemplaza. Se considera mala práctica precisamente por eso, porque esconde un cambio de valor de retorno dentro del código de limpieza; nunca pongas un `return` dentro de `finally`.
+>
+> La trampa que hay que evitar: si `finally` _también_ tiene un `return`, sobreescribe en silencio el valor que venía de `try` — el `return 1` del bloque `try` se descarta y se reemplaza. Se considera mala práctica precisamente por eso, porque esconde un cambio de valor de retorno dentro del código de limpieza; nunca pongas un `return` dentro de `finally`.
 
 ### Capturar múltiples excepciones en un solo bloque
 
