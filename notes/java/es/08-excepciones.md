@@ -115,7 +115,28 @@ La fila "Clase padre" indica de qué clase hereda cada tipo de excepción — es
 
 En Spring Boot casi siempre trabajas con excepciones no comprobadas — incluso cuando el problema real es "externo" en el mismo sentido que viste arriba (un empleado que no existe en la base de datos es justo el tipo de fallo esperable que, en teoría, encajaría como comprobada). La razón para no hacerlo así es de arquitectura, no del tipo de error en sí: una API REST típica tiene varias capas apiladas (`repository` → `service` → `controller`), y si `EmployeeNotFoundException` fuera comprobada, cada una de esas capas tendría que declarar `throws EmployeeNotFoundException` o envolverla en su propio `try/catch` — repitiendo el mismo boilerplate en cada controller que llama a ese servicio, solo para poder compilar. Con una excepción no comprobada, en cambio, no hay ninguna obligación del compilador: el objeto se propaga libremente hacia arriba (el mismo camino LIFO de siempre) sin que ninguna capa intermedia tenga que tocarlo, hasta que llega a un único punto centralizado — la clase `@RestControllerAdvice` que ves más abajo — que lo captura y decide qué código HTTP devolver. Por eso la convención en Spring Boot es lanzar una excepción no comprobada propia (como `EmployeeNotFoundException` más abajo) y dejar que ese `@RestControllerAdvice` la gestione en un solo sitio, en lugar de forzar a cada controller a declarar `throws` y llenar el código de `try/catch` repetidos.
 
-El patrón de "envolver" (_wrap_) sirve para relanzar una excepción que de verdad es comprobada — como `IOException` o `SQLException` — convirtiéndola en no comprobada. No es el mismo caso que `EmployeeNotFoundException` de más arriba: esa la defines tú mismo extendiendo `RuntimeException` directamente, así que nunca pasa por comprobada y nunca necesita este paso. El ejemplo siguiente usa `Files.readString()`, que sí lanza `IOException` comprobada, para mostrar el patrón en la práctica:
+Lanzarla es tan simple como cualquier otro `throw` — no hace falta declarar nada en la firma del método, precisamente porque es no comprobada. El código de abajo la lanza dentro de un `orElseThrow()` porque en este caso concreto el valor viene envuelto en un `Optional` (lo devuelve `repository.findById(id)`, un método de Spring Boot que verás más adelante) — `orElseThrow()` es solo la forma de sacar el valor de ese `Optional` o lanzar la excepción si no hay nada dentro; en cualquier otro sitio del código lanzas `EmployeeNotFoundException` igual que cualquier otra excepción, con un `throw new EmployeeNotFoundException(...)` normal, sin que tenga que ir dentro de un `orElseThrow()`(//TODO: TAMBIEN QUIERO QUE PONGAS EL EJEMPLO DE LANZARLA SIN UN ORELSETHROW PARA ENTENDER A LO QUE TE REFIERES):
+
+```java
+public Employee findById(Long id) {
+    return repository.findById(id)
+        .orElseThrow(() -> new EmployeeNotFoundException(id));
+}
+```
+
+Esta es la clase completa que estás lanzando arriba: //TODO: PREFIERO QUE ESTA PARTE VAYA ANTES QUE EL OTRO BLOQUE DE CODIGO PORQUE ESTO ES LO PRIMERO QUE TENEMOS QUE DEFINIR. ME DICES QUE PARA LANZAR UNA EXCEPCION PROPIA PRIMERO CREAMOS LA CLASE QUE EXTIENDA TUNTIMEEXEPTION CON UN CONSTRUCTOR Y USAS SUPER PORQUE...ETC ES DECIR LO QUIERO EXPLICADO. AL CONOCER ESTO YA PODEMOS USARLA EN EL BLOQUE DE CODIGO DE ARRIBA.
+
+```java
+public class EmployeeNotFoundException extends RuntimeException {
+    public EmployeeNotFoundException(Long id) {
+        super("Employee not found with id: " + id);
+    }
+}
+```
+
+Extiende `RuntimeException` directamente — por eso es no comprobada desde el mismo momento en que la escribes, sin depender de si hay o no una excepción comprobada más abajo en la pila. El constructor recibe el `id` que no se encontró y llama a `super(...)`, el constructor de `RuntimeException`, pasándole el mensaje ya formado; ese mensaje es justo lo que `e.getMessage()` te devuelve más tarde dentro del `@ExceptionHandler` que viste unas líneas más abajo. Que el dato que falta sea "externo" — una fila que no existe en la base de datos — no obliga a envolver nada: envolver solo hace falta cuando estás llamando a un método ajeno que el compilador ya trata como comprobado, como `Files.readString()` en el ejemplo de más abajo. Aquí no hay ningún método externo lanzando una excepción comprobada de por medio — tú mismo decides crear `EmployeeNotFoundException` desde cero como no comprobada, así que no hay ninguna excepción comprobada previa que convertir. Vuelves a ver esta misma clase, con más contexto todavía, en la sección "Excepciones personalizadas" más abajo.
+
+El patrón de "envolver" (_wrap_) sirve para relanzar una excepción que es comprobada — como `IOException` o `SQLException` — convirtiéndola en no comprobada. No es el mismo caso que `EmployeeNotFoundException` de más arriba, aunque las dos representen un problema "externo" en el sentido de depender de un dato que puede faltar: `EmployeeNotFoundException` nunca ha sido una excepción comprobada — la defines tú mismo extendiendo `RuntimeException` directamente desde el principio, así que el compilador jamás la trató como comprobada y no hay nada que envolver. El wrap solo hace falta cuando el compilador sí exige `throws` o `try/catch` porque la excepción original — como `IOException` — extiende `Exception` y no `RuntimeException`. El ejemplo siguiente usa `Files.readString()`, que sí lanza `IOException` comprobada, para mostrar el patrón en la práctica:
 
 ```java
 public String loadFile(String path) {
@@ -130,9 +151,31 @@ public String loadFile(String path) {
 }
 ```
 
-`RuntimeException` (igual que casi todas las excepciones de Java) tiene un constructor que acepta un `Throwable` como segundo argumento. Ojo con la palabra "envolver": no relanzas la misma excepción `IOException` — creas un objeto completamente nuevo, de tipo `RuntimeException`, y le pasas la excepción original (`e`) como segundo argumento de su constructor; ese objeto original queda guardado dentro del nuevo como su **cause**, accesible después con `nuevaExcepcion.getCause()`. Esto es importante: no pierdes información, el stack trace de la excepción original sigue disponible dentro de la nueva (verás algo como `Caused by: java.io.IOException...` al final del stack trace impreso). La ventaja es que `loadFile()` ya no necesita `throws IOException` en su firma — el llamador ya no está obligado por el compilador a manejarla, aunque sigue pudiendo hacerlo si quiere con `catch (RuntimeException e)`.
+`RuntimeException` (igual que casi todas las excepciones de Java) tiene un constructor que acepta un `Throwable` como segundo argumento. Ojo con la palabra "envolver": no relanzas la misma excepción `IOException` — creas un objeto completamente nuevo, de tipo `RuntimeException`, y le pasas la excepción original (`e`) como segundo argumento de su constructor; ese objeto original queda guardado dentro del nuevo como su **cause** — el atributo que toda excepción hereda de `Throwable` para enlazarla con la excepción que la originó de verdad, de forma que la traza del fallo real nunca se pierde. Si más adelante alguien captura esta nueva `RuntimeException` (por ejemplo con `catch (RuntimeException e)`), puede recuperar la excepción original llamando a `e.getCause()` sobre ese mismo objeto capturado — no hace falta ningún nombre especial de variable, es el `e` normal de cualquier bloque `catch`. Esto es importante: no pierdes información, el stack trace de la excepción original sigue disponible dentro de la nueva (verás algo como `Caused by: java.io.IOException...` al final del stack trace impreso). La ventaja es que `loadFile()` ya no necesita `throws IOException` en su firma — el llamador ya no está obligado por el compilador a manejarla, aunque sigue pudiendo hacerlo si quiere con `catch (RuntimeException e)`.
 
-> **Cuidado con "envolver" una excepción comprobada.** Es un patrón válido y muy común en Spring Boot, pero pierde la garantía del compilador — a partir de ahí, nadie te obliga a acordarte de gestionarla. Hazlo con intención (normalmente porque quieres simplificar la firma de tus métodos y dejar que un `@RestControllerAdvice` maneje el error de forma centralizada), no por evitar escribir `throws` sin pensarlo. Tienes el código completo de ese `@RestControllerAdvice` en acción más abajo, en la sección "Conexión con Spring Boot".
+> **Cuidado con "envolver" una excepción comprobada.** Es un patrón válido y muy común en Spring Boot, pero pierde la garantía del compilador — a partir de ahí, nadie te obliga a acordarte de gestionarla. Hazlo con intención (normalmente porque quieres simplificar la firma de tus métodos y dejar que un `@RestControllerAdvice` maneje el error de forma centralizada), no por evitar escribir `throws` sin pensarlo.
+
+Las dos formas de acabar en una `RuntimeException` que viste en esta sección — una propia como `EmployeeNotFoundException` (la creas tú desde cero, no envuelve nada) y una envuelta como la de `loadFile()` (nace de una `IOException` capturada) — llegan igual de "no comprobadas" al compilador, así que el mismo `@RestControllerAdvice` las puede capturar juntas; solo cambia qué tipo declara cada `@ExceptionHandler`:
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    // Captura la excepción propia — EmployeeNotFoundException, definida más arriba
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(EmployeeNotFoundException e) {
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
+
+    // Captura la RuntimeException genérica que "envuelve" la IOException de loadFile()
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleWrapped(RuntimeException e) {
+        return ResponseEntity.status(500).body(e.getMessage());
+    }
+}
+```
+
+Esta es la clase `GlobalExceptionHandler` completa, con los dos manejadores juntos — el mismo código que vuelves a ver en la sección "Conexión con Spring Boot" más abajo, donde se explica el patrón `@RestControllerAdvice` desde cero.
 
 ---
 
