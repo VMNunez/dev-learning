@@ -459,3 +459,19 @@ ON CONFLICT (email) DO NOTHING;
 `ON CONFLICT (email) DO NOTHING` prevents a duplicate key error if the app restarts — Spring Boot runs `data.sql` every time the app starts, not just the first time.
 
 > **The interview question:** "How did you create the first manager if there is no registration endpoint for managers?" — `data.sql` with a pre-hashed BCrypt password is the standard answer. You generate the hash once (with a small `main` method or an online tool) and commit it. The raw password is never in the source code.
+
+### Execution order — why `data.sql` can fail on a fresh database
+
+By default, Spring Boot runs `data.sql` **before** Hibernate creates or updates the schema, not after. On a project you have been running for a while this goes unnoticed — the tables already exist from previous runs. It only surfaces the day someone starts from a truly empty database: a fresh clone, a wiped local Postgres, or the Docker container in Step 11 booting Postgres from scratch. `data.sql` tries `INSERT INTO users` against a table that is not there yet, and the app fails to start.
+
+Fix it with a property in `application.properties`:
+
+```properties
+spring.jpa.defer-datasource-initialization=true
+```
+
+Docs: https://www.baeldung.com/spring-boot-data-sql-and-schema-sql → read: "Deferring Datasource Initialization"
+
+This tells Spring Boot: run Hibernate's schema creation/update first, and only run `data.sql` once the tables it depends on already exist. Without it, the two independent startup mechanisms — Hibernate building the schema, Spring Boot loading seed data — race in the wrong order.
+
+> Set this from the start of the project, even before you hit the failure — it costs nothing when the schema already exists, and saves you a confusing "relation does not exist" error the first time you run against a clean database.

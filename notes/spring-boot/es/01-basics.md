@@ -459,3 +459,19 @@ ON CONFLICT (email) DO NOTHING;
 `ON CONFLICT (email) DO NOTHING` evita un error de clave duplicada si la app se reinicia — Spring Boot ejecuta `data.sql` cada vez que arranca la app, no solo la primera vez.
 
 > **La pregunta de entrevista:** "¿Cómo creaste el primer manager si no hay endpoint de registro para managers?" — `data.sql` con una contraseña BCrypt pre-hasheada es la respuesta estándar. Generas el hash una vez (con un pequeño método `main` o una herramienta online) y lo commiteas. La contraseña en texto plano nunca está en el código fuente.
+
+### Orden de ejecución — por qué `data.sql` puede fallar en una base de datos nueva
+
+Por defecto, Spring Boot ejecuta `data.sql` **antes** de que Hibernate cree o actualice el esquema, no después. En un proyecto que llevas un tiempo ejecutando esto pasa desapercibido — las tablas ya existen de ejecuciones anteriores. Solo sale a la luz el día que alguien parte de una base de datos realmente vacía: un clon nuevo, un Postgres local borrado, o el contenedor de Docker del Step 11 arrancando Postgres desde cero. `data.sql` intenta hacer `INSERT INTO users` contra una tabla que todavía no existe, y la app falla al arrancar.
+
+Se arregla con una propiedad en `application.properties`:
+
+```properties
+spring.jpa.defer-datasource-initialization=true
+```
+
+Docs: https://www.baeldung.com/spring-boot-data-sql-and-schema-sql → leer: "Deferring Datasource Initialization"
+
+Esto le dice a Spring Boot: ejecuta primero la creación/actualización del esquema de Hibernate, y solo ejecuta `data.sql` una vez que las tablas de las que depende ya existen. Sin esto, los dos mecanismos de arranque independientes — Hibernate construyendo el esquema, Spring Boot cargando los datos de siembra — compiten en el orden equivocado.
+
+> Pon esto desde el principio del proyecto, incluso antes de que te encuentres el fallo — no cuesta nada cuando el esquema ya existe, y te ahorra un confuso error de "relation does not exist" la primera vez que ejecutes contra una base de datos limpia.
