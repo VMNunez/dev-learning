@@ -20,6 +20,8 @@ File: `pom.xml`
 
 No version needed — managed by `spring-boot-starter-parent`. This is a silent failure trap: annotations compile, code runs, but invalid input is never rejected. Always add the dependency before adding validation annotations.
 
+> **Why does it fail silently instead of throwing an error?** `@NotBlank`, `@Positive`, and the rest are just plain annotations — metadata attached to a field, nothing more. On their own they don't run any check; something has to read them and act. That something is Hibernate Validator (the Jakarta Bean Validation reference implementation), and `spring-boot-starter-validation` is what pulls it onto the classpath and lets Spring auto-configure the `Validator` bean that scans and enforces those annotations. Without the starter, the annotations still compile — the compiler only checks that the annotation exists as a type — but no validator is ever registered to look at them, so `@Valid` finds nothing to run and the request sails through unchecked.
+
 ---
 
 ## The problem without validation
@@ -31,6 +33,8 @@ Bean Validation solves this with annotations on DTOs. One annotation on a field 
 ---
 
 ## The annotations you use most
+
+Docs: https://www.baeldung.com/javax-validation → read: the section listing the standard constraint annotations (`@NotNull`, `@Size`, `@Min`/`@Max`, etc.)
 
 ```java
 public record TransactionCreateDTO(
@@ -72,6 +76,8 @@ public record TransactionCreateDTO(
 
 ## Triggering validation — @Valid on @RequestBody
 
+Docs: https://www.baeldung.com/spring-boot-bean-validation → read: the section on validating the request body with `@Valid`
+
 ```java
 @PostMapping
 public ResponseEntity<TransactionDTO> create(@Valid @RequestBody TransactionCreateDTO dto) {
@@ -95,6 +101,8 @@ Validation belongs on request DTOs, not on JPA entities. The entity lives in the
 
 ## Validating path variables and query params
 
+Docs: https://www.baeldung.com/spring-validate-path-variable-request-parameter → read: the full article — it's short and covers exactly this case
+
 For individual parameters (not a `@RequestBody` object), use `@Validated` on the controller class:
 
 ```java
@@ -113,6 +121,8 @@ public class TransactionController {
 ```
 
 `@Positive` on `@PathVariable` rejects negative or zero IDs automatically. Spring throws `ConstraintViolationException` instead of `MethodArgumentNotValidException` — handle both in `@ControllerAdvice`.
+
+> **`@Valid` vs `@Validated` — not interchangeable.** `@Valid` is the Java/Jakarta Bean Validation standard annotation — it works on `@RequestBody` objects and cascades into nested objects, but Spring MVC does not process it on individual method parameters like `@PathVariable` or `@RequestParam`. `@Validated` is Spring's own annotation; put it on the *class* to enable constraint checking on individual parameters, and it additionally supports validation groups (running different rules depending on context) which `@Valid` cannot do. Rule of thumb: `@Valid` on a `@RequestBody` DTO, `@Validated` on the controller class when validating loose parameters.
 
 ---
 
