@@ -122,6 +122,50 @@ With `STRING`, the stored value is `"MANAGER"` — adding a new enum value in th
 
 ---
 
+## Adding a NOT NULL column to a table that already has rows — @ColumnDefault
+
+Purpose: `@ColumnDefault` makes Hibernate add a `DEFAULT` clause to the generated `ALTER TABLE`, so PostgreSQL has a value to backfill existing rows with. Without it, adding a required (`NOT NULL`) column to a table that already has data fails outright.
+
+Docs: https://www.baeldung.com/hibernate-column-default-value → read: "Using @ColumnDefault"
+
+File: `src/main/java/com/victor/timetrack/model/User.java`
+
+```java
+@ColumnDefault("true")
+private boolean active;
+```
+
+**Why the plain `NOT NULL` column fails:**
+
+```
+Hibernate: alter table if exists users add column active boolean not null
+ERROR: column "active" of relation "users" contains null values
+```
+
+Adding a column always starts the same way for every existing row: the new cell has nothing in it, so the database's first instinct is to put `NULL` there. But `NOT NULL` forbids exactly that value. The two rules contradict each other — "fill this with `NULL`" vs. "this can never be `NULL`" — and PostgreSQL aborts the whole `ALTER TABLE` rather than leave the table in a broken state. This has nothing to do with your Java code being wrong; it is a genuine gap in information: the database was never told what the old rows should have in that column.
+
+**How `@ColumnDefault` closes that gap:**
+
+```
+Hibernate: alter table if exists users add column active boolean not null default true
+```
+
+With `DEFAULT true` inside the same statement, PostgreSQL now has an answer to "what goes in the old rows?" — it fills every existing row with `true` and adds the column in one atomic step. No contradiction, no manual data migration.
+
+`@ColumnDefault` takes a **`String`**, not a typed Java value — its job is to paste literal SQL text after `DEFAULT` in the generated DDL, not to represent a Java boolean. That is why the same annotation works for any column type, with the quoting rules of SQL itself, not Java:
+
+```java
+@ColumnDefault("0")           // numeric literal — no quotes needed in SQL
+@ColumnDefault("true")        // boolean literal — no quotes needed in SQL
+@ColumnDefault("'PENDING'")   // text/enum literal — SQL requires single quotes around strings
+```
+
+> This is a Hibernate-specific annotation (`org.hibernate.annotations.ColumnDefault`), not part of the JPA spec — same category as `@CreationTimestamp` above: a convenience Hibernate adds on top of the standard.
+
+> **Interviewers ask:** "What happens when you add a required column to a table with existing data?" — the answer is exactly this trade-off: either give the column a `DEFAULT` so the database can backfill it, or leave it nullable and backfill the data yourself before tightening the constraint later.
+
+---
+
 ## Automatic timestamps — @CreationTimestamp, @UpdateTimestamp, @PrePersist
 
 You almost never set `createdAt` / `updatedAt` by hand. There are two ways to fill them automatically — a Hibernate shortcut and the JPA-standard callback.

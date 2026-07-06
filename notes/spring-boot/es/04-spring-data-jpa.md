@@ -122,6 +122,50 @@ Con `STRING`, el valor almacenado es `"MANAGER"` — añadir un nuevo valor enum
 
 ---
 
+## Añadir una columna NOT NULL a una tabla que ya tiene filas — @ColumnDefault
+
+Propósito: `@ColumnDefault` hace que Hibernate añada una cláusula `DEFAULT` al `ALTER TABLE` que genera, para que PostgreSQL tenga un valor con el que rellenar las filas ya existentes. Sin esto, añadir una columna obligatoria (`NOT NULL`) a una tabla que ya tiene datos falla directamente.
+
+Docs: https://www.baeldung.com/hibernate-column-default-value → leer: "Using @ColumnDefault"
+
+Archivo: `src/main/java/com/victor/timetrack/model/User.java`
+
+```java
+@ColumnDefault("true")
+private boolean active;
+```
+
+**Por qué la columna `NOT NULL` a secas falla:**
+
+```
+Hibernate: alter table if exists users add column active boolean not null
+ERROR: column "active" of relation "users" contains null values
+```
+
+Añadir una columna empieza siempre igual para cada fila existente: la celda nueva no tiene nada dentro, así que el primer instinto de la base de datos es poner `NULL` ahí. Pero `NOT NULL` prohíbe exactamente ese valor. Las dos reglas se contradicen — "rellena esto con `NULL`" contra "esto nunca puede ser `NULL`" — y PostgreSQL aborta el `ALTER TABLE` entero antes que dejar la tabla en un estado roto. Esto no tiene nada que ver con que tu código Java esté mal; es un vacío de información real: nunca le dijiste a la base de datos qué debían tener las filas viejas en esa columna.
+
+**Cómo `@ColumnDefault` cierra ese vacío:**
+
+```
+Hibernate: alter table if exists users add column active boolean not null default true
+```
+
+Con `DEFAULT true` dentro de la misma sentencia, PostgreSQL ya tiene respuesta a "¿qué pongo en las filas viejas?" — rellena cada fila existente con `true` y añade la columna en un solo paso atómico. Sin contradicción, sin migración de datos manual.
+
+`@ColumnDefault` recibe un **`String`**, no un valor Java tipado — su trabajo es pegar texto SQL literal después de `DEFAULT` en el DDL generado, no representar un booleano de Java. Por eso la misma anotación sirve para cualquier tipo de columna, con las reglas de comillas de SQL, no de Java:
+
+```java
+@ColumnDefault("0")           // literal numérico — SQL no necesita comillas
+@ColumnDefault("true")        // literal booleano — SQL no necesita comillas
+@ColumnDefault("'PENDING'")   // literal de texto/enum — SQL exige comillas simples alrededor del texto
+```
+
+> Es una anotación específica de Hibernate (`org.hibernate.annotations.ColumnDefault`), no forma parte de la especificación JPA — misma categoría que `@CreationTimestamp` de arriba: una comodidad que Hibernate añade encima del estándar.
+
+> **Los entrevistadores preguntan:** "¿Qué pasa cuando añades una columna obligatoria a una tabla con datos existentes?" — la respuesta es exactamente este trade-off: o le das a la columna un `DEFAULT` para que la base de datos pueda rellenarla, o la dejas nullable y rellenas los datos tú mismo antes de apretar la restricción más adelante.
+
+---
+
 ## Timestamps automáticos — @CreationTimestamp, @UpdateTimestamp, @PrePersist
 
 Casi nunca estableces `createdAt` / `updatedAt` a mano. Hay dos formas de rellenarlos automáticamente — un atajo de Hibernate y el callback estándar de JPA.
