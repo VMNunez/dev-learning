@@ -955,3 +955,28 @@ Domain-realistic only — max 3 bullets.
 - Export approval reports to PDF or Excel
 - Email notifications when entries are approved or rejected
 - Bulk approval workflow for managers handling large teams
+
+---
+
+## Git branch strategy
+
+Written retroactively on 2026-07-06, after Step 4 closed — `feat/spring-foundation` had grown
+to cover the entire backend foundation without a plan for where it would end. From here on,
+one branch per coherent feature, never one per step.
+
+| Branch | Covers (steps) | Opens | Closes |
+|---|---|---|---|
+| `feat/spring-foundation` | Steps 1–4 — Spring Boot setup, Project CRUD, JWT auth, role-based authorization | Step 1, right after `projects/07-timetrack` was created from `main` | Now — Step 4's done condition passed. PR into `projects/07-timetrack`. |
+| `feat/timeentry-workflow` | Step 5 — TimeEntry CRUD + workflow | After `feat/spring-foundation` merges | When Step 5's done condition passes |
+| `feat/reports` | Step 6 — Reports | After `feat/timeentry-workflow` merges | When Step 6's done condition passes |
+| `feat/angular-frontend` | Step 7 — Angular frontend | After `feat/reports` merges | When Step 7's done condition passes |
+| `feat/backend-tests` | Step 8 — Backend tests | After `feat/angular-frontend` merges | When Step 8's done condition passes |
+| `feat/angular-tests` | Step 9 — Angular tests | After `feat/backend-tests` merges | When Step 9's done condition passes |
+| — (no branch) | Step 10 — SQL complement | — | Commits go straight to `main`, per CLAUDE.md's rule that `sql/` and study materials skip the feature-branch workflow |
+| `feat/docker` | Step 11 — Docker | After `feat/angular-tests` merges | When Step 11's done condition passes — the last feature branch before the project branch closes |
+
+The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
+open for the whole project. It only merges into `main` when Step 11 is done.
+
+**Immediate action:** `feat/spring-foundation` is done — open a PR into `projects/07-timetrack`
+now, then create `feat/timeentry-workflow` from `projects/07-timetrack` before starting Step 5.
