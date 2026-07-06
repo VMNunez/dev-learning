@@ -50,6 +50,12 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
   metadata fields; use `##` for top-level topic sections and `###` for sub-concepts within them —
   when adding a section to an existing file, match the heading level already in use.
 
+> **Spring Boot notes lean on Java concepts.** When writing a `notes/spring-boot/en/` note, the code
+> almost always uses pure-Java language features (generics, exceptions, interfaces). Read the
+> existing `notes/java/en/` files so you anchor those consistently — and when a Spring note leans on
+> a Java concept covered there, link to it rather than re-explaining it (see the cross-file link rule
+> in rule 3).
+
 **Docs link priority by topic** — the linked page must show real code examples and explain where
 things come from, not just define terms:
 - Spring Boot and Java concepts → **Baeldung (baeldung.com)** as primary (full working code,
@@ -283,6 +289,15 @@ a new file to calibrate.
 - **Do not write documentation.** If the note could be copy-pasted onto the official docs site
   unchanged, it is wrong. Notes capture what Victor learned and why it clicked — not a neutral
   description of what the framework does.
+
+  > **Bad note:** "`HttpClient` is a service that performs HTTP requests. It provides methods for all
+  > HTTP verbs including GET, POST, PUT, and DELETE."
+  > **Good note:** "`HttpClient` is Angular's way of calling external APIs. You inject it into a
+  > service (never a component) and it returns an Observable you subscribe to. Without it you'd use
+  > the browser's `fetch` directly — Angular just wraps it and makes it injectable. Used in project
+  > 02 to call the weather API."
+  > The bad note reads like the official docs. The good note explains WHY you use it, WHERE it lives,
+  > and references a real project.
 - **Calibrate depth to Victor's bar, not to the concept's difficulty.** The floor is never "how hard
   is this concept" — it is "how much does it take to *truly understand* it", the standard set by the
   validated files (esp. `08-excepciones.md` section 1). A genuinely trivial one-liner can stay short,
