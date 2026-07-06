@@ -28,6 +28,8 @@ Full flow       @SpringBootTest           Everything — slowest
 
 ## JUnit 5 — the test runner
 
+Docs: https://junit.org/junit5/docs/current/user-guide/#writing-tests-annotations → read: the annotations table
+
 JUnit 5 is the standard Java test framework. Spring Boot includes it automatically through the `spring-boot-starter-test` dependency — already in the `pom.xml` when you generate the project.
 
 ```java
@@ -79,6 +81,8 @@ assertThrows(SomeException.class, () -> { /* call that throws */ });
 
 ## Testing a service — JUnit 5 + Mockito (no Spring)
 
+Docs: https://www.baeldung.com/mockito-annotations → read: the `@Mock` and `@InjectMocks` sections
+
 This is the fastest test you write. You do not load Spring at all — you create the service with a mock repository passed through the constructor, just like constructor injection works in production.
 
 ```java
@@ -120,6 +124,8 @@ class TransactionServiceTest {
 }
 ```
 
+> **What `@ExtendWith(MockitoExtension.class)` actually does.** JUnit 5 does not know what `@Mock` or `@InjectMocks` mean on its own — those are Mockito annotations, not JUnit ones. `@ExtendWith` plugs a JUnit 5 *extension* into the test lifecycle; `MockitoExtension` is that plug for Mockito. Before each test runs, it scans the class for `@Mock` fields and creates a fake for each one, then scans for `@InjectMocks` and constructs that object, passing in the fakes it just created — same constructor injection Spring uses in production, just wired by Mockito instead of Spring. Without `@ExtendWith(MockitoExtension.class)`, every `@Mock` field stays `null` and the test fails with a `NullPointerException` on the first call.
+
 **Arrange / Act / Assert** — always structure tests this way:
 - **Arrange** — set up test data and mock behaviour
 - **Act** — call the method you are testing
@@ -130,6 +136,8 @@ class TransactionServiceTest {
 ---
 
 ## Mockito — the most useful methods
+
+Docs: https://www.baeldung.com/mockito-behavior → read: the `when()`/`thenReturn()` and `verify()` sections
 
 ```java
 // Make the mock return something
@@ -153,6 +161,8 @@ when(repository.findById(anyLong())).thenReturn(Optional.empty());
 ---
 
 ## @WebMvcTest — controller layer only
+
+Docs: https://www.baeldung.com/spring-boot-testing → read: the `@WebMvcTest` section
 
 Loads only the web layer: controllers, filters, and `@ControllerAdvice`. Services and repositories are not loaded — you replace them with `@MockBean`.
 
@@ -207,6 +217,8 @@ Use `@MockBean` whenever Spring is involved. Use `@Mock` for pure service tests.
 
 ## @SpringBootTest — full integration test
 
+Docs: https://www.baeldung.com/spring-boot-testing → read: the `@SpringBootTest` section
+
 Loads the entire application context: all beans, auto-configuration, and a real database connection. Use it for the critical paths — verifying that a POST request actually writes a row to the database.
 
 ```java
@@ -241,6 +253,8 @@ class TransactionIntegrationTest {
 ---
 
 ## @DataJpaTest — repository layer only
+
+Docs: https://www.baeldung.com/spring-boot-testing → read: the `@DataJpaTest` section
 
 Loads only JPA entities, repositories, and an in-memory H2 database. Does not load controllers or services.
 
@@ -282,6 +296,8 @@ class TransactionRepositoryTest {
 | Wrong SQL query | | | ✓ | ✓ |
 | Missing @Transactional | | | | ✓ |
 | Security misconfiguration | | | | ✓ |
+
+Read a ✓ as "this test type will actually fail if this bug is introduced" — an empty cell does not mean the layer is safe from that bug, it means that test type has no way to catch it even if it's there (e.g. a `JUnit+Mockito` service test can't catch a wrong URL mapping, because it never touches the web layer at all).
 
 This is why both unit tests and integration tests are needed — they catch different kinds of bugs. A @WebMvcTest that passes does not guarantee the business logic is correct.
 
