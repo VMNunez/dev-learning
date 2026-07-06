@@ -58,7 +58,7 @@ public class Transaction {
 - `@GeneratedValue(strategy = GenerationType.IDENTITY)` — the database auto-increments the id (`SERIAL` / `BIGSERIAL` in PostgreSQL)
 
 **Optional but common:**
-- `@Table(name = "...")` — override the default table name; **convention: always use plural lowercase** (`users`, `projects`, `time_entries`) — avoids reserved word conflicts and is the standard in real projects
+- `@Table(name = "...")` — override the default table name; **convention: always use plural lowercase** (`users`, `projects`, `time_entries`) — avoids reserved word conflicts and is the standard in real projects. This is a deliberate mismatch with the class name: the Java class stays singular (`User`, `TimeEntry`) because it represents **one** instance — one object, one row. The table is plural because it holds a **collection** of those rows. Same split shows up on `@JoinColumn`: the field is a singular object (`private Project project`), but the column it generates is named after what it stores — a foreign key, e.g. `project_id` — never after the field name or the related class.
 - `@Column(nullable = false)` — marks the column as NOT NULL in the database
 - `@Column(unique = true)` — adds a unique constraint; combine with `nullable = false` when the field is required and must be unique: `@Column(nullable = false, unique = true)`
 - `@Column(...)` — other properties: `length`, `name`, `updatable`
@@ -68,7 +68,12 @@ public class Transaction {
 
 ```java
 private Boolean active = true;   // new projects are active by default
+
+@Enumerated(EnumType.STRING)
+private EntryStatus status = EntryStatus.DRAFT;   // new entries start as DRAFT
 ```
+
+The enum case is a common trap: `status = 'DRAFT'` (single quotes) does not compile — `'DRAFT'` looks like a `char` literal but has 5 characters, which is invalid. An enum constant is never a string or a char; you always reference it through the enum type itself: `EntryStatus.DRAFT`.
 - `@PrePersist` — runs before the entity is inserted for the first time
 
 > **Reserved word trap:** `user` is a reserved word in PostgreSQL. A class named `User` without `@Table` causes a syntax error on startup. Always use `@Table(name = "users")` for the User entity. The same applies to other reserved words like `order`, `group`, `table`. Convention: use plural table names (`users`, `projects`) — this avoids most conflicts.

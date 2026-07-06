@@ -58,7 +58,7 @@ public class Transaction {
 - `@GeneratedValue(strategy = GenerationType.IDENTITY)` — la base de datos auto-incrementa el id (`SERIAL` / `BIGSERIAL` en PostgreSQL)
 
 **Opcionales pero comunes:**
-- `@Table(name = "...")` — sobreescribir el nombre de tabla por defecto; **convención: usa siempre plural en minúscula** (`users`, `projects`, `time_entries`) — evita conflictos con palabras reservadas y es el estándar en proyectos reales
+- `@Table(name = "...")` — sobreescribir el nombre de tabla por defecto; **convención: usa siempre plural en minúscula** (`users`, `projects`, `time_entries`) — evita conflictos con palabras reservadas y es el estándar en proyectos reales. Es un desajuste deliberado con el nombre de la clase: la clase Java se queda en singular (`User`, `TimeEntry`) porque representa **una** instancia — un objeto, una fila. La tabla va en plural porque contiene una **colección** de esas filas. La misma separación aparece en `@JoinColumn`: el campo es un objeto singular (`private Project project`), pero la columna que genera se llama según lo que guarda — una foreign key, ej. `project_id` — nunca según el nombre del campo ni el de la clase relacionada.
 - `@Column(nullable = false)` — marca la columna como NOT NULL en la base de datos
 - `@Column(unique = true)` — añade una constraint única; combínala con `nullable = false` cuando el campo es obligatorio y debe ser único: `@Column(nullable = false, unique = true)`
 - `@Column(...)` — otras propiedades: `length`, `name`, `updatable`
@@ -68,7 +68,12 @@ public class Transaction {
 
 ```java
 private Boolean active = true;   // los nuevos proyectos están activos por defecto
+
+@Enumerated(EnumType.STRING)
+private EntryStatus status = EntryStatus.DRAFT;   // las nuevas entradas empiezan como DRAFT
 ```
+
+El caso del enum es una trampa habitual: `status = 'DRAFT'` (comillas simples) no compila — `'DRAFT'` parece un literal `char`, pero tiene 5 caracteres, lo cual no es válido. Una constante de enum nunca es un string ni un char; siempre se referencia a través del propio tipo enum: `EntryStatus.DRAFT`.
 - `@PrePersist` — se ejecuta antes de que la entidad se inserte por primera vez
 
 > **Trampa de palabra reservada:** `user` es una palabra reservada en PostgreSQL. Una clase llamada `User` sin `@Table` causa un error de sintaxis al arrancar. Usa siempre `@Table(name = "users")` para la entidad User. Lo mismo aplica a otras palabras reservadas como `order`, `group`, `table`. Convención: usa nombres de tabla en plural (`users`, `projects`) — esto evita la mayoría de conflictos.
