@@ -475,3 +475,57 @@ Docs: https://www.baeldung.com/spring-boot-data-sql-and-schema-sql → read: "De
 This tells Spring Boot: run Hibernate's schema creation/update first, and only run `data.sql` once the tables it depends on already exist. Without it, the two independent startup mechanisms — Hibernate building the schema, Spring Boot loading seed data — race in the wrong order.
 
 > Set this from the start of the project, even before you hit the failure — it costs nothing when the schema already exists, and saves you a confusing "relation does not exist" error the first time you run against a clean database.
+
+### `data.sql` silently does nothing — `spring.sql.init.mode`
+
+Even with the ordering fixed, `data.sql` can simply be **ignored** — no error, no log line, the app starts fine and the table stays empty. This is because Spring Boot only runs `data.sql` automatically for **embedded** databases (H2, HSQL — the kind used in throwaway tests). PostgreSQL is an external, real database, so by default Spring Boot skips seeding it entirely.
+
+```properties
+spring.sql.init.mode=always
+```
+
+Docs: https://www.baeldung.com/spring-boot-data-sql-and-schema-sql → read the section on `spring.sql.init.mode`
+
+This forces Spring Boot to run `data.sql` regardless of database type. Without it, the silence is the trap — there is nothing in the console pointing you toward this property, because nothing failed; the initializer bean simply decided there was no work to do.
+
+---
+
+### Case study — every error hit seeding a real Postgres database, in order
+
+This is the actual sequence of failures from building `data.sql` for the first time against a live PostgreSQL instance — worth keeping as a reference, because each one teaches a different mechanism and they compound on top of each other.
+
+**1. `ALTER TABLE ... add column active boolean not null` fails**
+
+```
+ERROR: column "active" of relation "users" contains null values
+```
+
+Adding `active` as `NOT NULL` to a table that already had rows — PostgreSQL has nothing to put in the old rows and refuses to leave them `NULL`. Fixed with `@ColumnDefault("true")` (see `04-spring-data-jpa.md`), which adds `DEFAULT true` to the same `ALTER TABLE`, so existing rows get backfilled automatically.
+
+**2. Nothing happens at all — no error, no insert**
+
+Diagnosed as `spring.sql.init.mode` defaulting to `embedded` (see above) — PostgreSQL is not embedded, so `data.sql` was silently skipped. Fixed with `spring.sql.init.mode=always`.
+
+**3. `there is no unique or exclusion constraint matching the ON CONFLICT specification`**
+
+`ON CONFLICT (email)` needs a `UNIQUE` constraint on `email` to know what counts as a conflict — there wasn't one. Adding `@Column(unique = true)` to the entity did **not** fix it: Hibernate's `ddl-auto=update` reliably adds new columns and tables, but is unreliable at retrofitting a constraint onto a column that already existed before the annotation was added. Confirmed by checking pgAdmin's **Constraints → Unique** tab on the table — empty, even after restarting with the annotation in place. Fixed by running the `ALTER TABLE` by hand, once, in pgAdmin's Query Tool:
+
+```sql
+ALTER TABLE users ADD CONSTRAINT users_email_key UNIQUE (email);
+```
+
+> This exact limitation — `ddl-auto` being unreliable for altering existing columns — is why real projects use a migration tool (Flyway, Liquibase) instead of leaving schema evolution to Hibernate's guesswork.
+
+**4. `null value in column "id" of relation "users" violates not-null constraint`**
+
+The `INSERT` did not list a value for `id`. With `@GeneratedValue` and no explicit strategy (`AUTO`), Hibernate does not give the `id` column a database-level `DEFAULT` — instead, Hibernate itself queries a sequence and supplies the id value in the `INSERT` it generates, entirely in Java. `data.sql` bypasses Hibernate completely, so that never happens — the column has no default of its own, and PostgreSQL falls back to `NULL`. Fixed by pulling the next value from the same sequence Hibernate uses, directly in the SQL:
+
+```sql
+INSERT INTO users (id, email, password, name, role, active)
+VALUES (nextval('users_seq'), 'manager@timetrack.com', ...)
+ON CONFLICT (email) DO NOTHING;
+```
+
+**Finding the right sequence name:** two sequences existed for this table — `user_seq` and `users_seq` — because the entity's table name changed from the default (`user`, derived from the class name) to the explicit `@Table(name = "users")` at some point. Hibernate created a new sequence to match the new table name but never dropped the old one. Checking `last_value` on both did not help (neither had ever been consumed — the one existing test row had been typed directly into pgAdmin's row editor, not inserted through the app). The reliable check was comparing against a sibling entity: `Project` has `@Table(name = "projects")` and its sequence is `projects_seq` — same convention, table name plus `_seq`. That confirmed `users_seq` was the live one for `User`.
+
+> The general lesson underneath all four: `data.sql` runs as **raw SQL against the real database**, completely outside Hibernate. Every convenience Hibernate normally gives you for free — defaults, generated ids, validated constraints — has to already exist *in the database itself* before `data.sql` can rely on it. None of these were Java bugs; each one was a gap between what Hibernate does at the application level and what it had actually written into the schema.
