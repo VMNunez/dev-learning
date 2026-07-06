@@ -283,7 +283,7 @@ Recruiters at consultancies check all three before calling you. If they are not 
 
 ### LinkedIn
 
-The full writing process — all sections, text, posts, and skill order — is in `notes/prompts/strategy/linkedin-prompt.md`. Run it in a separate conversation when you are ready to update your profile.
+The full writing process — all sections, text, posts, and skill order — is in `notes/prompts/strategy/apply/linkedin-prompt.md`. Run it in a separate conversation when you are ready to update your profile.
 
 What matters most for recruiter visibility:
 - Keyword match in the headline and skills — `Angular`, `Spring Boot`, `Java` must appear
@@ -292,7 +292,7 @@ What matters most for recruiter visibility:
 
 ### CV
 
-The full writing process — format, bullets, ATS keywords, and length check — is in `notes/prompts/strategy/cv-prompt.md`. Run it in a separate conversation when you are ready to write or update your CV.
+The full writing process — format, bullets, ATS keywords, and length check — is in `notes/prompts/strategy/apply/cv-prompt.md`. Run it in a separate conversation when you are ready to write or update your CV.
 
 What matters most:
 - One page maximum — non-negotiable for junior roles at Spanish consultancies

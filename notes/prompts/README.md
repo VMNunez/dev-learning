@@ -51,6 +51,7 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | `projects/new-project-prompt.md` | `new` mode: gap-analyses PROGRESS vs coverage, picks the next project, writes a full PLANNING.md. `review` mode: audits an existing PLANNING.md. | `PROGRESS.md`, `notes/coverage.md`, `ROADMAP.md`, last project's `PLANNING.md` | `{project}/PLANNING.md`; adds a row to `PROGRESS.md`; marks the choice in `ROADMAP.md` |
 | `projects/readme-review-prompt.md` | The single source of README rules; writes/fixes every README section. Run before review and portfolio gate. | `{project}/PLANNING.md`, the existing README(s) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack) |
 | `projects/project-review-prompt.md` | Reviews code quality, patterns, and learning objectives against the plan; writes improvement tasks. | `{project}/PLANNING.md`, the source code, `PROJECT-BACKLOG.md` | `PROJECT-BACKLOG.md` (per-project task list + "Last reviewed" date) |
+| `projects/portfolio-ready-prompt.md` | Final go/no-go gate per project (last link in the per-project chain): generates project-specific interview questions, a verdict, a CV bullet, a GitHub description. | `{project}/PLANNING.md`, README(s), code, tests, `{project}/PROJECT-BACKLOG.md`, `ROADMAP.md` | `interview-prep/projects/{project}.md`, `notes/cv/cv-bullets.md` |
 
 ### Practice — active recall and timed tests (daily blocks)
 
@@ -63,15 +64,17 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | `practice/simulator-prompt.md` | Runs a live mock **technical** interview from my Q&A bank, scores each answer, tracks weak areas across sessions. | `interview-prep/{lang}/*.md`, `interview-prep/projects/*`, `interview-prep/SESSION-LOG.md` | `interview-prep/SESSION-LOG.md` |
 | `practice/hr-screen-prompt.md` | Runs a live mock **HR** call (stage 2): motivation, career-change story, availability, salary, "why us". Non-technical. | profile + situation from `_shared-context.md`, `ROADMAP.md` | optional `interview-prep/hr-screen.md` (polished answers) |
 
-### Strategy — keep the plan accurate and apply
+### Strategy — keep the plan accurate (`tracking/`) and apply (`apply/`)
+
+Two sub-purposes, two subfolders. `tracking/` keeps the hub files (`PROGRESS.md`, `ROADMAP.md`)
+accurate; `apply/` produces the job-application material.
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `strategy/progress-update-prompt.md` | Rebuilds PROGRESS.md from reality — reads every PLANNING.md, the sql/ folder, the simulation tracker. Run before `new-project`. | all `PLANNING.md` files, `sql/`, `simulations/TRACKER.md` | `PROGRESS.md` |
-| `strategy/roadmap-review-prompt.md` | Keeps ROADMAP forward-looking and gate-based (no stale dates); checks project sequence and study-block tables vs coverage. | `notes/coverage.md`, `PROGRESS.md`, the active `PLANNING.md` | `ROADMAP.md` |
-| `strategy/portfolio-ready-prompt.md` | Final go/no-go gate per project: generates project-specific interview questions, a verdict, a CV bullet, a GitHub description. | `{project}/PLANNING.md`, README(s), code, tests, `PROJECT-BACKLOG.md`, `ROADMAP.md` | `interview-prep/projects/{project}.md`, `notes/cv/cv-bullets.md` |
-| `strategy/cv-prompt.md` | Builds or reviews the one-page Spanish CV (ATS-checked). | `PROGRESS.md`, `ROADMAP.md`, `notes/cv/cv-bullets.md` | **Output only** — CV text to paste into a template (not stored in the repo) |
-| `strategy/linkedin-prompt.md` | Drafts every LinkedIn section + 3 posts, ready to paste. | `PROGRESS.md`, `ROADMAP.md` | **Output only** — LinkedIn text (not stored in the repo) |
+| `strategy/tracking/progress-update-prompt.md` | Rebuilds PROGRESS.md from reality — an orchestrator that fans out one cold subagent per project (+ SQL, + simulations), then merges. Run before `new-project`. | all `PLANNING.md` files, `sql/`, `simulations/TRACKER.md` | `PROGRESS.md` |
+| `strategy/tracking/roadmap-review-prompt.md` | Keeps ROADMAP forward-looking and gate-based (no stale dates); checks project sequence and study-block tables vs coverage. | `notes/coverage.md`, `PROGRESS.md`, the active `PLANNING.md` | `ROADMAP.md` |
+| `strategy/apply/cv-prompt.md` | Builds or reviews the one-page Spanish CV (ATS-checked). | `PROGRESS.md`, `ROADMAP.md`, `notes/cv/cv-bullets.md` | **Output only** — CV text to paste into a template (not stored in the repo) |
+| `strategy/apply/linkedin-prompt.md` | Drafts every LinkedIn section + 3 posts, ready to paste. | `PROGRESS.md`, `ROADMAP.md` | **Output only** — LinkedIn text (not stored in the repo) |
 
 ---
 
