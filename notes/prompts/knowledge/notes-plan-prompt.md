@@ -94,15 +94,16 @@ new files with the same names would overwrite Victor's refined content.**
 
 **2. Check that `es/` exists.** If it does not, create it as an empty folder.
 
-**3. Sync `es/` with `en/`.** For each numbered file in `en/`, check whether a file with the same
-number prefix exists in `es/` (Spanish filename, e.g. `en/08-exceptions.md` → `es/08-excepciones.md`).
-If missing, create it now — same structure and code blocks, all prose translated to natural Spanish,
-filename translated. The two folders must always contain exactly the same **number of files**, one
-per number prefix. If you find `es/` files with English names, rename them to Spanish with `git mv`.
-
-> Creating a missing `es/` translation of an already-finished `en/` file is a mechanical mirror, not
-> new authoring — do it here. But if the `en/` file itself is below standard, do NOT translate its
-> flaws; add a worklist item to fix `en/` first (write prompt), which then re-mirrors to `es/`.
+**3. Check `es/` parity — but do NOT translate here.** For each numbered file in `en/`, check whether
+a file with the same number prefix exists in `es/` (Spanish filename, e.g. `en/08-exceptions.md` →
+`es/08-excepciones.md`). Translating a full note is substantial prose work — doing ten of them inline
+would re-create exactly the whole-folder saturation this split exists to avoid. So:
+- If an `es/` file is **missing**, add a worklist row for it (task `create-es`, REWRITE_MODE inherits
+  from the `en/` file's own row if it has one) — a subagent translates it in its own cold context.
+- If an `es/` file has an **English name** (a naming error), that is a pure rename → `git mv` it to
+  the Spanish name here. That is mechanical, not translation.
+- The two folders must end up with the same **number of files**, one per number prefix — but the plan
+  only guarantees that by *listing* the missing translations as worklist rows, not by writing them.
 
 ### Step 1 — Survey TODOs across the folder (read-only)
 
@@ -185,10 +186,14 @@ edit it directly.
 - Do not add sections to existing files, and do not create the `00-intro` or any new numbered file's
   content — only *list* them as worklist items.
 - Do not update the "next file:" counter in CLAUDE.md — the write prompt does that when it actually
-  creates a file. (You may *propose* the numbers in the worklist so the write runs are unambiguous.)
+  creates a file. **But you MUST assign the concrete number to every new file in the worklist** (start
+  from the "next file:" counter and increment in study-sequence order). If you leave numbers for the
+  subagents to choose, parallel-in-time runs would each grab the same "next" number and collide. The
+  plan owns numbering; the subagents just use the number you gave them and the last one bumps the
+  counter.
 
-The only files you may modify are: the `en`/`es` folder structure (Step 0 migration and `es/` mirror
-of already-finished files), and `future-learning.md` (Step 4).
+The only files you may modify are: the `en`/`es` folder structure (Step 0 migration only — never a
+translation), and `future-learning.md` (Step 4).
 
 ---
 

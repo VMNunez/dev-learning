@@ -60,6 +60,16 @@ or {REWRITE_MODE}.
 I want you to do deep work on ONE notes file: {FILE}. Do only what {TASK} asks — do not wander into
 other files or folder-level work.
 
+> **If `{TASK}` is `create-es`** (translate an already-finished `en/` file into its missing `es/`
+> counterpart): the `en/` file is validated — do NOT audit or change it. Do only Step 4 (translate
+> `en/` → create the `es/` file, Spanish filename, natural Spanish prose) and Step 5 (mark the row).
+> Skip Steps 1–3. Then commit/report as usual.
+>
+> **Before writing a new file or a new section, read the sibling files already in `{FILE}`'s `en/`
+> folder** — enough to avoid duplicating an example or a concept another note already carries, to keep
+> terminology consistent, and to wire forward/back references correctly (a note that references a file
+> not written yet still gets the one-line forward-reference marker from the standard).
+
 Before starting, read:
 - CLAUDE.md — teaching rules and the "next file:" counters (update the counter only if you create a
   new numbered file this run).
@@ -149,12 +159,31 @@ Spanish prose must read as natural Spanish, not a word-for-word translation — 
 ("escanear" → "leer", "retornar" → "devolver") and English word order. Translate structural labels
 (`Purpose:` → `Propósito:`, `File:` → `Archivo:`; `Docs:` stays).
 
+## Step 4.5 — Self-check gate (before you mark done or commit)
+
+Nothing reviews this file after you — under the orchestrator it is committed unread. So verify your
+own work before finishing. Re-read the file you produced and confirm, honestly:
+- You ran the **anticipate-the-TODO pass** — you actually wrote out the 3–5 doubts Victor would raise
+  and each is answered in the prose (mechanism, not just behaviour).
+- Signature texture is present where the section warrants it (worked example, a diagram for anything
+  structural, callouts, tables explained) — and no section visibly drops below its neighbours.
+- `en/` and `es/` are truly in sync — same sections, same code, and the `es/` reads as native Spanish.
+- No example or concept duplicates a sibling file you read; forward/cross-topic references are marked.
+- Every `Docs:` link is real (or left as `Docs: TODO — add link`), never guessed.
+
+If any check fails, fix it now — do not commit a file that misses its own bar. This gate is the
+replacement for the human review that used to happen before the commit.
+
 ## Step 5 — Mark this file done in the worklist (automatic)
 
 Derive the worklist path from the topic root of `{FILE}` — e.g. `{FILE} = notes/java/en/08-exceptions.md`
 → `notes/java/notes-worklist.md`. If that file exists, find the row whose path matches `{FILE}` and
 flip its checkbox from `[ ]` to `[x]` — edit only that one line (`- [ ] #N · {FILE}` → `- [x] #N · {FILE}`),
 change nothing else. This is how progress is tracked without Victor marking anything by hand.
+
+**All-or-nothing.** If you cannot complete the file to the bar (blocked on a `File:` path, unsure of a
+mechanism, missing project context), do NOT commit a partial file and do NOT flip the checkbox. Leave
+the row `[ ]`, revert your partial edits, and report what blocked you so it can be re-run cleanly.
 
 If the worklist file does not exist (this run was launched directly, not from a plan), skip this step
 silently — there is nothing to mark.
