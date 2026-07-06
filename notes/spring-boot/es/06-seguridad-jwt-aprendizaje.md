@@ -1,6 +1,6 @@
 # Spring Security y JWT — Orden de estudio
 
-> Abre este archivo cuando estés **estudiando o repasando**. Abre `06-security-jwt.md` cuando estés **implementando**.
+> Abre este archivo cuando estés **estudiando o repasando**. Abre `06-seguridad-jwt.md` cuando estés **implementando**.
 >
 > El orden aquí es: entender el concepto → ver el código. El archivo de referencia está ordenado para construir (cada clase depende de las que están encima).
 

@@ -1,6 +1,6 @@
 # Spring Security y JWT — Referencia de implementación
 
-> Abre este archivo cuando estés **implementando**. Abre `06-security-jwt-learning.md` cuando estés **estudiando**.
+> Abre este archivo cuando estés **implementando**. Abre `06-seguridad-jwt-aprendizaje.md` cuando estés **estudiando**.
 >
 > Este archivo está ordenado para construir — cada clase depende de las que están encima (orden de creación). El archivo de aprendizaje está ordenado para entender — concepto antes que código, la pieza más simple primero.
 
@@ -18,7 +18,7 @@ Si nunca has escrito Java, algunos patrones de sintaxis de este archivo parecer�
 | `.stream().map(...).findFirst()`                                        | El **Stream API** — un pipeline que transforma una colección paso a paso. Aparece una vez aquí, dentro de `GlobalExceptionHandler`.                                                                                                                                            | [java/09-streams-lambdas.md — Stream API](../../java/es/09-streams-lambdas.md#qué-es-un-stream)                 |
 | `Jwts.builder().subject(...).signWith(...).compact()`                   | El **patrón builder** — encadena métodos para configurar un objeto, y luego una llamada final (`.build()` / `.compact()`) lo produce. jjwt y Spring lo usan en todas partes.                                                                                                   | explicado línea por línea en la sección `JwtUtil` abajo                                                   |
 | `@Component` · `@Service` · `@Bean` · `@Override`                       | **Anotaciones** — metadatos que pones en una clase o método para decirle a Spring (o al compilador) cómo tratarlo.                                                                                                                                                             | [java/13-annotations.md](../../java/es/13-annotations.md)                                                 |
-| `private final JwtUtil jwtUtil;` + constructor                          | **Inyección por constructor** — Spring pasa las dependencias a través del constructor. `final` significa que el campo se establece una vez y nunca se reasigna.                                                                                                                | [spring-boot/03-dependency-injection.md](./03-dependency-injection.md)                                    |
+| `private final JwtUtil jwtUtil;` + constructor                          | **Inyección por constructor** — Spring pasa las dependencias a través del constructor. `final` significa que el campo se establece una vez y nunca se reasigna.                                                                                                                | [spring-boot/03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md)                                    |
 
 > Dos reglas Java más con las que te toparás: `throws Exception` / `throws UsernameNotFoundException` en la firma de un método es la regla de **excepciones comprobadas** de Java — debes declarar una excepción que un método puede lanzar ([java/08-exceptions.md](../../java/es/08-exceptions.md)). Y `enum Role { EMPLOYEE, MANAGER }` (Paso 4) es un tipo con un conjunto fijo de valores con nombre ([java/11-enums.md](../../java/es/11-enums.md)).
 
@@ -1805,7 +1805,7 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
 **`hasAuthority('ROLE_MANAGER')`** — la misma comprobación, pero escribes el string completo incluyendo `ROLE_`. Ambos funcionan — `hasRole` es la versión más corta.
 
-> El cuerpo del método devuelve `ResponseEntity.noContent().build()` — HTTP **204 No Content**, la respuesta estándar para un `DELETE` exitoso que no tiene nada que devolver. (Guía completa de códigos de estado en [02-rest-controllers.md](./02-rest-controllers.md).)
+> El cuerpo del método devuelve `ResponseEntity.noContent().build()` — HTTP **204 No Content**, la respuesta estándar para un `DELETE` exitoso que no tiene nada que devolver. (Guía completa de códigos de estado en [02-controladores-rest.md](./02-controladores-rest.md).)
 
 ---
 

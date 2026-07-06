@@ -93,7 +93,7 @@ docker compose down      # los para y elimina
 
 Docs: https://docs.spring.io/spring-boot/how-to/data-initialization.html#howto.data-initialization.migration-tool.flyway → leer: "Use a Higher-level Database Migration Tool"
 
-`spring.jpa.hibernate.ddl-auto=update` (de [01-basics.md](./01-basics.md)) está bien mientras aprendes, pero nunca lo usas en producción. Deja que Hibernate altere el esquema automáticamente comparando entidades con la base de datos — y ese es exactamente el peligro: puede cambiar silenciosamente una tabla de producción, y no es revisable. No hay registro de *qué* cambió ni *cuándo*.
+`spring.jpa.hibernate.ddl-auto=update` (de [01-basicos.md](./01-basicos.md)) está bien mientras aprendes, pero nunca lo usas en producción. Deja que Hibernate altere el esquema automáticamente comparando entidades con la base de datos — y ese es exactamente el peligro: puede cambiar silenciosamente una tabla de producción, y no es revisable. No hay registro de *qué* cambió ni *cuándo*.
 
 Flyway lo reemplaza con **scripts SQL versionados**. Cada cambio de esquema es un archivo numerado en `src/main/resources/db/migration`:
 

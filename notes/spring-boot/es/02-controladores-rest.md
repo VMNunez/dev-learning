@@ -44,7 +44,7 @@ public class TransactionController {
 Algunas cosas que leer de este ejemplo:
 
 - **Sí — cada capa tiene una referencia a la que tiene debajo.** El controlador declara `private final TransactionService service`. `private` porque ninguna otra clase lo necesita; `final` porque una vez que Spring lo establece en el constructor nunca cambia. Verás esta exacta línea `private final` en cada controlador, service y clase que use un repositorio.
-- **El constructor es `public` y debe tener exactamente el mismo nombre que la clase** (`TransactionController`). Esa es la regla Java para cualquier constructor. Spring lo llama al arrancar y pasa el bean `TransactionService` automáticamente (inyección por constructor — ver [03-dependency-injection.md](./03-dependency-injection.md)).
+- **El constructor es `public` y debe tener exactamente el mismo nombre que la clase** (`TransactionController`). Esa es la regla Java para cualquier constructor. Spring lo llama al arrancar y pasa el bean `TransactionService` automáticamente (inyección por constructor — ver [03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md)).
 - **`this.service = service`** — el parámetro y el campo comparten el nombre `service`. `this.service` significa "el campo de este objeto"; el `service` a secas es el parámetro. La línea copia el parámetro inyectado en el campo para que el resto de la clase pueda usarlo.
 - **`TransactionResponse` es un DTO** (Data Transfer Object) — la forma que el API devuelve en lugar de la entidad raw. Los DTOs se explican completamente en la sección "DTOs" más abajo y en [layer-reference.md](../layer-reference.md).
 
@@ -232,7 +232,7 @@ public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectR
 | `@RequestBody` | cliente → servidor | un parámetro del método — lo que recibes |
 | `ResponseEntity.body(value)` | servidor → cliente | el return statement — lo que envías |
 
-`@Valid` junto a `@RequestBody` dispara Bean Validation en el objeto entrante — si los campos `@NotBlank` / `@NotNull` del DTO fallan, Spring devuelve 400 automáticamente antes de que se ejecute el cuerpo de tu método (ver [07-validation.md](./07-validation.md)).
+`@Valid` junto a `@RequestBody` dispara Bean Validation en el objeto entrante — si los campos `@NotBlank` / `@NotNull` del DTO fallan, Spring devuelve 400 automáticamente antes de que se ejecute el cuerpo de tu método (ver [07-validacion.md](./07-validacion.md)).
 
 **Cuándo usar cada uno — la regla simple:**
 

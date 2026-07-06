@@ -87,7 +87,7 @@ public ResponseEntity<TransactionDTO> create(@Valid @RequestBody TransactionCrea
 }
 ```
 
-Si falla alguna constraint, Spring lanza `MethodArgumentNotValidException` antes de que el método se ejecute. Tu `@ControllerAdvice` lo captura y devuelve un 400 con errores por campo — véase [05-exception-handling.md](05-exception-handling.md) para el código del handler.
+Si falla alguna constraint, Spring lanza `MethodArgumentNotValidException` antes de que el método se ejecute. Tu `@ControllerAdvice` lo captura y devuelve un 400 con errores por campo — véase [05-manejo-excepciones.md](05-manejo-excepciones.md) para el código del handler.
 
 ---
 

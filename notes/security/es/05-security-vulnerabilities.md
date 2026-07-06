@@ -110,7 +110,7 @@ una entrada de tiempo — o leer/editar datos existentes — que pertenece al em
 
 Esto se llama **IDOR** (Insecure Direct Object Reference) y cae dentro de la categoría **Broken Access Control** de OWASP — el riesgo número 1 del OWASP Top 10 de forma constante en los últimos años.
 
-**La solución:** nunca tomes la identidad de "de quién es esto" del body de la petición, de los query params o de la ruta — tómala siempre del `SecurityContextHolder` ya autenticado (ver [spring-boot/06-security-jwt.md — SecurityContextHolder](../../spring-boot/es/06-security-jwt.md#securitycontextholder--leer-el-usuario-actual-dentro-de-un-service)). El JWT ya fue verificado por `JwtFilter` antes de que la petición llegara al controller, así que el email que contiene no se puede falsificar sin conocer la clave secreta de firma. Un campo `userId` en el JSON no tiene esa garantía — es solo texto que escribió el cliente.
+**La solución:** nunca tomes la identidad de "de quién es esto" del body de la petición, de los query params o de la ruta — tómala siempre del `SecurityContextHolder` ya autenticado (ver [spring-boot/06-seguridad-jwt.md — SecurityContextHolder](../../spring-boot/es/06-seguridad-jwt.md#securitycontextholder--leer-el-usuario-actual-dentro-de-un-service)). El JWT ya fue verificado por `JwtFilter` antes de que la petición llegara al controller, así que el email que contiene no se puede falsificar sin conocer la clave secreta de firma. Un campo `userId` en el JSON no tiene esa garantía — es solo texto que escribió el cliente.
 
 ```java
 // Vulnerable — confía en lo que sea que envíe el cliente

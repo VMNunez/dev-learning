@@ -137,7 +137,7 @@ public TransactionDTO getById(Long id) {
 Optional<Transaction> findByIdWithUser(@Param("id") Long id);
 ```
 
-Usar DTOs es la mejor solución — mantiene la capa del controlador limpia e impide que la entidad se filtre a la capa HTTP (véase [02-rest-controllers.md](02-rest-controllers.md) sobre el patrón DTO).
+Usar DTOs es la mejor solución — mantiene la capa del controlador limpia e impide que la entidad se filtre a la capa HTTP (véase [02-controladores-rest.md](02-controladores-rest.md) sobre el patrón DTO).
 
 ---
 

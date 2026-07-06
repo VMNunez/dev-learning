@@ -8,7 +8,7 @@ Docs: [Baeldung — Bootstrap a Simple Application](https://www.baeldung.com/spr
 
 **Spring** (el framework) siempre ha podido hacer todo lo que hace Spring Boot — inyección de dependencias, una capa web, acceso a base de datos, seguridad. El problema nunca fue la *capacidad*, fue la *configuración*: para ejecutar una app web de Spring puro, configurabas un fichero XML (o una clase Java `@Configuration`) listando cada bean a mano, descargabas e instalabas un contenedor de servlets como Tomcat tú mismo, y desplegabas tu app dentro como un fichero `.war`.
 
-**Spring Boot** no es un framework diferente — es Spring más una capa que elimina esa configuración. Lo hace con dos ideas, ambas explicadas en profundidad en [01-basics.md](01-basics.md):
+**Spring Boot** no es un framework diferente — es Spring más una capa que elimina esa configuración. Lo hace con dos ideas, ambas explicadas en profundidad en [01-basicos.md](01-basicos.md):
 
 - **Auto-configuración** — Spring Boot mira qué hay en tu classpath (qué dependencias añadiste a `pom.xml`) y configura los beans correspondientes por ti. Añade `spring-boot-starter-data-jpa` y conecta la conexión a la base de datos, el `EntityManager`, y el soporte de transacciones sin que escribas ni una línea de config.
 - **Servidor embebido** — Tomcat viaja *dentro* de tu `.jar`. `java -jar app.jar` arranca el servidor él mismo; no hay nada que instalar por separado.
@@ -19,7 +19,7 @@ Docs: [Baeldung — Bootstrap a Simple Application](https://www.baeldung.com/spr
 
 ## El contenedor IoC — la única idea de la que dependen todas las demás
 
-El concepto central de Spring es la **Inversión de Control (IoC)**: en lugar de que tu código cree los objetos de los que depende (`new TransactionRepository()`), declaras lo que necesitas y un contenedor los crea y te los entrega. Ese contenedor se llama **ApplicationContext**, y los objetos que gestiona se llaman **beans** — explicación completa con el "por qué" en [03-dependency-injection.md](03-dependency-injection.md).
+El concepto central de Spring es la **Inversión de Control (IoC)**: en lugar de que tu código cree los objetos de los que depende (`new TransactionRepository()`), declaras lo que necesitas y un contenedor los crea y te los entrega. Ese contenedor se llama **ApplicationContext**, y los objetos que gestiona se llaman **beans** — explicación completa con el "por qué" en [03-inyeccion-dependencias.md](03-inyeccion-dependencias.md).
 
 ```
 Sin IoC (tú controlas la creación):
