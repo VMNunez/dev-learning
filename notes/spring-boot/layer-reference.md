@@ -26,6 +26,8 @@ HTTP response
 
 **The rule:** each layer only knows about the one directly below it. Controller → Service → Repository. Never skip a layer.
 
+**Why DTOs are written before the layer that uses them, not after:** this is a compile-time dependency, not just a style preference. The **request DTO** must exist before you write the service method, because the method's signature needs that type as a parameter — `create(CreateTimeEntryRequest request)` cannot compile if `CreateTimeEntryRequest` does not exist yet. The **response DTO** gets built inside the service (that's where `toResponse()` lives), so in practice it is finished by the time the service method is done — which is also before the controller needs it, since the controller's return type is `ResponseEntity<SomeResponse>`. In short: a DTO always has to exist before the first method signature that mentions it, the same rule that governs every other layer.
+
 ---
 
 ## Full vertical slice — Transaction feature
