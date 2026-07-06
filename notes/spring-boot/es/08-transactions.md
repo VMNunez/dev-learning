@@ -20,6 +20,8 @@ Una transacción es un grupo de operaciones de base de datos que o todas tienen 
 
 ## Dónde poner @Transactional
 
+Docs: https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html → leer: "Using @Transactional"
+
 En los **métodos de service** que hacen más de una operación de base de datos. No en los controladores (no acceden directamente a la base de datos). No en los métodos de repositorio (Spring Data JPA ya envuelve cada llamada al repositorio en su propia transacción).
 
 ```java
@@ -45,6 +47,8 @@ public class TransactionService {
 
 ## Transacciones de solo lectura — @Transactional(readOnly = true)
 
+Docs: https://www.baeldung.com/transaction-configuration-with-jpa-and-spring → leer: la sección sobre `readOnly = true` y su efecto en el rendimiento
+
 Para métodos que solo leen datos, márcalos como read-only. Hibernate omite el dirty-checking (comparar el estado de la entidad para detectar cambios) al final de la transacción, lo que hace las lecturas más rápidas.
 
 ```java
@@ -62,6 +66,8 @@ Buena práctica: anota todos los métodos del service. Los métodos de escritura
 
 ## @Transactional no funciona en métodos privados
 
+Docs: https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html → leer: la nota sobre visibilidad de métodos y auto-invocación
+
 `@Transactional` funciona a través de un proxy de Spring — un wrapper que intercepta la llamada al método y gestiona la transacción. Si el método es privado, el proxy no puede interceptarlo. La anotación se ignora silenciosamente sin ningún error.
 
 ```java
@@ -74,9 +80,28 @@ private void saveAndUpdateBalance(Transaction t) { ... }
 public void saveAndUpdateBalance(Transaction t) { ... }
 ```
 
+> **Misma causa raíz, forma más traicionera — llamarlo desde dentro de la misma clase.** Incluso un método `public @Transactional` pierde su transacción si lo llamas *desde otro método de la misma clase* en lugar de pasar por Spring:
+>
+> ```java
+> @Service
+> public class TransactionService {
+>
+>     public void createWithBalance(TransactionCreateDTO dto) {
+>         save(dto);   // ← auto-llamada: se salta el proxy por completo, @Transactional en save() nunca se ejecuta
+>     }
+>
+>     @Transactional
+>     public void save(TransactionCreateDTO dto) { ... }
+> }
+> ```
+>
+> La razón: cuando Spring crea el bean `TransactionService`, lo que realmente se inyecta en otras clases no es tu clase tal cual — es un **proxy**, una subclase generada (o un proxy dinámico de JDK) que envuelve tu clase y añade la lógica de transacción alrededor de cada llamada a un método. Las llamadas que llegan *desde fuera* del bean (por ejemplo, un controller llamando a `transactionService.createWithBalance(...)`) pasan primero por ese proxy, así que la lógica de transacción se ejecuta. Pero `save(dto)` de arriba se llama como `this.save(dto)` desde *dentro* del mismo objeto — Java resuelve esa llamada directamente contra la clase real, sin pasar nunca por el proxy que la envuelve. Sin proxy en el camino no hay transacción, exactamente igual que en el caso del método privado, solo que más difícil de detectar porque el método en sí es `public` y parece correctamente anotado. No hay forma de arreglar esto desde dentro de la misma clase — la solución estándar es mover `save()` a otro `@Service` distinto e inyectar ese bean, para forzar que la llamada pase por su propio proxy.
+
 ---
 
 ## LazyInitializationException — el error JPA más común
+
+Docs: https://www.baeldung.com/hibernate-lazy-initialization-exception
 
 Cuando accedes a una relación `FetchType.LAZY` después de que la sesión de Hibernate se ha cerrado, obtienes una `LazyInitializationException`. La sesión se cierra al final del método `@Transactional`:
 
@@ -118,6 +143,8 @@ Usar DTOs es la mejor solución — mantiene la capa del controlador limpia e im
 
 ## Propagación de transacciones — REQUIRED (el valor por defecto)
 
+Docs: https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html
+
 La propagación controla qué pasa cuando un método `@Transactional` llama a otro método `@Transactional`.
 
 | Propagación | Comportamiento |
@@ -131,6 +158,8 @@ En la mayoría de casos nunca estableces la propagación explícitamente — el 
 ---
 
 ## Error común — capturar la excepción dentro del método
+
+Docs: https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html → leer: "Rolling Back a Declarative Transaction"
 
 `@Transactional` hace rollback en excepciones no comprobadas (que extienden `RuntimeException`) por defecto. Si capturas la excepción dentro del método y no la relanzas, Spring no la ve y no hace rollback:
 
