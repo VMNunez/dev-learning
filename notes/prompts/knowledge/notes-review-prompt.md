@@ -63,6 +63,10 @@ For each section of the file, check:
   no guessed URLs (a guess must be `Docs: TODO — add link`).
 - **References** — forward references within the topic marked; cross-topic references opened with a
   preview callout; links to sibling notes carry a one-sentence reminder.
+- **Narrative seams** — the file opens by picking up the thread from the previous file (not a cold
+  definition) and closes by handing off to the next; where a sibling uses a shared example domain, this
+  file stays consistent with it. Read the neighbouring files to check the seams, not just this one in
+  isolation.
 - **Bilingual integrity** — `en/` and `es/` have the same sections and code; `es/` reads as native
   Spanish (no calque: "escanear"→"leer", "retornar"→"devolver"), not a word-for-word translation.
 - **No duplication** — no example or concept repeats a sibling file in the same folder.

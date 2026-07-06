@@ -140,11 +140,16 @@ Then read all numbered files in `{NOTES_PATH}` (skip `future-learning.md`, `cove
    and a one-paragraph map of what the rest of the notes cover. If it is missing, the very first
    worklist item is to create it.
 
-3. **Sequence completeness (proactive).** Assess the learning sequence as a whole: can Victor learn
-   the topic end-to-end from files 01–N without looking elsewhere for the basics? Is there a logical
-   progression where each file builds on the previous? Is the folder sparse (2 files where it clearly
-   needs 5)? Add the missing pieces as worklist items — but stay within `coverage.md` as the ceiling.
-   If no `coverage.md` exists, limit new files to the rule-1 gaps only.
+3. **Sequence completeness and narrative order (proactive).** Assess the learning sequence as a
+   whole: can Victor learn the topic end-to-end from files 01–N without looking elsewhere for the
+   basics? Is there a logical progression where each file builds on the previous? Is the folder sparse
+   (2 files where it clearly needs 5)? Add the missing pieces as worklist items — but stay within
+   `coverage.md` as the ceiling. If no `coverage.md` exists, limit new files to the rule-1 gaps only.
+
+   Order the worklist as a **narrative journey**, not just by number: each file should arrive because
+   the previous one made it necessary (see "Narrative thread" in the standard). For every row, add to
+   its `TASK` a one-line thread note — *what it continues from and what it sets up next* — so the
+   author opens and closes the file on-thread (e.g. "continues from 02-objects; sets up 07-collections").
 
 ### Step 3 — Quality flags on existing files (read-only, report only)
 

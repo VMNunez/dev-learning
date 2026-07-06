@@ -123,7 +123,35 @@ recognise the syntax.
 
 **Target reader:** write for someone who has never seen this concept before. A complete file is one
 that takes that person from zero to "I understand what this is and why it exists" without needing to
-look anything else up.
+look anything else up. These notes are Victor's **only** source for the topic — there is no course or
+book behind them — so nothing may be assumed to come "from elsewhere".
+
+### Narrative thread — the topic reads as one continuous story from 00 to N
+
+The notes are not a pile of well-written but disconnected pages. Read in order, files 00 → N must feel
+like **one guided journey**: each concept arrives because the previous one made it necessary, and the
+reader always knows where they are in the story. This is Victor's explicit bar — he studies by
+following a thread from start to finish, not by looking up isolated entries.
+
+Concretely, every file (beyond `00-intro`) must:
+- **Open by picking up the thread.** The first lines connect back to where the previous file left off
+  and say *why this topic comes now* — e.g. "You can now create objects (file 02). But every object
+  so far has been an island — nothing shares behaviour. That is the problem inheritance solves."
+  Never open a file cold with a bare definition, as if the reader arrived from nowhere.
+- **Close by handing off.** The last lines point forward: what this unlocked, and what the next file
+  builds on top of it — e.g. "Now that exceptions can travel up the stack, the next question is *where*
+  you should catch them. That is what file 09 is about."
+- **Keep a running domain where it helps.** When natural, carry a familiar example domain across
+  several files of the topic (the same `User`/`Order` model, the same `Animal` hierarchy) so the
+  reader recognises the world instead of re-learning a new toy example every file. This extends the
+  per-section "one worked example" rule up to the topic level.
+- **Reference, don't re-teach.** When a file leans on a concept already covered, link back with the
+  one-sentence reminder (see the cross-file link rule below) instead of re-explaining or ignoring it —
+  that is what keeps the thread continuous without breaking the current file's flow.
+
+The `00-intro` file is the map of this journey: it must lay out, in one paragraph, the route the rest
+of the files take and why they are ordered that way. When auditing, check the **seams between files**,
+not just each file in isolation — a topic can be made of strong pages and still read as disconnected.
 
 ### Zero-assumption rule — the most important rule in this section
 
