@@ -1,21 +1,63 @@
-# 01 — To-do List
+# To-do List
 
-My first Angular project. A simple task manager built to learn the core concepts of Angular.
+My 1st learning project — task manager where users add, complete and delete tasks with live filtering.
 
-**Live demo:** https://01angulartodolist.netlify.app/
+---
 
+## Why this project
+
+Every Angular app is built from components, services and reactive state. I built this project to understand how those building blocks work from scratch — how components communicate, how signals keep the UI in sync, and how services share state across the app.
+
+---
+
+## Live demo
+
+https://01angulartodolist.netlify.app/
+
+---
+
+## Screenshots
+
+**App overview**
 ![App preview](screenshots/preview.png)
+
+---
 
 ## Features
 
 - Add, complete and delete tasks
 - Filter tasks by status: All, Active, Completed
-- Task counter — pending of total
-- Empty state message when no tasks are visible
+- Live task counter — pending of total
+- Empty state message when no tasks match the filter
+
+---
+
+## Architecture decisions
+
+- Service for shared state to keep task logic out of components and accessible anywhere in the app
+- `signal()` and `computed()` for reactive state to avoid manual change detection
+- `input()` and `output()` for component communication — signal-based, Angular v17+ convention
+- `computed()` for the filtered list and counter to recalculate automatically when tasks change
+
+---
+
+## Tradeoffs
+
+- No localStorage — the focus was Angular fundamentals, not data persistence
+- Single service over multiple — the app is small enough that one service handles all state cleanly
+
+---
+
+## Future improvements
+
+- Persist tasks with localStorage
+- Due dates and priority levels
+- Drag to reorder tasks
+
+---
 
 ## What I learned
 
-### Angular
 - `@Component` — how to create a standalone component
 - `input()` and `output()` — signal-based communication between components
 - `@for` and `@empty` — render a list and handle the empty state
@@ -25,36 +67,36 @@ My first Angular project. A simple task manager built to learn the core concepts
 - `signal()`, `signal.update()`, `signal.set()` — reactive state
 - `computed()` — derived values from signals
 - Class binding `[class.x]` — apply CSS classes conditionally
-- TypeScript `type` — union types for type safety
-
-### CSS
 - CSS variables with `:root` and `var()`
 - Flexbox layout: `display: flex`, `justify-content`, `align-items`, `gap`
-- Pseudo-classes: `:hover`, `:focus`
-- `text-decoration`, `opacity`, `border-radius`
-- Component style encapsulation in Angular
+
+---
 
 ## Tech stack
 
-- Angular 21
-- TypeScript
-- CSS
+| Layer | Technology |
+|---|---|
+| Framework | Angular 21 |
+| Language | TypeScript |
+| Styles | CSS |
 
-## How to run the project
+---
 
-```bash
+## How to run
+
+```
 git clone https://github.com/VMNunez/dev-learning.git
 ```
 
-```bash
+```
 cd dev-learning/angular/01-todo-list
 ```
 
-```bash
+```
 npm install
 ```
 
-```bash
+```
 npm start
 ```
 

@@ -1,80 +1,111 @@
-# 05 — Task Manager
+# Task Manager
 
-My fifth Angular project. A task management app to learn Angular Material and CRUD patterns.
+My 5th learning project — task management app where users create, edit and delete tasks, filter by status and priority, and see live statistics.
 
-**Live demo:** https://05taskmanager.netlify.app/
+---
 
+## Why this project
+
+Most real business apps use a UI component library instead of building everything from scratch. I built this project to learn Angular Material — the table, dialog and form components that appear in almost every enterprise Angular app.
+
+---
+
+## Live demo
+
+https://05taskmanager.netlify.app/
+
+---
+
+## Screenshots
+
+**App overview**
 ![App preview](screenshots/preview.png)
+
+---
 
 ## Features
 
-- List tasks in a Material table with column sorting
-- Add and edit tasks in a modal dialog
-- Delete tasks with confirmation dialog
+- List tasks in a Material table with sortable columns
+- Add and edit tasks in a dialog with form validation
+- Delete tasks with a confirmation step
 - Filter tasks by status, priority and name
-- Task statistics cards — clickable to filter by status
-- Clear all filters button — appears only when a filter is active
-- Showing X of Y tasks count when filters are active
-- Keyboard accessible stat cards — Tab, Enter and Space support
-- Dirty check — warns before discarding unsaved changes
-- Data persists with localStorage
+- Live stat cards — show task counts per status
+- Clear filters button — only appears when a filter is active
+- Task count badge — "Showing X of Y" when filters are active
+- Data persists after page refresh
+
+---
 
 ## Architecture decisions
 
-- **Coordinator pattern over smart/dumb** — the page manages three child components (table, filters, dialog) that all depend on the same task list. With smart/dumb, each child would need the list passed down and events bubbled up through multiple levels. The coordinator pattern keeps the state in one place and makes the children reusable — the table does not need to know about the dialog.
+- Coordinator pattern on the page to avoid passing the task list through multiple levels — table, filters and dialog all share the same state, and the page is the single place that manages it
+- `MatTableDataSource` instead of a plain array to get sorting and pagination for free — connecting it to `MatSort` in `ngAfterViewInit` is all it takes
+- Dual-mode dialog for add and edit to avoid maintaining two near-identical forms — the dialog checks `MAT_DIALOG_DATA` to decide its mode and calls `patchValue()` in edit mode
+- Reusable `ConfirmDialog` in `shared/` so delete, discard-changes and clear-filters all use the same confirmation component with different text
+- `ErrorStateMatcher` to delay validation errors until submit instead of showing them as soon as a field is touched — better UX for forms the user is still filling in
 
-- **`MatTableDataSource` over a plain array** — the table needed sorting and pagination from the start. `MatTableDataSource` provides both automatically by connecting to `MatSort` and `MatPaginator`. A plain array would have required writing that logic manually and rewriting it if the requirements changed.
+---
 
-- **Dual-mode dialog for add and edit** — add and edit share the same form fields and validation. Building two separate dialogs would mean maintaining two near-identical templates. The dialog checks if `MAT_DIALOG_DATA` is present to decide its mode and calls `patchValue()` to pre-fill the form in edit mode.
+## Tradeoffs
 
-- **Reusable `ConfirmDialog` in `shared/`** — three different actions (delete task, discard changes, clear filters) all need a confirmation step. A single reusable component that receives title and message via `MAT_DIALOG_DATA` avoids duplicating the same UI three times and keeps destructive action behaviour consistent.
+- Angular Material over plain CSS — adds a dependency but matches what enterprise teams actually use, which is the point of this project
+- `localStorage` over a real backend — the focus was Material and CRUD patterns, not data persistence
 
-- **`ErrorStateMatcher` for submit-only errors** — by default `mat-error` shows as soon as a field is touched, which feels aggressive. A custom `ErrorStateMatcher` delays the error display until the user tries to submit, which is a better UX for forms where the user is still filling in fields.
+---
+
+## Future improvements
+
+- Pagination for large task lists
+- Due dates with overdue highlighting
+- Export tasks to CSV
+
+---
 
 ## What I learned
 
-### Angular
-- `MatTableModule` + `MatTableDataSource` — Material table with sorting, filtering and pagination
-- `MatSort` + `MatPaginator` — connect to `MatTableDataSource` via `@ViewChild` in `ngAfterViewInit`
-- `MatDialog` + `MAT_DIALOG_DATA` + `MatDialogRef` — open dialogs, pass data in, receive data back
+- `MatTableModule` + `MatTableDataSource` — Material table with sorting and filtering
+- `MatSort` + `@ViewChild` + `ngAfterViewInit` — connect sorting to the table after the view loads
+- `MatDialog.open()` + `afterClosed()` — open a dialog and receive data back
+- `MAT_DIALOG_DATA` — inject data passed by the parent into the dialog
+- `MatDialogRef.close(value)` — close the dialog and pass a value back
 - `patchValue()` — pre-fill a reactive form with existing data for edit flows
-- `ErrorStateMatcher` — control when `mat-error` appears (e.g. only on form submit)
-- `NgClass` — apply multiple CSS classes dynamically based on data
-- `role="button"` + `tabindex="0"` + `(keydown.enter)` — keyboard accessibility on non-button elements
+- `ErrorStateMatcher` — custom class that controls when `mat-error` appears
+- `NgClass` — apply multiple CSS classes dynamically based on task data
+- `mat.theme()` in `material-theme.scss` — set palette and typography once for the whole app
+- Context-specific themes — scope `mat.theme()` to a CSS class for a different palette per component
+- `--mat-sys-*` CSS variables — Material design tokens for theme-aware colors
 - Coordinator pattern — page owns all state; child components only display and emit
-
-### Angular Material theming
-- `mat.theme()` in `material-theme.scss` — set palette, typography and density once for the whole app
-- Context-specific themes — scope `mat.theme()` to a CSS class to apply a different palette per component
-- `--mat-sys-*` CSS variables — Material's design token system for theme-aware colors
-
-### CSS
-- CSS grid — two-column form layout; `grid-column: 1 / -1` to span full width
+- CSS grid — `grid-template-columns: 1fr 1fr` for two-column forms; `grid-column: 1 / -1` to span full width
 - `table-layout: fixed` + `.mat-column-*` — control column widths in a Material table
-- `visibility: hidden` — hide an element without removing its space from the layout
+
+---
 
 ## Tech stack
 
-- Angular 21
-- TypeScript
-- CSS
-- Angular Material 21
+| Layer | Technology |
+|---|---|
+| Framework | Angular 21 |
+| UI library | Angular Material 21 |
+| Language | TypeScript |
+| Styles | CSS |
 
-## How to run the project
+---
 
-```bash
+## How to run
+
+```
 git clone https://github.com/VMNunez/dev-learning.git
 ```
 
-```bash
+```
 cd dev-learning/angular/05-task-manager
 ```
 
-```bash
+```
 npm install
 ```
 
-```bash
+```
 npm start
 ```
 

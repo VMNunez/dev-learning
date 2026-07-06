@@ -6,6 +6,22 @@ Official docs: https://developer.mozilla.org/en-US/docs/Glossary/REST
 
 ---
 
+## REST principles — what makes an API "RESTful"
+
+Interviewers ask "is your API RESTful, and how do you know?". REST is not a library — it is a set of *constraints* an API follows. The ones that matter at junior level:
+
+- **Client–server** — the frontend (Angular) and the backend (Spring Boot) are independent and communicate only over HTTP. Either can change without the other, as long as the contract holds.
+- **Statelessness** — every request carries everything the server needs to handle it; the server keeps no per-client memory between requests. This is exactly why you send the JWT on *every* request instead of relying on a server session — and it is what lets the API run on several servers behind a load balancer.
+- **Uniform interface** — resources are named with nouns (`/api/projects`) and the HTTP verb carries the action. Any client that speaks HTTP can use the API without a custom protocol.
+- **Resource-based** — you model *things* (projects, entries, users), not actions. The URL identifies the thing; the method says what to do with it.
+- **Cacheable / layered** — responses can declare whether they are cacheable, and intermediaries (a gateway, a proxy) can sit between client and server without the client knowing.
+
+So the answer to "is your API RESTful?" is: it uses nouns for resources, HTTP verbs for actions, the correct status codes, and it is stateless (JWT on every request, no server session). That is what "RESTful" means in practice.
+
+> **Why REST and not GraphQL or RPC?** REST is the default in Spanish consultancies: simple to build, understood by every tool, and a perfect fit for resource-style CRUD. GraphQL shines when clients need to shape their own queries over a complex data graph (at the cost of more setup); RPC-style URLs (`/getProject`) couple the client to method names instead of resources. For a standard business CRUD API consumed by Angular, REST is the right and expected choice.
+
+---
+
 ## HTTP methods
 
 Each method has a specific meaning. The backend decides what to do based on the method + the URL together.
@@ -69,6 +85,20 @@ The backend tells the frontend what happened through a numeric status code.
 | Use lowercase with hyphens | `/leave-requests` | `/leaveRequests` |
 | Nest for relationships | `/employees/1/leaves` | `/getEmployeeLeaves?id=1` |
 | Use the method to express the action | `DELETE /employees/1` | `/deleteEmployee/1` |
+
+---
+
+## Query parameters — filtering, sorting, pagination
+
+The URL **path** identifies *which* resource; **query parameters** (after the `?`) carry *optional* refinements — filters, sorting, pagination. They never go in a request body, and a `GET` never has a body.
+
+```
+GET /api/entries?month=2025-05&status=SUBMITTED
+GET /api/entries?page=0&size=20&sort=date,desc
+```
+
+- The frontend builds them with Angular's `HttpParams`; the backend reads them with `@RequestParam`.
+- Use them for anything **optional** (filters, pagination). Never use them for the resource identity — that is a path variable (`/entries/42`).
 
 ---
 

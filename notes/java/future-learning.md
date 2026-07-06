@@ -6,16 +6,22 @@ Spring Boot topics live in `spring-boot/future-learning.md`.
 
 ---
 
-## What the numbered files will cover (junior goal)
+## What the numbered files cover (junior goal — all done ✓)
 
-These are the topics that will become numbered files as Victor studies Java:
-
-- Variables, types, control flow, methods
-- OOP — classes, interfaces, inheritance, polymorphism, abstract classes
-- Collections — `List`, `Map`, `Set`, `ArrayList`, `HashMap`
-- Exceptions — checked vs unchecked, try/catch, custom exceptions
-- Streams and lambdas — `filter`, `map`, `collect`, method references
-- Generics basics — `List<T>`, `Optional<T>`
+- 01 — Variables and types: primitives, wrapper classes, String, autoboxing, `var`
+- 02 — Control flow: `if/else`, switch expression, for-each, while, break/continue, null checks
+- 03 — Methods: declaration, access modifiers, return types, static, overloading, varargs
+- 04 — OOP: classes, fields, constructors, encapsulation, static, records
+- 05 — Interfaces and abstract classes: contracts, default methods, functional interfaces
+- 06 — Inheritance and polymorphism: `extends`, `super`, `@Override`, `instanceof`, `final`
+- 07 — Collections: `List`, `Map`, `Set`, sorting, `ConcurrentModificationException`
+- 08 — Exceptions: checked vs unchecked, try/catch/finally, custom exceptions, try-with-resources
+- 09 — Streams and lambdas: lambda syntax, method references, stream pipeline, collectors
+- 10 — Generics and Optional: generic classes/methods, bounded types, `Optional<T>` patterns
+- 11 — Enums: constants, fields/methods on enums, `@Enumerated`, switch with enums
+- 12 — Date and time: `LocalDate`, `LocalDateTime`, formatting, `@PrePersist`, JPA mapping
+- 13 — Annotations: built-in, meta-annotations, Spring Boot annotation families
+- 14 — Maven: `pom.xml`, parent BOM, dependency scopes, lifecycle commands
 
 ---
 
@@ -23,10 +29,11 @@ These are the topics that will become numbered files as Victor studies Java:
 
 ### Java 17+ features
 
-- **Records** — immutable data classes: `record Point(int x, int y) {}`
 - **Sealed classes** — restrict which classes can extend a type
 - **Text blocks** — multi-line strings with `""" ... """`
 - **Pattern matching for instanceof** — `if (obj instanceof String s) { s.length(); }`
+
+Records are already part of the current junior goal — see `coverage.md`.
 
 ### Java concurrency basics
 

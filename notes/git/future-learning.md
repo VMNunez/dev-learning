@@ -8,27 +8,6 @@ Topics to study once the current 11 files are solid. Nothing here is needed for 
 
 Things you will encounter in the first weeks. Not needed for the interview, but you will be asked to do them.
 
-### Interactive rebase — `git rebase -i`
-
-Clean up local commits before pushing: squash several commits into one, rename a commit message, reorder commits, or drop an accidental commit.
-
-```bash
-git rebase -i HEAD~3    # open an editor to edit the last 3 commits
-```
-
-In the editor, each commit has a command in front of it:
-
-| Command | What it does |
-|---------|-------------|
-| `pick` | keep the commit as-is |
-| `squash` / `s` | merge this commit into the one above it |
-| `reword` / `r` | keep the commit but edit the message |
-| `drop` / `d` | delete the commit entirely |
-
-**Rule:** only use `git rebase -i` on commits that have NOT been pushed yet — it rewrites history.
-
-Why it matters: many professional teams require clean history before a PR is merged. A feature that took 8 commits to develop (including "wip", "fix typo", "fix previous fix") should look like 2 or 3 clean commits in the shared history.
-
 ### Git tags and semantic versioning
 
 Tags mark a specific commit as a release. Unlike branches, tags do not move.
@@ -46,18 +25,6 @@ Semantic versioning format: `MAJOR.MINOR.PATCH`
 - `v1.0.0` → `v2.0.0`: breaking change (major)
 
 You will see tags on every professional project. You will be asked to tag releases once you own a piece of the codebase.
-
-### PR merge strategies — squash, merge commit, rebase
-
-When merging a PR on GitHub, there are three options:
-
-| Strategy | What it does | History |
-|----------|-------------|---------|
-| **Merge commit** | Creates a merge commit | Shows all commits + the merge commit |
-| **Squash and merge** | Combines all PR commits into one | Clean — one commit per feature |
-| **Rebase and merge** | Replays commits on top of main | Linear, no merge commit |
-
-Each team picks one strategy and applies it consistently. You need to know which one your team uses and why — squash is common in teams that want one commit per PR, merge commit is common when teams want full commit history preserved.
 
 ### `git bisect` — find the commit that broke something
 

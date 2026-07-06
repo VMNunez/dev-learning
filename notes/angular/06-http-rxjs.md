@@ -244,6 +244,31 @@ loadWeather(city: string): void {
 }
 ```
 
+## HttpParams — build query parameters
+
+When you need to call an API with query parameters like `?month=2025-05&status=SUBMITTED`, do not build the string by hand. `HttpParams` builds it for you and URL-encodes every value automatically (spaces, accents, `&`, and other special characters).
+
+Docs: https://angular.dev/guide/http/making-requests#setting-url-parameters — read: "Setting URL parameters"
+
+```typescript
+import { HttpParams } from '@angular/common/http';
+
+getEntries(month: string, status: string): Observable<Entry[]> {
+  const params = new HttpParams()
+    .set('month', month)
+    .set('status', status);
+
+  return this.http.get<Entry[]>('/api/entries', { params });
+}
+// sends GET /api/entries?month=2025-05&status=SUBMITTED
+```
+
+> **`HttpParams` is immutable.** Every `.set()` returns a *new* `HttpParams` — it does not change the original. That is why you chain the calls: `new HttpParams().set(...).set(...)`. If you called `.set()` on separate lines without reassigning, only the value you actually pass to `get()` would apply. Same idea as `req.clone()` in the interceptor — you build a new object, you never mutate the old one.
+
+**Why not a template literal?** You could write `` `/api/entries?month=${month}&status=${status}` `` and it works for simple values. But the moment a value contains a space or a reserved character, the URL breaks. `HttpParams` encodes each value correctly, so reach for it whenever a parameter is dynamic. Used in TimeTrack (project 07) to filter time entries by month and status.
+
+---
+
 ## Observable vs Promise
 
 |                 | Observable       | Promise     |

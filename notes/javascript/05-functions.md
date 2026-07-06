@@ -83,6 +83,31 @@ const user = {
 
 ---
 
+## bind, call, apply — set `this` manually
+
+Because a regular function's `this` depends on *how* it is called, you sometimes need to set it explicitly. Three methods do that:
+
+```js
+const user = { name: 'Victor' };
+
+function greet(greeting) {
+  return `${greeting}, ${this.name}`;
+}
+
+greet.call(user, 'Hello');       // 'Hello, Victor'  — calls now, args one by one
+greet.apply(user, ['Hello']);    // 'Hello, Victor'  — calls now, args as an array
+const bound = greet.bind(user);  // returns a NEW function with this fixed to user
+bound('Hello');                  // 'Hello, Victor'  — call it later
+```
+
+- **`call`** — invokes the function immediately, passing arguments one by one.
+- **`apply`** — invokes immediately, passing arguments as an array. (Memory hook: **a**pply = **a**rray.)
+- **`bind`** — does *not* invoke; it returns a new function with `this` permanently fixed, to call later.
+
+The classic problem they solve: passing a class method as a callback loses its `this`. `bind` fixes it — `setTimeout(this.tick.bind(this), 1000)`. In modern Angular/TypeScript you rarely write these — an arrow function (`() => this.tick()`) does the same thing more cleanly — but you must recognise them in older code and interview questions.
+
+---
+
 ## Default parameters
 
 ```js
@@ -107,6 +132,26 @@ function sum(...numbers) {
 
 sum(1, 2, 3, 4);  // 10
 ```
+
+---
+
+## Higher-order functions
+
+A higher-order function is a function that **takes a function as an argument, returns a function, or both**. They are the foundation of `map`, `filter`, `reduce`, and every RxJS operator.
+
+```js
+// takes a function — map receives a transform function
+[1, 2, 3].map(n => n * 2);
+
+// returns a function — a factory that builds a configured function
+function makePrefixer(prefix) {
+  return (text) => `${prefix}${text}`;
+}
+const withDollar = makePrefixer('$');
+withDollar('100'); // '$100'
+```
+
+You already use higher-order functions constantly: every array callback and every `computed(() => ...)` passes a function to another function. Interview answer: "a function that takes or returns another function — like `map`, or a factory that returns a configured function."
 
 ---
 
