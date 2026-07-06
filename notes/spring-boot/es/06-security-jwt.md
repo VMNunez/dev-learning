@@ -1184,19 +1184,62 @@ public ResponseEntity<ProjectResponse> create(@RequestBody CreateProjectRequest 
 
 ### SecurityContextHolder — leer el usuario actual dentro de un service
 
+Docs: [Spring Security — SecurityContextHolder](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-securitycontextholder)
+
+**El problema que resuelve:** HTTP es stateless — cada request es una conexión nueva, sin memoria de nada anterior. Entonces, cuando `TimeEntryService.create()` se ejecuta, ¿cómo sabe *quién* está llamando, ahora mismo, en este request concreto? No puede preguntárselo al cliente (mira la sección de IDOR en [security/05-security-vulnerabilities.md](../../security/es/05-security-vulnerabilities.md) para entender por qué no). Necesita un sitio donde consultar "el usuario autenticado de *este* request" — y ese sitio es `SecurityContextHolder`.
+
+**Qué es exactamente, a nivel mecánico:** es un **thread-local** — una especie de casillero que guarda un valor distinto por cada hilo (thread) de ejecución. En Spring Boot, cada petición HTTP que llega la procesa un hilo del pool de hilos del servidor (Tomcat, por defecto). Mientras ese hilo procesa tu request, puede guardar datos en su propio casillero sin chocar con otro hilo que esté atendiendo, al mismo tiempo, la petición de otro usuario distinto. Esa es exactamente la garantía que necesitas: "el usuario autenticado de *este* request", nunca mezclado con el request simultáneo de otra persona.
+
+> Un thread es la unidad de ejecución a la que el servidor le asigna un request. Dos usuarios llamando a tu API en el mismo instante son atendidos por dos hilos distintos — cada uno con su propio casillero thread-local. Por eso `SecurityContextHolder` nunca filtra la identidad del usuario A hacia el request del usuario B, ni siquiera bajo mucho tráfico concurrente.
+
+**Quién lo rellena, y cuándo:** `JwtFilter` — la misma clase que ya construiste — escribe ahí en cada request, antes de que tu controller o tu service lleguen a ejecutarse:
+
+```java
+// JwtFilter.java — esto ya existe en tu proyecto
+if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        userDetails, null, userDetails.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+}
+```
+
+`JwtFilter` decodifica el JWT, extrae el email, carga el `UserDetails`, lo envuelve en un objeto `Authentication`, y **guarda** ese objeto en el casillero del hilo actual con `setAuthentication(...)`.
+
+**Quién lo lee, y por qué le llega el mismo valor:** como el hilo es el mismo durante todo el ciclo de vida de un request — entra por `JwtFilter`, pasa por `SecurityFilterChain`, llega a tu `@RestController`, y baja hasta tu `@Service` — leer `SecurityContextHolder.getContext().getAuthentication()` más adelante, en ese mismo request, te devuelve **el mismo objeto exacto** que `JwtFilter` guardó momentos antes, en ese mismo hilo. Aquí no hay ninguna llamada de red ni consulta a base de datos — es literalmente leer un valor que otra clase, más temprano en el mismo request, ya dejó en un casillero compartido.
+
+```
+un request HTTP → un hilo → un casillero thread-local
+
+[JwtFilter]                          [TimeEntryService.create()]
+   escribe:                              lee:
+   SecurityContextHolder                SecurityContextHolder
+     .getContext()                        .getContext()
+     .setAuthentication(authToken)        .getAuthentication()
+        │                                    │
+        └──────────── mismo hilo ────────────┘
+             (mismo request, mismo casillero)
+```
+
+**Por qué `.getName()` te da el email en concreto:** `Authentication` tiene un método `getName()` que, cuando el "principal" (el sujeto autenticado) es un `UserDetails` — como el tuyo — devuelve `userDetails.getUsername()`. En tu `UserDetailsServiceImpl`, el "username" que configuraste **es el email** — tu app no tiene un concepto de username separado, usa el email como identificador de login. Por eso `getName()` te entrega el email directamente, sin ninguna consulta adicional:
+
 ```java
 // Dentro de cualquier método @Service — obtiene el email del usuario logueado actualmente
 String email = SecurityContextHolder.getContext()
         .getAuthentication()
-        .getName();
+        .getName();  // resuelve a userDetails.getUsername() — el email
+```
 
+> Analogía: piensa en `SecurityContextHolder` como una pizarra que solo tu hilo (este request) puede ver y escribir. `JwtFilter` es el primero en entrar a la sala y escribe "este request es de victor@email.com". Cualquier otra clase que entre después a la misma sala — tu service, tu controller — puede leer esa misma pizarra sin volver a preguntarle nada al cliente.
+
+Usarás esto en el Paso 5, cuando `TimeEntryService` necesite saber qué usuario está creando una entrada, o cuando `GET /api/entries` necesite filtrar resultados por el usuario actual. El punto clave: **nunca confíes en un `userId` enviado por el cliente** — léelo siempre del contexto de seguridad. Un cliente puede enviar cualquier `userId` que quiera; el `SecurityContext` refleja quién realmente se logueó.
+
+```java
 // Patrón completo — carga la entidad User desde el contexto de seguridad
 String email = SecurityContextHolder.getContext().getAuthentication().getName();
 User currentUser = userRepository.findByEmail(email)
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 ```
-
-**Nunca confíes en un `userId` enviado por el cliente** — siempre léelo del contexto de seguridad. Un cliente puede enviar cualquier `userId` que quiera; el `SecurityContext` refleja quién realmente se logueó.
 
 ### Condición de done para el Paso 4
 

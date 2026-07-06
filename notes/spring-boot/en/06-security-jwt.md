@@ -784,7 +784,8 @@ _Step by step:_
 **1. Request arrives → JwtFilter runs, sees no token → passes through**
 `security/JwtFilter.java` — Every request passes through `JwtFilter` first. It looks for an `Authorization: Bearer <token>` header. On login, the user does not have a token yet, so the header is missing. `JwtFilter` detects this and does nothing — it simply passes the request to the next step.
 
-**2. SecurityFilterChain checks the route → `/api/auth/**`is`permitAll()`→ allows it**`security/SecurityConfig.java`—`SecurityFilterChain`is the set of security rules you configured.`permitAll()`means "no authentication required for this URL". Since you marked`/api/auth/\*\*` as public, the login endpoint is allowed through.
+**2. SecurityFilterChain checks the route → `/api/auth/**` is `permitAll()` → allows it**
+`security/SecurityConfig.java` — `SecurityFilterChain` is the set of security rules you configured. `permitAll()` means "no authentication required for this URL". Since you marked `/api/auth/**` as public, the login endpoint is allowed through.
 
 **3. AuthController receives the request → calls AuthService.login()**
 `controller/AuthController.java` — The request reaches your controller, which reads the JSON body (email + password) and calls the service.
@@ -1827,7 +1828,7 @@ public class SecurityConfig {
 
 **`@EnableMethodSecurity`** — enables `@PreAuthorize` on individual methods. Without this annotation, `@PreAuthorize` is silently ignored — no error, just no protection.
 
-**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/`(login, register) without a token. The`/\*\*` matches any path below that prefix.
+**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/` (login, register) without a token. The `/**` matches any path below that prefix.
 
 **`.anyRequest().authenticated()`** — every other URL requires a valid JWT. Order matters: `requestMatchers` rules are checked first, in the order they are declared. `.anyRequest()` is always last — it is the catch-all.
 
@@ -1914,7 +1915,7 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 > **Why not just allow every origin with `"*"`?** Because `setAllowCredentials(true)` and `setAllowedOrigins(List.of("*"))` cannot be used together — Spring throws an error at startup and the browser rejects the response. The wildcard `"*"` means "anyone", and "anyone **plus** send credentials" is a security hole the CORS spec forbids. If you ever genuinely need a wildcard with credentials, the replacement is `setAllowedOriginPatterns(List.of("*"))`. In this project you list the exact Angular origin, so the trap never bites — but it is the single most common CORS mistake juniors hit, so it's worth recognising.
 
-**`source.registerCorsConfiguration("/**", config)`\*\* — applies this CORS config to every URL in the API.
+**`source.registerCorsConfiguration("/**", config)`** — applies this CORS config to every URL in the API.
 
 > The CORS error only appears in the browser — it is not a backend bug. The browser blocks the response, not the request. The fix is always on the server.
 
@@ -2073,14 +2074,51 @@ Apply it to POST, PUT, and DELETE in both `ProjectController` and `UserControlle
 
 Docs: [Spring Security — SecurityContextHolder](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-securitycontextholder)
 
-`SecurityContextHolder` is a thread-local store that holds the authenticated user for the current request. The `JwtFilter` puts the user there on every request. Any class — service, controller — can read it without needing the user's ID passed in as a parameter.
+**The problem this solves:** HTTP is stateless — each request is a brand new connection with no memory of anything before it. So when `TimeEntryService.create()` runs, how does it know *who* is calling, right now, in this exact request? It cannot ask the client (see the IDOR section in [security/05-security-vulnerabilities.md](../../security/en/05-security-vulnerabilities.md) for why not). It needs somewhere to look up "the authenticated user of *this* request" — that place is `SecurityContextHolder`.
+
+**What it actually is, mechanically:** it is a **thread-local** — a storage slot that holds a different value per execution thread. In Spring Boot, every incoming HTTP request is handled by one thread from the server's thread pool (Tomcat, by default). While that thread processes your request, it can stash data in its own slot without colliding with a different thread handling a different, simultaneous request from a different user. That is exactly the guarantee you need: "the authenticated user for *this* request," never mixed up with someone else's concurrent request.
+
+> A thread is the unit of execution the server hands one request to. Two users hitting your API at the same instant are handled by two separate threads — each with its own thread-local slot. That is why `SecurityContextHolder` never leaks user A's identity into user B's request, even under heavy concurrent traffic.
+
+**Who fills it, and when:** `JwtFilter` — the same class you already built — writes to it on every single request, before your controller or service ever runs:
+
+```java
+// JwtFilter.java — this already exists in your project
+if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        userDetails, null, userDetails.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+}
+```
+
+`JwtFilter` decodes the JWT, extracts the email, loads the `UserDetails`, wraps it in an `Authentication` object, and **stores** that object in the current thread's slot with `setAuthentication(...)`.
+
+**Who reads it, and why it gets the same value:** because the thread stays the same for the entire lifetime of one request — it enters at `JwtFilter`, passes through `SecurityFilterChain`, reaches your `@RestController`, and drops down into your `@Service` — reading `SecurityContextHolder.getContext().getAuthentication()` later in that same request returns **the exact same object** `JwtFilter` stored moments earlier, on that same thread. There is no network call, no database lookup here — it is literally reading a value another class, earlier in the same request, already left in a shared slot.
+
+```
+one HTTP request → one thread → one thread-local slot
+
+[JwtFilter]                          [TimeEntryService.create()]
+   writes:                              reads:
+   SecurityContextHolder                SecurityContextHolder
+     .getContext()                        .getContext()
+     .setAuthentication(authToken)        .getAuthentication()
+        │                                    │
+        └──────────── same thread ───────────┘
+             (same request, same slot)
+```
+
+**Why `.getName()` returns the email specifically:** `Authentication` has a `getName()` method that, when the "principal" (the authenticated subject) is a `UserDetails` — which yours is — returns `userDetails.getUsername()`. In `UserDetailsServiceImpl`, the "username" you configured **is the email** — your app has no separate username concept, it uses email as the login identifier. That is why `getName()` hands you the email directly, with no extra lookup:
 
 ```java
 // Inside any @Service method — get the email of the currently logged-in user
 String email = SecurityContextHolder.getContext()
         .getAuthentication()
-        .getName();  // returns the value set in .withUsername() — the email
+        .getName();  // resolves to userDetails.getUsername() — the email
 ```
+
+> Analogy: think of `SecurityContextHolder` as a blackboard only your thread (this one request) can see and write on. `JwtFilter` is the first to enter the room and writes "this request belongs to victor@email.com." Any class that enters the same room afterward — your service, your controller — can read that same blackboard without asking the client anything again.
 
 You use this in Step 5 when `TimeEntryService` needs to know which user is creating an entry, or when `GET /api/entries` needs to filter results by the current user. The key point: **never trust a `userId` sent by the client** — always read it from the security context. A client can send any `userId` they want; the `SecurityContext` reflects who actually logged in.
 
