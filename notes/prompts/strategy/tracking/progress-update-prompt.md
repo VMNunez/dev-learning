@@ -1,305 +1,208 @@
-# Progress Update Prompt
+# Progress Update Prompt — orchestrator
 
-Use in a **separate conversation**. One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
+Run this **inside Claude Code**. It rebuilds `PROGRESS.md` from reality, hands-off: an orchestrator
+that **fans out one cold subagent per project** to extract that project's concepts, plus one subagent
+each for SQL and simulations, then **merges everything itself** and commits. No project's PLANNING.md
+ever loads into the orchestrator's own context — it stays light and only holds PROGRESS.md.
 
-Run this when PROGRESS.md feels out of sync: after finishing a step or a project, after a long block of sessions, or before running the `new-project-prompt` (which uses PROGRESS.md as its main input for gap analysis). If PROGRESS.md is incomplete, the gap analysis is wrong.
+One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
 
-What this prompt does: audits the project(s) in scope (all projects, or just the active one — set by `MODE`), checks the SQL exercises on `main`, checks the simulation tracker, and writes a complete, accurate PROGRESS.md.
+Run this when PROGRESS.md feels out of sync: after finishing a step or a project, after a long block
+of sessions, or before running `new-project-prompt` (its gap analysis reads PROGRESS.md). If
+PROGRESS.md is incomplete, that gap analysis is wrong.
 
-**This prompt does NOT read `notes/coverage.md`.** Coverage tracks what Victor must learn — PROGRESS.md tracks what he has already learned. A stale or incomplete `notes/coverage.md` does not affect this prompt's results.
+**This prompt does NOT read `notes/coverage.md`.** Coverage tracks what Victor must *learn* —
+PROGRESS.md tracks what he *has learned*. A stale coverage.md does not affect this prompt.
+
+**Internal piece this orchestrates** (never launched directly):
+`_concept-extraction-standard.md` — the Format A/B/C extraction contract each project subagent runs.
 
 ---
 
 ````
-## Mode — choose the audit scope
+## Configuration — edit only this block
 
-Set `MODE` at the top of your request. It controls **which projects Step 2 audits**. SQL (Step 3)
-and simulations (Step 4) always run, in both modes.
+MODE = [active | all]
 
-- **`MODE: active`** (default) — audit ONLY the current in-progress project. Completed projects are
-  assumed already recorded and are skipped in Step 2. This is the fast, everyday refresh after
-  finishing a step or a session block.
-- **`MODE: all`** — full sweep: audit every project in Step 2 (all completed projects AND the active
-  one). Use this periodically, after several steps, or before running `new-project-prompt`, to catch
-  anything missed in completed projects.
+## active (default) — audit ONLY the current in-progress project. Completed projects are assumed
+##                    already recorded. Fast everyday refresh after a step or a session block.
+## all             — audit every project (all completed + the active one). Run periodically, or
+##                   before new-project-prompt, to catch anything missed in completed projects.
 
-If no `MODE` is given, default to `active`.
+SQL (Step B) and simulations (Step C) always run, in both modes.
 
----
-
-## Context
-
-My profile is in `notes/prompts/_shared-context.md`.
-
-PROGRESS.md is the master record of every project completed and every concept learned.
-It is the single source of truth for my history — other prompts (new-project-prompt,
-roadmap-review-prompt) read it to understand where I am and what I still need to learn.
-If PROGRESS.md is inaccurate or incomplete, those prompts produce wrong results.
-
-The goal of this prompt is to make PROGRESS.md fully accurate and complete.
+Use MODE wherever the prompt refers to {MODE}.
 
 ---
 
-## What PROGRESS.md is — and what it is not
+You are the **orchestrator**. You read `PROGRESS.md` once (to learn its structure and what is already
+recorded), dispatch subagents to gather facts, then merge their reports into PROGRESS.md yourself and
+commit. You never read a PLANNING.md directly — the project subagents do that and hand you back a
+short concept list.
 
-PROGRESS.md tracks:
-- The projects table (all completed and in-progress projects)
-- Per-project concept summaries (brief, one paragraph per project)
-- Technology sections — the detailed list of concepts actually learned, organized by topic
-  (Angular, CSS, Spring Boot, SQL, etc.)
-- Simulation progress
-- Complementary skills in practice
+First read `notes/prompts/strategy/tracking/_concept-extraction-standard.md` so you know the exact
+contract each project subagent follows and the shape of what it returns.
 
-PROGRESS.md does NOT contain:
-- Explanations — that is what notes/ is for
-- Future learning — that is what future-learning.md files are for
-- Architecture or strategy — that is what ROADMAP.md is for
+---
 
-**Format to maintain:** each concept entry is one line. Key syntax or API in backticks,
-followed by a short dash and a one-liner explanation when needed. Examples:
-- `signal()`, `signal.set()`, `signal.update()` — no explanation needed, the name is clear
+## What PROGRESS.md is — and is not
+
+Tracks: the projects table · per-project concept summaries (one paragraph each) · technology sections
+(the detailed concept list by topic: Angular, Java, Spring Boot, CSS, SQL…) · simulation progress ·
+complementary skills.
+
+Does NOT contain: explanations (→ notes/) · future learning (→ future-learning.md) · architecture or
+strategy (→ ROADMAP.md).
+
+**Entry format:** one line per concept. Key syntax/API in backticks, optional short dash-clause.
+- `signal()`, `signal.set()`, `signal.update()` — name is clear, no explanation needed
 - `effect()` — runs a side effect automatically when a tracked signal changes
 - `@PreAuthorize("hasRole('X')")` — method-level authorization; checked after JWT is validated
 
-Never add multi-line explanations. If a concept needs more than one line, it belongs in notes/.
+Never multi-line. If a concept needs more than one line, it belongs in notes/, not here.
 
 ---
 
-## Step 1 — Read the current state
+## Step 0 — Read the current state (orchestrator, once)
 
-Read these files:
+Read:
+1. `PROGRESS.md` — the current version. Learn its exact structure, section order, and format. Note
+   the projects table and each project's status. Treat statuses as a starting point — the subagents
+   verify them.
+2. `CLAUDE.md` "Current study progress" — general orientation only (which project is active). It is
+   updated by hand and may lag; do not treat it as authoritative.
 
-1. `PROGRESS.md` — the current version. Understand the structure, sections, and format exactly.
-   Note which projects are in the table and what status they have. Treat this as a starting
-   point only — actual project statuses will be verified in Step 2 by reading each PLANNING.md.
-2. `CLAUDE.md` — "Current study progress" section. Use this for general orientation (which project
-   is active, what phase). Do not treat it as authoritative — it is updated manually and may lag
-   behind the actual state. Project statuses are confirmed in Step 2.
+Decide the project scope from `{MODE}`:
+- **active** — only the in-progress project (⏳). Find it in the PROGRESS.md projects table or the
+  CLAUDE.md "Active project" line.
+- **all** — every project below.
 
----
+Project paths, in order:
+- Format A (Angular): `angular/01-todo-list`, `angular/02-weather-app`, `angular/03-expense-tracker`,
+  `angular/04-meal-finder`, `angular/05-task-manager`, `angular/06-hr-portal`
+- Full-stack: `projects/07-timetrack` (Format B) and any later ones in PROGRESS.md (Format C if they
+  have a numbered Section 3, else Format B)
 
-## Step 2 — Audit each project
-
-**Scope (set by `MODE`):**
-- **`MODE: active`** — audit ONLY the in-progress project (⏳). Find it in the PROGRESS.md projects
-  table or the CLAUDE.md "Active project" line, then apply the matching format's in-progress
-  instructions below. Skip every project marked Done ✓ — do not read their PLANNING.md.
-- **`MODE: all`** — audit every project below, completed and in-progress.
-
-PLANNING.md files use three different formats depending on when the project was created.
-Before reading any PLANNING.md, identify which format it uses — then follow the matching
-instructions below.
-
----
-
-### Format A — Old format (projects 01–06)
-
-These PLANNING.md files have a section called **"Key patterns introduced"** — a table with
-two columns: `| Pattern | Where used |`. There is no numbered Section 3.
-
-**For every project marked Done ✓ in Format A:**
-1. Read the "Key patterns introduced" table. Every row is a new concept for that project.
-2. Also read the "Key features" and "State management" sections — they sometimes mention
-   patterns (e.g. `localStorage + effect()`, `computed()` for derived values) not listed
-   in the patterns table.
-3. For each concept found: check if it already appears in PROGRESS.md.
-   To decide which technology section it belongs to, use this mapping:
-   - Angular API (`@Component`, `signal()`, `HttpClient`, `MatTable`, guards, pipes…) → Angular section
-   - CSS properties, layout techniques, animations → CSS section
-   - TypeScript utility types (`Omit`, `??`, `?.`…) → TypeScript utility types (sub-section of Angular or a dedicated TypeScript section, whichever exists)
-4. Note every concept present in the PLANNING.md but missing from PROGRESS.md.
+For each project in scope, lift its `PROGRESS_HINT` from the PROGRESS.md you just read: the project's
+`### Project NN` summary heading, plus any `### Project NN` sub-heading inside a technology section.
+These few lines are all a project subagent needs for the Format B step-status fallback.
 
 ---
 
-### Format B — Transitional format (project 07 and any project without a numbered Section 3)
+## Step A — Fan out one subagent per project
 
-These PLANNING.md files have a **"Progressive learning plan"** where each step ends with
-a `**Concept learned:**` line. There is no separate Section 3 table.
+For **each** project in scope, launch a `general-purpose` subagent, `run_in_background: false`. In
+`MODE: all` you may launch them in parallel (they only read — no git-index contention); in
+`MODE: active` there is just one. Each subagent's instruction:
 
-**For the in-progress project (⏳) in Format B:**
-1. Read the PLANNING.md "Progressive learning plan". Look for step headings marked with ✅
-   (e.g. `### Step 3 — Spring Security + JWT ✅`).
-   - If NO step has a ✅ marker anywhere in the file: fall back to PROGRESS.md. Check
-     these three sources and pick the one that shows the most steps done:
-     (a) The `### Project XX — ProjectName` heading in the per-project summaries section
-         (the block of `### Project NN` headings before any technology section begins).
-         Format varies — e.g. "(in progress — Steps 1–3 done, Step 4 in progress)".
-     (b) Any `### Project XX` sub-heading inside a technology section (e.g. the Spring
-         Boot section may have `### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓
-         Step 4 in progress ⏳)`). This sub-heading tracks step status per-section and is
-         often more current than the project summary heading.
-     (c) The concepts already present in the technology sections — if concepts from a
-         given step clearly appear in PROGRESS.md, treat that step as done.
-     Parse all sources flexibly and prefer the highest step count found across them.
-   - If AT LEAST ONE step has a ✅ marker: use the ✅ markers as the primary source. Steps
-     without ✅ are treated as not complete. However, also check the PROGRESS.md summary
-     line — if PROGRESS.md shows MORE steps as done than the ✅ markers indicate (e.g.
-     PLANNING.md has ✅ on Steps 1–2 only but PROGRESS.md says Steps 1–3 are done), prefer
-     the higher count. In-session updates may have added concepts to PROGRESS.md without
-     the corresponding ✅ being added to PLANNING.md.
-2. In the PLANNING.md, read the "Progressive learning plan". For each step confirmed as
-   complete, extract the concepts from its `**Concept learned:**` line.
-3. For the step marked "in progress": do NOT add its concepts — they will be added when
-   the step is fully complete. The only exception is if a concept from that step already
-   appears in the PROGRESS.md technology sections (it was learned early) — in that case
-   leave it as-is, do not remove it.
-4. For each concept extracted from completed steps: check if it already appears in the
-   relevant technology section of PROGRESS.md. To determine the section, use the concept:
-   - Spring Boot annotations, beans, security, JPA → Spring Boot section. This includes
-     Spring-specific annotations like `@Value`, `@Component`, `@Configuration`, `@Bean`.
-   - Pure Java language constructs (`Optional<T>`, `long` vs `Long`, wrapper classes,
-     `try/catch`, access modifiers…) → Java section (create it if it does not exist).
-     A concept is "pure Java" if it exists in Java regardless of Spring — not if it is
-     a Spring annotation that happens to appear in a Java file.
-   - Angular code → Angular section
-   - Backend testing concepts (JUnit 5, Mockito, `@ExtendWith`, `@Mock`, `@InjectMocks`…)
-     → Spring Boot section
-   - Frontend testing concepts (Jasmine, TestBed, `HttpClientTestingModule`, spies…)
-     → Angular section
-   - Docker, containerisation, `docker-compose` → General section (create it if it does
-     not exist, using the same heading + bullet format as other sections). **Not Deployment**
-     — the Deployment section covers cloud hosting and build configuration (Netlify, env
-     vars, CI/CD). General is for dev tooling and cross-cutting concepts that apply
-     regardless of where the app runs (`json-server`, Docker, etc.). If creating General
-     for the first time, place it after the SQL section.
-5. Note every concept from completed steps that is missing from PROGRESS.md.
+> Read `notes/prompts/strategy/tracking/_concept-extraction-standard.md` and execute it in full for
+> `PROJECT_PATH = «path»`. Here is the `PROGRESS_HINT` for this project (use it only for the Format B
+> step-status fallback):
+> ```
+> «the summary heading + technology sub-heading lifted in Step 0»
+> ```
+> Do not read or write PROGRESS.md; do not commit. Report: the format detected, the confirmed step
+> status, and the concept table (Concept · Section · From step) exactly as the standard specifies.
 
-**Important — `**Concept learned:**` lines are high-level summaries.** PROGRESS.md typically
-has more granular entries than these lines (e.g. the line says "JWT flow" but PROGRESS.md
-already has 10+ detailed bullets covering JWT internals). Before adding a concept:
-- If the `**Concept learned:**` line contains a summary label (e.g. "JWT flow", "layered
-  architecture") and PROGRESS.md already has detailed bullets that cover that topic,
-  treat the summary as already accounted for — do NOT add it as a new one-line bullet.
-- Only add an entry if a specific, concrete concept from the step is genuinely absent from
-  PROGRESS.md with no equivalent entry.
-
-**For a project marked Done ✓ in Format B:**
-All steps are complete. Apply the same extraction to every step in the learning plan,
-then follow the same check as above.
+Wait for every project subagent to finish and collect its report. Keep the reports — Step D merges them.
 
 ---
 
-### Format C — New format (projects 08 and later, created by new-project-prompt)
+## Step B — Subagent: audit SQL exercises
 
-These PLANNING.md files have a numbered **Section 3 ("New concepts")** — a table with
-columns `| Concept | Topic | Why this project teaches it |` — and a **Section 15**
-("Progressive learning plan") where each step explicitly lists which Section 3 concepts
-it introduces.
+Launch one `general-purpose` subagent, `run_in_background: false`:
 
-**For every project marked Done ✓ in Format C:**
-1. Read Section 3. Every row is a new concept. Use the "Topic" column to determine which
-   technology section in PROGRESS.md it belongs to.
-2. For each concept: check if it already appears in PROGRESS.md.
-3. Note every concept in Section 3 but missing from PROGRESS.md.
+> Audit the SQL exercises **as they exist on `main`** (study materials live on `main`; the working
+> tree is usually behind, so do NOT count working-tree files — count the `main` version).
+> - List the SQL files on main: `git ls-tree -r --name-only main -- sql/`
+> - Read each from main: `git show main:sql/<file>` — count numbered exercise headers in that output.
+>
+> Two file shapes exist: a flat file (`sql/01-basics.sql`) or a subfolder (`sql/02-joins/exercises.sql`).
+> Two header patterns exist — count lines matching **either**:
+> - `-- Exercise N:` at line start (sql-exercises-prompt topics: joins, group-by, subqueries…)
+> - `-- #N |` at line start, N one or more digits — `-- #1 |`, `-- #01 |`, `-- #40 |` (the basics file)
+>
+> Return one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
+> Folder column (`sql/01-basics.sql` for flat, `sql/02-joins/` for subfolders). Only list topics that
+> have a file or folder in sql/. Do not estimate; do not assign a status — the orchestrator does that.
 
-**For the in-progress project (⏳) in Format C:**
-1. Read Section 15. Find which steps are marked as complete (✅).
-2. For each completed step, read its "New concepts introduced" list — these reference
-   specific items from Section 3. Use the "Topic" column in Section 3 to determine the
-   correct PROGRESS.md section.
-3. Apply the same check: concept in a completed step but not in PROGRESS.md → add it.
-
----
-
-Project paths to check (in order). In `MODE: all` check every path; in `MODE: active` check only
-the in-progress project:
-- Angular projects (Format A): angular/01-todo-list, angular/02-weather-app,
-  angular/03-expense-tracker, angular/04-meal-finder, angular/05-task-manager,
-  angular/06-hr-portal
-- Full-stack projects: projects/07-timetrack (Format B) and any later ones in PROGRESS.md
-  (use Format C if they have a numbered Section 3, Format B if they do not)
+Wait and collect.
 
 ---
 
-## Step 3 — Audit SQL exercises
+## Step C — Subagent: audit simulations
 
-Read the `sql/` folder **as it exists on `main`** (see Branch note below — the working tree is
-usually behind). Two file formats may exist — check for both:
+Launch one `general-purpose` subagent, `run_in_background: false`:
 
-- **Flat file** (e.g. `sql/01-basics.sql`): a `.sql` file directly in the `sql/` folder
-- **Subfolder** (e.g. `sql/02-joins/exercises.sql`): a folder containing an `exercises.sql` file
+> Read `simulations/TRACKER.md`. Return: total simulations completed (✅ Pass or ⚠️ Borderline both
+> count as completed), split by type — Angular / Spring Boot / SQL — each as `X Pass, X Borderline,
+> X Fail`. If TRACKER.md does not exist or shows 0, return all zeros.
 
-**Branch note — the `sql/` exercises live on `main`; you are usually NOT on `main`.**
-SQL study materials are committed only on `main`. During an active project you work on a feature
-branch (e.g. `feat/spring-foundation`) that was created BEFORE the latest SQL commits landed on
-`main` — so the `sql/` files in your current working tree are stale and **undercount** the exercises.
-
-Therefore, do NOT count from the working-tree files. Count from the `main` version of each file
-(these are read-only git commands — safe to run):
-- List the SQL files on main:  `git ls-tree -r --name-only main -- sql/`
-- Read each file from main:     `git show main:sql/<file>`  — count the headers in that output.
-
-The `main` counts are authoritative. If `git show main:...` and the working-tree file disagree,
-trust `main`.
-
-**PROGRESS.md is a tracked file** (it lives on `main` with the other study materials — see
-CLAUDE.md). This prompt updates it; save your changes and commit them (see Step 6).
-
-For every file found in either format, count the exercises by counting numbered exercise
-headers. Two formats exist depending on when the file was created:
-
-- `-- Exercise N:` at the start of a line — used by sql-exercises-prompt (topics 2+:
-  joins, group-by, subqueries, etc.)
-- `-- #N |` at the start of a line (where N is one or more digits — e.g. `-- #1 |`,
-  `-- #01 |`, `-- #40 |`) — used in the basics file (`01-basics.sql`), which was created
-  manually before the sql-exercises-prompt was written
-
-Count lines matching either pattern. This gives the accurate exercise count per topic —
-do not estimate.
-
-The SQL section in PROGRESS.md has two distinct parts — keep both:
-
-**Part A — SQL concepts learned** (bullets like `SELECT DISTINCT`, `ORDER BY`, `IS NULL`…)
-These come from actual SQL knowledge practiced, not from the exercises folder. Do not touch
-this sub-section in Step 3 — it is audited only if a project's PLANNING.md introduced SQL
-concepts (Step 2). Leave it exactly as it is.
-
-**Part B — Exercises tracker**
-This is what Step 3 updates. Find the exercises sub-section in PROGRESS.md (usually under
-a heading like `### Exercises completed` or similar) and update it using this format:
-
-```
-### Exercises completed
-
-X total exercises across Y topics
-
-| Topic | Folder | Exercises | Status |
-|-------|--------|-----------|--------|
-| basics / SELECT | sql/01-basics.sql | N | solid ✅ |
-| joins | sql/02-joins/ | N | in progress ⏳ |
-| group-by | sql/03-group-by/ | N | in progress ⏳ |
-```
-
-Use the actual path in the Folder column: `sql/01-basics.sql` for flat files,
-`sql/02-joins/` for subfolders.
-
-Only list topics that have a file or folder in sql/. Their existence means exercises have
-been generated — "not started" never applies here. For each topic:
-- Count: read the file's `main` version (`git show main:sql/<file>`) and count lines matching
-  either header pattern: `-- Exercise N:` (for topics created by sql-exercises-prompt) or `-- #N |`
-  (for the basics file); do not mix them up or miss one
-- Status rules:
-  - Keep any topic already marked solid ✅ in the current PROGRESS.md — do not downgrade it
-  - Any topic already in PROGRESS.md as prose (being converted to table format for the first
-    time) gets in progress ⏳ — solid status requires an explicit sql-exercises-prompt review
-    scoring above 80%; it cannot be inferred from the prose description
-  - Any topic with a file or folder not yet in PROGRESS.md at all gets in progress ⏳
-  - Victor upgrades a topic to solid ✅ manually after a sql-exercises-prompt review scores above 80%
-
-If the exercises sub-section does not exist yet in PROGRESS.md, create it with the table above.
-If it already exists in a different format, rewrite it using the table format above — this is
-one of the cases where reformatting is allowed.
+Wait and collect.
 
 ---
 
-## Step 4 — Audit simulations
+## Step D — Merge everything into PROGRESS.md (orchestrator)
 
-Read simulations/TRACKER.md. Count:
-- Total simulations completed (✅ Pass or ⚠️ Borderline count as completed)
-- Split by type: Angular / Spring Boot / SQL
+You now hold every subagent report and the full current PROGRESS.md. Merge:
 
-If PROGRESS.md has a simulations section, update the counts.
-If PROGRESS.md has no simulations section yet, add one:
+### D1 — Concepts (from Step A reports)
+
+For each concept in each project report, check whether it already appears in the target technology
+section of PROGRESS.md. Add only genuinely missing concepts.
+
+> **`**Concept learned:**` lines are high-level summaries.** PROGRESS.md is often more granular (the
+> line says "JWT flow" but PROGRESS.md already has 10+ bullets on JWT internals). If a summary label
+> is already covered by existing detailed bullets, treat it as accounted for — do **not** add it as a
+> new one-liner. Only add a specific concept genuinely absent with no equivalent entry.
+
+For the in-progress project, do not add concepts from the step still in progress — unless one already
+appears in PROGRESS.md (learned early), in which case leave it as-is, never remove it.
+
+### D2 — Creating a missing technology section
+
+If a concept needs a section that does not exist yet, create it (same heading + one-line-bullet format
+as the others).
+
+**Java section, first creation — special case.** Before adding new Java concepts, scan the Spring Boot
+section for entries that are *pure Java* constructs per the standard's definition (`Optional<T>`,
+`long` vs `Long`, primitive/wrapper types, `try/catch`, access modifiers, default field values like
+`private Boolean active = true`). **Move** those from Spring Boot to the new Java section — remove from
+Spring Boot, add to Java. Log each as Removed under Spring Boot and Added under Java in the diff. Place
+the new Java section after Spring Boot; place a new General section after SQL. Only after this cleanup,
+add remaining new Java concepts.
+
+### D3 — SQL section (from Step B report)
+
+The SQL section has two parts — keep both:
+- **Part A — SQL concepts learned** (`SELECT DISTINCT`, `ORDER BY`, `IS NULL`…). These come from
+  project PLANNING.md SQL steps (Step A), not the exercises folder. Leave untouched here.
+- **Part B — Exercises tracker.** Rewrite it from the Step B counts, in this format:
+
+  ```
+  ### Exercises completed
+
+  X total exercises across Y topics
+
+  | Topic | Folder | Exercises | Status |
+  |-------|--------|-----------|--------|
+  | basics / SELECT | sql/01-basics.sql | N | solid ✅ |
+  | joins | sql/02-joins/ | N | in progress ⏳ |
+  ```
+
+  Status rules:
+  - Keep any topic already `solid ✅` — never downgrade.
+  - A topic being converted from prose to the table for the first time → `in progress ⏳` (solid needs
+    an explicit sql-exercises-prompt review scoring above 80% — it cannot be inferred).
+  - Any topic with a file/folder not yet in PROGRESS.md → `in progress ⏳`.
+  - Victor upgrades to `solid ✅` manually after a review scores above 80%.
+
+  If the sub-section does not exist, create it. If it exists in another format, rewrite it as this
+  table (one of the few cases where reformatting is allowed).
+
+### D4 — Simulations section (from Step C report)
+
+Update the counts if the section exists; otherwise add:
 
 ```
 ## Simulations
@@ -310,55 +213,35 @@ If PROGRESS.md has no simulations section yet, add one:
 - Total: X / 15 minimum target
 ```
 
-If TRACKER.md does not exist yet or shows 0 simulations: add the section with all zeros.
-This makes it visible that the simulation block has not started yet.
+All zeros if none — that makes it visible the block has not started.
+
+### D5 — Projects table and headings (from Step A step-statuses)
+
+- **Projects table:** fix any status marker that disagrees with a subagent's confirmed status. Done ✓
+  = all learning steps complete; ⏳ = at least one still in progress; 🔜 = not started.
+- **Per-project summary heading** (`### Project NN` in the summaries block):
+  - Done ✓ before this run: touch only if factually wrong.
+  - Still ⏳ after this run: update the parenthetical to the actual status (e.g. "Steps 1–3 done,
+    Step 4 in progress") and verify its `**New concepts:**` line covers every extracted concept.
+  - Newly completed this run (was ⏳, now Done ✓): **remove** the step-tracking parenthetical — the
+    format becomes `### Project NN — Name`, matching projects 01–06.
+- **Technology sub-headings:** if a section groups a project with a sub-heading like
+  `### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳)`, update its
+  parenthetical to the confirmed status (canonical: `(Step 1 ✓ … Step N in progress ⏳)`). If the
+  project just became Done ✓, remove the parenthetical. Summary heading and sub-headings must stay in
+  sync.
+
+### D6 — General merge rules
+
+- Keep the exact structure and section order of the current PROGRESS.md.
+- Keep existing content — remove nothing unless factually wrong or a duplicate.
+- Do not reformat correct entries; do not expand entries — one line per concept, maximum.
 
 ---
 
-## Step 5 — Write the updated PROGRESS.md
+## Step E — Write PROGRESS.md and print the diff
 
-Write the complete updated PROGRESS.md.
-
-Rules:
-- Keep the exact same structure and section order as the current PROGRESS.md
-- Add missing concepts to the correct technology section (Angular concept → Angular section)
-- If a technology section does not yet exist in PROGRESS.md and concepts need to be added to it,
-  create it following the same format as the existing sections (heading + one-line bullet list).
-  Exception — Java section: if creating the Java section for the first time, first scan the
-  Spring Boot section for any entries that are pure Java language constructs (those matching
-  the 'pure Java' definition from Step 2 — constructs that exist in Java regardless of Spring,
-  e.g. `Optional<T>`, `long` vs `Long`, primitive/wrapper types, `try/catch`, access modifiers,
-  default field values like `private Boolean active = true`). Move those entries to the new Java
-  section: remove them from Spring Boot and add them to Java. In the diff table, log each moved
-  entry as Removed under Spring Boot and Added under Java. Only after this cleanup, add any
-  remaining new Java concepts that are not yet anywhere in PROGRESS.md.
-- Keep existing content — do not remove anything unless it is factually wrong
-- Do not reformat entries that are already correct
-- Do not add explanations or expand entries — one line per concept maximum
-- Update the projects table: fix any status markers that do not match what Step 2 found.
-  A project is Done ✓ when all its learning steps are complete (all steps in the learning
-  plan for Format A/B, or all Section 15 steps for Format C). It is ⏳ if at least one
-  step is still in progress. It is 🔜 if it has not started.
-- Update each project's summary entry (the `### Project XX` section in PROGRESS.md):
-  - Already-completed projects (Done ✓ before this run): only touch if the heading or
-    `**New concepts:**` line is factually wrong (e.g. wrong step count, a concept missing
-    that all steps clearly show).
-  - In-progress project (still ⏳ after this run): update the heading to reflect the actual
-    step status found in Step 2 (e.g. "Steps 1–3 done, Step 4 in progress"), and verify
-    that the `**New concepts:**` line includes every concept extracted from completed steps.
-  - **Newly completed project (was ⏳, is now Done ✓ this run):** remove the step-tracking
-    parenthetical from the heading entirely. The correct format after completion matches
-    projects 01–06: `### Project NN — Name` with no parenthetical.
-- **Technology section sub-headings:** if PROGRESS.md has a `### Project NN` sub-heading
-  inside a technology section (the Spring Boot section currently uses `### Project 07 —
-  TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳)` to group concepts by
-  project), update its parenthetical to match the step status found in Step 2. Use this
-  canonical format: `(Step 1 ✓ Step 2 ✓ ... Step N in progress ⏳)`. If the project just
-  became Done ✓ this run, remove the parenthetical entirely — format becomes `### Project
-  NN — Name`. The project summary heading and the technology sub-headings must always be
-  in sync after every run.
-
-After writing, print a short diff summary:
+Write the complete updated PROGRESS.md, then print:
 
 **Changes made:**
 | Section | Added | Corrected | Removed |
@@ -376,20 +259,21 @@ After writing, print a short diff summary:
 | SQL | | | |
 | Simulations | | | |
 
-"Added" = anything added to PROGRESS.md that was not there before — missing concepts from PLANNING.md, updated SQL exercise counts, updated simulation counts, new per-project summary data
-"Corrected" = entries that were wrong (e.g. wrong project number, stale step status, exercise count updated to higher value from file)
-"Removed" = entries that were duplicates or factually wrong
+- **Added** = anything new — missing concepts, updated SQL counts, updated simulation counts, new
+  per-project summary data.
+- **Corrected** = entries that were wrong (wrong project number, stale step status, exercise count
+  raised to the file's real value).
+- **Removed** = duplicates or factually wrong entries.
+- Java section created for the first time: log each moved entry as Removed under Spring Boot and Added
+  under Java.
 
-Special cases:
-- Java section created for the first time with entries moved from Spring Boot: log each moved entry as Removed under Spring Boot and Added under Java
-
-If nothing changed in a section: write "—". Skip rows for sections that do not yet exist in PROGRESS.md.
+Write "—" for an unchanged section; skip rows for sections that do not exist in PROGRESS.md.
 
 ---
 
-## Step 6 — Show the commit message
+## Step F — Commit
 
-PROGRESS.md is a tracked file — study materials live on `main` per CLAUDE.md, so commit it there:
+PROGRESS.md is tracked and lives on `main` per CLAUDE.md. Commit it there:
 
 ```
 git add PROGRESS.md
@@ -398,4 +282,9 @@ git add PROGRESS.md
 ```
 git commit -m "docs: refresh PROGRESS.md — [main change, e.g. 'add project 07 Spring Boot concepts, fix projects table']"
 ```
+
+> **Auto-commit note.** Victor's global rule is "never auto-commit." This orchestrator may run the
+> commit itself (same lift already granted to the notes-audit orchestrator) **only when it has
+> finished a clean merge**. If anything is uncertain, print the two blocks above and let Victor run
+> them instead.
 ````
