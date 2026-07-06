@@ -31,8 +31,9 @@ Before giving any guidance, in this order:
    next concrete action.
    - Project 07: the "Progressive learning plan" + Section 0 (Session quick reference).
    - Projects 08+: Section 0 (Session quick reference) and Section 15.
-3. **Read `PROJECT-BACKLOG.md`** — find the active project's section. If any High or Medium
-   `[ ]` task is open, mention it at the start of the session.
+3. **Read the active project's `PROJECT-BACKLOG.md`** (e.g. `projects/07-timetrack/PROJECT-BACKLOG.md`)
+   — full-stack projects (07+) each keep their own; Angular projects 01–06 are closed and have none.
+   If any High or Medium `[ ]` task is open, mention it at the start of the session.
 4. **Check `PROGRESS.md`** — the source of truth for what has already been learned. Use it to
    know where we are before guiding the next step (and to know which SQL topic is next — see
    "SQL runs in parallel" under Git workflow).
@@ -313,8 +314,11 @@ never reached the trunk while PROGRESS claimed them as done). A separate branch 
 that does not exist and creating one that does.
 
 - **Study and tracking materials live on `main`:** `sql/`, `notes/`, `simulations/`, `PROGRESS.md`,
-  `ROADMAP.md`, `PROJECT-BACKLOG.md`. Commit them directly on `main`. **Project code** keeps the
+  `ROADMAP.md`. Commit them directly on `main`. **Project code** keeps the
   feature-branch → PR → `main` workflow (that history has portfolio value; study files do not need it).
+  `PROJECT-BACKLOG.md` now lives inside each full-stack project's own folder (e.g.
+  `projects/07-timetrack/PROJECT-BACKLOG.md`), so it follows that project's normal feature-branch
+  workflow like `PLANNING.md` and `README.md` do — it is no longer a root-level study file.
 - This gives `PROGRESS.md` exactly **one home** (`main`) — no divergence, no checkout dance.
 - SQL block (12:30): work in `sql/` on `main`, commit there, and update the SQL section of
   `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
@@ -388,10 +392,10 @@ learning/
 ├── CLAUDE.md              ← this file (session rules)
 ├── PROGRESS.md            ← concepts learned, projects done, status
 ├── ROADMAP.md             ← career strategy, phases, daily schedule, applications plan
-├── PROJECT-BACKLOG.md     ← improvement tasks per project, written by project-review-prompt
 ├── angular/               ← Angular-only projects (01-todo-list/, 02-..., etc.)
 ├── projects/              ← full-stack projects (backend + frontend + DB)
 │   └── 07-timetrack/      ← Spring Boot + Angular + PostgreSQL + Docker
+│       └── PROJECT-BACKLOG.md ← improvement tasks for this project, written by project-review-prompt
 ├── simulations/           ← technical test simulations — Angular, Spring Boot, SQL; tracker at TRACKER.md
 ├── sql/                   ← SQL exercises (01-basics/, 02-joins/, etc.) — lives on main
 ├── leetcode/              ← algorithm exercises for interviews (gated — see ROADMAP.md)

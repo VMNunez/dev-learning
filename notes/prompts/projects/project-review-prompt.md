@@ -2,7 +2,7 @@
 
 Use in a **separate conversation**. Fill in the configuration block, then paste everything into a new chat.
 
-This prompt reviews a project for code quality, patterns, and learning objectives. At the end it writes improvement tasks to `PROJECT-BACKLOG.md` at the root of the learning folder.
+This prompt reviews a project for code quality, patterns, and learning objectives. At the end it writes improvement tasks to `PROJECT-BACKLOG.md` inside the project's own folder (full-stack projects only — see Step 0).
 
 Run `readme-review-prompt.md` before this one. This prompt assumes the README is already correct.
 
@@ -45,13 +45,18 @@ Use these values wherever the prompt refers to {PROJECT_PATH} or {PROJECT_TYPE}.
 
 ## Step 0 — Backlog Check
 
-Before starting the review, read PROJECT-BACKLOG.md at the root of the learning folder.
+`PROJECT-BACKLOG.md` lives inside each full-stack project's own folder — `{PROJECT_PATH}/PROJECT-BACKLOG.md`
+(e.g. `projects/07-timetrack/PROJECT-BACKLOG.md`), not at the root of the learning folder.
 
-Find the section for {PROJECT_PATH}. Check the "Last Reviewed" date.
+**Angular projects 01–06 are closed and do not have a `PROJECT-BACKLOG.md`.** If {PROJECT_PATH} is
+one of them, skip this backlog check and Step 5 entirely — still run Steps 1–4 if Victor wants an
+informational review, but report the findings in chat instead of writing them anywhere.
+
+For full-stack projects, read `{PROJECT_PATH}/PROJECT-BACKLOG.md` if it exists. Check the "Last Reviewed" date.
 - If the date is within the last 30 days → stop and report:
   "This project was last reviewed on [date]. Less than 30 days ago — skipping.
    Reply FORCE if you want to run the review anyway."
-- If the date is older than 30 days or shows "—" → continue.
+- If the date is older than 30 days or the file does not exist yet → continue.
 
 ---
 
@@ -253,11 +258,9 @@ Before writing to the file, show a brief review summary in the chat:
 - **Top findings:** the 2–3 most important issues found
 - **Learning objectives:** how many are ✅ / ⚠️ / ❌
 
-Then update PROJECT-BACKLOG.md at the root of the learning folder.
+Then update `{PROJECT_PATH}/PROJECT-BACKLOG.md`. If it does not exist yet, create it.
 
-Find the section for {PROJECT_PATH}. If it does not exist, create it.
-
-Update the section with:
+Update the file with:
 1. Today's date as "Last Reviewed"
 2. The overall quality rating from the summary above
 3. The full list of improvement tasks from Step 4, as checkboxes
@@ -268,10 +271,12 @@ Format for each task:
 Preserve any tasks that were already checked off (✅) — do not delete completed items.
 Only update or add new ones.
 
-Then show the commit message so Victor can run it himself. Always one command per code block:
+This file lives inside the project's own folder, so it follows that project's normal
+feature-branch → PR → `main` workflow — it is not a direct-to-`main` study file. Show the commit
+message so Victor can run it himself. Always one command per code block:
 
 ```
-git add PROJECT-BACKLOG.md
+git add {PROJECT_PATH}/PROJECT-BACKLOG.md
 ```
 
 ```
