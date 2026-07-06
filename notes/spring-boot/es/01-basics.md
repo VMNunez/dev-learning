@@ -239,6 +239,8 @@ Después de este paso, IntelliJ reconoce `TimetrackApplication.java` como ejecut
 
 ## @SpringBootApplication — el punto de entrada (en `TimetrackApplication.java`)
 
+Docs: https://docs.spring.io/spring-boot/reference/using/using-the-springbootapplication-annotation.html → leer: "Using the @SpringBootApplication Annotation"
+
 Cada aplicación Spring Boot tiene exactamente una clase con `@SpringBootApplication`. Esto es lo que Spring Initializr generó para TimeTrack:
 
 ```java

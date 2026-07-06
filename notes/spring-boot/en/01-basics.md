@@ -239,6 +239,8 @@ After this step, IntelliJ recognises `TimetrackApplication.java` as runnable and
 
 ## @SpringBootApplication — the entry point (in `TimetrackApplication.java`)
 
+Docs: https://docs.spring.io/spring-boot/reference/using/using-the-springbootapplication-annotation.html → read: "Using the @SpringBootApplication Annotation"
+
 Every Spring Boot application has exactly one class with `@SpringBootApplication`. This is what Spring Initializr generated for TimeTrack:
 
 ```java
