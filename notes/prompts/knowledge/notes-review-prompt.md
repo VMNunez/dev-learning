@@ -5,8 +5,8 @@ prompt audits and fixes it before it is committed. It exists because, under the 
 are committed unread — a fresh reviewer with no stake in the draft catches what the author, close to
 their own text, misses. Run it on **one file**, right after the write prompt produced it.
 
-It is normally launched by `notes-run-prompt.md` as subagent **B** (the write prompt is subagent A).
-You can also run it standalone to audit a single finished file.
+It is normally launched by `notes-audit.md` as subagent **B** (the write prompt is subagent A). You
+can also run it standalone to audit a single finished file.
 
 ---
 

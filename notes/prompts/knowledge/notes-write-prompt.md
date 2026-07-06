@@ -1,21 +1,18 @@
-# Notes write prompt — deep work on ONE file
+# Notes write prompt — the AUTHOR component (one file)
 
-Use in a **separate conversation, one file per conversation.** Fill in the configuration block, then
-paste everything below into a new chat.
+**Internal component.** This is the **author** in the notes pipeline. You normally don't launch it —
+`notes-audit.md` dispatches it as a cold subagent, one per file, then hands the result to
+`notes-review-prompt.md` (the reviewer). It is documented here so the audit prompt can point a
+subagent at it; you can also run it standalone to draft/correct a single file.
 
-**What this prompt does.** This is the **writing half** of the notes system. It takes a single note
-file and does the heavy, high-standard work on it: resolves its TODOs, audits its quality, completes
-it to the full writing standard, and mirrors every change to the Spanish counterpart. It is the only
-prompt that writes rich note prose.
+**What it does.** Takes a single note file and does the heavy, high-standard work on it: resolves its
+TODOs, audits its quality, completes it to the full writing standard, and mirrors every change to the
+Spanish counterpart. It is the only component that writes rich note prose.
 
-**Why one file per conversation.** The writing standard is long and demanding. Applying it to a whole
-folder at once overloads the model's attention and the standard is the first thing that slips — which
-is exactly why parts of the old whole-folder audit got skipped. Bounding each run to one file keeps
-the full attention budget on that file, so the standard actually gets applied every time.
-
-**Where the tasks come from.** Run `notes-plan-prompt.md` first — it surveys the folder and prints an
-ordered worklist. Each worklist row is one run of this prompt. You can also run this prompt directly
-on a file you just wrote by hand, to correct it.
+**Why one file at a time.** The writing standard is long and demanding. Applying it to a whole folder
+at once overloads the model's attention and the standard is the first thing that slips — which is
+exactly why the old whole-folder audit skipped work. A cold subagent bounded to one file keeps the
+full attention budget on that file, so the standard actually gets applied every time.
 
 ---
 

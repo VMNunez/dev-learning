@@ -35,13 +35,11 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 |--------|--------------|----------------------------------------------|---------------------|
 | `knowledge/coverage-prompt.md` | Defines the required scope for **one** topic — what a junior must know, what is deferred. | the topic's note files, `notes/{topic}/future-learning.md` | `notes/{topic}/coverage.md`, syncs `notes/coverage.md`, updates `future-learning.md` |
 | `knowledge/coverage-audit-prompt.md` | **Global** convergence pass over all of `notes/coverage.md`; fills gaps, fixes item quality, can add a whole new topic folder (e.g. testing, docker). Run once after every topic has a coverage file. | `notes/coverage.md`, every `notes/{topic}/coverage.md`, `ROADMAP.md` | `notes/coverage.md` + each topic `coverage.md`, `future-learning.md` files; may create `notes/{topic}/` |
-| `knowledge/notes-plan-prompt.md` | **Plan half.** Surveys a whole topic folder, does the mechanical `en`/`es` sync, and produces an ordered **worklist** — writes no note prose. | `notes/{topic}/coverage.md`, the topic's notes (en + es), `future-learning.md` | `en`/`es` folder structure, `future-learning.md`; **output:** a worklist of write tasks |
-| `knowledge/notes-write-prompt.md` | **Write half.** Deep, high-standard work on **one** file: resolve TODOs, complete it, mirror to `es/`, auto-check its worklist row. Run once per worklist row, one file per conversation. | `_note-quality-standard.md`, the one file (en + es), `PROGRESS.md` | that one `notes/*.md` + its `es/*.md`, the worklist checkbox, the "next file:" counter in `CLAUDE.md` |
-| `knowledge/notes-review-prompt.md` | **Reviewer half.** Independent second-pass auditor for **one** file: audits the just-authored note against the standard, fixes what falls short in `en/` + `es/`, then (unless dry-run) marks the row and commits. | `_note-quality-standard.md`, the one file (en + es), sibling files | the audited `notes/*.md` + `es/*.md`, the worklist checkbox, one atomic commit |
-| `knowledge/notes-run-prompt.md` | **Orchestrator.** Runs **inside Claude Code**; per worklist row runs a two-subagent pipeline (author → reviewer) sequentially, one atomic commit per file. `DRY_RUN` stages without committing. | `notes/{topic}/notes-worklist.md`, `notes-write-prompt.md`, `notes-review-prompt.md` | every `notes/*.md` + `es/*.md` in the worklist, one atomic commit per file |
-| `knowledge/notes-build-prompt.md` | **Plan + run in one command.** Chains `notes-plan` then `notes-run` with no stop between — the hands-off build. Skips the human worklist checkpoint (use the two separately to keep it). | (delegates to plan + run) | the worklist + every built note, committed |
-| `knowledge/_note-quality-standard.md` | The **shared writing standard** both prompts above read (format modes, rule 3, signature elements, anticipate-the-TODO). Not runnable on its own. | — | — |
-| `knowledge/notes-by-topic-prompt.md` | **Retired** — split into the plan + write pair above. File now just points to them. | — | — |
+| `knowledge/notes-audit.md` | **THE entry point — the only notes prompt you launch.** Runs **inside Claude Code**, hands-off. `SCOPE = folder` audits/completes a whole topic; `SCOPE = file` audits one file. Every file is authored then reviewed by two cold subagents before an atomic commit. `DRY_RUN` stages without committing. | its four internal pieces (below) | every built `notes/*.md` + `es/*.md`, one atomic commit per file |
+| `knowledge/_note-quality-standard.md` | *Internal.* The **shared writing standard** every piece reads (format modes, rule 3, signature elements, anticipate-the-TODO). Not runnable. | — | — |
+| `knowledge/notes-plan-prompt.md` | *Internal (folder mode).* Surveys a topic folder, does the `en`/`es` sync, and writes the ordered **worklist** — no note prose. | `notes/{topic}/coverage.md`, the topic's notes (en + es), `future-learning.md` | `en`/`es` structure, `future-learning.md`, `notes-worklist.md` |
+| `knowledge/notes-write-prompt.md` | *Internal (author).* Deep, high-standard work on **one** file: resolve TODOs, complete it, mirror to `es/`, self-check gate. | `_note-quality-standard.md`, the one file (en + es), sibling files, `PROGRESS.md` | that one `notes/*.md` + its `es/*.md`, the `CLAUDE.md` counter |
+| `knowledge/notes-review-prompt.md` | *Internal (reviewer).* Independent second-pass auditor for **one** file: fixes what falls short in `en/` + `es/`, then marks the row and commits (unless dry-run). | `_note-quality-standard.md`, the one file (en + es), sibling files | the audited `notes/*.md` + `es/*.md`, the worklist checkbox, one atomic commit |
 | `knowledge/interview-prep-by-topic-prompt.md` | Builds and audits the **interview Q&A** for one topic (priority markers, question types, en/es sync). | `notes/{topic}/coverage.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md` |
 | `knowledge/notes-and-interview-prep-prompt.md` | Closes gaps **between** notes and Q&A in both directions (every note concept has a question, every question has a note). Run after the two above. | the topic notes + `interview-prep/en/` + `es/` | the topic `notes/*.md` and `interview-prep/en/` + `es/`, `CLAUDE.md` counter |
 
@@ -84,7 +82,7 @@ producer has not run (or is stale), its consumers produce wrong results. Run pro
 Each generated file, with who writes it and who depends on it:
 
 - **`notes/coverage.md`** — written by `coverage-prompt` / `coverage-audit-prompt` → read by
-  `notes-write` (per file), `interview-prep-by-topic`, `notes-and-interview-prep`, `new-project`,
+  `notes-audit`, `interview-prep-by-topic`, `notes-and-interview-prep`, `new-project`,
   `roadmap-review`, and `sql-exercises` (SQL section). *Coverage is the root — almost everything
   downstream assumes it is correct.*
 - **`PROGRESS.md`** — written by `progress-update` (and by Claude after each step in the daily
@@ -113,8 +111,7 @@ Pipeline view:
 ```
 coverage-prompt / coverage-audit ─► notes/coverage.md
         │
-        ├─► notes-plan ─► worklist ─► notes-run (author+reviewer subagents/row) ─► notes/*.md ─┐
-        │           (notes-build = plan+run in one) └─ or notes-write manually, 1 file/run ─┘   │
+        ├─► notes-audit (folder|file) ─► [plan] → per file: author + reviewer subagents ─► notes/*.md ─┐
         ├─► interview-prep-by-topic ─► interview-prep/*.md ─┐
         │        └─ notes-and-interview-prep keeps both in sync
         │                                                   │
@@ -146,9 +143,8 @@ Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
 
 **Auditing knowledge (one topic)**
 1. `coverage-prompt` — define/refresh the topic's coverage
-2. `notes-plan` (folder → worklist) then `notes-run` (per row: author + reviewer subagents; or
-   `notes-write` per file manually) — or `notes-build` to do both in one command. Then
-   `interview-prep-by-topic` — build both sides
+2. `notes-audit` (`SCOPE = folder` for a whole topic, `SCOPE = file` for one file — hands-off,
+   author + reviewer per file), then `interview-prep-by-topic` — build both sides
 3. `notes-and-interview-prep` — close the gaps between them
 4. (after all topics have coverage) `coverage-audit` — global convergence pass
 5. `roadmap-review` — check the plan still reflects reality
@@ -165,7 +161,7 @@ Per-target prompts (one topic / file / project / type at a time) also accept **`
 target field, so you don't have to run them folder by folder. Set the field to `all` and the prompt
 processes every target in order, one commit per target. Full rules: `notes/prompts/_batch-mode.md`.
 
-- **Supports `all`:** `coverage-prompt`, `notes-plan` (`TOPIC = all`), `interview-prep-by-topic`,
+- **Supports `all`:** `coverage-prompt`, `notes-audit` (`SCOPE = folder`, `TOPIC = all`), `interview-prep-by-topic`,
   `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-review`, `project-review`,
   `portfolio-ready` (`PROJECT_PATH = all`); `new-project` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**),

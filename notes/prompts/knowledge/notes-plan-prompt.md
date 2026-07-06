@@ -1,29 +1,29 @@
-# Notes plan prompt — folder-level audit that produces a worklist
+# Notes plan prompt — the PLANNING component (folder analysis)
 
-Use in a **separate conversation**. Fill in the configuration block, then paste everything below
-into a new chat.
+**Internal component.** This is the **planner** in the notes pipeline, used only in folder mode. You
+don't launch it — `notes-audit.md` (`SCOPE = folder`) dispatches it as a cold subagent first, then
+builds each row it produced. It is documented here so the audit prompt can point a subagent at it.
 
-**What this prompt does and does not do.** This is the **planning half** of the notes system. It
-surveys a whole topic folder and figures out *what needs to happen* — but it does **not** write or
-rewrite note prose. It does the cheap, verifiable, whole-folder work (folder setup, `en`/`es` sync,
-gap analysis, sequence check) and produces an **ordered worklist**. Each item in that worklist is
-then executed, **one file per conversation**, with `notes-write-prompt.md`.
+**What it does and does not do.** It surveys a whole topic folder and figures out *what needs to
+happen* — but it does **not** write or rewrite note prose. It does the cheap, verifiable, whole-folder
+work (folder setup, `en`/`es` parity, gap analysis, sequence check) and writes an **ordered
+worklist** (`notes/{TOPIC}/notes-worklist.md`). Each row is then built by the author + reviewer
+subagents the audit dispatches.
 
-**Why the split.** Applying the full writing standard to every file of a folder in one conversation
-overloads the model's attention — the heaviest work (the writing bar) is the first thing that gets
-dropped, and parts of the audit get skipped. Planning is analytical and mechanical, so it is safe to
-run across the whole folder. Writing is where the attention budget matters, so it is bounded to one
-file at a time. This prompt never writes rich note content — that is the write prompt's only job.
+**Why planning is separate from writing.** Applying the full writing standard to every file of a
+folder in one context overloads the model's attention — the heaviest work (the writing bar) is the
+first thing that gets dropped. Planning is analytical and mechanical, so it is safe to do across the
+whole folder in one pass. Writing is where the attention budget matters, so it is bounded to one cold
+subagent per file. This component never writes rich note content.
 
 ---
 
-**How to use:**
+**How it runs** (invoked by `notes-audit.md`; the config block below is filled by the dispatching
+subagent, not by Victor):
 
-1. Fill in `TOPIC` — the subject to plan (e.g. Angular, SQL, Java, Spring Boot).
-2. Fill in `NOTES_PATH` — the `en/` folder for that topic (e.g. `notes/angular/en/`).
-3. Paste the entire prompt below into a new chat.
-4. When it finishes, take the worklist it prints and run `notes-write-prompt.md` once per file, in
-   the order given.
+1. `TOPIC` — the subject to plan (e.g. Angular, SQL, Java, Spring Boot).
+2. `NOTES_PATH` — the `en/` folder for that topic (e.g. `notes/angular/en/`).
+3. It writes the worklist; the audit orchestrator then builds each row.
 
 ---
 
