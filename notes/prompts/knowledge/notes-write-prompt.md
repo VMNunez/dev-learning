@@ -149,6 +149,16 @@ Spanish prose must read as natural Spanish, not a word-for-word translation — 
 ("escanear" → "leer", "retornar" → "devolver") and English word order. Translate structural labels
 (`Purpose:` → `Propósito:`, `File:` → `Archivo:`; `Docs:` stays).
 
+## Step 5 — Mark this file done in the worklist (automatic)
+
+Derive the worklist path from the topic root of `{FILE}` — e.g. `{FILE} = notes/java/en/08-exceptions.md`
+→ `notes/java/notes-worklist.md`. If that file exists, find the row whose path matches `{FILE}` and
+flip its checkbox from `[ ]` to `[x]` — edit only that one line (`- [ ] #N · {FILE}` → `- [x] #N · {FILE}`),
+change nothing else. This is how progress is tracked without Victor marking anything by hand.
+
+If the worklist file does not exist (this run was launched directly, not from a plan), skip this step
+silently — there is nothing to mark.
+
 ---
 
 ## First-pass checklist — run on every section (first-pass mode only)
