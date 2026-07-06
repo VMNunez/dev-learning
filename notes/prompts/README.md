@@ -37,7 +37,9 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | `knowledge/coverage-audit-prompt.md` | **Global** convergence pass over all of `notes/coverage.md`; fills gaps, fixes item quality, can add a whole new topic folder (e.g. testing, docker). Run once after every topic has a coverage file. | `notes/coverage.md`, every `notes/{topic}/coverage.md`, `ROADMAP.md` | `notes/coverage.md` + each topic `coverage.md`, `future-learning.md` files; may create `notes/{topic}/` |
 | `knowledge/notes-plan-prompt.md` | **Plan half.** Surveys a whole topic folder, does the mechanical `en`/`es` sync, and produces an ordered **worklist** — writes no note prose. | `notes/{topic}/coverage.md`, the topic's notes (en + es), `future-learning.md` | `en`/`es` folder structure, `future-learning.md`; **output:** a worklist of write tasks |
 | `knowledge/notes-write-prompt.md` | **Write half.** Deep, high-standard work on **one** file: resolve TODOs, complete it, mirror to `es/`, auto-check its worklist row. Run once per worklist row, one file per conversation. | `_note-quality-standard.md`, the one file (en + es), `PROGRESS.md` | that one `notes/*.md` + its `es/*.md`, the worklist checkbox, the "next file:" counter in `CLAUDE.md` |
-| `knowledge/notes-run-prompt.md` | **Orchestrator.** Runs **inside Claude Code**; reads the worklist and dispatches one subagent per row (sequential), each building + committing one file atomically. Turns the whole topic into a single command. | `notes/{topic}/notes-worklist.md`, `notes-write-prompt.md` | every `notes/*.md` + `es/*.md` in the worklist, one atomic commit per file |
+| `knowledge/notes-review-prompt.md` | **Reviewer half.** Independent second-pass auditor for **one** file: audits the just-authored note against the standard, fixes what falls short in `en/` + `es/`, then (unless dry-run) marks the row and commits. | `_note-quality-standard.md`, the one file (en + es), sibling files | the audited `notes/*.md` + `es/*.md`, the worklist checkbox, one atomic commit |
+| `knowledge/notes-run-prompt.md` | **Orchestrator.** Runs **inside Claude Code**; per worklist row runs a two-subagent pipeline (author → reviewer) sequentially, one atomic commit per file. `DRY_RUN` stages without committing. | `notes/{topic}/notes-worklist.md`, `notes-write-prompt.md`, `notes-review-prompt.md` | every `notes/*.md` + `es/*.md` in the worklist, one atomic commit per file |
+| `knowledge/notes-build-prompt.md` | **Plan + run in one command.** Chains `notes-plan` then `notes-run` with no stop between — the hands-off build. Skips the human worklist checkpoint (use the two separately to keep it). | (delegates to plan + run) | the worklist + every built note, committed |
 | `knowledge/_note-quality-standard.md` | The **shared writing standard** both prompts above read (format modes, rule 3, signature elements, anticipate-the-TODO). Not runnable on its own. | — | — |
 | `knowledge/notes-by-topic-prompt.md` | **Retired** — split into the plan + write pair above. File now just points to them. | — | — |
 | `knowledge/interview-prep-by-topic-prompt.md` | Builds and audits the **interview Q&A** for one topic (priority markers, question types, en/es sync). | `notes/{topic}/coverage.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md` |
@@ -111,8 +113,8 @@ Pipeline view:
 ```
 coverage-prompt / coverage-audit ─► notes/coverage.md
         │
-        ├─► notes-plan ─► worklist ─► notes-run (orchestrates subagents) ─► notes/*.md ─┐
-        │                        └─ or notes-write manually, 1 file/run   ─┘         │
+        ├─► notes-plan ─► worklist ─► notes-run (author+reviewer subagents/row) ─► notes/*.md ─┐
+        │           (notes-build = plan+run in one) └─ or notes-write manually, 1 file/run ─┘   │
         ├─► interview-prep-by-topic ─► interview-prep/*.md ─┐
         │        └─ notes-and-interview-prep keeps both in sync
         │                                                   │
@@ -144,8 +146,9 @@ Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
 
 **Auditing knowledge (one topic)**
 1. `coverage-prompt` — define/refresh the topic's coverage
-2. `notes-plan` (folder → worklist) then `notes-run` (auto-builds every file via subagents; or
-   `notes-write` per file manually), then `interview-prep-by-topic` — build both sides
+2. `notes-plan` (folder → worklist) then `notes-run` (per row: author + reviewer subagents; or
+   `notes-write` per file manually) — or `notes-build` to do both in one command. Then
+   `interview-prep-by-topic` — build both sides
 3. `notes-and-interview-prep` — close the gaps between them
 4. (after all topics have coverage) `coverage-audit` — global convergence pass
 5. `roadmap-review` — check the plan still reflects reality
