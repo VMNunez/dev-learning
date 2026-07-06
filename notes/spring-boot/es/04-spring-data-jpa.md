@@ -15,6 +15,8 @@ Escribes contra la especificación JPA; Hibernate hace el trabajo. Es el mismo p
 
 ## @Entity — mapear una clase a una tabla
 
+Docs: https://www.baeldung.com/jpa-entities
+
 ```java
 @Entity
 @Table(name = "transactions")     // opcional — por defecto es el nombre de la clase, en minúscula
@@ -201,6 +203,8 @@ public void onCreate() {
 
 ## JpaRepository — lo que obtienes gratis
 
+Docs: https://www.baeldung.com/the-persistence-layer-with-spring-data-jpa → leer: la sección de `JpaRepository`
+
 El patrón que se repite: defines una interfaz; Spring genera la implementación.
 
 ```java
@@ -232,6 +236,8 @@ Transaction transaction = repository.findById(id)
 ---
 
 ## Derived query methods
+
+Docs: https://www.baeldung.com/spring-data-derived-queries
 
 Spring Data JPA parsea el nombre del método y genera el SQL — sin implementación necesaria.
 
@@ -304,6 +310,8 @@ public Page<TransactionResponse> getAll(Pageable pageable) {
 ---
 
 ## Relaciones — @ManyToOne y @OneToMany
+
+Docs: https://www.baeldung.com/hibernate-one-to-many
 
 Un usuario tiene muchas transacciones. En la base de datos, la tabla `transactions` tiene una columna FK `user_id`. La regla: **la entidad cuya tabla tiene la columna FK recibe `@ManyToOne`**.
 
@@ -379,6 +387,8 @@ public class User {
 
 ## FetchType.LAZY vs FetchType.EAGER
 
+Docs: https://www.baeldung.com/hibernate-lazy-eager-loading
+
 | | LAZY | EAGER |
 |---|------|-------|
 | Cuándo se carga | Solo cuando accedes al campo | Inmediatamente con el padre |
@@ -398,6 +408,8 @@ private User user;
 ---
 
 ## El problema N+1
+
+Docs: https://www.baeldung.com/spring-data-jpa-n-plus-1-problem
 
 Este es uno de los errores de rendimiento más comunes en aplicaciones JPA.
 
@@ -430,6 +442,8 @@ List<Transaction> findAll();
 ---
 
 ## save() — insert o update
+
+Docs: https://www.baeldung.com/jpa-persist-merge → leer: el contraste con el comportamiento insert-o-update de `save()`
 
 `save()` decide comprobando el campo `@Id`:
 - `id == null` → **INSERT** (nueva entidad)
