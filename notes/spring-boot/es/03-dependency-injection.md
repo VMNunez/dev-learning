@@ -35,6 +35,8 @@ Esto es **Inversión de Control (IoC)** — en lugar de que la clase controle su
 
 ## Beans de Spring — lo que Spring gestiona
 
+Docs: https://www.baeldung.com/spring-bean
+
 Un **bean** es cualquier objeto que Spring crea y gestiona. Spring almacena todos los beans en un contenedor llamado **Application Context**. Cuando anotas una clase con `@Service`, Spring crea una instancia y la guarda. Cuando otra clase la necesita, Spring inyecta esa misma instancia.
 
 **Por defecto, cada bean es un singleton** — una instancia compartida en toda la aplicación. Por eso los campos de los servicios deben ser sin estado (sin variables de instancia que cambien entre requests).
@@ -42,6 +44,8 @@ Un **bean** es cualquier objeto que Spring crea y gestiona. Spring almacena todo
 ---
 
 ## Anotaciones de beans — cuál usar
+
+Docs: https://www.baeldung.com/spring-component-repository-service
 
 Las cuatro registran la clase como un bean de Spring. Las diferencias son semánticas y prácticas:
 
@@ -59,6 +63,8 @@ Usar la anotación correcta hace el código autodocumentado — cualquier desarr
 ---
 
 ## Inyección por constructor — la forma correcta
+
+Docs: https://www.baeldung.com/constructor-injection-in-spring
 
 Hay tres formas de inyectar dependencias. Solo la inyección por constructor es recomendada para código nuevo:
 
@@ -103,6 +109,8 @@ public class TransactionService {
 ---
 
 ## @Bean — beans de clases de librería
+
+Docs: https://www.baeldung.com/spring-bean → leer: la sección sobre configuración basada en Java con métodos `@Bean`
 
 `@Component`, `@Service` y `@Repository` funcionan cuando posees la clase. Cuando necesitas un bean de una clase de librería (una que no puedes anotar), usas `@Bean` en un método dentro de una clase `@Configuration`:
 
@@ -150,6 +158,8 @@ Si falta algún bean (p.ej. olvidaste `@Service` en `AuthService`), Spring lanza
 
 ## @Qualifier y @Primary — múltiples implementaciones
 
+Docs: https://www.baeldung.com/spring-qualifier-annotation
+
 Si dos clases implementan la misma interfaz, Spring no sabe cuál inyectar:
 
 ```java
@@ -174,6 +184,8 @@ En la práctica, rara vez necesitas `@Qualifier` o `@Primary` en proyectos simpl
 ---
 
 ## @Value — leyendo configuración en beans
+
+Docs: https://www.baeldung.com/spring-value-annotation
 
 Lee valores de `application.properties` directamente en un campo:
 

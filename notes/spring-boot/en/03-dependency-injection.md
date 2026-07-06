@@ -35,6 +35,8 @@ This is **Inversion of Control (IoC)** — instead of the class controlling its 
 
 ## Spring beans — what Spring manages
 
+Docs: https://www.baeldung.com/spring-bean
+
 A **bean** is any object that Spring creates and manages. Spring stores all beans in a container called the **Application Context**. When you annotate a class with `@Service`, Spring creates one instance and stores it. When another class needs it, Spring injects that same instance.
 
 **By default, every bean is a singleton** — one instance shared across the whole application. This is why service fields must be stateless (no instance variables that change between requests).
@@ -42,6 +44,8 @@ A **bean** is any object that Spring creates and manages. Spring stores all bean
 ---
 
 ## Bean annotations — which to use
+
+Docs: https://www.baeldung.com/spring-component-repository-service
 
 All four register the class as a Spring bean. The differences are semantic and practical:
 
@@ -59,6 +63,8 @@ Using the right annotation makes the code self-documenting — any developer can
 ---
 
 ## Constructor injection — the correct way
+
+Docs: https://www.baeldung.com/constructor-injection-in-spring
 
 There are three ways to inject dependencies. Only constructor injection is recommended for new code:
 
@@ -103,6 +109,8 @@ public class TransactionService {
 ---
 
 ## @Bean — beans from library classes
+
+Docs: https://www.baeldung.com/spring-bean → read: the section on Java-based configuration with `@Bean` methods
 
 `@Component`, `@Service`, and `@Repository` work when you own the class. When you need a bean from a library class (one you can't annotate), you use `@Bean` on a method inside a `@Configuration` class:
 
@@ -150,6 +158,8 @@ If any bean is missing (e.g. you forgot `@Service` on `AuthService`), Spring thr
 
 ## @Qualifier and @Primary — multiple implementations
 
+Docs: https://www.baeldung.com/spring-qualifier-annotation
+
 If two classes implement the same interface, Spring does not know which to inject:
 
 ```java
@@ -174,6 +184,8 @@ In practice, you rarely need `@Qualifier` or `@Primary` in simple projects. They
 ---
 
 ## @Value — reading configuration into beans
+
+Docs: https://www.baeldung.com/spring-value-annotation
 
 Read values from `application.properties` directly into a field:
 
