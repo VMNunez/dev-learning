@@ -21,10 +21,40 @@ approval, no per-file launching — one command does everything.
 
 ---
 
-**How to use:**
+## How to use — recipes
 
-1. Fill in `SCOPE`, then `TOPIC` (folder) or `FILE` + `TASK` (file), and `DRY_RUN`.
-2. Paste into Claude Code and let it run to the end.
+Open a fresh chat **inside Claude Code**, paste the whole prompt below (config block + instructions),
+fill only the config block, and let it run to the end. You touch nothing else — no worklist to
+approve, no per-file launching, no commits to run (unless `DRY_RUN = true`). Pick the recipe:
+
+**A · Build or audit a whole topic** (e.g. finish the Java notes end to end)
+```
+SCOPE   = folder
+TOPIC   = Java
+FILE    =            ← leave blank
+TASK    =            ← leave blank
+DRY_RUN = true       ← true the first time on a topic; false once you trust it
+```
+
+**B · Audit or create one file** (e.g. a note you just wrote by hand, or one to fix)
+```
+SCOPE   = file
+TOPIC   = Java
+FILE    = notes/java/en/08-exceptions.md
+TASK    =            ← blank means "audit it and bring it fully to standard, resolving any TODOs"
+DRY_RUN = false
+```
+> In file mode, point `FILE` at the **`en/`** path — the pipeline mirrors to `es/` automatically. To
+> create a brand-new file, still name its intended `en/` path and set `TASK` to what it should cover.
+
+**Rules of thumb:**
+- **First time on any topic → `DRY_RUN = true`.** It writes and reviews everything but commits
+  nothing; you read the diff, then re-run with `DRY_RUN = false` (or paste the commits it printed).
+- **Spring Boot** is the one topic that spans two folders — just set `TOPIC = Spring Boot`; the
+  planner reads both `notes/java/en/` and `notes/spring-boot/en/` on its own.
+- Fill in **only** the config block. Everything below it is machinery — never edit it.
+- If a folder run is interrupted, just launch it again with the same config: finished files are
+  already `[x]` in the internal worklist and are skipped, so it resumes where it stopped.
 
 ---
 
