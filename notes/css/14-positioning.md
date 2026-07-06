@@ -126,6 +126,18 @@ z-index: 9999;  /* tooltips, notifications */
 
 Elements with the same z-index stack in DOM order — the one that appears later in the HTML is on top.
 
+### Stacking context — why z-index 9999 sometimes loses
+
+`z-index` does not compare globally — it only compares elements **inside the same stacking context**. A modal with `z-index: 9999` can still appear *behind* a navbar with `z-index: 100` if the modal is trapped inside a parent that created its own stacking context with a lower (or no) z-index.
+
+What creates a new stacking context (the surprising ones):
+
+- a `position` other than `static` **together with** a `z-index` value
+- `opacity` less than `1`
+- a `transform`, `filter`, or `will-change` — this one catches people: an animated parent silently traps its children
+
+So the classic bug "my modal is behind the navbar even with `z-index: 9999`" usually means the modal is nested inside an element with `opacity` or `transform`. The fix is to move the modal to the top level of the DOM — which is exactly why Angular Material's `MatDialog` renders the dialog in an overlay at the end of `<body>`, outside any component's stacking context.
+
 ---
 
 ## Common patterns

@@ -35,12 +35,10 @@ Used in advanced library types. You will see them in Angular and RxJS type defin
 
 ### Advanced utility types
 
-Beyond `Omit`, `Partial`, `Pick`, and `Record` — the ones you already know:
+Beyond `Omit`, `Partial`, `Pick`, `Record`, `Required`, and `Readonly` — the ones already in coverage:
 
 | Type | What it does |
 |------|-------------|
-| `Required<T>` | Makes all fields required (opposite of `Partial`) |
-| `Readonly<T>` | Makes all fields readonly |
 | `ReturnType<T>` | Extracts the return type of a function |
 | `Parameters<T>` | Extracts the parameter types of a function as a tuple |
 | `NonNullable<T>` | Removes `null` and `undefined` from a type |

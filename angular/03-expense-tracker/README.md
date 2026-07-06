@@ -1,10 +1,27 @@
-# 03 — Expense Tracker
+# Expense Tracker
 
-My third Angular project. A personal finance tracker to learn reactive forms, routing, and localStorage persistence.
+My 3rd learning project — personal finance tracker where users log income and expenses, see live totals and filter transactions.
 
-**Live demo:** https://03angularexpensetracker.netlify.app/
+---
 
+## Why this project
+
+Forms and validation appear in almost every business app. I built this project to understand how reactive forms work, how to validate user input properly, and how to navigate between pages — patterns that appear in every real Angular project.
+
+---
+
+## Live demo
+
+https://03angularexpensetracker.netlify.app/
+
+---
+
+## Screenshots
+
+**App overview**
 ![App preview](screenshots/preview.png)
+
+---
 
 ## Features
 
@@ -12,21 +29,37 @@ My third Angular project. A personal finance tracker to learn reactive forms, ro
 - Real-time balance, total income and total expenses
 - Filter transactions by type: All, Income, Expense
 - Delete transactions
-- Form validation with error messages
-- Data persists after page refresh (localStorage)
-- Responsive design — works on mobile and desktop
+- Form validation with inline error messages
+- Data persists after page refresh
+- Responsive — works on mobile and desktop
+
+---
 
 ## Architecture decisions
 
-- **Smart/dumb component pattern** — the transaction form is a dumb component that only emits an event with the new transaction data; the page handles saving and updating the list. This keeps the form reusable and moves all state decisions to one place.
+- Smart/dumb component pattern — the form component only emits data, the page handles saving and updating the list
+- Reactive forms over template-driven — `markAllAsTouched()` on submit requires TypeScript control over the form
+- `computed()` for filtering to recalculate automatically when the signal changes, without a manual trigger
 
-- **Reactive forms over template-driven** — the form has validation rules that need to be checked programmatically on submit (`markAllAsTouched()`). Template-driven forms make that harder because the logic lives in the HTML rather than in TypeScript.
+---
 
-- **`localStorage` for persistence** — there is no backend in this project. `localStorage` is the simplest way to keep data after a page refresh, and it is good enough for a personal finance tracker used by one person.
+## Tradeoffs
+
+- localStorage over a real backend — the focus was reactive forms and routing, not data persistence
+- `Omit<T, K>` for the create type over a separate interface — one source of truth for the transaction shape
+
+---
+
+## Future improvements
+
+- Categories for transactions with colour coding
+- Monthly summary chart
+- Export transactions to CSV
+
+---
 
 ## What I learned
 
-### Angular
 - `FormGroup` and `FormControl` — reactive forms
 - `Validators.required` and `Validators.min()` — built-in validation
 - `hasError()` and `touched` — show error messages at the right moment
@@ -35,34 +68,38 @@ My third Angular project. A personal finance tracker to learn reactive forms, ro
 - `routerLink` and `RouterOutlet` — navigation between pages
 - `Router` service — programmatic navigation with `router.navigate()`
 - `computed()` with filters — derived state that reacts to signals
-- `Omit<T, K>` — TypeScript utility type to create `NewTransaction` from `Transaction`
+- `Omit<T, K>` — TypeScript utility type to remove fields from an existing type
 - Smart/dumb component pattern — page handles logic, form only emits
-
-### CSS
 - `position: absolute` and `position: relative` — element positioning
-- `@media (min-width)` — responsive design, mobile first approach
+- `@media (min-width)` — responsive design, mobile first
+
+---
 
 ## Tech stack
 
-- Angular 21
-- TypeScript
-- CSS
+| Layer | Technology |
+|---|---|
+| Framework | Angular 21 |
+| Language | TypeScript |
+| Styles | CSS |
 
-## How to run the project
+---
 
-```bash
+## How to run
+
+```
 git clone https://github.com/VMNunez/dev-learning.git
 ```
 
-```bash
+```
 cd dev-learning/angular/03-expense-tracker
 ```
 
-```bash
+```
 npm install
 ```
 
-```bash
+```
 npm start
 ```
 

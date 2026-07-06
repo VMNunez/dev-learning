@@ -6,27 +6,13 @@ Topics to study once the current 14 files are solid. Nothing here is needed for 
 
 ## Phase 1 — After landing the first job
 
-### Performance patterns — debouncing and throttling
+### Throttling and raw debounce implementation
 
-Control how often a function runs in response to frequent events (typing, scrolling, resizing).
+The debouncing concept (what it is and why Angular uses `debounceTime()`) is already in coverage. What stays here is the raw implementation using `setTimeout`/`clearTimeout` and the throttling pattern — running a function at most once every N milliseconds regardless of how often the event fires. In Angular you will use `RxJS throttleTime()` instead of writing it manually, but understanding the underlying mechanism is useful when reading legacy non-Angular code.
 
-**Debouncing** — wait until the user stops triggering the event, then run once:
-```js
-// Run search only after the user stops typing for 300ms
-let timer;
-input.addEventListener('input', () => {
-  clearTimeout(timer);
-  timer = setTimeout(() => search(input.value), 300);
-});
-```
+### Custom iterators
 
-**Throttling** — run at most once every N milliseconds, regardless of how often the event fires.
-
-In Angular you will use `RxJS debounceTime()` and `throttleTime()` operators instead of writing this manually — but knowing the underlying concept is essential when someone asks "why are you using debounceTime here?".
-
-### Iterators and `for...of`
-
-Any object can be made iterable by implementing `Symbol.iterator`. This is how arrays, strings, Maps, and Sets all work with `for...of`:
+Any object can be made iterable by implementing `Symbol.iterator`. This is how arrays, strings, Maps, and Sets all work with `for...of` (which is already in coverage). What stays here is the custom iterator protocol itself:
 
 ```js
 const range = {

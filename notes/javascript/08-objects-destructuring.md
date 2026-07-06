@@ -42,6 +42,26 @@ This appears everywhere in Angular when building objects from component variable
 
 ---
 
+## Computed property keys
+
+Use square brackets in an object literal to make the **key itself** dynamic — computed from a variable or expression:
+
+```js
+const field = 'email';
+
+const update = { [field]: 'new@example.com' };
+// { email: 'new@example.com' }  — the key came from the variable's value
+
+// common when updating a field whose name is decided at runtime
+function setField(key, value) {
+  return { [key]: value };
+}
+```
+
+Without the brackets, `{ field: ... }` would use the literal string `'field'` as the key, not the variable's value.
+
+---
+
 ## Object destructuring
 
 Extract properties from an object into variables:
@@ -186,6 +206,30 @@ false ?? 'default'      // false  ← false is not null/undefined
 ```
 
 Used in Angular when reading from localStorage or optional signal values.
+
+---
+
+## Logical assignment — `||=`, `&&=`, `??=`
+
+Shorthand that combines a logical operator with assignment — it assigns to the left side only when a condition holds:
+
+```js
+let a;
+a ??= 'default';   // assigns only if a is null or undefined        → 'default'
+
+let count = 0;
+count ??= 10;      // 0 stays — 0 is not null/undefined             → 0
+count ||= 10;      // 0 is falsy, so it IS replaced                 → 10
+
+let theme = 'dark';
+theme &&= 'light'; // assigns only if the left side is truthy       → 'light'
+```
+
+- `a ??= b` → assign `b` only if `a` is `null` or `undefined` (the safe one — keeps `0`, `false`, `''`)
+- `a ||= b` → assign `b` if `a` is any falsy value
+- `a &&= b` → assign `b` only if `a` is truthy
+
+`??=` is the most useful — it sets a default without clobbering valid falsy values. These are the assignment form of the `??` / `||` operators above; you will mostly meet them when reading modern code.
 
 ---
 

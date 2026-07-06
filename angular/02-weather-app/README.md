@@ -1,32 +1,64 @@
-# 02 — Weather App
+# Weather App
 
-My second Angular project. A weather app that fetches real data from an API to learn HTTP Client and RxJS basics.
+My 2nd learning project — weather app that fetches real data from an external API and shows current conditions and a 5-day forecast.
 
-**Live demo:** https://02angularweatherapp.netlify.app/
+---
 
+## Why this project
+
+Real Angular apps almost always fetch data from an API. I built this project to understand how HttpClient, Observables and subscription management work — the foundation for any app that talks to a backend.
+
+---
+
+## Live demo
+
+https://02angularweatherapp.netlify.app/
+
+---
+
+## Screenshots
+
+**App overview**
 ![App preview](screenshots/preview.png)
+
+---
 
 ## Features
 
 - Search weather by city name
 - Current temperature, feels like, humidity and weather condition
-- Weather condition icon
 - 5-day forecast
 - Loading spinner while fetching data
-- Error handling when the city is not found
+- Error message when the city is not found
 - Madrid loaded by default on app start
+
+---
 
 ## Architecture decisions
 
-- **`forkJoin` for parallel requests** — the app needs current weather and the 5-day forecast at the same time; making them sequential would double the wait time for no reason. `forkJoin` fires both at once and waits for both to finish before updating the UI.
+- `forkJoin` for parallel requests to load current weather and forecast at the same time instead of sequentially
+- `takeUntilDestroyed` to cancel subscriptions automatically when the component is destroyed — no `ngOnDestroy` needed
+- Environment files for the API key to keep secrets out of the repository
 
-- **`takeUntilDestroyed` over manual unsubscribe** — HTTP subscriptions left open after a component is destroyed cause memory leaks. `takeUntilDestroyed()` handles cleanup automatically, which avoids writing a `ngOnDestroy` hook for every component.
+---
 
-- **Environment files for the API key** — the key cannot be committed to the repository. Environment files are excluded from git and injected at build time, which is the standard Angular pattern for secrets.
+## Tradeoffs
+
+- `subscribe` over `async` pipe — explicit subscription management was clearer for learning the Observable lifecycle
+- Single component over split components — the focus was HTTP patterns, not component architecture
+
+---
+
+## Future improvements
+
+- Hourly forecast breakdown
+- Save favourite cities
+- Geolocation to detect the user's current city automatically
+
+---
 
 ## What I learned
 
-### Angular
 - `HttpClient` — call external APIs from Angular
 - `subscribe` — handle Observable responses
 - `forkJoin` — run multiple HTTP requests in parallel
@@ -37,34 +69,38 @@ My second Angular project. A weather app that fetches real data from an API to l
 - Environment files — store API keys safely
 - `takeUntilDestroyed` — cancel HTTP subscriptions automatically when a component is destroyed
 - `DestroyRef` — Angular token injected to notify observables when the component lifecycle ends
-
-### CSS
 - `@keyframes` and `animation` — CSS animations
 - CSS spinner: `border-top-color` + `rotate` + `border-radius: 50%`
 - `transition` and `transform: scale()` — hover effects
 
+---
+
 ## Tech stack
 
-- Angular 21
-- TypeScript
-- CSS
-- OpenWeatherMap API
+| Layer | Technology |
+|---|---|
+| Framework | Angular 21 |
+| Language | TypeScript |
+| Styles | CSS |
+| API | OpenWeatherMap |
 
-## How to run the project
+---
 
-```bash
+## How to run
+
+```
 git clone https://github.com/VMNunez/dev-learning.git
 ```
 
-```bash
+```
 cd dev-learning/angular/02-weather-app
 ```
 
-```bash
+```
 npm install
 ```
 
-```bash
+```
 npm start
 ```
 

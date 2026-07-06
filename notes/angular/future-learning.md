@@ -4,45 +4,6 @@ Topics to study once the current foundation is solid. The goal of this file is n
 
 ---
 
-## Read-only knowledge before the first job
-
-These are patterns you do NOT need to write, but you WILL encounter in existing codebases on day one. Recognising them is enough — you do not need a project to understand them.
-
-### `@Output()` and `EventEmitter` — legacy component communication
-
-You use `output()` (modern signals API). Legacy Angular code — everything written before Angular 17 — uses the decorator pattern instead:
-
-```typescript
-// Legacy — what you will find in enterprise codebases
-@Output() employeeCreated = new EventEmitter<Employee>();
-
-// To emit a value
-this.employeeCreated.emit(newEmployee);
-
-// In the parent template
-<app-employee-form (employeeCreated)="onEmployeeCreated($event)" />
-```
-
-Your `output()` does the same thing — just without the class boilerplate. When you see `@Output()` and `EventEmitter`, you will know exactly what it does.
-
-### NgModule — the pre-standalone module system
-
-Every Angular project written before v15 uses `@NgModule`. You will see this in every existing enterprise project:
-
-```typescript
-@NgModule({
-  declarations: [AppComponent, EmployeeListComponent], // components that belong to this module
-  imports: [BrowserModule, HttpClientModule, MatTableModule], // external modules used here
-  exports: [EmployeeListComponent], // components other modules can use
-  providers: [EmployeeService], // services registered here
-})
-export class AppModule {}
-```
-
-You do not need to write NgModules — standalone is the modern approach. You need to be able to read this structure when you join a project that has it, and understand what goes where.
-
----
-
 ## Phase 1 — After landing the first job
 
 These are things you will encounter in real project work within the first few months. Not needed for the portfolio — needed to contribute effectively on a team.
@@ -59,6 +20,16 @@ provideRouter(routes, withPreloading(PreloadAllModules))
 
 `PreloadAllModules` downloads all lazy routes after the initial load. You can also write a custom strategy that only preloads specific routes. Relevant for production apps where perceived performance matters.
 
+### ChangeDetectorRef — manual change detection control
+
+In most Angular apps with signals you will never need this. But in existing codebases, third-party libraries often update data outside Angular's awareness. `ChangeDetectorRef` lets you trigger a check manually:
+
+- `cdr.detectChanges()` — force an immediate check of this component
+- `cdr.markForCheck()` — mark the component dirty so Angular checks it on the next cycle
+- `cdr.detach()` — remove the component from the change detection tree entirely (advanced, rarely needed)
+
+You will encounter this in legacy code that integrates charting libraries, Google Maps, or WebSockets. With signals, the need is rare — signals always notify Angular automatically.
+
 ### Angular CDK — Component Dev Kit
 
 The lower-level toolkit from the Angular Material team. Does not have visual components — it has primitives:
@@ -71,6 +42,19 @@ The lower-level toolkit from the Angular Material team. Does not have visual com
 | Accessibility | Focus management, keyboard navigation primitives |
 
 Relevant when your team builds custom UI components beyond what Material provides.
+
+### `resource()` API — signal-based async data loading
+
+A newer Angular API (still maturing through experimental/developer-preview stages across recent versions) that wraps an async loader function and exposes its result, loading state, and error as signals — without manually writing `toSignal()` + `catchError()` + a separate loading signal.
+
+```typescript
+userResource = resource({
+  request: () => this.userId(),
+  loader: ({ request }) => fetch(`/api/users/${request}`).then(r => r.json()),
+});
+```
+
+Why to wait: the API is still settling and most consultancy codebases in 2026 are not using it yet — `HttpClient` + `toSignal()` is still the pattern you will see and be asked about. Revisit once it stabilizes and appears in real project work.
 
 ### `@defer` blocks — template-level lazy loading
 

@@ -62,26 +62,6 @@ Nesting rules inside parent rules — no Sass required:
 
 Supported in all modern browsers since 2023. Makes component styles easier to read without a preprocessor.
 
-### Dark mode — `@prefers-color-scheme`
-
-Respond to the user's system dark mode preference:
-
-```css
-:root {
-  --background: #ffffff;
-  --text: #1a1a1a;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1a1a1a;
-    --text: #f0f0f0;
-  }
-}
-```
-
-When you use CSS variables throughout the design, switching to dark mode is only a few lines. Companies increasingly ask about this in interviews.
-
 ---
 
 ## Phase 2 — After 6–12 months
