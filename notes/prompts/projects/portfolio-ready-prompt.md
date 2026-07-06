@@ -162,11 +162,12 @@ Check whether all steps are marked as complete.
 
 Only run this check if all steps in PLANNING.md are complete.
 
-Read `PROJECT-BACKLOG.md` at the root of the learning folder.
-Find the section for {PROJECT_PATH} and check for open tasks (unchecked `[ ]` items).
+Read `{PROJECT_PATH}/PROJECT-BACKLOG.md` — each full-stack project keeps its own backlog inside
+its folder (e.g. `projects/07-timetrack/PROJECT-BACKLOG.md`), not at the root of the learning folder.
+Check for open tasks (unchecked `[ ]` items).
 
-If the section for {PROJECT_PATH} does not exist in PROJECT-BACKLOG.md: stop and report —
-"PROJECT-BACKLOG.md has no review for this project. Run `project-review-prompt` first."
+If `{PROJECT_PATH}/PROJECT-BACKLOG.md` does not exist: stop and report —
+"This project has no PROJECT-BACKLOG.md. Run `project-review-prompt` first."
 
 Apply this logic:
 
