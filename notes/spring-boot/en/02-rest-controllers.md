@@ -52,6 +52,8 @@ A few things to read off this example:
 
 ## @RestController and @RequestMapping
 
+Docs: https://www.baeldung.com/spring-controller-vs-restcontroller → read: the `@RestController` section
+
 `@RestController` tells Spring "this class handles HTTP requests, and every value I return should be sent straight back to the client as JSON". It is shorthand for `@Controller` + `@ResponseBody`: `@Controller` registers the class as a web component, and `@ResponseBody` is what serialises the return value to JSON (via Jackson) instead of treating it as the name of an HTML page.
 
 > **`@Controller` vs `@RestController`:** `@Controller` is for server-rendered HTML views (it returns the name of a template to render). For a REST API consumed by Angular, always use `@RestController` so you get JSON.
@@ -67,6 +69,8 @@ public class TransactionController { ... }
 ---
 
 ## HTTP methods — what each one means
+
+Docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods → read: the summary of each verb
 
 | Annotation       | HTTP method | Purpose                    | Has body? |
 | ---------------- | ----------- | -------------------------- | --------- |
@@ -89,6 +93,8 @@ The string inside the annotation is appended to the class-level `@RequestMapping
 ---
 
 ## ResponseEntity — controlling the HTTP response
+
+Docs: https://www.baeldung.com/spring-response-entity
 
 `ResponseEntity<T>` is **not** a DTO. It is a wrapper a controller method returns to control two things at once: the **HTTP status code** and the **response body**. The `<T>` is the type of the body it carries (often a DTO, e.g. `ResponseEntity<TransactionResponse>`). You reach for it because a REST API must communicate *what happened* (created? not found? deleted?), not just hand back data — and the status code is how it says that.
 
@@ -144,6 +150,8 @@ The relation to `@RestController`: the controller method returns the `ResponseEn
 
 ### @PathVariable — read a value from the URL path
 
+Docs: https://www.baeldung.com/spring-pathvariable
+
 Sometimes the URL itself carries a value — *which* resource you want. `GET /api/projects/42` means "the project with id 42". The `42` is not a fixed word; it changes per request. `@PathVariable` is how the controller reads that value out of the path and into a method parameter. Three things to be clear about:
 
 **1. The `{}` mark a placeholder, not a literal word.** In the mapping, `"/{id}"` tells Spring "this segment is a variable". Compare it with a static segment on the same base path `@RequestMapping("/api/projects")`:
@@ -183,6 +191,8 @@ In the second case, `@PathVariable("id")` says "take the `{id}` from the path an
 
 ### @RequestParam — read a value from the query string
 
+Docs: https://www.baeldung.com/spring-request-param
+
 Query parameters are the optional `key=value` pairs after the `?` in a URL: `GET /api/entries?month=2025-05&status=SUBMITTED`. They are the right tool for **optional filters, sorting, and pagination** — not for the resource identity (that is `@PathVariable`). `@RequestParam` reads one of them into a method parameter, the same way `@PathVariable` reads from the path:
 
 ```java
@@ -202,6 +212,8 @@ public ResponseEntity<List<EntryResponse>> getFiltered(
 ---
 
 ### @RequestBody — read the JSON body sent by the client
+
+Docs: https://www.baeldung.com/spring-request-response-body → read: the `@RequestBody` section
 
 For `POST` and `PUT`, the client sends data in the **body** of the request as JSON. `@RequestBody` tells Spring "take that JSON, convert it into this Java object (Jackson does the conversion), and give it to me as a parameter":
 
@@ -273,6 +285,8 @@ This is a defence-in-depth measure. The right approach is DTOs (described below)
 ---
 
 ## DTOs — never expose JPA entities directly
+
+Docs: https://www.baeldung.com/java-dto-pattern
 
 A **DTO** (Data Transfer Object) is a plain class whose only job is to define the *shape* of the data that crosses the API boundary — what the client sends in, and what you send back. It is not a database table and it holds no business logic: just fields. DTOs are how you give a clean shape to your responses instead of returning the raw entity.
 

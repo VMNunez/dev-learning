@@ -52,6 +52,8 @@ Algunas cosas que leer de este ejemplo:
 
 ## @RestController y @RequestMapping
 
+Docs: https://www.baeldung.com/spring-controller-vs-restcontroller → leer: la sección de `@RestController`
+
 `@RestController` le dice a Spring "esta clase gestiona peticiones HTTP, y cada valor que devuelva debe enviarse directamente al cliente como JSON". Es una abreviatura de `@Controller` + `@ResponseBody`: `@Controller` registra la clase como componente web, y `@ResponseBody` es lo que serializa el valor de retorno a JSON (via Jackson) en lugar de tratarlo como el nombre de una página HTML.
 
 > **`@Controller` vs `@RestController`:** `@Controller` es para vistas HTML renderizadas en el servidor (devuelve el nombre de una plantilla a renderizar). Para un REST API consumido por Angular, usa siempre `@RestController` para obtener JSON.
@@ -67,6 +69,8 @@ public class TransactionController { ... }
 ---
 
 ## Métodos HTTP — qué significa cada uno
+
+Docs: https://developer.mozilla.org/es/docs/Web/HTTP/Methods → leer: el resumen de cada verbo
 
 | Anotación | Método HTTP | Propósito | ¿Tiene body? |
 |---|---|---|---|
@@ -89,6 +93,8 @@ El string dentro de la anotación se añade a la ruta base `@RequestMapping` de 
 ---
 
 ## ResponseEntity — controlar la respuesta HTTP
+
+Docs: https://www.baeldung.com/spring-response-entity
 
 `ResponseEntity<T>` **no** es un DTO. Es un wrapper que devuelve un método del controlador para controlar dos cosas a la vez: el **código de estado HTTP** y el **body de la respuesta**. El `<T>` es el tipo del body que lleva (a menudo un DTO, p.ej. `ResponseEntity<TransactionResponse>`). Lo usas porque un REST API debe comunicar *qué pasó* (¿creado? ¿no encontrado? ¿eliminado?), no solo devolver datos — y el código de estado es como lo dice.
 
@@ -144,6 +150,8 @@ La relación con `@RestController`: el método del controlador devuelve el `Resp
 
 ### @PathVariable — leer un valor de la ruta URL
 
+Docs: https://www.baeldung.com/spring-pathvariable
+
 A veces la URL en sí lleva un valor — *qué* recurso quieres. `GET /api/projects/42` significa "el proyecto con id 42". El `42` no es una palabra fija; cambia por request. `@PathVariable` es como el controlador lee ese valor de la ruta y lo mete en un parámetro del método. Tres cosas que entender bien:
 
 **1. Los `{}` marcan un placeholder, no una palabra literal.** En el mapping, `"/{id}"` le dice a Spring "este segmento es una variable". Compáralo con un segmento estático en la misma ruta base `@RequestMapping("/api/projects")`:
@@ -183,6 +191,8 @@ En el segundo caso, `@PathVariable("id")` dice "toma el `{id}` de la ruta y ponl
 
 ### @RequestParam — leer un valor del query string
 
+Docs: https://www.baeldung.com/spring-request-param
+
 Los query parameters son los pares `clave=valor` opcionales después del `?` en una URL: `GET /api/entries?month=2025-05&status=SUBMITTED`. Son la herramienta correcta para **filtros opcionales, ordenación y paginación** — no para la identidad del recurso (eso es `@PathVariable`). `@RequestParam` lee uno de ellos en un parámetro del método, igual que `@PathVariable` lee de la ruta:
 
 ```java
@@ -202,6 +212,8 @@ public ResponseEntity<List<EntryResponse>> getFiltered(
 ---
 
 ### @RequestBody — leer el body JSON enviado por el cliente
+
+Docs: https://www.baeldung.com/spring-request-response-body → leer: la sección de `@RequestBody`
 
 Para `POST` y `PUT`, el cliente envía datos en el **body** del request como JSON. `@RequestBody` le dice a Spring "toma ese JSON, conviértelo en este objeto Java (Jackson hace la conversión) y dámelo como parámetro":
 
@@ -273,6 +285,8 @@ Esta es una medida de defensa en profundidad. El enfoque correcto son los DTOs (
 ---
 
 ## DTOs — nunca expongas entidades JPA directamente
+
+Docs: https://www.baeldung.com/java-dto-pattern
 
 Un **DTO** (Data Transfer Object) es una clase simple cuyo único trabajo es definir la *forma* de los datos que cruzan la frontera del API — lo que el cliente envía, y lo que tú devuelves. No es una tabla de base de datos y no contiene lógica de negocio: solo campos. Los DTOs son cómo das una forma limpia a tus respuestas en lugar de devolver la entidad raw.
 
