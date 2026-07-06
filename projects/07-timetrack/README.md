@@ -88,6 +88,8 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - `long` vs `Long` — primitive when value is always present; wrapper class when `null` is meaningful
 - JWT structure — header (algorithm) + payload (sub, iat, exp claims) + signature (HMAC using the secret key)
 - `getSigningKey()` — converts a Base64 secret string to a `SecretKey` using `Decoders.BASE64.decode()` + `Keys.hmacShaKeyFor()`
+- `Role` enum + `@ColumnDefault` + `data.sql` seeding — role-based authorization end to end, with `@PreAuthorize` tested for both EMPLOYEE (403) and MANAGER (201)
+- `DataIntegrityViolationException` handling — clean 409 Conflict instead of a raw 500 on constraint violations
 
 ---
 

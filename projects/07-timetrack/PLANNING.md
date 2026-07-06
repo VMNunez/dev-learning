@@ -11,10 +11,10 @@ Update this table at the start of every session. It is the authoritative pointer
 
 | | |
 |---|---|
-| **Current step** | Step 4 — Role-based authorization |
-| **Done condition** | Postman: POST /api/projects with EMPLOYEE token returns 403; with MANAGER token returns 201 |
-| **Phase** | Backend — security layer (Phase 3b) |
-| **Last updated** | 2026-06-21 |
+| **Current step** | Step 5 — TimeEntry CRUD + workflow |
+| **Done condition** | Postman: POST /api/entries returns 201 — status DRAFT; PATCH /api/entries/{id}/approve as employee returns 403; as manager on a SUBMITTED entry returns 200 — status APPROVED |
+| **Phase** | Backend — core domain (Phase 4) |
+| **Last updated** | 2026-07-06 |
 
 ---
 
@@ -731,7 +731,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - **Review concepts:** DTO boundary (LoginRequest/AuthResponse)
 - **Done condition:** `Postman: POST /api/auth/login returns 200 — body has token; GET /api/projects without token returns 401`
 
-### Step 4 — Role-based authorization
+### Step 4 — Role-based authorization ✅
 - Add `role` and `active` to `User` (EMPLOYEE / MANAGER)
 - Create `data.sql` with the first manager account
 - `@PreAuthorize("hasRole('MANAGER')")` on project and user write endpoints

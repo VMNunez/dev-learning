@@ -37,8 +37,8 @@
 ### Project 06 — HR portal
 **New concepts:** `CanActivateFn`, `CanDeactivateFn`, `loadComponent` (lazy loading), `HttpInterceptorFn`, `req.clone({ setHeaders })`, `withInterceptors()`, `canActivate` stacking, auth persistence with `signal + effect`, `??` nullish coalescing, dual-mode dialog, `markAsPristine()`, `MatToolbar`, `MatSidenav`, `routerLinkActive`, `filteredNavLinks = computed()`, role-aware dashboard, signal reference vs snapshot · CSS: app shell scroll pattern (`overflow: hidden` on `app-root`), active link flash fix (`::before` + `:not(:hover)`), responsive breakpoints (`@media max-width`)
 
-### Project 07 — TimeTrack (in progress — Steps 1–3 done, Step 4 in progress)
-**New concepts:** Spring Boot setup, `@Entity`, JPA annotations, `JpaRepository`, custom repository methods, `Optional<T>`, `@Service`, layered architecture, `@RestController`, DTOs, `@Valid`, `ResponseEntity`, `@PathVariable`, `@RequestBody`, soft delete, JWT structure, `UserDetailsService`, `SecurityFilterChain`, `JwtFilter`, `BCryptPasswordEncoder`, `@PreAuthorize`, `@RestControllerAdvice` · Full detail → Spring Boot section below
+### Project 07 — TimeTrack (in progress — Steps 1–4 done, Step 5 next)
+**New concepts:** Spring Boot setup, `@Entity`, JPA annotations, `JpaRepository`, custom repository methods, `Optional<T>`, `@Service`, layered architecture, `@RestController`, DTOs, `@Valid`, `ResponseEntity`, `@PathVariable`, `@RequestBody`, soft delete, JWT structure, `UserDetailsService`, `SecurityFilterChain`, `JwtFilter`, `BCryptPasswordEncoder`, `@PreAuthorize`, `@RestControllerAdvice`, `Role` enum, `@ColumnDefault`, `data.sql` seeding, `DataIntegrityViolationException` handling · Full detail → Spring Boot section below
 
 ---
 
@@ -235,7 +235,7 @@
 
 ## Spring Boot
 
-### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳)
+### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 ✓)
 
 - Spring Boot project setup with Spring Initializr — Spring Web, Spring Data JPA, PostgreSQL Driver, Lombok
 - `application.properties` — database connection, JPA settings, environment variable for password
@@ -308,6 +308,16 @@
 - `@PreAuthorize("hasRole('MANAGER')")` — method-level authorization; checks role after JWT filter has already confirmed who the user is
 - Flow 1 tested in Postman — login returns 200 + JWT; wrong password returns 401; empty field returns 400
 - Flow 2 tested in Postman — request without token returns 403; request with valid JWT returns 200
+- `Role` enum (`EMPLOYEE`, `MANAGER`) — fixed set of valid values instead of a `String`, invalid roles become compile errors
+- `@ColumnDefault("true")` — Hibernate annotation that adds a `DEFAULT` to the generated `ALTER TABLE`, so a new `NOT NULL` column can backfill rows that already exist
+- `data.sql` — seeds the first manager account on startup; no public registration endpoint exists for managers
+- `spring.jpa.defer-datasource-initialization=true` — runs `data.sql` after Hibernate creates/updates the schema instead of before, so `data.sql` never targets a table that does not exist yet
+- `spring.sql.init.mode=always` — forces `data.sql` to run against a real database like PostgreSQL; by default Spring Boot only auto-runs it for embedded databases
+- `ddl-auto=update` does not reliably retrofit constraints (like `UNIQUE`) onto columns that already existed before the annotation was added — added `ALTER TABLE ... ADD CONSTRAINT` by hand once in pgAdmin
+- `nextval('sequence_name')` — pulling the next id from Hibernate's own sequence directly in raw SQL, needed because `data.sql` bypasses Hibernate's own id-generation logic
+- `.roles(user.getRole().name())` in `UserDetailsServiceImpl` — derive the Spring Security authority from the entity's real role instead of a hardcoded string
+- `@PreAuthorize("hasRole('MANAGER')")` tested end-to-end in Postman — `POST /api/projects` returns 403 with an EMPLOYEE token and 201 with a MANAGER token
+- `DataIntegrityViolationException` — Spring's generic wrapper for any database constraint violation; handled in `GlobalExceptionHandler` to return 409 Conflict instead of a raw 500
 
 ---
 
