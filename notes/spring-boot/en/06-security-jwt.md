@@ -1737,6 +1737,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
 **`UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())`** — creates the authentication object that goes into `SecurityContextHolder`. The three arguments are: the principal (who), the credentials (null — no password needed here), and the authorities (roles). Once this is in the `SecurityContextHolder`, Spring Security considers the user authenticated for this request.
 
+> **2-arg vs 3-arg — two different meanings, same class.** `AuthService` (Flow 1) built a 2-arg version: `new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())` — email and *raw* password, handed to `authenticationManager.authenticate()` as an unverified login **attempt** still waiting to be checked. `JwtFilter` (Flow 2) builds the 3-arg version here — principal, `null` credentials, authorities — which is not an attempt at all: it is a **confirmed** authentication, already proven by the valid JWT signature, ready to be stored directly in `SecurityContextHolder`. The number of arguments is the tell: 2-arg always means "please verify this", 3-arg always means "this is already verified, here are the roles". That is also why Flow 2 passes `null` for credentials — there is no password to check anymore, the token already did that job.
+
 **`filterChain.doFilter(request, response)`** — `filterChain` is the ordered list of all filters in the chain. Calling `.doFilter()` means: "I am done — pass this request to the next filter in the chain". Every filter that does not want to block a request must call this, otherwise the request is dropped silently.
 
 `JwtFilter` calls it in two places:

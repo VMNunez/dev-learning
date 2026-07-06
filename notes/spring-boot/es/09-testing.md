@@ -147,6 +147,9 @@ when(repository.findAll()).thenReturn(List.of(t1, t2));
 // Hacer que el mock lance una excepción
 when(repository.findById(999L)).thenThrow(new ResourceNotFoundException("Transaction", 999L));
 
+// Hacer que un método void lance una excepción — when().thenThrow() no funciona aquí, no hay valor de retorno al que encadenar
+doThrow(new ResourceNotFoundException("Transaction", 999L)).when(repository).deleteById(999L);
+
 // Verificar que se llamó a un método
 verify(repository).save(any(Transaction.class));
 verify(repository, times(1)).deleteById(1L);

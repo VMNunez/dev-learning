@@ -147,6 +147,9 @@ when(repository.findAll()).thenReturn(List.of(t1, t2));
 // Make the mock throw
 when(repository.findById(999L)).thenThrow(new ResourceNotFoundException("Transaction", 999L));
 
+// Make a void method throw — when().thenThrow() doesn't work here, there's no return value to chain onto
+doThrow(new ResourceNotFoundException("Transaction", 999L)).when(repository).deleteById(999L);
+
 // Verify a method was called
 verify(repository).save(any(Transaction.class));
 verify(repository, times(1)).deleteById(1L);

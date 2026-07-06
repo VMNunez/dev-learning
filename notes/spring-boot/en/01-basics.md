@@ -177,6 +177,10 @@ This step is required from Java 21+ — the compiler needs to know explicitly th
 
 The three Lombok annotations you will use most: **`@Data`** (getters, setters, `equals()`, `hashCode()`, `toString()`), **`@NoArgsConstructor`** (the empty constructor JPA needs to build an entity from a database row), and **`@AllArgsConstructor`** (a constructor with every field). You put them on entities and DTOs — see them on a real entity in [04-spring-data-jpa.md](./04-spring-data-jpa.md) and [layer-reference.md](./layer-reference.md). Entities, repositories, and DTOs are documented there; this file stays focused on project setup and configuration.
 
+**A fourth one you'll see constantly in real codebases: `@RequiredArgsConstructor`.** It generates a constructor for only the `private final` (and `@NonNull`) fields — exactly the fields constructor injection needs, nothing else. Every service and controller in this project writes that constructor by hand instead — for example `AuthService`'s `public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) { this.authenticationManager = authenticationManager; this.jwtUtil = jwtUtil; }` (see [03-dependency-injection.md](./03-dependency-injection.md)). That hand-written constructor is *exactly* what `@RequiredArgsConstructor` generates for you — TimeTrack writes it explicitly on purpose, so the injection mechanism stays visible while you're learning it. Once it clicks, real projects reach for the annotation instead, so a class with five `private final` dependencies doesn't need five lines of repeated boilerplate.
+
+> **`@AllArgsConstructor` vs `@RequiredArgsConstructor`:** `@AllArgsConstructor` generates a constructor with *every* field, in declaration order — useful on DTOs and entities, where every field is data you want to set directly. `@RequiredArgsConstructor` only picks up `private final` (and `@NonNull`) fields — exactly what a `@Service` or `@Controller` needs, since its only fields are the dependencies injected through the constructor. Rule of thumb: `@AllArgsConstructor` on DTOs, `@RequiredArgsConstructor` on service/controller classes.
+
 ---
 
 ## Project structure
