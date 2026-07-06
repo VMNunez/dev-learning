@@ -51,6 +51,8 @@ public class GlobalExceptionHandler { ... }
 
 ## @RestControllerAdvice — the global exception handler
 
+Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → read: the `@ExceptionHandler` methods example
+
 `@RestControllerAdvice` marks a class whose `@ExceptionHandler` methods apply to **all controllers**. Spring automatically calls the right handler when an exception is thrown anywhere:
 
 ```java
@@ -94,6 +96,8 @@ public ResponseEntity<TransactionDTO> getById(@PathVariable Long id) {
 ---
 
 ## Custom exceptions
+
+Docs: https://www.baeldung.com/java-new-custom-exception
 
 Custom exception classes give meaningful names to your errors and let `@ControllerAdvice` route them to specific handlers:
 
@@ -147,6 +151,8 @@ public record ErrorResponse(
 
 ## Handling Bean Validation errors
 
+Docs: https://www.baeldung.com/spring-boot-bean-validation → read: the section on handling `MethodArgumentNotValidException`
+
 When `@Valid` on a `@RequestBody` fails, Spring throws `MethodArgumentNotValidException`. Handle it in `@ControllerAdvice` to return field-level errors:
 
 ```java
@@ -167,6 +173,8 @@ public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidExce
 ---
 
 ## HTTP status codes — when to return each
+
+Docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
 | Status | When |
 |--------|------|
