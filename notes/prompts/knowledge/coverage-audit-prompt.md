@@ -19,12 +19,17 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 
 ## Context — read first
 
-Read `notes/prompts/_shared-context.md` for my profile, the **Spanish job market 2026**, and
-the **AI factor 2026**. This audit decides what belongs in coverage based entirely on what the
-job requires — Steps 2, 3, and 4 below apply those market and AI criteria directly.
+Read two files before anything else:
+- `notes/prompts/knowledge/_coverage-standard.md` — **the standard: what a good coverage.md contains**
+  (scope logic, the three item types, confusable pairs, the AI factor, item/file format). Every
+  content and quality check this audit applies is defined there — this prompt only adds the *global
+  convergence flow* (topic completeness, cross-topic consistency, stability) on top.
+- `notes/prompts/_shared-context.md` — my profile, the **Spanish job market 2026**, and the **AI
+  factor 2026**.
 
-Note for this audit: projects and notes are vehicles to reach the job objective — they do not
-define scope. Scope is defined entirely by what the job requires.
+This audit decides what belongs in coverage based entirely on what the job requires — the target
+(role, companies, deadline) comes from ROADMAP + `_shared-context`, never from a value baked into
+this prompt. Projects and notes are vehicles to reach the objective — they do not define scope.
 
 (CLAUDE.md and ROADMAP.md are read in Step 1.)
 
@@ -89,50 +94,22 @@ Add it to the correct section in that topic's coverage, and sync to `notes/cover
 
 ## Step 3 — Audit each section for gaps
 
-For each section in `notes/coverage.md`, apply these five checks:
+For each section in `notes/coverage.md`, apply the **content and quality checks defined in
+`_coverage-standard.md`** — do not restate them, run them:
+- **Three item types** present (conceptual / decision / pressure) — add the missing type.
+- **Confusable pairs** — both sides present as separate items.
+- **Item quality** — each item is interview-anchored, not a dictionary definition; fix any that read
+  like one.
+- **One concept per item** — split any grouped bullet.
 
-**Check 1 — Three types of items:**
+Plus one audit-specific check the standard doesn't cover, because it only makes sense across a whole
+finished coverage file:
 
-Every section must have all three types. A section with only conceptual items is incomplete — it will only generate one type of interview question.
-
-- **Conceptual** — "what is X and how does it work?" e.g. `@Transactional — what it does and at which layer it belongs`
-- **Decision** — "why X instead of Y?" e.g. `JWT vs sessions — why JWT for a stateless REST API and what you give up`
-- **Pressure** — a gotcha or edge case that exposes shallow understanding e.g. `@Transactional on a private method — silently ignored because Spring cannot proxy it`
-
-If a type is missing, add at least one item of that type before moving to the next section.
-
-**Check 2 — Confusable pairs:**
-
-Scan for concepts that are easy to confuse with something similar. Both sides of every confusable pair must be present as separate items. Examples by topic (not exhaustive — apply the same logic to every topic):
-- Spring Boot: `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, `@Component` vs `@Bean`, `@Service` vs `@Repository` vs `@Component`, `findById` returns `Optional` vs throws exception, `save()` vs `saveAndFlush()`
-- Angular: `Subject` vs `BehaviorSubject`, `signal()` vs `computed()`, `ngIf` vs `@if`, `async pipe` vs manual subscribe, `Observable` vs `Promise`, `constructor` vs `ngOnInit`
-- Java: `==` vs `.equals()` — reference comparison vs value equality; classic trap with String comparisons, `checked` vs `unchecked exceptions` — when to use each and why Spring Boot prefers unchecked (RuntimeException subclasses)
-- SQL: `WHERE` vs `HAVING`, `JOIN` vs `LEFT JOIN`, `COUNT(*)` vs `COUNT(column)`, `TRUNCATE` vs `DELETE`, `UNION` vs `UNION ALL`, `EXISTS` vs `IN`
-- TypeScript: `interface` vs `type`, `any` vs `unknown`, `?.` vs `??`
-- Architecture: `PUT` vs `PATCH`, `401` vs `403`, unit test vs integration test, `DTO` vs entity, soft delete vs hard delete
-- Security: authentication vs authorisation, hashing vs encryption, `XSS` vs `CSRF`, access token vs refresh token
-
-**Check 3 — AI-exploitable gaps:**
-
-Are there concepts that AI generates commonly but a junior would struggle to explain? These are high-priority items. Focus on:
-- The "why" behind decisions (why JWT, why DTOs, why soft delete, why coordinator pattern)
-- Layer placement rules (what goes in controller vs service vs repository)
-- Transaction behaviour and edge cases
-- Security implications of common patterns
-- Annotation placement rules and what happens when they are wrong
-
-**Check 4 — Item quality:**
-
-Each item must follow the format: `concept — why it matters anchored to interview context`.
-
-- ❌ `@Transactional — manages database transactions`
-- ✅ `@Transactional — ensures multiple DB writes either all succeed or all roll back; interviewers ask where it belongs (service layer) and what happens if you put it on a private method (silently ignored — Spring cannot proxy it)`
-
-The bad item is a dictionary definition. The good item names what the interviewer is testing and names the gotcha a junior is likely to miss. Fix every item that reads like a dictionary definition.
-
-**Check 5 — One concept per item:**
-
-If any bullet groups multiple concepts, split them. This is a functional requirement, not a style rule: notes are audited per item, interview questions are generated per item, and project gap analysis maps per item. A grouped bullet breaks all three downstream steps.
+**AI-exploitable gaps** — are there concepts AI generates commonly but a junior would struggle to
+explain? These are high-priority to have in coverage. Focus on: the "why" behind decisions (why JWT,
+why DTOs, why soft delete, why coordinator pattern); layer-placement rules (controller vs service vs
+repository); transaction behaviour and edge cases; security implications of common patterns;
+annotation-placement rules and what breaks when they are wrong.
 
 ---
 
@@ -150,7 +127,7 @@ If a concept is in the wrong topic (e.g. a TypeScript-specific item sitting in J
 If any item in an existing section is clearly post-junior (too advanced for a junior screening, belongs to mid-level architecture or senior performance work), demote it to `notes/{topic}/future-learning.md` and remove it from coverage.
 
 **Future-learning promotion check:**
-For each `notes/{topic}/future-learning.md` corresponding to a section you reviewed: are any concepts listed there now in scope for a junior Angular + Spring Boot role in August 2026? Apply the same criteria from Step 3. If yes: add the concept to the correct section in `notes/coverage.md` and the corresponding `notes/{topic}/coverage.md`, and remove it from `future-learning.md`. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
+For each `notes/{topic}/future-learning.md` corresponding to a section you reviewed: are any concepts listed there now in scope for the job target read from ROADMAP + `_shared-context` (role, deadline)? Apply the same criteria from Step 3. If yes: add the concept to the correct section in `notes/coverage.md` and the corresponding `notes/{topic}/coverage.md`, and remove it from `future-learning.md`. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
 
 ---
 
