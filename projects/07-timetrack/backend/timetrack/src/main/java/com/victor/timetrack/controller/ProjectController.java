@@ -5,6 +5,7 @@ import com.victor.timetrack.dto.request.UpdateProjectRequest;
 import com.victor.timetrack.dto.response.ProjectResponse;
 import com.victor.timetrack.service.ProjectService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getById(id));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
     public ResponseEntity<ProjectResponse> create(@RequestBody CreateProjectRequest request){
         return ResponseEntity.status(201).body(projectService.create(request));
