@@ -72,11 +72,15 @@ not against a generic standard.
 
 Extract and keep in mind:
 - Which step the project is currently on (Section 0 — Session quick reference)
-- The new concepts planned for this project (Section 3)
-- The review concepts planned (Section 4)
-- All business rules defined for the domain (Section 8)
-- The test plan — which services and edge cases are required (Section 16)
-- The architecture decisions already committed to (Section 19)
+- The new concepts planned for this project (Section 3 — New concepts)
+- The review concepts planned (Section 4 — Review concepts)
+- All business rules defined for the domain (the "Workflow" section's "Business rules" subsection)
+- The test plan — which services and edge cases are required (the "Testing plan" section)
+- The architecture decisions already committed to (the "Architecture" section and "Architecture
+  decisions to document in the global README" section)
+
+These are matched by heading text, not by number — PLANNING.md's section numbering is not
+guaranteed to stay stable across projects, but these heading names are.
 
 **PLANNING.md format:** the section numbers above apply to projects 07+ (the format written by
 `new-project-prompt`). Projects 01–06 (Angular-only) use the old format with no numbered sections —
@@ -113,7 +117,7 @@ For FULLSTACK projects, also read:
 
 Review for:
 
-**Patterns — check against PLANNING.md Section 19 (architecture decisions):**
+**Patterns — check against PLANNING.md's "Architecture" and "Architecture decisions to document in the global README" sections:**
 - Is the correct pattern used for this project's learning objective?
   - Project 03: smart/dumb component pattern
   - Project 04: effect() for side effects triggered by signals
@@ -186,7 +190,7 @@ HTTP verbs:
   PATCH signals "I am changing one thing about this resource" — using PUT or POST for status changes
   is incorrect and signals the candidate does not understand REST verb semantics.
 
-Business rules (check against PLANNING.md Section 8):
+Business rules (check against PLANNING.md's "Workflow" > "Business rules" section):
 - Are all business rules from PLANNING.md actually enforced in the service layer?
   Common gaps: future date check, hours range, inactive project check, DRAFT-only edit/delete,
   role-based data filtering (employee sees own entries, manager sees all).
@@ -202,7 +206,7 @@ Docker (full-stack, when docker-compose.yml exists):
 - Is the JWT secret passed as an environment variable in the compose file — not hardcoded?
 - Does `docker-compose up` actually start both services without manual intervention?
 
-**Tests — check against PLANNING.md Section 16:**
+**Tests — check against PLANNING.md's "Testing plan" section:**
 - Are the service classes listed in the testing plan actually tested?
 - For each test file: does the test cover the edge cases defined in PLANNING.md Section 16?
   (entity not found, business rule violation, role violation — not just the happy path)
