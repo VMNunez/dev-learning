@@ -41,7 +41,7 @@ Use MODE and PROJECT wherever the prompt refers to {MODE} and {PROJECT}.
 ## Order: angular/01-todo-list, angular/02-weather-app, angular/03-expense-tracker,
 ## angular/04-meal-finder, angular/05-task-manager, angular/06-hr-portal, projects/07-timetrack.
 ## The section set is derived per project type — do not ask:
-##   - full-stack projects (07+): audit against the full 22-section template (Steps B–F below).
+##   - full-stack projects (07+): audit against the full 23-section template (Steps B–F below).
 ##   - angular projects (01–06): they use a simpler PLANNING.md, so do NOT flag the full-stack-only
 ##     sections as missing. Audit only the sections they actually have, plus the universal checks:
 ##     done-condition format in the learning plan (Step D), vague rules / TBD placeholders,
@@ -330,6 +330,27 @@ The steps in Section 15 must map to this sequence. Each step in the learning pla
 be traceable to one or more items from this list. If two items are combined into one step,
 explain why (e.g. "repository has no custom logic so it is combined with the entity step").
 
+### 4j — Git branch strategy
+
+Group the implementation steps from 4i into coherent feature branches — never one branch
+per step. A branch should span a logical, self-contained chunk of work with a clear "done"
+(e.g. all backend security steps together, all CRUD + workflow steps together, the whole
+Angular frontend together). Opening a new branch for every single step creates PR noise
+with no real isolation benefit; the goal is one branch per feature, not per commit.
+
+For each branch, define:
+- **Branch name** — follow the `feat/short-description` convention from CLAUDE.md
+- **Covers** — which implementation steps from 4i (and which steps from Section 15 once
+  written) it contains
+- **Opens** — when it is created (immediately after the previous feature branch's PR merges,
+  or at Step 1 for the first one)
+- **Closes** — the concrete condition that means it is done and ready for a PR into the
+  project branch (usually "after Step X's done condition passes")
+
+The project branch itself (`technology/0X-project-name`) is created once, in Step 1, and
+stays open for the whole project — it only merges into `main` when every step is done.
+Do not plan a branch for it beyond that.
+
 ---
 
 ## Step 5 — Write PLANNING.md
@@ -511,6 +532,16 @@ Then for each README: list the planned sections.
 ### 21. Future improvements
 3 maximum. Domain-realistic only — no AI, no microservices.
 
+### 22. Git branch strategy
+The branch plan designed in Step 4j, as a table:
+
+| Branch | Covers (steps) | Opens | Closes |
+|--------|-----------------|-------|--------|
+| ...    | ...             | ...   | ...    |
+
+Followed by one line naming the project branch (`technology/0X-project-name`) and confirming
+it stays open for the whole project, merging to `main` only when every step is done.
+
 ---
 
 ## Step 6 — Update ROADMAP.md and PROGRESS.md
@@ -584,7 +615,7 @@ Read these files:
 
 ## Step B — Section coverage check
 
-Check which of the 22 required sections (0–21) are present in the PLANNING.md.
+Check which of the 23 required sections (0–22) are present in the PLANNING.md.
 
 Required sections:
 0. Session quick reference
@@ -609,6 +640,7 @@ Required sections:
 19. Architecture decisions
 20. Tradeoffs
 21. Future improvements
+22. Git branch strategy
 
 Report each section as ✅ present or ❌ missing.
 Missing sections are critical issues — they block the project from starting clearly.
@@ -653,6 +685,14 @@ For each present section, check quality using these specific rules:
 - Are specific service method names listed (not just "test the service")?
 - Are edge cases defined for each test (not just the happy path)?
 
+**Section 22 — Git branch strategy:**
+- Does every branch have a name following `feat/short-description`?
+- Does every branch have a concrete opening and closing condition (not "when done")?
+- Do the branches together cover every step in Section 15, with no step left unassigned
+  and no step assigned to more than one branch?
+- Is there no more than one branch per coherent phase (setup, backend-core, security,
+  frontend, tests, docker) — flag if a branch was opened per individual step?
+
 ---
 
 ## Step D — Done condition format check
@@ -687,6 +727,11 @@ Cross-check between sections:
 
 5. **Testing plan vs learning plan:** the testing step(s) in Section 15 should match the
    scope described in Section 16. Flag any mismatch.
+
+6. **Branch strategy vs learning plan:** every step in Section 15 should fall inside exactly
+   one branch's range in Section 22. List any step not covered by a branch, and any branch
+   whose step range no longer matches Section 15 (e.g. Section 15 was edited after Section 22
+   was written).
 
 ---
 
