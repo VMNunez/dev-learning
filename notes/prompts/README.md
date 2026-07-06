@@ -35,7 +35,10 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 |--------|--------------|----------------------------------------------|---------------------|
 | `knowledge/coverage-prompt.md` | Defines the required scope for **one** topic — what a junior must know, what is deferred. | the topic's note files, `notes/{topic}/future-learning.md` | `notes/{topic}/coverage.md`, syncs `notes/coverage.md`, updates `future-learning.md` |
 | `knowledge/coverage-audit-prompt.md` | **Global** convergence pass over all of `notes/coverage.md`; fills gaps, fixes item quality, can add a whole new topic folder (e.g. testing, docker). Run once after every topic has a coverage file. | `notes/coverage.md`, every `notes/{topic}/coverage.md`, `ROADMAP.md` | `notes/coverage.md` + each topic `coverage.md`, `future-learning.md` files; may create `notes/{topic}/` |
-| `knowledge/notes-by-topic-prompt.md` | Builds and audits the study **notes** for one topic against its coverage. Holds the full notes writing standard. | `notes/{topic}/coverage.md`, the topic's notes (en + es), `PROGRESS.md` | the topic's `notes/*.md` + `notes/es/*.md`, `future-learning.md`, the "next file:" counter in `CLAUDE.md` |
+| `knowledge/notes-plan-prompt.md` | **Plan half.** Surveys a whole topic folder, does the mechanical `en`/`es` sync, and produces an ordered **worklist** — writes no note prose. | `notes/{topic}/coverage.md`, the topic's notes (en + es), `future-learning.md` | `en`/`es` folder structure, `future-learning.md`; **output:** a worklist of write tasks |
+| `knowledge/notes-write-prompt.md` | **Write half.** Deep, high-standard work on **one** file: resolve TODOs, complete it, mirror to `es/`. Run once per worklist row, one file per conversation. | `_note-quality-standard.md`, the one file (en + es), `PROGRESS.md` | that one `notes/*.md` + its `es/*.md`, the "next file:" counter in `CLAUDE.md` |
+| `knowledge/_note-quality-standard.md` | The **shared writing standard** both prompts above read (format modes, rule 3, signature elements, anticipate-the-TODO). Not runnable on its own. | — | — |
+| `knowledge/notes-by-topic-prompt.md` | **Retired** — split into the plan + write pair above. File now just points to them. | — | — |
 | `knowledge/interview-prep-by-topic-prompt.md` | Builds and audits the **interview Q&A** for one topic (priority markers, question types, en/es sync). | `notes/{topic}/coverage.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md` |
 | `knowledge/notes-and-interview-prep-prompt.md` | Closes gaps **between** notes and Q&A in both directions (every note concept has a question, every question has a note). Run after the two above. | the topic notes + `interview-prep/en/` + `es/` | the topic `notes/*.md` and `interview-prep/en/` + `es/`, `CLAUDE.md` counter |
 
@@ -78,7 +81,7 @@ producer has not run (or is stale), its consumers produce wrong results. Run pro
 Each generated file, with who writes it and who depends on it:
 
 - **`notes/coverage.md`** — written by `coverage-prompt` / `coverage-audit-prompt` → read by
-  `notes-by-topic`, `interview-prep-by-topic`, `notes-and-interview-prep`, `new-project`,
+  `notes-write` (per file), `interview-prep-by-topic`, `notes-and-interview-prep`, `new-project`,
   `roadmap-review`, and `sql-exercises` (SQL section). *Coverage is the root — almost everything
   downstream assumes it is correct.*
 - **`PROGRESS.md`** — written by `progress-update` (and by Claude after each step in the daily
@@ -107,7 +110,7 @@ Pipeline view:
 ```
 coverage-prompt / coverage-audit ─► notes/coverage.md
         │
-        ├─► notes-by-topic ─► notes/*.md ─┐
+        ├─► notes-plan ─► worklist ─► notes-write (1 file/run) ─► notes/*.md ─┐
         ├─► interview-prep-by-topic ─► interview-prep/*.md ─┐
         │        └─ notes-and-interview-prep keeps both in sync
         │                                                   │
@@ -139,7 +142,7 @@ Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
 
 **Auditing knowledge (one topic)**
 1. `coverage-prompt` — define/refresh the topic's coverage
-2. `notes-by-topic` then `interview-prep-by-topic` — build both sides
+2. `notes-plan` (folder → worklist) then `notes-write` per file, then `interview-prep-by-topic` — build both sides
 3. `notes-and-interview-prep` — close the gaps between them
 4. (after all topics have coverage) `coverage-audit` — global convergence pass
 5. `roadmap-review` — check the plan still reflects reality
@@ -156,7 +159,7 @@ Per-target prompts (one topic / file / project / type at a time) also accept **`
 target field, so you don't have to run them folder by folder. Set the field to `all` and the prompt
 processes every target in order, one commit per target. Full rules: `notes/prompts/_batch-mode.md`.
 
-- **Supports `all`:** `coverage-prompt`, `notes-by-topic`, `interview-prep-by-topic`,
+- **Supports `all`:** `coverage-prompt`, `notes-plan` (`TOPIC = all`), `interview-prep-by-topic`,
   `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-review`, `project-review`,
   `portfolio-ready` (`PROJECT_PATH = all`); `new-project` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**),
