@@ -42,6 +42,18 @@ Any concrete mention below — "junior Angular + Spring Boot", "NTT Data / Capge
 `_shared-context.md` say something different (a new deadline, a shifted target role, new companies),
 **they win** — the coverage must reflect the source, not the example.
 
+### Real postings outrank the model's guess
+
+There is a stronger source than reasoning about the market: the market itself. Read
+`notes/prompts/_job-market-evidence.md` — real junior postings from the target companies, distilled
+into recurring requirements. When it has evidence, its Synthesis is a **required floor**: every skill
+that recurs across several postings must map to coverage items, and a recurring requirement missing
+from coverage is a defect. When it is empty or stale, fall back to the model's knowledge (and,
+optionally, a live web search for current postings) — but real evidence always wins over a guess.
+Do not, however, *shrink* coverage below what the interview clearly tests just because a posting
+omitted it; postings under-list the fundamentals interviewers still probe. Evidence raises the floor,
+it does not lower the ceiling.
+
 ---
 
 ## Deciding what is IN and what is OUT

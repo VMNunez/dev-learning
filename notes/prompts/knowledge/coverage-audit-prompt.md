@@ -31,6 +31,12 @@ This audit decides what belongs in coverage based entirely on what the job requi
 (role, companies, deadline) comes from ROADMAP + `_shared-context`, never from a value baked into
 this prompt. Projects and notes are vehicles to reach the objective — they do not define scope.
 
+Also read `notes/prompts/_job-market-evidence.md` — real postings from the target companies. When it
+has evidence, its Synthesis is a **required floor**: every recurring requirement must map to coverage
+somewhere. For any section you are unsure is complete, run the **adversarial interviewer pass** from
+`coverage-prompt.md` Step 4a on that topic (a cold subagent writes the 12 questions it would ask and
+reports the gaps) — it is the fastest way to prove a section is complete rather than assume it.
+
 (CLAUDE.md and ROADMAP.md are read in Step 1.)
 
 ---

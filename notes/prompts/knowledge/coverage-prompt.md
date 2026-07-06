@@ -75,6 +75,11 @@ Before starting, read:
 - `ROADMAP.md` — the current phase, deadline, and what is post-junior scope. This is the source of the
   job target. Do not use any hardcoded role/company/date — read the target from ROADMAP and
   `_shared-context` and defer to them (see "The job target is the source" in the standard).
+- `notes/prompts/_job-market-evidence.md` — real junior postings from the target companies, distilled
+  into recurring requirements. When it has evidence, its Synthesis is a **required floor** for {TOPIC}:
+  every recurring skill that touches {TOPIC} must map to coverage items. When it is empty/stale, fall
+  back to your market knowledge (optionally a live web search). Real evidence outranks a guess, but
+  never shrink coverage below what the interview tests just because a posting omitted a fundamental.
 
 `coverage.md` is the single source of truth for what Victor must learn about {TOPIC}, derived from
 the job — not from the notes. The full definition, and why projects don't define scope, is in the
@@ -170,6 +175,39 @@ code, section naming and size (5–10 items), filtering-risk section order, and 
 section — the three-types check and the confusable-pairs check. Then run the standard's
 **completeness test** for the whole file before saving. Do not restate those rules here; the standard
 is the single source for them.
+
+---
+
+## Step 4a — Adversarial interviewer pass (gap hunt)
+
+The generator (Steps 1–4) tends to trust its own list. A separate, cold **interviewer** catches what
+it missed — the coverage failure that matters is not format, it is a *missing concept an interviewer
+would actually probe*. Run this pass on the coverage you just wrote, before syncing.
+
+**In Claude Code:** launch one `general-purpose` subagent, `run_in_background: false`:
+
+> You are a senior technical interviewer at one of the target consultancies (read ROADMAP.md and
+> `notes/prompts/_shared-context.md` for the exact role/companies, and
+> `notes/prompts/_job-market-evidence.md` for what they hire for). You have 30 minutes with a
+> candidate at the target level and the topic is {TOPIC}. Read `{NOTES_PATH}coverage.md` and
+> `notes/prompts/knowledge/_coverage-standard.md`.
+>
+> Write the **12 questions you would actually ask** to decide whether this candidate really knows
+> {TOPIC} — mix conceptual, decision ("why X over Y"), and pressure/gotcha questions, and lean on the
+> recurring requirements in the job-market evidence. Then, for each question, check whether the
+> current coverage.md gives the candidate what they'd need to answer it. Output only the **gaps**: the
+> questions the coverage does NOT support, each as a proposed coverage item in the standard's format
+> (`concept — interview-anchored sentence`), tagged with its section. Do not rewrite existing items;
+> only surface what is missing. Be adversarial — assume the coverage is incomplete until your 12
+> questions prove otherwise.
+
+Then **you** (the generator) review the returned gaps: add every genuine one to the right section of
+`{NOTES_PATH}coverage.md` in the standard's format, and discard any that are actually out of junior
+scope (note those in the summary as "adversary-suggested, left out — reason").
+
+**Not in Claude Code (plain chat):** do the same pass yourself, explicitly — switch hats, write the
+12 questions cold, list the gaps, then add the genuine ones. The independence is weaker than a real
+subagent, so be strict about actually generating the questions, not assuming the coverage is complete.
 
 ---
 
