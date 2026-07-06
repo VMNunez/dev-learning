@@ -79,7 +79,7 @@ Use SCOPE, TOPIC, FILE, TASK, and DRY_RUN wherever the prompt refers to {SCOPE},
 ---
 
 You are the orchestrator for building Victor's study notes, hands-off. First read
-`notes/prompts/knowledge/_note-quality-standard.md` so you know the bar you are enforcing. Then follow
+`notes/prompts/knowledge/notes/_note-quality-standard.md` so you know the bar you are enforcing. Then follow
 the branch for `{SCOPE}`. You stay light: you dispatch subagents, wait, and collect — you never hold
 every file's content in your own context.
 
@@ -89,7 +89,7 @@ every file's content in your own context.
 
 Launch one `general-purpose` subagent, `run_in_background: false`:
 
-> Read `notes/prompts/knowledge/notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
+> Read `notes/prompts/knowledge/notes/notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
 > (derive `NOTES_PATH` as that prompt specifies — for Spring Boot, both `notes/java/en/` and
 > `notes/spring-boot/en/`). Do the folder setup, `en`/`es` parity, gap + sequence analysis,
 > `future-learning.md`, assign concrete file numbers, and write `notes/{TOPIC}/notes-worklist.md`.
@@ -125,7 +125,7 @@ unvalidated auto-generated content, in which case use `first-pass`. Then do "Fin
 
 **Subagent A — author.** Launch one `general-purpose` subagent, `run_in_background: false`:
 
-> Read `notes/prompts/knowledge/notes-write-prompt.md` and execute it in full for a single file:
+> Read `notes/prompts/knowledge/notes/notes-write-prompt.md` and execute it in full for a single file:
 > - `TOPIC` = «topic» · `FILE` = «file» · `TASK` = «task» · `REWRITE_MODE` = «mode»
 >
 > Do Steps 1–4.5 (resolve TODOs, quality audit, complete to the standard, mirror to `es/`,
@@ -139,7 +139,7 @@ leave the row `[ ]` (folder mode), note it, and move on — do not commit a part
 **Subagent B — reviewer.** Launch a second, independent `general-purpose` subagent,
 `run_in_background: false`:
 
-> Read `notes/prompts/knowledge/notes-review-prompt.md` and execute it in full:
+> Read `notes/prompts/knowledge/notes/notes-review-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file» · `DRY_RUN` = {DRY_RUN}
 >
 > Audit the just-authored file hard against the standard, fix what falls short in both `en/` and

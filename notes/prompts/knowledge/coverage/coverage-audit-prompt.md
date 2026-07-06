@@ -20,7 +20,7 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 ## Context — read first
 
 Read two files before anything else:
-- `notes/prompts/knowledge/_coverage-standard.md` — **the standard: what a good coverage.md contains**
+- `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
   (scope logic, the three item types, confusable pairs, the AI factor, item/file format). Every
   content and quality check this audit applies is defined there — this prompt only adds the *global
   convergence flow* (topic completeness, cross-topic consistency, stability) on top.

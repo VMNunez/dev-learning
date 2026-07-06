@@ -36,7 +36,7 @@ Do not be generous — the author already believed it was done. Assume something
 have checked.
 
 Before starting, read:
-- notes/prompts/knowledge/_note-quality-standard.md — the bar you audit against, in full.
+- notes/prompts/knowledge/notes/_note-quality-standard.md — the bar you audit against, in full.
 - The first section of notes/java/es/08-excepciones.md — the calibration reference for "finished".
 - The sibling files already in `{FILE}`'s `en/` folder — to catch duplicated examples/concepts and
   broken or missing forward/cross-topic references.

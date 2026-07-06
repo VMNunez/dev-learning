@@ -66,7 +66,7 @@ Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
 I want you to create or update the coverage.md file for {TOPIC}.
 
 Before starting, read:
-- `notes/prompts/knowledge/_coverage-standard.md` — **the standard: what a good coverage.md contains**
+- `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
   (what belongs in scope, the three item types, confusable pairs, the AI factor, item/file format).
   Everything about *content quality* lives there — this prompt only adds the *per-topic flow* on top.
 - `CLAUDE.md` — teaching rules and the notes/ subfolder structure.
@@ -190,7 +190,7 @@ would actually probe*. Run this pass on the coverage you just wrote, before sync
 > `notes/prompts/_shared-context.md` for the exact role/companies, and
 > `notes/prompts/_job-market-evidence.md` for what they hire for). You have 30 minutes with a
 > candidate at the target level and the topic is {TOPIC}. Read `{NOTES_PATH}coverage.md` and
-> `notes/prompts/knowledge/_coverage-standard.md`.
+> `notes/prompts/knowledge/coverage/_coverage-standard.md`.
 >
 > Write the **12 questions you would actually ask** to decide whether this candidate really knows
 > {TOPIC} — mix conceptual, decision ("why X over Y"), and pressure/gotcha questions, and lean on the

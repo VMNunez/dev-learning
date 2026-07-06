@@ -64,7 +64,7 @@ Before starting, read:
 - CLAUDE.md — teaching rules, subfolder structure, and the "next file:" counters.
 - notes/prompts/_shared-context.md — my profile, the Spanish job market 2026, and the AI factor.
   The gaps you look for are framed by what Spanish consultancies filter juniors on.
-- notes/prompts/knowledge/_note-quality-standard.md — the writing standard. You read it to *judge*
+- notes/prompts/knowledge/notes/_note-quality-standard.md — the writing standard. You read it to *judge*
   whether existing notes meet the bar and to decide what is missing. You do NOT apply it to write
   here — you only use it to spot what falls short and turn that into a worklist item.
 
