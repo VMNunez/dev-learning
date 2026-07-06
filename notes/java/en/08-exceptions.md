@@ -26,6 +26,35 @@ If `main()` doesn't catch it either, that's the end of the road — `main()` is 
 
 ---
 
+## Exception hierarchy
+
+> Docs: https://www.baeldung.com/java-exceptions → read: "Exception Hierarchy"
+> 📖 Oracle Docs (`Throwable` Javadoc): https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html → check the "All Known Subclasses" section for the full hierarchy as documented by Oracle
+
+The JVM (_Java Virtual Machine_) is the program that actually runs your Java code — when you compile, Java doesn't generate machine code directly for your computer, it generates bytecode, and the JVM is what interprets and runs it, reserving and managing the memory your program needs itself (where your objects live, the call stack you saw at the start of this note, etc.). A "JVM-level" failure is one that happens inside that execution engine itself, not in your program's logic: for example, if your program creates so many objects that the memory the JVM has reserved runs out completely, the JVM has nowhere left to create things and throws `OutOfMemoryError`; if a chain of method calls goes so deep (say, a recursion with no stopping condition) that the call stack runs out of physical space to keep stacking methods, the JVM throws `StackOverflowError`. In both cases the problem isn't "your code has a logic bug" (as it is with `RuntimeException`) — it's that the environment your program runs in has run out of resources to keep working, something you normally can't fix from a `catch`.
+
+Every exception in Java extends `Throwable`. The two direct subclasses are `Error` (JVM-level failures you should never catch — out of memory, stack overflow) and `Exception` (problems your application can handle). `RuntimeException` is the unchecked branch under `Exception`. Your custom exceptions always extend `RuntimeException` in Spring Boot — they go in that bottom group.
+
+> **Why not catch `Error`?** By the time an `Error` like `OutOfMemoryError` or `StackOverflowError` is thrown, the JVM itself is already in a broken state — there's no free memory left to even run your `catch` block reliably, or the call stack itself just overflowed. Catching it doesn't fix anything; it just delays a crash that's going to happen anyway, and can hide the real problem instead of letting the app fail fast and visibly.
+
+```
+Throwable
+├── Error (JVM-level problems — OutOfMemoryError, StackOverflowError — do not catch these)
+└── Exception
+    ├── IOException (checked)
+    ├── SQLException (checked)
+    └── RuntimeException (unchecked)
+        ├── NullPointerException
+        ├── IllegalArgumentException
+        ├── IllegalStateException
+        ├── IndexOutOfBoundsException
+        └── your custom RuntimeException subclasses
+```
+
+This hierarchy is the foundation for everything that follows: the checked-vs-unchecked distinction you'll see right below depends exactly on which branch of this tree each exception extends — `Exception` (checked) or `RuntimeException` (unchecked).
+
+---
+
 ## Checked vs unchecked exceptions
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Checked Exception" and "Unchecked Exception"
@@ -330,7 +359,16 @@ public class EmployeeNotFoundException extends RuntimeException {
 
 You already saw this same class in the same depth in the `throw` section above — here it is again, this time as a general template for the whole pattern: extend, define the constructor, call `super(...)`. The message `super(...)` stores is what `e.getMessage()` returns later, both in an ordinary `catch` block and in a Spring Boot `@ExceptionHandler` — the same message traveling down either of the two possible capture paths.
 
-Once defined, you use it exactly like any other unchecked exception: a `throw new EmployeeNotFoundException(...)` at the point in the code where you detect the problem, with no need to declare anything in the method signature (see the `throw` section for the general case, and the "wrapping" section for when this step is NOT needed). In Spring Boot, this exception's usual destination is the same one you saw with the wrapping pattern: you let it propagate uncaught at every intermediate point, until a single `@RestControllerAdvice` catches it (you'll see the full code in the "Spring Boot connection" section below) and decides which HTTP status to return. The `findById()` example with `orElseThrow()` throwing it was already shown in full in the `throw` section above.
+Once defined, you use it exactly like any other unchecked exception: a `throw new EmployeeNotFoundException(...)` at the point in the code where you detect the problem, with no need to declare anything in the method signature:
+
+```java
+public Employee findById(Long id) {
+    return repository.findById(id)
+        .orElseThrow(() -> new EmployeeNotFoundException(id));
+}
+```
+
+In Spring Boot, this exception's usual destination is the same one you saw with the wrapping pattern: you let it propagate uncaught at every intermediate point, until a single `@RestControllerAdvice` catches it and decides which HTTP status to return.
 
 ---
 
@@ -367,6 +405,8 @@ try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
 // reader is closed automatically here, even if an exception occurred
 ```
 
+Before moving on, it's worth taking apart that first line inside the `try`, because it's actually two nested objects, not one: `new FileReader("data.txt")` creates a `FileReader` — Java's most basic class for reading a text file's content, character by character, from the path you give it. That freshly created `FileReader` is immediately passed as an argument to `new BufferedReader(...)`, a class that *wraps* another reader (here, the `FileReader`) to add a capability it doesn't have on its own: a `readLine()` method that reads a whole line at once, instead of you having to read character by character yourself. That's why you see two `new` calls back to back on the same line — it's the same idea as nesting function calls in JavaScript (`f(g(x))`): the innermost call is evaluated first (`new FileReader(...)`), and its result is passed as the argument to the outer one (`new BufferedReader(...)`). And yes, it's a complete variable declaration like any other: `BufferedReader reader = ...` declares a variable of type `BufferedReader` named `reader`, exactly like writing `int x = 5;` — the only difference is that here the declaration lives inside the `try`'s parentheses, which tells Java "when you're done with `reader`, close it for me."
+
 For a resource to go inside those parentheses, its class has to implement the `AutoCloseable` interface — that's what guarantees the object has a `close()` method Java can call without knowing anything else about that particular class. `BufferedReader`, `FileReader`, and JDBC's database objects (`Connection`, `Statement`, `ResultSet`) are common examples that already implement this interface.
 
 You can declare several resources separated by `;` inside the same parentheses, and Java closes them in reverse order of declaration — the same LIFO principle you already know from the *call stack* at the start of this note: the last resource opened is the first one closed, because it usually depends on the ones before it (for example, a `BufferedReader` wrapping a `FileReader` needs the `FileReader` to stay open while it closes, so the outer one closes first):
@@ -381,19 +421,27 @@ try (FileReader fileReader = new FileReader("data.txt");
 
 > **What happens if both the code inside `try` and the automatic `close()` throw an exception?** This is a detail that tends to come up in interviews. Java keeps the exception thrown by the code inside `try` — that's the one you see as the main exception — and the exception thrown by `close()` isn't discarded, it's stored inside the main one as **suppressed** (a suppressed exception), retrievable with `mainException.getSuppressed()`. It's the same concept as the `cause` you saw in the "wrapping" section — one exception linked to another without losing information — but here in the opposite direction: here the extra information travels "attached" to the one you already had, instead of being the one wrapping the original.
 
-Database connections in Spring Boot are managed automatically by the framework — you will not write try-with-resources for database work, but you will see it in file and network operations, which is where you genuinely have to open and close resources yourself.
+Database connections in Spring Boot are managed automatically by the framework — you will not write try-with-resources for database work, but you will see it in file and network operations, which is where you genuinely have to open and close resources yourself. For the profile you're aiming for — Angular + Spring Boot junior at a Spanish consultancy — this exact pattern isn't something you'll write every day: most typical CRUD projects (exactly the kind of project you'll build and get asked about in interviews) handle persistence through Spring Data, which already manages connections and transactions for you with nothing to open or close by hand. Where you will run into it is in more specific tasks — reading a config file, processing a CSV uploaded by a user, or any integration that touches the file system directly. Even so, it's a classic technical interview question precisely because it reveals whether you understand resource management and the `finally` underneath it, so it's worth knowing how to explain it even if you don't use it every day.
 
 ---
 
 ## Spring Boot connection
 
 > Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → read: "Using @ControllerAdvice" and "The Handler Methods"
+> 📖 Spring Docs: https://docs.spring.io/spring-framework/reference/web/webmvc-exceptionhandlers.html → read: "Exception Handling"
 
 > **Preview — Spring Boot:** This section uses `@RestControllerAdvice`, `@ExceptionHandler`, and `ResponseEntity` — all Spring Boot classes you haven't studied yet. Read it to see how Java exceptions plug into a web API. You'll build this exact pattern in the Spring Boot notes.
 
 The standard pattern in Spring Boot:
 
 ```java
+// 0. Declare the custom exception — the same class you already saw in "Custom exceptions"
+public class EmployeeNotFoundException extends RuntimeException {
+    public EmployeeNotFoundException(Long id) {
+        super("Employee not found with id: " + id);
+    }
+}
+
 // 1. Throw a custom exception in the service
 public Employee findById(Long id) {
     return repository.findById(id)
@@ -417,27 +465,3 @@ public class GlobalExceptionHandler {
 ```
 
 This way, the service throws exceptions cleanly and the controller advice handles the HTTP status codes in one central place.
-
----
-
-## Exception hierarchy
-
-> Docs: https://www.baeldung.com/java-exceptions → read: "Exception Hierarchy"
-
-Every exception in Java extends `Throwable`. The two direct subclasses are `Error` (JVM-level failures you should never catch — out of memory, stack overflow) and `Exception` (problems your application can handle). `RuntimeException` is the unchecked branch under `Exception`. Your custom exceptions always extend `RuntimeException` in Spring Boot — they go in that bottom group.
-
-> **Why not catch `Error`?** By the time an `Error` like `OutOfMemoryError` or `StackOverflowError` is thrown, the JVM itself is already in a broken state — there's no free memory left to even run your `catch` block reliably, or the call stack itself just overflowed. Catching it doesn't fix anything; it just delays a crash that's going to happen anyway, and can hide the real problem instead of letting the app fail fast and visibly.
-
-```
-Throwable
-├── Error (JVM-level problems — OutOfMemoryError, StackOverflowError — do not catch these)
-└── Exception
-    ├── IOException (checked)
-    ├── SQLException (checked)
-    └── RuntimeException (unchecked)
-        ├── NullPointerException
-        ├── IllegalArgumentException
-        ├── IllegalStateException
-        ├── IndexOutOfBoundsException
-        └── your custom RuntimeException subclasses
-```

@@ -26,6 +26,35 @@ Si `main()` tampoco la captura, ahí se acaba el camino — `main()` es siempre 
 
 ---
 
+## Jerarquía de excepciones
+
+> Docs: https://www.baeldung.com/java-exceptions → read: "Exception Hierarchy"
+> 📖 Oracle Docs (Javadoc de `Throwable`): https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html → mira el apartado "All Known Subclasses" para ver la jerarquía completa documentada por Oracle
+
+La JVM (_Java Virtual Machine_) es el programa que realmente ejecuta tu código Java — cuando compilas, Java no genera código máquina directo para tu ordenador, genera bytecode, y es la JVM la que lo interpreta y lo ejecuta, reservando y gestionando ella misma la memoria que tu programa necesita (donde viven tus objetos, la propia pila de llamadas que viste al principio de la nota, etc.). Un fallo "a nivel JVM" es un fallo que ocurre en ese motor de ejecución mismo, no en la lógica de tu programa: por ejemplo, si tu programa crea tantos objetos que la memoria que la JVM tiene reservada se agota por completo, la JVM ya no tiene dónde seguir creando cosas y lanza `OutOfMemoryError`; si una cadena de llamadas a métodos es tan profunda (por ejemplo, una recursión sin condición de parada) que la pila de llamadas se queda sin espacio físico para seguir apilando métodos, la JVM lanza `StackOverflowError`. En los dos casos el problema no es "tu código tiene un bug de lógica" (como sí pasa con `RuntimeException`) — es que el propio entorno donde se ejecuta tu programa se ha quedado sin recursos para seguir funcionando, algo que normalmente no puedes arreglar desde un `catch`.
+
+Toda excepción en Java extiende `Throwable`. Las dos subclases directas son `Error` (fallos a nivel JVM que nunca debes capturar — memoria agotada, stack overflow) y `Exception` (problemas que tu aplicación puede manejar). `RuntimeException` es la rama no comprobada bajo `Exception`. Tus excepciones personalizadas siempre extienden `RuntimeException` en Spring Boot — van en ese grupo inferior.
+
+> **¿Por qué no capturar `Error`?** Cuando se lanza un `Error` como `OutOfMemoryError` o `StackOverflowError`, la JVM ya está en un estado roto — no queda memoria libre para ejecutar tu bloque `catch` de forma fiable, o la propia pila de llamadas acaba de desbordarse. Capturarlo no arregla nada; solo retrasa un crash que va a pasar de todas formas, y puede esconder el problema real en vez de dejar que la aplicación falle rápido y de forma visible.
+
+```
+Throwable
+├── Error (problemas a nivel JVM — OutOfMemoryError, StackOverflowError — no los captures)
+└── Exception
+    ├── IOException (checked)
+    ├── SQLException (checked)
+    └── RuntimeException (unchecked)
+        ├── NullPointerException
+        ├── IllegalArgumentException
+        ├── IllegalStateException
+        ├── IndexOutOfBoundsException
+        └── tus subclases personalizadas de RuntimeException
+```
+
+Esta jerarquía es la base de todo lo que viene a continuación: la distinción entre comprobadas y no comprobadas que ves justo debajo depende exactamente de qué rama de este árbol extiende cada excepción — `Exception` (comprobada) o `RuntimeException` (no comprobada).
+
+---
+
 ## Excepciones comprobadas vs no comprobadas
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Checked Exception" y "Unchecked Exception"
@@ -286,9 +315,10 @@ Lanza siempre con un mensaje que explique qué salió mal y qué valor lo causó
 ## throws — declarar excepciones comprobadas
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Throws Keyword"
+
 > 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/declaring.html → read: "Specifying the Exceptions Thrown by a Method"
 
-A diferencia de `throw` — que usas para lanzar tú mismo una excepción propia o genérica en el momento en que detectas un problema (visto en la sección anterior) — `throws` no lanza nada: solo declara en la firma del método que, dentro de él, puede llegar a producirse una excepción comprobada que no se ha capturado ahí mismo. Lo usas cuando llamas a un método que a su vez ya declara `throws` para una excepción comprobada (o cuando tú mismo detectas y lanzas una comprobada con `throw`, algo raro en la práctica) y decides no capturarla en ese punto, sino dejar que sea quien te llama a ti quien decida qué hacer — la misma idea de "quién tiene más contexto para decidir" que viste en el callout de "cuándo usar `throws` y cuándo `try/catch`" más arriba.
+A diferencia de `throw` — que usas para lanzar tú mismo una excepción propia o genérica en el momento en que detectas un problema (visto en la sección anterior) — `throws` no lanza nada: solo declara en la firma del método que, dentro de él, puede llegar a producirse una excepción comprobada que no se ha capturado ahí mismo. Lo usas cuando llamas a un método que a su vez ya declara `throws` para una excepción comprobada (o cuando tú mismo detectas y lanzas una comprobada con `throw`, algo raro en la práctica) y decides no capturarla en ese punto, sino dejar que el llamador decida qué hacer — la misma idea de "quién tiene más contexto para decidir" que viste en el callout de "cuándo usar `throws` y cuándo `try/catch`" más arriba.
 
 ```java
 public String readFile(String path) throws IOException {
@@ -306,9 +336,10 @@ En un proyecto Spring Boot típico, sin embargo, vas a escribir `throws` bastant
 ## Excepciones personalizadas
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Custom Exception"
+
 > 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/creating.html → read: "Creating Exception Classes"
 
-Creas tu propia clase de excepción cuando quieres darle un nombre de dominio a un error, en vez de lanzar una excepción genérica de Java como `IllegalArgumentException` a secas — el mismo criterio que ya viste en la sección de `throw`: merece la pena cuando quieres documentar mejor el problema, o cuando necesitas que un `@ExceptionHandler` distinga ese caso concreto de cualquier otro. Aquí tienes la receta paso a paso, ya generalizada para cualquier excepción propia que quieras escribir, no solo para `EmployeeNotFoundException`:
+Creas tu propia clase de excepción cuando quieres darle un nombre de dominio a un error, en vez de lanzar una excepción genérica de Java como `IllegalArgumentException`. Merece la pena cuando quieres documentar mejor el problema, o cuando necesitas que un `@ExceptionHandler` distinga ese caso concreto de cualquier otro. Aquí tienes la receta paso a paso, ya generalizada para cualquier excepción propia que quieras escribir, no solo para `EmployeeNotFoundException`:
 
 1. **Extiende la clase padre correcta.** Casi siempre `RuntimeException`, para que sea no comprobada — es la convención en Spring Boot que ya viste más arriba. Si alguna vez quisieras una excepción comprobada propia extenderías `Exception` en su lugar, pero es un caso raro en un proyecto Spring Boot típico, donde casi todo se modela como no comprobado.
 2. **Dale un constructor que reciba lo que necesites para construir un buen mensaje de error.** No hay una firma fija — la decides tú según qué datos tengas disponibles en el momento en que la vayas a lanzar. Aquí es el `id` que no se encontró; en otra excepción podría ser un nombre de fichero, un código de error, o varios valores a la vez.
@@ -325,13 +356,23 @@ public class EmployeeNotFoundException extends RuntimeException {
 
 Ya viste esta misma clase con el mismo nivel de detalle en la sección de `throw` más arriba — aquí la tienes de nuevo, esta vez como plantilla general del patrón completo: extender, definir el constructor, llamar a `super(...)`. El mensaje que guarda `super(...)` es lo que devuelve `e.getMessage()` más tarde, tanto en un bloque `catch` normal como en un `@ExceptionHandler` de Spring Boot — es el mismo mensaje viajando por los dos caminos posibles de captura.
 
-Una vez definida, la usas exactamente igual que cualquier otra excepción no comprobada: un `throw new EmployeeNotFoundException(...)` en el punto del código donde detectas el problema, sin necesidad de declarar nada en la firma del método (ver la sección de `throw` para el caso general, y la de "envolver" para cuándo NO hace falta este paso). En Spring Boot, el destino habitual de esta excepción es el mismo que ya viste con el patrón de envolver: la dejas propagarse sin capturarla en ningún punto intermedio, hasta que un único `@RestControllerAdvice` la atrapa (verás el código completo en la sección "Conexión con Spring Boot" más abajo) y decide qué código HTTP devolver según su tipo exacto. El ejemplo de `findById()` con `orElseThrow()` que la lanza ya lo viste completo en la sección de `throw` más arriba.
+Una vez definida, la usas exactamente igual que cualquier otra excepción no comprobada: un `throw new EmployeeNotFoundException(...)` en el punto del código donde detectas el problema, sin necesidad de declarar nada en la firma del método:
+
+```java
+public Employee findById(Long id) {
+    return repository.findById(id)
+        .orElseThrow(() -> new EmployeeNotFoundException(id));
+}
+```
+
+En Spring Boot, el destino habitual de esta excepción es el mismo que ya viste con el patrón de envolver: la dejas propagarse sin capturarla en ningún punto intermedio, hasta que un único `@RestControllerAdvice` la atrapa y decide qué código HTTP devolver según su tipo exacto.
 
 ---
 
 ## try-with-resources
 
 > Docs: https://www.baeldung.com/java-try-with-resources → read: "Try-With-Resources"
+
 > 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html → read: "The try-with-resources Statement"
 
 Antes de que existiera esta sintaxis, cerrar un recurso como un fichero abierto significaba escribir tú mismo un bloque `finally` que llamara a `reader.close()` — y ese `close()` en sí mismo puede lanzar una excepción, así que el `finally` "correcto" acababa necesitando su propio `try/catch` anidado dentro:
@@ -362,9 +403,11 @@ try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
 // reader se cierra automáticamente aquí, incluso si ocurrió una excepción
 ```
 
+Antes de seguir, vale la pena desmontar esa primera línea del `try`, porque en realidad son dos objetos anidados, no uno: `new FileReader("data.txt")` crea un `FileReader` — la clase más básica de Java para leer el contenido de un fichero de texto, carácter a carácter, a partir de la ruta que le pasas. Ese `FileReader` recién creado se pasa inmediatamente como argumento a `new BufferedReader(...)`, que es una clase que _envuelve_ a otro lector (aquí, el `FileReader`) para añadirle una capacidad que el `FileReader` no tiene por sí solo: un método `readLine()` que lee una línea completa de una vez, en lugar de tener que ir leyendo carácter a carácter tú mismo. Por eso ves dos `new` seguidos en la misma línea — es la misma idea que anidar llamadas a funciones en JavaScript (`f(g(x))`): primero se evalúa la llamada de más adentro (`new FileReader(...)`), y su resultado se pasa como argumento a la de más afuera (`new BufferedReader(...)`). Y sí, es una declaración de variable completa como cualquier otra: `BufferedReader reader = ...` declara una variable de tipo `BufferedReader` llamada `reader`, exactamente igual que si escribieras `int x = 5;` — lo único distinto es que aquí la declaración vive dentro de los paréntesis del `try`, lo que le dice a Java "cuando termines con `reader`, ciérralo por mí".
+
 Para que un recurso pueda ir dentro de esos paréntesis, su clase tiene que implementar la interfaz `AutoCloseable` — es lo que garantiza que el objeto tenga un método `close()` que Java pueda llamar sin saber nada más sobre esa clase en concreto. `BufferedReader`, `FileReader`, y las conexiones de base de datos de JDBC (`Connection`, `Statement`, `ResultSet`) son ejemplos habituales que ya implementan esta interfaz.
 
-Puedes declarar varios recursos separándolos con `;` dentro del mismo paréntesis, y Java los cierra en el orden inverso al que los declaraste — el mismo principio LIFO que ya conoces del *call stack* al principio de esta nota: el último recurso en abrirse es el primero en cerrarse, porque normalmente es el que depende de los anteriores (por ejemplo, un `BufferedReader` que envuelve a un `FileReader` necesita que el `FileReader` siga abierto mientras él se cierra, así que se cierra primero el de fuera):
+Puedes declarar varios recursos separándolos con `;` dentro del mismo paréntesis, y Java los cierra en el orden inverso al que los declaraste — el mismo principio LIFO que ya conoces del _call stack_ al principio de esta nota: el último recurso en abrirse es el primero en cerrarse, porque normalmente es el que depende de los anteriores (por ejemplo, un `BufferedReader` que envuelve a un `FileReader` necesita que el `FileReader` siga abierto mientras él se cierra, así que se cierra primero el de fuera):
 
 ```java
 try (FileReader fileReader = new FileReader("data.txt");
@@ -376,7 +419,7 @@ try (FileReader fileReader = new FileReader("data.txt");
 
 > **¿Qué pasa si tanto el código de dentro del `try` como el `close()` automático lanzan una excepción?** Es un detalle que suele salir en entrevistas. Java se queda con la excepción que lanzó el código de dentro del `try` — esa es la que ves como excepción principal — y la excepción que lanzó `close()` no se descarta, sino que se guarda dentro de la principal como **suprimida** (_suppressed exception_), recuperable con `excepcionPrincipal.getSuppressed()`. Es el mismo concepto que el de `cause` que viste en la sección de "envolver" — una excepción enlazada a otra sin perder información — pero aquí en dirección contraria: aquí la información extra viaja "adjunta" a la que ya tenías, en vez de ser la que envuelve a la original.
 
-Las conexiones de base de datos en Spring Boot se gestionan automáticamente por el framework — no escribirás try-with-resources para trabajo con base de datos, pero lo verás en operaciones con ficheros y red, que es donde de verdad tienes que abrir y cerrar recursos tú mismo.
+Las conexiones de base de datos en Spring Boot se gestionan automáticamente por el framework — no escribirás try-with-resources para trabajo con base de datos, pero lo verás en operaciones con ficheros y red, que es donde de verdad tienes que abrir y cerrar recursos tú mismo. Para el perfil que buscas — junior de Angular + Spring Boot en una consultoría española — este patrón concreto no es algo que vayas a escribir todos los días: la mayoría de proyectos CRUD típicos (que es justo el tipo de proyecto que vas a construir y que te van a preguntar en una entrevista) resuelven la persistencia con Spring Data, que ya gestiona conexiones y transacciones por ti sin que tengas que abrir ni cerrar nada a mano. Donde sí te lo vas a encontrar es en tareas más puntuales — leer un fichero de configuración, procesar un CSV subido por el usuario, o cualquier integración que toque el sistema de ficheros directamente. Aun así, es una pregunta clásica de entrevista técnica precisamente porque revela si entiendes la gestión de recursos y el `finally` que hay por debajo, así que merece la pena saber explicarlo aunque no lo uses todos los días.
 
 ---
 
@@ -384,11 +427,20 @@ Las conexiones de base de datos en Spring Boot se gestionan automáticamente por
 
 > Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → read: "Using @ControllerAdvice" y "The Handler Methods"
 
+> 📖 Spring Docs: https://docs.spring.io/spring-framework/reference/web/webmvc-exceptionhandlers.html → read: "Exception Handling"
+
 > **Vista previa — Spring Boot:** Esta sección usa `@RestControllerAdvice`, `@ExceptionHandler` y `ResponseEntity` — clases de Spring Boot que aún no has estudiado. Léela para ver cómo las excepciones Java se conectan a una API web. Construirás exactamente este patrón en las notas de Spring Boot.
 
 El patrón estándar en Spring Boot:
 
 ```java
+// 0. Declarar la excepción propia — la misma clase que ya viste en "Excepciones personalizadas"
+public class EmployeeNotFoundException extends RuntimeException {
+    public EmployeeNotFoundException(Long id) {
+        super("Employee not found with id: " + id);
+    }
+}
+
 // 1. Lanzar una excepción personalizada en el servicio
 public Employee findById(Long id) {
     return repository.findById(id)
@@ -412,27 +464,3 @@ public class GlobalExceptionHandler {
 ```
 
 De este modo, el servicio lanza excepciones limpiamente y el controller advice gestiona los códigos de estado HTTP en un único lugar central.
-
----
-
-## Jerarquía de excepciones
-
-> Docs: https://www.baeldung.com/java-exceptions → read: "Exception Hierarchy"
-
-Toda excepción en Java extiende `Throwable`. Las dos subclases directas son `Error` (fallos a nivel JVM que nunca debes capturar — memoria agotada, stack overflow) y `Exception` (problemas que tu aplicación puede manejar). `RuntimeException` es la rama no comprobada bajo `Exception`. Tus excepciones personalizadas siempre extienden `RuntimeException` en Spring Boot — van en ese grupo inferior.
-
-> **¿Por qué no capturar `Error`?** Cuando se lanza un `Error` como `OutOfMemoryError` o `StackOverflowError`, la JVM ya está en un estado roto — no queda memoria libre para ejecutar tu bloque `catch` de forma fiable, o la propia pila de llamadas acaba de desbordarse. Capturarlo no arregla nada; solo retrasa un crash que va a pasar de todas formas, y puede esconder el problema real en vez de dejar que la aplicación falle rápido y de forma visible.
-
-```
-Throwable
-├── Error (problemas a nivel JVM — OutOfMemoryError, StackOverflowError — no los captures)
-└── Exception
-    ├── IOException (checked)
-    ├── SQLException (checked)
-    └── RuntimeException (unchecked)
-        ├── NullPointerException
-        ├── IllegalArgumentException
-        ├── IllegalStateException
-        ├── IndexOutOfBoundsException
-        └── tus subclases personalizadas de RuntimeException
-```
