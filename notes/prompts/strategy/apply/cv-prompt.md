@@ -263,18 +263,12 @@ the web-search extracts already on file. After tailoring, record it in
 information) and feeds `coverage-prompt` / `coverage-audit-prompt` as the required floor — so every offer
 you tailor to also sharpens what you study.
 
-> The **canonical intake procedure** lives in
-> `notes/prompts/knowledge/coverage/evidence-intake-prompt.md` — the three sub-steps below mirror it. If
-> the two ever diverge, that prompt wins; keep them in sync.
-
-1. **Add a Raw posting block** under `## Raw postings`, in the file's exact existing format:
-   `### <Company> — <Role> · <year> · <source>` followed by a `Requisitos (from extract):` line quoting
-   the real requirement text from the offer (stack, DB, testing, methodology, English level, seniority).
-   Because this is a *full* offer, mark it as such (e.g. `· full posting`) — it outranks the partial extracts.
-2. **Update the Synthesis** — increment "postings on file" by one, re-tally each recurring requirement's
-   frequency to include this offer (e.g. `~6/8` → `~7/9`), and add any newly recurring skill. Keep the
-   file's honesty rule: a skill seen only in a senior-ish posting is a "signal to watch", not a junior floor.
-3. **Update the footer** — `_Last updated: <yyyy-mm> · postings on file: <N>_`.
+> **Do not re-derive the procedure here — run the canonical one.** The intake steps live in
+> `notes/prompts/knowledge/coverage/evidence-intake-prompt.md`, Steps 2–4: add the Raw-posting block in
+> the file's exact format (**including the `Captured: <yyyy-mm>` line** — it is what makes the file
+> trend-readable), mark this offer `full posting` (a full pasted offer outranks web-search extracts),
+> deduplicate, re-tally the Synthesis frequencies, and update the footer count. Follow those steps as
+> written — this prompt adds nothing to them.
 
 Commit it **separately** from the CV (the CV is never committed; the evidence is):
 
