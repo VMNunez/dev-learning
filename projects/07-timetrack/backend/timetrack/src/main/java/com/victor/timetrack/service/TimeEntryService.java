@@ -2,6 +2,8 @@ package com.victor.timetrack.service;
 
 import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
+import com.victor.timetrack.exception.BusinessRuleViolationException;
+import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.model.TimeEntry;
 import com.victor.timetrack.model.User;
@@ -31,27 +33,26 @@ public class TimeEntryService {
     }
 
     public TimeEntryResponse create(CreateTimeEntryRequest request) {
-
-
+        
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
         Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found with id " + request.getProjectId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
 
         if (request.getDate().isAfter(LocalDate.now())) {
-            throw new RuntimeException("Date cannot be in the future");
+            throw new BusinessRuleViolationException("Date cannot be in the future");
         }
 
         if(!project.getActive()){
-            throw new RuntimeException("Project is not active");
+            throw new BusinessRuleViolationException("Project is not active");
         }
 
         BigDecimal min = new BigDecimal("0.5");
         BigDecimal max = new BigDecimal("24");
 
         if(request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max)>0){
-            throw new RuntimeException("Hours must be between 0.5 and 24");
+            throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
         }
 
         TimeEntry timeEntry = new TimeEntry();
