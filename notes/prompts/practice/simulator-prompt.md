@@ -87,8 +87,9 @@ Source files for full mode — read all of these:
 - notes/interview-prep/projects/ — read all files in this folder if they exist;
   if the folder is empty or does not exist, skip without error.
 
-(CSS and Git are deliberately left out of full mode — they are rarely the core of a Spanish
-consultancy technical screen for this stack. Use topic mode to drill them on their own.)
+(CSS, Git, and JavaScript are deliberately left out of full mode — a Spanish consultancy screen for
+this stack leads with TypeScript, not vanilla JS, and CSS/Git are rarely its core. Use topic mode to
+drill any of them on their own.)
 
 Source files for topic mode:
 - notes/interview-prep/{LANGUAGE}/{TOPIC}.md
