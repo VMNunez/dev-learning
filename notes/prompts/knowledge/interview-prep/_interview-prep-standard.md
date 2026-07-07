@@ -143,6 +143,8 @@ Optional elements after the answer, by type:
   > **Consejo de entrevista:** the same advice in Spanish
 - **Decision-based and Pressure (encouraged)** — a blank line, then one line:
   Red flag answer: what a weak candidate would say and why it fails.
+- **Any question the interviewer would pose with code** — a blank line, then a real code block (see
+  "Real code — from real projects" below).
 
 ---
 
@@ -175,6 +177,34 @@ The strong answer references a real project, states the problem it solves, and s
 
 ---
 
+## Real code — from real projects
+
+Some questions are answered far better with a short code block than with prose — and interviewers
+routinely **show** a snippet ("what does this print?", "why is this `@Transactional` ignored?") or
+**ask you to write one** ("write a JOIN that…", "how do you add the JWT to every request?"). For those
+questions, a real snippet is what makes the answer land.
+
+**When a question warrants code** (heuristic — not every question does):
+- **Pressure questions built on a snippet** — the code *is* the question; it must appear.
+- **"How do you write / configure X?"** where the honest answer is code — a JOIN, a reactive form, an
+  HTTP interceptor, a JWT filter, a `@Transactional` service method.
+- **Confusable-pair questions** where a 3-line contrast makes the difference click (`ngIf` vs `@if`,
+  `WHERE` vs `HAVING`).
+
+Most Conceptual and Decision-based questions stay prose — do not bolt code onto a question that a
+person would answer by talking.
+
+**Rules for the code block:**
+- **It comes from Victor's real project code**, and the block is cited to the file it came from — e.g.
+  a first-line comment `// projects/07-timetrack · TimeEntryService.java`. Never present invented code
+  as if it were his. If no project actually contains it (e.g. a pure-language gotcha), use a **minimal
+  generic snippet clearly marked** `// illustrative — not from a project`, or skip the code entirely.
+- **Smallest fragment that makes the point** — 3–10 lines, not a whole class. Trim imports and
+  unrelated fields.
+- **Same code in both `en/` and `es/`.** Code is identical; only comments may be translated.
+- The snippet supports the spoken answer — it does not replace it. The 1–2 sentence answer still says
+  what Victor would say; the code is what he would point at or write on the whiteboard.
+
 ## When a section is complete
 
 A section is done only when ALL hold:
@@ -182,6 +212,7 @@ A section is done only when ALL hold:
 - Every question a Spanish consultancy would realistically ask about the topic is covered.
 - The type ratio is roughly on target (or, for <5 questions, at least 1 Decision-based question present).
 - Every question is realistic, well-worded, and answered in Victor's voice per the quality bar above.
+- Every question an interviewer would pose with code carries a real, cited snippet (see "Real code").
 - At least one Decision-based question references a real project by name.
 - Every question has a priority marker; within the section they run ⭐⭐⭐ → ⭐⭐ → ⭐.
 - Every answer passes the "explain every word" test, or carries a TODO flagging it for rewrite.

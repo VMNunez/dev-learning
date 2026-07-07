@@ -40,6 +40,8 @@ Before starting, read:
 - notes/prompts/_shared-context.md — Victor's profile, projects, and the Spanish job market 2026 (you
   judge "realistic" and "in Victor's voice" against this).
 - Both `en/{FILE}.md` and `es/{FILE}.md`, scoped to `{SECTION}` (or the whole file if `all`).
+- When a code block's citation looks doubtful, open the cited project file (paths in "Sourcing real
+  code" of the write prompt) to confirm the snippet is real — a spot-check, not a full source read.
 
 ## Audit checklist — run every point on every question in scope
 
@@ -63,6 +65,12 @@ file worth studying:
   section is ⭐⭐⭐); each section runs ⭐⭐⭐ → ⭐⭐ → ⭐.
 - **Format** — blank line between question and answer; Junior tip on every Conceptual question; Red flag
   on Decision-based/Pressure where warranted.
+- **Real code where warranted** — every question an interviewer would pose with code (Pressure
+  snippets, "how do you write/configure X?", tight confusable-pair contrasts) carries a code block that
+  is **real and cited to a project file** (`// projects/07-timetrack · …`), minimal (3–10 lines), and
+  actually supports the answer. Fix invented code (replace with a real fragment from the project source,
+  or mark it `// illustrative — not from a project`), and add a snippet where one is clearly missing.
+  Same code in `en/` and `es/`.
 - **Bilingual integrity** — `en/` and `es/` have the same sections, same questions, same order; `es/`
   reads as native Spanish, not a calque; the Junior-tip label is `Consejo de entrevista:`.
 

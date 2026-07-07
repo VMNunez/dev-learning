@@ -114,7 +114,8 @@ note it, and move to the next topic — do not commit a partial file.
 > Read `notes/prompts/knowledge/interview-prep/interview-prep-review-prompt.md` and execute it in full
 > for `FILE = «topic»`, `SECTION = «section»`, `DRY_RUN = {DRY_RUN}`.
 > Audit the just-authored Q&A hard against the standard — especially that questions are realistic,
-> well-worded, and answered in Victor's voice — fix what falls short in both `en/` and `es/`, and
+> well-worded, answered in Victor's voice, and carry a real cited code snippet where an interviewer
+> would pose the question with code — fix what falls short in both `en/` and `es/`, and
 > finish exactly as that prompt says for this `DRY_RUN` (false: commit atomically; true: fix only,
 > commit nothing). Carry forward the author's summary blocks. Report your verdict, files touched, and
 > the commit hash if you committed.

@@ -90,6 +90,25 @@ Check `{MODE}` first. In **correct** mode run ONLY, in order: Step 1 (sync), Ste
 then stop. Skip Steps 3, 6.1, 6.3, and 6.4. You are correcting what is there, not expanding the topic;
 mention any real gap in the summary instead of adding questions. In **full** mode run everything.
 
+## Sourcing real code
+
+The standard requires a real, cited code snippet on any question an interviewer would pose with code
+(Pressure snippets, "how do you write/configure X?", tight confusable-pair contrasts). When a question
+in scope warrants code, **read the real source and take the smallest fragment from it** — never invent
+code and present it as Victor's. Where to look, by topic:
+
+- **spring-boot / java / security / architecture** → `projects/07-timetrack/backend/timetrack/src/main/java/`
+  (and `.../src/test/java/` for testing questions — JUnit/Mockito).
+- **angular / typescript / css** → the Angular projects, richest first: `angular/06-hr-portal/`,
+  `angular/05-task-manager/`, `angular/03-expense-tracker/`. (The 07 frontend is not built yet.)
+- **sql** → `sql/` (the exercise files — real queries Victor wrote).
+- **git / general** → usually prose; add code only if a concrete command or config genuinely helps.
+
+Cite the fragment with a first-line comment naming the file, e.g.
+`// projects/07-timetrack · TimeEntryService.java`. If no project actually contains the construct (a
+pure-language gotcha), use a minimal snippet marked `// illustrative — not from a project`, or skip the
+code. Keep the same code in both `en/` and `es/` (comments may be translated).
+
 ## Step 1 — Sync check
 
 Bring `en/{FILE}.md` and `es/{FILE}.md` into sync for the run's scope (full file, or just `{SECTION}`).
@@ -148,8 +167,9 @@ per section. Flag any section missing Decision-based or Pressure entirely, and f
 **6.4 Missing questions.** Every realistic question the target companies would ask that is not yet in
 `{SECTION}`. Do not cap at 3–5 — add until the section is genuinely interview-ready. Each new question:
 follow the question format in the standard (bold question + marker + blank line + answer in Victor's
-voice + Junior tip if Conceptual / Red flag if Decision-based or Pressure), reference a real project
-when it is about a pattern or decision, and add to BOTH files (translated). If a question logically
+voice + Junior tip if Conceptual / Red flag if Decision-based or Pressure + a **real, cited code
+block** if it is the kind of question an interviewer poses with code — see "Sourcing real code"),
+reference a real project when it is about a pattern or decision, and add to BOTH files (translated). If a question logically
 belongs in a different section than `{SECTION}`, note it in the summary instead of adding it here.
 Flag any new question whose concept is not in coverage.md with `[coverage gap]`.
 
