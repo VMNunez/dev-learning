@@ -67,7 +67,12 @@ DRY_RUN = false
 SCOPE   = [folder | file]
 
 ## folder mode:
-TOPIC   = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC   = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
+
+## TOPIC = all (folder mode only) audits every topic in turn — see notes/prompts/_batch-mode.md.
+## Batch order: Angular, Angular Material, Spring Boot (also reads notes/java/en/), Java,
+## Architecture, Security, TypeScript, JavaScript, CSS, SQL, Git, General. File mode is never
+## batched — it needs one exact FILE.
 
 ## file mode:
 FILE    = [exact en/ file path, e.g. notes/java/en/08-exceptions.md]
@@ -85,6 +90,19 @@ You are the orchestrator for building Victor's study notes, hands-off. First rea
 `notes/prompts/knowledge/notes/_note-quality-standard.md` so you know the bar you are enforcing. Then follow
 the branch for `{SCOPE}`. You stay light: you dispatch subagents, wait, and collect — you never hold
 every file's content in your own context.
+
+## If SCOPE = folder and TOPIC = all
+
+Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered topic list from the config block's
+Batch note (Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript →
+JavaScript → CSS → SQL → Git → General). Run the **entire `If SCOPE = folder` procedure below once per
+topic**, fully finishing one topic — plan, build every row, its commits — before starting the next.
+Never overlap topics: their subagents commit, and parallel commits race the git index. Put each
+topic's report under a `### {TOPIC}` heading, and after the last one print the `_batch-mode.md` summary
+table (`Topic | Result | Files changed`). If the run gets too long, finish the current topic
+completely (commits included) and stop with the `_batch-mode.md` "Completed / Remaining" line — a
+re-run resumes from the first unfinished topic (already-`[x]` worklist rows make finished topics fast
+no-ops). Otherwise, for a single topic, follow the branch directly.
 
 ## If SCOPE = folder
 
