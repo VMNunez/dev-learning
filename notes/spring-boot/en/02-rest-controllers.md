@@ -225,6 +225,20 @@ public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectR
 }
 ```
 
+**The mechanism, step by step**
+
+What actually travels over the network is not a Java object — it is plain text formatted as JSON. Your method needs a real object (`request.getName()`, etc.), so something has to translate that text into an object before your code runs:
+
+1. Postman (or Angular) sends the `POST` with the JSON `{"name": "Project Beta", "description": "..."}` in the request body.
+2. Spring receives the request and, because of `@PostMapping`, already knows it must run this `create(...)` method.
+3. Before running it, Spring inspects the method's parameters and sees `@RequestBody CreateProjectRequest request`.
+4. That annotation tells it: "the text in the body needs to be converted into a `CreateProjectRequest` object, and passed to this parameter".
+5. Jackson reads the JSON key by key: it sees `"name"`, looks for a field called `name` in `CreateProjectRequest`, and assigns it `"Project Beta"`. Same for `"description"`.
+6. The result is a real `CreateProjectRequest` object, already in memory, with its fields filled in.
+7. That already-built object is what your method receives once it starts running — you never write the code that parses the JSON.
+
+> Without `@RequestBody`, Spring would not know that parameter should be filled from the body — by default it looks for parameters in the URL instead (the way `@RequestParam` does), so the object would arrive `null` or empty.
+
 `@RequestBody` is only about *receiving* — it is the mirror image of the response. Do not confuse the two directions:
 
 |                              | Direction       | Where it appears                          |
