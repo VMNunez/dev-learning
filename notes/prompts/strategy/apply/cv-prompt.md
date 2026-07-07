@@ -5,9 +5,10 @@ Use in a **separate conversation**. Fill in the configuration block before pasti
 Run this when you are ready to write or update your CV for Spanish consultancy applications.
 The output is complete, ready-to-paste CV text in Spanish — copy it into your Word or PDF template.
 
-Two modes:
-- **`create`** — builds the CV from scratch using your current profile and projects
-- **`review`** — audits an existing CV and rewrites any weak sections; paste your current CV at the end
+Three modes:
+- **`create`** — builds the CV from scratch using your profile, projects, and existing personal data
+- **`review`** — audits an existing CV and rewrites any weak sections (read from `personal/CV` or pasted)
+- **`tailor`** — adapts your base CV to one specific job offer, keyword-matched to what that offer asks
 
 ---
 
@@ -16,18 +17,20 @@ Two modes:
 1. Fill in the configuration block below
 2. Paste the entire prompt into a new chat
 3. If MODE = review: paste your current CV at the very end
+4. If MODE = tailor: paste the full job offer at the very end
 
 ---
 
 ````
 ## Configuration — edit only this block
 
-MODE       = [create | review]
-EDUCATION  = [your degree, university, and year — e.g. "Grado en Administración de Empresas, Universidad Complutense de Madrid, 2017" | "no university degree"]
+MODE       = [create | review | tailor]
+EDUCATION  = [your degree, university, and year — e.g. "Grado en Administración de Empresas, Universidad Complutense de Madrid, 2017" | "no university degree" | auto — read it from my existing CV in personal/CV]
 CAMBRIDGE  = [obtained (B2) | in progress (B1→B2) | not yet started]
-LOCATION   = [your city — e.g. "Madrid" | "Barcelona"]
-PHONE      = [your phone number — e.g. "+34 612 345 678"]
+LOCATION   = [your city — e.g. "Madrid" | "Barcelona" | auto]
+PHONE      = [your phone number — e.g. "+34 612 345 678" | auto — read it from my existing CV]
 PROJECTS   = [comma-separated list of projects to include — e.g. "07-timetrack, 06-hr-portal, 05-task-manager" | auto — let the prompt choose the 3 strongest]
+BASE_CV    = [tailor mode only: path to the master CV to start from | auto — the most recent in personal/CV/master]
 
 ---
 
@@ -40,6 +43,21 @@ application prompts follow. It defines the **sources to read** (`CLAUDE.md`,
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the
 **project-selection heuristic**. This prompt does not repeat those rules — it adds only the
 CV-specific flow on top.
+
+---
+
+## Where CVs live and are saved
+
+Finished CVs are personal documents with your phone and email — they are **never committed to the
+repo**. They live outside it, at `C:\Users\Victor\Documents\main\personal\CV\`:
+- `master/` — your base CV(s): the canonical version you keep current
+- `applications/` — one tailored CV per job offer, named `empresa-puesto.md`
+- `assets/` — your headshot; the `[FOTO]` placeholder in the CV points here
+- `archive/` — old drafts, kept only as a data source (never sent)
+
+Only `notes/cv/cv-bullets.md` (no personal data) stays inside the repo. Read the existing CV in
+`master/` or `archive/` for the real personal facts (per the standard's "Sources to read") instead of
+inventing them.
 
 ---
 
@@ -64,10 +82,22 @@ apply them here without restating them.
 
 **If MODE = create:** proceed directly to Step 1.
 
-**If MODE = review:** before Step 1, read the CV pasted at the end of this chat.
+**If MODE = review:** before Step 1, read the CV to audit — either the one pasted at the end of this
+chat, or, if nothing is pasted, the most recent file in `personal/CV/master/` (or `archive/`, including
+`currículum.pdf`).
 - Note which projects are included → use them as the starting point for Step 1 instead of choosing from scratch
 - Note which bullets are weak, missing a result, or use filler language → flag them so Step 3 rewrites them
 - The output of Step 2 is a rewrite of each existing section, not a blank draft — show before/after for every section that changes
+
+**If MODE = tailor:** before Step 1, read the job offer pasted at the end of this chat (or fetch the URL
+given). Then:
+- **Extract the offer** — its hard requirements, its exact keywords/terminology, and its nice-to-haves.
+- **Start from BASE_CV** (the master CV) — adapt it, do not rebuild from zero.
+- **Gap analysis** — for each offer requirement, mark `HAVE` (with concrete evidence from PROGRESS/projects),
+  `PARTIAL` (can be spun honestly), or `MISSING`. Never claim a `MISSING` one — the standard's
+  defensibility rule still holds; a tailored CV is reordered and reworded, not fabricated.
+- **Reweight** — reorder skills, projects, and the PERFIL so the CV leads with what THIS offer prioritizes,
+  and mirror the offer's wording where you can defend it (e.g. if it says "APIs REST", use that phrasing).
 
 ---
 
@@ -184,6 +214,11 @@ For each keyword: ✅ present naturally in the CV / ❌ missing.
 
 For each missing required keyword: propose a natural place to add it without forcing it.
 
+**In `tailor` mode:** also audit against the **specific offer's keywords** extracted in mode handling.
+For this CV those take priority over the generic list — a keyword the offer names but the standard's
+list omits must still appear (if you can defend it), and a generic keyword the offer never mentions can
+be dropped to save space.
+
 ---
 
 ## Step 5 — Length check
@@ -195,19 +230,26 @@ Count the approximate lines and estimate if the content fits on one page in a st
 
 ---
 
-## Step 6 — Output the final CV
+## Step 6 — Output the final CV and save it
 
-Print the complete final CV text, ready to copy directly into a Word or PDF template.
-All fixes from Steps 3, 4, and 5 already applied.
+Print the complete final CV text, ready to copy into a Word or PDF template. All fixes from Steps 3, 4,
+and 5 already applied.
+
+Then **save it to the personal folder outside the repo** (create the file):
+- `create` / `review` → `C:\Users\Victor\Documents\main\personal\CV\master\cv-<yyyy-mm>.md`
+- `tailor` → `C:\Users\Victor\Documents\main\personal\CV\applications\<empresa>-<puesto>.md`
+
+Writing outside the project directory may prompt for permission the first time — that is expected.
+Never commit a CV to the repo; export the final version to PDF yourself for sending.
 
 Then print:
 
 **ATS keywords present:** list of keywords found in the CV
 **ATS keywords missing:** list of required keywords not found (with suggested placement)
 **Estimated length:** fits on one page / slightly over (X lines to cut)
+**Saved to:** the exact path written above
+**(tailor mode) Gap analysis:** the `HAVE / PARTIAL / MISSING` table against the offer, so you know
+what to shore up before the interview
 
-No commit message needed — the CV is not stored in this repo.
-Save it separately as a PDF in a folder outside the learning directory.
-
-[paste your current CV below this line — only needed in review mode]
+[paste your current CV (review mode) or the full job offer (tailor mode) below this line]
 ````
