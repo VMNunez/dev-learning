@@ -98,6 +98,32 @@ Add it to the correct section in that topic's coverage, and sync to `notes/cover
 
 ---
 
+## Step 2b — Market-fit check against the evidence (the priority floor)
+
+Do this **before** the finer per-section audit: coverage must first meet what the market actually asks,
+then expand — the priority order defined in `_coverage-standard.md` ("cover the market first, then
+expand"). This is the step that operationalises the "required floor" principle instead of leaving it
+to memory.
+
+Read the **Synthesis** in `notes/prompts/_job-market-evidence.md`. For **each recurring requirement**
+(with its frequency, e.g. `Docker ~3/8`, `Java ~8/8`):
+
+1. **Gap → add.** Find the coverage item(s) it maps to. If a recurring requirement has no item — or only
+   a thin/vague one — add or sharpen the item in the right topic section and sync to
+   `notes/{topic}/coverage.md`. Priority scales with frequency: a `~8/8` requirement missing from
+   coverage is a serious defect; a `~3/8` one is still required but lower urgency.
+2. **Over-coverage → flag, don't cut yet.** Note any coverage item that no posting supports **and** is
+   not an interview fundamental the postings under-list. Do not delete it here for that reason alone
+   (the standard's "raises the floor, does not lower the ceiling" rule) — list it as a demotion
+   candidate for the Step 4 scope check to judge.
+3. **Signals to watch → keep out.** A requirement in the evidence's "Signals to watch" list (senior-ish:
+   Kafka, Spring Cloud, Spring Batch, NgRx…) is **not** a junior floor — do not force it into coverage.
+
+If `_job-market-evidence.md` is empty or stale, skip this step and say so in the summary; the rest of
+the audit still runs on the model's knowledge of the market.
+
+---
+
 ## Step 3 — Audit each section for gaps
 
 For each section in `notes/coverage.md`, apply the **content and quality checks defined in
@@ -139,7 +165,7 @@ For each `notes/{topic}/future-learning.md` corresponding to a section you revie
 
 ## Step 5 — Apply all changes
 
-Apply every change identified in Steps 2, 3, and 4 directly to the files.
+Apply every change identified in Steps 2, 2b, 3, and 4 directly to the files.
 
 **Files to update:**
 - `notes/coverage.md` — the primary file
@@ -164,6 +190,8 @@ Print the summary:
 |--------|--------|
 | Sync corrections (pre-audit) | [topic — what differed] |
 | New topic folders created | [list or "none"] |
+| Market-fit gaps filled | [topic — recurring requirement (freq) that had no/thin item] |
+| Over-coverage demotion candidates | [item — no posting supports it, not a fundamental] |
 | Sections with gaps filled | [topic — what was added] |
 | Items split (grouped → atomic) | [list or "none"] |
 | Items moved between topics | [concept — from → to] |

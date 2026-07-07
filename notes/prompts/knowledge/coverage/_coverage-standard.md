@@ -54,6 +54,11 @@ Do not, however, *shrink* coverage below what the interview clearly tests just b
 omitted it; postings under-list the fundamentals interviewers still probe. Evidence raises the floor,
 it does not lower the ceiling.
 
+**Cover the market first, then expand.** When building or auditing a section, sequence the work: first
+make every recurring market requirement map to an item — that floor is the priority — then expand to the
+interview fundamentals and confusable pairs the postings under-list. Market coverage comes before
+breadth; a section is not allowed to be "rich" in extras while a `~8/8` recurring requirement has no item.
+
 ---
 
 ## Deciding what is IN and what is OUT
