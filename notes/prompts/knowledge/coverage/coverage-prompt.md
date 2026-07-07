@@ -76,10 +76,10 @@ Before starting, read:
   job target. Do not use any hardcoded role/company/date — read the target from ROADMAP and
   `_shared-context` and defer to them (see "The job target is the source" in the standard).
 - `notes/prompts/_job-market-evidence.md` — real junior postings from the target companies, distilled
-  into recurring requirements. When it has evidence, its Synthesis is a **required floor** for {TOPIC}:
-  every recurring skill that touches {TOPIC} must map to coverage items. When it is empty/stale, fall
-  back to your market knowledge (optionally a live web search). Real evidence outranks a guess, but
-  never shrink coverage below what the interview tests just because a posting omitted a fundamental.
+  into recurring requirements. Per the standard's "Two sources", the deep market analysis in Step 2 is
+  **primary**; this file **complements** it: every recurring skill that touches {TOPIC} must still map to
+  coverage items (a floor to raise), but it is a small sample — its silence never shrinks coverage, and
+  a real posting overrides the analysis only where they concretely conflict.
 
 `coverage.md` is the single source of truth for what Victor must learn about {TOPIC}, derived from
 the job — not from the notes. The full definition, and why projects don't define scope, is in the
@@ -108,15 +108,48 @@ Read these files before making any decision:
 
 ---
 
-## Step 2 — Derive coverage from the job, not the notes
+## Step 2 — Derive coverage from a deep market analysis (cold subagent), not the notes
 
-Apply the **standard's** scope logic to {TOPIC}: the interviewer mindset ("what would I ask to test
-whether they really know this?"), the IN/OUT filter, the AI factor, and the confusable-pairs rule are
-all defined in `_coverage-standard.md` — read them there and apply them here. The job target
-(role, companies, deadline) comes from ROADMAP + `_shared-context`, never from a value baked into
-this prompt.
+Scope for {TOPIC} comes **primarily** from a deep analysis of what the Spanish market asks a junior with
+Victor's objectives — the backbone defined in the standard's "Two sources" section — with the real
+postings complementing it. Run that analysis in a **cold subagent** so it can web-search without
+bloating this context.
 
-Two things this per-topic run must hold onto:
+**In Claude Code:** launch one `general-purpose` subagent, `run_in_background: false`:
+
+> You are a specialist in the Spanish IT job market for junior developers. Read `ROADMAP.md` and
+> `notes/prompts/_shared-context.md` for the candidate's exact objectives (target role, companies,
+> stack, timeline, profile) and `notes/prompts/knowledge/coverage/_coverage-standard.md` for what a
+> coverage item is. The topic is {TOPIC}.
+>
+> Produce a **deep analysis of what the Spanish market asks a junior with these objectives, specifically
+> for {TOPIC}**:
+> - Run a **live web search** of current Spanish junior postings and technical-interview norms for
+>   {TOPIC} in this stack (the target companies plus Tecnoempleo / InfoJobs / LinkedIn España); quote the
+>   requirement text you find and date it. If web search is unavailable, say so and use your trained
+>   knowledge of the 2026 Spanish market.
+> - Cross-check `notes/prompts/_job-market-evidence.md` (real postings already on file) as a
+>   **complement** — it is a small sample, so it corroborates and adds a frequency signal; it does not
+>   bound the analysis.
+>
+> Return the **required {TOPIC} scope from the market's perspective**: a list of must-know items, each as
+> `concept — one interview-anchored sentence` in the standard's format and tagged by section, and for
+> each a short source note (which posting/search supports it, or "fundamental interviewers still probe
+> even though postings under-list it"). Add a separate short list of **"signals to watch — not a junior
+> floor"** (senior-ish items to keep OUT). Do not write coverage.md; return only the analysis.
+
+Then **you** (the generator) treat the returned items as the {TOPIC} **market-demand floor** and derive
+coverage from them plus the standard's scope logic — the interviewer mindset ("what would I ask to test
+whether they really know this?"), the IN/OUT filter, the AI factor, and the confusable-pairs rule, all
+defined in `_coverage-standard.md`. The job target (role, companies, deadline) comes from ROADMAP +
+`_shared-context`, never from a value baked into this prompt.
+
+**Not in Claude Code (plain chat):** do the analysis yourself, explicitly — reason through what the
+Spanish market asks a junior with these objectives for {TOPIC}, use a web search if the environment
+allows, cross-check the evidence file, and write the market-demand item list *before* deriving coverage.
+The independence is weaker than a real subagent, so actually produce the list; do not skip to writing.
+
+Two things this per-topic run must still hold onto:
 - **The notes are not the source.** If {TOPIC}'s notes are sparse or missing, still derive full
   coverage from what the target screening tests. A gap in the notes is a notes problem, not a reason
   to shrink coverage.

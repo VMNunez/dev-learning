@@ -42,17 +42,27 @@ Any concrete mention below — "junior Angular + Spring Boot", "NTT Data / Capge
 `_shared-context.md` say something different (a new deadline, a shifted target role, new companies),
 **they win** — the coverage must reflect the source, not the example.
 
-### Real postings outrank the model's guess
+### Two sources: a deep market analysis, complemented by real postings
 
-There is a stronger source than reasoning about the market: the market itself. Read
-`notes/prompts/_job-market-evidence.md` — real junior postings from the target companies, distilled
-into recurring requirements. When it has evidence, its Synthesis is a **required floor**: every skill
-that recurs across several postings must map to coverage items, and a recurring requirement missing
-from coverage is a defect. When it is empty or stale, fall back to the model's knowledge (and,
-optionally, a live web search for current postings) — but real evidence always wins over a guess.
-Do not, however, *shrink* coverage below what the interview clearly tests just because a posting
-omitted it; postings under-list the fundamentals interviewers still probe. Evidence raises the floor,
-it does not lower the ceiling.
+Coverage scope rests on **two sources that reinforce each other**, and the first is primary:
+
+1. **A deep analysis of the target market — the backbone.** Reason thoroughly about what a junior for
+   the target role and companies (per ROADMAP + `_shared-context`) is actually asked in screenings,
+   technical interviews, and take-homes, and — when possible — back it with a **live web search of
+   current Spanish junior postings and interview norms** for the stack. This analysis is always
+   required; it is never a mere fallback. It is what makes coverage reflect the whole market, not only
+   the few postings that happen to be on file.
+2. **Real postings — the corroboration.** `notes/prompts/_job-market-evidence.md` holds real postings
+   from the target companies, distilled into recurring requirements. They **complement** the analysis:
+   they confirm it, add a frequency signal (`~7/9`), surface the exact wording the market uses, and —
+   on a concrete point where a real posting clearly conflicts with the analysis — the posting wins
+   (real data beats an unverified guess).
+
+Neither source alone is enough. The evidence file is a small, partial sample, so it can only *raise*
+the floor, never lower it — a requirement's absence from it is not proof a junior does not need it. And
+the analysis without the postings drifts toward what the model imagines rather than what the market
+prints. Use both: where they conflict on a concrete point, evidence wins; everywhere else, the deep
+analysis defines the floor. Evidence raises the floor, it does not lower the ceiling.
 
 **Cover the market first, then expand — but the expansion is not optional.** Sequence the work: first
 make every recurring market requirement map to an item (the priority floor), then expand to the

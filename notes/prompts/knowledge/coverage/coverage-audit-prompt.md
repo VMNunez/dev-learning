@@ -120,12 +120,14 @@ Read the **Synthesis** in `notes/prompts/_job-market-evidence.md`. For **each re
    Kafka, Spring Cloud, Spring Batch, NgRx…) is **not** a junior floor — do not force it into coverage.
 
 The evidence is currently a **small, partial sample**, so treat its coverage as a floor to raise, never
-as a ceiling: a requirement's *absence* from the file is not proof a junior does not need it. When the
-evidence is thin or empty, do **not** stop there — fall back to the model's reasoned per-topic analysis
-of what a junior for the target role and companies must know (Step 3's checks plus the completeness test
-in `_coverage-standard.md`) as an **equally required floor**, and let the real evidence override that
-analysis only where they actually conflict. In the summary, note whether each market-fit change came
-from real evidence, from the model's junior-needs analysis, or from both.
+as a ceiling: a requirement's *absence* from the file is not proof a junior does not need it. The
+evidence does **not** stand alone here — the primary input is the **deep analysis of the target market**
+from `_coverage-standard.md` ("Two sources"): what a junior for the target role and companies must know,
+reasoned in full and, when possible, backed by a live web search of current Spanish junior postings.
+Run that analysis for every section (Step 3's checks plus the completeness test) as a **co-primary
+floor** regardless of how many postings are on file; the evidence then complements and sharpens it, and
+overrides it only on a concrete point where they actually conflict. In the summary, note whether each
+market-fit change came from the deep analysis, from real evidence, or from both.
 
 ---
 
