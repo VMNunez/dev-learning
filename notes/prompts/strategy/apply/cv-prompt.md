@@ -261,6 +261,10 @@ the web-search extracts already on file. After tailoring, record it in
 information) and feeds `coverage-prompt` / `coverage-audit-prompt` as the required floor — so every offer
 you tailor to also sharpens what you study.
 
+> The **canonical intake procedure** lives in
+> `notes/prompts/knowledge/coverage/evidence-intake-prompt.md` — the three sub-steps below mirror it. If
+> the two ever diverge, that prompt wins; keep them in sync.
+
 1. **Add a Raw posting block** under `## Raw postings`, in the file's exact existing format:
    `### <Company> — <Role> · <year> · <source>` followed by a `Requisitos (from extract):` line quoting
    the real requirement text from the offer (stack, DB, testing, methodology, English level, seniority).
