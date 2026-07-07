@@ -94,6 +94,13 @@ Are there any other topics that a Spanish consultancy would interview a junior A
 2. Create `notes/{topic}/future-learning.md` with a short intro line and at least one `## Phase` section grouping post-junior concepts by when they become relevant (during the job, 6–12 months in, senior level)
 3. Do NOT create note files (the numbered `01-...` files) — those are written in separate guided sessions
 4. Add the new section to `notes/coverage.md` in study-priority order, with a `---` separator before and after. Apply the heading level transformation: `# Minimum Coverage — {TOPIC}` becomes `## {TOPIC}`, and each `## Section name` in the source becomes `### Section name` in `notes/coverage.md`
+5. **Register the new topic across the machinery — otherwise coverage names it but nothing downstream builds it.** A coverage file with no home in the rest of the system produces notes and Q&A for a topic no other prompt knows exists. Flag each of these in the final summary under "New-topic registration needed" (Victor applies the ones outside this prompt's scope, since they touch prompts this audit does not own):
+   - **CLAUDE.md** — add the topic to the `notes/` subfolders list (with its `next file:` counter) and, if it is study-relevant, to the 13:30 notes study order.
+   - **notes-audit / notes-plan** — add the topic to the `TOPIC` enum in both (the batch order lives in notes-audit only; notes-plan never runs batched).
+   - **interview-prep-audit / interview-prep-write** — if the topic gets its own Q&A file, add it to the `FILE` enum and the batch order; if it folds into an existing file (like Angular Material into `angular.md`), note that routing instead.
+   - **notes-and-interview-prep** — add it to the `TOPIC`/`FILE`/`NOTES_PATH` config and batch order.
+   - **simulator** — add its interview-prep file to the full-mode source list if it should appear in a mock interview.
+   Do NOT edit those prompt files from this audit — only create the coverage/future-learning files and the `notes/coverage.md` section here, and list the registration edits for Victor. This keeps the coverage audit's own commit atomic.
 
 **If a concept belongs under an existing topic instead:**
 Add it to the correct section in that topic's coverage, and sync to `notes/coverage.md`.
@@ -200,6 +207,7 @@ Print the summary:
 |--------|--------|
 | Sync corrections (pre-audit) | [topic — what differed] |
 | New topic folders created | [list or "none"] |
+| New-topic registration needed | [per new folder: the CLAUDE.md / notes-audit / interview-prep / simulator edits Victor must apply, or "none"] |
 | Market-fit gaps filled | [topic — recurring requirement (freq) that had no/thin item] |
 | Over-coverage demotion candidates | [item — no posting supports it, not a fundamental] |
 | Sections with gaps filled | [topic — what was added] |
