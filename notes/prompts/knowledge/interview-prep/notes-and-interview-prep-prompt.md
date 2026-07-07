@@ -2,7 +2,7 @@
 
 Use in a **separate conversation**. Fill in the configuration block, then paste everything into a new chat.
 
-**Prerequisites:** run `notes-audit` and `interview-prep-by-topic-prompt` first. This prompt assumes both sides are already quality-checked — it only finds and fixes gaps between them.
+> **▶ Run first:** `notes-audit` **and** `interview-prep-by-topic` for this topic — this prompt only finds and fixes gaps between notes and Q&A, so it assumes both sides are already built and quality-checked.
 
 ---
 

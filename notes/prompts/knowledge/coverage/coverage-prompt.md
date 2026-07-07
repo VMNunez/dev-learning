@@ -4,6 +4,8 @@ Use in a **separate conversation**. Fill in the two values in the configuration 
 
 Use this prompt when you want to create a new `coverage.md` for a notes folder, or update an existing one when new concepts have been learned, the project scope has changed, or topics need to be promoted from `future-learning.md`.
 
+> **▶ Run first:** nothing — it can create coverage from scratch. Optional: `evidence-intake` to refresh the market evidence its Step 2 subagent reads.
+
 ---
 
 **How to use:**

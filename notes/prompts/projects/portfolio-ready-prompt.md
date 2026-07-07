@@ -3,7 +3,8 @@
 Use in a **separate conversation**. Fill in the configuration block, then paste everything into a new chat.
 
 Run this once per project — when you think it is finished and ready to show to a recruiter.
-`readme-review-prompt` and `project-review-prompt` must have been run first — this prompt assumes the README is already correct and the code has already been reviewed for quality.
+
+> **▶ Run first:** `readme-review` **and** `project-review` — this prompt assumes the README is correct and the code has already been reviewed for quality.
 
 Before running: make sure all tasks you have already fixed are checked off (✅) in `PROJECT-BACKLOG.md`. The verdict in Step 3 reads the backlog directly — unchecked tasks count as open even if the code is already fixed.
 

@@ -7,6 +7,8 @@ Two modes:
 - **`practice`** — generates exercises for a SQL topic and saves them to `sql/`. If the topic file already exists, adds more exercises continuing the numbering.
 - **`review`** — checks your answers. Paste the exercise file at the very end of the prompt.
 
+> **▶ Run first:** nothing — `practice` generates exercises from scratch; `review` needs your answers pasted at the end.
+
 ---
 
 **How to use:**

@@ -5,6 +5,10 @@ never in the main daily session** — you fill in the configuration block at the
 paste it into a fresh chat, and it does one job. Update the project list inside each prompt as new
 projects are completed.
 
+> **▶ Run first.** Every runnable prompt opens with a `▶ Run first` line naming the prompt you must run
+> before it (or `nothing`). You never have to cross-check the dependency map below before running one —
+> the prompt tells you at the top.
+
 This file is the map: what each prompt does, **what it reads, what it generates**, how they feed
 each other, and which prompts are still missing. CLAUDE.md only links here.
 

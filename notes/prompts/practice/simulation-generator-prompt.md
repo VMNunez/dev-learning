@@ -7,6 +7,8 @@ The `simulations/` folder started with a fixed bank of 15 hand-written timed tes
 tells me a type (Angular / Spring Boot / SQL) is weak and I need more practice of exactly that kind.
 It is the producer; `simulation-review-prompt` is the consumer that grades what I build.
 
+> **▶ Run first:** nothing — this is a producer; `simulation-review` consumes what it makes.
+
 ---
 
 **How to use:**

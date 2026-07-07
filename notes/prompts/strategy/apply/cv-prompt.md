@@ -10,6 +10,8 @@ Three modes:
 - **`review`** — audits an existing CV and rewrites any weak sections (read from `personal/CV` or pasted)
 - **`tailor`** — adapts your base CV to one specific job offer, keyword-matched to what that offer asks
 
+> **▶ Run first:** `progress-update` (so `PROGRESS.md` is current). Optional: `portfolio-ready` for polished `cv-bullets`.
+
 ---
 
 **How to use:**

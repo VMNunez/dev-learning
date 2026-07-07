@@ -7,6 +7,8 @@ This is the dedicated way to **nourish `notes/prompts/_job-market-evidence.md`**
 that anchors coverage. Feeding it is a first-class action: it does not need the CV machinery. The evidence
 is public posting data (no personal information), so it **is** committed to the repo.
 
+> **▶ Run first:** nothing — this is a starting point (it produces evidence others consume).
+
 > Why this matters: `_job-market-evidence.md` feeds `coverage-prompt` / `coverage-audit` as the
 > **complement** to the deep market analysis (see `_coverage-standard.md`, "Two sources"). More real
 > postings = a sharper frequency signal and better wording, which keeps coverage matched to the market.

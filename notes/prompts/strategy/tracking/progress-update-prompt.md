@@ -5,6 +5,8 @@ that **fans out one cold subagent per project** to extract that project's concep
 each for SQL and simulations, then **merges everything itself** and commits. No project's PLANNING.md
 ever loads into the orchestrator's own context — it stays light and only holds PROGRESS.md.
 
+> **▶ Run first:** nothing — this is a producer. Run it *before* `new-project` and `roadmap-review`, which read `PROGRESS.md`.
+
 One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
 
 Run this when PROGRESS.md feels out of sync: after finishing a step or a project, after a long block

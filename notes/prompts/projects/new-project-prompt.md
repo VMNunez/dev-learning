@@ -7,6 +7,8 @@ Two modes:
 - **`new`** — use when a project is complete and it is time to plan the next one. Reads your progress and knowledge gaps, picks the best next project from ROADMAP.md, and writes a complete PLANNING.md ready to use on day one.
 - **`review`** — use at the start of a session, or any time the existing plan feels unclear or out of date. Points at an existing PLANNING.md and audits every section for missing content, vague done conditions, and internal inconsistencies. Audits **one project** when `PROJECT` is a folder name, or **every project in one run** when `PROJECT = all` (see the Batch targets note in the configuration block).
 
+> **▶ Run first:** `progress-update` — `new` mode's gap analysis reads `PROGRESS.md`; if it is stale it picks the wrong next project. (`review` mode has no prerequisite.)
+
 **How to use:**
 1. Fill in `MODE` — `new` or `review`
 2. Fill in `PROJECT`:

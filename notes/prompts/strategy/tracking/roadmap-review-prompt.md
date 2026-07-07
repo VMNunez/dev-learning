@@ -7,6 +7,8 @@ This prompt updates `ROADMAP.md` so it shows the optimal path from current progr
 of `notes/coverage.md` — through projects, study blocks, and practice. Run it whenever a project
 finishes, `notes/coverage.md` changes significantly, or it has been a while since the last check.
 
+> **▶ Run first:** `progress-update` — the Step 2 gap analysis reads `PROGRESS.md` directly; a stale one produces wrong results.
+
 It runs as an **orchestrator**: a doer applies the edits, then one cold `general-purpose` reviewer
 subagent independently verifies every invariant and fixes any it finds violated. That reviewer pass
 is the point of the design — the verification tail always runs instead of being skipped at the end of

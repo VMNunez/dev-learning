@@ -7,6 +7,8 @@ kind an AI assistant would generate — and asked to find what is wrong and expl
 practice prompts cover recall (`simulator`) and building from scratch (`simulation-review`); this
 one is the missing skill — **reviewing code you did not write.**
 
+> **▶ Run first:** nothing — self-contained; it generates the flawed snippet for you.
+
 How it works: the prompt generates a realistic snippet with planted issues and shows you only the
 code. You write your review. Then it grades what you found, what you missed, and what you flagged by
 mistake, and turns your gaps into interview questions.

@@ -5,6 +5,8 @@ Use in a **separate conversation**. No configuration needed — paste the whole 
 Run this when you are ready to update your LinkedIn profile before applying.
 The output is ready-to-paste text for every section — no rewriting needed, just copy each one.
 
+> **▶ Run first:** `progress-update` — the profile draws on `PROGRESS.md`; keep it current so projects and concepts are accurate.
+
 ---
 
 ````

@@ -2,6 +2,8 @@
 
 Use in a **separate conversation**. Fill in the configuration block, then paste the prompt into a new chat.
 
+> **▶ Run first:** `interview-prep-by-topic` (+ `portfolio-ready` for project questions) — the simulator draws from the interview-prep Q&A bank; with no Q&A it has nothing to ask.
+
 ---
 
 **How to use:**

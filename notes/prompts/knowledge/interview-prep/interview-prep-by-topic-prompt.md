@@ -2,6 +2,8 @@
 
 Use in a **separate conversation**. Fill in the two values in the configuration block, then paste everything into a new chat.
 
+> **▶ Run first:** `coverage-prompt` for this topic — the Q&A is built to cover every item in the topic's `coverage.md`.
+
 ---
 
 **How to use:**

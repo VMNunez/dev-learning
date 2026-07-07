@@ -4,6 +4,8 @@ Use in a **separate conversation**. No configuration needed — paste everything
 
 Use this prompt to audit `notes/coverage.md` for completeness, detect missing topics, and ensure every section reflects what Spanish consultancies actually test in 2026.
 
+> **▶ Run first:** `coverage-prompt` for every topic — this is the global convergence pass; run it once each topic already has its own `coverage.md`.
+
 **When to run:**
 - After all individual `{topic}/coverage.md` files have been created with `coverage-prompt.md`
 - After completing a major project (08, 09...) when scope may have expanded

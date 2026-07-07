@@ -6,6 +6,8 @@ Run this after you finish a timed simulation — no notes, no AI, timer stopped.
 
 **Before running this prompt:** fill in your own `Self-assessment` column in TRACKER.md (✅ Solid / 🔧 Good / ⚠️ Weak / ❌ Failed). The prompt updates `Status` and `Date` — it does not touch `Self-assessment`.
 
+> **▶ Run first:** nothing — run it after finishing a simulation, with your solution pasted at the end.
+
 ---
 
 **How to use:**

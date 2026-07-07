@@ -11,6 +11,9 @@ audited/fixed by a second, independent reviewer subagent** before it is committe
 stake in the draft, so it reads against the bar and catches what the author trusted. No worklist
 approval, no per-file launching — one command does everything.
 
+> **▶ Run first:** `coverage-prompt` for the topic — notes-audit builds notes to cover every item in
+> `coverage.md`; if coverage is missing or stale, the notes will be too.
+
 **Internal pieces this orchestrates** (you never launch these directly):
 `_note-quality-standard.md` (the bar) · `notes-plan-prompt.md` (folder analysis → worklist) ·
 `notes-write-prompt.md` (author) · `notes-review-prompt.md` (reviewer).
