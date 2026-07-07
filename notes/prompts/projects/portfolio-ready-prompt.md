@@ -193,13 +193,25 @@ Apply this logic:
 
 **Skip Steps 4 and 5 if the verdict from Step 3 is ❌ Not ready. Jump directly to the Final output format.**
 
-Draft a one-line CV bullet for this project. Format:
+Before drafting, read `notes/prompts/strategy/apply/_application-standard.md` — the shared standard
+`cv-prompt` consumes this bullet under. The bullet written here lands in the Spanish CV **as-is**
+(cv-prompt is told to use it without rewriting), so it must already comply with that standard:
 
-`Built [what it is] with [key technologies] — [one specific result or decision that shows depth]`
+- **In Spanish** — the CV is screened in Spanish; an English bullet here would land in it verbatim.
+- **Universal bullet format:** past-tense action verb (Desarrollé, Implementé, Construí, Diseñé) +
+  what was built + one concrete result or defensible decision that shows depth. No filler
+  ("participé en", "colaboré en").
+- **ATS keywords:** name the stack with the exact keywords from the standard's pool (Angular,
+  Spring Boot, PostgreSQL, JWT, Docker, JUnit…) where they genuinely apply.
+- **Defensibility rule:** nothing Victor cannot defend line by line in an interview.
+
+Format:
+
+`[Verbo en pasado] [qué es] con [tecnologías clave] — [un resultado concreto o una decisión que demuestra profundidad]`
 
 Examples:
-- "Built a full-stack time tracking app with Spring Boot + Angular + JWT — role-based access control and soft delete to preserve audit history."
-- "Built an HR portal with Angular route guards and lazy loading — three user roles with completely separate navigation and data access."
+- "Desarrollé una aplicación full-stack de control de horas con Spring Boot, Angular, PostgreSQL y JWT — control de acceso por roles y soft delete para conservar el histórico auditable."
+- "Construí un portal de RRHH en Angular con route guards y lazy loading — tres roles de usuario con navegación y acceso a datos completamente separados."
 
 Draft two options.
 
@@ -232,7 +244,9 @@ Used by `cv-prompt` when drafting the Projects section of your CV.
 
 ## Step 5 — GitHub repo description
 
-Draft a one-line GitHub repo description (160 characters max, no markdown):
+Draft a one-line GitHub repo description (160 characters max, no markdown). Unlike the CV bullet,
+this one stays in **English** — deliberate: GitHub's audience is wider than the Spanish screen, and
+English repo descriptions are the convention recruiters expect there.
 
 Format: `[What it does] — [tech stack]. [One thing that makes it worth looking at.]`
 
