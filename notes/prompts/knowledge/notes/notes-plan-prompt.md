@@ -31,13 +31,11 @@ subagent, not by Victor):
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
+TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
 NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/en/ | notes/security/en/]
 
-## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
-## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
-## (also reads notes/java/en/), Java, Architecture, Security, TypeScript, JavaScript, CSS, SQL,
-## Git, General.
+## This is an internal component — always dispatched for ONE topic by notes-audit (which expands
+## its own TOPIC = all into single topics before calling this planner). It never runs batched itself.
 
 Notes on specific topics:
 - Spring Boot: set NOTES_PATH = notes/java/en/, notes/spring-boot/en/ (comma-separated — read both,
