@@ -251,5 +251,34 @@ Then print:
 **(tailor mode) Gap analysis:** the `HAVE / PARTIAL / MISSING` table against the offer, so you know
 what to shore up before the interview
 
+---
+
+## Step 7 — Feed the job-market evidence (tailor mode only)
+
+A full, real job offer is high-value evidence for what the target market actually asks — stronger than
+the web-search extracts already on file. After tailoring, record it in
+`notes/prompts/_job-market-evidence.md`. That file **is** in the repo (public posting data, no personal
+information) and feeds `coverage-prompt` / `coverage-audit-prompt` as the required floor — so every offer
+you tailor to also sharpens what you study.
+
+1. **Add a Raw posting block** under `## Raw postings`, in the file's exact existing format:
+   `### <Company> — <Role> · <year> · <source>` followed by a `Requisitos (from extract):` line quoting
+   the real requirement text from the offer (stack, DB, testing, methodology, English level, seniority).
+   Because this is a *full* offer, mark it as such (e.g. `· full posting`) — it outranks the partial extracts.
+2. **Update the Synthesis** — increment "postings on file" by one, re-tally each recurring requirement's
+   frequency to include this offer (e.g. `~6/8` → `~7/9`), and add any newly recurring skill. Keep the
+   file's honesty rule: a skill seen only in a senior-ish posting is a "signal to watch", not a junior floor.
+3. **Update the footer** — `_Last updated: <yyyy-mm> · postings on file: <N>_`.
+
+Commit it **separately** from the CV (the CV is never committed; the evidence is):
+
+```
+git add notes/prompts/_job-market-evidence.md
+```
+
+```
+git commit -m "docs: add <company> <role> posting to job-market-evidence"
+```
+
 [paste your current CV (review mode) or the full job offer (tailor mode) below this line]
 ````
