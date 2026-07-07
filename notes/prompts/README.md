@@ -27,7 +27,7 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 |----------|---------------------|------------|---------|
 | `notes/coverage.md` | **what I must learn** | `coverage-prompt`, `coverage-audit-prompt` | notes/interview-prep audits, `plan-audit`, `roadmap-review`, `sql-exercises` |
 | `PROGRESS.md` | **what I have learned** | `progress-update-prompt` (+ Claude per step in session) | `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`, `sql-exercises` |
-| `{project}/PLANNING.md` | **what a project builds** | `plan-audit` | `readme-review`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review` |
+| `{project}/PLANNING.md` | **what a project builds** | `plan-audit` | `readme-audit`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review` |
 
 ---
 
@@ -60,7 +60,10 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | `projects/plan/_planning-standard.md` | *Internal.* The **shared PLANNING.md contract** both the author and reviewer read (the 23-section template + what makes each pass, done-condition formats, HTTP status conventions, professional implementation order, branch-strategy rules, consistency invariants, the two project formats). Not runnable. | — | — |
 | `projects/plan/plan-write-prompt.md` | *Internal (author, new mode).* Gap-analyses, chooses the next project, designs it, and writes the complete PLANNING.md to the standard + the ROADMAP/PROGRESS edits. Does not commit. | `_planning-standard.md`, `PROGRESS.md`, `notes/coverage.md`, `ROADMAP.md`, last project's `PLANNING.md` | `{project}/PLANNING.md`, `ROADMAP.md`, `PROGRESS.md` (working tree) |
 | `projects/plan/plan-review-prompt.md` | *Internal (reviewer).* Independent second pass on one plan: audits against the standard, fixes what falls short directly, then commits (unless dry-run). Used by both modes — subagent B in new mode, the sole doer in review mode. | `_planning-standard.md`, `{project}/PLANNING.md`, `PROGRESS.md` | the audited `PLANNING.md`, one atomic commit |
-| `projects/readme/readme-review-prompt.md` | The single source of README rules; writes/fixes every README section. Run before the portfolio gate (`portfolio-audit` reads the READMEs; `review-audit` does not). | `{project}/PLANNING.md`, the existing README(s) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack) |
+| `projects/readme/readme-audit.md` | **THE entry point — the only readme prompt you launch.** Runs **inside Claude Code**, hands-off. Reviews and fixes a project's README(s) to the standard — for full-stack, one author + cold-reviewer subagent pair **per README** (global / backend / frontend). Run before the portfolio gate (`portfolio-audit` reads the READMEs; `review-audit` does not). **Not auto-committed** — hands Victor the commit (project-folder files). | its three internal pieces (below) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack) |
+| `projects/readme/_readme-standard.md` | *Internal.* The **single source of README rules** every piece reads (the two project formats, quality filter, in-progress scan, the 12 global-README rules + section order, full-stack global additions, the backend 9 sections, the frontend 7 sections, the commit rule). Not runnable. | — | — |
+| `projects/readme/readme-write-prompt.md` | *Internal (author).* Writes/fixes **one** README (global \| backend \| frontend) to the standard's rules for that target. Does not commit. | `_readme-standard.md`, `{project}/PLANNING.md`, the existing README | that one README (working tree) |
+| `projects/readme/readme-review-prompt.md` | *Internal (reviewer).* Independent second pass on **one** README: audits against the standard (recruiter + interviewer lens), fixes what falls short directly. Does not commit. | `_readme-standard.md`, `{project}/PLANNING.md`, the README | the audited README |
 | `projects/review/review-audit.md` | **THE entry point — the only project-review prompt you launch.** Runs **inside Claude Code**, hands-off. Reviews a built project against its PLANNING.md: fans out a **code-quality + learning-objectives** subagent and (full-stack) a **cold attacker-hat security** subagent, then merges their findings into the backlog. **Not auto-committed** — writes the backlog and hands Victor the commit (project-folder file, feature-branch workflow). | its three internal pieces (below) | `PROJECT-BACKLOG.md` (per-project task list + "Last reviewed" date) |
 | `projects/review/_review-standard.md` | *Internal.* The **shared review contract** all pieces read (the two project formats, 30-day gate, scope limit, the full code-quality checklist with bad-vs-good examples, the security scope, the learning-objectives rubric, the task/priority/effort + backlog format). Not runnable. | — | — |
 | `projects/review/review-code-prompt.md` | *Internal (code reviewer).* Reads the source once and returns a code-quality findings table + the learning-objectives verdict. Does not write the backlog or commit. | `_review-standard.md`, `{project}/PLANNING.md`, the source code | findings tables (returned to the orchestrator) |
@@ -116,7 +119,7 @@ Each generated file, with who writes it and who depends on it:
 - **`PROGRESS.md`** — written by `progress-update` (and by Claude after each step in the daily
   session) → read by `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`,
   `sql-exercises`. *Stale PROGRESS = wrong gap analysis in `plan-audit` and `roadmap-review`.*
-- **`{project}/PLANNING.md`** — written by `plan-audit` (new mode) → read by `readme-review`,
+- **`{project}/PLANNING.md`** — written by `plan-audit` (new mode) → read by `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review`. *It is the contract
   the whole project is checked against.*
 - **`PROJECT-BACKLOG.md`** — written by `review-audit` → read by `portfolio-audit` (open
@@ -148,7 +151,7 @@ progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.m
                         ▲                              │                  ▲ (reads Q&A)
                         │            ┌─────────────────┼───────────────┐ │
                         │            ▼                 ▼               ▼ │
-                        │     readme-review     review-audit   portfolio-audit
+                        │     readme-audit     review-audit   portfolio-audit
                         │     README(s)         PROJECT-BACKLOG  ─► cv-bullets ─► cv-prompt
                         │                                          └► interview-prep/projects ┘
                         └─ roadmap-review ─► ROADMAP.md
@@ -165,7 +168,7 @@ Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
 1. `progress-update` — make PROGRESS.md accurate first
 2. `plan-audit` (`MODE = new`) — plan it, get PLANNING.md (author + reviewer, hands-off)
 3. build it, step by step (daily sessions)
-4. `readme-review` — fix the README(s) after each big feature
+4. `readme-audit` — fix the README(s) after each big feature
 5. `review-audit` — code review when the project is complete
 6. `portfolio-audit` — final gate before adding it to CV/LinkedIn
 
@@ -190,7 +193,7 @@ target field, so you don't have to run them folder by folder. Set the field to `
 processes every target in order, one commit per target. Full rules: `notes/prompts/_batch-mode.md`.
 
 - **Supports `all`:** `coverage-prompt`, `notes-audit` (`SCOPE = folder`, `TOPIC = all`), `interview-prep-audit`,
-  `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-review`, `review-audit`,
+  `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-audit`, `review-audit`,
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**),
   `simulation-generator`, `code-review` (`TYPE = all`).

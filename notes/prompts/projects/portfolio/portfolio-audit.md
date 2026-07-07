@@ -9,10 +9,10 @@ application **today**? It produces three things (see `_portfolio-standard.md`):
 2. A **verdict** — ✅ Ready / ⚠️ Almost / ❌ Not ready.
 3. If not ❌ — a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub description**.
 
-It is the last link in the per-project chain: `plan-audit` → build → `readme-review` → `review-audit`
+It is the last link in the per-project chain: `plan-audit` → build → `readme-audit` → `review-audit`
 → **portfolio-audit**.
 
-> **▶ Run first:** `readme-review` **and** `review-audit` — this gate assumes the README is correct
+> **▶ Run first:** `readme-audit` **and** `review-audit` — this gate assumes the README is correct
 > and the code has been reviewed (the verdict reads `PROJECT-BACKLOG.md`, which `review-audit` writes).
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.

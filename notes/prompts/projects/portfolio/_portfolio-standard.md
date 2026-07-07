@@ -19,7 +19,7 @@ in a job application right now — not "ready eventually", ready today?** It pro
 3. If the verdict is not ❌: a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub repo
    description** (English).
 
-It is the last link in the per-project chain: `plan-audit` → build → `readme-review` → `review-audit`
+It is the last link in the per-project chain: `plan-audit` → build → `readme-audit` → `review-audit`
 → **portfolio gate**.
 
 ---

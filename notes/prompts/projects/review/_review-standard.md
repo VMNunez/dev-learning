@@ -17,7 +17,7 @@ standard. It produces a prioritized list of **improvement tasks** written to
 `{PROJECT_PATH}/PROJECT-BACKLOG.md`. That backlog is what the portfolio gate (`portfolio-audit`) reads
 to decide go/no-go, so a security hole found here becomes a **High** task that blocks portfolio-ready.
 
-Chain: `plan-audit` → build → `readme-review` → **this review** → `portfolio-audit`.
+Chain: `plan-audit` → build → `readme-audit` → **this review** → `portfolio-audit`.
 
 ---
 

@@ -10,7 +10,7 @@ The heavy parts run as **two cold reviewer subagents** — a code-quality + lear
 an adversarial security pass — whose findings the orchestrator merges into the backlog. A cold reviewer
 with no stake in the code catches what a single long prompt would skip.
 
-> **▶ Run first:** nothing — it reads `PLANNING.md` and the source, not the README. (`readme-review`
+> **▶ Run first:** nothing — it reads `PLANNING.md` and the source, not the README. (`readme-audit`
 > is a prerequisite of `portfolio-audit`, which reads the READMEs — not of this review.)
 
 **Internal pieces this orchestrates** (you never launch these directly):
