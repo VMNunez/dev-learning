@@ -46,7 +46,10 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | `knowledge/notes/notes-plan-prompt.md` | *Internal (folder mode).* Surveys a topic folder, does the `en`/`es` sync, and writes the ordered **worklist** — no note prose. | `notes/{topic}/coverage.md`, the topic's notes (en + es), `future-learning.md` | `en`/`es` structure, `future-learning.md`, `notes-worklist.md` |
 | `knowledge/notes/notes-write-prompt.md` | *Internal (author).* Deep, high-standard work on **one** file: resolve TODOs, complete it, mirror to `es/`, self-check gate. | `_note-quality-standard.md`, the one file (en + es), sibling files, `PROGRESS.md` | that one `notes/*.md` + its `es/*.md`, the `CLAUDE.md` counter |
 | `knowledge/notes/notes-review-prompt.md` | *Internal (reviewer).* Independent second-pass auditor for **one** file: fixes what falls short in `en/` + `es/`, then marks the row and commits (unless dry-run). | `_note-quality-standard.md`, the one file (en + es), sibling files | the audited `notes/*.md` + `es/*.md`, the worklist checkbox, one atomic commit |
-| `knowledge/interview-prep/interview-prep-by-topic-prompt.md` | Builds and audits the **interview Q&A** for one topic (priority markers, question types, en/es sync). | `notes/{topic}/coverage.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md` |
+| `knowledge/interview-prep/interview-prep-audit.md` | **THE entry point — the only interview-prep prompt you launch.** Runs **inside Claude Code**, hands-off. Builds/audits the **interview Q&A** for one topic (or `all`); every file is **authored by one cold subagent then audited/fixed by a second reviewer subagent** before an atomic commit. `DRY_RUN` stages without committing. | its three internal pieces (below), `notes/{topic}/coverage.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md`, one atomic commit per topic |
+| `knowledge/interview-prep/_interview-prep-standard.md` | *Internal.* The **shared Q&A standard** the author, reviewer, and cross-reference prompts read (question types + ratio, priority markers, question format, the answer quality bar — realistic/well-worded/Victor's voice, bilingual contract, existing-content-is-final, section-complete). Not runnable. | — | — |
+| `knowledge/interview-prep/interview-prep-write-prompt.md` | *Internal (author).* Full audit of **one** topic: en/es sync, resolve TODOs, coverage check, priority markers, format, and the four audit sections. Does not commit. | `_interview-prep-standard.md`, `notes/{topic}/coverage.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md` (working tree) |
+| `knowledge/interview-prep/interview-prep-review-prompt.md` | *Internal (reviewer).* Independent second pass on **one** topic: enforces realistic, well-worded, Victor's-voice questions; fixes what falls short in `en/` + `es/`, then commits (unless dry-run). | `_interview-prep-standard.md`, `interview-prep/en/` + `es/` | the audited `interview-prep/*.md`, one atomic commit |
 | `knowledge/interview-prep/notes-and-interview-prep-prompt.md` | Closes gaps **between** notes and Q&A in both directions (every note concept has a question, every question has a note). Run after the two above. | the topic notes + `interview-prep/en/` + `es/` | the topic `notes/*.md` and `interview-prep/en/` + `es/`, `CLAUDE.md` counter |
 
 ### Projects — plan, document, review
@@ -94,7 +97,7 @@ producer has not run (or is stale), its consumers produce wrong results. Run pro
 Each generated file, with who writes it and who depends on it:
 
 - **`notes/coverage.md`** — written by `coverage-prompt` / `coverage-audit-prompt` → read by
-  `notes-audit`, `interview-prep-by-topic`, `notes-and-interview-prep`, `new-project`,
+  `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep`, `new-project`,
   `roadmap-review`, and `sql-exercises` (SQL section). *Coverage is the root — almost everything
   downstream assumes it is correct.*
 - **`notes/prompts/_job-market-evidence.md`** — written by `evidence-intake` (dedicated intake) and
@@ -110,7 +113,7 @@ Each generated file, with who writes it and who depends on it:
   High/Medium tasks block the "ready" verdict).
 - **`notes/cv/cv-bullets.md`** — written by `portfolio-ready` → read by `cv-prompt` (one polished
   bullet per project, reused as-is).
-- **`interview-prep/en/*.md` + `es/*.md`** — written by `interview-prep-by-topic`,
+- **`interview-prep/en/*.md` + `es/*.md`** — written by `interview-prep-audit`,
   `notes-and-interview-prep`, `simulation-review`, `sql-exercises`, `code-review` → read by `simulator`.
 - **`interview-prep/projects/*.md`** — written by `portfolio-ready` → read by `simulator`.
 - **`simulations/{type}/NN-*.md`** (the test specs) — written by `simulation-generator` (and the
@@ -127,7 +130,7 @@ Pipeline view:
 coverage-prompt / coverage-audit ─► notes/coverage.md
         │
         ├─► notes-audit (folder|file) ─► [plan] → per file: author + reviewer subagents ─► notes/*.md ─┐
-        ├─► interview-prep-by-topic ─► interview-prep/*.md ─┐
+        ├─► interview-prep-audit ─► interview-prep/*.md ─┐
         │        └─ notes-and-interview-prep keeps both in sync
         │                                                   │
         ▼                                                   ▼
@@ -159,7 +162,7 @@ Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
 **Auditing knowledge (one topic)**
 1. `coverage-prompt` — define/refresh the topic's coverage
 2. `notes-audit` (`SCOPE = folder` for a whole topic, `SCOPE = file` for one file — hands-off,
-   author + reviewer per file), then `interview-prep-by-topic` — build both sides
+   author + reviewer per file), then `interview-prep-audit` — build both sides
 3. `notes-and-interview-prep` — close the gaps between them
 4. (after all topics have coverage) `coverage-audit` — global convergence pass
 5. `roadmap-review` — check the plan still reflects reality
@@ -176,7 +179,7 @@ Per-target prompts (one topic / file / project / type at a time) also accept **`
 target field, so you don't have to run them folder by folder. Set the field to `all` and the prompt
 processes every target in order, one commit per target. Full rules: `notes/prompts/_batch-mode.md`.
 
-- **Supports `all`:** `coverage-prompt`, `notes-audit` (`SCOPE = folder`, `TOPIC = all`), `interview-prep-by-topic`,
+- **Supports `all`:** `coverage-prompt`, `notes-audit` (`SCOPE = folder`, `TOPIC = all`), `interview-prep-audit`,
   `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-review`, `project-review`,
   `portfolio-ready` (`PROJECT_PATH = all`); `new-project` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**),

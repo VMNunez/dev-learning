@@ -2,7 +2,7 @@
 
 Use in a **separate conversation**. Fill in the configuration block, then paste everything into a new chat.
 
-> **▶ Run first:** `notes-audit` **and** `interview-prep-by-topic` for this topic — this prompt only finds and fixes gaps between notes and Q&A, so it assumes both sides are already built and quality-checked.
+> **▶ Run first:** `notes-audit` **and** `interview-prep-audit` for this topic — this prompt only finds and fixes gaps between notes and Q&A, so it assumes both sides are already built and quality-checked.
 
 ---
 
@@ -88,7 +88,8 @@ For each uncovered concept:
    `en/{FILE}.md`; translate both to Spanish and add to the same section in `es/{FILE}.md`
    — never one without the other. If no section exists for this concept in the prep file,
    create the section heading in both files before adding the question.
-2. Follow the question format defined in `interview-prep-by-topic-prompt.md` exactly:
+2. Follow the question format defined in
+   `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` exactly:
    bold question + priority marker + blank line + answer + optional element based on type:
    — Conceptual (asks "what is X?" or "how does X work?") → add a Junior tip.
    — Decision-based (asks "why X?" or "when X instead of Y?") → add a Red flag (encouraged).

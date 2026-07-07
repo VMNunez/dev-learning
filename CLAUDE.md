@@ -254,7 +254,7 @@ notes/java/
 
 ### Interview prep — in-session rules
 
-→ Full format, question structure, and audit rules in `notes/prompts/knowledge/interview-prep/interview-prep-by-topic-prompt.md`.
+→ Question format and quality bar in `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`; to build/audit a topic's Q&A run `notes/prompts/knowledge/interview-prep/interview-prep-audit.md` (the entry point — author + cold reviewer subagents per topic).
 
 - Add questions naturally as concepts are learned — not in one batch at the end
 - Add to BOTH `en/` and `es/` at the same time — same question, same section, translated. Never add to one without the other
