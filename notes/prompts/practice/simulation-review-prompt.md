@@ -37,7 +37,9 @@ SIMULATION_FILE = simulations/sql/02-employees.md
 SIMULATION_FILE = simulations/sql/03-ecommerce.md
 SIMULATION_FILE = simulations/sql/04-university.md
 SIMULATION_FILE = simulations/sql/05-inventory.md
-← delete all lines above except the one you are reviewing
+← delete all lines above except the one you are reviewing.
+  For a spec created later by simulation-generator (06+), just write its path here
+  (e.g. simulations/spring-boot/06-invoice-api.md) — the list above is only the original bank.
 
 TIME_USED       = [minutes used — exact, no rounding — e.g. 74]
 MODE            = [review | hint — leave blank for review]
@@ -185,40 +187,16 @@ solution — not generic questions about the technology.
 or 2, target the most important gap. If every dimension scored 3, write a reinforcement question
 about the strongest pattern applied correctly in this solution.
 
-Add them to the right files. Always add to BOTH at the same time — never one without the other:
-- Angular → notes/interview-prep/en/angular.md AND notes/interview-prep/es/angular.md
-- Spring Boot → notes/interview-prep/en/spring-boot.md AND notes/interview-prep/es/spring-boot.md
-- SQL → notes/interview-prep/en/sql.md AND notes/interview-prep/es/sql.md
+Route each question to the topic file for the simulation TYPE:
+- Angular → `notes/interview-prep/{en,es}/angular.md`
+- Spring Boot → `notes/interview-prep/{en,es}/spring-boot.md`
+- SQL → `notes/interview-prep/{en,es}/sql.md`
 
-Before adding each question, scan the relevant file. If the same concept already has a question
-there, skip it — do not add a duplicate.
-
-Each question must follow the full format used in these files:
-
-**Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
-
-Answer in 1–2 sentences. Reference a real project or this simulation if the question is about
-a pattern or decision. Use "I used" or "I chose" — not "it is used".
-
-Rules: there must be a blank line between the bold question and the answer, and a blank line
-between the answer and any optional element below.
-
-Then add the optional element based on question type:
-- **Conceptual** (asks "what is X?" or "how does X work?") → add a Junior tip:
-  > **Junior tip:** one line of advice on how to explain it clearly in an interview
-  > **Consejo de entrevista:** same advice in Spanish
-- **Decision-based** (asks "why X?" or "when X instead of Y?") or **Pressure** (gotcha or edge case)
-  → add a Red flag:
-  Red flag answer: what a weak candidate would say and why it fails.
-
-Priority markers:
-- ⭐⭐⭐ — not knowing this would filter the candidate in a first screening
-- ⭐⭐ — comes up when the interviewer goes deeper
-- ⭐ — a niche detail; missing it is not a dealbreaker at junior level
-
-Place each question under the correct existing section heading in the file. If no section exists
-for this concept, create one. After adding, reorder within that section so ⭐⭐⭐ come first,
-then ⭐⭐, then ⭐.
+Then add each following **"Adding questions from outside the audit (practice prompts)"** in
+`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` — it defines the question format,
+the bilingual rule, dedupe-by-concept, placement, and priority-marker reordering. Do not restate them
+here. Anchor the answer to this simulation or a real project when the question is about a pattern or
+decision ("I chose…", "I used…", not "it is used").
 
 ---
 

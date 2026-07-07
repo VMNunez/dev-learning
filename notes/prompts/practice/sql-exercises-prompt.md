@@ -673,39 +673,19 @@ reason (e.g. WHERE vs HAVING), add one question, not three.
 This step runs for any score. Even at ≥ 80%, if one or two exercises were ⚠️ or ❌, add
 questions for those gaps. If every exercise was ✅, skip this step entirely.
 
-Add each question to BOTH files simultaneously — never one without the other:
-- notes/interview-prep/en/sql.md
-- notes/interview-prep/es/sql.md
+Add each question to `notes/interview-prep/en/sql.md` and `notes/interview-prep/es/sql.md` following
+**"Adding questions from outside the audit (practice prompts)"** in
+`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` — it defines the question format,
+the bilingual rule, dedupe-by-concept, placement under the matching `##` section, and priority-marker
+reordering. Do not restate them here. Two SQL-specific points on top of the standard:
 
-**Before adding:** find the target section in the file (see Placement below). Scan that section
-for a question that already tests the same concept, even if the wording differs. If one exists,
-skip — do not add a duplicate.
-
-**Format for each question:**
-
-**[Question as a Spanish consultancy interviewer would ask it?]** ⭐⭐
-
-Answer in 1–2 sentences. Use first person ("I use", "I chose") — not passive voice ("it is used").
-Reference the bookstore schema or the exercise number if the question is about a query pattern
-(e.g. "In the JOINs exercises, I used LEFT JOIN + IS NULL to find authors with no books...").
-
-Then add exactly one optional element based on the question type:
-- **Conceptual** (what is X / how does X work): add a Junior tip block
-  > **Junior tip:** [one line of advice on how to explain it clearly in an interview]
-  > **Consejo de entrevista:** [same advice in Spanish]
-- **Decision-based** (when X instead of Y) or **Pressure** (gotcha / edge case): add a Red flag line
-  Red flag answer: [what a weak candidate would say and why it is wrong]
-
-**Priority markers — replace ⭐⭐ above with the appropriate level for each question:**
-- ⭐⭐⭐ — core SQL pattern; not knowing this would filter a candidate in a first screening.
-  Examples: WHERE vs HAVING, INNER vs LEFT JOIN, NULL comparison behaviour, COUNT(*) vs COUNT(column).
-- ⭐⭐ — comes up when the interviewer goes deeper on the topic.
-  Examples: COALESCE, correlated subqueries, EXISTS vs IN, DML with RETURNING.
-- ⭐ — PostgreSQL-specific detail or rarely tested edge case; missing it is not a dealbreaker at junior level.
-
-**Placement:** find the matching `##` section heading in the file (e.g. `## JOINs`,
-`## Aggregates and GROUP BY`, `## DML`). Place the question under that heading. If no matching
-section exists, create one. Within the section, maintain priority order: ⭐⭐⭐ first, then ⭐⭐, then ⭐.
+- **Anchor the answer to the exercises.** Reference the bookstore schema or the exercise number when
+  the question is about a query pattern (e.g. "In the JOINs exercises, I used LEFT JOIN + IS NULL to
+  find authors with no books…").
+- **Priority calibration for SQL:** ⭐⭐⭐ = core pattern that filters in a first screen (WHERE vs
+  HAVING, INNER vs LEFT JOIN, NULL comparison behaviour, COUNT(*) vs COUNT(column)); ⭐⭐ = deeper
+  probes (COALESCE, correlated subqueries, EXISTS vs IN, DML with RETURNING); ⭐ = PostgreSQL-specific
+  edge cases.
 
 ---
 

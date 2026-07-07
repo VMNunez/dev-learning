@@ -129,28 +129,16 @@ For each **distinct concept** behind a missed issue or a false positive, add one
 "Distinct" means a different underlying concept — if two misses share one root cause, add one
 question. If I found everything cleanly, skip this step.
 
-Add to BOTH files, never one without the other:
-- angular → `notes/interview-prep/en/angular.md` + `es/angular.md`
-- spring-boot → `notes/interview-prep/en/spring-boot.md` + `es/spring-boot.md`
-- sql → `notes/interview-prep/en/sql.md` + `es/sql.md`
+Route each question to the topic file for {TYPE}:
+- angular → `notes/interview-prep/{en,es}/angular.md`
+- spring-boot → `notes/interview-prep/{en,es}/spring-boot.md`
+- sql → `notes/interview-prep/{en,es}/sql.md`
 
-Before adding, scan the target section — if the concept already has a question, skip it (no
-duplicates). Use the exact format used in those files:
-
-**[Question as a Spanish consultancy interviewer would ask it?]** ⭐⭐
-
-Answer in 1–2 sentences, first person ("I check…", "I move it to…"). Reference this exercise or a
-real project when it is about a pattern or decision.
-
-Then one optional element based on type:
-- **Conceptual** (what is X / how does X work) → a Junior tip block:
-  > **Junior tip:** [how to explain it clearly in an interview]
-  > **Consejo de entrevista:** [same advice in Spanish]
-- **Decision-based** (when X instead of Y) or **Pressure** (gotcha / edge case) → a Red flag line:
-  Red flag answer: [what a weak candidate would say and why it fails]
-
-Priority markers: ⭐⭐⭐ filter-level, ⭐⭐ deeper, ⭐ niche. Place each under the matching `##`
-section heading, keeping ⭐⭐⭐ first within the section.
+Then add each following **"Adding questions from outside the audit (practice prompts)"** in
+`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` — it defines the question format,
+the bilingual rule, dedupe-by-concept, placement, and priority-marker reordering. Do not restate them
+here. Answer in first person ("I check…", "I move it to…") and anchor to this exercise or a real
+project when the question is about a pattern or decision.
 
 ---
 

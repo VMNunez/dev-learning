@@ -155,6 +155,23 @@ Optional elements after the answer, by type:
 - **Any question the interviewer would pose with code** — a blank line, then a real code block (see
   "Real code — from real projects" below).
 
+### Adding questions from outside the audit (practice prompts)
+
+The practice prompts (`sql-exercises`, `simulation-review`, `code-review`) add a question or two to a
+Q&A file whenever a gap surfaces during practice — not through the full audit pipeline. They follow
+the **same** structure above (bold question + priority marker + blank line + answer in Victor's voice
++ Junior tip if Conceptual / Red flag if Decision-based or Pressure + a real cited code block where an
+interviewer would pose it with code). On top of that structure, these four rules govern every
+practice-driven insertion, so each prompt references them here instead of restating them:
+
+- **Both languages, always.** Add the question to `en/{topic}.md` **and** `es/{topic}.md` at once,
+  translated — never one without the other. Junior-tip label in `es/` is `Consejo de entrevista:`.
+- **Deduplicate by concept, not wording.** Before adding, scan the target section for a question that
+  already tests the same concept. If one exists, skip it — even if the phrasing differs.
+- **Place under the matching `##` section**, creating the section only if none fits. Then reorder
+  within that section so markers run ⭐⭐⭐ → ⭐⭐ → ⭐.
+- **Priority marker** per the "Priority markers" section above (⭐⭐⭐ filter-level, ⭐⭐ deeper, ⭐ niche).
+
 ---
 
 ## The answer quality bar
