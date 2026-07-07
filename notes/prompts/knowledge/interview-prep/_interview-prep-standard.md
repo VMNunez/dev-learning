@@ -31,6 +31,15 @@ interviewer would actually ask it, and an answer the way Victor would actually s
 > them), and the answers are **spoken in Victor's voice** (what he would say in the room, first person,
 > anchored to a real project). A file that fails any of the three is not done, however "complete" it looks.
 
+**Where "realistic" comes from — the same two sources coverage uses.** A question is realistic because it
+is grounded, not guessed. Per `_coverage-standard.md` ("Two sources"), the backbone is a **deep analysis
+of the real questions** a junior for this stack is actually asked at the target companies — web-backed
+when possible — and `notes/prompts/_job-market-evidence.md` **corroborates** it with the recurring
+requirements and the exact wording the market prints. The analysis is primary and defines the floor; the
+evidence sharpens it and overrides it only where a real posting concretely conflicts. Together they keep
+the Q&A anchored to real interviews instead of invented trivia — the `interview-prep-audit` pipeline runs
+exactly this split as its Stage M (market analysis) feeding the author.
+
 ---
 
 ## The bilingual en/es contract
