@@ -54,10 +54,20 @@ Do not, however, *shrink* coverage below what the interview clearly tests just b
 omitted it; postings under-list the fundamentals interviewers still probe. Evidence raises the floor,
 it does not lower the ceiling.
 
-**Cover the market first, then expand.** When building or auditing a section, sequence the work: first
-make every recurring market requirement map to an item — that floor is the priority — then expand to the
-interview fundamentals and confusable pairs the postings under-list. Market coverage comes before
-breadth; a section is not allowed to be "rich" in extras while a `~8/8` recurring requirement has no item.
+**Cover the market first, then expand — but the expansion is not optional.** Sequence the work: first
+make every recurring market requirement map to an item (the priority floor), then expand to the
+interview fundamentals and confusable pairs the postings under-list. The order is a priority, not a
+licence to stop at the market: a section is not allowed to be "rich" in extras while a `~8/8` recurring
+requirement has no item — but neither is it done just because the market requirements are covered. The
+fundamentals a junior is still tested on are equally required for completeness.
+
+> **When the evidence is thin, its silences are not signals.** `_job-market-evidence.md` currently holds
+> only a handful of partial postings — a small, noisy sample. A skill *not* appearing there does **not**
+> mean a junior for the target role does not need it. When the evidence is thin or empty, treat the
+> model's reasoned per-topic analysis of what a junior at the target role and companies must know as an
+> **equally required floor**: run the completeness test (below) in full for every section, and let real
+> evidence override that analysis only where the two actually conflict — never let a sparse file quietly
+> shrink coverage.
 
 ---
 

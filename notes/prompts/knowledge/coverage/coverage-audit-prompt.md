@@ -119,8 +119,13 @@ Read the **Synthesis** in `notes/prompts/_job-market-evidence.md`. For **each re
 3. **Signals to watch → keep out.** A requirement in the evidence's "Signals to watch" list (senior-ish:
    Kafka, Spring Cloud, Spring Batch, NgRx…) is **not** a junior floor — do not force it into coverage.
 
-If `_job-market-evidence.md` is empty or stale, skip this step and say so in the summary; the rest of
-the audit still runs on the model's knowledge of the market.
+The evidence is currently a **small, partial sample**, so treat its coverage as a floor to raise, never
+as a ceiling: a requirement's *absence* from the file is not proof a junior does not need it. When the
+evidence is thin or empty, do **not** stop there — fall back to the model's reasoned per-topic analysis
+of what a junior for the target role and companies must know (Step 3's checks plus the completeness test
+in `_coverage-standard.md`) as an **equally required floor**, and let the real evidence override that
+analysis only where they actually conflict. In the summary, note whether each market-fit change came
+from real evidence, from the model's junior-needs analysis, or from both.
 
 ---
 
