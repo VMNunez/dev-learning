@@ -38,8 +38,8 @@ BASE_CV    = [tailor mode only: path to the master CV to start from | auto — t
 
 First read `notes/prompts/strategy/apply/_application-standard.md` — the shared standard both
 application prompts follow. It defines the **sources to read** (`CLAUDE.md`,
-`notes/prompts/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, and the optional
-`notes/cv/cv-bullets.md`), the **universal bullet format**, the **ATS keyword pool** (required +
+`notes/prompts/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
+`notes/cv/cv-bullets.md`, and your existing CV in `personal/CV`), the **universal bullet format**, the **ATS keyword pool** (required +
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the
 **project-selection heuristic**. This prompt does not repeat those rules — it adds only the
 CV-specific flow on top.
