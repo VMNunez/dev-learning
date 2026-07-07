@@ -1,10 +1,26 @@
-# Roadmap Review Prompt
+# Roadmap Review Prompt — orchestrator
 
-Use in a **separate conversation**. No configuration to fill in — paste the whole prompt into a new chat as it is.
+Use in a **separate conversation**. No configuration to fill in — paste the whole prompt into a new
+chat as it is.
 
-This prompt updates `ROADMAP.md` so it shows the optimal path from current progress to full coverage of `notes/coverage.md` — through projects, study blocks, and practice. Run it whenever a project finishes, `notes/coverage.md` changes significantly, or it has been a while since the last check.
+This prompt updates `ROADMAP.md` so it shows the optimal path from current progress to full coverage
+of `notes/coverage.md` — through projects, study blocks, and practice. Run it whenever a project
+finishes, `notes/coverage.md` changes significantly, or it has been a while since the last check.
 
-**Prerequisite:** PROGRESS.md must be current before running this prompt — the gap analysis in Step 2 reads it directly. If you have finished a project or significant study sessions since the last PROGRESS.md update, run `progress-update-prompt` first. A stale PROGRESS.md will make the gap analysis produce wrong results.
+It runs as an **orchestrator**: a doer applies the edits, then one cold `general-purpose` reviewer
+subagent independently verifies every invariant and fixes any it finds violated. That reviewer pass
+is the point of the design — the verification tail always runs instead of being skipped at the end of
+a long single context.
+
+**Prerequisite:** PROGRESS.md must be current before running this prompt — the gap analysis in Step 2
+reads it directly. If you have finished a project or significant study sessions since the last
+PROGRESS.md update, run `progress-update-prompt` first. A stale PROGRESS.md will make the gap analysis
+produce wrong results.
+
+**Internal piece this orchestrates** (never launched directly):
+`_roadmap-standard.md` — the stable ROADMAP contract (what each file is for, what ROADMAP contains,
+gate-based sequencing, the canonical study-block references, no-duplication). The doer references it
+instead of re-printing the rules; the reviewer verifies against it.
 
 ---
 
@@ -13,71 +29,22 @@ I want you to review and update ROADMAP.md so it shows the optimal path from my 
 progress to full coverage of everything in notes/coverage.md — through projects, study
 blocks, and practice.
 
-Before starting, read CLAUDE.md (daily schedule, teaching rules) and
-`notes/prompts/_shared-context.md` (my profile, target job, and the market). How the prompts
-connect to each other is documented in `notes/prompts/README.md`.
+You are the **orchestrator**. A doer (you) applies the edits in Steps 1–5, then in Step 6 you
+launch one cold reviewer subagent that independently verifies and fixes the result. Finish with the
+report and the commit blocks.
 
----
+First read `notes/prompts/strategy/tracking/_roadmap-standard.md` — the stable ROADMAP contract this
+prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
-## What each file is for
+Then read CLAUDE.md (daily schedule, teaching rules) and `notes/prompts/_shared-context.md` (my
+profile, target job, and the market). How the prompts connect to each other is documented in
+`notes/prompts/README.md`.
 
-- `notes/coverage.md` — SOURCE OF TRUTH for what I must learn. Every concept needed for
-  a junior Angular + Spring Boot role at a Spanish consultancy.
-- `PROGRESS.md` — SOURCE OF TRUTH for what I have already learned. Project status,
-  completed steps, and concepts covered so far.
-- `ROADMAP.md` — the forward-looking strategy: the path from where I am to where I need
-  to be, through projects and study blocks. It references the other two — it does not
-  repeat them.
-
-ROADMAP.md answers: "given what I know now and what I still need to learn, what is the
-plan?" It is not a concept list and it is not a progress tracker.
-
----
-
-## What ROADMAP.md contains
-
-Two types of content:
-
-**Stable strategic sections** — define context, objectives, market, and hiring strategy.
-Written once. Only change if something is factually wrong:
-- Who you are and where you stand
-- The market you are targeting
-- The AI factor — how it changes the market
-- What most increases your probability of being hired
-- The hiring process at Spanish consultancies
-- Applications strategy (July → Fridays only, August → equal priority, September → full push)
-- Daily schedule (fixed times — intentional, do not convert to gates)
-- GitHub, LinkedIn, and CV
-- English — Cambridge First Certificate
-- After finding the job — keep growing
-- After September — three possible paths
-
-**Living sections** — change as progress is made. These are what this prompt updates:
-- Phase table (status markers ✅ / ⏳ / 🔜)
-- Project sequence (which project comes next and why)
-- SQL topic table (12:30 block)
-- Notes study order (13:30 block)
-
----
-
-## Gate-based sequencing — project sections never use dates
-
-Project phases are structured as sequential goals: "first do X; when X is done, start Y."
-Calendar dates do NOT belong in project milestone sections — they become stale and create
-false pressure.
-
-Dates are allowed only in:
-1. The applications strategy section.
-2. The daily schedule header.
-
-If a date appears anywhere else, replace it with a gate condition — a concrete, verifiable
-state that is true or false regardless of the date.
-
-Examples of correct gate language:
-- ❌ "Finish backend by June 14" → ✅ "Backend gate: login returns a JWT; Postman confirms
-  a protected endpoint rejects requests without a token"
-- ❌ "CV rule: update in July" → ✅ "Update CV when project 07 is live on GitHub with a
-  README that includes at least one architecture decision"
+`ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
+references `notes/coverage.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
+not repeat them. What each file is for, what ROADMAP contains (stable vs living sections), and the
+gate-based sequencing rules are all defined in `_roadmap-standard.md` — read them there before
+editing.
 
 ---
 
@@ -147,12 +114,8 @@ gaps it was designed to close are now covered by completed projects in PROGRESS.
 candidate's primary coverage areas are all already covered and it adds no uncovered gap,
 remove it from the list. Note each removal in the changes table with the reason.
 
-**Rules for project sections:**
-- Sequential gate language only: "complete project 07, which covers X and Y; then start
-  project 08 to cover A and B"
-- No calendar dates in project milestones — ever
-- New candidates must be full-stack (Spring Boot + Angular + PostgreSQL), testable,
-  and buildable in 2–4 weeks of full-time study
+Project-section rules (sequential gate language, no calendar dates ever, new-candidate
+requirements) are defined in `_roadmap-standard.md` — follow them.
 
 **Phase table:** After updating the project sections, also update the phase table at the
 top of ROADMAP.md. Each row corresponds to a phase — promote it to ✅ if its gate
@@ -164,55 +127,85 @@ are already complete.
 
 ## Step 4 — Check the study block tables
 
-**12:30 block — SQL then practice:**
-Compare the SQL topic table in ROADMAP against the SQL section of `notes/coverage.md`.
-- Add any SQL topic present in coverage.md but missing from the ROADMAP table.
-- Remove any topic that coverage.md marks as out of scope.
-- Status markers (✅ / 🔜) must match what PROGRESS.md shows.
+Update the three study-block sections to match the canonical values in `_roadmap-standard.md`
+("Canonical study-block references"):
 
-**13:30 block — Notes then interview prep:**
-The study order must be:
-`angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
-Confirm ROADMAP's version of this block matches exactly. If CLAUDE.md defines a different
-order, CLAUDE.md wins — update ROADMAP to match.
+**12:30 block — SQL then practice:** reconcile the SQL topic table against the SQL section of
+`notes/coverage.md` (add missing topics, remove out-of-scope topics, sync ✅ / 🔜 markers to
+PROGRESS.md).
 
-**LeetCode gate conditions:**
-ROADMAP.md has a section listing 5 gate conditions that must all be met before starting
-LeetCode. One condition references the notes study order ("notes complete for X topics").
-Verify that the topics listed in that gate match the high-priority topics in the current
-study order — angular, spring-boot, java, architecture, and any topics added between
-architecture and typescript (e.g. security). If a topic was added in that range and is
-missing from the gate, add it. Do not add typescript, sql, javascript, css, or git —
-those are lower priority and the gate must remain reachable before September.
-Do not change the other 4 gate conditions unless they are factually wrong per PROGRESS.md.
+**13:30 block — Notes then interview prep:** confirm the notes study order matches the canonical
+string exactly; if CLAUDE.md differs, CLAUDE.md wins.
+
+**LeetCode gate conditions:** verify the topics in the study-order gate condition match the
+high-priority topics per the standard (angular, spring-boot, java, architecture, and any topic added
+between architecture and typescript such as security). Do not add typescript, sql, javascript, css,
+or git. Do not change the other 4 gate conditions unless they are factually wrong per PROGRESS.md.
 
 ---
 
-## Step 5 — Check the stable sections
+## Step 5 — Apply the updates
 
-Do NOT reword, restructure, or improve stable sections. Only touch them if something is
-factually wrong — for example, a project listed as future when it is already complete, or
-a technology listed as not yet learned when it clearly appears in PROGRESS.md.
+Edit ROADMAP.md directly.
 
-If a fact is wrong, fix the specific sentence. Nothing else.
+Do NOT reword, restructure, or improve stable sections (per `_roadmap-standard.md`, "What ROADMAP.md
+contains"). Only touch them if something is factually wrong — for example, a project listed as future
+when it is already complete, or a technology listed as not yet learned when it clearly appears in
+PROGRESS.md. If a fact is wrong, fix the specific sentence. Nothing else.
 
-Do a literal scan of ROADMAP.md for month names (January through December) and year patterns
-(2025, 2026). For every match: if it is inside the applications strategy section or the
-daily schedule header, it is intentional — leave it. If it is anywhere else, convert it to
-a gate condition and note it in the changes table.
+After applying the edits, do a quick self-check against `_roadmap-standard.md`:
+- No calendar date in a project milestone, gate condition, or "CV rule" — only in the applications
+  strategy section and the daily schedule header.
+- No content duplicates PROGRESS.md or coverage.md word-for-word — reference them instead.
+- The active project has a concrete, verifiable gate condition.
+- Each future project in the sequence names which specific coverage.md gaps it closes.
+- The file reads as a forward-looking strategy document, not a concept list.
+
+Do not treat this self-check as the final word — Step 6 verifies it independently.
 
 ---
 
-## Step 6 — Apply the updates
+## Step 6 — Independent reviewer subagent
 
-Edit ROADMAP.md directly. After every change, verify:
+Now launch **one cold `general-purpose` subagent, `run_in_background: false`**. It has none of your
+context — it re-derives every judgement from the files alone, which is exactly why it catches what a
+long single context skips. Wait for it to finish before writing the report.
 
-- No calendar date in a project milestone, gate condition, or "CV rule" — only in the
-  applications strategy section and the daily schedule header
-- No content duplicates PROGRESS.md or coverage.md word-for-word — reference them instead
-- The active project has a concrete, verifiable gate condition
-- Each future project in the sequence names which specific coverage.md gaps it closes
-- The file reads as a forward-looking strategy document, not a concept list
+Its instruction:
+
+> You are an independent reviewer. Read `notes/prompts/strategy/tracking/_roadmap-standard.md` (the
+> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage.md`.
+> Verify every invariant below **from scratch** — do not trust that the edits are correct. For each
+> violation you find, **fix it directly in ROADMAP.md**, then report what you changed and why.
+>
+> Checklist — verify each one and fix any that fail:
+> 1. **Stray-date scan.** Do a literal scan of ROADMAP.md for every month name (January–December) and
+>    year pattern (2025, 2026, …). For each match: if it is inside the applications strategy section
+>    or the daily schedule header, it is intentional — leave it. Anywhere else, convert it to a gate
+>    condition (per the standard's ❌→✅ examples) and log it.
+> 2. **No duplication.** No passage duplicates PROGRESS.md or coverage.md word-for-word — it must
+>    reference them instead. Cut any restated concept list and point to the source file.
+> 3. **Future projects (🔜) name their gaps.** Every future project in the sequence names which
+>    specific coverage.md gaps it closes. If one does not, add the gap mapping (compute it from
+>    coverage.md vs PROGRESS.md).
+> 4. **Active project (⏳) gate.** The active project has a concrete, verifiable gate condition — a
+>    state that is true or false regardless of the date. If it is vague or date-based, rewrite it as a
+>    gate.
+> 5. **SQL table.** The SQL topic table matches the SQL section of coverage.md (no missing topic, no
+>    out-of-scope topic) and its ✅ / 🔜 markers agree with PROGRESS.md.
+> 6. **Notes study order.** The 13:30 study order equals the canonical string in the standard exactly:
+>    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
+>    (if CLAUDE.md differs, CLAUDE.md wins).
+> 7. **LeetCode gate topics.** The study-order gate condition lists exactly the high-priority topics
+>    per the standard (angular, spring-boot, java, architecture, security if added in that range) and
+>    does NOT list typescript, sql, javascript, css, or git.
+> 8. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if PROGRESS.md shows its
+>    goals complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
+>
+> Report: a short table of `Invariant | Verdict (pass / fixed) | What you changed`. If everything
+> passed with no fixes, say so explicitly.
+
+Fold the reviewer's fixes and findings into the report below.
 
 ---
 
@@ -223,6 +216,8 @@ Edit ROADMAP.md directly. After every change, verify:
 | Section | Change | Why |
 |---------|--------|-----|
 | ... | ... | ... |
+
+Include both the doer's edits (Steps 1–5) and the reviewer's fixes (Step 6) in this table.
 
 **Remaining knowledge gaps** — concepts in coverage.md not yet in PROGRESS.md, grouped by
 topic. Max 3 per topic. Focus on what interviewers at NTT Data, Capgemini, and similar
