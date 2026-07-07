@@ -4,7 +4,8 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 This prompt reviews a project for code quality, patterns, and learning objectives. At the end it writes improvement tasks to `PROJECT-BACKLOG.md` inside the project's own folder (full-stack projects only — see Step 0).
 
-> **▶ Run first:** `readme-review` — this prompt assumes the README is already correct.
+> **▶ Run first:** nothing — it reads `PLANNING.md` and the source code, not the README.
+> (`readme-review` is a prerequisite of `portfolio-ready`, which does read the READMEs — not of this review.)
 
 ---
 
