@@ -43,6 +43,32 @@ In practice you use `int`, `long`, `double`, and `boolean` for almost everything
 **Character** — for single characters:
 - `char` — one character, enclosed in single quotes: `'A'`. Used rarely in web development.
 
+### Comparing `BigDecimal` — `compareTo()` instead of `<`, `>`, or `equals()`
+
+Imagine a service needs to validate that hours worked fall between 0.5 and 24 (exactly the case for `TimeEntry.hours` in a timesheet). If `hours` is `BigDecimal`, writing `request.getHours() < 24` does not even compile — the error is `bad operand type BigDecimal for binary operator '<'`. The reason is the same as with wrapper classes: `<` and `>` only exist for primitives, and `BigDecimal` is an object.
+
+The next instinct is usually `.equals()`, but there is a trap: `.equals()` on `BigDecimal` also compares the **scale** (how many decimal places the number is internally represented with), not just the mathematical value. That is why `new BigDecimal("24.0").equals(new BigDecimal("24"))` returns `false` — to Java, "24.0" and "24" are objects with different scales (one decimal digit versus none), even though they are mathematically the same number.
+
+`BigDecimal` implements the `Comparable<BigDecimal>` interface, which provides the `compareTo(BigDecimal other)` method. This method does compare the actual mathematical value, ignoring scale, and returns an `int`:
+
+- negative if `this` is less than `other`
+- `0` if they are mathematically equal
+- positive if `this` is greater than `other`
+
+The pattern is always the same: call `compareTo()`, then compare the resulting `int` against `0` with the normal operators (`<`, `>`, `==`) — because now you are comparing two primitive `int`s, not two `BigDecimal` objects.
+
+```java
+BigDecimal hours = request.getHours();
+
+if (hours.compareTo(new BigDecimal("0.5")) < 0 || hours.compareTo(new BigDecimal("24")) > 0) {
+    throw new RuntimeException("Hours must be between 0.5 and 24");
+}
+```
+
+Read it as: "if `hours` compared to 0.5 is negative (meaning `hours` is less than 0.5) OR `hours` compared to 24 is positive (`hours` is greater than 24), throw the exception".
+
+> **`compareTo() == 0` for equality, never `equals()`.** If you ever need to check value equality between two `BigDecimal`s (e.g. "is the total billed exactly 100?"), use `total.compareTo(new BigDecimal("100")) == 0`, not `total.equals(new BigDecimal("100"))` — because if `total` arrived as `"100.00"` (with two decimal places, common when it comes from a `DECIMAL(10,2)` database column), `.equals()` would return `false` even though the value is identical.
+
 ---
 
 ## Variables
