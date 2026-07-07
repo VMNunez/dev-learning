@@ -1,18 +1,29 @@
 # Interview-prep audit — the single entry point for building interview Q&A
 
 Run this **inside Claude Code**. It is the only interview-prep prompt Victor launches. It builds the
-interview Q&A for a topic to the full quality standard, hands-off, using a two-subagent pipeline per
-topic: every file is **authored by one cold subagent and then audited/fixed by a second, independent
-reviewer subagent** before it is committed. The reviewer has no stake in the draft, so it reads against
-the bar — realistic questions, well-worded, answered in Victor's voice — and catches what the author
-trusted. No per-topic launching: one command does everything.
+interview Q&A for a topic to the full quality standard, hands-off, using a **four-stage cold-subagent
+pipeline** per topic:
+
+1. **Market analysis (M)** — a web-backed specialist gathers the *real questions actually asked* of a
+   junior for this stack at the target companies, so the Q&A mirrors real interviews, not invented ones.
+2. **Author (A)** — builds/audits the Q&A against the standard, using M's real-question list.
+3. **Adversarial gap-hunt (G)** — a senior-interviewer hat writes the 12 questions it would really ask
+   and returns the ones the file still misses.
+4. **Reviewer (B)** — an independent pass that adds G's genuine gaps, enforces the bar (realistic,
+   well-worded, Victor's voice, real cited code), and commits.
+
+Each stage is a cold subagent with no stake in the previous one's work, which is what makes the result
+exhaustive and realistic instead of a self-trusting single pass. No per-topic launching: one command
+does everything.
 
 > **▶ Run first:** `coverage-prompt` for the topic — the Q&A is built to cover every item in the
-> topic's `coverage.md`; if coverage is missing or stale, the Q&A will be too.
+> topic's `coverage.md`; if coverage is missing or stale, the Q&A will be too. Optional:
+> `evidence-intake` to refresh `_job-market-evidence.md`, which the market-analysis stage (M) reads.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_interview-prep-standard.md` (the bar) · `interview-prep-write-prompt.md` (author) ·
-`interview-prep-review-prompt.md` (reviewer).
+`interview-prep-review-prompt.md` (reviewer). The market-analysis (M) and gap-hunt (G) subagents are
+defined inline in the per-topic pipeline below — they are dispatch-only, with no standalone file.
 
 > **First run on a topic, use `DRY_RUN = true`.** It builds and reviews everything but commits nothing,
 > so you can read the diff before it lands. Once you trust it, `DRY_RUN = false` is fully hands-off.
@@ -94,31 +105,94 @@ Q&A in your own context.
 Process topics **one at a time, sequentially** — never overlap them, because each topic's reviewer
 commits and parallel commits race the git index.
 
-## Per-topic pipeline (run for each topic in the list)
+## Per-topic pipeline (run all four stages for each topic, in order)
 
-**Subagent A — author.** Launch one `general-purpose` subagent, `run_in_background: false`:
+Run the stages **sequentially** — each needs the previous one's output, and only B writes the commit.
+Which stages run depends on `{MODE}`:
+- **`full`** → all four: **M → A → G → B**.
+- **`correct`** → **A → B only**. Skip M and G. Correct mode adds no new questions, so the market list
+  and the gap hunt would have nothing to feed — running them there would just burn a web search. A does
+  its focused sync/TODO/tidy pass; B does a light review and commits.
+
+M and G are read-only (they write nothing). Only B's commit obeys `{DRY_RUN}`.
+
+**Stage M — interview-question market analysis.** Launch one `general-purpose` subagent,
+`run_in_background: false`:
+
+> You are a specialist in junior technical interviews at Spanish IT consultancies. Read `ROADMAP.md`
+> and `notes/prompts/_shared-context.md` for the candidate's exact target role, companies, stack, and
+> timeline, and `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` for what a good
+> interview question is. The topic is «topic».
+>
+> Produce the **real questions actually asked** of a junior for this stack on «topic» at the target
+> companies:
+> - Run a **live web search** for current Spanish junior interview questions on «topic» in this stack
+>   (the target companies plus Tecnoempleo / InfoJobs / LinkedIn España and "preguntas entrevista
+>   junior {topic} España" style sources); quote the question text you find and date it. If web search
+>   is unavailable, say so and use your trained knowledge of the 2026 Spanish market.
+> - Cross-check `notes/prompts/_job-market-evidence.md` (real postings on file) as a complement — which
+>   «topic» skills recur, and the exact wording the market uses.
+>
+> Return a flat list of real «topic» interview questions, each written **as an interviewer would say
+> it**, tagged with the section it belongs to and a one-word frequency signal (often / sometimes /
+> rare) plus a short source note. Do not write or edit any file — return only the list.
+
+Wait for M and keep its list.
+
+**Stage A — author.** Launch a fresh `general-purpose` subagent, `run_in_background: false`:
 
 > Read `notes/prompts/knowledge/interview-prep/interview-prep-write-prompt.md` and execute it in full
 > for `FILE = «topic»`, `SECTION = «section»`, `MODE = «mode»`.
+> Here is a **market-question list** for «topic» from a live analysis — treat every `often`/`sometimes`
+> question in it as required (it must have a well-worded question in the file), and match your phrasing
+> to how the market actually asks:
+> ```
+> «paste M's returned list»
+> ```
 > Do the sync, TODOs, coverage check, priority markers, format, and the audit sections your mode runs.
-> **Do NOT commit and do NOT mark anything done** — an independent reviewer runs next and owns the
-> commit. Leave your work in the working tree. Report the files touched, the coverage status, the
-> weak-answer / coverage-gap / TODO-pattern blocks, and the one-line commit message you'd use.
+> **Do NOT commit and do NOT mark anything done.** Leave your work in the working tree. Report the files
+> touched, the coverage status, and the weak-answer / coverage-gap / TODO-pattern blocks.
 
-Wait for A. If A reports it could not complete the topic (blocked, missing context), skip the reviewer,
+Wait for A. If A reports it could not complete the topic (blocked, missing context), skip the rest,
 note it, and move to the next topic — do not commit a partial file.
 
-**Subagent B — reviewer.** Launch a second, independent `general-purpose` subagent,
+**Stage G — adversarial gap-hunt.** Launch a fresh, independent `general-purpose` subagent,
+`run_in_background: false`:
+
+> You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
+> `notes/prompts/_shared-context.md` for the exact role/companies, and
+> `notes/prompts/_job-market-evidence.md` for what they hire for). You have ~30 minutes with a junior
+> candidate and the topic is «topic». Read `notes/interview-prep/en/«topic».md` and
+> `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`.
+>
+> Write the **12 questions you would actually ask** to decide whether this candidate really knows
+> «topic» — mix conceptual, decision ("why X over Y"), and pressure/gotcha, and lean on the recurring
+> requirements in the job-market evidence. Then, for each, check whether the file already has a question
+> covering it. Output only the **gaps**: the questions the file does NOT cover, each written as the real
+> interviewer question, tagged with its section and type (Conceptual / Decision / Pressure). Be
+> adversarial — assume the file is incomplete until your 12 questions prove otherwise. Do not edit any
+> file — return only the gap list.
+
+Wait for G and keep its gap list.
+
+**Stage B — reviewer.** Launch a fresh, independent `general-purpose` subagent,
 `run_in_background: false`:
 
 > Read `notes/prompts/knowledge/interview-prep/interview-prep-review-prompt.md` and execute it in full
 > for `FILE = «topic»`, `SECTION = «section»`, `DRY_RUN = {DRY_RUN}`.
-> Audit the just-authored Q&A hard against the standard — especially that questions are realistic,
+> _(full mode only — include this paragraph and the gap list; in correct mode G did not run, so omit
+> it.)_ First, an adversarial interviewer found these **gap questions** the file may be missing — add
+> every genuine one (skip any truly out of junior scope, note which and why) in the standard's full
+> format, to both `en/` and `es/`:
+> ```
+> «paste G's gap list»
+> ```
+> Then audit the whole Q&A hard against the standard — especially that questions are realistic,
 > well-worded, answered in Victor's voice, and carry a real cited code snippet where an interviewer
-> would pose the question with code — fix what falls short in both `en/` and `es/`, and
-> finish exactly as that prompt says for this `DRY_RUN` (false: commit atomically; true: fix only,
-> commit nothing). Carry forward the author's summary blocks. Report your verdict, files touched, and
-> the commit hash if you committed.
+> would pose the question with code — fix what falls short in both files, and finish exactly as that
+> prompt says for this `DRY_RUN` (false: commit atomically; true: fix only, commit nothing). Carry
+> forward the author's summary blocks. Report your verdict, which gap questions you added vs left out,
+> files touched, and the commit hash if you committed.
 
 Wait for B before starting the next topic.
 
@@ -148,7 +222,10 @@ detected (recommended standard rule additions).
   rule is "never auto-commit"; he lifted it for this orchestrator (same lift as notes-audit and
   progress-update). The reviewer subagent commits each topic. It applies nowhere else.
 - **One atomic commit per topic** (the `en/` + `es/` pair). Never batch topics, never `git add .`.
-- **Two subagents per topic, author then reviewer; topics are sequential.** Never overlap them —
-  parallel commits race the git index, and a reviewer must never audit an unfinished file.
-- Never skip the `es/` mirror or the reviewer pass.
+- **Stages run sequentially (M → A → G → B in `full`; A → B in `correct`); topics are sequential too.**
+  Never overlap them — each stage needs the previous one's output, parallel commits race the git index,
+  and a reviewer must never audit an unfinished file.
+- **Only B commits.** M, A, and G write no files (M and G write nothing at all; A leaves work in the
+  tree). Never let an analysis stage edit the Q&A.
+- Never skip the `es/` mirror, the market analysis, the gap-hunt, or the reviewer pass.
 ````

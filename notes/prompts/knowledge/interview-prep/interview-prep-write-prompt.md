@@ -151,10 +151,17 @@ Fix violations in both files and report what was fixed.
 
 ## Step 6 — The audit (full mode: all four; correct mode: only 6.2, report-only)
 
+> **Market-question list (if provided).** When launched by `interview-prep-audit.md`, you are handed a
+> list of the **real questions actually asked** for this topic at the target companies, each with a
+> frequency signal. Treat every `often`/`sometimes` question as **required** — it must appear in the
+> file as a well-worded question, phrased the way the market asks it — and use the list to calibrate the
+> realism and wording of everything you write in Step 6. If no list was provided (standalone run), rely
+> on coverage.md and your knowledge of what the target screenings ask.
+
 **6.1 Missing topics.** Topics not covered in `{SECTION}` that the target companies would ask, given
-the stack. Include every coverage.md concept with no question. One sentence per topic on why they ask
-it. If a topic you identify is NOT in coverage.md, flag it `[coverage gap]` so Victor can add it there
-separately.
+the stack. Include every coverage.md concept with no question and every `often`/`sometimes` item from
+the market-question list. One sentence per topic on why they ask it. If a topic you identify is NOT in
+coverage.md, flag it `[coverage gap]` so Victor can add it there separately.
 
 **6.2 Weak answers (report only — never rewrite without a TODO).** Answers that fail the quality bar in
 the standard: vague, too theoretical, not in Victor's voice, or missing a real-project anchor when the

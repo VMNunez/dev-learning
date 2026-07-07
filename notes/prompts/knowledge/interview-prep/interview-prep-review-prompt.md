@@ -74,6 +74,16 @@ file worth studying:
 - **Bilingual integrity** — `en/` and `es/` have the same sections, same questions, same order; `es/`
   reads as native Spanish, not a calque; the Junior-tip label is `Consejo de entrevista:`.
 
+## Apply the adversary gap list first (if provided)
+
+When launched by `interview-prep-audit.md`, you are handed a **gap list** from an adversarial
+interviewer — questions it would ask that the file may be missing. Before auditing, add every genuine
+gap to the correct section of both `en/` and `es/`, in the standard's full format (bold question +
+marker + blank line + answer in Victor's voice + Junior tip / Red flag / real cited code as the type
+warrants). Skip any gap that is truly out of junior scope and note which and why. If no list was
+provided (standalone run), skip this step. Then run the audit below over the whole file — including the
+questions you just added.
+
 ## Fix, don't just report
 
 Where a check fails, **fix it directly** in both `{FILE}` files — you are the last quality pass, not an
