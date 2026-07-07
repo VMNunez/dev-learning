@@ -6,9 +6,9 @@ This prompt reviews and fixes the README(s) for a project. It is the single sour
 rules for what a README must contain and how each section must be written.
 
 Run it after finishing a project, after a big feature, or any time the README feels out of
-date. Run it before `portfolio-ready-prompt` — that prompt assumes the README is already correct.
+date. Run it before `portfolio-audit` — that prompt assumes the README is already correct.
 
-> **▶ Run first:** nothing — it only needs the project's `PLANNING.md`. It is itself a prerequisite for `project-review` and `portfolio-ready`.
+> **▶ Run first:** nothing — it only needs the project's `PLANNING.md`. It is itself a prerequisite for `review-audit` and `portfolio-audit`.
 
 ---
 

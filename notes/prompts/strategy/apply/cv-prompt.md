@@ -10,7 +10,7 @@ Three modes:
 - **`review`** — audits an existing CV and rewrites any weak sections (read from `personal/CV` or pasted)
 - **`tailor`** — adapts your base CV to one specific job offer, keyword-matched to what that offer asks
 
-> **▶ Run first:** `progress-update` (so `PROGRESS.md` is current). Optional: `portfolio-ready` for polished `cv-bullets`.
+> **▶ Run first:** `progress-update` (so `PROGRESS.md` is current). Optional: `portfolio-audit` for polished `cv-bullets`.
 
 ---
 
@@ -113,7 +113,7 @@ If PROJECTS is a specific list: use those exact projects, in that order.
 
 For each chosen project, follow the standard's rule on sourcing bullets: use the polished entry in
 `notes/cv/cv-bullets.md` as the primary bullet if it exists (use it as-is — it was already polished by
-`portfolio-ready-prompt`), otherwise draft the primary bullet from the project's `README.md`. In both
+`portfolio-audit`), otherwise draft the primary bullet from the project's `README.md`. In both
 cases, read the README.md to find supporting details for the 2nd and 3rd bullets in the project section.
 
 ---
