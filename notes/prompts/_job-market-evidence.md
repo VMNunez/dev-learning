@@ -6,11 +6,15 @@ postings from the target consultancies, plus a distilled synthesis of the requir
 across them. `coverage-prompt.md` and `coverage-audit-prompt.md` read it as a **source** — an item
 that shows up repeatedly here is a strong signal it belongs in coverage.
 
-**How the coverage prompts use it:**
-- If this file has evidence, treat the recurring requirements in the Synthesis as a required floor —
-  every recurring skill must map to coverage items, and a gap here is a gap in coverage.
-- If this file is empty or stale, coverage falls back to the model's knowledge of the Spanish market
-  and may complement it with a live web search. Real evidence here always outranks the model's guess.
+**How the coverage prompts use it** (per `_coverage-standard.md`, "Two sources"): the backbone is always
+the **deep market analysis** — a full, web-backed reasoning of what the target junior is asked. This file
+is its **complement**, not its replacement:
+- When it has evidence, the recurring requirements in the Synthesis are a **required floor** the analysis
+  must satisfy — every recurring skill maps to coverage items, and a gap here is a gap in coverage. On a
+  concrete point where a real posting conflicts with the analysis, the posting wins (real data beats a guess).
+- It only ever **raises** that floor, never lowers it: this is a small, partial sample, so a skill's
+  *absence* here is not proof a junior does not need it. When it is empty or stale, the deep analysis
+  still stands on its own — coverage never shrinks just because the file is thin.
 
 **Evidence quality note.** The postings below were captured from **web-search extracts (July 2026)**,
 not full pasted job descriptions — individual postings on Tecnoempleo/Indra/NTT expire fast (410 Gone)

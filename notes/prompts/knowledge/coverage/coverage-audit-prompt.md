@@ -100,14 +100,21 @@ Add it to the correct section in that topic's coverage, and sync to `notes/cover
 
 ---
 
-## Step 2b — Market-fit check against the evidence (the priority floor)
+## Step 2b — Market-fit check: deep analysis first, evidence as the sharpening floor
 
 Do this **before** the finer per-section audit: coverage must first meet what the market actually asks,
 then expand — the priority order defined in `_coverage-standard.md` ("cover the market first, then
 expand"). This is the step that operationalises the "required floor" principle instead of leaving it
 to memory.
 
-Read the **Synthesis** in `notes/prompts/_job-market-evidence.md`. For **each recurring requirement**
+**Lead with the deep analysis — it is the primary input, not the evidence.** Per `_coverage-standard.md`
+("Two sources"), the backbone is a full reasoning of what a junior for the target role and companies must
+know, backed by a live web search of current Spanish junior postings when possible. Run that analysis for
+every section (Step 3's checks plus the completeness test) as the **primary floor**, regardless of how many
+postings are on file. The evidence below then **complements and sharpens** it — adding hard frequency and
+the market's exact wording — and overrides it only on a concrete point where the two actually conflict.
+
+Then read the **Synthesis** in `notes/prompts/_job-market-evidence.md`. For **each recurring requirement**
 (with its frequency, e.g. `Docker ~3/8`, `Java ~8/8`):
 
 1. **Gap → add.** Find the coverage item(s) it maps to. If a recurring requirement has no item — or only
@@ -121,15 +128,9 @@ Read the **Synthesis** in `notes/prompts/_job-market-evidence.md`. For **each re
 3. **Signals to watch → keep out.** A requirement in the evidence's "Signals to watch" list (senior-ish:
    Kafka, Spring Cloud, Spring Batch, NgRx…) is **not** a junior floor — do not force it into coverage.
 
-The evidence is currently a **small, partial sample**, so treat its coverage as a floor to raise, never
-as a ceiling: a requirement's *absence* from the file is not proof a junior does not need it. The
-evidence does **not** stand alone here — the primary input is the **deep analysis of the target market**
-from `_coverage-standard.md` ("Two sources"): what a junior for the target role and companies must know,
-reasoned in full and, when possible, backed by a live web search of current Spanish junior postings.
-Run that analysis for every section (Step 3's checks plus the completeness test) as a **co-primary
-floor** regardless of how many postings are on file; the evidence then complements and sharpens it, and
-overrides it only on a concrete point where they actually conflict. In the summary, note whether each
-market-fit change came from the deep analysis, from real evidence, or from both.
+Remember the evidence is a **small, partial sample**, so it only raises the floor set by the analysis,
+never lowers it: a requirement's *absence* from the file is not proof a junior does not need it. In the
+summary, note whether each market-fit change came from the deep analysis, from real evidence, or from both.
 
 ---
 

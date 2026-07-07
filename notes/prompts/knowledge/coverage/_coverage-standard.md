@@ -44,7 +44,11 @@ Any concrete mention below — "junior Angular + Spring Boot", "NTT Data / Capge
 
 ### Two sources: a deep market analysis, complemented by real postings
 
-Coverage scope rests on **two sources that reinforce each other**, and the first is primary:
+Coverage scope rests on **two sources that reinforce each other**, and the first is primary. Neither
+gives the true picture alone: the exhaustive analysis reveals the *real state of the market* — what a
+junior is actually asked, the whole surface of it — and the real postings corroborate that with hard
+frequency and the market's exact wording. Only together do they produce the complete, realistic view
+coverage is built on.
 
 1. **A deep analysis of the target market — the backbone.** Reason thoroughly about what a junior for
    the target role and companies (per ROADMAP + `_shared-context`) is actually asked in screenings,
