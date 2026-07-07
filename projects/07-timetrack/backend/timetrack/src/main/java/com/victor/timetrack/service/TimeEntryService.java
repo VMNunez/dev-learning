@@ -33,7 +33,7 @@ public class TimeEntryService {
     }
 
     public TimeEntryResponse create(CreateTimeEntryRequest request) {
-        
+
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
