@@ -221,6 +221,49 @@ edge case covered. A project with no tests is not finished.
 
 ---
 
+## Step 2b — Security audit (cold attacker pass — full-stack projects only)
+
+The Step 2 security checklist catches the known failure modes, but it is a fixed list. This pass is
+adversarial and systematic: a cold reviewer with an attacker's mindset reads the real code against
+the full junior security scope and hunts for what the checklist does not name. Skip this step for
+Angular projects 01–06 (no backend, and they are closed).
+
+**In Claude Code:** launch one `general-purpose` subagent, `run_in_background: false`:
+
+> You are a security reviewer with an attacker's mindset, auditing a junior portfolio project before
+> it is shown to Spanish consultancy interviewers. Read `notes/security/coverage.md` (the full junior
+> security scope), the security design sections of `{PROJECT_PATH}/PLANNING.md`, and the backend
+> source at `{PROJECT_PATH}/backend` — all of controller, service, security, model, dto, and
+> exception, plus `application.properties`/`application.yml`, `data.sql`, and `docker-compose.yml`
+> if they exist.
+>
+> Hunt for concrete, exploitable weaknesses a technical interviewer or a curious recruiter could
+> find: missing or inconsistent authorization (`@PreAuthorize` / role checks per endpoint), missing
+> ownership checks (can user A read or edit user B's data by changing an id?), entities leaking past
+> the DTO boundary (password hashes, internal fields), secrets or credentials in committed files,
+> JWT design flaws (expiration, claims, secret handling), CORS configuration, input-validation gaps
+> on request DTOs, SQL injection surface (native queries, string concatenation), and error responses
+> that leak internals. Judge against what the code actually does — not against a generic list.
+>
+> Return ONLY a findings table, most severe first:
+> `| Severity (High/Medium/Low) | File | Finding | Fix | Why an interviewer cares | Related notes/security/coverage.md item |`
+> If an area is genuinely clean, say "clean" for it in one line under the table — do not invent a
+> finding to fill space. Do not edit any file.
+
+Then **you** (the reviewer) merge the returned findings into the Step 4 improvement tasks: every
+confirmed vulnerability becomes a **High** priority task (a security hole makes the project look
+unprofessional faster than any missing feature); hardening ideas beyond junior scope go in the chat
+summary, not the backlog. Deduplicate against what Step 2 already found. The "Related coverage item"
+column ties each finding to `notes/security/coverage.md`, so fixing the backlog task doubles as
+interview preparation on that item.
+
+**Not in Claude Code (plain chat):** do the same pass yourself, explicitly — put the attacker hat
+on, work through `notes/security/coverage.md` area by area against the real code, and write the
+findings table before moving on. The independence is weaker than a real subagent, so be strict about
+sweeping every area, including the ones the Step 2 checklist already touched.
+
+---
+
 ## Step 3 — Learning Objectives Check
 
 Using the concepts you extracted in Step 1 from PLANNING.md:
@@ -239,7 +282,8 @@ For each concept:
 
 ## Step 4 — Improvement Tasks
 
-Based on Steps 2 and 3, write a list of improvement tasks.
+Based on Steps 2, 2b, and 3, write a list of improvement tasks. Every confirmed finding from the
+Step 2b security pass is included here as a High priority task (deduplicated against Step 2).
 
 Each task must:
 - Be specific — "add error state to the login form" not "improve error handling"
