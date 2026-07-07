@@ -15,7 +15,8 @@ that shows up repeatedly here is a strong signal it belongs in coverage.
 **Evidence quality note.** The postings below were captured from **web-search extracts (July 2026)**,
 not full pasted job descriptions — individual postings on Tecnoempleo/Indra/NTT expire fast (410 Gone)
 and several career sites are login-walled. The requirement text is real and quoted, but partial. To
-strengthen this file, paste 2–3 *full* "Requisitos" blocks from live postings when you see them.
+strengthen this file, paste 2–3 *full* "Requisitos" blocks from live postings when you see them — the
+tool for that is `notes/prompts/knowledge/coverage/evidence-intake-prompt.md` (`paste` or `search` mode).
 
 > Keep it honest: what recurs across many postings is a strong signal; what appears in one senior-ish
 > posting (Kafka, Spring Cloud, Spring Batch) is not a junior floor — note it as a "signal to watch",
@@ -24,6 +25,12 @@ strengthen this file, paste 2–3 *full* "Requisitos" blocks from live postings 
 ---
 
 ## Raw postings
+
+> **Dating for trend analysis.** Each posting carries a `Captured: yyyy-mm` line = when it entered this
+> file. That lets a later reader compare how requirements shift over time (Docker rising, a new framework
+> appearing, testing becoming baseline). Feed new postings with
+> `notes/prompts/knowledge/coverage/evidence-intake-prompt.md` (`paste` or `search` mode). The postings
+> below were all **captured 2026-07** (web-search extracts); newer ones carry their own `Captured:` date.
 
 ### Capgemini — Desarrollador/a Junior Java (híbrido) · 2026 · Tecnoempleo
 Stack / requisitos (from extract): Java, Spring, HTML, CSS, Angular, Node.

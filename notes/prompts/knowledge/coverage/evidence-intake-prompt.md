@@ -16,12 +16,16 @@ is public posting data (no personal information), so it **is** committed to the 
 ```
 ## Configuration — edit only this block
 
-MODE = [paste | search]
+MODE  = [paste | search]
+FOCUS = [optional, search mode only — leave BLANK for the normal run. Narrow the search to a company,
+         a city, or a sub-stack (e.g. "Capgemini", "Madrid", "Angular testing"). Blank = your full job
+         target, which is the default and the simplest way to run it.]
 
 ## paste  — you paste one or more full job offers at the very end of this chat; the prompt adds them.
-##          Full pasted offers outrank web-search extracts — mark them as "full posting".
-## search — the prompt runs a live web search for current Spanish junior postings for the target
-##          stack/companies and adds the ones that fit the target profile.
+##          Full pasted offers outrank web-search extracts — marked as "full posting".
+## search — NO topic needed. It defaults to YOUR job target (junior Angular + Spring Boot at Spanish
+##          consultancies, read from ROADMAP + _shared-context) and web-searches current matching
+##          postings. FOCUS only narrows it; leave FOCUS blank for the standard run.
 ```
 
 ---
@@ -45,28 +49,34 @@ Today's date is in the session context — use its month/year for the footer and
 **MODE = paste:** read the offer(s) pasted at the very end of this chat. Each should include the real
 "Requisitos" / responsibilities text. Treat them as **full postings** (higher quality than extracts).
 
-**MODE = search:** run a **live web search** for current Spanish **junior** postings matching the target
-profile — the target companies plus Tecnoempleo / InfoJobs / LinkedIn España / careers pages — for the
-target stack. Collect the real requirement text from each result and record its source URL and date.
-Individual postings expire fast (410 Gone); quote what you can actually read now. If web search is
-unavailable, say so and stop — do not invent postings.
+**MODE = search:** you need to pass **nothing** — the search is defined by Victor's job target read in
+Step 0 (junior Angular + Spring Boot at the target Spanish consultancies). Run a **live web search** for
+current Spanish **junior** postings on that stack — the target companies plus Tecnoempleo / InfoJobs /
+LinkedIn España / careers pages. If `FOCUS` is set, narrow to it (a company, city, or sub-stack); if it
+is blank, use the full target profile. Collect the real requirement text from each result and record its
+source URL. Individual postings expire fast (410 Gone); quote what you can actually read now. If web
+search is unavailable, say so and stop — do not invent postings.
 
 ---
 
 ## Step 2 — Add each posting to Raw postings
 
-For every gathered posting, in the file's **exact existing format**, under `## Raw postings`:
+For every gathered posting, in the file's format, under `## Raw postings`:
 
 ```
-### <Company> — <Role> · <year> · <source>
-Requisitos (from extract): <real requirement text — stack, DB, testing, methodology, English, seniority>.
+### <Company> — <Role> · <source>
+Captured: <yyyy-mm> · <full posting | web-search extract>
+Requisitos: <real requirement text — stack, DB, testing, methodology, English, seniority>.
 ```
 
 Rules:
+- **Stamp the capture date.** `Captured: <yyyy-mm>` = the current month (from the session context). This
+  is what makes the file **trend-readable** — a later reader can compare how requirements shift over time.
 - **Filter to the target profile.** Only add junior (or "recién titulado / prácticas") postings on the
   target stack at target-type companies. Skip senior-only or off-stack postings; note skipped ones in the
   report with a one-line reason. This keeps the evidence anchored to Victor's objectives.
-- **Mark full pasted offers** by appending `· full posting` to the heading — they outrank partial extracts.
+- **Mark quality** on the `Captured:` line: `full posting` for pasted full offers (they outrank extracts),
+  `web-search extract` for partial ones pulled from search.
 - **Deduplicate.** If a posting with the same company + role + source is already on file, update that block
   rather than adding a duplicate.
 - **Quote, do not invent.** Only write requirement text that actually appears in the offer/search result.
