@@ -121,6 +121,19 @@ return ResponseEntity.badRequest().body("Invalid input");
 
 The relation to `@RestController`: the controller method returns the `ResponseEntity`, and Spring reads the status from it and serialises the body to JSON with Jackson before sending it to the client.
 
+**How it gets built, step by step — `ResponseEntity.status(201).body(created)`**
+
+Read this line from the inside out:
+
+1. What is innermost runs first: `created` is already the object the service returned (e.g. the `ProjectResponse` that was just saved to the database).
+2. `ResponseEntity.status(201)` is a **static** method that starts building the response, fixing the status code to `201`. It returns a half-built object (a *builder*), not the final `ResponseEntity` yet.
+3. `.body(created)` is chained onto that builder and adds the data you want to send as the body. This is where construction finishes: the result is now the complete `ResponseEntity<ProjectResponse>` — status 201 + that body.
+4. The method `return`s that object. Spring receives it, serialises the body to JSON with Jackson, and assembles the real HTTP response that reaches Postman: a `201` status header, and the JSON in the body.
+
+**The `<T>` and type safety**
+
+`ResponseEntity<T>` is a **generic** class — the same mechanism you already know from `List<String>` or `Optional<T>`. The `<T>` fixes, at compile time, which concrete object type is allowed inside the body. That is why the method signature and what you pass to `.body(...)` must match: if the method declares `ResponseEntity<ProjectResponse>`, the compiler rejects passing a `String` or any other type into `.body(...)` — the same kind of error `List<String> list = new ArrayList<Integer>()` would produce.
+
 **Two shortcuts you will use constantly:**
 
 - `ResponseEntity.ok(value)` is exactly `ResponseEntity.status(200).body(value)` — GET and PUT use it, and it *does* include a body (the JSON object or array). These two lines are identical:

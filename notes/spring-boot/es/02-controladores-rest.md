@@ -121,6 +121,19 @@ return ResponseEntity.badRequest().body("Invalid input");
 
 La relación con `@RestController`: el método del controlador devuelve el `ResponseEntity`, y Spring lee el estado y serializa el body a JSON con Jackson antes de enviarlo al cliente.
 
+**Cómo se construye, paso a paso — `ResponseEntity.status(201).body(created)`**
+
+Esta línea se lee de dentro hacia fuera:
+
+1. Primero se ejecuta lo que está más adentro: `created` ya es el objeto que devolvió el service (por ejemplo, el `ProjectResponse` recién guardado en base de datos).
+2. `ResponseEntity.status(201)` es un método **estático** que empieza a construir la respuesta, fijando el código de estado a `201`. Devuelve un objeto a medio construir (un *builder*), no el `ResponseEntity` final todavía.
+3. `.body(created)` se encadena sobre ese builder y le añade el dato que quieres enviar como body. Aquí es donde termina de construirse: el resultado ya es el `ResponseEntity<ProjectResponse>` completo — estado 201 + ese body.
+4. El método `return`-ea ese objeto. Spring lo recibe, y a partir de ahí serializa el body a JSON con Jackson y arma la respuesta HTTP real que llega a Postman: cabecera de estado `201`, y el JSON en el cuerpo.
+
+**El `<T>` y la seguridad de tipos**
+
+`ResponseEntity<T>` es una clase **genérica** — el mismo mecanismo que ya conoces de `List<String>` u `Optional<T>`. El `<T>` fija, en tiempo de compilación, qué tipo concreto de objeto puede ir dentro del body. Por eso la firma del método y lo que pones en `.body(...)` tienen que coincidir: si el método declara `ResponseEntity<ProjectResponse>`, el compilador rechaza que le pases un `String` o cualquier otro tipo en `.body(...)` — es el mismo tipo de error que `List<String> list = new ArrayList<Integer>()` daría.
+
 **Dos atajos que usarás constantemente:**
 
 - `ResponseEntity.ok(value)` es exactamente `ResponseEntity.status(200).body(value)` — GET y PUT lo usan, y *sí* incluye un body (el objeto o array JSON). Estas dos líneas son idénticas:
