@@ -261,7 +261,7 @@ notes/java/
 
 ### README format
 
-All README format rules and quality standards → `notes/prompts/projects/readme-review-prompt.md`. Run it in a separate conversation.
+All README format rules and quality standards → `notes/prompts/projects/readme/readme-review-prompt.md`. Run it in a separate conversation.
 
 ---
 

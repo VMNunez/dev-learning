@@ -25,9 +25,9 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 
 | Hub file | Source of truth for | Written by | Read by |
 |----------|---------------------|------------|---------|
-| `notes/coverage.md` | **what I must learn** | `coverage-prompt`, `coverage-audit-prompt` | notes/interview-prep audits, `new-project`, `roadmap-review`, `sql-exercises` |
-| `PROGRESS.md` | **what I have learned** | `progress-update-prompt` (+ Claude per step in session) | `new-project`, `roadmap-review`, `portfolio-ready`, `cv`, `linkedin`, `sql-exercises` |
-| `{project}/PLANNING.md` | **what a project builds** | `new-project-prompt` | `readme-review`, `project-review`, `portfolio-ready`, `progress-update`, `roadmap-review` |
+| `notes/coverage.md` | **what I must learn** | `coverage-prompt`, `coverage-audit-prompt` | notes/interview-prep audits, `plan-audit`, `roadmap-review`, `sql-exercises` |
+| `PROGRESS.md` | **what I have learned** | `progress-update-prompt` (+ Claude per step in session) | `plan-audit`, `roadmap-review`, `portfolio-ready`, `cv`, `linkedin`, `sql-exercises` |
+| `{project}/PLANNING.md` | **what a project builds** | `plan-audit` | `readme-review`, `project-review`, `portfolio-ready`, `progress-update`, `roadmap-review` |
 
 ---
 
@@ -56,10 +56,13 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `projects/new-project-prompt.md` | `new` mode: gap-analyses PROGRESS vs coverage, picks the next project, writes a full PLANNING.md. `review` mode: audits an existing PLANNING.md. | `PROGRESS.md`, `notes/coverage.md`, `ROADMAP.md`, last project's `PLANNING.md` | `{project}/PLANNING.md`; adds a row to `PROGRESS.md`; marks the choice in `ROADMAP.md` |
-| `projects/readme-review-prompt.md` | The single source of README rules; writes/fixes every README section. Run before the portfolio gate (`portfolio-ready` reads the READMEs; `project-review` does not). | `{project}/PLANNING.md`, the existing README(s) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack) |
-| `projects/project-review-prompt.md` | Reviews code quality, patterns, and learning objectives against the plan; writes improvement tasks. Full-stack projects also get a **cold security-audit stage** (Step 2b) — an attacker-hat subagent reads the backend source against `notes/security/coverage.md` and appends prioritized findings. | `{project}/PLANNING.md`, the source code, `PROJECT-BACKLOG.md`, `notes/security/coverage.md` | `PROJECT-BACKLOG.md` (per-project task list + "Last reviewed" date) |
-| `projects/portfolio-ready-prompt.md` | Final go/no-go gate per project (last link in the per-project chain): generates project-specific interview questions, a verdict, a CV bullet, a GitHub description. | `{project}/PLANNING.md`, README(s), code, tests, `{project}/PROJECT-BACKLOG.md`, `ROADMAP.md` | `interview-prep/projects/{project}.md`, `notes/cv/cv-bullets.md` |
+| `projects/plan/plan-audit.md` | **THE entry point — the only project-plan prompt you launch.** Runs **inside Claude Code**, hands-off. `new` mode plans the next project (gap-analyses PROGRESS vs coverage, picks it, writes a full PLANNING.md) then an independent reviewer subagent audits and fixes it before it commits; `review` mode audits an existing PLANNING.md (one project or `all`). `DRY_RUN` stages without committing. | its three internal pieces (below) | `{project}/PLANNING.md`; adds a row to `PROGRESS.md`; marks the choice in `ROADMAP.md`; one atomic commit |
+| `projects/plan/_planning-standard.md` | *Internal.* The **shared PLANNING.md contract** both the author and reviewer read (the 23-section template + what makes each pass, done-condition formats, HTTP status conventions, professional implementation order, branch-strategy rules, consistency invariants, the two project formats). Not runnable. | — | — |
+| `projects/plan/plan-write-prompt.md` | *Internal (author, new mode).* Gap-analyses, chooses the next project, designs it, and writes the complete PLANNING.md to the standard + the ROADMAP/PROGRESS edits. Does not commit. | `_planning-standard.md`, `PROGRESS.md`, `notes/coverage.md`, `ROADMAP.md`, last project's `PLANNING.md` | `{project}/PLANNING.md`, `ROADMAP.md`, `PROGRESS.md` (working tree) |
+| `projects/plan/plan-review-prompt.md` | *Internal (reviewer).* Independent second pass on one plan: audits against the standard, fixes what falls short directly, then commits (unless dry-run). Used by both modes — subagent B in new mode, the sole doer in review mode. | `_planning-standard.md`, `{project}/PLANNING.md`, `PROGRESS.md` | the audited `PLANNING.md`, one atomic commit |
+| `projects/readme/readme-review-prompt.md` | The single source of README rules; writes/fixes every README section. Run before the portfolio gate (`portfolio-ready` reads the READMEs; `project-review` does not). | `{project}/PLANNING.md`, the existing README(s) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack) |
+| `projects/review/project-review-prompt.md` | Reviews code quality, patterns, and learning objectives against the plan; writes improvement tasks. Full-stack projects also get a **cold security-audit stage** (Step 2b) — an attacker-hat subagent reads the backend source against `notes/security/coverage.md` and appends prioritized findings. | `{project}/PLANNING.md`, the source code, `PROJECT-BACKLOG.md`, `notes/security/coverage.md` | `PROJECT-BACKLOG.md` (per-project task list + "Last reviewed" date) |
+| `projects/portfolio/portfolio-ready-prompt.md` | Final go/no-go gate per project (last link in the per-project chain): generates project-specific interview questions, a verdict, a CV bullet, a GitHub description. | `{project}/PLANNING.md`, README(s), code, tests, `{project}/PROJECT-BACKLOG.md`, `ROADMAP.md` | `interview-prep/projects/{project}.md`, `notes/cv/cv-bullets.md` |
 
 ### Practice — active recall and timed tests (daily blocks)
 
@@ -80,7 +83,7 @@ accurate; `apply/` produces the job-application material.
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
 | `strategy/tracking/_concept-extraction-standard.md` | *Internal.* The Format A/B/C **concept-extraction contract** each per-project subagent runs when `progress-update` fans out. Not runnable. | — | — |
-| `strategy/tracking/progress-update-prompt.md` | Rebuilds PROGRESS.md from reality — an orchestrator that fans out one cold subagent per project (+ SQL, + simulations), then merges. Run before `new-project`. | `_concept-extraction-standard.md`, all `PLANNING.md` files, `sql/`, `simulations/TRACKER.md` | `PROGRESS.md` |
+| `strategy/tracking/progress-update-prompt.md` | Rebuilds PROGRESS.md from reality — an orchestrator that fans out one cold subagent per project (+ SQL, + simulations), then merges. Run before `plan-audit`. | `_concept-extraction-standard.md`, all `PLANNING.md` files, `sql/`, `simulations/TRACKER.md` | `PROGRESS.md` |
 | `strategy/tracking/_roadmap-standard.md` | *Internal.* The **shared roadmap contract** `roadmap-review` reads: what ROADMAP is vs PROGRESS/coverage, stable vs living sections, gate-based sequencing (no dates), canonical study-block orders. Not runnable. | — | — |
 | `strategy/tracking/roadmap-review-prompt.md` | Keeps ROADMAP forward-looking and gate-based (no stale dates); checks project sequence and study-block tables vs coverage. **Orchestrator:** the doer applies edits, then a cold reviewer subagent re-verifies the invariants (date scan, LeetCode gate, study-block sync) and fixes ROADMAP. | `_roadmap-standard.md`, `notes/coverage.md`, `PROGRESS.md`, the active `PLANNING.md` | `ROADMAP.md` |
 | `strategy/apply/_application-standard.md` | *Internal.* The **shared job-application standard** both `cv` and `linkedin` read: expert stance, sources (incl. the existing CV in `personal/CV`), bullet format, ATS/skills keyword pool, Spanish voice rules, defensibility rule, project-selection heuristic. Not runnable. | — | — |
@@ -97,7 +100,7 @@ producer has not run (or is stale), its consumers produce wrong results. Run pro
 Each generated file, with who writes it and who depends on it:
 
 - **`notes/coverage.md`** — written by `coverage-prompt` / `coverage-audit-prompt` → read by
-  `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep`, `new-project`,
+  `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep`, `plan-audit`,
   `roadmap-review`, and `sql-exercises` (SQL section). *Coverage is the root — almost everything
   downstream assumes it is correct.*
 - **`notes/prompts/_job-market-evidence.md`** — written by `evidence-intake` (dedicated intake) and
@@ -105,9 +108,9 @@ Each generated file, with who writes it and who depends on it:
   and both their subagents, plus `interview-prep-audit`'s market-analysis stage. *Real postings that
   anchor coverage and the interview Q&A to the market.*
 - **`PROGRESS.md`** — written by `progress-update` (and by Claude after each step in the daily
-  session) → read by `new-project`, `roadmap-review`, `portfolio-ready`, `cv`, `linkedin`,
-  `sql-exercises`. *Stale PROGRESS = wrong gap analysis in `new-project` and `roadmap-review`.*
-- **`{project}/PLANNING.md`** — written by `new-project` → read by `readme-review`,
+  session) → read by `plan-audit`, `roadmap-review`, `portfolio-ready`, `cv`, `linkedin`,
+  `sql-exercises`. *Stale PROGRESS = wrong gap analysis in `plan-audit` and `roadmap-review`.*
+- **`{project}/PLANNING.md`** — written by `plan-audit` (new mode) → read by `readme-review`,
   `project-review`, `portfolio-ready`, `progress-update`, `roadmap-review`. *It is the contract
   the whole project is checked against.*
 - **`PROJECT-BACKLOG.md`** — written by `project-review` → read by `portfolio-ready` (open
@@ -135,7 +138,7 @@ coverage-prompt / coverage-audit ─► notes/coverage.md
         │        └─ notes-and-interview-prep keeps both in sync
         │                                                   │
         ▼                                                   ▼
-progress-update ─► PROGRESS.md ─► new-project ─► {project}/PLANNING.md   simulator
+progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.md   simulator
                         ▲                              │                  ▲ (reads Q&A)
                         │            ┌─────────────────┼───────────────┐ │
                         │            ▼                 ▼               ▼ │
@@ -154,7 +157,7 @@ Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
 
 **Starting a new project**
 1. `progress-update` — make PROGRESS.md accurate first
-2. `new-project` — plan it, get PLANNING.md
+2. `plan-audit` (`MODE = new`) — plan it, get PLANNING.md (author + reviewer, hands-off)
 3. build it, step by step (daily sessions)
 4. `readme-review` — fix the README(s) after each big feature
 5. `project-review` — code review when the project is complete
@@ -182,7 +185,7 @@ processes every target in order, one commit per target. Full rules: `notes/promp
 
 - **Supports `all`:** `coverage-prompt`, `notes-audit` (`SCOPE = folder`, `TOPIC = all`), `interview-prep-audit`,
   `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-review`, `project-review`,
-  `portfolio-ready` (`PROJECT_PATH = all`); `new-project` (`PROJECT = all`, **review mode only**);
+  `portfolio-ready` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**),
   `simulation-generator`, `code-review` (`TYPE = all`).
 - **Already global (no `all` needed):** `coverage-audit`, `progress-update`, `roadmap-review`, `cv`,

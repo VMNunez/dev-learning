@@ -88,7 +88,7 @@ In order of impact:
 
 2. **Tests in the project** — almost no junior candidate has tests. Having JUnit 5 + Mockito on the backend and Jasmine + TestBed on the frontend makes you immediately more credible. It shows you understand production code, not just working code.
 
-3. **A README with architecture decisions** — not a list of technologies. Decisions: _why JWT over sessions, why soft delete, why DTOs instead of exposing entities, why coordinator pattern_. One candidate who explains decisions is worth more than five who just list features. The README format and quality standard is defined in `notes/prompts/project-review-prompt.md`.
+3. **A README with architecture decisions** — not a list of technologies. Decisions: _why JWT over sessions, why soft delete, why DTOs instead of exposing entities, why coordinator pattern_. One candidate who explains decisions is worth more than five who just list features. The README format and quality standard is defined in `notes/prompts/projects/readme/readme-review-prompt.md`.
 
 4. **The internship on the CV** — even with a different stack. It proves you have worked in a team, delivered something real, and handled real deadlines. Mention a specific result: _built X that does Y for Z users/clients_.
 
@@ -157,7 +157,7 @@ No project is finished without tests. Tests are not a step — they are part of 
 
 ### Project 08 — after 07
 
-Planned using `notes/prompts/projects/new-project-prompt.md` — paste it into a new chat when project 07 is complete. It reads `notes/coverage.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project. Run it once, get a full plan.
+Planned using `notes/prompts/projects/plan/plan-audit.md` (`MODE = new`) — run it inside Claude Code when project 07 is complete. It reads `notes/coverage.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project — an author subagent drafts it and a cold reviewer audits and fixes it before it commits, hands-off. Run it once, get a full plan.
 
 **Project 08 candidate ideas:**
 

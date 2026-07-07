@@ -5,12 +5,12 @@ that **fans out one cold subagent per project** to extract that project's concep
 each for SQL and simulations, then **merges everything itself** and commits. No project's PLANNING.md
 ever loads into the orchestrator's own context — it stays light and only holds PROGRESS.md.
 
-> **▶ Run first:** nothing — this is a producer. Run it *before* `new-project` and `roadmap-review`, which read `PROGRESS.md`.
+> **▶ Run first:** nothing — this is a producer. Run it *before* `plan-audit` and `roadmap-review`, which read `PROGRESS.md`.
 
 One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
 
 Run this when PROGRESS.md feels out of sync: after finishing a step or a project, after a long block
-of sessions, or before running `new-project-prompt` (its gap analysis reads PROGRESS.md). If
+of sessions, or before running `plan-audit` (its gap analysis reads PROGRESS.md). If
 PROGRESS.md is incomplete, that gap analysis is wrong.
 
 **This prompt does NOT read `notes/coverage.md`.** Coverage tracks what Victor must *learn* —
@@ -29,7 +29,7 @@ MODE = [active | all]
 ## active (default) — audit ONLY the current in-progress project. Completed projects are assumed
 ##                    already recorded. Fast everyday refresh after a step or a session block.
 ## all             — audit every project (all completed + the active one). Run periodically, or
-##                   before new-project-prompt, to catch anything missed in completed projects.
+##                   before plan-audit, to catch anything missed in completed projects.
 
 SQL (Step B) and simulations (Step C) always run, in both modes.
 
