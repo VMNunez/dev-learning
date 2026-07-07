@@ -75,6 +75,9 @@ FILE = [angular | css | javascript | typescript | sql | java | spring-boot | arc
        → notes/interview-prep/en/{FILE}.md + notes/interview-prep/es/{FILE}.md
        → FILE = all audits every topic in turn — see notes/prompts/_batch-mode.md. Order:
          angular, spring-boot, java, architecture, security, typescript, sql, javascript, css, git, general.
+       → Angular Material has no file of its own: the `angular` run also verifies
+         notes/angular-material/coverage.md and places any Material questions in angular.md
+         (the author handles this in its Step 3).
 
 SECTION = [all | ## Routing | ## Forms | ...]   ← "all" for the whole file, or one exact heading
           (ignored when FILE = all — a batch run always uses SECTION = all)

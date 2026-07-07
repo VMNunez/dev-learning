@@ -50,6 +50,9 @@ MODE = [full | correct]
 Use FILE, SECTION, and MODE wherever the prompt refers to {FILE}, {SECTION}, or {MODE}.
 
 Notes on specific files:
+- angular: Angular framework questions. **Angular Material has no file of its own** — its questions
+  live here under Material sections, so this run also verifies `notes/angular-material/coverage.md`
+  (see Step 3).
 - spring-boot: Spring Boot framework questions (auto-configuration, controllers, beans, JPA). Java
   language questions live in java.md, not here.
 - java: language concepts needed to write Spring Boot code — classes, interfaces, annotations,
@@ -131,10 +134,13 @@ summary as a recommended one-sentence rule to add to the standard. Do not add th
 ## Step 3 — coverage.md check (full mode only)
 
 Read the topic's coverage: `notes/{FILE}/coverage.md` (for spring-boot, `notes/spring-boot/coverage.md`;
-for java, `notes/java/coverage.md`). If it exists, list every concept and verify each one that belongs
-in the run's scope has at least one question. Treat any uncovered concept as a required addition in
-Step 6.4, and label it "coverage.md concept — added". If coverage.md does not exist, rely on your
-knowledge of what junior Angular + Spring Boot interviews at Spanish consultancies require.
+for java, `notes/java/coverage.md`). **For `angular`, also read `notes/angular-material/coverage.md`** —
+Angular Material has no interview-prep file of its own; by convention its questions live in `angular.md`
+under Material sections, so its coverage items must be verified here too or they go untested. If it
+exists, list every concept and verify each one that belongs in the run's scope has at least one
+question. Treat any uncovered concept as a required addition in Step 6.4, and label it "coverage.md
+concept — added". If coverage.md does not exist, rely on your knowledge of what junior Angular +
+Spring Boot interviews at Spanish consultancies require.
 
 ## Step 4 — Priority markers
 
