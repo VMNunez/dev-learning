@@ -8,14 +8,16 @@ The output is ready-to-paste text for every section — no rewriting needed, jus
 ---
 
 ````
-## Context
+## Before starting
 
-My profile, internship details, and target companies are in `notes/prompts/_shared-context.md`.
+First read `notes/prompts/strategy/apply/_application-standard.md`. It defines the **sources to read**
+(`CLAUDE.md`, `notes/prompts/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, and the optional
+`notes/cv/cv-bullets.md`), the **universal bullet format**, the **skills pool** (required + preferred),
+the **Spanish / no-buzzword voice**, the **defensibility rule**, and the **project-selection
+heuristic**. This prompt does not repeat those rules — it adds only the LinkedIn-specific flow on top.
 
-Before starting, read these files:
-1. `CLAUDE.md` — stack and study context (profile and internship are in `notes/prompts/_shared-context.md`)
-2. `PROGRESS.md` — all completed projects and what each one demonstrates
-3. `ROADMAP.md` — the LinkedIn checklist (GitHub and LinkedIn section) and career target
+Note: for LinkedIn also read `ROADMAP.md` specifically for the **LinkedIn checklist** (GitHub and
+LinkedIn section) and career target, and read `PROGRESS.md` for what each project demonstrates.
 
 ---
 
@@ -55,8 +57,8 @@ Mark the recommended one clearly.
 
 Draft the "About" section. Rules:
 - 3–4 short paragraphs (LinkedIn shows only the first 2–3 lines before "see more" — the first line must hook)
-- Written in Spanish (Spanish consultancies screen in Spanish)
-- No buzzwords: no "apasionado", no "entusiasta", no "orientado a resultados"
+- Written in Spanish and free of buzzwords per the standard's voice rules (no "apasionado", no
+  "entusiasta", no "orientado a resultados")
 - Be specific: name the stack, name the internship company (or describe it), name the type of project
 - End with a clear call to action: "Abierto a oportunidades junior en [stack] — puedes escribirme en LinkedIn o contactarme en [email]"
 
@@ -72,7 +74,7 @@ Structure:
 
 **Internship entry:**
 
-Draft the experience entry for the internship. Use the same bullet format as the CV:
+Draft the experience entry for the internship. Use the **universal bullet format from the standard**:
 action verb (past tense) + what + result.
 
 Required fields:
@@ -90,12 +92,9 @@ Write: "Desarrollé el módulo de [feature] de una SaaS con Next.js + TypeScript
 
 ## Step 4 — Projects section
 
-Draft project entries for the top 3 projects based on PROGRESS.md.
-
-Priority order:
-1. Full-stack project (07-timetrack) — always first; most impressive for Spanish consultancies
-2. Most complex Angular project (06-hr-portal or 05-task-manager)
-3. One more Angular project that shows a different skill
+Draft project entries for the top 3 projects by applying the **project-selection heuristic from the
+standard** (full-stack project first; then the most complex Angular project; then one more that shows a
+different skill — preferring recency and concept coverage).
 
 For each project entry:
 - **Name:** the project name (e.g. "TimeTrack — Full-Stack Time Tracking App")
@@ -112,7 +111,8 @@ The third bullet (optional) should mention tests if they exist.
 
 ## Step 5 — Skills section
 
-List the skills to add on LinkedIn, in priority order (LinkedIn shows the top 3 most prominently):
+Add the skills from the standard's keyword pool, but in **LinkedIn priority order** — LinkedIn shows
+the top 3 most prominently, so ordering is what matters here:
 
 **Top 3 (always show first):**
 1. Angular
@@ -125,9 +125,9 @@ PostgreSQL, TypeScript, SQL, Docker, REST APIs, Git, Maven
 **Also add:**
 JUnit, Jasmine, Angular Material, RxJS, HTML, CSS, Spring Security, Hibernate
 
-**Do NOT add skills you cannot defend in an interview.**
-If you have not used Scrum/Agile in a structured way, do not add it.
-If you have not worked with Kubernetes or Microservices, do not add them.
+Apply the standard's **defensibility rule**: **do NOT add skills you cannot defend in an interview.**
+If you have not used Scrum/Agile in a structured way, do not add it. If you have not worked with
+Kubernetes or Microservices, do not add them.
 
 ---
 
