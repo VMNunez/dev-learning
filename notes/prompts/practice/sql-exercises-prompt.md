@@ -213,13 +213,19 @@ Generate {COUNT} exercises for {TOPIC}, numbered starting from N+1.
 introduce that concept; Standard and Challenge explore its edge cases and combinations.
 Do not cover other parts of the topic.
 
-**If FOCUS is blank:** cover the full topic. Use `notes/sql/coverage.md` as the primary
-source of concept scope — read the section that corresponds to {TOPIC} using the mapping
-below, and ensure every concept item listed there is addressed across the exercises.
-The topic-specific focus rules further below define exercise format, special constraints,
-and structure; coverage.md defines the concept scope. If coverage.md lists a concept not
-explicitly mentioned in the focus rules, treat it as an additional item to include,
-especially in Standard and Challenge exercises.
+**If FOCUS is blank:** cover the full topic. `notes/sql/coverage.md` is the **single source of
+truth for concept scope** — read the section that corresponds to {TOPIC} using the mapping below,
+and ensure every concept item listed there is addressed across the exercises. The topic-specific
+rules further below are **exercise format, structural constraints, and concrete seeds** (e.g. the
+BEGIN/ROLLBACK wrapper for DML, the four-task format for normalization, a specific Challenge to
+build) — they are *not* the scope list and must never be read as one.
+
+**Reconciliation rule — coverage.md always wins on scope.** The seed bullets below were written
+once and coverage.md evolves; do not assume they still match. On any disagreement about *which
+concepts* to cover, coverage.md is authoritative: include a concept it lists even if no seed
+mentions it, and drop a seed concept coverage.md no longer lists. The seeds only ever supply
+*format and concrete examples* for the concepts coverage.md defines — treat a seed that names a
+concept as an illustration, not as permission to add scope coverage.md dropped.
 
 | TOPIC | coverage.md section to read |
 |-------|-----------------------------|
@@ -290,7 +296,8 @@ skill in a technical interview ("explain every line, not just write it"):
 Do NOT add this line to Intro or Standard exercises — keep those frictionless. It is Challenge-only,
 where the reasoning is deepest and most worth explaining out loud.
 
-**Topic-specific focus:**
+**Topic-specific format and seeds** (structure + concrete exercise ideas — *not* the scope list;
+coverage.md defines scope, and the reconciliation rule above governs any conflict):
 
 JOINS
 - INNER JOIN (basic), LEFT JOIN (keep rows with no match), RIGHT JOIN, FULL OUTER JOIN
