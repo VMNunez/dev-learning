@@ -8,12 +8,14 @@ tasks. All pieces of the review pipeline read it:
   learning-objectives rubric.
 - `review-security-prompt.md` (the **security reviewer**) reads the security scope + finding format.
 - `review-correctness-prompt.md` (the **bug-hunter**) reads the correctness scope + finding format.
+- `review-tests-prompt.md` (the **test reviewer**, projects with tests) reads the test-quality scope.
 - `review-audit.md` (the **orchestrator**) reads the gate, the task/priority/effort rules, and the
   backlog format.
 
-The three reviewers ask three different questions of the same code: **is it clean and does it use the
-planned patterns?** (code), **can it be attacked?** (security), **does it do the wrong thing on a real
-input?** (correctness). None of them edits the code — Victor fixes everything himself to learn.
+The four reviewers ask four different questions: **is it clean and does it use the planned patterns?**
+(code), **can it be attacked?** (security), **does it do the wrong thing on a real input?**
+(correctness), and **does the test suite actually catch a regression, per the plan?** (tests). None of
+them edits the code — Victor fixes everything himself to learn.
 
 ## What the review is for
 
@@ -146,15 +148,9 @@ BCrypt hash (not plain text)?
 survives restarts? JWT secret passed as env var (not hardcoded)? `docker-compose up` starts both without
 manual steps?
 
-**Tests** — check against PLANNING.md's Testing plan.
-- Are the service classes in the plan actually tested?
-- Each test covers the plan's edge cases (entity not found, business-rule violation, role violation) —
-  not just the happy path?
-- Assertions check real behaviour, not just that a method was called?
-  - Bad: `verify(repository, times(1)).save(any())` with no assertion on the saved object.
-  - Good: assert the return value, or that the saved object has the expected state.
-- Any trivial "it exists" tests that verify nothing?
-- From project 07 on: every service class needs ≥1 unit test with ≥1 edge case. No tests = not finished.
+**Tests** — reviewed in depth by the **dedicated test reviewer** (see "Test-quality scope — the test
+review" below), not by the code reviewer. The code reviewer may note a glaring gap in passing, but the
+real test audit is a separate cold pass so it gets full attention.
 
 ---
 
@@ -192,6 +188,38 @@ Each finding names the **concrete trigger** and the **wrong result** — a bug w
 trigger is a guess. A correctness bug that a user or interviewer hits on a normal path is **High**
 (the app looks correct but is not); a bug on a rarer edge path is Medium; a latent one needing an
 unlikely combination is Low.
+
+---
+
+## Test-quality scope — the test review
+
+Projects with tests (07 onward) get a **dedicated cold test reviewer** that audits the test suite on its
+own, against the plan's §16 Testing plan and this bar. It reads the test files and the classes they
+cover; it does not re-review production code for style (that is the code reviewer's job). A test suite
+that looks green but asserts nothing is worse than no tests — it hides regressions. Check:
+
+- **Coverage vs the plan (§16)** — every service class in §16 has ≥1 unit test; **every business rule
+  in §8 has a test that proves it is enforced**; the slice tests §16 promised (`@WebMvcTest` /
+  `@DataJpaTest`) exist. A planned test that is missing is **High** (from project 07 on, no tests = not
+  finished).
+- **Edge cases, not just happy path** — each class covers the plan's edge cases (entity not found,
+  business-rule violation, role/ownership check, empty/boundary input). A service tested only on the
+  happy path is Medium — **High if the untested path is a business rule** (the app silently violates it).
+- **Assertion quality** — each test asserts real behaviour: the returned value, or the saved object's
+  state. `verify(repo).save(any())` with no assertion on *what* was saved is a finding. No trivial
+  "it exists" / "not null" tests that would pass on broken code.
+  - Bad: `verify(repository, times(1)).save(any())` and nothing else.
+  - Good: assert the return value, or capture the saved object and assert its state.
+- **Mockito hygiene** — mocks stub only what the method under test needs; the right thing is mocked (the
+  repository, not the class under test); no over-mocking that ends up testing the mock.
+- **Structure & readability** — clear arrange/act/assert; test names say what they check
+  (`create_throwsWhenProjectInactive`, not `test1`); no logic inside tests.
+- **Angular** — services use `HttpClientTestingModule` and assert the request (URL, method) + the mapped
+  response; component tests (from 08) assert rendered state and emitted events, not just that the
+  component was created.
+
+Priorities: a missing planned test or an untested §8 business rule is **High**; a weak assertion or a
+missing edge case is Medium; naming / structure polish is Low.
 
 ---
 

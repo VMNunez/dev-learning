@@ -6,10 +6,11 @@ and learning objectives — and writes a prioritized list of improvement tasks t
 `{PROJECT_PATH}/PROJECT-BACKLOG.md`. That backlog is what `portfolio-audit` reads for its go/no-go
 verdict, so a security hole found here becomes a **High** task that blocks portfolio-ready.
 
-The heavy parts run as **three cold reviewer subagents** — a code-quality + learning-objectives pass, an
-adversarial security pass, and an adversarial correctness (bug-hunter) pass — whose findings the
-orchestrator merges into the backlog. A cold reviewer with no stake in the code catches what a single
-long prompt would skip. **None of them edits the code — Victor fixes everything himself to learn.**
+The heavy parts run as **four cold reviewer subagents** — a code-quality + learning-objectives pass, an
+adversarial security pass, an adversarial correctness (bug-hunter) pass, and a dedicated test-quality
+pass — whose findings the orchestrator merges into the backlog. A cold reviewer with no stake in the
+code catches what a single long prompt would skip. **None of them edits the code — Victor fixes
+everything himself to learn.**
 
 > **▶ Run first:** nothing — it reads `PLANNING.md` and the source, not the README. (`readme-audit`
 > is a prerequisite of `portfolio-audit`, which reads the READMEs — not of this review.)
@@ -17,7 +18,8 @@ long prompt would skip. **None of them edits the code — Victor fixes everythin
 **Internal pieces this orchestrates** (you never launch these directly):
 `_review-standard.md` (the bar) · `review-code-prompt.md` (code + learning objectives) ·
 `review-security-prompt.md` (cold attacker pass, full-stack only) ·
-`review-correctness-prompt.md` (cold bug-hunter pass).
+`review-correctness-prompt.md` (cold bug-hunter pass) ·
+`review-tests-prompt.md` (dedicated test-quality pass, projects with tests).
 
 > **Not auto-committed — by design.** Unlike `plan-audit` and `portfolio-audit` (which write study
 > materials), this writes `PROJECT-BACKLOG.md` inside the project folder, which follows the project's
@@ -109,18 +111,32 @@ Launch a `general-purpose` subagent, `run_in_background: false`:
 > against the intended behaviour in PLANNING.md. **Do not edit any file, do not commit.** Return only
 > the findings table (trigger + wrong behaviour per bug).
 
-Wait and collect. (You may run Steps 1, 2, and 2b in parallel — they only read, so there is no
+Wait and collect.
+
+### Step 2c — Test reviewer (subagent, projects with tests)
+Full-stack projects (07 onward) have tests — launch a `general-purpose` subagent, `run_in_background:
+false`:
+
+> Read `notes/prompts/projects/review/review-tests-prompt.md` and execute it in full for
+> `PROJECT_PATH = {PROJECT_PATH}`. Audit the test suite against PLANNING.md §16 and the test-quality
+> bar — coverage vs the plan, every §8 business rule tested, edge cases, assertion quality, Mockito
+> hygiene, structure. **Do not edit any file, do not commit.** Return only the findings table.
+
+Wait and collect. (You may run Steps 1, 2, 2b, and 2c in parallel — they only read, so there is no
 git-index contention and no shared file to race.)
 
 ### Step 3 — Merge into improvement tasks (orchestrator)
-You now hold three findings tables (code, security, correctness) and the learning-objectives verdict.
-Merge them into one prioritized task list per the standard's task/priority/effort rules:
+You now hold four findings tables (code, security, correctness, tests) and the learning-objectives
+verdict. Merge them into one prioritized task list per the standard's task/priority/effort rules:
 - Every confirmed **security** finding → a **High** task.
 - Every **correctness** bug that hits a normal path → a **High** task; edge-path bugs → Medium; latent
   ones → Low (per the correctness scope's severity rule). Each task must carry the trigger so Victor
   can reproduce it.
-- Deduplicate across the three passes — a business-rule gap can surface in both the code and the
-  correctness pass; keep one task, the most specific.
+- Every **missing planned test** or **untested §8 business rule** from the test pass → a **High** task;
+  a weak assertion or missing edge case → Medium; test naming/structure → Low.
+- Deduplicate across the four passes — a business-rule gap can surface in the code, the correctness, and
+  the test pass at once; keep one task, the most specific (usually: enforce the rule in the service +
+  add the test that proves it).
 - Turn each code-quality finding and each ❌/⚠️ learning-objective gap into a specific task with a
   priority and an effort estimate.
 - "Beyond junior scope" hardening ideas go in the chat summary, not the backlog.
@@ -149,8 +165,9 @@ git commit -m "docs: review {PROJECT_PATH} — <one line summary of main finding
 - **Never auto-commit.** This flow writes a project-folder file under the feature-branch workflow;
   always hand Victor the command. (The `plan-audit` / `portfolio-audit` auto-commit exception does not
   extend here.)
-- **Three cold subagents, then merge in the orchestrator.** Never fold the code, security, or
-  correctness review into your own context — the focused cold pass is the whole point.
+- **Four cold subagents, then merge in the orchestrator.** Never fold the code, security, correctness,
+  or test review into your own context — the focused cold pass is the whole point. (The test pass runs
+  only for projects that have tests — 07 onward.)
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
 - **Security findings are always High**, and security + correctness findings are deduplicated against
   the code pass.

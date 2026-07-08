@@ -41,10 +41,12 @@ plus the frontend files above.
 
 ## Step 2 — Code-quality review
 
-Run the **full code-quality checklist** from the standard against the real code: patterns, TypeScript,
-error handling, cleanliness, Angular-specific, and (full-stack) backend architecture / security quick
-checklist / application.properties / HTTP verbs / business rules / seed data / docker / tests. Use the
-bad-vs-good examples in the standard as the bar for what counts as a finding. Judge against what the
+Run the **full code-quality checklist** from the standard against the real code: patterns, pattern
+consistency, TypeScript, error handling, cleanliness, Angular-specific, and (full-stack) backend
+architecture / security quick checklist / application.properties / HTTP verbs / business rules / seed
+data / docker. **The tests are audited by the dedicated test reviewer, not by you** — you may note a
+glaring gap in passing, but do not do the full test audit. Use the bad-vs-good examples in the standard
+as the bar for what counts as a finding. Judge against what the
 code actually does — do not invent issues to fill space; if an area is clean, say so.
 
 ## Step 3 — Learning-objectives check
