@@ -38,7 +38,7 @@ CONTACTO = [recruiter name if you have one — used to open the message | blank]
 First read `notes/prompts/strategy/apply/_application-standard.md` — the shared standard both application
 prompts follow. It defines the **sources to read** (`CLAUDE.md`, `notes/prompts/_shared-context.md`,
 `PROGRESS.md`, `ROADMAP.md`, the optional `notes/cv/cv-bullets.md`, and your existing CV in
-`personal/CV`), the **universal bullet format**, the **keyword pool**, the **Spanish / no-buzzword
+`personal/job-search`), the **universal bullet format**, the **keyword pool**, the **Spanish / no-buzzword
 voice**, the **defensibility rule**, and the **project-selection heuristic**. This prompt does not repeat
 those rules — it adds only the cover-letter flow on top.
 
@@ -102,4 +102,4 @@ the recommended one.
 - Remind the user to log the application with `tracker-prompt` (`log` mode) if this is a new outreach, so
   the message/letter and its outcome are on record.
 - The letter/message is **output only** — it is not stored in the repo. If the user wants to keep a
-  formal letter, suggest saving it next to the tailored CV in `personal/CV/applications/`.
+  formal letter, suggest saving it next to the tailored CV in `personal/job-search/applications/`.

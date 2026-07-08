@@ -48,7 +48,7 @@ fecha,empresa,sector,puesto,canal,estado,contacto,nota_feedback,cv_usado,fuente_
 - **estado** — `aplicado` → `entrevista` → `oferta` → `contratado` / `rechazado` / `sin respuesta` / `retirada`
 - **contacto** — recruiter or contact name if you have one, else blank
 - **nota_feedback** — short dated note; the full version lives in `outcome.md`
-- **cv_usado** — filename of the tailored CV sent (from `personal/CV/applications/`), else blank
+- **cv_usado** — filename of the tailored CV sent (from `personal/job-search/applications/`), else blank
 - **fuente_url** — the offer URL
 
 ---
