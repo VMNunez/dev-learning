@@ -24,7 +24,7 @@ large Spanish IT consultancies actually run internally.
   earlier project I **set up the whole foundation from scratch** (architecture, DB with a
   PostgreSQL→MySQL/Flyway migration, JWT auth, Docker dev environment) and onboarded teammates. The
   stack differs from my target, but it is real, professional teamwork — full detail in the CV source
-  file `personal/CV/internship-daw.md`.
+  file `personal/job-search/internship-daw.md`.
 - **Goal:** my first developer job at a Spanish IT consultancy by **August–September 2026**.
 - **Target companies:** NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI,
   and similar large consultancies.

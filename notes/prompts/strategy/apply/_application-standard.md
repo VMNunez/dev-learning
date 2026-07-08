@@ -34,7 +34,7 @@ Before generating anything, read these files:
    This file may not exist yet if portfolio-audit has not been run. If it does not exist, continue
    without it.
 6. The candidate's **existing CV and personal material** at
-   `C:\Users\Victor\Documents\main\personal\CV\` (outside the repo — never committed). `master/` holds
+   `C:\Users\Victor\Documents\main\personal\job-search\` (outside the repo — never committed). `master/` holds
    the current base CV; `archive/` holds older drafts (e.g. `currículum.pdf`); `assets/` holds the
    headshot photo. Read whatever exists there as the **ground truth for real personal facts** — exact
    education + year, employment dates, phone, and the internship's real company/title/dates. Never
