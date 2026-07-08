@@ -107,6 +107,15 @@ Compute the verdict yourself per the standard's **verdict logic**: Check 1 (feat
 Produce ✅ Ready / ⚠️ Almost / ❌ Not ready, listing incomplete steps or open High/Medium tasks as
 checkboxes. If the backlog file is missing, stop and report "run `review-audit` first".
 
+**Two quick sanity scans before you finalize the verdict** (report each as a one-line note, do not
+auto-fix):
+- **Resolved-but-unchecked tasks.** The verdict counts every `[ ]` as open. For each open High/Medium
+  task, glance at the real code — if it looks already done, flag it: "task X marked open but appears
+  resolved — check it off in the backlog and re-run if so". Never silently treat it as done.
+- **Unfilled visual placeholders.** Scan the global README for `*(screenshot — … — to be added)*` /
+  `*(GIF — … )*` placeholders. A README full of unfilled visuals is not recruiter-ready — if any
+  remain, downgrade a ✅ to ⚠️ and list them.
+
 ### Phase 3 — CV bullet + GitHub description (orchestrator)
 
 **Skip Phase 3 entirely if the verdict is ❌ Not ready.** Otherwise, per the standard: draft two Spanish

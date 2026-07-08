@@ -36,7 +36,9 @@ Before starting, read:
 - **Exhaustiveness (highest value).** Walk the real code and PLANNING.md and list every decision,
   pattern, business rule, and testing choice. For each, is there a question? Every gap is a missing
   question — **add it**. This is where most misses are: a whole section (e.g. Testing, Business Rules)
-  thin or absent.
+  thin or absent. Make the gap **measurable**: per section, count the real decisions you found vs the
+  questions covering them, and treat any section where questions < decisions as incomplete until you
+  have closed it. Report the per-section ratio in the finish so a thin section is a number, not a guess.
 - **Question type.** Each targets a decision / pattern / gotcha, not "what is X". Rewrite any generic
   "what is JWT"-style question into one about *this* project's choice.
 - **Answerability.** Each is answerable only by someone who wrote this code. Cut or sharpen anything a
@@ -59,4 +61,5 @@ Do **not** commit and do not write the CV bullet or verdict — those belong to 
 commits the question file together with the CV bullet in one atomic commit. Leave your fixes in the
 working tree. Report your **verdict**:
 - `PASS` (no changes) or `FIXED` (a short bullet list of what you added/corrected and why).
-- The final question count and section breakdown, so the orchestrator can confirm no section is thin.
+- The final question count and section breakdown, **with the questions-vs-decisions ratio per section**,
+  so the orchestrator can confirm no section is thin.
