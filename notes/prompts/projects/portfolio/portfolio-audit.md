@@ -8,6 +8,8 @@ application **today**? It produces three things (see `_portfolio-standard.md`):
    subagents, saved regardless of the verdict.
 2. A **verdict** — ✅ Ready / ⚠️ Almost / ❌ Not ready.
 3. If not ❌ — a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub description**.
+4. If ✅ Ready — a **direct update of Victor's GitHub profile README** (`dev/portfolio/VMNunez`, a
+   separate repo) to feature the project.
 
 It is the last link in the per-project chain: `plan-audit` → build → `readme-audit` → `review-audit`
 → **portfolio-audit**.
@@ -122,6 +124,15 @@ auto-fix):
 CV bullet options (read `_application-standard.md` first) and save them to `notes/cv/cv-bullets.md`; draft
 one English GitHub description (output only — Victor sets it in the repo settings manually).
 
+**Only when the verdict is ✅ Ready** (a truly portfolio-ready project, not ⚠️ Almost), **update Victor's
+GitHub profile README directly**. It lives at `dev/portfolio/VMNunez` — his GitHub profile repo, **outside
+this repo** (`dev/portfolio/VMNunez/README.md`, or the profile file that repo uses). You are the one
+responsible for keeping it current: read the existing README first to match its exact style and sections,
+then add or refresh this project's entry (name, one-line pitch, stack, links) in that same style — never
+paste a raw block for Victor to place by hand. Because it is a **separate git repo**, do not commit it
+inside the learning flow: after editing, print the commit + push commands for that repo (run from
+`dev/portfolio/VMNunez`) for Victor to run there. Only touch `dev/portfolio/` for this ✅-Ready step.
+
 ## Finishing
 
 Print, in this order:
@@ -129,7 +140,9 @@ Print, in this order:
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
 3. CV bullet (two options) — **omit if ❌**.
 4. GitHub description (one option) — **omit if ❌**.
-5. If ✅/⚠️: "Edit `notes/cv/cv-bullets.md` to keep only your chosen bullet before committing."
+5. If ✅ Ready: "Updated the GitHub profile README at `dev/portfolio/VMNunez`", then the commit + push
+   commands to run **from that repo** (`dev/portfolio/VMNunez`). Omit if ⚠️/❌.
+6. If ✅/⚠️: "Edit `notes/cv/cv-bullets.md` to keep only your chosen bullet before committing."
 
 **If `{DRY_RUN}` = false:** commit atomically. If ✅/⚠️ (cv-bullets was written):
 `git add notes/interview-prep/projects/«name».md notes/cv/cv-bullets.md`, then
