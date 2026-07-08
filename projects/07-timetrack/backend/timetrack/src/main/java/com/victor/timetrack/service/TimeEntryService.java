@@ -4,6 +4,8 @@ import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.exception.BusinessRuleViolationException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
+import com.victor.timetrack.exception.UnauthorizedException;
+import com.victor.timetrack.model.EntryStatus;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.model.TimeEntry;
 import com.victor.timetrack.model.User;
@@ -38,20 +40,21 @@ public class TimeEntryService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
         Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
 
         if (request.getDate().isAfter(LocalDate.now())) {
             throw new BusinessRuleViolationException("Date cannot be in the future");
         }
 
-        if(!project.getActive()){
+        if (!project.getActive()) {
             throw new BusinessRuleViolationException("Project is not active");
         }
 
         BigDecimal min = new BigDecimal("0.5");
         BigDecimal max = new BigDecimal("24");
 
-        if(request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max)>0){
+        if (request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max) > 0) {
             throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
         }
 
@@ -67,7 +70,30 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
-    private TimeEntryResponse toResponse (TimeEntry timeEntry){
+    public TimeEntryResponse submit(Long id) {
+        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        TimeEntry timeEntry = timeEntryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+
+        if (!timeEntry.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("You can only submit your own time entries");
+        }
+
+        if (timeEntry.getStatus() != EntryStatus.DRAFT) {
+            throw new BusinessRuleViolationException("Employee can only submit DRAFT entries");
+        }
+
+        timeEntry.setStatus(EntryStatus.SUBMITTED);
+
+        TimeEntry saved = timeEntryRepository.save(timeEntry);
+
+        return toResponse(saved);
+
+    }
+
+    private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
         response.setId(timeEntry.getId());
         response.setUserName(timeEntry.getUser().getName());

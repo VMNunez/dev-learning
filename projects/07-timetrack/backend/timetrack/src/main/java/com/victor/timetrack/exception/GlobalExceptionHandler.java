@@ -50,6 +50,13 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error",e.getMessage()));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String,String>> handleUnauthorized(UnauthorizedException e){
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", e.getMessage()));
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntime(RuntimeException e){
         return ResponseEntity
