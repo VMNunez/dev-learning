@@ -35,11 +35,13 @@ public class ProjectController {
         return ResponseEntity.status(201).body(projectService.create(request));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponse> update(@PathVariable Long id, @RequestBody UpdateProjectRequest request){
         return ResponseEntity.ok(projectService.update(id, request));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         projectService.delete(id);
