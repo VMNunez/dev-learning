@@ -134,19 +134,35 @@ Every development step. Each step has: a short title · what is built (2–4 bul
 concepts from §3 it introduces · which REVIEW concepts from §4 it reinforces · a concrete **done
 condition** in the format below. Steps follow the professional implementation order below and
 introduce **one major concept at a time**. Step 1 is always "Project setup". The plan must include
-three dedicated steps explicitly: **backend tests** (JUnit 5 + Mockito), **Angular tests** (level per
-CLAUDE.md "Testing rules"), and a **SQL complement** step.
+three dedicated steps explicitly: **backend tests** (JUnit 5 + Mockito unit tests, plus the one slice
+test type this project introduces — `@WebMvcTest` or `@DataJpaTest` — if any), **Angular tests** (level
+per CLAUDE.md "Testing rules"), and a **SQL complement** step.
 - **Pass:** every step has a done condition; every done condition is valid (format below); each step
   introduces at most one major new concept; the three dedicated steps are present.
 
 ### 16. Testing plan
-What is tested and at what level.
-**Backend (JUnit 5 + Mockito):** which service methods, which edge cases (not just the happy path —
-entity not found, business-rule violation, role check).
-**Angular services (Jasmine + TestBed):** which services, what each test verifies.
-**Angular components (Jasmine + TestBed):** per CLAUDE.md whether component tests are new here; which
-components, what each verifies.
-- **Pass:** specific method/service names (not "test the service"); edge cases named per test.
+What is tested, at which **level**, and why — a real test plan, not "we will write tests". Organise it
+as a small test pyramid appropriate to a junior project: mostly unit, a few slice tests, **no e2e**
+(Cypress/Selenium) unless a much later project justifies it. Introduce one new test *type* at a time,
+like any other concept — do not dump the whole pyramid into project 08.
+
+**Backend — unit (JUnit 5 + Mockito):** per service class, which methods and which edge cases (not just
+the happy path — entity not found, business-rule violation, role/ownership check). **Every business
+rule in §8 has a test that proves it is enforced.**
+**Backend — slice (introduced one type at a time, from project 08):** at least one `@WebMvcTest`
+(controller + `MockMvc`: status codes, JSON shape, validation 400, 401/403) and, where a repository has
+custom queries, one `@DataJpaTest` (the query returns what it should against a real embedded DB). Name
+the controller/repository and what each asserts. If the project introduces neither yet, say so
+explicitly — do not pad.
+**Angular services (Jasmine + TestBed + `HttpClientTestingModule`):** which services, what each test
+verifies (the request URL/method, the mapped response, error handling).
+**Angular components (Jasmine + TestBed, from project 08):** which components, what each verifies
+(renders the right state, emits on action, shows empty/error state).
+**Assertion quality (every level):** each test asserts real behaviour — the returned value or the saved
+object's state — never only `verify(...)` that a method was called. No trivial "it exists" tests.
+- **Pass:** specific method/service/component names (not "test the service"); edge cases named per
+  test; every §8 business rule mapped to a test; the slice-test line present (even if "none yet — added
+  in project 0X"); the assertion-quality rule stated.
 - For each new testing concept, add one interview question to `notes/interview-prep/en/` and `es/`.
 
 ### 17. Key rule
@@ -229,7 +245,9 @@ PLANNING.md.
    interceptor, route guards.
 10. **Feature pages** — one at a time in dependency order: login first, then the simplest resource,
     then more complex pages.
-11. **Backend tests** — JUnit 5 + Mockito; one step per service class; happy path + edge cases.
+11. **Backend tests** — JUnit 5 + Mockito unit tests, one step per service class (happy path + edge
+    cases), plus the one slice test type this project introduces (`@WebMvcTest` and/or `@DataJpaTest`),
+    if any.
 12. **Angular tests** — services first (`HttpClientTestingModule`); components if project 08+.
 13. **SQL complement** — write by hand in `sql/` the SQL Hibernate generates for the main queries.
 14. **Docker** — `docker-compose.yml` with the database service; app image if time allows. Late by

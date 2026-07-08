@@ -160,6 +160,13 @@ explain why.
 **branch rules in the standard** (never one branch per step). For each branch: name, covers, opens,
 closes. Confirm the project branch stays open for the whole project.
 
+**4k — Test plan.** Design the test plan per the standard's §16 before writing it: for each service, the
+methods and the edge cases to test; which business rules from §8 need a test that proves enforcement;
+the one slice test type this project introduces (`@WebMvcTest` and/or `@DataJpaTest`) and what it
+asserts; the Angular service and (from 08) component tests. Keep it level-appropriate — mostly unit, a
+few slice tests, no e2e. This is a design decision, not boilerplate: a project whose test plan only
+lists "test the services" has no test plan.
+
 ---
 
 ## Step 5 — Write PLANNING.md
