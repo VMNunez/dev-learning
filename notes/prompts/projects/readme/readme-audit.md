@@ -92,6 +92,16 @@ Wait for A, then **subagent B — reviewer.** Launch a second, independent `gene
 
 Collect, per target, whether the README changed.
 
+## Cross-README coherence (full-stack only)
+
+Because the three targets are written by separate subagents, the same decision can be described
+inconsistently between them (a tradeoff or pattern told one way in `global` and another in `backend`).
+After the pairs finish, do a quick coherence scan across the three READMEs: does each shared decision
+(the main tradeoffs, the key patterns, the tech stack) read consistently, with no contradiction? If you
+find a conflict, re-dispatch the reviewer subagent for the README that is wrong to fix the wording —
+keep it out of your own context — and note it in the summary. Angular projects have one README, so skip
+this.
+
 ## Finishing
 
 Print a **summary of changes** across all targets (one line per section changed, grouped by README), then

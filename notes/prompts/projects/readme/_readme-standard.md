@@ -55,6 +55,12 @@ markers like `✓` or `(Step 3)`.
 A section that fails both is noise — cut or rewrite it. Passing only the recruiter lens is not enough:
 the goal is a consultancy that asks technical questions.
 
+**Length — recruiter lens.** The global README is scanned in seconds; keep it tight enough that a
+recruiter reaches "What I learned" without fatigue. When a section runs long, the depth belongs in the
+backend/frontend README or in `notes/` — link to it, do not inline it. The backend/frontend READMEs may
+run deeper (their audience is a technical interviewer), but still no wall of prose where a table or a
+short snippet says it better.
+
 **Fix, don't just report.** Add every missing section, fix every present-but-wrong one directly in the
 file. Do not rewrite sections that are already correct — only touch what needs to change. Record what
 changed for the summary at the end.
