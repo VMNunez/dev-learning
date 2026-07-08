@@ -16,9 +16,15 @@ large Spanish IT consultancies actually run internally.
 
 - **Status:** studying full-time since June 2, 2026. This is my main job right now, not a side
   project — a fixed daily routine of building, practising, and interview prep.
-- **Recent experience:** an internship completed in June 2026, building a production SaaS with
-  Next.js + TypeScript + MySQL. The stack differs from my target, but it is real, paid,
-  professional work — and it goes on the CV.
+- **Recent experience:** a ~3-month internship at **Sagatech** (Mar–Jun 2026) as a web developer,
+  on a 3-developer team building **Getxo**, a management SaaS in real internal use (launch planned).
+  Two standout points beyond just shipping features (Next.js + TypeScript + Supabase, and an earlier
+  project on Next.js + MySQL): **(1)** I introduced the **Git branching flow (GitFlow)** to a team
+  that was pushing straight to `main`, and wrote the developer onboarding guide; **(2)** on the
+  earlier project I **set up the whole foundation from scratch** (architecture, DB with a
+  PostgreSQL→MySQL/Flyway migration, JWT auth, Docker dev environment) and onboarded teammates. The
+  stack differs from my target, but it is real, professional teamwork — full detail in the CV source
+  file `personal/CV/internship-daw.md`.
 - **Goal:** my first developer job at a Spanish IT consultancy by **August–September 2026**.
 - **Target companies:** NTT Data, Capgemini, Indra, Sopra Steria, Accenture, Everis, Atos, CGI,
   and similar large consultancies.
