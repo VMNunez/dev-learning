@@ -7,8 +7,13 @@ tasks. All pieces of the review pipeline read it:
 - `review-code-prompt.md` (the **code reviewer**) reads the code-quality checklist and the
   learning-objectives rubric.
 - `review-security-prompt.md` (the **security reviewer**) reads the security scope + finding format.
+- `review-correctness-prompt.md` (the **bug-hunter**) reads the correctness scope + finding format.
 - `review-audit.md` (the **orchestrator**) reads the gate, the task/priority/effort rules, and the
   backlog format.
+
+The three reviewers ask three different questions of the same code: **is it clean and does it use the
+planned patterns?** (code), **can it be attacked?** (security), **does it do the wrong thing on a real
+input?** (correctness). None of them edits the code — Victor fixes everything himself to learn.
 
 ## What the review is for
 
@@ -57,13 +62,38 @@ read the "Key patterns introduced" table and listed objectives instead.
 
 ## Code-quality checklist
 
-**Patterns** — check against PLANNING.md's Architecture + architecture-decisions sections. Is the
-project's learning-objective pattern actually used?
-- Project 03: smart/dumb components · 04: `effect()` for signal-driven side effects · 05: coordinator
-  pattern (coordinator owns state, children receive+emit) · 06: auth guard, role guard, interceptor,
-  CanDeactivate guard · 07: layered architecture (controller → service → repository), DTOs, JWT filter,
-  `SecurityContextHolder` for the current user, PATCH for state transitions.
+**Patterns** — the project's learning-objective patterns come from **its own PLANNING.md** (§3 new
+concepts, §6 architecture, and the architecture-decisions section) — derive them per project, never
+rely on a fixed list. Is each pattern actually used, and used *meaningfully* (not just name-dropped)?
+Past projects illustrate the shape to expect, but for 08+ read the plan: 03 smart/dumb components · 04
+`effect()` for signal-driven side effects · 05 coordinator pattern (coordinator owns state, children
+receive+emit) · 06 auth guard, role guard, interceptor, CanDeactivate guard · 07 layered architecture
+(controller → service → repository), DTOs, JWT filter, `SecurityContextHolder` for the current user,
+PATCH for state transitions.
 - Signals used correctly (no needless subscriptions where a signal works)? Services single-responsibility?
+
+**Pattern consistency across the project** — the same problem must be solved the same way everywhere.
+An inconsistent codebase reads as junior even when each piece is individually fine. Check:
+- Every page that manages state uses the **same** approach (coordinator everywhere, not coordinator on
+  one page and ad-hoc `subscribe` on another).
+- Every backend service returns **DTOs** at the boundary — not one service returning a DTO and another
+  leaking an entity.
+- Error handling is **uniform** — the same loading/error signal pattern in every component; the same
+  `@RestControllerAdvice` + custom-exception path for every error (no `try/catch` returning a raw string
+  in one controller and a proper exception in another).
+- **Naming is consistent** — `*Request`/`*Response` for DTOs, `*Service`/`*Repository` suffixes, the
+  same casing and verb style across endpoints.
+- Any place that departs from the pattern used everywhere else is a **Medium** finding (High if it
+  breaks the DTO boundary or leaks an entity) — name both the outlier and the convention it should follow.
+
+**Design-guide adherence (Angular / frontend)** — the built UI must follow the project's own design doc
+in PLANNING.md §14 (UI design). Check the components against it:
+- Colours come from the §14 **palette** (role/status → hex), not arbitrary hardcoded hex values
+  scattered across templates. Repeated raw hex that should be a theme token is a finding.
+- The pages match their §14 **wireframes** in layout and the **empty/loading/error states** the
+  wireframe specified — a page missing its planned empty state is a Medium finding.
+- The Material components used are the ones §14 planned (not a random mix). Flag any page that ignores
+  the design doc — the point of writing §14 before coding is that the code follows it.
 
 **TypeScript** — any `any` where a real type belongs? Interfaces for all data shapes? Optional fields
 marked `?`?
@@ -143,6 +173,25 @@ Every confirmed vulnerability becomes a **High** task in the backlog (a security
 faster than any missing feature). The "Related coverage item" column ties each finding to
 `notes/security/coverage.md`, so fixing the task doubles as interview prep on that item. Hardening beyond
 junior scope goes in the chat summary, not the backlog.
+
+---
+
+## Correctness scope — the bug hunt
+
+The code-quality checklist catches *structural* problems (wrong layer, `any`, missing loading state) and
+whether each business rule is enforced *at all*. It does **not** catch a rule enforced with the wrong
+comparison, an edge case that returns garbage, or a state transition that should be blocked but is not.
+Full-stack **and** Angular projects also get an **adversarial correctness pass**: a cold reviewer with a
+QA "break-it" mindset traces realistic inputs and states through the real code and hunts for logic bugs —
+null/`Optional` mishandling, edge cases (empty/first/last/zero/negative/boundary date), inverted or
+off-by-one conditions, state-machine violations, lifecycle/ordering bugs, numeric/date errors, and
+swallowed or unshown errors. Judged against the intended behaviour in PLANNING.md (§8 business rules and
+state machine), not a generic list.
+
+Each finding names the **concrete trigger** and the **wrong result** — a bug without a reproducible
+trigger is a guess. A correctness bug that a user or interviewer hits on a normal path is **High**
+(the app looks correct but is not); a bug on a rarer edge path is Medium; a latent one needing an
+unlikely combination is Low.
 
 ---
 

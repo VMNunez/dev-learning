@@ -6,16 +6,18 @@ and learning objectives — and writes a prioritized list of improvement tasks t
 `{PROJECT_PATH}/PROJECT-BACKLOG.md`. That backlog is what `portfolio-audit` reads for its go/no-go
 verdict, so a security hole found here becomes a **High** task that blocks portfolio-ready.
 
-The heavy parts run as **two cold reviewer subagents** — a code-quality + learning-objectives pass and
-an adversarial security pass — whose findings the orchestrator merges into the backlog. A cold reviewer
-with no stake in the code catches what a single long prompt would skip.
+The heavy parts run as **three cold reviewer subagents** — a code-quality + learning-objectives pass, an
+adversarial security pass, and an adversarial correctness (bug-hunter) pass — whose findings the
+orchestrator merges into the backlog. A cold reviewer with no stake in the code catches what a single
+long prompt would skip. **None of them edits the code — Victor fixes everything himself to learn.**
 
 > **▶ Run first:** nothing — it reads `PLANNING.md` and the source, not the README. (`readme-audit`
 > is a prerequisite of `portfolio-audit`, which reads the READMEs — not of this review.)
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_review-standard.md` (the bar) · `review-code-prompt.md` (code + learning objectives) ·
-`review-security-prompt.md` (cold attacker pass, full-stack only).
+`review-security-prompt.md` (cold attacker pass, full-stack only) ·
+`review-correctness-prompt.md` (cold bug-hunter pass).
 
 > **Not auto-committed — by design.** Unlike `plan-audit` and `portfolio-audit` (which write study
 > materials), this writes `PROJECT-BACKLOG.md` inside the project folder, which follows the project's
@@ -75,10 +77,10 @@ summary table (`Project | Quality | High | Medium | Low`). Otherwise, follow the
 ## Single-project procedure
 
 ### Step 0 — Gate (orchestrator)
-Derive the project type from the path. **Angular 01–06:** informational only — run just the code
-subagent (Step 1), report its findings in chat, write nothing, no commit; skip Steps 2–4. **Full-stack:**
-apply the 30-day gate from the standard against `{PROJECT_PATH}/PROJECT-BACKLOG.md`; if it was reviewed
-< 30 days ago, stop and offer FORCE.
+Derive the project type from the path. **Angular 01–06:** informational only — run the code subagent
+(Step 1) **and the correctness subagent (Step 2b)**, report their findings in chat, write nothing, no
+commit; skip the security pass and Steps 3–4. **Full-stack:** apply the 30-day gate from the standard
+against `{PROJECT_PATH}/PROJECT-BACKLOG.md`; if it was reviewed < 30 days ago, stop and offer FORCE.
 
 ### Step 1 — Code reviewer (subagent)
 Launch one `general-purpose` subagent, `run_in_background: false`:
@@ -99,14 +101,26 @@ Launch a second `general-purpose` subagent, `run_in_background: false`:
 > and the real backend. **Do not edit any file, do not commit.** Return only the findings table (+ any
 > "beyond junior scope" line).
 
-Wait and collect. (You may run Steps 1 and 2 in parallel — they only read, so there is no git-index
-contention and no shared file to race.)
+### Step 2b — Correctness reviewer (subagent)
+Launch a `general-purpose` subagent, `run_in_background: false`:
+
+> Read `notes/prompts/projects/review/review-correctness-prompt.md` and execute it in full for
+> `PROJECT_PATH = {PROJECT_PATH}`. Do the cold bug-hunter pass — trace realistic inputs and states
+> against the intended behaviour in PLANNING.md. **Do not edit any file, do not commit.** Return only
+> the findings table (trigger + wrong behaviour per bug).
+
+Wait and collect. (You may run Steps 1, 2, and 2b in parallel — they only read, so there is no
+git-index contention and no shared file to race.)
 
 ### Step 3 — Merge into improvement tasks (orchestrator)
-You now hold both findings tables and the learning-objectives verdict. Merge them into one prioritized
-task list per the standard's task/priority/effort rules:
+You now hold three findings tables (code, security, correctness) and the learning-objectives verdict.
+Merge them into one prioritized task list per the standard's task/priority/effort rules:
 - Every confirmed **security** finding → a **High** task.
-- Deduplicate the security findings against the code reviewer's security quick-checklist findings.
+- Every **correctness** bug that hits a normal path → a **High** task; edge-path bugs → Medium; latent
+  ones → Low (per the correctness scope's severity rule). Each task must carry the trigger so Victor
+  can reproduce it.
+- Deduplicate across the three passes — a business-rule gap can surface in both the code and the
+  correctness pass; keep one task, the most specific.
 - Turn each code-quality finding and each ❌/⚠️ learning-objective gap into a specific task with a
   priority and an effort estimate.
 - "Beyond junior scope" hardening ideas go in the chat summary, not the backlog.
@@ -135,8 +149,10 @@ git commit -m "docs: review {PROJECT_PATH} — <one line summary of main finding
 - **Never auto-commit.** This flow writes a project-folder file under the feature-branch workflow;
   always hand Victor the command. (The `plan-audit` / `portfolio-audit` auto-commit exception does not
   extend here.)
-- **Two cold subagents, then merge in the orchestrator.** Never fold the code or security review into
-  your own context — the focused cold pass is the whole point.
-- **Security findings are always High** and always deduplicated against the code pass.
+- **Three cold subagents, then merge in the orchestrator.** Never fold the code, security, or
+  correctness review into your own context — the focused cold pass is the whole point.
+- **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
+- **Security findings are always High**, and security + correctness findings are deduplicated against
+  the code pass.
 - Angular 01–06 are informational only — never create a backlog or a commit for them.
 ````
