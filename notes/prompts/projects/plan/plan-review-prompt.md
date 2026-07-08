@@ -75,8 +75,16 @@ the standard. The highest-value ones:
 **3. Done-condition format.** For every done condition in §15 (and §0), mark ✅ valid or ⚠️ vague
 against the four formats in the standard. For each ⚠️, rewrite it to a valid format.
 
-**4. Internal consistency.** Run all six invariants from the standard (entities↔repos, API↔controllers,
-pages↔wireframes, new-concepts↔steps, testing-plan↔steps, branches↔steps). Fix each mismatch.
+**4. Internal consistency.** Run all eight invariants from the standard (entities↔repos,
+API↔controllers, pages↔wireframes, new-concepts↔steps, testing-plan↔steps, branches↔steps,
+routes/roles↔API-security, §0-branch↔§22). Fix each mismatch.
+
+**5. Design correctness.** Run the standard's "Design-correctness checks" — fetch types justified, state
+machine has no dead/orphan states, endpoint roles consistent with ownership, one major concept per step,
+every §6/§20 reason passes the interview test. This is the check that separates a *complete* plan from a
+*defensible* one: a section can be present and well-formatted yet describe a decision that would collapse
+under an interviewer's "why?". Where a decision is unsound or its reason is hollow, fix the decision (or
+its stated reason) directly — do not just note it.
 
 ---
 
@@ -106,5 +114,6 @@ Print the atomic commit sequence he should run, one command per code block.
 
 Then report your **verdict** for this plan:
 - `PASS` (no changes needed) or `FIXED` (a short bullet list of what you corrected and why).
-- The audit summary: X critical (missing sections) · Y quality · Z consistency issues found and fixed.
+- The audit summary: X critical (missing sections) · Y quality · Z consistency · W design-correctness
+  issues found and fixed.
 - The files touched, and — if committed — the commit hash.

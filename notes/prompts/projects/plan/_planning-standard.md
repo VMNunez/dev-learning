@@ -5,6 +5,8 @@
 
 - `plan-write-prompt.md` (the **author**) reads it to know **what to produce** when writing a
   new plan.
+- `plan-architecture-prompt.md` (the **architecture advisor**, new mode) reads §6, §3, and §20 to
+  strengthen the architecture decisions against Victor's level.
 - `plan-review-prompt.md` (the **reviewer**) reads it to know **what to audit against** when
   checking an existing plan.
 
@@ -41,10 +43,14 @@ matched by **heading text, not by number** — numbering is not guaranteed stabl
 the heading names are.
 
 ### 0. Session quick reference
-A living table, updated at the start of every session. Columns: **Current step · Done condition ·
-Phase · Last updated**. Write it with dashes when creating a new plan; the first session fills it in.
-- **Pass:** present. If the project is in progress, Current step names a real step, Done condition is
-  specific (not a dash) and follows the done-condition format below.
+A living table, updated at the start of every session. Columns: **Current step · Current branch · Done
+condition · Phase · Last updated**. Write it with dashes when creating a new plan; the first session
+fills it in. The **Current branch** must be the exact `feat/…` branch from §22 that covers the current
+step — this is what Claude reads first each session, so the branch is right there next to the step
+instead of buried in §22.
+- **Pass:** present. If the project is in progress, Current step names a real step, Current branch is
+  the §22 branch whose range contains that step (not a dash, not `main`, not the project branch), and
+  Done condition is specific (not a dash) and follows the done-condition format below.
 
 ### 1. Project title and one-line description
 Plain language, says what the app does and who uses it.
@@ -233,6 +239,10 @@ PLANNING.md.
 Each step in §15 should be traceable to one or more items here. If two items are combined into one
 step, explain why (e.g. "repository has no custom logic so it is combined with the entity step").
 
+> **No-auth projects:** if the domain genuinely has no users or login, omit the security half of steps
+> 6–8 and every JWT part — do not force auth into a project that does not need it. When auditing such a
+> plan, the reviewer must **not** flag the missing security steps (or invariant 7) as gaps.
+
 ---
 
 ## Git branch strategy rules
@@ -272,3 +282,30 @@ Cross-checks between sections. A finished plan satisfies all of them; the review
 5. **Testing plan vs learning plan** — the testing step(s) in §15 match the scope in §16.
 6. **Branch strategy vs learning plan** — every §15 step falls inside exactly one branch's range in
    §22; no step uncovered, no branch whose range no longer matches §15.
+7. **Routes/roles vs API security** — every manager-only / employee-only route in §13 has a matching
+   `@PreAuthorize` (or documented role restriction) on its endpoint(s) in §10, and vice versa. No route
+   protected in the UI but open in the API, and no endpoint restricted by role whose page is reachable
+   by the wrong role. (Skip for a no-auth project.)
+8. **§0 branch vs §22** — the Current branch in §0 is one of the branches defined in §22, and its
+   §22 range contains the §0 Current step. If §0 says step 5 but the branch shown covers steps 1–3,
+   one of them is wrong.
+
+---
+
+## Design-correctness checks — is each decision *defensible*, not just *present*?
+
+The consistency invariants above prove the plan is internally coherent. These prove the design
+decisions are **sound enough to defend in an interview** — the difference between a *complete* plan and
+a *perfect* one. The reviewer runs each; the author should already satisfy them.
+
+1. **Relationship fetch types (§7)** — every `EAGER` is justified (the default should be `LAZY`; flag
+   any `EAGER` without a stated reason). Every cascade choice matches the ownership described.
+2. **State machine (§8)** — if there is one, every state is reachable from the initial state and every
+   non-terminal state has at least one outgoing transition. No dead or orphan states.
+3. **Endpoint roles (§10)** — no endpoint that mutates another user's data is open to `EMPLOYEE`
+   without an ownership check named in §8. Read vs write roles are consistent across a resource.
+4. **One concept per step (§15)** — no step silently bundles two major new concepts (e.g. JWT *and*
+   pagination). If a step must, it is called out and justified.
+5. **Interview test** — for each architecture decision (§6) and tradeoff (§20), the stated reason
+   already answers "why did you do it this way?" — not "because the tutorial did". A reason that is
+   just a restatement of the choice ("used DTOs to have DTOs") fails.

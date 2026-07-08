@@ -18,7 +18,7 @@ against the bar and catches what the author trusted. No report to apply by hand,
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_planning-standard.md` (the bar) · `plan-write-prompt.md` (author) ·
-`plan-review-prompt.md` (reviewer).
+`plan-architecture-prompt.md` (architecture advisor, new mode only) · `plan-review-prompt.md` (reviewer).
 
 > **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits nothing, so you can
 > read the diff before it lands. Once you trust it, `DRY_RUN = false` is fully hands-off.
@@ -100,7 +100,21 @@ Launch one `general-purpose` subagent, `run_in_background: false`:
 > the one-line commit message you'd use.
 
 Wait for it. If it reports it could not choose or write a plan (blocked, missing context), stop and
-report — do not run the reviewer on nothing.
+report — do not run the architecture advisor or reviewer on nothing.
+
+### Phase 1b — Architecture advisor (one architecture subagent)
+
+Launch a `general-purpose` subagent, `run_in_background: false`, on the plan the author just wrote:
+
+> Read `notes/prompts/projects/plan/plan-architecture-prompt.md` and execute it in full for
+> `PROJECT = «the chosen project folder path»`. Judge the drafted architecture (§6), the one new
+> architectural concept (§3), and the tradeoffs (§20) against Victor's current level and the coverage
+> gaps — fix over-engineering, under-engineering, and a misjudged new concept directly in those
+> sections. **Do NOT commit.** Report your architecture verdict, the one new concept, what you changed,
+> and any ripple the reviewer must reconcile.
+
+Wait for it. It only sharpens architecture; if it reports the architecture is already sound and changes
+nothing, that is fine — continue to the reviewer.
 
 ### Phase 2 — Review (one reviewer subagent)
 
@@ -155,7 +169,9 @@ block. In `new` mode that is the three-file commit; in `review` mode, one commit
   It applies nowhere else — normal sessions still hand Victor the command.
 - **One atomic commit per plan.** In new mode that single commit carries PLANNING.md + ROADMAP.md +
   PROGRESS.md (they are one logical change: registering the new project). Never `git add .`.
-- **Author then reviewer in new mode; reviewer only in review mode.** Never overlap subagents — the
-  reviewer must see a finished plan, and parallel commits race the git index.
+- **Author → architecture advisor → reviewer in new mode; reviewer only in review mode.** Run them
+  strictly in sequence, never overlapping — each must see the previous one's finished work, and parallel
+  commits race the git index. (The architecture advisor is new-mode only; a `review`-mode plan already
+  exists and the general reviewer's design-correctness checks cover it.)
 - Never skip the reviewer pass.
 ````

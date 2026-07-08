@@ -60,6 +60,13 @@ Read these in order. They are the inputs to every decision this prompt makes.
 
 ## Step 2 — Gap analysis
 
+**First, confirm PROGRESS.md is fresh.** The whole gap analysis rests on it; a stale PROGRESS picks the
+wrong next project and every later step inherits the error. Cross-check the last project marked done in
+PROGRESS.md against the most recent project work in the repo (the latest `projects/0X-*` folder and the
+git history). If PROGRESS looks behind — a finished project not recorded, a step done in code but not in
+the table — **stop and report** "PROGRESS.md looks stale — run `progress-update` first", rather than
+planning on bad data.
+
 Compare `notes/coverage.md` against `PROGRESS.md` to find what is not yet learned.
 
 **Filter the gaps to what matters.** Keep only concepts that: appear in the Angular, Spring Boot, Java,
@@ -91,6 +98,10 @@ Step-2 gaps it covers. Choose the one that:
    enterprise work (not a toy app).
 5. Includes meaningful business rules — not just CRUD.
 6. Introduces at least one JPA relationship or pattern NOT already practiced in the previous project.
+7. **Differs in domain from the projects already in the portfolio** — a recruiter scanning the repo
+   list should see variety, not three variations of the same app. If the strongest gap-covering
+   candidate shares a domain with a published project (e.g. another HR/leave app), prefer the next-best
+   candidate that closes comparable gaps in a fresh domain, or justify why the overlap is worth it.
 
 If none covers the most important gaps well, propose a new candidate and explain why it fits better —
 it must still meet all criteria. Write a one-paragraph justification: why this project over the others,
