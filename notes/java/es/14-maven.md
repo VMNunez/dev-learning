@@ -107,7 +107,7 @@ Todo proyecto Maven tiene un único `pom.xml` en la raíz. Tiene cuatro seccione
 
 ## El bloque parent y la gestión de versiones
 
-El `spring-boot-starter-parent` en `<parent>` es la clave de la experiencia "simplemente funciona" de Spring Boot. Él:
+El `spring-boot-starter-parent` en `<parent>` es la clave de la experiencia "simplemente funciona" de Spring Boot. Este bloque:
 
 - Gestiona todas las versiones de librerías Spring para que sean compatibles entre sí
 - Proporciona valores por defecto sensatos para el build de Maven
