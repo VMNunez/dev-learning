@@ -19,6 +19,53 @@ each other, and which prompts are still missing. CLAUDE.md only links here.
 
 ---
 
+## Prompts you launch vs. internal pieces you never touch
+
+Every file in this folder is a `.md` prompt, but **not every file is something you run.** Two kinds:
+
+- **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
+  conversation. No leading `_` and no `-write-prompt` / `-review-prompt` / `-plan-prompt` suffix.
+  **23 files, listed below.**
+- **Internal — you never launch these directly.** A runnable prompt reads and executes them as its
+  own subagent step; they never appear in your "paste into a new chat" workflow. Two patterns:
+  - **`_`-prefixed standard files** (e.g. `_note-quality-standard.md`, `_review-standard.md`) — the
+    shared rulebook a family of prompts all read. Pure reference, nothing to run.
+  - **`-write-prompt.md` / `-review-prompt.md` / `-plan-prompt.md` files** (e.g. `notes-write-prompt.md`,
+    `review-security-prompt.md`, `plan-write-prompt.md`) — the author/reviewer/planner subagent steps
+    an orchestrator (the `-audit.md` file in the same folder) fans out to automatically.
+
+### The 23 runnable prompts
+
+| Group | Prompts |
+|---|---|
+| Knowledge | `coverage-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
+| Projects | `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
+| Practice | `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
+| Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
+
+Two flavors among these 23, both launched the same way (paste config into a new chat):
+- **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `plan-audit`, `readme-audit`,
+  `review-audit`, `portfolio-audit`, `progress-update-prompt` — run entirely inside Claude Code and
+  hand you a finished result (and, where noted, a commit) with no further input from you.
+- **Single-shot prompts** — everything else — do one job in one pass; some need you to paste
+  something mid-conversation (your code into `simulation-review-prompt`, a job offer into
+  `cover-letter-prompt`, etc.).
+
+### The internal-only files (never launch these)
+
+`_coverage-standard.md`, `_note-quality-standard.md`, `_interview-prep-standard.md`,
+`_planning-standard.md`, `_readme-standard.md`, `_review-standard.md`, `_portfolio-standard.md`,
+`_concept-extraction-standard.md`, `_roadmap-standard.md`, `_application-standard.md`,
+`_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`, plus every
+`notes-plan-prompt.md` / `notes-write-prompt.md` / `notes-review-prompt.md`,
+`interview-prep-write-prompt.md` / `interview-prep-review-prompt.md`,
+`plan-write-prompt.md` / `plan-review-prompt.md`,
+`readme-write-prompt.md` / `readme-review-prompt.md`,
+`review-code-prompt.md` / `review-security-prompt.md` / `review-correctness-prompt.md` / `review-tests-prompt.md`,
+`portfolio-write-prompt.md` / `portfolio-review-prompt.md`.
+
+---
+
 ## The three hub files
 
 Everything orbits three sources of truth. Most prompts exist to write one of them or to consume one.
