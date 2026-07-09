@@ -8,6 +8,6 @@ Read `notes/prompts/knowledge/notes/notes-audit.md` and execute it in full as th
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- The prompt's own config block and instructions are authoritative — execute them exactly (plan → per-file author + cold reviewer subagents, en/es sync, atomic commit per file).
+- The prompt's own config block and instructions are authoritative — execute them exactly (plan → one cold inspector per existing file → per-file author + cold reviewer subagents, en/es sync, atomic commit per file).
 - If the configuration is empty or incomplete, ask for the missing config-block values before launching any subagent.
 - If DRY_RUN was not given, default it to `true` so nothing commits until Victor has read the diff.
