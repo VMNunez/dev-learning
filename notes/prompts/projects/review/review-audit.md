@@ -194,11 +194,34 @@ git add {PROJECT_PATH}/PROJECT-BACKLOG.md
 git commit -m "docs: review {PROJECT_PATH} — <one line summary of main findings>"
 ```
 
+### Step 6 — Pipeline self-report (orchestrator, last)
+After the commit hand-over, write a short **Pipeline self-report** to
+`notes/prompts/projects/review/_last-run-report.md` (overwrite; header: date + project) — meta-
+observations about the run itself, not the code. This is the evidence a later session uses to decide
+whether these prompts need changing, so be honest, including "nothing to report":
+- **Slices mapped** — the Step 0 list, and whether any turned out wrong (missing resource, slice too
+  big/small).
+- **Report discipline** — which reviewers, if any, came back with code excerpts/narrative that had to
+  be discarded.
+- **Trace verification** — traces that failed the Step 5 check, re-dispatches made, any slice left
+  "not reviewed", any false alarm.
+- **Dedup** — how many cross-slice duplicates were merged, and whether matching them was hard
+  (a sign the business-rule-tag improvement is needed).
+- **Anything else** that made the run harder than it should be.
+
+Five bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
+directly** under the notes/prompts exception — `git status` before add and before commit, stage only
+`_last-run-report.md`, message `docs: pipeline self-report for review of {PROJECT_PATH}`. (The
+never-auto-commit rule below applies to `PROJECT-BACKLOG.md`, not to this file.) A later main session
+reads this file to decide if the prompts need a change — they stay frozen unless it shows a real
+failure. Also print the report in chat.
+
 ## Hard rules
 
-- **Never auto-commit.** This flow writes a project-folder file under the feature-branch workflow;
-  always hand Victor the command. (The `plan-audit` / `portfolio-audit` auto-commit exception does not
-  extend here.)
+- **Never auto-commit the backlog.** `PROJECT-BACKLOG.md` is a project-folder file under the
+  feature-branch workflow; always hand Victor the command. (The `plan-audit` / `portfolio-audit`
+  auto-commit exception does not extend to it.) The only file this flow commits itself is the Step 6
+  `_last-run-report.md` — prompt-system machinery under the notes/prompts exception.
 - **One slice per subagent — never the whole codebase.** Each reviewer owns one vertical slice (a
   resource's flow, a resource's security, a cross-cutting area, a frontend feature) and returns a trace
   proving it covered every file/endpoint in it. A subagent handed the whole backend skims the last
