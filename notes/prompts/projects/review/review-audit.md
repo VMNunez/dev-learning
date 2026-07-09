@@ -98,6 +98,8 @@ Derive the project type from the path. **Full-stack:** apply the 30-day gate fro
 - **Frontend features** — from the `pages/`/`features/` folders per PLANNING.md's structure. One slice
   per feature, plus the fixed `frontend-infra` slice (routes, config, guards, interceptors, auth).
 
+Keep this slice map (slice → files/endpoints it owns) — Step 5 verifies each reviewer's trace against it.
+
 **Angular 01–06** are informational only: map **frontend feature slices + `frontend-infra`** and run
 just the flow reviewers (Steps 3–4) — report their findings in chat, write no backlog, no security pass,
 no commit. Skip Steps 1, 2, and 5's backlog/commit. **Full-stack:** run every step.
@@ -151,8 +153,17 @@ Dispatch one `general-purpose` subagent, `run_in_background: false`:
 > no code excerpts. **Do not edit any file.**
 
 ### Step 5 — Merge into the backlog + hand over the commit (orchestrator)
-You now hold a findings table per slice (flow + security), plus the learning-objectives verdict. Merge
-them into one prioritized task list per the standard's task/priority/effort rules:
+You now hold a findings table per slice (flow + security), plus the learning-objectives verdict.
+
+**First, verify coverage against your Step 0 map.** For each slice, compare the reviewer's trace with
+the files that slice owns (the flow prompt's Step 1 table / the security prompt's endpoint list): every
+owned file/endpoint must appear in the trace. A report whose trace misses part of its slice — or that
+came back with no trace at all — does **not** count as reviewed: re-dispatch that one slice once; if it
+fails again, list it as **"not reviewed"** in the chat summary and move on. Never treat a silent or
+partial report as clean.
+
+Then merge the verified tables into one prioritized task list per the standard's
+task/priority/effort rules:
 - Every confirmed **security** finding → a **High** task, carrying which endpoint/area it hits.
 - Every **correctness** finding on a normal path → **High**; edge-path → Medium; latent → Low. Each task
   carries the trigger so Victor can reproduce it.
@@ -197,6 +208,9 @@ git commit -m "docs: review {PROJECT_PATH} — <one line summary of main finding
   security reviewer. They only read, so they may run in parallel; never let one subagent do both.
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
 - **Security findings are always High**, and findings are deduplicated across every slice.
+- **No trace, no review.** A slice counts as reviewed only when its trace covers every file/endpoint
+  the slice owns (verified in Step 5 against the Step 0 map). Failed or partial reports get one
+  re-dispatch, then an explicit "not reviewed" in the summary — never a silent pass.
 - **Bounded reports only.** Every subagent returns its findings table + trace and nothing else — no
   code excerpts, no narrative. If one overflows, keep its table + trace and discard the rest; never let
   a verbose reviewer crowd the merge.
