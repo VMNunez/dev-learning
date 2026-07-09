@@ -116,7 +116,7 @@ private EntryStatus status;
 enum Role { EMPLOYEE, MANAGER }
 // Almacenado como: 0=EMPLOYEE, 1=MANAGER
 
-// Añades un nuevo rol en medio la semana que viene:
+// La semana que viene añades un nuevo rol en medio:
 enum Role { EMPLOYEE, ADMIN, MANAGER }
 // Ahora: 0=EMPLOYEE, 1=ADMIN, 2=MANAGER
 // ¡Pero la BD sigue teniendo filas con valor 1 — ahora significan ADMIN, no MANAGER!
