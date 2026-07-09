@@ -175,9 +175,12 @@ Wait for B before starting anything else.
 ## Finishing
 
 **If `{DRY_RUN}` = false:** everything is committed, one atomic commit per file, and any worklist rows
-are `[x]`. Report the commits made. In folder mode, if every row is `[x]`, remind Victor he can delete
-`notes/{TOPIC}/notes-worklist.md` (it was never committed — temporary artifact). List any failed row
-so it can be re-run (`SCOPE = file`, that `FILE`).
+are `[x]`. Report the commits made. **In folder mode, once every row is `[x]`, delete
+`notes/{TOPIC}/notes-worklist.md` yourself** (`rm` it — it was never committed, it is a temporary
+artifact, so deletion needs no commit and leaves the working tree clean). Do not merely remind Victor
+to delete it — remove it as the final step, and confirm it is gone. If any row is still `[ ]` (a failed
+build), leave the worklist in place and list the failed row so it can be re-run (`SCOPE = file`, that
+`FILE`).
 
 **If `{DRY_RUN}` = true:** nothing was committed, nothing marked — all changes are staged in the
 working tree for Victor to read. Print the atomic commit sequence to run after reviewing the diff, one
