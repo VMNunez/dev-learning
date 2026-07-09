@@ -1,21 +1,24 @@
 # Project review standard — the shared contract
 
 **Internal component. Not runnable.** This is the single source of truth for **reviewing a built
-project**: code quality, patterns, security, learning objectives, and how findings become backlog
-tasks. All pieces of the review pipeline read it:
+project**: code quality, patterns, security, correctness, tests, learning objectives, and how findings
+become backlog tasks. The pieces of the review pipeline read it:
 
-- `review-code-prompt.md` (the **code reviewer**) reads the code-quality checklist and the
-  learning-objectives rubric.
-- `review-security-prompt.md` (the **security reviewer**) reads the security scope + finding format.
-- `review-correctness-prompt.md` (the **bug-hunter**) reads the correctness scope + finding format.
-- `review-tests-prompt.md` (the **test reviewer**, projects with tests) reads the test-quality scope.
-- `review-audit.md` (the **orchestrator**) reads the gate, the task/priority/effort rules, and the
-  backlog format.
+- `review-flow-prompt.md` (the **per-slice functional reviewer**) reads the code-quality checklist, the
+  correctness scope, and the test-quality scope — it runs all three lenses on **one vertical slice** (a
+  backend resource's `model→repository→service→controller→DTO→tests` flow, a frontend feature, or a
+  cross-cutting area).
+- `review-security-prompt.md` (the **per-slice security reviewer**) reads the security scope + finding
+  format — it hunts **one slice** (a resource's endpoints, or the cross-cutting `security-infra`).
+- `review-audit.md` (the **orchestrator**) reads the gate, the learning-objectives rubric, the
+  task/priority/effort rules, and the backlog format. It maps the slices and merges every slice's
+  findings.
 
-The four reviewers ask four different questions: **is it clean and does it use the planned patterns?**
-(code), **can it be attacked?** (security), **does it do the wrong thing on a real input?**
-(correctness), and **does the test suite actually catch a regression, per the plan?** (tests). None of
-them edits the code — Victor fixes everything himself to learn.
+The review is split by **vertical slice** so no reviewer ever holds the whole codebase. Per slice it
+asks: **is it clean and does it use the planned patterns? does it do the wrong thing on a real input?
+does its test suite actually catch a regression?** (all three = the flow reviewer), and separately **can
+it be attacked?** (the security reviewer). None of them edits the code — Victor fixes everything himself
+to learn.
 
 ## What the review is for
 
@@ -148,9 +151,10 @@ BCrypt hash (not plain text)?
 survives restarts? JWT secret passed as env var (not hardcoded)? `docker-compose up` starts both without
 manual steps?
 
-**Tests** — reviewed in depth by the **dedicated test reviewer** (see "Test-quality scope — the test
-review" below), not by the code reviewer. The code reviewer may note a glaring gap in passing, but the
-real test audit is a separate cold pass so it gets full attention.
+**Tests** — reviewed **in the same slice** as the code they cover: the per-slice flow reviewer runs the
+"Test-quality scope — the test review" lens (below) on that slice's own tests, alongside the quality and
+correctness lenses. A resource's tests are judged together with the resource's flow, never as a separate
+whole-project pass.
 
 ---
 
@@ -177,8 +181,8 @@ junior scope goes in the chat summary, not the backlog.
 The code-quality checklist catches *structural* problems (wrong layer, `any`, missing loading state) and
 whether each business rule is enforced *at all*. It does **not** catch a rule enforced with the wrong
 comparison, an edge case that returns garbage, or a state transition that should be blocked but is not.
-Full-stack **and** Angular projects also get an **adversarial correctness pass**: a cold reviewer with a
-QA "break-it" mindset traces realistic inputs and states through the real code and hunts for logic bugs —
+So the per-slice flow reviewer also runs an **adversarial correctness lens** with a QA "break-it"
+mindset: it traces realistic inputs and states through its slice's real code and hunts for logic bugs —
 null/`Optional` mishandling, edge cases (empty/first/last/zero/negative/boundary date), inverted or
 off-by-one conditions, state-machine violations, lifecycle/ordering bugs, numeric/date errors, and
 swallowed or unshown errors. Judged against the intended behaviour in PLANNING.md (§8 business rules and
@@ -193,10 +197,10 @@ unlikely combination is Low.
 
 ## Test-quality scope — the test review
 
-Projects with tests (07 onward) get a **dedicated cold test reviewer** that audits the test suite on its
-own, against the plan's §16 Testing plan and this bar. It reads the test files and the classes they
-cover; it does not re-review production code for style (that is the code reviewer's job). A test suite
-that looks green but asserts nothing is worse than no tests — it hides regressions. Check:
+Projects with tests (07 onward): the per-slice flow reviewer runs a **test-quality lens** on its
+slice's own tests, against the plan's §16 Testing plan and this bar. It reads the slice's test files
+together with the classes they cover. A test suite that looks green but asserts nothing is worse than no
+tests — it hides regressions. Check:
 
 - **Coverage vs the plan (§16)** — every service class in §16 has ≥1 unit test; **every business rule
   in §8 has a test that proves it is enforced**; the slice tests §16 promised (`@WebMvcTest` /

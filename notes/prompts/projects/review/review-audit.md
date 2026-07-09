@@ -1,30 +1,37 @@
 # Review audit — the single entry point for reviewing a project
 
 Run this **inside Claude Code**. It is the only review-audit prompt Victor launches. It reviews a
-**built** project against the contract its own `PLANNING.md` set — code quality, patterns, security,
-and learning objectives — and writes a prioritized list of improvement tasks to
-`{PROJECT_PATH}/PROJECT-BACKLOG.md`. That backlog is what `portfolio-audit` reads for its go/no-go
-verdict, so a security hole found here becomes a **High** task that blocks portfolio-ready.
+**built** project against the contract its own `PLANNING.md` set — code quality, correctness, security,
+and tests — and writes a prioritized list of improvement tasks to `{PROJECT_PATH}/PROJECT-BACKLOG.md`.
+That backlog is what `portfolio-audit` reads for its go/no-go verdict, so a security hole found here
+becomes a **High** task that blocks portfolio-ready.
 
-The heavy parts run as **four cold reviewer subagents** — a code-quality + learning-objectives pass, an
-adversarial security pass, an adversarial correctness (bug-hunter) pass, and a dedicated test-quality
-pass — whose findings the orchestrator merges into the backlog. A cold reviewer with no stake in the
-code catches what a single long prompt would skip. **None of them edits the code — Victor fixes
-everything himself to learn.**
+The review is split into **vertical slices**, so no subagent ever reviews the whole codebase — each one
+owns a small, closed surface it cannot leave half-checked:
+
+- **Per backend resource** (auth, time-entries, users, …): a **flow** reviewer traces the full
+  `model → repository → service → controller → DTO → tests` flow (quality + correctness + tests), and a
+  **security** reviewer hunts that same flow for vulnerabilities.
+- **Backend cross-cutting**: a `persistence-config` flow reviewer and a `security-infra` security
+  reviewer.
+- **Per frontend feature** + `frontend-infra`: a flow reviewer each.
+- **One learning-objectives** pass over the whole project.
+
+The orchestrator merges every slice's findings into the backlog. **No subagent edits the code — Victor
+fixes everything himself to learn.**
 
 > **▶ Run first:** nothing — it reads `PLANNING.md` and the source, not the README. (`readme-audit`
 > is a prerequisite of `portfolio-audit`, which reads the READMEs — not of this review.)
 
 **Internal pieces this orchestrates** (you never launch these directly):
-`_review-standard.md` (the bar) · `review-code-prompt.md` (code + learning objectives) ·
-`review-security-prompt.md` (cold attacker pass, full-stack only) ·
-`review-correctness-prompt.md` (cold bug-hunter pass) ·
-`review-tests-prompt.md` (dedicated test-quality pass, projects with tests).
+`_review-standard.md` (the bar — all the checklists) · `review-flow-prompt.md` (per-slice functional
+reviewer: quality + correctness + tests) · `review-security-prompt.md` (per-slice attacker pass,
+full-stack only).
 
-> **Not auto-committed — by design.** Unlike `plan-audit` and `portfolio-audit` (which write study
-> materials), this writes `PROJECT-BACKLOG.md` inside the project folder, which follows the project's
-> **feature-branch → PR → main** workflow. The orchestrator writes the backlog to the working tree and
-> **hands Victor the commit command** — it never commits for him. There is no `DRY_RUN`.
+> **Not auto-committed — by design.** This writes `PROJECT-BACKLOG.md` inside the project folder, which
+> follows the project's **feature-branch → PR → main** workflow. The orchestrator writes the backlog to
+> the working tree and **hands Victor the commit command** — it never commits for him. There is no
+> `DRY_RUN`.
 
 ---
 
@@ -66,8 +73,8 @@ Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}.
 
 You are the orchestrator for reviewing Victor's projects. First read
 `notes/prompts/projects/review/_review-standard.md` so you know the bar, the gate, the priority rules,
-and the backlog format. Then run the procedure below. You stay light: the subagents read all the source
-and hand you back findings tables — you merge and write the backlog. You never read the full source
+and the backlog format. Then run the procedure below. You stay light: the slice reviewers read the
+source and hand you back findings tables — you map the slices and merge. You never read the full source
 yourself.
 
 ## If PROJECT_PATH = all
@@ -78,93 +85,83 @@ summary table (`Project | Quality | High | Medium | Low`). Otherwise, follow the
 
 ## Single-project procedure
 
-### Step 0 — Gate (orchestrator)
-Derive the project type from the path. **Angular 01–06:** informational only — run the code subagent
-(Step 1) **and the correctness subagent (Step 2b)**, report their findings in chat, write nothing, no
-commit; skip the security pass and Steps 3–4. **Full-stack:** apply the 30-day gate from the standard
-against `{PROJECT_PATH}/PROJECT-BACKLOG.md`; if it was reviewed < 30 days ago, stop and offer FORCE.
+### Step 0 — Gate and map the slices (orchestrator)
+Derive the project type from the path. **Full-stack:** apply the 30-day gate from the standard against
+`{PROJECT_PATH}/PROJECT-BACKLOG.md`; if it was reviewed < 30 days ago, stop and offer FORCE. Then
+**map the review slices** — this is light structural work (you list slices, you do not review code):
+- **Backend resources** — from `{PROJECT_PATH}/PLANNING.md` §7 (entities) / §10 (API), or by listing the
+  `backend/src/main/java/**/controller/*Controller.java` files. One slice per resource (e.g.
+  `auth`, `users`, `projects`, `time-entries`).
+- **Backend cross-cutting** — the two fixed slices `persistence-config` and `security-infra`.
+- **Frontend features** — from the `pages/`/`features/` folders per PLANNING.md's structure. One slice
+  per feature, plus the fixed `frontend-infra` slice (routes, config, guards, interceptors, auth).
 
-### Step 1 — Code reviewer (subagent)
-Launch one `general-purpose` subagent, `run_in_background: false`:
+**Angular 01–06** are informational only: map **frontend feature slices + `frontend-infra`** and run
+just the flow reviewers (Steps 3–4) — report their findings in chat, write no backlog, no security pass,
+no commit. Skip Steps 1, 2, and 5's backlog/commit. **Full-stack:** run every step.
 
-> Read `notes/prompts/projects/review/review-code-prompt.md` and execute it in full for
-> `PROJECT_PATH = {PROJECT_PATH}`. Review the source against the standard's code-quality checklist and
-> check the learning objectives. **Do not edit any file, do not write the backlog, do not commit.**
-> Return the two blocks it specifies: the code-quality findings table and the learning-objectives table
-> + overall quality read.
+> The slice reviewers only **read** — they never edit and never commit — so you may run several in
+> parallel (there is no git-index contention). Keep it manageable; collect every findings table.
 
-Wait and collect.
+### Step 1 — Backend, one flow + one security reviewer per resource
+For **each** backend resource, dispatch two `general-purpose` subagents, `run_in_background: false`:
 
-### Step 2 — Security reviewer (subagent, full-stack only)
-Launch a second `general-purpose` subagent, `run_in_background: false`:
+> **(flow)** Read `notes/prompts/projects/review/review-flow-prompt.md` and execute it for
+> `PROJECT_PATH = {PROJECT_PATH}`, `TIER = backend`, `SCOPE = «resource»`. Trace the resource's full
+> `model → repository → service → controller → DTO → tests` flow and return its findings table + trace.
+> **Do not edit any file, do not write the backlog, do not commit.**
 
-> Read `notes/prompts/projects/review/review-security-prompt.md` and execute it in full for
-> `PROJECT_PATH = {PROJECT_PATH}`. Do the cold attacker-hat pass against `notes/security/coverage.md`
-> and the real backend. **Do not edit any file, do not commit.** Return only the findings table (+ any
-> "beyond junior scope" line).
+> **(security)** Read `notes/prompts/projects/review/review-security-prompt.md` and execute it for
+> `PROJECT_PATH = {PROJECT_PATH}`, `SCOPE = «resource»`. Hunt each of that resource's endpoints for
+> authorization/ownership/injection/data-exposure flaws and return its findings table + trace. **Do not
+> edit any file, do not commit.**
 
-### Step 2b — Correctness reviewer (subagent)
-Launch a `general-purpose` subagent, `run_in_background: false`:
+Collect every table.
 
-> Read `notes/prompts/projects/review/review-correctness-prompt.md` and execute it in full for
-> `PROJECT_PATH = {PROJECT_PATH}`. Do the cold bug-hunter pass — trace realistic inputs and states
-> against the intended behaviour in PLANNING.md. **Do not edit any file, do not commit.** Return only
-> the findings table (trigger + wrong behaviour per bug).
+### Step 2 — Backend, cross-cutting reviewers
+Dispatch:
+> **(flow)** `review-flow-prompt.md` with `TIER = backend`, `SCOPE = persistence-config` — datasource,
+> `application.properties`, transactions, fetch/N+1, docker env.
+> **(security)** `review-security-prompt.md` with `SCOPE = security-infra` — SecurityConfig, JWT filter,
+> CORS, hashing, secrets/credentials, global exception handler.
 
-Wait and collect.
+Collect both tables.
 
-### Step 2c — Test reviewer (subagent, projects with tests)
-Full-stack projects (07 onward) have tests — launch a `general-purpose` subagent, `run_in_background:
-false`:
+### Step 3 — Frontend, one flow reviewer per feature (+ frontend-infra)
+For **each** frontend feature, and once for `frontend-infra`, dispatch:
+> `review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
+> service split, types, state, subscription cleanup, validation timing, and that slice's tests.
 
-> Read `notes/prompts/projects/review/review-tests-prompt.md` and execute it in full for
-> `PROJECT_PATH = {PROJECT_PATH}`. Audit the test suite against PLANNING.md §16 and the test-quality
-> bar — coverage vs the plan, every §8 business rule tested, edge cases, assertion quality, Mockito
-> hygiene, structure. **Do not edit any file, do not commit.** Return only the findings table.
+Collect every table. (For Angular 01–06 this is the whole review — report in chat and stop.)
 
-Wait and collect. (You may run Steps 1, 2, 2b, and 2c in parallel — they only read, so there is no
-git-index contention and no shared file to race.)
+### Step 4 — Learning-objectives pass (one subagent)
+Dispatch one `general-purpose` subagent, `run_in_background: false`:
+> Read `notes/prompts/projects/review/_review-standard.md` ("Learning-objectives rubric") and
+> `{PROJECT_PATH}/PLANNING.md` §3 (new concepts) / §4 (review concepts). For each concept, check the
+> code and mark ✅ Demonstrated / ⚠️ Shallow / ❌ Missing, with a one-line note. Return the table + the
+> tally. **Do not edit any file.**
 
-> **Size guard — split a pass by module when a project is too big to review whole (future-proofing).**
-> Each pass above hands one cold subagent the project's **entire** source for its concern. That is the
-> correct split *today* — a bug-hunt or security pass needs to see every layer (controller → service →
-> repository) at once, so it cannot be cut file-by-file. But a single subagent's attention still
-> degrades once the source it must hold is large enough, and it will start skimming the last files —
-> the same failure the one-unit rule exists to prevent, just at project scale. So before dispatching,
-> estimate the source size (rough proxy: number of `.java` / `.ts` source files, or total lines, under
-> review). **If a project is large enough that one pass would strain a single context** (as a starting
-> rule of thumb, well past the size of project 07 — e.g. ≳ 40–50 source files, or once a pass visibly
-> starts leaving findings in the last files), split that pass **by module/feature** (e.g. `auth`,
-> `time-entries`, `users`) — one cold subagent per module for that concern, in sequence — and merge
-> their findings tables in Step 3 exactly as you merge the four concerns. Split by module, never by
-> arbitrary file batches: a module is the smallest slice that still keeps a cross-layer trace intact.
-> Keep the four-concern split regardless; the module split is an *additional* cut inside a concern,
-> applied only to the concerns whose source is too big. This is not needed at project 07's current
-> size — it is the escape hatch for when 07 grows or projects 08+ arrive.
-
-### Step 3 — Merge into improvement tasks (orchestrator)
-You now hold four findings tables (code, security, correctness, tests) and the learning-objectives
-verdict. Merge them into one prioritized task list per the standard's task/priority/effort rules:
-- Every confirmed **security** finding → a **High** task.
-- Every **correctness** bug that hits a normal path → a **High** task; edge-path bugs → Medium; latent
-  ones → Low (per the correctness scope's severity rule). Each task must carry the trigger so Victor
-  can reproduce it.
-- Every **missing planned test** or **untested §8 business rule** from the test pass → a **High** task;
-  a weak assertion or missing edge case → Medium; test naming/structure → Low.
-- Deduplicate across the four passes — a business-rule gap can surface in the code, the correctness, and
-  the test pass at once; keep one task, the most specific (usually: enforce the rule in the service +
-  add the test that proves it).
-- Turn each code-quality finding and each ❌/⚠️ learning-objective gap into a specific task with a
-  priority and an effort estimate.
+### Step 5 — Merge into the backlog + hand over the commit (orchestrator)
+You now hold a findings table per slice (flow + security), plus the learning-objectives verdict. Merge
+them into one prioritized task list per the standard's task/priority/effort rules:
+- Every confirmed **security** finding → a **High** task, carrying which endpoint/area it hits.
+- Every **correctness** finding on a normal path → **High**; edge-path → Medium; latent → Low. Each task
+  carries the trigger so Victor can reproduce it.
+- Every **missing planned test** or **untested §8 business rule** → **High**; weak assertion / missing
+  edge case → Medium; naming/structure → Low.
+- **Deduplicate across slices** — the same business-rule gap can surface in a resource's flow, its
+  security pass, and a cross-cutting slice at once; keep one task, the most specific (usually: enforce
+  the rule in the service + add the test that proves it).
+- Turn each quality finding and each ⚠️/❌ learning-objective into a specific task with a priority and an
+  effort estimate.
 - "Beyond junior scope" hardening ideas go in the chat summary, not the backlog.
 
-### Step 4 — Write the backlog + hand over the commit (orchestrator)
-First print a brief summary in chat: **Overall quality** (Strong/Good/Needs work + one sentence) ·
-**Top findings** (2–3) · **Learning objectives** (how many ✅/⚠️/❌).
+First print a brief chat summary: **Overall quality** (Strong/Good/Needs work + one sentence) · **Top
+findings** (2–3) · **Learning objectives** (how many ✅/⚠️/❌) · **Slices reviewed** (count).
 
-Then update `{PROJECT_PATH}/PROJECT-BACKLOG.md` (create it if missing) per the standard's backlog format:
-today's date as "Last Reviewed", the overall quality rating, and the full task list as checkboxes.
-Preserve tasks already checked off (✅).
+Then update `{PROJECT_PATH}/PROJECT-BACKLOG.md` (create it if missing) per the standard's backlog
+format: today's date as "Last Reviewed", the overall quality rating, and the full task list as
+checkboxes. Preserve tasks already checked off (✅).
 
 Finally, **hand Victor the commit** — do not run it (see the by-design note above). One command per
 code block:
@@ -182,11 +179,16 @@ git commit -m "docs: review {PROJECT_PATH} — <one line summary of main finding
 - **Never auto-commit.** This flow writes a project-folder file under the feature-branch workflow;
   always hand Victor the command. (The `plan-audit` / `portfolio-audit` auto-commit exception does not
   extend here.)
-- **Four cold subagents, then merge in the orchestrator.** Never fold the code, security, correctness,
-  or test review into your own context — the focused cold pass is the whole point. (The test pass runs
-  only for projects that have tests — 07 onward.)
+- **One slice per subagent — never the whole codebase.** Each reviewer owns one vertical slice (a
+  resource's flow, a resource's security, a cross-cutting area, a frontend feature) and returns a trace
+  proving it covered every file/endpoint in it. A subagent handed the whole backend skims the last
+  resources — the failure this split exists to prevent. The orchestrator's only whole-project work is
+  the light slice-mapping (Step 0) and the merge (Step 5).
+- **Two lenses per backend resource** — one flow reviewer (quality + correctness + tests) and one
+  security reviewer. They only read, so they may run in parallel; never let one subagent do both.
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
-- **Security findings are always High**, and security + correctness findings are deduplicated against
-  the code pass.
-- Angular 01–06 are informational only — never create a backlog or a commit for them.
+- **Security findings are always High**, and findings are deduplicated across every slice.
+- Angular 01–06 are informational only — frontend flow reviewers, report in chat, never a backlog or a
+  commit for them.
+
 ````
