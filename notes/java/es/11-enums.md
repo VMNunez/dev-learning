@@ -19,7 +19,7 @@ setRole(Role.ADMIN);  // error de compilación si escribes Role.ADNIM — se det
 
 ## Enum básico
 
-Un enum se declara con `enum` en lugar de `class`. Cada constante se escribe en UPPER_SNAKE_CASE por convención. Para usar una constante, la prefijes con el nombre del enum: `Role.ADMIN`. Los enums se comparan con `==` (explicado en la sección "Comparar enums" más abajo).
+Un enum se declara con `enum` en lugar de `class`. Cada constante se escribe en UPPER_SNAKE_CASE por convención. Para usar una constante, antepones el nombre del enum: `Role.ADMIN`. Los enums se comparan con `==` (explicado en la sección "Comparar enums" más abajo).
 
 ```java
 public enum Role {
