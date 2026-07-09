@@ -134,6 +134,9 @@ git commit -m "type: description"
 
 ### After every learning plan step is completed — update these files without being asked
 
+(The `step-complete` skill in `.claude/skills/` fires on this event and walks this exact checklist —
+plus the README standard, which does not auto-load. This section remains the source of truth.)
+
 - `PROGRESS.md` — extract the concepts introduced in that step and add them to the correct technology section. How to extract depends on the project format:
   - Projects 01–06: read "Key patterns introduced" table in PLANNING.md — every row is a concept
   - Project 07: read the `**Concept learned:**` line of the completed step in the learning plan
