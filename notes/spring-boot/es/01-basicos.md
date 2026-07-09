@@ -25,6 +25,93 @@ El patrón que se repite: **las anotaciones reemplazan la configuración**. Ante
 
 ---
 
+## Cómo funciona Spring Boot por dentro — por qué un starter "simplemente funciona"
+
+Las dos ideas de arriba (la auto-configuración y el servidor embebido) son el titular. Pero en una entrevista "se configura solo" no es una respuesta — la repregunta es siempre *¿cómo?*. Esta sección traza los tres mecanismos que hay debajo, porque son exactamente las preguntas con las que un entrevistador distingue a quien *añadió* dependencias de quien *entiende* el build: "¿cómo sabe Spring Boot cómo configurar tu `DataSource`?", "¿qué trae realmente `spring-boot-starter-web`?" y "¿cómo sirve HTTP tu app sin un Tomcat instalado?".
+
+Docs: https://www.baeldung.com/spring-boot-autoconfiguration → read: "Understanding Auto-Configuration" y el ejemplo de `@Conditional`
+
+### El classpath — la palabra de la que dependen los tres mecanismos
+
+Todo lo que viene después se apoya en una sola idea, así que fíjala primero. El **classpath** es la lista completa de clases compiladas que tu app puede ver en tiempo de ejecución: tu propio código más cada `.jar` que Maven descargó a partir de las dependencias del `pom.xml`. Cuando añades `spring-boot-starter-data-jpa` y recargas Maven, los jars de Hibernate y JDBC caen en el classpath — es decir, clases como `org.hibernate.SessionFactory` ahora están *presentes y son cargables*. Cuando quitas la dependencia, desaparecen. Toda la "magia" de Spring Boot no es más que **mirar qué hay en el classpath y reaccionar a ello**.
+
+> Piensa en el classpath como el conjunto de herramientas dispuestas sobre el banco de trabajo. Spring Boot pasa junto al banco al arrancar y, por cada herramienta que ve, monta el puesto de trabajo que la usa. Si la herramienta no está en el banco → ese puesto no se monta nunca. Nada se adivina; todo es una reacción a lo que está físicamente ahí.
+
+### 1. Auto-configuración — el mecanismo, no la magia
+
+`@SpringBootApplication` incluye `@EnableAutoConfiguration` (ver la tabla de anotaciones más abajo). Al arrancar, esa anotación hace que Spring Boot cargue una larga lista de clases de configuración ya escritas que vienen dentro de los jars de Spring Boot — una por tecnología (`DataSourceAutoConfiguration`, `JpaRepositoriesAutoConfiguration`, `WebMvcAutoConfiguration`, y decenas más). Cada una es una clase `@Configuration` llena de métodos `@Bean` que saben cómo montar esa tecnología.
+
+El truco está en que **ninguna se ejecuta de forma incondicional**. Cada clase de auto-configuración está protegida por anotaciones `@Conditional` que Spring evalúa contra tu classpath y tus beans existentes antes de decidir si la activa. Las dos que debes saber nombrar:
+
+- **`@ConditionalOnClass(DataSource.class)`** — "ejecuta esta configuración solo si esta clase está en el classpath". `DataSourceAutoConfiguration` lleva esta anotación, así que se activa *solo* cuando hay presente una clase de JDBC/datasource — lo cual ocurre en el momento en que `spring-boot-starter-data-jpa` la pone ahí. Sin el starter de JPA → la clase no está → toda la configuración del datasource se salta. Por eso añadir un starter "simplemente funciona": el starter deja las clases en el classpath, y la auto-configuración correspondiente se despierta sola.
+- **`@ConditionalOnMissingBean`** — "crea este bean solo si el desarrollador no ha definido ya uno del mismo tipo". Los beans de Spring Boot son todos **valores por defecto que se apartan**. Si nunca defines un `DataSource`, se usa el que auto-configura Spring Boot; en el momento en que declaras tu propio `@Bean DataSource`, `@ConditionalOnMissingBean` lo detecta y Spring Boot se retira en silencio. Sobrescribes *definiendo*, nunca editando la configuración del framework.
+
+Recorriendo la pregunta real que hace un entrevistador — *"¿cómo sabe Spring Boot cómo configurar tu `DataSource`?"*:
+
+```
+1. spring-boot-starter-data-jpa en el pom.xml
+        → pone los jars de Hibernate + JDBC en el CLASSPATH
+2. @EnableAutoConfiguration carga DataSourceAutoConfiguration
+        → está protegida por @ConditionalOnClass(DataSource.class)
+3. DataSource.class SÍ está en el classpath  → la condición pasa → la config se activa
+4. @ConditionalOnMissingBean → tú no definiste ningún DataSource
+        → Spring Boot crea el de por defecto, leyendo spring.datasource.* de application.properties
+5. Existe un bean DataSource listo — tú escribiste cero configuración
+```
+
+Esa es la respuesta completa, y es mucho más sólida que "es automático". Las líneas `spring.datasource.url`/`username`/`password` que pones en [application.properties](#applicationproperties--configuración-central) son los valores que lee este bean auto-configurado — las properties y la auto-configuración son las dos mitades del mismo mecanismo.
+
+> **Por qué esto es mejor que el XML.** En el Spring clásico escribías a mano un bloque `<bean id="dataSource" ...>` por cada pieza de infraestructura. La auto-configuración le da la vuelta: el framework asume el montaje *convencional* y solo te pide los valores que son genuinamente propios del proyecto (la URL, las credenciales). "Convención sobre configuración" es el nombre de esta idea — configuras las excepciones, no los valores por defecto.
+
+### 2. Starters — paquetes curados y alineados en versiones
+
+Un **starter** no es código. Es un jar (casi) vacío cuyo único trabajo es declarar una lista curada de *otras* dependencias con versiones ya probadas para funcionar juntas. `spring-boot-starter-web` prácticamente no contiene clases propias — ábrelo y es en esencia un `pom.xml` que trae Spring MVC, la librería de JSON Jackson, validación y el Tomcat embebido, todo en versiones compatibles. Una línea en tu `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+
+arrastra toda una capa de librerías. Eso es lo que significa "starter" — un *punto de partida* para una capacidad, empaquetado para que no lo montes dependencia a dependencia.
+
+Los starters que usas en TimeTrack, y la respuesta a "¿qué trae cada uno?":
+
+| Starter | Trae (la capa que arranca) |
+| --- | --- |
+| `spring-boot-starter-web` | Spring MVC, `@RestController`/`@GetMapping`, Jackson (JSON), **Tomcat embebido** |
+| `spring-boot-starter-data-jpa` | Spring Data JPA, Hibernate, la fontanería de JDBC/transacciones |
+| `spring-boot-starter-security` | Spring Security — la cadena de filtros, `BCryptPasswordEncoder`, `@PreAuthorize` a nivel de método |
+| `spring-boot-starter-validation` | Bean Validation (`@NotBlank`, `@Email`) más su implementación Hibernate Validator |
+| `spring-boot-starter-test` | JUnit 5, Mockito, AssertJ — añadido automáticamente a cada proyecto |
+
+Lee la tabla así: *una línea de la columna izquierda* es todo lo que escribes; *toda la columna derecha* es lo que llega al classpath — lo que a su vez dispara la auto-configuración de la sección 1. Starters y auto-configuración van en pareja: **el starter pone las clases en el classpath; la auto-configuración reacciona a ellas.**
+
+> **¿Por qué no añadir Spring MVC, Jackson, Tomcat y validación uno a uno tú mismo?** Podrías — pero entonces *tú* cargas con el trabajo de elegir versiones que no choquen, y una versión de Jackson que discrepa sin avisar con tu versión de Spring MVC es una tarde miserable. El starter es un contrato de versiones: alguien ya probó este conjunto exacto junto. Combinado con `spring-boot-starter-parent` (el `<parent>` del `pom.xml`, que contiene un BOM — un Bill of Materials con la lista de versiones probadas), es la razón por la que tus bloques `<dependency>` de librerías de Spring no llevan **ninguna etiqueta `<version>`**. El parent decide la versión; el starter decide el conjunto.
+
+### 3. El servidor embebido — cómo `java -jar` sirve HTTP sin nada instalado
+
+El despliegue web clásico de Java era: instalar Tomcat como un programa aparte en el servidor, construir tu app en un fichero `.war` y soltar el war en la carpeta `webapps/` de Tomcat. El servidor era el contenedor; tu app era el invitado que vivía dentro de él.
+
+Spring Boot invierte esa relación. `spring-boot-starter-web` pone las clases de Tomcat **en el classpath como una librería más**, y la auto-configuración (sección 1) las ve y arranca una instancia de Tomcat embebida desde *dentro* de tu aplicación durante `SpringApplication.run(...)`. Ahora el servidor es el invitado y tu app es el anfitrión. Como Tomcat no es más que unas clases más en el mismo jar, el build produce un único **fat jar** autocontenido (también llamado "uber jar") — tu código compilado, cada dependencia y Tomcat, todo comprimido en un solo fichero. Así que:
+
+```
+java -jar timetrack.jar
+        → se ejecuta main() → SpringApplication.run(...)
+        → la auto-config ve Tomcat en el classpath
+        → arranca un Tomcat embebido, escuchando en el puerto 8080
+        → tus endpoints @RestController ya están sirviendo HTTP
+```
+
+Sin Tomcat instalado en la máquina, sin war, sin carpeta `webapps/` — el único requisito en el servidor es un runtime de Java. Esta es la diferencia más nítida entre **Spring Boot y el Spring clásico** que un entrevistador sondea con "¿cómo sirve HTTP tu app sin un Tomcat instalado?". La respuesta: el servidor va embebido dentro del fat jar, arrancado programáticamente al inicio.
+
+> **Por eso el Dockerfile es tan corto.** Como el jar ya contiene el servidor, contenerizar la app es solo "pon un runtime de Java en la imagen, copia el jar dentro, ejecuta `java -jar`" — sin una imagen base con un servidor de aplicaciones preinstalado. Verás exactamente ese patrón `FROM eclipse-temurin` + `java -jar` cuando el proyecto llegue al paso de Docker.
+
+> **Puedes cambiar el servidor, y eso demuestra la idea.** Excluye Tomcat de `spring-boot-starter-web` y añade `spring-boot-starter-jetty`, y la app corre sobre Jetty en su lugar — no cambiaste nada salvo el classpath, y la auto-configuración arrancó un servidor distinto. El contenedor es una dependencia, no una parte fija de la plataforma.
+
+---
+
 ## Spring Initializr — iniciar un proyecto
 
 [start.spring.io](https://start.spring.io) genera un proyecto Spring Boot listo para ejecutar con el `pom.xml` correcto y la estructura de carpetas. Seleccionas las dependencias que necesitas y descargas un zip.
