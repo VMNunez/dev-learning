@@ -934,7 +934,7 @@ DELETE /api/users/1  Authorization: Bearer <token-empleado-válido>
 
 ## 16. Errores comunes
 
-**Olvidar `SessionCreationPolicy.STATELESS`** — Spring crea sesiones HTTP por defecto. Sin esto, obtienes sesiones Y JWT, que conflictúan y desperdician memoria.
+**Olvidar `SessionCreationPolicy.STATELESS`** — Spring crea sesiones HTTP por defecto. Sin esto, obtienes sesiones Y JWT, que entran en conflicto y desperdician memoria.
 
 **Orden de filtros incorrecto** — `addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)` es obligatorio. Si el filtro JWT se ejecuta después del filtro por defecto de Spring, el request se rechaza antes de que tu filtro tenga oportunidad de autenticarlo.
 
