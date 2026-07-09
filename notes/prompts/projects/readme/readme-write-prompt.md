@@ -33,12 +33,18 @@ Before starting, read:
 - `notes/prompts/projects/readme/_readme-standard.md` — the bar. Focus on the **universal rules** and
   the section for your `{TARGET}` (Global README rules — with the full-stack additions if the project is
   full-stack; or the Backend / Frontend README rules). This is what you write against.
-- `CLAUDE.md` — learning objectives per project and teaching rules. (Victor's profile and the market are
-  in `notes/prompts/_shared-context.md`.)
 - `{PROJECT_PATH}/PLANNING.md` — extract the app concept, learning objectives, and key patterns; the
   README must reflect what was actually built.
 - The existing target README (`{PROJECT_PATH}/README.md` for `global`, `.../backend/README.md` for
   `backend`, `.../frontend/README.md` for `frontend`) — if it exists.
+
+Do **not** re-read `CLAUDE.md` — it is already injected into your context automatically; Victor's
+profile and the market live in `notes/prompts/_shared-context.md` if a section genuinely needs them.
+
+**Scoped code reading.** When a section must be checked against the real code (API endpoints, tests,
+security measures, folder structure), read **only the files that section needs** — e.g. the
+`controller/` package for the endpoint table, the `test/` tree for the Tests section, `ls` output for
+folder trees. Never sweep the whole project; your attention budget belongs to the README, not the repo.
 
 ## Step 1 — Scan for in-progress markers
 Run the standard's in-progress-marker scan on this README: resolve completed markers, leave one clean
@@ -54,7 +60,9 @@ Check this README's sections against the standard's rules for your `{TARGET}`, i
   specifies — never skip silently.
 
 ## Output — report (no commit)
-Do not commit. Report:
+Do not commit. Report, in **at most 15 lines** (the orchestrator collects many of these — keep it
+tight; the detail lives in the file itself):
 - The README you worked on (`{TARGET}`) and whether it existed or was created.
 - A **summary of changes** — one line per section changed: `[Section] — what was wrong → what was fixed`.
+  If more sections changed than fit the budget, group minor ones into a single line.
 - Any section left as a placeholder (genuinely not built yet), so the reviewer knows it is intentional.

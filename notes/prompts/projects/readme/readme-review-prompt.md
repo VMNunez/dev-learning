@@ -31,6 +31,10 @@ Before starting, read:
   I learned" / patterns match the plan's learning objectives.
 - The target README file itself.
 
+**Scoped code reading.** When a check needs the real code (truthfulness of the endpoint table, the
+Tests section, security claims), read **only the files that check needs** — never sweep the whole
+project. Your attention budget belongs to the README.
+
 ## Audit checklist — run every point on this README
 - **Section coverage + order** — all required sections present and in the standard's order for this
   target. Add any missing; reorder any misplaced.
@@ -55,6 +59,9 @@ what misses the bar. If the README is genuinely already at bar, change nothing a
 
 ## Finish — no commit
 Do **not** commit (the orchestrator hands Victor the command). Leave your fixes in the working tree.
-Report your **verdict** for this README:
-- `PASS` (no changes) or `FIXED` (a short bullet list of what you corrected and why).
+Report, in **at most 20 lines**:
+- A **section trace** — one line per required section of this target, `[Section] — OK | FIXED: <what>`.
+  This is your proof of a full pass: a report without the trace means the audit did not cover every
+  section and the orchestrator will re-dispatch you.
+- Your **verdict**: `PASS` (no changes) or `FIXED`.
 - Which README (`{TARGET}`) and whether it changed — so the orchestrator knows to include it in the commit.

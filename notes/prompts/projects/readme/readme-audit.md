@@ -65,7 +65,9 @@ edit the files — you never write a README in your own context.
 Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, finishing one before the next. Put each
 project's report under a `### [project]` heading, and after the last print the `_batch-mode.md` summary
-table (`Project | READMEs changed`). Otherwise, follow the procedure once.
+table (`Project | READMEs changed`). Once a project is finished, carry forward only its summary table
+row — drop its per-target detail from your working context before starting the next project.
+Otherwise, follow the procedure once.
 
 ## Single-project procedure
 
@@ -87,20 +89,37 @@ Wait for A, then **subagent B — reviewer.** Launch a second, independent `gene
 
 > Read `notes/prompts/projects/readme/readme-review-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Audit the just-authored README hard against
-> the standard and fix what falls short directly. **Do NOT commit.** Report your verdict (PASS/FIXED) and
-> whether the README changed.
+> the standard and fix what falls short directly. **Do NOT commit.** Report the section trace, your
+> verdict (PASS/FIXED), and whether the README changed.
 
-Collect, per target, whether the README changed.
+**Verify the trace.** The reviewer's report must contain a section trace — one line per required
+section for that target. If the trace is missing or skips sections, the audit was not a full pass:
+re-dispatch the reviewer for that target once, telling it which sections lack a trace line.
+
+Collect, per target, whether the README changed. Keep only the verdict, the changed-flag, and the
+one-line-per-section summaries — do not accumulate anything longer in your context.
+
+**Failure protocol.** If a subagent errors out or returns a report you cannot act on (no verdict, no
+summary), re-dispatch that same subagent once with the same instructions. If it fails again, stop that
+target, exclude its README from the commit command, and flag it clearly in the final summary — never
+hand Victor a commit that includes a README whose pipeline did not complete.
 
 ## Cross-README coherence (full-stack only)
 
 Because the three targets are written by separate subagents, the same decision can be described
 inconsistently between them (a tradeoff or pattern told one way in `global` and another in `backend`).
-After the pairs finish, do a quick coherence scan across the three READMEs: does each shared decision
-(the main tradeoffs, the key patterns, the tech stack) read consistently, with no contradiction? If you
-find a conflict, re-dispatch the reviewer subagent for the README that is wrong to fix the wording —
-keep it out of your own context — and note it in the summary. Angular projects have one README, so skip
-this.
+After the pairs finish, launch one more `general-purpose` subagent (`run_in_background: false`) — do
+**not** read the READMEs yourself; they stay out of your context:
+
+> Read the three READMEs of `{PROJECT_PATH}` (`README.md`, `backend/README.md`, `frontend/README.md`)
+> and nothing else. Check that every shared decision (the main tradeoffs, the key patterns, the tech
+> stack) reads consistently across them, with no contradiction. Change nothing. Report in ≤ 10 lines:
+> `COHERENT`, or one line per conflict — which README is wrong, which section, and what the correct
+> version (per the other READMEs and PLANNING.md) says.
+
+If it reports conflicts, re-dispatch the **reviewer** subagent for each README that is wrong, quoting
+the conflict line so it knows exactly what to align — and note it in the summary. Angular projects have
+one README, so skip this.
 
 ## Finishing
 
