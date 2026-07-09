@@ -58,28 +58,38 @@ more than one thing. Two failures to avoid, both of which degrade quality:
 So the work is split two ways at once — **by topic** and **by concern** — under a strict role divide:
 
 **Analysts (cold `general-purpose` subagents) — read-only, one concern, return a list. Never edit any
-file.** For each topic, dispatch three analysts, each given exactly one topic and one job:
+file.** Two kinds run: **per-topic analysts (A, B, C)** — dispatched once per topic, each given exactly
+one topic and one job — and **one global analyst (D)** — dispatched a single time across the whole file,
+because its concern (cross-topic consistency) only exists in the space *between* topics and cannot be
+judged one section at a time.
 
-| Analyst | Concern | Mandate | Returns |
-|---------|---------|---------|---------|
-| **A — Market-fit** | Step 2b | Does coverage meet what the market asks for this topic? | Gap list: recurring requirement (with freq) → the item it needs, in the standard's format, tagged by section. Plus over-coverage flags. |
-| **B — Internal quality** | Step 3 | Does each existing item pass the standard's quality bar? | Gap list: missing item type, missing confusable-pair side, dictionary-definition rewrites, AI-exploitable gaps — each as a proposed item/edit, tagged by section. Plus an **item-by-item trace** (every current item listed PASS or change) as proof it read the whole section. |
-| **C — Adversarial interviewer** | Step 4a | Would a real interviewer find a hole? | Gap list: of the 12 questions it would ask, the ones coverage does NOT support, each as a proposed item tagged by section. |
+| Analyst | Scope | Concern | Mandate | Returns |
+|---------|-------|---------|---------|---------|
+| **A — Market-fit** | per topic | Step 2b | Does coverage meet what the market asks for this topic? | Gap list: recurring requirement (with freq) → the item it needs, in the standard's format, tagged by section. Plus over-coverage flags. |
+| **B — Internal quality** | per topic | Step 3 | Does each existing item pass the standard's quality bar? | Gap list: missing item type, missing confusable-pair side, dictionary-definition rewrites, AI-exploitable gaps — each as a proposed item/edit, tagged by section. Plus an **item-by-item trace** (every current item listed PASS or change) as proof it read the whole section. |
+| **C — Adversarial interviewer** | per topic | Step 4a | Would a real interviewer find a hole? | Gap list: of the 12 questions it would ask, the ones coverage does NOT support, each as a proposed item tagged by section. |
+| **D — Cross-topic consistency** | global (once) | Step 4 | Do the sections overlap, misplace, or carry post-junior items? | Three lists: duplicates (concept → the two sections + which to keep), misplaced items (concept → from → to), and scope-demotion candidates (item → why post-junior). Reads all sections; edits nothing. |
 
 Rules for the analyst split:
-- **One topic per analyst, one concern per analyst.** Never hand a subagent two topics or two concerns,
-  even at higher token cost — deep, atomic passes are the standard, the same rule the notes audit
-  enforces file-by-file. Three analysts × twelve topics is expected and fine.
-- Each analyst reads only what its concern needs: its own topic's section in `notes/coverage.md`, that
-  topic's `notes/{topic}/coverage.md` + `future-learning.md`, `_coverage-standard.md`, and (A and C) the
-  evidence Synthesis. Nothing else.
+- **One topic per analyst, one concern per analyst — for A, B, C.** Never hand a per-topic subagent two
+  topics or two concerns, even at higher token cost — deep, atomic passes are the standard, the same rule
+  the notes audit enforces file-by-file. Three analysts × twelve topics is expected and fine.
+- **Analyst D is the one deliberate exception: a single global pass, still one concern.** Cross-topic
+  consistency is meaningless per-topic (a duplicate lives in two sections at once), so D reads the whole
+  `notes/coverage.md` — but it is still confined to exactly one concern (consistency) and still returns
+  a list only. It never judges market-fit, item quality, or interview holes; those stay with A/B/C.
+- Each analyst reads only what its concern needs: A, B, C read their own topic's section in
+  `notes/coverage.md`, that topic's `notes/{topic}/coverage.md` + `future-learning.md`,
+  `_coverage-standard.md`, and (A and C) the evidence Synthesis. D reads all of `notes/coverage.md`, the
+  `future-learning.md` of each topic, and `_coverage-standard.md`. Nothing else.
 - **Analysts do not touch files.** They return findings only. If an analyst edits a file, the run is wrong.
 
-**The orchestrator (this context) is the only editor, and does only the global, structural, whole-file
-work**, which genuinely needs a cross-topic view but is light: Step 1 (read state + pre-audit sync),
-Step 2 (topic completeness — is a whole folder missing), Step 4 (cross-topic duplicate/misplacement/scope
-scan), and the final Step 5 sync-verify + Step 6 summary/commit. It also **consolidates and applies** each
-topic's three analyst gap-lists (Step 5).
+**The orchestrator (this context) is the only editor, and does only the light global glue** that
+genuinely needs a cross-topic view: Step 1 (read state + pre-audit sync), Step 2 (topic completeness — is
+a whole folder missing), and the final Step 5 sync-verify + Step 6 summary/commit. It **consolidates and
+applies** each topic's three analyst gap-lists (Step 5) plus Analyst D's global lists (Step 4). It no
+longer performs the cross-topic scan itself — Analyst D does the reading, the orchestrator only applies —
+which keeps even the whole-file work out of the editing context.
 
 **Per-topic loop (sequential, one topic fully done before the next):**
 1. Dispatch Analyst A, then B, then C for the topic (`run_in_background: false`). Collect their three lists.
@@ -91,6 +101,13 @@ topic's three analyst gap-lists (Step 5).
 
 Doing one topic end-to-end keeps the orchestrator's editing context small (one section at a time) and
 each commit-ready, without any analyst ever holding more than a single concern.
+
+**Global cross-topic pass (once, after the per-topic loop):** dispatch Analyst D a single time
+(`run_in_background: false`) over the finished `notes/coverage.md`, collect its three lists (duplicates,
+misplaced items, scope-demotion candidates), and apply the surviving ones in Step 4. Run it **after** all
+per-topic loops so it judges the sections in their post-edit state — otherwise it would flag overlaps the
+per-topic passes are about to change anyway. Because D reads the whole file, running it last also means
+the orchestrator never has to load every section into its own editing context just to find duplicates.
 
 ---
 
@@ -224,30 +241,49 @@ annotation-placement rules and what breaks when they are wrong.
 
 ---
 
-## Step 4 — Cross-topic consistency
+## Step 4 — Analyst D's mandate: cross-topic consistency
 
-Before applying changes, scan across all sections of `notes/coverage.md`:
+This is the single concern of **Analyst D**, run **once** as a read-only cold subagent over the whole of
+`notes/coverage.md` after the per-topic loop. Cross-topic consistency cannot be judged one section at a
+time — a duplicate lives in two sections at once — so D is the one analyst with a global view. It still
+holds exactly one concern and **returns three lists, editing nothing**; the orchestrator applies the
+survivors in Step 5.
 
-**Duplicate detection:**
-If the same concept appears in two sections (e.g. "service layer" in both Architecture and Spring Boot), keep it in the topic where an interviewer is most likely to ask it. Remove it from the other. Note the overlap in the final summary.
+**In Claude Code:** launch one `general-purpose` subagent, `run_in_background: false`:
 
-**Misplaced items:**
-If a concept is in the wrong topic (e.g. a TypeScript-specific item sitting in JavaScript, or a REST concept sitting in Spring Boot when it belongs in Architecture), move it to the correct section and update both files.
+> You are auditing `notes/coverage.md` for cross-topic consistency only — not market-fit, not item
+> quality, not interview holes (other analysts own those). Read the whole `notes/coverage.md`, the
+> `future-learning.md` of each topic folder, and
+> `notes/prompts/knowledge/coverage/_coverage-standard.md`. The section order is Angular → Angular
+> Material → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git →
+> General. Return exactly three lists, nothing else:
+> 1. **Duplicates** — the same concept in two sections (e.g. "service layer" in both Architecture and
+>    Spring Boot). For each: the concept, the two sections, and which section should keep it (the one an
+>    interviewer is most likely to ask it in) — the other is removed.
+> 2. **Misplaced items** — a concept sitting in the wrong topic (a TypeScript-specific item under
+>    JavaScript, a REST concept under Spring Boot that belongs in Architecture). For each:
+>    `concept — from → to`.
+> 3. **Scope-demotion candidates** — items clearly post-junior for the target role (mid-level
+>    architecture, senior performance work). For each: `item — one-line why it is post-junior`. Read
+>    ROADMAP.md and `notes/prompts/_shared-context.md` for the target level.
+> Do not edit any file. Return only the three lists.
 
-**Scope check:**
-If any item in an existing section is clearly post-junior (too advanced for a junior screening, belongs to mid-level architecture or senior performance work), demote it to `notes/{topic}/future-learning.md` and remove it from coverage.
+The orchestrator then applies the surviving findings in Step 5: remove the losing side of each duplicate,
+move each misplaced item to the correct section (updating both files), and demote each confirmed
+scope-demotion item to `notes/{topic}/future-learning.md`. Note every overlap, move, and demotion in the
+final summary.
 
-**Future-learning promotion check:**
-For each `notes/{topic}/future-learning.md` corresponding to a section you reviewed: are any concepts listed there now in scope for the job target read from ROADMAP + `_shared-context` (role, deadline)? Apply the same criteria from Step 3. If yes: add the concept to the correct section in `notes/coverage.md` and the corresponding `notes/{topic}/coverage.md`, and remove it from `future-learning.md`. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
+**Future-learning promotion check (orchestrator, alongside applying D):**
+For each `notes/{topic}/future-learning.md`: are any concepts listed there now in scope for the job target read from ROADMAP + `_shared-context` (role, deadline)? Apply the same criteria from Step 3. If yes: add the concept to the correct section in `notes/coverage.md` and the corresponding `notes/{topic}/coverage.md`, and remove it from `future-learning.md`. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
 
 ---
 
 ## Step 5 — Orchestrator applies the consolidated changes
 
 The orchestrator (this context) is the only editor. Apply every change directly to the files: the
-orchestrator's own findings from Step 2 (topic completeness) and Step 4 (cross-topic), plus each topic's
-consolidated Analyst A/B/C gap-list from the per-topic loop (Steps 2b + 3 + 4a). Analysts never wrote
-anything — everything they surfaced lands here.
+orchestrator's own findings from Step 2 (topic completeness), Analyst D's three cross-topic lists from
+Step 4, plus each topic's consolidated Analyst A/B/C gap-list from the per-topic loop (Steps 2b + 3 + 4a).
+Analysts never wrote anything — everything they surfaced lands here.
 
 **Files to update:**
 - `notes/coverage.md` — the primary file
