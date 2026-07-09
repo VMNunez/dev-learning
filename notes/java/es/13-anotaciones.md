@@ -17,7 +17,7 @@ Hay tres consumidores de anotaciones:
 | Herramientas de build | Tiempo de build | `@Generated` |
 | Framework / JVM | Tiempo de ejecución | `@Service`, `@Autowired`, `@Transactional` |
 
-Spring Boot lee sus anotaciones en tiempo de ejecución usando **reflection** — escanea el classpath, encuentra clases con `@Component` / `@Service` / `@Repository`, y las registra como beans automáticamente.
+Spring Boot lee sus anotaciones en tiempo de ejecución usando **reflection** — recorre el classpath, encuentra clases con `@Component` / `@Service` / `@Repository`, y las registra como beans automáticamente.
 
 ---
 
@@ -117,7 +117,7 @@ La anotación le dice a Spring que gestione esta clase como un bean. El construc
 
 ### Anotaciones de bean — registrar una clase como objeto gestionado por Spring
 
-Cuando Spring arranca tu aplicación, escanea todos los paquetes buscando clases anotadas con cualquiera de estas. Crea una instancia de cada una (un bean) y la gestiona — conectando dependencias, gestionando transacciones, etc. Los cuatro estereotipos siguientes son variaciones de `@Component`; solo se diferencian en qué capa marcan, lo que ayuda tanto a Spring como a los desarrolladores a entender el rol de cada clase.
+Cuando Spring arranca tu aplicación, recorre todos los paquetes buscando clases anotadas con cualquiera de estas. Crea una instancia de cada una (un bean) y la gestiona — conectando dependencias, gestionando transacciones, etc. Los cuatro estereotipos siguientes son variaciones de `@Component`; solo se diferencian en qué capa marcan, lo que ayuda tanto a Spring como a los desarrolladores a entender el rol de cada clase.
 
 ```java
 @Component   // bean genérico de Spring
