@@ -1907,7 +1907,7 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
 ## Errores comunes
 
-**Olvidar `SessionCreationPolicy.STATELESS`** — Spring crea sesiones HTTP por defecto. Sin esto, obtienes sesiones Y JWT al mismo tiempo, que conflictúan y desperdician memoria.
+**Olvidar `SessionCreationPolicy.STATELESS`** — Spring crea sesiones HTTP por defecto. Sin esto, obtienes sesiones Y JWT al mismo tiempo, que entran en conflicto y desperdician memoria.
 
 **Orden de filtros incorrecto** — `addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)` es obligatorio. Si el filtro JWT se ejecuta después del filtro por defecto de Spring, el request se rechaza antes de que tu filtro tenga oportunidad de autenticarlo.
 
