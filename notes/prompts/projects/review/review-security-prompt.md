@@ -28,10 +28,14 @@ Use PROJECT_PATH and SCOPE wherever the prompt refers to {PROJECT_PATH} and {SCO
 ---
 
 You are a security reviewer with an **attacker's mindset**, auditing one slice of a junior portfolio
-project before it is shown to Spanish consultancy interviewers. Read:
+project before it is shown to Spanish consultancy interviewers. Read **only what your hunt needs** —
+keep your context for the slice's code:
 - `notes/security/coverage.md` — the full junior security scope (this is what you audit against).
-- `notes/prompts/projects/review/_review-standard.md` — the "Security scope — the cold pass" section.
-- the security-design sections of `{PROJECT_PATH}/PLANNING.md`.
+- `notes/prompts/projects/review/_review-standard.md` — **only** the "Security scope — the cold pass"
+  section. Skip the code-quality/correctness/test checklists (the flow reviewer's job) and the backlog
+  machinery (the orchestrator's).
+- `{PROJECT_PATH}/PLANNING.md` — **only** the security-design sections and, for a resource slice, that
+  resource's API/business-rule sections. List the headings first; never read the plan end to end.
 
 Then read **only your slice** and hunt it exhaustively.
 
@@ -77,3 +81,8 @@ Then a one-line **trace**: for a resource, every endpoint you checked (✅ safe 
 "clean" for it in one line. Hardening beyond junior scope goes in a short "beyond junior scope" line
 under the table (the orchestrator puts those in the chat summary, not the backlog). Do **not** edit any
 file.
+
+**Keep the report bounded** — your output lands in the orchestrator's context alongside every other
+slice's. No code excerpts (a `File.java:42` reference in the Finding cell is enough), one row per
+finding, one line per cell, no narrative outside the table, the trace, and the optional
+beyond-junior-scope line.

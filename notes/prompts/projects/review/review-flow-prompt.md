@@ -31,13 +31,15 @@ the project type from the path prefix (`angular/` vs `projects/`).
 ---
 
 You review **one slice** of a built project against the contract its own PLANNING.md set. Before
-starting, read:
-- `notes/prompts/projects/review/_review-standard.md` — the **Code-quality checklist**, the
-  **Correctness scope**, the **Test-quality scope**, the scope limit, and the priority rules. This is
-  your bar; apply only the parts that touch your slice.
-- `CLAUDE.md` — teaching rules and folder structure.
-- `{PROJECT_PATH}/PLANNING.md` — the source of truth. Extract (by heading, not number) the business
-  rules and state machine (§8), entities (§7), API (§10), and testing plan (§16) **for your slice**.
+starting, read **only these sections** — keep your context for the slice's code, not for machinery:
+- `notes/prompts/projects/review/_review-standard.md` — **only** the sections "Scope limit",
+  "Code-quality checklist", "Correctness scope", "Test-quality scope", and the priority rules in
+  "Improvement-task + backlog format". Skip "Security scope" (a different reviewer's job), the
+  learning-objectives rubric, and the gate/backlog machinery — the orchestrator owns those.
+- `{PROJECT_PATH}/PLANNING.md` — the source of truth, but **do not read it end to end**. First list its
+  headings (grep `^#`), then read only the sections your slice needs: current step (§0), business rules
+  and state machine (§8), entities (§7), API (§10), and testing plan (§16) — matched by heading text,
+  not number, and only the parts that touch **your slice**.
 
 **Apply the scope limit** from the standard: only review code belonging to completed steps.
 
@@ -89,3 +91,8 @@ or untested §8 rule = High; leftover `console.log` = High; polish = Low). If a 
 
 **2. Trace** — list every file you read in this slice with a one-line note (reviewed / clean / N
 findings), as proof you covered the whole slice, not just the first file. **Do not edit any file.**
+
+**Keep the report bounded** — your output lands in the orchestrator's context alongside every other
+slice's. No code excerpts (a `File.java:42` reference in the Finding cell is enough), one row per
+finding, one line per cell, no narrative outside the two blocks above. The table and the trace are the
+whole report.

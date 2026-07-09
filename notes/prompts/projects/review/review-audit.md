@@ -81,7 +81,9 @@ yourself.
 Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next. Put
 each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
-summary table (`Project | Quality | High | Medium | Low`). Otherwise, follow the procedure once.
+summary table (`Project | Quality | High | Medium | Low`). **Once a project's backlog is written, drop
+its slice tables from your working state** — carry forward only its summary row; the detail lives in
+its `PROJECT-BACKLOG.md`. This keeps a 7-project run from drowning your context in stale findings. Otherwise, follow the procedure once.
 
 ## Single-project procedure
 
@@ -100,8 +102,11 @@ Derive the project type from the path. **Full-stack:** apply the 30-day gate fro
 just the flow reviewers (Steps 3–4) — report their findings in chat, write no backlog, no security pass,
 no commit. Skip Steps 1, 2, and 5's backlog/commit. **Full-stack:** run every step.
 
-> The slice reviewers only **read** — they never edit and never commit — so you may run several in
-> parallel (there is no git-index contention). Keep it manageable; collect every findings table.
+> The slice reviewers only **read** — they never edit and never commit — so run them in parallel:
+> dispatch each step's independent subagents **in a single message** (parallel tool calls), in batches
+> of at most ~4 so no batch's combined reports flood your context at once. Collect every findings
+> table; the reviewers are instructed to return bounded tables with no code excerpts — if one comes
+> back with long code dumps or narrative, keep only its table + trace and discard the rest.
 
 ### Step 1 — Backend, one flow + one security reviewer per resource
 For **each** backend resource, dispatch two `general-purpose` subagents, `run_in_background: false`:
@@ -136,10 +141,14 @@ Collect every table. (For Angular 01–06 this is the whole review — report in
 
 ### Step 4 — Learning-objectives pass (one subagent)
 Dispatch one `general-purpose` subagent, `run_in_background: false`:
-> Read `notes/prompts/projects/review/_review-standard.md` ("Learning-objectives rubric") and
-> `{PROJECT_PATH}/PLANNING.md` §3 (new concepts) / §4 (review concepts). For each concept, check the
-> code and mark ✅ Demonstrated / ⚠️ Shallow / ❌ Missing, with a one-line note. Return the table + the
-> tally. **Do not edit any file.**
+> Read `notes/prompts/projects/review/_review-standard.md` ("Learning-objectives rubric" — that section
+> only) and, from `{PROJECT_PATH}/PLANNING.md`, only §3 (new concepts) / §4 (review concepts). Then
+> work **concept by concept, not file by file**: for each concept, locate where it should live with a
+> targeted search (grep for its annotation/class/pattern — e.g. `@RestControllerAdvice`,
+> `SecurityContextHolder`, `takeUntilDestroyed`) and read only the file(s) that hit, enough to judge
+> whether the use is meaningful. Never read the codebase end to end. Mark each concept ✅ Demonstrated /
+> ⚠️ Shallow / ❌ Missing with a one-line note (file:line for ✅/⚠️). Return only the table + the tally —
+> no code excerpts. **Do not edit any file.**
 
 ### Step 5 — Merge into the backlog + hand over the commit (orchestrator)
 You now hold a findings table per slice (flow + security), plus the learning-objectives verdict. Merge
@@ -188,6 +197,9 @@ git commit -m "docs: review {PROJECT_PATH} — <one line summary of main finding
   security reviewer. They only read, so they may run in parallel; never let one subagent do both.
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
 - **Security findings are always High**, and findings are deduplicated across every slice.
+- **Bounded reports only.** Every subagent returns its findings table + trace and nothing else — no
+  code excerpts, no narrative. If one overflows, keep its table + trace and discard the rest; never let
+  a verbose reviewer crowd the merge.
 - Angular 01–06 are informational only — frontend flow reviewers, report in chat, never a backlog or a
   commit for them.
 
