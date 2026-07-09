@@ -198,6 +198,9 @@ git commit -m "<that file's commit message>"
   the command.
 - **One atomic commit per file.** Never batch notes, never `git add .`, never commit
   `notes-worklist.md`.
+- **Before every `git add`/`git commit`, run `git status` and confirm only the intended `notes/`
+  paths are staged.** A project code file left staged from an earlier, unrelated step can silently
+  ride along into a notes commit — `git restore --staged` anything that isn't a notes file.
 - **Two subagents per file, author then reviewer; rows are sequential.** Never overlap them — parallel
   commits race the git index, and a reviewer must never audit an unfinished file.
 - Never skip the `es/` mirror or the reviewer pass.
