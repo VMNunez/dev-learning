@@ -6,21 +6,22 @@ the full quality standard, hands-off, in two shapes:
 - `SCOPE = folder` — audit and complete a whole topic (gap analysis → build every file needed).
 - `SCOPE = file` — audit and complete one file (a note you just wrote, or one to fix).
 
-Both shapes use the same quality pipeline: every file is **authored by one cold subagent (A), then
-audited/fixed by a second, independent English/structure reviewer (B), then read cold by a third
-`en/`-blind Spanish reviewer (C)** before it is committed. Each reviewer has no stake in the draft, so
-it reads against the bar and catches what the author trusted; the Spanish reviewer never sees the `en/`
-so it can judge the `es/` as the native study text Victor actually reads. No worklist approval, no
-per-file launching — one command does everything.
+Both shapes use the same four-stage quality pipeline, one cold subagent per stage, `en/` as the
+canonical source: **English author (A) → English reviewer (B) → translator (T) → `en/`-blind Spanish
+reviewer (C)**. A and B finish and review the English before any Spanish exists; T then translates the
+final English into `es/`; C reads the `es/` cold and commits. Each stage has no stake in the previous
+one's work, so it catches what the last trusted — and because C never sees the `en/`, it judges the
+`es/` as the native study text Victor actually reads. No worklist approval, no per-file launching —
+one command does everything.
 
 > **▶ Run first:** `coverage-prompt` for the topic — notes-audit builds notes to cover every item in
 > `coverage.md`; if coverage is missing or stale, the notes will be too.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_note-quality-standard.md` (the bar) · `notes-plan-prompt.md` (folder analysis → worklist) ·
-`notes-inspect-prompt.md` (per-file quality flags → worklist rows) · `notes-write-prompt.md` (author) ·
-`notes-review-prompt.md` (English/structure reviewer) · `notes-review-es-prompt.md` (`en/`-blind
-Spanish reviewer, owns the commit).
+`notes-inspect-prompt.md` (per-file quality flags → worklist rows) · `notes-write-prompt.md` (English
+author) · `notes-review-prompt.md` (English reviewer) · `notes-translate-prompt.md` (translator
+`en/`→`es/`) · `notes-review-es-prompt.md` (`en/`-blind Spanish reviewer, owns the commit).
 
 > **The pipeline always commits** — one atomic commit per file, made by the Spanish reviewer (the last
 > stage). There is no preview mode: the history is atomic and git-reversible, so a bad file is one
@@ -138,10 +139,10 @@ Wait for each inspector before launching the next. When all inspectors are done,
 `notes/{TOPIC}/notes-worklist.md` and collect every row still `[ ]`, in ascending row-number order. If
 none, report "notes already complete" and stop.
 
-### Phase 2 — Build every row (author → reviewer → Spanish reviewer, sequential)
+### Phase 2 — Build every row (author → reviewer → translator → Spanish reviewer, sequential)
 
-For each unchecked row **in order**, run the three-subagent pipeline below. Never overlap rows or the
-three subagents of a row — each reviewer must see a finished file, and commits must not race on the git
+For each unchecked row **in order**, run the four-stage pipeline below. Never overlap rows or the four
+stages of a row — each stage must see a finished predecessor, and commits must not race on the git
 index.
 
 Proceed exactly as the **"Per-file pipeline"** section at the bottom describes, using the row's
@@ -162,42 +163,65 @@ unvalidated auto-generated content, in which case use `first-pass`. Then do "Fin
 
 ## Per-file pipeline (used by both scopes)
 
-**Subagent A — author.** Launch one `general-purpose` subagent, `run_in_background: false`:
+Four stages, always in this order: **English author (A) → English reviewer (B) → translator (T) →
+Spanish reviewer (C)**. `en/` is the canonical source: A and B finish and review the English *before*
+any Spanish exists, then T produces the `es/` from that final English, then C reads the `es/` cold and
+commits. Each stage is a cold subagent, `run_in_background: false`, and you **wait for each before
+launching the next** — never overlap them (parallel commits race the git index; a stage must never see
+an unfinished predecessor).
+
+> **Translation-only rows.** If the worklist row's task is `create-es` (the `en/` is already final and
+> valid, only the Spanish is missing), **skip A and B** — there is nothing to author or English-review.
+> Run only **T then C**. For every other row, run all four stages.
+
+**Subagent A — English author.** Launch one `general-purpose` subagent:
 
 > Read `notes/prompts/knowledge/notes/notes-write-prompt.md` and execute it in full for a single file:
 > - `TOPIC` = «topic» · `FILE` = «file» · `TASK` = «task» · `REWRITE_MODE` = «mode»
 >
-> Do Steps 1–4.5 (resolve TODOs, quality audit, complete to the standard, mirror to `es/`,
-> self-check gate). **Do NOT commit and do NOT mark any worklist row** — an independent reviewer runs
-> next and owns the commit. Leave your work in the working tree. Report the files you touched, the
-> coverage status, and the one-line commit message you'd use.
+> Work in **English only** (`en/`): resolve TODOs (reading the `es/` only to find Victor's markers),
+> quality-audit, complete to the standard, self-check. **Do NOT create or edit the `es/` file, do NOT
+> commit, do NOT mark any worklist row.** Leave your `en/` work in the working tree. Report the
+> sections you touched (T needs this), the TODOs you resolved, and the coverage status.
 
-Wait for A. If A reports it could not complete the file (blocked, missing context), skip the reviewer,
-leave the row `[ ]` (folder mode), note it, and move on — do not commit a partial file.
+Wait for A. If A reports it could not complete the file (blocked, missing context), skip B/T/C, leave
+the row `[ ]` (folder mode), note it, and move on — do not translate or commit a partial file.
 
-**Subagent B — English/structure reviewer.** Launch a second, independent `general-purpose` subagent,
-`run_in_background: false`:
+**Subagent B — English reviewer (`en/` only).** Launch a second, independent `general-purpose`
+subagent:
 
 > Read `notes/prompts/knowledge/notes/notes-review-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
 >
-> Audit the just-authored file hard against the standard, fix what falls short in `en/` and guarantee
-> `en/`↔`es/` structural parity. **Do NOT judge the native-Spanish read and do NOT commit or mark the
-> row — the Spanish reviewer runs next and owns the commit.** Report your verdict (PASS/FIXED + what
-> you changed) and files touched.
+> Audit the just-authored `en/` file hard against the standard and fix what falls short in English.
+> The `es/` does not exist yet — there is nothing bilingual to check. **Do NOT touch `es/`, do NOT
+> commit or mark the row.** Report your verdict (PASS/FIXED), the section-by-section trace, and files
+> touched.
 
-Wait for B before starting C.
+Wait for B before starting T.
 
-**Subagent C — Spanish reviewer (`es/` only, `en/`-blind).** Launch a third, independent
-`general-purpose` subagent, `run_in_background: false`:
+**Subagent T — translator (`en/` → `es/`).** Launch a third, independent `general-purpose` subagent:
+
+> Read `notes/prompts/knowledge/notes/notes-translate-prompt.md` and execute it in full:
+> - `TOPIC` = «topic» · `FILE` = «file»
+>
+> Treat the finished `en/` file as the canonical source and produce (or re-sync) its `es/` counterpart:
+> exact structural parity, native-Spanish prose, clear any leftover `es/` TODO marker. **Do NOT change
+> the English, do NOT commit or mark the row.** Report TRANSLATED/RE-SYNCED, the section trace, and any
+> English sentence you suspect is wrong.
+
+Wait for T before starting C.
+
+**Subagent C — Spanish reviewer (`es/` only, `en/`-blind).** Launch a fourth, independent
+`general-purpose` subagent:
 
 > Read `notes/prompts/knowledge/notes/notes-review-es-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
 >
 > Read ONLY the `es/` counterpart (never open the `en/` file), audit it as a standalone native-Spanish
 > study text, fix calque and flow directly, then — as the last stage — mark the worklist row `[x]` if
-> one exists and commit this one file atomically. Report your verdict (PASS/FIXED + Spanish fixes), any
-> structural gaps it could not fix, files touched, and the commit hash.
+> one exists and commit this one file atomically (`en/` + `es/`). Report your verdict (PASS/FIXED +
+> Spanish fixes), any structural gaps it could not fix, files touched, and the commit hash.
 
 Wait for C before starting anything else.
 
@@ -218,7 +242,7 @@ build), leave the worklist in place and list the failed row so it can be re-run 
 - **One file per subagent context — ALWAYS, even at higher token cost. This is the rule that protects
   quality.** A subagent that carries a whole folder (or several files) in its context degrades its
   attention toward the end and silently skims — the later files get a shallow pass, exactly the failure
-  Victor caught. So: never dispatch a subagent to author, review, inspect, polish, translate, or
+  Victor caught. So: never dispatch a subagent to author, review, inspect, translate, polish, or
   quality-check more than one file at a time. Whatever the task (full audit, TODO resolution, a narrow Spanish-prose
   or docs-link pass), it is always **one cold subagent per file**, run sequentially. Deep, atomic,
   file-by-file passes are the standard here — paying more tokens for one-file-per-subagent is the
@@ -235,9 +259,12 @@ build), leave the worklist in place and list the failed row so it can be re-run 
 - **Before every `git add`/`git commit`, run `git status` and confirm only the intended `notes/`
   paths are staged.** A project code file left staged from an earlier, unrelated step can silently
   ride along into a notes commit — `git restore --staged` anything that isn't a notes file.
-- **Three subagents per file, author → English/structure reviewer → Spanish reviewer; rows are
-  sequential.** Never overlap them — parallel commits race the git index, a reviewer must never audit
-  an unfinished file, and only the last stage (C) commits. A and B never commit; C always does.
-- Never skip the `es/` mirror, the reviewer pass, or the Spanish reviewer pass.
+- **Four subagents per file, English author → English reviewer → translator → Spanish reviewer; rows
+  are sequential.** Never overlap them — parallel commits race the git index, a stage must never see an
+  unfinished predecessor, and only the last stage (C) commits. A, B, and T never commit; C always does.
+  (`create-es` rows skip A and B — run only T → C.)
+- **`en/` is canonical.** A and B own the English; T renders it into `es/`; only C touches the `es/`
+  after T. Never let the author or English reviewer write the `es/`.
+- Never skip the translation pass or either reviewer pass.
 
 ````

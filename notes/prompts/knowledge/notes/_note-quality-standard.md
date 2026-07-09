@@ -98,8 +98,11 @@ Each topic folder has `en/` and `es/` subfolders. `coverage.md`, `future-learnin
   counterpart too.
 - **TODO resolved in an `en/` file** → apply the equivalent fix in the `es/` counterpart too.
 
-**Victor studies from the `es/` files.** They are primary — apply changes there first, then mirror
-to `en/`.
+**`en/` is the canonical source; `es/` is its first-class translation.** Author and correct content in
+`en/` first, then translate into `es/`. Victor *studies* from `es/`, so it must read as native Spanish
+and gets equal care — but the source of truth when writing is the English. Intentional trims are made
+in `en/` (never restore to `es/` what is absent from `en/`); a TODO Victor writes in `es/` is read as
+input, resolved in `en/`, then re-synced into `es/`.
 
 ---
 

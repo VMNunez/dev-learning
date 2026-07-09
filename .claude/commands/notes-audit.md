@@ -8,6 +8,6 @@ Read `notes/prompts/knowledge/notes/notes-audit.md` and execute it in full as th
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- The prompt's own config block and instructions are authoritative — execute them exactly (plan → one cold inspector per existing file → per-file author + English/structure reviewer + en-blind Spanish reviewer subagents, en/es sync, atomic commit per file).
+- The prompt's own config block and instructions are authoritative — execute them exactly (plan → one cold inspector per existing file → per-file four-stage chain: English author → English reviewer → translator en→es → en-blind Spanish reviewer, with en/ as canonical source, atomic commit per file).
 - If the configuration is empty or incomplete, ask for the missing config-block values before launching any subagent.
 - The pipeline always commits — one atomic commit per file, made by the Spanish reviewer (the last stage).

@@ -107,7 +107,7 @@ would re-create exactly the whole-folder saturation this split exists to avoid. 
 
 ### Step 1 — Survey TODOs across the folder (read-only)
 
-Scan both `es/` (primary — that is where Victor adds markers) and `en/` for TODO markers
+Scan both `es/` (where Victor adds his markers) and `en/` for TODO markers
 (`TODO:`, `<!-- TODO: -->`, `// TODO`). Do NOT resolve them here — resolving a TODO means editing
 note prose, which is the write prompt's job. Instead:
 - List every file that contains TODOs, with a count and a one-line description of each.

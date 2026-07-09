@@ -1,18 +1,23 @@
-# Notes write prompt — the AUTHOR component (one file)
+# Notes write prompt — the ENGLISH AUTHOR component (one file, en/ only)
 
-**Internal component.** This is the **author** in the notes pipeline. You normally don't launch it —
-`notes-audit.md` dispatches it as a cold subagent, one per file, then hands the result to
-`notes-review-prompt.md` (the reviewer). It is documented here so the audit prompt can point a
-subagent at it; you can also run it standalone to draft/correct a single file.
+**Internal component.** This is the **English author** in the notes pipeline — stage **A**. You
+normally don't launch it — `notes-audit.md` dispatches it as a cold subagent, one per file, then hands
+the result down the chain: English reviewer (B) → translator (T) → Spanish reviewer (C). It is
+documented here so the audit prompt can point a subagent at it; you can also run it standalone to
+draft/correct a single `en/` file.
 
-**What it does.** Takes a single note file and does the heavy, high-standard work on it: resolves its
-TODOs, audits its quality, completes it to the full writing standard, and mirrors every change to the
-Spanish counterpart. It is the only component that writes rich note prose.
+**What it does.** Takes a single `en/` note file and does the heavy, high-standard authoring on it:
+resolves its TODOs, audits its quality, and completes it to the full writing standard. **It works only
+in English (`en/`).** It never writes the Spanish file — translation is a separate stage (T) that runs
+on the *finished, reviewed* English, so the Spanish is produced once from a stable source instead of
+being written and re-synced repeatedly.
 
-**Why one file at a time.** The writing standard is long and demanding. Applying it to a whole folder
-at once overloads the model's attention and the standard is the first thing that slips — which is
-exactly why the old whole-folder audit skipped work. A cold subagent bounded to one file keeps the
-full attention budget on that file, so the standard actually gets applied every time.
+**Why English-only, and why one file at a time.** Writing rich English prose to the standard and
+translating it to natural Spanish are two different cognitive jobs; doing both in one context means the
+Spanish gets whatever attention is left after the heavy English work. And the writing standard is long
+enough that applying it to a whole folder at once overloads attention and the standard is the first
+thing that slips. So authoring is bounded to **one `en/` file, in English only** — the full attention
+budget stays on writing that file well.
 
 ---
 
@@ -54,14 +59,11 @@ or {REWRITE_MODE}.
 
 ---
 
-I want you to do deep work on ONE notes file: {FILE}. Do only what {TASK} asks — do not wander into
-other files or folder-level work.
+I want you to do deep work on ONE English notes file: {FILE}. Do only what {TASK} asks — do not wander
+into other files or folder-level work. **You write English only.** You never create or edit the `es/`
+file — a later stage translates your finished English. Your single deliverable is a `{FILE}` that is at
+the full standard in English.
 
-> **If `{TASK}` is `create-es`** (translate an already-finished `en/` file into its missing `es/`
-> counterpart): the `en/` file is validated — do NOT audit or change it. Do only Step 4 (translate
-> `en/` → create the `es/` file, Spanish filename, natural Spanish prose) and Step 5 (mark the row).
-> Skip Steps 1–3. Then commit/report as usual.
->
 > **Before writing a new file or a new section, read the sibling files already in `{FILE}`'s `en/`
 > folder** — enough to avoid duplicating an example or a concept another note already carries, to keep
 > terminology consistent, and to wire forward/back references correctly (a note that references a file
@@ -73,32 +75,35 @@ Before starting, read:
 - notes/prompts/_shared-context.md — my profile and the Spanish job market 2026.
 - notes/prompts/knowledge/notes/_note-quality-standard.md — THE writing standard. This is your bar. Apply
   it in full to everything you write this run: zero-assumption, second-order completeness, signature
-  elements, the anticipate-the-TODO pass, format mode, bilingual rules, Docs link priority. Before
-  writing a new file, read the first section of notes/java/es/08-excepciones.md to calibrate.
+  elements, the anticipate-the-TODO pass, format mode, Docs link priority. Before writing a new file,
+  read the first section of notes/java/es/08-excepciones.md to calibrate the *depth* (read it for the
+  texture, not to copy Spanish — you write English).
 
 ---
 
-## Scope — this run touches exactly two files
+## Scope — this run touches exactly ONE file
 
-- `{FILE}` (the `en/` file), and
-- its `es/` counterpart, identified by the **same number prefix** (e.g. `en/08-exceptions.md` →
-  `es/08-excepciones.md`). Victor studies from `es/`, so apply changes there first, then mirror to
-  `en/`. If the `es/` counterpart does not exist yet, create it as part of this run.
+- `{FILE}` (the `en/` file) — and nothing else, except CLAUDE.md's "next file:" counter, and only if
+  this run creates a new numbered file.
 
-Do **not** touch any other file except CLAUDE.md's "next file:" counter, and only if this run creates
-a new numbered file. Do not read or edit `coverage.md`, `future-learning.md`, or any sibling note —
-if you notice a gap that belongs elsewhere, mention it in the summary instead of acting on it. The
-folder-level survey is the plan prompt's job.
+You do **not** create, read for editing, or touch the `es/` counterpart to *write* it — that is the
+translator's job (stage T). The one exception is **reading** the `es/` file to find Victor's TODO
+markers (see Step 1): Victor adds his doubts in the `es/` file, so you read them there as *input*, but
+you write your answer in `{FILE}` (English). You never edit the `es/` file.
+
+Do not read or edit `coverage.md`, `future-learning.md`, or any sibling note's body — if you notice a
+gap that belongs elsewhere, mention it in the summary instead of acting on it.
 
 ---
 
 ## Step 1 — Resolve TODOs (if TASK includes them)
 
-Scan `{FILE}`'s `es/` counterpart first (that is where Victor adds markers), then the `en/` file.
-Markers appear as `TODO:`, `<!-- TODO: -->`, or `// TODO`. Two forms:
+Victor adds his doubts as markers in the **`es/`** file (that is where he studies), so **read the
+`es/` counterpart to find them**, then also scan `{FILE}` itself. Markers appear as `TODO:`,
+`<!-- TODO: -->`, or `// TODO`. Two forms:
 
 - **Instruction TODOs** — a direct correction or task (`TODO: add example`, `TODO: rewrite this
-  paragraph`). Apply the fix literally.
+  paragraph`). Apply the fix literally, in English, in `{FILE}`.
 - **Question TODOs** — Victor writes a doubt he wants clarified (`TODO: why does Spring create a new
   context here?`). These are NOT Q&A requests. Resolve the doubt by weaving the answer into the
   surrounding prose of the paragraph it appears in — the question itself must never appear in the
@@ -106,20 +111,21 @@ Markers appear as `TODO:`, `<!-- TODO: -->`, or `// TODO`. Two forms:
   or a subheading for the question.
 
   **Banned opening words — hard rule, no exceptions.** The sentence that resolves a question TODO must
-  never start with a confirmation/agreement word, in either language: "Sí," / "Yes," / "Exacto," /
-  "Exactly," / "Correcto," / "Efectivamente," / "Claro," / "Tu intuición es correcta" / "Buena
-  pregunta" — or anything whose function is to validate before the fact appears. If the first draft
-  starts with one, delete it and restructure so the sentence leads with the fact itself.
-  - ❌ "Exacto: Java se niega a compilar precisamente porque ese fichero puede no existir…"
-  - ✅ "Java se niega a compilar precisamente porque ese fichero puede no existir…"
+  never start with a confirmation/agreement word: "Yes," / "Exactly," / "Correct," / "Good question" —
+  or anything whose function is to validate before the fact appears. If the first draft starts with
+  one, delete it and restructure so the sentence leads with the fact itself.
+  - ❌ "Exactly: Java refuses to compile precisely because that file may not exist…"
+  - ✅ "Java refuses to compile precisely because that file may not exist…"
 
   The test: after the fix, a reader who did not see the TODO should not be able to tell there was ever
   a question there. Run this test on every question-TODO resolution. Section headings derived from
   question TODOs use a descriptive noun phrase ("Constructors in subclasses"), never a question format
   ("Can a subclass add its own constructor?").
 
-For each TODO: identify what Victor wants, apply the fix at that exact location in `es/`, mirror the
-equivalent fix to `en/`, remove the marker in both files, and note what changed in the summary.
+For each TODO: identify what Victor wants, apply the fix in English at the matching location in
+`{FILE}`, and remove any TODO marker that lives in `{FILE}`. **Leave the marker in the `es/` file
+untouched** — the translator (T) re-syncs the `es/` from your finished English and clears it there.
+Note in the summary which TODOs you resolved so T knows which `es/` sections changed.
 
 ## Step 2 — Quality audit of this file (rule 2)
 
@@ -128,11 +134,11 @@ repeating patterns, correct format mode, file-level and section-level `Docs:` li
 voice, forward-reference notes, cross-topic preview callouts.
 
 **Action rules:**
-- **Missing `Docs:` links** (file- or section-level) → **add them directly**, in both modes. They are
-  new content, not modifications to existing text. Follow the link priority in the standard. If you
-  are not certain of the exact URL/sub-section, write `Docs: TODO — add link` — never guess.
+- **Missing `Docs:` links** (file- or section-level) → **add them directly**. They are new content,
+  not modifications to existing text. Follow the link priority in the standard. If you are not certain
+  of the exact URL/sub-section, write `Docs: TODO — add link` — never guess.
 - **Forward references / cross-topic references** without a note or preview callout → **add the
-  note/callout directly** in both modes — it is new content, not a modification.
+  note/callout directly** — it is new content, not a modification.
 - **All other violations in existing prose** (wrong voice, wrong format mode, missing WHY, missing
   patterns):
   - `standard` mode → report in the summary only. Do not change the text (unless TASK explicitly
@@ -142,61 +148,36 @@ voice, forward-reference notes, cross-topic preview callouts.
 ## Step 3 — Complete the file to the standard (rule 3)
 
 If TASK asks to create the file, add a section, or complete a thin one, write it to the full standard
-in `_note-quality-standard.md`. New content always follows the standard fully, in both modes. When
-creating a new numbered file, use the next available number from CLAUDE.md and update that counter.
+in `_note-quality-standard.md`. When creating a new numbered file, use the next available number from
+CLAUDE.md and update that counter.
 
 If TASK is `create-file` for `00-intro-{topic}.md`, cover the four intro points from the standard:
 high-level mental model, key concepts that appear everywhere, how it differs from JS/TS/React, and a
 one-paragraph map of the rest of the notes.
 
-## Step 4 — Mirror to `es/`
+## Step 4 — Self-check gate (before you finish)
 
-Every change above must exist in both files. Apply to `es/` first (Victor's primary), then `en/`.
-Spanish prose must read as natural Spanish, not a word-for-word translation — fix calque vocabulary
-("escanear" → "leer", "retornar" → "devolver") and English word order. Translate structural labels
-(`Purpose:` → `Propósito:`, `File:` → `Archivo:`; `Docs:` stays).
-
-## Step 4.5 — Self-check gate (before you mark done or commit)
-
-Nothing reviews this file after you — under the orchestrator it is committed unread. So verify your
-own work before finishing. Re-read the file you produced and confirm, honestly:
+The English reviewer (B) audits this file next, but do not lean on that — hand off clean work. Re-read
+`{FILE}` and confirm, honestly:
 - You ran the **anticipate-the-TODO pass** — you actually wrote out the 3–5 doubts Victor would raise
   and each is answered in the prose (mechanism, not just behaviour).
 - Signature texture is present where the section warrants it (worked example, a diagram for anything
   structural, callouts, tables explained) — and no section visibly drops below its neighbours.
-- `en/` and `es/` are truly in sync — same sections, same code, and the `es/` reads as native Spanish.
 - No example or concept duplicates a sibling file you read; forward/cross-topic references are marked.
 - Every `Docs:` link is real (or left as `Docs: TODO — add link`), never guessed.
 
-If any check fails, fix it now — do not commit a file that misses its own bar. This gate is the
-replacement for the human review that used to happen before the commit.
-
-## Step 5 — Mark this file done in the worklist (automatic)
-
-Derive the worklist path from the topic root of `{FILE}` — e.g. `{FILE} = notes/java/en/08-exceptions.md`
-→ `notes/java/notes-worklist.md`. If that file exists, find the row whose path matches `{FILE}` and
-flip its checkbox from `[ ]` to `[x]` — edit only that one line (`- [ ] #N · {FILE}` → `- [x] #N · {FILE}`),
-change nothing else. This is how progress is tracked without Victor marking anything by hand.
-
-**All-or-nothing.** If you cannot complete the file to the bar (blocked on a `File:` path, unsure of a
-mechanism, missing project context), do NOT commit a partial file and do NOT flip the checkbox. Leave
-the row `[ ]`, revert your partial edits, and report what blocked you so it can be re-run cleanly.
-
-If the worklist file does not exist (this run was launched directly, not from a plan), skip this step
-silently — there is nothing to mark.
+If any check fails, fix it now.
 
 ---
 
 ## First-pass checklist — run on every section (first-pass mode only)
 
 > **IMPORTANT:** The checklist runs on **every section unconditionally** — including sections with no
-> TODO markers. TODOs and the first-pass checklist are two independent passes. Resolving all TODOs
-> does not complete the first-pass run. After finishing TODOs, continue with the checklist on every
-> remaining section.
+> TODO markers. TODOs and the first-pass checklist are two independent passes. After finishing TODOs,
+> continue with the checklist on every remaining section.
 
 Keep all code blocks and the `Purpose:`/`Docs:` labels unchanged — only rewrite prose. Exception: fix
-a `File:` line whose path exists in no project (real project path, a representative generic path, or
-omit); do not touch a valid `File:` line. You MAY reorder sections if a different order is more
+a `File:` line whose path exists in no project. You MAY reorder sections if a different order is more
 logical for learning (foundational → complex); note it in the summary with a one-line justification.
 
 - **Voice and person** — Does the section address Victor directly ("you use this when…")? Passive
@@ -211,39 +192,32 @@ logical for learning (foundational → complex); note it in the summary with a o
 - **Second-order completeness** — Apply all four rules from the standard (mechanism not just usage;
   confusable pairs contrasted; exact scope stated; JS/TS anchor only when truly equivalent).
 - **Depth calibration** — Apply "Calibrate depth to Victor's bar" and the signature-elements block
-  from the standard. Compare each section against its neighbours in the same file: if they carry the
-  signature texture (diagram, worked example, callouts, table explained) and this one doesn't, raise
-  it to match. A file must not visibly shift standard halfway through.
-- **Translation quality (`es/` only)** — natural Spanish, not a calque of the English.
+  from the standard. Compare each section against its neighbours: raise any that drops below.
 
 After a first-pass run, note in the summary that the file is now validated so Victor switches back to
 `standard` for future runs.
 
 ---
 
-## Output — report and commit
+## Output — report (you do NOT commit)
 
-Give the file its coverage status (✅ Complete / 🔧 Fixed / ➕ Added, from the standard) and a short
-summary of what changed in both `en/` and `es/`.
+You never commit and never mark the worklist row — later stages (T translates, C commits) own that.
+Leave your English work in the working tree and report:
+
+- The file's coverage status (✅ Complete / 🔧 Fixed / ➕ Added, from the standard).
+- A short summary of what changed in `{FILE}`, and **which sections you touched** — the translator
+  needs this to know what to (re)translate in the `es/`.
+- Which TODOs you resolved (so T clears the matching `es/` markers).
 
 If any issues remain in existing prose that you did not change (standard mode, no TODO), list them so
 Victor can add a TODO next run:
 
-**Reported issues — existing text (require a TODO to fix):**
+**Reported issues — existing English text (require a TODO to fix):**
 - `{FILE}` — [issue and which rule it violates]
 
-Then the commit — one command per code block:
-
-```
-git add <the en/ file, the es/ file, and CLAUDE.md if the counter changed — exact paths, no wildcards>
-```
-
-```
-git commit -m "docs: <type> {TOPIC} note <NN> — <one-line summary>"
-```
-
-Use `➕ Added` → `feat`-style summary "add"; `🔧 Fixed`/TODO resolutions → "fix"/"resolve"; keep it to
-one logical change per commit. If this run both created a file and resolved unrelated TODOs in it,
-that is still one file → one commit.
+**All-or-nothing.** If you cannot complete the file to the bar (blocked on a `File:` path, unsure of a
+mechanism, missing project context), do NOT leave a half-written file — revert your partial edits and
+report what blocked you so the row can be re-run cleanly. A partial English file would poison every
+stage after you.
 
 ````

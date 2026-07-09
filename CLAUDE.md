@@ -225,10 +225,20 @@ notes/java/
 ```
 
 **Rules:**
-- **Never modify an `en/` file without checking its `es/` counterpart.** The rule covers three cases:
-  - New file created in `en/` → create the full Spanish version in `es/` with the same filename
-  - New section added to an existing `en/` file → if the `es/` counterpart exists, add the translated section there too; if not, note it but don't create the whole file
-  - TODO resolved in an `en/` file → apply the same fix in `es/` if the counterpart exists
+- **`en/` is the canonical source; `es/` is its first-class translation.** Content is authored and
+  corrected in `en/` first, then translated into `es/`. `es/` is still what Victor *studies* from, so
+  it must read as native Spanish and gets equal care — but the *source of truth* when writing is the
+  English. This reverses the older "`es/` is the absolute source" rule (retired 2026-07-09).
+  - **Intentional trims are made in `en/`.** If Victor wants to cut something (e.g. JS filler
+    comparisons — see the no-JS-filler rule), remove it from `en/`, the canonical source, so the
+    translation never re-adds it. Never restore to `es/` content that is absent from `en/`.
+  - **TODOs Victor writes in `es/`** (his study file) are read as *input*: resolve the doubt in `en/`,
+    then re-sync `es/` from the updated English and clear the `es/` marker. The answer round-trips
+    through English — that is expected under the canonical model.
+- **Never modify an `en/` file without re-syncing its `es/` counterpart.** The rule covers three cases:
+  - New file created in `en/` → create the full Spanish translation in `es/` with the same filename
+  - New section added to an existing `en/` file → if the `es/` counterpart exists, translate the section there too; if not, note it but don't create the whole file
+  - TODO resolved in an `en/` file → re-sync the same content into `es/` if the counterpart exists
 - Spanish versions use the same structure and code blocks — only the prose is translated into Spanish. Code comments may also be translated. **The Spanish prose must read as natural Spanish, not as a word-for-word translation of the English.** The content and message must be identical across both languages, but each version should read as if it were written natively in that language — same idea, same emphasis, different words where needed. Literal translations that sound awkward or robotic in Spanish are not acceptable. Structural labels like `Purpose:`, `File:`, and `Docs:` must be translated to `Propósito:`, `Archivo:`, and `Docs:` (Docs stays as-is — it is a common abbreviation in Spanish developer contexts).
 - `en/` and `es/` must always contain exactly the same files. Whenever a file is created in `en/`, create the Spanish version in `es/` immediately. Whenever a section is added or a TODO is resolved in an `en/` file, apply the same change in `es/`. The two folders are never allowed to be out of sync.
 - If the `en/` or `es/` subfolder does not exist yet, create it before writing any files into it. If numbered files are still in the topic root (not yet migrated), move them to `en/` with `git mv` and create the Spanish counterparts in `es/` — non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) always stay in the root.

@@ -43,13 +43,20 @@ sub-concept); a sentence explaining how to read every table; exact error message
 
 ## Step 3 — Honour the bilingual en/es contract
 
-- `en/` and `es/` must always contain the same files with the same structure and code blocks.
-- New file in `en/` → create the full `es/` counterpart (same filename). TODO resolved or section
-  added in one → apply the same change in the other if it exists.
+- **`en/` is the canonical source; `es/` is its first-class translation.** Author and correct the
+  content in `en/` first, then translate into `es/`. Both must contain the same files with the same
+  structure and code blocks.
+- New file in `en/` → create the full `es/` translation (same filename). TODO resolved or section
+  added → do it in `en/`, then re-sync `es/`.
+- **A TODO Victor wrote in `es/`** is read as *input*: resolve the doubt in `en/`, then bring the
+  answer into `es/` and clear the marker. The answer round-trips through English — that is expected.
+- **Intentional trims are made in `en/`.** If Victor cut something from `es/` (e.g. JS filler — never
+  add those, see the no-JS-filler rule), do not restore it; remove it from `en/` too so it stays gone.
+  Never re-add to `es/` content that is absent from `en/`.
 - **Spanish prose must read as natural native Spanish, not a word-for-word translation.** Same idea,
   same emphasis, different words where needed. Translate structural labels (`Purpose:` → `Propósito:`,
   `File:` → `Archivo:`; `Docs:` stays).
-- Victor studies primarily from `es/` — give it equal care, not a rushed translation.
+- Victor studies from `es/` — give it equal care, never a rushed translation.
 
 ## Step 4 — Respect the folder counters
 

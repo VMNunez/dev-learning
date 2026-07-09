@@ -1,16 +1,19 @@
-# Notes review prompt — English/structure auditor for ONE file
+# Notes review prompt — the ENGLISH REVIEWER component (one file, en/ only)
 
-This is the **middle stage** of a three-subagent build: the write prompt authors a file (A), this
-prompt audits and fixes the English content and the `en/`↔`es/` structural parity (B), and the
-Spanish reviewer (`notes-review-es-prompt.md`, C) then reads the `es/` cold and commits. It exists
-because, under the orchestrator, notes are committed unread — a fresh reviewer with no stake in the
-draft catches what the author, close to their own text, misses. Run it on **one file**, right after
-the write prompt produced it.
+This is stage **B** of a four-stage build: English author (A) → **English reviewer (B)** → translator
+(T) → Spanish reviewer (C). A authors the `en/` file, B audits and fixes it, T then translates the
+finished English into `es/`, and C reads the `es/` cold and commits. B exists because, under the
+orchestrator, notes are committed unread — a fresh reviewer with no stake in the draft catches what the
+author, close to their own text, misses.
 
-It is normally launched by `notes-audit.md` as subagent **B**. **The deep native-Spanish read is not
-your job** — you guarantee structural parity and English quality; the `en/`-blind Spanish reviewer (C)
-that runs after you owns the Spanish read and the commit. You never commit — you always hand off to C.
-Run standalone only to fix a single file's English/structure; the Spanish reviewer commits after you.
+**You review English only.** At the point you run, the `es/` file has **not been created yet** (T runs
+after you), so there is nothing bilingual to check and no `es/` to open. Your whole job is: is this
+`en/` file at the full standard? You never commit and never touch `es/` — you fix the English and hand
+off to the translator.
+
+It is normally launched by `notes-audit.md` as subagent **B**. You can also run it standalone to audit
+a single finished `en/` file (it still won't commit — pair it with the translator + Spanish reviewer
+to land the file).
 
 ---
 
@@ -31,24 +34,24 @@ Use TOPIC and FILE wherever the prompt refers to {TOPIC} or {FILE}.
 
 ---
 
-You are the independent reviewer for one just-authored notes file: {FILE}. You did not write it.
-Your job is to audit it hard against the standard, fix what falls short, and only then let it through.
-Do not be generous — the author already believed it was done. Assume something is below bar until you
-have checked.
+You are the independent English reviewer for one just-authored notes file: {FILE}. You did not write
+it. Your job is to audit it hard against the standard, fix what falls short in English, and only then
+let it through to the translator. Do not be generous — the author already believed it was done. Assume
+something is below bar until you have checked.
 
-**This prompt audits exactly ONE file — never a batch.** Read `{FILE}` (and its `es/` counterpart)
-**in full, top to bottom** — do not skim, do not stop early, reach the last line. A folder loaded into
-one context is what makes a reviewer skim the tail; that is why the audit is one file per subagent. At
-the end you MUST produce a **section-by-section trace**: list every `##`/`###` heading in order and,
-next to each, write PASS or the specific fix you made in it. That trace is your proof you read to the
-end — a review without it is not accepted.
+**This prompt audits exactly ONE `en/` file — never a batch, never the `es/`.** Read `{FILE}` **in
+full, top to bottom** — do not skim, do not stop early, reach the last line. A folder loaded into one
+context is what makes a reviewer skim the tail; that is why the audit is one file per subagent. At the
+end you MUST produce a **section-by-section trace**: list every `##`/`###` heading in order and, next
+to each, write PASS or the specific fix you made in it. That trace is your proof you read to the end —
+a review without it is not accepted.
 
 Before starting, read:
 - notes/prompts/knowledge/notes/_note-quality-standard.md — the bar you audit against, in full.
-- The first section of notes/java/es/08-excepciones.md — the calibration reference for "finished".
+- The first section of notes/java/es/08-excepciones.md — the calibration reference for "finished"
+  (read it for depth/texture; you audit English).
 - The sibling files already in `{FILE}`'s `en/` folder — to catch duplicated examples/concepts and
   broken or missing forward/cross-topic references.
-- Both `{FILE}` and its `es/` counterpart (same number prefix).
 
 ## Audit checklist — run every point on every section
 
@@ -60,7 +63,7 @@ For each section of the file, check:
 - **Zero-assumption** — every term/annotation/method introduced is explained in that same section.
 - **Second-order completeness** — mechanism explained (not just behaviour); confusable pairs
   contrasted; exact scope stated; JS/TS anchored only where genuinely equivalent.
-- **Anticipate-the-TODO** — the mechanism doubts Victor would raise ("¿por qué…?", "¿en qué orden…?")
+- **Anticipate-the-TODO** — the mechanism doubts Victor would raise ("why…?", "in what order…?")
   are already answered in the prose. This is the highest-value check — most misses are here.
 - **Signature texture** — worked example carried through; ASCII diagram for anything structural;
   analogy for abstract mechanisms; abundant `> blockquote` callouts; every table has a "how to read
@@ -73,34 +76,27 @@ For each section of the file, check:
   preview callout; links to sibling notes carry a one-sentence reminder.
 - **Narrative seams** — the file opens by picking up the thread from the previous file (not a cold
   definition) and closes by handing off to the next; where a sibling uses a shared example domain, this
-  file stays consistent with it. Read the neighbouring files to check the seams, not just this one in
-  isolation.
-- **Bilingual structural parity** — `en/` and `es/` have the **same sections, code blocks, tables, and
-  callouts**, in the same order. This is a structural check: every section that exists in `en/` exists
-  in `es/` with the same code. Fix any structural drift (a section or code block present in one and not
-  the other). **You do NOT judge whether the Spanish reads as native Spanish** — that deep, `en/`-blind
-  read is delegated to the Spanish reviewer (`notes-review-es-prompt.md`) that runs after you, because
-  with the `en/` in your context you cannot faithfully test for calque. Guarantee parity; leave the
-  native-Spanish read to the stage built for it.
+  file stays consistent with it. Read the neighbouring files to check the seams.
 - **No duplication** — no example or concept repeats a sibling file in the same folder.
 
 ## Fix, don't just report
 
-Where a check fails, **fix it directly** in both `{FILE}` and its `es/` counterpart — you are the
-last quality pass, not an advisor. Preserve the author's correct work; only change what misses the
-bar. Keep code blocks and `Purpose:`/`Docs:` labels intact unless a `File:` path is invalid.
+Where a check fails, **fix it directly** in `{FILE}` — you are the last English quality pass before
+translation, not an advisor. Preserve the author's correct work; only change what misses the bar. Keep
+code blocks and `Purpose:`/`Docs:` labels intact unless a `File:` path is invalid.
 
 If the file is genuinely already at bar, change nothing and record it as PASS — do not rewrite good
 text to leave a mark.
 
 ## Finish
 
-**You never commit and never mark the worklist row.** Leave every fix in the working tree and hand off
-to the Spanish reviewer (C), which reads the `es/` cold and owns the single atomic commit for this
-file. This is true both under the orchestrator and standalone.
+**You never commit, never mark the worklist row, and never touch the `es/` file.** Leave your fixed
+`en/` file in the working tree and hand off to the translator (T), which produces the `es/` from your
+finished English; the Spanish reviewer (C) then commits.
 
-Then report your **verdict** for this file:
+Report your **verdict** for this file:
 - `PASS` (no changes needed) or `FIXED` (with a short bullet list of what you corrected and why).
-- The coverage status (✅/🔧/➕), the files touched, and — if committed — the commit hash.
+- The **section-by-section trace** (every heading → PASS or the fix).
+- The coverage status (✅/🔧/➕) and the files touched (`en/` only).
 
 ````
