@@ -125,6 +125,23 @@ false`:
 Wait and collect. (You may run Steps 1, 2, 2b, and 2c in parallel — they only read, so there is no
 git-index contention and no shared file to race.)
 
+> **Size guard — split a pass by module when a project is too big to review whole (future-proofing).**
+> Each pass above hands one cold subagent the project's **entire** source for its concern. That is the
+> correct split *today* — a bug-hunt or security pass needs to see every layer (controller → service →
+> repository) at once, so it cannot be cut file-by-file. But a single subagent's attention still
+> degrades once the source it must hold is large enough, and it will start skimming the last files —
+> the same failure the one-unit rule exists to prevent, just at project scale. So before dispatching,
+> estimate the source size (rough proxy: number of `.java` / `.ts` source files, or total lines, under
+> review). **If a project is large enough that one pass would strain a single context** (as a starting
+> rule of thumb, well past the size of project 07 — e.g. ≳ 40–50 source files, or once a pass visibly
+> starts leaving findings in the last files), split that pass **by module/feature** (e.g. `auth`,
+> `time-entries`, `users`) — one cold subagent per module for that concern, in sequence — and merge
+> their findings tables in Step 3 exactly as you merge the four concerns. Split by module, never by
+> arbitrary file batches: a module is the smallest slice that still keeps a cross-layer trace intact.
+> Keep the four-concern split regardless; the module split is an *additional* cut inside a concern,
+> applied only to the concerns whose source is too big. This is not needed at project 07's current
+> size — it is the escape hatch for when 07 grows or projects 08+ arrive.
+
 ### Step 3 — Merge into improvement tasks (orchestrator)
 You now hold four findings tables (code, security, correctness, tests) and the learning-objectives
 verdict. Merge them into one prioritized task list per the standard's task/priority/effort rules:
