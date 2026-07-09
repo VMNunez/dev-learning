@@ -124,7 +124,7 @@ class TransactionServiceTest {
 }
 ```
 
-> **Qué hace realmente `@ExtendWith(MockitoExtension.class)`.** JUnit 5 no sabe por sí solo qué significan `@Mock` o `@InjectMocks` — son anotaciones de Mockito, no de JUnit. `@ExtendWith` conecta una *extensión* de JUnit 5 al ciclo de vida del test; `MockitoExtension` es ese conector para Mockito. Antes de que se ejecute cada test, escanea la clase buscando campos `@Mock` y crea un falso para cada uno, luego busca `@InjectMocks` y construye ese objeto, pasándole los falsos que acaba de crear — la misma inyección por constructor que usa Spring en producción, solo que aquí la monta Mockito en lugar de Spring. Sin `@ExtendWith(MockitoExtension.class)`, cada campo `@Mock` se queda en `null` y el test falla con una `NullPointerException` en la primera llamada.
+> **Qué hace realmente `@ExtendWith(MockitoExtension.class)`.** JUnit 5 no sabe por sí solo qué significan `@Mock` o `@InjectMocks` — son anotaciones de Mockito, no de JUnit. `@ExtendWith` conecta una *extensión* de JUnit 5 al ciclo de vida del test; `MockitoExtension` es ese conector para Mockito. Antes de que se ejecute cada test, recorre la clase en busca de campos `@Mock` y crea un falso para cada uno, luego busca `@InjectMocks` y construye ese objeto, pasándole los falsos que acaba de crear — la misma inyección por constructor que usa Spring en producción, solo que aquí la monta Mockito en lugar de Spring. Sin `@ExtendWith(MockitoExtension.class)`, cada campo `@Mock` se queda en `null` y el test falla con una `NullPointerException` en la primera llamada.
 
 **Arrange / Act / Assert** — estructura siempre los tests así:
 - **Arrange** — configura los datos de test y el comportamiento del mock
