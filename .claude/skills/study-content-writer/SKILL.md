@@ -64,6 +64,8 @@ Update the `next file:` counter for the topic in CLAUDE.md if you create a new n
 
 ## What this skill does NOT do
 
-It does not commit, does not run the audit pipeline, and does not restructure the whole topic.
+It does not run the audit pipeline and does not restructure the whole topic. Committing is governed
+by CLAUDE.md, not by this skill — in a daily session Claude MAY commit `notes/` files directly
+(atomic, no Co-Authored-By, double `git status` check), so after writing, follow that rule as usual.
 For a full topic build or audit, that is `/notes-audit` or `/interview-prep-audit` in a separate
 session — this skill is only for getting inline, in-session writing right.
