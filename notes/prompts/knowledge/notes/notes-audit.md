@@ -16,7 +16,8 @@ approval, no per-file launching — one command does everything.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_note-quality-standard.md` (the bar) · `notes-plan-prompt.md` (folder analysis → worklist) ·
-`notes-write-prompt.md` (author) · `notes-review-prompt.md` (reviewer).
+`notes-inspect-prompt.md` (per-file quality flags → worklist rows) · `notes-write-prompt.md` (author) ·
+`notes-review-prompt.md` (reviewer).
 
 > **First run on a topic, use `DRY_RUN = true`.** It builds and reviews everything but commits
 > nothing, so you can read the diff before it lands. Once you trust it, `DRY_RUN = false` is fully
@@ -117,8 +118,29 @@ Launch one `general-purpose` subagent, `run_in_background: false`:
 > Do the Step 0/Step 4 structural commit as that prompt says (never commit `notes-worklist.md`).
 > Report the worklist rows you wrote.
 
-Wait for it to finish. Then read `notes/{TOPIC}/notes-worklist.md` yourself and collect every row
-still `[ ]`, in ascending row-number order. If none, report "notes already complete" and stop.
+Wait for it to finish. Then read `notes/{TOPIC}/notes-worklist.md` yourself.
+
+### Phase 1.5 — Inspect every pre-existing file (one cold subagent per file, sequential)
+
+The planner did not judge existing files against the standard — it only listed them under the
+worklist's **"Existing files to inspect"** heading. Now dispatch one inspector per listed file, so each
+file is judged at full attention in its own cold context (never a batch — that is the failure this
+split exists to prevent).
+
+Read the "Existing files to inspect" list from the worklist. For **each** file in it, **in order**,
+launch one `general-purpose` subagent, `run_in_background: false` (never overlap them — they all
+append to the same worklist file and parallel writes would race):
+
+> Read `notes/prompts/knowledge/notes/notes-inspect-prompt.md` and execute it in full for a single file:
+> - `TOPIC` = {TOPIC} · `FILE` = «file» · `WORKLIST` = notes/{TOPIC}/notes-worklist.md
+>
+> Read that one file top to bottom against the standard, append its `fix-quality` / `add-docs-link`
+> rows to the worklist (merging into an existing row for the same file if one is already there), and
+> return your section-by-section trace and verdict. Do NOT edit note prose, do NOT commit.
+
+Wait for each inspector before launching the next. When all inspectors are done, re-read
+`notes/{TOPIC}/notes-worklist.md` and collect every row still `[ ]`, in ascending row-number order. If
+none, report "notes already complete" and stop.
 
 ### Phase 2 — Build every row (author → reviewer, sequential)
 
@@ -198,8 +220,8 @@ git commit -m "<that file's commit message>"
 - **One file per subagent context — ALWAYS, even at higher token cost. This is the rule that protects
   quality.** A subagent that carries a whole folder (or several files) in its context degrades its
   attention toward the end and silently skims — the later files get a shallow pass, exactly the failure
-  Victor caught. So: never dispatch a subagent to author, review, polish, translate, or quality-check
-  more than one file at a time. Whatever the task (full audit, TODO resolution, a narrow Spanish-prose
+  Victor caught. So: never dispatch a subagent to author, review, inspect, polish, translate, or
+  quality-check more than one file at a time. Whatever the task (full audit, TODO resolution, a narrow Spanish-prose
   or docs-link pass), it is always **one cold subagent per file**, run sequentially. Deep, atomic,
   file-by-file passes are the standard here — paying more tokens for one-file-per-subagent is the
   intended trade, never a reason to batch. Every per-file subagent must **read its file top to bottom**

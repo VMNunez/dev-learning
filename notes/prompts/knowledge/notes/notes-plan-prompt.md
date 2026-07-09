@@ -5,10 +5,12 @@ don't launch it — `notes-audit.md` (`SCOPE = folder`) dispatches it as a cold 
 builds each row it produced. It is documented here so the audit prompt can point a subagent at it.
 
 **What it does and does not do.** It surveys a whole topic folder and figures out *what needs to
-happen* — but it does **not** write or rewrite note prose. It does the cheap, verifiable, whole-folder
-work (folder setup, `en`/`es` parity, gap analysis, sequence check) and writes an **ordered
-worklist** (`notes/{TOPIC}/notes-worklist.md`). Each row is then built by the author + reviewer
-subagents the audit dispatches.
+happen* — but it does **not** write or rewrite note prose, and it does **not** judge existing files
+against the writing standard (that is delegated to `notes-inspect-prompt.md`, one cold subagent per
+file). It does the cheap, verifiable, whole-folder work (folder setup, `en`/`es` parity, gap analysis,
+sequence check, TODO survey) and writes an **ordered worklist** (`notes/{TOPIC}/notes-worklist.md`),
+including the list of pre-existing files the inspectors must judge. Each row is then built by the
+author + reviewer subagents the audit dispatches.
 
 **Why planning is separate from writing.** Applying the full writing standard to every file of a
 folder in one context overloads the model's attention — the heaviest work (the writing bar) is the
@@ -149,24 +151,23 @@ Then read all numbered files in `{NOTES_PATH}` (skip `future-learning.md`, `cove
    its `TASK` a one-line thread note — *what it continues from and what it sets up next* — so the
    author opens and closes the file on-thread (e.g. "continues from 02-objects; sets up 07-collections").
 
-### Step 3 — Quality flags on existing files (read-only, report only)
+### Step 3 — List existing files for quality inspection (do NOT judge them here)
 
-For each existing file, check it against the standard (in `_note-quality-standard.md`) and flag —
-**do not fix** — anything that falls short:
-- WHY explained before the code?
-- Repeating patterns named explicitly?
-- Correct format mode for its folder (structured vs conversational)?
-- File-level `Docs:` link present? Each section's `Docs:` link points to an exact sub-section, not a
-  homepage?
-- Reads like a personal learning guide, not documentation? (Test: would this sentence appear
-  word-for-word on the official docs site?)
-- Forward references within the topic marked with a one-line note?
-- Cross-topic references opened with a preview callout?
-- Second-order completeness and signature texture present, or does the file visibly shift standard
-  halfway through?
+You do **not** judge existing files against the standard in this context. Judging one file against the
+long standard is the heaviest attention work in the whole pipeline; doing it for every file here is
+exactly what made the old planner skim the tail of the folder. That work is now delegated to
+`notes-inspect-prompt.md` — one cold subagent per existing file, dispatched by `notes-audit.md` after
+you finish. Each inspector reads its single file in full and appends its own `fix-quality` /
+`add-docs-link` rows to the worklist.
 
-Turn every flag into a worklist item tagged `fix-quality` for that file. Missing `Docs:` links become
-`add-docs-link` items. Do not edit any prose.
+So here you only **list** the pre-existing numbered files that must be inspected — do not open them
+against the checklist, do not write any `fix-quality` or `add-docs-link` rows yourself. Under the
+"Existing files to inspect" heading of the worklist, print every numbered `.md` file currently in
+`{NOTES_PATH}` (skip `future-learning.md`, `coverage.md`, `layer-reference.md`, and anything not
+starting with a two-digit number). The orchestrator dispatches one inspector per listed file.
+
+> Files you plan as **new** (`create-file` / `create-es` rows) are NOT inspected — they are authored
+> and reviewed fresh, so they never appear in the inspect list. Only files that already exist do.
 
 ### Step 4 — `future-learning.md` (edits to this reference file allowed)
 
@@ -226,6 +227,13 @@ write prompt when that file's run finishes. Delete this file once every row is [
 - [ ] #3 · notes/{TOPIC}/en/09-generics.md
       TASK = add a section on bounded type parameters (rule-1 gap)
       REWRITE_MODE = standard
+
+## Existing files to inspect
+(the orchestrator dispatches one notes-inspect-prompt subagent per file below; each appends its own
+fix-quality / add-docs-link rows above)
+- notes/{TOPIC}/en/01-variables-types.md
+- notes/{TOPIC}/en/02-objects.md
+- notes/{TOPIC}/en/08-exceptions.md
 ```
 
 Rules for the file:
@@ -235,8 +243,10 @@ Rules for the file:
   named sections, and the gap. The write run must not need to re-derive it.
 - `REWRITE_MODE`: `first-pass` only for auto-generated files Victor has never validated; `standard`
   otherwise.
-- Task types you may fold into the TASK line: `create-file`, `add-section`, `resolve-TODOs`,
-  `fix-quality`, `add-docs-link` (a file may carry several).
+- Task types **you** write into a TASK line: `create-file`, `add-section`, `resolve-TODOs`,
+  `create-es` (a file may carry several). You do **not** write `fix-quality` or `add-docs-link` rows —
+  those are appended later by the per-file inspect subagents (Step 3), which is why every pre-existing
+  file must appear under "Existing files to inspect".
 - List **every** file that needs work — the cap is on how many get *built*, not *planned*. Building
   happens later, one file per run.
 
@@ -250,8 +260,9 @@ edits) — with a status per file.
 **TODO pattern → recommended standard change** (if any): one specific sentence to add to
 `_note-quality-standard.md`. Victor decides whether to accept it.
 
-**Reported quality issues** that need a Victor decision before the write prompt touches existing text
-(in `standard` mode, existing prose is only rewritten with a TODO or explicit go-ahead).
+Do **not** print a "reported quality issues" list — you did not judge existing files this run. The
+per-file inspect subagents (Step 3) produce those flags in their own cold contexts and append them to
+the worklist. Your job ends at listing which files they must inspect.
 
 Finally, the commit for the structural work only (the write runs commit their own file changes).
 **Never `git add` `notes/{TOPIC}/notes-worklist.md`** — it is a temporary work artifact, not study
