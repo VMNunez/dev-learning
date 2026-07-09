@@ -47,6 +47,9 @@ something is below bar until you have checked it.
 
 **This prompt inspects exactly ONE file — never a batch.** Read `{FILE}` and its `es/` counterpart
 (same number prefix) **in full, top to bottom** — do not skim, do not stop early, reach the last line.
+If the `es/` counterpart does not exist yet, that is already recorded (the planner wrote a `create-es`
+row for it) — do not flag its absence; just skip the bilingual-integrity check and judge the `en/`
+alone.
 A folder loaded into one context is what makes an inspector skim the tail; that is why inspection is
 one file per subagent.
 
@@ -91,6 +94,10 @@ short (do NOT fix it):
   definition) and closes by handing off to the next; consistent shared example domain with siblings.
 - **Bilingual integrity** — `en/` and `es/` have the same sections and code; `es/` reads as native
   Spanish (no calque: "escanear"→"leer", "retornar"→"devolver"), not a word-for-word translation.
+  (Skip this check entirely if the `es/` does not exist yet — a `create-es` row already covers it.
+  Note that a flagged row sends the file through the full pipeline, so Spanish-only shortfalls are
+  fixed by the translator/Spanish-reviewer stages, not by the English author — flag them anyway;
+  the pipeline routes them.)
 - **No duplication** — no example or concept repeats a sibling file in the same folder.
 
 ## Section-by-section trace (mandatory — proof you read to the end)

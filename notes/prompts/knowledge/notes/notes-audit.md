@@ -170,9 +170,11 @@ commits. Each stage is a cold subagent, `run_in_background: false`, and you **wa
 launching the next** — never overlap them (parallel commits race the git index; a stage must never see
 an unfinished predecessor).
 
-> **Translation-only rows.** If the worklist row's task is `create-es` (the `en/` is already final and
-> valid, only the Spanish is missing), **skip A and B** — there is nothing to author or English-review.
-> Run only **T then C**. For every other row, run all four stages.
+> **Translation-only rows.** If the worklist row's task is **only** `create-es` (the `en/` is already
+> final and valid, only the Spanish is missing), **skip A and B** — there is nothing to author or
+> English-review. Run only **T then C**. If the row's `TASK` mixes `create-es` with anything else (e.g.
+> an inspector merged `fix-quality` flags into it), the English is NOT final — run all four stages.
+> For every other row, run all four stages.
 
 **Subagent A — English author.** Launch one `general-purpose` subagent:
 

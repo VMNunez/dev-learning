@@ -14,7 +14,7 @@ English beside you, any calque still parses. The only faithful test is a reviewe
 
 **Scope.** It is prose-only within the existing structure: it improves Spanish wording, flow, and
 naturalness, and fixes calque. It must **not** add or remove sections, code blocks, tables, or
-callouts — B already guaranteed `en/`↔`es/` structural parity, and this pass must preserve it. If a
+callouts — the translator (T) already guaranteed `en/`↔`es/` structural parity, and this pass must preserve it. If a
 section is missing content (not just badly worded), that is a structural gap C reports, not fixes.
 
 ---
