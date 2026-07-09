@@ -56,7 +56,10 @@ Two flavors among these 23, both launched the same way (paste config into a new 
 `_coverage-standard.md`, `_note-quality-standard.md`, `_interview-prep-standard.md`,
 `_planning-standard.md`, `_readme-standard.md`, `_review-standard.md`, `_portfolio-standard.md`,
 `_concept-extraction-standard.md`, `_roadmap-standard.md`, `_application-standard.md`,
-`_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`, plus every
+`_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`,
+`_pipeline-self-report.md` (the shared final step every orchestrator runs: five bullets on how the run
+itself went, written to `_last-run-report.md` in the orchestrator's folder and auto-committed — the
+evidence that decides whether a frozen prompt gets reopened), plus every
 `notes-plan-prompt.md` / `notes-inspect-prompt.md` / `notes-write-prompt.md` / `notes-review-prompt.md` / `notes-translate-prompt.md` / `notes-review-es-prompt.md`,
 `interview-prep-write-prompt.md` / `interview-prep-review-prompt.md`,
 `plan-write-prompt.md` / `plan-review-prompt.md`,
