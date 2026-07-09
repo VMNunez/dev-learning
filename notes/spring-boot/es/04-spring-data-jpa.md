@@ -64,7 +64,7 @@ public class Transaction {
 - `@Column(nullable = false)` — marca la columna como NOT NULL en la base de datos
 - `@Column(unique = true)` — añade una constraint única; combínala con `nullable = false` cuando el campo es obligatorio y debe ser único: `@Column(nullable = false, unique = true)`
 - `@Column(...)` — otras propiedades: `length`, `name`, `updatable`
-- `@CreationTimestamp` — anotación de Hibernate; establece el campo automáticamente a la fecha y hora actuales cuando la entidad se guarda por primera vez; nunca estableces este campo manualmente en tu código
+- `@CreationTimestamp` — anotación de Hibernate; asigna automáticamente al campo la fecha y hora actuales cuando la entidad se guarda por primera vez; nunca rellenas este campo manualmente en tu código
 
 **Valores por defecto de campo** — se establecen directamente en la declaración del campo; JPA respeta el valor por defecto al crear una nueva entidad:
 
