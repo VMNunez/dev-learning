@@ -318,27 +318,21 @@ All README format rules and quality standards live in `notes/prompts/projects/re
 
 ### SQL and study materials live on `main` — there is no separate SQL branch
 
-**Decision: drop `sql/practice`.** It gave no isolation — SQL files never touch project code, so they
-never conflict — and it split `PROGRESS.md` across branches (the branch already holds exercises that
-never reached the trunk while PROGRESS claimed them as done). A separate branch was solving a problem
-that does not exist and creating one that does.
+(The old `sql/practice` branch was merged and deleted in July 2026 — study files never conflict with
+project code, so a separate branch only split `PROGRESS.md` across branches.)
 
 - **Study and tracking materials live on `main`:** `sql/`, `notes/`, `simulations/`, `PROGRESS.md`,
   `ROADMAP.md`. Commit them directly on `main`. **Project code** keeps the
   feature-branch → PR → `main` workflow (that history has portfolio value; study files do not need it).
-  `PROJECT-BACKLOG.md` now lives inside each full-stack project's own folder (e.g.
-  `projects/07-timetrack/PROJECT-BACKLOG.md`), so it follows that project's normal feature-branch
-  workflow like `PLANNING.md` and `README.md` do — it is no longer a root-level study file.
+  `PROJECT-BACKLOG.md` lives inside each full-stack project's own folder (e.g.
+  `projects/07-timetrack/PROJECT-BACKLOG.md`) and follows that project's normal feature-branch
+  workflow like `PLANNING.md` and `README.md` do.
 - This gives `PROGRESS.md` exactly **one home** (`main`) — no divergence, no checkout dance.
 - SQL block (12:30): work in `sql/` on `main`, commit there, and update the SQL section of
   `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
 - The SQL section in PROGRESS.md tracks which topics exist in `sql/` and their status:
   solid ✅ (score > 80% in review) or in progress ⏳. Read it at the start of a SQL session to know
   which topic is next.
-- **One-time cleanup still pending:** the old `sql/practice` branch has work that never landed on
-  `main` (exercises #21–40 and `02-joins`). Merge it into `main`, reconcile `PROGRESS.md` once
-  (keep the most complete version), then delete the branch (local + remote). Ask Claude for the exact
-  commands — do this before the next SQL session so nothing is lost.
 
 ### PROGRESS.md updates
 
