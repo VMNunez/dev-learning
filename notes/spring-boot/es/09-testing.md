@@ -79,7 +79,7 @@ assertThrows(SomeException.class, () -> { /* llamada que lanza */ });
 
 ---
 
-## Testar un service — JUnit 5 + Mockito (sin Spring)
+## Testear un service — JUnit 5 + Mockito (sin Spring)
 
 Docs: https://www.baeldung.com/mockito-annotations → leer: las secciones de `@Mock` e `@InjectMocks`
 
