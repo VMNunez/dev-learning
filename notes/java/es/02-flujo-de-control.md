@@ -113,7 +113,7 @@ for (Employee emp : employees) {
 }
 ```
 
-Usa el for mejorado siempre que solo necesites los elementos y no el índice. En Spring Boot, esto es lo que escribirás la mayoría del tiempo — aunque los streams (cubiertos en `09-streams-lambdas.md`) son incluso más concisos para transformar colecciones.
+Usa el for mejorado siempre que solo necesites los elementos y no el índice. En Spring Boot, esto es lo que escribirás la mayor parte del tiempo — aunque los streams (cubiertos en `09-streams-lambdas.md`) son incluso más concisos para transformar colecciones.
 
 ---
 
