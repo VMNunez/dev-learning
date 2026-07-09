@@ -161,7 +161,7 @@ a.breathe();                 // la JVM ejecuta el breathe() que corresponda al o
 
 Las interfaces (explicadas en [05-interfaces-abstract.md](05-interfaces-abstract.md)) llevan este concepto más lejos. Es el mecanismo detrás de la inyección de dependencias de Spring: declaras el tipo como una interfaz, y el framework inyecta la implementación concreta en runtime.
 
-**Abstracción** (_abstraction_) — exponer lo que algo hace, ocultar cómo lo hace. La distinción con encapsulación es sutil: la encapsulación protege el estado interno de un objeto; la abstracción oculta el comportamiento interno para simplificar lo que el exterior necesita saber. Tienes razón: es el controlador el que practica la abstracción, porque llama a `projectService.findAll()` sin saber nada de cómo ese método va a buscar los datos:
+**Abstracción** (_abstraction_) — exponer lo que algo hace, ocultar cómo lo hace. La distinción con encapsulación es sutil: la encapsulación protege el estado interno de un objeto; la abstracción oculta el comportamiento interno para simplificar lo que el exterior necesita saber. El controlador es un buen ejemplo de abstracción: llama a `projectService.findAll()` sin saber nada de cómo ese método va a buscar los datos:
 
 ```java
 // El controlador solo sabe que findAll() devuelve proyectos — no cómo lo hace
