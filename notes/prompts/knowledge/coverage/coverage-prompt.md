@@ -332,14 +332,28 @@ The "Synced to notes/coverage.md" row always appears, even when creating from sc
 "Removed from future-learning" = concept deleted entirely because it is no longer relevant
 (wrong topic, outdated, or not needed anywhere — not just post-junior).
 
-Then show the commit message so Victor can run it himself. Always one command per code block:
+**Commit the changes yourself.** Coverage files live under `notes/`, so this is one of the
+cases where Claude commits directly (CLAUDE.md "Non-negotiables" exception for `notes/` and
+`notes/prompts/`) — do not hand the commands to Victor. No `Co-Authored-By` lines. The commit
+must be atomic — only the coverage files, nothing else.
+
+**Mandatory safety check before committing — never skip it:**
+1. Run `git status` and read the full list of changed/staged files.
+2. Stage only the coverage files:
 
 ```
 git add {NOTES_PATH}coverage.md {NOTES_PATH}future-learning.md notes/coverage.md
 ```
 
-If `{NOTES_PATH}future-learning.md` was not modified, remove it from the git add command.
+If `{NOTES_PATH}future-learning.md` was not modified, remove it from the `git add` command.
+
+3. Run `git status` again and confirm **only** `notes/` coverage paths are staged. If any
+   project code file, or any file this prompt did not touch, is staged, `git restore --staged`
+   it before continuing — a stray code file has ridden along into a notes commit before.
+4. Only once the staged list is clean, commit:
 
 ```
 git commit -m "docs: update {TOPIC} coverage — <one line summary of main changes>"
 ```
+
+Report the commit hash in the final summary so Victor can see it landed.
