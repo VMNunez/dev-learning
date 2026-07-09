@@ -138,9 +138,9 @@ Con solo `status` y `message`, aparece un problema en cuanto tienes más de un t
 
 La solución es un único DTO de error, con **la misma forma siempre**, sin importar qué excepción lo generó:
 
-Purpose: modela el cuerpo JSON de cualquier error de la API en un formato único y predecible, para que el frontend siempre lea las mismas claves (`message`, `fieldErrors`...) sin necesidad de saber qué excepción concreta lo produjo.
+Propósito: modela el cuerpo JSON de cualquier error de la API en un formato único y predecible, para que el frontend siempre lea las mismas claves (`message`, `fieldErrors`...) sin necesidad de saber qué excepción concreta lo produjo.
 
-File: `src/main/java/com/victor/timetrack/dto/response/ErrorResponse.java`
+Archivo: `src/main/java/com/victor/timetrack/dto/response/ErrorResponse.java`
 
 Docs: https://www.baeldung.com/jackson-ignore-null-fields → leer: "@JsonInclude(Include.NON_NULL)"
 
