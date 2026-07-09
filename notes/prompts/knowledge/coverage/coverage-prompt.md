@@ -314,7 +314,7 @@ heading levels should differ (`#` → `##`, `##` → `###`). If anything differs
 After writing coverage.md:
 - Remove concepts promoted to coverage
 - Add concepts demoted from coverage or newly identified as post-junior
-- Remove entries identified in Step 4 as no longer relevant at all (wrong topic, outdated, or not needed in any future phase) — simply delete them
+- Remove entries identified in Step 3 as no longer relevant at all (wrong topic, outdated, or not needed in any future phase) — simply delete them
 - Do not rewrite the whole file — only touch the entries that changed
 - Preserve the phased structure (Phase 1, Phase 2, Phase 3) if it already exists
 - If `future-learning.md` does not exist yet for this topic, create it with a short intro

@@ -92,7 +92,10 @@ longer performs the cross-topic scan itself — Analyst D does the reading, the 
 which keeps even the whole-file work out of the editing context.
 
 **Per-topic loop (sequential, one topic fully done before the next):**
-1. Dispatch Analyst A, then B, then C for the topic (`run_in_background: false`). Collect their three lists.
+1. Dispatch Analyst A, then B, then C for the topic (`run_in_background: false`). Dispatch each one by
+   telling it to read its mandate section in this prompt (A → Step 2b, B → Step 3, C → Step 4a) with
+   {TOPIC} filled in, plus only the files its concern needs (listed in the analyst-split rules above).
+   Collect their three lists.
 2. Consolidate: merge the three lists, drop duplicates, discard any gap that is out of junior scope
    (record those in the summary as "analyst-suggested, left out — reason").
 3. Apply the surviving gaps to `notes/{topic}/coverage.md` and its section in `notes/coverage.md`, sync
@@ -241,6 +244,30 @@ annotation-placement rules and what breaks when they are wrong.
 
 ---
 
+## Step 4a — Analyst C's mandate: adversarial interviewer
+
+This is the single concern of **Analyst C**, run once per topic as a read-only cold subagent. It is the
+audit's version of `coverage-prompt.md`'s adversarial pass — same idea, applied to an already-existing
+section. Analyst C **returns a gap list** and edits nothing.
+
+You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
+`notes/prompts/_shared-context.md` for the exact role/companies, and
+`notes/prompts/_job-market-evidence.md` for what they hire for). You have 30 minutes with a candidate
+at the target level and the topic is {TOPIC}. Read that topic's `notes/{topic}/coverage.md` (and its
+section in `notes/coverage.md` if the topic file is missing) plus
+`notes/prompts/knowledge/coverage/_coverage-standard.md`.
+
+Write the **12 questions you would actually ask** to decide whether this candidate really knows
+{TOPIC} — mix conceptual, decision ("why X over Y"), and pressure/gotcha questions, and lean on the
+recurring requirements in the job-market evidence. Then, for each question, check whether the current
+coverage gives the candidate what they'd need to answer it. Return only the **gaps**: the questions the
+coverage does NOT support, each as a proposed coverage item in the standard's format
+(`concept — interview-anchored sentence`), tagged with its section. Do not rewrite existing items, do
+not edit any file. Be adversarial — assume the coverage is incomplete until your 12 questions prove
+otherwise.
+
+---
+
 ## Step 4 — Analyst D's mandate: cross-topic consistency
 
 This is the single concern of **Analyst D**, run **once** as a read-only cold subagent over the whole of
@@ -274,7 +301,7 @@ scope-demotion item to `notes/{topic}/future-learning.md`. Note every overlap, m
 final summary.
 
 **Future-learning promotion check (orchestrator, alongside applying D):**
-For each `notes/{topic}/future-learning.md`: are any concepts listed there now in scope for the job target read from ROADMAP + `_shared-context` (role, deadline)? Apply the same criteria from Step 3. If yes: add the concept to the correct section in `notes/coverage.md` and the corresponding `notes/{topic}/coverage.md`, and remove it from `future-learning.md`. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
+For each `notes/{topic}/future-learning.md`: are any concepts listed there now in scope for the job target read from ROADMAP + `_shared-context` (role, deadline)? Apply the IN/OUT + AI-factor criteria from `_coverage-standard.md`. If yes: add the concept to the correct section in `notes/coverage.md` and the corresponding `notes/{topic}/coverage.md`, and remove it from `future-learning.md`. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
 
 ---
 
@@ -335,12 +362,20 @@ Stable means: every topic for Victor's objective is represented, every section h
 
 Apply all changes directly to the files. Do not describe what you would write — write it.
 
-Then show the commit message so Victor can run it himself. Always use this format — one command per code block:
+**Commit the changes yourself.** Coverage files live under `notes/`, so this is one of the cases where
+Claude commits directly (CLAUDE.md "Non-negotiables" exception for `notes/` and `notes/prompts/`) — do
+not hand the commands to Victor. No `Co-Authored-By` lines.
 
-```
-git add <all files changed>
-```
+**Mandatory safety check before committing — never skip it:**
+1. Run `git status` and read the full list of changed/staged files.
+2. Stage only the files this audit touched, by exact path — `notes/coverage.md`, each changed
+   `notes/{topic}/coverage.md` and `notes/{topic}/future-learning.md`. Never `git add .`.
+3. Run `git status` again and confirm **only** those `notes/` paths are staged. If any project code
+   file, or any file this audit did not touch, is staged, `git restore --staged` it before continuing.
+4. Only once the staged list is clean, commit:
 
 ```
 git commit -m "docs: global coverage audit — <one line summary of main changes>"
 ```
+
+Report the commit hash in the final summary so Victor can see it landed.
