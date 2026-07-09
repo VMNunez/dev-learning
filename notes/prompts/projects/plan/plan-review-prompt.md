@@ -1,17 +1,19 @@
 # Project plan review prompt — second-pass auditor for ONE plan
 
 This is the **reviewer half** of the project-plan pipeline. It audits one `PLANNING.md` against the
-contract in `_planning-standard.md`, **fixes what falls short directly in the file**, and commits it
-(unless dry-run). It serves two callers:
+contract in `_planning-standard.md` and **fixes what falls short directly in the file**. A plan is
+authored whole, but reviewed by **specialists**: `plan-audit.md` dispatches this prompt once per concern
+(`{SCOPE}` = architecture · data-model-api · rules-security · steps-tests · branches-coverage), so each
+cold subagent owns a small, defined slice it cannot skim. It serves two callers:
 
-- **`new` mode** — `plan-audit.md` dispatches it as subagent **B** right after the author
-  (subagent A) writes a fresh plan. It is the independent second pass: a reviewer with no stake in the
-  draft catches what the author, close to their own text, missed. It commits the plan + the ROADMAP.md
-  / PROGRESS.md edits the author left staged.
-- **`review` mode** — run on an existing plan (one project, or batched across all) to bring it back to
-  standard. Same audit, same fixes, same commit.
+- **`new` mode** — after the author (subagent A) and the architecture advisor write a fresh plan, the
+  orchestrator runs the specialist reviewers as the independent second pass, then commits the plan + the
+  ROADMAP.md / PROGRESS.md edits the author left staged.
+- **`review` mode** — run the same specialists on an existing plan (one project, or batched across all)
+  to bring it back to standard.
 
-You can also run it standalone on one finished plan.
+A dispatched specialist (`{SCOPE}` ≠ all) never commits — the orchestrator owns the single commit. You
+can also run it standalone with `{SCOPE}` = all on one finished plan (then it commits per `{DRY_RUN}`).
 
 ---
 
@@ -21,9 +23,11 @@ You can also run it standalone on one finished plan.
 PROJECT = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker |
            angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal |
            projects/07-timetrack | ... — the folder path of the plan to audit]
+SCOPE   = [all | architecture | data-model-api | rules-security | steps-tests | branches-coverage]
+          → the audit orchestrator dispatches ONE concern per subagent; "all" is for a standalone run.
 DRY_RUN = [false | true]
 
-Use PROJECT and DRY_RUN wherever the prompt refers to {PROJECT} and {DRY_RUN}.
+Use PROJECT, SCOPE, and DRY_RUN wherever the prompt refers to {PROJECT}, {SCOPE}, and {DRY_RUN}.
 
 > `PROJECT` is a **folder path**. Angular projects live at `angular/0X-name/PLANNING.md`, full-stack at
 > `projects/0X-name/PLANNING.md`. Derive the plan path from it.
@@ -52,7 +56,27 @@ from the path prefix and project number — do not ask.
 
 ---
 
-## Audit — run every check against the standard
+## Your concern — audit only `{SCOPE}`
+
+**A plan is authored whole (its sections cross-reference), but it is reviewed by specialists** — each
+subagent owns one concrete concern so it cannot skim a tail: it either verified every check in its
+slice or it did not. Read the whole plan for context, but **only audit and fix the sections, invariants,
+and checks your `{SCOPE}` owns**, listed here. Do not touch another concern's sections (mention a
+cross-concern ripple in your report so the orchestrator routes it).
+
+| `{SCOPE}` | Owns (sections · invariants · design-correctness) |
+|---|---|
+| `architecture` | §6 layering · §3 the one new architectural concept · §20 tradeoffs · design-correctness of these (every reason passes the interview "why?") |
+| `data-model-api` | §7 entities (all five columns; each relationship = fetch type + cascade + reason) · §10 endpoints + HTTP status conventions · folder structure · invariants: entities↔repos, API↔controllers, pages↔wireframes |
+| `rules-security` | §8 business rules (no vague/TBD; state diagram present; no dead/orphan states) · §0 current step + done condition · invariant routes/roles↔API-security · endpoint roles consistent with ownership |
+| `steps-tests` | §15 steps (each a valid done condition; one major concept per step; the three dedicated test steps present) · §16 testing plan (specific method/service names; edge cases named) · done-condition format across §15/§0 · invariants: new-concepts↔steps, testing-plan↔steps |
+| `branches-coverage` | §22 branches (`feat/…` naming; cover every §15 step, none double-assigned; one per phase; concrete open/close) · **section coverage** (all 23 present for full-stack — a missing section is critical, add it) · invariants: branches↔steps, §0-branch↔§22 |
+
+`SCOPE = all` (standalone run) means run **every** row below over the whole plan.
+
+---
+
+## Audit — run every check your `{SCOPE}` owns against the standard
 
 **1. Section coverage.** For a full-stack plan, check all 23 sections (0–22) are present. Report each
 as ✅ present or ❌ missing. Missing sections are critical — they block the project from starting
@@ -100,20 +124,22 @@ rewrite good text to leave a mark.
 
 ## Finish
 
-**If `{DRY_RUN}` = false:**
-- **`new` mode** (the author left ROADMAP.md + PROGRESS.md staged alongside the new plan): commit all
-  three atomically. `git add {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
+**If `{SCOPE}` ≠ all (dispatched by the orchestrator):** do **not** commit — the orchestrator commits
+once, after every concern's specialist has run. Leave your fixes in the working tree. Report your
+**verdict for this concern**:
+- `PASS` (no changes) or `FIXED` (a short bullet list of what you corrected and why).
+- A **check-by-check trace of your slice**: list every section/invariant/check your `{SCOPE}` owns and,
+  next to each, ✅ pass or the fix you made — proof you ran your whole slice, not just the first items.
+- Any cross-concern ripple another specialist must reconcile.
+
+**If `{SCOPE}` = all (standalone run):**
+- **`{DRY_RUN}` = false, `new` mode** (author left ROADMAP.md + PROGRESS.md staged): commit all three
+  atomically. `git add {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
   `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.
-- **`review` mode** (only the plan changed): commit just the plan. Use the project's real path prefix
-  (`angular/` for 01–06, `projects/` for 07+):
-  `git add {PROJECT}/PLANNING.md`, then
+- **`{DRY_RUN}` = false, `review` mode** (only the plan changed): commit just the plan, real path prefix
+  (`angular/` for 01–06, `projects/` for 07+): `git add {PROJECT}/PLANNING.md`, then
   `git commit -m "docs: improve PLANNING.md for {PROJECT} — fix done conditions, add missing sections"`.
+- **`{DRY_RUN}` = true:** do not commit; leave changes in the tree and print the commit sequence.
 
-**If `{DRY_RUN}` = true:** do not commit. Leave every change in the working tree for Victor to review.
-Print the atomic commit sequence he should run, one command per code block.
-
-Then report your **verdict** for this plan:
-- `PASS` (no changes needed) or `FIXED` (a short bullet list of what you corrected and why).
-- The audit summary: X critical (missing sections) · Y quality · Z consistency · W design-correctness
-  issues found and fixed.
-- The files touched, and — if committed — the commit hash.
+Then report the verdict + the audit summary (X critical · Y quality · Z consistency · W
+design-correctness issues found and fixed) + the files touched + the commit hash if committed.

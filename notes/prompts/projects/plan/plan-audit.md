@@ -8,10 +8,12 @@ audits a project's `PLANNING.md` to the full standard, hands-off, in two shapes:
 - `MODE = review` — audit an existing PLANNING.md against the standard, fix what falls short, and
   commit (one project, or `PROJECT = all` for every project in turn).
 
-Both shapes use the same quality pipeline: the plan is **authored (new mode only) then audited/fixed by
-a cold reviewer subagent** before it is committed. The reviewer has no stake in the draft, so it reads
-against the bar and catches what the author trusted. No report to apply by hand, no per-file launching
-— one command does everything.
+Both shapes use the same quality pipeline: the plan is **authored whole (new mode only), then audited
+and fixed by five cold specialist reviewers — one per concern** (architecture · data-model-api ·
+rules-security · steps-tests · branches-coverage) — before the orchestrator commits it. Authoring stays
+whole because a plan's sections cross-reference; review is split so each specialist owns a small slice
+it cannot skim, catching what the author trusted. No report to apply by hand, no per-file launching —
+one command does everything.
 
 > **▶ Run first (new mode only):** `progress-update` — the gap analysis reads `PROGRESS.md`; if it is
 > stale it picks the wrong next project. (`review` mode has no prerequisite.)
@@ -116,62 +118,89 @@ Launch a `general-purpose` subagent, `run_in_background: false`, on the plan the
 Wait for it. It only sharpens architecture; if it reports the architecture is already sound and changes
 nothing, that is fine — continue to the reviewer.
 
-### Phase 2 — Review (one reviewer subagent)
+### Phase 2 — Review (specialist reviewers, one concern each)
 
-Launch a second, independent `general-purpose` subagent, `run_in_background: false`:
-
-> Read `notes/prompts/projects/plan/plan-review-prompt.md` and execute it in full for the plan the
-> author just wrote: `PROJECT = «the chosen project folder path»` · `DRY_RUN = {DRY_RUN}`. This is
-> **new mode**: audit the just-authored plan hard against the standard, fix what falls short directly
-> in the file, and finish as that prompt says for new mode — false: commit the plan + the staged
-> ROADMAP.md and PROGRESS.md atomically; true: fix only, commit nothing. Report your verdict, files
-> touched, and the commit hash if you committed.
-
-Wait for it, then go to "Finishing".
+Do **not** hand one subagent the whole 23-section plan to audit — it would skim the last sections. Run
+the **specialist reviewers** defined in "Specialist review procedure" below over the just-authored plan.
+They fix directly and do not commit. Then go to "Finishing" (the orchestrator commits the plan + the
+staged ROADMAP.md / PROGRESS.md).
 
 ## If MODE = review
 
 ### PROJECT = all
 Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block's
-Batch note and run the **single-project review below once per project**, fully finishing one (including
-its commit) before starting the next — never overlap, since their subagents commit and parallel commits
-race the git index. Put each project's report under a `### [project]` heading, and after the last one
+Batch note and run the **single-project review below once per project**, fully finishing one (all five
+specialists + the orchestrator commit) before starting the next — never overlap, since the orchestrator
+commits per project and parallel commits race the git index. Put each project's report under a
+`### [project]` heading, and after the last one
 print the `_batch-mode.md` summary table (`Project | Result | Sections fixed`). If the run gets too
 long, finish the current project completely and stop with the "Completed / Remaining" line — a re-run
 resumes from the first unfinished project.
 
 ### Single project
-No author phase — the plan already exists. Launch one `general-purpose` reviewer subagent,
+No author phase — the plan already exists. Run the **specialist reviewers** defined in "Specialist
+review procedure" below over `{PROJECT}/PLANNING.md`, then go to "Finishing" (the orchestrator commits
+just the plan).
+
+---
+
+## Specialist review procedure (used by both modes)
+
+The plan is reviewed by **five specialists, each owning one concrete concern** — so each cold subagent
+audits a small, defined slice it cannot leave half-done. Dispatch them **sequentially**, in this order
+(they all edit the same `PLANNING.md`, so never overlap; none commits):
+
+1. `architecture` · 2. `data-model-api` · 3. `rules-security` · 4. `steps-tests` · 5. `branches-coverage`
+
+For an **Angular project (01–06)**, skip concerns whose sections the plan does not have (e.g. no
+backend API/security) — the reviewer prompt derives the format, but do not dispatch a concern with
+nothing to audit. For a **full-stack project (07+)**, run all five.
+
+For **each** concern in order, launch a fresh, independent `general-purpose` subagent,
 `run_in_background: false`:
 
-> Read `notes/prompts/projects/plan/plan-review-prompt.md` and execute it in full:
-> `PROJECT = {PROJECT}` · `DRY_RUN = {DRY_RUN}`. This is **review mode**: audit the existing
-> `{PROJECT}/PLANNING.md` against the standard, fix what falls short directly, and finish as that
-> prompt says for review mode (false: commit just the plan; true: fix only). Report your verdict, the
-> audit summary (critical / quality / consistency counts), files touched, and the commit hash if you
-> committed.
+> Read `notes/prompts/projects/plan/plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
+> `SCOPE = «this concern»`, `DRY_RUN = true`. Audit **only your concern's** sections/invariants/checks
+> against the standard (the `{SCOPE}` table in that prompt), fix what falls short directly in the file,
+> and **do NOT commit** — the orchestrator commits once after every concern. Return your verdict and the
+> **check-by-check trace of your slice**, plus any cross-concern ripple to reconcile.
 
-Wait for it, then go to "Finishing".
+Wait for each specialist before dispatching the next. Collect their traces and any ripples; if a ripple
+lands in a concern already reviewed, re-dispatch that one specialist to reconcile it.
 
 ## Finishing
 
-**If `{DRY_RUN}` = false:** everything is committed, one atomic commit per plan. Report the commit(s)
-made and each reviewer's verdict.
+The specialist reviewers left every fix in the working tree; **the orchestrator does the single commit**
+(they never commit). One atomic commit per plan.
 
-**If `{DRY_RUN}` = true:** nothing was committed — all changes are staged in the working tree for
-Victor to read. Print the atomic commit sequence to run after reviewing the diff, one command per code
+**If `{DRY_RUN}` = false:** commit now.
+- **`new` mode** (the author left ROADMAP.md + PROGRESS.md staged with the plan): `git add
+  {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
+  `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.
+- **`review` mode** (only the plan changed): `git add {PROJECT}/PLANNING.md`, then
+  `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`.
+Report the commit made and each specialist's verdict/trace.
+
+**If `{DRY_RUN}` = true:** nothing is committed — all changes are staged in the working tree for Victor
+to read. Print the atomic commit sequence above to run after reviewing the diff, one command per code
 block. In `new` mode that is the three-file commit; in `review` mode, one commit per plan.
 
 ## Hard rules
 
 - **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
-  rule is "never auto-commit"; he lifted it for the audit orchestrators. The reviewer subagent commits.
-  It applies nowhere else — normal sessions still hand Victor the command.
+  rule is "never auto-commit"; he lifted it for the audit orchestrators. **The orchestrator commits
+  once** (the specialist reviewers never do). It applies nowhere else — normal sessions still hand
+  Victor the command.
 - **One atomic commit per plan.** In new mode that single commit carries PLANNING.md + ROADMAP.md +
   PROGRESS.md (they are one logical change: registering the new project). Never `git add .`.
-- **Author → architecture advisor → reviewer in new mode; reviewer only in review mode.** Run them
-  strictly in sequence, never overlapping — each must see the previous one's finished work, and parallel
-  commits race the git index. (The architecture advisor is new-mode only; a `review`-mode plan already
-  exists and the general reviewer's design-correctness checks cover it.)
-- Never skip the reviewer pass.
+- **The plan is authored whole, reviewed by specialists — one concern per subagent.** Authoring needs
+  the whole plan in one context (the sections cross-reference); review does not, so it is split into
+  five cold specialists (architecture · data-model-api · rules-security · steps-tests ·
+  branches-coverage), each owning a small slice it cannot skim and returning a check-by-check trace.
+- **Strict sequence, never overlapping.** new mode: author → architecture advisor → the five
+  specialists (in order) → orchestrator commit; review mode: the five specialists → orchestrator commit.
+  Each must see the previous one's finished work, and they all edit the same file. (The architecture
+  advisor is new-mode only, on the author side; the `architecture` specialist reviewer independently
+  re-checks §6/§3/§20 in both modes.)
+- Never skip the specialist review passes.
 ````
