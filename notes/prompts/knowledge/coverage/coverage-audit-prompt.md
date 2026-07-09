@@ -35,34 +35,62 @@ this prompt. Projects and notes are vehicles to reach the objective — they do 
 
 Also read `notes/prompts/_job-market-evidence.md` — real postings from the target companies. When it
 has evidence, its Synthesis is a **required floor**: every recurring requirement must map to coverage
-somewhere. For any section you are unsure is complete, run the **adversarial interviewer pass** from
-`coverage-prompt.md` Step 4a on that topic (a cold subagent writes the 12 questions it would ask and
-reports the gaps) — it is the fastest way to prove a section is complete rather than assume it.
+somewhere. The **adversarial interviewer pass** (a cold subagent writes the 12 questions it would ask
+and reports the gaps) is not optional or per-doubt here — it runs for every topic as **Analyst C** in
+the per-topic loop (see the Execution model), the fastest way to prove a section is complete rather than
+assume it.
 
 (CLAUDE.md and ROADMAP.md are read in Step 1.)
 
 ---
 
-## Execution model — the deep per-section audit is ONE cold subagent per topic (mandatory)
+## Execution model — read-only analysts, one concern each; the orchestrator is the only editor
 
-Do **not** audit all twelve topic sections in a single context. Loading the whole `coverage.md` and
-deep-checking every section in one pass is exactly the failure Victor caught in the notes flow: the
-model's attention degrades toward the end and the last topics get a shallow skim. Every item in every
-section deserves the same scrutiny as the first, so the deep work is split file-by-topic:
+Do **not** audit all twelve topic sections in a single context, and do **not** let any one subagent do
+more than one thing. Two failures to avoid, both of which degrade quality:
+- **Whole-file passes** — loading all of `coverage.md` and deep-checking every section in one context is
+  the failure Victor caught in the notes flow: attention degrades toward the end and the last topics get
+  a shallow skim. Every item in every section deserves the scrutiny the first one gets.
+- **Multi-concern subagents** — a subagent asked to judge market-fit *and* internal quality *and* then
+  edit files splits its attention three ways and does none of them deeply. One subagent, one concern,
+  one deliverable.
 
-- **The orchestrator (this context) does only the global, structural, whole-file work**, which genuinely
-  needs a cross-topic view but is light: Step 1 (read state + pre-audit sync), Step 2 (topic
-  completeness — is a whole folder missing), Step 4 (cross-topic duplicate/misplacement/scope scan),
-  and the final Step 5 sync-verify + Step 6 summary/commit.
-- **The deep per-section audit — Step 2b (market-fit) and Step 3 (item-by-item gaps) — runs as one cold
-  `general-purpose` subagent per topic**, dispatched **sequentially** (they edit `coverage.md` +
-  `notes/{topic}/coverage.md`; sequential avoids racing edits and keeps each commit-ready). Give each
-  subagent exactly one topic: it reads only that topic's section in `notes/coverage.md`, that topic's
-  `notes/{topic}/coverage.md` and `future-learning.md`, `_coverage-standard.md`, and the evidence
-  Synthesis — then applies Steps 2b + 3 for that topic and returns an **item-by-item trace** (every
-  coverage item listed with PASS or the change made) as proof it read the whole section to the end.
-- **Never hand one subagent more than one topic**, even at higher token cost — deep, atomic,
-  topic-by-topic passes are the standard, the same rule the notes audit enforces file-by-file.
+So the work is split two ways at once — **by topic** and **by concern** — under a strict role divide:
+
+**Analysts (cold `general-purpose` subagents) — read-only, one concern, return a list. Never edit any
+file.** For each topic, dispatch three analysts, each given exactly one topic and one job:
+
+| Analyst | Concern | Mandate | Returns |
+|---------|---------|---------|---------|
+| **A — Market-fit** | Step 2b | Does coverage meet what the market asks for this topic? | Gap list: recurring requirement (with freq) → the item it needs, in the standard's format, tagged by section. Plus over-coverage flags. |
+| **B — Internal quality** | Step 3 | Does each existing item pass the standard's quality bar? | Gap list: missing item type, missing confusable-pair side, dictionary-definition rewrites, AI-exploitable gaps — each as a proposed item/edit, tagged by section. Plus an **item-by-item trace** (every current item listed PASS or change) as proof it read the whole section. |
+| **C — Adversarial interviewer** | Step 4a | Would a real interviewer find a hole? | Gap list: of the 12 questions it would ask, the ones coverage does NOT support, each as a proposed item tagged by section. |
+
+Rules for the analyst split:
+- **One topic per analyst, one concern per analyst.** Never hand a subagent two topics or two concerns,
+  even at higher token cost — deep, atomic passes are the standard, the same rule the notes audit
+  enforces file-by-file. Three analysts × twelve topics is expected and fine.
+- Each analyst reads only what its concern needs: its own topic's section in `notes/coverage.md`, that
+  topic's `notes/{topic}/coverage.md` + `future-learning.md`, `_coverage-standard.md`, and (A and C) the
+  evidence Synthesis. Nothing else.
+- **Analysts do not touch files.** They return findings only. If an analyst edits a file, the run is wrong.
+
+**The orchestrator (this context) is the only editor, and does only the global, structural, whole-file
+work**, which genuinely needs a cross-topic view but is light: Step 1 (read state + pre-audit sync),
+Step 2 (topic completeness — is a whole folder missing), Step 4 (cross-topic duplicate/misplacement/scope
+scan), and the final Step 5 sync-verify + Step 6 summary/commit. It also **consolidates and applies** each
+topic's three analyst gap-lists (Step 5).
+
+**Per-topic loop (sequential, one topic fully done before the next):**
+1. Dispatch Analyst A, then B, then C for the topic (`run_in_background: false`). Collect their three lists.
+2. Consolidate: merge the three lists, drop duplicates, discard any gap that is out of junior scope
+   (record those in the summary as "analyst-suggested, left out — reason").
+3. Apply the surviving gaps to `notes/{topic}/coverage.md` and its section in `notes/coverage.md`, sync
+   the two, and update `future-learning.md` if anything was promoted/demoted.
+4. Move to the next topic.
+
+Doing one topic end-to-end keeps the orchestrator's editing context small (one section at a time) and
+each commit-ready, without any analyst ever holding more than a single concern.
 
 ---
 
@@ -130,12 +158,15 @@ Add it to the correct section in that topic's coverage, and sync to `notes/cover
 
 ---
 
-## Step 2b — Market-fit check: deep analysis first, evidence as the sharpening floor
+## Step 2b — Analyst A's mandate: market-fit (deep analysis first, evidence as the sharpening floor)
 
-Do this **before** the finer per-section audit: coverage must first meet what the market actually asks,
-then expand — the priority order defined in `_coverage-standard.md` ("cover the market first, then
-expand"). This is the step that operationalises the "required floor" principle instead of leaving it
-to memory.
+This is the single concern of **Analyst A**, run once per topic as a read-only cold subagent. It comes
+**before** the finer per-section audit: coverage must first meet what the market actually asks, then
+expand — the priority order defined in `_coverage-standard.md` ("cover the market first, then expand").
+This is the step that operationalises the "required floor" principle instead of leaving it to memory.
+
+Analyst A **returns a gap list** and edits nothing — the orchestrator applies the surviving gaps in the
+per-topic loop. "Add", "sharpen", "flag" below mean *propose in the returned list*, not write to a file.
 
 **Lead with the deep analysis — it is the primary input, not the evidence.** Per `_coverage-standard.md`
 ("Two sources"), the backbone is a full reasoning of what a junior for the target role and companies must
@@ -164,10 +195,13 @@ summary, note whether each market-fit change came from the deep analysis, from r
 
 ---
 
-## Step 3 — Audit each section for gaps
+## Step 3 — Analyst B's mandate: internal quality of each item
 
-For each section in `notes/coverage.md`, apply the **content and quality checks defined in
-`_coverage-standard.md`** — do not restate them, run them:
+This is the single concern of **Analyst B**, run once per topic as a read-only cold subagent, on that
+one topic's section. Analyst B **returns a gap list plus the item-by-item trace** and edits nothing —
+the orchestrator applies the surviving gaps in the per-topic loop.
+
+Apply the **content and quality checks defined in `_coverage-standard.md`** — do not restate them, run them:
 - **Three item types** present (conceptual / decision / pressure) — add the missing type.
 - **Confusable pairs** — both sides present as separate items.
 - **Item quality** — each item is interview-anchored, not a dictionary definition; fix any that read
@@ -203,9 +237,12 @@ For each `notes/{topic}/future-learning.md` corresponding to a section you revie
 
 ---
 
-## Step 5 — Apply all changes
+## Step 5 — Orchestrator applies the consolidated changes
 
-Apply every change identified in Steps 2, 2b, 3, and 4 directly to the files.
+The orchestrator (this context) is the only editor. Apply every change directly to the files: the
+orchestrator's own findings from Step 2 (topic completeness) and Step 4 (cross-topic), plus each topic's
+consolidated Analyst A/B/C gap-list from the per-topic loop (Steps 2b + 3 + 4a). Analysts never wrote
+anything — everything they surfaced lands here.
 
 **Files to update:**
 - `notes/coverage.md` — the primary file

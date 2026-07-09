@@ -89,6 +89,20 @@ standard's "What coverage.md is" section.
 
 ---
 
+## Subagent roles — one concern each, read-only
+
+This prompt uses two cold subagents, each with a **single concern** and **no write access**:
+- **Step 2 — market analyst:** derives the market-demand floor for {TOPIC}. Returns a list; edits nothing.
+- **Step 4a — adversarial interviewer:** finds concepts an interviewer would probe that coverage misses.
+  Returns a gap list; edits nothing.
+
+Never merge these into one subagent and never give either a second job — a subagent that both analyses
+and writes, or covers two concerns at once, splits its attention and lowers quality. **The generator
+(this context) is the only editor:** it consolidates the returned lists and writes coverage.md,
+future-learning.md, and the sync to notes/coverage.md.
+
+---
+
 ## Step 1 — Read the existing state
 
 Before reading any file, re-read the configuration block above — some topics have additional
