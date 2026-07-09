@@ -83,7 +83,7 @@ Role role = Role.ADMIN;
 role.name()      // "ADMIN" — el nombre de la constante como String
 role.ordinal()   // 0 — posición en la declaración (base 0)
 
-Role.valueOf("ADMIN")   // Role.ADMIN — String → constante de enum (lanza si no se encuentra)
+Role.valueOf("ADMIN")   // Role.ADMIN — String → constante de enum (lanza una excepción si no se encuentra)
 Role.values()           // Role[] — todas las constantes: [ADMIN, EMPLOYEE, MANAGER]
 ```
 
