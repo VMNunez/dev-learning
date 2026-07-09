@@ -1705,9 +1705,9 @@ public class SecurityConfig {
 
 ## AuthenticationEntryPoint — 401 en vez del 403 vacío por defecto
 
-Purpose: intercepta el momento exacto en que Spring Security detecta que una request **no tiene ninguna autenticación válida** (sin token, o un token tan roto que ni se puede procesar) y controla qué responder — en vez de dejar que Spring aplique su comportamiento por defecto.
+Propósito: intercepta el momento exacto en que Spring Security detecta que una request **no tiene ninguna autenticación válida** (sin token, o un token tan roto que ni se puede procesar) y controla qué responder — en vez de dejar que Spring aplique su comportamiento por defecto.
 
-File: `src/main/java/com/victor/timetrack/security/JwtAuthenticationEntryPoint.java`
+Archivo: `src/main/java/com/victor/timetrack/security/JwtAuthenticationEntryPoint.java`
 
 Docs: https://www.baeldung.com/spring-security-401-unauthorized → leer: la sección donde implementan `AuthenticationEntryPoint` con un `ObjectMapper` para escribir el JSON de error
 
