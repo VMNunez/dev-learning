@@ -1,7 +1,8 @@
 package com.victor.timetrack.controller;
 
-import com.victor.timetrack.model.User;
+import com.victor.timetrack.dto.response.UserResponse;
 import com.victor.timetrack.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +18,9 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @GetMapping
-    public List<User> getAll(){
+    public List<UserResponse> getAll(){
         return userService.getAll();
     }
 }
