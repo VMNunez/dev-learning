@@ -35,6 +35,13 @@ Your job is to audit it hard against the standard, fix what falls short, and onl
 Do not be generous — the author already believed it was done. Assume something is below bar until you
 have checked.
 
+**This prompt audits exactly ONE file — never a batch.** Read `{FILE}` (and its `es/` counterpart)
+**in full, top to bottom** — do not skim, do not stop early, reach the last line. A folder loaded into
+one context is what makes a reviewer skim the tail; that is why the audit is one file per subagent. At
+the end you MUST produce a **section-by-section trace**: list every `##`/`###` heading in order and,
+next to each, write PASS or the specific fix you made in it. That trace is your proof you read to the
+end — a review without it is not accepted.
+
 Before starting, read:
 - notes/prompts/knowledge/notes/_note-quality-standard.md — the bar you audit against, in full.
 - The first section of notes/java/es/08-excepciones.md — the calibration reference for "finished".

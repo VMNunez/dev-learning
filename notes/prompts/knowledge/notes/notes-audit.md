@@ -195,6 +195,17 @@ git commit -m "<that file's commit message>"
 
 ## Hard rules
 
+- **One file per subagent context — ALWAYS, even at higher token cost. This is the rule that protects
+  quality.** A subagent that carries a whole folder (or several files) in its context degrades its
+  attention toward the end and silently skims — the later files get a shallow pass, exactly the failure
+  Victor caught. So: never dispatch a subagent to author, review, polish, translate, or quality-check
+  more than one file at a time. Whatever the task (full audit, TODO resolution, a narrow Spanish-prose
+  or docs-link pass), it is always **one cold subagent per file**, run sequentially. Deep, atomic,
+  file-by-file passes are the standard here — paying more tokens for one-file-per-subagent is the
+  intended trade, never a reason to batch. Every per-file subagent must **read its file top to bottom**
+  and, when reviewing/auditing, return a **section-by-section trace** (every `##`/`###` heading with
+  PASS or the fix made) as proof it reached the last line. If you are ever tempted to "save spawns" by
+  handing one subagent a batch of files, that is the mistake — do not.
 - **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
   rule is "never auto-commit"; he lifted it for this orchestrator. The reviewer subagent commits each
   file. It applies nowhere else — normal sessions and standalone component prompts still hand Victor
