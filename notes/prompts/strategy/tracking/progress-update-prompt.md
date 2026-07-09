@@ -279,6 +279,11 @@ went wrong. Then print:
 
 Write "—" for an unchanged section; skip rows for sections that do not exist in PROGRESS.md.
 
+**Low-confidence statuses:** if any project subagent derived its step status from the
+`PROGRESS_HINT` fallback (or the hint overrode the ✅ markers) rather than from ✅ markers alone,
+add one line after the table naming the project and suggesting Victor add the missing ✅ to that
+step's heading in PLANNING.md — that makes the next run self-sufficient.
+
 ---
 
 ## Step F — Commit

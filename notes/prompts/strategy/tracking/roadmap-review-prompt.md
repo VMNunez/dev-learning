@@ -84,7 +84,10 @@ Launch **both** `general-purpose` subagents in a single message so they run in p
 > Read `notes/coverage.md` (the target: every concept required for the job) and `PROGRESS.md` (the
 > actual: what is already learned). Identify which concepts are still uncovered: present in
 > coverage.md but not yet in PROGRESS.md — treat a concept as covered if PROGRESS.md has an
-> equivalent entry even with different wording. Group by topic, following the order in coverage.md:
+> equivalent entry even with different wording. If you are **not sure** whether an entry really
+> covers a concept, do NOT silently drop it — list it in a separate "borderline" group with one
+> line saying which PROGRESS.md entry might cover it; a hidden gap is worse than a doubtful one.
+> Group by topic, following the order in coverage.md:
 > Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript →
 > JavaScript → SQL → CSS → Git → General.
 >
@@ -96,7 +99,8 @@ Launch **both** `general-purpose` subagents in a single message so they run in p
 > in/out-of-scope markers) — the doer needs it to reconcile a table without opening coverage.md.
 >
 > Return **only**: (1) the uncovered-concept list, one line per concept, grouped by topic; (2) the
-> SQL topic list. No excerpts of covered material, no reasoning trace.
+> borderline group (may be empty); (3) the SQL topic list. No excerpts of covered material, no
+> reasoning trace.
 
 **Subagent 2b — active project summary.** Its instruction:
 
@@ -107,6 +111,8 @@ Launch **both** `general-purpose` subagents in a single message so they run in p
 > Do not return full step descriptions or code.
 
 The 2a gap list drives Steps 3 and 4; the 2b summary replaces reading PLANNING.md yourself.
+Borderline concepts from 2a are NOT gaps for planning purposes (do not add project candidates for
+them) — carry them into the Step 7 report so Victor resolves them, marked `(borderline)`.
 
 ---
 
@@ -275,7 +281,9 @@ If any phase was newly promoted to ✅ in this review, add this reminder:
 "Phase X is now closed — if a project also finished, update PROGRESS.md's project table and
 CLAUDE.md's 'Current study progress' section too, per CLAUDE.md's instructions."
 
-Commit message — one command per block:
+ROADMAP.md is tracked and lives on `main` per CLAUDE.md. Per the commit-hygiene rule, run
+`git status` right before the add and again right before the commit — confirm nothing but
+ROADMAP.md gets staged (`git restore --staged` anything else). Then:
 
 ```
 git add ROADMAP.md
@@ -284,5 +292,11 @@ git add ROADMAP.md
 ```
 git commit -m "docs: update roadmap — <one-line summary of main changes>"
 ```
+
+> **Auto-commit note.** Victor's global rule is "never auto-commit." This orchestrator may run the
+> commit itself (same lift granted to `progress-update` and the notes-audit orchestrator, extended
+> here 2026-07-09) **only when both reviewers finished and every fix landed cleanly**. If anything is
+> uncertain — a reviewer failed, a fix conflicts, or the diff shows an unexplained hunk — print the
+> two blocks above and let Victor run them instead.
 
 ````

@@ -59,7 +59,10 @@ every Section 3 row counts.
    at your level; the orchestrator handles early-learned concepts already in PROGRESS.md).
 
 Record the confirmed step status as a short string — e.g. `Steps 1–3 done, Step 4 in progress` or
-`all steps complete` — and return it. The orchestrator uses it to fix the projects table and headings.
+`all steps complete` — and return it, **stating how you derived it**: `(from ✅ markers)`,
+`(from PROGRESS_HINT — no ✅ markers in PLANNING.md)`, or `(hint overrode ✅ markers)`. The
+orchestrator uses the status to fix the projects table and headings, and the derivation note to flag
+low-confidence statuses in its report.
 
 ---
 
