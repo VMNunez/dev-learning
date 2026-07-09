@@ -72,8 +72,9 @@ Read:
 1. `PROGRESS.md` — the current version. Learn its exact structure, section order, and format. Note
    the projects table and each project's status. Treat statuses as a starting point — the subagents
    verify them.
-2. `CLAUDE.md` "Current study progress" — general orientation only (which project is active). It is
-   updated by hand and may lag; do not treat it as authoritative.
+2. The "Current study progress" and "Active project" lines of CLAUDE.md — general orientation only
+   (which project is active). CLAUDE.md is already loaded into your context by Claude Code; do **not**
+   re-read the file. It is updated by hand and may lag; do not treat it as authoritative.
 
 Decide the project scope from `{MODE}`:
 - **active** — only the in-progress project (⏳). Find it in the PROGRESS.md projects table or the
@@ -244,9 +245,13 @@ All zeros if none — that makes it visible the block has not started.
 
 ---
 
-## Step E — Write PROGRESS.md and print the diff
+## Step E — Apply the edits and print the diff
 
-Write the complete updated PROGRESS.md, then print:
+Apply the merge as **targeted in-place edits** (Edit tool, one edit per change) — do NOT rewrite the
+whole file. You already hold the current PROGRESS.md from Step 0; rewriting it wholesale wastes
+output tokens and risks silently dropping sections. After editing, run `git diff PROGRESS.md` and
+skim it — every hunk must correspond to a row in the table below; an unexplained hunk means an edit
+went wrong. Then print:
 
 **Changes made:**
 | Section | Added | Corrected | Removed |
@@ -278,7 +283,9 @@ Write "—" for an unchanged section; skip rows for sections that do not exist i
 
 ## Step F — Commit
 
-PROGRESS.md is tracked and lives on `main` per CLAUDE.md. Commit it there:
+PROGRESS.md is tracked and lives on `main` per CLAUDE.md. Per the commit-hygiene rule, run
+`git status` right before the add and again right before the commit — confirm nothing but
+PROGRESS.md gets staged (`git restore --staged` anything else). Then:
 
 ```
 git add PROGRESS.md

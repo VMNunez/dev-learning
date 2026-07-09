@@ -9,6 +9,8 @@ return the concepts those completed steps teach — each tagged with the PROGRES
 to — plus the project's confirmed step status.
 
 **What you must NOT do:**
+- Do **not** read anything beyond this standard and the project's `PLANNING.md` — not the project's
+  code, README, or any other file. Everything you need is in the PLANNING.md and the `PROGRESS_HINT`.
 - Do **not** read or write `PROGRESS.md`. You cannot see it. Deduplication against what is already
   recorded is the orchestrator's job, not yours — so extract the full concept list for completed
   steps even if some concepts might already exist. The orchestrator drops the duplicates.
@@ -111,4 +113,5 @@ Return, and nothing else:
 
 Keep each concept to one line, key syntax in backticks — the same format PROGRESS.md uses. Do not add
 explanations longer than a short dash-clause. Do not decide whether a concept is "already present" —
-that is the orchestrator's merge step.
+that is the orchestrator's merge step. Return no PLANNING.md excerpts and no reasoning trace — the
+three items above are the entire report.

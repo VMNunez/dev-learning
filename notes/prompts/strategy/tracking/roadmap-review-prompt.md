@@ -11,10 +11,11 @@ finishes, `notes/coverage.md` changes significantly, or it has been a while sinc
 
 It runs as an **orchestrator**: two cold fact-gathering subagents feed a doer (the gap analysis and
 the active project's PLANNING.md summary — so neither `coverage.md` nor a PLANNING.md ever loads into
-the doer's own context), the doer applies the edits, then one cold `general-purpose` reviewer
-subagent independently verifies every invariant and fixes any it finds violated. That reviewer pass
-is the point of the design — the verification tail always runs instead of being skipped at the end of
-a long single context.
+the doer's own context), the doer applies the edits, then two cold reviewer subagents run in sequence
+— one mechanical (ROADMAP + standard only) and one cross-file — each independently verifying its own
+invariants and fixing any it finds violated. That reviewer tail is the point of the design — the
+verification always runs instead of being skipped at the end of a long single context, and each
+reviewer loads only the files its checks actually need.
 
 **Prerequisite:** PROGRESS.md must be current before running this prompt — the gap analysis in Step 2
 reads it directly. If you have finished a project or significant study sessions since the last
@@ -24,7 +25,7 @@ produce wrong results.
 **Internal piece this orchestrates** (never launched directly):
 `_roadmap-standard.md` — the stable ROADMAP contract (what each file is for, what ROADMAP contains,
 gate-based sequencing, the canonical study-block references, no-duplication). The doer references it
-instead of re-printing the rules; the reviewer verifies against it.
+instead of re-printing the rules; the reviewers verify against it.
 
 ---
 
@@ -35,15 +36,15 @@ blocks, and practice.
 
 You are the **orchestrator**. In Step 2 you launch two cold fact-gathering subagents (gap analysis +
 active-project summary) so `notes/coverage.md` and the PLANNING.md never load into your own context;
-you (the doer) apply the edits in Steps 3–5 from their reports; then in Step 6 you launch one cold
-reviewer subagent that independently verifies and fixes the result. Finish with the report and the
-commit blocks.
+you (the doer) apply the edits in Steps 3–5 from their reports; then in Step 6 you launch two cold
+reviewer subagents, one after the other, that independently verify and fix the result. Finish with
+the report and the commit blocks.
 
 First read `notes/prompts/strategy/tracking/_roadmap-standard.md` — the stable ROADMAP contract this
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
-Then read CLAUDE.md (daily schedule, teaching rules) and `notes/prompts/_shared-context.md` (my
-profile, target job, and the market).
+Then read `notes/prompts/_shared-context.md` (my profile, target job, and the market). CLAUDE.md
+(daily schedule, study order) is already loaded into your context by Claude Code — do not re-read it.
 
 `ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
 references `notes/coverage.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
@@ -169,7 +170,8 @@ or git. Do not change the other 4 gate conditions unless they are factually wron
 
 ## Step 5 — Apply the updates
 
-Edit ROADMAP.md directly.
+Edit ROADMAP.md directly, as **targeted in-place edits** (one edit per change) — never rewrite the
+whole file; wholesale rewrites waste output and risk silently dropping stable sections.
 
 Do NOT reword, restructure, or improve stable sections (per `_roadmap-standard.md`, "What ROADMAP.md
 contains"). Only touch them if something is factually wrong — for example, a project listed as future
@@ -188,47 +190,60 @@ Do not treat this self-check as the final word — Step 6 verifies it independen
 
 ---
 
-## Step 6 — Independent reviewer subagent
+## Step 6 — Two independent reviewer subagents (sequential)
 
-Now launch **one cold `general-purpose` subagent, `run_in_background: false`**. It has none of your
-context — it re-derives every judgement from the files alone, which is exactly why it catches what a
-long single context skips. Wait for it to finish before writing the report.
+Launch **two cold `general-purpose` subagents, one after the other** (`run_in_background: false` —
+never in parallel: both fix ROADMAP.md directly, and concurrent edits to the same file conflict).
+They have none of your context — each re-derives its judgements from the files alone, which is
+exactly why they catch what a long single context skips. Each loads only the files its own checks
+need. Wait for both before writing the report.
 
-Its instruction:
+**Reviewer 1 — mechanical invariants** (reads only `_roadmap-standard.md` and `ROADMAP.md` — it must
+NOT open PROGRESS.md or coverage.md; its checks don't need them). Its instruction:
 
 > You are an independent reviewer. Read `notes/prompts/strategy/tracking/_roadmap-standard.md` (the
-> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage.md`.
-> Verify every invariant below **from scratch** — do not trust that the edits are correct. For each
-> violation you find, **fix it directly in ROADMAP.md**, then report what you changed and why.
+> ROADMAP contract), then the freshly edited `ROADMAP.md`. Read nothing else. Verify each invariant
+> below **from scratch** — do not trust that the edits are correct. For each violation, **fix it
+> directly in ROADMAP.md**, then report what you changed and why.
 >
-> Checklist — verify each one and fix any that fail:
 > 1. **Stray-date scan.** Do a literal scan of ROADMAP.md for every month name (January–December) and
 >    year pattern (2025, 2026, …). For each match: if it is inside the applications strategy section
 >    or the daily schedule header, it is intentional — leave it. Anywhere else, convert it to a gate
 >    condition (per the standard's ❌→✅ examples) and log it.
-> 2. **No duplication.** No passage duplicates PROGRESS.md or coverage.md word-for-word — it must
->    reference them instead. Cut any restated concept list and point to the source file.
-> 3. **Future projects (🔜) name their gaps.** Every future project in the sequence names which
->    specific coverage.md gaps it closes. If one does not, add the gap mapping (compute it from
->    coverage.md vs PROGRESS.md).
-> 4. **Active project (⏳) gate.** The active project has a concrete, verifiable gate condition — a
->    state that is true or false regardless of the date. If it is vague or date-based, rewrite it as a
->    gate.
-> 5. **SQL table.** The SQL topic table matches the SQL section of coverage.md (no missing topic, no
->    out-of-scope topic) and its ✅ / 🔜 markers agree with PROGRESS.md.
-> 6. **Notes study order.** The 13:30 study order equals the canonical string in the standard exactly:
+> 2. **Notes study order.** The 13:30 study order equals the canonical string in the standard exactly:
 >    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
->    (if CLAUDE.md differs, CLAUDE.md wins).
-> 7. **LeetCode gate topics.** The study-order gate condition lists exactly the high-priority topics
+>    (CLAUDE.md is already in your context — if its order differs from the standard, CLAUDE.md wins).
+> 3. **LeetCode gate topics.** The study-order gate condition lists exactly the high-priority topics
 >    per the standard (angular, spring-boot, java, architecture, security if added in that range) and
 >    does NOT list typescript, sql, javascript, css, or git.
-> 8. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if PROGRESS.md shows its
+>
+> Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` — no file
+> excerpts, no reasoning trace. If everything passed with no fixes, say so explicitly.
+
+**Reviewer 2 — cross-file consistency** (launch only after Reviewer 1 has finished). Its instruction:
+
+> You are an independent reviewer. Read `notes/prompts/strategy/tracking/_roadmap-standard.md` (the
+> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage.md`.
+> Verify each invariant below **from scratch** — do not trust that the edits are correct. For each
+> violation, **fix it directly in ROADMAP.md**, then report what you changed and why.
+>
+> 1. **No duplication.** No passage duplicates PROGRESS.md or coverage.md word-for-word — it must
+>    reference them instead. Cut any restated concept list and point to the source file.
+> 2. **Future projects (🔜) name their gaps.** Every future project in the sequence names which
+>    specific coverage.md gaps it closes. If one does not, add the gap mapping (compute it from
+>    coverage.md vs PROGRESS.md).
+> 3. **Active project (⏳) gate.** The active project has a concrete, verifiable gate condition — a
+>    state that is true or false regardless of the date. If it is vague or date-based, rewrite it as a
+>    gate.
+> 4. **SQL table.** The SQL topic table matches the SQL section of coverage.md (no missing topic, no
+>    out-of-scope topic) and its ✅ / 🔜 markers agree with PROGRESS.md.
+> 5. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if PROGRESS.md shows its
 >    goals complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
 >
 > Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` — no file
 > excerpts, no reasoning trace. If everything passed with no fixes, say so explicitly.
 
-Fold the reviewer's fixes and findings into the report below.
+Fold both reviewers' fixes and findings into the report below.
 
 ---
 
@@ -240,7 +255,7 @@ Fold the reviewer's fixes and findings into the report below.
 |---------|--------|-----|
 | ... | ... | ... |
 
-Include both the doer's edits (Steps 1–5) and the reviewer's fixes (Step 6) in this table.
+Include both the doer's edits (Steps 1–5) and the two reviewers' fixes (Step 6) in this table.
 
 **Remaining knowledge gaps** — concepts in coverage.md not yet in PROGRESS.md, grouped by
 topic. Max 3 per topic. Focus on what interviewers at NTT Data, Capgemini, and similar
