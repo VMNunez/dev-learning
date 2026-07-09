@@ -5,7 +5,7 @@
 
 ## La arquitectura de tres capas — el patrón más importante
 
-Todo API Spring Boot sigue tres capas. Es lo primero que te preguntará un entrevistador.
+Toda API de Spring Boot sigue tres capas. Es lo primero que te preguntará un entrevistador.
 
 ```
 HTTP request
@@ -43,7 +43,7 @@ public class TransactionController {
 
 Algunas cosas que leer de este ejemplo:
 
-- **Sí — cada capa tiene una referencia a la que tiene debajo.** El controlador declara `private final TransactionService service`. `private` porque ninguna otra clase lo necesita; `final` porque una vez que Spring lo establece en el constructor nunca cambia. Verás esta exacta línea `private final` en cada controlador, service y clase que use un repositorio.
+- **Sí — cada capa tiene una referencia a la que tiene debajo.** El controlador declara `private final TransactionService service`. `private` porque ninguna otra clase lo necesita; `final` porque una vez que Spring lo establece en el constructor nunca cambia. Verás exactamente esta línea `private final` en cada controlador, service y clase que use un repositorio.
 - **El constructor es `public` y debe tener exactamente el mismo nombre que la clase** (`TransactionController`). Esa es la regla Java para cualquier constructor. Spring lo llama al arrancar y pasa el bean `TransactionService` automáticamente (inyección por constructor — ver [03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md)).
 - **`this.service = service`** — el parámetro y el campo comparten el nombre `service`. `this.service` significa "el campo de este objeto"; el `service` a secas es el parámetro. La línea copia el parámetro inyectado en el campo para que el resto de la clase pueda usarlo.
 - **`TransactionResponse` es un DTO** (Data Transfer Object) — la forma que el API devuelve en lugar de la entidad raw. Los DTOs se explican completamente en la sección "DTOs" más abajo y en [layer-reference.md](../layer-reference.md).
@@ -96,7 +96,7 @@ El string dentro de la anotación se añade a la ruta base `@RequestMapping` de 
 
 Docs: https://www.baeldung.com/spring-response-entity
 
-`ResponseEntity<T>` **no** es un DTO. Es un wrapper que devuelve un método del controlador para controlar dos cosas a la vez: el **código de estado HTTP** y el **body de la respuesta**. El `<T>` es el tipo del body que lleva (a menudo un DTO, p.ej. `ResponseEntity<TransactionResponse>`). Lo usas porque un REST API debe comunicar *qué pasó* (¿creado? ¿no encontrado? ¿eliminado?), no solo devolver datos — y el código de estado es como lo dice.
+`ResponseEntity<T>` **no** es un DTO. Es un wrapper que devuelve un método del controlador para controlar dos cosas a la vez: el **código de estado HTTP** y el **body de la respuesta**. El `<T>` es el tipo del body que lleva (a menudo un DTO, p.ej. `ResponseEntity<TransactionResponse>`). Lo usas porque un REST API debe comunicar *qué pasó* (¿creado? ¿no encontrado? ¿eliminado?), no solo devolver datos — y el código de estado es precisamente cómo lo comunica.
 
 Sin `ResponseEntity`, cada método devolvería un `200 OK` simple, incluso un `POST` que debería decir `201 Created` o un `DELETE` que debería decir `204 No Content`.
 
@@ -128,7 +128,7 @@ Esta línea se lee de dentro hacia fuera:
 1. Primero se ejecuta lo que está más adentro: `created` ya es el objeto que devolvió el service (por ejemplo, el `ProjectResponse` recién guardado en base de datos).
 2. `ResponseEntity.status(201)` es un método **estático** que empieza a construir la respuesta, fijando el código de estado a `201`. Devuelve un objeto a medio construir (un *builder*), no el `ResponseEntity` final todavía.
 3. `.body(created)` se encadena sobre ese builder y le añade el dato que quieres enviar como body. Aquí es donde termina de construirse: el resultado ya es el `ResponseEntity<ProjectResponse>` completo — estado 201 + ese body.
-4. El método `return`-ea ese objeto. Spring lo recibe, y a partir de ahí serializa el body a JSON con Jackson y arma la respuesta HTTP real que llega a Postman: cabecera de estado `201`, y el JSON en el cuerpo.
+4. El método devuelve ese objeto con `return`. Spring lo recibe, y a partir de ahí serializa el body a JSON con Jackson y arma la respuesta HTTP real que llega a Postman: cabecera de estado `201`, y el JSON en el cuerpo.
 
 **El `<T>` y la seguridad de tipos**
 
@@ -319,7 +319,7 @@ Un **DTO** (Data Transfer Object) es una clase simple cuyo único trabajo es def
 
 **¿Por qué no devolver la entidad JPA directamente?** La entidad está ligada al esquema de base de datos y puede contener campos que el cliente nunca debe ver — un hash de contraseña, claves foráneas internas, colecciones cargadas perezosamente. Devolverla filtra esos campos y acopla tu API pública a tus tablas: cambia una columna y accidentalmente cambias el API. Un DTO te permite controlar exactamente qué campos salen y cuáles entran.
 
-> **¿Cuándo creas el DTO?** Antes del service y el controlador que lo usan — nombran su tipo en sus firmas de método, así que tiene que existir primero. El orden para una feature es: entity → repository → **DTO** → service → controller (el mismo flujo que [layer-reference.md](../layer-reference.md)).
+> **¿Cuándo creas el DTO?** Antes del service y el controlador que lo usan — las firmas de sus métodos mencionan ese tipo, así que tiene que existir primero. El orden para una feature es: entity → repository → **DTO** → service → controller (el mismo flujo que [layer-reference.md](../layer-reference.md)).
 
 Mantienes dos DTOs por recurso — uno por dirección:
 
