@@ -39,7 +39,7 @@ Docs: https://www.baeldung.com/spring-bean
 
 Un **bean** es cualquier objeto que Spring crea y gestiona. Spring almacena todos los beans en un contenedor llamado **Application Context**. Cuando anotas una clase con `@Service`, Spring crea una instancia y la guarda. Cuando otra clase la necesita, Spring inyecta esa misma instancia.
 
-**Por defecto, cada bean es un singleton** — una instancia compartida en toda la aplicación. Por eso los campos de los servicios deben ser sin estado (sin variables de instancia que cambien entre requests).
+**Por defecto, cada bean es un singleton** — una instancia compartida en toda la aplicación. Por eso los campos de los servicios no deben tener estado (sin variables de instancia que cambien entre requests).
 
 ---
 
@@ -252,4 +252,4 @@ public class JwtUtil {
 | Seguridad de tipos | No — solo inyección de String | Sí — los campos tienen tipo |
 | Testabilidad | Difícil de sobreescribir en tests | Fácil — solo construye la clase |
 
-> **Por qué lo preguntan los entrevistadores:** en cuanto tienes más de tres inyecciones `@Value` para el mismo prefijo, el código empieza a oler. `@ConfigurationProperties` es el patrón de producción. "¿Cómo gestionas la configuración agrupada?" — esta es la respuesta esperada para candidatos junior senior.
+> **Por qué lo preguntan los entrevistadores:** en cuanto tienes más de tres inyecciones `@Value` para el mismo prefijo, el código empieza a oler. `@ConfigurationProperties` es el patrón de producción. "¿Cómo gestionas la configuración agrupada?" — esta es la respuesta esperada para candidatos junior-mid.
