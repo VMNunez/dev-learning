@@ -379,3 +379,9 @@ git commit -m "docs: global coverage audit — <one line summary of main changes
 ```
 
 Report the commit hash in the final summary so Victor can see it landed.
+
+### Final step — pipeline self-report
+
+After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+run — write the report file in this orchestrator's folder, commit it on its own, and print the five
+bullets in chat.

@@ -229,4 +229,11 @@ git add CLAUDE.md
 ```
 git commit -m "docs: cross-reference {TOPIC} notes ↔ interview prep — <one line summary>"
 ```
+
+### Final step — pipeline self-report
+
+After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+run — write the report file in this orchestrator's folder, commit it on its own, and print the five
+bullets in chat.
+
 ````

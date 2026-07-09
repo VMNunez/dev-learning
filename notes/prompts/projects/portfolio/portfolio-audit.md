@@ -192,4 +192,11 @@ one command per code block, for Victor to run after reading the diff.
 - **Author then reviewer per section, sequentially.** Never overlap a section's two subagents or two
   sections — the reviewer must see a finished section, and they edit the same file. Never skip the
   reviewer pass.
+
+### Final step — pipeline self-report
+
+After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+run — write the report file in this orchestrator's folder, commit it on its own, and print the five
+bullets in chat.
+
 ````

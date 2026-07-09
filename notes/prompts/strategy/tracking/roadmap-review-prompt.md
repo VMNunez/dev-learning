@@ -299,4 +299,11 @@ git commit -m "docs: update roadmap — <one-line summary of main changes>"
 > uncertain — a reviewer failed, a fix conflicts, or the diff shows an unexplained hunk — print the
 > two blocks above and let Victor run them instead.
 
+
+### Final step — pipeline self-report
+
+After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+run — write the report file in this orchestrator's folder, commit it on its own, and print the five
+bullets in chat.
+
 ````

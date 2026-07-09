@@ -277,4 +277,11 @@ detected (recommended standard rule additions).
   are sequential too — never overlap, because they edit the same files and parallel commits race the
   git index, and a reviewer must never audit an unfinished section.
 - Never skip the `es/` mirror, the market analysis, the gap-hunt, or the per-section reviewer pass.
+
+### Final step — pipeline self-report
+
+After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+run — write the report file in this orchestrator's folder, commit it on its own, and print the five
+bullets in chat.
+
 ````

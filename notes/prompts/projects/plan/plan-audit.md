@@ -209,4 +209,11 @@ block. In `new` mode that is the three-file commit; in `review` mode, one commit
   advisor is new-mode only, on the author side; the `architecture` specialist reviewer independently
   re-checks §6/§3/§20 in both modes.)
 - Never skip the specialist review passes.
+
+### Final step — pipeline self-report
+
+After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+run — write the report file in this orchestrator's folder, commit it on its own, and print the five
+bullets in chat.
+
 ````

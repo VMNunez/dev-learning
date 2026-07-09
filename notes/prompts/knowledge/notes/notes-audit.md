@@ -269,4 +269,11 @@ build), leave the worklist in place and list the failed row so it can be re-run 
   after T. Never let the author or English reviewer write the `es/`.
 - Never skip the translation pass or either reviewer pass.
 
+
+### Final step — pipeline self-report
+
+After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+run — write the report file in this orchestrator's folder, commit it on its own, and print the five
+bullets in chat.
+
 ````
