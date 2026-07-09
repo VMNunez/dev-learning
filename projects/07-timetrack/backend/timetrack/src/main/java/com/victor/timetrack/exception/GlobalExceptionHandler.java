@@ -4,6 +4,7 @@ import com.victor.timetrack.dto.response.ErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,7 +22,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException e) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(buildError(HttpStatus.UNAUTHORIZED, e.getMessage()));
+                .body(buildError(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -64,6 +65,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(buildError(HttpStatus.FORBIDDEN, e.getMessage()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(buildError(HttpStatus.FORBIDDEN, "You don't have permission to perform this action"
+                ));
     }
 
     @ExceptionHandler(RuntimeException.class)
