@@ -114,31 +114,33 @@ Exception: a sub-section that describes a gotcha, an edge case, a "why not X?" s
 a comparison between two alternatives always needs its own question — it cannot be counted
 as covered by a general question about the parent concept.
 
-**Detect here; author in one cold subagent.** In this context, build the **gap list** only: every
-uncovered concept, with the section it belongs to and one line on what a question about it must test.
-Do NOT write any question inline — that is the deep, standard-bound work the Execution model reserves
-for a cold subagent.
+**Detect here; author one cold subagent per SECTION.** In this context, build the **gap list** only:
+every uncovered concept, with the target `##` section of the Q&A file it belongs to and one line on
+what a question about it must test. Do NOT write any question inline — that is the deep, standard-bound
+work the Execution model reserves for a cold subagent. The atomic unit is a **section**, not the whole
+Q&A file: **group the gaps by target section**, and for a section that does not exist yet, plan its
+heading here so the subagent creates it.
 
-When the gap list is ready, **dispatch one cold `general-purpose` subagent** (`run_in_background:
-false`) for the topic's Q&A pair — that pair is one atomic unit, so a single subagent handles all the
-notes → prep additions for this topic:
+Then, **one target section at a time, sequentially** (never overlap — the runs edit the same two
+files), dispatch a cold `general-purpose` subagent (`run_in_background: false`):
 
-> Read `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` (the bar). Then read
-> `notes/interview-prep/es/{FILE}.md` and `en/{FILE}.md` **in full, top to bottom** — Victor studies
-> from `es/`, so apply changes there first, then mirror to `en/`. Add a question for each gap below, in
-> the standard's exact format (bold question + priority marker + blank line + answer + Junior tip if
-> Conceptual / Red flag if Decision-based or Pressure), answered in Victor's voice and anchored to a
-> real project when the concept was practised in one. If a section does not exist, create it in both
-> files first. After adding, reorder each touched section ⭐⭐⭐ → ⭐⭐ → ⭐. Keep `en/` and `es/` in
-> exact sync (same questions, same order; `es/` as native Spanish, Junior-tip label `Consejo de
-> entrevista:`). Do NOT commit — leave the work in the tree. Return a **section-by-section trace**
-> (every touched `##` heading with what you added or PASS) as proof you read the whole file, plus the
-> list of questions added.
+> Read `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` (the bar). You are adding
+> questions to ONE section — `«## heading»` — of `notes/interview-prep/{FILE}.md`. Read that section in
+> both `es/{FILE}.md` and `en/{FILE}.md` **in full, top to bottom** (Victor studies from `es/`, so
+> apply changes there first, then mirror to `en/`); create the section heading in both files if it does
+> not exist. Add a question for each gap below, in the standard's exact format (bold question + priority
+> marker + blank line + answer + Junior tip if Conceptual / Red flag if Decision-based or Pressure),
+> answered in Victor's voice and anchored to a real project when the concept was practised in one. Then
+> reorder this section ⭐⭐⭐ → ⭐⭐ → ⭐. Keep `en/` and `es/` in exact sync for this section (`es/` as
+> native Spanish, Junior-tip label `Consejo de entrevista:`). Do NOT commit — leave the work in the
+> tree. Return a **question-by-question trace for this section** (each question added, or PASS) as proof
+> you read it whole.
 > ```
-> «paste the notes → prep gap list for this topic»
+> «paste only this section's slice of the notes → prep gap list»
 > ```
 
-Wait for it to finish. Note each added question in the summary as "notes → prep — added".
+Wait for each subagent before dispatching the next. Note each added question in the summary as
+"notes → prep — added".
 
 ---
 
