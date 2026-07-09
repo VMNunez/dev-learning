@@ -382,7 +382,7 @@ Ojo con el nombre del método: el que define la interfaz `Comparator` se llama `
 
 ## ConcurrentModificationException
 
-Esta es una trampa clásica de Java que cae todo el mundo la primera vez. Parece totalmente lógico recorrer una lista y eliminar los elementos que no quieres — pero Java no lo permite y lanza `ConcurrentModificationException`.
+Esta es una trampa clásica de Java en la que cae todo el mundo la primera vez. Parece totalmente lógico recorrer una lista y eliminar los elementos que no quieres — pero Java no lo permite y lanza `ConcurrentModificationException`.
 
 El motivo: el bucle for-each usa un iterador internamente. Ese contador de versión (Java lo llama `modCount`) es simplemente un número entero que la lista guarda por dentro y aumenta en uno cada vez que su estructura cambia — cada `add()` o `remove()`. El iterador anota ese número en el momento en que empieza a recorrer la lista. Cada vez que llamas a `remove()` directamente sobre la lista, ese contador cambia. En la siguiente iteración, el iterador compara su contador con el de la lista, los ve distintos, y lanza la excepción — porque no puede saber si los índices siguen siendo válidos.
 
