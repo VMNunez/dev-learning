@@ -5,20 +5,24 @@
 `portfolio-review-prompt.md` (the reviewer). It is documented here so the orchestrator can point a
 subagent at it; you can also run it standalone to draft one project's question bank.
 
-**What it does.** Reads the project's real code and PLANNING.md and writes an **exhaustive bank of
-project-specific interview questions** to `notes/interview-prep/projects/{PROJECT_NAME}.md`. This is the
-heavy generative part of the portfolio gate — the part that gets shortchanged in a long single prompt,
-which is why it runs as its own focused subagent. It does **not** compute the verdict, write the CV
-bullet, or commit — the orchestrator owns those.
+**What it does.** Reads **one section's** code area of the project and PLANNING.md and writes the
+**exhaustive set of project-specific interview questions for that section** into
+`notes/interview-prep/projects/{PROJECT_NAME}.md`. The orchestrator runs it once per bank section
+(`{SECTION}`), so each run is a small, specific task that cannot skim a tail — the failure mode when one
+prompt tries to author the whole bank. It does **not** compute the verdict, write the CV bullet, or
+commit — the orchestrator owns those.
 
 ---
 
 ## Configuration — edit only this block
 
 PROJECT_PATH = [angular/06-hr-portal | projects/07-timetrack | ... — the project folder path]
+SECTION      = [all | Architecture & Patterns | Security & Auth | Business Rules | Technical Decisions | Testing]
+               → the audit orchestrator passes ONE section; "all" is for a standalone run only.
 
-Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}. Derive {PROJECT_NAME} as the last path
-segment (e.g. `07-timetrack`) and the project type from the path prefix (`angular/` vs `projects/`).
+Use PROJECT_PATH and SECTION wherever the prompt refers to {PROJECT_PATH} and {SECTION}. Derive
+{PROJECT_NAME} as the last path segment (e.g. `07-timetrack`) and the project type from the path prefix
+(`angular/` vs `projects/`).
 
 ---
 
@@ -33,9 +37,28 @@ quality bar, the file template, and the append/dedupe rule. That is what you aut
 
 ---
 
+## Scope — you write ONE section
+
+**When `{SECTION}` ≠ all, you author only that one bank section** and read only its code area — that is
+the whole job, and it must be exhaustive for that area. Do not write questions for other sections; if
+you notice a decision that belongs in another section, mention it in the report, do not write it. Map
+sections to code areas like this:
+
+| {SECTION} | Read (on top of the always-read files below) |
+|---|---|
+| Architecture & Patterns | structure + layered architecture; backend controllers/services, or angular routes/config/components |
+| Security & Auth | backend security folder + JWT filter; angular guards/interceptors |
+| Business Rules | service logic + validation + PLANNING.md §8 business rules |
+| Technical Decisions | tradeoffs in PLANNING.md, DTOs, HTTP status choices, config/properties |
+| Testing | the test files (`src/test/java`, `**/*.spec.ts`) |
+
+(`SECTION = all` on a standalone run means author every section — then still work one section fully
+before the next, and read each section's area as above.)
+
 ## Step 1 — Read the project
 
-Read all of these before writing anything.
+Read the always-read files below, plus your `{SECTION}`'s code area from the table above. Read before
+writing anything.
 
 **For all projects:** `ROADMAP.md` — target companies and interview context to aim the questions at.
 
@@ -55,12 +78,13 @@ Read all of these before writing anything.
 
 ---
 
-## Step 2 — Write the question bank
+## Step 2 — Write your section's questions
 
 Following the quality bar in the standard, generate every question a technical interviewer at NTT Data
-or Capgemini would realistically ask about **THIS specific project** — its actual implementation
-choices, not generic technology questions. Mine PLANNING.md for new/review concepts, business rules,
-and architecture decisions/tradeoffs; mine the source for the real code paths behind them.
+or Capgemini would realistically ask about **THIS specific project** within `{SECTION}` — its actual
+implementation choices, not generic technology questions. First **list every real decision, pattern, or
+rule in your section's code area** (from the source + PLANNING.md); then write one question per decision
+so none is left undefended. Mine the source for the real code paths behind each.
 
 Examples of the shape (adapt to the actual code):
 - "In TimeTrack, why does the service use `SecurityContextHolder` instead of the userId from the request body?"
@@ -68,11 +92,11 @@ Examples of the shape (adapt to the actual code):
 - "Why does this project use PATCH for status transitions instead of PUT?"
 - "What happens in your JWT filter if the token is expired? Where exactly does the request stop?"
 
-Apply the standard's **exhaustiveness rule**: as many questions as there are real decisions and patterns
-to defend — do not cap at 5. Cover architecture/patterns, security/auth, business rules, technical
-decisions, and testing. Save to `notes/interview-prep/projects/{PROJECT_NAME}.md` using the standard's
-file template; if the file exists, append only what is not already there and never duplicate a decision
-or code path already covered.
+Apply the standard's **exhaustiveness rule** within your section: as many questions as there are real
+decisions and patterns to defend in this area — do not cap at 5. Save them under the `{SECTION}` heading
+in `notes/interview-prep/projects/{PROJECT_NAME}.md` using the standard's file template (create the
+heading if the file/section does not exist yet); if questions for this section already exist, append
+only what is not already there and never duplicate a decision or code path already covered.
 
 These questions are saved **regardless of the eventual verdict** — they are useful prep even for an
 unfinished project.
@@ -82,7 +106,8 @@ unfinished project.
 ## Output — report (no commit)
 
 Do not commit. Leave the question file in the working tree. Report:
-- The project type detected and the files you read.
-- How many questions you wrote (and how many were appended vs the file already had).
-- The section breakdown (Architecture & Patterns / Security & Auth / Business Rules / Technical
-  Decisions / Testing) so the reviewer can check for thin sections.
+- The project type detected and the files you read for `{SECTION}`.
+- How many questions you wrote for this section (and how many were appended vs already there).
+- A **decision-by-decision trace for `{SECTION}`**: every real decision/pattern/rule you found in the
+  area, each with the question that now covers it — the reviewer uses this to confirm the section is
+  exhaustive, not thin.

@@ -4,8 +4,9 @@ Run this **inside Claude Code**. It is the only portfolio prompt Victor launches
 go/no-go gate** on a finished project, hands-off: is it ready to show a recruiter and reference in a job
 application **today**? It produces three things (see `_portfolio-standard.md`):
 
-1. An **exhaustive bank of project-specific interview questions** — authored then cold-reviewed by two
-   subagents, saved regardless of the verdict.
+1. An **exhaustive bank of project-specific interview questions** — built **one bank section at a time**,
+   each authored then cold-reviewed by its own pair of subagents (so no section gets skimmed), saved
+   regardless of the verdict.
 2. A **verdict** — ✅ Ready / ⚠️ Almost / ❌ Not ready.
 3. If not ❌ — a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub description**.
 4. If ✅ Ready — a **direct update of Victor's GitHub profile README** (`dev/portfolio/VMNunez`, a
@@ -82,25 +83,48 @@ summary table (`Project | Verdict | Questions`). Otherwise, for one project, fol
 
 ## Single-project procedure
 
-### Phase 1 — Question bank (author → reviewer)
+### Phase 1 — Question bank (one cold author → reviewer per SECTION)
 
-**Subagent A — author.** Launch one `general-purpose` subagent, `run_in_background: false`:
+**The unit of deep work is one section of the bank, not the whole bank.** The bank has five fixed
+sections, each mapping to a distinct code area — so each is a specific, self-contained task a subagent
+cannot half-finish (it either covered every decision in *that one area* or it did not):
 
-> Read `notes/prompts/projects/portfolio/portfolio-write-prompt.md` and execute it in full for
-> `PROJECT_PATH = {PROJECT_PATH}`. Read the project, write the exhaustive project-specific question bank
-> to `notes/interview-prep/projects/«name».md` per the standard. **Do NOT commit** — a reviewer runs
-> next and the orchestrator owns the commit. Report the files read, the question count, and the section
-> breakdown.
+| Section | Code area the subagent mines |
+|---|---|
+| Architecture & Patterns | structure + layered architecture; backend controllers/services, or angular routes/config/components |
+| Security & Auth | backend security folder + JWT filter; angular guards/interceptors — **skip if the project has no auth** |
+| Business Rules | service logic + validation + PLANNING.md §8 business rules |
+| Technical Decisions | tradeoffs in PLANNING.md, DTOs, HTTP status choices, config |
+| Testing | the test files — **skip if the project has none** |
 
-Wait for A. Then **subagent B — reviewer.** Launch a second, independent `general-purpose` subagent,
-`run_in_background: false`:
+First decide which sections are **present** (does the project have auth? tests?) and drop the absent
+ones. Then process the present sections **one at a time, sequentially** — they all edit the same
+question file, so never overlap. For each section, run author then reviewer; neither commits.
 
-> Read `notes/prompts/projects/portfolio/portfolio-review-prompt.md` and execute it in full for
-> `PROJECT_PATH = {PROJECT_PATH}`. Audit the just-authored question bank hard against the standard, fix
-> thin/weak/duplicate questions directly, add any missing ones. **Do NOT commit.** Report your verdict
-> (PASS/FIXED + what changed) and the final question count + section breakdown.
+**Subagent A — author (this section).** Launch a `general-purpose` subagent, `run_in_background: false`:
 
-Wait for B before continuing.
+> Read `notes/prompts/projects/portfolio/portfolio-write-prompt.md` and execute it for
+> `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
+> (see the table) plus PLANNING.md, and write **only this section's** questions to
+> `notes/interview-prep/projects/«name».md` per the standard. **Do NOT commit.** Return a
+> **decision-by-decision trace**: every real decision/pattern/rule you found in this area, each with
+> the question that now covers it — this is your proof the section is exhaustive.
+
+Wait for A. Then **subagent B — reviewer (this section).** Launch a second, independent
+`general-purpose` subagent, `run_in_background: false`:
+
+> Read `notes/prompts/projects/portfolio/portfolio-review-prompt.md` and execute it for
+> `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. Audit **only this section** hard against
+> the standard: walk its code area, count decisions-found vs questions, add every missing one, fix
+> thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED) and the
+> **decisions-vs-questions ratio for this section**.
+
+Wait for B before starting the next section.
+
+**After all sections — orchestrator (light global scan).** Do a quick cross-section duplicate scan
+over the finished bank (the same decision or code path landing in two sections → keep it in the one
+where an interviewer is likeliest to ask it, remove the other). Fix a stray duplicate directly — this
+needs the whole-file view, so it belongs here, not in a per-section subagent. Then continue to Phase 2.
 
 ### Phase 2 — Verdict (orchestrator)
 
@@ -157,7 +181,15 @@ one command per code block, for Victor to run after reading the diff.
 - **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
   rule is "never auto-commit"; he lifted it for the audit orchestrators. It applies nowhere else.
 - **Questions are saved regardless of the verdict** — a ❌ still commits the question file.
-- **One atomic commit per project.** In `all` mode, one commit per project, never batched.
-- **Author then reviewer, sequentially.** Never overlap the two subagents — the reviewer must see a
-  finished bank, and parallel commits race the git index. Never skip the reviewer pass.
+- **One atomic commit per project.** In `all` mode, one commit per project, never batched. The
+  orchestrator commits once, after every section's author→reviewer pair is done; the section subagents
+  never commit.
+- **One SECTION per subagent — never the whole bank.** Authoring and review run one cold subagent per
+  bank section, in sequence, each mining only that section's code area and returning a
+  decision-by-decision trace. A subagent handed the whole project would skim the last sections (thin
+  Testing/Business-Rules is exactly that failure). Whole-bank work is limited to the light cross-section
+  dedupe the orchestrator does at the end.
+- **Author then reviewer per section, sequentially.** Never overlap a section's two subagents or two
+  sections — the reviewer must see a finished section, and they edit the same file. Never skip the
+  reviewer pass.
 ````
