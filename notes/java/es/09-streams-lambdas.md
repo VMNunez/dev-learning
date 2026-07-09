@@ -7,7 +7,7 @@
 
 ## Por qué este tema importa en Spring Boot
 
-Abre cualquier servicio de Spring Boot y encontrarás streams y lambdas en los primeros métodos. No son un tema avanzado que alcanzas después — son la forma por defecto de trabajar con datos en Java. Considera lo que hace un método de servicio típico:
+Abre cualquier servicio de Spring Boot y encontrarás streams y lambdas en los primeros métodos. No son un tema avanzado que aprendes más adelante — son la forma por defecto de trabajar con datos en Java. Piensa en lo que hace un método de servicio típico:
 
 - obtener una lista de entidades del repositorio
 - filtrar las que no cumplen una condición
