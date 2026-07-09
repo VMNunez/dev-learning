@@ -603,7 +603,7 @@ Diagnosticado como `spring.sql.init.mode` por defecto en `embedded` (ver arriba)
 
 **3. `there is no unique or exclusion constraint matching the ON CONFLICT specification`**
 
-`ON CONFLICT (email)` necesita una restricción `UNIQUE` sobre `email` para saber qué cuenta como conflicto — no había ninguna. Añadir `@Column(unique = true)` a la entidad **no** lo arregló: el `ddl-auto=update` de Hibernate añade columnas y tablas nuevas de forma fiable, pero no es fiable retrofitiendo una restricción sobre una columna que ya existía antes de añadir la anotación. Confirmado revisando la pestaña **Constraints → Unique** de la tabla en pgAdmin — vacía, incluso después de reiniciar con la anotación puesta. Se arregló ejecutando el `ALTER TABLE` a mano, una sola vez, en el Query Tool de pgAdmin:
+`ON CONFLICT (email)` necesita una restricción `UNIQUE` sobre `email` para saber qué cuenta como conflicto — no había ninguna. Añadir `@Column(unique = true)` a la entidad **no** lo arregló: el `ddl-auto=update` de Hibernate añade columnas y tablas nuevas de forma fiable, pero no es fiable al añadir a posteriori una restricción sobre una columna que ya existía antes de poner la anotación. Confirmado revisando la pestaña **Constraints → Unique** de la tabla en pgAdmin — vacía, incluso después de reiniciar con la anotación puesta. Se arregló ejecutando el `ALTER TABLE` a mano, una sola vez, en el Query Tool de pgAdmin:
 
 ```sql
 ALTER TABLE users ADD CONSTRAINT users_email_key UNIQUE (email);
