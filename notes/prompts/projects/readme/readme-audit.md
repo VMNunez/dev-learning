@@ -40,6 +40,10 @@ PROJECT_PATH = all
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The project type (and therefore which READMEs) is derived from the path — do not set it.
 
+**After the run:** review the changed READMEs and run the commit command it hands you. Then skim the
+**pipeline self-report** it prints (also saved to `_last-run-report.md`) — only if it shows a real
+failure of the machinery do these prompts get edited, in a separate session.
+
 ---
 
 ````
@@ -140,11 +144,32 @@ git add {PROJECT_PATH}/frontend/README.md
 git commit -m "docs: update {PROJECT_PATH} README(s) — <one-line summary of main changes>"
 ```
 
+## Pipeline self-report (orchestrator, last)
+
+After the commit hand-over, write a short **Pipeline self-report** to
+`notes/prompts/projects/readme/_last-run-report.md` (overwrite; header: date + project(s)) — meta-
+observations about the run itself, not the READMEs. This is the evidence a later session uses to decide
+whether these prompts need changing, so be honest, including "nothing to report":
+- **Report discipline** — which subagents, if any, blew their line budget or returned reports that had
+  to be discarded.
+- **Trace verification** — reviewer traces that were missing/incomplete, re-dispatches made, any false alarm.
+- **Coherence** — conflicts the coherence subagent found (a sign the author prompts under-specify a
+  shared decision), or `COHERENT`.
+- **Failure protocol** — subagents that errored, second failures, any README excluded from the commit.
+- **Anything else** that made the run harder than it should be.
+
+Five bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
+directly** under the notes/prompts exception — `git status` before add and before commit, stage only
+`_last-run-report.md`, message `docs: pipeline self-report for readme review of {PROJECT_PATH}`. (The
+never-auto-commit rule below applies to the README files, not to this one.) The prompts stay frozen
+unless this report shows a real failure. Also print the report in chat.
+
 ## Hard rules
 
-- **Never auto-commit.** README files follow the project's feature-branch workflow; always hand Victor
-  the command. (The `plan-audit` / `portfolio-audit` auto-commit exception does not extend here — same
-  as `review-audit`.)
+- **Never auto-commit the READMEs.** They follow the project's feature-branch workflow; always hand
+  Victor the command. (The `plan-audit` / `portfolio-audit` auto-commit exception does not extend to
+  them — same as `review-audit`.) The only file this flow commits itself is `_last-run-report.md` —
+  prompt-system machinery under the notes/prompts exception.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
 - **Only commit READMEs that changed** — never `git add` all three by default.
