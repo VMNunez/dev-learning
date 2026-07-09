@@ -20,7 +20,7 @@ Archivo: `pom.xml`
 
 No hace falta versión — la gestiona `spring-boot-starter-parent`. Es un fallo silencioso: las anotaciones compilan, el código arranca, pero el input inválido nunca se rechaza. Añade siempre la dependencia antes de usar anotaciones de validación.
 
-> **¿Por qué falla en silencio en vez de lanzar un error?** `@NotBlank`, `@Positive` y el resto son solo anotaciones — metadatos pegados a un campo, nada más. Por sí solas no ejecutan ninguna comprobación; algo tiene que leerlas y actuar. Ese algo es Hibernate Validator (la implementación de referencia de Jakarta Bean Validation), y `spring-boot-starter-validation` es lo que lo añade al classpath y permite que Spring autoconfigure el bean `Validator` que escanea y aplica esas anotaciones. Sin el starter, las anotaciones compilan igual — el compilador solo comprueba que la anotación existe como tipo — pero no se registra ningún validador que las lea, así que `@Valid` no encuentra nada que ejecutar y el request pasa sin comprobarse.
+> **¿Por qué falla en silencio en vez de lanzar un error?** `@NotBlank`, `@Positive` y el resto son solo anotaciones — metadatos pegados a un campo, nada más. Por sí solas no ejecutan ninguna comprobación; algo tiene que leerlas y actuar. Ese algo es Hibernate Validator (la implementación de referencia de Jakarta Bean Validation), y `spring-boot-starter-validation` es lo que lo añade al classpath y permite que Spring autoconfigure el bean `Validator` que lee y aplica esas anotaciones. Sin el starter, las anotaciones compilan igual — el compilador solo comprueba que la anotación existe como tipo — pero no se registra ningún validador que las lea, así que `@Valid` no encuentra nada que ejecutar y el request pasa sin comprobarse.
 
 ---
 
