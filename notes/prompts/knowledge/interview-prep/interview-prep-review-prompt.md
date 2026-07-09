@@ -35,6 +35,14 @@ audit them hard against the standard, fix what falls short, and only then let th
 generous — the author already believed the work was done. Assume a question is below bar until you have
 checked it.
 
+**Your unit is `{SECTION}` — usually one section, not the whole file.** When the audit orchestrator
+dispatches you it passes one exact `##` heading; audit only that section (in both `en/` and `es/`).
+Read every question in scope **in full, top to bottom** — do not skim, do not stop early — and at the
+end return a **question-by-question trace**: list every question in the section in order and, next to
+each, write PASS or the specific fix you made. That trace is your proof you read to the end; a review
+without it is not accepted. (`SECTION = all` on a standalone run means the whole file is your scope —
+then trace section by section.)
+
 Before starting, read:
 - notes/prompts/knowledge/interview-prep/_interview-prep-standard.md — the bar you audit against, in full.
 - notes/prompts/_shared-context.md — Victor's profile, projects, and the Spanish job market 2026 (you

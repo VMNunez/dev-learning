@@ -1,20 +1,24 @@
 # Interview-prep audit — the single entry point for building interview Q&A
 
 Run this **inside Claude Code**. It is the only interview-prep prompt Victor launches. It builds the
-interview Q&A for a topic to the full quality standard, hands-off, using a **four-stage cold-subagent
-pipeline** per topic:
+interview Q&A for a topic to the full quality standard, hands-off. The key design point: **the deep
+work — authoring and reviewing questions — is done one cold subagent per SECTION, not per whole topic
+file.** A section is small enough to keep full attention on, yet complete enough to check the type
+ratio and priority order (both per-section). Around that sit two light, whole-topic **detection**
+stages that write nothing:
 
 1. **Market analysis (M)** — a web-backed specialist gathers the *real questions actually asked* of a
-   junior for this stack at the target companies, so the Q&A mirrors real interviews, not invented ones.
-2. **Author (A)** — builds/audits the Q&A against the standard, using M's real-question list.
-3. **Adversarial gap-hunt (G)** — a senior-interviewer hat writes the 12 questions it would really ask
-   and returns the ones the file still misses.
-4. **Reviewer (B)** — an independent pass that adds G's genuine gaps, enforces the bar (realistic,
-   well-worded, Victor's voice, real cited code), and commits.
+   junior for this stack at the target companies, tagged by section, so the Q&A mirrors real interviews.
+2. **Adversarial gap-hunt (G)** — a senior-interviewer hat writes the 12 questions it would really ask
+   and returns, tagged by section, the ones the file still misses.
+3. **Per-section Author (A) → Reviewer (B)** — for each section in turn, a fresh author writes/audits
+   just that section (fed its slice of M + G), then an independent reviewer audits just that section
+   (realistic, well-worded, Victor's voice, real cited code). Neither commits.
 
 Each stage is a cold subagent with no stake in the previous one's work, which is what makes the result
-exhaustive and realistic instead of a self-trusting single pass. No per-topic launching: one command
-does everything.
+exhaustive and realistic instead of a self-trusting single pass. The orchestrator does only the light
+whole-topic detection and the final per-topic commit. No per-topic launching: one command does
+everything.
 
 > **▶ Run first:** `coverage-prompt` for the topic — the Q&A is built to cover every item in the
 > topic's `coverage.md`; if coverage is missing or stale, the Q&A will be too. Optional:
@@ -108,19 +112,31 @@ Q&A in your own context.
 Process topics **one at a time, sequentially** — never overlap them, because each topic's reviewer
 commits and parallel commits race the git index.
 
-## Per-topic pipeline (run all four stages for each topic, in order)
+## Per-topic pipeline — whole-topic detection, then per-SECTION deep work
 
-Run the stages **sequentially** — each needs the previous one's output, and only B writes the commit.
-Which stages run depends on `{MODE}`:
-- **`full`** → all four: **M → A → G → B**.
-- **`correct`** → **A → B only**. Skip M and G. Correct mode adds no new questions, so the market list
-  and the gap hunt would have nothing to feed — running them there would just burn a web search. A does
-  its focused sync/TODO/tidy pass; B does a light review and commits.
+**The unit of deep work is one SECTION, not the whole topic file.** A Q&A file is a list of
+independent sections (`## Routing`, `## Forms`, …); a section is small enough to author and audit with
+full attention, yet complete enough that the type ratio (55/35/10) and the priority ordering — both
+defined per section — can still be checked. So **detection is whole-topic and light (it stays in the
+orchestrator or a read-only subagent); authoring and review are one cold subagent per section, in
+sequence.** Never hand one subagent the whole file to author or audit — that is the large task Victor
+does not want.
 
-M and G are read-only (they write nothing). Only B's commit obeys `{DRY_RUN}`.
+Which parts run depends on `{MODE}`:
+- **`full`** → whole-topic detection (**M**, **G**, sync/route) → per-section **A → B** (deep).
+- **`correct`** → per-section **A → B** only (skip M and G — correct mode adds no new questions, so the
+  market list and gap hunt would have nothing to feed). The light en/es sync check still runs first.
 
-**Stage M — interview-question market analysis.** Launch one `general-purpose` subagent,
-`run_in_background: false`:
+M and G write nothing; A and B leave their work in the tree; **only the orchestrator commits, once per
+topic**, after all sections are done. Everything is sequential — never overlap sections or the two
+subagents of a section, because they edit the same two files.
+
+---
+
+### Whole-topic detection (light — needs the cross-section view)
+
+**Stage M — interview-question market analysis (full mode only).** Launch one `general-purpose`
+subagent, `run_in_background: false`:
 
 > You are a specialist in junior technical interviews at Spanish IT consultancies. Read `ROADMAP.md`
 > and `notes/prompts/_shared-context.md` for the candidate's exact target role, companies, stack, and
@@ -140,27 +156,11 @@ M and G are read-only (they write nothing). Only B's commit obeys `{DRY_RUN}`.
 > it**, tagged with the section it belongs to and a one-word frequency signal (often / sometimes /
 > rare) plus a short source note. Do not write or edit any file — return only the list.
 
-Wait for M and keep its list.
+Wait for M and keep its list — **it must be tagged by section** (each question carries the `##` heading
+it belongs to), so you can hand each section only its own slice later.
 
-**Stage A — author.** Launch a fresh `general-purpose` subagent, `run_in_background: false`:
-
-> Read `notes/prompts/knowledge/interview-prep/interview-prep-write-prompt.md` and execute it in full
-> for `FILE = «topic»`, `SECTION = «section»`, `MODE = «mode»`.
-> Here is a **market-question list** for «topic» from a live analysis — treat every `often`/`sometimes`
-> question in it as required (it must have a well-worded question in the file), and match your phrasing
-> to how the market actually asks:
-> ```
-> «paste M's returned list»
-> ```
-> Do the sync, TODOs, coverage check, priority markers, format, and the audit sections your mode runs.
-> **Do NOT commit and do NOT mark anything done.** Leave your work in the working tree. Report the files
-> touched, the coverage status, and the weak-answer / coverage-gap / TODO-pattern blocks.
-
-Wait for A. If A reports it could not complete the topic (blocked, missing context), skip the rest,
-note it, and move to the next topic — do not commit a partial file.
-
-**Stage G — adversarial gap-hunt.** Launch a fresh, independent `general-purpose` subagent,
-`run_in_background: false`:
+**Stage G — adversarial gap-hunt (full mode only).** Launch a fresh, independent `general-purpose`
+subagent, `run_in_background: false`:
 
 > You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
 > `notes/prompts/_shared-context.md` for the exact role/companies, and
@@ -176,28 +176,67 @@ note it, and move to the next topic — do not commit a partial file.
 > adversarial — assume the file is incomplete until your 12 questions prove otherwise. Do not edit any
 > file — return only the gap list.
 
-Wait for G and keep its gap list.
+Wait for G and keep its gap list — **also tagged by section**.
 
-**Stage B — reviewer.** Launch a fresh, independent `general-purpose` subagent,
-`run_in_background: false`:
+**Build the per-section work list (orchestrator).** Read the `##` section headings in
+`notes/interview-prep/en/{FILE}.md` and the topic's `coverage.md` sections. If `{SECTION}` ≠ all, the
+list is just that one section. For each section, assemble its **slice**: the M questions tagged to it +
+the G gaps tagged to it + its coverage items. Also run the light **en/es file-level sync check** here
+(same sections, same question counts on each side) and route each mismatch into the owning section's
+slice. This is structural detection — do it in your own context; **do not author any question here.**
 
-> Read `notes/prompts/knowledge/interview-prep/interview-prep-review-prompt.md` and execute it in full
-> for `FILE = «topic»`, `SECTION = «section»`, `DRY_RUN = {DRY_RUN}`.
-> _(full mode only — include this paragraph and the gap list; in correct mode G did not run, so omit
-> it.)_ First, an adversarial interviewer found these **gap questions** the file may be missing — add
-> every genuine one (skip any truly out of junior scope, note which and why) in the standard's full
-> format, to both `en/` and `es/`:
+---
+
+### Per-section deep work (one cold subagent per section, sequential)
+
+For **each section in the work list, in order**, run Author then Reviewer. Never overlap sections, and
+never overlap a section's two subagents — they edit the same two files. Neither subagent commits.
+
+**Author (A).** Launch a fresh `general-purpose` subagent, `run_in_background: false`:
+
+> Read `notes/prompts/knowledge/interview-prep/interview-prep-write-prompt.md` and execute it for
+> `FILE = «topic»`, `SECTION = «this exact heading»`, `MODE = «mode»`. **Work on this one section
+> only** — read it in full in both `en/{FILE}.md` and `es/{FILE}.md`, top to bottom. Here is its
+> market/gap slice — treat every `often`/`sometimes` market question and every genuine gap as required
+> (a well-worded question must exist for each), and match the market's phrasing:
 > ```
-> «paste G's gap list»
+> «paste this section's slice: M questions + G gaps for this heading»
 > ```
-> Then audit the whole Q&A hard against the standard — especially that questions are realistic,
-> well-worded, answered in Victor's voice, and carry a real cited code snippet where an interviewer
-> would pose the question with code — fix what falls short in both files, and finish exactly as that
-> prompt says for this `DRY_RUN` (false: commit atomically; true: fix only, commit nothing). Carry
-> forward the author's summary blocks. Report your verdict, which gap questions you added vs left out,
-> files touched, and the commit hash if you committed.
+> Do the section's TODOs, coverage check, priority markers, and format for this section only. **Do NOT
+> commit, do NOT mark anything done, do NOT touch other sections.** Leave your work in the tree. Return
+> a **question-by-question trace for this section** (each question with PASS or the change you made) as
+> proof you read it whole, plus the weak-answer / coverage-gap / TODO-pattern notes for this section.
 
-Wait for B before starting the next topic.
+Wait for A. If A reports it could not complete the section (blocked, missing context), skip that
+section's reviewer, note it, and move to the next section — do not leave a half-authored section for
+the reviewer.
+
+**Reviewer (B).** Launch a fresh, independent `general-purpose` subagent, `run_in_background: false`:
+
+> Read `notes/prompts/knowledge/interview-prep/interview-prep-review-prompt.md` and execute it for
+> `FILE = «topic»`, `SECTION = «this exact heading»`, `DRY_RUN = true`. **Audit this one section
+> only**, in full in both `en/` + `es/`: realistic, well-worded, in Victor's voice, real cited code
+> where an interviewer poses the question with code, correct type ratio and priority order within the
+> section. Fix what falls short in both files. `DRY_RUN = true` means **fix only, do not commit** — the
+> orchestrator commits once per topic after every section. Return your verdict and a
+> **question-by-question trace for this section**.
+
+Wait for B before starting the next section.
+
+---
+
+### Finish the topic (orchestrator — light global scan, then commit)
+
+After every section is done, do the light whole-file structural pass in your own context — this needs
+the cross-section view, so it belongs here, not in a per-section subagent:
+- **Cross-section duplicate scan** — the same question landing in two sections → keep it in the one
+  where an interviewer is likeliest to ask it, remove the other.
+- **en/es parity** — same sections, same order, same question count on both sides.
+- **Global priority sanity** — no section is more than half ⭐⭐⭐.
+
+Fix a stray duplicate or ordering issue directly (structural, not authoring). Then commit per
+`{DRY_RUN}` — **one atomic commit for the whole topic** (the `en/` + `es/` pair). This is the only
+commit; the section subagents never committed.
 
 ## Finishing
 
@@ -221,14 +260,21 @@ detected (recommended standard rule additions).
 
 ## Hard rules
 
+- **One SECTION per subagent for the deep work — ALWAYS, even at higher token cost.** Authoring and
+  review are one cold subagent per section, in sequence. Never hand one subagent the whole topic file
+  to author or audit — a subagent that carries every section degrades toward the end and skims the last
+  ones. Whole-topic work is limited to the *light detection* stages (M, G, the sync/dedupe scans),
+  which genuinely need the cross-section view and write nothing. Each per-section subagent reads its
+  section in full in both `en/`+`es/` and returns a **question-by-question trace** as proof.
 - **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
   rule is "never auto-commit"; he lifted it for this orchestrator (same lift as notes-audit and
-  progress-update). The reviewer subagent commits each topic. It applies nowhere else.
-- **One atomic commit per topic** (the `en/` + `es/` pair). Never batch topics, never `git add .`.
-- **Stages run sequentially (M → A → G → B in `full`; A → B in `correct`); topics are sequential too.**
-  Never overlap them — each stage needs the previous one's output, parallel commits race the git index,
-  and a reviewer must never audit an unfinished file.
-- **Only B commits.** M, A, and G write no files (M and G write nothing at all; A leaves work in the
-  tree). Never let an analysis stage edit the Q&A.
-- Never skip the `es/` mirror, the market analysis, the gap-hunt, or the reviewer pass.
+  progress-update). It applies nowhere else.
+- **Only the orchestrator commits — once per topic** (the `en/` + `es/` pair), after every section is
+  done. M, A, G, and B write no commit (M and G write nothing at all; A and B leave their work in the
+  tree). Never batch topics, never `git add .`.
+- **Sequential everywhere.** Full mode per topic: M → G → [per section: A → B] → commit; correct mode:
+  [per section: A → B] → commit. Sections are sequential, a section's A → B is sequential, and topics
+  are sequential too — never overlap, because they edit the same files and parallel commits race the
+  git index, and a reviewer must never audit an unfinished section.
+- Never skip the `es/` mirror, the market analysis, the gap-hunt, or the per-section reviewer pass.
 ````

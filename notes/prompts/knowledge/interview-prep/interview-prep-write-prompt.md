@@ -66,8 +66,12 @@ Notes on specific files:
 
 ---
 
-You are auditing one topic of Victor's interview preparation. Do deep work on this topic only — do not
-wander into other topics.
+You are auditing Victor's interview preparation. Do deep work on the scope you are given only — do not
+wander outside it. **When the audit orchestrator dispatches you, `{SECTION}` is one exact `##`
+heading** — author/audit just that section (in both `en/` and `es/`), read it in full, and return a
+**question-by-question trace** (each question with PASS or the change you made) as proof you finished
+it. A section is the deep-work unit; never take on the whole file in one pass under the orchestrator.
+(`SECTION = all` on a standalone run means the whole file — then work section by section within it.)
 
 Before starting, read:
 - CLAUDE.md — teaching rules and subfolder structure.
