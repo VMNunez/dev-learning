@@ -1821,6 +1821,30 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
 **`@PreAuthorize` ignorado silenciosamente** — si olvidas `@EnableMethodSecurity` en `SecurityConfig`, la anotación no hace nada. Sin error — la protección simplemente no existe.
 
+**`AccessDeniedException` sin handler específico → 500 en vez de 403** — cuando `@PreAuthorize("hasRole('MANAGER')")` rechaza a un usuario sin el rol correcto, Spring lanza `org.springframework.security.access.AccessDeniedException`. Esta clase extiende `RuntimeException`, así que si tu `@RestControllerAdvice` solo tiene un catch-all genérico para `RuntimeException` (y no un `@ExceptionHandler(AccessDeniedException.class)` específico), esa excepción cae en el catch-all y devuelve un 500 — aunque el rechazo del rol es un caso perfectamente normal, no un fallo inesperado del servidor.
+
+```java
+// Sin handler específico — el catch-all intercepta AccessDeniedException por error
+@ExceptionHandler(RuntimeException.class)
+public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException e) {
+    return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"));
+}
+
+// Con el handler correcto, delante del catch-all
+@ExceptionHandler(AccessDeniedException.class)
+public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException e) {
+    return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(buildError(HttpStatus.FORBIDDEN, "You don't have permission to perform this action"));
+}
+```
+
+> El orden de los métodos dentro de la clase no importa para Spring — `@RestControllerAdvice` siempre busca el handler **más específico** que coincida con el tipo exacto de la excepción lanzada, antes de caer al catch-all genérico. Da igual si `handleAccessDenied` está antes o después de `handleRuntime` en el archivo; lo que importa es que exista.
+
+> **No confundir con tu propia `UnauthorizedException`.** Si ya tienes una excepción personalizada tuya (por ejemplo, una que lanzas a mano en el service cuando un empleado intenta actuar sobre datos que no son suyos) que también mapea a 403, no sirve para capturar `AccessDeniedException` — son clases sin relación de herencia entre sí. `AccessDeniedException` la lanza el propio framework dentro del mecanismo de `@PreAuthorize`; tu excepción la lanzas tú en tu código de negocio. Necesitas un `@ExceptionHandler` por cada una, aunque ambas acaben devolviendo el mismo código HTTP.
+
 ---
 
 ## Paso 4 — Autorización basada en roles
