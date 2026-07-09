@@ -43,6 +43,29 @@ reports the gaps) — it is the fastest way to prove a section is complete rathe
 
 ---
 
+## Execution model — the deep per-section audit is ONE cold subagent per topic (mandatory)
+
+Do **not** audit all twelve topic sections in a single context. Loading the whole `coverage.md` and
+deep-checking every section in one pass is exactly the failure Victor caught in the notes flow: the
+model's attention degrades toward the end and the last topics get a shallow skim. Every item in every
+section deserves the same scrutiny as the first, so the deep work is split file-by-topic:
+
+- **The orchestrator (this context) does only the global, structural, whole-file work**, which genuinely
+  needs a cross-topic view but is light: Step 1 (read state + pre-audit sync), Step 2 (topic
+  completeness — is a whole folder missing), Step 4 (cross-topic duplicate/misplacement/scope scan),
+  and the final Step 5 sync-verify + Step 6 summary/commit.
+- **The deep per-section audit — Step 2b (market-fit) and Step 3 (item-by-item gaps) — runs as one cold
+  `general-purpose` subagent per topic**, dispatched **sequentially** (they edit `coverage.md` +
+  `notes/{topic}/coverage.md`; sequential avoids racing edits and keeps each commit-ready). Give each
+  subagent exactly one topic: it reads only that topic's section in `notes/coverage.md`, that topic's
+  `notes/{topic}/coverage.md` and `future-learning.md`, `_coverage-standard.md`, and the evidence
+  Synthesis — then applies Steps 2b + 3 for that topic and returns an **item-by-item trace** (every
+  coverage item listed with PASS or the change made) as proof it read the whole section to the end.
+- **Never hand one subagent more than one topic**, even at higher token cost — deep, atomic,
+  topic-by-topic passes are the standard, the same rule the notes audit enforces file-by-file.
+
+---
+
 ## What notes/coverage.md is
 
 `notes/coverage.md` is the combined file that mirrors all topic `coverage.md` files in one place. It is the **single source of truth** for everything Victor must learn across all topics.
