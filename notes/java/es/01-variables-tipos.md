@@ -243,7 +243,7 @@ El problema: `String` es **inmutable** — una vez creado, no puede modificarse.
 
 `StringBuilder` usa un **buffer** para resolver esto — un espacio en memoria donde va acumulando los trozos del string mientras los construyes, como una pizarra donde escribes trozo a trozo hasta tener el resultado completo. Lo modificas en el sitio sin crear objetos nuevos, y cuando terminas llamas a `.toString()` para obtener el string definitivo.
 
-El motivo por el que se introduce **thread-safe** aquí es que `StringBuilder` no lo es — y en Spring Boot esto es relevante porque cada petición HTTP llega en un hilo distinto. Si declararas un `StringBuilder` como campo compartido de un bean de Spring (que es un singleton), varios hilos podrían escribir en él a la vez y corromper el resultado. Por ejemplo:
+El concepto de **thread-safe** aparece aquí porque `StringBuilder` no lo es — y en Spring Boot esto es relevante porque cada petición HTTP llega en un hilo distinto. Si declararas un `StringBuilder` como campo compartido de un bean de Spring (que es un singleton), varios hilos podrían escribir en él a la vez y corromper el resultado. Por ejemplo:
 
 ```java
 // MAL — campo compartido entre todos los hilos (nunca hagas esto con StringBuilder)
