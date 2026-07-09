@@ -9,7 +9,9 @@ finishes, `notes/coverage.md` changes significantly, or it has been a while sinc
 
 > **▶ Run first:** `progress-update` — the Step 2 gap analysis reads `PROGRESS.md` directly; a stale one produces wrong results.
 
-It runs as an **orchestrator**: a doer applies the edits, then one cold `general-purpose` reviewer
+It runs as an **orchestrator**: two cold fact-gathering subagents feed a doer (the gap analysis and
+the active project's PLANNING.md summary — so neither `coverage.md` nor a PLANNING.md ever loads into
+the doer's own context), the doer applies the edits, then one cold `general-purpose` reviewer
 subagent independently verifies every invariant and fixes any it finds violated. That reviewer pass
 is the point of the design — the verification tail always runs instead of being skipped at the end of
 a long single context.
@@ -31,16 +33,17 @@ I want you to review and update ROADMAP.md so it shows the optimal path from my 
 progress to full coverage of everything in notes/coverage.md — through projects, study
 blocks, and practice.
 
-You are the **orchestrator**. A doer (you) applies the edits in Steps 1–5, then in Step 6 you
-launch one cold reviewer subagent that independently verifies and fixes the result. Finish with the
-report and the commit blocks.
+You are the **orchestrator**. In Step 2 you launch two cold fact-gathering subagents (gap analysis +
+active-project summary) so `notes/coverage.md` and the PLANNING.md never load into your own context;
+you (the doer) apply the edits in Steps 3–5 from their reports; then in Step 6 you launch one cold
+reviewer subagent that independently verifies and fixes the result. Finish with the report and the
+commit blocks.
 
 First read `notes/prompts/strategy/tracking/_roadmap-standard.md` — the stable ROADMAP contract this
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
 Then read CLAUDE.md (daily schedule, teaching rules) and `notes/prompts/_shared-context.md` (my
-profile, target job, and the market). How the prompts connect to each other is documented in
-`notes/prompts/README.md`.
+profile, target job, and the market).
 
 `ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
 references `notes/coverage.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
@@ -50,41 +53,59 @@ editing.
 
 ---
 
-## Step 1 — Read the current state
+## Step 1 — Read the current state (doer — only what the merge itself needs)
 
-Read in this order:
+Read only these two — coverage.md and the active PLANNING.md are gathered by subagents in Step 2,
+never by you:
 
-1. `notes/coverage.md` — every concept required for the target job. This is the target.
-2. `PROGRESS.md` — what projects are done and what concepts are already covered. This is the
+1. `PROGRESS.md` — what projects are done and what concepts are already covered. This is the
    actual. The projects table is the source of truth for which project is active and at
    what phase.
-3. `ROADMAP.md` — the current plan: strategic context, phase table, project sequence, and
+2. `ROADMAP.md` — the current plan: strategic context, phase table, project sequence, and
    study block tables.
-4. The active project's `PLANNING.md` — the single source of truth for what that project
-   builds and learns. Find the active project from PROGRESS.md's project table. If ambiguous,
-   run `git branch` to identify the active project-level branch (pattern: `projects/0X-name`
-   or `angular/0X-name`; feature branches `feat/...` are sub-branches and do not identify
-   the project on their own).
+
+Identify the active project from PROGRESS.md's project table. If ambiguous, run `git branch` to
+identify the active project-level branch (pattern: `projects/0X-name` or `angular/0X-name`; feature
+branches `feat/...` are sub-branches and do not identify the project on their own).
 
 Today's date is available in the session context — use it to judge which applications strategy
 phases (July, August, September) are past, current, or still ahead.
 
 ---
 
-## Step 2 — Gap analysis
+## Step 2 — Fan out two cold fact-gathering subagents
 
-Compare `notes/coverage.md` (the target) against `PROGRESS.md` (the actual).
+Launch **both** `general-purpose` subagents in a single message so they run in parallel
+(`run_in_background: false`; they only read). Wait for both reports before Step 3.
 
-Identify which concepts are still uncovered: present in coverage.md but not yet in PROGRESS.md.
-Group by topic, following the order in coverage.md:
-Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript →
-JavaScript → SQL → CSS → Git → General.
+**Subagent 2a — gap analysis.** Its instruction:
 
-Filter to what actually comes up in junior Angular + Spring Boot interviews at Spanish
-consultancies. Skip: CQRS, event sourcing, JVM tuning, Kubernetes internals, Angular
-zone.js internals, algorithms beyond basic data structures.
+> Read `notes/coverage.md` (the target: every concept required for the job) and `PROGRESS.md` (the
+> actual: what is already learned). Identify which concepts are still uncovered: present in
+> coverage.md but not yet in PROGRESS.md — treat a concept as covered if PROGRESS.md has an
+> equivalent entry even with different wording. Group by topic, following the order in coverage.md:
+> Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript →
+> JavaScript → SQL → CSS → Git → General.
+>
+> Filter to what actually comes up in junior Angular + Spring Boot interviews at Spanish
+> consultancies. Skip: CQRS, event sourcing, JVM tuning, Kubernetes internals, Angular zone.js
+> internals, algorithms beyond basic data structures.
+>
+> Also return, verbatim, the SQL topic list from coverage.md's SQL section (topic names + any
+> in/out-of-scope markers) — the doer needs it to reconcile a table without opening coverage.md.
+>
+> Return **only**: (1) the uncovered-concept list, one line per concept, grouped by topic; (2) the
+> SQL topic list. No excerpts of covered material, no reasoning trace.
 
-This gap list drives Steps 3 and 4.
+**Subagent 2b — active project summary.** Its instruction:
+
+> Read `«active project path»/PLANNING.md` — the single source of truth for what that project builds
+> and learns. Return **only**: (1) a 3–5 bullet summary of the project's scope (what it builds, main
+> stack pieces); (2) the step list with each step's completion status; (3) the current step's done
+> condition, verbatim — the doer uses it to confirm the ROADMAP gate is concrete and verifiable.
+> Do not return full step descriptions or code.
+
+The 2a gap list drives Steps 3 and 4; the 2b summary replaces reading PLANNING.md yourself.
 
 ---
 
@@ -104,8 +125,8 @@ condition was — and link to PLANNING.md for the full step history. Remove any 
 breakdown. Do not keep both the summary and the steps.
 
 **Current (⏳):** Confirm the gate condition is concrete and verifiable. Confirm the project
-description still matches PLANNING.md scope. If PLANNING.md changed scope since the last
-update, fix ROADMAP to match it.
+description still matches the PLANNING.md scope as reported by subagent 2b. If the scope changed
+since the last update, fix ROADMAP to match it.
 
 **Next (🔜):** Check the candidate list — does at least one candidate address the most
 significant uncovered gaps from Step 2? If a significant gap has no candidate that covers it,
@@ -132,9 +153,9 @@ are already complete.
 Update the three study-block sections to match the canonical values in `_roadmap-standard.md`
 ("Canonical study-block references"):
 
-**12:30 block — SQL then practice:** reconcile the SQL topic table against the SQL section of
-`notes/coverage.md` (add missing topics, remove out-of-scope topics, sync ✅ / 🔜 markers to
-PROGRESS.md).
+**12:30 block — SQL then practice:** reconcile the SQL topic table against the SQL topic list that
+subagent 2a returned from coverage.md (add missing topics, remove out-of-scope topics, sync ✅ / 🔜
+markers to PROGRESS.md).
 
 **13:30 block — Notes then interview prep:** confirm the notes study order matches the canonical
 string exactly; if CLAUDE.md differs, CLAUDE.md wins.
@@ -204,8 +225,8 @@ Its instruction:
 > 8. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if PROGRESS.md shows its
 >    goals complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
 >
-> Report: a short table of `Invariant | Verdict (pass / fixed) | What you changed`. If everything
-> passed with no fixes, say so explicitly.
+> Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` — no file
+> excerpts, no reasoning trace. If everything passed with no fixes, say so explicitly.
 
 Fold the reviewer's fixes and findings into the report below.
 

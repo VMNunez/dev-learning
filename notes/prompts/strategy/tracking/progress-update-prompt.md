@@ -2,8 +2,9 @@
 
 Run this **inside Claude Code**. It rebuilds `PROGRESS.md` from reality, hands-off: an orchestrator
 that **fans out one cold subagent per project** to extract that project's concepts, plus one subagent
-each for SQL and simulations, then **merges everything itself** and commits. No project's PLANNING.md
-ever loads into the orchestrator's own context — it stays light and only holds PROGRESS.md.
+for SQL, then **merges everything itself** and commits. No project's PLANNING.md ever loads into the
+orchestrator's own context — it stays light and only holds PROGRESS.md plus the small simulations
+tracker (which it reads directly — a subagent for one tiny file costs more context than it saves).
 
 > **▶ Run first:** nothing — this is a producer. Run it *before* `plan-audit` and `roadmap-review`, which read `PROGRESS.md`.
 
@@ -31,7 +32,7 @@ MODE = [active | all]
 ## all             — audit every project (all completed + the active one). Run periodically, or
 ##                   before plan-audit, to catch anything missed in completed projects.
 
-SQL (Step B) and simulations (Step C) always run, in both modes.
+SQL (Step B) and simulations (Step C) are always audited, in both modes.
 
 Use MODE wherever the prompt refers to {MODE}.
 
@@ -94,8 +95,8 @@ These few lines are all a project subagent needs for the Format B step-status fa
 ## Step A — Fan out one subagent per project
 
 For **each** project in scope, launch a `general-purpose` subagent, `run_in_background: false`. In
-`MODE: all` you may launch them in parallel (they only read — no git-index contention); in
-`MODE: active` there is just one. Each subagent's instruction:
+`MODE: all`, launch them all in a single message so they run in parallel (they only read — no
+git-index contention); in `MODE: active` there is just one. Each subagent's instruction:
 
 > Read `notes/prompts/strategy/tracking/_concept-extraction-standard.md` and execute it in full for
 > `PROJECT_PATH = «path»`. Here is the `PROGRESS_HINT` for this project (use it only for the Format B
@@ -103,8 +104,10 @@ For **each** project in scope, launch a `general-purpose` subagent, `run_in_back
 > ```
 > «the summary heading + technology sub-heading lifted in Step 0»
 > ```
-> Do not read or write PROGRESS.md; do not commit. Report: the format detected, the confirmed step
-> status, and the concept table (Concept · Section · From step) exactly as the standard specifies.
+> Read ONLY the standard and this project's `PLANNING.md` — not the project's code, README, or any
+> other file. Do not read or write PROGRESS.md; do not commit. Report back **only** the three items
+> the standard specifies — the format detected, the confirmed step status, and the concept table
+> (Concept · Section · From step) — with no PLANNING.md excerpts and no reasoning trace.
 
 Wait for every project subagent to finish and collect its report. Keep the reports — Step D merges them.
 
@@ -116,15 +119,18 @@ Launch one `general-purpose` subagent, `run_in_background: false`:
 
 > Audit the SQL exercises **as they exist on `main`** (study materials live on `main`; the working
 > tree is usually behind, so do NOT count working-tree files — count the `main` version).
+> **Count without loading file contents into your context** — two commands are enough:
 > - List the SQL files on main: `git ls-tree -r --name-only main -- sql/`
-> - Read each from main: `git show main:sql/<file>` — count numbered exercise headers in that output.
+> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+:|#[0-9]+ \|)" main -- sql/`
+>   (output is `main:sql/<file>:<count>`). Only `git show` a file if its count looks wrong (e.g. zero
+>   for a file that clearly holds exercises) — and then only to recheck the headers, not to study it.
 >
 > Two file shapes exist: a flat file (`sql/01-basics.sql`) or a subfolder (`sql/02-joins/exercises.sql`).
-> Two header patterns exist — count lines matching **either**:
+> The regex covers the two header patterns in use:
 > - `-- Exercise N:` at line start (sql-exercises-prompt topics: joins, group-by, subqueries…)
 > - `-- #N |` at line start, N one or more digits — `-- #1 |`, `-- #01 |`, `-- #40 |` (the basics file)
 >
-> Return one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
+> Return **only** one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
 > Folder column (`sql/01-basics.sql` for flat, `sql/02-joins/` for subfolders). Only list topics that
 > have a file or folder in sql/. Do not estimate; do not assign a status — the orchestrator does that.
 
@@ -132,15 +138,12 @@ Wait and collect.
 
 ---
 
-## Step C — Subagent: audit simulations
+## Step C — Audit simulations (orchestrator, directly)
 
-Launch one `general-purpose` subagent, `run_in_background: false`:
-
-> Read `simulations/TRACKER.md`. Return: total simulations completed (✅ Pass or ⚠️ Borderline both
-> count as completed), split by type — Angular / Spring Boot / SQL — each as `X Pass, X Borderline,
-> X Fail`. If TRACKER.md does not exist or shows 0, return all zeros.
-
-Wait and collect.
+No subagent here — `simulations/TRACKER.md` is one small file, and a subagent round-trip would cost
+more context than reading it. Read it yourself and note: total simulations completed (✅ Pass or
+⚠️ Borderline both count as completed), split by type — Angular / Spring Boot / SQL — each as
+`X Pass, X Borderline, X Fail`. If TRACKER.md does not exist or shows 0, record all zeros.
 
 ---
 
@@ -202,7 +205,7 @@ The SQL section has two parts — keep both:
   If the sub-section does not exist, create it. If it exists in another format, rewrite it as this
   table (one of the few cases where reformatting is allowed).
 
-### D4 — Simulations section (from Step C report)
+### D4 — Simulations section (from the Step C counts)
 
 Update the counts if the section exists; otherwise add:
 
