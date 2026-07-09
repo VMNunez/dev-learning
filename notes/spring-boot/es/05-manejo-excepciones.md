@@ -82,6 +82,8 @@ public class GlobalExceptionHandler {
 }
 ```
 
+> El `ErrorResponse` de este ejemplo está simplificado a propósito, para centrarte primero en cómo `@RestControllerAdvice` enruta cada excepción a su handler. La versión completa — con más campos y una regla para no mostrar alguno cuando no aplica — está en la sección "DTO de respuesta de error" más abajo.
+
 Con esto en su lugar, los controladores quedan limpios — solo contienen el happy path:
 
 ```java
@@ -132,18 +134,59 @@ Esto ya está explicado en [08-exceptions.md](../java/08-exceptions.md) — el p
 
 ## DTO de respuesta de error
 
-En lugar de devolver un String simple como cuerpo del error, devuelve un objeto estructurado consistente. El frontend Angular puede entonces leer `error.status` y `error.message` para cualquier error:
+Con solo `status` y `message`, aparece un problema en cuanto tienes más de un tipo de error: cada `@ExceptionHandler` decide su propia forma de cuerpo JSON, y acaban sin ser consistentes entre sí. Un ejemplo real: `handleBadCredentials` devolvía `{"error": "..."}` (un String), pero `handleValidation` devolvía `{"errors": {...}}` (un mapa) — dos claves distintas (`error` vs `errors`) para el mismo concepto. En Angular, el código que lee la respuesta de error necesita saber de antemano cuál de las dos claves esperar según qué excepción disparó el fallo — y eso es frágil: cualquier cambio en el backend rompe el frontend en silencio.
+
+La solución es un único DTO de error, con **la misma forma siempre**, sin importar qué excepción lo generó:
+
+Purpose: modela el cuerpo JSON de cualquier error de la API en un formato único y predecible, para que el frontend siempre lea las mismas claves (`message`, `fieldErrors`...) sin necesidad de saber qué excepción concreta lo produjo.
+
+File: `src/main/java/com/victor/timetrack/dto/response/ErrorResponse.java`
+
+Docs: https://www.baeldung.com/jackson-ignore-null-fields → leer: "@JsonInclude(Include.NON_NULL)"
 
 ```java
-public record ErrorResponse(
-    int status,
-    String message,
-    LocalDateTime timestamp
-) {
-    // Constructor de conveniencia — el timestamp siempre es ahora
-    public ErrorResponse(int status, String message) {
-        this(status, message, LocalDateTime.now());
-    }
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ErrorResponse {
+    private Instant timestamp;
+    private int status;
+    private String error;
+    private String message;
+    private Map<String, String> fieldErrors;
+}
+```
+
+- **`timestamp: Instant`** — el momento exacto en que ocurrió el error, en UTC. Se explica en detalle (y por qué `Instant` y no `LocalDateTime`) en [12-fechas.md](../../java/es/12-fechas.md#instant--un-punto-exacto-en-el-tiempo-sin-ambigüedad-de-zona-horaria) — resumen rápido: un timestamp técnico necesita ser el mismo instante para cualquiera que lo lea, independientemente de la zona horaria del servidor.
+- **`status: int`**, no `HttpStatus` — porque este objeto se serializa a JSON, y JSON no tiene el concepto de enum de Spring. Se rellena con `status.value()`, el método que convierte el enum `HttpStatus` a su número (`404`, `400`...).
+- **`error: String`** — el nombre corto del código HTTP (`"Not Found"`, `"Bad Request"`), obtenido con `status.getReasonPhrase()`. Es información derivable de `status`, pero tenerla explícita en el JSON evita que quien lo lea tenga que memorizar qué significa cada número.
+- **`message: String`** — el único campo que cambia de verdad excepción a excepción; el texto que normalmente muestra el frontend en un toast.
+- **`fieldErrors: Map<String, String>`** — solo tiene contenido cuando el error viene de validar campos de un formulario (ver la sección de Bean Validation, abajo). En el resto de casos vale `null`.
+
+> **`@JsonInclude(JsonInclude.Include.NON_NULL)`** actúa en el momento de serializar — cuando Spring Boot convierte el objeto Java a texto JSON para la respuesta HTTP, justo antes de mandarlo al cliente. Sin esta anotación, un `fieldErrors` en `null` aparecería igualmente como `"fieldErrors": null` en el JSON de salida. Con la anotación, Jackson omite esa clave por completo cuando detecta que el valor es `null` — así un 404 devuelve un JSON limpio, sin la clave `fieldErrors`, y solo un error de validación la incluye rellena.
+
+Para no repetir la construcción de `timestamp`, `status`, `error` y `message` en cada uno de los `@ExceptionHandler` (7 handlers en este proyecto), un método privado dentro del propio `GlobalExceptionHandler` centraliza esa parte común:
+
+```java
+private ErrorResponse buildError(HttpStatus status, String message) {
+    ErrorResponse errorResponse = new ErrorResponse();
+    errorResponse.setTimestamp(Instant.now());
+    errorResponse.setStatus(status.value());
+    errorResponse.setError(status.getReasonPhrase());
+    errorResponse.setMessage(message);
+    return errorResponse;
+}
+```
+
+`fieldErrors` no forma parte de los parámetros de `buildError` a propósito: es el único campo que no aplica a la mayoría de los handlers, así que meterlo como parámetro obligaría a que los otros 6 handlers pasaran `null` explícitamente sin usarlo nunca. En el único handler que sí lo necesita (`handleValidation`, ver abajo), se llama a `buildError` para la parte común y luego se le hace un `.setFieldErrors(...)` extra al objeto ya construido.
+
+Con `buildError`, un handler típico queda así de corto:
+
+```java
+@ExceptionHandler(ResourceNotFoundException.class)
+public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException e) {
+    return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(buildError(HttpStatus.NOT_FOUND, e.getMessage()));
 }
 ```
 
@@ -153,20 +196,60 @@ public record ErrorResponse(
 
 Docs: https://www.baeldung.com/spring-boot-bean-validation → leer: la sección sobre gestionar `MethodArgumentNotValidException`
 
-Cuando `@Valid` en un `@RequestBody` falla, Spring lanza `MethodArgumentNotValidException`. Gestiónalo en `@ControllerAdvice` para devolver errores a nivel de campo:
+Cuando `@Valid` en un `@RequestBody` falla, Spring lanza `MethodArgumentNotValidException`. Esa excepción lleva dentro un `BindingResult` — el informe completo de qué campos fallaron y con qué mensaje. `getFieldErrors()` te da la lista de esos fallos como objetos `FieldError`, cada uno con un nombre de campo (`getField()`) y un mensaje (`getDefaultMessage()`).
+
+En vez de devolver un único String con todos los mensajes concatenados, la forma correcta es un `Map<String, String>` campo → mensaje, para que el frontend pueda pintar cada error debajo de su input correspondiente sin tener que parsear texto:
 
 ```java
 @ExceptionHandler(MethodArgumentNotValidException.class)
 public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
-    String message = e.getBindingResult()
-        .getFieldErrors()
-        .stream()
-        .map(err -> err.getField() + ": " + err.getDefaultMessage())
-        .collect(Collectors.joining(", "));
+    Map<String, String> errors = e.getBindingResult().getFieldErrors().stream()
+            .collect(Collectors.toMap(
+                    FieldError::getField,
+                    FieldError::getDefaultMessage,
+                    (existing, replacement) -> existing
+            ));
 
-    return ResponseEntity
-        .status(HttpStatus.BAD_REQUEST)
-        .body(new ErrorResponse(400, message));
+    ErrorResponse errorResponse = buildError(HttpStatus.BAD_REQUEST, "Validation failed");
+    errorResponse.setFieldErrors(errors);
+
+    return ResponseEntity.badRequest().body(errorResponse);
+}
+```
+
+Desglosando el `Collectors.toMap(...)`:
+
+- **`.stream()`** convierte la `List<FieldError>` en un Stream — el mecanismo de Java para encadenar transformaciones (map, filter, collect) sobre una colección sin escribir un `for` manual.
+- **`Collectors.toMap(keyExtractor, valueExtractor, mergeFunction)`** es la operación final del stream: en vez de producir otra lista, produce un `Map`. Necesita que le digas, para cada elemento del stream, qué usar como clave y qué usar como valor.
+- **`FieldError::getField`** es una *method reference* — una forma abreviada de escribir `fieldError -> fieldError.getField()`. Le dice al collector: "para cada `FieldError`, usa el resultado de `.getField()` como clave del mapa" (`"email"`, `"password"`...).
+- **`FieldError::getDefaultMessage`** hace lo mismo para el valor: "usa el resultado de `.getDefaultMessage()`" (`"must not be blank"`...).
+- **`(existing, replacement) -> existing`** es la función de "merge", y solo se dispara si dos `FieldError` generaran la **misma clave** — por ejemplo, si el campo `email` tuviera dos anotaciones de validación fallando a la vez (`@NotBlank` y `@Email`). Sin esta tercera función, `Collectors.toMap` lanzaría una excepción en tiempo de ejecución ante esa colisión (`IllegalStateException: Duplicate key`); con ella, simplemente te quedas con el primer mensaje que encontró y descarta el segundo.
+
+> **¿Por qué no simplemente unir todos los mensajes en un único String** (como haría `Collectors.joining(", ")`)? Porque entonces el frontend recibiría algo como `"email: must not be blank, password: must not be blank"` y tendría que **parsear ese texto** para saber a qué campo del formulario pertenece cada error. Con un `Map<String, String>`, el frontend accede directamente por clave (`fieldErrors["email"]`) y lo pone debajo del input correcto, sin ningún parsing.
+
+El JSON resultante de un error de validación con dos campos vacíos a la vez:
+
+```json
+{
+    "timestamp": "2026-07-09T10:15:00.123Z",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Validation failed",
+    "fieldErrors": {
+        "email": "must not be blank",
+        "password": "must not be blank"
+    }
+}
+```
+
+Y el de un 404 (por ejemplo, `ResourceNotFoundException`), donde `fieldErrors` nunca se rellena — nótese que la clave ni siquiera aparece, gracias a `@JsonInclude(NON_NULL)`:
+
+```json
+{
+    "timestamp": "2026-07-09T10:16:00.456Z",
+    "status": 404,
+    "error": "Not Found",
+    "message": "Project not found with id 9999"
 }
 ```
 

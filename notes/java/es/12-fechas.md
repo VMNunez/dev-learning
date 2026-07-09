@@ -19,6 +19,31 @@ Tienes tres clases según lo que necesites representar. Lo más importante que h
 
 ---
 
+## Instant — un punto exacto en el tiempo, sin ambigüedad de zona horaria
+
+Las tres clases de arriba tienen un límite que no se nota hasta que tu app corre en más de un sitio: son "hora de pared" (*wall-clock time*). `LocalDateTime.now()` te da la fecha y hora tal como las marca el reloj **del servidor donde se ejecuta el código**, sin decir en qué zona horaria está ese reloj. Si tu servidor está en Madrid, `LocalDateTime.now()` un 11 de mayo a las 14:30 te da `2026-05-11T14:30:00` — pero si despliegas ese mismo código en un servidor configurado en UTC, sin cambiar una sola línea, ese mismo instante físico te devuelve un valor distinto (`2026-05-11T12:30:00`), porque `LocalDateTime` no sabe que existe una diferencia horaria que compensar.
+
+> Piénsalo así: `LocalDateTime` es como decir "son las 14:30" sin decir en qué ciudad — depende de dónde estés parado para saber a qué hora absoluta te refieres. `Instant` es como decir "son las 12:30 UTC" — un único punto en el tiempo, el mismo para cualquiera que lo lea, viva donde viva.
+
+`Instant` representa exactamente eso: un punto en el tiempo medido en UTC (tiempo universal), independiente de en qué zona horaria esté el servidor que lo generó. Por eso es la clase que se usa para **timestamps técnicos** — el momento exacto en que ocurrió un evento del sistema (un error, un log, una fila creada) — mientras que `LocalDate`/`LocalDateTime` siguen siendo las correctas para **fechas de negocio** (la fecha de una entry de horas trabajadas, el cumpleaños de un empleado), donde lo que importa es la fecha tal como la escribiría una persona, no el instante universal.
+
+```java
+Instant now = Instant.now();   // 2026-05-11T12:30:00.123456Z
+```
+
+La `Z` al final significa "Zulu time", el nombre militar/aeronáutico para UTC — es la forma en que `Instant` deja explícito, en el propio texto, que no hace falta preguntar "¿en qué zona horaria está esto?".
+
+| Clase | Qué representa | ¿Guarda zona horaria? | Cuándo usarla |
+|-------|----------------|------------------------|----------------|
+| `LocalDateTime` | Fecha y hora "de pared" | No — depende de dónde se ejecute | Fechas de negocio: cumpleaños, fecha de una entry, deadline |
+| `Instant` | Un punto exacto en UTC | Sí, implícitamente (siempre UTC) | Timestamps técnicos: cuándo ocurrió un error, cuándo se creó un log |
+
+La columna "¿Guarda zona horaria?" es la que decide cuál usar: si dos servidores en zonas distintas deben coincidir en "cuándo pasó esto" sin ambigüedad, necesitas `Instant`; si lo que quieres es la fecha tal como la vería un humano rellenando un formulario, `LocalDateTime`/`LocalDate` es lo correcto.
+
+> **Vista previa — Spring Boot:** verás `Instant` en el DTO `ErrorResponse` que centraliza los errores de la API (`notes/spring-boot/es/05-manejo-excepciones.md`) — el timestamp de un error es exactamente el caso "técnico, no de negocio" que describe la tabla de arriba.
+
+---
+
 ## Crear valores
 
 Las tres clases siguen el mismo patrón de creación: `.now()` para el momento actual, `.of(...)` para una fecha u hora concreta, y `.parse()` para una fecha que llega como string (habitual cuando el cliente envía una fecha en el cuerpo de la petición). Nota importante: en `java.time` los meses están indexados desde 1 — enero es 1, no 0.
