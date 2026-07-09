@@ -188,7 +188,7 @@ Dos formas de recargar:
 
 **Cómo verificar que una dependencia se descargó realmente:**
 
-Comprueba que el jar existe en la caché local de Maven. Maven almacena cada librería descargada en `C:\Users\Victor\.m2\repository\`, organizado por group y artifact — sí, esta es la carpeta donde mirar:
+Comprueba que el jar existe en la caché local de Maven. Maven almacena cada librería descargada en `C:\Users\Victor\.m2\repository\`, organizadas por group y artifact — esta es exactamente la carpeta donde mirar:
 
 Ejemplo para Spring Security:
 
