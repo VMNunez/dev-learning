@@ -134,7 +134,10 @@ Batch note and run the **single-project review below once per project**, fully f
 specialists + the orchestrator commit) before starting the next — never overlap, since the orchestrator
 commits per project and parallel commits race the git index. Put each project's report under a
 `### [project]` heading, and after the last one
-print the `_batch-mode.md` summary table (`Project | Result | Sections fixed`). If the run gets too
+print the `_batch-mode.md` summary table (`Project | Result | Sections fixed`). **Condense as you go:**
+once a project is committed, its five specialist traces are spent — carry forward only one line per
+project (`project · verdict · n fixes · commit hash`) and drop the traces from your working notes, or
+seven projects of traces will crowd out the later ones. If the run gets too
 long, finish the current project completely and stop with the "Completed / Remaining" line — a re-run
 resumes from the first unfinished project.
 
@@ -165,8 +168,8 @@ For **each** concern in order, launch a fresh, independent `general-purpose` sub
 > concern's row lists in that prompt's reading map** — never the whole standard. Audit **only your
 > concern's** sections/invariants/checks (the `{SCOPE}` table in that prompt), fix what falls short
 > directly in the file, and **do NOT commit** — the orchestrator commits once after every concern.
-> Return your verdict and the **check-by-check trace of your slice**, plus any cross-concern ripple
-> to reconcile.
+> Return your verdict and the **check-by-check trace of your slice** in that prompt's compact report
+> format (one line per check — never paste plan content), plus any cross-concern ripple to reconcile.
 
 Wait for each specialist before dispatching the next. Collect their traces and any ripples; if a ripple
 lands in a concern already reviewed, re-dispatch that one specialist to reconcile it.

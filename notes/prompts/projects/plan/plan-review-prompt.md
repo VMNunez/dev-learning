@@ -41,8 +41,10 @@ then let it through.
 
 **Reading map — load only what your `{SCOPE}` needs.** The point of the specialist split is a small,
 focused context per reviewer; a specialist that reads everything defeats it.
-- `{PROJECT}/PLANNING.md` — the file to audit. Read it whole once for cross-reference context, but
-  only audit and edit your slice.
+- `{PROJECT}/PLANNING.md` — the file to audit, read in **tiers**: your own sections in full · the
+  sections your invariants cross-reference in full (e.g. `data-model-api` needs §14's page list for
+  invariant 3, not its ASCII wireframes — stop at the headings) · everything else headings-only, just
+  enough to know the plan's shape. Never read tail sections your slice does not touch.
 - `notes/prompts/projects/plan/_planning-standard.md` — **only the parts your `{SCOPE}` row lists in
   the "Reads from the standard" column below**, plus "Two project formats" (every scope needs it to
   derive the format). Read the standard in full **only** when `{SCOPE}` = all.
@@ -135,12 +137,14 @@ rewrite good text to leave a mark.
 ## Finish
 
 **If `{SCOPE}` ≠ all (dispatched by the orchestrator):** do **not** commit — the orchestrator commits
-once, after every concern's specialist has run. Leave your fixes in the working tree. Report your
-**verdict for this concern**:
-- `PASS` (no changes) or `FIXED` (a short bullet list of what you corrected and why).
-- A **check-by-check trace of your slice**: list every section/invariant/check your `{SCOPE}` owns and,
-  next to each, ✅ pass or the fix you made — proof you ran your whole slice, not just the first items.
-- Any cross-concern ripple another specialist must reconcile.
+once, after every concern's specialist has run. Leave your fixes in the working tree. Your report is
+**compact and bounded** — it lands in the orchestrator's context, and five verbose reports saturate it:
+- Line 1 — verdict: `PASS` (no changes) or `FIXED: n fixes`.
+- The **check-by-check trace of your slice** as a table, **one line per check, ≤15 words per line**:
+  `| check | ✅ / fix made |`. Every section/invariant/design check your `{SCOPE}` owns must have a
+  row — proof you ran your whole slice, not just the first items. Detail lives in the file edits, not
+  in the report; never paste plan content back.
+- Ripples: one line per cross-concern ripple another specialist must reconcile (`none` if none).
 
 **If `{SCOPE}` = all (standalone run):**
 - **`{DRY_RUN}` = false, `new` mode** (author left ROADMAP.md + PROGRESS.md staged): commit all three
