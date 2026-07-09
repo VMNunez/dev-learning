@@ -6,6 +6,9 @@ Every item must be explainable with a real example from the TimeTrack project.
 ## Project setup
 
 - `@SpringBootApplication` — combines `@Configuration`, `@EnableAutoConfiguration`, and `@ComponentScan`; interviewers ask "what does this annotation replace in a traditional Spring app?" and "why must the class be in the root package?"
+- Auto-configuration mechanism — `@EnableAutoConfiguration` inspects the classpath and conditionally creates beans (`@ConditionalOnClass`, `@ConditionalOnMissingBean`), which is why adding a starter "just works" with no XML; interviewers ask "how does Spring Boot know how to configure your `DataSource`?" and expect the classpath-scanning + conditional-beans answer, not just "it is automatic"
+- Spring Boot starters — a starter (`spring-boot-starter-web`, `-data-jpa`, `-security`) is a curated dependency bundle that pulls in a whole layer's libraries with compatible versions in one line; interviewers ask "what is a starter and what does `spring-boot-starter-web` actually bring in?" — it separates someone who added dependencies from someone who understands the build
+- Embedded server (Tomcat) — Spring Boot packages an embedded servlet container inside the fat jar, so `java -jar app.jar` starts Tomcat on port 8080 with no external application server and no WAR to deploy; interviewers ask "how does your app serve HTTP without a Tomcat installed?" — a classic Spring-Boot-vs-classic-Spring differentiator
 - `application.properties` — where datasource, JPA settings, and JWT config go; interviewers ask how you keep credentials out of source control (environment variables with `${VAR_NAME}` syntax; app fails at startup if the variable is missing — better than a silent null at runtime)
 - Profiles: `application-dev.properties`, `spring.profiles.active` — separating config per environment; asked in any interview about real-world deployment
 - Maven: `pom.xml` structure, adding a dependency, `mvn clean install` — how the project is built and how libraries are pulled in; interviewers ask what `spring-boot-starter-parent` does (manages all dependency versions via a BOM so you do not write version tags)
@@ -17,6 +20,7 @@ Every item must be explainable with a real example from the TimeTrack project.
 
 ## REST controllers
 
+- Layered architecture: controller → service → repository — the controller handles HTTP and DTO mapping, the service holds business logic and the transaction boundary, the repository handles persistence; interviewers ask "why have a service layer instead of calling the repository from the controller?" — separation of concerns, testability, and one place for `@Transactional` and business rules (the general layered/service-layer pattern is owned by the Architecture coverage; this item is its Spring Boot framing)
 - `@RestController` — combines `@Controller` and `@ResponseBody`; every return value is serialised to JSON by Jackson automatically; interviewers ask "what is the difference between `@Controller` and `@RestController`?" — `@Controller` is for server-rendered HTML; always use `@RestController` for a REST API
 - `@RequestMapping` — sets the base URL path for all methods in the class; combined with method-level annotations (`@GetMapping`, `@PostMapping`) to form the full URL
 - `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping` — method-level annotations for each HTTP verb; `@PatchMapping` is used for partial updates and state transitions (submit, approve, reject); tested in every technical screening
@@ -32,6 +36,8 @@ Every item must be explainable with a real example from the TimeTrack project.
 
 ## Dependency injection and beans
 
+- Inversion of Control (IoC) and dependency injection — the Spring container creates your objects and wires their dependencies instead of you calling `new`; interviewers open the topic with "what is dependency injection?" and expect the IoC container as the answer, plus why it makes code testable (you inject a mock in a test instead of the real dependency)
+- Bean scope and the singleton default — Spring beans are singleton-scoped by default (one shared instance for the whole app), which is why a `@Service` must be stateless and thread-safe; interviewers ask "what scope is a `@Service` by default, and is it safe for two concurrent requests?" — the gotcha is storing mutable per-request state in a field of a singleton bean
 - `@Service`, `@Repository`, `@Component`, `@Controller` — all four register the class as a Spring bean; `@Repository` also translates JPA/Hibernate exceptions into Spring's `DataAccessException`; interviewers ask "what is the difference between `@Service` and `@Component`?" — semantics and layer readability
 - `@Bean` in a `@Configuration` class — the way to register library classes you cannot annotate with `@Component`; used in `SecurityConfig` to expose `BCryptPasswordEncoder` and `AuthenticationManager`; interviewers ask "why did you define a `@Bean` for `BCryptPasswordEncoder`?"
 - Constructor injection — preferred over `@Autowired` field injection; makes dependencies explicit, `final`, and easy to mock in tests without starting Spring; Spring infers it automatically when the class has one constructor; interviewers ask "why not field injection?"
@@ -55,7 +61,9 @@ Every item must be explainable with a real example from the TimeTrack project.
 
 ## Spring Data JPA — repositories, queries, and performance
 
+- JPA vs Hibernate — JPA is the specification (the `@Entity`, `@Id` annotations and the `EntityManager` interface); Hibernate is the default implementation Spring Boot ships; interviewers ask "are JPA and Hibernate the same thing?" — the spec/implementation distinction separates a candidate who understands the stack from one who memorised annotations
 - `JpaRepository` built-in methods: `save()`, `findById()`, `findAll()`, `deleteById()`, `existsById()` — what Spring provides without writing any SQL; interviewers ask "what does `JpaRepository` give you for free?"
+- `findById()` returns `Optional<T>`, not the entity or `null` — forces you to handle the not-found case explicitly with `.orElseThrow(...)`; interviewers ask "what does `findById` return and why not the entity directly?" — returning `Optional` instead of `null` is the design that prevents a `NullPointerException`
 - `save()` insert vs update — `save()` inserts when `id == null` and merges (updates) when `id` is already set; no separate `insert()` and `update()` methods needed; interviewers ask how Spring Data decides which operation to run
 - Derived query methods: `findByEmail(String email)` — Spring reads the method name and generates the SQL; no `@Query` needed for simple lookups; interviewers test how far the naming convention goes (`findByTypeAndUserId`, `existsByEmail`)
 - `@Query` with JPQL — custom queries for aggregations and complex filtering; JPQL uses entity class names and field names, not table names and column names; needed for the reports endpoint in TimeTrack
@@ -79,6 +87,7 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Route rules: `.requestMatchers("/api/auth/**").permitAll()` and `.anyRequest().authenticated()` — all public and protected routes in one place; order matters — specific rules must be declared before the catch-all; interviewers ask "how do you make the login endpoint public without exposing everything?"
 - `@PreAuthorize("hasRole('MANAGER')")` — method-level role check that runs after the JWT is validated; requires `@EnableMethodSecurity` on `SecurityConfig`; silently ignored without it — the most common authorization bug in junior code
 - CORS configuration in `SecurityFilterChain` — required when Angular (port 4200) calls Spring Boot (port 8080); must be configured inside the Security layer via a `CorsConfigurationSource` bean, not with `@CrossOrigin` on controllers, because the Security filter runs before controllers see the request
+- `AuthenticationEntryPoint` — the hook Spring Security calls when an unauthenticated request hits a protected route; by default Spring returns an empty 403, so you implement it to return the semantically correct 401 with a JSON body; interviewers ask "should a missing or invalid token return 401 or 403, and how do you control it?" — 401 means "not authenticated" (who are you?), 403 means "authenticated but not allowed" (valid token, wrong role)
 
 ## Spring Security — authentication and JWT
 
@@ -92,6 +101,7 @@ Every item must be explainable with a real example from the TimeTrack project.
 - JWT cannot be invalidated before expiry — once issued a JWT is valid until its `exp` claim passes; there is no server-side state to delete; the practical solution is a short expiry time (15–60 min); a token blacklist in Redis restores revocability but reintroduces server state; interviewers test this trade-off directly
 - Session-based vs JWT — sessions store state on the server (can revoke instantly, harder to scale horizontally); JWT stores state on the client (stateless, scales easily, cannot revoke before expiry); interviewers ask "why JWT instead of sessions?" — the REST statelessness argument is the expected answer
 - HS256 vs RS256 — HS256 uses one shared secret (correct for a single backend service); RS256 uses a public/private key pair (needed when multiple services verify the same token without sharing a secret); interviewers ask which you chose and why
+- Access token vs refresh token — the access token is short-lived and sent on every request; the refresh token is long-lived and used only to obtain a new access token without forcing the user to log in again; interviewers ask "since a JWT cannot be revoked before it expires, how do you keep expiry short without logging the user out every 15 minutes?" — the refresh token is the expected answer
 
 ## Bean validation
 

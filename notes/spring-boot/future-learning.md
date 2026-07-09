@@ -20,10 +20,6 @@ Topics to study once the numbered files (01–09) are solid. Nothing here is nee
 
 ## Phase 1 — After landing the first job
 
-### AuthenticationEntryPoint
-
-A Spring Security interface for customising the response when an unauthenticated request hits a protected route. By default, Spring Security returns 403 instead of 401 for missing tokens — `AuthenticationEntryPoint` lets you return the semantically correct 401. Not a filter question at junior level, but worth knowing when the security config is reviewed in depth.
-
 ### Spring Boot Actuator
 
 Health checks, metrics, and management endpoints that ops teams use to monitor the app in production. Automatically exposes `/actuator/health`, `/actuator/info`, and more. Essential in any production-deployed Spring Boot app.
