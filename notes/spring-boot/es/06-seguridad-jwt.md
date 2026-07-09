@@ -1703,6 +1703,102 @@ public class SecurityConfig {
 
 ---
 
+## AuthenticationEntryPoint — 401 en vez del 403 vacío por defecto
+
+Purpose: intercepta el momento exacto en que Spring Security detecta que una request **no tiene ninguna autenticación válida** (sin token, o un token tan roto que ni se puede procesar) y controla qué responder — en vez de dejar que Spring aplique su comportamiento por defecto.
+
+File: `src/main/java/com/victor/timetrack/security/JwtAuthenticationEntryPoint.java`
+
+Docs: https://www.baeldung.com/spring-security-401-unauthorized → leer: la sección donde implementan `AuthenticationEntryPoint` con un `ObjectMapper` para escribir el JSON de error
+
+Sin configurar nada, cuando una request sin token llega a un endpoint protegido (`.anyRequest().authenticated()`), Spring Security devuelve **403 Forbidden sin ningún cuerpo**. Esto es justo el error que ya tenías anotado en "Errores comunes" más abajo: **403 no es el código correcto aquí**. La distinción HTTP es:
+
+- **401 Unauthorized** — "no sé quién eres". No hay ninguna autenticación, o la que hay es inválida.
+- **403 Forbidden** — "sé quién eres, pero no tienes permiso". El usuario está autenticado con un token válido, pero le falta el rol necesario.
+
+> Spring Security internamente lanza dos tipos de excepción distintos para estos dos casos: `AuthenticationException` cuando no hay autenticación en absoluto, y `AccessDeniedException` cuando sí la hay pero falla la autorización (esta última es la que capturas en `GlobalExceptionHandler` con `@ExceptionHandler(AccessDeniedException.class)` — ver la sección de manejo de excepciones). El componente que decide qué hacer con cada una es distinto: `AuthenticationEntryPoint` para la primera, y tu `@RestControllerAdvice` normal para la segunda, porque `AccessDeniedException` sí llega hasta la capa de controller, mientras que `AuthenticationException` se resuelve antes, dentro del propio filtro de seguridad.
+
+**¿Por qué no puedes arreglar esto con un `@ExceptionHandler` normal, como hiciste con `AccessDeniedException`?** Porque el rechazo por falta de autenticación ocurre **antes** de que la request llegue a ningún controller — pasa dentro de la filter chain de Spring Security, una capa que se ejecuta por completo antes de que Spring MVC (y por tanto tu `@RestControllerAdvice`) entre en juego. `@ExceptionHandler` solo puede capturar excepciones lanzadas desde dentro de un método de controller o de ahí para adentro — no desde un filtro que ni siquiera ha dejado pasar la request tan lejos.
+
+```java
+@Component
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    private final ObjectMapper objectMapper;
+
+    public JwtAuthenticationEntryPoint(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+                         AuthenticationException authException) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(Instant.now());
+        errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        errorResponse.setError(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        errorResponse.setMessage("Authentication required");
+
+        objectMapper.writeValue(response.getWriter(), errorResponse);
+    }
+}
+```
+
+> **No olvides `@Component`.** Sin esta anotación, la clase compila perfectamente sola — el error solo aparece al arrancar la aplicación, cuando Spring intenta construir `SecurityConfig` y descubre que no tiene ningún bean de tipo `JwtAuthenticationEntryPoint` para inyectar en su constructor. El mensaje exacto es: `Parameter 1 of constructor in com.victor.timetrack.security.SecurityConfig required a bean of type 'com.victor.timetrack.security.JwtAuthenticationEntryPoint' that could not be found.` `@Component` es lo que le dice a Spring "gestiona tú esta clase, créala automáticamente y ponla disponible para inyectar" — sin ella, la clase existe como código Java normal, pero fuera del control de Spring, así que ningún constructor puede pedirla como dependencia.
+
+**`implements AuthenticationEntryPoint`** — esta interfaz de Spring Security exige un único método, `commence(...)`, que Spring llama automáticamente cada vez que una request sin autenticación válida intenta acceder a un recurso protegido. El nombre viene de que este método es literalmente donde "empieza" (*commences*) el proceso de pedirle al cliente que se autentique — en una app web tradicional con login por formulario, aquí es donde redirigirías a la página de login; en una API JWT, aquí es donde devuelves el error JSON.
+
+**`ObjectMapper objectMapper`** — la clase de Jackson (la librería que Spring Boot usa para convertir entre JSON y objetos Java) que convierte un objeto Java a texto JSON. En un `@RestController` normal nunca la ves porque Spring la usa automáticamente por ti detrás de `return ResponseEntity...`. Aquí, como estás fuera del mundo de los controllers (dentro de un componente de seguridad de bajo nivel), tienes que invocarla tú mismo. Se inyecta por constructor porque Spring Boot ya tiene un `ObjectMapper` configurado como bean disponible en el contenedor — es el mismo que usa internamente para todas tus respuestas normales, así que no necesitas crear uno nuevo.
+
+**`response.setStatus(...)` / `response.setContentType(...)`** — a diferencia de un `@ExceptionHandler`, donde simplemente devuelves un `ResponseEntity` y Spring construye la respuesta HTTP por ti, aquí escribes directamente sobre el objeto `HttpServletResponse` — el objeto de bajo nivel que representa la respuesta HTTP cruda, antes de que exista ningún concepto de "controller" o "DTO". Tienes que poner el código de estado y el content-type a mano, uno por uno.
+
+**`objectMapper.writeValue(response.getWriter(), errorResponse)`** — `response.getWriter()` te da el canal de escritura de la respuesta; `writeValue(destino, objeto)` serializa `errorResponse` a JSON y lo escribe ahí directamente, en un solo paso. Es el mismo trabajo que un `@RestControllerAdvice` hace por ti automáticamente — aquí lo escribes a mano porque no hay ningún controller de por medio que lo haga por ti.
+
+Conéctalo en `SecurityConfig` con `.exceptionHandling(...)`:
+
+```java
+private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+public SecurityConfig(JwtFilter jwtFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    this.jwtFilter = jwtFilter;
+    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+}
+
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/api/auth/**").permitAll()
+            .anyRequest().authenticated()
+        )
+        .exceptionHandling(exceptions -> exceptions
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+        )
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+}
+```
+
+**`.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint))`** — le dice a la filter chain: "cuando detectes que no hay autenticación válida, no uses tu comportamiento por defecto — usa este `AuthenticationEntryPoint` en su lugar". Sin esta línea, la clase `JwtAuthenticationEntryPoint` compila perfectamente pero Spring Security nunca la invoca — sigue aplicando el 403 vacío de siempre.
+
+El JSON resultante al llamar a un endpoint protegido sin ningún token:
+
+```json
+{
+    "timestamp": "2026-07-09T09:30:00.000Z",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "Authentication required"
+}
+```
+
+---
+
 ## CORS — permitir que Angular llame al API
 
 Docs: [Baeldung — CORS with Spring](https://www.baeldung.com/spring-cors) (empieza aquí — ejemplo claro y completo) · [Spring Security — CORS](https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html)
@@ -1817,7 +1913,7 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
 **CSRF habilitado con JWT** — CSRF es para sesiones basadas en cookies. Si lo dejas activado, cada request que no sea GET se rechazará con un 403 por falta de token CSRF.
 
-**Devolver 403 en lugar de 401** — 401 significa "no autenticado" (sin token o inválido). 403 significa "autenticado pero no permitido" (rol incorrecto). Spring Security devuelve 403 para requests no autenticados por defecto — sobreescríbelo con un `AuthenticationEntryPoint` personalizado si necesitas un 401 correcto.
+**Devolver 403 en lugar de 401** — 401 significa "no autenticado" (sin token o inválido). 403 significa "autenticado pero no permitido" (rol incorrecto). Spring Security devuelve 403 para requests no autenticados por defecto — sobreescríbelo con un `AuthenticationEntryPoint` personalizado si necesitas un 401 correcto. Ver la sección "AuthenticationEntryPoint — 401 en vez del 403 vacío por defecto" más arriba para la implementación completa.
 
 **`@PreAuthorize` ignorado silenciosamente** — si olvidas `@EnableMethodSecurity` en `SecurityConfig`, la anotación no hace nada. Sin error — la protección simplemente no existe.
 

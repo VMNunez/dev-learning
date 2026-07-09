@@ -1844,6 +1844,102 @@ public class SecurityConfig {
 
 ---
 
+## AuthenticationEntryPoint — 401 instead of the default empty 403
+
+Purpose: intercepts the exact moment Spring Security detects a request has **no valid authentication at all** (no token, or a token so broken it can't even be processed) and controls what to respond with — instead of letting Spring apply its default behavior.
+
+File: `src/main/java/com/victor/timetrack/security/JwtAuthenticationEntryPoint.java`
+
+Docs: https://www.baeldung.com/spring-security-401-unauthorized → read: the section implementing `AuthenticationEntryPoint` with an `ObjectMapper` to write the error JSON
+
+With no configuration, when a request with no token reaches a protected endpoint (`.anyRequest().authenticated()`), Spring Security returns **403 Forbidden with no body at all**. This is exactly the mistake already flagged in "Common mistakes" below: **403 isn't the right code here**. The HTTP distinction is:
+
+- **401 Unauthorized** — "I don't know who you are." There's no authentication, or what's there is invalid.
+- **403 Forbidden** — "I know who you are, but you're not allowed." The user is authenticated with a valid token, but is missing the required role.
+
+> Internally, Spring Security throws two different exception types for these two cases: `AuthenticationException` when there's no authentication at all, and `AccessDeniedException` when there is authentication but authorization fails (the latter is the one you catch in `GlobalExceptionHandler` with `@ExceptionHandler(AccessDeniedException.class)` — see the exception handling section). The component that decides what to do with each is different: `AuthenticationEntryPoint` for the first, your regular `@RestControllerAdvice` for the second — because `AccessDeniedException` does reach the controller layer, while `AuthenticationException` gets resolved earlier, inside the security filter itself.
+
+**Why can't you fix this with a regular `@ExceptionHandler`, the way you did with `AccessDeniedException`?** Because the rejection for missing authentication happens **before** the request ever reaches a controller — it happens inside Spring Security's filter chain, a layer that runs entirely before Spring MVC (and therefore your `@RestControllerAdvice`) ever comes into play. `@ExceptionHandler` can only catch exceptions thrown from inside a controller method or below it — not from a filter that hasn't even let the request get that far.
+
+```java
+@Component
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    private final ObjectMapper objectMapper;
+
+    public JwtAuthenticationEntryPoint(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+                         AuthenticationException authException) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(Instant.now());
+        errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        errorResponse.setError(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        errorResponse.setMessage("Authentication required");
+
+        objectMapper.writeValue(response.getWriter(), errorResponse);
+    }
+}
+```
+
+> **Don't forget `@Component`.** Without this annotation, the class compiles perfectly fine on its own — the error only shows up when the application starts, when Spring tries to build `SecurityConfig` and discovers it has no bean of type `JwtAuthenticationEntryPoint` to inject into its constructor. The exact message is: `Parameter 1 of constructor in com.victor.timetrack.security.SecurityConfig required a bean of type 'com.victor.timetrack.security.JwtAuthenticationEntryPoint' that could not be found.` `@Component` is what tells Spring "manage this class yourself, create it automatically, and make it available for injection" — without it, the class exists as plain Java code, but outside Spring's control, so no constructor can request it as a dependency.
+
+**`implements AuthenticationEntryPoint`** — this Spring Security interface requires a single method, `commence(...)`, which Spring calls automatically whenever a request with no valid authentication tries to reach a protected resource. The name comes from the fact that this method is literally where the process of asking the client to authenticate "commences" — in a traditional web app with form login, this is where you'd redirect to the login page; in a JWT API, this is where you return the JSON error instead.
+
+**`ObjectMapper objectMapper`** — Jackson's class (the library Spring Boot uses to convert between JSON and Java objects) for turning a Java object into JSON text. In a regular `@RestController` you never see it because Spring uses it automatically for you behind `return ResponseEntity...`. Here, since you're outside the world of controllers (inside a low-level security component), you have to call it yourself. It's injected through the constructor because Spring Boot already has an `ObjectMapper` configured as a bean available in the container — the same one it uses internally for all your normal responses, so you don't need to create a new one.
+
+**`response.setStatus(...)` / `response.setContentType(...)`** — unlike an `@ExceptionHandler`, where you simply return a `ResponseEntity` and Spring builds the HTTP response for you, here you write directly onto the `HttpServletResponse` object — the low-level object representing the raw HTTP response, before any concept of "controller" or "DTO" exists. You have to set the status code and content type by hand, one at a time.
+
+**`objectMapper.writeValue(response.getWriter(), errorResponse)`** — `response.getWriter()` gives you the response's write channel; `writeValue(destination, object)` serializes `errorResponse` to JSON and writes it there directly, in one step. It's the same work a `@RestControllerAdvice` does for you automatically — here you do it by hand because there's no controller in the middle to do it for you.
+
+Wire it into `SecurityConfig` with `.exceptionHandling(...)`:
+
+```java
+private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+public SecurityConfig(JwtFilter jwtFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    this.jwtFilter = jwtFilter;
+    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+}
+
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/api/auth/**").permitAll()
+            .anyRequest().authenticated()
+        )
+        .exceptionHandling(exceptions -> exceptions
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+        )
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+}
+```
+
+**`.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint))`** — tells the filter chain: "when you detect there's no valid authentication, don't use your default behavior — use this `AuthenticationEntryPoint` instead". Without this line, the `JwtAuthenticationEntryPoint` class compiles perfectly fine but Spring Security never calls it — it keeps applying the same old empty 403.
+
+The resulting JSON when hitting a protected endpoint with no token at all:
+
+```json
+{
+    "timestamp": "2026-07-09T09:30:00.000Z",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "Authentication required"
+}
+```
+
+---
+
 ## CORS — allowing Angular to call the API
 
 Docs: [Baeldung — CORS with Spring](https://www.baeldung.com/spring-cors) (start here — clear, full example) · [Spring Security — CORS](https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html)
