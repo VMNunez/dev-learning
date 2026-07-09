@@ -54,6 +54,37 @@ Before starting, read CLAUDE.md (teaching rules, subfolder structure) and
 
 ---
 
+## Execution model — detection is global; every fix is ONE cold subagent per unit
+
+Split this run into two kinds of work, and never mix them:
+
+- **Detection is global, structural, and light** — it genuinely needs the cross-view of the whole
+  topic (which note concept has no question, which question has no note, where a concept could sit).
+  Build the concept map and the two gap lists (Steps 1–3) **in this orchestrator context**. This is
+  the legitimate whole-file work, the same exception coverage-audit and notes-plan rely on.
+- **Closing a gap is DEEP per-unit work** — writing a Q&A answer to `_interview-prep-standard.md`, or
+  authoring a note file/section to `_note-quality-standard.md`, is exactly the writing bar the notes
+  and interview-prep pipelines split file-by-file. **Never write it inline here, and never batch it.**
+  Once the gap lists are ready, **dispatch one cold `general-purpose` subagent per atomic unit, in
+  sequence** (even at higher token cost) to author the fix:
+  - **notes → prep** → the atomic unit is the topic's Q&A pair (`en/{FILE}.md` + `es/{FILE}.md`) —
+    **one** subagent adds every missing question for the topic.
+  - **prep → notes** → the atomic unit is one note file — **one** subagent per note file to create or
+    extend, dispatched one after another.
+
+  Each dispatched subagent must **read its whole unit top to bottom** and return a **section-by-section
+  (or item-by-item) trace** — every `##`/`###` heading (or every gap it was handed) with PASS or the
+  change it made — as proof it reached the end. Run them strictly sequentially, never overlapping:
+  they edit the same files and commit, and parallel edits race the git index. Loading a folder — or all
+  twelve topics — into one context is precisely the saturation that makes the tail get a shallow skim;
+  that is why the deep work is one cold subagent per unit.
+
+> **`TOPIC = all`** (per `notes/prompts/_batch-mode.md`): process the topics **one at a time,
+> sequentially** — run this whole procedure fully for one topic (detection + every dispatched fix +
+> the commit) before starting the next. Never load more than one topic's deep work into a context.
+
+---
+
 ## Step 1 — Read the source files
 
 Read in this order:
@@ -83,28 +114,31 @@ Exception: a sub-section that describes a gotcha, an edge case, a "why not X?" s
 a comparison between two alternatives always needs its own question — it cannot be counted
 as covered by a general question about the parent concept.
 
-For each uncovered concept:
-1. Write the question and answer in English and add it to the correct section in
-   `en/{FILE}.md`; translate both to Spanish and add to the same section in `es/{FILE}.md`
-   — never one without the other. If no section exists for this concept in the prep file,
-   create the section heading in both files before adding the question.
-2. Follow the question format defined in
-   `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` exactly:
-   bold question + priority marker + blank line + answer + optional element based on type:
-   — Conceptual (asks "what is X?" or "how does X work?") → add a Junior tip.
-   — Decision-based (asks "why X?" or "when X instead of Y?") → add a Red flag (encouraged).
-   — Pressure (a gotcha, edge case, or unusual condition) → add a Red flag (encouraged).
-   Junior tip syntax — blank line, then two consecutive blockquote lines, English then Spanish:
-   > **Junior tip:** [one line of advice in English]
-   > **Consejo de entrevista:** [same advice in Spanish]
-   Red flag syntax — one line after a blank line:
-   Red flag answer: [what a weak candidate would say and why it fails]
-   Priority: ⭐⭐⭐ if not knowing this would filter the candidate in a first screening;
-   ⭐⭐ if it comes up when the interviewer goes deeper; ⭐ for niche details.
-3. Reference a real project in the answer when the concept was practiced in one.
-4. After adding questions to a section, reorder within that section so ⭐⭐⭐ come first,
-   then ⭐⭐, then ⭐.
-5. Note it in the summary as "notes → prep — added".
+**Detect here; author in one cold subagent.** In this context, build the **gap list** only: every
+uncovered concept, with the section it belongs to and one line on what a question about it must test.
+Do NOT write any question inline — that is the deep, standard-bound work the Execution model reserves
+for a cold subagent.
+
+When the gap list is ready, **dispatch one cold `general-purpose` subagent** (`run_in_background:
+false`) for the topic's Q&A pair — that pair is one atomic unit, so a single subagent handles all the
+notes → prep additions for this topic:
+
+> Read `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` (the bar). Then read
+> `notes/interview-prep/es/{FILE}.md` and `en/{FILE}.md` **in full, top to bottom** — Victor studies
+> from `es/`, so apply changes there first, then mirror to `en/`. Add a question for each gap below, in
+> the standard's exact format (bold question + priority marker + blank line + answer + Junior tip if
+> Conceptual / Red flag if Decision-based or Pressure), answered in Victor's voice and anchored to a
+> real project when the concept was practised in one. If a section does not exist, create it in both
+> files first. After adding, reorder each touched section ⭐⭐⭐ → ⭐⭐ → ⭐. Keep `en/` and `es/` in
+> exact sync (same questions, same order; `es/` as native Spanish, Junior-tip label `Consejo de
+> entrevista:`). Do NOT commit — leave the work in the tree. Return a **section-by-section trace**
+> (every touched `##` heading with what you added or PASS) as proof you read the whole file, plus the
+> list of questions added.
+> ```
+> «paste the notes → prep gap list for this topic»
+> ```
+
+Wait for it to finish. Note each added question in the summary as "notes → prep — added".
 
 ---
 
@@ -116,33 +150,49 @@ that covers the concept this question is about?
 A question is "backed" if the concept appears as a section or sub-section in any numbered
 note file. Use judgment — exact name matching is not required.
 
-For each unbacked question:
-1. Create a new note file or add a section to an existing file following the format defined
-   in `notes/prompts/knowledge/notes/_note-quality-standard.md` exactly: conversational mode for all folders except
-   `notes/java/en/` and `notes/spring-boot/en/` (structured mode). Write in a personal learning
-   voice ("You use this when…", not "This is used when…"). Start with the problem the concept
-   solves before introducing the concept itself. Include at least one sentence of context
-   before any code block. Do not write documentation — if the text could appear on the
-   official docs site unchanged, it is wrong. If adding to an existing file, choose the file
-   whose topic is most closely related — check the headings read in Step 1.
-2. Also create or update the Spanish version — replace `en/` with `es/` in the path (e.g.
-   `notes/java/es/09-streams-lambdas.md`). Same structure and code blocks, prose in Spanish.
-   The `es/` counterpart must always exist and must always match the `en/` file. If the `es/`
-   file does not exist yet, create the full translation before adding the new section.
-3. Follow the numbered naming convention for new files — start from the next available
-   number in CLAUDE.md for that folder. If creating multiple files in one run, assign
-   numbers in study-sequence order.
-4. Update the "next file:" counter in CLAUDE.md after creating new files.
-5. Note it in the summary as "prep → notes — added".
+**Detect and route here; author one cold subagent per note file.** In this context, build the list
+of unbacked questions and, for each, decide its **target note file** — an existing file to extend
+(pick the closest-topic file from the headings read in Step 1) or a new file to create. Group the
+gaps by target file so each file is touched once. **Assign the concrete number to every new file here**
+(start from the "next file:" counter in CLAUDE.md and increment in study-sequence order) — the
+orchestrator owns numbering so sequential runs never collide. Do NOT write any note prose inline: a
+note file is one atomic unit and its writing bar is the deep work the Execution model reserves for a
+cold subagent.
 
-If more than 3 new note files need to be created: create the first 3 in study-sequence
-order and report the rest in the summary — address them in the next run.
+Then, **one target note file at a time, sequentially** (never overlap — the runs commit), dispatch a
+cold `general-purpose` subagent (`run_in_background: false`):
+
+> Read `notes/prompts/knowledge/notes/_note-quality-standard.md` (the writing bar) and, before writing,
+> the first section of `notes/java/es/08-excepciones.md` to calibrate. You are creating/extending ONE
+> note file: `«en/ path»` (number `«N»` if new). Read that file (and its `es/` counterpart, and the
+> sibling files in its `en/` folder) **in full, top to bottom** to avoid duplicating an example and to
+> wire references. Author the section(s) that back these questions to the full standard — problem
+> before definition, context before any code block, personal-guide voice, mechanism not just behaviour,
+> the anticipate-the-TODO pass — in the correct mode for the folder (structured for
+> `notes/java/en/` and `notes/spring-boot/en/`, conversational otherwise). Mirror every change to the
+> `es/` counterpart first (Victor's primary), as native Spanish; create the full `es/` file if it does
+> not exist. If you create a new numbered file, bump the "next file:" counter in CLAUDE.md. Do NOT
+> commit. Return a **section-by-section trace** of the file (every `##`/`###` with PASS or what you
+> wrote) as proof you read it whole, plus which questions it now backs.
+> ```
+> «paste the unbacked questions routed to this file»
+> ```
+
+Wait for each subagent before dispatching the next. Note each as "prep → notes — added" in the summary.
+
+**Cap:** create at most 3 new note files per run (extending existing files is uncapped). If more than 3
+new files are needed, dispatch the first 3 in study-sequence order and report the rest in the summary —
+they are addressed next run.
 
 ---
 
 ## Execution
 
-Apply all changes directly to the files. Do not report and leave gaps open.
+Detection happens in this context; every fix is applied by the cold per-unit subagents dispatched in
+Steps 2–3 (which leave their work in the tree, uncommitted). The orchestrator waits for each subagent,
+collects its trace, and then commits. Do not report and leave gaps open — every genuine gap must be
+dispatched, not deferred (except the >3-new-note-files cap in Step 3). Never author a question or a
+note section in this orchestrator context.
 
 ---
 
