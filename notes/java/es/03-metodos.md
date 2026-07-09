@@ -144,7 +144,7 @@ int result = MathUtils.square(5);   // 25
 
 ¿Cuándo tiene sentido usar `static`? Cuando el método realiza una operación que no depende de ningún dato concreto de un objeto — solo de los parámetros que le pasas. `MathUtils.square(5)` no necesita saber nada de ningún `Employee` ni de ninguna otra clase.
 
-Ya has usado métodos estáticos sin saberlo: `Integer.parseInt("42")` y `String.valueOf(42)` son estáticos — los llamas sobre la clase `Integer` o `String`, no sobre un objeto concreto. Exacto: los wrappers (`Integer`, `Long`, `Boolean`…) son clases de Java. Lo que los distingue de un `int` primitivo es precisamente eso — son objetos, tienen métodos, y pueden ser `null`. Por eso se llaman "wrappers" (envolturas): envuelven el valor primitivo en un objeto.
+Ya has usado métodos estáticos sin saberlo: `Integer.parseInt("42")` y `String.valueOf(42)` son estáticos — los llamas sobre la clase `Integer` o `String`, no sobre un objeto concreto. Recuerda que los wrappers (`Integer`, `Long`, `Boolean`…) son clases de Java. Lo que los distingue de un `int` primitivo es precisamente eso — son objetos, tienen métodos, y pueden ser `null`. Por eso se llaman "wrappers" (envolturas): envuelven el valor primitivo en un objeto.
 
 > **En Spring Boot:** los métodos de tus services y repositories son métodos de instancia — los llamas sobre objetos que Spring inyecta (`employeeService.findAll()`, `employeeRepository.save(emp)`). Necesitan el objeto porque trabajan con datos internos (la conexión a base de datos, la configuración, etc.). Los métodos `static` aparecen en clases de utilidad pura, como `JwtUtils.generateToken(username)` — operaciones sin estado que solo dependen de los argumentos que les pasas.
 
