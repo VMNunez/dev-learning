@@ -54,6 +54,10 @@ PROJECT_PATH = all
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The project type is derived from the path — do not set it.
 - Angular projects 01–06 are informational only (no backlog, no security pass, no commit).
+- **After the run:** commit the backlog with the command the orchestrator hands you, then in your next
+  main session just say the review ran — Claude reads the auto-committed
+  `projects/review/_last-run-report.md` (Step 6) and tells you whether these prompts need a change
+  (they stay frozen unless that report shows a real failure).
 
 ---
 
