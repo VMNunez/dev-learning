@@ -85,7 +85,7 @@ eyJhbGciOiJIUzI1NiJ9 . eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIn0 . abc123
 - **Payload** — los claims: datos del usuario como pares clave-valor (`sub` = email, `iat` = issued at, `exp` = expiración)
 - **Signature** — HMAC de header + payload usando la clave secreta — demuestra que el token no fue manipulado
 
-Cualquier servidor con la misma clave secreta puede verificar el token sin llamar a la base de datos. Este es el punto — sin sesión, sin estado compartido.
+Cualquier servidor con la misma clave secreta puede verificar el token sin llamar a la base de datos. En eso consiste la idea — sin sesión, sin estado compartido.
 
 Una limitación importante: no puedes invalidar un JWT antes de que expire. Una vez emitido, el token es válido hasta que pase su claim `exp` — no hay estado en el lado del servidor que eliminar. La solución práctica es un tiempo de expiración corto (15-60 minutos). La alternativa es una blacklist de tokens en Redis, pero eso introduce estado en el servidor y derrota parcialmente el propósito de la autenticación stateless.
 
@@ -313,7 +313,7 @@ ruta de error → [GlobalExceptionHandler]
   rol incorrecto     → HTTP 403  (AccessDeniedException)
 ```
 
-**Qué es responsable cada clase:**
+**De qué es responsable cada clase:**
 
 | Clase | Flujo | Responsabilidad |
 |---|---|---|
