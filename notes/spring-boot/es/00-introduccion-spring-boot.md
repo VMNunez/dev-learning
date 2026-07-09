@@ -74,7 +74,7 @@ Request HTTP
 Base de datos
 ```
 
-Cada archivo numerado de esta carpeta hace zoom en un eslabón de esa cadena. Cuando algo en un archivo concreto se sienta desconectado, vuelve a este diagrama — casi siempre encaja en una de estas cajas.
+Cada archivo numerado de esta carpeta hace zoom en un eslabón de esa cadena. Cuando algo en un archivo concreto se note desconectado, vuelve a este diagrama — casi siempre encaja en una de estas cajas.
 
 ---
 
