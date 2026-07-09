@@ -69,6 +69,14 @@ For each section of the file, check:
   isolation.
 - **Bilingual integrity** — `en/` and `es/` have the same sections and code; `es/` reads as native
   Spanish (no calque: "escanear"→"leer", "retornar"→"devolver"), not a word-for-word translation.
+- **Spanish reads standalone** — do a dedicated pass reading the `es/` file **from top to bottom on
+  its own, without looking at the `en/` version**, as if it were the only source. Confirm it flows as
+  a continuous, well-written Spanish text: the narrative thread works in Spanish (each section leads
+  into the next, opens on-thread and hands off), the prose is easy to follow, and no sentence only
+  makes sense if you mentally back-translate it to English. A passage that is technically correct but
+  reads as translated-from-English, breaks the flow, or forces the reader to reconstruct the English
+  is a fail — rewrite it as native Spanish. The `es/` must stand as a first-class study text, not a
+  mirror of the `en/`.
 - **No duplication** — no example or concept repeats a sibling file in the same folder.
 
 ## Fix, don't just report
