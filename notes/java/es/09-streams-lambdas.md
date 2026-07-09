@@ -263,7 +263,7 @@ public List<ProjectResponse> getAll() {
 }
 ```
 
-`.toList()` (Java 16+) es una alternativa más corta a `.collect(Collectors.toList())`. Ambas funcionan en Java 25. La diferencia: `.toList()` devuelve una lista **inmutable** — no puedes añadir ni eliminar elementos del resultado. Usa `.collect(Collectors.toList())` solo cuando necesites modificar la lista resultado a continuación, lo cual es raro.
+`.toList()` (Java 16+) es una alternativa más corta a `.collect(Collectors.toList())`. Ambas funcionan en Java 25. La diferencia: `.toList()` devuelve una lista **inmutable** — no puedes añadir ni eliminar elementos del resultado. Usa `.collect(Collectors.toList())` solo cuando necesites modificar después la lista resultante, lo cual es raro.
 
 A medida que la lógica de mapeo crece, típicamente la extraes a un método privado y usas una referencia a método:
 
