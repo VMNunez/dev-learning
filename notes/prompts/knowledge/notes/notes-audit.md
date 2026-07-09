@@ -6,10 +6,12 @@ the full quality standard, hands-off, in two shapes:
 - `SCOPE = folder` — audit and complete a whole topic (gap analysis → build every file needed).
 - `SCOPE = file` — audit and complete one file (a note you just wrote, or one to fix).
 
-Both shapes use the same quality pipeline: every file is **authored by one cold subagent and then
-audited/fixed by a second, independent reviewer subagent** before it is committed. The reviewer has no
-stake in the draft, so it reads against the bar and catches what the author trusted. No worklist
-approval, no per-file launching — one command does everything.
+Both shapes use the same quality pipeline: every file is **authored by one cold subagent (A), then
+audited/fixed by a second, independent English/structure reviewer (B), then read cold by a third
+`en/`-blind Spanish reviewer (C)** before it is committed. Each reviewer has no stake in the draft, so
+it reads against the bar and catches what the author trusted; the Spanish reviewer never sees the `en/`
+so it can judge the `es/` as the native study text Victor actually reads. No worklist approval, no
+per-file launching — one command does everything.
 
 > **▶ Run first:** `coverage-prompt` for the topic — notes-audit builds notes to cover every item in
 > `coverage.md`; if coverage is missing or stale, the notes will be too.
@@ -17,11 +19,12 @@ approval, no per-file launching — one command does everything.
 **Internal pieces this orchestrates** (you never launch these directly):
 `_note-quality-standard.md` (the bar) · `notes-plan-prompt.md` (folder analysis → worklist) ·
 `notes-inspect-prompt.md` (per-file quality flags → worklist rows) · `notes-write-prompt.md` (author) ·
-`notes-review-prompt.md` (reviewer).
+`notes-review-prompt.md` (English/structure reviewer) · `notes-review-es-prompt.md` (`en/`-blind
+Spanish reviewer, owns the commit).
 
-> **First run on a topic, use `DRY_RUN = true`.** It builds and reviews everything but commits
-> nothing, so you can read the diff before it lands. Once you trust it, `DRY_RUN = false` is fully
-> hands-off.
+> **The pipeline always commits** — one atomic commit per file, made by the Spanish reviewer (the last
+> stage). There is no preview mode: the history is atomic and git-reversible, so a bad file is one
+> `git revert` away rather than something to catch before it lands.
 
 ---
 
@@ -29,7 +32,7 @@ approval, no per-file launching — one command does everything.
 
 Open a fresh chat **inside Claude Code**, paste the whole prompt below (config block + instructions),
 fill only the config block, and let it run to the end. You touch nothing else — no worklist to
-approve, no per-file launching, no commits to run (unless `DRY_RUN = true`). Pick the recipe:
+approve, no per-file launching, no commits to run yourself. Pick the recipe:
 
 **A · Build or audit a whole topic** (e.g. finish the Java notes end to end)
 ```
@@ -37,7 +40,6 @@ SCOPE   = folder
 TOPIC   = Java
 FILE    =            ← leave blank
 TASK    =            ← leave blank
-DRY_RUN = true       ← true the first time on a topic; false once you trust it
 ```
 
 **B · Audit or create one file** (e.g. a note you just wrote by hand, or one to fix)
@@ -46,14 +48,11 @@ SCOPE   = file
 TOPIC   = Java
 FILE    = notes/java/en/08-exceptions.md
 TASK    =            ← blank means "audit it and bring it fully to standard, resolving any TODOs"
-DRY_RUN = false
 ```
 > In file mode, point `FILE` at the **`en/`** path — the pipeline mirrors to `es/` automatically. To
 > create a brand-new file, still name its intended `en/` path and set `TASK` to what it should cover.
 
 **Rules of thumb:**
-- **First time on any topic → `DRY_RUN = true`.** It writes and reviews everything but commits
-  nothing; you read the diff, then re-run with `DRY_RUN = false` (or paste the commits it printed).
 - **Spring Boot** is the one topic that spans two folders — just set `TOPIC = Spring Boot`; the
   planner reads both `notes/java/en/` and `notes/spring-boot/en/` on its own.
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
@@ -80,10 +79,7 @@ FILE    = [exact en/ file path, e.g. notes/java/en/08-exceptions.md]
 TASK    = [what to do to it; leave blank to mean "audit it and bring it fully to standard, resolving
            any TODOs"]
 
-DRY_RUN = [false | true]
-
-Use SCOPE, TOPIC, FILE, TASK, and DRY_RUN wherever the prompt refers to {SCOPE}, {TOPIC}, {FILE},
-{TASK}, or {DRY_RUN}.
+Use SCOPE, TOPIC, FILE, and TASK wherever the prompt refers to {SCOPE}, {TOPIC}, {FILE}, or {TASK}.
 
 ---
 
@@ -142,10 +138,10 @@ Wait for each inspector before launching the next. When all inspectors are done,
 `notes/{TOPIC}/notes-worklist.md` and collect every row still `[ ]`, in ascending row-number order. If
 none, report "notes already complete" and stop.
 
-### Phase 2 — Build every row (author → reviewer, sequential)
+### Phase 2 — Build every row (author → reviewer → Spanish reviewer, sequential)
 
-For each unchecked row **in order**, run the two-subagent pipeline below. Never overlap rows or the
-two subagents of a row — the reviewer must see a finished file, and commits must not race on the git
+For each unchecked row **in order**, run the three-subagent pipeline below. Never overlap rows or the
+three subagents of a row — each reviewer must see a finished file, and commits must not race on the git
 index.
 
 Proceed exactly as the **"Per-file pipeline"** section at the bottom describes, using the row's
@@ -153,8 +149,8 @@ Proceed exactly as the **"Per-file pipeline"** section at the bottom describes, 
 
 ### Phase 3 — Report
 
-Print the per-row table (author status · reviewer verdict · commit) and the `[x]` summary. Guidance
-for `DRY_RUN` is in "Finishing" below.
+Print the per-row table (author status · reviewer verdict · commit) and the `[x]` summary. See
+"Finishing" below for the worklist cleanup.
 
 ## If SCOPE = file
 
@@ -179,41 +175,43 @@ unvalidated auto-generated content, in which case use `first-pass`. Then do "Fin
 Wait for A. If A reports it could not complete the file (blocked, missing context), skip the reviewer,
 leave the row `[ ]` (folder mode), note it, and move on — do not commit a partial file.
 
-**Subagent B — reviewer.** Launch a second, independent `general-purpose` subagent,
+**Subagent B — English/structure reviewer.** Launch a second, independent `general-purpose` subagent,
 `run_in_background: false`:
 
 > Read `notes/prompts/knowledge/notes/notes-review-prompt.md` and execute it in full:
-> - `TOPIC` = «topic» · `FILE` = «file» · `DRY_RUN` = {DRY_RUN}
+> - `TOPIC` = «topic» · `FILE` = «file»
 >
-> Audit the just-authored file hard against the standard, fix what falls short in both `en/` and
-> `es/`, and finish exactly as that prompt says for this `DRY_RUN` (false: mark the worklist row `[x]`
-> if one exists and commit atomically; true: fix only, commit nothing, mark nothing). Report your
-> verdict (PASS/FIXED + what you changed), files touched, and the commit hash if you committed.
+> Audit the just-authored file hard against the standard, fix what falls short in `en/` and guarantee
+> `en/`↔`es/` structural parity. **Do NOT judge the native-Spanish read and do NOT commit or mark the
+> row — the Spanish reviewer runs next and owns the commit.** Report your verdict (PASS/FIXED + what
+> you changed) and files touched.
 
-Wait for B before starting anything else.
+Wait for B before starting C.
+
+**Subagent C — Spanish reviewer (`es/` only, `en/`-blind).** Launch a third, independent
+`general-purpose` subagent, `run_in_background: false`:
+
+> Read `notes/prompts/knowledge/notes/notes-review-es-prompt.md` and execute it in full:
+> - `TOPIC` = «topic» · `FILE` = «file»
+>
+> Read ONLY the `es/` counterpart (never open the `en/` file), audit it as a standalone native-Spanish
+> study text, fix calque and flow directly, then — as the last stage — mark the worklist row `[x]` if
+> one exists and commit this one file atomically. Report your verdict (PASS/FIXED + Spanish fixes), any
+> structural gaps it could not fix, files touched, and the commit hash.
+
+Wait for C before starting anything else.
 
 ---
 
 ## Finishing
 
-**If `{DRY_RUN}` = false:** everything is committed, one atomic commit per file, and any worklist rows
-are `[x]`. Report the commits made. **In folder mode, once every row is `[x]`, delete
+Everything is committed — one atomic commit per file (made by the Spanish reviewer, stage C) — and any
+worklist rows are `[x]`. Report the commits made. **In folder mode, once every row is `[x]`, delete
 `notes/{TOPIC}/notes-worklist.md` yourself** (`rm` it — it was never committed, it is a temporary
 artifact, so deletion needs no commit and leaves the working tree clean). Do not merely remind Victor
 to delete it — remove it as the final step, and confirm it is gone. If any row is still `[ ]` (a failed
 build), leave the worklist in place and list the failed row so it can be re-run (`SCOPE = file`, that
 `FILE`).
-
-**If `{DRY_RUN}` = true:** nothing was committed, nothing marked — all changes are staged in the
-working tree for Victor to read. Print the atomic commit sequence to run after reviewing the diff, one
-file per pair of blocks, in processed order (never add `notes-worklist.md`):
-
-```
-git add <en/ path> <es/ path> <CLAUDE.md if its counter changed>
-```
-```
-git commit -m "<that file's commit message>"
-```
 
 ## Hard rules
 
@@ -228,17 +226,18 @@ git commit -m "<that file's commit message>"
   and, when reviewing/auditing, return a **section-by-section trace** (every `##`/`###` heading with
   PASS or the fix made) as proof it reached the last line. If you are ever tempted to "save spawns" by
   handing one subagent a batch of files, that is the mistake — do not.
-- **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
-  rule is "never auto-commit"; he lifted it for this orchestrator. The reviewer subagent commits each
-  file. It applies nowhere else — normal sessions and standalone component prompts still hand Victor
+- **Auto-commit is authorized for this flow only.** Victor's global rule is "never auto-commit"; he
+  lifted it for this orchestrator, which always commits. The Spanish reviewer subagent (stage C) commits
+  each file. It applies nowhere else — normal sessions and standalone component prompts still hand Victor
   the command.
 - **One atomic commit per file.** Never batch notes, never `git add .`, never commit
   `notes-worklist.md`.
 - **Before every `git add`/`git commit`, run `git status` and confirm only the intended `notes/`
   paths are staged.** A project code file left staged from an earlier, unrelated step can silently
   ride along into a notes commit — `git restore --staged` anything that isn't a notes file.
-- **Two subagents per file, author then reviewer; rows are sequential.** Never overlap them — parallel
-  commits race the git index, and a reviewer must never audit an unfinished file.
-- Never skip the `es/` mirror or the reviewer pass.
+- **Three subagents per file, author → English/structure reviewer → Spanish reviewer; rows are
+  sequential.** Never overlap them — parallel commits race the git index, a reviewer must never audit
+  an unfinished file, and only the last stage (C) commits. A and B never commit; C always does.
+- Never skip the `es/` mirror, the reviewer pass, or the Spanish reviewer pass.
 
 ````

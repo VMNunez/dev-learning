@@ -1,32 +1,33 @@
-# Notes review prompt — second-pass auditor for ONE file
+# Notes review prompt — English/structure auditor for ONE file
 
-This is the **reviewer half** of a two-subagent build: the write prompt authors a file, then this
-prompt audits and fixes it before it is committed. It exists because, under the orchestrator, notes
-are committed unread — a fresh reviewer with no stake in the draft catches what the author, close to
-their own text, misses. Run it on **one file**, right after the write prompt produced it.
+This is the **middle stage** of a three-subagent build: the write prompt authors a file (A), this
+prompt audits and fixes the English content and the `en/`↔`es/` structural parity (B), and the
+Spanish reviewer (`notes-review-es-prompt.md`, C) then reads the `es/` cold and commits. It exists
+because, under the orchestrator, notes are committed unread — a fresh reviewer with no stake in the
+draft catches what the author, close to their own text, misses. Run it on **one file**, right after
+the write prompt produced it.
 
-It is normally launched by `notes-audit.md` as subagent **B** (the write prompt is subagent A). You
-can also run it standalone to audit a single finished file.
+It is normally launched by `notes-audit.md` as subagent **B**. **The deep native-Spanish read is not
+your job** — you guarantee structural parity and English quality; the `en/`-blind Spanish reviewer (C)
+that runs after you owns the Spanish read and the commit. You never commit — you always hand off to C.
+Run standalone only to fix a single file's English/structure; the Spanish reviewer commits after you.
 
 ---
 
 **How to use:**
 
 1. Fill in `TOPIC` and `FILE` (the exact `en/` file just authored).
-2. Fill in `DRY_RUN` — `false` (fix, mark done, commit) or `true` (fix only, leave everything staged
-   for Victor to review and commit).
-3. Paste into a fresh conversation (or let the orchestrator dispatch it).
+2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
 
 ````
 ## Configuration — edit only this block
 
-TOPIC   = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
-FILE    = [exact en/ file path just authored, e.g. notes/java/en/08-exceptions.md]
-DRY_RUN = [false | true]
+TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+FILE  = [exact en/ file path just authored, e.g. notes/java/en/08-exceptions.md]
 
-Use TOPIC, FILE, and DRY_RUN wherever the prompt refers to {TOPIC}, {FILE}, or {DRY_RUN}.
+Use TOPIC and FILE wherever the prompt refers to {TOPIC} or {FILE}.
 
 ---
 
@@ -74,16 +75,13 @@ For each section of the file, check:
   definition) and closes by handing off to the next; where a sibling uses a shared example domain, this
   file stays consistent with it. Read the neighbouring files to check the seams, not just this one in
   isolation.
-- **Bilingual integrity** — `en/` and `es/` have the same sections and code; `es/` reads as native
-  Spanish (no calque: "escanear"→"leer", "retornar"→"devolver"), not a word-for-word translation.
-- **Spanish reads standalone** — do a dedicated pass reading the `es/` file **from top to bottom on
-  its own, without looking at the `en/` version**, as if it were the only source. Confirm it flows as
-  a continuous, well-written Spanish text: the narrative thread works in Spanish (each section leads
-  into the next, opens on-thread and hands off), the prose is easy to follow, and no sentence only
-  makes sense if you mentally back-translate it to English. A passage that is technically correct but
-  reads as translated-from-English, breaks the flow, or forces the reader to reconstruct the English
-  is a fail — rewrite it as native Spanish. The `es/` must stand as a first-class study text, not a
-  mirror of the `en/`.
+- **Bilingual structural parity** — `en/` and `es/` have the **same sections, code blocks, tables, and
+  callouts**, in the same order. This is a structural check: every section that exists in `en/` exists
+  in `es/` with the same code. Fix any structural drift (a section or code block present in one and not
+  the other). **You do NOT judge whether the Spanish reads as native Spanish** — that deep, `en/`-blind
+  read is delegated to the Spanish reviewer (`notes-review-es-prompt.md`) that runs after you, because
+  with the `en/` in your context you cannot faithfully test for calque. Guarantee parity; leave the
+  native-Spanish read to the stage built for it.
 - **No duplication** — no example or concept repeats a sibling file in the same folder.
 
 ## Fix, don't just report
@@ -97,14 +95,9 @@ text to leave a mark.
 
 ## Finish
 
-**If `{DRY_RUN}` = false:**
-1. Mark the worklist row done: derive `notes/{TOPIC}/notes-worklist.md`, find the row whose path is
-   `{FILE}`, flip `- [ ] #N · {FILE}` → `- [x] #N · {FILE}` (that one line only).
-2. Commit this one file atomically: `git add` the `en/` path, the `es/` path, and CLAUDE.md only if
-   the counter was bumped (never add `notes-worklist.md`), then `git commit` with a message covering
-   authoring + review, e.g. `docs: add {TOPIC} note NN — <topic> (reviewed)`.
-
-**If `{DRY_RUN}` = true:** do not mark the row, do not commit. Leave every change in the working tree.
+**You never commit and never mark the worklist row.** Leave every fix in the working tree and hand off
+to the Spanish reviewer (C), which reads the `es/` cold and owns the single atomic commit for this
+file. This is true both under the orchestrator and standalone.
 
 Then report your **verdict** for this file:
 - `PASS` (no changes needed) or `FIXED` (with a short bullet list of what you corrected and why).
