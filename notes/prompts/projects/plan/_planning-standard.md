@@ -8,7 +8,9 @@
 - `plan-architecture-prompt.md` (the **architecture advisor**, new mode) reads §6, §3, and §20 to
   strengthen the architecture decisions against Victor's level.
 - `plan-review-prompt.md` (the **reviewer**) reads it to know **what to audit against** when
-  checking an existing plan.
+  checking an existing plan. A dispatched specialist reads **only the parts its `{SCOPE}` row maps
+  to** (its template sections, its invariant numbers, its design-check numbers) — never the whole
+  file; only a standalone `SCOPE = all` run reads it in full.
 
 Keeping the contract in one file is why the two never drift: the writer and the reviewer are held to
 exactly the same bar. If a rule about PLANNING.md changes, it changes **here** — never inside the

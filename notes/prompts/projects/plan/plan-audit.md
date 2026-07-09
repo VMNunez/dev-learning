@@ -83,8 +83,9 @@ Use MODE, PROJECT, and DRY_RUN wherever the prompt refers to {MODE}, {PROJECT}, 
 
 ---
 
-You are the orchestrator for building Victor's project plans, hands-off. First read
-`notes/prompts/projects/plan/_planning-standard.md` so you know the bar you are enforcing. Then follow the
+You are the orchestrator for building Victor's project plans, hands-off. Do **not** read
+`_planning-standard.md`, the plan itself, or any project file — the subagents read those (each only the
+slice its task needs); loading them here bloats the orchestrator's context for no benefit. Follow the
 branch for `{MODE}`. You stay light: you dispatch subagents, wait, and collect — you never write or
 audit the plan in your own context.
 
@@ -160,10 +161,12 @@ For **each** concern in order, launch a fresh, independent `general-purpose` sub
 `run_in_background: false`:
 
 > Read `notes/prompts/projects/plan/plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
-> `SCOPE = «this concern»`, `DRY_RUN = true`. Audit **only your concern's** sections/invariants/checks
-> against the standard (the `{SCOPE}` table in that prompt), fix what falls short directly in the file,
-> and **do NOT commit** — the orchestrator commits once after every concern. Return your verdict and the
-> **check-by-check trace of your slice**, plus any cross-concern ripple to reconcile.
+> `SCOPE = «this concern»`, `DRY_RUN = true`. Read **only the files and standard sections your
+> concern's row lists in that prompt's reading map** — never the whole standard. Audit **only your
+> concern's** sections/invariants/checks (the `{SCOPE}` table in that prompt), fix what falls short
+> directly in the file, and **do NOT commit** — the orchestrator commits once after every concern.
+> Return your verdict and the **check-by-check trace of your slice**, plus any cross-concern ripple
+> to reconcile.
 
 Wait for each specialist before dispatching the next. Collect their traces and any ripples; if a ripple
 lands in a concern already reviewed, re-dispatch that one specialist to reconcile it.

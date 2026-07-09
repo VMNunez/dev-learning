@@ -44,8 +44,9 @@ Read these in order. They are the inputs to every decision this prompt makes.
 1. `notes/prompts/projects/plan/_planning-standard.md` — **the output contract.** The 23-section template,
    done-condition formats, HTTP status conventions, professional implementation order, branch-strategy
    rules, and consistency invariants. Everything you write must conform to it.
-2. `CLAUDE.md` — profile, tech stack, teaching rules, project structure. Focus on "Current study
-   progress", "Java/Spring Boot", "Testing rules".
+2. `CLAUDE.md` — only the sections that feed a plan: "Current study progress", "Java/Spring Boot",
+   "Testing rules", and "Git workflow". Skip the rest — session and notes rules do not shape a
+   PLANNING.md.
 3. `PROGRESS.md` — the master record of every project completed and concept learned. The single source
    of truth for project history — do not infer it from CLAUDE.md or ROADMAP.md. Read the full Angular,
    Spring Boot, and SQL sections.
