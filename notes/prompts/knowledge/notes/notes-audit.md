@@ -24,8 +24,14 @@ author) · `notes-review-prompt.md` (English reviewer) · `notes-translate-promp
 `en/`→`es/`) · `notes-review-es-prompt.md` (`en/`-blind Spanish reviewer, owns the commit).
 
 > **The pipeline always commits** — one atomic commit per file, made by the Spanish reviewer (the last
-> stage). There is no preview mode: the history is atomic and git-reversible, so a bad file is one
+> stage). There is no preview mode — a deliberate divergence from the `DRY_RUN` its sibling
+> orchestrators offer: the history is atomic and git-reversible, so a bad file is one
 > `git revert` away rather than something to catch before it lands.
+>
+> **Branch guard (step 0, before dispatching anything):** run `git branch --show-current`. Notes live
+> on `main` (CLAUDE.md, "SQL and study materials live on main"); if the current branch is a project
+> feature branch, stop and ask Victor whether to switch or proceed — never silently stack dozens of
+> notes commits onto a portfolio feature branch.
 
 ---
 
@@ -56,6 +62,9 @@ TASK    =            ← blank means "audit it and bring it fully to standard, r
 **Rules of thumb:**
 - **Spring Boot** is the one topic that spans two folders — just set `TOPIC = Spring Boot`; the
   planner reads both `notes/java/en/` and `notes/spring-boot/en/` on its own.
+- **Topic → folder mapping:** wherever a path says `notes/{TOPIC}/…`, the folder is the topic name
+  lowercased with hyphens (Spring Boot → `notes/spring-boot/`, Angular Material →
+  `notes/angular-material/`). The Spring Boot worklist lives in `notes/spring-boot/`.
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - If a folder run is interrupted, just launch it again with the same config: finished files are
   already `[x]` in the internal worklist and are skipped, so it resumes where it stopped.
@@ -170,11 +179,12 @@ commits. Each stage is a cold subagent, `run_in_background: false`, and you **wa
 launching the next** — never overlap them (parallel commits race the git index; a stage must never see
 an unfinished predecessor).
 
-> **Translation-only rows.** If the worklist row's task is **only** `create-es` (the `en/` is already
+> **Translation-only rows.** If the worklist row's task is **only** `create-es` and/or
+> `fix-es-quality` (Spanish-only flags — the `en/` is already
 > final and valid, only the Spanish is missing), **skip A and B** — there is nothing to author or
-> English-review. Run only **T then C**. If the row's `TASK` mixes `create-es` with anything else (e.g.
-> an inspector merged `fix-quality` flags into it), the English is NOT final — run all four stages.
-> For every other row, run all four stages.
+> English-review. Run only **T then C**. If the row's `TASK` mixes those with anything touching the
+> English (e.g. an inspector merged `fix-quality` flags into it), the English is NOT final — run all
+> four stages. For every other row, run all four stages.
 
 **Subagent A — English author.** Launch one `general-purpose` subagent:
 
@@ -227,7 +237,8 @@ Wait for T before starting C.
 
 Wait for C before starting anything else.
 
-**Verify every trace — the trace is a gate, not decoration (orchestrator).** B, T, and C must each
+**Verify every trace — the trace is a gate, not decoration (orchestrator).** B, T, and C — and A
+whenever `REWRITE_MODE = first-pass` (unvalidated content is where a skipped tail hurts most) — must each
 return a section-by-section trace (every `##`/`###` heading with PASS or the fix made). After each of
 those stages, before launching the next, check its trace against the file's actual headings: a trace
 that is missing or skips headings means that stage did NOT do a full pass — re-dispatch that same stage

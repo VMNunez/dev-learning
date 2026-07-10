@@ -95,9 +95,9 @@ short (do NOT fix it):
 - **Bilingual integrity** — `en/` and `es/` have the same sections and code; `es/` reads as native
   Spanish (no calque: "escanear"→"leer", "retornar"→"devolver"), not a word-for-word translation.
   (Skip this check entirely if the `es/` does not exist yet — a `create-es` row already covers it.
-  Note that a flagged row sends the file through the full pipeline, so Spanish-only shortfalls are
-  fixed by the translator/Spanish-reviewer stages, not by the English author — flag them anyway;
-  the pipeline routes them.)
+  Label a shortfall that is purely Spanish-side as **`fix-es-quality`** (not `fix-quality`): the
+  orchestrator routes those rows through the translator/Spanish-reviewer stages only, so the English
+  author never re-runs over a valid `en/`.)
 - **No duplication** — no example or concept repeats a sibling file in the same folder.
 
 ## Section-by-section trace (mandatory — proof you read to the end)

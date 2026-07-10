@@ -1,15 +1,15 @@
 # Note quality standard — what a finished note looks like
 
 This is the **shared writing standard** for study notes. It is not a runnable prompt — it holds
-no configuration block and does nothing on its own. Two prompts read it:
-
-- `notes-plan-prompt.md` reads it to **judge** whether existing notes meet the bar and to decide
-  what is missing (it does not write rich prose).
-- `notes-write-prompt.md` reads it to **write** — it applies every rule here in full to the one
-  file it is working on.
+no configuration block and does nothing on its own. Every piece of the notes pipeline reads it:
+the planner (`notes-plan-prompt.md`) for the gap analysis only (judging file quality is delegated to
+the inspector), the inspector and both reviewers (`notes-inspect-prompt.md`, `notes-review-prompt.md`,
+`notes-review-es-prompt.md`) to judge against the bar, and the author and translator
+(`notes-write-prompt.md`, `notes-translate-prompt.md`) to produce to it.
 
 Keeping the standard in one file is deliberate: the writing bar is long and detailed, and it must
-stay identical across both prompts. Edit it here once; both prompts pick up the change.
+stay identical across every prompt. Edit it here once; all of them pick up the change. If any
+component's own checklist ever diverges from this file, **this file wins**.
 
 This bar is the same for **every topic** — it is NOT Java-specific. Notes in other folders
 (e.g. Angular) that currently sit below it are a backlog to raise, never a lower target to match.

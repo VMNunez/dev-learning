@@ -220,7 +220,7 @@ Notes exist in two languages. Each topic folder contains two subfolders — `en/
 ```
 notes/java/
   en/  ← numbered English note files (e.g. 09-streams-lambdas.md)
-  es/  ← numbered Spanish note files (same filenames)
+  es/  ← numbered Spanish note files (same numeric prefix, Spanish-translated name — e.g. 08-exceptions.md ↔ 08-excepciones.md)
   coverage.md        ← stays in the root (not language-specific)
   future-learning.md ← stays in the root
   layer-reference.md ← stays in the root (spring-boot only)
@@ -238,11 +238,11 @@ notes/java/
     then re-sync `es/` from the updated English and clear the `es/` marker. The answer round-trips
     through English — that is expected under the canonical model.
 - **Never modify an `en/` file without re-syncing its `es/` counterpart.** The rule covers three cases:
-  - New file created in `en/` → create the full Spanish translation in `es/` with the same filename
+  - New file created in `en/` → create the full Spanish translation in `es/` with the same numeric prefix and a Spanish-translated name (never a copy of the English filename — see `_note-quality-standard.md`, "File naming convention")
   - New section added to an existing `en/` file → if the `es/` counterpart exists, translate the section there too; if not, note it but don't create the whole file
   - TODO resolved in an `en/` file → re-sync the same content into `es/` if the counterpart exists
 - Spanish versions use the same structure and code blocks — only the prose is translated into Spanish. Code comments may also be translated. **The Spanish prose must read as natural Spanish, not as a word-for-word translation of the English.** The content and message must be identical across both languages, but each version should read as if it were written natively in that language — same idea, same emphasis, different words where needed. Literal translations that sound awkward or robotic in Spanish are not acceptable. Structural labels like `Purpose:`, `File:`, and `Docs:` must be translated to `Propósito:`, `Archivo:`, and `Docs:` (Docs stays as-is — it is a common abbreviation in Spanish developer contexts).
-- `en/` and `es/` must always contain exactly the same files. Whenever a file is created in `en/`, create the Spanish version in `es/` immediately. Whenever a section is added or a TODO is resolved in an `en/` file, apply the same change in `es/`. The two folders are never allowed to be out of sync.
+- `en/` and `es/` must always contain the same set of numbered files, paired by numeric prefix. Whenever a file is created in `en/`, create the Spanish version in `es/` immediately. Whenever a section is added or a TODO is resolved in an `en/` file, apply the same change in `es/`. The two folders are never allowed to be out of sync.
 - If the `en/` or `es/` subfolder does not exist yet, create it before writing any files into it. If numbered files are still in the topic root (not yet migrated), move them to `en/` with `git mv` and create the Spanish counterparts in `es/` — non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) always stay in the root.
 - `coverage.md`, `future-learning.md`, and `layer-reference.md` are not translated — they live only in the topic root.
 

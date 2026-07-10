@@ -92,12 +92,16 @@ If the Spanish is genuinely already native and at bar, change nothing and record
 ## Finish
 
 You are the last stage in the chain, so you own the single atomic commit for this file:
-1. Mark the worklist row done: derive `notes/{TOPIC}/notes-worklist.md`, find the row whose path is
-   `{FILE}` (the `en/` path), flip `- [ ] #N · {FILE}` → `- [x] #N · {FILE}` (that one line only).
-2. Commit this one file atomically: `git add` the `en/` path, the `es/` path, and CLAUDE.md only if
+1. Mark the worklist row done: derive `notes/{TOPIC}/notes-worklist.md` (topic name lowercased with
+   hyphens). **If the worklist does not exist (file mode / standalone run), skip this step.** Otherwise
+   find the row whose path is `{FILE}` (the `en/` path), flip `- [ ] #N · {FILE}` → `- [x] #N · {FILE}`
+   (that one line only).
+2. Commit this one file atomically: `git add` the `es/` path, the `en/` path **only if this build
+   modified it** (on a translation-only row it did not), and CLAUDE.md only if
    the counter was bumped (never add `notes-worklist.md`). Before `git add`, run `git status` and
-   confirm only the intended `notes/` paths are staged. Commit message covers the whole build, e.g.
-   `docs: add {TOPIC} note NN — <topic> (reviewed en + es)`.
+   confirm only the intended `notes/` paths are staged. Commit message covers what actually changed:
+   `docs: add {TOPIC} note NN — <topic> (reviewed en + es)`, or
+   `docs: add es translation for {TOPIC} note NN` on a translation-only row.
 
 Then report your **verdict**:
 - `PASS` (no changes) or `FIXED` (bullet list of the Spanish fixes).
