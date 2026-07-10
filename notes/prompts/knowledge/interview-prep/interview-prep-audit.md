@@ -221,7 +221,18 @@ the reviewer.
 > orchestrator commits once per topic after every section. Return your verdict and a
 > **question-by-question trace for this section**.
 
-Wait for B before starting the next section.
+Wait for B. **Acceptance gate — verify the trace and the slice coverage (orchestrator).** Two checks
+before moving on, using the section slice you assembled (it is already in your context):
+- **Trace:** B's report must contain the question-by-question trace for this section. Missing or
+  partial trace → that was not a full audit.
+- **Slice coverage:** every `often`/`sometimes` market question (M) and every gap (G) in this section's
+  slice must now be covered by a question — confirmed by A's or B's trace. Uncovered items mean the
+  section is not done, even if B said PASS.
+
+If either check fails, re-dispatch B **once** for this section, listing the missing trace lines and the
+uncovered slice items so it knows exactly what to close. One retry maximum; if items are still
+uncovered after the retry, list them explicitly in the final summary instead of looping — never report
+the section as complete. Only then start the next section.
 
 ---
 
