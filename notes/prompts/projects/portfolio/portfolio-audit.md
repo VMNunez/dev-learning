@@ -79,7 +79,11 @@ Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list f
 run the **single-project procedure below once per project**, fully finishing one (including its commit)
 before the next — never overlap, since their subagents commit and parallel commits race the git index.
 Put each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
-summary table (`Project | Verdict | Questions`). Otherwise, for one project, follow the procedure.
+summary table (`Project | Verdict | Questions`). **Context guard for batch runs:** with ~7 projects × up
+to 5 sections × 2 subagents, full decision-by-decision traces returned to you would saturate your own
+context. In `all` mode, tell each subagent to return only the **question count, the
+questions-vs-decisions ratio, and the list of uncovered decisions if the ratio is below 1** — not the
+full trace (the trace still drives their own work; it just stays in their context). Otherwise, for one project, follow the procedure.
 
 ## Single-project procedure
 
@@ -119,7 +123,12 @@ Wait for A. Then **subagent B — reviewer (this section).** Launch a second, in
 > thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED) and the
 > **decisions-vs-questions ratio for this section**.
 
-Wait for B before starting the next section.
+Wait for B. **Acceptance gate — act on B's ratio, don't just record it:** if B reports a
+questions-vs-decisions ratio below 1 (decisions found in the code area that still have no question), the
+section is not done — re-dispatch subagent B **once** for the same section, telling it which decisions
+its own report listed as uncovered, so it adds the missing questions. One retry maximum; if the ratio is
+still below 1 after the retry, note the uncovered decisions in the final report instead of looping.
+Only then start the next section.
 
 **After all sections — orchestrator (light global scan).** Do a quick cross-section duplicate scan
 over the finished bank (the same decision or code path landing in two sections → keep it in the one

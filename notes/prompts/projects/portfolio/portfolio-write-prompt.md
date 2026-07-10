@@ -57,10 +57,14 @@ before the next, and read each section's area as above.)
 
 ## Step 1 — Read the project
 
-Read the always-read files below, plus your `{SECTION}`'s code area from the table above. Read before
-writing anything.
+**When `{SECTION}` ≠ all (the normal orchestrated run), your reading list is small and fixed:**
+`{PROJECT_PATH}/PLANNING.md`, `ROADMAP.md` (target companies and interview context), and **only your
+section's code area** from the table above — nothing else. Do not read the other READMEs, the other
+layers, or files outside your area: the per-section split exists precisely so each subagent's context
+stays on one area. Read before writing anything.
 
-**For all projects:** `ROADMAP.md` — target companies and interview context to aim the questions at.
+**Only when `SECTION = all` (standalone run)**, read the full per-type list below on top of PLANNING.md
+and ROADMAP.md:
 
 **For ANGULAR projects:**
 - `{PROJECT_PATH}/PLANNING.md`, `{PROJECT_PATH}/README.md`
