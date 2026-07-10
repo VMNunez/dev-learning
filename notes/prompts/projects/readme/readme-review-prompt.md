@@ -53,6 +53,10 @@ project. Your attention budget belongs to the README.
 - **Full-stack `global`** — the "Full technical details" final line is present with resolving paths; a
   Testing row exists in Tech stack if the project has tests.
 
+**If dispatched with a quoted coherence conflict** (the orchestrator's cross-README pass found your
+README contradicting the others), fix that conflict and re-run only the affected sections' checks —
+trace only those sections, not the full list.
+
 ## Fix, don't just report
 Where a check fails, **fix it directly** in the README. Preserve the author's correct work; only change
 what misses the bar. If the README is genuinely already at bar, change nothing and record it as PASS.

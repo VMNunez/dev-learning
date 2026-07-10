@@ -52,7 +52,7 @@ failure of the machinery do these prompts get edited, in a separate session.
 PROJECT_PATH = [projects/01-todo-list | ... | projects/06-hr-portal | projects/07-timetrack | all]
 
 ## PROJECT_PATH = all runs on every project in turn — see notes/prompts/_batch-mode.md.
-## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
+## Batch targets (ordered): projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The READMEs are derived per type (by project number: 01–06 Angular-only,
 ## 07+ full-stack): angular → [global]; full-stack → [global, backend, frontend].
 
@@ -69,8 +69,10 @@ edit the files — you never write a README in your own context.
 Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, finishing one before the next. Put each
 project's report under a `### [project]` heading, and after the last print the `_batch-mode.md` summary
-table (`Project | READMEs changed`). Once a project is finished, carry forward only its summary table
-row — drop its per-target detail from your working context before starting the next project.
+table (`Project | READMEs changed`) — this table replaces `_batch-mode.md`'s generic
+`Target | Result | Files changed` one, and batch-mode's per-target commit rule is replaced here by the
+commit hand-over (READMEs are never auto-committed). Once a project is finished, carry forward only its
+summary table row — drop its per-target detail from your working context before starting the next project.
 Otherwise, follow the procedure once.
 
 ## Single-project procedure
@@ -79,8 +81,9 @@ Derive the target list from the project type: **Angular → `[global]`**; **full
 backend, frontend]`**.
 
 For **each** target, run the author → reviewer pair below. Different targets touch different files and
-none of the subagents commit, so you may run the pairs for different targets in parallel — but within a
-target the reviewer must run **after** its author.
+none of the subagents commit, so you may run the pairs for different targets in parallel — launch the
+authors for all targets in one block, wait for all, then launch the reviewers in one block. Within a
+target the reviewer must always run **after** its author.
 
 **Subagent A — author.** Launch one `general-purpose` subagent, `run_in_background: false`:
 
@@ -116,7 +119,7 @@ After the pairs finish, launch one more `general-purpose` subagent (`run_in_back
 **not** read the READMEs yourself; they stay out of your context:
 
 > Read the three READMEs of `{PROJECT_PATH}` (`README.md`, `backend/README.md`, `frontend/README.md`)
-> and nothing else. Check that every shared decision (the main tradeoffs, the key patterns, the tech
+> and `{PROJECT_PATH}/PLANNING.md`, and nothing else. Check that every shared decision (the main tradeoffs, the key patterns, the tech
 > stack) reads consistently across them, with no contradiction. Change nothing. Report in ≤ 10 lines:
 > `COHERENT`, or one line per conflict — which README is wrong, which section, and what the correct
 > version (per the other READMEs and PLANNING.md) says.
@@ -157,8 +160,10 @@ whether these prompts need changing, so be honest, including "nothing to report"
   shared decision), or `COHERENT`.
 - **Failure protocol** — subagents that errored, second failures, any README excluded from the commit.
 - **Anything else** that made the run harder than it should be.
+- **Verdict** — "pipeline clean" or "change worth considering: X" (the uniform criterion from
+  `notes/prompts/_pipeline-self-report.md`, of which these bullets are this pipeline's tailored version).
 
-Five bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
+Six bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
 directly** under the notes/prompts exception — `git status` before add and before commit, stage only
 `_last-run-report.md`, message `docs: pipeline self-report for readme review of {PROJECT_PATH}`. (The
 never-auto-commit rule below applies to the README files, not to this one.) The prompts stay frozen

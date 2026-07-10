@@ -53,7 +53,8 @@ markers like `✓` or `(Step 3)`.
 - **Interviewer lens:** "Does this section prove I understand why I built it this way?"
 
 A section that fails both is noise — cut or rewrite it. Passing only the recruiter lens is not enough:
-the goal is a consultancy that asks technical questions.
+the goal is a consultancy that asks technical questions. Never define basic terms — a README assumes a
+developer reader.
 
 **Length — recruiter lens.** The global README is scanned in seconds; keep it tight enough that a
 recruiter reaches "What I learned" without fatigue. When a section runs long, the depth belongs in the

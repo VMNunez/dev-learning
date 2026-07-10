@@ -37,5 +37,6 @@ content commit. Also print the five bullets in chat.
 ## How it gets used
 
 In a later main session, Victor mentions the run; Claude reads the report file and decides whether
-the orchestrator's prompt needs a change. Clean report → prompts stay frozen. (The review pipeline's
-`review-audit.md` carries its own tailored version of this step — same contract.)
+the orchestrator's prompt needs a change. Clean report → prompts stay frozen. (Two pipelines carry
+their own tailored version of this step — same contract, same Verdict criterion: `review-audit.md`
+and `readme-audit.md`.)
