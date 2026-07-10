@@ -45,7 +45,7 @@ Every file in this folder is a `.md` prompt, but **not every file is something y
 
 Two flavors among these 23, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `plan-audit`, `readme-audit`,
-  `review-audit`, `portfolio-audit`, `progress-update-prompt` — run entirely inside Claude Code and
+  `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt` — run entirely inside Claude Code and
   hand you a finished result (and, where noted, a commit) with no further input from you.
 - **Single-shot prompts** — everything else — do one job in one pass; some need you to paste
   something mid-conversation (your code into `simulation-review-prompt`, a job offer into
@@ -256,8 +256,10 @@ processes every target in order, one commit per target. Full rules: `notes/promp
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**),
   `simulation-generator`, `code-review` (`TYPE = all`).
-- **Already global (no `all` needed):** `coverage-audit`, `progress-update`, `roadmap-review`, `cv`,
+- **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `cv`,
   `linkedin`, and `simulator` full mode — these cover everything in one run by design.
+  `progress-update` defaults to `MODE = active` (only the in-progress project); set `MODE = all`
+  for the full global pass.
 - **Single-shot (not batchable):** `simulation-review` and `hr-screen` — each needs your pasted code
   or a live back-and-forth, so they run one at a time.
 

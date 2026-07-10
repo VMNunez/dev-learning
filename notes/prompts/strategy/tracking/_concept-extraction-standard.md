@@ -55,8 +55,8 @@ every Section 3 row counts.
    - **No ✅ anywhere:** fall back to `PROGRESS_HINT`. Read the highest step count it shows across
      (a) the `### Project NN` summary heading and (b) any `### Project NN` technology sub-heading.
      Prefer the highest step count found.
-2. The step marked "in progress" is **not** complete — do not extract its concepts (exception: none
-   at your level; the orchestrator handles early-learned concepts already in PROGRESS.md).
+2. The step marked "in progress" is **not** complete — do not extract its concepts. No exceptions
+   for you: early-learned concepts already in PROGRESS.md are the orchestrator's job, not yours.
 
 Record the confirmed step status as a short string — e.g. `Steps 1–3 done, Step 4 in progress` or
 `all steps complete` — and return it, **stating how you derived it**: `(from ✅ markers)`,

@@ -1,7 +1,7 @@
 # Roadmap Review Prompt — orchestrator
 
-Use in a **separate conversation**. No configuration to fill in — paste the whole prompt into a new
-chat as it is.
+Run this **inside Claude Code** (it dispatches subagents; a plain chat cannot run it). No
+configuration to fill in — paste the whole prompt into a fresh Claude Code chat as it is.
 
 This prompt updates `ROADMAP.md` so it shows the optimal path from current progress to full coverage
 of `notes/coverage.md` — through projects, study blocks, and practice. Run it whenever a project
@@ -218,7 +218,8 @@ NOT open PROGRESS.md or coverage.md; its checks don't need them). Its instructio
 >    condition (per the standard's ❌→✅ examples) and log it.
 > 2. **Notes study order.** The 13:30 study order equals the canonical string in the standard exactly:
 >    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
->    (CLAUDE.md is already in your context — if its order differs from the standard, CLAUDE.md wins).
+>    (CLAUDE.md is normally already in your context; if not, read its "Daily study blocks" section.
+>    If its order differs from the standard, CLAUDE.md wins).
 > 3. **LeetCode gate topics.** The study-order gate condition lists exactly the high-priority topics
 >    per the standard (angular, spring-boot, java, architecture, security if added in that range) and
 >    does NOT list typescript, sql, javascript, css, or git.

@@ -121,9 +121,12 @@ Launch one `general-purpose` subagent, `run_in_background: false`:
 > Audit the SQL exercises **as they exist on `main`** (study materials live on `main`; the working
 > tree is usually behind, so do NOT count working-tree files — count the `main` version).
 > **Count without loading file contents into your context** — two commands are enough:
-> - List the SQL files on main: `git ls-tree -r --name-only main -- sql/`
-> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+:|#[0-9]+ \|)" main -- sql/`
->   (output is `main:sql/<file>:<count>`). Only `git show` a file if its count looks wrong (e.g. zero
+> - List the SQL files on main: `git ls-tree -r --name-only main -- practice/sql/ sql/`
+>   (double pathspec: covers the current home `practice/sql/` and the legacy `sql/` until the one-time
+>   migration on `main` is done). **Guard: if it returns 0 files, ABORT the SQL step and report it —
+>   never rewrite the tracker table with zeros.**
+> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+:|#[0-9]+ \|)" main -- practice/sql/ sql/`
+>   (output is `main:<path>:<count>`). Only `git show` a file if its count looks wrong (e.g. zero
 >   for a file that clearly holds exercises) — and then only to recheck the headers, not to study it.
 >
 > Two file shapes exist: a flat file (`practice/sql/01-basics.sql`) or a subfolder (`practice/sql/02-joins/exercises.sql`).
@@ -132,8 +135,9 @@ Launch one `general-purpose` subagent, `run_in_background: false`:
 > - `-- #N |` at line start, N one or more digits — `-- #1 |`, `-- #01 |`, `-- #40 |` (the basics file)
 >
 > Return **only** one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
-> Folder column (`practice/sql/01-basics.sql` for flat, `practice/sql/02-joins/` for subfolders). Only list topics that
-> have a file or folder in practice/sql/. Do not estimate; do not assign a status — the orchestrator does that.
+> Folder column (`practice/sql/01-basics.sql` for flat, `practice/sql/02-joins/` for subfolders; if a file
+> still lives at the legacy `sql/...` on main, report it under its `practice/sql/...` home). Only list topics
+> found by the commands above. Do not estimate; do not assign a status — the orchestrator does that.
 
 Wait and collect.
 
