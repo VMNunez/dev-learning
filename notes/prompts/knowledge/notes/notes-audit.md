@@ -227,6 +227,15 @@ Wait for T before starting C.
 
 Wait for C before starting anything else.
 
+**Verify every trace — the trace is a gate, not decoration (orchestrator).** B, T, and C must each
+return a section-by-section trace (every `##`/`###` heading with PASS or the fix made). After each of
+those stages, before launching the next, check its trace against the file's actual headings: a trace
+that is missing or skips headings means that stage did NOT do a full pass — re-dispatch that same stage
+**once**, naming the headings that lack a trace line. One retry maximum; if the trace is still
+incomplete, mark the row **"unverified"** in the final report (never treat a traceless stage as a full
+pass) and move on. For C — which has already committed — a re-dispatch that produces fixes commits them
+as a small follow-up commit for the same file.
+
 ---
 
 ## Finishing
