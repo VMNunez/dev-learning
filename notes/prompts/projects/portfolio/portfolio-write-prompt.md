@@ -41,16 +41,9 @@ quality bar, the file template, and the append/dedupe rule. That is what you aut
 
 **When `{SECTION}` ≠ all, you author only that one bank section** and read only its code area — that is
 the whole job, and it must be exhaustive for that area. Do not write questions for other sections; if
-you notice a decision that belongs in another section, mention it in the report, do not write it. Map
-sections to code areas like this:
-
-| {SECTION} | Read (on top of the always-read files below) |
-|---|---|
-| Architecture & Patterns | structure + layered architecture; backend controllers/services, or angular routes/config/components |
-| Security & Auth | backend security folder + JWT filter; angular guards/interceptors |
-| Business Rules | service logic + validation + PLANNING.md §8 business rules |
-| Technical Decisions | tradeoffs in PLANNING.md, DTOs, HTTP status choices, config/properties |
-| Testing | the test files (`src/test/java`, `**/*.spec.ts`) |
+you notice a decision that belongs in another section, mention it in the report, do not write it. The
+section → code-area mapping is the standard's **"Bank sections → code areas (canonical table)"** — use
+that, never a local copy.
 
 (`SECTION = all` on a standalone run means author every section — then still work one section fully
 before the next, and read each section's area as above.)
@@ -59,7 +52,7 @@ before the next, and read each section's area as above.)
 
 **When `{SECTION}` ≠ all (the normal orchestrated run), your reading list is small and fixed:**
 `{PROJECT_PATH}/PLANNING.md`, `ROADMAP.md` (target companies and interview context), and **only your
-section's code area** from the table above — nothing else. Do not read the other READMEs, the other
+section's code area** from the standard's canonical table — nothing else. Do not read the other READMEs, the other
 layers, or files outside your area: the per-section split exists precisely so each subagent's context
 stays on one area. Read before writing anything.
 
@@ -112,6 +105,8 @@ unfinished project.
 Do not commit. Leave the question file in the working tree. Report:
 - The project type detected and the files you read for `{SECTION}`.
 - How many questions you wrote for this section (and how many were appended vs already there).
-- A **decision-by-decision trace for `{SECTION}`**: every real decision/pattern/rule you found in the
-  area, each with the question that now covers it — the reviewer uses this to confirm the section is
-  exhaustive, not thin.
+- Any decision you found but could not cover with a question (with why).
+
+Build the **decision-by-decision trace** (every real decision/pattern/rule → its question) in your own
+context to drive exhaustiveness — do not paste it back: the reviewer is a cold subagent that re-walks
+the code itself, and full traces only saturate the orchestrator.

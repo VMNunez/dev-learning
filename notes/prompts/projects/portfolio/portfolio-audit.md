@@ -2,7 +2,7 @@
 
 Run this **inside Claude Code**. It is the only portfolio prompt Victor launches. It runs the **final
 go/no-go gate** on a finished project, hands-off: is it ready to show a recruiter and reference in a job
-application **today**? It produces three things (see `_portfolio-standard.md`):
+application **today**? It produces four things (see `_portfolio-standard.md`):
 
 1. An **exhaustive bank of project-specific interview questions** — built **one bank section at a time**,
    each authored then cold-reviewed by its own pair of subagents (so no section gets skimmed), saved
@@ -91,15 +91,9 @@ full trace (the trace still drives their own work; it just stays in their contex
 
 **The unit of deep work is one section of the bank, not the whole bank.** The bank has five fixed
 sections, each mapping to a distinct code area — so each is a specific, self-contained task a subagent
-cannot half-finish (it either covered every decision in *that one area* or it did not):
-
-| Section | Code area the subagent mines |
-|---|---|
-| Architecture & Patterns | structure + layered architecture; backend controllers/services, or angular routes/config/components |
-| Security & Auth | backend security folder + JWT filter; angular guards/interceptors — **skip if the project has no auth** |
-| Business Rules | service logic + validation + PLANNING.md §8 business rules |
-| Technical Decisions | tradeoffs in PLANNING.md, DTOs, HTTP status choices, config |
-| Testing | the test files — **skip if the project has none** |
+cannot half-finish (it either covered every decision in *that one area* or it did not). The mapping
+lives in the standard's **"Bank sections → code areas (canonical table)"** — use that, including its
+skip notes.
 
 First decide which sections are **present** (does the project have auth? tests?) and drop the absent
 ones. Then process the present sections **one at a time, sequentially** — they all edit the same
@@ -109,10 +103,10 @@ question file, so never overlap. For each section, run author then reviewer; nei
 
 > Read `notes/prompts/projects/portfolio/portfolio-write-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
-> (see the table) plus PLANNING.md, and write **only this section's** questions to
-> `notes/interview-prep/projects/«name».md` per the standard. **Do NOT commit.** Return a
-> **decision-by-decision trace**: every real decision/pattern/rule you found in this area, each with
-> the question that now covers it — this is your proof the section is exhaustive.
+> (the standard's canonical table) plus PLANNING.md, and write **only this section's** questions to
+> `notes/interview-prep/projects/«name».md` per the standard. **Do NOT commit.** Build a
+> decision-by-decision trace in your own context to drive exhaustiveness, but return only the
+> **question count and any decision you could not cover** — the reviewer re-walks the code itself.
 
 Wait for A. Then **subagent B — reviewer (this section).** Launch a second, independent
 `general-purpose` subagent, `run_in_background: false`:
@@ -182,8 +176,9 @@ Print, in this order:
 `git commit -m "docs: portfolio-audit «name» — <one-line summary + verdict>"`.
 If ❌ (no cv-bullets): `git add notes/interview-prep/projects/«name».md`, then the same commit message.
 
-**If `{DRY_RUN}` = true:** commit nothing. Leave everything staged and print the commit sequence above,
-one command per code block, for Victor to run after reading the diff.
+**If `{DRY_RUN}` = true:** commit nothing. Leave everything in the working tree and print the
+`git add` + `git commit` sequence above, one command per code block, for Victor to run after reading
+the diff.
 
 ## Hard rules
 
@@ -206,6 +201,7 @@ one command per code block, for Victor to run after reading the diff.
 
 After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
-bullets in chat.
+bullets in chat. The self-report is prompt-system machinery: it commits itself **even when
+`DRY_RUN = true`** (only the project outputs stay uncommitted).
 
 ````

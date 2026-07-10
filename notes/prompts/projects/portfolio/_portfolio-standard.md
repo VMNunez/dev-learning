@@ -11,13 +11,18 @@ All three pieces of the portfolio pipeline read it:
 ## What the portfolio gate is for
 
 It answers one question: **is the project at `{PROJECT_PATH}` ready to show a recruiter and reference
-in a job application right now — not "ready eventually", ready today?** It produces three things:
+in a job application right now — not "ready eventually", ready today?** It produces four things:
 
 1. A bank of **project-specific interview questions** (saved regardless of the verdict — they are
    useful prep even for an unfinished project).
 2. A **go/no-go verdict** (✅ Ready / ⚠️ Almost / ❌ Not ready).
 3. If the verdict is not ❌: a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub repo
    description** (English).
+4. If the verdict is ✅ Ready: a **direct update of Victor's GitHub profile README**
+   (`dev/portfolio/VMNunez`, a separate repo). Format: match that README's existing style and sections
+   exactly; add or refresh the project's entry (name, one-line pitch, stack, links). Never committed
+   from the learning flow — the orchestrator prints the commit + push commands for that repo
+   (procedure: `portfolio-audit.md`, Phase 3).
 
 It is the last link in the per-project chain: `plan-audit` → build → `readme-audit` → `review-audit`
 → **portfolio gate**.
@@ -32,6 +37,21 @@ It is the last link in the per-project chain: `plan-audit` → build → `readme
   interceptors.
 
 Derive the type from the project number (01–06 Angular-only, 07+ full-stack) — never ask.
+
+---
+
+## Bank sections → code areas (canonical table)
+
+The question bank has **five fixed sections**, each mapping to a distinct code area. This is the single
+source of that mapping — the orchestrator and both subagent prompts reference it, never their own copy:
+
+| Section | Code area to mine / walk |
+|---|---|
+| Architecture & Patterns | structure + layered architecture; backend controllers/services, or angular routes/config/components |
+| Security & Auth | backend security folder + JWT filter; angular guards/interceptors — **skip if the project has no auth** |
+| Business Rules | service logic + validation + PLANNING.md §8 business rules |
+| Technical Decisions | tradeoffs in PLANNING.md, DTOs, HTTP status choices, config/properties |
+| Testing | the test files (`src/test/java`, `**/*.spec.ts`) — **skip if the project has none** |
 
 ---
 
@@ -56,6 +76,14 @@ backlog inside its folder). If it does **not** exist: stop and report "no PROJEC
 - No open High or Medium → **✅ Ready.** Show it to a recruiter today.
 - Open **Low** tasks do not affect the verdict — ignore them.
 
+**Two sanity scans before the verdict is final** (report each as a one-line note, never auto-fix):
+- **Resolved-but-unchecked tasks.** Every `[ ]` counts as open. For each open High/Medium task, glance
+  at the real code — if it looks already done, flag it ("task X marked open but appears resolved —
+  check it off in the backlog and re-run"). Never silently treat it as done.
+- **Unfilled visual placeholders.** Scan the global README for `*(screenshot — … — to be added)*` /
+  `*(GIF — …)*` placeholders. If any remain, **downgrade a ✅ to ⚠️** and list them — a README full of
+  unfilled visuals is not recruiter-ready.
+
 > Unchecked tasks count as open even if the code is already fixed — the verdict reads the backlog
 > directly. Before running the gate, tasks already fixed should be checked off (✅) in the backlog.
 
@@ -78,7 +106,7 @@ and `es/` — these are **project-specific**, about the actual implementation de
   someone who actually wrote or understands this specific code.
 - Come from the real files: PLANNING.md's new/review concepts, business rules, architecture decisions
   and tradeoffs; and the actual source. Use ROADMAP.md to target the companies/context (NTT Data,
-  Capgemini, Indra).
+  Capgemini, and similar — the profile in `_shared-context.md` is the source for targets).
 
 **Model answer:** 2–4 sentences, references the **actual implementation** (not a textbook
 definition), and uses "I chose" / "I decided" — not "it is used".

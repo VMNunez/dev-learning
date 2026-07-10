@@ -18,7 +18,8 @@ SECTION      = [all | Architecture & Patterns | Security & Auth | Business Rules
                → the audit orchestrator passes ONE section; "all" is for a standalone run only.
 
 Use PROJECT_PATH and SECTION wherever the prompt refers to {PROJECT_PATH} and {SECTION}. Derive
-{PROJECT_NAME} as the last path segment; derive the project type from the path prefix.
+{PROJECT_NAME} as the last path segment; derive the project type from the number (01–06 Angular-only,
+07+ full-stack).
 
 ---
 
@@ -26,21 +27,14 @@ You are the independent reviewer for one just-authored **section** (`{SECTION}`)
 `notes/interview-prep/projects/{PROJECT_NAME}.md`. The author already believed it was complete — do not
 be generous; assume a decision in this section's area is undefended until you have checked the code.
 
-**Your scope is `{SECTION}` only.** Audit just that section against just its code area (see the mapping
-below). Do not touch or judge other sections. (`SECTION = all` on a standalone run means audit every
-section — then still work one section fully before the next.)
-
-| {SECTION} | Code area to walk |
-|---|---|
-| Architecture & Patterns | structure + layered architecture; backend controllers/services, or angular routes/config/components |
-| Security & Auth | backend security folder + JWT filter; angular guards/interceptors |
-| Business Rules | service logic + validation + PLANNING.md §8 business rules |
-| Technical Decisions | tradeoffs in PLANNING.md, DTOs, HTTP status choices, config/properties |
-| Testing | the test files (`src/test/java`, `**/*.spec.ts`) |
+**Your scope is `{SECTION}` only.** Audit just that section against just its code area — the mapping is
+the standard's **"Bank sections → code areas (canonical table)"**, never a local copy. Do not touch or
+judge other sections. (`SECTION = all` on a standalone run means audit every section — then still work
+one section fully before the next.)
 
 Before starting, read:
 - `notes/prompts/projects/portfolio/_portfolio-standard.md` — the question quality bar, in full.
-- PLANNING.md + the real source **for your section's code area** (per the table above). You cannot judge
+- PLANNING.md + the real source **for your section's code area** (per the standard's canonical table). You cannot judge
   whether the section is exhaustive without seeing what there was to ask about in that area.
 - The `{SECTION}` section of `notes/interview-prep/projects/{PROJECT_NAME}.md` — the part to audit.
 
