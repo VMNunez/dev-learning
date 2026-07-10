@@ -49,8 +49,7 @@ live step; defer to it.** Update this line when the active project changes.
 
 Each project's `PLANNING.md` is the single source of truth for what that project builds: app
 concept, tech stack, data model, key patterns, folder structure, and the step-by-step plan.
-- Angular projects: `angular/0X-project-name/PLANNING.md`
-- Full-stack projects: `projects/0X-project-name/PLANNING.md`
+- Every project lives under `projects/0X-project-name/PLANNING.md` (Angular-only 01–06, full-stack 07+)
 
 ---
 
@@ -324,16 +323,16 @@ All README format rules and quality standards live in `notes/prompts/projects/re
 (The old `sql/practice` branch was merged and deleted in July 2026 — study files never conflict with
 project code, so a separate branch only split `PROGRESS.md` across branches.)
 
-- **Study and tracking materials live on `main`:** `sql/`, `notes/`, `simulations/`, `PROGRESS.md`,
+- **Study and tracking materials live on `main`:** `practice/sql/`, `notes/`, `practice/simulations/`, `PROGRESS.md`,
   `ROADMAP.md`. Commit them directly on `main`. **Project code** keeps the
   feature-branch → PR → `main` workflow (that history has portfolio value; study files do not need it).
   `PROJECT-BACKLOG.md` lives inside each full-stack project's own folder (e.g.
   `projects/07-timetrack/PROJECT-BACKLOG.md`) and follows that project's normal feature-branch
   workflow like `PLANNING.md` and `README.md` do.
 - This gives `PROGRESS.md` exactly **one home** (`main`) — no divergence, no checkout dance.
-- SQL block (12:30): work in `sql/` on `main`, commit there, and update the SQL section of
+- SQL block (12:30): work in `practice/sql/` on `main`, commit there, and update the SQL section of
   `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
-- The SQL section in PROGRESS.md tracks which topics exist in `sql/` and their status:
+- The SQL section in PROGRESS.md tracks which topics exist in `practice/sql/` and their status:
   solid ✅ (score > 80% in review) or in progress ⏳. Read it at the start of a SQL session to know
   which topic is next.
 
@@ -399,12 +398,13 @@ learning/
 ├── CLAUDE.md              ← this file (session rules)
 ├── PROGRESS.md            ← concepts learned, projects done, status
 ├── ROADMAP.md             ← career strategy, phases, daily schedule, applications plan
-├── angular/               ← Angular-only projects (01-todo-list/, 02-..., etc.)
-├── projects/              ← full-stack projects (backend + frontend + DB)
+├── projects/              ← every project, chronological (01–06 Angular-only, 07+ full-stack); see projects/README.md
+│   ├── 06-hr-portal/      ← last Angular-only project
 │   └── 07-timetrack/      ← Spring Boot + Angular + PostgreSQL + Docker
 │       └── PROJECT-BACKLOG.md ← improvement tasks for this project, written by review-audit
-├── simulations/           ← technical test simulations — Angular, Spring Boot, SQL; tracker at TRACKER.md
-├── sql/                   ← SQL exercises (01-basics/, 02-joins/, etc.) — lives on main
-├── leetcode/              ← algorithm exercises for interviews (gated — see ROADMAP.md)
+├── practice/              ← exercises, not portfolio (lives on main)
+│   ├── sql/               ← SQL exercises (01-basics/, 02-joins/, etc.)
+│   ├── simulations/       ← technical test simulations — Angular, Spring Boot, SQL; tracker at TRACKER.md
+│   └── leetcode/          ← algorithm exercises for interviews (gated — see ROADMAP.md)
 └── notes/                 ← study guide + prompt system (see notes/ folder and notes/prompts/README.md)
 ```

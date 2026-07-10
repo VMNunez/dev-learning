@@ -64,11 +64,11 @@ PROJECT_PATH = all
 ````
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/06-hr-portal | projects/07-timetrack | all]
+PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | all]
 
 ## PROJECT_PATH = all runs the review on every project in turn — see notes/prompts/_batch-mode.md.
-## Order: angular/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
-## 06-hr-portal, projects/07-timetrack. The project type is derived per path (angular/ vs projects/).
+## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
+## 06-hr-portal, 07-timetrack. The project type is derived from the number (01–06 Angular-only, 07+ full-stack).
 ## The 30-day "Last Reviewed" gate applies per full-stack project — recently reviewed ones are skipped.
 
 Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}.

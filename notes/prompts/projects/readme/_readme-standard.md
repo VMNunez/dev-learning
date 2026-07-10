@@ -29,7 +29,7 @@ Chain: `plan-audit` → build → **this readme review** → `review-audit` → 
 | `backend` | `{PROJECT_PATH}/backend/README.md` | Technical interviewer | Makes them trust your backend knowledge |
 | `frontend` | `{PROJECT_PATH}/frontend/README.md` | Technical interviewer | Makes them trust your Angular knowledge |
 
-Derive the type from the path prefix (`angular/` vs `projects/`); do not ask. Each README is one
+Derive the type from the project number (01–06 Angular-only, 07+ full-stack); do not ask. Each README is one
 **TARGET** (`global` / `backend` / `frontend`) — the author and reviewer work on one target at a time.
 
 ---

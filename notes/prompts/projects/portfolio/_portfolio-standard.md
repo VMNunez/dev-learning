@@ -31,7 +31,7 @@ It is the last link in the per-project chain: `plan-audit` → build → `readme
 - **Angular-only projects (01–06)** — closed. Read routes, config, page components, services, guards,
   interceptors.
 
-Derive the type from the path prefix (`angular/` vs `projects/`) and number — never ask.
+Derive the type from the project number (01–06 Angular-only, 07+ full-stack) — never ask.
 
 ---
 

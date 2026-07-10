@@ -22,24 +22,24 @@ Run this after you finish a timed simulation — no notes, no AI, timer stopped.
 ````
 ## Configuration — edit only this block
 
-SIMULATION_FILE = simulations/angular/01-task-form.md
-SIMULATION_FILE = simulations/angular/02-user-search.md
-SIMULATION_FILE = simulations/angular/03-product-filter.md
-SIMULATION_FILE = simulations/angular/04-login-form.md
-SIMULATION_FILE = simulations/angular/05-expense-dashboard.md
-SIMULATION_FILE = simulations/spring-boot/01-task-api.md
-SIMULATION_FILE = simulations/spring-boot/02-product-api.md
-SIMULATION_FILE = simulations/spring-boot/03-user-api.md
-SIMULATION_FILE = simulations/spring-boot/04-order-api.md
-SIMULATION_FILE = simulations/spring-boot/05-employee-api.md
-SIMULATION_FILE = simulations/sql/01-bookstore.md
-SIMULATION_FILE = simulations/sql/02-employees.md
-SIMULATION_FILE = simulations/sql/03-ecommerce.md
-SIMULATION_FILE = simulations/sql/04-university.md
-SIMULATION_FILE = simulations/sql/05-inventory.md
+SIMULATION_FILE = practice/simulations/angular/01-task-form.md
+SIMULATION_FILE = practice/simulations/angular/02-user-search.md
+SIMULATION_FILE = practice/simulations/angular/03-product-filter.md
+SIMULATION_FILE = practice/simulations/angular/04-login-form.md
+SIMULATION_FILE = practice/simulations/angular/05-expense-dashboard.md
+SIMULATION_FILE = practice/simulations/spring-boot/01-task-api.md
+SIMULATION_FILE = practice/simulations/spring-boot/02-product-api.md
+SIMULATION_FILE = practice/simulations/spring-boot/03-user-api.md
+SIMULATION_FILE = practice/simulations/spring-boot/04-order-api.md
+SIMULATION_FILE = practice/simulations/spring-boot/05-employee-api.md
+SIMULATION_FILE = practice/simulations/sql/01-bookstore.md
+SIMULATION_FILE = practice/simulations/sql/02-employees.md
+SIMULATION_FILE = practice/simulations/sql/03-ecommerce.md
+SIMULATION_FILE = practice/simulations/sql/04-university.md
+SIMULATION_FILE = practice/simulations/sql/05-inventory.md
 ← delete all lines above except the one you are reviewing.
   For a spec created later by simulation-generator (06+), just write its path here
-  (e.g. simulations/spring-boot/06-invoice-api.md) — the list above is only the original bank.
+  (e.g. practice/simulations/spring-boot/06-invoice-api.md) — the list above is only the original bank.
 
 TIME_USED       = [minutes used — exact, no rounding — e.g. 74]
 MODE            = [review | hint — leave blank for review]
@@ -161,7 +161,7 @@ Name 1–2 things done well (applies to any verdict, not just Pass). One line ea
 Only mention real strengths — no false positives. If nothing stands out, skip this.
 
 **Pattern check — before closing this step:**
-Read simulations/TRACKER.md. Count completed simulations for the same TYPE (angular / spring-boot / sql)
+Read practice/simulations/TRACKER.md. Count completed simulations for the same TYPE (angular / spring-boot / sql)
 that show ❌ Fail or ⚠️ Borderline status. Then add 1 if the current verdict is also ❌ Fail or
 ⚠️ Borderline. If the combined total is 2 or more, flag it:
 "Recurring pattern: [N] of your [TYPE] simulations resulted in Borderline or Fail. In this session
@@ -204,7 +204,7 @@ decision ("I chose…", "I used…", not "it is used").
 
 Update two files:
 
-**simulations/TRACKER.md** — find the row for {SIMULATION_FILE} and update:
+**practice/simulations/TRACKER.md** — find the row for {SIMULATION_FILE} and update:
 - **Status:** ✅ Pass / ⚠️ Borderline / ❌ Fail (from Step 2 verdict)
 - **Date:** today's date
 
@@ -218,7 +218,7 @@ this prompt.
 Then show the commit message:
 
 ```
-git add {SIMULATION_FILE} simulations/TRACKER.md notes/interview-prep/
+git add {SIMULATION_FILE} practice/simulations/TRACKER.md notes/interview-prep/
 ```
 
 ```

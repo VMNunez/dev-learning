@@ -82,8 +82,8 @@ Decide the project scope from `{MODE}`:
 - **all** — every project below.
 
 Project paths, in order:
-- Format A (Angular): `angular/01-todo-list`, `angular/02-weather-app`, `angular/03-expense-tracker`,
-  `angular/04-meal-finder`, `angular/05-task-manager`, `angular/06-hr-portal`
+- Format A (Angular): `projects/01-todo-list`, `projects/02-weather-app`, `projects/03-expense-tracker`,
+  `projects/04-meal-finder`, `projects/05-task-manager`, `projects/06-hr-portal`
 - Full-stack: `projects/07-timetrack` (Format B) and any later ones in PROGRESS.md (Format C if they
   have a numbered Section 3, else Format B)
 
@@ -126,14 +126,14 @@ Launch one `general-purpose` subagent, `run_in_background: false`:
 >   (output is `main:sql/<file>:<count>`). Only `git show` a file if its count looks wrong (e.g. zero
 >   for a file that clearly holds exercises) — and then only to recheck the headers, not to study it.
 >
-> Two file shapes exist: a flat file (`sql/01-basics.sql`) or a subfolder (`sql/02-joins/exercises.sql`).
+> Two file shapes exist: a flat file (`practice/sql/01-basics.sql`) or a subfolder (`practice/sql/02-joins/exercises.sql`).
 > The regex covers the two header patterns in use:
 > - `-- Exercise N:` at line start (sql-exercises-prompt topics: joins, group-by, subqueries…)
 > - `-- #N |` at line start, N one or more digits — `-- #1 |`, `-- #01 |`, `-- #40 |` (the basics file)
 >
 > Return **only** one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
-> Folder column (`sql/01-basics.sql` for flat, `sql/02-joins/` for subfolders). Only list topics that
-> have a file or folder in sql/. Do not estimate; do not assign a status — the orchestrator does that.
+> Folder column (`practice/sql/01-basics.sql` for flat, `practice/sql/02-joins/` for subfolders). Only list topics that
+> have a file or folder in practice/sql/. Do not estimate; do not assign a status — the orchestrator does that.
 
 Wait and collect.
 
@@ -141,7 +141,7 @@ Wait and collect.
 
 ## Step C — Audit simulations (orchestrator, directly)
 
-No subagent here — `simulations/TRACKER.md` is one small file, and a subagent round-trip would cost
+No subagent here — `practice/simulations/TRACKER.md` is one small file, and a subagent round-trip would cost
 more context than reading it. Read it yourself and note: total simulations completed (✅ Pass or
 ⚠️ Borderline both count as completed), split by type — Angular / Spring Boot / SQL — each as
 `X Pass, X Borderline, X Fail`. If TRACKER.md does not exist or shows 0, record all zeros.
@@ -192,8 +192,8 @@ The SQL section has two parts — keep both:
 
   | Topic | Folder | Exercises | Status |
   |-------|--------|-----------|--------|
-  | basics / SELECT | sql/01-basics.sql | N | solid ✅ |
-  | joins | sql/02-joins/ | N | in progress ⏳ |
+  | basics / SELECT | practice/sql/01-basics.sql | N | solid ✅ |
+  | joins | practice/sql/02-joins/ | N | in progress ⏳ |
   ```
 
   Status rules:

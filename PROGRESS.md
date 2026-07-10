@@ -351,8 +351,8 @@
 
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
-| basics / SELECT | sql/01-basics.sql | 40 | in progress ⏳ |
-| joins | sql/02-joins.sql | 10 | in progress ⏳ |
+| basics / SELECT | practice/sql/01-basics.sql | 40 | in progress ⏳ |
+| joins | practice/sql/02-joins.sql | 10 | in progress ⏳ |
 
 ---
 

@@ -38,7 +38,7 @@ Chain: `plan-audit` → build → `readme-audit` → **this review** → `portfo
 - **Angular-only projects (01–06)** — closed. No `PROJECT-BACKLOG.md`, no security pass. If reviewed at
   all it is **informational only** — report findings in chat, write nothing, no commit.
 
-Derive the type from the path prefix (`angular/` vs `projects/`); do not ask.
+Derive the type from the project number (01–06 Angular-only, 07+ full-stack); do not ask.
 
 ---
 

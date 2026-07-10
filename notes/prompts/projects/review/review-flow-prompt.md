@@ -17,7 +17,7 @@ slice's code.
 
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/06-hr-portal | projects/07-timetrack | ...]
+PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | ...]
 TIER         = [backend | frontend]
 SCOPE        = [a resource/feature name, or a cross-cutting area]
                → backend resource:  e.g. `time-entries`, `auth`, `users`, `projects`
@@ -26,7 +26,7 @@ SCOPE        = [a resource/feature name, or a cross-cutting area]
                → frontend cross-cutting: `frontend-infra`
 
 Use PROJECT_PATH, TIER, and SCOPE wherever the prompt refers to {PROJECT_PATH}, {TIER}, {SCOPE}. Derive
-the project type from the path prefix (`angular/` vs `projects/`).
+the project type from the project number (01–06 Angular-only, 07+ full-stack).
 
 ---
 

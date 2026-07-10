@@ -12,7 +12,7 @@ can also run it standalone to audit one finished README.
 
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/06-hr-portal | projects/07-timetrack | ...]
+PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | ...]
 TARGET       = [global | backend | frontend]
 
 Use PROJECT_PATH and TARGET wherever the prompt refers to {PROJECT_PATH} and {TARGET}. Derive the project

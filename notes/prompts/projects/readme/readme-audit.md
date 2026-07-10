@@ -49,12 +49,12 @@ failure of the machinery do these prompts get edited, in a separate session.
 ````
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/01-todo-list | ... | angular/06-hr-portal | projects/07-timetrack | all]
+PROJECT_PATH = [projects/01-todo-list | ... | projects/06-hr-portal | projects/07-timetrack | all]
 
 ## PROJECT_PATH = all runs on every project in turn — see notes/prompts/_batch-mode.md.
-## Order: angular/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
-## 06-hr-portal, projects/07-timetrack. The READMEs are derived per type: angular → [global];
-## full-stack → [global, backend, frontend].
+## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
+## 06-hr-portal, 07-timetrack. The READMEs are derived per type (by project number: 01–06 Angular-only,
+## 07+ full-stack): angular → [global]; full-stack → [global, backend, frontend].
 
 Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}.
 

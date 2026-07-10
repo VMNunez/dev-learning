@@ -20,8 +20,8 @@ can also run it standalone with `{SCOPE}` = all on one finished plan (then it co
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-PROJECT = [angular/01-todo-list | angular/02-weather-app | angular/03-expense-tracker |
-           angular/04-meal-finder | angular/05-task-manager | angular/06-hr-portal |
+PROJECT = [projects/01-todo-list | projects/02-weather-app | projects/03-expense-tracker |
+           projects/04-meal-finder | projects/05-task-manager | projects/06-hr-portal |
            projects/07-timetrack | ... — the folder path of the plan to audit]
 SCOPE   = [all | architecture | data-model-api | rules-security | steps-tests | branches-coverage]
           → the audit orchestrator dispatches ONE concern per subagent; "all" is for a standalone run.
@@ -150,8 +150,8 @@ once, after every concern's specialist has run. Leave your fixes in the working 
 - **`{DRY_RUN}` = false, `new` mode** (author left ROADMAP.md + PROGRESS.md staged): commit all three
   atomically. `git add {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
   `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.
-- **`{DRY_RUN}` = false, `review` mode** (only the plan changed): commit just the plan, real path prefix
-  (`angular/` for 01–06, `projects/` for 07+): `git add {PROJECT}/PLANNING.md`, then
+- **`{DRY_RUN}` = false, `review` mode** (only the plan changed): commit just the plan
+  (every project lives under `projects/`): `git add {PROJECT}/PLANNING.md`, then
   `git commit -m "docs: improve PLANNING.md for {PROJECT} — fix done conditions, add missing sections"`.
 - **`{DRY_RUN}` = true:** do not commit; leave changes in the tree and print the commit sequence.
 

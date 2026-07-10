@@ -106,9 +106,9 @@ code and present it as Victor's. Where to look, by topic:
 
 - **spring-boot / java / security / architecture** → `projects/07-timetrack/backend/timetrack/src/main/java/`
   (and `.../src/test/java/` for testing questions — JUnit/Mockito).
-- **angular / typescript / css** → the Angular projects, richest first: `angular/06-hr-portal/`,
-  `angular/05-task-manager/`, `angular/03-expense-tracker/`. (The 07 frontend is not built yet.)
-- **sql** → `sql/` (the exercise files — real queries Victor wrote).
+- **angular / typescript / css** → the Angular projects, richest first: `projects/06-hr-portal/`,
+  `projects/05-task-manager/`, `projects/03-expense-tracker/`. (The 07 frontend is not built yet.)
+- **sql** → `practice/sql/` (the exercise files — real queries Victor wrote).
 - **git / general** → usually prose; add code only if a concrete command or config genuinely helps.
 
 Cite the fragment with a first-line comment naming the file, e.g.

@@ -16,13 +16,13 @@ commit — the orchestrator owns those.
 
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/06-hr-portal | projects/07-timetrack | ... — the project folder path]
+PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | ... — the project folder path]
 SECTION      = [all | Architecture & Patterns | Security & Auth | Business Rules | Technical Decisions | Testing]
                → the audit orchestrator passes ONE section; "all" is for a standalone run only.
 
 Use PROJECT_PATH and SECTION wherever the prompt refers to {PROJECT_PATH} and {SECTION}. Derive
-{PROJECT_NAME} as the last path segment (e.g. `07-timetrack`) and the project type from the path prefix
-(`angular/` vs `projects/`).
+{PROJECT_NAME} as the last path segment (e.g. `07-timetrack`) and the project type from the number
+(01–06 Angular-only, 07+ full-stack).
 
 ---
 

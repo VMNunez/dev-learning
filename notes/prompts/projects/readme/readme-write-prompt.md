@@ -17,7 +17,7 @@ for the last one slip — so each README gets its own focused author.
 
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/06-hr-portal | projects/07-timetrack | ...]
+PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | ...]
 TARGET       = [global | backend | frontend]
 
 Use PROJECT_PATH and TARGET wherever the prompt refers to {PROJECT_PATH} and {TARGET}. `backend` and

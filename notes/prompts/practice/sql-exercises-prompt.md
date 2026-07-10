@@ -4,7 +4,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 Two modes:
 
-- **`practice`** — generates exercises for a SQL topic and saves them to `sql/`. If the topic file already exists, adds more exercises continuing the numbering.
+- **`practice`** — generates exercises for a SQL topic and saves them to `practice/sql/`. If the topic file already exists, adds more exercises continuing the numbering.
 - **`review`** — checks your answers. Paste the exercise file at the very end of the prompt.
 
 > **▶ Run first:** nothing — `practice` generates exercises from scratch; `review` needs your answers pasted at the end.
@@ -477,19 +477,19 @@ Challenge: analyze a slow query and decide what index to add, then verify with E
 
 | Topic | Path |
 |-------|------|
-| joins | sql/02-joins/exercises.sql |
-| group-by | sql/03-group-by/exercises.sql |
-| nulls | sql/04-nulls/exercises.sql |
-| subqueries | sql/05-subqueries/exercises.sql |
-| ctes | sql/06-ctes/exercises.sql |
-| dml | sql/07-dml/exercises.sql |
-| normalization | sql/08-normalization/exercises.sql |
-| schema-design | sql/09-schema-design/exercises.sql |
-| window-functions | sql/10-window-functions/exercises.sql |
-| indexes | sql/11-indexes/exercises.sql |
-| transactions | sql/12-transactions/exercises.sql |
-| data-types | sql/13-data-types/exercises.sql |
-| postgresql-specifics | sql/14-postgresql-specifics/exercises.sql |
+| joins | practice/sql/02-joins/exercises.sql |
+| group-by | practice/sql/03-group-by/exercises.sql |
+| nulls | practice/sql/04-nulls/exercises.sql |
+| subqueries | practice/sql/05-subqueries/exercises.sql |
+| ctes | practice/sql/06-ctes/exercises.sql |
+| dml | practice/sql/07-dml/exercises.sql |
+| normalization | practice/sql/08-normalization/exercises.sql |
+| schema-design | practice/sql/09-schema-design/exercises.sql |
+| window-functions | practice/sql/10-window-functions/exercises.sql |
+| indexes | practice/sql/11-indexes/exercises.sql |
+| transactions | practice/sql/12-transactions/exercises.sql |
+| data-types | practice/sql/13-data-types/exercises.sql |
+| postgresql-specifics | practice/sql/14-postgresql-specifics/exercises.sql |
 
 If the folder does not exist, create it using the path above.
 
@@ -650,14 +650,14 @@ The table format is (4 columns — shared with `progress-update-prompt`):
 
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
-| basics / SELECT | sql/01-basics.sql | 40 | in progress ⏳ |
-| joins | sql/02-joins.sql | 24 | solid ✅ |
+| basics / SELECT | practice/sql/01-basics.sql | 40 | in progress ⏳ |
+| joins | practice/sql/02-joins.sql | 24 | solid ✅ |
 ```
 
 **If the table exists:** find the row for {TOPIC} and update the `Exercises` and `Status` columns:
 - Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
 - Exercises: count all exercises in the reviewed file, including any previous batches
-- Leave the `Folder` column as-is (it is the file path, e.g. `sql/02-joins.sql`)
+- Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/02-joins.sql`)
 - Then refresh the `X total exercises across Y topics` summary line above the table to match the
   new column totals
 

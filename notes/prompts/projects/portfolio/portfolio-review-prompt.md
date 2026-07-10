@@ -13,7 +13,7 @@ can also run it standalone on one section (or `SECTION = all` for a finished fil
 
 ## Configuration — edit only this block
 
-PROJECT_PATH = [angular/06-hr-portal | projects/07-timetrack | ...]
+PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | ...]
 SECTION      = [all | Architecture & Patterns | Security & Auth | Business Rules | Technical Decisions | Testing]
                → the audit orchestrator passes ONE section; "all" is for a standalone run only.
 

@@ -130,9 +130,9 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `practice/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises by topic. `review` mode: grades my answers and scores them. | `notes/sql/coverage.md`, `PROGRESS.md`, `sql/{topic}/exercises.sql` | `sql/{topic}/exercises.sql`; the SQL table in `PROGRESS.md`; `interview-prep/en/sql.md` + `es/sql.md` |
-| `practice/simulation-generator-prompt.md` | Creates new timed test specs (Angular / Spring Boot / SQL) in the existing format — the producer for the simulation bank. | `simulations/{type}/` (existing specs), `simulations/TRACKER.md` | new `simulations/{type}/NN-*.md`; rows + counts in `simulations/TRACKER.md` |
-| `practice/simulation-review-prompt.md` | Grades a finished timed simulation, gives a 3-score ideal solution, adds interview questions. `hint` mode guides mid-test. | the simulation spec in `simulations/{type}/`, `simulations/TRACKER.md`, + my pasted code | `simulations/TRACKER.md`, the spec's header, `interview-prep/en/{topic}.md` + `es/{topic}.md` |
+| `practice/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises by topic. `review` mode: grades my answers and scores them. | `notes/sql/coverage.md`, `PROGRESS.md`, `practice/sql/{topic}/exercises.sql` | `practice/sql/{topic}/exercises.sql`; the SQL table in `PROGRESS.md`; `interview-prep/en/sql.md` + `es/sql.md` |
+| `practice/simulation-generator-prompt.md` | Creates new timed test specs (Angular / Spring Boot / SQL) in the existing format — the producer for the simulation bank. | `practice/simulations/{type}/` (existing specs), `practice/simulations/TRACKER.md` | new `practice/simulations/{type}/NN-*.md`; rows + counts in `practice/simulations/TRACKER.md` |
+| `practice/simulation-review-prompt.md` | Grades a finished timed simulation, gives a 3-score ideal solution, adds interview questions. `hint` mode guides mid-test. | the simulation spec in `practice/simulations/{type}/`, `practice/simulations/TRACKER.md`, + my pasted code | `practice/simulations/TRACKER.md`, the spec's header, `interview-prep/en/{topic}.md` + `es/{topic}.md` |
 | `practice/code-review-prompt.md` | Generates a flawed snippet (often AI-style) for me to critique, then grades what I found / missed / over-flagged. Trains the stage-3 code-review step. | (snippet generated fresh; no spec file needed) | `interview-prep/en/{type}.md` + `es/{type}.md` (questions for my gaps) |
 | `practice/simulator-prompt.md` | Runs a live mock **technical** interview from my Q&A bank, scores each answer, tracks weak areas across sessions. | `interview-prep/{lang}/*.md`, `interview-prep/projects/*`, `interview-prep/SESSION-LOG.md` | `interview-prep/SESSION-LOG.md` |
 | `practice/hr-screen-prompt.md` | Runs a live mock **HR** call (stage 2): motivation, career-change story, availability, salary, "why us". Non-technical. | profile + situation from `_shared-context.md`, `ROADMAP.md` | optional `interview-prep/hr-screen.md` (polished answers) |
@@ -145,7 +145,7 @@ accurate; `apply/` produces the job-application material.
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
 | `strategy/tracking/_concept-extraction-standard.md` | *Internal.* The Format A/B/C **concept-extraction contract** each per-project subagent runs when `progress-update` fans out. Not runnable. | — | — |
-| `strategy/tracking/progress-update-prompt.md` | Rebuilds PROGRESS.md from reality — an orchestrator that fans out one cold subagent per project (+ one for SQL; it reads the small simulations tracker itself), then merges. Run before `plan-audit`. | `_concept-extraction-standard.md`, all `PLANNING.md` files, `sql/`, `simulations/TRACKER.md` | `PROGRESS.md` |
+| `strategy/tracking/progress-update-prompt.md` | Rebuilds PROGRESS.md from reality — an orchestrator that fans out one cold subagent per project (+ one for SQL; it reads the small simulations tracker itself), then merges. Run before `plan-audit`. | `_concept-extraction-standard.md`, all `PLANNING.md` files, `practice/sql/`, `practice/simulations/TRACKER.md` | `PROGRESS.md` |
 | `strategy/tracking/_roadmap-standard.md` | *Internal.* The **shared roadmap contract** `roadmap-review` reads: what ROADMAP is vs PROGRESS/coverage, stable vs living sections, gate-based sequencing (no dates), canonical study-block orders. Not runnable. | — | — |
 | `strategy/tracking/roadmap-review-prompt.md` | Keeps ROADMAP forward-looking and gate-based (no stale dates); checks project sequence and study-block tables vs coverage. **Orchestrator:** two cold fact-gatherers (gap analysis + active-PLANNING summary) feed the doer so coverage.md and PLANNING.md never load into its context; the doer applies edits, then two sequential cold reviewers — mechanical (date scan, study order, LeetCode gate; reads only ROADMAP + standard) and cross-file (gaps, gates, SQL table, phase markers) — re-verify the invariants and fix ROADMAP. | `_roadmap-standard.md`, `notes/coverage.md`, `PROGRESS.md`, the active `PLANNING.md` | `ROADMAP.md` |
 | `strategy/apply/_application-standard.md` | *Internal.* The **shared job-application standard** both `cv` and `linkedin` read: expert stance, sources (incl. the existing CV in `personal/job-search`), bullet format, ATS/skills keyword pool, Spanish voice rules, defensibility rule, project-selection heuristic. Not runnable. | — | — |
@@ -185,9 +185,9 @@ Each generated file, with who writes it and who depends on it:
 - **`interview-prep/en/*.md` + `es/*.md`** — written by `interview-prep-audit`,
   `notes-and-interview-prep`, `simulation-review`, `sql-exercises`, `code-review` → read by `simulator`.
 - **`interview-prep/projects/*.md`** — written by `portfolio-audit` → read by `simulator`.
-- **`simulations/{type}/NN-*.md`** (the test specs) — written by `simulation-generator` (and the
+- **`practice/simulations/{type}/NN-*.md`** (the test specs) — written by `simulation-generator` (and the
   original bank by hand) → read by `simulation-review` (and by me, to take the test).
-- **`simulations/TRACKER.md`** — written by `simulation-generator` (new rows) and `simulation-review`
+- **`practice/simulations/TRACKER.md`** — written by `simulation-generator` (new rows) and `simulation-review`
   (status) → read by `progress-update` and by `simulation-review` itself (recurring-weakness check).
 - **`interview-prep/SESSION-LOG.md`** — written and read by `simulator` (tracks weak areas between
   sessions).
@@ -212,7 +212,7 @@ progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.m
                         │                                          └► interview-prep/projects ┘
                         └─ roadmap-review ─► ROADMAP.md
 
-Practice (independent): sql-exercises ─► sql/ + PROGRESS + sql Q&A
+Practice (independent): sql-exercises ─► practice/sql/ + PROGRESS + sql Q&A
                         simulation-review ─► TRACKER + topic Q&A
 ```
 

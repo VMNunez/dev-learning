@@ -251,7 +251,7 @@ PLANNING.md.
     cases), plus the one slice test type this project introduces (`@WebMvcTest` and/or `@DataJpaTest`),
     if any.
 12. **Angular tests** — services first (`HttpClientTestingModule`); components if project 08+.
-13. **SQL complement** — write by hand in `sql/` the SQL Hibernate generates for the main queries.
+13. **SQL complement** — write by hand in `practice/sql/` the SQL Hibernate generates for the main queries.
 14. **Docker** — `docker-compose.yml` with the database service; app image if time allows. Late by
     design — Docker wraps a working app, not a work in progress.
 15. **README** — all three READMEs after the project works.

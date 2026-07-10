@@ -70,12 +70,12 @@ MODE    = [new | review]
 PROJECT = [blank — auto-detects the next project from PROGRESS.md]
 
 ## review mode:
-PROJECT = [folder path, e.g. projects/07-timetrack | angular/06-hr-portal | all]
+PROJECT = [folder path, e.g. projects/07-timetrack | projects/06-hr-portal | all]
 
 ## PROJECT = all (review mode only) audits every project in turn — see notes/prompts/_batch-mode.md.
-## Order: angular/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder,
-## 05-task-manager, 06-hr-portal, projects/07-timetrack. The format is derived per project type
-## (full-stack → full 23-section audit; angular → present-sections + universal checks only).
+## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder,
+## 05-task-manager, 06-hr-portal, 07-timetrack. The format is derived per project type by number
+## (01–06 Angular-only → present-sections + universal checks only; 07+ full-stack → full 23-section audit).
 
 DRY_RUN = [false | true]
 
