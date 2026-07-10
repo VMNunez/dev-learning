@@ -83,8 +83,9 @@ Before starting, read:
 
 ## Scope — this run touches exactly two files
 
-`en/{FILE}.md` and its `es/{FILE}.md` twin (same filename). Victor studies from `es/`, so apply changes
-there first, then mirror to `en/`. If `{FILE}` is given as a path to one language file, derive the
+`en/{FILE}.md` and its `es/{FILE}.md` twin (same filename). **`en/` is the canonical source** — author
+and correct there first, then translate into `es/` (the file Victor studies from, so the Spanish must
+read as native, never a calque). If `{FILE}` is given as a path to one language file, derive the
 topic and audit both twins — never just the one handed to you.
 
 If `{SECTION}` is not "all", operate only on that heading's content. If the section is missing in one

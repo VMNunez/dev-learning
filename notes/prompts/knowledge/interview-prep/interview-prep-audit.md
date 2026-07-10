@@ -249,6 +249,12 @@ Fix a stray duplicate or ordering issue directly (structural, not authoring). Th
 `{DRY_RUN}` — **one atomic commit for the whole topic** (the `en/` + `es/` pair). This is the only
 commit; the section subagents never committed.
 
+**Context discipline (matters in `FILE = all`).** Once a topic is committed, condense everything you
+were holding for it — the M list, the G gaps, the per-section slices and traces — down to one verdict
+line per topic (author status · reviewer verdict · commit · any uncovered items) for the final report.
+Carry nothing else into the next topic: the deep detail did its job at the acceptance gate, and
+holding eleven topics' worth of it is exactly the context saturation this per-section design avoids.
+
 ## Finishing
 
 **If `{DRY_RUN}` = false:** everything is committed, one atomic commit per topic. Report the commits
