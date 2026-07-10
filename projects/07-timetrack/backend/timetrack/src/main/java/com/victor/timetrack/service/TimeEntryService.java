@@ -93,6 +93,21 @@ public class TimeEntryService {
 
     }
 
+    public TimeEntryResponse approve(Long id) {
+        TimeEntry timeEntry = timeEntryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+
+        if(!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)){
+            throw  new BusinessRuleViolationException("Manager can only approve SUBMITTED entries");
+        }
+
+        timeEntry.setStatus(EntryStatus.APPROVED);
+
+        TimeEntry saved = timeEntryRepository.save(timeEntry);
+
+        return toResponse(saved);
+    }
+
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
         response.setId(timeEntry.getId());

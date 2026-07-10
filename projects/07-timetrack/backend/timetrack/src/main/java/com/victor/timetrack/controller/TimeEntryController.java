@@ -4,6 +4,7 @@ import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.service.TimeEntryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,12 @@ public class TimeEntryController {
     @PatchMapping("/{id}/submit")
     public ResponseEntity<TimeEntryResponse> submit(@PathVariable Long id){
         return ResponseEntity.status(200).body(timeEntryService.submit(id));
+    }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @PatchMapping("/{id}/approve")
+    public ResponseEntity<TimeEntryResponse> approve(@PathVariable Long id){
+        return ResponseEntity.status(200).body(timeEntryService.approve(id));
     }
 
 }
