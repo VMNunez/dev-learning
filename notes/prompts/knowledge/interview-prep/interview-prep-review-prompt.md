@@ -1,12 +1,12 @@
-# Interview-prep review prompt — second-pass auditor for ONE topic
+# Interview-prep review prompt — second-pass auditor (one section under the orchestrator; one topic standalone)
 
 This is the **reviewer half** of a two-subagent build: the write prompt authors a topic's Q&A, then
 this prompt audits and fixes it before it is committed. It exists because, under the orchestrator, the
 Q&A is committed unread — a fresh reviewer with no stake in the draft catches the questions the author,
 close to their own work, waved through. Run it on **one topic**, right after the write prompt produced it.
 
-It is normally launched by `interview-prep-audit.md` as subagent **B** (the write prompt is subagent
-A). You can also run it standalone to audit a single topic's finished Q&A.
+It is normally launched by `interview-prep-audit.md` as subagent **B**, once per section (the write
+prompt is subagent A). You can also run it standalone to audit a single topic's finished Q&A.
 
 ---
 

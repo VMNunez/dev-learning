@@ -18,7 +18,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 ## Replace the [ ] with your value and delete the brackets.
 
 TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
-NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/en/ | notes/security/en/]
+NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/ (not yet migrated to en/-es/ — use the topic root, no Spanish mirror) | notes/security/en/]
 FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
              → notes/interview-prep/en/{FILE}.md
              → notes/interview-prep/es/{FILE}.md
@@ -67,8 +67,8 @@ Split this run into two kinds of work, and never mix them:
   and interview-prep pipelines split file-by-file. **Never write it inline here, and never batch it.**
   Once the gap lists are ready, **dispatch one cold `general-purpose` subagent per atomic unit, in
   sequence** (even at higher token cost) to author the fix:
-  - **notes → prep** → the atomic unit is the topic's Q&A pair (`en/{FILE}.md` + `es/{FILE}.md`) —
-    **one** subagent adds every missing question for the topic.
+  - **notes → prep** → the atomic unit is **one `##` section** of the topic's Q&A pair (`en/` +
+    `es/`) — one subagent per target section, as Step 2 details (never the whole topic in one context).
   - **prep → notes** → the atomic unit is one note file — **one** subagent per note file to create or
     extend, dispatched one after another.
 
@@ -126,10 +126,13 @@ files), dispatch a cold `general-purpose` subagent (`run_in_background: false`):
 
 > Read `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` (the bar). You are adding
 > questions to ONE section — `«## heading»` — of `notes/interview-prep/{FILE}.md`. Read that section in
-> both `es/{FILE}.md` and `en/{FILE}.md` **in full, top to bottom** (Victor studies from `es/`, so
-> apply changes there first, then mirror to `en/`); create the section heading in both files if it does
-> not exist. Add a question for each gap below, in the standard's exact format (bold question + priority
-> marker + blank line + answer + Junior tip if Conceptual / Red flag if Decision-based or Pressure),
+> both `en/{FILE}.md` and `es/{FILE}.md` **in full, top to bottom** (`en/` is the canonical source —
+> author there first, then translate to `es/` as native Spanish); create the section heading in both
+> files if it does not exist. Add a question for each gap below, in the standard's exact format (bold
+> question + priority marker + blank line + answer + Junior tip if Conceptual / Red flag if
+> Decision-based or Pressure), with **real cited code where the question warrants it** (see the
+> standard's "Real code" rule) and **respecting the `[x]` studied marker** (never rewrite a studied
+> question; reordering is allowed),
 > answered in Victor's voice and anchored to a real project when the concept was practised in one. Then
 > reorder this section ⭐⭐⭐ → ⭐⭐ → ⭐. Keep `en/` and `es/` in exact sync for this section (`es/` as
 > native Spanish, Junior-tip label `Consejo de entrevista:`). Do NOT commit — leave the work in the
@@ -171,9 +174,9 @@ cold `general-purpose` subagent (`run_in_background: false`):
 > wire references. Author the section(s) that back these questions to the full standard — problem
 > before definition, context before any code block, personal-guide voice, mechanism not just behaviour,
 > the anticipate-the-TODO pass — in the correct mode for the folder (structured for
-> `notes/java/en/` and `notes/spring-boot/en/`, conversational otherwise). Mirror every change to the
-> `es/` counterpart first (Victor's primary), as native Spanish; create the full `es/` file if it does
-> not exist. If you create a new numbered file, bump the "next file:" counter in CLAUDE.md. Do NOT
+> `notes/java/en/` and `notes/spring-boot/en/`, conversational otherwise). Author in `en/` first (the
+> canonical source), then re-sync the `es/` counterpart as native Spanish; create the full `es/` file
+> if it does not exist. If you create a new numbered file, bump the "next file:" counter in CLAUDE.md. Do NOT
 > commit. Return a **section-by-section trace** of the file (every `##`/`###` with PASS or what you
 > wrote) as proof you read it whole, plus which questions it now backs.
 > ```
@@ -192,7 +195,10 @@ they are addressed next run.
 
 Detection happens in this context; every fix is applied by the cold per-unit subagents dispatched in
 Steps 2–3 (which leave their work in the tree, uncommitted). The orchestrator waits for each subagent,
-collects its trace, and then commits. Do not report and leave gaps open — every genuine gap must be
+collects its trace, and then commits. **Acceptance gate:** a subagent's report counts only if its trace
+covers its whole unit (every heading/gap with PASS or the change made). If the trace is missing or
+partial, re-dispatch that subagent **once**, quoting what was missing; if it fails again, report the
+unit as incomplete in the summary — never mark it done on a partial trace. Do not report and leave gaps open — every genuine gap must be
 dispatched, not deferred (except the >3-new-note-files cap in Step 3). Never author a question or a
 note section in this orchestrator context.
 

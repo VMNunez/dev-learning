@@ -1,7 +1,7 @@
-# Interview-prep write prompt — the AUTHOR component (one topic)
+# Interview-prep write prompt — the AUTHOR component (one section under the orchestrator; one topic standalone)
 
 **Internal component.** This is the **author** in the interview-prep pipeline. You normally don't
-launch it — `interview-prep-audit.md` dispatches it as a cold subagent, one per topic, then hands the
+launch it — `interview-prep-audit.md` dispatches it as a cold subagent, **one per section** of a topic's Q&A (per-section is the deep-work unit), then hands the
 result to `interview-prep-review-prompt.md` (the reviewer). It is documented here so the orchestrator
 can point a subagent at it; you can also run it standalone to build/audit a single topic.
 
@@ -208,6 +208,6 @@ Then report:
 - **Weak answers found** (from 6.2) — question + what is missing.
 - **Coverage gaps found** — concepts added that are not in coverage.md.
 - **TODO patterns detected** — recommended one-sentence rule additions for the standard.
-- The one-line commit message you would use (the reviewer will refine and run it):
+- The one-line commit message you would use (the orchestrator — or the reviewer on a standalone run — will run it):
   `docs: audit {FILE} interview prep — <one-line summary of main fixes>`.
 ````
