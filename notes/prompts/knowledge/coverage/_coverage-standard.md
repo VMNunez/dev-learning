@@ -20,7 +20,7 @@ item in coverage — never the other way around.
 - If an item is in coverage but not in the notes yet → that is a gap in the notes.
 - If the notes cover something not in coverage → extra material, fine to keep, but not required.
 
-Downstream, `notes-audit.md` and `notes-and-interview-prep-prompt.md` use coverage as their baseline:
+Downstream, `knowledge/notes/notes-audit.md` and `knowledge/interview-prep/notes-and-interview-prep-prompt.md` use coverage as their baseline:
 every item is a required topic that must be covered by at least one note. No exceptions. So the state
 of the notes never limits what goes in coverage — if the notes are sparse or missing, derive coverage
 entirely from what Spanish consultancies test at junior level; the gap just means notes must be written.

@@ -95,7 +95,12 @@ which keeps even the whole-file work out of the editing context.
 1. Dispatch Analyst A, then B, then C for the topic (`run_in_background: false`). Dispatch each one by
    telling it to read its mandate section in this prompt (A → Step 2b, B → Step 3, C → Step 4a) with
    {TOPIC} filled in, plus only the files its concern needs (listed in the analyst-split rules above).
-   Collect their three lists.
+   Collect their three lists. **Acceptance check per analyst:** B must return its item-by-item trace;
+   A must map each recurring evidence requirement to the item that covers it (or a gap); C must list
+   all 12 of its questions, each marked SUPPORTED or GAP. If a report is missing its proof or is
+   unusable, re-dispatch that analyst **once**, naming what was missing; if it fails again, flag the
+   topic as partially analysed in the summary and continue — never treat a proofless report as a full
+   pass.
 2. Consolidate: merge the three lists, drop duplicates, discard any gap that is out of junior scope
    (record those in the summary as "analyst-suggested, left out — reason").
 3. Apply the surviving gaps to `notes/{topic}/coverage.md` and its section in `notes/coverage.md`, sync
@@ -136,7 +141,7 @@ Read these files before making any decision:
    `notes/prompts/_shared-context.md`, read above)
 3. `ROADMAP.md` — current phase, what is in progress, what is post-junior scope
 
-Then list all existing subdirectories under `notes/` (excluding `interview-prep/`, `prompts/`). These are the current topic folders.
+Then list all existing subdirectories under `notes/` (excluding `interview-prep/`, `prompts/`, and `ai-development/` — post-employment material with no coverage.md; list any other folder outside the 12-topic order as an anomaly instead of looping over it). These are the current topic folders.
 
 **Pre-audit sync check:**
 For each topic folder found, read `notes/{topic}/coverage.md` (if it exists) and compare it to its corresponding section in `notes/coverage.md`. If they differ, `notes/{topic}/coverage.md` is the authoritative source — correct `notes/coverage.md` to match, applying the heading level transformation (topic `#` → `##`, topic `##` → `###`). Note any corrections in the final summary under "Sync corrections (pre-audit)".
@@ -154,9 +159,9 @@ Compare the current topic folders against what Victor's objective requires.
 
 **Questions to answer:**
 
-Is **Testing** missing as a dedicated topic? At project 07 onwards, JUnit 5 + Mockito (backend) and Jasmine + TestBed (frontend) are permanent requirements. Apply the three criteria above. Testing has its own distinct interview questions at Spanish consultancies ("how do you write a unit test?", "what is Mockito?", "how does TestBed work?"), has well over 5 distinct coverage items (JUnit 5 structure, Mockito mocking, meaningful assertions, TestBed setup, integration vs unit test), and is clearly separate from `notes/general/`. It almost certainly meets all three criteria — confirm and, if so, create `notes/testing/`. If created, place it after the Security section in `notes/coverage.md`.
+Is **Testing** missing as a dedicated topic? At project 07 onwards, JUnit 5 + Mockito (backend) and Jasmine + TestBed (frontend) are permanent requirements. Apply the three criteria above. Testing has its own distinct interview questions at Spanish consultancies ("how do you write a unit test?", "what is Mockito?", "how does TestBed work?"), has well over 5 distinct coverage items (JUnit 5 structure, Mockito mocking, meaningful assertions, TestBed setup, integration vs unit test), and is clearly separate from `notes/general/`. It almost certainly meets all three criteria — confirm and, if so, **flag it** under "New topic detected → run coverage-prompt" (target position: after the Security section in `notes/coverage.md`). Detection only — creating the folder and authoring its coverage belong to `coverage-prompt.md`.
 
-Is **Docker** missing as a topic? Victor uses Docker Compose in project 07. Decide: is there enough junior-level content for a dedicated `notes/docker/` folder (5+ distinct coverage items), or do the relevant concepts belong in `notes/architecture/` or `notes/general/`? If created, place it after the General section in `notes/coverage.md` (last in the order).
+Is **Docker** missing as a topic? Victor uses Docker Compose in project 07. Decide: is there enough junior-level content for a dedicated `notes/docker/` folder (5+ distinct coverage items), or do the relevant concepts belong in `notes/architecture/` or `notes/general/`? If it qualifies, **flag it** the same way (target position: after the General section, last in the order) — never create it here.
 
 Are there any other topics that a Spanish consultancy would interview a junior Angular + Spring Boot developer about that are not represented in the current folder structure?
 
@@ -351,7 +356,7 @@ Then answer explicitly:
 
 **Is notes/coverage.md now stable?**
 
-Stable means: every topic for Victor's objective is represented, every section has the three types (conceptual / decision / pressure), every confusable pair has both sides, and no item is a dictionary definition.
+Stable means: every topic for Victor's objective is represented, every section has the three types (conceptual / decision / pressure), every confusable pair has both sides, no item is a dictionary definition, and every recurring requirement in the evidence Synthesis maps to at least one item.
 
 - If **stable**: "notes/coverage.md is stable. Re-run this audit only if: a new topic folder is added, a new project introduces scope not yet covered, or the job objective changes significantly."
 - If **not stable**: list what remains and why it could not be fixed in this pass (e.g. a section needed more than 5 new items and you split the work). Be specific about what the next run must address.

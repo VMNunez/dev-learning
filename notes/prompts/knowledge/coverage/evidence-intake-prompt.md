@@ -114,14 +114,12 @@ Print a short summary:
 | New "signals to watch" | [list or "none"] |
 | Footer count | [old N → new N] |
 
-The evidence file is committed (public data, no personal info). Show the commit — one command per block:
-
-```
-git add notes/prompts/_job-market-evidence.md
-```
-
-```
-git commit -m "docs: add <N> postings to job-market-evidence — <main stacks/companies>"
-```
+The evidence file is committed (public data, no personal info). It lives under `notes/prompts/`, so
+**commit it directly** (CLAUDE.md's notes/prompts exception — do not hand the commands to Victor),
+with the mandatory double check:
+1. `git status` — confirm only `notes/prompts/_job-market-evidence.md` is about to be staged.
+2. `git add notes/prompts/_job-market-evidence.md`
+3. `git status` — confirm nothing else is staged (`git restore --staged` anything that is).
+4. `git commit -m "docs: add <N> postings to job-market-evidence — <main stacks/companies>"`
 
 [paste your full job offer(s) below this line — only needed in `paste` mode]

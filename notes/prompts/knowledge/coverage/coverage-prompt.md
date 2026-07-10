@@ -29,6 +29,8 @@ NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/java
 ## Git, General.
 
 Notes on specific topics:
+- General: not yet migrated to en/-es/ — its numbered files sit in the topic root
+  (notes/general/), not in an en/ subfolder; read them from there in Step 1.3.
 - Spring Boot: set NOTES_PATH = notes/spring-boot/ — coverage.md is written there.
   Additionally read notes/java/en/ when reading existing notes (Step 1.3), because Spring Boot
   coverage must include Java language concepts that appear in Spring Boot code.
@@ -371,3 +373,10 @@ git commit -m "docs: update {TOPIC} coverage — <one line summary of main chang
 ```
 
 Report the commit hash in the final summary so Victor can see it landed.
+
+### Final step — pipeline self-report
+
+This prompt dispatches subagents, so it ends like every orchestrator: read
+`notes/prompts/_pipeline-self-report.md` and execute it for this run. Because this folder is shared
+with `coverage-audit-prompt.md`, write the report as `_last-run-report-coverage-prompt.md`, commit it
+on its own, and print the five bullets in chat.
