@@ -12,11 +12,13 @@ import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.ProjectRepository;
 import com.victor.timetrack.repository.TimeEntryRepository;
 import com.victor.timetrack.repository.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -122,6 +124,21 @@ public class TimeEntryService {
         TimeEntry saved = timeEntryRepository.save(timeEntry);
 
         return toResponse(saved);
+    }
+
+    public List<TimeEntryResponse> getAll() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = Objects.requireNonNull(auth).getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+
+        boolean isManager = Objects.requireNonNull(auth).getAuthorities().stream()
+                .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
+
+        return isManager
+                ? timeEntryRepository.findAll().stream().map(this::toResponse).toList()
+                : timeEntryRepository.findByUser(user).stream().map(this::toResponse).toList();
     }
 
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {

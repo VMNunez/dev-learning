@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/entries")
 public class TimeEntryController {
@@ -15,6 +17,11 @@ public class TimeEntryController {
 
     public TimeEntryController(TimeEntryService timeEntryService){
         this.timeEntryService = timeEntryService;
+    }
+
+    @GetMapping
+    public  ResponseEntity<List<TimeEntryResponse>> getAll(){
+        return ResponseEntity.status(200).body(timeEntryService.getAll());
     }
 
     @PostMapping
