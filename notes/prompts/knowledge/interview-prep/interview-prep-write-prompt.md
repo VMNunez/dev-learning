@@ -80,7 +80,7 @@ Before starting, read:
 - notes/prompts/_shared-context.md — Victor's profile, projects, and the Spanish job market 2026.
 - notes/prompts/knowledge/interview-prep/_interview-prep-standard.md — THE bar. Every definition
   (question types, priority markers, question format, the answer quality bar, the bilingual contract,
-  existing-content-is-final, section-complete) lives there. Apply it in full; this prompt only adds the
+  studied-content-is-final via the `[x]` marker, section-complete) lives there. Apply it in full; this prompt only adds the
   audit *flow*.
 
 ## Scope — this run touches exactly two files
