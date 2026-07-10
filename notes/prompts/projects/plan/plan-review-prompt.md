@@ -8,12 +8,13 @@ cold subagent owns a small, defined slice it cannot skim. It serves two callers:
 
 - **`new` mode** — after the author (subagent A) and the architecture advisor write a fresh plan, the
   orchestrator runs the specialist reviewers as the independent second pass, then commits the plan + the
-  ROADMAP.md / PROGRESS.md edits the author left staged.
+  ROADMAP.md / PROGRESS.md edits the author left in the working tree.
 - **`review` mode** — run the same specialists on an existing plan (one project, or batched across all)
   to bring it back to standard.
 
 A dispatched specialist (`{SCOPE}` ≠ all) never commits — the orchestrator owns the single commit. You
-can also run it standalone with `{SCOPE}` = all on one finished plan (then it commits per `{DRY_RUN}`).
+can also run it standalone with `{SCOPE}` = all on one finished plan; a standalone run **never commits
+either** — it leaves the fixes in the working tree and prints the commit commands for Victor.
 
 ---
 
@@ -29,8 +30,9 @@ DRY_RUN = [false | true]
 
 Use PROJECT, SCOPE, and DRY_RUN wherever the prompt refers to {PROJECT}, {SCOPE}, and {DRY_RUN}.
 
-> `PROJECT` is a **folder path**. Angular projects live at `angular/0X-name/PLANNING.md`, full-stack at
-> `projects/0X-name/PLANNING.md`. Derive the plan path from it.
+> `PROJECT` is a **folder path**. Every project lives at `projects/0X-name/`, so the plan is always
+> `{PROJECT}/PLANNING.md`. The format (Angular 01–06 vs full-stack 07+) is derived from the project
+> number, not from the path.
 
 ---
 
@@ -57,7 +59,7 @@ focused context per reviewer; a specialist that reads everything defeats it.
 23-section audit; Angular (01–06) → audit only the sections that project actually has, plus the
 universal checks (done-condition format, no vague/TBD rules, internal consistency of present
 sections). Never flag full-stack-only sections as missing on an Angular project. Derive the format
-from the path prefix and project number — do not ask.
+from the project number — do not ask.
 
 ---
 
@@ -92,18 +94,9 @@ means.
 the project from starting clearly, so **add them** (see "Fix, don't just report").
 
 **2. Quality per section** *(owner: every scope, for its own sections only)*. For each section your
-`{SCOPE}` owns, check it against its "what makes it pass" line in the standard. The highest-value ones:
-- **§0** — if in progress, Current step is real, Done condition specific and valid.
-- **§3** — each concept specific, each with a reason.
-- **§7** — every field has all five columns; every relationship states fetch type + cascade + reason.
-- **§8** — no vague rule, no TBD; state diagram present if there are transitions.
-- **§10** — every endpoint complete; status codes match the conventions.
-- **§15** — every step has a valid done condition; one major concept per step; the three dedicated
-  steps (backend tests, Angular tests, SQL complement) are present.
-- **§16** — specific method/service names; edge cases named (not just the happy path).
-- **§22** — every branch name follows `feat/short-description`; concrete open/close conditions; the
-  branches cover every §15 step with none unassigned or double-assigned; no more than one branch per
-  coherent phase.
+`{SCOPE}` owns, apply its **"what makes it pass" line in the standard** — the standard is the single
+source of those criteria; do not rely on any summary of them. If a section's pass line and the plan
+disagree, the standard wins.
 
 **3. Done-condition format** *(owners: `steps-tests` for §15, `rules-security` for §0)*. For every
 done condition in your slice, mark ✅ valid or ⚠️ vague against the four formats in the standard. For
@@ -146,14 +139,11 @@ once, after every concern's specialist has run. Leave your fixes in the working 
   in the report; never paste plan content back.
 - Ripples: one line per cross-concern ripple another specialist must reconcile (`none` if none).
 
-**If `{SCOPE}` = all (standalone run):**
-- **`{DRY_RUN}` = false, `new` mode** (author left ROADMAP.md + PROGRESS.md staged): commit all three
-  atomically. `git add {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
-  `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.
-- **`{DRY_RUN}` = false, `review` mode** (only the plan changed): commit just the plan
-  (every project lives under `projects/`): `git add {PROJECT}/PLANNING.md`, then
-  `git commit -m "docs: improve PLANNING.md for {PROJECT} — fix done conditions, add missing sections"`.
-- **`{DRY_RUN}` = true:** do not commit; leave changes in the tree and print the commit sequence.
+**If `{SCOPE}` = all (standalone run):** never commit — commit authority belongs to the orchestrators
+(CLAUDE.md's auto-commit exception covers them, not a standalone reviewer). Leave all changes in the
+working tree and print the commit sequence for Victor:
+`git add {PROJECT}/PLANNING.md` · `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`
+(`{DRY_RUN}` only affects whether you print the sequence as "ready to run" or as a preview).
 
 Then report the verdict + the audit summary (X critical · Y quality · Z consistency · W
-design-correctness issues found and fixed) + the files touched + the commit hash if committed.
+design-correctness issues found and fixed) + the files touched.

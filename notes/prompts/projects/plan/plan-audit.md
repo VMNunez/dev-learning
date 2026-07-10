@@ -10,7 +10,8 @@ audits a project's `PLANNING.md` to the full standard, hands-off, in two shapes:
 
 Both shapes use the same quality pipeline: the plan is **authored whole (new mode only), then audited
 and fixed by five cold specialist reviewers — one per concern** (architecture · data-model-api ·
-rules-security · steps-tests · branches-coverage) — before the orchestrator commits it. Authoring stays
+rules-security · steps-tests · branches-coverage) — before the orchestrator commits it. New mode adds
+an **architecture advisor** between the author and the specialists (Phase 1b). Authoring stays
 whole because a plan's sections cross-reference; review is split so each specialist owns a small slice
 it cannot skim, catching what the author trusted. No report to apply by hand, no per-file launching —
 one command does everything.
@@ -124,7 +125,7 @@ nothing, that is fine — continue to the reviewer.
 Do **not** hand one subagent the whole 23-section plan to audit — it would skim the last sections. Run
 the **specialist reviewers** defined in "Specialist review procedure" below over the just-authored plan.
 They fix directly and do not commit. Then go to "Finishing" (the orchestrator commits the plan + the
-staged ROADMAP.md / PROGRESS.md).
+ROADMAP.md / PROGRESS.md edits left in the working tree).
 
 ## If MODE = review
 
@@ -172,7 +173,14 @@ For **each** concern in order, launch a fresh, independent `general-purpose` sub
 > format (one line per check — never paste plan content), plus any cross-concern ripple to reconcile.
 
 Wait for each specialist before dispatching the next. Collect their traces and any ripples; if a ripple
-lands in a concern already reviewed, re-dispatch that one specialist to reconcile it.
+lands in a concern already reviewed, re-dispatch that one specialist to reconcile it — **at most one
+re-dispatch per concern per run**. If the reconciliation pass leaves new ripples, record them in the
+pipeline self-report instead of iterating further.
+
+**Specialist acceptance check:** a specialist's report is acceptable only if its trace has **one row
+per check its slice owns**. If rows are missing or the report is unusable, re-dispatch that specialist
+once, quoting what was missing; if it fails again, note the gap in the self-report and continue — never
+silently accept a partial trace.
 
 ## Finishing
 
@@ -180,14 +188,14 @@ The specialist reviewers left every fix in the working tree; **the orchestrator 
 (they never commit). One atomic commit per plan.
 
 **If `{DRY_RUN}` = false:** commit now.
-- **`new` mode** (the author left ROADMAP.md + PROGRESS.md staged with the plan): `git add
+- **`new` mode** (the author left ROADMAP.md + PROGRESS.md in the working tree with the plan): `git add
   {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
   `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.
 - **`review` mode** (only the plan changed): `git add {PROJECT}/PLANNING.md`, then
   `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`.
 Report the commit made and each specialist's verdict/trace.
 
-**If `{DRY_RUN}` = true:** nothing is committed — all changes are staged in the working tree for Victor
+**If `{DRY_RUN}` = true:** nothing is committed — all changes are left in the working tree for Victor
 to read. Print the atomic commit sequence above to run after reviewing the diff, one command per code
 block. In `new` mode that is the three-file commit; in `review` mode, one commit per plan.
 

@@ -165,7 +165,8 @@ object's state — never only `verify(...)` that a method was called. No trivial
 - **Pass:** specific method/service/component names (not "test the service"); edge cases named per
   test; every §8 business rule mapped to a test; the slice-test line present (even if "none yet — added
   in project 0X"); the assertion-quality rule stated.
-- For each new testing concept, add one interview question to `notes/interview-prep/en/` and `es/`.
+- (Reminder, not a check: interview questions for new testing concepts are added during daily
+  sessions per CLAUDE.md — no piece of this pipeline writes interview-prep files.)
 
 ### 17. Key rule
 One paragraph: the single most important thing to remember about this project.
