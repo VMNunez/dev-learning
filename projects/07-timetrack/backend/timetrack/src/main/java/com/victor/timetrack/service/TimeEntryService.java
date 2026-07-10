@@ -97,11 +97,27 @@ public class TimeEntryService {
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
-        if(!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)){
-            throw  new BusinessRuleViolationException("Manager can only approve SUBMITTED entries");
+        if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
+            throw new BusinessRuleViolationException("Manager can only approve SUBMITTED entries");
         }
 
         timeEntry.setStatus(EntryStatus.APPROVED);
+
+        TimeEntry saved = timeEntryRepository.save(timeEntry);
+
+        return toResponse(saved);
+    }
+
+    public TimeEntryResponse reject(Long id, String rejectionNote) {
+        TimeEntry timeEntry = timeEntryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+
+        if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
+            throw new BusinessRuleViolationException("Manager can only reject SUBMITTED entries");
+        }
+
+        timeEntry.setStatus(EntryStatus.REJECTED);
+        timeEntry.setRejectionNote(rejectionNote);
 
         TimeEntry saved = timeEntryRepository.save(timeEntry);
 

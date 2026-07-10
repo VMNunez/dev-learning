@@ -1,6 +1,7 @@
 package com.victor.timetrack.controller;
 
 import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
+import com.victor.timetrack.dto.request.RejectRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.service.TimeEntryService;
 import org.springframework.http.ResponseEntity;
@@ -32,4 +33,9 @@ public class TimeEntryController {
         return ResponseEntity.status(200).body(timeEntryService.approve(id));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
+    @PatchMapping("/{id}/reject")
+    public ResponseEntity<TimeEntryResponse> reject(@PathVariable Long id , @RequestBody RejectRequest request){
+        return ResponseEntity.status(200).body(timeEntryService.reject(id,request.getRejectionNote()));
+    }
 }
