@@ -153,8 +153,10 @@ subagent, `run_in_background: false`:
 >   «topic» skills recur, and the exact wording the market uses.
 >
 > Return a flat list of real «topic» interview questions, each written **as an interviewer would say
-> it**, tagged with the section it belongs to and a one-word frequency signal (often / sometimes /
-> rare) plus a short source note. Do not write or edit any file — return only the list.
+> it**, tagged with the section it belongs to, a one-word frequency signal (often / sometimes /
+> rare), and a provenance tag: `[sourced]` (you found it in the live search or the evidence file —
+> include the short source note) or `[trained]` (from your trained knowledge of the market). Do not
+> write or edit any file — return only the list.
 
 Wait for M and keep its list — **it must be tagged by section** (each question carries the `##` heading
 it belongs to), so you can hand each section only its own slice later.
@@ -206,6 +208,8 @@ never overlap a section's two subagents — they edit the same two files. Neithe
 > commit, do NOT mark anything done, do NOT touch other sections.** Leave your work in the tree. Return
 > a **question-by-question trace for this section** (each question with PASS or the change you made) as
 > proof you read it whole, plus the weak-answer / coverage-gap / TODO-pattern notes for this section.
+> Respect the studied marker: questions ending in `[x]` are content Victor has studied — structural
+> fixes only, report weak ones instead of rewriting (see the standard).
 
 Wait for A. If A reports it could not complete the section (blocked, missing context), skip that
 section's reviewer, note it, and move to the next section — do not leave a half-authored section for
@@ -217,8 +221,11 @@ the reviewer.
 > `FILE = «topic»`, `SECTION = «this exact heading»`, `DRY_RUN = true`. **Audit this one section
 > only**, in full in both `en/` + `es/`: realistic, well-worded, in Victor's voice, real cited code
 > where an interviewer poses the question with code, correct type ratio and priority order within the
-> section. Fix what falls short in both files. `DRY_RUN = true` means **fix only, do not commit** — the
-> orchestrator commits once per topic after every section. Return your verdict and a
+> section. Rewrite freely any question **without** the `[x]` studied marker; questions ending in `[x]`
+> are content Victor has studied — always-allowed structural fixes only, and **report** anything below
+> bar there as a weak answer (see the standard). Fix what falls short in both files. `DRY_RUN = true`
+> means **fix only, do not
+> commit** — the orchestrator commits once per topic after every section. Return your verdict and a
 > **question-by-question trace for this section**.
 
 Wait for B. **Acceptance gate — verify the trace and the slice coverage (orchestrator).** Two checks

@@ -70,7 +70,9 @@ You are auditing Victor's interview preparation. Do deep work on the scope you a
 wander outside it. **When the audit orchestrator dispatches you, `{SECTION}` is one exact `##`
 heading** — author/audit just that section (in both `en/` and `es/`), read it in full, and return a
 **question-by-question trace** (each question with PASS or the change you made) as proof you finished
-it. A section is the deep-work unit; never take on the whole file in one pass under the orchestrator.
+it. **Respect the studied marker**: a question whose bold line ends in `[x]` (in either language) is
+content Victor has already studied — apply only the always-allowed structural fixes from the standard
+and report weak ones instead of rewriting; everything unmarked you may rewrite freely to reach the bar. A section is the deep-work unit; never take on the whole file in one pass under the orchestrator.
 (`SECTION = all` on a standalone run means the whole file — then work section by section within it.)
 
 Before starting, read:
@@ -116,6 +118,11 @@ Cite the fragment with a first-line comment naming the file, e.g.
 `// projects/07-timetrack · TimeEntryService.java`. If no project actually contains the construct (a
 pure-language gotcha), use a minimal snippet marked `// illustrative — not from a project`, or skip the
 code. Keep the same code in both `en/` and `es/` (comments may be translated).
+
+**The same truthfulness rule applies to prose anchors.** Never write "I used it in project 06 to…"
+unless that project really does use it — check the source before writing the claim. An invented anchor
+is worse than no anchor: it is a false anecdote about Victor's own code that one interviewer follow-up
+exposes. If no project uses the pattern, answer without a project reference.
 
 ## Step 1 — Sync check
 

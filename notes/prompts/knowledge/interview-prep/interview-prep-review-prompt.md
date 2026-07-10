@@ -79,6 +79,11 @@ file worth studying:
   actually supports the answer. Fix invented code (replace with a real fragment from the project source,
   or mark it `// illustrative — not from a project`), and add a snippet where one is clearly missing.
   Same code in `en/` and `es/`.
+- **Project anchor real** — when an answer names a project and a concrete use ("I used it in project 06
+  to add the JWT header…"), spot-check that the named project actually contains that usage — same
+  criterion as code citations, and worse when it fails: an invented anecdote about Victor's own code is
+  exactly what an interviewer's follow-up exposes. Fix a false anchor by pointing it at where the
+  pattern really lives (or dropping the anchor), never by leaving it plausible-but-unverified.
 - **Bilingual integrity** — `en/` and `es/` have the same sections, same questions, same order; `es/`
   reads as native Spanish, not a calque; the Junior-tip label is `Consejo de entrevista:`.
 
@@ -96,12 +101,15 @@ scope, including any questions you just added.
 ## Fix, don't just report
 
 Where a check fails, **fix it directly** in both `{FILE}` files — you are the last quality pass, not an
-advisor. Rewriting an unrealistic or badly-worded question, tightening an answer into Victor's voice,
-reclassifying a type, and reordering by priority are all part of your job here (the author already ran;
-you are finishing the same build, so the "existing content is final" rule does not bind the reviewer
-for questions authored in this same run — it protects content Victor has studied across runs, which is
-untouched by definition on a fresh audit). Preserve every question that is already at bar; only change
-what misses it. If the topic is genuinely already at bar, change nothing and record it as PASS.
+advisor. But your freedom to rewrite is **scoped by the studied marker**: any question carrying `[x]`
+at the end of its bold line (in either file) is content Victor has already studied — the standard's
+"studied content is final" rule binds you there: apply only the always-allowed structural fixes
+(markers, ordering, format, missing Junior tip / Red flag, mirroring the `[x]` itself) and **report**
+anything below bar as a weak answer for Victor to TODO. Every question **without** `[x]` is fair game:
+rewording an unrealistic question, tightening an answer into Victor's voice, and reclassifying a type
+are all your job on unmarked content. Never add or remove an `[x]` yourself (mirroring an existing one
+between `en/` and `es/` is the only exception). Preserve every question that is already at bar; only
+change what misses it. If the topic is genuinely already at bar, change nothing and record it as PASS.
 
 ## Finish
 

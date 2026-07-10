@@ -58,28 +58,33 @@ Notes and Q&A both live in two languages, and the two files are **never allowed 
 
 ---
 
-## Existing content is final unless marked with TODO
+## Studied content is final — the `[x]` marker
 
-Do not rewrite, rephrase, or "improve" a question or answer that already exists. Victor may have
-studied it and likes it as written.
+Victor marks every question he has **already studied** with `[x]` at the end of the bold question
+line, after the priority marker:
 
-**Allowed without a TODO:**
-- Resolve TODO markers.
-- Add new questions (always allowed).
-- Assign priority markers (⭐⭐⭐/⭐⭐/⭐) to existing questions.
-- Reorder existing questions by priority within a section (never across sections).
+**What is `@Transactional` and what does it do?** ⭐⭐⭐ [x]
+
+He marks it in `es/` (the file he studies from); any pipeline pass that touches the question mirrors
+the marker to `en/`. A question carrying `[x]` in **either** file counts as studied. Everything
+without `[x]` is fair game — rewrite it freely to raise it to the bar.
+
+**On a studied (`[x]`) question, allowed without a TODO:**
+- Resolve TODO markers (a TODO from Victor always overrides `[x]` — he is asking for the change).
+- Assign or fix the priority marker; reorder by priority within a section (never across sections).
 - Fix structural format violations (missing blank line between question and answer).
-- Add a Junior tip to an existing Conceptual question missing one; add a Red flag to an existing
-  Decision-based or Pressure question missing one.
+- Add a missing Junior tip (Conceptual) or Red flag (Decision-based / Pressure).
+- Mirror the `[x]` marker itself between `en/` and `es/`.
 
-**NOT allowed without a TODO:**
-- Change the wording of existing questions.
-- Rewrite or rephrase existing answers.
-- "Strengthen" existing content on your own judgment.
+**NOT allowed on a studied question without a TODO:**
+- Change the wording of the question.
+- Rewrite or rephrase the answer.
+- "Strengthen" it on your own judgment.
 
-If an existing answer is weak but has no TODO, **report it** — do not change it. Victor adds a TODO, and
-the fix lands on the next run. (Exception: if Victor explicitly asks you to fix the reported weak
-answers in the same conversation, you may rewrite them — mirrored to both files.)
+If a studied answer is weak but has no TODO, **report it** — do not change it. Victor adds a TODO, and
+the fix lands on the next run. (Exception: if Victor explicitly asks in the same conversation to fix
+the reported weak answers, rewrite them — mirrored to both files.) Adding new questions is always
+allowed; new questions are born unmarked.
 
 ---
 
@@ -187,7 +192,10 @@ An answer is interview-ready only when all of these hold:
   to…", never "it is used to…". Concise (1–2 sentences); an interviewer wants a crisp answer, not a
   lecture.
 - **Anchored to a real project** whenever the question is about a pattern or a decision — named
-  project, the problem it solved, and what would break without it.
+  project, the problem it solved, and what would break without it. **The anchor must be true**: the
+  named project really uses the pattern (verify in the source before claiming it). An invented anchor
+  is worse than none — it is a false anecdote about Victor's own code that one follow-up question
+  exposes.
 - **Every word defensible.** Apply the test: *"could Victor explain every word of this answer if the
   interviewer pressed on it?"* If not, the answer is padded or memorised — it is weak.
 
