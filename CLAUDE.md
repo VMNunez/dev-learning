@@ -256,7 +256,7 @@ notes/java/
 - `notes/sql/` — `en/` and `es/` for numbered files; next file: `15-...`; future-learning.md in root
 - `notes/architecture/` — `en/` and `es/` for numbered files; next file: `06-...`; future-learning.md in root (includes microservices as a concept-only entry)
 - `notes/angular/` — `en/` and `es/` for numbered files; next file: `19-...`; future-learning.md in root
-- `notes/java/` — `en/` and `es/` for numbered files; next file: `15-...`; future-learning.md in root
+- `notes/java/` — `en/` and `es/` for numbered files; next file: `16-...`; future-learning.md in root
 - `notes/spring-boot/` — `en/` and `es/` for numbered files; next file: `11-...`; future-learning.md and layer-reference.md in root
 - `notes/angular-material/` — `en/` and `es/` for numbered files; next file: `16-...`
 - `notes/general/` — not yet migrated to `en/`/`es/` (files sit in the topic root); next file: `13-...`; future-learning.md in root
