@@ -3,6 +3,9 @@
 Use in a **separate conversation**, ideally inside Claude Code so it can read across both repos.
 No configuration needed — paste the whole prompt into a new chat.
 
+> **▶ Run first:** `portfolio-audit` if a project just reached ✅ Ready (its Phase 3 already updates
+> this README) — otherwise nothing.
+
 Run this whenever you want the **GitHub profile README** (`dev/portfolio/VMNunez`) reviewed, refreshed,
 or optimized for the job target — without re-explaining the context each time. Claude is the one
 responsible for keeping that README current and optimized; this prompt is the repeatable entry point

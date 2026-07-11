@@ -24,8 +24,10 @@ each other, and which prompts are still missing. CLAUDE.md only links here.
 Every file in this folder is a `.md` prompt, but **not every file is something you run.** Two kinds:
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation. No leading `_` and no `-write-prompt` / `-review-prompt` / `-plan-prompt` suffix.
-  **23 files, listed below.**
+  conversation (inside Claude Code, the orchestrators are also available as `/slash-commands`, e.g.
+  `/notes-audit`). No leading `_` and not an internal subagent step (suffixes `-write` / `-review` /
+  `-plan` / `-inspect` / `-translate` / `-review-es` / `-architecture` / `-flow` / `-security`
+  `-prompt.md`) — the explicit lists below are authoritative. **23 files, listed below.**
 - **Internal — you never launch these directly.** A runnable prompt reads and executes them as its
   own subagent step; they never appear in your "paste into a new chat" workflow. Two patterns:
   - **`_`-prefixed standard files** (e.g. `_note-quality-standard.md`, `_review-standard.md`) — the
@@ -45,8 +47,10 @@ Every file in this folder is a `.md` prompt, but **not every file is something y
 
 Two flavors among these 23, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `plan-audit`, `readme-audit`,
-  `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`, `coverage-audit-prompt` — run entirely inside Claude Code and
-  hand you a finished result (and, where noted, a commit) with no further input from you.
+  `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`, `coverage-audit-prompt`, `notes-and-interview-prep-prompt` — run entirely inside Claude Code and
+  hand you a finished result (and, where noted, a commit) with no further input from you. Every
+  orchestrator also ends by writing its folder's `_last-run-report.md` (self-report) — not repeated
+  in each table row below.
 - **Single-shot prompts** — everything else — do one job in one pass; some need you to paste
   something mid-conversation (your code into `simulation-review-prompt`, a job offer into
   `cover-letter-prompt`, etc.).

@@ -7,7 +7,7 @@ description: >
   step complete", "ya está el step"). CLAUDE.md mandates updating four places after every completed
   step, and the real failure mode is doing it partially — updating PROGRESS.md but forgetting the
   ✅ in PLANNING.md or the README. This skill makes the ritual atomic: all four or flag why not.
-  Do NOT trigger for ordinary commits mid-step, notes-only sessions, or the audit pipelines.
+  Do NOT trigger for ordinary commits mid-step, notes-only sessions, or the audit pipelines. (Projects 01-06 are closed - their extraction format, the "Key patterns introduced" table, is N/A in practice.)
 ---
 
 # Step-completion ritual (daily session)
