@@ -333,7 +333,7 @@ project code, so a separate branch only split `PROGRESS.md` across branches.)
 - SQL block (12:30): work in `practice/sql/` on `main`, commit there, and update the SQL section of
   `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
 - The SQL section in PROGRESS.md tracks which topics exist in `practice/sql/` and their status:
-  solid ✅ (score > 80% in review) or in progress ⏳. Read it at the start of a SQL session to know
+  solid ✅ (score ≥ 80% in review) or in progress ⏳. Read it at the start of a SQL session to know
   which topic is next.
 
 ### PROGRESS.md updates
@@ -403,7 +403,7 @@ learning/
 │   └── 07-timetrack/      ← Spring Boot + Angular + PostgreSQL + Docker
 │       └── PROJECT-BACKLOG.md ← improvement tasks for this project, written by review-audit
 ├── practice/              ← exercises, not portfolio (lives on main)
-│   ├── sql/               ← SQL exercises (01-basics/, 02-joins/, etc.)
+│   ├── sql/               ← SQL exercises (flat files: 01-basics.sql, 02-joins.sql, …)
 │   ├── simulations/       ← technical test simulations — Angular, Spring Boot, SQL; tracker at TRACKER.md
 │   └── leetcode/          ← algorithm exercises for interviews (gated — see ROADMAP.md)
 └── notes/                 ← study guide + prompt system (see notes/ folder and notes/prompts/README.md)

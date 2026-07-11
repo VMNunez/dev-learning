@@ -477,19 +477,19 @@ Challenge: analyze a slow query and decide what index to add, then verify with E
 
 | Topic | Path |
 |-------|------|
-| joins | practice/sql/02-joins/exercises.sql |
-| group-by | practice/sql/03-group-by/exercises.sql |
-| nulls | practice/sql/04-nulls/exercises.sql |
-| subqueries | practice/sql/05-subqueries/exercises.sql |
-| ctes | practice/sql/06-ctes/exercises.sql |
-| dml | practice/sql/07-dml/exercises.sql |
-| normalization | practice/sql/08-normalization/exercises.sql |
-| schema-design | practice/sql/09-schema-design/exercises.sql |
-| window-functions | practice/sql/10-window-functions/exercises.sql |
-| indexes | practice/sql/11-indexes/exercises.sql |
-| transactions | practice/sql/12-transactions/exercises.sql |
-| data-types | practice/sql/13-data-types/exercises.sql |
-| postgresql-specifics | practice/sql/14-postgresql-specifics/exercises.sql |
+| joins | practice/sql/02-joins.sql |
+| group-by | practice/sql/03-group-by.sql |
+| nulls | practice/sql/04-nulls.sql |
+| subqueries | practice/sql/05-subqueries.sql |
+| ctes | practice/sql/06-ctes.sql |
+| dml | practice/sql/07-dml.sql |
+| normalization | practice/sql/08-normalization.sql |
+| schema-design | practice/sql/09-schema-design.sql |
+| window-functions | practice/sql/10-window-functions.sql |
+| indexes | practice/sql/11-indexes.sql |
+| transactions | practice/sql/12-transactions.sql |
+| data-types | practice/sql/13-data-types.sql |
+| postgresql-specifics | practice/sql/14-postgresql-specifics.sql |
 
 If the folder does not exist, create it using the path above.
 
@@ -662,7 +662,7 @@ The table format is (4 columns — shared with `progress-update-prompt`):
   new column totals
 
 **If the row for {TOPIC} does not exist in the table:** add it. Fill `Folder` with the file's
-path (`sql/<NN>-<topic>.sql` for a flat file, `sql/<NN>-<topic>/` for a subfolder).
+path (`practice/sql/<NN>-<topic>.sql` — the flat-file convention is the real one; a legacy subfolder would be `practice/sql/<NN>-<topic>/`).
 
 **If the `### Exercises completed` table does not exist in PROGRESS.md:** create it under a new
 `### Exercises completed` heading, with the 4-column format and the summary line above. Insert it
@@ -699,7 +699,9 @@ reordering. Do not restate them here. Two SQL-specific points on top of the stan
 ### Step 6 — Commit message
 
 **Branch:** SQL exercises and PROGRESS.md both live on `main` (there is no separate SQL branch).
-Commit on `main`.
+Commit on `main`. **Precondition check:** if `practice/sql/` or `PROGRESS.md` do not exist on `main`
+yet (the repo-layout reorg may still live only on the feature branch), stop and say so — merge the
+reorg to `main` first instead of recreating files in the wrong place.
 
 List only files that were actually modified. Always one command per code block.
 

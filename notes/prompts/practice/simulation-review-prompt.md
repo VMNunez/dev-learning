@@ -218,11 +218,15 @@ this prompt.
 Then show the commit message:
 
 ```
-git add {SIMULATION_FILE} practice/simulations/TRACKER.md notes/interview-prep/
+git add {SIMULATION_FILE} practice/simulations/TRACKER.md
+```
+If (and only if) questions were added, also stage the two exact Q&A files:
+```
+git add notes/interview-prep/en/{topic}.md notes/interview-prep/es/{topic}.md
 ```
 
 ```
-git commit -m "docs: simulation {SIMULATION_FILE} — [Pass/Borderline/Fail], {TIME_USED}min"
+git commit -m "docs: simulation {type} {NN} — [Pass/Borderline/Fail], {TIME_USED}min"
 ```
 
 ---

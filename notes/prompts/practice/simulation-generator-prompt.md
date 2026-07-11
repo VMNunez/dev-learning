@@ -136,5 +136,6 @@ git commit -m "docs: add {COUNT} {TYPE} simulation(s) — [main skill targeted]"
 ```
 
 > Branch note: both these simulation specs and the `practice/sql/` exercises live on `main` — there is no
-> separate SQL branch. Commit on `main`.
+> separate SQL branch. Commit on `main`. Precondition: if `practice/simulations/` does not exist on
+> `main` yet (repo-layout reorg still on the feature branch), stop and flag it — merge the reorg first.
 ````

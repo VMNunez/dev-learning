@@ -46,7 +46,7 @@ Before starting, read `CLAUDE.md` (teaching rules) and `notes/prompts/_shared-co
 (my profile, and especially the **"Spanish job market 2026"** and **"AI factor 2026"** sections —
 they list the exact mistakes interviewers test for in the code-review step).
 
-The point of this exercise is the stage-4 reality: a junior who can write code but cannot review
+The point of this exercise appears in the stage-3 technical test (a code-review step) and again live in stage 4. The underlying reality: a junior who can write code but cannot review
 it gets filtered out. I must learn to spot the bug, name *why* it is wrong, and say how I would fix
 it — out loud, the way I would in an interview.
 
