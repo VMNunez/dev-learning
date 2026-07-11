@@ -35,12 +35,13 @@ CONTACTO = [recruiter name if you have one — used to open the message | blank]
 
 ## Before starting
 
-First read `notes/prompts/strategy/apply/_application-standard.md` — the shared standard both application
-prompts follow. It defines the **sources to read** (`CLAUDE.md`, `notes/prompts/_shared-context.md`,
+First read `notes/prompts/strategy/apply/_application-standard.md` — the shared application standard.
+From it, a cover letter uses the **sources to read** (`CLAUDE.md`, `notes/prompts/_shared-context.md`,
 `PROGRESS.md`, `ROADMAP.md`, the optional `notes/cv/cv-bullets.md`, and your existing CV in
-`personal/job-search`), the **universal bullet format**, the **keyword pool**, the **Spanish / no-buzzword
-voice**, the **defensibility rule**, and the **project-selection heuristic**. This prompt does not repeat
-those rules — it adds only the cover-letter flow on top.
+`personal/job-search`), the **keyword awareness**, the **Spanish / no-buzzword voice**, and the
+**defensibility rule** (the bullet format and project-selection heuristic are CV/LinkedIn machinery —
+a ≤250-word letter has neither). This prompt does not repeat those rules — it adds only the
+cover-letter flow on top.
 
 Then read the pasted offer to know what **that specific company** asks for — you connect their needs to
 real evidence from your profile, never generic enthusiasm.
@@ -52,7 +53,8 @@ real evidence from your profile, never generic enthusiasm.
 - **Write in Spanish**, no buzzwords (no "apasionado", no "orientado a resultados"), no em-dashes, no
   clichés. Same voice as the CV.
 - **Every claim is defensible** — only mention a skill you can back up in an interview (defensibility
-  rule). Name the internship (SaaS with Next.js + TypeScript + MySQL) and the full-stack project
+  rule). Name the internship (stack per `_shared-context.md` / `personal/job-search/internship-daw.md`
+  — the ground truth; never hardcode it here) and the full-stack project
   (`07-timetrack`, Angular + Spring Boot + PostgreSQL) as the concrete evidence.
 - **Connect their needs to your evidence** — read what the offer asks and match it to a specific thing
   you built, not to an adjective. "Construí una API REST con Spring Boot y JWT" beats "tengo pasión por

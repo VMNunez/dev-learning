@@ -63,7 +63,7 @@ concept, tech stack, data model, key patterns, folder structure, and the step-by
 - I am also preparing for the Cambridge First Certificate (B2 English exam)
 - My English is around B1 and I am pushing it to **B2 / Cambridge First (FCE)** — pitch explanations at FCE level to stretch me (see Language rules)
 - Previous knowledge (a bit rusty): React, Node.js, Express, TypeScript, Tailwind, CSS, HTML, JavaScript
-- Internship ended June 2 2026 (built a SaaS with Next.js + TypeScript + MySQL) — real work experience
+- Internship ended June 2 2026 (built a SaaS with Next.js + TypeScript + Supabase) — real work experience
 
 Career strategy, phases, applications timeline, and what makes a strong junior in 2026 → `ROADMAP.md`.
 Fuller profile, honest situation analysis (strengths / risks), and the Spanish job market →

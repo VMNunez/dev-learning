@@ -278,6 +278,4 @@ Aug–Sep 2026, per the market analysis in `_shared-context.md`) are now **built
   career-change story, availability, salary), which only had a one-line touch in `simulator`.
 
 Still intentionally **not** a prompt:
-- **Application tracker** — a simple file plus the ROADMAP applications section already cover this;
-  a dedicated prompt would be overhead.
 - **English / Cambridge prep** — tracked in a separate private repo, out of scope for this folder.

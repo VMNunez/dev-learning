@@ -11,6 +11,8 @@ Three modes:
 - **`tailor`** — adapts your base CV to one specific job offer, keyword-matched to what that offer asks
 
 > **▶ Run first:** `progress-update` (so `PROGRESS.md` is current). Optional: `portfolio-audit` for polished `cv-bullets`.
+> Mind ROADMAP.md's **CV gate**: update the CV only once project 07 is live on GitHub with a README
+> that includes at least one architecture decision — not before.
 
 ---
 
@@ -146,6 +148,7 @@ junior en consultora donde aplicar y seguir desarrollando estas competencias."
 ---
 
 **HABILIDADES TÉCNICAS**
+*(example structure — regenerate the real cells from PROGRESS.md at run time; never copy this table as-is)*
 
 | Frontend       | Backend             | Base de datos  | Herramientas   |
 |----------------|---------------------|----------------|----------------|

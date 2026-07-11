@@ -144,6 +144,9 @@ judge which skills the offers keep asking for. You do **not** need to write any 
      nowhere all asked for something you don't have (e.g. `Docker`, `testing`), name it.
    - **Recurring feedback** — the same critique twice is a signal, not noise.
    - **Funnel** — how many `aplicado` → `entrevista` → `oferta`, and where the drop is.
+   - **Aging queue (follow-up)** — every row still `aplicado`/`entrevista` whose `fecha` is more than
+     14 days old with no note since: list them and suggest a follow-up (use `cover-letter-prompt`
+     `message` mode).
 3. Give **2–4 concrete actions**, ranked. Each must be something you can act on, e.g.:
    - "Two consultancies rejected after asking for Docker — run `evidence-intake` on those offers so it
      reaches `coverage.md`, then prioritise the Docker topic."
