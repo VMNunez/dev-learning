@@ -3,13 +3,15 @@
 > 📖 [Baeldung — Control structures in Java](https://www.baeldung.com/java-control-structures) → read: "If-Else Statement", "Switch Statement" and "Loops"
 > 📖 [Oracle Docs — Control flow statements](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html)
 
+In [01-variables-types.md](01-variables-types.md) you learned how to declare and store values. On its own, a program that only stores values does nothing interesting — it runs top to bottom, one line after another, and stops. Control flow is what lets a program *make decisions* about those values (run this block, skip that one) and *repeat* work (loop over a list). It is the difference between a fixed script and a program that reacts to its data.
+
 Control flow statements decide which code runs and how many times. Java uses the same structures as JavaScript — the syntax is nearly identical, so most of this will feel familiar.
 
 ---
 
 ## if / else
 
-The basic decision tool. Runs the first block whose condition is true, skips the rest. If no condition matches, the `else` block runs (if you wrote one).
+The basic decision tool. Java evaluates the conditions top to bottom and runs the first block whose condition is true, then skips all the rest — even if a later condition would also be true. If no condition matches and you wrote an `else`, that block runs as the default.
 
 ```java
 if (age >= 18) {
@@ -20,6 +22,8 @@ if (age >= 18) {
     System.out.println("Child");
 }
 ```
+
+> **The condition must be a real `boolean`.** This is the one place Java differs from JavaScript here. In JS you can write `if (name)` and it runs when `name` is any "truthy" value (a non-empty string, a non-zero number). Java has no truthy/falsy: the condition has to be an expression that evaluates to exactly `true` or `false`. `if (name)` does not compile — you get `incompatible types: String cannot be converted to boolean`. To check a string has content you write it out: `if (name != null && !name.isEmpty())`. The same rule applies to `while`, `do-while`, and the ternary below.
 
 ### Ternary operator
 
@@ -40,7 +44,7 @@ Use `switch` when you have many possible values for one variable. A chain of `if
 
 ### Classic switch (statement)
 
-The classic form runs code for each matching case. You must write `break` at the end of each case — without it, execution "falls through" to the next case and runs that code too, even if it does not match. This is a common bug in Java code.
+The classic form runs the code of the case that matches. You must write `break` at the end of each case — without it, execution falls into the next case and runs that code too, even if it does not match. This behaviour has a name: **fall-through** (literally "falling down") — control "falls" from one case to the next without stopping. It is a common bug in Java code.
 
 ```java
 switch (day) {
@@ -83,6 +87,8 @@ Use the switch expression form for all new code — it is cleaner, safer, and ea
 
 The most explicit form — you control the start, stop, and step yourself. Three parts, separated by semicolons: `(init; condition; step)`. Use it when you need the index number.
 
+> **What is the "step"?** It is how much the counter moves on each iteration. `i++` is the most common step: it adds 1 to `i`. But you could use `i += 2` to go in twos, or `i--` to count backwards.
+
 ```java
 for (int i = 0; i < 5; i++) {
     System.out.println(i);   // prints: 0 1 2 3 4
@@ -95,7 +101,7 @@ for (int i = 0; i < 5; i++) {
 
 ### Enhanced for (for-each) — use this for collections and arrays
 
-The classic index loop is verbose and error-prone (off-by-one errors, wrong variable name). The enhanced `for` removes the index entirely and gives you each item directly. Think of it as Java's version of `for...of` in JavaScript.
+The classic index loop has two frequent problems: it is longer to write, and it is easy to get the range wrong — for example writing `i <= names.length` instead of `i < names.length`, which runs one iteration too many and reads past the end of the array (this is called an _off-by-one error_ — being off by exactly one position). The enhanced `for` removes the index entirely and gives you each item directly. Think of it as Java's version of `for...of` in JavaScript.
 
 Syntax: `for (Type variable : collection)` — read as "for each item of this type in this collection".
 
@@ -181,8 +187,13 @@ if (name != null) {
 }
 
 // Or using Optional (covered in 10-generics.md) — the modern approach
+// Don't worry about the `->` syntax yet — that's a lambda, covered in 09-streams-lambdas.md
 Optional.ofNullable(name)
     .ifPresent(n -> System.out.println(n.toUpperCase()));
 ```
 
 In Spring Boot, many methods return `Optional<T>` instead of a raw object that might be null. `repository.findById(id)` is a good example — it returns `Optional<Employee>` so you are forced to handle the "not found" case. This pattern is covered in detail in `10-generics.md`.
+
+---
+
+So far every loop and condition has lived inside one block of code. But real programs are not one long block — they are split into reusable, named pieces you can call by name, each taking inputs and handing back a result. Those pieces are **methods**, and the `if`, `for`, and `switch` you just learned are the building blocks that go inside them. That is where [03-methods.md](03-methods.md) picks up.

@@ -3,13 +3,15 @@
 > 📖 [Baeldung — Control structures in Java](https://www.baeldung.com/java-control-structures) → leer: "If-Else Statement", "Switch Statement" y "Loops"
 > 📖 [Oracle Docs — Control flow statements](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html)
 
+En [01-variables-tipos.md](01-variables-tipos.md) aprendiste a declarar y guardar valores. Por sí solo, un programa que solo guarda valores no hace nada interesante — se ejecuta de arriba a abajo, una línea tras otra, y termina. El control de flujo es lo que permite a un programa *tomar decisiones* sobre esos valores (ejecutar este bloque, saltarse aquel) y *repetir* trabajo (recorrer una lista). Es la diferencia entre un guion fijo y un programa que reacciona a sus datos.
+
 Las sentencias de control de flujo deciden qué código se ejecuta y cuántas veces. Java usa las mismas estructuras que JavaScript — la sintaxis es casi idéntica, así que la mayoría te resultará familiar.
 
 ---
 
 ## if / else
 
-Ejecuta el bloque cuya condición sea verdadera y omite los demás. Si escribes varios `else if`, Java los evalúa de arriba a abajo y ejecuta el primero que se cumpla. Si ninguna condición se cumple y hay un `else`, ese bloque se ejecuta como opción por defecto.
+La herramienta de decisión básica. Java evalúa las condiciones de arriba a abajo y ejecuta el primer bloque cuya condición sea verdadera, y luego se salta todos los demás — aunque una condición posterior también fuese cierta. Si ninguna condición coincide y escribiste un `else`, ese bloque se ejecuta como opción por defecto.
 
 ```java
 if (age >= 18) {
@@ -20,6 +22,8 @@ if (age >= 18) {
     System.out.println("Child");
 }
 ```
+
+> **La condición tiene que ser un `boolean` de verdad.** Este es el único punto donde Java se aparta de JavaScript aquí. En JS puedes escribir `if (name)` y se ejecuta cuando `name` es cualquier valor "truthy" (una cadena no vacía, un número distinto de cero). Java no tiene truthy/falsy: la condición debe ser una expresión que evalúe exactamente a `true` o `false`. `if (name)` no compila — obtienes `incompatible types: String cannot be converted to boolean`. Para comprobar que una cadena tiene contenido lo escribes entero: `if (name != null && !name.isEmpty())`. La misma regla se aplica a `while`, `do-while` y al ternario de abajo.
 
 ### Operador ternario
 
@@ -168,7 +172,7 @@ Piensa en `break` como la salida de emergencia y en `continue` como el botón de
 
 ## Comprobaciones de null
 
-> **¿Qué es un error en runtime?** Es un error que no ocurre al compilar el código, sino cuando el programa ya está corriendo y llega a esa línea. El compilador no lo detecta de antemano — simplemente falla en el momento en que se ejecuta. (La explicación completa de compile time vs runtime está en la sección `var` de [01-variables-tipos.md](01-variables-tipos.md).)
+**Error en runtime:** un error que no ocurre cuando Java compila el código, sino cuando el programa ya está corriendo y llega a esa línea. El compilador no lo detecta de antemano. (Para la explicación completa de compile time vs runtime, mira la sección `var` en [01-variables-tipos.md](01-variables-tipos.md).)
 
 `NullPointerException` es el error en runtime más común en Java. Ocurre cuando llamas a un método sobre una variable que es `null` — Java no puede encontrar el objeto en el que ejecutar el método. Solo los **objetos** tienen métodos: `String`, wrappers (`Integer`, `Long`…), y cualquier clase que definas. Los **primitivos** (`int`, `long`, `double`…) no son objetos y no tienen métodos — no pueden ser `null` y no puedes llamar `.algo()` sobre ellos. Por eso nunca verás una `NullPointerException` en una variable `int`. En [01-variables-tipos.md](01-variables-tipos.md) ya tienes los métodos útiles de los wrappers y de `String` — esas son las clases sobre las que sí puedes llamar métodos. La solución es simple: comprueba siempre si es `null` antes de llamar métodos sobre algo que podría no existir.
 
@@ -182,10 +186,14 @@ if (name != null) {
     System.out.println(name.toUpperCase());
 }
 
-// O usando Optional — el enfoque moderno (cubierto en 10-generics.md)
-// No te preocupes si aún no entiendes esta sintaxis — lo verás en detalle más adelante
+// O usando Optional (cubierto en 10-generics.md) — el enfoque moderno
+// No te preocupes todavía por la sintaxis `->` — es una lambda, se cubre en 09-streams-lambdas.md
 Optional.ofNullable(name)
     .ifPresent(n -> System.out.println(n.toUpperCase()));
 ```
 
 En Spring Boot, muchos métodos devuelven `Optional<T>` en lugar de un objeto crudo que podría ser null. `repository.findById(id)` es un buen ejemplo — devuelve `Optional<Employee>` para que estés obligado a manejar el caso "no encontrado". Este patrón se cubre en detalle en `10-generics.md`.
+
+---
+
+Hasta ahora todos los bucles y condiciones han vivido dentro de un mismo bloque de código. Pero los programas reales no son un único bloque largo — se dividen en piezas reutilizables y con nombre que puedes invocar por su nombre, cada una tomando entradas y devolviendo un resultado. Esas piezas son los **métodos**, y el `if`, el `for` y el `switch` que acabas de aprender son los ladrillos que van dentro de ellos. Ahí es donde arranca [03-metodos.md](03-metodos.md).
