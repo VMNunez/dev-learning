@@ -84,8 +84,9 @@ yourself.
 ## If PROJECT_PATH = all
 Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next. Put
-each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
-summary table (`Project | Quality | High | Medium | Low`). **Once a project's backlog is written, drop
+each project's report under a `### [project]` heading, and after the last print this pipeline's own
+summary table (`Project | Quality | High | Medium | Low` — a deliberate override of `_batch-mode.md`'s
+generic `Target | Result | Files changed`). **Once a project's backlog is written, drop
 its slice tables from your working state** — carry forward only its summary row; the detail lives in
 its `PROJECT-BACKLOG.md`. This keeps a 7-project run from drowning your context in stale findings. Otherwise, follow the procedure once.
 
@@ -212,10 +213,13 @@ whether these prompts need changing, so be honest, including "nothing to report"
 - **Dedup** — how many cross-slice duplicates were merged, and whether matching them was hard
   (a sign the business-rule-tag improvement is needed).
 - **Anything else** that made the run harder than it should be.
+- **Verdict** — one line: "pipeline clean" or "change worth considering: <what>" (the shared
+  criterion from `_pipeline-self-report.md`).
 
-Five bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
+Six bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
 directly** under the notes/prompts exception — `git status` before add and before commit, stage only
-`_last-run-report.md`, message `docs: pipeline self-report for review of {PROJECT_PATH}`. (The
+`_last-run-report.md`, message `docs: pipeline self-report for review-audit run on {PROJECT_PATH}`
+(the shared contract's format). (The
 never-auto-commit rule below applies to `PROJECT-BACKLOG.md`, not to this file.) A later main session
 reads this file to decide if the prompts need a change — they stay frozen unless it shows a real
 failure. Also print the report in chat.

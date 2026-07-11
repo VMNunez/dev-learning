@@ -38,8 +38,9 @@ starting, read **only these sections** — keep your context for the slice's cod
   learning-objectives rubric, and the gate/backlog machinery — the orchestrator owns those.
 - `{PROJECT_PATH}/PLANNING.md` — the source of truth, but **do not read it end to end**. First list its
   headings (grep `^#`), then read only the sections your slice needs: current step (§0), business rules
-  and state machine (§8), entities (§7), API (§10), and testing plan (§16) — matched by heading text,
-  not number, and only the parts that touch **your slice**.
+  and state machine (§8), entities (§7), API (§10), testing plan (§16), and — **frontend slices only** —
+  UI design (§14, the palette / wireframes / empty-loading-error states the design-guide check compares
+  against) — matched by heading text, not number, and only the parts that touch **your slice**.
 
 **Apply the scope limit** from the standard: only review code belonging to completed steps.
 
@@ -65,7 +66,9 @@ Apply, to your slice only, the matching parts of the standard:
 1. **Quality** (Code-quality checklist) — layering (logic in the service, controller thin, entity never
    returned), DTOs at the boundary, `@Valid`, uniform error handling, naming, TypeScript `any`, state
    signals, subscription cleanup, `forkJoin`, HTTP verbs, `application.properties` hygiene (config
-   slice). Use the standard's bad-vs-good examples as the bar.
+   slice). For a frontend slice, also run the standard's **design-guide adherence** check: components
+   vs PLANNING.md §14's palette, wireframes, and planned empty/loading/error states. Use the standard's
+   bad-vs-good examples as the bar.
 2. **Correctness** (Correctness scope — the bug hunt) — trace realistic inputs and states through this
    slice: null/`Optional` mishandling, edge cases (empty/first/last/zero/negative/boundary date),
    inverted or off-by-one conditions, **state-machine violations** and business rules enforced with the
