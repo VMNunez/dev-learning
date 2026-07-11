@@ -498,6 +498,7 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 
 - `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` — reading and writing typed containers in Spring Boot code
 - Why generics exist — catch type errors at compile time instead of at runtime; without generics, a `List` could hold any type and every `.get()` required a cast that could fail at runtime
+- Generics hold reference types only, not primitives — `List<int>` does not compile; you write `List<Integer>` and autoboxing bridges the two; interviewers show `List<int>` and ask why it fails, tying generics back to the wrapper-vs-primitive distinction
 - `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()` — the correct way to handle a value that might not exist
 - `Optional.get()` vs `Optional.orElseThrow()` — `get()` throws `NoSuchElementException` with no useful message if empty; `orElseThrow()` lets you throw a meaningful exception with context; interviewers treat `get()` as a red flag in code review — it is the same problem as returning `null`
 - Why returning `null` is a problem — forces every caller to null-check; `Optional` makes the absence explicit in the return type; interviewers ask "why Optional instead of null?"
@@ -525,6 +526,8 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `NullPointerException` — the most common runtime failure; interviewers ask where it comes from (calling a method on `null`, unboxing a `null` wrapper, `Optional.get()` on an empty Optional) and how you prevent it (`Optional`, `Objects.requireNonNull`, null checks); not knowing its causes reads as no real Java experience
 - `finally` — always runs even when the `try` returns or throws, used for cleanup; the gotcha is that a `return` inside `finally` overrides the try's return and swallows the exception; interviewers use it to test control-flow depth
 - try-with-resources — the modern way to guarantee a resource (`Connection`, `InputStream`) is closed via `AutoCloseable`, replacing a hand-written `finally { close(); }`; interviewers ask how you close resources safely and expect this over manual cleanup
+- exception chaining / cause constructor (`throw new X(msg, cause)`) — how you rethrow while preserving the original stack trace; interviewers ask "if you catch and rethrow, how do you avoid losing where it really failed?" and a missing cause is a classic junior mistake that hides the real error
+- catch-block ordering — a more specific exception must be caught before a more general one, or the code does not compile (`catch (Exception e)` before `catch (IllegalArgumentException e)` is a compile error); interviewers use it as a quick pressure check on how catch resolution works
 
 ### Collections
 
