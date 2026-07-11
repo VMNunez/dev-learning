@@ -19,6 +19,8 @@ TuCodigo.java  →  [compilador javac]  →  TuCodigo.class  →  [JVM]  →  pr
  código fuente       compile time           bytecode          runtime
 ```
 
+Docs: [Baeldung — JVM, JRE and JDK: What's the Difference?](https://www.baeldung.com/jvm-vs-jre-vs-jdk) → leer "JVM" y "JDK" para ver cómo encajan el compilador y la máquina virtual.
+
 > **¿Por qué importa esto en Spring Boot?** Cuando ejecutas `mvn spring-boot:run` o pulsas el botón verde de IntelliJ, Maven compila tu código y la JVM arranca tu aplicación. Cuando ves una `NullPointerException` en los logs, es un **error en runtime** — el compilador no lo detectó porque solo ocurre con datos concretos cuando el programa ya está corriendo.
 
 ---
@@ -89,6 +91,8 @@ Cada palabra tiene su razón de ser:
 | `main`          | El nombre que la JVM busca por convención                             |
 | `String[] args` | Argumentos de línea de comandos al arrancar el programa               |
 
+Lee cada fila así: _esta palabra clave está en la firma porque la JVM necesita que esté ahí_ — la columna izquierda es la palabra, la derecha es el requisito que satisface. Quita cualquiera de ellas y la JVM deja de reconocer el método como punto de entrada.
+
 > **En Spring Boot nunca escribes `main` tú mismo.** Spring Initializr genera un `Application.java` con un `main` que llama a `SpringApplication.run()`. Esa única línea arranca todo el framework: inicializa el contexto de la aplicación, descubre todos tus beans y lanza el **servidor embebido** — Tomcat, por defecto, que Spring Boot lleva integrado dentro del propio JAR. No necesitas instalar Tomcat por separado; viene incluido. Después de eso, no vuelves a tocar `main`.
 
 ---
@@ -129,7 +133,7 @@ Car yourCar = new Car();  // crea otro objeto distinto — mismo molde, datos di
 
 La OOP de Java se asienta sobre cuatro principios. No necesitas dominarlos ahora — con saber qué significa cada palabra cuando la encuentres es suficiente.
 
-**Encapsulación** (_encapsulation_) — ocultar los detalles internos; exponer solo lo que el exterior necesita. Los campos casi siempre son `private`, sin excepciones. Los métodos, en cambio, pueden ser `public` (si los llama alguien de fuera) o `private` (si son helpers internos que nadie fuera de la clase necesita conocer). En Spring Boot verás esta combinación constantemente: campos `private`, métodos de servicio `public`, métodos auxiliares `private`. Se accede a los campos siempre a través de métodos (`getSpeed()`, no `car.speed` directamente).
+**Encapsulación** (_encapsulation_) — ocultar los detalles internos; exponer solo lo que el exterior necesita. Los campos son casi siempre `private`. Los métodos, en cambio, pueden ser `public` (si los llama alguien de fuera) o `private` (si son helpers internos que nadie fuera de la clase necesita conocer). En Spring Boot verás esta combinación constantemente: campos `private`, métodos de servicio `public`, métodos auxiliares `private`. Se accede a los campos siempre a través de métodos (`getSpeed()`, no `car.speed` directamente).
 
 **Herencia** (_inheritance_) — una clase puede extender otra y reutilizar su código. La clase hija obtiene todo lo que tiene el padre, más sus propias adiciones:
 
@@ -167,7 +171,7 @@ Las interfaces (explicadas en [05-interfaces-abstract.md](05-interfaces-abstract
 // El controlador solo sabe que findAll() devuelve proyectos — no cómo lo hace
 List<Project> projects = projectService.findAll();
 
-// save() guarda en base de datos — no sabes qué SQL genera ni cómo conecta
+// save() guarda en base de datos — no sabes qué SQL genera
 repository.save(entity);
 ```
 
@@ -181,6 +185,8 @@ Docs: [Baeldung — OOP Concepts in Java](https://www.baeldung.com/java-oop) →
 
 Dado que vienes de JavaScript, estos son los puntos que más te van a desconcertar al principio:
 
+Lee cada fila como un hábito que tienes que desaprender: la columna del medio es lo que tu instinto de JS espera, y la de la derecha es lo que Java hace en realidad. Cuando algo te sorprenda en Spring Boot, casi siempre es una de estas filas mordiéndote.
+
 | Concepto              | JavaScript                                      | Java                                       |
 | --------------------- | ----------------------------------------------- | ------------------------------------------ |
 | Tipos                 | Dinámico — las variables pueden cambiar de tipo | Estático — el tipo se fija en compile time |
@@ -191,3 +197,11 @@ Dado que vienes de JavaScript, estos son los puntos que más te van a desconcert
 | Compilación           | No hace falta (interpretado)                    | Obligatoria antes de ejecutar              |
 
 El mayor cambio mental: **en JavaScript, las funciones son ciudadanos de primera clase**. En Java, **las clases son los ciudadanos de primera clase**. Todo lo demás sale de esa diferencia.
+
+---
+
+## El camino que viene — cómo están ordenadas estas notas
+
+Estas notas están numeradas en el orden que construye la comprensión desde los cimientos, no por orden alfabético ni por importancia. El recorrido es deliberado: cada fichero solo da por sabido lo que los anteriores ya enseñaron. Empiezas por la materia prima — [01-variables-tipos.md](01-variables-tipos.md) para los tipos primitivos y de referencia con los que está hecha cada línea de Java, luego [02-flujo-de-control.md](02-flujo-de-control.md) para `if`/`for`/`switch`, y [03-metodos.md](03-metodos.md) para cómo se empaqueta y se llama al comportamiento. Con eso en la mano entras en el corazón del lenguaje, la orientación a objetos, a lo largo de cuatro ficheros que se apoyan uno en otro: [04-poo-clases.md](04-poo-clases.md) (clases, objetos, constructores, `this`), [05-interfaces-abstractas.md](05-interfaces-abstractas.md) (los contratos contra los que Spring inyecta) y [06-herencia-polimorfismo.md](06-herencia-polimorfismo.md) (`extends`, `super`, y el dispatch de métodos en runtime que viste arriba) — la sección de OOP de esta página es solo el adelanto de esos tres. Después vienen las herramientas del día a día a las que recurrirás en cualquier método de servicio: [07-colecciones.md](07-colecciones.md) (`List`, `Map`, `Set`), [08-excepciones.md](08-excepciones.md) (el fichero más profundo, y el modelo del listón de calidad de todos los demás), [09-streams-lambdas.md](09-streams-lambdas.md) (pipelines de datos de estilo funcional), [10-genericos.md](10-genericos.md) (`<T>` y `Optional`, en los que se apoyan las colecciones y los repositorios), [11-enums.md](11-enums.md) y [12-fechas.md](12-fechas.md) (`LocalDate`/`LocalDateTime`). El último tramo gira hacia cómo se ensamblan los proyectos Spring Boot reales: [13-anotaciones.md](13-anotaciones.md) (el mecanismo de `@` que mueve todo el framework), [14-maven.md](14-maven.md) (las dependencias y el build), y por último [15-modelo-de-memoria.md](15-modelo-de-memoria.md) — stack, heap y garbage collection, colocado al final a propósito porque explica *por qué* todo lo que viste antes (las referencias, `null`, la identidad de los objetos) se comporta como se comporta. Léelos en orden la primera vez; después, trata cada uno como una referencia independiente.
+
+Empieza por [01-variables-tipos.md](01-variables-tipos.md) — convierte la idea del tipado estático de esta página en el conjunto concreto de tipos que declararás en cada clase de aquí en adelante.
