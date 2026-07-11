@@ -3,6 +3,8 @@
 > 📖 [Baeldung — Java primitives](https://www.baeldung.com/java-primitives) → leer: "Overview" y "Primitive Data Types"
 > 📖 [Oracle Docs — Primitive types and variables](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
 
+La [introducción](00-intro-java.md) te dejó con la idea central de que Java es de **tipado estático**: cada variable tiene un tipo fijado en tiempo de compilación, y ese tipo no cambia nunca. Eso lleva directamente a la siguiente pregunta — *¿cuáles son esos tipos?* Este archivo la responde. Antes de escribir una sola clase, un bucle o un método, necesitas la materia prima: el conjunto exacto de tipos que Java te da para guardar un número, un flag, un trozo de texto, y cómo se comportan en memoria. Todo lo que viene a partir de aquí — cada campo de cada entidad de Spring Boot, cada parámetro de método — se construye a partir de los tipos de esta página.
+
 ## Tipos primitivos
 
 En Java hay dos formas de almacenar datos en memoria. La primera es guardar el **valor directamente** — el número 42 o el booleano `true` se guardan en el sitio exacto donde está la variable. La segunda es guardar una **referencia** — en lugar del dato en sí, la variable guarda una dirección de memoria que apunta a donde está el objeto real, como un enlace. Los **tipos primitivos** usan la primera forma: almacenan el valor directamente, sin referencias. Los **objetos** (como `String`, `Employee`, o cualquier clase) usan la segunda.
@@ -61,7 +63,7 @@ El instinto siguiente suele ser `.equals()`, pero ahí hay una trampa: `.equals(
 - `0` si son matemáticamente iguales
 - positivo si `this` es mayor que `other`
 
-El patrón siempre es el mismo: llamas a `compareTo()`, y comparas ese `int` resultante contra `0` con los operadores normales (`<`, `>`, `==`) — porque ahora sí estás comparando dos primitivos `int`, no dos objetos `BigDecimal`.
+El patrón siempre es el mismo: llamas a `compareTo()`, y comparas ese `int` resultante con `0` usando los operadores normales (`<`, `>`, `==`) — porque ahora sí estás comparando dos primitivos `int`, no dos objetos `BigDecimal`.
 
 ```java
 BigDecimal hours = request.getHours();
@@ -129,7 +131,7 @@ Cada tipo primitivo tiene una clase wrapper correspondiente. Las usas cuando un 
 
 **El caso más común:** las colecciones de Java (`List`, `Map`, `Set`) solo funcionan con objetos, no con primitivos. `List<int>` no compila — el compilador da un error de tipo: `Type argument int is not within bounds of type-variable E`. Usas `List<Integer>` en su lugar. Las colecciones (`List`, `Map`, `Set`) se explican en detalle en [07-collections.md](07-collections.md) — de momento quédate con que son las estructuras de datos principales de Java y todas exigen tipos objeto, no primitivos.
 
-**Otro caso:** las clases wrapper pueden ser `null`. Un `int` primitivo no puede ser null, pero `Integer` sí. En Spring Boot, los IDs de base de datos suelen tipificarse como `Long` (no `long`) porque Hibernate los establece a `null` hasta que la entidad se guarda por primera vez.
+**Otro caso:** las clases wrapper pueden ser `null`. Un `int` primitivo no puede ser null, pero `Integer` sí. En Spring Boot, los IDs de base de datos se suelen declarar como `Long` (no `long`) porque Hibernate los establece a `null` hasta que la entidad se guarda por primera vez.
 
 ### Cuándo usar cada uno — la regla práctica
 
@@ -145,6 +147,8 @@ private Long id;
 @Value("${app.jwt.expiration}")
 private long expiration;
 ```
+
+Lee cada fila como una pareja: la columna izquierda es el primitivo que usas cuando el valor siempre está presente, y la columna derecha es la forma objeto a la que cambias cuando necesitas `null` o una colección. El nombre no es arbitrario — el wrapper es la palabra completa con mayúscula inicial (`int` → `Integer`, `char` → `Character`).
 
 | Primitivo | Wrapper     |
 | --------- | ----------- |
@@ -198,7 +202,7 @@ El método `.formatted()` reemplaza marcadores de posición en el string. `%s` s
 
 ```java
 "User %s has %d points".formatted("Victor", 100);  // "User Victor has 100 points"
-"User %s has %d points".formatted(100, "Victor");  // Error — 100 no es un String para %s
+"User %s has %d points".formatted(100, "Victor");  // MAL — 100 no es un String para %s
 ```
 
 Para decimales usa `%f`. Puedes limitar el número de cifras con `.Nf` (N = cifras decimales): `"El precio es %.2f euros".formatted(19.99)` → `"El precio es 19.99 euros"`.
@@ -223,17 +227,19 @@ name.equalsIgnoreCase("victor")   // true — igual pero ignora mayúsculas/min�
 
 ### Comparación de Strings — usa siempre `equals()`
 
-En Java, `==` compara **direcciones de memoria** (referencias), no el contenido. Dos variables de tipo String con el mismo texto pueden estar almacenadas en ubicaciones de memoria distintas, por lo que `==` puede devolver `false` aunque el contenido parezca idéntico.
+En Java, `==` compara **direcciones de memoria** (referencias), no el contenido. Dos variables de tipo String pueden contener exactamente los mismos caracteres y aun así vivir en dos direcciones distintas — y `==` compara las direcciones, así que devuelve `false` aunque el texto sea idéntico.
 
 `.equals()` siempre compara los caracteres reales — eso es lo que casi siempre quieres:
 
 ```java
-String a = "hello";
-String b = "hello";
+String a = new String("hello");
+String b = new String("hello");
 
-a == b        // poco fiable — compara direcciones de memoria, no contenido
-a.equals(b)   // true — usa siempre esto para comparar Strings
+a == b        // false — dos objetos separados, direcciones distintas
+a.equals(b)   // true — mismos caracteres, que es lo que querías comparar
 ```
+
+> **Cuidado — los literales de string son una trampa aquí.** Si escribes `String a = "hello"; String b = "hello";` (literales normales, sin `new`), entonces `a == b` sí devuelve `true` — porque Java mantiene una única copia compartida de cada literal en una caché llamada **string pool**, así que ambas variables acaban apuntando al mismísimo objeto. Eso hace que `==` *parezca* que funciona. Se rompe en cuanto uno de los strings viene de otro sitio — input del usuario, una fila de la base de datos, `new String(...)`, o un valor construido por concatenación en tiempo de ejecución — y entonces `==` devuelve `false` en silencio. El pool es exactamente la razón por la que nunca debes fiarte de `==` para comparar contenido: funciona justo lo suficiente como para engañarte. El pool en sí se explica en [15-memory-model.md](15-memory-model.md).
 
 > **¿Por qué existe `==` para Strings?** Para los objetos (incluyendo String), `==` comprueba si dos variables apuntan al **mismo objeto en memoria** — no solo al mismo valor. Esto importa en algunos casos (por ejemplo, comprobar si dos entradas de una lista son literalmente el mismo objeto), pero para Strings casi nunca quieres eso.
 
@@ -261,6 +267,8 @@ public String buildReport(List<String> lines) {
 ```
 
 > **¿Qué significa thread-safe?** Un **hilo** (thread) es una tarea que corre en paralelo con otras dentro del mismo programa. En una API REST, Spring Boot asigna un hilo distinto a cada petición HTTP que llega — así puede atender varias a la vez sin esperar a que termine la primera. **Thread-safe** significa que varios hilos pueden usar el mismo objeto simultáneamente sin que uno corrompa el trabajo del otro. `String` y `StringBuffer` son thread-safe; `StringBuilder` no. En la práctica, el riesgo no existe si creas el `StringBuilder` dentro de un método local — ese objeto es tuyo y ningún otro hilo lo toca.
+
+Lee la tabla eligiendo tus dos restricciones — ¿necesitas que el objeto sea modificable, y lo toca más de un hilo — y la última columna te da el tipo que encaja. Casi siempre acabas en `String` (inmutable, seguro) para los valores del día a día y en `StringBuilder` (mutable, un solo hilo) para los bucles.
 
 |                 | ¿Inmutable? | ¿Thread-safe? | Cuándo usar                                 |
 | --------------- | ----------- | ------------- | ------------------------------------------- |
@@ -306,3 +314,7 @@ Para entender por qué, necesitas dos conceptos: **compile time** (tiempo de com
 Solo funciona para variables locales (dentro de métodos). No se puede usar para campos, parámetros de métodos ni tipos de retorno.
 
 Útil cuando el tipo es largo y obvio por el lado derecho: `var employees = employeeRepository.findAll()` es más limpio que `List<Employee> employees = employeeRepository.findAll()`.
+
+---
+
+Ya tienes la materia prima: los ocho primitivos, sus objetos wrapper, `String` y sus primos mutables, el casting entre tipos, y `var`. Pero una variable que simplemente se queda ahí guardando un valor no hace nada por sí sola — un programa tiene que *decidir* y *repetir*: ejecuta este bloque solo si la edad es mayor de 18, recorre cada empleado de la lista. Eso es el control de flujo, y es lo que cubre a continuación [02-control-flow.md](02-control-flow.md) — `if`/`else`, `switch`, y los bucles que ponen a trabajar estos tipos.
