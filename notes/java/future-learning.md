@@ -57,7 +57,7 @@ Wildcards (`? extends T`, `? super T`), bounded type parameters, generic methods
 
 ### JVM internals and performance
 
-Garbage collection algorithms (G1, ZGC), heap vs stack, memory leaks, profiling with VisualVM or JFR.
+Garbage collection *algorithms* (G1, ZGC) and tuning, memory leaks, profiling with VisualVM or JFR. (The *conceptual* stack-vs-heap split and what the garbage collector does are now junior coverage — see `coverage.md`, "Memory and value semantics"; only the internals, algorithms, and tuning stay here.)
 
 ### Reflection and annotations
 
