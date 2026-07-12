@@ -3,7 +3,9 @@
 > 📖 [Baeldung — Introduction to the Java 8 Date/Time API](https://www.baeldung.com/java-8-date-time-intro)
 > 📖 [Oracle Docs — Date and Time API](https://docs.oracle.com/javase/tutorial/datetime/index.html)
 
-Antes de Java 8, trabajar con fechas era un suplicio. La clase `Date` almacenaba milisegundos desde 1970 y sus meses empezaban por 0 (enero = 0). `Calendar` era el "arreglo", pero resultaba verboso y mutable — podías cambiar accidentalmente una fecha que habías pasado a otro método y generar bugs difíciles de rastrear. Java 8 introdujo el paquete `java.time`, que es inmutable (cada operación devuelve un objeto nuevo), legible por sí solo y no tiene esas peculiaridades de indexación. Lo usarás en todos los proyectos desde el primer día.
+Un enum (el archivo anterior) te permitía restringir un tipo a un conjunto pequeño y fijo de valores. La siguiente necesidad de modelado cotidiana es el tiempo mismo — la fecha de contratación de un empleado, el deadline de una tarea, el momento exacto en que se creó una fila. Antes de Java 8, esto era una trampa.
+
+Trabajar con fechas era un suplicio. La clase `Date` almacenaba milisegundos desde 1970 y sus meses empezaban por 0 (enero = 0). `Calendar` era el "arreglo", pero resultaba verboso y mutable — podías cambiar accidentalmente una fecha que habías pasado a otro método y generar bugs difíciles de rastrear. Java 8 introdujo el paquete `java.time`, que es inmutable (cada operación devuelve un objeto nuevo), legible por sí solo y no tiene esas peculiaridades de indexación. Lo usarás en todos los proyectos desde el primer día.
 
 ---
 
@@ -16,6 +18,24 @@ Tienes tres clases según lo que necesites representar. Lo más importante que h
 | `LocalDate` | Una fecha sin hora | `2026-05-11` |
 | `LocalTime` | Una hora sin fecha | `14:30:00` |
 | `LocalDateTime` | Una fecha y hora juntas | `2026-05-11T14:30:00` |
+
+Lee cada fila así: "si necesito representar *(columna central)*, echo mano de *(columna izquierda)*, y un valor tiene esta pinta *(columna derecha)*." Elige el tipo más pequeño que cargue con lo que realmente necesitas — un cumpleaños es un `LocalDate`, no un `LocalDateTime` con un `00:00:00` sin sentido añadido detrás.
+
+Una forma rápida de ver cómo se relacionan los cuatro tipos de `java.time`: `LocalDateTime` no es más que un `LocalDate` y un `LocalTime` pegados, e `Instant` es el que se ancla a UTC.
+
+```
+                    una fecha       una hora
+                 ┌───────────┐  ┌───────────┐
+   LocalDate ───▶│ 2026-05-11│  │ 14:30:00  │◀─── LocalTime
+                 └───────────┘  └───────────┘
+                        └──────┬──────┘
+                               ▼
+                       LocalDateTime          ← sin zona horaria (hora de pared)
+                    2026-05-11T14:30:00
+
+                       Instant                ← un punto en UTC (absoluto)
+                 2026-05-11T12:30:00.123456Z
+```
 
 ---
 
@@ -61,7 +81,7 @@ LocalDateTime event = LocalDateTime.of(2026, 6, 1, 9, 0);
 
 // Desde un string
 LocalDate parsed = LocalDate.parse("2026-05-11");          // formato ISO por defecto
-LocalDate parsed = LocalDate.parse("11/05/2026",
+LocalDate parsedCustom = LocalDate.parse("11/05/2026",
     DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 ```
 
@@ -80,9 +100,13 @@ date.getDayOfMonth();  // 11
 date.getDayOfWeek();   // MONDAY
 ```
 
+> **`getMonthValue()` vs `getMonth()`:** estos dos parecen intercambiables pero devuelven tipos distintos. `getMonthValue()` te da el número (`5`), que es lo que quieres para cálculos o para construir otra fecha. `getMonth()` te da una constante del enum `Month` (`MAY`) — útil cuando quieres el nombre en lugar del número. Echa mano de `getMonthValue()` por defecto; usa `getMonth()` solo cuando de verdad necesites el enum.
+
 ---
 
 ## Formatear
+
+Convertir una fecha en string es el proceso inverso del parseo. Por defecto `toString()` ya te da el formato ISO (`2026-05-11`), que es el que siempre quieres para APIs y bases de datos — es inequívoco y todos los sistemas lo entienden. Cuando necesitas otro formato para que lo lea una persona (un `dd/MM/yyyy` español, o un mes escrito con letras), construyes un `DateTimeFormatter` con un patrón y se lo pasas a `.format()`. Esto es **solo para mostrar** — nunca almacenes ni envíes una fecha con formato personalizado; formatéala en el último momento, para la pantalla.
 
 ```java
 LocalDate date = LocalDate.of(2026, 5, 11);
@@ -94,8 +118,8 @@ date.toString();  // "2026-05-11"
 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 date.format(formatter);  // "11/05/2026"
 
-DateTimeFormatter long = DateTimeFormatter.ofPattern("d MMMM yyyy");
-date.format(long);  // "11 May 2026"
+DateTimeFormatter longFormat = DateTimeFormatter.ofPattern("d MMMM yyyy");
+date.format(longFormat);  // "11 May 2026"
 ```
 
 ---
@@ -103,6 +127,8 @@ date.format(long);  // "11 May 2026"
 ## Sumar y restar
 
 Todas las clases de `java.time` son inmutables — `plusDays` y `minusDays` no cambian el original, devuelven un objeto nuevo. Asigna siempre el resultado:
+
+> **Este es el bug de fechas número uno.** `date.plusDays(7);` por sí solo no hace nada que puedas ver — la fecha nueva se calcula y se descarta de inmediato, porque `date` sigue apuntando al valor antiguo. La llamada *parece* que mutó `date`, pero la inmutabilidad significa que la única forma de conservar el resultado es capturarlo: `date = date.plusDays(7);` o `LocalDate next = date.plusDays(7);`. Esta es exactamente la razón por la que el viejo `Calendar` mutable era peligroso y por la que `java.time` eligió la inmutabilidad en su lugar.
 
 ```java
 LocalDate date = LocalDate.of(2026, 5, 11);
@@ -131,6 +157,8 @@ a.isEqual(b);   // false
 
 a.compareTo(b); // número negativo — a es anterior a b (igual que String.compareTo)
 ```
+
+> **`isEqual()` vs `equals()`:** para `LocalDate` ambos devuelven la misma respuesta, así que puedes usar cualquiera. La diferencia importa en los tipos con zona horaria (como las implementaciones de `ChronoLocalDate` o `ZonedDateTime`): `isEqual()` compara el punto en la línea temporal, mientras que `equals()` además exige que los objetos sean de la misma *clase/cronología*. Para comparaciones de `LocalDate` a secas, prefiere `isEqual()` por legibilidad — se lee como "¿es la misma fecha?".
 
 ---
 
@@ -222,3 +250,7 @@ date.plusDays(n) / date.minusDays(n)   // sumar o restar
 date.isBefore(other) / date.isAfter(other)  // comparar
 Period.between(start, end)             // diferencia en días/meses/años
 ```
+
+---
+
+Te habrás fijado en que los ejemplos de Spring Boot de arriba se apoyan en pequeñas etiquetas como `@Entity`, `@Column` y `@PrePersist` para hacer que clases Java normales se comporten de formas especiales. Ese mecanismo — adjuntar metadatos al código que un framework lee y sobre los que actúa — son las **anotaciones**, y son el motor detrás de cada clase de Spring que estás a punto de escribir. Ese es el siguiente archivo: `notes/java/es/13-anotaciones.md`.

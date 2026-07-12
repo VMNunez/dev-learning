@@ -3,7 +3,9 @@
 > 📖 [Baeldung — Introduction to the Java 8 Date/Time API](https://www.baeldung.com/java-8-date-time-intro)
 > 📖 [Oracle Docs — Date and Time API](https://docs.oracle.com/javase/tutorial/datetime/index.html)
 
-Before Java 8, working with dates was painful. The `Date` class stored milliseconds since 1970 and its month was 0-indexed (January = 0). `Calendar` was the "fix" but was verbose and mutable — you could accidentally change a date you passed to another method and create subtle bugs. Java 8 introduced the `java.time` package, which is immutable (every operation returns a new object), self-documenting, and does not have the indexing quirks. You will use it in every project from day one.
+An enum (the previous file) let you restrict a type to a small, fixed set of values. The next everyday modelling need is time itself — an employee's hire date, a task deadline, the exact moment a row was created. Before Java 8, this was a trap.
+
+Working with dates was painful. The `Date` class stored milliseconds since 1970 and its month was 0-indexed (January = 0). `Calendar` was the "fix" but was verbose and mutable — you could accidentally change a date you passed to another method and create subtle bugs. Java 8 introduced the `java.time` package, which is immutable (every operation returns a new object), self-documenting, and does not have the indexing quirks. You will use it in every project from day one.
 
 ---
 
@@ -16,6 +18,24 @@ You have three classes depending on what you need to represent. The most importa
 | `LocalDate` | A date with no time | `2026-05-11` |
 | `LocalTime` | A time with no date | `14:30:00` |
 | `LocalDateTime` | A date and time together | `2026-05-11T14:30:00` |
+
+Read each row as: "if I need to represent *(middle column)*, reach for *(left column)*, and a value looks like *(right column)*." Pick the smallest type that carries what you actually need — a birthday is a `LocalDate`, not a `LocalDateTime` with a meaningless `00:00:00` tacked on.
+
+A quick way to see how the four `java.time` types relate: `LocalDateTime` is just a `LocalDate` and a `LocalTime` glued together, and `Instant` is the one that pins itself to UTC.
+
+```
+                    a date          a time
+                 ┌───────────┐  ┌───────────┐
+   LocalDate ───▶│ 2026-05-11│  │ 14:30:00  │◀─── LocalTime
+                 └───────────┘  └───────────┘
+                        └──────┬──────┘
+                               ▼
+                       LocalDateTime          ← no timezone (wall clock)
+                    2026-05-11T14:30:00
+
+                       Instant                ← a point in UTC (absolute)
+                 2026-05-11T12:30:00.123456Z
+```
 
 ---
 
@@ -61,7 +81,7 @@ LocalDateTime event = LocalDateTime.of(2026, 6, 1, 9, 0);
 
 // From a string
 LocalDate parsed = LocalDate.parse("2026-05-11");          // ISO format by default
-LocalDate parsed = LocalDate.parse("11/05/2026",
+LocalDate parsedCustom = LocalDate.parse("11/05/2026",
     DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 ```
 
@@ -80,9 +100,13 @@ date.getDayOfMonth();  // 11
 date.getDayOfWeek();   // MONDAY
 ```
 
+> **`getMonthValue()` vs `getMonth()`:** these two look interchangeable but return different types. `getMonthValue()` gives you the number (`5`), which is what you want for calculations or building another date. `getMonth()` gives you a `Month` enum constant (`MAY`) — useful when you want the name rather than the number. Reach for `getMonthValue()` by default; pick `getMonth()` only when you actually need the enum.
+
 ---
 
 ## Formatting
+
+Turning a date into a string is the reverse of parsing. By default `toString()` already gives you the ISO format (`2026-05-11`), which is what you always want for APIs and databases — it is unambiguous and every system understands it. When you need a different layout for a human to read (a Spanish `dd/MM/yyyy`, or a spelled-out month), you build a `DateTimeFormatter` with a pattern and pass it to `.format()`. This is **display only** — never store or send a custom-formatted date; format at the last moment, for the screen.
 
 ```java
 LocalDate date = LocalDate.of(2026, 5, 11);
@@ -94,8 +118,8 @@ date.toString();  // "2026-05-11"
 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 date.format(formatter);  // "11/05/2026"
 
-DateTimeFormatter long = DateTimeFormatter.ofPattern("d MMMM yyyy");
-date.format(long);  // "11 May 2026"
+DateTimeFormatter longFormat = DateTimeFormatter.ofPattern("d MMMM yyyy");
+date.format(longFormat);  // "11 May 2026"
 ```
 
 ---
@@ -103,6 +127,8 @@ date.format(long);  // "11 May 2026"
 ## Adding and subtracting
 
 All `java.time` classes are immutable — `plusDays` and `minusDays` do not change the original, they return a new object. Always assign the result:
+
+> **This is the number-one date bug.** `date.plusDays(7);` on its own does nothing you can see — the new date is computed and immediately thrown away, because `date` still points to the old value. The call *looks* like it mutated `date`, but immutability means the only way to keep the result is to capture it: `date = date.plusDays(7);` or `LocalDate next = date.plusDays(7);`. This is exactly why the old mutable `Calendar` was dangerous and why `java.time` chose immutability instead.
 
 ```java
 LocalDate date = LocalDate.of(2026, 5, 11);
@@ -131,6 +157,8 @@ a.isEqual(b);   // false
 
 a.compareTo(b); // negative number — a is before b (same as String.compareTo)
 ```
+
+> **`isEqual()` vs `equals()`:** for `LocalDate` both return the same answer, so you can use either. The difference matters on the timezone-aware types (like `ChronoLocalDate` implementations or `ZonedDateTime`): `isEqual()` compares the point on the timeline, while `equals()` also requires the objects to be the same *class/chronology*. For plain `LocalDate` comparisons, prefer `isEqual()` for readability — it reads as "is this the same date?".
 
 ---
 
@@ -222,3 +250,7 @@ date.plusDays(n) / date.minusDays(n)   // add or subtract
 date.isBefore(other) / date.isAfter(other)  // compare
 Period.between(start, end)             // difference in days/months/years
 ```
+
+---
+
+You noticed that the Spring Boot examples above lean on small labels like `@Entity`, `@Column`, and `@PrePersist` to make plain Java classes behave in special ways. That mechanism — attaching metadata to code that a framework reads and acts on — is **annotations**, and it is the engine behind every Spring class you are about to write. That is the next file: `notes/java/en/13-annotations.md`.
