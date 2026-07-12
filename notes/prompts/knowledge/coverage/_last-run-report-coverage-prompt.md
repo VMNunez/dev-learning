@@ -1,9 +1,9 @@
 # Coverage prompt — last run self-report
 
-**Date:** 2026-07-11 · **Target:** TOPIC = Java, NOTES_PATH = notes/java/ (update of an existing, mature coverage.md)
+**Date:** 2026-07-12 · **Target:** TOPIC = Spring Boot, NOTES_PATH = notes/spring-boot/ (update of an existing, mature coverage.md)
 
-1. **Plan vs reality** — Two cold subagents (market analyst + adversarial interviewer) split cleanly; both returned usable output. Coverage was already mature from the prior run, so the market analyst found no net-new floor items — its whole list was already covered. The adversary was the only source of new items. Sizing was right.
-2. **Report discipline** — Both subagents returned tight, on-format lists; nothing had to be trimmed or discarded. No code dumps.
-3. **Failures & retries** — None. Both completed on first dispatch (market analyst noted Tecnoempleo URLs 410 fast, but worked from search extracts as designed).
-4. **Rule friction** — One genuine ambiguity: the adversary proposed a whole Testing (JUnit/Mockito) section, but the config block assigns testing to Spring Boot coverage, not Java. The prompt does not state where Java-side testing gaps should land — resolved by leaving it out of Java. Worth a one-line clarification that Java coverage never carries testing items.
-5. **Verdict** — pipeline clean; minor change worth considering: state explicitly that Java coverage excludes testing (it lives in Spring Boot coverage) so the adversary's testing gaps are routed, not re-litigated each run.
+1. **Plan vs reality** — Two cold subagents (market analyst on Sonnet, adversarial interviewer on Opus) split cleanly; both returned usable output on first dispatch. Coverage was already mature, so the market analyst found no net-new floor items — the whole file was confirmed market-aligned. The adversary was the only source of new items (3 added, 1 left out). Sizing right.
+2. **Report discipline** — Both subagents returned tight, on-format tagged lists; nothing had to be trimmed or discarded. No code dumps or narrative padding.
+3. **Failures & retries** — None. Both ran synchronously and completed on first try (market analyst noted thin/expired posting URLs, worked from search extracts + evidence file as designed).
+4. **Rule friction** — Minor: placement of the `ddl-auto` item was a judgement call (entity-mapping vs repositories/performance vs Project setup); the prompt correctly leaves section choice to the generator, so no fix needed. Step 4b sync was frictionless since topic-file bullets are copied verbatim (only headings shift, none here).
+5. **Verdict** — pipeline clean.
