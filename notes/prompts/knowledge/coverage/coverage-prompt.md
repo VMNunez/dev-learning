@@ -103,6 +103,18 @@ and writes, or covers two concerns at once, splits its attention and lowers qual
 (this context) is the only editor:** it consolidates the returned lists and writes coverage.md,
 future-learning.md, and the sync to notes/coverage.md.
 
+### Model policy — per role, to protect quality while saving tokens
+
+Pass an explicit `model` override on every subagent dispatch:
+
+| Role | `model:` | Why |
+|------|----------|-----|
+| **Generator (this context / session)** | **Opus** | It word-crafts every coverage item to the standard — the real quality bottleneck. Run the session on Opus. |
+| Step 2 — market analyst | `sonnet` | Web-search + list; retrieval-heavy, and the Opus generator judges the result against the standard afterwards. |
+| **Step 4a — adversarial interviewer** | **`opus`** | Generating genuinely hard interview gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. |
+
+This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on Sonnet with A/B bumped to Opus; **here the session IS the author**, so it runs on Opus. If Victor wants maximum saving and accepts more risk, the market analyst can stay Sonnet and only 4a on Opus — never drop 4a below Opus, that is the pass that finds the holes.
+
 ---
 
 ## Step 1 — Read the existing state
@@ -133,7 +145,7 @@ Victor's objectives — the backbone defined in the standard's "Two sources" sec
 postings complementing it. Run that analysis in a **cold subagent** so it can web-search without
 bloating this context.
 
-**In Claude Code:** launch one `general-purpose` subagent, `run_in_background: false`:
+**In Claude Code:** launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
 
 > You are a specialist in the Spanish IT job market for junior developers. Read `ROADMAP.md` and
 > `notes/prompts/_shared-context.md` for the candidate's exact objectives (target role, companies,
@@ -235,7 +247,7 @@ The generator (Steps 1–4) tends to trust its own list. A separate, cold **inte
 it missed — the coverage failure that matters is not format, it is a *missing concept an interviewer
 would actually probe*. Run this pass on the coverage you just wrote, before syncing.
 
-**In Claude Code:** launch one `general-purpose` subagent, `run_in_background: false`:
+**In Claude Code:** launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
 > You are a senior technical interviewer at one of the target consultancies (read ROADMAP.md and
 > `notes/prompts/_shared-context.md` for the exact role/companies, and

@@ -91,8 +91,27 @@ applies** each topic's three analyst gap-lists (Step 5) plus Analyst D's global 
 longer performs the cross-topic scan itself — Analyst D does the reading, the orchestrator only applies —
 which keeps even the whole-file work out of the editing context.
 
+### Model policy — per analyst, to protect quality while saving tokens
+
+Pass an explicit `model` override on every dispatch, matched to how much deep reasoning the concern
+needs. The **generative "find what's missing" passes** need Opus; the **verification "check what's
+present" passes** are lighter and run on Sonnet (~1/5 the cost).
+
+| Role | `model:` | Why |
+|------|----------|-----|
+| **Orchestrator (this context / session)** | **Opus** | It is the only editor — it word-crafts every applied item to the standard. Run the session on Opus. |
+| A — Market-fit | `sonnet` | Web-search + map evidence→items; the Opus orchestrator judges each proposed item before applying. |
+| B — Internal quality | `sonnet` | Runs a fixed checklist over existing items + an item-by-item trace — verification, not generation. |
+| **C — Adversarial interviewer** | **`opus`** | Writing the 12 hardest questions and spotting the hole coverage misses is the deepest reasoning in the audit. |
+| D — Cross-topic consistency | `sonnet` | Pattern-matches duplicates / misplaced / post-junior items across sections — verification. |
+
+Never drop C below Opus (it is the pass that proves a section complete) and never drop the orchestrator
+below Opus (it writes the items). If Victor asks for maximum saving, A may also stay Sonnet as-is; the
+one non-negotiable Opus roles are the session and Analyst C.
+
 **Per-topic loop (sequential, one topic fully done before the next):**
-1. Dispatch Analyst A, then B, then C for the topic (`run_in_background: false`). Dispatch each one by
+1. Dispatch Analyst A (`model: sonnet`), then B (`model: sonnet`), then C (`model: opus`) for the topic
+   (`run_in_background: false`). Dispatch each one by
    telling it to read its mandate section in this prompt (A → Step 2b, B → Step 3, C → Step 4a) with
    {TOPIC} filled in, plus only the files its concern needs (listed in the analyst-split rules above).
    Collect their three lists. **Acceptance check per analyst:** B must return its item-by-item trace;
@@ -111,7 +130,7 @@ Doing one topic end-to-end keeps the orchestrator's editing context small (one s
 each commit-ready, without any analyst ever holding more than a single concern.
 
 **Global cross-topic pass (once, after the per-topic loop):** dispatch Analyst D a single time
-(`run_in_background: false`) over the finished `notes/coverage.md`, collect its three lists (duplicates,
+(`model: sonnet`, `run_in_background: false`) over the finished `notes/coverage.md`, collect its three lists (duplicates,
 misplaced items, scope-demotion candidates), and apply the surviving ones in Step 4. Run it **after** all
 per-topic loops so it judges the sections in their post-edit state — otherwise it would flag overlaps the
 per-topic passes are about to change anyway. Because D reads the whole file, running it last also means
@@ -281,7 +300,7 @@ time — a duplicate lives in two sections at once — so D is the one analyst w
 holds exactly one concern and **returns three lists, editing nothing**; the orchestrator applies the
 survivors in Step 5.
 
-**In Claude Code:** launch one `general-purpose` subagent, `run_in_background: false`:
+**In Claude Code:** launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
 
 > You are auditing `notes/coverage.md` for cross-topic consistency only — not market-fit, not item
 > quality, not interview holes (other analysts own those). Read the whole `notes/coverage.md`, the
