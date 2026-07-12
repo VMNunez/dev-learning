@@ -232,8 +232,11 @@ Wait for T before starting C.
 >
 > Read ONLY the `es/` counterpart (never open the `en/` file), audit it as a standalone native-Spanish
 > study text, fix calque and flow directly, then — as the last stage — mark the worklist row `[x]` if
-> one exists and commit this one file atomically (`en/` + `es/`). Report your verdict (PASS/FIXED +
-> Spanish fixes), any structural gaps it could not fix, files touched, and the commit hash.
+> one exists and commit this one file atomically (`en/` + `es/`). On a **create-file row**, also stage
+> `CLAUDE.md` in that same commit **if** the author bumped its "next file:" counter for this new note —
+> the counter bump is the structural record of adding the file, so it belongs to that one logical
+> change; verify the `CLAUDE.md` diff is only the counter line before including it. Report your verdict
+> (PASS/FIXED + Spanish fixes), any structural gaps it could not fix, files touched, and the commit hash.
 
 Wait for C before starting anything else.
 
@@ -280,7 +283,10 @@ build), leave the worklist in place and list the failed row so it can be re-run 
   `notes-worklist.md`.
 - **Before every `git add`/`git commit`, run `git status` and confirm only the intended `notes/`
   paths are staged.** A project code file left staged from an earlier, unrelated step can silently
-  ride along into a notes commit — `git restore --staged` anything that isn't a notes file.
+  ride along into a notes commit — `git restore --staged` anything that isn't a notes file. **The one
+  allowed non-`notes/` path is `CLAUDE.md` on a create-file row, and only when its diff is nothing but
+  the "next file:" counter bump for the note being added** — it rides with that file's commit as one
+  logical change. Anything else staged is a mistake to restore.
 - **Four subagents per file, English author → English reviewer → translator → Spanish reviewer; rows
   are sequential.** Never overlap them — parallel commits race the git index, a stage must never see an
   unfinished predecessor, and only the last stage (C) commits. A, B, and T never commit; C always does.
