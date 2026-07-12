@@ -268,6 +268,16 @@ Then **you** (the generator) review the returned gaps: add every genuine one to 
 `{NOTES_PATH}coverage.md` in the standard's format, and discard any that are actually out of junior
 scope (note those in the summary as "adversary-suggested, left out — reason").
 
+Two routing rules when handling the discards:
+- **Discarded ≠ vanished.** For any gap you discard as out-of-junior-scope, confirm it is already
+  recorded in `future-learning.md`; if it is not, add it there (Step 5 performs the write). A discarded
+  item must never disappear — it is either in coverage or in future-learning, never nowhere.
+- **Owned by another topic.** If a proposed gap belongs to a different topic's coverage by ownership
+  (e.g. JUnit/Mockito items surfaced during a Java run belong to Spring Boot coverage, per the
+  configuration block's per-topic notes), leave it OUT of this file and route it to its owner — note it
+  in the summary as "owned by <topic>, not added here". Do not re-litigate the same misplaced gap on
+  every run.
+
 **Not in Claude Code (plain chat):** do the same pass yourself, explicitly — switch hats, write the
 12 questions cold, list the gaps, then add the genuine ones. The independence is weaker than a real
 subagent, so be strict about actually generating the questions, not assuming the coverage is complete.
