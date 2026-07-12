@@ -59,6 +59,13 @@ native Spanish**, not a word-for-word calque of the English.
 - **Structural parity is exact.** Every `##`/`###` heading in `{FILE}` exists in the `es/`; every code
   block is present unchanged (comments may be translated to natural Spanish); every table and callout
   is carried over. Do not add or drop sections — this is a mirror.
+- **Internal cross-file links point at the Spanish filename in `es/`.** When `{FILE}` links to a
+  sibling note (e.g. `[10-generics.md](10-generics.md)`), the `es/` must link to that sibling's **`es/`
+  counterpart by its Spanish name** — `[10-genericos.md](10-genericos.md)`, not the English filename.
+  The `es/` folder is self-contained: every internal link resolves to a file that exists in `es/`.
+  Never carry an English filename into an `es/` link (it becomes a broken link the moment the reader
+  clicks it). If you are unsure of a sibling's exact Spanish filename, list `notes/{TOPIC}/es/` and
+  match by numeric prefix. Prose-only references with no markdown link stay prose-only.
 - **Prose is native Spanish.** Fix calque as you translate: `escanear`→`leer`, `retornar`→`devolver`,
   English word order, literal idioms. Translate structural labels: `Purpose:`→`Propósito:`,
   `File:`→`Archivo:`; `Docs:` stays. Technical English terms Victor hears at work (*deploy, refactor,

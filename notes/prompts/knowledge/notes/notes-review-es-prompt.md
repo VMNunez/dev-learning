@@ -70,6 +70,11 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
   English inside the Spanish prose — that is correct, not a calque.
 - **Callouts and tables** — `> blockquote` callouts read naturally in Spanish; every table still has
   its "cómo leer esto" sentence in Spanish.
+- **Internal links resolve inside `es/`** — every markdown link to a sibling note must point at a file
+  that **exists in `notes/{TOPIC}/es/`** by its Spanish name (e.g. `10-genericos.md`, not
+  `10-generics.md`). List `notes/{TOPIC}/es/` and check each internal link against it; fix any link
+  that carries an English filename or names a file that is not there. This is the last defence before
+  the commit — a broken `es/` link that ships here is one no later stage will catch.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if
   translated, read as natural Spanish.
 
