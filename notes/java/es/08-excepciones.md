@@ -14,15 +14,15 @@ Un apunte sobre dos términos que se confunden con facilidad, antes de ver cómo
 [bottom]
 ```
 
-Cuando `methodB()` termina (ejecuta su `return`), se quita de la pila — desaparece el de arriba primero. Luego `methodA()` comienza a ejecutarse y cuando termina se quita del stack. Este proceso se repite para todos los métodos, siendo `main()` el último en ejecutarse. Este orden es lo que significa "salen en orden inverso a como entraron": el último que entró (`methodB()`) es el primero que sale. En inglés se llama LIFO (Last In, First Out).
+Cuando `methodB()` termina (ejecuta su `return`), se quita de la cima de la pila — desaparece el de arriba primero. Luego `methodA()` termina y se quita. Por último, `main()`. Este orden es lo que significa "salir en orden inverso": el último que entró es el primero que sale. Dicho de otro modo, LIFO (Last In, First Out).
 
-El **stack trace** es la _foto_ de esa pila justo en el instante del error: el texto que ves impreso en la consola con la lista de métodos activos en ese momento. Como las excepciones son objetos normales en Java, llevan dentro tanto el mensaje de error como ese stack trace completo — así sabes exactamente dónde ocurrió el problema y por qué métodos pasó la excepción hasta llegar hasta ahí.
-
-> La frase "se propaga hacia arriba de la pila" es la que verás en la documentación oficial, pero no te la imagines como una flecha subiendo en el diagrama de arriba. "Arriba" aquí significa "hacia el método que la llamó", que en el diagrama se dibuja hacia _abajo_ — el mismo camino que sigue un `return`, solo que interrumpido por un error en vez de un valor normal.
+El **stack trace** es la _foto_ de esa pila justo en el instante del error: el texto que ves impreso en la consola con la lista de métodos activos en ese momento. La `pila de llamadas` es la estructura dinámica que cambia constantemente mientras el programa corre; el `stack trace` es la copia impresa de esa estructura en un instante concreto. Como las excepciones son objetos normales en Java, llevan dentro tanto el mensaje de error como ese stack trace completo — así sabes exactamente dónde ocurrió el problema y por qué métodos pasó la excepción hasta llegar hasta ahí.
 
 Con estos dos conceptos claros, así es como viaja una excepción. Java lanza un objeto que representa el error justo en el método donde ocurre el fallo — que siempre es el que está en la cima de la pila en ese instante, porque solo el método que se está ejecutando _ahora mismo_ puede fallar en ese momento. Desde ahí, el objeto se propaga **hacia el llamador** (el método que lo llamó), siguiendo el mismo camino LIFO de salida que un `return` normal seguiría, con una diferencia clave: en vez de devolver su valor normal, lo que le llega a cada llamador es el objeto de la excepción. Así, `methodB()` sale con la excepción en vez de con un valor de retorno; si `methodA()` no la captura con un `catch`, también sale hacia `main()`.
 
 Si `main()` tampoco la captura, ahí se acaba el camino — `main()` es siempre el primer método de la pila, así que no hay ningún llamador a quien seguir propagando el error. La aplicación termina y Java imprime en consola el stack trace: la lista de los métodos que estaban activos cuando ocurrió el error (`methodB()`, `methodA()`, `main()`) y por los que la excepción se fue propagando sin que nadie la capturara.
+
+> La frase "se propaga hacia arriba de la pila" es la que verás en la documentación oficial, pero no te la imagines como una flecha subiendo en el diagrama de arriba. "Arriba" aquí significa "hacia el método que la llamó", que en el diagrama se dibuja hacia _abajo_ — el mismo camino que sigue un `return`, solo que interrumpido por un error en vez de un valor normal.
 
 ---
 
@@ -102,7 +102,7 @@ Estas son las excepciones comprobadas más típicas que te vas a encontrar, junt
 
 Ambas están en la tabla de aquí abajo.
 
-Las **excepciones no comprobadas** (_unchecked_, subclases de `RuntimeException`) representan errores de programación — un `null` que no debería serlo, un índice que se sale del array, un argumento que no tiene sentido. La frase "subclases de `RuntimeException`" quiere decir que son tipos de error distintos entre sí, pero todos heredan de la misma clase padre, `RuntimeException` — es exactamente esa herencia común la que el compilador usa para decidir que no hace falta declararlas (lo verás dibujado en el diagrama de "Jerarquía de excepciones" más abajo). Las excepciones no comprobadas son bugs, no eventos externos (algo fuera de tu control, que puede pasar aunque el código esté perfectamente escrito), sino que son fallos que ocurren _solo_ porque tu propio código tiene un error. Si tu código estuviera bien escrito, nunca deberían fallar. Por eso el compilador no exige nada — no tendría sentido obligarte a declarar en la firma de cada método todos los bugs posibles que podrías llegar a cometer. Estas excepciones se propagan libremente hacia el llamador (el mismo camino LIFO que ya conoces de la sección anterior) hasta que algo las captura o la aplicación se rompe.
+Las **excepciones no comprobadas** (_unchecked_, subclases de `RuntimeException`) representan errores de programación — un `null` que no debería serlo, un índice que se sale del array, un argumento que no tiene sentido. La frase "subclases de `RuntimeException`" quiere decir que son tipos de error distintos entre sí, pero todos heredan de la misma clase padre, `RuntimeException` — es exactamente esa herencia común la que el compilador usa para decidir que no hace falta declararlas (lo verás dibujado en el diagrama de "Jerarquía de excepciones" más abajo). Son bugs, no eventos externos: aquí "evento externo" es lo contrario de lo que viste con las comprobadas — no es "el fichero no existe" (algo fuera de tu control, que puede pasar aunque el código esté perfectamente escrito), sino un fallo que ocurre _solo_ porque tu propio código tiene un bug. Si tu código estuviera bien escrito, nunca deberían fallar. Por eso el compilador no exige nada — no tendría sentido obligarte a declarar en la firma de cada método todos los bugs posibles que podrías llegar a cometer. Estas excepciones se propagan libremente hacia el llamador (el mismo camino LIFO que ya conoces de la sección anterior) hasta que algo las captura o la aplicación se rompe.
 
 Estas son las subclases de `RuntimeException` más típicas que te vas a encontrar constantemente en Java (y en entrevistas técnicas), junto con el escenario exacto que dispara cada una:
 
@@ -132,6 +132,8 @@ Exception in thread "main" java.lang.ArithmeticException: / by zero
 Ese es el stack trace del que hablábamos al principio de la nota: la primera línea (`Exception in thread "main" ...`) te da el tipo de excepción y el mensaje; las líneas `at ...` son la foto de la pila en el instante del fallo — el método donde se lanzó (`divide`, línea 6) y el método por el que pasó antes de llegar, sin que nadie la capturara, hasta `main` (línea 2).
 
 > **Por qué no hace falta ningún `try/catch` ni `throw` para "arreglar" esto.** A diferencia de las comprobadas, el compilador nunca te obliga a nada aquí: `divide()` compila perfectamente tal como está, aunque `b` pueda llegar a valer `0` en tiempo de ejecución. Añadir gestión de este error es una decisión de diseño tuya, no una exigencia del compilador — puedes envolver la llamada en un `try/catch` para capturar el fallo después de que ocurra, o comprobar la condición antes con un `if (b == 0) throw new IllegalArgumentException("b no puede ser 0")` para detectarlo tú mismo con un mensaje más claro antes de que Java lance su propio `ArithmeticException`. Ninguna de las dos es obligatoria; `IOException` sí lo era porque el compilador la vigila, `ArithmeticException` no porque nadie la vigila salvo tú.
+
+> Aquí es fácil caer en la misma trampa de antes: "se propaga hacia arriba" es la frase estándar en la documentación de Java, pero como ya viste, "arriba" significa "hacia el método que la llamó", no "arriba en el diagrama de la pila" — que en realidad se dibuja hacia abajo. La pila de la sección anterior está bien dibujada; es la palabra "arriba" la que engaña si te la tomas al pie de la letra. De aquí en adelante verás las dos formas en la documentación real (*"se propaga hacia arriba de la pila"*) — cuando la veas, tradúcela mentalmente como "hacia el llamador".
 
 |                           | Comprobadas (checked)                                                                                                             | No comprobadas (unchecked)                                                                                                                                                                                                                         |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -312,10 +314,11 @@ Lanza siempre con un mensaje que explique qué salió mal y qué valor lo causó
 
 `throw` es la misma palabra clave que ya conoces de JavaScript — la diferencia está en qué puedes lanzar. JS te deja lanzar cualquier valor (un string, un número, un objeto cualquiera); Java exige que el objeto que lanzas sea, en algún punto de su árbol de herencia, un `Throwable` — no necesariamente una subclase de `Exception` en concreto, sino cualquier clase que descienda de `Throwable` (lo que en la práctica siempre será `Exception`, `RuntimeException`, o una subclase de cualquiera de las dos, ya que `Error` es la otra rama y no la lanzas tú a mano). Por eso, a diferencia de JS, no puedes lanzar un simple string o un número: el compilador rechaza cualquier cosa que no cumpla esa condición.
 
+---
+
 ## throws — declarar excepciones comprobadas
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Throws Keyword"
-
 > 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/declaring.html → read: "Specifying the Exceptions Thrown by a Method"
 
 A diferencia de `throw` — que usas para lanzar tú mismo una excepción propia o genérica en el momento en que detectas un problema (visto en la sección anterior) — `throws` no lanza nada: solo declara en la firma del método que, dentro de él, puede llegar a producirse una excepción comprobada que no se ha capturado ahí mismo. Lo usas cuando llamas a un método que a su vez ya declara `throws` para una excepción comprobada (o cuando tú mismo detectas y lanzas una comprobada con `throw`, algo raro en la práctica) y decides no capturarla en ese punto, sino dejar que el llamador decida qué hacer — la misma idea de "quién tiene más contexto para decidir" que viste en el callout de "cuándo usar `throws` y cuándo `try/catch`" más arriba.
@@ -336,7 +339,6 @@ En un proyecto Spring Boot típico, sin embargo, vas a escribir `throws` bastant
 ## Excepciones personalizadas
 
 > Docs: https://www.baeldung.com/java-exceptions → read: "Custom Exception"
-
 > 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/creating.html → read: "Creating Exception Classes"
 
 Creas tu propia clase de excepción cuando quieres darle un nombre de dominio a un error, en vez de lanzar una excepción genérica de Java como `IllegalArgumentException`. Merece la pena cuando quieres documentar mejor el problema, o cuando necesitas que un `@ExceptionHandler` distinga ese caso concreto de cualquier otro. Aquí tienes la receta paso a paso, ya generalizada para cualquier excepción propia que quieras escribir, no solo para `EmployeeNotFoundException`:
@@ -365,14 +367,13 @@ public Employee findById(Long id) {
 }
 ```
 
-En Spring Boot, el destino habitual de esta excepción es el mismo que ya viste con el patrón de envolver: la dejas propagarse sin capturarla en ningún punto intermedio, hasta que un único `@RestControllerAdvice` la atrapa y decide qué código HTTP devolver según su tipo exacto.
+En Spring Boot, el destino habitual de esta excepción es el mismo que ya viste con el patrón de envolver: la dejas propagarse sin capturarla en ningún punto intermedio, hasta que un único `@RestControllerAdvice` la atrapa y decide qué código HTTP devolver.
 
 ---
 
 ## try-with-resources
 
 > Docs: https://www.baeldung.com/java-try-with-resources → read: "Try-With-Resources"
-
 > 📖 Oracle Docs: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html → read: "The try-with-resources Statement"
 
 Antes de que existiera esta sintaxis, cerrar un recurso como un fichero abierto significaba escribir tú mismo un bloque `finally` que llamara a `reader.close()` — y ese `close()` en sí mismo puede lanzar una excepción, así que el `finally` "correcto" acababa necesitando su propio `try/catch` anidado dentro:
@@ -426,7 +427,6 @@ Las conexiones de base de datos en Spring Boot se gestionan automáticamente por
 ## Conexión con Spring Boot
 
 > Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → read: "Using @ControllerAdvice" y "The Handler Methods"
-
 > 📖 Spring Docs: https://docs.spring.io/spring-framework/reference/web/webmvc-exceptionhandlers.html → read: "Exception Handling"
 
 > **Vista previa — Spring Boot:** Esta sección usa `@RestControllerAdvice`, `@ExceptionHandler` y `ResponseEntity` — clases de Spring Boot que aún no has estudiado. Léela para ver cómo las excepciones Java se conectan a una API web. Construirás exactamente este patrón en las notas de Spring Boot.
