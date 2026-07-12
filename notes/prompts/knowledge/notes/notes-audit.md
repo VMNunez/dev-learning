@@ -98,6 +98,26 @@ You are the orchestrator for building Victor's study notes, hands-off. First rea
 the branch for `{SCOPE}`. You stay light: you dispatch subagents, wait, and collect — you never hold
 every file's content in your own context.
 
+## Model policy — per-stage, to protect quality while saving tokens
+
+Pass an explicit `model` override on **every** subagent dispatch, matched to how much deep reasoning
+the stage needs. Quality lives in authoring mechanism-deep prose (A) and in catching subtle bugs and
+false facts (B) — keep those on **Opus**. Translation and calque/link-fixing (T, C) and judging against
+a fixed standard (planner, inspectors) are lighter — run those on **Sonnet** (~1/5 the cost).
+
+| Stage | Dispatch `model:` |
+|-------|-------------------|
+| Planner (Phase 1) | `sonnet` |
+| Inspectors (Phase 1.5) | `sonnet` |
+| **A — English author** | **`opus`** |
+| **B — English reviewer** | **`opus`** |
+| T — translator | `sonnet` |
+| C — Spanish reviewer (commits) | `sonnet` |
+
+This is the default. If Victor says "run the whole thing on Sonnet" (max token saving, accept some risk
+on the deep catches), pass `sonnet` everywhere instead and note it in the final report. Never silently
+drop A/B below Opus — that is the one downgrade that costs quality.
+
 ## If SCOPE = folder and TOPIC = all
 
 Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered topic list from the config block's
@@ -115,7 +135,7 @@ no-ops). Otherwise, for a single topic, follow the branch directly.
 
 ### Phase 1 — Plan (one planning subagent)
 
-Launch one `general-purpose` subagent, `run_in_background: false`:
+Launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
 
 > Read `notes/prompts/knowledge/notes/notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
 > (derive `NOTES_PATH` as that prompt specifies — for Spring Boot, both `notes/java/en/` and
@@ -134,7 +154,7 @@ file is judged at full attention in its own cold context (never a batch — that
 split exists to prevent).
 
 Read the "Existing files to inspect" list from the worklist. For **each** file in it, **in order**,
-launch one `general-purpose` subagent, `run_in_background: false` (never overlap them — they all
+launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false` (never overlap them — they all
 append to the same worklist file and parallel writes would race):
 
 > Read `notes/prompts/knowledge/notes/notes-inspect-prompt.md` and execute it in full for a single file:
@@ -186,7 +206,7 @@ an unfinished predecessor).
 > English (e.g. an inspector merged `fix-quality` flags into it), the English is NOT final — run all
 > four stages. For every other row, run all four stages.
 
-**Subagent A — English author.** Launch one `general-purpose` subagent:
+**Subagent A — English author.** Launch one `general-purpose` subagent, `model: opus`:
 
 > Read `notes/prompts/knowledge/notes/notes-write-prompt.md` and execute it in full for a single file:
 > - `TOPIC` = «topic» · `FILE` = «file» · `TASK` = «task» · `REWRITE_MODE` = «mode»
@@ -200,7 +220,7 @@ Wait for A. If A reports it could not complete the file (blocked, missing contex
 the row `[ ]` (folder mode), note it, and move on — do not translate or commit a partial file.
 
 **Subagent B — English reviewer (`en/` only).** Launch a second, independent `general-purpose`
-subagent:
+subagent, `model: opus`:
 
 > Read `notes/prompts/knowledge/notes/notes-review-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
@@ -212,7 +232,7 @@ subagent:
 
 Wait for B before starting T.
 
-**Subagent T — translator (`en/` → `es/`).** Launch a third, independent `general-purpose` subagent:
+**Subagent T — translator (`en/` → `es/`).** Launch a third, independent `general-purpose` subagent, `model: sonnet`:
 
 > Read `notes/prompts/knowledge/notes/notes-translate-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
@@ -225,7 +245,7 @@ Wait for B before starting T.
 Wait for T before starting C.
 
 **Subagent C — Spanish reviewer (`es/` only, `en/`-blind).** Launch a fourth, independent
-`general-purpose` subagent:
+`general-purpose` subagent, `model: sonnet`:
 
 > Read `notes/prompts/knowledge/notes/notes-review-es-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
