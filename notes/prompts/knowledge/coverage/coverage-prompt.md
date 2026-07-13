@@ -91,17 +91,50 @@ standard's "What coverage.md is" section.
 
 ---
 
+## The purpose filter — the primary criterion, above every other rule
+
+**Victor's purpose is the ONLY test an item has to pass.** Read it from ROADMAP + `_shared-context`
+before writing anything; never from a value baked into this prompt. As of this writing it reads:
+first developer job at a large Spanish consultancy (NTT Data, Capgemini, Indra…), **junior/junior-mid**,
+**Angular + Spring Boot + PostgreSQL**, applying **August–September 2026**, where **stage 4 — the live
+review of the take-home — is the decisive filter** and 2026 added a **code-review round on
+(often AI-generated) snippets**. Defer to the sources if they now say something different.
+
+The filter cuts **in both directions**, and a run that fails either one has failed:
+
+- **Nothing missing.** If a junior at that target could be asked it, shown it in a snippet, or hit it
+  while doing the take-home — it is IN, however unglamorous. Reading a stack trace, `mvn` failing, a
+  415 because the `Content-Type` header is absent, an annotation that silently does nothing: these
+  decide interviews and are exactly what a coverage file written from a textbook leaves out.
+- **Nothing extra.** If no target posting asks for it, no stage-4 interviewer would probe a junior on
+  it, and it is not defensible from Victor's own project — it is OUT, however "good to know". It does
+  not just waste study time: coverage feeds `notes-audit` and `interview-prep`, so every stray item
+  becomes notes to write, and the runway to the applications window is short. `_shared-context` says
+  **depth over breadth**, and that finishing the portfolio project is the priority before applying.
+
+Concretely, for each candidate item ask: *would this decide whether he gets the job in
+August–September 2026?* Not "is it true", not "is it Spring Boot", not "would a good engineer know
+it" — **would it decide the job.** If you cannot name the stage it is tested at (the take-home, the
+snippet code review, a "why X over Y" in stage 4, a decision he must defend about his own project),
+it is not a coverage item — route it to `future-learning.md`.
+
+> This is why the AI factor in the standard is not a side rule but the sharp edge of the purpose:
+> anything easy to generate with AI and hard to explain, defend, or review is precisely what stage 4
+> now exists to test.
+
+---
+
 ## Subagent roles — one concern each, read-only
 
-This prompt uses two cold subagents, each with a **single concern** and **no write access**:
+This prompt uses cold subagents, each with a **single concern** and **no write access**:
 - **Step 2 — market analyst:** derives the market-demand floor for {TOPIC}. Returns a list; edits nothing.
-- **Step 4a — adversarial interviewer:** finds concepts an interviewer would probe that coverage misses.
-  Returns a gap list; edits nothing.
+- **Step 4a — adversarial interviewers (a fan-out, not one):** each hunts, from its own angle, the
+  concepts an interviewer would probe that coverage misses. Each returns a gap list; none edits anything.
 
-Never merge these into one subagent and never give either a second job — a subagent that both analyses
-and writes, or covers two concerns at once, splits its attention and lowers quality. **The generator
-(this context) is the only editor:** it consolidates the returned lists and writes coverage.md,
-future-learning.md, and the sync to notes/coverage.md.
+Never merge these into one subagent and never give any of them a second job — a subagent that both
+analyses and writes, or covers two concerns at once, splits its attention and lowers quality. **The
+generator (this context) is the only editor:** it consolidates the returned lists, applies the purpose
+filter, and writes coverage.md, future-learning.md, and the sync to notes/coverage.md.
 
 ### Model policy — per role, to protect quality while saving tokens
 
@@ -109,11 +142,11 @@ Pass an explicit `model` override on every subagent dispatch:
 
 | Role | `model:` | Why |
 |------|----------|-----|
-| **Generator (this context / session)** | **Opus** | It word-crafts every coverage item to the standard — the real quality bottleneck. Run the session on Opus. |
+| **Generator (this context / session)** | **Opus** | It word-crafts every coverage item to the standard and applies the purpose filter — the real quality bottleneck. Run the session on Opus. |
 | Step 2 — market analyst | `sonnet` | Web-search + list; retrieval-heavy, and the Opus generator judges the result against the standard afterwards. |
-| **Step 4a — adversarial interviewer** | **`opus`** | Generating genuinely hard interview gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. |
+| **Step 4a — every adversarial angle** | **`opus`** | Generating genuinely hard gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. This is the pass completeness depends on; never economise here. |
 
-This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on Sonnet with A/B bumped to Opus; **here the session IS the author**, so it runs on Opus. If Victor wants maximum saving and accepts more risk, the market analyst can stay Sonnet and only 4a on Opus — never drop 4a below Opus, that is the pass that finds the holes.
+This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on Sonnet with A/B bumped to Opus; **here the session IS the author**, so it runs on Opus. If Victor wants maximum saving and accepts more risk, the market analyst can stay Sonnet — but **never drop a 4a angle below Opus, and never save tokens by running fewer angles**: that is the pass that finds the holes, and a coverage file with holes silently propagates into the notes and the interview prep.
 
 ---
 
@@ -239,36 +272,84 @@ section — the three-types check and the confusable-pairs check. Then run the s
 **completeness test** for the whole file before saving. Do not restate those rules here; the standard
 is the single source for them.
 
+**Restructuring is allowed — and expected on a real update.** When new items push a section past the
+standard's size limit, **split it** into two sections with functional names rather than letting it
+bloat (a 15-item "REST controllers" became "REST controllers" + "API design and the HTTP contract").
+Likewise, create a new section when a cluster of gaps has no home. Two consequences: the "leave correct
+existing bullets untouched" rule in Step 1.4 is about **wording**, not about where a bullet lives —
+moving an unchanged bullet into a better section is fine; and Step 4b must then mirror the new and
+renamed **headings**, not only the bullets.
+
 ---
 
-## Step 4a — Adversarial interviewer pass (gap hunt)
+## Step 4a — Adversarial gap hunt: a fan-out of angles, uncapped
 
-The generator (Steps 1–4) tends to trust its own list. A separate, cold **interviewer** catches what
-it missed — the coverage failure that matters is not format, it is a *missing concept an interviewer
-would actually probe*. Run this pass on the coverage you just wrote, before syncing.
+The generator (Steps 1–4) tends to trust its own list, and a single interviewer only finds the gaps
+that fit inside its own question set. **This is the pass that decides whether coverage is complete, so
+it is deliberately the most expensive one.** Two rules make it work, and both were learned from a real
+run where one capped interviewer returned 13 gaps and looked convergent — while three further angles
+then found 80+ more:
 
-**In Claude Code:** launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
+- **Never cap the questions.** Do not ask a subagent for "the 12 questions you would ask". A capped
+  interviewer finds the gaps that fit in 12 questions; it does not find the gaps. Every dispatch says
+  *as many as you genuinely would use — be exhaustive for this angle*.
+- **Fan out by angle, not by repetition.** Running the same generic interviewer twice returns the same
+  list. Different **angles** interrogate different surfaces of the topic, and the surfaces the generic
+  interviewer never touches (what you *do* at a keyboard; what you do when it *breaks*) are where the
+  real holes are.
 
-> You are a senior technical interviewer at one of the target consultancies (read ROADMAP.md and
-> `notes/prompts/_shared-context.md` for the exact role/companies, and
-> `notes/prompts/_job-market-evidence.md` for what they hire for). You have 30 minutes with a
-> candidate at the target level and the topic is {TOPIC}. Read `{NOTES_PATH}coverage.md` and
+**In Claude Code:** launch these as **parallel** `general-purpose` subagents, `model: opus`,
+`run_in_background: false`. Adapt the angle list to {TOPIC} — these are the ones that pay for a
+backend/frontend framework topic; drop any that is meaningless for the topic (a "production debugging"
+angle makes no sense for CSS) and add one the topic obviously needs:
+
+1. **Live code review** — "here is a snippet, what is wrong with it / would you approve this PR?".
+   Annotations that silently do nothing, wrong layer, misused framework idioms, tests that pass but
+   prove nothing. *This angle maps directly onto the 2026 code-review round — never skip it.*
+2. **Design and decisions** — "why X over Y?" and "how would you build this?" across the topic's real
+   design space.
+3. **Take-home / live coding** — what must he be able to DO from a blank IDE without googling: bootstrap
+   the project, wire the DB, read a stack trace, run it, exercise it with Postman, unblock himself when
+   the first run fails.
+4. **Debugging what broke** — the errors he will actually hit and be asked about: startup failures, the
+   framework's own exception messages and what they really mean, a slow endpoint.
+
+Give each subagent this brief (substituting its angle):
+
+> You are a senior engineer at one of the target consultancies (read `ROADMAP.md`,
+> `notes/prompts/_shared-context.md` for the exact role/companies/level, and
+> `notes/prompts/_job-market-evidence.md` for what they hire for) interviewing a candidate at the target
+> level. The topic is {TOPIC}. Read `{NOTES_PATH}coverage.md` and
 > `notes/prompts/knowledge/coverage/_coverage-standard.md`.
 >
-> Write the **12 questions you would actually ask** to decide whether this candidate really knows
-> {TOPIC} — mix conceptual, decision ("why X over Y"), and pressure/gotcha questions, and lean on the
-> recurring requirements in the job-market evidence. Then, for each question, check whether the
-> current coverage.md gives the candidate what they'd need to answer it. Output only the **gaps**: the
-> questions the coverage does NOT support, each as a proposed coverage item in the standard's format
-> (`concept — interview-anchored sentence`), tagged with its section. Do not rewrite existing items;
-> only surface what is missing. Be adversarial — assume the coverage is incomplete until your 12
-> questions prove otherwise.
+> Your angle is: **<ANGLE + its one-line description from the list above>**.
+>
+> Generate as MANY probes from this angle as you genuinely would use — **do not stop at a fixed
+> number; be exhaustive for this angle.** Then check each probe against the CURRENT coverage.md and
+> output **only the gaps**: what a candidate could not answer from coverage as written, each as a
+> coverage item in the standard's format (`concept — interview-anchored sentence`), tagged with the
+> section it belongs in (propose a new section if none fits). Do not rewrite existing items. Be
+> adversarial — assume the coverage is incomplete until your probes prove otherwise. List separately,
+> under **"OUT — post-junior"**, anything you judge to be beyond what a junior at this target is
+> actually filtered on.
 
-Then **you** (the generator) review the returned gaps: add every genuine one to the right section of
-`{NOTES_PATH}coverage.md` in the standard's format, and discard any that are actually out of junior
-scope (note those in the summary as "adversary-suggested, left out — reason").
+**Stop rule:** you are done when a fresh angle returns only duplicates of what the others already
+found. Heavy overlap between angles is the convergence signal — it means the surface is covered, not
+that the pass was wasted.
 
-Two routing rules when handling the discards:
+Then **you** (the generator) consolidate: deduplicate across the angles, and run **every** proposed gap
+through the **purpose filter** at the top of this prompt. Add each survivor to the right section of
+`{NOTES_PATH}coverage.md` in the standard's format. Discard the rest and note them in the summary as
+"adversary-suggested, left out — reason".
+
+> **Expect to discard, and expect to discard confidently.** An uncapped adversary optimises for
+> completeness, not for Victor's job — it will propose things that are real, correct, and irrelevant to
+> a junior screening in Spain (a past run proposed file uploads and `@Async`, which appear in no target
+> posting and in none of his projects). Deleting those is not losing coverage; it is the purpose filter
+> doing its job. **The item's own justification must name the stage it is tested at** — if the
+> adversary could not, and you cannot either, it is out.
+
+Three routing rules when handling the discards:
 - **Discarded ≠ vanished.** For any gap you discard as out-of-junior-scope, confirm it is already
   recorded in `future-learning.md`; if it is not, add it there (Step 5 performs the write). A discarded
   item must never disappear — it is either in coverage or in future-learning, never nowhere.
@@ -277,10 +358,15 @@ Two routing rules when handling the discards:
   configuration block's per-topic notes), leave it OUT of this file and route it to its owner — note it
   in the summary as "owned by <topic>, not added here". Do not re-litigate the same misplaced gap on
   every run.
+- **Real but not his job.** A gap that fails the purpose filter (nothing in the target postings, no
+  stage-4 interviewer would probe a junior on it, not defensible from his own projects) goes to
+  `future-learning.md` **with the reason written next to it** — "left out of coverage because X" — so a
+  later run does not re-add it and Victor can see the judgement, not just the omission.
 
-**Not in Claude Code (plain chat):** do the same pass yourself, explicitly — switch hats, write the
-12 questions cold, list the gaps, then add the genuine ones. The independence is weaker than a real
-subagent, so be strict about actually generating the questions, not assuming the coverage is complete.
+**Not in Claude Code (plain chat):** run the angles yourself, one at a time and explicitly — switch
+hats per angle, generate the probes cold and uncapped, list the gaps, then apply the purpose filter.
+The independence is much weaker than real subagents, so actually write the probes out; do not skim
+the coverage and declare it complete.
 
 ---
 
@@ -316,7 +402,10 @@ Git → General. Add a `---` separator before and after the new section.
 
 Do this for every edit, not just full rewrites — if only one bullet changes in
 `{NOTES_PATH}coverage.md`, change that same bullet in `notes/coverage.md` too. The two files
-must never drift apart.
+must never drift apart. **This includes structure:** if Step 4 split, renamed, added or removed a
+section, the mirrored section must gain, rename or lose the same `###` heading. When an update is large
+enough that patching bullet by bullet is error-prone, rebuild the whole `## {TOPIC}` section from the
+topic file in one replacement — that is the safer path, not a shortcut.
 
 **Cross-topic overlap check:**
 Before finalizing, scan the other sections of `notes/coverage.md` for items that overlap with
@@ -355,10 +444,13 @@ After all edits, print a short summary:
 
 | Change | Detail |
 |--------|--------|
+| Angles run in Step 4a | [which angles, and where they converged — "angle 4 returned only duplicates"] |
 | Added to coverage | [list of new items] |
+| Sections split / added | [structural changes, or "none"] |
 | Modified in coverage | [list of updated items — one line per change, or "none"] |
 | Promoted from future-learning | [list or "none"] |
 | Demoted to future-learning | [item — one-line reason it no longer belongs in coverage, or "none"] |
+| Left out by the purpose filter | [adversary-suggested item — the stage it could not be tied to, or "none"] |
 | Removed from future-learning | [item — one-line reason it was removed, or "none"] |
 | Synced to notes/coverage.md | [yes — X bullets changed / no changes needed] |
 
