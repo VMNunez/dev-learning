@@ -92,6 +92,22 @@ The string inside the annotation is appended to the class-level `@RequestMapping
 
 ---
 
+## Why PATCH endpoints get a URL suffix and PUT/POST/DELETE don't
+
+`PUT /api/entries/{id}`, `POST /api/entries`, and `DELETE /api/entries/{id}` never need anything appended to the path — the HTTP verb alone already says the whole action: replace the resource, create it, remove it. There is exactly one thing a PUT can mean for a given resource, so the URL never needs to disambiguate further.
+
+`PATCH` is different. "Partially update" is vague on its own — a resource can have many different partial updates, especially one that follows a state machine (see `notes/architecture` for the workflow pattern). A `TimeEntry` can move `DRAFT → SUBMITTED`, `SUBMITTED → APPROVED`, or `SUBMITTED → REJECTED` — three distinct transitions, all technically "PATCH". Without a suffix, `PATCH /api/entries/{id}` alone can't tell the server which transition the client means. The suffix names the specific sub-action:
+
+```java
+@PatchMapping("/{id}/submit")   // PATCH /api/entries/42/submit
+@PatchMapping("/{id}/approve")  // PATCH /api/entries/42/approve
+@PatchMapping("/{id}/reject")   // PATCH /api/entries/42/reject
+```
+
+> **Rule of thumb:** if a verb can only mean one thing for that resource (PUT, POST, DELETE), the path stays bare — `/{id}`. If the same verb (PATCH) could mean several different transitions on the same resource, the suffix names which one — `/{id}/submit`, `/{id}/approve`.
+
+---
+
 ## ResponseEntity — controlling the HTTP response
 
 Docs: https://www.baeldung.com/spring-response-entity

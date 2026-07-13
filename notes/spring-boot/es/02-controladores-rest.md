@@ -92,6 +92,22 @@ El string dentro de la anotación se añade a la ruta base `@RequestMapping` de 
 
 ---
 
+## Por qué los endpoints PATCH llevan sufijo en la URL y PUT/POST/DELETE no
+
+`PUT /api/entries/{id}`, `POST /api/entries` y `DELETE /api/entries/{id}` nunca necesitan nada añadido a la ruta — el verbo HTTP ya dice toda la acción: reemplazar el recurso, crearlo, eliminarlo. Para un recurso dado solo hay una cosa que un PUT puede significar, así que la URL nunca necesita desambiguar más.
+
+`PATCH` es distinto. "Actualizar parcialmente" es vago por sí solo — un recurso puede tener muchas actualizaciones parciales distintas, sobre todo uno que sigue una máquina de estados (ver `notes/architecture` para el patrón de workflow). Un `TimeEntry` puede pasar de `DRAFT → SUBMITTED`, `SUBMITTED → APPROVED`, o `SUBMITTED → REJECTED` — tres transiciones distintas, todas técnicamente "PATCH". Sin sufijo, un `PATCH /api/entries/{id}` a secas no le dice al servidor qué transición quiere el cliente. El sufijo nombra la sub-acción concreta:
+
+```java
+@PatchMapping("/{id}/submit")   // PATCH /api/entries/42/submit
+@PatchMapping("/{id}/approve")  // PATCH /api/entries/42/approve
+@PatchMapping("/{id}/reject")   // PATCH /api/entries/42/reject
+```
+
+> **Regla práctica:** si un verbo solo puede significar una cosa para ese recurso (PUT, POST, DELETE), la ruta se queda desnuda — `/{id}`. Si el mismo verbo (PATCH) puede significar varias transiciones distintas sobre el mismo recurso, el sufijo nombra cuál — `/{id}/submit`, `/{id}/approve`.
+
+---
+
 ## ResponseEntity — controlar la respuesta HTTP
 
 Docs: https://www.baeldung.com/spring-response-entity
