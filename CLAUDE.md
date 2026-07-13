@@ -144,8 +144,9 @@ plus the README standard, which does not auto-load. This section remains the sou
   - In PROGRESS.md, each item must be one specific thing — never group multiple concepts in one line
 - `projects/0X-projectname/README.md` — update the "What I learned" section
 - `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed
-- `notes/interview-prep/` — add at least one question (in `en/` **and** `es/`) for each new concept the step introduced (the in-session rule, made part of this ritual so it is never skipped)
 - When a project is fully done, remind Victor to update the "Current study progress" section in this file and the project table in PROGRESS.md
+
+**Interview-prep is not part of this ritual** (dropped 2026-07-13) — do not add interview questions automatically on step completion. Add them only when Victor asks, in session, or via `interview-prep-audit`.
 
 ## CSS teaching rules
 

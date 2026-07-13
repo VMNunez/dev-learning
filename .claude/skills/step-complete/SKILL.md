@@ -4,17 +4,24 @@ description: >
   Run the full step-completion ritual WHENEVER a learning-plan step of the active project is
   finished during a daily session — the moment Victor's code for the step works, is tested, and is
   committed (or he says the step is done: "step X terminado", "hemos acabado el step", "mark the
-  step complete", "ya está el step"). CLAUDE.md mandates updating four places after every completed
+  step complete", "ya está el step"). CLAUDE.md mandates updating three places after every completed
   step, and the real failure mode is doing it partially — updating PROGRESS.md but forgetting the
-  ✅ in PLANNING.md or the README. This skill makes the ritual atomic: all four or flag why not.
-  Do NOT trigger for ordinary commits mid-step, notes-only sessions, or the audit pipelines. (Projects 01-06 are closed - their extraction format, the "Key patterns introduced" table, is N/A in practice.)
+  ✅ in PLANNING.md or the README. This skill makes the ritual atomic: all three or flag why not.
+  Interview-prep is NOT part of this ritual (dropped 2026-07-13 — Victor adds those separately,
+  on request, not automatically on step completion). Do NOT trigger for ordinary commits mid-step,
+  notes-only sessions, or the audit pipelines. (Projects 01-06 are closed - their extraction format,
+  the "Key patterns introduced" table, is N/A in practice.)
 ---
 
 # Step-completion ritual (daily session)
 
 A learning-plan step just finished. CLAUDE.md ("After every learning plan step is completed")
-requires four updates — do all of them, in this order, without being asked. If one genuinely does
+requires three updates — do all of them, in this order, without being asked. If one genuinely does
 not apply, say so explicitly instead of silently skipping it.
+
+Interview-prep questions are **not** part of this ritual — Victor asked (2026-07-13) to stop adding
+them automatically on step completion. Only add interview-prep questions when he asks for them
+directly, in session.
 
 ## 1 — PLANNING.md: mark the step
 
@@ -37,13 +44,6 @@ on `main` — commit it from the repo root.
 **Before touching the README, read `notes/prompts/projects/readme/_readme-standard.md`** — like the
 note standards, it only auto-loads inside `readme-audit`, so an inline edit without it silently
 misses the format. Keep the entries short bullets, no explanations (details belong in `notes/`).
-
-## 4 — Interview-prep questions
-
-Add questions for what the step taught, to BOTH `notes/interview-prep/en/{topic}.md` and
-`es/{topic}.md` (same question, same section, translated). This is study content — the
-`study-content-writer` skill's rules apply: load
-`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` first.
 
 ## Commits
 
