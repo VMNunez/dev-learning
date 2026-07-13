@@ -1,9 +1,9 @@
 # Coverage prompt — last run self-report
 
-**Date:** 2026-07-12 · **Target:** TOPIC = Spring Boot, NOTES_PATH = notes/spring-boot/ (update of an existing, mature coverage.md)
+**Date:** 2026-07-13 · **Target:** TOPIC = Spring Boot, NOTES_PATH = notes/spring-boot/ (update of an existing, mature coverage.md)
 
-1. **Plan vs reality** — Two cold subagents (market analyst on Sonnet, adversarial interviewer on Opus) split cleanly; both returned usable output on first dispatch. Coverage was already mature, so the market analyst found no net-new floor items — the whole file was confirmed market-aligned. The adversary was the only source of new items (3 added, 1 left out). Sizing right.
-2. **Report discipline** — Both subagents returned tight, on-format tagged lists; nothing had to be trimmed or discarded. No code dumps or narrative padding.
-3. **Failures & retries** — None. Both ran synchronously and completed on first try (market analyst noted thin/expired posting URLs, worked from search extracts + evidence file as designed).
-4. **Rule friction** — Minor: placement of the `ddl-auto` item was a judgement call (entity-mapping vs repositories/performance vs Project setup); the prompt correctly leaves section choice to the generator, so no fix needed. Step 4b sync was frictionless since topic-file bullets are copied verbatim (only headings shift, none here).
-5. **Verdict** — pipeline clean.
+1. **Plan vs reality** — Two cold subagents (market analyst on Sonnet, adversarial interviewer on Opus) split cleanly; both returned usable output on first dispatch. Same shape as the 2026-07-12 run: the market analyst again found no net-new floor items (coverage already satisfies the whole market floor), and the adversary was again the only source of new items — 13 proposed, 12 added, 1 discarded, plus 1 promotion from future-learning. Two consecutive runs where the analyst adds nothing is now a pattern worth noting, though its "no conflict with the floor" verdict is what licenses trusting the file.
+2. **Report discipline** — Both subagents returned tight, on-format tagged lists; nothing had to be trimmed or discarded. The interviewer correctly returned only gaps and did not rewrite existing items.
+3. **Failures & retries** — None. Both ran synchronously and completed on first try (market analyst again hit expired/login-walled postings and worked from search extracts + the evidence file, as designed).
+4. **Rule friction** — Real friction this run: the added items pushed "REST controllers" to 15 bullets, past the standard's ">12 → split" rule, but neither the prompt nor the standard says how to split an *existing* section during an update. I split out a new "DTOs and the API contract" section on my own judgement, which also meant Step 4b had to insert a new `###` heading in notes/coverage.md rather than just change bullets — Step 4b's wording ("if only one bullet changes, change that same bullet") does not anticipate a structural change.
+5. **Verdict** — change worth considering: state in Step 4 that an update may split an oversized section, and in Step 4b that the sync must mirror new/renamed headings, not only bullets.
