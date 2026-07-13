@@ -20,9 +20,9 @@ Topics to study once the numbered files (01–09) are solid. Nothing here is nee
 
 ## Phase 1 — After landing the first job
 
-### Spring Boot Actuator
+### Optimistic locking — `@Version`
 
-Health checks, metrics, and management endpoints that ops teams use to monitor the app in production. Automatically exposes `/actuator/health`, `/actuator/info`, and more. Essential in any production-deployed Spring Boot app.
+Concurrency control for the lost-update problem: two users load the same row, both write, and the second write silently overwrites the first. A `@Version` field makes Hibernate check the version on every update and throw `ObjectOptimisticLockingFailureException` when the row changed underneath you, which you map to a 409. Real and worth knowing, but junior screenings at the target consultancies do not probe concurrency — it becomes relevant the first time you touch a system with real concurrent writers.
 
 ### Spring Boot Caching
 
