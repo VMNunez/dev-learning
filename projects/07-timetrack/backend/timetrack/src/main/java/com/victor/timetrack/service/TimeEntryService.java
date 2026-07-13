@@ -183,6 +183,25 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    public void delete(Long id) {
+        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        TimeEntry timeEntry = timeEntryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+
+        if (!timeEntry.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("You can only delete your own time entries");
+        }
+
+        if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
+            throw new BusinessRuleViolationException("You can only delete DRAFT entries");
+        }
+
+        timeEntryRepository.deleteById(id);
+    }
+
+
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
         response.setId(timeEntry.getId());

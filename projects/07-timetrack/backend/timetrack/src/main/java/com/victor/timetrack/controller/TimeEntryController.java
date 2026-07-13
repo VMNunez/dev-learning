@@ -52,4 +52,10 @@ public class TimeEntryController {
                                                     @Valid @RequestBody CreateTimeEntryRequest request) {
         return ResponseEntity.status(200).body(timeEntryService.update(id, request));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        timeEntryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
