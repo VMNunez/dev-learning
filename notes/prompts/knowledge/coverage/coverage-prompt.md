@@ -89,16 +89,23 @@ Before starting, read:
 the job — not from the notes. The full definition, and why projects don't define scope, is in the
 standard's "What coverage.md is" section.
 
+**Concepts only — coverage feeds the notes.** Every item must be a *studyable concept* (a mechanism,
+an annotation, a decision, a gotcha) that `notes-audit` can turn into a study note. Working methods,
+interview conduct, and "how to behave in the round" (think out loud, build in vertical slices, the
+order to read a PR in) are NOT coverage items — the *concepts underneath them* are (e.g. not "read the
+trace before editing code" but "`Caused by:` — the root cause sits at the bottom of a nested stack
+trace"). Route conduct/method material to the interview-prep prompts, never into coverage.md.
+
 ---
 
 ## Subagent roles — one concern each, read-only
 
-This prompt uses two cold subagents, each with a **single concern** and **no write access**:
+This prompt uses cold subagents, each with a **single concern** and **no write access**:
 - **Step 2 — market analyst:** derives the market-demand floor for {TOPIC}. Returns a list; edits nothing.
-- **Step 4a — adversarial interviewer:** finds concepts an interviewer would probe that coverage misses.
-  Returns a gap list; edits nothing.
+- **Step 4a — adversarial interviewers (a fan-out, not one):** each hunts, from its own angle, the
+  concepts an interviewer would probe that coverage misses. Each returns a gap list; none edits anything.
 
-Never merge these into one subagent and never give either a second job — a subagent that both analyses
+Never merge these into one subagent and never give any of them a second job — a subagent that both analyses
 and writes, or covers two concerns at once, splits its attention and lowers quality. **The generator
 (this context) is the only editor:** it consolidates the returned lists and writes coverage.md,
 future-learning.md, and the sync to notes/coverage.md.
@@ -111,9 +118,9 @@ Pass an explicit `model` override on every subagent dispatch:
 |------|----------|-----|
 | **Generator (this context / session)** | **Opus** | It word-crafts every coverage item to the standard — the real quality bottleneck. Run the session on Opus. |
 | Step 2 — market analyst | `sonnet` | Web-search + list; retrieval-heavy, and the Opus generator judges the result against the standard afterwards. |
-| **Step 4a — adversarial interviewer** | **`opus`** | Generating genuinely hard interview gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. |
+| **Step 4a — every adversarial angle** | **`opus`** | Generating genuinely hard interview gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. |
 
-This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on Sonnet with A/B bumped to Opus; **here the session IS the author**, so it runs on Opus. If Victor wants maximum saving and accepts more risk, the market analyst can stay Sonnet and only 4a on Opus — never drop 4a below Opus, that is the pass that finds the holes.
+This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on Sonnet with A/B bumped to Opus; **here the session IS the author**, so it runs on Opus. If Victor wants maximum saving and accepts more risk, the market analyst can stay Sonnet — but **never drop a 4a angle below Opus, and never save tokens by running fewer angles**: that is the pass that finds the holes, and a coverage file with holes silently propagates into the notes and the interview prep.
 
 ---
 
@@ -239,34 +246,75 @@ section — the three-types check and the confusable-pairs check. Then run the s
 **completeness test** for the whole file before saving. Do not restate those rules here; the standard
 is the single source for them.
 
+**Restructuring is allowed — and expected on a real update.** When new items push a section past the
+standard's size limit, **split it** into two sections with functional names rather than letting it
+bloat; likewise, create a new section when a cluster of gaps has no home. Two consequences: the "leave
+correct existing bullets untouched" rule in Step 1.4 is about **wording**, not about where a bullet
+lives — moving an unchanged bullet into a better section is fine; and Step 4b must then mirror the new
+and renamed **headings**, not only the bullets.
+
 ---
 
-## Step 4a — Adversarial interviewer pass (gap hunt)
+## Step 4a — Adversarial gap hunt: a fan-out of angles, uncapped
 
-The generator (Steps 1–4) tends to trust its own list. A separate, cold **interviewer** catches what
-it missed — the coverage failure that matters is not format, it is a *missing concept an interviewer
-would actually probe*. Run this pass on the coverage you just wrote, before syncing.
+The generator (Steps 1–4) tends to trust its own list, and a single interviewer only finds the gaps
+that fit inside its own question set. **This is the pass that decides whether coverage is complete, so
+it is deliberately the most expensive one.** Two rules make it work, and both were learned from a real
+run where one capped interviewer returned 13 gaps and looked convergent — while three further angles
+then found 80+ more:
 
-**In Claude Code:** launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
+- **Never cap the questions.** Do not ask a subagent for "the 12 questions you would ask". A capped
+  interviewer finds the gaps that fit in 12 questions; it does not find the gaps. Every dispatch says
+  *as many as you genuinely would use — be exhaustive for this angle*.
+- **Fan out by angle, not by repetition.** Running the same generic interviewer twice returns the same
+  list. Different **angles** interrogate different surfaces of the topic — and the surfaces the generic
+  interviewer never touches (what breaks at the keyboard, what the take-home actually exercises) are
+  where the real holes are.
 
-> You are a senior technical interviewer at one of the target consultancies (read ROADMAP.md and
-> `notes/prompts/_shared-context.md` for the exact role/companies, and
-> `notes/prompts/_job-market-evidence.md` for what they hire for). You have 30 minutes with a
-> candidate at the target level and the topic is {TOPIC}. Read `{NOTES_PATH}coverage.md` and
-> `notes/prompts/knowledge/coverage/_coverage-standard.md`.
+**In Claude Code:** launch these as **parallel** `general-purpose` subagents, `model: opus`,
+`run_in_background: false`. Adapt the angle list to {TOPIC} — drop any that is meaningless for the
+topic (a "production debugging" angle makes no sense for CSS) and add one the topic obviously needs:
+
+1. **Live code review** — "here is a snippet, what is wrong with it?". The *concepts* a reviewer needs:
+   annotations that silently do nothing, wrong layer, misused framework idioms, tests that pass but
+   prove nothing. *This angle maps directly onto the 2026 code-review round — never skip it.*
+2. **Design and decisions** — "why X over Y?" and "how would you build this?" across the topic's real
+   design space.
+3. **Take-home / live coding** — the *concepts* behind doing the work from a blank IDE: what someone
+   who cannot bootstrap the project, wire the DB, or unblock a failed first run is missing (the
+   mechanism of the wrapper/tooling, what an error actually means, where configuration comes from).
+4. **Debugging what broke** — the errors he will actually hit and be asked about: startup failures, the
+   framework's own exception messages and what they really mean, a slow endpoint.
+
+Give each subagent this brief (substituting its angle):
+
+> You are a senior engineer at one of the target consultancies (read `ROADMAP.md`,
+> `notes/prompts/_shared-context.md` for the exact role/companies/level, and
+> `notes/prompts/_job-market-evidence.md` for what they hire for — a small sample that corroborates,
+> never bounds, your probes) interviewing a candidate at the target level. The topic is {TOPIC}. Read
+> `{NOTES_PATH}coverage.md` and `notes/prompts/knowledge/coverage/_coverage-standard.md`.
 >
-> Write the **12 questions you would actually ask** to decide whether this candidate really knows
-> {TOPIC} — mix conceptual, decision ("why X over Y"), and pressure/gotcha questions, and lean on the
-> recurring requirements in the job-market evidence. Then, for each question, check whether the
-> current coverage.md gives the candidate what they'd need to answer it. Output only the **gaps**: the
-> questions the coverage does NOT support, each as a proposed coverage item in the standard's format
-> (`concept — interview-anchored sentence`), tagged with its section. Do not rewrite existing items;
-> only surface what is missing. Be adversarial — assume the coverage is incomplete until your 12
-> questions prove otherwise.
+> Your angle is: **<ANGLE + its one-line description from the list above>**.
+>
+> Generate as MANY probes from this angle as you genuinely would use — **do not stop at a fixed
+> number; be exhaustive for this angle.** Then check each probe against the CURRENT coverage.md and
+> output **only the gaps**: what a candidate could not answer from coverage as written, each as a
+> coverage item in the standard's format (`concept — interview-anchored sentence`), tagged with the
+> section it belongs in (propose a new section if none fits). **Every gap must be a studyable
+> concept** — a mechanism, annotation, decision, or gotcha a note can be written about — never a
+> working method or interview conduct ("think out loud", "build in slices"); when a method matters,
+> return the concept underneath it. Do not rewrite existing items. Be adversarial — assume the
+> coverage is incomplete until your probes prove otherwise. List separately, under
+> **"OUT — post-junior"**, anything you judge beyond what a junior at this target is filtered on.
 
-Then **you** (the generator) review the returned gaps: add every genuine one to the right section of
-`{NOTES_PATH}coverage.md` in the standard's format, and discard any that are actually out of junior
-scope (note those in the summary as "adversary-suggested, left out — reason").
+**Stop rule:** you are done when a fresh angle returns only duplicates of what the others already
+found. Heavy overlap between angles is the convergence signal — it means the surface is covered, not
+that the pass was wasted.
+
+Then **you** (the generator) consolidate: deduplicate across the angles, check each proposed gap
+against the standard's IN/OUT filter and the "concepts only" rule above, add every genuine one to the
+right section of `{NOTES_PATH}coverage.md` in the standard's format, and discard the rest (note those
+in the summary as "adversary-suggested, left out — reason").
 
 Two routing rules when handling the discards:
 - **Discarded ≠ vanished.** For any gap you discard as out-of-junior-scope, confirm it is already
@@ -278,9 +326,10 @@ Two routing rules when handling the discards:
   in the summary as "owned by <topic>, not added here". Do not re-litigate the same misplaced gap on
   every run.
 
-**Not in Claude Code (plain chat):** do the same pass yourself, explicitly — switch hats, write the
-12 questions cold, list the gaps, then add the genuine ones. The independence is weaker than a real
-subagent, so be strict about actually generating the questions, not assuming the coverage is complete.
+**Not in Claude Code (plain chat):** run the angles yourself, one at a time and explicitly — switch
+hats per angle, generate the probes cold and uncapped, list the gaps, then add the genuine ones. The
+independence is much weaker than real subagents, so actually write the probes out; do not skim the
+coverage and declare it complete.
 
 ---
 
@@ -316,7 +365,16 @@ Git → General. Add a `---` separator before and after the new section.
 
 Do this for every edit, not just full rewrites — if only one bullet changes in
 `{NOTES_PATH}coverage.md`, change that same bullet in `notes/coverage.md` too. The two files
-must never drift apart.
+must never drift apart. **This includes structure:** if Step 4 split, renamed, added or removed a
+section, the mirrored section must gain, rename or lose the same `###` heading. When an update is
+large enough that patching bullet by bullet is error-prone, rebuild the whole `## {TOPIC}` section
+from the topic file in one replacement — that is the safer path, not a shortcut.
+
+> **Windows encoding warning:** on Windows, PowerShell 5.1 `Get-Content`/`Set-Content` without an
+> explicit encoding reads a UTF-8 file as ANSI and silently corrupts every non-ASCII character
+> (em dashes become `â€”`) — it happened on a real run. Rebuild `notes/coverage.md` with explicit
+> UTF-8 reads and BOM-less UTF-8 writes (or use the Read/Edit/Write tools, which handle this), and
+> re-read the result checking a line with an em dash before committing.
 
 **Cross-topic overlap check:**
 Before finalizing, scan the other sections of `notes/coverage.md` for items that overlap with
@@ -355,7 +413,9 @@ After all edits, print a short summary:
 
 | Change | Detail |
 |--------|--------|
+| Angles run in Step 4a | [which angles, and where they converged — "angle 4 returned only duplicates"] |
 | Added to coverage | [list of new items] |
+| Sections split / added | [structural changes, or "none"] |
 | Modified in coverage | [list of updated items — one line per change, or "none"] |
 | Promoted from future-learning | [list or "none"] |
 | Demoted to future-learning | [item — one-line reason it no longer belongs in coverage, or "none"] |
