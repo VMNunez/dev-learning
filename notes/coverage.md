@@ -543,7 +543,6 @@ Every item must be explainable with a real example from the TimeTrack project.
 - The incident method — reproduce it, find the request in the logs by timestamp and endpoint, read the root cause of the trace, form one hypothesis, verify it, then fix; interviewers open with "the app is broken in prod, what do you do?" and are grading the *order* of your steps, not the fix
 - The Whitelabel Error Page / a bare 500 — an exception escaped the controller and no `@ExceptionHandler` matched; the body tells you nothing, so the answer is always "go and read the server log"; interviewers ask what a 500 tells you (that *your* code failed, not the client's request)
 - Anatomy of a log line — timestamp, level, PID, thread, logger class, message; you filter for `ERROR` and read upwards from the failing request; interviewers ask how you find one broken request inside thousands of lines
-- HikariCP pool exhaustion — `Connection is not available, request timed out` means every pooled connection (10 by default) is held; the usual causes are a long transaction, an external HTTP call inside `@Transactional`, or a slow query under load; raising `maximum-pool-size` hides the leak, so interviewers ask what you would investigate *before* changing the number
 - Diagnosing a slow endpoint — turn on SQL logging and count the queries (N+1 is the usual verdict), check whether the filtered column is indexed, check whether the endpoint returns an unbounded list, and measure before and after; interviewers ask "this endpoint takes 8 seconds, what do you check first?" and the ranked checklist *is* the answer
 - `OutOfMemoryError: Java heap space` — almost always an unbounded `findAll()` on a large table or a full-collection load; the fix is pagination, not a bigger `-Xmx`; the follow-up to the `findAll()` question
 - `NullPointerException` in a service — in Spring the two boring causes are an unwrapped `Optional` from `findById()` and a dependency that is null because the object was created with `new` and Spring never injected it; interviewers show the trace and ask you to name the likely cause without seeing the code
@@ -556,24 +555,8 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Parameterised logging — `log.info("Approved entry {}", id)` skips building the string when the level is disabled, unlike concatenation; a small but classic code-review question
 - `log.error("msg", e)` vs `log.error(e.getMessage())` — passing the exception logs the full stack trace; passing only the message discards the cause and makes production debugging impossible; juniors do this constantly, so interviewers look for it in your `catch` blocks
 - What you must never log — passwords, raw JWTs, whole request bodies with personal data; `log.info("login request {}", request)` prints the raw password because Lombok's `@ToString` includes every field
-- Correlation id / MDC — one id per request, echoed in the error response, so a user's "it failed at 10:42" maps to actual log lines; interviewers ask how you would find that one request
 - Spring Boot Actuator — `spring-boot-starter-actuator` exposes `/actuator/health` and `/actuator/info`, which is what a container orchestrator probes to decide whether your service is alive; interviewers in Docker-flavoured roles ask "how does ops know your app is up?"
 - Actuator endpoint exposure — `management.endpoints.web.exposure.include=*` publishes `/env`, `/beans` and `/heapdump`, leaking your properties (JWT secret included) to anyone who asks; interviewers reviewing a config file ask which endpoints you expose and whether they are secured
-
-### Asynchronous work and scheduling
-
-- `@Async` + `@EnableAsync` — moves a method onto a separate thread pool so the HTTP thread returns immediately; interviewers ask "the approval e-mail takes 3 seconds — does the user wait for it?"
-- `@Async` gotchas — it is proxy-based, so a self-invoked call runs synchronously (the same root cause as the `@Transactional` trap); the return type must be `void` or `CompletableFuture`; exceptions thrown inside are swallowed unless you handle them; and neither the `SecurityContext` nor the transaction propagates to the async thread
-- Custom `TaskExecutor` bean — the default executor spawns an unbounded thread per call; production defines a bounded pool; interviewers ask what happens under load with the default
-- `@Scheduled` + `@EnableScheduling` — cron or fixed-delay background jobs (auto-rejecting entries left in `DRAFT` for 30 days); interviewers ask "how would you run a nightly job?" and the follow-up is what happens when you deploy two instances — both fire, and a junior is expected to at least *see* the problem
-- `fixedRate` vs `fixedDelay` vs `cron` — rate schedules from the previous start (runs can overlap), delay schedules from the previous finish, cron by wall clock; a confusable trio interviewers ask directly
-
-### File upload and downloads
-
-- `MultipartFile` + `consumes = MULTIPART_FORM_DATA_VALUE` — how a file actually reaches a Spring controller; interviewers ask "how would you attach a document to a time entry?" and expect the parameter type, not a base64 string inside the JSON body
-- Upload limits and validation — `spring.servlet.multipart.max-file-size`, checking the real content type, and never trusting the client-supplied filename (path traversal); interviewers turn the upload question into a security question the moment you answer the happy path
-- Storing the file vs storing the bytes — filesystem or object storage with the path in the database, versus a `BYTEA`/`BLOB` column; interviewers ask which you chose and why (DB bloat, backup size, streaming) — the reasoning matters more than the choice
-- Streaming a download — returning a `Resource` or `StreamingResponseBody` with `Content-Disposition` instead of loading the whole file into a `byte[]`; the pressure follow-up about a 500 MB file
 
 ### Tooling and schema evolution
 

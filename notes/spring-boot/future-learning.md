@@ -28,6 +28,18 @@ The clean way to decouple a side effect (send an e-mail, write an audit row) fro
 
 `ETag` / `If-None-Match` / `Cache-Control` so a client can skip re-downloading unchanged data, and rate limiting (Bucket4j or at the gateway) so one client cannot hammer the API. Real REST design, but never asked of a junior in Spain.
 
+### Background work — `@Async` and `@Scheduled`
+
+`@Async` + `@EnableAsync` moves a slow side effect (an e-mail, a report) off the HTTP thread; `@Scheduled` + `@EnableScheduling` runs cron jobs. Both are proxy-based, so a self-invoked call silently runs synchronously — the same trap as `@Transactional`. Left out of coverage because TimeTrack has neither, no target posting asks for them, and they are not a junior filter; the moment a job needs a nightly task, start here (and with the two-instances problem: both replicas fire unless you add a distributed lock).
+
+### File upload and downloads
+
+`MultipartFile` with `consumes = MULTIPART_FORM_DATA_VALUE`, `spring.servlet.multipart.max-file-size`, never trusting the client-supplied filename (path traversal), and whether to store the bytes in a `BYTEA` column or the file in object storage with the path in the DB. Real and common on the job, but TimeTrack uploads nothing and no target posting asks for it.
+
+### Operating a service in production
+
+Diagnosing HikariCP connection-pool exhaustion (`Connection is not available, request timed out` — a long transaction, an HTTP call inside `@Transactional`, or a slow query under load; raising `maximum-pool-size` hides the leak), and correlation ids via MDC so one user's failed request maps to real log lines. Coverage keeps the failures a take-home actually hits (startup errors, a slow endpoint, an unbounded `findAll()`); these two belong to someone who already operates a service.
+
 ### Spring Boot Caching
 
 ```java
