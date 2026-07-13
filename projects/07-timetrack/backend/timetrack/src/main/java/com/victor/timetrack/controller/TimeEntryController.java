@@ -16,34 +16,40 @@ import java.util.List;
 public class TimeEntryController {
     private final TimeEntryService timeEntryService;
 
-    public TimeEntryController(TimeEntryService timeEntryService){
+    public TimeEntryController(TimeEntryService timeEntryService) {
         this.timeEntryService = timeEntryService;
     }
 
     @GetMapping
-    public  ResponseEntity<List<TimeEntryResponse>> getAll(){
+    public ResponseEntity<List<TimeEntryResponse>> getAll() {
         return ResponseEntity.status(200).body(timeEntryService.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<TimeEntryResponse> create(@Valid @RequestBody CreateTimeEntryRequest request){
+    public ResponseEntity<TimeEntryResponse> create(@Valid @RequestBody CreateTimeEntryRequest request) {
         return ResponseEntity.status(201).body(timeEntryService.create(request));
     }
 
     @PatchMapping("/{id}/submit")
-    public ResponseEntity<TimeEntryResponse> submit(@PathVariable Long id){
+    public ResponseEntity<TimeEntryResponse> submit(@PathVariable Long id) {
         return ResponseEntity.status(200).body(timeEntryService.submit(id));
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PatchMapping("/{id}/approve")
-    public ResponseEntity<TimeEntryResponse> approve(@PathVariable Long id){
+    public ResponseEntity<TimeEntryResponse> approve(@PathVariable Long id) {
         return ResponseEntity.status(200).body(timeEntryService.approve(id));
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<TimeEntryResponse> reject(@PathVariable Long id ,@Valid @RequestBody RejectRequest request){
-        return ResponseEntity.status(200).body(timeEntryService.reject(id,request.getRejectionNote()));
+    public ResponseEntity<TimeEntryResponse> reject(@PathVariable Long id, @Valid @RequestBody RejectRequest request) {
+        return ResponseEntity.status(200).body(timeEntryService.reject(id, request.getRejectionNote()));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TimeEntryResponse> update(@PathVariable Long id,
+                                                    @Valid @RequestBody CreateTimeEntryRequest request) {
+        return ResponseEntity.status(200).body(timeEntryService.update(id, request));
     }
 }

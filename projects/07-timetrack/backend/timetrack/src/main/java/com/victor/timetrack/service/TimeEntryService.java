@@ -141,6 +141,48 @@ public class TimeEntryService {
                 : timeEntryRepository.findByUser(user).stream().map(this::toResponse).toList();
     }
 
+    public TimeEntryResponse update(Long id, CreateTimeEntryRequest request) {
+        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        Project project = projectRepository.findById(request.getProjectId())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
+        TimeEntry timeEntry = timeEntryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+
+        if (!timeEntry.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("You can only update your own time entries");
+        }
+
+        if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
+            throw new BusinessRuleViolationException("You can only update DRAFT entries");
+        }
+
+        if (request.getDate().isAfter(LocalDate.now())) {
+            throw new BusinessRuleViolationException("Date cannot be in the future");
+        }
+
+        if (!project.getActive()) {
+            throw new BusinessRuleViolationException("Project is not active");
+        }
+
+        BigDecimal min = new BigDecimal("0.5");
+        BigDecimal max = new BigDecimal("24");
+
+        if (request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max) > 0) {
+            throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
+        }
+
+        timeEntry.setProject(project);
+        timeEntry.setDate(request.getDate());
+        timeEntry.setHours(request.getHours());
+        timeEntry.setDescription(request.getDescription());
+
+        TimeEntry saved = timeEntryRepository.save(timeEntry);
+        return toResponse(saved);
+    }
+
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
         response.setId(timeEntry.getId());
