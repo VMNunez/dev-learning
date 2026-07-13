@@ -40,6 +40,26 @@ The clean way to decouple a side effect (send an e-mail, write an audit row) fro
 
 Diagnosing HikariCP connection-pool exhaustion (`Connection is not available, request timed out` — a long transaction, an HTTP call inside `@Transactional`, or a slow query under load; raising `maximum-pool-size` hides the leak), and correlation ids via MDC so one user's failed request maps to real log lines. Coverage keeps the failures a take-home actually hits (startup errors, a slow endpoint, an unbounded `findAll()`); these two belong to someone who already operates a service.
 
+### Modelling choices a junior is not filtered on
+
+Four design decisions that are real, but that no target posting asks for and no stage-4 interviewer probes a junior on — left out of coverage for that reason, and worth revisiting the first time a client project forces the choice:
+- **`UUID` vs a sequential `Long` primary key** — opaque and safe to generate client-side, but wider and it fragments the index. `BIGSERIAL` is the right default for TimeTrack.
+- **A status lookup table instead of an `@Enumerated` enum** — lets the business add a state without a redeploy, at the cost of compile-time safety.
+- **JPA auditing (`@CreatedBy` / `@LastModifiedBy` + `@EnableJpaAuditing`)** — fills "who approved this?" from the `SecurityContextHolder` automatically. Coverage only requires the timestamp columns.
+- **Package by feature instead of package by layer** — real, but `controller`/`service`/`repository` is what consultancy codebases use and what the interviewer expects to read.
+
+### Contract-first API design
+
+Agreeing the OpenAPI spec with the frontend team *before* either side writes code, so both work in parallel against a stub — as opposed to the code-first approach (springdoc generating the spec from your controllers) that coverage requires. Left out of coverage because a junior is hired into an existing contract, not asked to negotiate one.
+
+### Timeouts and resilience on outbound calls
+
+Connect and read timeouts on a `RestClient`/`RestTemplate`, so a slow third-party API does not become your endpoint's latency. Real the moment a service integrates with another, but TimeTrack calls nothing external and no target posting asks for it.
+
+### Flyway vs Liquibase
+
+Liquibase abstracts schema changes into XML/YAML changelogs and is database-agnostic, at the cost of a layer of indirection over readable SQL. Coverage requires Flyway (versioned SQL scripts); knowing the alternative exists is a post-hire refinement.
+
 ### Spring Boot Caching
 
 ```java
