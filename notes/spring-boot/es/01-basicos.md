@@ -5,14 +5,20 @@
 
 ---
 
+[00-introduccion-spring-boot.md](./00-introduccion-spring-boot.md) te dio el mapa: Spring Boot es Spring con las tres tareas de montaje eliminadas — cablear beans a mano, instalar un contenedor de servlets y desplegar un `.war` dentro de él. También prometió que el *mecanismo* detrás de esa eliminación — el classpath, `@ConditionalOnClass`, los starters, el fat jar — se trazaría aquí. Ese es el trabajo de este archivo. Lo terminas con un proyecto que arranca, una base de datos con la que puede hablar, y la capacidad de responder *cómo* se configura Spring Boot en lugar de solo afirmar que lo hace.
+
+---
+
 ## Por qué existe Spring Boot
+
+Docs: https://www.baeldung.com/spring-vs-spring-boot → leer: la sección "Spring Boot" (la tabla comparativa del final es la respuesta de entrevista en una sola pantalla)
 
 Antes de entrar en Spring Boot, tres términos que verás constantemente:
 
 - **Tomcat** — un servidor web. Es un programa que escucha en un puerto de red (como el 8080) y recibe peticiones HTTP de navegadores o clientes. Sin un servidor web, tu código Java no tiene forma de aceptar conexiones HTTP. Antes de Spring Boot, tenías que descargar Tomcat por separado, instalarlo, configurarlo y desplegar tu app en él.
 - **`.jar`** — una aplicación Java empaquetada. Es básicamente un archivo zip que contiene todo tu código compilado y puede ejecutarse directamente con `java -jar app.jar`. Cuando construyes un proyecto Spring Boot, Maven produce un único `.jar` que contiene tu código y todo lo que necesita (incluido Tomcat).
-- **Bean** — un objeto que Spring crea y gestiona por ti. En lugar de que escribas `new UserService()` en todas partes, Spring crea una instancia de `UserService`, la almacena y la proporciona automáticamente a cualquier clase que la necesite. Solo tienes que anotar una clase con `@Service` y Spring se encarga del resto.
-- **Jackson** — la librería que Spring Boot usa para convertir entre objetos Java y JSON. Cuando un controlador devuelve un objeto Java, Jackson lo convierte en el JSON que recibe el cliente; cuando llega un request con un body JSON, Jackson lo convierte de vuelta en un objeto Java. Funciona automáticamente — lee tus getters públicos (o los que genera Lombok) para decidir qué campos incluir. Nunca lo llamas directamente; Spring Boot lo conecta solo.
+- **Bean** — un objeto que Spring crea, posee y entrega a quien lo necesite, en lugar de que tú escribas `new UserService()`. Esa es la idea de IoC de [00-introduccion-spring-boot.md](./00-introduccion-spring-boot.md#el-contenedor-ioc--la-única-idea-de-la-que-depende-todo-lo-demás), y el mecanismo completo (scopes, inyección, `@Bean`) vive en [03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md) — para este archivo, "bean" simplemente significa *un objeto que el framework construyó por ti*.
+- **Jackson** — la librería que Spring Boot usa para convertir entre objetos Java y JSON. Cuando un controlador devuelve un objeto Java, Jackson lo convierte en el JSON que recibe el cliente; cuando llega un request con un body JSON, Jackson lo convierte de vuelta en un objeto Java. Funciona automáticamente — lee tus getters públicos (o los que genera Lombok) para decidir qué campos incluir. Nunca lo llamas directamente; Spring Boot lo conecta solo. Lo ves funcionando de principio a fin en [02-controladores-rest.md](./02-controladores-rest.md).
 
 ---
 
@@ -29,7 +35,7 @@ El patrón que se repite: **las anotaciones reemplazan la configuración**. Ante
 
 Las dos ideas de arriba (la auto-configuración y el servidor embebido) son el titular. Pero en una entrevista "se configura solo" no es una respuesta — la repregunta es siempre *¿cómo?*. Esta sección traza los tres mecanismos que hay debajo, porque son exactamente las preguntas con las que un entrevistador distingue a quien *añadió* dependencias de quien *entiende* el build: "¿cómo sabe Spring Boot cómo configurar tu `DataSource`?", "¿qué trae realmente `spring-boot-starter-web`?" y "¿cómo sirve HTTP tu app sin un Tomcat instalado?".
 
-Docs: https://www.baeldung.com/spring-boot-autoconfiguration → read: "Understanding Auto-Configuration" y el ejemplo de `@Conditional`
+Docs: https://www.baeldung.com/spring-boot-autoconfiguration → leer: "Understanding Auto-Configuration" y el ejemplo de `@Conditional`
 
 ### El classpath — la palabra de la que dependen los tres mecanismos
 
@@ -46,7 +52,7 @@ El truco está en que **ninguna se ejecuta de forma incondicional**. Cada clase 
 - **`@ConditionalOnClass(DataSource.class)`** — "ejecuta esta configuración solo si esta clase está en el classpath". `DataSourceAutoConfiguration` lleva esta anotación, así que se activa *solo* cuando hay presente una clase de JDBC/datasource — lo cual ocurre en el momento en que `spring-boot-starter-data-jpa` la pone ahí. Sin el starter de JPA → la clase no está → toda la configuración del datasource se salta. Por eso añadir un starter "simplemente funciona": el starter deja las clases en el classpath, y la auto-configuración correspondiente se despierta sola.
 - **`@ConditionalOnMissingBean`** — "crea este bean solo si el desarrollador no ha definido ya uno del mismo tipo". Los beans de Spring Boot son todos **valores por defecto que se apartan**. Si nunca defines un `DataSource`, se usa el que auto-configura Spring Boot; en el momento en que declaras tu propio `@Bean DataSource`, `@ConditionalOnMissingBean` lo detecta y Spring Boot se retira en silencio. Sobrescribes *definiendo*, nunca editando la configuración del framework.
 
-Recorriendo la pregunta real que hace un entrevistador — *"¿cómo sabe Spring Boot cómo configurar tu `DataSource`?"*:
+Si sigues paso a paso la pregunta real que hace un entrevistador — *"¿cómo sabe Spring Boot cómo configurar tu `DataSource`?"*:
 
 ```
 1. spring-boot-starter-data-jpa en el pom.xml
@@ -65,28 +71,35 @@ Esa es la respuesta completa, y es mucho más sólida que "es automático". Las 
 
 ### 2. Starters — paquetes curados y alineados en versiones
 
-Un **starter** no es código. Es un jar (casi) vacío cuyo único trabajo es declarar una lista curada de *otras* dependencias con versiones ya probadas para funcionar juntas. `spring-boot-starter-web` prácticamente no contiene clases propias — ábrelo y es en esencia un `pom.xml` que trae Spring MVC, la librería de JSON Jackson, validación y el Tomcat embebido, todo en versiones compatibles. Una línea en tu `pom.xml`:
+Un **starter** no es código. Es un jar (casi) vacío cuyo único trabajo es declarar una lista curada de *otras* dependencias con versiones ya probadas para funcionar juntas. `spring-boot-starter-webmvc` prácticamente no contiene clases propias — ábrelo y es en esencia un `pom.xml` que trae Spring MVC, la librería de JSON Jackson y el Tomcat embebido, todo en versiones compatibles. Una línea en tu `pom.xml`:
 
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
+    <artifactId>spring-boot-starter-webmvc</artifactId>
 </dependency>
 ```
 
 arrastra toda una capa de librerías. Eso es lo que significa "starter" — un *punto de partida* para una capacidad, empaquetado para que no lo montes dependencia a dependencia.
 
-Los starters que usas en TimeTrack, y la respuesta a "¿qué trae cada uno?":
+> **Cuidado con el nombre: es `spring-boot-starter-webmvc`, no `spring-boot-starter-web`.** Todos los tutoriales, respuestas de StackOverflow y artículos de Baeldung escritos antes de Spring Boot 4 dicen `spring-boot-starter-web` — ese fue el nombre del artifact durante una década. Spring Boot 4 (la versión que usa TimeTrack, 4.0.6) lo renombró a `spring-boot-starter-webmvc`, porque Spring MVC ahora es solo *uno* de los stacks web que ofrece Boot (WebFlux es el otro), y el nombre genérico antiguo ya no decía cuál estabas pidiendo. Si copias un bloque `<dependency>` de un artículo antiguo, obtendrás un artifact que Maven no puede resolver. Lee `spring-boot-starter-web` en cualquier texto anterior a 2026 como "lo que ahora es `-webmvc`".
 
-| Starter | Trae (la capa que arranca) |
+Los starters que usas en TimeTrack — esta tabla se lee directamente del `backend/timetrack/pom.xml`:
+
+| Starter (artifactId exacto en el pom) | Trae (la capa que arranca) |
 | --- | --- |
-| `spring-boot-starter-web` | Spring MVC, `@RestController`/`@GetMapping`, Jackson (JSON), **Tomcat embebido** |
+| `spring-boot-starter-webmvc` | Spring MVC, `@RestController`/`@GetMapping`, Jackson (JSON), **Tomcat embebido** |
 | `spring-boot-starter-data-jpa` | Spring Data JPA, Hibernate, la fontanería de JDBC/transacciones |
 | `spring-boot-starter-security` | Spring Security — la cadena de filtros, `BCryptPasswordEncoder`, `@PreAuthorize` a nivel de método |
 | `spring-boot-starter-validation` | Bean Validation (`@NotBlank`, `@Email`) más su implementación Hibernate Validator |
-| `spring-boot-starter-test` | JUnit 5, Mockito, AssertJ — añadido automáticamente a cada proyecto |
+| `spring-boot-starter-webmvc-test` | Soporte de tests para la capa web — JUnit 5, Mockito, AssertJ, `MockMvc` (`<scope>test</scope>`) |
+| `spring-boot-starter-data-jpa-test` | Soporte de tests para la capa de persistencia — `@DataJpaTest` y su slice (`<scope>test</scope>`) |
 
-Lee la tabla así: *una línea de la columna izquierda* es todo lo que escribes; *toda la columna derecha* es lo que llega al classpath — lo que a su vez dispara la auto-configuración de la sección 1. Starters y auto-configuración van en pareja: **el starter pone las clases en el classpath; la auto-configuración reacciona a ellas.**
+Lee la tabla así: *una línea de la columna izquierda* es todo lo que escribes; *toda la columna derecha* es lo que llega al classpath — lo que a su vez dispara la auto-configuración de la sección 1. Starters y auto-configuración van en pareja: **el starter pone las clases en el classpath; la auto-configuración reacciona a ellas.** Las dos filas de `test` son la excepción a "un starter = una capacidad en tiempo de ejecución": no añaden nada a la app en ejecución (`<scope>test</scope>` las mantiene fuera del jar final) y existen solo para que tus tests compilen y se ejecuten.
+
+> **El único `spring-boot-starter-test` también es un nombre de Boot 3.** Los proyectos antiguos tienen exactamente un starter de test que lo empaquetaba todo. Boot 4 lo dividió por slice — tomas `-webmvc-test` para tests de controladores y `-data-jpa-test` para tests de repositorios, por eso el pom de TimeTrack tiene dos starters con scope `test` en lugar de uno. Las mismas herramientas por debajo (JUnit 5, Mockito, AssertJ); simplemente ahora llegan en dos paquetes. Los usas de verdad en [09-testing.md](./09-testing.md).
+
+> **JJWT es el elemento diferente en el pom.** Las tres dependencias `io.jsonwebtoken` (`jjwt-api`, `jjwt-impl`, `jjwt-jackson`) *no* son starters de Spring — son una librería de terceros, así que nadie ha acordado de antemano su versión por ti. Por eso son los únicos bloques en `pom.xml` que llevan una etiqueta `<version>0.12.6</version>` explícita: no están en el BOM de `spring-boot-starter-parent`, así que el parent no tiene opinión sobre ellos y debes indicar tú mismo la versión. Ver [06-seguridad-jwt.md](./06-seguridad-jwt.md).
 
 > **¿Por qué no añadir Spring MVC, Jackson, Tomcat y validación uno a uno tú mismo?** Podrías — pero entonces *tú* cargas con el trabajo de elegir versiones que no choquen, y una versión de Jackson que discrepa sin avisar con tu versión de Spring MVC es una tarde miserable. El starter es un contrato de versiones: alguien ya probó este conjunto exacto junto. Combinado con `spring-boot-starter-parent` (el `<parent>` del `pom.xml`, que contiene un BOM — un Bill of Materials con la lista de versiones probadas), es la razón por la que tus bloques `<dependency>` de librerías de Spring no llevan **ninguna etiqueta `<version>`**. El parent decide la versión; el starter decide el conjunto.
 
@@ -94,7 +107,7 @@ Lee la tabla así: *una línea de la columna izquierda* es todo lo que escribes;
 
 El despliegue web clásico de Java era: instalar Tomcat como un programa aparte en el servidor, construir tu app en un fichero `.war` y soltar el war en la carpeta `webapps/` de Tomcat. El servidor era el contenedor; tu app era el invitado que vivía dentro de él.
 
-Spring Boot invierte esa relación. `spring-boot-starter-web` pone las clases de Tomcat **en el classpath como una librería más**, y la auto-configuración (sección 1) las ve y arranca una instancia de Tomcat embebida desde *dentro* de tu aplicación durante `SpringApplication.run(...)`. Ahora el servidor es el invitado y tu app es el anfitrión. Como Tomcat no es más que unas clases más en el mismo jar, el build produce un único **fat jar** autocontenido (también llamado "uber jar") — tu código compilado, cada dependencia y Tomcat, todo comprimido en un solo fichero. Así que:
+Spring Boot invierte esa relación. `spring-boot-starter-webmvc` pone las clases de Tomcat **en el classpath como una librería más**, y la auto-configuración (sección 1) las ve y arranca una instancia de Tomcat embebida desde *dentro* de tu aplicación durante `SpringApplication.run(...)`. Ahora el servidor es el invitado y tu app es el anfitrión. Como Tomcat no es más que unas clases más en el mismo jar, el build produce un único **fat jar** autocontenido (también llamado "uber jar") — tu código compilado, cada dependencia y Tomcat, todo comprimido en un solo fichero. Así que:
 
 ```
 java -jar timetrack.jar
@@ -108,11 +121,13 @@ Sin Tomcat instalado en la máquina, sin war, sin carpeta `webapps/` — el úni
 
 > **Por eso el Dockerfile es tan corto.** Como el jar ya contiene el servidor, contenerizar la app es solo "pon un runtime de Java en la imagen, copia el jar dentro, ejecuta `java -jar`" — sin una imagen base con un servidor de aplicaciones preinstalado. Verás exactamente ese patrón `FROM eclipse-temurin` + `java -jar` cuando el proyecto llegue al paso de Docker.
 
-> **Puedes cambiar el servidor, y eso demuestra la idea.** Excluye Tomcat de `spring-boot-starter-web` y añade `spring-boot-starter-jetty`, y la app corre sobre Jetty en su lugar — no cambiaste nada salvo el classpath, y la auto-configuración arrancó un servidor distinto. El contenedor es una dependencia, no una parte fija de la plataforma.
+> **Puedes cambiar el servidor, y eso demuestra la idea.** Excluye Tomcat de `spring-boot-starter-webmvc` y añade `spring-boot-starter-jetty`, y la app corre sobre Jetty en su lugar — no cambiaste nada salvo el classpath, y la auto-configuración arrancó un servidor distinto. El contenedor es una dependencia, no una parte fija de la plataforma.
 
 ---
 
 ## Spring Initializr — iniciar un proyecto
+
+Docs: https://www.baeldung.com/spring-boot-start → leer: la sección sobre generar el proyecto con Spring Initializr y qué termina en el `pom.xml` generado
 
 [start.spring.io](https://start.spring.io) genera un proyecto Spring Boot listo para ejecutar con el `pom.xml` correcto y la estructura de carpetas. Seleccionas las dependencias que necesitas y descargas un zip.
 
@@ -121,7 +136,7 @@ Todo proyecto Spring Boot empieza de la misma manera. Las únicas cosas que camb
 ### Qué significa cada campo
 
 | Campo | Qué es | ¿Siempre igual? |
-|---|---|---|
+| --- | --- | --- |
 | **Project: Maven** | Build tool — descarga librerías, compila y empaqueta tu código. Gradle hace el mismo trabajo pero Maven es más común en empresas españolas. | Sí, siempre Maven |
 | **Language: Java** | El lenguaje de programación. Kotlin y Groovy también corren en la JVM pero la empresa española usa Java. | Sí, siempre Java |
 | **Spring Boot version** | Elige la última versión estable — la que está en verde sin etiqueta SNAPSHOT ni RC. SNAPSHOT = sin terminar. RC = casi lista pero aún en pruebas. | Siempre la última estable |
@@ -132,10 +147,12 @@ Todo proyecto Spring Boot empieza de la misma manera. Las únicas cosas que camb
 | **Configuration: Properties** | Formato del archivo de config. Properties = `clave=valor` (más simple). YAML = formato indentado (más legible pero se rompe con mala indentación). | Properties es más seguro |
 | **Java** | La versión de Java instalada en tu máquina. Debe coincidir con lo que tienes. Ejecuta `java -version` en el terminal para comprobarlo. | Coincidir con tu instalación |
 
+Lee primero la tercera columna — es la que te ahorra tiempo. "Sí, siempre" significa que el campo es un **ritual**: lo estableces una vez de la misma forma en cada proyecto que vayas a empezar, así que deja de pensarlo. Solo las filas que no dicen "sí" son decisiones reales, y solo hay tres: el **Artifact** (el nombre del proyecto), el **Group** (quién es el dueño) y la versión de **Java** (la que realmente tengas instalada en tu máquina — un desajuste aquí es el clásico "el proyecto no compila nada más abrirlo").
+
 ### Configuración usada para el proyecto 07 (TimeTrack)
 
 | Campo | Valor |
-|---|---|
+| --- | --- |
 | Project | Maven |
 | Language | Java |
 | Spring Boot | 4.0.6 (última estable, mayo 2026) |
@@ -146,22 +163,26 @@ Todo proyecto Spring Boot empieza de la misma manera. Las únicas cosas que camb
 
 ### Dependencias para un proyecto Spring Boot completo
 
-Estas son todas las dependencias que necesita un proyecto Spring Boot completo. Algunas pueden seleccionarse en Spring Initializr al configurarlo; otras (marcadas con \*) deben añadirse manualmente al `pom.xml` porque no están en Spring Initializr.
+Estas son todas las dependencias que necesita un proyecto Spring Boot completo. Algunas pueden seleccionarse en Spring Initializr al configurarlo; otras (marcadas con \*) deben añadirse manualmente al `pom.xml` más adelante porque no están en Spring Initializr.
 
 | Dependencia | Qué te da |
-|---|---|
-| **Spring Web** | El servidor HTTP embebido (Tomcat) y las anotaciones para construir endpoints REST (`@RestController`, `@GetMapping`, etc.) |
+| --- | --- |
+| **Spring Web** (la etiqueta de Initializr; el artifact que añade es `spring-boot-starter-webmvc` en Boot 4) | El servidor HTTP embebido (Tomcat) y las anotaciones para construir endpoints REST (`@RestController`, `@GetMapping`, etc.) |
 | **Spring Data JPA** | Herramientas para hablar con la base de datos sin escribir SQL a mano. Defines clases Java y Spring genera las queries. |
 | **PostgreSQL Driver** | El conector entre Java y PostgreSQL. Sin esto, Spring no puede abrir una conexión a la base de datos. |
 | **Spring Security** | Autenticación y autorización. Bloquea todos los endpoints por defecto hasta que configuras qué rutas son públicas. |
-| **Validation** (este es el nombre exacto en Initializr — artifact `spring-boot-starter-validation`) | Anotaciones de Bean Validation (`@NotBlank`, `@NotNull`, `@Email`, `@Min`) para validar los request bodies. |
+| **Validation** (este es el nombre exacto que hay que buscar en Initializr — artifact `spring-boot-starter-validation`) | Anotaciones de Bean Validation (`@NotBlank`, `@NotNull`, `@Email`, `@Min`) para validar los request bodies. |
 | **Lombok** | Generación de código en tiempo de compilación — elimina el boilerplate de getters, setters y constructores de las clases entity. |
-| **Spring Boot Starter Test** (no es un checkbox — Initializr siempre lo añade automáticamente) | JUnit 5 + Mockito + utilidades de test. Ya está en cada `pom.xml` generado; nunca lo añades a mano. |
+| **Test starters** (no es un checkbox — Initializr siempre los añade automáticamente) | JUnit 5 + Mockito + AssertJ. En Boot 4 llegan como dos starters con scope `test` (`spring-boot-starter-webmvc-test`, `spring-boot-starter-data-jpa-test`), emparejados con las dependencias que marcaste. Ya están en el `pom.xml` generado; nunca los añades a mano. |
 | **JJWT\*** (manual) | Librería JWT para crear y validar tokens. Debe añadirse manualmente desde mvnrepository.com (tres artifacts). |
+
+Lee esta tabla como *una fila = una capacidad que la app gana*, no como "una librería que hay que estudiar". Marcar **Spring Web** no significa que ahora tengas que estudiar Tomcat; significa que los endpoints HTTP se vuelven posibles. Las notas entre paréntesis importan más de lo que parece: el `\*` de **JJWT** es la única fila que Initializr no puede darte (la pegas en `pom.xml` a mano — ver la siguiente sección), **Validation** es el string exacto que hay que escribir en el buscador porque "Bean Validation" no encuentra nada, y la fila de **Test starters** está en la lista solo para que no vayas buscando un checkbox que no existe. Compárala con la tabla de starters de arriba: cada fila de aquí es la *etiqueta* de Initializr, y lo que realmente deja en el classpath es el jar del starter.
 
 ---
 
 ## Añadir dependencias después de crear el proyecto
+
+Docs: https://www.baeldung.com/maven → leer: "Dependency Management" (de qué está hecho un bloque `<dependency>`: groupId, artifactId, version)
 
 Cuando necesitas una librería que no seleccionaste en Spring Initializr, la añades manualmente al `pom.xml`.
 
@@ -188,7 +209,7 @@ Dos formas de recargar:
 
 **Cómo verificar que una dependencia se descargó realmente:**
 
-Comprueba que el jar existe en la caché local de Maven. Maven almacena cada librería descargada en `C:\Users\Victor\.m2\repository\`, organizadas por group y artifact — esta es exactamente la carpeta donde mirar:
+Comprueba que el jar existe en la caché local de Maven. Maven almacena cada librería descargada en `C:\Users\Victor\.m2\repository\`, organizadas por group y artifact — sí, esta es exactamente la carpeta donde mirar:
 
 Ejemplo para Spring Security:
 
@@ -201,6 +222,12 @@ Si la carpeta no existe, Maven nunca lo descargó. Recarga Maven y vuelve a inte
 ---
 
 ### Lombok — eliminar código boilerplate
+
+Propósito: un generador de código en tiempo de compilación que pones en entidades, DTOs y clases service para nunca escribir a mano getters, setters, constructores, `equals()`, `hashCode()` o `toString()` — la anotación se expande en métodos Java reales antes de que corra el compilador.
+
+Archivo: `backend/timetrack/pom.xml` (la dependencia + los dos plugins de abajo); las anotaciones en sí viven en las entidades, p.ej. `src/main/java/com/victor/timetrack/model/User.java`
+
+Docs: https://www.baeldung.com/intro-to-project-lombok → leer: "@Data", "@NoArgsConstructor / @AllArgsConstructor" y la configuración del annotation processor
 
 Lombok es una librería Java usada en casi todos los proyectos Spring Boot. Genera getters, setters, constructores, `equals()`, `hashCode()` y `toString()` automáticamente — nunca los escribes a mano.
 
@@ -262,9 +289,9 @@ Este paso es obligatorio desde Java 21+ — el compilador necesita saber explíc
 
 **Después de guardar `pom.xml`:** pulsa `Ctrl + Shift + O` para recargar Maven (o haz clic en la notificación que aparece).
 
-Las tres anotaciones de Lombok que más usarás: **`@Data`** (getters, setters, `equals()`, `hashCode()`, `toString()`), **`@NoArgsConstructor`** (el constructor vacío que JPA necesita para construir una entidad desde una fila de base de datos), y **`@AllArgsConstructor`** (un constructor con todos los campos). Las pones en entidades y DTOs — ve un ejemplo en una entidad real en [04-spring-data-jpa.md](./04-spring-data-jpa.md) y [layer-reference.md](../layer-reference.md).
+Las tres anotaciones de Lombok que más usarás: **`@Data`** (getters, setters, `equals()`, `hashCode()`, `toString()`), **`@NoArgsConstructor`** (el constructor vacío que JPA necesita para construir una entidad desde una fila de base de datos), y **`@AllArgsConstructor`** (un constructor con todos los campos). Las pones en entidades y DTOs — ve un ejemplo en una entidad real en [04-spring-data-jpa.md](./04-spring-data-jpa.md) y [layer-reference.md](../layer-reference.md). Las entidades, repositorios y DTOs están documentados ahí; este archivo se queda centrado en el montaje del proyecto y la configuración.
 
-> **El getter de un campo `boolean` no se llama `getXxx()` — se llama `isXxx()`.** Lombok sigue aquí la convención estándar de JavaBeans (la misma que usan Jackson y casi todas las librerías Java): para un campo `boolean` **primitivo** (minúscula), el getter generado es `isActive()`, no `getActive()`. Esto **solo** aplica al primitivo `boolean` — si el campo fuera `Boolean` con mayúscula (la clase wrapper, un objeto igual que `String` o `Long`), Lombok sí genera `getActive()`, como con cualquier otro campo. Es fácil confundirse porque en tu proyecto conviven ambos casos: `User.active` es `boolean` primitivo → `user.isActive()`; si en otra entidad ves un campo `Boolean` (mayúscula), ahí sí sería `getActive()`. Compílalo y comprueba cuál tienes en cada entidad si tienes dudas — el propio autocompletado de IntelliJ te lo confirma al escribir `user.` y ver qué getter aparece en la lista.
+> **El getter de un campo `boolean` no se llama `getXxx()` — se llama `isXxx()`.** Lombok sigue aquí la convención estándar de JavaBeans (la misma que usan Jackson y casi todas las librerías Java): para un campo `boolean` **primitivo** (minúscula), el getter generado es `isActive()`, no `getActive()`. Esto **solo** aplica al primitivo `boolean` — si el campo fuera `Boolean` con mayúscula (la clase wrapper, un objeto igual que `String` o `Long`), Lombok sí genera `getActive()`, como con cualquier otro campo. Es fácil confundirse porque en este proyecto conviven ambos casos, uno al lado del otro: `User.active` es `boolean` primitivo → `user.isActive()`; si en otra entidad ves un campo `Boolean` (mayúscula), ahí sí sería `getActive()`. Compílalo y comprueba cuál tienes en cada entidad si tienes dudas — el propio autocompletado de IntelliJ te lo confirma al escribir `user.` y ver qué getter aparece en la lista.
 
 **Una cuarta que verás constantemente en proyectos reales: `@RequiredArgsConstructor`.** Genera un constructor solo para los campos `private final` (y `@NonNull`) — exactamente los campos que necesita la inyección por constructor, nada más. Cada service y controller de este proyecto escribe ese constructor a mano en su lugar — por ejemplo, el de `AuthService`: `public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) { this.authenticationManager = authenticationManager; this.jwtUtil = jwtUtil; }` (ver [03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md)). Ese constructor escrito a mano es *exactamente* lo que `@RequiredArgsConstructor` generaría por ti — TimeTrack lo escribe explícitamente a propósito, para que el mecanismo de inyección se vea mientras lo estás aprendiendo. Una vez que lo entiendes, los proyectos reales recurren a la anotación en su lugar, así una clase con cinco dependencias `private final` no necesita cinco líneas de boilerplate repetido.
 
@@ -332,7 +359,7 @@ Después de este paso, IntelliJ reconoce `TimetrackApplication.java` como ejecut
 
 ## @SpringBootApplication — el punto de entrada (en `TimetrackApplication.java`)
 
-Docs: https://docs.spring.io/spring-boot/reference/using/using-the-springbootapplication-annotation.html → leer: "Using the @SpringBootApplication Annotation"
+Docs: https://www.baeldung.com/spring-boot-annotations → leer: la entrada de `@SpringBootApplication` y las tres anotaciones que agrupa (secundario, oficial: https://docs.spring.io/spring-boot/reference/using/using-the-springbootapplication-annotation.html)
 
 Cada aplicación Spring Boot tiene exactamente una clase con `@SpringBootApplication`. Esto es lo que Spring Initializr generó para TimeTrack:
 
@@ -362,17 +389,21 @@ public class TimetrackApplication {
 
 `@SpringBootApplication` combina tres anotaciones:
 
-| Anotación | Qué hace |
-|---|---|
-| `@Configuration` | Marca esta clase como fuente de beans de Spring |
-| `@EnableAutoConfiguration` | Activa la auto-configuración basada en el classpath |
-| `@ComponentScan` | Escanea el paquete actual y todos los subpaquetes buscando `@Component`, `@Service`, `@Repository`, `@Controller` |
+| Anotación | Qué hace | Dónde la vuelves a encontrar |
+| --- | --- | --- |
+| `@Configuration` | Marca esta clase como fuente de beans de Spring — un lugar donde pueden vivir métodos `@Bean` | [03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md) — ahí escribes tu propia clase `@Configuration` |
+| `@EnableAutoConfiguration` | Activa la auto-configuración basada en el classpath (el mecanismo `@ConditionalOnClass` trazado arriba) | Ya trazado en este archivo, §"Cómo funciona Spring Boot por dentro" |
+| `@ComponentScan` | Escanea el paquete actual y todos los subpaquetes buscando `@Component`, `@Service`, `@Repository`, `@Controller` | El escaneo paso a paso está en [00-introduccion-spring-boot.md](./00-introduccion-spring-boot.md); los beans que encuentra son el `@RestController` de [02-controladores-rest.md](./02-controladores-rest.md) y el `@Repository` de [04-spring-data-jpa.md](./04-spring-data-jpa.md) |
+
+Lee la tercera columna como una referencia hacia adelante, no como lectura extra: **no necesitas nada de eso para que la app arranque** — las tres anotaciones ya están haciendo su trabajo con cero código tuyo. La columna existe para que, cuando un `@RestController` del archivo 02 o un `JpaRepository` del archivo 04 se registre "automáticamente", recuerdes que *esta* línea en *esta* clase es la razón.
 
 La clase debe estar en el paquete raíz para que `@ComponentScan` encuentre todos tus componentes automáticamente.
 
 ---
 
 ## application.properties — configuración central
+
+Docs: https://www.baeldung.com/properties-with-spring → leer: "Registering Properties" y la sintaxis del placeholder `${...}` (secundario, la lista completa de claves: https://docs.spring.io/spring-boot/appendix/application-properties/index.html)
 
 `src/main/resources/application.properties` es donde va toda la configuración específica del entorno. Sin valores hardcodeados en el código Java. Piénsalo como un archivo `.env`.
 
@@ -390,7 +421,7 @@ spring.application.name=timetrack
 # Database connection
 spring.datasource.url=jdbc:postgresql://localhost:5432/timetrack
 spring.datasource.username=postgres
-spring.datasource.password=tu_contraseña
+spring.datasource.password=your_password
 
 # JPA / Hibernate
 spring.jpa.hibernate.ddl-auto=update
@@ -400,12 +431,14 @@ spring.jpa.show-sql=true
 Docs: las claves de datasource (`spring.datasource.*`) y de JPA (`spring.jpa.*`) están listadas en el apéndice oficial → https://docs.spring.io/spring-boot/appendix/application-properties/index.html — leer: "Data Properties". Los valores de `ddl-auto` (`update`, `create`, `validate`, `none`) se explican en https://docs.spring.io/spring-boot/how-to/data-initialization.html → leer: "Initialize a Database Using Hibernate".
 
 | Propiedad | Qué hace |
-|---|---|
+| --- | --- |
 | `spring.datasource.url` | JDBC URL — protocolo + driver + host + puerto + nombre de base de datos |
 | `spring.datasource.username` | Usuario de PostgreSQL |
 | `spring.datasource.password` | Contraseña de PostgreSQL — nunca commitees el valor real a GitHub |
 | `spring.jpa.hibernate.ddl-auto=update` | Crea tablas si no existen; las actualiza si cambia la entidad. Nunca uses `create` en producción (borra y recrea las tablas). |
 | `spring.jpa.show-sql=true` | Imprime el SQL que genera Hibernate en la consola — útil mientras aprendes |
+
+Lee la columna izquierda como el *namespace*, no como un string mágico: las tres claves `spring.datasource.*` las lee el bean `DataSource` auto-configurado de §"Auto-configuración" de arriba, y las dos claves `spring.jpa.*` las lee la auto-configuración de Hibernate. Esa es la única razón por la que estas líneas tienen algún efecto — tu código Java nunca las lee; algún bean con `@ConditionalOnClass` en un jar de Spring Boot lo hace. Fíjate en que las dos últimas filas llevan el **valor** dentro de la clave (`ddl-auto=update`, `show-sql=true`): eso es porque el valor *es* la lección — `ddl-auto` es la fila que puede borrar tus tablas de producción si escribes `create` en lugar de `update`.
 
 **Cómo verificar que la conexión funciona:** ejecuta `TimetrackApplication.java` en IntelliJ y busca esta línea en la consola:
 
@@ -454,19 +487,27 @@ La sintaxis `${VARIABLE:default}` usa el valor por defecto si la variable no est
 
 Los valores se quedan en tu máquina — nunca se commitean.
 
-**`application.properties` final para TimeTrack:**
+**El `application.properties` real de TimeTrack** (el archivo completo, copiado de `backend/timetrack/src/main/resources/application.properties`):
 
 ```properties
 spring.application.name=timetrack
-
 spring.datasource.url=jdbc:postgresql://localhost:5432/timetrack
 spring.datasource.username=postgres
 spring.datasource.password=${DB_PASSWORD}
-
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.open-in-view=false
+spring.jpa.defer-datasource-initialization=true
+
+app.jwt.secret=${JWT_SECRET}
+app.jwt.expiration=86400000
+
+spring.sql.init.mode=always
 ```
+
+Dos de esas claves no son `spring.*` en absoluto — `app.jwt.secret` y `app.jwt.expiration`. Ese es el punto: **cualquier clave que inventes es una property válida.** Las claves `spring.*` las lee la propia auto-configuración de Spring Boot; una clave bajo un namespace que *tú* inventaste (`app.*` aquí) la lee *tu* código, con `@Value("${app.jwt.secret}")` en `JwtUtil` — lo ves exactamente así en [06-seguridad-jwt.md](./06-seguridad-jwt.md). El secret es una variable de entorno por la razón de arriba; `86400000` son milisegundos — 24 horas — y no es un secreto, así que va en el archivo a la vista de todos.
+
+Las otras dos — `spring.jpa.defer-datasource-initialization` y `spring.sql.init.mode` — existen por culpa de `data.sql`; te las ganas por las malas en la sección "data.sql" de más abajo, así que ignóralas por ahora.
 
 **Si accidentalmente commiteas un secreto:** cambiar el valor en un nuevo commit no es suficiente — el commit antiguo sigue siendo visible en el historial de git. La acción correcta es **invalidar la credencial inmediatamente** (cambiar la contraseña, revocar la API key) para que el valor filtrado quede inservible.
 
@@ -476,7 +517,7 @@ spring.jpa.open-in-view=false
 
 Propósito: los perfiles de Spring te permiten tener un archivo de config por entorno (local, staging, producción) sin cambiar el código. El archivo correcto se carga automáticamente según qué perfil está activo.
 
-Docs: https://docs.spring.io/spring-boot/reference/features/profiles.html → leer: "Adding Active Profiles" y la convención de nombrado de archivos properties
+Docs: https://www.baeldung.com/spring-profiles → leer: "Using @Profile" y "Setting the Active Profile" (secundario, oficial: https://docs.spring.io/spring-boot/reference/features/profiles.html)
 
 Archivo: `src/main/resources/`
 
@@ -624,3 +665,13 @@ ON CONFLICT (email) DO NOTHING;
 **Encontrar el nombre correcto de la secuencia:** existían dos secuencias para esta tabla — `user_seq` y `users_seq` — porque el nombre de la tabla de la entidad cambió del valor por defecto (`user`, derivado del nombre de la clase) al explícito `@Table(name = "users")` en algún momento. Hibernate creó una secuencia nueva para coincidir con el nombre de tabla nuevo, pero nunca borró la vieja. Comprobar `last_value` en las dos no ayudó (ninguna se había consumido nunca — la única fila de prueba existente se había escrito directamente en el editor de filas de pgAdmin, no insertada a través de la app). La comprobación fiable fue comparar con una entidad hermana: `Project` tiene `@Table(name = "projects")` y su secuencia es `projects_seq` — misma convención, nombre de tabla más `_seq`. Eso confirmó que `users_seq` era la que estaba realmente en uso para `User`.
 
 > La lección general detrás de los cuatro fallos: `data.sql` se ejecuta como **SQL puro contra la base de datos real**, completamente fuera de Hibernate. Cada comodidad que Hibernate normalmente te da gratis — defaults, ids generados, restricciones validadas — tiene que existir ya *en la propia base de datos* antes de que `data.sql` pueda apoyarse en ella. Ninguno de estos fue un bug de Java; cada uno fue un hueco entre lo que Hibernate hace a nivel de aplicación y lo que de verdad había escrito en el esquema.
+
+---
+
+## Dónde te deja esto — y qué viene después
+
+La app ahora **arranca**: Maven tiene las dependencias correctas, la auto-configuración las convierte en beans, un Tomcat embebido escucha en el puerto 8080, `application.properties` lo apunta a una base de datos PostgreSQL real, y `data.sql` ha puesto ya la primera fila de manager en ella. Todo lo que configuraste en este archivo es *infraestructura* — se ejecuta antes de que llegue una sola petición, y nada de ello es código al que un usuario pueda llegar.
+
+Que es exactamente el agujero: Tomcat está escuchando, y **no hay nada que responda**. Cada URL que escribes devuelve un 404 (o, una vez que Spring Security está en el pom, una página de login), porque no has escrito ni un solo endpoint. El `@ComponentScan` que acabas de conocer está ahí, escaneando tus paquetes y sin encontrar ningún controlador que registrar.
+
+Ahí es donde retoma [02-controladores-rest.md](./02-controladores-rest.md): `@RestController`, `@GetMapping`/`@PostMapping`, y cómo un body JSON que llega al puerto 8080 se convierte en un objeto Java y se le entrega a uno de tus métodos. El montaje está hecho — de aquí en adelante, todo lo que escribes es la propia aplicación.
