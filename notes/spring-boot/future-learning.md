@@ -20,9 +20,13 @@ Topics to study once the numbered files (01–09) are solid. Nothing here is nee
 
 ## Phase 1 — After landing the first job
 
-### Optimistic locking — `@Version`
+### Events inside the app — `ApplicationEventPublisher`
 
-Concurrency control for the lost-update problem: two users load the same row, both write, and the second write silently overwrites the first. A `@Version` field makes Hibernate check the version on every update and throw `ObjectOptimisticLockingFailureException` when the row changed underneath you, which you map to a 409. Real and worth knowing, but junior screenings at the target consultancies do not probe concurrency — it becomes relevant the first time you touch a system with real concurrent writers.
+The clean way to decouple a side effect (send an e-mail, write an audit row) from the business method that triggers it, and `@TransactionalEventListener` to run that side effect only *after* the transaction commits. Genuinely useful, but a junior is not filtered out for not knowing it.
+
+### HTTP caching and rate limiting
+
+`ETag` / `If-None-Match` / `Cache-Control` so a client can skip re-downloading unchanged data, and rate limiting (Bucket4j or at the gateway) so one client cannot hammer the API. Real REST design, but never asked of a junior in Spain.
 
 ### Spring Boot Caching
 
@@ -62,9 +66,21 @@ Non-blocking API built on Project Reactor. Returns `Mono<T>` and `Flux<T>` inste
 
 ### Advanced testing
 
-- **Testcontainers** — real PostgreSQL container for integration tests
+- **Testcontainers** — real PostgreSQL container for integration tests. Coverage already requires knowing *why* H2 is not PostgreSQL and that Testcontainers is the answer; actually wiring it up is the mid-level step.
 - **WireMock** — mock external HTTP services in tests
 - **ArchUnit** — verify layer boundaries in code (controller cannot call repository directly, etc.)
+
+### JVM forensics and performance tuning
+
+Thread dumps and heap dumps (`jstack`, `jmap`, Eclipse MAT) when an app hangs or runs out of memory; GC flags and heap sizing; `EXPLAIN ANALYZE` and index tuning driven by the query plan. Coverage requires *naming the symptom* (pool exhaustion, `OutOfMemoryError`, an unindexed column); analysing a dump or a query plan is the growth step beyond it.
+
+### Hibernate performance internals
+
+Second-level cache, `@BatchSize`, `hibernate.jdbc.batch_size`, and fetch-strategy tuning beyond `JOIN FETCH` / `@EntityGraph`.
+
+### Resilience and distributed concerns
+
+Circuit breakers and retries (Resilience4j), distributed scheduling locks (ShedLock — coverage only asks that you *see* the two-instances problem), distributed tracing and correlation across services, Kubernetes probes, load testing (JMeter, Gatling).
 
 ### Spring Boot internals
 
