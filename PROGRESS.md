@@ -15,7 +15,7 @@
 | 04 | Meal finder | Route parameters, ActivatedRoute, effect(), computed(), localStorage, favourites | Done ✓ | [Live demo](https://04mealfinder.netlify.app/) |
 | 05 | Task manager | Angular Material, MatTable, MatDialog, CRUD, coordinator pattern, context-specific themes | Done ✓ | — |
 | 06 | HR portal | Route guards, lazy loading, HTTP interceptors, role-based access, MatSidenav, role-aware dashboard | Done ✓ | — |
-| 07 | TimeTrack | Spring Boot REST API, JWT, PostgreSQL, Angular full stack | In progress ⏳ | — |
+| 07 | TimeTrack | Spring Boot REST API, JWT, PostgreSQL, Angular full stack, TimeEntry workflow | In progress ⏳ | — |
 
 ---
 
@@ -37,8 +37,8 @@
 ### Project 06 — HR portal
 **New concepts:** `CanActivateFn`, `CanDeactivateFn`, `loadComponent` (lazy loading), `HttpInterceptorFn`, `req.clone({ setHeaders })`, `withInterceptors()`, `canActivate` stacking, auth persistence with `signal + effect`, `??` nullish coalescing, dual-mode dialog, `markAsPristine()`, `MatToolbar`, `MatSidenav`, `routerLinkActive`, `filteredNavLinks = computed()`, role-aware dashboard, signal reference vs snapshot · CSS: app shell scroll pattern (`overflow: hidden` on `app-root`), active link flash fix (`::before` + `:not(:hover)`), responsive breakpoints (`@media max-width`)
 
-### Project 07 — TimeTrack (in progress — Steps 1–4 done, Step 5 next)
-**New concepts:** Spring Boot setup, `@Entity`, JPA annotations, `JpaRepository`, custom repository methods, `Optional<T>`, `@Service`, layered architecture, `@RestController`, DTOs, `@Valid`, `ResponseEntity`, `@PathVariable`, `@RequestBody`, soft delete, JWT structure, `UserDetailsService`, `SecurityFilterChain`, `JwtFilter`, `BCryptPasswordEncoder`, `@PreAuthorize`, `@RestControllerAdvice`, `Role` enum, `@ColumnDefault`, `data.sql` seeding, `DataIntegrityViolationException` handling · Full detail → Spring Boot section below
+### Project 07 — TimeTrack (in progress — Steps 1–5 done, Step 6 next)
+**New concepts:** Spring Boot setup, `@Entity`, JPA annotations, `JpaRepository`, custom repository methods, `Optional<T>`, `@Service`, layered architecture, `@RestController`, DTOs, `@Valid`, `ResponseEntity`, `@PathVariable`, `@RequestBody`, soft delete, JWT structure, `UserDetailsService`, `SecurityFilterChain`, `JwtFilter`, `BCryptPasswordEncoder`, `@PreAuthorize`, `@RestControllerAdvice`, `Role` enum, `@ColumnDefault`, `data.sql` seeding, `DataIntegrityViolationException` handling, `@ManyToOne` relationships, state machine workflow (DRAFT→SUBMITTED→APPROVED/REJECTED), PATCH for state transitions, role-based data filtering, Bean Validation across all request DTOs, hard delete vs soft delete · Full detail → Spring Boot section below
 
 ---
 
@@ -235,7 +235,7 @@
 
 ## Spring Boot
 
-### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 ✓)
+### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 ✓ Step 5 ✓)
 
 - Spring Boot project setup with Spring Initializr — Spring Web, Spring Data JPA, PostgreSQL Driver, Lombok
 - `application.properties` — database connection, JPA settings, environment variable for password
@@ -318,6 +318,16 @@
 - `.roles(user.getRole().name())` in `UserDetailsServiceImpl` — derive the Spring Security authority from the entity's real role instead of a hardcoded string
 - `@PreAuthorize("hasRole('MANAGER')")` tested end-to-end in Postman — `POST /api/projects` returns 403 with an EMPLOYEE token and 201 with a MANAGER token
 - `DataIntegrityViolationException` — Spring's generic wrapper for any database constraint violation; handled in `GlobalExceptionHandler` to return 409 Conflict instead of a raw 500
+- `TimeEntry` entity with `@ManyToOne` to `User` and `Project` — two foreign keys on the same entity, both `nullable = false`
+- State machine workflow — `EntryStatus` enum (`DRAFT` → `SUBMITTED` → `APPROVED`/`REJECTED`); each transition method checks the current status before changing it
+- PATCH with URL suffix for state transitions (`/{id}/submit`, `/{id}/approve`, `/{id}/reject`) — PATCH alone is ambiguous (many possible partial updates), so the suffix names which transition; PUT/POST/DELETE never need a suffix because the verb already says the one thing it can mean
+- Comparing entities by id, never by object reference or `.equals()` on the whole object — `timeEntry.getUser().getId().equals(user.getId())`; Lombok's `@Data`-generated `equals()` compares every field, which is unreliable for JPA entities
+- `BigDecimal.compareTo()` instead of `.equals()` or `<`/`>` — `.equals()` also compares scale (`"24.0"` ≠ `"24"`), and `<`/`>` don't compile on objects; `compareTo() < 0` / `> 0` compares the actual mathematical value
+- `LocalDate.isAfter()` / `isBefore()` instead of `==` or `.equals()` — purpose-built comparison methods; `==` compares references, `.equals()` only tells same/different day, not order
+- Role-based data filtering in a service method — reading authorities off `SecurityContextHolder` to branch between `findAll()` (manager) and `findByUser(user)` (employee) in the same `getAll()`
+- Bean Validation (`@NotBlank`/`@NotNull`) added across every request DTO (`CreateProjectRequest`, `UpdateProjectRequest`, `CreateTimeEntryRequest`, `RejectRequest`) with `@Valid` on the matching controller params — `MethodArgumentNotValidException` accumulates every failed field in one response, unlike the manual fail-fast business-rule checks
+- Hard delete (`deleteById`) vs soft delete (`active = false`) — `TimeEntry` has no `active` field like `Project`/`User`; only DRAFT entries can be deleted, so nothing worth preserving is ever lost
+- `PUT /api/entries/{id}` re-runs `create`'s business rules (future date, inactive project, hours range) because PUT replaces the whole resource, not just one field
 
 ---
 
