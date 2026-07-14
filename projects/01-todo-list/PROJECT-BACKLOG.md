@@ -3,22 +3,17 @@
 **Last Reviewed — backend:** n/a — Angular-only
 **Last Reviewed — frontend:** 2026-07-14
 
-**Overall quality:** Good — clean smart/dumb split, correct signal/computed state and strict typing throughout. The gap is testing: every spec is still CLI boilerplate, so nothing in the app is actually covered.
+**Overall quality:** Good — clean smart/dumb split, correct signal/computed state and strict typing throughout. Nothing blocks portfolio-ready; the open tasks are small correctness and polish items.
+
+> **Tests are out of scope for this project.** Per CLAUDE.md ("Testing rules"), testing is introduced in project 07 (services) and project 08 (components). The `.spec.ts` files here are untouched Angular CLI scaffold, and their absence of real assertions is **not** a finding.
 
 ---
 
 ## Tasks
 
-### High
-
-- [ ] `[frontend]` Write real unit tests for `TaskService` — `addTask` appends a task, `toggleTask` flips only the matching task, `deleteTask` removes only the matching task. Currently `task.service.spec.ts` only has the generated `should be created`. *(Effort: M)*
-- [ ] `[frontend]` Write real unit tests for `TaskList`'s computeds — `filteredTasks()` returns the right subset for each of `all` / `active` / `completed`, and `pendingCount` / `totalCount` track the signal. *(Effort: M)*
-- [ ] `[frontend]` Write real unit tests for the dumb components' outputs — `TaskItem` emits `taskToggled` / `taskDeleted` with the correct id, and `TaskForm` ignores empty/whitespace-only input instead of adding a task. *(Effort: M)*
-
 ### Medium
 
 - [ ] `[frontend]` Replace `id: Date.now()` in `task.service.ts:15` with an incrementing counter or `crypto.randomUUID()`. Trigger: two tasks added within the same millisecond (rapid double-click) get the same id, so `toggleTask` / `deleteTask` then act on both at once. *(Effort: S)*
-- [ ] `[frontend]` Fix or remove `app.spec.ts` — it asserts an `<h1>` containing `'Hello, 01-todo-list'`, but `app.html` renders only `<router-outlet />`, so the assertion can never match the real DOM. *(Effort: S)*
 - [ ] `[frontend]` Let the user submit a task with Enter — `task-form.html` only wires the button click. Wrap the input in a `<form (ngSubmit)="...">` (or add `(keyup.enter)`). *(Effort: S)*
 
 ### Low
@@ -28,6 +23,7 @@
 - [ ] `[frontend]` Remove the no-op `align-items: center` in `task-item.css:12-15` — it sits on a `<span>` that is not a flex/grid container. *(Effort: S)*
 - [ ] `[frontend]` Reconcile routing with the plan — `app.config.ts` provides `provideRouter` and the shell uses `RouterOutlet`, but PLANNING.md says "No routing — single page". Either drop the router and render `TodoPage` directly, or update PLANNING.md. *(Effort: S)*
 - [ ] `[frontend]` `app.css` is empty — drop the unused `styleUrl` reference. *(Effort: S)*
+- [ ] `[frontend]` Delete the leftover CLI scaffold `app.spec.ts` — it asserts an `<h1>` containing `'Hello, 01-todo-list'` that no longer exists (`app.html` renders only `<router-outlet />`). Not a test gap (see the note above), just dead scaffold. *(Effort: S)*
 
 ---
 
