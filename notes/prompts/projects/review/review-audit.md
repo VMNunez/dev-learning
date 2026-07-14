@@ -115,8 +115,32 @@ no commit. Skip Steps 1, 2, and 5's backlog/commit. **Full-stack:** run every st
 > table; the reviewers are instructed to return bounded tables with no code excerpts — if one comes
 > back with long code dumps or narrative, keep only its table + trace and discard the rest.
 
+### Model policy — per slice, to protect the findings that matter while saving tokens
+Pass an explicit `model` override on every dispatch, matched to how much deep reasoning the slice needs.
+**Finding a correctness bug or a vulnerability is generative, adversarial reasoning → Opus; checking
+structure/patterns against a fixed checklist is verification → Sonnet (~1/5 the cost).** The backend is
+where a missed bug is costly and where a weak model skims past subtle flaws — so it never drops below
+Opus. Frontend flow and the learning-objectives pass are largely structural verification and ride Sonnet.
+
+| Role | `model:` | Why |
+|------|----------|-----|
+| **Orchestrator (this context / session)** | **Opus** | It maps the slices, dedups across them, and word-crafts each backlog task with its priority. Run the session on Opus. |
+| **Step 1 — backend flow (per resource)** | **`opus`** | Correctness on the real path: N+1, transaction boundaries, §8 business rules — the subtle bugs a lighter model misses. |
+| **Step 1 — backend security (per resource)** | **`opus`** | Adversarial hunt for authz/ownership/injection/exposure — the review's analog of coverage's Analyst C; never drop it. |
+| **Step 2 — persistence-config flow** | **`opus`** | Datasource/transactions/fetch/N+1 — subtle backend correctness, same bar as Step 1 flow. |
+| **Step 2 — security-infra** | **`opus`** | SecurityConfig, JWT filter, CORS, hashing, secrets — the highest-stakes attack surface. |
+| Step 3 — frontend flow (per feature + frontend-infra) | `sonnet` | Component/service split, subscription cleanup, validation timing, tests — structural pattern-matching, lower stakes. |
+| Step 4 — learning-objectives | `sonnet` | Locate each concept and mark ✅/⚠️/❌ against the rubric — verification, not generation. |
+
+Never drop the backend flow or any security slice below Opus (those are the passes that catch the bugs
+and holes that block portfolio-ready), and never drop the orchestrator below Opus (it writes the
+backlog). If Victor asks for maximum saving, the two Sonnet slices are already the cheapest safe setting —
+do not push backend or security down to save tokens. **Step 5 re-dispatches use the same model the
+original slice used.**
+
 ### Step 1 — Backend, one flow + one security reviewer per resource
-For **each** backend resource, dispatch two `general-purpose` subagents, `run_in_background: false`:
+For **each** backend resource, dispatch two `general-purpose` subagents, `run_in_background: false`
+(flow → `model: opus`, security → `model: opus`):
 
 > **(flow)** Read `notes/prompts/projects/review/review-flow-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `TIER = backend`, `SCOPE = «resource»`. Trace the resource's full
@@ -131,7 +155,7 @@ For **each** backend resource, dispatch two `general-purpose` subagents, `run_in
 Collect every table.
 
 ### Step 2 — Backend, cross-cutting reviewers
-Dispatch:
+Dispatch (both `model: opus`):
 > **(flow)** `review-flow-prompt.md` with `TIER = backend`, `SCOPE = persistence-config` — datasource,
 > `application.properties`, transactions, fetch/N+1, docker env.
 > **(security)** `review-security-prompt.md` with `SCOPE = security-infra` — SecurityConfig, JWT filter,
@@ -140,14 +164,14 @@ Dispatch:
 Collect both tables.
 
 ### Step 3 — Frontend, one flow reviewer per feature (+ frontend-infra)
-For **each** frontend feature, and once for `frontend-infra`, dispatch:
+For **each** frontend feature, and once for `frontend-infra`, dispatch (`model: sonnet`):
 > `review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
 > service split, types, state, subscription cleanup, validation timing, and that slice's tests.
 
 Collect every table. (For Angular 01–06 this is the whole review — report in chat and stop.)
 
 ### Step 4 — Learning-objectives pass (one subagent)
-Dispatch one `general-purpose` subagent, `run_in_background: false`:
+Dispatch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
 > Read `notes/prompts/projects/review/_review-standard.md` ("Learning-objectives rubric" — that section
 > only) and, from `{PROJECT_PATH}/PLANNING.md`, only §3 (new concepts) / §4 (review concepts). Then
 > work **concept by concept, not file by file**: for each concept, locate where it should live with a
@@ -239,6 +263,9 @@ failure. Also print the report in chat.
   security reviewer. They only read, so they may run in parallel; never let one subagent do both.
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
 - **Security findings are always High**, and findings are deduplicated across every slice.
+- **Model per slice, always explicit** (see Model policy): backend flow + every security slice + the
+  orchestrator run on **Opus**; frontend flow and learning-objectives on **Sonnet**. Never drop backend
+  or security below Opus to save tokens — those are the passes that catch what blocks portfolio-ready.
 - **No trace, no review.** A slice counts as reviewed only when its trace covers every file/endpoint
   the slice owns (verified in Step 5 against the Step 0 map). Failed or partial reports get one
   re-dispatch, then an explicit "not reviewed" in the summary — never a silent pass.
