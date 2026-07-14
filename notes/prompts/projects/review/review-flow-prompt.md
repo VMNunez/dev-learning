@@ -82,6 +82,18 @@ Apply, to your slice only, the matching parts of the standard:
 Judge against what the code actually does — do not invent findings to fill space; if a lens is clean
 for this slice, say so.
 
+**Any finding about a config file must quote the offending line verbatim.** For anything you report in
+`application.properties` / `.yml` / `data.sql` / `docker-compose.yml` (hardcoded secret, `ddl-auto`,
+`show-sql`, a credential, a missing env var), put the exact line — value included — in the Finding cell,
+e.g. `app.jwt.secret=my-secret-key` **not** "the JWT secret is hardcoded". If you cannot quote the line,
+you have not read it and the finding does not exist. Config findings are the easiest to assert from
+memory of what such files *usually* look like, and a false one lands straight in the backlog as a High.
+
+> **Why this rule is here.** On 2026-07-14 a reviewer reported "hardcoded JWT secret — High" against a
+> file whose actual line was `app.jwt.secret=${JWT_SECRET}` — correctly externalised. It was caught only
+> because a second slice happened to read the same file and contradicted it. Quoting the line makes the
+> mistake impossible to make without it being visible.
+
 ## Output — findings table + trace (no edits, no commit)
 
 Return, for **this slice only**:
