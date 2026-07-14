@@ -2,7 +2,7 @@
 
 **Internal component (new mode only).** This is the architecture specialist in the project-plan
 pipeline. `plan-audit.md` dispatches it as a cold subagent **between the author and the reviewer**: the
-author picks the project and drafts all 23 sections; this advisor then strengthens the architecture
+author picks the project and drafts all 24 sections; this advisor then strengthens the architecture
 decisions specifically — the layers, the patterns, and the *one* new architectural concept the project
 should introduce — against Victor's current level and learning goals. Then the general reviewer runs.
 

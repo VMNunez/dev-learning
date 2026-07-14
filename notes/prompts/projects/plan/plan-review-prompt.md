@@ -56,7 +56,7 @@ focused context per reviewer; a specialist that reads everything defeats it.
   skip it entirely.
 
 **Apply the right format.** Per the standard's "Two project formats": full-stack (07+) → the full
-23-section audit; Angular (01–06) → audit only the sections that project actually has, plus the
+24-section audit; Angular (01–06) → audit only the sections that project actually has, plus the
 universal checks (done-condition format, no vague/TBD rules, internal consistency of present
 sections). Never flag full-stack-only sections as missing on an Angular project. Derive the format
 from the project number — do not ask.
@@ -77,7 +77,7 @@ cross-concern ripple in your report so the orchestrator routes it).
 | `data-model-api` | §7 entities (all five columns; each relationship = fetch type + cascade + reason) · §10 endpoints · §12/§13 folder structures · invariants 1–3 (entities↔repos, API↔controllers, pages↔wireframes) · design check 1 (fetch types justified) | template §7/§10/§12/§13 · HTTP status conventions · invariants 1–3 · design check 1 |
 | `rules-security` | §8 business rules (no vague/TBD; state diagram present) · §0 current step + its done-condition format · invariant 7 (routes/roles↔API-security) · design checks 2 (no dead/orphan states) and 3 (endpoint roles vs ownership) | template §0/§8 · done-condition format · invariant 7 · design checks 2–3 |
 | `steps-tests` | §15 steps (each a valid done condition; one major concept per step; the three dedicated test steps present) · §16 testing plan (specific method/service names; edge cases named) · done-condition format in §15 (`rules-security` owns §0's) · invariants 4–5 (new-concepts↔steps, testing-plan↔steps) · design check 4 (one concept per step) | template §15/§16 · done-condition format · professional implementation order · invariants 4–5 · design check 4 |
-| `branches-coverage` | §22 branches (`feat/…` naming; cover every §15 step, none double-assigned; one per phase; concrete open/close) · **section coverage** (all 23 present for full-stack — a missing section is critical, add it) · invariants 6 and 8 (branches↔steps, §0-branch↔§22) | template §22 · branch-strategy rules · the 23-section list (headings only) · invariants 6 and 8 |
+| `branches-coverage` | §22 branches (`feat/…` naming; cover every §15 step, none double-assigned; one per phase; concrete open/close) · **§23 quality gates** (G1–G4 present, in build order; G1/G2 tier-scoped, never `full`; G3 stated as prerequisite of G4; every trigger names a real §22 branch / §15 step) · **section coverage** (all 24 present for full-stack — a missing section is critical, add it) · invariants 6, 8, 9 and 10 (branches↔steps, §0-branch↔§22, gates↔branches, §0-next-gate↔§23) | template §22/§23 · branch-strategy rules · quality-gate rules · the 24-section list (headings only) · invariants 6, 8, 9, 10 |
 
 `SCOPE = all` (standalone run) means run **every** row over the whole plan, reading the standard in full.
 
@@ -89,9 +89,12 @@ Each check below names its **owner scope(s)** — run a check only if your `{SCO
 `{SCOPE}` = all). The table above is the authoritative assignment; this list expands what each check
 means.
 
-**1. Section coverage** *(owner: `branches-coverage`)*. For a full-stack plan, check all 23 sections
-(0–22) are present. Report each as ✅ present or ❌ missing. Missing sections are critical — they block
-the project from starting clearly, so **add them** (see "Fix, don't just report").
+**1. Section coverage** *(owner: `branches-coverage`)*. For a full-stack plan, check all 24 sections
+(0–23) are present. Report each as ✅ present or ❌ missing. Missing sections are critical — they block
+the project from starting clearly, so **add them** (see "Fix, don't just report"). **§23 (quality gates)
+is new** — an older plan written before it will be missing the section entirely; add it by instantiating
+the canonical G1–G4 table from the standard's quality-gate rules against this project's real §22
+branches and §15 steps.
 
 **2. Quality per section** *(owner: every scope, for its own sections only)*. For each section your
 `{SCOPE}` owns, apply its **"what makes it pass" line in the standard** — the standard is the single

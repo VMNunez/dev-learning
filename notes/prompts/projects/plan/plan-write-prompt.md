@@ -41,7 +41,7 @@ you touched and the one-line commit message you'd use — the reviewer runs next
 
 Read these in order. They are the inputs to every decision this prompt makes.
 
-1. `notes/prompts/projects/plan/_planning-standard.md` — **the output contract.** The 23-section template,
+1. `notes/prompts/projects/plan/_planning-standard.md` — **the output contract.** The 24-section template,
    done-condition formats, HTTP status conventions, professional implementation order, branch-strategy
    rules, and consistency invariants. Everything you write must conform to it.
 2. `CLAUDE.md` — only the sections that feed a plan: "Current study progress", "Java/Spring Boot",
@@ -175,8 +175,8 @@ lists "test the services" has no test plan.
 Write the file at `projects/0X-projectname/PLANNING.md`. Determine the project number from PROGRESS.md
 (last completed + 1) and a short folder name (`0X-projectname`, e.g. `08-invoice-manager`).
 
-Write **all 23 sections in the exact order and to the contract defined in `_planning-standard.md`** —
-§0 through §22. Do not restate the contract here; follow it. Fold in every design decision from Step 4
+Write **all 24 sections in the exact order and to the contract defined in `_planning-standard.md`** —
+§0 through §23. Do not restate the contract here; follow it. Fold in every design decision from Step 4
 and both concept lists from Step 2. Every done condition (in §0 and §15) must use one of the four valid
 formats from the standard. Match the depth and structure of the last project's PLANNING.md.
 

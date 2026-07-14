@@ -76,7 +76,7 @@ PROJECT = [folder path, e.g. projects/07-timetrack | projects/06-hr-portal | all
 ## PROJECT = all (review mode only) audits every project in turn — see notes/prompts/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder,
 ## 05-task-manager, 06-hr-portal, 07-timetrack. The format is derived per project type by number
-## (01–06 Angular-only → present-sections + universal checks only; 07+ full-stack → full 23-section audit).
+## (01–06 Angular-only → present-sections + universal checks only; 07+ full-stack → full 24-section audit).
 
 DRY_RUN = [false | true]
 
@@ -122,7 +122,7 @@ nothing, that is fine — continue to the reviewer.
 
 ### Phase 2 — Review (specialist reviewers, one concern each)
 
-Do **not** hand one subagent the whole 23-section plan to audit — it would skim the last sections. Run
+Do **not** hand one subagent the whole 24-section plan to audit — it would skim the last sections. Run
 the **specialist reviewers** defined in "Specialist review procedure" below over the just-authored plan.
 They fix directly and do not commit. Then go to "Finishing" (the orchestrator commits the plan + the
 ROADMAP.md / PROGRESS.md edits left in the working tree).

@@ -20,9 +20,9 @@ write or review prompt.
 
 ## Two project formats
 
-The template below has 23 sections (0–22). Which of them apply depends on the project type:
+The template below has 24 sections (0–23). Which of them apply depends on the project type:
 
-- **Full-stack projects (07+)** — Spring Boot + Angular + PostgreSQL. They use the **full 23-section
+- **Full-stack projects (07+)** — Spring Boot + Angular + PostgreSQL. They use the **full 24-section
   template**. Everything in this file applies.
 - **Angular-only projects (01–06)** — closed and already complete. They use a simpler legacy
   PLANNING.md with **no numbered sections**. Do **not** flag the full-stack-only sections as missing
@@ -37,7 +37,7 @@ when auditing an old project.
 
 ---
 
-## The 23-section template — exact order
+## The 24-section template — exact order
 
 Every full-stack PLANNING.md must contain these sections, in this order. For each: **what it must
 contain** (the author writes this) and **what makes it pass** (the reviewer checks this). Sections are
@@ -46,13 +46,16 @@ the heading names are.
 
 ### 0. Session quick reference
 A living table, updated at the start of every session. Columns: **Current step · Current branch · Done
-condition · Phase · Last updated**. Write it with dashes when creating a new plan; the first session
-fills it in. The **Current branch** must be the exact `feat/…` branch from §22 that covers the current
-step — this is what Claude reads first each session, so the branch is right there next to the step
-instead of buried in §22.
+condition · Next gate · Phase · Last updated**. Write it with dashes when creating a new plan; the first
+session fills it in. The **Current branch** must be the exact `feat/…` branch from §22 that covers the
+current step — this is what Claude reads first each session, so the branch is right there next to the
+step instead of buried in §22. **Next gate** names the next §23 gate and what triggers it (e.g.
+"G1 — backend review, when `feat/timeentry-workflow` merges"), so the checkpoint is visible from the
+step you are on rather than remembered at the end.
 - **Pass:** present. If the project is in progress, Current step names a real step, Current branch is
-  the §22 branch whose range contains that step (not a dash, not `main`, not the project branch), and
-  Done condition is specific (not a dash) and follows the done-condition format below.
+  the §22 branch whose range contains that step (not a dash, not `main`, not the project branch), Done
+  condition is specific (not a dash) and follows the done-condition format below, and Next gate names a
+  real §23 gate.
 
 ### 1. Project title and one-line description
 Plain language, says what the app does and who uses it.
@@ -189,6 +192,15 @@ The branch plan as a table: **Branch · Covers (steps) · Opens · Closes**. The
 project branch (`technology/0X-project-name`), confirming it stays open for the whole project and
 merges to `main` only when every step is done. Follows the branch rules below.
 
+### 23. Quality gates — which prompt to run when
+The checkpoint plan as a table: **Gate · Trigger · Prompt + config · Why**. Each gate ties a concrete
+point in the build (a §22 branch closing, a §15 phase finishing) to the one prompt that should run
+there. This is what stops quality checks from being an afterthought at the end — and what stops them
+from being run over and over on the whole project. Follows the quality-gate rules below.
+- **Pass:** present, as a table; every gate names a real prompt and a concrete trigger tied to a §22
+  branch or §15 step (not "when the backend feels done"); the backend and frontend review gates are
+  both present and scoped (`REVIEW_SCOPE = backend` / `frontend`); the gates appear in build order.
+
 ---
 
 ## Done-condition format
@@ -292,6 +304,39 @@ that.
 
 ---
 
+## Quality-gate rules (§23)
+
+A **gate** is a checkpoint where a quality prompt runs. Gates exist for two reasons, and both matter:
+
+1. **Catch defects while they are still cheap.** Reviewing the backend the moment it is done — instead
+   of at the very end — means the frontend is never built on top of an API with a broken authorization
+   rule. A bug found after the frontend consumes it costs two fixes, not one.
+2. **Spend tokens once, on the right surface.** A gate is scoped (`REVIEW_SCOPE = backend`) precisely so
+   the same code is not re-reviewed in every later `full` run. **Never plan a `full` review as a routine
+   gate** — `full` is for a first review or a final sweep, not for something already reviewed per tier.
+
+Every full-stack plan instantiates these gates, in build order. Adapt the trigger wording to the
+project's actual §22 branches and §15 steps, but do not drop a gate or invent extra ones:
+
+| Gate | Trigger | Prompt + config | Why here |
+|------|---------|-----------------|----------|
+| **G1 — Backend review** | The last backend branch's PR merges (backend complete, before frontend work starts) | `review-audit` · `PROJECT_PATH = {project}` · `REVIEW_SCOPE = backend` | Correctness + security on the API **before** the frontend is built against it. |
+| **G2 — Frontend review** | The frontend branch's PR merges (frontend complete) | `review-audit` · `REVIEW_SCOPE = frontend` | Component/service split, state, cleanup, tests — the backend is not re-reviewed, so no tokens are wasted. |
+| **G3 — READMEs** | Every High task from G1/G2 is fixed, before the project branch → `main` PR | `readme-audit` | The READMEs must be at standard — it is a hard prerequisite of G4. |
+| **G4 — Portfolio go/no-go** | After G3 | `portfolio-audit` | Reads `PROJECT-BACKLOG.md` for the verdict; an unfixed High from G1/G2 blocks portfolio-ready. |
+
+Two gates are **not** listed in the table because they are not project-specific — but the plan should
+mention them once, under the table:
+- **Per step:** when a §15 step's done condition passes, the `step-complete` ritual runs (PLANNING ✅ +
+  PROGRESS.md + README). Not a prompt to schedule — it fires on the event.
+- **Ordering is a hard dependency:** G3 before G4. `portfolio-audit` reads the READMEs, so running it
+  before `readme-audit` gives a verdict on a document that is about to change.
+
+- **Pass:** G1–G4 all present, in order, each with a concrete trigger naming a real §22 branch or §15
+  step; G1 and G2 are tier-scoped (never `full`); G3 is stated as a prerequisite of G4.
+
+---
+
 ## Internal consistency invariants
 
 Cross-checks between sections. A finished plan satisfies all of them; the reviewer verifies each:
@@ -310,6 +355,13 @@ Cross-checks between sections. A finished plan satisfies all of them; the review
 8. **§0 branch vs §22** — the Current branch in §0 is one of the branches defined in §22, and its
    §22 range contains the §0 Current step. If §0 says step 5 but the branch shown covers steps 1–3,
    one of them is wrong.
+9. **Gates vs branches/steps (§23 ↔ §22/§15)** — every gate's trigger names a branch that actually
+   exists in §22 or a step that actually exists in §15. G1 fires at the **last backend** branch, G2 at
+   the **frontend** branch — so if §22's phases were reordered, the gates moved with them. A gate whose
+   trigger names a branch that is not in §22 is a stale gate.
+10. **§0 Next gate vs §23** — the Next gate in §0 is one of the gates defined in §23, and it is the
+   first one whose trigger has not fired yet given the §0 Current step. A plan pointing at G3 while the
+   backend review (G1) has never run is wrong.
 
 ---
 
