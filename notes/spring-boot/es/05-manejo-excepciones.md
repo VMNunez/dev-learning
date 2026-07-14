@@ -1,16 +1,20 @@
 # Manejo de excepciones en Spring Boot
 
 > 📖 [Baeldung — Error Handling for REST with Spring](https://www.baeldung.com/exception-handling-for-rest-with-spring)
-> 📖 [@ControllerAdvice](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-advice.html)
+> 📖 [Baeldung — Custom Error Message Handling for REST API (@ControllerAdvice)](https://www.baeldung.com/global-error-handler-in-a-spring-rest-api)
 
 ## El problema — sin un handler global
 
-Sin un handler central de excepciones, cada método del controlador necesita su propio try/catch. Con 10 endpoints, esto genera 30 líneas extra de manejo de errores idéntico:
+[04-spring-data-jpa.md](./04-spring-data-jpa.md) dejó la capa de persistencia funcionando, pero fallando mal. Ya se lanzan tres excepciones dentro de tus services: `ResourceNotFoundException` desde `findById(id).orElseThrow(...)`, `BusinessRuleViolationException` cuando un manager intenta aprobar una entrada que no está en `SUBMITTED`, y una violación de constraint de Hibernate que la propia base de datos lanza en cuanto alguien se registra con un email que ya existe en `users` (eso es `@Column(unique = true)` haciendo su trabajo). Ahora mismo, las tres llegan al cliente como exactamente lo mismo: un `500 Internal Server Error`. Un proyecto que no existe no es un error de servidor — es un `404`. Una regla de negocio rota es un `400`. Un email duplicado es un `409`. Algo tiene que colocarse entre la excepción y la respuesta HTTP y traducir una en la otra, **en un solo sitio, para toda la API**. Ese algo es este archivo.
+
+El arreglo ingenuo es un `try/catch` en cada método del controller. Con 10 endpoints eso son 30 líneas extra de manejo de errores idéntico, y en el momento en que añades un nuevo tipo de excepción tienes que acordarte de capturarla en los 10:
+
+Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → leer: primero la solución a nivel de controller con `@ExceptionHandler`, y fíjate en la limitación que señala el artículo — solo aplica al controller donde vive.
 
 ```java
-// Sin @ControllerAdvice — duplicado en cada método del controlador
+// MAL — sin @ControllerAdvice, duplicado en cada método del controller
 @GetMapping("/{id}")
-public ResponseEntity<TransactionDTO> getById(@PathVariable Long id) {
+public ResponseEntity<ProjectResponse> getById(@PathVariable Long id) {
     try {
         return ResponseEntity.ok(service.getById(id));
     } catch (ResourceNotFoundException e) {
@@ -21,19 +25,19 @@ public ResponseEntity<TransactionDTO> getById(@PathVariable Long id) {
 }
 ```
 
-La solución: una clase central que gestiona todas las excepciones de toda la API.
+La solución: una clase central que gestiona todas las excepciones de toda la API — tu `GlobalExceptionHandler`.
 
 ---
 
 ## @RestControllerAdvice vs @ControllerAdvice
 
-Propósito: ambas marcan una clase como handler global de excepciones, pero `@RestControllerAdvice` es la elección correcta para una REST API. Combina `@ControllerAdvice` (interceptar excepciones de todos los controladores) y `@ResponseBody` (serializar el valor de retorno a JSON automáticamente).
+Propósito: ambas marcan una clase como handler global de excepciones, pero `@RestControllerAdvice` es la elección correcta para una REST API. Combina `@ControllerAdvice` (interceptar excepciones de todos los controllers) y `@ResponseBody` (serializar el valor de retorno a JSON automáticamente).
 
 Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → leer: "@RestControllerAdvice"
 
 Archivo: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
 
-Sin `@ResponseBody`, `@ControllerAdvice` devuelve el valor de retorno del handler como el nombre de una vista HTML a renderizar — no como JSON. En una REST API no hay motor de plantillas, así que Spring devuelve un 500 en lugar del error limpio que definiste. `@RestControllerAdvice` lo soluciona sin configuración extra.
+Sin `@ResponseBody`, `@ControllerAdvice` devuelve el valor de retorno del handler como el nombre de una vista HTML a renderizar — no como JSON. En una REST API no hay motor de plantillas, así que Spring devuelve un 500 en lugar de tu cuerpo de error limpio. `@RestControllerAdvice` lo soluciona sin configuración extra.
 
 ```java
 // Correcto — usar @RestControllerAdvice en una REST API
@@ -51,90 +55,160 @@ public class GlobalExceptionHandler { ... }
 
 ## @RestControllerAdvice — el handler global de excepciones
 
-Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → leer: el ejemplo de métodos `@ExceptionHandler`
+Propósito: una única clase, fuera de todo controller, cuyos métodos `@ExceptionHandler` Spring llama cada vez que una excepción escapa de *cualquier* controller de la app — así cada tipo de excepción se mapea a su código HTTP exactamente una vez, en un solo sitio.
 
-`@RestControllerAdvice` marca una clase cuyos métodos `@ExceptionHandler` se aplican a **todos los controladores**. Spring llama automáticamente al handler correcto cuando se lanza una excepción en cualquier lugar:
+Archivo: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java`
+
+Docs: https://www.baeldung.com/exception-handling-for-rest-with-spring → leer: la sección `@ControllerAdvice` (la solución global, después de la de nivel de controller)
+
+`@RestControllerAdvice` marca una clase cuyos métodos `@ExceptionHandler` aplican a **todos los controllers**. Cada método declara, en la anotación, la clase de excepción de la que es responsable; Spring guarda ese mapeo y llama al método correcto cuando se lanza una excepción coincidente en cualquier punto por debajo del controller — en un service, en un repository, en Hibernate. Este es el esqueleto real del proyecto 07, recortado a tres de sus once handlers (la lista completa está en la tabla justo después):
 
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException e) {
         return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(new ErrorResponse(404, e.getMessage()));
+                .status(HttpStatus.NOT_FOUND)
+                .body(buildError(HttpStatus.NOT_FOUND, e.getMessage()));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException e) {
+    @ExceptionHandler(BusinessRuleViolationException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessRuleViolation(BusinessRuleViolationException e) {
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(400, e.getMessage()));
+                .status(HttpStatus.BAD_REQUEST)
+                .body(buildError(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
-    @ExceptionHandler(Exception.class)   // fallback catch-all
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception e) {
+    @ExceptionHandler(RuntimeException.class)   // catch-all fallback
+    public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException e) {
         return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ErrorResponse(500, "Internal server error"));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"));
     }
 }
 ```
 
-> El `ErrorResponse` de este ejemplo está simplificado a propósito, para centrarte primero en cómo `@RestControllerAdvice` enruta cada excepción a su handler. La versión completa — con más campos y una regla para no mostrar alguno cuando no aplica — está en la sección "DTO de respuesta de error" más abajo.
+- **`@ExceptionHandler(X.class)`** — registra este método como el handler de `X`. El parámetro del método (`X e`) es el propio objeto excepción: Spring te pasa la instancia que capturó, que es lo que permite que `e.getMessage()` lleve el mensaje que el service escribió al lanzarla.
+- **`buildError(...)`** — un helper privado de esta misma clase que ensambla el cuerpo de la respuesta. Se explica en la sección "DTO de respuesta de error" más abajo; por ahora léelo como "construye el JSON de error estándar con este código y este mensaje".
 
-Con esto en su lugar, los controladores quedan limpios — solo contienen el happy path:
+La clase tiene **once** métodos `@ExceptionHandler` en total. Lee la tabla como la tabla de enrutamiento de toda la API: columna izquierda, la clase de excepción que llegó al advice; columna derecha, el código que el cliente termina viendo y de dónde viene esa excepción. Tres de los once son tus propias clases; las otras ocho son de Spring.
+
+| Excepción gestionada | Código | Lanzada por |
+|---|---|---|
+| `BadCredentialsException` | 401 | Spring Security, en un login fallido |
+| `MethodArgumentNotValidException` | 400 | Spring MVC, cuando `@Valid` en un `@RequestBody` falla |
+| `DataIntegrityViolationException` | 409 | Spring Data, cuando la BD rechaza una constraint única |
+| `ResourceNotFoundException` | 404 | tu service, en `.orElseThrow(...)` |
+| `BusinessRuleViolationException` | 400 | tu service, en una regla de negocio rota |
+| `UnauthorizedException` | 403 | tu service, cuando quien llama no es dueño de nada aquí |
+| `AccessDeniedException` | 403 | Spring Security, cuando falla la comprobación de rol |
+| `HttpMessageNotReadableException` | 400 | Spring MVC, cuando el cuerpo JSON falta o está malformado |
+| `MissingServletRequestParameterException` | 400 | Spring MVC, cuando falta un `@RequestParam` obligatorio |
+| `MethodArgumentTypeMismatchException` | 400 | Spring MVC, cuando un parámetro no se puede convertir a su tipo |
+| `RuntimeException` | 500 | cualquier cosa no gestionada — el catch-all |
+
+> **`UnauthorizedException` devuelve 403, no 401 — y el nombre engaña un poco.** Se lanza cuando un usuario intenta enviar o editar el time entry de otra persona: Spring Security ya sabe exactamente quién es (un JWT válido lo trajo hasta aquí), simplemente no tiene permiso para tocar esa fila. "Conocido pero sin permiso" es 403 por definición — ver la tabla de códigos de estado más abajo. El nombre es un resto de una versión anterior; el código sí es el correcto.
+
+### Cómo elige Spring un handler cuando los tipos se solapan
+
+Mira de cerca los tres handlers de arriba y aparece un problema real: `ResourceNotFoundException extends RuntimeException`. Así que cuando tu service lanza una `ResourceNotFoundException`, **dos** handlers técnicamente coinciden con ella — el específico, y el catch-all de `RuntimeException`. Ambos son destinos legales. ¿Por qué obtienes un `404` y no un `500`?
+
+Porque Spring no elige la primera coincidencia, y tampoco elige la última que se declaró. Al arrancar, `ExceptionHandlerMethodResolver` escanea la clase advice y construye un mapa de *clase de excepción* → *método handler*. Cuando se lanza una excepción, toma la clase real en tiempo de ejecución de esa excepción y sube **por su cadena de herencia**, nivel a nivel, buscando la clase más cercana que esté en ese mapa. El primer nivel que tenga una entrada gana — el handler **más específico**, medido como profundidad en la jerarquía de clases, no como orden en el archivo.
+
+```
+        se lanza: ResourceNotFoundException
+                    │
+   nivel 0 ─── ResourceNotFoundException  → ¿handler registrado?  SÍ  ✅ se detiene aquí → 404
+                    │  (extiende)
+   nivel 1 ─── RuntimeException           → ¿handler registrado?  SÍ  (nunca se alcanza)
+                    │  (extiende)
+   nivel 2 ─── Exception                  → ¿handler registrado?  no
+```
+
+> **La analogía:** piénsalo como un simulacro de incendio en un edificio. La excepción empieza en su propia planta (su clase exacta) y busca una salida en esa planta. Solo si no hay salida ahí sube una planta (su superclase) y vuelve a mirar. Toma la primera salida que encuentra en el camino hacia arriba — así que una salida especializada en tu propia planta siempre se usa antes que la salida de emergencia del tejado. El catch-all de `RuntimeException` *es* esa salida del tejado: solo la toman las excepciones que no tenían salida propia.
+
+Por eso el catch-all es seguro de mantener aunque coincida con casi todo: nunca puede robarle una request a un handler más específico. Y también por eso añadir un nuevo `@ExceptionHandler` específico cambia inmediatamente el comportamiento de excepciones que antes caían en el catch-all — estás abriendo una salida en una planta más baja.
+
+> **Dónde se vuelve ambiguo "más específico".** Si dos métodos **dentro de la misma clase advice** declaran la *misma* clase de excepción — digamos que escribes por accidente dos métodos `@ExceptionHandler(ResourceNotFoundException.class)` — `ExceptionHandlerMethodResolver` no puede ordenarlos mientras construye su mapa, y se niega a arrancar: `IllegalStateException: Ambiguous @ExceptionHandler method mapped for [class com.victor.timetrack.exception.ResourceNotFoundException]: {handleResourceNotFound, handleNotFound}`. Nunca es una moneda al aire en tiempo de ejecución — te enteras en el instante en que la app arranca. Fíjate en el alcance exacto de ese fallo: que dos clases advice *distintas* gestionen ambas la misma excepción **no** es un error — Spring simplemente las consulta en el orden de `@Order` y gana el primer advice que tenga coincidencia. El fallo de arranque es solo para un duplicado dentro de una misma clase.
+
+Con esto en su lugar, los controllers quedan limpios — solo contienen el happy path:
 
 ```java
-// Controlador limpio — no hay try/catch
+// Controller limpio — no hace falta try/catch
 @GetMapping("/{id}")
-public ResponseEntity<TransactionDTO> getById(@PathVariable Long id) {
+public ResponseEntity<ProjectResponse> getById(@PathVariable Long id) {
     return ResponseEntity.ok(service.getById(id));
-    // el service lanza ResourceNotFoundException si no encuentra → @ControllerAdvice devuelve 404
+    // el service lanza ResourceNotFoundException si no encuentra → GlobalExceptionHandler devuelve 404
 }
 ```
+
+> El `ErrorResponse` que construye `buildError` es la única forma de cuerpo que esta API devuelve para un error, siempre. El DTO completo — sus campos y la regla que oculta los que no aplican — está en la sección "DTO de respuesta de error" más abajo.
 
 ---
 
 ## Excepciones personalizadas
 
-Docs: https://www.baeldung.com/java-new-custom-exception
+Propósito: dar a tus fallos de dominio su propio tipo, para que el service pueda decir *qué salió mal en términos de negocio* y `GlobalExceptionHandler` tenga algo específico a lo que enrutar hacia un código HTTP — en vez de que todo llegue como una `RuntimeException` anónima que solo puede convertirse en un 500.
 
-Las clases de excepción personalizadas dan nombres con significado a tus errores y permiten que `@ControllerAdvice` las enrute a handlers específicos:
+Archivo: `src/main/java/com/victor/timetrack/exception/ResourceNotFoundException.java` (y `BusinessRuleViolationException.java`, `UnauthorizedException.java` justo al lado)
+
+Docs: https://www.baeldung.com/java-new-custom-exception → leer: la sección sobre crear una excepción no comprobada personalizada
+
+El proyecto 07 tiene exactamente tres, y las tres son así de pequeñas — la clase *es* la información. No hay lógica dentro, ni campos; lo único que cada una añade a `RuntimeException` es su **nombre**, y ese nombre es con el que hace match el `@ExceptionHandler`:
 
 ```java
-// No comprobada — extiende RuntimeException (la convención en Spring Boot)
+// src/main/java/com/victor/timetrack/exception/ResourceNotFoundException.java
 public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException(String resource, Long id) {
-        super(resource + " not found with id: " + id);
-    }
-}
-
-public class DuplicateResourceException extends RuntimeException {
-    public DuplicateResourceException(String message) {
+    public ResourceNotFoundException(String message) {
         super(message);
     }
 }
 
-// Uso en el service
-public Transaction getById(Long id) {
-    return repository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Transaction", id));
-}
+// BusinessRuleViolationException.java y UnauthorizedException.java son idénticas
+// en forma — solo cambia el nombre de la clase.
 ```
+
+- **`extends RuntimeException`** — la hace *no comprobada* (unchecked, ver más abajo).
+- **`super(message)`** — pasa el string del mensaje hacia arriba, al propio constructor de `RuntimeException`, que es quien lo almacena. Ese es el string que `e.getMessage()` devuelve luego dentro del handler, y por tanto el string que el frontend termina mostrándole al usuario. Si te olvidas de la llamada `super(message)`, la excepción sigue funcionando pero `getMessage()` devuelve `null` y tu cuerpo del 404 llega con `"message": null`.
+
+Así es como el service la lanza — la línea real de `TimeEntryService`:
+
+```java
+// service — la entrada existe, o la request es un 404
+TimeEntry timeEntry = timeEntryRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+```
+
+> **Qué hace `.orElseThrow()` aquí.** `findById(id)` no devuelve un `TimeEntry` — devuelve un `Optional<TimeEntry>`, un pequeño objeto envoltorio que o bien contiene la entrada o bien no contiene nada. Spring Data lo devuelve a propósito, para que "no encontrado" nunca te llegue como un `null` silencioso que se te olvida comprobar. `.orElseThrow(...)` es cómo abres ese envoltorio: si contiene un valor recuperas el `TimeEntry`, y si está vacío lanza la excepción que construye la lambda que va dentro. La parte `() -> new ResourceNotFoundException(...)` es una lambda — una pequeña función que Java solo ejecuta *si* la caja resulta estar vacía, así que el objeto excepción nunca se crea en el happy path. Ambos son Java puro, no Spring: `Optional<T>` en detalle en [java/10-genericos.md — `Optional<T>`](../../java/es/10-genericos.md#optionalt), lambdas en [java/09-streams-lambdas.md](../../java/es/09-streams-lambdas.md#sintaxis-de-lambdas).
 
 **Por qué extender `RuntimeException` (no comprobada) y no `Exception` (comprobada):**
 
-Las excepciones comprobadas obligan a cada llamador en la pila a gestionarlas o redeclararlas con `throws`. Esto contamina el código de service y controlador con manejo de errores para excepciones que no pueden solucionar. La convención de Spring Boot es: lanza excepciones no comprobadas desde los servicios, captúralas globalmente con `@ControllerAdvice`.
+Las excepciones comprobadas obligan a cada llamador en la pila a gestionarlas o redeclararlas con `throws`. Tu service lanza desde tres capas por debajo del controller, así que una excepción comprobada significaría `throws ResourceNotFoundException` en el método del service, en el método del controller, y en cualquier cosa intermedia — cada uno de ellos declarando un error que no puede arreglar y que no quiere ni conocer. La convención de Spring Boot es la opuesta: lanza excepciones no comprobadas desde los services, deja que vuelen sin que nadie las toque a través de cada capa, y captúralas una única vez, globalmente, en `@RestControllerAdvice`. Por eso exactamente la clase extiende `RuntimeException` y no `Exception`.
 
-Esto ya está explicado en [08-exceptions.md](../java/08-exceptions.md) — el patrón es el mismo, aplicado a la capa de la REST API.
+La distinción comprobada/no comprobada en sí, y qué hace el compilador con cada una, está en [java/08-excepciones.md](../../java/es/08-excepciones.md) — el patrón es el mismo, aplicado aquí a la capa de la REST API.
+
+> **El email duplicado no tiene su propia excepción personalizada — y es a propósito.** Podrías esperar una `DuplicateResourceException` junto a estas tres, pero no existe: el fallo de email duplicado no lo lanza tu código en absoluto. PostgreSQL rechaza el insert por la constraint `@Column(unique = true)` de [04-spring-data-jpa.md](./04-spring-data-jpa.md), Hibernate convierte ese rechazo en la propia `DataIntegrityViolationException` de Spring, y `GlobalExceptionHandler` captura *esa* clase directamente y la mapea a `409 Conflict`. Escribir una excepción personalizada solo tiene sentido cuando *tú* eres quien detecta el fallo.
+
+```java
+@ExceptionHandler(DataIntegrityViolationException.class)
+public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+    return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(buildError(HttpStatus.CONFLICT, "A resource with this value already exists"));
+}
+```
+
+> **Por qué el mensaje es genérico** (`"A resource with this value already exists"`) en vez de repetir el texto propio de la base de datos: la violación de constraint en bruto contiene el nombre de la tabla, el nombre de la columna y el nombre de la constraint — detalles internos del esquema que nunca quieres entregarle a un caller anónimo. El handler descarta deliberadamente `e.getMessage()` y escribe el suyo propio.
 
 ---
 
 ## DTO de respuesta de error
 
-Con solo `status` y `message`, aparece un problema en cuanto tienes más de un tipo de error: cada `@ExceptionHandler` decide su propia forma de cuerpo JSON, y acaban sin ser consistentes entre sí. Un ejemplo real: `handleBadCredentials` devolvía `{"error": "..."}` (un String), pero `handleValidation` devolvía `{"errors": {...}}` (un mapa) — dos claves distintas (`error` vs `errors`) para el mismo concepto. En Angular, el código que lee la respuesta de error necesita saber de antemano cuál de las dos claves esperar según qué excepción disparó el fallo — y eso es frágil: cualquier cambio en el backend rompe el frontend en silencio.
+Antes de que este DTO existiera, cada handler inventaba su propia forma de cuerpo, y esas formas se alejaban entre sí casi al instante.
+
+> **Este párrafo es historia, no el código actual.** En un commit anterior del proyecto 07 no existía ningún `ErrorResponse`: `handleBadCredentials` devolvía un `Map` serializado como `{"error": "..."}` (un valor String), mientras que `handleValidation` devolvía `{"errors": {...}}` (un valor mapa) — dos claves distintas, `error` frente a `errors`, para el mismo concepto. El código de Angular que leía el fallo tenía que saber *de antemano* qué clave esperar según qué excepción había saltado, así que cualquier cambio en el backend rompía el frontend en silencio. Ambos handlers se reescribieron para devolver `ErrorResponse`; si abres hoy `GlobalExceptionHandler` no encontrarás esas formas en ningún sitio. Sigue leyendo — el resto de esta sección es el código que de verdad está en el repo.
 
 La solución es un único DTO de error, con **la misma forma siempre**, sin importar qué excepción lo generó:
 
@@ -162,9 +236,9 @@ public class ErrorResponse {
 - **`message: String`** — el único campo que cambia de verdad excepción a excepción; el texto que normalmente muestra el frontend en un toast.
 - **`fieldErrors: Map<String, String>`** — solo tiene contenido cuando el error viene de validar campos de un formulario (ver la sección de Bean Validation, abajo). En el resto de casos vale `null`.
 
-> **`@JsonInclude(JsonInclude.Include.NON_NULL)`** actúa en el momento de serializar — cuando Spring Boot convierte el objeto Java a texto JSON para la respuesta HTTP, justo antes de mandarlo al cliente. Sin esta anotación, un `fieldErrors` en `null` aparecería igualmente como `"fieldErrors": null` en el JSON de salida. Con la anotación, Jackson omite esa clave por completo cuando detecta que el valor es `null` — así un 404 devuelve un JSON limpio, sin la clave `fieldErrors`, y solo un error de validación la incluye rellena.
+> **`@JsonInclude(JsonInclude.Include.NON_NULL)`** entra en juego en el momento de la serialización — cuando Spring Boot convierte el objeto Java a texto JSON para la respuesta HTTP, justo antes de mandarlo al cliente. Sin esta anotación, un `fieldErrors` en `null` aparecería igualmente como `"fieldErrors": null` en el JSON de salida. Con ella, Jackson omite esa clave por completo en cuanto detecta un valor `null` — así un 404 devuelve un JSON limpio sin la clave `fieldErrors`, y solo un error de validación la incluye rellena.
 
-Para no repetir la construcción de `timestamp`, `status`, `error` y `message` en cada uno de los `@ExceptionHandler` (7 handlers en este proyecto), un método privado dentro del propio `GlobalExceptionHandler` centraliza esa parte común:
+Para no repetir la construcción de `timestamp`, `status`, `error` y `message` en cada uno de los métodos `@ExceptionHandler` (11 handlers en este proyecto), un método privado dentro del propio `GlobalExceptionHandler` centraliza esa parte común:
 
 ```java
 private ErrorResponse buildError(HttpStatus status, String message) {
@@ -177,7 +251,7 @@ private ErrorResponse buildError(HttpStatus status, String message) {
 }
 ```
 
-`fieldErrors` no forma parte de los parámetros de `buildError` a propósito: es el único campo que no aplica a la mayoría de los handlers, así que meterlo como parámetro obligaría a que los otros 6 handlers pasaran `null` explícitamente sin usarlo nunca. En el único handler que sí lo necesita (`handleValidation`, ver abajo), se llama a `buildError` para la parte común y luego se le hace un `.setFieldErrors(...)` extra al objeto ya construido.
+`fieldErrors` no forma parte de los parámetros de `buildError` a propósito: es el único campo que no aplica a la mayoría de los handlers, así que convertirlo en parámetro obligaría a los otros 10 handlers a pasar `null` explícitamente sin usarlo nunca. En el único handler que sí lo necesita (`handleValidation`, ver abajo), se llama a `buildError` para la parte común y luego se le hace un `.setFieldErrors(...)` extra al objeto ya construido.
 
 Con `buildError`, un handler típico queda así de corto:
 
@@ -194,7 +268,13 @@ public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundExce
 
 ## Gestionar errores de Bean Validation
 
+Propósito: convertir un `@Valid` fallido en un `@RequestBody` en un `400` cuyo cuerpo diga **qué campo** falló y **por qué**, para que el formulario de Angular pueda pintar el mensaje debajo del input correspondiente en vez de mostrar un único toast poco concreto.
+
+Archivo: `src/main/java/com/victor/timetrack/exception/GlobalExceptionHandler.java` (el método `handleValidation`)
+
 Docs: https://www.baeldung.com/spring-boot-bean-validation → leer: la sección sobre gestionar `MethodArgumentNotValidException`
+
+> **Esta es la versión canónica de este handler.** Las *anotaciones* de validación (`@NotBlank`, `@Email`, `@Min`…) y dónde colocarlas se cubren en [07-validacion.md](./07-validacion.md); el *handler* que convierte su fallo en una respuesta HTTP vive aquí, y el código de abajo es el que está en el `GlobalExceptionHandler` real. Si encuentras un `handleValidation` distinto, más simple, en otro punto de estas notas, este es el que coincide con el proyecto.
 
 Cuando `@Valid` en un `@RequestBody` falla, Spring lanza `MethodArgumentNotValidException`. Esa excepción lleva dentro un `BindingResult` — el informe completo de qué campos fallaron y con qué mensaje. `getFieldErrors()` te da la lista de esos fallos como objetos `FieldError`, cada uno con un nombre de campo (`getField()`) y un mensaje (`getDefaultMessage()`).
 
@@ -225,7 +305,7 @@ Desglosando el `Collectors.toMap(...)`:
 - **`FieldError::getDefaultMessage`** hace lo mismo para el valor: "usa el resultado de `.getDefaultMessage()`" (`"must not be blank"`...).
 - **`(existing, replacement) -> existing`** es la función de "merge", y solo se dispara si dos `FieldError` generaran la **misma clave** — por ejemplo, si el campo `email` tuviera dos anotaciones de validación fallando a la vez (`@NotBlank` y `@Email`). Sin esta tercera función, `Collectors.toMap` lanzaría una excepción en tiempo de ejecución ante esa colisión (`IllegalStateException: Duplicate key`); con ella, simplemente te quedas con el primer mensaje que encontró y descarta el segundo.
 
-> **¿Por qué no simplemente unir todos los mensajes en un único String** (como haría `Collectors.joining(", ")`)? Porque entonces el frontend recibiría algo como `"email: must not be blank, password: must not be blank"` y tendría que **parsear ese texto** para saber a qué campo del formulario pertenece cada error. Con un `Map<String, String>`, el frontend accede directamente por clave (`fieldErrors["email"]`) y lo pone debajo del input correcto, sin ningún parsing.
+> **¿Por qué no simplemente unir todos los mensajes en un único String** (como haría `Collectors.joining(", ")`)? Porque entonces el frontend recibiría algo como `"email: must not be blank, password: must not be blank"` y tendría que **parsear ese texto** para saber a qué campo del formulario pertenece cada error. Con un `Map<String, String>`, el frontend accede directamente por clave (`fieldErrors["email"]`) y lo coloca debajo del input correcto, sin ningún parsing.
 
 El JSON resultante de un error de validación con dos campos vacíos a la vez:
 
@@ -268,6 +348,8 @@ Docs: https://developer.mozilla.org/es/docs/Web/HTTP/Status
 | 409 Conflict | Email duplicado, violación de constraint única |
 | 500 Internal Server Error | Excepción no gestionada — el fallback catch-all |
 
+Lee la tabla como una búsqueda que funciona en una sola dirección: nunca partes del código de estado, partes de la **columna "Cuándo"** — la situación que tu service acaba de encontrar — y ella te dice qué código debe devolver el handler. La línea que más importa es la frontera entre `401` y `403`: `401` significa *no sé quién eres* (sin token, o con uno inválido), `403` significa *sé exactamente quién eres y aun así no puedes hacer esto* (token válido, rol insuficiente). Confundir estos dos es el error más común de toda la tabla, y los entrevistadores preguntan por la diferencia directamente.
+
 El patrón que se repite: **lanza en el service, mapea a HTTP en `@ControllerAdvice`**. El service solo conoce conceptos de dominio (recurso no encontrado, entrada duplicada), no códigos de estado HTTP. `@ControllerAdvice` hace la traducción.
 
 ---
@@ -284,7 +366,7 @@ WARN ... DefaultHandlerExceptionResolver : Resolved [org.springframework.web.bin
 
 El nombre de la clase está ahí mismo, paquete incluido (`org.springframework.web.bind.MissingServletRequestParameterException`) — reproduce la request que falla, lee la consola, copia el nombre en un `@ExceptionHandler` nuevo.
 
-**Caso B — tu propio catch-all ya se la traga en silencio.** Un `@ExceptionHandler(RuntimeException.class)` genérico gestiona cualquier subtipo de `RuntimeException`, incluidos los que todavía no tienen un handler específico — y en cuanto tu propio código la gestiona, `DefaultHandlerExceptionResolver` de Spring nunca llega a ejecutarse, así que ese `WARN` nunca aparece. En esa situación, imprime tú mismo el nombre de la clase temporalmente, dentro del catch-all, justo antes de que devuelva:
+**Caso B — tu propio catch-all ya se la traga en silencio.** Un `@ExceptionHandler(RuntimeException.class)` genérico gestiona cualquier subtipo de `RuntimeException`, incluidos los que todavía no tienen un handler específico escrito — y en cuanto tu propio código la gestiona, `DefaultHandlerExceptionResolver` de Spring nunca llega a ejecutarse, así que ese `WARN` nunca aparece. En esa situación, imprime tú mismo el nombre de la clase temporalmente, dentro del catch-all, justo antes de que devuelva:
 
 ```java
 @ExceptionHandler(RuntimeException.class)
@@ -319,7 +401,19 @@ public ResponseEntity<ErrorResponse> handleMissingServletRequestParameter(
 
 `e.getParameterName()` es el método que hace este handler más útil que un mensaje genérico — te dice exactamente qué query param faltaba (`"month"`), sacado directamente de la excepción en vez de escrito a mano.
 
-> **Contraste con `MethodArgumentTypeMismatchException`** — un fallo relacionado pero distinto: el parámetro **sí** se envió, pero Spring no pudo convertir su valor al tipo esperado (por ejemplo, `?month=2025-13`, un `YearMonth` inválido). Esta **sí es** una `RuntimeException`, así que sí llega a un catch-all genérico — pero en silencio, con el código equivocado (`500` en vez de `400`), que es justo por lo que "llega a algún handler" no es lo mismo que "llega al handler correcto". Dale su propio `@ExceptionHandler`, mismo patrón que el de arriba, usando `e.getName()` para indicar qué parámetro tenía el valor inválido.
+> **Contraste con `MethodArgumentTypeMismatchException`** — un fallo relacionado pero distinto: el parámetro **sí** se envió, pero Spring no pudo convertir su valor al tipo esperado (por ejemplo, `?month=2025-13`, un `YearMonth` inválido). Esta **sí es** una `RuntimeException`, así que *sí* llega al catch-all genérico — pero en silencio, con el código equivocado (`500` en vez de `400`), que es justo por lo que "llega a algún handler" no es lo mismo que "llega al handler *correcto*". Por eso el proyecto 07 también le da su propio handler, el undécimo de la tabla:
+
+```java
+@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
+    return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(buildError(HttpStatus.BAD_REQUEST,
+                    "Invalid value for parameter '" + e.getParameter().getParameterName() + "'"));
+}
+```
+
+`e.getParameter()` devuelve un `MethodParameter` — la descripción que hace Spring del argumento del método del controller que estaba intentando rellenar — y `.getParameterName()` sobre él te da el nombre de ese argumento (`"month"`). Es un salto más largo que el `MissingServletRequestParameterException.getParameterName()` de arriba porque esta excepción la lanza el paso de *conversión de tipo*, que razona sobre parámetros de método, no sobre nombres de query string.
 
 ---
 
@@ -369,3 +463,13 @@ Un añadido de defensa en profundidad, además de atrapar cada excepción explí
 ```
 
 > **Los entrevistadores preguntan:** "¿Por qué un bug de nivel 400 podría aparecer como un 401 en una app con Spring Security?" — este mecanismo exacto (el forward interno a `/error` tratado como una request sin autenticar) es la respuesta de manual, y es lo bastante específica como para demostrar que has depurado algo así de verdad, no que solo has leído sobre `@ExceptionHandler` de forma aislada.
+
+---
+
+## Dónde te deja esto — y qué viene después
+
+Ahora la API falla con honestidad. Una excepción lanzada tres capas por debajo, dentro de un service, ya no se escapa como un 500 con un stack trace: `@RestControllerAdvice` la intercepta, Spring elige el `@ExceptionHandler` más específico subiendo por la jerarquía de clases de la excepción, `buildError` le da la única forma de cuerpo que usa toda la API, y `@JsonInclude(NON_NULL)` oculta los campos que no aplican. Cada controller del proyecto ha vuelto a ser solo el happy path.
+
+Pero las dos últimas secciones ya han dado alguna pista. `BadCredentialsException` → `401`. `AccessDeniedException` → `403`. `JwtFilter`, `SecurityConfig`, `.anyRequest().authenticated()`, un `AuthenticationEntryPoint` que salta cuando no hay token presente — la trampa de `/error` solo existe *porque* hay una cadena de filtros de seguridad delante de cada request, decidiendo quién entra antes de que tu controller llegue siquiera a ejecutarse. Esos handlers ya están en `GlobalExceptionHandler` y todavía no has construido lo que los lanza.
+
+[06-seguridad-jwt.md](./06-seguridad-jwt.md) lo construye: cómo una request que lleva un JWT se autentica mediante un filtro antes de llegar al controller, qué hace Spring Security de verdad con el token, y por qué las excepciones que lanza (`BadCredentialsException`, `AccessDeniedException`) llegan exactamente a la misma clase advice que acabas de escribir.
