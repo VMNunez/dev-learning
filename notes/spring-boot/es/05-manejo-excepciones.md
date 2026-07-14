@@ -269,3 +269,103 @@ Docs: https://developer.mozilla.org/es/docs/Web/HTTP/Status
 | 500 Internal Server Error | Excepción no gestionada — el fallback catch-all |
 
 El patrón que se repite: **lanza en el service, mapea a HTTP en `@ControllerAdvice`**. El service solo conoce conceptos de dominio (recurso no encontrado, entrada duplicada), no códigos de estado HTTP. `@ControllerAdvice` hace la traducción.
+
+---
+
+## Cómo averiguar el nombre exacto de la clase de una excepción no gestionada
+
+Cada `@ExceptionHandler` nuevo que añades empieza igual: algo falla con el código de estado equivocado, y necesitas saber exactamente qué clase de excepción lanzó Spring antes de poder escribir `@ExceptionHandler(AlgunaExcepcion.class)` para ella. Nunca hace falta adivinarlo — Spring te lo dice, en uno de dos sitios según si algo ya atrapó la excepción o no.
+
+**Caso A — nada la atrapa, así que la gestiona `DefaultHandlerExceptionResolver`.** Cuando una excepción no es una `RuntimeException` que tu `GlobalExceptionHandler` reconozca, el resolutor propio de Spring entra en acción y registra el nombre completo de la clase con nivel `WARN` en la consola:
+
+```
+WARN ... DefaultHandlerExceptionResolver : Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter 'month' for method parameter type YearMonth is not present]
+```
+
+El nombre de la clase está ahí mismo, paquete incluido (`org.springframework.web.bind.MissingServletRequestParameterException`) — reproduce la request que falla, lee la consola, copia el nombre en un `@ExceptionHandler` nuevo.
+
+**Caso B — tu propio catch-all ya se la traga en silencio.** Un `@ExceptionHandler(RuntimeException.class)` genérico gestiona cualquier subtipo de `RuntimeException`, incluidos los que todavía no tienen un handler específico — y en cuanto tu propio código la gestiona, `DefaultHandlerExceptionResolver` de Spring nunca llega a ejecutarse, así que ese `WARN` nunca aparece. En esa situación, imprime tú mismo el nombre de la clase temporalmente, dentro del catch-all, justo antes de que devuelva:
+
+```java
+@ExceptionHandler(RuntimeException.class)
+public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException e) {
+    System.out.println(e.getClass().getName());   // temporal — bórralo en cuanto lo hayas leído
+    return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"));
+}
+```
+
+Reproduce la request que falla, lee la línea impresa en la consola, y bórrala después — solo estaba ahí para revelar el tipo, el mismo propósito que un breakpoint que quitarías después.
+
+> Las dos técnicas responden a la misma pregunta — "¿qué excepción es esta?" — la única diferencia es **quién** la está atrapando en ese momento: el resolutor por defecto de Spring (Caso A, te lo registra automáticamente) o tu propio catch-all (Caso B, tienes que pedirle que te lo diga, porque para Spring tu código ya la ha "gestionado").
+
+---
+
+## No toda excepción es una RuntimeException — el hueco que un catch-all genérico no cubre
+
+`@ExceptionHandler(RuntimeException.class)` parece una red de seguridad para "cualquier cosa inesperada", pero solo atrapa subtipos de `RuntimeException`. Algunos fallos muy comunes de Spring MVC **no son** `RuntimeException` en absoluto — `MissingServletRequestParameterException` (un `@RequestParam` obligatorio que no se envió) es uno de ellos; desciende de `ServletException`, una familia de excepciones más antigua y no relacionada, propia de la API de Servlets, no de `RuntimeException`. Tu catch-all simplemente nunca la ve — no coincide, igual que un bloque `catch (IOException e)` nunca atraparía un `NullPointerException`.
+
+```java
+@ExceptionHandler(MissingServletRequestParameterException.class)
+public ResponseEntity<ErrorResponse> handleMissingServletRequestParameter(
+        MissingServletRequestParameterException e) {
+    return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(buildError(HttpStatus.BAD_REQUEST,
+                    "Required parameter '" + e.getParameterName() + "' is missing"));
+}
+```
+
+`e.getParameterName()` es el método que hace este handler más útil que un mensaje genérico — te dice exactamente qué query param faltaba (`"month"`), sacado directamente de la excepción en vez de escrito a mano.
+
+> **Contraste con `MethodArgumentTypeMismatchException`** — un fallo relacionado pero distinto: el parámetro **sí** se envió, pero Spring no pudo convertir su valor al tipo esperado (por ejemplo, `?month=2025-13`, un `YearMonth` inválido). Esta **sí es** una `RuntimeException`, así que sí llega a un catch-all genérico — pero en silencio, con el código equivocado (`500` en vez de `400`), que es justo por lo que "llega a algún handler" no es lo mismo que "llega al handler correcto". Dale su propio `@ExceptionHandler`, mismo patrón que el de arriba, usando `e.getName()` para indicar qué parámetro tenía el valor inválido.
+
+---
+
+## La trampa de `/error` — por qué un parámetro ausente puede devolver 401 en vez de 400
+
+Esta es una trampa real que solo aparece cuando Spring Security entra en juego, y merece la pena trazarla de principio a fin porque el síntoma (código de estado equivocado, sin relación aparente con autenticación) no tiene sentido hasta que ves el mecanismo completo.
+
+**La cadena de sucesos:**
+
+1. `MissingServletRequestParameterException` se lanza mientras Spring resuelve los argumentos del método del controller — **antes** de que el propio método del controller (y por tanto cualquier `@PreAuthorize` sobre él) llegue a ejecutarse.
+2. Si nada en tu `@RestControllerAdvice` la atrapa (ver la sección anterior), el `DefaultHandlerExceptionResolver` de Spring la recoge y llama a `response.sendError(400, ...)`.
+3. `sendError()` no escribe la respuesta directamente — le dice al contenedor de servlets "esta request ha fallado, redirígela internamente a la página de error de la app". La página de error por defecto de Spring Boot es `/error`, servida por `BasicErrorController`.
+4. Ese salto hacia `/error` es, desde el punto de vista de Spring Security, **una request completamente nueva** — que vuelve a pasar por toda la cadena de filtros.
+5. `JwtFilter` extiende `OncePerRequestFilter`, cuyo comportamiento por defecto es **saltarse los error dispatches** (`shouldNotFilterErrorDispatch()` devuelve `true` salvo que lo sobrescribas) — así que no se vuelve a ejecutar en esta segunda pasada, y no se establece ninguna `Authentication` para ella.
+6. La regla `.anyRequest().authenticated()` de `SecurityConfig` también se aplica a `/error`, porque nunca quedó excluida. Sin ninguna `Authentication` presente, esa regla falla.
+7. `ExceptionTranslationFilter` atrapa ese fallo y llama a `jwtAuthenticationEntryPoint.commence(...)` — el mismo entry point exacto que salta cuando de verdad falta el token — produciendo un `401 Unauthorized` con `"Authentication required"`.
+
+```
+Request original (con un JWT válido)
+        │
+        ▼
+DispatcherServlet: resuelve @RequestParam → FALLA (falta el parámetro)
+        │
+        ▼
+DefaultHandlerExceptionResolver: sendError(400)
+        │
+        ▼
+Contenedor: forward → /error   (una request/dispatch NUEVA)
+        │
+        ▼
+JwtFilter: se salta (error dispatch) → no se establece ninguna Authentication
+        │
+        ▼
+.anyRequest().authenticated() → falla → 401, no 400
+```
+
+> El código de estado que ves (`401`) no tiene nada que ver con el problema original (un query param ausente) — es un efecto secundario de que la propia página de error es una request sin autenticar que Spring Security bloquea. Por eso el arreglo que de verdad importa es **no dejar nunca que la excepción llegue a `/error`**: atrapa `MissingServletRequestParameterException` (y cualquier otra excepción que de otro modo caería en el resolutor por defecto) directamente en `GlobalExceptionHandler`, tal como hace la sección anterior. En cuanto tu propio `@ExceptionHandler` construye la respuesta, el paso 2 de arriba nunca llega a llamar a `sendError()`, así que nunca se produce el segundo forward, y toda la cadena de los pasos 3-7 se evita por completo.
+
+Un añadido de defensa en profundidad, además de atrapar cada excepción explícitamente: excluir `/error` de `.anyRequest().authenticated()` en `SecurityConfig`, para que *cualquier* excepción futura que se escape igualmente llegue a la página de error en vez de reportarse como un `401` engañoso:
+
+```java
+.authorizeHttpRequests(auth -> auth
+        .requestMatchers("/api/auth/**").permitAll()
+        .requestMatchers("/error").permitAll()   // deja que la propia página de error sea accesible
+        .anyRequest().authenticated()
+)
+```
+
+> **Los entrevistadores preguntan:** "¿Por qué un bug de nivel 400 podría aparecer como un 401 en una app con Spring Security?" — este mecanismo exacto (el forward interno a `/error` tratado como una request sin autenticar) es la respuesta de manual, y es lo bastante específica como para demostrar que has depurado algo así de verdad, no que solo has leído sobre `@ExceptionHandler` de forma aislada.
