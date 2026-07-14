@@ -559,16 +559,22 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
 
 ### De `?month=2025-05` a un rango de fechas — YearMonth
 
-El controller recibe `month=2025-05` como parámetro de query string. `java.time.YearMonth` representa exactamente eso — un año más un mes, sin día — y Spring puede vincularlo directamente desde el query string porque su formato de `toString()`/parsing es la misma forma ISO (`yyyy-MM`) que ya usa la URL, así que no hace falta ningún conversor personalizado.
+El controller recibe `month=2025-05` como parámetro de query string. `java.time.YearMonth` representa exactamente eso — un año más un mes, sin día — y Spring puede vincularlo directamente desde el query string porque su formato de `toString()`/parsing es la misma forma ISO (`yyyy-MM`) que ya usa la URL, así que no hace falta ningún conversor personalizado. El único trabajo del controller es recibir ese `YearMonth` y pasárselo al service — convertirlo en un rango de fechas real es lógica de negocio (decidir *cómo* un mes se traduce a fechas concretas), así que vive en el service, siguiendo el mismo reparto de arquitectura por capas que usas en todo el proyecto: **el controller recibe, el service decide, el repositorio consulta.**
 
 ```java
-@GetMapping("/by-project")
-@PreAuthorize("hasRole('MANAGER')")
-public List<ProjectHoursReportResponse> getByProject(@RequestParam YearMonth month) {
+// service — TimeEntryService.java
+public List<ProjectHoursReportResponse> getHoursByProject(YearMonth month) {
     LocalDate start = month.atDay(1);          // 2025-05-01
     LocalDate end = month.atEndOfMonth();       // 2025-05-31 (gestiona bien 28/29/30/31)
     return timeEntryRepository.getHoursByProject(start, end);
 }
+```
+
+`atDay(1)` y `atEndOfMonth()` son **métodos de instancia de `YearMonth`** — operan sobre el año-mes concreto que contiene ese objeto (mayo de 2025 en este ejemplo), igual que un `String` tiene métodos de instancia como `.toUpperCase()` que operan sobre el texto que contiene. La diferencia aquí está en el **tipo de retorno**: estos dos métodos no devuelven otro `YearMonth`, devuelven un `LocalDate` — un método puede devolver un tipo distinto al de la clase a la que pertenece; nada obliga a que los métodos de `YearMonth` devuelvan más valores `YearMonth`.
+
+```
+month.atDay(1)         →  LocalDate  (el día 1 de ese año-mes)
+month.atEndOfMonth()   →  LocalDate  (el último día — 28/29/30/31, resuelto automáticamente)
 ```
 
 > **¿Por qué no simplemente tratar `month` como un `String` y trocearlo?** Podrías dividir `"2025-05"` por el `-` y construir un `LocalDate` a mano, pero entonces los casos límite son cosa tuya — ¿cuántos días tiene mayo? ¿Sigue funcionando bien la app en un febrero bisiesto? `YearMonth.atEndOfMonth()` ya conoce la respuesta para cada mes, incluyendo 28 vs 29 de febrero, así que la lógica del calendario nunca hay que razonarla a mano.

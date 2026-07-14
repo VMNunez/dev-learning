@@ -559,16 +559,22 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
 
 ### From `?month=2025-05` to a date range — YearMonth
 
-The controller receives `month=2025-05` as a query string. `java.time.YearMonth` represents exactly that — a year plus a month, no day — and Spring can bind it straight from the query string because its `toString()`/parsing format is the same ISO shape (`yyyy-MM`) the URL already uses, so no custom converter is needed.
+The controller receives `month=2025-05` as a query string. `java.time.YearMonth` represents exactly that — a year plus a month, no day — and Spring can bind it straight from the query string because its `toString()`/parsing format is the same ISO shape (`yyyy-MM`) the URL already uses, so no custom converter is needed. The controller's only job is to receive that `YearMonth` and hand it to the service — turning it into an actual date range is business logic (deciding *how* a month maps to concrete dates), so it belongs in the service, following the same layered-architecture split used everywhere else in this project: **controller receives, service decides, repository fetches.**
 
 ```java
-@GetMapping("/by-project")
-@PreAuthorize("hasRole('MANAGER')")
-public List<ProjectHoursReportResponse> getByProject(@RequestParam YearMonth month) {
+// service — TimeEntryService.java
+public List<ProjectHoursReportResponse> getHoursByProject(YearMonth month) {
     LocalDate start = month.atDay(1);          // 2025-05-01
     LocalDate end = month.atEndOfMonth();       // 2025-05-31 (handles 28/29/30/31 correctly)
     return timeEntryRepository.getHoursByProject(start, end);
 }
+```
+
+`atDay(1)` and `atEndOfMonth()` are **instance methods of `YearMonth`** — they operate on the specific year-month value the object holds (May 2025 in this example), the same way a `String` has instance methods like `.toUpperCase()` that operate on the text it holds. The difference here is the *return type*: these two methods don't give back another `YearMonth`, they give back a `LocalDate` — a method is free to return a different type than the class it belongs to; nothing forces `YearMonth`'s methods to return more `YearMonth` values.
+
+```
+month.atDay(1)         →  LocalDate  (the 1st day of that year-month)
+month.atEndOfMonth()   →  LocalDate  (the last day — 28/29/30/31, resolved automatically)
 ```
 
 > **Why not just parse `month` as a `String` and slice it?** You could split `"2025-05"` on `-` and build a `LocalDate` by hand, but then you own the edge cases yourself — how many days does May have? Does the app still work correctly in a leap-year February? `YearMonth.atEndOfMonth()` already knows the answer for every month, including February 28 vs 29, so the calendar logic never has to be reasoned about by hand.
