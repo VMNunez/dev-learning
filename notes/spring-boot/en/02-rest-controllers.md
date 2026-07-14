@@ -80,7 +80,7 @@ public class TransactionController { ... }
 
 ## HTTP methods — what each one means
 
-Docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods → read: the summary of each verb
+Docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods → read: the summary of each verb
 
 | Annotation       | HTTP method | Purpose                    | Has body? |
 | ---------------- | ----------- | -------------------------- | --------- |
@@ -329,8 +329,6 @@ DELETE /api/projects/42     → @PathVariable
 
 **The pattern:** use `@PathVariable` for the resource identifier (it is mandatory — no ID, no resource). Use `@RequestParam` for optional filters. Use `@RequestBody` when the client sends JSON in the body.
 
-`@Valid` triggers Bean Validation on the `@RequestBody` — if the DTO has `@NotNull` or `@NotBlank` fields and the input fails them, Spring returns 400 automatically.
-
 ---
 
 ### void vs Void
@@ -421,7 +419,7 @@ Purpose: the persistence layer for `User` — an interface Spring Data implement
 
 File: `src/main/java/com/victor/timetrack/repository/UserRepository.java`
 
-Docs: https://www.baeldung.com/spring-data-repositories → read: "JpaRepository" and the derived-query naming rules
+Docs: https://www.baeldung.com/spring-data-derived-queries → read: the opening sections on how Spring Data turns a method *name* into a query (`findBy…`)
 
 The repository comes first because the service depends on it. It is just an interface extending `JpaRepository<User, Long>` — that alone gives you `findAll()`, `findById()`, `save()` and `deleteById()` with no implementation to write:
 
