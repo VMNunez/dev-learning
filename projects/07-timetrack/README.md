@@ -98,6 +98,11 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - Comparing JPA entities by id, not by object reference or full `.equals()` — Lombok's `@Data`-generated `equals()` is unreliable for entities
 - `BigDecimal.compareTo()` and `LocalDate.isAfter()`/`isBefore()` — the correct way to compare values that don't support `==`, `<`, `>`, or a safe `.equals()`
 - Hard delete over soft delete for `TimeEntry` — only DRAFT entries can be removed, so nothing worth an audit trail is ever lost
+- Interface projections — Spring Data builds a proxy per result row from `SELECT ... AS alias`, matched to getter names by convention
+- JPQL aggregation with `SUM()` + `GROUP BY` — groups matching rows into buckets before aggregating within each one
+- `YearMonth` — binds automatically from `?month=2025-05`; `.atDay(1)`/`.atEndOfMonth()` convert it to a date range
+- Repositories organized by entity, controllers/services by feature — a report query still lives on the entity's repository
+- Spring Security `/error` gotcha — an unhandled exception can return a misleading 401 if `/error` isn't excluded from `.anyRequest().authenticated()`
 
 ---
 

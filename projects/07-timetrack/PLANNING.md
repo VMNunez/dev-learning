@@ -11,9 +11,9 @@ Update this table at the start of every session. It is the authoritative pointer
 
 | | |
 |---|---|
-| **Current step** | Step 6 — Reports |
-| **Done condition** | Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours } |
-| **Phase** | Backend — core domain (Phase 4) |
+| **Current step** | Step 7 — Angular frontend |
+| **Done condition** | Browser: login at localhost:4200 redirects to /dashboard; the entries table renders rows at /entries |
+| **Phase** | Frontend (Phase 5) |
 | **Last updated** | 2026-07-14 |
 
 ---
@@ -750,12 +750,13 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - **Done condition:** `Postman: POST /api/entries returns 201 — status DRAFT; PATCH /api/entries/{id}/approve as employee returns 403; as manager on a SUBMITTED entry returns 200 — status APPROVED`
 - **Concept learned:** hard delete (`deleteById`) is correct here — `TimeEntry` has no `active` field like `Project`/`User`, and only DRAFT entries can be removed, so nothing worth preserving is lost. Bean Validation (`@NotBlank`/`@NotNull` + `@Valid`) was added across all request DTOs (`CreateProjectRequest`, `UpdateProjectRequest`, `CreateTimeEntryRequest`, `RejectRequest`) as part of this step, plus a `PUT /api/entries/{id}` (edit DRAFT) and `DELETE /api/entries/{id}` (delete DRAFT) endpoint — both reusing the owner + DRAFT-only guards, and PUT re-running create's business rules (future date, inactive project, hours range) since it replaces the whole resource.
 
-### Step 6 — Reports
+### Step 6 — Reports ✅
 - Aggregate queries with JPQL
 - Summary by project and by employee for a given month
 - **New concepts:** JPQL aggregation queries, query filters with `@RequestParam`
 - **Review concepts:** `@PreAuthorize` (reports are MANAGER only)
 - **Done condition:** `Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours }`
+- **Concept learned:** interface projections (`ProjectHoursReportResponse`, `EmployeeHoursReportResponse`) let Spring Data build a proxy per result row directly from `SELECT ... AS alias` — no class, no manual mapping — as long as each getter's name matches an alias exactly (Java Bean convention: strip `get`, lowercase first letter). `YearMonth` is received in the controller but converted to a `LocalDate` start/end range in the service (business logic), not the controller. Repositories are organized by **entity** (`TimeEntryRepository` owns both report queries, since their `FROM` is `TimeEntry`), a different axis than controllers/services, which are organized by **feature** (`ReportController`/`ReportService`). Found and fixed two real bugs surfaced by the Postman test pass: `MissingServletRequestParameterException` and `MethodArgumentTypeMismatchException` aren't `RuntimeException`s / weren't specifically handled, so a missing or malformed `?month=` fell through to `500` — worse, the missing-param case revealed a genuine Spring Security gotcha where Spring's internal forward to `/error` gets rejected as unauthenticated (`401`) because `JwtFilter` skips error dispatches by default and `/error` was never excluded from `.anyRequest().authenticated()`.
 
 ### Step 7 — Angular frontend
 - Angular project with Angular Material and the indigo theme
