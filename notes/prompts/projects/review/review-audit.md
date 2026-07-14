@@ -50,7 +50,15 @@ PROJECT_PATH = projects/07-timetrack
 PROJECT_PATH = all
 ```
 
+**C · Review only one tier** (split a big project across sessions)
+```
+PROJECT_PATH = projects/07-timetrack
+REVIEW_SCOPE = backend
+```
+
 **Rules of thumb:**
+- `REVIEW_SCOPE` defaults to `full`. Use `backend` / `frontend` when the whole-project run is too long —
+  a partial run only touches its own tier's backlog tasks and does not reset the 30-day gate.
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The project type is derived from the path — do not set it.
 - Angular projects 01–06 are informational only (no backlog, no security pass, no commit).
@@ -65,13 +73,20 @@ PROJECT_PATH = all
 ## Configuration — edit only this block
 
 PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | all]
+REVIEW_SCOPE = [full | backend | frontend]
 
 ## PROJECT_PATH = all runs the review on every project in turn — see notes/prompts/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The project type is derived from the number (01–06 Angular-only, 07+ full-stack).
 ## The 30-day "Last Reviewed" gate applies per full-stack project — recently reviewed ones are skipped.
+##
+## REVIEW_SCOPE limits the review to one tier so a big project can be split across sessions instead of
+## one long run. Default = full. `backend` runs only Steps 1–2; `frontend` runs only Step 3; both skip
+## the whole-project learning-objectives pass (Step 4) and touch only their own tier's backlog tasks
+## (see Step 5). Angular 01–06 are frontend-only regardless — `backend` on them is a no-op.
 
-Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}.
+Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}, and REVIEW_SCOPE wherever it refers to
+{REVIEW_SCOPE} (default to `full` if left blank).
 
 ---
 
@@ -95,7 +110,14 @@ its `PROJECT-BACKLOG.md`. This keeps a 7-project run from drowning your context 
 ### Step 0 — Gate and map the slices (orchestrator)
 Derive the project type from the path. **Full-stack:** apply the 30-day gate from the standard against
 `{PROJECT_PATH}/PROJECT-BACKLOG.md`; if it was reviewed < 30 days ago, stop and offer FORCE. Then
-**map the review slices** — this is light structural work (you list slices, you do not review code):
+**map the review slices** — this is light structural work (you list slices, you do not review code).
+
+**Apply {REVIEW_SCOPE} first — map only the tiers it names:**
+- `backend` → map only the backend slices; skip the frontend map and Steps 3–4.
+- `frontend` → map only the frontend slices; skip the backend map and Steps 1–2 and 4.
+- `full` (default) → map both tiers and run every step.
+
+Slices, per tier:
 - **Backend resources** — from `{PROJECT_PATH}/PLANNING.md` §7 (entities) / §10 (API), or by listing the
   `backend/src/main/java/**/controller/*Controller.java` files. One slice per resource (e.g.
   `auth`, `users`, `projects`, `time-entries`).
@@ -171,7 +193,9 @@ For **each** frontend feature, and once for `frontend-infra`, dispatch (`model: 
 Collect every table. (For Angular 01–06 this is the whole review — report in chat and stop.)
 
 ### Step 4 — Learning-objectives pass (one subagent)
-Dispatch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
+**Skip this step entirely if {REVIEW_SCOPE} is `backend` or `frontend`** — it judges whole-project
+concept coverage and only makes sense on a `full` run. Dispatch one `general-purpose` subagent,
+`model: sonnet`, `run_in_background: false`:
 > Read `notes/prompts/projects/review/_review-standard.md` ("Learning-objectives rubric" — that section
 > only) and, from `{PROJECT_PATH}/PLANNING.md`, only §3 (new concepts) / §4 (review concepts). Then
 > work **concept by concept, not file by file**: for each concept, locate where it should live with a
@@ -211,6 +235,13 @@ findings** (2–3) · **Learning objectives** (how many ✅/⚠️/❌) · **Sli
 Then update `{PROJECT_PATH}/PROJECT-BACKLOG.md` (create it if missing) per the standard's backlog
 format: today's date as "Last Reviewed", the overall quality rating, and the full task list as
 checkboxes. Preserve tasks already checked off (✅).
+
+**On a partial {REVIEW_SCOPE} run, only touch the reviewed tier's tasks.** A `backend` run rewrites the
+backend tasks and leaves every frontend task untouched (and vice versa) — never delete or overwrite the
+tier you did not review this run. Record the scope in the header so the state is unambiguous, e.g.
+`Last Reviewed: 2026-07-14 (backend only)`; the learning-objectives table is left as-is on a partial run
+(it is only regenerated on a `full` run). The 30-day gate treats a project as freshly reviewed only when
+the last run was `full`.
 
 Finally, **hand Victor the commit** — do not run it (see the by-design note above). One command per
 code block:
@@ -262,6 +293,10 @@ failure. Also print the report in chat.
 - **Two lenses per backend resource** — one flow reviewer (quality + correctness + tests) and one
   security reviewer. They only read, so they may run in parallel; never let one subagent do both.
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
+- **A partial `REVIEW_SCOPE` run stays in its lane.** `backend` / `frontend` review and rewrite only
+  their own tier's slices and backlog tasks, skip the whole-project learning-objectives pass, and do not
+  reset the 30-day gate; the untouched tier's tasks are preserved verbatim. Only a `full` run marks the
+  project fully reviewed.
 - **Security findings are always High**, and findings are deduplicated across every slice.
 - **Model per slice, always explicit** (see Model policy): backend flow + every security slice + the
   orchestrator run on **Opus**; frontend flow and learning-objectives on **Sonnet**. Never drop backend
