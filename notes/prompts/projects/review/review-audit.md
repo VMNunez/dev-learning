@@ -195,6 +195,7 @@ Opus. Frontend flow and the learning-objectives pass are largely structural veri
 | **Step 2 — persistence-config flow** | **`opus`** | Datasource/transactions/fetch/N+1 — subtle backend correctness, same bar as Step 1 flow. |
 | **Step 2 — security-infra** | **`opus`** | SecurityConfig, JWT filter, CORS, hashing, secrets — the highest-stakes attack surface. |
 | Step 3 — frontend flow (per feature + frontend-infra) | `sonnet` | Component/service split, subscription cleanup, validation timing, tests — structural pattern-matching, lower stakes. |
+| Step 3b — cross-slice consistency (per tier) | `sonnet` | Comparing slices against a fixed list of axes — verification, not generation. |
 | Step 4 — learning-objectives | `sonnet` | Locate each concept and mark ✅/⚠️/❌ against the rubric — verification, not generation. |
 
 Never drop the backend flow or any security slice below Opus (those are the passes that catch the bugs
@@ -233,7 +234,31 @@ For **each** frontend feature, and once for `frontend-infra`, dispatch (`model: 
 > `review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
 > service split, types, state, subscription cleanup, validation timing, and that slice's tests.
 
-Collect every table. (For Angular 01–06 these are the only flow slices — then go on to Steps 4 and 5.)
+Collect every table.
+
+### Step 3b — Cross-slice consistency pass (one subagent per tier)
+The one reviewer allowed to look **across** slices — because consistency is a property *between* them and
+a slice reviewer structurally cannot see it. It reads **narrowly and widely**: only the axes below, over
+every feature of the tier, never the full code. Run it for each tier in {REVIEW_SCOPE} (frontend on
+Angular 01–06). Dispatch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
+
+> Read `notes/prompts/projects/review/_review-standard.md` — **only** the "Pattern consistency across the
+> project" block and the priority rules. Then, across **every** feature of `TIER = «tier»` in
+> `{PROJECT_PATH}`, compare the slices against each other on that block's axes **only** — state approach,
+> smart/dumb decomposition, persistence/side-effect mechanism, styling tokens, empty/loading/error states
+> (frontend); DTO boundary, error-handling path, naming (backend). For each axis: name the convention the
+> **majority** of the code follows, then name every **outlier** that departs from it, with `file:line`.
+> An axis where everything agrees is a one-line "consistent". You are not hunting bugs and not judging any
+> slice on its own merits — another reviewer already did that. Return only a table
+> `| Axis | Convention (majority) | Outlier(s) | Priority |` plus a one-line list of the features you
+> compared, as your trace. No code excerpts. **Do not edit any file.**
+
+An outlier is **Medium** (High only if it breaks the DTO boundary or leaks an entity). Dedup it in Step 5
+against the slice tables: when a slice reviewer already reported the same thing locally (e.g. "this page
+persists imperatively"), keep the **consistency** wording — it names the convention the fix should follow,
+which the local finding cannot.
+
+(For Angular 01–06 Steps 3 and 3b are the only flow work — then go on to Steps 4 and 5.)
 
 ### Step 4 — Learning-objectives pass (one subagent)
 **Skip this step entirely if {REVIEW_SCOPE} is `backend` or `frontend`** — it judges whole-project
@@ -341,6 +366,10 @@ failure. Also print the report in chat.
   proving it covered every file/endpoint in it. A subagent handed the whole backend skims the last
   resources — the failure this split exists to prevent. The orchestrator's only whole-project work is
   the light slice-mapping (Step 0) and the merge (Step 5).
+  **The single exception is the Step 3b consistency reviewer**, which is deliberately cross-slice: it
+  reads *narrowly* (a fixed list of axes) across *every* slice, so it never holds the whole codebase in
+  depth. It is the only reviewer permitted to look outside one slice, and only for those axes — a
+  consistency reviewer that starts reporting bugs has left its lane.
 - **Two lenses per backend resource** — one flow reviewer (quality + correctness + tests) and one
   security reviewer. They only read, so they may run in parallel; never let one subagent do both.
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.

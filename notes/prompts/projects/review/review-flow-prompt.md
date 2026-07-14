@@ -66,14 +66,25 @@ Apply, to your slice only, the matching parts of the standard:
 1. **Quality** (Code-quality checklist) — layering (logic in the service, controller thin, entity never
    returned), DTOs at the boundary, `@Valid`, uniform error handling, naming, TypeScript `any`, state
    signals, subscription cleanup, `forkJoin`, HTTP verbs, `application.properties` hygiene (config
-   slice). For a frontend slice, also run the standard's **design-guide adherence** check: components
-   vs PLANNING.md §14's palette, wireframes, and planned empty/loading/error states. Use the standard's
-   bad-vs-good examples as the bar.
+   slice). For a frontend slice, also run: the standard's **design-guide adherence** check (components
+   vs PLANNING.md §14's palette, wireframes, planned empty/loading/error states — on **01–06 there is no
+   §14**, so apply the degraded form the standard describes: hardcoded hex vs theme token, and whether
+   every page that can be empty or fail renders that state); its **accessibility** block (labels on
+   inputs, accessible names on icon-only buttons, errors tied to their field, no `<div (click)>`); and —
+   **Angular-only 01–06 only**, where no cold security pass runs — its **frontend security** greps
+   (`[innerHTML]`, `bypassSecurityTrust*`, sensitive data in `localStorage`), reporting a clean grep as
+   an explicit one-line "no findings". Use the standard's bad-vs-good examples as the bar.
+   **Skip the standard's "Pattern consistency across the project" block** — consistency is a between-slice
+   property and you hold one slice; a separate cross-slice reviewer owns it. Judge your slice on its own
+   merits and do not speculate about how the others do it.
 2. **Correctness** (Correctness scope — the bug hunt) — trace realistic inputs and states through this
    slice: null/`Optional` mishandling, edge cases (empty/first/last/zero/negative/boundary date),
    inverted or off-by-one conditions, **state-machine violations** and business rules enforced with the
    wrong comparison, lifecycle/ordering bugs, numeric/date errors, swallowed or unshown errors. Name a
-   concrete **trigger** and the **wrong result** for each — no trigger, no bug.
+   concrete **trigger** and the **wrong result** for each — no trigger, no bug. Include the standard's
+   **data-representation** checks — money held in a floating-point `number` and aggregated, a "today"
+   default built from `toISOString()` (UTC, not local), `Date.now()` used as a unique id — these break no
+   business rule, so no other lens hunts them.
 3. **Tests** (Test-quality scope) — this slice's tests vs its behaviour and §16/§8: every service/rule
    in this slice has a test that proves enforcement; edge cases covered, not just the happy path;
    assertions check real behaviour (not a bare `verify(...save(any()))`); Mockito hygiene; clear
