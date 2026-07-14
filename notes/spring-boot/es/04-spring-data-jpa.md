@@ -235,6 +235,33 @@ Transaction transaction = repository.findById(id)
 
 ---
 
+## Los repositorios se agrupan por entidad, no por feature — un eje distinto al de controllers/services
+
+Los controllers y services de este proyecto se organizan por **feature** — un par por cada recurso que expone la API: `ProjectController`/`ProjectService`, `TimeEntryController`/`TimeEntryService`, `ReportController`/`ReportService`. Cada endpoint nuevo tiene su propio par, siguiendo ese patrón sin excepciones (ver [11-logica-de-negocio-modelado-dominio.md](../es/11-logica-de-negocio-modelado-dominio.md) para saber por qué los controllers nunca saltan directamente al repositorio).
+
+Los repositorios siguen una regla **completamente distinta**: un repositorio por **entidad**, fijado por la propia declaración `extends JpaRepository<Entidad, Long>`. `TimeEntryRepository extends JpaRepository<TimeEntry, Long>` está atado de forma permanente a la entidad `TimeEntry` — esa relación no es una convención de nombres que podrías romper, está incrustada en el parámetro de tipo genérico, que es justo lo que permite a Spring generar `save()`, `findById()`, etc. para esa entidad concreta.
+
+Esto importa en el momento en que construyes una feature — como un informe — que tiene su propio controller y service pero produce datos que **no son una entidad persistida**. No existe una tabla `Report`, ni un `@Entity Report`, así que no hay nada contra lo que un hipotético `ReportRepository` pudiera hacer `extends JpaRepository<..., ...>`. Su `@Query` sería simplemente un método suelto sin ninguna entidad asociada — rompiendo el patrón de un-repositorio-por-entidad que sigue el resto de repositorios del proyecto.
+
+La solución: pon la query donde de verdad apunta su cláusula `FROM`. Un informe construido con `FROM TimeEntry te ...` es una query *sobre* filas de `TimeEntry` (agrupadas y agregadas, pero siguen siendo filas de `TimeEntry`) — así que pertenece a `TimeEntryRepository`, el mismo repositorio que ya tiene `findByUser`. El agrupamiento por feature (`ReportController` → `ReportService`) sigue existiendo una capa por encima; simplemente llama al repositorio agrupado por entidad que hay debajo, igual que hace cualquier otro service:
+
+```
+ReportController  →  ReportService  →  TimeEntryRepository   (el FROM de la query es TimeEntry)
+```
+
+> **Los dos ejes, lado a lado:**
+>
+> | Capa | Se agrupa por | Ejemplo |
+> |---|---|---|
+> | Controller / Service | Feature (el recurso que expone la API) | `ReportController`/`ReportService` para informes |
+> | Repositorio | Entidad (a qué está atado `JpaRepository<X, Long>`) | `TimeEntryRepository` para cualquier lectura de filas de `TimeEntry`, agregadas o no |
+>
+> Una feature nueva casi siempre significa un par controller+service nuevo. **No** significa automáticamente un repositorio nuevo — comprueba primero si la cláusula `FROM` de la query apunta a una entidad para la que ya tienes repositorio.
+
+La query de agregación `getHoursByProject` de la sección anterior es un ejemplo concreto de esta regla: vive en `TimeEntryRepository`, no en un `ReportRepository`, precisamente por esto.
+
+---
+
 ## Derived query methods
 
 Docs: https://www.baeldung.com/spring-data-derived-queries

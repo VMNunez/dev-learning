@@ -235,6 +235,33 @@ Transaction transaction = repository.findById(id)
 
 ---
 
+## Repositories group by entity, not by feature — a different axis than controllers/services
+
+Controllers and services in this project are organized by **feature** — one pair per resource the API exposes: `ProjectController`/`ProjectService`, `TimeEntryController`/`TimeEntryService`, `ReportController`/`ReportService`. Every new endpoint gets its own pair, following that pattern strictly (see [11-business-logic-domain-modeling.md](11-business-logic-domain-modeling.md) for why controllers never skip straight to the repository).
+
+Repositories follow a **different rule entirely**: one repository per **entity**, fixed by the `extends JpaRepository<Entity, Long>` declaration itself. `TimeEntryRepository extends JpaRepository<TimeEntry, Long>` is permanently tied to the `TimeEntry` entity — that relationship isn't a naming convention you could break, it's baked into the generic type parameter, which is what lets Spring generate `save()`, `findById()`, etc. for that specific entity.
+
+This matters the moment you build a feature — like a report — that has its own controller and service but produces data that **isn't a persisted entity**. There is no `Report` table, no `@Entity Report`, so there's nothing for a hypothetical `ReportRepository` to `extends JpaRepository<..., ...>` against. Its `@Query` would just be a loose method with no entity binding — breaking the one-repository-per-entity pattern every other repository in the project follows.
+
+The fix: put the query where its `FROM` clause actually points. A report built with `FROM TimeEntry te ...` is a query *about* `TimeEntry` rows (grouped and aggregated, but still `TimeEntry` rows) — so it belongs on `TimeEntryRepository`, the same repository that already owns `findByUser`. The feature-shaped grouping (`ReportController` → `ReportService`) still exists one layer up; it just calls into the entity-shaped repository underneath, same as any other service does:
+
+```
+ReportController  →  ReportService  →  TimeEntryRepository   (query's FROM is TimeEntry)
+```
+
+> **The two axes side by side:**
+>
+> | Layer | Grouped by | Example |
+> |---|---|---|
+> | Controller / Service | Feature (the resource the API exposes) | `ReportController`/`ReportService` for reports |
+> | Repository | Entity (what `JpaRepository<X, Long>` is bound to) | `TimeEntryRepository` for anything reading `TimeEntry` rows, aggregated or not |
+>
+> A new feature almost always means a new controller+service pair. It does **not** automatically mean a new repository — check first whether the query's `FROM` targets an entity you already have a repository for.
+
+The `getHoursByProject` aggregation query from the previous section is a concrete example of this: it lives in `TimeEntryRepository`, not a `ReportRepository`, precisely because of this rule.
+
+---
+
 ## Derived query methods
 
 Docs: https://www.baeldung.com/spring-data-derived-queries
