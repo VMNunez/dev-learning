@@ -235,6 +235,33 @@ Transaction transaction = repository.findById(id)
 
 ---
 
+## Los repositorios se agrupan por entidad, no por feature — un eje distinto al de controllers/services
+
+Los controllers y services de este proyecto se organizan por **feature** — un par por cada recurso que expone la API: `ProjectController`/`ProjectService`, `TimeEntryController`/`TimeEntryService`, `ReportController`/`ReportService`. Cada endpoint nuevo tiene su propio par, siguiendo ese patrón sin excepciones (ver [11-logica-de-negocio-modelado-dominio.md](../es/11-logica-de-negocio-modelado-dominio.md) para saber por qué los controllers nunca saltan directamente al repositorio).
+
+Los repositorios siguen una regla **completamente distinta**: un repositorio por **entidad**, fijado por la propia declaración `extends JpaRepository<Entidad, Long>`. `TimeEntryRepository extends JpaRepository<TimeEntry, Long>` está atado de forma permanente a la entidad `TimeEntry` — esa relación no es una convención de nombres que podrías romper, está incrustada en el parámetro de tipo genérico, que es justo lo que permite a Spring generar `save()`, `findById()`, etc. para esa entidad concreta.
+
+Esto importa en el momento en que construyes una feature — como un informe — que tiene su propio controller y service pero produce datos que **no son una entidad persistida**. No existe una tabla `Report`, ni un `@Entity Report`, así que no hay nada contra lo que un hipotético `ReportRepository` pudiera hacer `extends JpaRepository<..., ...>`. Su `@Query` sería simplemente un método suelto sin ninguna entidad asociada — rompiendo el patrón de un-repositorio-por-entidad que sigue el resto de repositorios del proyecto.
+
+La solución: pon la query donde de verdad apunta su cláusula `FROM`. Un informe construido con `FROM TimeEntry te ...` es una query *sobre* filas de `TimeEntry` (agrupadas y agregadas, pero siguen siendo filas de `TimeEntry`) — así que pertenece a `TimeEntryRepository`, el mismo repositorio que ya tiene `findByUser`. El agrupamiento por feature (`ReportController` → `ReportService`) sigue existiendo una capa por encima; simplemente llama al repositorio agrupado por entidad que hay debajo, igual que hace cualquier otro service:
+
+```
+ReportController  →  ReportService  →  TimeEntryRepository   (el FROM de la query es TimeEntry)
+```
+
+> **Los dos ejes, lado a lado:**
+>
+> | Capa | Se agrupa por | Ejemplo |
+> |---|---|---|
+> | Controller / Service | Feature (el recurso que expone la API) | `ReportController`/`ReportService` para informes |
+> | Repositorio | Entidad (a qué está atado `JpaRepository<X, Long>`) | `TimeEntryRepository` para cualquier lectura de filas de `TimeEntry`, agregadas o no |
+>
+> Una feature nueva casi siempre significa un par controller+service nuevo. **No** significa automáticamente un repositorio nuevo — comprueba primero si la cláusula `FROM` de la query apunta a una entidad para la que ya tienes repositorio.
+
+La query de agregación `getHoursByProject` de la sección anterior es un ejemplo concreto de esta regla: vive en `TimeEntryRepository`, no en un `ReportRepository`, precisamente por esto.
+
+---
+
 ## Derived query methods
 
 Docs: https://www.baeldung.com/spring-data-derived-queries
@@ -459,3 +486,126 @@ repository.save(t);   // UPDATE — id ya está establecido por la base de datos
 ```
 
 No necesitas métodos separados `insert()` y `update()` — `save()` gestiona ambos.
+
+---
+
+## Queries de agregación y proyecciones por interfaz
+
+Todos los métodos de repositorio que has visto hasta ahora devuelven entidades — `Transaction`, `List<Transaction>`, `Page<Transaction>`. Pero un informe como "total de horas por proyecto este mes" no es una entidad. No existe una tabla `Report`, ni un `@Id`, ni una fila única que pudieras guardar con `save()` — es un resultado **calculado**: una fila por proyecto, con un `SUM()` de una columna de otra tabla relacionada. Devolver un `List<Project>` para esto no tiene sentido — un `Project` no tiene un campo `totalHours`, y no debería tenerlo, porque ese número depende de un rango de fechas que eliges en el momento de la petición, no de nada guardado en el propio proyecto.
+
+**Propósito:** una proyección por interfaz le dice a Spring Data JPA la *forma* de un resultado calculado — qué campos existen y de qué tipo son — sin que tengas que escribir una clase ni ningún código de mapeo. Spring genera la implementación por ti en tiempo de ejecución.
+
+**Archivo:** `src/main/java/com/victor/timetrack/dto/response/ProjectHoursReportResponse.java`
+
+**Docs:** https://www.baeldung.com/spring-data-jpa-projections → leer: "Interface-based Projections"
+
+```java
+public interface ProjectHoursReportResponse {
+    String getProjectName();
+    BigDecimal getTotalHours();
+}
+```
+
+> **¿Por qué la interfaz solo tiene dos métodos si el informe devuelve varios proyectos?** No confundas la *lista* con la *forma de una fila*. `List<ProjectHoursReportResponse>` es lo que representa "cuántas filas hay" — un elemento por cada proyecto que tuvo entries en el rango. `ProjectHoursReportResponse` en sí describe la forma de **una sola** de esas filas — los dos campos que necesita cada fila, no "dos filas en total". Spring instancia un objeto proxy por cada fila que devuelve la query; cada uno de esos objetos implementa la interfaz, así que todos tienen disponibles `getProjectName()` y `getTotalHours()` — pero llamar a `getProjectName()` sobre el objeto construido a partir de la fila 1 devuelve `"TimeTrack"`, mientras que llamarlo sobre el objeto de la fila 2 devuelve `"Marketing"`. Mismos dos métodos en cada objeto (el contrato fijo), distintos valores por objeto (porque cada uno se construye a partir de una fila distinta). Es exactamente la misma relación que ya conoces entre una clase normal y sus instancias: `new Project()` dos veces te da dos objetos que comparten el mismo método `getName()` pero cada uno devuelve su propio dato — la única diferencia aquí es que tú nunca escribes `new`, lo hace Spring una vez por fila.
+>
+> **¿Por qué una interfaz y no una clase con `@Data`, como el resto de DTOs de respuesta de este proyecto?** Cualquier otro DTO (`ProjectResponse`, `UserResponse`...) es una clase que tú mismo instancias — escribes `new ProjectResponse()` (o lo hace un mapper) y rellenas cada campo a mano en tu propio código Java. Una proyección es distinta: **tú nunca la construyes**. Spring Data lee los alias de columna que devuelve la query (`SUM(te.hours) AS totalHours`) y, como Java puede generar en tiempo de ejecución un objeto proxy que implemente cualquier interfaz, construye sobre la marcha un objeto cuyo `getTotalHours()` devuelve exactamente el valor de esa columna — sin cuerpo de clase, sin constructor, sin mapeo manual. Una `class` no se puede construir así porque necesitaría un constructor que Spring tendría que llamar con los argumentos correctos en el orden correcto; una interfaz solo promete "existe algo con este método", que es todo lo que necesita un proxy generado en tiempo de ejecución.
+
+> **Regla práctica — memoriza esta:** cada vez que escribas una interfaz de proyección (para JPQL, como aquí, o para SQL nativo con `@Query(nativeQuery = true)`), cada getter tiene que coincidir, por nombre, con un `AS alias` del `SELECT`. Decide primero la lista `SELECT ... AS alias`, y luego escribe un getter por cada alias — nunca al revés. `AS totalHours` necesita `getTotalHours()`; `AS employeeName` necesita `getEmployeeName()`. Sin alias, no hay proyección.
+
+**El contrato alias-getter — este es el mecanismo real, no solo una convención:**
+
+Spring empareja cada getter con un alias de columna usando la regla estándar de nomenclatura de Java Beans: quita `get` del nombre del método, pon en minúscula la primera letra, y ese es el nombre que busca entre los alias de la query.
+
+```
+getProjectName()   →   busca el alias "projectName"
+getTotalHours()    →   busca el alias "totalHours"
+```
+
+Por eso exactamente la query JPQL de abajo escribe `AS projectName` y `AS totalHours` — esas cadenas no son decoración, son el contrato literal del que depende la interfaz. Si renombras un getter a `getHours()` sin renombrar el alias a `hours`, ese campo vuelve silenciosamente `null` — Spring no da ningún error, porque desde su punto de vista "no hay ningún alias llamado `hours`" es un caso perfectamente válido (el campo simplemente no está establecido).
+
+> **MAL** — el alias y el nombre del getter no coinciden, sin error, bug silencioso:
+> ```java
+> // la interfaz tiene getTotalHours()
+> // la query dice:
+> SELECT te.project.name AS projectName, SUM(te.hours) AS hours   // ← "hours", no "totalHours"
+> // resultado: report.getTotalHours() siempre devuelve null, y nada te avisa por qué
+> ```
+> **BIEN** — el alias coincide exactamente con el nombre del getter:
+> ```java
+> SELECT te.project.name AS projectName, SUM(te.hours) AS totalHours
+> ```
+
+### La query de agregación en sí — SUM + GROUP BY en JPQL
+
+JPQL (Jakarta Persistence Query Language) se parece a SQL pero consulta tus **entidades y sus campos**, no tablas y columnas directamente — `te.project.name` recorre el grafo de objetos Java (`TimeEntry.project.name`), y Hibernate traduce ese camino al join SQL correspondiente por ti.
+
+```java
+public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
+
+    @Query("""
+        SELECT te.project.name AS projectName, SUM(te.hours) AS totalHours
+        FROM TimeEntry te
+        WHERE te.date BETWEEN :start AND :end
+        GROUP BY te.project.name
+        """)
+    List<ProjectHoursReportResponse> getHoursByProject(
+        @Param("start") LocalDate start,
+        @Param("end") LocalDate end
+    );
+}
+```
+
+- `SUM(te.hours)` — una función de agregación de JPQL; funciona igual que `SUM()` en SQL puro, sumando `hours` de cada fila de `TimeEntry` que cumple el `WHERE`, dentro de cada grupo.
+- `GROUP BY te.project.name` — **esto es lo que convierte muchas filas en una fila por proyecto.** Sin él, `SUM()` colapsaría *todo* el resultado en un único total mezclando todos los proyectos. `GROUP BY` le dice a la base de datos "primero divide las filas que cumplen el `WHERE` en cubos según este valor, y luego agrega dentro de cada cubo por separado" — un cubo por cada `project.name` distinto, un resultado de `SUM()` por cubo.
+
+  Ejemplo con datos concretos — imagina que el `WHERE` deja estas tres filas de `TimeEntry` de mayo de 2025:
+
+  ```
+  TimeTrack  — 3h
+  TimeTrack  — 5h
+  Marketing  — 2h
+  ```
+
+  `GROUP BY te.project.name` las reparte en dos cubos según el nombre del proyecto, y `SUM(te.hours)` se calcula **por separado dentro de cada cubo**:
+
+  ```
+  cubo "TimeTrack":  3 + 5  →  totalHours = 8
+  cubo "Marketing":  2      →  totalHours = 2
+  ```
+
+  Resultado final: dos filas — `{projectName: "TimeTrack", totalHours: 8}` y `{projectName: "Marketing", totalHours: 2}`. Sin `GROUP BY` obtendrías una sola fila con `totalHours = 10` (todo sumado junto, sin distinguir proyecto).
+- `WHERE te.date BETWEEN :start AND :end` — el filtro por mes. `TimeEntry` no tiene un campo `month` (solo `date`, un `LocalDate`), así que "mayo de 2025" tiene que convertirse en un rango: el primer y el último día de ese mes. Esto es justo lo que `YearMonth` (ver el callout de abajo) está pensado para producir.
+- `List<ProjectHoursReportResponse>` como tipo de retorno es lo que le indica a Spring Data que construya objetos proxy de esa interfaz a partir del resultado — no entidades.
+
+> **Cómo leer la tabla de abajo:** cada fila empareja una cláusula JPQL con la pregunta en lenguaje llano que responde sobre el resultado final — útil cuando una query de informe deja de devolver lo esperado y necesitas comprobar cada cláusula por separado.
+
+| Cláusula | Pregunta que responde |
+|---|---|
+| `SELECT ... AS alias` | ¿Qué columnas vuelven, y a qué getter se mapean? |
+| `WHERE` | ¿Qué filas se tienen en cuenta, antes de cualquier agrupación? |
+| `GROUP BY` | ¿Cómo se dividen en cubos las filas que sobreviven? |
+| `SUM(...)` (dentro de `SELECT`) | ¿Qué se calcula *dentro* de cada cubo? |
+
+### De `?month=2025-05` a un rango de fechas — YearMonth
+
+El controller recibe `month=2025-05` como parámetro de query string. `java.time.YearMonth` representa exactamente eso — un año más un mes, sin día — y Spring puede vincularlo directamente desde el query string porque su formato de `toString()`/parsing es la misma forma ISO (`yyyy-MM`) que ya usa la URL, así que no hace falta ningún conversor personalizado. El único trabajo del controller es recibir ese `YearMonth` y pasárselo al service — convertirlo en un rango de fechas real es lógica de negocio (decidir *cómo* un mes se traduce a fechas concretas), así que vive en el service, siguiendo el mismo reparto de arquitectura por capas que usas en todo el proyecto: **el controller recibe, el service decide, el repositorio consulta.**
+
+```java
+// service — TimeEntryService.java
+public List<ProjectHoursReportResponse> getHoursByProject(YearMonth month) {
+    LocalDate start = month.atDay(1);          // 2025-05-01
+    LocalDate end = month.atEndOfMonth();       // 2025-05-31 (gestiona bien 28/29/30/31)
+    return timeEntryRepository.getHoursByProject(start, end);
+}
+```
+
+`atDay(1)` y `atEndOfMonth()` son **métodos de instancia de `YearMonth`** — operan sobre el año-mes concreto que contiene ese objeto (mayo de 2025 en este ejemplo), igual que un `String` tiene métodos de instancia como `.toUpperCase()` que operan sobre el texto que contiene. La diferencia aquí está en el **tipo de retorno**: estos dos métodos no devuelven otro `YearMonth`, devuelven un `LocalDate` — un método puede devolver un tipo distinto al de la clase a la que pertenece; nada obliga a que los métodos de `YearMonth` devuelvan más valores `YearMonth`.
+
+```
+month.atDay(1)         →  LocalDate  (el día 1 de ese año-mes)
+month.atEndOfMonth()   →  LocalDate  (el último día — 28/29/30/31, resuelto automáticamente)
+```
+
+> **¿Por qué no simplemente tratar `month` como un `String` y trocearlo?** Podrías dividir `"2025-05"` por el `-` y construir un `LocalDate` a mano, pero entonces los casos límite son cosa tuya — ¿cuántos días tiene mayo? ¿Sigue funcionando bien la app en un febrero bisiesto? `YearMonth.atEndOfMonth()` ya conoce la respuesta para cada mes, incluyendo 28 vs 29 de febrero, así que la lógica del calendario nunca hay que razonarla a mano.
+
+**Por qué `@PreAuthorize("hasRole('MANAGER')")` aquí en concreto:** los informes agregan horas de todo el equipo, no solo las entries propias del que llama — la misma regla de concepto de repaso ya usada en `GET /api/users` y en los endpoints de mutación de proyectos (ver el patrón de callout de palabra reservada más arriba): cualquier endpoint que exponga datos más allá de "los míos" necesita una comprobación de rol explícita, porque el filtro JWT de Spring Security solo demuestra *quién* llama, nunca *qué* tiene permiso de ver.

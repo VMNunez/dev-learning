@@ -37,7 +37,7 @@
 ### Project 06 — HR portal
 **New concepts:** `CanActivateFn`, `CanDeactivateFn`, `loadComponent` (lazy loading), `HttpInterceptorFn`, `req.clone({ setHeaders })`, `withInterceptors()`, `canActivate` stacking, auth persistence with `signal + effect`, `??` nullish coalescing, dual-mode dialog, `markAsPristine()`, `MatToolbar`, `MatSidenav`, `routerLinkActive`, `filteredNavLinks = computed()`, role-aware dashboard, signal reference vs snapshot · CSS: app shell scroll pattern (`overflow: hidden` on `app-root`), active link flash fix (`::before` + `:not(:hover)`), responsive breakpoints (`@media max-width`)
 
-### Project 07 — TimeTrack (in progress — Steps 1–5 done, Step 6 next)
+### Project 07 — TimeTrack (in progress — Steps 1–6 done, Step 7 next)
 **New concepts:** Spring Boot setup, `@Entity`, JPA annotations, `JpaRepository`, custom repository methods, `Optional<T>`, `@Service`, layered architecture, `@RestController`, DTOs, `@Valid`, `ResponseEntity`, `@PathVariable`, `@RequestBody`, soft delete, JWT structure, `UserDetailsService`, `SecurityFilterChain`, `JwtFilter`, `BCryptPasswordEncoder`, `@PreAuthorize`, `@RestControllerAdvice`, `Role` enum, `@ColumnDefault`, `data.sql` seeding, `DataIntegrityViolationException` handling, `@ManyToOne` relationships, state machine workflow (DRAFT→SUBMITTED→APPROVED/REJECTED), PATCH for state transitions, role-based data filtering, Bean Validation across all request DTOs, hard delete vs soft delete · Full detail → Spring Boot section below
 
 ---
@@ -235,7 +235,7 @@
 
 ## Spring Boot
 
-### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 ✓ Step 5 ✓)
+### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 ✓ Step 5 ✓ Step 6 ✓)
 
 - Spring Boot project setup with Spring Initializr — Spring Web, Spring Data JPA, PostgreSQL Driver, Lombok
 - `application.properties` — database connection, JPA settings, environment variable for password
@@ -328,6 +328,14 @@
 - Bean Validation (`@NotBlank`/`@NotNull`) added across every request DTO (`CreateProjectRequest`, `UpdateProjectRequest`, `CreateTimeEntryRequest`, `RejectRequest`) with `@Valid` on the matching controller params — `MethodArgumentNotValidException` accumulates every failed field in one response, unlike the manual fail-fast business-rule checks
 - Hard delete (`deleteById`) vs soft delete (`active = false`) — `TimeEntry` has no `active` field like `Project`/`User`; only DRAFT entries can be deleted, so nothing worth preserving is ever lost
 - `PUT /api/entries/{id}` re-runs `create`'s business rules (future date, inactive project, hours range) because PUT replaces the whole resource, not just one field
+- Interface projections (`ProjectHoursReportResponse`, `EmployeeHoursReportResponse`) — Spring Data builds a runtime proxy per query result row, no class or manual mapping; requires no `@Data`, only getter signatures
+- Alias-to-getter contract — each getter name (minus `get`, first letter lowercased) must match a `SELECT ... AS alias` exactly, or that field silently comes back `null` with no error
+- JPQL aggregation with `SUM()` + `GROUP BY` — `GROUP BY te.project.name` splits matching rows into buckets before `SUM()` runs separately inside each one; without it, `SUM()` collapses everything into one total
+- `YearMonth` — represents a year+month with no day; binds automatically from `?month=2025-05` because its parsing format matches ISO `yyyy-MM`; `.atDay(1)` / `.atEndOfMonth()` convert it to a `LocalDate` range, done in the service layer (business logic), not the controller
+- Repositories are organized by **entity** (fixed by `extends JpaRepository<Entity, Long>`), a different axis than controllers/services which are organized by **feature** — a report query with `FROM TimeEntry` belongs on `TimeEntryRepository`, even though the feature is "reports"
+- `MissingServletRequestParameterException` is not a `RuntimeException` (it descends from `ServletException`) — a generic `@ExceptionHandler(RuntimeException.class)` catch-all never sees it; needs its own handler
+- Spring Security `/error` gotcha — an unhandled exception resolved via `sendError()` triggers an internal forward to `/error`, which `JwtFilter` skips by default (`OncePerRequestFilter.shouldNotFilterErrorDispatch()`), so `/error` gets rejected as unauthenticated (`401`) unless explicitly excluded from `.anyRequest().authenticated()` — the real fix is catching the exception before `sendError()` ever runs
+- `MethodArgumentTypeMismatchException` — thrown when a `@RequestParam` value can't convert to the target type (e.g. `?month=2025-13`); is a `RuntimeException`, so it reaches a generic catch-all, but silently with the wrong status unless given its own handler
 
 ---
 

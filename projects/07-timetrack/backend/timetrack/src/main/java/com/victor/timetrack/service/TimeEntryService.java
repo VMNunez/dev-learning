@@ -201,7 +201,6 @@ public class TimeEntryService {
         timeEntryRepository.deleteById(id);
     }
 
-
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
         response.setId(timeEntry.getId());
