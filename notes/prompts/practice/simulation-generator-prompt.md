@@ -2,10 +2,12 @@
 
 Use in a **separate conversation**. Fill in the configuration block, then paste the prompt into a new chat.
 
-The `simulations/` folder started with a fixed bank of 15 hand-written timed tests. This prompt
+The `practice/simulations/` folder started with a fixed bank of 15 hand-written timed tests. This prompt
 **creates new ones in the same format** — for when the bank is used up, or when `simulation-review`
 tells me a type (Angular / Spring Boot / SQL) is weak and I need more practice of exactly that kind.
 It is the producer; `simulation-review-prompt` is the consumer that grades what I build.
+
+> **▶ Run first:** nothing — this is a producer; `simulation-review` consumes what it makes.
 
 ---
 
@@ -13,7 +15,7 @@ It is the producer; `simulation-review-prompt` is the consumer that grades what 
 
 1. Fill in `TYPE`, and optionally `COUNT`, `DIFFICULTY`, and `FOCUS`
 2. Paste the entire prompt into a new chat
-3. The new specs are saved to `simulations/{type}/` and registered in `simulations/TRACKER.md`
+3. The new specs are saved to `practice/simulations/{type}/` and registered in `practice/simulations/TRACKER.md`
 
 ---
 
@@ -51,11 +53,11 @@ Time limits by type (match the existing bank):
 
 ## Step 1 — Read the existing bank
 
-1. List the files in `simulations/{TYPE}/`. Find the highest test number — call it N. New tests
+1. List the files in `practice/simulations/{TYPE}/`. Find the highest test number — call it N. New tests
    start at N+1, with two-digit numbers (`06`, `07`, …).
 2. Read the two most recent existing specs in that folder. Match their **exact format and section
    order** — do not invent a new structure.
-3. Read `simulations/TRACKER.md` — note the section for {TYPE} and its current count (e.g. "Angular
+3. Read `practice/simulations/TRACKER.md` — note the section for {TYPE} and its current count (e.g. "Angular
    (0 / 5)").
 4. Do not repeat a scenario already in the bank. Each new test must use a different domain.
 
@@ -66,7 +68,7 @@ Time limits by type (match the existing bank):
 Generate {COUNT} tests, numbered from N+1. Pick distinct, recognisable enterprise domains
 (invoicing, bookings, inventory, support tickets, payroll, deliveries, etc.).
 
-Each file goes to `simulations/{TYPE}/NN-short-name.md` and must follow the format for its type:
+Each file goes to `practice/simulations/{TYPE}/NN-short-name.md` and must follow the format for its type:
 
 **Header (all types):**
 ```
@@ -111,7 +113,7 @@ tests) · `## Bonus (if done before time)`.
 
 ## Step 3 — Update the tracker
 
-In `simulations/TRACKER.md`, add one row per new test under the {TYPE} section, matching the
+In `practice/simulations/TRACKER.md`, add one row per new test under the {TYPE} section, matching the
 existing column format (`| # | [Title](path) | time | ⏳ Pending | — | — |`). Update the section
 count in the heading (e.g. "Angular (0 / 5)" → "Angular (0 / 7)"). Do not touch other sections or
 any existing row.
@@ -120,19 +122,20 @@ any existing row.
 
 ## Step 4 — Report and commit
 
-Print: "Generated {COUNT} {TYPE} test(s): NN, NN. Saved to simulations/{TYPE}/ and registered in
+Print: "Generated {COUNT} {TYPE} test(s): NN, NN. Saved to practice/simulations/{TYPE}/ and registered in
 TRACKER.md." List each title in one line.
 
 One command per code block — list only the files actually created plus the tracker:
 
 ```
-git add simulations/{TYPE}/ simulations/TRACKER.md
+git add practice/simulations/{TYPE}/ practice/simulations/TRACKER.md
 ```
 
 ```
 git commit -m "docs: add {COUNT} {TYPE} simulation(s) — [main skill targeted]"
 ```
 
-> Branch note: both these simulation specs and the `sql/` exercises live on `main` — there is no
-> separate SQL branch. Commit on `main`.
+> Branch note: both these simulation specs and the `practice/sql/` exercises live on `main` — there is no
+> separate SQL branch. Commit on `main`. Precondition: if `practice/simulations/` does not exist on
+> `main` yet (repo-layout reorg still on the feature branch), stop and flag it — merge the reorg first.
 ````

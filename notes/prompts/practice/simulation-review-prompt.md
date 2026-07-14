@@ -6,6 +6,8 @@ Run this after you finish a timed simulation — no notes, no AI, timer stopped.
 
 **Before running this prompt:** fill in your own `Self-assessment` column in TRACKER.md (✅ Solid / 🔧 Good / ⚠️ Weak / ❌ Failed). The prompt updates `Status` and `Date` — it does not touch `Self-assessment`.
 
+> **▶ Run first:** nothing — run it after finishing a simulation, with your solution pasted at the end.
+
 ---
 
 **How to use:**
@@ -20,22 +22,24 @@ Run this after you finish a timed simulation — no notes, no AI, timer stopped.
 ````
 ## Configuration — edit only this block
 
-SIMULATION_FILE = simulations/angular/01-task-form.md
-SIMULATION_FILE = simulations/angular/02-user-search.md
-SIMULATION_FILE = simulations/angular/03-product-filter.md
-SIMULATION_FILE = simulations/angular/04-login-form.md
-SIMULATION_FILE = simulations/angular/05-expense-dashboard.md
-SIMULATION_FILE = simulations/spring-boot/01-task-api.md
-SIMULATION_FILE = simulations/spring-boot/02-product-api.md
-SIMULATION_FILE = simulations/spring-boot/03-user-api.md
-SIMULATION_FILE = simulations/spring-boot/04-order-api.md
-SIMULATION_FILE = simulations/spring-boot/05-employee-api.md
-SIMULATION_FILE = simulations/sql/01-bookstore.md
-SIMULATION_FILE = simulations/sql/02-employees.md
-SIMULATION_FILE = simulations/sql/03-ecommerce.md
-SIMULATION_FILE = simulations/sql/04-university.md
-SIMULATION_FILE = simulations/sql/05-inventory.md
-← delete all lines above except the one you are reviewing
+SIMULATION_FILE = practice/simulations/angular/01-task-form.md
+SIMULATION_FILE = practice/simulations/angular/02-user-search.md
+SIMULATION_FILE = practice/simulations/angular/03-product-filter.md
+SIMULATION_FILE = practice/simulations/angular/04-login-form.md
+SIMULATION_FILE = practice/simulations/angular/05-expense-dashboard.md
+SIMULATION_FILE = practice/simulations/spring-boot/01-task-api.md
+SIMULATION_FILE = practice/simulations/spring-boot/02-product-api.md
+SIMULATION_FILE = practice/simulations/spring-boot/03-user-api.md
+SIMULATION_FILE = practice/simulations/spring-boot/04-order-api.md
+SIMULATION_FILE = practice/simulations/spring-boot/05-employee-api.md
+SIMULATION_FILE = practice/simulations/sql/01-bookstore.md
+SIMULATION_FILE = practice/simulations/sql/02-employees.md
+SIMULATION_FILE = practice/simulations/sql/03-ecommerce.md
+SIMULATION_FILE = practice/simulations/sql/04-university.md
+SIMULATION_FILE = practice/simulations/sql/05-inventory.md
+← delete all lines above except the one you are reviewing.
+  For a spec created later by simulation-generator (06+), just write its path here
+  (e.g. practice/simulations/spring-boot/06-invoice-api.md) — the list above is only the original bank.
 
 TIME_USED       = [minutes used — exact, no rounding — e.g. 74]
 MODE            = [review | hint — leave blank for review]
@@ -157,7 +161,7 @@ Name 1–2 things done well (applies to any verdict, not just Pass). One line ea
 Only mention real strengths — no false positives. If nothing stands out, skip this.
 
 **Pattern check — before closing this step:**
-Read simulations/TRACKER.md. Count completed simulations for the same TYPE (angular / spring-boot / sql)
+Read practice/simulations/TRACKER.md. Count completed simulations for the same TYPE (angular / spring-boot / sql)
 that show ❌ Fail or ⚠️ Borderline status. Then add 1 if the current verdict is also ❌ Fail or
 ⚠️ Borderline. If the combined total is 2 or more, flag it:
 "Recurring pattern: [N] of your [TYPE] simulations resulted in Borderline or Fail. In this session
@@ -183,40 +187,16 @@ solution — not generic questions about the technology.
 or 2, target the most important gap. If every dimension scored 3, write a reinforcement question
 about the strongest pattern applied correctly in this solution.
 
-Add them to the right files. Always add to BOTH at the same time — never one without the other:
-- Angular → notes/interview-prep/en/angular.md AND notes/interview-prep/es/angular.md
-- Spring Boot → notes/interview-prep/en/spring-boot.md AND notes/interview-prep/es/spring-boot.md
-- SQL → notes/interview-prep/en/sql.md AND notes/interview-prep/es/sql.md
+Route each question to the topic file for the simulation TYPE:
+- Angular → `notes/interview-prep/{en,es}/angular.md`
+- Spring Boot → `notes/interview-prep/{en,es}/spring-boot.md`
+- SQL → `notes/interview-prep/{en,es}/sql.md`
 
-Before adding each question, scan the relevant file. If the same concept already has a question
-there, skip it — do not add a duplicate.
-
-Each question must follow the full format used in these files:
-
-**Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
-
-Answer in 1–2 sentences. Reference a real project or this simulation if the question is about
-a pattern or decision. Use "I used" or "I chose" — not "it is used".
-
-Rules: there must be a blank line between the bold question and the answer, and a blank line
-between the answer and any optional element below.
-
-Then add the optional element based on question type:
-- **Conceptual** (asks "what is X?" or "how does X work?") → add a Junior tip:
-  > **Junior tip:** one line of advice on how to explain it clearly in an interview
-  > **Consejo de entrevista:** same advice in Spanish
-- **Decision-based** (asks "why X?" or "when X instead of Y?") or **Pressure** (gotcha or edge case)
-  → add a Red flag:
-  Red flag answer: what a weak candidate would say and why it fails.
-
-Priority markers:
-- ⭐⭐⭐ — not knowing this would filter the candidate in a first screening
-- ⭐⭐ — comes up when the interviewer goes deeper
-- ⭐ — a niche detail; missing it is not a dealbreaker at junior level
-
-Place each question under the correct existing section heading in the file. If no section exists
-for this concept, create one. After adding, reorder within that section so ⭐⭐⭐ come first,
-then ⭐⭐, then ⭐.
+Then add each following **"Adding questions from outside the audit (practice prompts)"** in
+`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` — it defines the question format,
+the bilingual rule, dedupe-by-concept, placement, and priority-marker reordering. Do not restate them
+here. Anchor the answer to this simulation or a real project when the question is about a pattern or
+decision ("I chose…", "I used…", not "it is used").
 
 ---
 
@@ -224,7 +204,7 @@ then ⭐⭐, then ⭐.
 
 Update two files:
 
-**simulations/TRACKER.md** — find the row for {SIMULATION_FILE} and update:
+**practice/simulations/TRACKER.md** — find the row for {SIMULATION_FILE} and update:
 - **Status:** ✅ Pass / ⚠️ Borderline / ❌ Fail (from Step 2 verdict)
 - **Date:** today's date
 
@@ -238,11 +218,15 @@ this prompt.
 Then show the commit message:
 
 ```
-git add {SIMULATION_FILE} simulations/TRACKER.md notes/interview-prep/
+git add {SIMULATION_FILE} practice/simulations/TRACKER.md
+```
+If (and only if) questions were added, also stage the two exact Q&A files:
+```
+git add notes/interview-prep/en/{topic}.md notes/interview-prep/es/{topic}.md
 ```
 
 ```
-git commit -m "docs: simulation {SIMULATION_FILE} — [Pass/Borderline/Fail], {TIME_USED}min"
+git commit -m "docs: simulation {type} {NN} — [Pass/Borderline/Fail], {TIME_USED}min"
 ```
 
 ---

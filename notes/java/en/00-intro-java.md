@@ -19,6 +19,8 @@ YourCode.java  →  [javac compiler]  →  YourCode.class  →  [JVM]  →  runn
   source code        compile time         bytecode            runtime
 ```
 
+Docs: [Baeldung — JVM, JRE and JDK: What's the Difference?](https://www.baeldung.com/jvm-vs-jre-vs-jdk) → read "JVM" and "JDK" to see how the compiler and the virtual machine fit together.
+
 > **Why does this matter for Spring Boot?** When you run `mvn spring-boot:run` or click the green button in IntelliJ, Maven compiles your code and the JVM starts your application. When you see a `NullPointerException` in the logs, that is a **runtime error** — the compiler missed it because it only happened with specific data at runtime.
 
 ---
@@ -88,6 +90,8 @@ Each keyword has a reason:
 | `void` | The entry point does not return anything to the JVM |
 | `main` | The name the JVM looks for by convention |
 | `String[] args` | Command-line arguments passed when starting the program |
+
+Read each row as: *this keyword is in the signature because the JVM needs it to be there* — the left column is the word, the right column is the requirement it satisfies. Drop any one of them and the JVM no longer recognises the method as the entry point.
 
 > **In Spring Boot you never write `main` yourself.** Spring Initializr generates one `Application.java` with a `main` that calls `SpringApplication.run()`. That one line starts the whole framework — it bootstraps the application context, discovers all your beans, and starts the **embedded server** — Tomcat by default, which Spring Boot carries bundled inside the JAR itself. You do not install Tomcat separately; it comes included. You will not touch `main` again after that.
 
@@ -181,6 +185,8 @@ Docs: [Baeldung — OOP Concepts in Java](https://www.baeldung.com/java-oop) →
 
 Since you come from JavaScript, these are the things that will trip you up most:
 
+Read each row as one habit you have to unlearn: the middle column is what your JS instinct expects, the right column is what Java actually does. When something surprises you in Spring Boot, it is almost always one of these rows biting you.
+
 | Concept | JavaScript | Java |
 |---------|-----------|------|
 | Types | Dynamic — variables can change type | Static — type is fixed at compile time |
@@ -191,3 +197,11 @@ Since you come from JavaScript, these are the things that will trip you up most:
 | Compilation | Not needed (interpreted) | Required before running |
 
 The biggest shift: **in JavaScript, functions are first-class citizens**. In Java, **classes are the first-class citizens**. Everything else flows from that difference.
+
+---
+
+## The route ahead — how these notes are ordered
+
+These notes are numbered in the order that builds understanding from the ground up, not alphabetically or by importance. The path is deliberate: each file only assumes what the earlier ones already taught. You start with the raw materials — [01-variables-types.md](01-variables-types.md) for the primitive and reference types every line of Java is made of, then [02-control-flow.md](02-control-flow.md) for `if`/`for`/`switch`, and [03-methods.md](03-methods.md) for how behaviour is packaged and called. With those in hand you move into the heart of the language, object orientation, across four files that build on each other: [04-oop-classes.md](04-oop-classes.md) (classes, objects, constructors, `this`), [05-interfaces-abstract.md](05-interfaces-abstract.md) (the contracts Spring injects against), and [06-inheritance-polymorphism.md](06-inheritance-polymorphism.md) (`extends`, `super`, and the runtime method dispatch you met above) — the OOP section on this page is only the preview of those three. Next come the everyday tools you will reach for in any service method: [07-collections.md](07-collections.md) (`List`, `Map`, `Set`), [08-exceptions.md](08-exceptions.md) (the deepest file, and the model for the quality bar of all the others), [09-streams-lambdas.md](09-streams-lambdas.md) (functional-style data pipelines), [10-generics.md](10-generics.md) (`<T>` and `Optional`, which the collections and repositories lean on), [11-enums.md](11-enums.md), and [12-dates.md](12-dates.md) (`LocalDate`/`LocalDateTime`). The last stretch turns toward how real Spring Boot projects are wired: [13-annotations.md](13-annotations.md) (the `@` mechanism the whole framework is driven by), [14-maven.md](14-maven.md) (dependencies and the build), and finally [15-memory-model.md](15-memory-model.md) — stack, heap, and garbage collection, placed last on purpose because it explains *why* everything you saw earlier (references, `null`, object identity) behaves the way it does. Read them in order the first time; after that, treat each as a standalone reference.
+
+Start with [01-variables-types.md](01-variables-types.md) — it turns the static-typing idea from this page into the concrete set of types you will declare in every class from here on.

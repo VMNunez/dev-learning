@@ -4,6 +4,7 @@ import com.victor.timetrack.dto.request.CreateProjectRequest;
 import com.victor.timetrack.dto.request.UpdateProjectRequest;
 import com.victor.timetrack.dto.response.ProjectResponse;
 import com.victor.timetrack.service.ProjectService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,15 +32,17 @@ public class ProjectController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
-    public ResponseEntity<ProjectResponse> create(@RequestBody CreateProjectRequest request){
+    public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectRequest request){
         return ResponseEntity.status(201).body(projectService.create(request));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectResponse> update(@PathVariable Long id, @RequestBody UpdateProjectRequest request){
+    public ResponseEntity<ProjectResponse> update(@PathVariable Long id,@Valid @RequestBody UpdateProjectRequest request){
         return ResponseEntity.ok(projectService.update(id, request));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         projectService.delete(id);

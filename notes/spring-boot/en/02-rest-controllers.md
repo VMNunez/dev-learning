@@ -52,6 +52,8 @@ A few things to read off this example:
 
 ## @RestController and @RequestMapping
 
+Docs: https://www.baeldung.com/spring-controller-vs-restcontroller → read: the `@RestController` section
+
 `@RestController` tells Spring "this class handles HTTP requests, and every value I return should be sent straight back to the client as JSON". It is shorthand for `@Controller` + `@ResponseBody`: `@Controller` registers the class as a web component, and `@ResponseBody` is what serialises the return value to JSON (via Jackson) instead of treating it as the name of an HTML page.
 
 > **`@Controller` vs `@RestController`:** `@Controller` is for server-rendered HTML views (it returns the name of a template to render). For a REST API consumed by Angular, always use `@RestController` so you get JSON.
@@ -67,6 +69,8 @@ public class TransactionController { ... }
 ---
 
 ## HTTP methods — what each one means
+
+Docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods → read: the summary of each verb
 
 | Annotation       | HTTP method | Purpose                    | Has body? |
 | ---------------- | ----------- | -------------------------- | --------- |
@@ -88,7 +92,25 @@ The string inside the annotation is appended to the class-level `@RequestMapping
 
 ---
 
+## Why PATCH endpoints get a URL suffix and PUT/POST/DELETE don't
+
+`PUT /api/entries/{id}`, `POST /api/entries`, and `DELETE /api/entries/{id}` never need anything appended to the path — the HTTP verb alone already says the whole action: replace the resource, create it, remove it. There is exactly one thing a PUT can mean for a given resource, so the URL never needs to disambiguate further.
+
+`PATCH` is different. "Partially update" is vague on its own — a resource can have many different partial updates, especially one that follows a state machine (see `notes/architecture` for the workflow pattern). A `TimeEntry` can move `DRAFT → SUBMITTED`, `SUBMITTED → APPROVED`, or `SUBMITTED → REJECTED` — three distinct transitions, all technically "PATCH". Without a suffix, `PATCH /api/entries/{id}` alone can't tell the server which transition the client means. The suffix names the specific sub-action:
+
+```java
+@PatchMapping("/{id}/submit")   // PATCH /api/entries/42/submit
+@PatchMapping("/{id}/approve")  // PATCH /api/entries/42/approve
+@PatchMapping("/{id}/reject")   // PATCH /api/entries/42/reject
+```
+
+> **Rule of thumb:** if a verb can only mean one thing for that resource (PUT, POST, DELETE), the path stays bare — `/{id}`. If the same verb (PATCH) could mean several different transitions on the same resource, the suffix names which one — `/{id}/submit`, `/{id}/approve`.
+
+---
+
 ## ResponseEntity — controlling the HTTP response
+
+Docs: https://www.baeldung.com/spring-response-entity
 
 `ResponseEntity<T>` is **not** a DTO. It is a wrapper a controller method returns to control two things at once: the **HTTP status code** and the **response body**. The `<T>` is the type of the body it carries (often a DTO, e.g. `ResponseEntity<TransactionResponse>`). You reach for it because a REST API must communicate *what happened* (created? not found? deleted?), not just hand back data — and the status code is how it says that.
 
@@ -114,6 +136,19 @@ return ResponseEntity.badRequest().body("Invalid input");
 ```
 
 The relation to `@RestController`: the controller method returns the `ResponseEntity`, and Spring reads the status from it and serialises the body to JSON with Jackson before sending it to the client.
+
+**How it gets built, step by step — `ResponseEntity.status(201).body(created)`**
+
+Read this line from the inside out:
+
+1. What is innermost runs first: `created` is already the object the service returned (e.g. the `ProjectResponse` that was just saved to the database).
+2. `ResponseEntity.status(201)` is a **static** method that starts building the response, fixing the status code to `201`. It returns a half-built object (a *builder*), not the final `ResponseEntity` yet.
+3. `.body(created)` is chained onto that builder and adds the data you want to send as the body. This is where construction finishes: the result is now the complete `ResponseEntity<ProjectResponse>` — status 201 + that body.
+4. The method `return`s that object. Spring receives it, serialises the body to JSON with Jackson, and assembles the real HTTP response that reaches Postman: a `201` status header, and the JSON in the body.
+
+**The `<T>` and type safety**
+
+`ResponseEntity<T>` is a **generic** class — the same mechanism you already know from `List<String>` or `Optional<T>`. The `<T>` fixes, at compile time, which concrete object type is allowed inside the body. That is why the method signature and what you pass to `.body(...)` must match: if the method declares `ResponseEntity<ProjectResponse>`, the compiler rejects passing a `String` or any other type into `.body(...)` — the same kind of error `List<String> list = new ArrayList<Integer>()` would produce.
 
 **Two shortcuts you will use constantly:**
 
@@ -143,6 +178,8 @@ The relation to `@RestController`: the controller method returns the `ResponseEn
 ## Reading input — @PathVariable, @RequestParam, @RequestBody
 
 ### @PathVariable — read a value from the URL path
+
+Docs: https://www.baeldung.com/spring-pathvariable
 
 Sometimes the URL itself carries a value — *which* resource you want. `GET /api/projects/42` means "the project with id 42". The `42` is not a fixed word; it changes per request. `@PathVariable` is how the controller reads that value out of the path and into a method parameter. Three things to be clear about:
 
@@ -183,6 +220,8 @@ In the second case, `@PathVariable("id")` says "take the `{id}` from the path an
 
 ### @RequestParam — read a value from the query string
 
+Docs: https://www.baeldung.com/spring-request-param
+
 Query parameters are the optional `key=value` pairs after the `?` in a URL: `GET /api/entries?month=2025-05&status=SUBMITTED`. They are the right tool for **optional filters, sorting, and pagination** — not for the resource identity (that is `@PathVariable`). `@RequestParam` reads one of them into a method parameter, the same way `@PathVariable` reads from the path:
 
 ```java
@@ -203,6 +242,8 @@ public ResponseEntity<List<EntryResponse>> getFiltered(
 
 ### @RequestBody — read the JSON body sent by the client
 
+Docs: https://www.baeldung.com/spring-request-response-body → read: the `@RequestBody` section
+
 For `POST` and `PUT`, the client sends data in the **body** of the request as JSON. `@RequestBody` tells Spring "take that JSON, convert it into this Java object (Jackson does the conversion), and give it to me as a parameter":
 
 ```java
@@ -212,6 +253,20 @@ public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectR
     return ResponseEntity.status(201).body(projectService.create(request));
 }
 ```
+
+**The mechanism, step by step**
+
+What actually travels over the network is not a Java object — it is plain text formatted as JSON. Your method needs a real object (`request.getName()`, etc.), so something has to translate that text into an object before your code runs:
+
+1. Postman (or Angular) sends the `POST` with the JSON `{"name": "Project Beta", "description": "..."}` in the request body.
+2. Spring receives the request and, because of `@PostMapping`, already knows it must run this `create(...)` method.
+3. Before running it, Spring inspects the method's parameters and sees `@RequestBody CreateProjectRequest request`.
+4. That annotation tells it: "the text in the body needs to be converted into a `CreateProjectRequest` object, and passed to this parameter".
+5. Jackson reads the JSON key by key: it sees `"name"`, looks for a field called `name` in `CreateProjectRequest`, and assigns it `"Project Beta"`. Same for `"description"`.
+6. The result is a real `CreateProjectRequest` object, already in memory, with its fields filled in.
+7. That already-built object is what your method receives once it starts running — you never write the code that parses the JSON.
+
+> Without `@RequestBody`, Spring would not know that parameter should be filled from the body — by default it looks for parameters in the URL instead (the way `@RequestParam` does), so the object would arrive `null` or empty.
 
 `@RequestBody` is only about *receiving* — it is the mirror image of the response. Do not confuse the two directions:
 
@@ -273,6 +328,8 @@ This is a defence-in-depth measure. The right approach is DTOs (described below)
 ---
 
 ## DTOs — never expose JPA entities directly
+
+Docs: https://www.baeldung.com/java-dto-pattern
 
 A **DTO** (Data Transfer Object) is a plain class whose only job is to define the *shape* of the data that crosses the API boundary — what the client sends in, and what you send back. It is not a database table and it holds no business logic: just fields. DTOs are how you give a clean shape to your responses instead of returning the raw entity.
 

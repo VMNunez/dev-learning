@@ -47,6 +47,24 @@ Lo que realmente quieren saber: ¿Estás listo para la colaboración profesional
 R: El mayor cambio sería la disciplina con git — nunca mergear tus propios PRs, mantener los commits atómicos para que los compañeros puedan seguir el historial, y escribir descripciones de PR que expliquen el por qué, no solo el qué. Ya hago esto en mis proyectos personales. Lo más difícil es acordar la arquitectura de antemano — por eso existen patrones como Core/Feature/Shared, para que cinco desarrolladores puedan trabajar de forma independiente sin romper el código del otro.
 Respuesta mala: "Comunicaría más." — Demasiado vago. El entrevistador quiere prácticas concretas, no intenciones.
 
+**¿Cuál es la diferencia entre Scrum y Kanban?** ⭐⭐⭐
+Scrum trabaja en sprints fijos — normalmente dos semanas — con roles y ceremonias definidas, y el equipo se compromete a un conjunto de items en cada sprint. Kanban es un flujo continuo: las tareas se mueven por un tablero y el equipo coge la siguiente cuando tiene capacidad, con un límite de cuántas pueden estar en curso a la vez. Scrum encaja con trabajo de features planificado; Kanban con un flujo constante de tareas impredecibles como soporte o corrección de bugs. Las consultoras usan sobre todo Scrum, a veces Kanban para equipos de mantenimiento.
+
+**¿Cuáles son los roles en Scrum?** ⭐⭐⭐
+Tres: el Product Owner es dueño del backlog y decide la prioridad — representa al cliente. El Scrum Master elimina bloqueos y protege el proceso; no es un manager y no asigna tareas. El Development Team construye el incremento. Lo que importa como junior: yo no decido qué se construye a continuación — eso es del PO — y si estoy bloqueado, lo planteo al Scrum Master, normalmente en el daily standup.
+
+**¿Cuáles son las ceremonias de Scrum?** ⭐⭐
+Cuatro. El sprint planning al principio — el equipo decide qué mete en el sprint. El daily standup — la sincronización de 15 minutos sobre progreso y bloqueos. El sprint review al final — haces una demo del incremento funcionando a los stakeholders. Y la retrospectiva — el equipo mira su propio proceso y acuerda una cosa que mejorar. Planning y standup son sobre el trabajo; review y retro son sobre el resultado y el proceso.
+
+**¿Qué es una user story?** ⭐⭐
+Un requisito escrito desde el punto de vista del usuario, con el formato "Como [rol], quiero [objetivo] para [beneficio]". Por ejemplo, en TimeTrack: "Como manager, quiero aprobar las entradas de tiempo enviadas para que la nómina solo cuente horas validadas." Mantiene el foco en el valor para el usuario, no solo en una tarea técnica, y la parte del "para" es lo que te dice cuándo la story está realmente terminada.
+
+**¿Por qué los equipos estiman en story points en vez de en horas?** ⭐⭐
+Porque a la gente se le da mal adivinar horas pero razonablemente bien comparar tamaños. Los story points son una medida relativa — esta story es aproximadamente el doble de esfuerzo que aquella — normalmente en una escala tipo Fibonacci. También separa el esfuerzo de la persona: dos horas para mí y para un senior son distintas, pero el tamaño relativo del trabajo es el mismo. Como junior esperaría estimar en equipo, no solo.
+
+**¿Qué significa "Definition of Done"?** ⭐⭐
+Es la checklist compartida que un item tiene que cumplir antes de que el equipo lo dé por terminado — normalmente: código escrito, revisado en un PR, testeado, mergeado, y que cumple los criterios de aceptación de la story. La clave es que "done" es un acuerdo del equipo, no una opinión personal. En mis propios proyectos mi definición de done es: el código funciona, tiene al menos un test con sentido, corre en local, y está commiteado de forma atómica — la misma idea aplicada en solitario.
+
 ---
 
 ## HTTP fundamentals

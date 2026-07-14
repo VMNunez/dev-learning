@@ -90,6 +90,14 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - `getSigningKey()` — converts a Base64 secret string to a `SecretKey` using `Decoders.BASE64.decode()` + `Keys.hmacShaKeyFor()`
 - `Role` enum + `@ColumnDefault` + `data.sql` seeding — role-based authorization end to end, with `@PreAuthorize` tested for both EMPLOYEE (403) and MANAGER (201)
 - `DataIntegrityViolationException` handling — clean 409 Conflict instead of a raw 500 on constraint violations
+- `@ManyToOne` on `TimeEntry` to both `User` and `Project` — two foreign keys on the same entity
+- State machine workflow — `EntryStatus` enum (`DRAFT` → `SUBMITTED` → `APPROVED`/`REJECTED`), each transition checks the current status first
+- PATCH with a URL suffix for state transitions (`/submit`, `/approve`, `/reject`) — PUT/POST/DELETE never need one because the verb alone is unambiguous
+- Role-based data filtering — `getAll()` branches between `findAll()` and `findByUser()` by reading authorities off `SecurityContextHolder`
+- Bean Validation (`@NotBlank`/`@NotNull` + `@Valid`) across every request DTO — accumulates all failed fields in one response, unlike fail-fast manual checks
+- Comparing JPA entities by id, not by object reference or full `.equals()` — Lombok's `@Data`-generated `equals()` is unreliable for entities
+- `BigDecimal.compareTo()` and `LocalDate.isAfter()`/`isBefore()` — the correct way to compare values that don't support `==`, `<`, `>`, or a safe `.equals()`
+- Hard delete over soft delete for `TimeEntry` — only DRAFT entries can be removed, so nothing worth an audit trail is ever lost
 
 ---
 

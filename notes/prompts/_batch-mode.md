@@ -14,8 +14,8 @@ name depends on the prompt (it is named in each prompt's "Batch targets" note):
 
 - coverage / notes / notes+interview-prep → `TOPIC = all`
 - interview-prep audit → `FILE = all`
-- readme-review / project-review / portfolio-ready → `PROJECT_PATH = all`
-- new-project (review mode only) → `PROJECT = all` (**review mode only** — new mode plans a single next project, so it stays one at a time)
+- readme-audit / review-audit / portfolio-audit → `PROJECT_PATH = all`
+- plan-audit (review mode only) → `PROJECT = all` (**review mode only** — new mode plans a single next project, so it stays one at a time)
 - sql-exercises → `TOPIC = all` (**practice mode only** — review mode needs a pasted file, so it stays one at a time)
 - simulation-generator / code-review → `TYPE = all`
 

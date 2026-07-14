@@ -13,12 +13,12 @@ Six projects, each focused on a specific set of concepts — starting from compo
 
 | # | Project | Stack | Key concepts | Live |
 |---|---------|-------|-------------|------|
-| 01 | [To-do list](angular/01-todo-list/) | Angular · CSS | Components, services, signals, directives, class binding | [Live demo](https://01angulartodolist.netlify.app/) |
-| 02 | [Weather app](angular/02-weather-app/) | Angular · CSS · OpenWeatherMap API | HTTP Client, RxJS, forkJoin, pipes, CSS animations, API integration | [Live demo](https://02angularweatherapp.netlify.app/) |
-| 03 | [Expense tracker](angular/03-expense-tracker/) | Angular · CSS | Reactive forms, validation, localStorage, computed signals, routing | [Live demo](https://03angularexpensetracker.netlify.app/) |
-| 04 | [Meal finder](angular/04-meal-finder/) | Angular · CSS · TheMealDB API | Route params, ActivatedRoute, effect(), computed(), favourites, loading/error states, takeUntilDestroyed | [Live demo](https://04mealfinder.netlify.app/) |
-| 05 | [Task manager](angular/05-task-manager/) | Angular · Angular Material | Angular Material, MatTable, MatDialog, MatPaginator, CRUD, coordinator pattern, reactive forms, keyboard accessibility | [Live demo](https://05taskmanager.netlify.app/) |
-| 06 | [HR portal](angular/06-hr-portal/) | Angular · Angular Material | Route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate, Core/Feature/Shared architecture, MatStepper, MatSidenav | [Live demo](https://06-hr-portal.netlify.app) |
+| 01 | [To-do list](projects/01-todo-list/) | Angular · CSS | Components, services, signals, directives, class binding | [Live demo](https://01angulartodolist.netlify.app/) |
+| 02 | [Weather app](projects/02-weather-app/) | Angular · CSS · OpenWeatherMap API | HTTP Client, RxJS, forkJoin, pipes, CSS animations, API integration | [Live demo](https://02angularweatherapp.netlify.app/) |
+| 03 | [Expense tracker](projects/03-expense-tracker/) | Angular · CSS | Reactive forms, validation, localStorage, computed signals, routing | [Live demo](https://03angularexpensetracker.netlify.app/) |
+| 04 | [Meal finder](projects/04-meal-finder/) | Angular · CSS · TheMealDB API | Route params, ActivatedRoute, effect(), computed(), favourites, loading/error states, takeUntilDestroyed | [Live demo](https://04mealfinder.netlify.app/) |
+| 05 | [Task manager](projects/05-task-manager/) | Angular · Angular Material | Angular Material, MatTable, MatDialog, MatPaginator, CRUD, coordinator pattern, reactive forms, keyboard accessibility | [Live demo](https://05taskmanager.netlify.app/) |
+| 06 | [HR portal](projects/06-hr-portal/) | Angular · Angular Material | Route guards, lazy loading, HTTP interceptors, role-based access, CanDeactivate, Core/Feature/Shared architecture, MatStepper, MatSidenav | [Live demo](https://06-hr-portal.netlify.app) |
 
 ---
 

@@ -15,6 +15,8 @@ Escribes contra la especificación JPA; Hibernate hace el trabajo. Es el mismo p
 
 ## @Entity — mapear una clase a una tabla
 
+Docs: https://www.baeldung.com/jpa-entities
+
 ```java
 @Entity
 @Table(name = "transactions")     // opcional — por defecto es el nombre de la clase, en minúscula
@@ -58,17 +60,22 @@ public class Transaction {
 - `@GeneratedValue(strategy = GenerationType.IDENTITY)` — la base de datos auto-incrementa el id (`SERIAL` / `BIGSERIAL` en PostgreSQL)
 
 **Opcionales pero comunes:**
-- `@Table(name = "...")` — sobreescribir el nombre de tabla por defecto; **convención: usa siempre plural en minúscula** (`users`, `projects`, `time_entries`) — evita conflictos con palabras reservadas y es el estándar en proyectos reales
+- `@Table(name = "...")` — sobreescribir el nombre de tabla por defecto; **convención: usa siempre plural en minúscula** (`users`, `projects`, `time_entries`) — evita conflictos con palabras reservadas y es el estándar en proyectos reales. Es un desajuste deliberado con el nombre de la clase: la clase Java se queda en singular (`User`, `TimeEntry`) porque representa **una** instancia — un objeto, una fila. La tabla va en plural porque contiene una **colección** de esas filas. La misma separación aparece en `@JoinColumn`: el campo es un objeto singular (`private Project project`), pero la columna que genera se llama según lo que guarda — una foreign key, ej. `project_id` — nunca según el nombre del campo ni el de la clase relacionada.
 - `@Column(nullable = false)` — marca la columna como NOT NULL en la base de datos
 - `@Column(unique = true)` — añade una constraint única; combínala con `nullable = false` cuando el campo es obligatorio y debe ser único: `@Column(nullable = false, unique = true)`
 - `@Column(...)` — otras propiedades: `length`, `name`, `updatable`
-- `@CreationTimestamp` — anotación de Hibernate; establece el campo automáticamente a la fecha y hora actuales cuando la entidad se guarda por primera vez; nunca estableces este campo manualmente en tu código
+- `@CreationTimestamp` — anotación de Hibernate; asigna automáticamente al campo la fecha y hora actuales cuando la entidad se guarda por primera vez; nunca rellenas este campo manualmente en tu código
 
 **Valores por defecto de campo** — se establecen directamente en la declaración del campo; JPA respeta el valor por defecto al crear una nueva entidad:
 
 ```java
 private Boolean active = true;   // los nuevos proyectos están activos por defecto
+
+@Enumerated(EnumType.STRING)
+private EntryStatus status = EntryStatus.DRAFT;   // las nuevas entradas empiezan como DRAFT
 ```
+
+El caso del enum es una trampa habitual: `status = 'DRAFT'` (comillas simples) no compila — `'DRAFT'` parece un literal `char`, pero tiene 5 caracteres, lo cual no es válido. Una constante de enum nunca es un string ni un char; siempre se referencia a través del propio tipo enum: `EntryStatus.DRAFT`.
 - `@PrePersist` — se ejecuta antes de que la entidad se inserte por primera vez
 
 > **Trampa de palabra reservada:** `user` es una palabra reservada en PostgreSQL. Una clase llamada `User` sin `@Table` causa un error de sintaxis al arrancar. Usa siempre `@Table(name = "users")` para la entidad User. Lo mismo aplica a otras palabras reservadas como `order`, `group`, `table`. Convención: usa nombres de tabla en plural (`users`, `projects`) — esto evita la mayoría de conflictos.
@@ -109,7 +116,7 @@ private EntryStatus status;
 enum Role { EMPLOYEE, MANAGER }
 // Almacenado como: 0=EMPLOYEE, 1=MANAGER
 
-// Añades un nuevo rol en medio la semana que viene:
+// La semana que viene añades un nuevo rol en medio:
 enum Role { EMPLOYEE, ADMIN, MANAGER }
 // Ahora: 0=EMPLOYEE, 1=ADMIN, 2=MANAGER
 // ¡Pero la BD sigue teniendo filas con valor 1 — ahora significan ADMIN, no MANAGER!
@@ -196,6 +203,8 @@ public void onCreate() {
 
 ## JpaRepository — lo que obtienes gratis
 
+Docs: https://www.baeldung.com/the-persistence-layer-with-spring-data-jpa → leer: la sección de `JpaRepository`
+
 El patrón que se repite: defines una interfaz; Spring genera la implementación.
 
 ```java
@@ -227,6 +236,8 @@ Transaction transaction = repository.findById(id)
 ---
 
 ## Derived query methods
+
+Docs: https://www.baeldung.com/spring-data-derived-queries
 
 Spring Data JPA parsea el nombre del método y genera el SQL — sin implementación necesaria.
 
@@ -299,6 +310,8 @@ public Page<TransactionResponse> getAll(Pageable pageable) {
 ---
 
 ## Relaciones — @ManyToOne y @OneToMany
+
+Docs: https://www.baeldung.com/hibernate-one-to-many
 
 Un usuario tiene muchas transacciones. En la base de datos, la tabla `transactions` tiene una columna FK `user_id`. La regla: **la entidad cuya tabla tiene la columna FK recibe `@ManyToOne`**.
 
@@ -374,6 +387,8 @@ public class User {
 
 ## FetchType.LAZY vs FetchType.EAGER
 
+Docs: https://www.baeldung.com/hibernate-lazy-eager-loading
+
 | | LAZY | EAGER |
 |---|------|-------|
 | Cuándo se carga | Solo cuando accedes al campo | Inmediatamente con el padre |
@@ -393,6 +408,8 @@ private User user;
 ---
 
 ## El problema N+1
+
+Docs: https://www.baeldung.com/spring-data-jpa-n-plus-1-problem
 
 Este es uno de los errores de rendimiento más comunes en aplicaciones JPA.
 
@@ -425,6 +442,8 @@ List<Transaction> findAll();
 ---
 
 ## save() — insert o update
+
+Docs: https://www.baeldung.com/jpa-persist-merge → leer: el contraste con el comportamiento insert-o-update de `save()`
 
 `save()` decide comprobando el campo `@Id`:
 - `id == null` → **INSERT** (nueva entidad)

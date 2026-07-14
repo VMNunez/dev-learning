@@ -5,6 +5,8 @@
 
 ## Declaración de un método
 
+En [02-control-flow.md](02-control-flow.md) cada bucle y cada `if` que escribiste vivía dentro de un método `main` — ese `main` era en sí mismo un método, igual que las llamadas a `System.out.println` que invocaba. Esta nota da un paso atrás y examina esa pieza fundamental directamente: de qué está hecho un método y cómo escribes los tuyos.
+
 > **¿Dónde viven los métodos?** Siempre dentro de una clase — no pueden existir fuera de una clase en Java. Los explicamos aquí antes de ver las clases completas porque ya los has encontrado en los ejemplos de control de flujo. La estructura completa de una clase (campos, constructores, encapsulación) se cubre en [04-oop-clases.md](04-oop-clases.md).
 
 Un método es un bloque de código con nombre que realiza una tarea concreta. Lo defines una vez y lo llamas desde cualquier parte del programa.
@@ -43,12 +45,14 @@ public static double calculateTax(double price, double rate) {
 
 Un modificador de acceso controla desde dónde se puede llamar a un método (o acceder a un campo). Es la forma en que Java protege el código interno de una clase y decide qué partes son visibles desde fuera.
 
-| Modificador | Quién puede acceder                     |
-| ----------- | --------------------------------------- | --------------------------------------------------------- |
-| `public`    | Todos                                   |
+Lee la tabla como "quién tiene permiso para llamar a este método": cada fila es un modificador y el alcance de los llamadores que permite, del más abierto (`public`) al más cerrado (`private`).
+
+| Modificador | Quién puede acceder |
+| ----------- | ------------------- |
+| `public`    | Todos |
 | `private`   | Solo dentro de la misma clase (las subclases tampoco pueden acceder) |
 | `protected` | Misma clase + subclases + mismo paquete |
-| (ninguno)   | Solo el mismo paquete                   |
+| (ninguno)   | Solo el mismo paquete |
 
 En Spring Boot usarás principalmente `public` para endpoints REST y métodos de servicio, y `private` para métodos auxiliares internos.
 
@@ -77,9 +81,11 @@ public class Dog extends Animal {
 }
 ```
 
+---
+
 ## Tipos de retorno
 
-El tipo de retorno indica qué tipo de valor devuelve el método cuando termina. Si el método no devuelve nada, su tipo de retorno es `void`.
+El tipo de retorno indica qué tipo de valor devuelve el método cuando termina. Si el método no calcula nada que devolver — simplemente hace algo — su tipo de retorno es `void`.
 
 ```java
 public String getName() { return this.name; }    // devuelve un String
@@ -144,7 +150,7 @@ int result = MathUtils.square(5);   // 25
 
 ¿Cuándo tiene sentido usar `static`? Cuando el método realiza una operación que no depende de ningún dato concreto de un objeto — solo de los parámetros que le pasas. `MathUtils.square(5)` no necesita saber nada de ningún `Employee` ni de ninguna otra clase.
 
-Ya has usado métodos estáticos sin saberlo: `Integer.parseInt("42")` y `String.valueOf(42)` son estáticos — los llamas sobre la clase `Integer` o `String`, no sobre un objeto concreto. Exacto: los wrappers (`Integer`, `Long`, `Boolean`…) son clases de Java. Lo que los distingue de un `int` primitivo es precisamente eso — son objetos, tienen métodos, y pueden ser `null`. Por eso se llaman "wrappers" (envolturas): envuelven el valor primitivo en un objeto.
+Ya has usado métodos estáticos sin saberlo: `Integer.parseInt("42")` y `String.valueOf(42)` son estáticos — los llamas sobre la clase `Integer` o `String`, no sobre un objeto concreto. Recuerda que los wrappers (`Integer`, `Long`, `Boolean`…) son clases de Java. Lo que los distingue de un `int` primitivo es precisamente eso — son objetos, tienen métodos, y pueden ser `null`. Por eso se llaman "wrappers" (envolturas): envuelven el valor primitivo en un objeto.
 
 > **En Spring Boot:** los métodos de tus services y repositories son métodos de instancia — los llamas sobre objetos que Spring inyecta (`employeeService.findAll()`, `employeeRepository.save(emp)`). Necesitan el objeto porque trabajan con datos internos (la conexión a base de datos, la configuración, etc.). Los métodos `static` aparecen en clases de utilidad pura, como `JwtUtils.generateToken(username)` — operaciones sin estado que solo dependen de los argumentos que les pasas.
 
@@ -164,13 +170,21 @@ add(1.5, 2.5);     // llama a la segunda versión — devuelve 4.0
 add(1, 2, 3);      // llama a la tercera versión — devuelve 6
 ```
 
-Java decide qué versión llamar mirando los **parámetros** — su número y sus tipos. El tipo de retorno no cuenta para esa decisión. Si defines dos métodos con los mismos parámetros pero distinto tipo de retorno, Java no puede distinguirlos y el compilador dará error: al llamar al método no hay forma de saber cuál de los dos quieres.
+Java decide qué versión llamar mirando los **parámetros** — su número y sus tipos. El tipo de retorno no cuenta para esa decisión. Si defines dos métodos con los mismos parámetros pero distinto tipo de retorno, Java no puede distinguirlos y el compilador rechaza el archivo antes incluso de ejecutarlo — en el punto de la llamada no hay forma de saber cuál de los dos quieres. Cuando escribes `add(1, 2)` nunca indicas un tipo de retorno, así que los parámetros son la única señal que Java tiene — dos métodos que los compartieran serían indistinguibles.
+
+```java
+public int add(int a, int b) { return a + b; }
+public double add(int a, int b) { return a + b; }   // ❌ mismo nombre, mismos parámetros
+// error: method add(int,int) is already defined in class Calculator
+```
+
+> **Sobrecarga vs sobrescritura (overloading vs overriding) — no las confundas.** Suenan parecido y ambas hablan de "dos métodos con el mismo nombre", pero son ideas opuestas. La **sobrecarga** (overloading, esta sección) es *una* clase que define varias versiones de un método que se diferencian en sus parámetros — la elección la hace el compilador en tiempo de compilación según los argumentos que pasas. La **sobrescritura** (overriding) es una *subclase* que reemplaza un método que heredó de su padre, manteniendo *exactamente los mismos* parámetros, para cambiar su comportamiento — la elección se hace en tiempo de ejecución según el tipo real del objeto. Regla práctica: mismo nombre + parámetros distintos + misma clase = overloading; mismo nombre + mismos parámetros + subclase = overriding. La sobrescritura se cubre en [06-herencia-polimorfismo.md](06-herencia-polimorfismo.md).
 
 ---
 
 ## Varargs — número variable de argumentos
 
-Normalmente, cuando defines un método con dos parámetros, tienes que pasarle exactamente dos argumentos. Con varargs (`...`) puedes pasarle cualquier cantidad — cero, uno, cinco o los que quieras. Java los recoge en un array internamente. Lo encontrarás en métodos de logging (`log.info("User {} logged in", username)`) y en utilidades como `String.format()` — el mismo patrón que el `.formatted()` que viste en [01-variables-tipos.md](01-variables-tipos.md).
+Normalmente, cuando defines un método con dos parámetros, tienes que pasarle exactamente dos argumentos. Con varargs (`...`) puedes pasarle cualquier cantidad — cero, uno, cinco o los que quieras. Java los recoge en un array internamente. Lo encontrarás en frameworks de logging (`log.info("User {} not found", id)`) y en utilidades como `String.format()` — el mismo patrón que el `.formatted()` que viste en [01-variables-tipos.md](01-variables-tipos.md).
 
 La sintaxis es `Tipo... nombre`. Debe ser el último parámetro del método, porque si hubiera más parámetros después Java no sabría dónde termina la lista variable y empieza el siguiente argumento fijo.
 
@@ -221,6 +235,8 @@ public class Calculator {
 }
 ```
 
+Llamándolos:
+
 ```java
 // Método de instancia — necesitas crear un objeto primero
 Calculator calc = new Calculator("MyCalc");
@@ -245,3 +261,5 @@ String result2 = "  hello  "
 - Getters booleanos: empiezan con `is` o `has` — `isActive()`, `hasRole()`, `isEmpty()`
 - Getters: `getName()`, `getAge()`
 - Setters: `setName(String name)`, `setAge(int age)`
+
+Esos getters y setters son tu primera pista de un patrón mayor: los métodos rara vez viven solos — envuelven los *campos* de una clase y controlan cómo el mundo exterior los lee y los modifica. Ese acoplamiento entre campos y métodos, junto con los constructores y la encapsulación, es justo el tema de la siguiente nota. Continúa en [04-oop-clases.md](04-oop-clases.md), donde el `Calculator` que acabas de ver se convierte en una clase completa con estado.

@@ -3,6 +3,8 @@
 > 📖 [Baeldung — Java Collections](https://www.baeldung.com/java-collections)
 > 📖 [Oracle Docs — Collections framework](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
 
+Ya sabes crear objetos, compartir comportamiento entre ellos mediante herencia, y tratarlos de forma uniforme gracias al polimorfismo ([06-herencia-polimorfismo.md](06-herencia-polimorfismo.md)). Pero hasta ahora cada objeto ha vivido por su cuenta — un único `Employee`, un único `Animal`. Las aplicaciones reales trabajan con *muchos* a la vez: todos los empleados de un departamento, todas las filas que devuelve una consulta, todos los roles que tiene un usuario. Necesitas estructuras que guarden grupos de objetos, y eso es justo lo que te dan las colecciones — y se apoyan directamente en el polimorfismo, porque una `List<Animal>` puede almacenar perros y gatos codo con codo precisamente porque a una variable de un tipo se le permite contener muchos tipos de objeto.
+
 Antes de que existieran las colecciones, tenías que gestionar tus propios arrays — tamaño fijo, sin búsqueda integrada, sin forma de añadir ni eliminar elementos. El Collections Framework es un conjunto de interfaces y clases que viene incluido en el JDK de Java (en el paquete `java.util`) — no tienes que descargar nada, ya está ahí. Te da estructuras de datos listas para usar para lo que haces constantemente en cualquier aplicación: listas ordenadas de elementos, búsquedas por clave y conjuntos de valores únicos. Las tres que usarás en casi todos los servicios Spring Boot son `List`, `Map` y `Set`.
 
 ---
@@ -58,7 +60,9 @@ mutable.add("Luis");    // ✅ funciona — esta sí es modificable
 mutable.remove("Ana");  // ✅ funciona
 ```
 
-Usa `List.of()` cuando los datos no van a cambiar (por ejemplo, una lista fija de valores en un test). Usa `new ArrayList<>()` cuando vayas a añadir o quitar elementos después. La inmutabilidad solo bloquea las operaciones de _modificación estructural_ — `add()`, `remove()`, `set()` y `clear()`. Los métodos de solo lectura (`get()`, `contains()`, `size()`, iterar con for-each) funcionan perfectamente en listas creadas con `List.of()`.
+Usa `List.of()` cuando los datos no van a cambiar (por ejemplo, una lista fija de valores en un test). Usa `new ArrayList<>()` cuando vayas a añadir o quitar elementos después.
+
+> **Inmutable no significa que no se pueda leer nada — significa que no se puede cambiar nada.** La inmutabilidad solo bloquea las operaciones de *modificación estructural* — las que alteran lo que contiene la lista: `add()`, `remove()`, `set()` y `clear()`. Los métodos de solo lectura (`get()`, `contains()`, `size()`, iterar con for-each) funcionan perfectamente en una lista creada con `List.of()` — leer nunca fue el problema, solo lo era mutar.
 
 ### List vs Array
 
@@ -69,7 +73,7 @@ Usa `List.of()` cuando los datos no van a cambiar (por ejemplo, una lista fija d
 | Métodos  | Ninguno                           | add, remove, contains, etc. |
 | Usado en | Datos de bajo nivel y tamaño fijo | Casi todo lo demás          |
 
-Usa `List` en casi todos los casos. Usa arrays solo cuando el tamaño es fijo y el rendimiento es crítico.
+Lee cada fila como un trade-off entre las dos: la fila `Tamaño` es la que de verdad decide cuál eliges — un número fijo de golpe apunta a un array, cualquier cosa que crezca apunta a una `List`; las demás filas son consecuencia de esa primera elección. Usa `List` en casi todos los casos. Usa arrays solo cuando el tamaño es fijo y el rendimiento es crítico.
 
 ### ArrayList vs LinkedList
 
@@ -78,6 +82,25 @@ Ambas son implementaciones de `List`, pero guardan los datos en memoria de forma
 `ArrayList` internamente es un array que crece automáticamente. Cuando creas un `ArrayList`, Java reserva un bloque contiguo de posiciones en memoria. Leer un elemento por índice (`get(0)`, `get(5)`) es instantáneo porque Java calcula la posición exacta en memoria directamente. El problema aparece cuando insertas o eliminas en el medio: tiene que desplazar todos los elementos posteriores una posición.
 
 `LinkedList` internamente es una cadena de nodos. Cada nodo guarda el valor del elemento más dos referencias: una al nodo anterior y otra al siguiente. Para leer el elemento en la posición 5, Java tiene que recorrer 5 nodos desde el principio — por eso el acceso por índice es lento. Pero insertar o eliminar en el medio es rápido: solo hay que actualizar dos referencias, sin mover nada más.
+
+La diferencia se ve más fácil dibujada que descrita. Un `ArrayList` es un único bloque sólido de huecos contiguos, así que Java salta a cualquier índice mediante aritmética (`inicio + índice`); un `LinkedList` son nodos dispersos atados entre sí por referencias, así que la única forma de llegar a un nodo es saltar desde el anterior:
+
+```
+ArrayList — un bloque contiguo, índice = salto directo
+  ┌──────┬──────┬──────┬──────┐
+  │  [0] │  [1] │  [2] │  [3] │   get(2) → salta directo al hueco 2
+  └──────┴──────┴──────┴──────┘
+
+LinkedList — nodos separados enlazados por referencias, hay que saltar de nodo en nodo
+  ┌───────┐   ┌───────┐   ┌───────┐
+  │ value │←─→│ value │←─→│ value │   get(2) → empieza en la cabeza, sigue
+  │ prev  │   │ prev  │   │ prev  │              next dos veces para llegar
+  │ next  │   │ next  │   │ next  │
+  └───────┘   └───────┘   └───────┘
+   node 0      node 1      node 2
+```
+
+> **Por qué la columna de memoria dice que `LinkedList` usa más.** Cada hueco de un `ArrayList` guarda solo el valor. Cada nodo de un `LinkedList` guarda el valor *más* dos referencias extra (`prev` y `next`) — ese sobrecoste, multiplicado por cada elemento, es la razón por la que los mismos datos cuestan más memoria en un `LinkedList`.
 
 |                            | ArrayList                  | LinkedList                                             |
 | -------------------------- | -------------------------- | ------------------------------------------------------ |
@@ -88,7 +111,7 @@ Ambas son implementaciones de `List`, pero guardan los datos en memoria de forma
 | Memoria                    | Menos                      | Más (cada nodo almacena dos referencias)               |
 | Cuándo usar                | Casi siempre               | Raramente — solo si hay muchas inserciones en el medio |
 
-En la práctica, usa `ArrayList` para todo. `LinkedList` es una respuesta teórica en entrevistas — en código real de Spring Boot casi nunca la verás.
+Lee las dos filas centrales juntas — son toda la historia: `ArrayList` gana en `get(i)` (salto directo) y pierde en inserciones en el medio (desplaza todo lo que va detrás); `LinkedList` es el espejo exacto. Cada una de las demás filas se deduce de esa estructura array-vs-nodos. En la práctica, usa `ArrayList` para todo. `LinkedList` es una respuesta teórica en entrevistas — en código real de Spring Boot casi nunca la verás.
 
 ---
 
@@ -98,9 +121,13 @@ Un `Map` es la estructura que usas cuando necesitas buscar algo por un identific
 
 Esto es útil, por ejemplo, cuando quieres **cachear** un resultado — es decir, guardar algo que ya calculaste o recuperaste para no repetir ese trabajo. Si tienes una lista de 1000 empleados y necesitas buscar el mismo empleado varias veces por ID, guardas los resultados en un `Map<Integer, Employee>` y los recuperas en tiempo constante, en lugar de recorrer la lista cada vez.
 
-`Map<String, Integer>` se lee así: el primer tipo entre los `<>` (esos ángulos son la sintaxis de **genéricos** de Java — no es un operador con nombre propio; sirven para decirle a la clase con qué tipos va a trabajar, y se explican a fondo en [10-generics.md](10-generics.md)) es el tipo de la clave (`String` — el nombre del empleado) y el segundo es el tipo del valor (`Integer` — la puntuación). Siempre declaras el tipo de la clave primero y el del valor segundo.
+`Map<String, Integer>` se lee así: el primer tipo entre los `<>` (esos ángulos son la sintaxis de **genéricos** de Java — no es un operador con nombre propio; sirven para decirle a la clase con qué tipos va a trabajar, y se explican a fondo en [10-genericos.md](10-genericos.md)) es el tipo de la clave (`String` — el nombre del empleado) y el segundo es el tipo del valor (`Integer` — la puntuación). Siempre declaras el tipo de la clave primero y el del valor segundo.
 
-Creas un `Map` con `new HashMap<>()` — la interfaz es `Map<K, V>` y la implementación concreta es `HashMap`. Los métodos que más usarás son: `put(clave, valor)` para añadir o actualizar una entrada (si la clave ya existe, `put()` reemplaza el valor anterior en lugar de añadir una segunda entrada), `get(clave)` para recuperar el valor de una clave, `getOrDefault(clave, valorPorDefecto)` para leer con un fallback si la clave no existe, `containsKey(clave)` para saber si una clave está en el mapa, `containsValue(valor)` para saber si un valor concreto aparece en alguna entrada, `remove(clave)` para eliminar una entrada, y `size()` para contar cuántas hay.
+Creas un `Map` con `new HashMap<>()` — la interfaz es `Map<K, V>` y la implementación concreta es `HashMap`, el mismo patrón que `List` y `ArrayList`.
+
+> **Por qué un `put()` sobre una clave existente reemplaza en lugar de añadir una segunda entrada.** Un `Map` garantiza que cada clave es única — ese es todo su propósito. Así que cuando haces `put()` de una clave que ya está, no existe la opción de "añadir una segunda": mantener dos entradas con la misma clave rompería la promesa de una-clave-un-valor sobre la que se construye toda la estructura. Java lo resuelve de la única forma que puede — sobrescribe el valor antiguo con el nuevo, y `size()` se queda igual.
+
+Los métodos que más usarás son: `put(clave, valor)` para añadir o actualizar una entrada (si la clave ya existe, `put()` reemplaza el valor anterior en lugar de añadir una segunda entrada), `get(clave)` para recuperar un valor, `getOrDefault(clave, valorPorDefecto)` para leer con un fallback si la clave no existe, `containsKey(clave)` para saber si una clave está en el mapa, `containsValue(valor)` para saber si un valor concreto aparece en alguna entrada, `remove(clave)` para eliminar una entrada, y `size()` para contar cuántas hay.
 
 ```java
 import java.util.HashMap;
@@ -136,7 +163,9 @@ for (Map.Entry<String, Integer> entry : scores.entrySet()) {
 }
 ```
 
-Las tres opciones —`entrySet()`, `keySet()` y `values()`— sí son formas de **recorrer** el mapa; lo que cambia es qué parte necesitas en cada caso. Usas `entrySet()` cuando necesitas la clave y el valor a la vez. Si solo necesitas las claves, `scores.keySet()` te devuelve un `Set<String>` — útil cuando quieres recorrer solo los nombres sin necesitar sus puntuaciones. Si solo necesitas los valores, `scores.values()` te devuelve una `Collection<Integer>`. `Collection` es la interfaz raíz de la que heredan `List`, `Set` y otras estructuras del Collections Framework del JDK — `values()` la usa porque el mapa no garantiza un orden concreto para los valores, así que no puede comprometerse a devolver una `List`. En la práctica no cambia nada: puedes recorrerla con un for-each igual que cualquier otra colección. Esto es útil cuando quieres operar sobre todos los valores — sumarlos, buscar el máximo — sin importar a qué clave pertenece cada uno:
+Las tres opciones —`entrySet()`, `keySet()` y `values()`— son formas de **recorrer** el mapa; lo que cambia es qué parte necesitas en cada caso. Usas `entrySet()` cuando necesitas la clave y el valor a la vez. Si solo necesitas las claves, `scores.keySet()` te devuelve un `Set<String>` — útil cuando quieres recorrer solo los nombres sin necesitar sus puntuaciones. Si solo necesitas los valores, `scores.values()` te devuelve una `Collection<Integer>`.
+
+> **Por qué `values()` devuelve una `Collection`, no una `List`.** `Collection` es la interfaz raíz de la que heredan `List`, `Set` y las demás estructuras del Collections Framework — es el tipo más general de "grupo de elementos". `values()` promete deliberadamente solo ese tipo general porque una `List` implicaría un orden posicional garantizado, y un mapa no mantiene ningún orden para sus valores. Devolver `Collection` es Java negándose a prometer algo (`get(2)` sobre los valores) que el mapa no puede respaldar. En la práctica no cambia nada: puedes recorrerla con un for-each igual que cualquier otra colección. Esto es útil cuando quieres operar sobre todos los valores — sumarlos, buscar el máximo — sin importar a qué clave pertenece cada uno:
 
 ```java
 // keySet() — recorrer solo las claves
@@ -158,6 +187,23 @@ Hay tres implementaciones de `Map` que verás en entrevistas y en código real. 
 
 `HashMap` es la implementación por defecto. Internamente usa una **tabla hash** — una técnica que convierte la clave en un número para calcular en qué posición del array interno guardarla. El resultado es inserción y búsqueda muy rápidas (tiempo constante), pero sin ningún orden garantizado: si iteras sobre un `HashMap`, los elementos pueden salir en cualquier orden.
 
+La tabla hash es la razón de que la búsqueda sea instantánea. En vez de recorrer las entradas una a una, Java pasa la clave por una función `hashCode()` para obtener un número, convierte ese número en un índice de hueco dentro de un array interno, y salta directo a ese hueco — la misma idea del salto directo que un índice de array, salvo que el índice se *calcula a partir de la clave* en lugar de dárselo tú:
+
+```
+   key "Victor"  ──hashCode()──►  3491...  ──% array size──►  slot 5
+   key "Ana"     ──hashCode()──►  9106...  ──% array size──►  slot 2
+
+   internal array:
+   ┌──────┬──────┬───────────┬──────┬──────┬───────────┐
+   │ [0]  │ [1]  │[2] Ana→88 │ [3]  │ [4]  │[5] Victor→97│
+   └──────┴──────┴───────────┴──────┴──────┴───────────┘
+   get("Ana") → hash → slot 2 → listo, sin recorrer nada
+```
+
+Esto también explica por qué el orden parece aleatorio: el hueco depende del hash de la clave, no de cuándo la insertaste, así que iterar recorre los huecos del array por orden de índice — lo cual no tiene nada que ver con el orden de inserción.
+
+> **Esta misma tabla hash es la que impulsa `HashSet`.** Un `HashSet` es literalmente un `HashMap` en el que solo se usan las claves y los valores se ignoran — por eso "¿existe este valor?" es instantáneo en un set, y por eso ambos comparten exactamente el mismo comportamiento de orden-no-garantizado.
+
 `LinkedHashMap` funciona igual que `HashMap` internamente (misma velocidad), pero además mantiene una lista enlazada que recuerda el orden de inserción. Cuando iteras, los elementos salen en el mismo orden en que los añadiste.
 
 `TreeMap` ordena las claves automáticamente — alfabéticamente si son `String`, numéricamente si son números. Internamente usa un árbol binario de búsqueda equilibrado, lo que hace la inserción y búsqueda algo más lentas que `HashMap`.
@@ -167,6 +213,8 @@ Hay tres implementaciones de `Map` que verás en entrevistas y en código real. 
 | Orden       | Sin orden           | Orden de inserción           | Ordenado por clave         |
 | Velocidad   | Más rápido          | Ligeramente más lento        | Más lento (ordenación)     |
 | Cuándo usar | La mayoría de casos | Necesitas orden de inserción | Necesitas claves ordenadas |
+
+Lee primero la fila `Orden` — es la única razón para elegir `LinkedHashMap` o `TreeMap` en vez de la implementación por defecto; la fila `Velocidad` es el precio que pagas por ese orden, así que solo te mueves de `HashMap` cuando de verdad necesitas la ordenación que dan las otras dos.
 
 ---
 
@@ -219,9 +267,7 @@ Igual que con `Map`, hay tres implementaciones de `Set` y la diferencia entre el
 | Velocidad   | Más rápido          | Ligeramente más lento        | Más lento (ordenación)      |
 | Cuándo usar | La mayoría de casos | Necesitas orden de inserción | Necesitas valores ordenados |
 
-En la práctica, `HashSet` cubre el 95% de los casos.
-
----
+Lee esta tabla exactamente igual que la de `Map` de arriba — la misma elección de tres vías, guiada por la fila `Orden`, con `Velocidad` como el coste de moverte de la implementación por defecto. Y no es casualidad: cada `Set` está respaldado por el `Map` correspondiente (`HashSet`→`HashMap`, `TreeSet`→`TreeMap`), así que heredan el mismo trade-off de orden-contra-velocidad. En la práctica, `HashSet` cubre el 95% de los casos.
 
 ## Métodos comunes — List, Map y Set
 
@@ -240,6 +286,8 @@ Las tres estructuras comparten un conjunto de operaciones básicas porque las tr
 | Recorrer                    | for-each          | for-each          | `entrySet()` / `keySet()` / `values()` |
 
 En `Map`, `remove(clave)` elimina **por clave**, no por valor: le pasas la clave y borra el par entero. No hay un método que borre "el primer par cuyo valor sea X" recorriendo el mapa; si necesitas eso, tienes que localizar tú la clave primero. (Existe una variante `remove(clave, valor)` que solo borra si esa clave tiene exactamente ese valor, pero sigue encontrando la entrada por la clave.) En `List` y `Set`, en cambio, `remove(valor)` sí elimina por el propio valor.
+
+---
 
 ## Métodos de utilidad de Collections
 
@@ -276,6 +324,8 @@ Cuando ordenas una lista de `String` o `Integer`, Java ya sabe cómo compararlos
 ### Comparable — la clase sabe ordenarse a sí misma
 
 Usas `Comparable` cuando hay un orden por defecto obvio para tu clase — uno que cualquiera esperaría. Por ejemplo, empleados ordenados por nombre. Lo implementas dentro de la propia clase y solo puedes definir uno: ese único orden —el campo que elijas en `compareTo()`— pasa a ser el orden "natural" de la clase, el que se usa siempre que ordenes sin especificar otra regla.
+
+> **Qué significa de verdad "orden natural".** No es más que el orden por defecto por el que se ordena un tipo cuando no le das a `sort()` una regla propia — nada místico. El orden natural de `String` es el alfabético, el de `Integer` es el numérico (ascendente), y vienen de fábrica porque ambos ya implementan `Comparable`. Tu `Employee` no tiene orden natural hasta que *tú* defines uno en `compareTo()`; el campo que compares ahí pasa a serlo. `employees.sort(null)` y `Collections.sort(employees)` significan los dos "usa el orden natural" — eso es lo que el `null` está representando.
 
 Para implementarlo, tu clase añade `implements Comparable<Employee>` y define el método `compareTo()`. Java llama a ese método internamente cuando ordena la lista — tú no lo llamas directamente. El método compara `this` (el objeto actual) con `other` (el otro objeto de la lista con el que Java lo está comparando en ese momento — no lo creas tú ni lo pasas: durante la ordenación Java va tomando los elementos de la lista de dos en dos y le entrega el segundo a tu método como `other`) y devuelve: un número negativo si `this` debe ir antes, cero si son iguales, y un número positivo si `this` debe ir después.
 
@@ -329,12 +379,12 @@ El `<>` vacío en `new ArrayList<>()` se llama **operador diamante** y es una ab
 
 El problema con `Comparable` es que solo puedes definir un orden por clase. Si quieres ordenar empleados por nombre en una pantalla y por edad en otra, `Comparable` no es suficiente — solo tienes uno. `Comparator` resuelve esto: defines la regla fuera de la clase y se la pasas directamente a `sort()`. Puedes crear tantos `Comparator` distintos como quieras para la misma clase.
 
-`Comparator` tiene tres métodos de fábrica que usarás siempre:
+`Comparator` te da un puñado de métodos que usarás siempre. Los dos primeros son **métodos de fábrica** — métodos estáticos que *construyen* un `Comparator` a partir de un campo, así que con ellos empiezas una regla de ordenación. Los dos últimos son **métodos de encadenamiento** — los llamas *sobre* un `Comparator` ya existente para refinarlo, así que siempre van después de una de las fábricas:
 
-- **`Comparator.comparing(función)`** — ordena por el campo que devuelve la función. Úsalo para `String` u objetos.
-- **`Comparator.comparingInt(función)`** — igual pero optimizado para campos `int` (evita convertir el primitivo `int` a objeto `Integer`). Úsalo para edad, precio, cantidad.
-- **`.reversed()`** — encadena al comparator anterior para invertir el orden (de mayor a menor en lugar de menor a mayor).
-- **`.thenComparing(función)`** — desempate: cuando dos elementos son iguales según el primer criterio, aplica un segundo criterio. Para campos `int` existe `.thenComparingInt(función)`, igual que `comparingInt` — es la variante optimizada para primitivos.
+- **`Comparator.comparing(función)`** *(fábrica)* — construye un comparator que ordena por el campo que devuelve la función. Úsalo para `String` u objetos.
+- **`Comparator.comparingInt(función)`** *(fábrica)* — igual pero optimizado para campos `int` (evita convertir el primitivo `int` a objeto `Integer`). Úsalo para edad, precio, cantidad.
+- **`.reversed()`** *(encadenamiento)* — encadena al comparator anterior para invertir el orden (de mayor a menor en lugar de menor a mayor).
+- **`.thenComparing(función)`** *(encadenamiento)* — desempate: cuando dos elementos son iguales según el primer criterio, aplica un segundo criterio. Para campos `int` existe `.thenComparingInt(función)`, igual que `comparingInt` — es la variante optimizada para primitivos.
 
 La sintaxis `Employee::getName` se llama **referencia a método** — una forma corta de escribir `e -> e.getName()`. Se explica en `09-streams-lambdas.md`. Por ahora léela como "el método `getName` de `Employee`".
 
@@ -369,9 +419,9 @@ employees.sort(Comparator.comparing(Employee::getName)
 
 ### Comparable vs Comparator
 
-|                        | Comparable                                     | Comparator                                                                |
-| ---------------------- | ---------------------------------------------- | ------------------------------------------------------------------------- |
-| Dónde se define        | Dentro de la clase                             | Fuera de la clase                                                         |
+|                        | Comparable                                     | Comparator                                    |
+| ---------------------- | ---------------------------------------------- | --------------------------------------------- |
+| Dónde se define        | Dentro de la clase                             | Fuera de la clase                             |
 | Método                 | `compareTo()`                                  | `compare()`                                   |
 | Opciones de ordenación | Una (el orden natural)                         | Muchas                                        |
 | Cuándo usar            | Ordenación por defecto, eres dueño de la clase | Múltiples ordenaciones, o la clase no es tuya |
@@ -382,9 +432,11 @@ Ojo con el nombre del método: el que define la interfaz `Comparator` se llama `
 
 ## ConcurrentModificationException
 
-Esta es una trampa clásica de Java que cae todo el mundo la primera vez. Parece totalmente lógico recorrer una lista y eliminar los elementos que no quieres — pero Java no lo permite y lanza `ConcurrentModificationException`.
+Esta es una trampa clásica de Java en la que cae todo el mundo la primera vez. Parece totalmente lógico recorrer una lista y eliminar los elementos que no quieres — pero Java no lo permite y lanza `ConcurrentModificationException`.
 
 El motivo: el bucle for-each usa un iterador internamente. Ese contador de versión (Java lo llama `modCount`) es simplemente un número entero que la lista guarda por dentro y aumenta en uno cada vez que su estructura cambia — cada `add()` o `remove()`. El iterador anota ese número en el momento en que empieza a recorrer la lista. Cada vez que llamas a `remove()` directamente sobre la lista, ese contador cambia. En la siguiente iteración, el iterador compara su contador con el de la lista, los ve distintos, y lanza la excepción — porque no puede saber si los índices siguen siendo válidos.
+
+> **En una línea:** el iterador guarda su propia copia de `modCount` y la comprueba en cada paso; cambiar la lista a sus espaldas hace que los dos números dejen de coincidir, y ese desacuerdo es justo lo que dispara la excepción. La solución, entonces, nunca es "hacer que deje de quejarse" — es eliminar a través del iterador para que ambos contadores se muevan juntos (ver abajo).
 
 ```java
 // Esto lanza ConcurrentModificationException
@@ -461,3 +513,7 @@ public List<EmployeeDTO> getAllEmployees() {
         .collect(Collectors.toList());
 }
 ```
+
+---
+
+Pero fíjate bien en ese servicio: ¿qué pasa cuando la lista vuelve vacía, o cuando llamas a `get(0)` sobre una `List` que no tiene filas, o a `get("Victor")` sobre un `Map` y la clave no está? Cada uno de esos es un momento en el que el flujo *normal* de mover datos por colecciones se rompe — el código pide algo que la estructura no puede dar. La respuesta de Java a "el flujo normal se acaba de romper" es la excepción: un objeto que interrumpe el método y viaja de vuelta hacia quien lo llamó en lugar de devolver un valor. De eso trata [08-excepciones.md](08-excepciones.md) — cómo se señalan los errores, cómo viajan hacia arriba por la pila de llamadas, y dónde deberías capturarlos.

@@ -15,6 +15,8 @@ You write against the JPA spec; Hibernate does the work. This is the same patter
 
 ## @Entity — mapping a class to a table
 
+Docs: https://www.baeldung.com/jpa-entities
+
 ```java
 @Entity
 @Table(name = "transactions")     // optional — default is the class name, lowercase
@@ -58,7 +60,7 @@ public class Transaction {
 - `@GeneratedValue(strategy = GenerationType.IDENTITY)` — the database auto-increments the id (`SERIAL` / `BIGSERIAL` in PostgreSQL)
 
 **Optional but common:**
-- `@Table(name = "...")` — override the default table name; **convention: always use plural lowercase** (`users`, `projects`, `time_entries`) — avoids reserved word conflicts and is the standard in real projects
+- `@Table(name = "...")` — override the default table name; **convention: always use plural lowercase** (`users`, `projects`, `time_entries`) — avoids reserved word conflicts and is the standard in real projects. This is a deliberate mismatch with the class name: the Java class stays singular (`User`, `TimeEntry`) because it represents **one** instance — one object, one row. The table is plural because it holds a **collection** of those rows. Same split shows up on `@JoinColumn`: the field is a singular object (`private Project project`), but the column it generates is named after what it stores — a foreign key, e.g. `project_id` — never after the field name or the related class.
 - `@Column(nullable = false)` — marks the column as NOT NULL in the database
 - `@Column(unique = true)` — adds a unique constraint; combine with `nullable = false` when the field is required and must be unique: `@Column(nullable = false, unique = true)`
 - `@Column(...)` — other properties: `length`, `name`, `updatable`
@@ -68,7 +70,12 @@ public class Transaction {
 
 ```java
 private Boolean active = true;   // new projects are active by default
+
+@Enumerated(EnumType.STRING)
+private EntryStatus status = EntryStatus.DRAFT;   // new entries start as DRAFT
 ```
+
+The enum case is a common trap: `status = 'DRAFT'` (single quotes) does not compile — `'DRAFT'` looks like a `char` literal but has 5 characters, which is invalid. An enum constant is never a string or a char; you always reference it through the enum type itself: `EntryStatus.DRAFT`.
 - `@PrePersist` — runs before the entity is inserted for the first time
 
 > **Reserved word trap:** `user` is a reserved word in PostgreSQL. A class named `User` without `@Table` causes a syntax error on startup. Always use `@Table(name = "users")` for the User entity. The same applies to other reserved words like `order`, `group`, `table`. Convention: use plural table names (`users`, `projects`) — this avoids most conflicts.
@@ -196,6 +203,8 @@ public void onCreate() {
 
 ## JpaRepository — what you get for free
 
+Docs: https://www.baeldung.com/the-persistence-layer-with-spring-data-jpa → read: the `JpaRepository` section
+
 The repeating pattern: you define an interface; Spring generates the implementation.
 
 ```java
@@ -227,6 +236,8 @@ Transaction transaction = repository.findById(id)
 ---
 
 ## Derived query methods
+
+Docs: https://www.baeldung.com/spring-data-derived-queries
 
 Spring Data JPA parses the method name and generates the SQL — no implementation needed.
 
@@ -299,6 +310,8 @@ public Page<TransactionResponse> getAll(Pageable pageable) {
 ---
 
 ## Relationships — @ManyToOne and @OneToMany
+
+Docs: https://www.baeldung.com/hibernate-one-to-many
 
 One user has many transactions. In the database, the `transactions` table has a `user_id` foreign key column. The rule: **the entity whose table has the FK column gets `@ManyToOne`**.
 
@@ -374,6 +387,8 @@ public class User {
 
 ## FetchType.LAZY vs FetchType.EAGER
 
+Docs: https://www.baeldung.com/hibernate-lazy-eager-loading
+
 | | LAZY | EAGER |
 |---|------|-------|
 | When loaded | Only when you access the field | Immediately with the parent |
@@ -393,6 +408,8 @@ private User user;
 ---
 
 ## The N+1 problem
+
+Docs: https://www.baeldung.com/spring-data-jpa-n-plus-1-problem
 
 This is one of the most common performance mistakes in JPA applications.
 
@@ -425,6 +442,8 @@ List<Transaction> findAll();
 ---
 
 ## save() — insert or update
+
+Docs: https://www.baeldung.com/jpa-persist-merge → read: the contrast with `save()`'s insert-or-update behaviour
 
 `save()` decides by checking the `@Id` field:
 - `id == null` → **INSERT** (new entity)

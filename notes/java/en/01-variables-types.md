@@ -3,6 +3,8 @@
 > 📖 [Baeldung — Java primitives](https://www.baeldung.com/java-primitives) → read: "Overview" and "Primitive Data Types"
 > 📖 [Oracle Docs — Primitive types and variables](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
 
+The [intro](00-intro-java.md) left you with the big idea that Java is **statically typed**: every variable has a type fixed at compile time, and that type never changes. That raises the obvious next question — *what are those types?* This file answers it. Before you can write a single class, a loop, or a method, you need the raw materials: the exact set of types Java gives you to hold a number, a flag, a piece of text, and how they behave in memory. Everything from here on — every field in every Spring Boot entity, every method parameter — is built out of the types on this page.
+
 ## Primitive types
 
 In Java there are two ways to store data in memory. The first is to store the **value directly** — the number 42 or the boolean `true` is stored exactly where the variable lives. The second is to store a **reference** — instead of the data itself, the variable holds a memory address that points to where the real object is, like a link. **Primitive types** use the first form: they store the value directly, no references. **Objects** (like `String`, `Employee`, or any class) use the second.
@@ -27,13 +29,13 @@ In practice you use `int`, `long`, `double`, and `boolean` for almost everything
 ### Types by category
 
 **Integer numbers** — for counting, IDs, ages, quantities:
-- `byte` and `short` — very rarely used in practice. You will see them in old code or when working with binary data.
+- `byte` and `short` — whole numbers just like `int` and `long`, only with a much smaller range. They cannot hold decimals. In practice you will see them in old code or when working with binary data.
 - `int` — your everyday whole number. Use this by default.
 - `long` — when `int` is not big enough. Database IDs are often `Long` because they grow very large. Notice the `L` suffix: `1234567890L` — without it Java treats the number as `int` and may reject it.
 
 **Decimal numbers** — for prices, percentages, rates:
-- `float` — half the precision of `double`: only ~7 significant digits. Use only if memory is critical (almost never in web development). Notice the `f` suffix: `0.21f`.
-- `double` — the default choice for decimals. Higher precision: up to ~15 significant digits.
+- `float` — half the precision of `double`: only ~7 significant digits. If you need `3.141592653589793`, a `float` stores it as `3.1415927` — you lose digits. Use only if memory is critical (almost never in web development). Notice the `f` suffix: `0.21f`.
+- `double` — the default choice for decimals. Higher precision: up to ~15 significant digits. `3.141592653589793`, for example, fits comfortably in a `double`.
 
 > **Money in Spring Boot:** never use `double` or `float` for financial values. Use `BigDecimal` — it is a plain Java class (`java.math` package, not Spring Boot) that does exact arithmetic. `double` cannot represent 0.1 exactly in binary because computers express numbers as sums of powers of 2 (1/2, 1/4, 1/8…), and 0.1 cannot be expressed as a finite sum of those powers — just like 1/3 cannot be written exactly in decimal (0.333…). The processor stores the closest approximation it can, and that small error accumulates across operations until you get `0.09999999...` instead of `0.1`. `BigDecimal` avoids this by operating on the actual digits, without the representation error.
 
@@ -42,6 +44,32 @@ In practice you use `int`, `long`, `double`, and `boolean` for almost everything
 
 **Character** — for single characters:
 - `char` — one character, enclosed in single quotes: `'A'`. Used rarely in web development.
+
+### Comparing `BigDecimal` — `compareTo()` instead of `<`, `>`, or `equals()`
+
+Imagine a service needs to validate that hours worked fall between 0.5 and 24 (exactly the case for `TimeEntry.hours` in a timesheet). If `hours` is `BigDecimal`, writing `request.getHours() < 24` does not even compile — the error is `bad operand type BigDecimal for binary operator '<'`. The reason is the same as with wrapper classes: `<` and `>` only exist for primitives, and `BigDecimal` is an object.
+
+The next instinct is usually `.equals()`, but there is a trap: `.equals()` on `BigDecimal` also compares the **scale** (how many decimal places the number is internally represented with), not just the mathematical value. That is why `new BigDecimal("24.0").equals(new BigDecimal("24"))` returns `false` — to Java, "24.0" and "24" are objects with different scales (one decimal digit versus none), even though they are mathematically the same number.
+
+`BigDecimal` implements the `Comparable<BigDecimal>` interface, which provides the `compareTo(BigDecimal other)` method. This method does compare the actual mathematical value, ignoring scale, and returns an `int`:
+
+- negative if `this` is less than `other`
+- `0` if they are mathematically equal
+- positive if `this` is greater than `other`
+
+The pattern is always the same: call `compareTo()`, then compare the resulting `int` against `0` with the normal operators (`<`, `>`, `==`) — because now you are comparing two primitive `int`s, not two `BigDecimal` objects.
+
+```java
+BigDecimal hours = request.getHours();
+
+if (hours.compareTo(new BigDecimal("0.5")) < 0 || hours.compareTo(new BigDecimal("24")) > 0) {
+    throw new RuntimeException("Hours must be between 0.5 and 24");
+}
+```
+
+Read it as: "if `hours` compared to 0.5 is negative (meaning `hours` is less than 0.5) OR `hours` compared to 24 is positive (`hours` is greater than 24), throw the exception".
+
+> **`compareTo() == 0` for equality, never `equals()`.** If you ever need to check value equality between two `BigDecimal`s (e.g. "is the total billed exactly 100?"), use `total.compareTo(new BigDecimal("100")) == 0`, not `total.equals(new BigDecimal("100"))` — because if `total` arrived as `"100.00"` (with two decimal places, common when it comes from a `DECIMAL(10,2)` database column), `.equals()` would return `false` even though the value is identical.
 
 ---
 
@@ -85,7 +113,9 @@ long bigNumber = 1234567890123L;
 int smaller = (int) bigNumber;  // may overflow if the number is too large for int
 ```
 
-The `(int)` before the variable is the cast. Java does not do this automatically because you might lose data — you have to write it explicitly to signal that you accept the possible loss. The loss happens specifically when the larger number does not fit in the smaller type: if the value exceeds the destination type's range, Java wraps around silently instead of throwing an error — which is why narrowing can produce unexpected results.
+The `(int)` before the variable is the cast. Java does not do this automatically because you might lose data — you have to write it explicitly to signal that you accept the possible loss. The loss happens specifically when the larger number does not fit in the smaller type: if the value exceeds the destination type's range, a silent wraparound (described below) happens instead of an error — which is why narrowing can produce unexpected results.
+
+> **Silent wraparound:** when a number does not fit in the destination type, Java does not throw an error — it simply "rolls over". Picture a car odometer that reaches 999,999 and flips back to 000,000: exactly that happens with integers. `int`'s maximum value is 2,147,483,647; add 1 to it and you get −2,147,483,648, the minimum. The counter runs off the top end and reappears at the bottom. That is why narrowing (and integer overflow in general) can produce wrong results silently, with no exception to warn you.
 
 ---
 
@@ -111,6 +141,8 @@ private Long id;
 @Value("${app.jwt.expiration}")
 private long expiration;
 ```
+
+Read each row as a pair: the left column is the primitive you use when the value is always present, the right column is the object form you switch to when you need `null` or a collection. The name is not arbitrary — the wrapper is the capitalised full word (`int` → `Integer`, `char` → `Character`).
 
 | Primitive | Wrapper     |
 | --------- | ----------- |
@@ -160,10 +192,11 @@ String greeting = "Hello, " + name;                   // concatenation with +
 String greeting2 = "Hello, %s".formatted(name);       // template substitution — Java 15+
 ```
 
-The `.formatted()` method replaces placeholders in the string. `%s` means "a string goes here", `%d` means "an integer goes here". It is the same idea as template literals in JavaScript — `` `Hello, ${name}` `` — but with `%s` as the placeholder. You can chain it directly on the string literal.
+The `.formatted()` method replaces placeholders in the string. `%s` means "a string goes here", `%d` means "an integer goes here". It is the same idea as template literals in JavaScript — `` `Hello, ${name}` `` — but with positional placeholders. The order matters: the values are matched to the placeholders left to right, in the order they appear in the string.
 
 ```java
 "User %s has %d points".formatted("Victor", 100);  // "User Victor has 100 points"
+"User %s has %d points".formatted(100, "Victor");  // MAL — 100 is not a String for %s
 ```
 
 For decimals, use `%f`. You can control how many decimal places to show with `.Nf` (N = number of digits): `"Price is %.2f euros".formatted(19.99)` → `"Price is 19.99 euros"`.
@@ -188,19 +221,21 @@ name.equalsIgnoreCase("victor")   // true — same but ignores uppercase/lowerca
 
 ### String comparison — always use `equals()`
 
-In Java, `==` compares **memory addresses** (references), not content. Two string variables with the same text might be stored at different memory locations, so `==` can return `false` even when the content looks identical.
+In Java, `==` compares **memory addresses** (references), not content. Two `String` variables can hold the exact same characters and still live at two different addresses — and `==` compares the addresses, so it returns `false` even though the text is identical.
 
 `.equals()` always compares the actual characters — that is what you almost always want:
 
 ```java
-String a = "hello";
-String b = "hello";
+String a = new String("hello");
+String b = new String("hello");
 
-a == b        // unreliable — compares memory addresses, not content
-a.equals(b)   // true — always use this for String comparison
+a == b        // false — two separate objects, different addresses
+a.equals(b)   // true — same characters, which is what you meant
 ```
 
-> **Why does `==` even exist for Strings?** For objects (including String), `==` checks if two variables point to the **same object in memory** — not just the same value. This matters in some cases (e.g. checking if two list entries are literally the same object), but for Strings you almost never want that.
+> **Careful — string literals are a trap here.** If you write `String a = "hello"; String b = "hello";` (plain literals, no `new`), then `a == b` actually returns `true` — because Java keeps a single shared copy of each literal in a cache called the **string pool**, so both variables end up pointing to the very same object. That makes `==` *look* like it works. It breaks the moment one of the strings comes from somewhere else — user input, a database row, `new String(...)`, or a value built by concatenation at runtime — and then `==` silently returns `false`. The pool is exactly why you must never trust `==` for content: it works just often enough to fool you. The pool itself is covered in [15-memory-model.md](15-memory-model.md).
+
+> **Why does `==` even exist for Strings?** For objects (including `String`), `==` checks if two variables point to the **same object in memory** — not just the same value. This matters in some cases (e.g. checking if two list entries are literally the same object), but for Strings you almost never want that.
 
 ### `String`, `StringBuilder`, `StringBuffer`
 
@@ -208,7 +243,7 @@ The problem: `String` is **immutable** — once created, it cannot be changed. E
 
 `StringBuilder` uses a **buffer** to solve this — a space in memory where it accumulates the pieces of the string while you are building it, like a whiteboard where you keep writing until you have the final result. You modify it in place without creating new objects, and when you are done you call `.toString()` to get the finished string.
 
-The reason **thread-safety** is mentioned here is that `StringBuilder` is not thread-safe — and in Spring Boot this matters because each HTTP request arrives on a separate thread. If you declared a `StringBuilder` as a shared field on a Spring bean (which is a singleton), multiple threads could write to it at the same time and corrupt the result. For example:
+The concept of **thread-safety** shows up here because `StringBuilder` is not thread-safe — and in Spring Boot this matters because each HTTP request arrives on a separate thread. If you declared a `StringBuilder` as a shared field on a Spring bean (which is a singleton), multiple threads could write to it at the same time and corrupt the result. For example:
 
 ```java
 // BAD — shared across all threads (never do this with StringBuilder)
@@ -224,6 +259,10 @@ public String buildReport(List<String> lines) {
     return sb.toString();
 }
 ```
+
+> **What does thread-safe mean?** A **thread** is a task that runs in parallel with others inside the same program. In a REST API, Spring Boot assigns a separate thread to each incoming HTTP request — that is how it serves several at once without waiting for the first to finish. **Thread-safe** means several threads can use the same object at the same time without one corrupting the other's work. `String` and `StringBuffer` are thread-safe; `StringBuilder` is not. In practice the risk simply does not exist if you create the `StringBuilder` as a local variable inside a method — that object is yours and no other thread ever touches it.
+
+Read the table by picking your two constraints — do you need the object to be modifiable, and does more than one thread touch it — and the last column names the type that fits. Almost always you land on `String` (immutable, safe) for everyday values and `StringBuilder` (mutable, single-thread) for loops.
 
 |                 | Immutable? | Thread-safe? | When to use                             |
 | --------------- | ---------- | ------------ | --------------------------------------- |
@@ -241,10 +280,12 @@ for (int i = 0; i < 1000; i++) {
 // Efficient — mutates the same object
 StringBuilder sb = new StringBuilder();
 for (int i = 0; i < 1000; i++) {
-    sb.append(i);
+    sb.append(i);   // modifies the StringBuilder instead of creating a new one
 }
 String result = sb.toString();
 ```
+
+> **Why `.append()` and not `+=`?** Because `StringBuilder` is mutable — `.append()` modifies the existing object without creating anything new. `+=` on a `String` creates a brand-new object every time (that is exactly why it is slow). `StringBuilder` does not overload the `+=` operator, so it exposes its own `.append()` method to make it explicit that you are mutating the object in place.
 
 In Spring Boot you will mostly work with `String`. Use `StringBuilder` when you are building a long string by joining many pieces — for example, generating a comma-separated list or assembling a SQL fragment in a service method.
 
@@ -267,3 +308,7 @@ Two concepts help here: **compile time** is when Java translates your source cod
 Only works for local variables (inside methods). Cannot be used for fields, method parameters, or return types.
 
 Useful when the type is long and obvious from the right side: `var employees = employeeRepository.findAll()` is cleaner than `List<Employee> employees = employeeRepository.findAll()`.
+
+---
+
+You now have the raw materials: the eight primitives, their wrapper objects, `String` and its mutable cousins, casting between types, and `var`. But a variable that just sits there holding a value does nothing on its own — a program has to *decide* and *repeat*: run this block only if the age is over 18, loop over every employee in the list. That is control flow, and it is what [02-control-flow.md](02-control-flow.md) covers next — `if`/`else`, `switch`, and the loops that put these types to work.

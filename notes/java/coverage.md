@@ -9,12 +9,15 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `int` vs `long` — use `int` for most whole numbers, `long` for large numbers and database IDs; the `L` suffix is required for long literals (`1234567890L`) — forgetting it is a common mistake interviewers spot
 - `primitive` vs wrapper class (`long` vs `Long`) — wrapper classes can be `null`; interviewers ask "why does your entity ID use `Long` and not `long`?" — because JPA sets the ID to `null` before the first save; a `long` cannot be `null` so it would cause a compile error
 - `String.equals()` vs `==` — `==` compares memory addresses, not content; using `==` to compare Strings is the most common beginner bug interviewers check for in every Java code review; always use `.equals()`
+- String pool / literal interning — string literals (`"hi"`) are placed in a shared pool, so `==` between two identical literals is accidentally `true`, while `new String("hi")` or a runtime-built string is a separate object and returns `false`; interviewers use this as the follow-up to `==` vs `.equals()` to check you understand *why* `==` sometimes appears to work on Strings and know never to rely on it
 - `String.isBlank()` vs `String.isEmpty()` — `isEmpty()` is true only when length is 0; `isBlank()` is also true when the string is all spaces; maps directly to understanding `@NotBlank` (rejects blanks and spaces) vs `@NotNull` (only rejects null); interviewers ask this when reviewing DTO validation
 - `String.formatted()` — Java 15+ template substitution (`"User %s not found".formatted(id)`); the Java equivalent of JavaScript template literals; appears in custom exception messages
 - `BigDecimal` for money — `double` cannot represent 0.1 exactly in binary; interviewers ask "what type would you use for a price field and why?"; the correct answer is `BigDecimal` — it does exact arithmetic; `double` produces rounding errors after a few operations
 - `var` — local type inference (Java 10+); the type is still fixed at compile time — Java just infers it from the right side; only valid for local variables, not fields, parameters, or return types; you will see it in code reviews even if you do not write it yourself
 - String immutability — every operation (`toUpperCase()`, `+`, `replace()`) returns a new `String` object instead of changing the original; interviewers ask "why does `result += name` inside a loop perform badly?" — each iteration allocates a new object that the garbage collector must clean up
 - `StringBuilder` — mutable buffer for building a string inside a loop; `sb.append(x)` modifies the same object instead of creating a new one each time; interviewers ask when to reach for it instead of `+` (loops, not single-line concatenation — the compiler already optimises that case)
+- autoboxing / unboxing — the compiler silently converts between a primitive and its wrapper (`long` ↔ `Long`); unboxing a `null` wrapper into a primitive throws `NullPointerException`; interviewers show `long id = mapThatMightReturnNull.get(key)` and ask what blows up and why
+- `Integer` / `Long` cache and `==` on boxed values — boxed values from -128 to 127 are cached, so `==` on two boxed `100L` is accidentally `true` but two boxed `1000L` is `false`; interviewers use this gotcha to check you never compare wrapper objects with `==`, only `.equals()`
 
 ## Control flow
 
@@ -26,13 +29,27 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - Classes, fields, constructors — every Spring component is a class; interviewers ask "what is an object in the context of a Spring bean?"
 - `private final` fields — why Spring Boot services use them: dependencies cannot change after construction, makes the class easier to unit test; the constructor injection pattern depends on this
 - Access modifiers: `public`, `private`, `protected` — what each restricts and why Spring Boot services use `private` for fields and `public` for methods
+- Package-private (default) access — a field or method with no modifier is visible only within the same package, not public; interviewers list all four levels and expect you to name the "default" one because it is the one juniors forget
 - `this` keyword — disambiguates between a field and a constructor parameter; appears in Lombok-generated code and custom constructors
+- No-arg (default) constructor — Java gives a class a public no-arg constructor only when you declare no constructor at all; the moment you add any constructor that default disappears; interviewers ask "why does your JPA entity need a no-arg constructor?" — Hibernate instantiates the entity by reflection and then sets the fields, so an entity that has only an all-args constructor fails at runtime
 - `static` methods and fields — belong to the class, not to any instance; `Map.of()`, `Integer.parseInt()`, `Objects.equals()`, and utility factory methods are all `static`; interviewers ask "why can't a `static` method access instance fields?" (because there is no instance)
 - `instanceof` — checks the runtime type of an object; appears in `equals()` overrides (`if (!(obj instanceof Employee other)) return false`) and in exception handlers; pattern matching form (`instanceof Dog dog`) is Java 16+ and is in the notes
 - `equals()` and `hashCode()` — always override both together; `HashMap` and `HashSet` use `hashCode()` to find the bucket and `equals()` to confirm the match; breaking the contract causes silent bugs; Lombok `@Data` generates both automatically — interviewers ask "what does `@Data` generate?"
 - `Objects.equals(a, b)` — null-safe comparison utility; equivalent to `a != null && a.equals(b)` but shorter and cleaner; use inside `equals()` overrides to avoid NullPointerException
 - Encapsulation — fields are `private`, accessed through getters/setters; this is what Lombok's `@Data` generates; Spring Data reads and writes entity fields through this pattern
 - Records (Java 16+) — `record CreateUserRequest(String name, String email) {}` generates the constructor, getters, `equals`, `hashCode`, and `toString` automatically; immutable by design; interviewers ask "have you seen records used as DTOs?" because it shows you know modern Java
+
+## Inheritance and polymorphism
+
+- `extends` and `super` — a subclass inherits a parent's fields and methods; `super(...)` calls the parent constructor and `super.method()` calls the overridden parent method; interviewers ask you to distinguish inheritance from implementing an interface (single `extends` vs many `implements`) and where Spring uses it (your custom exception `extends RuntimeException`)
+- Polymorphism (runtime dispatch) — a variable of the parent/interface type can hold any subclass, and the overridden method chosen is decided at runtime, not compile time; this is why Spring can inject any implementation of an interface without the caller knowing which one; the classic "what is polymorphism, show an example" question
+- `final` (variable, method, class) — `final` on a variable forbids reassignment, on a method forbids overriding it in a subclass, on a class forbids extending it at all; interviewers ask "what does `final` mean in these three places?" because juniors only know the field case, and it explains why a `private final` service dependency cannot be swapped after construction
+
+## Memory and value semantics
+
+- Pass-by-value (Java has no pass-by-reference) — Java always copies the argument; for objects it copies the *reference*, so a method can mutate the object's fields (the caller sees it) but reassigning the parameter changes nothing for the caller; interviewers ask "does the caller see the change?" to catch candidates who confuse Java with C++
+- Stack vs heap — local variables and object *references* live on the per-method call stack, while the objects themselves live on the shared heap; interviewers ask this to test whether you truly understand pass-by-value (the reference is copied on the stack, the object on the heap is shared) and where a `NullPointerException` really comes from
+- Garbage collection — Java reclaims heap objects automatically once nothing can reach them any more, so there is no manual `free()`/`delete` like in C++; interviewers ask "how is memory managed in Java?" and expect you to name the garbage collector and connect it to why `result += name` in a loop is wasteful — each iteration leaves an unreachable `String` behind for the GC to clean up
 
 ## Interfaces and abstract classes
 
@@ -49,6 +66,7 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 
 - `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` — reading and writing typed containers in Spring Boot code
 - Why generics exist — catch type errors at compile time instead of at runtime; without generics, a `List` could hold any type and every `.get()` required a cast that could fail at runtime
+- Generics hold reference types only, not primitives — `List<int>` does not compile; you write `List<Integer>` and autoboxing bridges the two; interviewers show `List<int>` and ask why it fails, tying generics back to the wrapper-vs-primitive distinction
 - `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()` — the correct way to handle a value that might not exist
 - `Optional.get()` vs `Optional.orElseThrow()` — `get()` throws `NoSuchElementException` with no useful message if empty; `orElseThrow()` lets you throw a meaningful exception with context; interviewers treat `get()` as a red flag in code review — it is the same problem as returning `null`
 - Why returning `null` is a problem — forces every caller to null-check; `Optional` makes the absence explicit in the return type; interviewers ask "why Optional instead of null?"
@@ -64,6 +82,7 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `Collectors.groupingBy()` — groups elements into `Map<Key, List<Value>>`; used when a service must return data organised by a field (status, department, date); interviewers ask you to read the result type
 - `.toList()` vs `collect(Collectors.toList())` — `.toList()` is Java 16+ and returns an immutable list; `collect(Collectors.toList())` returns a mutable list; if the next line calls `.add()` on the result, `.toList()` will throw; interviewers ask the difference when reviewing modern Java code
 - Stream vs for loop — streams express intent clearly (`filter` + `map`); for loops are clearer when the logic is complex or when you need early exit with `break`; know when to choose each
+- Intermediate vs terminal operations (lazy evaluation) — `filter`/`map` are intermediate and do nothing until a terminal operation (`collect`, `forEach`, `findFirst`) runs; a stream with no terminal operation never executes; interviewers ask "does this `filter` run?" to test whether you know streams are lazy, not eager
 
 ## Exceptions
 
@@ -72,6 +91,11 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `try` / `catch` / `throws` — reading Spring Boot exception handling code; `throws` in a method signature is a contract: the caller must handle it
 - Creating a custom exception: `extends RuntimeException`, constructor that accepts a message, why you name it after what went wrong (`ResourceNotFoundException`)
 - `throw new SomeException()` — how it propagates up the call stack until `@RestControllerAdvice` catches it and returns a JSON error response
+- `NullPointerException` — the most common runtime failure; interviewers ask where it comes from (calling a method on `null`, unboxing a `null` wrapper, `Optional.get()` on an empty Optional) and how you prevent it (`Optional`, `Objects.requireNonNull`, null checks); not knowing its causes reads as no real Java experience
+- `finally` — always runs even when the `try` returns or throws, used for cleanup; the gotcha is that a `return` inside `finally` overrides the try's return and swallows the exception; interviewers use it to test control-flow depth
+- try-with-resources — the modern way to guarantee a resource (`Connection`, `InputStream`) is closed via `AutoCloseable`, replacing a hand-written `finally { close(); }`; interviewers ask how you close resources safely and expect this over manual cleanup
+- exception chaining / cause constructor (`throw new X(msg, cause)`) — how you rethrow while preserving the original stack trace; interviewers ask "if you catch and rethrow, how do you avoid losing where it really failed?" and a missing cause is a classic junior mistake that hides the real error
+- catch-block ordering — a more specific exception must be caught before a more general one, or the code does not compile (`catch (Exception e)` before `catch (IllegalArgumentException e)` is a compile error); interviewers use it as a quick pressure check on how catch resolution works
 
 ## Collections
 

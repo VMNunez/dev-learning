@@ -10,7 +10,7 @@ that is reference-only lives in its own file and is linked from here.
 
 - **Explain before any code** — never hand over full code unprompted (classes, methods, config, even a dependency snippet). Concept first, let Victor try; give the code at once if he explicitly asks for it.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
-- **No git side effects** — never run git/CLI commands; only write them for Victor to run. Never auto-commit. No `Co-Authored-By` lines. Commits are atomic (one logical change).
+- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`) or the prompt system (`notes/prompts/`), Claude may run the commits directly; the `progress-update` and `roadmap-review` orchestrators may likewise commit `PROGRESS.md` / `ROADMAP.md` under the conditions stated in those prompts. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only `notes/`/`notes/prompts/` paths are staged, and `git restore --staged` anything else (a project code file left staged from an earlier step has ridden along into a notes commit before).
 - **Never redirect** — don't comment on time spent or push Victor to "move on"; he decides what to work on.
 - **Correct his English at the end** — short and friendly, and now level it up from B1 to B2/FCE (see Language rules).
 - **Definition of done** — a unit of work is finished only when the code works, has at least one meaningful test, runs locally, and is committed atomically.
@@ -31,8 +31,9 @@ Before giving any guidance, in this order:
    next concrete action.
    - Project 07: the "Progressive learning plan" + Section 0 (Session quick reference).
    - Projects 08+: Section 0 (Session quick reference) and Section 15.
-3. **Read `PROJECT-BACKLOG.md`** — find the active project's section. If any High or Medium
-   `[ ]` task is open, mention it at the start of the session.
+3. **Read the active project's `PROJECT-BACKLOG.md`** (e.g. `projects/07-timetrack/PROJECT-BACKLOG.md`)
+   — full-stack projects (07+) each keep their own; Angular projects 01–06 are closed and have none.
+   If any High or Medium `[ ]` task is open, mention it at the start of the session.
 4. **Check `PROGRESS.md`** — the source of truth for what has already been learned. Use it to
    know where we are before guiding the next step (and to know which SQL topic is next — see
    "SQL runs in parallel" under Git workflow).
@@ -41,15 +42,14 @@ Before giving any guidance, in this order:
 what to improve once the step is done · `PROGRESS.md` records what is already learned. Always teach
 against the active project's plan — never invent random tasks.
 
-**Active project (June 2026):** `projects/07-timetrack` — Spring Boot + Angular + PostgreSQL +
-Docker + JWT + tests. Branch: `feat/spring-foundation` (or the current feature branch).
-Steps 1–3 done, Step 4 in progress — **PLANNING.md Section 0 is authoritative for the live step;
-defer to it.** Update this line when the active project changes.
+**Active project (July 2026):** `projects/07-timetrack` — Spring Boot + Angular + PostgreSQL +
+Docker + JWT + tests. Branch: `feat/timeentry-workflow` (or the current feature branch).
+Steps 1–4 done, Step 5 (TimeEntry) in progress — **PLANNING.md Section 0 is authoritative for the
+live step; defer to it.** Update this line when the active project changes.
 
 Each project's `PLANNING.md` is the single source of truth for what that project builds: app
 concept, tech stack, data model, key patterns, folder structure, and the step-by-step plan.
-- Angular projects: `angular/0X-project-name/PLANNING.md`
-- Full-stack projects: `projects/0X-project-name/PLANNING.md`
+- Every project lives under `projects/0X-project-name/PLANNING.md` (Angular-only 01–06, full-stack 07+)
 
 ---
 
@@ -63,7 +63,7 @@ concept, tech stack, data model, key patterns, folder structure, and the step-by
 - I am also preparing for the Cambridge First Certificate (B2 English exam)
 - My English is around B1 and I am pushing it to **B2 / Cambridge First (FCE)** — pitch explanations at FCE level to stretch me (see Language rules)
 - Previous knowledge (a bit rusty): React, Node.js, Express, TypeScript, Tailwind, CSS, HTML, JavaScript
-- Internship ended June 2 2026 (built a SaaS with Next.js + TypeScript + MySQL) — real work experience
+- Internship ended June 2 2026 (built a SaaS with Next.js + TypeScript + Supabase) — real work experience
 
 Career strategy, phases, applications timeline, and what makes a strong junior in 2026 → `ROADMAP.md`.
 Fuller profile, honest situation analysis (strengths / risks), and the Spanish job market →
@@ -133,6 +133,9 @@ git commit -m "type: description"
 
 ### After every learning plan step is completed — update these files without being asked
 
+(The `step-complete` skill in `.claude/skills/` fires on this event and walks this exact checklist —
+plus the README standard, which does not auto-load. This section remains the source of truth.)
+
 - `PROGRESS.md` — extract the concepts introduced in that step and add them to the correct technology section. How to extract depends on the project format:
   - Projects 01–06: read "Key patterns introduced" table in PLANNING.md — every row is a concept
   - Project 07: read the `**Concept learned:**` line of the completed step in the learning plan
@@ -142,6 +145,8 @@ git commit -m "type: description"
 - `projects/0X-projectname/README.md` — update the "What I learned" section
 - `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed
 - When a project is fully done, remind Victor to update the "Current study progress" section in this file and the project table in PROGRESS.md
+
+**Interview-prep is not part of this ritual** (dropped 2026-07-13) — do not add interview questions automatically on step completion. Add them only when Victor asks, in session, or via `interview-prep-audit`.
 
 ## CSS teaching rules
 
@@ -203,7 +208,7 @@ Not the main focus now, but keep them in mind. How Claude applies each one in pr
 
 ## notes/ folder
 
-All format, structure, writing style, and organisation rules → `notes/prompts/knowledge/notes-by-topic-prompt.md`. Read it before writing or editing any notes file. Claude can write notes files directly (Markdown docs, and code notes for Angular/SQL/Java) — Victor does not need to write these himself.
+All format, structure, writing style, and organisation rules → `notes/prompts/knowledge/notes/_note-quality-standard.md` (the shared writing standard). Read it before writing or editing any notes file. To build or audit notes there is **one entry point**: `notes/prompts/knowledge/notes/notes-audit.md` — run it inside Claude Code with `SCOPE = folder` (a whole topic) or `SCOPE = file` (one file); it plans, authors, and independently reviews each file with cold subagents, then commits atomically, hands-off. It orchestrates its seven internal pieces in `knowledge/notes/` (`_note-quality-standard`, `notes-plan`, `notes-inspect`, `notes-write`, `notes-review`, `notes-translate`, `notes-review-es`) — you never launch those directly. Claude can write notes files directly (Markdown docs, and code notes for Angular/SQL/Java) — Victor does not need to write these himself.
 
 **Detail standard — applies to every notes file written in a session, not only in the audit prompt.** Victor's quality bar is high for every topic; the best reference is the first section of `notes/java/es/08-excepciones.md`. Two rules carry most of the weight:
 - **Explain the mechanism, not just the behaviour.** State *why* something works the way it does, under the hood, step by step — not only what it does. Describing behaviour without tracing the mechanism is the number-one reason Victor has to add TODOs (e.g. don't say "the exception travels up the stack" without explaining what the stack is, how methods are stacked, and why "up" means "toward the caller").
@@ -217,19 +222,29 @@ Notes exist in two languages. Each topic folder contains two subfolders — `en/
 ```
 notes/java/
   en/  ← numbered English note files (e.g. 09-streams-lambdas.md)
-  es/  ← numbered Spanish note files (same filenames)
+  es/  ← numbered Spanish note files (same numeric prefix, Spanish-translated name — e.g. 08-exceptions.md ↔ 08-excepciones.md)
   coverage.md        ← stays in the root (not language-specific)
   future-learning.md ← stays in the root
   layer-reference.md ← stays in the root (spring-boot only)
 ```
 
 **Rules:**
-- **Never modify an `en/` file without checking its `es/` counterpart.** The rule covers three cases:
-  - New file created in `en/` → create the full Spanish version in `es/` with the same filename
-  - New section added to an existing `en/` file → if the `es/` counterpart exists, add the translated section there too; if not, note it but don't create the whole file
-  - TODO resolved in an `en/` file → apply the same fix in `es/` if the counterpart exists
+- **`en/` is the canonical source; `es/` is its first-class translation.** Content is authored and
+  corrected in `en/` first, then translated into `es/`. `es/` is still what Victor *studies* from, so
+  it must read as native Spanish and gets equal care — but the *source of truth* when writing is the
+  English. This reverses the older "`es/` is the absolute source" rule (retired 2026-07-09).
+  - **Intentional trims are made in `en/`.** If Victor wants to cut something (e.g. JS filler
+    comparisons — see the no-JS-filler rule), remove it from `en/`, the canonical source, so the
+    translation never re-adds it. Never restore to `es/` content that is absent from `en/`.
+  - **TODOs Victor writes in `es/`** (his study file) are read as *input*: resolve the doubt in `en/`,
+    then re-sync `es/` from the updated English and clear the `es/` marker. The answer round-trips
+    through English — that is expected under the canonical model.
+- **Never modify an `en/` file without re-syncing its `es/` counterpart.** The rule covers three cases:
+  - New file created in `en/` → create the full Spanish translation in `es/` with the same numeric prefix and a Spanish-translated name (never a copy of the English filename — see `_note-quality-standard.md`, "File naming convention")
+  - New section added to an existing `en/` file → if the `es/` counterpart exists, translate the section there too; if not, note it but don't create the whole file
+  - TODO resolved in an `en/` file → re-sync the same content into `es/` if the counterpart exists
 - Spanish versions use the same structure and code blocks — only the prose is translated into Spanish. Code comments may also be translated. **The Spanish prose must read as natural Spanish, not as a word-for-word translation of the English.** The content and message must be identical across both languages, but each version should read as if it were written natively in that language — same idea, same emphasis, different words where needed. Literal translations that sound awkward or robotic in Spanish are not acceptable. Structural labels like `Purpose:`, `File:`, and `Docs:` must be translated to `Propósito:`, `Archivo:`, and `Docs:` (Docs stays as-is — it is a common abbreviation in Spanish developer contexts).
-- `en/` and `es/` must always contain exactly the same files. Whenever a file is created in `en/`, create the Spanish version in `es/` immediately. Whenever a section is added or a TODO is resolved in an `en/` file, apply the same change in `es/`. The two folders are never allowed to be out of sync.
+- `en/` and `es/` must always contain the same set of numbered files, paired by numeric prefix. Whenever a file is created in `en/`, create the Spanish version in `es/` immediately. Whenever a section is added or a TODO is resolved in an `en/` file, apply the same change in `es/`. The two folders are never allowed to be out of sync.
 - If the `en/` or `es/` subfolder does not exist yet, create it before writing any files into it. If numbered files are still in the topic root (not yet migrated), move them to `en/` with `git mv` and create the Spanish counterparts in `es/` — non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) always stay in the root.
 - `coverage.md`, `future-learning.md`, and `layer-reference.md` are not translated — they live only in the topic root.
 
@@ -242,25 +257,25 @@ notes/java/
 - `notes/sql/` — `en/` and `es/` for numbered files; next file: `15-...`; future-learning.md in root
 - `notes/architecture/` — `en/` and `es/` for numbered files; next file: `06-...`; future-learning.md in root (includes microservices as a concept-only entry)
 - `notes/angular/` — `en/` and `es/` for numbered files; next file: `19-...`; future-learning.md in root
-- `notes/java/` — `en/` and `es/` for numbered files; next file: `15-...`; future-learning.md in root
-- `notes/spring-boot/` — `en/` and `es/` for numbered files; next file: `11-...`; future-learning.md and layer-reference.md in root
+- `notes/java/` — `en/` and `es/` for numbered files; next file: `16-...`; future-learning.md in root
+- `notes/spring-boot/` — `en/` and `es/` for numbered files; next file: `14-...`; future-learning.md and layer-reference.md in root
 - `notes/angular-material/` — `en/` and `es/` for numbered files; next file: `16-...`
-- `notes/general/` — `en/` and `es/` for numbered files; next file: `12-...`; future-learning.md in root
+- `notes/general/` — not yet migrated to `en/`/`es/` (files sit in the topic root); next file: `13-...`; future-learning.md in root
 - `notes/security/` — `en/` and `es/` for numbered files; next file: `06-...`; future-learning.md in root
 - `notes/interview-prep/en/` and `notes/interview-prep/es/` — Q&A study files, one file per topic: `angular.md`, `typescript.md`, `architecture.md`, `general.md`, `javascript.md`, `css.md`, `git.md`, `sql.md`, `java.md`, `spring-boot.md`, `security.md`
-- `notes/interview-prep/projects/` — one file per project with specific questions about that project's implementation decisions; generated by `portfolio-ready-prompt`
+- `notes/interview-prep/projects/` — one file per project with specific questions about that project's implementation decisions; generated by `portfolio-audit`
 - `notes/prompts/` — the prompt system (see "The study system" below); `notes/prompts/README.md` is the index
 
 ### Interview prep — in-session rules
 
-→ Full format, question structure, and audit rules in `notes/prompts/knowledge/interview-prep-by-topic-prompt.md`.
+→ Question format and quality bar in `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`; to build/audit a topic's Q&A run `notes/prompts/knowledge/interview-prep/interview-prep-audit.md` (the entry point — author + cold reviewer subagents per topic).
 
 - Add questions naturally as concepts are learned — not in one batch at the end
 - Add to BOTH `en/` and `es/` at the same time — same question, same section, translated. Never add to one without the other
 
 ### README format
 
-All README format rules and quality standards → `notes/prompts/projects/readme-review-prompt.md`. Run it in a separate conversation.
+All README format rules and quality standards live in `notes/prompts/projects/readme/_readme-standard.md`; run `readme-audit.md` (inside Claude Code) to apply them. Run in a separate conversation.
 
 ---
 
@@ -307,24 +322,21 @@ All README format rules and quality standards → `notes/prompts/projects/readme
 
 ### SQL and study materials live on `main` — there is no separate SQL branch
 
-**Decision: drop `sql/practice`.** It gave no isolation — SQL files never touch project code, so they
-never conflict — and it split `PROGRESS.md` across branches (the branch already holds exercises that
-never reached the trunk while PROGRESS claimed them as done). A separate branch was solving a problem
-that does not exist and creating one that does.
+(The old `sql/practice` branch was merged and deleted in July 2026 — study files never conflict with
+project code, so a separate branch only split `PROGRESS.md` across branches.)
 
-- **Study and tracking materials live on `main`:** `sql/`, `notes/`, `simulations/`, `PROGRESS.md`,
-  `ROADMAP.md`, `PROJECT-BACKLOG.md`. Commit them directly on `main`. **Project code** keeps the
+- **Study and tracking materials live on `main`:** `practice/sql/`, `notes/`, `practice/simulations/`, `PROGRESS.md`,
+  `ROADMAP.md`. Commit them directly on `main`. **Project code** keeps the
   feature-branch → PR → `main` workflow (that history has portfolio value; study files do not need it).
+  `PROJECT-BACKLOG.md` lives inside each full-stack project's own folder (e.g.
+  `projects/07-timetrack/PROJECT-BACKLOG.md`) and follows that project's normal feature-branch
+  workflow like `PLANNING.md` and `README.md` do.
 - This gives `PROGRESS.md` exactly **one home** (`main`) — no divergence, no checkout dance.
-- SQL block (12:30): work in `sql/` on `main`, commit there, and update the SQL section of
+- SQL block (12:30): work in `practice/sql/` on `main`, commit there, and update the SQL section of
   `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
-- The SQL section in PROGRESS.md tracks which topics exist in `sql/` and their status:
-  solid ✅ (score > 80% in review) or in progress ⏳. Read it at the start of a SQL session to know
+- The SQL section in PROGRESS.md tracks which topics exist in `practice/sql/` and their status:
+  solid ✅ (score ≥ 80% in review) or in progress ⏳. Read it at the start of a SQL session to know
   which topic is next.
-- **One-time cleanup still pending:** the old `sql/practice` branch has work that never landed on
-  `main` (exercises #21–40 and `02-joins`). Merge it into `main`, reconcile `PROGRESS.md` once
-  (keep the most complete version), then delete the branch (local + remote). Ask Claude for the exact
-  commands — do this before the next SQL session so nothing is lost.
 
 ### PROGRESS.md updates
 
@@ -388,12 +400,13 @@ learning/
 ├── CLAUDE.md              ← this file (session rules)
 ├── PROGRESS.md            ← concepts learned, projects done, status
 ├── ROADMAP.md             ← career strategy, phases, daily schedule, applications plan
-├── PROJECT-BACKLOG.md     ← improvement tasks per project, written by project-review-prompt
-├── angular/               ← Angular-only projects (01-todo-list/, 02-..., etc.)
-├── projects/              ← full-stack projects (backend + frontend + DB)
+├── projects/              ← every project, chronological (01–06 Angular-only, 07+ full-stack); see projects/README.md
+│   ├── 06-hr-portal/      ← last Angular-only project
 │   └── 07-timetrack/      ← Spring Boot + Angular + PostgreSQL + Docker
-├── simulations/           ← technical test simulations — Angular, Spring Boot, SQL; tracker at TRACKER.md
-├── sql/                   ← SQL exercises (01-basics/, 02-joins/, etc.) — lives on main
-├── leetcode/              ← algorithm exercises for interviews (gated — see ROADMAP.md)
+│       └── PROJECT-BACKLOG.md ← improvement tasks for this project, written by review-audit
+├── practice/              ← exercises, not portfolio (lives on main)
+│   ├── sql/               ← SQL exercises (flat files: 01-basics.sql, 02-joins.sql, …)
+│   ├── simulations/       ← technical test simulations — Angular, Spring Boot, SQL; tracker at TRACKER.md
+│   └── leetcode/          ← algorithm exercises for interviews (gated — see ROADMAP.md)
 └── notes/                 ← study guide + prompt system (see notes/ folder and notes/prompts/README.md)
 ```

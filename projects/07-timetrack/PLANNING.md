@@ -11,10 +11,10 @@ Update this table at the start of every session. It is the authoritative pointer
 
 | | |
 |---|---|
-| **Current step** | Step 5 — TimeEntry CRUD + workflow |
-| **Done condition** | Postman: POST /api/entries returns 201 — status DRAFT; PATCH /api/entries/{id}/approve as employee returns 403; as manager on a SUBMITTED entry returns 200 — status APPROVED |
+| **Current step** | Step 6 — Reports |
+| **Done condition** | Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours } |
 | **Phase** | Backend — core domain (Phase 4) |
-| **Last updated** | 2026-07-06 |
+| **Last updated** | 2026-07-14 |
 
 ---
 
@@ -740,7 +740,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - **Review concepts:** JWT flow (token now carries the role)
 - **Done condition:** `Postman: POST /api/projects with EMPLOYEE token returns 403; with MANAGER token returns 201`
 
-### Step 5 — TimeEntry CRUD + workflow
+### Step 5 — TimeEntry CRUD + workflow ✅
 - `TimeEntry` entity with `@ManyToOne` to User and Project
 - `GET /api/entries` filters by current user (employee) or returns all (manager)
 - CRUD with business-rule validation (future date, inactive project, DRAFT-only edits)
@@ -748,6 +748,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - **New concepts:** `@ManyToOne` relationships, state machine workflow, PATCH for transitions, role-based data filtering
 - **Review concepts:** soft delete, `SecurityContextHolder`
 - **Done condition:** `Postman: POST /api/entries returns 201 — status DRAFT; PATCH /api/entries/{id}/approve as employee returns 403; as manager on a SUBMITTED entry returns 200 — status APPROVED`
+- **Concept learned:** hard delete (`deleteById`) is correct here — `TimeEntry` has no `active` field like `Project`/`User`, and only DRAFT entries can be removed, so nothing worth preserving is lost. Bean Validation (`@NotBlank`/`@NotNull` + `@Valid`) was added across all request DTOs (`CreateProjectRequest`, `UpdateProjectRequest`, `CreateTimeEntryRequest`, `RejectRequest`) as part of this step, plus a `PUT /api/entries/{id}` (edit DRAFT) and `DELETE /api/entries/{id}` (delete DRAFT) endpoint — both reusing the owner + DRAFT-only guards, and PUT re-running create's business rules (future date, inactive project, hours range) since it replaces the whole resource.
 
 ### Step 6 — Reports
 - Aggregate queries with JPQL

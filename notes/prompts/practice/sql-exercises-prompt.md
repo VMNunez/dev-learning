@@ -4,8 +4,10 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 Two modes:
 
-- **`practice`** — generates exercises for a SQL topic and saves them to `sql/`. If the topic file already exists, adds more exercises continuing the numbering.
+- **`practice`** — generates exercises for a SQL topic and saves them to `practice/sql/`. If the topic file already exists, adds more exercises continuing the numbering.
 - **`review`** — checks your answers. Paste the exercise file at the very end of the prompt.
+
+> **▶ Run first:** nothing — `practice` generates exercises from scratch; `review` needs your answers pasted at the end.
 
 ---
 
@@ -211,13 +213,19 @@ Generate {COUNT} exercises for {TOPIC}, numbered starting from N+1.
 introduce that concept; Standard and Challenge explore its edge cases and combinations.
 Do not cover other parts of the topic.
 
-**If FOCUS is blank:** cover the full topic. Use `notes/sql/coverage.md` as the primary
-source of concept scope — read the section that corresponds to {TOPIC} using the mapping
-below, and ensure every concept item listed there is addressed across the exercises.
-The topic-specific focus rules further below define exercise format, special constraints,
-and structure; coverage.md defines the concept scope. If coverage.md lists a concept not
-explicitly mentioned in the focus rules, treat it as an additional item to include,
-especially in Standard and Challenge exercises.
+**If FOCUS is blank:** cover the full topic. `notes/sql/coverage.md` is the **single source of
+truth for concept scope** — read the section that corresponds to {TOPIC} using the mapping below,
+and ensure every concept item listed there is addressed across the exercises. The topic-specific
+rules further below are **exercise format, structural constraints, and concrete seeds** (e.g. the
+BEGIN/ROLLBACK wrapper for DML, the four-task format for normalization, a specific Challenge to
+build) — they are *not* the scope list and must never be read as one.
+
+**Reconciliation rule — coverage.md always wins on scope.** The seed bullets below were written
+once and coverage.md evolves; do not assume they still match. On any disagreement about *which
+concepts* to cover, coverage.md is authoritative: include a concept it lists even if no seed
+mentions it, and drop a seed concept coverage.md no longer lists. The seeds only ever supply
+*format and concrete examples* for the concepts coverage.md defines — treat a seed that names a
+concept as an illustration, not as permission to add scope coverage.md dropped.
 
 | TOPIC | coverage.md section to read |
 |-------|-----------------------------|
@@ -288,7 +296,8 @@ skill in a technical interview ("explain every line, not just write it"):
 Do NOT add this line to Intro or Standard exercises — keep those frictionless. It is Challenge-only,
 where the reasoning is deepest and most worth explaining out loud.
 
-**Topic-specific focus:**
+**Topic-specific format and seeds** (structure + concrete exercise ideas — *not* the scope list;
+coverage.md defines scope, and the reconciliation rule above governs any conflict):
 
 JOINS
 - INNER JOIN (basic), LEFT JOIN (keep rows with no match), RIGHT JOIN, FULL OUTER JOIN
@@ -468,19 +477,19 @@ Challenge: analyze a slow query and decide what index to add, then verify with E
 
 | Topic | Path |
 |-------|------|
-| joins | sql/02-joins/exercises.sql |
-| group-by | sql/03-group-by/exercises.sql |
-| nulls | sql/04-nulls/exercises.sql |
-| subqueries | sql/05-subqueries/exercises.sql |
-| ctes | sql/06-ctes/exercises.sql |
-| dml | sql/07-dml/exercises.sql |
-| normalization | sql/08-normalization/exercises.sql |
-| schema-design | sql/09-schema-design/exercises.sql |
-| window-functions | sql/10-window-functions/exercises.sql |
-| indexes | sql/11-indexes/exercises.sql |
-| transactions | sql/12-transactions/exercises.sql |
-| data-types | sql/13-data-types/exercises.sql |
-| postgresql-specifics | sql/14-postgresql-specifics/exercises.sql |
+| joins | practice/sql/02-joins.sql |
+| group-by | practice/sql/03-group-by.sql |
+| nulls | practice/sql/04-nulls.sql |
+| subqueries | practice/sql/05-subqueries.sql |
+| ctes | practice/sql/06-ctes.sql |
+| dml | practice/sql/07-dml.sql |
+| normalization | practice/sql/08-normalization.sql |
+| schema-design | practice/sql/09-schema-design.sql |
+| window-functions | practice/sql/10-window-functions.sql |
+| indexes | practice/sql/11-indexes.sql |
+| transactions | practice/sql/12-transactions.sql |
+| data-types | practice/sql/13-data-types.sql |
+| postgresql-specifics | practice/sql/14-postgresql-specifics.sql |
 
 If the folder does not exist, create it using the path above.
 
@@ -641,19 +650,19 @@ The table format is (4 columns — shared with `progress-update-prompt`):
 
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
-| basics / SELECT | sql/01-basics.sql | 40 | in progress ⏳ |
-| joins | sql/02-joins.sql | 24 | solid ✅ |
+| basics / SELECT | practice/sql/01-basics.sql | 40 | in progress ⏳ |
+| joins | practice/sql/02-joins.sql | 24 | solid ✅ |
 ```
 
 **If the table exists:** find the row for {TOPIC} and update the `Exercises` and `Status` columns:
 - Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
 - Exercises: count all exercises in the reviewed file, including any previous batches
-- Leave the `Folder` column as-is (it is the file path, e.g. `sql/02-joins.sql`)
+- Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/02-joins.sql`)
 - Then refresh the `X total exercises across Y topics` summary line above the table to match the
   new column totals
 
 **If the row for {TOPIC} does not exist in the table:** add it. Fill `Folder` with the file's
-path (`sql/<NN>-<topic>.sql` for a flat file, `sql/<NN>-<topic>/` for a subfolder).
+path (`practice/sql/<NN>-<topic>.sql` — the flat-file convention is the real one; a legacy subfolder would be `practice/sql/<NN>-<topic>/`).
 
 **If the `### Exercises completed` table does not exist in PROGRESS.md:** create it under a new
 `### Exercises completed` heading, with the 4-column format and the summary line above. Insert it
@@ -671,46 +680,28 @@ reason (e.g. WHERE vs HAVING), add one question, not three.
 This step runs for any score. Even at ≥ 80%, if one or two exercises were ⚠️ or ❌, add
 questions for those gaps. If every exercise was ✅, skip this step entirely.
 
-Add each question to BOTH files simultaneously — never one without the other:
-- notes/interview-prep/en/sql.md
-- notes/interview-prep/es/sql.md
+Add each question to `notes/interview-prep/en/sql.md` and `notes/interview-prep/es/sql.md` following
+**"Adding questions from outside the audit (practice prompts)"** in
+`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` — it defines the question format,
+the bilingual rule, dedupe-by-concept, placement under the matching `##` section, and priority-marker
+reordering. Do not restate them here. Two SQL-specific points on top of the standard:
 
-**Before adding:** find the target section in the file (see Placement below). Scan that section
-for a question that already tests the same concept, even if the wording differs. If one exists,
-skip — do not add a duplicate.
-
-**Format for each question:**
-
-**[Question as a Spanish consultancy interviewer would ask it?]** ⭐⭐
-
-Answer in 1–2 sentences. Use first person ("I use", "I chose") — not passive voice ("it is used").
-Reference the bookstore schema or the exercise number if the question is about a query pattern
-(e.g. "In the JOINs exercises, I used LEFT JOIN + IS NULL to find authors with no books...").
-
-Then add exactly one optional element based on the question type:
-- **Conceptual** (what is X / how does X work): add a Junior tip block
-  > **Junior tip:** [one line of advice on how to explain it clearly in an interview]
-  > **Consejo de entrevista:** [same advice in Spanish]
-- **Decision-based** (when X instead of Y) or **Pressure** (gotcha / edge case): add a Red flag line
-  Red flag answer: [what a weak candidate would say and why it is wrong]
-
-**Priority markers — replace ⭐⭐ above with the appropriate level for each question:**
-- ⭐⭐⭐ — core SQL pattern; not knowing this would filter a candidate in a first screening.
-  Examples: WHERE vs HAVING, INNER vs LEFT JOIN, NULL comparison behaviour, COUNT(*) vs COUNT(column).
-- ⭐⭐ — comes up when the interviewer goes deeper on the topic.
-  Examples: COALESCE, correlated subqueries, EXISTS vs IN, DML with RETURNING.
-- ⭐ — PostgreSQL-specific detail or rarely tested edge case; missing it is not a dealbreaker at junior level.
-
-**Placement:** find the matching `##` section heading in the file (e.g. `## JOINs`,
-`## Aggregates and GROUP BY`, `## DML`). Place the question under that heading. If no matching
-section exists, create one. Within the section, maintain priority order: ⭐⭐⭐ first, then ⭐⭐, then ⭐.
+- **Anchor the answer to the exercises.** Reference the bookstore schema or the exercise number when
+  the question is about a query pattern (e.g. "In the JOINs exercises, I used LEFT JOIN + IS NULL to
+  find authors with no books…").
+- **Priority calibration for SQL:** ⭐⭐⭐ = core pattern that filters in a first screen (WHERE vs
+  HAVING, INNER vs LEFT JOIN, NULL comparison behaviour, COUNT(*) vs COUNT(column)); ⭐⭐ = deeper
+  probes (COALESCE, correlated subqueries, EXISTS vs IN, DML with RETURNING); ⭐ = PostgreSQL-specific
+  edge cases.
 
 ---
 
 ### Step 6 — Commit message
 
 **Branch:** SQL exercises and PROGRESS.md both live on `main` (there is no separate SQL branch).
-Commit on `main`.
+Commit on `main`. **Precondition check:** if `practice/sql/` or `PROGRESS.md` do not exist on `main`
+yet (the repo-layout reorg may still live only on the feature branch), stop and say so — merge the
+reorg to `main` first instead of recreating files in the wrong place.
 
 List only files that were actually modified. Always one command per code block.
 

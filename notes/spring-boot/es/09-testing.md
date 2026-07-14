@@ -28,6 +28,8 @@ Flujo completo @SpringBootTest           Todo — más lento
 
 ## JUnit 5 — el test runner
 
+Docs: https://junit.org/junit5/docs/current/user-guide/#writing-tests-annotations → leer: la tabla de anotaciones
+
 JUnit 5 es el framework de test Java estándar. Spring Boot lo incluye automáticamente a través de la dependencia `spring-boot-starter-test` — ya está en el `pom.xml` cuando generas el proyecto.
 
 ```java
@@ -77,7 +79,9 @@ assertThrows(SomeException.class, () -> { /* llamada que lanza */ });
 
 ---
 
-## Testar un service — JUnit 5 + Mockito (sin Spring)
+## Testear un service — JUnit 5 + Mockito (sin Spring)
+
+Docs: https://www.baeldung.com/mockito-annotations → leer: las secciones de `@Mock` e `@InjectMocks`
 
 Este es el test más rápido que escribes. No cargas Spring en absoluto — creas el service con un repositorio mock pasado por el constructor, igual que funciona la inyección por constructor en producción.
 
@@ -120,6 +124,8 @@ class TransactionServiceTest {
 }
 ```
 
+> **Qué hace realmente `@ExtendWith(MockitoExtension.class)`.** JUnit 5 no sabe por sí solo qué significan `@Mock` o `@InjectMocks` — son anotaciones de Mockito, no de JUnit. `@ExtendWith` conecta una *extensión* de JUnit 5 al ciclo de vida del test; `MockitoExtension` es ese conector para Mockito. Antes de que se ejecute cada test, recorre la clase en busca de campos `@Mock` y crea un falso para cada uno, luego busca `@InjectMocks` y construye ese objeto, pasándole los falsos que acaba de crear — la misma inyección por constructor que usa Spring en producción, solo que aquí la monta Mockito en lugar de Spring. Sin `@ExtendWith(MockitoExtension.class)`, cada campo `@Mock` se queda en `null` y el test falla con una `NullPointerException` en la primera llamada.
+
 **Arrange / Act / Assert** — estructura siempre los tests así:
 - **Arrange** — configura los datos de test y el comportamiento del mock
 - **Act** — llama al método que estás testeando
@@ -131,6 +137,8 @@ class TransactionServiceTest {
 
 ## Mockito — los métodos más útiles
 
+Docs: https://www.baeldung.com/mockito-behavior → leer: las secciones de `when()`/`thenReturn()` y `verify()`
+
 ```java
 // Hacer que el mock devuelva algo
 when(repository.findById(1L)).thenReturn(Optional.of(transaction));
@@ -138,6 +146,9 @@ when(repository.findAll()).thenReturn(List.of(t1, t2));
 
 // Hacer que el mock lance una excepción
 when(repository.findById(999L)).thenThrow(new ResourceNotFoundException("Transaction", 999L));
+
+// Hacer que un método void lance una excepción — when().thenThrow() no funciona aquí, no hay valor de retorno al que encadenar
+doThrow(new ResourceNotFoundException("Transaction", 999L)).when(repository).deleteById(999L);
 
 // Verificar que se llamó a un método
 verify(repository).save(any(Transaction.class));
@@ -153,6 +164,8 @@ when(repository.findById(anyLong())).thenReturn(Optional.empty());
 ---
 
 ## @WebMvcTest — solo capa de controlador
+
+Docs: https://www.baeldung.com/spring-boot-testing → leer: la sección de `@WebMvcTest`
 
 Carga solo la capa web: controladores, filtros y `@ControllerAdvice`. Los services y repositorios no se cargan — los reemplazas con `@MockBean`.
 
@@ -207,6 +220,8 @@ Usa `@MockBean` siempre que Spring esté involucrado. Usa `@Mock` para tests de 
 
 ## @SpringBootTest — test de integración completo
 
+Docs: https://www.baeldung.com/spring-boot-testing → leer: la sección de `@SpringBootTest`
+
 Carga todo el contexto de la aplicación: todos los beans, auto-configuración y una conexión real a la base de datos. Úsalo para los flujos críticos — verificar que un POST request realmente escribe una fila en la base de datos.
 
 ```java
@@ -241,6 +256,8 @@ class TransactionIntegrationTest {
 ---
 
 ## @DataJpaTest — solo capa de repositorio
+
+Docs: https://www.baeldung.com/spring-boot-testing → leer: la sección de `@DataJpaTest`
 
 Carga solo entidades JPA, repositorios y una base de datos H2 en memoria. No carga controladores ni services.
 
@@ -282,6 +299,8 @@ class TransactionRepositoryTest {
 | Query SQL incorrecta | | | ✓ | ✓ |
 | @Transactional que falta | | | | ✓ |
 | Seguridad mal configurada | | | | ✓ |
+
+Lee un ✓ como "este tipo de test realmente falla si se introduce este bug" — una celda vacía no significa que esa capa esté a salvo del bug, significa que ese tipo de test no tiene forma de detectarlo aunque esté presente (por ejemplo, un test de service `JUnit+Mockito` no puede detectar un mapeo de URL incorrecto, porque nunca toca la capa web).
 
 Por eso se necesitan tanto tests unitarios como de integración — detectan diferentes tipos de bugs. Un @WebMvcTest que pasa no garantiza que la lógica de negocio sea correcta.
 

@@ -88,7 +88,7 @@ In order of impact:
 
 2. **Tests in the project** — almost no junior candidate has tests. Having JUnit 5 + Mockito on the backend and Jasmine + TestBed on the frontend makes you immediately more credible. It shows you understand production code, not just working code.
 
-3. **A README with architecture decisions** — not a list of technologies. Decisions: _why JWT over sessions, why soft delete, why DTOs instead of exposing entities, why coordinator pattern_. One candidate who explains decisions is worth more than five who just list features. The README format and quality standard is defined in `notes/prompts/project-review-prompt.md`.
+3. **A README with architecture decisions** — not a list of technologies. Decisions: _why JWT over sessions, why soft delete, why DTOs instead of exposing entities, why coordinator pattern_. One candidate who explains decisions is worth more than five who just list features. The README format and quality standard is defined in `notes/prompts/projects/readme/_readme-standard.md`.
 
 4. **The internship on the CV** — even with a different stack. It proves you have worked in a team, delivered something real, and handled real deadlines. Mention a specific result: _built X that does Y for Z users/clients_.
 
@@ -157,7 +157,7 @@ No project is finished without tests. Tests are not a step — they are part of 
 
 ### Project 08 — after 07
 
-Planned using `notes/prompts/projects/new-project-prompt.md` — paste it into a new chat when project 07 is complete. It reads `notes/coverage.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project. Run it once, get a full plan.
+Planned using `notes/prompts/projects/plan/plan-audit.md` (`MODE = new`) — run it inside Claude Code when project 07 is complete. It reads `notes/coverage.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project — an author subagent drafts it and a cold reviewer audits and fixes it before it commits, hands-off. Run it once, get a full plan.
 
 **Project 08 candidate ideas:**
 
@@ -192,7 +192,7 @@ Planned using `notes/prompts/projects/new-project-prompt.md` — paste it into a
 **Stage 2 — Technical test simulation:**
 Simulate real consultancy tests: write a Spring Boot endpoint from scratch, build an Angular form with validation, write a SQL query against an unfamiliar schema — all under time pressure. This is what the actual tests look like.
 
-**Minimum target: 15 simulations before applying seriously** — all tests are in `simulations/` with a tracker at `simulations/TRACKER.md`. Split by type:
+**Minimum target: 15 simulations before applying seriously** — all tests are in `practice/simulations/` with a tracker at `practice/simulations/TRACKER.md`. Split by type:
 
 | Type        | Minimum | What it covers                                                        |
 | ----------- | ------- | --------------------------------------------------------------------- |
@@ -207,11 +207,11 @@ Simulate real consultancy tests: write a Spring Boot endpoint from scratch, buil
 - When time is up, review with Claude: what was wrong, what was slow, what you could not recall
 
 **Where to get the tests:**
-All 15 tests are already written in `simulations/` — 5 Angular, 5 Spring Boot, 5 SQL. Check `simulations/TRACKER.md` for the full list and your progress.
+All 15 tests are already written in `practice/simulations/` — 5 Angular, 5 Spring Boot, 5 SQL. Check `practice/simulations/TRACKER.md` for the full list and your progress.
 
 To do a simulation: open the spec file, set a timer, and build. No notes, no AI. When time is up, open a new chat and write:
 
-> _"Review my solution for [simulations/angular/01-task-form.md]. Here is my code: [paste code]. Tell me what is wrong, what is missing, and what I would score."_
+> _"Review my solution for [practice/simulations/angular/01-task-form.md]. Here is my code: [paste code]. Tell me what is wrong, what is missing, and what I would score."_
 
 **Stage 3 — LeetCode Easy (only if all of the following are complete):**
 
@@ -254,7 +254,7 @@ Replaces interview prep when all main topics are solid.
 
 - Project 07 live, documented, explainable line by line
 - Project 08 live or well advanced
-- At least 15 simulations completed (5 Spring Boot, 5 Angular, 5 SQL) — tracker at `simulations/TRACKER.md`
+- At least 15 simulations completed (5 Spring Boot, 5 Angular, 5 SQL) — tracker at `practice/simulations/TRACKER.md`
 - All interview prep files solid — every question answered with a project example
 - CV with specific results: _built X that does Y_
 - LinkedIn updated with project summaries and the internship bullet
@@ -283,7 +283,7 @@ Recruiters at consultancies check all three before calling you. If they are not 
 
 ### LinkedIn
 
-The full writing process — all sections, text, posts, and skill order — is in `notes/prompts/strategy/linkedin-prompt.md`. Run it in a separate conversation when you are ready to update your profile.
+The full writing process — all sections, text, posts, and skill order — is in `notes/prompts/strategy/apply/linkedin-prompt.md`. Run it in a separate conversation when you are ready to update your profile.
 
 What matters most for recruiter visibility:
 - Keyword match in the headline and skills — `Angular`, `Spring Boot`, `Java` must appear
@@ -292,7 +292,7 @@ What matters most for recruiter visibility:
 
 ### CV
 
-The full writing process — format, bullets, ATS keywords, and length check — is in `notes/prompts/strategy/cv-prompt.md`. Run it in a separate conversation when you are ready to write or update your CV.
+The full writing process — format, bullets, ATS keywords, and length check — is in `notes/prompts/strategy/apply/cv-prompt.md`. Run it in a separate conversation when you are ready to write or update your CV.
 
 What matters most:
 - One page maximum — non-negotiable for junior roles at Spanish consultancies

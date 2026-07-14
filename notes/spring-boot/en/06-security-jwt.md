@@ -784,7 +784,8 @@ _Step by step:_
 **1. Request arrives → JwtFilter runs, sees no token → passes through**
 `security/JwtFilter.java` — Every request passes through `JwtFilter` first. It looks for an `Authorization: Bearer <token>` header. On login, the user does not have a token yet, so the header is missing. `JwtFilter` detects this and does nothing — it simply passes the request to the next step.
 
-**2. SecurityFilterChain checks the route → `/api/auth/**`is`permitAll()`→ allows it**`security/SecurityConfig.java`—`SecurityFilterChain`is the set of security rules you configured.`permitAll()`means "no authentication required for this URL". Since you marked`/api/auth/\*\*` as public, the login endpoint is allowed through.
+**2. SecurityFilterChain checks the route → `/api/auth/**` is `permitAll()` → allows it**
+`security/SecurityConfig.java` — `SecurityFilterChain` is the set of security rules you configured. `permitAll()` means "no authentication required for this URL". Since you marked `/api/auth/**` as public, the login endpoint is allowed through.
 
 **3. AuthController receives the request → calls AuthService.login()**
 `controller/AuthController.java` — The request reaches your controller, which reads the JSON body (email + password) and calls the service.
@@ -1736,6 +1737,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
 **`UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())`** — creates the authentication object that goes into `SecurityContextHolder`. The three arguments are: the principal (who), the credentials (null — no password needed here), and the authorities (roles). Once this is in the `SecurityContextHolder`, Spring Security considers the user authenticated for this request.
 
+> **2-arg vs 3-arg — two different meanings, same class.** `AuthService` (Flow 1) built a 2-arg version: `new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())` — email and *raw* password, handed to `authenticationManager.authenticate()` as an unverified login **attempt** still waiting to be checked. `JwtFilter` (Flow 2) builds the 3-arg version here — principal, `null` credentials, authorities — which is not an attempt at all: it is a **confirmed** authentication, already proven by the valid JWT signature, ready to be stored directly in `SecurityContextHolder`. The number of arguments is the tell: 2-arg always means "please verify this", 3-arg always means "this is already verified, here are the roles". That is also why Flow 2 passes `null` for credentials — there is no password to check anymore, the token already did that job.
+
 **`filterChain.doFilter(request, response)`** — `filterChain` is the ordered list of all filters in the chain. Calling `.doFilter()` means: "I am done — pass this request to the next filter in the chain". Every filter that does not want to block a request must call this, otherwise the request is dropped silently.
 
 `JwtFilter` calls it in two places:
@@ -1827,7 +1830,7 @@ public class SecurityConfig {
 
 **`@EnableMethodSecurity`** — enables `@PreAuthorize` on individual methods. Without this annotation, `@PreAuthorize` is silently ignored — no error, just no protection.
 
-**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/`(login, register) without a token. The`/\*\*` matches any path below that prefix.
+**`.requestMatchers("/api/auth/**").permitAll()`** — opens every URL under `/api/auth/` (login, register) without a token. The `/**` matches any path below that prefix.
 
 **`.anyRequest().authenticated()`** — every other URL requires a valid JWT. Order matters: `requestMatchers` rules are checked first, in the order they are declared. `.anyRequest()` is always last — it is the catch-all.
 
@@ -1838,6 +1841,102 @@ public class SecurityConfig {
 **`.cors(cors -> cors.configurationSource(corsConfigurationSource()))`** — applies the CORS rules defined in the `corsConfigurationSource()` bean. CORS must be configured inside Spring Security — not with `@CrossOrigin` — so the Security layer handles it before blocking the request.
 
 > The code block above omits `authenticationManager()` and `corsConfigurationSource()` for clarity. Both must be inside the same `SecurityConfig` class. `authenticationManager()` was defined in the previous step. `corsConfigurationSource()` is defined in the CORS section below — add it after `authenticationManager()`.
+
+---
+
+## AuthenticationEntryPoint — 401 instead of the default empty 403
+
+Purpose: intercepts the exact moment Spring Security detects a request has **no valid authentication at all** (no token, or a token so broken it can't even be processed) and controls what to respond with — instead of letting Spring apply its default behavior.
+
+File: `src/main/java/com/victor/timetrack/security/JwtAuthenticationEntryPoint.java`
+
+Docs: https://www.baeldung.com/spring-security-401-unauthorized → read: the section implementing `AuthenticationEntryPoint` with an `ObjectMapper` to write the error JSON
+
+With no configuration, when a request with no token reaches a protected endpoint (`.anyRequest().authenticated()`), Spring Security returns **403 Forbidden with no body at all**. This is exactly the mistake already flagged in "Common mistakes" below: **403 isn't the right code here**. The HTTP distinction is:
+
+- **401 Unauthorized** — "I don't know who you are." There's no authentication, or what's there is invalid.
+- **403 Forbidden** — "I know who you are, but you're not allowed." The user is authenticated with a valid token, but is missing the required role.
+
+> Internally, Spring Security throws two different exception types for these two cases: `AuthenticationException` when there's no authentication at all, and `AccessDeniedException` when there is authentication but authorization fails (the latter is the one you catch in `GlobalExceptionHandler` with `@ExceptionHandler(AccessDeniedException.class)` — see the exception handling section). The component that decides what to do with each is different: `AuthenticationEntryPoint` for the first, your regular `@RestControllerAdvice` for the second — because `AccessDeniedException` does reach the controller layer, while `AuthenticationException` gets resolved earlier, inside the security filter itself.
+
+**Why can't you fix this with a regular `@ExceptionHandler`, the way you did with `AccessDeniedException`?** Because the rejection for missing authentication happens **before** the request ever reaches a controller — it happens inside Spring Security's filter chain, a layer that runs entirely before Spring MVC (and therefore your `@RestControllerAdvice`) ever comes into play. `@ExceptionHandler` can only catch exceptions thrown from inside a controller method or below it — not from a filter that hasn't even let the request get that far.
+
+```java
+@Component
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    private final ObjectMapper objectMapper;
+
+    public JwtAuthenticationEntryPoint(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+                         AuthenticationException authException) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(Instant.now());
+        errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        errorResponse.setError(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        errorResponse.setMessage("Authentication required");
+
+        objectMapper.writeValue(response.getWriter(), errorResponse);
+    }
+}
+```
+
+> **Don't forget `@Component`.** Without this annotation, the class compiles perfectly fine on its own — the error only shows up when the application starts, when Spring tries to build `SecurityConfig` and discovers it has no bean of type `JwtAuthenticationEntryPoint` to inject into its constructor. The exact message is: `Parameter 1 of constructor in com.victor.timetrack.security.SecurityConfig required a bean of type 'com.victor.timetrack.security.JwtAuthenticationEntryPoint' that could not be found.` `@Component` is what tells Spring "manage this class yourself, create it automatically, and make it available for injection" — without it, the class exists as plain Java code, but outside Spring's control, so no constructor can request it as a dependency.
+
+**`implements AuthenticationEntryPoint`** — this Spring Security interface requires a single method, `commence(...)`, which Spring calls automatically whenever a request with no valid authentication tries to reach a protected resource. The name comes from the fact that this method is literally where the process of asking the client to authenticate "commences" — in a traditional web app with form login, this is where you'd redirect to the login page; in a JWT API, this is where you return the JSON error instead.
+
+**`ObjectMapper objectMapper`** — Jackson's class (the library Spring Boot uses to convert between JSON and Java objects) for turning a Java object into JSON text. In a regular `@RestController` you never see it because Spring uses it automatically for you behind `return ResponseEntity...`. Here, since you're outside the world of controllers (inside a low-level security component), you have to call it yourself. It's injected through the constructor because Spring Boot already has an `ObjectMapper` configured as a bean available in the container — the same one it uses internally for all your normal responses, so you don't need to create a new one.
+
+**`response.setStatus(...)` / `response.setContentType(...)`** — unlike an `@ExceptionHandler`, where you simply return a `ResponseEntity` and Spring builds the HTTP response for you, here you write directly onto the `HttpServletResponse` object — the low-level object representing the raw HTTP response, before any concept of "controller" or "DTO" exists. You have to set the status code and content type by hand, one at a time.
+
+**`objectMapper.writeValue(response.getWriter(), errorResponse)`** — `response.getWriter()` gives you the response's write channel; `writeValue(destination, object)` serializes `errorResponse` to JSON and writes it there directly, in one step. It's the same work a `@RestControllerAdvice` does for you automatically — here you do it by hand because there's no controller in the middle to do it for you.
+
+Wire it into `SecurityConfig` with `.exceptionHandling(...)`:
+
+```java
+private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+public SecurityConfig(JwtFilter jwtFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    this.jwtFilter = jwtFilter;
+    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+}
+
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/api/auth/**").permitAll()
+            .anyRequest().authenticated()
+        )
+        .exceptionHandling(exceptions -> exceptions
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+        )
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+}
+```
+
+**`.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint))`** — tells the filter chain: "when you detect there's no valid authentication, don't use your default behavior — use this `AuthenticationEntryPoint` instead". Without this line, the `JwtAuthenticationEntryPoint` class compiles perfectly fine but Spring Security never calls it — it keeps applying the same old empty 403.
+
+The resulting JSON when hitting a protected endpoint with no token at all:
+
+```json
+{
+    "timestamp": "2026-07-09T09:30:00.000Z",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "Authentication required"
+}
+```
 
 ---
 
@@ -1914,7 +2013,7 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 > **Why not just allow every origin with `"*"`?** Because `setAllowCredentials(true)` and `setAllowedOrigins(List.of("*"))` cannot be used together — Spring throws an error at startup and the browser rejects the response. The wildcard `"*"` means "anyone", and "anyone **plus** send credentials" is a security hole the CORS spec forbids. If you ever genuinely need a wildcard with credentials, the replacement is `setAllowedOriginPatterns(List.of("*"))`. In this project you list the exact Angular origin, so the trap never bites — but it is the single most common CORS mistake juniors hit, so it's worth recognising.
 
-**`source.registerCorsConfiguration("/**", config)`\*\* — applies this CORS config to every URL in the API.
+**`source.registerCorsConfiguration("/**", config)`** — applies this CORS config to every URL in the API.
 
 > The CORS error only appears in the browser — it is not a backend bug. The browser blocks the response, not the request. The fix is always on the server.
 
@@ -1958,6 +2057,30 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 **Returning 403 instead of 401** — 401 means "not authenticated" (no token or invalid). 403 means "authenticated but not allowed" (wrong role). Spring Security returns 403 for unauthenticated requests by default — override with a custom `AuthenticationEntryPoint` if you need a proper 401.
 
 **`@PreAuthorize` silently ignored** — if you forget `@EnableMethodSecurity` on `SecurityConfig`, the annotation does nothing and every role can access the protected endpoint. No error — the protection just does not exist.
+
+**`AccessDeniedException` with no specific handler → 500 instead of 403** — when `@PreAuthorize("hasRole('MANAGER')")` rejects a user without the right role, Spring throws `org.springframework.security.access.AccessDeniedException`. This class extends `RuntimeException`, so if your `@RestControllerAdvice` only has a generic catch-all for `RuntimeException` (and no specific `@ExceptionHandler(AccessDeniedException.class)`), that exception falls into the catch-all and returns a 500 — even though a role rejection is a perfectly normal case, not an unexpected server failure.
+
+```java
+// No specific handler — the catch-all wrongly intercepts AccessDeniedException
+@ExceptionHandler(RuntimeException.class)
+public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException e) {
+    return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"));
+}
+
+// With the correct handler, ahead of the catch-all
+@ExceptionHandler(AccessDeniedException.class)
+public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException e) {
+    return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(buildError(HttpStatus.FORBIDDEN, "You don't have permission to perform this action"));
+}
+```
+
+> The order of methods inside the class doesn't matter to Spring — `@RestControllerAdvice` always looks for the **most specific** handler matching the exact type of the thrown exception, before falling back to the generic catch-all. It doesn't matter whether `handleAccessDenied` sits before or after `handleRuntime` in the file; what matters is that it exists at all.
+
+> **Don't confuse this with your own custom `UnauthorizedException`.** If you already have a custom exception (say, one you throw by hand in the service when an employee tries to act on data that isn't theirs) that also maps to 403, it won't catch `AccessDeniedException` — the two classes have no inheritance relationship. `AccessDeniedException` is thrown by the framework itself, inside the `@PreAuthorize` mechanism; your exception is thrown by you, in your own business logic. You need one `@ExceptionHandler` per exception, even if both end up returning the same HTTP code.
 
 ---
 
@@ -2073,14 +2196,51 @@ Apply it to POST, PUT, and DELETE in both `ProjectController` and `UserControlle
 
 Docs: [Spring Security — SecurityContextHolder](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-securitycontextholder)
 
-`SecurityContextHolder` is a thread-local store that holds the authenticated user for the current request. The `JwtFilter` puts the user there on every request. Any class — service, controller — can read it without needing the user's ID passed in as a parameter.
+**The problem this solves:** HTTP is stateless — each request is a brand new connection with no memory of anything before it. So when `TimeEntryService.create()` runs, how does it know *who* is calling, right now, in this exact request? It cannot ask the client (see the IDOR section in [security/05-security-vulnerabilities.md](../../security/en/05-security-vulnerabilities.md) for why not). It needs somewhere to look up "the authenticated user of *this* request" — that place is `SecurityContextHolder`.
+
+**What it actually is, mechanically:** it is a **thread-local** — a storage slot that holds a different value per execution thread. In Spring Boot, every incoming HTTP request is handled by one thread from the server's thread pool (Tomcat, by default). While that thread processes your request, it can stash data in its own slot without colliding with a different thread handling a different, simultaneous request from a different user. That is exactly the guarantee you need: "the authenticated user for *this* request," never mixed up with someone else's concurrent request.
+
+> A thread is the unit of execution the server hands one request to. Two users hitting your API at the same instant are handled by two separate threads — each with its own thread-local slot. That is why `SecurityContextHolder` never leaks user A's identity into user B's request, even under heavy concurrent traffic.
+
+**Who fills it, and when:** `JwtFilter` — the same class you already built — writes to it on every single request, before your controller or service ever runs:
+
+```java
+// JwtFilter.java — this already exists in your project
+if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        userDetails, null, userDetails.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+}
+```
+
+`JwtFilter` decodes the JWT, extracts the email, loads the `UserDetails`, wraps it in an `Authentication` object, and **stores** that object in the current thread's slot with `setAuthentication(...)`.
+
+**Who reads it, and why it gets the same value:** because the thread stays the same for the entire lifetime of one request — it enters at `JwtFilter`, passes through `SecurityFilterChain`, reaches your `@RestController`, and drops down into your `@Service` — reading `SecurityContextHolder.getContext().getAuthentication()` later in that same request returns **the exact same object** `JwtFilter` stored moments earlier, on that same thread. There is no network call, no database lookup here — it is literally reading a value another class, earlier in the same request, already left in a shared slot.
+
+```
+one HTTP request → one thread → one thread-local slot
+
+[JwtFilter]                          [TimeEntryService.create()]
+   writes:                              reads:
+   SecurityContextHolder                SecurityContextHolder
+     .getContext()                        .getContext()
+     .setAuthentication(authToken)        .getAuthentication()
+        │                                    │
+        └──────────── same thread ───────────┘
+             (same request, same slot)
+```
+
+**Why `.getName()` returns the email specifically:** `Authentication` has a `getName()` method that, when the "principal" (the authenticated subject) is a `UserDetails` — which yours is — returns `userDetails.getUsername()`. In `UserDetailsServiceImpl`, the "username" you configured **is the email** — your app has no separate username concept, it uses email as the login identifier. That is why `getName()` hands you the email directly, with no extra lookup:
 
 ```java
 // Inside any @Service method — get the email of the currently logged-in user
 String email = SecurityContextHolder.getContext()
         .getAuthentication()
-        .getName();  // returns the value set in .withUsername() — the email
+        .getName();  // resolves to userDetails.getUsername() — the email
 ```
+
+> Analogy: think of `SecurityContextHolder` as a blackboard only your thread (this one request) can see and write on. `JwtFilter` is the first to enter the room and writes "this request belongs to victor@email.com." Any class that enters the same room afterward — your service, your controller — can read that same blackboard without asking the client anything again.
 
 You use this in Step 5 when `TimeEntryService` needs to know which user is creating an entry, or when `GET /api/entries` needs to filter results by the current user. The key point: **never trust a `userId` sent by the client** — always read it from the security context. A client can send any `userId` they want; the `SecurityContext` reflects who actually logged in.
 
