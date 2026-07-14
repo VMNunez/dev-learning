@@ -58,7 +58,8 @@ REVIEW_SCOPE = backend
 
 **Rules of thumb:**
 - `REVIEW_SCOPE` defaults to `full`. Use `backend` / `frontend` when the whole-project run is too long —
-  a partial run only touches its own tier's backlog tasks and does not reset the 30-day gate.
+  a partial run only touches its own tier's backlog tasks and only refreshes its own tier's
+  "Last Reviewed" date, so the other tier still shows as stale (or `never`) until you review it.
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The project type is derived from the path — do not set it.
 - Angular projects 01–06 are informational only (no backlog, no security pass, no commit).
@@ -108,9 +109,12 @@ its `PROJECT-BACKLOG.md`. This keeps a 7-project run from drowning your context 
 ## Single-project procedure
 
 ### Step 0 — Gate and map the slices (orchestrator)
-Derive the project type from the path. **Full-stack:** apply the 30-day gate from the standard against
-`{PROJECT_PATH}/PROJECT-BACKLOG.md`; if it was reviewed < 30 days ago, stop and offer FORCE. Then
-**map the review slices** — this is light structural work (you list slices, you do not review code).
+Derive the project type from the path. **Full-stack:** apply the standard's **per-tier 30-day gate**
+against `{PROJECT_PATH}/PROJECT-BACKLOG.md` — read its `**Last Reviewed — backend:**` /
+`**Last Reviewed — frontend:**` lines and gate **only the tiers {REVIEW_SCOPE} will review**. If every
+tier in scope was reviewed < 30 days ago, stop and offer FORCE; if only some are fresh, continue with
+the stale/`never` ones and say which you are skipping. A missing backlog = never reviewed → continue.
+Then **map the review slices** — this is light structural work (you list slices, you do not review code).
 
 **Apply {REVIEW_SCOPE} first — map only the tiers it names:**
 - `backend` → map only the backend slices; skip the frontend map and Steps 3–4.
@@ -233,15 +237,20 @@ First print a brief chat summary: **Overall quality** (Strong/Good/Needs work + 
 findings** (2–3) · **Learning objectives** (how many ✅/⚠️/❌) · **Slices reviewed** (count).
 
 Then update `{PROJECT_PATH}/PROJECT-BACKLOG.md` (create it if missing) per the standard's backlog
-format: today's date as "Last Reviewed", the overall quality rating, and the full task list as
-checkboxes. Preserve tasks already checked off (✅).
+format: the **per-tier "Last Reviewed" lines**, the overall quality rating, and the full task list as
+checkboxes, **each task tagged with its tier** (`[backend]` / `[frontend]`). Preserve tasks already
+checked off (✅).
+
+**Stamp today's date only on the tiers this run actually reviewed** — a `backend` run sets
+`**Last Reviewed — backend:**` to today and leaves the `frontend` line exactly as it was (a date, or
+`never`). That is what keeps a partial run from ever making an unreviewed tier look reviewed. If the
+backlog still carries the old single `**Last Reviewed:**` line, rewrite the header into the two-line
+per-tier form now (per the standard's migration note).
 
 **On a partial {REVIEW_SCOPE} run, only touch the reviewed tier's tasks.** A `backend` run rewrites the
-backend tasks and leaves every frontend task untouched (and vice versa) — never delete or overwrite the
-tier you did not review this run. Record the scope in the header so the state is unambiguous, e.g.
-`Last Reviewed: 2026-07-14 (backend only)`; the learning-objectives table is left as-is on a partial run
-(it is only regenerated on a `full` run). The 30-day gate treats a project as freshly reviewed only when
-the last run was `full`.
+`[backend]`-tagged tasks and leaves every `[frontend]` task untouched (and vice versa) — never delete or
+overwrite the tier you did not review this run. The learning-objectives table is likewise left as-is on
+a partial run (it is only regenerated on a `full` run).
 
 Finally, **hand Victor the commit** — do not run it (see the by-design note above). One command per
 code block:
@@ -294,9 +303,12 @@ failure. Also print the report in chat.
   security reviewer. They only read, so they may run in parallel; never let one subagent do both.
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
 - **A partial `REVIEW_SCOPE` run stays in its lane.** `backend` / `frontend` review and rewrite only
-  their own tier's slices and backlog tasks, skip the whole-project learning-objectives pass, and do not
-  reset the 30-day gate; the untouched tier's tasks are preserved verbatim. Only a `full` run marks the
-  project fully reviewed.
+  their own tier's slices and backlog tasks, skip the whole-project learning-objectives pass, and stamp
+  today's date on **only their own tier's** "Last Reviewed" line. The untouched tier's tasks and date are
+  preserved verbatim — a partial run must never make an unreviewed tier look reviewed.
+- **Review state lives in `{PROJECT_PATH}/PROJECT-BACKLOG.md`, per tier — nowhere else.** No missing file
+  = never reviewed; a tier line of `never` = that tier never reviewed. There is no root-level review
+  index, by design: a second copy of the date would drift out of sync with the backlog.
 - **Security findings are always High**, and findings are deduplicated across every slice.
 - **Model per slice, always explicit** (see Model policy): backend flow + every security slice + the
   orchestrator run on **Opus**; frontend flow and learning-objectives on **Sonnet**. Never drop backend

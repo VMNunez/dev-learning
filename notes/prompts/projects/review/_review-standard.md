@@ -42,13 +42,37 @@ Derive the type from the project number (01–06 Angular-only, 07+ full-stack); 
 
 ---
 
-## The 30-day gate (full-stack only)
+## The 30-day gate (full-stack only) — per tier
 
-`PROJECT-BACKLOG.md` lives inside the project folder (`{PROJECT_PATH}/PROJECT-BACKLOG.md`). Read its
-"Last Reviewed" date:
-- Within the last 30 days → **stop**: "Last reviewed on [date], < 30 days ago — skipping. Reply FORCE
-  to run anyway."
-- Older than 30 days, or the file does not exist → continue.
+`PROJECT-BACKLOG.md` lives inside the project folder (`{PROJECT_PATH}/PROJECT-BACKLOG.md`) and is the
+**single source of truth for whether a project has been reviewed**. There is no root-level index — the
+state lives with the thing it describes, and duplicating the date anywhere else only creates drift.
+
+Because `REVIEW_SCOPE` can review one tier at a time, "reviewed" is **not** a yes/no for the project —
+it is tracked **per tier**. The backlog header carries one line per tier:
+
+```
+**Last Reviewed — backend:** 2026-07-06
+**Last Reviewed — frontend:** never
+```
+
+`never` means that tier has never been reviewed. **A missing `PROJECT-BACKLOG.md` means the project has
+never been reviewed at all** — that is how "has this been reviewed?" is answered.
+
+**Apply the gate only to the tiers this run will actually review** (per `REVIEW_SCOPE`; a `full` run
+gates on both):
+- Every tier in scope was reviewed within the last 30 days → **stop**: "Backend last reviewed on [date],
+  < 30 days ago — skipping. Reply FORCE to run anyway."
+- Some tiers in scope are stale (> 30 days) or `never` → **continue, but only for those tiers**, and say
+  which ones you are skipping and why.
+- No header, no file, or the tier says `never` → continue.
+
+A tier is only "freshly reviewed" once a run actually covered it. A `backend` run never refreshes the
+frontend date, so it can never make the frontend look reviewed when it is not.
+
+> **Migration:** a backlog still carrying the old single `**Last Reviewed:** [date]` line was written
+> before per-tier tracking. Read it as *both* tiers reviewed on that date, and rewrite the header into
+> the two-line form on the next run.
 
 ---
 
@@ -248,9 +272,14 @@ carry a **priority** and an **effort**, and be actionable on its own (note any d
   - **Medium** — a genuine improvement that adds portfolio value.
   - **Low** — polish, nice-to-have, minor clarity. (Low does not affect the portfolio verdict.)
 
-**PROJECT-BACKLOG.md** contains: "Last Reviewed" date · an overall quality rating (Strong / Good / Needs
-work, one sentence) · the task list as checkboxes. Task line:
+**PROJECT-BACKLOG.md** contains: a **per-tier "Last Reviewed" line** (see the gate above — `backend` and
+`frontend`, each a date or `never`) · an overall quality rating (Strong / Good / Needs work, one
+sentence) · the task list as checkboxes. Task line:
 `- [ ] **[Priority]** — [Task description] *(Effort: [Small/Medium/Large])*`
+
+**Tag every task with the tier it belongs to** (`[backend]` / `[frontend]`) right after the priority, so
+a partial-scope run can rewrite its own tier's tasks and leave the other tier's untouched:
+`- [ ] **[High]** `[backend]` — [Task description] *(Effort: [Small])*`
 
 Preserve tasks already checked off (✅) — never delete completed items; only update or add. The backlog
 lives in the project folder, so it follows the project's normal **feature-branch → PR → main** workflow
