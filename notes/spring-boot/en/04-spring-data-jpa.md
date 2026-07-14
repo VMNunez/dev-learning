@@ -483,6 +483,8 @@ public interface ProjectHoursReportResponse {
 >
 > **Why an interface and not a class with `@Data`, like every other response DTO in this project?** Every other DTO (`ProjectResponse`, `UserResponse`...) is a class you instantiate yourself — you write `new ProjectResponse()` (or a mapper does it) and fill each field by hand in your own Java code. A projection is different: **you never construct it**. Spring Data reads the column aliases coming back from the database query (`SUM(te.hours) AS totalHours`) and, because Java can generate a proxy object that implements any interface at runtime, it builds an object on the fly whose `getTotalHours()` returns exactly that column's value — no class body, no constructor, no manual mapping needed. A `class` cannot be built this way because a class needs a constructor Spring would have to call with the right arguments in the right order; an interface only promises "something with this method exists", which is all a runtime proxy needs to satisfy.
 
+> **Practical rule — memorize this one:** every time you write an interface projection (for JPQL, as here, or for native SQL with `@Query(nativeQuery = true)`), each getter must match, by name, one `AS alias` in the `SELECT`. Decide the `SELECT ... AS alias` list first, then write one getter per alias — never the other way around. `AS totalHours` needs `getTotalHours()`; `AS employeeName` needs `getEmployeeName()`. No aliases, no projection.
+
 **The alias-to-getter contract — this is the actual mechanism, not just a convention:**
 
 Spring matches each getter to a column alias using the standard Java Bean naming rule: strip `get` from the method name, lowercase the first letter, and that is the name it looks for among the query's aliases.
