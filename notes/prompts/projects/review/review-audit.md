@@ -291,14 +291,15 @@ per-tier form now (per the standard's migration note).
 overwrite the tier you did not review this run. The learning-objectives table is likewise left as-is on
 a partial run (it is only regenerated on a `full` run).
 
-Finally, **hand Victor the commit** — do not run it (see the by-design note above). One command per
-code block:
+Finally, **commit the backlog yourself** (authorized 2026-07-14 — Victor does not want to run these by
+hand). Run `git status` right before `git add` and right before `git commit`, stage **only**
+`{PROJECT_PATH}/PROJECT-BACKLOG.md`, and `git restore --staged` anything else that crept in. The backlog
+is a docs file this pipeline authored, so it is a documentation commit, not a code commit — the
+"Victor makes code commits himself" rule is untouched. One logical change, one commit, separate from the
+Step 6 self-report commit:
 
 ```
 git add {PROJECT_PATH}/PROJECT-BACKLOG.md
-```
-
-```
 git commit -m "docs: review {PROJECT_PATH} — <one line summary of main findings>"
 ```
 
@@ -329,10 +330,12 @@ failure. Also print the report in chat.
 
 ## Hard rules
 
-- **Never auto-commit the backlog.** `PROJECT-BACKLOG.md` is a project-folder file under the
-  feature-branch workflow; always hand Victor the command. (The `plan-audit` / `portfolio-audit`
-  auto-commit exception does not extend to it.) The only file this flow commits itself is the Step 6
-  `_last-run-report.md` — prompt-system machinery under the notes/prompts exception.
+- **Commit the backlog yourself** (authorized 2026-07-14 — same standing as `plan-audit` /
+  `portfolio-audit`; Victor does not want to run these by hand). It is a docs commit for a file this
+  pipeline wrote, so it does not touch the "Victor makes code commits himself" rule. `git status` before
+  add and before commit; stage **only** `PROJECT-BACKLOG.md`, never a project code file that was left
+  staged from an earlier step. It commits on the active branch, never on `main`. The Step 6
+  `_last-run-report.md` is a **separate** commit — never fold the two together.
 - **One slice per subagent — never the whole codebase.** Each reviewer owns one vertical slice (a
   resource's flow, a resource's security, a cross-cutting area, a frontend feature) and returns a trace
   proving it covered every file/endpoint in it. A subagent handed the whole backend skims the last
