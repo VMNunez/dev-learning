@@ -3,7 +3,15 @@
 > 📖 [Baeldung — Building a REST API with Spring Boot](https://www.baeldung.com/building-a-restful-web-service-with-spring-and-java-based-configuration)
 > 📖 [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
 
+---
+
+[01-basics.md](./01-basics.md) left you with an app that boots and has nothing to say: Tomcat is listening on 8080, the database is connected, `data.sql` has seeded the first manager — and `@ComponentScan` is walking your packages finding **zero controllers to register**. Every URL you type returns a 404 because no class has ever claimed one. This file closes that hole. From here on, everything you write is the application itself: the classes that own a URL, read what the client sent, and decide what comes back.
+
+---
+
 ## The three-layer architecture — the most important pattern
+
+Docs: https://www.baeldung.com/spring-component-repository-service → read: the sections on `@Controller`, `@Service` and `@Repository` — what each stereotype means and why they are separate
 
 Every Spring Boot API follows three layers. This is the first thing an interviewer will ask about.
 
@@ -22,6 +30,8 @@ Database
 - **The rule:** each layer only calls the one directly below it. Controller → Service → Repository.
 - Business logic changes → only touch the service. Database changes → only touch the repository.
 - A controller that imports a repository is a red flag in any code review.
+
+> **The restaurant.** The controller is the **waiter**: he takes the order, checks it makes sense ("we don't serve that"), and carries the plate back out — he never cooks. The service is the **kitchen**: all the actual decisions happen there (what goes in the dish, in what order, what to do when an ingredient is missing). The repository is the **pantry**: it only knows how to fetch and store ingredients, and it has no opinion about the recipe. A waiter who walks into the pantry and grabs raw meat has skipped the kitchen — that is exactly what a controller calling a repository directly looks like, and why reviewers flag it on sight. The value of the split is that you can replace the pantry (Postgres → MongoDB) without the kitchen noticing, and rewrite the recipe without retraining the waiter.
 
 ```java
 // Controller — only knows about the service
@@ -46,7 +56,7 @@ A few things to read off this example:
 - **Yes — each layer holds a reference to the one below it.** The controller declares `private final TransactionService service`. `private` because no other class needs it; `final` because once Spring sets it in the constructor it never changes. You will see this exact `private final` dependency line in every controller, service, and repository-using class.
 - **The constructor is `public` and must be named exactly like the class** (`TransactionController`). That is the Java rule for any constructor. Spring calls it at startup and passes in the `TransactionService` bean automatically (constructor injection — see [03-dependency-injection.md](./03-dependency-injection.md)).
 - **`this.service = service`** — the parameter and the field share the name `service`. `this.service` means "the field of this object"; the bare `service` is the parameter. The line copies the injected parameter into the field so the rest of the class can use it.
-- **`TransactionResponse` is a DTO** (Data Transfer Object) — the shape the API sends back instead of the raw entity. DTOs are explained fully in the "DTOs" section below and in [layer-reference.md](./layer-reference.md).
+- **`TransactionResponse` is a DTO** (Data Transfer Object) — the shape the API sends back instead of the raw entity. DTOs are explained fully in the "DTOs" section below and in [layer-reference.md](../layer-reference.md).
 
 ---
 
@@ -79,6 +89,8 @@ Docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods → read: the su
 | `@PutMapping`    | PUT         | Replace an entire resource | Yes       |
 | `@PatchMapping`  | PATCH       | Update part of a resource  | Yes       |
 | `@DeleteMapping` | DELETE      | Remove a resource          | No        |
+
+Read this table left to right as *one annotation = one HTTP verb*: the annotation you put on the method is the only thing that decides which verb reaches it — `@GetMapping` and `@PostMapping` on the *same* URL are two different endpoints and never collide. The column that actually changes how you write the method is the last one: **"Has body? = Yes" is exactly the set of methods that need a `@RequestBody` parameter** (POST, PUT, PATCH), and "No" is the set where the only input can come from the URL (`@PathVariable`, `@RequestParam`) — a GET with a JSON body is not something you write, because the client has nowhere natural to put it.
 
 ```java
 @GetMapping              // GET    /api/transactions
@@ -115,6 +127,26 @@ Docs: https://www.baeldung.com/spring-response-entity
 `ResponseEntity<T>` is **not** a DTO. It is a wrapper a controller method returns to control two things at once: the **HTTP status code** and the **response body**. The `<T>` is the type of the body it carries (often a DTO, e.g. `ResponseEntity<TransactionResponse>`). You reach for it because a REST API must communicate *what happened* (created? not found? deleted?), not just hand back data — and the status code is how it says that.
 
 Without `ResponseEntity`, every method would return plain `200 OK`, even a `POST` that should say `201 Created` or a `DELETE` that should say `204 No Content`.
+
+> **Why not just return the object directly?** Because a method that returns `ProjectResponse` gives Spring nothing to work with except the body — so Spring falls back to its default, `200 OK`, on *every* response. It compiles, Postman shows the JSON, and the endpoint looks fine. It is still wrong: a client (or an Angular interceptor, or a monitoring dashboard) that reads the status code is being told "nothing was created" after a successful creation.
+
+```java
+// ❌ MAL — compiles, works, and always answers 200 OK even though it created a resource
+@PostMapping
+public ProjectResponse create(@Valid @RequestBody CreateProjectRequest request) {
+    return projectService.create(request);
+}
+
+// ✅ BIEN — the status code is part of the answer: 201 Created + the new resource as the body
+@PostMapping
+public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectRequest request) {
+    return ResponseEntity.status(201).body(projectService.create(request));
+}
+```
+
+The wrong version is not a compiler error and never will be — that is precisely what makes it easy to ship. `ResponseEntity` is what turns the status code from a Spring default into a decision you make.
+
+> **The parcel.** Think of `ResponseEntity` as posting a parcel. The **box contents** are the body (the JSON), and the **label stuck on the outside** is the status code. Returning the object directly is handing over an unlabelled box: the contents may be perfect, but the courier writes the same generic label on everything. `ResponseEntity.status(201).body(created)` is you writing the label yourself, then putting the contents in — which is exactly the order the builder forces, as the next block shows.
 
 Each line below builds a different response — same idea, different status + body:
 
@@ -172,6 +204,8 @@ Read this line from the inside out:
 | 404 Not Found             | Resource does not exist       | `findById` returned empty |
 | 409 Conflict              | Duplicate resource            | Email already exists      |
 | 500 Internal Server Error | Unhandled server error        | Bug                       |
+
+Read the table by its **first digit**, not row by row — that is the part you have to recall under pressure in an interview. `2xx` = it worked. `4xx` = *the client* is at fault (it sent bad data, no token, the wrong role, a non-existent id) — the server is healthy and the caller must change something before retrying. `5xx` = *the server* is at fault; the client did nothing wrong and retrying the identical request may well work. The "When to use" column is where the layers of this file meet: the three `4xx` rows you write by hand almost never appear in the controller — 400 comes from `@Valid` (see [07-validation.md](./07-validation.md)), and 404/409 are thrown as exceptions in the *service* and translated into a status by a `@ControllerAdvice` (see [05-exception-handling.md](./05-exception-handling.md)). The controller itself typically only ever chooses between 200, 201 and 204.
 
 ---
 
@@ -301,41 +335,45 @@ DELETE /api/projects/42     → @PathVariable
 
 ### void vs Void
 
-`delete` returns `ResponseEntity<Void>` because the `<>` needs a *class* and there is no value to send back. The full explanation of the keyword `void` vs the class `Void` lives in the Java notes — see [java/03-methods.md](../java/03-methods.md#void-vs-void).
-
----
-
-## @JsonIgnore — preventing fields from appearing in JSON
-
-Purpose: `@JsonIgnore` tells Jackson to skip that field when serialising to JSON. Used on entity fields that must never travel over the API — most importantly the `password` field on `User`.
-
-Docs: https://www.baeldung.com/jackson-annotations → read: "@JsonIgnore"
-
-File: `src/main/java/com/victor/timetrack/model/User.java`
-
-```java
-@Entity
-@Table(name = "users")
-public class User {
-
-    @JsonIgnore
-    private String password;  // never appears in any JSON response from any endpoint
-}
-```
-
-This is a defence-in-depth measure. The right approach is DTOs (described below), which give you full control over what goes out. But if code ever accidentally returns a `User` entity directly, `@JsonIgnore` ensures the hash is not exposed. Interviewers ask: "Why doesn't your `/api/users` endpoint return the password?" — either DTOs or `@JsonIgnore` is the expected answer. Using DTOs is better; `@JsonIgnore` is the backup.
+`delete` returns `ResponseEntity<Void>` because the `<>` needs a *class* and there is no value to send back. The full explanation of the keyword `void` vs the class `Void` lives in the Java notes — see [java/03-methods.md](../../java/en/03-methods.md#void-vs-void).
 
 ---
 
 ## DTOs — never expose JPA entities directly
 
-Docs: https://www.baeldung.com/java-dto-pattern
+Purpose: a plain class that defines the *shape* of the data crossing the API boundary — one for what the client sends in, one for what you send back — so the controller never touches the JPA entity.
 
-A **DTO** (Data Transfer Object) is a plain class whose only job is to define the *shape* of the data that crosses the API boundary — what the client sends in, and what you send back. It is not a database table and it holds no business logic: just fields. DTOs are how you give a clean shape to your responses instead of returning the raw entity.
+File: `src/main/java/com/victor/timetrack/dto/request/CreateProjectRequest.java` and `src/main/java/com/victor/timetrack/dto/response/ProjectResponse.java`
 
-**Why not return the JPA entity directly?** The entity is tied to the database schema and can hold fields the client must never see — a password hash, internal foreign keys, lazy-loaded collections. Returning it leaks those fields and couples your public API to your tables: change a column and you accidentally change the API. A DTO lets you control exactly which fields go out and which come in.
+Docs: https://www.baeldung.com/java-dto-pattern → read: the "The DTO Pattern" section and the mapping example
 
-> **When do you create the DTO?** Before the service and controller that use it — they name its type in their method signatures, so it has to exist first. The order for a feature is: entity → repository → **DTO** → service → controller (the same flow as [layer-reference.md](./layer-reference.md)).
+A **DTO** (Data Transfer Object) is not a database table and it holds no business logic: just fields. It is how you give a clean shape to your responses instead of returning the raw entity.
+
+**Why not return the JPA entity directly?** The entity is tied to the database schema and can hold fields the client must never see — a password hash, internal foreign keys, lazy-loaded collections. Returning it leaks those fields *and* couples your public API to your tables: rename a column and you have silently made a breaking change to every client. Here is the exact failure, on the real `User` entity of this project:
+
+```java
+// ❌ MAL — returns the entity. Jackson serialises EVERY field with a getter,
+//          and @Data generated getPassword() — so the BCrypt hash goes out over the wire.
+@GetMapping
+public List<User> getAll() {
+    return userRepository.findAll();
+}
+// GET /api/users  →  [{ "id":1, "name":"Ana", "email":"...", "password":"$2a$10$Xy...", ... }]
+
+// ✅ BIEN — returns a DTO. UserResponse has no password field at all,
+//           so there is nothing for Jackson to leak, no matter what the entity grows later.
+@GetMapping
+public List<UserResponse> getAll() {
+    return userService.getAll();
+}
+// GET /api/users  →  [{ "id":1, "name":"Ana", "email":"...", "role":"EMPLOYEE", "active":true }]
+```
+
+The mechanism behind the leak is worth being explicit about, because it is not something you wrote: Jackson decides what to serialise by **reflecting over the class's public getters**, not by reading some list you configured. Lombok's `@Data` on `User` generates a getter for every field — including `password` — so Jackson finds it and prints it. Nobody "returned the password"; you returned an object that *has* one. The DTO fixes it structurally: `UserResponse` has no such field, so the hash cannot escape even by accident.
+
+> **The `@JsonIgnore` alternative — and why TimeTrack does not use it.** Jackson has an annotation, `@JsonIgnore`, that you can put on `private String password` in the entity to tell Jackson "skip this field when serialising". It works, and you will meet it in real codebases as a defence-in-depth measure. **TimeTrack's `User` entity does not carry it** — the project relies on DTOs instead, which is the stronger answer: `@JsonIgnore` protects one field you remembered, a DTO protects every field you did not. Know both, because the interview question is "why doesn't your `/api/users` endpoint return the password?" and the expected answer names DTOs first, `@JsonIgnore` as the backup. Docs: https://www.baeldung.com/jackson-annotations → read: "@JsonIgnore".
+
+> **When do you create the DTO?** Before the service and controller that use it — they name its type in their method signatures, so it has to exist first. The order for a feature is: entity → repository → **DTO** → service → controller (the same flow as [layer-reference.md](../layer-reference.md)).
 
 You keep two DTOs per resource — one per direction:
 
@@ -343,9 +381,8 @@ You keep two DTOs per resource — one per direction:
 
 ```java
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateProjectRequest {
+
     @NotBlank
     private String name;
 
@@ -357,8 +394,6 @@ public class CreateProjectRequest {
 
 ```java
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProjectResponse {
     private Long id;
     private String name;
@@ -368,84 +403,127 @@ public class ProjectResponse {
 }
 ```
 
-The **service** converts between the entity and these DTOs; the **controller** only ever deals with DTOs, never the entity. These are the real class-based DTOs from the TimeTrack `projects` feature — `@Data` with Lombok, the style used across the project (not Java `record`s).
+Both carry only `@Data` — Lombok's getters, setters, `equals()`, `hashCode()` and `toString()` in one annotation. No `@NoArgsConstructor` is needed here: a class with no other constructor already gets Java's implicit no-args one, which is all Jackson requires to build the object before calling the setters. (Entities are different — they declare `@AllArgsConstructor`, which *removes* the implicit one, so they must add `@NoArgsConstructor` back explicitly. See [01-basics.md](./01-basics.md#lombok--eliminating-boilerplate-code).)
+
+The **service** converts between the entity and these DTOs; the **controller** only ever deals with DTOs, never the entity. These are the real class-based DTOs from the TimeTrack `projects` feature — Lombok classes, the style used across the project, not Java `record`s.
 
 ---
 
 ## Project 07 — TimeTrack (first working endpoint)
 
-This is the first Controller → Service → Repository chain built in the TimeTrack project. Step 1 returns the entity directly — DTOs are introduced in Step 2.
+This is the first Controller → Service → Repository chain built in the TimeTrack project — the `users` slice, the smallest one that proves all three layers are wired together.
+
+> **What you are reading is the Step 2 code, not the Step 1 code.** The endpoint was first built in Step 1 returning `List<User>` — the raw entity, exactly the `// ❌ MAL` version above — precisely so the leak was visible in Postman before DTOs were introduced to fix it in Step 2. The files below are what is in the repo **today**, after that refactor. When the diagram at the end of this section says `List<UserResponse>`, that is why.
 
 ### UserRepository
 
-The repository comes first because the service depends on it. It is just an interface that extends `JpaRepository<User, Long>` — that alone gives you `findAll()`, `findById()`, `save()`, and `deleteById()` with no implementation to write:
+Purpose: the persistence layer for `User` — an interface Spring Data implements at runtime, giving you the CRUD methods for free.
+
+File: `src/main/java/com/victor/timetrack/repository/UserRepository.java`
+
+Docs: https://www.baeldung.com/spring-data-repositories → read: "JpaRepository" and the derived-query naming rules
+
+The repository comes first because the service depends on it. It is just an interface extending `JpaRepository<User, Long>` — that alone gives you `findAll()`, `findById()`, `save()` and `deleteById()` with no implementation to write:
 
 ```java
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 }
 ```
 
+- The two type arguments are **the entity** and **the type of its `@Id`** — `<User, Long>` because `User.id` is a `Long`. Get them the wrong way round and it will not compile.
+- `findByEmail` is a **derived query**: you declare the method, write no body, and Spring Data reads the *name* to generate `SELECT * FROM users WHERE email = ?`. It returns `Optional<User>` because an email that matches nothing is a normal outcome, not an error. It is not used by `/api/users` — login needs it (see [06-security-jwt.md](./06-security-jwt.md)) — but it is in the file, so it is here.
+- **There is no `@Repository` annotation on it**, and none is needed: Spring Data detects every interface extending `JpaRepository` and registers the bean itself. Adding `@Repository` is harmless and you will see it in plenty of codebases; it is simply redundant. The full mechanism is in [04-spring-data-jpa.md](./04-spring-data-jpa.md).
+
 ### UserService
+
+Purpose: the business layer for `User` — fetches the entities from the repository and converts them into the DTO shape the API is allowed to expose.
+
+File: `src/main/java/com/victor/timetrack/service/UserService.java`
+
+Docs: https://www.baeldung.com/spring-component-repository-service → read: the `@Service` section
 
 ```java
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserResponse> getAll() {
+        return userRepository.findAll().stream().map(this::toResponse).toList();
+    }
+
+    private UserResponse toResponse(User user) {
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole());
+        response.setActive(user.isActive());
+
+        return response;
     }
 }
 ```
 
-- `@Service` — Spring finds this class, creates one instance (a bean), and keeps it available for injection
-- `private final UserRepository userRepository` — declare the dependency; `final` because it never changes after the constructor runs
-- Constructor injection — Spring detects the single constructor and injects `UserRepository` automatically
-- `userRepository.findAll()` — built-in method from `JpaRepository`; no SQL needed
+- **`@Service`** — Spring finds this class during the `@ComponentScan` from file 01, creates one instance (a bean), and keeps it available for injection
+- **`private final UserRepository userRepository`** — declare the dependency; `final` because it never changes after the constructor runs
+- **Constructor injection** — Spring sees the single constructor and passes in the `UserRepository` bean automatically ([03-dependency-injection.md](./03-dependency-injection.md))
+- **`userRepository.findAll()`** — built-in method from `JpaRepository`; no SQL written by you
+- **`user.isActive()`, not `getActive()`** — the field is a primitive `boolean`, and Lombok follows the JavaBeans convention of `isXxx()` for primitives. `ProjectResponse.active` is the wrapper `Boolean`, so *that* one is `getActive()`. Both appear in this file; the difference is the field type, nothing else.
+- **`toResponse()` is `private` and sits at the bottom** — no other class needs it, so it goes after the public methods that call it. This helper is the single place the entity→DTO mapping lives.
 
 ### UserController
+
+Purpose: the web layer for `User` — owns the `/api/users` URL, and hands every request straight to the service.
+
+File: `src/main/java/com/victor/timetrack/controller/UserController.java`
+
+Docs: https://www.baeldung.com/spring-controller-vs-restcontroller → read: the `@RestController` section
 
 ```java
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService){
         this.userService = userService;
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @GetMapping
-    public List<User> getAll() {
+    public List<UserResponse> getAll(){
         return userService.getAll();
     }
 }
 ```
 
-- `@RestController` — marks this class as a REST controller; every return value is serialized to JSON automatically
-- `@RequestMapping("/api/users")` — base URL for all methods in this class
-- `@GetMapping` — responds to `GET /api/users`; no path needed because the base URL is already set on the class
-- The controller injects the service the same way the service injects the repository — same constructor injection pattern
+- **`@RestController`** — marks this class as a REST controller; every return value is serialised to JSON automatically
+- **`@RequestMapping("/api/users")`** — base URL for all methods in this class
+- **`@GetMapping`** — responds to `GET /api/users`; no path argument needed because the base URL is already set on the class
+- **`@PreAuthorize("hasRole('MANAGER')")`** — a Spring Security guard added later in the project: only a token whose role is `MANAGER` reaches the method; anyone else gets a 403 before the body runs. Ignore the mechanism for now — it is the subject of [06-security-jwt.md](./06-security-jwt.md); it is quoted here only because removing it would make this a fabricated file rather than the real one.
+- **The return type is a bare `List<UserResponse>`, not a `ResponseEntity`** — and this is the one endpoint in the project that gets away with it, precisely because a successful GET *should* answer 200, which is Spring's default. It is the exception that shows the rule: as soon as a method needs to say 201 or 204, the bare return type has no way to express it. Compare it with `ProjectController` below, where every method wraps its result.
+- The controller injects the service exactly the way the service injects the repository — one constructor, one `private final` field. Same pattern, one layer up.
 
 ### Project 07 — ProjectService — full CRUD with DTOs and toResponse()
 
-Step 2 introduces DTOs and full CRUD. The key pattern: a private `toResponse()` helper, placed at the **bottom of the class**, avoids repeating the entity-to-DTO mapping in every method.
+Purpose: the business layer for `Project` — the full CRUD, including the role-dependent read and the soft delete.
 
-> This is the *worked, explained* version of the vertical slice. [layer-reference.md](./layer-reference.md) has the same flow as a quick-reference set of tables (using a `Transaction` example) — open that when you just need to recall the structure; read this when you want the reasoning behind each line.
+File: `src/main/java/com/victor/timetrack/service/ProjectService.java`
 
-**Why `.map(this::toResponse)`?** `this::toResponse` is a *method reference* — shorthand for the lambda `project -> this.toResponse(project)` (see [java/09-streams-lambdas.md](../java/09-streams-lambdas.md)). `stream().map(...)` calls it once per entity, turning each `Project` into a `ProjectResponse`, and `toList()` collects the results. The `this::` form works because the helper is a method on this same class.
+Docs: https://www.baeldung.com/spring-component-repository-service → read: the `@Service` section
+
+> This is the *worked, explained* version of the vertical slice. [layer-reference.md](../layer-reference.md) has the same flow as a quick-reference set of tables (using a `Transaction` example) — open that when you just need to recall the structure; read this when you want the reasoning behind each line.
+
+**Why `.map(this::toResponse)`?** `this::toResponse` is a *method reference* — shorthand for the lambda `project -> this.toResponse(project)` (see [java/09-streams-lambdas.md](../../java/en/09-streams-lambdas.md)). `stream().map(...)` calls it once per entity, turning each `Project` into a `ProjectResponse`, and `toList()` collects the results. The `this::` form works because the helper is a method on this same class.
 
 ```java
 @Service
 public class ProjectService {
-
     private final ProjectRepository projectRepository;
 
     public ProjectService(ProjectRepository projectRepository) {
@@ -453,38 +531,46 @@ public class ProjectService {
     }
 
     public List<ProjectResponse> getAll() {
-        return projectRepository.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isManager = Objects.requireNonNull(auth).getAuthorities().stream()
+                .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
+
+        return isManager
+                ? projectRepository.findAll().stream().map(this::toResponse).toList()
+                : projectRepository.findByActiveTrue().stream().map(this::toResponse).toList();
     }
 
     public ProjectResponse getById(Long id) {
-        return projectRepository.findById(id)
-                .map(this::toResponse)
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+        return projectRepository.findById(id).map(this::toResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
     }
 
     public ProjectResponse create(CreateProjectRequest request) {
         Project project = new Project();
         project.setName(request.getName());
         project.setDescription(request.getDescription());
+
         Project saved = projectRepository.save(project);
+
         return toResponse(saved);
     }
 
     public ProjectResponse update(Long id, UpdateProjectRequest request) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
         project.setName(request.getName());
         project.setDescription(request.getDescription());
+
         Project saved = projectRepository.save(project);
+
         return toResponse(saved);
     }
 
     public void delete(Long id) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
-        project.setActive(false);   // soft delete — keeps data, marks as inactive
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+        project.setActive(false);   // soft delete — keeps the row, marks it inactive
         projectRepository.save(project);
     }
 
@@ -502,48 +588,55 @@ public class ProjectService {
 
 **Key decisions:**
 
-- `toResponse()` is `private` and sits at the **bottom of the class** — it converts a `Project` entity into a `ProjectResponse` DTO; no other class needs it, so it goes after the public methods that call it
-- `create()` starts with `new Project()` — entity does not exist yet
-- `update()` starts with `findById()` — entity must exist to be modified; `orElseThrow()` handles the "not found" case and stops the method immediately
-- `save()` handles both insert and update — JPA decides based on whether `id` is null
-- `delete()` returns `void` — nothing to return after a soft delete
-- Soft delete: `active = false` instead of removing the row — keeps historical data intact
+- **`getAll()` reads the caller's role and branches** — a manager sees every project, an employee only the active ones (`findByActiveTrue()`, another derived query). `SecurityContextHolder` is the static holder Spring Security fills with the authenticated user before your method runs, so the service can ask "who is calling?" without the controller passing it down. That the *business* rule ("who may see archived projects") lives in the service and not the controller is the layering rule doing its job. Full mechanism in [06-security-jwt.md](./06-security-jwt.md).
+- **`orElseThrow(() -> new ResourceNotFoundException(...))`** — `findById` returns an `Optional<Project>`, and `orElseThrow` either unwraps the value or throws. `ResourceNotFoundException` is a custom exception of this project (not `RuntimeException`), and it is what a `@ControllerAdvice` later turns into a real `404` response — which is exactly why the controller below never has to write `notFound()` by hand ([05-exception-handling.md](./05-exception-handling.md)).
+- **`create()` starts with `new Project()`** — the entity does not exist yet; `update()` starts with `findById()` — it must exist to be modified.
+- **`save()` handles both insert and update** — JPA decides based on whether the `id` is null.
+- **`delete()` returns `void`** and performs a **soft delete**: `active = false` instead of removing the row, so historical time entries never point at a project that vanished.
 
 ### Project 07 — ProjectController — full CRUD with ResponseEntity
+
+Purpose: the web layer for `Project` — maps each HTTP verb to a service call and chooses the status code that goes back.
+
+File: `src/main/java/com/victor/timetrack/controller/ProjectController.java`
+
+Docs: https://www.baeldung.com/spring-response-entity → read: the "Using ResponseEntity" examples
 
 ```java
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
-
     private final ProjectService projectService;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService){
         this.projectService = projectService;
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectResponse>> getAll() {
+    public ResponseEntity<List<ProjectResponse>>  getAll(){
         return ResponseEntity.ok(projectService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<ProjectResponse> getById(@PathVariable Long id){
         return ResponseEntity.ok(projectService.getById(id));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
-    public ResponseEntity<ProjectResponse> create(@RequestBody CreateProjectRequest request) {
+    public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectRequest request){
         return ResponseEntity.status(201).body(projectService.create(request));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectResponse> update(@PathVariable Long id, @RequestBody UpdateProjectRequest request) {
+    public ResponseEntity<ProjectResponse> update(@PathVariable Long id, @Valid @RequestBody UpdateProjectRequest request){
         return ResponseEntity.ok(projectService.update(id, request));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id){
         projectService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -552,31 +645,37 @@ public class ProjectController {
 
 **Key decisions:**
 
-- `getAll` and `getById` use `ResponseEntity.ok()` — shortcut for status 200 + body
-- `create` uses `status(201).body()` — POST must return 201, not 200
-- `update` uses `ResponseEntity.ok()` — updating an existing resource returns 200
-- `delete` returns `ResponseEntity<Void>` — no body; `Void` (uppercase) because `<>` only accepts classes, not the `void` keyword
-- `delete` calls the service first, then builds the response — two separate lines because the service returns `void`
-- `@RequestMapping("/api/projects")` on the class sets the base path; each method only adds what is different (`/{id}`, nothing, etc.)
+- **Every method body is one line** — and that is the point. The controller decides the URL, the verb and the status code; it makes no decision about *what* happens. All five bodies are "call the service, wrap the result".
+- **`getAll` and `getById` use `ResponseEntity.ok()`** — the shortcut for status 200 + body
+- **`create` uses `status(201).body()`** — a POST that created something must say 201, not 200
+- **`update` uses `ResponseEntity.ok()`** — updating an existing resource returns 200; nothing was created
+- **`delete` returns `ResponseEntity<Void>`** — no body; `Void` (uppercase) because `<>` only accepts classes, not the `void` keyword
+- **`delete` needs two lines, not one** — the service returns `void`, so there is no value to wrap: you call it, then build the empty 204 response separately
+- **`@Valid` sits next to `@RequestBody` on the two write methods** — the validation runs *before* the method body, so an empty `name` is rejected with a 400 and `create()` never runs ([07-validation.md](./07-validation.md))
+- **Nothing here catches a "not found"** — `getById` on a missing id looks like it would return an empty 200. It does not: the service throws, and the exception handler converts it to 404 before anything is serialised.
 
 ---
 
-### What happens when the browser calls GET /api/users
+### What happens when the manager calls GET /api/users
 
 ```
-Browser → GET /api/users
-  → UserController.getAll()
-    → UserService.getAll()
-      → UserRepository.findAll()
-        → Hibernate generates: SELECT id, email, name FROM users
-          → PostgreSQL returns rows
-        → returned as List<User>
-      → returned to controller
-    → Jackson serializes List<User> to JSON
-  → browser receives []  (empty array — no users yet)
+Postman → GET /api/users  (with a MANAGER token)
+  → JwtFilter authenticates the token, @PreAuthorize lets it through
+    → UserController.getAll()
+      → UserService.getAll()
+        → UserRepository.findAll()
+          → Hibernate generates: SELECT id, name, email, password, role, active FROM users
+            → PostgreSQL returns rows
+          → returned as List<User>          ← entities, password hash included
+        → .map(this::toResponse)            ← the boundary: entities become DTOs HERE
+      → returned to the controller as List<UserResponse>
+    → Jackson serialises List<UserResponse> to JSON
+  → Postman receives [{ "id":1, "name":"Admin Manager", "email":"manager@timetrack.com", ... }]
 ```
 
-Hibernate logs the SQL to the console because `spring.jpa.show-sql=true` is set in `application.properties`.
+Trace the password through that diagram: it *is* loaded from the database into the `User` entities — Hibernate selects the column, there is no way not to. What never happens is the last step: `toResponse()` copies five fields into a `UserResponse` and the hash is simply not one of them, so by the time Jackson runs there is nothing to leak. **The DTO conversion in the service is the exact line where the database's shape stops and the API's shape begins.**
+
+Hibernate prints that `SELECT` to the console because `spring.jpa.show-sql=true` is set in `application.properties` — the fastest way to confirm your endpoint really hit the database and did not just answer from nowhere.
 
 ---
 
@@ -628,3 +727,13 @@ public class TransactionController {
     }
 }
 ```
+
+---
+
+## Where this leaves you — and what comes next
+
+The 404 you started this file with is gone. `@ComponentScan` now finds real `@RestController` classes, each one owning a URL; `@GetMapping`/`@PostMapping` route the verb to a method; `@PathVariable`, `@RequestParam` and `@RequestBody` pull the client's input into your parameters; `ResponseEntity` decides what goes back and with which status; and DTOs guarantee that what goes back is a shape you chose, not a database row.
+
+But look again at the very first line of every controller in this file — `private final ProjectService projectService`, filled by a constructor you never call. Nothing in this file explained *who* calls it. You wrote `new` exactly once, on a `Project` entity inside a service; you never wrote `new ProjectService(...)` or `new ProjectController(...)`, and yet both objects exist and are correctly wired to each other at runtime. Three layers only stay decoupled if something outside them does the assembling — and that something is the IoC container.
+
+[03-dependency-injection.md](./03-dependency-injection.md) is where that stops being magic: what a bean actually is, how `@Service`/`@Repository`/`@RestController` register one, how Spring picks the constructor and matches each parameter to a bean, and why constructor injection — not `@Autowired` on a field — is the form every reviewer expects to see.
