@@ -11,10 +11,10 @@ Update this table at the start of every session. It is the authoritative pointer
 
 | | |
 |---|---|
-| **Current step** | Step 5 — TimeEntry CRUD + workflow |
-| **Done condition** | Postman: POST /api/entries returns 201 — status DRAFT; PATCH /api/entries/{id}/approve as employee returns 403; as manager on a SUBMITTED entry returns 200 — status APPROVED |
+| **Current step** | Step 6 — Reports |
+| **Done condition** | Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours } |
 | **Phase** | Backend — core domain (Phase 4) |
-| **Last updated** | 2026-07-06 |
+| **Last updated** | 2026-07-14 |
 
 ---
 
