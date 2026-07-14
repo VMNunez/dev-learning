@@ -5,6 +5,19 @@ Managers review the entries and approve or reject them.
 
 ---
 
+## 0. Session quick reference
+
+Update this table at the start of every session. It is the authoritative pointer to the live step.
+
+| | |
+|---|---|
+| **Current step** | Step 6 — Reports |
+| **Done condition** | Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours } |
+| **Phase** | Backend — core domain (Phase 4) |
+| **Last updated** | 2026-07-14 |
+
+---
+
 ## Why this project
 
 - The workflow pattern (DRAFT → SUBMITTED → APPROVED / REJECTED) appears in almost every enterprise app
@@ -14,17 +27,63 @@ Managers review the entries and approve or reject them.
 
 ---
 
+## 3. New concepts
+
+Concepts this project teaches for the first time. (Steps 1–3 are now done and already recorded in PROGRESS.md; they are kept here so the table reflects the whole project scope.)
+
+| Concept | Topic | Why this project teaches it |
+|---|---|---|
+| Layered architecture (Controller → Service → Repository) | Architecture | First backend; the layer split is the backbone of every Spring app |
+| `@Entity` / JPA mapping to PostgreSQL | Spring Boot | First time mapping Java classes to tables |
+| `JpaRepository` + derived query methods | Spring Boot | CRUD without SQL; `findByEmail` style finders |
+| DTO request/response boundary | Spring Boot | Entities never leave the service layer |
+| Spring Security + JWT stateless auth | Security | Standard auth in every Spring Boot job |
+| `@PreAuthorize("hasRole(...)")` role checks | Security | Method-level authorization after the JWT filter |
+| `@ManyToOne` / `@OneToMany` relationships | Spring Boot / JPA | TimeEntry → User and → Project foreign keys |
+| State machine workflow (DRAFT→SUBMITTED→APPROVED/REJECTED) | Architecture | Most valuable pattern in a junior portfolio |
+| PATCH for state transitions | REST | Signals that only `status` changes, not the whole resource |
+| Query filters with `@RequestParam` | Spring Boot | `?month=`, `?status=`, `?projectId=` on GET /api/entries |
+| JPQL aggregation queries | Spring Boot / SQL | Reports — hours grouped by project and by employee |
+| `@RestControllerAdvice` GlobalExceptionHandler | Spring Boot | Consistent JSON error bodies |
+| `data.sql` startup seeding | Spring Boot | First manager account with no register endpoint |
+| JUnit 5 + Mockito unit tests | Testing | First backend tests |
+| Angular consuming a real REST API end to end | Angular | First time the frontend talks to a backend you built |
+| Docker + docker-compose | General / DevOps | One command runs app + database locally |
+
+---
+
+## 4. Review concepts
+
+Concepts from earlier projects this project reinforces.
+
+| Concept | Originally learned in | How this project uses it again |
+|---|---|---|
+| JWT auth flow | Project 06 (frontend side) | Now built on the backend — full round trip |
+| Route guards (`authGuard`, role guard) | Project 06 | `authGuard` + `managerGuard` on protected routes |
+| HTTP interceptor | Project 06 | Attaches the JWT to every request |
+| Role-aware UI | Project 06 | Same route, different data per role (Entries page) |
+| Coordinator (smart/dumb) pattern | Projects 03 / 05 | Each page owns state; children display and emit |
+| Reactive forms + validation | Project 03 | Entry form, user form |
+| MatTable + MatDialog | Project 05 | Entries, Projects, Approvals tables and dialogs |
+| `forkJoin` parallel requests | Project 02 | Manager dashboard stat cards |
+| Signals + `computed()` | Project 01 onwards | Derived stat counts across pages |
+| Auth persistence with signal + `effect()` | Project 06 | Token + current user kept in localStorage |
+| Soft delete | Project 07 (Step 2) | Reused for users and projects |
+| `MatSidenav` app shell | Project 06 | Same fixed toolbar + scrollable content layout |
+
+---
+
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Backend | Java + Spring Boot |
-| Auth | Spring Security + JWT |
-| Database | PostgreSQL |
-| ORM | Spring Data JPA + Hibernate |
-| Frontend | Angular + Angular Material |
-| Local setup | Docker + docker-compose |
-| Tests | JUnit 5 + Mockito (backend), Jasmine + TestBed (frontend) |
+| Layer | Technology | Notes |
+|---|---|---|
+| Backend | Java + Spring Boot | First Spring Boot project; layered architecture |
+| Auth | Spring Security + JWT | Stateless; secret from `${JWT_SECRET}` env var |
+| Database | PostgreSQL | Local instance via pgAdmin; same DB used in Docker |
+| ORM | Spring Data JPA + Hibernate | `JpaRepository` + derived queries; JPQL for reports |
+| Frontend | Angular + Angular Material | Indigo theme; Core/Feature/Shared structure |
+| Local setup | Docker + docker-compose | App + Postgres in one command (Step 9) |
+| Tests | JUnit 5 + Mockito (backend), Jasmine + TestBed (frontend) | Services only — component tests start at project 08 |
 
 ---
 
@@ -76,42 +135,44 @@ See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-
 ## Entities
 
 ### User
-| Field | Type | Notes |
-|---|---|---|
-| id | BIGINT | Primary key, auto-increment |
-| name | VARCHAR | Full name |
-| email | VARCHAR | Unique, used for login |
-| password | VARCHAR | Hashed with BCrypt |
-| role | ENUM | `EMPLOYEE` or `MANAGER` |
-| active | BOOLEAN | Default true — soft delete, inactive users cannot log in |
-| createdAt | TIMESTAMP | Set automatically |
+| Field | Java type | SQL type | Constraints | Notes |
+|---|---|---|---|---|
+| id | Long | BIGINT | PK, auto-increment | Identity generated by the DB |
+| name | String | VARCHAR | not null | Full name shown in the UI |
+| email | String | VARCHAR | not null, unique | Used as the login username |
+| password | String | VARCHAR | not null | BCrypt hash, never plain text |
+| role | Role (enum) | VARCHAR | not null | `EMPLOYEE` or `MANAGER` — stored as string via `@Enumerated(STRING)` |
+| active | Boolean | BOOLEAN | not null, default true | Soft delete — inactive users cannot log in |
+| createdAt | LocalDateTime | TIMESTAMP | not null | Set by `@CreationTimestamp` |
 
 ### Project
-| Field | Type | Notes |
-|---|---|---|
-| id | BIGINT | Primary key, auto-increment |
-| name | VARCHAR | Unique, not null |
-| description | VARCHAR | Optional |
-| active | BOOLEAN | Default true — inactive projects cannot receive new entries |
-| createdAt | TIMESTAMP | Set automatically |
+| Field | Java type | SQL type | Constraints | Notes |
+|---|---|---|---|---|
+| id | Long | BIGINT | PK, auto-increment | Identity generated by the DB |
+| name | String | VARCHAR | not null, unique | Project name shown in selectors |
+| description | String | VARCHAR | nullable | Optional context |
+| active | Boolean | BOOLEAN | not null, default true | Inactive projects cannot receive new entries |
+| createdAt | LocalDateTime | TIMESTAMP | not null | Set by `@CreationTimestamp` |
 
 ### TimeEntry
-| Field | Type | Notes |
-|---|---|---|
-| id | BIGINT | Primary key, auto-increment |
-| user | FK → User | Who logged the entry |
-| project | FK → Project | Which project the hours belong to |
-| date | DATE | The day the work was done |
-| hours | DECIMAL(4,2) | Between 0.5 and 24 |
-| description | VARCHAR | What was done |
-| status | ENUM | `DRAFT`, `SUBMITTED`, `APPROVED`, `REJECTED` |
-| rejectionNote | VARCHAR | Optional — set by manager when rejecting |
-| createdAt | TIMESTAMP | Set automatically |
-| updatedAt | TIMESTAMP | Updated automatically on every change |
+| Field | Java type | SQL type | Constraints | Notes |
+|---|---|---|---|---|
+| id | Long | BIGINT | PK, auto-increment | Identity generated by the DB |
+| user | User | BIGINT (FK) | not null | `@ManyToOne` → User; who logged the entry |
+| project | Project | BIGINT (FK) | not null | `@ManyToOne` → Project; which project the hours belong to |
+| date | LocalDate | DATE | not null | The day the work was done; cannot be in the future |
+| hours | BigDecimal | DECIMAL(4,2) | not null | Between 0.5 and 24 |
+| description | String | VARCHAR | not null | What was done |
+| status | EntryStatus (enum) | VARCHAR | not null, default DRAFT | `DRAFT`, `SUBMITTED`, `APPROVED`, `REJECTED` via `@Enumerated(STRING)` |
+| rejectionNote | String | VARCHAR | nullable | Set by the manager when rejecting |
+| createdAt | LocalDateTime | TIMESTAMP | not null | Set by `@CreationTimestamp` |
+| updatedAt | LocalDateTime | TIMESTAMP | not null | Set by `@UpdateTimestamp` on every change |
 
 ### Relationships
-- User → TimeEntry: one-to-many (`@OneToMany` / `@ManyToOne`)
-- Project → TimeEntry: one-to-many (`@OneToMany` / `@ManyToOne`)
+- **User → TimeEntry:** one-to-many. The FK lives on `TimeEntry.user` (`@ManyToOne`); `User` may expose `@OneToMany(mappedBy = "user")` only if a user needs to read their own entries through the entity graph — otherwise skip it and query through the repository.
+- **Project → TimeEntry:** one-to-many. The FK lives on `TimeEntry.project` (`@ManyToOne`).
+- **Fetch type:** `@ManyToOne` defaults to `EAGER`. Keep the default here — every TimeEntry response needs its user and project anyway, and the tables are small. (If lists grow, switch to `LAZY` + a fetch-join query; out of scope for the MVP.)
+- **Cascade:** **none.** Deleting a user or project must never cascade-delete TimeEntries — that is exactly why both use soft delete (`active = false`). Historical timesheet data is preserved.
 
 ---
 
@@ -153,6 +214,27 @@ VALUES ('Admin', 'admin@timetrack.com', '$2a$10$...bcrypt_hash...', 'MANAGER', t
 ON CONFLICT DO NOTHING;
 ```
 The BCrypt hash must be pre-generated for a known password (e.g. `Admin2024!`).
+
+---
+
+## Testing with Postman
+
+Test every endpoint in Postman as soon as it is created. Do not wait until the whole layer is finished.
+
+**Setup — one collection for the project:**
+- Create a collection called `07 - TimeTrack` (project convention: `## - ProjectName`)
+- Create folders inside it, one per controller: `Auth`, `Users`, `Projects`, `Entries`, `Reports`
+- Add each endpoint to its folder as you build it
+
+**For each endpoint, check:**
+- Correct HTTP status code (200, 201, 204, 400, 404...)
+- Correct JSON response body
+- Error cases (missing fields, wrong id, etc.)
+
+**GET requests** — also testable in the browser (`http://localhost:8080/api/...`)
+**POST / PUT / DELETE** — Postman only
+
+**Base URL:** `http://localhost:8080`
 
 ---
 
@@ -627,68 +709,128 @@ These are real timesheet or dashboard apps worth looking at for reference:
 This is the first Spring Boot project. Each step introduces one new concept.
 
 ### Step 1 — Spring Boot foundation
-- Create project with Spring Initializr (dependencies: Spring Web, Spring Data JPA, PostgreSQL Driver)
-- Connect to PostgreSQL via `application.properties`
-- Create `User` entity with `@Entity`, `@Id`, `@GeneratedValue`
-- Create `UserRepository` extending `JpaRepository`
-- Create `UserService` with a `getAll()` method
-- Create `UserController` with a `GET /api/users` endpoint
-- **Concept learned:** Controller → Service → Repository pattern, JPA basics, project setup
+- Create project with Spring Initializr (dependencies: Spring Web, Spring Data JPA, PostgreSQL Driver, Lombok)
+- Connect to PostgreSQL via `application.properties`; create the `timetrack` database in pgAdmin
+- Create `User` entity, `UserRepository` (`JpaRepository`), `UserService.getAll()`, `UserController` with `GET /api/users`
+- **New concepts:** layered architecture, `@Entity`/JPA basics
+- **Review concepts:** none (first backend step)
+- **Done condition:** `Terminal: mvn spring-boot:run — started on port 8080` and `Browser: GET localhost:8080/api/users returns [] at /api/users`
 
 ### Step 2 — Full CRUD for Projects
 - Create `Project` entity, repository, service, controller
-- GET all, GET by id, POST, PUT, DELETE
-- Use DTOs to separate request/response from the entity
-- **Concept learned:** REST conventions, DTOs, full CRUD in Spring Boot
+- GET all, GET by id, POST, PUT, DELETE (soft delete) with DTOs
+- **New concepts:** DTO request/response boundary, REST conventions, soft delete
+- **Review concepts:** layered architecture
+- **Done condition:** `Postman: POST /api/projects returns 201 — body has id + name; GET /api/projects returns 200 with the created project`
 
 ### Step 3 — Spring Security + JWT
-- Add Spring Security dependency
-- Configure CORS — Angular runs on port 4200, Spring Boot on 8080; without CORS the browser blocks all requests
-- Create the login endpoint (`POST /api/auth/login`)
-- Hash passwords with BCrypt
-- Generate and validate JWT tokens
-- Protect all routes except `/api/auth/login`
-- Add `GlobalExceptionHandler` with `@ControllerAdvice` for clean JSON error responses
-- **Concept learned:** Spring Security configuration, CORS, JWT flow, global error handling
+- Add Spring Security; configure CORS for `localhost:4200`
+- Login endpoint `POST /api/auth/login`; BCrypt password hashing; generate + validate JWT
+- Protect all routes except `/api/auth/login`; add `GlobalExceptionHandler` (`@RestControllerAdvice`)
+- **New concepts:** Spring Security + JWT, CORS, `@RestControllerAdvice`
+- **Review concepts:** DTO boundary (LoginRequest/AuthResponse)
+- **Done condition:** `Postman: POST /api/auth/login returns 200 — body has token; GET /api/projects without token returns 401`
 
-### Step 4 — Role-based authorization
-- Add `role` and `active` fields to `User` (EMPLOYEE / MANAGER)
-- Create `data.sql` with the first manager account — role field now exists, seed can run safely
-- Use `@PreAuthorize("hasRole('MANAGER')")` on project and user endpoints — only managers can create, update, or delete
-- Use `SecurityContextHolder` to get the current logged-in user inside a service method
-- **Concept learned:** Spring Security roles, SecurityContext, database seeding
+### Step 4 — Role-based authorization ✅
+- Add `role` and `active` to `User` (EMPLOYEE / MANAGER)
+- Create `data.sql` with the first manager account
+- `@PreAuthorize("hasRole('MANAGER')")` on project and user write endpoints
+- `SecurityContextHolder` to read the current user inside a service
+- **New concepts:** `@PreAuthorize` role checks, `data.sql` seeding, `SecurityContextHolder`
+- **Review concepts:** JWT flow (token now carries the role)
+- **Done condition:** `Postman: POST /api/projects with EMPLOYEE token returns 403; with MANAGER token returns 201`
 
-### Step 5 — TimeEntry CRUD + workflow
-- Create `TimeEntry` entity with `@ManyToOne` to User and Project
-- `GET /api/entries` — use `SecurityContextHolder` to return own entries for employees, all entries for managers
-- CRUD endpoints with business rule validation (future date, inactive project, DRAFT-only edits)
-- Status transitions: submit, approve, reject
-- **Concept learned:** entity relationships, role-based data filtering, business logic in services, state machine pattern
+### Step 5 — TimeEntry CRUD + workflow ✅
+- `TimeEntry` entity with `@ManyToOne` to User and Project
+- `GET /api/entries` filters by current user (employee) or returns all (manager)
+- CRUD with business-rule validation (future date, inactive project, DRAFT-only edits)
+- Status transitions: submit, approve, reject (PATCH)
+- **New concepts:** `@ManyToOne` relationships, state machine workflow, PATCH for transitions, role-based data filtering
+- **Review concepts:** soft delete, `SecurityContextHolder`
+- **Done condition:** `Postman: POST /api/entries returns 201 — status DRAFT; PATCH /api/entries/{id}/approve as employee returns 403; as manager on a SUBMITTED entry returns 200 — status APPROVED`
+- **Concept learned:** hard delete (`deleteById`) is correct here — `TimeEntry` has no `active` field like `Project`/`User`, and only DRAFT entries can be removed, so nothing worth preserving is lost. Bean Validation (`@NotBlank`/`@NotNull` + `@Valid`) was added across all request DTOs (`CreateProjectRequest`, `UpdateProjectRequest`, `CreateTimeEntryRequest`, `RejectRequest`) as part of this step, plus a `PUT /api/entries/{id}` (edit DRAFT) and `DELETE /api/entries/{id}` (delete DRAFT) endpoint — both reusing the owner + DRAFT-only guards, and PUT re-running create's business rules (future date, inactive project, hours range) since it replaces the whole resource.
 
 ### Step 6 — Reports
 - Aggregate queries with JPQL
 - Summary by project and by employee for a given month
-- **Concept learned:** JPQL aggregations, reporting patterns in Spring Boot
+- **New concepts:** JPQL aggregation queries, query filters with `@RequestParam`
+- **Review concepts:** `@PreAuthorize` (reports are MANAGER only)
+- **Done condition:** `Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours }`
 
 ### Step 7 — Angular frontend
-- Set up Angular project with Angular Material and the indigo theme
-- Auth service + JWT storage in localStorage
-- HTTP interceptor to attach the token to every request
-- Auth guard + manager guard
+- Angular project with Angular Material and the indigo theme
+- Auth service + JWT in localStorage; HTTP interceptor; auth guard + manager guard
 - Shared components: `status-badge`, `confirm-dialog`, `reject-dialog`
 - All pages: Login, Dashboard, Entries, Projects, Approvals, Team, Reports
-- **Concept learned:** Angular consuming a real REST API end to end
+- **New concepts:** Angular consuming a real REST API end to end
+- **Review concepts:** route guards, HTTP interceptor, role-aware UI, coordinator pattern, reactive forms, MatTable/MatDialog, `forkJoin`, auth persistence
+- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard; the entries table renders rows at /entries`
 
-### Step 8 — Tests
-- Backend: JUnit 5 + Mockito — one test per service method
-- Frontend: Jasmine + TestBed — one test per service
-- **Concept learned:** unit testing in both Java and Angular
+### Step 8 — Backend tests
+- JUnit 5 + Mockito — one test per service method
+- Cover edge cases, not just the happy path (see Section 16)
+- **New concepts:** JUnit 5 + Mockito unit testing
+- **Review concepts:** business rules and state machine (asserted through tests)
+- **Done condition:** `Terminal: mvn test passes — TimeEntryServiceTest, approve_throwsWhenNotSubmitted asserted`
 
-### Step 9 — Docker
+### Step 9 — Angular tests
+- Jasmine + TestBed with `HttpClientTestingModule` — one test per service
+- Verify the HTTP call, the URL, and the error path (see Section 16)
+- Component tests are NOT in scope — per CLAUDE.md they start at project 08; this project tests services only
+- **New concepts:** Angular service unit testing with `HttpClientTestingModule`
+- **Review concepts:** auth and entry services
+- **Done condition:** `Terminal: ng test passes — EntryService spec, getEntries issues a GET to /api/entries asserted`
+
+### Step 10 — SQL complement
+- In `sql/`, hand-write the SQL that Hibernate generates for the main report queries (the `GROUP BY` aggregations) and for `GET /api/entries` with filters
+- Compare your SQL output in pgAdmin against the API response — they must match
+- **New concepts:** reading Hibernate-generated SQL; connecting JPQL to raw SQL
+- **Review concepts:** JPQL aggregations, daily SQL block (`GROUP BY`, `SUM`, `WHERE`)
+- **Done condition:** `pgAdmin: the hand-written GROUP BY query in sql/ returns hours-per-project rows matching GET /api/reports/by-project`
+
+### Step 11 — Docker
 - `Dockerfile` for the Spring Boot app
 - `docker-compose.yml` with Spring Boot + PostgreSQL services
 - `docker-compose up` runs everything locally
-- **Concept learned:** Docker basics, containerisation
+- **New concepts:** Docker + docker-compose, containerisation
+- **Review concepts:** none
+- **Done condition:** `Terminal: docker-compose up — app reachable at localhost:8080/api/users and the Postgres service is healthy`
+
+---
+
+## Testing plan
+
+### Backend — JUnit 5 + Mockito (Step 8)
+
+Mock the repository; test the service in isolation. Cover the edge cases, not only the happy path.
+
+| Service method | Happy path | Edge cases to cover |
+|---|---|---|
+| `TimeEntryService.create` | Saves a DRAFT entry | future date → throws; inactive project → throws; hours < 0.5 or > 24 → throws |
+| `TimeEntryService.submit` | DRAFT → SUBMITTED | entry not DRAFT → throws; caller is not the owner → throws |
+| `TimeEntryService.approve` | SUBMITTED → APPROVED | entry not SUBMITTED → throws; entry id not found → `ResourceNotFoundException` |
+| `TimeEntryService.reject` | SUBMITTED → REJECTED + note saved | entry not SUBMITTED → throws; missing note → throws |
+| `ProjectService.create` | Saves a project | duplicate name → throws (409) |
+| `UserService.create` | Saves user, password BCrypt-hashed | duplicate email → throws (409) |
+| `AuthService.login` | Returns a JWT | wrong password → `BadCredentialsException` (401) |
+| `ReportService.summaryByProject` | Groups hours per project for the month | empty month → returns empty list, not null |
+
+### Angular — services (Jasmine + TestBed, Step 9)
+
+Use `HttpClientTestingModule` and `HttpTestingController` to assert the request without a real backend.
+
+| Service | What the test verifies |
+|---|---|
+| `AuthService.login` | POSTs to `/api/auth/login`; on success stores the token and sets `currentUser` |
+| `EntryService.getEntries` | GETs `/api/entries` with the right query params; returns the typed list |
+| `EntryService.approve` | PATCHes `/api/entries/{id}/approve`; updates local state on success |
+| error path | a 401/403 response surfaces an error the caller can handle |
+
+### Angular — components
+
+Out of scope for this project. Per CLAUDE.md "Testing rules", component (TestBed) tests are introduced in **project 08**. Project 07 tests services only.
+
+For each new testing concept (JUnit 5 + Mockito, `HttpClientTestingModule`), add one interview question to `notes/interview-prep/en/` and `notes/interview-prep/es/` (same question, both files).
 
 ---
 
@@ -699,16 +841,143 @@ is better than a perfect project delivered in September. Ship early, apply in pa
 
 ---
 
-## Architecture decisions to document in the README
+## README structure
 
-These are the decisions worth explaining — they show you think, not just code.
+This project uses three READMEs. See `CLAUDE.md → README format for full-stack projects` for the full rules.
 
-- Why manager creates employee accounts instead of public self-registration (anyone could self-assign the Manager role)
-- Why `data.sql` for the first manager account instead of a setup endpoint (a setup endpoint must be removed or protected after first use — a seed file is simpler and version-controlled)
-- Why workflow states instead of a simple boolean `approved` field
-- Why DTOs instead of returning entities directly from the API
-- Why `@PreAuthorize` instead of checking roles inside the service
-- Why `SecurityContextHolder` to get the current user instead of passing `userId` in the request body
-- Why `PATCH` for state transitions instead of `PUT`
-- Why soft delete (`active = false`) for both users and projects instead of hard delete (deleting a user would orphan their TimeEntries; deleting a project would orphan its entries)
-- Why `docker-compose` instead of running Spring Boot and PostgreSQL separately
+| File | Audience | When to write |
+|---|---|---|
+| `README.md` | Recruiter | Update after each step |
+| `backend/README.md` | Technical interviewer | Write when backend is complete |
+| `frontend/README.md` | Technical interviewer | Write when frontend is complete |
+
+---
+
+## backend/README.md — planned sections
+
+Write when the backend is complete (after Step 6).
+
+**1. API endpoints table**
+| Method | URL | Role | Description |
+One row per endpoint — all routes visible at a glance.
+
+**2. Database schema**
+Entities, fields, relationships. One sentence per key decision (why ENUM for status, why soft delete, why no cascade delete).
+
+**3. Auth flow — numbered steps**
+1. Client sends `POST /api/auth/login` with email and password
+2. Service loads user from DB, verifies password with BCrypt
+3. Server generates JWT signed with the secret from environment variable
+4. Client sends JWT in `Authorization: Bearer <token>` header on every request
+5. `JwtFilter` intercepts, validates token, extracts user, sets `SecurityContext`
+6. Spring Security allows or denies based on `SecurityFilterChain` rules
+
+**4. Security considerations**
+- Passwords hashed with BCrypt — never stored in plain text
+- JWT secret loaded from environment variable — never committed to git
+- Role-based endpoint protection with `@PreAuthorize`
+- Input validation at controller boundary with `@Valid` + `@ControllerAdvice`
+
+**5. Key patterns**
+- Layered architecture — controller never calls repository
+- DTO boundary — entity never leaves the service layer
+- Soft delete — `active = false` instead of DELETE
+- `GlobalExceptionHandler` — consistent JSON error responses
+
+**6. Tradeoffs**
+- JWT over session-based auth — stateless API scales without server memory
+- Soft delete over hard delete — deleting a user would orphan all their TimeEntries
+- RuntimeException over checked exceptions — Spring Boot convention, caught globally with @ControllerAdvice
+
+**7. How to run alone**
+IntelliJ + local PostgreSQL, without Docker.
+
+---
+
+## frontend/README.md — planned sections
+
+Write when the frontend is complete (after Step 7).
+
+**1. Folder structure** — one-line explanation per folder, why it exists.
+
+**2. State management approach**
+- Signals for local component state
+- Services for shared state across pages
+- Coordinator pattern — page owns all state, child components receive and emit
+
+**3. Key patterns**
+- `authGuard` + `managerGuard` — route protection per role
+- HTTP interceptor — JWT attached automatically to every request
+- Role-aware UI — same route, different content per role
+- `forkJoin` on dashboard — parallel API calls for stat cards
+
+**4. Shared components**
+- `status-badge` — coloured badge used in entries, approvals and dashboard
+- `confirm-dialog` — reusable confirmation before any destructive action
+- `reject-dialog` — rejection note input, used in approvals
+
+**5. Tradeoffs**
+- Signals over NgRx — app complexity did not justify a state management library
+- Angular Material over custom CSS — enterprise UI library standard in Spanish consultancies
+
+**6. How to run alone** — `ng serve`
+
+---
+
+## Architecture decisions to document in the global README
+
+Format: `[what you did] to [why it matters]` — one line each, 6-8 maximum.
+
+- Stateless JWT auth to keep the API independent of server state
+- DTO boundary between persistence and HTTP layer to control what the API exposes
+- PATCH for state transitions (submit, approve, reject) to signal that only status changes
+- SecurityContextHolder for current user to prevent privilege escalation from client-supplied userId
+- Soft delete for users and projects to preserve historical timesheet data
+- Workflow states (DRAFT → SUBMITTED → APPROVED / REJECTED) to support the resubmit flow and audit trail
+- Manager-only account creation to prevent self-assignment of the Manager role
+- data.sql seed for the first manager account to avoid a setup endpoint that must be removed after first use
+
+---
+
+## Tradeoffs to document in the global README
+
+Format: `[option chosen] over [option rejected] — [reason]`
+
+- JWT over session-based auth — stateless API requires no server memory per user
+- Soft delete over hard delete — deleting a user would orphan all their TimeEntries
+- docker-compose over separate manual setup — one command runs the full project locally
+
+---
+
+## Future improvements to document in the global README
+
+Domain-realistic only — max 3 bullets.
+
+- Export approval reports to PDF or Excel
+- Email notifications when entries are approved or rejected
+- Bulk approval workflow for managers handling large teams
+
+---
+
+## Git branch strategy
+
+Written retroactively on 2026-07-06, after Step 4 closed — `feat/spring-foundation` had grown
+to cover the entire backend foundation without a plan for where it would end. From here on,
+one branch per coherent feature, never one per step.
+
+| Branch | Covers (steps) | Opens | Closes |
+|---|---|---|---|
+| `feat/spring-foundation` | Steps 1–4 — Spring Boot setup, Project CRUD, JWT auth, role-based authorization | Step 1, right after `projects/07-timetrack` was created from `main` | Now — Step 4's done condition passed. PR into `projects/07-timetrack`. |
+| `feat/timeentry-workflow` | Step 5 — TimeEntry CRUD + workflow | After `feat/spring-foundation` merges | When Step 5's done condition passes |
+| `feat/reports` | Step 6 — Reports | After `feat/timeentry-workflow` merges | When Step 6's done condition passes |
+| `feat/angular-frontend` | Step 7 — Angular frontend | After `feat/reports` merges | When Step 7's done condition passes |
+| `feat/backend-tests` | Step 8 — Backend tests | After `feat/angular-frontend` merges | When Step 8's done condition passes |
+| `feat/angular-tests` | Step 9 — Angular tests | After `feat/backend-tests` merges | When Step 9's done condition passes |
+| — (no branch) | Step 10 — SQL complement | — | Commits go straight to `main`, per CLAUDE.md's rule that `sql/` and study materials skip the feature-branch workflow |
+| `feat/docker` | Step 11 — Docker | After `feat/angular-tests` merges | When Step 11's done condition passes — the last feature branch before the project branch closes |
+
+The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
+open for the whole project. It only merges into `main` when Step 11 is done.
+
+**Immediate action:** `feat/spring-foundation` is done — open a PR into `projects/07-timetrack`
+now, then create `feat/timeentry-workflow` from `projects/07-timetrack` before starting Step 5.

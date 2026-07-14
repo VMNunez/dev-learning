@@ -44,6 +44,18 @@ width: 200px total, padding and border eat into that space ← predictable
 
 Always use `border-box`. Set it once in the reset and forget about it.
 
+### Collapsing margins
+
+A box-model surprise interviewers love: when two **vertical** margins meet — the bottom margin of one element and the top margin of the next — they do **not** add up. They *collapse* into a single margin equal to the **larger** of the two.
+
+```
+<p style="margin-bottom: 30px">A</p>
+<p style="margin-top: 20px">B</p>
+/* the gap between A and B is 30px, NOT 50px — the larger one wins */
+```
+
+This only happens with vertical margins of block elements in normal flow. It does **not** happen horizontally, and it does not happen inside a flex or grid container — another reason `gap` is more predictable than margins for spacing. If a gap looks smaller than the numbers suggest, collapsing margins is usually why.
+
 ---
 
 ## Reset and global base styles

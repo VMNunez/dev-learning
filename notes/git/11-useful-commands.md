@@ -20,6 +20,7 @@
 | `git rm --cached filename` | Stop tracking a file (keeps it on disk) |
 | `git push origin --delete branch` | Delete a remote branch |
 | `git checkout -` | Switch back to the previous branch |
+| `git branch --set-upstream-to=origin/branch branch` | Connect a local branch to its remote without pushing |
 
 ---
 

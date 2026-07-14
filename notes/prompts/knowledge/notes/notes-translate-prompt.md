@@ -1,0 +1,92 @@
+# Notes translate prompt — the TRANSLATOR component (one file, en/ → es/)
+
+This is stage **T** of a four-stage build: English author (A) → English reviewer (B) → **translator
+(T)** → Spanish reviewer (C). By the time you run, the `en/` file is **finished and reviewed** — it is
+the canonical source. Your single job is to produce (or re-sync) its `es/` counterpart as **natural,
+first-class Spanish**, then hand off to the Spanish reviewer who reads it cold and commits.
+
+**Why translation is its own stage.** Writing rich English to the standard and rendering it as native
+Spanish are two different cognitive jobs. When one subagent did both, the Spanish got whatever
+attention was left after the heavy English work — and it was written *before* the English review, so
+every English fix forced a re-sync. Translating only the final, reviewed English, in its own cold
+context, means the Spanish is produced once from a stable source with the full attention budget on
+making it read like Spanish.
+
+**You do not audit or change the English.** The `en/` is validated and canonical. You read it as the
+source of truth and mirror it. If you believe an English sentence is wrong, do **not** fix it — note it
+in your report; the English is not yours to touch.
+
+---
+
+**How to use:**
+
+1. Fill in `TOPIC` and `FILE` — `FILE` is the **`en/`** path; you create/update its `es/` counterpart
+   (same number prefix, Spanish filename, e.g. `en/08-exceptions.md` → `es/08-excepciones.md`).
+2. Paste into a fresh conversation (or let the orchestrator dispatch it).
+
+---
+
+````
+## Configuration — edit only this block
+
+TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+FILE  = [exact en/ file path (the canonical source), e.g. notes/java/en/08-exceptions.md]
+
+Use TOPIC and FILE wherever the prompt refers to {TOPIC} or {FILE}.
+
+---
+
+You translate exactly ONE file: the canonical `en/` source `{FILE}` → its `es/` counterpart (same
+number prefix). Read `{FILE}` **in full, top to bottom**, and produce an `es/` that is its faithful,
+natural-Spanish mirror. If the `es/` already exists, **re-sync it** to the current English: bring over
+every section, code block, table, and callout so the two match exactly, and clear any leftover `TODO:`
+marker Victor wrote in the `es/` (the English author already resolved the doubt in `{FILE}`).
+
+Before starting, read:
+- `{FILE}` — the canonical English source (your input, do not change it).
+- The existing `es/` counterpart, if any (you are re-syncing it, not starting blind).
+- The first section of `notes/java/es/08-excepciones.md` — the reference for what finished, native
+  Spanish notes read like.
+- notes/prompts/knowledge/notes/_note-quality-standard.md — the bilingual rules and the Spanish-prose
+  expectations (structural labels, calque list).
+
+## What you produce
+
+An `es/` file that is **structurally identical** to `{FILE}` — same sections in the same order, same
+code blocks, same tables, same `> blockquote` callouts, same diagrams — but whose **prose reads as
+native Spanish**, not a word-for-word calque of the English.
+
+- **Structural parity is exact.** Every `##`/`###` heading in `{FILE}` exists in the `es/`; every code
+  block is present unchanged (comments may be translated to natural Spanish); every table and callout
+  is carried over. Do not add or drop sections — this is a mirror.
+- **Internal cross-file links point at the Spanish filename in `es/`.** When `{FILE}` links to a
+  sibling note (e.g. `[10-generics.md](10-generics.md)`), the `es/` must link to that sibling's **`es/`
+  counterpart by its Spanish name** — `[10-genericos.md](10-genericos.md)`, not the English filename.
+  The `es/` folder is self-contained: every internal link resolves to a file that exists in `es/`.
+  Never carry an English filename into an `es/` link (it becomes a broken link the moment the reader
+  clicks it). If you are unsure of a sibling's exact Spanish filename, list `notes/{TOPIC}/es/` and
+  match by numeric prefix. Prose-only references with no markdown link stay prose-only.
+- **Prose is native Spanish.** Fix calque as you translate: `escanear`→`leer`, `retornar`→`devolver`,
+  English word order, literal idioms. Translate structural labels: `Purpose:`→`Propósito:`,
+  `File:`→`Archivo:`; `Docs:` stays. Technical English terms Victor hears at work (*deploy, refactor,
+  stack, edge case, trade-off*) stay in English inside the Spanish prose — that is correct, not calque.
+- **Meaning is identical.** Same idea, same emphasis, same worked example — only the language changes.
+  Do not summarise, do not expand, do not "improve" the content; render it.
+
+## Section-by-section trace (mandatory — proof you translated the whole file)
+
+List **every `##`/`###` heading in order** and, next to each, write `translated` (or `re-synced` if it
+already existed and you updated it). A report without this trace is not accepted — it is your proof you
+reached the last line instead of stopping at the middle of the file.
+
+## Finish
+
+**You do not commit and do not mark the worklist row** — the Spanish reviewer (C) reads your `es/`
+cold, polishes naturalness, and owns the single atomic commit. Leave the `es/` file in the working
+tree and report:
+- `TRANSLATED` (created the `es/`) or `RE-SYNCED` (updated an existing `es/`).
+- The section-by-section trace.
+- The CLAUDE.md "next file:" counter is the author's to bump — you never touch it.
+- Any English sentence you believe is wrong (for a follow-up author run — you did **not** change it).
+
+````

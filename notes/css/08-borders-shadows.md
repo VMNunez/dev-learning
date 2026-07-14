@@ -104,6 +104,20 @@ button:focus-visible {
 }
 ```
 
+### `:focus` vs `:focus-visible`
+
+`:focus` fires on **every** way of focusing an element — including a plain mouse click. That is why a button can show an ugly focus ring just from being clicked. `:focus-visible` is smarter: the browser only matches it when it decides keyboard navigation is likely (the user pressed Tab), not on a mouse click.
+
+```css
+/* ❌ ring shows on click too — looks wrong */
+button:focus { outline: 2px solid var(--primary); }
+
+/* ✅ ring only on keyboard focus — clean for mouse, accessible for keyboard */
+button:focus-visible { outline: 2px solid var(--primary); }
+```
+
+The rule: style `:focus-visible`, not `:focus`, for focus rings — keyboard users keep the ring, mouse users do not get it on every click. Never use `outline: none` without a visible replacement — that breaks keyboard navigation.
+
 ---
 
 ## box-shadow
@@ -156,6 +170,29 @@ box-shadow:
 ```css
 box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);  /* pressed/sunken effect */
 ```
+
+---
+
+## aspect-ratio
+
+`aspect-ratio` locks an element's width-to-height proportion, so it scales without distortion when you control only one dimension:
+
+```css
+.video {
+  width: 100%;
+  aspect-ratio: 16 / 9;   /* height is computed automatically from the width */
+}
+
+.avatar {
+  width: 80px;
+  aspect-ratio: 1;        /* a perfect square — same as 1 / 1 */
+}
+```
+
+Two things it solves:
+
+- **No distortion** — set the width (e.g. `100%`) and the height follows the ratio, instead of guessing pixel heights at each breakpoint.
+- **Reserve space before an image loads** — giving an `<img>` (or its container) an `aspect-ratio` keeps the slot the right size while the image downloads, which stops the page from jumping (layout shift). It replaces the old "padding-bottom percentage" hack.
 
 ---
 

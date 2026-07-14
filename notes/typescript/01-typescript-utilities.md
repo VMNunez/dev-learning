@@ -33,6 +33,74 @@ export type NewTransaction = Omit<Transaction, 'id' | 'date'>;
 
 ---
 
+## Partial, Required, Readonly — transform every field at once
+
+These take a type and flip one thing about *every* property:
+
+```typescript
+interface Transaction {
+  id: number;
+  description: string;
+  amount: number;
+}
+
+Partial<Transaction>   // { id?, description?, amount? }            — every field optional
+Required<Transaction>  // { id, description, amount }               — every field required
+Readonly<Transaction>  // { readonly id; readonly description; ... } — every field readonly
+```
+
+- **`Partial<T>`** is the PATCH pattern: a partial update sends only the fields that changed, so the request type makes every field optional. `Required<T>` is its opposite — force-complete a type that has optionals.
+- **`Readonly<T>`** signals immutability — a config object or DTO that must not be mutated after it is built.
+
+> Which fits which endpoint? **POST** (create) → the full type or `Omit<T, 'id'>` (id not generated yet). **PATCH** (partial update) → `Partial<T>`. **PUT** (full replace) → the full type.
+
+---
+
+## Pick vs Omit — keep some vs remove some
+
+The most confused pair. They are mirror images:
+
+```typescript
+Pick<Transaction, 'id' | 'amount'>   // { id, amount }              — KEEP only these
+Omit<Transaction, 'id'>              // { description, amount, ... } — REMOVE these
+```
+
+- `Pick` when you want a small subset and listing what to keep is shorter.
+- `Omit` when you want almost everything except one or two fields — `Omit<Transaction, 'id'>` is the canonical create-form type.
+
+---
+
+## Record — a typed key-value map
+
+`Record<K, V>` describes an object whose keys are of type `K` and values of type `V`. Use it for lookup tables and dictionaries:
+
+```typescript
+const labels: Record<string, string> = {
+  pending: 'Pending review',
+  approved: 'Approved',
+};
+
+// keys restricted to a union — TypeScript checks every key is present
+const colours: Record<'low' | 'medium' | 'high', string> = {
+  low: 'green',
+  medium: 'orange',
+  high: 'red',
+};
+```
+
+**`Record<string, T>` vs the index signature `{ [key: string]: T }`** — both describe an object with dynamic string keys of the same value type. `Record` is the shorthand and the common choice in app code. The index signature still exists because it can be mixed with fixed known properties in the same interface:
+
+```typescript
+interface Config {
+  apiUrl: string;          // a fixed known property
+  [key: string]: string;   // plus any number of dynamic string keys
+}
+```
+
+> `Record` vs a `Map`? Use `Record` for a fixed-shape object you write as a literal (config, labels). Use a `Map` when keys are added/removed at runtime, keys are not strings, or you need `.size` / `.has()` / insertion order.
+
+---
+
 ## as — type assertion
 
 `as` tells TypeScript to treat a value as a specific type. It does not change the data — it only satisfies the type checker.

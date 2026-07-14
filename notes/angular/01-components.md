@@ -218,6 +218,68 @@ Think of it like a doorbell — it does not send information, it just signals th
 
 `@empty` renders when the array is empty. It is optional but useful to show a message when there is no data.
 
+### @switch — choose one branch from several fixed options
+
+Docs: https://angular.dev/guide/templates/control-flow#switch — read: "@switch block — selection control flow"
+
+Reach for `@switch` when you are checking one value against several fixed options — a status field is the classic case. With three or more branches it reads far better than a chain of `@if` / `@else if`.
+
+```html
+@switch (request.status) {
+  @case ('approved') {
+    <span class="badge badge--approved">Approved</span>
+  }
+  @case ('pending') {
+    <span class="badge badge--pending">Pending</span>
+  }
+  @case ('rejected') {
+    <span class="badge badge--rejected">Rejected</span>
+  }
+  @default {
+    <span class="badge">Unknown</span>
+  }
+}
+```
+
+`@case` compares with `===`. `@default` is optional — it renders when no case matches. Unlike the old `[ngSwitch]` directive, there is no container element: `@switch` wraps the cases directly.
+
+> When you only have two states (true / false), `@if` / `@else` is simpler. Reach for `@switch` once there are three or more fixed values to compare — like a leave request status in project 06.
+
+---
+
+## @let — a local variable inside the template
+
+Docs: https://angular.dev/guide/templates/let-template-variables — read: "Using @let"
+
+`@let` declares a variable you can reuse across the same template block. You use it to avoid calling the same `computed()` or method several times in one template — you name the result once and read the name everywhere else.
+
+Before `@let`, you either called the signal repeatedly or wrapped everything in an extra `@if` just to create a variable:
+
+```html
+<!-- calls totalHours() three times -->
+<p>{{ totalHours() }} hours</p>
+@if (totalHours() > 40) {
+  <p class="warning">Over {{ totalHours() }} — check overtime</p>
+}
+```
+
+With `@let` you compute it once:
+
+```html
+@let hours = totalHours();
+
+<p>{{ hours }} hours</p>
+@if (hours > 40) {
+  <p class="warning">Over {{ hours }} — check overtime</p>
+}
+```
+
+- The variable is scoped to the current template block and everything nested inside it
+- It is read-only — you cannot reassign it later in the template
+- It updates automatically when the expression's signals change, just like interpolation
+
+> **Why not just keep calling `totalHours()`?** For a cheap signal read it makes no real difference. But if the value comes from a method or a heavier `computed()`, repeating it runs the work several times per change-detection pass. `@let` is the in-template fix. It does not replace `computed()` though — logic reused across components still belongs in a `computed()` in the class.
+
 ---
 
 ## Content projection — ng-content

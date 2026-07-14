@@ -75,6 +75,38 @@ findById([1, 2, 3], 1);    // ❌ numbers do not have an id property
 
 ---
 
+## keyof — the union of an object's property names
+
+`keyof T` produces a union of all the property names of `T` as string literals:
+
+```ts
+interface Employee { id: number; name: string; email: string; }
+
+type EmployeeKey = keyof Employee;
+// 'id' | 'name' | 'email'
+```
+
+On its own it looks abstract, but it is what makes the built-in utility types *safe*. This is roughly how `Pick` is defined internally:
+
+```ts
+type Pick<T, K extends keyof T> = { [P in K]: T[P] };
+```
+
+The `K extends keyof T` constraint is the point: it forces the keys you pass to be **real property names of `T`**, not just any string. That is why `Pick<Employee, 'naem'>` is a compile error — `'naem'` is not in `keyof Employee`. Without `keyof`, a typo would only surface at runtime.
+
+A common use is a generic getter that only accepts real keys:
+
+```ts
+function getField<T, K extends keyof T>(obj: T, key: K): T[K] {
+  return obj[key];
+}
+
+getField(employee, 'email');  // ✅ returns string
+getField(employee, 'phone');  // ❌ compile error — not a key of Employee
+```
+
+---
+
 ## Utility types — review
 
 These are built-in generics that transform existing types. Already covered in `01-typescript-utilities.md`, but the connection to generics:
