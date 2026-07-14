@@ -32,7 +32,8 @@ Before giving any guidance, in this order:
    - Project 07: the "Progressive learning plan" + Section 0 (Session quick reference).
    - Projects 08+: Section 0 (Session quick reference) and Section 15.
 3. **Read the active project's `PROJECT-BACKLOG.md`** (e.g. `projects/07-timetrack/PROJECT-BACKLOG.md`)
-   — full-stack projects (07+) each keep their own; Angular projects 01–06 are closed and have none.
+   — every project keeps its own once `review-audit` has run on it. Angular projects 01–06 get a
+   frontend-only backlog (no security pass); full-stack projects (07+) get both tiers.
    If any High or Medium `[ ]` task is open, mention it at the start of the session.
 4. **Check `PROGRESS.md`** — the source of truth for what has already been learned. Use it to
    know where we are before guiding the next step (and to know which SQL topic is next — see

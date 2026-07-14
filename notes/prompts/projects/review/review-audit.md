@@ -62,7 +62,8 @@ REVIEW_SCOPE = backend
   "Last Reviewed" date, so the other tier still shows as stale (or `never`) until you review it.
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The project type is derived from the path — do not set it.
-- Angular projects 01–06 are informational only (no backlog, no security pass, no commit).
+- Angular projects 01–06 are frontend-only: they get the frontend flow slices, the learning-objectives
+  pass, their own `PROJECT-BACKLOG.md` and a commit — but no security pass (no backend to attack).
 - **After the run:** commit the backlog with the command the orchestrator hands you, then in your next
   main session just say the review ran — Claude reads the auto-committed
   `projects/review/_last-run-report.md` (Step 6) and tells you whether these prompts need a change
@@ -148,9 +149,11 @@ same absent artefacts as findings: on the 2026-07-14 run, all 9 backend slices w
 backlog. The standard's scope limit already forbids this; Step 0 is where it becomes enforceable, because
 Step 0 is the only place that knows which steps are done.
 
-**Angular 01–06** are informational only: map **frontend feature slices + `frontend-infra`** and run
-just the flow reviewers (Steps 3–4) — report their findings in chat, write no backlog, no security pass,
-no commit. Skip Steps 1, 2, and 5's backlog/commit. **Full-stack:** run every step.
+**Angular 01–06** are **frontend-only**, not informational: map **frontend feature slices +
+`frontend-infra`**, skip Steps 1–2 (there is no backend, so no backend flow and **no security pass**),
+and run Steps 3, 4 and 5 in full — including writing `PROJECT-BACKLOG.md` and handing over the commit.
+Gate them on the `frontend` line only; their backlog's backend line stays `n/a — Angular-only`, and
+every task is tagged `[frontend]`. **Full-stack:** run every step.
 
 > The slice reviewers only **read** — they never edit and never commit — so run them in parallel:
 > dispatch each step's independent subagents **in a single message** (parallel tool calls), in batches
@@ -211,7 +214,7 @@ For **each** frontend feature, and once for `frontend-infra`, dispatch (`model: 
 > `review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
 > service split, types, state, subscription cleanup, validation timing, and that slice's tests.
 
-Collect every table. (For Angular 01–06 this is the whole review — report in chat and stop.)
+Collect every table. (For Angular 01–06 these are the only flow slices — then go on to Steps 4 and 5.)
 
 ### Step 4 — Learning-objectives pass (one subagent)
 **Skip this step entirely if {REVIEW_SCOPE} is `backend` or `frontend`** — it judges whole-project
@@ -336,7 +339,8 @@ failure. Also print the report in chat.
 - **Bounded reports only.** Every subagent returns its findings table + trace and nothing else — no
   code excerpts, no narrative. If one overflows, keep its table + trace and discard the rest; never let
   a verbose reviewer crowd the merge.
-- Angular 01–06 are informational only — frontend flow reviewers, report in chat, never a backlog or a
-  commit for them.
+- Angular 01–06 are frontend-only — frontend flow reviewers + learning-objectives, then a
+  `[frontend]`-tagged backlog and the commit hand-over, exactly like the frontend tier of a full-stack
+  project. Never a security pass for them (no backend).
 
 ````

@@ -7,7 +7,8 @@ cross-cutting `security-infra` — never the whole backend at once. It returns a
 the orchestrator to merge into the backlog as **High** tasks. It does **not** edit any file and does
 **not** commit.
 
-Skip it for Angular projects 01–06 — no backend, and they are closed.
+Skip it for Angular projects 01–06 — they have no backend, so there is no server-side attack surface to
+audit. (They still get a frontend review and a backlog; they just never get this pass.)
 
 **Why per slice.** Security lives in two places: *inside each resource's flow* (can user A touch user
 B's data? is the id trusted from the body?) and in *shared infrastructure* (the filter, CORS, secrets).

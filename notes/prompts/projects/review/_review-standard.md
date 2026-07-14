@@ -35,14 +35,18 @@ Chain: `plan-audit` → build → `readme-audit` → **this review** → `portfo
 
 - **Full-stack projects (07+)** — Spring Boot + Angular + PostgreSQL. Get the full review: frontend +
   backend code, the **cold security pass**, and a `PROJECT-BACKLOG.md`.
-- **Angular-only projects (01–06)** — closed. No `PROJECT-BACKLOG.md`, no security pass. If reviewed at
-  all it is **informational only** — report findings in chat, write nothing, no commit.
+- **Angular-only projects (01–06)** — feature-complete, but still portfolio pieces worth improving. They
+  get the **frontend half** of the review: frontend flow slices, the learning-objectives pass, and a
+  `PROJECT-BACKLOG.md` of their own. **No security pass** — there is no backend to attack, and a
+  frontend-only Angular app has no server-side attack surface this review can meaningfully audit. Their
+  backlog carries only `[frontend]` tasks and only a `**Last Reviewed — frontend:**` line (the backend
+  line is written as `n/a — Angular-only`).
 
 Derive the type from the project number (01–06 Angular-only, 07+ full-stack); do not ask.
 
 ---
 
-## The 30-day gate (full-stack only) — per tier
+## The 30-day gate — per tier
 
 `PROJECT-BACKLOG.md` lives inside the project folder (`{PROJECT_PATH}/PROJECT-BACKLOG.md`) and is the
 **single source of truth for whether a project has been reviewed**. There is no root-level index — the
@@ -69,6 +73,9 @@ gates on both):
 
 A tier is only "freshly reviewed" once a run actually covered it. A `backend` run never refreshes the
 frontend date, so it can never make the frontend look reviewed when it is not.
+
+On an **Angular-only project (01–06)** the same gate applies, but there is only one real tier: gate on
+the `frontend` line, and leave the backend line as `n/a — Angular-only`.
 
 ### The gate measures *unreviewed code*, not elapsed time — check the steps before the date
 
@@ -318,7 +325,8 @@ carry a **priority** and an **effort**, and be actionable on its own (note any d
   - **Low** — polish, nice-to-have, minor clarity. (Low does not affect the portfolio verdict.)
 
 **PROJECT-BACKLOG.md** contains: a **per-tier "Last Reviewed" line** (see the gate above — `backend` and
-`frontend`, each a date or `never`) · an overall quality rating (Strong / Good / Needs work, one
+`frontend`, each a date or `never`; on Angular-only projects the backend line is `n/a — Angular-only`)
+· an overall quality rating (Strong / Good / Needs work, one
 sentence) · the task list as checkboxes. Task line:
 `- [ ] **[Priority]** — [Task description] *(Effort: [Small/Medium/Large])*`
 
