@@ -211,6 +211,33 @@ in committed files, JWT design flaws, CORS config, input-validation gaps, SQL-in
 queries, string concatenation), error responses that leak internals. Judged against what the code
 actually does, not a generic list.
 
+### What "confirmed" means — the orchestrator arbitrates, and this is the test
+
+"Every security finding is High" is only safe once *confirmed* is defined, or every design decision the
+plan forgot to make gets filed as a vulnerability and the High tier inflates until it stops meaning
+anything. A finding is **confirmed** — and therefore **High** — when either holds:
+
+- **It breaks a contract PLANNING makes.** The plan promises X, the code does not do X. (Example: §10 says
+  "employees see active projects only"; `getById` returns inactive ones to an employee. That is a real
+  broken-authorization bug, whatever the reviewer graded it.)
+- **It violates a universal security invariant**, whether or not the plan mentions it: missing
+  authorization on an endpoint, ownership not checked on an id from the request, a password hash or
+  internal field crossing the DTO boundary, injection surface, a secret in a committed file, an error
+  response leaking internals. These need no contract — they are wrong everywhere.
+
+When **the plan is simply silent** and no invariant is broken, it is **not a vulnerability — it is a
+decision you never made.** File it **Medium**, worded as *"decide and document"*, and say which section of
+PLANNING should record the answer. (Example: nothing in §8 forbids a manager approving their own entry.
+The code is not violating a rule; the rule does not exist. Segregation of duties may well be the right
+answer — but the fix is a decision in §8, then code, not a High that blocks portfolio-ready today.)
+
+**The orchestrator decides this, not the slice reviewer.** A reviewer sees one slice and cannot know
+whether the plan speaks to the issue elsewhere; the orchestrator has read PLANNING and holds every table.
+So it **overrides the reviewer's grade in both directions** — up, when a reviewer under-grades a real
+contract break (this happened on 2026-07-14: `getById` came back Medium and was raised to High), and down
+is not needed, because a reviewer's High that turns out to rest on a silent plan becomes a Medium
+"decide and document". Record the reason in the task line so the grade is auditable.
+
 Every confirmed vulnerability becomes a **High** task in the backlog (a security hole looks unprofessional
 faster than any missing feature). The "Related coverage item" column ties each finding to
 `notes/security/coverage.md`, so fixing the task doubles as interview prep on that item. Hardening beyond
