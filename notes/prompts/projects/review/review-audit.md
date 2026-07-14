@@ -135,6 +135,19 @@ Slices, per tier:
 
 Keep this slice map (slice → files/endpoints it owns) — Step 5 verifies each reviewer's trace against it.
 
+**Then derive the unbuilt-step exclusion — and pass it into every dispatch.** From PLANNING.md §0 and the
+✅ marks in the learning plan, list the steps **not yet built**, and name in one line what each one would
+have produced (e.g. "Step 8 — Backend tests: `src/test/**` service tests" · "Step 11 — Docker:
+`docker-compose.yml`, `Dockerfile`"). Append that list verbatim to **every** subagent prompt in Steps 1–4,
+with the instruction: *"These steps are not built. Their absence is out of scope — where you would
+otherwise report something missing, write 'Step X — not yet built, out of scope' instead of a finding."*
+
+This is the orchestrator's job, not the operator's. Without it, every reviewer independently reports the
+same absent artefacts as findings: on the 2026-07-14 run, all 9 backend slices would have raised a High
+"no tests" finding for a test suite that Step 8 has not written yet — 9 false Highs straight into the
+backlog. The standard's scope limit already forbids this; Step 0 is where it becomes enforceable, because
+Step 0 is the only place that knows which steps are done.
+
 **Angular 01–06** are informational only: map **frontend feature slices + `frontend-infra`** and run
 just the flow reviewers (Steps 3–4) — report their findings in chat, write no backlog, no security pass,
 no commit. Skip Steps 1, 2, and 5's backlog/commit. **Full-stack:** run every step.
