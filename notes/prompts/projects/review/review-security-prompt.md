@@ -87,3 +87,15 @@ file.
 slice's. No code excerpts (a `File.java:42` reference in the Finding cell is enough), one row per
 finding, one line per cell, no narrative outside the table, the trace, and the optional
 beyond-junior-scope line.
+
+**Never transcribe the value of a secret** — this is your slice's occupational hazard, since hunting
+committed keys, weak JWT secrets and DB credentials is half your job. Cite every secret **by location
+and kind only** — `application.properties:12 (JWT signing secret)` — never by value, not even partially
+masked (a `7b6aec…` prefix still leaks material and confirms which key it is). This holds in all three
+places it is tempting: the Finding cell, the trace, and the line where you explain why something is
+**not** a finding — "the key at `environment.ts:3` is gitignored and untracked" is the complete
+argument; the value adds nothing to it. And it holds hardest exactly when the secret **is** exposed:
+that is a High finding, it goes into a `PROJECT-BACKLOG.md` that gets **committed**, so pasting the
+value there would commit the very secret you are telling Victor to rotate. Cite it by line, say what it
+is, say it must be rotated and moved to an env var. You are changing how you cite a secret, never
+whether you raise it.

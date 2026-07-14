@@ -111,3 +111,14 @@ findings), as proof you covered the whole slice, not just the first file. **Do n
 slice's. No code excerpts (a `File.java:42` reference in the Finding cell is enough), one row per
 finding, one line per cell, no narrative outside the two blocks above. The table and the trace are the
 whole report.
+
+**Never transcribe the value of a secret.** If you come across an API key, password, token, or
+connection string, cite it **by location and kind only** — `environment.ts:3 (OpenWeatherMap API key)`
+— never by value, not even partially masked (a `7b6aec…` prefix still leaks material and confirms which
+key it is). This holds in all three places it is tempting: the Finding cell, the trace, and the line
+where you explain why something is **not** a finding — "the key at `environment.ts:3` is gitignored and
+untracked" is the complete argument; the value adds nothing to it. It holds whether or not the secret is
+committed: your report feeds a `PROJECT-BACKLOG.md` that **is** committed, so a value copied here is one
+step from being the leak it was reporting. A secret that is genuinely exposed (committed, or hardcoded
+where an env var belongs) is still a finding — you are changing how you cite it, never whether you
+raise it.
