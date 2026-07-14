@@ -1,5 +1,6 @@
 package com.victor.timetrack.controller;
 
+import com.victor.timetrack.dto.response.EmployeeHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
 import com.victor.timetrack.service.ReportService;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,11 @@ public class ReportController {
     @GetMapping("/by-project")
     public ResponseEntity<List<ProjectHoursReportResponse>> getHoursByProject(@RequestParam YearMonth month){
         return ResponseEntity.status(200).body(reportService.getHoursByProject(month));
+    }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @GetMapping("/by-employee")
+    public ResponseEntity<List<EmployeeHoursReportResponse>> getHoursByEmployee(@RequestParam YearMonth month){
+        return ResponseEntity.status(200).body(reportService.getHoursByEmployee(month));
     }
 }

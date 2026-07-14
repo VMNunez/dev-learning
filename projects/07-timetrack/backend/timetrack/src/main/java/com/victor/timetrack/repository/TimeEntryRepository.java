@@ -1,5 +1,6 @@
 package com.victor.timetrack.repository;
 
+import com.victor.timetrack.dto.response.EmployeeHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
 import com.victor.timetrack.model.TimeEntry;
 import com.victor.timetrack.model.User;
@@ -20,4 +21,12 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
             GROUP BY te.project.name
             """)
     List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate start, @Param("end") LocalDate end);
+
+    @Query("""
+            SELECT te.user.name AS employeeName, SUM(te.hours) AS totalHours
+            FROM TimeEntry te
+            WHERE te.date BETWEEN :start AND :end
+            GROUP BY te.user.name
+            """)
+    List<EmployeeHoursReportResponse> getHoursByEmployee(@Param("start") LocalDate start, @Param("end") LocalDate end);
 }
