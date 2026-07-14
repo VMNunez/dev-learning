@@ -1,8 +1,16 @@
-# Spring Security y JWT — Referencia de implementación
+# Spring Security y JWT
 
-> Abre este archivo cuando estés **implementando**. Abre `06-seguridad-jwt-aprendizaje.md` cuando estés **estudiando**.
->
-> Este archivo está ordenado para construir — cada clase depende de las que están encima (orden de creación). El archivo de aprendizaje está ordenado para entender — concepto antes que código, la pieza más simple primero.
+Docs: [jjwt — README](https://github.com/jwtk/jjwt) (la librería JWT usada aquí — crear, firmar y parsear tokens) · [Baeldung — Spring Security: authentication with a database](https://www.baeldung.com/spring-security-authentication-with-a-database) (el companion práctico para la parte de Spring Security) · [Spring Security Reference](https://docs.spring.io/spring-security/reference/) (autoritativo, estilo referencia)
+
+---
+
+## Retomando el hilo — los handlers que no tenían quién los lanzara
+
+[05-manejo-excepciones.md](./05-manejo-excepciones.md) te dejó con un `GlobalExceptionHandler` que ya contiene dos handlers que nunca tuviste forma de disparar: `BadCredentialsException` → `401`, y `AccessDeniedException` → `403`. Nada en el proyecto los lanza, porque nada en el proyecto comprueba *quién* está llamando. Ese mismo archivo también te llevó por la trampa de `/error` — un bug donde un query param que falta aparece como un `401` — y esa trampa existe solo *porque* una filter chain de seguridad se sitúa delante de cada request, decidiendo quién entra antes de que corra ningún controller. Depuraste el síntoma sin llegar a construir nunca la máquina que lo causa.
+
+Este archivo construye esa máquina. Es donde esas dos excepciones finalmente son lanzadas por algo real: `BadCredentialsException` cuando una contraseña no coincide con un hash BCrypt almacenado, `AccessDeniedException` cuando un empleado autenticado intenta llegar a un endpoint solo para managers. Y es donde la filter chain de aquel diagrama de `/error` deja de ser una caja negra — tú mismo escribes uno de sus filtros.
+
+El orden de abajo es el **orden de construcción**: cada clase depende de las de arriba, así que puedes compilar y probar sobre la marcha en vez de escribir diez clases y esperar que funcionen.
 
 ---
 
@@ -13,14 +21,14 @@ Si nunca has escrito Java, algunos patrones de sintaxis de este archivo parecer�
 | Sintaxis que verás                                                      | Qué es realmente                                                                                                                                                                                                                                                               | Dónde se explica en tus notas                                                                             |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
 | `auth -> auth.anyRequest()...` · `() -> new Something()`                | Un **lambda** — una función corta y sin nombre pasada como argumento. La parte antes de `->` es la entrada que el método te da; la parte después es lo que haces con ella. Los métodos de config de Spring Security toman lambdas para que puedas describir cada regla inline. | [java/09-streams-lambdas.md — Lambda expressions](../../java/es/09-streams-lambdas.md#sintaxis-de-lambdas) |
-| `findByEmail(email).orElseThrow(...)`                                   | El método devuelve un **`Optional<User>`** — una caja que o contiene un usuario o está vacía. `.orElseThrow()` abre la caja, o lanza si está vacía. Así es como Spring Data evita devolver `null`.                                                                             | [java/10-generics.md — `Optional<T>`](../../java/es/10-generics.md#optionalt)                             |
-| `ResponseEntity<AuthResponse>` · `Map<String, String>` · `List.of(...)` | **Generics** — el `<...>` dice qué tipo vive dentro de un contenedor. `List<String>` es una lista de strings; `ResponseEntity<AuthResponse>` es una respuesta HTTP que lleva un `AuthResponse`.                                                                                | [java/10-generics.md — Generics](../../java/es/10-generics.md#generics)                                   |
+| `findByEmail(email).orElseThrow(...)`                                   | El método devuelve un **`Optional<User>`** — una caja que o contiene un usuario o está vacía. `.orElseThrow()` abre la caja, o lanza si está vacía. Así es como Spring Data evita devolver `null`.                                                                             | [java/10-genericos.md — `Optional<T>`](../../java/es/10-genericos.md#optionalt)                             |
+| `ResponseEntity<AuthResponse>` · `Map<String, String>` · `List.of(...)` | **Generics** — el `<...>` dice qué tipo vive dentro de un contenedor. `List<String>` es una lista de strings; `ResponseEntity<AuthResponse>` es una respuesta HTTP que lleva un `AuthResponse`.                                                                                | [java/10-genericos.md — Generics](../../java/es/10-genericos.md#generics)                                   |
 | `.stream().map(...).findFirst()`                                        | El **Stream API** — un pipeline que transforma una colección paso a paso. Aparece una vez aquí, dentro de `GlobalExceptionHandler`.                                                                                                                                            | [java/09-streams-lambdas.md — Stream API](../../java/es/09-streams-lambdas.md#qué-es-un-stream)                 |
 | `Jwts.builder().subject(...).signWith(...).compact()`                   | El **patrón builder** — encadena métodos para configurar un objeto, y luego una llamada final (`.build()` / `.compact()`) lo produce. jjwt y Spring lo usan en todas partes.                                                                                                   | explicado línea por línea en la sección `JwtUtil` abajo                                                   |
-| `@Component` · `@Service` · `@Bean` · `@Override`                       | **Anotaciones** — metadatos que pones en una clase o método para decirle a Spring (o al compilador) cómo tratarlo.                                                                                                                                                             | [java/13-annotations.md](../../java/es/13-annotations.md)                                                 |
+| `@Component` · `@Service` · `@Bean` · `@Override`                       | **Anotaciones** — metadatos que pones en una clase o método para decirle a Spring (o al compilador) cómo tratarlo.                                                                                                                                                             | [java/13-anotaciones.md](../../java/es/13-anotaciones.md)                                                 |
 | `private final JwtUtil jwtUtil;` + constructor                          | **Inyección por constructor** — Spring pasa las dependencias a través del constructor. `final` significa que el campo se establece una vez y nunca se reasigna.                                                                                                                | [spring-boot/03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md)                                    |
 
-> Dos reglas Java más con las que te toparás: `throws Exception` / `throws UsernameNotFoundException` en la firma de un método es la regla de **excepciones comprobadas** de Java — debes declarar una excepción que un método puede lanzar ([java/08-exceptions.md](../../java/es/08-exceptions.md)). Y `enum Role { EMPLOYEE, MANAGER }` (Paso 4) es un tipo con un conjunto fijo de valores con nombre ([java/11-enums.md](../../java/es/11-enums.md)).
+> Dos reglas Java más con las que te toparás: `throws Exception` / `throws UsernameNotFoundException` en la firma de un método es la regla de **excepciones comprobadas** de Java — debes declarar una excepción que un método puede lanzar ([java/08-excepciones.md](../../java/es/08-excepciones.md)). Y `enum Role { EMPLOYEE, MANAGER }` (Paso 4) es un tipo con un conjunto fijo de valores con nombre ([java/11-enums.md](../../java/es/11-enums.md)).
 
 ---
 
@@ -134,6 +142,8 @@ Un JWT se firma para prevenir manipulaciones. El algoritmo determina cómo se pr
 | **RS256** | RSA-SHA256      | Par clave pública/privada | Múltiples servicios — la clave pública puede compartirse con seguridad |
 | **ES256** | ECDSA-SHA256    | Par clave pública/privada | Igual que RS256 pero claves más pequeñas, verificación más rápida      |
 
+**Cómo leer esta tabla:** la columna que lo decide todo es **Tipo de clave**. "Un secret compartido" significa que el mismo string firma y verifica, así que cualquier parte que pueda *comprobar* un token también puede *falsificar* uno — está bien cuando hay un único backend, es fatal en el momento en que le das la clave a un segundo servicio. "Par clave pública/privada" separa esos dos poderes: la clave privada firma, la clave pública solo verifica, así que puedes publicar la mitad pública libremente. La columna **Caso de uso** es justo ese trade-off reformulado en función de cuántos servicios tienes.
+
 **HS256** usa una clave secreta para tanto firmar como verificar. Cualquiera que conozca el secret puede crear y validar tokens — lo que significa que el secret nunca debe salir del servidor. Esta es la opción más simple y la elección correcta cuando solo hay un servicio backend.
 
 **RS256 / ES256** usan claves asimétricas. La clave privada firma el token (solo el servidor la tiene). La clave pública lo verifica (puede compartirse con cualquiera). Se usa cuando múltiples servicios necesitan verificar tokens de forma independiente — por ejemplo, una arquitectura de microservicios donde el Servicio A emite tokens y el Servicio B los valida sin compartir un secret.
@@ -154,6 +164,8 @@ Usamos **HS256** porque este es un único backend Spring Boot. Un secret, un lug
 | `OAuth2LoginAuthenticationProvider` | Gestiona flujos "Login with Google / GitHub"                                                   | Apps de consumidores con social login                                             |
 | `RememberMeAuthenticationProvider`  | Gestiona cookies "remember me"                                                                 | Apps basadas en sesión con login persistente                                      |
 
+**Cómo leer esta tabla:** nunca eliges un proveedor por "cuál es mejor" — eliges por **dónde viven realmente tus usuarios**, que es lo que codifica la columna "Cuándo lo usas". Usuarios en tu propia tabla de PostgreSQL → `Dao`. Usuarios en el Active Directory de la empresa → `Ldap`. Usuarios propiedad de un proveedor de identidad externo que ya emitió el token → `Jwt`. Lee las filas como cinco respuestas distintas a una sola pregunta ("¿quién guarda las credenciales?"), no como cinco opciones que compiten por la misma situación. Nota también que la fila `Jwt` *no* es lo que este archivo construye: es para **consumir** tokens que emitió otra persona, mientras que aquí emites los tuyos propios con `JwtUtil` y los validas en tu propio `JwtFilter`.
+
 `AuthenticationManager` recorre todos los proveedores registrados cuando llega un intento de login. Elige el que puede gestionar el tipo de token pasado. Si ninguno puede gestionarlo, lanza una excepción.
 
 **Por qué `DaoAuthenticationProvider` para este proyecto:** nuestros usuarios están almacenados en PostgreSQL y se loguean con email + contraseña. `DaoAuthenticationProvider` está construido exactamente para este caso. Le das un `UserDetailsService` (cómo cargar el usuario de la base de datos) y un `PasswordEncoder` (cómo comparar contraseñas), y gestiona la verificación completa. Escribes menos de 10 líneas de configuración y todo el mecanismo de login funciona.
@@ -164,7 +176,7 @@ Usamos **HS256** porque este es un único backend Spring Boot. Un secret, un lug
 
 La capa de seguridad JWT es un **patrón boilerplate** — la estructura no cambia entre proyectos. Una vez que lo entiendes y lo implementas una vez, lo copias a cada futura app Spring Boot que necesite autenticación JWT.
 
-**Archivos que siempre son idénticos:** `JwtUtil.java`, `JwtFilter.java`, `GlobalExceptionHandler.java`, `AuthService.java`, `AuthController.java`, `LoginRequest.java` + `AuthResponse.java`
+**Archivos que siempre son idénticos:** `JwtUtil.java`, `JwtFilter.java`, `JwtAuthenticationEntryPoint.java`, `AuthService.java`, `AuthController.java`, `LoginRequest.java` + `AuthResponse.java`
 
 **Archivos donde solo cambian pequeños detalles:**
 
@@ -173,6 +185,9 @@ La capa de seguridad JWT es un **patrón boilerplate** — la estructura no camb
 | `SecurityConfig.java`         | Las reglas de ruta — qué paths son públicos, cuáles protegidos         |
 | `UserDetailsServiceImpl.java` | El campo usado para encontrar al usuario (email, username) y los roles |
 | `JwtUtil.java` (opcional)     | Claims extra añadidos al token — p.ej. rol, userId                     |
+| `GlobalExceptionHandler.java` | Solo sus handlers de **seguridad** son boilerplate (`BadCredentialsException` → 401, `AccessDeniedException` → 403). El resto de la clase es específico de la app y sigue creciendo con el proyecto |
+
+**Cómo leer esta tabla:** la columna de la izquierda *no* significa "archivos que reescribes desde cero" — significa "archivos que pegas y luego tocas en uno o dos sitios". `GlobalExceptionHandler` es el que hay que vigilar: dos de sus handlers pertenecen a este patrón de seguridad y viajan sin cambios con él, pero la clase en su conjunto no es boilerplate. En TimeTrack ya lleva once handlers, un `ErrorResponse` DTO compartido y un helper `buildError()` — todo construido en [05-manejo-excepciones.md](./05-manejo-excepciones.md) y guiado por *tus* excepciones de dominio (`ResourceNotFoundException`, `BusinessRuleViolationException`, …), que son distintas en cada app.
 
 ---
 
@@ -329,7 +344,8 @@ Authorization: Bearer eyJ...
 │   lee SecurityContextHolder                             │
 │   .anyRequest().authenticated()                         │
 │   usuario en contexto → request permitido               │
-│   sin usuario en contexto → HTTP 403 Forbidden          │
+│   sin usuario en contexto → JwtAuthenticationEntryPoint │
+│                            → HTTP 401 Unauthorized       │
 └─────────────────────────────────────────────────────────┘
          │
          ▼
@@ -399,11 +415,15 @@ Authorization: Bearer eyJ...
               │
     { "token": "eyJ..." }
 
-camino de error → [GlobalExceptionHandler]
-  falla @Valid           → HTTP 400  { "error": "field: ..." }
-  contraseña incorrecta  → HTTP 401  { "error": "Invalid email or password" }
-  token malo/caducado    → HTTP 403  (sin auth establecida, Spring rechaza)
-  rol incorrecto         → HTTP 403  (AccessDeniedException)
+caminos de error
+  [GlobalExceptionHandler]  (excepciones que llegan a la capa MVC)
+    falla @Valid       → HTTP 400  { "message": "Validation failed" }
+    contraseña incorrecta → HTTP 401  { "message": "Invalid email or password" }
+    rol incorrecto     → HTTP 403  (AccessDeniedException)
+
+  [JwtAuthenticationEntryPoint]  (rechazado dentro de la filter chain)
+    sin token / token malo / caducado → HTTP 401
+                                        { "message": "Authentication required" }
 ```
 
 ---
@@ -433,7 +453,10 @@ GET /api/projects  Authorization: Bearer <token-expirado-o-falso>
 → SecurityContextHolder NO se establece
 → filterChain.doFilter() continúa
 → SecurityFilterChain: .anyRequest().authenticated() → DENEGADO
-→ HTTP 403 Forbidden
+→ AuthenticationException → JwtAuthenticationEntryPoint.commence()
+→ HTTP 401 Unauthorized
+{ "timestamp": ..., "status": 401,
+  "error": "Unauthorized", "message": "Authentication required" }
 ```
 
 **Autenticado pero rol incorrecto:**
@@ -448,6 +471,8 @@ POST /api/projects  Authorization: Bearer <token-empleado-válido>
 → HTTP 403 Forbidden
 ```
 
+> **Nota la diferencia: 401 y 403 no son el mismo rechazo.** Un token ausente o inválido significa que Spring Security nunca llegó a autenticarte — obtienes **401 Unauthorized** con `"message": "Authentication required"`, producido por el `JwtAuthenticationEntryPoint` que conectas en la cadena (ver [AuthenticationEntryPoint — 401 en vez del 403 vacío por defecto](#authenticationentrypoint--401-en-vez-del-403-vacío-por-defecto) más abajo). Un rol incorrecto significa que *sí* estabas autenticado — Spring sabe exactamente quién eres — pero la comprobación de rol falló, así que obtienes **403 Forbidden**. De fábrica, sin ese entry point, Spring Security devolvería un 403 vacío para *ambos* casos, por eso la separación 401/403 es algo que tienes que configurar en vez de algo que obtienes gratis.
+
 ---
 
 ### Qué es responsable cada clase
@@ -461,7 +486,10 @@ POST /api/projects  Authorization: Bearer <token-empleado-válido>
 | `AuthService`            | Solo Flujo 1 | Orquesta el login — llama a authenticate(), luego a generateToken()  |
 | `AuthController`         | Solo Flujo 1 | Recibe el request HTTP de login, devuelve el token                   |
 | `JwtFilter`              | Solo Flujo 2 | Intercepta cada request, valida JWT, establece SecurityContextHolder |
+| `JwtAuthenticationEntryPoint` | Solo Flujo 2 | Escribe el JSON 401 cuando un request no lleva ninguna autenticación válida |
 | `GlobalExceptionHandler` | Ambos        | Convierte excepciones en respuestas JSON limpias                     |
+
+**Cómo leer esta tabla:** la columna **Flujo** te dice *cuándo* entra siquiera en juego la clase — las clases "Solo Flujo 1" existen solo para entregar un token, las de "Solo Flujo 2" existen solo para comprobar uno, y las "Ambos" son la fontanería compartida que corre en cualquier caso. Si estás depurando un login que falla, solo las filas de Flujo 1 y Ambos pueden ser la causa; si un token se rechaza en una ruta protegida, mira Flujo 2 y Ambos. La columna **Responsabilidad** es deliberadamente una frase cada una — si no puedes decir el trabajo de una clase en una frase, está haciendo demasiado.
 
 ---
 
@@ -569,6 +597,7 @@ src/main/java/com/victor/timetrack/
 ├── security/
 │   ├── JwtUtil.java                ← crea y valida tokens
 │   ├── JwtFilter.java              ← se ejecuta en cada request
+│   ├── JwtAuthenticationEntryPoint.java ← JSON 401 cuando no hay auth válida
 │   └── SecurityConfig.java         ← todas las reglas de seguridad + beans
 ├── service/
 │   ├── UserDetailsServiceImpl.java ← carga el usuario de la BD
@@ -1309,6 +1338,8 @@ Docs: [Spring — @ControllerAdvice](https://docs.spring.io/spring-framework/ref
 
 Cuando `AuthService` llama a `authenticationManager.authenticate()` y las credenciales son incorrectas, Spring Security lanza `BadCredentialsException`. Esa excepción viaja hacia arriba por la call stack hasta que algo la captura. `GlobalExceptionHandler` es ese algo.
 
+> **La versión de abajo es la versión de enseñanza con dos handlers, no la clase tal como está hoy en TimeTrack.** Devuelve un body `Map.of("error", ...)` en crudo para que veas el mecanismo sin nada más de por medio. El `exception/GlobalExceptionHandler.java` real del proyecto ha crecido desde entonces a un DTO `ErrorResponse` compartido construido por un helper `buildError(status, message)`, un mapa `fieldErrors` en vez de solo el primer error de validación, y handlers para `AccessDeniedException`, `ResourceNotFoundException`, `BusinessRuleViolationException` y más — esa es la clase que construiste en [05-manejo-excepciones.md](./05-manejo-excepciones.md). Lee este bloque como "los dos handlers que necesita seguridad"; lee `05` para la forma que usa realmente el proyecto.
+
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -1501,7 +1532,8 @@ UserDetailsService.loadUserByUsername(email) → carga el usuario de la BD
       ▼
 JwtUtil.isValid(token, email)?
   NO ────────────────────────→ filterChain.doFilter() → pasa de largo
-      │                        (SecurityFilterChain bloquea: sin auth establecida → 403)
+      │                        (SecurityFilterChain bloquea: sin auth establecida
+      │                         → JwtAuthenticationEntryPoint → 401)
   SÍ
       ▼
 SecurityContextHolder.setAuthentication(
@@ -1709,7 +1741,7 @@ Propósito: intercepta el momento exacto en que Spring Security detecta que una 
 
 Archivo: `src/main/java/com/victor/timetrack/security/JwtAuthenticationEntryPoint.java`
 
-Docs: https://www.baeldung.com/spring-security-401-unauthorized → leer: la sección donde implementan `AuthenticationEntryPoint` con un `ObjectMapper` para escribir el JSON de error
+Docs: [Baeldung — Handle Spring Security Exceptions](https://www.baeldung.com/spring-security-exceptions) → leer: la sección de `AuthenticationEntryPoint`, donde `commence()` escribe el JSON de error directamente en la respuesta
 
 Sin configurar nada, cuando una request sin token llega a un endpoint protegido (`.anyRequest().authenticated()`), Spring Security devuelve **403 Forbidden sin ningún cuerpo**. Esto es justo el error que ya tenías anotado en "Errores comunes" más abajo: **403 no es el código correcto aquí**. La distinción HTTP es:
 
@@ -2116,3 +2148,15 @@ User currentUser = userRepository.findByEmail(email)
 Postman: POST /api/projects con token EMPLOYEE → 403 Forbidden
 Postman: POST /api/projects con token MANAGER  → 201 Created
 ```
+
+Para conseguir un token EMPLOYEE: añade un usuario con `role = 'EMPLOYEE'` en pgAdmin e inicia sesión vía Postman. Para conseguir un token MANAGER: inicia sesión con la cuenta `admin@timetrack.com` sembrada por `data.sql`.
+
+---
+
+## Dónde te deja esto — y qué viene después
+
+La API ahora sabe dos cosas que no sabía antes: **quién** está llamando (el filtro JWT pone un `UserDetails` en `SecurityContextHolder` antes de que corra ningún controller) y **si tiene permiso** (`.anyRequest().authenticated()` para la ruta, `@PreAuthorize("hasRole('MANAGER')")` para el método). Los dos handlers huérfanos de `05` finalmente tienen algo que los lance, y las excepciones caen exactamente donde ese archivo predijo: `BadCredentialsException` → `401`, `AccessDeniedException` → `403`.
+
+Pero mira de cerca qué sigue siendo de confianza ciega. `LoginRequest` llega con `@NotBlank` en dos campos y `@Valid` en el parámetro del controller — y esas anotaciones se usaron aquí sin llegar nunca a explicarse. Eso no es un descuido de este archivo: es el siguiente agujero. La autenticación responde "¿es realmente Victor?"; no dice nada sobre si el *body* que envió es coherente. Un manager logueado con un token perfectamente válido todavía puede hacer `POST` de un proyecto con un nombre en blanco, un presupuesto negativo, o una fecha de fin anterior a la de inicio — todas las comprobaciones de seguridad pasan, y la basura entra directa a PostgreSQL.
+
+[07-validacion.md](./07-validacion.md) cierra ese hueco: qué dispara realmente `@Valid`, qué anotaciones existen (`@NotBlank`, `@Email`, `@Positive`, `@Size`), dónde se captura el `MethodArgumentNotValidException` resultante, y por qué validar en el límite del DTO es mejor que esparcir comprobaciones `if (x == null)` por tus services.

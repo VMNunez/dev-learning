@@ -1,8 +1,16 @@
-# Spring Security and JWT — Implementation reference
+# Spring Security and JWT
 
-> Open this file when **implementing**. Open `06-security-jwt-learning.md` when **studying**.
->
-> This file is ordered for building — each class depends on the ones above it (creation order). The learning file is ordered for understanding — concept before code, simplest piece first.
+Docs: [jjwt — README](https://github.com/jwtk/jjwt) (the JWT library used here — creating, signing and parsing tokens) · [Baeldung — Spring Security: authentication with a database](https://www.baeldung.com/spring-security-authentication-with-a-database) (the practical companion for the Spring Security side) · [Spring Security Reference](https://docs.spring.io/spring-security/reference/) (authoritative, reference-style)
+
+---
+
+## Picking up the thread — the handlers that had nothing to throw them
+
+[05-exception-handling.md](./05-exception-handling.md) left you with a `GlobalExceptionHandler` that already contains two handlers you never had a way to trigger: `BadCredentialsException` → `401`, and `AccessDeniedException` → `403`. Nothing in the project throws them, because nothing in the project checks *who* is calling. The same file also walked you through the `/error` trap — a bug where a missing query param surfaces as a `401` — and that trap only exists *because* a security filter chain sits in front of every request, deciding who gets in before any controller runs. You debugged the symptom without ever building the machine that causes it.
+
+This file builds that machine. It is where those two exceptions finally get thrown by something real: `BadCredentialsException` when a password does not match a stored BCrypt hash, `AccessDeniedException` when an authenticated employee reaches for a manager-only endpoint. And it is where the filter chain from that `/error` diagram stops being a black box — you write one of its filters yourself.
+
+The order below is the **build order**: each class depends on the ones above it, so you can compile and test as you go instead of writing ten classes and hoping.
 
 ---
 
@@ -135,6 +143,8 @@ A JWT is signed to prevent tampering. The algorithm determines how that signatur
 | **RS256** | RSA-SHA256   | Public/private key pair | Multiple services — public key can be shared safely |
 | **ES256** | ECDSA-SHA256 | Public/private key pair | Same as RS256 but smaller keys, faster verification |
 
+**How to read this table:** the column that decides everything is **Key type**. "One shared secret" means the same string both signs and verifies, so every party that can *check* a token can also *forge* one — fine when there is a single backend, fatal the moment you hand the key to a second service. "Public/private key pair" splits those two powers: the private key signs, the public key only verifies, so you can publish the public half freely. The **Use case** column is just that trade-off restated in terms of how many services you have.
+
 **HS256** uses one secret key to both sign and verify. Everyone who knows the secret can create and validate tokens — which means the secret must never leave the server. This is the simplest option and the right choice when there is only one backend service.
 
 **RS256 / ES256** use asymmetric keys. The private key signs the token (only the server holds it). The public key verifies it (can be shared with anyone). This is used when multiple services need to verify tokens independently — for example, a microservices architecture where Service A issues tokens and Service B validates them without sharing a secret.
@@ -155,6 +165,8 @@ We use **HS256** because this is a single Spring Boot backend. One secret, one p
 | `OAuth2LoginAuthenticationProvider` | Handles "Login with Google / GitHub" flows                                                     | Consumer apps with social login                                                  |
 | `RememberMeAuthenticationProvider`  | Handles "remember me" cookies                                                                  | Session-based apps with persistent login                                         |
 
+**How to read this table:** you never pick a provider by "which is best" — you pick by **where your users actually live**, which is what the "When you use it" column encodes. Users in your own PostgreSQL table → `Dao`. Users in the company's Active Directory → `Ldap`. Users owned by an external identity provider that already issued the token → `Jwt`. Read the rows as five different answers to one question ("who holds the credentials?"), not as five competing options for the same situation. Note also that the `Jwt` row is *not* what this file builds: it is for **consuming** tokens someone else issued, whereas here you issue your own with `JwtUtil` and validate them in your own `JwtFilter`.
+
 `AuthenticationManager` loops through all registered providers when a login attempt arrives. It picks the one that can handle the type of token passed. If none can handle it, it throws an exception.
 
 **Why `DaoAuthenticationProvider` for this project:**
@@ -172,7 +184,7 @@ The JWT security layer is a **boilerplate pattern** — the structure does not c
 
 - `JwtUtil.java` — no changes ever
 - `JwtFilter.java` — no changes ever
-- `GlobalExceptionHandler.java` — no changes ever
+- `JwtAuthenticationEntryPoint.java` — no changes ever
 - `AuthService.java` — no changes ever
 - `AuthController.java` — no changes ever
 - `LoginRequest.java` + `AuthResponse.java` — no changes ever
@@ -184,6 +196,9 @@ The JWT security layer is a **boilerplate pattern** — the structure does not c
 | `SecurityConfig.java`         | The route rules — which paths are public, which are protected   |
 | `UserDetailsServiceImpl.java` | The field used to find the user (email, username) and the roles |
 | `JwtUtil.java` (optional)     | Extra claims added to the token — e.g. role, userId             |
+| `GlobalExceptionHandler.java` | Only its **security** handlers are boilerplate (`BadCredentialsException` → 401, `AccessDeniedException` → 403). The rest of the class is app-specific and keeps growing with the project |
+
+**How to read this table:** the left column is *not* "files you rewrite from scratch" — it is "files you paste in and then touch in one or two places". `GlobalExceptionHandler` is the one to watch: two of its handlers belong to this security pattern and travel with it unchanged, but the class as a whole is not boilerplate. In TimeTrack it already carries around eleven handlers, a shared `ErrorResponse` DTO and a `buildError()` helper — all of it built in [05-exception-handling.md](./05-exception-handling.md) and driven by *your* domain exceptions (`ResourceNotFoundException`, `BusinessRuleViolationException`, …), which are different in every app.
 
 This is why senior developers implement JWT auth quickly — they are not thinking, they are copying a known pattern and adjusting two or three things. After TimeTrack, you will do the same.
 
@@ -357,7 +372,8 @@ Authorization: Bearer eyJ...
 │   signature OK + not expired?                           │
 │   false → setAuthentication() never called              │
 │           JwtFilter still calls filterChain.doFilter()  │
-│           SecurityFilterChain: no auth found → HTTP 403 │
+│           SecurityFilterChain: no auth found            │
+│           → JwtAuthenticationEntryPoint → HTTP 401      │
 │   true → continue                                       │
 └─────────────────────────────────────────────────────────┘
          │ true
@@ -389,7 +405,10 @@ Authorization: Bearer eyJ...
 │   reads SecurityContextHolder                           │
 │   .anyRequest().authenticated()                         │
 │   user in context → request is allowed                  │
-│   no user in context → HTTP 403 Forbidden               │
+│   no user in context → JwtAuthenticationEntryPoint      │
+│                        → HTTP 401 Unauthorized          │
+│                        { "message":                     │
+│                          "Authentication required" }    │
 └─────────────────────────────────────────────────────────┘
          │
          ▼
@@ -460,11 +479,15 @@ Authorization: Bearer eyJ...
               │
     { "token": "eyJ..." }
 
-error path → [GlobalExceptionHandler]
-  @Valid fails       → HTTP 400  { "error": "field: ..." }
-  wrong password     → HTTP 401  { "error": "Invalid email or password" }
-  bad/expired token  → HTTP 403  (no auth set, Spring rejects)
-  wrong role         → HTTP 403  (AccessDeniedException)
+error paths
+  [GlobalExceptionHandler]  (exceptions that reach the MVC layer)
+    @Valid fails       → HTTP 400  { "message": "Validation failed" }
+    wrong password     → HTTP 401  { "message": "Invalid email or password" }
+    wrong role         → HTTP 403  (AccessDeniedException)
+
+  [JwtAuthenticationEntryPoint]  (rejected inside the filter chain)
+    no / bad / expired token → HTTP 401
+                               { "message": "Authentication required" }
 ```
 
 ---
@@ -521,9 +544,12 @@ filterChain.doFilter() continues
          ▼
 SecurityFilterChain: .anyRequest().authenticated()
     → no user in SecurityContextHolder → DENIED
+    → AuthenticationException → JwtAuthenticationEntryPoint.commence()
          │
          ▼
-HTTP 403 Forbidden
+HTTP 401 Unauthorized
+{ "timestamp": ..., "status": 401,
+  "error": "Unauthorized", "message": "Authentication required" }
 ```
 
 ---
@@ -553,7 +579,7 @@ throws AccessDeniedException
 HTTP 403 Forbidden
 ```
 
-> Note the difference: a missing/invalid token returns 403 because Spring Security's default behaviour maps unauthenticated requests to 403. A wrong role also returns 403. Both are 403 but for different reasons — authentication failure vs authorisation failure. Ideally an invalid token should return 401. You fix this with a custom `AuthenticationEntryPoint` (advanced — out of scope for now).
+> **Note the difference: 401 and 403 are not the same rejection.** A missing or invalid token means Spring Security never authenticated you at all — you get **401 Unauthorized** with `"message": "Authentication required"`, produced by the `JwtAuthenticationEntryPoint` you wire into the chain (see [AuthenticationEntryPoint — 401 instead of the default empty 403](#authenticationentrypoint--401-instead-of-the-default-empty-403) below). A wrong role means you *were* authenticated — Spring knows exactly who you are — but the role check failed, so you get **403 Forbidden**. Out of the box, without that entry point, Spring Security would return an empty 403 for *both* cases, which is why the 401/403 split is something you have to configure rather than something you get for free.
 
 ---
 
@@ -568,7 +594,10 @@ HTTP 403 Forbidden
 | `AuthService`            | Flow 1 only | Orchestrates login — calls authenticate(), then generateToken()     |
 | `AuthController`         | Flow 1 only | Receives the login HTTP request, returns the token                  |
 | `JwtFilter`              | Flow 2 only | Intercepts every request, validates JWT, sets SecurityContextHolder |
+| `JwtAuthenticationEntryPoint` | Flow 2 only | Writes the 401 JSON when a request carries no valid authentication at all |
 | `GlobalExceptionHandler` | Both        | Converts exceptions into clean JSON error responses                 |
+
+**How to read this table:** the **Flow** column tells you *when* the class is even loaded into the story — "Flow 1 only" classes exist purely to hand out a token, "Flow 2 only" classes exist purely to check one, and "Both" classes are the shared plumbing that runs in either case. If you are debugging a login that fails, only the Flow 1 and Both rows can be at fault; if a token is rejected on a protected route, look at Flow 2 and Both. The **Responsibility** column is deliberately one sentence each — if you cannot say a class's job in one sentence, it is doing too much.
 
 ---
 
@@ -709,6 +738,7 @@ src/main/java/com/victor/timetrack/
 ├── security/
 │   ├── JwtUtil.java                ← creates & validates tokens
 │   ├── JwtFilter.java              ← runs on every request
+│   ├── JwtAuthenticationEntryPoint.java ← 401 JSON when no valid auth
 │   └── SecurityConfig.java         ← all security rules + beans
 ├── service/
 │   ├── UserDetailsServiceImpl.java ← loads the user from the DB
@@ -1451,6 +1481,8 @@ Docs: [Spring — @ControllerAdvice](https://docs.spring.io/spring-framework/ref
 
 When `AuthService` calls `authenticationManager.authenticate()` and the credentials are wrong, Spring Security throws `BadCredentialsException`. That exception travels up the call stack until something catches it. `GlobalExceptionHandler` is that thing.
 
+> **The version below is the two-handler teaching version, not the class as it stands in TimeTrack today.** It returns a raw `Map.of("error", ...)` body so you can see the mechanism with nothing else in the way. The real `exception/GlobalExceptionHandler.java` in the project has since grown to a shared `ErrorResponse` DTO built by a `buildError(status, message)` helper, a `fieldErrors` map instead of just the first validation error, and handlers for `AccessDeniedException`, `ResourceNotFoundException`, `BusinessRuleViolationException` and more — that is the class you built in [05-exception-handling.md](./05-exception-handling.md). Read this block as "the two handlers security needs"; read `05` for the shape the project actually uses.
+
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -1645,7 +1677,8 @@ UserDetailsService.loadUserByUsername(email) → loads user from DB
       ▼
 JwtUtil.isValid(token, email)?
   NO ────────────────────────→ filterChain.doFilter() → pass through
-      │                        (SecurityFilterChain blocks: no auth set → 403)
+      │                        (SecurityFilterChain blocks: no auth set
+      │                         → JwtAuthenticationEntryPoint → 401)
   YES
       ▼
 SecurityContextHolder.setAuthentication(
@@ -1850,7 +1883,7 @@ Purpose: intercepts the exact moment Spring Security detects a request has **no 
 
 File: `src/main/java/com/victor/timetrack/security/JwtAuthenticationEntryPoint.java`
 
-Docs: https://www.baeldung.com/spring-security-401-unauthorized → read: the section implementing `AuthenticationEntryPoint` with an `ObjectMapper` to write the error JSON
+Docs: [Baeldung — Handle Spring Security Exceptions](https://www.baeldung.com/spring-security-exceptions) → read: the `AuthenticationEntryPoint` section, where `commence()` writes the error JSON straight onto the response
 
 With no configuration, when a request with no token reaches a protected endpoint (`.anyRequest().authenticated()`), Spring Security returns **403 Forbidden with no body at all**. This is exactly the mistake already flagged in "Common mistakes" below: **403 isn't the right code here**. The HTTP distinction is:
 
@@ -2054,7 +2087,7 @@ public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
 **CSRF enabled with JWT** — CSRF is for cookie-based sessions. If you leave it on, every non-GET request will be rejected with a 403 for missing a CSRF token.
 
-**Returning 403 instead of 401** — 401 means "not authenticated" (no token or invalid). 403 means "authenticated but not allowed" (wrong role). Spring Security returns 403 for unauthenticated requests by default — override with a custom `AuthenticationEntryPoint` if you need a proper 401.
+**Returning 403 instead of 401** — 401 means "not authenticated" (no token or invalid). 403 means "authenticated but not allowed" (wrong role). Spring Security's default entry point returns an empty 403 for *both*, which is wrong for the first case. The fix is the `JwtAuthenticationEntryPoint` registered with `.exceptionHandling(...)` — you already built it in [the AuthenticationEntryPoint section](#authenticationentrypoint--401-instead-of-the-default-empty-403), so TimeTrack answers a no-token request with a proper 401 JSON body. If you copy this security layer into a new project and forget that one `.exceptionHandling(...)` line, the empty 403 comes straight back.
 
 **`@PreAuthorize` silently ignored** — if you forget `@EnableMethodSecurity` on `SecurityConfig`, the annotation does nothing and every role can access the protected endpoint. No error — the protection just does not exist.
 
@@ -2259,3 +2292,13 @@ Postman: POST /api/projects with MANAGER token  → 201 Created
 ```
 
 To get an EMPLOYEE token: add a user with `role = 'EMPLOYEE'` in pgAdmin and log in via Postman. To get a MANAGER token: log in with the `admin@timetrack.com` account seeded by `data.sql`.
+
+---
+
+## Where this leaves you — and what comes next
+
+The API now knows two things it did not know before: **who** is calling (the JWT filter puts a `UserDetails` in `SecurityContextHolder` before any controller runs) and **whether they are allowed** (`.anyRequest().authenticated()` for the route, `@PreAuthorize("hasRole('MANAGER')")` for the method). The two orphaned handlers from `05` finally have something throwing them, and the exceptions land exactly where that file predicted: `BadCredentialsException` → `401`, `AccessDeniedException` → `403`.
+
+But look closely at what is still trusted. `LoginRequest` arrives with `@NotBlank` on two fields and `@Valid` on the controller parameter — and those annotations were used here without ever being explained. That is not an accident of this file: it is the next hole. Authentication answers "is this really Victor?"; it says nothing about whether the *body* he sent is coherent. A logged-in manager with a perfectly valid token can still `POST` a project with a blank name, a negative budget, or an end date before the start date — every security check passes, and the garbage goes straight into PostgreSQL.
+
+[07-validation.md](./07-validation.md) closes that gap: what `@Valid` actually triggers, which annotations exist (`@NotBlank`, `@Email`, `@Positive`, `@Size`), where the resulting `MethodArgumentNotValidException` is caught, and why validating at the DTO boundary beats scattering `if (x == null)` checks through your services.
