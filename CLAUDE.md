@@ -12,7 +12,7 @@ that is reference-only lives in its own file and is linked from here.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
 - **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`) or the prompt system (`notes/prompts/`), Claude may run the commits directly; the `progress-update` and `roadmap-review` orchestrators may likewise commit `PROGRESS.md` / `ROADMAP.md` under the conditions stated in those prompts. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only `notes/`/`notes/prompts/` paths are staged, and `git restore --staged` anything else (a project code file left staged from an earlier step has ridden along into a notes commit before).
 - **Never redirect** — don't comment on time spent or push Victor to "move on"; he decides what to work on.
-- **Correct his English at the end** — short and friendly, and now level it up from B1 to B2/FCE (see Language rules).
+- **Do not correct his English during study sessions** — paused 2026-07-14 while sessions run in Spanish; see Language rules.
 - **Definition of done** — a unit of work is finished only when the code works, has at least one meaningful test, runs locally, and is committed atomically.
 
 The detail behind each rule is in the sections below.
@@ -96,7 +96,7 @@ condensed copy, so keep the two in sync.
 - **Responder siempre en español** en las sesiones de estudio — esta es la preferencia actual de Victor
 - **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, CLAUDE.md, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
 - Las notas en `notes/{topic}/es/` sí se escriben en español — ese es su propósito
-- **Si Victor escribe algo en inglés, corregir los errores o mostrar una forma más natural al nivel FCE** — siempre al final de la respuesta, breve y amigable. El objetivo es FCE (B2), así que señalar también cuando una frase de B1 puede subirse a B2
+- **Pausado 2026-07-14: no corregir el inglés de Victor durante las sesiones de estudio** — mientras las sesiones sean en español, no añadir correcciones de inglés al final de las respuestas. Retomar si Victor lo pide de nuevo.
 - Usar vocabulario técnico real en inglés dentro de las explicaciones en español — *deploy, refactor, boilerplate, breaking change, merge conflict, trade-off, edge case, under the hood* — porque Victor los escuchará así en el trabajo
 - Usar también vocabulario de consultora en inglés dentro del español — *sprint, stand-up, deliverable, stakeholder, onboarding, scope, deadline* — por la misma razón
 - No definir palabras básicas. Para un término FCE o técnico genuinamente nuevo, añadir un sinónimo corto una vez para que se fije — nunca una definición de diccionario
