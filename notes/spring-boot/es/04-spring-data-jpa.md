@@ -479,6 +479,8 @@ public interface ProjectHoursReportResponse {
 }
 ```
 
+> **¿Por qué la interfaz solo tiene dos métodos si el informe devuelve varios proyectos?** No confundas la *lista* con la *forma de una fila*. `List<ProjectHoursReportResponse>` es lo que representa "cuántas filas hay" — un elemento por cada proyecto que tuvo entries en el rango. `ProjectHoursReportResponse` en sí describe la forma de **una sola** de esas filas — los dos campos que necesita cada fila, no "dos filas en total". Spring instancia un objeto proxy por cada fila que devuelve la query; cada uno de esos objetos implementa la interfaz, así que todos tienen disponibles `getProjectName()` y `getTotalHours()` — pero llamar a `getProjectName()` sobre el objeto construido a partir de la fila 1 devuelve `"TimeTrack"`, mientras que llamarlo sobre el objeto de la fila 2 devuelve `"Marketing"`. Mismos dos métodos en cada objeto (el contrato fijo), distintos valores por objeto (porque cada uno se construye a partir de una fila distinta). Es exactamente la misma relación que ya conoces entre una clase normal y sus instancias: `new Project()` dos veces te da dos objetos que comparten el mismo método `getName()` pero cada uno devuelve su propio dato — la única diferencia aquí es que tú nunca escribes `new`, lo hace Spring una vez por fila.
+>
 > **¿Por qué una interfaz y no una clase con `@Data`, como el resto de DTOs de respuesta de este proyecto?** Cualquier otro DTO (`ProjectResponse`, `UserResponse`...) es una clase que tú mismo instancias — escribes `new ProjectResponse()` (o lo hace un mapper) y rellenas cada campo a mano en tu propio código Java. Una proyección es distinta: **tú nunca la construyes**. Spring Data lee los alias de columna que devuelve la query (`SUM(te.hours) AS totalHours`) y, como Java puede generar en tiempo de ejecución un objeto proxy que implemente cualquier interfaz, construye sobre la marcha un objeto cuyo `getTotalHours()` devuelve exactamente el valor de esa columna — sin cuerpo de clase, sin constructor, sin mapeo manual. Una `class` no se puede construir así porque necesitaría un constructor que Spring tendría que llamar con los argumentos correctos en el orden correcto; una interfaz solo promete "existe algo con este método", que es todo lo que necesita un proxy generado en tiempo de ejecución.
 
 **El contrato alias-getter — este es el mecanismo real, no solo una convención:**
@@ -525,7 +527,24 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
 ```
 
 - `SUM(te.hours)` — una función de agregación de JPQL; funciona igual que `SUM()` en SQL puro, sumando `hours` de cada fila de `TimeEntry` que cumple el `WHERE`, dentro de cada grupo.
-- `GROUP BY te.project.name` — **esto es lo que convierte muchas filas en una fila por proyecto.** Sin él, `SUM()` colapsaría *todo* el resultado en un único total across todos los proyectos. `GROUP BY` le dice a la base de datos "primero divide las filas que cumplen el `WHERE` en cubos según este valor, y luego agrega dentro de cada cubo por separado" — un cubo por cada `project.name` distinto, un resultado de `SUM()` por cubo.
+- `GROUP BY te.project.name` — **esto es lo que convierte muchas filas en una fila por proyecto.** Sin él, `SUM()` colapsaría *todo* el resultado en un único total mezclando todos los proyectos. `GROUP BY` le dice a la base de datos "primero divide las filas que cumplen el `WHERE` en cubos según este valor, y luego agrega dentro de cada cubo por separado" — un cubo por cada `project.name` distinto, un resultado de `SUM()` por cubo.
+
+  Ejemplo con datos concretos — imagina que el `WHERE` deja estas tres filas de `TimeEntry` de mayo de 2025:
+
+  ```
+  TimeTrack  — 3h
+  TimeTrack  — 5h
+  Marketing  — 2h
+  ```
+
+  `GROUP BY te.project.name` las reparte en dos cubos según el nombre del proyecto, y `SUM(te.hours)` se calcula **por separado dentro de cada cubo**:
+
+  ```
+  cubo "TimeTrack":  3 + 5  →  totalHours = 8
+  cubo "Marketing":  2      →  totalHours = 2
+  ```
+
+  Resultado final: dos filas — `{projectName: "TimeTrack", totalHours: 8}` y `{projectName: "Marketing", totalHours: 2}`. Sin `GROUP BY` obtendrías una sola fila con `totalHours = 10` (todo sumado junto, sin distinguir proyecto).
 - `WHERE te.date BETWEEN :start AND :end` — el filtro por mes. `TimeEntry` no tiene un campo `month` (solo `date`, un `LocalDate`), así que "mayo de 2025" tiene que convertirse en un rango: el primer y el último día de ese mes. Esto es justo lo que `YearMonth` (ver el callout de abajo) está pensado para producir.
 - `List<ProjectHoursReportResponse>` como tipo de retorno es lo que le indica a Spring Data que construya objetos proxy de esa interfaz a partir del resultado — no entidades.
 

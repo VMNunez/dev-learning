@@ -479,6 +479,8 @@ public interface ProjectHoursReportResponse {
 }
 ```
 
+> **Why does the interface only have two methods if the report returns many projects?** Don't confuse the *list* with the *shape of one row*. `List<ProjectHoursReportResponse>` is what carries "how many rows" — one element per project that had entries in the range. `ProjectHoursReportResponse` itself describes the shape of a *single* one of those rows — the two fields every row needs, not "two rows total". Spring instantiates one proxy object per row that comes back from the query; each of those objects implements the interface, so each one has both `getProjectName()` and `getTotalHours()` available — but calling `getProjectName()` on the object built from row 1 returns `"TimeTrack"`, while calling it on the object built from row 2 returns `"Marketing"`. Same two methods on every object (the fixed contract), different values per object (because each is built from a different row). This is the exact same relationship as a regular class and its instances: `new Project()` twice gives you two objects that share the same `getName()` method but each returns its own data — the only difference here is that you never write `new` yourself, Spring does it once per row.
+>
 > **Why an interface and not a class with `@Data`, like every other response DTO in this project?** Every other DTO (`ProjectResponse`, `UserResponse`...) is a class you instantiate yourself — you write `new ProjectResponse()` (or a mapper does it) and fill each field by hand in your own Java code. A projection is different: **you never construct it**. Spring Data reads the column aliases coming back from the database query (`SUM(te.hours) AS totalHours`) and, because Java can generate a proxy object that implements any interface at runtime, it builds an object on the fly whose `getTotalHours()` returns exactly that column's value — no class body, no constructor, no manual mapping needed. A `class` cannot be built this way because a class needs a constructor Spring would have to call with the right arguments in the right order; an interface only promises "something with this method exists", which is all a runtime proxy needs to satisfy.
 
 **The alias-to-getter contract — this is the actual mechanism, not just a convention:**
@@ -526,6 +528,23 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
 
 - `SUM(te.hours)` — a JPQL aggregate function; it works the same way `SUM()` does in raw SQL, adding up `hours` across every `TimeEntry` row that matches the `WHERE`, per group.
 - `GROUP BY te.project.name` — **this is what turns many rows into one row per project.** Without it, `SUM()` would collapse the *entire* result set into a single total across all projects. `GROUP BY` tells the database "first split the matching rows into buckets by this value, then aggregate within each bucket separately" — one bucket per distinct `project.name`, one `SUM()` result per bucket.
+
+  Worked example — say the `WHERE` clause leaves these three `TimeEntry` rows for May 2025:
+
+  ```
+  TimeTrack  — 3h
+  TimeTrack  — 5h
+  Marketing  — 2h
+  ```
+
+  `GROUP BY te.project.name` splits them into two buckets by project name, and `SUM(te.hours)` runs **separately inside each bucket**:
+
+  ```
+  bucket "TimeTrack":  3 + 5  →  totalHours = 8
+  bucket "Marketing":  2      →  totalHours = 2
+  ```
+
+  Final result: two rows — `{projectName: "TimeTrack", totalHours: 8}` and `{projectName: "Marketing", totalHours: 2}`. Remove `GROUP BY` and you'd get one row with `totalHours = 10` (everything summed together, project identity lost).
 - `WHERE te.date BETWEEN :start AND :end` — the month filter. `TimeEntry` has no `month` field (only `date`, a `LocalDate`), so "May 2025" has to become a range: the first and last day of that month. This is exactly what `YearMonth` (see the callout below) is built to produce.
 - `List<ProjectHoursReportResponse>` as the return type is what tells Spring Data to build proxy objects of that interface from the result — not entities.
 
