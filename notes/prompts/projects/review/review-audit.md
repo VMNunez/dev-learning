@@ -149,6 +149,25 @@ same absent artefacts as findings: on the 2026-07-14 run, all 9 backend slices w
 backlog. The standard's scope limit already forbids this; Step 0 is where it becomes enforceable, because
 Step 0 is the only place that knows which steps are done.
 
+**Tests are part of that exclusion, and it is derived from the project number — not from the ✅ marks.**
+Per CLAUDE.md ("Testing rules"), testing enters the roadmap at **project 07** (services: JUnit/Jasmine)
+and **project 08** (components: TestBed). So:
+- **Projects 01–06:** tests are **out of scope entirely**. Their `.spec.ts` files are untouched Angular
+  CLI scaffold — empty `should create` assertions are the expected state, not a gap.
+- **Project 07:** service tests are in scope; **component** tests are not.
+- **Projects 08+:** both are in scope.
+
+Append the applicable line verbatim to **every** subagent prompt in Steps 1–4, e.g. for 01–06:
+*"This project predates the testing roadmap (tests start at project 07). Its `.spec.ts` files are CLI
+scaffold. Do not report missing tests, empty specs, or weak assertions as findings — write 'tests — out
+of scope for this project' instead."*
+
+This exclusion **cannot** be derived from the ✅ marks: projects 01–06 use the old PLANNING format, which
+has no §0 and no ✅ step marks, so the step-based rule above silently fires on nothing. On the 2026-07-14
+run of `01-todo-list` both frontend reviewers read the empty scaffold specs as missing coverage and raised
+three High "no tests" tasks — which went into the backlog and Victor had to catch. Every project from 01
+to 06 will reproduce those three false Highs unless this line is passed down.
+
 **Angular 01–06** are **frontend-only**, not informational: map **frontend feature slices +
 `frontend-infra`**, skip Steps 1–2 (there is no backend, so no backend flow and **no security pass**),
 and run Steps 3, 4 and 5 in full — including writing `PROJECT-BACKLOG.md` and handing over the commit.

@@ -273,6 +273,13 @@ unlikely combination is Low.
 
 ## Test-quality scope — the test review
 
+> **Projects 01–06 have no tests, by design — never report their absence.** Per CLAUDE.md ("Testing
+> rules"), testing enters the roadmap at project **07** (services) and project **08** (components). In
+> 01–06 the `.spec.ts` files are untouched Angular CLI scaffold: an empty `should create` is the expected
+> state. In 07, component tests are likewise out of scope. Missing tests, empty specs and weak assertions
+> in an out-of-scope project are **not findings** — write "tests — out of scope for this project" instead.
+> This lens is skipped entirely there; the flow reviewer runs only the quality and correctness lenses.
+
 Projects with tests (07 onward): the per-slice flow reviewer runs a **test-quality lens** on its
 slice's own tests, against the plan's §16 Testing plan and this bar. It reads the slice's test files
 together with the classes they cover. A test suite that looks green but asserts nothing is worse than no
