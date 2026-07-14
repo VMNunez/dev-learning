@@ -320,20 +320,20 @@ All README format rules and quality standards live in `notes/prompts/projects/re
 - Format: title + bullet list of changes under `## Changes` + one line under `## Why` explaining the decision behind the main change
 - Claude always writes the branch name, commit message, and PR description — Victor does not write these
 
-### SQL and study materials live on `main` — there is no separate SQL branch
+### Study materials follow the active branch — no direct commits to `main`
 
-(The old `sql/practice` branch was merged and deleted in July 2026 — study files never conflict with
-project code, so a separate branch only split `PROGRESS.md` across branches.)
+(Changed 2026-07-14 — previously `practice/sql/`, `notes/`, `practice/simulations/`, `PROGRESS.md`
+and `ROADMAP.md` were committed straight to `main`. Reversed because Victor works one branch at a
+time, so the conflict risk that rule was avoiding rarely applies in practice, and a single rule —
+everything commits on the branch you're on — is simpler to remember than a split.)
 
-- **Study and tracking materials live on `main`:** `practice/sql/`, `notes/`, `practice/simulations/`, `PROGRESS.md`,
-  `ROADMAP.md`. Commit them directly on `main`. **Project code** keeps the
-  feature-branch → PR → `main` workflow (that history has portfolio value; study files do not need it).
-  `PROJECT-BACKLOG.md` lives inside each full-stack project's own folder (e.g.
-  `projects/07-timetrack/PROJECT-BACKLOG.md`) and follows that project's normal feature-branch
-  workflow like `PLANNING.md` and `README.md` do.
-- This gives `PROGRESS.md` exactly **one home** (`main`) — no divergence, no checkout dance.
-- SQL block (12:30): work in `practice/sql/` on `main`, commit there, and update the SQL section of
-  `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
+- **All study/tracking materials commit on whatever branch is currently active**: `practice/sql/`,
+  `notes/`, `practice/simulations/`, `PROGRESS.md`, `ROADMAP.md` — same as project code.
+  `PROJECT-BACKLOG.md`, `PLANNING.md`, and `README.md` already worked this way.
+- **`main` never receives direct commits, only merges via PR** — same rule for study materials as
+  for code: `feat/x` → PR → project branch → PR → `main`.
+- SQL block (12:30): work in `practice/sql/` on the active branch, commit there, and update the SQL
+  section of `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
 - The SQL section in PROGRESS.md tracks which topics exist in `practice/sql/` and their status:
   solid ✅ (score ≥ 80% in review) or in progress ⏳. Read it at the start of a SQL session to know
   which topic is next.
@@ -386,7 +386,7 @@ The three hub files everything reads from or writes to:
 
 - Angular: 6 projects completed (todo list, weather app, expense tracker, meal finder, task manager, HR portal) + project 07 (TimeTrack) in progress
 - CSS/Tailwind: practised inside Angular projects
-- SQL: in progress on `main` (PostgreSQL, bookstore schema)
+- SQL: in progress (PostgreSQL, bookstore schema)
 
 Project list and learning objectives per project → `PROGRESS.md` (projects table) and `ROADMAP.md`.
 Projects 01–06 are Angular-only; full-stack projects start at 07.
@@ -404,7 +404,7 @@ learning/
 │   ├── 06-hr-portal/      ← last Angular-only project
 │   └── 07-timetrack/      ← Spring Boot + Angular + PostgreSQL + Docker
 │       └── PROJECT-BACKLOG.md ← improvement tasks for this project, written by review-audit
-├── practice/              ← exercises, not portfolio (lives on main)
+├── practice/              ← exercises, not portfolio
 │   ├── sql/               ← SQL exercises (flat files: 01-basics.sql, 02-joins.sql, …)
 │   ├── simulations/       ← technical test simulations — Angular, Spring Boot, SQL; tracker at TRACKER.md
 │   └── leetcode/          ← algorithm exercises for interviews (gated — see ROADMAP.md)
