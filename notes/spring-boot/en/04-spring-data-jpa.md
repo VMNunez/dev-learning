@@ -459,3 +459,99 @@ repository.save(t);   // UPDATE — id is now set by the database
 ```
 
 You do not need separate `insert()` and `update()` methods — `save()` handles both.
+
+---
+
+## Aggregation queries and interface projections
+
+Every repository method you've seen so far returns entities — `Transaction`, `List<Transaction>`, `Page<Transaction>`. But a report like "total hours per project this month" is not an entity. There is no `Report` table, no `@Id`, no single row you could `save()` — it is a **computed** result: one row per project, with a `SUM()` of a related table's column. Returning a `List<Project>` for this makes no sense — a `Project` doesn't have a `totalHours` field, and it shouldn't, because that number depends on a date range you pick at request time, not on anything stored on the project itself.
+
+**Purpose:** an interface projection tells Spring Data JPA the *shape* of a computed result — which fields exist and their types — without you writing a class or any mapping code. Spring generates the implementation for you at runtime.
+
+**File:** `src/main/java/com/victor/timetrack/dto/response/ProjectHoursReportResponse.java`
+
+**Docs:** https://www.baeldung.com/spring-data-jpa-projections → read: "Interface-based Projections"
+
+```java
+public interface ProjectHoursReportResponse {
+    String getProjectName();
+    BigDecimal getTotalHours();
+}
+```
+
+> **Why an interface and not a class with `@Data`, like every other response DTO in this project?** Every other DTO (`ProjectResponse`, `UserResponse`...) is a class you instantiate yourself — you write `new ProjectResponse()` (or a mapper does it) and fill each field by hand in your own Java code. A projection is different: **you never construct it**. Spring Data reads the column aliases coming back from the database query (`SUM(te.hours) AS totalHours`) and, because Java can generate a proxy object that implements any interface at runtime, it builds an object on the fly whose `getTotalHours()` returns exactly that column's value — no class body, no constructor, no manual mapping needed. A `class` cannot be built this way because a class needs a constructor Spring would have to call with the right arguments in the right order; an interface only promises "something with this method exists", which is all a runtime proxy needs to satisfy.
+
+**The alias-to-getter contract — this is the actual mechanism, not just a convention:**
+
+Spring matches each getter to a column alias using the standard Java Bean naming rule: strip `get` from the method name, lowercase the first letter, and that is the name it looks for among the query's aliases.
+
+```
+getProjectName()   →   looks for alias "projectName"
+getTotalHours()    →   looks for alias "totalHours"
+```
+
+This is exactly why the JPQL query below writes `AS projectName` and `AS totalHours` — those strings are not decoration, they are the literal contract the interface depends on. Rename a getter to `getHours()` without renaming the alias to `hours`, and that field silently comes back `null` — Spring doesn't error, because from its point of view "no alias named `hours`" is a perfectly valid case (the field is just unset).
+
+> **MAL** — alias and getter name don't match, no error, silent bug:
+> ```java
+> // interface says getTotalHours()
+> // query says:
+> SELECT te.project.name AS projectName, SUM(te.hours) AS hours   // ← "hours", not "totalHours"
+> // result: report.getTotalHours() always returns null, and nothing tells you why
+> ```
+> **BIEN** — alias matches the getter name exactly:
+> ```java
+> SELECT te.project.name AS projectName, SUM(te.hours) AS totalHours
+> ```
+
+### The aggregation query itself — SUM + GROUP BY in JPQL
+
+JPQL (Jakarta Persistence Query Language) looks like SQL but queries your **entities and their fields**, not tables and columns directly — `te.project.name` walks the Java object graph (`TimeEntry.project.name`), and Hibernate translates that path into the SQL join for you.
+
+```java
+public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
+
+    @Query("""
+        SELECT te.project.name AS projectName, SUM(te.hours) AS totalHours
+        FROM TimeEntry te
+        WHERE te.date BETWEEN :start AND :end
+        GROUP BY te.project.name
+        """)
+    List<ProjectHoursReportResponse> getHoursByProject(
+        @Param("start") LocalDate start,
+        @Param("end") LocalDate end
+    );
+}
+```
+
+- `SUM(te.hours)` — a JPQL aggregate function; it works the same way `SUM()` does in raw SQL, adding up `hours` across every `TimeEntry` row that matches the `WHERE`, per group.
+- `GROUP BY te.project.name` — **this is what turns many rows into one row per project.** Without it, `SUM()` would collapse the *entire* result set into a single total across all projects. `GROUP BY` tells the database "first split the matching rows into buckets by this value, then aggregate within each bucket separately" — one bucket per distinct `project.name`, one `SUM()` result per bucket.
+- `WHERE te.date BETWEEN :start AND :end` — the month filter. `TimeEntry` has no `month` field (only `date`, a `LocalDate`), so "May 2025" has to become a range: the first and last day of that month. This is exactly what `YearMonth` (see the callout below) is built to produce.
+- `List<ProjectHoursReportResponse>` as the return type is what tells Spring Data to build proxy objects of that interface from the result — not entities.
+
+> **Reading the table below:** each row pairs a JPQL clause with the plain-English question it answers about the final result — useful when a report query stops returning what you expect and you need to check each clause in isolation.
+
+| Clause | Question it answers |
+|---|---|
+| `SELECT ... AS alias` | Which columns come back, and what getter do they map to? |
+| `WHERE` | Which rows are considered at all, before any grouping? |
+| `GROUP BY` | How are the surviving rows split into buckets? |
+| `SUM(...)` (inside `SELECT`) | What is computed *within* each bucket? |
+
+### From `?month=2025-05` to a date range — YearMonth
+
+The controller receives `month=2025-05` as a query string. `java.time.YearMonth` represents exactly that — a year plus a month, no day — and Spring can bind it straight from the query string because its `toString()`/parsing format is the same ISO shape (`yyyy-MM`) the URL already uses, so no custom converter is needed.
+
+```java
+@GetMapping("/by-project")
+@PreAuthorize("hasRole('MANAGER')")
+public List<ProjectHoursReportResponse> getByProject(@RequestParam YearMonth month) {
+    LocalDate start = month.atDay(1);          // 2025-05-01
+    LocalDate end = month.atEndOfMonth();       // 2025-05-31 (handles 28/29/30/31 correctly)
+    return timeEntryRepository.getHoursByProject(start, end);
+}
+```
+
+> **Why not just parse `month` as a `String` and slice it?** You could split `"2025-05"` on `-` and build a `LocalDate` by hand, but then you own the edge cases yourself — how many days does May have? Does the app still work correctly in a leap-year February? `YearMonth.atEndOfMonth()` already knows the answer for every month, including February 28 vs 29, so the calendar logic never has to be reasoned about by hand.
+
+**Why `@PreAuthorize("hasRole('MANAGER')")` here specifically:** reports aggregate hours across the whole team, not just the caller's own entries — the same review-concept rule already used on `GET /api/users` and project mutation endpoints (see the reserved-word callout pattern above): any endpoint that exposes data beyond "my own" needs an explicit role check, because Spring Security's JWT filter only proves *who* is calling, never *what* they're allowed to see.
