@@ -70,6 +70,24 @@ gates on both):
 A tier is only "freshly reviewed" once a run actually covered it. A `backend` run never refreshes the
 frontend date, so it can never make the frontend look reviewed when it is not.
 
+### The gate measures *unreviewed code*, not elapsed time — check the steps before the date
+
+The 30-day window exists to stop you re-reviewing the **same** code, not to stop you reviewing **new**
+code. So before applying it, compare the tier's date against the work done since:
+
+**If any step was completed after that tier's "Last Reviewed" date, the gate does not apply to that
+tier — continue, regardless of how recent the date is.** Read the ✅ steps in PLANNING.md's learning plan
+and the step-completion dates recorded in `PROGRESS.md` / the backlog's own task notes; if the tier has
+gained a step since it was last reviewed, it contains code no reviewer has ever seen. Say so and run.
+
+> **This is the failure the rule exists to prevent.** On 2026-07-14 a `backend` run on 07-timetrack was
+> gated at "reviewed 8 days ago" — but Step 6 (Reports) had been *built* in those 8 days and had never
+> been reviewed. Forcing past the gate found, in that unreviewed step, a High correctness bug (the report
+> aggregates summed DRAFT and REJECTED hours). A purely time-based gate punishes fast building: the more
+> steps you finish inside the window, the more unreviewed code it hides.
+
+Only when the tier has gained **no** completed step since its last review does the 30-day window decide.
+
 > **Migration:** a backlog still carrying the old single `**Last Reviewed:** [date]` line was written
 > before per-tier tracking. Read it as *both* tiers reviewed on that date, and rewrite the header into
 > the two-line form on the next run.

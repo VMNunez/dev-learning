@@ -114,6 +114,10 @@ against `{PROJECT_PATH}/PROJECT-BACKLOG.md` — read its `**Last Reviewed — ba
 `**Last Reviewed — frontend:**` lines and gate **only the tiers {REVIEW_SCOPE} will review**. If every
 tier in scope was reviewed < 30 days ago, stop and offer FORCE; if only some are fresh, continue with
 the stale/`never` ones and say which you are skipping. A missing backlog = never reviewed → continue.
+**Before you gate on the date, apply the standard's "the gate measures unreviewed code, not elapsed
+time" rule** — if a tier has completed a step since its last review, it holds code no reviewer has seen,
+and the 30-day window does not apply to it. Check the ✅ steps against the tier's date first; only gate
+on the date when the tier has gained no step.
 Then **map the review slices** — this is light structural work (you list slices, you do not review code).
 
 **Apply {REVIEW_SCOPE} first — map only the tiers it names:**
