@@ -1644,7 +1644,9 @@ File: `src/main/java/com/victor/timetrack/security/JwtFilter.java`
 
 Docs: [Spring Security — Filter Chain Architecture](https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-filters-review)
 
-`OncePerRequestFilter` is the correct base class for a JWT filter — Spring guarantees it runs exactly once per request, even if a request is forwarded internally.
+`OncePerRequestFilter` is the correct base class for a JWT filter — Spring guarantees it runs exactly **once** for a given request, even if that request gets forwarded internally to another servlet during normal processing (so you never accidentally re-check the same token twice for one client call).
+
+> **"Once" has a second, less obvious side.** The same guarantee has a flip side that matters a lot once you hit the bug below: by default, `OncePerRequestFilter` **skips itself entirely** when the dispatch is an internal `ERROR` forward (Tomcat re-routing a request to `/error` after an uncaught exception) or an `ASYNC` dispatch. That is not a bug — it exists so your filter's business logic (checking a token) does not run again on an internal, synthetic re-dispatch of a request it already saw. But it has a sharp edge: if `JwtFilter` itself is the thing that crashes, the forward to `/error` that follows will **not** go through `JwtFilter` again — see "Why a filter can't rely on `GlobalExceptionHandler`" below.
 
 Every HTTP request passes through this filter before reaching any controller. The filter reads the JWT from the `Authorization` header, validates it, and — if valid — sets the authentication in `SecurityContextHolder`. Once that is set, Spring Security knows who is making the request and applies the route rules from `SecurityFilterChain`.
 
@@ -1664,29 +1666,32 @@ Starts with "Bearer "?
       │
   YES → strip "Bearer " prefix (7 chars) → raw token
       ▼
-JwtUtil.extractUsername(token) → get email from "sub" claim
+try { JwtUtil.extractUsername(token) → get email from "sub" claim
       │
       ▼
-Already authenticated this request? (getAuthentication() != null)
-  YES ───────────────────────→ skip — already processed
-      │
-  NO
-      ▼
-UserDetailsService.loadUserByUsername(email) → loads user from DB
-      │
-      ▼
-JwtUtil.isValid(token, email)?
-  NO ────────────────────────→ filterChain.doFilter() → pass through
-      │                        (SecurityFilterChain blocks: no auth set
-      │                         → JwtAuthenticationEntryPoint → 401)
-  YES
-      ▼
-SecurityContextHolder.setAuthentication(
-  new UsernamePasswordAuthenticationToken(userDetails, null, authorities)
-)
+      Already authenticated this request? (getAuthentication() != null)
+        YES ───────────────────────→ skip — already processed
+            │
+        NO
+            ▼
+      UserDetailsService.loadUserByUsername(email) → loads user from DB
+            │
+            ▼
+      JwtUtil.isValid(token, email)?
+        NO ────────────────────────→ do nothing → falls through to filterChain.doFilter()
+            │
+        YES
+            ▼
+      SecurityContextHolder.setAuthentication(
+        new UsernamePasswordAuthenticationToken(userDetails, null, authorities)
+      )
+} catch (JwtException | UsernameNotFoundException e) {
+      logger.warn(...)   ← swallow it, do NOT rethrow — see below
+}
       │
       ▼
 filterChain.doFilter() → continues to SecurityFilterChain → controller
+      │                   (no auth set → JwtAuthenticationEntryPoint → 401)
 ```
 
 **SecurityContextHolder — lifecycle per request:**
@@ -1737,18 +1742,23 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        String email = jwtUtil.extractUsername(token);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        try {
+            String email = jwtUtil.extractUsername(token);
 
-            if (jwtUtil.isValid(token, userDetails.getUsername())) {
-                UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                    );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                if (jwtUtil.isValid(token, userDetails.getUsername())) {
+                    UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                        );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        } catch (JwtException | UsernameNotFoundException e) {
+            logger.warn("Invalid JWT token: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);
@@ -1779,6 +1789,76 @@ public class JwtFilter extends OncePerRequestFilter {
 1. **Early return (no token):** `JwtFilter` has nothing to do — it calls `filterChain.doFilter()` immediately and returns. The request continues through the chain and eventually reaches `SecurityFilterChain`, which checks the route rules.
 
 2. **At the end (after processing):** whether the token was valid or not, `JwtFilter` always calls `filterChain.doFilter()` at the very end. This is important: `JwtFilter`'s job is not to block requests — it only sets (or does not set) the user in `SecurityContextHolder`. Blocking is `SecurityFilterChain`'s job. If the token was invalid and nothing was set in `SecurityContextHolder`, `SecurityFilterChain` will reject the request because `authenticated()` is not satisfied.
+
+### Why a filter can't rely on `GlobalExceptionHandler`
+
+The version of `JwtFilter` above wraps `extractUsername` and `loadUserByUsername` in a `try/catch`. Without it, sending a request with a tampered token (change one character of the signature) does not fail cleanly — it produces a very specific, misleading bug.
+
+**What actually happens with no `try/catch`:**
+
+```
+1. jwtUtil.extractUsername(token) throws SignatureException (uncaught)
+2. No catch anywhere in JwtFilter → the exception climbs the call stack
+3. GlobalExceptionHandler (@RestControllerAdvice) never sees it —
+   it only intercepts exceptions thrown FROM INSIDE a @Controller method.
+   JwtFilter runs earlier in the pipeline, before the DispatcherServlet
+   even routes the request to a controller:
+
+   Request → [security filters incl. JwtFilter] → DispatcherServlet → @Controller
+                        ↑ exception happens here      ↑ @RestControllerAdvice only
+                          — outside MVC's reach          watches from here onward
+
+4. Uncaught exception reaches Tomcat → Spring Boot's default error handling
+   makes Tomcat do an INTERNAL FORWARD of the same request to "/error"
+   (not a new HTTP request — the same one, re-routed server-side)
+5. OncePerRequestFilter skips itself on an ERROR dispatch by default
+   (see the callout above) → JwtFilter does NOT run on this second pass
+   → SecurityContextHolder stays empty for the /error request
+6. "/error" is not excluded from .anyRequest().authenticated() in
+   SecurityConfig → Spring Security rejects it as unauthenticated
+   → jwtAuthenticationEntryPoint.commence() fires → client gets 401
+```
+
+The client receives a normal-looking `401 Unauthorized` with the exact same body as "no token sent at all":
+
+```json
+{
+    "error": "Unauthorized",
+    "message": "Authentication required",
+    "status": 401,
+    "timestamp": "2026-07-15T09:22:19.647166500Z"
+}
+```
+
+> **Why this is worse than an obvious bug.** The response *looks* correct — a bad token really should result in a 401. But it is the wrong 401, produced by the wrong mechanism, entirely by coincidence of how `/error` is (not) excluded from the security rules. The real event — an unhandled `RuntimeException` inside a servlet filter — still happened underneath and still gets logged as a server-side error:
+> ```
+> ERROR ... o.a.c.c.C.[.[.[/].[dispatcherServlet]  : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
+> io.jsonwebtoken.security.SignatureException: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+> 	at io.jsonwebtoken.impl.DefaultJwtParser.verifySignature(...)
+> 	at com.victor.timetrack.security.JwtUtil.parseClaims(JwtUtil.java:49)
+> 	at com.victor.timetrack.security.JwtUtil.extractUsername(JwtUtil.java:34)
+> 	at com.victor.timetrack.security.JwtFilter.doFilterInternal(JwtFilter.java:39)
+> ```
+> If `/error` were ever excluded from `.anyRequest().authenticated()` for some other reason (e.g. to serve a custom error page), this same tampered token would suddenly return a raw `500` instead — because the accidental 401 mechanism would no longer apply. A fix that only "looks right" by accident is not a fix.
+
+**How to actually notice this kind of bug.** Postman only shows you what the *client* received — it cannot tell you whether that status code was produced by the mechanism you intended. The tell is a mismatch between the two sides: if the backend console prints an `ERROR`-level stack trace (`Servlet.service() ... threw exception`) for a request you expected to be handled cleanly by `GlobalExceptionHandler` or `JwtAuthenticationEntryPoint`, that is proof something crashed outside your intended flow — regardless of what the client ended up seeing. A clean, expected 401 through `JwtAuthenticationEntryPoint` never logs at `ERROR` level, because it is not a failure — it is normal authentication rejection.
+
+**The fix — catch inside the filter, don't rethrow:**
+
+```java
+try {
+    String email = jwtUtil.extractUsername(token);
+    // ... rest of the logic
+} catch (JwtException | UsernameNotFoundException e) {
+    logger.warn("Invalid JWT token: " + e.getMessage());
+}
+```
+
+**`catch (JwtException | UsernameNotFoundException e)`** — a *multi-catch*: one `catch` block handling two unrelated exception types the same way, joined with `|`. `JwtException` is the common superclass for everything `jjwt` can throw while parsing a token — `SignatureException` (tampered), `ExpiredJwtException` (past the 24h expiry from `application.properties`), `MalformedJwtException` (not a valid JWT string at all). Catching the **supertype** rather than one concrete subclass matters here: a `catch (SignatureException e)` would still let an `ExpiredJwtException` through uncaught, because they are sibling subclasses, not parent/child. `UsernameNotFoundException` covers the other failure path: the email inside a *still cryptographically valid* token no longer matches any row in `users` — for example, the account was soft-deleted after the token was issued (`UserDetailsServiceImpl.loadUserByUsername`, line 21: `.orElseThrow(() -> new UsernameNotFoundException(...))`).
+
+> **Why not `throw new RuntimeException(...)` inside the `catch`?** That was the tempting fix, and it does not work — for the exact same reason the original bug existed. Rethrowing *anything* from inside a servlet filter still lands outside `GlobalExceptionHandler`'s reach; you would just be re-creating the same uncaught-exception-in-a-filter problem with a different exception type. The correct pattern in a security filter is not "throw and let something translate it" — it is "leave `SecurityContextHolder` empty and call `filterChain.doFilter()` anyway". A component further down the chain that *does* understand "no authentication present" (the `AuthorizationFilter` enforcing `.anyRequest().authenticated()`) takes over from there, and it already knows how to turn that into a real, intentional 401 via `jwtAuthenticationEntryPoint`. The filter's job is only ever to set or not set the context — never to decide the HTTP response itself.
+
+> **Why `logger.warn(...)` and not `logger.error(...)`?** `OncePerRequestFilter` already exposes a protected `logger` field, so no `@Slf4j` or manual declaration is needed. The distinction between the two levels is not cosmetic — `ERROR` is reserved for things that should never happen in normal operation (a bug, a dependency outage) and is what monitoring tools (Sentry, Datadog, on-call alerts) watch for. A tampered or expired token is not a bug — tokens are *designed* to expire, and malicious/malformed tokens are routine background noise on any public API. Logging it at `ERROR` would mean a legitimate user's session expiring — something that happens constantly — pages an on-call engineer as if the server were broken. `WARN` records the event for later debugging without triggering that alarm.
 
 ---
 
