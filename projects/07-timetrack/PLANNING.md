@@ -43,6 +43,7 @@ Concepts this project teaches for the first time. (Steps 1–3 are now done and 
 | State machine workflow (DRAFT→SUBMITTED→APPROVED/REJECTED) | Architecture | Most valuable pattern in a junior portfolio |
 | PATCH for state transitions | REST | Signals that only `status` changes, not the whole resource |
 | Query filters with `@RequestParam` | Spring Boot | `?month=`, `?status=`, `?projectId=` on GET /api/entries |
+| `Specification<T>` + `JpaSpecificationExecutor` (Criteria API) | Spring Boot / JPA | Dynamic optional filters on GET /api/entries — the JPQL `IS NULL OR` pattern hit a real PostgreSQL bug (`42P18`, can't infer parameter type), Specifications build predicates only for filters actually present |
 | JPQL aggregation queries | Spring Boot / SQL | Reports — hours grouped by project and by employee |
 | `@RestControllerAdvice` GlobalExceptionHandler | Spring Boot | Consistent JSON error bodies |
 | `data.sql` startup seeding | Spring Boot | First manager account with no register endpoint |
