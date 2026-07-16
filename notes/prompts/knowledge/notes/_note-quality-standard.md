@@ -106,6 +106,17 @@ input, resolved in `en/`, then re-synced into `es/`.
 
 ---
 
+## Read the whole file, verifiably — before editing, reviewing, or translating
+
+The Read tool loads **2000 lines by default and truncates longer files silently** — and note files
+cross that line (`spring-boot/en/06-security-jwt.md` is already past 2384). A truncated read makes a
+review trace miss the tail headings, and — worst case — makes a translate pass regenerate the `es/`
+file **without its tail, destroying content**. So before working on any note file: check its line
+count (`wc -l`); if it is near or over 2000, read it in passes with `offset` until the real end. Your
+section-by-section trace must cover every heading in the file — the orchestrator checks it against
+the actual headings, so a truncated read fails the trace gate; this rule is how you pass it on the
+first dispatch.
+
 ## Living document rules
 
 Notes are not written once and forgotten. After each concept is learned and the code is written in
