@@ -116,7 +116,12 @@ or untested §8 rule = High; leftover `console.log` = High; polish = Low). If a 
 "clean" for it in one line.
 
 **2. Trace** — list every file you read in this slice with a one-line note (reviewed / clean / N
-findings), as proof you covered the whole slice, not just the first file. **Do not edit any file.**
+findings), **plus proof you read it to the end**: its line count and a short quote of its **last real
+line** (the closing method, selector, rule, or export — not a blank line or `}`). Format each row as
+`file (N lines, ends: «…last line…») — note`. This is the same principle as the config-line rule above,
+applied to coverage: a trace row you can only write after reaching the bottom of the file cannot be
+faked from the first screen. A row without the line count + closing quote does not count as read — the
+orchestrator treats that slice as not covered. **Do not edit any file.**
 
 **Keep the report bounded** — your output lands in the orchestrator's context alongside every other
 slice's. No code excerpts (a `File.java:42` reference in the Finding cell is enough), one row per
