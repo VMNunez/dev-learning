@@ -1,5 +1,5 @@
 ---
-description: Rebuild PROGRESS.md from reality — one cold subagent per project, then merge (runs inside Claude Code)
+description: Reconcile PROGRESS.md with what each PLANNING.md declares (not the code — it never reads code) — one cold subagent per project, then merge (runs inside Claude Code)
 argument-hint: (no args — global by design)
 ---
 

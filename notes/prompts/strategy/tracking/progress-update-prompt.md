@@ -1,6 +1,8 @@
 # Progress Update Prompt — orchestrator
 
-Run this **inside Claude Code**. It rebuilds `PROGRESS.md` from reality, hands-off: an orchestrator
+Run this **inside Claude Code**. It reconciles `PROGRESS.md` with what each project's `PLANNING.md`
+**declares** — never with the code; the extraction standard forbids subagents from reading it, so a
+fixed bug or refactor is invisible here until the plan records it. Hands-off: an orchestrator
 that **fans out one cold subagent per project** to extract that project's concepts, plus one subagent
 for SQL, then **merges everything itself** and commits. No project's PLANNING.md ever loads into the
 orchestrator's own context — it stays light and only holds PROGRESS.md plus the small simulations
