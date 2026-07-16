@@ -118,16 +118,21 @@ Wait for every project subagent to finish and collect its report. Keep the repor
 
 Launch one `general-purpose` subagent, `run_in_background: false`:
 
-> Audit the SQL exercises **as they exist on `main`** (study materials live on `main`; the working
-> tree is usually behind, so do NOT count working-tree files — count the `main` version).
-> **Count without loading file contents into your context** — two commands are enough:
-> - List the SQL files on main: `git ls-tree -r --name-only main -- practice/sql/ sql/`
->   (double pathspec: covers the current home `practice/sql/` and the legacy `sql/` until the one-time
->   migration on `main` is done). **Guard: if it returns 0 files, ABORT the SQL step and report it —
->   never rewrite the tracker table with zeros.**
-> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+:|#[0-9]+ \|)" main -- practice/sql/ sql/`
->   (output is `main:<path>:<count>`). Only `git show` a file if its count looks wrong (e.g. zero
->   for a file that clearly holds exercises) — and then only to recheck the headers, not to study it.
+> Audit the SQL exercises **as they exist in committed history** — count both the active branch
+> (`HEAD`) and `main`, and take the **higher count per file**. Since 2026-07-14 study materials
+> commit on the active branch, so new SQL lands on `HEAD`; but SQL committed under the previous rule
+> went straight to `main` and may not be merged into the current branch yet. Counting a single ref
+> silently drops whichever topics live only on the other one. Do NOT count uncommitted working-tree
+> files.
+> **Count without loading file contents into your context** — two commands per ref:
+> - List the SQL files: `git ls-tree -r --name-only HEAD -- practice/sql/ sql/`, then the same with
+>   `main` (double pathspec: covers the current home `practice/sql/` and the legacy `sql/` until the
+>   one-time migration is done). **Guard: if BOTH refs return 0 files, ABORT the SQL step and report
+>   it — never rewrite the tracker table with zeros.**
+> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+:|#[0-9]+ \|)" HEAD -- practice/sql/ sql/`,
+>   then the same with `main` (output is `<ref>:<path>:<count>`). Only `git show` a file if its count
+>   looks wrong (e.g. zero for a file that clearly holds exercises) — and then only to recheck the
+>   headers, not to study it.
 >
 > Two file shapes exist: a flat file (`practice/sql/01-basics.sql`) or a subfolder (`practice/sql/02-joins/exercises.sql`).
 > The regex covers the two header patterns in use:
@@ -136,7 +141,7 @@ Launch one `general-purpose` subagent, `run_in_background: false`:
 >
 > Return **only** one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
 > Folder column (`practice/sql/01-basics.sql` for flat, `practice/sql/02-joins/` for subfolders; if a file
-> still lives at the legacy `sql/...` on main, report it under its `practice/sql/...` home). Only list topics
+> still lives at the legacy `sql/...` on either ref, report it under its `practice/sql/...` home). Only list topics
 > found by the commands above. Do not estimate; do not assign a status — the orchestrator does that.
 
 Wait and collect.
@@ -292,7 +297,8 @@ step's heading in PLANNING.md — that makes the next run self-sufficient.
 
 ## Step F — Commit
 
-PROGRESS.md is tracked and lives on `main` per CLAUDE.md. Per the commit-hygiene rule, run
+PROGRESS.md follows the active branch per CLAUDE.md (2026-07-14 — `main` only receives merges via
+PR). Per the commit-hygiene rule, run
 `git status` right before the add and again right before the commit — confirm nothing but
 PROGRESS.md gets staged (`git restore --staged` anything else). Then:
 
