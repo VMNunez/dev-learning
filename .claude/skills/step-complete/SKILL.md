@@ -33,9 +33,14 @@ hints) — never skip it.
 ## 2 — PROGRESS.md: extract the step's concepts
 
 Read the completed step's concept source per its format (project 07: the `**Concept learned:**`
-line; projects 08+: the "New concepts introduced" list routed by its Topic column). Add each
-concept to the correct technology section — **one specific thing per line**, key syntax in
-backticks, optional short dash-clause, never multi-line. Also update the project's summary line /
+line; projects 08+: the "New concepts introduced" list routed by its Topic column). **Route each
+concept with the Step 4 mapping table in
+`notes/prompts/strategy/tracking/_concept-extraction-standard.md`** — read it before writing; like
+the README standard below, it only auto-loads inside `progress-update`, so an inline edit without
+it silently mis-routes (the trap it exists for: pure Java constructs like `Optional<T>` or
+`BigDecimal.compareTo()` land in Spring Boot just because they appeared in a Spring project —
+`Optional<T>` is Java; `@Autowired` is Spring). Write each concept as **one specific thing per
+line**, key syntax in backticks, optional short dash-clause, never multi-line. Also update the project's summary line /
 sub-headings to the new step status (e.g. "Steps 1–5 done, Step 6 in progress"). PROGRESS.md
 follows the active branch (CLAUDE.md, 2026-07-14 — `main` only receives merges via PR) — commit it
 from the repo root.
