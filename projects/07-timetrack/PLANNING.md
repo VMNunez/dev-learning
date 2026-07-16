@@ -975,7 +975,7 @@ one branch per coherent feature, never one per step.
 | `feat/angular-frontend` | Step 7 — Angular frontend | After `feat/reports` merges | When Step 7's done condition passes |
 | `feat/backend-tests` | Step 8 — Backend tests | After `feat/angular-frontend` merges | When Step 8's done condition passes |
 | `feat/angular-tests` | Step 9 — Angular tests | After `feat/backend-tests` merges | When Step 9's done condition passes |
-| — (no branch) | Step 10 — SQL complement | — | Commits go straight to `main`, per CLAUDE.md's rule that `sql/` and study materials skip the feature-branch workflow |
+| — (no dedicated branch) | Step 10 — SQL complement | — | Commits go on whatever branch is active at the time, per CLAUDE.md's rule (2026-07-14) that study materials follow the active branch — `main` only receives merges via PR |
 | `feat/docker` | Step 11 — Docker | After `feat/angular-tests` merges | When Step 11's done condition passes — the last feature branch before the project branch closes |
 
 The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
