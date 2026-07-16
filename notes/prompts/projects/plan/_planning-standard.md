@@ -68,8 +68,18 @@ it adds that the previous project does not.
 ### 3. New concepts
 A table of every concept learned for the **first time** in this project.
 Columns: **Concept · Topic · Why this project teaches it**.
+
+The **Topic** column is a controlled vocabulary, not free text — downstream, `progress-update`'s
+extraction standard trusts it *over its own heuristics* to route each concept into PROGRESS.md, so a
+loose value ("Backend", "Java/Spring") mis-files the concept silently. Valid values are exactly the
+PROGRESS.md section names: **Angular · CSS · TypeScript · Java · Spring Boot · Architecture ·
+Security · Deployment · General · SQL**. One value per row. The line that trips people up: a concept
+is **Java** if it exists in Java regardless of Spring (`Optional<T>`, `BigDecimal.compareTo()`,
+wrapper types, `try/catch`); a Spring annotation or Spring-only contract is **Spring Boot** even
+though it lives in a `.java` file (`Optional<T>` is Java; `@Autowired` is Spring).
 - **Pass:** each concept is specific ("pagination with `Pageable`" = good; "Spring Boot" = too vague),
-  and every row has a reason in the third column. Only concepts not yet in PROGRESS.md.
+  every Topic is one of the valid section names above (Java vs Spring Boot split correctly), and
+  every row has a reason in the third column. Only concepts not yet in PROGRESS.md.
 
 ### 4. Review concepts
 A table of concepts from PROGRESS.md this project reinforces.

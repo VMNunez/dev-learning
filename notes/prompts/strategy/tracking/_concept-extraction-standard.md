@@ -98,7 +98,11 @@ Route every extracted concept to exactly one section using this mapping:
 > file is **not** pure Java — it goes to Spring Boot. `Optional<T>` is Java; `@Autowired` is Spring.
 
 > **Format C shortcut:** the Section 3 "Topic" column already names the section — trust it over the
-> heuristics above when they disagree.
+> heuristics above when they disagree, **but only if the value is a valid section name** (Angular ·
+> CSS · TypeScript · Java · Spring Boot · Architecture · Security · Deployment · General · SQL —
+> the controlled vocabulary `_planning-standard.md` §3 requires). If a Topic value is anything else
+> ("Backend", "Java/Spring", blank), fall back to the heuristics for that row and flag the invalid
+> value in your report so the orchestrator can surface it.
 
 ---
 
