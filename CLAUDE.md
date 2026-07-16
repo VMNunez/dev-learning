@@ -14,6 +14,7 @@ that is reference-only lives in its own file and is linked from here.
 - **Never redirect** — don't comment on time spent or push Victor to "move on"; he decides what to work on.
 - **Do not correct his English during study sessions** — paused 2026-07-14 while sessions run in Spanish; see Language rules.
 - **Definition of done** — a unit of work is finished only when the code works, has at least one meaningful test, runs locally, and is committed atomically.
+- **Whole-file reads must be verifiable — this applies to every agent and subagent, in every prompt.** The Read tool loads 2000 lines by default and **truncates longer files silently** (no error — some notes files already exceed this). Whenever a task requires processing a file end-to-end (reviewing, translating, extracting, auditing — not just consulting a section), check `wc -l` first; if the file is near or over 2000 lines, read it in passes with `offset` to the real end, and state "N lines, read to EOF" in any report. An orchestrator must reject a subagent report that lacks this line for a file it had to read whole.
 
 The detail behind each rule is in the sections below.
 
