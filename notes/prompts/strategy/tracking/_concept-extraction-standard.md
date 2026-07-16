@@ -24,6 +24,15 @@ to — plus the project's confirmed step status.
 
 ---
 
+## Step 0 — Read the whole file, verifiably
+
+The Read tool loads **2000 lines by default and truncates longer files silently** — no error, no
+warning. A truncated PLANNING.md makes you report an incomplete step status and miss the last steps'
+concepts with full confidence. So, before anything else: check the file's line count (`wc -l`). If it
+is near or over 2000, read it in passes with `offset` until you reach the real end. Either way,
+**state in your report the total line count and that you read to EOF** — that line is the
+orchestrator's proof your extraction saw the whole plan.
+
 ## Step 1 — Identify the PLANNING.md format
 
 `PLANNING.md` files use three formats depending on when the project was created. Read the file and
@@ -110,9 +119,10 @@ Route every extracted concept to exactly one section using this mapping:
 
 Return, and nothing else:
 
-1. **Format detected:** A / B / C.
-2. **Confirmed step status:** the short string from Step 2.
-3. **Concept list** — one row per concept from completed steps:
+1. **Read verification:** the PLANNING.md's total line count and confirmation you read to EOF (Step 0).
+2. **Format detected:** A / B / C.
+3. **Confirmed step status:** the short string from Step 2.
+4. **Concept list** — one row per concept from completed steps:
 
    | Concept (key syntax/API in backticks) | Section | From step |
    |---------------------------------------|---------|-----------|
@@ -121,4 +131,4 @@ Return, and nothing else:
 Keep each concept to one line, key syntax in backticks — the same format PROGRESS.md uses. Do not add
 explanations longer than a short dash-clause. Do not decide whether a concept is "already present" —
 that is the orchestrator's merge step. Return no PLANNING.md excerpts and no reasoning trace — the
-three items above are the entire report.
+four items above are the entire report.

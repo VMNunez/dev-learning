@@ -40,6 +40,8 @@ Before starting, read:
   (the previous project's layers, guards, coordinator pattern, layered backend, JWT filter, etc.).
 - `notes/coverage.md` — the architecture section: which architectural concepts are still gaps.
 - `{PROJECT}/PLANNING.md` — the draft the author just wrote. §6, §3, §7, §10, §20 are your focus.
+  The Read tool truncates files over 2000 lines silently — check `wc -l` first and, if near or over
+  2000, read in passes with `offset` to the real end (§20 lives in the tail).
 
 ---
 

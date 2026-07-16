@@ -177,10 +177,11 @@ lands in a concern already reviewed, re-dispatch that one specialist to reconcil
 re-dispatch per concern per run**. If the reconciliation pass leaves new ripples, record them in the
 pipeline self-report instead of iterating further.
 
-**Specialist acceptance check:** a specialist's report is acceptable only if its trace has **one row
-per check its slice owns**. If rows are missing or the report is unusable, re-dispatch that specialist
-once, quoting what was missing; if it fails again, note the gap in the self-report and continue — never
-silently accept a partial trace.
+**Specialist acceptance check:** a specialist's report is acceptable only if it opens with the plan's
+line count + read-to-EOF confirmation (the reviewer prompt's truncation guard) **and** its trace has
+**one row per check its slice owns**. If either is missing or the report is unusable, re-dispatch that
+specialist once, quoting what was missing; if it fails again, note the gap in the self-report and
+continue — never silently accept a partial trace or a possibly truncated read.
 
 ## Finishing
 

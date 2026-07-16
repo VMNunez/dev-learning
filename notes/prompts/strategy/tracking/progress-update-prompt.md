@@ -108,9 +108,12 @@ git-index contention); in `MODE: active` there is just one. Each subagent's inst
 > «the summary heading + technology sub-heading lifted in Step 0»
 > ```
 > Read ONLY the standard and this project's `PLANNING.md` — not the project's code, README, or any
-> other file. Do not read or write PROGRESS.md; do not commit. Report back **only** the three items
-> the standard specifies — the format detected, the confirmed step status, and the concept table
-> (Concept · Section · From step) — with no PLANNING.md excerpts and no reasoning trace.
+> other file. Do not read or write PROGRESS.md; do not commit. Report back **only** the four items
+> the standard specifies — the read verification (line count + read-to-EOF), the format detected,
+> the confirmed step status, and the concept table (Concept · Section · From step) — with no
+> PLANNING.md excerpts and no reasoning trace. If the read verification is missing or the subagent
+> could not reach EOF, re-dispatch it once quoting Step 0 — never merge concepts from a possibly
+> truncated read.
 
 Wait for every project subagent to finish and collect its report. Keep the reports — Step D merges them.
 

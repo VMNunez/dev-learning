@@ -68,7 +68,13 @@ from the project number — do not ask.
 **A plan is authored whole (its sections cross-reference), but it is reviewed by specialists** — each
 subagent owns one concrete concern so it cannot skim a tail: it either verified every check in its
 slice or it did not. Read the whole plan for context, but **only audit and fix the sections, invariants,
-and checks your `{SCOPE}` owns**, listed here. Do not touch another concern's sections (mention a
+and checks your `{SCOPE}` owns**, listed here.
+
+**Read the plan verifiably first.** The Read tool loads 2000 lines by default and truncates longer
+files silently — and the tail sections (§22/§23) are exactly where some scopes live, so a truncated
+read breaks the "cannot skim" guarantee with no error and a plausible-looking trace. Check the plan's
+line count (`wc -l`); if it is near or over 2000, read in passes with `offset` to the real end. State
+the total line count and that you reached EOF as the first line of your report. Do not touch another concern's sections (mention a
 cross-concern ripple in your report so the orchestrator routes it).
 
 | `{SCOPE}` | Owns (sections · invariants · design checks) | Reads from the standard |
