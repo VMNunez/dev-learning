@@ -11,12 +11,12 @@ Update this table at the start of every session. It is the authoritative pointer
 
 | | |
 |---|---|
-| **Current step** | Step 7 — Angular frontend |
-| **Current branch** | `feat/angular-frontend` |
-| **Done condition** | Browser: login at localhost:4200 redirects to /dashboard; the entries table renders rows at /entries |
-| **Next gate** | G4 — frontend review (`review-audit`, `REVIEW_SCOPE = frontend`), when `feat/angular-frontend` merges |
+| **Current step** | Step 7a — Angular shell + auth |
+| **Current branch** | `feat/angular-shell-auth` |
+| **Done condition** | Browser: login at localhost:4200 redirects to /dashboard inside the shell; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login |
+| **Next gate** | G4 — frontend review (`review-audit`, `REVIEW_SCOPE = frontend`), when `feat/angular-manager-pages` (last frontend branch) merges |
 | **Phase** | Frontend (Phase 5) |
-| **Last updated** | 2026-07-14 |
+| **Last updated** | 2026-07-16 |
 
 ---
 
@@ -254,6 +254,22 @@ Test every endpoint in Postman as soon as it is created. Do not wait until the w
 ### Auth — public endpoints
 ```
 POST /api/auth/login       → returns JWT
+```
+
+**Token lifetime:** 24h (`app.jwt.expiration=86400000` in `application.properties`). When a token
+expires mid-session the API returns 401 — the Angular interceptor (Step 7a) catches it, clears the
+stored session, and redirects to `/login`. Expiry is handled once in the interceptor, never per page.
+
+### Error contract — what every non-2xx response looks like
+
+All errors return the same `ErrorResponse` body from `GlobalExceptionHandler`:
+```json
+{ "timestamp": "...", "status": 400, "error": "Bad Request", "message": "Validation failed" }
+```
+Validation errors (400 from `@Valid`, via `MethodArgumentNotValidException`) additionally carry a
+field-level map the reactive forms consume to show a message under each input (Step 7b):
+```json
+{ "status": 400, "message": "Validation failed", "fieldErrors": { "hours": "must be at most 24" } }
 ```
 
 ### Users (Manager only)
@@ -776,14 +792,33 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - **Done condition:** `Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours }`
 - **Concept learned:** interface projections (`ProjectHoursReportResponse`, `EmployeeHoursReportResponse`) let Spring Data build a proxy per result row directly from `SELECT ... AS alias` — no class, no manual mapping — as long as each getter's name matches an alias exactly (Java Bean convention: strip `get`, lowercase first letter). `YearMonth` is received in the controller but converted to a `LocalDate` start/end range in the service (business logic), not the controller. Repositories are organized by **entity** (`TimeEntryRepository` owns both report queries, since their `FROM` is `TimeEntry`), a different axis than controllers/services, which are organized by **feature** (`ReportController`/`ReportService`). Found and fixed two real bugs surfaced by the Postman test pass: `MissingServletRequestParameterException` and `MethodArgumentTypeMismatchException` aren't `RuntimeException`s / weren't specifically handled, so a missing or malformed `?month=` fell through to `500` — worse, the missing-param case revealed a genuine Spring Security gotcha where Spring's internal forward to `/error` gets rejected as unauthenticated (`401`) because `JwtFilter` skips error dispatches by default and `/error` was never excluded from `.anyRequest().authenticated()`.
 
-### Step 7 — Angular frontend
-- Angular project with Angular Material and the indigo theme
-- Auth service + JWT in localStorage; HTTP interceptor; auth guard + manager guard
-- Shared components: `status-badge`, `confirm-dialog`, `reject-dialog`
-- All pages: Login, Dashboard, Entries, Projects, Approvals, Team, Reports
+### Step 7 — Angular frontend (split into 7a / 7b / 7c)
+
+One step per coherent slice, days not weeks — same granularity the backend had. Each sub-step has its
+own branch (§22) and its own done condition covering its **full** scope.
+
+#### Step 7a — Shell + auth
+- Angular project with Angular Material and the indigo theme; `environment.ts` with the API base URL
+- Auth service + JWT in localStorage; auth guard + manager guard
+- HTTP interceptor: attaches the token **and handles 401 mid-session** (clear session → redirect to `/login`) — see the token-lifetime note in the REST API section
+- App shell: `MatSidenav` + toolbar, sidebar links filtered by role; Login page
 - **New concepts:** Angular consuming a real REST API end to end
-- **Review concepts:** route guards, HTTP interceptor, role-aware UI, coordinator pattern, reactive forms, MatTable/MatDialog, `forkJoin`, auth persistence
-- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard; the entries table renders rows at /entries`
+- **Review concepts:** route guards, HTTP interceptor, auth persistence, `MatSidenav` shell
+- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
+
+#### Step 7b — Employee flow: dashboard + entries
+- Employee dashboard (stat cards from one `GET /api/entries?month=` call) + recent entries
+- Entries page: filter bar, table, FAB; entry-dialog (create/edit); inline submit quick action
+- Shared components: `status-badge`, `confirm-dialog`
+- Reactive forms consume the `fieldErrors` map from the error contract — message under each input on 400
+- **Review concepts:** coordinator pattern, reactive forms, MatTable/MatDialog, signals + `computed()`
+- **Done condition:** `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; an invalid form submit shows the backend field error under the input`
+
+#### Step 7c — Manager pages
+- Manager dashboard (`forkJoin` stat cards) + pending approvals list
+- Projects page (CRUD); Approvals page + shared `reject-dialog`; Team page + `user-dialog`; Reports page
+- **Review concepts:** `forkJoin`, role-aware UI, MatTable, `MatBadge`
+- **Done condition:** `Browser: as MANAGER, approve one entry and reject another (with note) at /approvals; create a project at /projects and a user at /team; /reports renders both hours tables for a selected month`
 
 ### Step 8 — Backend tests
 - JUnit 5 + Mockito — one test per service method
@@ -810,6 +845,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 ### Step 11 — Docker
 - `Dockerfile` for the Spring Boot app
 - `docker-compose.yml` with Spring Boot + PostgreSQL services
+- Config per environment: `JWT_SECRET` and DB credentials as env vars in the compose file (never in the image); a `docker` Spring profile (`application-docker.properties`) overrides the DB host to the compose service name instead of `localhost`
 - `docker-compose up` runs everything locally
 - **New concepts:** Docker + docker-compose, containerisation
 - **Review concepts:** none
@@ -923,7 +959,7 @@ IntelliJ + local PostgreSQL, without Docker.
 
 ## frontend/README.md — planned sections
 
-Write when the frontend is complete (after Step 7).
+Write when the frontend is complete (after Step 7c).
 
 **1. Folder structure** — one-line explanation per folder, why it exists.
 
@@ -973,6 +1009,8 @@ Format: `[option chosen] over [option rejected] — [reason]`
 - JWT over session-based auth — stateless API requires no server memory per user
 - Soft delete over hard delete — deleting a user would orphan all their TimeEntries
 - docker-compose over separate manual setup — one command runs the full project locally
+- Return-all over `Pageable` pagination on GET /api/entries — a team's monthly entries are dozens of rows, not thousands; the month filter already bounds the result. Pagination is the first change if teams grow
+- `ddl-auto=update` over Flyway migrations — single developer, schema still evolving with the plan; versioned migrations become necessary the moment a second environment or teammate exists
 
 ---
 
@@ -997,8 +1035,10 @@ one branch per coherent feature, never one per step.
 | `feat/spring-foundation` | Steps 1–4 — Spring Boot setup, Project CRUD, JWT auth, role-based authorization | Step 1, right after `projects/07-timetrack` was created from `main` | Now — Step 4's done condition passed. PR into `projects/07-timetrack`. |
 | `feat/timeentry-workflow` | Step 5 — TimeEntry CRUD + workflow | After `feat/spring-foundation` merges | When Step 5's done condition passes |
 | `feat/reports` | Step 6 — Reports | After `feat/timeentry-workflow` merges | When Step 6's done condition passes |
-| `feat/angular-frontend` | Step 7 — Angular frontend | After `feat/reports` merges | When Step 7's done condition passes |
-| `feat/backend-tests` | Step 8 — Backend tests | After `feat/angular-frontend` merges | When Step 8's done condition passes |
+| `feat/angular-shell-auth` | Step 7a — Shell + auth | After `feat/reports` merges | When Step 7a's done condition passes |
+| `feat/angular-entries` | Step 7b — Employee flow: dashboard + entries | After `feat/angular-shell-auth` merges | When Step 7b's done condition passes |
+| `feat/angular-manager-pages` | Step 7c — Manager pages | After `feat/angular-entries` merges | When Step 7c's done condition passes — the last frontend branch, triggers G4 |
+| `feat/backend-tests` | Step 8 — Backend tests | After `feat/angular-manager-pages` merges | When Step 8's done condition passes |
 | `feat/angular-tests` | Step 9 — Angular tests | After `feat/backend-tests` merges | When Step 9's done condition passes |
 | — (no dedicated branch) | Step 10 — SQL complement | — | Commits go on whatever branch is active at the time, per CLAUDE.md's rule (2026-07-14) that study materials follow the active branch — `main` only receives merges via PR |
 | `feat/docker` | Step 11 — Docker | After `feat/angular-tests` merges | When Step 11's done condition passes — the last feature branch before the project branch closes |
@@ -1023,7 +1063,7 @@ become accurate — not remembered at the very end. The project is not closed un
 | **G1 — Step ritual** | Every learning-plan step's done condition passes | *(no prompt — the `step-complete` skill fires in-session)* | Keeps PLANNING ✅ / PROGRESS.md / README true as you go, so the later gates read accurate files. |
 | **G2 — Plan drift** | Only if the learning plan / branch strategy change mid-build (scope cut, steps reordered) | `plan-audit` · `MODE = review` · `PROJECT = projects/07-timetrack` | Every later gate checks the code against PLANNING.md. A stale plan silently invalidates all of them. Skip if the plan never moved. |
 | **G3 — Backend review** | `feat/reports` merges — backend complete (Steps 1–6), **before Step 7 (Angular frontend) starts** | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = backend` | Correctness + security on the API **before** the frontend is built against it. Fix the High tasks it writes to `PROJECT-BACKLOG.md` before moving on. |
-| **G4 — Frontend review** | `feat/angular-frontend` merges — Step 7 complete | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = frontend` | The backend is **not** re-reviewed (its tier is already dated in the backlog), so this costs a fraction of a `full` run. |
+| **G4 — Frontend review** | `feat/angular-manager-pages` merges — Steps 7a–7c complete | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = frontend` | The backend is **not** re-reviewed (its tier is already dated in the backlog), so this costs a fraction of a `full` run. |
 | **G5 — READMEs** | Every **High** task from G3/G4 is fixed and committed | `readme-audit` · `PROJECT_PATH = projects/07-timetrack` | Hard prerequisite of G7: `portfolio-audit` reads the READMEs, so running it first would judge a document that is about to change. |
 | **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | G7 and `cv-prompt` both read `PROGRESS.md`. If it is stale, the portfolio verdict and the CV bullet are built on a wrong picture of what you learned. |
 | **G7 — Portfolio go/no-go** | After G5 **and** G6 | `portfolio-audit` · `PROJECT_PATH = projects/07-timetrack` | The closing gate. Reads `PROJECT-BACKLOG.md` — an unfixed High/Medium from G3/G4 blocks the ✅ Ready verdict. Produces the CV bullet + the project question bank. |
