@@ -1,10 +1,10 @@
 # Pipeline self-report — review-audit
 
-**Date:** 2026-07-14 · **Project:** projects/04-meal-finder · **Scope:** full (Angular-only → frontend tier)
+**Date:** 2026-07-16 · **Project:** projects/05-task-manager · **Scope:** full (Angular-only → frontend tier)
 
-- **Slices mapped** — 4 frontend slices (`search-page`, `meal-detail-page`, `favourites-page`, `frontend-infra`) + the Step 3b consistency pass + learning objectives. The map held: no slice was too big or too small, and the shared `MealService` sat naturally in `frontend-infra` (the favourites-page reviewer read it for context and declared it in its trace — correct behaviour, not a leak).
-- **Report discipline** — clean. All six subagents returned a bounded table + trace with no code excerpts; nothing had to be discarded.
+- **Slices mapped** — 2 frontend slices (`task-page`, covering the coordinator + 4 child components + `task.service` + model; and `frontend-infra`) + the Step 3b consistency pass + learning objectives. Single-feature app: the map held, no slice too big or too small.
+- **Report discipline** — clean. All four subagents returned a bounded table + trace with no code excerpts; nothing had to be discarded.
 - **Trace verification** — every trace covered its slice's full file list on the first dispatch. No re-dispatches, no slice left "not reviewed".
-- **Dedup** — three cross-slice duplicates merged (the missing `FavouriteService` was raised by both `favourites-page` and `frontend-infra`; the raw-hex tokens by three slices; the icon-button `aria-label` gap by three). Matching them was easy — near-identical wording, no tagging improvement needed.
-- **The orchestrator's arbitration earned its keep.** The learning-objectives pass marked `computed()` for nav counts ✅ while `frontend-infra` raised a High for a missing nav; reading `app.html` myself showed both were half-right (the `computed()` exists, but only inside `search-page`, and `app.html` is a bare `<router-outlet />`) → one correctly-worded Medium. I also verified the `MealResponse.meals: Meal[]` finding against the real subscriber before grading it High, since a wrong High on the app's main path is the costliest thing to ship into a backlog.
-- **Verdict** — pipeline clean. The Step 0 exclusion lines added after the previous runs (tests out of scope for 01–06; no §14 design section, degrade to hex-vs-token) worked exactly as designed: zero false "no tests" Highs and zero "missing design doc" findings, and no reviewer had to derive the degradation itself. The change the 03 run recommended is now paying off.
+- **Dedup** — one cross-slice duplicate merged: the blue-vs-violet palette mismatch was raised by both the `frontend-infra` flow reviewer (Medium) and the learning-objectives pass (⚠️ Shallow). Trivial to match (same file, same fact); no tagging improvement needed.
+- **Anything else** — the run happened on branch `fix/backend-backlog` (a project-07 feature branch), so the 05 backlog landed there rather than on a 05-specific branch. Harmless, but noted for whoever merges. No false Highs: the Step 0 exclusion lines (tests out of scope for 01–06; no §14, degrade to hex-vs-token) worked as designed.
+- **Verdict** — pipeline clean.
