@@ -204,7 +204,11 @@ Planned using `notes/prompts/projects/plan/plan-audit.md` (`MODE = new`) — run
 | PostgreSQL specifics (::, ILIKE, DISTINCT ON, DATE_TRUNC, STRING_AGG) | 🔜      |
 | Indexes, EXPLAIN, basic query performance                              | 🔜      |
 
-→ When all topics are solid: switch to Stage 2.
+→ **Switch to Stage 2 when the test-relevant topics are solid** — JOINs · GROUP BY/aggregates ·
+subqueries/CTEs · NULL handling · DML basics. Those are what consultancy tests actually ask; window
+functions, indexes, and PostgreSQL specifics are not worth delaying simulations for. Once in Stage 2,
+interleave the remaining topics (one SQL day per week) until the table is complete — the full list
+still gates LeetCode (Stage 3), unchanged.
 
 **Stage 2 — Technical test simulation:**
 Simulate real consultancy tests: write a Spring Boot endpoint from scratch, build an Angular form with validation, write a SQL query against an unfamiliar schema — all under time pressure. This is what the actual tests look like.
@@ -267,14 +271,23 @@ Replaces interview prep when all main topics are solid.
 | August 1  | Equal priority   | Study + applications every weekday                                                                                                                                                                                    |
 | September | Full target mode | Market opens — companies back with budget and junior positions                                                                                                                                                        |
 
-**What "ready" means by September:**
+**What "ready" means by September — minimum vs stretch:**
+
+The minimum is what the hiring process actually evaluates (CV screen → technical test → technical
+interview). Being "not ready" because a stretch item is missing is a false alarm — apply anyway.
+
+*Minimum (blocks applying seriously — all four required):*
 
 - Project 07 live, documented, explainable line by line
-- Project 08 live or well advanced
 - At least 15 simulations completed (5 Spring Boot, 5 Angular, 5 SQL) — tracker at `practice/simulations/TRACKER.md`
-- All interview prep files solid — every question answered with a project example
-- CV with specific results: _built X that does Y_
-- LinkedIn updated with project summaries and the internship bullet
+- Interview prep (es/) solid for angular, spring-boot, java, architecture, security — every question answered with a project example
+- CV with specific results (_built X that does Y_) + LinkedIn updated with project summaries and the internship bullet
+
+*Stretch (raises the ceiling, never blocks applying):*
+
+- Project 08 live or well advanced — only if the minimum is on track (see Urgency order, item 6)
+- Remaining interview prep topics (typescript, css, sql, javascript, git)
+- LeetCode Easy (behind its five gates, unchanged)
 
 **Why September and not August:** Spanish consultancies approve headcount after summer. The positions open in September — not in August when the decision-makers are on holiday.
 
