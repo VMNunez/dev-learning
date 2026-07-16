@@ -202,7 +202,7 @@ decision ("I chose…", "I used…", not "it is used").
 
 ## Step 5 — Update the tracker
 
-Update two files:
+Update three files:
 
 **practice/simulations/TRACKER.md** — find the row for {SIMULATION_FILE} and update:
 - **Status:** ✅ Pass / ⚠️ Borderline / ❌ Fail (from Step 2 verdict)
@@ -215,10 +215,38 @@ Update two files:
 Leave **Self-assessment** untouched in both files — Victor fills that himself before running
 this prompt.
 
+**PROGRESS.md** — refresh the `## Simulations` section. Once the TRACKER.md row above is updated,
+recount from TRACKER.md itself (it is small and already open) and rewrite the four lines:
+
+```
+## Simulations
+
+- Angular: X completed (X Pass, X Borderline, X Fail)
+- Spring Boot: X completed (X Pass, X Borderline, X Fail)
+- SQL: X completed (X Pass, X Borderline, X Fail)
+- Total: X / 15 minimum target
+```
+
+Three counting rules, each easy to get silently wrong:
+- **Count the `Status` column, never `Self-assessment`.** The two columns use different scales —
+  Status is Pass/Borderline/Fail, Self-assessment is Solid/Good/Weak/Failed. Counting the wrong one
+  yields plausible numbers and no error.
+- **`X completed` = Pass + Borderline only.** A ❌ Fail appears in the breakdown but does not count
+  as completed. `Total` is the sum of the three `completed` values, against the 15 target.
+- **Rows still ⏳ Pending count as nothing** — skip them.
+
+This section has two writers: this prompt (primary — it holds the Step 2 verdict) and
+`progress-update-prompt.md` (safety net — its Steps C and D4 recount the same section from the same
+file). Their output must be **identical**; if the format or the three rules above ever drift apart,
+the two will overwrite each other on every run. Change them together or not at all.
+
+PROGRESS.md follows the active branch (CLAUDE.md 2026-07-14 — `main` only receives merges via PR),
+so it commits alongside the other two.
+
 Then show the commit message:
 
 ```
-git add {SIMULATION_FILE} practice/simulations/TRACKER.md
+git add {SIMULATION_FILE} practice/simulations/TRACKER.md PROGRESS.md
 ```
 If (and only if) questions were added, also stage the two exact Q&A files:
 ```

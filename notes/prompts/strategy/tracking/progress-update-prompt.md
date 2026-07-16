@@ -153,7 +153,10 @@ Wait and collect.
 No subagent here — `practice/simulations/TRACKER.md` is one small file, and a subagent round-trip would cost
 more context than reading it. Read it yourself and note: total simulations completed (✅ Pass or
 ⚠️ Borderline both count as completed), split by type — Angular / Spring Boot / SQL — each as
-`X Pass, X Borderline, X Fail`. If TRACKER.md does not exist or shows 0, record all zeros.
+`X Pass, X Borderline, X Fail`. Count the **`Status`** column, never `Self-assessment` — the two use
+different scales (Status is Pass/Borderline/Fail; Self-assessment is Solid/Good/Weak/Failed), so the
+wrong column yields plausible numbers and no error. Rows still ⏳ Pending count as nothing. If
+TRACKER.md does not exist or shows 0, record all zeros.
 
 ---
 
@@ -216,6 +219,12 @@ The SQL section has two parts — keep both:
   table (one of the few cases where reformatting is allowed).
 
 ### D4 — Simulations section (from the Step C counts)
+
+You are the **safety net** here, not the primary writer: `notes/prompts/practice/simulation-review-prompt.md`
+(Step 5) already refreshes this section when a simulation is reviewed, because that is where the
+Pass/Borderline/Fail verdict is decided. Your job is to catch what it missed. Both must produce
+**identical** output — if this format or Step C's counting rules ever drift from that prompt's, the
+two will overwrite each other on every run. Change them together or not at all.
 
 Update the counts if the section exists; otherwise add:
 
