@@ -97,7 +97,10 @@ These few lines are all a project subagent needs for the Format B step-status fa
 
 ## Step A — Fan out one subagent per project
 
-For **each** project in scope, launch a `general-purpose` subagent, `run_in_background: false`. In
+For **each** project in scope, launch a `general-purpose` subagent, `run_in_background: false`,
+**`model: sonnet`** — extraction is pattern-matching against an explicit standard (find the concept
+lines, route with the Step 4 table), not judgment; the report contract + the orchestrator's
+re-dispatch rule catch a bad report, so the top model buys nothing here. In
 `MODE: all`, launch them all in a single message so they run in parallel (they only read — no
 git-index contention); in `MODE: active` there is just one. Each subagent's instruction:
 
@@ -121,7 +124,9 @@ Wait for every project subagent to finish and collect its report. Keep the repor
 
 ## Step B — Subagent: audit SQL exercises
 
-Launch one `general-purpose` subagent, `run_in_background: false`:
+Launch one `general-purpose` subagent, `run_in_background: false`, **`model: haiku`** — it runs two
+git commands and formats their output; no judgment involved, and the zero-file guard already covers
+the one failure mode:
 
 > Audit the SQL exercises **as they exist in committed history** — count both the active branch
 > (`HEAD`) and `main`, and take the **higher count per file**. Since 2026-07-14 study materials
