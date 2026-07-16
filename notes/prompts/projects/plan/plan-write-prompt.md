@@ -51,7 +51,10 @@ Read these in order. They are the inputs to every decision this prompt makes.
    of truth for project history — do not infer it from CLAUDE.md or ROADMAP.md. Read the full Angular,
    Spring Boot, and SQL sections.
 4. `notes/coverage.md` — the target: every concept Victor must know before applying. Every item not in
-   PROGRESS.md is a gap.
+   PROGRESS.md is a gap. **This is the largest file this pipeline reads (1600+ lines and growing) and
+   the gap analysis needs all of it** — the Read tool truncates at 2000 lines silently, so check
+   `wc -l` first and, if near or over 2000, read in passes with `offset` to the real end; a truncated
+   read silently drops the later topics from the gap analysis.
 5. `ROADMAP.md` — the career plan: phase table, candidate project ideas for the next project, and the
    "What 'ready' means" gate list.
 6. The last completed project's `PLANNING.md` (check PROGRESS.md for the number, then read
