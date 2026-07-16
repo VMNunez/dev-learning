@@ -45,9 +45,9 @@ what to improve once the step is done · `PROGRESS.md` records what is already l
 against the active project's plan — never invent random tasks.
 
 **Active project (July 2026):** `projects/07-timetrack` — Spring Boot + Angular + PostgreSQL +
-Docker + JWT + tests. Branch: `feat/timeentry-workflow` (or the current feature branch).
-Steps 1–4 done, Step 5 (TimeEntry) in progress — **PLANNING.md Section 0 is authoritative for the
-live step; defer to it.** Update this line when the active project changes.
+Docker + JWT + tests. Branch: `feat/angular-shell-auth` (or the current feature branch).
+Steps 1–6 done (backend complete), Step 7a (Angular shell + auth) next — **PLANNING.md Section 0 is
+authoritative for the live step; defer to it.** Update this line when the active project changes.
 
 Each project's `PLANNING.md` is the single source of truth for what that project builds: app
 concept, tech stack, data model, key patterns, folder structure, and the step-by-step plan.
