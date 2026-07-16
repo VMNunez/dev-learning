@@ -216,6 +216,14 @@ Report the commit made and each specialist's verdict/trace.
 
 ## Hard rules
 
+- **Model tier: every subagent in this flow launches with the top model available** (pass
+  `model: opus` — or the session's higher tier if one exists — on each Agent call; never haiku, and
+  never silently inherit a cheap session model). This is deliberate, not an oversight to optimize:
+  the author designs what Victor will learn for a month, the advisor and specialists rewrite plan
+  prose — quality here is guaranteed by judgment, not by structure, so it is the wrong place to save
+  tokens (contrast `progress-update`, whose mechanical subagents are tiered down explicitly). Revisit
+  only with a real run's self-report as evidence, and per-scope, not wholesale.
+
 - **Auto-commit is authorized for this flow — always** (Victor retired the `DRY_RUN` condition
   2026-07-16). His global rule is "never auto-commit"; he lifted it for the audit orchestrators, and
   the authorship boundary in CLAUDE.md holds: PLANNING.md / ROADMAP.md / PROGRESS.md are system
