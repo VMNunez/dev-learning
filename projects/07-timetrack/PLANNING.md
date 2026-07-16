@@ -12,7 +12,9 @@ Update this table at the start of every session. It is the authoritative pointer
 | | |
 |---|---|
 | **Current step** | Step 7 — Angular frontend |
+| **Current branch** | `feat/angular-frontend` |
 | **Done condition** | Browser: login at localhost:4200 redirects to /dashboard; the entries table renders rows at /entries |
+| **Next gate** | G4 — frontend review (`review-audit`, `REVIEW_SCOPE = frontend`), when `feat/angular-frontend` merges |
 | **Phase** | Frontend (Phase 5) |
 | **Last updated** | 2026-07-14 |
 
@@ -39,17 +41,17 @@ Concepts this project teaches for the first time. (Steps 1–3 are now done and 
 | DTO request/response boundary | Spring Boot | Entities never leave the service layer |
 | Spring Security + JWT stateless auth | Security | Standard auth in every Spring Boot job |
 | `@PreAuthorize("hasRole(...)")` role checks | Security | Method-level authorization after the JWT filter |
-| `@ManyToOne` / `@OneToMany` relationships | Spring Boot / JPA | TimeEntry → User and → Project foreign keys |
+| `@ManyToOne` / `@OneToMany` relationships | Spring Boot | TimeEntry → User and → Project foreign keys |
 | State machine workflow (DRAFT→SUBMITTED→APPROVED/REJECTED) | Architecture | Most valuable pattern in a junior portfolio |
-| PATCH for state transitions | REST | Signals that only `status` changes, not the whole resource |
+| PATCH for state transitions | Spring Boot | Signals that only `status` changes, not the whole resource |
 | Query filters with `@RequestParam` | Spring Boot | `?month=`, `?status=`, `?projectId=` on GET /api/entries |
-| `Specification<T>` + `JpaSpecificationExecutor` (Criteria API) | Spring Boot / JPA | Dynamic optional filters on GET /api/entries — the JPQL `IS NULL OR` pattern hit a real PostgreSQL bug (`42P18`, can't infer parameter type), Specifications build predicates only for filters actually present |
-| JPQL aggregation queries | Spring Boot / SQL | Reports — hours grouped by project and by employee |
+| `Specification<T>` + `JpaSpecificationExecutor` (Criteria API) | Spring Boot | Dynamic optional filters on GET /api/entries — the JPQL `IS NULL OR` pattern hit a real PostgreSQL bug (`42P18`, can't infer parameter type), Specifications build predicates only for filters actually present |
+| JPQL aggregation queries | Spring Boot | Reports — hours grouped by project and by employee |
 | `@RestControllerAdvice` GlobalExceptionHandler | Spring Boot | Consistent JSON error bodies |
 | `data.sql` startup seeding | Spring Boot | First manager account with no register endpoint |
-| JUnit 5 + Mockito unit tests | Testing | First backend tests |
+| JUnit 5 + Mockito unit tests | Spring Boot | First backend tests |
 | Angular consuming a real REST API end to end | Angular | First time the frontend talks to a backend you built |
-| Docker + docker-compose | General / DevOps | One command runs app + database locally |
+| Docker + docker-compose | Deployment | One command runs app + database locally |
 
 ---
 
@@ -129,6 +131,13 @@ Two completely separate applications that communicate via HTTP:
 
 The Spring Boot backend follows Layered Architecture internally (Controller → Service → Repository). The Angular frontend follows Component Architecture. Neither application knows how the other is built — they only share a JSON contract.
 
+**New architectural patterns vs the previous project (06 — Angular-only):**
+Project 06 was frontend-only (Component + Core/Feature/Shared architecture), so everything below is new here — this is the first project with a backend.
+- **Layered architecture (Controller → Service → Repository)** — the backbone of every Spring app; each layer has one responsibility so business rules never leak into HTTP handling or DB access.
+- **REST API + SPA separation** — backend and frontend are two independent apps sharing only a JSON contract, instead of one app rendering its own View. This is why it is not classic MVC.
+- **DTO boundary (Controller ↔ Service)** — a translation layer between persistence and HTTP so the API controls exactly what it exposes and entities never leak across the wire.
+- **State machine workflow (DRAFT → SUBMITTED → APPROVED / REJECTED)** — lives in the Service layer; transitions are enforced business rules, not free-form field edits.
+
 See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-layered-architecture.md) for the full layered architecture explanation.
 
 ---
@@ -196,8 +205,9 @@ APPROVED     REJECTED ─────────┘
 
 **Business rules:**
 - Employee can only see their own entries
-- Employee can only edit or delete DRAFT entries
-- Employee can only submit DRAFT entries
+- Employee can only edit or delete their **own** DRAFT entries (ownership resolved from the JWT via `SecurityContextHolder`, never from a client-supplied `userId`)
+- Employee can only submit their **own** DRAFT entries
+- A REJECTED entry can be re-opened by its owner for editing — this returns it to DRAFT so it can be corrected and resubmitted (the resubmit loop in the diagram above)
 - Manager can see all entries from all users
 - Manager can only approve or reject SUBMITTED entries
 - Cannot log entries for a future date
@@ -305,6 +315,7 @@ src/main/java/com/victor/timetrack/
 ├── service/
 │   ├── AuthService.java
 │   ├── UserService.java
+│   ├── UserDetailsServiceImpl.java   (Spring Security — loads a user by email for authentication)
 │   ├── ProjectService.java
 │   ├── TimeEntryService.java
 │   └── ReportService.java
@@ -321,15 +332,20 @@ src/main/java/com/victor/timetrack/
 ├── dto/
 │   ├── request/
 │   │   ├── LoginRequest.java
-│   │   ├── CreateUserRequest.java
-│   │   ├── UpdateUserRequest.java
-│   │   ├── CreateEntryRequest.java
-│   │   └── RejectEntryRequest.java
+│   │   ├── CreateProjectRequest.java
+│   │   ├── UpdateProjectRequest.java
+│   │   ├── CreateTimeEntryRequest.java
+│   │   ├── RejectRequest.java              (rejectionNote body for PATCH /reject)
+│   │   ├── CreateUserRequest.java          (planned — Team page user management)
+│   │   └── UpdateUserRequest.java          (planned — Team page user management)
 │   └── response/
 │       ├── AuthResponse.java
 │       ├── UserResponse.java
-│       ├── EntryResponse.java
-│       └── ReportResponse.java
+│       ├── ProjectResponse.java
+│       ├── TimeEntryResponse.java
+│       ├── ProjectHoursReportResponse.java    (interface projection — hours grouped by project)
+│       ├── EmployeeHoursReportResponse.java   (interface projection — hours grouped by employee)
+│       └── ErrorResponse.java                 (uniform JSON error body from GlobalExceptionHandler)
 ├── exception/
 │   ├── GlobalExceptionHandler.java   (@ControllerAdvice — returns clean JSON errors)
 │   ├── ResourceNotFoundException.java
@@ -744,9 +760,10 @@ This is the first Spring Boot project. Each step introduces one new concept.
 ### Step 5 — TimeEntry CRUD + workflow ✅
 - `TimeEntry` entity with `@ManyToOne` to User and Project
 - `GET /api/entries` filters by current user (employee) or returns all (manager)
+- Optional query filters on `GET /api/entries` (`?month=`, `?status=`, `?projectId=`) via `Specification<T>` + `JpaSpecificationExecutor`
 - CRUD with business-rule validation (future date, inactive project, DRAFT-only edits)
 - Status transitions: submit, approve, reject (PATCH)
-- **New concepts:** `@ManyToOne` relationships, state machine workflow, PATCH for transitions, role-based data filtering
+- **New concepts:** `@ManyToOne` relationships, state machine workflow, PATCH for transitions, role-based data filtering, `Specification<T>` dynamic query filters
 - **Review concepts:** soft delete, `SecurityContextHolder`
 - **Done condition:** `Postman: POST /api/entries returns 201 — status DRAFT; PATCH /api/entries/{id}/approve as employee returns 403; as manager on a SUBMITTED entry returns 200 — status APPROVED`
 - **Concept learned:** hard delete (`deleteById`) is correct here — `TimeEntry` has no `active` field like `Project`/`User`, and only DRAFT entries can be removed, so nothing worth preserving is lost. Bean Validation (`@NotBlank`/`@NotNull` + `@Valid`) was added across all request DTOs (`CreateProjectRequest`, `UpdateProjectRequest`, `CreateTimeEntryRequest`, `RejectRequest`) as part of this step, plus a `PUT /api/entries/{id}` (edit DRAFT) and `DELETE /api/entries/{id}` (delete DRAFT) endpoint — both reusing the owner + DRAFT-only guards, and PUT re-running create's business rules (future date, inactive project, hours range) since it replaces the whole resource.
@@ -816,6 +833,14 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `UserService.create` | Saves user, password BCrypt-hashed | duplicate email → throws (409) |
 | `AuthService.login` | Returns a JWT | wrong password → `BadCredentialsException` (401) |
 | `ReportService.summaryByProject` | Groups hours per project for the month | empty month → returns empty list, not null |
+
+**Backend — slice tests:** none in project 07. This is the first project with tests, so it introduces
+only the unit level (JUnit 5 + Mockito). The slice types (`@WebMvcTest` for controllers, `@DataJpaTest`
+for custom repository queries) are introduced from project 08 — do not add them here.
+
+**Assertion quality:** every test asserts real behaviour — the returned value or the saved object's
+state (status transition, hashed password, computed total) — never only `verify(...)` that a mock method
+was called. No trivial "it exists" tests.
 
 ### Angular — services (Jasmine + TestBed, Step 9)
 
@@ -983,3 +1008,46 @@ open for the whole project. It only merges into `main` when Step 11 is done.
 
 **Immediate action:** `feat/spring-foundation` is done — open a PR into `projects/07-timetrack`
 now, then create `feat/timeentry-workflow` from `projects/07-timetrack` before starting Step 5.
+
+---
+
+## Quality gates — which prompt to run when
+
+Each gate ties a concrete point in the build (a §22 branch closing, a learning-plan phase finishing) to
+the one prompt that runs there, so a quality check happens at the moment the file it reads has just
+become accurate — not remembered at the very end. The project is not closed until every gate has run
+(see the closure checklist below).
+
+| Gate | Trigger | Prompt + config | Why exactly here |
+|------|---------|-----------------|------------------|
+| **G1 — Step ritual** | Every learning-plan step's done condition passes | *(no prompt — the `step-complete` skill fires in-session)* | Keeps PLANNING ✅ / PROGRESS.md / README true as you go, so the later gates read accurate files. |
+| **G2 — Plan drift** | Only if the learning plan / branch strategy change mid-build (scope cut, steps reordered) | `plan-audit` · `MODE = review` · `PROJECT = projects/07-timetrack` | Every later gate checks the code against PLANNING.md. A stale plan silently invalidates all of them. Skip if the plan never moved. |
+| **G3 — Backend review** | `feat/reports` merges — backend complete (Steps 1–6), **before Step 7 (Angular frontend) starts** | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = backend` | Correctness + security on the API **before** the frontend is built against it. Fix the High tasks it writes to `PROJECT-BACKLOG.md` before moving on. |
+| **G4 — Frontend review** | `feat/angular-frontend` merges — Step 7 complete | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = frontend` | The backend is **not** re-reviewed (its tier is already dated in the backlog), so this costs a fraction of a `full` run. |
+| **G5 — READMEs** | Every **High** task from G3/G4 is fixed and committed | `readme-audit` · `PROJECT_PATH = projects/07-timetrack` | Hard prerequisite of G7: `portfolio-audit` reads the READMEs, so running it first would judge a document that is about to change. |
+| **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | G7 and `cv-prompt` both read `PROGRESS.md`. If it is stale, the portfolio verdict and the CV bullet are built on a wrong picture of what you learned. |
+| **G7 — Portfolio go/no-go** | After G5 **and** G6 | `portfolio-audit` · `PROJECT_PATH = projects/07-timetrack` | The closing gate. Reads `PROJECT-BACKLOG.md` — an unfixed High/Medium from G3/G4 blocks the ✅ Ready verdict. Produces the CV bullet + the project question bank. |
+| **G8 — Roadmap resync** | After G7 returns ✅ Ready | `roadmap-review-prompt` | The project sequence just changed. This is what keeps `ROADMAP.md` from drifting into a stale plan. |
+
+**Prerequisite chain (hard — a gate run out of order gives a wrong answer, not just a late one):**
+`G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. G5 before G7 because the portfolio gate reads the READMEs;
+G6 before G7 because it reads PROGRESS; G3/G4 before G7 because it reads the backlog.
+
+### Closure checklist — the project's definition of done
+
+The project is never declared finished early — it is closed only when every box is ticked.
+
+```
+- [ ] Every §15 step's done condition passes, each with its step-complete ritual (G1)
+- [ ] PLANNING.md still matches what was built — re-run plan-audit MODE=review if §15/§22 moved (G2)
+- [ ] review-audit REVIEW_SCOPE=backend has run, and every High task it found is fixed (G3)
+- [ ] review-audit REVIEW_SCOPE=frontend has run, and every High task it found is fixed (G4)
+- [ ] readme-audit has run — global + backend + frontend READMEs at standard (G5)
+- [ ] progress-update MODE=active has run — PROGRESS.md reflects this project (G6)
+- [ ] portfolio-audit returns ✅ Ready — no open High/Medium in PROJECT-BACKLOG.md (G7)
+- [ ] roadmap-review has run — ROADMAP.md reflects the new project sequence (G8)
+- [ ] The project branch has been merged into `main` via PR
+```
+
+**The project is closed only when every box is ticked.** A ❌ or ⚠️ verdict at G7 means going back and
+fixing, not shipping — that is the whole point of having a gate there.
