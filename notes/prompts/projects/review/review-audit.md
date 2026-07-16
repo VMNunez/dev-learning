@@ -293,6 +293,17 @@ task/priority/effort rules:
 - **Deduplicate across slices** — the same business-rule gap can surface in a resource's flow, its
   security pass, and a cross-cutting slice at once; keep one task, the most specific (usually: enforce
   the rule in the service + add the test that proves it).
+- **Reconcile contradictions across slices before writing any task — dedup is not enough.** A slice
+  reviewer sees only its own files, so it can report "X is missing" when X is actually defined in a file
+  another slice owns. When two tables disagree about the same symbol — one says a class/rule/style/token
+  is absent, another says it exists and is used — you are the only one holding both, so **resolve it
+  against the real code** (one targeted grep/read of the symbol) before it reaches the backlog. Drop the
+  false half; never file a "missing X" task while another slice reports X working.
+  > On the 2026-07-16 run of 05-task-manager, the `task-page` reviewer filed "no CSS defines `.btn-danger`"
+  > (it lives in `material-theme.scss`, owned by `frontend-infra`) while the `frontend-infra` reviewer
+  > reported that same `.btn-danger` as a working scoped `mat.theme()`. Both tables were in front of the
+  > orchestrator; the false Medium still reached the backlog and was only caught on a manual spot-check.
+  > This is a structural blind spot of slicing — the orchestrator is the only reviewer positioned to catch it.
 - Turn each quality finding and each ⚠️/❌ learning-objective into a specific task with a priority and an
   effort estimate.
 - "Beyond junior scope" hardening ideas go in the chat summary, not the backlog.
