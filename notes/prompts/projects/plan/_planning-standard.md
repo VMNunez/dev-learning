@@ -148,12 +148,23 @@ empty states, role-specific variations) · **4)** visual inspiration (2–3 real
 Every development step. Each step has: a short title · what is built (2–4 bullets) · which NEW
 concepts from §3 it introduces · which REVIEW concepts from §4 it reinforces · a concrete **done
 condition** in the format below. Steps follow the professional implementation order below and
-introduce **one major concept at a time**. Step 1 is always "Project setup". The plan must include
+introduce **one major concept at a time**. Step 1 is always "Project setup".
+
+**Step sizing:** a step is a few days of work, never weeks. A phase that is inherently large — the
+Angular frontend is the canonical case: shell + auth + several pages — must be split into multiple
+steps (shell/auth first, then pages in dependency order, 2–3 pages max per step), each with its own
+done condition. **A step's done condition must cover the step's full listed scope**: if the bullets
+build seven pages, a condition that only proves login + one table is invalid — the step could "pass"
+with three-quarters of its scope unbuilt.
+
+The plan must include
 three dedicated steps explicitly: **backend tests** (JUnit 5 + Mockito unit tests, plus the one slice
 test type this project introduces — `@WebMvcTest` or `@DataJpaTest` — if any), **Angular tests** (level
 per CLAUDE.md "Testing rules"), and a **SQL complement** step.
-- **Pass:** every step has a done condition; every done condition is valid (format below); each step
-  introduces at most one major new concept; the three dedicated steps are present.
+- **Pass:** every step has a done condition; every done condition is valid (format below) **and covers
+  the step's full listed scope**; each step introduces at most one major new concept; no step spans
+  more than a few days of work (a whole app tier in one step fails — split it); the three dedicated
+  steps are present.
 
 ### 16. Testing plan
 What is tested, at which **level**, and why — a real test plan, not "we will write tests". Organise it
@@ -296,8 +307,14 @@ step, explain why (e.g. "repository has no custom logic so it is combined with t
 
 Group the implementation steps into **coherent feature branches — never one branch per step**. A
 branch spans a logical, self-contained chunk with a clear "done" (e.g. all backend security steps
-together, all CRUD + workflow together, the whole Angular frontend together). One branch per step
+together, all CRUD + workflow together, the frontend shell + auth together). One branch per step
 creates PR noise with no isolation benefit; the goal is one branch per feature.
+
+**Branch scope must be comparable across the whole project.** If the backend phases each got a
+feature-sized branch (auth, workflow, reports), the frontend is never one giant branch — split it the
+same way its §15 steps are split (e.g. `feat/angular-shell-auth`, `feat/angular-entries`,
+`feat/angular-manager-pages`). A branch spanning weeks of work defeats PR-sized review and gives the
+G4 gate one unreviewably large diff.
 
 For each branch, define:
 - **Branch name** — `feat/short-description` (CLAUDE.md convention).
@@ -313,8 +330,9 @@ that.
 
 - **Pass:** every branch name follows `feat/short-description`; every branch has a concrete open and
   close condition (not "when done"); the branches together cover every §15 step, no step unassigned
-  and no step in more than one branch; no more than one branch per coherent phase (setup, backend-core,
-  security, frontend, tests, docker).
+  and no step in more than one branch; one branch per coherent feature-sized chunk — a large phase
+  (the frontend) is split into 2–3 branches mirroring its §15 steps, and no branch spans notably more
+  work than the largest backend branch.
 
 ---
 
@@ -410,6 +428,11 @@ The consistency invariants above prove the plan is internally coherent. These pr
 decisions are **sound enough to defend in an interview** — the difference between a *complete* plan and
 a *perfect* one. The reviewer runs each; the author should already satisfy them.
 
+**The bar for every check here is Victor's actual objective** — a junior / junior-mid interview at a
+Spanish consultancy (see `_shared-context.md`) — not abstract best practice. A decision passes when it
+survives an interviewer's "why?", and a gap matters in proportion to how likely an interviewer is to
+probe it.
+
 1. **Relationship fetch types (§7)** — every `EAGER` is justified (the default should be `LAZY`; flag
    any `EAGER` without a stated reason). Every cascade choice matches the ownership described.
 2. **State machine (§8)** — if there is one, every state is reachable from the initial state and every
@@ -421,3 +444,17 @@ a *perfect* one. The reviewer runs each; the author should already satisfy them.
 5. **Interview test** — for each architecture decision (§6) and tradeoff (§20), the stated reason
    already answers "why did you do it this way?" — not "because the tutorial did". A reason that is
    just a restatement of the choice ("used DTOs to have DTOs") fails.
+6. **Enterprise-gap sweep (§10/§15/§20)** — the plan addresses, **or documents as a deliberate §20
+   tradeoff**, the gaps an interviewer probes first. Silence on any of these fails; a one-line
+   documented tradeoff passes:
+   - **Pagination** on any collection endpoint that grows unboundedly (`Pageable`/`Page<T>`, or a §20
+     line saying why the MVP returns everything).
+   - **Token expiry** — the JWT lifetime is stated, and the plan says what the frontend does on a 401
+     mid-session (interceptor behaviour), not just at login.
+   - **Validation error contract** — the field-level error body shape (`@Valid` →
+     `MethodArgumentNotValidException`) is defined in §10, so the frontend forms know what they consume.
+   - **Environment config in the Docker step** — secrets and DB credentials as env vars in the compose
+     file, and how the app's properties differ per environment (profile / override), stated in the §15
+     Docker step's bullets.
+   - **Schema evolution** — migrations (Flyway/Liquibase) at least named as the rejected option in §20
+     if the project relies on `ddl-auto`.

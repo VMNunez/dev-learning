@@ -89,7 +89,7 @@ cross-concern ripple in your report so the orchestrator routes it).
 
 | `{SCOPE}` | Owns (sections · invariants · design checks) | Reads from the standard |
 |---|---|---|
-| `architecture` | §6 layering · §3 the one new architectural concept · §20 tradeoffs · design check 5 (interview test on every §6/§20 reason) | template §3/§6/§20 · "Design-correctness checks" |
+| `architecture` | §6 layering · §3 the one new architectural concept · §20 tradeoffs · design check 5 (interview test on every §6/§20 reason) · design check 6 (enterprise-gap sweep — read §10, the §15 Docker step, and §20 just deep enough to verify each listed gap is addressed or documented as a tradeoff) | template §3/§6/§20 · "Design-correctness checks" |
 | `data-model-api` | §7 entities (all five columns; each relationship = fetch type + cascade + reason) · §10 endpoints · §12/§13 folder structures · invariants 1–3 (entities↔repos, API↔controllers, pages↔wireframes) · design check 1 (fetch types justified) | template §7/§10/§12/§13 · HTTP status conventions · invariants 1–3 · design check 1 |
 | `rules-security` | §8 business rules (no vague/TBD; state diagram present) · §0 current step + its done-condition format · invariant 7 (routes/roles↔API-security) · design checks 2 (no dead/orphan states) and 3 (endpoint roles vs ownership) | template §0/§8 · done-condition format · invariant 7 · design checks 2–3 |
 | `steps-tests` | §15 steps (each a valid done condition; one major concept per step; the three dedicated test steps present) · §16 testing plan (specific method/service names; edge cases named) · **§3 Pass criteria** (each concept specific; every Topic one of the controlled-vocabulary section names, Java vs Spring Boot split correctly — you already read §3 for invariant 4) · done-condition format in §15 (`rules-security` owns §0's) · invariants 4–5 (new-concepts↔steps, testing-plan↔steps) · design check 4 (one concept per step) | template §3/§15/§16 · done-condition format · professional implementation order · invariants 4–5 · design check 4 |
@@ -126,7 +126,7 @@ each ⚠️, rewrite it to a valid format.
 each mismatch.
 
 **5. Design correctness** *(split by the table: 1 `data-model-api` · 2–3 `rules-security` ·
-4 `steps-tests` · 5 `architecture`)*. Run only the design-correctness checks your `{SCOPE}` owns —
+4 `steps-tests` · 5–6 `architecture`)*. Run only the design-correctness checks your `{SCOPE}` owns —
 fetch types justified, state machine has no dead/orphan states, endpoint roles consistent with
 ownership, one major concept per step,
 every §6/§20 reason passes the interview test. This is the check that separates a *complete* plan from a
