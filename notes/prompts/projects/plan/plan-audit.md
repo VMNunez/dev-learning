@@ -23,8 +23,11 @@ one command does everything.
 `_planning-standard.md` (the bar) · `plan-write-prompt.md` (author) ·
 `plan-architecture-prompt.md` (architecture advisor, new mode only) · `plan-review-prompt.md` (reviewer).
 
-> **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits nothing, so you can
-> read the diff before it lands. Once you trust it, `DRY_RUN = false` is fully hands-off.
+> **This flow always commits its own work** (Victor retired the `DRY_RUN` switch 2026-07-16 — the
+> pipeline is trusted to land its result). The safety valve is no longer a dry run but the gates
+> below: the specialist acceptance check and, in review mode, the history-preservation gate — if
+> either fails after its one re-dispatch, the orchestrator **aborts without committing** and reports,
+> leaving the working tree for Victor to inspect. It never commits a run that failed its own checks.
 
 ---
 
@@ -37,26 +40,23 @@ fill only the config block, and let it run to the end. Pick the recipe:
 ```
 MODE    = new
 PROJECT =            ← leave blank; new mode auto-detects from PROGRESS.md
-DRY_RUN = true       ← true the first time; false once you trust it
 ```
 
-**B · Audit one existing plan**
+**B · Audit one existing plan** (also the recipe for **restructuring a pre-standard plan** — e.g. a
+plan written before the 24-section standard existed; completed steps are preserved, see the
+history-preservation gate)
 ```
 MODE    = review
 PROJECT = projects/07-timetrack
-DRY_RUN = false
 ```
 
 **C · Audit every plan in one run**
 ```
 MODE    = review
 PROJECT = all
-DRY_RUN = false
 ```
 
 **Rules of thumb:**
-- **First time → `DRY_RUN = true`.** It writes and reviews everything but commits nothing; you read the
-  diff, then re-run with `DRY_RUN = false` (or paste the commits it printed).
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - `PROJECT = all` is **review mode only** — `new` mode plans a single next project by design.
 
@@ -78,9 +78,7 @@ PROJECT = [folder path, e.g. projects/07-timetrack | projects/06-hr-portal | all
 ## 05-task-manager, 06-hr-portal, 07-timetrack. The format is derived per project type by number
 ## (01–06 Angular-only → present-sections + universal checks only; 07+ full-stack → full 24-section audit).
 
-DRY_RUN = [false | true]
-
-Use MODE, PROJECT, and DRY_RUN wherever the prompt refers to {MODE}, {PROJECT}, or {DRY_RUN}.
+Use MODE and PROJECT wherever the prompt refers to {MODE} or {PROJECT}.
 
 ---
 
@@ -165,7 +163,9 @@ For **each** concern in order, launch a fresh, independent `general-purpose` sub
 `run_in_background: false`:
 
 > Read `notes/prompts/projects/plan/plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
-> `SCOPE = «this concern»`, `DRY_RUN = true`. Read **only the files and standard sections your
+> `SCOPE = «this concern»`, `DRY_RUN = true` (that is plan-review's own no-commit switch — the
+> orchestrator owns the single commit; it is unrelated to this orchestrator's retired config). Read
+> **only the files and standard sections your
 > concern's row lists in that prompt's reading map** — never the whole standard. Audit **only your
 > concern's** sections/invariants/checks (the `{SCOPE}` table in that prompt), fix what falls short
 > directly in the file, and **do NOT commit** — the orchestrator commits once after every concern.
@@ -186,9 +186,11 @@ continue — never silently accept a partial trace or a possibly truncated read.
 ## Finishing
 
 The specialist reviewers left every fix in the working tree; **the orchestrator does the single commit**
-(they never commit). One atomic commit per plan.
+(they never commit). One atomic commit per plan. **Gate first:** if the specialist acceptance check or
+(review mode) the history-preservation gate ended the run in a failed state, do NOT commit — leave the
+working tree as-is and report what failed and why.
 
-**If `{DRY_RUN}` = false:** commit now.
+Otherwise commit now:
 - **`new` mode** (the author left ROADMAP.md + PROGRESS.md in the working tree with the plan): `git add
   {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
   `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.
@@ -196,16 +198,14 @@ The specialist reviewers left every fix in the working tree; **the orchestrator 
   `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`.
 Report the commit made and each specialist's verdict/trace.
 
-**If `{DRY_RUN}` = true:** nothing is committed — all changes are left in the working tree for Victor
-to read. Print the atomic commit sequence above to run after reviewing the diff, one command per code
-block. In `new` mode that is the three-file commit; in `review` mode, one commit per plan.
-
 ## Hard rules
 
-- **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
-  rule is "never auto-commit"; he lifted it for the audit orchestrators. **The orchestrator commits
-  once** (the specialist reviewers never do). It applies nowhere else — normal sessions still hand
-  Victor the command.
+- **Auto-commit is authorized for this flow — always** (Victor retired the `DRY_RUN` condition
+  2026-07-16). His global rule is "never auto-commit"; he lifted it for the audit orchestrators, and
+  the authorship boundary in CLAUDE.md holds: PLANNING.md / ROADMAP.md / PROGRESS.md are system
+  machinery, never his code or `practice/` work. **The orchestrator commits once** (the specialist
+  reviewers never do) — unless a gate failed, in which case it aborts without committing. It applies
+  nowhere else — normal sessions still hand Victor the command.
 - **One atomic commit per plan.** In new mode that single commit carries PLANNING.md + ROADMAP.md +
   PROGRESS.md (they are one logical change: registering the new project). Never `git add .`.
 - **The plan is authored whole, reviewed by specialists — one concern per subagent.** Authoring needs
