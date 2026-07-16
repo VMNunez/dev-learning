@@ -74,7 +74,17 @@ and checks your `{SCOPE}` owns**, listed here.
 files silently — and the tail sections (§22/§23) are exactly where some scopes live, so a truncated
 read breaks the "cannot skim" guarantee with no error and a plausible-looking trace. Check the plan's
 line count (`wc -l`); if it is near or over 2000, read in passes with `offset` to the real end. State
-the total line count and that you reached EOF as the first line of your report. Do not touch another concern's sections (mention a
+the total line count and that you reached EOF as the first line of your report.
+
+**Completed work is history, not format — every scope obeys this.** Steps already marked done (✅ on
+a step heading, a §0 "Steps 1–N done" line, closed branches in the branch table) are facts about work
+Victor already built and committed. Restructuring is allowed — renumber, reword, re-section, convert
+an old-format plan to the standard — but every done step must survive, visibly marked done, and the
+current in-progress step must keep its real-world position. **Never unmark, merge away, or delete a
+completed step.** If the plan's own markers disagree (✅ on some steps but §0 or the branch table
+recording more as done), normalize to the most complete consistent history — add the missing ✅,
+never resolve a conflict by dropping a done mark — and flag the normalization in your report. The
+orchestrator snapshots the done markers before the review and fails the run if any are lost. Do not touch another concern's sections (mention a
 cross-concern ripple in your report so the orchestrator routes it).
 
 | `{SCOPE}` | Owns (sections · invariants · design checks) | Reads from the standard |

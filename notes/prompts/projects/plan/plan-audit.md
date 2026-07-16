@@ -141,9 +141,25 @@ long, finish the current project completely and stop with the "Completed / Remai
 resumes from the first unfinished project.
 
 ### Single project
-No author phase — the plan already exists. Run the **specialist reviewers** defined in "Specialist
-review procedure" below over `{PROJECT}/PLANNING.md`, then go to "Finishing" (the orchestrator commits
-just the plan).
+No author phase — the plan already exists. Review mode may **fully restructure a pre-standard plan**
+(one written before the 24-section standard — the specialists add missing sections, reformat old ones)
+— but restructuring changes *format*, never *history*. That is enforced by the gate below.
+
+**History snapshot (before dispatching any specialist).** Without reading the plan (stay light — a
+grep is a count, not a read), snapshot the done-work markers:
+`grep -n "✅" {PROJECT}/PLANNING.md` (the done-step headings) and keep the matched lines. If the plan
+records done steps some other way (a §0 "Steps 1–N done" line, a branch table with closed branches),
+grep those too. This is the baseline the finished plan must still contain.
+
+**History-preservation gate (after the last specialist, before Finishing).** Re-run the same greps.
+Every done step from the snapshot must still exist and still be marked done — renumbered or reworded
+is fine, **unmarked or missing is a failure**. The in-progress step must be the same real-world
+position it was. On failure: re-dispatch `steps-tests` once, quoting the lost steps verbatim; if the
+re-run still fails the gate, **abort without committing** and report exactly which history was lost —
+never commit a plan that lost completed work.
+
+Then run the **specialist reviewers** defined in "Specialist review procedure" below over
+`{PROJECT}/PLANNING.md`, apply the gate, and go to "Finishing" (the orchestrator commits just the plan).
 
 ---
 
