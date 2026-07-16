@@ -107,12 +107,27 @@ In order of impact:
 | 1   | Angular foundation + CSS/Tailwind solid           | Angular 01–04 + CSS/Tailwind                                       | SELECT, WHERE, ORDER BY                                           | Angular notes                                 | ✅ Done    |
 | 2   | Angular complete + Java foundation                | Angular 05–06 + RxJS + Java foundation                             | SQL basics continued                                              | Angular notes + interview prep started        | ✅ Done    |
 | 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | JOINs                                                             | Spring Boot notes                             | ✅ Done    |
-| 3b  | Project 07 complete with tests and Docker         | Project 07 full — Angular frontend, tests, Docker                  | GROUP BY, aggregates, subqueries                                  | Java + Architecture notes                     | ⏳ Current |
-| 4   | Project 08 done + Friday applications             | Project 08 + more if time allows + Friday applications             | CTEs, window functions → SQL complete → technical test simulation | TypeScript + CSS notes + interview prep (es/) | 🔜         |
+| 3b  | Project 07 demonstrable — frontend + tests        | Project 07 — Angular frontend (Steps 7a–7c) + backend/Angular tests | GROUP BY, aggregates, subqueries                                  | Java + Architecture notes                     | ⏳ Current |
+| 3c  | Consolidation — fluent without Claude             | Rebuild key 07 slices solo (no notes, no AI) + Docker + SQL complement | Remaining SQL topics → technical test simulation                  | Interview prep (es/) started                  | 🔜         |
+| 4   | Applications daily + simulations; 08 conditional  | Friday→daily applications; Project 08 **only once simulations are on track** | Technical test simulation                                         | TypeScript + CSS notes + interview prep (es/) | 🔜         |
 | 5   | Interview ready — full application push           | Final project polish + applications every day                      | Technical test simulation                                         | Interview prep full focus                     | 🔜         |
 | 6   | After the job — depends on outcome                | Branches by outcome — see "After September — three possible paths" | Depends on path                                                   | Depends on path                               | 🔜         |
 
 _Row 6 is intentionally open — what happens after September depends on whether the goal is met by then. See the dedicated section near the end of this file for the three paths and what each one requires._
+
+### Urgency order (set 2026-07-16) — urgent first, important-but-not-urgent after
+
+The hiring process above defines urgency: the real filter is a **technical test done alone, timed, no
+notes, no AI** — so fluency without Claude outranks adding more artifacts. In order:
+
+1. **Project 07 Angular frontend (Steps 7a–7c)** — the CV gate depends on it; nothing is applyable without it.
+2. **Project 07 tests (JUnit 5 + Mockito, Jasmine services)** — the #2 differentiator in this file, and interview material in themselves. Part of finishing, not a phase after.
+3. **Consolidation (Phase 3c)** — rebuild key slices of 07 solo (a CRUD endpoint from scratch, a reactive form + service) under the same conditions as a real test. This is what the technical test measures; Claude-guided building does not train it.
+4. **Simulations + interview prep (es/)** — the 15-simulation target and fluent answers with project examples.
+5. **Docker + SQL complement (Steps 10–11)** — CV keyword, 1–2 days of work, never probed deeply at junior level. Deliberately after consolidation, not before.
+6. **Project 08** — only once simulations are on track. A second project adds less than explaining the first one fluently; it must never displace items 3–4.
+
+LeetCode stays behind its existing five gates — unchanged.
 
 ---
 
@@ -141,7 +156,9 @@ _This schedule is fixed for the full-time study window only — June 2 → Septe
 
 **Covers:** REST API, JWT auth, role-based authorization, JPA + Hibernate, TimeEntry workflow (DRAFT → SUBMITTED → APPROVED / REJECTED), reports, Angular frontend, JUnit 5 + Mockito, Jasmine + TestBed, Docker Compose, architecture README.
 
-**Full project gate (Phase 3b):** Angular frontend live, all services have at least one unit test, `docker-compose up` runs everything, README includes at least one architecture decision with a real tradeoff — and every line is explainable out loud in an interview.
+**Demonstrable gate (Phase 3b):** Angular frontend live (Steps 7a–7c), all services have at least one unit test, README includes at least one architecture decision with a real tradeoff — and every line is explainable out loud in an interview. This is what unlocks the CV update and consolidation.
+
+**Full project gate (Phase 3c):** `docker-compose up` runs everything and the SQL complement is done — Docker closes the project (Step 11), deliberately after consolidation work has started, not before.
 
 **CV gate:** Update CV when project 07 is live on GitHub with a README that includes at least one architecture decision — not before.
 
