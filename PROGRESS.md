@@ -242,11 +242,9 @@
 - `@Entity`, `@Table`, `@Id`, `@GeneratedValue` — mapping a Java class to a PostgreSQL table
 - `@Column(nullable = false, unique = true)` — adding database constraints on entity fields
 - `@CreationTimestamp` — Hibernate sets the timestamp automatically on first save
-- Default field values in Java — `private Boolean active = true`
 - Lombok — `@Data`, `@NoArgsConstructor`, `@AllArgsConstructor` — eliminates boilerplate getters, setters, and constructors
 - `JpaRepository<Entity, IdType>` — built-in CRUD methods (`findAll`, `findById`, `save`, `deleteById`) without writing SQL; only knows about the primary key — custom fields need declared methods
 - Custom repository methods — `Optional<User> findByEmail(String email)` — Spring reads the method name and generates `WHERE email = ?` automatically
-- `Optional<T>` — wraps a value that might not exist; use `orElseThrow()` instead of returning `null`
 - `@Service` — marks a class as a Spring bean containing business logic
 - `private final` + constructor injection — recommended pattern over `@Autowired`; dependencies are explicit and the class is easier to test
 - `@RestController`, `@RequestMapping`, `@GetMapping` — building a REST endpoint
@@ -274,7 +272,6 @@
 - `app.jwt.secret` and `app.jwt.expiration` in `application.properties` — custom property names; secret injected from env var `${JWT_SECRET}`
 - `@Value("${property.name}")` — injects a value from `application.properties` into a class field at startup
 - `@Component` — registers a class as a Spring bean when it is not a controller, service, or repository
-- `long` vs `Long` — use the primitive when the value is always present; use the wrapper class when `null` is meaningful
 - JWT structure — three Base64-encoded parts: header (algorithm), payload (claims: `sub`, `iat`, `exp`), signature (HMAC of header+payload using the secret)
 - `getSigningKey()` pattern — converts a Base64 secret string to a `SecretKey`: `Decoders.BASE64.decode(secret)` → raw bytes → `Keys.hmacShaKeyFor(bytes)` → SecretKey
 - `UserDetailsService` — Spring Security interface with one method: `loadUserByUsername()`; you implement it to tell Spring where your users live in the database
@@ -322,8 +319,6 @@
 - State machine workflow — `EntryStatus` enum (`DRAFT` → `SUBMITTED` → `APPROVED`/`REJECTED`); each transition method checks the current status before changing it
 - PATCH with URL suffix for state transitions (`/{id}/submit`, `/{id}/approve`, `/{id}/reject`) — PATCH alone is ambiguous (many possible partial updates), so the suffix names which transition; PUT/POST/DELETE never need a suffix because the verb already says the one thing it can mean
 - Comparing entities by id, never by object reference or `.equals()` on the whole object — `timeEntry.getUser().getId().equals(user.getId())`; Lombok's `@Data`-generated `equals()` compares every field, which is unreliable for JPA entities
-- `BigDecimal.compareTo()` instead of `.equals()` or `<`/`>` — `.equals()` also compares scale (`"24.0"` ≠ `"24"`), and `<`/`>` don't compile on objects; `compareTo() < 0` / `> 0` compares the actual mathematical value
-- `LocalDate.isAfter()` / `isBefore()` instead of `==` or `.equals()` — purpose-built comparison methods; `==` compares references, `.equals()` only tells same/different day, not order
 - Role-based data filtering in a service method — reading authorities off `SecurityContextHolder` to branch between `findAll()` (manager) and `findByUser(user)` (employee) in the same `getAll()`
 - Bean Validation (`@NotBlank`/`@NotNull`) added across every request DTO (`CreateProjectRequest`, `UpdateProjectRequest`, `CreateTimeEntryRequest`, `RejectRequest`) with `@Valid` on the matching controller params — `MethodArgumentNotValidException` accumulates every failed field in one response, unlike the manual fail-fast business-rule checks
 - Hard delete (`deleteById`) vs soft delete (`active = false`) — `TimeEntry` has no `active` field like `Project`/`User`; only DRAFT entries can be deleted, so nothing worth preserving is ever lost
@@ -331,11 +326,22 @@
 - Interface projections (`ProjectHoursReportResponse`, `EmployeeHoursReportResponse`) — Spring Data builds a runtime proxy per query result row, no class or manual mapping; requires no `@Data`, only getter signatures
 - Alias-to-getter contract — each getter name (minus `get`, first letter lowercased) must match a `SELECT ... AS alias` exactly, or that field silently comes back `null` with no error
 - JPQL aggregation with `SUM()` + `GROUP BY` — `GROUP BY te.project.name` splits matching rows into buckets before `SUM()` runs separately inside each one; without it, `SUM()` collapses everything into one total
-- `YearMonth` — represents a year+month with no day; binds automatically from `?month=2025-05` because its parsing format matches ISO `yyyy-MM`; `.atDay(1)` / `.atEndOfMonth()` convert it to a `LocalDate` range, done in the service layer (business logic), not the controller
+- `YearMonth` binding — `?month=2025-05` binds automatically to a `YearMonth` param because its parsing format matches ISO `yyyy-MM`; the conversion to a `LocalDate` range happens in the service layer (business logic), not the controller
 - Repositories are organized by **entity** (fixed by `extends JpaRepository<Entity, Long>`), a different axis than controllers/services which are organized by **feature** — a report query with `FROM TimeEntry` belongs on `TimeEntryRepository`, even though the feature is "reports"
 - `MissingServletRequestParameterException` is not a `RuntimeException` (it descends from `ServletException`) — a generic `@ExceptionHandler(RuntimeException.class)` catch-all never sees it; needs its own handler
 - Spring Security `/error` gotcha — an unhandled exception resolved via `sendError()` triggers an internal forward to `/error`, which `JwtFilter` skips by default (`OncePerRequestFilter.shouldNotFilterErrorDispatch()`), so `/error` gets rejected as unauthenticated (`401`) unless explicitly excluded from `.anyRequest().authenticated()` — the real fix is catching the exception before `sendError()` ever runs
 - `MethodArgumentTypeMismatchException` — thrown when a `@RequestParam` value can't convert to the target type (e.g. `?month=2025-13`); is a `RuntimeException`, so it reaches a generic catch-all, but silently with the wrong status unless given its own handler
+
+---
+
+## Java
+
+- `Optional<T>` — wraps a value that might not exist; use `orElseThrow()` instead of returning `null`
+- `long` vs `Long` — use the primitive when the value is always present; use the wrapper class when `null` is meaningful
+- Default field values — `private Boolean active = true`
+- `BigDecimal.compareTo()` instead of `.equals()` or `<`/`>` — `.equals()` also compares scale (`"24.0"` ≠ `"24"`), and `<`/`>` don't compile on objects; `compareTo() < 0` / `> 0` compares the actual mathematical value
+- `LocalDate.isAfter()` / `isBefore()` instead of `==` or `.equals()` — purpose-built comparison methods; `==` compares references, `.equals()` only tells same/different day, not order
+- `YearMonth` — represents a year+month with no day; `.atDay(1)` / `.atEndOfMonth()` convert it to a `LocalDate` range
 
 ---
 
