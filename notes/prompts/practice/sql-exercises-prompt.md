@@ -698,10 +698,13 @@ reordering. Do not restate them here. Two SQL-specific points on top of the stan
 
 ### Step 6 — Commit message
 
-**Branch:** SQL exercises and PROGRESS.md both live on `main` (there is no separate SQL branch).
-Commit on `main`. **Precondition check:** if `practice/sql/` or `PROGRESS.md` do not exist on `main`
-yet (the repo-layout reorg may still live only on the feature branch), stop and say so — merge the
-reorg to `main` first instead of recreating files in the wrong place.
+**Branch:** SQL exercises and PROGRESS.md commit on **whatever branch is active** (CLAUDE.md
+2026-07-14 — study materials follow the active branch; `main` only receives merges via PR). No
+branch switch, no separate SQL branch.
+
+**These are Victor's files — never run the commit yourself.** Print the commands below for him to
+copy-paste; `practice/sql/` and `practice/simulations/` are his work, outside every auto-commit
+exception.
 
 List only files that were actually modified. Always one command per code block.
 
