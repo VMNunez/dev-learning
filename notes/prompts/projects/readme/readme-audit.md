@@ -85,14 +85,16 @@ none of the subagents commit, so you may run the pairs for different targets in 
 authors for all targets in one block, wait for all, then launch the reviewers in one block. Within a
 target the reviewer must always run **after** its author.
 
-**Subagent A — author.** Launch one `general-purpose` subagent, `run_in_background: false`:
+**Subagent A — author.** Launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`
+(recruiter-facing prose — the portfolio's front door):
 
 > Read `notes/prompts/projects/readme/readme-write-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Fix that one README to the standard.
 > **Do NOT commit.** Report the summary of changes and any intentional placeholder.
 
 Wait for A, then **subagent B — reviewer.** Launch a second, independent `general-purpose` subagent,
-`run_in_background: false`:
+`model: sonnet`, `run_in_background: false` (conformance against a highly prescriptive standard —
+the structure guarantees quality here, and the author already ran at the top tier):
 
 > Read `notes/prompts/projects/readme/readme-review-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Audit the just-authored README hard against
@@ -115,7 +117,8 @@ hand Victor a commit that includes a README whose pipeline did not complete.
 
 Because the three targets are written by separate subagents, the same decision can be described
 inconsistently between them (a tradeoff or pattern told one way in `global` and another in `backend`).
-After the pairs finish, launch one more `general-purpose` subagent (`run_in_background: false`) — do
+After the pairs finish, launch one more `general-purpose` subagent (`model: sonnet`,
+`run_in_background: false` — cross-checking three files for contradictions, changes nothing) — do
 **not** read the READMEs yourself; they stay out of your context:
 
 > Read the three READMEs of `{PROJECT_PATH}` (`README.md`, `backend/README.md`, `frontend/README.md`)

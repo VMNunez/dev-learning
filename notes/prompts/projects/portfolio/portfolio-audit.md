@@ -99,7 +99,8 @@ First decide which sections are **present** (does the project have auth? tests?)
 ones. Then process the present sections **one at a time, sequentially** — they all edit the same
 question file, so never overlap. For each section, run author then reviewer; neither commits.
 
-**Subagent A — author (this section).** Launch a `general-purpose` subagent, `run_in_background: false`:
+**Subagent A — author (this section).** Launch a `general-purpose` subagent, `model: opus`,
+`run_in_background: false` (judging which code decisions are interview-worthy is the whole task):
 
 > Read `notes/prompts/projects/portfolio/portfolio-write-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
@@ -109,7 +110,9 @@ question file, so never overlap. For each section, run author then reviewer; nei
 > **question count and any decision you could not cover** — the reviewer re-walks the code itself.
 
 Wait for A. Then **subagent B — reviewer (this section).** Launch a second, independent
-`general-purpose` subagent, `run_in_background: false`:
+`general-purpose` subagent, `model: opus`, `run_in_background: false` (it re-walks the code hunting
+decisions the author missed — same judgment as authoring; this is the portfolio's go/no-go gate,
+the wrong place to save):
 
 > Read `notes/prompts/projects/portfolio/portfolio-review-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. Audit **only this section** hard against

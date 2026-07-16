@@ -136,7 +136,7 @@ subagents of a section, because they edit the same two files.
 ### Whole-topic detection (light — needs the cross-section view)
 
 **Stage M — interview-question market analysis (full mode only).** Launch one `general-purpose`
-subagent, `run_in_background: false`:
+subagent, `model: opus`, `run_in_background: false` (market judgment shapes every question downstream):
 
 > You are a specialist in junior technical interviews at Spanish IT consultancies. Read `ROADMAP.md`
 > and `notes/prompts/_shared-context.md` for the candidate's exact target role, companies, stack, and
@@ -162,7 +162,8 @@ Wait for M and keep its list — **it must be tagged by section** (each question
 it belongs to), so you can hand each section only its own slice later.
 
 **Stage G — adversarial gap-hunt (full mode only).** Launch a fresh, independent `general-purpose`
-subagent, `run_in_background: false`:
+subagent, `model: opus`, `run_in_background: false` (adversarial creativity — a cheap model finds
+the obvious gaps, not the ones that matter):
 
 > You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
 > `notes/prompts/_shared-context.md` for the exact role/companies, and
@@ -194,7 +195,8 @@ slice. This is structural detection — do it in your own context; **do not auth
 For **each section in the work list, in order**, run Author then Reviewer. Never overlap sections, and
 never overlap a section's two subagents — they edit the same two files. Neither subagent commits.
 
-**Author (A).** Launch a fresh `general-purpose` subagent, `run_in_background: false`:
+**Author (A).** Launch a fresh `general-purpose` subagent, `model: opus`, `run_in_background: false`
+(writes bilingual Q&A in Victor's voice — prose quality is the product):
 
 > Read `notes/prompts/knowledge/interview-prep/interview-prep-write-prompt.md` and execute it for
 > `FILE = «topic»`, `SECTION = «this exact heading»`, `MODE = «mode»`. **Work on this one section
@@ -215,7 +217,9 @@ Wait for A. If A reports it could not complete the section (blocked, missing con
 section's reviewer, note it, and move to the next section — do not leave a half-authored section for
 the reviewer.
 
-**Reviewer (B).** Launch a fresh, independent `general-purpose` subagent, `run_in_background: false`:
+**Reviewer (B).** Launch a fresh, independent `general-purpose` subagent, `model: opus`,
+`run_in_background: false` (it rewrites weak questions freely — that is authoring, not checklist
+verification):
 
 > Read `notes/prompts/knowledge/interview-prep/interview-prep-review-prompt.md` and execute it for
 > `FILE = «topic»`, `SECTION = «this exact heading»`, `DRY_RUN = true`. **Audit this one section

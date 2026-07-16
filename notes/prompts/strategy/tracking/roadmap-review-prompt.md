@@ -77,7 +77,8 @@ phases (July, August, September) are past, current, or still ahead.
 ## Step 2 — Fan out two cold fact-gathering subagents
 
 Launch **both** `general-purpose` subagents in a single message so they run in parallel
-(`run_in_background: false`; they only read). Wait for both reports before Step 3.
+(`model: sonnet` for both — they cross-reference lists and report facts, no judgment;
+`run_in_background: false`; they only read). Wait for both reports before Step 3.
 
 **Subagent 2a — gap analysis.** Its instruction:
 
@@ -198,7 +199,8 @@ Do not treat this self-check as the final word — Step 6 verifies it independen
 
 ## Step 6 — Two independent reviewer subagents (sequential)
 
-Launch **two cold `general-purpose` subagents, one after the other** (`run_in_background: false` —
+Launch **two cold `general-purpose` subagents, one after the other** (`model: opus` — they re-derive
+career-strategy judgements and fix ROADMAP.md prose; `run_in_background: false` —
 never in parallel: both fix ROADMAP.md directly, and concurrent edits to the same file conflict).
 They have none of your context — each re-derives its judgements from the files alone, which is
 exactly why they catch what a long single context skips. Each loads only the files its own checks

@@ -66,7 +66,8 @@ Split this run into two kinds of work, and never mix them:
   authoring a note file/section to `_note-quality-standard.md`, is exactly the writing bar the notes
   and interview-prep pipelines split file-by-file. **Never write it inline here, and never batch it.**
   Once the gap lists are ready, **dispatch one cold `general-purpose` subagent per atomic unit, in
-  sequence** (even at higher token cost) to author the fix:
+  sequence, always `model: opus`** (authoring to the notes/Q&A quality bar — judgment work, per the
+  model-tiering convention in `notes/prompts/README.md`; even at higher token cost) to author the fix:
   - **notes → prep** → the atomic unit is **one `##` section** of the topic's Q&A pair (`en/` +
     `es/`) — one subagent per target section, as Step 2 details (never the whole topic in one context).
   - **prep → notes** → the atomic unit is one note file — **one** subagent per note file to create or
@@ -122,7 +123,7 @@ Q&A file: **group the gaps by target section**, and for a section that does not 
 heading here so the subagent creates it.
 
 Then, **one target section at a time, sequentially** (never overlap — the runs edit the same two
-files), dispatch a cold `general-purpose` subagent (`run_in_background: false`):
+files), dispatch a cold `general-purpose` subagent (`model: opus`, `run_in_background: false`):
 
 > Read `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` (the bar). You are adding
 > questions to ONE section — `«## heading»` — of `notes/interview-prep/{FILE}.md`. Read that section in
@@ -165,7 +166,7 @@ note file is one atomic unit and its writing bar is the deep work the Execution 
 cold subagent.
 
 Then, **one target note file at a time, sequentially** (never overlap — the runs commit), dispatch a
-cold `general-purpose` subagent (`run_in_background: false`):
+cold `general-purpose` subagent (`model: opus`, `run_in_background: false`):
 
 > Read `notes/prompts/knowledge/notes/_note-quality-standard.md` (the writing bar) and, before writing,
 > the first section of `notes/java/es/08-excepciones.md` to calibrate. You are creating/extending ONE

@@ -269,6 +269,29 @@ processes every target in order, one commit per target. Full rules: `notes/promp
 
 ---
 
+## Model tiering — every subagent dispatch names its model
+
+Every orchestrator specifies `model:` on each Agent dispatch, so the cost/quality tradeoff is decided
+once, in the prompt, and never inherited by accident from whatever model the session happens to run
+(completed 2026-07-16). The criterion:
+
+> **If the output's quality is guaranteed by structure — an explicit standard, a report contract, a
+> trace gate that rejects incomplete work — tier down. If it is guaranteed only by judgment — writing
+> prose, designing, translating, deciding what matters — top tier.**
+
+- **haiku** — pure command-running and formatting (the SQL exercise counter).
+- **sonnet** — pattern-matching and conformance against an explicit standard: concept extraction,
+  notes inspect/translate/es-review, README review + consistency check, roadmap fact-gathering.
+- **opus / top** — everything that authors, rewrites, or judges: plan author + advisor + specialists
+  (pinned in `plan-audit.md`), notes/README/interview-prep authors, interview-prep market + gap-hunt +
+  reviewer (it rewrites), portfolio author + reviewer (go/no-go gate), roadmap reviewers, review-audit
+  flow/security.
+
+**A new prompt must pick a tier per dispatch using this criterion — never leave `model:` unspecified.**
+Re-tiering an existing dispatch needs a real run's self-report as evidence, per the frozen-prompts rule.
+
+---
+
 ## Gaps — closed, and what is left
 
 The three gaps detected against the goal (junior Angular + Spring Boot at a Spanish consultancy by

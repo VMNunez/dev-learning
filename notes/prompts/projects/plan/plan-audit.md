@@ -92,7 +92,7 @@ audit the plan in your own context.
 
 ### Phase 1 — Author (one writing subagent)
 
-Launch one `general-purpose` subagent, `run_in_background: false`:
+Launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
 > Read `notes/prompts/projects/plan/plan-write-prompt.md` and execute it in full
 > (`PROJECT = {PROJECT}` — blank means auto-detect). Do the gap analysis, choose the next project,
@@ -106,7 +106,7 @@ report — do not run the architecture advisor or reviewer on nothing.
 
 ### Phase 1b — Architecture advisor (one architecture subagent)
 
-Launch a `general-purpose` subagent, `run_in_background: false`, on the plan the author just wrote:
+Launch a `general-purpose` subagent, `model: opus`, `run_in_background: false`, on the plan the author just wrote:
 
 > Read `notes/prompts/projects/plan/plan-architecture-prompt.md` and execute it in full for
 > `PROJECT = «the chosen project folder path»`. Judge the drafted architecture (§6), the one new
@@ -176,7 +176,7 @@ backend API/security) — the reviewer prompt derives the format, but do not dis
 nothing to audit. For a **full-stack project (07+)**, run all five.
 
 For **each** concern in order, launch a fresh, independent `general-purpose` subagent,
-`run_in_background: false`:
+`model: opus`, `run_in_background: false`:
 
 > Read `notes/prompts/projects/plan/plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
 > `SCOPE = «this concern»`, `DRY_RUN = true` (that is plan-review's own no-commit switch — the
