@@ -235,7 +235,7 @@
 
 ## Spring Boot
 
-### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 ✓ Step 5 ✓ Step 6 ✓)
+### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 ✓ Step 5 ✓ Step 6 ✓ Step 7 in progress ⏳)
 
 - Spring Boot project setup with Spring Initializr — Spring Web, Spring Data JPA, PostgreSQL Driver, Lombok
 - `application.properties` — database connection, JPA settings, environment variable for password
