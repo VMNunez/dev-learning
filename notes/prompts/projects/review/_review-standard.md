@@ -384,6 +384,22 @@ For each concept planned in PLANNING.md §3 (new) and §4 (review), check the co
 - ⚠️ **Shallow** — present but not used meaningfully.
 - ❌ **Missing** — not implemented.
 
+**A pattern made of several pieces is ✅ only when every piece is there.** Many planned concepts are
+not a single symbol but a combination — two selectors, a provider plus its use, a `clone()` plus the
+`setHeaders` it carries, a signal plus the `effect()` that persists it. Finding *part* of the
+combination is **⚠️ Shallow, not ✅** — say which piece is missing, and file the gap as a task. Before
+marking ✅, re-read the concept as the plan words it and check each piece it names separately; a
+partial match must never be rounded up to complete.
+
+> **The failure this exists to prevent.** On the 2026-07-16 run of 06-hr-portal, the plan's "App shell
+> scroll fix" is `html, body { height: 100% }` + `app-root { overflow: hidden }`. The reviewer found
+> `body { height: 100% }` and `app-root { overflow: hidden }`, matched two pieces out of three, and
+> marked the concept ✅ at `styles.css:23,32` — but `html` has no height anywhere, so the `body`
+> percentage never resolves and the fix does nothing. It was caught only because another slice
+> happened to read the same file and disagree. Nothing guarantees that second reader exists: a
+> rounded-up ✅ that no one contradicts reaches the backlog unchallenged, and a concept Victor never
+> actually finished gets recorded as learned.
+
 ---
 
 ## Improvement-task + backlog format
