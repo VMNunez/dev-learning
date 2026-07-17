@@ -52,6 +52,17 @@ prompts first for that.
 Before starting, read CLAUDE.md (teaching rules, subfolder structure) and
 `notes/prompts/_shared-context.md` (my profile and the market context).
 
+> **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
+> branch is currently active (CLAUDE.md) — a feature branch is the normal case. If you are on
+> **`main`**, stop and ask Victor which branch to use — `main` never receives direct commits.
+
+> **Verifiable reads (CLAUDE.md non-negotiable):** the Read tool truncates at 2000 lines
+> **silently**, and some notes/Q&A files are near that. Before any whole-file read (here in
+> detection, or by a dispatched subagent on its unit), run `wc -l`; if the file is near or over
+> 2000 lines, read it in `offset` passes to the real end. Every dispatched subagent's report must
+> state **"N lines, read to EOF"** for its unit — treat a report without it as an incomplete pass
+> (re-dispatch once).
+
 ---
 
 ## Execution model — detection is global; every fix is ONE cold subagent per unit
@@ -89,10 +100,15 @@ Split this run into two kinds of work, and never mix them:
 ## Step 1 — Read the source files
 
 Read in this order:
-1. All numbered note files in {NOTES_PATH} (the `en/` folder) — skip any non-numbered files
-2. The Spanish counterpart: replace `en/` with `es/` in {NOTES_PATH} and read those files too — same exclusion rules
-3. `notes/interview-prep/en/{FILE}.md`
-4. `notes/interview-prep/es/{FILE}.md`
+1. The numbered note files in {NOTES_PATH} (the `en/` folder) — **at headings level, not full
+   prose**: `grep -n "^##" <file>` per file plus its opening lines. Detection needs the concept map
+   (which sections exist), not the prose — loading every file's body is the whole-folder saturation
+   the deep per-unit work exists to avoid. Open a body only where a heading leaves genuine doubt
+   about what the section covers. Skip any non-numbered files.
+2. The Spanish counterpart: replace `en/` with `es/` in {NOTES_PATH} — headings level too, only to
+   confirm parity (same sections exist on both sides).
+3. `notes/interview-prep/en/{FILE}.md` — in full (`wc -l` first; see the verifiable-reads rule).
+4. `notes/interview-prep/es/{FILE}.md` — headings + question count per section (parity check).
 
 Note: `coverage.md` and `future-learning.md` live in the topic root (e.g. `notes/java/`), not inside `en/` or `es/`.
 

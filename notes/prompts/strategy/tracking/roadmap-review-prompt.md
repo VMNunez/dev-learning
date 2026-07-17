@@ -40,6 +40,16 @@ you (the doer) apply the edits in Steps 3–5 from their reports; then in Step 6
 reviewer subagents, one after the other, that independently verify and fix the result. Finish with
 the report and the commit blocks.
 
+> **Branch guard (step 0):** run `git branch --show-current`. ROADMAP.md commits on whatever branch
+> is currently active — a feature branch is the normal case; name it in the final report. If you are
+> on **`main`**, stop and ask Victor which branch to use — `main` never receives direct commits.
+
+> **Verifiable reads (CLAUDE.md non-negotiable):** `notes/coverage.md` is near the Read tool's
+> silent 2000-line truncation limit. Subagent 2a and Reviewer 2 must run `wc -l` on it before
+> reading, use `offset` passes to the real end if needed, and state **"N lines, read to EOF"** in
+> their report — treat a report without that line as unusable (re-dispatch once; if it fails again,
+> flag it in the self-report instead of merging from a possibly truncated read).
+
 First read `notes/prompts/strategy/tracking/_roadmap-standard.md` — the stable ROADMAP contract this
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
@@ -99,9 +109,11 @@ Launch **both** `general-purpose` subagents in a single message so they run in p
 > Also return, verbatim, the SQL topic list from coverage.md's SQL section (topic names + any
 > in/out-of-scope markers) — the doer needs it to reconcile a table without opening coverage.md.
 >
+> Run `wc -l notes/coverage.md` before reading it (silent 2000-line Read truncation — use `offset`
+> passes if needed) and include "N lines, read to EOF" in your report.
 > Return **only**: (1) the uncovered-concept list, one line per concept, grouped by topic; (2) the
-> borderline group (may be empty); (3) the SQL topic list. No excerpts of covered material, no
-> reasoning trace.
+> borderline group (may be empty); (3) the SQL topic list; (4) the read-to-EOF line. No excerpts of
+> covered material, no reasoning trace.
 
 **Subagent 2b — active project summary.** Its instruction:
 
@@ -249,8 +261,11 @@ NOT open PROGRESS.md or coverage.md; its checks don't need them). Its instructio
 > 5. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if PROGRESS.md shows its
 >    goals complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
 >
-> Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` — no file
-> excerpts, no reasoning trace. If everything passed with no fixes, say so explicitly.
+> Run `wc -l notes/coverage.md` before reading it (silent 2000-line Read truncation — use `offset`
+> passes if needed) and include "N lines, read to EOF" in your report.
+> Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` plus the
+> read-to-EOF line — no file excerpts, no reasoning trace. If everything passed with no fixes, say
+> so explicitly.
 
 Fold both reviewers' fixes and findings into the report below.
 
@@ -284,7 +299,8 @@ If any phase was newly promoted to ✅ in this review, add this reminder:
 "Phase X is now closed — if a project also finished, update PROGRESS.md's project table and
 CLAUDE.md's 'Current study progress' section too, per CLAUDE.md's instructions."
 
-ROADMAP.md is tracked and lives on `main` per CLAUDE.md. Per the commit-hygiene rule, run
+ROADMAP.md commits on whatever branch is currently active (CLAUDE.md, "Study materials follow the
+active branch", changed 2026-07-14 — `main` only receives merges via PR). Per the commit-hygiene rule, run
 `git status` right before the add and again right before the commit — confirm nothing but
 ROADMAP.md gets staged (`git restore --staged` anything else). Then:
 

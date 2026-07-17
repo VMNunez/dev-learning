@@ -40,6 +40,11 @@ Use MODE wherever the prompt refers to {MODE}.
 
 ---
 
+> **Branch guard (step 0):** run `git branch --show-current`. PROGRESS.md commits on whatever branch
+> is currently active (CLAUDE.md) — a feature branch is the normal case; name it in the final
+> report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
+> direct commits, only merges via PR.
+
 You are the **orchestrator**. You read `PROGRESS.md` once (to learn its structure and what is already
 recorded), dispatch subagents to gather facts, then merge their reports into PROGRESS.md yourself and
 commit. You never read a PLANNING.md directly — the project subagents do that and hand you back a

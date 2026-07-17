@@ -34,6 +34,10 @@ FOCUS = [optional, search mode only — leave BLANK for the normal run. Narrow t
 
 ## Step 0 — Read the current state
 
+> **Branch guard:** run `git branch --show-current`. The evidence file commits on whatever branch is
+> currently active — a feature branch is the normal case. If you are on **`main`**, stop and ask
+> Victor which branch to use — `main` never receives direct commits, only merges via PR.
+
 Read before touching anything:
 1. `notes/prompts/_job-market-evidence.md` — learn its **exact format** (the `### Company — Role · year ·
    source` Raw-posting blocks, the Synthesis frequencies `~N/M`, the footer count) and what is already on file.
@@ -121,5 +125,9 @@ with the mandatory double check:
 2. `git add notes/prompts/_job-market-evidence.md`
 3. `git status` — confirm nothing else is staged (`git restore --staged` anything that is).
 4. `git commit -m "docs: add <N> postings to job-market-evidence — <main stacks/companies>"`
+
+Finally, update this prompt's row in `notes/prompts/_run-tracker.md` (the "Global prompts" table)
+with today's date and commit that file on its own (`docs: run tracker — evidence-intake run`). This
+prompt has no full self-report step, but the tracker row still records that it ran.
 
 [paste your full job offer(s) below this line — only needed in `paste` mode]

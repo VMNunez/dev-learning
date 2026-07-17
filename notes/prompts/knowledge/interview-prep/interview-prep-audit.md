@@ -9,8 +9,8 @@ stages that write nothing:
 
 1. **Market analysis (M)** — a web-backed specialist gathers the *real questions actually asked* of a
    junior for this stack at the target companies, tagged by section, so the Q&A mirrors real interviews.
-2. **Adversarial gap-hunt (G)** — a senior-interviewer hat writes the 12 questions it would really ask
-   and returns, tagged by section, the ones the file still misses.
+2. **Adversarial gap-hunt (G)** — a senior-interviewer hat writes, uncapped, the questions it would
+   really ask and returns, tagged by section, the ones the file still misses.
 3. **Per-section Author (A) → Reviewer (B)** — for each section in turn, a fresh author writes/audits
    just that section (fed its slice of M + G), then an independent reviewer audits just that section
    (realistic, well-worded, Victor's voice, real cited code). Neither commits.
@@ -98,7 +98,20 @@ Use FILE, SECTION, MODE, and DRY_RUN wherever the prompt refers to {FILE}, {SECT
 
 ---
 
-You are the orchestrator for building Victor's interview Q&A, hands-off. First read
+You are the orchestrator for building Victor's interview Q&A, hands-off.
+
+> **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
+> branch is currently active (CLAUDE.md) — a feature branch is the normal case; name it in the final
+> report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
+> direct commits, only merges via PR.
+
+> **Verifiable reads (CLAUDE.md non-negotiable):** any subagent that must read a whole file (G reads
+> the full `en/` Q&A; A and B read both `en/`+`es/` files to locate their section) runs `wc -l`
+> first — the Read tool truncates at 2000 lines **silently** — and reads with `offset` passes to the
+> real end if the file is near or over that. G's report must state **"N lines, read to EOF"** for
+> the Q&A file; treat a G report without it as unusable (re-dispatch once).
+
+First read
 `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` so you know the bar you are
 enforcing. You stay light: you dispatch subagents, wait, and collect — you never hold every topic's
 Q&A in your own context.
@@ -171,13 +184,17 @@ the obvious gaps, not the ones that matter):
 > candidate and the topic is «topic». Read `notes/interview-prep/en/«topic».md` and
 > `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`.
 >
-> Write the **12 questions you would actually ask** to decide whether this candidate really knows
-> «topic» — mix conceptual, decision ("why X over Y"), and pressure/gotcha, and lean on the recurring
-> requirements in the job-market evidence. Then, for each, check whether the file already has a question
-> covering it. Output only the **gaps**: the questions the file does NOT cover, each written as the real
+> Write the questions you would actually ask to decide whether this candidate really knows «topic» —
+> **as many as you genuinely would use; do not stop at a fixed number, be exhaustive** (a capped
+> interviewer finds only the gaps that fit its question budget — a real coverage run proved it: one
+> capped pass returned 13 gaps and looked convergent while uncapped angles found 80+ more). Mix
+> conceptual, decision ("why X over Y"), and pressure/gotcha, and lean on the recurring requirements
+> in the job-market evidence. Then, for each, check whether the file already has a question covering
+> it. Output only the **gaps**: the questions the file does NOT cover, each written as the real
 > interviewer question, tagged with its section and type (Conceptual / Decision / Pressure). Be
-> adversarial — assume the file is incomplete until your 12 questions prove otherwise. Do not edit any
-> file — return only the gap list.
+> adversarial — assume the file is incomplete until your questions prove otherwise. Run `wc -l` on
+> the Q&A file before reading it and state "N lines, read to EOF" in your report. Do not edit any
+> file — return only the gap list and that line, no narrative.
 
 Wait for G and keep its gap list — **also tagged by section**.
 
@@ -257,7 +274,10 @@ the cross-section view, so it belongs here, not in a per-section subagent:
 - **Global priority sanity** — no section is more than half ⭐⭐⭐.
 
 Fix a stray duplicate or ordering issue directly (structural, not authoring). Then commit per
-`{DRY_RUN}` — **one atomic commit for the whole topic** (the `en/` + `es/` pair). This is the only
+`{DRY_RUN}` — **one atomic commit for the whole topic** (the `en/` + `es/` pair). **Safety check
+before committing:** run `git status` before the add and again before the commit — confirm only the
+topic's `en/` + `es/` pair is staged, and `git restore --staged` anything else (a project code file
+left staged from an earlier step has ridden along into a notes commit before). This is the only
 commit; the section subagents never committed.
 
 **Context discipline (matters in `FILE = all`).** Once a topic is committed, condense everything you

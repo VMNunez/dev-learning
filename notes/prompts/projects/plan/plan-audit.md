@@ -82,7 +82,14 @@ Use MODE and PROJECT wherever the prompt refers to {MODE} or {PROJECT}.
 
 ---
 
-You are the orchestrator for building Victor's project plans, hands-off. Do **not** read
+You are the orchestrator for building Victor's project plans, hands-off.
+
+> **Branch guard (step 0):** run `git branch --show-current`. Study/tracking materials commit on
+> whatever branch is currently active (CLAUDE.md) — a feature branch is the normal case; name it in
+> the final report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never
+> receives direct commits, only merges via PR.
+
+ Do **not** read
 `_planning-standard.md`, the plan itself, or any project file — the subagents read those (each only the
 slice its task needs); loading them here bloats the orchestrator's context for no benefit. Follow the
 branch for `{MODE}`. You stay light: you dispatch subagents, wait, and collect — you never write or
@@ -206,7 +213,9 @@ The specialist reviewers left every fix in the working tree; **the orchestrator 
 (review mode) the history-preservation gate ended the run in a failed state, do NOT commit — leave the
 working tree as-is and report what failed and why.
 
-Otherwise commit now:
+Otherwise commit now — with the safety check first: run `git status` before the add and again before
+the commit, confirm only the intended files are staged (`git restore --staged` anything else — a
+project code file left staged from an earlier step must never ride along):
 - **`new` mode** (the author left ROADMAP.md + PROGRESS.md in the working tree with the plan): `git add
   {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
   `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.

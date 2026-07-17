@@ -68,7 +68,14 @@ Use PROJECT_PATH and DRY_RUN wherever the prompt refers to {PROJECT_PATH} and {D
 
 ---
 
-You are the orchestrator for the portfolio gate, hands-off. First read
+You are the orchestrator for the portfolio gate, hands-off.
+
+> **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
+> branch is currently active (CLAUDE.md) — a feature branch is the normal case; name it in the final
+> report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
+> direct commits, only merges via PR.
+
+First read
 `notes/prompts/projects/portfolio/_portfolio-standard.md` so you know the verdict logic, the question
 bar, and the CV / GitHub formats. Then run the procedure below. You stay light on the heavy part: you
 dispatch the two question subagents and wait — you never author the question bank in your own context.
@@ -174,7 +181,10 @@ Print, in this order:
    commands to run **from that repo** (`dev/portfolio/VMNunez`). Omit if ⚠️/❌.
 6. If ✅/⚠️: "Edit `notes/cv/cv-bullets.md` to keep only your chosen bullet before committing."
 
-**If `{DRY_RUN}` = false:** commit atomically. If ✅/⚠️ (cv-bullets was written):
+**If `{DRY_RUN}` = false:** commit atomically — with the safety check first: run `git status` before
+the add and again before the commit, confirm only the intended `notes/` files are staged
+(`git restore --staged` anything else, especially project code left staged from an earlier step).
+If ✅/⚠️ (cv-bullets was written):
 `git add notes/interview-prep/projects/«name».md notes/cv/cv-bullets.md`, then
 `git commit -m "docs: portfolio-audit «name» — <one-line summary + verdict>"`.
 If ❌ (no cv-bullets): `git add notes/interview-prep/projects/«name».md`, then the same commit message.
