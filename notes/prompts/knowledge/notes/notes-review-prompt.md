@@ -46,6 +46,11 @@ end you MUST produce a **section-by-section trace**: list every `##`/`###` headi
 to each, write PASS or the specific fix you made in it. That trace is your proof you read to the end —
 a review without it is not accepted.
 
+> **Verifiable read (CLAUDE.md non-negotiable):** run `wc -l {FILE}` before reading — the Read tool
+> truncates at 2000 lines **silently**; if the file is near or over that, read it in passes with
+> `offset` to the real end. Your report must state **"N lines, read to EOF"**; the orchestrator
+> rejects a review without it.
+
 Before starting, read:
 - notes/prompts/knowledge/notes/_note-quality-standard.md — the bar you audit against, in full.
 - The first section of notes/java/es/08-excepciones.md — the calibration reference for "finished"
@@ -96,6 +101,7 @@ finished English; the Spanish reviewer (C) then commits.
 
 Report your **verdict** for this file:
 - `PASS` (no changes needed) or `FIXED` (with a short bullet list of what you corrected and why).
+- The **"N lines, read to EOF"** line for `{FILE}`.
 - The **section-by-section trace** (every heading → PASS or the fix).
 - The coverage status (✅/🔧/➕) and the files touched (`en/` only).
 

@@ -60,7 +60,11 @@ or {REWRITE_MODE}.
 ---
 
 I want you to do deep work on ONE English notes file: {FILE}. Do only what {TASK} asks — do not wander
-into other files or folder-level work. **You write English only.** You never create or edit the `es/`
+into other files or folder-level work. **Verifiable read (CLAUDE.md non-negotiable):** before reading
+`{FILE}` (or the `es/` for TODO markers), run `wc -l` on it — the Read tool truncates at 2000 lines
+silently; if a file is near or over that, read it in passes with `offset` to the real end, and state
+**"N lines, read to EOF"** in your report for every file you had to process end-to-end. **You write
+English only.** You never create or edit the `es/`
 file — a later stage translates your finished English. Your single deliverable is a `{FILE}` that is at
 the full standard in English.
 
@@ -204,6 +208,7 @@ After a first-pass run, note in the summary that the file is now validated so Vi
 You never commit and never mark the worklist row — later stages (T translates, C commits) own that.
 Leave your English work in the working tree and report:
 
+- The **"N lines, read to EOF"** line for every file you processed end-to-end.
 - The file's coverage status (✅ Complete / 🔧 Fixed / ➕ Added, from the standard).
 - A short summary of what changed in `{FILE}`, and **which sections you touched** — the translator
   needs this to know what to (re)translate in the `es/`.

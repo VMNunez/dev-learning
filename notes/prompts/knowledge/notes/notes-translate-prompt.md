@@ -42,6 +42,12 @@ natural-Spanish mirror. If the `es/` already exists, **re-sync it** to the curre
 every section, code block, table, and callout so the two match exactly, and clear any leftover `TODO:`
 marker Victor wrote in the `es/` (the English author already resolved the doubt in `{FILE}`).
 
+> **Verifiable read (CLAUDE.md non-negotiable):** run `wc -l` on `{FILE}` (and the existing `es/`, if
+> any) before reading — the Read tool truncates at 2000 lines **silently**; a truncated read here means
+> a silently missing tail in the translation. If a file is near or over 2000 lines, read it in passes
+> with `offset` to the real end. Your report must state **"N lines, read to EOF"** for each file read
+> whole; the orchestrator rejects a report without it.
+
 Before starting, read:
 - `{FILE}` — the canonical English source (your input, do not change it).
 - The existing `es/` counterpart, if any (you are re-syncing it, not starting blind).
@@ -85,6 +91,7 @@ reached the last line instead of stopping at the middle of the file.
 cold, polishes naturalness, and owns the single atomic commit. Leave the `es/` file in the working
 tree and report:
 - `TRANSLATED` (created the `es/`) or `RE-SYNCED` (updated an existing `es/`).
+- The **"N lines, read to EOF"** line for `{FILE}` (and the prior `es/`, if read).
 - The section-by-section trace.
 - The CLAUDE.md "next file:" counter is the author's to bump — you never touch it.
 - Any English sentence you believe is wrong (for a follow-up author run — you did **not** change it).

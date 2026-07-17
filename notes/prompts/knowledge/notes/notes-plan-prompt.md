@@ -139,8 +139,14 @@ ceiling — do not plan files for topics not listed there. If no `coverage.md` e
 below and your knowledge of what junior Angular + Spring Boot interviews at Spanish consultancies
 require.
 
-Then read all numbered files in `{NOTES_PATH}` (skip `future-learning.md`, `coverage.md`,
-`layer-reference.md`, and anything not starting with a two-digit number). When NOTES_PATH lists a
+Then survey every numbered file in `{NOTES_PATH}` (skip `future-learning.md`, `coverage.md`,
+`layer-reference.md`, and anything not starting with a two-digit number) — **at headings level, not
+full prose**: for each file, read its heading structure (`grep -n "^##" <file>`) plus its opening
+section, enough to know what it covers and how it hands off. Do NOT load every file's full body into
+this one context — gap and sequence analysis needs the map, not the prose, and full-folder reads are
+exactly the attention saturation this pipeline splits stages to avoid (per-file depth belongs to the
+inspectors). Open a file's body only where the headings leave a genuine doubt about whether a
+coverage item is present. When NOTES_PATH lists a
 read-only context folder, you still read it here — that is the whole point of reading it (correct
 gap-placement, cross-links) — but any new file or section you plan below belongs in the **audit
 target** folder, never in the context folder.

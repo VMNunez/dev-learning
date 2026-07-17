@@ -44,6 +44,11 @@ version — your judgment must come from the Spanish text alone, the way Victor 
 **This prompt audits exactly ONE `es/` file — never a batch.** Read it **in full, top to bottom** —
 do not skim, do not stop early, reach the last line.
 
+> **Verifiable read (CLAUDE.md non-negotiable):** run `wc -l` on the `es/` file before reading — the
+> Read tool truncates at 2000 lines **silently**; if it is near or over that, read it in passes with
+> `offset` to the real end. Your report must state **"N lines, read to EOF"**; the orchestrator
+> rejects a report without it.
+
 Before starting, read:
 - `notes/prompts/knowledge/notes/_note-quality-standard.md` — the bar (bilingual rules, voice, signature
   texture), in full.
@@ -110,6 +115,7 @@ You are the last stage in the chain, so you own the single atomic commit for thi
 
 Then report your **verdict**:
 - `PASS` (no changes) or `FIXED` (bullet list of the Spanish fixes).
+- The **"N lines, read to EOF"** line for the `es/` file.
 - Any **structural gaps** you could not fix (for a follow-up author run).
 - Files touched (`es/` only, unless you committed), and — if committed — the commit hash.
 

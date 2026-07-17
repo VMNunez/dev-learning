@@ -28,10 +28,11 @@ author) · `notes-review-prompt.md` (English reviewer) · `notes-translate-promp
 > orchestrators offer: the history is atomic and git-reversible, so a bad file is one
 > `git revert` away rather than something to catch before it lands.
 >
-> **Branch guard (step 0, before dispatching anything):** run `git branch --show-current`. Notes live
-> on `main` (CLAUDE.md, "SQL and study materials live on main"); if the current branch is a project
-> feature branch, stop and ask Victor whether to switch or proceed — never silently stack dozens of
-> notes commits onto a portfolio feature branch.
+> **Branch guard (step 0, before dispatching anything):** run `git branch --show-current`. Study
+> materials commit on **whatever branch is currently active** (CLAUDE.md, "Study materials follow the
+> active branch", changed 2026-07-14) — a feature branch is the normal, expected case; just name the
+> branch in the final report. The one branch that must stop the run is **`main`**: it never receives
+> direct commits, only merges via PR — if you are on `main`, stop and ask Victor which branch to use.
 
 ---
 
@@ -96,19 +97,23 @@ Use SCOPE, TOPIC, FILE, and TASK wherever the prompt refers to {SCOPE}, {TOPIC},
 You are the orchestrator for building Victor's study notes, hands-off. First read
 `notes/prompts/knowledge/notes/_note-quality-standard.md` so you know the bar you are enforcing. Then follow
 the branch for `{SCOPE}`. You stay light: you dispatch subagents, wait, and collect — you never hold
-every file's content in your own context.
+every file's content in your own context. Ask every subagent for a **concise** report (its verdict,
+trace, EOF line, and files touched — no prose recaps); once you have verified a stage's trace and moved
+on, you never need that trace again — carry only the per-row status forward into the final report.
 
 ## Model policy — per-stage, to protect quality while saving tokens
 
 Pass an explicit `model` override on **every** subagent dispatch, matched to how much deep reasoning
-the stage needs. Quality lives in authoring mechanism-deep prose (A) and in catching subtle bugs and
-false facts (B) — keep those on **Opus**. Translation and calque/link-fixing (T, C) and judging against
-a fixed standard (planner, inspectors) are lighter — run those on **Sonnet** (~1/5 the cost).
+the stage needs. Quality lives in authoring mechanism-deep prose (A), in catching subtle bugs and
+false facts (B), and in judging existing files against the standard (the inspectors — their own prompt
+calls it "the heaviest attention work", and a `CLEAN` verdict closes a file with no Opus stage ever
+seeing it) — keep those on **Opus**. Translation and calque/link-fixing (T, C) and the planner's
+mechanical folder survey are lighter — run those on **Sonnet** (~1/5 the cost).
 
 | Stage | Dispatch `model:` |
 |-------|-------------------|
 | Planner (Phase 1) | `sonnet` |
-| Inspectors (Phase 1.5) | `sonnet` |
+| **Inspectors (Phase 1.5)** | **`opus`** |
 | **A — English author** | **`opus`** |
 | **B — English reviewer** | **`opus`** |
 | T — translator | `sonnet` |
@@ -116,7 +121,7 @@ a fixed standard (planner, inspectors) are lighter — run those on **Sonnet** (
 
 This is the default. If Victor says "run the whole thing on Sonnet" (max token saving, accept some risk
 on the deep catches), pass `sonnet` everywhere instead and note it in the final report. Never silently
-drop A/B below Opus — that is the one downgrade that costs quality.
+drop A/B or the inspectors below Opus — those are the downgrades that cost quality.
 
 ## If SCOPE = folder and TOPIC = all
 
@@ -154,7 +159,7 @@ file is judged at full attention in its own cold context (never a batch — that
 split exists to prevent).
 
 Read the "Existing files to inspect" list from the worklist. For **each** file in it, **in order**,
-launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false` (never overlap them — they all
+launch one `general-purpose` subagent, `model: opus`, `run_in_background: false` (never overlap them — they all
 append to the same worklist file and parallel writes would race):
 
 > Read `notes/prompts/knowledge/notes/notes-inspect-prompt.md` and execute it in full for a single file:
@@ -262,10 +267,14 @@ Wait for C before starting anything else.
 
 **Verify every trace — the trace is a gate, not decoration (orchestrator).** B, T, and C — and A
 whenever `REWRITE_MODE = first-pass` (unvalidated content is where a skipped tail hurts most) — must each
-return a section-by-section trace (every `##`/`###` heading with PASS or the fix made). After each of
-those stages, before launching the next, check its trace against the file's actual headings: a trace
-that is missing or skips headings means that stage did NOT do a full pass — re-dispatch that same stage
-**once**, naming the headings that lack a trace line. One retry maximum; if the trace is still
+return a section-by-section trace (every `##`/`###` heading with PASS or the fix made) **and the line
+"N lines, read to EOF"** for the file it processed (CLAUDE.md, whole-file reads must be verifiable —
+the Read tool truncates at 2000 lines silently, and some notes already exceed that). After each of
+those stages, before launching the next, check its trace against the file's actual headings — get them
+with `grep -n "^##" <file>` (never with another Read, which can truncate exactly like the one you are
+auditing): a trace that is missing, skips headings, or comes without the "read to EOF" line means that
+stage did NOT do a verifiable full pass — re-dispatch that same stage **once**, naming the headings
+that lack a trace line (or demanding the EOF line). One retry maximum; if the trace is still
 incomplete, mark the row **"unverified"** in the final report (never treat a traceless stage as a full
 pass) and move on. For C — which has already committed — a re-dispatch that produces fixes commits them
 as a small follow-up commit for the same file.
@@ -295,6 +304,10 @@ build), leave the worklist in place and list the failed row so it can be re-run 
   and, when reviewing/auditing, return a **section-by-section trace** (every `##`/`###` heading with
   PASS or the fix made) as proof it reached the last line. If you are ever tempted to "save spawns" by
   handing one subagent a batch of files, that is the mistake — do not.
+- **Full reads must be verifiable (CLAUDE.md non-negotiable).** Every per-file subagent runs `wc -l`
+  on its file before reading; if the file is near or over 2000 lines it reads in passes with `offset`
+  to the real end, and every report states **"N lines, read to EOF"**. The orchestrator rejects a
+  report that lacks this line for a file the stage had to read whole (see the trace gate above).
 - **Auto-commit is authorized for this flow only.** Victor's global rule is "never auto-commit"; he
   lifted it for this orchestrator, which always commits. The Spanish reviewer subagent (stage C) commits
   each file. It applies nowhere else — normal sessions and standalone component prompts still hand Victor

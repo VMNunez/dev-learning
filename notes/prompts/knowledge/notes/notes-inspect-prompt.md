@@ -53,6 +53,11 @@ alone.
 A folder loaded into one context is what makes an inspector skim the tail; that is why inspection is
 one file per subagent.
 
+> **Verifiable read (CLAUDE.md non-negotiable):** before reading, run `wc -l` on `{FILE}` and its
+> `es/` counterpart. The Read tool truncates at 2000 lines **silently** — if a file is near or over
+> that, read it in passes with `offset` until the real end. Your report must state **"N lines, read
+> to EOF"** for each file read whole; the orchestrator rejects a report without it.
+
 Before starting, read:
 - `notes/prompts/knowledge/notes/_note-quality-standard.md` — the bar you judge against, in full.
 - The first section of `notes/java/es/08-excepciones.md` — the calibration reference for "finished".
@@ -136,10 +141,11 @@ work to leave a mark.
 ## Output — report
 
 Print, in this order:
-1. The **section-by-section trace** (every heading → PASS or shortfall).
-2. **Verdict:** `CLEAN` (no rows appended) or `FLAGGED` (list the rows you appended/merged and the
+1. The **"N lines, read to EOF"** line for `{FILE}` (and its `es/`, if read).
+2. The **section-by-section trace** (every heading → PASS or shortfall).
+3. **Verdict:** `CLEAN` (no rows appended) or `FLAGGED` (list the rows you appended/merged and the
    rule each violates).
-3. The files touched — only `{WORKLIST}` (or none if CLEAN).
+4. The files touched — only `{WORKLIST}` (or none if CLEAN).
 
 Do not commit anything. `{WORKLIST}` is a temporary work artifact and is never committed.
 
