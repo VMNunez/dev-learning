@@ -6,8 +6,16 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 
 > **▶ Run first:** `coverage-prompt` for every topic — this is the global convergence pass; run it once each topic already has its own `coverage.md`.
 
+> **Gate — check the run tracker before anything else (step 0).** Read
+> `notes/prompts/_run-tracker.md` and look at the **coverage-prompt column**: this audit only runs
+> once **every topic** has a run date there. A topic's `coverage.md` merely *existing* does not count
+> — the old files predate `coverage-prompt`, so only a tracker date proves the current prompt
+> produced/refreshed it. If any cell in the column is empty, **stop without auditing** and report the
+> pending topics ("run `coverage-prompt` on: …") so Victor knows exactly what is left.
+
 **When to run:**
-- After all individual `{topic}/coverage.md` files have been created with `coverage-prompt.md`
+- After all individual `{topic}/coverage.md` files have been created with `coverage-prompt.md` —
+  verified via the run tracker (see the gate above), never by the files' mere existence
 - After completing a major project (08, 09...) when scope may have expanded
 - When you suspect a topic is missing or a section is thin
 

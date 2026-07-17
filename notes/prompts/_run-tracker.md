@@ -11,25 +11,28 @@ the run date and a short scope note, and commits both files together. Victor nev
 (though he may correct it).
 
 **How to read it:** each cell is the **date of the last completed run** on that target, with a scope
-note when the run was partial. An empty cell means *never run* (or run before this tracker existed,
-2026-07-17 — cells known from surviving reports are pre-filled).
+note when the run was partial. An empty cell means **pending** — the current version of that prompt
+has not been run on that target. Output files that predate the prompt (e.g. the old `coverage.md`
+files created before `coverage-prompt` existed) do NOT count as runs — the cell stays empty until the
+prompt itself has been executed. Prompts may read this file as a gate (e.g. `coverage-audit` only
+runs once the whole coverage-prompt column is filled).
 
 ## Per-topic prompts
 
 | Topic | coverage-prompt | notes-audit | interview-prep-audit |
 |---|---|---|---|
-| Angular | ✔ pre-tracker | | |
-| Angular Material | ✔ pre-tracker | | |
+| Angular | | | |
+| Angular Material | | | |
 | Spring Boot | 2026-07-13 | 2026-07-15 | |
-| Java | ✔ pre-tracker | | |
-| Architecture | ✔ pre-tracker | | |
-| Security | ✔ pre-tracker | | |
-| TypeScript | ✔ pre-tracker | | |
-| JavaScript | ✔ pre-tracker | | |
-| CSS | ✔ pre-tracker | | |
-| SQL | ✔ pre-tracker | | |
-| Git | ✔ pre-tracker | | |
-| General | ✔ pre-tracker | | |
+| Java | | | |
+| Architecture | | | |
+| Security | | | |
+| TypeScript | | | |
+| JavaScript | | | |
+| CSS | | | |
+| SQL | | | |
+| Git | | | |
+| General | | | |
 
 ## Per-project prompts
 
