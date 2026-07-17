@@ -43,7 +43,7 @@ this prompt. Projects and notes are vehicles to reach the objective — they do 
 
 Also read `notes/prompts/_job-market-evidence.md` — real postings from the target companies. When it
 has evidence, its Synthesis is a **required floor**: every recurring requirement must map to coverage
-somewhere. The **adversarial interviewer pass** (a cold subagent writes the 12 questions it would ask
+somewhere. The **adversarial interviewer pass** (a cold subagent writes, uncapped, the questions it would ask
 and reports the gaps) is not optional or per-doubt here — it runs for every topic as **Analyst C** in
 the per-topic loop (see the Execution model), the fastest way to prove a section is complete rather than
 assume it.
@@ -75,7 +75,7 @@ judged one section at a time.
 |---------|-------|---------|---------|---------|
 | **A — Market-fit** | per topic | Step 2b | Does coverage meet what the market asks for this topic? | Gap list: recurring requirement (with freq) → the item it needs, in the standard's format, tagged by section. Plus over-coverage flags. |
 | **B — Internal quality** | per topic | Step 3 | Does each existing item pass the standard's quality bar? | Gap list: missing item type, missing confusable-pair side, dictionary-definition rewrites, AI-exploitable gaps — each as a proposed item/edit, tagged by section. Plus an **item-by-item trace** (every current item listed PASS or change) as proof it read the whole section. |
-| **C — Adversarial interviewer** | per topic | Step 4a | Would a real interviewer find a hole? | Gap list: of the 12 questions it would ask, the ones coverage does NOT support, each as a proposed item tagged by section. |
+| **C — Adversarial interviewer** | per topic | Step 4a | Would a real interviewer find a hole? | Gap list: of the questions it would ask (uncapped), the ones coverage does NOT support, each as a proposed item tagged by section. |
 | **D — Cross-topic consistency** | global (once) | Step 4 | Do the sections overlap, misplace, or carry post-junior items? | Three lists: duplicates (concept → the two sections + which to keep), misplaced items (concept → from → to), and scope-demotion candidates (item → why post-junior). Reads all sections; edits nothing. |
 
 Rules for the analyst split:
@@ -110,7 +110,7 @@ present" passes** are lighter and run on Sonnet (~1/5 the cost).
 | **Orchestrator (this context / session)** | **Opus** | It is the only editor — it word-crafts every applied item to the standard. Run the session on Opus. |
 | A — Market-fit | `sonnet` | Web-search + map evidence→items; the Opus orchestrator judges each proposed item before applying. |
 | B — Internal quality | `sonnet` | Runs a fixed checklist over existing items + an item-by-item trace — verification, not generation. |
-| **C — Adversarial interviewer** | **`opus`** | Writing the 12 hardest questions and spotting the hole coverage misses is the deepest reasoning in the audit. |
+| **C — Adversarial interviewer** | **`opus`** | Writing the hardest questions (uncapped) and spotting the hole coverage misses is the deepest reasoning in the audit. |
 | D — Cross-topic consistency | `sonnet` | Pattern-matches duplicates / misplaced / post-junior items across sections — verification. |
 
 Never drop C below Opus (it is the pass that proves a section complete) and never drop the orchestrator
@@ -122,9 +122,11 @@ one non-negotiable Opus roles are the session and Analyst C.
    (`run_in_background: false`). Dispatch each one by
    telling it to read its mandate section in this prompt (A → Step 2b, B → Step 3, C → Step 4a) with
    {TOPIC} filled in, plus only the files its concern needs (listed in the analyst-split rules above).
-   Collect their three lists. **Acceptance check per analyst:** B must return its item-by-item trace;
-   A must map each recurring evidence requirement to the item that covers it (or a gap); C must list
-   all 12 of its questions, each marked SUPPORTED or GAP. If a report is missing its proof or is
+   Collect their three lists. **Acceptance check per analyst:** every report must carry the
+   "N lines, read to EOF" line for each file it read whole (see the verifiable-reads rule in
+   Step 1); B must return its item-by-item trace; A must map each recurring evidence requirement to
+   the item that covers it (or a gap); C must list every question it generated (uncapped — see its
+   mandate), each marked SUPPORTED or GAP. If a report is missing its proof or is
    unusable, re-dispatch that analyst **once**, naming what was missing; if it fails again, flag the
    topic as partially analysed in the summary and continue — never treat a proofless report as a full
    pass.
@@ -160,6 +162,15 @@ Any change to `notes/coverage.md` must immediately be reflected in the correspon
 ---
 
 ## Step 1 — Read the system state
+
+> **Verifiable reads (CLAUDE.md non-negotiable) — applies to every whole-file read in this audit,
+> by the orchestrator and by every analyst.** The Read tool truncates at 2000 lines **silently**,
+> and `notes/coverage.md` is already near that limit and grows on every run — a truncated read here
+> means the tail topics (SQL, Git, General) silently vanish from the pre-audit sync, from Analyst
+> D's global pass, and from the Step 5 sync verification. Before reading any file end-to-end, run
+> `wc -l`; if it is near or over 2000 lines, read it in passes with `offset` to the real end. Every
+> analyst report and the final summary must state **"N lines, read to EOF"** for each file read
+> whole — a report without it fails its acceptance check.
 
 Read these files before making any decision:
 
@@ -284,15 +295,18 @@ section. Analyst C **returns a gap list** and edits nothing.
 
 You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
 `notes/prompts/_shared-context.md` for the exact role/companies, and
-`notes/prompts/_job-market-evidence.md` for what they hire for). You have 30 minutes with a candidate
+`notes/prompts/_job-market-evidence.md` for what they hire for). You are screening a candidate
 at the target level and the topic is {TOPIC}. Read that topic's `notes/{topic}/coverage.md` (and its
 section in `notes/coverage.md` if the topic file is missing) plus
 `notes/prompts/knowledge/coverage/_coverage-standard.md`.
 
-Write the **12 questions you would actually ask** to decide whether this candidate really knows
-{TOPIC} — mix conceptual, decision ("why X over Y"), and pressure/gotcha questions, and lean on the
-recurring requirements in the job-market evidence. Then, for each question, check whether the current
-coverage gives the candidate what they'd need to answer it. Return only the **gaps**: the questions the
+Write the questions you would actually ask to decide whether this candidate really knows {TOPIC} —
+**as many as you genuinely would use; do not stop at a fixed number, be exhaustive** (a capped
+interviewer finds only the gaps that fit inside its question budget — a real `coverage-prompt` run
+proved it: one capped interviewer returned 13 gaps and looked convergent while further uncapped
+angles found 80+ more). Mix conceptual, decision ("why X over Y"), and pressure/gotcha questions,
+and lean on the recurring requirements in the job-market evidence. Then, for each question, check
+whether the current coverage gives the candidate what they'd need to answer it. Return only the **gaps**: the questions the
 coverage does NOT support, each as a proposed coverage item in the standard's format
 (`concept — interview-anchored sentence`), tagged with its section. Do not rewrite existing items, do
 not edit any file. Be adversarial — assume the coverage is incomplete until your 12 questions prove
@@ -325,7 +339,9 @@ survivors in Step 5.
 > 3. **Scope-demotion candidates** — items clearly post-junior for the target role (mid-level
 >    architecture, senior performance work). For each: `item — one-line why it is post-junior`. Read
 >    ROADMAP.md and `notes/prompts/_shared-context.md` for the target level.
-> Do not edit any file. Return only the three lists.
+> Do not edit any file. Before reading `notes/coverage.md`, run `wc -l` on it — it is near the Read
+> tool's silent 2000-line truncation limit; if needed, read it in `offset` passes to the real end,
+> and state "N lines, read to EOF" in your report. Return only the three lists plus that line.
 
 The orchestrator then applies the surviving findings in Step 5: remove the losing side of each duplicate,
 move each misplaced item to the correct section (updating both files), and demote each confirmed

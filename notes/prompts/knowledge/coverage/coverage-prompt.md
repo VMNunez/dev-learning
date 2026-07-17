@@ -126,6 +126,14 @@ This differs from `notes-audit` on purpose: there the session/orchestrator was l
 
 ## Step 1 — Read the existing state
 
+> **Verifiable reads (CLAUDE.md non-negotiable) — applies to every whole-file read in this prompt.**
+> The Read tool truncates at 2000 lines **silently**, and `notes/coverage.md` is already near that
+> limit and grows on every run. Before reading any file end-to-end (`coverage.md` files, Step 4b's
+> sync and verify), run `wc -l` on it; if it is near or over 2000 lines, read it in passes with
+> `offset` to the real end. State **"N lines, read to EOF"** in the final summary for
+> `notes/coverage.md` — a truncated read there makes the Step 4b sync-verify pass on a half-read
+> file.
+
 Before reading any file, re-read the configuration block above — some topics have additional
 reading instructions (e.g. Spring Boot requires reading `notes/java/` in step 1.3 as well).
 
@@ -135,10 +143,14 @@ Read these files before making any decision:
    items without a clear reason.
 2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
    in-scope given the job target read from ROADMAP + `_shared-context` (role, deadline).
-3. All numbered note files in `{NOTES_PATH}en/` — read them to understand what has been studied
-   and what examples already exist. This is context, not the source of coverage decisions.
-   Skip `future-learning.md` and `coverage.md` in this pass. (Note: the numbered files live in
-   the `en/` subfolder; `coverage.md` and `future-learning.md` live in the topic root.)
+3. The numbered note files in `{NOTES_PATH}en/` — **surveyed at headings level, not full prose**:
+   for each file, read its heading structure (`grep -n "^##" <file>`) plus its opening section,
+   enough to know what has been studied and which examples exist. This is context, not the source
+   of coverage decisions, so the map is enough — loading every file's full body into the same
+   context that must then word-craft every coverage item is the whole-folder saturation the notes
+   pipeline splits stages to avoid. Open a file's body only where the headings leave a genuine
+   doubt. Skip `future-learning.md` and `coverage.md` in this pass. (Note: the numbered files live
+   in the `en/` subfolder; `coverage.md` and `future-learning.md` live in the topic root.)
 4. When updating an existing `coverage.md`, touch only the items that are new, wrong, or
    being promoted/demoted. Leave correct existing bullets untouched, word for word — an
    unprompted reword of unrelated items makes the resulting commit noisy and hard to review.
@@ -384,7 +396,9 @@ keep it in the topic where an interviewer is most likely to ask it, and mention 
 the final summary instead of duplicating the item.
 
 **Verify the sync before reporting done:**
-Re-read the {TOPIC} section in `notes/coverage.md` and the full content of
+Check `wc -l notes/coverage.md` first and read to the real end (`offset` passes if near/over 2000
+lines — see the verifiable-reads rule in Step 1); a truncated read here silently passes a broken
+sync. Re-read the {TOPIC} section in `notes/coverage.md` and the full content of
 `{NOTES_PATH}coverage.md` side by side. Confirm every bullet matches exactly — only the
 heading levels should differ (`#` → `##`, `##` → `###`). If anything differs, fix
 `notes/coverage.md` now, before moving to Step 5.
