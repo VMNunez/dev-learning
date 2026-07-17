@@ -26,17 +26,28 @@ Then five bullets, one line each — honest, including "nothing to report":
    worked around during the run.
 5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
 
+## Update the run tracker
+
+After writing the report, update `notes/prompts/_run-tracker.md` — the permanent ledger of which
+targets each prompt has covered. Find your orchestrator's column (or row, for global prompts) and set
+the cell for this run's target to today's date, with a short parenthetical if the run was partial
+(e.g. "backend only", "scoped to `notes/spring-boot/`"). Overwrite the cell's previous date — the
+tracker records the *last* run per target, not a history. If the run covered several targets (a
+`TOPIC = all` batch), update every cell it actually finished — never a cell for a target that was
+planned but not completed.
+
 ## How to commit it
 
-The file is prompt-system machinery under `notes/prompts/`, so **commit it directly** (the
+Both files are prompt-system machinery under `notes/prompts/`, so **commit them directly** (the
 notes/prompts exception — this applies even in pipelines whose main output is never auto-committed,
-like `readme-audit`): `git status` → stage **only** the report file → `git status` again → commit
-`docs: pipeline self-report for <orchestrator> run on <target>`. Never bundle it into the pipeline's
-content commit. Also print the five bullets in chat.
+like `readme-audit`): `git status` → stage **only** the report file and `_run-tracker.md` →
+`git status` again → commit
+`docs: pipeline self-report for <orchestrator> run on <target>`. Never bundle them into the
+pipeline's content commit. Also print the five bullets in chat.
 
 ## How it gets used
 
 In a later main session, Victor mentions the run; Claude reads the report file and decides whether
 the orchestrator's prompt needs a change. Clean report → prompts stay frozen. (Two pipelines carry
-their own tailored version of this step — same contract, same Verdict criterion: `review-audit.md`
-and `readme-audit.md`.)
+their own tailored version of this step — same contract, same Verdict criterion, and the same
+`_run-tracker.md` update: `review-audit.md` and `readme-audit.md`.)
