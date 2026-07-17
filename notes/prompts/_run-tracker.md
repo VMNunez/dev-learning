@@ -20,7 +20,7 @@ note when the run was partial. An empty cell means *never run* (or run before th
 |---|---|---|---|
 | Angular | | | |
 | Angular Material | | | |
-| Spring Boot | 2026-07-13 | 2026-07-15 (scoped to `notes/spring-boot/` only — `notes/java/` rows deferred) | |
+| Spring Boot | 2026-07-13 | 2026-07-15 | |
 | Java | | | |
 | Architecture | | | |
 | Security | | | |
