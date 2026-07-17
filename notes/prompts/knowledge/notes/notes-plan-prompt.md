@@ -40,9 +40,18 @@ NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | n
 ## its own TOPIC = all into single topics before calling this planner). It never runs batched itself.
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/java/en/, notes/spring-boot/en/ (comma-separated — read both,
-  because Spring Boot code uses Java language concepts). Both folders use structured mode.
+- Spring Boot: set NOTES_PATH = notes/java/en/, notes/spring-boot/en/ (comma-separated). Both folders
+  use structured mode, but they play DIFFERENT roles here. `notes/spring-boot/en/` is the **audit
+  target** (the folder whose name matches TOPIC): you plan gaps for it, check its `es/` parity, and
+  list its files to inspect. `notes/java/en/` is **read-only context**: you read it so gap-placement
+  is correct (a language concept belongs in `java/`, a framework concept in `spring-boot/`) and so
+  Spring Boot notes can link to Java concepts instead of re-teaching them — but you never plan,
+  inspect, migrate, or add `es`-parity rows for it here. Java is audited on its own `TOPIC = Java` run;
+  auditing it as part of Spring Boot would rebuild the whole Java folder (a scope blow-up) and, in a
+  `TOPIC = all` batch, would audit Java twice.
   coverage.md lives in notes/spring-boot/ root only — read it from there, not from notes/java/.
+  → **General rule for multi-folder NOTES_PATH:** only the folder whose name matches TOPIC is the audit
+  target; every other folder listed is read-only context — read it, never plan/inspect/migrate it.
 - Java: focus on language concepts needed to write Spring Boot code — classes, interfaces,
   annotations, generics, exceptions, Maven. Skip Java concepts that don't appear in a Spring Boot context.
 - SQL: database is PostgreSQL. Flag any PostgreSQL-specific detail consultancies would ask about
@@ -76,6 +85,11 @@ Before starting, read:
 
 Before anything else, check whether the bilingual folder structure is in place. These are
 deterministic, verifiable operations — do them directly.
+
+> **Scope:** every Step 0 operation (migration, `es/` parity, `create-es` rows) applies to the **audit
+> target** folder only — the one whose name matches TOPIC. When NOTES_PATH lists a read-only context
+> folder too (e.g. `notes/java/en/` on a Spring Boot run), never migrate it or add parity rows for it;
+> it is audited on its own topic run.
 
 **1. Migrate numbered files from the topic root to `en/`.**
 Check whether there are numbered `.md` files sitting directly in the topic root (e.g.
@@ -126,7 +140,10 @@ below and your knowledge of what junior Angular + Spring Boot interviews at Span
 require.
 
 Then read all numbered files in `{NOTES_PATH}` (skip `future-learning.md`, `coverage.md`,
-`layer-reference.md`, and anything not starting with a two-digit number).
+`layer-reference.md`, and anything not starting with a two-digit number). When NOTES_PATH lists a
+read-only context folder, you still read it here — that is the whole point of reading it (correct
+gap-placement, cross-links) — but any new file or section you plan below belongs in the **audit
+target** folder, never in the context folder.
 
 1. **Missing fundamentals (rule 1).** Identify fundamental concepts missing that a Spanish
    consultancy would use to filter candidates in a first technical screening. One sentence per gap
@@ -162,9 +179,13 @@ you finish. Each inspector reads its single file in full and appends its own `fi
 
 So here you only **list** the pre-existing numbered files that must be inspected — do not open them
 against the checklist, do not write any `fix-quality` or `add-docs-link` rows yourself. Under the
-"Existing files to inspect" heading of the worklist, print every numbered `.md` file currently in
-`{NOTES_PATH}` (skip `future-learning.md`, `coverage.md`, `layer-reference.md`, and anything not
-starting with a two-digit number). The orchestrator dispatches one inspector per listed file.
+"Existing files to inspect" heading of the worklist, print every numbered `.md` file currently in the
+**audit target** folder — the one whose name matches TOPIC (skip `future-learning.md`, `coverage.md`,
+`layer-reference.md`, and anything not starting with a two-digit number). **Do NOT list files from a
+read-only context folder** — e.g. on a Spring Boot run, list the files in `notes/spring-boot/en/`
+only, never the `notes/java/en/` files (those are inspected on their own `TOPIC = Java` run). The
+orchestrator dispatches one inspector per listed file, so a file listed here is a file that gets
+rebuilt — listing the context folder is exactly the scope blow-up this split prevents.
 
 > Files you plan as **new** (`create-file` / `create-es` rows) are NOT inspected — they are authored
 > and reviewed fresh, so they never appear in the inspect list. Only files that already exist do.
