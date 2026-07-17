@@ -13,6 +13,11 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 > produced/refreshed it. If any cell in the column is empty, **stop without auditing** and report the
 > pending topics ("run `coverage-prompt` on: …") so Victor knows exactly what is left.
 
+> **Branch guard (also step 0):** run `git branch --show-current`. Study materials commit on
+> whatever branch is currently active (CLAUDE.md, "Study materials follow the active branch") — a
+> feature branch is the normal case; name it in the final summary. If you are on **`main`**, stop
+> and ask Victor which branch to use — `main` never receives direct commits, only merges via PR.
+
 **When to run:**
 - After all individual `{topic}/coverage.md` files have been created with `coverage-prompt.md` —
   verified via the run tracker (see the gate above), never by the files' mere existence
@@ -129,7 +134,9 @@ one non-negotiable Opus roles are the session and Analyst C.
    mandate), each marked SUPPORTED or GAP. If a report is missing its proof or is
    unusable, re-dispatch that analyst **once**, naming what was missing; if it fails again, flag the
    topic as partially analysed in the summary and continue — never treat a proofless report as a full
-   pass.
+   pass. **Bounded reports only:** each analyst returns its list(s) + proof lines and nothing else —
+   no narrative, no restating of items it found fine; if a report comes back wrapped in prose, keep
+   the lists + proof and discard the rest.
 2. Consolidate: merge the three lists, drop duplicates, discard any gap that is out of junior scope
    (record those in the summary as "analyst-suggested, left out — reason").
 3. Apply the surviving gaps to `notes/{topic}/coverage.md` and its section in `notes/coverage.md`, sync

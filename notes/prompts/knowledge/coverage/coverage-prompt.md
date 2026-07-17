@@ -69,6 +69,12 @@ Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
 
 I want you to create or update the coverage.md file for {TOPIC}.
 
+> **Branch guard (step 0, before anything else):** run `git branch --show-current`. Study materials
+> commit on whatever branch is currently active (CLAUDE.md, "Study materials follow the active
+> branch") — a feature branch is the normal case; just name the branch in the final summary. The one
+> branch that must stop the run is **`main`**: it never receives direct commits, only merges via PR —
+> if you are on `main`, stop and ask Victor which branch to use.
+
 Before starting, read:
 - `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
   (what belongs in scope, the three item types, confusable pairs, the AI factor, item/file format).
@@ -109,6 +115,24 @@ Never merge these into one subagent and never give any of them a second job — 
 and writes, or covers two concerns at once, splits its attention and lowers quality. **The generator
 (this context) is the only editor:** it consolidates the returned lists and writes coverage.md,
 future-learning.md, and the sync to notes/coverage.md.
+
+**Acceptance check per subagent — no proof, no pass.** Before consolidating any subagent's list,
+verify it carries its proof of work:
+- **Step 2 market analyst** — each must-know item has its source note (posting/search quote, or
+  "fundamental interviewers still probe"), and the report says whether the live web search ran or
+  fell back to trained knowledge.
+- **Each Step 4a angle** — the "N lines, read to EOF" line for `{NOTES_PATH}coverage.md` (the file
+  it judged gaps against — an angle that half-read it reports gaps that are already covered), and
+  every gap in the standard's item format, tagged by section.
+
+If a report is missing its proof or is unusable, re-dispatch that one subagent **once**, naming what
+was missing. If it fails again, mark that angle/analysis as **not completed** in the final summary —
+never treat a proofless report as a full pass, and never silently continue as if the angle had run.
+
+**Bounded reports only.** Every subagent returns its list (+ proof lines) and nothing else — no
+narrative, no code dumps, no restating of coverage items it found fine. The 4a angles are uncapped in
+*items*, never in prose: if a report comes back wrapped in narrative, keep the item list + proof and
+discard the rest.
 
 ### Model policy — per role, to protect quality while saving tokens
 
@@ -318,6 +342,10 @@ Give each subagent this brief (substituting its angle):
 > return the concept underneath it. Do not rewrite existing items. Be adversarial — assume the
 > coverage is incomplete until your probes prove otherwise. List separately, under
 > **"OUT — post-junior"**, anything you judge beyond what a junior at this target is filtered on.
+> Run `wc -l` on the coverage.md before reading it (the Read tool truncates at 2000 lines silently —
+> use `offset` passes if needed) and state **"N lines, read to EOF"** in your report — a half-read
+> coverage produces gaps that are already covered. Return only the gap list, the OUT list, and that
+> line — no narrative around them.
 
 **Stop rule:** you are done when a fresh angle returns only duplicates of what the others already
 found. Heavy overlap between angles is the convergence signal — it means the surface is covered, not
