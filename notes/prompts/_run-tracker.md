@@ -18,18 +18,18 @@ note when the run was partial. An empty cell means *never run* (or run before th
 
 | Topic | coverage-prompt | notes-audit | interview-prep-audit |
 |---|---|---|---|
-| Angular | | | |
-| Angular Material | | | |
+| Angular | ✔ pre-tracker | | |
+| Angular Material | ✔ pre-tracker | | |
 | Spring Boot | 2026-07-13 | 2026-07-15 | |
-| Java | | | |
-| Architecture | | | |
-| Security | | | |
-| TypeScript | | | |
-| JavaScript | | | |
-| CSS | | | |
-| SQL | | | |
-| Git | | | |
-| General | | | |
+| Java | ✔ pre-tracker | | |
+| Architecture | ✔ pre-tracker | | |
+| Security | ✔ pre-tracker | | |
+| TypeScript | ✔ pre-tracker | | |
+| JavaScript | ✔ pre-tracker | | |
+| CSS | ✔ pre-tracker | | |
+| SQL | ✔ pre-tracker | | |
+| Git | ✔ pre-tracker | | |
+| General | ✔ pre-tracker | | |
 
 ## Per-project prompts
 
