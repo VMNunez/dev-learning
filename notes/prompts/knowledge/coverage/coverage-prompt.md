@@ -224,6 +224,12 @@ bloating this context.
 > - Cross-check `notes/prompts/_job-market-evidence.md` (real postings already on file) as a
 >   **complement** — it is a small sample, so it corroborates and adds a frequency signal; it does not
 >   bound the analysis.
+> - **If {TOPIC} appears in fewer than ~3 of the postings on file, shift your weight to interview
+>   norms.** Some topics are rarely *named* in a posting yet are heavily *probed* in the technical
+>   round (Angular Material appeared in ~2/8 and still drives a whole take-home screen). In that case
+>   do not pad the list with generic stack requirements: report the low frequency explicitly, then
+>   spend your effort on what the technical interview and the take-home actually exercise for {TOPIC}.
+>   Low posting frequency is a signal about *how the market words its ads*, never about scope.
 >
 > Return the **required {TOPIC} scope from the market's perspective**: a list of must-know items, each as
 > `concept — one interview-anchored sentence` in the standard's format and tagged by section, and for
@@ -264,6 +270,19 @@ If yes: add it to coverage and remove it from `future-learning.md`.
 If coverage currently contains something too advanced for a junior screening, move it.
 Write a short explanation in `future-learning.md` of why it is post-junior scope.
 
+**Split the concept from its implementation — a promotion is often partial.**
+The commonest real case is not "in or out" but "knowing what it is, is in scope; building one is not".
+When a Step 4a angle proposes a gap that `future-learning.md` already lists as post-junior, do not treat
+it as a contradiction to resolve one way: check whether the *concept* and the *implementation* belong on
+different sides of the line. `ControlValueAccessor` is the worked example — a junior is asked what it is
+and why Material controls bind to `formControlName` (IN), and is not asked to write one (stays in
+future-learning). Same shape for `MatPaginatorIntl` (the token exists and is the translation hook: IN;
+subclassing it into an i18n pipeline: OUT) and custom `DataSource` (binding `[length]` and reacting to
+`(page)`: IN; extending the CDK base class: OUT).
+When you split one this way, add the coverage item **and** reword the `future-learning.md` entry so it
+names the boundary explicitly — otherwise the next run re-litigates the same item. Record it in the
+summary under "Promoted from future-learning" as a partial promotion.
+
 **Add new entries to future-learning:**
 If you identify a concept that is real and worth knowing post-hire — and it is not already
 in `future-learning.md` — add it. Do not create a full note file for it.
@@ -302,6 +321,20 @@ section — the three-types check and the confusable-pairs check. Then run the s
 **completeness test** for the whole file before saving. Do not restate those rules here; the standard
 is the single source for them.
 
+**Structural check before saving — count, do not eyeball.** The standard's size and one-concept rules
+are the two that a generator reliably violates while believing it complied, so verify them mechanically
+rather than by impression, on the finished file:
+1. **Count the items in every section.** Any section over 12 items must be split before saving; under 3
+   must be merged. Counting is not optional — a real run shipped a 16-item section that the generator
+   had "checked" by reading it.
+2. **Re-read every item you wrote this run for the one-concept rule.** An item naming two annotations,
+   two files, or two mechanisms joined by "and"/"+" is a grouped bullet and must be split — the same run
+   shipped two of these (`environment.ts` + `fileReplacements`, `CORS` + `proxy.conf.json`).
+3. **Then run the standard's completeness test** on the whole file, plus the three-item-types and
+   confusable-pairs checks per section.
+
+State in the final summary that this check ran and what it changed (or "no splits needed").
+
 **Restructuring is allowed — and expected on a real update.** When new items push a section past the
 standard's size limit, **split it** into two sections with functional names rather than letting it
 bloat; likewise, create a new section when a cluster of gaps has no home. Two consequences: the "leave
@@ -326,6 +359,19 @@ then found 80+ more:
   list. Different **angles** interrogate different surfaces of the topic — and the surfaces the generic
   interviewer never touches (what breaks at the keyboard, what the take-home actually exercises) are
   where the real holes are.
+
+> **When to launch the angles — it depends on whether coverage already exists.** The step is numbered
+> after Step 4, but that order is only mandatory in one of the two cases:
+> - **`{NOTES_PATH}coverage.md` did not exist, or is thin** — run the angles **after** Step 4 writes the
+>   file, sequentially. Hunting gaps against an empty or skeletal file returns the whole topic as a
+>   "gap" and tells you nothing.
+> - **`{NOTES_PATH}coverage.md` already exists and is mature** (the normal case on an update) — launch
+>   the angles **in parallel with the Step 2 market analyst**, judging against the current file, and
+>   consolidate everything in one pass afterwards. This is what the angle brief means by "the CURRENT
+>   coverage.md". It is materially cheaper and loses nothing: the angles were never reading your new
+>   items anyway, since Step 4's additions come from the same market analysis they run beside.
+>
+> Either way the consolidation is a single pass and the generator is still the only editor.
 
 **In Claude Code:** launch these as **parallel** `general-purpose` subagents, `model: opus`,
 `run_in_background: false`. Adapt the angle list to {TOPIC} — drop any that is meaningless for the
@@ -376,7 +422,7 @@ against the standard's IN/OUT filter and the "concepts only" rule above, add eve
 right section of `{NOTES_PATH}coverage.md` in the standard's format, and discard the rest (note those
 in the summary as "adversary-suggested, left out — reason").
 
-Two routing rules when handling the discards:
+Three routing rules when handling the discards:
 - **Discarded ≠ vanished.** For any gap you discard as out-of-junior-scope, confirm it is already
   recorded in `future-learning.md`; if it is not, add it there (Step 5 performs the write). A discarded
   item must never disappear — it is either in coverage or in future-learning, never nowhere.
@@ -385,6 +431,19 @@ Two routing rules when handling the discards:
   configuration block's per-topic notes), leave it OUT of this file and route it to its owner — note it
   in the summary as "owned by <topic>, not added here". Do not re-litigate the same misplaced gap on
   every run.
+- **Already covered by another topic — run the cross-topic overlap check HERE, before writing.**
+  Scan the other sections of `notes/coverage.md` for items that overlap with the gaps you are about to
+  add (e.g. REST status codes or "service layer" could plausibly sit under Architecture, Spring Boot,
+  or Angular; view encapsulation and `::ng-deep` sit under Angular, not Angular Material). If the
+  concept already exists elsewhere, keep it in the topic where an interviewer is most likely to ask it,
+  drop it from this run's additions, and mention the overlap in the final summary instead of
+  duplicating the item.
+  > **Why this check lives in Step 4a and not Step 4b.** It used to sit at the end of the sync step —
+  > which meant a duplicate was written into the topic file *and* mirrored into `notes/coverage.md`
+  > before being caught, forcing a second full sync pass. It happened on a real run (three Angular-owned
+  > items written and mirrored during an Angular Material run). Deciding ownership belongs to
+  > consolidation, when nothing has been written yet; by Step 4b the cost of a wrong call has already
+  > been paid twice.
 
 **Not in Claude Code (plain chat):** run the angles yourself, one at a time and explicitly — switch
 hats per angle, generate the probes cold and uncapped, list the gaps, then add the genuine ones. The
@@ -436,13 +495,6 @@ from the topic file in one replacement — that is the safer path, not a shortcu
 > UTF-8 reads and BOM-less UTF-8 writes (or use the Read/Edit/Write tools, which handle this), and
 > re-read the result checking a line with an em dash before committing.
 
-**Cross-topic overlap check:**
-Before finalizing, scan the other sections of `notes/coverage.md` for items that overlap with
-what you just added or changed (e.g. REST status codes or "service layer" could plausibly sit
-under Architecture, Spring Boot, or Angular). If the same concept already exists elsewhere,
-keep it in the topic where an interviewer is most likely to ask it, and mention the overlap in
-the final summary instead of duplicating the item.
-
 **Verify the sync before reporting done:**
 Check `wc -l notes/coverage.md` first and read to the real end (`offset` passes if near/over 2000
 lines — see the verifiable-reads rule in Step 1); a truncated read here silently passes a broken
@@ -478,6 +530,8 @@ After all edits, print a short summary:
 | Angles run in Step 4a | [which angles, and where they converged — "angle 4 returned only duplicates"] |
 | Added to coverage | [list of new items] |
 | Sections split / added | [structural changes, or "none"] |
+| Structural check (Step 4) | [item counts verified per section; what the count forced, or "no splits needed"] |
+| Cross-topic overlap (Step 4a) | [items dropped as owned by another topic, or "none"] |
 | Modified in coverage | [list of updated items — one line per change, or "none"] |
 | Promoted from future-learning | [list or "none"] |
 | Demoted to future-learning | [item — one-line reason it no longer belongs in coverage, or "none"] |
