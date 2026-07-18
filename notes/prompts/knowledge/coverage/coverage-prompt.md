@@ -603,6 +603,15 @@ Git → General. Add a `---` separator before and after the new section.
    - Every `## [Section name]` in the source becomes `### [Section name]` (one heading level
      deeper) — content and order stay otherwise identical, including any `---` separators
      between subsections if the source file uses them.
+
+   > **The two substitutions overlap — never apply them in a single pass over the file.** The first
+   > rule turns the title into `## {TOPIC}`, which the second rule then matches and demotes again to
+   > `### {TOPIC}`, silently producing a section that no longer has a topic heading at all. It
+   > happened on a real run (SQL, 2026-07-18) via one `sed` with two expressions. Transform the title
+   > **separately** from the section headings (handle line 1 on its own, or run the `## ` → `### `
+   > rule first and the title rule second), and explicitly check that line 1 of the rebuilt section
+   > reads `## {TOPIC}` before moving on. The verify step below catches this, but only if you compare
+   > the heading levels rather than just the bullets.
 3. Keep the `---` separator before and after the section so it stays cleanly divided from the
    topics before and after it in the study-priority order (Angular → Angular Material →
    Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git →
