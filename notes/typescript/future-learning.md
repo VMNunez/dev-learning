@@ -93,7 +93,9 @@ type B = UnpackPromise<number>;           // number
 
 Used inside conditional types to extract a type from a generic. You will encounter it in RxJS and Angular source code.
 
-### Declaration merging and module augmentation
+### Module augmentation
+
+> **Boundary with coverage:** *knowing that two `interface` declarations merge* — and that this is the real reason `interface` is preferred for extensible model shapes — is now in coverage. What stays here is **using** that mechanism to augment types from a library you do not control, which is a library/tooling concern, not a junior filter.
 
 TypeScript allows multiple declarations of the same interface to merge automatically:
 
@@ -112,6 +114,24 @@ Useful when you need to extend types from a library you do not control — for e
 ### Custom decorators
 
 Angular uses decorators extensively (`@Component`, `@Injectable`, `@Input`). Writing your own requires enabling `experimentalDecorators` in `tsconfig.json`. Custom decorators are useful for cross-cutting concerns — logging, validation, caching — where you want to add behaviour without modifying the function body.
+
+---
+
+### Variance and `strictFunctionTypes`
+
+Why a function type with a narrower parameter is (or is not) assignable where a wider one is expected — parameters are checked contravariantly under `strictFunctionTypes`, except for methods declared with method shorthand, which stay bivariant for historical reasons. You will meet it as "why did this event-handler assignment stop compiling?". The formal rules are a mid-level topic; at junior level it is enough to recognise the error and change the parameter type.
+
+### Implementing branded / nominal types
+
+> **Boundary with coverage:** *that* TypeScript is structurally typed, so two `number`-based ids are interchangeable, is in coverage — it is a standard "TypeScript vs Java" question. Hand-rolling the branded-type workaround (an intersection with a unique phantom property, plus the constructor functions around it) is what lives here.
+
+### Runtime schema validation (Zod and friends)
+
+Coverage already says the API boundary needs a real runtime check, because a generic type parameter validates nothing. Choosing and wiring a schema library — deriving the TypeScript type from the schema so there is one source of truth — is the tooling layer on top of that idea, and belongs to whoever owns the frontend architecture.
+
+### Generating types from an OpenAPI spec
+
+Spring Boot can publish a Swagger/OpenAPI contract, and generators turn that contract into TypeScript interfaces so the frontend models cannot drift from the backend. Setting up that pipeline is a team-level decision; knowing *that* hand-written interfaces drift silently is the junior-level concept and is already in coverage.
 
 ---
 
