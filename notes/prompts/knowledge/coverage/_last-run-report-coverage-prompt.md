@@ -40,9 +40,22 @@
    - *Note for the next run:* `notes/coverage.md` has now crossed the truncation threshold — **2008
      lines**. Every future whole-file read of it must use `offset` passes; this run sidestepped the risk
      by processing it programmatically, but a Read-based sync would now silently truncate.
-5. **Verdict** — Pipeline clean. **Change worth considering:** the Step 4a angle list is
-   framework-shaped and under-serves *language* topics, where "what does this print, and in what order?"
-   is the dominant screening format in Spain. The prompt already permits adding an angle, but making
-   **output-prediction the named canonical fifth angle for language topics** (JavaScript, Java,
-   TypeScript) would stop that depending on the generator noticing — on this run it was the difference
-   between covering the coercion/prototype/event-loop mechanism layer and missing it entirely.
+5. **Verdict** — Pipeline clean. **Three changes applied off this run:**
+   - *Step 4a angle list:* **output prediction is now a mandatory fifth angle for language topics**
+     (JavaScript, Java, TypeScript). Angles 1–4 are framework-shaped, so on a language topic they can
+     converge, look complete, and never reach the mechanism layer — on this run the improvised fifth
+     angle was the only source of `ToPrimitive`, the abstract equality algorithm, `this` binding
+     precedence, the prototype chain and microtask ordering.
+   - *Cross-topic overlap check:* now states the technique (**one grep, not a re-read** of a 2000+ line
+     file, and not memory) and warns that **foundational topics are structurally overlap-heavy** — Java
+     and JavaScript are both recorded as the worked evidence.
+   - *Final summary:* new **"Size delta"** row (lines and sections, before → after, plus the analyst's
+     posting-frequency signal), with an explicit note that it is *reported, never acted on* — scope
+     still comes from the job, and the scheduling conclusion is Victor's to draw, not the run's.
+
+   **Still open, not applied — needs Victor's decision because it changes the design:** `coverage-prompt`
+   has no cold reviewer of its own output. The 4a angles audit the *existing* file; the items the
+   generator word-crafts during consolidation are never judged by anyone, and they are the entire product
+   of the run (85 items in one pass here). `notes-audit` solves the same risk with a reviewer stage. The
+   cheap version would be a single cold Opus subagent receiving only the newly added items plus
+   `_coverage-standard.md`, checking format, the one-concept rule, and interview anchoring.
