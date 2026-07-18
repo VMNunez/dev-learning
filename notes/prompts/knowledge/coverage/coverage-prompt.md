@@ -396,6 +396,16 @@ topic (a "production debugging" angle makes no sense for CSS) and add one the to
    mechanism of the wrapper/tooling, what an error actually means, where configuration comes from).
 4. **Debugging what broke** — the errors he will actually hit and be asked about: startup failures, the
    framework's own exception messages and what they really mean, a slow endpoint.
+5. **Output prediction — mandatory for language topics (JavaScript, Java, TypeScript), optional
+   elsewhere.** "What does this print, and in what order?" — execution and evaluation order, reference
+   vs value at call sites, coercion and operator semantics, iteration rules, and the canned puzzles a
+   screening reuses verbatim. *Why it is mandatory and not left to judgement:* angles 1–4 are all
+   framework-shaped — they interrogate how you use a stack — so on a language topic they can converge,
+   look complete, and still never touch the mechanism layer underneath. That is exactly what happened on
+   the JavaScript run: this angle was improvised, and it was the **only** one that returned `ToPrimitive`,
+   the abstract equality algorithm, `this` binding precedence, the prototype chain, microtask-drain
+   ordering and sparse arrays. Without it the file would have been fluent about idioms and silent about
+   why they behave that way — the exact gap a Spanish quickfire screening is built to find.
 
 Give each subagent this brief (substituting its angle):
 
@@ -447,6 +457,17 @@ Three routing rules when handling the discards:
   concept already exists elsewhere, keep it in the topic where an interviewer is most likely to ask it,
   drop it from this run's additions, and mention the overlap in the final summary instead of
   duplicating the item.
+  > **How to run it without burning the context: one grep, not a re-read.** `notes/coverage.md` is well
+  > over 2000 lines, so do not read it whole to judge ownership and do not judge from memory either —
+  > grep it once for the distinctive terms of the gaps you are about to add (plus `^## ` to see the
+  > section map in the same output), and decide from the hits. Two consecutive runs show why this is the
+  > load-bearing step and not a formality: on Java roughly **half** the proposed gaps were already owned
+  > by Spring Boot or Architecture, and on JavaScript an entire proposed "browser storage" section was
+  > owned by General and Security, along with CORS, the `OPTIONS` preflight, the `Authorization: Bearer`
+  > header, JWT-in-`localStorage` and `.env`-is-public. **Foundational topics are structurally
+  > overlap-heavy** — anything that sits underneath other topics (JavaScript below Angular; Java below
+  > Spring Boot) will attract proposals that belong to the layer above, so budget real effort here on
+  > those runs.
   > **Why this check lives in Step 4a and not Step 4b.** It used to sit at the end of the sync step —
   > which meant a duplicate was written into the topic file *and* mirrored into `notes/coverage.md`
   > before being caught, forcing a second full sync pass. It happened on a real run (three Angular-owned
@@ -537,6 +558,7 @@ After all edits, print a short summary:
 | Change | Detail |
 |--------|--------|
 | Angles run in Step 4a | [which angles, and where they converged — "angle 4 returned only duplicates"] |
+| Size delta | [before → after, in lines and sections, plus the market analyst's posting-frequency signal for {TOPIC}] |
 | Added to coverage | [list of new items] |
 | Sections split / added | [structural changes, or "none"] |
 | Structural check (Step 4) | [item counts verified per section; what the count forced, or "no splits needed"] |
@@ -554,6 +576,15 @@ The "Synced to notes/coverage.md" row always appears, even when creating from sc
 "Promoted from future-learning" = concept moved into coverage (now in scope).
 "Removed from future-learning" = concept deleted entirely because it is no longer relevant
 (wrong topic, outdated, or not needed anywhere — not just post-junior).
+
+**"Size delta" is reported, never acted on.** Scope comes from the job — never from the notes, and
+never from where {TOPIC} sits in Victor's study queue — so a large delta is *not* a reason to trim,
+and this row must not turn into a self-imposed budget. It exists because the run is the only moment
+that knows both numbers at once, and Victor is the one who decides what the growth means downstream
+(the JavaScript run took a topic from 121 to 208 lines and 13 to 27 sections — every item defensible,
+but ~200 concepts queued for `notes-audit` on a topic that is eighth in the study order, which is a
+scheduling judgement only he can make). Report the before/after and the analyst's frequency signal
+plainly, and leave the conclusion to him.
 
 **Commit the changes yourself.** Coverage files live under `notes/`, so this is one of the
 cases where Claude commits directly (CLAUDE.md "Non-negotiables" exception for `notes/` and
