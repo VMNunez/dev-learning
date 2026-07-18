@@ -33,6 +33,9 @@ is still the source, and `{NOTES_PATH}coverage.md` is still the topic's only cov
 
 ## Security
 
+- Least privilege for the application's database role — the app connects with a role that can read and write rows but cannot `DROP` a table or read another schema, so a successful SQL injection is capped at what that role can reach; Security already owns SQL injection and parameterised queries, but not the blast-radius argument; interviewers ask "injection got through — how bad is it?" *(routed from the SQL run, 2026-07-18)*
+- Mapping a database constraint violation to an HTTP response — a unique violation is a `409 Conflict` and a foreign key violation a `400`/`404`, never a raw `500` echoing the SQL, because the constraint name and table names leak the schema to the client; the SQL side (the error text, the SQLSTATE code) is owned by SQL coverage, the information-disclosure side is not covered anywhere *(routed from the SQL run, 2026-07-18)*
+
 - A CORS-blocked request reports no status code — the browser surfaces a rejected preflight as a generic network error with `status 0`, not the real backend status, so the Network tab shows a failure that looks nothing like the 401 or 500 the server actually sent; interviewers ask why the error has no status and expect you to distinguish a CORS block from an auth failure. Security already owns CORS and the `OPTIONS` preflight, but not this symptom *(routed from the Angular run, 2026-07-18)*
 
 ## Spring Boot
