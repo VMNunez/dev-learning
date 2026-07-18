@@ -56,8 +56,12 @@
    - *Note for the next run:* `notes/coverage.md` is now **2116 lines**, well past the truncation
      threshold. Any Read-based whole-file pass must use `offset`; this run processed it programmatically.
 
-5. **Verdict** — Change worth considering: **add one line to Step 4b's consolidation** telling the
-   generator what to do when applying a reviewer's split pushes a section past the 12-item cap — prefer
-   relocating the least-central item to a semantically honest section (as done here), and split the
-   section only when no such home exists. Everything else: pipeline clean, and Step 4b is confirmed
-   worth keeping.
+5. **Verdict** — Pipeline clean, and Step 4b confirmed worth keeping. **One change applied off this run:**
+   Step 4b's consolidation now states what to do when applying a reviewer's split pushes a section past
+   the 12-item cap. It records that the two rules do not conflict in priority — the split always happens,
+   since a grouped bullet is a defect while an oversized section is only a shape problem — and that the
+   overflow is absorbed by **relocating** the least-central item to a neighbour whose heading honestly
+   describes it, splitting the section only if no honest home exists. It also now requires **re-running
+   the Step 4 structural count after the 4b fixes**, since the first count runs before those edits exist
+   and structurally cannot see the overflow (this run caught the 13-item section only because the recount
+   happened to be done anyway).
