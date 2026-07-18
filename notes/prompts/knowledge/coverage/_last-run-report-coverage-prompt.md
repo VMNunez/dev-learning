@@ -1,9 +1,44 @@
 # Coverage prompt — last run self-report
 
-**Date:** 2026-07-18 · **Target:** TOPIC = Angular Material, NOTES_PATH = notes/angular-material/ · **Branch:** `fix/backend-backlog`
+**Date:** 2026-07-18 · **Target:** TOPIC = Java, NOTES_PATH = notes/java/ · **Branch:** `fix/backend-backlog`
 
-1. **Plan vs reality** — The split held: one market analyst (Sonnet) + four adversarial angles (code review, design/decisions, take-home/live coding, debugging) on Opus, run in parallel. The four angles converged hard — module wiring, testing harnesses, accessibility, overlay/encapsulation styling and runtime-error reading were each independently surfaced by three or four angles, which is exactly the stop-rule signal. The market analyst was the weakest contributor by design: Angular Material appears in only ~2/8 postings on file, so the deep-analysis backbone carried nearly all the scope, as the standard says it should when evidence is thin.
-2. **Report discipline** — Clean. All five subagents returned only the required gap list / OUT list / proof line, correctly formatted; nothing had to be trimmed or discarded.
-3. **Failures & retries** — None. All five passed the acceptance check on first dispatch (source note per market item; "159 lines, read to EOF" from every 4a angle). The generator-model guard added after the Angular run worked as intended — the session was confirmed on Opus 4.8 before Step 1.
-4. **Rule friction** — Two points. (a) Step 4a is written to run *after* Step 4 writes the file, but against a mature existing coverage.md it is materially cheaper to fan the angles out on the current file in parallel with Step 2 and consolidate once; the angle brief's own phrase "the CURRENT coverage.md" suggests this is allowed, but the step ordering does not say so. (b) The cross-topic overlap check fired late and usefully — the Angular section already owned view encapsulation, `::ng-deep` and the reactive-vs-template-driven decision (the first two even anchored to Material in their own wording) — but because that check sits in Step 4b, three duplicate items had already been written into the topic file *and* mirrored before removal, forcing a second full sync pass.
-5. **Verdict** — Five prompt changes applied off this run (commit `49cd4d5`, same day): (a) the **cross-topic overlap check moved from Step 4b to the end of Step 4a consolidation**, so overlapping items are dropped before anything is written or mirrored — this run paid the cost twice; (b) a **mechanical structural check before saving Step 4** — count items per section rather than eyeballing, and re-read this run's items for the one-concept rule, closing the two violations the Angular run shipped; (c) **conditional Step 4a ordering** made explicit — parallel with Step 2 when coverage is mature, sequential after Step 4 when it is thin or new; (d) the market analyst now **shifts weight to interview norms when {TOPIC} appears in <~3 postings**, instead of padding with generic stack requirements; (e) Step 3 gained the **concept-vs-implementation split** for partial promotions (`ControlValueAccessor`, `MatPaginatorIntl`, custom `DataSource`), with a requirement to reword the future-learning entry so the boundary is not re-litigated next run. Not applied: a "guard compliance" bullet in the shared self-report template — it lives in `_pipeline-self-report.md`, which all orchestrators share, so it is out of this prompt's scope to change. The `en/`-tolerance fix from the Angular run paid off immediately: angular-material's notes are also still flat in the topic root and the run proceeded without friction.
+1. **Plan vs reality** — The split held. Java's coverage was mature (137 lines), so the conditional
+   ordering added after the Angular Material run applied for the first time: the four angles ran **in
+   parallel with the Step 2 market analyst**, judged against the existing file, and everything
+   consolidated in one pass. It saved a full sequential leg with no loss — the angles never needed the
+   new items, exactly as the prompt predicts. Angle yield was uneven but not wasted: live-code-review
+   and debugging produced the densest Java-owned gaps, while design and take-home returned mostly
+   material owned by Spring Boot or Architecture (see bullet 4).
+2. **Report discipline** — Clean. All five subagents returned only the required gap list / OUT list /
+   proof line ("137 lines, read to EOF", "138 lines, read to EOF"). The market analyst declared the
+   live web search ran and reported the frequency signal (Java in 8/8 postings on file, but named only
+   as a stack keyword — no posting itemises language-level scope, which it flagged explicitly rather
+   than padding). Nothing trimmed or discarded.
+3. **Failures & retries** — None. All five passed the acceptance check on first dispatch.
+4. **Rule friction and rule breaches** —
+   - *Confirmation, not friction:* the **cross-topic overlap check did most of the work this run** —
+     roughly half of all proposed gaps were already owned elsewhere (Spring Boot: proxy/self-invocation,
+     `@Data` on an entity, Lombok as a compile-time processor, stack-trace and `Caused by:` reading,
+     `OutOfMemoryError`, `application.properties`, the Maven wrapper, `~/.m2`, every test-quality item;
+     Architecture/General: layering, DTO-vs-entity, swallowed exceptions). Having the check *before*
+     writing — the change made after the Angular Material run — paid off exactly as intended; nothing
+     was written and mirrored only to be removed.
+   - *Friction (minor, real):* the existing "Control flow" section had **2 items**, below the
+     standard's merge floor. The structural check surfaces this but offers no clean home, since no
+     adjacent section could absorb it without breaking semantics. Resolved by **growing** it — renamed
+     "Control flow and source structure" and folded in the new `package`/`import`/fully-qualified-name
+     items. The prompt should say that an under-3 section may be grown with adjacent new concepts
+     rather than merged across a semantic boundary.
+   - *Breaches:* none. Branch guard ran (`fix/backend-backlog`, not `main`); the generator was confirmed
+     on Opus before Step 1; all four angles on Opus, market analyst on Sonnet; the mechanical count
+     check ran and forced four section splits (Exceptions → mechanics + "the ones you will actually
+     hit"; Collections → choosing/using + ordering/identity/cost; Classes and objects → classes +
+     object identity and immutable data); the sync was verified programmatically line-for-line rather
+     than by eye.
+   - *Pre-existing defect found and fixed:* `notes/coverage.md` was missing the `---` separator between
+     the Spring Boot and Java sections. Not caused by this run — the section replacement preserved the
+     boundary faithfully — but repaired while there.
+5. **Verdict** — Pipeline clean; the three changes made after the Angular Material run all proved out
+   on their first real use. One small change worth considering: Step 4's structural check should state
+   that a section under 3 items may be **grown** with adjacent new concepts instead of merged, because
+   forcing a merge across a semantic boundary is worse than either alternative.
