@@ -7,7 +7,15 @@ theory. The prompts stay **frozen** between runs — a self-report showing a rea
 thing that reopens one.
 
 The report is about the **machinery, not the content**: it never repeats findings, notes, or tasks —
-those live in the pipeline's own output files.
+those live in the pipeline's own output files. Concretely: naming *which* items you added, dropped, or
+routed elsewhere is content and belongs in the run's chat summary, even when the routing decision itself
+was hard. The machinery fact is "the overlap check did real work"; the list of overlapping items is not.
+
+> **Write against this spec, not against the previous report.** You overwrite the last run's file, so
+> you see it — and imitating its shape is how a long report begets a longer one. A real run followed a
+> predecessor into ~60 lines of which ~25 earned their place, duplicating the chat summary and adding
+> paragraphs about what went *well*. That is the failure mode to avoid: this file exists to surface what
+> broke, and padding it with successes buries the one finding that should reopen a frozen prompt.
 
 ## What to write
 
