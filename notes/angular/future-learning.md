@@ -20,15 +20,14 @@ provideRouter(routes, withPreloading(PreloadAllModules))
 
 `PreloadAllModules` downloads all lazy routes after the initial load. You can also write a custom strategy that only preloads specific routes. Relevant for production apps where perceived performance matters.
 
-### ChangeDetectorRef — manual change detection control
+### ChangeDetectorRef — beyond the two basic methods
 
-In most Angular apps with signals you will never need this. But in existing codebases, third-party libraries often update data outside Angular's awareness. `ChangeDetectorRef` lets you trigger a check manually:
+**Boundary (set 2026-07-18):** `detectChanges()` vs `markForCheck()` — what each does, and recognising a manual call as a symptom of a deeper cause — is now **in coverage** (`Lifecycle hooks`). Interviewers do ask which one an `OnPush` component needs after an async callback. What stays here is everything past that pair.
 
-- `cdr.detectChanges()` — force an immediate check of this component
-- `cdr.markForCheck()` — mark the component dirty so Angular checks it on the next cycle
-- `cdr.detach()` — remove the component from the change detection tree entirely (advanced, rarely needed)
+- `cdr.detach()` and `reattach()` — removing a component from the change detection tree entirely, then driving it by hand; the technique behind high-frequency widgets (live tickers, canvas overlays) that must not re-render with the rest of the page
+- Deliberately detaching a subtree as a performance strategy, rather than as a workaround
 
-You will encounter this in legacy code that integrates charting libraries, Google Maps, or WebSockets. With signals, the need is rare — signals always notify Angular automatically.
+You will encounter this in legacy code that integrates charting libraries, Google Maps, or WebSockets. With signals the need is rare — signals always notify Angular automatically.
 
 ### Angular CDK — Component Dev Kit
 
@@ -42,6 +41,8 @@ The lower-level toolkit from the Angular Material team. Does not have visual com
 | Accessibility | Focus management, keyboard navigation primitives |
 
 Relevant when your team builds custom UI components beyond what Material provides.
+
+**Boundary (set 2026-07-18):** knowing that virtual scrolling exists and when to reach for it — as one of the three answers to "what do you do with 10,000 rows?", alongside server-side paging and `@defer` — is now **in coverage** (`Performance and change detection`). Actually wiring `cdk-virtual-scroll-viewport`, writing a custom `DataSource`, and the rest of the CDK primitives above stay here.
 
 ### `resource()` API — signal-based async data loading
 
@@ -134,11 +135,41 @@ Why to wait: requires understanding deployment, build systems, and inter-team co
 
 ### Performance profiling and optimization
 
+**Boundary (set 2026-07-18):** Angular DevTools, the change-detection profiler, `track` in `@for`, `OnPush`, and bundle `budgets` are now **in coverage** (`Performance and change detection`, `Build and compilation`) — a junior is asked "the app feels slow, what's your first step?" and is expected to say *measure*. What stays here is the deeper tooling:
+
 - `ng build --stats-json` + Webpack Bundle Analyzer — visualise what is in your bundle and where to cut
-- Angular DevTools — inspect change detection and component tree performance
-- `trackBy` in `@for` — prevent unnecessary DOM re-renders in large lists
-- `OnPush` + signals as the default — you already know this; applying it consistently matters at scale
+- Manual chunking strategy and source-map-explorer analysis
 - Image optimization with `NgOptimizedImage` — lazy loads images, prevents layout shift
+
+---
+
+## Phase 3 additions — surfaced by the 2026-07-18 coverage run
+
+These were proposed by the adversarial angles and judged post-junior. They are recorded here so the next run does not re-litigate them.
+
+### Advanced DI and template mechanics
+
+- Custom structural directives — `TemplateRef` + `ViewContainerRef` and how `*someDirective` desugars into an `<ng-template>`; the mechanism behind `*ngIf` itself
+- `InjectionToken`, `useFactory`, `useExisting`, and multi-providers — configuring DI beyond a class token
+- Angular Elements — packaging a component as a Web Component (already noted below)
+
+### Advanced testing
+
+- Component harnesses — `ComponentHarness`, `HarnessLoader`, and the Angular Material harnesses; the supported way to test Material components without asserting on their internal DOM
+- Marble testing — `TestScheduler`, `cold()` / `hot()` for asserting on stream timing
+- E2E testing with Cypress or Playwright, and where E2E sits against unit tests in the pyramid
+- Jest / Vitest migration off Karma, and the experimental Angular builders for each
+- `TestBed.overrideComponent` / `overrideProvider`, `NO_ERRORS_SCHEMA`, and shallow-rendering strategies
+- Mutation testing (Stryker) as a measure of whether the suite actually catches bugs
+
+### Architecture at scale
+
+- Facade service pattern — a feature-level facade exposing signals over dumb data services; worth knowing once an app has enough services that components start orchestrating them
+- Dynamic forms built from a backend-provided schema — constructing `FormGroup`/`FormArray` at runtime rather than declaring them
+- Nx monorepo workspaces — enforced module boundaries and multi-project `angular.json`
+- Custom builders and writing your own schematics
+- Design-token and theming architecture across a shared component library
+- Zoneless change detection — `provideExperimentalZonelessChangeDetection` and what removing Zone.js demands of the codebase; the direction Angular is heading, but the migration itself is senior work
 
 ---
 

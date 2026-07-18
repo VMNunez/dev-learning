@@ -29,9 +29,12 @@ is still the source, and `{NOTES_PATH}coverage.md` is still the topic's only cov
 
 ---
 
-## Angular
+*(No entries pending. The four Angular items routed from the TypeScript run on 2026-07-18 were consumed by the Angular coverage run the same day — all four added to `notes/angular/coverage.md`.)*
 
-- Template type checking (`strictTemplates` / `fullTemplateTypeCheck` in `angularCompilerOptions`) — the compiler type-checks bindings inside the HTML, not just the `.ts`; interviewers ask how a wrong `[input]` type is caught at build time and why this is the flag that breaks migrations *(routed from the TypeScript run, 2026-07-18)*
-- Ahead-of-Time (AOT) compilation vs JIT — templates are compiled at build time, which is why a template type error surfaces in `ng build` and not in the editor; interviewers ask why AOT is the default *(routed from the TypeScript run, 2026-07-18)*
-- `ng build` type-checks through the CLI's own pipeline, not bare `tsc` — a green editor is not proof the build passes; interviewers ask why `ng build` reports errors the IDE never showed *(routed from the TypeScript run, 2026-07-18)*
-- Typed reactive forms `FormGroup<T>` / `FormControl<T>` (Angular 14+) — `.value` is typed instead of `any`, so a renamed control fails at compile time; interviewers ask what problem untyped forms had, and this is directly exercised by the standard take-home (form + validation + service) *(routed from the TypeScript run, 2026-07-18)*
+## Security
+
+- A CORS-blocked request reports no status code — the browser surfaces a rejected preflight as a generic network error with `status 0`, not the real backend status, so the Network tab shows a failure that looks nothing like the 401 or 500 the server actually sent; interviewers ask why the error has no status and expect you to distinguish a CORS block from an auth failure. Security already owns CORS and the `OPTIONS` preflight, but not this symptom *(routed from the Angular run, 2026-07-18)*
+
+## Spring Boot
+
+- The OpenAPI document as the contract the frontend codes against — springdoc is already covered from the producer side, but not the consumer side: deriving the client's interfaces, endpoints, and response shapes from `/swagger-ui.html` rather than guessing, which is what a full-stack take-home actually exercises; interviewers ask how the Angular side knows the response shape before the backend is finished *(routed from the Angular run, 2026-07-18)*
