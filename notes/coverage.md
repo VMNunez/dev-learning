@@ -9,23 +9,25 @@ Order follows study priority: Angular → Angular Material → Spring Boot → J
 ## Angular
 
 Topics a junior must know to pass a technical screening for Angular roles at Spanish consultancies in 2026.
-Every item must be explainable with a real example from at least one of the six Angular projects or TimeTrack.
+Scope is derived from what those screenings test, not from what the projects happen to use. Every item must be explainable out loud with a concrete example — ideally from the six Angular projects or TimeTrack, and where a concept has no home in them, from a minimal example built for the purpose.
 
-### Components and templates
+### Components, inputs and projection
 - `@Component` — selector, template, styles, `standalone: true`; interviewers ask what standalone means and why Angular 17+ uses it by default
 - `imports` array on `@Component` — every directive, pipe, or component used in the template must be listed here; forgetting one causes a clear Angular error; interviewers ask why Angular 17+ moved away from NgModules
-- Data binding: interpolation `{{ }}`, property `[]`, event `()`, two-way `[()]` — the four types; interviewers ask the difference between `[]` and `{{}}`
 - `input()` and `output()` — signal-based component communication; interviewers ask "how does data flow between parent and child?"
 - `input()` vs `input.required<T>()` — `input()` needs a default value or the type becomes `T | undefined`; `input.required<T>()` has no default and throws at compile time if the parent does not pass it; interviewers ask which one to use for a value the component cannot render without (e.g. an `id`)
+- `model()` — signal-based two-way binding for a custom component (`[(value)]`); reviewers show `@Input()` + `@Output()` boilerplate built to fake two-way binding and ask for the signal-era replacement
+- Template reference variables — `#ref` on any template element gives a typed handle to it; pass `ref.value` to a method without a signal or form control; interviewers ask how you read an input value without reactive forms
+- `ng-content` — content projection; lets a parent inject arbitrary HTML into a child's template slot; interviewers ask how you build a reusable layout wrapper in Angular
+
+### Template syntax and rendering
+- Data binding: interpolation `{{ }}`, property `[]`, event `()`, two-way `[()]` — the four types; interviewers ask the difference between `[]` and `{{}}`
 - `@if`, `@for`, `@empty`, `@else` — new control flow syntax; `@for` requires a `track` expression for performance; interviewers ask why `track` matters
 - `@switch`, `@case`, `@default` — control flow alternative to chained `@if`/`@else if` when checking one value against several fixed options (e.g. a status field); interviewers ask when to reach for `@switch` instead of multiple `@if` blocks (readability once there are 3+ branches)
 - `@let` — declares a local template variable from an expression, reused across the same template block without recalculating it; interviewers ask how you avoid calling the same `computed()` or method multiple times in one template
-- Template reference variables — `#ref` on any template element gives a typed handle to it; pass `ref.value` to a method without a signal or form control; interviewers ask how you read an input value without reactive forms
-- `ng-content` — content projection; lets a parent inject arbitrary HTML into a child's template slot; interviewers ask how you build a reusable layout wrapper in Angular
 - `[class.x]` binding — applies a single CSS class when the condition is true; simpler and more readable than `ngClass` for a single class; interviewers ask the difference from `ngClass`
 - `ngClass` — applies multiple CSS classes conditionally using an object map `{ 'class': condition }`; reach for it when two or more classes depend on component state; interviewers ask when to use it instead of `[class.x]`
 - Calling a method directly in a template binding (`{{ getTotal() }}`, `[disabled]="isInvalid()"`) — re-runs on every change-detection cycle instead of once; reviewers show a slow component built this way and expect the fix to be a `computed()` or a pure pipe, not the method itself
-- `model()` — signal-based two-way binding for a custom component (`[(value)]`); reviewers show `@Input()` + `@Output()` boilerplate built to fake two-way binding and ask for the signal-era replacement
 - Safe navigation operator `?.` in templates — the template renders once before async/HTTP data arrives, so `user.name` throws "Cannot read properties of undefined"; `user?.name` renders nothing until the value exists; interviewers ask how you guard a template against not-yet-loaded data
 - `@defer` blocks (`@placeholder`, `@loading`, triggers like `on viewport`/`on interaction`) — Angular 17+ template-level lazy loading that delays downloading a heavy component's code until needed; interviewers ask "how do you defer a heavy widget below the fold without a lazy route?"
 
@@ -114,8 +116,10 @@ Every item must be explainable with a real example from at least one of the six 
 - `app.config.ts` / `ApplicationConfig` `providers` array — the central place app-wide providers are registered in a standalone app; interviewers ask where you'd register `provideHttpClient()`, `provideRouter()`, or an interceptor
 - `provideHttpClient()` — `HttpClient` is unusable until this is registered; a `NullInjectorError: No provider for HttpClient` on first run is the most common blank-project failure; interviewers ask why an injected `HttpClient` throws at startup
 - `provideAnimations()` / `provideAnimationsAsync()` — Angular Material components that animate (`MatDialog`, `MatSnackBar`) fail or mis-render without this provider registered, even though the component is correctly in `imports`
-- `environment.ts` / `environment.prod.ts` + `fileReplacements` in `angular.json` — where the API base URL and per-build config live, and the mechanism (`angular.json`'s `fileReplacements`) that swaps the file on a production build; interviewers ask how the app points at localhost in dev and the real API in production without a code change
-- CORS during local development + `proxy.conf.json` — why the browser blocks a call from `localhost:4200` to an API on another port, that it is a server-side (not Angular) fix, and how `ng serve --proxy-config` routes `/api` calls through the dev server to avoid it locally
+- `environment.ts` / `environment.prod.ts` — where the API base URL and per-build config live; interviewers ask how the app points at localhost in dev and the real API in production without changing a line of code
+- `fileReplacements` in `angular.json` — the build-config mechanism that swaps `environment.ts` for `environment.prod.ts` on a production build; interviewers ask how the environment file actually gets replaced (it is not the code that chooses — the builder does)
+- CORS error in local development — the browser blocks a call from `localhost:4200` to an API on another origin unless the server sends the right headers; interviewers ask why the call is blocked and expect you to know it is a server-side (backend) fix, not an Angular one
+- `proxy.conf.json` + `ng serve --proxy-config` — routes `/api` calls through the Angular dev server so the browser sees a same-origin request, sidestepping CORS while developing locally; interviewers ask how you talk to a backend on a different port in dev
 
 ### Debugging Angular errors
 - `ExpressionChangedAfterItHasBeenCheckedError` (NG0100) — the dev-mode error thrown when a value read in the template changes between Angular's first and verification change-detection pass (e.g. a parent field set inside a child's `ngAfterViewInit`, or a getter that mutates state); interviewers show the stack trace and ask what causes it and how to fix it
