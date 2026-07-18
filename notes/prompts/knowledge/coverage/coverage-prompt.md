@@ -539,24 +539,32 @@ Three routing rules when handling the discards:
   > `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` under the owning topic's `## ` heading, in
   > the standard's item format, tagged with the run that found it — creating the heading if absent. A
   > summary line is not a handoff: the summary lives in a chat nobody reads later, so the item then
-  > **Ownership of a vendor-neutral concept does not delete its framework-specific twin.** Security and
-  > Architecture are language-agnostic by nature, so the *concept* is owned by `security/` or
-  > `architecture/` and lives there — but the **concrete implementation in a framework is a distinct,
-  > legitimately owned item** in that framework's coverage, and routing the concept out must not silently
-  > drop it. CSRF-the-attack belongs to Security; `CsrfTokenRepository` and when to disable CSRF for a
-  > stateless JWT API belong to Spring Boot. Layered architecture belongs to Architecture;
-  > `@Service`/`@Repository` and the DTO-vs-entity boundary belong to Spring Boot. Sanitisation belongs
-  > to Security; `DomSanitizer` and `[innerHTML]` belong to Angular. So when you route a concept out,
-  > ask explicitly whether this topic has its own *wiring* for it: if it does, keep that item here (worded
-  > as the implementation, not the concept) and route only the vendor-neutral part. Two items, one on each
-  > side, is the correct outcome — not a duplicate. What IS a duplicate is restating the neutral concept
-  > here, or restating the framework API over there.
   > depends on the owner's own future run rediscovering it by chance. **It does not.** The TypeScript run
   > (2026-07-18) routed out four Angular-owned concepts — `strictTemplates`, AOT, the `ng build`
   > type-check, typed `FormGroup<T>` — and Angular's coverage run had already happened that same day
   > without finding any of them. Nothing else in the pipeline catches this: `coverage-audit`'s Analyst D
   > hunts duplicates, misplaced items and demotion candidates, so a concept **absent from every section**
   > is invisible to it. Write the entry before you move on.
+  > **Routing the concept out does not route out this topic's implementation of it.** Some axes are
+  > agnostic of any language or framework by nature — security, architecture, HTTP/REST, testing theory,
+  > relational/transaction theory, git — so the *concept* is owned by that topic and lives there. But
+  > wherever a framework has its own **concrete wiring** for that concept, the wiring is a distinct,
+  > legitimately owned item in the framework's coverage, and routing the concept out must not silently
+  > take the wiring with it. CSRF-the-attack is Security; `CsrfTokenRepository` and why a stateless JWT
+  > API disables it is Spring Boot. Layering is Architecture; `@Service`/`@Repository` and the
+  > DTO-vs-entity boundary is Spring Boot. Escaping is Security; `DomSanitizer` and `[innerHTML]` is
+  > Angular. Isolation levels are SQL; `@Transactional` and its propagation is Spring Boot. So when you
+  > route a concept out, ask explicitly whether this topic has wiring of its own for it — if it does,
+  > keep that item here worded as the wiring, and route only the neutral concept. Two items, one on each
+  > side, is the correct outcome, not a duplicate.
+  > **The concreteness test — this exception is narrow, and it is the one most likely to be abused.**
+  > Granting "keep a twin" is exactly the permission a generator holding 100+ proposals will over-use,
+  > because justifying "it has its own wiring" is easier than letting a good item go, and that would
+  > reintroduce through the back door the duplicates the ownership grep exists to kill. So the kept item
+  > **must name a concrete artefact — an API, annotation, config file, class, or command**. If you cannot
+  > name one, it is not wiring: it is the same concept in other words, and it goes to the owner whole.
+  > "Spring Boot handles CSRF" fails the test; `CsrfTokenRepository` passes. Restating the neutral concept
+  > here, or restating the framework API over in the neutral topic, are both still duplicates.
 - **Already covered by this topic — grep the topic's own file too, in the same pass.** The
   cross-topic check below has no eye on duplication *inside* `{NOTES_PATH}coverage.md` itself, and
   Step 4b explicitly cannot judge it (the reviewer only sees the new items, never the sections they
