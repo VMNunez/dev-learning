@@ -53,9 +53,19 @@
      posting-frequency signal), with an explicit note that it is *reported, never acted on* — scope
      still comes from the job, and the scheduling conclusion is Victor's to draw, not the run's.
 
-   **Still open, not applied — needs Victor's decision because it changes the design:** `coverage-prompt`
-   has no cold reviewer of its own output. The 4a angles audit the *existing* file; the items the
-   generator word-crafts during consolidation are never judged by anyone, and they are the entire product
-   of the run (85 items in one pass here). `notes-audit` solves the same risk with a reviewer stage. The
-   cheap version would be a single cold Opus subagent receiving only the newly added items plus
-   `_coverage-standard.md`, checking format, the one-concept rule, and interview anchoring.
+   **Fourth change, applied after Victor approved the design change:** the pipeline had no cold reviewer
+   of its own output — the 4a angles audit the *existing* file, while the items the generator word-crafts
+   during consolidation were never judged by anyone despite being the entire product of the run (85 items
+   in one pass here). Added as **Step 4b — cold review of what this run actually wrote**: one Opus
+   subagent, sent only the newly added items plus `_coverage-standard.md`, returning defects and fixes
+   against item format, the one-concept rule, conduct-vs-concept, section filing and vagueness; proof of
+   work is an "N items reviewed" line that must match what was sent. It sits **before** the sync (now
+   Step 4c) on the same principle that moved the overlap check into 4a — a defect caught after mirroring
+   costs a second full sync pass. The generator remains the only editor and may reject a defect it
+   disagrees with, since the reviewer lacks the market analysis that produced the item; what it may not
+   do is skip the step because the items felt fine when written.
+
+   **Not yet exercised.** Step 4b was added *after* this run, so it has never actually executed. The next
+   coverage run is its first real test, and its self-report should say plainly whether the reviewer found
+   anything the generator had missed — if it reliably returns nothing, the step is cost without value and
+   this note is the evidence to reconsider it.
