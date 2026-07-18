@@ -658,7 +658,10 @@ padding the input is how a narrow check turns into an expensive one that reviews
 > can judge placement and duplication. [paste the touched sections here, new items marked `[NEW]`]
 >
 > Judge **only the `[NEW]` items**, one at a time, against the standard. Use the unmarked items as
-> context only — never report a defect against one of them:
+> context only — never report a standalone defect against one of them. The one exception is the
+> duplication check below: when a `[NEW]` item collides with an unmarked one, you may propose
+> sharpening the existing bullet as the fix — that is still a defect *of the new item*, resolved on
+> the old one:
 > - **Item format** — `concept — interview-anchored sentence`? Does the sentence say what the
 >   interviewer is testing, or does it merely define the term?
 > - **One concept per item** — flag any bullet joining two annotations, two files, two mechanisms with
@@ -766,6 +769,10 @@ The two files must match bullet for bullet, with only the heading levels differi
 `##` → `###`). **Do not verify this by reading the two side by side.** A single missing bullet in a
 40-item section is invisible to the eye and survives every "I compared them" claim; run the
 comparison mechanically instead, and read only to resolve what the diff reports:
+
+> **Run these in the Bash tool, never in PowerShell.** `diff <(...)` is bash process substitution —
+> PowerShell 5.1 cannot parse it, and a run that hits the parse error must not fall back to
+> "verifying by reading", which is exactly what this step forbids.
 
 ```
 diff <(grep '^- ' {NOTES_PATH}coverage.md) \
