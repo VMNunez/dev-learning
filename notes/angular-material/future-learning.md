@@ -9,7 +9,8 @@ Concepts that are real and worth knowing, but not needed to pass a junior screen
 - **Custom theme from scratch** — defining your own `$primary`, `$accent`, `$warn` palettes with custom hues instead of using prebuilt palettes; not tested at junior level but needed if you join a team with a design system
 - **`mat.button-overrides()` and `mat.theme-overrides()`** — granular token overrides for specific components; useful when you need to change one visual detail without redefining the whole palette; post-junior refinement
 - **Dark mode support** — defining a dark palette and switching themes at runtime; common in production apps but not a junior interview topic
-- **Custom form controls** — implementing `ControlValueAccessor` to make a non-standard component work inside `mat-form-field` with reactive forms; mid-level topic, not needed until you build design system components
+- **Custom form controls** — *implementing* `ControlValueAccessor` (and `MatFormFieldControl`) to make a non-standard component work inside `mat-form-field` with reactive forms; mid-level topic, not needed until you build design system components. Knowing *what* `ControlValueAccessor` is and why Material controls bind to `formControlName` is in coverage — writing one is not
+- **Material major-version migration schematics** — `ng update` migrations and the MDC rewrite internals; you run them on the job, you are not tested on them
 
 ---
 
@@ -21,9 +22,13 @@ Concepts that are real and worth knowing, but not needed to pass a junior screen
 - **`MatChips`** — tag input for multi-value fields (e.g. skills, tags, filters); common in enterprise UIs but not in the projects done so far
 - **`MatAutocomplete`** — search input with live dropdown suggestions; useful in large forms but requires integration with an API or a large dataset to be meaningful
 - **`MatBottomSheet`** — like `MatDialog` but slides up from the bottom; mobile-first pattern; not common in desktop enterprise apps
-- **`MatTabs`** — splits content into labelled tab panels; useful for dashboards with multiple views but not asked as a junior screening filter the way table/dialog/form are
 - **`MatExpansionPanel`** — collapsible accordion sections; common in settings pages and FAQ-style UIs; lower interview priority than the core form and table components
 - **`MatBadge`** — small numeric or status indicator overlaid on an icon (e.g. notification count); cosmetic addition, not a junior interview topic
+- **Custom `ComponentHarness` subclasses** — writing your own harness for your own components; using Material's built-in harnesses is in coverage, authoring one is not
+- **Custom `DateAdapter`** — replacing the native adapter with a Luxon or date-fns implementation; only needed when the project has real timezone or locale-formatting requirements
+- **`MatPaginatorIntl` / `MatDatepickerIntl` subclassing** — wiring Material's label tokens into a full i18n pipeline; knowing the token exists and why it is the translation hook is in coverage, implementing the subclass is not
+- **Custom `DataSource` subclass** — extending the CDK `DataSource` with `connect()`/`disconnect()` for server-side paged tables; the junior-level version is binding `[length]` and reacting to `(page)`, which is in coverage
+- **`MatIconRegistry` with sanitised SVG sprites** — registering a custom icon set instead of using Material Symbols; appears when a client brings its own icon library
 
 ---
 
