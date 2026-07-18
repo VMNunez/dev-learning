@@ -543,6 +543,12 @@ narrow check turns into an expensive one that reviews everything shallowly.
 > - **No fenced code**, and the wording is specific (a real error message, a real method name) rather
 >   than vague.
 >
+> **Out of your scope — do not report on these.** You are seeing an *excerpt*: only the items this run
+> added, not the sections they live in. So you cannot judge **section size** (the standard's 3–12 rule),
+> whether a section is under-filled, or whether the file as a whole passes the completeness test — a
+> section that looks like it holds 2 items here may hold 10 in the file. The generator verifies those
+> mechanically. Judge the items in front of you and say nothing about how many there are.
+>
 > Return **only defects**: for each, the item's opening words, the rule it breaks, and a corrected
 > version you would accept. Say nothing about items that pass. If a whole section's items read as
 > filler or restate an existing bullet, say so once. End with the line **"N items reviewed"** where N is
