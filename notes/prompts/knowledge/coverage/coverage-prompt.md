@@ -539,6 +539,18 @@ Three routing rules when handling the discards:
   > `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` under the owning topic's `## ` heading, in
   > the standard's item format, tagged with the run that found it — creating the heading if absent. A
   > summary line is not a handoff: the summary lives in a chat nobody reads later, so the item then
+  > **Ownership of a vendor-neutral concept does not delete its framework-specific twin.** Security and
+  > Architecture are language-agnostic by nature, so the *concept* is owned by `security/` or
+  > `architecture/` and lives there — but the **concrete implementation in a framework is a distinct,
+  > legitimately owned item** in that framework's coverage, and routing the concept out must not silently
+  > drop it. CSRF-the-attack belongs to Security; `CsrfTokenRepository` and when to disable CSRF for a
+  > stateless JWT API belong to Spring Boot. Layered architecture belongs to Architecture;
+  > `@Service`/`@Repository` and the DTO-vs-entity boundary belong to Spring Boot. Sanitisation belongs
+  > to Security; `DomSanitizer` and `[innerHTML]` belong to Angular. So when you route a concept out,
+  > ask explicitly whether this topic has its own *wiring* for it: if it does, keep that item here (worded
+  > as the implementation, not the concept) and route only the vendor-neutral part. Two items, one on each
+  > side, is the correct outcome — not a duplicate. What IS a duplicate is restating the neutral concept
+  > here, or restating the framework API over there.
   > depends on the owner's own future run rediscovering it by chance. **It does not.** The TypeScript run
   > (2026-07-18) routed out four Angular-owned concepts — `strictTemplates`, AOT, the `ng build`
   > type-check, typed `FormGroup<T>` — and Angular's coverage run had already happened that same day
