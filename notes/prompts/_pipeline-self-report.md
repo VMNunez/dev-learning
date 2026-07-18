@@ -59,6 +59,14 @@ like `readme-audit`): `git status` → stage **only** the report file and `_run-
 `docs: pipeline self-report for <orchestrator> run on <target>`. Never bundle them into the
 pipeline's content commit. Also print the five bullets in chat.
 
+**Verify the commit before declaring the run finished — `git show --stat HEAD`, not memory.** The
+commit must list **two** files: the report and `_run-tracker.md`. If it lists only the report, the
+tracker half was skipped — update it and commit before ending the run. This check exists because it
+failed in the wild: the Security coverage run (2026-07-18) wrote its report, skipped the tracker,
+and its own bullet 4 declared "no rule breached" — the same saturated context that skips a step
+cannot see the skip. Bullets 3 and 4 of the report may only claim a clean close-out if this stat
+check actually ran.
+
 ## How it gets used
 
 In a later main session, Victor mentions the run; Claude reads the report file and decides whether

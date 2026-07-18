@@ -106,6 +106,18 @@ I want you to create or update the coverage.md file for {TOPIC}.
 > subagent `model:` overrides do not cover this — they set the *subagents'* models, never the
 > session's.
 
+> **Run-checklist guard (step 0, same moment):** before doing anything else, create the session's
+> todo list (TodoWrite) with **every** step of this run as its own item — the required reads below
+> (one item per file), Steps 1–5, and, explicitly, the closing admin steps: coverage commit, inbox
+> commit (conditional), self-report, **`_run-tracker.md` row**, and the `git show --stat` close-out
+> verification. Mark items done as they complete; **the final summary must not be printed while any
+> item is unchecked.** Why this is mechanical and not trust-based: the steps most likely to be
+> dropped are the administrative ones at the end, precisely because they run on the run's most
+> saturated context and nothing fails loudly when they are skipped — the Security run (2026-07-18)
+> completed every content step and silently skipped the tracker update. A checklist the harness
+> re-displays is the external memory a saturated context no longer has; prose instructions
+> re-extracted from a 900-line prompt are not.
+
 Before starting, read:
 - `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
   (what belongs in scope, the three item types, confusable pairs, the AI factor, item/file format).
@@ -186,8 +198,9 @@ never treat a proofless report as a full pass, and never silently continue as if
 
 **Bounded reports only.** Every subagent returns its list (+ proof lines) and nothing else — no
 narrative, no code dumps, no restating of coverage items it found fine. The 4a angles are uncapped in
-*items*, never in prose: if a report comes back wrapped in narrative, keep the item list + proof and
-discard the rest.
+*items*, never in prose — and they write their item lists to **scratchpad files**, returning only a
+path + counts + proof line to the session (see Step 4a); if any report comes back wrapped in
+narrative, keep the item list + proof and discard the rest.
 
 ### Model policy — per role, to protect quality while saving tokens
 
@@ -522,8 +535,19 @@ Give each subagent this brief (substituting its angle):
 > **"OUT — post-junior"**, anything you judge beyond what a junior at this target is filtered on.
 > Run `wc -l` on the coverage.md before reading it (the Read tool truncates at 2000 lines silently —
 > use `offset` passes if needed) and state **"N lines, read to EOF"** in your report — a half-read
-> coverage produces gaps that are already covered. Return only the gap list, the OUT list, and that
-> line — no narrative around them.
+> coverage produces gaps that are already covered. **Write your full report to
+> `<scratchpad>/angle-<n>-<short-name>.md`** (the session gives you the exact path in this brief) —
+> the gap list, the OUT list, and the proof line, no narrative around them. **Return to the session
+> only three lines:** the file path, "N gaps, M OUT items", and the "N lines, read to EOF" proof.
+
+**Why the reports go to files and not into the chat.** Six uncapped Opus angles returning ~130
+proposals directly into the session is the single biggest context spike of the run — and it lands on
+the same context that must then word-craft every item and finish the admin steps. With reports on
+disk, the generator consolidates **incrementally**: process one angle file at a time, merge its
+genuine gaps into a single deduplicated worklist (a scratchpad file, not a mental list), and from
+then on reason against the worklist — never against six raw reports held at once. The acceptance
+check moves accordingly: verify each angle's three-line return carries its proof (path exists, proof
+line present) before reading its file, and reject/re-dispatch on the same rules as before.
 
 **Stop rule:** you are done when a fresh angle returns only duplicates of what the others already
 found. Heavy overlap between angles is the convergence signal — it means the surface is covered, not
@@ -910,9 +934,19 @@ is the resolution: the coverage change and the routing are two logical changes.
 
 Report the commit hashes in the final summary so Victor can see they landed.
 
-### Final step — pipeline self-report
+### Final step — pipeline self-report AND run tracker (two halves, one commit)
 
 This prompt dispatches subagents, so it ends like every orchestrator: read
-`notes/prompts/_pipeline-self-report.md` and execute it for this run. Because this folder is shared
-with `coverage-audit-prompt.md`, write the report as `_last-run-report-coverage-prompt.md`, commit it
-on its own, and print the five bullets in chat.
+`notes/prompts/_pipeline-self-report.md` and execute it for this run. That step has **two halves,
+and both are named here on purpose**: (1) write the report — because this folder is shared with
+`coverage-audit-prompt.md`, as `_last-run-report-coverage-prompt.md` — and (2) **update this run's
+cell in `notes/prompts/_run-tracker.md`**. Commit the two files together, print the five bullets in
+chat.
+
+**Close-out verification — mechanical, never by impression:** after that commit, run
+`git show --stat HEAD` and confirm it lists **both** files. If it lists only the report, the step is
+half-done — update the tracker and commit it before printing anything else. This half used to live
+only by indirection inside the shared file, and the Security run (2026-07-18) — the heaviest run to
+date — wrote the report, skipped the tracker, and then self-assessed "no rule breached"; a saturated
+context cannot see its own omission, so the check is a `git show --stat`, not a feeling. Only after
+this verification passes may the last checklist item be marked done and the summary printed.
