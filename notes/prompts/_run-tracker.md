@@ -27,7 +27,7 @@ runs once the whole coverage-prompt column is filled).
 | Java | 2026-07-18 | | |
 | Architecture | | | |
 | Security | | | |
-| TypeScript | | | |
+| TypeScript | 2026-07-18 | | |
 | JavaScript | 2026-07-18 | | |
 | CSS | | | |
 | SQL | | | |

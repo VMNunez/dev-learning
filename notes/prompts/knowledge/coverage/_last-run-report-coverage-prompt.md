@@ -1,71 +1,63 @@
 # Coverage prompt — last run self-report
 
-**Date:** 2026-07-18 · **Target:** TOPIC = JavaScript, NOTES_PATH = notes/javascript/ · **Branch:** `fix/backend-backlog`
+**Date:** 2026-07-18 · **Target:** TOPIC = TypeScript, NOTES_PATH = notes/typescript/ · **Branch:** `fix/backend-backlog`
 
-1. **Plan vs reality** — The split held. JavaScript's coverage was mature (121 lines), so the parallel
-   ordering applied again: the angles ran **alongside the Step 2 market analyst**, judged against the
-   existing file, and consolidated in one pass. One deliberate deviation, and it was the most valuable
-   decision of the run: a **fifth angle — output-prediction quickfire** — was added under the prompt's
-   "add one the topic obviously needs" clause. It was the *only* angle that reached the language-semantics
-   layer (`ToPrimitive`, the abstract equality algorithm, `this` binding precedence, the prototype chain,
-   microtask-drain ordering, sparse arrays). The four standard angles are framework-shaped and, on their
-   own, would have left JavaScript's largest screening surface uncovered.
-2. **Report discipline** — Clean. All five angles returned only the gap list / OUT list / proof line
-   ("121 lines, read to EOF" ×5). The market analyst declared the live web search ran and reported the
-   frequency signal honestly — JavaScript is named in ~1 of 9 postings on file, below the 3-posting
-   threshold — then shifted its weight to interview norms as instructed instead of padding with generic
-   stack requirements. Nothing trimmed or discarded.
-3. **Failures & retries** — None. All six passed the acceptance check on first dispatch.
+1. **Plan vs reality** — The split held. Coverage was mature (86 lines), so the parallel ordering applied:
+   the five angles ran **alongside the Step 2 market analyst**, judged against the existing file, and were
+   consolidated in one pass. The **mandatory output-prediction angle** (added to the prompt off the
+   JavaScript run) justified its mandate on its first enforced outing: it was the sole source of
+   narrowing-reset-inside-a-closure, `let` vs `const` widening, `void`-as-a-contextual-return-contract,
+   excess property checks and numeric-enum reverse mapping. Angles 1, 3 and 4 converged hard on type
+   erasure / strict mode / tsconfig — the convergence the stop rule describes — yet each still returned
+   non-duplicate items, so no angle was redundant.
+
+2. **Report discipline** — Clean. All six subagents returned bounded lists with proof lines ("86 lines,
+   read to EOF" ×5; the analyst declared its search status). The analyst appended a short "bottom line"
+   paragraph beyond the requested lists — harmless, kept for its frequency signal. Nothing discarded.
+
+3. **Failures & retries** — None. Every acceptance check passed on first dispatch, including the Step 4b
+   reviewer's "80 items reviewed" matching the count sent.
+
 4. **Rule friction and rule breaches** —
-   - *Confirmation:* the **cross-topic overlap check again did heavy work**, and more than on any prior
-     run. JavaScript sits underneath Angular, General, Security and Architecture, so a large share of
-     proposed gaps was already owned elsewhere: an entire proposed "browser storage" section (General
-     ~1801–1804 and Security), plus CORS, the `OPTIONS` preflight, the `Authorization: Bearer` header,
-     JWT-in-`localStorage`/XSS, `.env`-is-public, `proxy.conf.json`, and every test-quality item
-     (Angular/General own testing). Having the check *before* writing paid off again — none of it was
-     written and mirrored only to be removed.
-   - *Friction (minor, real):* the prompt gives no signal that **some topics are structurally
-     overlap-heavy**. For a foundational topic like JavaScript the check is not a formality but the
-     single most consequential consolidation step, and it only stayed tractable because the proposed
-     concepts were grepped against `notes/coverage.md` in one pass rather than judged from memory.
-     Worth naming that technique in the step.
-   - *Structural check earned its keep:* the mechanical count forced two fixes the eye had missed — an
-     undersized 4-item "Execution order and the event loop" was **grown** (call-stack item, per the rule
-     added off the Java run) rather than merged, and a `console.*` bullet that had fused severity levels
-     with `console.table`/`console.dir` was split under the one-concept rule.
-   - *Breaches:* none. Branch guard ran (`fix/backend-backlog`, not `main`); the generator was confirmed
-     on Opus before Step 1; all five angles on Opus, market analyst on Sonnet; the sync was verified
-     programmatically line-for-line (266 lines, 0 mismatches) rather than by eye, and the Windows
-     encoding hazard was avoided by rebuilding through Python with explicit UTF-8 instead of PowerShell.
-   - *Note for the next run:* `notes/coverage.md` has now crossed the truncation threshold — **2008
-     lines**. Every future whole-file read of it must use `offset` passes; this run sidestepped the risk
-     by processing it programmatically, but a Read-based sync would now silently truncate.
-5. **Verdict** — Pipeline clean. **Three changes applied off this run:**
-   - *Step 4a angle list:* **output prediction is now a mandatory fifth angle for language topics**
-     (JavaScript, Java, TypeScript). Angles 1–4 are framework-shaped, so on a language topic they can
-     converge, look complete, and never reach the mechanism layer — on this run the improvised fifth
-     angle was the only source of `ToPrimitive`, the abstract equality algorithm, `this` binding
-     precedence, the prototype chain and microtask ordering.
-   - *Cross-topic overlap check:* now states the technique (**one grep, not a re-read** of a 2000+ line
-     file, and not memory) and warns that **foundational topics are structurally overlap-heavy** — Java
-     and JavaScript are both recorded as the worked evidence.
-   - *Final summary:* new **"Size delta"** row (lines and sections, before → after, plus the analyst's
-     posting-frequency signal), with an explicit note that it is *reported, never acted on* — scope
-     still comes from the job, and the scheduling conclusion is Victor's to draw, not the run's.
+   - **Step 4b's first real execution — it paid for itself.** The previous report flagged that the step
+     had never run and that a reviewer reliably returning nothing would be cost without value. It returned
+     **6 defects on 80 items, and all 6 were applied**: three one-concept violations the generator had
+     written while believing it complied (a four-flag `noUnusedLocals`/`noUnusedParameters`/… bullet,
+     `module` fused with `moduleResolution`, `extends` fused with the Angular config layout), one narrowing
+     item conflating two distinct mechanisms, one item **misfiled** (literal widening under "Structural
+     typing and assignability" when `as const` already owned widening), and one item that **restated the
+     bullet directly above it**. Note the pattern: these are precisely the defects no *other* check in the
+     pipeline looks for — the 4a angles audit the old file, the structural count only counts. The step
+     should stay.
+   - *Friction (real, unguided):* applying the reviewer's mandated splits pushed
+     `## Narrowing and type guards` from 12 to **13** items — a reviewer-mandated split colliding with the
+     structural 12-item cap. **The prompt does not say which wins.** Resolved by relocating the
+     `catch (e: unknown)` item to `## Modelling domain state and errors`, where it files better anyway; but
+     that was an unguided judgement call, and a weaker run would have either ignored the split or blown
+     the cap.
+   - *Cross-topic overlap check:* did real work again, as predicted for topics sitting under others.
+     Routed out to **Angular**: `strictTemplates` / template type-checking, AOT compilation, the `ng build`
+     type-check pipeline, and typed reactive forms (`FormGroup<T>`) — all Angular-owned and currently
+     *absent* from Angular's coverage, so they are a genuine gap in that file, not duplicates. Also left
+     with their owners: OpenAPI/Swagger generation (Spring Boot), ISO-8601 parsing (JavaScript), custom
+     error classes and `this`-binding-in-callbacks (JavaScript), Java's own type erasure (Java). One grep
+     over `notes/coverage.md` sufficed — no re-read of the now-2116-line file.
+   - *Structural check earned its keep:* the mechanical count confirmed all 19 sections within 3–12 both
+     before and after the 4b fixes; without the recount after applying fixes, the 13-item overflow above
+     would have shipped unnoticed.
+   - *Search limitation (recurring, not a failure):* the analyst's live web search ran but surfaced no
+     quotable Spanish postings — listing pages don't expose "Requisitos" text in snippets — so its
+     frequency signal leaned on `_job-market-evidence.md`. TypeScript is explicitly named in only ~1 of 8
+     postings there (absorbed into "Angular"), so it correctly shifted weight to interview norms.
+   - *Breaches:* none. Branch guard ran (`fix/backend-backlog`, not `main`); generator confirmed on Opus
+     before Step 1; all five angles + the 4b reviewer on Opus, analyst on Sonnet; the sync was verified
+     programmatically (`diff` on bullets and headings — 0 mismatches) rather than by eye, and the Windows
+     encoding hazard was avoided by rebuilding through bash/awk instead of PowerShell `Set-Content`.
+   - *Note for the next run:* `notes/coverage.md` is now **2116 lines**, well past the truncation
+     threshold. Any Read-based whole-file pass must use `offset`; this run processed it programmatically.
 
-   **Fourth change, applied after Victor approved the design change:** the pipeline had no cold reviewer
-   of its own output — the 4a angles audit the *existing* file, while the items the generator word-crafts
-   during consolidation were never judged by anyone despite being the entire product of the run (85 items
-   in one pass here). Added as **Step 4b — cold review of what this run actually wrote**: one Opus
-   subagent, sent only the newly added items plus `_coverage-standard.md`, returning defects and fixes
-   against item format, the one-concept rule, conduct-vs-concept, section filing and vagueness; proof of
-   work is an "N items reviewed" line that must match what was sent. It sits **before** the sync (now
-   Step 4c) on the same principle that moved the overlap check into 4a — a defect caught after mirroring
-   costs a second full sync pass. The generator remains the only editor and may reject a defect it
-   disagrees with, since the reviewer lacks the market analysis that produced the item; what it may not
-   do is skip the step because the items felt fine when written.
-
-   **Not yet exercised.** Step 4b was added *after* this run, so it has never actually executed. The next
-   coverage run is its first real test, and its self-report should say plainly whether the reviewer found
-   anything the generator had missed — if it reliably returns nothing, the step is cost without value and
-   this note is the evidence to reconsider it.
+5. **Verdict** — Change worth considering: **add one line to Step 4b's consolidation** telling the
+   generator what to do when applying a reviewer's split pushes a section past the 12-item cap — prefer
+   relocating the least-central item to a semantically honest section (as done here), and split the
+   section only when no such home exists. Everything else: pipeline clean, and Step 4b is confirmed
+   worth keeping.
