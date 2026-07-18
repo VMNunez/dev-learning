@@ -1,48 +1,48 @@
 # Coverage prompt — last run self-report
 
-**Date:** 2026-07-18 · **Target:** TOPIC = Java, NOTES_PATH = notes/java/ · **Branch:** `fix/backend-backlog`
+**Date:** 2026-07-18 · **Target:** TOPIC = JavaScript, NOTES_PATH = notes/javascript/ · **Branch:** `fix/backend-backlog`
 
-1. **Plan vs reality** — The split held. Java's coverage was mature (137 lines), so the conditional
-   ordering added after the Angular Material run applied for the first time: the four angles ran **in
-   parallel with the Step 2 market analyst**, judged against the existing file, and everything
-   consolidated in one pass. It saved a full sequential leg with no loss — the angles never needed the
-   new items, exactly as the prompt predicts. Angle yield was uneven but not wasted: live-code-review
-   and debugging produced the densest Java-owned gaps, while design and take-home returned mostly
-   material owned by Spring Boot or Architecture (see bullet 4).
-2. **Report discipline** — Clean. All five subagents returned only the required gap list / OUT list /
-   proof line ("137 lines, read to EOF", "138 lines, read to EOF"). The market analyst declared the
-   live web search ran and reported the frequency signal (Java in 8/8 postings on file, but named only
-   as a stack keyword — no posting itemises language-level scope, which it flagged explicitly rather
-   than padding). Nothing trimmed or discarded.
-3. **Failures & retries** — None. All five passed the acceptance check on first dispatch.
+1. **Plan vs reality** — The split held. JavaScript's coverage was mature (121 lines), so the parallel
+   ordering applied again: the angles ran **alongside the Step 2 market analyst**, judged against the
+   existing file, and consolidated in one pass. One deliberate deviation, and it was the most valuable
+   decision of the run: a **fifth angle — output-prediction quickfire** — was added under the prompt's
+   "add one the topic obviously needs" clause. It was the *only* angle that reached the language-semantics
+   layer (`ToPrimitive`, the abstract equality algorithm, `this` binding precedence, the prototype chain,
+   microtask-drain ordering, sparse arrays). The four standard angles are framework-shaped and, on their
+   own, would have left JavaScript's largest screening surface uncovered.
+2. **Report discipline** — Clean. All five angles returned only the gap list / OUT list / proof line
+   ("121 lines, read to EOF" ×5). The market analyst declared the live web search ran and reported the
+   frequency signal honestly — JavaScript is named in ~1 of 9 postings on file, below the 3-posting
+   threshold — then shifted its weight to interview norms as instructed instead of padding with generic
+   stack requirements. Nothing trimmed or discarded.
+3. **Failures & retries** — None. All six passed the acceptance check on first dispatch.
 4. **Rule friction and rule breaches** —
-   - *Confirmation, not friction:* the **cross-topic overlap check did most of the work this run** —
-     roughly half of all proposed gaps were already owned elsewhere (Spring Boot: proxy/self-invocation,
-     `@Data` on an entity, Lombok as a compile-time processor, stack-trace and `Caused by:` reading,
-     `OutOfMemoryError`, `application.properties`, the Maven wrapper, `~/.m2`, every test-quality item;
-     Architecture/General: layering, DTO-vs-entity, swallowed exceptions). Having the check *before*
-     writing — the change made after the Angular Material run — paid off exactly as intended; nothing
-     was written and mirrored only to be removed.
-   - *Friction (minor, real):* the existing "Control flow" section had **2 items**, below the
-     standard's merge floor. The structural check surfaces this but offers no clean home, since no
-     adjacent section could absorb it without breaking semantics. Resolved by **growing** it — renamed
-     "Control flow and source structure" and folded in the new `package`/`import`/fully-qualified-name
-     items. The prompt should say that an under-3 section may be grown with adjacent new concepts
-     rather than merged across a semantic boundary.
+   - *Confirmation:* the **cross-topic overlap check again did heavy work**, and more than on any prior
+     run. JavaScript sits underneath Angular, General, Security and Architecture, so a large share of
+     proposed gaps was already owned elsewhere: an entire proposed "browser storage" section (General
+     ~1801–1804 and Security), plus CORS, the `OPTIONS` preflight, the `Authorization: Bearer` header,
+     JWT-in-`localStorage`/XSS, `.env`-is-public, `proxy.conf.json`, and every test-quality item
+     (Angular/General own testing). Having the check *before* writing paid off again — none of it was
+     written and mirrored only to be removed.
+   - *Friction (minor, real):* the prompt gives no signal that **some topics are structurally
+     overlap-heavy**. For a foundational topic like JavaScript the check is not a formality but the
+     single most consequential consolidation step, and it only stayed tractable because the proposed
+     concepts were grepped against `notes/coverage.md` in one pass rather than judged from memory.
+     Worth naming that technique in the step.
+   - *Structural check earned its keep:* the mechanical count forced two fixes the eye had missed — an
+     undersized 4-item "Execution order and the event loop" was **grown** (call-stack item, per the rule
+     added off the Java run) rather than merged, and a `console.*` bullet that had fused severity levels
+     with `console.table`/`console.dir` was split under the one-concept rule.
    - *Breaches:* none. Branch guard ran (`fix/backend-backlog`, not `main`); the generator was confirmed
-     on Opus before Step 1; all four angles on Opus, market analyst on Sonnet; the mechanical count
-     check ran and forced four section splits (Exceptions → mechanics + "the ones you will actually
-     hit"; Collections → choosing/using + ordering/identity/cost; Classes and objects → classes +
-     object identity and immutable data); the sync was verified programmatically line-for-line rather
-     than by eye.
-   - *Pre-existing defect found and fixed:* `notes/coverage.md` was missing the `---` separator between
-     the Spring Boot and Java sections. Not caused by this run — the section replacement preserved the
-     boundary faithfully — but repaired while there.
-5. **Verdict** — Pipeline clean; the three changes made after the Angular Material run all proved out
-   on their first real use. **One change applied off this run:** Step 4's structural check now states
-   that an undersized section has two fixes and that **growing it is the first choice** — fold in this
-   run's adjacent gaps and rename the section to the wider theme; merge into a neighbour only when no
-   such concepts exist, and never across a semantic boundary just to clear the count, because a section
-   whose name no longer describes its contents misfiles those bullets for every downstream prompt that
-   reads coverage by section. The Java "Control flow" → "Control flow and source structure" case is
-   recorded there as the worked example.
+     on Opus before Step 1; all five angles on Opus, market analyst on Sonnet; the sync was verified
+     programmatically line-for-line (266 lines, 0 mismatches) rather than by eye, and the Windows
+     encoding hazard was avoided by rebuilding through Python with explicit UTF-8 instead of PowerShell.
+   - *Note for the next run:* `notes/coverage.md` has now crossed the truncation threshold — **2008
+     lines**. Every future whole-file read of it must use `offset` passes; this run sidestepped the risk
+     by processing it programmatically, but a Read-based sync would now silently truncate.
+5. **Verdict** — Pipeline clean. **Change worth considering:** the Step 4a angle list is
+   framework-shaped and under-serves *language* topics, where "what does this print, and in what order?"
+   is the dominant screening format in Spain. The prompt already permits adding an angle, but making
+   **output-prediction the named canonical fifth angle for language topics** (JavaScript, Java,
+   TypeScript) would stop that depending on the generator noticing — on this run it was the difference
+   between covering the coercion/prototype/event-loop mechanism layer and missing it entirely.
