@@ -540,6 +540,18 @@ expected** — the reviewer sees the items without the market analysis that prod
 mistake a deliberately narrow item for a vague one. What is not allowed is skipping the step because
 the items "felt fine when written": that is precisely the judgement this step exists to distrust.
 
+**When applying a split pushes a section over the 12-item cap.** The reviewer enforces the one-concept
+rule, so its fixes *add* items — and a section already near the limit can cross it while you are
+complying with a mandated split. The two rules do not conflict in priority (the split always happens:
+a grouped bullet is a defect, an oversized section is only a shape problem), so the question is where
+the extra item lands. In order: **relocate** the least-central item in that section to a neighbour whose
+heading honestly describes it; if no honest home exists, **split the section** per Step 4's rule. Never
+resolve it by declining the split or by leaving the section over 12. The worked example is the TypeScript
+run: applying two splits took `## Narrowing and type guards` from 12 to 13, and the fix was moving the
+`catch (e: unknown)` item into `## Modelling domain state and errors`, where it filed better anyway.
+**Re-run the Step 4 structural count after applying the reviewer's fixes** — the first count ran before
+these edits existed, so it cannot have seen the overflow.
+
 ---
 
 ## Step 4c — Keep notes/coverage.md in sync
