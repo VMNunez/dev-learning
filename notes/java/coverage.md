@@ -19,10 +19,21 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - autoboxing / unboxing — the compiler silently converts between a primitive and its wrapper (`long` ↔ `Long`); unboxing a `null` wrapper into a primitive throws `NullPointerException`; interviewers show `long id = mapThatMightReturnNull.get(key)` and ask what blows up and why
 - `Integer` / `Long` cache and `==` on boxed values — boxed values from -128 to 127 are cached, so `==` on two boxed `100L` is accidentally `true` but two boxed `1000L` is `false`; interviewers use this gotcha to check you never compare wrapper objects with `==`, only `.equals()`
 
-## Control flow
+## Control flow and source structure
 
 - Classic `switch` fall-through — without `break` at the end of a case, execution continues into the next case even if it does not match; one of the most common Java bugs interviewers ask candidates to spot in a code review
 - Switch expression (Java 14+) — `->` syntax that returns a value directly and removes fall-through entirely; the compiler warns if a case is missing; interviewers ask why this form is safer than the classic statement and expect you to know it is the standard pattern for handling enum status fields in a service method
+- `package` declaration must mirror the folder path — the declared package and the directory the file sits in have to match or the compiler refuses to build; interviewers ask this when a candidate drags a file to another folder in the IDE and cannot explain the resulting error
+- `import` resolves a name, it does not load anything — an import only tells the compiler which class a simple name refers to; the class itself must be on the classpath, and `java.lang` needs no import because it is imported implicitly; interviewers ask what an import actually does to separate it from a JavaScript `import`, which really does fetch a module
+- Fully-qualified class names and same-name collisions — when two libraries expose a class with the same simple name (`java.util.Date` and `java.sql.Date`) you can import only one and must write the other in full; interviewers show a file that needs both and ask how you resolve it
+
+## Compiling and running Java
+
+- JDK vs JRE vs JVM — the JDK contains the compiler (`javac`) and the tools, the JVM executes bytecode, the JRE is the runtime subset; interviewers ask this to check you understand why a machine with only a runtime cannot build the project
+- Compile-time vs runtime failure — the compiler checks syntax, types, and signatures; anything that depends on a *value* (a null reference, a bad cast, a missing class on the classpath) can only fail while running; interviewers show a list of errors and ask you to classify them, because "it compiles" proves almost nothing
+- Reading the common compiler messages — `cannot find symbol`, `incompatible types`, `unreported exception X must be caught or declared to be thrown`, `class Y is public, should be declared in a file named Y.java`; interviewers expect you to translate each into the fix without searching, since these are the four you will hit weekly
+- `NoClassDefFoundError` vs `ClassNotFoundException` — both mean a class the code needs is not on the classpath at runtime even though it compiled fine; the usual cause is a dependency declared with the wrong scope or missing from the package; interviewers ask why a `provided`-scope library breaks the deployed application
+- `NoSuchMethodError` — the code was compiled against one version of a library and a different version is on the classpath at runtime; it is a runtime error with a clean compile, and the way you find it is by inspecting the dependency tree; interviewers use it for "it works on my machine, it breaks in the pipeline"
 
 ## Classes and objects
 
@@ -33,17 +44,24 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `this` keyword — disambiguates between a field and a constructor parameter; appears in Lombok-generated code and custom constructors
 - No-arg (default) constructor — Java gives a class a public no-arg constructor only when you declare no constructor at all; the moment you add any constructor that default disappears; interviewers ask "why does your JPA entity need a no-arg constructor?" — Hibernate instantiates the entity by reflection and then sets the fields, so an entity that has only an all-args constructor fails at runtime
 - `static` methods and fields — belong to the class, not to any instance; `Map.of()`, `Integer.parseInt()`, `Objects.equals()`, and utility factory methods are all `static`; interviewers ask "why can't a `static` method access instance fields?" (because there is no instance)
+- Encapsulation — fields are `private`, accessed through getters/setters; this is what Lombok's `@Data` generates; Spring Data reads and writes entity fields through this pattern
+
+## Object identity and immutable data
+
 - `instanceof` — checks the runtime type of an object; appears in `equals()` overrides (`if (!(obj instanceof Employee other)) return false`) and in exception handlers; pattern matching form (`instanceof Dog dog`) is Java 16+ and is in the notes
 - `equals()` and `hashCode()` — always override both together; `HashMap` and `HashSet` use `hashCode()` to find the bucket and `equals()` to confirm the match; breaking the contract causes silent bugs; Lombok `@Data` generates both automatically — interviewers ask "what does `@Data` generate?"
 - `Objects.equals(a, b)` — null-safe comparison utility; equivalent to `a != null && a.equals(b)` but shorter and cleaner; use inside `equals()` overrides to avoid NullPointerException
-- Encapsulation — fields are `private`, accessed through getters/setters; this is what Lombok's `@Data` generates; Spring Data reads and writes entity fields through this pattern
 - Records (Java 16+) — `record CreateUserRequest(String name, String email) {}` generates the constructor, getters, `equals`, `hashCode`, and `toString` automatically; immutable by design; interviewers ask "have you seen records used as DTOs?" because it shows you know modern Java
+- Record vs class, and why an entity cannot be a record — a record is the right shape for a request/response payload (immutable, value equality, no Lombok needed) but Hibernate needs a no-arg constructor and mutable fields, so an entity stays a class; interviewers ask "why is your DTO a record and your entity is not?"
+- Immutability as a design default — a class with `final` fields and no setters cannot be changed by a caller after construction, which removes a whole class of surprise bugs and makes the object safe to share; interviewers ask "when would you make a class immutable and what do you gain?"
+- Static factory method vs constructor — a factory (`Optional.of()`, `Employee.of(...)`) can carry a meaningful name, validate before constructing, and return a cached or subclass instance, none of which a constructor can do; interviewers ask why `Optional` has no public constructor
 
 ## Inheritance and polymorphism
 
 - `extends` and `super` — a subclass inherits a parent's fields and methods; `super(...)` calls the parent constructor and `super.method()` calls the overridden parent method; interviewers ask you to distinguish inheritance from implementing an interface (single `extends` vs many `implements`) and where Spring uses it (your custom exception `extends RuntimeException`)
 - Polymorphism (runtime dispatch) — a variable of the parent/interface type can hold any subclass, and the overridden method chosen is decided at runtime, not compile time; this is why Spring can inject any implementation of an interface without the caller knowing which one; the classic "what is polymorphism, show an example" question
 - `final` (variable, method, class) — `final` on a variable forbids reassignment, on a method forbids overriding it in a subclass, on a class forbids extending it at all; interviewers ask "what does `final` mean in these three places?" because juniors only know the field case, and it explains why a `private final` service dependency cannot be swapped after construction
+- Composition over inheritance — the default rule is to hold a collaborator as a field rather than extend a class, because inheritance couples you to the parent's internals and you only get one; interviewers ask "where do you actually use `extends` in a Spring Boot app?" and the honest answer is custom exceptions and framework base classes, almost nothing else
 
 ## Memory and value semantics
 
@@ -61,14 +79,20 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - Overriding vs overloading — overriding: same method name and signature in a subclass (decided at runtime); overloading: same method name with different parameters in the same class (decided at compile time); interviewers show code and ask "is this an override or an overload?"
 - Functional interfaces — an interface with exactly one abstract method; this is what makes lambda syntax possible; `@FunctionalInterface` enforces the constraint; built-ins: `Predicate<T>` (filter/test), `Function<T, R>` (transform), `Consumer<T>` (consume with no return), `Supplier<T>` (produce with no input); interviewers ask "what type does this lambda implement?"
 - Why Spring Boot prefers interfaces for dependencies — you can swap implementations without changing the caller; the foundation of testable, loosely coupled code
+- Interface-per-service vs the concrete class alone — the `UserService` + `UserServiceImpl` pair is a convention, not a law: an interface with exactly one implementation adds indirection for nothing, but it is what lets you swap or stub the collaborator later; interviewers ask "do you always create both? why?" and want a reasoned answer rather than cargo cult
+- Program to the interface in declarations — write `List<X> x = new ArrayList<>()` and `Map<K, V>` rather than `ArrayList`/`HashMap` on the left-hand side, so callers depend on the capability and not the implementation; a standard code-review comment interviewers expect you to justify
 
 ## Generics
 
 - `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` — reading and writing typed containers in Spring Boot code
 - Why generics exist — catch type errors at compile time instead of at runtime; without generics, a `List` could hold any type and every `.get()` required a cast that could fail at runtime
 - Generics hold reference types only, not primitives — `List<int>` does not compile; you write `List<Integer>` and autoboxing bridges the two; interviewers show `List<int>` and ask why it fails, tying generics back to the wrapper-vs-primitive distinction
+- Raw types (`List` with no type parameter) — still legal for backward compatibility, but they switch off every generic check, produce "unchecked" warnings, and move the failure to a runtime `ClassCastException`; interviewers show a raw `List` and ask what the compiler has stopped doing for you
+- Type erasure — generic type information exists only at compile time and is erased from the bytecode, which is why you cannot overload on `List<String>` vs `List<Integer>`, cannot write `x instanceof List<String>`, and cannot do `new T[]`; interviewers use it to explain several "why won't this compile?" snippets
 - `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()` — the correct way to handle a value that might not exist
 - `Optional.get()` vs `Optional.orElseThrow()` — `get()` throws `NoSuchElementException` with no useful message if empty; `orElseThrow()` lets you throw a meaningful exception with context; interviewers treat `get()` as a red flag in code review — it is the same problem as returning `null`
+- `if (o.isPresent()) return o.get();` is the reviewable smell — `Optional` is meant to be chained with `map`/`filter`/`orElseThrow`, not unwrapped with a manual check, which is just a null check with extra syntax; interviewers show both forms and ask you to rewrite the first
+- `Optional` is a return type, never a field or a parameter — it is not serialisable, JPA cannot map it, and an `Optional` that can itself be null is a double negative; interviewers ask "would you make an entity field `Optional<String>`?" and the answer is no
 - Why returning `null` is a problem — forces every caller to null-check; `Optional` makes the absence explicit in the return type; interviewers ask "why Optional instead of null?"
 
 ## Streams and lambdas
@@ -83,40 +107,67 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - `.toList()` vs `collect(Collectors.toList())` — `.toList()` is Java 16+ and returns an immutable list; `collect(Collectors.toList())` returns a mutable list; if the next line calls `.add()` on the result, `.toList()` will throw; interviewers ask the difference when reviewing modern Java code
 - Stream vs for loop — streams express intent clearly (`filter` + `map`); for loops are clearer when the logic is complex or when you need early exit with `break`; know when to choose each
 - Intermediate vs terminal operations (lazy evaluation) — `filter`/`map` are intermediate and do nothing until a terminal operation (`collect`, `forEach`, `findFirst`) runs; a stream with no terminal operation never executes; interviewers ask "does this `filter` run?" to test whether you know streams are lazy, not eager
+- Side effects inside a lambda — a `forEach` that adds to a list declared outside the stream, or a `map` that saves to the database, defeats the point of a pipeline built on pure transformations and breaks outright if the stream is ever parallel; interviewers show a `forEach` mutating an external list and ask you to rewrite it with `collect`
 
-## Exceptions
+## Exceptions — mechanics
 
+- `Throwable` hierarchy: `Error` vs `Exception` — `Error` (`StackOverflowError`, `OutOfMemoryError`) signals a JVM-level failure you are not meant to catch, `Exception` is application-level, and both sit under `Throwable`; interviewers ask "why does `catch (Exception e)` not catch everything, and why is `catch (Throwable)` wrong?"
 - Checked vs unchecked exceptions — why Spring Boot uses unchecked (`RuntimeException` subclasses): they do not need to be declared in the method signature and propagate freely to `@RestControllerAdvice`
 - `RuntimeException` vs `Exception` — `RuntimeException` is unchecked (no `throws` declaration needed); `Exception` is checked (must declare with `throws` or catch it); always extend `RuntimeException` for custom exceptions in Spring Boot so they propagate without boilerplate
 - `try` / `catch` / `throws` — reading Spring Boot exception handling code; `throws` in a method signature is a contract: the caller must handle it
 - Creating a custom exception: `extends RuntimeException`, constructor that accepts a message, why you name it after what went wrong (`ResourceNotFoundException`)
+- Designing the exception hierarchy — one abstract base (`AppException`) with a subclass per failure type lets the global handler catch the base and stay small, whereas a flat set of unrelated `RuntimeException`s forces a new handler method for every error; interviewers ask how you would add a new error type without touching the advice
 - `throw new SomeException()` — how it propagates up the call stack until `@RestControllerAdvice` catches it and returns a JSON error response
-- `NullPointerException` — the most common runtime failure; interviewers ask where it comes from (calling a method on `null`, unboxing a `null` wrapper, `Optional.get()` on an empty Optional) and how you prevent it (`Optional`, `Objects.requireNonNull`, null checks); not knowing its causes reads as no real Java experience
 - `finally` — always runs even when the `try` returns or throws, used for cleanup; the gotcha is that a `return` inside `finally` overrides the try's return and swallows the exception; interviewers use it to test control-flow depth
 - try-with-resources — the modern way to guarantee a resource (`Connection`, `InputStream`) is closed via `AutoCloseable`, replacing a hand-written `finally { close(); }`; interviewers ask how you close resources safely and expect this over manual cleanup
 - exception chaining / cause constructor (`throw new X(msg, cause)`) — how you rethrow while preserving the original stack trace; interviewers ask "if you catch and rethrow, how do you avoid losing where it really failed?" and a missing cause is a classic junior mistake that hides the real error
 - catch-block ordering — a more specific exception must be caught before a more general one, or the code does not compile (`catch (Exception e)` before `catch (IllegalArgumentException e)` is a compile error); interviewers use it as a quick pressure check on how catch resolution works
 
-## Collections
+## The exceptions you will actually hit
+
+- `NullPointerException` — the most common runtime failure; interviewers ask where it comes from (calling a method on `null`, unboxing a `null` wrapper, `Optional.get()` on an empty Optional) and how you prevent it (`Optional`, `Objects.requireNonNull`, null checks); not knowing its causes reads as no real Java experience
+- Helpful NullPointerException messages (Java 14+) — the JVM now names the exact expression that was null (`Cannot invoke "User.getName()" because "user" is null`), so a line with three chained calls no longer leaves you guessing which one failed; interviewers paste the message and expect you to point at the dereference instead of adding print statements
+- `StackOverflowError` — every method call pushes a frame onto the call stack, so recursion with no exit condition (or two objects whose `toString()` call each other) fills it and the JVM gives up; interviewers ask what causes it because it shows up in almost every first project with a bidirectional relationship
+- `ClassCastException` — a cast fails at runtime because the object is not the type you claimed; interviewers pair it with `instanceof` and ask why the compiler allowed the cast in the first place
+- `NumberFormatException` — thrown by `Integer.parseInt("abc")`; the real source is almost always untrusted input arriving as a String, so the answer interviewers want is validating at the boundary rather than catching it deep in a service
+- `IndexOutOfBoundsException` — off-by-one on `list.get(size)` or treating an empty result as populated; the message prints both the offending index and the size, and interviewers expect you to read the two numbers rather than re-run the code
+- `IllegalArgumentException` vs `IllegalStateException` — the two exceptions you throw *on purpose*: the first for a parameter that is invalid on its own, the second for an object that is in the wrong state for the call; interviewers ask which one fits a given validation and treat a bare `RuntimeException` as a smell
+
+## Collections — choosing and using
 
 - `List` — ordered, allows duplicates; used in repository results and service return types (`List<User>`)
 - `Map` — key-value pairs; `Map.of("message", "Not found")` for quick immutable error response bodies; Spring serialises it to JSON automatically
 - `Set` — no duplicates; used in many-to-many relationships (e.g. a user's set of roles or permissions)
 - When to use each in a Spring Boot context — `List` for ordered results from queries, `Map` for ad-hoc response bodies, `Set` for relationship collections where duplicates are meaningless
+- Choosing by the operation you need, not by habit — need uniqueness → `Set`, need lookup by key → `Map`, need order and index → `List`; interviewers ask "what would you store a user's roles in, and why not a `List`?" to see whether the choice was reasoned or automatic
+- `HashMap` vs `LinkedHashMap` vs `TreeMap` — `HashMap` gives no order guarantee at all, `LinkedHashMap` preserves insertion order, `TreeMap` keeps keys sorted; a response that must come back in a stable order is a requirement, not an implementation detail, and interviewers ask which one you would pick
 - `ArrayList` vs `LinkedList` — `ArrayList` is backed by an array (fast random access via `get(i)`, slow insert/remove in the middle); `LinkedList` is a chain of nodes (slow `get(i)`, fast insert/remove in the middle); interviewers ask this as a data-structure tradeoff question even though `ArrayList` is what you actually use in almost every Spring Boot project
+- Immutable collection factories — `List.of()`, `Map.of()`, `Arrays.asList()`, and `.toList()` return collections that reject `add`/`remove` with `UnsupportedOperationException`; the bug is never the list, it is the caller assuming it could be modified; interviewers ask what that exception means when it appears in a stack trace
+
+## Collections — ordering, identity, and cost
+
 - `Comparable<T>` vs `Comparator<T>` — `Comparable` is implemented inside the class itself (`compareTo()`) and defines one natural order; `Comparator` is defined outside the class (`compare()`, or `Comparator.comparing()`) and supports multiple sort orders without changing the class; interviewers ask which one to use when you need to sort the same list two different ways
 - `Comparator.comparing()` — sorts a list by a field: `list.stream().sorted(Comparator.comparing(Employee::getName))`; used in service methods when you need a specific order that the query does not guarantee; interviewers ask you to read and explain the comparator
 - `ConcurrentModificationException` — thrown when you call `list.remove()` directly inside a for-each loop over that same list; the for-each loop uses an internal iterator that detects the structural change and fails fast; interviewers ask how to safely remove items while iterating (`removeIf()` is the cleanest fix; an explicit `Iterator.remove()` also works)
+- Mutating a field after the object is in a `HashSet` — the set placed it in a bucket derived from the old `hashCode()`, so once the field changes the object is in the wrong bucket and `contains()` returns false for an object that is physically inside the set; interviewers describe exactly that symptom and ask why
+- Defensive copies from a getter — returning the internal `List` directly lets any caller mutate your object's state behind its back, which is why a getter on a collection field often returns a copy or an unmodifiable view; interviewers ask how you protect an entity's collection
+- Cost of the collection operation you chose — `HashMap.get()` and `Set.contains()` are constant time while `List.contains()` and `indexOf()` scan the whole list, so a `list.contains()` inside a loop over another list turns an O(n) job into O(n²); the standard refactor is to build a `Map` of the lookup side once, and interviewers hand you exactly that nested loop to fix
 
 ## Enums
 
 - Defining an enum — used for `Role` (EMPLOYEE, MANAGER) and `EntryStatus` (DRAFT, SUBMITTED, APPROVED, REJECTED) in TimeTrack; interviewers ask you to show one from the project
 - Using enums in `switch` expressions — the clean way to handle each status in a service method; exhaustive by default so the compiler warns if a case is missing
+- Enums carry fields and behaviour, not just names — a constant can hold a label, a code, or an HTTP status and expose it through a method, which removes the `switch` that would otherwise be duplicated everywhere the enum is used; interviewers ask how you would attach a display name to each status
+- Enum vs a lookup table in the database — an enum is compile-time-safe but a new value needs a code change and a redeploy, while a table lets the business add values at runtime with no type safety; interviewers ask which you would choose for "status" and which for something the client edits
 - `@Enumerated(EnumType.STRING)` vs `EnumType.ORDINAL` — `STRING` stores the name ("MANAGER") in the database; `ORDINAL` stores the position (0, 1, 2); if you add a new value in the middle of the enum, `ORDINAL` silently breaks all existing records; interviewers always ask why `STRING` is the safe choice
 
 ## Annotations
 
 - What annotations are — metadata attached to a class, method, or field that Spring reads at runtime to configure behaviour; they do not change what the code does on their own — they are instructions to the framework
+- An annotation does nothing until something reads it — an annotation is inert metadata; unless a runtime reflection scan, a generated proxy, or a compile-time processor looks for it, it has no effect whatsoever; this single mechanism explains every "the annotation is right there but nothing happens" bug interviewers plant in a review snippet
+- `@Retention` — decides whether the annotation survives into the `.class` file and is visible at runtime (`RUNTIME`) or is discarded (`SOURCE`, `CLASS`, the default); a framework that reads annotations reflectively can only see `RUNTIME` ones; interviewers show a custom annotation being ignored and ask why
+- `@Target` — restricts which elements an annotation may be placed on (type, method, field, parameter); putting one where it is not legal either fails to compile or is quietly skipped, which is the first thing a reviewer checks when an annotation has no effect
+- Annotation attributes and the `value` shorthand — `@Foo("x")` is shorthand for `@Foo(value = "x")`, and every other attribute must be named; assuming a default or naming the wrong attribute changes behaviour with no error; interviewers hand you an unfamiliar annotation and ask you to read its attributes
 - Meta-annotations — annotations that annotate other annotations; `@Service` is composed of `@Component` with a semantic label; this is why `@Service` and `@Repository` behave the same way as `@Component` for dependency injection — they are all discovered by Spring's component scan
 - How to read an unfamiliar annotation — look at what it is composed of (meta-annotations), what it enables (like `@EnableMethodSecurity`), and which layer it belongs to; this skill matters because Spring Boot code is dense with annotations you did not write yourself
 
@@ -135,3 +186,8 @@ Every item must be explainable with a real example from TimeTrack or the Java no
 - How to add a dependency — search Maven Central, copy the `<dependency>` block, Maven downloads it automatically on the next build
 - Build lifecycle: `clean`, `compile`, `test`, `package`, `install` — what `mvn clean install` does and why it is the standard command to build and test before pushing
 - Dependency scopes: `compile` (default, always available), `test` (only in tests), `provided` (available at runtime but not packaged) — why `spring-boot-starter-test` uses `test` scope; interviewers ask what scope to use for a testing library
+- Transitive dependencies and `mvn dependency:tree` — every dependency drags in its own, so libraries you never declared end up on the classpath and two of them can demand different versions of the same thing; the tree is how you see who pulled what, and it is the first move when a `NoSuchMethodError` appears; interviewers ask how you would debug that
+- Nearest-wins version resolution — when two paths in the tree lead to the same library at different versions, Maven picks the one closest to your project rather than the newest, which is how a build silently downgrades a library; interviewers ask why the parent POM pins versions instead of trusting resolution
+- Why `mvn clean` fixes "impossible" errors — `target/` holds compiled classes from previous builds, so a renamed or deleted source file can leave a stale `.class` on the classpath that keeps working until you wipe it; interviewers ask when `clean` is genuinely necessary rather than superstition
+- `-DskipTests` vs `-Dmaven.test.skip=true` — the first compiles the tests but does not run them, the second does not even compile them; interviewers ask the difference because reaching for either to make a red build go green is hiding a failure, not fixing one
+- `settings.xml` and internal mirrors — a consultancy points Maven at a corporate Nexus or Artifactory instead of Maven Central through the per-user `settings.xml`, so a first build failing with `Could not transfer artifact … Connection refused` on a client laptop is a configuration problem, not a code one; day-one reality on a client project

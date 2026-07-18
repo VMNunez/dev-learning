@@ -45,7 +45,21 @@ Records are already part of the current junior goal — see `coverage.md`.
 
 ### Advanced generics
 
-Wildcards (`? extends T`, `? super T`), bounded type parameters, generic methods. Relevant when reading library code and writing reusable utilities.
+Wildcards (`? extends T`, `? super T`), bounded type parameters, generic methods, and the `ParameterizedTypeReference`/`TypeReference` workarounds for erasure. Relevant when reading library code and writing reusable utilities.
+
+(*What type erasure is* and *what raw types switch off* are now junior coverage — see `coverage.md`, "Generics"; only the wildcard/variance rules and the erasure workarounds stay here.)
+
+### Advanced streams
+
+Parallel streams and when they are safe, custom `Collector` implementations, `Spliterator`. The everyday pipeline (`filter`/`map`/`collect`) is already junior coverage.
+
+### Writing your own annotations
+
+Declaring a custom annotation with `@Retention`/`@Target` and reading it with a reflection scan or an `AbstractProcessor`. (*Reading* an existing annotation's retention and target — and knowing an annotation is inert until something processes it — is now junior coverage.)
+
+### Design vocabulary
+
+The GoF pattern catalogue (strategy, decorator, factory method, visitor) and SOLID applied formally class by class, as an explicit vocabulary you defend in a design review.
 
 ### Java concurrency advanced
 
@@ -69,4 +83,6 @@ How annotations work at runtime, how frameworks like Spring use reflection to wi
 
 - **Java modules (JPMS)** — added in Java 9. Almost no Spring Boot projects use it.
 - **Ant / Maven lifecycle internals** — use Maven commands without understanding the internals.
+- **Multi-module Maven projects and publishing to a private Nexus/Artifactory** — *consuming* an internal mirror is junior coverage (`settings.xml`); authoring modules and publishing artifacts is not.
+- **Gradle** — the alternative build tool, and Maven↔Gradle migration. Learn it when a client project uses it.
 - **JavaFX** — desktop UI framework. Not used in web development.
