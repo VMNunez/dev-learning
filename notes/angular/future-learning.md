@@ -56,20 +56,6 @@ userResource = resource({
 
 Why to wait: the API is still settling and most consultancy codebases in 2026 are not using it yet — `HttpClient` + `toSignal()` is still the pattern you will see and be asked about. Revisit once it stabilizes and appears in real project work.
 
-### `@defer` blocks — template-level lazy loading
-
-Angular 17+ syntax that delays loading a heavy component until it is needed:
-
-```html
-@defer (on viewport) {
-  <app-heavy-chart [data]="chartData" />
-} @placeholder {
-  <div class="chart-skeleton"></div>
-}
-```
-
-The component code is not downloaded until the block enters the viewport (or on interaction, on idle, after a timer — many triggers available). Practical for dashboards with many charts or heavy third-party components.
-
 ---
 
 ## Phase 2 — After 6–12 months of experience
