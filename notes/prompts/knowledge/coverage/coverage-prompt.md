@@ -419,6 +419,18 @@ topic (a "production debugging" angle makes no sense for CSS) and add one the to
    the abstract equality algorithm, `this` binding precedence, the prototype chain, microtask-drain
    ordering and sparse arrays. Without it the file would have been fluent about idioms and silent about
    why they behave that way — the exact gap a Spanish quickfire screening is built to find.
+6. **Existing-codebase onboarding — mandatory for framework/stack topics (Spring Boot, Angular,
+   Architecture, and any topic whose interview shows real project code), optional for language and
+   pure-syntax topics.** The concepts a junior needs on day one inside a large codebase they did not
+   write: recognising which layer or role a class has from its name and annotations, following a
+   request end to end, judging a change's blast radius, adding a field across every layer, versioning
+   an API other teams consume. *Why it is mandatory and not left to judgement — the mirror of angle 5's
+   reasoning:* angles 1–4 are all shaped as if the candidate authors the code, so on a stack topic
+   they converge on writing-and-debugging mechanics and never touch the inheriting-code surface —
+   which is the one a consultancy junior actually lives on, since almost none green-field anything.
+   On the Architecture run (2026-07-18) this angle was improvised, and it was the sole source of the
+   file's two most market-relevant new sections ("Working in a codebase you did not write", most of
+   "System shape and structure"); the four standard angles had converged elsewhere and looked complete.
 
 Give each subagent this brief (substituting its angle):
 
@@ -473,6 +485,16 @@ Three routing rules when handling the discards:
   > without finding any of them. Nothing else in the pipeline catches this: `coverage-audit`'s Analyst D
   > hunts duplicates, misplaced items and demotion candidates, so a concept **absent from every section**
   > is invisible to it. Write the entry before you move on.
+- **Already covered by this topic — grep the topic's own file too, in the same pass.** The
+  cross-topic check below has no eye on duplication *inside* `{NOTES_PATH}coverage.md` itself, and
+  Step 4b explicitly cannot judge it (the reviewer only sees the new items, never the sections they
+  join). That leaves the generator catching, from memory and with ~100+ proposals in context, that a
+  gap it is about to add restates a bullet three sections up — which is exactly the moment memory
+  fails. So before writing: grep `{NOTES_PATH}coverage.md` for the distinctive terms of the gaps you
+  are about to add, the same gesture as the cross-topic grep, one file more. On a real run
+  (Architecture, 2026-07-18) two proposed gaps — a "transaction boundary" item and a "consistent
+  error contract" item — duplicated existing bullets and were caught only by the generator's
+  attention; this check makes that catch procedural instead of lucky.
 - **Already covered by another topic — run the cross-topic overlap check HERE, before writing.**
   Scan the other sections of `notes/coverage.md` for items that overlap with the gaps you are about to
   add (e.g. REST status codes or "service layer" could plausibly sit under Architecture, Spring Boot,
@@ -491,6 +513,15 @@ Three routing rules when handling the discards:
   > overlap-heavy** — anything that sits underneath other topics (JavaScript below Angular; Java below
   > Spring Boot) will attract proposals that belong to the layer above, so budget real effort here on
   > those runs.
+  > **Cross-cutting topics are the inverse case, and heavier still.** A topic that sits *across* the
+  > stack rather than underneath it (Architecture over Spring Boot + Angular + General; Security is
+  > the same shape) attracts proposals from every side at once: on the Architecture run (2026-07-18)
+  > roughly **two-thirds** of ~130 proposed gaps were already owned elsewhere, and ownership was the
+  > run's single most expensive judgement. On these topics expect one grep NOT to be enough — the
+  > honest pattern was a section-map grep, one wide multi-term grep, then follow-up greps scoped to
+  > the individual owning topics' line ranges. And expect the honest outcome to be **dropping most of
+  > the proposals**, not adding them: a cross-cutting run that adds the majority of its gaps has
+  > almost certainly duplicated the topics it spans.
   > **Why this check lives in Step 4a and not in the sync step.** It used to sit at the end of the sync —
   > which meant a duplicate was written into the topic file *and* mirrored into `notes/coverage.md`
   > before being caught, forcing a second full sync pass. It happened on a real run (three Angular-owned
@@ -717,7 +748,15 @@ If `{NOTES_PATH}future-learning.md` was not modified, remove it from the `git ad
 git commit -m "docs: update {TOPIC} coverage — <one line summary of main changes>"
 ```
 
-Report the commit hash in the final summary so Victor can see it landed.
+**If Step 4a wrote entries into `_cross-topic-inbox.md`, commit that file separately, right after the
+coverage commit** — same safety check (status → add only the inbox file → status → commit), message
+`docs: route <N> <owning-topic>-owned items from the {TOPIC} coverage run to the cross-topic inbox`.
+The atomicity rule above ("only the coverage files, nothing else") and Step 4a's "write the entry
+before you move on" used to contradict each other here — a real run (Architecture, 2026-07-18) had to
+improvise this second commit because the `git add` list did not mention the inbox at all. Two commits
+is the resolution: the coverage change and the routing are two logical changes.
+
+Report the commit hashes in the final summary so Victor can see they landed.
 
 ### Final step — pipeline self-report
 
