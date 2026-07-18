@@ -60,7 +60,18 @@ Notes on specific topics:
   rarely-used components are not. The boundary with notes/angular/ is: if the concept is
   about Angular itself (directives, signals, routing), it belongs in angular/; if it is
   specific to a Material component's API or behaviour, it belongs here.
-- Security: covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
+- Security: covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF, SQL injection — plus the
+  surfaces the 2026-07-18 run added: information disclosure (stack traces, user enumeration including
+  the timing variant, over-returning fields, secrets in logs, exposed actuator/Swagger), attacks on
+  login and credentials (brute force, rate limiting and the lockout trade-off, password reset), the
+  attacker mindset (blast radius, trust boundaries, a token as a bearer credential), transport (why
+  TLS is the precondition for token auth) and dependency risk (known CVEs).
+  **Security holds the language-agnostic concept; the topic holds its implementation.** "How is a
+  password stored and why" is Security; `BCryptPasswordEncoder` as a bean is Spring Boot. "What CORS
+  is and who enforces it" is Security; `CorsConfigurationSource` inside `SecurityFilterChain` is
+  Spring Boot. Apply this in both directions when the overlap check runs: do not import Spring
+  Security *wiring* into this file, and do not leave a vendor-neutral security concept to be owned by
+  a framework topic just because that is where it was first written down.
 - Architecture: in scope — REST principles, layered architecture, MVC, coordinator pattern,
   smart/dumb components, service layer, repository pattern. Out of scope (future-learning) —
   microservices, event-driven architecture, DDD, CQRS, distributed systems.
@@ -188,12 +199,19 @@ This differs from `notes-audit` on purpose: there the session/orchestrator was l
 ## Step 1 — Read the existing state
 
 > **Verifiable reads (CLAUDE.md non-negotiable) — applies to every whole-file read in this prompt.**
-> The Read tool truncates at 2000 lines **silently**, and `notes/coverage.md` is already near that
-> limit and grows on every run. Before reading any file end-to-end (`coverage.md` files, Step 4c's
-> sync and verify), run `wc -l` on it; if it is near or over 2000 lines, read it in passes with
-> `offset` to the real end. State **"N lines, read to EOF"** in the final summary for
-> `notes/coverage.md` — a truncated read there makes the Step 4c sync-verify pass on a half-read
-> file.
+> The Read tool truncates at 2000 lines **silently**. Before reading any file end-to-end, run `wc -l`
+> on it; if it is near or over 2000 lines, read it in passes with `offset` to the real end.
+>
+> **The two coverage files are handled differently — do not apply one rule to both.**
+> - **`{NOTES_PATH}coverage.md` (the topic file) is read whole**, by you in Step 1 and by every Step 4a
+>   angle. State **"N lines, read to EOF"** for it in the final summary, and reject any angle report
+>   that lacks the line — an angle that half-read it reports gaps that are already covered.
+> - **`notes/coverage.md` (the combined file) is never read whole.** It is over 2000 lines and grows
+>   every run, so reading it end-to-end burns the context that must then word-craft every item. Work it
+>   by section map (`grep -n "^## "`), term greps, targeted `offset` range reads, and the diffs in
+>   Step 4c. Do **not** claim "read to EOF" for it; report what you actually did instead. This is the
+>   settled resolution of a contradiction two runs had to resolve by hand — Step 4a's "one grep, not a
+>   re-read" is the rule for this file, and Step 4c verifies it mechanically rather than by reading.
 
 Before reading any file, re-read the configuration block above — some topics have additional
 reading instructions (e.g. Spring Boot requires reading `notes/java/` in step 1.3 as well).
@@ -416,8 +434,30 @@ then found 80+ more:
 > Either way the consolidation is a single pass and the generator is still the only editor.
 
 **In Claude Code:** launch these as **parallel** `general-purpose` subagents, `model: opus`,
-`run_in_background: false`. Adapt the angle list to {TOPIC} — drop any that is meaningless for the
-topic (a "production debugging" angle makes no sense for CSS) and add one the topic obviously needs:
+`run_in_background: false`. Adapt the angle list to {TOPIC}: drop any that is meaningless for the topic
+(a "production debugging" angle makes no sense for CSS), and **add at least one angle invented for
+{TOPIC} specifically — this is required, not optional.**
+
+> **The invented angle is where the run's value actually comes from.** The numbered angles below are
+> generic by construction, so on any topic that sits *beside* a framework they converge on that
+> framework's mechanics — which another topic usually already owns. Two consecutive runs show the
+> pattern and neither is a coincidence:
+> - **Architecture (2026-07-18)** — the four standard angles converged on Spring Boot mechanics; the
+>   two improvised angles (take-home, existing-codebase onboarding) produced the run's *only* genuinely
+>   new sections. Onboarding was promoted to angle 6 as a result.
+> - **Security (2026-07-18)** — the four standard angles converged almost entirely on Spring Security
+>   *wiring* (`SecurityFilterChain`, `@EnableMethodSecurity`, `UserDetailsService`, `OncePerRequestFilter`),
+>   every bit of it owned by Spring Boot coverage. The improvised **attacker-mindset / threat-modelling**
+>   angle produced three whole new sections (information disclosure, attacks on login, transport and
+>   dependency risk) and roughly two-thirds of everything added.
+>
+> So do not treat the numbered list as the work and the extra angle as a garnish. Before dispatching,
+> ask: **"what is the question an interviewer asks about {TOPIC} that none of the angles below would
+> ever generate?"** — the inversion the topic allows (Security: *how would you attack it?*), the surface
+> the candidate lives on rather than authors (Architecture: *code you did not write*), the layer beneath
+> the idioms (language topics: *what does this print?*). Name the invented angle and its yield explicitly
+> in the final summary, so the next run can promote it into the numbered list if it keeps paying off —
+> that is how angles 5 and 6 got here.
 
 1. **Live code review** — "here is a snippet, what is wrong with it?". The *concepts* a reviewer needs:
    annotations that silently do nothing, wrong layer, misused framework idioms, tests that pass but
@@ -569,10 +609,23 @@ here, deliberately kept narrow so it costs one subagent rather than a second pip
 after the sync has already been mirrored into `notes/coverage.md` and costs a second full sync pass to
 repair. Fix the topic file while it is still the only copy.
 
-**Scope — the new items only, never the whole file.** Send the reviewer the items this run added or
-reworded (with their section headings for context) plus `_coverage-standard.md`. Do not send the
-untouched bullets: they were reviewed on the run that wrote them, and padding the input is how a
-narrow check turns into an expensive one that reviews everything shallowly.
+**Scope — the touched sections, with the new items marked.** Send the reviewer `_coverage-standard.md`
+plus **every section this run added to, in full, with each new or reworded item marked `[NEW]`**. Send
+nothing from sections this run did not touch — those were reviewed on the run that wrote them, and
+padding the input is how a narrow check turns into an expensive one that reviews everything shallowly.
+
+> **Why the whole section and not only the new bullets.** The brief asks the reviewer to judge whether
+> an item is *filed in the right section* and whether it *restates an existing bullet* — and neither
+> question can be answered from an excerpt that omits the section's other items. A real run (Security,
+> 2026-07-18) hit exactly this: the reviewer flagged a CSRF-mechanism item as misfiled, not knowing the
+> section already held the CSRF bullet it explains, and the generator had to overrule it. That is a
+> false positive manufactured by the prompt, not by the reviewer.
+>
+> Sending the section also closes a hole the prompt elsewhere admits it cannot cover. Step 4a's
+> intra-file duplicate check runs on the generator's memory with ~100+ proposals in context — "which is
+> exactly the moment memory fails". With the surrounding bullets present, the reviewer becomes a real
+> second check on same-section duplication, at close to zero extra cost: only the touched sections are
+> sent, and they are the ones the generator was reasoning about anyway.
 
 **In Claude Code:** one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
@@ -580,30 +633,37 @@ narrow check turns into an expensive one that reviews everything shallowly.
 > `notes/prompts/knowledge/coverage/_coverage-standard.md` — it is the authority; where your taste and
 > the standard disagree, the standard wins. The topic is {TOPIC}.
 >
-> Below are the items just added to `{NOTES_PATH}coverage.md`, grouped by the section they were filed
-> under. [paste the new items here]
+> Below are the sections of `{NOTES_PATH}coverage.md` that this run touched, each shown **in full**.
+> Items marked `[NEW]` were written by this run; the unmarked ones already existed and are shown so you
+> can judge placement and duplication. [paste the touched sections here, new items marked `[NEW]`]
 >
-> Judge **only these items**, one at a time, against the standard:
+> Judge **only the `[NEW]` items**, one at a time, against the standard. Use the unmarked items as
+> context only — never report a defect against one of them:
 > - **Item format** — `concept — interview-anchored sentence`? Does the sentence say what the
 >   interviewer is testing, or does it merely define the term?
 > - **One concept per item** — flag any bullet joining two annotations, two files, two mechanisms with
 >   "and"/"+" that a note would have to split anyway.
 > - **Studyable concept, not conduct** — a mechanism, annotation, decision, or gotcha; never a working
 >   method or interview behaviour.
-> - **Filed in the right section** — does the item's section heading actually describe it?
+> - **Filed in the right section** — does the item's section heading actually describe it, and do the
+>   unmarked items around it belong to the same theme? An item that would read as an intruder beside
+>   its neighbours is misfiled even when the heading loosely fits.
+> - **Duplicates a bullet already in the section** — a `[NEW]` item that restates an unmarked one, or
+>   that a note would cover in the same breath, is a defect; say which existing bullet it collides with
+>   and whether the right fix is dropping the new item or sharpening the old one.
 > - **No fenced code**, and the wording is specific (a real error message, a real method name) rather
 >   than vague.
 >
-> **Out of your scope — do not report on these.** You are seeing an *excerpt*: only the items this run
-> added, not the sections they live in. So you cannot judge **section size** (the standard's 3–12 rule),
-> whether a section is under-filled, or whether the file as a whole passes the completeness test — a
-> section that looks like it holds 2 items here may hold 10 in the file. The generator verifies those
-> mechanically. Judge the items in front of you and say nothing about how many there are.
+> **Out of your scope — do not report on these.** You are seeing only the sections this run *touched*,
+> not the whole file. So do not judge **section size** (the standard's 3–12 rule), whether a section is
+> under-filled, or whether the file as a whole passes the completeness test: sections you cannot see
+> may already carry a concept you think is missing, and the generator verifies every count
+> mechanically, before and after your fixes. Say nothing about how many items there are.
 >
 > Return **only defects**: for each, the item's opening words, the rule it breaks, and a corrected
-> version you would accept. Say nothing about items that pass. If a whole section's items read as
-> filler or restate an existing bullet, say so once. End with the line **"N items reviewed"** where N is
-> the number you were given — the count is your proof of work.
+> version you would accept. Say nothing about items that pass. If a whole section's `[NEW]` items read
+> as filler, say so once. End with the line **"N items reviewed"** where N is the number of `[NEW]`
+> items you were given (not the total shown) — the count is your proof of work.
 
 **Acceptance check:** the report must carry the "N items reviewed" line and N must match what you sent.
 If it is missing or the count is wrong, re-dispatch **once** naming the problem; if it fails again, mark
@@ -681,13 +741,41 @@ from the topic file in one replacement — that is the safer path, not a shortcu
 > UTF-8 reads and BOM-less UTF-8 writes (or use the Read/Edit/Write tools, which handle this), and
 > re-read the result checking a line with an em dash before committing.
 
-**Verify the sync before reporting done:**
-Check `wc -l notes/coverage.md` first and read to the real end (`offset` passes if near/over 2000
-lines — see the verifiable-reads rule in Step 1); a truncated read here silently passes a broken
-sync. Re-read the {TOPIC} section in `notes/coverage.md` and the full content of
-`{NOTES_PATH}coverage.md` side by side. Confirm every bullet matches exactly — only the
-heading levels should differ (`#` → `##`, `##` → `###`). If anything differs, fix
-`notes/coverage.md` now, before moving to Step 5.
+**Verify the sync before reporting done — by diffing, not by reading.**
+The two files must match bullet for bullet, with only the heading levels differing (`#` → `##`,
+`##` → `###`). **Do not verify this by reading the two side by side.** A single missing bullet in a
+40-item section is invisible to the eye and survives every "I compared them" claim; run the
+comparison mechanically instead, and read only to resolve what the diff reports:
+
+```
+diff <(grep '^- ' {NOTES_PATH}coverage.md) \
+     <(sed -n '/^## {TOPIC}$/,/^## /p' notes/coverage.md | grep '^- ')
+
+diff <(grep '^## ' {NOTES_PATH}coverage.md | sed 's/^## //') \
+     <(sed -n '/^## {TOPIC}$/,/^## /p' notes/coverage.md | grep '^### ' | sed 's/^### //')
+```
+
+Both must come back empty. Then check by eye the **one** thing a diff of bullets and headings cannot
+see: that line 1 of the rebuilt section reads `## {TOPIC}` and not `### {TOPIC}` (the double-demotion
+trap above), and that a line containing an em dash still renders as `—` and not `â€”` (the Windows
+encoding trap above). If anything differs, fix `notes/coverage.md` now, before moving to Step 5.
+
+> **Why this replaced "re-read the section side by side" (Security run, 2026-07-18).** That run
+> discovered `notes/coverage.md` had been missing the *Broken access control (IDOR)* bullet for an
+> unknown number of previous runs — the mirrored `### Common vulnerabilities` held 6 items against
+> the topic file's 8. Every prior run had "verified the sync" by reading and passed it. The drift was
+> caught the first time the check was run as a `diff`. Reading finds structural breakage; only a diff
+> finds a single absent bullet.
+
+> **On reading `notes/coverage.md` end-to-end: do not.** Step 1's verifiable-reads rule and Step 4a's
+> "one grep, not a re-read" used to point in opposite directions for this file, and a real run had to
+> resolve the contradiction by hand. The resolution: **the combined file is never read whole.** It is
+> over 2000 lines and grows every run, so it is worked with by section map (`grep -n "^## "`), term
+> greps, targeted `offset` range reads, and the diffs above. The `"N lines, read to EOF"` claim is
+> required for **`{NOTES_PATH}coverage.md`** — the topic file, which every 4a angle must read whole —
+> and is *not* claimed for `notes/coverage.md`. In the summary, state for the combined file what you
+> actually did (`"section map + N term greps + ranges X–Y; Security section verified by diff"`).
+> Never write "read to EOF" for a file you legitimately did not read to EOF.
 
 ---
 
