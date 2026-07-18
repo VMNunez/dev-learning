@@ -25,7 +25,7 @@ runs once the whole coverage-prompt column is filled).
 | Angular Material | 2026-07-18 | | |
 | Spring Boot | 2026-07-13 | 2026-07-15 | |
 | Java | 2026-07-18 | | |
-| Architecture | | | |
+| Architecture | 2026-07-18 | | |
 | Security | | | |
 | TypeScript | 2026-07-18 | | |
 | JavaScript | 2026-07-18 | | |
