@@ -184,6 +184,14 @@ Read these files before making any decision:
    items without a clear reason.
 2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
    in-scope given the job target read from ROADMAP + `_shared-context` (role, deadline).
+2b. `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` — the entries filed under `## {TOPIC}` are
+   gaps that **other topics' runs** found and routed to you (an Angular template-compiler concept
+   surfaced by a TypeScript run, a JUnit concept surfaced by a Java run). Read only your own heading.
+   Treat each as a *proposed* item: judge it against the standard and the IN/OUT filter exactly like a
+   Step 4a gap — it is not pre-approved, and you may discard it. Then **clear every entry you looked at**,
+   whether you added or discarded it, and report both counts in the summary. Leaving a consumed entry
+   behind makes the next run re-litigate it; leaving an unread one silently loses it, which is the
+   failure this file exists to prevent. No heading for {TOPIC}, or an empty one, is the normal state.
 3. The numbered note files — **surveyed at headings level, not full prose**:
    for each file, read its heading structure (`grep -n "^##" <file>`) plus its opening section,
    enough to know what has been studied and which examples exist. This is context, not the source
@@ -455,6 +463,16 @@ Three routing rules when handling the discards:
   configuration block's per-topic notes), leave it OUT of this file and route it to its owner — note it
   in the summary as "owned by <topic>, not added here". Do not re-litigate the same misplaced gap on
   every run.
+  > **Routing means writing it down, not mentioning it.** Append the item to
+  > `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` under the owning topic's `## ` heading, in
+  > the standard's item format, tagged with the run that found it — creating the heading if absent. A
+  > summary line is not a handoff: the summary lives in a chat nobody reads later, so the item then
+  > depends on the owner's own future run rediscovering it by chance. **It does not.** The TypeScript run
+  > (2026-07-18) routed out four Angular-owned concepts — `strictTemplates`, AOT, the `ng build`
+  > type-check, typed `FormGroup<T>` — and Angular's coverage run had already happened that same day
+  > without finding any of them. Nothing else in the pipeline catches this: `coverage-audit`'s Analyst D
+  > hunts duplicates, misplaced items and demotion candidates, so a concept **absent from every section**
+  > is invisible to it. Write the entry before you move on.
 - **Already covered by another topic — run the cross-topic overlap check HERE, before writing.**
   Scan the other sections of `notes/coverage.md` for items that overlap with the gaps you are about to
   add (e.g. REST status codes or "service layer" could plausibly sit under Architecture, Spring Boot,
@@ -634,7 +652,8 @@ After all edits, print a short summary:
 | Added to coverage | [list of new items] |
 | Sections split / added | [structural changes, or "none"] |
 | Structural check (Step 4) | [item counts verified per section; what the count forced, or "no splits needed"] |
-| Cross-topic overlap (Step 4a) | [items dropped as owned by another topic, or "none"] |
+| Cross-topic overlap (Step 4a) | [items dropped as owned by another topic — and confirm each was written to `_cross-topic-inbox.md` under that topic, or "none"] |
+| Inbox consumed (Step 1) | [entries that were waiting under `## {TOPIC}`: N added, M discarded (with reason), all cleared — or "inbox empty"] |
 | Cold review (Step 4b) | [N items reviewed; X defects reported, Y applied — and one line on any you rejected and why, or "not completed"] |
 | Modified in coverage | [list of updated items — one line per change, or "none"] |
 | Promoted from future-learning | [list or "none"] |

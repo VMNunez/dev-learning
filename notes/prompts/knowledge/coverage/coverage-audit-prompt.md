@@ -137,6 +137,15 @@ one non-negotiable Opus roles are the session and Analyst C.
    pass. **Bounded reports only:** each analyst returns its list(s) + proof lines and nothing else —
    no narrative, no restating of items it found fine; if a report comes back wrapped in prose, keep
    the lists + proof and discard the rest.
+1b. Read `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` and take the entries filed under
+   `## {TOPIC}` — gaps that another topic's run found and routed to this one. Fold them into the
+   consolidation below as **proposed** items (judged against the standard like any analyst gap, never
+   pre-approved), then **clear every entry you looked at**, added or discarded, and report both counts
+   in the summary. This audit walks every topic, so it is the pipeline's sweep of the inbox: an entry
+   left uncleared here will be re-litigated on the next run, and one left unread is the silent loss the
+   file exists to prevent. Note that Analyst D cannot cover for this — D hunts duplicates, misplaced
+   items and demotion candidates in `notes/coverage.md`, so a concept absent from every section is
+   invisible to it, which is exactly how four Angular-owned items went missing on 2026-07-18.
 2. Consolidate: merge the three lists, drop duplicates, discard any gap that is out of junior scope
    (record those in the summary as "analyst-suggested, left out — reason").
 3. Apply the surviving gaps to `notes/{topic}/coverage.md` and its section in `notes/coverage.md`, sync
