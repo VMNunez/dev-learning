@@ -6,13 +6,13 @@ Topics to study once the current 14 files are solid. Nothing here is needed for 
 
 ## Phase 1 — After landing the first job
 
-### Throttling and raw debounce implementation
+### Throttling
 
-The debouncing concept (what it is and why Angular uses `debounceTime()`) is already in coverage. What stays here is the raw implementation using `setTimeout`/`clearTimeout` and the throttling pattern — running a function at most once every N milliseconds regardless of how often the event fires. In Angular you will use `RxJS throttleTime()` instead of writing it manually, but understanding the underlying mechanism is useful when reading legacy non-Angular code.
+Debouncing is now fully in coverage — both the concept and the raw `setTimeout`/`clearTimeout` closure implementation, because a vanilla live-coding round asks you to write it. What stays here is **throttling**: running a function at most once every N milliseconds regardless of how often the event fires. It is the sibling pattern, but it is asked far less often at junior level, and in Angular you reach for `RxJS throttleTime()` rather than writing it by hand.
 
-### Custom iterators
+### Writing a custom iterator
 
-Any object can be made iterable by implementing `Symbol.iterator`. This is how arrays, strings, Maps, and Sets all work with `for...of` (which is already in coverage). What stays here is the custom iterator protocol itself:
+**The boundary:** *knowing the iterable protocol* is in coverage — that `for...of`, spread and destructuring all consume `Symbol.iterator`, which is why they work on `Set` and `Map` but throw `TypeError: x is not iterable` on a plain object. What stays here is *implementing* one yourself, which a junior is never asked to do:
 
 ```js
 const range = {
@@ -52,24 +52,21 @@ gen.next().value; // 2
 
 Used internally by some state management libraries. Rarely written by hand in Angular apps, but you will see them in library code.
 
-### `AbortController` — cancelling async operations
+### Retry and backoff strategies
 
-Cancel a `fetch` request or any async operation that takes too long:
+Retrying a failed request a bounded number of times with an increasing delay, plus request deduplication and circuit-breaker style resilience. Knowing that blind infinite retry is worse than failing fast is worth having as an instinct, but designing the policy is a mid-level concern — at junior level the expected answer is "surface the error to the user".
 
-```js
-const controller = new AbortController();
-const signal = controller.signal;
+### Structural sharing and immutability libraries
 
-fetch('/api/data', { signal })
-  .then(res => res.json())
-  .catch(err => {
-    if (err.name === 'AbortError') console.log('request was cancelled');
-  });
+Immer and Immutable.js make deep updates cheap by reusing the untouched parts of the previous state instead of copying everything. Coverage already carries shallow vs deep copy and `structuredClone`, which is the whole junior surface; this is the library-level strategy you meet in a large state-managed codebase.
 
-controller.abort(); // cancel the request
-```
+### `Object.defineProperty` and property descriptors
 
-In Angular, `HttpClient` has its own cancellation via `takeUntilDestroyed()` — but this pattern appears in backend-for-frontend code and in non-Angular JavaScript.
+Controlling whether a property is writable, enumerable, or configurable, and defining accessors programmatically. This is the older mechanism underneath getters/setters and the reason some library objects behave unexpectedly with `Object.keys` or spread.
+
+### Regex beyond the basics
+
+Lookahead and lookbehind, named capture groups, and the stateful `lastIndex` of a `/g` regex — the last one being why calling `.test()` twice on the same global regex returns alternating results. Coverage carries the flags and `.test`/`.match` surface a junior is actually filtered on.
 
 ---
 
