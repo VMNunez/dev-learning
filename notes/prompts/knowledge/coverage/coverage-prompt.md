@@ -122,6 +122,9 @@ This prompt uses cold subagents, each with a **single concern** and **no write a
 - **Step 2 — market analyst:** derives the market-demand floor for {TOPIC}. Returns a list; edits nothing.
 - **Step 4a — adversarial interviewers (a fan-out, not one):** each hunts, from its own angle, the
   concepts an interviewer would probe that coverage misses. Each returns a gap list; none edits anything.
+- **Step 4b — standard reviewer (one, not a fan-out):** judges the items *this run just wrote* against
+  `_coverage-standard.md`. Returns defects + fixes; edits nothing. It is the only role that looks
+  forward at the run's own output instead of backward at the file it inherited.
 
 Never merge these into one subagent and never give any of them a second job — a subagent that both analyses
 and writes, or covers two concerns at once, splits its attention and lowers quality. **The generator
@@ -136,6 +139,7 @@ verify it carries its proof of work:
 - **Each Step 4a angle** — the "N lines, read to EOF" line for `{NOTES_PATH}coverage.md` (the file
   it judged gaps against — an angle that half-read it reports gaps that are already covered), and
   every gap in the standard's item format, tagged by section.
+- **Step 4b reviewer** — the "N items reviewed" line, with N matching the number of items you sent it.
 
 If a report is missing its proof or is unusable, re-dispatch that one subagent **once**, naming what
 was missing. If it fails again, mark that angle/analysis as **not completed** in the final summary —
@@ -155,6 +159,7 @@ Pass an explicit `model` override on every subagent dispatch:
 | **Generator (this context / session)** | **Opus** | It word-crafts every coverage item to the standard — the real quality bottleneck. Run the session on Opus. |
 | Step 2 — market analyst | `sonnet` | Web-search + list; retrieval-heavy, and the Opus generator judges the result against the standard afterwards. |
 | **Step 4a — every adversarial angle** | **`opus`** | Generating genuinely hard interview gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. |
+| **Step 4b — standard reviewer** | **`opus`** | It is the only check on the run's own output, and judging an item against a written standard is the same craft as writing one — a weaker model rubber-stamps. |
 
 This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on Sonnet with A/B bumped to Opus; **here the session IS the author**, so it runs on Opus. If Victor wants maximum saving and accepts more risk, the market analyst can stay Sonnet — but **never drop a 4a angle below Opus, and never save tokens by running fewer angles**: that is the pass that finds the holes, and a coverage file with holes silently propagates into the notes and the interview prep.
 
@@ -164,10 +169,10 @@ This differs from `notes-audit` on purpose: there the session/orchestrator was l
 
 > **Verifiable reads (CLAUDE.md non-negotiable) — applies to every whole-file read in this prompt.**
 > The Read tool truncates at 2000 lines **silently**, and `notes/coverage.md` is already near that
-> limit and grows on every run. Before reading any file end-to-end (`coverage.md` files, Step 4b's
+> limit and grows on every run. Before reading any file end-to-end (`coverage.md` files, Step 4c's
 > sync and verify), run `wc -l` on it; if it is near or over 2000 lines, read it in passes with
 > `offset` to the real end. State **"N lines, read to EOF"** in the final summary for
-> `notes/coverage.md` — a truncated read there makes the Step 4b sync-verify pass on a half-read
+> `notes/coverage.md` — a truncated read there makes the Step 4c sync-verify pass on a half-read
 > file.
 
 Before reading any file, re-read the configuration block above — some topics have additional
@@ -348,7 +353,7 @@ State in the final summary that this check ran and what it changed (or "no split
 standard's size limit, **split it** into two sections with functional names rather than letting it
 bloat; likewise, create a new section when a cluster of gaps has no home. Two consequences: the "leave
 correct existing bullets untouched" rule in Step 1.4 is about **wording**, not about where a bullet
-lives — moving an unchanged bullet into a better section is fine; and Step 4b must then mirror the new
+lives — moving an unchanged bullet into a better section is fine; and Step 4c must then mirror the new
 and renamed **headings**, not only the bullets.
 
 ---
@@ -468,12 +473,12 @@ Three routing rules when handling the discards:
   > overlap-heavy** — anything that sits underneath other topics (JavaScript below Angular; Java below
   > Spring Boot) will attract proposals that belong to the layer above, so budget real effort here on
   > those runs.
-  > **Why this check lives in Step 4a and not Step 4b.** It used to sit at the end of the sync step —
+  > **Why this check lives in Step 4a and not in the sync step.** It used to sit at the end of the sync —
   > which meant a duplicate was written into the topic file *and* mirrored into `notes/coverage.md`
   > before being caught, forcing a second full sync pass. It happened on a real run (three Angular-owned
   > items written and mirrored during an Angular Material run). Deciding ownership belongs to
-  > consolidation, when nothing has been written yet; by Step 4b the cost of a wrong call has already
-  > been paid twice.
+  > consolidation, when nothing has been written yet; by the time the sync runs, the cost of a wrong
+  > call has already been paid twice. Step 4b's cold review sits on the same principle.
 
 **Not in Claude Code (plain chat):** run the angles yourself, one at a time and explicitly — switch
 hats per angle, generate the probes cold and uncapped, list the gaps, then add the genuine ones. The
@@ -482,7 +487,62 @@ coverage and declare it complete.
 
 ---
 
-## Step 4b — Keep notes/coverage.md in sync
+## Step 4b — Cold review of what this run actually wrote
+
+Every other check in this prompt judges the coverage that existed **before** the run: the 4a angles
+hunt gaps in the old file, the structural check counts sections, the completeness test reads the
+whole. Nothing judges the **items the generator just word-crafted** — and those are the entire product
+of the run (the JavaScript run wrote ~85 new items in a single consolidation pass, unreviewed by
+anyone). `notes-audit` solves exactly this risk with a reviewer stage; this step is its equivalent
+here, deliberately kept narrow so it costs one subagent rather than a second pipeline.
+
+**It runs here, before Step 4c, for the same reason the overlap check moved into 4a:** a defect caught
+after the sync has already been mirrored into `notes/coverage.md` and costs a second full sync pass to
+repair. Fix the topic file while it is still the only copy.
+
+**Scope — the new items only, never the whole file.** Send the reviewer the items this run added or
+reworded (with their section headings for context) plus `_coverage-standard.md`. Do not send the
+untouched bullets: they were reviewed on the run that wrote them, and padding the input is how a
+narrow check turns into an expensive one that reviews everything shallowly.
+
+**In Claude Code:** one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
+
+> You are reviewing coverage items written by another engineer, against a written standard. Read
+> `notes/prompts/knowledge/coverage/_coverage-standard.md` — it is the authority; where your taste and
+> the standard disagree, the standard wins. The topic is {TOPIC}.
+>
+> Below are the items just added to `{NOTES_PATH}coverage.md`, grouped by the section they were filed
+> under. [paste the new items here]
+>
+> Judge **only these items**, one at a time, against the standard:
+> - **Item format** — `concept — interview-anchored sentence`? Does the sentence say what the
+>   interviewer is testing, or does it merely define the term?
+> - **One concept per item** — flag any bullet joining two annotations, two files, two mechanisms with
+>   "and"/"+" that a note would have to split anyway.
+> - **Studyable concept, not conduct** — a mechanism, annotation, decision, or gotcha; never a working
+>   method or interview behaviour.
+> - **Filed in the right section** — does the item's section heading actually describe it?
+> - **No fenced code**, and the wording is specific (a real error message, a real method name) rather
+>   than vague.
+>
+> Return **only defects**: for each, the item's opening words, the rule it breaks, and a corrected
+> version you would accept. Say nothing about items that pass. If a whole section's items read as
+> filler or restate an existing bullet, say so once. End with the line **"N items reviewed"** where N is
+> the number you were given — the count is your proof of work.
+
+**Acceptance check:** the report must carry the "N items reviewed" line and N must match what you sent.
+If it is missing or the count is wrong, re-dispatch **once** naming the problem; if it fails again, mark
+the review as **not completed** in the final summary rather than treating it as a pass.
+
+Then **you** (the generator, still the only editor) apply the corrections you agree with, and note in
+the summary how many defects were reported and how many you applied. **Disagreeing is allowed and
+expected** — the reviewer sees the items without the market analysis that produced them, so it can
+mistake a deliberately narrow item for a vague one. What is not allowed is skipping the step because
+the items "felt fine when written": that is precisely the judgement this step exists to distrust.
+
+---
+
+## Step 4c — Keep notes/coverage.md in sync
 
 `notes/coverage.md` is a combined file that mirrors all 12 topic `coverage.md` files in one
 place, for cross-topic analysis. It must always contain **exactly the same content** as each
@@ -563,6 +623,7 @@ After all edits, print a short summary:
 | Sections split / added | [structural changes, or "none"] |
 | Structural check (Step 4) | [item counts verified per section; what the count forced, or "no splits needed"] |
 | Cross-topic overlap (Step 4a) | [items dropped as owned by another topic, or "none"] |
+| Cold review (Step 4b) | [N items reviewed; X defects reported, Y applied — and one line on any you rejected and why, or "not completed"] |
 | Modified in coverage | [list of updated items — one line per change, or "none"] |
 | Promoted from future-learning | [list or "none"] |
 | Demoted to future-learning | [item — one-line reason it no longer belongs in coverage, or "none"] |
