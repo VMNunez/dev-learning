@@ -325,8 +325,17 @@ is the single source for them.
 are the two that a generator reliably violates while believing it complied, so verify them mechanically
 rather than by impression, on the finished file:
 1. **Count the items in every section.** Any section over 12 items must be split before saving; under 3
-   must be merged. Counting is not optional — a real run shipped a 16-item section that the generator
+   must be fixed. Counting is not optional — a real run shipped a 16-item section that the generator
    had "checked" by reading it.
+   > **An undersized section has two fixes, and merging is the second choice.** Prefer to **grow** it:
+   > if this run's gaps include concepts that genuinely belong beside the orphans, fold them in and
+   > rename the section to cover the wider theme. Merge into a neighbour only when no such concepts
+   > exist. Never merge across a semantic boundary just to clear the count — a section whose name no
+   > longer describes its contents is worse than either the small section or the missing items, and it
+   > misfiles those bullets for every downstream prompt that reads coverage by section. The worked
+   > example is the Java run: a 2-item "Control flow" had no honest neighbour (the adjacent sections
+   > were Strings and Classes), so it grew with that run's `package` / `import` / fully-qualified-name
+   > gaps and became "Control flow and source structure".
 2. **Re-read every item you wrote this run for the one-concept rule.** An item naming two annotations,
    two files, or two mechanisms joined by "and"/"+" is a grouped bullet and must be split — the same run
    shipped two of these (`environment.ts` + `fileReplacements`, `CORS` + `proxy.conf.json`).
