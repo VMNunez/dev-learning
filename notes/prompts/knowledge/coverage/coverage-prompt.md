@@ -114,6 +114,26 @@ order to read a PR in) are NOT coverage items — the *concepts underneath them*
 trace before editing code" but "`Caused by:` — the root cause sits at the bottom of a nested stack
 trace"). Route conduct/method material to the interview-prep prompts, never into coverage.md.
 
+**Never assert where a concept lives without reading the file — this binds the whole run, not just
+Step 4a.** The grep discipline in Step 4a's overlap check is written as a *consolidation* step, which
+leaves the rest of the run free to make ownership claims from memory: in the framing before Step 1, in
+the summary, in an answer to Victor about what this run will probably find. Those claims are not
+harmless commentary — they set the run's expectations before a single subagent has read anything, and
+a wrong one biases every later judgement toward the answer already announced.
+
+So: **any statement of the form "X is probably already covered by <topic>" / "X almost certainly lives
+elsewhere" must be preceded by the grep that shows it, at whatever point in the run it is made.** One
+`grep -n "^## " notes/coverage.md` for the section map plus one term grep is enough — it costs seconds,
+and it is the same gesture Step 4a mandates anyway.
+
+Say "I have not checked yet" rather than a hedged guess. **"Almost certainly" is the tell**: it reads
+as verified while carrying none of the work, and it is wrong in both directions. On the Security run
+(2026-07-18) the pre-run framing announced that JWT, CORS and SQL injection "almost certainly already
+have homes in the other topics' sections" — the exact inverse of the file, where `### JWT`, `### CORS`
+and the injection item are Security's own sections (`notes/coverage.md` 1318–1363) and the duplication
+runs *outward* into Spring Boot, Architecture and General. Acting on that guess would have dropped
+Security's own core items as other topics' property.
+
 ---
 
 ## Subagent roles — one concern each, read-only
