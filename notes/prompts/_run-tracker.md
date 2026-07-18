@@ -32,7 +32,7 @@ runs once the whole coverage-prompt column is filled).
 | CSS | | | |
 | SQL | 2026-07-18 | | |
 | Git | | | |
-| General | | | |
+| General | 2026-07-19 | | |
 
 ## Per-project prompts
 
