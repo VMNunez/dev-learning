@@ -32,8 +32,10 @@ Notes on specific topics:
 - General: not yet migrated to en/-es/ — its numbered files sit in the topic root
   (notes/general/), not in an en/ subfolder; read them from there in Step 1.3.
 - Spring Boot: set NOTES_PATH = notes/spring-boot/ — coverage.md is written there.
-  Additionally read notes/java/en/ when reading existing notes (Step 1.3), because Spring Boot
-  coverage must include Java language concepts that appear in Spring Boot code.
+  Additionally read the Java notes when reading existing notes (Step 1.3) — `notes/java/en/` if that
+  subfolder exists, otherwise the flat numbered files in `notes/java/` (same `en/`-may-not-exist-yet
+  rule as Step 1.3) — because Spring Boot coverage must include Java language concepts that appear in
+  Spring Boot code.
   Also read notes/spring-boot/layer-reference.md — it defines what belongs in each layer
   (controller, service, repository) and is directly relevant for coverage decisions about
   where annotations and logic should live.
@@ -74,6 +76,16 @@ I want you to create or update the coverage.md file for {TOPIC}.
 > branch") — a feature branch is the normal case; just name the branch in the final summary. The one
 > branch that must stop the run is **`main`**: it never receives direct commits, only merges via PR —
 > if you are on `main`, stop and ask Victor which branch to use.
+
+> **Generator-model guard (step 0, same moment):** the model-policy table below names **Opus** for
+> the generator (this session), because this session *is* the author of every coverage item — the
+> real quality bottleneck. Nothing in the run flow can enforce the session's own model, so confirm it
+> yourself before Step 1: if you are not running on Opus, **stop and tell Victor to switch the session
+> to Opus** (`/model opus`) before continuing — do not word-craft coverage items on a weaker model.
+> This is not optional politeness: a real run consolidated on Sonnet shipped standard violations (an
+> unsplit 16-item section, two merged multi-concept items) that only an Opus re-pass caught. The
+> subagent `model:` overrides do not cover this — they set the *subagents'* models, never the
+> session's.
 
 Before starting, read:
 - `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
@@ -167,14 +179,22 @@ Read these files before making any decision:
    items without a clear reason.
 2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
    in-scope given the job target read from ROADMAP + `_shared-context` (role, deadline).
-3. The numbered note files in `{NOTES_PATH}en/` — **surveyed at headings level, not full prose**:
+3. The numbered note files — **surveyed at headings level, not full prose**:
    for each file, read its heading structure (`grep -n "^##" <file>`) plus its opening section,
    enough to know what has been studied and which examples exist. This is context, not the source
    of coverage decisions, so the map is enough — loading every file's full body into the same
    context that must then word-craft every coverage item is the whole-folder saturation the notes
    pipeline splits stages to avoid. Open a file's body only where the headings leave a genuine
-   doubt. Skip `future-learning.md` and `coverage.md` in this pass. (Note: the numbered files live
-   in the `en/` subfolder; `coverage.md` and `future-learning.md` live in the topic root.)
+   doubt. Skip `future-learning.md` and `coverage.md` in this pass.
+   > **Where the numbered files live depends on whether `notes-audit` has run yet.** The `en/`/`es/`
+   > split is created by `notes-audit`, not by this prompt — coverage can (and often does) run
+   > *first*, on a topic whose notes are still flat numbered files in the topic root (`General`, and
+   > any topic not yet audited). So: `ls {NOTES_PATH}en/` first — if the `en/` subfolder exists, read
+   > the numbered files there; if it does not, read them from the topic root (`{NOTES_PATH}`). If
+   > **neither** has numbered files, the notes simply do not exist yet — that is normal and expected
+   > (coverage is derived from the job, not the notes), so skip this sub-step and derive coverage from
+   > Step 2 alone. A missing `en/` is never an error and never a reason to stop.
+   > `coverage.md` and `future-learning.md` always live in the topic root regardless.
 4. When updating an existing `coverage.md`, touch only the items that are new, wrong, or
    being promoted/demoted. Leave correct existing bullets untouched, word for word — an
    unprompted reword of unrelated items makes the resulting commit noisy and hard to review.
