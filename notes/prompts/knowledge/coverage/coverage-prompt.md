@@ -27,6 +27,11 @@ NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/java
 ## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
 ## (also reads notes/java/), Java, Architecture, Security, TypeScript, JavaScript, CSS, SQL,
 ## Git, General.
+## Batch caution: this is the heaviest per-target orchestrator — each target consolidates 100+
+## opus-angle proposals inside the session's own context, and that context is also the author of
+## every item. Expect to finish only 2–3 topics per conversation; apply _batch-mode.md's
+## stop-and-resume rule EARLY, at the first sign of context strain, rather than word-crafting
+## the later topics' items on a saturated context.
 
 Notes on specific topics:
 - General: not yet migrated to en/-es/ — its numbered files sit in the topic root
@@ -71,7 +76,10 @@ Notes on specific topics:
   is and who enforces it" is Security; `CorsConfigurationSource` inside `SecurityFilterChain` is
   Spring Boot. Apply this in both directions when the overlap check runs: do not import Spring
   Security *wiring* into this file, and do not leave a vendor-neutral security concept to be owned by
-  a framework topic just because that is where it was first written down.
+  a framework topic just because that is where it was first written down. This is the topic-local
+  instance of the general rule in Step 4a ("Routing the concept out does not route out this topic's
+  implementation") — that rule, with its concreteness test, is the authoritative version; if the two
+  ever read differently, Step 4a wins.
 - Architecture: in scope — REST principles, layered architecture, MVC, coordinator pattern,
   smart/dumb components, service layer, repository pattern. Out of scope (future-learning) —
   microservices, event-driven architecture, DDD, CQRS, distributed systems.
@@ -519,7 +527,10 @@ Give each subagent this brief (substituting its angle):
 
 **Stop rule:** you are done when a fresh angle returns only duplicates of what the others already
 found. Heavy overlap between angles is the convergence signal — it means the surface is covered, not
-that the pass was wasted.
+that the pass was wasted. Since the angles dispatch **in parallel**, this rule cannot end the pass
+early — it governs the decision that actually exists: whether to launch **additional** angles after
+consolidating. Reports that heavily overlap → converged, stop; an angle that returned a surface no
+other touched → consider one more angle adjacent to it before closing.
 
 Then **you** (the generator) consolidate: deduplicate across the angles, check each proposed gap
 against the standard's IN/OUT filter and the "concepts only" rule above, add every genuine one to the
@@ -532,9 +543,15 @@ Three routing rules when handling the discards:
   item must never disappear — it is either in coverage or in future-learning, never nowhere.
 - **Owned by another topic.** If a proposed gap belongs to a different topic's coverage by ownership
   (e.g. JUnit/Mockito items surfaced during a Java run belong to Spring Boot coverage, per the
-  configuration block's per-topic notes), leave it OUT of this file and route it to its owner — note it
-  in the summary as "owned by <topic>, not added here". Do not re-litigate the same misplaced gap on
-  every run.
+  configuration block's per-topic notes), leave it OUT of this file and route it to its owner.
+  This bullet and the "Already covered by another topic" bullet below decide the same question by two
+  different tests — **this one by rule** (the per-topic boundaries, regardless of whether the owner has
+  written the item yet), **that one by pre-existence** (a grep shows the owner already has it). The
+  consequences differ on purpose: an item the owner does *not* yet have goes to the inbox (here); an
+  item the owner already has needs no handoff, only the summary mention (there). Apply whichever test
+  fires first, and apply the concrete-twin rule below under both. Either way, note the routed item
+  in the summary as "owned by <topic>, not added here", and do not re-litigate the same misplaced gap
+  on every run.
   > **Routing means writing it down, not mentioning it.** Append the item to
   > `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` under the owning topic's `## ` heading, in
   > the standard's item format, tagged with the run that found it — creating the heading if absent. A
