@@ -14,7 +14,8 @@ those live in the pipeline's own output files.
 After the run's normal final step, write `_last-run-report.md` **in the orchestrator's own folder**
 (overwrite the previous run's; if several orchestrators share a folder, use
 `_last-run-report-<orchestrator>.md`). Header: date + the run's target (topic / project / scope).
-Then five bullets, one line each — honest, including "nothing to report":
+Then these five bullets — honest, including "nothing to report". Keep each one short; a bullet only
+earns extra lines when it is reporting something that actually went wrong:
 
 1. **Plan vs reality** — did the work split (subagents, slices, sections, files) turn out right, or
    was something missing / mis-sized?
@@ -22,8 +23,13 @@ Then five bullets, one line each — honest, including "nothing to report":
    (code dumps, narrative, overlong reports)?
 3. **Failures & retries** — subagents that failed, were re-dispatched, or returned unusable work; how
    the failure protocol behaved.
-4. **Rule friction** — any instruction in the prompt that was ambiguous, contradictory, or had to be
-   worked around during the run.
+4. **Rule friction and rule breaches** — two things, one bullet: any instruction in the prompt that was
+   ambiguous, contradictory, or had to be worked around during the run; **and any rule the run itself
+   broke** — a step-0 guard skipped, a model policy violated, a mandatory check not run. Name what was
+   breached and what it cost, not just that it happened. (This half exists because a real coverage run
+   word-crafted its items on the wrong model and shipped standard violations: the incident fit none of
+   the five bullets, so that report invented a sixth. A broken rule is machinery evidence — it belongs
+   here, not in an ad-hoc bullet.)
 5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
 
 ## Update the run tracker
