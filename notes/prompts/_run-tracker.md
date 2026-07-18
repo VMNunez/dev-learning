@@ -26,7 +26,7 @@ runs once the whole coverage-prompt column is filled).
 | Spring Boot | 2026-07-13 | 2026-07-15 | |
 | Java | 2026-07-18 | | |
 | Architecture | 2026-07-18 | | |
-| Security | | | |
+| Security | 2026-07-18 | | |
 | TypeScript | 2026-07-18 | | |
 | JavaScript | 2026-07-18 | | |
 | CSS | | | |
