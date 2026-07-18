@@ -39,6 +39,10 @@
      the Spring Boot and Java sections. Not caused by this run — the section replacement preserved the
      boundary faithfully — but repaired while there.
 5. **Verdict** — Pipeline clean; the three changes made after the Angular Material run all proved out
-   on their first real use. One small change worth considering: Step 4's structural check should state
-   that a section under 3 items may be **grown** with adjacent new concepts instead of merged, because
-   forcing a merge across a semantic boundary is worse than either alternative.
+   on their first real use. **One change applied off this run:** Step 4's structural check now states
+   that an undersized section has two fixes and that **growing it is the first choice** — fold in this
+   run's adjacent gaps and rename the section to the wider theme; merge into a neighbour only when no
+   such concepts exist, and never across a semantic boundary just to clear the count, because a section
+   whose name no longer describes its contents misfiles those bullets for every downstream prompt that
+   reads coverage by section. The Java "Control flow" → "Control flow and source structure" case is
+   recorded there as the worked example.
