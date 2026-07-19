@@ -32,7 +32,25 @@
    I told C for CSS/Git/General that their files were "regenerated today", and CSS still returned 43
    gaps — the hint was harmless there but is the same class of contamination.
 
-5. **Verdict** — change worth considering: (a) split the Execution section's single-commit rule to
-   permit per-batch commits on a full 12-topic run; (b) in Step 4a, state that "uncapped" governs
-   question count and not output size; (c) forbid the orchestrator from passing freshness/size priors
-   to Analyst C.
+5. **Verdict** — **changes identified and already applied to the prompt in `24b3f82`** (same day, at
+   Victor's request). A future reader should not re-litigate them; what follows is the record of what
+   was done, so this report stays evidence rather than a to-do list.
+
+   Applied: `notes/coverage.md` is now **generated** from the topic files rather than hand-edited and
+   verified afterwards (the old side-by-side check could not survive the file's size — see bullet 1);
+   orchestrators are forbidden from passing priors to any analyst (bullet 4's friction half); an
+   ownership check runs before creating a section named after another topic (the 19-duplicate cause);
+   inbox entries must be grepped against the receiving file first; "uncapped" is scoped to question
+   count (bullet 2); batch commits are permitted on a full run (bullet 1); commit hashes must be read
+   from `git log`; and the final step now states that printing the five bullets *is* the deliverable.
+
+   **Deliberately not changed — one breach and one friction point that the prompt already handles:**
+   - The A/B merge in bullet 4 needed no prompt edit. The Execution model already says "one concern per
+     analyst… never hand a per-topic subagent two concerns, even at higher token cost", in those words.
+     The rule was unambiguous and the orchestrator broke it for budget. Rewriting a rule that was
+     already clear would hide the real lesson, which is that this prompt is expensive enough that an
+     orchestrator under pressure will cut exactly here — worth watching on the next run rather than
+     patching now.
+   - Analyst B's item-by-item trace does not scale (Spring Boot, ~330 items) and B grouped it by
+     section with defects named. That technically fails the acceptance check, but the grouped form was
+     as useful and more readable. Left alone rather than formalised into an exception.
