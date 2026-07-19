@@ -29,9 +29,9 @@ runs once the whole coverage-prompt column is filled).
 | Security | 2026-07-18 | | |
 | TypeScript | 2026-07-18 | | |
 | JavaScript | 2026-07-18 | | |
-| CSS | | | |
+| CSS | 2026-07-19 | | |
 | SQL | 2026-07-18 | | |
-| Git | | | |
+| Git | 2026-07-19 | | |
 | General | 2026-07-19 | | |
 
 ## Per-project prompts
