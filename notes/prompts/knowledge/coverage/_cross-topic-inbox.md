@@ -62,6 +62,4 @@ is still the source, and `{NOTES_PATH}coverage.md` is still the topic's only cov
 
 ## Git
 
-- What makes a change reviewable — a small, single-purpose diff with a stated intent; a 2000-line PR gets rubber-stamped because a reviewer cannot hold it in their head, so review quality collapses with size; PRs and code review are covered but not the size constraint that decides whether review works at all *(routed from the General run, 2026-07-19)*
-- Review comment vs blocking objection — a suggestion may be discussed or declined, a blocking objection stops the merge and must be resolved; interviewers ask how you respond to review feedback you disagree with, and the concept is who owns the decision *(routed from the General run, 2026-07-19)*
-- Self-review before requesting review — the author reads their own diff first to strip debug statements, commented-out blocks and unrelated formatting changes; interviewers probe this when a junior's PR contains a stray `console.log` *(routed from the General run, 2026-07-19)*
+*(Empty — the three items routed from the General run on 2026-07-19 were all consumed and added by the Git coverage run the same day.)*
