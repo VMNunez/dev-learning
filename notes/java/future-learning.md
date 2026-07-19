@@ -85,4 +85,17 @@ How annotations work at runtime, how frameworks like Spring use reflection to wi
 - **Ant / Maven lifecycle internals** — use Maven commands without understanding the internals.
 - **Multi-module Maven projects and publishing to a private Nexus/Artifactory** — *consuming* an internal mirror is junior coverage (`settings.xml`); authoring modules and publishing artifacts is not.
 - **Gradle** — the alternative build tool, and Maven↔Gradle migration. Learn it when a client project uses it.
+
+---
+
+## Additions from the 2026-07-19 coverage audit
+
+_Analyst C generated 122 interview questions for Java and found the topic materially under-covered; most gaps were promoted into `coverage.md` (concurrency awareness, streams internals, generics wildcards, `java.time` beyond `LocalDate`, `BigDecimal` correctness, Java version literacy, reflection). These are the ones judged genuinely post-junior:_
+
+- **`sealed` classes and `permits` (Java 17)** — a closed set of subtypes enabling exhaustive `switch` pattern matching; real and modern, but a junior is not filtered for not knowing it, and it only pays off alongside pattern matching for `switch` (Java 21). Java *version literacy* (knowing 17 introduced it) is in coverage; using it is not.
+- **`clone()` and `Cloneable`** — shallow versus deep copying through the legacy cloning mechanism. Modern code uses a copy constructor, a static factory, or a record, all of which are in coverage; `Cloneable`'s broken contract is a curiosity you meet in old code.
+- **Virtual threads and structured concurrency (Java 21)** — the concurrency *awareness* section in coverage stops at "a bean is shared, here is what a race condition is"; virtual threads change how a server handles blocking calls and belong with the Spring Boot 3.2+ integration, after the first job.
+- **Writing concurrent code properly** — `ExecutorService` lifecycle, `CompletableFuture` composition, the `java.util.concurrent` locks, and the Java Memory Model's happens-before rules. Coverage deliberately stops at recognising the vocabulary and diagnosing shared mutable state.
+- **Custom annotations with `@Retention` / `@Target` plus an annotation processor** — reading them reflectively is in coverage (it is how Spring works); authoring a processor is not.
+- **JVM tuning and profiling** — heap sizing flags, choosing a garbage collector, and reading a heap dump with VisualVM or JFR. Coverage stops at "what a memory leak looks like in a GC language".
 - **JavaFX** — desktop UI framework. Not used in web development.

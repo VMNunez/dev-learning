@@ -159,7 +159,7 @@ These were proposed by the adversarial angles and judged post-junior. They are r
 - Marble testing — `TestScheduler`, `cold()` / `hot()` for asserting on stream timing
 - E2E testing with Cypress or Playwright, and where E2E sits against unit tests in the pyramid
 - Jest / Vitest migration off Karma, and the experimental Angular builders for each
-- `TestBed.overrideComponent` / `overrideProvider`, `NO_ERRORS_SCHEMA`, and shallow-rendering strategies
+- `TestBed.overrideComponent` / `overrideProvider` as a general override toolkit — the shallow-rendering tradeoff itself was promoted to coverage by the 2026-07-19 audit; what stays here is the fuller override API
 - Mutation testing (Stryker) as a measure of whether the suite actually catches bugs
 
 ### Architecture at scale
@@ -169,7 +169,46 @@ These were proposed by the adversarial angles and judged post-junior. They are r
 - Nx monorepo workspaces — enforced module boundaries and multi-project `angular.json`
 - Custom builders and writing your own schematics
 - Design-token and theming architecture across a shared component library
-- Zoneless change detection — `provideExperimentalZonelessChangeDetection` and what removing Zone.js demands of the codebase; the direction Angular is heading, but the migration itself is senior work
+- Zoneless change detection — *the concept* was promoted to coverage by the 2026-07-19 audit (what breaks without Zone.js); what remains here is performing the migration on a real codebase, which is senior work
+
+---
+
+## Phase additions — surfaced by the 2026-07-19 coverage audit
+
+_Analyst C generated 181 interview questions for Angular; these are the gaps judged real but post-junior for the August–September 2026 target._
+
+### Server-side rendering — Phase 2
+
+Angular SSR is rare in the internal business applications Spanish consultancies build for their clients, so it is not a junior filter — but it is worth knowing once a client-facing, SEO-sensitive project appears.
+
+- `@angular/ssr` and when a client genuinely needs server rendering (SEO, first paint on slow devices) versus when it is pure operational cost
+- `provideClientHydration()` — reusing the server-rendered DOM instead of re-creating it, and what breaks hydration (direct DOM manipulation, markup mismatches)
+- `isPlatformBrowser` / `PLATFORM_ID` — why `window` and `localStorage` crash under SSR and how platform-guarded code is written
+- `afterNextRender` / `afterRender` — the Angular 16+ hooks for DOM-dependent work that must never run on the server; only meaningful once SSR is in play
+
+### Newer signal APIs — Phase 2
+
+Real and useful, but too new to be a screening filter in 2026: an interviewer cannot assume a candidate has met them.
+
+- `linkedSignal()` — writable state derived from a source that resets when the source changes (Angular 19)
+- `resource()` / `httpResource()` — the signal-native async primitive exposing `value`/`status`/`error`, which will eventually replace the loading/error signal trio
+
+### Advanced DI and HTTP — Phase 2
+
+- `APP_INITIALIZER` / `provideAppInitializer` — blocking bootstrap on an async task such as loading runtime config from a server
+- Token refresh queueing inside an interceptor — holding concurrent 401s behind a single refresh call so the app does not fire five refreshes at once; the naive version is covered as the 401-loop trap, the correct queueing implementation is mid-level
+- `reportProgress: true` + `HttpEventType` — driving an upload progress bar from the request's event stream
+
+### Performance and UX polish — Phase 2
+
+- `NgOptimizedImage` (`ngSrc`, `priority`, `fill`) — enforced sizing, lazy loading, and LCP preloading for image-heavy pages
+- `withInMemoryScrolling` — scroll-position restoration and anchor scrolling on navigation
+- CDK `BreakpointObserver` — making responsive decisions in TypeScript rather than in CSS
+- `MatStepper` — multi-step forms with one `FormGroup` per step and `linear` mode
+
+### Internationalisation beyond formatting — Phase 2
+
+- `@angular/localize` build-time i18n versus a runtime library (ngx-translate) — one bundle per language against one bundle that switches at runtime; the `LOCALE_ID` formatting layer is in coverage, this architectural choice is not
 
 ---
 

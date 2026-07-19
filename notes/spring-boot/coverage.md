@@ -15,6 +15,17 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Package structure convention (`controller`, `service`, `repository`, `model`, `dto`, `config`, `exception`) — the layout every consultancy codebase uses, and a class placed *outside* the main class's root package is never scanned, so the bean silently does not exist; interviewers read your folder tree before they read your code
 - `jakarta.*` vs `javax.*` — Spring Boot 3 on Java 17 moved every EE import from `javax.persistence` / `javax.validation` to `jakarta.*`; mixing the two means the annotations compile but Hibernate and the validator silently ignore them; postings that ask for "Java 17 / Spring Boot 3" make this a live trap the moment you copy an older tutorial
 
+## Auto-configuration — how Boot decides what to create
+
+- Where auto-configurations are registered — each starter jar carries a `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` file (it was `spring.factories` before Boot 2.7) listing its candidate configuration classes, which is the concrete thing that turns "a jar on the classpath" into "beans in your context"; interviewers who liked your `@ConditionalOnClass` answer follow with "and where is that list actually written down?"
+- The conditions evaluation report (`--debug`) — printing "Positive matches" and "Negative matches" tells you exactly which auto-configuration fired, which backed off, and on which condition; interviewers ask "you added a starter and the bean you expected is not there — how do you find out why?" and expect you to read the report rather than guess
+- `@SpringBootApplication(exclude = ...)` — switches off one auto-configuration you do not want, the classic being `DataSourceAutoConfiguration` in a service with no database; interviewers ask what you do when the app refuses to start demanding a datasource URL it should not need
+- `scanBasePackages` — widens component scanning when a class legitimately lives outside the main class's package tree, instead of moving the class; interviewers pair it with the root-package rule to check you understand scanning is a *convention*, not magic
+- `@ConditionalOnProperty` on your own bean — the same conditional mechanism Boot uses internally, applied to your code so a stub payment gateway or a data-seeding runner exists only when a flag is set; interviewers ask how you switch a bean on per environment without inventing a `@Profile` for every combination
+- `ApplicationContext` vs `BeanFactory` — `BeanFactory` is the bare dependency-injection container, `ApplicationContext` is the one Boot actually builds and adds events, internationalisation, and resource loading on top; interviewers ask "what exactly is 'the container' you keep referring to?" once you have said three times that Spring creates your objects
+
+---
+
 ## The toolchain — Maven and the JDK
 
 - Maven: `pom.xml` structure, adding a dependency — how the project is built and how libraries are pulled in; interviewers ask what `spring-boot-starter-parent` does (manages all dependency versions via a BOM so you do not write version tags)
@@ -27,6 +38,11 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Re-importing after editing `pom.xml` — a newly added dependency stays unresolved (red imports, `package does not exist`) until the IDE re-imports the Maven project or `mvn -U` re-resolves it; in a live-coding round the candidate who stares at a red import for five minutes after adding a starter has never set a project up from zero
 - `.gitignore` for a Spring Boot deliverable — `target/`, `.idea/`, and any file holding real credentials must never be committed; a take-home submitted with a 40 MB `target/` folder or a JWT secret inside `application.properties` is judged before a line of code is read
 - The `-parameters` compiler flag and `@PathVariable` names — since Spring Boot 3.2 parameter names are no longer inferred from bytecode unless the code is compiled with `-parameters` (the `spring-boot-maven-plugin` adds it; a bare `javac` or a misconfigured IDE build does not), so `@PathVariable Long id` fails at runtime with "Name for argument … not specified" unless the name is declared explicitly; interviewers on a Boot 3 codebase ask why the same controller works under Maven and dies when built differently
+
+- `mvn dependency:tree` and transitive version conflicts — two libraries dragging in different versions of the same jar compile fine and then fail at runtime with `NoSuchMethodError` or `NoClassDefFoundError`; the tree shows who pulled what, and `<dependencyManagement>` or an `<exclusion>` is the fix; interviewers ask what is happening when code that compiles blows up on a missing method
+- Dependency `<scope>` — `runtime` for the PostgreSQL driver (needed to run, never imported in your code), `provided`/`optional` for Lombok (compile-time only, must not ship to consumers), `test` for test libraries; interviewers point at the driver in your `pom.xml` and ask why it carries a scope the others do not
+
+---
 
 ## Lombok
 
@@ -55,6 +71,11 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Build once, configure per environment — the same jar and the same Docker image are promoted from dev to production and only the environment variables change; you never rebuild the artifact per environment or bake a profile into the image; interviewers ask "how does the identical jar run against two different databases?"
 - `server.port` — how you move the app off 8080; the immediate fix when startup fails with the port already in use
 - `CommandLineRunner` / `ApplicationRunner` vs `@PostConstruct` vs `data.sql` — three places to run startup code, differing in whether the whole context is ready; interviewers ask where you would seed data and why not in the constructor
+
+- Multi-document YAML profiles — one `application.yml` split by `---` with `spring.config.activate.on-profile`, rather than a file per environment; interviewers ask how a single file holds both dev and prod config and expect the separator, not "you copy the file"
+- Where secrets live beyond an environment variable — env vars are readable by any process listing and are exposed through `/actuator/env`, so real deployments inject them from a secret manager (Vault, AWS Secrets Manager, a Kubernetes Secret) at runtime; interviewers accept the env var for a take-home and then ask what a bank does instead
+
+---
 
 ## Wiring the database — datasource, schema, and seeding
 
@@ -95,6 +116,13 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Date binding in `@RequestParam` / `@PathVariable` — a `LocalDate` parameter is rejected with a 400 unless the client sends ISO-8601 or the parameter carries `@DateTimeFormat`; interviewers show a report endpoint filtered by month and ask why the request fails
 - Ambiguous mapping at startup — two controller methods declaring the same verb and path make the whole context fail to start with `Ambiguous mapping. Cannot map ... method`; a self-inflicted failure caused by copy-pasting an endpoint
 
+- `@RequestHeader` — reads a value that is neither in the path, the query string, nor the body: a correlation id, an `Accept-Language`, or the raw `Authorization` when no filter has parsed it yet; supports `required = false` and a default; interviewers ask how a controller gets at a header
+- `consumes` and `produces` on a mapping — `consumes` declares what the endpoint accepts, so a wrong `Content-Type` is 415; `produces` declares what it returns, so an `Accept` it cannot satisfy is 406; interviewers ask you to tell 415 and 406 apart and say which side of the exchange each one blames
+- `MultipartFile` uploads — `consumes = MULTIPART_FORM_DATA`, the file bound alongside a `@RequestPart` DTO, and `spring.servlet.multipart.max-file-size`, whose modest default rejects a real document with an error that does not look like a size problem; interviewers ask what the endpoint looks like when the client must attach a PDF
+- `@ModelAttribute` for query-parameter objects — a filter endpoint with six optional params binds into one object that can carry its own validation, instead of six method arguments; interviewers ask how you keep a report endpoint's signature readable
+
+---
+
 ## API design and the HTTP contract
 
 - HTTP status conventions: 200 GET/PUT success, 201 POST success, 204 DELETE success, 400 validation error, 401 missing or invalid token, 403 authenticated but not allowed, 404 not found, 409 duplicate — tested in every technical interview
@@ -109,6 +137,11 @@ Every item must be explainable with a real example from the TimeTrack project.
 - A machine-readable error code, not just a message — a hardcoded English string forces the Angular client to display whatever the backend wrote, while a stable `code` (`ENTRY_ALREADY_SUBMITTED`) lets the frontend branch and translate; interviewers on a full-stack team ask "how does the frontend show this error in Spanish?"
 - Breaking vs non-breaking change, and API versioning — adding an optional field is safe; renaming or removing one breaks every deployed Angular client, which is why you version (`/api/v1/...`); interviewers ask "you need to change a response field the frontend depends on — what do you do?" and expect "additive if possible, new version if breaking"
 - Soft delete — `active = false` instead of `deleteById()`; preserves historical data and the audit trail; interviewers ask "what happens to existing time entries when a project is deleted?"
+
+- A bare array vs an envelope in a list response — a top-level JSON array leaves nowhere to add pagination metadata later without breaking every client, which is why `Page<T>`'s wrapper shape (or an explicit `{ "data": [...], "total": n }`) is the safer contract; interviewers ask what you change when the client suddenly needs the total count, and who breaks when you do
+- The OpenAPI document as the contract the frontend codes against — springdoc publishes it from your annotations, and the Angular side derives its interfaces, endpoints, and response shapes from `/swagger-ui.html` instead of guessing or waiting; interviewers on full-stack rounds ask how the frontend knows the response shape before the backend is finished
+
+---
 
 ## Business logic and domain modelling
 
@@ -140,6 +173,12 @@ Every item must be explainable with a real example from the TimeTrack project.
 - `LocalDate` vs `LocalDateTime` vs `Instant`, and storing UTC — which type maps to which column, why timestamps are stored in UTC and converted at the edge, and why `java.util.Date` is never used in new code; interviewers ask what type your `createdAt` is and what timezone the database holds
 - `BigDecimal` for money and decimal hours — `double` loses precision on money and totals; use `BigDecimal` with `@Column(precision, scale)` and compare with `.compareTo()`, not `.equals()`; a standard probe in any billing or timesheet domain
 
+- `@JsonInclude(NON_NULL)` — whether null fields appear in the response is a contract decision and not a cosmetic one: dropping them shrinks the payload but leaves the Angular client unable to distinguish "not sent" from "explicitly null"; interviewers ask why half the response fields vanished after someone added the annotation globally
+- Global Jackson configuration through `spring.jackson.*` — the property-naming strategy, the date format, and `FAIL_ON_UNKNOWN_PROPERTIES` are set once in properties (or a `Jackson2ObjectMapperBuilderCustomizer`), never by annotating forty DTO fields; interviewers ask what you touch when the Angular team wants `snake_case` across the whole API
+- Unknown properties in the request body — Boot disables `FAIL_ON_UNKNOWN_PROPERTIES` by default, so a field the client sends that your DTO does not declare is silently discarded rather than rejected; interviewers ask whether that is the behaviour you want, since the same leniency hides a misspelled field name for weeks
+
+---
+
 ## Dependency injection and beans
 
 - Inversion of Control (IoC) and dependency injection — the Spring container creates your objects and wires their dependencies instead of you calling `new`; interviewers open the topic with "what is dependency injection?" and expect the IoC container as the answer, plus why it makes code testable (you inject a mock in a test instead of the real dependency)
@@ -154,6 +193,17 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Interface + implementation for a service, or just a class — the indirection only pays when there is a second implementation; Spring proxies concrete classes fine and Mockito mocks them, so "you need it for testing" is out of date; interviewers ask "why does your `TimeEntryService` (not) have an interface?" and the honest trade-off beats the cargo-culted answer
 - Filter vs `HandlerInterceptor` vs `@Aspect` for a cross-cutting concern — a filter sits at the servlet level and sees every request including the security chain, an interceptor runs around the controller and knows which handler method was selected, an AOP aspect wraps any bean method; interviewers ask "how would you log every incoming request, or time every service call?" and expect you to pick one and say why the other two do not fit
 - Calling another HTTP API — `RestTemplate` is in maintenance, `WebClient` is the reactive client, `RestClient` (Boot 3.2+) is the modern synchronous choice; interviewers ask "your service needs to call an external API — what do you inject?"
+
+---
+
+## Bean lifecycle and proxies
+
+- Eager singletons and `@Lazy` — every singleton is built at startup, which is precisely why a broken bean fails the boot instead of the first request that touches it; `@Lazy` defers creation and therefore defers the failure to runtime, so it is a deliberate trade rather than an optimisation; interviewers ask why the app refuses to start rather than erroring on the endpoint
+- `@PreDestroy` and graceful shutdown — Spring closes the context on a JVM shutdown hook, and `server.shutdown=graceful` lets in-flight requests finish instead of being severed mid-transaction; interviewers on container-flavoured rounds ask what happens to a half-finished request when the orchestrator sends SIGTERM
+- JDK dynamic proxy vs CGLIB — Spring wraps an interface-implementing bean in a JDK proxy and a plain class by subclassing it with CGLIB, which is *why* `private`, `final`, and self-invoked methods escape `@Transactional` and `@PreAuthorize`; interviewers ask "you said the proxy cannot intercept that — what is the proxy actually made of?", and this single answer unifies three separate gotchas
+- `ApplicationEventPublisher` and `@EventListener` — decouples a side effect (an audit row, a notification) from the method that triggers it, without the publisher knowing who listens; interviewers ask how you add a second side effect to `approve()` without touching the approval logic, and this is the Spring-native alternative to injecting a fourth collaborator
+
+---
 
 ## Spring Data JPA — entity mapping
 
@@ -170,6 +220,20 @@ Every item must be explainable with a real example from the TimeTrack project.
 - `@CreationTimestamp` / `@UpdateTimestamp` (Hibernate) vs `@PrePersist` (JPA) — `@CreationTimestamp` is Hibernate-specific and sets the field automatically; `@PrePersist` is the JPA-standard lifecycle callback that runs before the first insert; interviewers ask "did you set `createdAt` manually?" and which approach you chose
 - `@Version` (optimistic locking) — the field that stops a lost update: two users load the same row, both save, and without it the second write silently overwrites the first; with it Hibernate checks the version and the loser gets `ObjectOptimisticLockingFailureException`, which you map to a 409; interviewers ask "two managers approve the same entry at the same time — what happens?"
 
+- Lombok `@Data` on a JPA entity — the generated `equals`/`hashCode`/`toString` touch every field including lazy relations, so putting the entity in a `HashSet` or simply logging it triggers a load or a `LazyInitializationException`; `@Data` on a DTO is fine, on an entity it is a trap; interviewers use it as the "did you copy this from an AI?" probe
+- `@Embeddable` / `@Embedded` — groups fields that belong together (an address, a money amount) into a value-object class mapped onto columns of the *same* table, with `@AttributeOverride` when names collide; interviewers ask how you avoid eight loose address fields on the entity without inventing a second table
+
+---
+
+## The persistence context — what Hibernate is actually doing
+
+- The four entity states — transient (created with `new`, no id, unknown to JPA), managed (inside the persistence context and dirty-checked), detached (the transaction ended, so changes go nowhere), removed (queued for delete); interviewers ask "I changed a field and nothing happened — which state was the object in?", and these four names are the vocabulary every other JPA answer depends on
+- The first-level cache — two `findById(1L)` calls inside one transaction issue one SELECT, because the persistence context returns the same managed instance; interviewers ask how many queries a method runs and use the answer to check you understand the context is a cache, not merely a change tracker
+- `persist()` vs `merge()` behind `save()` — `persist` attaches a genuinely new instance, `merge` copies a detached object's state onto a managed copy and returns *that* copy, so discarding the return value of `save()` on a detached entity is a real bug; interviewers ask what `save()` returns and why it may not be the object you handed it
+- Flush timing — Hibernate writes at commit or before a query that would be affected, not at the moment you call the setter, which is why the SQL in your log appears "late" and why a test that never flushes sees nothing in the database; interviewers ask when the UPDATE is actually sent
+
+---
+
 ## Spring Data JPA — relationships
 
 - `@ManyToOne(fetch = FetchType.LAZY)` and `@JoinColumn(name = "user_id")` — the entity on the "many" side holds the FK column; `@JoinColumn` names that column; interviewers ask "which entity owns the foreign key and why?"
@@ -177,6 +241,12 @@ Every item must be explainable with a real example from the TimeTrack project.
 - `@ManyToMany` — models a many-to-many relationship; requires a join table; interviewers ask about relationships and this is the third type they expect you to know after `@ManyToOne` and `@OneToMany`
 - Bidirectional relationship consistency — setting only the child's `@ManyToOne` leaves the parent's in-memory collection stale, and adding to the `mappedBy` collection alone writes no FK at all because the inverse side is not the owner; the fix is a helper method that sets both sides; interviewers show `project.getEntries().add(e)` and ask whether the foreign key is written
 - `cascade = CascadeType.ALL` and `orphanRemoval = true` — `cascade` propagates save/delete operations to children automatically; `orphanRemoval` deletes a child when it is removed from the parent's collection; interviewers ask the difference between the two
+
+- The owning side of a bidirectional relationship — the side holding the foreign key (`@ManyToOne`, or the side without `mappedBy`) is the only one Hibernate consults when deciding what to write, so setting only the `@OneToMany` side saves nothing and produces a silent no-op; interviewers ask why the child row was never persisted
+- Cascade declared on the wrong side — `cascade = CascadeType.ALL` on a `@ManyToOne` means deleting one time entry deletes its whole project, and every other entry with it; cascade belongs on the parent's `@OneToMany`, and `REMOVE` almost never belongs on the many side; reviewers show the annotation and ask what your delete endpoint actually deletes
+- A join table that grows its own columns — the moment the link carries data (`assigned_at`, `role_on_project`), `@ManyToMany` stops being viable and the join becomes its own entity with two `@ManyToOne`s; interviewers ask what changes in your mapping when the client wants to know *when* a user joined a project
+
+---
 
 ## Spring Data JPA — repositories and queries
 
@@ -193,6 +263,10 @@ Every item must be explainable with a real example from the TimeTrack project.
 - `@Modifying` on an update/delete `@Query` — without it Spring tries to run the statement as a `SELECT` and throws `Can not issue data manipulation statements with executeQuery()`; it also needs a `@Transactional` boundary, and `clearAutomatically = true` because the persistence context still holds stale entities after a bulk update; a top "what is wrong with this snippet?" probe
 - Spring Data JPA vs `JdbcTemplate` and plain SQL — JPA buys you the persistence context, dirty checking, and free CRUD, but it hides the SQL and fights you on reporting queries and bulk writes, where a native query or `JdbcTemplate` is the honest choice; interviewers ask "when would you *not* use JPA?" and a candidate who thinks JPA is always right has never written a report
 
+- `EntityManager` and `@PersistenceContext` — the JPA interface `JpaRepository` is built on, and what you inject directly for a dynamic Criteria query or a manual `flush()`/`detach()`; interviewers ask what sits underneath Spring Data to check the repository interface is not the deepest layer you know
+
+---
+
 ## JPA performance — fetching, N+1, and pagination
 
 - N+1 problem — one query loads the list, then N extra queries load each lazy relationship in a loop; fix with `JOIN FETCH` in `@Query` or with `@EntityGraph`; one of the most common JPA interview questions
@@ -205,6 +279,12 @@ Every item must be explainable with a real example from the TimeTrack project.
 - `Page<T>` vs `Slice<T>` — `Page` runs an extra `COUNT` query to know the total; `Slice` only knows whether a next page exists and skips the count; interviewers ask which you return and what the count costs on a large table
 - Unbounded page size and sort injection — a client sending `?size=100000` is honoured unless you cap it (`spring.data.web.pageable.max-page-size`, `@PageableDefault`), and an unvalidated `?sort=password` orders by a column you never meant to expose; the pressure follow-up to the happy-path `Pageable` answer
 - Dynamic filtering — combining optional filters (project, status, date range) without writing 2ⁿ derived methods; the junior answers are one `@Query` with `:param IS NULL OR field = :param`, plus knowing `Specification`/Criteria exists for the general case; interviewers ask "the client can filter by any combination of three fields — how do you implement that?"
+
+- `MultipleBagFetchException` and pagination with `JOIN FETCH` — you cannot `JOIN FETCH` two `List` collections in one query, and fetching a collection alongside a `Pageable` makes Hibernate log "applying in memory" and page the entire result set in RAM; the fixes are a `Set`, a second query, or `@BatchSize`; interviewers ask what went wrong right after your N+1 fix "worked"
+- Batch inserts — saving thousands of rows one `save()` at a time issues one round trip each; `saveAll` plus `hibernate.jdbc.batch_size` (and `order_inserts`) groups them, and `GenerationType.IDENTITY` silently disables batching altogether because Hibernate needs each generated id immediately; interviewers ask why the import endpoint takes minutes
+- `@EnableCaching` and `@Cacheable` — Spring's cache abstraction for reference data re-read on every request, paired with `@CacheEvict` on the write path; the risks are a stale cache nobody invalidated and a cache key that forgot a parameter; interviewers ask what you would do about a repeated query *and* what you would get wrong doing it
+
+---
 
 ## Exception handling — the global advice
 
@@ -220,6 +300,11 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Rethrowing without chaining the cause — `throw new BusinessException(e.getMessage())` discards the original stack trace, so the log stops at the rethrow and the root cause is gone; the fix is the two-arg constructor `new BusinessException(msg, e)`; interviewers show the message-only rethrow and ask what the production log will be missing
 - `try/catch` in the controller instead of the advice — catching in the controller and hand-building a `ResponseEntity.status(500)` duplicates the advice, breaks the centralised error contract, and usually loses the correct status; interviewers show a controller full of `try/catch` next to a working advice and ask what is wrong with handling errors there
 - Error response format — a consistent `{ "message": "...", "status": 404 }` body so the Angular client parses every error the same way; Spring Boot 3 also ships `ProblemDetail` (RFC 7807: `type`, `title`, `status`, `detail`), and knowing the standard exists separates a candidate who designed a contract from one who returned a random map
+
+- An error id in the response and the detail in the log — the client receives `{"code": "...", "traceId": "8f3c..."}` while the stack trace stays server-side, which satisfies "never leak internals" and "we still have to debug production" at the same time; interviewers ask how you find the request behind a user's "it failed at 14:32"
+- An exception thrown inside a security filter escapes `@RestControllerAdvice` — the filter chain runs before `DispatcherServlet`, so an `ExpiredJwtException` raised while parsing the token becomes a raw container 500 instead of your JSON error shape; the fix is catching it in the filter and delegating to the `AuthenticationEntryPoint`; interviewers ask why the global handler never fires for authentication errors
+
+---
 
 ## Mapping framework exceptions to status codes
 
@@ -246,6 +331,11 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Validation groups (`OnCreate`, `OnUpdate`) — the same DTO where `id` must be absent on create and present on update, without duplicating the class; interviewers ask how you avoid two nearly identical DTOs
 - The three validation layers — format and presence on the DTO (`@NotBlank`), business rules that need other data in the service (a `SUBMITTED` entry cannot be edited), integrity invariants in the database (`UNIQUE`, `NOT NULL`) as the last line of defence; interviewers ask "where do you validate, and why in more than one place?" — the answer is that each layer stops a different failure, not that it is duplication
 
+- Validation messages and internationalisation — `@NotBlank(message = "{entry.hours.required}")` resolves through `ValidationMessages.properties` or a `MessageSource`, so the Angular client shows Spanish without the backend hardcoding the sentence; interviewers on a Spanish-market product ask where the text the user actually reads comes from
+- `@Validated` on a `@ConfigurationProperties` class — constraint annotations on the config object make the app refuse to boot when a required property is missing or malformed, instead of failing on the first request that needs it; interviewers ask how you guarantee the JWT secret is present and long enough *before* traffic arrives
+
+---
+
 ## Transactions
 
 - `@Transactional` — wraps the service method in a database transaction; if an unchecked exception propagates out, every DB write in that method rolls back; required for any method that writes to more than one table
@@ -261,6 +351,13 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Optimistic (`@Version`) vs pessimistic (`SELECT … FOR UPDATE`) locking — optimistic assumes conflicts are rare and fails the loser at commit (no DB locks, the client retries); pessimistic locks the row up front and serialises the writers (correct under real contention, but it blocks and can deadlock); interviewers ask "why `@Version` instead of locking the row?"
 - `REQUIRES_NEW` propagation — always starts a new, independent transaction regardless of an existing one; used when an inner operation such as an audit-log write must commit even if the outer transaction rolls back
 
+- Default propagation `REQUIRED` — a `@Transactional` service method calling another joins the *existing* transaction rather than opening a second one, which is why the inner method's failure rolls the outer one back too; interviewers ask "service A calls service B, both `@Transactional` — how many transactions are there?", and `REQUIRES_NEW` only means anything once you can answer that
+- Isolation levels — PostgreSQL defaults to `READ_COMMITTED`, which still permits non-repeatable reads and phantoms within one transaction; raising it buys correctness at the cost of throughput and serialization failures you then have to retry; interviewers ask which anomaly your default still allows and why you did not simply set `SERIALIZABLE`
+- Calling an external HTTP API inside a transaction — the database connection stays checked out for the whole call, so one slow third party drains the pool, and a rollback cannot undo the remote side effect anyway; the remote call belongs outside the transactional boundary; interviewers ask what is wrong with a `@Transactional` method that also invoices the customer
+- Connection pool exhaustion — `HikariPool-1 - Connection is not available, request timed out after 30000ms` means every connection is held, usually by long transactions, `open-in-view` on a slow endpoint, or a leak; you hunt the slow transaction and compare `maximum-pool-size` against what the database permits rather than raising the number blindly; interviewers deliberately separate this from the pool *initialization* failure because the causes share nothing
+
+---
+
 ## Spring Security — the filter chain and configuration
 
 - `@Configuration` + `@EnableWebSecurity` + `@EnableMethodSecurity` — the three annotations that activate Spring Security and method-level role checks; `@EnableMethodSecurity` is silently ignored if missing — `@PreAuthorize` will compile and run but protect nothing
@@ -269,6 +366,14 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Why CSRF is disabled for a JWT API, and when that stops being true — CSRF attacks work because the browser attaches credentials automatically, which it never does for an `Authorization: Bearer` header your JS sets by hand; move the token into a cookie and CSRF protection has to come straight back on; interviewers say "you disabled CSRF — justify it", then ask whether the answer still holds with a cookie
 - CORS configuration in `SecurityFilterChain` — required when Angular (4200) calls Spring Boot (8080); configured inside the Security layer via a `CorsConfigurationSource` bean, not with `@CrossOrigin` on controllers, because the Security filter runs before controllers see the request; `allowedOrigins("*")` together with `allowCredentials(true)` is rejected by the browser and insecure anyway
 - `AuthenticationEntryPoint` — the hook Spring Security calls when an unauthenticated request hits a protected route; by default Spring returns an empty 403, so you implement it to return the semantically correct 401 with a JSON body; interviewers ask "should a missing or invalid token return 401 or 403?" — 401 means "who are you?", 403 means "valid token, wrong role"
+
+- `addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)` — the JWT filter must run before the filter that would otherwise attempt form login, so the `SecurityContext` is already populated by the time the authorization filter inspects it; register it later and every request is anonymous; interviewers ask where in the chain your filter goes and what breaks if it goes at the end — the single most-asked JWT configuration question
+- A custom filter must always call `filterChain.doFilter` — returning early when the `Authorization` header is absent silently breaks every `permitAll()` endpoint, because the request never reaches the rest of the chain; interviewers ask why login itself started returning nothing
+- `shouldNotFilter` for public routes — the JWT filter still executes on `/api/auth/login`, so a missing or malformed header must not throw there; you either return early after calling `doFilter` or override `shouldNotFilter`; interviewers ask why login returns 401 in a chain that explicitly declares it `permitAll()`
+- Preflight `OPTIONS` rejected with 401 — the browser sends the preflight without the `Authorization` header, so a chain that authenticates every request kills it before any CORS header is written; enabling `cors()` in the chain puts the CORS filter first; interviewers ask why the browser fails while Postman succeeds
+- Multiple `SecurityFilterChain` beans — a second chain with its own `securityMatcher` and `@Order` lets `/actuator/**` use basic auth while `/api/**` uses JWT; the first matching chain handles the request completely; interviewers ask how you protect Actuator differently from your API
+
+---
 
 ## Spring Security — authorization and the current user
 
@@ -281,6 +386,11 @@ Every item must be explainable with a real example from the TimeTrack project.
 - `@AuthenticationPrincipal` vs `SecurityContextHolder` — the idiomatic way a controller reads the logged-in user is an injected `@AuthenticationPrincipal UserDetails` (or a `Principal` parameter), while a service reaches into the `SecurityContextHolder` thread-local; interviewers show a controller taking `userId` as a `@RequestParam` and ask where the current user should come from
 - Modelling roles: an enum on `User` vs a roles table vs granular authorities — an enum is enough for `USER`/`MANAGER` but cannot express "may approve but not delete"; interviewers ask "the client wants a third role that only reads reports — what changes in your model?"
 
+- SpEL inside `@PreAuthorize` / `@PostAuthorize` — `@PreAuthorize("#id == authentication.principal.id or hasRole('MANAGER')")` states ownership declaratively, but a rule needing a database lookup belongs in the service or in a bean referenced as `@perms.canEdit(#id)`; interviewers ask where the ownership rule lives and then push on what happens once it needs the entity itself
+- Anonymous authentication is not `null` — an unauthenticated request still carries an `AnonymousAuthenticationToken` in the `SecurityContextHolder`, so a hand-rolled `getAuthentication() != null` ownership check waves a logged-out caller straight through; interviewers plant that null check and ask who gets past it
+
+---
+
 ## Spring Security — authentication
 
 - `UserDetailsService.loadUserByUsername()` — the one method you implement to tell Spring how to load your users from the database; called automatically by `DaoAuthenticationProvider` during login; you never call it yourself
@@ -290,6 +400,11 @@ Every item must be explainable with a real example from the TimeTrack project.
 - `OncePerRequestFilter` — the base class for `JwtFilter`; guaranteed to run exactly once per request; reads the `Authorization: Bearer` header, validates the token, and sets the authenticated user in `SecurityContextHolder`
 - `SecurityContextHolder` — thread-local storage where `JwtFilter` places the authenticated user for the current request; services read it to get the logged-in user instead of trusting client-supplied ids
 - `UsernamePasswordAuthenticationToken` 2-arg vs 3-arg — 2-arg (no authorities) is unverified credentials passed to `authenticate()`; 3-arg (with authorities) is a confirmed authentication stored in `SecurityContextHolder`; the distinction matters when reading `JwtFilter` code
+
+- `DelegatingPasswordEncoder` and the `{bcrypt}` prefix — Spring's default encoder stores the algorithm inline in the hash, so the app can still verify old hashes while writing new ones in a stronger algorithm; `There is no PasswordEncoder mapped for the id "null"` means a user row was inserted without going through `encode()`; interviewers use that exact message to check you know encoding happens at registration, not at login
+- Brute force and user enumeration on the login endpoint — an unthrottled `/api/auth/login` invites credential stuffing, and distinct "user not found" versus "wrong password" messages tell an attacker which emails exist; the answers are one generic message plus attempt lockout or delay; interviewers ask what protects your login beyond hashing
+
+---
 
 ## JWT — design and trade-offs
 
@@ -301,6 +416,10 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Session-based vs JWT — sessions store state on the server (instant revocation, harder to scale horizontally); JWT stores it on the client (stateless, scales easily, cannot be revoked before expiry); interviewers ask "why JWT instead of sessions?"
 - HS256 vs RS256 — HS256 uses one shared secret (right for a single backend); RS256 uses a key pair (needed when several services verify the same token without sharing a secret); interviewers ask which you chose and why
 - Access token vs refresh token — the access token is short-lived and sent on every request; the refresh token is long-lived and used only to mint a new access token; interviewers ask "since a JWT cannot be revoked, how do you keep expiry short without logging the user out every 15 minutes?"
+
+- `ExpiredJwtException` vs `SignatureException` vs `MalformedJwtException` — expiry means a legitimate but stale token, a signature failure means the secret differs or the payload was tampered with, and malformed means the string is not a JWT at all; interviewers name one and ask what the client must have done to cause it
+
+---
 
 ## Testing — unit tests with JUnit 5 and Mockito
 
@@ -314,6 +433,12 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Arrange / Act / Assert — the three-part structure every test follows; interviewers expect to see it and will ask you to explain it if the pattern is missing
 - `ArgumentCaptor` — `verify(repo).save(any())` proves only that *something* was saved; capturing the argument and asserting on its fields (the status is `DRAFT`, the owner is the authenticated user) is what turns an interaction check into a real assertion; interviewers ask "how do you prove the object you persisted was the right one?"
 - Mockito strict stubs — `MockitoExtension` runs in `STRICT_STUBS`, so a `when()` the code never calls fails with `UnnecessaryStubbingException`, and `verify()` on an interaction that did not happen fails with "Wanted but not invoked"; both are the test telling you your assumption about the code is wrong (usually: the branch you think you are testing is never reached), not noise to silence with `lenient()`; interviewers ask how you read a failing Mockito test
+
+- `@ParameterizedTest` with `@CsvSource` / `@ValueSource` — one test method covering every illegal status transition instead of ten near-identical methods; interviewers ask how you would test all four transitions without copy-pasting the spec
+- AssertJ (`assertThat(...).isInstanceOf(...).hasMessageContaining(...)`, `assertThatThrownBy`) — it ships inside `spring-boot-starter-test` and is what real Spring codebases assert with; interviewers notice immediately when a candidate only knows `assertEquals` and cannot assert fluently on an object's fields
+- Stubbing voids and proving absence — `doNothing()` / `doThrow()` for `void` methods, plus `verify(repo, never()).save(any())` and `verifyNoInteractions(emailService)` to prove the rejected path did *not* write; interviewers ask "how do you test that nothing was saved?", and a spec that only checks the exception has tested half the requirement
+
+---
 
 ## Testing — what a test actually proves
 
@@ -336,6 +461,12 @@ Every item must be explainable with a real example from the TimeTrack project.
 - H2 is not PostgreSQL — the in-memory database accepts types, reserved words and constraints the real one rejects, so a green repository test can still fail in production; Testcontainers runs the real PostgreSQL in Docker; interviewers ask whether your tests run against the same engine as production
 - `@ActiveProfiles("test")` + `application-test.properties` — how tests get their own datasource instead of writing to your dev database; interviewers ask "do your tests write to your real database?" and the wrong answer is a red flag on data hygiene
 - Test isolation — `@SpringBootTest` writes survive between tests unless the class is `@Transactional` (rolled back per test); a suite that only passes in a given order is a red flag; interviewers ask how you keep integration tests repeatable
+
+- `@SpringBootTest(webEnvironment = RANDOM_PORT)` with `TestRestTemplate` — the only test that starts a real server and exercises the actual filter chain, JSON serialization, and status codes end to end; interviewers ask what `MockMvc` does *not* prove and expect you to name the real-port variant
+- Faking an external HTTP dependency with WireMock — an integration test cannot call a third-party API, so you stand up a stub server and assert your client's behaviour on 200, on 500, and on a timeout; it is named explicitly alongside JUnit and Mockito in the microservices postings, so interviewers ask how you test the code that calls another service
+- Proving a rollback actually happened — asserting that the method threw is not enough; the test must re-read through the repository and confirm the row is absent; interviewers ask how you know the failed operation did not half-write
+
+---
 
 ## Exercising the API — Postman and HTTP failures
 
@@ -385,6 +516,12 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Spring Boot Actuator — `spring-boot-starter-actuator` exposes `/actuator/health` and `/actuator/info`, which is what a container orchestrator probes to decide whether your service is alive; interviewers in Docker-flavoured roles ask "how does ops know your app is up?"
 - Actuator endpoint exposure — `management.endpoints.web.exposure.include=*` publishes `/env`, `/beans` and `/heapdump`, leaking your properties (JWT secret included) to anyone who asks; interviewers reviewing a config file ask which endpoints you expose and whether they are secured
 
+- Securing Actuator and adding a custom `HealthIndicator` — expose only `health` and `info` publicly, put the rest behind a role or on a separate `management.server.port`, and implement an indicator so `/actuator/health` reflects a dependency you actually care about; interviewers ask both "how does ops know you are up?" and "who else can read that endpoint?"
+- Correlation id and the logging MDC — putting a request id into the MDC and the log pattern is what lets you follow one user's request through thousands of interleaved lines from concurrent threads; interviewers ask how you trace a single request on a busy server, and "I search by timestamp" is the wrong answer
+- Logs go to stdout in a container — you do not write `logging.file.name` in production, because the platform collects stdout and there is no file to fetch from a dead container; the format (JSON for an aggregator) then becomes a config decision; interviewers in Docker rounds ask where your log file lives and the correct answer is that there is not one
+
+---
+
 ## Tooling and schema evolution
 
 - Docker: `Dockerfile` for a Spring Boot app — `FROM eclipse-temurin`, `COPY target/*.jar app.jar`, `ENTRYPOINT`; interviewers ask "how do you containerise a Spring Boot application?"
@@ -395,3 +532,21 @@ Every item must be explainable with a real example from the TimeTrack project.
 - Adding a `NOT NULL` column to a table that has rows — the three-step migration (add it nullable, backfill with an `UPDATE`, then add the constraint), because a single `ALTER TABLE ... NOT NULL` fails on existing data; the "how would you evolve the schema?" question always lands here
 - `ddl-auto=validate` + Flyway — the production pairing: Flyway owns the schema and Hibernate only checks that the entities match it, failing fast on drift; interviewers ask "what stops your entity and your table from disagreeing?"
 - springdoc-openapi / Swagger UI — one dependency generates the live API contract at `/swagger-ui.html` from your controller and DTO annotations, which is how the Angular team consumes your endpoints; interviewers ask "how does the frontend know your API without asking you?"
+- Baselining Flyway on a database that already exists — a project grown under `ddl-auto=update` already has tables, so `V1__init.sql` must describe the current schema and `baselineOnMigrate` tells Flyway to start from there instead of refusing to run against a non-empty database; interviewers ask how you introduce migrations into a project that never had them
+- A JRE base image, a non-root `USER`, and `.dockerignore` — shipping the full JDK roughly doubles the image, running as root is a finding in any security review, and without `.dockerignore` the build context swallows `target/` and `.git`; interviewers reading your Dockerfile ask about all three
+- Layered jars (`layertools`) — a fat jar is a single Docker layer, so changing one line re-ships every dependency; extracting dependency, loader, and application layers means only the last one changes on rebuild; interviewers ask why pushing your image takes minutes for a one-word fix
+- `@Scheduled` + `@EnableScheduling` — the standard way to run periodic work such as a nightly reminder for unsubmitted timesheets, with a cron expression; interviewers ask how you run a scheduled job and immediately follow with "and when you scale to two instances?" (both fire it unless something like ShedLock or a database lock coordinates them)
+- `@Async` + `@EnableAsync` — moves slow work off the request thread onto a configured `TaskExecutor`, with the same proxy limitation as `@Transactional`: a self-invoked `@Async` method just runs synchronously; interviewers ask how you stop an email send adding two seconds to the response
+
+---
+
+## Microservices — the awareness a junior is expected to have
+
+Named in roughly 3 of every 8 target postings (explicitly at UST/BCNC and in the banking-sector roles) alongside Spring Boot. No consultancy expects a junior to have designed a distributed system, but they do expect you to know what the word means and to defend the monolith you actually built.
+
+- What a microservice is, against the monolith you built — one deployable unit per business capability with its own database, instead of one application owning every table; interviewers ask you to define it and are checking for "own database and own deployment", not a recital of the term
+- Why Spring Boot is the framework this is built with — the embedded server and the executable fat jar are exactly what make a service independently runnable and deployable, which is the property the whole architecture depends on; interviewers ask what Boot contributes to a microservices stack beyond being convenient
+- Monolith vs microservices as a defensible decision — you built TimeTrack as a monolith on purpose: one team, one database, transactions that are a single `@Transactional` rather than a distributed saga, and one thing to deploy; interviewers ask "would you split this into microservices?" and the answer they want is a reasoned no, not enthusiasm
+- What method calls become across a service boundary — an in-process call becomes a network call that can be slow, fail, or partially succeed, so retries, timeouts, and idempotency stop being optional; interviewers ask what actually gets harder once the service is split
+- Naming the Spring Cloud pieces without claiming to have wired them — service discovery (Eureka), an API gateway, centralised configuration (Config Server), and declarative HTTP clients (OpenFeign); interviewers ask "how do services find each other?" and the honest junior answer names the problem each piece solves and says you have not implemented them
+- Where the shared database anti-pattern bites — two services writing the same tables reintroduces the coupling the split was meant to remove, which is why data ownership per service is the defining rule; interviewers use it to check whether you understand the split is about data, not about folder structure
