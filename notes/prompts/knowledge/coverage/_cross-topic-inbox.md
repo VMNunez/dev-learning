@@ -31,6 +31,11 @@ is still the source, and `{NOTES_PATH}coverage.md` is still the topic's only cov
 
 *(No entries pending. The four Angular items routed from the TypeScript run on 2026-07-18 were consumed by the Angular coverage run the same day — all four added to `notes/angular/coverage.md`.)*
 
+## Angular
+
+- `styleUrls` vs inline `styles` in `@Component` — both are scoped by view encapsulation, so inline styles do not escape it; the array form is for a handful of component-local rules; interviewers ask whether writing styles inline changes the scoping (it does not); encapsulation is covered on the CSS side, but this component-API choice is Angular's *(routed from the CSS run, 2026-07-19)*
+- Development vs production build differences for stylesheets — style optimisation, minification and budgets apply only to a production build, so a visual problem that appears solely after `ng build` points at the build configuration rather than the CSS; `ng serve` vs `ng build` and `budgets` are both already covered, but not this diagnostic consequence; interviewers use the "it worked in `ng serve`" scenario *(routed from the CSS run, 2026-07-19)*
+
 ## Spring Boot
 
 - Spring beans are singletons, so a service must be stateless — one instance is shared by every concurrent request, which makes an instance field holding request data (`private User currentUser`) a data-leak bug under load; bean scope and constructor injection are already covered, but not this consequence; interviewers ask "your service has a `currentUser` field — what happens with two simultaneous requests?" *(routed from the Architecture run, 2026-07-18)*
