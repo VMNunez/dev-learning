@@ -137,19 +137,54 @@ one non-negotiable Opus roles are the session and Analyst C.
    pass. **Bounded reports only:** each analyst returns its list(s) + proof lines and nothing else —
    no narrative, no restating of items it found fine; if a report comes back wrapped in prose, keep
    the lists + proof and discard the rest.
+1a. **Dispatch every analyst clean — never hand one your own prior.** State the topic and the mandate,
+   and stop there. Do not tell an analyst that a file is "the thinnest", "freshly regenerated", "in
+   good shape", or "probably under-covered": that is your hypothesis, and the analyst's job is to form
+   its own. The damage is asymmetric — a "probably thin" prior invites invented gaps, a "probably fine"
+   prior suppresses real ones — and it lands hardest on **Analyst C**, the one role running on Opus
+   precisely because its independent judgement is what proves a section complete. This is not
+   hypothetical: on the 2026-07-19 run the orchestrator told C that an 85-line Security file was the
+   thinnest in the system and to assume heavy under-coverage; C ran the pass anyway and returned
+   "the premise is wrong", with 71 of 98 questions supported. It was right, and the prior had bought
+   nothing. Two topics that same run were told their files had been regenerated that day; one still
+   returned 43 gaps. If you genuinely need a scope boundary (which sibling topic owns what), state it
+   as a **routing rule**, never as an expectation about what the analyst will find.
 1b. Read `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` and take the entries filed under
    `## {TOPIC}` — gaps that another topic's run found and routed to this one. Fold them into the
    consolidation below as **proposed** items (judged against the standard like any analyst gap, never
    pre-approved), then **clear every entry you looked at**, added or discarded, and report both counts
-   in the summary. This audit walks every topic, so it is the pipeline's sweep of the inbox: an entry
+   in the summary.
+   **Check each entry against the topic file before adding it — a routed gap is frequently already
+   covered.** The routing run only saw its *own* topic, so it flagged what looked absent from where it
+   stood; it never read the receiving file. Grep the receiving `coverage.md` for the concept and read
+   the surrounding items before writing anything. On the 2026-07-19 run this check killed 8 of 17
+   entries: all three Security items routed from the General run were already in the CORS section
+   almost verbatim (the origin definition, the preflight trigger, "CORS is not authorisation"), and
+   three Spring Boot items were already carried by existing bullets. Adding them would have created
+   duplicates for Analyst D to find and the orchestrator to remove — the cost of skipping a grep is
+   paid twice. Report discarded-as-already-covered separately from discarded-as-out-of-scope. This audit walks every topic, so it is the pipeline's sweep of the inbox: an entry
    left uncleared here will be re-litigated on the next run, and one left unread is the silent loss the
    file exists to prevent. Note that Analyst D cannot cover for this — D hunts duplicates, misplaced
    items and demotion candidates in `notes/coverage.md`, so a concept absent from every section is
    invisible to it, which is exactly how four Angular-owned items went missing on 2026-07-18.
 2. Consolidate: merge the three lists, drop duplicates, discard any gap that is out of junior scope
    (record those in the summary as "analyst-suggested, left out — reason").
-3. Apply the surviving gaps to `notes/{topic}/coverage.md` and its section in `notes/coverage.md`, sync
-   the two, and update `future-learning.md` if anything was promoted/demoted.
+2b. **Before creating a *new section*, check which topic already owns the concept.** Analysts are
+   confined to one topic and will therefore propose, in perfectly good faith, whole areas that another
+   topic already covers — C for Angular will hand you a browser-security section, C for Architecture a
+   transactions section, C for Java a concurrency section. Adding a gap to an existing section is
+   low-risk; opening a new one named after another topic is the reliable way to manufacture
+   duplicates. So for each proposed new section, grep the sibling topic's `coverage.md` first and pick
+   one of three outcomes: **keep it whole** (the sibling genuinely does not cover it), **keep the
+   framework-specific half and drop the rest** (Angular keeps `DomSanitizer` and `withXsrfConfiguration`
+   because they are Angular APIs; Security keeps token storage, `[innerHTML]`, and "role checks are
+   UX"), or **drop it and leave a one-line pointer** to the owning topic so a reader of this file alone
+   is not misled into thinking the concept is out of scope. On the 2026-07-19 run this check was not
+   performed and Analyst D later found 19 duplicates, the majority created by that run's own edits —
+   caught, but only after the writing was done twice.
+3. Apply the surviving gaps to `notes/{topic}/coverage.md`, and update `future-learning.md` if anything
+   was promoted or demoted. **Do not hand-edit `notes/coverage.md` during the loop** — it is rebuilt
+   from the topic files in Step 5, which is what makes the mirror exact.
 4. Move to the next topic.
 
 Doing one topic end-to-end keeps the orchestrator's editing context small (one section at a time) and
@@ -180,11 +215,12 @@ Any change to `notes/coverage.md` must immediately be reflected in the correspon
 ## Step 1 — Read the system state
 
 > **Verifiable reads (CLAUDE.md non-negotiable) — applies to every whole-file read in this audit,
-> by the orchestrator and by every analyst.** The Read tool truncates at 2000 lines **silently**,
-> and `notes/coverage.md` is already near that limit and grows on every run — a truncated read here
-> means the tail topics (SQL, Git, General) silently vanish from the pre-audit sync, from Analyst
-> D's global pass, and from the Step 5 sync verification. Before reading any file end-to-end, run
-> `wc -l`; if it is near or over 2000 lines, read it in passes with `offset` to the real end. Every
+> by the orchestrator and by every analyst.** The Read tool truncates at 2000 lines **silently**, and
+> `notes/coverage.md` passed that limit long ago — it stood at 3914 lines after the 2026-07-19 run and
+> grows with every audit, so a single Read call now returns barely half of it. A truncated read here
+> means the tail topics (SQL, Git, General) silently vanish from Analyst D's global pass. Before
+> reading any file end-to-end, run `wc -l`; if it is near or over 2000 lines, read it in passes with
+> `offset` to the real end — for this file that is several passes, not one extra. Every
 > analyst report and the final summary must state **"N lines, read to EOF"** for each file read
 > whole — a report without it fails its acceptance check.
 
@@ -238,7 +274,7 @@ it never writes a new topic's `coverage.md`:
    Do NOT edit those prompt files from this audit, and do NOT author the topic's coverage here — only list the detected topic and its registration edits for Victor. This keeps the audit's job to detection and its own commit atomic.
 
 **If a concept belongs under an existing topic instead:**
-Add it to the correct section in that topic's coverage, and sync to `notes/coverage.md`.
+Add it to the correct section in that topic's `coverage.md`; the Step 5 rebuild carries it into the mirror.
 
 ---
 
@@ -317,7 +353,11 @@ section in `notes/coverage.md` if the topic file is missing) plus
 `notes/prompts/knowledge/coverage/_coverage-standard.md`.
 
 Write the questions you would actually ask to decide whether this candidate really knows {TOPIC} —
-**as many as you genuinely would use; do not stop at a fixed number, be exhaustive** (a capped
+**as many as you genuinely would use; do not stop at a fixed number, be exhaustive** — "uncapped"
+governs the *number of questions*, not the size of your report: keep each question to a terse one-liner
+and put the substance in the gap items, because a report that overruns the tool's inline limit has to
+be recovered from a persisted file before the orchestrator can use it (this happened on 2026-07-19 at
+49.8 KB) — (a capped
 interviewer finds only the gaps that fit inside its question budget — a real `coverage-prompt` run
 proved it: one capped interviewer returned 13 gaps and looked convergent while further uncapped
 angles found 80+ more). Mix conceptual, decision ("why X over Y"), and pressure/gotcha questions,
@@ -355,17 +395,22 @@ survivors in Step 5.
 > 3. **Scope-demotion candidates** — items clearly post-junior for the target role (mid-level
 >    architecture, senior performance work). For each: `item — one-line why it is post-junior`. Read
 >    ROADMAP.md and `notes/prompts/_shared-context.md` for the target level.
-> Do not edit any file. Before reading `notes/coverage.md`, run `wc -l` on it — it is near the Read
-> tool's silent 2000-line truncation limit; if needed, read it in `offset` passes to the real end,
-> and state "N lines, read to EOF" in your report. Return only the three lists plus that line.
+> Do not edit any file. Before reading `notes/coverage.md`, run `wc -l` on it — it is **far past** the
+> Read tool's silent 2000-line truncation limit (3914 lines after the 2026-07-19 run), so one Read call
+> returns roughly half the file and the tail topics would be invisible to you. Read it in several
+> `offset` passes to the real last line and state "N lines, read to EOF" in your report; a report
+> covering only the first 2000 lines is a failed pass. Return only the three lists plus that line.
 
-The orchestrator then applies the surviving findings in Step 5: remove the losing side of each duplicate,
-move each misplaced item to the correct section (updating both files), and demote each confirmed
-scope-demotion item to `notes/{topic}/future-learning.md`. Note every overlap, move, and demotion in the
-final summary.
+The orchestrator then applies the surviving findings in Step 5, editing the **topic files** (the mirror
+is regenerated afterwards): remove the losing side of each duplicate — leaving a one-line pointer to the
+owning topic where a reader would otherwise think the concept is out of scope — move each misplaced item
+to the correct topic file, and demote each confirmed scope-demotion item to
+`notes/{topic}/future-learning.md`. Note every overlap, move, and demotion in the final summary, and say
+which duplicates this run created itself rather than inherited: that number is the measure of whether
+the Step 2b ownership check is working.
 
 **Future-learning promotion check (orchestrator, alongside applying D):**
-For each `notes/{topic}/future-learning.md`: are any concepts listed there now in scope for the job target read from ROADMAP + `_shared-context` (role, deadline)? Apply the IN/OUT + AI-factor criteria from `_coverage-standard.md`. If yes: add the concept to the correct section in `notes/coverage.md` and the corresponding `notes/{topic}/coverage.md`, and remove it from `future-learning.md`. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
+For each `notes/{topic}/future-learning.md`: are any concepts listed there now in scope for the job target read from ROADMAP + `_shared-context` (role, deadline)? Apply the IN/OUT + AI-factor criteria from `_coverage-standard.md`. If yes: add the concept to the correct section in `notes/{topic}/coverage.md` (the mirror picks it up on the Step 5 rebuild) and remove it from `future-learning.md`. Watch for the reverse case too: an item you promote here, or add anywhere in the loop, may already be described in that topic's `future-learning.md` as deliberately deferred — when you promote it, delete the deferral rather than leaving the two files contradicting each other, and when you demote one, check the file does not already carry it. Also: if any entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated, or not needed in any future phase — delete it entirely. Do not move it anywhere; simply remove it.
 
 ---
 
@@ -376,18 +421,35 @@ orchestrator's own findings from Step 2 (topic completeness), Analyst D's three 
 Step 4, plus each topic's consolidated Analyst A/B/C gap-list from the per-topic loop (Steps 2b + 3 + 4a).
 Analysts never wrote anything — everything they surfaced lands here.
 
-**Files to update:**
-- `notes/coverage.md` — the primary file
-- Each `notes/{topic}/coverage.md` that was changed — must mirror its section in `notes/coverage.md` exactly (heading levels shifted back: `##` → `#`, `###` → `##`)
+**Files to edit by hand — the topic files only:**
+- Each `notes/{topic}/coverage.md` that was changed
 - Each `notes/{topic}/future-learning.md` that changed — received demoted items, had promoted items removed, or had entries deleted entirely
 
 **Do NOT:**
+- Hand-edit `notes/coverage.md` — it is generated, not authored (see below)
 - Reword bullets that are already correct — only touch what is new, wrong, restructured, or moved
 - Create note files (the numbered `01-...` files)
 - Remove items without a documented reason in the summary
 
-**Sync verification — mandatory before Step 6:**
-After all edits, re-read each modified section in `notes/coverage.md` and its corresponding `notes/{topic}/coverage.md` side by side. Confirm every bullet matches exactly — only heading levels differ. If anything differs, fix it now.
+**Rebuild `notes/coverage.md` from the topic files — do not verify the mirror, generate it.**
+
+The topic files are the source; `notes/coverage.md` is their concatenation with heading levels shifted
+down one. So regenerate it rather than editing it in parallel and hoping the two stayed aligned:
+
+```
+{ header block; for each topic in study-priority order: drop the topic file's `# ` title line,
+  shift every remaining heading down one level (`#` → `##`), re-insert the title as `## {Topic}`,
+  and append a `---` separator } > notes/coverage.md
+```
+
+This replaces the old instruction to re-read every section side by side against its topic file. That
+check could not survive the file's own growth: at 3900+ lines it exceeds the Read tool's silent
+2000-line truncation twice over, so a whole-file comparison is either infeasible or — worse — asserted
+without having been performed. Generating the mirror makes it exact by construction and costs one
+command. **Then prove it**: for each of the 12 topics, split the rebuilt file at its `## ` heading,
+shift the headings back up, and diff against the topic file, ignoring blank lines and the `---`
+separators. Report the per-topic result. A run may only claim "Sync verified" in Step 6 on the back of
+that diff actually having run — never on the strength of having rebuilt the file.
 
 ---
 
@@ -409,7 +471,9 @@ Print the summary:
 | Items promoted from future-learning | [topic — concept] |
 | Items demoted to future-learning | [item — reason] |
 | Items removed from future-learning | [item — reason it was deleted entirely] |
-| Sync verified | [yes — all topic files match notes/coverage.md] |
+| Inbox entries consumed | [N read → N added / N discarded out-of-scope / N discarded already-covered] |
+| Duplicates removed | [N total, of which N were created by this run] |
+| Sync verified | [yes — the per-topic diff ran and all 12 matched, or name the ones that did not] |
 
 Then answer explicitly:
 
@@ -442,10 +506,26 @@ not hand the commands to Victor. No `Co-Authored-By` lines.
 git commit -m "docs: global coverage audit — <one line summary of main changes>"
 ```
 
-Report the commit hash in the final summary so Victor can see it landed.
+**One commit is the default; batch commits are allowed and are the right call on a full 12-topic run.**
+This audit is a long session — 12 topics × 3 analysts, plus Analyst D — and a single commit at the very
+end means everything is unprotected until then. On 2026-07-19 the session limit was hit mid-run and
+four completed topics survived only because they had already been committed. So: commit after every
+few topics (`docs: coverage audit (1/2) — <topics>`), keeping each batch a coherent unit, and run the
+full safety check above **every time** — the check is per commit, never once per session. The per-topic
+loop already calls each topic "commit-ready"; this makes that explicit instead of leaving it in tension
+with a single-commit rule. The rebuild and the Analyst D pass land in the final commit, since both
+operate across all topics.
+
+**Report commit hashes by reading them from `git log`, never from memory.** State them in the final
+summary so Victor can confirm the work landed. A hash you did not read is a hash you invented: on
+2026-07-19 the summary carried a fabricated hash for the self-report commit alongside two real ones,
+which is worse than omitting it, because a wrong hash looks verified.
 
 ### Final step — pipeline self-report
 
 After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
-run — write the report file in this orchestrator's folder, commit it on its own, and print the five
-bullets in chat.
+run — write the report file in this orchestrator's folder, commit it **together with
+`_run-tracker.md`** (verify with `git show --stat HEAD` that the commit lists two files), and **print
+the five bullets in chat**. That last half is easy to drop after a long run: on 2026-07-19 the report
+was written and committed correctly but never printed, so Victor had to ask whether the step had
+happened at all. Writing the file is not the deliverable — the bullets in front of him are.
