@@ -2,6 +2,14 @@
 
 TypeScript as used in Angular and Spring Boot full-stack projects. Every item must be explainable with a real example from one of the projects. Interviewers test whether you understand why a feature exists and what the gotchas are, not just whether you can write the syntax.
 
+## Why TypeScript exists
+
+- TypeScript as a strict superset of JavaScript — every valid `.js` file is already valid TypeScript, which is what makes adoption incremental and what makes the compiler a checker bolted onto JavaScript rather than a separate language; interviewers open with "what does TypeScript give you that JavaScript doesn't" and want "the error surfaces at compile time instead of at 3am in production", not "it adds types"
+- Type-checking and transpilation are two separate jobs — the modern Angular build strips types with esbuild without checking them while `tsc` performs the checking pass, which is exactly why a type error can fail `ng build` and never interrupt a running `ng serve`; interviewers ask who actually enforces your types
+- What the compiler cannot promise — types describe your *intent* about data you do not control, so a backend that changes its response shape produces perfectly typed code that is simply wrong at runtime; interviewers ask what TypeScript does *not* protect you from, and a candidate who answers "nothing, it's type safe" has misunderstood the tool
+
+---
+
 ## Types
 
 - Primitive types: `string`, `number`, `boolean`, `null`, `undefined`, `void` — the building blocks; interviewers ask what `void` means for function return types and the difference between `null` (explicit absence) and `undefined` (not yet assigned)
@@ -13,6 +21,11 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - Literal types: `type Direction = 'left' | 'right'` — restricts a field to specific constant values; interviewers ask the difference between `string` and `'admin' | 'user'` (the literal type catches typos at compile time)
 - Tuple types `[string, number]` — a fixed-length array where each position has its own type; interviewers ask when a tuple beats an object (rarely — an object names its fields, a tuple only positions them)
 
+- Index-access types (`Employee['id']`) — reads a property's type out of an existing type instead of restating it, so renaming the model updates every derived annotation; interviewers ask how you type a variable that must always match a model field
+- `keyof typeof CONFIG` — the idiom that turns a runtime constant object into a union of its keys by combining the `typeof` value operator with `keyof`; interviewers ask how you type a lookup key so that renaming a config entry breaks the build rather than failing silently
+
+---
+
 ## Structural typing and assignability
 
 - Structural typing ("duck typing") — TypeScript decides compatibility by shape, not by declared name, so any object with the right fields satisfies an interface it never declared; interviewers contrast it with Java's nominal typing and ask whether a class is assignable to an interface without `implements` (it is)
@@ -20,6 +33,11 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - The assignability ladder of `any`, `unknown` and `never` — `any` flows in both directions, `unknown` accepts everything but is assignable to nothing without narrowing, `never` is assignable to everything and accepts nothing; interviewers ask you to place all three relative to each other
 - `{}`, `object` and `Function` as types — `{}` accepts any non-null value including numbers and strings, and `Function` gives no call-signature safety; interviewers use `{}` to test whether you read it as "empty object"
 - Branded / nominal typing — because typing is structural, `EmployeeId` and `ProjectId` declared as plain `number` are freely interchangeable; interviewers ask what structural typing costs you and how you would stop two ids being swapped
+
+- Array assignability is deliberately unsound — `Dog[]` is assignable to `Animal[]`, so the compiler happily lets you push a `Cat` into what is really an array of dogs; it is a known hole accepted for convenience, and interviewers use it to find out whether you believe TypeScript is a proof system or a very good linter
+- Fewer parameters is assignable to more — `arr.map(x => x.id)` compiles even though `map` passes three arguments, because a function that ignores trailing parameters can never misuse them; interviewers show the arity mismatch and ask why it is not an error
+
+---
 
 ## Interfaces and type aliases
 
@@ -29,6 +47,10 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - Extending interfaces: `interface AdminUser extends User` — adds new fields to an existing shape; interviewers contrast this with the `&` intersection approach on type aliases
 - Declaration merging — two `interface User` declarations in the same scope merge into a single type, while two `type User` aliases are a duplicate-identifier error; this is the concrete mechanism behind the "interface for models" preference, not a style opinion
 - Interfaces are open, type aliases are closed — a consumer can augment a third-party interface but never a type alias; interviewers ask when that openness is a feature and when it is a hazard in your own domain models
+
+- `readonly T[]` / `ReadonlyArray<T>` — `readonly` on a property only stops reassignment of the reference, so a `readonly items` array can still be mutated with `push`; making the collection genuinely immutable requires the array type itself; interviewers ask why the `readonly` field they just mutated compiled
+
+---
 
 ## Enums
 
@@ -59,6 +81,13 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - Deriving a type instead of hand-writing it — building the create-DTO as `Omit<Employee, 'id'>` so one edit to `Employee` propagates everywhere; interviewers ask why this beats declaring a second independent interface that will silently drift
 - The `typeof` type operator on a value — `typeof CONFIG` reuses a constant's already-inferred type instead of declaring a parallel interface beside it; interviewers ask where a type should come from when the value is the source of truth
 
+- `NonNullable<T>` — strips `null` and `undefined` out of a union, which is how you name "the same type, but after the guard"; interviewers ask how you express the post-check type without rewriting the union by hand
+- `ReturnType<typeof fn>` and `Parameters<typeof fn>` — derive a type from a function that already exists rather than restating its shape and letting the two drift; interviewers ask where a type should come from when a function is the source of truth
+- `Awaited<T>` — unwraps the value inside a `Promise`, including nested ones; interviewers ask what type `await service.load()` produces and how you name it without calling the function
+- `Readonly<T>` is shallow — it freezes the top-level properties only, so a nested object inside a `Readonly<Config>` is still fully mutable; reviewers show a "readonly" object being modified two levels down and ask why the compiler allowed it
+
+---
+
 ## Narrowing and type guards
 
 - `typeof` narrowing — works for primitive types (`'string'`, `'number'`, `'boolean'`); the classic gotcha: `typeof null === 'object'` — always check `=== null` separately when a value could be null
@@ -74,6 +103,9 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - A discriminated union needs a literal discriminant — if the tag field is typed `string` instead of `'loading' | 'success' | 'error'`, the switch narrows nothing and every branch keeps the full union; interviewers ask why an apparently correct discriminated union is not narrowing
 - `.filter(Boolean)` does not narrow — the result stays `(T | null)[]` unless the predicate is declared as a type guard (`(x): x is T => x != null`); interviewers ask why the type did not change after the filter
 
+
+---
+
 ## Null safety and type assertions
 
 - `?.` optional chaining — stops evaluation and returns `undefined` if the left side is `null` or `undefined`; used constantly in Angular templates with nullable signals; interviewers ask when to prefer `?.` over `!` (when you are not 100% certain the value exists)
@@ -84,6 +116,11 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - Definite assignment assertion `name!: string` on a class property — distinct from the `!` operator on an expression; it promises the compiler that something outside the constructor assigns the field, which is why it appears on `@Input()` and `@ViewChild` fields; interviewers ask who is responsible for keeping that promise
 - `// @ts-ignore` vs `// @ts-expect-error` — both suppress the next line's error, but `@ts-expect-error` itself errors once the line stops failing, so it cannot rot silently in the codebase; interviewers ask which belongs in a real project and why
 
+- `?.()` and `?.[]` — optional chaining also covers calls and index access (`callback?.()`, `arr?.[0]`), which is how you invoke an optional callback without wrapping it in an `if`; interviewers show `obj.fn?.()` and ask what happens when `fn` is absent (nothing, and the expression is `undefined`)
+- `satisfies` vs `as` — `satisfies` checks a value against a type while *keeping* the narrow literal types it inferred, whereas `as` overwrites the inferred type and silences the error along with it; it is the modern replacement for `as` on config objects, and interviewers ask which of the two still catches a typo in a key
+
+---
+
 ## Classes and access modifiers
 
 - `public`, `private`, `protected`, `readonly` — `private` restricts access to the same class; `protected` also allows subclasses; `readonly` is about immutability, not visibility; interviewers ask the difference between `private` and `protected` and when to use each
@@ -92,6 +129,12 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - Classes as types — a TypeScript class can be used as a type without a separate interface; the `CanDeactivateFn<MyComponent>` pattern relies on this; interviewers may show this pattern and ask what type the component parameter has
 - `private` is compile-time only — unlike Java's `private`, the field is a plain property in the emitted JavaScript and is reachable at runtime; interviewers with a Java background use this to test whether you know what TypeScript actually enforces (the `#name` syntax is the real runtime-private one)
 - `implements` — forces a class to satisfy an interface's shape without inheriting anything; interviewers ask how you enforce a contract on a class when there is no base class to extend
+
+- `abstract class` vs `interface` — an abstract class can carry shared implementation and state and forces `extends` (so a class gets only one), while an interface is erased at compile time and constrains shape alone; interviewers with a Java background ask which you would pick for a family of services that share behaviour
+- `static` members — belong to the class itself rather than to any instance, which is where a constant or a factory helper goes; interviewers ask why `static` survives compilation into real JavaScript while `private` semantics do not
+- `super()` in a derived constructor — must be called before anything touches `this`, and the base class's parameter properties arrive as ordinary inherited fields; interviewers ask what breaks when a subclass forgets it
+
+---
 
 ## `as const`
 
@@ -110,6 +153,10 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - An `async` method always returns `Promise<T>` — declaring the return as `T` is a compile error and declaring it `Promise<any>` throws away the contract; a routine review finding in Angular services
 - Function overload signatures — several declarations sitting over one implementation, where the implementation signature itself is not callable; interviewers ask when overloads beat a single union parameter
 
+- Typing a destructured parameter with defaults — `function load({ page = 1, size = 20 }: Query = {})` puts the annotation on the pattern as a whole and the final `= {}` makes the whole argument optional; interviewers show it because the syntax is routinely misread as three separate annotations
+
+---
+
 ## Modules and decorators
 
 - `import` / `export` — named exports (multiple per file) vs default export (one per file); Angular uses named exports for components and services; interviewers ask why Angular avoids default exports (named exports keep the name fixed at the source, making refactoring safer)
@@ -117,6 +164,11 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - What a decorator is in Angular's context — `@Component`, `@Injectable`, `@Pipe` attach metadata to a class that Angular reads at startup; without the decorator, Angular does not know the class is a component
 - How TypeScript decorators work conceptually — a function that receives the class and can modify or annotate it; you use them everywhere in Angular but rarely write custom ones at junior level; interviewers test that you know they are functions, not language keywords
 - `import type` — marks an import as type-only so it is erased from the emitted JavaScript instead of surviving as a real runtime import; interviewers ask what problem it solves (accidental side-effect imports and circular dependencies between model files)
+
+- A `.ts` file with no top-level `import` or `export` is a global script, not a module — which is why two unrelated files declaring the same `const` collide with "Cannot redeclare block-scoped variable"; the fix is an `export {}`, and interviewers use the error to check you know what actually makes a file a module
+- `esModuleInterop` / `allowSyntheticDefaultImports` — the flags that let `import x from 'cjs-lib'` work against a CommonJS package that has no real default export; interviewers ask why an identical import line works in one project and fails in another
+
+---
 
 ## Types at runtime
 
@@ -175,6 +227,10 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - `declare module` — the pragmatic way to type or silence an untyped import when no `@types` package exists; the alternative to scattering `any` at the boundary
 - `declare global` — how a value injected by the build (a global constant, an added `window` property) gets a type; interviewers ask where the type for something that no import produced comes from
 
+- `allowJs` and `checkJs` with JSDoc annotations — how a legacy JavaScript file gets type-checked in place before anyone renames it to `.ts`; this is the realistic answer to "how would you introduce TypeScript into an existing project", and "rewrite everything" is the answer that fails it
+
+---
+
 ## Typing the API boundary
 
 - `http.get<Employee[]>()` is a claim, not a check — the generic only labels the response and no validation runs, so a renamed backend field yields `undefined` at runtime with a completely green build; the canonical full-stack junior question
@@ -184,6 +240,11 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - `field?: string` vs `field: string | null` across the wire — an absent key and an explicit JSON `null` are different payloads, and interviewers test that you do not treat them as interchangeable when mirroring a nullable backend column
 - Separate request and response types — modelling `CreateEmployeeRequest` without `id` apart from `Employee`; interviewers ask what goes wrong when one interface serves both directions (optional-field creep until nothing is guaranteed)
 - `JSON.parse()` returns `any` — the parsed value is unknown at compile time, so assigning it straight into a typed variable silently disables checking; the safe move is `unknown` followed by narrowing
+
+- Typing a `Promise`-returning method — `Promise<Employee>` is the declared contract and `await` unwraps it, whereas an unannotated `async` method quietly infers the union of every branch it returns; interviewers ask what `await this.load()` is typed as when one branch returns `null`
+- `@typescript-eslint` as the second enforcement layer — `no-explicit-any`, `no-non-null-assertion` and `no-floating-promises` are linter rules and not compiler errors, which is why a build passes while CI still fails; consultancy postings ask for "calidad de código mediante buenas prácticas" and interviewers ask what actually stops an `any` reaching `main`
+
+---
 
 ## Modelling domain state and errors
 

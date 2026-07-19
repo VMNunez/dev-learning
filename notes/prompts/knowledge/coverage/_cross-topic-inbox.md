@@ -41,9 +41,7 @@ is still the source, and `{NOTES_PATH}coverage.md` is still the topic's only cov
 
 ## Security
 
-- Origin — scheme, host and port together, so `http://localhost:4200` and `http://localhost:8080` are different origins purely because of the port; "what CORS is" is covered but not the definition of the boundary it applies to, and interviewers ask why an Angular + Spring Boot project hits CORS on day one *(routed from the General run, 2026-07-19)*
-- What makes a request "simple" vs preflighted — a `GET`/`POST` with a basic content type goes straight through, while a custom header such as `Authorization` or `Content-Type: application/json` triggers the preflight; the preflight itself is covered but not its trigger, which is why CORS suddenly appears in a project that worked before the JWT header was added *(routed from the General run, 2026-07-19)*
-- CORS is not authorisation — allowing an origin grants no permissions; it only relaxes a browser-side read restriction, and non-browser clients (curl, Postman, another server) ignore CORS entirely; interviewers use "why does Postman work but the browser doesn't?" as the filter question *(routed from the General run, 2026-07-19)*
+*(Empty — all three entries routed from the General run on 2026-07-19 were consumed by the coverage-audit run the same day and **all three discarded as already covered**: the CORS section already opens with the scheme+host+port definition of an origin, already names the `Authorization` header and a JSON content type as what triggers the preflight, and already carries "CORS is not authorisation" verbatim along with the Postman-versus-browser framing. The General run routed items Security already had.)*
 
 ## Git
 

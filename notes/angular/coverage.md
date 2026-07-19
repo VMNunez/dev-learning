@@ -242,11 +242,10 @@ Scope is derived from what those screenings test, not from what the projects hap
 
 ## Security in the browser
 - Angular's default output sanitisation — interpolated and property-bound values are escaped before they reach the DOM, which is why `{{ userInput }}` cannot inject a `<script>`; interviewers ask what actually protects an Angular app from XSS out of the box, and a candidate who answers "nothing, you sanitise manually" fails the question
-- `[innerHTML]` — binding a raw HTML string re-enters the dangerous path, so Angular sanitises it and silently strips scripts and event handlers while logging a warning; interviewers ask what happens to a `<script>` tag inside a bound string and why the content came out different from what was passed
 - `DomSanitizer.bypassSecurityTrustHtml` / `bypassSecurityTrustResourceUrl` — the explicit escape hatch, and the single place XSS re-enters an Angular app; reviewers show one applied to user-supplied content and expect the objection, not an explanation of the API
-- Where the JWT is stored — `localStorage` is readable by any script that gets injected, an `httpOnly` cookie is not but then needs CSRF protection instead; interviewers ask where your project's token lives and expect the tradeoff rather than a preference
 - `HttpClient` XSRF support (`withXsrfConfiguration`) — Angular reads the CSRF cookie and echoes it back as a header, which is exactly what Spring Security's CSRF filter is checking for; interviewers ask how the frontend cooperates with backend CSRF protection
-- Role-aware UI is cosmetic — hiding an admin button with `@if` improves the interface but enforces nothing, because the endpoint is still reachable with curl; interviewers ask whether your guard and your `@if` are security, and the answer is that only the server is
+
+> Token storage (`localStorage` vs `httpOnly` cookie), the fact that `[innerHTML]` bypasses Angular's escaping, and "client-side role checks are UX, not security" are owned by the **Security** topic and deliberately not repeated here.
 
 ## Accessibility
 - Label association and `aria-describedby` on a validation message — how a screen-reader user learns which field failed and why; Spanish public-sector contracts (a large share of Indra and NTT Data work) make this a requirement rather than a nicety, and interviewers on those accounts ask
@@ -296,13 +295,8 @@ Scope is derived from what those screenings test, not from what the projects hap
 - HTTP interceptor as a cross-cutting concern — one interceptor handles auth headers and global error responses for the whole app, not repeated in every service; interviewers ask what genuinely belongs there (auth header, 401 redirect) versus what must stay per-call (a 404 that really means "empty state")
 
 ## Angular Material
-- `MatTable` with `MatTableDataSource`, `MatSort`, `MatPaginator` — the standard way to display tabular data; interviewers at consultancies expect you to know this combination
-- `MatDialog` — opening a modal, passing data in with `MAT_DIALOG_DATA`, and reading the result with `afterClosed()`
-- Form fields: `mat-form-field`, `mat-error`, `ErrorStateMatcher` — how Material shows validation errors inside styled form fields
-- `MatAutocomplete` bound to a reactive control with `displayWith` — the single most common Material live-coding exercise; interviewers ask how the input shows a readable label while the form control holds an id
-- `MatSnackBar` — user feedback after actions (save, delete, error); injected as a service, not added to `imports`
-- Custom theming: scoped `mat.theme()` in a component stylesheet — how to apply a different colour to one component without changing the whole app
-- Client-side vs server-side pagination/filtering — `MatTableDataSource` paginates and sorts in memory, which breaks down past a few thousand rows; interviewers ask "your table has 100k rows, what changes?" and expect the shift to server-driven paging with `HttpParams` (page/size params sent to the backend)
+
+> Angular Material has its own topic file (`notes/angular-material/coverage.md`) covering the component set, theming, the CDK, accessibility and harness testing in full. Nothing is duplicated here — study it as its own topic.
 
 ## Interoperability with the Spring Boot backend
 - `LocalDate` / `LocalDateTime` over JSON — they arrive as ISO strings, never as a `Date`, so `| date` fails on the raw value and a naive `new Date('2026-07-19')` shifts the day by the browser's timezone; interviewers ask how a date survives the round trip intact

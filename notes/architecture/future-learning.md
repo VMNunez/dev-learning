@@ -155,3 +155,9 @@ Move to Phase 2 when: you feel friction with layered architecture — when you f
 Move to Phase 3 when: you have worked on a project where two teams' services communicate, and you have felt the pain of one service going down and breaking the other.
 
 Architecture knowledge that comes from real problems sticks. Architecture knowledge from reading docs before facing the problem does not.
+
+---
+
+## Demoted by the 2026-07-19 coverage audit
+
+- **Richardson maturity levels and HATEOAS** — the formal REST maturity ladder and hypermedia-driven APIs. Analyst D judged it post-junior: level 3 is rarely built and Spanish consultancy screenings do not ask for the model by name. The practical half (proper verbs and status codes, which is level 2) stays in coverage.

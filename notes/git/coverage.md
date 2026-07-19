@@ -14,6 +14,12 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `git show <commit>` — displays the full diff of one specific commit; the fast way to answer "what exactly did this commit change?" without scrolling through `git log -p`; used constantly when explaining your own commit history in a technical interview
 - `user.email` set globally vs per repository — the cause of commits landing in a client's repo under the wrong identity, which matters at a consultancy where your commits are attributed across several accounts; `git log --format='%an %ae'` is how you notice
 
+- `git clean -fd` — removes *untracked* files, which `reset --hard` never touches because it only restores what Git is already tracking; interviewers say "I discarded everything and the new files are still there" and expect you to know these are two different commands for two different sets of files
+- HTTPS vs SSH remotes and credential storage — a clone or push failing at a client is almost always authentication rather than Git, and the fix is an SSH key or a personal access token plus the credential helper; interviewers ask how you set up a new machine on day one
+- `git clone --depth 1` — a shallow clone downloads only the latest commit instead of years of history, which is how a CI job and a first look at a 4 GB client repo stay fast; interviewers ask why a pipeline clones differently from a developer
+
+---
+
 ## The Git model — commits, branches, and HEAD
 
 - A commit is an immutable snapshot with a parent pointer — it stores the whole tree state plus a link back to the commit it came from, and history is that chain of backward links; interviewers ask you to draw the history after three commits and expect arrows pointing at the parent, not forward
@@ -28,6 +34,10 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - Ancestor and descendant — B descends from A if you can walk parent links from B back to A; the definition that makes fast-forward precise, since it is possible only when the target is a descendant of the current tip
 - Detached HEAD — happens when you checkout a specific commit ID instead of a branch; new commits are not attached to any branch and can be lost; fix with `git checkout -b new-branch-name`
 - A commit can be on many branches at once — "being on a branch" means reachable by walking parents from that branch's tip, not owned by it; explains why a merged feature's commits all appear in `git log main`
+
+- Branches and tags are files under `.git/refs` — a ref is literally a forty-character SHA sitting in a text file (or collected into `packed-refs`), which is the concrete proof behind "a branch is just a pointer"; interviewers use it to find out whether the pointer model is understood or recited
+
+---
 
 ## Branching and merging
 
@@ -70,6 +80,11 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - Previewing what a merge will bring in — `git log --oneline HEAD..<branch>` lists the commits that would arrive before you run the merge; the antidote to "the merge pulled in forty commits I did not expect"
 - Avoiding conflicts — pull from the target branch frequently; keep feature branches short-lived; communicate with teammates about which files each person is touching
 
+- Conflicts in generated files (`package-lock.json`, `pom.xml`, a built asset) — the resolution is to take one side and regenerate, never to hand-merge the markers, because a hand-stitched lockfile describes a dependency tree that exists on nobody's machine; interviewers ask because it is the conflict a junior meets weekly
+- Line-ending conflicts between Windows and Linux (`core.autocrlf`, `.gitattributes`) — a whole file shows as modified or conflicted although nobody changed a line of it, because CRLF and LF differ on every line; developing on Windows against a Linux CI is exactly the setup that produces it, and interviewers at consultancies with mixed teams ask what causes a full-file diff
+
+---
+
 ## Undoing changes
 
 - `git restore` — discards changes in the working directory without touching history; `--staged` unstages a file; the safe everyday tool for "I changed this but I don't want to keep it"
@@ -95,6 +110,11 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `git fetch --prune` — deletes remote-tracking refs for branches that no longer exist on the server; explains why `git branch -r` keeps listing branches everyone else deleted months ago
 - Starting from a colleague's remote branch — `git switch --track origin/feature` creates a local branch tracking theirs; asked when they check whether you can join a feature already in flight
 
+- Fork vs clone — a fork is a server-side copy you own and can push to, which is what you use when you have no write access to the original; interviewers ask it to check you understand why open-source and external-contractor workflows differ from an internal team branching inside one repository
+- Git submodules — a pinned reference to another repository nested inside this one, which is why a fresh clone leaves the folder empty until it is initialised; a junior is expected to recognise one in a legacy client repo and know why the build failed, not to design with them
+
+---
+
 ## Pull requests and code review
 
 - Pull requests — a request to merge a branch with a description of what changed and why; the place for code review before changes reach main; the merge does not happen automatically
@@ -119,6 +139,10 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `fixup!` and "fix typo" commits — commits that only patch an earlier commit on the same branch should be squashed before review; interviewers ask what you do with a PR whose eleven commits include six saying "fix"
 - Why granular commits still matter under a squash convention — commits are written for the reviewer, not only for the permanent history, and they are what makes a regression traceable to one small change later
 - A ticket ID in the commit message — the string the board matches on to link the commit to its story and move the card; the second half of the traceability convention interviewers probe at consultancies
+
+- Git hooks and `--no-verify` — `pre-commit` and `commit-msg` hooks run linters and enforce the Conventional Commits format on your machine before the commit exists, and `--no-verify` skips them; interviewers ask what rejected your commit and whether skipping it is ever acceptable (only when the hook itself is broken, never to dodge the check)
+
+---
 
 ## `.gitignore` and files that must never be committed
 
@@ -174,6 +198,11 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `CODEOWNERS` — a file mapping paths to the people whose review is mandatory for changes there; also how you discover who owns an area of an unfamiliar codebase
 - Delete branch on merge — merged branches are removed automatically so the remote reflects live work only; interviewers probe how a shared repo avoids accumulating dozens of dead branches
 
+- What actually triggers a pipeline — a push to a branch, opening or updating a pull request, or pushing a tag, each typically running a different job; interviewers ask why the PR build and the `main` build are not the same run and expect the event distinction
+- Green locally, red in CI — CI starts from a clean clone containing only what is committed, so the usual cause is a file that is untracked or ignored on your machine and therefore absent from the build; interviewers use it as the pressure question that tests whether you know what your repository actually contains
+
+---
+
 ## Branching models and team conventions
 
 - Git Flow — `main` plus `develop`, `feature/`, `release/` and `hotfix/` branches; the model most Spanish consultancies still run in legacy projects, so interviewers ask what `develop` is for and why newer teams dropped it
@@ -207,6 +236,10 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `git blame --ignore-rev <sha>` (and `blame.ignoreRevsFile`) — skips a known reformatting commit so blame reports the last meaningful author instead of whoever ran the formatter; the follow-up interviewers add straight after the basic blame question
 - `git show` on a merge commit prints no diff by default — a merge is compared against two parents at once, so Git needs to be asked for a combined diff; the gotcha that reveals whether you understand parents
 - `git branch --contains <commit>` — tells you which branches already include a given commit, which is exactly how you verify that a hotfix reached production
+
+- `git bisect` — a binary search over the history that pins the exact commit introducing a regression in a handful of steps instead of two hundred; interviewers ask "a bug appeared somewhere in the last 200 commits, how do you find it?" and expect the tool by name, plus the observation that it only works well because the commits are atomic
+
+---
 
 ## Comparing points in history
 

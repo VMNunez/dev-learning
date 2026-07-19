@@ -24,6 +24,8 @@ Spotting a transitive dependency in a table is in `coverage.md` — interviewers
 
 ### Index types beyond B-tree
 
+_The 2026-07-19 coverage audit demoted the `JSONB`/full-text GIN-vs-B-tree choice here, confirming this section's existing scope._
+
 GIN, GiST, BRIN and hash indexes, partial and expression indexes, covering indexes with `INCLUDE`, and full-text search with `tsvector` and `pg_trgm`. The junior goal stops at what a B-tree index does, when it helps and what it costs on writes.
 
 ### MVCC, `VACUUM` and table bloat
@@ -62,5 +64,7 @@ Splitting a large table by range, streaming replication, replica lag as a debugg
 - **Query optimiser internals** — use `EXPLAIN` when you have a slow query; do not study the internals in advance.
 - **PL/pgSQL, stored procedures and triggers** — an Oracle/PL-SQL-track skill, not the Spring Boot + Angular junior track.
 - **Row-level security and multi-tenancy at the DB layer** — `CREATE POLICY`, schema-per-tenant. Architecture-level decisions taken above a junior.
+- **`DEFERRABLE INITIALLY DEFERRED` constraints** — postponing constraint checks to commit time so a circular insert order becomes possible. Real, and never a junior filter. _Added 2026-07-19 by the coverage audit._
 - **External connection pooling (PgBouncer)** — application-side pooling is Spring Boot's HikariCP and is covered there; the infrastructure layer is post-junior.
 - **NoSQL databases (MongoDB, Redis, Cassandra)** — completely different paradigm. Redis is worth a brief look (used as cache in Spring Boot), but do not deep-dive until the relational SQL foundation is solid.
+

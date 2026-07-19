@@ -18,6 +18,11 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ---
 
+- `JOIN ... USING (column)` and `NATURAL JOIN` — `USING` collapses the shared column into one output column, while `NATURAL JOIN` guesses the join keys from every matching name and silently changes meaning the day somebody adds a column called `created_at` to both tables; interviewers ask why `NATURAL JOIN` is banned in real codebases
+- Semi-join and anti-join as vocabulary — `EXISTS` expresses a semi-join (rows that have a match, without duplicating them) and `NOT EXISTS` or `LEFT JOIN ... IS NULL` an anti-join; interviewers use the terms in code review and expect you to recognise the shapes rather than define them
+
+---
+
 ## JOIN pitfalls and row multiplication
 
 - Condition in `ON` vs in `WHERE` for an outer join — a condition in `ON` is applied while matching rows, a condition in `WHERE` after the join is built; for an `INNER JOIN` the two are equivalent, for a `LEFT JOIN` they are not; interviewers ask exactly this before showing you a broken query
@@ -29,6 +34,10 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - Joining on mismatched types — joining `varchar` to `int` forces a cast that prevents index use and often errors outright in PostgreSQL; a schema-level smell a reviewer looks for
 - `NULL` in a join key — a `NULL` never matches anything in any join type, so those rows vanish from an `INNER JOIN` and keep `NULL`s on the right in a `LEFT JOIN`; interviewers ask why a row "disappeared" after adding a join
 - `COUNT(*)` after a `LEFT JOIN` returning 1 instead of 0 — the unmatched row exists as all-`NULL` and `COUNT(*)` still counts it; `COUNT(child.id)` returns the real `0`; the practical payoff of the `COUNT(*)` vs `COUNT(column)` distinction
+
+---
+
+- An explicit `CROSS JOIN` as a deliberate tool — producing every combination is right when you actually want the grid, such as every project against every month so a report shows empty periods as zero rows; interviewers check that you can tell it apart from the accidental Cartesian product you just diagnosed
 
 ---
 
@@ -49,6 +58,11 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ---
 
+- `COUNT(1)` vs `COUNT(*)` — PostgreSQL produces an identical plan for both, so "`COUNT(1)` is faster" is folklore; interviewers plant it deliberately to see whether you repeat a received opinion or reason from what the planner actually does
+- `ARRAY_AGG` — collects the grouped values into a real PostgreSQL array instead of the delimited string `STRING_AGG` produces; interviewers ask which of the two you would hand back to an API and expect the array when the client has to iterate
+
+---
+
 ## Querying basics
 
 - SQL execution order — `FROM + JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT`; the foundation for understanding why aliases work in `ORDER BY` but not in `WHERE` or `HAVING`
@@ -63,6 +77,22 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `||` string concatenation — joins two text values into one column, e.g. `first_name || ' ' || last_name AS full_name`; interviewers ask how you build a display name from separate columns without a function call
 - `UNION` vs `UNION ALL` — `UNION` combines the results of two queries and removes duplicate rows; `UNION ALL` keeps every row including duplicates and is faster because it skips the duplicate check; interviewers ask which one to use when you know the two result sets cannot overlap (`UNION ALL` — no reason to pay for a duplicate scan)
 - `UNION` column rules — both queries must return the same number of columns with compatible types; column names in the result come from the first query; interviewers ask what happens if the column types do not match (PostgreSQL raises an error or silently casts, depending on the mismatch)
+
+---
+
+- Grouping by an expression — `GROUP BY DATE_TRUNC('month', work_date)` is legal, and the same expression must appear in `SELECT` (PostgreSQL also lets you group by the output alias); this is the mechanism behind every monthly report, and interviewers ask you to build one live
+- `ORDER BY 2` by ordinal position — sorts by the second selected column; it is valid SQL and it breaks silently the day someone reorders the `SELECT` list, so interviewers ask whether you would ship it in application code
+- An `ORDER BY` inside a subquery or CTE is not binding — only the outermost one is guaranteed, so a sort buried in a `WITH` block can be discarded by the planner; interviewers ask why the result came back unordered despite the sort you wrote
+
+---
+
+## Set operations
+
+- `UNION` vs `UNION ALL` — both stack two result sets, but `UNION` also deduplicates and therefore sorts, so `UNION ALL` is the default when you already know the rows are distinct; interviewers ask which one you would use and expect the cost of the deduplication named
+- `INTERSECT` — returns only the rows present in *both* queries, which is the direct answer to "which users appear in both lists" without a join; interviewers ask for it once you have used `IN` for the same question
+- `EXCEPT` — returns the rows of the first query that are absent from the second, the standard way to diff two tables or two environments and the set-based twin of `NOT EXISTS`; interviewers ask how you would find what one table has and the other does not
+- Column count and type rules — every branch of a set operation must return the same number of columns in compatible types, and the result takes its column names from the first branch; interviewers show a mismatched `UNION` and ask why it will not run
+- Where `ORDER BY` and `LIMIT` go in a set operation — once, at the very end, applying to the combined result; putting them on the first branch is the usual mistake and interviewers use it to check you understand the branches are evaluated before being combined
 
 ---
 
@@ -87,6 +117,10 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - Negating a boolean column drops the `NULL`s — `WHERE NOT is_active` excludes rows where `is_active IS NULL`, so "inactive users" misses everyone the flag was never set for
 - `IN` vs multiple `OR` — `IN (list)` is cleaner and optimized internally by PostgreSQL; preferred when checking against more than two values
 - `BETWEEN` with timestamps — `BETWEEN '2024-01-01' AND '2024-06-30'` silently excludes events after midnight on June 30; safer to cast before comparing: `created_at::date BETWEEN '2024-01-01' AND '2024-06-30'`
+
+---
+
+- `= ANY (...)` and `> ALL (...)` — `IN` is literally shorthand for `= ANY`, and `ANY`/`ALL` extend the same idea to the comparison operators; interviewers use it to check you understand `IN` as an operator rather than as a piece of syntax you memorised
 
 ---
 
@@ -136,6 +170,11 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ---
 
+- A correlated subquery — one that references a column from the outer query and therefore re-runs once per outer row, which is why a tidy-looking `SELECT` with a per-row subquery collapses on a large table; interviewers show one and expect you to name why it does not scale and how a join or a window function replaces it
+- CTEs are no longer an optimisation fence — before PostgreSQL 12 a `WITH` was always materialised, and since 12 the planner may inline it unless you write `MATERIALIZED` explicitly; interviewers ask whether a CTE is slower than the equivalent subquery and want the version-aware answer rather than the old rule
+
+---
+
 ## DML — modifying data
 
 - `INSERT INTO ... VALUES (...)` — adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty
@@ -152,10 +191,22 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ---
 
+- `UPDATE ... FROM` — PostgreSQL's syntax for updating one table from a join against another, and the correct alternative to a correlated subquery that re-runs per row; interviewers ask how you would back-fill a column from a related table
+- Finding duplicates — `GROUP BY email HAVING COUNT(*) > 1` is the canonical query and the one interviewers ask for before they ask you to add the `UNIQUE` constraint that prevents them
+- Deleting duplicates while keeping one row — `ROW_NUMBER()` inside a CTE partitioned by the duplicate key, then deleting where the number is greater than one; the standard follow-up to "now clean it up so the constraint can actually be added"
+
+---
+
 ## Transactions
 
 - `BEGIN` / `COMMIT` / `ROLLBACK` — groups multiple statements so they either all succeed or all fail; `ROLLBACK` undoes everything since `BEGIN`; the SQL-level mechanism that `@Transactional` wraps in Spring Boot
-- ACID properties — Atomicity (all or nothing), Consistency (constraints never violated mid-transaction), Isolation (concurrent transactions do not see each other's uncommitted changes), Durability (committed data survives a crash); interviewers ask what ACID stands for when discussing `@Transactional`
+- Atomicity — the transaction is all or nothing, so a failure halfway through leaves the database exactly as it was; this is the property `@Transactional` is bought for and the one interviewers ask you to illustrate with a two-table write
+- Consistency — the database moves from one valid state to another and never lands with a constraint violated, which is why a rollback is the only correct response to a failed constraint mid-transaction
+- Isolation — concurrent transactions do not see each other's uncommitted changes, and *how strictly* is exactly what the isolation level controls; interviewers use this letter as the doorway to the isolation-level question
+- Durability — once the commit returns, the data survives a crash because it is already on disk in the write-ahead log; interviewers ask what "committed" actually guarantees
+- The three read anomalies — a dirty read sees another transaction's uncommitted data, a non-repeatable read gets a different value for the same row read twice, and a phantom read gets different *rows* for the same query; interviewers name them in quickfire and want a one-line example of each, not a definition of isolation in the abstract
+- The four isolation levels — `READ UNCOMMITTED`, `READ COMMITTED`, `REPEATABLE READ`, `SERIALIZABLE` — and which anomaly each one stops; the follow-up that catches candidates reciting the ANSI table is that PostgreSQL never permits dirty reads even at the lowest level, so its `READ UNCOMMITTED` behaves as `READ COMMITTED`
+- Optimistic vs pessimistic locking as a decision — pessimistic takes the lock up front with `SELECT ... FOR UPDATE`, optimistic detects the clash at write time and makes the loser retry; interviewers ask which fits a low-contention web application and expect the retry cost weighed against the lock's held time
 - `@Transactional` connection — Spring Boot wraps the method in `BEGIN` / `COMMIT` and automatically issues `ROLLBACK` on an unchecked exception; interviewers ask "what happens if the second save fails inside a `@Transactional` method?"
 - Read committed is PostgreSQL's default isolation level — every statement sees a fresh snapshot of committed data, so two identical reads inside one transaction can return different rows; interviewers ask what a concurrent transaction can and cannot see from inside yours
 - The aborted-transaction state — after any error inside a transaction every following statement fails with `current transaction is aborted, commands ignored until end of transaction block`; you must `ROLLBACK` before the session is usable again; interviewers ask why the next, perfectly valid query also failed
@@ -177,6 +228,28 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ---
 
+- `DENSE_RANK()` — the third member of the trio: ties share a number and the next value does not skip, so tied firsts give 1, 1, 2 where `RANK()` gives 1, 1, 3 and `ROW_NUMBER()` gives 1, 2, 3; interviewers put tied data on the screen and ask for all three outputs
+- A window function cannot appear in `WHERE` or `HAVING` — windows are computed *after* those clauses run, so filtering on `ROW_NUMBER()` means wrapping the query in a subquery or CTE; it is the logical-execution-order payoff and the first error every junior hits with windows
+- Window function vs `GROUP BY` — `GROUP BY` collapses the rows and gives you one per group, a window keeps every row and adds the aggregate alongside it; interviewers ask when you would reach for each, and "show each entry next to its project total" is the case only a window answers
+- The default window frame — `SUM() OVER (ORDER BY date)` accumulates because the implicit frame runs from the start of the partition to the current row, while `SUM() OVER (PARTITION BY project)` with no `ORDER BY` repeats the group total on every row; interviewers ask why adding an `ORDER BY` changed the numbers
+- "The second highest value" as a live exercise — solvable with `OFFSET 1`, with a correlated subquery, or with `DENSE_RANK`; interviewers ask which one is still correct when two rows tie for first, and only the ranking version answers cleanly
+
+---
+
+## Date and string functions
+
+The surface a live SQL exercise actually exercises. Stalling on a function name here reads as never having written SQL by hand, whatever else you can explain.
+
+- `DATE_TRUNC` — snaps a timestamp down to the start of its month, week or day, which is what makes `GROUP BY DATE_TRUNC('month', work_date)` the backbone of every period report; interviewers ask you to produce a monthly total from raw timestamps
+- `EXTRACT(YEAR FROM ...)` / `DATE_PART` — pulls one field out of a date so you can group by year, month number, or weekday; the companion to `DATE_TRUNC`, and interviewers ask when each is the right tool (truncate to keep periods ordered, extract to bucket across periods)
+- What subtraction returns — two timestamps give an `INTERVAL`, two `DATE`s give a plain integer number of days; interviewers ask what type comes back before they ask you to compute a duration, because the answer decides whether you can sum it
+- `AGE(a, b)` vs plain subtraction — `AGE` returns a human-readable years/months/days interval while subtraction returns a flat elapsed amount; interviewers ask how you would compute someone's age in completed years
+- `INTERVAL` arithmetic — `NOW() - INTERVAL '30 days'` is how a "last 30 days" filter is written, and it composes with the `>=` predicate that keeps the query sargable
+- The core string toolkit — `UPPER`, `LOWER`, `TRIM`, `LENGTH`, `SUBSTRING`, `REPLACE` and `SPLIT_PART`; a live exercise routinely asks you to normalise or slice a text column and expects these without a lookup
+- `||` with a `NULL` operand returns `NULL` — so one missing middle name blanks the entire concatenated display name; the fixes are `COALESCE` around each piece or `CONCAT_WS`, which skips nulls for you; interviewers show exactly this blank column and ask what happened
+
+---
+
 ## Schema design — constraints and integrity
 
 - Primary key — uniquely identifies each row; `SERIAL` or `BIGSERIAL` in PostgreSQL; every table needs exactly one; interviewers ask "what is the primary key of your `time_entries` table?"
@@ -190,6 +263,10 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `CHECK` constraint — validates a condition on insert or update; `CHECK (hours > 0 AND hours <= 24)` rejects invalid data at the database level, not just the application level
 - Constraint in the database vs validation in the application — application checks are advisory and bypassed by migrations, scripts and any other client; the database constraint is the only enforced guarantee; interviewers ask whether Bean Validation makes the `CHECK` unnecessary, and the answer is that you duplicate it on purpose
 - A constraint violation is a race the application check cannot win — a duplicate can pass a prior `SELECT` and still fail at insert time because another request committed in between; the reason the `UNIQUE` constraint is required even with a service-layer duplicate check
+
+---
+
+- `ON UPDATE CASCADE` — propagates a changed parent key down to the children, and it exists mainly because natural keys change; interviewers use it to close the loop on why a surrogate key is the default (a key that never changes needs no cascade)
 
 ---
 
@@ -207,6 +284,13 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - Soft delete vs hard delete — a `deleted_at` column keeps history and preserves foreign keys, but every query must now filter it and one forgotten filter resurrects deleted rows in a report; interviewers ask what breaks when you soft-delete a user whose `email` must stay unique
 - Database `DEFAULT NOW()` vs Hibernate `@CreationTimestamp` for `created_at` — interviewers ask what happens to the database default when the ORM always sends the column explicitly, and the answer is that the default never fires
 - Reading a schema out loud — describing the TimeTrack data model: "three tables; `users` and `projects` are independent; `time_entries` links to both via foreign keys"; interviewers ask "explain your database structure"
+
+---
+
+- 1NF, 2NF and 3NF by name — Spanish screenings still ask "¿qué es la tercera forma normal?" verbatim, so you need a one-line definition of each plus a table that violates it (repeating groups, a non-key column depending on part of a composite key, a non-key column depending on another non-key column); spotting the problem without the label is not enough when the interviewer asks by number
+- Modelling a one-to-one relationship — either a shared primary key or a `UNIQUE` foreign key, and the prior question interviewers actually care about is why you split the table at all rather than adding the columns
+- A self-referencing foreign key — `manager_id INT REFERENCES users(id)` models a hierarchy inside one table and must be nullable so the root has somewhere to stop; interviewers pair it directly with the self-join question
+- Reading an ER diagram — crow's-foot notation for 1:1, 1:N and N:M plus the optional and mandatory marks; take-home statements ship a diagram rather than prose and expect you to translate it straight into DDL
 
 ---
 
@@ -289,6 +373,11 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ---
 
+- Index-only scan and covering indexes — when every column a query needs is already in the index, PostgreSQL never touches the table at all, which is what `Index Only Scan` in a plan is telling you and why `INCLUDE` columns exist; interviewers ask what makes a scan "only"
+- `CREATE INDEX CONCURRENTLY` — builds the index without taking a write lock, at the cost of a slower build that can leave an invalid index behind if it fails; the answer to "how do you add an index to a table that is serving traffic"
+
+---
+
 ## Reading a query plan and diagnosing slowness
 
 - `EXPLAIN` — shows the query plan and whether an index is being used; `Seq Scan` means every row is read; `Index Scan` means the index was used; run this when a query is slow before adding an index
@@ -299,6 +388,18 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `pg_stat_activity` — the view listing current sessions, their state (`active`, `idle in transaction`) and the query each is running; the first thing you look at when the database appears stuck rather than slow
 - `statement_timeout` — makes a long-running query fail fast instead of hanging forever and tying up its connection; interviewers ask how you stop one bad query from exhausting the pool
 - `ALTER TABLE` takes an exclusive lock — it blocks every read and write on that table for its duration, which is how a "small migration" takes a production API down; interviewers ask what you check before running one on a live table
+
+---
+
+- Reading a plan node's numbers — `cost=0.00..431.00 rows=1200 width=36` is startup cost, total cost, estimated rows, and average row width in bytes; interviewers paste a plan and expect you to read it aloud rather than only scan it for the word `Seq Scan`
+- Nested Loop vs Hash Join vs Merge Join — a nested loop over a large unindexed inner side is the classic slow join, a hash join means the planner expects enough rows to be worth building a hash table, and a merge join means both inputs are already sorted; interviewers ask what the join node tells you about the data volume the planner is assuming
+
+---
+
+## Programmable database objects
+
+- Triggers — a function fired automatically on `INSERT`, `UPDATE` or `DELETE`, most often used for audit columns or a history table; interviewers ask why behaviour hidden in the database makes an application harder to reason about, since nothing in the Java code says it happens
+- Stored procedures and functions — worth recognising because legacy consultancy codebases are full of them; interviewers ask whether business logic belongs in the database or in the Java service layer and expect the testability, version-control and portability argument rather than a flat preference
 
 ---
 

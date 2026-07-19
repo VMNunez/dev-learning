@@ -177,15 +177,13 @@ Cross-cutting concepts that appear in interviews regardless of the stack. These 
 - What must never reach a log — passwords, raw JWTs and personal data; interviewers show a line that dumps the whole request object and ask what you would remove, because a log file is read by more people than the database
 - Choosing the log level per environment — `DEBUG` locally and `INFO` or `WARN` in production, changed by configuration rather than by editing and redeploying code; interviewers ask how you would raise verbosity on an app that is already running
 
+- Character-encoding mismatches — accented names arriving as `Ã±` mean the bytes were written as UTF-8 and read as something else, and the mismatch hides between the terminal, the database's encoding, and a container's default locale; it is the third member of the timezone-and-locale family and interviewers on any Spanish-language product ask where you would look
+
+---
+
 ## SOLID
 
-- Single Responsibility — one class, one reason to change; controller handles HTTP, service handles rules, repository handles data; interviewers ask you to name this principle when they show a "fat controller" that mixes HTTP and business logic
-- Dependency Inversion — inject dependencies instead of creating them with `new`; what Angular's `inject()` and Spring Boot's constructor injection implement; tested by asking "how would you write a unit test for this without touching the database?"
-- Open/Closed — extend without modifying existing code; add a new feature by adding new code, not by changing what already works; shows you understand why stable, tested code should not be reopened unnecessarily
-- Liskov Substitution — a subtype must behave correctly wherever its parent is expected; violations cause hard-to-trace bugs in class hierarchies; prefer composition over inheritance when this guarantee is hard to maintain
-- Interface Segregation — prefer small specific interfaces over one large one; a class should only be required to implement methods it actually uses
-- SOLID as a trade-off rather than a rulebook — each principle buys flexibility at the cost of indirection; interviewers respect "I extract an interface when there is a second implementation or a test seam" and distrust one interface per class
-- Composition over inheritance — injecting a collaborator couples you to one small surface, while extending a base class couples you to everything the parent does and will ever do; interviewers ask how you would share behaviour between two services
+> SOLID is owned by the **Architecture** topic, where it is anchored to real project decisions and paired with coupling, cohesion and the concrete violations interviewers show you. It is deliberately not duplicated here.
 
 ## Code principles
 
@@ -194,6 +192,9 @@ Cross-cutting concepts that appear in interviews regardless of the stack. These 
 - YAGNI — do not build features for hypothetical future requirements; adding pagination before it is needed, or building a plugin system for a feature with one implementation, are the classic examples; common in AI-generated code
 - DRY vs premature abstraction — two blocks that merely look alike may be a coincidence rather than duplication, and extracting too early creates a shared abstraction that fights both callers when they diverge; interviewers ask when you would deliberately *not* deduplicate
 - Technical debt as a deliberate decision — a shortcut taken knowingly and written down as a ticket is debt; the same shortcut taken unknowingly is a defect; interviewers ask how you would handle a deadline that forces the shortcut
+- Code smell — a surface symptom pointing at a deeper design problem rather than a bug: a long method, a god class, a long parameter list, a class reaching repeatedly into another object's data; interviewers ask you to name three you would flag on sight, because "clean code" without concrete smells is a slogan
+- Refactoring, precisely — changing the structure without changing the behaviour, which is only safe when tests already pin that behaviour down; interviewers ask what separates refactoring from rewriting, and the presence of tests is the whole answer
+- Naming versus comments — a comment explaining *what* the code does is usually a rename waiting to happen, while a comment explaining *why* a non-obvious decision was made is the one worth keeping; interviewers use a commented block to check which kind you write
 
 ## Agile and Scrum — the framework
 
@@ -242,3 +243,38 @@ Named in ~6 of every 8 junior postings at Spanish consultancies ("metodologías 
 - Hotfix — an urgent fix branched from what is actually in production rather than from the current development line, then merged back; interviewers ask why you cannot simply ship the dev branch, and the answer is that it contains unreleased, unverified work
 - CI pipeline as a merge gate — an automated build and test run on every push that must pass before a merge is allowed; interviewers ask what happens when the pipeline goes red on your branch, and the concept is that it is yours to fix and it blocks everyone once it is on the shared branch
 - Smoke test after a deploy — a minimal check that the deployed system is alive and its critical path works, distinct from the full test suite; interviewers ask how you know a deploy actually succeeded
+
+---
+
+## Cloud awareness
+
+Named in roughly 3 of every 8 target postings (Indra's "proyectos sobre cloud pública" is the explicit one). Nobody expects a junior to operate a cloud platform, but they do expect you to recognise the shape of one and know what changes when the app stops running on your laptop.
+
+- What a managed service is — the provider runs the database, the queue or the container platform, so you stop patching, backing up and scaling it and start paying for it; interviewers ask what a managed database buys you and expect the operational answer rather than "it's in the cloud"
+- Where a containerised app actually runs — an image is pushed to a registry and a service pulls and runs it, which is the same image you built locally rather than a rebuild; interviewers ask how your `docker build` output reaches production
+- Configuration and secrets at deploy time — the environment variables that were a `.env` file locally arrive from the platform's configuration or secret store, which is exactly why the twelve-factor rule matters; interviewers ask where the production database password lives
+- What does not change — your Spring Boot jar, your SQL and your Angular bundle are identical; the cloud changes who runs them and how they are configured, not what they are; interviewers ask whether you would need to rewrite the app to deploy it and the honest answer is no
+
+---
+
+## Reviewing code — what to look for
+
+Distinct from Git's pull-request mechanics: this is the judgement you apply once the diff is open. The 2026 technical interview is largely a review round.
+
+- What a reviewer actually checks, in order — does it do what the ticket says, is it correct at the edges, is the new behaviour tested, and is it named so the next person understands it; interviewers ask because a junior who only comments on formatting adds nothing to a team
+- Reviewability is a property of the change — a small single-purpose diff gets a genuine review while a two-thousand-line one gets an approval nobody read; interviewers ask why you would split a change and want the reviewer's attention budget named
+- Unrelated changes inside one review — a formatting sweep bundled with a bug fix hides the fix inside the noise; the same atomicity rule as commits, applied to the diff
+- Separating a blocking objection from a preference — a correctness or security problem blocks, a naming quibble does not, and treating both the same way makes a reviewer easy to ignore; interviewers ask how you decide what is worth a comment
+- Being asked "why did you do it this way?" — the second follow-up is what exposes code that was copied rather than reasoned about; this is the review round's real question, and it is why every line you submit must be defensible
+
+---
+
+## Working with AI as a developer
+
+`_shared-context.md` records this as the defining change of 2026: the question moved from "can you write the code?" to "can you explain it, defend it, and catch what the assistant got wrong?" These are concepts a screening now tests directly.
+
+- Using an assistant professionally — expected rather than suspect in 2026, but the code you submit is yours and is judged as yours; interviewers ask how you use Copilot or Cursor and are equally wary of "never" and "for everything"
+- Never commit code you cannot explain — the single rule separating a developer from a prompt runner, and interviewers test it by pointing at any line of your own project and asking why it is there
+- The defects AI reliably produces at junior level — a hardcoded secret instead of an environment variable, `@Transactional` on the controller instead of the service, the wrong validation annotation (`@NotNull` where `@NotBlank` was meant), a test that asserts nothing, and an N+1 query from a missing fetch strategy; the 2026 technical test increasingly hands you a snippet containing several of these and counts how many you find
+- Verifying a claim about an unfamiliar framework — you check the official documentation and run it, because a confidently invented API name reads perfectly and compiles nowhere; interviewers ask how you check an answer you cannot yet evaluate
+- AI on a take-home — the deliverable is graded by whether you can defend it live, so anything you cannot explain is a liability rather than a shortcut; interviewers ask what you would disclose and the honest position is the defensible one

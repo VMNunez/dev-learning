@@ -25,6 +25,15 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `:is()` and `:where()` — both group selectors, but `:is()` takes the specificity of its most specific argument while `:where()` always scores zero; `:where()` is the modern way to ship overridable base styles instead of reaching for `!important` — a confusable pair
 - Over-qualified selectors — `div.card` or `.page .card .card__title` raise specificity for no benefit and force the next developer into `!important`; the concrete defect a reviewer flags in a BEM codebase
 
+- `:nth-child()` vs `:nth-of-type()` — the first counts *all* siblings and the second only the matching elements, which is the canned "why doesn't `p:nth-child(2)` hit my second paragraph?" snippet when a heading sits above it
+- Attribute selectors — `[type="text"]`, `[disabled]`, `[class^="icon-"]`; they carry class-level specificity and are how you style a control you cannot add a class to, which happens constantly with third-party and Material markup
+- Form-state pseudo-classes — `:disabled`, `:checked`, `:required`, `:invalid`, `:placeholder-shown`; the trap is that `:invalid` matches an empty required field *before* the user has typed anything, which is why real validation styling waits for `:user-invalid` or a touched class
+- Stylable pseudo-elements beyond `::before`/`::after` — `::placeholder`, `::selection`, `::marker`, `::first-line`; each accepts only a small subset of properties, so interviewers ask what you can actually change on a placeholder
+- `:has()` — the relational selector (`.card:has(img)`) that finally lets a parent be styled by its children; baseline-supported by 2026 and the reason a class of JavaScript class-toggles is no longer needed
+- `@layer` — assigns rules to named cascade layers, where an unlayered author rule beats any layered one regardless of specificity; the modern way to tame a third-party stylesheet without reaching for `!important`
+
+---
+
 ## Box model
 - `margin`, `padding`, `border`, `content` — what each layer is and how they stack; interviewers draw the box model and ask you to label it or explain why two elements are not touching even though margin is set to 0
 - `box-sizing: border-box` — makes `width` include padding and border; the default `content-box` adds them on top, causing sizing surprises; setting it globally in a reset makes layouts predictable
@@ -46,6 +55,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `height: 100%` needs a parent with a resolved height — a percentage height resolves against the parent's computed height, so it collapses to nothing when the ancestor chain up to `html`/`body` is `auto`; the most common "why won't this fill the screen?" failure
 - `float` and `position: absolute` are mutually exclusive — absolute or fixed positioning forces `float` to compute to `none`; a snippet with both is a deliberate trap
 
+- `float` and the clearfix — what floats were originally for, why a floated child collapses its parent's height, and why `display: flow-root` replaced the hack; you need this purely to read the legacy consultancy CSS you will be handed
+- `pointer-events: none` and `user-select: none` — switch off hit-testing and text selection respectively; the accessibility trap is that `pointer-events: none` does not remove the element from the tab order, so a "disabled" button styled this way is still reachable and activatable by keyboard
+
+---
+
 ## Flexbox
 - Container properties: `flex-direction`, `justify-content`, `align-items`, `gap` — the four set on almost every flex container; not knowing these will fail the "build a navbar" question in any screening
 - `flex-wrap: wrap` — controls whether items wrap to the next line when space runs out; `nowrap` (default) shrinks items to fit; `wrap` moves them to a new row; asked when discussing responsive card layouts
@@ -59,6 +73,10 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `margin: auto` on flex items — absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
 - Properties that do nothing on a flex item — `float`, `clear` and `vertical-align` are ignored once the parent is a flex container; interviewers show old float code inside a flex parent and ask why it has no effect
 
+- `align-content` vs `align-items` on a flex container — `align-items` positions items on the cross axis within their line, while `align-content` distributes the *lines* of a wrapped container and does nothing at all when `flex-wrap: nowrap`; it is the reason `align-items: center` "does nothing" on a multi-row flex list
+
+---
+
 ## CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer
 - `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries
@@ -66,6 +84,13 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `minmax(0, 1fr)` vs `1fr` — a bare `1fr` track has an automatic minimum of its content size, so long content overflows the track; `minmax(0, 1fr)` lets it actually shrink; the Grid twin of the flex `min-width: 0` fix
 - `auto-fill` vs `auto-fit` — both create as many columns as fit; `auto-fill` keeps empty column tracks (items stay at their minimum size); `auto-fit` collapses empty tracks (items stretch to fill the space); a confusable pair tested in interviews
 - `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed
+
+- `grid-template-areas` — names regions and draws them as an ASCII map, which is far more readable than line numbers for a page-level layout and can be redrawn wholesale inside a media query; interviewers ask when the named syntax earns its keep
+- The implicit grid — `grid-auto-rows`, `grid-auto-columns` and `grid-auto-flow: row | column | dense`; items beyond the tracks you declared land in auto-created ones, which is why row heights suddenly stop matching; interviewers ask what happens to the items you never explicitly placed
+- `justify-items`/`align-items`/`place-items` versus `justify-content`/`align-content` — the first set positions each item inside its own track, the second distributes the whole track set inside the container; it is the most-confused pair in Grid and interviewers hand you a snippet using the wrong one
+- Container queries (`@container` with `container-type: inline-size`) — size a component by the width of its container rather than of the viewport, which is the correct tool for a card that appears both in a narrow sidebar and full width; interviewers ask how they differ from media queries
+
+---
 
 ## Position
 - `static`, `relative`, `absolute`, `fixed`, `sticky` — `static` is the default and is not a positioning context; `relative` creates the context for absolute children; `fixed` is always relative to the viewport; `sticky` sticks at a scroll threshold
@@ -77,6 +102,10 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `z-index` works on flex and grid items without positioning — the documented exception to "z-index only applies to positioned elements"
 - Painting order without `z-index` — backgrounds first, then non-positioned blocks, then floats, then inline content, then positioned elements in source order; interviewers ask which of two overlapping untouched divs is on top and why
 - `inset: 0` — shorthand for `top: 0; right: 0; bottom: 0; left: 0`; used in modal overlays to cover the full viewport; interviewers who review your code expect you to know this shorthand
+
+- Responsive images are markup, not CSS — `srcset`/`sizes` and `<picture>` decide which *file* is downloaded, while CSS only sizes whatever already arrived; interviewers ask whether serving a smaller image on mobile is a CSS job and the answer is no
+
+---
 
 ## Responsive design
 - Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach
@@ -124,6 +153,15 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `@mixin` / `@include` — a reusable, optionally parameterised block of declarations for repeated patterns such as a media query or a button base; interviewers ask when a mixin is the right tool rather than a shared class
 - `@extend` vs a mixin — `@extend` merges selectors into one rule (smaller output, but it couples unrelated selectors and can cause surprising selector explosions) while a mixin duplicates declarations but stays predictable; the standard tradeoff question
 
+- `@forward` and an index partial — re-exports several partials from one entry file so a component writes a single `@use` instead of five; it is the standard shape of a real `styles/` folder, and interviewers who named SASS in the posting ask how you organise it
+- SASS maps and `map.get` — a `$colors` map as the single token source, read with `map.get($colors, 'primary')`; the structure that makes a palette editable in one place before CSS custom properties take over at runtime
+- `@each` over a map to generate modifier classes — the loop that emits `.btn--primary`, `.btn--danger` and so on from the token map rather than by hand; the canonical demonstration that SASS is a language and not just nesting
+- `@if` / `@else` with mixin arguments — a `respond-to('tablet')` mixin that resolves a breakpoint *name* to a media query, which is the strongest justification for a mixin over a shared class; interviewers ask for a real case where a mixin beats a class
+- SASS built-in modules — `math.div()` replaced the `/` operator (a slash is now a separator) and `color.adjust()`/`color.scale()` replaced `lighten()`/`darken()`; a stylesheet still using the old functions is one that has not been migrated, and recognising that is the point
+- `@use ... with ($primary: ...)` — configures a library's `!default` variables at load time, which is the supported way to theme a SASS library instead of overriding its compiled output afterwards
+
+---
+
 ## Accessibility — colour and focus
 - Contrast ratio and the AA thresholds — `4.5:1` for body text and `3:1` for large text; interviewers hand you a designer's grey-on-white (`#999`, roughly `2.8:1`) and ask whether you ship it, because public-sector delivery makes AA a contractual requirement rather than a preference
 - Contrast applies to non-text UI too — icons, form-field borders and focus indicators need `3:1` against their surroundings; juniors assume contrast is a text-only rule and ship an invisible focus ring on a coloured background
@@ -140,6 +178,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Minimum target size — interactive controls need roughly `24×24` CSS pixels, reached with padding or an enlarged pseudo-element hit area rather than by scaling a 16px icon; asked about icon-only buttons in dense toolbars
 - `content` in `::before` / `::after` is announced by most screen readers — an icon-font glyph is read out as a garbage character, so decorative pseudo-elements use `content: ""` and anything meaningful needs real markup or a visually-hidden label
 - `cursor: pointer` on a non-interactive element — makes a `<div>` look clickable while it stays unfocusable and unannounced; the CSS symptom of a missing native `<button>`
+
+- Logical properties — `margin-inline`, `padding-block`, `inset-inline-start` follow the writing direction, so one stylesheet serves both LTR and RTL without a mirrored copy; relevant the moment a consultancy project adds an Arabic or Hebrew locale, and interviewers on multi-locale accounts ask
+- Deciding what you can ship — caniuse or Baseline checked against the browser matrix written into the client's contract; support is a project decision documented somewhere, not a personal judgement call, and interviewers ask who decides
+
+---
 
 ## Debugging CSS in DevTools
 - Styles pane vs Computed pane — Styles lists every rule the browser matched, in winning order; Computed shows the single resolved value actually in use after cascade, inheritance and unit resolution; interviewers ask "the rule is right there in Styles, so why is the element still 16px?" and expect you to open Computed
@@ -161,6 +204,12 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `svh`, `lvh` and `dvh` — mobile browsers grow and shrink their toolbar while scrolling, so `100vh` is the *large* viewport and clips content behind the bar; `dvh` follows the current one; interviewers ask why a full-screen mobile layout is cut off at the bottom on iOS Safari
 - Scrollbar width changes layout — a classic desktop scrollbar occupies real horizontal space, so a centred page shifts sideways the moment a dialog sets `overflow: hidden` on `body`; `scrollbar-gutter: stable` reserves the space; interviewers ask why the page "jumps" when a modal opens
 - `overflow-wrap: break-word` and `word-break` — force a long unbroken string (a URL, an email, a German compound noun) to wrap instead of blowing out of its container; interviewers show a broken card and ask why `overflow: hidden` is the wrong fix
+
+- `scroll-behavior: smooth` and `scroll-margin-top` — an anchor target lands hidden underneath a sticky header unless `scroll-margin-top` offsets it, and the smooth behaviour itself must be gated behind `prefers-reduced-motion`; interviewers ask why the in-page link jumps to the wrong place
+- CSS scroll snapping — `scroll-snap-type` on the container plus `scroll-snap-align` on the children builds a carousel with no JavaScript at all; interviewers ask whether a carousel needs a library
+- Locking the background scroll behind a modal — `overflow: hidden` on `body` loses the user's scroll position and shifts the layout by the width of the disappearing scrollbar; interviewers ask why a dialog library bothers to handle this for you
+
+---
 
 ## `auto` and intrinsic sizing
 - `margin: 0 auto` only centres an element with a definite width — with `width: auto` the auto margins resolve to zero and nothing moves; the single most reused CSS screening puzzle
@@ -186,6 +235,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Animations sit above normal author declarations in the cascade — a running animation overrides a matching rule regardless of its specificity, which is why the element snaps back the instant the animation ends without `animation-fill-mode: forwards`
 - `!important` is ignored inside `@keyframes` — the declaration is dropped rather than winning; a pressure question for candidates who claim `!important` always wins
 
+- `transition-timing-function` and `cubic-bezier()` — `ease` is the default, `linear` reads as mechanical, `ease-out` suits entrances; paired with `transition-delay` to stagger a list; interviewers ask why an animation "feels wrong" when the timing is the only thing left
+- Reflow vs repaint vs composite — only `transform` and `opacity` can be handled by the compositor without re-running layout or paint, which is the actual reason they are the cheap properties to animate; `will-change` buys a layer at the cost of memory and a new stacking context, so it is applied narrowly and removed afterwards
+
+---
+
 ## Typography
 - `font-size` with `rem` — `px` ignores the user's browser font size preference and breaks accessibility; `rem` scales with the root setting; interviewers ask why a font size set in `px` is bad practice for accessibility
 - `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight
@@ -196,6 +250,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `-webkit-line-clamp` for multi-line truncation — truncates at N lines instead of one; the counterpart to the single-line ellipsis trio, and interviewers use the pair to check you know one-line truncation is not the general case
 - `text-transform` — `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display
 - `font-family` fallback stack — listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name
+
+- `@font-face` and self-hosting — `src` with `format()`, plus `font-display` and `unicode-range` subsetting; self-hosting instead of the Google Fonts CDN is a data-protection requirement on Spanish public-sector work rather than a preference, and interviewers on those accounts ask directly
+- `white-space` values — `nowrap`, `pre`, `pre-wrap`, `pre-line`; `pre-wrap` is what preserves a user's line breaks in a comment field without also preserving every stray space; interviewers ask how you render stored multi-line text faithfully
+
+---
 
 ## CSS variables and design tokens
 - `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates
@@ -221,6 +280,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `outline` vs `border` — `outline` is drawn outside the border and occupies no layout space, so adding one on focus never shifts the surrounding elements the way a `border` does; interviewers ask which of the two belongs on a focus ring and why — a confusable pair
 - `aspect-ratio` — locks an element's width-to-height ratio (`aspect-ratio: 16 / 9`) so it scales without distortion when only one dimension is known; replaces the older padding-percentage hack for responsive video and image containers; interviewers ask how you reserve space for an image before it loads to avoid layout shift
 
+- Gradients and the `background` shorthand — `linear-gradient()` counts as an image, several comma-separated layers stack front to back, and the `url() no-repeat center / cover` slash syntax sets position and size in one go; interviewers ask you to read that shorthand aloud
+- `backdrop-filter: blur()` — the frosted-glass effect behind a modal, which needs a translucent background colour to be visible at all and is genuinely expensive to composite; interviewers ask what it costs before they ask how to write it
+
+---
+
 ## Font and image loading
 - FOUT vs FOIT — a flash of *unstyled* text versus a flash of *invisible* text while a web font downloads; a confusable pair, and interviewers ask which one the browser does by default and which one you should prefer
 - `font-display: swap` — renders the fallback immediately and swaps when the web font arrives, trading a layout shift for text that is never invisible; interviewers ask what that tradeoff costs the user
@@ -233,6 +297,18 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `clamp(min, preferred, max)` — creates a value that scales fluidly between limits; `font-size: clamp(1rem, 2.5vw, 2rem)` replaces multiple breakpoint overrides for font size; tested because it signals modern CSS knowledge
 - `min()` and `max()` — `min(100%, 600px)` is equivalent to `max-width: 600px; width: 100%`; `max(1rem, 5%)` ensures a minimum even when using a relative unit; useful for containers that should be fluid on mobile and capped on desktop
 
+- `ch` as the readable-line-length unit — `max-width: 65ch` caps a paragraph at roughly 65 characters and adapts to the font actually rendered, which a `px` cap cannot; interviewers ask what governs a comfortable measure
+
+---
+
+## CSS delivery and performance
+
+- CSS is render-blocking — the browser will not paint until it has built the CSSOM, so the size and number of stylesheets directly delay first paint; this is why critical CSS is inlined and the rest deferred, and interviewers ask why CSS blocks rendering when JavaScript can be deferred
+- Where stylesheet weight actually comes from — unpurged utility classes, a partial imported twice through two entry points, and a theme shipped for every component whether used or not; interviewers hand you "the bundle budget is failing" and want the first three places you look
+- The DevTools Coverage panel — reports unused CSS bytes per file, which is the only empirical handle on dead styles, while still not being proof (a rule used only in a modal shows as unused until the modal opens); interviewers ask how you would find out whether a class is used at all
+
+---
+
 ## Naming and stylesheet organisation
 - Block, element (`__`), modifier (`--`) — `.card`, `.card__title`, `.card--featured`; a naming convention that makes class names predictable in global stylesheets; interviewers at consultancies ask about CSS organisation because shared CSS becomes unmaintainable without a convention
 - Why BEM keeps specificity low — each rule is a single class selector (`0-1-0`); nested selectors like `.card .card__title` raise specificity and become hard to override; BEM avoids nesting in the CSS file
@@ -242,6 +318,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Where a shared style belongs — the decision chain runs component styles → shared component → global stylesheet → design token; interviewers ask where you would put a button style used by three features and expect a component, not a global class
 - The vendor override file — a dedicated global file holding overrides of a third-party library's internals, isolated so an upgrade breaks in one known place rather than across every component
 - Why overriding a library's internal classes is fragile — internal class names are not a public API and can change on any release; interviewers ask what breaks when you upgrade Angular Material after deep-styling its internals
+
+- Utility-first (Tailwind) vs BEM and SCSS — utilities remove the naming problem and the dead-CSS problem at the cost of noisy templates, while BEM keeps markup clean at the cost of a stylesheet that rots; interviewers ask which you would argue for on a consultancy project, and Victor's real Tailwind experience makes this a question he should welcome
+- Linting stylesheets — Stylelint plus Prettier enforce property ordering and can forbid `!important` or ID selectors in CI; the team-scale answer to "how do you keep CSS consistent across six developers", where a style guide nobody enforces is not one
+
+---
 
 ## Changing shared CSS safely
 - Blast radius of a shared class — a class in a global stylesheet is an unbounded public API, so `.card` has as many callers as there are templates referencing it and CSS offers no way to enumerate them; interviewers ask why editing a shared class is riskier than editing a component style

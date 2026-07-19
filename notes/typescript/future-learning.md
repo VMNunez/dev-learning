@@ -152,3 +152,5 @@ Type definitions for JavaScript libraries that do not ship with types. Only rele
 - **TypeScript compiler API** — programmatic access to the TypeScript compiler. Only relevant if you are building TypeScript plugins or tools. No application in Angular + Spring Boot development.
 - **Type-level programming** — using TypeScript's type system as a Turing-complete language. An impressive academic exercise; no practical value at junior or mid level.
 - **`namespace`** — the old module system before ES modules. You will see it in legacy code but should never write it in new code.
+
+- **Assertion functions (`asserts value is Employee`)** — narrowing by throwing rather than by returning a boolean. Real, but rarely required or tested at junior level even in a strong TypeScript shop; the `is` type-predicate form, which is what interviewers actually ask for, stays in coverage. _Demoted 2026-07-19 by the coverage audit._
