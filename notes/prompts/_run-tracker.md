@@ -50,7 +50,7 @@ runs once the whole coverage-prompt column is filled).
 
 | Prompt | Last run |
 |---|---|
-| coverage-audit | |
+| coverage-audit | 2026-07-19 (all 12 topics) |
 | evidence-intake | |
 | progress-update | 2026-07-16 (MODE = active) |
 | roadmap-review | |
