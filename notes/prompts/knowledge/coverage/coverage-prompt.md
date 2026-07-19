@@ -6,6 +6,12 @@ Use this prompt when you want to create a new `coverage.md` for a notes folder, 
 
 > **▶ Run first:** nothing — it can create coverage from scratch. Optional: `evidence-intake` to refresh the market evidence its Step 2 subagent reads.
 
+> **Rules here, evidence next door.** Rules that came from a real run's failure carry a `(why: R-n)`
+> pointer into `_coverage-prompt-rationale.md` — the incident, what it cost, and the worked example.
+> You do **not** need to read that file to execute a run. Read the entry when you are tempted to
+> weaken, skip, or "simplify" a rule: every one of them exists because a run already tried that.
+> When a run's self-report changes a rule, the new evidence goes *there*, not back inline here.
+
 ---
 
 **How to use:**
@@ -101,22 +107,17 @@ I want you to create or update the coverage.md file for {TOPIC}.
 > real quality bottleneck. Nothing in the run flow can enforce the session's own model, so confirm it
 > yourself before Step 1: if you are not running on Opus, **stop and tell Victor to switch the session
 > to Opus** (`/model opus`) before continuing — do not word-craft coverage items on a weaker model.
-> This is not optional politeness: a real run consolidated on Sonnet shipped standard violations (an
-> unsplit 16-item section, two merged multi-concept items) that only an Opus re-pass caught. The
-> subagent `model:` overrides do not cover this — they set the *subagents'* models, never the
-> session's.
+> The subagent `model:` overrides do not cover this — they set the *subagents'* models, never the
+> session's. (why: R1)
 
 > **Run-checklist guard (step 0, same moment):** before doing anything else, create the session's
 > todo list (TodoWrite) with **every** step of this run as its own item — the required reads below
 > (one item per file), Steps 1–5, and, explicitly, the closing admin steps: coverage commit, inbox
 > commit (conditional), self-report, **`_run-tracker.md` row**, and the `git show --stat` close-out
 > verification. Mark items done as they complete; **the final summary must not be printed while any
-> item is unchecked.** Why this is mechanical and not trust-based: the steps most likely to be
-> dropped are the administrative ones at the end, precisely because they run on the run's most
-> saturated context and nothing fails loudly when they are skipped — the Security run (2026-07-18)
-> completed every content step and silently skipped the tracker update. A checklist the harness
-> re-displays is the external memory a saturated context no longer has; prose instructions
-> re-extracted from a 900-line prompt are not.
+> item is unchecked.** This is mechanical rather than trust-based because the steps most likely to be
+> dropped are the administrative ones at the end, which run on the most saturated context and fail
+> silently. (why: R2)
 
 Before starting, read:
 - `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
@@ -158,12 +159,7 @@ elsewhere" must be preceded by the grep that shows it, at whatever point in the 
 and it is the same gesture Step 4a mandates anyway.
 
 Say "I have not checked yet" rather than a hedged guess. **"Almost certainly" is the tell**: it reads
-as verified while carrying none of the work, and it is wrong in both directions. On the Security run
-(2026-07-18) the pre-run framing announced that JWT, CORS and SQL injection "almost certainly already
-have homes in the other topics' sections" — the exact inverse of the file, where `### JWT`, `### CORS`
-and the injection item are Security's own sections (`notes/coverage.md` 1318–1363) and the duplication
-runs *outward* into Spring Boot, Architecture and General. Acting on that guess would have dropped
-Security's own core items as other topics' property.
+as verified while carrying none of the work, and it is wrong in both directions. (why: R3)
 
 ---
 
@@ -397,20 +393,15 @@ is the single source for them.
 are the two that a generator reliably violates while believing it complied, so verify them mechanically
 rather than by impression, on the finished file:
 1. **Count the items in every section.** Any section over 12 items must be split before saving; under 3
-   must be fixed. Counting is not optional — a real run shipped a 16-item section that the generator
-   had "checked" by reading it.
+   must be fixed. Counting is not optional. (why: R18)
    > **An undersized section has two fixes, and merging is the second choice.** Prefer to **grow** it:
    > if this run's gaps include concepts that genuinely belong beside the orphans, fold them in and
    > rename the section to cover the wider theme. Merge into a neighbour only when no such concepts
    > exist. Never merge across a semantic boundary just to clear the count — a section whose name no
    > longer describes its contents is worse than either the small section or the missing items, and it
-   > misfiles those bullets for every downstream prompt that reads coverage by section. The worked
-   > example is the Java run: a 2-item "Control flow" had no honest neighbour (the adjacent sections
-   > were Strings and Classes), so it grew with that run's `package` / `import` / fully-qualified-name
-   > gaps and became "Control flow and source structure".
+   > misfiles those bullets for every downstream prompt that reads coverage by section. (why: R18)
 2. **Re-read every item you wrote this run for the one-concept rule.** An item naming two annotations,
-   two files, or two mechanisms joined by "and"/"+" is a grouped bullet and must be split — the same run
-   shipped two of these (`environment.ts` + `fileReplacements`, `CORS` + `proxy.conf.json`).
+   two files, or two mechanisms joined by "and"/"+" is a grouped bullet and must be split.
 3. **Then run the standard's completeness test** on the whole file, plus the three-item-types and
    confusable-pairs checks per section.
 
@@ -429,9 +420,7 @@ and renamed **headings**, not only the bullets.
 
 The generator (Steps 1–4) tends to trust its own list, and a single interviewer only finds the gaps
 that fit inside its own question set. **This is the pass that decides whether coverage is complete, so
-it is deliberately the most expensive one.** Two rules make it work, and both were learned from a real
-run where one capped interviewer returned 13 gaps and looked convergent — while three further angles
-then found 80+ more:
+it is deliberately the most expensive one.** Two rules make it work (why: R4):
 
 - **Never cap the questions.** Do not ask a subagent for "the 12 questions you would ask". A capped
   interviewer finds the gaps that fit in 12 questions; it does not find the gaps. Every dispatch says
@@ -461,16 +450,8 @@ then found 80+ more:
 
 > **The invented angle is where the run's value actually comes from.** The numbered angles below are
 > generic by construction, so on any topic that sits *beside* a framework they converge on that
-> framework's mechanics — which another topic usually already owns. Two consecutive runs show the
-> pattern and neither is a coincidence:
-> - **Architecture (2026-07-18)** — the four standard angles converged on Spring Boot mechanics; the
->   two improvised angles (take-home, existing-codebase onboarding) produced the run's *only* genuinely
->   new sections. Onboarding was promoted to angle 6 as a result.
-> - **Security (2026-07-18)** — the four standard angles converged almost entirely on Spring Security
->   *wiring* (`SecurityFilterChain`, `@EnableMethodSecurity`, `UserDetailsService`, `OncePerRequestFilter`),
->   every bit of it owned by Spring Boot coverage. The improvised **attacker-mindset / threat-modelling**
->   angle produced three whole new sections (information disclosure, attacks on login, transport and
->   dependency risk) and roughly two-thirds of everything added.
+> framework's mechanics — which another topic usually already owns. Three consecutive runs show the
+> pattern and none is a coincidence (why: R5).
 >
 > So do not treat the numbered list as the work and the extra angle as a garnish. Before dispatching,
 > ask: **"what is the question an interviewer asks about {TOPIC} that none of the angles below would
@@ -495,11 +476,7 @@ then found 80+ more:
    vs value at call sites, coercion and operator semantics, iteration rules, and the canned puzzles a
    screening reuses verbatim. *Why it is mandatory and not left to judgement:* angles 1–4 are all
    framework-shaped — they interrogate how you use a stack — so on a language topic they can converge,
-   look complete, and still never touch the mechanism layer underneath. That is exactly what happened on
-   the JavaScript run: this angle was improvised, and it was the **only** one that returned `ToPrimitive`,
-   the abstract equality algorithm, `this` binding precedence, the prototype chain, microtask-drain
-   ordering and sparse arrays. Without it the file would have been fluent about idioms and silent about
-   why they behave that way — the exact gap a Spanish quickfire screening is built to find.
+   look complete, and still never touch the mechanism layer underneath. (why: R6)
 6. **Existing-codebase onboarding — mandatory for framework/stack topics (Spring Boot, Angular,
    Architecture, and any topic whose interview shows real project code), optional for language and
    pure-syntax topics.** The concepts a junior needs on day one inside a large codebase they did not
@@ -509,9 +486,7 @@ then found 80+ more:
    reasoning:* angles 1–4 are all shaped as if the candidate authors the code, so on a stack topic
    they converge on writing-and-debugging mechanics and never touch the inheriting-code surface —
    which is the one a consultancy junior actually lives on, since almost none green-field anything.
-   On the Architecture run (2026-07-18) this angle was improvised, and it was the sole source of the
-   file's two most market-relevant new sections ("Working in a codebase you did not write", most of
-   "System shape and structure"); the four standard angles had converged elsewhere and looked complete.
+   (why: R7)
 
 Give each subagent this brief (substituting its angle):
 
@@ -540,14 +515,12 @@ Give each subagent this brief (substituting its angle):
 > the gap list, the OUT list, and the proof line, no narrative around them. **Return to the session
 > only three lines:** the file path, "N gaps, M OUT items", and the "N lines, read to EOF" proof.
 
-**Why the reports go to files and not into the chat.** Six uncapped Opus angles returning ~130
-proposals directly into the session is the single biggest context spike of the run — and it lands on
-the same context that must then word-craft every item and finish the admin steps. With reports on
-disk, the generator consolidates **incrementally**: process one angle file at a time, merge its
-genuine gaps into a single deduplicated worklist (a scratchpad file, not a mental list), and from
-then on reason against the worklist — never against six raw reports held at once. The acceptance
-check moves accordingly: verify each angle's three-line return carries its proof (path exists, proof
-line present) before reading its file, and reject/re-dispatch on the same rules as before.
+**Why the reports go to files and not into the chat.** With reports on disk, the generator
+consolidates **incrementally**: process one angle file at a time, merge its genuine gaps into a single
+deduplicated worklist (a scratchpad file, not a mental list), and from then on reason against the
+worklist — never against six or seven raw reports held at once. The acceptance check moves
+accordingly: verify each angle's three-line return carries its proof (path exists, proof line present)
+before reading its file, and reject/re-dispatch on the same rules as before. (why: R8)
 
 **Stop rule:** you are done when a fresh angle returns only duplicates of what the others already
 found. Heavy overlap between angles is the convergence signal — it means the surface is covered, not
@@ -580,12 +553,8 @@ Three routing rules when handling the discards:
   > `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` under the owning topic's `## ` heading, in
   > the standard's item format, tagged with the run that found it — creating the heading if absent. A
   > summary line is not a handoff: the summary lives in a chat nobody reads later, so the item then
-  > depends on the owner's own future run rediscovering it by chance. **It does not.** The TypeScript run
-  > (2026-07-18) routed out four Angular-owned concepts — `strictTemplates`, AOT, the `ng build`
-  > type-check, typed `FormGroup<T>` — and Angular's coverage run had already happened that same day
-  > without finding any of them. Nothing else in the pipeline catches this: `coverage-audit`'s Analyst D
-  > hunts duplicates, misplaced items and demotion candidates, so a concept **absent from every section**
-  > is invisible to it. Write the entry before you move on.
+  > depends on the owner's own future run rediscovering it by chance. **It does not**, and nothing else
+  > in the pipeline catches it. Write the entry before you move on. (why: R9)
   > **Routing the concept out does not route out this topic's implementation of it.** Some axes are
   > agnostic of any language or framework by nature — security, architecture, HTTP/REST, testing theory,
   > relational/transaction theory, git — so the *concept* is owned by that topic and lives there. But
@@ -612,10 +581,8 @@ Three routing rules when handling the discards:
   join). That leaves the generator catching, from memory and with ~100+ proposals in context, that a
   gap it is about to add restates a bullet three sections up — which is exactly the moment memory
   fails. So before writing: grep `{NOTES_PATH}coverage.md` for the distinctive terms of the gaps you
-  are about to add, the same gesture as the cross-topic grep, one file more. On a real run
-  (Architecture, 2026-07-18) two proposed gaps — a "transaction boundary" item and a "consistent
-  error contract" item — duplicated existing bullets and were caught only by the generator's
-  attention; this check makes that catch procedural instead of lucky.
+  are about to add, the same gesture as the cross-topic grep, one file more. This check makes a catch
+  that was previously lucky into a procedural one. (why: R10)
 - **Already covered by another topic — run the cross-topic overlap check HERE, before writing.**
   Scan the other sections of `notes/coverage.md` for items that overlap with the gaps you are about to
   add (e.g. REST status codes or "service layer" could plausibly sit under Architecture, Spring Boot,
@@ -626,29 +593,23 @@ Three routing rules when handling the discards:
   > **How to run it without burning the context: one grep, not a re-read.** `notes/coverage.md` is well
   > over 2000 lines, so do not read it whole to judge ownership and do not judge from memory either —
   > grep it once for the distinctive terms of the gaps you are about to add (plus `^## ` to see the
-  > section map in the same output), and decide from the hits. Two consecutive runs show why this is the
-  > load-bearing step and not a formality: on Java roughly **half** the proposed gaps were already owned
-  > by Spring Boot or Architecture, and on JavaScript an entire proposed "browser storage" section was
-  > owned by General and Security, along with CORS, the `OPTIONS` preflight, the `Authorization: Bearer`
-  > header, JWT-in-`localStorage` and `.env`-is-public. **Foundational topics are structurally
-  > overlap-heavy** — anything that sits underneath other topics (JavaScript below Angular; Java below
-  > Spring Boot) will attract proposals that belong to the layer above, so budget real effort here on
-  > those runs.
-  > **Cross-cutting topics are the inverse case, and heavier still.** A topic that sits *across* the
-  > stack rather than underneath it (Architecture over Spring Boot + Angular + General; Security is
-  > the same shape) attracts proposals from every side at once: on the Architecture run (2026-07-18)
-  > roughly **two-thirds** of ~130 proposed gaps were already owned elsewhere, and ownership was the
-  > run's single most expensive judgement. On these topics expect one grep NOT to be enough — the
-  > honest pattern was a section-map grep, one wide multi-term grep, then follow-up greps scoped to
-  > the individual owning topics' line ranges. And expect the honest outcome to be **dropping most of
-  > the proposals**, not adding them: a cross-cutting run that adds the majority of its gaps has
-  > almost certainly duplicated the topics it spans.
-  > **Why this check lives in Step 4a and not in the sync step.** It used to sit at the end of the sync —
-  > which meant a duplicate was written into the topic file *and* mirrored into `notes/coverage.md`
-  > before being caught, forcing a second full sync pass. It happened on a real run (three Angular-owned
-  > items written and mirrored during an Angular Material run). Deciding ownership belongs to
+  > section map in the same output), and decide from the hits.
+  > **Two structural cases make this the load-bearing step, not a formality.** *Foundational* topics
+  > sit underneath others (JavaScript below Angular; Java below Spring Boot) and attract proposals
+  > belonging to the layer above. *Cross-cutting* topics sit across the stack (Architecture, Security,
+  > General) and attract proposals from every side at once — on those, expect one grep NOT to be enough
+  > (the honest pattern is a section-map grep, one wide multi-term grep, then follow-up greps scoped to
+  > the individual owning topics' line ranges), and expect the honest outcome to be **dropping most of
+  > the proposals**, not adding them. A cross-cutting run that adds the majority of its gaps has almost
+  > certainly duplicated the topics it spans. (why: R11)
+  > **A multi-term grep that returns zero hits across the board is a broken command, not an empty
+  > result.** Before concluding "no overlap", re-run one single term standalone and confirm it returns
+  > the hits you know are there. A silent false negative here is worse than skipping the check, because
+  > it produces a *confident* wrong answer. Prefer the dedicated Grep tool over a hand-rolled shell loop.
+  > (why: R22)
+  > **Why this check lives in Step 4a and not in the sync step.** Deciding ownership belongs to
   > consolidation, when nothing has been written yet; by the time the sync runs, the cost of a wrong
-  > call has already been paid twice. Step 4b's cold review sits on the same principle.
+  > call has already been paid twice. Step 4b's cold review sits on the same principle. (why: R12)
 
 **Not in Claude Code (plain chat):** run the angles yourself, one at a time and explicitly — switch
 hats per angle, generate the probes cold and uncapped, list the gaps, then add the genuine ones. The
@@ -677,16 +638,11 @@ padding the input is how a narrow check turns into an expensive one that reviews
 
 > **Why the whole section and not only the new bullets.** The brief asks the reviewer to judge whether
 > an item is *filed in the right section* and whether it *restates an existing bullet* — and neither
-> question can be answered from an excerpt that omits the section's other items. A real run (Security,
-> 2026-07-18) hit exactly this: the reviewer flagged a CSRF-mechanism item as misfiled, not knowing the
-> section already held the CSRF bullet it explains, and the generator had to overrule it. That is a
-> false positive manufactured by the prompt, not by the reviewer.
->
-> Sending the section also closes a hole the prompt elsewhere admits it cannot cover. Step 4a's
-> intra-file duplicate check runs on the generator's memory with ~100+ proposals in context — "which is
-> exactly the moment memory fails". With the surrounding bullets present, the reviewer becomes a real
-> second check on same-section duplication, at close to zero extra cost: only the touched sections are
-> sent, and they are the ones the generator was reasoning about anyway.
+> question can be answered from an excerpt that omits the section's other items. Sending the section
+> also closes a hole the prompt elsewhere admits it cannot cover: Step 4a's intra-file duplicate check
+> runs on the generator's memory with 100+ proposals in context, which is exactly the moment memory
+> fails. With the surrounding bullets present, the reviewer becomes a real second check on same-section
+> duplication, at close to zero extra cost. (why: R13)
 
 **In Claude Code:** one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
@@ -745,9 +701,7 @@ complying with a mandated split. The two rules do not conflict in priority (the 
 a grouped bullet is a defect, an oversized section is only a shape problem), so the question is where
 the extra item lands. In order: **relocate** the least-central item in that section to a neighbour whose
 heading honestly describes it; if no honest home exists, **split the section** per Step 4's rule. Never
-resolve it by declining the split or by leaving the section over 12. The worked example is the TypeScript
-run: applying two splits took `## Narrowing and type guards` from 12 to 13, and the fix was moving the
-`catch (e: unknown)` item into `## Modelling domain state and errors`, where it filed better anyway.
+resolve it by declining the split or by leaving the section over 12. (why: R14)
 **Re-run the Step 4 structural count after applying the reviewer's fixes** — the first count ran before
 these edits existed, so it cannot have seen the overflow.
 
@@ -779,14 +733,11 @@ Git → General. Add a `---` separator before and after the new section.
      deeper) — content and order stay otherwise identical, including any `---` separators
      between subsections if the source file uses them.
 
-   > **The two substitutions overlap — never apply them in a single pass over the file.** The first
-   > rule turns the title into `## {TOPIC}`, which the second rule then matches and demotes again to
-   > `### {TOPIC}`, silently producing a section that no longer has a topic heading at all. It
-   > happened on a real run (SQL, 2026-07-18) via one `sed` with two expressions. Transform the title
-   > **separately** from the section headings (handle line 1 on its own, or run the `## ` → `### `
+   > **The two substitutions overlap — never apply them in a single pass over the file.** Transform the
+   > title **separately** from the section headings (handle line 1 on its own, or run the `## ` → `### `
    > rule first and the title rule second), and explicitly check that line 1 of the rebuilt section
    > reads `## {TOPIC}` before moving on. The verify step below catches this, but only if you compare
-   > the heading levels rather than just the bullets.
+   > the heading levels rather than just the bullets. (why: R15)
 3. Keep the `---` separator before and after the section so it stays cleanly divided from the
    topics before and after it in the study-priority order (Angular → Angular Material →
    Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git →
@@ -828,22 +779,16 @@ see: that line 1 of the rebuilt section reads `## {TOPIC}` and not `### {TOPIC}`
 trap above), and that a line containing an em dash still renders as `—` and not `â€”` (the Windows
 encoding trap above). If anything differs, fix `notes/coverage.md` now, before moving to Step 5.
 
-> **Why this replaced "re-read the section side by side" (Security run, 2026-07-18).** That run
-> discovered `notes/coverage.md` had been missing the *Broken access control (IDOR)* bullet for an
-> unknown number of previous runs — the mirrored `### Common vulnerabilities` held 6 items against
-> the topic file's 8. Every prior run had "verified the sync" by reading and passed it. The drift was
-> caught the first time the check was run as a `diff`. Reading finds structural breakage; only a diff
-> finds a single absent bullet.
+> **Why this replaced "re-read the section side by side".** Reading finds structural breakage; only a
+> diff finds a single absent bullet. (why: R16)
 
-> **On reading `notes/coverage.md` end-to-end: do not.** Step 1's verifiable-reads rule and Step 4a's
-> "one grep, not a re-read" used to point in opposite directions for this file, and a real run had to
-> resolve the contradiction by hand. The resolution: **the combined file is never read whole.** It is
-> over 2000 lines and grows every run, so it is worked with by section map (`grep -n "^## "`), term
+> **On reading `notes/coverage.md` end-to-end: do not.** **The combined file is never read whole.** It
+> is over 2000 lines and grows every run, so it is worked with by section map (`grep -n "^## "`), term
 > greps, targeted `offset` range reads, and the diffs above. The `"N lines, read to EOF"` claim is
 > required for **`{NOTES_PATH}coverage.md`** — the topic file, which every 4a angle must read whole —
 > and is *not* claimed for `notes/coverage.md`. In the summary, state for the combined file what you
 > actually did (`"section map + N term greps + ranges X–Y; Security section verified by diff"`).
-> Never write "read to EOF" for a file you legitimately did not read to EOF.
+> Never write "read to EOF" for a file you legitimately did not read to EOF. (why: R17)
 
 ---
 
@@ -894,11 +839,9 @@ The "Synced to notes/coverage.md" row always appears, even when creating from sc
 **"Size delta" is reported, never acted on.** Scope comes from the job — never from the notes, and
 never from where {TOPIC} sits in Victor's study queue — so a large delta is *not* a reason to trim,
 and this row must not turn into a self-imposed budget. It exists because the run is the only moment
-that knows both numbers at once, and Victor is the one who decides what the growth means downstream
-(the JavaScript run took a topic from 121 to 208 lines and 13 to 27 sections — every item defensible,
-but ~200 concepts queued for `notes-audit` on a topic that is eighth in the study order, which is a
-scheduling judgement only he can make). Report the before/after and the analyst's frequency signal
-plainly, and leave the conclusion to him.
+that knows both numbers at once, and Victor is the one who decides what the growth means downstream.
+Report the before/after and the analyst's frequency signal plainly, and leave the conclusion to him.
+(why: R19)
 
 **Commit the changes yourself.** Coverage files live under `notes/`, so this is one of the
 cases where Claude commits directly (CLAUDE.md "Non-negotiables" exception for `notes/` and
@@ -927,10 +870,7 @@ git commit -m "docs: update {TOPIC} coverage — <one line summary of main chang
 **If Step 4a wrote entries into `_cross-topic-inbox.md`, commit that file separately, right after the
 coverage commit** — same safety check (status → add only the inbox file → status → commit), message
 `docs: route <N> <owning-topic>-owned items from the {TOPIC} coverage run to the cross-topic inbox`.
-The atomicity rule above ("only the coverage files, nothing else") and Step 4a's "write the entry
-before you move on" used to contradict each other here — a real run (Architecture, 2026-07-18) had to
-improvise this second commit because the `git add` list did not mention the inbox at all. Two commits
-is the resolution: the coverage change and the routing are two logical changes.
+Two commits is deliberate: the coverage change and the routing are two logical changes. (why: R20)
 
 Report the commit hashes in the final summary so Victor can see they landed.
 
@@ -945,8 +885,6 @@ chat.
 
 **Close-out verification — mechanical, never by impression:** after that commit, run
 `git show --stat HEAD` and confirm it lists **both** files. If it lists only the report, the step is
-half-done — update the tracker and commit it before printing anything else. This half used to live
-only by indirection inside the shared file, and the Security run (2026-07-18) — the heaviest run to
-date — wrote the report, skipped the tracker, and then self-assessed "no rule breached"; a saturated
-context cannot see its own omission, so the check is a `git show --stat`, not a feeling. Only after
-this verification passes may the last checklist item be marked done and the summary printed.
+half-done — update the tracker and commit it before printing anything else. A saturated context cannot
+see its own omission, so the check is a `git show --stat`, not a feeling. Only after this verification
+passes may the last checklist item be marked done and the summary printed. (why: R21)
