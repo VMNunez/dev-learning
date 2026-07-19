@@ -444,22 +444,36 @@ it is deliberately the most expensive one.** Two rules make it work (why: R4):
 > Either way the consolidation is a single pass and the generator is still the only editor.
 
 **In Claude Code:** launch these as **parallel** `general-purpose` subagents, `model: opus`,
-`run_in_background: false`. Adapt the angle list to {TOPIC}: drop any that is meaningless for the topic
-(a "production debugging" angle makes no sense for CSS), and **add at least one angle invented for
-{TOPIC} specifically — this is required, not optional.**
+`run_in_background: false`. Adapt the angle list to {TOPIC} in two ways, both required:
+
+- **Substitute, don't just subtract.** When a numbered angle is meaningless for the topic (a
+  "production debugging" angle makes no sense for CSS; a "take-home from a blank IDE" angle makes no
+  sense for Git, since nobody bootstraps a repo under test conditions), drop it **and put a
+  topic-specific angle in its place**. The Git run's replacement — recovery and error-message reading
+  — returned 38 gaps, the highest single-angle yield of that run. A dropped angle is a free slot, not
+  a saving. (why: R23)
+- **Invent at least TWO angles for {TOPIC} specifically — this is required, not optional.** One was
+  the old floor; four consecutive runs show two is where the yield actually is (why: R5).
 
 > **The invented angle is where the run's value actually comes from.** The numbered angles below are
 > generic by construction, so on any topic that sits *beside* a framework they converge on that
 > framework's mechanics — which another topic usually already owns. Three consecutive runs show the
 > pattern and none is a coincidence (why: R5).
 >
-> So do not treat the numbered list as the work and the extra angle as a garnish. Before dispatching,
+> So do not treat the numbered list as the work and the invented angles as a garnish. Before dispatching,
 > ask: **"what is the question an interviewer asks about {TOPIC} that none of the angles below would
 > ever generate?"** — the inversion the topic allows (Security: *how would you attack it?*), the surface
 > the candidate lives on rather than authors (Architecture: *code you did not write*), the layer beneath
-> the idioms (language topics: *what does this print?*). Name the invented angle and its yield explicitly
-> in the final summary, so the next run can promote it into the numbered list if it keeps paying off —
-> that is how angles 5 and 6 got here.
+> the idioms (language topics: *what does this print?*). Name each invented angle and its yield
+> explicitly in the final summary.
+>
+> **But do not promote them into the numbered list — that door is closed, deliberately.** Angles 5 and
+> 6 arrived that way, which made promotion look like the pattern to keep repeating. It is not: the
+> invented angle wins *because* it is topic-specific, so promoting it just adds one more generic angle
+> — and generic angles are precisely the ones that converge on the neighbouring framework's mechanics
+> that another topic already owns. Promoting the winners would erode the thing that made them win. A
+> run that feels the urge anyway should read R5 first: it lists the runs, the yields, and the
+> reasoning against. (why: R5)
 
 1. **Live code review** — "here is a snippet, what is wrong with it?". The *concepts* a reviewer needs:
    annotations that silently do nothing, wrong layer, misused framework idioms, tests that pass but
@@ -644,6 +658,18 @@ padding the input is how a narrow check turns into an expensive one that reviews
 > fails. With the surrounding bullets present, the reviewer becomes a real second check on same-section
 > duplication, at close to zero extra cost. (why: R13)
 
+> **When the run restructured sections, marking by hand is expensive — here is the sanctioned shortcut,
+> and its one condition.** A run that splits, renames or reorders sections can easily have 150 items to
+> mark, and that cost is what tempts a generator into substituting something cheaper. So `git diff HEAD
+> -- {NOTES_PATH}coverage.md` **is** an acceptable way to show the reviewer what is new — **but only if
+> the dispatch also names which bullets are inherited-but-moved.** Without that list the shortcut is not
+> equivalent to marking: a reordered section makes git report unchanged, pre-existing bullets as
+> additions, the reviewer spends its attention on items Step 1.4 forbids rewording, and the
+> same-section duplication check this step exists for gets diluted. Produce the list by diffing against
+> the *pre-run* file rather than trusting the patch shape — `git show HEAD:{NOTES_PATH}coverage.md | grep
+> '^- '` gives the inherited bullets, and anything in the new file matching one of those lines verbatim
+> is moved, not new. (why: R23)
+
 **In Claude Code:** one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
 > You are reviewing coverage items written by another engineer, against a written standard. Read
@@ -724,6 +750,14 @@ Git → General. Add a `---` separator before and after the new section.
 1. Find the section for {TOPIC} in `notes/coverage.md` — it starts at the line `## {TOPIC}`
    and ends right before the next `## ` heading (or end of file if {TOPIC} is General, the
    last section).
+
+   > **The off-by-one that duplicates the heading.** The line number the section map reports **is** the
+   > `## {TOPIC}` heading itself, so a splice that keeps everything before it must use `head -(N-1)`,
+   > not `head -N`. Using N keeps the old heading and the rebuilt section adds its own, leaving two
+   > consecutive `## {TOPIC}` lines. **The two mandated diffs below do not catch this** — they compare
+   > bullets and `###` sub-headings, and both pass cleanly while the duplicate `##` sits there. Re-run
+   > `grep -n "^## " notes/coverage.md` after every splice and confirm the file still has exactly 12
+   > topic headings. (why: R24)
 2. Replace that whole section with the new content from `{NOTES_PATH}coverage.md`, transformed
    like this:
    - The title line `# Minimum Coverage — {TOPIC}` becomes `## {TOPIC}` (drop the

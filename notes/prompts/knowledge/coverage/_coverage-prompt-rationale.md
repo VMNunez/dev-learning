@@ -72,8 +72,30 @@ Three consecutive runs, none of them a coincidence:
   the app" produced build-outside-the-IDE, configuration precedence and the container-runtime section;
   "process and delivery" produced both delivery sections.
 
+- **CSS (2026-07-19)** — eight angles, two invented. "It works on your machine" (environment-dependent
+  rendering) produced the viewport/scrollbar-unit and font-and-image-loading sections; "accessibility —
+  the non-visual, non-mouse user" produced two whole sections that no numbered angle touched, on a
+  surface that is contractual in the public-sector work these consultancies actually deliver.
+- **Git (2026-07-19)** — six angles, two invented, one numbered angle *replaced* rather than dropped.
+  "Draw me what Git actually did" produced the commit/branch graph-model section that makes every other
+  Git answer derivable; "Git as the team's process surface" produced branch protection and releases.
+
 The pattern: the numbered angles are generic by construction, so on any topic sitting *beside* a
 framework they converge on that framework — which another topic already owns.
+
+**Two conclusions the fourth run made explicit.**
+
+*One invented angle was too low a floor.* CSS and Git both ran **two**, and in both cases both of them
+carried material no numbered angle reached. The requirement is now two, not "at least one".
+
+*Do not promote the winners into the numbered list.* This is a reversal, and the reasoning matters
+because the prompt used to advise the opposite. Angles 5 and 6 were promoted invented angles, which made
+promotion look like the mechanism to keep feeding. But the invented angle wins precisely *because* it is
+tailored to the topic; promote it and it becomes one more generic angle, and generic angles are exactly
+the ones documented above as converging on the neighbouring framework. Promotion therefore erodes the
+property that produced the yield. The General run's pending recommendation to promote "the wire" was
+declined on these grounds (2026-07-19) — recorded here so the next run does not re-propose it from
+scratch. Name the invented angles and their yield in the summary; leave the numbered list alone.
 
 ## R6 — Why output prediction is mandatory for language topics
 
@@ -225,3 +247,38 @@ On the General run (2026-07-19) the cross-topic ownership check was first run as
 as a tooling failure, not an empty result. Trusted, it would have duplicated roughly thirty items already
 owned by Spring Boot, Security, Git and JavaScript into General — precisely the failure the check exists
 to prevent. The dedicated Grep tool worked where the bash loop did not.
+
+## R23 — The cheap substitute for `[NEW]` marking, and why it needs a condition
+
+On the CSS/Git run (2026-07-19) Step 4b's marking requirement was **breached, by the generator, with a
+measurable cost**. Both topics were restructured heavily (CSS 16→27 sections, Git 8→19), so marking every
+new item by hand meant ~150 marks per topic. Instead the reviewers were told to derive the new items from
+`git diff HEAD`. That is not equivalent: a rewritten or reordered section makes git report **unchanged,
+pre-existing bullets as additions**. The CSS reviewer duly reported defects against four inherited
+bullets, three of its findings had to be rejected on provenance alone, and the same-section duplication
+check — the entire reason R13 sends whole sections — was diluted. The Git dispatch patched around it with
+a caveat paragraph, which worked but moved the provenance judgement onto the subagent.
+
+The lesson is not "enforce the marking harder". A requirement that is genuinely expensive and has no
+sanctioned alternative is one that invites exactly this substitution. So the diff is now allowed **with
+the condition that makes it equivalent**: the dispatch must also name which bullets are
+inherited-but-moved, derived from the pre-run file (`git show HEAD:{path}`), not guessed from the patch
+shape.
+
+Also recorded from that run: **substituting a numbered angle beats dropping one.** Git's take-home angle
+is meaningless (nobody bootstraps a repo under test conditions); replacing it with a
+recovery-and-error-message angle returned 38 gaps, the run's highest single-angle yield. Step 4a now
+frames a dead angle as a free slot rather than a saving.
+
+## R24 — The splice off-by-one that both mandated diffs pass
+
+Same run: the Step 4c splice for Git used `head -N` where N was the line number of the `## Git` heading
+itself, so the rebuilt section's own heading landed under the surviving original — two consecutive
+`## Git` lines. The CSS splice, done correctly with N−1, showed the trap is an off-by-one and not a
+misunderstanding.
+
+What makes this worth a rule is the detection gap: **both diffs mandated by Step 4c passed while the
+duplicate heading was present.** They compare `- ` bullets and `### ` sub-headings, and a stray `## `
+line is invisible to both. Only `grep -n "^## "` caught it. This is the concrete case behind the standing
+instruction to check line 1 by eye — the eye-check and the section-map grep cover what the diffs
+structurally cannot.
