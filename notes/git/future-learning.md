@@ -8,7 +8,9 @@ Topics to study once the current 11 files are solid. Nothing here is needed for 
 
 Things you will encounter in the first weeks. Not needed for the interview, but you will be asked to do them.
 
-### Git tags and semantic versioning
+### Semantic versioning and owning a release
+
+> **Boundary (set 2026-07-19, coverage run).** The *tag mechanics* were promoted to coverage — `git tag`, annotated vs lightweight, `git describe`, and `git log <tag>..<tag>` to see what a release contained. What stays here is the part a junior is not asked to do: **deciding** a version number and owning the release itself. Do not re-promote the commands below; they are already covered.
 
 Tags mark a specific commit as a release. Unlike branches, tags do not move.
 
@@ -27,6 +29,8 @@ Semantic versioning format: `MAJOR.MINOR.PATCH`
 You will see tags on every professional project. You will be asked to tag releases once you own a piece of the codebase.
 
 ### `git bisect` — find the commit that broke something
+
+> **Boundary (set 2026-07-19, coverage run).** One angle argued `bisect` belongs in coverage; three others judged it post-junior and it stays here. The split: *why* a granular, atomic history pays off later is already a coverage item under Commit quality, and that is the part an interviewer actually probes. **Operating** bisect is what remains post-junior. Promote it only if a real interview report asks for the command itself.
 
 Binary search through the commit history to find which specific commit introduced a bug.
 
@@ -71,29 +75,6 @@ npx husky init
 In Spring Boot projects, hooks can be plain shell scripts or configured with Maven plugins.
 
 Why it matters: professional teams use hooks to enforce standards automatically. A pre-commit hook that runs the linter means nobody can commit code that fails the style guide — the check happens before the commit, not in CI after the fact.
-
-### Branching strategies — Git flow vs trunk-based development
-
-Two approaches to managing branches in a team:
-
-**Git flow** — formal model with long-lived branches:
-```
-main           ← only tagged releases
-develop        ← integration branch
-feature/*      ← feature branches off develop
-release/*      ← stabilisation before merging to main
-hotfix/*       ← bug fixes applied directly to main
-```
-Used in teams with scheduled releases. Adds overhead but gives explicit control over what goes to production.
-
-**Trunk-based development** — everyone merges to main frequently:
-```
-main           ← always deployable
-feature/*      ← short-lived (1–2 days max), merged directly to main
-```
-Used in teams that deploy continuously. Requires good CI and feature flags to hide incomplete work.
-
-You already use a model closer to trunk-based. Knowing the vocabulary matters when a tech lead explains the team's branching strategy on day one.
 
 ### `git worktree` — multiple branches at the same time
 
