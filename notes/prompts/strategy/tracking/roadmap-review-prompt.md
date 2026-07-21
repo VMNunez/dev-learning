@@ -285,9 +285,20 @@ Fold both reviewers' fixes and findings into the report below.
 
 Include both the doer's edits (Steps 1–5) and the two reviewers' fixes (Step 6) in this table.
 
-**Remaining knowledge gaps** — concepts in coverage.md not yet in PROGRESS.md, grouped by
-topic. Max 3 per topic. Focus on what interviewers at NTT Data, Capgemini, and similar
-companies actually ask junior Angular + Spring Boot candidates.
+**Remaining knowledge gaps** — concepts in coverage.md not yet in PROGRESS.md. Split them into
+two groups; the split is the point, not the length:
+
+- *Gaps the plan already owns* — for each, name what closes it (a project in the sequence, the SQL
+  block, the notes block). Group by topic, max 3 per topic, ranked by what interviewers at NTT
+  Data, Capgemini, and similar companies actually ask junior Angular + Spring Boot candidates.
+  Nothing to decide here — this group is a status line.
+- *Gaps nothing in ROADMAP closes* — **no limit**. Any topic or concept that no project candidate
+  and no study block accounts for. These are holes in the plan, not in Victor's study, and they
+  are what this review exists to surface. If a whole topic has no PROGRESS.md section at all
+  (Architecture and Security were both in this state on 2026-07-21), say so as one line for the
+  topic rather than listing its concepts — coverage.md owns the full list.
+
+Never restate coverage.md — reference it for detail.
 
 **New project candidates added** — list only candidates added in Step 3 that were not in
 ROADMAP before this review. For each: project name, what it covers technically, which gap
