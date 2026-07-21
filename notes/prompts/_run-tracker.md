@@ -44,7 +44,7 @@ runs once the whole coverage-prompt column is filled).
 | 04-meal-finder | | | | |
 | 05-task-manager | | | | |
 | 06-hr-portal | | | | |
-| 07-timetrack | 2026-07-16 (MODE = review) | 2026-07-17 (backend only, FORCE) | | |
+| 07-timetrack | 2026-07-21 (MODE = review) | 2026-07-17 (backend only, FORCE) | | |
 
 ## Global prompts (no per-target scope)
 
