@@ -38,7 +38,7 @@ runs once the whole coverage-prompt column is filled).
 
 | Project | plan-audit | review-audit | readme-audit | portfolio-audit |
 |---|---|---|---|---|
-| 01-todo-list | | | | |
+| 01-todo-list | 2026-07-21 (MODE = review) | | | |
 | 02-weather-app | | | | |
 | 03-expense-tracker | | | | |
 | 04-meal-finder | | | | |

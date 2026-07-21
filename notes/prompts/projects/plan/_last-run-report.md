@@ -1,9 +1,10 @@
 # plan-audit — last run report
 
-**Date:** 2026-07-16 · **Target:** MODE = review, PROJECT = projects/07-timetrack
+**Date:** 2026-07-21 · **Target:** MODE = review, PROJECT = projects/01-todo-list
+**Status:** applied in bbe5d4c
 
-1. **Plan vs reality** — the five-specialist split sized well: every slice returned a full trace; branches-coverage caught the only structural gap (§23 missing entirely), which no other slice could have owned.
-2. **Report discipline** — all five reports came back in the compact format with line count + read-to-EOF; nothing trimmed or discarded.
-3. **Failures & retries** — zero re-dispatches; both ripples (architecture→steps-tests Topic vocabulary, rules-security→branches-coverage §0 columns) landed in not-yet-run specialists, so no reconciliation pass was needed.
-4. **Rule friction** — the history snapshot showed Steps 5–6 marked ✅ while session context (CLAUDE.md active-project line) says Step 5 in progress; the gate only checks preservation so it passed, but the prompt gives no guidance when the baseline itself contradicts external context. Also, the active git branch (`fix/backend-backlog`) is a transient fix branch not in §22 — the specialist reasonably set §0 Current branch to the canonical `feat/angular-frontend`, but invariant 8 doesn't say how to treat fix branches.
-5. **Verdict** — pipeline clean; change worth considering: one line in the review-mode prompt on how invariant 8 handles transient fix branches, and a note that a snapshot/CLAUDE.md mismatch should be reported (not resolved) by the orchestrator.
+1. **Plan vs reality** — the Angular-only path worked as designed: `rules-security` was correctly not dispatched (nothing to audit) and `branches-coverage` returned an all-N/A trace, the honest result for a legacy plan with no numbered sections — but that means two of five slices did no work on 01–06, so the five-specialist split is oversized for Angular projects.
+2. **Report discipline** — nothing trimmed or discarded; all traces came back compact with line count + read-to-EOF.
+3. **Failures & retries** — zero unusable reports. Two re-dispatches, both for ripples: `architecture` (component names and state ownership contradicting the corrected steps) and `steps-tests` (an `output()` the built component never had). Each concern used its one allowed re-dispatch; the cap held.
+4. **Rule friction and rule breaches** — **breach:** step 0 read the previous report but did not print its open finding to Victor. That report predates the `Status:` line, and its Verdict named an unapplied change (invariant 8 vs transient fix branches); the check keys on `Status`, so a header without one read as clean and the finding stayed silent for a second run. **Friction:** the ripple cap forced the run to commit a plan carrying a line it had already verified as false — see Verdict.
+5. **Verdict** — change applied: the leftover-ripple rule now carves out verified factual errors (the orchestrator corrects every occurrence before committing, instead of only recording them). Drafted, then tightened by the cold reviewer, which caught that the error occurred twice, not once. Second finding recorded, not applied: the oversized specialist set on Angular projects is cost, not a wrong result (bar condition 3).
