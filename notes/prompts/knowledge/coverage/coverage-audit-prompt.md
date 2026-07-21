@@ -85,6 +85,10 @@ judged one section at a time.
 | **C — Adversarial interviewer** | per topic | Step 4a | Would a real interviewer find a hole? | Gap list: of the questions it would ask (uncapped), the ones coverage does NOT support, each as a proposed item tagged by section. |
 | **D — Cross-topic consistency** | global (once) | Step 4 | Do the sections overlap, misplace, or carry post-junior items? | Three lists: duplicates (concept → the two sections + which to keep), misplaced items (concept → from → to), and scope-demotion candidates (item → why post-junior). Reads all sections; edits nothing. |
 
+The four mandates themselves live in `notes/prompts/knowledge/coverage/_coverage-analyst-mandates.md`
+(sections A, B, C, D — the "Step" labels above are their section names). They were extracted so this
+orchestrator holds only the flow; each dispatched analyst reads its own section there.
+
 Rules for the analyst split:
 - **One topic per analyst, one concern per analyst — for A, B, C.** Never hand a per-topic subagent two
   topics or two concerns, even at higher token cost — deep, atomic passes are the standard, the same rule
@@ -126,9 +130,9 @@ one non-negotiable Opus roles are the session and Analyst C.
 
 **Per-topic loop (sequential, one topic fully done before the next):**
 1. Dispatch Analyst A (`model: sonnet`), then B (`model: sonnet`), then C (`model: opus`) for the topic
-   (`run_in_background: false`). Dispatch each one by
-   telling it to read its mandate section in this prompt (A → Step 2b, B → Step 3, C → Step 4a) with
-   {TOPIC} filled in, plus only the files its concern needs (listed in the analyst-split rules above).
+   (`run_in_background: false`). Dispatch each one by telling it to read its section (A / B / C) in
+   `notes/prompts/knowledge/coverage/_coverage-analyst-mandates.md` with {TOPIC} filled in, plus only
+   the files its concern needs (listed in the analyst-split rules above).
    Collect their three lists. **Acceptance check per analyst:** every report must carry the
    "N lines, read to EOF" line for each file it read whole (see the verifiable-reads rule in
    Step 1); B must return its item-by-item trace; A must map each recurring evidence requirement to
@@ -140,50 +144,31 @@ one non-negotiable Opus roles are the session and Analyst C.
    no narrative, no restating of items it found fine; if a report comes back wrapped in prose, keep
    the lists + proof and discard the rest.
 1a. **Dispatch every analyst clean — never hand one your own prior.** State the topic and the mandate,
-   and stop there. Do not tell an analyst that a file is "the thinnest", "freshly regenerated", "in
-   good shape", or "probably under-covered": that is your hypothesis, and the analyst's job is to form
-   its own. The damage is asymmetric — a "probably thin" prior invites invented gaps, a "probably fine"
-   prior suppresses real ones — and it lands hardest on **Analyst C**, the one role running on Opus
-   precisely because its independent judgement is what proves a section complete. This is not
-   hypothetical: on the 2026-07-19 run the orchestrator told C that an 85-line Security file was the
-   thinnest in the system and to assume heavy under-coverage; C ran the pass anyway and returned
-   "the premise is wrong", with 71 of 98 questions supported. It was right, and the prior had bought
-   nothing. Two topics that same run were told their files had been regenerated that day; one still
-   returned 43 gaps. If you genuinely need a scope boundary (which sibling topic owns what), state it
-   as a **routing rule**, never as an expectation about what the analyst will find.
-1b. Read `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` and take the entries filed under
-   `## {TOPIC}` — gaps that another topic's run found and routed to this one. Fold them into the
-   consolidation below as **proposed** items (judged against the standard like any analyst gap, never
-   pre-approved), then **clear every entry you looked at**, added or discarded, and report both counts
-   in the summary.
-   **Check each entry against the topic file before adding it — a routed gap is frequently already
-   covered.** The routing run only saw its *own* topic, so it flagged what looked absent from where it
-   stood; it never read the receiving file. Grep the receiving `coverage.md` for the concept and read
-   the surrounding items before writing anything. On the 2026-07-19 run this check killed 8 of 17
-   entries: all three Security items routed from the General run were already in the CORS section
-   almost verbatim (the origin definition, the preflight trigger, "CORS is not authorisation"), and
-   three Spring Boot items were already carried by existing bullets. Adding them would have created
-   duplicates for Analyst D to find and the orchestrator to remove — the cost of skipping a grep is
-   paid twice. Report discarded-as-already-covered separately from discarded-as-out-of-scope. This audit walks every topic, so it is the pipeline's sweep of the inbox: an entry
-   left uncleared here will be re-litigated on the next run, and one left unread is the silent loss the
-   file exists to prevent. Note that Analyst D cannot cover for this — D hunts duplicates, misplaced
-   items and demotion candidates in `notes/coverage.md`, so a concept absent from every section is
-   invisible to it, which is exactly how four Angular-owned items went missing on 2026-07-18.
+   and stop. Do not tell an analyst a file is "the thinnest", "freshly regenerated", or "probably
+   under-covered": the damage is asymmetric — a "thin" prior invites invented gaps, a "fine" prior
+   suppresses real ones — and it lands hardest on Analyst C, whose independent judgement is the whole
+   reason it runs on Opus (told once that an 85-line file was thinnest, C overturned the prior and
+   returned 71/98 supported). A genuine scope boundary — which sibling topic owns what — is a **routing
+   rule**, never an expectation about what the analyst will find.
+1b. Read `notes/prompts/knowledge/coverage/_cross-topic-inbox.md`, take the entries under `## {TOPIC}`
+   — gaps another topic's run routed here — and fold them into the consolidation as **proposed** items
+   (judged like any analyst gap, never pre-approved). Then **clear every entry you looked at**, added or
+   discarded, and report both counts: an entry left uncleared is re-litigated next run, one left unread
+   is the silent loss the file exists to prevent, and Analyst D cannot catch it (a concept absent from
+   every section is invisible to a duplicate-hunter). **Grep the receiving `coverage.md` before adding
+   any entry** — the routing run never read this file, so a routed gap is frequently already covered
+   (8 of 17 were, on 2026-07-19). Report discarded-as-already-covered separately from
+   discarded-as-out-of-scope.
 2. Consolidate: merge the three lists, drop duplicates, discard any gap that is out of junior scope
    (record those in the summary as "analyst-suggested, left out — reason").
-2b. **Before creating a *new section*, check which topic already owns the concept.** Analysts are
-   confined to one topic and will therefore propose, in perfectly good faith, whole areas that another
-   topic already covers — C for Angular will hand you a browser-security section, C for Architecture a
-   transactions section, C for Java a concurrency section. Adding a gap to an existing section is
-   low-risk; opening a new one named after another topic is the reliable way to manufacture
-   duplicates. So for each proposed new section, grep the sibling topic's `coverage.md` first and pick
-   one of three outcomes: **keep it whole** (the sibling genuinely does not cover it), **keep the
-   framework-specific half and drop the rest** (Angular keeps `DomSanitizer` and `withXsrfConfiguration`
-   because they are Angular APIs; Security keeps token storage, `[innerHTML]`, and "role checks are
-   UX"), or **drop it and leave a one-line pointer** to the owning topic so a reader of this file alone
-   is not misled into thinking the concept is out of scope. On the 2026-07-19 run this check was not
-   performed and Analyst D later found 19 duplicates, the majority created by that run's own edits —
-   caught, but only after the writing was done twice.
+2b. **Before creating a *new section*, check which topic already owns the concept.** An analyst confined
+   to one topic will, in good faith, propose whole areas another topic covers — C for Angular hands you a
+   browser-security section, C for Java a concurrency section. Adding a gap to an existing section is
+   low-risk; opening a new one named after another topic reliably manufactures duplicates (19 of them on
+   2026-07-19, most created by that run's own edits). So grep the sibling topic's `coverage.md` first and
+   pick one: **keep it whole** (the sibling does not cover it), **keep the framework-specific half and
+   drop the rest** (Angular keeps `DomSanitizer`; Security keeps token storage and "role checks are UX"),
+   or **drop it and leave a one-line pointer** to the owning topic.
 3. Apply the surviving gaps to `notes/{topic}/coverage.md`, and update `future-learning.md` if anything
    was promoted or demoted. **Do not hand-edit `notes/coverage.md` during the loop** — it is rebuilt
    from the topic files in Step 5, which is what makes the mirror exact.
@@ -280,128 +265,26 @@ Add it to the correct section in that topic's `coverage.md`; the Step 5 rebuild 
 
 ---
 
-## Step 2b — Analyst A's mandate: market-fit (deep analysis first, evidence as the sharpening floor)
+## Analyst mandates — A (market-fit), B (internal quality), C (adversarial interviewer)
 
-This is the single concern of **Analyst A**, run once per topic as a read-only cold subagent. It comes
-**before** the finer per-section audit: coverage must first meet what the market actually asks, then
-expand — the priority order defined in `_coverage-standard.md` ("cover the market first, then expand").
-This is the step that operationalises the "required floor" principle instead of leaving it to memory.
+The three per-topic mandates live in `notes/prompts/knowledge/coverage/_coverage-analyst-mandates.md`,
+one section each — moved out of this prompt so the orchestrator's context holds the flow, not the
+briefs. The per-topic loop above dispatches each analyst to read its own section there:
 
-Analyst A **returns a gap list** and edits nothing — the orchestrator applies the surviving gaps in the
-per-topic loop. "Add", "sharpen", "flag" below mean *propose in the returned list*, not write to a file.
-
-**Lead with the deep analysis — it is the primary input, not the evidence.** Per `_coverage-standard.md`
-("Two sources"), the backbone is a full reasoning of what a junior for the target role and companies must
-know, backed by a live web search of current Spanish junior postings when possible. Run that analysis for
-every section (Step 3's checks plus the completeness test) as the **primary floor**, regardless of how many
-postings are on file. The evidence below then **complements and sharpens** it — adding hard frequency and
-the market's exact wording — and overrides it only on a concrete point where the two actually conflict.
-
-Then read the **Synthesis** in `notes/prompts/_job-market-evidence.md`. For **each recurring requirement**
-(with its frequency, e.g. `Docker ~3/8`, `Java ~8/8`):
-
-1. **Gap → add.** Find the coverage item(s) it maps to. If a recurring requirement has no item — or only
-   a thin/vague one — add or sharpen the item in the right topic section and sync to
-   `notes/{topic}/coverage.md`. Priority scales with frequency: a `~8/8` requirement missing from
-   coverage is a serious defect; a `~3/8` one is still required but lower urgency.
-2. **Over-coverage → flag, don't cut yet.** Note any coverage item that no posting supports **and** is
-   not an interview fundamental the postings under-list. Do not delete it here for that reason alone
-   (the standard's "raises the floor, does not lower the ceiling" rule) — list it as a demotion
-   candidate for the Step 4 scope check to judge.
-3. **Signals to watch → keep out.** A requirement in the evidence's "Signals to watch" list (senior-ish:
-   Kafka, Spring Cloud, Spring Batch, NgRx…) is **not** a junior floor — do not force it into coverage.
-
-Remember the evidence is a **small, partial sample**, so it only raises the floor set by the analysis,
-never lowers it: a requirement's *absence* from the file is not proof a junior does not need it. In the
-summary, note whether each market-fit change came from the deep analysis, from real evidence, or from both.
+- **Analyst A — market-fit** (mandate: Step 2b): does coverage meet what the market asks for this topic?
+- **Analyst B — internal quality** (mandate: Step 3): does each existing item pass the standard's bar?
+- **Analyst C — adversarial interviewer** (mandate: Step 4a): would a real interviewer find a hole the
+  coverage cannot answer? Runs on `opus`.
 
 ---
 
-## Step 3 — Analyst B's mandate: internal quality of each item
+## Step 4 — Apply Analyst D's cross-topic findings
 
-This is the single concern of **Analyst B**, run once per topic as a read-only cold subagent, on that
-one topic's section. Analyst B **returns a gap list plus the item-by-item trace** and edits nothing —
-the orchestrator applies the surviving gaps in the per-topic loop.
-
-Apply the **content and quality checks defined in `_coverage-standard.md`** — do not restate them, run them:
-- **Three item types** present (conceptual / decision / pressure) — add the missing type.
-- **Confusable pairs** — both sides present as separate items.
-- **Item quality** — each item is interview-anchored, not a dictionary definition; fix any that read
-  like one.
-- **One concept per item** — split any grouped bullet.
-
-Plus one audit-specific check the standard doesn't cover, because it only makes sense across a whole
-finished coverage file:
-
-**AI-exploitable gaps** — are there concepts AI generates commonly but a junior would struggle to
-explain? These are high-priority to have in coverage. Focus on: the "why" behind decisions (why JWT,
-why DTOs, why soft delete, why coordinator pattern); layer-placement rules (controller vs service vs
-repository); transaction behaviour and edge cases; security implications of common patterns;
-annotation-placement rules and what breaks when they are wrong.
-
----
-
-## Step 4a — Analyst C's mandate: adversarial interviewer
-
-This is the single concern of **Analyst C**, run once per topic as a read-only cold subagent. It is the
-audit's version of `coverage-prompt.md`'s adversarial pass — same idea, applied to an already-existing
-section. Analyst C **returns a gap list** and edits nothing.
-
-You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
-`notes/prompts/_shared-context.md` for the exact role/companies, and
-`notes/prompts/_job-market-evidence.md` for what they hire for). You are screening a candidate
-at the target level and the topic is {TOPIC}. Read that topic's `notes/{topic}/coverage.md` (and its
-section in `notes/coverage.md` if the topic file is missing) plus
-`notes/prompts/knowledge/coverage/_coverage-standard.md`.
-
-Write the questions you would actually ask to decide whether this candidate really knows {TOPIC} —
-**as many as you genuinely would use; do not stop at a fixed number, be exhaustive** — "uncapped"
-governs the *number of questions*, not the size of your report: keep each question to a terse one-liner
-and put the substance in the gap items, because a report that overruns the tool's inline limit has to
-be recovered from a persisted file before the orchestrator can use it (this happened on 2026-07-19 at
-49.8 KB) — (a capped
-interviewer finds only the gaps that fit inside its question budget — a real `coverage-prompt` run
-proved it: one capped interviewer returned 13 gaps and looked convergent while further uncapped
-angles found 80+ more). Mix conceptual, decision ("why X over Y"), and pressure/gotcha questions,
-and lean on the recurring requirements in the job-market evidence. Then, for each question, check
-whether the current coverage gives the candidate what they'd need to answer it. Return only the **gaps**: the questions the
-coverage does NOT support, each as a proposed coverage item in the standard's format
-(`concept — interview-anchored sentence`), tagged with its section. Do not rewrite existing items, do
-not edit any file. Be adversarial — assume the coverage is incomplete until your 12 questions prove
-otherwise.
-
----
-
-## Step 4 — Analyst D's mandate: cross-topic consistency
-
-This is the single concern of **Analyst D**, run **once** as a read-only cold subagent over the whole of
-`notes/coverage.md` after the per-topic loop. Cross-topic consistency cannot be judged one section at a
-time — a duplicate lives in two sections at once — so D is the one analyst with a global view. It still
-holds exactly one concern and **returns three lists, editing nothing**; the orchestrator applies the
-survivors in Step 5.
-
-**In Claude Code:** launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
-
-> You are auditing `notes/coverage.md` for cross-topic consistency only — not market-fit, not item
-> quality, not interview holes (other analysts own those). Read the whole `notes/coverage.md`, the
-> `future-learning.md` of each topic folder, and
-> `notes/prompts/knowledge/coverage/_coverage-standard.md`. The section order is Angular → Angular
-> Material → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git →
-> General. Return exactly three lists, nothing else:
-> 1. **Duplicates** — the same concept in two sections (e.g. "service layer" in both Architecture and
->    Spring Boot). For each: the concept, the two sections, and which section should keep it (the one an
->    interviewer is most likely to ask it in) — the other is removed.
-> 2. **Misplaced items** — a concept sitting in the wrong topic (a TypeScript-specific item under
->    JavaScript, a REST concept under Spring Boot that belongs in Architecture). For each:
->    `concept — from → to`.
-> 3. **Scope-demotion candidates** — items clearly post-junior for the target role (mid-level
->    architecture, senior performance work). For each: `item — one-line why it is post-junior`. Read
->    ROADMAP.md and `notes/prompts/_shared-context.md` for the target level.
-> Do not edit any file. Before reading `notes/coverage.md`, run `wc -l` on it — it is **far past** the
-> Read tool's silent 2000-line truncation limit (3914 lines after the 2026-07-19 run), so one Read call
-> returns roughly half the file and the tail topics would be invisible to you. Read it in several
-> `offset` passes to the real last line and state "N lines, read to EOF" in your report; a report
-> covering only the first 2000 lines is a failed pass. Return only the three lists plus that line.
+Analyst D's mandate is in `_coverage-analyst-mandates.md` ("Analyst D"). Dispatch it once, after the
+per-topic loop, `model: sonnet`, over the finished `notes/coverage.md`; collect its three lists
+(duplicates, misplaced items, scope-demotion candidates) and apply the survivors here. Run it last so
+it judges the sections in their post-edit state, and because reading the whole file is its job, not the
+orchestrator's.
 
 The orchestrator then applies the surviving findings in Step 5, editing the **topic files** (the mirror
 is regenerated afterwards): remove the losing side of each duplicate — leaving a one-line pointer to the
@@ -508,26 +391,20 @@ not hand the commands to Victor. No `Co-Authored-By` lines.
 git commit -m "docs: global coverage audit — <one line summary of main changes>"
 ```
 
-**One commit is the default; batch commits are allowed and are the right call on a full 12-topic run.**
-This audit is a long session — 12 topics × 3 analysts, plus Analyst D — and a single commit at the very
-end means everything is unprotected until then. On 2026-07-19 the session limit was hit mid-run and
-four completed topics survived only because they had already been committed. So: commit after every
-few topics (`docs: coverage audit (1/2) — <topics>`), keeping each batch a coherent unit, and run the
-full safety check above **every time** — the check is per commit, never once per session. The per-topic
-loop already calls each topic "commit-ready"; this makes that explicit instead of leaving it in tension
-with a single-commit rule. The rebuild and the Analyst D pass land in the final commit, since both
-operate across all topics.
+**Batch commits are allowed and are the right call on a full 12-topic run.** A single commit at the very
+end leaves everything unprotected until then, and a mid-run session limit can lose it (it did on
+2026-07-19). Commit after every few topics (`docs: coverage audit (1/2) — <topics>`), each batch a
+coherent unit, and run the full safety check above **every time** — it is per commit, never per session.
+The rebuild and the Analyst D pass land in the final commit, since both operate across all topics.
 
-**Report commit hashes by reading them from `git log`, never from memory.** State them in the final
-summary so Victor can confirm the work landed. A hash you did not read is a hash you invented: on
-2026-07-19 the summary carried a fabricated hash for the self-report commit alongside two real ones,
-which is worse than omitting it, because a wrong hash looks verified.
+**Report commit hashes by reading them from `git log`, never from memory** — a hash you did not read is
+a hash you invented, and a wrong one looks verified (a fabricated self-report hash shipped this way on
+2026-07-19).
 
 ### Final step — pipeline self-report
 
 After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
-run — write the report file in this orchestrator's folder, commit it **together with
-`_run-tracker.md`** (verify with `git show --stat HEAD` that the commit lists two files), and **print
-the five bullets in chat**. That last half is easy to drop after a long run: on 2026-07-19 the report
-was written and committed correctly but never printed, so Victor had to ask whether the step had
-happened at all. Writing the file is not the deliverable — the bullets in front of him are.
+run — write the report file in this orchestrator's folder, commit it **together with `_run-tracker.md`**
+(verify with `git show --stat HEAD` that the commit lists two files), and **print the five bullets in
+chat**. Printing is the deliverable, not writing the file — the print half is easy to drop after a long
+run (it was on 2026-07-19), and then the report might as well not exist.
