@@ -95,10 +95,13 @@ Requisitos: **recién titulados** en **CFGS DAM/DAW**, Grado en Ing. Informátic
 Telemática. Conocimientos de desarrollo **front-end: HTML, CSS, JavaScript, Angular, React,
 TypeScript**; **inglés nivel B2**. Motivación por el ámbito tecnológico y trabajo en equipo.
 
-### Sector banca — Programador Junior Full Stack · Jooble / Indeed España
-Captured: 2026-07 · web-search extract
-Requisitos: **1 a 2 años** de experiencia laboral. **Java**, **JavaScript**, **Node JS**, **React** y
-**Angular**, para proyectos del **sector bancario**.
+### Métrica Consulting — Programador/a Junior Full Stack (sector bancario) · InfoJobs
+Captured: 2026-07 · **full posting** (sustituye al extracto "Sector banca — Programador Junior Full
+Stack · Jooble/Indeed" capturado en el mismo run — es la misma oferta, deduplicada)
+Requisitos: experiencia laboral de al menos **1 o 2 años** como Programador/a **Junior** Full Stack,
+"siendo el punto fuerte en **Java y Javascript**". Imprescindible experiencia previa en **Node JS**,
+**React** y **Angular**. Experiencia en bases de datos **MySQL, PostgreSQL y MongoDB**. **Inglés Alto**.
+Proyecto para el **sector bancario**.
 
 ### Ayesa Digital — Desarrollador/a Junior Java + Angular (administración pública) · InfoJobs
 Captured: 2026-07 · **full posting** · **perfil junior explícito**
@@ -132,13 +135,20 @@ Requisitos: dos perfiles en la misma oferta.
 posibilidad de trabajar en proyectos internacionales". Es una palanca de acceso a mejores proyectos, no
 un filtro de entrada.
 
-### Full Stack Junior (Madrid, proyecto estable) · Indeed España
-Captured: 2026-07 · web-search extract
-Requisitos: al menos **1 año** de experiencia como desarrollador Full Stack. **Java** y **JavaScript**;
-**Spring Boot** y **Spring Security con control de acceso basado en roles**; **React (Hooks)** y
-**Angular** en frontend; bases de datos **MySQL, PostgreSQL y MongoDB**; **nivel alto de inglés
-(obligatorio)**. Responsabilidades: desarrollo Full Stack con Java, Spring Boot y JavaScript, frontend
-con React y Angular, y trabajo con bases de datos relacionales y NoSQL.
+### Grupo Digital — Full Stack junior/mid/senior (Madrid, sector pagos) · InfoJobs
+Captured: 2026-07 · **full posting** · **desde 1 año** · **26.000–42.000 €** según experiencia
+Sustituye al extracto "Full Stack Junior (Madrid, proyecto estable)" del mismo run: es esa oferta, ahora
+completa. Entra en el suelo junior porque admite explícitamente perfiles **junior** ("perfiles de Full
+Stack (junior/mid/senior)", "a partir de 1 año"), aunque la banda salarial cubra hasta senior.
+Requisitos: **Java y JavaScript**; **Spring Boot y Spring Security con control de acceso por roles**;
+**Node.js y Express**; **arquitectura por capas y principios SOLID**; **React (Hooks) y Angular**;
+**HTML, CSS y Bootstrap**; **MySQL, PostgreSQL y MongoDB**; **JPA y relaciones one-to-many**; Mongoose;
+**JUnit, Mockito, Jest y Postman**; **Docker, Jenkins, AWS y Kubernetes**; **CI/CD y documentación de
+APIs con Swagger**; **inglés alto (imprescindible)**. Deseable: entornos internacionales, **Agile**.
+Funciones: diseñar y desarrollar **APIs REST seguras y escalables**; desarrollo Full Stack con Java,
+Spring Boot y JavaScript; frontend con React y Angular; **bases de datos relacionales y NoSQL**;
+**pruebas unitarias e integración** para asegurar la calidad; **CI/CD y despliegues sobre contenedores
+y cloud**; entorno **Agile** con equipos internacionales.
 
 ---
 
@@ -240,21 +250,26 @@ Distilled from the ~14 postings above (July 2026). Frequencies are approximate �
 **Backend — Java / Spring Boot** (the core of the target roles)
 - **Java (8 / 17)** — ~13/14 postings (baseline, non-negotiable)
 - **Spring Boot / Spring Framework** — ~11/14 (Ayesa is the notable exception: Java sin framework nombrado)
-- **Relational DB (PostgreSQL / MySQL / SQL / Oracle)** — ~9/14 (**Oracle** aparece en banca y sector público)
+- **Relational DB (PostgreSQL / MySQL / SQL / Oracle)** — ~8/14 (**Oracle** aparece en banca y sector público)
 - **REST APIs / servicios web** — ~7/14
-- **Spring Data / JPA / Hibernate** — ~5/14 (named directly, implied by "Suite de Spring", or as Hibernate)
-- **Microservices** — ~5/14 (present but leans mid-level; junior-facing as "aware of")
-- **Testing: JUnit + Mockito** — ~4/14 (explicit; a hard differentiator at junior level)
+- **Testing: JUnit + Mockito** — ~5/14 (explicit; a hard differentiator at junior level. Grupo Digital
+  lo pide desglosado — "pruebas unitarias **e integración**" — ya en una oferta que admite juniors)
+- **Spring Data / JPA / Hibernate** — ~5/14 (named directly, implied by "Suite de Spring", as Hibernate,
+  o como "JPA y **relaciones one-to-many**")
+- **Microservices** — ~4/14 (present but leans mid-level; junior-facing as "aware of")
+- **Docker / containers** — ~4/14 (rising; baseline in microservices roles)
+- **CI/CD (Jenkins / GitLab CI)** — ~3/14 y **subiendo**: ya no es solo del techo, aparece en ofertas que
+  admiten juniors (Grupo Digital, Santander, UST)
 - **Maven** — ~3/14
-- **Docker / containers** — ~3/14 (rising; baseline in microservices roles)
+- **NoSQL (MongoDB / Redis)** — ~3/14 (siempre *junto a* la relacional, nunca en su lugar)
 
 **Frontend — Angular**
 - **Angular (v12+ / v18)** — ~12/14 (asked in nearly every full-stack posting)
 - **TypeScript** — ~5/14 (baseline for any Angular role)
 - **HTML / CSS / SASS** — ~5/14
 - **RxJS** — ~3/14 (strong in frontend-focused postings)
+- **Testing: Jasmine / Karma / Jest** — ~3/14
 - **Angular Material** — ~2/14
-- **Testing: Jasmine / Karma / Jest** — ~2/14
 
 **Cross-cutting**
 - **English (B2)** — ~9/14 required + ~1 conditional (near-universal at global consultancies; one posting
@@ -262,7 +277,10 @@ Distilled from the ~14 postings above (July 2026). Frequencies are approximate �
   Ayesa, en sector público español, no lo menciona)
 - **Agile / Scrum-Kanban** — ~8/14 (named in almost every posting)
 - **Git** — ~7/14 (assumed everywhere)
-- **Cloud (public — Azure/AWS awareness)** — ~3/14
+- **Cloud (public — Azure/AWS awareness)** — ~4/14
+- **Principios SOLID / arquitectura por capas** — ~2/14, pero uno de ellos es una oferta que admite
+  juniors (Grupo Digital). Es diseño, no herramienta: barato de estudiar y caro de improvisar
+- **Documentación de APIs (Swagger / OpenAPI)** — ~1/14, primera aparición; anotado para vigilar
 
 **Signals to watch (appear in postings but NOT a junior floor — do not force into junior coverage)**
 - Spring Cloud, Spring Batch — mid-level / specific projects
@@ -284,4 +302,4 @@ Distilled from the ~14 postings above (July 2026). Frequencies are approximate �
 
 ---
 
-_Last updated: 2026-07 (12 web-search extracts + 2 full postings)  ·  postings on file: 14 junior + 4 en `## Techo`_
+_Last updated: 2026-07 (10 web-search extracts + 4 full postings)  ·  postings on file: 14 junior + 4 en `## Techo`_
