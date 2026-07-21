@@ -205,6 +205,23 @@ más de 600 empleados". Requisitos: 5–7 años como Senior Full Stack Developer
 - **Testing:** **JUnit 5, Mockito**, WireMock, **Cucumber (BDD)**, **ArchUnit**, **Jasmine/Karma** (front).
 - **Calidad de código:** **SonarQube** y **JaCoCo**.
 
+### Capgemini — Software Engineer Java · Agile Delivery Center Spain (Murcia / Valencia) · careers Capgemini
+Captured: 2026-07 · **full posting** · **+2 años exigidos** · **francés fluido imprescindible**
+Por qué está en `Techo` y no en el suelo junior: exige "+2 years of relevant work experience" y entre las
+tareas del rol figura "provide guidance and **mentorship to junior developers**" — el puesto se define
+explícitamente *por encima* del junior. Además el **francés fluido** es un filtro de entrada duro
+("fluent French to communicate with teams and customers"; el inglés solo "will be considered").
+Centro: ADCenter Spain, hub en **Murcia y Valencia** con clientes internacionales europeos, modelo agile
+distribuido, **Scrum y SAFe**, cloud-native y prácticas DevOps.
+Perfil: **Java 8-17 (streams, interfaces...)**, **Spring frameworks**, **arquitectura de microservicios**.
+Ciclo de vida del desarrollo y **Scrum**. BBDD **relacionales y no relacionales (SQL y NoSQL)**.
+**Unit testing, integration testing y debugging con JUnit y Mockito**. Control de versiones: **Git,
+GitLab, GitHub**. **Code reviews** para asegurar calidad, rendimiento y seguridad. Colaboración con
+equipos remotos y cross-funcionales. Definición y refinamiento de **arquitectura software y patrones de
+diseño**.
+Nota de proceso: "**Even if you don't have 100% of the required knowledge, we would love to meet you!**"
+— la propia oferta invita a aplicar sin cumplir el 100%.
+
 **Qué señala este techo (lectura para `future-learning.md`, no para coverage):**
 - **Testing con taxonomía completa** — en junior el testing casi no se exige por escrito; a partir de
   mid se pide desglosado (unitario / integración / E2E). Misma curva en las cuatro ofertas, y en la
@@ -227,6 +244,15 @@ más de 600 empleados". Requisitos: 5–7 años como Senior Full Stack Developer
   como objetivo: es un "suma puntos" de mid, no una puerta.
 - **Observabilidad (Dynatrace, Prometheus, OpenTelemetry)** — categoría entera que no existe en ninguna
   oferta junior del fichero. Señal clara de escalón senior, no de hueco actual.
+- **Code reviews y mentoring** — a partir de 2 años el rol deja de ser "escribir código" e incluye revisar
+  el de otros y guiar a juniors (Capgemini ADCenter). Es la primera responsabilidad *no técnica* que
+  aparece, y explica por qué las ofertas de ese tramo insisten en comunicación.
+- **Un tercer idioma como palanca real** — Capgemini ADCenter (Murcia/Valencia) exige **francés fluido**
+  para clientes franceses, con el inglés como secundario. El inglés sigue siendo el filtro general del
+  mercado, pero en centros concretos el francés abre puertas que el inglés no. Dato a tener presente si
+  el mercado se pone difícil, no un objetivo actual.
+- **Java 8-17 con "streams, interfaces" nombrados aparte** — a 2 años ya no basta "saber Java": piden las
+  piezas del lenguaje moderno. **Streams** es la que Victor aún no ha tocado → `java/future-learning.md`.
 - **IA / GenAI dentro del stack Java** — Spring AI, SDK de Anthropic Claude, **MCP** y **RAG** listados
   como stack de proyecto, no como I+D. Es la primera vez que aparece en el fichero y encaja con lo que
   ya está anotado en `notes/ai-development/future-learning.md` (estudiar tras el primer empleo). El dato
@@ -302,4 +328,4 @@ Distilled from the ~14 postings above (July 2026). Frequencies are approximate �
 
 ---
 
-_Last updated: 2026-07 (10 web-search extracts + 4 full postings)  ·  postings on file: 14 junior + 4 en `## Techo`_
+_Last updated: 2026-07 (10 web-search extracts + 4 full postings)  ·  postings on file: 14 junior + 5 en `## Techo`_
