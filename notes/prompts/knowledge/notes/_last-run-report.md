@@ -1,5 +1,10 @@
 # Notes-audit — last run self-report
 
+**Status:** fact-check gate applied to `notes-write` in `3b5dea2` (2026-07-19). Second verdict item —
+"planner should not treat row count as scope" — considered and **rejected: fails condition 3** (it
+affects the orchestrator's scope estimate, i.e. planning cost, not the correctness of what reaches the
+notes). Not to be re-proposed.
+
 **Date:** 2026-07-15 (run spanned 2026-07-13 → 07-15) · **Target:** SCOPE = folder, TOPIC = Spring Boot — scoped by Victor to `notes/spring-boot/` only (`notes/java/` rows deferred to a future run). 14 Spring Boot rows built: 3 new files (11 business-logic, 12 production-debugging, 13 logging), 1 new section (Postman in 09), 10 existing-file rebuilds (00–10). One duplicate `06` file deleted by Victor mid-run.
 
 1. **Plan vs reality** — Planner predicted 8 rows; Phase 1.5 inspectors surfaced findings on ~26 existing files — an order-of-magnitude scope blow-up. The per-file split (one cold subagent, four-stage pipeline per row) was correctly sized, but the planner materially under-scoped existing-file work: it lists files to inspect without predicting how many need rebuilds, so "8 rows" was never a real size estimate. The inspectors, not the planner, are where true scope became visible.
