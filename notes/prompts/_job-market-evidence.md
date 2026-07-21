@@ -152,13 +152,29 @@ monitorización. **Estrategias de testing completas: unitarias, integración y E
 y MongoDB**. Metodologías **Agile**. **Código limpio y patrones de diseño**. Colaboración con equipos
 de UI/UX.
 
+### Second Window — Full-Stack Developer Java + Angular (Madrid, 66% teletrabajo) · InfoJobs
+Captured: 2026-07 · **full posting** · **3+ años exigidos** · **30.000–33.000 € brutos/año**
+Perfil requerido: al menos **3 años** en desarrollo Fullstack con **Java y Angular**. Desarrollo integral
+de aplicaciones web, **diseño de microservicios** y desarrollo de **APIs**. "Dominio del ecosistema
+Java": **Java y Spring Framework**. Frontend: "desarrollo moderno con **Angular**". Herramientas:
+**GitHub, GitLab, VS Code e IntelliJ**. Cultura DevOps: **Jenkins** para CI/CD. Metodologías:
+**Scrum/Kanban**. Ciclo de vida completo del desarrollo, equipo multidisciplinar.
+Deseables (no exigidos): BBDD **Oracle**; **JPA** para persistencia; mensajería asíncrona
+(**Kafka o RabbitMQ**).
+
 **Qué señala este techo (lectura para `future-learning.md`, no para coverage):**
 - **Testing con taxonomía completa** — en junior el testing casi no se exige por escrito; a partir de
   mid se pide desglosado (unitario / integración / E2E). Es la misma curva en las dos ofertas.
 - **SOLID + patrones de diseño** — nombrados como *hard skill* con entidad propia, no como adorno.
   Es lo más cercano al nivel actual de Victor de todo el techo → candidato natural a `java/future-learning.md`.
-- **Kubernetes + CI/CD** — presentes en las dos. Docker ya está en el suelo junior (~3/13); Kubernetes
-  es el escalón siguiente, claramente fuera de junior.
+- **CI/CD nombrado como "cultura DevOps"** — en las tres ofertas del techo, y con herramienta concreta
+  (GitLab CI, Jenkins). **Kubernetes** aparece en dos de tres: Docker ya está en el suelo junior (~3/13),
+  Kubernetes es el escalón inmediatamente siguiente y claramente fuera de junior.
+- **Mensajería asíncrona (Kafka / RabbitMQ)** — en las tres, y en Second Window explícitamente como
+  *deseable*, no exigida ni siquiera a 3 años. Confirma que `Kafka` siga como *signal to watch* y no
+  como objetivo: es un "suma puntos" de mid, no una puerta.
+- **Referencia salarial** — Second Window paga **30–33k** por 3 años de Java + Angular fullstack en
+  Madrid. Útil como ancla para negociar más adelante; el suelo junior queda por debajo de esa banda.
 - **Arquitectura Hexagonal / DDD táctico** — el salto arquitectónico de mid → `architecture/future-learning.md`.
 - **Angular avanzado: NgRx, Signals, Nx** — la oferta de Zemsania es la única del fichero donde Angular
   es el eje y el backend el complemento. → `angular/future-learning.md`.
