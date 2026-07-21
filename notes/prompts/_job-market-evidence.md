@@ -73,43 +73,77 @@ Requisitos (from extract): **Spring Boot**, **API REST**, microservicios, **Java
 ### Primer empleo — Programador Junior Java Spring Boot (contrato formativo, Madrid) · 2026 · primerempleo.com
 Beca/contrato formativo: **Java**, **Spring Boot**.
 
+### Santander Digital Services — Junior Full Stack Software Engineer (Madrid) · santander.wd3.myworkdayjobs.com / Glassdoor
+Captured: 2026-07 · web-search extract
+Requisitos: al menos **2 años** de experiencia en ejecución de proyectos tecnológicos; **FP de grado
+superior** en el ámbito tecnológico. Conocimientos **obligatorios de Java, Angular y SQL** —
+"conocimiento del lenguaje de programación Angular y backend Java". Conocimiento de frameworks como
+**Spring y Spring Boot**, y de herramientas **DevOps: Jira, Jenkins, Git, GitHub**. Experiencia con
+monitorización de plataformas, automatización de procesos, **microservicios** y **metodologías ágiles**.
+Soft skills: proactividad, comunicación, adaptación al cambio, trabajo en equipo con Negocio y Operaciones.
+
+### Minsait (Indra) — Programa recién titulados / desarrollo frontend · careers Minsait vía Indeed
+Captured: 2026-07 · web-search extract
+Requisitos: **recién titulados** en **CFGS DAM/DAW**, Grado en Ing. Informática, Telecomunicaciones o
+Telemática. Conocimientos de desarrollo **front-end: HTML, CSS, JavaScript, Angular, React,
+TypeScript**; **inglés nivel B2**. Motivación por el ámbito tecnológico y trabajo en equipo.
+
+### Sector banca — Programador Junior Full Stack · Jooble / Indeed España
+Captured: 2026-07 · web-search extract
+Requisitos: **1 a 2 años** de experiencia laboral. **Java**, **JavaScript**, **Node JS**, **React** y
+**Angular**, para proyectos del **sector bancario**.
+
+### Full Stack Junior (Madrid, proyecto estable) · Indeed España
+Captured: 2026-07 · web-search extract
+Requisitos: al menos **1 año** de experiencia como desarrollador Full Stack. **Java** y **JavaScript**;
+**Spring Boot** y **Spring Security con control de acceso basado en roles**; **React (Hooks)** y
+**Angular** en frontend; bases de datos **MySQL, PostgreSQL y MongoDB**; **nivel alto de inglés
+(obligatorio)**. Responsabilidades: desarrollo Full Stack con Java, Spring Boot y JavaScript, frontend
+con React y Angular, y trabajo con bases de datos relacionales y NoSQL.
+
 ---
 
 ## Synthesis — recurring requirements by stack
 
-Distilled from the ~8 postings above (July 2026). Frequencies are approximate — evidence is partial.
+Distilled from the ~12 postings above (July 2026). Frequencies are approximate — evidence is partial.
 
 **Backend — Java / Spring Boot** (the core of the target roles)
-- **Java (8 / 17)** — ~8/8 postings (baseline, non-negotiable)
-- **Spring Boot / Spring Framework** — ~8/8
-- **REST APIs** — ~6/8
-- **Relational DB (MySQL / PostgreSQL)** — ~6/8
-- **Testing: JUnit + Mockito** — ~4/8 (explicit; a hard differentiator at junior level)
-- **Spring Data / JPA** — ~4/8 (named directly or implied by "Suite de Spring")
-- **Maven** — ~3/8
-- **Docker / containers** — ~3/8 (rising; baseline in microservices roles)
-- **Microservices** — ~3/8 (present but leans mid-level; junior-facing as "aware of")
+- **Java (8 / 17)** — ~11/12 postings (baseline, non-negotiable)
+- **Spring Boot / Spring Framework** — ~10/12
+- **Relational DB (MySQL / PostgreSQL / SQL)** — ~8/12
+- **REST APIs** — ~6/12
+- **Testing: JUnit + Mockito** — ~4/12 (explicit; a hard differentiator at junior level)
+- **Spring Data / JPA** — ~4/12 (named directly or implied by "Suite de Spring")
+- **Microservices** — ~4/12 (present but leans mid-level; junior-facing as "aware of")
+- **Maven** — ~3/12
+- **Docker / containers** — ~3/12 (rising; baseline in microservices roles)
 
 **Frontend — Angular**
-- **Angular (v12+ / v18)** — ~6/8
-- **TypeScript** — ~4/8 (baseline for any Angular role)
-- **RxJS** — ~3/8 (strong in frontend-focused postings)
-- **HTML / CSS / SASS** — ~4/8
-- **Angular Material** — ~2/8
-- **Testing: Jasmine / Karma / Jest** — ~2/8
+- **Angular (v12+ / v18)** — ~10/12 (asked in nearly every full-stack posting)
+- **TypeScript** — ~5/12 (baseline for any Angular role)
+- **HTML / CSS / SASS** — ~5/12
+- **RxJS** — ~3/12 (strong in frontend-focused postings)
+- **Angular Material** — ~2/12
+- **Testing: Jasmine / Karma / Jest** — ~2/12
 
 **Cross-cutting**
-- **Git** — ~6/8 (assumed everywhere)
-- **Agile / Scrum-Kanban** — ~6/8 (named in almost every posting)
-- **English (B2)** — ~7/8 (global consultancies, near-universal ask)
-- **Cloud (public — Azure/AWS awareness)** — ~3/8
+- **English (B2)** — ~9/12 (global consultancies, near-universal ask; one posting marks it *obligatorio*)
+- **Git** — ~7/12 (assumed everywhere)
+- **Agile / Scrum-Kanban** — ~7/12 (named in almost every posting)
+- **Cloud (public — Azure/AWS awareness)** — ~3/12
 
 **Signals to watch (appear in postings but NOT a junior floor — do not force into junior coverage)**
 - Spring Cloud, Spring Batch — mid-level / specific projects
 - Kafka / messaging — mid-level microservices
-- Jenkins / CI-CD pipelines — nice-to-have, rising
+- Jenkins / CI-CD pipelines — nice-to-have but **rising**: now named in 2 postings (UST, Santander),
+  the Santander one bundling it as "DevOps: Jira, Jenkins, Git, GitHub" for a *junior* role
+- **React** — ~3/12, always as an *alternative* to Angular in full-stack junior postings, never instead
+  of it. Off Victor's roadmap by design; noted only as market context, not a gap to close
+- **Spring Security / role-based access control** — named explicitly in one junior full-stack posting;
+  low frequency but directly relevant to project 07's JWT work
+- **MongoDB / NoSQL** — appears alongside the relational DBs in one junior full-stack posting
 - NgRx / state management — appears in higher junior/mid Angular roles
 
 ---
 
-_Last updated: 2026-07 (web-search extracts)  ·  postings on file: 8_
+_Last updated: 2026-07 (web-search extracts)  ·  postings on file: 12_
