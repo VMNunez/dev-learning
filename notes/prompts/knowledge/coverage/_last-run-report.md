@@ -1,6 +1,7 @@
 # Last run report — coverage-audit
 
 **Date:** 2026-07-19 · **Target:** global (all 12 topics) · **Branch:** `fix/backend-backlog`
+**Status:** applied in `24b3f82`
 
 1. **Plan vs reality** — The A/B/C-per-topic + D-global split held. Two sizing problems. First, the
    per-topic loop is far larger than the prompt implies: 36 per-topic dispatches plus D, and the run

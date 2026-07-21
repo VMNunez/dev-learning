@@ -21,7 +21,14 @@ was hard. The machinery fact is "the overlap check did real work"; the list of o
 
 After the run's normal final step, write `_last-run-report.md` **in the orchestrator's own folder**
 (overwrite the previous run's; if several orchestrators share a folder, use
-`_last-run-report-<orchestrator>.md`). Header: date + the run's target (topic / project / scope).
+`_last-run-report-<orchestrator>.md`). Header: date + the run's target (topic / project / scope) + a
+**`Status:` line** — `open` if the Verdict names a change nobody has applied yet, or
+`applied in <hash>` once the prompt has been edited to address it. This one line is what lets a later
+reader tell a live finding from a done one at a glance, instead of re-deriving it from prose (on
+2026-07-19 a Verdict written as a to-do list had to be rewritten as a record precisely because the
+next reader would otherwise re-apply changes that already existed). A clean run's status is `open` and
+stays `open` — there was nothing to apply.
+
 Then these five bullets — honest, including "nothing to report". Keep each one short; a bullet only
 earns extra lines when it is reporting something that actually went wrong:
 
@@ -73,3 +80,30 @@ In a later main session, Victor mentions the run; Claude reads the report file a
 the orchestrator's prompt needs a change. Clean report → prompts stay frozen. (Two pipelines carry
 their own tailored version of this step — same contract, same Verdict criterion, and the same
 `_run-tracker.md` update: `review-audit.md` and `readme-audit.md`.)
+
+**The bar a finding must clear before it edits a prompt.** The reading is automatic; the editing is
+not, and it stays a decision Victor makes. When a finding is on the table, it earns an edit only if it
+clears **all four**:
+
+1. **Real evidence, not theory** — it comes from something that actually happened in a run, not from a
+   hypothetical the report imagined.
+2. **The prompt was wrong or ambiguous** — the instruction was inexecutable, contradictory, or silent
+   where it needed to speak. A rule the run *broke* while the prompt stated it clearly is not a prompt
+   defect; it is a discipline lapse to watch, and rewriting an already-clear rule only buries the real
+   lesson (the 2026-07-19 run merged two analysts against a rule that said "one concern per analyst…
+   even at higher token cost" — the prompt needed no edit).
+3. **It would have changed the result, not just the cost** — a finding that only made the run more
+   expensive is friction to note, not a defect to patch.
+4. **Not already covered** — the existing text does not handle it somewhere the run failed to look.
+
+This bar is deliberately asymmetric-aware: a self-report exists to surface what broke, so every finding
+arrives framed as "fix me", and nothing in the loop ever proposes *removing* prompt text. The four
+conditions are the counterweight — most findings are friction (fails #3) or a discipline lapse
+(fails #2), and only the ones that survive all four justify growing a prompt that no one re-reads whole.
+When a finding is considered and rejected, say so in the Verdict with the condition it failed, so the
+same zombie finding is not re-proposed on the next run.
+
+Do **not** turn this into an automated pre-step that reads, edits, and re-runs the prompt in one chain:
+that removes the human gate, lets a misread finding apply *and* execute before anyone sees it, and
+ratchets prompts longer in one direction only (this file already warns that "a long report begets a
+longer one" — a self-editing prompt is the same dynamic with no brake). The gate is the point.
