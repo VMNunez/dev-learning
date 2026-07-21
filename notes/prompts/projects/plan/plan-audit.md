@@ -200,7 +200,11 @@ For **each** concern in order, launch a fresh, independent `general-purpose` sub
 Wait for each specialist before dispatching the next. Collect their traces and any ripples; if a ripple
 lands in a concern already reviewed, re-dispatch that one specialist to reconcile it — **at most one
 re-dispatch per concern per run**. If the reconciliation pass leaves new ripples, record them in the
-pipeline self-report instead of iterating further.
+pipeline self-report instead of iterating further — except a ripple that is a **verified factual error**
+and not a design disagreement (a wrong component, file, or cross-reference name, checked against the
+code): the orchestrator corrects it in the plan itself — **every occurrence, not just the line the
+specialist named** — before committing, rather than ship a line it knows is wrong, and names the
+correction in the self-report.
 
 **Specialist acceptance check:** a specialist's report is acceptable only if it opens with the plan's
 line count + read-to-EOF confirmation (the reviewer prompt's truncation guard) **and** its trace has
