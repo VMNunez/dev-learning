@@ -100,6 +100,26 @@ gap that belongs elsewhere, mention it in the summary instead of acting on it.
 
 ---
 
+## Fact-check gate — verify before you write, never from memory (applies to every step below)
+
+Anything factual you put in `{FILE}` — a code fragment, an annotation, a class / interface / config
+name, a dependency artifact, a version-specific API, a `File:` path, or a `Docs:` URL — must be verified
+against the live source **before** it goes in, not recalled and hoped correct. Verify against the actual
+project files for anything drawn from the project, against `pom.xml` for a dependency or a version-fact,
+and against the real documentation page (opened, not pattern-guessed) for a link. If you cannot verify
+it, write a `TODO` in its place; a gap Victor can see beats a fabrication he cannot.
+
+This is a **prevention** gate at author time, not a review afterthought. The 2026-07-15 Spring Boot run
+shipped fabricated code and version-facts into eight files — an annotation placed on a class that does
+not carry it, a `JwtService` and a `JwtProperties` that are not in the repo, a whole
+`Transaction`/`TransactionService` domain that was invented, `@MockBean` where Boot 4 needs
+`@MockitoBean`, `spring-boot-starter-web` where the project uses `-webmvc`, plus roughly eight Baeldung
+URLs built from a plausible-looking pattern. Every one was caught only because reviewer B ran on Opus
+with an explicit fact-check mandate; on a cheaper reviewer they reach Victor's study notes as confident,
+wrong material. Reviewer B is the backstop — it is not the reason you may write from memory.
+
+---
+
 ## Step 1 — Resolve TODOs (if TASK includes them)
 
 Victor adds his doubts as markers in the **`es/`** file (that is where he studies), so **read the
@@ -168,7 +188,9 @@ The English reviewer (B) audits this file next, but do not lean on that — hand
 - Signature texture is present where the section warrants it (worked example, a diagram for anything
   structural, callouts, tables explained) — and no section visibly drops below its neighbours.
 - No example or concept duplicates a sibling file you read; forward/cross-topic references are marked.
-- Every `Docs:` link is real (or left as `Docs: TODO — add link`), never guessed.
+- The **fact-check gate** held: every code fragment, class/config name, dependency, version-specific
+  API, `File:` path and `Docs:` link in the file was verified against the live source, not written from
+  memory — anything unverifiable is a `TODO`, never a plausible guess.
 
 If any check fails, fix it now.
 
