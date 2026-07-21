@@ -100,6 +100,23 @@ Captured: 2026-07 · web-search extract
 Requisitos: **1 a 2 años** de experiencia laboral. **Java**, **JavaScript**, **Node JS**, **React** y
 **Angular**, para proyectos del **sector bancario**.
 
+### Ayesa Digital — Desarrollador/a Junior Java + Angular (administración pública) · InfoJobs
+Captured: 2026-07 · **full posting** · **perfil junior explícito**
+Empresa: "multinacional española tecnológica", +11.000 profesionales en 10 países. Proyecto: evolución y
+mantenimiento de los módulos aplicativos de una plataforma de gestión del **ámbito de la administración
+pública**.
+Requisitos: "**Perfil junior** con motivación por desarrollarse en entornos Java y Angular".
+Conocimientos en desarrollo **backend con Java**; **nociones** de desarrollo frontend con **Angular**;
+conocimientos de bases de datos **Oracle**. Se valorará experiencia o formación en generación de
+informes con **JasperReports**. "Ganas de aprender, trabajo en equipo y orientación a la calidad".
+Conocimientos técnicos declarados: Backend **Java** · Frontend **Angular** · BBDD **Oracle** · Informes
+**JasperReports**.
+Día a día: programar backend en Java dando soporte a la lógica de negocio, construir y evolucionar
+interfaces con Angular, trabajar con Oracle (consultas, mantenimiento y **optimización**), diseñar
+informes con JasperReports, participar en el ciclo de desarrollo dentro de un **equipo ágil**.
+**No menciona Spring Boot ni inglés** — de las pocas ofertas Java del fichero donde el framework no
+aparece nombrado.
+
 ### NTT DATA Castellón — Java Developer (Java, Spring Boot, microservicios) · InfoJobs
 Captured: 2026-07 · **full posting** (oferta completa pegada)
 Seniority: **no declarada** — "Nivel: Empleado/a", sin años de experiencia exigidos. Convocatoria de
@@ -218,33 +235,34 @@ más de 600 empleados". Requisitos: 5–7 años como Senior Full Stack Developer
 
 ## Synthesis — recurring requirements by stack
 
-Distilled from the ~13 postings above (July 2026). Frequencies are approximate — evidence is partial.
+Distilled from the ~14 postings above (July 2026). Frequencies are approximate — evidence is partial.
 
 **Backend — Java / Spring Boot** (the core of the target roles)
-- **Java (8 / 17)** — ~12/13 postings (baseline, non-negotiable)
-- **Spring Boot / Spring Framework** — ~11/13
-- **Relational DB (MySQL / PostgreSQL / SQL)** — ~8/13
-- **REST APIs / servicios web** — ~7/13
-- **Spring Data / JPA / Hibernate** — ~5/13 (named directly, implied by "Suite de Spring", or as Hibernate)
-- **Microservices** — ~5/13 (present but leans mid-level; junior-facing as "aware of")
-- **Testing: JUnit + Mockito** — ~4/13 (explicit; a hard differentiator at junior level)
-- **Maven** — ~3/13
-- **Docker / containers** — ~3/13 (rising; baseline in microservices roles)
+- **Java (8 / 17)** — ~13/14 postings (baseline, non-negotiable)
+- **Spring Boot / Spring Framework** — ~11/14 (Ayesa is the notable exception: Java sin framework nombrado)
+- **Relational DB (PostgreSQL / MySQL / SQL / Oracle)** — ~9/14 (**Oracle** aparece en banca y sector público)
+- **REST APIs / servicios web** — ~7/14
+- **Spring Data / JPA / Hibernate** — ~5/14 (named directly, implied by "Suite de Spring", or as Hibernate)
+- **Microservices** — ~5/14 (present but leans mid-level; junior-facing as "aware of")
+- **Testing: JUnit + Mockito** — ~4/14 (explicit; a hard differentiator at junior level)
+- **Maven** — ~3/14
+- **Docker / containers** — ~3/14 (rising; baseline in microservices roles)
 
 **Frontend — Angular**
-- **Angular (v12+ / v18)** — ~11/13 (asked in nearly every full-stack posting)
-- **TypeScript** — ~5/13 (baseline for any Angular role)
-- **HTML / CSS / SASS** — ~5/13
-- **RxJS** — ~3/13 (strong in frontend-focused postings)
-- **Angular Material** — ~2/13
-- **Testing: Jasmine / Karma / Jest** — ~2/13
+- **Angular (v12+ / v18)** — ~12/14 (asked in nearly every full-stack posting)
+- **TypeScript** — ~5/14 (baseline for any Angular role)
+- **HTML / CSS / SASS** — ~5/14
+- **RxJS** — ~3/14 (strong in frontend-focused postings)
+- **Angular Material** — ~2/14
+- **Testing: Jasmine / Karma / Jest** — ~2/14
 
 **Cross-cutting**
-- **English (B2)** — ~9/13 required + ~1 conditional (near-universal at global consultancies; one posting
-  marks it *obligatorio*, NTT Castellón makes it the key to international projects rather than a filter)
-- **Git** — ~7/13 (assumed everywhere)
-- **Agile / Scrum-Kanban** — ~7/13 (named in almost every posting)
-- **Cloud (public — Azure/AWS awareness)** — ~3/13
+- **English (B2)** — ~9/14 required + ~1 conditional (near-universal at global consultancies; one posting
+  marks it *obligatorio*, NTT Castellón makes it the key to international projects rather than a filter.
+  Ayesa, en sector público español, no lo menciona)
+- **Agile / Scrum-Kanban** — ~8/14 (named in almost every posting)
+- **Git** — ~7/14 (assumed everywhere)
+- **Cloud (public — Azure/AWS awareness)** — ~3/14
 
 **Signals to watch (appear in postings but NOT a junior floor — do not force into junior coverage)**
 - Spring Cloud, Spring Batch — mid-level / specific projects
@@ -255,6 +273,10 @@ Distilled from the ~13 postings above (July 2026). Frequencies are approximate �
   of it. Off Victor's roadmap by design; noted only as market context, not a gap to close
 - **jQuery / frontend legacy** — named once (NTT Castellón, full posting). Real signal of consultancy
   maintenance work, but not something to study ahead of the roadmap
+- **JasperReports / generación de informes** — named once (Ayesa, sector público). Herramienta de nicho
+  típica de administración pública y banca; se aprende en el puesto, no se estudia antes
+- **Oracle** — ~2/14 y siempre en banca o administración pública. No desplaza a PostgreSQL como BBDD de
+  estudio, pero explica por qué el SQL estándar (no el dialecto) es lo que conviene dominar
 - **Spring Security / role-based access control** — named explicitly in one junior full-stack posting;
   low frequency but directly relevant to project 07's JWT work
 - **MongoDB / NoSQL** — appears alongside the relational DBs in one junior full-stack posting
@@ -262,4 +284,4 @@ Distilled from the ~13 postings above (July 2026). Frequencies are approximate �
 
 ---
 
-_Last updated: 2026-07 (12 web-search extracts + 1 full posting)  ·  postings on file: 13_
+_Last updated: 2026-07 (12 web-search extracts + 2 full postings)  ·  postings on file: 14 junior + 4 en `## Techo`_
