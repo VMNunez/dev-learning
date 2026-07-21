@@ -106,8 +106,8 @@ In order of impact:
 | --- | ------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------------- | ---------- |
 | 1   | Angular foundation + CSS/Tailwind solid           | Angular 01–04 + CSS/Tailwind                                       | SELECT, WHERE, ORDER BY                                           | Angular notes                                 | ✅ Done    |
 | 2   | Angular complete + Java foundation                | Angular 05–06 + RxJS + Java foundation                             | SQL basics continued                                              | Angular notes + interview prep started        | ✅ Done    |
-| 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | JOINs                                                             | Spring Boot notes                             | ✅ Done    |
-| 3b  | Project 07 demonstrable — frontend + tests        | Project 07 — Angular frontend (Steps 7a–7c) + backend/Angular tests | GROUP BY, aggregates, subqueries                                  | Java + Architecture notes                     | ⏳ Current |
+| 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | SQL basics continued + JOINs started                              | Spring Boot notes                             | ✅ Done    |
+| 3b  | Project 07 demonstrable — frontend + tests        | Project 07 — Angular frontend (Steps 7a–7c) + backend/Angular tests | JOINs, GROUP BY, aggregates, subqueries                           | Java + Architecture notes                     | ⏳ Current |
 | 3c  | Consolidation — fluent without Claude             | Rebuild key 07 slices solo (no notes, no AI) + Docker + SQL complement | Remaining SQL topics → technical test simulation                  | Interview prep (es/) started                  | 🔜         |
 | 4   | Applications daily + simulations; 08 conditional  | Friday→daily applications; Project 08 **only once simulations are on track** | Technical test simulation                                         | TypeScript + CSS notes + interview prep (es/) | 🔜         |
 | 5   | Interview ready — full application push           | Final project polish + applications every day                      | Technical test simulation                                         | Interview prep full focus                     | 🔜         |
@@ -176,11 +176,22 @@ No project is finished without tests. Tests are not a step — they are part of 
 
 Planned using `notes/prompts/projects/plan/plan-audit.md` (`MODE = new`) — run it inside Claude Code when project 07 is complete. It reads `notes/coverage.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project — an author subagent drafts it and a cold reviewer audits and fixes it before it commits, hands-off. Run it once, get a full plan.
 
-**Project 08 candidate ideas:**
+**Project 08 candidate ideas** — each names the `notes/coverage.md` gaps it closes (gaps that project 07 does not touch):
 
-- **Invoice Manager** — clients, products, invoices. Covers: many-to-many, Pageable, `@Query`, PDF export
-- **Expense Reports** — submit and approve expenses. Covers: file upload, email, approval workflow, Flyway
-- **Library Catalog** — books, authors, members, loans. Covers: many-to-many, complex queries, component tests
+- **Invoice Manager** — clients, products, invoices. Covers: many-to-many, Pageable, `@Query`, PDF export.
+  Closes: JPA pagination (`Page` vs `Slice`), owning side of a many-to-many, custom JPQL, N+1 and
+  `open-in-view` awareness, Angular table pagination against a server-side page.
+- **Expense Reports** — submit and approve expenses. Covers: file upload, email, approval workflow, Flyway.
+  Closes: Flyway / schema evolution, multipart upload and download over `HttpClient`,
+  `@Transactional` propagation across a multi-step approval, `@Async` / `@Scheduled`.
+- **Library Catalog** — books, authors, members, loans. Covers: many-to-many, complex queries, component tests.
+  Closes: Jasmine + TestBed **component** testing (project-08 rule), `@DataJpaTest` repository tests,
+  aggregate/report SQL against a richer schema.
+- **Support Desk** — tickets with comments, search, and dynamic forms. Covers: typeahead search,
+  dynamic form sections, status workflow with an audit trail.
+  Closes: the RxJS higher-order operators gap (`switchMap` / `debounceTime` typeahead pipeline,
+  `combineLatest`, `retry` / `finalize`), typed reactive forms + `FormArray` +
+  `ControlValueAccessor`, and `@WebMvcTest` slice tests on the backend.
 
 ---
 
@@ -190,19 +201,25 @@ Planned using `notes/prompts/projects/plan/plan-audit.md` (`MODE = new`) — run
 
 | Topic                                                                  | Status  |
 | ---------------------------------------------------------------------- | ------- |
-| SELECT, WHERE, operators, ORDER BY, LIMIT                              | ✅ Done |
-| JOINs (INNER, LEFT, RIGHT, FULL OUTER, self JOIN)                     | 🔜      |
-| GROUP BY, HAVING, aggregate functions                                  | 🔜      |
-| CASE expressions, UNION / UNION ALL                                    | 🔜      |
+| SELECT, WHERE, operators, ORDER BY, LIMIT                              | ⏳      |
+| JOINs (INNER, LEFT, RIGHT, FULL OUTER, self JOIN) + row multiplication  | ⏳      |
+| GROUP BY, HAVING, aggregate functions (incl. FILTER, CASE WHEN)        | 🔜      |
+| Set operations (UNION / UNION ALL, INTERSECT, EXCEPT)                  | 🔜      |
 | Filtering and NULL handling (IS NULL, COALESCE, NULLIF, LIKE, IN)     | 🔜      |
+| Type behaviour at runtime (integer division, casts, NUMERIC vs FLOAT)  | 🔜      |
 | Subqueries, CTEs, and views                                            | 🔜      |
 | DML — INSERT, UPDATE, DELETE, RETURNING, ON CONFLICT                  | 🔜      |
-| Transactions (BEGIN, COMMIT, ROLLBACK, ACID)                           | 🔜      |
-| Window functions (ROW_NUMBER, RANK, LAG, SUM OVER)                    | 🔜      |
+| Transactions (BEGIN, COMMIT, ROLLBACK, ACID, isolation, locking)       | 🔜      |
+| Window functions (ROW_NUMBER, RANK, DENSE_RANK, LAG/LEAD, SUM OVER)   | 🔜      |
+| Date and string functions (DATE_TRUNC, EXTRACT, string toolkit)        | 🔜      |
 | Schema design (keys, constraints, relationships, normalization)         | 🔜      |
-| Data types (VARCHAR, NUMERIC, TIMESTAMPTZ, BOOLEAN)                   | 🔜      |
-| PostgreSQL specifics (::, ILIKE, DISTINCT ON, DATE_TRUNC, STRING_AGG) | 🔜      |
-| Indexes, EXPLAIN, basic query performance                              | 🔜      |
+| Data types (VARCHAR/TEXT, NUMERIC, TIMESTAMPTZ, BOOLEAN, JSONB)        | 🔜      |
+| DDL + working with a live database (psql, information_schema, grants)  | 🔜      |
+| Reading PostgreSQL errors                                              | 🔜      |
+| PostgreSQL specifics (::, ILIKE, DISTINCT ON, RETURNING)              | 🔜      |
+| Indexes, EXPLAIN / query plans, basic query performance                | 🔜      |
+| Programmable objects (triggers, stored procedures — recognition only)  | 🔜      |
+| Writing a report query (end-to-end)                                    | 🔜      |
 
 → **Switch to Stage 2 when the test-relevant topics are solid** — JOINs · GROUP BY/aggregates ·
 subqueries/CTEs · NULL handling · DML basics. Those are what consultancy tests actually ask; window
