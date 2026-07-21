@@ -76,58 +76,80 @@ check actually ran.
 
 ## Refine the prompt when this run earned it — the last step
 
-After writing the report, look at its Verdict. If it names a finding, **apply the fix to the prompt
-now**, in this same context. This is automatic — not a change Victor has to remember to request in some
-later session that may never come (the `notes-write` fact-check gate sat `open` four days because
-nothing triggered the read). Doing it here is also where the evidence is best: you just lived the run,
-so you know what broke rather than re-reading it cold, and the prompt you executed was the honest,
-unmodified current version.
+After writing the report, look at its Verdict. If it names a finding, the prompt may be refined **now**,
+in this same context — automatic, not deferred to a later session that may never come (the `notes-write`
+gate sat `open` four days because nothing triggered the read). Here the evidence is best: you just lived
+the run, and the prompt you executed was the honest, unmodified current version. (Refining a prompt
+*before* a run and executing the change in the same breath is the unsafe variant — it entangles a
+possibly-wrong edit with the run and ships it unseen; the at-end edit is only *used* on the next
+invocation Victor starts, so a human always sits between the edit and its next use.) But the edit does
+**not** land on your own say-so. It is drafted, reviewed by a cold subagent, and only then applied. The
+three parts below are the filter, the independent gate, and the brake on growth.
 
-Apply the fix **only if it clears all four conditions** — this bar is what keeps trivia out:
+**The bar — draft an edit only for a finding that clears all four:**
 
-1. **Real evidence, not theory** — it comes from something that actually happened this run, not from a
-   hypothetical the report imagined.
-2. **The prompt was wrong or ambiguous** — the instruction was inexecutable, contradictory, or silent
-   where it needed to speak. A rule the run *broke* while the prompt stated it clearly is a discipline
-   lapse to watch, not a prompt defect; rewriting an already-clear rule buries the real lesson (the
-   2026-07-19 coverage run merged two analysts against a rule that said "one concern per analyst… even
-   at higher token cost" — the prompt needed no edit).
-3. **It would have changed the result, not just the cost** — a finding that only made the run slower or
-   more expensive is friction to note, not a defect to patch. This is the condition that stops the
-   prompt growing for every minor annoyance.
-4. **Not already covered** — the existing text does not handle it somewhere the run failed to look.
+1. **Real evidence, not theory** — something that actually happened this run, not a hypothetical.
+2. **The prompt was wrong or ambiguous** — inexecutable, contradictory, or silent where it needed to
+   speak. A rule the run *broke* while the prompt stated it clearly is a discipline lapse to watch, not
+   a prompt defect; rewriting an already-clear rule buries the lesson (the 2026-07-19 coverage run
+   merged two analysts against a rule that already said "one concern per analyst… even at higher token
+   cost" — no edit was needed).
+3. **It would have changed the result, not just the cost** — a finding that only made the run slower is
+   friction to note, not a defect to patch. This is the condition that stops the prompt growing for
+   every annoyance.
+4. **Not already covered** — the text does not handle it somewhere the run failed to look.
 
-A self-report exists to surface what broke, so every finding arrives framed as "fix me", and nothing in
-the loop ever proposes *removing* prompt text — the four conditions are the only counterweight to that
-one-way ratchet. Most findings are friction (fails #3) or a discipline lapse (fails #2) and stay
-unapplied; only the survivors justify growing a prompt no one re-reads whole. When you consider and
+Most findings are friction (#3) or a discipline lapse (#2) and are recorded, not applied. When you
 reject one, name the failed condition in the Verdict so the same zombie is not re-proposed next run.
 
-**Why doing this automatically is safe — and where the line is.** The edit lands *after* the run
-finished, so the run just executed was a clean test of the unmodified prompt, and the refined version is
-only *used* on the next invocation, which Victor starts. A human still sits between the edit and its next
-use. That is the whole difference from editing a prompt *before* running it and executing the change in
-the same breath: that entangles a possibly-wrong edit with the run and ships it before anyone has seen
-it. Never do the before-and-run version; the after-run version is the one that is safe to automate.
+**Independent review before you apply — a cold subagent, never your own saturated judgement.** A
+self-report exists to surface what broke, so every finding arrives framed "fix me", and the author of
+the fix is the same tired context that just ran a long pipeline: two reasons the edit needs a second,
+independent pair of eyes. Draft the edit, then dispatch **one cold `general-purpose` subagent
+(`model: opus`** — this is the quality gate and it fires rarely) with exactly three inputs: the finding
+as the report states it, the current prompt section it targets, and your drafted replacement. It returns
+one verdict — **approve / approve-with-tightening / reject** — answering: does the edit clear all four
+bar conditions; is every fact in it correct; can the same fix be made by **tightening an existing line
+instead of adding one**; and does applying it make any now-redundant or stale text removable. Apply only
+what it approves, in the form it approves. If it rejects — or you cannot dispatch it — the finding stays
+`open`: a postponed finding is recoverable via its `Status` line, a self-approved bad edit is not. The
+tie always goes to `open`, never to editing on your own.
 
-**When uncertain at a saturated run-end, leave it `open`.** Context is thin at the end of a long run,
-and the same tiredness that skips a step can wave through a sloppy edit. A finding you postpone is fully
-recoverable — its `Status: open` line surfaces it next time — while a hasty edit shipped from a saturated
-context is not. The tie goes to `open`, never to editing.
+**The prompt has a size budget — refinement is net-neutral above it.** Long prompts are where Claude
+starts dropping steps, so an ever-growing prompt defeats its own purpose; this is the brake on the
+one-way ratchet (nothing in the loop ever *proposes* removing text, so the discipline has to be forced):
+- **Cite the incident in a clause, never a paragraph.** The war-story ("on 2026-07-19 the orchestrator
+  told C the file was thin and C had to overturn it") belongs in the self-report; the prompt states the
+  rule crisply and at most tags the cost in a half-line. Retelling failures in full is the single
+  largest source of bloat — this file and the coverage-audit prompt are both already guilty of it.
+- **Above ~500 lines, one-in-one-out.** Treat 500 lines as the point where an orchestrator must
+  consolidate rather than accumulate (a prompt may set a different budget in its own header if it
+  justifies the length). Under budget, a clean addition is fine. Over it, the reviewer must name what
+  stale caveat, duplicated instruction, or spent incident comes *out* to make room — a prompt that
+  cannot afford a new rule without consolidation is telling you it needs a consolidation pass, not
+  another clause. (`coverage-audit-prompt.md` is already over — its next refinement is net-negative.)
 
-**Commit flow.** Apply the fix, commit it on its own (`docs: <prompt> — refine from the run that just
-finished`), read the hash from `git log` (never from memory), then set the report's
-`Status: applied in <hash>` and commit the report + tracker together. Alongside the five bullets, print
-one line naming what you changed — that printed line is the human's view of the edit.
+**Commit flow.** Apply the reviewer-approved edit, commit it on its own (`docs: <prompt> — refine from
+the run that just finished`), read the hash from `git log` (never from memory), set the report's
+`Status: applied in <hash>`, and commit the report + tracker together. Alongside the five bullets, print
+one line naming what changed and one naming what came *out* — that is the human's view of the edit.
 
-## The safety net for findings left open
+## Run-start check — surface anything the last run left open
 
-The at-end step only sees *this* run's report, so a finding an earlier run left `open` — because it
-failed the bar then, or because that run predates this mechanism — is caught later, not here. Two ways:
-Victor mentions the run and Claude reads the report, or (where an orchestrator's step 0 opts into it) a
-future run of the same prompt reads its own `_last-run-report`'s `Status` line at start and surfaces an
-`open` bar-clearing finding before proceeding. Either way the `Status` line is what turns the check into
-a glance instead of a re-derivation. Clean report → prompts stay frozen.
+The at-end refinement only sees *this* run's report, so a finding an earlier run left `open` needs a
+separate trigger or it rots (the `notes-write` gate sat four days for exactly this reason). Every
+orchestrator's step 0 therefore includes this check — one glance, made cheap by the `Status` line:
+
+- Read this orchestrator's own `_last-run-report` (if one exists) and look at its `Status` line.
+- `applied in <hash>`, or a clean report → proceed silently.
+- `open` → print **one line** to Victor naming the open finding and its state: either it was *rejected
+  against the bar* (the Verdict says which condition — say so and move on, it is not a to-do), or it is
+  a genuine item a past run never applied.
+- **Do not apply it here.** Editing the prompt and then immediately running it is the entangled
+  before-and-run pattern the refinement step exists to avoid. Surfacing it is the whole job — one
+  printed line at start is what breaks the silence that let a real defect sit for four days. If Victor
+  wants it applied, that is his call; otherwise it flows into this run's own at-end refinement if this
+  run reproduces it.
 
 (Two pipelines carry their own tailored version of this step — same contract, same bar, same
 `_run-tracker.md` update: `review-audit.md` and `readme-audit.md`.)
