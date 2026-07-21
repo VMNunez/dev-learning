@@ -79,13 +79,37 @@ Rules:
 - **Stamp the capture date.** `Captured: <yyyy-mm>` = the current month (from the session context). This
   is what makes the file **trend-readable** — a later reader can compare how requirements shift over time.
 - **Filter to the target profile.** Only add junior (or "recién titulado / prácticas") postings on the
-  target stack at target-type companies. Skip senior-only or off-stack postings; note skipped ones in the
-  report with a one-line reason. This keeps the evidence anchored to Victor's objectives.
+  target stack at target-type companies to `## Raw postings`. This keeps the evidence anchored to
+  Victor's objectives. Off-stack postings are dropped entirely (note them in the report with a one-line
+  reason). Mid/senior postings on the target stack are **not dropped** — they go to `## Techo`, see below.
+- **Seniority not declared?** If a posting states no years and no senior gate (e.g. "Nivel: Empleado/a"),
+  it may go in `## Raw postings`, but its block must open with a line saying seniority is undeclared —
+  never let it read as stronger junior evidence than it is.
 - **Mark quality** on the `Captured:` line: `full posting` for pasted full offers (they outrank extracts),
   `web-search extract` for partial ones pulled from search.
 - **Deduplicate.** If a posting with the same company + role + source is already on file, update that block
   rather than adding a duplicate.
 - **Quote, do not invent.** Only write requirement text that actually appears in the offer/search result.
+
+---
+
+## Step 2b — Mid/senior postings on the target stack → `## Techo`
+
+A posting that is **on Victor's stack but above his level** (3+ años, or an explicit senior gate) is not
+waste: it shows **where the bar is heading**, which is what the `notes/{topic}/future-learning.md` files
+are for. Add it to the `## Techo` section instead of `## Raw postings`, same block format, with the
+required years on the `Captured:` line.
+
+The separation is the whole point — keep it strict:
+- `## Techo` postings **never** enter the Synthesis denominator and **never** raise a frequency. The
+  Synthesis counts `## Raw postings` only.
+- They **never** justify adding a coverage item. A skill appearing *only* in `## Techo` is by definition
+  something Victor does not need yet — that is the signal, not a gap.
+- After adding a posting, update the "Qué señala este techo" bullets at the end of the section, and route
+  each new signal to the topic whose `future-learning.md` should eventually absorb it (name the file).
+
+If a posting is off-stack entirely (not Java/Spring/Angular), drop it — it goes in neither section, only
+in the report's skipped line.
 
 ---
 
@@ -112,8 +136,10 @@ Print a short summary:
 
 | | Detail |
 |--|--------|
-| Postings added | [company — role — source, one per line] |
-| Postings skipped (off-profile) | [company — role — reason, or "none"] |
+| Postings added (junior → Raw postings) | [company — role — source, one per line] |
+| Postings added to `## Techo` (mid/senior) | [company — role — years required, or "none"] |
+| Postings dropped (off-stack) | [company — role — reason, or "none"] |
+| future-learning signals from `## Techo` | [signal → target future-learning.md file, or "none"] |
 | Synthesis changes | [requirement — old freq → new freq; new skills added] |
 | New "signals to watch" | [list or "none"] |
 | Footer count | [old N → new N] |
