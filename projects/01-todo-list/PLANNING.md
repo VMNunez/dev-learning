@@ -140,7 +140,7 @@ app/
 |---|---|---|
 | `@Component` decorator | Every component | The unit Angular is built from — nothing else can be learned before it |
 | `@Injectable` | `TaskService` | Marks the class Angular is allowed to construct and inject; the entry point to DI |
-| `inject()` | `TaskService` consumed by `TodoPage` / `TaskList` | The modern function-based DI Angular now prefers over constructor injection |
+| `inject()` | `TaskService` consumed by `TaskForm` / `TaskList` | The modern function-based DI Angular now prefers over constructor injection |
 | `input()` + `output()` | `task-item` talks to its parent `task-list` | The contract that keeps children dumb — data down, events up |
 | `signal()` + `computed()` | `TaskService` list state; `TaskList` derived counts and filter | Reactivity without subscriptions, so the first project spends its budget on components |
 | `signal.set()` + `signal.update()` | `addTask`, `toggleTask`, `deleteTask` in `TaskService` | The two write APIs: replace a value outright vs derive the next from the current |
@@ -178,7 +178,8 @@ projects 01–06 have no test step by design.
 2. **`TaskService`** ✅ — `@Injectable` service holding `signal<Task[]>` plus `addTask`, `toggleTask`,
    `deleteTask`, each replacing the array instead of mutating it.
    *Done:* `Browser: adding a task from the console via the injected service makes the list grow at `/``
-3. **`todo-page` shell** ✅ — the page component, `inject()`s the service and composes form + list.
+3. **`todo-page` shell** ✅ — the page component: a pure composition shell that injects nothing and
+   just places form + list.
    *Done:* `Browser: the page shell with form and list slots renders at `/``
 4. **`task-form`** ✅ — feature component that `inject()`s `TaskService` and calls `addTask` with the
    trimmed title; rejects whitespace-only input.
