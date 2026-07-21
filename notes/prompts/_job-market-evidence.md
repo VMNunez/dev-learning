@@ -162,9 +162,34 @@ Java": **Java y Spring Framework**. Frontend: "desarrollo moderno con **Angular*
 Deseables (no exigidos): BBDD **Oracle**; **JPA** para persistencia; mensajería asíncrona
 (**Kafka o RabbitMQ**).
 
+### Consultora española (sin nombrar) — Senior Full Stack Java + Angular (Barcelona, sector seguros) · InfoJobs
+Captured: 2026-07 · **full posting** · **5–7 años exigidos, "Senior" explícito**
+Empresa no identificada en la oferta: "empresa española líder en servicios tecnológicos... desde 1995,
+más de 600 empleados". Requisitos: 5–7 años como Senior Full Stack Developer; **Angular**; **inglés B2**;
+**CFGS**. Stack tecnológico declarado al completo:
+- **Lenguajes:** Java 21/25, TypeScript.
+- **Frameworks & Runtimes:** Spring Boot 3.x/4.x, Angular 21.
+- **Bases de datos:** PostgreSQL, Redis, SQLite.
+- **IA / GenAI:** Spring AI (OpenAI, Vertex AI Gemini, HuggingFace, Ollama), Anthropic Claude (SDK),
+  **MCP (Model Context Protocol)** y **RAG**.
+- **Infraestructura & DevOps:** Docker, Jenkins (CI/CD), AWS, Kubernetes.
+- **Monitorización & Observabilidad:** Dynatrace, Prometheus/Micrometer, OpenTelemetry.
+- **Seguridad:** **Spring Security, OAuth2 y JWT**.
+- **Testing:** **JUnit 5, Mockito**, WireMock, **Cucumber (BDD)**, **ArchUnit**, **Jasmine/Karma** (front).
+- **Calidad de código:** **SonarQube** y **JaCoCo**.
+
 **Qué señala este techo (lectura para `future-learning.md`, no para coverage):**
 - **Testing con taxonomía completa** — en junior el testing casi no se exige por escrito; a partir de
-  mid se pide desglosado (unitario / integración / E2E). Es la misma curva en las dos ofertas.
+  mid se pide desglosado (unitario / integración / E2E). Misma curva en las cuatro ofertas, y en la
+  senior de Barcelona con herramienta por nivel: **JUnit 5 + Mockito** (unit), **WireMock** (mocking de
+  APIs), **Cucumber** (BDD), **ArchUnit** (tests de arquitectura), **Jasmine/Karma** (front). Nota
+  importante: **JUnit 5 y Mockito son los mismos del suelo junior (~4/13)** — no cambian al subir de
+  nivel, solo se les añaden capas alrededor. Lo que estudies ahora no se tira.
+- **Métricas de calidad de código: SonarQube y JaCoCo** — cobertura y análisis estático como requisito
+  con nombre propio. Es el paso natural después de "escribir tests" → `java/future-learning.md`.
+- **Seguridad nombrada como bloque propio: Spring Security + OAuth2 + JWT** — es exactamente la pila del
+  Step 6 del proyecto 07, listada como stack senior. Refuerza que ese trabajo no es material de práctica:
+  es la misma pieza que se usa arriba. OAuth2 es el escalón que aún no tocas → `security/future-learning.md`.
 - **SOLID + patrones de diseño** — nombrados como *hard skill* con entidad propia, no como adorno.
   Es lo más cercano al nivel actual de Victor de todo el techo → candidato natural a `java/future-learning.md`.
 - **CI/CD nombrado como "cultura DevOps"** — en las tres ofertas del techo, y con herramienta concreta
@@ -173,6 +198,14 @@ Deseables (no exigidos): BBDD **Oracle**; **JPA** para persistencia; mensajería
 - **Mensajería asíncrona (Kafka / RabbitMQ)** — en las tres, y en Second Window explícitamente como
   *deseable*, no exigida ni siquiera a 3 años. Confirma que `Kafka` siga como *signal to watch* y no
   como objetivo: es un "suma puntos" de mid, no una puerta.
+- **Observabilidad (Dynatrace, Prometheus, OpenTelemetry)** — categoría entera que no existe en ninguna
+  oferta junior del fichero. Señal clara de escalón senior, no de hueco actual.
+- **IA / GenAI dentro del stack Java** — Spring AI, SDK de Anthropic Claude, **MCP** y **RAG** listados
+  como stack de proyecto, no como I+D. Es la primera vez que aparece en el fichero y encaja con lo que
+  ya está anotado en `notes/ai-development/future-learning.md` (estudiar tras el primer empleo). El dato
+  nuevo es que llega vía **Spring AI**, es decir, por el lado Java — no hace falta cambiar de ecosistema.
+- **Versiones muy por delante** — Java 21/25, Spring Boot 3.x/4.x, **Angular 21**. El proyecto 07 va con
+  Java 25, así que el backend está alineado con lo que pide una oferta senior de 2026. Útil para el CV.
 - **Referencia salarial** — Second Window paga **30–33k** por 3 años de Java + Angular fullstack en
   Madrid. Útil como ancla para negociar más adelante; el suelo junior queda por debajo de esa banda.
 - **Arquitectura Hexagonal / DDD táctico** — el salto arquitectónico de mid → `architecture/future-learning.md`.
