@@ -16,11 +16,14 @@ is its **complement**, not its replacement:
   *absence* here is not proof a junior does not need it. When it is empty or stale, the deep analysis
   still stands on its own — coverage never shrinks just because the file is thin.
 
-**Evidence quality note.** The postings below were captured from **web-search extracts (July 2026)**,
-not full pasted job descriptions — individual postings on Tecnoempleo/Indra/NTT expire fast (410 Gone)
-and several career sites are login-walled. The requirement text is real and quoted, but partial. To
-strengthen this file, paste 2–3 *full* "Requisitos" blocks from live postings when you see them — the
-tool for that is `notes/prompts/knowledge/coverage/evidence-intake-prompt.md` (`paste` or `search` mode).
+**Evidence quality note.** Most postings below were captured from **web-search extracts (July 2026)**,
+not full job descriptions — individual postings on Tecnoempleo/Indra/NTT expire fast (410 Gone) and
+several career sites are login-walled. That text is real and quoted, but partial: an extract can drop a
+requirement rather than prove its absence, which is why a skill's low frequency here is never evidence
+it is not asked. **One posting is a full pasted offer** (NTT DATA Castellón, marked `full posting`) and
+carries more weight than the extracts around it. To strengthen this file, paste 2–3 more *full*
+"Requisitos" blocks from live postings when you see them — the tool for that is
+`notes/prompts/knowledge/coverage/evidence-intake-prompt.md` (`paste` or `search` mode).
 
 > Keep it honest: what recurs across many postings is a strong signal; what appears in one senior-ish
 > posting (Kafka, Spring Cloud, Spring Batch) is not a junior floor — note it as a "signal to watch",
@@ -93,6 +96,21 @@ Captured: 2026-07 · web-search extract
 Requisitos: **1 a 2 años** de experiencia laboral. **Java**, **JavaScript**, **Node JS**, **React** y
 **Angular**, para proyectos del **sector bancario**.
 
+### NTT DATA Castellón — Java Developer (Java, Spring Boot, microservicios) · InfoJobs
+Captured: 2026-07 · **full posting** (oferta completa pegada)
+Seniority: **no declarada** — "Nivel: Empleado/a", sin años de experiencia exigidos. Convocatoria de
+expansión del centro ("seguimos en proceso de expansión... necesitamos incorporar diferentes
+profesionales"), teletrabajo desde el primer día, contratación indefinida. No es explícitamente junior,
+pero tampoco excluye perfiles de entrada — léase con esa cautela.
+Requisitos: dos perfiles en la misma oferta.
+- **Analistas y Programadores JAVA**: "Experiencia en proyectos de desarrollo con **Spring Boot**,
+  **Hibernate**, **Servicios web**, **Servicios REST** y **Angular**".
+- **Desarrolladores/as FullStack**: "con experiencia en **Angular**, **React**, **JavaScript**,
+  **jQuery**, etc."
+**Inglés: condicional, no obligatorio** — "si además te desenvuelves bien en inglés, puedes optar por la
+posibilidad de trabajar en proyectos internacionales". Es una palanca de acceso a mejores proyectos, no
+un filtro de entrada.
+
 ### Full Stack Junior (Madrid, proyecto estable) · Indeed España
 Captured: 2026-07 · web-search extract
 Requisitos: al menos **1 año** de experiencia como desarrollador Full Stack. **Java** y **JavaScript**;
@@ -105,40 +123,43 @@ con React y Angular, y trabajo con bases de datos relacionales y NoSQL.
 
 ## Synthesis — recurring requirements by stack
 
-Distilled from the ~12 postings above (July 2026). Frequencies are approximate — evidence is partial.
+Distilled from the ~13 postings above (July 2026). Frequencies are approximate — evidence is partial.
 
 **Backend — Java / Spring Boot** (the core of the target roles)
-- **Java (8 / 17)** — ~11/12 postings (baseline, non-negotiable)
-- **Spring Boot / Spring Framework** — ~10/12
-- **Relational DB (MySQL / PostgreSQL / SQL)** — ~8/12
-- **REST APIs** — ~6/12
-- **Testing: JUnit + Mockito** — ~4/12 (explicit; a hard differentiator at junior level)
-- **Spring Data / JPA** — ~4/12 (named directly or implied by "Suite de Spring")
-- **Microservices** — ~4/12 (present but leans mid-level; junior-facing as "aware of")
-- **Maven** — ~3/12
-- **Docker / containers** — ~3/12 (rising; baseline in microservices roles)
+- **Java (8 / 17)** — ~12/13 postings (baseline, non-negotiable)
+- **Spring Boot / Spring Framework** — ~11/13
+- **Relational DB (MySQL / PostgreSQL / SQL)** — ~8/13
+- **REST APIs / servicios web** — ~7/13
+- **Spring Data / JPA / Hibernate** — ~5/13 (named directly, implied by "Suite de Spring", or as Hibernate)
+- **Microservices** — ~5/13 (present but leans mid-level; junior-facing as "aware of")
+- **Testing: JUnit + Mockito** — ~4/13 (explicit; a hard differentiator at junior level)
+- **Maven** — ~3/13
+- **Docker / containers** — ~3/13 (rising; baseline in microservices roles)
 
 **Frontend — Angular**
-- **Angular (v12+ / v18)** — ~10/12 (asked in nearly every full-stack posting)
-- **TypeScript** — ~5/12 (baseline for any Angular role)
-- **HTML / CSS / SASS** — ~5/12
-- **RxJS** — ~3/12 (strong in frontend-focused postings)
-- **Angular Material** — ~2/12
-- **Testing: Jasmine / Karma / Jest** — ~2/12
+- **Angular (v12+ / v18)** — ~11/13 (asked in nearly every full-stack posting)
+- **TypeScript** — ~5/13 (baseline for any Angular role)
+- **HTML / CSS / SASS** — ~5/13
+- **RxJS** — ~3/13 (strong in frontend-focused postings)
+- **Angular Material** — ~2/13
+- **Testing: Jasmine / Karma / Jest** — ~2/13
 
 **Cross-cutting**
-- **English (B2)** — ~9/12 (global consultancies, near-universal ask; one posting marks it *obligatorio*)
-- **Git** — ~7/12 (assumed everywhere)
-- **Agile / Scrum-Kanban** — ~7/12 (named in almost every posting)
-- **Cloud (public — Azure/AWS awareness)** — ~3/12
+- **English (B2)** — ~9/13 required + ~1 conditional (near-universal at global consultancies; one posting
+  marks it *obligatorio*, NTT Castellón makes it the key to international projects rather than a filter)
+- **Git** — ~7/13 (assumed everywhere)
+- **Agile / Scrum-Kanban** — ~7/13 (named in almost every posting)
+- **Cloud (public — Azure/AWS awareness)** — ~3/13
 
 **Signals to watch (appear in postings but NOT a junior floor — do not force into junior coverage)**
 - Spring Cloud, Spring Batch — mid-level / specific projects
 - Kafka / messaging — mid-level microservices
 - Jenkins / CI-CD pipelines — nice-to-have but **rising**: now named in 2 postings (UST, Santander),
   the Santander one bundling it as "DevOps: Jira, Jenkins, Git, GitHub" for a *junior* role
-- **React** — ~3/12, always as an *alternative* to Angular in full-stack junior postings, never instead
+- **React** — ~4/13, always as an *alternative* to Angular in full-stack postings, never instead
   of it. Off Victor's roadmap by design; noted only as market context, not a gap to close
+- **jQuery / frontend legacy** — named once (NTT Castellón, full posting). Real signal of consultancy
+  maintenance work, but not something to study ahead of the roadmap
 - **Spring Security / role-based access control** — named explicitly in one junior full-stack posting;
   low frequency but directly relevant to project 07's JWT work
 - **MongoDB / NoSQL** — appears alongside the relational DBs in one junior full-stack posting
@@ -146,4 +167,4 @@ Distilled from the ~12 postings above (July 2026). Frequencies are approximate �
 
 ---
 
-_Last updated: 2026-07 (web-search extracts)  ·  postings on file: 12_
+_Last updated: 2026-07 (12 web-search extracts + 1 full posting)  ·  postings on file: 13_
