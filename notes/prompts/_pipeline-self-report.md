@@ -127,7 +127,18 @@ one-way ratchet (nothing in the loop ever *proposes* removing text, so the disci
   justifies the length). Under budget, a clean addition is fine. Over it, the reviewer must name what
   stale caveat, duplicated instruction, or spent incident comes *out* to make room — a prompt that
   cannot afford a new rule without consolidation is telling you it needs a consolidation pass, not
-  another clause. (`coverage-audit-prompt.md` is already over — its next refinement is net-negative.)
+  another clause.
+- **When pruning is not enough, extract — but only past a clean seam.** If a prompt is over budget on
+  genuine load-bearing content, not war-stories, the next tool is to move a self-contained block into a
+  component file, the way `coverage-audit` extracted its analyst mandates and `notes-audit` its stages.
+  Extract only when the block **(a)** is read by a *different* reader than the orchestrator — a dispatched
+  subagent reads it, the orchestrator only points — so the split genuinely reduces what any one context
+  holds instead of scattering lines; **(b)** is self-contained (its own inputs and return spec) so it
+  survives being read alone; and **(c)** is stable, not rewritten every run. If the length instead comes
+  from many interdependent inline rules with no clean seam, do **not** split: coupled logic across two
+  files is worse than one long file, and every extraction adds a cross-reference that can break (the
+  coverage-audit split lost two rules until the cold reviewer caught them). Prune first, extract second,
+  and only very few prompts ever need it — the big orchestrators, which already have it.
 
 **Commit flow.** Apply the reviewer-approved edit, commit it on its own (`docs: <prompt> — refine from
 the run that just finished`), read the hash from `git log` (never from memory), set the report's
