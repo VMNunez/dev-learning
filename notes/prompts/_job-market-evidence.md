@@ -15,6 +15,10 @@ is its **complement**, not its replacement:
 - It only ever **raises** that floor, never lowers it: this is a small, partial sample, so a skill's
   *absence* here is not proof a junior does not need it. When it is empty or stale, the deep analysis
   still stands on its own — coverage never shrinks just because the file is thin.
+- **The `## Techo` section is off-limits to coverage.** It holds mid/senior postings (3+ años) kept only
+  to show where the bar is heading, and it feeds the `future-learning.md` files — never coverage, never
+  the Synthesis frequencies. A skill that appears *only* there is by definition one Victor does not need
+  yet. Read the Raw postings + Synthesis; skip `Techo`.
 
 **Evidence quality note.** Most postings below were captured from **web-search extracts (July 2026)**,
 not full job descriptions — individual postings on Tecnoempleo/Indra/NTT expire fast (410 Gone) and
@@ -118,6 +122,48 @@ Requisitos: al menos **1 año** de experiencia como desarrollador Full Stack. **
 **Angular** en frontend; bases de datos **MySQL, PostgreSQL y MongoDB**; **nivel alto de inglés
 (obligatorio)**. Responsabilidades: desarrollo Full Stack con Java, Spring Boot y JavaScript, frontend
 con React y Angular, y trabajo con bases de datos relacionales y NoSQL.
+
+---
+
+## Techo — ofertas mid/senior (NO cuentan para las frecuencias junior)
+
+> **Regla dura, léela antes de usar esta sección.** Estas ofertas exigen explícitamente 3+ años y están
+> **fuera del perfil objetivo**. Existen aquí por una única razón: mostrar **hacia dónde va el listón**,
+> para alimentar los `future-learning.md` de cada topic. **Nunca** entran en el denominador de la
+> Synthesis, **nunca** suben el suelo junior, y `coverage-prompt` / `coverage-audit` **no pueden usarlas
+> para añadir items a coverage**. Un skill que solo aparece aquí es, por definición, algo que Victor
+> todavía NO necesita. Confundir estas dos secciones rompe el propósito del fichero.
+
+### Sopra Steria — Analista/Programador Java Spring Boot (Alicante, sector Retail) · InfoJobs
+Captured: 2026-07 · **full posting** · **3+ años exigidos**
+Hard skills: **Java Spring Boot**; **POO, principios SOLID y patrones de diseño**; **Arquitectura
+Hexagonal y DDD táctico**; desarrollo de **APIs REST enfocadas al rendimiento, escalabilidad y
+seguridad**; BBDD relacionales (**PostgreSQL**); NoSQL (**Redis**); broker de mensajería (**RabbitMQ**);
+**test unitarios**; desarrollo en **sistemas dockerizados**; despliegues en **Kubernetes**; **CI/CD con
+GitLab CI**; **Git**.
+
+### Zemsania — Desarrollador FullStack Angular (Barcelona, sector seguros) · InfoJobs
+Captured: 2026-07 · **full posting** · **5+ años exigidos**
+Requisitos: experiencia "sólida y profunda" en **Angular v16+** y tecnologías asociadas: **NgRx,
+Angular Material, Signals y Nx**. **Java y/o Kotlin** para back-end y creación de APIs. **REST APIs y
+Web MVC**. **Inglés B2/C1**, fluidez escrita y oral "indispensable". **Git-based workflows**. Prácticas
+**DevOps, CI/CD, containerización (Docker) y Kubernetes**. Cloud: **AWS o Azure**. Herramientas de
+monitorización. **Estrategias de testing completas: unitarias, integración y E2E**. BBDD: **PostgreSQL
+y MongoDB**. Metodologías **Agile**. **Código limpio y patrones de diseño**. Colaboración con equipos
+de UI/UX.
+
+**Qué señala este techo (lectura para `future-learning.md`, no para coverage):**
+- **Testing con taxonomía completa** — en junior el testing casi no se exige por escrito; a partir de
+  mid se pide desglosado (unitario / integración / E2E). Es la misma curva en las dos ofertas.
+- **SOLID + patrones de diseño** — nombrados como *hard skill* con entidad propia, no como adorno.
+  Es lo más cercano al nivel actual de Victor de todo el techo → candidato natural a `java/future-learning.md`.
+- **Kubernetes + CI/CD** — presentes en las dos. Docker ya está en el suelo junior (~3/13); Kubernetes
+  es el escalón siguiente, claramente fuera de junior.
+- **Arquitectura Hexagonal / DDD táctico** — el salto arquitectónico de mid → `architecture/future-learning.md`.
+- **Angular avanzado: NgRx, Signals, Nx** — la oferta de Zemsania es la única del fichero donde Angular
+  es el eje y el backend el complemento. → `angular/future-learning.md`.
+- **APIs REST con adjetivos** (rendimiento, escalabilidad, seguridad) — a los 3 años ya no se pide
+  "saber hacer REST", se pide hacerlas bien. Ese es el salto real junior → mid.
 
 ---
 
