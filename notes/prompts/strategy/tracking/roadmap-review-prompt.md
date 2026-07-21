@@ -9,7 +9,7 @@ finishes, `notes/coverage.md` changes significantly, or it has been a while sinc
 
 > **▶ Run first:** `progress-update` — the Step 2 gap analysis reads `PROGRESS.md` directly; a stale one produces wrong results.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this orchestrator's own `_last-run-report-roadmap-review.md` (this folder is shared with `progress-update`, which owns the unsuffixed `_last-run-report.md`) and, if its `Status` is `open`, surface that finding in one line before proceeding — surface only, never apply it in this run.
 
 It runs as an **orchestrator**: two cold fact-gathering subagents feed a doer (the gap analysis and
 the active project's PLANNING.md summary — so neither `coverage.md` nor a PLANNING.md ever loads into
@@ -41,6 +41,8 @@ active-project summary) so `notes/coverage.md` and the PLANNING.md never load in
 you (the doer) apply the edits in Steps 3–5 from their reports; then in Step 6 you launch two cold
 reviewer subagents, one after the other, that independently verify and fix the result. Finish with
 the report and the commit blocks.
+
+Step 0 also includes the run-start check stated above this fenced block.
 
 > **Branch guard (step 0):** run `git branch --show-current`. ROADMAP.md commits on whatever branch
 > is currently active — a feature branch is the normal case; name it in the final report. If you are
