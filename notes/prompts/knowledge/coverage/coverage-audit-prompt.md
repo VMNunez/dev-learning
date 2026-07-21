@@ -6,6 +6,8 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 
 > **▶ Run first:** `coverage-prompt` for every topic — this is the global convergence pass; run it once each topic already has its own `coverage.md`.
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 > **Gate — check the run tracker before anything else (step 0).** Read
 > `notes/prompts/_run-tracker.md` and look at the **coverage-prompt column**: this audit only runs
 > once **every topic** has a run date there. A topic's `coverage.md` merely *existing* does not count

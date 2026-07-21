@@ -11,6 +11,8 @@ stale — and always **before** `portfolio-audit`, which assumes the READMEs are
 > **▶ Run first:** nothing — it only needs `PLANNING.md` and the existing README(s). It is itself a
 > prerequisite of `portfolio-audit`.
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 **Internal pieces this orchestrates** (you never launch these directly):
 `_readme-standard.md` (the bar) · `readme-write-prompt.md` (author) · `readme-review-prompt.md` (reviewer).
 

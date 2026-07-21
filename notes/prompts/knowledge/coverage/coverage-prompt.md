@@ -6,6 +6,8 @@ Use this prompt when you want to create a new `coverage.md` for a notes folder, 
 
 > **▶ Run first:** nothing — it can create coverage from scratch. Optional: `evidence-intake` to refresh the market evidence its Step 2 subagent reads.
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 > **Rules here, evidence next door.** Rules that came from a real run's failure carry a `(why: R-n)`
 > pointer into `_coverage-prompt-rationale.md` — the incident, what it cost, and the worked example.
 > You do **not** need to read that file to execute a run. Read the entry when you are tempted to

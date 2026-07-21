@@ -17,6 +17,8 @@ one command does everything.
 > **▶ Run first:** `coverage-prompt` for the topic — notes-audit builds notes to cover every item in
 > `coverage.md`; if coverage is missing or stale, the notes will be too.
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 **Internal pieces this orchestrates** (you never launch these directly):
 `_note-quality-standard.md` (the bar) · `notes-plan-prompt.md` (folder analysis → worklist) ·
 `notes-inspect-prompt.md` (per-file quality flags → worklist rows) · `notes-write-prompt.md` (English

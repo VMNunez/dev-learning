@@ -9,6 +9,8 @@ finishes, `notes/coverage.md` changes significantly, or it has been a while sinc
 
 > **▶ Run first:** `progress-update` — the Step 2 gap analysis reads `PROGRESS.md` directly; a stale one produces wrong results.
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 It runs as an **orchestrator**: two cold fact-gathering subagents feed a doer (the gap analysis and
 the active project's PLANNING.md summary — so neither `coverage.md` nor a PLANNING.md ever loads into
 the doer's own context), the doer applies the edits, then two cold reviewer subagents run in sequence

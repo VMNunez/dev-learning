@@ -10,6 +10,8 @@ tracker (which it reads directly — a subagent for one tiny file costs more con
 
 > **▶ Run first:** nothing — this is a producer. Run it *before* `plan-audit` and `roadmap-review`, which read `PROGRESS.md`.
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
 
 Run this when PROGRESS.md feels out of sync: after finishing a step or a project, after a long block

@@ -19,6 +19,8 @@ one command does everything.
 > **▶ Run first (new mode only):** `progress-update` — the gap analysis reads `PROGRESS.md`; if it is
 > stale it picks the wrong next project. (`review` mode has no prerequisite.)
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 **Internal pieces this orchestrates** (you never launch these directly):
 `_planning-standard.md` (the bar) · `plan-write-prompt.md` (author) ·
 `plan-architecture-prompt.md` (architecture advisor, new mode only) · `plan-review-prompt.md` (reviewer).

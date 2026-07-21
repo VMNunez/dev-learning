@@ -20,6 +20,8 @@ It is the last link in the per-project chain: `plan-audit` → build → `readme
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 **Internal pieces this orchestrates** (you never launch these directly):
 `_portfolio-standard.md` (the bar) · `portfolio-write-prompt.md` (question author) ·
 `portfolio-review-prompt.md` (question reviewer).

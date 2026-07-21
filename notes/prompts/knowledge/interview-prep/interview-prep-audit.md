@@ -24,6 +24,8 @@ everything.
 > topic's `coverage.md`; if coverage is missing or stale, the Q&A will be too. Optional:
 > `evidence-intake` to refresh `_job-market-evidence.md`, which the market-analysis stage (M) reads.
 
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+
 **Internal pieces this orchestrates** (you never launch these directly):
 `_interview-prep-standard.md` (the bar) · `interview-prep-write-prompt.md` (author) ·
 `interview-prep-review-prompt.md` (reviewer). The market-analysis (M) and gap-hunt (G) subagents are
