@@ -63,6 +63,13 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
+    @ExceptionHandler(InvalidStateTransitionException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidStateTransition(InvalidStateTransitionException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(buildError(HttpStatus.CONFLICT, e.getMessage()));
+    }
+
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException e) {
         return ResponseEntity

@@ -41,6 +41,11 @@ public class TimeEntryController {
         return ResponseEntity.status(200).body(timeEntryService.submit(id));
     }
 
+    @PatchMapping("/{id}/reopen")
+    public ResponseEntity<TimeEntryResponse> reopen(@PathVariable Long id){
+        return ResponseEntity.status(200).body(timeEntryService.reopen(id));
+    }
+
     @PreAuthorize("hasRole('MANAGER')")
     @PatchMapping("/{id}/approve")
     public ResponseEntity<TimeEntryResponse> approve(@PathVariable Long id) {

@@ -3,6 +3,7 @@ package com.victor.timetrack.service;
 import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.exception.BusinessRuleViolationException;
+import com.victor.timetrack.exception.InvalidStateTransitionException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.exception.UnauthorizedException;
 import com.victor.timetrack.model.*;
@@ -84,7 +85,7 @@ public class TimeEntryService {
         }
 
         if (timeEntry.getStatus() != EntryStatus.DRAFT) {
-            throw new BusinessRuleViolationException("Employee can only submit DRAFT entries");
+            throw new InvalidStateTransitionException("Employee can only submit DRAFT entries");
         }
 
         timeEntry.setStatus(EntryStatus.SUBMITTED);
@@ -100,7 +101,7 @@ public class TimeEntryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
         if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
-            throw new BusinessRuleViolationException("Manager can only approve SUBMITTED entries");
+            throw new InvalidStateTransitionException("Manager can only approve SUBMITTED entries");
         }
 
         timeEntry.setStatus(EntryStatus.APPROVED);
@@ -115,7 +116,7 @@ public class TimeEntryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
         if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
-            throw new BusinessRuleViolationException("Manager can only reject SUBMITTED entries");
+            throw new InvalidStateTransitionException("Manager can only reject SUBMITTED entries");
         }
 
         timeEntry.setStatus(EntryStatus.REJECTED);
@@ -151,13 +152,14 @@ public class TimeEntryService {
                 .where(TimeEntrySpecifications.hasUserId(userId))
                 .and(TimeEntrySpecifications.hasProjectId(projectId))
                 .and(TimeEntrySpecifications.hasStatus(status))
-                .and(TimeEntrySpecifications.dateBetween(start,end));
+                .and(TimeEntrySpecifications.dateBetween(start, end));
 
         return timeEntryRepository.findAll(spec)
                 .stream()
                 .map(this::toResponse)
                 .toList();
     }
+
     public TimeEntryResponse update(Long id, CreateTimeEntryRequest request) {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
@@ -173,7 +175,7 @@ public class TimeEntryService {
         }
 
         if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
-            throw new BusinessRuleViolationException("You can only update DRAFT entries");
+            throw new InvalidStateTransitionException("You can only update DRAFT entries");
         }
 
         if (request.getDate().isAfter(LocalDate.now())) {
@@ -200,6 +202,29 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    public TimeEntryResponse reopen(Long id) {
+        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        TimeEntry timeEntry = timeEntryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+
+        if (!timeEntry.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("You can only reopen your own entries");
+        }
+
+        if(timeEntry.getStatus() != EntryStatus.REJECTED){
+            throw  new InvalidStateTransitionException("Employee can only reopen REJECTED entries");
+        }
+
+        timeEntry.setStatus(EntryStatus.DRAFT);
+        timeEntry.setRejectionNote(null);
+
+        TimeEntry saved = timeEntryRepository.save(timeEntry);
+
+        return toResponse(saved);
+    }
+
     public void delete(Long id) {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
@@ -212,13 +237,11 @@ public class TimeEntryService {
         }
 
         if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
-            throw new BusinessRuleViolationException("You can only delete DRAFT entries");
+            throw new InvalidStateTransitionException("You can only delete DRAFT entries");
         }
 
         timeEntryRepository.deleteById(id);
     }
-
-
 
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
