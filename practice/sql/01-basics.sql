@@ -156,3 +156,90 @@ SELECT title, LENGTH(title) AS title_length FROM books ORDER BY title_length DES
 -- Get books ordered by price ascending. Skip the 2 cheapest and return the next 3.
 SELECT * FROM books ORDER BY price ASC LIMIT 3 OFFSET 2;
 SELECT * FROM books ORDER BY price ASC OFFSET 2 FETCH NEXT 3 ROWS ONLY;
+
+-- ==================================
+-- EXTRA EXERCISES
+-- ==================================
+
+-- #21 | SELECT — specific columns
+-- Get the name and nationality of all authors.
+SELECT name, nationality FROM authors; 
+
+-- #22 | WHERE — less than
+-- Get all books published before 1960. Show all columns.
+SELECT * FROM books WHERE year < 1960;
+
+-- #23 | WHERE — AND
+-- Get all books by author_id 13 that cost more than 12.
+SELECT * FROM books WHERE author_id = 13 AND price > 12;
+
+-- #24 | ORDER BY — multiple columns
+-- Get all books ordered by year ascending, then alphabetically by title within the same year. Show all columns.
+SELECT * FROM books ORDER BY year,title;
+
+-- #25 | ORDER BY + LIMIT
+-- Get the 2 oldest books (earliest year). Show only title and year.
+SELECT title,year FROM books ORDER BY year ASC LIMIT 2;
+
+-- #26 | WHERE — OR with different fields
+-- Get all books by author_id 11 or that cost less than 9. Use OR.
+SELECT * FROM books WHERE author_id = 11 OR price < 9;
+
+-- #27 | SELECT — expression + alias
+-- Get all books showing title and a column called discounted_price that is the price minus 2. Order by discounted_price ascending.
+SELECT title,price - 2 AS discounted_price FROM books ORDER BY discounted_price ASC;
+
+-- #28 | WHERE — ILIKE
+-- Get all books whose title starts with the letter "k". Case insensitive.
+SELECT * FROM books WHERE title ILIKE 'k%';
+
+-- #29 | SELECT DISTINCT
+-- Get all unique countries from the customers table.
+SELECT DISTINCT country FROM customers;
+
+-- #30 | WHERE — NOT LIKE
+-- Get all authors whose name does NOT start with "H".
+SELECT * FROM authors WHERE name NOT LIKE 'H%';
+
+
+-- #31 | SELECT — concatenation
+-- Get all customers showing a single column called customer_info with the format: Alice Johnson — US. Use || to combine name, ' — ', and country.
+SELECT name || ' — ' || country AS customer_info FROM customers;
+
+
+-- #32 | WHERE — BETWEEN + ORDER BY
+-- Get all books that cost between 10 and 13. Show only title and price, ordered by price ascending.
+SELECT title, price FROM books WHERE price BETWEEN 10 AND 13 ORDER BY price ASC;
+
+-- #33 | ORDER BY — multiple columns
+-- Get all books ordered by author_id ascending, then by year ascending within the same author. Show title, author_id, and year.
+SELECT title, author_id, year FROM books ORDER BY author_id ASC, year ASC;
+
+
+-- #34 | LIMIT + OFFSET
+-- Get books ordered by year ascending. Skip the 2 oldest and return the next 2.
+SELECT * FROM books ORDER BY year ASC LIMIT 2 OFFSET 2;
+
+-- #35 | SELECT — LENGTH() + WHERE
+-- Get all books whose title has more than 15 characters. Show title and title length, ordered by length descending.
+SELECT title, LENGTH(title) AS title_length FROM  books WHERE LENGTH(title) > 15 ORDER BY title_length DESC;
+
+-- #36 | WHERE — IS NOT NULL
+-- Get all books where the price is not null. Show only title and price.
+SELECT title, price FROM books WHERE price IS NOT NULL;
+
+-- #37 | WHERE — comparison on a different table
+-- Get all orders placed after 2024-02-01. Show all columns.
+SELECT * FROM orders WHERE created_at::date > '2024-02-01';
+
+-- #38 | DISTINCT ON
+-- Get the most recently published book per author. Show author_id, title, and year.
+SELECT DISTINCT ON(author_id) author_id, title, year FROM books ORDER BY author_id, year DESC;
+
+-- #39 | WHERE — NOT BETWEEN
+-- Get all books NOT published between 1960 and 2000. Show title and year.
+SELECT title, year FROM books WHERE year NOT BETWEEN 1960 and 2000;
+
+-- #40 | SELECT — concatenation with numbers
+-- Get all books showing a single column called book_summary with the format: 1984 — $9.99. Use || to combine title, ' — $', and price.
+SELECT title || ' — $' || price AS  book_summary FROM books;
