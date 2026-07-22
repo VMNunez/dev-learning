@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -26,6 +27,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(buildError(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ErrorResponse> handleDisabled(DisabledException e){
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(buildError(HttpStatus.UNAUTHORIZED,"Invalid email or password"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
