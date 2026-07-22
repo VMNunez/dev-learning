@@ -26,9 +26,14 @@ tells them apart, and it is the filename:
 
 > **A leading `_` means "never launch this".** No underscore, and it is yours to run.
 
+**Inside Claude Code you do not need the rule at all: type `/` and the list is the answer.** Every
+runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
+set — 24 commands in `.claude/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+that only the 11 orchestrators had one, which made the menu look like the whole system when it was
+under half of it). **Adding a runnable prompt means adding its command in the same commit.**
+
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation (inside Claude Code, the orchestrators are also available as `/slash-commands`, e.g.
-  `/notes-audit`). **23 files, listed below.**
+  conversation, or just use its slash command. **24 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
   "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -38,7 +43,7 @@ tells them apart, and it is the filename:
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 23 runnable prompts
+### The 24 runnable prompts — each with a slash command of the same name
 
 | Group | Prompts |
 |---|---|
@@ -47,7 +52,7 @@ tells them apart, and it is the filename:
 | Practice | `sql-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
 
-Two flavors among these 23, both launched the same way (paste config into a new chat):
+Two flavors among these 24, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`, `coverage-audit-prompt`, `notes-and-interview-prep-prompt` — run entirely inside Claude Code and
   hand you a finished result (and, where noted, a commit) with no further input from you. Every
