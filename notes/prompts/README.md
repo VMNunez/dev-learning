@@ -149,7 +149,7 @@ down a flat list of ten files:
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
 | `practice/sql/sql-plan-audit.md` | **Orchestrator.** Audits **and extends** `practice/sql/PLANNING.md` against `_sql-plan-standard.md` — four cold specialists (learning-design · coverage-and-steps · counts-and-truth · loop-and-fence), history gate, single commit. `coverage-and-steps` writes the new steps for coverage sections nothing claims yet, so the plan grows as SQL grows. The plan it maintains covers **exercises only** — notes, Q&A and simulations are separate tracks Victor runs himself. | `_sql-plan-standard.md`, `practice/sql/PLANNING.md`, `notes/sql/coverage.md`, `ROADMAP.md`, `PROGRESS.md`, `sql-exercises-prompt.md`, the exercise files (as evidence, never edited) | `practice/sql/PLANNING.md` |
-| `practice/sql/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises by topic. `review` mode: grades my answers and scores them. | `notes/sql/coverage.md`, `PROGRESS.md`, `practice/sql/{topic}/exercises.sql` | `practice/sql/{topic}/exercises.sql`; the SQL table in `PROGRESS.md`; `interview-prep/en/sql.md` + `es/sql.md` |
+| `practice/sql/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises for the current step. `review` mode: grades my answers, scores them, and logs every ⚠️/❌ concept. Config is exactly four keys — `MODE`, `TOPIC`, `COUNT`, `FILE`; focus and review come from the step in `PLANNING.md`, never pasted. **Writes no notes and no Q&A** — those are separate tracks. | `practice/sql/PLANNING.md` (the step: topic, count, focus), `notes/sql/coverage.md`, `PROGRESS.md`, the flat exercise files `practice/sql/NN-name.sql` | `practice/sql/NN-name.sql`; `practice/sql/MISTAKES.md` (review mode); the SQL table in `PROGRESS.md` |
 | `practice/simulations/simulation-generator-prompt.md` | Creates new timed test specs (Angular / Spring Boot / SQL) in the existing format — the producer for the simulation bank. | `practice/simulations/{type}/` (existing specs), `practice/simulations/TRACKER.md` | new `practice/simulations/{type}/NN-*.md`; rows + counts in `practice/simulations/TRACKER.md` |
 | `practice/simulations/simulation-review-prompt.md` | Grades a finished timed simulation, gives a 3-score ideal solution, adds interview questions. `hint` mode guides mid-test. | the simulation spec in `practice/simulations/{type}/`, `practice/simulations/TRACKER.md`, + my pasted code | `practice/simulations/TRACKER.md`, the spec's header, `interview-prep/en/{topic}.md` + `es/{topic}.md` |
 | `practice/interview/code-review-prompt.md` | Generates a flawed snippet (often AI-style) for me to critique, then grades what I found / missed / over-flagged. Trains the stage-3 code-review step. | (snippet generated fresh; no spec file needed) | `interview-prep/en/{type}.md` + `es/{type}.md` (questions for my gaps) |
@@ -202,8 +202,15 @@ Each generated file, with who writes it and who depends on it:
 - **`notes/cv/cv-bullets.md`** — written by `portfolio-audit` → read by `cv-prompt` (one polished
   bullet per project, reused as-is).
 - **`interview-prep/en/*.md` + `es/*.md`** — written by `interview-prep-audit`,
-  `notes-and-interview-prep`, `simulation-review`, `sql-exercises`, `code-review` → read by `simulator`.
+  `notes-and-interview-prep`, `simulation-review`, `code-review` → read by `simulator`.
 - **`interview-prep/projects/*.md`** — written by `portfolio-audit` → read by `simulator`.
+- **`practice/sql/PLANNING.md`** — written by `sql-plan-audit` → read by `sql-exercises` (every run
+  takes its topic, count and focus from the current step) and by `simulation-generator` in
+  `TYPE = sql` (a SQL test may only use techniques from steps already closed). *This is the SQL
+  track's contract, the same role a project's `PLANNING.md` plays.*
+- **`practice/sql/MISTAKES.md`** — written by `sql-exercises` in `review` mode (one row per failed
+  concept, with its `coverage.md` section and how many times it has come back) → read by the revision
+  points R1–R5 in `PLANNING.md` §8b, which take their focus from its open rows, highest count first.
 - **`practice/simulations/{type}/NN-*.md`** (the test specs) — written by `simulation-generator` (and the
   original bank by hand) → read by `simulation-review` (and by me, to take the test).
 - **`practice/simulations/TRACKER.md`** — written by `simulation-generator` (new rows) and `simulation-review`
@@ -231,8 +238,16 @@ progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.m
                         │                                          └► interview-prep/projects ┘
                         └─ roadmap-review ─► ROADMAP.md
 
-Practice (independent): sql-exercises ─► practice/sql/ + PROGRESS + sql Q&A
-                        simulation-review ─► TRACKER + topic Q&A
+Practice (its own loop, fed by coverage):
+
+  notes/sql/coverage.md ─► sql-plan-audit ─► practice/sql/PLANNING.md ─┬─► sql-exercises ─► NN-*.sql
+                                                    ▲                 │        └─► MISTAKES.md ─┐
+                                                    └── the R1–R5 revision points read it ◄──────┘
+                                                                      │
+                                                                      └─► simulation-generator (sql)
+                                                                             (only closed steps)
+
+  simulation-generator ─► simulations/{type}/ ─► simulation-review ─► TRACKER + topic Q&A ─► simulator
 ```
 
 ---
@@ -254,6 +269,18 @@ Practice (independent): sql-exercises ─► practice/sql/ + PROGRESS + sql Q&A
 3. `notes-and-interview-prep` — close the gaps between them
 4. (after all topics have coverage) `coverage-audit` — global convergence pass
 5. `roadmap-review` — check the plan still reflects reality
+
+**The SQL track (the daily 12:30 block)**
+1. `coverage-prompt` (`TOPIC = sql`) — only when coverage is stale; it is the root of the plan
+2. `sql-plan-audit` — turns coverage into ordered steps in `practice/sql/PLANNING.md`. Re-run it when a
+   step closes, when coverage grows, or when the plan feels out of date
+3. per step, in the block itself: `sql-exercises` (`MODE = practice`) → answer them in pgAdmin →
+   `sql-exercises` (`MODE = review`) to grade. The step's topic, count and focus come from the plan
+4. at each revision point R1–R5 (every 3 scored files): `sql-exercises` again, focused on the open
+   rows of `MISTAKES.md`
+5. `simulation-generator` (`TYPE = sql`) — the first timed test is due once Step 5 closes; it refuses
+   to use techniques from steps you have not closed
+6. after the last step: `progress-update`, then `roadmap-review`
 
 **Applying**
 1. `portfolio-audit` on each finished project (produces cv-bullets)

@@ -1004,12 +1004,12 @@ basics → joins → group-by → join-pitfalls → nulls → subqueries → cte
 → indexes → live-database → report-queries
 Print: "Siguiente tema: [next topic]. Ejecuta el prompt en modo practice con TOPIC = [next topic]."
 If {TOPIC} is report-queries (the last topic): print "Has completado todos los temas SQL. Revisa
-practice/sql/PLANNING.md §9 — te toca el gate G7 (progress-update)."
+practice/sql/PLANNING.md §9 — te toca el gate G3 (progress-update)."
 
-**Also name the step gate when one fires here.** PLANNING.md §9 hangs three gates off a closing step —
-after `nulls` closes, G4 (`interview-prep-audit TOPIC = sql`); after `window-functions` closes, G6
-(`simulation-generator TYPE = sql`); after `report-queries`, G7. If {TOPIC} is one of those three, add:
-"Además, esto cierra el paso [N] del plan: toca ejecutar [gate] antes de seguir."
+**Also name the revision point when one fires here.** PLANNING.md §8b hangs five revision points off a
+closing step — R1 after `joins`, R2 after `nulls`, R3 after `window-functions`, R4 after `data-types`,
+R5 after `live-database`. If {TOPIC} is one of those five, add: "Además, esto cierra el paso [N] del
+plan: toca el punto de repaso [R] antes de seguir — su foco son las filas abiertas de MISTAKES.md."
 Then proceed to Steps 4 and 5.
 
 ---
@@ -1082,8 +1082,10 @@ Then refresh the totals line under the table.
 Only when 4c set a row to `done ✅`. Rewrite the §0 table:
 - **Current step** → the next row in §8 that is not ✅
 - **Done condition** → that step's done condition, copied from its §6 entry
-- **Next gate** → the first gate in §9 whose trigger has not fired yet. Steps 4, 7 and 13 close with a
-  gate attached (G4, G6, G7) — if this was one of them, Next gate is that one.
+- **Next revision point** → the first of R1–R5 in §8b whose trigger has not fired yet. Steps 1, 4, 7,
+  10 and 12 each close one (R1–R5) — if this was one of them, the next one is the following R.
+  **The row is "Next revision point", never "Next gate"** — §0 has six named rows and this is one of
+  them; renaming it is how off-scope tracks creep back into the quick reference.
 - **Last updated** → today
 
 #### 4e — Report what is still manual
@@ -1126,7 +1128,8 @@ apart.
 If the file does not exist, create it with the two tables and the header explaining what it is.
 
 **This prompt still never writes to `notes/interview-prep/` or to `notes/sql/`.** Those belong to
-`interview-prep-audit` (G4) and `/notes-audit` (Moment 5); a grading run that also authors study
+`interview-prep-audit` and `/notes-audit`, which Victor runs on his own schedule (`PLANNING.md` §Z);
+a grading run that also authors study
 material bypasses both standards and their cold reviewers. `MISTAKES.md` is not study material — it
 is this run's own output, the record of what it graded wrong. **This prompt is its only writer**; the
 revision points R1–R5 in `PLANNING.md` §8b read it to derive their focus.
