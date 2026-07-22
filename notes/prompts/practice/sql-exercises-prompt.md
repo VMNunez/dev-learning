@@ -1101,23 +1101,35 @@ So never print "step closed" on the strength of a score alone. If 4c set the row
 
 ### Step 5 — Concept gaps: log them in `MISTAKES.md`
 
-If any answer was ⚠️ or ❌, **append one row per distinct conceptual gap to the `## Open` table of
-`practice/sql/MISTAKES.md`** — today's date, the step number, the concept, one clause on what went
-wrong, and the exercise number. One row per *concept*, not per exercise: three exercises that all
-failed on `WHERE` vs `HAVING` are one row. Then list the same gaps in one short block at the end of
-the chat.
+If any answer was ⚠️ or ❌, **record each distinct conceptual gap in the `## Open` table of
+`practice/sql/MISTAKES.md`**, whose columns are `Logged | Last seen | Times | Step | Coverage section |
+Concept | Sev | What went wrong | Exercises`. One row per *concept*, not per exercise: three exercises
+that all failed on `WHERE` vs `HAVING` are one row, with all three numbers in `Exercises`.
 
-**Also close what this run redeemed.** Before appending, read the `## Open` table: if a concept
-listed there was answered correctly in this batch, move its row to `## Closed` with today's date as
-the closing date. Never delete a row — a concept failed twice and fixed once is a different fact
-from a concept never failed, and the closed table is what tells them apart.
+- **`Coverage section` is the heading from `notes/sql/coverage.md`, copied verbatim** — not a
+  paraphrase and not the step name. If the gap fits no existing heading, write the closest one and say
+  so in one line in the chat; that mismatch is a signal for the next `coverage-audit`, not a licence to
+  invent a section name here.
+- **A concept already in `## Open` is never given a second row.** Increment its `Times`, set
+  `Last seen` to today, append the new exercise numbers, and raise `Sev` to ❌ if this run was worse.
+  Recurrence is the whole point of the column — a second row destroys it.
+- **`Sev`** is the worst grade the concept has ever received, not this run's.
+
+Then list the same gaps in one short block at the end of the chat, highest `Times` first.
+
+**Also close what this run redeemed.** Before recording anything, read the `## Open` table: if a
+concept listed there was answered correctly in this batch, move its row to `## Closed` with today's
+date as the closing date, carrying its `Times` across. Never delete a row — a concept failed twice and
+fixed once is a different fact from a concept never failed, and the closed table is what tells them
+apart.
 
 If the file does not exist, create it with the two tables and the header explaining what it is.
 
 **This prompt still never writes to `notes/interview-prep/` or to `notes/sql/`.** Those belong to
 `interview-prep-audit` (G4) and `/notes-audit` (Moment 5); a grading run that also authors study
 material bypasses both standards and their cold reviewers. `MISTAKES.md` is not study material — it
-is this run's own output, the record of what it graded wrong, and nothing else reads or writes it.
+is this run's own output, the record of what it graded wrong. **This prompt is its only writer**; the
+revision points R1–R5 in `PLANNING.md` §8b read it to derive their focus.
 
 If every attempted exercise was ✅, skip the appending half but still run the closing half.
 

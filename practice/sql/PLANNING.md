@@ -322,7 +322,9 @@ review run).
 ### The mistake log — `practice/sql/MISTAKES.md`
 
 One file, written only by `sql-exercises` in `review` mode (its Step 5). Every ⚠️ or ❌ becomes one
-open row — concept, what went wrong, exercise — and a later run that gets the same concept right
+open row — concept, its `coverage.md` section, severity, what went wrong, the exercises — and a
+re-failure increments that row's `Times` instead of opening a second one. A later run that gets the
+same concept right
 moves the row to `## Closed` instead of deleting it. It is the focus source for every revision point
 in §8b, and the only place in this track where *what was failed* is written down: `PROGRESS.md` only
 ever records what was learned.
@@ -792,7 +794,8 @@ twice.
 
 Every revision point runs Moment 2b with its `FOCUS` taken from the **open rows of
 `practice/sql/MISTAKES.md`** for the files in its span — the written record of what was actually
-answered wrong. Not "what feels rusty". If a span has no open rows, the point still fires, and `FOCUS`
+answered wrong. Not "what feels rusty". **Order them by `Times` descending**: the concept failed three
+times earns the batch before the one failed once. If a span has no open rows, the point still fires, and `FOCUS`
 becomes the concepts of those files that have appeared in the fewest exercises.
 
 A revision point clears when the open rows in its span are closed by a later scored run.
