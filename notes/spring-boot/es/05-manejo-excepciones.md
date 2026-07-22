@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
 - **`@ExceptionHandler(X.class)`** — registra este método como el handler de `X`. El parámetro del método (`X e`) es el propio objeto excepción: Spring te pasa la instancia que capturó, que es lo que permite que `e.getMessage()` lleve el mensaje que el service escribió al lanzarla.
 - **`buildError(...)`** — un helper privado de esta misma clase que ensambla el cuerpo de la respuesta. Se explica en la sección "DTO de respuesta de error" más abajo; por ahora léelo como "construye el JSON de error estándar con este código y este mensaje".
 
-La clase tiene **once** métodos `@ExceptionHandler` en total. Lee la tabla como la tabla de enrutamiento de toda la API: columna izquierda, la clase de excepción que llegó al advice; columna derecha, el código que el cliente termina viendo y de dónde viene esa excepción. Tres de los once son tus propias clases; las otras ocho son de Spring.
+La clase tiene **doce** métodos `@ExceptionHandler` en total. Lee la tabla como la tabla de enrutamiento de toda la API: columna izquierda, la clase de excepción que llegó al advice; columna derecha, el código que el cliente termina viendo y de dónde viene esa excepción. Cuatro de los doce son tus propias clases; las otras ocho son de Spring.
 
 | Excepción gestionada | Código | Lanzada por |
 |---|---|---|
@@ -101,7 +101,8 @@ La clase tiene **once** métodos `@ExceptionHandler` en total. Lee la tabla como
 | `MethodArgumentNotValidException` | 400 | Spring MVC, cuando `@Valid` en un `@RequestBody` falla |
 | `DataIntegrityViolationException` | 409 | Spring Data, cuando la BD rechaza una constraint única |
 | `ResourceNotFoundException` | 404 | tu service, en `.orElseThrow(...)` |
-| `BusinessRuleViolationException` | 400 | tu service, en una regla de negocio rota |
+| `BusinessRuleViolationException` | 400 | tu service, en una regla de negocio sobre los *datos enviados* |
+| `InvalidStateTransitionException` | 409 | tu service, cuando la request es válida pero el *estado actual* del recurso la prohíbe |
 | `UnauthorizedException` | 403 | tu service, cuando quien llama no es dueño de nada aquí |
 | `AccessDeniedException` | 403 | Spring Security, cuando falla la comprobación de rol |
 | `HttpMessageNotReadableException` | 400 | Spring MVC, cuando el cuerpo JSON falta o está malformado |
@@ -156,7 +157,7 @@ Archivo: `src/main/java/com/victor/timetrack/exception/ResourceNotFoundException
 
 Docs: https://www.baeldung.com/java-new-custom-exception → leer: la sección sobre crear una excepción no comprobada personalizada
 
-El proyecto 07 tiene exactamente tres, y las tres son así de pequeñas — la clase *es* la información. No hay lógica dentro, ni campos; lo único que cada una añade a `RuntimeException` es su **nombre**, y ese nombre es con el que hace match el `@ExceptionHandler`:
+El proyecto 07 tiene cuatro, y todas son así de pequeñas — la clase *es* la información. No hay lógica dentro, ni campos; lo único que cada una añade a `RuntimeException` es su **nombre**, y ese nombre es con el que hace match el `@ExceptionHandler`:
 
 ```java
 // src/main/java/com/victor/timetrack/exception/ResourceNotFoundException.java
@@ -166,8 +167,8 @@ public class ResourceNotFoundException extends RuntimeException {
     }
 }
 
-// BusinessRuleViolationException.java y UnauthorizedException.java son idénticas
-// en forma — solo cambia el nombre de la clase.
+// BusinessRuleViolationException.java, UnauthorizedException.java e
+// InvalidStateTransitionException.java son idénticas en forma — solo cambia el nombre de la clase.
 ```
 
 - **`extends RuntimeException`** — la hace *no comprobada* (unchecked, ver más abajo).
@@ -201,6 +202,42 @@ public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityV
 ```
 
 > **Por qué el mensaje es genérico** (`"A resource with this value already exists"`) en vez de repetir el texto propio de la base de datos: la violación de constraint en bruto contiene el nombre de la tabla, el nombre de la columna y el nombre de la constraint — detalles internos del esquema que nunca quieres entregarle a un caller anónimo. El handler descarta deliberadamente `e.getMessage()` y escribe el suyo propio.
+
+### `BusinessRuleViolationException` vs `InvalidStateTransitionException` — ¿400 o 409?
+
+`TimeEntryService` lanza excepciones de regla de negocio por dos motivos genuinamente distintos, y hasta este punto del proyecto ambos usaban la misma clase, `BusinessRuleViolationException`, mapeada al mismo `400`. Dos ejemplos, uno junto al otro:
+
+```java
+// create() — rechazado por LO QUE ENVIÓ EL CLIENTE
+if (request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max) > 0) {
+    throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
+}
+
+// reopen() — rechazado por el ESTADO ACTUAL DEL RECURSO
+if (timeEntry.getStatus() != EntryStatus.REJECTED) {
+    throw new InvalidStateTransitionException("Employee can only reopen REJECTED entries");
+}
+```
+
+Las dos son legítimamente "reglas de negocio" en el sentido cotidiano de la palabra — pero fallan por razones opuestas, y esa diferencia es exactamente lo que la distinción `400` vs `409` del estándar HTTP existe para comunicarle a quien llama:
+
+- **`hours: 30`** está mal sin importar en qué estado esté nada. Manda la misma petición otra vez, mañana, contra otra entry distinta — sigue estando mal, porque el problema vive por completo dentro del body de la petición. Ese es el caso de manual para **`400 Bad Request`**: *la propia petición es inválida.*
+- **`reopen` sobre una entry en `DRAFT`** no está mal por nada que el cliente enviara — la petición `PATCH` no lleva body en absoluto. Falla por lo que la **entry es ahora mismo** en el servidor. Rechaza la entry #52, y vuelve a intentar ese mismo `PATCH /api/entries/52/reopen` — ahora funciona, sin ningún cambio en la petición. El problema vive en el estado del recurso, no en la petición. Ese es el caso de manual para **`409 Conflict`**: *la petición está bien, pero choca con el estado actual del recurso.*
+
+> **La prueba a aplicar cada vez que no tengas claro cuál toca:** "¿arreglar esto exige que el cliente mande datos distintos, o exige que el estado del recurso cambie primero?" Primer caso → `400`. Segundo caso → `409`. `hours: 30` necesita datos distintos → `400`. `reopen` sobre una entry que no está `REJECTED` necesita que la *entry* cambie primero (que la rechacen) → `409`.
+
+`InvalidStateTransitionException` es ahora la que lanza cada guardia de la máquina de estados en `TimeEntryService` — `submit` (debe estar en `DRAFT`), `reopen` (debe estar en `REJECTED`), `approve`/`reject` (debe estar en `SUBMITTED`), e incluso `update`/`delete` (debe estar en `DRAFT`, porque editar o borrar una entry `SUBMITTED`/`APPROVED` es exactamente el mismo tipo de conflicto). `BusinessRuleViolationException` se queda para las reglas sobre los *datos entrantes* — el rango de horas, la comprobación de fecha futura, la comprobación de proyecto inactivo.
+
+```java
+@ExceptionHandler(InvalidStateTransitionException.class)
+public ResponseEntity<ErrorResponse> handleInvalidStateTransition(InvalidStateTransitionException e) {
+    return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(buildError(HttpStatus.CONFLICT, e.getMessage()));
+}
+```
+
+> **Este es un segundo motivo, sin relación con el primero, por el que dos peticiones distintas pueden devolver ambas `409`** — el primero era `DataIntegrityViolationException`, arriba (un valor único duplicado). Las dos son genuinamente `409`, pero por mecanismos diferentes: una es la base de datos rechazando guardar un valor que ya existe, la otra es tu propio service rechazando una transición de estado que el flujo de trabajo no permite. El código de estado es el mismo; la causa y la clase de excepción no lo son.
 
 ---
 
@@ -345,7 +382,7 @@ Docs: https://developer.mozilla.org/es/docs/Web/HTTP/Status
 | 401 Unauthorized | No hay token de autenticación o el token es inválido |
 | 403 Forbidden | El token es válido pero el usuario no tiene permiso |
 | 404 Not Found | El recurso solicitado no existe |
-| 409 Conflict | Email duplicado, violación de constraint única |
+| 409 Conflict | Email duplicado, violación de constraint única, o una transición de estado que el status actual del recurso prohíbe (p. ej. reabrir una entry que no está `REJECTED`) |
 | 500 Internal Server Error | Excepción no gestionada — el fallback catch-all |
 
 Lee la tabla como una búsqueda que funciona en una sola dirección: nunca partes del código de estado, partes de la **columna "Cuándo"** — la situación que tu service acaba de encontrar — y ella te dice qué código debe devolver el handler. La línea que más importa es la frontera entre `401` y `403`: `401` significa *no sé quién eres* (sin token, o con uno inválido), `403` significa *sé exactamente quién eres y aun así no puedes hacer esto* (token válido, rol insuficiente). Confundir estos dos es el error más común de toda la tabla, y los entrevistadores preguntan por la diferencia directamente.
