@@ -86,11 +86,25 @@ For each, launch a fresh `general-purpose` subagent, `model: opus`, `run_in_back
 | 1 | `learning-design` | Section B, all ten items | the step entries (§6), §2, §3 |
 | 2 | `coverage-and-scope` | Section D invariants 1, 2, 5 · Section E | the coverage file for {TRACK}, §5, §6, §11 |
 | 3 | `steps-and-counts` | Section C (all) · Section D invariants 3, 4, 6, 8, 9 | §0, §5, §6, §8 · `PROGRESS.md` · **the orchestrator's Phase 1 snapshot** |
-| 4 | `gates-and-rituals` | Section A (every required section present and non-empty) · Section D invariant 7 | §2, §4, §7, §9 · the prompts §2 tells Victor to run |
+| 4 | `system-seams` | Section A (every required section present and non-empty) · **C4, C4b, C4c** · Section D invariant 7 · Section E's ownership table | §2, §4, §7, §9 · **every prompt named in §2 and §9**, and `notes/prompts/README.md` |
 
-Concern 4 also owns **C4** — the plan and the prompts it invokes must agree on paths, topic names and
-config keys. Where they diverge it decides which side is wrong per C4's rule and fixes **that** side,
-even when the fix lands in the prompt file rather than the plan. Say so explicitly in its trace.
+**Concern 4 is the one that treats the plan as part of a system, and it is the most valuable of the
+four.** Its core job: for **every** prompt the plan tells Victor to run — in a Moment (§2) or a gate
+(§9) — open that prompt and check three things:
+
+1. **It exists at the path the plan gives.** A moved or renamed prompt is a dead instruction.
+2. **The config the plan says to paste is that prompt's real config block** — every key exists, none
+   is missing, none was renamed. Quote the mismatch, do not paraphrase it.
+3. **The outputs the plan expects are the outputs that prompt actually writes.** A gate that claims a
+   prompt updates a file it no longer touches is a gate that clears on nothing. (This has already
+   happened once in the wild: the plan's Moment 4 still claimed the grading prompt added interview
+   questions weeks after that step was removed from it.)
+
+Then apply **C4c**: anything the plan *describes* rather than *points at* — note content, Q&A format,
+exercise quality — comes out, replaced by the pointer. Use Section E's table to decide who owns what.
+
+Where a divergence is the prompt's fault rather than the plan's, fix the prompt and say so explicitly
+in the trace — a fix landing outside the plan must never be silent.
 
 **Acceptance check.** A specialist's report is acceptable only if it opens with the read-to-EOF line
 **and** has one row per check its slice owns. Otherwise re-dispatch it once, quoting what was missing;

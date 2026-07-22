@@ -100,6 +100,23 @@ both the plan and the prompt that consumes them. On disagreement the plan wins o
 the prompt wins on *its own config vocabulary*. Either way the divergence is a finding — one of the
 two gets fixed, never left.
 
+**C4b — Every prompt the plan invokes must exist, and its config must be real.** The plan is a node in
+a prompt system: §2 and §9 tell Victor to run other prompts with a pasted config. Each of those is
+checked against the prompt itself — the file exists at that path, the config keys are that prompt's
+own keys (not invented, not renamed, none missing), and the outputs the plan expects are the outputs
+that prompt actually writes. A gate pointing at a prompt that moved, or handing it a key it no longer
+takes, fails silently: the run happens, produces something else, and the plan keeps claiming the gate
+was cleared. This is the single most likely way a correct plan rots, because it rots without anyone
+editing it.
+
+**C4c — One owner per artefact; the plan points, it never restates.** Everything the plan mentions is
+owned by exactly one prompt or standard, and the plan holds a pointer to it, never a copy. Note files
+belong to `/notes-audit`, the Q&A bank to `interview-prep-audit`, the concept list to the coverage
+file, the exercises to the generating prompt. The plan may name *which* files a step produces and
+*when*; it may not describe their content, quality bar, or format. Duplicated ownership is a finding
+even when both copies currently agree — they will not agree for long, and the plan is the copy that
+nobody re-reads.
+
 **C5 — One artefact, one schema.** An exercise file whose setup block no longer matches the canonical
 schema is closed, not extended; the next file starts fresh. (Generalises to any track: an artefact
 built on a superseded baseline is closed rather than patched.)
@@ -124,7 +141,17 @@ built on a superseded baseline is closed rather than patched.)
 
 ## Section E — What this standard does not govern
 
-- **The content of the exercises** — that is the generating prompt's job, bounded by the coverage file.
-- **The coverage list itself** — a concept missing from coverage is added there, never invented in the
-  plan. A plan that grows its own concept list has become a second source of truth.
-- **Note quality** — `_note-quality-standard.md` owns it.
+The line is ownership, per C4c: the audit checks that the **pointer** is correct, never the pointed-at
+content. So it verifies that a step names the right note files and sends Victor to the right prompt —
+and says nothing about whether those notes are any good.
+
+| Artefact | Owned by | This audit may only check |
+|----------|----------|---------------------------|
+| Exercise content and difficulty | the generating prompt (`sql-exercises-prompt.md`) | that the plan's counts and topics match what the prompt can produce |
+| The concept list | `notes/{topic}/coverage.md` + `coverage-audit` | that every section is claimed once, or excluded with a reason |
+| Note files and their quality | `/notes-audit` + `_note-quality-standard.md` | that the filenames, `en`/`es` pairing and numbering the plan declares are consistent with §5 and `CLAUDE.md` |
+| The interview Q&A bank | `interview-prep-audit` + its standard | that the gate exists, at the right trigger, with a real config |
+| Simulations | `simulation-generator` / `simulation-review` | the same |
+| `PROGRESS.md` content | `progress-update` + Claude per step | that the plan's §8 does not contradict it |
+
+A finding that lands outside this table is reported to Victor as a recommendation, never fixed here.
