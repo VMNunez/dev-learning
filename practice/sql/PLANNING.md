@@ -11,10 +11,9 @@
 The capstone switches to the TimeTrack model.
 
 > ⚠️ **`01-basics.sql` carries an older, thinner schema** (`order_books` with no `quantity` or
-> `unit_price`, `authors.nationality`, `books.year`). The prompt now detects this and asks before
-> generating. Steps 2, 3 and 13 need `quantity`/`unit_price` to be possible at all, so the canonical
-> schema has to be adopted at the latest when Step 2 creates `03-aggregates.sql` — which is a new
-> file, so it gets the canonical setup block for free.
+> `unit_price`, `authors.nationality`, `books.year`) and is **closed** because of it — resolved
+> 2026-07-22 by leaving it alone and starting `02-execution-order-set-ops.sql` with the canonical
+> schema. Every file from `02-` on ships its own canonical SETUP block: one file, one schema.
 
 **Target:** pass the SQL half of a technical screening at NTT Data / Capgemini / Indra, and write the
 report queries TimeTrack needs without looking anything up.
@@ -27,11 +26,11 @@ report queries TimeTrack needs without looking anything up.
 
 | | |
 |---|---|
-| **Current step** | Step 0 — Querying basics (40 answered, **20 first-pass scored 40/40 correct**, target 30) |
+| **Current step** | Step 0 — Querying basics (`01-basics.sql` cerrado con 20 first-pass; `02-execution-order-set-ops.sql` con 10 sin responder, target 30) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
-| **Done condition** | `Review: sql-exercises MODE = review scores ≥ 80% on 01-basics.sql` |
+| **Done condition** | `Review: sql-exercises MODE = review scores ≥ 80% on 02-execution-order-set-ops.sql` |
 | **Next gate** | G3 — split `notes/sql/` into `en/` + `es/` (G0 ✅ 2026-07-22, G2 ✅ 2026-07-18) |
-| **Blocked on** | nothing. The next action is the Moment 2 run of Step 0 (`MODE = practice`, `TOPIC = basics`, `COUNT = 10`) — the review is done and clean, what is missing are the last 10 first-pass exercises. |
+| **Blocked on** | nothing. Los 10 ejercicios ya están escritos en `02-execution-order-set-ops.sql`: toca ejecutar su bloque SETUP en pgAdmin, responderlos (Moment 3) y pasarlos por `MODE = review`. |
 | **Last updated** | 2026-07-22 |
 
 ---
@@ -250,28 +249,35 @@ target of 30.
 
 | File | Step(s) | Written | Answered | Scored | First-pass target | Status |
 |------|---------|---------|----------|--------|-------------------|--------|
-| `01-basics.sql` | 0 | 40 *(20 review)* | 40 | **20** *(+20 review, uncounted)* | 30 | scored 40/40 on 2026-07-22 — 10 first-pass exercises still to write |
-| `02-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
-| `03-aggregates.sql` | 2 | 0 | 0 | 0 | 12 | to create |
-| `04-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
-| `05-nulls.sql` | 4 | 0 | 0 | 0 | 12 | to create |
-| `06-subqueries-ctes.sql` | 5 | 0 | 0 | 0 | 16 | to create |
-| `07-dates-strings.sql` | 6 | 0 | 0 | 0 | 12 | to create |
-| `08-window-functions.sql` | 7 | 0 | 0 | 0 | 12 | to create |
-| `09-dml-transactions.sql` | 8 | 0 | 0 | 0 | 16 | to create |
-| `10-schema-design.sql` | 9 | 0 | 0 | 0 | 12 | to create |
-| `11-data-types-ddl.sql` | 10 | 0 | 0 | 0 | 12 | to create |
-| `12-indexes.sql` | 11 | 0 | 0 | 0 | 12 | to create |
-| `13-live-database.sql` | 12 | 0 | 0 | 0 | 12 | to create |
-| `14-report-queries.sql` | 13 | 0 | 0 | 0 | 8 | to create |
+| `01-basics.sql` | 0 | 40 *(20 review)* | 40 | **20** *(+20 review, uncounted)* | 20 | **closed** — scored 40/40 on 2026-07-22. Legacy schema (v1); no more exercises are added here |
+| `02-execution-order-set-ops.sql` | 0 | 10 | 0 | 0 | 10 | created 2026-07-22 — canonical schema, current format |
+| `03-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
+| `04-aggregates.sql` | 2 | 0 | 0 | 0 | 12 | to create |
+| `05-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
+| `06-nulls.sql` | 4 | 0 | 0 | 0 | 12 | to create |
+| `07-subqueries-ctes.sql` | 5 | 0 | 0 | 0 | 16 | to create |
+| `08-dates-strings.sql` | 6 | 0 | 0 | 0 | 12 | to create |
+| `09-window-functions.sql` | 7 | 0 | 0 | 0 | 12 | to create |
+| `10-dml-transactions.sql` | 8 | 0 | 0 | 0 | 16 | to create |
+| `11-schema-design.sql` | 9 | 0 | 0 | 0 | 12 | to create |
+| `12-data-types-ddl.sql` | 10 | 0 | 0 | 0 | 12 | to create |
+| `13-indexes.sql` | 11 | 0 | 0 | 0 | 12 | to create |
+| `14-live-database.sql` | 12 | 0 | 0 | 0 | 12 | to create |
+| `15-report-queries.sql` | 13 | 0 | 0 | 0 | 8 | to create |
 
-**First-pass total when the track is done: 200 exercises across 14 files.** Review batches add on top
+> **One file, one schema (rule adopted 2026-07-22).** `01-basics.sql` keeps the old thin schema and is
+> closed at 40 exercises; everything from `02-` on carries the canonical bookstore schema in its own
+> SETUP block. Step 0's 30 first-pass exercises are therefore split 20 + 10 across two files. This is
+> why the file numbers no longer match the step numbers — the mapping is this table, and the prompt's
+> path table was updated to match.
+
+**First-pass total when the track is done: 200 exercises across 15 files.** Review batches add on top
 and are deliberately not budgeted — 40 written today, 40 answered, 20 first-pass scored.
 
 **Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
 one by hand.
 
-*Legacy* — `01-basics.sql` only, written before the prompt existed. (`02-joins.sql` was the other one;
+*Legacy* — `01-basics.sql` only, written before the prompt existed. (the old `02-joins.sql`, now renumbered `03-joins.sql`, was the other one;
 it was deleted and will be regenerated in the current format, so `01-basics.sql` is the last file that
 will ever carry this.)
 The answer goes directly under the description, and the correction marker goes at the end of the
@@ -351,9 +357,11 @@ junior level, and it absorbed the ten hand-written exercises the step used to st
 
 ### Step 0 — Querying basics ⏳ (20/30 first-pass scored, +20 review)
 
-**Exercises:** `practice/sql/01-basics.sql` — 40 answered in total: **20 first-pass (#01–#20), 20 review
-(#21–#40), 10 first-pass still to go**. Reviewed 2026-07-22: **40/40 correctas (100%)** — el score no
-cierra el paso porque el target de primera pasada son 30.
+**Exercises:** dos archivos, uno por esquema.
+- `practice/sql/01-basics.sql` — **cerrado**: 40 respondidas (20 first-pass #01–#20 + 20 de repaso
+  #21–#40), **40/40 correctas** el 2026-07-22. Esquema v1 (el viejo). No se le añade nada más.
+- `practice/sql/02-execution-order-set-ops.sql` — 10 first-pass, escritas el 2026-07-22 con el esquema
+  canónico y el formato actual. Sin responder todavía.
 **Coverage:** `Querying basics`, `Filtering and pattern matching`, `Sorting, pagination, and determinism`, `Set operations`
 **Notes — extend:** `03-select`, `04-where`, `05-order-by-limit` · **create:** `15-set-operations`
 **Reinforces:** — (first step)
@@ -370,26 +378,17 @@ Still missing before this step closes — the ten remaining exercises target exa
 - `NULLS FIRST` / `NULLS LAST`, and why `LIMIT` without `ORDER BY` is non-deterministic
 - Keyset pagination vs deep `OFFSET`
 
-**Moment 2 config:**
-
-```
-MODE  = practice
-TOPIC = basics
-COUNT = 10
-FOCUS = execution order, alias visibility per clause, CASE WHEN in SELECT,
-        UNION vs UNION ALL, INTERSECT, EXCEPT, NULLS FIRST/LAST,
-        LIMIT without ORDER BY, keyset vs deep OFFSET pagination
-```
-Add: *"append to `practice/sql/01-basics.sql`, continuing the numbering from #40"* + the no-repetition line.
+**Moment 2:** ya ejecutado el 2026-07-22 (`COUNT = 10`, el FOCUS de la lista de arriba). Nada que
+generar; el paso está en Moment 3.
 
 **Exit question:** *why does an alias defined in `SELECT` work in `ORDER BY` but raise an error in `WHERE`?*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 01-basics.sql` · notes in `en/` + `es/` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 02-execution-order-set-ops.sql` · notes in `en/` + `es/` · exit question aloud
 
 ---
 
 ### Step 1 — JOINs (0 scored / 22 target)
 
-**Exercises:** `practice/sql/02-joins.sql` — 22, generated from scratch in **two runs of 11**. The
+**Exercises:** `practice/sql/03-joins.sql` — 22, generated from scratch in **two runs of 11**. The
 original ten hand-written statements were deleted on 2026-07-22: they were never answered, and they
 carried the old thin schema, so regenerating gets the canonical one and the current exercise format
 (`-- Your answer:` + `-- ✅ Corregido` markers) instead of perpetuating the legacy format into a
@@ -428,13 +427,13 @@ The single most-tested SQL topic at junior level, which is why it comes before a
 screening `GROUP BY` almost always sits on top of a join.
 
 **Exit question:** *given `authors` and `books`, which join do you use for "every author, including those with no books", and what does the row look like for an author with none?*
-**Done:** `Review: ... ≥ 80% on 02-joins.sql` (#01–#22) · `06-joins` in `en/` + `es/` · exit question aloud
+**Done:** `Review: ... ≥ 80% on 03-joins.sql` (#01–#22) · `06-joins` in `en/` + `es/` · exit question aloud
 
 ---
 
 ### Step 2 — Aggregates and grouping
 
-**Exercises:** `practice/sql/03-aggregates.sql` — 12
+**Exercises:** `practice/sql/04-aggregates.sql` — 12
 **Coverage:** `Aggregates and grouping`
 **Notes — extend:** `07-aggregates`
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
@@ -445,13 +444,13 @@ over zero rows returning `NULL`, the `GROUP BY` rule, `HAVING` vs `WHERE`, condi
 with `CASE WHEN` and `FILTER (WHERE ...)`.
 
 **Exit question:** *`WHERE` vs `HAVING` — which runs first, and why can't `WHERE` use `COUNT(*)`?*
-**Done:** `Review: ... ≥ 80% on 03-aggregates.sql` · `07-aggregates` in both languages · exit question aloud
+**Done:** `Review: ... ≥ 80% on 04-aggregates.sql` · `07-aggregates` in both languages · exit question aloud
 
 ---
 
 ### Step 3 — JOIN pitfalls and row multiplication
 
-**Exercises:** `practice/sql/04-join-pitfalls.sql` — 12
+**Exercises:** `practice/sql/05-join-pitfalls.sql` — 12
 **Coverage:** `JOIN pitfalls and row multiplication`
 **Notes — extend:** `06-joins` (second half)
 **Reinforces:** Steps 1 + 2 — every pitfall here is an **aggregate over a broken join**
@@ -471,13 +470,13 @@ It stays a separate step from Step 2 on purpose: these are what separate "knows 
 debugged a wrong report", and burying them inside the aggregation step loses them.
 
 **Exit question:** *a report total comes back exactly double the real number. What is the first thing you check?*
-**Done:** `Review: ... ≥ 80% on 04-join-pitfalls.sql` · `06-joins` complete in both languages · exit question aloud
+**Done:** `Review: ... ≥ 80% on 05-join-pitfalls.sql` · `06-joins` complete in both languages · exit question aloud
 
 ---
 
 ### Step 4 — NULL and three-valued logic
 
-**Exercises:** `practice/sql/05-nulls.sql` — 12
+**Exercises:** `practice/sql/06-nulls.sql` — 12
 **Coverage:** `NULL and three-valued logic`
 **Notes — create:** `16-nulls-and-three-valued-logic`
 **Reinforces:** Steps 1–3 — `LEFT JOIN` producing nulls, `AVG` skipping them, `COUNT(*)` counting them
@@ -490,7 +489,7 @@ Right after aggregation because every `NULL` surprise you have already met now g
 explained rather than described.
 
 **Exit question:** *are two `NULL`s equal in SQL? Explain what `WHERE price = NULL` actually evaluates to.*
-**Done:** `Review: ... ≥ 80% on 05-nulls.sql` · `16-...` in both languages · exit question aloud
+**Done:** `Review: ... ≥ 80% on 06-nulls.sql` · `16-...` in both languages · exit question aloud
 
 > **This closes the screening core.** Steps 1–4 are what a quickfire round asks. Gate **G4** fires here.
 
@@ -498,7 +497,7 @@ explained rather than described.
 
 ### Step 5 — Subqueries, CTEs, and views
 
-**Exercises:** `practice/sql/06-subqueries-ctes.sql` — 16 (two runs of 8)
+**Exercises:** `practice/sql/07-subqueries-ctes.sql` — 16 (two runs of 8)
 **Coverage:** `Subqueries, CTEs, and views`
 **Notes — extend:** `09-subqueries`, `12-ctes-and-views`
 **Reinforces:** Step 3 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see
@@ -508,13 +507,13 @@ Subquery in `WHERE` / `FROM` / `SELECT`, `IN` vs `EXISTS`, subquery vs `JOIN`, c
 and why they do not scale, `WITH` and chained CTEs, `CREATE VIEW`, view vs materialized view.
 
 **Exit question:** *when would you reach for a CTE instead of a subquery, and is a CTE slower?*
-**Done:** `Review: ... ≥ 80% on 06-subqueries-ctes.sql` · both notes in both languages · exit question aloud
+**Done:** `Review: ... ≥ 80% on 07-subqueries-ctes.sql` · both notes in both languages · exit question aloud
 
 ---
 
 ### Step 6 — Date and string functions
 
-**Exercises:** `practice/sql/07-dates-strings.sql` — 12
+**Exercises:** `practice/sql/08-dates-strings.sql` — 12
 **Coverage:** `Date and string functions`, `PostgreSQL specifics`
 **Notes — create:** `17-date-and-string-functions` · **extend:** `14-postgresql-specifics`
 **Reinforces:** Step 3 — `GROUP BY DATE_TRUNC('month', ...)` is grouping by an expression
@@ -527,13 +526,13 @@ monthly report is `GROUP BY DATE_TRUNC('month', ...)`.
 `TOPIC` but claims different coverage sections.
 
 **Exit question:** *build a monthly total from a raw `TIMESTAMP` column. Which function, and why not `EXTRACT`?*
-**Done:** `Review: ... ≥ 80% on 07-dates-strings.sql` · `17-...` in both languages · exit question aloud
+**Done:** `Review: ... ≥ 80% on 08-dates-strings.sql` · `17-...` in both languages · exit question aloud
 
 ---
 
 ### Step 7 — Window functions
 
-**Exercises:** `practice/sql/08-window-functions.sql` — 12
+**Exercises:** `practice/sql/09-window-functions.sql` — 12
 **Coverage:** `Window functions`
 **Notes — extend:** `13-window-functions`
 **Reinforces:** Step 3 — a window keeps the rows `GROUP BY` collapses; Step 0 — execution order explains why a window cannot sit in `WHERE`
@@ -543,7 +542,7 @@ monthly report is `GROUP BY DATE_TRUNC('month', ...)`.
 function cannot appear in `WHERE`, window vs `GROUP BY`, the default frame, "the second highest value".
 
 **Exit question:** *"the latest entry per user" — write the shape of the query and explain why you need a subquery around it.*
-**Done:** `Review: ... ≥ 80% on 08-window-functions.sql` · `13-window-functions` in both languages · exit question aloud
+**Done:** `Review: ... ≥ 80% on 09-window-functions.sql` · `13-window-functions` in both languages · exit question aloud
 
 > Gate **G6** (first timed simulation) fires here — you now have enough surface for a realistic test.
 
@@ -551,7 +550,7 @@ function cannot appear in `WHERE`, window vs `GROUP BY`, the default frame, "the
 
 ### Step 8 — DML and transactions
 
-**Exercises:** `practice/sql/09-dml-transactions.sql` — 16 (two runs of 8)
+**Exercises:** `practice/sql/10-dml-transactions.sql` — 16 (two runs of 8)
 **Coverage:** `DML — modifying data`, `Transactions`
 **Notes — extend:** `08-dml`, `11-transactions`
 **Reinforces:** Step 3 — `GROUP BY ... HAVING COUNT(*) > 1` is the duplicate-finding query; Step 7 — `ROW_NUMBER()` is how you delete duplicates keeping one
@@ -566,13 +565,13 @@ anomalies, the four isolation levels, `SELECT ... FOR UPDATE`, deadlocks, and th
 One step because in practice you learn transactions by wrapping a destructive `UPDATE` in one.
 
 **Exit question:** *what happens if the second `save()` fails inside a `@Transactional` method, and what SQL is Spring actually issuing?*
-**Done:** `Review: ... ≥ 80% on 09-dml-transactions.sql` · both notes in both languages · exit question aloud
+**Done:** `Review: ... ≥ 80% on 10-dml-transactions.sql` · both notes in both languages · exit question aloud
 
 ---
 
 ### Step 9 — Schema design: constraints and modelling
 
-**Exercises:** `practice/sql/10-schema-design.sql` — 12
+**Exercises:** `practice/sql/11-schema-design.sql` — 12
 **Coverage:** `Schema design — constraints and integrity`, `Schema design — modelling decisions`
 **Notes — extend:** `02-relationships`
 **Reinforces:** Step 4 — `NULL` in a `UNIQUE` constraint; Step 8 — a constraint violation is the race an application check cannot win
@@ -584,13 +583,13 @@ redundant by Bean Validation, natural vs surrogate keys, soft vs hard delete, an
 **by name** — Spanish screenings ask "¿qué es la tercera forma normal?" verbatim.
 
 **Exit question:** *explain the TimeTrack data model out loud in three sentences, then say where each foreign key lives and why it cannot go on the other side.*
-**Done:** `Review: ... ≥ 80% on 10-schema-design.sql` · `02-relationships` in both languages · exit question aloud
+**Done:** `Review: ... ≥ 80% on 11-schema-design.sql` · `02-relationships` in both languages · exit question aloud
 
 ---
 
 ### Step 10 — Data types and DDL
 
-**Exercises:** `practice/sql/11-data-types-ddl.sql` — 12
+**Exercises:** `practice/sql/12-data-types-ddl.sql` — 12
 **Coverage:** `Data types`, `DDL — creating and evolving a schema`
 **Notes — create:** `18-ddl` · **extend:** `01-data-types`
 **Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`
@@ -603,13 +602,13 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 `ddl-auto` has been doing it for you in TimeTrack.
 
 **Exit question:** *write `CREATE TABLE time_entries` from memory, constraints included.*
-**Done:** `pgAdmin: the hand-written schema in 11-data-types-ddl.sql creates all three TimeTrack tables from empty, constraints included` · `18-ddl` in both languages · exit question aloud
+**Done:** `pgAdmin: the hand-written schema in 12-data-types-ddl.sql creates all three TimeTrack tables from empty, constraints included` · `18-ddl` in both languages · exit question aloud
 
 ---
 
 ### Step 11 — Indexes and query plans
 
-**Exercises:** `practice/sql/12-indexes.sql` — 12
+**Exercises:** `practice/sql/13-indexes.sql` — 12
 **Coverage:** `Indexes`, `Reading a query plan and diagnosing slowness`
 **Notes — create:** `19-query-plans` · **extend:** `10-indexes`
 **Reinforces:** Step 10 — `UNIQUE` and `PRIMARY KEY` create their index automatically; Step 1 — the join column is the one that needs one
@@ -626,7 +625,7 @@ index, composite index column order, non-sargable predicates, leading-wildcard `
 
 ### Step 12 — Working with a live database and reading errors
 
-**Exercises:** `practice/sql/13-live-database.sql` — 12
+**Exercises:** `practice/sql/14-live-database.sql` — 12
 **Coverage:** `Working with a live database`, `Reading PostgreSQL errors`, `Type behaviour at runtime`
 **Notes — create:** `20-live-database-and-errors`
 **Reinforces:** Step 9 — every error message here is a constraint from that step firing
@@ -646,7 +645,7 @@ The one step where you deliberately leave pgAdmin: a server does not have a GUI,
 
 ### Step 13 — Writing a report query (capstone)
 
-**Exercises:** `practice/sql/14-report-queries.sql` — 8
+**Exercises:** `practice/sql/15-report-queries.sql` — 8
 **Coverage:** `Writing a report query`
 **Notes:** none — the capstone is drilled, not noted
 **Reinforces:** everything; this is the integration step
@@ -681,7 +680,7 @@ on whatever feature branch the morning project block is on.
   before the last SQL commit still carries the old exercise files, and appending to them silently
   drops the newer exercises when it merges. This has already happened once: on 2026-07-22
   `fix/backend-backlog` carried a 20-exercise `01-basics.sql` while `main` had 40 plus a whole
-  `02-joins.sql` — resolved by merging `main` into the branch (G0).
+  the old `02-joins.sql` — resolved by merging `main` into the branch (G0).
   Check with `git log --oneline main -1 -- practice/sql/` against your branch before starting.
 - Exercise files are **Victor's authorship** → Claude never commits them, only prints the commands.
 - `notes/sql/` files are written by the notes pipeline → `/notes-audit` commits them itself.
@@ -697,20 +696,20 @@ one. A row moves to ✅ only after a `review` run has graded it.
 | Step | Topic | Exercises file | Scored / target | Notes produced | Status |
 |------|-------|----------------|-------------------|----------------|--------|
 | — | `en`/`es` migration (G3) | — | — | 14 files × 2 | not started |
-| 0 | Querying basics | `01-basics.sql` | 20 / 30 *(40/40 correct 2026-07-22; +20 repaso, uncounted)* | extend 03, 04, 05 · **new 15** | in progress ⏳ |
-| 1 | JOINs | `02-joins.sql` | 0 / 22 | extend 06 | not started |
-| 2 | Aggregates and grouping | `03-aggregates.sql` | 0 / 12 | extend 07 | not started |
-| 3 | JOIN pitfalls | `04-join-pitfalls.sql` | 0 / 12 | extend 06 | not started |
-| 4 | NULL and three-valued logic | `05-nulls.sql` | 0 / 12 | **new 16** | not started |
-| 5 | Subqueries, CTEs, views | `06-subqueries-ctes.sql` | 0 / 16 | extend 09, 12 | not started |
-| 6 | Date and string functions | `07-dates-strings.sql` | 0 / 12 | **new 17** · extend 14 | not started |
-| 7 | Window functions | `08-window-functions.sql` | 0 / 12 | extend 13 | not started |
-| 8 | DML and transactions | `09-dml-transactions.sql` | 0 / 16 | extend 08, 11 | not started |
-| 9 | Schema design | `10-schema-design.sql` | 0 / 12 | extend 02 | not started |
-| 10 | Data types and DDL | `11-data-types-ddl.sql` | 0 / 12 | **new 18** · extend 01 | not started |
-| 11 | Indexes and query plans | `12-indexes.sql` | 0 / 12 | **new 19** · extend 10 | not started |
-| 12 | Live database and errors | `13-live-database.sql` | 0 / 12 | **new 20** | not started |
-| 13 | Report queries (capstone) | `14-report-queries.sql` | 0 / 8 | — | not started |
+| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: 0/10 answered)* | extend 03, 04, 05 · **new 15** | in progress ⏳ |
+| 1 | JOINs | `03-joins.sql` | 0 / 22 | extend 06 | not started |
+| 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 12 | extend 07 | not started |
+| 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | extend 06 | not started |
+| 4 | NULL and three-valued logic | `06-nulls.sql` | 0 / 12 | **new 16** | not started |
+| 5 | Subqueries, CTEs, views | `07-subqueries-ctes.sql` | 0 / 16 | extend 09, 12 | not started |
+| 6 | Date and string functions | `08-dates-strings.sql` | 0 / 12 | **new 17** · extend 14 | not started |
+| 7 | Window functions | `09-window-functions.sql` | 0 / 12 | extend 13 | not started |
+| 8 | DML and transactions | `10-dml-transactions.sql` | 0 / 16 | extend 08, 11 | not started |
+| 9 | Schema design | `11-schema-design.sql` | 0 / 12 | extend 02 | not started |
+| 10 | Data types and DDL | `12-data-types-ddl.sql` | 0 / 12 | **new 18** · extend 01 | not started |
+| 11 | Indexes and query plans | `13-indexes.sql` | 0 / 12 | **new 19** · extend 10 | not started |
+| 12 | Live database and errors | `14-live-database.sql` | 0 / 12 | **new 20** | not started |
+| 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | — | not started |
 
 **20 of 200 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
 20-exercise review batch that does not count. `PROGRESS.md` holds the

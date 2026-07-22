@@ -374,12 +374,13 @@
 
 ### Exercises completed
 
-40 total exercises across 1 topic
+50 total exercises across 1 topic (40 answered, 10 pending)
 
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
-| basics / SELECT | practice/sql/01-basics.sql | 40 | in progress ⏳ — 40/40 scored 2026-07-22, 20 first-pass of 30 |
-| joins | practice/sql/02-joins.sql | 0 | not started (file deleted 2026-07-22, to regenerate) |
+| basics / SELECT (part 1) | practice/sql/01-basics.sql | 40 | closed ✅ — 40/40 scored 2026-07-22 (20 first-pass + 20 repaso); old schema, no longer extended |
+| basics / SELECT (part 2) | practice/sql/02-execution-order-set-ops.sql | 10 | in progress ⏳ — written 2026-07-22, unanswered |
+| joins | practice/sql/03-joins.sql | 0 | not started (file deleted 2026-07-22, to regenerate) |
 
 ---
 
