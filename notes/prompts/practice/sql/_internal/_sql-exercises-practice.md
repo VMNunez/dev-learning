@@ -149,7 +149,7 @@ introduce that concept; Standard and Challenge explore its edge cases and combin
 Do not cover other parts of the topic.
 
 **If FOCUS is blank:** cover the full topic. `notes/sql/coverage.md` is the **single source of
-truth for concept scope** — read the section that corresponds to {TOPIC} using the mapping below,
+truth for concept scope** — read the sections the §6 step declares (resolved as described below),
 and ensure every concept item listed there is addressed across the exercises. The topic-specific
 rules further below are **exercise format, structural constraints, and concrete seeds** (e.g. the
 BEGIN/ROLLBACK wrapper for DML, the four-task format for normalization, a specific Challenge to
@@ -162,33 +162,34 @@ mentions it, and drop a seed concept coverage.md no longer lists. The seeds only
 *format and concrete examples* for the concepts coverage.md defines — treat a seed that names a
 concept as an illustration, not as permission to add scope coverage.md dropped.
 
-Every section name below is verified to exist verbatim in `notes/sql/coverage.md`. If a lookup fails,
-**stop and report it** rather than falling back to the seeds — a missing section means the mapping has
-gone stale and the exercises would silently lose their scope list.
+**Which sections to read — resolve them from the plan, never from a list kept here.** The §6 step
+that owns {TOPIC} already declares them:
 
-| TOPIC | coverage.md section(s) to read |
-|-------|-----------------------------|
-| basics | ## Querying basics · ## Filtering and pattern matching · ## Sorting, pagination, and determinism · ## Set operations |
-| joins | ## JOINs |
-| join-pitfalls | ## JOIN pitfalls and row multiplication |
-| group-by | ## Aggregates and grouping |
-| nulls | ## NULL and three-valued logic |
-| subqueries | ## Subqueries, CTEs, and views — subquery items only |
-| ctes | ## Subqueries, CTEs, and views — CTE and view items |
-| dates-strings | ## Date and string functions · ## PostgreSQL specifics |
-| window-functions | ## Window functions |
-| dml | ## DML — modifying data |
-| transactions | ## Transactions |
-| schema-design | ## Schema design — constraints and integrity · ## Schema design — modelling decisions |
-| normalization | ## Schema design — modelling decisions (the 1NF/2NF/3NF items only) |
-| data-types | ## Data types |
-| ddl | ## DDL — creating and evolving a schema |
-| indexes | ## Indexes · ## Reading a query plan and diagnosing slowness |
-| live-database | ## Working with a live database · ## Reading PostgreSQL errors · ## Type behaviour at runtime |
-| report-queries | ## Writing a report query |
+1. The path table in `sql-exercises-prompt.md` gives the **`PLANNING.md step`** number for {TOPIC}.
+2. That step's **`**Coverage:**`** line lists its coverage sections, verbatim. Those are the sections
+   to read — all of them.
+3. When the step carries two runs with different TOPICs (Steps 5, 8, 9, 10), the run's own
+   **`**Focus:**`** line narrows the scope *within* those sections — that is where a half-section
+   split lives (Step 5 run 1 is the subquery half of `Subqueries, CTEs, and views`; Step 9 run 2 is
+   the 1NF/2NF/3NF items of `Schema design — modelling decisions`). The `Focus` resolution above
+   already applies; this note only says where the narrowing comes from.
 
-`## Programmable database objects` is deliberately not claimed by any topic — see PLANNING.md §Z
-("Coverage sections deliberately excluded from the steps"), not §11, which is the closure checklist.
+`practice/sql/PLANNING.md` is the single source for all three of `COUNT`, `Focus` and `Coverage` —
+the same rule `sql-exercises-prompt.md` states for paths and order: **on any disagreement the plan
+wins and this prompt is the thing to fix.** A mapping duplicated here would drift the moment
+`sql-plan-audit SCOPE = extend` added a step, and nothing audits a table that lives in a prompt.
+
+Two stop conditions, both silent-scope-loss bugs if allowed to fall through to the seeds:
+
+- **The step declares no `**Coverage:**` line** → stop and report it. The plan standard (B) requires
+  one on every step; a step without it is a planning gap, exactly like a missing `COUNT`.
+- **A section named on that line does not exist verbatim in `notes/sql/coverage.md`** → stop and
+  report it. It means the plan and coverage have drifted apart, and `sql-plan-audit` is what fixes
+  that, not this run.
+
+A coverage section claimed by no step at all is likewise not this prompt's problem to paper over —
+see PLANNING.md §Z ("Coverage sections deliberately excluded from the steps") for the ones that are
+excluded on purpose, and run `sql-plan-audit` for the ones that are not.
 
 **Difficulty distribution — applied to the batch of {COUNT} new exercises:**
 Calculate the split based on COUNT, then assign labels to the new exercises in order:
