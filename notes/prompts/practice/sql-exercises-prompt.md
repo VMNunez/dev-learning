@@ -43,11 +43,16 @@ FOCUS = [specific concept to practise — optional, practice mode only]
         Example: FOCUS = LEFT JOIN, FULL OUTER JOIN
         Example: FOCUS = HAVING, aggregate filters
         Leave blank to cover the full topic
+REVIEW = [yes | no — default: no. Practice mode only.]
+         yes = a review batch over concepts already drilled (PLANNING.md Moment 2b): no Intro tier,
+         labelled [Repaso], repetition allowed, not counted against the step's target.
+         Leave as no for a first-pass batch.
 
 Validation — check these before doing anything else:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
 - If COUNT is blank: use 12.
 - If COUNT is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4.
+- If REVIEW is blank: use no. If REVIEW = yes in review mode: ignore it, it only affects generation.
 
 ---
 
@@ -195,11 +200,37 @@ Stop and wait for Victor's response.
   block in either case.
 
   **If the file is in the legacy format, say so before generating:**
-  "Este archivo está en el formato antiguo (`-- #NN |`, sin bloque SETUP ni marca `-- Your answer:`).
-  Los ejercicios nuevos usarán el formato actual, así que el archivo quedará mixto. El modo review
-  solo puntúa lo que lleva `-- Your answer:` — los ejercicios antiguos saldrán como 'Sin responder'
-  aunque estén contestados. ¿Continúo? (sí / no)"
+  "Este archivo está en el formato antiguo (`-- #NN |`, sin marca `-- Your answer:`). Los ejercicios
+  nuevos usarán el formato actual, así que el archivo quedará mixto — eso es normal y el modo review
+  lo maneja: lee ambos formatos y puntúa tus respuestas antiguas con normalidad. La única diferencia
+  es que los ejercicios antiguos no pueden llevar la marca `-- ✅ Corregido`, así que se re-leen en
+  cada review en vez de saltarse como cerrados. ¿Continúo? (sí / no)"
   Wait for an affirmative before continuing.
+
+  **Then check the schema, which is a separate and more dangerous mismatch.** Read the setup block of
+  the existing file and compare its `CREATE TABLE` statements against the canonical schema above.
+  Compare table names *and* column names — a file can be in the current exercise format and still
+  carry an obsolete schema.
+
+  If they differ, **stop and ask before generating a single exercise**. This step exists because the
+  rule above forbids regenerating the setup block, so without this check the new exercises reference
+  columns that do not exist in Victor's database and not one of them runs in pgAdmin.
+
+  Print the concrete diff — missing tables, and columns whose name differs (e.g. `nationality` vs
+  `country`, `year` vs `published_year`) — then:
+
+  "El bloque SETUP de este archivo no coincide con el esquema canónico: [diff]. Si genero contra el
+  canónico, los ejercicios nuevos no correrán en tu pgAdmin. Dos opciones:
+   (A) Genero contra el esquema que ya tiene el archivo — los ejercicios corren, pero se pierden los
+       conceptos que ese esquema no soporta (indícolos: [list, e.g. fan-out sobre `quantity`]).
+   (B) Añado un bloque SETUP nuevo con el esquema canónico al final del archivo, antes de los
+       ejercicios nuevos. Corre ese bloque en pgAdmin y a partir de ahí todo usa el canónico; los
+       ejercicios antiguos dejarán de correr, aunque siguen siendo puntuables.
+   ¿A o B?"
+
+  Wait for the answer. On (A), use the file's own schema as the canonical one for this run and say so
+  in the self-report bullet 1. On (B), emit the new setup block with a banner
+  `-- ===== SETUP v2 — esquema canónico (los ejercicios anteriores usan el esquema v1) =====`.
 - If the file does not exist: set N = 0 and generate the complete file including the setup block.
 
 ---
@@ -334,6 +365,19 @@ Challenge is 0, move one exercise from Standard to Challenge so every batch has 
 Challenge exercise. (COUNT=5 → 2 Intro, 2 Standard, 1 Challenge.)
 
 Label each exercise with its level: `-- Exercise N [Intro]:`, `[Standard]:`, `[Challenge]:`.
+
+**Review batches — `REVIEW = yes` in the config.** A review batch is a deliberate second pass over
+concepts already drilled (PLANNING.md Moment 2b). It changes two things and nothing else:
+- **No Intro tier.** Split the batch 60% Standard / 40% Challenge. Re-doing `SELECT title FROM books`
+  on a concept already passed teaches nothing — that is exactly how exercises #21–#40 of
+  `01-basics.sql` bought only three new concepts for a whole hour of work.
+- **Label them `-- Exercise N [Repaso]:`** instead of the level, so the file itself records which
+  block was first-pass and which was review. Without the marker nothing distinguishes them later.
+
+Also drop the new-concept restriction: deliberate repetition is the point of a review batch, so
+covering ground already covered is correct here and only here. Review batches are **not** counted
+against a step's target in PLANNING.md §5 and never flip a status in §8 — say so in the closing
+message: "Este lote es de repaso: no cuenta para el target del paso."
 
 **Cross-topic integration rule:** for the bookstore-based query topics from nulls onward
 (nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, indexes,
@@ -723,6 +767,11 @@ This is normal when reviewing a new append batch.
 ### Step 2 — Check each answer
 
 Run each query mentally against the schema defined in the setup block.
+
+**If the file has two setup blocks** (a `SETUP v2` banner marks a mid-file schema change — see
+practice Step 1), evaluate each exercise against the block that precedes it, not against the last one
+read. An exercise written for the v1 schema is **not** wrong for using a v1 column name.
+
 For the self-contained design topics (schema-design, normalization, data-types), there is no
 shared setup block — evaluate each answer's table design and type choices against the
 requirements stated in that exercise.
@@ -903,13 +952,16 @@ The table format is (4 columns — shared with `progress-update-prompt`):
 ```markdown
 ### Exercises completed
 
-50 total exercises across 2 topics
+[N] total exercises across [M] topics
 
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
-| basics / SELECT | practice/sql/01-basics.sql | 40 | in progress ⏳ |
-| joins | practice/sql/02-joins.sql | 24 | solid ✅ |
+| basics / SELECT | practice/sql/01-basics.sql | [count] | in progress ⏳ |
+| joins | practice/sql/02-joins.sql | [count] | solid ✅ |
 ```
+
+The numbers above are placeholders showing the shape — read the real counts from the file you just
+reviewed. Never copy an example figure into PROGRESS.md.
 
 **If the table exists:** find the row for {TOPIC} and update the `Exercises` and `Status` columns:
 - Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
@@ -929,10 +981,15 @@ before the next `##` heading.
 #### 4c — PLANNING.md §8, the step row
 
 Open `practice/sql/PLANNING.md`. Find the row in the §8 table for the step this {TOPIC} belongs to
-(the path table in Step 4 gives the step number). Update its **Answered / target** cell with the real
-count and its **Status** cell:
+(the path table in Step 4 gives the step number). Update its **Scored / target** cell with the number
+of exercises this run actually graded ≥ 80%, and its **Status** cell:
 - score ≥ 80% **and** the step's target reached → `done ✅`
 - otherwise → `in progress ⏳`
+
+§5 of the plan defines three counts — *written*, *answered*, *scored* — and only **scored** moves a
+status. Do not write an answered-but-ungraded count into that cell; that conflation is what made the
+plan claim Step 0 was 40/40 when nothing had ever been reviewed. Update the matching `Scored` cell in
+the §5 table too.
 
 Then refresh the totals line under the table.
 
