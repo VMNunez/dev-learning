@@ -19,20 +19,20 @@ runs once the whole coverage-prompt column is filled).
 
 ## Per-topic prompts
 
-| Topic | coverage-prompt | notes-audit | interview-prep-audit |
-|---|---|---|---|
-| Angular | 2026-07-18 | | |
-| Angular Material | 2026-07-18 | | |
-| Spring Boot | 2026-07-13 | 2026-07-15 | |
-| Java | 2026-07-18 | | |
-| Architecture | 2026-07-18 | | |
-| Security | 2026-07-18 | | |
-| TypeScript | 2026-07-18 | | |
-| JavaScript | 2026-07-18 | | |
-| CSS | 2026-07-19 | | |
-| SQL | 2026-07-18 | | |
-| Git | 2026-07-19 | | |
-| General | 2026-07-19 | | |
+| Topic | coverage-prompt | notes-audit | interview-prep-audit | notes-and-interview-prep |
+|---|---|---|---|---|
+| Angular | 2026-07-18 | | | |
+| Angular Material | 2026-07-18 | | | |
+| Spring Boot | 2026-07-13 | 2026-07-15 | | |
+| Java | 2026-07-18 | | | |
+| Architecture | 2026-07-18 | | | |
+| Security | 2026-07-18 | | | |
+| TypeScript | 2026-07-18 | | | |
+| JavaScript | 2026-07-18 | | | |
+| CSS | 2026-07-19 | | | |
+| SQL | 2026-07-18 | | | |
+| Git | 2026-07-19 | | | |
+| General | 2026-07-19 | | | |
 
 ## Per-project prompts
 
