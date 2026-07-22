@@ -27,7 +27,7 @@ mistake, and turns your gaps into interview questions.
 ## Configuration — edit only this block
 
 TYPE        = [angular | spring-boot | sql | all]
-              → TYPE = all runs one snippet per type in turn — see notes/prompts/_batch-mode.md
+              → TYPE = all runs one snippet per type in turn — see notes/prompts/_internal/_batch-mode.md
                 (order: angular, spring-boot, sql; finish reviewing one before the next starts)
 DIFFICULTY  = [intro | standard | challenge]   → default: standard
 ISSUE_COUNT = [number of issues to plant]       → default: 4
@@ -42,7 +42,7 @@ Validation — before anything else:
 
 ## Context
 
-Before starting, read `CLAUDE.md` (teaching rules) and `notes/prompts/_shared-context.md`
+Before starting, read `CLAUDE.md` (teaching rules) and `notes/prompts/_internal/_shared-context.md`
 (my profile, and especially the **"Spanish job market 2026"** and **"AI factor 2026"** sections —
 they list the exact mistakes interviewers test for in the code-review step).
 

@@ -18,7 +18,7 @@ well past that). Reports are bounded: the list(s) plus proof lines, no narrative
 Run once per topic. Analyst A **returns a gap list** and edits nothing; the orchestrator applies the
 survivors. "Add", "sharpen", "flag" below mean *propose in the returned list*, not write to a file.
 Inputs: this topic's `notes/{topic}/coverage.md` (the section under audit) and its `future-learning.md`,
-`_coverage-standard.md`, and the evidence Synthesis in `notes/prompts/_job-market-evidence.md`.
+`_coverage-standard.md`, and the evidence Synthesis in `notes/prompts/_internal/_job-market-evidence.md`.
 
 Market-fit comes **before** the finer per-section audit: coverage must first meet what the market asks,
 then expand — the priority order in `_coverage-standard.md` ("cover the market first, then expand").
@@ -31,7 +31,7 @@ regardless of how many postings are on file. The evidence then
 sharpens it — adding hard frequency and the market's exact wording — and overrides it only where the two
 actually conflict on a concrete point.
 
-Then read the **Synthesis** in `notes/prompts/_job-market-evidence.md`. For **each recurring requirement**
+Then read the **Synthesis** in `notes/prompts/_internal/_job-market-evidence.md`. For **each recurring requirement**
 (with its frequency, e.g. `Docker ~3/8`, `Java ~8/8`):
 
 1. **Gap → add.** Find the coverage item(s) it maps to. If a recurring requirement has no item, or only
@@ -75,7 +75,7 @@ Run once per topic on `model: opus` — this is the deepest reasoning in the aud
 complete rather than assuming it. Analyst C **returns a gap list** and edits nothing.
 
 You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
-`notes/prompts/_shared-context.md` for the exact role/companies, and `notes/prompts/_job-market-evidence.md`
+`notes/prompts/_internal/_shared-context.md` for the exact role/companies, and `notes/prompts/_internal/_job-market-evidence.md`
 for what they hire for). You are screening a candidate at the target level and the topic is {TOPIC}. Read
 that topic's `notes/{topic}/coverage.md` (and its section in `notes/coverage.md` if the topic file is
 missing) plus `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`.
@@ -118,7 +118,7 @@ Dispatch it with this brief:
 >    REST concept under Spring Boot that belongs in Architecture). For each: `concept — from → to`.
 > 3. **Scope-demotion candidates** — items clearly post-junior for the target role (mid-level
 >    architecture, senior performance work). For each: `item — one-line why it is post-junior`. Read
->    ROADMAP.md and `notes/prompts/_shared-context.md` for the target level.
+>    ROADMAP.md and `notes/prompts/_internal/_shared-context.md` for the target level.
 > Do not edit any file. Before reading `notes/coverage.md`, run `wc -l` on it — it is far past the Read
 > tool's silent 2000-line truncation limit (3900+ lines), so one Read call returns roughly half and the
 > tail topics would be invisible to you. Read it in several `offset` passes to the real last line and

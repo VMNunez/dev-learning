@@ -10,7 +10,7 @@ tracker (which it reads directly — a subagent for one tiny file costs more con
 
 > **▶ Run first:** nothing — this is a producer. Run it *before* `plan-audit` and `roadmap-review`, which read `PROGRESS.md`.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
 
@@ -343,7 +343,7 @@ git commit -m "docs: refresh PROGRESS.md — [main change, e.g. 'add project 07 
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat.
 

@@ -13,7 +13,7 @@ This file is the map: what each prompt does, **what it reads, what it generates*
 each other, and which prompts are still missing. CLAUDE.md only links here.
 
 > **Two files every prompt reads.** Almost all of them start by reading `CLAUDE.md` (teaching
-> rules, folder structure, "next file:" counters) and `notes/prompts/_shared-context.md` (my
+> rules, folder structure, "next file:" counters) and `notes/prompts/_internal/_shared-context.md` (my
 > profile, situation, the market). To keep the tables below readable, those two are not repeated
 > in each "Reads" cell — assume them.
 
@@ -26,10 +26,13 @@ tells them apart, and it is the filename:
 
 > **A leading `_` means "never launch this".** No underscore, and it is yours to run.
 
-**Every family keeps its internal pieces in an `_internal/` subfolder** (2026-07-22). Open any folder
-under `notes/prompts/` and you see its runnable prompts and one `_internal/` — never a mix you have to
-read prefixes to sort. Standards, subagent steps and `_last-run-report*.md` files all live there; a new
-one goes in `_internal/` too, including a report a pipeline has not written yet. The `_` prefix stays on
+**Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the ten families
+and this root, which holds the five files the whole system shares (`_shared-context.md`,
+`_pipeline-self-report.md`, `_batch-mode.md`, `_job-market-evidence.md`, `_run-tracker.md`). Open any
+folder under `notes/prompts/` and you see its runnable prompts and one `_internal/`, never a mix you
+have to read prefixes to sort. Standards, subagent steps and `_last-run-report*.md` files all live
+there; a new one goes in `_internal/` too, **including a report a pipeline has not written yet** — the
+path a prompt is told to write to counts, not just the files already on disk. The `_` prefix stays on
 the filenames anyway, so a file keeps its marking if it is ever moved or quoted out of context.
 
 **Inside Claude Code you do not need the rule at all: type `/` and the list is the answer.** Every
@@ -110,8 +113,8 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | `knowledge/coverage/_cross-topic-inbox.md` | *Internal.* The **durable handoff** between coverage runs: when a run finds a gap owned by another topic, it files the item here under that topic instead of only mentioning it in a summary. Every coverage run reads its own heading at Step 1 and clears what it consumed; `coverage-audit` sweeps all headings. Not runnable. | — | — |
 | `knowledge/coverage/_coverage-prompt-rationale.md` | *Internal.* The **evidence behind the rules** in `coverage-prompt.md` — each real run's failure, what it cost, and the worked example, as numbered `R-n` entries the prompt points at. Keeps the prompt executable while the history stays intact. Read an entry before weakening or skipping the rule it justifies; a run's self-report adds new entries here, never inline in the prompt. Not runnable. | — | — |
 | `knowledge/coverage/coverage-prompt.md` | Defines the required scope for **one** topic — what a junior must know, what is deferred. Two subagents bracket the generation: a **deep market-analysis subagent** (Step 2, web-backed, anchored to Victor's objectives — the primary source) and an **adversarial interviewer subagent** (Step 4a) to hunt missing items; real postings complement the analysis. | `_coverage-standard.md`, `ROADMAP.md`, `_job-market-evidence.md`, the topic's note files, `future-learning.md` | `notes/{topic}/coverage.md`, syncs `notes/coverage.md`, updates `future-learning.md` |
-| `knowledge/coverage/coverage-audit-prompt.md` | **Global** convergence pass over all of `notes/coverage.md`; runs a **market-fit check** (Step 2b): a deep analysis of what the target junior market asks (primary), complemented by the job-market evidence, to keep coverage matched to the market — fills gaps, fixes item quality, and **detects** missing topics (e.g. testing, docker), delegating their authoring to `coverage-prompt`. Runs as a hands-off orchestrator (analysts A/B/C/D as cold subagents). Run once after every topic has a coverage file. | `_coverage-standard.md`, `notes/coverage.md`, every `notes/{topic}/coverage.md`, `notes/prompts/_job-market-evidence.md`, `ROADMAP.md` | `notes/coverage.md` + each topic `coverage.md`, `future-learning.md` files; flags new topics for `coverage-prompt` |
-| `knowledge/coverage/evidence-intake-prompt.md` | Nourishes `notes/prompts/_job-market-evidence.md`: `paste` mode adds full offers you provide, `search` mode web-searches a batch of current Spanish junior postings; both append Raw-posting blocks, re-tally the Synthesis, and commit. Run it whenever you see real postings. | `_job-market-evidence.md`, `_coverage-standard.md`, `ROADMAP.md` | `notes/prompts/_job-market-evidence.md` |
+| `knowledge/coverage/coverage-audit-prompt.md` | **Global** convergence pass over all of `notes/coverage.md`; runs a **market-fit check** (Step 2b): a deep analysis of what the target junior market asks (primary), complemented by the job-market evidence, to keep coverage matched to the market — fills gaps, fixes item quality, and **detects** missing topics (e.g. testing, docker), delegating their authoring to `coverage-prompt`. Runs as a hands-off orchestrator (analysts A/B/C/D as cold subagents). Run once after every topic has a coverage file. | `_coverage-standard.md`, `notes/coverage.md`, every `notes/{topic}/coverage.md`, `notes/prompts/_internal/_job-market-evidence.md`, `ROADMAP.md` | `notes/coverage.md` + each topic `coverage.md`, `future-learning.md` files; flags new topics for `coverage-prompt` |
+| `knowledge/coverage/evidence-intake-prompt.md` | Nourishes `notes/prompts/_internal/_job-market-evidence.md`: `paste` mode adds full offers you provide, `search` mode web-searches a batch of current Spanish junior postings; both append Raw-posting blocks, re-tally the Synthesis, and commit. Run it whenever you see real postings. | `_job-market-evidence.md`, `_coverage-standard.md`, `ROADMAP.md` | `notes/prompts/_internal/_job-market-evidence.md` |
 | `knowledge/notes/notes-audit.md` | **THE entry point — the only notes prompt you launch.** Runs **inside Claude Code**, hands-off. `SCOPE = folder` audits/completes a whole topic; `SCOPE = file` audits one file. Existing files are quality-flagged one cold subagent each, then every file goes through four cold stages — English author (A) → English reviewer (B) → translator en→es (T) → `en/`-blind Spanish reviewer (C) — with `en/` as the canonical source, then committed (one atomic commit per file, made by C). | its seven internal pieces (below) | every built `notes/*.md` + `es/*.md`, one atomic commit per file |
 | `knowledge/notes/_note-quality-standard.md` | *Internal.* The **shared writing standard** every piece reads (format modes, rule 3, signature elements, anticipate-the-TODO). Not runnable. | — | — |
 | `knowledge/notes/_notes-plan-prompt.md` | *Internal (folder mode).* Surveys a topic folder, does the `en`/`es` sync, and writes the ordered **worklist** — no note prose. | `notes/{topic}/coverage.md`, the topic's notes (en + es), `future-learning.md` | `en`/`es` structure, `future-learning.md`, `notes-worklist.md` |
@@ -184,7 +187,7 @@ accurate; `apply/` produces the job-application material.
 | `strategy/tracking/_roadmap-standard.md` | *Internal.* The **shared roadmap contract** `roadmap-review` reads: what ROADMAP is vs PROGRESS/coverage, stable vs living sections, gate-based sequencing (no dates), canonical study-block orders. Not runnable. | — | — |
 | `strategy/tracking/roadmap-review-prompt.md` | Keeps ROADMAP forward-looking and gate-based (no stale dates); checks project sequence and study-block tables vs coverage. **Orchestrator:** two cold fact-gatherers (gap analysis + active-PLANNING summary) feed the doer so coverage.md and PLANNING.md never load into its context; the doer applies edits, then two sequential cold reviewers — mechanical (date scan, study order, LeetCode gate; reads only ROADMAP + standard) and cross-file (gaps, gates, SQL table, phase markers) — re-verify the invariants and fix ROADMAP. | `_roadmap-standard.md`, `notes/coverage.md`, `PROGRESS.md`, the active `PLANNING.md` | `ROADMAP.md` |
 | `strategy/apply/_application-standard.md` | *Internal.* The **shared job-application standard** both `cv` and `linkedin` read: expert stance, sources (incl. the existing CV in `personal/job-search`), bullet format, ATS/skills keyword pool, Spanish voice rules, defensibility rule, project-selection heuristic. Not runnable. | — | — |
-| `strategy/apply/cv-prompt.md` | `create` / `review` / `tailor` the one-page Spanish CV (ATS-checked). `tailor` adapts it to a pasted job offer with a `HAVE / PARTIAL / MISSING` gap analysis, and feeds that offer into the job-market evidence. | `_application-standard.md`, `PROGRESS.md`, `ROADMAP.md`, `notes/cv/cv-bullets.md`, the existing CV in `personal/job-search/` | Saves the CV to `personal/job-search/` **outside the repo** (never committed): `master/` for create/review, `applications/` for tailor. `tailor` also appends the posting to `notes/prompts/_job-market-evidence.md` |
+| `strategy/apply/cv-prompt.md` | `create` / `review` / `tailor` the one-page Spanish CV (ATS-checked). `tailor` adapts it to a pasted job offer with a `HAVE / PARTIAL / MISSING` gap analysis, and feeds that offer into the job-market evidence. | `_application-standard.md`, `PROGRESS.md`, `ROADMAP.md`, `notes/cv/cv-bullets.md`, the existing CV in `personal/job-search/` | Saves the CV to `personal/job-search/` **outside the repo** (never committed): `master/` for create/review, `applications/` for tailor. `tailor` also appends the posting to `notes/prompts/_internal/_job-market-evidence.md` |
 | `strategy/apply/linkedin-prompt.md` | Drafts every LinkedIn section + 3 posts, ready to paste. | `_application-standard.md`, `PROGRESS.md`, `ROADMAP.md` | **Output only** — LinkedIn text (not stored in the repo) |
 | `strategy/apply/cover-letter-prompt.md` | `letter` (formal one-page *carta de presentación*) / `message` (short 5–6 line recruiter message) tailored to a pasted offer, in the same Spanish voice as the CV. | `_application-standard.md`, `PROGRESS.md`, `ROADMAP.md`, the pasted offer | **Output only** — cover-letter/message text (not stored in the repo) |
 | `strategy/apply/profile-readme-prompt.md` | `sync` (pull in fact deltas only) / `optimize` (full re-evaluation against the job target) for the GitHub profile README. The repeatable entry point so Claude never needs to be re-briefed on that repo's context each time. | `dev/portfolio/VMNunez/CLAUDE.md` (standing context + gap list), that repo's `README.md`, `PROGRESS.md`, the active project's `PLANNING.md`, `personal/job-search/internship-daw.md` | Edits `dev/portfolio/VMNunez/README.md` + its `CLAUDE.md` gap list directly (separate repo, never committed from here) |
@@ -203,7 +206,7 @@ Each generated file, with who writes it and who depends on it:
   `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep`, `plan-audit`,
   `roadmap-review`, and `sql-exercises` (SQL section). *Coverage is the root — almost everything
   downstream assumes it is correct.*
-- **`notes/prompts/_job-market-evidence.md`** — written by `evidence-intake` (dedicated intake) and
+- **`notes/prompts/_internal/_job-market-evidence.md`** — written by `evidence-intake` (dedicated intake) and
   `cv-prompt` (tailor mode, as it tailors to each offer) → read by `coverage-prompt`, `coverage-audit`,
   and both their subagents, plus `interview-prep-audit`'s market-analysis stage. *Real postings that
   anchor coverage and the interview Q&A to the market.*
@@ -310,7 +313,7 @@ Practice (its own loop, fed by coverage):
 
 Per-target prompts (one topic / file / project / type at a time) also accept **`all`** in their
 target field, so you don't have to run them folder by folder. Set the field to `all` and the prompt
-processes every target in order, one commit per target. Full rules: `notes/prompts/_batch-mode.md`.
+processes every target in order, one commit per target. Full rules: `notes/prompts/_internal/_batch-mode.md`.
 
 - **Supports `all`:** `coverage-prompt`, `notes-audit` (`SCOPE = folder`, `TOPIC = all`), `interview-prep-audit`,
   `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-audit`, `review-audit`,

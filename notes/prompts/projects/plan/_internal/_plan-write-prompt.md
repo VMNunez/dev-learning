@@ -29,7 +29,7 @@ Use PROJECT wherever the prompt refers to {PROJECT}.
 ## Context
 
 My profile, the Spanish job market, and what consultancies look for are in
-`notes/prompts/_shared-context.md`. The goal is not just to build something — it is to be able to
+`notes/prompts/_internal/_shared-context.md`. The goal is not just to build something — it is to be able to
 explain every line and every decision in an interview.
 
 **Do NOT commit and do NOT edit any worklist.** Leave everything in the working tree. Report the files

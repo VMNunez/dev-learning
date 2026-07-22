@@ -11,7 +11,7 @@ stale — and always **before** `portfolio-audit`, which assumes the READMEs are
 > **▶ Run first:** nothing — it only needs `PLANNING.md` and the existing README(s). It is itself a
 > prerequisite of `portfolio-audit`.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_readme-standard.md` (the bar) · `_readme-write-prompt.md` (author) · `_readme-review-prompt.md` (reviewer).
@@ -53,7 +53,7 @@ failure of the machinery do these prompts get edited, in a separate session.
 
 PROJECT_PATH = [projects/01-todo-list | ... | projects/06-hr-portal | projects/07-timetrack | all]
 
-## PROJECT_PATH = all runs on every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT_PATH = all runs on every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Batch targets (ordered): projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The READMEs are derived per type (by project number: 01–06 Angular-only,
 ## 07+ full-stack): angular → [global]; full-stack → [global, backend, frontend].
@@ -68,7 +68,7 @@ has, and the commit rule. Then run the procedure below. You stay light: the suba
 edit the files — you never write a README in your own context.
 
 ## If PROJECT_PATH = all
-Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
+Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, finishing one before the next. Put each
 project's report under a `### [project]` heading, and after the last print the `_batch-mode.md` summary
 table (`Project | READMEs changed`) — this table replaces `_batch-mode.md`'s generic
@@ -166,7 +166,7 @@ whether these prompts need changing, so be honest, including "nothing to report"
 - **Failure protocol** — subagents that errored, second failures, any README excluded from the commit.
 - **Anything else** that made the run harder than it should be.
 - **Verdict** — "pipeline clean" or "change worth considering: X" (the uniform criterion from
-  `notes/prompts/_pipeline-self-report.md`, of which these bullets are this pipeline's tailored version).
+  `notes/prompts/_internal/_pipeline-self-report.md`, of which these bullets are this pipeline's tailored version).
 
 Six bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
 directly** under the notes/prompts exception — `git status` before add and before commit, stage only

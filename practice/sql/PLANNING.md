@@ -818,7 +818,7 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 |------|---------|-----------------|------------------|
 | **G0 — Branch sync** ✅ 2026-07-22 | Before the first SQL session on any branch | *(no prompt — `git merge main` into the branch)* | Appending to a stale file loses exercises at merge time. Done once on `fix/backend-backlog`; re-check on every future branch. |
 | **G1 — Step ritual** | Every step's done conditions pass | *(no prompt — the §4 ritual, by hand)* | The `step-complete` skill only covers project steps and will not fire for SQL. Without this, every later gate reads a stale `PROGRESS.md`. |
-| **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before Step 0; again if a real job posting reveals a gap | `notes/prompts/knowledge/coverage/coverage-prompt.md` · `TOPIC = sql` (logged in `notes/prompts/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
+| **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before Step 0; again if a real job posting reveals a gap | `notes/prompts/knowledge/coverage/coverage-prompt.md` · `TOPIC = sql` (logged in `notes/prompts/_internal/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
 | **G3 — PROGRESS accurate** | After **Step 13** closes | `notes/prompts/strategy/tracking/progress-update-prompt.md` (it has a dedicated SQL subagent) | Reconciles the whole SQL section in one pass, catching anything the per-step ritual missed. Must precede G4. |
 | **G4 — Roadmap resync** | After G3 | `notes/prompts/strategy/tracking/roadmap-review-prompt.md` | The roadmap's SQL gate can only be marked cleared once `PROGRESS.md` says the track is finished. |
 

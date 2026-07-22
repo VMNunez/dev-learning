@@ -43,7 +43,7 @@ salary, no knowledge of the company model, or hesitation about the career change
 Conduct the **entire session in {LANGUAGE}**. When LANGUAGE = en, judge content only — do not
 penalise grammar or fluency.
 
-Before starting, read `notes/prompts/_shared-context.md` (my profile and the "Where I stand"
+Before starting, read `notes/prompts/_internal/_shared-context.md` (my profile and the "Where I stand"
 analysis — the internship, the career change, the differentiator) and `ROADMAP.md` (the
 applications strategy and timeline). Use them to probe realistically.
 

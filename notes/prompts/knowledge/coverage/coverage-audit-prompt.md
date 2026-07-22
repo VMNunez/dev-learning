@@ -6,10 +6,10 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 
 > **▶ Run first:** `coverage-prompt` for every topic — this is the global convergence pass; run it once each topic already has its own `coverage.md`.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 > **Gate — check the run tracker before anything else (step 0).** Read
-> `notes/prompts/_run-tracker.md` and look at the **coverage-prompt column**: this audit only runs
+> `notes/prompts/_internal/_run-tracker.md` and look at the **coverage-prompt column**: this audit only runs
 > once **every topic** has a run date there. A topic's `coverage.md` merely *existing* does not count
 > — the old files predate `coverage-prompt`, so only a tracker date proves the current prompt
 > produced/refreshed it. If any cell in the column is empty, **stop without auditing** and report the
@@ -41,14 +41,14 @@ Read two files before anything else:
   (scope logic, the three item types, confusable pairs, the AI factor, item/file format). Every
   content and quality check this audit applies is defined there — this prompt only adds the *global
   convergence flow* (topic completeness, cross-topic consistency, stability) on top.
-- `notes/prompts/_shared-context.md` — my profile, the **Spanish job market 2026**, and the **AI
+- `notes/prompts/_internal/_shared-context.md` — my profile, the **Spanish job market 2026**, and the **AI
   factor 2026**.
 
 This audit decides what belongs in coverage based entirely on what the job requires — the target
 (role, companies, deadline) comes from ROADMAP + `_shared-context`, never from a value baked into
 this prompt. Projects and notes are vehicles to reach the objective — they do not define scope.
 
-Also read `notes/prompts/_job-market-evidence.md` — real postings from the target companies. When it
+Also read `notes/prompts/_internal/_job-market-evidence.md` — real postings from the target companies. When it
 has evidence, its Synthesis is a **required floor**: every recurring requirement must map to coverage
 somewhere. The **adversarial interviewer pass** (a cold subagent writes, uncapped, the questions it would ask
 and reports the gaps) is not optional or per-doubt here — it runs for every topic as **Analyst C** in
@@ -215,7 +215,7 @@ Read these files before making any decision:
 
 1. `notes/coverage.md` — the primary input
 2. `CLAUDE.md` — learning objectives and notes folder structure (profile and market are in
-   `notes/prompts/_shared-context.md`, read above)
+   `notes/prompts/_internal/_shared-context.md`, read above)
 3. `ROADMAP.md` — current phase, what is in progress, what is post-junior scope
 
 Then list all existing subdirectories under `notes/` (excluding `interview-prep/`, `prompts/`, and `ai-development/` — post-employment material with no coverage.md; list any other folder outside the 12-topic order as an anomaly instead of looping over it). These are the current topic folders.
@@ -403,7 +403,7 @@ a hash you invented, and a wrong one looks verified (a fabricated self-report ha
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it **together with `_run-tracker.md`**
 (verify with `git show --stat HEAD` that the commit lists two files), and **print the five bullets in
 chat**. Printing is the deliverable, not writing the file — the print half is easy to drop after a long

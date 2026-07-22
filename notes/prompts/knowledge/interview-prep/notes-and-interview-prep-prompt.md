@@ -4,7 +4,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 > **▶ Run first:** `notes-audit` **and** `interview-prep-audit` for this topic — this prompt only finds and fixes gaps between notes and Q&A, so it assumes both sides are already built and quality-checked.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 ---
 
@@ -26,7 +26,7 @@ FILE       = [angular | css | javascript | typescript | sql | java | spring-boot
              → notes/interview-prep/es/{FILE}.md
 
 ## TOPIC = all runs every topic in turn (NOTES_PATH and FILE derived per topic) —
-## see notes/prompts/_batch-mode.md. Order: Angular, Angular Material, Spring Boot, Java,
+## see notes/prompts/_internal/_batch-mode.md. Order: Angular, Angular Material, Spring Boot, Java,
 ## Architecture, Security, TypeScript, JavaScript, CSS, SQL, Git, General.
 
 Notes on specific topics:
@@ -52,7 +52,7 @@ directions. It does not audit quality, fix formatting, or resolve TODOs. Run the
 prompts first for that.
 
 Before starting, read CLAUDE.md (teaching rules, subfolder structure) and
-`notes/prompts/_shared-context.md` (my profile and the market context).
+`notes/prompts/_internal/_shared-context.md` (my profile and the market context).
 
 > **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
 > branch is currently active (CLAUDE.md) — a feature branch is the normal case. If you are on
@@ -93,7 +93,7 @@ Split this run into two kinds of work, and never mix them:
   twelve topics — into one context is precisely the saturation that makes the tail get a shallow skim;
   that is why the deep work is one cold subagent per unit.
 
-> **`TOPIC = all`** (per `notes/prompts/_batch-mode.md`): process the topics **one at a time,
+> **`TOPIC = all`** (per `notes/prompts/_internal/_batch-mode.md`): process the topics **one at a time,
 > sequentially** — run this whole procedure fully for one topic (detection + every dispatched fix +
 > the commit) before starting the next. Never load more than one topic's deep work into a context.
 
@@ -257,7 +257,7 @@ git commit -m "docs: cross-reference {TOPIC} notes ↔ interview prep — <one l
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat.
 

@@ -57,7 +57,7 @@ MODE behaviour:
 
 ## Context
 
-Before starting, read CLAUDE.md (teaching rules) and `notes/prompts/_shared-context.md`
+Before starting, read CLAUDE.md (teaching rules) and `notes/prompts/_internal/_shared-context.md`
 (my profile, and what Spanish consultancies look for).
 
 I just completed the simulation at {SIMULATION_FILE} under real conditions: no notes,

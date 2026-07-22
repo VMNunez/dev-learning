@@ -33,7 +33,7 @@ entirely from what Spanish consultancies test at junior level; the gap just mean
 ## The job target is the source — never hardcode it
 
 What counts as "in scope" is defined by **Victor's job target**, and that target lives in
-`ROADMAP.md` (current phase, deadline, what is post-junior) and `notes/prompts/_shared-context.md`
+`ROADMAP.md` (current phase, deadline, what is post-junior) and `notes/prompts/_internal/_shared-context.md`
 (profile, the Spanish job market 2026, the AI factor). **Read both** before deciding scope — do not
 rely on values written into a prompt.
 
@@ -56,7 +56,7 @@ coverage is built on.
    current Spanish junior postings and interview norms** for the stack. This analysis is always
    required; it is never a mere fallback. It is what makes coverage reflect the whole market, not only
    the few postings that happen to be on file.
-2. **Real postings — the corroboration.** `notes/prompts/_job-market-evidence.md` holds real postings
+2. **Real postings — the corroboration.** `notes/prompts/_internal/_job-market-evidence.md` holds real postings
    from the target companies, distilled into recurring requirements. They **complement** the analysis:
    they confirm it, add a frequency signal (`~7/9`), surface the exact wording the market uses, and —
    on a concrete point where a real posting clearly conflicts with the analysis — the posting wins

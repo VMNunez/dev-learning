@@ -20,7 +20,7 @@ It is the last link in the per-project chain: `plan-audit` → build → `readme
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_portfolio-standard.md` (the bar) · `_portfolio-write-prompt.md` (question author) ·
@@ -62,7 +62,7 @@ DRY_RUN      = false
 PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | all]
 DRY_RUN      = [false | true]
 
-## PROJECT_PATH = all runs the gate on every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT_PATH = all runs the gate on every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The project type is derived from the number (01–06 Angular-only, 07+ full-stack).
 
@@ -84,7 +84,7 @@ dispatch the two question subagents and wait — you never author the question b
 The verdict + CV bullet + GitHub description are short and deterministic, so you do those yourself.
 
 ## If PROJECT_PATH = all
-Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
+Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one (including its commit)
 before the next — never overlap, since their subagents commit and parallel commits race the git index.
 Put each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
@@ -214,7 +214,7 @@ the diff.
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat. The self-report is prompt-system machinery: it commits itself **even when
 `DRY_RUN = true`** (only the project outputs stay uncommitted).

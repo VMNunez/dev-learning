@@ -13,7 +13,7 @@ The output is ready-to-paste text for every section — no rewriting needed, jus
 ## Before starting
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md`. It defines the **sources to read**
-(`CLAUDE.md`, `notes/prompts/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
+(`CLAUDE.md`, `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
 `notes/cv/cv-bullets.md`, and your existing CV in `personal/job-search`), the **universal bullet format**, the **skills pool** (required + preferred),
 the **Spanish / no-buzzword voice**, the **defensibility rule**, and the **project-selection
 heuristic**. This prompt does not repeat those rules — it adds only the LinkedIn-specific flow on top.

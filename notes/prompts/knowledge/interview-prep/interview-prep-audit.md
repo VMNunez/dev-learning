@@ -24,7 +24,7 @@ everything.
 > topic's `coverage.md`; if coverage is missing or stale, the Q&A will be too. Optional:
 > `evidence-intake` to refresh `_job-market-evidence.md`, which the market-analysis stage (M) reads.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_interview-prep-standard.md` (the bar) · `_interview-prep-write-prompt.md` (author) ·
@@ -79,7 +79,7 @@ DRY_RUN = false
 
 FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security | all]
        → notes/interview-prep/en/{FILE}.md + notes/interview-prep/es/{FILE}.md
-       → FILE = all audits every topic in turn — see notes/prompts/_batch-mode.md. Order:
+       → FILE = all audits every topic in turn — see notes/prompts/_internal/_batch-mode.md. Order:
          angular, spring-boot, java, architecture, security, typescript, sql, javascript, css, git, general.
        → Angular Material has no file of its own: the `angular` run also verifies
          notes/angular-material/coverage.md and places any Material questions in angular.md
@@ -154,7 +154,7 @@ subagents of a section, because they edit the same two files.
 subagent, `model: opus`, `run_in_background: false` (market judgment shapes every question downstream):
 
 > You are a specialist in junior technical interviews at Spanish IT consultancies. Read `ROADMAP.md`
-> and `notes/prompts/_shared-context.md` for the candidate's exact target role, companies, stack, and
+> and `notes/prompts/_internal/_shared-context.md` for the candidate's exact target role, companies, stack, and
 > timeline, and `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` for what a good
 > interview question is. The topic is «topic».
 >
@@ -164,7 +164,7 @@ subagent, `model: opus`, `run_in_background: false` (market judgment shapes ever
 >   (the target companies plus Tecnoempleo / InfoJobs / LinkedIn España and "preguntas entrevista
 >   junior {topic} España" style sources); quote the question text you find and date it. If web search
 >   is unavailable, say so and use your trained knowledge of the 2026 Spanish market.
-> - Cross-check `notes/prompts/_job-market-evidence.md` (real postings on file) as a complement — which
+> - Cross-check `notes/prompts/_internal/_job-market-evidence.md` (real postings on file) as a complement — which
 >   «topic» skills recur, and the exact wording the market uses.
 >
 > Return a flat list of real «topic» interview questions, each written **as an interviewer would say
@@ -181,8 +181,8 @@ subagent, `model: opus`, `run_in_background: false` (adversarial creativity — 
 the obvious gaps, not the ones that matter):
 
 > You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
-> `notes/prompts/_shared-context.md` for the exact role/companies, and
-> `notes/prompts/_job-market-evidence.md` for what they hire for). You have ~30 minutes with a junior
+> `notes/prompts/_internal/_shared-context.md` for the exact role/companies, and
+> `notes/prompts/_internal/_job-market-evidence.md` for what they hire for). You have ~30 minutes with a junior
 > candidate and the topic is «topic». Read `notes/interview-prep/en/«topic».md` and
 > `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`.
 >
@@ -330,7 +330,7 @@ detected (recommended standard rule additions).
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat.
 

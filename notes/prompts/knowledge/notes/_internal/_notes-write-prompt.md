@@ -76,7 +76,7 @@ the full standard in English.
 Before starting, read:
 - CLAUDE.md — teaching rules and the "next file:" counters (update the counter only if you create a
   new numbered file this run).
-- notes/prompts/_shared-context.md — my profile and the Spanish job market 2026.
+- notes/prompts/_internal/_shared-context.md — my profile and the Spanish job market 2026.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — THE writing standard. This is your bar. Apply
   it in full to everything you write this run: zero-assumption, second-order completeness, signature
   elements, the anticipate-the-TODO pass, format mode, Docs link priority. Before writing a new file,

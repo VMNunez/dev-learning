@@ -6,7 +6,7 @@ Use this prompt when you want to create a new `coverage.md` for a notes folder, 
 
 > **▶ Run first:** nothing — it can create coverage from scratch. Optional: `evidence-intake` to refresh the market evidence its Step 2 subagent reads.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 > **Rules here, evidence next door.** Rules that came from a real run's failure carry a `(why: R-n)`
 > pointer into `_coverage-prompt-rationale.md` — the incident, what it cost, and the worked example.
@@ -31,7 +31,7 @@ Use this prompt when you want to create a new `coverage.md` for a notes folder, 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
 
-## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
+## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
 ## (also reads notes/java/), Java, Architecture, Security, TypeScript, JavaScript, CSS, SQL,
 ## Git, General.
@@ -126,12 +126,12 @@ Before starting, read:
   (what belongs in scope, the three item types, confusable pairs, the AI factor, item/file format).
   Everything about *content quality* lives there — this prompt only adds the *per-topic flow* on top.
 - `CLAUDE.md` — teaching rules and the notes/ subfolder structure.
-- `notes/prompts/_shared-context.md` — my profile, the **Spanish job market 2026**, and the **AI
+- `notes/prompts/_internal/_shared-context.md` — my profile, the **Spanish job market 2026**, and the **AI
   factor 2026**.
 - `ROADMAP.md` — the current phase, deadline, and what is post-junior scope. This is the source of the
   job target. Do not use any hardcoded role/company/date — read the target from ROADMAP and
   `_shared-context` and defer to them (see "The job target is the source" in the standard).
-- `notes/prompts/_job-market-evidence.md` — real junior postings from the target companies, distilled
+- `notes/prompts/_internal/_job-market-evidence.md` — real junior postings from the target companies, distilled
   into recurring requirements. Per the standard's "Two sources", the deep market analysis in Step 2 is
   **primary**; this file **complements** it: every recurring skill that touches {TOPIC} must still map to
   coverage items (a floor to raise), but it is a small sample — its silence never shrinks coverage, and
@@ -281,7 +281,7 @@ bloating this context.
 **In Claude Code:** launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
 
 > You are a specialist in the Spanish IT job market for junior developers. Read `ROADMAP.md` and
-> `notes/prompts/_shared-context.md` for the candidate's exact objectives (target role, companies,
+> `notes/prompts/_internal/_shared-context.md` for the candidate's exact objectives (target role, companies,
 > stack, timeline, profile) and `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` for what a
 > coverage item is. The topic is {TOPIC}.
 >
@@ -291,7 +291,7 @@ bloating this context.
 >   {TOPIC} in this stack (the target companies plus Tecnoempleo / InfoJobs / LinkedIn España); quote the
 >   requirement text you find and date it. If web search is unavailable, say so and use your trained
 >   knowledge of the 2026 Spanish market.
-> - Cross-check `notes/prompts/_job-market-evidence.md` (real postings already on file) as a
+> - Cross-check `notes/prompts/_internal/_job-market-evidence.md` (real postings already on file) as a
 >   **complement** — it is a small sample, so it corroborates and adds a frequency signal; it does not
 >   bound the analysis.
 > - **If {TOPIC} appears in fewer than ~3 of the postings on file, shift your weight to interview
@@ -507,8 +507,8 @@ it is deliberately the most expensive one.** Two rules make it work (why: R4):
 Give each subagent this brief (substituting its angle):
 
 > You are a senior engineer at one of the target consultancies (read `ROADMAP.md`,
-> `notes/prompts/_shared-context.md` for the exact role/companies/level, and
-> `notes/prompts/_job-market-evidence.md` for what they hire for — a small sample that corroborates,
+> `notes/prompts/_internal/_shared-context.md` for the exact role/companies/level, and
+> `notes/prompts/_internal/_job-market-evidence.md` for what they hire for — a small sample that corroborates,
 > never bounds, your probes) interviewing a candidate at the target level. The topic is {TOPIC}. Read
 > `{NOTES_PATH}coverage.md` and `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`.
 >
@@ -913,10 +913,10 @@ Report the commit hashes in the final summary so Victor can see they landed.
 ### Final step — pipeline self-report AND run tracker (two halves, one commit)
 
 This prompt dispatches subagents, so it ends like every orchestrator: read
-`notes/prompts/_pipeline-self-report.md` and execute it for this run. That step has **two halves,
+`notes/prompts/_internal/_pipeline-self-report.md` and execute it for this run. That step has **two halves,
 and both are named here on purpose**: (1) write the report — because this folder is shared with
 `coverage-audit-prompt.md`, as `_last-run-report-coverage-prompt.md` — and (2) **update this run's
-cell in `notes/prompts/_run-tracker.md`**. Commit the two files together, print the five bullets in
+cell in `notes/prompts/_internal/_run-tracker.md`**. Commit the two files together, print the five bullets in
 chat.
 
 **Close-out verification — mechanical, never by impression:** after that commit, run

@@ -23,7 +23,7 @@ fixes everything himself to learn.**
 > **▶ Run first:** nothing — it reads `PLANNING.md` and the source, not the README. (`readme-audit`
 > is a prerequisite of `portfolio-audit`, which reads the READMEs — not of this review.)
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_review-standard.md` (the bar — all the checklists) · `_review-flow-prompt.md` (per-slice functional
@@ -79,7 +79,7 @@ REVIEW_SCOPE = backend
 PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | all]
 REVIEW_SCOPE = [full | backend | frontend]
 
-## PROJECT_PATH = all runs the review on every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT_PATH = all runs the review on every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The project type is derived from the number (01–06 Angular-only, 07+ full-stack).
 ## The 30-day "Last Reviewed" gate applies per full-stack project — recently reviewed ones are skipped.
@@ -101,7 +101,7 @@ source and hand you back findings tables — you map the slices and merge. You n
 yourself.
 
 ## If PROJECT_PATH = all
-Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
+Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next. Put
 each project's report under a `### [project]` heading, and after the last print this pipeline's own
 summary table (`Project | Quality | High | Medium | Low` — a deliberate override of `_batch-mode.md`'s

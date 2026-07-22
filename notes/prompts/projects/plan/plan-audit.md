@@ -19,7 +19,7 @@ one command does everything.
 > **▶ Run first (new mode only):** `progress-update` — the gap analysis reads `PROGRESS.md`; if it is
 > stale it picks the wrong next project. (`review` mode has no prerequisite.)
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_planning-standard.md` (the bar) · `_plan-write-prompt.md` (author) ·
@@ -75,7 +75,7 @@ PROJECT = [blank — auto-detects the next project from PROGRESS.md]
 ## review mode:
 PROJECT = [folder path, e.g. projects/07-timetrack | projects/06-hr-portal | all]
 
-## PROJECT = all (review mode only) audits every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT = all (review mode only) audits every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder,
 ## 05-task-manager, 06-hr-portal, 07-timetrack. The format is derived per project type by number
 ## (01–06 Angular-only → present-sections + universal checks only; 07+ full-stack → full 24-section audit).
@@ -137,7 +137,7 @@ ROADMAP.md / PROGRESS.md edits left in the working tree).
 ## If MODE = review
 
 ### PROJECT = all
-Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block's
+Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block's
 Batch note and run the **single-project review below once per project**, fully finishing one (all five
 specialists + the orchestrator commit) before starting the next — never overlap, since the orchestrator
 commits per project and parallel commits race the git index. Put each project's report under a
@@ -260,7 +260,7 @@ Report the commit made and each specialist's verdict/trace.
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat.
 

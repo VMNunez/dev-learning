@@ -3,7 +3,7 @@
 Use in a **separate conversation** (ideally inside Claude Code, so `search` mode can web-search). Fill
 the config block, paste the prompt into a new chat, and — in `paste` mode — paste the offers at the end.
 
-This is the dedicated way to **nourish `notes/prompts/_job-market-evidence.md`** — the real-postings file
+This is the dedicated way to **nourish `notes/prompts/_internal/_job-market-evidence.md`** — the real-postings file
 that anchors coverage. Feeding it is a first-class action: it does not need the CV machinery. The evidence
 is public posting data (no personal information), so it **is** committed to the repo.
 
@@ -39,11 +39,11 @@ FOCUS = [optional, search mode only — leave BLANK for the normal run. Narrow t
 > Victor which branch to use — `main` never receives direct commits, only merges via PR.
 
 Read before touching anything:
-1. `notes/prompts/_job-market-evidence.md` — learn its **exact format** (the `### Company — Role · year ·
+1. `notes/prompts/_internal/_job-market-evidence.md` — learn its **exact format** (the `### Company — Role · year ·
    source` Raw-posting blocks, the Synthesis frequencies `~N/M`, the footer count) and what is already on file.
 2. `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — the "Two sources" section: the evidence is
    the **complement** to the deep analysis, a floor to raise, never a ceiling. Keep that framing.
-3. `ROADMAP.md` + `notes/prompts/_shared-context.md` — the **target profile**: role, companies, stack,
+3. `ROADMAP.md` + `notes/prompts/_internal/_shared-context.md` — the **target profile**: role, companies, stack,
    seniority. Only postings that fit this profile belong in the file (see the filter in Step 2).
 
 Today's date is in the session context — use its month/year for the footer and for dating searched postings.
@@ -147,12 +147,12 @@ Print a short summary:
 The evidence file is committed (public data, no personal info). It lives under `notes/prompts/`, so
 **commit it directly** (CLAUDE.md's notes/prompts exception — do not hand the commands to Victor),
 with the mandatory double check:
-1. `git status` — confirm only `notes/prompts/_job-market-evidence.md` is about to be staged.
-2. `git add notes/prompts/_job-market-evidence.md`
+1. `git status` — confirm only `notes/prompts/_internal/_job-market-evidence.md` is about to be staged.
+2. `git add notes/prompts/_internal/_job-market-evidence.md`
 3. `git status` — confirm nothing else is staged (`git restore --staged` anything that is).
 4. `git commit -m "docs: add <N> postings to job-market-evidence — <main stacks/companies>"`
 
-Finally, update this prompt's row in `notes/prompts/_run-tracker.md` (the "Global prompts" table)
+Finally, update this prompt's row in `notes/prompts/_internal/_run-tracker.md` (the "Global prompts" table)
 with today's date and commit that file on its own (`docs: run tracker — evidence-intake run`). This
 prompt has no full self-report step, but the tracker row still records that it ran.
 

@@ -17,7 +17,7 @@ one command does everything.
 > **▶ Run first:** `coverage-prompt` for the topic — notes-audit builds notes to cover every item in
 > `coverage.md`; if coverage is missing or stale, the notes will be too.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_note-quality-standard.md` (the bar) · `_notes-plan-prompt.md` (folder analysis → worklist) ·
@@ -82,7 +82,7 @@ SCOPE   = [folder | file]
 ## folder mode:
 TOPIC   = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 
-## TOPIC = all (folder mode only) audits every topic in turn — see notes/prompts/_batch-mode.md.
+## TOPIC = all (folder mode only) audits every topic in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Batch order: Angular, Angular Material, Spring Boot (also reads notes/java/en/), Java,
 ## Architecture, Security, TypeScript, JavaScript, CSS, SQL, Git, General. File mode is never
 ## batched — it needs one exact FILE.
@@ -127,7 +127,7 @@ drop A/B or the inspectors below Opus — those are the downgrades that cost qua
 
 ## If SCOPE = folder and TOPIC = all
 
-Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered topic list from the config block's
+Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered topic list from the config block's
 Batch note (Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript →
 JavaScript → CSS → SQL → Git → General). Run the **entire `If SCOPE = folder` procedure below once per
 topic**, fully finishing one topic — plan, build every row, its commits — before starting the next.
@@ -333,7 +333,7 @@ build), leave the worklist in place and list the failed row so it can be re-run 
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat.
 

@@ -47,13 +47,13 @@ connection exists, ask directly.
 At the end of a full interview you close with an invitation to ask questions.
 
 Before starting, read CLAUDE.md for teaching context. (My profile and projects are in
-`notes/prompts/_shared-context.md` — see "Who I am" below.)
+`notes/prompts/_internal/_shared-context.md` — see "Who I am" below.)
 
 ---
 
 ## Who I am
 
-My profile and my projects are in `notes/prompts/_shared-context.md` — read it before starting.
+My profile and my projects are in `notes/prompts/_internal/_shared-context.md` — read it before starting.
 You probe project-specific decisions during the interview (see the Follow-up rule), so know the
 project list well.
 

@@ -69,7 +69,7 @@ concept, tech stack, data model, key patterns, folder structure, and the step-by
 
 Career strategy, phases, applications timeline, and what makes a strong junior in 2026 → `ROADMAP.md`.
 Fuller profile, honest situation analysis (strengths / risks), and the Spanish job market →
-`notes/prompts/_shared-context.md` — that file is the single source; the bullets above are its
+`notes/prompts/_internal/_shared-context.md` — that file is the single source; the bullets above are its
 condensed copy, so keep the two in sync.
 
 ## Local dev environment
@@ -367,9 +367,9 @@ The system is built — **run the prompts, don't keep editing them.** If you fee
 the machinery, take it as the signal to go use it instead.
 
 Two shared files the prompts depend on:
-- `notes/prompts/_shared-context.md` — single source for my profile, situation analysis, and the
+- `notes/prompts/_internal/_shared-context.md` — single source for my profile, situation analysis, and the
   Spanish job market. Every prompt reads it (the "Who I am" bullets above are its condensed copy).
-- `notes/prompts/_batch-mode.md` — per-target prompts (coverage, notes, projects, etc.) accept
+- `notes/prompts/_internal/_batch-mode.md` — per-target prompts (coverage, notes, projects, etc.) accept
   `all` to run on every topic/project at once instead of one by one.
 
 The three hub files everything reads from or writes to:

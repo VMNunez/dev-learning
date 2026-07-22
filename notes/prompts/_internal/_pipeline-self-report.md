@@ -62,7 +62,7 @@ already something to add.
 
 ## Update the run tracker
 
-After writing the report, update `notes/prompts/_run-tracker.md` — the permanent ledger of which
+After writing the report, update `notes/prompts/_internal/_run-tracker.md` — the permanent ledger of which
 targets each prompt has covered. Find your orchestrator's column (or row, for global prompts) and set
 the cell for this run's target to today's date, with a short parenthetical if the run was partial
 (e.g. "backend only", "scoped to `notes/spring-boot/`"). Overwrite the cell's previous date — the

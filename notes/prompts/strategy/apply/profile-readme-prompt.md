@@ -35,7 +35,7 @@ MODE = [sync | optimize]
 2. Read `dev/portfolio/VMNunez/README.md` — the current state.
 3. Read the sources that file's CLAUDE.md points to (`PROGRESS.md`, the active project's `PLANNING.md`
    Section 0, `personal/job-search/internship-daw.md`, `notes/cv/cv-bullets.md` if it exists,
-   `notes/prompts/_shared-context.md`).
+   `notes/prompts/_internal/_shared-context.md`).
 
 ---
 

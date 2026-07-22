@@ -42,7 +42,7 @@ BASE_CV    = [tailor mode only: path to the master CV to start from | auto — t
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared standard both
 application prompts follow. It defines the **sources to read** (`CLAUDE.md`,
-`notes/prompts/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
+`notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
 `notes/cv/cv-bullets.md`, and your existing CV in `personal/job-search`), the **universal bullet format**, the **ATS keyword pool** (required +
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the
 **project-selection heuristic**. This prompt does not repeat those rules — it adds only the
@@ -262,7 +262,7 @@ what to shore up before the interview
 
 A full, real job offer is high-value evidence for what the target market actually asks — stronger than
 the web-search extracts already on file. After tailoring, record it in
-`notes/prompts/_job-market-evidence.md`. That file **is** in the repo (public posting data, no personal
+`notes/prompts/_internal/_job-market-evidence.md`. That file **is** in the repo (public posting data, no personal
 information) and feeds `coverage-prompt` / `coverage-audit-prompt` as the required floor — so every offer
 you tailor to also sharpens what you study.
 
@@ -276,7 +276,7 @@ you tailor to also sharpens what you study.
 Commit it **separately** from the CV (the CV is never committed; the evidence is):
 
 ```
-git add notes/prompts/_job-market-evidence.md
+git add notes/prompts/_internal/_job-market-evidence.md
 ```
 
 ```

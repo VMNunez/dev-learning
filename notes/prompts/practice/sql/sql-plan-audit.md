@@ -13,13 +13,13 @@ or the plan simply feels out of date. It is safe to run repeatedly; a clean plan
 
 > **▶ Run first:** nothing. A stale `PROGRESS.md` is one of the findings, not a prerequisite.
 
-> **Run-start check (step 0a):** execute the check in `notes/prompts/_pipeline-self-report.md` — read
+> **Run-start check (step 0a):** execute the check in `notes/prompts/_internal/_pipeline-self-report.md` — read
 > `_last-run-report-sql-plan-audit.md` and, if its `Status` is `open`, surface the finding in one line
 > before proceeding. If the file does not exist, say "first run of this prompt" in one line and
 > continue — its absence is expected, not a failure.
 
 **Internal pieces** (never launched directly): `_sql-plan-standard.md` (the bar) ·
-`notes/prompts/_pipeline-self-report.md` (the final step). Each specialist's mandate is its slice of
+`notes/prompts/_internal/_pipeline-self-report.md` (the final step). Each specialist's mandate is its slice of
 the standard, given in the dispatch below — four slices of one standard do not justify a fifth file.
 
 **Scope fence, and it is the point of this prompt.** The SQL plan covers **exercises only**. Notes,
@@ -195,8 +195,8 @@ mid-audit.
 
 ## Final step — pipeline self-report
 
-Read `notes/prompts/_pipeline-self-report.md` and execute it: write
-`notes/prompts/practice/sql/_internal/_last-run-report-sql-plan-audit.md`, update `notes/prompts/_run-tracker.md`,
+Read `notes/prompts/_internal/_pipeline-self-report.md` and execute it: write
+`notes/prompts/practice/sql/_internal/_last-run-report-sql-plan-audit.md`, update `notes/prompts/_internal/_run-tracker.md`,
 commit both on their own, print the five bullets, and run the refinement step — that is what makes
 this prompt improve from its own runs instead of from theory.
 

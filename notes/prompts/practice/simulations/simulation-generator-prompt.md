@@ -23,7 +23,7 @@ It is the producer; `simulation-review-prompt` is the consumer that grades what 
 ## Configuration — edit only this block
 
 TYPE       = [angular | spring-boot | sql | all]
-             → TYPE = all generates for every type in turn — see notes/prompts/_batch-mode.md
+             → TYPE = all generates for every type in turn — see notes/prompts/_internal/_batch-mode.md
                (order: angular, spring-boot, sql)
 COUNT      = [how many new tests to generate]   → default: 2
 DIFFICULTY = [standard | challenge]             → default: standard
@@ -39,7 +39,7 @@ Validation — before anything else:
 
 ## Context
 
-Before starting, read `CLAUDE.md` and `notes/prompts/_shared-context.md`. The tests must look like
+Before starting, read `CLAUDE.md` and `notes/prompts/_internal/_shared-context.md`. The tests must look like
 what a Spanish consultancy actually hands a junior in the take-home stage (stage 3) — a realistic
 enterprise mini-task, clean acceptance criteria, doable in the time limit. Not a toy, not a
 multi-day project.

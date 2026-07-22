@@ -9,7 +9,7 @@ finishes, `notes/coverage.md` changes significantly, or it has been a while sinc
 
 > **▶ Run first:** `progress-update` — the Step 2 gap analysis reads `PROGRESS.md` directly; a stale one produces wrong results.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this orchestrator's own `_last-run-report-roadmap-review.md` (this folder is shared with `progress-update`, which owns the unsuffixed `_last-run-report.md`) and, if its `Status` is `open`, surface that finding in one line before proceeding — surface only, never apply it in this run.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this orchestrator's own `_last-run-report-roadmap-review.md` (this folder is shared with `progress-update`, which owns the unsuffixed `_last-run-report.md`) and, if its `Status` is `open`, surface that finding in one line before proceeding — surface only, never apply it in this run.
 
 It runs as an **orchestrator**: two cold fact-gathering subagents feed a doer (the gap analysis and
 the active project's PLANNING.md summary — so neither `coverage.md` nor a PLANNING.md ever loads into
@@ -57,7 +57,7 @@ Step 0 also includes the run-start check stated above this fenced block.
 First read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` — the stable ROADMAP contract this
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
-Then read `notes/prompts/_shared-context.md` (my profile, target job, and the market). CLAUDE.md
+Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, and the market). CLAUDE.md
 (daily schedule, study order) is already loaded into your context by Claude Code — do not re-read it.
 
 `ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
@@ -336,7 +336,7 @@ git commit -m "docs: update roadmap — <one-line summary of main changes>"
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat.
 

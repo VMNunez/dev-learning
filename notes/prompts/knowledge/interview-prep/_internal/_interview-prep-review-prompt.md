@@ -45,7 +45,7 @@ then trace section by section.)
 
 Before starting, read:
 - notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md — the bar you audit against, in full.
-- notes/prompts/_shared-context.md — Victor's profile, projects, and the Spanish job market 2026 (you
+- notes/prompts/_internal/_shared-context.md — Victor's profile, projects, and the Spanish job market 2026 (you
   judge "realistic" and "in Victor's voice" against this).
 - Both `en/{FILE}.md` and `es/{FILE}.md`, scoped to `{SECTION}` (or the whole file if `all`).
 - When a code block's citation looks doubtful, open the cited project file (paths in "Sourcing real

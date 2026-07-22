@@ -39,7 +39,7 @@ Before starting, read:
   `backend`, `.../frontend/README.md` for `frontend`) — if it exists.
 
 Do **not** re-read `CLAUDE.md` — it is already injected into your context automatically; Victor's
-profile and the market live in `notes/prompts/_shared-context.md` if a section genuinely needs them.
+profile and the market live in `notes/prompts/_internal/_shared-context.md` if a section genuinely needs them.
 
 **Scoped code reading.** When a section must be checked against the real code (API endpoints, tests,
 security measures, folder structure), read **only the files that section needs** — e.g. the

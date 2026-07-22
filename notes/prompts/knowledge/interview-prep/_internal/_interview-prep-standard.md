@@ -18,7 +18,7 @@ standard.
 
 `notes/interview-prep/en/{topic}.md` (and its `es/` twin) is a **Q&A bank for one topic**, built to
 prepare Victor for a junior Angular + Java Spring Boot screening at a Spanish IT consultancy (NTT Data,
-Capgemini, Indra, and similar) — the target in `ROADMAP.md` and `notes/prompts/_shared-context.md`.
+Capgemini, Indra, and similar) — the target in `ROADMAP.md` and `notes/prompts/_internal/_shared-context.md`.
 Read both before judging any question: every question and answer is measured against what a real
 interviewer at those companies would filter a junior on.
 
@@ -34,7 +34,7 @@ interviewer would actually ask it, and an answer the way Victor would actually s
 **Where "realistic" comes from — the same two sources coverage uses.** A question is realistic because it
 is grounded, not guessed. Per `_coverage-standard.md` ("Two sources"), the backbone is a **deep analysis
 of the real questions** a junior for this stack is actually asked at the target companies — web-backed
-when possible — and `notes/prompts/_job-market-evidence.md` **corroborates** it with the recurring
+when possible — and `notes/prompts/_internal/_job-market-evidence.md` **corroborates** it with the recurring
 requirements and the exact wording the market prints. The analysis is primary and defines the floor; the
 evidence sharpens it and overrides it only where a real posting concretely conflicts. Together they keep
 the Q&A anchored to real interviews instead of invented trivia — the `interview-prep-audit` pipeline runs

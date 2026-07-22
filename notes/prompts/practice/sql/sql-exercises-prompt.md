@@ -112,7 +112,7 @@ Validation:
 - If `practice/sql/PLANNING.md` has no §6 step for {TOPIC}: print "Error: {TOPIC} no tiene step en el plan. Añádelo a §6 antes de correr esto." and stop — do not fall back to a default COUNT. A topic with no step is a planning gap, and silently generating 12 exercises hides it.
 - If the resolved {COUNT} is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4.
 - In review mode: {COUNT}, {FOCUS} and {REVIEW} do not apply — only {FILE}. If {FILE} does not exist: print "Error: no existe [FILE]." and stop.
-- `TOPIC = all` is practice mode only; it walks every topic in the order below, resolving each one's COUNT and FOCUS from its own §6 step. See `notes/prompts/_batch-mode.md`. Review mode stays one file at a time.
+- `TOPIC = all` is practice mode only; it walks every topic in the order below, resolving each one's COUNT and FOCUS from its own §6 step. See `notes/prompts/_internal/_batch-mode.md`. Review mode stays one file at a time.
 
 Topic order (study order, and also the file-number order): basics, joins, group-by, join-pitfalls,
 nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design,
@@ -141,12 +141,12 @@ nobody reads it at the start of the next run.
 ## Context
 
 **Before starting, read these four files:**
-- `CLAUDE.md` — daily schedule and teaching context (my profile and the market are in `notes/prompts/_shared-context.md`).
+- `CLAUDE.md` — daily schedule and teaching context (my profile and the market are in `notes/prompts/_internal/_shared-context.md`).
 - `practice/sql/PLANNING.md` — **the SQL learning plan.** It owns the step order, the file numbering, how many exercises each file targets, and which coverage sections each step claims. If this prompt and that plan ever disagree about a path or an order, the plan wins and this prompt is the thing to fix.
 - `PROGRESS.md` — the SQL section shows which topics are already solid.
 - `notes/sql/coverage.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
-My profile is in `notes/prompts/_shared-context.md`.
+My profile is in `notes/prompts/_internal/_shared-context.md`.
 
 My daily SQL block is 12:30–13:30. I write answers directly in the SQL file in pgAdmin
 (PostgreSQL), then paste it into review mode. This block feeds into Stage 2: technical test
@@ -267,7 +267,7 @@ Then come back here for the final step below, which runs in both modes.
 
 **Runs at the end of every run, in both modes.** Write
 `notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md`, overwriting the previous one. This is the
-adaptation of `notes/prompts/_pipeline-self-report.md` for a single-shot prompt: no subagents, no
+adaptation of `notes/prompts/_internal/_pipeline-self-report.md` for a single-shot prompt: no subagents, no
 slices, so three bullets instead of five.
 
 Header: today's date · `MODE` and `TOPIC` · a `Status:` line — `open` if the Verdict names a change
@@ -296,7 +296,7 @@ to add.
 
 **Skip entirely when the Verdict is "prompt limpio".** Otherwise: this prompt is frozen, and a
 self-report is the only evidence that reopens it — but evidence nobody acts on rots. The orchestrators
-close this loop (`notes/prompts/_pipeline-self-report.md`, "Commit flow"); a single-shot prompt closes
+close this loop (`notes/prompts/_internal/_pipeline-self-report.md`, "Commit flow"); a single-shot prompt closes
 it the same way, with one cold reviewer instead of a pipeline.
 
 1. Draft the edit: the smallest clause that would have prevented this run's friction. A clause, never
@@ -333,7 +333,7 @@ git add notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md
 git commit -m "docs: self-report for sql-exercises run ({MODE}, {TOPIC})"
 ```
 
-> The run tracker (`notes/prompts/_run-tracker.md`) is an orchestrator ledger — this prompt does not
+> The run tracker (`notes/prompts/_internal/_run-tracker.md`) is an orchestrator ledger — this prompt does not
 > write to it.
 
 ---
