@@ -1,0 +1,413 @@
+# `sql-exercises` — MODE = review branch
+
+**Internal component of `sql-exercises-prompt.md`. Not runnable on its own** — it assumes the shell has
+already resolved `{FILE}`, read `CLAUDE.md`, `PLANNING.md`, `PROGRESS.md` and `coverage.md`, and
+printed the resolution block.
+
+Split out 2026-07-22: a run is either practice or review, never both, so carrying the other branch was
+~40% of the file for nothing. The shell reads only the branch its `MODE` names.
+
+---
+
+## MODE = review
+
+---
+
+### Step 1 — Read the file
+
+Read the file at {FILE} (resolved from the path table in Step 4 when FILE was left blank).
+If Victor pasted a file at the end of the chat instead, use the pasted content — a paste always wins
+over {FILE}, because it may hold answers he has not saved to disk yet.
+Confirm in one line which one you used: "Reviso [path]" or "Reviso el archivo pegado".
+Identify the topic from the file header.
+
+**First, detect the format**, because the two are answered differently:
+- **Current format** — exercises marked `-- Exercise N [Level]:` with a `-- Your answer:` line. An
+  answer is any content after `-- Your answer:` (ignoring blank and comment-only lines).
+- **Legacy format** — exercises marked `-- #NN | title` with **no** `-- Your answer:` line; the answer
+  is written directly under the description. Here, an answer is any non-comment SQL line between one
+  `-- #NN |` header and the next. `01-basics.sql` is the only file in this format — treating it with
+  the current-format rule reports all 40 answered exercises as unanswered.
+- **Mixed file** — apply each rule to the block it belongs to. Say so in one line at the top:
+  "Archivo mixto: ejercicios #1–#N en formato antiguo, el resto en formato actual."
+
+**Second, skip what is already settled.** An exercise whose **header line ends with**
+`✅ Corregido YYYY-MM-DD` has already been reviewed and accepted in an earlier run. **Do not
+re-review it, do not re-score it, do not comment on it.** List it in the summary as `✅ (ya corregido)`
+and exclude it from the score, exactly like an unanswered one — the score must measure *this* batch,
+not a growing pile of work already validated. This mirrors the studied-content-is-final rule in
+`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`.
+
+If **every** exercise in the file carries the marker, print
+"Todo este archivo ya está corregido. Nada que revisar." and stop — do not run Steps 3–6.
+
+Then, for each remaining exercise:
+- Answer present: review it.
+- No answer: mark as "— Sin responder" in the summary. Exclude from score and breakdown.
+
+**Partial-file detection:** if the first N exercises are all "Sin responder" and only later
+exercises have answers, print one line at the top:
+"Revisando ejercicios [first answered] a [last answered]."
+This is normal when reviewing a new append batch.
+
+---
+
+### Step 2 — Check each answer
+
+Run each query mentally against the schema defined in the setup block.
+
+**If the file has two setup blocks** (a `SETUP v2` banner marks a mid-file schema change — see
+practice Step 1), evaluate each exercise against the block that precedes it, not against the last one
+read. An exercise written for the v1 schema is **not** wrong for using a v1 column name.
+
+For the self-contained design topics (schema-design, normalization, data-types), there is no
+shared setup block — evaluate each answer's table design and type choices against the
+requirements stated in that exercise.
+
+Mark each answer with one of these:
+
+**✅ Correct** — returns the right result with a good approach.
+One line confirming it is correct.
+If there is a significantly cleaner or more idiomatic PostgreSQL way to write it,
+add: "Nota: [one sentence on the alternative]" — do not rewrite the query, just note it.
+Only add this note when the improvement is meaningful (e.g. using FILTER instead of CASE
+inside an aggregate, using DISTINCT ON instead of a subquery). Skip for minor style differences.
+
+**⚠️ Partial** — runs without error but returns wrong or incomplete results.
+- One sentence: what is wrong
+- Correct query in a code block
+- If the mistake is a classic pattern error (WHERE vs HAVING, INNER vs LEFT, COUNT(*) vs
+  COUNT(column), correlated vs non-correlated), explain the distinction in one sentence
+
+**❌ Wrong** — syntax error, wrong approach, or completely wrong result.
+- One sentence: what is wrong
+- Correct query in a code block
+- Explain the concept behind the correct approach in one sentence
+
+**For dml-topic exercises:** a missing ROLLBACK is flagged as ⚠️ Partial even if the DML
+statement itself is correct — resetting data after each exercise is part of the skill.
+This applies only to the `dml` topic. In the `transactions` topic, COMMIT is the correct
+ending for exercises that test the COMMIT path — do not flag a missing ROLLBACK there;
+instead apply the transactions checklist below.
+
+**For normalization exercises:** check:
+- Are the functional dependencies correctly identified?
+- Is the normal form violation correctly named?
+- Does the normalized schema reach 3NF?
+- Are the INSERT statements consistent with the new structure?
+
+**For schema design exercises:** check:
+- Are all required entities represented as tables?
+- Do foreign keys correctly represent the relationships?
+- Are NOT NULL, UNIQUE, and CHECK constraints applied where the requirements imply them?
+- Is there anything that would cause problems in practice (e.g. missing FK, mutable PK)?
+
+**For transactions exercises:** check:
+- Does every exercise that requires COMMIT actually use COMMIT (not ROLLBACK)?
+- Is SAVEPOINT used correctly — ROLLBACK TO saves partial work, not everything?
+- Are ACID comments present and accurate? A wrong comment is flagged as ⚠️ Partial.
+- Is the @Transactional connection described correctly when the exercise asks for it?
+- For DELETE vs TRUNCATE: are the differences (WHERE support, logging, rollback, SERIAL reset) all stated?
+
+**For data-types exercises:** check:
+- Is the chosen type correct for the scenario (NUMERIC for money, TIMESTAMPTZ for created_at, etc.)?
+- Does Victor justify each choice with a comment? Missing justifications are flagged as ⚠️ Partial.
+- For NUMERIC vs FLOAT: does Victor explain the rounding error risk?
+- For TIMESTAMP vs TIMESTAMPTZ: does Victor explain what happens when the server time zone changes?
+
+**For dates-strings exercises:** check:
+- Is the PostgreSQL-specific syntax used correctly (:: cast, ILIKE, DATE_TRUNC, STRING_AGG, INTERVAL)?
+- For ILIKE vs LIKE: does the answer demonstrate understanding of case sensitivity — not just use ILIKE?
+- For a period report: is DATE_TRUNC used (keeps periods ordered) where EXTRACT would scramble them?
+- For a concatenation over a nullable column: is the NULL handled with COALESCE or CONCAT_WS? An
+  unguarded `||` is ⚠️ Partial even when the query runs.
+
+**For join-pitfalls exercises:** check:
+- When the exercise asks for a predicted row count, is the number right? A correct query with a wrong
+  prediction is ⚠️ Partial — the prediction is the skill being tested.
+- Is a fix that only masks a fan-out (COUNT(DISTINCT ...)) distinguished from one that removes it
+  (pre-aggregating in a CTE)? Naming the difference is required on Challenge exercises.
+
+**For ddl exercises:** check:
+- Does the CREATE TABLE run as written — no forward reference to a table created later?
+- Are constraints named where the exercise asked for it?
+- For ALTER on a populated table: does the answer address the existing rows, not just the new rule?
+
+**For live-database exercises:** check:
+- For an error-diagnosis exercise, is the *cause* named, not just the fix?
+- For "relation does not exist": are all three causes given (wrong database, wrong search_path,
+  quoted-identifier case)? Fewer than three is ⚠️ Partial.
+
+**For report-queries exercises:** check:
+- Does a group with zero rows survive — LEFT JOIN from the driving table, COALESCE(SUM(...), 0)?
+  A report that silently drops empty groups is ❌ even if every returned row is right.
+- Is every output column aliased?
+- Is the stated 10-minute target met? Record it in the summary, but do not lower the score for it.
+
+---
+
+### Step 2a — Second pass on the ✅ answers, by a cold subagent
+
+**Run this before writing a single marker.** The marker is irreversible in practice: a ✅ exercise is
+skipped by every later run, so a wrongly accepted answer becomes a concept Victor believes he owns
+and never sees again. One grader marking his own work has no check against that.
+
+Dispatch **one subagent that has not seen this run**. Give it: the setup block the exercises run
+against, and *only* the exercises marked ✅ in Step 2 — the exercise text and Victor's query, with no
+verdict, no commentary, and no hint that they were already accepted. Ask it for one line per
+exercise: **correct** or **not correct, because <one clause>**. Nothing else — it is not reviewing
+style, not suggesting idiomatic alternatives, not grading the ⚠️ and ❌ ones.
+
+Reconcile:
+- **Both say correct** → the ✅ stands and the exercise gets its marker in Step 2b.
+- **The subagent says not correct** → re-check that exercise yourself against the schema. If it is
+  right, downgrade the answer to ⚠️ or ❌, give the correction in the summary, and **write no marker**.
+  If the subagent is wrong, keep the ✅ and say so in one line: "Segunda pasada discrepó en el #N; la
+  revisé y la respuesta es correcta porque […]".
+
+**Print the outcome in one line:** "Segunda pasada: N ✅ confirmados, M revertidos." A run where the
+second pass changed nothing is the normal case and is worth stating — it is the evidence the markers
+were earned.
+
+This is the only subagent in this prompt. It exists here and not on the ⚠️/❌ answers because those
+come back through review anyway; the ✅ ones never do.
+
+---
+
+### Step 2b — Write the correction markers back into the file
+
+**This is the only step that edits the exercise file, and it edits nothing but these marker lines.**
+The file it edits is {FILE}. If the review ran off a paste whose exercises do not match what is on
+disk, skip this step and print: "No escribo marcadores: el texto pegado no coincide con [FILE]."
+
+For every exercise marked **✅ Correct** in Step 2, append the marker **to the end of that exercise's
+header line** — never on a line of its own, so the file stays scannable and the answer keeps its own
+line. It goes on the header in both formats:
+
+```sql
+-- #39 | WHERE — NOT BETWEEN ✅ Corregido 2026-07-22
+-- Exercise 41 [Standard]: LEFT JOIN — finding missing data ✅ Corregido 2026-07-22
+```
+
+Use today's real date. Do **not** add the marker to ⚠️ Partial or ❌ Wrong answers — those still need
+work, and they must come back through review once corrected. Do not add it to unanswered exercises.
+Never modify Victor's queries, never reformat, never touch anything but these appended lines.
+
+Why this exists: without it, every review run re-grades the whole file from #01, the score silently
+mixes old validated work with the new batch, and there is no record in the file itself of what has
+been settled. The marker is what makes an exercise file resumable.
+
+**Print the count:** "Marcados como corregidos: N ejercicios."
+
+---
+
+### Step 3 — Summary
+
+Print the summary table:
+
+| Exercise | Level | Result | Issue |
+|----------|-------|--------|-------|
+| 1 | Intro | ✅ | — |
+| 2 | Intro | ⚠️ | Used WHERE instead of HAVING |
+| 3 | Standard | ❌ | Missed LEFT JOIN — INNER drops non-matching rows |
+| 4 | — | Sin responder | — |
+
+**Score:** X / Y correct  (Y = attempted exercises only; unanswered not counted)
+
+Breakdown by level (attempted only):
+- Intro: X/N ✅
+- Standard: X/N ✅
+- Challenge: X/N ✅
+
+**Verdict — three mutually exclusive cases based on score:**
+
+**Score < 60%:**
+"Este tema necesita más práctica. Revisa los errores y corrígelos en pgAdmin.
+Conceptos a reforzar: [list the specific concepts that had ❌ or ⚠️ answers].
+Añado un batch de refuerzo al plan; luego ejecuta el prompt con MODE = practice y TOPIC = {TOPIC}."
+
+Then, in Step 4, append a Moment 2b reinforcement block to the {TOPIC} step in
+`practice/sql/PLANNING.md` §6 — `COUNT = 8`, `REVIEW = yes`, and `FOCUS` set to exactly those failed
+concepts. **This is what keeps the config down to two keys:** the next run reads the block instead of
+Victor retyping it, and the plan ends up holding the record of what he struggled with.
+Then proceed to Steps 4 and 5.
+
+**Score ≥ 60% and < 80%:**
+"Base sólida. Repasa los ejercicios marcados con ⚠️ o ❌ antes de avanzar."
+Then proceed to Steps 4 and 5.
+
+**Score ≥ 80%:**
+"Listo para marcar {TOPIC} como sólido. Pasamos al siguiente tema."
+Find {TOPIC} in the study order below. The next topic is the one immediately to the right.
+basics → joins → group-by → join-pitfalls → nulls → subqueries → ctes → dates-strings
+→ window-functions → dml → transactions → schema-design → normalization → data-types → ddl
+→ indexes → live-database → report-queries
+Print: "Siguiente tema: [next topic]. Ejecuta el prompt en modo practice con TOPIC = [next topic]."
+If {TOPIC} is report-queries (the last topic): print "Has completado todos los temas SQL. Revisa
+practice/sql/PLANNING.md §9 — te toca el gate G3 (progress-update)."
+
+**Also name the revision point when one fires here.** PLANNING.md §8b hangs five revision points off a
+closing step — R1 after `joins`, R2 after `nulls`, R3 after `window-functions`, R4 after `data-types`,
+R5 after `live-database`. If {TOPIC} is one of those five, add: "Además, esto cierra el paso [N] del
+plan: toca el punto de repaso [R] antes de seguir — su foco son las filas abiertas de MISTAKES.md."
+Then proceed to Steps 4 and 5.
+
+---
+
+### Step 4 — Update PROGRESS.md and PLANNING.md
+
+Five things must move when a topic is scored, and the failure mode is doing one of them. Do all five,
+or state explicitly which one you skipped and why.
+
+#### 4a — PROGRESS.md, the concept list
+
+Read PROGRESS.md, `## SQL` section. Add every concept this batch actually exercised to the concept
+list, **one specific line per concept**. Never group: `HAVING filters groups after aggregation, WHERE
+filters rows before it` is a line; "aggregation" is not. Skip concepts already listed — check before
+adding.
+
+This is the half that has always been missed. The exercises table below records *how many*; this
+records *what*, and it is what `progress-update` and `cv-prompt` read downstream.
+
+#### 4b — PROGRESS.md, the exercises table
+
+The table format is (4 columns — shared with `progress-update-prompt`):
+
+```markdown
+### Exercises completed
+
+[N] total exercises across [M] topics
+
+| Topic | Folder | Exercises | Status |
+|-------|--------|-----------|--------|
+| basics / SELECT | practice/sql/01-basics.sql | [count] | in progress ⏳ |
+| joins | practice/sql/03-joins.sql | [count] | solid ✅ |
+```
+
+The numbers above are placeholders showing the shape — read the real counts from the file you just
+reviewed. Never copy an example figure into PROGRESS.md.
+
+**If the table exists:** find the row for {TOPIC} and update the `Exercises` and `Status` columns:
+- Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
+- Exercises: count all exercises in the reviewed file, including any previous batches
+- Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/03-joins.sql`)
+- Then refresh the `X total exercises across Y topics` summary line above the table to match the
+  new column totals
+
+**If the row for {TOPIC} does not exist in the table:** add it. Fill `Folder` with the file's
+path (`practice/sql/<NN>-<topic>.sql` — the flat-file convention is the real one; a legacy subfolder would be `practice/sql/<NN>-<topic>/`).
+
+**If the `### Exercises completed` table does not exist in PROGRESS.md:** create it under a new
+`### Exercises completed` heading, with the 4-column format and the summary line above. Insert it
+at the end of the `## SQL` section — after the last existing `###` heading in that section and
+before the next `##` heading.
+
+#### 4c — PLANNING.md §8, the step row
+
+Open `practice/sql/PLANNING.md`. Find the row in the §8 table for the step this {TOPIC} belongs to
+(the path table in Step 4 gives the step number). Update its **Scored / target** cell with the number
+of exercises this run actually graded ≥ 80%, and its **Status** cell:
+- score ≥ 80% **and** the step's target reached → `done ✅`
+- otherwise → `in progress ⏳`
+
+§5 of the plan defines three counts — *written*, *answered*, *scored* — and only **scored** moves a
+status. Do not write an answered-but-ungraded count into that cell; that conflation is what made the
+plan claim Step 0 was 40/40 when nothing had ever been reviewed. Update the matching `Scored` cell in
+the §5 table too.
+
+Then refresh the totals line under the table.
+
+#### 4d — PLANNING.md §0, the quick reference
+
+Only when 4c set a row to `done ✅`. Rewrite the §0 table:
+- **Current step** → the next row in §8 that is not ✅
+- **Done condition** → that step's done condition, copied from its §6 entry
+- **Next revision point** → the first of R1–R5 in §8b whose trigger has not fired yet. Steps 1, 4, 7,
+  10 and 12 each close one (R1–R5) — if this was one of them, the next one is the following R.
+  **The row is "Next revision point", never "Next gate"** — §0 has six named rows and this is one of
+  them; renaming it is how off-scope tracks creep back into the quick reference.
+- **Last updated** → today
+
+#### 4e — Report what is still manual
+
+Two parts of the step-complete ritual (PLANNING.md §4) are **outside this prompt's reach**, because
+they depend on work this run did not do:
+- the note files in `notes/sql/en/` + `es/` — written by `/notes-audit`, not here
+- the `notes/sql/` counter in `CLAUDE.md` — only moves when a new note number is used
+
+So never print "step closed" on the strength of a score alone. If 4c set the row to `done ✅`, print:
+"Ejercicios del paso [N] cerrados. Para cerrar el paso entero faltan: las notas en `en/` + `es/`
+(ejecuta `/notes-audit SCOPE = file`) y responder la exit question de memoria."
+
+---
+
+### Step 5 — Concept gaps: log them in `MISTAKES.md`
+
+If any answer was ⚠️ or ❌, **record each distinct conceptual gap in the `## Open` table of
+`practice/sql/MISTAKES.md`**, whose columns are `Logged | Last seen | Times | Step | Coverage section |
+Concept | Sev | What went wrong | Exercises`. One row per *concept*, not per exercise: three exercises
+that all failed on `WHERE` vs `HAVING` are one row, with all three numbers in `Exercises`.
+
+- **`Coverage section` is the heading from `notes/sql/coverage.md`, copied verbatim** — not a
+  paraphrase and not the step name. If the gap fits no existing heading, write the closest one and say
+  so in one line in the chat; that mismatch is a signal for the next `coverage-audit`, not a licence to
+  invent a section name here.
+- **A concept already in `## Open` is never given a second row.** Increment its `Times`, set
+  `Last seen` to today, append the new exercise numbers, and raise `Sev` to ❌ if this run was worse.
+  Recurrence is the whole point of the column — a second row destroys it.
+- **`Sev`** is the worst grade the concept has ever received, not this run's.
+
+Then list the same gaps in one short block at the end of the chat, highest `Times` first.
+
+**Also close what this run redeemed.** Before recording anything, read the `## Open` table: if a
+concept listed there was answered correctly in this batch, move its row to `## Closed` with today's
+date as the closing date, carrying its `Times` across. Never delete a row — a concept failed twice and
+fixed once is a different fact from a concept never failed, and the closed table is what tells them
+apart.
+
+If the file does not exist, create it with the two tables and the header explaining what it is.
+
+**This prompt still never writes to `notes/interview-prep/` or to `notes/sql/`.** Those belong to
+`interview-prep-audit` and `/notes-audit`, which Victor runs on his own schedule (`PLANNING.md` §Z);
+a grading run that also authors study
+material bypasses both standards and their cold reviewers. `MISTAKES.md` is not study material — it
+is this run's own output, the record of what it graded wrong. **This prompt is its only writer**; the
+revision points R1–R5 in `PLANNING.md` §8b read it to derive their focus.
+
+If every attempted exercise was ✅, skip the appending half but still run the closing half.
+
+---
+
+### Step 6 — Commit message
+
+**Branch:** SQL exercises and PROGRESS.md commit on **whatever branch is active** (CLAUDE.md
+2026-07-14 — study materials follow the active branch; `main` only receives merges via PR). No
+branch switch, no separate SQL branch.
+
+**These are Victor's files — never run the commit yourself.** Print the commands below for him to
+copy-paste; `practice/sql/` and `practice/simulations/` are his work, outside every auto-commit
+exception.
+
+List only files that were actually modified. Always one command per code block.
+
+Use the exact folder path from the shell's path table (under Resolution) for {TOPIC} — not `sql/{TOPIC}/`:
+
+```
+git add [exact path from Step 4 table] PROGRESS.md practice/sql/PLANNING.md
+```
+
+If Step 5 touched the mistake log:
+```
+git add practice/sql/MISTAKES.md
+```
+
+```
+git commit -m "docs: SQL {TOPIC} review — [X/Y correct], [main gap or 'all solid']"
+```
+
+---
+
+<!-- ============================================================ -->
+<!-- FINAL STEP — both modes                                      -->
+<!-- ============================================================ -->
+

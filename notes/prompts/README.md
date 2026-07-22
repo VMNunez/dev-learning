@@ -62,7 +62,8 @@ Two flavors among these 23, both launched the same way (paste config into a new 
 `_coverage-standard.md`, `_note-quality-standard.md`, `_interview-prep-standard.md`,
 `_planning-standard.md`, `_readme-standard.md`, `_review-standard.md`, `_portfolio-standard.md`,
 `_concept-extraction-standard.md`, `_roadmap-standard.md`, `_application-standard.md`,
-`_sql-plan-standard.md`, `_sql-exercise-seeds.md`,
+`_sql-plan-standard.md`, `_sql-exercise-seeds.md`, `_sql-exercises-practice.md`,
+`_sql-exercises-review.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`,
 `_pipeline-self-report.md` (the shared final step every orchestrator runs: five bullets on how the run
 itself went, written to `_last-run-report.md` in the orchestrator's folder and auto-committed — the
@@ -150,6 +151,7 @@ down a flat list of ten files:
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
 | `practice/sql/_sql-plan-standard.md` | *Internal.* The **bar `sql-plan-audit` checks the plan against** — required sections, the ten learning-design checks, the per-step field list, the consistency invariants, and who owns what. Not runnable. | — | — |
+| `practice/sql/_sql-exercises-practice.md` · `_sql-exercises-review.md` | *Internal.* The two **branches of `sql-exercises`** — generate-and-save, and grade-and-record. A run is one mode or the other, never both, so the shell reads only the branch its `MODE` names. Not runnable alone: both assume the shell already resolved `{FILE}`/`{COUNT}`/`{FOCUS}` and read the context files. | — | — |
 | `practice/sql/_sql-exercise-seeds.md` | *Internal.* Per-topic **structure and concrete exercise ideas** for `sql-exercises` Step 3 — the traps worth building a question around and each topic's Challenge. A run reads **only its own topic's block**. Scope still comes from `coverage.md`, never from here. Not runnable. | — | — |
 | `practice/sql/sql-plan-audit.md` | **Orchestrator.** Audits **and extends** `practice/sql/PLANNING.md` against `_sql-plan-standard.md` — four cold specialists (learning-design · coverage-and-steps · counts-and-truth · loop-and-fence), history gate, single commit. `coverage-and-steps` writes the new steps for coverage sections nothing claims yet, so the plan grows as SQL grows. The plan it maintains covers **exercises only** — notes, Q&A and simulations are separate tracks Victor runs himself. | `_sql-plan-standard.md`, `practice/sql/PLANNING.md`, `notes/sql/coverage.md`, `ROADMAP.md`, `PROGRESS.md`, `sql-exercises-prompt.md`, the exercise files (as evidence, never edited) | `practice/sql/PLANNING.md` |
 | `practice/sql/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises for the current step. `review` mode: grades my answers, scores them, and logs every ⚠️/❌ concept. Config is exactly four keys — `MODE`, `TOPIC`, `COUNT`, `FILE`; focus and review come from the step in `PLANNING.md`, never pasted. **Writes no notes and no Q&A** — those are separate tracks. | `practice/sql/PLANNING.md` (the step: topic, count, focus), `notes/sql/coverage.md`, `PROGRESS.md`, the flat exercise files `practice/sql/NN-name.sql` | `practice/sql/NN-name.sql`; `practice/sql/MISTAKES.md` (review mode); the SQL table in `PROGRESS.md` |
