@@ -47,13 +47,17 @@ earns extra lines when it is reporting something that actually went wrong:
    here, not in an ad-hoc bullet.)
 5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
 
-**Before writing bullet 5, `wc -l` your own prompt file.** Over ~500 lines, add one line to the Verdict
-naming the count and the largest section (`grep -n "^## "` and subtract). This is the only thing in the
-system that measures a prompt's size on a schedule: the size budget below is a brake on *adding*, so it
-fires only when a run happens to propose an edit — a prompt nobody edits can sit at double the budget
-indefinitely. It did: `sql-exercises-prompt.md` reached 1244 lines carrying a line that said "this file
-is over 1000 lines" to a reader who only arrives when there is already something to add. One `wc -l` per
-run is what turns that from a comment into a signal.
+**Before writing bullet 5, check the prompt's health — two questions, both cheap.** *(1)* Did this run
+skip or shortcut any mandatory step? If yes, it belongs in bullet 4 **and** in the Verdict, and you must
+read the previous report: two in a row makes extraction mandatory (see the health budget below).
+*(2)* `wc -l` your own prompt file; over ~500 lines, name the count and the largest section
+(`grep -n "^## "` and subtract) in the Verdict.
+
+This is the only thing in the system that checks a prompt's health on a schedule — the budget below is a
+brake on *adding*, so it fires only when a run happens to propose an edit, and a prompt nobody edits can
+sit at double the budget indefinitely. It did: `sql-exercises-prompt.md` reached 1244 lines carrying a
+line that said "this file is over 1000 lines", addressed to a reader who only arrives when there is
+already something to add.
 
 ## Update the run tracker
 
@@ -123,25 +127,34 @@ what it approves, in the form it approves. If it rejects — or you cannot dispa
 `open`: a postponed finding is recoverable via its `Status` line, a self-approved bad edit is not. The
 tie always goes to `open`, never to editing on your own.
 
-**The prompt has a size budget — refinement is net-neutral above it.** Long prompts are where Claude
-starts dropping steps, so an ever-growing prompt defeats its own purpose; this is the brake on the
-one-way ratchet (nothing in the loop ever *proposes* removing text, so the discipline has to be forced):
+**The prompt has a health budget — refinement is net-neutral above it.** The thing being protected is
+**that every step actually runs**; length is only the proxy that predicts when they stop. So there are
+two signals, and the first one outranks the second:
+
+- **The real signal is a skipped step, and bullet 4 already records it.** A run that dropped a
+  mandatory check, skipped a step-0 guard, or executed a step from the wrong branch is telling you the
+  prompt no longer fits in one execution — whatever its length. **Two consecutive reports for the same
+  prompt naming a skip make an extraction pass mandatory, not optional**: the second skip is proof the
+  first was structural and not a bad day. One skip is a data point; two is a verdict.
+- **~500 lines is a smoke alarm, not the law.** It is a rough proxy chosen because it is free to
+  measure, and it is wrong in both directions: 900 lines of reference tables read once can be perfectly
+  healthy, while 300 lines carrying forty mandatory checks are not. Over it, apply one-in-one-out — the
+  reviewer must name what stale caveat, duplicated instruction or spent incident comes *out* to make
+  room. **Under it, a prompt that skipped a step is still unhealthy** and gets the same treatment; do
+  not let a green line count wave a real skip through.
 - **Cite the incident in a clause, never a paragraph.** The war-story ("on 2026-07-19 the orchestrator
   told C the file was thin and C had to overturn it") belongs in the self-report; the prompt states the
   rule crisply and at most tags the cost in a half-line. Retelling failures in full is the single
   largest source of bloat — this file and the coverage-audit prompt are both already guilty of it.
-- **Above ~500 lines, one-in-one-out.** Treat 500 lines as the point where an orchestrator must
-  consolidate rather than accumulate (a prompt may set a different budget in its own header if it
-  justifies the length). Under budget, a clean addition is fine. Over it, the reviewer must name what
-  stale caveat, duplicated instruction, or spent incident comes *out* to make room — a prompt that
-  cannot afford a new rule without consolidation is telling you it needs a consolidation pass, not
-  another clause.
 - **When pruning is not enough, extract — but only past a clean seam.** If a prompt is over budget on
   genuine load-bearing content, not war-stories, the next tool is to move a self-contained block into a
   component file, the way `coverage-audit` extracted its analyst mandates and `notes-audit` its stages.
-  Extract only when the block **(a)** is read by a *different* reader than the orchestrator — a dispatched
-  subagent reads it, the orchestrator only points — so the split genuinely reduces what any one context
-  holds instead of scattering lines; **(b)** is self-contained (its own inputs and return spec) so it
+  Extract only when the block **(a)** is not needed by every execution — either a *different* reader
+  consumes it (a dispatched subagent reads it, the orchestrator only points) or a given run needs one
+  such block and not the others (`sql-exercises` reads one of two mode branches and one of thirteen
+  topic seed blocks). Both forms genuinely reduce what a single context holds; a block every run must
+  read is **not** a candidate, however long and stable it looks — extracting it only adds a hop.
+  **(b)** is self-contained (its own inputs and return spec) so it
   survives being read alone; and **(c)** is stable, not rewritten every run. If the length instead comes
   from many interdependent inline rules with no clean seam, do **not** split: coupled logic across two
   files is worse than one long file, and every extraction adds a cross-reference that can break (the
