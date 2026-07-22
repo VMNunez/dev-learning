@@ -29,7 +29,7 @@ TOPIC = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes |
 
 ## TOPIC = all (practice mode only) generates exercises for every SQL topic in turn —
 ## see notes/prompts/_batch-mode.md. The order below is the study order, and it is also the
-## file-number order (see the path table in Step 4): basics, joins, join-pitfalls, group-by,
+## file-number order (see the path table in Step 4): basics, joins, group-by, join-pitfalls,
 ## nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design,
 ## normalization, data-types, ddl, indexes, live-database, report-queries.
 ## Review mode stays one file at a time — it needs your pasted answers.
@@ -48,6 +48,20 @@ Validation — check these before doing anything else:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
 - If COUNT is blank: use 12.
 - If COUNT is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4.
+
+---
+
+## Run-start check — read the last run's report
+
+Before anything else, read `notes/prompts/practice/_last-run-report-sql-exercises.md` (it may not
+exist yet — that is fine, skip silently). If it exists and its `Status:` line says `open`, surface the
+Verdict in **one line** before continuing:
+
+"Nota del último run: [verdict]."
+
+Then continue normally. This is the same discipline the orchestrators use, adapted for a single-shot
+prompt: the report is the only evidence that ever reopens a frozen prompt, and it is worthless if
+nobody reads it at the start of the next run.
 
 ---
 
@@ -73,18 +87,24 @@ Study order (matches `practice/sql/PLANNING.md` §6 — **the file number is the
 folder listing reads in the order the topics are learned):
 
 ```
-01 basics ─┬─ 02 joins ─ 02 join-pitfalls ─ 03 group-by ─ 04 nulls ─ 05 subqueries+ctes
-           │
-           └─► 06 dates-strings ─ 07 window-functions ─ 08 dml+transactions
-                 ─ 09 schema-design+normalization ─ 10 data-types+ddl ─ 11 indexes
-                 ─ 12 live-database ─ 13 report-queries
+01 basics ─ 02 joins ─ 03 group-by ─ 04 join-pitfalls ─ 05 nulls ─ 06 subqueries+ctes
+  ─ 07 dates-strings ─ 08 window-functions ─ 09 dml+transactions
+  ─ 10 schema-design+normalization ─ 11 data-types+ddl ─ 12 indexes
+  ─ 13 live-database ─ 14 report-queries
 ```
 
-Why this order and not the coverage.md order: joins come before aggregation because in a real
-screening `GROUP BY` almost always sits on top of a join; NULLs come after aggregation so the
-surprises already met (a `LEFT JOIN` producing nulls, `AVG` skipping them) get explained rather than
-described; date functions come before window functions because a live exercise stalls on
-`DATE_TRUNC` first. The reasoning per step is in PLANNING.md §6.
+Why this order and not the coverage.md order:
+- **joins before aggregation** — in a real screening `GROUP BY` almost always sits on top of a join.
+- **aggregation before join-pitfalls** — every pitfall worth drilling *is* an aggregate over a broken
+  join: fan-out inflating `SUM`, `COUNT(*)` vs `COUNT(column)` after a `LEFT JOIN`, pre-aggregating in
+  a CTE instead of `COUNT(DISTINCT)`. None of them can even be stated without `SUM` and `COUNT`, so
+  join-pitfalls cannot precede group-by.
+- **NULLs after aggregation** — the surprises already met (a `LEFT JOIN` producing nulls, `AVG`
+  skipping them) get their mechanism explained rather than described.
+- **date functions before window functions** — a live exercise stalls on `DATE_TRUNC` first, and every
+  monthly report is `GROUP BY DATE_TRUNC('month', ...)`.
+
+The reasoning per step is in PLANNING.md §6.
 
 ---
 
@@ -377,8 +397,10 @@ JOINS
 - Challenge: find books with no orders (LEFT JOIN + IS NULL pattern)
 
 JOIN-PITFALLS
-Every exercise here is a join that looks right and is not. Where useful, present a broken query and
-ask for the diagnosis rather than only asking for a correct query from scratch.
+**Runs after group-by, never before it** — every pitfall below is an aggregate over a broken join, so
+`SUM` and `COUNT` must already be fluent. Every exercise here is a join that looks right and is not.
+Where useful, present a broken query and ask for the diagnosis rather than only asking for a correct
+query from scratch.
 - A condition in ON vs in WHERE on an outer join — equivalent for INNER, not for LEFT
 - The WHERE filter on the right table that silently turns a LEFT JOIN into an INNER JOIN
 - Row multiplication on a one-to-many join — at least one exercise must ask for the predicted row
@@ -624,22 +646,22 @@ second topic appends to the first rather than creating a new file.
 |-------|------|------------------|
 | basics | practice/sql/01-basics.sql | 0 |
 | joins | practice/sql/02-joins.sql | 1 |
-| join-pitfalls | practice/sql/02-joins.sql *(appends)* | 2 |
-| group-by | practice/sql/03-aggregates.sql | 3 |
-| nulls | practice/sql/04-nulls.sql | 4 |
-| subqueries | practice/sql/05-subqueries-ctes.sql | 5 |
-| ctes | practice/sql/05-subqueries-ctes.sql *(appends)* | 5 |
-| dates-strings | practice/sql/06-dates-strings.sql | 6 |
-| window-functions | practice/sql/07-window-functions.sql | 7 |
-| dml | practice/sql/08-dml-transactions.sql | 8 |
-| transactions | practice/sql/08-dml-transactions.sql *(appends)* | 8 |
-| schema-design | practice/sql/09-schema-design.sql | 9 |
-| normalization | practice/sql/09-schema-design.sql *(appends)* | 9 |
-| data-types | practice/sql/10-data-types-ddl.sql | 10 |
-| ddl | practice/sql/10-data-types-ddl.sql *(appends)* | 10 |
-| indexes | practice/sql/11-indexes.sql | 11 |
-| live-database | practice/sql/12-live-database.sql | 12 |
-| report-queries | practice/sql/13-report-queries.sql | 13 |
+| group-by | practice/sql/03-aggregates.sql | 2 |
+| join-pitfalls | practice/sql/04-join-pitfalls.sql | 3 |
+| nulls | practice/sql/05-nulls.sql | 4 |
+| subqueries | practice/sql/06-subqueries-ctes.sql | 5 |
+| ctes | practice/sql/06-subqueries-ctes.sql *(appends)* | 5 |
+| dates-strings | practice/sql/07-dates-strings.sql | 6 |
+| window-functions | practice/sql/08-window-functions.sql | 7 |
+| dml | practice/sql/09-dml-transactions.sql | 8 |
+| transactions | practice/sql/09-dml-transactions.sql *(appends)* | 8 |
+| schema-design | practice/sql/10-schema-design.sql | 9 |
+| normalization | practice/sql/10-schema-design.sql *(appends)* | 9 |
+| data-types | practice/sql/11-data-types-ddl.sql | 10 |
+| ddl | practice/sql/11-data-types-ddl.sql *(appends)* | 10 |
+| indexes | practice/sql/12-indexes.sql | 11 |
+| live-database | practice/sql/13-live-database.sql | 12 |
+| report-queries | practice/sql/14-report-queries.sql | 13 |
 
 If the folder does not exist, create it using the path above. **Never invent a path** — if {TOPIC} is
 not in this table, stop and report it.
@@ -677,7 +699,17 @@ Identify the topic from the file header.
 - **Mixed file** — apply each rule to the block it belongs to. Say so in one line at the top:
   "Archivo mixto: ejercicios #1–#N en formato antiguo, el resto en formato actual."
 
-Then, for each exercise:
+**Second, skip what is already settled.** An exercise whose answer line is followed by a
+`-- ✅ Corregido YYYY-MM-DD` marker has already been reviewed and accepted in an earlier run. **Do not
+re-review it, do not re-score it, do not comment on it.** List it in the summary as `✅ (ya corregido)`
+and exclude it from the score, exactly like an unanswered one — the score must measure *this* batch,
+not a growing pile of work already validated. This mirrors the studied-content-is-final rule in
+`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`.
+
+If **every** exercise in the file carries the marker, print
+"Todo este archivo ya está corregido. Nada que revisar." and stop — do not run Steps 3–6.
+
+Then, for each remaining exercise:
 - Answer present: review it.
 - No answer: mark as "— Sin responder" in the summary. Exclude from score and breakdown.
 
@@ -777,6 +809,28 @@ instead apply the transactions checklist below.
 
 ---
 
+### Step 2b — Write the correction markers back into the file
+
+**This is the only step that edits the exercise file, and it edits nothing but these marker lines.**
+
+For every exercise marked **✅ Correct** in Step 2, append one line immediately after the answer:
+
+```sql
+-- ✅ Corregido 2026-07-22
+```
+
+Use today's real date. Do **not** add the marker to ⚠️ Partial or ❌ Wrong answers — those still need
+work, and they must come back through review once corrected. Do not add it to unanswered exercises.
+Never modify Victor's queries, never reformat, never touch anything but these appended lines.
+
+Why this exists: without it, every review run re-grades the whole file from #01, the score silently
+mixes old validated work with the new batch, and there is no record in the file itself of what has
+been settled. The marker is what makes an exercise file resumable.
+
+**Print the count:** "Marcados como corregidos: N ejercicios."
+
+---
+
 ### Step 3 — Summary
 
 Print the summary table:
@@ -812,7 +866,7 @@ Then proceed to Steps 4 and 5.
 **Score ≥ 80%:**
 "Listo para marcar {TOPIC} como sólido. Pasamos al siguiente tema."
 Find {TOPIC} in the study order below. The next topic is the one immediately to the right.
-basics → joins → join-pitfalls → group-by → nulls → subqueries → ctes → dates-strings
+basics → joins → group-by → join-pitfalls → nulls → subqueries → ctes → dates-strings
 → window-functions → dml → transactions → schema-design → normalization → data-types → ddl
 → indexes → live-database → report-queries
 Print: "Siguiente tema: [next topic]. Ejecuta el prompt en modo practice con TOPIC = [next topic]."
@@ -827,9 +881,22 @@ Then proceed to Steps 4 and 5.
 
 ---
 
-### Step 4 — Update PROGRESS.md
+### Step 4 — Update PROGRESS.md and PLANNING.md
 
-Read PROGRESS.md. Find the `## SQL` section. Within it, look for a `### Exercises completed` table.
+Five things must move when a topic is scored, and the failure mode is doing one of them. Do all five,
+or state explicitly which one you skipped and why.
+
+#### 4a — PROGRESS.md, the concept list
+
+Read PROGRESS.md, `## SQL` section. Add every concept this batch actually exercised to the concept
+list, **one specific line per concept**. Never group: `HAVING filters groups after aggregation, WHERE
+filters rows before it` is a line; "aggregation" is not. Skip concepts already listed — check before
+adding.
+
+This is the half that has always been missed. The exercises table below records *how many*; this
+records *what*, and it is what `progress-update` and `cv-prompt` read downstream.
+
+#### 4b — PROGRESS.md, the exercises table
 
 The table format is (4 columns — shared with `progress-update-prompt`):
 
@@ -858,6 +925,36 @@ path (`practice/sql/<NN>-<topic>.sql` — the flat-file convention is the real o
 `### Exercises completed` heading, with the 4-column format and the summary line above. Insert it
 at the end of the `## SQL` section — after the last existing `###` heading in that section and
 before the next `##` heading.
+
+#### 4c — PLANNING.md §8, the step row
+
+Open `practice/sql/PLANNING.md`. Find the row in the §8 table for the step this {TOPIC} belongs to
+(the path table in Step 4 gives the step number). Update its **Answered / target** cell with the real
+count and its **Status** cell:
+- score ≥ 80% **and** the step's target reached → `done ✅`
+- otherwise → `in progress ⏳`
+
+Then refresh the totals line under the table.
+
+#### 4d — PLANNING.md §0, the quick reference
+
+Only when 4c set a row to `done ✅`. Rewrite the §0 table:
+- **Current step** → the next row in §8 that is not ✅
+- **Done condition** → that step's done condition, copied from its §6 entry
+- **Next gate** → the first gate in §9 whose trigger has not fired yet. Steps 4, 7 and 13 close with a
+  gate attached (G4, G6, G7) — if this was one of them, Next gate is that one.
+- **Last updated** → today
+
+#### 4e — Report what is still manual
+
+Two parts of the step-complete ritual (PLANNING.md §4) are **outside this prompt's reach**, because
+they depend on work this run did not do:
+- the note files in `notes/sql/en/` + `es/` — written by `/notes-audit`, not here
+- the `notes/sql/` counter in `CLAUDE.md` — only moves when a new note number is used
+
+So never print "step closed" on the strength of a score alone. If 4c set the row to `done ✅`, print:
+"Ejercicios del paso [N] cerrados. Para cerrar el paso entero faltan: las notas en `en/` + `es/`
+(ejecuta `/notes-audit SCOPE = file`) y responder la exit question de memoria."
 
 ---
 
@@ -912,6 +1009,51 @@ git add notes/interview-prep/en/sql.md notes/interview-prep/es/sql.md
 ```
 git commit -m "docs: SQL {TOPIC} review — [X/Y correct], [main gap or 'all solid']"
 ```
+
+---
+
+<!-- ============================================================ -->
+<!-- FINAL STEP — both modes                                      -->
+<!-- ============================================================ -->
+
+## Final step — write the self-report
+
+**Runs at the end of every run, in both modes.** Write
+`notes/prompts/practice/_last-run-report-sql-exercises.md`, overwriting the previous one. This is the
+adaptation of `notes/prompts/_pipeline-self-report.md` for a single-shot prompt: no subagents, no
+slices, so three bullets instead of five.
+
+Header: today's date · `MODE` and `TOPIC` · a `Status:` line — `open` if the Verdict names a change
+nobody has applied yet, `applied in <hash>` once this prompt has been edited to address it. A clean
+run's status is `open` and stays `open`.
+
+Then exactly these three bullets, honest, including "nothing to report":
+
+1. **Config vs reality** — did `TOPIC`, `COUNT` and `FOCUS` produce what the step actually needed, or
+   was the batch mis-sized, off-scope, or aimed at the wrong file? Name it if a path, a coverage
+   section, or a topic in the tables above turned out to be wrong or missing.
+2. **Rule friction and rule breaches** — any instruction here that was ambiguous, contradictory, or had
+   to be worked around; **and any rule this run broke** — the run-start check skipped, the coverage
+   lookup failed and the seeds were used anyway, correction markers not written, PLANNING.md not
+   updated. Name what was breached and what it cost.
+3. **Verdict** — one line: "prompt limpio" or "cambio a considerar: <qué>".
+
+**Keep it short.** This file exists to surface what broke; padding it with what went well buries the
+one finding that should reopen the prompt. It is about the machinery, never the SQL — which exercises
+were wrong belongs in the chat summary, not here.
+
+**Commit it yourself** — `notes/prompts/` is prompt-system machinery, inside the auto-commit
+exception in CLAUDE.md, and separate from the exercise commit Victor runs:
+
+```
+git add notes/prompts/practice/_last-run-report-sql-exercises.md
+```
+```
+git commit -m "docs: self-report for sql-exercises run ({MODE}, {TOPIC})"
+```
+
+> The run tracker (`notes/prompts/_run-tracker.md`) is an orchestrator ledger — this prompt does not
+> write to it.
 
 ---
 
