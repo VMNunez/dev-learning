@@ -27,11 +27,11 @@ report queries TimeTrack needs without looking anything up.
 
 | | |
 |---|---|
-| **Current step** | Step 0 — Querying basics (40 answered, **0 scored**, first-pass target 30) |
+| **Current step** | Step 0 — Querying basics (40 answered, **20 first-pass scored 40/40 correct**, target 30) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
 | **Done condition** | `Review: sql-exercises MODE = review scores ≥ 80% on 01-basics.sql` |
 | **Next gate** | G3 — split `notes/sql/` into `en/` + `es/` (G0 ✅ 2026-07-22, G2 ✅ 2026-07-18) |
-| **Blocked on** | nothing. The next action is a `MODE = review` run on the 40 answered exercises of `01-basics.sql` (Moment 4) — they have never been scored. |
+| **Blocked on** | nothing. The next action is the Moment 2 run of Step 0 (`MODE = practice`, `TOPIC = basics`, `COUNT = 10`) — the review is done and clean, what is missing are the last 10 first-pass exercises. |
 | **Last updated** | 2026-07-22 |
 
 ---
@@ -250,7 +250,7 @@ target of 30.
 
 | File | Step(s) | Written | Answered | Scored | First-pass target | Status |
 |------|---------|---------|----------|--------|-------------------|--------|
-| `01-basics.sql` | 0 | 40 *(≈20 review)* | 40 | **0** | 30 | answered, never scored — run Moment 4 |
+| `01-basics.sql` | 0 | 40 *(20 review)* | 40 | **20** *(+20 review, uncounted)* | 30 | scored 40/40 on 2026-07-22 — 10 first-pass exercises still to write |
 | `02-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
 | `03-aggregates.sql` | 2 | 0 | 0 | 0 | 12 | to create |
 | `04-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
@@ -266,7 +266,7 @@ target of 30.
 | `14-report-queries.sql` | 13 | 0 | 0 | 0 | 8 | to create |
 
 **First-pass total when the track is done: 200 exercises across 14 files.** Review batches add on top
-and are deliberately not budgeted — 50 written today, 40 answered, 0 scored.
+and are deliberately not budgeted — 40 written today, 40 answered, 20 first-pass scored.
 
 **Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
 one by hand.
@@ -347,10 +347,11 @@ junior level, and it absorbed the ten hand-written exercises the step used to st
 
 ---
 
-### Step 0 — Querying basics ⏳ (20/30 first-pass, +20 review)
+### Step 0 — Querying basics ⏳ (20/30 first-pass scored, +20 review)
 
 **Exercises:** `practice/sql/01-basics.sql` — 40 answered in total: **20 first-pass (#01–#20), 20 review
-(#21–#40), 10 first-pass still to go**
+(#21–#40), 10 first-pass still to go**. Reviewed 2026-07-22: **40/40 correctas (100%)** — el score no
+cierra el paso porque el target de primera pasada son 30.
 **Coverage:** `Querying basics`, `Filtering and pattern matching`, `Sorting, pagination, and determinism`, `Set operations`
 **Notes — extend:** `03-select`, `04-where`, `05-order-by-limit` · **create:** `15-set-operations`
 **Reinforces:** — (first step)
@@ -694,7 +695,7 @@ one. A row moves to ✅ only after a `review` run has graded it.
 | Step | Topic | Exercises file | Scored / target | Notes produced | Status |
 |------|-------|----------------|-------------------|----------------|--------|
 | — | `en`/`es` migration (G3) | — | — | 14 files × 2 | not started |
-| 0 | Querying basics | `01-basics.sql` | 0 / 30 *(40 answered, +20 repaso)* | extend 03, 04, 05 · **new 15** | in progress ⏳ |
+| 0 | Querying basics | `01-basics.sql` | 20 / 30 *(40/40 correct 2026-07-22; +20 repaso, uncounted)* | extend 03, 04, 05 · **new 15** | in progress ⏳ |
 | 1 | JOINs | `02-joins.sql` | 0 / 22 | extend 06 | not started |
 | 2 | Aggregates and grouping | `03-aggregates.sql` | 0 / 12 | extend 07 | not started |
 | 3 | JOIN pitfalls | `04-join-pitfalls.sql` | 0 / 12 | extend 06 | not started |
@@ -709,8 +710,8 @@ one. A row moves to ✅ only after a `review` run has graded it.
 | 12 | Live database and errors | `13-live-database.sql` | 0 / 12 | **new 20** | not started |
 | 13 | Report queries (capstone) | `14-report-queries.sql` | 0 / 8 | — | not started |
 
-**0 of 200 first-pass exercises scored** (40 answered and awaiting their first review run), plus a
-20-exercise review batch. `PROGRESS.md` holds the
+**20 of 200 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
+20-exercise review batch that does not count. `PROGRESS.md` holds the
 authoritative status; this table is the at-a-glance copy. Both are updated by the §4 ritual, in the
 same commit. Review batches never change a row here.
 

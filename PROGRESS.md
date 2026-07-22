@@ -367,16 +367,19 @@
 - `OFFSET` — skip rows, used for pagination
 - `FETCH` — SQL standard alternative to LIMIT
 - SQL execution order — `FROM → WHERE → SELECT → ORDER BY → LIMIT`
+- Alias visibility — a `SELECT` alias works in `ORDER BY` but not in `WHERE`, because `WHERE` runs first
+- `LENGTH()` — number of characters in a string, usable in `SELECT` and in `WHERE`
 - Cast operator `::` — convert types (e.g. `timestamp::date`)
+- Casting a column in `WHERE` makes the predicate non-sargable — an index on that column stops being used
 
 ### Exercises completed
 
-50 total exercises across 2 topics
+40 total exercises across 1 topic
 
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
-| basics / SELECT | practice/sql/01-basics.sql | 40 | in progress ⏳ |
-| joins | practice/sql/02-joins.sql | 10 | in progress ⏳ |
+| basics / SELECT | practice/sql/01-basics.sql | 40 | in progress ⏳ — 40/40 scored 2026-07-22, 20 first-pass of 30 |
+| joins | practice/sql/02-joins.sql | 0 | not started (file deleted 2026-07-22, to regenerate) |
 
 ---
 
