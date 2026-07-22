@@ -25,7 +25,7 @@ The author already believed it was done — do not be generous; assume a section
 have checked it against the standard.
 
 Before starting, read:
-- `notes/prompts/projects/readme/_readme-standard.md` — the bar, in full: the universal rules and the
+- `notes/prompts/projects/readme/_internal/_readme-standard.md` — the bar, in full: the universal rules and the
   rules for your `{TARGET}` (Global — with full-stack additions if applicable — or Backend or Frontend).
 - `{PROJECT_PATH}/PLANNING.md` — to check the README reflects what was actually built and that the "What
   I learned" / patterns match the plan's learning objectives.

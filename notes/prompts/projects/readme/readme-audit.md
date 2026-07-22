@@ -63,7 +63,7 @@ Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}.
 ---
 
 You are the orchestrator for reviewing Victor's README(s), hands-off. First read
-`notes/prompts/projects/readme/_readme-standard.md` so you know the bar, which READMEs each project type
+`notes/prompts/projects/readme/_internal/_readme-standard.md` so you know the bar, which READMEs each project type
 has, and the commit rule. Then run the procedure below. You stay light: the subagents read the rules and
 edit the files — you never write a README in your own context.
 
@@ -90,7 +90,7 @@ target the reviewer must always run **after** its author.
 **Subagent A — author.** Launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`
 (recruiter-facing prose — the portfolio's front door):
 
-> Read `notes/prompts/projects/readme/_readme-write-prompt.md` and execute it in full for
+> Read `notes/prompts/projects/readme/_internal/_readme-write-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Fix that one README to the standard.
 > **Do NOT commit.** Report the summary of changes and any intentional placeholder.
 
@@ -98,7 +98,7 @@ Wait for A, then **subagent B — reviewer.** Launch a second, independent `gene
 `model: sonnet`, `run_in_background: false` (conformance against a highly prescriptive standard —
 the structure guarantees quality here, and the author already ran at the top tier):
 
-> Read `notes/prompts/projects/readme/_readme-review-prompt.md` and execute it in full for
+> Read `notes/prompts/projects/readme/_internal/_readme-review-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Audit the just-authored README hard against
 > the standard and fix what falls short directly. **Do NOT commit.** Report the section trace, your
 > verdict (PASS/FIXED), and whether the README changed.
@@ -155,7 +155,7 @@ git commit -m "docs: update {PROJECT_PATH} README(s) — <one-line summary of ma
 ## Pipeline self-report (orchestrator, last)
 
 After the commit hand-over, write a short **Pipeline self-report** to
-`notes/prompts/projects/readme/_last-run-report.md` (overwrite; header: date + project(s)) — meta-
+`notes/prompts/projects/readme/_internal/_last-run-report.md` (overwrite; header: date + project(s)) — meta-
 observations about the run itself, not the READMEs. This is the evidence a later session uses to decide
 whether these prompts need changing, so be honest, including "nothing to report":
 - **Report discipline** — which subagents, if any, blew their line budget or returned reports that had

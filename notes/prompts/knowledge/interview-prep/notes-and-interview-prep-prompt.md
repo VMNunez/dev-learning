@@ -143,7 +143,7 @@ heading here so the subagent creates it.
 Then, **one target section at a time, sequentially** (never overlap — the runs edit the same two
 files), dispatch a cold `general-purpose` subagent (`model: opus`, `run_in_background: false`):
 
-> Read `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` (the bar). You are adding
+> Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` (the bar). You are adding
 > questions to ONE section — `«## heading»` — of `notes/interview-prep/{FILE}.md`. Read that section in
 > both `en/{FILE}.md` and `es/{FILE}.md` **in full, top to bottom** (`en/` is the canonical source —
 > author there first, then translate to `es/` as native Spanish); create the section heading in both

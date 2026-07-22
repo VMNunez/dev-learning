@@ -32,7 +32,7 @@ the project type from the project number (01–06 Angular-only, 07+ full-stack).
 
 You review **one slice** of a built project against the contract its own PLANNING.md set. Before
 starting, read **only these sections** — keep your context for the slice's code, not for machinery:
-- `notes/prompts/projects/review/_review-standard.md` — **only** the sections "Scope limit",
+- `notes/prompts/projects/review/_internal/_review-standard.md` — **only** the sections "Scope limit",
   "Code-quality checklist", "Correctness scope", "Test-quality scope", and the priority rules in
   "Improvement-task + backlog format". Skip "Security scope" (a different reviewer's job), the
   learning-objectives rubric, and the gate/backlog machinery — the orchestrator owns those.

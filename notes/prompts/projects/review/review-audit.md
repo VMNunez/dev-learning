@@ -95,7 +95,7 @@ Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}, and REVIEW_SCOPE 
 ---
 
 You are the orchestrator for reviewing Victor's projects. First read
-`notes/prompts/projects/review/_review-standard.md` so you know the bar, the gate, the priority rules,
+`notes/prompts/projects/review/_internal/_review-standard.md` so you know the bar, the gate, the priority rules,
 and the backlog format. Then run the procedure below. You stay light: the slice reviewers read the
 source and hand you back findings tables — you map the slices and merge. You never read the full source
 yourself.
@@ -210,12 +210,12 @@ original slice used.**
 For **each** backend resource, dispatch two `general-purpose` subagents, `run_in_background: false`
 (flow → `model: opus`, security → `model: opus`):
 
-> **(flow)** Read `notes/prompts/projects/review/_review-flow-prompt.md` and execute it for
+> **(flow)** Read `notes/prompts/projects/review/_internal/_review-flow-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `TIER = backend`, `SCOPE = «resource»`. Trace the resource's full
 > `model → repository → service → controller → DTO → tests` flow and return its findings table + trace.
 > **Do not edit any file, do not write the backlog, do not commit.**
 
-> **(security)** Read `notes/prompts/projects/review/_review-security-prompt.md` and execute it for
+> **(security)** Read `notes/prompts/projects/review/_internal/_review-security-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SCOPE = «resource»`. Hunt each of that resource's endpoints for
 > authorization/ownership/injection/data-exposure flaws and return its findings table + trace. **Do not
 > edit any file, do not commit.**
@@ -244,7 +244,7 @@ a slice reviewer structurally cannot see it. It reads **narrowly and widely**: o
 every feature of the tier, never the full code. Run it for each tier in {REVIEW_SCOPE} (frontend on
 Angular 01–06). Dispatch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
 
-> Read `notes/prompts/projects/review/_review-standard.md` — **only** the "Pattern consistency across the
+> Read `notes/prompts/projects/review/_internal/_review-standard.md` — **only** the "Pattern consistency across the
 > project" block and the priority rules. Then, across **every** feature of `TIER = «tier»` in
 > `{PROJECT_PATH}`, compare the slices against each other on that block's axes **only** — state approach,
 > smart/dumb decomposition, persistence/side-effect mechanism, styling tokens, empty/loading/error states
@@ -266,7 +266,7 @@ which the local finding cannot.
 **Skip this step entirely if {REVIEW_SCOPE} is `backend` or `frontend`** — it judges whole-project
 concept coverage and only makes sense on a `full` run. Dispatch one `general-purpose` subagent,
 `model: sonnet`, `run_in_background: false`:
-> Read `notes/prompts/projects/review/_review-standard.md` ("Learning-objectives rubric" — that section
+> Read `notes/prompts/projects/review/_internal/_review-standard.md` ("Learning-objectives rubric" — that section
 > only) and, from `{PROJECT_PATH}/PLANNING.md`, only §3 (new concepts) / §4 (review concepts). Then
 > work **concept by concept, not file by file**: for each concept, locate where it should live with a
 > targeted search (grep for its annotation/class/pattern — e.g. `@RestControllerAdvice`,
@@ -343,7 +343,7 @@ git commit -m "docs: review {PROJECT_PATH} — <one line summary of main finding
 
 ### Step 6 — Pipeline self-report (orchestrator, last)
 After the commit hand-over, write a short **Pipeline self-report** to
-`notes/prompts/projects/review/_last-run-report.md` (overwrite; header: date + project) — meta-
+`notes/prompts/projects/review/_internal/_last-run-report.md` (overwrite; header: date + project) — meta-
 observations about the run itself, not the code. This is the evidence a later session uses to decide
 whether these prompts need changing, so be honest, including "nothing to report":
 - **Slices mapped** — the Step 0 list, and whether any turned out wrong (missing resource, slice too

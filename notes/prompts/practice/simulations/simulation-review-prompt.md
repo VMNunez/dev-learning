@@ -193,7 +193,7 @@ Route each question to the topic file for the simulation TYPE:
 - SQL → `notes/interview-prep/{en,es}/sql.md`
 
 Then add each following **"Adding questions from outside the audit (practice prompts)"** in
-`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` — it defines the question format,
+`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` — it defines the question format,
 the bilingual rule, dedupe-by-concept, placement, and priority-marker reordering. Do not restate them
 here. Anchor the answer to this simulation or a real project when the question is about a pattern or
 decision ("I chose…", "I used…", not "it is used").

@@ -52,7 +52,7 @@ recorded), dispatch subagents to gather facts, then merge their reports into PRO
 commit. You never read a PLANNING.md directly — the project subagents do that and hand you back a
 short concept list.
 
-First read `notes/prompts/strategy/tracking/_concept-extraction-standard.md` so you know the exact
+First read `notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md` so you know the exact
 contract each project subagent follows and the shape of what it returns.
 
 ---
@@ -111,7 +111,7 @@ re-dispatch rule catch a bad report, so the top model buys nothing here. In
 `MODE: all`, launch them all in a single message so they run in parallel (they only read — no
 git-index contention); in `MODE: active` there is just one. Each subagent's instruction:
 
-> Read `notes/prompts/strategy/tracking/_concept-extraction-standard.md` and execute it in full for
+> Read `notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md` and execute it in full for
 > `PROJECT_PATH = «path»`. Here is the `PROGRESS_HINT` for this project (use it only for the Format B
 > step-status fallback):
 > ```

@@ -32,7 +32,7 @@ My profile, the Spanish job market, and what consultancies look for are in
 `notes/prompts/_shared-context.md`. **Do NOT commit** — leave the question file in the working tree.
 The reviewer runs next and the orchestrator owns the commit.
 
-Before starting, read `notes/prompts/projects/portfolio/_portfolio-standard.md` — the interview-question
+Before starting, read `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the interview-question
 quality bar, the file template, and the append/dedupe rule. That is what you author against.
 
 ---

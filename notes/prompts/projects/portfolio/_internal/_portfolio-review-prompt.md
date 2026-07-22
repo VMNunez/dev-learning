@@ -33,7 +33,7 @@ judge other sections. (`SECTION = all` on a standalone run means audit every sec
 one section fully before the next.)
 
 Before starting, read:
-- `notes/prompts/projects/portfolio/_portfolio-standard.md` — the question quality bar, in full.
+- `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the question quality bar, in full.
 - PLANNING.md + the real source **for your section's code area** (per the standard's canonical table). You cannot judge
   whether the section is exhaustive without seeing what there was to ask about in that area.
 - The `{SECTION}` section of `notes/interview-prep/projects/{PROJECT_NAME}.md` — the part to audit.

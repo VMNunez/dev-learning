@@ -77,7 +77,7 @@ PUESTO   = [role, only if needed to disambiguate]
 
 ## Before starting
 
-Read `notes/prompts/strategy/apply/_application-standard.md` for the **target-market context** (Spanish
+Read `notes/prompts/strategy/apply/_internal/_application-standard.md` for the **target-market context** (Spanish
 junior Angular + Spring Boot at consultancies) and the **keyword pool** — you use it in `analyze` mode to
 judge which skills the offers keep asking for. You do **not** need to write any CV bullets here.
 

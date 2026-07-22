@@ -114,7 +114,7 @@ You are the orchestrator for building Victor's interview Q&A, hands-off.
 > the Q&A file; treat a G report without it as unusable (re-dispatch once).
 
 First read
-`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` so you know the bar you are
+`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` so you know the bar you are
 enforcing. You stay light: you dispatch subagents, wait, and collect — you never hold every topic's
 Q&A in your own context.
 
@@ -155,7 +155,7 @@ subagent, `model: opus`, `run_in_background: false` (market judgment shapes ever
 
 > You are a specialist in junior technical interviews at Spanish IT consultancies. Read `ROADMAP.md`
 > and `notes/prompts/_shared-context.md` for the candidate's exact target role, companies, stack, and
-> timeline, and `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` for what a good
+> timeline, and `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` for what a good
 > interview question is. The topic is «topic».
 >
 > Produce the **real questions actually asked** of a junior for this stack on «topic» at the target
@@ -184,7 +184,7 @@ the obvious gaps, not the ones that matter):
 > `notes/prompts/_shared-context.md` for the exact role/companies, and
 > `notes/prompts/_job-market-evidence.md` for what they hire for). You have ~30 minutes with a junior
 > candidate and the topic is «topic». Read `notes/interview-prep/en/«topic».md` and
-> `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`.
+> `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`.
 >
 > Write the questions you would actually ask to decide whether this candidate really knows «topic» —
 > **as many as you genuinely would use; do not stop at a fixed number, be exhaustive** (a capped
@@ -217,7 +217,7 @@ never overlap a section's two subagents — they edit the same two files. Neithe
 **Author (A).** Launch a fresh `general-purpose` subagent, `model: opus`, `run_in_background: false`
 (writes bilingual Q&A in Victor's voice — prose quality is the product):
 
-> Read `notes/prompts/knowledge/interview-prep/_interview-prep-write-prompt.md` and execute it for
+> Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-write-prompt.md` and execute it for
 > `FILE = «topic»`, `SECTION = «this exact heading»`, `MODE = «mode»`. **Work on this one section
 > only** — read it in full in both `en/{FILE}.md` and `es/{FILE}.md`, top to bottom. Here is its
 > market/gap slice — treat every `often`/`sometimes` market question and every genuine gap as required
@@ -240,7 +240,7 @@ the reviewer.
 `run_in_background: false` (it rewrites weak questions freely — that is authoring, not checklist
 verification):
 
-> Read `notes/prompts/knowledge/interview-prep/_interview-prep-review-prompt.md` and execute it for
+> Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-review-prompt.md` and execute it for
 > `FILE = «topic»`, `SECTION = «this exact heading»`, `DRY_RUN = true`. **Audit this one section
 > only**, in full in both `en/` + `es/`: realistic, well-worded, in Victor's voice, real cited code
 > where an interviewer poses the question with code, correct type ratio and priority order within the

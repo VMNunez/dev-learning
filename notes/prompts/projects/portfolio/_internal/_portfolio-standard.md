@@ -154,7 +154,7 @@ removed — omit if the project has no tests]
 
 ## CV bullet format
 
-Read `notes/prompts/strategy/apply/_application-standard.md` first — the bullet lands in the Spanish CV
+Read `notes/prompts/strategy/apply/_internal/_application-standard.md` first — the bullet lands in the Spanish CV
 **as-is** (`cv-prompt` uses it without rewriting), so it must already comply:
 - **Spanish** (the CV is screened in Spanish).
 - **Format:** past-tense action verb (Desarrollé, Implementé, Construí, Diseñé) + what was built +

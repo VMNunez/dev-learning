@@ -135,7 +135,7 @@ Route each question to the topic file for {TYPE}:
 - sql → `notes/interview-prep/{en,es}/sql.md`
 
 Then add each following **"Adding questions from outside the audit (practice prompts)"** in
-`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` — it defines the question format,
+`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` — it defines the question format,
 the bilingual rule, dedupe-by-concept, placement, and priority-marker reordering. Do not restate them
 here. Answer in first person ("I check…", "I move it to…") and anchor to this exercise or a real
 project when the question is about a pattern or decision.

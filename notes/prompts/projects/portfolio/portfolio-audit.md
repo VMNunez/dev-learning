@@ -78,7 +78,7 @@ You are the orchestrator for the portfolio gate, hands-off.
 > direct commits, only merges via PR.
 
 First read
-`notes/prompts/projects/portfolio/_portfolio-standard.md` so you know the verdict logic, the question
+`notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` so you know the verdict logic, the question
 bar, and the CV / GitHub formats. Then run the procedure below. You stay light on the heavy part: you
 dispatch the two question subagents and wait — you never author the question bank in your own context.
 The verdict + CV bullet + GitHub description are short and deterministic, so you do those yourself.
@@ -111,7 +111,7 @@ question file, so never overlap. For each section, run author then reviewer; nei
 **Subagent A — author (this section).** Launch a `general-purpose` subagent, `model: opus`,
 `run_in_background: false` (judging which code decisions are interview-worthy is the whole task):
 
-> Read `notes/prompts/projects/portfolio/_portfolio-write-prompt.md` and execute it for
+> Read `notes/prompts/projects/portfolio/_internal/_portfolio-write-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
 > (the standard's canonical table) plus PLANNING.md, and write **only this section's** questions to
 > `notes/interview-prep/projects/«name».md` per the standard. **Do NOT commit.** Build a
@@ -123,7 +123,7 @@ Wait for A. Then **subagent B — reviewer (this section).** Launch a second, in
 decisions the author missed — same judgment as authoring; this is the portfolio's go/no-go gate,
 the wrong place to save):
 
-> Read `notes/prompts/projects/portfolio/_portfolio-review-prompt.md` and execute it for
+> Read `notes/prompts/projects/portfolio/_internal/_portfolio-review-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. Audit **only this section** hard against
 > the standard: walk its code area, count decisions-found vs questions, add every missing one, fix
 > thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED) and the

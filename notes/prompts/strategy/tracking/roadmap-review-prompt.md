@@ -54,7 +54,7 @@ Step 0 also includes the run-start check stated above this fenced block.
 > their report — treat a report without that line as unusable (re-dispatch once; if it fails again,
 > flag it in the self-report instead of merging from a possibly truncated read).
 
-First read `notes/prompts/strategy/tracking/_roadmap-standard.md` — the stable ROADMAP contract this
+First read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` — the stable ROADMAP contract this
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
 Then read `notes/prompts/_shared-context.md` (my profile, target job, and the market). CLAUDE.md
@@ -225,7 +225,7 @@ need. Wait for both before writing the report.
 **Reviewer 1 — mechanical invariants** (reads only `_roadmap-standard.md` and `ROADMAP.md` — it must
 NOT open PROGRESS.md or coverage.md; its checks don't need them). Its instruction:
 
-> You are an independent reviewer. Read `notes/prompts/strategy/tracking/_roadmap-standard.md` (the
+> You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
 > ROADMAP contract), then the freshly edited `ROADMAP.md`. Read nothing else. Verify each invariant
 > below **from scratch** — do not trust that the edits are correct. For each violation, **fix it
 > directly in ROADMAP.md**, then report what you changed and why.
@@ -247,7 +247,7 @@ NOT open PROGRESS.md or coverage.md; its checks don't need them). Its instructio
 
 **Reviewer 2 — cross-file consistency** (launch only after Reviewer 1 has finished). Its instruction:
 
-> You are an independent reviewer. Read `notes/prompts/strategy/tracking/_roadmap-standard.md` (the
+> You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
 > ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage.md`.
 > Verify each invariant below **from scratch** — do not trust that the edits are correct. For each
 > violation, **fix it directly in ROADMAP.md**, then report what you changed and why.

@@ -36,7 +36,7 @@ Identify the topic from the file header.
 re-review it, do not re-score it, do not comment on it.** List it in the summary as `✅ (ya corregido)`
 and exclude it from the score, exactly like an unanswered one — the score must measure *this* batch,
 not a growing pile of work already validated. This mirrors the studied-content-is-final rule in
-`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`.
+`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`.
 
 If **every** exercise in the file carries the marker, print
 "Todo este archivo ya está corregido. Nada que revisar." and stop — do not run Steps 3–6.

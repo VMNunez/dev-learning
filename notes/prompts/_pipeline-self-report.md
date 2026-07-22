@@ -19,7 +19,8 @@ was hard. The machinery fact is "the overlap check did real work"; the list of o
 
 ## What to write
 
-After the run's normal final step, write `_last-run-report.md` **in the orchestrator's own folder**
+After the run's normal final step, write `_last-run-report.md` **in the `_internal/` subfolder of the
+orchestrator's own folder** (every family keeps its non-runnable files there, reports included)
 (overwrite the previous run's; if several orchestrators share a folder, use
 `_last-run-report-<orchestrator>.md`). Header: date + the run's target (topic / project / scope) + a
 **`Status:` line** — `open` if the Verdict names a change nobody has applied yet, or

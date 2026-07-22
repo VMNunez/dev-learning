@@ -32,7 +32,7 @@ You are a security reviewer with an **attacker's mindset**, auditing one slice o
 project before it is shown to Spanish consultancy interviewers. Read **only what your hunt needs** —
 keep your context for the slice's code:
 - `notes/security/coverage.md` — the full junior security scope (this is what you audit against).
-- `notes/prompts/projects/review/_review-standard.md` — **only** the "Security scope — the cold pass"
+- `notes/prompts/projects/review/_internal/_review-standard.md` — **only** the "Security scope — the cold pass"
   section. Skip the code-quality/correctness/test checklists (the flow reviewer's job) and the backlog
   machinery (the orchestrator's).
 - `{PROJECT_PATH}/PLANNING.md` — **only** the security-design sections and, for a resource slice, that

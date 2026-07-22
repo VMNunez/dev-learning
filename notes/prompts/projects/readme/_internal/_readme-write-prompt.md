@@ -30,7 +30,7 @@ You write **one** README: the `{TARGET}` one for `{PROJECT_PATH}`. **Do NOT comm
 in the working tree; the reviewer runs next and the orchestrator owns the commit.
 
 Before starting, read:
-- `notes/prompts/projects/readme/_readme-standard.md` — the bar. Focus on the **universal rules** and
+- `notes/prompts/projects/readme/_internal/_readme-standard.md` — the bar. Focus on the **universal rules** and
   the section for your `{TARGET}` (Global README rules — with the full-stack additions if the project is
   full-stack; or the Backend / Frontend README rules). This is what you write against.
 - `{PROJECT_PATH}/PLANNING.md` — extract the app concept, learning objectives, and key patterns; the
