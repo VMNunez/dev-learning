@@ -15,15 +15,18 @@ Split out 2026-07-22: a run is either practice or review, never both, so carryin
 
 ### Step 1 — Check existing state
 
-**PROGRESS.md:** read the SQL section. Find the `### Exercises completed` table and look for a row
-where Topic = {TOPIC}. If that row shows `solid ✅`, print:
+**PROGRESS.md:** read the SQL section. Find the `### Exercises completed` table and look for the row
+**whose `Folder` cell is `{FILE}`** — match on the path, never on the `Topic` cell. The Topic cell is
+free prose that has already drifted (`basics / SELECT (part 2)` is the row for `TOPIC = basics`), and a
+name match silently misses it and appends a duplicate row. If that row's Status begins with `solid ✅`
+or `closed ✅`, print:
 "Este tema ya está marcado como sólido en PROGRESS.md. ¿Quieres más ejercicios de todos modos?
 Responde sí para continuar, o no para salir."
 Stop and wait for Victor's response.
 - If he responds with any affirmative (sí, si, yes, SÍ, claro, of course, etc.): continue to Step 2.
 - If his response is not affirmative, or he does not respond: print nothing else and stop.
 
-**Existing file:** check if the file for {TOPIC} already exists (see path table in Step 4).
+**Existing file:** check whether `{FILE}` (already resolved by the shell) exists.
 - If it exists: read it and find the highest exercise number, checking **both** formats:
   - current format — lines matching `-- Exercise [number] [`
   - **legacy format** — lines matching `-- #[number] |` (used by `01-basics.sql`, the only file left
@@ -179,7 +182,8 @@ gone stale and the exercises would silently lose their scope list.
 | live-database | ## Working with a live database · ## Reading PostgreSQL errors · ## Type behaviour at runtime |
 | report-queries | ## Writing a report query |
 
-`## Programmable database objects` is deliberately not claimed by any topic — see PLANNING.md §11.
+`## Programmable database objects` is deliberately not claimed by any topic — see PLANNING.md §Z
+("Coverage sections deliberately excluded from the steps"), not §11, which is the closure checklist.
 
 **Difficulty distribution — applied to the batch of {COUNT} new exercises:**
 Calculate the split based on COUNT, then assign labels to the new exercises in order:
@@ -200,6 +204,12 @@ Challenge exercise. (COUNT=5 → 2 Intro, 2 Standard, 1 Challenge.)
 
 Label each exercise with its level: `-- Exercise N [Intro]:`, `[Standard]:`, `[Challenge]:`.
 
+**First-pass batches — resolved `{REVIEW} = no`. Every exercise must introduce a concept not already
+drilled in this file.** Read the exercises already in `{FILE}` before generating: a batch that re-covers
+ground the file already holds spends an hour of the 12:30 block buying nothing. This is derived from
+`{REVIEW}`, not pasted into the config — the plan used to tell Victor to append the rule by hand, which
+made it a line he could forget.
+
 **Review batches — resolved `{REVIEW} = yes`.** A review batch is a deliberate second pass over
 concepts already drilled (PLANNING.md Moment 2b). It changes two things and nothing else:
 - **No Intro tier.** Split the batch 60% Standard / 40% Challenge. Re-doing `SELECT title FROM books`
@@ -216,7 +226,9 @@ message: "Este lote es de repaso: no cuenta para el target del paso."
 **Cross-topic integration rule:** for the bookstore-based query topics from nulls onward
 (nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, indexes,
 live-database), at least one Challenge exercise must combine the current topic with a concept from an
-earlier topic. Examples: a subquery Challenge that also requires a JOIN; a CTEs Challenge that uses
+earlier topic — and **at least two from `subqueries` onward** (PLANNING.md §6 raises the floor at
+Step 5, where the surface is finally wide enough for a real composition). The step's `**Reinforces:**`
+line names which earlier topic to combine with, so it is never a guess. Examples: a subquery Challenge that also requires a JOIN; a CTEs Challenge that uses
 GROUP BY inside a CTE; a window functions Challenge that filters with a WHERE clause using
 IS NULL. This rule does not apply to the self-contained design topics (schema-design, normalization,
 data-types, ddl) — they have no shared query schema to integrate with. It does not apply to
@@ -250,8 +262,11 @@ where the reasoning is deepest and most worth explaining out loud.
 
 **Topic-specific format and seeds.** The structure a batch should take on this topic, and concrete
 exercise ideas worth drilling, live in **`notes/prompts/practice/sql/_internal/_sql-exercise-seeds.md`**. Open it
-and read **only the block whose heading matches the resolved `{TOPIC}`** — the other twelve are not
-yours this run.
+and read **only the block whose heading matches the resolved `{TOPIC}`** — the other seventeen are not
+yours this run. **Headings are matched case- and separator-insensitively**: the file writes
+`GROUP BY`, `WINDOW FUNCTIONS`, `SCHEMA DESIGN` and `DATA TYPES` for the topics `group-by`,
+`window-functions`, `schema-design` and `data-types`. A heading that differs only in case, spaces or
+hyphens **is** the block — do not report it as missing.
 
 - If the file has no block for `{TOPIC}` (a topic added to coverage but not yet seeded), generate from
   `notes/sql/coverage.md` alone and say so in one line. A missing seed block is a gap to fill later,
@@ -274,15 +289,17 @@ table: it carries the pre-canonical schema, so nothing is ever appended to it ag
 SETUP block does not match the canonical schema is never extended — start the next numbered file
 instead, and update `practice/sql/PLANNING.md` §5 and §8.
 
-If the folder does not exist, create it using the path above. **Never invent a path** — if {TOPIC} is
-not in this table, stop and report it.
+If the folder does not exist, create it. **Never invent a path** — `{FILE}` came from the shell's path
+table and is the only path this run may write to; if the shell could not resolve one, it has already
+stopped.
 
 For a **new file**: write the complete file (setup block + exercises).
 For **append**: read the existing file, then append the new exercises after the last line. Do not modify any existing content.
 
 After saving, print the message matching the case:
 - New file, bookstore-based topic: "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Ábrelo en pgAdmin, ejecuta el bloque SETUP primero, y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
-- New file, self-contained topic (normalization, schema-design, data-types): "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Cada ejercicio es independiente — no hay bloque SETUP. Ábrelo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
+- New file, self-contained topic (schema-design, normalization, data-types, ddl — the same four as
+  Step 2): "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Cada ejercicio es independiente — no hay bloque SETUP. Ábrelo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
 - Append: "Listo. {COUNT} ejercicios añadidos a [path]. Total en el archivo: {N+COUNT}. Abre el archivo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:' nuevo. Luego pégalo en el modo review."
 
 ---

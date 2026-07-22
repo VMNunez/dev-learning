@@ -13,9 +13,14 @@ A concept here that coverage.md dropped is stale and comes out; a coverage secti
 generated from coverage.md directly, never skipped.
 
 **How it is read:** the prompt's Step 3 looks up **only the block for the run's `TOPIC`** and ignores
-the rest. Extracted 2026-07-22, when the prompt passed 1200 lines and this block was 267 of them —
-carrying twelve irrelevant topic blocks into every run's context was the largest single cost in the
-file.
+the other seventeen. Extracted 2026-07-22, when the prompt passed 1200 lines and this block was 267 of
+them — carrying seventeen irrelevant topic blocks into every run's context was the largest single cost
+in the file.
+
+**Heading style is not `TOPIC` style.** Blocks are headed in caps with spaces (`GROUP BY`,
+`WINDOW FUNCTIONS`, `SCHEMA DESIGN`, `DATA TYPES`) where the topic value is lowercase and hyphenated
+(`group-by`, `window-functions`, `schema-design`, `data-types`). The match is case- and
+separator-insensitive; four topics would otherwise look unseeded and are not.
 
 ---
 

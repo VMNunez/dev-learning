@@ -24,7 +24,7 @@ paste the exercise file either; it is read from disk.
 ## Configuration — edit only this block
 
 MODE  = [practice | review]
-TOPIC = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
+TOPIC = [basics | joins | group-by | join-pitfalls | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
 COUNT =
 FILE  = practice/sql/01-basics.sql
         practice/sql/02-execution-order-set-ops.sql
@@ -59,9 +59,9 @@ the need to hand-tune anything *else* about a batch, the thing that needs changi
 | Value | Where it comes from |
 |-------|---------------------|
 | `{FILE}` | the `FILE` key if Victor set it; otherwise the path table below, keyed by {TOPIC}. Never invent a path. |
-| `{COUNT}` | the `COUNT` key if Victor set it; otherwise the `COUNT` line of the §6 step in `practice/sql/PLANNING.md` whose TOPIC matches. When the two differ, say so in one line ("COUNT del bloque = 6, el plan pide 10") and use his — the plan is the default, not a veto. |
-| `{FOCUS}` | the `FOCUS` line of that same §6 step. |
-| `{REVIEW}` | `no`, unless the §6 step's block is a Moment 2b reinforcement batch, which sets it to `yes`. |
+| `{COUNT}` | the `COUNT` key if Victor set it; otherwise the `COUNT = n` inside the **`**Moment 2 config:**`** line or block of the §6 step in `practice/sql/PLANNING.md` whose TOPIC matches. When the two differ, say so in one line ("COUNT del bloque = 6, el plan pide 10") and use his — the plan is the default, not a veto. |
+| `{FOCUS}` | the **`**Focus:**`** line of that same §6 step (every step has one; `none — the whole topic` is a real value, not a blank). |
+| `{REVIEW}` | `no`, unless the §6 block picked is a **Moment 2b reinforcement block** — the one `MODE = review` appends when a score came back under 60%, headed `**Moment 2b reinforcement block:**` — which sets it to `yes`. |
 
 **The path table — `{FILE}` resolves from here, in both modes.** Flat files, numbered in study
 order; several topics share a file, and the second topic appends to the first rather than creating a
@@ -94,8 +94,16 @@ closed, so nothing is ever appended to it again (one file, one schema).
 `{REVIEW} = yes` means: a batch over concepts already drilled — no Intro tier, exercises labelled
 `[Repaso]`, repetition allowed, and **not** counted against the step's first-pass target.
 
-Steps in §6 sometimes carry two blocks (a first pass and a second). Use the first one whose exercise
-target is not yet met according to §8 / `PROGRESS.md`. State which block you picked.
+**Steps in §6 sometimes carry two runs.** Two cases, and they are disambiguated differently:
+- **Two runs with different `TOPIC`s** (Steps 5, 8, 9, 10) — the run is chosen by the `TOPIC` you were
+  given. Nothing to decide.
+- **Two runs with the same `TOPIC`** (Step 1: `joins` twice) — every such run states its **exercise
+  range** in the plan (`run 1 → #01–#11`, `run 2 → #12–#22`). Pick by the written count on disk: the
+  first run whose range is not yet fully written. State which run you picked and why in one line
+  ("Run 2: el archivo ya tiene 11 ejercicios").
+
+A **Moment 2b reinforcement block** is never picked by this rule — it is picked only when it is the
+last block in the step and its concepts have not yet been re-drilled since it was appended.
 
 **Then print this and continue in the same turn — it is a statement, not a question:**
 
@@ -110,7 +118,9 @@ Validation:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
 - If {TOPIC} is not in the path table above: stop and report it.
 - If `practice/sql/PLANNING.md` has no §6 step for {TOPIC}: print "Error: {TOPIC} no tiene step en el plan. Añádelo a §6 antes de correr esto." and stop — do not fall back to a default COUNT. A topic with no step is a planning gap, and silently generating 12 exercises hides it.
-- If the resolved {COUNT} is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4.
+- **If the §6 step exists but states no `COUNT` (or no `**Focus:**` line): print "Error: el step de {TOPIC} en §6 no declara [COUNT / Focus]. Arréglalo en `practice/sql/PLANNING.md` antes de correr esto." and stop.** A step missing the value is the same planning gap as a missing step, and this is the case that used to fall through to the minimum-4 warning below and quietly generate a batch nobody asked for. Never invent the value, never round to the minimum, never ask Victor for it.
+- If Victor set `COUNT` explicitly and it is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4. **This applies only to a typed override** — a plan-derived COUNT is never silently corrected; it errors above.
+- **Target already met:** if §5 shows {FILE} has already *written* its step's first-pass target (e.g. `02-execution-order-set-ops.sql`, 10 of 10), print "El target first-pass de este archivo ya está escrito ({n}/{target}). ¿Generas un lote extra de repaso (no cuenta para el paso), o paras? (repaso / paro)" and wait. On `repaso`, continue with `{REVIEW} = yes`. This is the guard against re-generating over a step that only needs answering.
 - In review mode: {COUNT}, {FOCUS} and {REVIEW} do not apply — only {FILE}. If {FILE} does not exist: print "Error: no existe [FILE]." and stop.
 - `TOPIC = all` is practice mode only; it walks every topic in the order below, resolving each one's COUNT and FOCUS from its own §6 step. See `notes/prompts/_internal/_batch-mode.md`. Review mode stays one file at a time.
 

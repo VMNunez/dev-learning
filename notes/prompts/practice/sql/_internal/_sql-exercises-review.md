@@ -15,7 +15,7 @@ Split out 2026-07-22: a run is either practice or review, never both, so carryin
 
 ### Step 1 — Read the file
 
-Read the file at {FILE} (resolved from the path table in Step 4 when FILE was left blank).
+Read the file at {FILE} (already resolved by the shell, from its path table under Resolution).
 If Victor pasted a file at the end of the chat instead, use the pasted content — a paste always wins
 over {FILE}, because it may hold answers he has not saved to disk yet.
 Confirm in one line which one you used: "Reviso [path]" or "Reviso el archivo pegado".
@@ -45,6 +45,13 @@ Then, for each remaining exercise:
 - Answer present: review it.
 - No answer: mark as "— Sin responder" in the summary. Exclude from score and breakdown.
 
+**If no exercise in the file has an answer at all**, print
+"Nada que puntuar: los {n} ejercicios de [FILE] siguen sin responder. Respóndelos en pgAdmin (Moment 3
+del plan) y vuelve a pasar el review." and **stop — do not run Steps 2 to 6.** This is the state
+`02-execution-order-set-ops.sql` is in today, and it is not a score of 0: a score of 0 would flip the
+§8 row to `in progress ⏳` on the strength of work never attempted, and Step 3's three verdicts are all
+defined on a percentage that does not exist when the denominator is 0.
+
 **Partial-file detection:** if the first N exercises are all "Sin responder" and only later
 exercises have answers, print one line at the top:
 "Revisando ejercicios [first answered] a [last answered]."
@@ -60,7 +67,7 @@ Run each query mentally against the schema defined in the setup block.
 practice Step 1), evaluate each exercise against the block that precedes it, not against the last one
 read. An exercise written for the v1 schema is **not** wrong for using a v1 column name.
 
-For the self-contained design topics (schema-design, normalization, data-types), there is no
+For the self-contained design topics (schema-design, normalization, data-types, ddl), there is no
 shared setup block — evaluate each answer's table design and type choices against the
 requirements stated in that exercise.
 
@@ -226,10 +233,19 @@ Breakdown by level (attempted only):
 Conceptos a reforzar: [list the specific concepts that had ❌ or ⚠️ answers].
 Añado un batch de refuerzo al plan; luego ejecuta el prompt con MODE = practice y TOPIC = {TOPIC}."
 
-Then, in Step 4, append a Moment 2b reinforcement block to the {TOPIC} step in
-`practice/sql/PLANNING.md` §6 — `COUNT = 8`, `REVIEW = yes`, and `FOCUS` set to exactly those failed
-concepts. **This is what keeps the config down to two keys:** the next run reads the block instead of
-Victor retyping it, and the plan ends up holding the record of what he struggled with.
+Then, in Step 4, append a reinforcement block to the {TOPIC} step in `practice/sql/PLANNING.md` §6,
+**in exactly this shape** — it is what the shell's Resolution table reads, so a block written any other
+way resolves to nothing:
+
+```
+**Moment 2b reinforcement block:** `TOPIC = {TOPIC}`, `COUNT = 8`  *(añadido por el review del <fecha>)*
+**Focus:** <exactamente los conceptos fallados, separados por comas>
+```
+
+`REVIEW` is **not** written into the block — the shell derives `{REVIEW} = yes` from the block's
+heading. **This is what keeps the pasted config down to two keys:** the next run reads the block
+instead of Victor retyping it, and the plan ends up holding the record of what he struggled with.
+Place it after the step's own `**Focus:**` line, never replacing it.
 Then proceed to Steps 4 and 5.
 
 **Score ≥ 60% and < 80%:**
@@ -247,8 +263,19 @@ If {TOPIC} is report-queries (the last topic): print "Has completado todos los t
 practice/sql/PLANNING.md §9 — te toca el gate G3 (progress-update)."
 
 **Also name the revision point when one fires here.** PLANNING.md §8b hangs five revision points off a
-closing step — R1 after `joins`, R2 after `nulls`, R3 after `window-functions`, R4 after `data-types`,
-R5 after `live-database`. If {TOPIC} is one of those five, add: "Además, esto cierra el paso [N] del
+closing **step**, not off a topic — and two of those steps run more than one topic, so the trigger is
+the *last* topic of the step, never the first:
+
+| Point | Fires when this step closes | i.e. the review run whose {TOPIC} is | Not on |
+|-------|-----------------------------|--------------------------------------|--------|
+| R1 | Step 1 — `03-joins.sql` reaches 22 scored | `joins` (the **second** run) | the first `joins` run |
+| R2 | Step 4 — `06-nulls.sql` | `nulls` | — |
+| R3 | Step 7 — `09-window-functions.sql` | `window-functions` | — |
+| R4 | Step 10 — `12-data-types-ddl.sql` | `ddl` | `data-types`, which is only the first of that step's two runs |
+| R5 | Step 12 — `14-live-database.sql` | `live-database` | — |
+
+Fire it only when 4c actually set the step's row to `done ✅`. If it did not, the step is still open and
+no revision point has been reached. When one does fire, add: "Además, esto cierra el paso [N] del
 plan: toca el punto de repaso [R] antes de seguir — su foco son las filas abiertas de MISTAKES.md."
 Then proceed to Steps 4 and 5.
 
@@ -287,14 +314,17 @@ The table format is (4 columns — shared with `progress-update-prompt`):
 The numbers above are placeholders showing the shape — read the real counts from the file you just
 reviewed. Never copy an example figure into PROGRESS.md.
 
-**If the table exists:** find the row for {TOPIC} and update the `Exercises` and `Status` columns:
+**If the table exists:** find the row **whose `Folder` cell is `{FILE}`** — match on the path, never on
+the `Topic` cell, which is free prose and has already drifted (`basics / SELECT (part 2)` is the row for
+`TOPIC = basics`). A name match misses it and appends a duplicate row for a file already tracked.
+Update that row's `Exercises` and `Status` columns:
 - Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
 - Exercises: count all exercises in the reviewed file, including any previous batches
 - Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/03-joins.sql`)
 - Then refresh the `X total exercises across Y topics` summary line above the table to match the
   new column totals
 
-**If the row for {TOPIC} does not exist in the table:** add it. Fill `Folder` with the file's
+**If no row has `{FILE}` in its `Folder` cell:** add one. Fill `Folder` with the file's
 path (`practice/sql/<NN>-<topic>.sql` — the flat-file convention is the real one; a legacy subfolder would be `practice/sql/<NN>-<topic>/`).
 
 **If the `### Exercises completed` table does not exist in PROGRESS.md:** create it under a new
@@ -304,16 +334,21 @@ before the next `##` heading.
 
 #### 4c — PLANNING.md §8, the step row
 
-Open `practice/sql/PLANNING.md`. Find the row in the §8 table for the step this {TOPIC} belongs to
-(the path table in Step 4 gives the step number). Update its **Scored / target** cell with the number
-of exercises this run actually graded ≥ 80%, and its **Status** cell:
+Open `practice/sql/PLANNING.md`. Find the row in the §8 table for the step this {TOPIC} belongs to —
+**the shell's path table gives the step number for {TOPIC}**. Update its **Scored / target** cell with
+the number of exercises this run actually graded ≥ 80%, and its **Status** cell:
 - score ≥ 80% **and** the step's target reached → `done ✅`
 - otherwise → `in progress ⏳`
 
+**A step spanning two files keeps a per-file breakdown in that cell** (Step 0 is the live case:
+`20 / 30 (01: 20/20 closed …; 02: 0/10 …)`). Do not flatten it to a bare fraction and do not rewrite
+the parenthetical for the file you did not review: update **only the clause for `{FILE}`**, then
+recompute the leading `scored / target` as the sum across the step's files. Same rule in §5, which
+has **one row per file, not per step** — update the row whose file name is `{FILE}`.
+
 §5 of the plan defines three counts — *written*, *answered*, *scored* — and only **scored** moves a
 status. Do not write an answered-but-ungraded count into that cell; that conflation is what made the
-plan claim Step 0 was 40/40 when nothing had ever been reviewed. Update the matching `Scored` cell in
-the §5 table too.
+plan claim Step 0 was 40/40 when nothing had ever been reviewed.
 
 Then refresh the totals line under the table.
 
@@ -330,14 +365,20 @@ Only when 4c set a row to `done ✅`. Rewrite the §0 table:
 
 #### 4e — Report what is still manual
 
-Two parts of the step-complete ritual (PLANNING.md §4) are **outside this prompt's reach**, because
-they depend on work this run did not do:
-- the note files in `notes/sql/en/` + `es/` — written by `/notes-audit`, not here
-- the `notes/sql/` counter in `CLAUDE.md` — only moves when a new note number is used
+The step-complete ritual is PLANNING.md §4, and it has **exactly one manual item** plus the exit
+question — both outside this prompt's reach:
+- **`notes/sql/coverage.md`** — if the batch surfaced a concept genuinely missing from coverage, Victor
+  adds it there (§4, item 3). This prompt never edits coverage.
+- **The exit question**, answered aloud from memory. §3 is explicit that a score alone never closes a
+  step.
 
 So never print "step closed" on the strength of a score alone. If 4c set the row to `done ✅`, print:
-"Ejercicios del paso [N] cerrados. Para cerrar el paso entero faltan: las notas en `en/` + `es/`
-(ejecuta `/notes-audit SCOPE = file`) y responder la exit question de memoria."
+"Ejercicios del paso [N] cerrados. Para cerrar el paso entero falta responder la exit question de
+memoria, y añadir a `notes/sql/coverage.md` cualquier concepto que haya salido aquí y no esté."
+
+**Do not name notes, Q&A or simulations as blockers.** They are separate tracks (PLANNING.md §Z), no
+step closes on one, and telling Victor a note is "missing to close the step" is precisely the scope
+creep the plan's fence exists to prevent.
 
 ---
 
@@ -356,6 +397,11 @@ that all failed on `WHERE` vs `HAVING` are one row, with all three numbers in `E
   `Last seen` to today, append the new exercise numbers, and raise `Sev` to ❌ if this run was worse.
   Recurrence is the whole point of the column — a second row destroys it.
 - **`Sev`** is the worst grade the concept has ever received, not this run's.
+- **`Step`** is the plan step number the reviewed file belongs to — the shell's path table gives it for
+  `{TOPIC}`. A bare number (`4`), not a name, so a revision point can filter its span mechanically.
+- **The `## Closed` table has six columns** — `Logged | Closed | Times | Step | Coverage section |
+  Concept`. Moving a row drops `Sev`, `What went wrong` and `Exercises` and adds `Closed`; carry the
+  other five across verbatim.
 
 Then list the same gaps in one short block at the end of the chat, highest `Times` first.
 
