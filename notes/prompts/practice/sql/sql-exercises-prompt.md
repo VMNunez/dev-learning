@@ -956,8 +956,10 @@ it the same way, with one cold reviewer instead of a pipeline.
    - Reject if the friction was a one-off, if an existing rule already covers it, or if the edit
      restates something the plan owns — **a fix that belongs in `practice/sql/PLANNING.md` is applied
      there, not here.** That is the most common correct verdict for this prompt.
-   - This file is over 1000 lines, so **one-in-one-out applies**: the reviewer must name what stale
-     caveat or spent incident comes *out* to make room, or reject the edit.
+   - This file is far over the ~500-line budget (991 after the 2026-07-22 seed extraction), so
+     **one-in-one-out applies**: the reviewer must name what stale caveat or spent incident comes
+     *out* to make room, or reject the edit. If the only honest answer is "nothing comes out", that
+     is the signal the file needs another extraction pass, not another clause.
 3. On **apply**: make the edit, commit it alone (`docs: sql-exercises — refine from the run that just
    finished`), read the hash from `git log` (never from memory), and set the report's
    `Status: applied in <hash>`. Print one line naming what went in and one naming what came out.
