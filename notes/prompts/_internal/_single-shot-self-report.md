@@ -1,7 +1,7 @@
 # Single-shot self-report — shared final step for every non-orchestrator prompt
 
-**Internal component. Not runnable.** The eleven single-shot prompts end by executing this step, the
-way the ten orchestrators end by executing `_pipeline-self-report.md`. Same purpose: each real run
+**Internal component. Not runnable.** Twelve of the 24 runnable prompts end by executing this step; the
+other twelve end by executing `_pipeline-self-report.md`. Same purpose: each real run
 leaves evidence about **how the prompt itself behaved**, so it improves from what went wrong instead of
 from theory. Prompts stay **frozen** between runs — a report showing a real failure is the only thing
 that reopens one.
@@ -16,10 +16,21 @@ the run's own output files and its chat summary; this file records only how the 
 **Before writing a single word of the report**, verify the run actually produced what it promised:
 
 1. Open `notes/prompts/README.md` and find this prompt's row. Its **"Generates / updates"** cell is the
-   declared output list — the contract.
-2. For every file named there, check it on disk: does it exist, and does `git status` show it touched
-   by this run? For an output outside the repo, check the path directly.
-3. Any declared output missing or untouched is a **skipped step**, and it goes in bullet 2 by name.
+   declared output list — **plus this run's own report file**, which every run produces and the table
+   does not repeat.
+2. For every file named there, check it on disk: does it exist, and did *this run* write it? The probe is
+   `git status` **and** `git log --name-only` back to this run's first commit — a prompt that already
+   committed its content leaves a clean `git status`, which proves nothing. For an output **outside the
+   repo** (`personal/job-search/`, the portfolio repo), existence is not enough: a file left by an
+   earlier run passes that test trivially, so check its **mtime is from this run**.
+3. Any declared output missing or untouched is a **skipped step**, and it goes in bullet 2 by name. So is
+   one whose only change is cosmetic when the row promised real work — *touched* means the declared work
+   landed, not that the mtime moved.
+4. **Where the row's outputs are conditional or absent, say so instead of passing silently.** A cell that
+   is mode-conditional (`sql-exercises` writes `MISTAKES.md` in review mode only), optional (`hr-screen`),
+   or has no repo file at all (`linkedin`, `cover-letter`) makes this check vacuous. In those runs, name
+   in bullet 2 which of *this mode's* obligations you verified and how — never report a green close-out
+   from an empty list.
 
 This exists because self-assessment fails in exactly the case that matters: **the same saturated context
 that skips a step cannot see the skip.** A real coverage run (2026-07-18) wrote its report, skipped the
@@ -86,7 +97,9 @@ clear all four conditions — condition 3 above all, stated as a concrete differ
 every fact in it correct; can the same fix be made by **tightening an existing line instead of adding
 one**; and does applying it make any now-stale text removable. Apply only what it approves, in the form
 it approves. If it rejects, or you cannot dispatch it, the finding stays `open` — a postponed finding is
-recoverable via its `Status` line, a self-approved bad edit is not.
+recoverable via its `Status` line, a self-approved bad edit is not. **Record the verdict in the report** —
+one line, `cold reviewer: approve | approve-with-tightening | reject`, beside the Verdict. It is the only
+trace the gate ran: an applied edit with no such line is indistinguishable on disk from a self-approval.
 
 **Growth is capped.** Over ~500 lines the edit must be net-neutral: the reviewer names what stale caveat
 or spent incident comes *out* to make room, or rejects. Cite an incident in a clause, never a paragraph —

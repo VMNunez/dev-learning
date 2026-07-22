@@ -48,15 +48,30 @@ earns extra lines when it is reporting something that actually went wrong:
    here, not in an ad-hoc bullet.)
 5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
 
-**Close-out check — against disk, before you write a word of the report.** Open `notes/prompts/README.md`,
-find this orchestrator's row, and treat its **"Generates / updates"** cell as the contract. For every file
-named there: does it exist, and does `git status` show this run touched it? **Every declared output that
-is missing or untouched is a skipped step**, named in bullet 4.
+**Close-out check — against disk, before you write a word of the report.** Do not replace any part of it
+with asking yourself whether you missed anything. **The same saturated context that skips a step cannot
+see the skip** — not a hypothesis: on 2026-07-18 a coverage run skipped the tracker update and its own
+bullet 4 declared "no rule breached". A list checked against disk does not depend on remembering. Three
+lists, in order:
 
-Do not replace this with asking yourself whether you missed anything. **The same saturated context that
-skips a step cannot see the skip** — that is not a hypothesis, it is what happened on 2026-07-18, when a
-coverage run skipped the tracker update and its own bullet 4 declared "no rule breached". A list checked
-against disk does not depend on remembering.
+**(a) Declared files.** Open `notes/prompts/README.md`, find this orchestrator's row, and treat its
+**"Generates / updates"** cell as the list — **plus this run's own report file and `_run-tracker.md`**,
+which every run produces and the table deliberately does not repeat. Does each exist, and did *this run*
+write it?
+
+**(b) The probe is `git status` *and* `git log`.** Most orchestrators commit before reaching this step
+(per file in `notes-audit`, per topic in `interview-prep-audit`, the inbox in `coverage-prompt`), so a
+clean `git status` proves nothing — check `git log --name-only` back to this run's first commit as well,
+and count a file as written if it appears in either. Missing from both is a **skipped step**, named in
+bullet 4. So is a file whose only change is cosmetic when the row promised real work: *touched* means the
+declared work landed, not that the mtime moved.
+
+**(c) Declared dispatches — the half no file can prove.** Every subagent this prompt mandates writes into
+a file some other step also writes, so list (a) comes back green whether or not a single one ran. List
+the dispatches this prompt requires (authors, reviewers, specialists, per-slice or per-section fan-outs)
+and state the count actually dispatched against the count required. **A mandated dispatch that did not
+run is a skipped step even when every declared file exists.** This is the largest blind spot in the
+check: skipping the reviewer half leaves disk indistinguishable from a clean run.
 
 **Then two more, both cheap.** *(1)* Did this run skip or shortcut any mandatory step the check above
 cannot see (a step-0 guard, a re-dispatch, a gate)? It belongs in bullet 4 **and** in the Verdict, and
@@ -139,7 +154,10 @@ bar conditions; is every fact in it correct; can the same fix be made by **tight
 instead of adding one**; and does applying it make any now-redundant or stale text removable. Apply only
 what it approves, in the form it approves. If it rejects — or you cannot dispatch it — the finding stays
 `open`: a postponed finding is recoverable via its `Status` line, a self-approved bad edit is not. The
-tie always goes to `open`, never to editing on your own.
+tie always goes to `open`, never to editing on your own. **Record the verdict in the report** — one line,
+`cold reviewer: approve | approve-with-tightening | reject`, beside the Verdict. It is the only trace the
+gate ran at all: an applied edit with no such line is indistinguishable on disk from a self-approval, and
+a later reader must treat it as one.
 
 **The prompt has a health budget — refinement is net-neutral above it.** The thing being protected is
 **that every step actually runs**; length is only the proxy that predicts when they stop. So there are
