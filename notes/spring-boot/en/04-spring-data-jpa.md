@@ -803,6 +803,31 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
 | `GROUP BY` | How are the surviving rows split into buckets? |
 | `SUM(...)` (inside `SELECT`) | What is computed *within* each bucket? |
 
+### Filtering by a fixed enum value — the JPQL literal, not a parameter
+
+The `WHERE` above only checks `te.date BETWEEN :start AND :end` — it sums every `TimeEntry` in the range regardless of `status`. That is a real bug in TimeTrack's first version of this query: a manager's report ended up summing hours from entries still in `DRAFT` (never even submitted) and entries in `REJECTED` (explicitly rejected) as if they were confirmed work. The whole point of the `DRAFT → SUBMITTED → APPROVED/REJECTED` state machine is that `APPROVED` is the only status a manager has actually signed off on — a report is supposed to be a number people can trust, and summing unconfirmed or rejected hours breaks that trust silently, with no error to warn you.
+
+The fix is one more `AND` — but the way you reference the enum value is worth stopping on, because it is different from every other query in this file:
+
+```java
+@Query("""
+        SELECT te.project.name AS projectName, SUM(te.hours) AS totalHours
+        FROM TimeEntry te
+        WHERE te.date BETWEEN :start AND :end
+              AND te.status = com.victor.timetrack.model.EntryStatus.APPROVED
+        GROUP BY te.project.name
+        """)
+List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate start, @Param("end") LocalDate end);
+```
+
+`com.victor.timetrack.model.EntryStatus.APPROVED` is a **JPQL enum literal** — you write the enum's fully-qualified Java path (package + class + constant) directly inside the query string, and JPQL resolves it to the same constant your Java code would reference as `EntryStatus.APPROVED`. No `@Param`, no extra method argument — the value never varies per call, so it does not belong in the method signature at all.
+
+> **Why not just add a fifth `@Param("status") EntryStatus status` instead?** Because that would say "the caller decides which status counts", when the whole point of this fix is the opposite: **`APPROVED` is not a caller's choice, it is the report's own definition of "real hours".** Every future caller of `getHoursByProject` — this endpoint today, any other report you add later — must get the same trustworthy number, not a number that depends on what someone happened to pass in. A parameter would let a future bug (or a careless new caller) accidentally request `DRAFT` hours in a "totals" report; a literal makes that mistake structurally impossible, because the rule lives inside the query itself, not in whoever happens to call it.
+
+> **Contrast with the dynamic filters in [14-specifications-criteria-api.md](./14-specifications-criteria-api.md).** `GET /api/entries`'s `status` filter is a `Specification` built from a `@RequestParam` precisely *because* the caller is supposed to choose it (an employee might want to see only their `SUBMITTED` entries). This report's `status = APPROVED` is the opposite case: a business rule that never changes per request. Same underlying question both times — "does this value vary per caller, or is it fixed by the rule?" — different answer, different tool: a parameter for the first, a literal for the second.
+
+This is why `GROUP BY` order matters here too: the enum comparison in `WHERE` runs **before** the grouping (see the clause table above — `WHERE` decides which rows are considered *at all*, before `GROUP BY` even sees them), so a `REJECTED` entry is discarded before it ever reaches a bucket, rather than being summed and then somehow subtracted afterward.
+
 ### From `?month=2025-05` to a date range — YearMonth
 
 File: `src/main/java/com/victor/timetrack/service/ReportService.java` — note this is `ReportService`, **not** `TimeEntryService`: the method sits in the *feature*-shaped service, and reaches into the *entity*-shaped `TimeEntryRepository` underneath, exactly as the two-axes rule earlier in this file predicts.

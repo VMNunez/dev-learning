@@ -803,6 +803,31 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
 | `GROUP BY` | ¿Cómo se dividen en cubos las filas que sobreviven? |
 | `SUM(...)` (dentro de `SELECT`) | ¿Qué se calcula *dentro* de cada cubo? |
 
+### Filtrar por un valor de enum fijo — el literal JPQL, no un parámetro
+
+El `WHERE` de arriba solo comprueba `te.date BETWEEN :start AND :end` — suma cualquier `TimeEntry` del rango sin importar su `status`. Eso es un bug real en la primera versión de esta query en TimeTrack: el reporte de un manager terminaba sumando horas de entries todavía en `DRAFT` (ni siquiera enviadas) y entries en `REJECTED` (rechazadas explícitamente) como si fueran trabajo confirmado. Todo el sentido de la máquina de estados `DRAFT → SUBMITTED → APPROVED/REJECTED` es que `APPROVED` es el único status que un manager de verdad ha validado — se supone que un reporte es un número del que la gente puede fiarse, y sumar horas no confirmadas o rechazadas rompe esa confianza en silencio, sin ningún error que te avise.
+
+El arreglo es un `AND` más — pero la forma de referenciar el valor del enum merece detenerse en ella, porque es distinta de cualquier otra query de este archivo:
+
+```java
+@Query("""
+        SELECT te.project.name AS projectName, SUM(te.hours) AS totalHours
+        FROM TimeEntry te
+        WHERE te.date BETWEEN :start AND :end
+              AND te.status = com.victor.timetrack.model.EntryStatus.APPROVED
+        GROUP BY te.project.name
+        """)
+List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate start, @Param("end") LocalDate end);
+```
+
+`com.victor.timetrack.model.EntryStatus.APPROVED` es un **literal de enum en JPQL** — escribes la ruta completa en Java del enum (paquete + clase + constante) directamente dentro del string de la query, y JPQL lo resuelve a la misma constante que tu código Java referenciaría como `EntryStatus.APPROVED`. Sin `@Param`, sin argumento extra en el método — el valor nunca cambia entre llamadas, así que no pertenece a la firma del método en absoluto.
+
+> **¿Por qué no simplemente añadir un quinto `@Param("status") EntryStatus status`?** Porque eso diría "quien llama decide qué status cuenta", cuando todo el sentido de este arreglo es justo lo contrario: **`APPROVED` no es una elección de quien llama, es la propia definición del reporte de "horas reales".** Cualquier futuro llamador de `getHoursByProject` — este endpoint hoy, cualquier otro reporte que añadas más adelante — debe obtener el mismo número fiable, no un número que dependa de lo que a alguien se le ocurriera pasar. Un parámetro dejaría que un futuro bug (o un nuevo llamador descuidado) pidiera por accidente horas en `DRAFT` en un reporte de "totales"; un literal hace ese error estructuralmente imposible, porque la regla vive dentro de la propia query, no en quien la llama.
+
+> **Contraste con los filtros dinámicos de [14-especificaciones-criteria-api.md](./14-especificaciones-criteria-api.md).** El filtro `status` de `GET /api/entries` es una `Specification` construida a partir de un `@RequestParam` precisamente *porque* se supone que quien llama lo elige (un empleado podría querer ver solo sus entries `SUBMITTED`). El `status = APPROVED` de este reporte es el caso opuesto: una regla de negocio que nunca cambia por petición. La misma pregunta de fondo las dos veces — "¿este valor varía según quien llama, o lo fija la regla?" — respuesta distinta, herramienta distinta: un parámetro para el primer caso, un literal para el segundo.
+
+Por eso el orden del `GROUP BY` también importa aquí: la comparación del enum en `WHERE` se ejecuta **antes** de la agrupación (ver la tabla de cláusulas de arriba — `WHERE` decide qué filas se tienen en cuenta *en absoluto*, antes de que `GROUP BY` siquiera las vea), así que una entry `REJECTED` se descarta antes de llegar a ningún cubo, en vez de sumarse y luego restarse de algún modo después.
+
 ### De `?month=2025-05` a un rango de fechas — YearMonth
 
 Archivo: `src/main/java/com/victor/timetrack/service/ReportService.java` — nota que es `ReportService`, **no** `TimeEntryService`: el método vive en el service agrupado por *feature*, y llega hasta el `TimeEntryRepository` agrupado por *entidad* que hay debajo, exactamente como predice la regla de los dos ejes de antes en este archivo.
