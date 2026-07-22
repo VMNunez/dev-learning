@@ -27,19 +27,20 @@ MODE  = [practice | review]
 TOPIC = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
 COUNT =
 FILE  = practice/sql/01-basics.sql
-        practice/sql/02-joins.sql
-        practice/sql/03-aggregates.sql
-        practice/sql/04-join-pitfalls.sql
-        practice/sql/05-nulls.sql
-        practice/sql/06-subqueries-ctes.sql
-        practice/sql/07-dates-strings.sql
-        practice/sql/08-window-functions.sql
-        practice/sql/09-dml-transactions.sql
-        practice/sql/10-schema-design.sql
-        practice/sql/11-data-types-ddl.sql
-        practice/sql/12-indexes.sql
-        practice/sql/13-live-database.sql
-        practice/sql/14-report-queries.sql
+        practice/sql/02-execution-order-set-ops.sql
+        practice/sql/03-joins.sql
+        practice/sql/04-aggregates.sql
+        practice/sql/05-join-pitfalls.sql
+        practice/sql/06-nulls.sql
+        practice/sql/07-subqueries-ctes.sql
+        practice/sql/08-dates-strings.sql
+        practice/sql/09-window-functions.sql
+        practice/sql/10-dml-transactions.sql
+        practice/sql/11-schema-design.sql
+        practice/sql/12-data-types-ddl.sql
+        practice/sql/13-indexes.sql
+        practice/sql/14-live-database.sql
+        practice/sql/15-report-queries.sql
 
 **That is the entire configuration.** Do not add keys. `MODE` and `TOPIC` are required; `COUNT` and
 `FILE` are optional overrides — they are there so Victor can pin the batch size or name the file
@@ -231,8 +232,8 @@ Stop and wait for Victor's response.
 **Existing file:** check if the file for {TOPIC} already exists (see path table in Step 4).
 - If it exists: read it and find the highest exercise number, checking **both** formats:
   - current format — lines matching `-- Exercise [number] [`
-  - **legacy format** — lines matching `-- #[number] |` (used by `01-basics.sql` and the original
-    `02-joins.sql`, both written by hand before this prompt existed)
+  - **legacy format** — lines matching `-- #[number] |` (used by `01-basics.sql`, the only file left
+    in it — written by hand before this prompt existed, and now closed)
 
   Take the highest number found across both patterns — call it N. New exercises start from N+1. If
   neither pattern matches (the file has only a setup block), set N = 0. Do NOT regenerate the setup
@@ -785,8 +786,8 @@ Identify the topic from the file header.
   answer is any content after `-- Your answer:` (ignoring blank and comment-only lines).
 - **Legacy format** — exercises marked `-- #NN | title` with **no** `-- Your answer:` line; the answer
   is written directly under the description. Here, an answer is any non-comment SQL line between one
-  `-- #NN |` header and the next. `01-basics.sql` and the original `02-joins.sql` are in this format —
-  treating them with the current-format rule reports all 40 answered exercises as unanswered.
+  `-- #NN |` header and the next. `01-basics.sql` is the only file in this format — treating it with
+  the current-format rule reports all 40 answered exercises as unanswered.
 - **Mixed file** — apply each rule to the block it belongs to. Say so in one line at the top:
   "Archivo mixto: ejercicios #1–#N en formato antiguo, el resto en formato actual."
 
@@ -1040,7 +1041,7 @@ The table format is (4 columns — shared with `progress-update-prompt`):
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
 | basics / SELECT | practice/sql/01-basics.sql | [count] | in progress ⏳ |
-| joins | practice/sql/02-joins.sql | [count] | solid ✅ |
+| joins | practice/sql/03-joins.sql | [count] | solid ✅ |
 ```
 
 The numbers above are placeholders showing the shape — read the real counts from the file you just
@@ -1049,7 +1050,7 @@ reviewed. Never copy an example figure into PROGRESS.md.
 **If the table exists:** find the row for {TOPIC} and update the `Exercises` and `Status` columns:
 - Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
 - Exercises: count all exercises in the reviewed file, including any previous batches
-- Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/02-joins.sql`)
+- Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/03-joins.sql`)
 - Then refresh the `X total exercises across Y topics` summary line above the table to match the
   new column totals
 
