@@ -78,18 +78,18 @@ COUNT = <the step's COUNT, given per step in §6 — never the default>
 ```
 
 The step's focus travels with the step, not with the paste: the prompt looks up the §6 entry for that
-`TOPIC` and takes the focus from there.
+`TOPIC` and reads its **`**Focus:**`** line from there.
 
-Nothing else to add: since 2026-07-22 the prompt's own path table matches §5 file for file, so it
-writes to the right place on its own. If it ever asks where to save, the plan and the prompt have
+**Nothing else is added to the paste — nothing.** Since 2026-07-22 the prompt's own path table matches
+§5 file for file, and the two rules that used to be pasted by hand are derived instead:
+- the **new-concept rule** ("every exercise must introduce a concept not already drilled in this file")
+  is what `{REVIEW} = no` means, and the prompt applies it on every first-pass batch;
+- the **cross-topic rule** (one Challenge combining an earlier topic, two from Step 5 on) is read off
+  the step's `**Reinforces:**` line.
+
+A rule you have to remember to paste is a rule that eventually does not get pasted. If the prompt ever
+asks where to save, or hands back a batch that ignores one of these, the plan and the prompt have
 drifted — fix the prompt, not the run.
-
-> **On a first-pass run, add the new-concept rule.** Append this line:
-> *"Every exercise must introduce a concept not already drilled in this file."*
->
-> This applies **only to first-pass runs** — the ones whose `COUNT` is budgeted in §5 against the
-> step's remaining concepts. It does **not** apply to review runs, which are a different thing
-> entirely: see Moment 2b.
 
 ---
 
@@ -115,32 +115,32 @@ TOPIC = <the topic being revisited>
 COUNT = 8
 ```
 
-The focus — the concepts to narrow onto — is stated in the §8b revision point (open rows of
-`MISTAKES.md`) or in the §6 step, and the prompt reads it from there. It is not a pasted key.
+**Again, nothing else is pasted — and this is the part that changed.** A review batch used to require
+two hand-typed lines (*"deliberate repetition is the point"*, *"skip Intro"*), because the prompt's
+difficulty split was fixed at 25/50/25 with no notion of a review batch. It is not fixed any more: the
+prompt derives `{REVIEW} = yes`, drops the Intro tier, splits 60% Standard / 40% Challenge, labels the
+exercises `[Repaso]`, and excludes them from the step's target — all of it automatically.
 
-Then add these two lines, which are what make it a *review* batch rather than a weaker copy of the
-first pass:
+`{REVIEW} = yes` is derived from **one of two things**, never from the paste:
+- a **`**Moment 2b reinforcement block:**`** appended to the §6 step by a `MODE = review` run that
+  scored under 60% — it carries its own `COUNT` and its own `**Focus:**`, taken from the concepts that
+  actually failed;
+- or, for a voluntary revisit, the prompt's "target already met" guard: it notices the file has already
+  written its first-pass target and offers the repaso batch.
 
-> *"These are review exercises over concepts I have already drilled — deliberate repetition is the
-> point. Do not restrict yourself to new concepts."*
->
-> *"Skew the difficulty to Standard and Challenge; skip Intro. I have already passed the Intro pass on
-> these concepts, and re-doing `SELECT title FROM books` teaches nothing."*
-
-**Why the second line matters.** The prompt's difficulty split is fixed at 25% Intro / 50% Standard /
-25% Challenge **per batch**, with no notion of a review batch. Left alone it hands you a fresh Intro
-tier over concepts you already passed — which is exactly what #21–#40 became: twenty exercises that
-re-covered the same ground at the same difficulty, buying three genuinely new concepts
+Why it stopped being manual: leaving it to a pasted line is exactly how #21–#40 happened — twenty
+exercises that re-covered the same ground at the same difficulty, buying three genuinely new concepts
 (`NOT LIKE`, `IS NOT NULL`, `NOT BETWEEN`). The repetition was right; the *level* was too low to earn
-its hour.
+its hour, and the line that would have fixed it was one nobody remembered to type.
 
 **Review runs do not advance a step.** They are not counted in §5's targets and never flip a status in
 §8 — a step closes on its first-pass exercises and its exit question. Review is maintenance on ground
 already taken.
 
-**Label them.** Ask the prompt for `-- Exercise N [Repaso]:` instead of `[Intro]/[Standard]/[Challenge]`
-so the file itself records which batch was first-pass and which was review. Without a marker, six
-months from now nothing distinguishes them — and the review-mode score silently mixes both.
+**They come labelled.** The prompt writes `-- Exercise N [Repaso]:` instead of
+`[Intro]/[Standard]/[Challenge]`, so the file itself records which batch was first-pass and which was
+review. Without that marker, six months from now nothing distinguishes them — and the review-mode score
+silently mixes both.
 
 ---
 
@@ -248,9 +248,10 @@ Flat, numbered, matching `CLAUDE.md` ("flat files"). "Done" counts are what exis
 **Three counts, never conflated.**
 - *Written* = the prompt generated the statement.
 - *Answered* = the query is written under it. A file full of unanswered statements is worth nothing.
-- *Scored* = a `review` run has graded it ≥ 80%. **Only this one advances a step.** Answered-but-never-
-  scored is the state `02-execution-order-set-ops.sql` is in today: 10 statements written, none
-  answered, so nothing to validate. `01-basics.sql` is the opposite case — all 40 answers carry a
+- *Scored* = a `review` run has graded it ≥ 80%. **Only this one advances a step.**
+  `02-execution-order-set-ops.sql` is at the first rung today: 10 statements *written*, 0 *answered*, so
+  there is nothing to score yet and `MODE = review` will refuse the file rather than record a 0.
+  `01-basics.sql` is the opposite case — all 40 answers carry a
   `-- ✅ Corregido` marker, but only its 20 first-pass exercises count toward Step 0's target.
 - *Target* = the **first-pass** exercises the step needs. **Review batches (Moment 2b) are extra and
   uncounted** — a file legitimately grows past its target forever, and that is not drift.
@@ -359,10 +360,10 @@ junior level, and it absorbed the ten hand-written exercises the step used to st
 mechanical:
 - Every batch spans intro → challenge; the exercise prompt's own difficulty split does this and is not
   overridden on a first-pass run (a review batch deliberately skips Intro — see Moment 2b).
-- **From Step 5 on, every Moment 2 config gets one extra line appended**, verbatim:
-  *"At least two Challenge exercises must combine this topic with a topic from an earlier step."*
-  The `Reinforces:` line of each step names which earlier step that is, so the line is never a guess.
-  Without it a late step is drilled in isolation and teaches nothing about composition — which is
+- **From Step 5 on, at least two Challenge exercises must combine the step's topic with an earlier
+  one** (one is enough from Step 4). This is not pasted: the prompt applies it from the topic alone, and
+  the `**Reinforces:**` line of each step names which earlier step to combine with, so it is never a
+  guess. Without it a late step is drilled in isolation and teaches nothing about composition — which is
   exactly what a screening tests, since no real question is ever one topic wide.
 
 > **A note on `TOPIC` values.** The `TOPIC` in a Moment 2 config is the *prompt's* vocabulary, not a
@@ -384,6 +385,8 @@ explained against.
   canónico y el formato actual. Sin responder todavía.
 **Coverage:** `Querying basics`, `Filtering and pattern matching`, `Sorting, pagination, and determinism`, `Set operations`
 **Reinforces:** — (first step)
+**Moment 2 config:** `TOPIC = basics`, `COUNT = 10`  *(ya ejecutado el 2026-07-22 — ver abajo)*
+**Focus:** SQL execution order and alias visibility, `CASE WHEN` in `SELECT`, `UNION`/`UNION ALL`/`INTERSECT`/`EXCEPT`, `NULLS FIRST`/`NULLS LAST` and non-deterministic `LIMIT`, keyset pagination vs deep `OFFSET`
 
 **Concepts:** covered across both batches — `SELECT`, `WHERE` (`AND`/`OR`/`IN`/`NOT IN`/`LIKE`/
 `ILIKE`/`NOT LIKE`/`BETWEEN`/`NOT BETWEEN`/`IS NOT NULL`), `ORDER BY` (single, multiple, by alias),
@@ -397,8 +400,10 @@ Still missing before this step closes — the ten remaining exercises target exa
 - `NULLS FIRST` / `NULLS LAST`, and why `LIMIT` without `ORDER BY` is non-deterministic
 - Keyset pagination vs deep `OFFSET`
 
-**Moment 2:** ya ejecutado el 2026-07-22 (`COUNT = 10`, el FOCUS de la lista de arriba). Nada que
-generar; el paso está en Moment 3.
+**Moment 2 ya está hecho:** el run se ejecutó el 2026-07-22 y las 10 sentencias están escritas. El
+config de arriba se conserva porque el prompt lo lee para derivar `COUNT` y `Focus`, no porque haya que
+volver a ejecutarlo — el paso está en Moment 3, y el prompt avisa (guard "target already met") si se
+lanza otro `practice` sobre este archivo.
 
 **Exit question:** *why does an alias defined in `SELECT` work in `ORDER BY` but raise an error in `WHERE`?*
 **Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 02-execution-order-set-ops.sql` · exit question aloud
@@ -424,29 +429,24 @@ anti-join). Run 2 covers the rest: `RIGHT JOIN` and why it is rewritable as a `L
 `FULL OUTER JOIN`, self join, `USING` vs `NATURAL JOIN` and why `NATURAL` is banned in real
 codebases, `EXISTS`/`NOT EXISTS` as semi-join and anti-join vocabulary.
 
-**Moment 2 config — run 1** *(new file: it generates the canonical setup block)*:
-```
-MODE  = practice
-TOPIC = joins
-COUNT = 11
-```
-**Focus — run 1** *(read from this step by the prompt, not pasted)*: INNER JOIN across two and three
-tables, table aliases, LEFT JOIN keeping unmatched rows, LEFT JOIN + IS NULL as an anti-join.
+> **Two runs, un solo `TOPIC`.** Es el único step así, y por eso cada run declara su **rango de
+> ejercicios**: es el único dato en disco con el que el prompt puede saber cuál de los dos le estás
+> pidiendo. El prompt elige el primer rango que aún no esté escrito entero.
 
-**Moment 2 config — run 2** *(appends, continuing from #11)*:
-```
-MODE  = practice
-TOPIC = joins
-COUNT = 11
-```
-**Focus — run 2** *(read from this step by the prompt, not pasted)*: RIGHT JOIN, FULL OUTER JOIN,
-self join, USING vs NATURAL JOIN, EXISTS as a semi-join, NOT EXISTS as an anti-join.
+**Moment 2 config — run 1** *(archivo nuevo: genera el setup block canónico)* — **rango `#01–#11`**:
+`TOPIC = joins`, `COUNT = 11`
+**Focus:** INNER JOIN across two and three tables, table aliases, LEFT JOIN keeping unmatched rows,
+LEFT JOIN + IS NULL as an anti-join.
 
-Add the no-repetition line to both runs. Nothing else: the file no longer exists, so run 1 writes the
-canonical schema itself and there is no legacy-schema prompt to answer.
+**Moment 2 config — run 2** *(append)* — **rango `#12–#22`**: `TOPIC = joins`, `COUNT = 11`
+**Focus:** RIGHT JOIN, FULL OUTER JOIN, self join, USING vs NATURAL JOIN, EXISTS as a semi-join,
+NOT EXISTS as an anti-join.
+
+Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 escribe el esquema canónico
+él mismo y no hay prompt de esquema legacy que contestar.
 
 **Exit question:** *given `authors` and `books`, which join do you use for "every author, including those with no books", and what does the row look like for an author with none?*
-**Done:** `Review: ... ≥ 80% on 03-joins.sql` (#01–#22) · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 03-joins.sql` (#01–#22) · exit question aloud
 
 ---
 
@@ -458,14 +458,15 @@ of a technical test.
 **Exercises:** `practice/sql/04-aggregates.sql` — 12
 **Coverage:** `Aggregates and grouping`
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
-**Moment 2 config:** `TOPIC = group-by`, `COUNT = 12` · focus: *(none — the whole topic)*
+**Moment 2 config:** `TOPIC = group-by`, `COUNT = 12`
+**Focus:** none — the whole topic
 
 **Concepts:** `COUNT(*)` vs `COUNT(column)` vs `COUNT(DISTINCT)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, `SUM`
 over zero rows returning `NULL`, the `GROUP BY` rule, `HAVING` vs `WHERE`, conditional aggregation
 with `CASE WHEN` and `FILTER (WHERE ...)`.
 
 **Exit question:** *`WHERE` vs `HAVING` — which runs first, and why can't `WHERE` use `COUNT(*)`?*
-**Done:** `Review: ... ≥ 80% on 04-aggregates.sql` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 04-aggregates.sql` · exit question aloud
 
 ---
 
@@ -477,7 +478,8 @@ which is the follow-up question after a join answer lands.
 **Exercises:** `practice/sql/05-join-pitfalls.sql` — 12
 **Coverage:** `JOIN pitfalls and row multiplication`
 **Reinforces:** Steps 1 + 2 — every pitfall here is an **aggregate over a broken join**
-**Moment 2 config:** `TOPIC = join-pitfalls`, `COUNT = 12` · focus: *(none — the whole topic)*
+**Moment 2 config:** `TOPIC = join-pitfalls`, `COUNT = 12`
+**Focus:** none — the whole topic
 
 **Concepts:** condition in `ON` vs in `WHERE`, the `WHERE` filter that silently turns a `LEFT JOIN` into an
 `INNER JOIN`, fan-out inflating `SUM`, `COUNT(*)` returning 1 instead of 0 after a `LEFT JOIN`,
@@ -493,7 +495,7 @@ It stays a separate step from Step 2 on purpose: these are what separate "knows 
 debugged a wrong report", and burying them inside the aggregation step loses them.
 
 **Exit question:** *a report total comes back exactly double the real number. What is the first thing you check?*
-**Done:** `Review: ... ≥ 80% on 05-join-pitfalls.sql` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 05-join-pitfalls.sql` · exit question aloud
 
 ---
 
@@ -505,13 +507,14 @@ describing one he has not met — and `NOT IN` with a `NULL` is a standard scree
 **Exercises:** `practice/sql/06-nulls.sql` — 12
 **Coverage:** `NULL and three-valued logic`
 **Reinforces:** Steps 1–3 — `LEFT JOIN` producing nulls, `AVG` skipping them, `COUNT(*)` counting them
-**Moment 2 config:** `TOPIC = nulls`, `COUNT = 12` · focus: *(none — the whole topic)*
+**Moment 2 config:** `TOPIC = nulls`, `COUNT = 12`
+**Focus:** none — the whole topic
 
 **Concepts:** `NULL = NULL`, `IS NULL` vs `= NULL`, `AND`/`OR` truth tables, `NOT IN` with a `NULL` in the subquery,
 `NOT EXISTS` vs `NOT IN`, `IS DISTINCT FROM`, `NULL` in `UNIQUE`, `COALESCE`, `NULLIF`.
 
 **Exit question:** *are two `NULL`s equal in SQL? Explain what `WHERE price = NULL` actually evaluates to.*
-**Done:** `Review: ... ≥ 80% on 06-nulls.sql` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 06-nulls.sql` · exit question aloud
 
 > **This closes the screening core.** Steps 1–4 are what a quickfire round asks — which is why
 > revision point **R2** (§8b) fires here, before anything is built on top of it.
@@ -526,13 +529,16 @@ step before the surface is wide enough for a realistic timed test.
 **Exercises:** `practice/sql/07-subqueries-ctes.sql` — 16 (two runs of 8)
 **Coverage:** `Subqueries, CTEs, and views`
 **Reinforces:** Step 3 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see
-**Moment 2 config:** two runs, both `COUNT = 8`, appending to the same file — `TOPIC = subqueries`, then `TOPIC = ctes`
+**Moment 2 config — run 1:** `TOPIC = subqueries`, `COUNT = 8`
+**Focus:** none — the whole subquery half of the section
+**Moment 2 config — run 2:** `TOPIC = ctes`, `COUNT = 8` *(append al mismo archivo)*
+**Focus:** none — the whole CTE and view half of the section
 
 **Concepts:** subquery in `WHERE` / `FROM` / `SELECT`, `IN` vs `EXISTS`, subquery vs `JOIN`, correlated subqueries
 and why they do not scale, `WITH` and chained CTEs, `CREATE VIEW`, view vs materialized view.
 
 **Exit question:** *when would you reach for a CTE instead of a subquery, and is a CTE slower?*
-**Done:** `Review: ... ≥ 80% on 07-subqueries-ctes.sql` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 07-subqueries-ctes.sql` · exit question aloud
 
 ---
 
@@ -544,7 +550,8 @@ exercise stalls on a raw `TIMESTAMP` long before it stalls on `ROW_NUMBER`.
 **Exercises:** `practice/sql/08-dates-strings.sql` — 12
 **Coverage:** `Date and string functions`, `PostgreSQL specifics`
 **Reinforces:** Step 3 — `GROUP BY DATE_TRUNC('month', ...)` is grouping by an expression
-**Moment 2 config:** `TOPIC = dates-strings`, `COUNT = 12` · focus: *(none — the whole topic)*
+**Moment 2 config:** `TOPIC = dates-strings`, `COUNT = 12`
+**Focus:** none — the whole topic
 
 **Concepts:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `AGE` and date arithmetic, `INTERVAL`,
 `NOW()` vs `CURRENT_DATE`, casting a `TIMESTAMP` to a `DATE`, `TO_CHAR` formatting, `CONCAT` vs `||`,
@@ -555,7 +562,7 @@ specifics that ride along (`::` casting, `ILIKE`, `RETURNING`).
 `TOPIC` but claims different coverage sections.
 
 **Exit question:** *build a monthly total from a raw `TIMESTAMP` column. Which function, and why not `EXTRACT`?*
-**Done:** `Review: ... ≥ 80% on 08-dates-strings.sql` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 08-dates-strings.sql` · exit question aloud
 
 ---
 
@@ -567,13 +574,14 @@ question, never as the opener.
 **Exercises:** `practice/sql/09-window-functions.sql` — 12
 **Coverage:** `Window functions`
 **Reinforces:** Step 3 — a window keeps the rows `GROUP BY` collapses; Step 0 — execution order explains why a window cannot sit in `WHERE`
-**Moment 2 config:** `TOPIC = window-functions`, `COUNT = 12` · focus: *(none — the whole topic)*
+**Moment 2 config:** `TOPIC = window-functions`, `COUNT = 12`
+**Focus:** none — the whole topic
 
 **Concepts:** `ROW_NUMBER`, `RANK`, `DENSE_RANK`, `LAG`/`LEAD`, `SUM() OVER (PARTITION BY ...)`, why a window
 function cannot appear in `WHERE`, window vs `GROUP BY`, the default frame, "the second highest value".
 
 **Exit question:** *"the latest entry per user" — write the shape of the query and explain why you need a subquery around it.*
-**Done:** `Review: ... ≥ 80% on 09-window-functions.sql` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 09-window-functions.sql` · exit question aloud
 
 > Revision point **R3** (§8b) fires here: subqueries, dates and windows now sit on a core that has had
 > months to decay, and the mistake log is the only honest record of what slipped.
@@ -588,7 +596,10 @@ needs Step 7's `ROW_NUMBER()`, so it cannot precede either — and it is where S
 **Exercises:** `practice/sql/10-dml-transactions.sql` — 16 (two runs of 8)
 **Coverage:** `DML — modifying data`, `Transactions`
 **Reinforces:** Step 3 — `GROUP BY ... HAVING COUNT(*) > 1` is the duplicate-finding query; Step 7 — `ROW_NUMBER()` is how you delete duplicates keeping one
-**Moment 2 config:** two runs, both `COUNT = 8`, appending to the same file — `TOPIC = dml`, then `TOPIC = transactions`
+**Moment 2 config — run 1:** `TOPIC = dml`, `COUNT = 8`
+**Focus:** none — the whole `DML — modifying data` section
+**Moment 2 config — run 2:** `TOPIC = transactions`, `COUNT = 8` *(append al mismo archivo)*
+**Focus:** none — the whole `Transactions` section
 
 **Concepts:** `INSERT` (single, multi-row, `RETURNING`), insert order with foreign keys, resetting a sequence after
 seeding, `UPDATE`/`DELETE` and the missing-`WHERE` catastrophe, `DELETE` vs `TRUNCATE`, `ON CONFLICT`
@@ -599,7 +610,7 @@ anomalies, the four isolation levels, `SELECT ... FOR UPDATE`, deadlocks, and th
 One step because in practice you learn transactions by wrapping a destructive `UPDATE` in one.
 
 **Exit question:** *what happens if the second `save()` fails inside a `@Transactional` method, and what SQL is Spring actually issuing?*
-**Done:** `Review: ... ≥ 80% on 10-dml-transactions.sql` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 10-dml-transactions.sql` · exit question aloud
 
 ---
 
@@ -611,7 +622,10 @@ and met the `NULL` it treats specially (Step 4) — and it is late because a scr
 **Exercises:** `practice/sql/11-schema-design.sql` — 12
 **Coverage:** `Schema design — constraints and integrity`, `Schema design — modelling decisions`
 **Reinforces:** Step 4 — `NULL` in a `UNIQUE` constraint; Step 8 — a constraint violation is the race an application check cannot win
-**Moment 2 config:** two runs, both `COUNT = 6` — `TOPIC = schema-design`, then `TOPIC = normalization`
+**Moment 2 config — run 1:** `TOPIC = schema-design`, `COUNT = 6`
+**Focus:** none — the whole `Schema design — constraints and integrity` section
+**Moment 2 config — run 2:** `TOPIC = normalization`, `COUNT = 6` *(append al mismo archivo)*
+**Focus:** 1NF, 2NF, 3NF by name, functional dependencies, and migrating the data into the normalized schema
 
 **Concepts:** primary and foreign keys, which side of a 1:N carries the FK, composite keys on a junction table,
 `ON DELETE` behaviour, `NOT NULL` / `UNIQUE` / `CHECK`, why a database constraint is not made
@@ -619,7 +633,7 @@ redundant by Bean Validation, natural vs surrogate keys, soft vs hard delete, an
 **by name** — Spanish screenings ask "¿qué es la tercera forma normal?" verbatim.
 
 **Exit question:** *explain the TimeTrack data model out loud in three sentences, then say where each foreign key lives and why it cannot go on the other side.*
-**Done:** `Review: ... ≥ 80% on 11-schema-design.sql` · exit question aloud
+**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 11-schema-design.sql` · exit question aloud
 
 ---
 
@@ -631,7 +645,10 @@ first; putting DDL before modelling would produce syntax with nothing to say abo
 **Exercises:** `practice/sql/12-data-types-ddl.sql` — 12
 **Coverage:** `Data types`, `DDL — creating and evolving a schema`
 **Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`
-**Moment 2 config:** two runs, both `COUNT = 6` — `TOPIC = data-types`, then `TOPIC = ddl`
+**Moment 2 config — run 1:** `TOPIC = data-types`, `COUNT = 6`
+**Focus:** none — the whole `Data types` section
+**Moment 2 config — run 2:** `TOPIC = ddl`, `COUNT = 6` *(append al mismo archivo; **este run es el que cierra el paso y dispara R4**)*
+**Focus:** none — the whole `DDL — creating and evolving a schema` section
 
 **Concepts:** `NUMERIC` vs `FLOAT`, `TIMESTAMP` vs `TIMESTAMPTZ`, `DATE` for a business day, `VARCHAR` vs `TEXT`,
 `SERIAL` vs `IDENTITY`, `JSONB` vs a real table. Then writing `CREATE TABLE` / `ALTER TABLE` by hand.
@@ -652,7 +669,8 @@ where a junior's first indexes actually come from.
 **Exercises:** `practice/sql/13-indexes.sql` — 12
 **Coverage:** `Indexes`, `Reading a query plan and diagnosing slowness`
 **Reinforces:** Step 10 — `UNIQUE` and `PRIMARY KEY` create their index automatically; Step 1 — the join column is the one that needs one
-**Moment 2 config:** `TOPIC = indexes`, `COUNT = 12` · focus: *(none — the whole topic)*
+**Moment 2 config:** `TOPIC = indexes`, `COUNT = 12`
+**Focus:** none — the whole topic
 
 **Concepts:** what an index is and its write cost, why PostgreSQL does not index a foreign key column, when not to
 index, composite index column order, non-sargable predicates, leading-wildcard `LIKE`, `EXPLAIN` vs
@@ -671,7 +689,8 @@ pgAdmin, and a server without a GUI is a job-day problem, not a screening one.
 **Exercises:** `practice/sql/14-live-database.sql` — 12
 **Coverage:** `Working with a live database`, `Reading PostgreSQL errors`, `Type behaviour at runtime`
 **Reinforces:** Step 9 — every error message here is a constraint from that step firing
-**Moment 2 config:** `TOPIC = live-database`, `COUNT = 12` · focus: *(none — the whole topic)*
+**Moment 2 config:** `TOPIC = live-database`, `COUNT = 12`
+**Focus:** none — the whole topic
 
 **Concepts:** `psql` basics (`\dt`, `\d`, `\l`, `\i`), `information_schema`, the `public` schema and `search_path`,
 roles and `GRANT`, `pg_dump` and restoring a dump. Then the exact text of the eight errors a junior
@@ -692,15 +711,8 @@ under time pressure, which is the one thing drilling topic by topic never produc
 **Exercises:** `practice/sql/15-report-queries.sql` — 8
 **Coverage:** `Writing a report query`
 **Reinforces:** everything; this is the integration step
-**Moment 2 config:**
-
-```
-MODE  = practice
-TOPIC = report-queries
-COUNT = 8
-```
-
-**Focus:** none — the whole topic.
+**Moment 2 config:** `TOPIC = report-queries`, `COUNT = 8`
+**Focus:** none — the whole topic
 
 The prompt's `report-queries` topic already builds its own TimeTrack setup block (`users`, `projects`,
 `time_entries`) instead of the bookstore, marks every exercise Challenge, and states a 10-minute
@@ -724,7 +736,7 @@ on whatever feature branch the morning project block is on.
 - **Before any SQL session, check the branch has the latest `practice/sql/`.** A feature branch cut
   before the last SQL commit still carries the old exercise files, and appending to them silently
   drops the newer exercises when it merges. This has already happened once: on 2026-07-22
-  `fix/backend-backlog` carried a 20-exercise `01-basics.sql` while `main` had 40 plus a whole
+  `fix/backend-backlog` carried a 20-exercise `01-basics.sql` while `main` had 40, plus the whole of
   the old `02-joins.sql` — resolved by merging `main` into the branch (G0).
   Check with `git log --oneline main -1 -- practice/sql/` against your branch before starting.
 - Exercise files are **Victor's authorship** → Claude never commits them, only prints the commands.
@@ -851,16 +863,24 @@ Cross-checks between sections. Verify these whenever this plan is edited:
    table is a step: nothing else is tracked there.
 6. **§0 Next revision point vs §8b** — the Next revision point in §0 is a real point from §8b, and the
    first one whose trigger has not fired yet given the §0 Current step.
-7. **Done conditions** — every step's done condition matches one of the five formats in §3, and
+7. **Done conditions** — every step's done condition matches one of the five formats in §3 **written
+   out in full**, never abbreviated (`Review: ... ≥ 80% on X.sql` is not the format; nine steps carried
+   that ellipsis until 2026-07-22), and
    nothing outside that list appears in a `Done:` line. No vague condition survives an edit.
 8. **Revision cadence** — a revision point in §8b lands at least every **3 exercise files** of §5, and
     every revision point names its focus source as the open rows of `practice/sql/MISTAKES.md`. No
     revision batch is counted in a §5 target or a §8 status. A span of four files with no revision
     point between them is a violation, not a scheduling preference.
-9. **Prompt paths and keys** — every prompt this plan names exists at the path given, and every config
-   it says to paste uses only that prompt's real keys (`sql-exercises-prompt.md`: `MODE`, `TOPIC`,
-   `COUNT`, `FILE` — `FOCUS` and `REVIEW` are derived from the §6 step, never pasted). A plan pointing
-   at a moved prompt or an invented key rots silently: the run happens and produces something else.
+9. **Prompt paths and keys, in both directions** — every prompt this plan names exists at the path
+   given, and every config it says to paste uses only that prompt's real keys
+   (`sql-exercises-prompt.md`: `MODE`, `TOPIC`, `COUNT`, `FILE` — `FOCUS` and `REVIEW` are derived from
+   the §6 step, never pasted). A plan pointing at a moved prompt or an invented key rots silently: the
+   run happens and produces something else. **And the reverse**: every value the prompt says it derives
+   from this plan must be here **in the literal shape it looks for** — a `**Moment 2 config:**` line
+   carrying `COUNT = n`, and a `**Focus:**` line, in every §6 step; plus an exercise range on each run
+   of a step whose two runs share a `TOPIC` (only Step 1). A step missing one of those is the same dead
+   instruction as an invented key, and it fails later and more quietly: on 2026-07-22 Step 0 had
+   neither, and a `TOPIC = basics` run would have silently generated a batch of 4 nobody asked for.
 10. **Extendable without rewriting** — growth is the normal case here, not a special event. When
     `coverage.md` gains a `## ` section (G2, or a job posting revealing a gap), it becomes a **new
     step**, added by this procedure and nothing else:
@@ -884,6 +904,18 @@ Cross-checks between sections. Verify these whenever this plan is edited:
     Only exercise steps are added this way. A new coverage section never adds a note, Q&A or
     simulation task to this plan — those tracks run separately, on their own prompts, and pick the
     new section up on their own runs.
+
+11. **One artefact, one schema** — an exercise file whose SETUP block no longer matches the canonical
+    schema in `sql-exercises-prompt.md` is **closed, not extended**: the next numbered file starts
+    fresh with its own SETUP block, and §5 and §8 record the split. `01-basics.sql` is the standing
+    case (adopted 2026-07-22). Appending to such a file produces exercises that do not run in Victor's
+    pgAdmin, which is a worse failure than a longer file list.
+
+> **These eleven are numbered identically to Section D of
+> `notes/prompts/practice/sql/_internal/_sql-plan-standard.md`**, because `sql-plan-audit` splits the work
+> between four specialists *by invariant number*. Until 2026-07-22 the two lists used different
+> numbering, which handed two of them each other's checks. Renumber one side and you must renumber the
+> other.
 
 ---
 
