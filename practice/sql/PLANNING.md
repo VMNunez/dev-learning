@@ -87,9 +87,16 @@ drifted — fix the prompt, not the run.
 
 ### Moment 2b — Review runs (off the critical path, any time)  ▶ RUN A PROMPT
 
-**Trigger:** whenever a topic feels rusty — including a step already closed ✅. Not scheduled, not
-gated, entirely your call. This is how `01-basics.sql` grew from 20 to 40 exercises: #21–#40 are a
-deliberate second pass over the same concepts, and that is a legitimate, valuable use of the block.
+**Two triggers, and only one of them is optional.**
+- **Mandatory** — gates **G4-R** (after Step 4) and **G6-R** (after Step 7). `FOCUS` is not a judgement
+  call there: it is the open rows of `practice/sql/MISTAKES.md`. See §9.
+- **Optional** — whenever a topic feels rusty, on any step, including one already ✅. This is how
+  `01-basics.sql` grew from 20 to 40 exercises, and it is a legitimate use of the block.
+
+**Why the mandatory half exists.** Invariant 1 gives each coverage section to exactly one step, so
+every concept is drilled once and never returns. Left to the optional trigger alone, the gap closes
+only when Victor notices it — and a forgotten concept does not feel rusty, it feels learned. The
+mistake log is the objective substitute for that feeling.
 
 **Prompt:** the same `sql-exercises-prompt.md`, `MODE = practice`, on the topic being revisited.
 
@@ -150,7 +157,12 @@ What it does, beyond printing a score:
   already-validated work, and the file itself records what is settled.
 - **Updates `PROGRESS.md` twice** — the concept list (one line per concept) and the exercises table.
 - **Updates this file** — the §8 row (count + status) and, when a step closes, the §0 header.
-- Adds questions to `notes/interview-prep/en/sql.md` + `es/sql.md` for each conceptual gap.
+- **Re-checks every answer it accepted** with a cold subagent before writing any marker, and prints
+  "Segunda pasada: N ✅ confirmados, M revertidos". A marker is permanent, so it is not written on a
+  single grader's word.
+- **Logs every ⚠️ and ❌ in `practice/sql/MISTAKES.md`**, one row per concept, and closes the rows this
+  run redeemed. It does **not** write to `notes/interview-prep/` or `notes/sql/` — that belongs to
+  `interview-prep-audit` (G4) and `/notes-audit` (Moment 5).
 
 It cannot close a step on its own, and it will say so: the notes in `en/` + `es/` and the exit question
 are outside its reach. Those two are yours (Moments 5 and 6).
@@ -306,6 +318,14 @@ will score normally. **Both formats carry the `-- ✅ Corregido` marker** — it
 so a graded legacy exercise is skipped as settled exactly like a current-format one (corrected
 2026-07-22; this file used to claim otherwise, which cost `01-basics.sql` its markers on the first
 review run).
+
+### The mistake log — `practice/sql/MISTAKES.md`
+
+One file, written only by `sql-exercises` in `review` mode (its Step 5). Every ⚠️ or ❌ becomes one
+open row — concept, what went wrong, exercise — and a later run that gets the same concept right
+moves the row to `## Closed` instead of deleting it. It is the `FOCUS` source for gates G4-R and
+G6-R, and the only place in this track where *what was failed* is written down: `PROGRESS.md` only
+ever records what was learned.
 
 ### Note files — `notes/sql/en/` + `notes/sql/es/`
 
@@ -730,14 +750,18 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 | **G1 — Step ritual** | Every step's done conditions pass | *(no prompt — the §4 ritual, by hand)* | The `step-complete` skill only covers project steps and will not fire for SQL. Without this, every later gate reads a stale `PROGRESS.md`. |
 | **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before Step 0; again if a real job posting reveals a gap | `coverage-prompt` · `TOPIC = sql` (logged in `notes/prompts/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
 | **G3 — Notes `en`/`es` migration** | Once, before any Moment 5 | `/notes-audit` · `SCOPE = folder` · `TOPIC = sql` | The 14 existing files sit in the topic root — `notes-audit` has never run on SQL (`_run-tracker.md`, SQL row is empty). Every step's Moment 5 targets `notes/sql/en/…`, which does not exist yet. Hard blocker. **Also fix `CLAUDE.md` line ~259 afterwards** — it already claims `notes/sql/` has `en/` and `es/`, which is not true until this gate runs. |
+| **G4-R — Repaso obligatorio** | After **Step 4** closes, before G4 | `sql-exercises` · `MODE = practice`, `TOPIC =` the topic that owns the most `## Open` rows, `COUNT = 8`, `REVIEW = yes`, `FOCUS =` the open concepts of `practice/sql/MISTAKES.md` | Steps 0–4 are the screening core and each concept was drilled exactly once (invariant 1). Everything failed on the way here is sitting open in the mistake log; this is where it gets re-drilled, while the ground is still fresh enough to fix cheaply. **Not optional and not "when it feels rusty"** — self-assessed rustiness is exactly what fails: a forgotten concept feels learned. Run one batch per topic with open rows. The gate clears when `MISTAKES.md` has no `## Open` row older than this gate. |
 | **G4 — Q&A build** | After **Step 4** closes — joins + pitfalls + aggregation + nulls is the screening core | `interview-prep-audit` · `TOPIC = sql` | Builds the real Q&A bank on the half of SQL a quickfire round actually asks, while there is still time to drill it. `sql-exercises` review mode adds questions incrementally; this is the structured pass. |
 | **G5 — Notes ↔ Q&A sync** | Right after G4 | `notes-and-interview-prep` · `TOPIC = sql` | Closes both directions: every note concept has a question, every question has a note. Meaningless before G4 exists. |
+| **G6-R — Repaso obligatorio** | After **Step 7** closes, before G6 | same config as G4-R, over the rows opened since it | Same reason, second checkpoint: Steps 5–7 add subqueries, dates and windows on top of a core that has now had two months to decay. Going into the first timed simulation with open rows in the mistake log means the simulation measures the decay instead of the skill. |
 | **G6 — First timed simulation** | After **Step 7** closes | `simulation-generator` · `TYPE = sql`, then `simulation-review` on the finished test | You now have joins, aggregation, nulls, subqueries, dates and windows — enough surface for a realistic timed test. `PROGRESS.md` shows 0/15 simulations; this is where SQL starts filling that. |
 | **G7 — PROGRESS accurate** | After **Step 13** closes | `progress-update-prompt` (it has a dedicated SQL subagent) | Reconciles the whole SQL section in one pass, catching anything the per-step ritual missed. Must precede G8. |
 | **G8 — Final Q&A + roadmap resync** | After G7 | `interview-prep-audit` · `TOPIC = sql`, then `roadmap-review-prompt` | The Q&A now covers all 14 steps, and the roadmap's SQL gate can finally be marked cleared. |
 
 **Prerequisite chain (hard — a gate run out of order gives a wrong answer, not just a late one):**
-`G0 → G2 → G3 → steps (G1 each) → G4 → G5 → G6 → G7 → G8`.
+`G0 → G2 → G3 → steps (G1 each) → G4-R → G4 → G5 → G6-R → G6 → G7 → G8`.
+Each `-R` gate runs *before* the gate it precedes: a Q&A bank or a timed test built on concepts still
+open in `MISTAKES.md` measures the gap instead of closing it.
 G0 before anything because a stale branch corrupts the exercise files themselves. G3 before any note
 work because the target folders must exist. G4 before G5 because the sync prompt needs a Q&A file to
 sync against. G7 before G8 because both `interview-prep-audit` and `roadmap-review` read `PROGRESS.md`.
@@ -754,6 +778,7 @@ shipping.
 - [ ] Steps 0–13 all closed, each with its §4 ritual (G1)
 - [ ] All 200 first-pass exercises answered and scored ≥ 80% (review batches are extra and uncounted)
 - [ ] Every new note file 15–20 exists in both en/ and es/, no open TODOs
+- [ ] Repaso obligatorio run after Step 4 and after Step 7 — no stale open rows in MISTAKES.md (G4-R, G6-R)
 - [ ] interview-prep-audit TOPIC=sql has run after Step 4 (G4)
 - [ ] notes-and-interview-prep TOPIC=sql has run — no orphan concepts either way (G5)
 - [ ] At least 3 SQL simulations completed with a Pass in practice/simulations/TRACKER.md (G6)
