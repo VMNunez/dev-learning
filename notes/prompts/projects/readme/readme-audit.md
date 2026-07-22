@@ -14,7 +14,7 @@ stale — and always **before** `portfolio-audit`, which assumes the READMEs are
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
-`_readme-standard.md` (the bar) · `readme-write-prompt.md` (author) · `readme-review-prompt.md` (reviewer).
+`_readme-standard.md` (the bar) · `_readme-write-prompt.md` (author) · `_readme-review-prompt.md` (reviewer).
 
 > **Not auto-committed — by design.** Like `review-audit`, this writes README files inside the project
 > folder, which follow the project's **feature-branch → PR → main** workflow. The subagents fix the
@@ -90,7 +90,7 @@ target the reviewer must always run **after** its author.
 **Subagent A — author.** Launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`
 (recruiter-facing prose — the portfolio's front door):
 
-> Read `notes/prompts/projects/readme/readme-write-prompt.md` and execute it in full for
+> Read `notes/prompts/projects/readme/_readme-write-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Fix that one README to the standard.
 > **Do NOT commit.** Report the summary of changes and any intentional placeholder.
 
@@ -98,7 +98,7 @@ Wait for A, then **subagent B — reviewer.** Launch a second, independent `gene
 `model: sonnet`, `run_in_background: false` (conformance against a highly prescriptive standard —
 the structure guarantees quality here, and the author already ran at the top tier):
 
-> Read `notes/prompts/projects/readme/readme-review-prompt.md` and execute it in full for
+> Read `notes/prompts/projects/readme/_readme-review-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Audit the just-authored README hard against
 > the standard and fix what falls short directly. **Do NOT commit.** Report the section trace, your
 > verdict (PASS/FIXED), and whether the README changed.

@@ -4,8 +4,8 @@
 the final go/no-go check on a project before it goes on the CV, LinkedIn, or into a job application.
 All three pieces of the portfolio pipeline read it:
 
-- `portfolio-write-prompt.md` (the **author**) reads it for the interview-question quality bar.
-- `portfolio-review-prompt.md` (the **reviewer**) reads it to audit the question bank against that bar.
+- `_portfolio-write-prompt.md` (the **author**) reads it for the interview-question quality bar.
+- `_portfolio-review-prompt.md` (the **reviewer**) reads it to audit the question bank against that bar.
 - `portfolio-audit.md` (the **orchestrator**) reads it for the verdict logic and the CV / GitHub formats.
 
 ## What the portfolio gate is for

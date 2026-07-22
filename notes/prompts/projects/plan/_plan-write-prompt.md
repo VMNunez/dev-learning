@@ -2,7 +2,7 @@
 
 **Internal component.** This is the **author** in the project-plan pipeline. You normally don't launch
 it — `plan-audit.md` dispatches it as a cold subagent in `new` mode, then hands its output to
-`plan-review-prompt.md` (the reviewer) for a second pass and the commit. It is documented here
+`_plan-review-prompt.md` (the reviewer) for a second pass and the commit. It is documented here
 so the audit prompt can point a subagent at it; you can also run it standalone to draft one PLANNING.md.
 
 **What it does.** Picks the next project from the gap analysis, designs every part of it, and writes a

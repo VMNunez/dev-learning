@@ -20,10 +20,10 @@ one command does everything.
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
-`_note-quality-standard.md` (the bar) · `notes-plan-prompt.md` (folder analysis → worklist) ·
-`notes-inspect-prompt.md` (per-file quality flags → worklist rows) · `notes-write-prompt.md` (English
-author) · `notes-review-prompt.md` (English reviewer) · `notes-translate-prompt.md` (translator
-`en/`→`es/`) · `notes-review-es-prompt.md` (`en/`-blind Spanish reviewer, owns the commit).
+`_note-quality-standard.md` (the bar) · `_notes-plan-prompt.md` (folder analysis → worklist) ·
+`_notes-inspect-prompt.md` (per-file quality flags → worklist rows) · `_notes-write-prompt.md` (English
+author) · `_notes-review-prompt.md` (English reviewer) · `_notes-translate-prompt.md` (translator
+`en/`→`es/`) · `_notes-review-es-prompt.md` (`en/`-blind Spanish reviewer, owns the commit).
 
 > **The pipeline always commits** — one atomic commit per file, made by the Spanish reviewer (the last
 > stage). There is no preview mode — a deliberate divergence from the `DRY_RUN` its sibling
@@ -144,7 +144,7 @@ no-ops). Otherwise, for a single topic, follow the branch directly.
 
 Launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
 
-> Read `notes/prompts/knowledge/notes/notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
+> Read `notes/prompts/knowledge/notes/_notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
 > (derive `NOTES_PATH` as that prompt specifies — for Spring Boot, both `notes/java/en/` and
 > `notes/spring-boot/en/`). Do the folder setup, `en`/`es` parity, gap + sequence analysis,
 > `future-learning.md`, assign concrete file numbers, and write `notes/{TOPIC}/notes-worklist.md`.
@@ -164,7 +164,7 @@ Read the "Existing files to inspect" list from the worklist. For **each** file i
 launch one `general-purpose` subagent, `model: opus`, `run_in_background: false` (never overlap them — they all
 append to the same worklist file and parallel writes would race):
 
-> Read `notes/prompts/knowledge/notes/notes-inspect-prompt.md` and execute it in full for a single file:
+> Read `notes/prompts/knowledge/notes/_notes-inspect-prompt.md` and execute it in full for a single file:
 > - `TOPIC` = {TOPIC} · `FILE` = «file» · `WORKLIST` = notes/{TOPIC}/notes-worklist.md
 >
 > Read that one file top to bottom against the standard, append its `fix-quality` / `add-docs-link`
@@ -215,7 +215,7 @@ an unfinished predecessor).
 
 **Subagent A — English author.** Launch one `general-purpose` subagent, `model: opus`:
 
-> Read `notes/prompts/knowledge/notes/notes-write-prompt.md` and execute it in full for a single file:
+> Read `notes/prompts/knowledge/notes/_notes-write-prompt.md` and execute it in full for a single file:
 > - `TOPIC` = «topic» · `FILE` = «file» · `TASK` = «task» · `REWRITE_MODE` = «mode»
 >
 > Work in **English only** (`en/`): resolve TODOs (reading the `es/` only to find Victor's markers),
@@ -229,7 +229,7 @@ the row `[ ]` (folder mode), note it, and move on — do not translate or commit
 **Subagent B — English reviewer (`en/` only).** Launch a second, independent `general-purpose`
 subagent, `model: opus`:
 
-> Read `notes/prompts/knowledge/notes/notes-review-prompt.md` and execute it in full:
+> Read `notes/prompts/knowledge/notes/_notes-review-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
 >
 > Audit the just-authored `en/` file hard against the standard and fix what falls short in English.
@@ -241,7 +241,7 @@ Wait for B before starting T.
 
 **Subagent T — translator (`en/` → `es/`).** Launch a third, independent `general-purpose` subagent, `model: sonnet`:
 
-> Read `notes/prompts/knowledge/notes/notes-translate-prompt.md` and execute it in full:
+> Read `notes/prompts/knowledge/notes/_notes-translate-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
 >
 > Treat the finished `en/` file as the canonical source and produce (or re-sync) its `es/` counterpart:
@@ -254,7 +254,7 @@ Wait for T before starting C.
 **Subagent C — Spanish reviewer (`es/` only, `en/`-blind).** Launch a fourth, independent
 `general-purpose` subagent, `model: sonnet`:
 
-> Read `notes/prompts/knowledge/notes/notes-review-es-prompt.md` and execute it in full:
+> Read `notes/prompts/knowledge/notes/_notes-review-es-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
 >
 > Read ONLY the `es/` counterpart (never open the `en/` file), audit it as a standalone native-Spanish

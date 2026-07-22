@@ -5,7 +5,7 @@ dispatches it **once per vertical slice** — one backend resource's full flow, 
 one cross-cutting area — never the whole codebase. It reads only that slice and returns a **findings
 table** for the orchestrator to merge into the backlog. It does **not** edit any file and does **not**
 commit — Victor fixes everything himself to learn. (Security is a separate reviewer,
-`review-security-prompt.md`.)
+`_review-security-prompt.md`.)
 
 **Why per slice.** A subagent handed the whole project skims the last files; one handed a single
 resource's `model → repository → service → controller → DTO → tests` flow has a small, closed surface

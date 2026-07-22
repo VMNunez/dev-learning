@@ -2,10 +2,10 @@
 
 This is the **shared writing standard** for study notes. It is not a runnable prompt — it holds
 no configuration block and does nothing on its own. Every piece of the notes pipeline reads it:
-the planner (`notes-plan-prompt.md`) for the gap analysis only (judging file quality is delegated to
-the inspector), the inspector and both reviewers (`notes-inspect-prompt.md`, `notes-review-prompt.md`,
-`notes-review-es-prompt.md`) to judge against the bar, and the author and translator
-(`notes-write-prompt.md`, `notes-translate-prompt.md`) to produce to it.
+the planner (`_notes-plan-prompt.md`) for the gap analysis only (judging file quality is delegated to
+the inspector), the inspector and both reviewers (`_notes-inspect-prompt.md`, `_notes-review-prompt.md`,
+`_notes-review-es-prompt.md`) to judge against the bar, and the author and translator
+(`_notes-write-prompt.md`, `_notes-translate-prompt.md`) to produce to it.
 
 Keeping the standard in one file is deliberate: the writing bar is long and detailed, and it must
 stay identical across every prompt. Edit it here once; all of them pick up the change. If any
@@ -237,7 +237,7 @@ finished note visibly uses most of them:
   notes are dense with these (five in the first `01` file alone). Every "why does it work this way?",
   "what does this word mean?", or "why not the obvious alternative?" becomes a callout. Do not ration
   them — under-using callouts is the most common way a draft falls below his bar. Resolve the doubt as
-  a statement of fact (see the question-TODO rule in `notes-write-prompt.md`) — never phrase the
+  a statement of fact (see the question-TODO rule in `_notes-write-prompt.md`) — never phrase the
   heading as a literal question.
 - **Every comparison table gets a sentence on how to read it.** After any table, add a line that
   explains what a non-obvious column or row actually means and how to use it — e.g. "The `Parent

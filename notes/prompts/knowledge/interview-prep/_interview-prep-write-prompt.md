@@ -2,7 +2,7 @@
 
 **Internal component.** This is the **author** in the interview-prep pipeline. You normally don't
 launch it — `interview-prep-audit.md` dispatches it as a cold subagent, **one per section** of a topic's Q&A (per-section is the deep-work unit), then hands the
-result to `interview-prep-review-prompt.md` (the reviewer). It is documented here so the orchestrator
+result to `_interview-prep-review-prompt.md` (the reviewer). It is documented here so the orchestrator
 can point a subagent at it; you can also run it standalone to build/audit a single topic.
 
 **What it does.** Takes one topic's Q&A files (`en/{FILE}.md` + `es/{FILE}.md`) and does the full

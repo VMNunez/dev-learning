@@ -26,8 +26,8 @@ fixes everything himself to learn.**
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
-`_review-standard.md` (the bar — all the checklists) · `review-flow-prompt.md` (per-slice functional
-reviewer: quality + correctness + tests) · `review-security-prompt.md` (per-slice attacker pass,
+`_review-standard.md` (the bar — all the checklists) · `_review-flow-prompt.md` (per-slice functional
+reviewer: quality + correctness + tests) · `_review-security-prompt.md` (per-slice attacker pass,
 full-stack only).
 
 > **Not auto-committed — by design.** This writes `PROJECT-BACKLOG.md` inside the project folder, which
@@ -210,12 +210,12 @@ original slice used.**
 For **each** backend resource, dispatch two `general-purpose` subagents, `run_in_background: false`
 (flow → `model: opus`, security → `model: opus`):
 
-> **(flow)** Read `notes/prompts/projects/review/review-flow-prompt.md` and execute it for
+> **(flow)** Read `notes/prompts/projects/review/_review-flow-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `TIER = backend`, `SCOPE = «resource»`. Trace the resource's full
 > `model → repository → service → controller → DTO → tests` flow and return its findings table + trace.
 > **Do not edit any file, do not write the backlog, do not commit.**
 
-> **(security)** Read `notes/prompts/projects/review/review-security-prompt.md` and execute it for
+> **(security)** Read `notes/prompts/projects/review/_review-security-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SCOPE = «resource»`. Hunt each of that resource's endpoints for
 > authorization/ownership/injection/data-exposure flaws and return its findings table + trace. **Do not
 > edit any file, do not commit.**
@@ -224,16 +224,16 @@ Collect every table.
 
 ### Step 2 — Backend, cross-cutting reviewers
 Dispatch (both `model: opus`):
-> **(flow)** `review-flow-prompt.md` with `TIER = backend`, `SCOPE = persistence-config` — datasource,
+> **(flow)** `_review-flow-prompt.md` with `TIER = backend`, `SCOPE = persistence-config` — datasource,
 > `application.properties`, transactions, fetch/N+1, docker env.
-> **(security)** `review-security-prompt.md` with `SCOPE = security-infra` — SecurityConfig, JWT filter,
+> **(security)** `_review-security-prompt.md` with `SCOPE = security-infra` — SecurityConfig, JWT filter,
 > CORS, hashing, secrets/credentials, global exception handler.
 
 Collect both tables.
 
 ### Step 3 — Frontend, one flow reviewer per feature (+ frontend-infra)
 For **each** frontend feature, and once for `frontend-infra`, dispatch (`model: sonnet`):
-> `review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
+> `_review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
 > service split, types, state, subscription cleanup, validation timing, and that slice's tests.
 
 Collect every table.

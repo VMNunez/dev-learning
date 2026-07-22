@@ -3,8 +3,8 @@
 This is the **shared standard** for interview-prep Q&A files. It is not a runnable prompt — it holds
 no configuration and does nothing on its own. Three prompts read it:
 
-- `interview-prep-write-prompt.md` (author) reads it to **build/audit one topic's** Q&A to this bar.
-- `interview-prep-review-prompt.md` (reviewer) reads it to **audit the authored Q&A** against this bar.
+- `_interview-prep-write-prompt.md` (author) reads it to **build/audit one topic's** Q&A to this bar.
+- `_interview-prep-review-prompt.md` (reviewer) reads it to **audit the authored Q&A** against this bar.
 - `notes-and-interview-prep-prompt.md` reads it to reuse the **question format** when it adds
   cross-reference questions.
 

@@ -3,8 +3,8 @@
 **Internal component. Not runnable.** This is the single source of truth for **what a project's
 README(s) must contain and how each section must be written**. All pieces of the readme pipeline read it:
 
-- `readme-write-prompt.md` (the **author**) reads the rules for the one README it is writing.
-- `readme-review-prompt.md` (the **reviewer**) reads the same rules to audit that README.
+- `_readme-write-prompt.md` (the **author**) reads the rules for the one README it is writing.
+- `_readme-review-prompt.md` (the **reviewer**) reads the same rules to audit that README.
 - `readme-audit.md` (the **orchestrator**) reads the "which READMEs" logic and the commit rule.
 
 ## What the readme review is for

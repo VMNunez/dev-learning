@@ -3,11 +3,11 @@
 **Internal component. Not runnable.** This is the single source of truth for what a project's
 `PLANNING.md` must contain and what makes each section pass. Both halves of the plan pipeline read it:
 
-- `plan-write-prompt.md` (the **author**) reads it to know **what to produce** when writing a
+- `_plan-write-prompt.md` (the **author**) reads it to know **what to produce** when writing a
   new plan.
-- `plan-architecture-prompt.md` (the **architecture advisor**, new mode) reads §6, §3, and §20 to
+- `_plan-architecture-prompt.md` (the **architecture advisor**, new mode) reads §6, §3, and §20 to
   strengthen the architecture decisions against Victor's level.
-- `plan-review-prompt.md` (the **reviewer**) reads it to know **what to audit against** when
+- `_plan-review-prompt.md` (the **reviewer**) reads it to know **what to audit against** when
   checking an existing plan. A dispatched specialist reads **only the parts its `{SCOPE}` row maps
   to** (its template sections, its invariant numbers, its design-check numbers) — never the whole
   file; only a standalone `SCOPE = all` run reads it in full.

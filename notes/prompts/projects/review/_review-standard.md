@@ -4,11 +4,11 @@
 project**: code quality, patterns, security, correctness, tests, learning objectives, and how findings
 become backlog tasks. The pieces of the review pipeline read it:
 
-- `review-flow-prompt.md` (the **per-slice functional reviewer**) reads the code-quality checklist, the
+- `_review-flow-prompt.md` (the **per-slice functional reviewer**) reads the code-quality checklist, the
   correctness scope, and the test-quality scope — it runs all three lenses on **one vertical slice** (a
   backend resource's `model→repository→service→controller→DTO→tests` flow, a frontend feature, or a
   cross-cutting area).
-- `review-security-prompt.md` (the **per-slice security reviewer**) reads the security scope + finding
+- `_review-security-prompt.md` (the **per-slice security reviewer**) reads the security scope + finding
   format — it hunts **one slice** (a resource's endpoints, or the cross-cutting `security-infra`).
 - `review-audit.md` (the **orchestrator**) reads the gate, the learning-objectives rubric, the
   task/priority/effort rules, and the backlog format. It maps the slices and merges every slice's

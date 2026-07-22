@@ -27,8 +27,8 @@ everything.
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
-`_interview-prep-standard.md` (the bar) · `interview-prep-write-prompt.md` (author) ·
-`interview-prep-review-prompt.md` (reviewer). The market-analysis (M) and gap-hunt (G) subagents are
+`_interview-prep-standard.md` (the bar) · `_interview-prep-write-prompt.md` (author) ·
+`_interview-prep-review-prompt.md` (reviewer). The market-analysis (M) and gap-hunt (G) subagents are
 defined inline in the per-topic pipeline below — they are dispatch-only, with no standalone file.
 
 > **First run on a topic, use `DRY_RUN = true`.** It builds and reviews everything but commits nothing,
@@ -217,7 +217,7 @@ never overlap a section's two subagents — they edit the same two files. Neithe
 **Author (A).** Launch a fresh `general-purpose` subagent, `model: opus`, `run_in_background: false`
 (writes bilingual Q&A in Victor's voice — prose quality is the product):
 
-> Read `notes/prompts/knowledge/interview-prep/interview-prep-write-prompt.md` and execute it for
+> Read `notes/prompts/knowledge/interview-prep/_interview-prep-write-prompt.md` and execute it for
 > `FILE = «topic»`, `SECTION = «this exact heading»`, `MODE = «mode»`. **Work on this one section
 > only** — read it in full in both `en/{FILE}.md` and `es/{FILE}.md`, top to bottom. Here is its
 > market/gap slice — treat every `often`/`sometimes` market question and every genuine gap as required
@@ -240,7 +240,7 @@ the reviewer.
 `run_in_background: false` (it rewrites weak questions freely — that is authoring, not checklist
 verification):
 
-> Read `notes/prompts/knowledge/interview-prep/interview-prep-review-prompt.md` and execute it for
+> Read `notes/prompts/knowledge/interview-prep/_interview-prep-review-prompt.md` and execute it for
 > `FILE = «topic»`, `SECTION = «this exact heading»`, `DRY_RUN = true`. **Audit this one section
 > only**, in full in both `en/` + `es/`: realistic, well-worded, in Victor's voice, real cited code
 > where an interviewer poses the question with code, correct type ratio and priority order within the

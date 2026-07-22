@@ -23,8 +23,8 @@ It is the last link in the per-project chain: `plan-audit` → build → `readme
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
-`_portfolio-standard.md` (the bar) · `portfolio-write-prompt.md` (question author) ·
-`portfolio-review-prompt.md` (question reviewer).
+`_portfolio-standard.md` (the bar) · `_portfolio-write-prompt.md` (question author) ·
+`_portfolio-review-prompt.md` (question reviewer).
 
 > **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits nothing, so you can
 > read the diff first. Once you trust it, `DRY_RUN = false` is fully hands-off.
@@ -111,7 +111,7 @@ question file, so never overlap. For each section, run author then reviewer; nei
 **Subagent A — author (this section).** Launch a `general-purpose` subagent, `model: opus`,
 `run_in_background: false` (judging which code decisions are interview-worthy is the whole task):
 
-> Read `notes/prompts/projects/portfolio/portfolio-write-prompt.md` and execute it for
+> Read `notes/prompts/projects/portfolio/_portfolio-write-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
 > (the standard's canonical table) plus PLANNING.md, and write **only this section's** questions to
 > `notes/interview-prep/projects/«name».md` per the standard. **Do NOT commit.** Build a
@@ -123,7 +123,7 @@ Wait for A. Then **subagent B — reviewer (this section).** Launch a second, in
 decisions the author missed — same judgment as authoring; this is the portfolio's go/no-go gate,
 the wrong place to save):
 
-> Read `notes/prompts/projects/portfolio/portfolio-review-prompt.md` and execute it for
+> Read `notes/prompts/projects/portfolio/_portfolio-review-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. Audit **only this section** hard against
 > the standard: walk its code area, count decisions-found vs questions, add every missing one, fix
 > thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED) and the

@@ -2,7 +2,7 @@
 
 **Internal component.** This is the **author** in the readme pipeline. You normally don't launch it —
 `readme-audit.md` dispatches it as a cold subagent, one per README, then hands the result to
-`readme-review-prompt.md` (the reviewer). It is documented here so the orchestrator can point a subagent
+`_readme-review-prompt.md` (the reviewer). It is documented here so the orchestrator can point a subagent
 at it; you can also run it standalone to fix one README.
 
 **What it does.** Writes and fixes **one** README (the `TARGET`) to the contract in `_readme-standard.md`

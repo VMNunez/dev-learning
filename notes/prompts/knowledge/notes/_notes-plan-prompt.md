@@ -6,7 +6,7 @@ builds each row it produced. It is documented here so the audit prompt can point
 
 **What it does and does not do.** It surveys a whole topic folder and figures out *what needs to
 happen* — but it does **not** write or rewrite note prose, and it does **not** judge existing files
-against the writing standard (that is delegated to `notes-inspect-prompt.md`, one cold subagent per
+against the writing standard (that is delegated to `_notes-inspect-prompt.md`, one cold subagent per
 file). It does the cheap, verifiable, whole-folder work (folder setup, `en`/`es` parity, gap analysis,
 sequence check, TODO survey) and writes an **ordered worklist** (`notes/{TOPIC}/notes-worklist.md`),
 including the list of pre-existing files the inspectors must judge. Each row is then built by the
@@ -67,7 +67,7 @@ Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
 
 I want you to plan a technical audit of my study notes for {TOPIC}. You will survey the whole folder,
 do the mechanical/structural fixes, and produce an ordered worklist of writing tasks — but you will
-NOT write or rewrite any note prose. That happens later, one file at a time, with notes-write-prompt.md.
+NOT write or rewrite any note prose. That happens later, one file at a time, with _notes-write-prompt.md.
 
 Before starting, read:
 - CLAUDE.md — teaching rules, subfolder structure, and the "next file:" counters.
@@ -179,7 +179,7 @@ target** folder, never in the context folder.
 You do **not** judge existing files against the standard in this context. Judging one file against the
 long standard is the heaviest attention work in the whole pipeline; doing it for every file here is
 exactly what made the old planner skim the tail of the folder. That work is now delegated to
-`notes-inspect-prompt.md` — one cold subagent per existing file, dispatched by `notes-audit.md` after
+`_notes-inspect-prompt.md` — one cold subagent per existing file, dispatched by `notes-audit.md` after
 you finish. Each inspector reads its single file in full and appends its own `fix-quality` /
 `add-docs-link` rows to the worklist.
 
@@ -257,7 +257,7 @@ orchestrator deletes this file once every row is [x].
       REWRITE_MODE = standard
 
 ## Existing files to inspect
-(the orchestrator dispatches one notes-inspect-prompt subagent per file below; each appends its own
+(the orchestrator dispatches one _notes-inspect-prompt subagent per file below; each appends its own
 fix-quality / add-docs-link rows above)
 - notes/{TOPIC}/en/01-variables-types.md
 - notes/{TOPIC}/en/02-objects.md

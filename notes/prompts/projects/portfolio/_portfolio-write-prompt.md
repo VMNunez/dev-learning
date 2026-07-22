@@ -2,7 +2,7 @@
 
 **Internal component.** This is the **author** in the portfolio pipeline. You normally don't launch it
 — `portfolio-audit.md` dispatches it as a cold subagent, then hands its output to
-`portfolio-review-prompt.md` (the reviewer). It is documented here so the orchestrator can point a
+`_portfolio-review-prompt.md` (the reviewer). It is documented here so the orchestrator can point a
 subagent at it; you can also run it standalone to draft one project's question bank.
 
 **What it does.** Reads **one section's** code area of the project and PLANNING.md and writes the
