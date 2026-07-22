@@ -274,10 +274,11 @@ one by hand.
 *Legacy* — `01-basics.sql` only, written before the prompt existed. (`02-joins.sql` was the other one;
 it was deleted and will be regenerated in the current format, so `01-basics.sql` is the last file that
 will ever carry this.)
-The answer goes directly under the description, with no marker:
+The answer goes directly under the description, and the correction marker goes at the end of the
+header line:
 
 ```sql
--- #07 | LEFT JOIN — finding missing data
+-- #07 | LEFT JOIN — finding missing data ✅ Corregido 2026-07-22
 -- List every author who has never had a book ordered.
 SELECT ...
 ```
@@ -286,18 +287,19 @@ SELECT ...
 file:
 
 ```sql
--- Exercise 41 [Standard]: LEFT JOIN — finding missing data
+-- Exercise 41 [Standard]: LEFT JOIN — finding missing data ✅ Corregido 2026-07-22
 -- List every author who has never had a book ordered.
 -- Your answer:
 SELECT ...
--- ✅ Corregido 2026-07-22
 ```
 
 Appending to a legacy file leaves it **mixed**, and the prompt warns you and asks before doing it —
 answer yes; a mixed file is expected and correctly handled. `review` mode reads both (legacy answers
 are the SQL lines between one `-- #NN |` and the next), so the 40 answered exercises in `01-basics.sql`
-will score normally. Only the *current* format can carry the `-- ✅ Corregido` marker, so legacy
-exercises get re-read on every review run instead of being skipped as settled.
+will score normally. **Both formats carry the `-- ✅ Corregido` marker** — it is just a comment line,
+so a graded legacy exercise is skipped as settled exactly like a current-format one (corrected
+2026-07-22; this file used to claim otherwise, which cost `01-basics.sql` its markers on the first
+review run).
 
 ### Note files — `notes/sql/en/` + `notes/sql/es/`
 
