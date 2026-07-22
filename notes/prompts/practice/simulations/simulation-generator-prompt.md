@@ -66,8 +66,9 @@ tracking*** (find it by that heading, not by the number alone: §9 is the qualit
 similar) and list the steps whose Status is ✅. **A SQL test may only require techniques from closed
 steps.** This is not a style preference: the bank's first five tests were written before the plan
 existed and every one of them needs window functions (Step 7), which makes them unusable for months.
-Concretely — joins need Step 1, `GROUP BY`/`HAVING` Step 2, `NULL` handling Step 4, subqueries and CTEs
-Step 5, date/string functions Step 6, window functions Step 7, DML and transactions Step 8. If fewer
+**The technique-to-step mapping is `PLANNING.md` §8c — read it there, do not re-derive it.** That plan
+owns what Victor knows and when; duplicating the mapping here is how the two drift, and §8c also
+carries the "Estado hoy" line and the note that tests 01–05 are blocked on Step 7. If fewer
 than three steps are closed, print "Not enough closed steps for a realistic SQL test — the first one
 is due when **Step 2** closes: Steps 0, 1 and 2 give basics + joins + `GROUP BY`, which is already a
 real 45-minute test." and stop. State in your Step 4 report which closed steps each test drew on.

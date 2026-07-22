@@ -825,6 +825,50 @@ the same twenty exercises done twice would read as forty exercises of progress.
 
 ---
 
+## Section 8c — Simulation readiness: qué puedes pedir hoy
+
+**Esto no programa simulaciones ni dice cómo es un test — eso es del track de simulaciones (§Z).** Dice
+la única cosa que nadie más sabe: **qué técnicas tienes disponibles**, que es la tabla §8 leída desde
+fuera. Un test que exige una técnica de un step sin cerrar no es difícil, es imposible, y descubrirlo a
+mitad del cronómetro no enseña nada.
+
+**La regla:** un test SQL solo puede exigir técnicas de steps **cerrados** (`done ✅` en §8). La técnica
+más dura del test es la del step cerrado más alto.
+
+| Técnica | Disponible cuando cierra |
+|---------|--------------------------|
+| `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos | Step 0 |
+| JOINs de todo tipo | Step 1 |
+| `GROUP BY` / `HAVING` / agregados | Step 2 |
+| Diagnóstico de fan-out y multiplicación de filas | Step 3 |
+| Manejo de `NULL`, `NOT IN` con nulos | Step 4 |
+| Subconsultas, CTEs, vistas | Step 5 |
+| Funciones de fecha y texto, `DATE_TRUNC` | Step 6 |
+| Window functions | Step 7 |
+| DML y transacciones | Step 8 |
+| Diseño de esquema y normalización | Step 9 |
+| Tipos y DDL escrito a mano | Step 10 |
+| Índices y planes de ejecución | Step 11 |
+
+**Estado hoy (2026-07-22): 0 steps cerrados → ninguna simulación SQL todavía.** El primer test toca
+cuando cierre el **Step 2**: basics + joins + `GROUP BY` ya es un examen real. Antes de eso no hay
+superficie suficiente y el generador se planta él solo.
+
+> ⚠️ **Los cinco tests que ya están en el banco (`practice/simulations/sql/` 01–05) están bloqueados.**
+> Se escribieron antes de que existiera este plan y **los cinco piden window functions**, o sea Step 7.
+> No los abras hasta entonces: no es que salgan mal, es que no se pueden empezar. Esto se apunta aquí
+> porque es un hecho sobre tu conocimiento de SQL, no sobre los tests.
+
+**Cuando toque, lo que pides es un test cuya técnica más alta sea la del último step cerrado**, y el
+`FOCUS` natural es el tema de ese step — lo que acabas de cerrar es lo que menos veces has usado bajo
+presión. La configuración concreta y el formato del test los pone `simulation-generator-prompt.md`;
+esta sección solo te dice contra qué steps puedes tirar.
+
+Mantener esta sección al día es parte de G1b: cuando `sql-plan-audit` mueve un step a ✅, actualiza el
+"Estado hoy" de arriba.
+
+---
+
 ## Section 9 — Quality gates: which prompt to run when
 
 A **gate** is a checkpoint where a quality prompt runs. Same logic as the project standard: run each
@@ -954,7 +998,10 @@ shipping.
 - **SQL notes** (`notes/sql/`) — run `/notes-audit` when Victor decides to. This plan never schedules a
   note, never lists a note file, and no step closes on one.
 - **SQL interview Q&A** (`notes/interview-prep/`) — run `/interview-prep-audit`. Same rule.
-- **SQL simulations** (`practice/simulations/`) — run the simulation prompts. Same rule.
+- **SQL simulations** (`practice/simulations/`) — run the simulation prompts. Same rule, **con una
+  excepción acotada: §8c**, que dice qué técnicas tienes desbloqueadas y por tanto qué puedes pedir.
+  Eso es un hecho sobre tu conocimiento de SQL y esta es la única tabla que lo tiene. El formato del
+  test, su banco y su tracker siguen siendo del otro track.
 
 **Coverage sections deliberately excluded from the steps:** everything in
 `notes/sql/future-learning.md`, plus the `Programmable database objects` coverage section (triggers,

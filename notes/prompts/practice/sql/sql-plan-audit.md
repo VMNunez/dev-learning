@@ -146,6 +146,11 @@ ambiguity. Conversely, a step claiming a section coverage no longer has is remov
 - Anything scheduling notes, Q&A or simulations **comes out**, collapsed into one §Z line. Anything the
   plan *describes* rather than *points at* (exercise format, note quality, Q&A shape) comes out too —
   Section E's table decides who owns what.
+- **§8c is the one exception and is not to be deleted.** Simulation *readiness* — which techniques the
+  closed steps of §8 unlock — is a fact about SQL knowledge and belongs here; simulation *content*
+  (format, time limit, bank, tracker, config) does not. Check §8c states the first but not the second,
+  and that its "Estado hoy" line agrees with §8's closed steps. A specialist that removes §8c wholesale
+  has failed this check, not passed it.
 
 **Acceptance check.** A report is acceptable only with the read-to-EOF line **and** one row per check
 its slice owns. Otherwise re-dispatch once, quoting what was missing; if it fails again, record the

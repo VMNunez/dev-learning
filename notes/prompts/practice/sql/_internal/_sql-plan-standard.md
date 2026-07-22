@@ -9,9 +9,20 @@ what "done" means for each step. It exists so that no SQL session starts with "�
 **What this plan is NOT.** It is **not** a plan for the SQL *notes*, the SQL *interview Q&A*, or the
 SQL *simulations*. Those are separate tracks Victor runs himself with their own prompts
 (`/notes-audit`, `/interview-prep-audit`, `simulation-generator`), on his own schedule. This plan
-never schedules them, never states their config, and never lists their files. **§Z is the only place
-they may be named at all**, as a one-line reminder that they live elsewhere. A step that closes partly
+never schedules them, never states their config, and never lists their files. A step that closes partly
 on a note being written is out of scope: here a step closes on exercises.
+
+**One exception, and only one: readiness.** A downstream track that may only use *closed* steps has to
+ask this plan whether it is unblocked, because §8 is the sole record of that. So the plan may state
+**which techniques the closed steps have unlocked, and therefore what that track is allowed to ask
+for** — a fact about SQL knowledge, which is exactly what this plan owns. It still may not schedule the
+run, state its config, describe what a test looks like, or list its files. The line is *readiness vs
+content*: "joins and `GROUP BY` are available, window functions are not" is readiness; "a SQL test is
+6–9 queries with a 45-minute limit" is content and belongs to the other prompt.
+
+Amended 2026-07-22. Before that the fence was absolute, and the consequence was that the
+technique-to-step mapping lived inside `simulation-generator-prompt.md` alone — so the five SQL tests
+already in the bank all required Step 7 material and nothing Victor reads daily said so.
 
 Its two inputs, and it never invents beyond them:
 - **`notes/sql/coverage.md`** — what must be learned. Every step claims sections of it; a concept that
@@ -35,6 +46,7 @@ Its two inputs, and it never invents beyond them:
 | 7 | Branch and commit rules | Which branch, who commits what, atomicity. |
 | 8 | Progress table | One row per step: scored/target, status. Mirrors `PROGRESS.md`. |
 | 8b | Revision points | Where the track deliberately stops advancing and re-drills. Governed by B4. |
+| 8c | Simulation readiness | The technique-to-step mapping, and which techniques the closed steps of §8 have unlocked. Readiness only — see the exception in "What this plan is NOT". |
 | 9 | Quality gates | Which quality prompt runs at which checkpoint, and the hard prerequisite chain. |
 | 10 | Consistency invariants | The mechanical cross-checks in Section D. |
 | 11 | Closure | What makes the whole track finished. |
@@ -178,6 +190,7 @@ format or quality bar.
 | The concept list | `notes/sql/coverage.md` | which sections a step claims |
 | What has been learned | `PROGRESS.md` | that closing a step updates it |
 | The mistake log | `practice/sql/MISTAKES.md` (written by the review run) | that revision points read it |
-| Notes, interview Q&A, simulations | their own prompts, run separately by Victor | one line in §Z. Nothing else. |
+| Notes, interview Q&A | their own prompts, run separately by Victor | one line in §Z. Nothing else. |
+| Simulations — what a test contains, its format, its time limit, the bank, the tracker | `simulation-generator-prompt.md` · `simulation-review-prompt.md` | one line in §Z **plus §8c: readiness only** — which techniques the closed steps unlock, and therefore what may be asked for today. Never the config, never the format. |
 
 A finding outside this table is reported to Victor as a recommendation, never fixed in the plan.
