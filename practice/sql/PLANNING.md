@@ -234,6 +234,11 @@ claim otherwise.
 
 Commit message: `docs: close SQL step N — <topic>`.
 
+**Then, once that commit is in, run G1b (§9): `sql-plan-audit`, `SCOPE = full`.** It is the only thing
+that checks this file, and the moment right after a step closes is when it has just become least true —
+§0 still points at the step you finished, and §5 and §8 have just moved. It comes after the commit, not
+before, so it audits the numbers the ritual actually wrote.
+
 ---
 
 ## Section 5 — Every file this plan produces
@@ -830,6 +835,7 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 |------|---------|-----------------|------------------|
 | **G0 — Branch sync** ✅ 2026-07-22 | Before the first SQL session on any branch | *(no prompt — `git merge main` into the branch)* | Appending to a stale file loses exercises at merge time. Done once on `fix/backend-backlog`; re-check on every future branch. |
 | **G1 — Step ritual** | Every step's done conditions pass | *(no prompt — the §4 ritual, by hand)* | The `step-complete` skill only covers project steps and will not fire for SQL. Without this, every later gate reads a stale `PROGRESS.md`. |
+| **G1b — Plan al día** | Right after G1, when a step closes · when `notes/sql/coverage.md` grows (i.e. after G2) · when `sql-exercises-prompt.md` changes | `notes/prompts/practice/sql/sql-plan-audit.md` · `SCOPE = full` (`SCOPE = extend` when the only trigger was new coverage sections) | This file is the one that rots fastest — every closed step, every new coverage section and every prompt change leaves it slightly less true, and nothing else audits it. It runs *after* G1 so it reads the status G1 has just made accurate, and before the next step starts building on a stale plan. Safe to run repeatedly: a clean plan comes back unchanged. |
 | **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before Step 0; again if a real job posting reveals a gap | `notes/prompts/knowledge/coverage/coverage-prompt.md` · `TOPIC = sql` (logged in `notes/prompts/_internal/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
 | **G3 — PROGRESS accurate** | After **Step 13** closes | `notes/prompts/strategy/tracking/progress-update-prompt.md` (it has a dedicated SQL subagent) | Reconciles the whole SQL section in one pass, catching anything the per-step ritual missed. Must precede G4. |
 | **G4 — Roadmap resync** | After G3 | `notes/prompts/strategy/tracking/roadmap-review-prompt.md` | The roadmap's SQL gate can only be marked cleared once `PROGRESS.md` says the track is finished. |
@@ -838,9 +844,13 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 that is the only place they are scheduled from.
 
 **Prerequisite chain (hard — a gate run out of order gives a wrong answer, not just a late one):**
-`G0 → G2 → steps (G1 each, with R1–R5 firing on the §8b cadence) → G3 → G4`.
-G0 before anything because a stale branch corrupts the exercise files themselves. G3 before G4 because
-`roadmap-review` reads `PROGRESS.md`.
+`G0 → G2 → steps (G1 then G1b each, with R1–R5 firing on the §8b cadence) → G3 → G4`.
+G0 before anything because a stale branch corrupts the exercise files themselves. **G1 before G1b**
+because `sql-plan-audit` audits §0, §5 and §8 against `PROGRESS.md` — run it first and it faithfully
+certifies the numbers the ritual had not written yet. **G2 before G1b** for the same reason in the
+other direction: the audit's extension engine turns unclaimed coverage sections into new steps, so it
+must read the refreshed coverage, not the old one. G3 before G4 because `roadmap-review` reads
+`PROGRESS.md`.
 
 ## Section 10 — Consistency invariants
 
