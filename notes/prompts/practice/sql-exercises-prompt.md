@@ -785,8 +785,8 @@ Identify the topic from the file header.
 - **Mixed file** — apply each rule to the block it belongs to. Say so in one line at the top:
   "Archivo mixto: ejercicios #1–#N en formato antiguo, el resto en formato actual."
 
-**Second, skip what is already settled.** An exercise whose answer line is followed by a
-`-- ✅ Corregido YYYY-MM-DD` marker has already been reviewed and accepted in an earlier run. **Do not
+**Second, skip what is already settled.** An exercise whose **header line ends with**
+`✅ Corregido YYYY-MM-DD` has already been reviewed and accepted in an earlier run. **Do not
 re-review it, do not re-score it, do not comment on it.** List it in the summary as `✅ (ya corregido)`
 and exclude it from the score, exactly like an unanswered one — the score must measure *this* batch,
 not a growing pile of work already validated. This mirrors the studied-content-is-final rule in
@@ -906,10 +906,13 @@ instead apply the transactions checklist below.
 The file it edits is {FILE}. If the review ran off a paste whose exercises do not match what is on
 disk, skip this step and print: "No escribo marcadores: el texto pegado no coincide con [FILE]."
 
-For every exercise marked **✅ Correct** in Step 2, append one line immediately after the answer:
+For every exercise marked **✅ Correct** in Step 2, append the marker **to the end of that exercise's
+header line** — never on a line of its own, so the file stays scannable and the answer keeps its own
+line. It goes on the header in both formats:
 
 ```sql
--- ✅ Corregido 2026-07-22
+-- #39 | WHERE — NOT BETWEEN ✅ Corregido 2026-07-22
+-- Exercise 41 [Standard]: LEFT JOIN — finding missing data ✅ Corregido 2026-07-22
 ```
 
 Use today's real date. Do **not** add the marker to ⚠️ Partial or ❌ Wrong answers — those still need
