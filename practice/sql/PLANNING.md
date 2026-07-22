@@ -5,9 +5,16 @@
 *which files it produces*, *how many exercises each one gets*, *which prompt runs at which moment*,
 *what to update when a step closes*, and *when the whole track is finished*.
 
-**Database:** PostgreSQL (local, pgAdmin). **Schema:** the bookstore schema at the top of
-`practice/sql/01-basics.sql` (`authors`, `books`, `customers`, `orders`, `order_books`); the capstone
-switches to the TimeTrack model.
+**Database:** PostgreSQL (local, pgAdmin). **Schema:** the canonical bookstore schema defined in
+`notes/prompts/practice/sql-exercises-prompt.md` (`authors`, `publishers`, `genres`, `books`,
+`customers`, `orders`, `order_items`, `reviews`) — that prompt is the single source of truth for it.
+The capstone switches to the TimeTrack model.
+
+> ⚠️ **`01-basics.sql` carries an older, thinner schema** (`order_books` with no `quantity` or
+> `unit_price`, `authors.nationality`, `books.year`). The prompt now detects this and asks before
+> generating. Steps 2, 3 and 13 need `quantity`/`unit_price` to be possible at all, so the canonical
+> schema has to be adopted at the latest when Step 2 creates `03-aggregates.sql` — which is a new
+> file, so it gets the canonical setup block for free.
 
 **Target:** pass the SQL half of a technical screening at NTT Data / Capgemini / Indra, and write the
 report queries TimeTrack needs without looking anything up.
@@ -20,7 +27,7 @@ report queries TimeTrack needs without looking anything up.
 
 | | |
 |---|---|
-| **Current step** | Step 0 — Querying basics (20/30 first-pass answered, +20 review) |
+| **Current step** | Step 0 — Querying basics (40 answered, **0 scored**, first-pass target 30) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
 | **Done condition** | `Review: sql-exercises MODE = review scores ≥ 80% on 01-basics.sql` |
 | **Next gate** | G3 — split `notes/sql/` into `en/` + `es/` (G0 ✅ 2026-07-22, G2 ✅ 2026-07-18) |
@@ -667,10 +674,10 @@ on whatever feature branch the morning project block is on.
 Status is driven by the **scored** count (§5's third definition), never the written or merely answered
 one. A row moves to ✅ only after a `review` run has graded it.
 
-| Step | Topic | Exercises file | Answered / target | Notes produced | Status |
+| Step | Topic | Exercises file | Scored / target | Notes produced | Status |
 |------|-------|----------------|-------------------|----------------|--------|
 | — | `en`/`es` migration (G3) | — | — | 14 files × 2 | not started |
-| 0 | Querying basics | `01-basics.sql` | 20 / 30 *(+20 repaso)* | extend 03, 04, 05 · **new 15** | in progress ⏳ |
+| 0 | Querying basics | `01-basics.sql` | 0 / 30 *(40 answered, +20 repaso)* | extend 03, 04, 05 · **new 15** | in progress ⏳ |
 | 1 | JOINs | `02-joins.sql` | 0 / 22 *(10 written)* | extend 06 | not started |
 | 2 | Aggregates and grouping | `03-aggregates.sql` | 0 / 12 | extend 07 | not started |
 | 3 | JOIN pitfalls | `04-join-pitfalls.sql` | 0 / 12 | extend 06 | not started |
@@ -685,7 +692,8 @@ one. A row moves to ✅ only after a `review` run has graded it.
 | 12 | Live database and errors | `13-live-database.sql` | 0 / 12 | **new 20** | not started |
 | 13 | Report queries (capstone) | `14-report-queries.sql` | 0 / 8 | — | not started |
 
-**20 of 200 first-pass exercises answered**, plus a 20-exercise review batch. `PROGRESS.md` holds the
+**0 of 200 first-pass exercises scored** (40 answered and awaiting their first review run), plus a
+20-exercise review batch. `PROGRESS.md` holds the
 authoritative status; this table is the at-a-glance copy. Both are updated by the §4 ritual, in the
 same commit. Review batches never change a row here.
 
