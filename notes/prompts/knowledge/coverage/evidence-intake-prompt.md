@@ -9,6 +9,10 @@ is public posting data (no personal information), so it **is** committed to the 
 
 > **▶ Run first:** nothing — this is a starting point (it produces evidence others consume).
 
+> **Run-start check (step 0):** read `_internal/_last-run-report-evidence-intake.md`. If it does not
+> exist, say "first run of this prompt" in one line and continue. If its `Status` is `open`, print one
+> line naming the finding — then leave it alone; do not apply it in this run.
+
 > Why this matters: `_job-market-evidence.md` feeds `coverage-prompt` / `coverage-audit` as the
 > **complement** to the deep market analysis (see `_coverage-standard.md`, "Two sources"). More real
 > postings = a sharper frequency signal and better wording, which keeps coverage matched to the market.
@@ -152,8 +156,19 @@ with the mandatory double check:
 3. `git status` — confirm nothing else is staged (`git restore --staged` anything that is).
 4. `git commit -m "docs: add <N> postings to job-market-evidence — <main stacks/companies>"`
 
-Finally, update this prompt's row in `notes/prompts/_internal/_run-tracker.md` (the "Global prompts" table)
-with today's date and commit that file on its own (`docs: run tracker — evidence-intake run`). This
-prompt has no full self-report step, but the tracker row still records that it ran.
+Then update this prompt's row in `notes/prompts/_internal/_run-tracker.md` (the "Global prompts" table)
+with today's date and commit that file on its own (`docs: run tracker — evidence-intake run`).
+
+## Final step — write the self-report
+
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs, the three bullets written to
+`notes/prompts/knowledge/coverage/_internal/_last-run-report-evidence-intake.md`, its own commit, then
+the refinement step behind a cold reviewer.
+
+This prompt was the only one of the 24 without a self-report, on the reasoning that the tracker row
+already recorded that it ran. That records *that* it ran, never *how* — and it writes
+`_job-market-evidence.md`, the root three other prompts anchor their market analysis to, so a silent
+defect here propagates into coverage and the interview Q&A with nothing downstream able to see it.
 
 [paste your full job offer(s) below this line — only needed in `paste` mode]
