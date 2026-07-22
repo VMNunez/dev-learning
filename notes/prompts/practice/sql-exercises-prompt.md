@@ -727,24 +727,29 @@ second topic appends to the first rather than creating a new file.
 
 | Topic | Path | PLANNING.md step |
 |-------|------|------------------|
-| basics | practice/sql/01-basics.sql | 0 |
-| joins | practice/sql/02-joins.sql | 1 |
-| group-by | practice/sql/03-aggregates.sql | 2 |
-| join-pitfalls | practice/sql/04-join-pitfalls.sql | 3 |
-| nulls | practice/sql/05-nulls.sql | 4 |
-| subqueries | practice/sql/06-subqueries-ctes.sql | 5 |
-| ctes | practice/sql/06-subqueries-ctes.sql *(appends)* | 5 |
-| dates-strings | practice/sql/07-dates-strings.sql | 6 |
-| window-functions | practice/sql/08-window-functions.sql | 7 |
-| dml | practice/sql/09-dml-transactions.sql | 8 |
-| transactions | practice/sql/09-dml-transactions.sql *(appends)* | 8 |
-| schema-design | practice/sql/10-schema-design.sql | 9 |
-| normalization | practice/sql/10-schema-design.sql *(appends)* | 9 |
-| data-types | practice/sql/11-data-types-ddl.sql | 10 |
-| ddl | practice/sql/11-data-types-ddl.sql *(appends)* | 10 |
-| indexes | practice/sql/12-indexes.sql | 11 |
-| live-database | practice/sql/13-live-database.sql | 12 |
-| report-queries | practice/sql/14-report-queries.sql | 13 |
+| basics | practice/sql/02-execution-order-set-ops.sql | 0 |
+| joins | practice/sql/03-joins.sql | 1 |
+| group-by | practice/sql/04-aggregates.sql | 2 |
+| join-pitfalls | practice/sql/05-join-pitfalls.sql | 3 |
+| nulls | practice/sql/06-nulls.sql | 4 |
+| subqueries | practice/sql/07-subqueries-ctes.sql | 5 |
+| ctes | practice/sql/07-subqueries-ctes.sql *(appends)* | 5 |
+| dates-strings | practice/sql/08-dates-strings.sql | 6 |
+| window-functions | practice/sql/09-window-functions.sql | 7 |
+| dml | practice/sql/10-dml-transactions.sql | 8 |
+| transactions | practice/sql/10-dml-transactions.sql *(appends)* | 8 |
+| schema-design | practice/sql/11-schema-design.sql | 9 |
+| normalization | practice/sql/11-schema-design.sql *(appends)* | 9 |
+| data-types | practice/sql/12-data-types-ddl.sql | 10 |
+| ddl | practice/sql/12-data-types-ddl.sql *(appends)* | 10 |
+| indexes | practice/sql/13-indexes.sql | 11 |
+| live-database | practice/sql/14-live-database.sql | 12 |
+| report-queries | practice/sql/15-report-queries.sql | 13 |
+
+**One file, one schema (2026-07-22).** `practice/sql/01-basics.sql` is closed and is not in this
+table: it carries the pre-canonical schema, so nothing is ever appended to it again. A file whose
+SETUP block does not match the canonical schema is never extended — start the next numbered file
+instead, and update `practice/sql/PLANNING.md` §5 and §8.
 
 If the folder does not exist, create it using the path above. **Never invent a path** — if {TOPIC} is
 not in this table, stop and report it.
