@@ -16,7 +16,7 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long>, Jpa
     @Query("""
             SELECT te.project.name AS projectName, SUM(te.hours) AS totalHours
             FROM TimeEntry te
-            WHERE te.date BETWEEN :start AND :end
+            WHERE te.date BETWEEN :start AND :end AND te.status = com.victor.timetrack.model.EntryStatus.APPROVED
             GROUP BY te.project.name
             """)
     List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate start, @Param("end") LocalDate end);
@@ -24,7 +24,7 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long>, Jpa
     @Query("""
             SELECT te.user.name AS employeeName, SUM(te.hours) AS totalHours
             FROM TimeEntry te
-            WHERE te.date BETWEEN :start AND :end
+            WHERE te.date BETWEEN :start AND :end AND te.status = com.victor.timetrack.model.EntryStatus.APPROVED
             GROUP BY te.user.name
             """)
     List<EmployeeHoursReportResponse> getHoursByEmployee(@Param("start") LocalDate start, @Param("end") LocalDate end);
