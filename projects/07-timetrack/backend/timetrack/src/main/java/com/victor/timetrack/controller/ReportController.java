@@ -2,6 +2,7 @@ package com.victor.timetrack.controller;
 
 import com.victor.timetrack.dto.response.EmployeeHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
+import com.victor.timetrack.dto.response.ReportSummaryResponse;
 import com.victor.timetrack.service.ReportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,5 +33,11 @@ public class ReportController {
     @GetMapping("/by-employee")
     public ResponseEntity<List<EmployeeHoursReportResponse>> getHoursByEmployee(@RequestParam YearMonth month){
         return ResponseEntity.status(200).body(reportService.getHoursByEmployee(month));
+    }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @GetMapping("/summary")
+    public ResponseEntity<ReportSummaryResponse> getSummary(@RequestParam YearMonth month){
+        return ResponseEntity.status(200).body(reportService.getSummary(month));
     }
 }
