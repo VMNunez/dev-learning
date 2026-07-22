@@ -13,9 +13,10 @@ or the plan simply feels out of date. It is safe to run repeatedly; a clean plan
 
 > **▶ Run first:** nothing. A stale `PROGRESS.md` is one of the findings, not a prerequisite.
 
-> **Run-start check (step 0):** execute the check in `notes/prompts/_pipeline-self-report.md` — read
+> **Run-start check (step 0a):** execute the check in `notes/prompts/_pipeline-self-report.md` — read
 > `_last-run-report-sql-plan-audit.md` and, if its `Status` is `open`, surface the finding in one line
-> before proceeding.
+> before proceeding. If the file does not exist, say "first run of this prompt" in one line and
+> continue — its absence is expected, not a failure.
 
 **Internal pieces** (never launched directly): `_sql-plan-standard.md` (the bar) ·
 `notes/prompts/_pipeline-self-report.md` (the final step). Each specialist's mandate is its slice of
@@ -38,7 +39,8 @@ SCOPE = full
 
 - `SCOPE = full` — the normal run: all four specialists.
 - `SCOPE = extend` — only reconcile with `notes/sql/coverage.md` and add the steps it now needs
-  (specialists 2 and 1 only). Use after a `coverage-audit` run added sections.
+  (specialists 2 and 1, in that order — the same first two of a full run). Use after a
+  `coverage-audit` run added sections.
 
 ---
 
@@ -55,7 +57,7 @@ You are the orchestrator. You stay light: dispatch, wait, collect, gate, commit.
 plan in your own context and you never read the standard** — the moment you start judging, the
 cold-reviewer property is gone.
 
-> **Branch guard (step 0):** `git branch --show-current`. Study materials commit on the active branch
+> **Branch guard (step 0b, right after the run-start check):** `git branch --show-current`. Study materials commit on the active branch
 > (CLAUDE.md). On **`main`**, stop and ask Victor which branch to use.
 
 ## Phase 1 — Evidence snapshot (orchestrator, counts only)
@@ -63,9 +65,19 @@ cold-reviewer property is gone.
 Gather the ground truth the specialists check the plan against. Counts, never contents:
 
 - `ls practice/sql/` — the files that exist.
-- Per exercise file: `grep -c` on the exercise header patterns (`-- Exercise N [` and the legacy
-  `-- #NN |`) → a real written count, and `grep -c "✅ Corregido"` → a real scored count.
+- Per exercise file, **these exact commands** — both header formats live on disk, and a pattern that
+  matches neither returns `0`, which `counts-and-truth` would then write into the plan as real:
+  ```
+  grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' practice/sql/NN-name.sql   → written
+  grep -cE '^--.*✅ Corregido' practice/sql/NN-name.sql                      → scored
+  ```
+  The marker sits either on the header line or on its own line under the answer — one per exercise
+  either way. If scored > written for any file, the count is wrong: stop and report it rather than
+  propagating it.
 - `grep -n "✅\|⏳\|done\|in progress" practice/sql/PLANNING.md` → the status baseline for the gate.
+- **The plan's own count rows, copied verbatim**: the §5 file table and the §9 progress table. These
+  are the numbers the history gate protects — the numbers on disk cannot regress, since this flow
+  never touches the exercise files, so a gate that only re-greps disk checks nothing.
 - `grep -n "^## " notes/sql/coverage.md` → the current section list.
 
 Hand this snapshot to specialists 2 and 3. It is evidence, not a finding: the plan is wrong only where
@@ -73,8 +85,15 @@ it disagrees with it.
 
 ## Phase 2 — Specialists, one concern each, sequential
 
-They all edit the same file, so they **never overlap**. Dispatch in this order, waiting for each.
-None commits. `SCOPE = extend` runs only #2 then #1.
+They all edit the same file, so they **never overlap**. Dispatch in **this order — 2 → 1 → 3 → 4** —
+waiting for each. None commits. `SCOPE = extend` runs the first two only, so it is a strict prefix of
+a full run, not a different sequence.
+
+**Why the extension engine goes first.** #2 is the only specialist that *writes new steps*, and #1 is
+the one that audits a step's shape and justification (Section B, Section C). Run #1 first and every
+step born in this run ships unreviewed — the one ripple re-dispatch allowed per concern is not a
+substitute for reviewing work that did not exist yet. #3 and #4 follow because counts and prompt paths
+are only true of the final set of steps.
 
 For each, launch a fresh `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
@@ -93,7 +112,13 @@ For each, launch a fresh `general-purpose` subagent, `model: opus`, `run_in_back
 | 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | §2, §3, §6, §7 · `ROADMAP.md` (for B2) |
 | 2 | `coverage-and-steps` | **Invariants 1, 2** · **B10** | `notes/sql/coverage.md` · §5, §6, §11 · the Phase 1 section list |
 | 3 | `counts-and-truth` | **Invariants 3, 4, 5, 8, 9, 11** | §0, §5, §6, §9 · `PROGRESS.md` · **the Phase 1 snapshot** |
-| 4 | `loop-and-fence` | **Section A** (every section present, non-empty) · **Invariants 6, 7, 10** · **Section E** | §0, §2, §4, §8, §Z · `sql-exercises-prompt.md` |
+| 4 | `loop-and-fence` | **Section A** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 10** · **Section E** | §0, §2, §4, §8, §Z · `sql-exercises-prompt.md` |
+
+**Section A is checked cell by cell.** "Present and non-empty" is not the bar: §0 must carry its six
+named rows (current step · current branch · done condition · next revision point · blocked on · last
+updated), §1 its three lines, §4 its automated/manual marks. A row the plan invented in place of a
+required one — a *next gate* where *next revision point* belongs — passes a presence check and fails
+this one, and it is exactly how off-scope tracks creep back into §0.
 
 **Specialist 2 is the extension engine.** For every `## ` section of `notes/sql/coverage.md` not
 claimed by a step, it does not merely report the gap — it **writes the new step**, to Section C's
@@ -121,9 +146,11 @@ itself in **every** occurrence before committing.
 
 ## Phase 3 — History gate
 
-Re-run the Phase 1 status greps. **Every step marked done before the run must still be marked done**,
-and every scored count must be ≥ what it was. Renumbered or reworded is fine; unmarked, downgraded or
-missing is a failure — a plan that loses the record of completed work is worse than an unaudited one.
+Re-run the Phase 1 status greps **and re-read the §5 and §9 count rows**, comparing them against the
+verbatim copy taken in Phase 1. **Every step marked done before the run must still be marked done**,
+and **every scored count in the plan must be ≥ what it was** — that is the half that matters, since
+the counts on disk never move here. Renumbered or reworded is fine; unmarked, downgraded or missing is
+a failure — a plan that loses the record of completed work is worse than an unaudited one.
 
 On failure: re-dispatch `counts-and-truth` once, quoting the lost lines verbatim. If it still fails,
 **abort without committing**, leave the working tree, and report exactly what was lost.
