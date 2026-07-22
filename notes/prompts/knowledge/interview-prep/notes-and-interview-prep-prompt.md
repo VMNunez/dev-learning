@@ -4,7 +4,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 > **▶ Run first:** `notes-audit` **and** `interview-prep-audit` for this topic — this prompt only finds and fixes gaps between notes and Q&A, so it assumes both sides are already built and quality-checked.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read `_internal/_last-run-report-notes-and-interview-prep.md` (not the `interview-prep-audit` one beside it) and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 ---
 
@@ -258,7 +258,9 @@ git commit -m "docs: cross-reference {TOPIC} notes ↔ interview prep — <one l
 ### Final step — pipeline self-report
 
 After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
-run — write the report file in this orchestrator's folder, commit it on its own, and print the five
+run — write `notes/prompts/knowledge/interview-prep/_internal/_last-run-report-notes-and-interview-prep.md`
+(this folder is shared with `interview-prep-audit`, so both reports carry their orchestrator's suffix and
+neither owns the unsuffixed name), commit it on its own with `_run-tracker.md`, and print the five
 bullets in chat.
 
 ````

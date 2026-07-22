@@ -24,7 +24,7 @@ everything.
 > topic's `coverage.md`; if coverage is missing or stale, the Q&A will be too. Optional:
 > `evidence-intake` to refresh `_job-market-evidence.md`, which the market-analysis stage (M) reads.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read `_internal/_last-run-report-interview-prep-audit.md` (not the `notes-and-interview-prep` one beside it) and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_interview-prep-standard.md` (the bar) · `_interview-prep-write-prompt.md` (author) ·
@@ -331,7 +331,9 @@ detected (recommended standard rule additions).
 ### Final step — pipeline self-report
 
 After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
-run — write the report file in this orchestrator's folder, commit it on its own, and print the five
-bullets in chat.
+run — write `notes/prompts/knowledge/interview-prep/_internal/_last-run-report-interview-prep-audit.md`
+(this folder is shared with `notes-and-interview-prep`, so both reports carry their orchestrator's
+suffix and neither owns the unsuffixed name), commit it on its own with `_run-tracker.md`, and print the
+five bullets in chat.
 
 ````
