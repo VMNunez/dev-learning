@@ -35,8 +35,20 @@ public class ProjectService {
     }
 
     public ProjectResponse getById(Long id) {
-        return projectRepository.findById(id).map(this::toResponse)
+        Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isManager = Objects.requireNonNull(auth).getAuthorities().stream()
+                .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
+
+
+        if (!isManager && !project.getActive()) {
+            throw new ResourceNotFoundException("Project not found with id: " + id);
+        }
+
+        return toResponse(project);
 
     }
 
