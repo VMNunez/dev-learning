@@ -24,7 +24,8 @@ paste the exercise file either; it is read from disk.
 ## Configuration — edit only this block
 
 MODE  = [practice | review]
-TOPIC = [basics | joins | group-by | join-pitfalls | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
+TOPIC = [R1 | R2 | R3 | R4 | R5   ← a revision point (§8b); everything below is a normal topic
+         basics | joins | group-by | join-pitfalls | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
 COUNT =
 FILE  = practice/sql/01-basics.sql
         practice/sql/02-execution-order-set-ops.sql
@@ -87,6 +88,11 @@ new one.
 | indexes | practice/sql/13-indexes.sql | 11 |
 | live-database | practice/sql/14-live-database.sql | 12 |
 | report-queries | practice/sql/15-report-queries.sql | 13 |
+| R1 | practice/sql/R1-repaso.sql | *(revision point — steps 0–1)* |
+| R2 | practice/sql/R2-repaso.sql | *(revision point — steps 2–4)* |
+| R3 | practice/sql/R3-repaso.sql | *(revision point — steps 5–7)* |
+| R4 | practice/sql/R4-repaso.sql | *(revision point — steps 8–10)* |
+| R5 | practice/sql/R5-repaso.sql | *(revision point — steps 11–12)* |
 
 `practice/sql/01-basics.sql` is deliberately absent: it carries the pre-canonical schema and is
 closed, so nothing is ever appended to it again (one file, one schema).
@@ -105,6 +111,34 @@ closed, so nothing is ever appended to it again (one file, one schema).
 A **Moment 2b reinforcement block** is never picked by this rule — it is picked only when it is the
 last block in the step and its concepts have not yet been re-drilled since it was appended.
 
+### `{TOPIC}` is a revision point (`R1`–`R5`) — resolve it from the mistake log
+
+A revision point is not a topic: it is a **span of steps** whose failures are re-drilled together
+(PLANNING.md §8b). Everything resolves differently, and **`practice` mode only** — `review` mode grades
+the resulting file like any other.
+
+| Value | Where it comes from |
+|-------|---------------------|
+| `{FILE}` | the path table above: `practice/sql/R{n}-repaso.sql`. Its own file, never appended to a first-pass file — a repaso batch is uncounted (§5) and mixing it into a step's file corrupts that step's score. |
+| `{COUNT}` | `8`, unless Victor overrode it. Revision batches are not budgeted in §5. |
+| `{REVIEW}` | always `yes`. |
+| `{FOCUS}` | **the open rows of `practice/sql/MISTAKES.md` whose `Step` falls in the span**, ordered by `Times` descending. This is the whole point of the mechanism: the batch drills what the record says was answered wrong, not what feels rusty. |
+
+Spans: `R1` → steps 0–1 · `R2` → steps 2–4 · `R3` → steps 5–7 · `R4` → steps 8–10 · `R5` → steps 11–12.
+
+**Read `practice/sql/MISTAKES.md` before anything else on these runs**, take the `## Open` rows whose
+`Step` is in the span, and build `{FOCUS}` from their `Concept` cells, highest `Times` first. A concept
+failed three times earns the batch before one failed once — weight the exercise count towards the top
+of that list rather than splitting evenly.
+
+**If the span has no open rows, the point still fires** (§8b is explicit). `{FOCUS}` becomes the
+concepts of that span's steps that have appeared in the fewest exercises — read the §6 `**Concepts:**`
+lines for those steps and the exercise files themselves. Say in one line which case applied: "R2: 3
+filas abiertas en MISTAKES.md" or "R2: sin filas abiertas — foco por cobertura más fina".
+
+Print the resolution block with `Punto de repaso {R}` in place of `Step {N}`, and list the concepts you
+took, with their `Times`.
+
 **Then print this and continue in the same turn — it is a statement, not a question:**
 
 ```
@@ -117,6 +151,8 @@ Focus: {FOCUS}
 Validation:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
 - If {TOPIC} is not in the path table above: stop and report it.
+- **If {TOPIC} is `R1`–`R5`:** the §6-step rules below do not apply — a revision point has no step of its own. Skip straight to the revision-point resolution above. In `review` mode a repaso file is graded normally, but **it never updates §8, §5 or a step status** (see the review branch): it is uncounted by design.
+- If {TOPIC} is `R1`–`R5` in `practice` mode and `practice/sql/MISTAKES.md` does not exist: print "Error: no existe `practice/sql/MISTAKES.md`. Un punto de repaso deriva su foco de sus filas abiertas." and stop — do not fall back to a generic batch over the span. Generating one anyway is exactly the "revise what feels rusty" behaviour §8b exists to replace.
 - If `practice/sql/PLANNING.md` has no §6 step for {TOPIC}: print "Error: {TOPIC} no tiene step en el plan. Añádelo a §6 antes de correr esto." and stop — do not fall back to a default COUNT. A topic with no step is a planning gap, and silently generating 12 exercises hides it.
 - **If the §6 step exists but states no `COUNT` (or no `**Focus:**` line): print "Error: el step de {TOPIC} en §6 no declara [COUNT / Focus]. Arréglalo en `practice/sql/PLANNING.md` antes de correr esto." and stop.** A step missing the value is the same planning gap as a missing step, and this is the case that used to fall through to the minimum-4 warning below and quietly generate a batch nobody asked for. Never invent the value, never round to the minimum, never ask Victor for it.
 - If Victor set `COUNT` explicitly and it is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4. **This applies only to a typed override** — a plan-derived COUNT is never silently corrected; it errors above.

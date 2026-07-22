@@ -154,7 +154,11 @@ checks. Aligned 2026-07-22.
 
 1. Every section of `notes/sql/coverage.md` is claimed by exactly one step, or excluded in §Z with a
    reason. None unclaimed, none claimed twice.
-2. Every step names a file that appears in §5, and every file in §5 belongs to a step.
+2. Every step names a file that appears in §5's step table, and every file in that table belongs to a
+   step. **Declared exception:** the revision files (`R{n}-repaso.sql`) belong to a §8b point, not a
+   step, and live in their own §5 table with no target — they are the physical form of "a revision
+   batch is extra" (B4). A plan that lets them into the step table has started counting repaso as
+   progress.
 3. **Counts, and the three that are never conflated** — *written* (the statement exists), *answered* (a
    query is under it), *scored* (a review run graded it); only **scored** moves a status, and a plan
    reporting answered work as scored claims progress that never happened. Per-step counts for a shared

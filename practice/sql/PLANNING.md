@@ -107,12 +107,26 @@ every concept is drilled once and never returns. Left to the optional trigger al
 only when Victor notices it — and a forgotten concept does not feel rusty, it feels learned. The
 mistake log is the objective substitute for that feeling.
 
-**Prompt:** the same `sql-exercises-prompt.md`, `MODE = practice`, on the topic being revisited.
+**Prompt:** the same `sql-exercises-prompt.md`, `MODE = practice`. Lo que pegas depende de cuál de los
+dos triggers estés atendiendo:
+
+**Punto de repaso de §8b (obligatorio)** — `TOPIC` es el punto, no un tema:
+
+```
+MODE  = practice
+TOPIC = R2
+```
+
+El prompt reconoce `R1`–`R5`, abre `practice/sql/MISTAKES.md`, coge las filas abiertas cuyo `Step` cae
+en el span del punto, las ordena por `Times` descendente y **eso** es el foco. Escribe en
+`practice/sql/R2-repaso.sql`, su propio archivo. Si el span no tiene filas abiertas el punto se dispara
+igual y el foco pasa a los conceptos del span menos ejercitados.
+
+**Revisita voluntaria de un tema** — `TOPIC` es el tema:
 
 ```
 MODE  = practice
 TOPIC = <the topic being revisited>
-COUNT = 8
 ```
 
 **Again, nothing else is pasted — and this is the part that changed.** A review batch used to require
@@ -121,12 +135,13 @@ difficulty split was fixed at 25/50/25 with no notion of a review batch. It is n
 prompt derives `{REVIEW} = yes`, drops the Intro tier, splits 60% Standard / 40% Challenge, labels the
 exercises `[Repaso]`, and excludes them from the step's target — all of it automatically.
 
-`{REVIEW} = yes` is derived from **one of two things**, never from the paste:
-- a **`**Moment 2b reinforcement block:**`** appended to the §6 step by a `MODE = review` run that
-  scored under 60% — it carries its own `COUNT` and its own `**Focus:**`, taken from the concepts that
-  actually failed;
-- or, for a voluntary revisit, the prompt's "target already met" guard: it notices the file has already
-  written its first-pass target and offers the repaso batch.
+`{REVIEW} = yes` is derived from **una de tres cosas**, nunca de la pegada:
+- un `TOPIC` que es un punto de repaso (`R1`–`R5`) — siempre es un lote de repaso;
+- un **`**Moment 2b reinforcement block:**`** que un run de `MODE = review` añadió al step de §6 tras
+  puntuar por debajo del 60% — lleva su propio `COUNT` y su propio `**Focus:**`, sacados de los
+  conceptos que fallaron;
+- o, en una revisita voluntaria, el guard "target already met": el prompt ve que el archivo ya tiene
+  escrito su target first-pass y te ofrece el lote de repaso.
 
 Why it stopped being manual: leaving it to a pasted line is exactly how #21–#40 happened — twenty
 exercises that re-covered the same ground at the same difficulty, buying three genuinely new concepts
@@ -324,6 +339,24 @@ will score normally. **Both formats carry the `-- ✅ Corregido` marker** — it
 so a graded legacy exercise is skipped as settled exactly like a current-format one (corrected
 2026-07-22; this file used to claim otherwise, which cost `01-basics.sql` its markers on the first
 review run).
+
+### Revision files — `practice/sql/R{n}-repaso.sql`
+
+Uno por punto de repaso de §8b, creado por su lote de Moment 2b (`TOPIC = R2`) y **no antes**. No están
+en la tabla de arriba porque no pertenecen a ningún step: **no tienen target, no cuentan para nada y
+nunca mueven un estado de §8** — por eso viven en archivo propio en vez de apilarse dentro del archivo
+de un step, donde inflarían su cuenta y ensuciarían su nota.
+
+| Archivo | Punto | Span (steps) | Estado |
+|---------|-------|--------------|--------|
+| `R1-repaso.sql` | R1 | 0–1 | sin crear |
+| `R2-repaso.sql` | R2 | 2–4 | sin crear |
+| `R3-repaso.sql` | R3 | 5–7 | sin crear |
+| `R4-repaso.sql` | R4 | 8–10 | sin crear |
+| `R5-repaso.sql` | R5 | 11–12 | sin crear |
+
+Todos llevan el esquema canónico, incluido `R1`, cuyo span toca `01-basics.sql` (esquema v1): los
+conceptos fallados se reexpresan contra el canónico en vez de resucitar un esquema cerrado.
 
 ### The mistake log — `practice/sql/MISTAKES.md`
 
@@ -815,6 +848,14 @@ answered wrong. Not "what feels rusty". **Order them by `Times` descending**: th
 times earns the batch before the one failed once. If a span has no open rows, the point still fires, and `FOCUS`
 becomes the concepts of those files that have appeared in the fewest exercises.
 
+**Y esto es ejecutable, no una intención.** Pegas `TOPIC = R2` y el prompt hace exactamente lo de
+arriba: filtra `## Open` por la columna `Step`, ordena por `Times`, y escribe en `R2-repaso.sql`. Los
+spans por step son los de la tabla de arriba — R1 → steps 0–1 · R2 → 2–4 · R3 → 5–7 · R4 → 8–10 ·
+R5 → 11–12 — y son también los que usa el prompt. Hasta 2026-07-22 esta sección describía un mecanismo
+que ningún prompt sabía ejecutar: `MODE = practice` solo miraba la línea `**Focus:**` del step, así que
+un ⚠️ suelto en un review de 85% dejaba la fila abierta y el punto de repaso sin nada de donde derivar
+su foco.
+
 A revision point clears when the open rows in its span are closed by a later scored run.
 
 ### A revision batch is extra
@@ -903,8 +944,10 @@ Cross-checks between sections. Verify these whenever this plan is edited:
 1. **Coverage vs steps** — every section of `notes/sql/coverage.md` is claimed by exactly one step in
    §6, or listed in §Z as deliberately excluded. No section unclaimed, none in two steps. (This is
    about coverage **section names**, not the prompt's `TOPIC` values — two steps may share a `TOPIC`.)
-2. **Steps vs exercise files** — every step in §6 names an exercise file that appears in §5, and every
-   file in §5 belongs to a step.
+2. **Steps vs exercise files** — every step in §6 names an exercise file that appears in §5's step
+   table, and every file in that table belongs to a step. **Los `R{n}-repaso.sql` son la excepción
+   declarada**: viven en su propia tabla de §5, pertenecen a un punto de §8b y no a un step, y ningún
+   step puede nombrarlos.
 3. **Exercise counts** — every step in §6 states a count; the per-step counts for a shared file sum to
    that file's first-pass target in §5; §8's totals match §5's. A file whose *written* count exceeds
    its target is not a violation — that is a review batch (Moment 2b) and is expected.

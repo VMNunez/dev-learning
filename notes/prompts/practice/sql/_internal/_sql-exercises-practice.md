@@ -76,6 +76,11 @@ Stop and wait for Victor's response.
 
 Skip this step if the file already exists.
 
+**Revision-point files (`R{n}-repaso.sql`) always ship the canonical bookstore setup block**, even when
+their span includes `01-basics.sql`, which carries the old v1 schema. One file, one schema: re-express
+the failed v1 concepts against the canonical columns rather than reviving a schema that is closed. If a
+concept cannot be re-expressed (it depended on a v1-only column), drop it and say so in one line.
+
 **Self-contained topics — no bookstore setup block:** for `schema-design`, `normalization`,
 `data-types` and `ddl`, do NOT generate the bookstore setup block. Each exercise in these topics
 carries its own table definitions. For a new file of one of these topics, generate only the
@@ -259,6 +264,11 @@ skill in a technical interview ("explain every line, not just write it"):
 ```
 Do NOT add this line to Intro or Standard exercises — keep those frictionless. It is Challenge-only,
 where the reasoning is deepest and most worth explaining out loud.
+
+**Revision-point batches (`{TOPIC} = R1`–`R5`) draw their seeds from every topic in the span**, not
+from one block: for each concept in `{FOCUS}`, open the seed block of the topic that concept belongs to.
+The span's steps are given in the shell's revision-point table. Everything else — no Intro tier, the
+60/40 split, the `[Repaso]` label, uncounted — follows from `{REVIEW} = yes` below.
 
 **Topic-specific format and seeds.** The structure a batch should take on this topic, and concrete
 exercise ideas worth drilling, live in **`notes/prompts/practice/sql/_internal/_sql-exercise-seeds.md`**. Open it

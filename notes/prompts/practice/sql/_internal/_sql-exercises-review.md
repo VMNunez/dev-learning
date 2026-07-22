@@ -286,6 +286,14 @@ Then proceed to Steps 4 and 5.
 Five things must move when a topic is scored, and the failure mode is doing one of them. Do all five,
 or state explicitly which one you skipped and why.
 
+> **Revision-point files (`R{n}-repaso.sql`) are the one exception, and it is deliberate.** Run **4a**
+> (any genuinely new concept still gets listed) and **Step 5** — closing the redeemed `MISTAKES.md`
+> rows *is* the purpose of the batch. **Skip 4b, 4c and 4d entirely**: a repaso batch is uncounted
+> (PLANNING.md §5 and §8b), so it never touches the exercises table, never moves a `Scored / target`
+> figure and never flips a §8 status. Print "Lote de repaso: no cuenta para ningún paso." and, in place
+> of 4e, state which of the point's open rows closed and which are still open — a revision point clears
+> only when its span has no `## Open` row left.
+
 #### 4a — PROGRESS.md, the concept list
 
 Read PROGRESS.md, `## SQL` section. Add every concept this batch actually exercised to the concept

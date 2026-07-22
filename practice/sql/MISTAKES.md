@@ -18,6 +18,9 @@ scores its concept correct again — the closing run appends the date, it is nev
   row** and updates *Last seen* — it never opens a second row for the same concept. This column is the
   priority order for a revision batch: highest first.
 - **Sev** is the worst grade the concept has ever received (❌ outranks ⚠️).
+- **Step** is the plan step the failed exercise belongs to, as a bare number. It is what makes a
+  revision point executable: `TOPIC = R2` filters this table to steps 2–4, sorts by *Times*, and drills
+  exactly those concepts. Write `4`, never `Step 4` or the step's name.
 
 ---
 
