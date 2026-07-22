@@ -3,7 +3,7 @@ description: Audit and extend practice/sql/PLANNING.md against the SQL plan stan
 argument-hint: SCOPE=full|extend
 ---
 
-Read `notes/prompts/practice/sql-plan-audit.md` and execute it in full as the hands-off orchestrator it describes, running inside Claude Code.
+Read `notes/prompts/practice/sql/sql-plan-audit.md` and execute it in full as the hands-off orchestrator it describes, running inside Claude Code.
 
 Configuration from the user: $ARGUMENTS
 

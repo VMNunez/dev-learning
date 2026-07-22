@@ -98,7 +98,7 @@ authoritative.
 
 ## Run-start check — read the last run's report
 
-Before anything else, read `notes/prompts/practice/_last-run-report-sql-exercises.md` (it may not
+Before anything else, read `notes/prompts/practice/sql/_last-run-report-sql-exercises.md` (it may not
 exist yet — that is fine, skip silently). If it exists and its `Status:` line says `open`, surface the
 Verdict in **one line** before continuing:
 
@@ -1171,7 +1171,7 @@ git commit -m "docs: SQL {TOPIC} review — [X/Y correct], [main gap or 'all sol
 ## Final step — write the self-report
 
 **Runs at the end of every run, in both modes.** Write
-`notes/prompts/practice/_last-run-report-sql-exercises.md`, overwriting the previous one. This is the
+`notes/prompts/practice/sql/_last-run-report-sql-exercises.md`, overwriting the previous one. This is the
 adaptation of `notes/prompts/_pipeline-self-report.md` for a single-shot prompt: no subagents, no
 slices, so three bullets instead of five.
 
@@ -1225,7 +1225,7 @@ were wrong belongs in the chat summary, not here.
 exception in CLAUDE.md, and separate from the exercise commit Victor runs:
 
 ```
-git add notes/prompts/practice/_last-run-report-sql-exercises.md
+git add notes/prompts/practice/sql/_last-run-report-sql-exercises.md
 ```
 ```
 git commit -m "docs: self-report for sql-exercises run ({MODE}, {TOPIC})"

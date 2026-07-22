@@ -237,7 +237,7 @@ The SQL section has two parts — keep both:
 
 ### D4 — Simulations section (from the Step C counts)
 
-You are the **safety net** here, not the primary writer: `notes/prompts/practice/simulation-review-prompt.md`
+You are the **safety net** here, not the primary writer: `notes/prompts/practice/simulations/simulation-review-prompt.md`
 (Step 5) already refreshes this section when a simulation is reviewed, because that is where the
 Pass/Borderline/Fail verdict is decided. Your job is to catch what it missed. Both must produce
 **identical** output — if this format or Step C's counting rules ever drift from that prompt's, the

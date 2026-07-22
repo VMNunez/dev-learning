@@ -6,7 +6,7 @@
 *what to update when a step closes*, and *when the whole track is finished*.
 
 **Database:** PostgreSQL (local, pgAdmin). **Schema:** the canonical bookstore schema defined in
-`notes/prompts/practice/sql-exercises-prompt.md` (`authors`, `publishers`, `genres`, `books`,
+`notes/prompts/practice/sql/sql-exercises-prompt.md` (`authors`, `publishers`, `genres`, `books`,
 `customers`, `orders`, `order_items`, `reviews`) — that prompt is the single source of truth for it.
 The capstone switches to the TimeTrack model.
 
@@ -69,7 +69,7 @@ daily 12:30 session.** Each moment states the trigger, the prompt, and the confi
 ### Moment 2 — Generate the exercises  ▶ RUN A PROMPT
 
 **Trigger:** immediately after Moment 1, with the exercise file still empty.
-**Prompt:** `notes/prompts/practice/sql-exercises-prompt.md` — paste into a **new chat**.
+**Prompt:** `notes/prompts/practice/sql/sql-exercises-prompt.md` — paste into a **new chat**.
 
 ```
 MODE  = practice

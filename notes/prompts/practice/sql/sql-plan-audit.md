@@ -97,7 +97,7 @@ are only true of the final set of steps.
 
 For each, launch a fresh `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
-> Read `notes/prompts/practice/_sql-plan-standard.md` — **only the sections your concern owns**, listed
+> Read `notes/prompts/practice/sql/_sql-plan-standard.md` — **only the sections your concern owns**, listed
 > below — and audit `practice/sql/PLANNING.md` against them. Fix what falls short **directly in the
 > file**. Do **NOT** commit. Return a **check-by-check trace**: one line per check you own,
 > `check · verdict · what you changed (or "no change")`. Never paste plan content back. End with any
@@ -196,7 +196,7 @@ mid-audit.
 ## Final step — pipeline self-report
 
 Read `notes/prompts/_pipeline-self-report.md` and execute it: write
-`notes/prompts/practice/_last-run-report-sql-plan-audit.md`, update `notes/prompts/_run-tracker.md`,
+`notes/prompts/practice/sql/_last-run-report-sql-plan-audit.md`, update `notes/prompts/_run-tracker.md`,
 commit both on their own, print the five bullets, and run the refinement step — that is what makes
 this prompt improve from its own runs instead of from theory.
 
