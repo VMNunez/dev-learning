@@ -61,6 +61,15 @@ Time limits by type (match the existing bank):
    (0 / 5)").
 4. Do not repeat a scenario already in the bank. Each new test must use a different domain.
 
+**`TYPE = sql` only — read the exercise plan first.** Open `practice/sql/PLANNING.md` §8 (the progress
+table) and list the steps whose Status is ✅. **A SQL test may only require techniques from closed
+steps.** This is not a style preference: the bank's first five tests were written before the plan
+existed and every one of them needs window functions (Step 7), which makes them unusable for months.
+Concretely — joins need Step 1, `GROUP BY`/`HAVING` Step 2, `NULL` handling Step 4, subqueries and CTEs
+Step 5, date/string functions Step 6, window functions Step 7, DML and transactions Step 8. If fewer
+than three steps are closed, print "Not enough closed steps for a realistic SQL test — the first one
+is due when Step 5 closes." and stop. State in your Step 4 report which closed steps each test drew on.
+
 ---
 
 ## Step 2 — Design and write each test
@@ -97,8 +106,9 @@ layered separation, Bean Validation, 404 via custom exception, DTOs not entities
 the service) · `## Bonus (if done before time)`.
 
 **sql** — then: `## Schema` (a ```sql CREATE TABLE block, 3–5 related tables with FKs) ·
-`## Queries to write` (numbered, 6–9 queries that escalate from simple JOINs to GROUP BY/HAVING,
-NULL handling, and at least one that needs a subquery or window function at challenge level) ·
+`## Queries to write` (numbered, 6–9 queries that escalate in difficulty, **drawn only from closed
+steps** — the hardest technique in the test is the one from the highest closed step, and at challenge
+level at least one query must combine two of them) ·
 `## Evaluation — what a good solution looks like` (one checkbox per query naming the technique it
 tests) · `## Bonus (if done before time)`.
 
@@ -135,7 +145,7 @@ git add practice/simulations/{TYPE}/ practice/simulations/TRACKER.md
 git commit -m "docs: add {COUNT} {TYPE} simulation(s) — [main skill targeted]"
 ```
 
-> Branch note: both these simulation specs and the `practice/sql/` exercises live on `main` — there is no
-> separate SQL branch. Commit on `main`. Precondition: if `practice/simulations/` does not exist on
-> `main` yet (repo-layout reorg still on the feature branch), stop and flag it — merge the reorg first.
+> Branch note: study materials commit on **whatever branch is currently active** (`CLAUDE.md`,
+> 2026-07-14) — `main` never receives direct commits, only merges via PR. Run `git branch --show-current`
+> first; if it returns `main`, stop and ask which branch to use.
 ````
