@@ -1,7 +1,7 @@
 # Last run — `sql-plan-audit`
 
 **Date:** 2026-07-22 · **Target:** `practice/sql/PLANNING.md` · **Scope:** `full` (first run)
-**Status:** open
+**Status:** applied in d571c0f
 
 1. **Plan vs reality** — the 2 → 1 → 3 → 4 order held: #2 found no coverage gaps, so the "extension
    engine first" rationale was never exercised, but #4 running last was decisive — it deleted sections
@@ -30,4 +30,8 @@
    (#1), the prompt is silent where it needed to speak, and it changed the result — a cold re-dispatch
    would have re-derived a 90k-token audit. Held `open` rather than applied: the recovery worked, so
    the finding needs a second occurrence to prove the resume is the right general answer rather than
-   luck of a warm transcript.
+   luck of a warm transcript. **Overturned by the cold reviewer**, which approved-with-tightening: the
+   token-saving framing above fails condition 3, but the real defect is that no gate fires on a
+   *silent* specialist, so the default is to advance to #3/#4 and ship a plan whose Section B/C fixes
+   were never written — a wrong artifact, not a slow one. Applied in that reviewed form, with the
+   fallback the draft lacked.
