@@ -5,19 +5,19 @@ import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.exception.BusinessRuleViolationException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.exception.UnauthorizedException;
-import com.victor.timetrack.model.EntryStatus;
-import com.victor.timetrack.model.Project;
-import com.victor.timetrack.model.TimeEntry;
-import com.victor.timetrack.model.User;
+import com.victor.timetrack.model.*;
 import com.victor.timetrack.repository.ProjectRepository;
 import com.victor.timetrack.repository.TimeEntryRepository;
+import com.victor.timetrack.repository.TimeEntrySpecifications;
 import com.victor.timetrack.repository.UserRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Objects;
 
@@ -126,21 +126,38 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
-    public List<TimeEntryResponse> getAll() {
+    public List<TimeEntryResponse> findByFilter(Long userId, Long projectId, EntryStatus status, YearMonth month) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = Objects.requireNonNull(auth).getName();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
 
         boolean isManager = Objects.requireNonNull(auth).getAuthorities().stream()
                 .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
 
-        return isManager
-                ? timeEntryRepository.findAll().stream().map(this::toResponse).toList()
-                : timeEntryRepository.findByUser(user).stream().map(this::toResponse).toList();
-    }
+        LocalDate start = null;
+        LocalDate end = null;
 
+        if (month != null) {
+            start = month.atDay(1);
+            end = month.atEndOfMonth();
+        }
+
+        if (!isManager) {
+            String email = auth.getName();
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+            userId = user.getId();
+        }
+
+        Specification<TimeEntry> spec = Specification
+                .where(TimeEntrySpecifications.hasUserId(userId))
+                .and(TimeEntrySpecifications.hasProjectId(projectId))
+                .and(TimeEntrySpecifications.hasStatus(status))
+                .and(TimeEntrySpecifications.dateBetween(start,end));
+
+        return timeEntryRepository.findAll(spec)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
     public TimeEntryResponse update(Long id, CreateTimeEntryRequest request) {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
@@ -200,6 +217,8 @@ public class TimeEntryService {
 
         timeEntryRepository.deleteById(id);
     }
+
+
 
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
