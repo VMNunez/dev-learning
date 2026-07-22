@@ -35,7 +35,7 @@ hints) — never skip it.
 Read the completed step's concept source per its format (project 07: the `**Concept learned:**`
 line; projects 08+: the "New concepts introduced" list routed by its Topic column). **Route each
 concept with the Step 4 mapping table in
-`notes/prompts/strategy/tracking/_concept-extraction-standard.md`** — read it before writing; like
+`notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md`** — read it before writing; like
 the README standard below, it only auto-loads inside `progress-update`, so an inline edit without
 it silently mis-routes (the trap it exists for: pure Java constructs like `Optional<T>` or
 `BigDecimal.compareTo()` land in Spring Boot just because they appeared in a Spring project —
@@ -47,7 +47,7 @@ from the repo root.
 
 ## 3 — Project README: "What I learned"
 
-**Before touching the README, read `notes/prompts/projects/readme/_readme-standard.md`** — like the
+**Before touching the README, read `notes/prompts/projects/readme/_internal/_readme-standard.md`** — like the
 note standards, it only auto-loads inside `readme-audit`, so an inline edit without it silently
 misses the format. Keep the entries short bullets, no explanations (details belong in `notes/`).
 

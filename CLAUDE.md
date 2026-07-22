@@ -270,14 +270,14 @@ notes/java/
 
 ### Interview prep — in-session rules
 
-→ Question format and quality bar in `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md`; to build/audit a topic's Q&A run `notes/prompts/knowledge/interview-prep/interview-prep-audit.md` (the entry point — author + cold reviewer subagents per topic).
+→ Question format and quality bar in `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`; to build/audit a topic's Q&A run `notes/prompts/knowledge/interview-prep/interview-prep-audit.md` (the entry point — author + cold reviewer subagents per topic).
 
 - Add questions naturally as concepts are learned — not in one batch at the end
 - Add to BOTH `en/` and `es/` at the same time — same question, same section, translated. Never add to one without the other
 
 ### README format
 
-All README format rules and quality standards live in `notes/prompts/projects/readme/_readme-standard.md`; run `readme-audit.md` (inside Claude Code) to apply them. Run in a separate conversation.
+All README format rules and quality standards live in `notes/prompts/projects/readme/_internal/_readme-standard.md`; run `readme-audit.md` (inside Claude Code) to apply them. Run in a separate conversation.
 
 ---
 
