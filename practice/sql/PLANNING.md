@@ -23,8 +23,8 @@ report queries TimeTrack needs without looking anything up.
 | **Current step** | Step 0 — Querying basics (20/30 first-pass answered, +20 review) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
 | **Done condition** | `Review: sql-exercises MODE = review scores ≥ 80% on 01-basics.sql` |
-| **Next gate** | G0 — bring `practice/sql/` up to date from `main` (see below), then G3 |
-| **Blocked on** | ⚠️ the current branch is **behind `main`** on `practice/sql/` — it has an old 20-exercise `01-basics.sql` and no `02-joins.sql` at all. Merge `main` into the branch before touching any SQL file, or 30 exercises get silently overwritten. |
+| **Next gate** | G3 — split `notes/sql/` into `en/` + `es/` (G0 ✅ 2026-07-22, G2 ✅ 2026-07-18) |
+| **Blocked on** | nothing. The next action is a `MODE = review` run on the 40 answered exercises of `01-basics.sql` (Moment 4) — they have never been scored. |
 | **Last updated** | 2026-07-22 |
 
 ---
@@ -232,41 +232,63 @@ Flat, numbered, matching `CLAUDE.md` ("flat files"). "Done" counts are what exis
 
 **Three counts, never conflated.**
 - *Written* = the prompt generated the statement.
-- *Answered* = the query is written under it **and** scored ≥ 80% by a `review` run. Only this one
-  advances a step — a file full of unanswered statements is worth nothing.
+- *Answered* = the query is written under it. A file full of unanswered statements is worth nothing.
+- *Scored* = a `review` run has graded it ≥ 80%. **Only this one advances a step.** Answered-but-never-
+  scored is the state `01-basics.sql` is in today: 40 queries written, zero validated.
 - *Target* = the **first-pass** exercises the step needs. **Review batches (Moment 2b) are extra and
   uncounted** — a file legitimately grows past its target forever, and that is not drift.
 
 `01-basics.sql` shows all three: 40 written, of which ~20 are a review batch, against a first-pass
 target of 30.
 
-| File | Step(s) | Written | Answered | First-pass target | Status |
-|------|---------|---------|----------|-------------------|--------|
-| `01-basics.sql` | 0 | 40 *(≈20 review)* | 40 | 30 | closing set pending |
-| `02-joins.sql` | 1 | 10 | **0** | 22 | statements only — never studied |
-| `03-aggregates.sql` | 2 | 0 | 0 | 12 | to create |
-| `04-join-pitfalls.sql` | 3 | 0 | 0 | 12 | to create |
-| `05-nulls.sql` | 4 | 0 | 0 | 12 | to create |
-| `06-subqueries-ctes.sql` | 5 | 0 | 0 | 16 | to create |
-| `07-dates-strings.sql` | 6 | 0 | 0 | 12 | to create |
-| `08-window-functions.sql` | 7 | 0 | 0 | 12 | to create |
-| `09-dml-transactions.sql` | 8 | 0 | 0 | 16 | to create |
-| `10-schema-design.sql` | 9 | 0 | 0 | 12 | to create |
-| `11-data-types-ddl.sql` | 10 | 0 | 0 | 12 | to create |
-| `12-indexes.sql` | 11 | 0 | 0 | 12 | to create |
-| `13-live-database.sql` | 12 | 0 | 0 | 12 | to create |
-| `14-report-queries.sql` | 13 | 0 | 0 | 8 | to create |
+| File | Step(s) | Written | Answered | Scored | First-pass target | Status |
+|------|---------|---------|----------|--------|-------------------|--------|
+| `01-basics.sql` | 0 | 40 *(≈20 review)* | 40 | **0** | 30 | answered, never scored — run Moment 4 |
+| `02-joins.sql` | 1 | 10 | **0** | 0 | 22 | statements only — never studied |
+| `03-aggregates.sql` | 2 | 0 | 0 | 0 | 12 | to create |
+| `04-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
+| `05-nulls.sql` | 4 | 0 | 0 | 0 | 12 | to create |
+| `06-subqueries-ctes.sql` | 5 | 0 | 0 | 0 | 16 | to create |
+| `07-dates-strings.sql` | 6 | 0 | 0 | 0 | 12 | to create |
+| `08-window-functions.sql` | 7 | 0 | 0 | 0 | 12 | to create |
+| `09-dml-transactions.sql` | 8 | 0 | 0 | 0 | 16 | to create |
+| `10-schema-design.sql` | 9 | 0 | 0 | 0 | 12 | to create |
+| `11-data-types-ddl.sql` | 10 | 0 | 0 | 0 | 12 | to create |
+| `12-indexes.sql` | 11 | 0 | 0 | 0 | 12 | to create |
+| `13-live-database.sql` | 12 | 0 | 0 | 0 | 12 | to create |
+| `14-report-queries.sql` | 13 | 0 | 0 | 0 | 8 | to create |
 
 **First-pass total when the track is done: 200 exercises across 14 files.** Review batches add on top
-and are deliberately not budgeted — 50 written today, of which 40 are answered.
+and are deliberately not budgeted — 50 written today, 40 answered, 0 scored.
 
-Header format stays as it already is in `01-basics.sql`:
+**Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
+one by hand.
+
+*Legacy* — `01-basics.sql` and the original ten of `02-joins.sql`, written before the prompt existed.
+The answer goes directly under the description, with no marker:
 
 ```sql
 -- #07 | LEFT JOIN — finding missing data
 -- List every author who has never had a book ordered.
 SELECT ...
 ```
+
+*Current* — everything the prompt generates from now on, including new batches appended to a legacy
+file:
+
+```sql
+-- Exercise 41 [Standard]: LEFT JOIN — finding missing data
+-- List every author who has never had a book ordered.
+-- Your answer:
+SELECT ...
+-- ✅ Corregido 2026-07-22
+```
+
+Appending to a legacy file leaves it **mixed**, and the prompt warns you and asks before doing it —
+answer yes; a mixed file is expected and correctly handled. `review` mode reads both (legacy answers
+are the SQL lines between one `-- #NN |` and the next), so the 40 answered exercises in `01-basics.sql`
+will score normally. Only the *current* format can carry the `-- ✅ Corregido` marker, so legacy
+exercises get re-read on every review run instead of being skipped as settled.
 
 ### Note files — `notes/sql/en/` + `notes/sql/es/`
 
@@ -281,7 +303,7 @@ next free number for `notes/sql/` is `15-`):
 | 15 | `en/15-set-operations.md` | `es/15-operaciones-de-conjuntos.md` | Step 0 |
 | 16 | `en/16-nulls-and-three-valued-logic.md` | `es/16-nulls-y-logica-de-tres-valores.md` | Step 4 |
 | 17 | `en/17-date-and-string-functions.md` | `es/17-funciones-de-fecha-y-texto.md` | Step 6 |
-| 18 | `en/18-ddl.md` | `es/18-ddl.md` | Step 10 |
+| 18 | `en/18-ddl.md` | `es/18-ddl-creacion-de-esquemas.md` | Step 10 |
 | 19 | `en/19-query-plans.md` | `es/19-planes-de-ejecucion.md` | Step 11 |
 | 20 | `en/20-live-database-and-errors.md` | `es/20-base-de-datos-en-vivo-y-errores.md` | Step 12 |
 
@@ -630,8 +652,9 @@ on whatever feature branch the morning project block is on.
 
 - **Before any SQL session, check the branch has the latest `practice/sql/`.** A feature branch cut
   before the last SQL commit still carries the old exercise files, and appending to them silently
-  drops the newer exercises when it merges. This has already happened: `fix/backend-backlog` carries a
-  20-exercise `01-basics.sql` while `main` has 40 plus a whole `02-joins.sql`.
+  drops the newer exercises when it merges. This has already happened once: on 2026-07-22
+  `fix/backend-backlog` carried a 20-exercise `01-basics.sql` while `main` had 40 plus a whole
+  `02-joins.sql` — resolved by merging `main` into the branch (G0).
   Check with `git log --oneline main -1 -- practice/sql/` against your branch before starting.
 - Exercise files are **Victor's authorship** → Claude never commits them, only prints the commands.
 - `notes/sql/` files are written by the notes pipeline → `/notes-audit` commits them itself.
@@ -641,7 +664,8 @@ on whatever feature branch the morning project block is on.
 
 ## Section 8 — Progress tracking
 
-Status is driven by the **answered** count, never the written one.
+Status is driven by the **scored** count (§5's third definition), never the written or merely answered
+one. A row moves to ✅ only after a `review` run has graded it.
 
 | Step | Topic | Exercises file | Answered / target | Notes produced | Status |
 |------|-------|----------------|-------------------|----------------|--------|
@@ -675,10 +699,10 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 
 | Gate | Trigger | Prompt + config | Why exactly here |
 |------|---------|-----------------|------------------|
-| **G0 — Branch sync** | Before the first SQL session on any branch | *(no prompt — `git merge main` into the branch)* | The current branch is behind `main` on `practice/sql/`. Appending to a stale file loses 30 exercises at merge time. One-time for this branch, a habit for every future one. |
+| **G0 — Branch sync** ✅ 2026-07-22 | Before the first SQL session on any branch | *(no prompt — `git merge main` into the branch)* | Appending to a stale file loses exercises at merge time. Done once on `fix/backend-backlog`; re-check on every future branch. |
 | **G1 — Step ritual** | Every step's done conditions pass | *(no prompt — the §4 ritual, by hand)* | The `step-complete` skill only covers project steps and will not fire for SQL. Without this, every later gate reads a stale `PROGRESS.md`. |
-| **G2 — Coverage refresh** | Once, before Step 0; again if a real job posting reveals a gap | `coverage-prompt` · `TOPIC = sql` | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
-| **G3 — Notes `en`/`es` migration** | Once, before any Moment 5 | `/notes-audit` · `SCOPE = folder` · `TOPIC = sql` | The 14 existing files sit in the topic root. Every step's Moment 5 targets `notes/sql/en/…`, which does not exist yet. Hard blocker. |
+| **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before Step 0; again if a real job posting reveals a gap | `coverage-prompt` · `TOPIC = sql` (logged in `notes/prompts/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
+| **G3 — Notes `en`/`es` migration** | Once, before any Moment 5 | `/notes-audit` · `SCOPE = folder` · `TOPIC = sql` | The 14 existing files sit in the topic root — `notes-audit` has never run on SQL (`_run-tracker.md`, SQL row is empty). Every step's Moment 5 targets `notes/sql/en/…`, which does not exist yet. Hard blocker. **Also fix `CLAUDE.md` line ~259 afterwards** — it already claims `notes/sql/` has `en/` and `es/`, which is not true until this gate runs. |
 | **G4 — Q&A build** | After **Step 4** closes — joins + pitfalls + aggregation + nulls is the screening core | `interview-prep-audit` · `TOPIC = sql` | Builds the real Q&A bank on the half of SQL a quickfire round actually asks, while there is still time to drill it. `sql-exercises` review mode adds questions incrementally; this is the structured pass. |
 | **G5 — Notes ↔ Q&A sync** | Right after G4 | `notes-and-interview-prep` · `TOPIC = sql` | Closes both directions: every note concept has a question, every question has a note. Meaningless before G4 exists. |
 | **G6 — First timed simulation** | After **Step 7** closes | `simulation-generator` · `TYPE = sql`, then `simulation-review` on the finished test | You now have joins, aggregation, nulls, subqueries, dates and windows — enough surface for a realistic timed test. `PROGRESS.md` shows 0/15 simulations; this is where SQL starts filling that. |
@@ -697,11 +721,11 @@ The SQL track is finished only when every box is ticked. A failed condition mean
 shipping.
 
 ```
-- [ ] practice/sql/ is current on the working branch (G0)
-- [ ] coverage-prompt TOPIC=sql has run — coverage.md current (G2)
+- [x] practice/sql/ is current on the working branch (G0) — 2026-07-22
+- [x] coverage-prompt TOPIC=sql has run — coverage.md current (G2) — 2026-07-18
 - [ ] notes-audit SCOPE=folder TOPIC=sql has run — all 14 files split into en/ + es/ (G3)
 - [ ] Steps 0–13 all closed, each with its §4 ritual (G1)
-- [ ] All 220 exercises answered and scored ≥ 80%
+- [ ] All 200 first-pass exercises answered and scored ≥ 80% (review batches are extra and uncounted)
 - [ ] Every new note file 15–20 exists in both en/ and es/, no open TODOs
 - [ ] interview-prep-audit TOPIC=sql has run after Step 4 (G4)
 - [ ] notes-and-interview-prep TOPIC=sql has run — no orphan concepts either way (G5)
