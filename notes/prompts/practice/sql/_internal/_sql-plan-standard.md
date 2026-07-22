@@ -32,12 +32,20 @@ Its two inputs, and it never invents beyond them:
 | 4 | What to update when a step closes | Every file that moves, marked *automated* (a prompt does it) or *manual*. |
 | 5 | The exercise files | Every file, in order, with its target and the three counts (written / answered / scored). |
 | 6 | The steps | One entry per step, to the shape in Section C. |
-| 7 | Revision points | Where the track deliberately stops advancing and re-drills. Governed by B4. |
-| 8 | Branch and commit rules | Which branch, who commits what, atomicity. |
-| 9 | Progress table | One row per step: scored/target, status. Mirrors `PROGRESS.md`. |
+| 7 | Branch and commit rules | Which branch, who commits what, atomicity. |
+| 8 | Progress table | One row per step: scored/target, status. Mirrors `PROGRESS.md`. |
+| 8b | Revision points | Where the track deliberately stops advancing and re-drills. Governed by B4. |
+| 9 | Quality gates | Which quality prompt runs at which checkpoint, and the hard prerequisite chain. |
 | 10 | Consistency invariants | The mechanical cross-checks in Section D. |
 | 11 | Closure | What makes the whole track finished. |
-| Z | Out of scope | One line each: notes, Q&A, simulations — run separately, not planned here. |
+| Z | Out of scope | One line each: notes, Q&A, simulations — run separately, not planned here. Plus the coverage sections deliberately excluded from the steps, with a reason. |
+
+**These numbers are the contract.** Three other files cross-reference the plan by section number —
+`_sql-exercises-review.md` (§4, §8, §8b, §Z), `_sql-exercises-practice.md` (§Z) and
+`simulation-generator-prompt.md` (§8) — so renumbering a section is a breaking change, not a tidy-up.
+Revision points live at **§8b**, not §7, precisely so that the eleven sections before them keep their
+numbers as the plan grows. Aligned 2026-07-22, when this table still described a §7/§8/§9 layout the
+plan had never had.
 
 ---
 
@@ -99,42 +107,61 @@ Every §6 entry has exactly these fields. A missing field is a finding.
 
 **Why here:** <one sentence: what it needs from the previous step, or why a screening asks it early>
 **Exercises:** practice/sql/NN-name.sql — <count> (split into runs if over the ceiling)
-**Coverage claimed:** <verbatim section names from notes/sql/coverage.md>
+**Coverage:** <verbatim section names from notes/sql/coverage.md>
 **Reinforces:** <which earlier step, through which concept>
+**Moment 2 config:** `TOPIC = <the exercise prompt's topic value>`, `COUNT = <n>`
+**Focus:** <the concepts to narrow onto, or `none — the whole topic`>
 **Concepts:** <the concrete list this step drills>
 
-**Config to paste:**
-    MODE  = practice
-    TOPIC = <the exercise prompt's topic value>
-    COUNT = <n>
-    FOCUS = <concepts, or blank for the full topic>
-
 **Exit question:** <one question, answered aloud>
-**Done:** <a §3 format> · exit question aloud
+**Done:** <a §3 format, written out in full> · exit question aloud
 ```
 
+**`FOCUS` is a field of the step, never a pasted key.** The pasted config has exactly four keys —
+`MODE`, `TOPIC`, `COUNT`, `FILE` — and `sql-exercises-prompt.md` derives `{FOCUS}` and `{REVIEW}` by
+reading the step. So the step must carry a literal **`**Focus:**` line** and a literal `COUNT = n`
+inside its **`**Moment 2 config:**`** line: those two strings are what the prompt greps for, and a step
+that states the same information in prose resolves to nothing and stops the run. (Corrected
+2026-07-22: this block used to show a five-key config with `FOCUS =` in it, which the prompt has never
+accepted.) `none — the whole topic` is a value; a blank `**Focus:**` line is a finding.
+
+**A step split into two runs states each run's exercise range** (`run 1 → #01–#11`, `run 2 →
+#12–#22`) whenever both runs share a `TOPIC`. Without the range there is nothing on disk that tells the
+prompt which run it is being asked for.
+
 `TOPIC` is the **exercise prompt's vocabulary**, not a coverage section name — different namespaces,
-and two steps may legitimately share a `TOPIC` with different `FOCUS`.
+and two steps may legitimately share a `TOPIC` with different focus.
 
 ---
 
 ## Section D — Invariants
 
-1. Every section of `notes/sql/coverage.md` is claimed by exactly one step, or excluded in §11 with a
+**Numbered to match the plan's own §10, one for one.** The audit dispatches concerns by invariant
+number, so a standard numbering these differently from the plan hands two specialists each other's
+checks. Aligned 2026-07-22.
+
+1. Every section of `notes/sql/coverage.md` is claimed by exactly one step, or excluded in §Z with a
    reason. None unclaimed, none claimed twice.
 2. Every step names a file that appears in §5, and every file in §5 belongs to a step.
-3. Per-step counts for a shared file sum to that file's target; §9's totals match §5's.
+3. **Counts, and the three that are never conflated** — *written* (the statement exists), *answered* (a
+   query is under it), *scored* (a review run graded it); only **scored** moves a status, and a plan
+   reporting answered work as scored claims progress that never happened. Per-step counts for a shared
+   file sum to that file's target, §8's totals match §5's, and both match the exercise files on disk
+   and `PROGRESS.md`.
 4. No generation run exceeds the declared ceiling; a step above it is split into runs.
-5. §0's current step is the first non-done row in §9.
-6. Every done condition matches a §3 format.
-7. A revision point appears at least every 3 files in §5 (B4).
-8. **Three counts, never conflated** — *written* (the statement exists), *answered* (a query is under
-   it), *scored* (a review run graded it). Only **scored** moves a status. A plan reporting answered
-   work as scored claims progress that never happened.
-9. Every count and status in §5 and §9 matches the exercise files on disk and `PROGRESS.md`.
-10. Every prompt named exists at the path given, and every config the plan says to paste uses that
-    prompt's real keys. A plan pointing at a moved prompt or an invented key rots silently: the run
-    happens and produces something else.
+5. §0's current step is the first non-done row in §8.
+6. §0's next revision point is a real point from §8b, and the first whose trigger has not fired.
+7. Every done condition matches a §3 format **verbatim**, not abbreviated. `Review: ... ≥ 80% on X.sql`
+   is not the format; `Review: sql-exercises MODE = review scores ≥ 80% on X.sql` is.
+8. A revision point appears at least every 3 files in §5 (B4), each naming `MISTAKES.md` open rows as
+   its focus source, and no revision batch is counted in a §5 target or a §8 status.
+9. Every prompt named exists at the path given, and every config the plan says to paste uses that
+   prompt's real keys. A plan pointing at a moved prompt or an invented key rots silently: the run
+   happens and produces something else. **This runs in both directions:** every value the prompt says
+   it *derives* from the plan must be present in the plan, in the shape the prompt names — a step with
+   no `COUNT` line is the same dead instruction as an invented key.
+10. **Extendable without rewriting** (B10) — a new coverage section becomes a new step at its dependency
+    position, without renumbering closed steps, taking its own file.
 11. **One artefact, one schema** — an exercise file whose setup block no longer matches the canonical
     schema is closed, not extended; the next file starts fresh with its own setup block.
 

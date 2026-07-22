@@ -71,11 +71,12 @@ Gather the ground truth the specialists check the plan against. Counts, never co
   grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' practice/sql/NN-name.sql   → written
   grep -cE '^--.*✅ Corregido' practice/sql/NN-name.sql                      → scored
   ```
-  The marker sits either on the header line or on its own line under the answer — one per exercise
-  either way. If scored > written for any file, the count is wrong: stop and report it rather than
-  propagating it.
+  The marker always sits **at the end of the exercise's header line**, one per exercise, in both header
+  formats (`_sql-exercises-review.md` Step 2b forbids it on a line of its own). If scored > written for
+  any file, the count is wrong: stop and report it rather than propagating it.
 - `grep -n "✅\|⏳\|done\|in progress" practice/sql/PLANNING.md` → the status baseline for the gate.
-- **The plan's own count rows, copied verbatim**: the §5 file table and the §9 progress table. These
+- **The plan's own count rows, copied verbatim**: the §5 file table and the **§8** progress table
+  (§8 — *Progress tracking*; §9 is the quality-gate table and holds no counts). These
   are the numbers the history gate protects — the numbers on disk cannot regress, since this flow
   never touches the exercise files, so a gate that only re-greps disk checks nothing.
 - `grep -n "^## " notes/sql/coverage.md` → the current section list.
@@ -110,9 +111,14 @@ For each, launch a fresh `general-purpose` subagent, `model: opus`, `run_in_back
 | # | Concern | Owns | Also reads |
 |---|---------|------|------------|
 | 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | §2, §3, §6, §7 · `ROADMAP.md` (for B2) |
-| 2 | `coverage-and-steps` | **Invariants 1, 2** · **B10** | `notes/sql/coverage.md` · §5, §6, §11 · the Phase 1 section list |
-| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 8, 9, 11** | §0, §5, §6, §9 · `PROGRESS.md` · **the Phase 1 snapshot** |
-| 4 | `loop-and-fence` | **Section A** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 10** · **Section E** | §0, §2, §4, §8, §Z · `sql-exercises-prompt.md` |
+| 2 | `coverage-and-steps` | **Invariants 1, 2, 10** · **B10** | `notes/sql/coverage.md` · §5, §6, §Z · the Phase 1 section list |
+| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11** | §0, §5, §6, §8 · `PROGRESS.md` · **the Phase 1 snapshot** |
+| 4 | `loop-and-fence` | **Section A** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9** · **Section E** | §0, §2, §3, §4, §8b, §Z · `sql-exercises-prompt.md` |
+
+**The invariant numbers are the standard's Section D numbers, and Section D is numbered identically to
+the plan's own §10** — they were two different numbering schemes until 2026-07-22, which handed
+specialists 3 and 4 each other's checks (the plan's invariant 8 is the revision cadence, the standard's
+was the three counts). If a future edit renumbers either side, renumber both.
 
 **Section A is checked cell by cell.** "Present and non-empty" is not the bar: §0 must carry its six
 named rows (current step · current branch · done condition · next revision point · blocked on · last
@@ -122,7 +128,7 @@ this one, and it is exactly how off-scope tracks creep back into §0.
 
 **Specialist 2 is the extension engine.** For every `## ` section of `notes/sql/coverage.md` not
 claimed by a step, it does not merely report the gap — it **writes the new step**, to Section C's
-shape, inserted at the dependency position B1 justifies, with its own file in §5 and its row in §9.
+shape, inserted at the dependency position B1 justifies, with its own file in §5 and its row in §8.
 Existing step numbers are preserved where possible and closed steps are never renumbered into
 ambiguity. Conversely, a step claiming a section coverage no longer has is removed or re-pointed.
 
@@ -130,6 +136,12 @@ ambiguity. Conversely, a step claiming a section coverage no longer has is remov
 - Every prompt the plan tells Victor to run must **exist at that path** and its pasted config must use
   **that prompt's real keys** — open `sql-exercises-prompt.md` and compare key by key. A moved prompt
   or an invented key is a dead instruction that fails silently.
+- **And the reverse direction, which is the half that actually broke:** every value the prompt says it
+  *derives from the plan* must be present in the plan **in the literal shape the prompt greps for**.
+  Read the prompt's Resolution table and check each source string against every §6 step — today that
+  means a `**Moment 2 config:**` line carrying `COUNT = n`, and a `**Focus:**` line. A step missing
+  either one stops the run, or worse, used to fall through to a silent default batch. Steps whose two
+  runs share a `TOPIC` must also state each run's exercise range.
 - The outputs the plan expects must be the outputs that prompt actually writes.
 - Anything scheduling notes, Q&A or simulations **comes out**, collapsed into one §Z line. Anything the
   plan *describes* rather than *points at* (exercise format, note quality, Q&A shape) comes out too —
@@ -152,7 +164,7 @@ itself in **every** occurrence before committing.
 
 ## Phase 3 — History gate
 
-Re-run the Phase 1 status greps **and re-read the §5 and §9 count rows**, comparing them against the
+Re-run the Phase 1 status greps **and re-read the §5 and §8 count rows**, comparing them against the
 verbatim copy taken in Phase 1. **Every step marked done before the run must still be marked done**,
 and **every scored count in the plan must be ≥ what it was** — that is the half that matters, since
 the counts on disk never move here. Renumbered or reworded is fine; unmarked, downgraded or missing is
