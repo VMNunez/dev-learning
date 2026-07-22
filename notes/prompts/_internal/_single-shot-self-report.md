@@ -91,15 +91,21 @@ When you reject a finding, **name the failed condition in the Verdict** so the s
 re-proposed next run.
 
 **Independent review before applying.** Dispatch one cold `general-purpose` subagent (`model: opus`)
-with exactly three inputs: the finding as the report states it, the prompt section it targets, and your
-drafted replacement. It returns **approve / approve-with-tightening / reject**, answering: does the edit
+with four inputs: the finding as the report states it, the prompt section it targets, your
+drafted replacement, and **the whole prompt file, read end-to-end**. The last one is what makes
+condition 4 answerable at all: "already covered somewhere the run failed to look" cannot be judged from
+the excerpt the run happened to look at, and a reviewer given excerpts approves near-duplicates and
+contradictions it had no way to see. It returns **approve / approve-with-tightening / reject**, answering: does the edit
 clear all four conditions — condition 3 above all, stated as a concrete difference in the output; is
-every fact in it correct; can the same fix be made by **tightening an existing line instead of adding
+every fact in it correct; **is this already stated elsewhere in the file, or does it contradict something
+there**; can the same fix be made by **tightening an existing line instead of adding
 one**; and does applying it make any now-stale text removable. Apply only what it approves, in the form
 it approves. If it rejects, or you cannot dispatch it, the finding stays `open` — a postponed finding is
 recoverable via its `Status` line, a self-approved bad edit is not. **Record the verdict in the report** —
 one line, `cold reviewer: approve | approve-with-tightening | reject`, beside the Verdict. It is the only
 trace the gate ran: an applied edit with no such line is indistinguishable on disk from a self-approval.
+The reviewer's return must open with `N lines, read to EOF` for the prompt file (CLAUDE.md's whole-file
+rule); without it, treat the verdict as a reject — you cannot tell a whole-file judgement from a skim.
 
 **Growth is capped.** Over ~500 lines the edit must be net-neutral: the reviewer names what stale caveat
 or spent incident comes *out* to make room, or rejects. Cite an incident in a clause, never a paragraph —
