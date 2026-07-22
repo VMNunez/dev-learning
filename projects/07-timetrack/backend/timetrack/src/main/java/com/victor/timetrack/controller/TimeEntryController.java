@@ -31,16 +31,19 @@ public class TimeEntryController {
 
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping
     public ResponseEntity<TimeEntryResponse> create(@Valid @RequestBody CreateTimeEntryRequest request) {
         return ResponseEntity.status(201).body(timeEntryService.create(request));
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
     @PatchMapping("/{id}/submit")
     public ResponseEntity<TimeEntryResponse> submit(@PathVariable Long id) {
         return ResponseEntity.status(200).body(timeEntryService.submit(id));
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
     @PatchMapping("/{id}/reopen")
     public ResponseEntity<TimeEntryResponse> reopen(@PathVariable Long id){
         return ResponseEntity.status(200).body(timeEntryService.reopen(id));
@@ -58,12 +61,14 @@ public class TimeEntryController {
         return ResponseEntity.status(200).body(timeEntryService.reject(id, request.getRejectionNote()));
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
     @PutMapping("/{id}")
     public ResponseEntity<TimeEntryResponse> update(@PathVariable Long id,
                                                     @Valid @RequestBody CreateTimeEntryRequest request) {
         return ResponseEntity.status(200).body(timeEntryService.update(id, request));
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         timeEntryService.delete(id);
