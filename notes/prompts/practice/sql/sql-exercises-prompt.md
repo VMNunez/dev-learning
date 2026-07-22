@@ -942,6 +942,11 @@ Then exactly these three bullets, honest, including "nothing to report":
    updated. Name what was breached and what it cost.
 3. **Verdict** — one line: "prompt limpio" or "cambio a considerar: <qué>".
 
+**Before writing bullet 3, `wc -l` this file.** Over ~500 lines, add one line to the Verdict naming the
+count and the largest section. This prompt is the reason the check exists — it reached 1244 lines while
+carrying a caveat that said so, addressed to a reader who only shows up when there is already something
+to add.
+
 ### Refinement — apply the verdict, or the report is just a diary
 
 **Skip entirely when the Verdict is "prompt limpio".** Otherwise: this prompt is frozen, and a

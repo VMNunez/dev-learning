@@ -47,6 +47,14 @@ earns extra lines when it is reporting something that actually went wrong:
    here, not in an ad-hoc bullet.)
 5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
 
+**Before writing bullet 5, `wc -l` your own prompt file.** Over ~500 lines, add one line to the Verdict
+naming the count and the largest section (`grep -n "^## "` and subtract). This is the only thing in the
+system that measures a prompt's size on a schedule: the size budget below is a brake on *adding*, so it
+fires only when a run happens to propose an edit — a prompt nobody edits can sit at double the budget
+indefinitely. It did: `sql-exercises-prompt.md` reached 1244 lines carrying a line that said "this file
+is over 1000 lines" to a reader who only arrives when there is already something to add. One `wc -l` per
+run is what turns that from a comment into a signal.
+
 ## Update the run tracker
 
 After writing the report, update `notes/prompts/_run-tracker.md` — the permanent ledger of which
