@@ -284,5 +284,17 @@ Victor pastes the updated code and runs this prompt again for the next step.
 
 ---
 
+---
+
+## Final step — write the self-report
+
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
+`notes/prompts/practice/simulations/_internal/_last-run-report-simulation-review.md`, its own commit, then the refinement step.
+
+> **Run-start check (step 0):** that file's Step 5 — before anything else, read
+> `notes/prompts/practice/simulations/_internal/_last-run-report-simulation-review.md` and surface its Verdict in one line if `Status` is `open`.
+
+
 [paste your solution below this line]
 ````

@@ -48,9 +48,19 @@ earns extra lines when it is reporting something that actually went wrong:
    here, not in an ad-hoc bullet.)
 5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
 
-**Before writing bullet 5, check the prompt's health — two questions, both cheap.** *(1)* Did this run
-skip or shortcut any mandatory step? If yes, it belongs in bullet 4 **and** in the Verdict, and you must
-read the previous report: two in a row makes extraction mandatory (see the health budget below).
+**Close-out check — against disk, before you write a word of the report.** Open `notes/prompts/README.md`,
+find this orchestrator's row, and treat its **"Generates / updates"** cell as the contract. For every file
+named there: does it exist, and does `git status` show this run touched it? **Every declared output that
+is missing or untouched is a skipped step**, named in bullet 4.
+
+Do not replace this with asking yourself whether you missed anything. **The same saturated context that
+skips a step cannot see the skip** — that is not a hypothesis, it is what happened on 2026-07-18, when a
+coverage run skipped the tracker update and its own bullet 4 declared "no rule breached". A list checked
+against disk does not depend on remembering.
+
+**Then two more, both cheap.** *(1)* Did this run skip or shortcut any mandatory step the check above
+cannot see (a step-0 guard, a re-dispatch, a gate)? It belongs in bullet 4 **and** in the Verdict, and
+you must read the previous report: two in a row makes extraction mandatory (see the health budget below).
 *(2)* `wc -l` your own prompt file; over ~500 lines, name the count and the largest section
 (`grep -n "^## "` and subtract) in the Verdict.
 
@@ -107,9 +117,12 @@ three parts below are the filter, the independent gate, and the brake on growth.
    a prompt defect; rewriting an already-clear rule buries the lesson (the 2026-07-19 coverage run
    merged two analysts against a rule that already said "one concern per analyst… even at higher token
    cost" — no edit was needed).
-3. **It would have changed the result, not just the cost** — a finding that only made the run slower is
-   friction to note, not a defect to patch. This is the condition that stops the prompt growing for
-   every annoyance.
+3. **It would have changed the *result*, not just the cost.** This is the condition that does the real
+   work, and most findings must die here. Ask it concretely: *would the output file have been different,
+   or wrong, or missing?* If the honest answer is "the run would have been slower, clunkier, or needed
+   one more question", that is friction — record it in the Verdict and stop. Annoyance is not evidence,
+   and a prompt that grows a clause for every annoyance ends up unable to execute the rules it already
+   has, which is the failure this whole budget exists to prevent.
 4. **Not already covered** — the text does not handle it somewhere the run failed to look.
 
 Most findings are friction (#3) or a discipline lapse (#2) and are recorded, not applied. When you

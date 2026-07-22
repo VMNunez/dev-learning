@@ -79,6 +79,7 @@ Two flavors among these 24, both launched the same way (paste config into a new 
 `_sql-plan-standard.md`, `_sql-exercise-seeds.md`, `_sql-exercises-practice.md`,
 `_sql-exercises-review.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`,
+`_single-shot-self-report.md` (the same contract for the eleven non-orchestrator prompts: close-out check against declared outputs, three bullets, refinement behind a cold reviewer),
 `_pipeline-self-report.md` (the shared final step every orchestrator runs: five bullets on how the run
 itself went, written to `_last-run-report.md` in the orchestrator's folder and auto-committed — the
 evidence that decides whether a frozen prompt gets reopened), plus every

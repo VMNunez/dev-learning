@@ -156,4 +156,16 @@ git commit -m "docs: code-review practice {TYPE} — add questions for [main gap
 
 If no questions were added (clean review), print: "Clean review — nothing to add. Run again with a
 higher DIFFICULTY or a different FOCUS."
+
+---
+
+## Final step — write the self-report
+
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
+`notes/prompts/practice/interview/_internal/_last-run-report-code-review.md`, its own commit, then the refinement step.
+
+> **Run-start check (step 0):** that file's Step 5 — before anything else, read
+> `notes/prompts/practice/interview/_internal/_last-run-report-code-review.md` and surface its Verdict in one line if `Status` is `open`.
+
 ````

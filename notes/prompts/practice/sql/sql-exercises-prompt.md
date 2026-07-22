@@ -265,79 +265,19 @@ Then come back here for the final step below, which runs in both modes.
 
 ## Final step — write the self-report
 
-**Runs at the end of every run, in both modes.** Write
-`notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md`, overwriting the previous one. This is the
-adaptation of `notes/prompts/_internal/_pipeline-self-report.md` for a single-shot prompt: no subagents, no
-slices, so three bullets instead of five.
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
+`notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md`, its own commit, then the
+refinement step.
 
-Header: today's date · `MODE` and `TOPIC` · a `Status:` line — `open` if the Verdict names a change
-nobody has applied yet, `applied in <hash>` once this prompt has been edited to address it. A clean
-run's status is `open` and stays `open`.
+**One tailoring of bullet 1 (`Config vs reality`), because this prompt derives more than it is given:**
+report whether the `{COUNT}` and `{FOCUS}` read from `PLANNING.md` §6 produced what the step actually
+needed, and whether `{FILE}` resolved to the right file. **A wrong derived value is a bug in the plan,
+not in this prompt** — name the file that needs the fix.
 
-Then exactly these three bullets, honest, including "nothing to report":
-
-1. **Resolution vs reality** — the config is two keys, so this bullet is about what the prompt
-   *derived*: did the `{COUNT}` and `{FOCUS}` read from PLANNING.md §6 produce what the step actually
-   needed, or was the batch mis-sized or off-scope? Did `{FILE}` resolve to the right file? Name it if
-   a path, a coverage section, or a §6 step turned out to be wrong, missing, or stale. **A wrong
-   derived value is a bug in the plan, not in the run** — say which file needs the fix.
-2. **Rule friction and rule breaches** — any instruction here that was ambiguous, contradictory, or had
-   to be worked around; **and any rule this run broke** — the run-start check skipped, the coverage
-   lookup failed and the seeds were used anyway, correction markers not written, PLANNING.md not
-   updated. Name what was breached and what it cost.
-3. **Verdict** — one line: "prompt limpio" or "cambio a considerar: <qué>".
-
-**Before writing bullet 3, `wc -l` this file.** Over ~500 lines, add one line to the Verdict naming the
-count and the largest section. This prompt is the reason the check exists — it reached 1244 lines while
-carrying a caveat that said so, addressed to a reader who only shows up when there is already something
-to add.
-
-### Refinement — apply the verdict, or the report is just a diary
-
-**Skip entirely when the Verdict is "prompt limpio".** Otherwise: this prompt is frozen, and a
-self-report is the only evidence that reopens it — but evidence nobody acts on rots. The orchestrators
-close this loop (`notes/prompts/_internal/_pipeline-self-report.md`, "Commit flow"); a single-shot prompt closes
-it the same way, with one cold reviewer instead of a pipeline.
-
-1. Draft the edit: the smallest clause that would have prevented this run's friction. A clause, never
-   a paragraph — the war story stays in the report, the prompt states the rule crisply.
-2. Dispatch **one cold subagent** (it has not seen this run) with: the drafted edit, the bullet that
-   motivated it, and this bar. It answers **apply** or **reject**, with one line of reasoning:
-   - Reject if the friction was a one-off, if an existing rule already covers it, or if the edit
-     restates something the plan owns — **a fix that belongs in `practice/sql/PLANNING.md` is applied
-     there, not here.** That is the most common correct verdict for this prompt.
-   - This file is far over the ~500-line budget (991 after the 2026-07-22 seed extraction), so
-     **one-in-one-out applies**: the reviewer must name what stale caveat or spent incident comes
-     *out* to make room, or reject the edit. If the only honest answer is "nothing comes out", that
-     is the signal the file needs another extraction pass, not another clause.
-3. On **apply**: make the edit, commit it alone (`docs: sql-exercises — refine from the run that just
-   finished`), read the hash from `git log` (never from memory), and set the report's
-   `Status: applied in <hash>`. Print one line naming what went in and one naming what came out.
-   On **reject**: leave the prompt untouched and record the rejection and its reason in the Verdict,
-   so a future run does not re-propose it. `Status` stays `open`.
-
-**Never edit the prompt and then re-run it in the same conversation** — that is the entangled
-before-and-run pattern this step exists to avoid.
-
-**Keep it short.** This file exists to surface what broke; padding it with what went well buries the
-one finding that should reopen the prompt. It is about the machinery, never the SQL — which exercises
-were wrong belongs in the chat summary, not here.
-
-**Commit it yourself** — `notes/prompts/` is prompt-system machinery, inside the auto-commit
-exception in CLAUDE.md, and separate from the exercise commit Victor runs:
-
-```
-git add notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md
-```
-```
-git commit -m "docs: self-report for sql-exercises run ({MODE}, {TOPIC})"
-```
-
-> The run tracker (`notes/prompts/_internal/_run-tracker.md`) is an orchestrator ledger — this prompt does not
-> write to it.
-
----
-
+Common rejections here, so they are not re-proposed every run: a fix that belongs in
+`practice/sql/PLANNING.md` is applied there, and a batch that felt mis-sized but produced correct
+exercises fails condition 3 (it changed the cost, not the result).
 [optional — paste an exercise file below this line only if your answers are not saved to disk yet;
 a paste overrides {FILE}]
 ````

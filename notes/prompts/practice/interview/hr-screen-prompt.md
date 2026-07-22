@@ -118,4 +118,16 @@ git commit -m "docs: HR screen prep — polished answers for stage-2 call"
 ```
 
 If no: end without writing anything.
+
+---
+
+## Final step — write the self-report
+
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
+`notes/prompts/practice/interview/_internal/_last-run-report-hr-screen.md`, its own commit, then the refinement step.
+
+> **Run-start check (step 0):** that file's Step 5 — before anything else, read
+> `notes/prompts/practice/interview/_internal/_last-run-report-hr-screen.md` and surface its Verdict in one line if `Status` is `open`.
+
 ````

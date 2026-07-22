@@ -225,4 +225,16 @@ No commit message needed — this content goes directly into LinkedIn, not into 
 - All required skills added in the correct priority order
 - "Open to work" configured with the right job titles and Spain as location
 - At least one post drafted and ready to publish when applications start
+
+---
+
+## Final step — write the self-report
+
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
+`notes/prompts/strategy/apply/_internal/_last-run-report-linkedin.md`, its own commit, then the refinement step.
+
+> **Run-start check (step 0):** that file's Step 5 — before anything else, read
+> `notes/prompts/strategy/apply/_internal/_last-run-report-linkedin.md` and surface its Verdict in one line if `Status` is `open`.
+
 ````

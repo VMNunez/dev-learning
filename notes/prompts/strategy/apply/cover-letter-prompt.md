@@ -105,3 +105,15 @@ the recommended one.
   the message/letter and its outcome are on record.
 - The letter/message is **output only** — it is not stored in the repo. If the user wants to keep a
   formal letter, suggest saving it next to the tailored CV in `personal/job-search/applications/`.
+
+---
+
+## Final step — write the self-report
+
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
+`notes/prompts/strategy/apply/_internal/_last-run-report-cover-letter.md`, its own commit, then the refinement step.
+
+> **Run-start check (step 0):** that file's Step 5 — before anything else, read
+> `notes/prompts/strategy/apply/_internal/_last-run-report-cover-letter.md` and surface its Verdict in one line if `Status` is `open`.
+
