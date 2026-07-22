@@ -905,6 +905,34 @@ instead apply the transactions checklist below.
 
 ---
 
+### Step 2a — Second pass on the ✅ answers, by a cold subagent
+
+**Run this before writing a single marker.** The marker is irreversible in practice: a ✅ exercise is
+skipped by every later run, so a wrongly accepted answer becomes a concept Victor believes he owns
+and never sees again. One grader marking his own work has no check against that.
+
+Dispatch **one subagent that has not seen this run**. Give it: the setup block the exercises run
+against, and *only* the exercises marked ✅ in Step 2 — the exercise text and Victor's query, with no
+verdict, no commentary, and no hint that they were already accepted. Ask it for one line per
+exercise: **correct** or **not correct, because <one clause>**. Nothing else — it is not reviewing
+style, not suggesting idiomatic alternatives, not grading the ⚠️ and ❌ ones.
+
+Reconcile:
+- **Both say correct** → the ✅ stands and the exercise gets its marker in Step 2b.
+- **The subagent says not correct** → re-check that exercise yourself against the schema. If it is
+  right, downgrade the answer to ⚠️ or ❌, give the correction in the summary, and **write no marker**.
+  If the subagent is wrong, keep the ✅ and say so in one line: "Segunda pasada discrepó en el #N; la
+  revisé y la respuesta es correcta porque […]".
+
+**Print the outcome in one line:** "Segunda pasada: N ✅ confirmados, M revertidos." A run where the
+second pass changed nothing is the normal case and is worth stating — it is the evidence the markers
+were earned.
+
+This is the only subagent in this prompt. It exists here and not on the ⚠️/❌ answers because those
+come back through review anyway; the ✅ ones never do.
+
+---
+
 ### Step 2b — Write the correction markers back into the file
 
 **This is the only step that edits the exercise file, and it edits nothing but these marker lines.**
@@ -1070,13 +1098,27 @@ So never print "step closed" on the strength of a score alone. If 4c set the row
 
 ---
 
-### Step 5 — Concept gaps: report them, do not write them up
+### Step 5 — Concept gaps: log them in `MISTAKES.md`
 
-If any answer was ⚠️ or ❌, list the distinct conceptual gaps in one short block at the end of the
-chat — one line per gap, no Q&A drafting. **This prompt never writes to `notes/interview-prep/` or to
-`notes/sql/`.** Those files belong to `interview-prep-audit` (gate G4) and `/notes-audit` (Moment 5);
-a grading run that also authors study material bypasses both standards and their cold reviewers.
-Victor decides when to run them. If every attempted exercise was ✅, skip this step entirely.
+If any answer was ⚠️ or ❌, **append one row per distinct conceptual gap to the `## Open` table of
+`practice/sql/MISTAKES.md`** — today's date, the step number, the concept, one clause on what went
+wrong, and the exercise number. One row per *concept*, not per exercise: three exercises that all
+failed on `WHERE` vs `HAVING` are one row. Then list the same gaps in one short block at the end of
+the chat.
+
+**Also close what this run redeemed.** Before appending, read the `## Open` table: if a concept
+listed there was answered correctly in this batch, move its row to `## Closed` with today's date as
+the closing date. Never delete a row — a concept failed twice and fixed once is a different fact
+from a concept never failed, and the closed table is what tells them apart.
+
+If the file does not exist, create it with the two tables and the header explaining what it is.
+
+**This prompt still never writes to `notes/interview-prep/` or to `notes/sql/`.** Those belong to
+`interview-prep-audit` (G4) and `/notes-audit` (Moment 5); a grading run that also authors study
+material bypasses both standards and their cold reviewers. `MISTAKES.md` is not study material — it
+is this run's own output, the record of what it graded wrong, and nothing else reads or writes it.
+
+If every attempted exercise was ✅, skip the appending half but still run the closing half.
 
 ---
 
@@ -1095,12 +1137,12 @@ List only files that were actually modified. Always one command per code block.
 Use the exact folder path from the Step 4 path table for {TOPIC} — not `sql/{TOPIC}/`:
 
 ```
-git add [exact path from Step 4 table] PROGRESS.md
+git add [exact path from Step 4 table] PROGRESS.md practice/sql/PLANNING.md
 ```
 
-If interview questions were added:
+If Step 5 touched the mistake log:
 ```
-git add notes/interview-prep/en/sql.md notes/interview-prep/es/sql.md
+git add practice/sql/MISTAKES.md
 ```
 
 ```
