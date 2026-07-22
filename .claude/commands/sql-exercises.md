@@ -1,0 +1,14 @@
+---
+description: Generate SQL exercises for the current plan step, or grade the ones you answered (runs inside Claude Code)
+argument-hint: MODE=practice|review TOPIC=basics|joins|nulls|...  (COUNT and FILE optional — the plan supplies them)
+---
+
+Read `notes/prompts/practice/sql/sql-exercises-prompt.md` and execute it in full, running inside Claude Code.
+
+Configuration from the user: $ARGUMENTS
+
+Rules:
+- The config is exactly four keys — `MODE`, `TOPIC`, `COUNT`, `FILE`. Do not accept or invent others: `FOCUS` and `REVIEW` are derived from the matching step in `practice/sql/PLANNING.md`, never pasted.
+- Blank `COUNT`/`FILE` is the normal state — resolve them from the plan, print what you derived, and continue without asking.
+- Read only the branch the resolved `MODE` names (`_sql-exercises-practice.md` or `_sql-exercises-review.md`), and only the `{TOPIC}` block of `_sql-exercise-seeds.md`.
+- The exercise files are Victor's work: in `practice` mode append exercises, never rewrite his answers; in `review` mode write correction markers and `MISTAKES.md`, and give him the commit command rather than committing.
