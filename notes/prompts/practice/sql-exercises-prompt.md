@@ -7,49 +7,60 @@ Two modes:
 - **`practice`** — generates exercises for a SQL topic and saves them to `practice/sql/`. If the topic file already exists, adds more exercises continuing the numbering.
 - **`review`** — checks your answers. Paste the exercise file at the very end of the prompt.
 
-> **▶ Run first:** nothing — `practice` generates exercises from scratch; `review` needs your answers pasted at the end.
+> **▶ Run first:** nothing — `practice` generates exercises from scratch; `review` reads the answered file from `{FILE}`.
 
 ---
 
 **How to use:**
 
-1. Fill in `MODE` and `TOPIC`
-2. Set `COUNT` if you want more or fewer exercises than the default
-3. Set `FOCUS` to concentrate on a specific concept within the topic (optional)
+1. Fill in `MODE` and `TOPIC` — those two are the only required keys
+2. Leave `FILE` blank unless you are pointing at a file that is not the topic's default
+3. Set `COUNT` / `FOCUS` / `REVIEW` if you want to shape the batch (practice mode only)
 4. Paste the prompt into a new chat
-5. If `MODE = review`: paste your answered file at the very end
+
+In `MODE = review` you do **not** need to paste the exercise file: the prompt reads `{FILE}` from
+disk. Paste it only if your answers are not saved yet — a paste overrides `{FILE}`.
 
 ---
 
 ````
 ## Configuration — edit only this block
 
-MODE  = [practice | review]
-TOPIC = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
+MODE   = [practice | review]
+TOPIC  = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
+FILE   = [path to the exercise file — optional, leave blank to use the default for {TOPIC}]
+COUNT  = [number of exercises to generate — default: 12 — practice mode only]
+FOCUS  = [specific concept to practise — optional, practice mode only]
+REVIEW = [yes | no — default: no — practice mode only]
 
-## TOPIC = all (practice mode only) generates exercises for every SQL topic in turn —
-## see notes/prompts/_batch-mode.md. The order below is the study order, and it is also the
-## file-number order (see the path table in Step 4): basics, joins, group-by, join-pitfalls,
-## nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design,
-## normalization, data-types, ddl, indexes, live-database, report-queries.
-## Review mode stays one file at a time — it needs your pasted answers.
-##
-## The topic list, the file numbering and the step numbering are kept in sync with
-## practice/sql/PLANNING.md — that file is the source of truth for the order. Several topics
-## deliberately share one file (joins + join-pitfalls, subqueries + ctes, dml + transactions,
-## schema-design + normalization, data-types + ddl); the path table in Step 4 is authoritative.
-COUNT = [number of exercises to generate — default: 12 — only used in practice mode]
-FOCUS = [specific concept to practise — optional, practice mode only]
-        Example: FOCUS = LEFT JOIN, FULL OUTER JOIN
-        Example: FOCUS = HAVING, aggregate filters
-        Leave blank to cover the full topic
-REVIEW = [yes | no — default: no. Practice mode only.]
-         yes = a review batch over concepts already drilled (PLANNING.md Moment 2b): no Intro tier,
-         labelled [Repaso], repetition allowed, not counted against the step's target.
-         Leave as no for a first-pass batch.
+Notes on each key:
+
+**TOPIC** — `all` (practice mode only) generates exercises for every SQL topic in turn; see
+`notes/prompts/_batch-mode.md`. The order listed above is the study order, and it is also the
+file-number order (see the path table in Step 4): basics, joins, group-by, join-pitfalls, nulls,
+subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design, normalization,
+data-types, ddl, indexes, live-database, report-queries. Review mode stays one file at a time.
+The topic list, the file numbering and the step numbering are kept in sync with
+`practice/sql/PLANNING.md` — that file is the source of truth for the order. Several topics
+deliberately share one file (joins + join-pitfalls, subqueries + ctes, dml + transactions,
+schema-design + normalization, data-types + ddl); the path table in Step 4 is authoritative.
+
+**FILE** — which file to read (review) or write (practice). Leave it blank in the normal case: the
+path table in Step 4 maps {TOPIC} to its file, so the prompt resolves it on its own. Set it only to
+point at a file that is not the default — a renamed file, a split-off batch, or a one-off review of
+an older file. A blank FILE is never an error.
+
+**FOCUS** — Example: `FOCUS = LEFT JOIN, FULL OUTER JOIN`. Example: `FOCUS = HAVING, aggregate
+filters`. Leave blank to cover the full topic.
+
+**REVIEW** — `yes` = a review batch over concepts already drilled (PLANNING.md Moment 2b): no Intro
+tier, labelled [Repaso], repetition allowed, not counted against the step's target. Leave as `no`
+for a first-pass batch.
 
 Validation — check these before doing anything else:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
+- If FILE is blank: resolve it from the Step 4 path table using {TOPIC}. If {TOPIC} is not in that table, stop and report it — never invent a path.
+- If FILE is set but the file does not exist: in review mode, print "Error: no existe [FILE]." and stop. In practice mode, treat it as a new file.
 - If COUNT is blank: use 12.
 - If COUNT is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4.
 - If REVIEW is blank: use no. If REVIEW = yes in review mode: ignore it, it only affects generation.
@@ -730,7 +741,10 @@ After saving, print the message matching the case:
 
 ### Step 1 — Read the file
 
-Read the file Victor pasted at the end of this chat.
+Read the file at {FILE} (resolved from the path table in Step 4 when FILE was left blank).
+If Victor pasted a file at the end of the chat instead, use the pasted content — a paste always wins
+over {FILE}, because it may hold answers he has not saved to disk yet.
+Confirm in one line which one you used: "Reviso [path]" or "Reviso el archivo pegado".
 Identify the topic from the file header.
 
 **First, detect the format**, because the two are answered differently:
@@ -861,6 +875,8 @@ instead apply the transactions checklist below.
 ### Step 2b — Write the correction markers back into the file
 
 **This is the only step that edits the exercise file, and it edits nothing but these marker lines.**
+The file it edits is {FILE}. If the review ran off a paste whose exercises do not match what is on
+disk, skip this step and print: "No escribo marcadores: el texto pegado no coincide con [FILE]."
 
 For every exercise marked **✅ Correct** in Step 2, append one line immediately after the answer:
 
