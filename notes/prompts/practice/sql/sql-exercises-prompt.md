@@ -126,7 +126,7 @@ authoritative.
 
 ## Run-start check — read the last run's report
 
-Before anything else, read `notes/prompts/practice/sql/_last-run-report-sql-exercises.md` (it may not
+Before anything else, read `notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md` (it may not
 exist yet — that is fine, skip silently). If it exists and its `Status:` line says `open`, surface the
 Verdict in **one line** before continuing:
 
@@ -252,8 +252,8 @@ canonical schema. What happens next depends entirely on `MODE`, and the two bran
 
 | `MODE` | Read and execute, in full | What it does |
 |--------|---------------------------|--------------|
-| `practice` | `notes/prompts/practice/sql/_sql-exercises-practice.md` | checks existing state, writes the setup block if the file is new, generates {COUNT} exercises, saves them |
-| `review` | `notes/prompts/practice/sql/_sql-exercises-review.md` | reads the answered file, grades every answer, writes the correction markers, updates PROGRESS.md and MISTAKES.md |
+| `practice` | `notes/prompts/practice/sql/_internal/_sql-exercises-practice.md` | checks existing state, writes the setup block if the file is new, generates {COUNT} exercises, saves them |
+| `review` | `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` | reads the answered file, grades every answer, writes the correction markers, updates PROGRESS.md and MISTAKES.md |
 
 Do **not** open the other branch — it cannot apply to this run, and reading it is how a run ends up
 executing a step from the wrong mode. If `MODE` resolved to neither value, the Resolution validation
@@ -266,7 +266,7 @@ Then come back here for the final step below, which runs in both modes.
 ## Final step — write the self-report
 
 **Runs at the end of every run, in both modes.** Write
-`notes/prompts/practice/sql/_last-run-report-sql-exercises.md`, overwriting the previous one. This is the
+`notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md`, overwriting the previous one. This is the
 adaptation of `notes/prompts/_pipeline-self-report.md` for a single-shot prompt: no subagents, no
 slices, so three bullets instead of five.
 
@@ -327,7 +327,7 @@ were wrong belongs in the chat summary, not here.
 exception in CLAUDE.md, and separate from the exercise commit Victor runs:
 
 ```
-git add notes/prompts/practice/sql/_last-run-report-sql-exercises.md
+git add notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md
 ```
 ```
 git commit -m "docs: self-report for sql-exercises run ({MODE}, {TOPIC})"

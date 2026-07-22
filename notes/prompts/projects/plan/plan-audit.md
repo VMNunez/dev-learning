@@ -103,7 +103,7 @@ audit the plan in your own context.
 
 Launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
-> Read `notes/prompts/projects/plan/_plan-write-prompt.md` and execute it in full
+> Read `notes/prompts/projects/plan/_internal/_plan-write-prompt.md` and execute it in full
 > (`PROJECT = {PROJECT}` — blank means auto-detect). Do the gap analysis, choose the next project,
 > design it, write the complete `PLANNING.md` to the contract in `_planning-standard.md`, and make the
 > ROADMAP.md + PROGRESS.md edits. **Do NOT commit** — an independent reviewer runs next and owns the
@@ -117,7 +117,7 @@ report — do not run the architecture advisor or reviewer on nothing.
 
 Launch a `general-purpose` subagent, `model: opus`, `run_in_background: false`, on the plan the author just wrote:
 
-> Read `notes/prompts/projects/plan/_plan-architecture-prompt.md` and execute it in full for
+> Read `notes/prompts/projects/plan/_internal/_plan-architecture-prompt.md` and execute it in full for
 > `PROJECT = «the chosen project folder path»`. Judge the drafted architecture (§6), the one new
 > architectural concept (§3), and the tradeoffs (§20) against Victor's current level and the coverage
 > gaps — fix over-engineering, under-engineering, and a misjudged new concept directly in those
@@ -187,7 +187,7 @@ nothing to audit. For a **full-stack project (07+)**, run all five.
 For **each** concern in order, launch a fresh, independent `general-purpose` subagent,
 `model: opus`, `run_in_background: false`:
 
-> Read `notes/prompts/projects/plan/_plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
+> Read `notes/prompts/projects/plan/_internal/_plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
 > `SCOPE = «this concern»`, `DRY_RUN = true` (that is plan-review's own no-commit switch — the
 > orchestrator owns the single commit; it is unrelated to this orchestrator's retired config). Read
 > **only the files and standard sections your

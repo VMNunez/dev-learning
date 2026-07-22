@@ -34,7 +34,7 @@ recruiter should see standard enterprise layering, and Victor must be able to **
 pattern in an interview**. An architecture he cannot explain is worse than a simpler one he can.
 
 Before starting, read:
-- `notes/prompts/projects/plan/_planning-standard.md` — §6 (Architecture), §3 (New concepts), §20
+- `notes/prompts/projects/plan/_internal/_planning-standard.md` — §6 (Architecture), §3 (New concepts), §20
   (Tradeoffs), and the "Design-correctness checks". This is the shape and the bar.
 - `PROGRESS.md` — what architecture and patterns Victor has **already** built and can be assumed known
   (the previous project's layers, guards, coordinator pattern, layered backend, JWT filter, etc.).

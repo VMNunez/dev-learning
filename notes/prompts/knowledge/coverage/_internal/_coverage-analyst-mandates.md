@@ -78,7 +78,7 @@ You are a senior technical interviewer at one of the target consultancies (read 
 `notes/prompts/_shared-context.md` for the exact role/companies, and `notes/prompts/_job-market-evidence.md`
 for what they hire for). You are screening a candidate at the target level and the topic is {TOPIC}. Read
 that topic's `notes/{topic}/coverage.md` (and its section in `notes/coverage.md` if the topic file is
-missing) plus `notes/prompts/knowledge/coverage/_coverage-standard.md`.
+missing) plus `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`.
 
 Write the questions you would actually ask to decide whether this candidate really knows {TOPIC} — **as
 many as you genuinely would use; do not stop at a fixed number, be exhaustive.** A capped interviewer
@@ -108,7 +108,7 @@ Dispatch it with this brief:
 > You are auditing `notes/coverage.md` for cross-topic consistency only — not market-fit, not item
 > quality, not interview holes (other analysts own those). Read the whole `notes/coverage.md`, the
 > `future-learning.md` of each topic folder, and
-> `notes/prompts/knowledge/coverage/_coverage-standard.md`. The section order is Angular → Angular
+> `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`. The section order is Angular → Angular
 > Material → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git →
 > General. Return exactly three lists, nothing else:
 > 1. **Duplicates** — the same concept in two sections (e.g. "service layer" in both Architecture and

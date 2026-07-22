@@ -37,7 +37,7 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 ## Context — read first
 
 Read two files before anything else:
-- `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
+- `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — **the standard: what a good coverage.md contains**
   (scope logic, the three item types, confusable pairs, the AI factor, item/file format). Every
   content and quality check this audit applies is defined there — this prompt only adds the *global
   convergence flow* (topic completeness, cross-topic consistency, stability) on top.
@@ -85,7 +85,7 @@ judged one section at a time.
 | **C — Adversarial interviewer** | per topic | Step 4a | Would a real interviewer find a hole? | Gap list: of the questions it would ask (uncapped), the ones coverage does NOT support, each as a proposed item tagged by section. |
 | **D — Cross-topic consistency** | global (once) | Step 4 | Do the sections overlap, misplace, or carry post-junior items? | Three lists: duplicates (concept → the two sections + which to keep), misplaced items (concept → from → to), and scope-demotion candidates (item → why post-junior). Reads all sections; edits nothing. |
 
-The four mandates themselves live in `notes/prompts/knowledge/coverage/_coverage-analyst-mandates.md`
+The four mandates themselves live in `notes/prompts/knowledge/coverage/_internal/_coverage-analyst-mandates.md`
 (sections A, B, C, D — the "Step" labels above are their section names). They were extracted so this
 orchestrator holds only the flow; each dispatched analyst reads its own section there.
 
@@ -131,7 +131,7 @@ one non-negotiable Opus roles are the session and Analyst C.
 **Per-topic loop (sequential, one topic fully done before the next):**
 1. Dispatch Analyst A (`model: sonnet`), then B (`model: sonnet`), then C (`model: opus`) for the topic
    (`run_in_background: false`). Dispatch each one by telling it to read its section (A / B / C) in
-   `notes/prompts/knowledge/coverage/_coverage-analyst-mandates.md` with {TOPIC} filled in, plus only
+   `notes/prompts/knowledge/coverage/_internal/_coverage-analyst-mandates.md` with {TOPIC} filled in, plus only
    the files its concern needs (listed in the analyst-split rules above).
    Collect their three lists. **Acceptance check per analyst:** every report must carry the
    "N lines, read to EOF" line for each file it read whole (see the verifiable-reads rule in
@@ -150,7 +150,7 @@ one non-negotiable Opus roles are the session and Analyst C.
    reason it runs on Opus (told once that an 85-line file was thinnest, C overturned the prior and
    returned 71/98 supported). A genuine scope boundary — which sibling topic owns what — is a **routing
    rule**, never an expectation about what the analyst will find.
-1b. Read `notes/prompts/knowledge/coverage/_cross-topic-inbox.md`, take the entries under `## {TOPIC}`
+1b. Read `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md`, take the entries under `## {TOPIC}`
    — gaps another topic's run routed here — and fold them into the consolidation as **proposed** items
    (judged like any analyst gap, never pre-approved). Then **clear every entry you looked at**, added or
    discarded, and report both counts: an entry left uncleared is re-litigated next run, one left unread
@@ -267,7 +267,7 @@ Add it to the correct section in that topic's `coverage.md`; the Step 5 rebuild 
 
 ## Analyst mandates — A (market-fit), B (internal quality), C (adversarial interviewer)
 
-The three per-topic mandates live in `notes/prompts/knowledge/coverage/_coverage-analyst-mandates.md`,
+The three per-topic mandates live in `notes/prompts/knowledge/coverage/_internal/_coverage-analyst-mandates.md`,
 one section each — moved out of this prompt so the orchestrator's context holds the flow, not the
 briefs. The per-topic loop above dispatches each analyst to read its own section there:
 

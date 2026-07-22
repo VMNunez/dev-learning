@@ -50,7 +50,7 @@ do not skim, do not stop early, reach the last line.
 > rejects a report without it.
 
 Before starting, read:
-- `notes/prompts/knowledge/notes/_note-quality-standard.md` — the bar (bilingual rules, voice, signature
+- `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` — the bar (bilingual rules, voice, signature
   texture), in full.
 - The first section of `notes/java/es/08-excepciones.md` — the calibration reference for a finished
   Spanish note.

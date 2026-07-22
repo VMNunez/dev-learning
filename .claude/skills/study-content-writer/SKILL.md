@@ -20,7 +20,7 @@ hit the exact same quality bar the pipeline would, so daily-session notes are ne
 ## Step 1 — Load the right standard FIRST (before writing a single line)
 
 - Writing or refining a **note** (`notes/{topic}/en|es/*.md`) →
-  read `notes/prompts/knowledge/notes/_note-quality-standard.md` in full.
+  read `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` in full.
 - Writing or refining an **interview question** (`notes/interview-prep/en|es/*.md`) →
   read `notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` in full.
 - If the task touches both, read both.

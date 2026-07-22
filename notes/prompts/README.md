@@ -26,6 +26,13 @@ tells them apart, and it is the filename:
 
 > **A leading `_` means "never launch this".** No underscore, and it is yours to run.
 
+**In the four families with three or more internal pieces those files also live in an `_internal/`
+subfolder** — `knowledge/notes/`, `knowledge/coverage/`, `practice/sql/`, `projects/plan/`. Open one
+and you see the runnable prompt(s) and one folder, instead of eight files you have to read prefixes to
+tell apart. The `_` prefix stays on the filenames anyway, so a file keeps its marking if it is ever
+moved or quoted out of context. Families with only two internals keep them alongside: a folder for two
+files hides more than it explains.
+
 **Inside Claude Code you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
 set — 24 commands in `.claude/commands/`, one per prompt, kept at parity (completed 2026-07-22; before

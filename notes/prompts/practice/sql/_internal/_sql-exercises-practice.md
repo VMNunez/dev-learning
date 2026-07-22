@@ -249,7 +249,7 @@ Do NOT add this line to Intro or Standard exercises — keep those frictionless.
 where the reasoning is deepest and most worth explaining out loud.
 
 **Topic-specific format and seeds.** The structure a batch should take on this topic, and concrete
-exercise ideas worth drilling, live in **`notes/prompts/practice/sql/_sql-exercise-seeds.md`**. Open it
+exercise ideas worth drilling, live in **`notes/prompts/practice/sql/_internal/_sql-exercise-seeds.md`**. Open it
 and read **only the block whose heading matches the resolved `{TOPIC}`** — the other twelve are not
 yours this run.
 

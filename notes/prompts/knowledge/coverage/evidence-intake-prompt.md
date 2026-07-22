@@ -41,7 +41,7 @@ FOCUS = [optional, search mode only — leave BLANK for the normal run. Narrow t
 Read before touching anything:
 1. `notes/prompts/_job-market-evidence.md` — learn its **exact format** (the `### Company — Role · year ·
    source` Raw-posting blocks, the Synthesis frequencies `~N/M`, the footer count) and what is already on file.
-2. `notes/prompts/knowledge/coverage/_coverage-standard.md` — the "Two sources" section: the evidence is
+2. `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — the "Two sources" section: the evidence is
    the **complement** to the deep analysis, a floor to raise, never a ceiling. Keep that framing.
 3. `ROADMAP.md` + `notes/prompts/_shared-context.md` — the **target profile**: role, companies, stack,
    seniority. Only postings that fit this profile belong in the file (see the filter in Step 2).

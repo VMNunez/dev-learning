@@ -59,7 +59,7 @@ one file per subagent.
 > to EOF"** for each file read whole; the orchestrator rejects a report without it.
 
 Before starting, read:
-- `notes/prompts/knowledge/notes/_note-quality-standard.md` — the bar you judge against, in full.
+- `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` — the bar you judge against, in full.
 - The first section of `notes/java/es/08-excepciones.md` — the calibration reference for "finished".
 - The sibling files already in `{FILE}`'s `en/` folder — enough to catch duplicated examples/concepts
   and broken or missing forward/cross-topic references (read their headings, not every word).

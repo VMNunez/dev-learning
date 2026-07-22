@@ -47,7 +47,7 @@ focused context per reviewer; a specialist that reads everything defeats it.
   sections your invariants cross-reference in full (e.g. `data-model-api` needs §14's page list for
   invariant 3, not its ASCII wireframes — stop at the headings) · everything else headings-only, just
   enough to know the plan's shape. Never read tail sections your slice does not touch.
-- `notes/prompts/projects/plan/_planning-standard.md` — **only the parts your `{SCOPE}` row lists in
+- `notes/prompts/projects/plan/_internal/_planning-standard.md` — **only the parts your `{SCOPE}` row lists in
   the "Reads from the standard" column below**, plus "Two project formats" (every scope needs it to
   derive the format). Read the standard in full **only** when `{SCOPE}` = all.
 - `CLAUDE.md` — **only** `steps-tests` reads it, and only the "Testing rules" section. Other scopes

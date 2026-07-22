@@ -186,7 +186,7 @@ cold subagent.
 Then, **one target note file at a time, sequentially** (never overlap — the runs commit), dispatch a
 cold `general-purpose` subagent (`model: opus`, `run_in_background: false`):
 
-> Read `notes/prompts/knowledge/notes/_note-quality-standard.md` (the writing bar) and, before writing,
+> Read `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` (the writing bar) and, before writing,
 > the first section of `notes/java/es/08-excepciones.md` to calibrate. You are creating/extending ONE
 > note file: `«en/ path»` (number `«N»` if new). Read that file (and its `es/` counterpart, and the
 > sibling files in its `en/` folder) **in full, top to bottom** to avoid duplicating an example and to

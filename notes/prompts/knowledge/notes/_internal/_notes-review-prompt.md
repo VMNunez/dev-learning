@@ -52,7 +52,7 @@ a review without it is not accepted.
 > rejects a review without it.
 
 Before starting, read:
-- notes/prompts/knowledge/notes/_note-quality-standard.md — the bar you audit against, in full.
+- notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bar you audit against, in full.
 - The first section of notes/java/es/08-excepciones.md — the calibration reference for "finished"
   (read it for depth/texture; you audit English).
 - The sibling files already in `{FILE}`'s `en/` folder — to catch duplicated examples/concepts and

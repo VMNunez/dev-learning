@@ -122,7 +122,7 @@ I want you to create or update the coverage.md file for {TOPIC}.
 > silently. (why: R2)
 
 Before starting, read:
-- `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
+- `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — **the standard: what a good coverage.md contains**
   (what belongs in scope, the three item types, confusable pairs, the AI factor, item/file format).
   Everything about *content quality* lives there — this prompt only adds the *per-topic flow* on top.
 - `CLAUDE.md` — teaching rules and the notes/ subfolder structure.
@@ -241,7 +241,7 @@ Read these files before making any decision:
    items without a clear reason.
 2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
    in-scope given the job target read from ROADMAP + `_shared-context` (role, deadline).
-2b. `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` — the entries filed under `## {TOPIC}` are
+2b. `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` — the entries filed under `## {TOPIC}` are
    gaps that **other topics' runs** found and routed to you (an Angular template-compiler concept
    surfaced by a TypeScript run, a JUnit concept surfaced by a Java run). Read only your own heading.
    Treat each as a *proposed* item: judge it against the standard and the IN/OUT filter exactly like a
@@ -282,7 +282,7 @@ bloating this context.
 
 > You are a specialist in the Spanish IT job market for junior developers. Read `ROADMAP.md` and
 > `notes/prompts/_shared-context.md` for the candidate's exact objectives (target role, companies,
-> stack, timeline, profile) and `notes/prompts/knowledge/coverage/_coverage-standard.md` for what a
+> stack, timeline, profile) and `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` for what a
 > coverage item is. The topic is {TOPIC}.
 >
 > Produce a **deep analysis of what the Spanish market asks a junior with these objectives, specifically
@@ -510,7 +510,7 @@ Give each subagent this brief (substituting its angle):
 > `notes/prompts/_shared-context.md` for the exact role/companies/level, and
 > `notes/prompts/_job-market-evidence.md` for what they hire for — a small sample that corroborates,
 > never bounds, your probes) interviewing a candidate at the target level. The topic is {TOPIC}. Read
-> `{NOTES_PATH}coverage.md` and `notes/prompts/knowledge/coverage/_coverage-standard.md`.
+> `{NOTES_PATH}coverage.md` and `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`.
 >
 > Your angle is: **<ANGLE + its one-line description from the list above>**.
 >
@@ -566,7 +566,7 @@ Three routing rules when handling the discards:
   in the summary as "owned by <topic>, not added here", and do not re-litigate the same misplaced gap
   on every run.
   > **Routing means writing it down, not mentioning it.** Append the item to
-  > `notes/prompts/knowledge/coverage/_cross-topic-inbox.md` under the owning topic's `## ` heading, in
+  > `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` under the owning topic's `## ` heading, in
   > the standard's item format, tagged with the run that found it — creating the heading if absent. A
   > summary line is not a handoff: the summary lives in a chat nobody reads later, so the item then
   > depends on the owner's own future run rediscovering it by chance. **It does not**, and nothing else
@@ -675,7 +675,7 @@ padding the input is how a narrow check turns into an expensive one that reviews
 **In Claude Code:** one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
 
 > You are reviewing coverage items written by another engineer, against a written standard. Read
-> `notes/prompts/knowledge/coverage/_coverage-standard.md` — it is the authority; where your taste and
+> `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — it is the authority; where your taste and
 > the standard disagree, the standard wins. The topic is {TOPIC}.
 >
 > Below are the sections of `{NOTES_PATH}coverage.md` that this run touched, each shown **in full**.

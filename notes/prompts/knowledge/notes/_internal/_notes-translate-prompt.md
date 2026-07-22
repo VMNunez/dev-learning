@@ -53,7 +53,7 @@ Before starting, read:
 - The existing `es/` counterpart, if any (you are re-syncing it, not starting blind).
 - The first section of `notes/java/es/08-excepciones.md` — the reference for what finished, native
   Spanish notes read like.
-- notes/prompts/knowledge/notes/_note-quality-standard.md — the bilingual rules and the Spanish-prose
+- notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bilingual rules and the Spanish-prose
   expectations (structural labels, calque list).
 
 ## What you produce

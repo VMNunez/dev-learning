@@ -97,7 +97,7 @@ Use SCOPE, TOPIC, FILE, and TASK wherever the prompt refers to {SCOPE}, {TOPIC},
 ---
 
 You are the orchestrator for building Victor's study notes, hands-off. First read
-`notes/prompts/knowledge/notes/_note-quality-standard.md` so you know the bar you are enforcing. Then follow
+`notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` so you know the bar you are enforcing. Then follow
 the branch for `{SCOPE}`. You stay light: you dispatch subagents, wait, and collect — you never hold
 every file's content in your own context. Ask every subagent for a **concise** report (its verdict,
 trace, EOF line, and files touched — no prose recaps); once you have verified a stage's trace and moved
@@ -144,7 +144,7 @@ no-ops). Otherwise, for a single topic, follow the branch directly.
 
 Launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
 
-> Read `notes/prompts/knowledge/notes/_notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
+> Read `notes/prompts/knowledge/notes/_internal/_notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
 > (derive `NOTES_PATH` as that prompt specifies — for Spring Boot, both `notes/java/en/` and
 > `notes/spring-boot/en/`). Do the folder setup, `en`/`es` parity, gap + sequence analysis,
 > `future-learning.md`, assign concrete file numbers, and write `notes/{TOPIC}/notes-worklist.md`.
@@ -164,7 +164,7 @@ Read the "Existing files to inspect" list from the worklist. For **each** file i
 launch one `general-purpose` subagent, `model: opus`, `run_in_background: false` (never overlap them — they all
 append to the same worklist file and parallel writes would race):
 
-> Read `notes/prompts/knowledge/notes/_notes-inspect-prompt.md` and execute it in full for a single file:
+> Read `notes/prompts/knowledge/notes/_internal/_notes-inspect-prompt.md` and execute it in full for a single file:
 > - `TOPIC` = {TOPIC} · `FILE` = «file» · `WORKLIST` = notes/{TOPIC}/notes-worklist.md
 >
 > Read that one file top to bottom against the standard, append its `fix-quality` / `add-docs-link`
@@ -215,7 +215,7 @@ an unfinished predecessor).
 
 **Subagent A — English author.** Launch one `general-purpose` subagent, `model: opus`:
 
-> Read `notes/prompts/knowledge/notes/_notes-write-prompt.md` and execute it in full for a single file:
+> Read `notes/prompts/knowledge/notes/_internal/_notes-write-prompt.md` and execute it in full for a single file:
 > - `TOPIC` = «topic» · `FILE` = «file» · `TASK` = «task» · `REWRITE_MODE` = «mode»
 >
 > Work in **English only** (`en/`): resolve TODOs (reading the `es/` only to find Victor's markers),
@@ -229,7 +229,7 @@ the row `[ ]` (folder mode), note it, and move on — do not translate or commit
 **Subagent B — English reviewer (`en/` only).** Launch a second, independent `general-purpose`
 subagent, `model: opus`:
 
-> Read `notes/prompts/knowledge/notes/_notes-review-prompt.md` and execute it in full:
+> Read `notes/prompts/knowledge/notes/_internal/_notes-review-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
 >
 > Audit the just-authored `en/` file hard against the standard and fix what falls short in English.
@@ -241,7 +241,7 @@ Wait for B before starting T.
 
 **Subagent T — translator (`en/` → `es/`).** Launch a third, independent `general-purpose` subagent, `model: sonnet`:
 
-> Read `notes/prompts/knowledge/notes/_notes-translate-prompt.md` and execute it in full:
+> Read `notes/prompts/knowledge/notes/_internal/_notes-translate-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
 >
 > Treat the finished `en/` file as the canonical source and produce (or re-sync) its `es/` counterpart:
@@ -254,7 +254,7 @@ Wait for T before starting C.
 **Subagent C — Spanish reviewer (`es/` only, `en/`-blind).** Launch a fourth, independent
 `general-purpose` subagent, `model: sonnet`:
 
-> Read `notes/prompts/knowledge/notes/_notes-review-es-prompt.md` and execute it in full:
+> Read `notes/prompts/knowledge/notes/_internal/_notes-review-es-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
 >
 > Read ONLY the `es/` counterpart (never open the `en/` file), audit it as a standalone native-Spanish

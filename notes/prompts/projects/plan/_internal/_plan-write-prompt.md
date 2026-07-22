@@ -41,7 +41,7 @@ you touched and the one-line commit message you'd use — the reviewer runs next
 
 Read these in order. They are the inputs to every decision this prompt makes.
 
-1. `notes/prompts/projects/plan/_planning-standard.md` — **the output contract.** The 24-section template,
+1. `notes/prompts/projects/plan/_internal/_planning-standard.md` — **the output contract.** The 24-section template,
    done-condition formats, HTTP status conventions, professional implementation order, branch-strategy
    rules, and consistency invariants. Everything you write must conform to it.
 2. `CLAUDE.md` — only the sections that feed a plan: "Current study progress", "Java/Spring Boot",
