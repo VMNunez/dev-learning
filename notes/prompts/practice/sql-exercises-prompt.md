@@ -11,11 +11,12 @@ Two modes:
 
 ---
 
-**How to use:** fill in the two keys, paste the prompt into a new chat. That is the whole ritual.
+**How to use:** fill in `MODE` and `TOPIC`, paste the prompt into a new chat. That is the whole ritual.
 
-Everything else — which file, how many exercises, which concepts — is **not yours to decide**: it is
-already written in `practice/sql/PLANNING.md`, and this prompt reads it. In `MODE = review` you do
-not need to paste the exercise file either; it is read from disk.
+Everything left blank — which file, how many exercises, which concepts — comes from
+`practice/sql/PLANNING.md`, and this prompt reads it, so the default is always the plan. `COUNT` and
+`FILE` are there when you want to override that for one run. In `MODE = review` you do not need to
+paste the exercise file either; it is read from disk.
 
 ---
 
@@ -24,8 +25,8 @@ not need to paste the exercise file either; it is read from disk.
 
 MODE  = [practice | review]
 TOPIC = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
-FILE  = [optional — delete every line but the one you want. Blank = the default file for {TOPIC}.]
-        practice/sql/01-basics.sql
+COUNT =
+FILE  = practice/sql/01-basics.sql
         practice/sql/02-joins.sql
         practice/sql/03-aggregates.sql
         practice/sql/04-join-pitfalls.sql
@@ -40,11 +41,13 @@ FILE  = [optional — delete every line but the one you want. Blank = the defaul
         practice/sql/13-live-database.sql
         practice/sql/14-report-queries.sql
 
-**That is the entire configuration.** Do not add keys. `MODE` and `TOPIC` are required; `FILE` is
-there so Victor can name the file explicitly when he wants to be sure which one is touched — it is
-normally blank, and blank is never an error. If more than one path is left under `FILE`, that is a
-half-finished edit: stop and ask which one, do not guess. If you feel the need to hand-tune anything else about a
-batch, the thing that needs changing is the step in `practice/sql/PLANNING.md`, not this run.
+**That is the entire configuration.** Do not add keys. `MODE` and `TOPIC` are required; `COUNT` and
+`FILE` are optional overrides — they are there so Victor can pin the batch size or name the file
+explicitly when he wants to be sure what happens, and **blank is the normal state and never an
+error**. Blank means "derive it from the plan" (see the Resolution table). If more than one path is
+left under `FILE`, that is a half-finished edit: stop and ask which one, do not guess. If you feel
+the need to hand-tune anything *else* about a batch, the thing that needs changing is the step in
+`practice/sql/PLANNING.md`, not this run.
 
 ---
 
@@ -55,7 +58,7 @@ batch, the thing that needs changing is the step in `practice/sql/PLANNING.md`, 
 | Value | Where it comes from |
 |-------|---------------------|
 | `{FILE}` | the `FILE` key if Victor set it; otherwise the path table in `MODE = practice` Step 4, keyed by {TOPIC}. Never invent a path. |
-| `{COUNT}` | the `COUNT` line of the §6 step in `practice/sql/PLANNING.md` whose TOPIC matches. |
+| `{COUNT}` | the `COUNT` key if Victor set it; otherwise the `COUNT` line of the §6 step in `practice/sql/PLANNING.md` whose TOPIC matches. When the two differ, say so in one line ("COUNT del bloque = 6, el plan pide 10") and use his — the plan is the default, not a veto. |
 | `{FOCUS}` | the `FOCUS` line of that same §6 step. |
 | `{REVIEW}` | `no`, unless the §6 step's block is a Moment 2b reinforcement batch, which sets it to `yes`. |
 
@@ -1059,28 +1062,13 @@ So never print "step closed" on the strength of a score alone. If 4c set the row
 
 ---
 
-### Step 5 — Interview questions
+### Step 5 — Concept gaps: report them, do not write them up
 
-For each distinct conceptual gap revealed by ⚠️ or ❌ answers, add one interview question.
-"Distinct gap" means a different underlying concept. If three exercises failed for the same
-reason (e.g. WHERE vs HAVING), add one question, not three.
-
-This step runs for any score. Even at ≥ 80%, if one or two exercises were ⚠️ or ❌, add
-questions for those gaps. If every exercise was ✅, skip this step entirely.
-
-Add each question to `notes/interview-prep/en/sql.md` and `notes/interview-prep/es/sql.md` following
-**"Adding questions from outside the audit (practice prompts)"** in
-`notes/prompts/knowledge/interview-prep/_interview-prep-standard.md` — it defines the question format,
-the bilingual rule, dedupe-by-concept, placement under the matching `##` section, and priority-marker
-reordering. Do not restate them here. Two SQL-specific points on top of the standard:
-
-- **Anchor the answer to the exercises.** Reference the bookstore schema or the exercise number when
-  the question is about a query pattern (e.g. "In the JOINs exercises, I used LEFT JOIN + IS NULL to
-  find authors with no books…").
-- **Priority calibration for SQL:** ⭐⭐⭐ = core pattern that filters in a first screen (WHERE vs
-  HAVING, INNER vs LEFT JOIN, NULL comparison behaviour, COUNT(*) vs COUNT(column)); ⭐⭐ = deeper
-  probes (COALESCE, correlated subqueries, EXISTS vs IN, DML with RETURNING); ⭐ = PostgreSQL-specific
-  edge cases.
+If any answer was ⚠️ or ❌, list the distinct conceptual gaps in one short block at the end of the
+chat — one line per gap, no Q&A drafting. **This prompt never writes to `notes/interview-prep/` or to
+`notes/sql/`.** Those files belong to `interview-prep-audit` (gate G4) and `/notes-audit` (Moment 5);
+a grading run that also authors study material bypasses both standards and their cold reviewers.
+Victor decides when to run them. If every attempted exercise was ✅, skip this step entirely.
 
 ---
 
