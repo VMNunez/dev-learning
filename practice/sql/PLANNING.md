@@ -251,7 +251,7 @@ target of 30.
 | File | Step(s) | Written | Answered | Scored | First-pass target | Status |
 |------|---------|---------|----------|--------|-------------------|--------|
 | `01-basics.sql` | 0 | 40 *(≈20 review)* | 40 | **0** | 30 | answered, never scored — run Moment 4 |
-| `02-joins.sql` | 1 | 10 | **0** | 0 | 22 | statements only — never studied |
+| `02-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
 | `03-aggregates.sql` | 2 | 0 | 0 | 0 | 12 | to create |
 | `04-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
 | `05-nulls.sql` | 4 | 0 | 0 | 0 | 12 | to create |
@@ -271,7 +271,9 @@ and are deliberately not budgeted — 50 written today, 40 answered, 0 scored.
 **Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
 one by hand.
 
-*Legacy* — `01-basics.sql` and the original ten of `02-joins.sql`, written before the prompt existed.
+*Legacy* — `01-basics.sql` only, written before the prompt existed. (`02-joins.sql` was the other one;
+it was deleted and will be regenerated in the current format, so `01-basics.sql` is the last file that
+will ever carry this.)
 The answer goes directly under the description, with no marker:
 
 ```sql
@@ -329,10 +331,14 @@ allowed to be out of sync (`CLAUDE.md`, bilingual notes rule).
 The order is not the order of `coverage.md`. It follows how the concepts actually depend on each
 other, and front-loads what a screening asks first.
 
-**Step sizing:** a step is a handful of 12:30 sessions, never weeks. **No step generates more than 16
-new exercises** — that ceiling is why schema design is split across Steps 9 and 10 instead of being one
-36-exercise block. (A file's *total* can exceed 16 when several steps write into it, as `01-basics.sql`
-and `02-joins.sql` do.)
+**Step sizing:** a step is a handful of 12:30 sessions, never weeks. **No single generation run asks
+for more than 12 exercises, and no step targets more than 22** — that ceiling is why schema design is
+split across Steps 9 and 10 instead of being one 36-exercise block. A step above 12 is always split
+into two runs (Steps 1, 5, 8, 9, 10), which also keeps each batch's difficulty split meaningful.
+
+Step 1 is the only step at the 22 ceiling, deliberately: JOINs is the single most-tested SQL topic at
+junior level, and it absorbed the ten hand-written exercises the step used to start from. (A file's
+*total* can exceed its step's target when several steps write into it, as `01-basics.sql` does.)
 
 > **A note on `TOPIC` values.** The `TOPIC` in a Moment 2 config is the *prompt's* vocabulary, not a
 > `coverage.md` section name. Two steps may pass the same `TOPIC` with different `FOCUS` values without
@@ -378,31 +384,42 @@ Add: *"append to `practice/sql/01-basics.sql`, continuing the numbering from #40
 
 ---
 
-### Step 1 — JOINs (0 answered / 10 written / 22 target)
+### Step 1 — JOINs (0 scored / 22 target)
 
-**Exercises:** `practice/sql/02-joins.sql` — **10 statements already written but never answered**, 12 to
-generate. Moment 2 is already half-done for this step; start at Moment 3 on the existing ten.
+**Exercises:** `practice/sql/02-joins.sql` — 22, generated from scratch in **two runs of 11**. The
+original ten hand-written statements were deleted on 2026-07-22: they were never answered, and they
+carried the old thin schema, so regenerating gets the canonical one and the current exercise format
+(`-- Your answer:` + `-- ✅ Corregido` markers) instead of perpetuating the legacy format into a
+second file.
 **Coverage:** `JOINs`
 **Notes — extend:** `06-joins`
 **Reinforces:** Step 0 — execution order (`FROM + JOIN` runs first, which is why the join happens before `WHERE`)
 
-The 10 written statements cover: `INNER JOIN` (two tables, specific columns, aliases, three tables,
-with `WHERE`, with `ORDER BY`, with `LIMIT`), `LEFT JOIN` (all rows, and the `IS NULL` anti-join), and
-one count-per-group preview. They are unanswered — answering them is the first work of this step.
+Run 1 builds the foundation: `INNER JOIN` (two tables, named columns, aliases, three tables, combined
+with `WHERE` / `ORDER BY` / `LIMIT`) and `LEFT JOIN` (keeping unmatched rows, and the `IS NULL`
+anti-join). Run 2 covers the rest: `RIGHT JOIN` and why it is rewritable as a `LEFT`,
+`FULL OUTER JOIN`, self join, `USING` vs `NATURAL JOIN` and why `NATURAL` is banned in real
+codebases, `EXISTS`/`NOT EXISTS` as semi-join and anti-join vocabulary.
 
-Still missing: `RIGHT JOIN` and why it is rewritable as a `LEFT`, `FULL OUTER JOIN`, self join,
-`USING` vs `NATURAL JOIN` and why `NATURAL` is banned in real codebases, semi-join / anti-join as
-vocabulary.
-
-**Moment 2 config:**
+**Moment 2 config — run 1** *(new file: it generates the canonical setup block)*:
 ```
 MODE  = practice
 TOPIC = joins
-COUNT = 12
+COUNT = 11
+FOCUS = INNER JOIN across two and three tables, table aliases, LEFT JOIN keeping
+        unmatched rows, LEFT JOIN + IS NULL as an anti-join
+```
+
+**Moment 2 config — run 2** *(appends, continuing from #11)*:
+```
+MODE  = practice
+TOPIC = joins
+COUNT = 11
 FOCUS = RIGHT JOIN, FULL OUTER JOIN, self join, USING vs NATURAL JOIN,
         EXISTS as a semi-join, NOT EXISTS as an anti-join
 ```
-Add: *"append to `practice/sql/02-joins.sql`, continuing from #10"* + the no-repetition line.
+Add the no-repetition line to both runs. Nothing else: the file no longer exists, so run 1 writes the
+canonical schema itself and there is no legacy-schema prompt to answer.
 
 The single most-tested SQL topic at junior level, which is why it comes before aggregation: in a real
 screening `GROUP BY` almost always sits on top of a join.
@@ -417,7 +434,7 @@ screening `GROUP BY` almost always sits on top of a join.
 **Exercises:** `practice/sql/03-aggregates.sql` — 12
 **Coverage:** `Aggregates and grouping`
 **Notes — extend:** `07-aggregates`
-**Reinforces:** Step 1 — the count-per-group exercise (#10 of `02-joins.sql`) was the preview of this
+**Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
 **Moment 2 config:** `TOPIC = group-by`, `COUNT = 12`, `FOCUS =` *(blank — full topic)*
 
 `COUNT(*)` vs `COUNT(column)` vs `COUNT(DISTINCT)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, `SUM`
@@ -678,7 +695,7 @@ one. A row moves to ✅ only after a `review` run has graded it.
 |------|-------|----------------|-------------------|----------------|--------|
 | — | `en`/`es` migration (G3) | — | — | 14 files × 2 | not started |
 | 0 | Querying basics | `01-basics.sql` | 0 / 30 *(40 answered, +20 repaso)* | extend 03, 04, 05 · **new 15** | in progress ⏳ |
-| 1 | JOINs | `02-joins.sql` | 0 / 22 *(10 written)* | extend 06 | not started |
+| 1 | JOINs | `02-joins.sql` | 0 / 22 | extend 06 | not started |
 | 2 | Aggregates and grouping | `03-aggregates.sql` | 0 / 12 | extend 07 | not started |
 | 3 | JOIN pitfalls | `04-join-pitfalls.sql` | 0 / 12 | extend 06 | not started |
 | 4 | NULL and three-valued logic | `05-nulls.sql` | 0 / 12 | **new 16** | not started |
@@ -757,8 +774,9 @@ Cross-checks between sections. Verify these whenever this plan is edited:
 3. **Exercise counts** — every step in §6 states a count; the per-step counts for a shared file sum to
    that file's first-pass target in §5; §8's totals match §5's. A file whose *written* count exceeds
    its target is not a violation — that is a review batch (Moment 2b) and is expected.
-4. **Step sizing** — no step generates more than 16 new exercises (a file's total may be higher when
-   several steps write into it).
+4. **Step sizing** — no generation run asks for more than 12 exercises and no step targets more than
+   22; anything above 12 is split into two runs (a file's total may be higher when several steps
+   write into it).
 5. **Steps vs note files** — every note file a step creates or extends appears in §5, and every new
    file in §5 has both an `en/` and an `es/` name.
 6. **§0 vs §8** — the Current step in §0 is the first row in §8 that is not ✅.
