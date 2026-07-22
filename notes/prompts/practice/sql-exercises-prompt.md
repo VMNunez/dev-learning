@@ -25,12 +25,19 @@ Two modes:
 ## Configuration — edit only this block
 
 MODE  = [practice | review]
-TOPIC = [joins | group-by | nulls | subqueries | ctes | dml | transactions | window-functions | normalization | schema-design | data-types | postgresql-specifics | indexes | all]
+TOPIC = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
 
 ## TOPIC = all (practice mode only) generates exercises for every SQL topic in turn —
-## see notes/prompts/_batch-mode.md. Order: joins, group-by, nulls, subqueries, ctes, dml,
-## transactions, window-functions, normalization, schema-design, data-types,
-## postgresql-specifics, indexes. Review mode stays one file at a time — it needs your pasted answers.
+## see notes/prompts/_batch-mode.md. The order below is the study order, and it is also the
+## file-number order (see the path table in Step 4): basics, joins, join-pitfalls, group-by,
+## nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design,
+## normalization, data-types, ddl, indexes, live-database, report-queries.
+## Review mode stays one file at a time — it needs your pasted answers.
+##
+## The topic list, the file numbering and the step numbering are kept in sync with
+## practice/sql/PLANNING.md — that file is the source of truth for the order. Several topics
+## deliberately share one file (joins + join-pitfalls, subqueries + ctes, dml + transactions,
+## schema-design + normalization, data-types + ddl); the path table in Step 4 is authoritative.
 COUNT = [number of exercises to generate — default: 12 — only used in practice mode]
 FOCUS = [specific concept to practise — optional, practice mode only]
         Example: FOCUS = LEFT JOIN, FULL OUTER JOIN
@@ -46,8 +53,9 @@ Validation — check these before doing anything else:
 
 ## Context
 
-**Before starting, read these three files:**
+**Before starting, read these four files:**
 - `CLAUDE.md` — daily schedule and teaching context (my profile and the market are in `notes/prompts/_shared-context.md`).
+- `practice/sql/PLANNING.md` — **the SQL learning plan.** It owns the step order, the file numbering, how many exercises each file targets, and which coverage sections each step claims. If this prompt and that plan ever disagree about a path or an order, the plan wins and this prompt is the thing to fix.
 - `PROGRESS.md` — the SQL section shows which topics are already solid.
 - `notes/sql/coverage.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
@@ -61,10 +69,22 @@ SQL is not isolated from the rest of the stack. Where relevant, connect a concep
 Spring Boot or JPA equivalent in the exercise description (e.g. transactions → @Transactional,
 schema design → @Entity + @OneToMany, indexes → N+1 query problem).
 
-Study order (matches ROADMAP.md):
-JOINs (02) → GROUP BY (03) → NULLs (04) → subqueries (05) → CTEs (06) → DML (07)
-→ transactions (12) → window functions (10) → normalization (08) → schema design (09)
-→ data types (13) → PostgreSQL specifics (14) → indexes (11)
+Study order (matches `practice/sql/PLANNING.md` §6 — **the file number is the step order**, so the
+folder listing reads in the order the topics are learned):
+
+```
+01 basics ─┬─ 02 joins ─ 02 join-pitfalls ─ 03 group-by ─ 04 nulls ─ 05 subqueries+ctes
+           │
+           └─► 06 dates-strings ─ 07 window-functions ─ 08 dml+transactions
+                 ─ 09 schema-design+normalization ─ 10 data-types+ddl ─ 11 indexes
+                 ─ 12 live-database ─ 13 report-queries
+```
+
+Why this order and not the coverage.md order: joins come before aggregation because in a real
+screening `GROUP BY` almost always sits on top of a join; NULLs come after aggregation so the
+surprises already met (a `LEFT JOIN` producing nulls, `AVG` skipping them) get explained rather than
+described; date functions come before window functions because a live exercise stalls on
+`DATE_TRUNC` first. The reasoning per step is in PLANNING.md §6.
 
 ---
 
@@ -116,10 +136,13 @@ reviews     id SERIAL PK | book_id INT FK→books | customer_id INT FK→custome
   and running totals show meaningful patterns
 - indexes: add 500+ rows to books and order_items using generate_series() so EXPLAIN ANALYZE
   shows a real cost difference before and after adding an index
-- postgresql-specifics: insert author and book names with mixed case (e.g. 'ORWELL', 'Orwell',
-  'george orwell') so ILIKE vs LIKE differences produce visibly different result sets;
-  ensure orders span at least 6 distinct months so DATE_TRUNC('month', ...) produces
-  meaningful grouping in report queries
+- dates-strings: insert author and book names with mixed case (e.g. 'ORWELL', 'Orwell',
+  'george orwell') so ILIKE vs LIKE differences produce visibly different result sets; ensure orders
+  span at least 6 distinct months so DATE_TRUNC('month', ...) produces meaningful grouping; leave at
+  least 2 customers with a NULL city so a || concatenation blanks a whole display name
+- join-pitfalls: at least one book appearing in several order_items, so a naive
+  SUM(books.price) across the join comes back an exact multiple of the real total
+- live-database: no extra data — the exercises read the schema itself and provoke constraint errors
 
 ---
 
@@ -142,10 +165,21 @@ Stop and wait for Victor's response.
 - If his response is not affirmative, or he does not respond: print nothing else and stop.
 
 **Existing file:** check if the file for {TOPIC} already exists (see path table in Step 4).
-- If it exists: read it. Scan for lines matching the pattern `-- Exercise [number] [`. Take the
-  highest number found — call it N. New exercises will start from N+1. If no line matches this
-  pattern (file exists but has only the setup block and no exercises yet), set N = 0 and start
-  from Exercise 1. Do NOT regenerate the setup block in either case.
+- If it exists: read it and find the highest exercise number, checking **both** formats:
+  - current format — lines matching `-- Exercise [number] [`
+  - **legacy format** — lines matching `-- #[number] |` (used by `01-basics.sql` and the original
+    `02-joins.sql`, both written by hand before this prompt existed)
+
+  Take the highest number found across both patterns — call it N. New exercises start from N+1. If
+  neither pattern matches (the file has only a setup block), set N = 0. Do NOT regenerate the setup
+  block in either case.
+
+  **If the file is in the legacy format, say so before generating:**
+  "Este archivo está en el formato antiguo (`-- #NN |`, sin bloque SETUP ni marca `-- Your answer:`).
+  Los ejercicios nuevos usarán el formato actual, así que el archivo quedará mixto. El modo review
+  solo puntúa lo que lleva `-- Your answer:` — los ejercicios antiguos saldrán como 'Sin responder'
+  aunque estén contestados. ¿Continúo? (sí / no)"
+  Wait for an affirmative before continuing.
 - If the file does not exist: set N = 0 and generate the complete file including the setup block.
 
 ---
@@ -154,12 +188,20 @@ Stop and wait for Victor's response.
 
 Skip this step if the file already exists.
 
-**Self-contained topics — no bookstore setup block:** for `normalization`, `schema-design`,
-and `data-types`, do NOT generate the bookstore setup block. Each exercise in these topics
+**Self-contained topics — no bookstore setup block:** for `schema-design`, `normalization`,
+`data-types` and `ddl`, do NOT generate the bookstore setup block. Each exercise in these topics
 carries its own table definitions. For a new file of one of these topics, generate only the
-header comment and the `-- EXERCISES: {TOPIC}` banner, then go straight to Step 3. The rest
-of this step applies only to the bookstore-based topics (joins, group-by, nulls, subqueries,
-ctes, dml, transactions, window-functions, postgresql-specifics, indexes).
+header comment and the `-- EXERCISES: {TOPIC}` banner, then go straight to Step 3.
+
+**`report-queries` uses the TimeTrack model, not the bookstore.** Generate a setup block with
+`users`, `projects` and `time_entries` mirroring `projects/07-timetrack` (a `Role` enum on users, an
+`EntryStatus` of DRAFT/SUBMITTED/APPROVED/REJECTED on entries, `hours NUMERIC(5,2)`, `work_date DATE`),
+seeded across at least 6 distinct months and including a project with zero entries so a `LEFT JOIN`
+report has an empty group to preserve.
+
+The rest of this step applies to the bookstore-based topics: `basics`, `joins`, `join-pitfalls`,
+`group-by`, `nulls`, `subqueries`, `ctes`, `dates-strings`, `window-functions`, `dml`, `transactions`,
+`indexes`, `live-database`.
 
 Generate a complete setup block that Victor can paste and run in pgAdmin.
 
@@ -227,21 +269,32 @@ mentions it, and drop a seed concept coverage.md no longer lists. The seeds only
 *format and concrete examples* for the concepts coverage.md defines — treat a seed that names a
 concept as an illustration, not as permission to add scope coverage.md dropped.
 
-| TOPIC | coverage.md section to read |
+Every section name below is verified to exist verbatim in `notes/sql/coverage.md`. If a lookup fails,
+**stop and report it** rather than falling back to the seeds — a missing section means the mapping has
+gone stale and the exercises would silently lose their scope list.
+
+| TOPIC | coverage.md section(s) to read |
 |-------|-----------------------------|
+| basics | ## Querying basics · ## Filtering and pattern matching · ## Sorting, pagination, and determinism · ## Set operations |
 | joins | ## JOINs |
+| join-pitfalls | ## JOIN pitfalls and row multiplication |
 | group-by | ## Aggregates and grouping |
-| nulls | ## Filtering and NULL handling |
+| nulls | ## NULL and three-valued logic |
 | subqueries | ## Subqueries, CTEs, and views — subquery items only |
 | ctes | ## Subqueries, CTEs, and views — CTE and view items |
+| dates-strings | ## Date and string functions · ## PostgreSQL specifics |
+| window-functions | ## Window functions |
 | dml | ## DML — modifying data |
 | transactions | ## Transactions |
-| window-functions | ## Window functions |
-| normalization | ## Schema design — normalization items |
-| schema-design | ## Schema design |
+| schema-design | ## Schema design — constraints and integrity · ## Schema design — modelling decisions |
+| normalization | ## Schema design — modelling decisions (the 1NF/2NF/3NF items only) |
 | data-types | ## Data types |
-| postgresql-specifics | ## PostgreSQL specifics |
-| indexes | ## Performance basics |
+| ddl | ## DDL — creating and evolving a schema |
+| indexes | ## Indexes · ## Reading a query plan and diagnosing slowness |
+| live-database | ## Working with a live database · ## Reading PostgreSQL errors · ## Type behaviour at runtime |
+| report-queries | ## Writing a report query |
+
+`## Programmable database objects` is deliberately not claimed by any topic — see PLANNING.md §11.
 
 **Difficulty distribution — applied to the batch of {COUNT} new exercises:**
 Calculate the split based on COUNT, then assign labels to the new exercises in order:
@@ -263,12 +316,13 @@ Challenge exercise. (COUNT=5 → 2 Intro, 2 Standard, 1 Challenge.)
 Label each exercise with its level: `-- Exercise N [Intro]:`, `[Standard]:`, `[Challenge]:`.
 
 **Cross-topic integration rule:** for the bookstore-based query topics from nulls onward
-(nulls, subqueries, ctes, transactions, window-functions, postgresql-specifics, indexes),
-at least one Challenge exercise must combine the current topic with a concept from an earlier
-topic. Examples: a subquery Challenge that also requires a JOIN; a CTEs Challenge that uses
+(nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, indexes,
+live-database), at least one Challenge exercise must combine the current topic with a concept from an
+earlier topic. Examples: a subquery Challenge that also requires a JOIN; a CTEs Challenge that uses
 GROUP BY inside a CTE; a window functions Challenge that filters with a WHERE clause using
-IS NULL. This rule does not apply to the self-contained design topics (normalization,
-schema-design, data-types) — they have no shared query schema to integrate with.
+IS NULL. This rule does not apply to the self-contained design topics (schema-design, normalization,
+data-types, ddl) — they have no shared query schema to integrate with. It does not apply to
+`report-queries` either, where *every* exercise is an integration by definition.
 
 **Format for each exercise:**
 ```sql
@@ -299,12 +353,104 @@ where the reasoning is deepest and most worth explaining out loud.
 **Topic-specific format and seeds** (structure + concrete exercise ideas — *not* the scope list;
 coverage.md defines scope, and the reconciliation rule above governs any conflict):
 
+BASICS
+- SELECT (all columns vs named columns), expressions and aliases, || concatenation
+- WHERE: comparison operators, AND/OR, IN vs multiple OR, LIKE/ILIKE, BETWEEN, IS NULL, the NOT forms
+- ORDER BY: single and multiple columns, by expression, by alias, ASC/DESC, NULLS FIRST/LAST
+- LIMIT / OFFSET / FETCH, and why LIMIT without ORDER BY is non-deterministic
+- DISTINCT (whole-row semantics) and DISTINCT ON
+- SQL execution order (FROM+JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT) and where a
+  SELECT alias is visible — at least two exercises must make the candidate predict whether an alias
+  works in a given clause; this is the mental model every later topic leans on
+- CASE WHEN in SELECT (per-row label)
+- UNION vs UNION ALL, INTERSECT, EXCEPT — column count and type rules, and where ORDER BY goes
+- Keyset (seek) pagination vs deep OFFSET
+- Challenge: a query combining a CASE label, a set operation and a deterministic ORDER BY
+
 JOINS
 - INNER JOIN (basic), LEFT JOIN (keep rows with no match), RIGHT JOIN, FULL OUTER JOIN
 - Self-join (e.g. authors who share the same country)
 - Multi-table JOIN (3+ tables)
+- JOIN ... USING (column) vs NATURAL JOIN — and why NATURAL JOIN is banned in real codebases
+- EXISTS as a semi-join, NOT EXISTS / LEFT JOIN + IS NULL as an anti-join — as vocabulary to recognise
 - At least two exercises where JOIN type matters: INNER would lose rows, LEFT is needed
 - Challenge: find books with no orders (LEFT JOIN + IS NULL pattern)
+
+JOIN-PITFALLS
+Every exercise here is a join that looks right and is not. Where useful, present a broken query and
+ask for the diagnosis rather than only asking for a correct query from scratch.
+- A condition in ON vs in WHERE on an outer join — equivalent for INNER, not for LEFT
+- The WHERE filter on the right table that silently turns a LEFT JOIN into an INNER JOIN
+- Row multiplication on a one-to-many join — at least one exercise must ask for the predicted row
+  count before running it
+- Fan-out inflating SUM/AVG, and the two fixes: pre-aggregating in a CTE vs COUNT(DISTINCT ...)
+- Accidental cross join from a missing ON predicate, and the deliberate CROSS JOIN as a real tool
+- NULL in a join key — why the row disappears from an INNER JOIN
+- COUNT(*) returning 1 instead of 0 after a LEFT JOIN, and why COUNT(child.id) gives the real 0
+- Challenge: a report whose total comes back an exact multiple of the right answer — find and fix it
+
+DATES-STRINGS
+Exercises use the bookstore schema. Claims the whole `## PostgreSQL specifics` coverage section, so
+the PostgreSQL-only tools live here rather than in a topic of their own.
+- DATE_TRUNC('month'|'week'|'day', ...) — the backbone of every period report; at least one exercise
+  builds a monthly total from raw timestamps
+- EXTRACT(YEAR FROM ...) / DATE_PART, and when each beats DATE_TRUNC (truncate to keep periods
+  ordered, extract to bucket across periods)
+- What subtraction returns — two timestamps give an INTERVAL, two DATEs give an integer day count
+- AGE(a, b) vs plain subtraction
+- INTERVAL arithmetic — NOW() - INTERVAL '30 days' as a sargable "last 30 days" filter
+- NOW() vs CURRENT_DATE
+- The string toolkit: UPPER, LOWER, TRIM, LENGTH, SUBSTRING, REPLACE, SPLIT_PART
+- || with a NULL operand blanking the whole result, and the two fixes (COALESCE per piece, CONCAT_WS)
+- STRING_AGG vs ARRAY_AGG — which one you hand back to an API
+- :: cast operator, and ILIKE vs LIKE (one exercise where LIKE finds nothing and ILIKE finds rows)
+- Challenge: a monthly report combining DATE_TRUNC, STRING_AGG and a COALESCE'd concatenation
+
+DDL
+Self-contained — no bookstore setup block. Victor writes DDL from a blank editor, because ddl-auto has
+been generating it for him in TimeTrack.
+- CREATE TABLE by hand: column list, types, NOT NULL, DEFAULT, constraint clauses
+- Column-level vs table-level constraint syntax, and why you name a constraint
+- REFERENCES inline, and what order tables must be created in
+- CREATE TABLE IF NOT EXISTS — what makes a seed script re-runnable
+- ALTER TABLE ADD COLUMN — and why adding it NOT NULL to a populated table fails without a DEFAULT
+- ALTER TABLE ALTER COLUMN TYPE, ADD CONSTRAINT on a populated table, RENAME COLUMN
+- DROP TABLE vs DROP TABLE ... CASCADE
+- DDL is transactional in PostgreSQL — one exercise wraps an ALTER in BEGIN; ... ROLLBACK; to prove it
+- Challenge: write the full TimeTrack schema (users, projects, time_entries) from the domain rules,
+  constraints included
+
+LIVE-DATABASE
+Two halves: operating the database without a GUI, and reading its errors. Uses the bookstore schema.
+- psql orientation: \l, \dt, \d table_name, \i file.sql — one exercise per command, stating what the
+  output tells you
+- information_schema and pg_catalog — list every table and every column of one table with a query
+- The public schema, search_path, and qualified vs unqualified names
+- Role vs user, GRANT on a table, object ownership — which privileges the app's DB user should hold
+- pg_dump and restoring a dump
+- The error catalogue — for each, give the exact message text and ask what caused it and how to fix it:
+  duplicate key / unique violation · foreign key violation on insert vs on delete · not-null violation ·
+  check constraint violation · "must appear in the GROUP BY clause" · "more than one row returned by a
+  subquery used as an expression" · "relation does not exist" (three causes) · "invalid input syntax
+  for type integer"
+- SQLSTATE codes 23505, 23503, 23502, 23514 — and why code beats parsing the message text
+- Type behaviour that fails silently: integer division truncating, division by zero aborting the query,
+  PostgreSQL refusing an implicit cast MySQL would perform, TIMESTAMP compared to DATE
+- Challenge: given a raw log line, name the statement that caused it and write the fix
+
+REPORT-QUERIES
+The capstone. **Uses the TimeTrack model, not the bookstore.** No new syntax — every exercise hands a
+requirement in prose and expects the whole query, the way a live exercise does.
+- Format: the exercise is a business requirement in one or two sentences, plus the expected column
+  list. No hints, no clause skeleton given.
+- Mapping a requirement onto FROM/JOIN → WHERE → GROUP BY → HAVING → ORDER BY
+- Choosing the driving table so a LEFT JOIN preserves groups with zero rows
+- COALESCE(SUM(...), 0) so an empty group renders 0 rather than blank
+- Aliasing every output column
+- Formatting in the query vs in the application — ROUND(SUM(hours)::numeric, 2) vs letting Angular do it
+- At least two exercises must be answerable only with a period filter (DATE_TRUNC or a half-open range)
+- Every exercise is Challenge level: add the "-- Why I chose this approach" line to all of them, and
+  state a target time of 10 minutes in the exercise header so the file doubles as timed practice
 
 GROUP BY
 - Basic aggregates: COUNT, SUM, AVG, MIN, MAX
@@ -450,18 +596,14 @@ Cover:
 Format: each exercise provides a description of the system (e.g. "an e-commerce order table"), asks Victor to write CREATE TABLE with the correct types, and requires a comment on each column explaining the choice.
 Do NOT use the bookstore setup block — each exercise is self-contained.
 
-POSTGRESQL SPECIFICS
-Exercises use the bookstore schema. Each exercise must require at least one PostgreSQL-specific feature — not achievable with standard SQL alone.
-Cover:
-- :: cast operator — created_at::date, price::text, '5'::int; exercises with date comparisons that require casting a timestamp to date
-- ILIKE — case-insensitive search; one exercise explicitly comparing LIKE (case-sensitive, finds nothing) vs ILIKE (case-insensitive, finds results) on the same query
-- DISTINCT ON — get one row per group with multiple columns; the column in DISTINCT ON(...) must be leftmost in ORDER BY; exercise: most recent order per customer
-- RETURNING — exercises with INSERT/UPDATE/DELETE that return the affected row without a second SELECT; Victor must write the full statement and explain why this avoids a round-trip
-- DATE_TRUNC('month', date) — group orders by calendar month; exercise: monthly sales report showing total revenue per month
-- NOW() vs CURRENT_DATE — NOW() returns timestamp with time; CURRENT_DATE returns date only; exercises filtering recent rows using each
-- INTERVAL — WHERE order_date > NOW() - INTERVAL '30 days'; exercise: find customers who joined in the last 90 days
-- STRING_AGG(column, separator) — concatenate grouped values into one string (e.g. list all genre names for a given author on one line); exercise: report showing authors and their genres as a comma-separated column
-Challenge: a query that combines at least three of the above features in one statement (e.g. DISTINCT ON + DATE_TRUNC + RETURNING).
+POSTGRESQL SPECIFICS — *retired as a standalone topic.* Its items were redistributed to the topic
+where each one is actually needed, so a PostgreSQL-only tool is learned in the context that uses it
+rather than in a grab-bag at the end:
+- DATE_TRUNC, NOW() vs CURRENT_DATE, INTERVAL, STRING_AGG, :: casts, ILIKE → **dates-strings**
+- DISTINCT ON → **basics** (alongside DISTINCT) and again in **ctes**, as the no-subquery way to get
+  the most recent row per group
+- RETURNING → **dml**
+- Single vs double quotes, identifier case folding → **live-database**, with the errors they produce
 
 INDEXES
 Use the bookstore schema with 500+ rows (use generate_series() in setup).
@@ -475,23 +617,32 @@ Challenge: analyze a slow query and decide what index to add, then verify with E
 
 ### Step 4 — Save the file
 
-| Topic | Path |
-|-------|------|
-| joins | practice/sql/02-joins.sql |
-| group-by | practice/sql/03-group-by.sql |
-| nulls | practice/sql/04-nulls.sql |
-| subqueries | practice/sql/05-subqueries.sql |
-| ctes | practice/sql/06-ctes.sql |
-| dml | practice/sql/07-dml.sql |
-| normalization | practice/sql/08-normalization.sql |
-| schema-design | practice/sql/09-schema-design.sql |
-| window-functions | practice/sql/10-window-functions.sql |
-| indexes | practice/sql/11-indexes.sql |
-| transactions | practice/sql/12-transactions.sql |
-| data-types | practice/sql/13-data-types.sql |
-| postgresql-specifics | practice/sql/14-postgresql-specifics.sql |
+**Flat files, numbered in study order.** Several topics share a file — that is deliberate, and the
+second topic appends to the first rather than creating a new file.
 
-If the folder does not exist, create it using the path above.
+| Topic | Path | PLANNING.md step |
+|-------|------|------------------|
+| basics | practice/sql/01-basics.sql | 0 |
+| joins | practice/sql/02-joins.sql | 1 |
+| join-pitfalls | practice/sql/02-joins.sql *(appends)* | 2 |
+| group-by | practice/sql/03-aggregates.sql | 3 |
+| nulls | practice/sql/04-nulls.sql | 4 |
+| subqueries | practice/sql/05-subqueries-ctes.sql | 5 |
+| ctes | practice/sql/05-subqueries-ctes.sql *(appends)* | 5 |
+| dates-strings | practice/sql/06-dates-strings.sql | 6 |
+| window-functions | practice/sql/07-window-functions.sql | 7 |
+| dml | practice/sql/08-dml-transactions.sql | 8 |
+| transactions | practice/sql/08-dml-transactions.sql *(appends)* | 8 |
+| schema-design | practice/sql/09-schema-design.sql | 9 |
+| normalization | practice/sql/09-schema-design.sql *(appends)* | 9 |
+| data-types | practice/sql/10-data-types-ddl.sql | 10 |
+| ddl | practice/sql/10-data-types-ddl.sql *(appends)* | 10 |
+| indexes | practice/sql/11-indexes.sql | 11 |
+| live-database | practice/sql/12-live-database.sql | 12 |
+| report-queries | practice/sql/13-report-queries.sql | 13 |
+
+If the folder does not exist, create it using the path above. **Never invent a path** — if {TOPIC} is
+not in this table, stop and report it.
 
 For a **new file**: write the complete file (setup block + exercises).
 For **append**: read the existing file, then append the new exercises after the last line. Do not modify any existing content.
@@ -516,8 +667,17 @@ After saving, print the message matching the case:
 Read the file Victor pasted at the end of this chat.
 Identify the topic from the file header.
 
-For each exercise, check if there is any content after "-- Your answer:" (ignoring blank
-lines and comment-only lines):
+**First, detect the format**, because the two are answered differently:
+- **Current format** — exercises marked `-- Exercise N [Level]:` with a `-- Your answer:` line. An
+  answer is any content after `-- Your answer:` (ignoring blank and comment-only lines).
+- **Legacy format** — exercises marked `-- #NN | title` with **no** `-- Your answer:` line; the answer
+  is written directly under the description. Here, an answer is any non-comment SQL line between one
+  `-- #NN |` header and the next. `01-basics.sql` and the original `02-joins.sql` are in this format —
+  treating them with the current-format rule reports all 40 answered exercises as unanswered.
+- **Mixed file** — apply each rule to the block it belongs to. Say so in one line at the top:
+  "Archivo mixto: ejercicios #1–#N en formato antiguo, el resto en formato actual."
+
+Then, for each exercise:
 - Answer present: review it.
 - No answer: mark as "— Sin responder" in the summary. Exclude from score and breakdown.
 
@@ -586,11 +746,34 @@ instead apply the transactions checklist below.
 - For NUMERIC vs FLOAT: does Victor explain the rounding error risk?
 - For TIMESTAMP vs TIMESTAMPTZ: does Victor explain what happens when the server time zone changes?
 
-**For postgresql-specifics exercises:** check:
-- Is the PostgreSQL-specific syntax used correctly (:: cast, ILIKE, DISTINCT ON, RETURNING, DATE_TRUNC, STRING_AGG, INTERVAL)?
+**For dates-strings exercises:** check:
+- Is the PostgreSQL-specific syntax used correctly (:: cast, ILIKE, DATE_TRUNC, STRING_AGG, INTERVAL)?
 - For ILIKE vs LIKE: does the answer demonstrate understanding of case sensitivity — not just use ILIKE?
-- For DISTINCT ON: is the column inside DISTINCT ON(...) also the leftmost column in ORDER BY?
-- For RETURNING: does Victor explain why it avoids a second SELECT?
+- For a period report: is DATE_TRUNC used (keeps periods ordered) where EXTRACT would scramble them?
+- For a concatenation over a nullable column: is the NULL handled with COALESCE or CONCAT_WS? An
+  unguarded `||` is ⚠️ Partial even when the query runs.
+
+**For join-pitfalls exercises:** check:
+- When the exercise asks for a predicted row count, is the number right? A correct query with a wrong
+  prediction is ⚠️ Partial — the prediction is the skill being tested.
+- Is a fix that only masks a fan-out (COUNT(DISTINCT ...)) distinguished from one that removes it
+  (pre-aggregating in a CTE)? Naming the difference is required on Challenge exercises.
+
+**For ddl exercises:** check:
+- Does the CREATE TABLE run as written — no forward reference to a table created later?
+- Are constraints named where the exercise asked for it?
+- For ALTER on a populated table: does the answer address the existing rows, not just the new rule?
+
+**For live-database exercises:** check:
+- For an error-diagnosis exercise, is the *cause* named, not just the fix?
+- For "relation does not exist": are all three causes given (wrong database, wrong search_path,
+  quoted-identifier case)? Fewer than three is ⚠️ Partial.
+
+**For report-queries exercises:** check:
+- Does a group with zero rows survive — LEFT JOIN from the driving table, COALESCE(SUM(...), 0)?
+  A report that silently drops empty groups is ❌ even if every returned row is right.
+- Is every output column aliased?
+- Is the stated 10-minute target met? Record it in the summary, but do not lower the score for it.
 
 ---
 
@@ -629,10 +812,17 @@ Then proceed to Steps 4 and 5.
 **Score ≥ 80%:**
 "Listo para marcar {TOPIC} como sólido. Pasamos al siguiente tema."
 Find {TOPIC} in the study order below. The next topic is the one immediately to the right.
-joins → group-by → nulls → subqueries → ctes → dml → transactions → window-functions
-→ normalization → schema-design → data-types → postgresql-specifics → indexes
+basics → joins → join-pitfalls → group-by → nulls → subqueries → ctes → dates-strings
+→ window-functions → dml → transactions → schema-design → normalization → data-types → ddl
+→ indexes → live-database → report-queries
 Print: "Siguiente tema: [next topic]. Ejecuta el prompt en modo practice con TOPIC = [next topic]."
-If {TOPIC} is indexes (the last topic): print "Has completado todos los temas SQL. Revisa PROGRESS.md."
+If {TOPIC} is report-queries (the last topic): print "Has completado todos los temas SQL. Revisa
+practice/sql/PLANNING.md §9 — te toca el gate G7 (progress-update)."
+
+**Also name the step gate when one fires here.** PLANNING.md §9 hangs three gates off a closing step —
+after `nulls` closes, G4 (`interview-prep-audit TOPIC = sql`); after `window-functions` closes, G6
+(`simulation-generator TYPE = sql`); after `report-queries`, G7. If {TOPIC} is one of those three, add:
+"Además, esto cierra el paso [N] del plan: toca ejecutar [gate] antes de seguir."
 Then proceed to Steps 4 and 5.
 
 ---
