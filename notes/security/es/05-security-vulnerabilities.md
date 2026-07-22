@@ -125,6 +125,46 @@ User currentUser = userRepository.findByEmail(email).orElseThrow(...);
 
 ---
 
+## Broken access control (BOLA) — un filtro aplicado en el endpoint de listado, olvidado en el de detalle
+
+El IDOR de arriba trata de *confiar en un id que aporta el cliente* para decidir propiedad. Este es un fallo hermano pero distinto, dentro de la misma categoría de OWASP (**Broken Access Control**, sigue siendo el riesgo número 1 del OWASP Top 10): una regla de visibilidad se aplica correctamente en un endpoint de **listado**, y alguien asume que con eso basta — pero el endpoint de **un solo elemento** nunca vuelve a comprobarla, así que cualquiera que ya conozca (o adivine) un id puede leerlo directamente, saltándose la regla que sí aplica el endpoint de listado.
+
+```
+GET /api/projects              (listado) → filtra correctamente: un EMPLOYEE solo ve proyectos activos
+GET /api/projects/{id}         (detalle) → se olvida el filtro por completo: devuelve CUALQUIER proyecto,
+                                             activo o no, a CUALQUIER usuario autenticado
+```
+
+El razonamiento que lleva a esto es siempre la misma trampa: *"si un proyecto inactivo nunca aparece en el listado, nadie lo va a pedir por id."* Pero un atacante (o simplemente un empleado curioso) no necesita verlo en el listado — solo necesita probar ids consecutivos en la URL (`/api/projects/1`, `/2`, `/3`...) hasta que uno devuelva datos. Esto se llama **BOLA** (Broken Object-Level Authorization) — el nombre general para "la API no verifica que *este objeto concreto* sea uno que quien llama tiene permiso de ver", del que IDOR es un caso particular frecuente.
+
+**La solución:** volver a aplicar exactamente la misma regla de visibilidad dentro del método de detalle, no solo en el de listado.
+
+```java
+// Vulnerable — getAll() filtra por rol y estado active, getById() no
+public ProjectResponse getById(Long id) {
+    return projectRepository.findById(id).map(this::toResponse)
+            .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+}
+
+// Seguro — se revisa aquí la misma regla que ya aplica getAll()
+public ProjectResponse getById(Long id) {
+    Project project = projectRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+
+    boolean isManager = /* la misma comprobación de rol que ya hace getAll() */;
+    if (!isManager && !project.getActive()) {
+        throw new ResourceNotFoundException("Project not found with id: " + id);
+    }
+    return toResponse(project);
+}
+```
+
+> **Por qué el fallo es `404`, no `403`.** Un `403 Forbidden` le diría a quien llama "este id existe, pero no puedes verlo" — lo cual es en sí mismo una fuga: confirma que el recurso es real. Lanzar la *misma* `ResourceNotFoundException` (`404`) tanto para "no existe" como para "existe pero no puedes verlo" hace que los dos casos sean indistinguibles desde fuera — exactamente igual que `handleBadCredentials` y `handleDisabled` devuelven el mismo mensaje genérico en [spring-boot/05-manejo-excepciones.md](../../spring-boot/es/05-manejo-excepciones.md), para que un intento de login no se pueda usar para enumerar qué cuentas existen.
+
+> Respuesta de entrevista a "¿qué es BOLA?": un endpoint comprueba *quién* llama (autenticación) pero no si quien llama tiene permiso para ver *este objeto concreto* (autorización a nivel de objeto) — casi siempre porque un filtro se escribió una vez, en el endpoint de listado, y nunca se volvió a aplicar en el endpoint de detalle que devuelve el mismo tipo de dato por id.
+
+---
+
 ## Valida siempre en el servidor — el cliente nunca es la frontera de seguridad
 
 La validación en el cliente (`Validators` de Angular, botones deshabilitados) sirve para la **experiencia de usuario** — feedback instantáneo, sin round-trips desperdiciados. **No** es seguridad. Cualquiera puede saltarse la app de Angular por completo y llamar a tu API directamente con Postman, `curl`, o las DevTools del navegador, enviando lo que quiera.
@@ -141,5 +181,6 @@ El servidor es la única frontera que controlas, así que cada regla debe aplica
 | CSRF | Engaña al navegador para que envíe cookies | JWT en cabecera es seguro frente a CSRF; Spring Security CSRF para sesiones |
 | Inyección SQL | Inyecta SQL en una consulta | JPA usa consultas parametrizadas automáticamente |
 | Broken access control (IDOR) | Confía en un id enviado por el cliente para decidir propiedad | Deriva la identidad de `SecurityContextHolder`, nunca del request |
+| Broken access control (BOLA) | Existe un filtro de visibilidad en el listado pero no en el detalle | Reaplicar la misma comprobación de rol/active dentro de cada método de un solo elemento |
 
-El patrón común: los cuatro ataques implican **inyectar o confiar en datos no verificados** dentro de un contexto que debería estar validado — HTML, peticiones HTTP, SQL, o la propiedad de un recurso. Las defensas consisten en tratar el input del cliente siempre como dato, nunca como código ni como fuente de verdad sobre la identidad.
+El patrón común: los cinco ataques implican **inyectar o confiar en datos no verificados**, o saltarse una comprobación en algún sitio donde debía repetirse, dentro de un contexto que debería estar validado — HTML, peticiones HTTP, SQL, la propiedad de un recurso, o la visibilidad a nivel de objeto. Las defensas consisten en tratar el input del cliente siempre como dato, nunca como código ni como fuente de verdad sobre la identidad, y en revalidar la autorización en cada frontera, no solo en la primera que se te ocurrió.
