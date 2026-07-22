@@ -139,6 +139,12 @@ ambiguity. Conversely, a step claiming a section coverage no longer has is remov
 its slice owns. Otherwise re-dispatch once, quoting what was missing; if it fails again, record the
 gap in the self-report and continue — never silently accept a partial trace.
 
+**A specialist that dies mid-run is resumed, not re-dispatched.** Silence is not acceptance — never
+advance to the next specialist without its trace. `SendMessage` to its agent id restores its
+transcript: tell it what is already on disk and have it write the fixes it had already concluded. This
+does not consume the concern's re-dispatch. If the resume also fails, then re-dispatch cold — that one
+does count.
+
 **Ripples.** If a fix invalidates a concern already reviewed, re-dispatch that one — **at most one
 re-dispatch per concern per run**. Remaining ripples go in the self-report, except a verified factual
 error (a wrong path, count or cross-reference, checked against disk), which the orchestrator corrects
