@@ -263,6 +263,49 @@ A **terminal operation** does *not* return a stream — it returns a final resul
 
 ---
 
+## `reduce` — folding a stream into a single value
+
+`int` and `double` streams have a built-in `.sum()`. A `Stream<BigDecimal>` does not — `BigDecimal` is a regular class, not a primitive, so Java has no automatic notion of "add these objects together". `BigDecimal` is used instead of `double` specifically *because* `double` loses precision on decimals (the same `0.1 + 0.2 != 0.3` trap you may already know from JavaScript), which is unacceptable for money or billable hours — but the price of that precision is losing the primitive streams' free `.sum()`. `reduce` is the general-purpose tool that fills the gap: it folds every element into one result, and you tell it exactly *how* to combine them.
+
+```java
+BigDecimal approvedHours = entries.stream()
+    .filter(e -> e.getStatus() == EntryStatus.APPROVED)
+    .map(TimeEntry::getHours)
+    .reduce(BigDecimal.ZERO, BigDecimal::add);
+```
+
+`reduce(identity, accumulator)` takes two arguments:
+
+- **`identity`** — the starting value, what you are "carrying" before looking at the first element. For a sum it must be the additive identity, `BigDecimal.ZERO` (for a product it would be `BigDecimal.ONE` instead — the value that combining with it changes nothing).
+- **`accumulator`** — a function that combines "what you're carrying so far" with "the current element" into the new running value. `BigDecimal::add` is the method reference for `BigDecimal`'s own `.add(BigDecimal other)` method — reduce calls it as `carried.add(element)` at every step.
+
+**Traced by hand**, over three `BigDecimal` values `[4.00, 21.00, 6.00]` (three `APPROVED` entries' hours):
+
+```
+carried (start) = BigDecimal.ZERO           → 0.00
+
+step 1: carried = carried.add(4.00)   →  0.00.add(4.00)   = 4.00
+step 2: carried = carried.add(21.00)  →  4.00.add(21.00)  = 25.00
+step 3: carried = carried.add(6.00)   →  25.00.add(6.00)  = 31.00
+
+final result: 31.00
+```
+
+> This is the exact same shape as the accumulator-variable loop you already know — `reduce` is just the stream's name for it:
+> ```java
+> BigDecimal total = BigDecimal.ZERO;
+> for (BigDecimal hours : listOfHours) {
+>     total = total.add(hours);
+> }
+> ```
+> `reduce(identity, accumulator)` is `total = identity`, then `total = accumulator.apply(total, element)` once per element, with the loop itself hidden inside the stream machinery.
+
+> **Why not the one-argument `reduce(accumulator)` overload?** It exists (see the `Optional`-returning family in the next section), but it has no identity to fall back on, so it returns `Optional<BigDecimal>` — empty if the stream had zero elements, because there is nothing to combine. The two-argument form you used above sidesteps that: `BigDecimal.ZERO` **is** the right answer for "sum of nothing", so it can return a plain `BigDecimal` instead of an `Optional`, never empty, never needing an `orElse(...)` afterward. Prefer the two-argument form whenever your identity value is a genuine, meaningful "nothing happened" answer — sum and count both qualify; "the maximum of an empty list" does not, which is why `max()` stays `Optional`-returning.
+
+This exact pattern — `filter` by an enum status, `map` to the field you care about, `reduce` to a single `BigDecimal` — is the real code behind `ReportService.getSummary()` in project 07: `approvedHours` and `pendingHours` are each one `filter → map → reduce` pipeline, differing only in which `EntryStatus` the `filter` keeps.
+
+---
+
 ## Optional — the "maybe empty" result
 
 Some operations can honestly come back with *nothing*. If you search a list for the first employee with a given id and no employee has it, there is no value to return. In most languages that gap is filled with `null`, and forgetting to check for `null` is the single most common source of crashes. Java's answer is `Optional<T>`: a small box that either holds a value or is explicitly empty, and that *forces you at compile time to say what happens in the empty case* before you can touch the value.

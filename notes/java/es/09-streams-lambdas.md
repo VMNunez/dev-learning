@@ -264,6 +264,49 @@ Una **operación terminal** *no* devuelve un stream — devuelve un resultado fi
 
 ---
 
+## `reduce` — plegar un stream en un único valor
+
+Los streams de `int` o `double` tienen un `.sum()` incorporado. Un `Stream<BigDecimal>` no lo tiene — `BigDecimal` es una clase normal, no un primitivo, así que Java no tiene ninguna noción automática de "suma estos objetos". `BigDecimal` se usa en vez de `double` precisamente *porque* `double` pierde precisión con los decimales (la misma trampa `0.1 + 0.2 != 0.3` que quizá ya conoces de JavaScript), algo inaceptable para dinero u horas facturables — pero el precio de esa precisión es perder el `.sum()` gratuito de los streams primitivos. `reduce` es la herramienta general que llena ese hueco: pliega todos los elementos en un único resultado, y tú le dices exactamente **cómo** combinarlos.
+
+```java
+BigDecimal approvedHours = entries.stream()
+    .filter(e -> e.getStatus() == EntryStatus.APPROVED)
+    .map(TimeEntry::getHours)
+    .reduce(BigDecimal.ZERO, BigDecimal::add);
+```
+
+`reduce(identity, accumulator)` recibe dos argumentos:
+
+- **`identity`** — el valor de arranque, lo que "llevas acumulado" antes de mirar el primer elemento. Para una suma tiene que ser el elemento neutro de la suma, `BigDecimal.ZERO` (para un producto sería `BigDecimal.ONE` en su lugar — el valor que, al combinarse, no cambia nada).
+- **`accumulator`** — una función que combina "lo que llevas acumulado hasta ahora" con "el elemento actual" para dar el nuevo valor en curso. `BigDecimal::add` es la method reference del propio método `.add(BigDecimal otro)` de `BigDecimal` — `reduce` lo llama como `acumulado.add(elemento)` en cada paso.
+
+**Trazado a mano**, sobre tres valores `BigDecimal` `[4.00, 21.00, 6.00]` (las horas de tres entries `APPROVED`):
+
+```
+acumulado (inicio) = BigDecimal.ZERO        → 0.00
+
+paso 1: acumulado = acumulado.add(4.00)   →  0.00.add(4.00)   = 4.00
+paso 2: acumulado = acumulado.add(21.00)  →  4.00.add(21.00)  = 25.00
+paso 3: acumulado = acumulado.add(6.00)   →  25.00.add(6.00)  = 31.00
+
+resultado final: 31.00
+```
+
+> Es exactamente la misma forma que el bucle con variable acumuladora que ya conoces — `reduce` es solo el nombre que le da el stream:
+> ```java
+> BigDecimal total = BigDecimal.ZERO;
+> for (BigDecimal hours : listaDeHoras) {
+>     total = total.add(hours);
+> }
+> ```
+> `reduce(identity, accumulator)` es `total = identity`, y luego `total = accumulator.apply(total, elemento)` una vez por elemento, con el bucle en sí escondido dentro de la maquinaria del stream.
+
+> **¿Por qué no la sobrecarga de un solo argumento, `reduce(accumulator)`?** Existe (la ves en la familia que devuelve `Optional`, en la siguiente sección), pero no tiene ningún `identity` al que recurrir, así que devuelve `Optional<BigDecimal>` — vacío si el stream tenía cero elementos, porque no hay nada que combinar. La forma de dos argumentos que usaste arriba evita eso: `BigDecimal.ZERO` **es** la respuesta correcta para "la suma de nada", así que puede devolver un `BigDecimal` normal en vez de un `Optional`, nunca vacío, sin necesitar un `orElse(...)` después. Prefiere la forma de dos argumentos siempre que tu valor `identity` sea una respuesta genuina y con sentido para "no pasó nada" — suma y conteo cumplen esto; "el máximo de una lista vacía" no, por eso `max()` sigue devolviendo `Optional`.
+
+Este patrón exacto — `filter` por un status de enum, `map` al campo que te interesa, `reduce` a un único `BigDecimal` — es el código real detrás de `ReportService.getSummary()` en el proyecto 07: `approvedHours` y `pendingHours` son cada uno un pipeline `filter → map → reduce`, diferenciándose solo en qué `EntryStatus` se queda el `filter`.
+
+---
+
 ## Optional — el resultado "quizá vacío"
 
 Algunas operaciones pueden honestamente volver con *nada*. Si buscas en una lista el primer empleado con un id dado y ningún empleado lo tiene, no hay valor que devolver. En la mayoría de los lenguajes ese hueco se rellena con `null`, y olvidar comprobar el `null` es la fuente más común de fallos. La respuesta de Java es `Optional<T>`: una pequeña caja que o bien contiene un valor o bien está explícitamente vacía, y que *te obliga en tiempo de compilación a decir qué pasa en el caso vacío* antes de poder tocar el valor.
