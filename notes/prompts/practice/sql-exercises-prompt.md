@@ -11,59 +11,84 @@ Two modes:
 
 ---
 
-**How to use:**
+**How to use:** fill in the two keys, paste the prompt into a new chat. That is the whole ritual.
 
-1. Fill in `MODE` and `TOPIC` — those two are the only required keys
-2. Leave `FILE` blank unless you are pointing at a file that is not the topic's default
-3. Set `COUNT` / `FOCUS` / `REVIEW` if you want to shape the batch (practice mode only)
-4. Paste the prompt into a new chat
-
-In `MODE = review` you do **not** need to paste the exercise file: the prompt reads `{FILE}` from
-disk. Paste it only if your answers are not saved yet — a paste overrides `{FILE}`.
+Everything else — which file, how many exercises, which concepts — is **not yours to decide**: it is
+already written in `practice/sql/PLANNING.md`, and this prompt reads it. In `MODE = review` you do
+not need to paste the exercise file either; it is read from disk.
 
 ---
 
 ````
 ## Configuration — edit only this block
 
-MODE   = [practice | review]
-TOPIC  = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
-FILE   = [path to the exercise file — optional, leave blank to use the default for {TOPIC}]
-COUNT  = [number of exercises to generate — default: 12 — practice mode only]
-FOCUS  = [specific concept to practise — optional, practice mode only]
-REVIEW = [yes | no — default: no — practice mode only]
+MODE  = [practice | review]
+TOPIC = [basics | joins | join-pitfalls | group-by | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
+FILE  = [optional — delete every line but the one you want. Blank = the default file for {TOPIC}.]
+        practice/sql/01-basics.sql
+        practice/sql/02-joins.sql
+        practice/sql/03-aggregates.sql
+        practice/sql/04-join-pitfalls.sql
+        practice/sql/05-nulls.sql
+        practice/sql/06-subqueries-ctes.sql
+        practice/sql/07-dates-strings.sql
+        practice/sql/08-window-functions.sql
+        practice/sql/09-dml-transactions.sql
+        practice/sql/10-schema-design.sql
+        practice/sql/11-data-types-ddl.sql
+        practice/sql/12-indexes.sql
+        practice/sql/13-live-database.sql
+        practice/sql/14-report-queries.sql
 
-Notes on each key:
+**That is the entire configuration.** Do not add keys. `MODE` and `TOPIC` are required; `FILE` is
+there so Victor can name the file explicitly when he wants to be sure which one is touched — it is
+normally blank, and blank is never an error. If more than one path is left under `FILE`, that is a
+half-finished edit: stop and ask which one, do not guess. If you feel the need to hand-tune anything else about a
+batch, the thing that needs changing is the step in `practice/sql/PLANNING.md`, not this run.
 
-**TOPIC** — `all` (practice mode only) generates exercises for every SQL topic in turn; see
-`notes/prompts/_batch-mode.md`. The order listed above is the study order, and it is also the
-file-number order (see the path table in Step 4): basics, joins, group-by, join-pitfalls, nulls,
-subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design, normalization,
-data-types, ddl, indexes, live-database, report-queries. Review mode stays one file at a time.
-The topic list, the file numbering and the step numbering are kept in sync with
-`practice/sql/PLANNING.md` — that file is the source of truth for the order. Several topics
-deliberately share one file (joins + join-pitfalls, subqueries + ctes, dml + transactions,
-schema-design + normalization, data-types + ddl); the path table in Step 4 is authoritative.
+---
 
-**FILE** — which file to read (review) or write (practice). Leave it blank in the normal case: the
-path table in Step 4 maps {TOPIC} to its file, so the prompt resolves it on its own. Set it only to
-point at a file that is not the default — a renamed file, a split-off batch, or a one-off review of
-an older file. A blank FILE is never an error.
+## Resolution — work these out before doing anything else
 
-**FOCUS** — Example: `FOCUS = LEFT JOIN, FULL OUTER JOIN`. Example: `FOCUS = HAVING, aggregate
-filters`. Leave blank to cover the full topic.
+**Do not ask Victor for any of these. Derive them, print what you derived, and continue.**
 
-**REVIEW** — `yes` = a review batch over concepts already drilled (PLANNING.md Moment 2b): no Intro
-tier, labelled [Repaso], repetition allowed, not counted against the step's target. Leave as `no`
-for a first-pass batch.
+| Value | Where it comes from |
+|-------|---------------------|
+| `{FILE}` | the `FILE` key if Victor set it; otherwise the path table in `MODE = practice` Step 4, keyed by {TOPIC}. Never invent a path. |
+| `{COUNT}` | the `COUNT` line of the §6 step in `practice/sql/PLANNING.md` whose TOPIC matches. |
+| `{FOCUS}` | the `FOCUS` line of that same §6 step. |
+| `{REVIEW}` | `no`, unless the §6 step's block is a Moment 2b reinforcement batch, which sets it to `yes`. |
 
-Validation — check these before doing anything else:
+`{REVIEW} = yes` means: a batch over concepts already drilled — no Intro tier, exercises labelled
+`[Repaso]`, repetition allowed, and **not** counted against the step's first-pass target.
+
+Steps in §6 sometimes carry two blocks (a first pass and a second). Use the first one whose exercise
+target is not yet met according to §8 / `PROGRESS.md`. State which block you picked.
+
+**Then print this and continue in the same turn — it is a statement, not a question:**
+
+```
+Step {N} — {step name}
+Archivo: {FILE}
+Ejercicios: {COUNT}   Repaso: {REVIEW}
+Focus: {FOCUS}
+```
+
+Validation:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
-- If FILE is blank: resolve it from the Step 4 path table using {TOPIC}. If {TOPIC} is not in that table, stop and report it — never invent a path.
-- If FILE is set but the file does not exist: in review mode, print "Error: no existe [FILE]." and stop. In practice mode, treat it as a new file.
-- If COUNT is blank: use 12.
-- If COUNT is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4.
-- If REVIEW is blank: use no. If REVIEW = yes in review mode: ignore it, it only affects generation.
+- If {TOPIC} is not in the Step 4 path table: stop and report it.
+- If `practice/sql/PLANNING.md` has no §6 step for {TOPIC}: print "Error: {TOPIC} no tiene step en el plan. Añádelo a §6 antes de correr esto." and stop — do not fall back to a default COUNT. A topic with no step is a planning gap, and silently generating 12 exercises hides it.
+- If the resolved {COUNT} is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4.
+- In review mode: {COUNT}, {FOCUS} and {REVIEW} do not apply — only {FILE}. If {FILE} does not exist: print "Error: no existe [FILE]." and stop.
+- `TOPIC = all` is practice mode only; it walks every topic in the order below, resolving each one's COUNT and FOCUS from its own §6 step. See `notes/prompts/_batch-mode.md`. Review mode stays one file at a time.
+
+Topic order (study order, and also the file-number order): basics, joins, group-by, join-pitfalls,
+nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design,
+normalization, data-types, ddl, indexes, live-database, report-queries. This order, the file
+numbering and the step numbering are kept in sync with `practice/sql/PLANNING.md` — that file is the
+source of truth. Several topics deliberately share one file (joins + join-pitfalls, subqueries +
+ctes, dml + transactions, schema-design + normalization, data-types + ddl); the Step 4 path table is
+authoritative.
 
 ---
 
@@ -377,7 +402,7 @@ Challenge exercise. (COUNT=5 → 2 Intro, 2 Standard, 1 Challenge.)
 
 Label each exercise with its level: `-- Exercise N [Intro]:`, `[Standard]:`, `[Challenge]:`.
 
-**Review batches — `REVIEW = yes` in the config.** A review batch is a deliberate second pass over
+**Review batches — resolved `{REVIEW} = yes`.** A review batch is a deliberate second pass over
 concepts already drilled (PLANNING.md Moment 2b). It changes two things and nothing else:
 - **No Intro tier.** Split the batch 60% Standard / 40% Challenge. Re-doing `SELECT title FROM books`
   on a concept already passed teaches nothing — that is exactly how exercises #21–#40 of
@@ -918,10 +943,13 @@ Breakdown by level (attempted only):
 
 **Score < 60%:**
 "Este tema necesita más práctica. Revisa los errores y corrígelos en pgAdmin.
-Para practicar más los conceptos donde fallaste, ejecuta el prompt en modo practice con:
-  TOPIC = {TOPIC}
-  FOCUS = [list the specific concepts that had ❌ or ⚠️ answers]
-  COUNT = 8"
+Conceptos a reforzar: [list the specific concepts that had ❌ or ⚠️ answers].
+Añado un batch de refuerzo al plan; luego ejecuta el prompt con MODE = practice y TOPIC = {TOPIC}."
+
+Then, in Step 4, append a Moment 2b reinforcement block to the {TOPIC} step in
+`practice/sql/PLANNING.md` §6 — `COUNT = 8`, `REVIEW = yes`, and `FOCUS` set to exactly those failed
+concepts. **This is what keeps the config down to two keys:** the next run reads the block instead of
+Victor retyping it, and the plan ends up holding the record of what he struggled with.
 Then proceed to Steps 4 and 5.
 
 **Score ≥ 60% and < 80%:**
@@ -1102,14 +1130,41 @@ run's status is `open` and stays `open`.
 
 Then exactly these three bullets, honest, including "nothing to report":
 
-1. **Config vs reality** — did `TOPIC`, `COUNT` and `FOCUS` produce what the step actually needed, or
-   was the batch mis-sized, off-scope, or aimed at the wrong file? Name it if a path, a coverage
-   section, or a topic in the tables above turned out to be wrong or missing.
+1. **Resolution vs reality** — the config is two keys, so this bullet is about what the prompt
+   *derived*: did the `{COUNT}` and `{FOCUS}` read from PLANNING.md §6 produce what the step actually
+   needed, or was the batch mis-sized or off-scope? Did `{FILE}` resolve to the right file? Name it if
+   a path, a coverage section, or a §6 step turned out to be wrong, missing, or stale. **A wrong
+   derived value is a bug in the plan, not in the run** — say which file needs the fix.
 2. **Rule friction and rule breaches** — any instruction here that was ambiguous, contradictory, or had
    to be worked around; **and any rule this run broke** — the run-start check skipped, the coverage
    lookup failed and the seeds were used anyway, correction markers not written, PLANNING.md not
    updated. Name what was breached and what it cost.
 3. **Verdict** — one line: "prompt limpio" or "cambio a considerar: <qué>".
+
+### Refinement — apply the verdict, or the report is just a diary
+
+**Skip entirely when the Verdict is "prompt limpio".** Otherwise: this prompt is frozen, and a
+self-report is the only evidence that reopens it — but evidence nobody acts on rots. The orchestrators
+close this loop (`notes/prompts/_pipeline-self-report.md`, "Commit flow"); a single-shot prompt closes
+it the same way, with one cold reviewer instead of a pipeline.
+
+1. Draft the edit: the smallest clause that would have prevented this run's friction. A clause, never
+   a paragraph — the war story stays in the report, the prompt states the rule crisply.
+2. Dispatch **one cold subagent** (it has not seen this run) with: the drafted edit, the bullet that
+   motivated it, and this bar. It answers **apply** or **reject**, with one line of reasoning:
+   - Reject if the friction was a one-off, if an existing rule already covers it, or if the edit
+     restates something the plan owns — **a fix that belongs in `practice/sql/PLANNING.md` is applied
+     there, not here.** That is the most common correct verdict for this prompt.
+   - This file is over 1000 lines, so **one-in-one-out applies**: the reviewer must name what stale
+     caveat or spent incident comes *out* to make room, or reject the edit.
+3. On **apply**: make the edit, commit it alone (`docs: sql-exercises — refine from the run that just
+   finished`), read the hash from `git log` (never from memory), and set the report's
+   `Status: applied in <hash>`. Print one line naming what went in and one naming what came out.
+   On **reject**: leave the prompt untouched and record the rejection and its reason in the Verdict,
+   so a future run does not re-propose it. `Status` stays `open`.
+
+**Never edit the prompt and then re-run it in the same conversation** — that is the entangled
+before-and-run pattern this step exists to avoid.
 
 **Keep it short.** This file exists to surface what broke; padding it with what went well buries the
 one finding that should reopen the prompt. It is about the machinery, never the SQL — which exercises
@@ -1130,5 +1185,6 @@ git commit -m "docs: self-report for sql-exercises run ({MODE}, {TOPIC})"
 
 ---
 
-[paste your exercise file below this line — only needed in review mode]
+[optional — paste an exercise file below this line only if your answers are not saved to disk yet;
+a paste overrides {FILE}]
 ````
