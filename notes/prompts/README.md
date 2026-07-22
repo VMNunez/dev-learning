@@ -42,7 +42,7 @@ Every file in this folder is a `.md` prompt, but **not every file is something y
 |---|---|
 | Knowledge | `coverage-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
 | Projects | `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
-| Practice | `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
+| Practice | `practice-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
 
 Two flavors among these 23, both launched the same way (paste config into a new chat):
@@ -137,6 +137,7 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
+| `practice/practice-plan-audit.md` | **Orchestrator.** Audits a practice track's `PLANNING.md` against `_practice-plan-standard.md` — four cold specialists (learning-design · coverage-and-scope · steps-and-counts · gates-and-rituals), history-preservation gate, single commit. The `plan-audit` equivalent for practice tracks. | `_practice-plan-standard.md`, `practice/{track}/PLANNING.md`, the track's `coverage.md`, `PROGRESS.md`, the exercise files (as evidence, never edited) | `practice/{track}/PLANNING.md`; occasionally the prompt it disagrees with (rule C4) |
 | `practice/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises by topic. `review` mode: grades my answers and scores them. | `notes/sql/coverage.md`, `PROGRESS.md`, `practice/sql/{topic}/exercises.sql` | `practice/sql/{topic}/exercises.sql`; the SQL table in `PROGRESS.md`; `interview-prep/en/sql.md` + `es/sql.md` |
 | `practice/simulation-generator-prompt.md` | Creates new timed test specs (Angular / Spring Boot / SQL) in the existing format — the producer for the simulation bank. | `practice/simulations/{type}/` (existing specs), `practice/simulations/TRACKER.md` | new `practice/simulations/{type}/NN-*.md`; rows + counts in `practice/simulations/TRACKER.md` |
 | `practice/simulation-review-prompt.md` | Grades a finished timed simulation, gives a 3-score ideal solution, adds interview questions. `hint` mode guides mid-test. | the simulation spec in `practice/simulations/{type}/`, `practice/simulations/TRACKER.md`, + my pasted code | `practice/simulations/TRACKER.md`, the spec's header, `interview-prep/en/{topic}.md` + `es/{topic}.md` |

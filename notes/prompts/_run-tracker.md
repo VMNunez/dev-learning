@@ -51,6 +51,7 @@ runs once the whole coverage-prompt column is filled).
 | Prompt | Last run |
 |---|---|
 | coverage-audit | 2026-07-19 (all 12 topics) |
+| practice-plan-audit | — (TRACK = sql, never run) |
 | evidence-intake | 2026-07-21 (MODE = search, +4 postings → 12) |
 | progress-update | 2026-07-16 (MODE = active) |
 | roadmap-review | 2026-07-21 |
