@@ -248,6 +248,48 @@ With `DEFAULT true` inside the same statement, PostgreSQL now has an answer to "
 
 > **Interviewers ask:** "What happens when you add a required column to a table with existing data?" — the answer is exactly this trade-off: either give the column a `DEFAULT` so the database can backfill it, or leave it nullable and backfill the data yourself before tightening the constraint later.
 
+**The trap: `@ColumnDefault` does NOT set the default for new rows your app creates.**
+
+This is the easy thing to get wrong, and it hides a real bug. There are **two different doors** a row can enter the `users` table through, and each door has its **own** default — they are set in different places and do not cover each other:
+
+```
+Door 1 — through your app (Hibernate)      Door 2 — through raw SQL
+new User(...)  →  Hibernate INSERT          INSERT INTO users (...) VALUES (...)
+                                            (pgAdmin by hand, data.sql, another program)
+        │                                            │
+        ▼                                            ▼
+default comes from the JAVA FIELD           default comes from the DB COLUMN
+   private boolean active = true;              @ColumnDefault("true")
+```
+
+The reason they don't overlap is how Hibernate builds the `INSERT`. When you save a `new User(...)`, Hibernate reads the current value of every field on the object and writes each one **explicitly** into the SQL. A `@ColumnDefault` only fires when the `INSERT` **doesn't mention the column at all** — and Hibernate always mentions it, because the object always has a value for it.
+
+Now the bug. A primitive `boolean` in Java is never empty — if you don't assign it, Java sets it to `false` automatically (that is the language rule for `boolean`, not something Hibernate does). So with this field:
+
+```java
+@ColumnDefault("true")   // ← Door 2 only: raw SQL inserts
+private boolean active;  // ← Java sets this to false before you touch it
+```
+
+every `User` created in code is born `active = false`, and Hibernate faithfully writes `active = false` into the `INSERT`. The `@ColumnDefault("true")` never gets a say, because the column *was* mentioned. Result: a brand-new user is saved deactivated — and once "inactive users can't log in" is enforced, that user can never log in.
+
+> **So is `@ColumnDefault` dead code?** No — it still guards Door 2. If someone runs a raw `INSERT` that omits `active` (a `data.sql` seed, a manual pgAdmin insert, another service writing to the same table), PostgreSQL falls back to `DEFAULT true`. It is genuinely useful there. It is just the *wrong tool* for Door 1, which is the door your app actually uses every day. The lesson is not "remove it" — it is "you need both".
+
+The fix is to give the **Java field** its own default, so the object is born `true` before Hibernate ever looks at it:
+
+```java
+// MAL — @ColumnDefault alone; every User created in Java is born active = false
+@ColumnDefault("true")
+private boolean active;
+
+// BIEN — both doors covered: Java default for app inserts, @ColumnDefault for raw SQL
+@ColumnDefault("true")
+@Column(nullable = false)
+private boolean active = true;
+```
+
+> **Why also `@Column(nullable = false)`?** The Java-side `= true` protects rows *your app* creates, but it lives only in Java — it cannot stop a raw SQL `INSERT` from writing `NULL`. `@Column(nullable = false)` pushes the guarantee down to the database itself, so the invariant "a user is always either active or inactive, never unknown" holds no matter which door the row came through. (A primitive `boolean` can never *be* `null` in Java — but the DB column, written directly, could.)
+
 ---
 
 ## Automatic timestamps — @CreationTimestamp, @UpdateTimestamp, @PrePersist

@@ -248,6 +248,48 @@ Con `DEFAULT true` dentro de la misma sentencia, PostgreSQL ya tiene respuesta a
 
 > **Los entrevistadores preguntan:** "¿Qué pasa cuando añades una columna obligatoria a una tabla con datos existentes?" — la respuesta es exactamente este trade-off: o le das a la columna un `DEFAULT` para que la base de datos pueda rellenarla, o la dejas nullable y rellenas los datos tú mismo antes de apretar la restricción más adelante.
 
+**La trampa: `@ColumnDefault` NO pone el valor por defecto de las filas nuevas que crea tu app.**
+
+Esto es lo fácil de equivocar, y esconde un bug real. Hay **dos puertas distintas** por las que una fila puede entrar en la tabla `users`, y cada puerta tiene su **propio** default — se ponen en sitios diferentes y no se cubren la una a la otra:
+
+```
+Puerta 1 — por tu app (Hibernate)          Puerta 2 — por SQL directo
+new User(...)  →  INSERT de Hibernate       INSERT INTO users (...) VALUES (...)
+                                            (pgAdmin a mano, data.sql, otro programa)
+        │                                            │
+        ▼                                            ▼
+el default sale del CAMPO JAVA              el default sale de la COLUMNA de la BD
+   private boolean active = true;              @ColumnDefault("true")
+```
+
+La razón de que no se solapen está en cómo Hibernate construye el `INSERT`. Cuando guardas un `new User(...)`, Hibernate lee el valor actual de cada campo del objeto y escribe cada uno **explícitamente** en el SQL. Un `@ColumnDefault` solo entra en juego cuando el `INSERT` **no menciona la columna en absoluto** — y Hibernate siempre la menciona, porque el objeto siempre tiene un valor para ella.
+
+Ahora el bug. Un `boolean` primitivo en Java nunca está vacío — si no le asignas nada, Java lo pone en `false` automáticamente (es la regla del lenguaje para `boolean`, no algo que haga Hibernate). Así que con este campo:
+
+```java
+@ColumnDefault("true")   // ← solo Puerta 2: inserts por SQL directo
+private boolean active;  // ← Java lo pone en false antes de que lo toques
+```
+
+cada `User` creado en código nace `active = false`, y Hibernate escribe fielmente `active = false` en el `INSERT`. El `@ColumnDefault("true")` nunca llega a opinar, porque la columna *sí* se mencionó. Resultado: un usuario recién creado se guarda desactivado — y en cuanto se aplique la regla "los usuarios inactivos no pueden loguear", ese usuario ya nunca podrá entrar.
+
+> **Entonces, ¿`@ColumnDefault` es código muerto?** No — sigue protegiendo la Puerta 2. Si alguien ejecuta un `INSERT` directo que omite `active` (un seed en `data.sql`, un insert manual en pgAdmin, otro servicio escribiendo en la misma tabla), PostgreSQL recurre a `DEFAULT true`. Ahí sí es útil de verdad. Simplemente es la herramienta *equivocada* para la Puerta 1, que es la puerta que tu app usa todos los días. La lección no es "quítalo" — es "necesitas las dos".
+
+El arreglo es darle al **campo Java** su propio default, para que el objeto nazca `true` antes de que Hibernate lo mire siquiera:
+
+```java
+// MAL — @ColumnDefault solo; cada User creado en Java nace active = false
+@ColumnDefault("true")
+private boolean active;
+
+// BIEN — las dos puertas cubiertas: default Java para inserts de la app, @ColumnDefault para SQL directo
+@ColumnDefault("true")
+@Column(nullable = false)
+private boolean active = true;
+```
+
+> **¿Por qué también `@Column(nullable = false)`?** El `= true` del lado Java protege las filas que crea *tu app*, pero vive solo en Java — no puede impedir que un `INSERT` de SQL directo escriba `NULL`. `@Column(nullable = false)` baja la garantía hasta la propia base de datos, para que el invariante "un usuario está siempre activo o inactivo, nunca desconocido" se mantenga sin importar por qué puerta entró la fila. (Un `boolean` primitivo nunca puede *ser* `null` en Java — pero la columna de la BD, escrita directamente, sí podría.)
+
 ---
 
 ## Timestamps automáticos — @CreationTimestamp, @UpdateTimestamp, @PrePersist
