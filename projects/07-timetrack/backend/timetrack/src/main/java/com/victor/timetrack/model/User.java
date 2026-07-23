@@ -28,6 +28,7 @@ public class User {
     private Role role;
 
     @ColumnDefault("true")
-    private boolean active;
+    @Column(nullable = false)
+    private boolean active = true;
 
 }
