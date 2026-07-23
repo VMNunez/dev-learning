@@ -103,6 +103,12 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - `YearMonth` — binds automatically from `?month=2025-05`; `.atDay(1)`/`.atEndOfMonth()` convert it to a date range
 - Repositories organized by entity, controllers/services by feature — a report query still lives on the entity's repository
 - Spring Security `/error` gotcha — an unhandled exception can return a misleading 401 if `/error` isn't excluded from `.anyRequest().authenticated()`
+- Spring Profiles — `application-{profile}.properties` merges onto the base config, loaded only when that profile is active
+- `@Profile("dev")` on a bean — the bean isn't instantiated at all outside the active profile, not just skipped
+- `CommandLineRunner` — Spring calls `run()` once after the context loads, with all beans available
+- Startup seeding in Java over `data.sql` — BCrypt hash built at runtime from an env var, never committed to git
+- Idempotent seed — `findByEmail(...).isPresent()` guard replaces SQL's `ON CONFLICT DO NOTHING`
+- Foreign key `ON DELETE RESTRICT` — can't delete a parent row while a child still references it (SQL state `23503`)
 
 ---
 
