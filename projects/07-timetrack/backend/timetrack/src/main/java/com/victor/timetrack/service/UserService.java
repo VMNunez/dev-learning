@@ -1,7 +1,9 @@
 package com.victor.timetrack.service;
 
 import com.victor.timetrack.dto.request.CreateUserRequest;
+import com.victor.timetrack.dto.request.UpdateUserRequest;
 import com.victor.timetrack.dto.response.UserResponse;
+import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -41,6 +43,28 @@ public class UserService {
         User saved = userRepository.save(newUser);
 
         return toResponse(saved);
+    }
+
+    public UserResponse update(Long id, UpdateUserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
+
+        if (!user.getEmail().equals(request.getEmail())) {
+            Optional<User> userExist = userRepository.findByEmail(request.getEmail());
+
+            if (userExist.isPresent()) {
+                throw new DataIntegrityViolationException("Email already in use");
+            }
+        }
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
+
+        User saved = userRepository.save(user);
+
+        return toResponse(saved);
+
     }
 
     private UserResponse toResponse(User user) {

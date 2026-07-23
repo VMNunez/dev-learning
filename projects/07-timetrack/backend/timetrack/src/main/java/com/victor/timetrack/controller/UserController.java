@@ -1,6 +1,7 @@
 package com.victor.timetrack.controller;
 
 import com.victor.timetrack.dto.request.CreateUserRequest;
+import com.victor.timetrack.dto.request.UpdateUserRequest;
 import com.victor.timetrack.dto.response.UserResponse;
 import com.victor.timetrack.service.UserService;
 import jakarta.validation.Valid;
@@ -30,4 +31,11 @@ public class UserController {
     public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest request){
         return ResponseEntity.status(201).body(userService.create(request));
     }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> update(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request){
+        return ResponseEntity.status(200).body(userService.update(id,request));
+    }
+
 }
