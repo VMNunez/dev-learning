@@ -1,11 +1,12 @@
 package com.victor.timetrack.controller;
 
+import com.victor.timetrack.dto.request.CreateUserRequest;
 import com.victor.timetrack.dto.response.UserResponse;
 import com.victor.timetrack.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +21,13 @@ public class UserController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping
-    public List<UserResponse> getAll(){
-        return userService.getAll();
+    public ResponseEntity<List<UserResponse>> getAll(){
+        return ResponseEntity.status(200).body(userService.getAll());
+    }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping
+    public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest request){
+        return ResponseEntity.status(201).body(userService.create(request));
     }
 }
