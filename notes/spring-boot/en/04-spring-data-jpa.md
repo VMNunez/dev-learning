@@ -290,6 +290,8 @@ private boolean active = true;
 
 > **Why also `@Column(nullable = false)`?** The Java-side `= true` protects rows *your app* creates, but it lives only in Java — it cannot stop a raw SQL `INSERT` from writing `NULL`. `@Column(nullable = false)` pushes the guarantee down to the database itself, so the invariant "a user is always either active or inactive, never unknown" holds no matter which door the row came through. (A primitive `boolean` can never *be* `null` in Java — but the DB column, written directly, could.)
 
+> **`@ColumnDefault` and `@Column(nullable = false)` are read at the same moment, but they don't protect the same way afterwards.** Both are read once, when Hibernate generates the DDL at startup (`ddl-auto=update`) — so far they look identical. But what each one produces behaves differently from then on: `@ColumnDefault` becomes a `DEFAULT` clause that PostgreSQL only consults **per insert**, and only when that specific insert omits the column. `@Column(nullable = false)` becomes a `NOT NULL` constraint baked permanently into the table's schema — after that one-time DDL step, Hibernate is no longer involved at all. PostgreSQL itself rejects any future `NULL` write on that column, forever, no matter who sends it — Hibernate, pgAdmin, a script, another service. Hibernate only writes the rule once; the database is what enforces it after that, for every writer, not just Hibernate.
+
 ---
 
 ## Automatic timestamps — @CreationTimestamp, @UpdateTimestamp, @PrePersist
