@@ -67,6 +67,14 @@ public class UserService {
 
     }
 
+    public void delete(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
+
+        user.setActive(false);
+        userRepository.save(user);
+    }
+
     private UserResponse toResponse(User user) {
         UserResponse response = new UserResponse();
         response.setId(user.getId());

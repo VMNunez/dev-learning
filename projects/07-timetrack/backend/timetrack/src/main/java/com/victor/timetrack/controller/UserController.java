@@ -38,4 +38,11 @@ public class UserController {
         return ResponseEntity.status(200).body(userService.update(id,request));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

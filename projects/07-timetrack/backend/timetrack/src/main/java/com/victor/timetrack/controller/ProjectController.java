@@ -39,7 +39,7 @@ public class ProjectController {
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponse> update(@PathVariable Long id,@Valid @RequestBody UpdateProjectRequest request){
-        return ResponseEntity.ok(projectService.update(id, request));
+        return ResponseEntity.status(200).body(projectService.update(id, request));
     }
 
     @PreAuthorize("hasRole('MANAGER')")
