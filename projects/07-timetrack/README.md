@@ -103,6 +103,14 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - `YearMonth` — binds automatically from `?month=2025-05`; `.atDay(1)`/`.atEndOfMonth()` convert it to a date range
 - Repositories organized by entity, controllers/services by feature — a report query still lives on the entity's repository
 - Spring Security `/error` gotcha — an unhandled exception can return a misleading 401 if `/error` isn't excluded from `.anyRequest().authenticated()`
+- `Specification<T>` + `JpaSpecificationExecutor` — dynamic optional filters built as predicates, one static factory per filter, `cb.conjunction()` when a filter is absent
+- `InvalidStateTransitionException` → 409 vs `BusinessRuleViolationException` → 400 — a state-machine conflict is a different HTTP class than an input-data rule
+- `PATCH /api/entries/{id}/reopen` — owner-only transition `REJECTED → DRAFT` that clears the rejection note, reviving a rejected entry
+- Inactive users can't log in — `.disabled(!user.isActive())` on the `UserDetails` builder + a `DisabledException` handler returning the same generic 401 as bad credentials (no user enumeration)
+- Reports count trusted hours only — the aggregates filter on `status = APPROVED` so DRAFT/SUBMITTED/REJECTED never inflate the totals
+- Broken object-level authorization (BOLA) — a filter on the list endpoint must also be applied on the detail endpoint (`getById`), returning 404 not 403 so the resource's existence isn't confirmed
+- Java Streams `filter`/`map`/`reduce` over `BigDecimal` — computing the report summary totals without a mutable accumulator
+- User-management endpoints (manager only) — `POST`/`PUT`/`DELETE /api/users`, BCrypt-hashing the password on create, soft delete, duplicate email mapped to 409
 - Spring Profiles — `application-{profile}.properties` merges onto the base config, loaded only when that profile is active
 - `@Profile("dev")` on a bean — the bean isn't instantiated at all outside the active profile, not just skipped
 - `CommandLineRunner` — Spring calls `run()` once after the context loads, with all beans available
