@@ -21,7 +21,7 @@ is the first retained execution.
 
 ## Per-topic prompts
 
-| Topic | Coverage J | Coverage M | Coverage S | Plan J | Plan M | Plan S | Notes J | Notes M | Notes S | Interview J | Interview M | Interview S | Sync J | Sync M | Sync S |
+| Topic | Coverage J | Plan J | Notes J | Interview J | Sync J | Coverage M | Plan M | Notes M | Interview M | Sync M | Coverage S | Plan S | Notes S | Interview S | Sync S |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Angular | | | | | | | | | | | | | | | |
 | Angular Material | | | | | | | | | | | | | | | |
@@ -36,7 +36,8 @@ is the first retained execution.
 | Git | | | | | | | | | | | | | | | |
 | General | | | | | | | | | | | | | | | |
 
-The Notes J/M/S cells are summaries, written as `X/Y complete` plus the last outcome. Their denominator
+Columns are grouped by level (J, then M, then S), with Coverage → Plan → Notes → Interview → Sync
+inside each level. The Notes J/M/S cells are summaries, written as `X/Y complete` plus the last outcome. Their denominator
 comes from the corresponding notes plan, never from counting files on disk.
 
 ## Notes file executions
