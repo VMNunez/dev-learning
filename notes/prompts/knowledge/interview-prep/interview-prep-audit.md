@@ -22,9 +22,11 @@ exhaustive and realistic instead of a self-trusting single pass. The orchestrato
 whole-topic detection and the final per-topic commit. No per-topic launching: one command does
 everything.
 
-> **▶ Run first:** `coverage-prompt` for the topic — the Q&A is built to cover every item in the
-> topic's `coverage/{LEVEL}.md`; if coverage is missing or stale, the Q&A will be too. Optional:
-> `evidence-intake` to refresh `_job-market-evidence.md`, which the market-analysis stage (M) reads.
+> **▶ Run first:** complete this exact topic and level through `coverage-prompt` →
+> `notes-plan-prompt` → one `notes-audit` per plan entry. Every entry in
+> `notes/{topic}/coverage/notes-plan-{LEVEL}.md` must be `complete`; otherwise this prompt stops.
+> Angular also requires the Angular Material plan at the selected level because both topics share
+> `angular.md`. Optional: `evidence-intake` to refresh `_job-market-evidence.md`, which Stage M reads.
 
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read `_internal/_last-run-report-interview-prep-audit.md` (not the `notes-and-interview-prep` one beside it) and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
@@ -135,6 +137,17 @@ separately. Compare them with the selected-level EN and ES metadata:
 - EN/ES metadata differs → parity failure that this run must fix.
 
 Never copy a fingerprint from another level or trust a timestamp in its place.
+
+Before market analysis, verify the completed-notes prerequisite:
+
+1. Resolve `notes/{topic}/coverage/notes-plan-{LEVEL}.md`; for Angular resolve both Angular and
+   Angular Material plans.
+2. Require `Plan status: current` and a plan coverage fingerprint matching the exact current
+   coverage bytes.
+3. Require every numbered entry to have `Status: complete`.
+4. Require every completed entry's declared English and Spanish files to exist.
+5. If any check fails, stop that topic and report the exact pending/stale/missing entries. Never
+   generate Q&A from a partially built topic.
 
 ## Decide the topic list
 

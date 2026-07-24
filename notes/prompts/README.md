@@ -312,9 +312,18 @@ Practice (its own loop, fed by coverage):
 **Auditing knowledge (one topic)**
 1. `coverage-prompt` — define/refresh exactly one topic and level (Angular and Angular Material separately)
 2. `notes-plan-prompt` with the same `TOPIC + LEVEL` — generate or refresh the persistent study map
-3. `notes-audit` with `TOPIC + LEVEL + NOTE` — build only the file being studied
-4. `interview-prep-audit`, then `notes-and-interview-prep` — build and reconcile Q&A
-5. After all topics have that level, run `coverage-audit`, then `roadmap-review`
+3. `notes-audit` with `TOPIC + LEVEL + NOTE` — build exactly one planned English/Spanish pair
+4. Repeat `notes-audit` for every pending plan entry, in dependency order, until the selected
+   `notes-plan-{LEVEL}.md` contains only `Status: complete`
+5. `interview-prep-audit` with the same `LEVEL` and topic `FILE` — build the isolated level Q&A;
+   it stops if that topic's notes plan is stale, pending, or missing either language file
+6. `notes-and-interview-prep` — reconcile the completed notes and Q&A in both directions
+7. After all topics have that level, run `coverage-audit`, then `roadmap-review`
+
+The unit changes at each stage: coverage and planning process one **topic + level**; `notes-audit`
+processes one **planned file pair**; `interview-prep-audit` processes the completed **topic + level**
+Q&A (deep work remains one section per agent). Never launch interview prep merely because one note
+finished—the complete selected-level notes plan is its prerequisite.
 
 **The SQL track (the daily 12:30 block)**
 1. `coverage-prompt` (`TOPIC = sql`) — only when coverage is stale; it is the root of the plan

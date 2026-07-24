@@ -8,5 +8,6 @@ Read `notes/prompts/knowledge/interview-prep/notes-and-interview-prep-prompt.md`
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- Run `/notes-audit` and `/interview-prep-audit` on the topic first — this prompt reconciles what those two produce and has nothing to work with otherwise.
+- Complete every entry in the selected topic-level notes plan, then run `/interview-prep-audit`;
+  this prompt reconciles those finished outputs and has nothing to work with otherwise.
 - Both languages move together: never write to `en/` without the matching `es/` change.
