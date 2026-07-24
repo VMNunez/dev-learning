@@ -8,8 +8,6 @@ Topics to study once the current 17 files are solid. Nothing here is needed for 
 
 ### CSS cascade layers — `@layer`
 
-> **Boundary (set 2026-07-19, coverage run).** Several adversarial angles proposed `@layer` as the modern answer to "how do you tame a legacy stylesheet without `!important`?" and it was deliberately left here rather than promoted: it is not yet a rejection criterion at the target consultancies in 2026, and the junior-level answer to that question is already in coverage (the specificity arms race, the ordered ways to beat a rule without `!important`). Promote it when a real posting or interview report names it — not on the strength of it being good CSS.
-
 A new way to manage the cascade without fighting specificity. Layers have an explicit priority order, and all rules inside a lower-priority layer lose to all rules in a higher-priority layer — regardless of selector specificity.
 
 ```css
@@ -159,6 +157,7 @@ Low-level APIs that let you extend CSS with JavaScript — write custom paint fu
 
 ## What NOT to study prematurely
 
+- **Sass/SCSS** — a CSS preprocessor with variables, nesting, and mixins. Now that native CSS has variables and nesting, Sass is less essential. Learn it only if a project requires it.
 - **CSS-in-JS** — writing CSS as JavaScript objects (styled-components, Emotion). Not used in Angular. Only relevant if you move to React.
 - **CSS Modules** — scoped CSS via import hashes. Angular handles this with component encapsulation — you do not need CSS Modules.
 - **PostCSS** — a build tool that transforms CSS. You will encounter it indirectly (Angular uses it internally), but you do not need to configure it yourself.

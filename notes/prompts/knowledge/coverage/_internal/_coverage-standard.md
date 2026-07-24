@@ -160,12 +160,12 @@ technical screening", "the most common source of bugs in junior code".
 
 **Good vs bad item:**
 - ❌ `@Transactional — manages database transactions`
-- ✅ `@Transactional — ensures multiple DB writes either all succeed or all roll back; interviewers
-  ask where it belongs (service layer) and what happens if you put it on a private method (silently
-  ignored — Spring cannot proxy it)`
+- ✅ `@Transactional — defines an atomic service-layer boundary so its database writes commit or
+  roll back together; interviewers use it to test whether you place transactions around a complete
+  business operation`
 
-The bad item is a dictionary definition. The good item names what the interviewer is testing and the
-gotcha a junior is likely to miss. Fix every item that reads like a dictionary definition.
+The bad item is a dictionary definition. The good item names one mechanism and the signal the
+interviewer is testing. Proxy limitations such as private methods belong in their own item.
 
 **One concept per item — functional requirement, not style.** Never group multiple concepts in one
 bullet (if a bullet lists `@Entity`, `@Table`, `@Id` together, split them). Notes are audited per
@@ -197,7 +197,8 @@ and items within a section foundational-first, then more specific.
 
 ## The completeness test — before finalising a section or file
 
-Answer honestly: *"If Victor studied only the items here and nothing else, could he confidently answer
-any interview question about this topic at a screening for the target role and companies?"* If no,
-something is missing — find it before writing. A section that fails any of: all three item types
-present · both sides of every confusable pair · no item is a dictionary definition — is not done.
+Answer honestly: *"If Victor studied only the items here, could he handle the common screening
+questions and practical tasks that materially filter a junior candidate for the target role?"* Do
+not optimise for every question an interviewer could invent. A section is complete when it covers
+the recurring market floor, ordinary junior fundamentals, the important confusable pairs, and the
+three item types without importing post-hire depth.

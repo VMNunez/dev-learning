@@ -31,7 +31,8 @@ Spring Boot topics live in `spring-boot/future-learning.md`.
 
 - **Sealed classes** — restrict which classes can extend a type
 - **Text blocks** — multi-line strings with `""" ... """`
-- **Pattern matching for instanceof** — `if (obj instanceof String s) { s.length(); }`
+- **Advanced pattern matching** — switch and record patterns beyond the basic `instanceof Type value`
+  syntax already required in junior coverage
 
 Records are already part of the current junior goal — see `coverage.md`.
 
@@ -45,21 +46,7 @@ Records are already part of the current junior goal — see `coverage.md`.
 
 ### Advanced generics
 
-Wildcards (`? extends T`, `? super T`), bounded type parameters, generic methods, and the `ParameterizedTypeReference`/`TypeReference` workarounds for erasure. Relevant when reading library code and writing reusable utilities.
-
-(*What type erasure is* and *what raw types switch off* are now junior coverage — see `coverage.md`, "Generics"; only the wildcard/variance rules and the erasure workarounds stay here.)
-
-### Advanced streams
-
-Parallel streams and when they are safe, custom `Collector` implementations, `Spliterator`. The everyday pipeline (`filter`/`map`/`collect`) is already junior coverage.
-
-### Writing your own annotations
-
-Declaring a custom annotation with `@Retention`/`@Target` and reading it with a reflection scan or an `AbstractProcessor`. (*Reading* an existing annotation's retention and target — and knowing an annotation is inert until something processes it — is now junior coverage.)
-
-### Design vocabulary
-
-The GoF pattern catalogue (strategy, decorator, factory method, visitor) and SOLID applied formally class by class, as an explicit vocabulary you defend in a design review.
+Wildcards (`? extends T`, `? super T`), bounded type parameters, generic methods. Relevant when reading library code and writing reusable utilities.
 
 ### Java concurrency advanced
 
@@ -71,7 +58,7 @@ The GoF pattern catalogue (strategy, decorator, factory method, visitor) and SOL
 
 ### JVM internals and performance
 
-Garbage collection *algorithms* (G1, ZGC) and tuning, memory leaks, profiling with VisualVM or JFR. (The *conceptual* stack-vs-heap split and what the garbage collector does are now junior coverage — see `coverage.md`, "Memory and value semantics"; only the internals, algorithms, and tuning stay here.)
+Garbage collection algorithms (G1, ZGC), heap vs stack, memory leaks, profiling with VisualVM or JFR.
 
 ### Reflection and annotations
 
@@ -83,19 +70,4 @@ How annotations work at runtime, how frameworks like Spring use reflection to wi
 
 - **Java modules (JPMS)** — added in Java 9. Almost no Spring Boot projects use it.
 - **Ant / Maven lifecycle internals** — use Maven commands without understanding the internals.
-- **Multi-module Maven projects and publishing to a private Nexus/Artifactory** — *consuming* an internal mirror is junior coverage (`settings.xml`); authoring modules and publishing artifacts is not.
-- **Gradle** — the alternative build tool, and Maven↔Gradle migration. Learn it when a client project uses it.
-
----
-
-## Additions from the 2026-07-19 coverage audit
-
-_Analyst C generated 122 interview questions for Java and found the topic materially under-covered; most gaps were promoted into `coverage.md` (concurrency awareness, streams internals, generics wildcards, `java.time` beyond `LocalDate`, `BigDecimal` correctness, Java version literacy, reflection). These are the ones judged genuinely post-junior:_
-
-- **`sealed` classes and `permits` (Java 17)** — a closed set of subtypes enabling exhaustive `switch` pattern matching; real and modern, but a junior is not filtered for not knowing it, and it only pays off alongside pattern matching for `switch` (Java 21). Java *version literacy* (knowing 17 introduced it) is in coverage; using it is not.
-- **`clone()` and `Cloneable`** — shallow versus deep copying through the legacy cloning mechanism. Modern code uses a copy constructor, a static factory, or a record, all of which are in coverage; `Cloneable`'s broken contract is a curiosity you meet in old code.
-- **Virtual threads and structured concurrency (Java 21)** — the concurrency *awareness* section in coverage stops at "a bean is shared, here is what a race condition is"; virtual threads change how a server handles blocking calls and belong with the Spring Boot 3.2+ integration, after the first job.
-- **Writing concurrent code properly** — `ExecutorService` lifecycle, `CompletableFuture` composition, the `java.util.concurrent` locks, and the Java Memory Model's happens-before rules. Coverage deliberately stops at recognising the vocabulary and diagnosing shared mutable state.
-- **Custom annotations with `@Retention` / `@Target` plus an annotation processor** — reading them reflectively is in coverage (it is how Spring works); authoring a processor is not.
-- **JVM tuning and profiling** — heap sizing flags, choosing a garbage collector, and reading a heap dump with VisualVM or JFR. Coverage stops at "what a memory leak looks like in a GC language".
 - **JavaFX** — desktop UI framework. Not used in web development.

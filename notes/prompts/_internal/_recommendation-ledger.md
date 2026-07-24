@@ -15,7 +15,9 @@ Self-report recommendations use one of four states:
 | REC-004 | progress self-report | Clarify Java-section cleanup when the section already exists | applied | D2 now requires moving misplaced pure-Java entries before additions |
 | REC-005 | SQL exercises self-report | Keep blocking clarification questions brief | applied | SQL shell now requires options, consequence, and recommendation only |
 | REC-006 | portability audit | Separate canonical workflows from Claude/Codex runtime syntax | applied | Shared session/runtime standards and dual launcher catalogs added |
+| REC-007 | coverage prompt audit | Remove platform-specific tools, shell syntax, and literal tier names from the canonical coverage workflow | applied | `coverage-prompt.md` now translates runtime capabilities through `_agent-runtime-standard.md` and uses portable validation |
+| REC-008 | coverage/content audit | Bound coverage to the junior hiring floor and stop unbounded adversarial expansion | applied | `coverage-prompt.md` now has topic budgets, an evidence-backed stopping rule, final-artifact reviewers, and explicit ownership boundaries |
+| REC-009 | coverage/content audit | Recalibrate the 12 generated topic files and correct factual/coverage-future defects | applied | All topic coverage files were restored to the compact baseline, fact-corrected, ownership-cleaned, budget-checked, and mirrored into `notes/coverage.md` |
 
 New self-reports append or update a row here. A historical report remains immutable evidence; its
 wording does not determine current status. The ledger does.
-

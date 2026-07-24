@@ -52,10 +52,28 @@ this prompt. Projects and notes are vehicles to reach the objective — they do 
 
 Also read `notes/prompts/_internal/_job-market-evidence.md` — real postings from the target companies. When it
 has evidence, its Synthesis is a **required floor**: every recurring requirement must map to coverage
-somewhere. The **adversarial interviewer pass** (a cold subagent writes, uncapped, the questions it would ask
-and reports the gaps) is not optional or per-doubt here — it runs for every topic as **Analyst C** in
-the per-topic loop (see the Execution model), the fastest way to prove a section is complete rather than
-assume it.
+somewhere. The adversarial interviewer pass runs for every topic as Analyst C, but it is bounded by
+the junior hiring floor below; it must not turn every question an interviewer could invent into a
+required item.
+
+### Junior-scope guard — authoritative for this audit
+
+Coverage is a minimum hiring floor, not an exhaustive reference manual. Apply the same budgets and
+stopping rule as `coverage-prompt.md`:
+
+- Angular, Spring Boot, Java, SQL: normally 60–100 items.
+- TypeScript, JavaScript, CSS: normally 45–80 items.
+- Angular Material, Architecture, Security, Git, General: normally 35–70 items.
+
+An analyst may propose a gap only when not knowing it would materially weaken the current junior
+candidacy. Post-hire implementation depth, framework/compiler internals, production operations,
+specialist performance work, rare tooling, and interview conduct go to future learning or are
+discarded. “An interviewer could ask it” is insufficient evidence.
+
+The audit is stable when every recurring market requirement, ordinary junior fundamental, and
+high-value confusable pair is covered and a fresh pass returns only duplicates, future depth, or
+another topic's ownership. Exceeding a budget requires item-level market justification in the final
+summary; breadth alone is not justification.
 
 (the shared session rules and ROADMAP.md are read in Step 1.)
 
@@ -84,7 +102,7 @@ judged one section at a time.
 |---------|-------|---------|---------|---------|
 | **A — Market-fit** | per topic | Step 2b | Does coverage meet what the market asks for this topic? | Gap list: recurring requirement (with freq) → the item it needs, in the standard's format, tagged by section. Plus over-coverage flags. |
 | **B — Internal quality** | per topic | Step 3 | Does each existing item pass the standard's quality bar? | Gap list: missing item type, missing confusable-pair side, dictionary-definition rewrites, AI-exploitable gaps — each as a proposed item/edit, tagged by section. Plus an **item-by-item trace** (every current item listed PASS or change) as proof it read the whole section. |
-| **C — Adversarial interviewer** | per topic | Step 4a | Would a real interviewer find a hole? | Gap list: of the questions it would ask (uncapped), the ones coverage does NOT support, each as a proposed item tagged by section. |
+| **C — Adversarial interviewer** | per topic | Step 4a | Would a real junior interviewer find a material hole? | At most 10 evidence-backed gaps whose absence could filter the target candidate; duplicates, future depth, and other-topic ownership are reported as rejected categories, not proposed items. |
 | **D — Cross-topic consistency** | global (once) | Step 4 | Do the sections overlap, misplace, or carry post-junior items? | Three lists: duplicates (concept → the two sections + which to keep), misplaced items (concept → from → to), and scope-demotion candidates (item → why post-junior). Reads all sections; edits nothing. |
 
 The four mandates themselves live in `notes/prompts/knowledge/coverage/_internal/_coverage-analyst-mandates.md`
@@ -112,23 +130,11 @@ applies** each topic's three analyst gap-lists (Step 5) plus Analyst D's global 
 longer performs the cross-topic scan itself — Analyst D does the reading, the orchestrator only applies —
 which keeps even the whole-file work out of the editing context.
 
-### Model policy — per analyst, to protect quality while saving tokens
+### Runtime reasoning policy
 
-Pass an explicit `model` override on every dispatch, matched to how much deep reasoning the concern
-needs. The **generative "find what's missing" passes** need deep-reasoning; the **verification "check what's
-present" passes** are lighter and run on standard-reasoning (~1/5 the cost).
-
-| Role | `model:` | Why |
-|------|----------|-----|
-| **Orchestrator (this context / session)** | **deep-reasoning** | It is the only editor — it word-crafts every applied item to the standard. Run the session on deep-reasoning. |
-| A — Market-fit | `standard` | Web-search + map evidence→items; the deep-reasoning orchestrator judges each proposed item before applying. |
-| B — Internal quality | `standard` | Runs a fixed checklist over existing items + an item-by-item trace — verification, not generation. |
-| **C — Adversarial interviewer** | **`deep`** | Writing the hardest questions (uncapped) and spotting the hole coverage misses is the deepest reasoning in the audit. |
-| D — Cross-topic consistency | `standard` | Pattern-matches duplicates / misplaced / post-junior items across sections — verification. |
-
-Never drop C below deep-reasoning (it is the pass that proves a section complete) and never drop the orchestrator
-below deep-reasoning (it writes the items). If Victor asks for maximum saving, A may also stay standard-reasoning as-is; the
-one non-negotiable deep-reasoning roles are the session and Analyst C.
+Use the canonical tiers from `_agent-runtime-standard.md`: deep for the orchestrator and Analyst C,
+standard for A, B, and D. These are capability tiers, not literal model identifiers. Translate them
+through the active runtime and omit overrides when no valid mapping is exposed.
 
 **Per-topic loop (sequential, one topic fully done before the next):**
 1. Dispatch Analyst A (`reasoning tier: standard`), then B (`reasoning tier: standard`), then C (`reasoning tier: deep`) for the topic
@@ -138,8 +144,8 @@ one non-negotiable deep-reasoning roles are the session and Analyst C.
    Collect their three lists. **Acceptance check per analyst:** every report must carry the
    "N lines, read to EOF" line for each file it read whole (see the verifiable-reads rule in
    Step 1); B must return its item-by-item trace; A must map each recurring evidence requirement to
-   the item that covers it (or a gap); C must list every question it generated (uncapped — see its
-   mandate), each marked SUPPORTED or GAP. If a report is missing its proof or is
+   the item that covers it (or a gap); C must return its bounded material-gap list plus counts for
+   supported, duplicate, future-depth, and other-owner questions. If a report is missing its proof or is
    unusable, re-dispatch that analyst **once**, naming what was missing; if it fails again, flag the
    topic as partially analysed in the summary and continue — never treat a proofless report as a full
    pass. **Bounded reports only:** each analyst returns its list(s) + proof lines and nothing else —
@@ -149,7 +155,7 @@ one non-negotiable deep-reasoning roles are the session and Analyst C.
    and stop. Do not tell an analyst a file is "the thinnest", "freshly regenerated", or "probably
    under-covered": the damage is asymmetric — a "thin" prior invites invented gaps, a "fine" prior
    suppresses real ones — and it lands hardest on Analyst C, whose independent judgement is the whole
-   reason it runs on deep-reasoning (told once that an 85-line file was thinnest, C overturned the prior and
+   reason it uses the deep tier (told once that an 85-line file was thinnest, C overturned the prior and
    returned 71/98 supported). A genuine scope boundary — which sibling topic owns what — is a **routing
    rule**, never an expectation about what the analyst will find.
 1b. Read `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md`, take the entries under `## {TOPIC}`

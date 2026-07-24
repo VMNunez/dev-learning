@@ -10,11 +10,6 @@ Study these in order. Each one builds on the previous.
 
 ### Monolith vs Microservices
 
-> **Boundary (set 2026-07-18):** the *concept and the tradeoff* were promoted into `coverage.md`
-> (section "System shape and structure") because interviewers ask juniors this directly. What stays
-> here is the *implementation*: designing a service split, running Spring Cloud, and handling
-> distributed transactions. Do not re-promote the implementation side on a later run.
-
 You will be asked this in interviews even as a junior. You do not need to have built either — you just need to know what they are and the trade-off.
 
 **Monolith** — one application, one deployable unit. All features live in the same codebase and run in the same process. Simpler to build and debug. Good for small teams and early-stage projects.
@@ -58,17 +53,6 @@ When a downstream service fails, stop calling it for a while instead of letting 
 
 Why it matters: you will see `@CircuitBreaker` annotations in production code and need to know what they do.
 
-### Recognised in a real codebase, not needed for the screening
-
-Concepts the 2026 coverage run judged out of junior scope but real enough to meet on the job. Recorded here so a later run does not re-litigate them:
-
-- **Transaction propagation and isolation levels** (`REQUIRES_NEW`, `NESTED`, read-committed vs repeatable-read) — the default is all a junior is asked about; the modes matter when you hit a real concurrency bug
-- **Optimistic locking with `@Version`** — how two users editing the same row are stopped from silently overwriting each other; you will see the annotation before you need to design with it
-- **Caching as a layer** (`@Cacheable`, Redis, and the invalidation problem) — the second-hardest problem in computing; adding a cache before you can measure the slow query is how juniors create bugs
-- **Testcontainers** — running a real PostgreSQL in Docker for integration tests instead of H2; the modern answer to "your tests pass against H2 and fail in production"
-- **ArchUnit / automated layer-boundary enforcement** — tests that fail the build when a controller imports a repository; the tooling that makes the layer rules in coverage machine-checked
-- **Architecture Decision Records (ADRs)** — a short markdown file per decision, kept in the repo; how teams stop re-arguing the same choice every six months
-
 ---
 
 ## Phase 2 — After 6–12 months of experience
@@ -76,12 +60,6 @@ Concepts the 2026 coverage run judged out of junior scope but real enough to mee
 These require real project experience to understand properly. Reading about them without hands-on context does not stick.
 
 ### Hexagonal architecture (Ports and Adapters)
-
-> **Boundary (set 2026-07-18):** *recognising the term* and being able to say what it means and why
-> layered was enough for your own project is now a coverage item ("System shape and structure").
-> Everything below — designing ports, writing adapters, structuring a codebase around it — stays
-> post-junior. A consultancy interviewer drops the word to test recognition, never to have a junior
-> build one.
 
 The idea: the business logic at the centre knows nothing about the outside world (databases, HTTP, messaging). It defines "ports" (interfaces), and "adapters" implement those ports.
 
@@ -139,10 +117,6 @@ These are real topics but studying them now would be wasted time — you need pr
 - **Service mesh (Istio, Linkerd)** — infrastructure, not application architecture
 - **SAGA pattern** — distributed transactions, only relevant when working across multiple databases
 - **Event sourcing** — advanced persistence pattern; start with CQRS first
-- **Consumer-driven contract testing (Pact, Spring Cloud Contract)** — only meaningful when another team consumes your API and you cannot deploy together
-- **Strangler fig migration** — replacing a legacy system endpoint by endpoint; requires a legacy system to strangle
-- **Multi-tenancy strategies** (schema per tenant vs discriminator column vs database per tenant) — a product-company problem you meet on a specific project, not a junior filter
-- **Feature flags and progressive delivery** — decoupling release from deploy; belongs with blue-green and canary deployment, which are ops concerns at this stage
 
 ---
 
@@ -155,9 +129,3 @@ Move to Phase 2 when: you feel friction with layered architecture — when you f
 Move to Phase 3 when: you have worked on a project where two teams' services communicate, and you have felt the pain of one service going down and breaking the other.
 
 Architecture knowledge that comes from real problems sticks. Architecture knowledge from reading docs before facing the problem does not.
-
----
-
-## Demoted by the 2026-07-19 coverage audit
-
-- **Richardson maturity levels and HATEOAS** — the formal REST maturity ladder and hypermedia-driven APIs. Analyst D judged it post-junior: level 3 is rarely built and Spanish consultancy screenings do not ask for the model by name. The practical half (proper verbs and status codes, which is level 2) stays in coverage.

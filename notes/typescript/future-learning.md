@@ -93,9 +93,7 @@ type B = UnpackPromise<number>;           // number
 
 Used inside conditional types to extract a type from a generic. You will encounter it in RxJS and Angular source code.
 
-### Module augmentation
-
-> **Boundary with coverage:** *knowing that two `interface` declarations merge* — and that this is the real reason `interface` is preferred for extensible model shapes — is now in coverage. What stays here is **using** that mechanism to augment types from a library you do not control, which is a library/tooling concern, not a junior filter.
+### Declaration merging and module augmentation
 
 TypeScript allows multiple declarations of the same interface to merge automatically:
 
@@ -117,24 +115,6 @@ Angular uses decorators extensively (`@Component`, `@Injectable`, `@Input`). Wri
 
 ---
 
-### Variance and `strictFunctionTypes`
-
-Why a function type with a narrower parameter is (or is not) assignable where a wider one is expected — parameters are checked contravariantly under `strictFunctionTypes`, except for methods declared with method shorthand, which stay bivariant for historical reasons. You will meet it as "why did this event-handler assignment stop compiling?". The formal rules are a mid-level topic; at junior level it is enough to recognise the error and change the parameter type.
-
-### Implementing branded / nominal types
-
-> **Boundary with coverage:** *that* TypeScript is structurally typed, so two `number`-based ids are interchangeable, is in coverage — it is a standard "TypeScript vs Java" question. Hand-rolling the branded-type workaround (an intersection with a unique phantom property, plus the constructor functions around it) is what lives here.
-
-### Runtime schema validation (Zod and friends)
-
-Coverage already says the API boundary needs a real runtime check, because a generic type parameter validates nothing. Choosing and wiring a schema library — deriving the TypeScript type from the schema so there is one source of truth — is the tooling layer on top of that idea, and belongs to whoever owns the frontend architecture.
-
-### Generating types from an OpenAPI spec
-
-Spring Boot can publish a Swagger/OpenAPI contract, and generators turn that contract into TypeScript interfaces so the frontend models cannot drift from the backend. Setting up that pipeline is a team-level decision; knowing *that* hand-written interfaces drift silently is the junior-level concept and is already in coverage.
-
----
-
 ## Phase 3 — Mid-level
 
 ### TypeScript project references and `tsc --build`
@@ -152,5 +132,3 @@ Type definitions for JavaScript libraries that do not ship with types. Only rele
 - **TypeScript compiler API** — programmatic access to the TypeScript compiler. Only relevant if you are building TypeScript plugins or tools. No application in Angular + Spring Boot development.
 - **Type-level programming** — using TypeScript's type system as a Turing-complete language. An impressive academic exercise; no practical value at junior or mid level.
 - **`namespace`** — the old module system before ES modules. You will see it in legacy code but should never write it in new code.
-
-- **Assertion functions (`asserts value is Employee`)** — narrowing by throwing rather than by returning a boolean. Real, but rarely required or tested at junior level even in a strong TypeScript shop; the `is` type-predicate form, which is what interviewers actually ask for, stays in coverage. _Demoted 2026-07-19 by the coverage audit._

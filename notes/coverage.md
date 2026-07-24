@@ -1,4 +1,4 @@
-# Global Coverage — All Topics
+﻿# Global Coverage — All Topics
 
 Combined minimum coverage for every topic in the notes folder.
 Source files: one `coverage.md` per topic folder — this file is a read-only mirror for cross-topic analysis.
@@ -9,757 +9,289 @@ Order follows study priority: Angular → Angular Material → Spring Boot → J
 ## Angular
 
 Topics a junior must know to pass a technical screening for Angular roles at Spanish consultancies in 2026.
-Scope is derived from what those screenings test, not from what the projects happen to use. Every item must be explainable out loud with a concrete example — ideally from the six Angular projects or TimeTrack, and where a concept has no home in them, from a minimal example built for the purpose.
+Every item must be explainable with a real example from at least one of the six Angular projects or TimeTrack.
 
-### Components and inputs
-- `@Component` — selector, template, styles, `standalone: true`; interviewers ask what standalone means and why Angular 17+ uses it by default
-- `imports` array on `@Component` — every directive, pipe, or component used in the template must be listed here; forgetting one causes a clear Angular error; interviewers ask why Angular 17+ moved away from NgModules
-- `input()` and `output()` — signal-based component communication; interviewers ask "how does data flow between parent and child?"
-- `input()` vs `input.required<T>()` — `input()` needs a default value or the type becomes `T | undefined`; `input.required<T>()` has no default and throws at compile time if the parent does not pass it; interviewers ask which one to use for a value the component cannot render without (e.g. an `id`)
-- `model()` — signal-based two-way binding for a custom component (`[(value)]`); reviewers show `@Input()` + `@Output()` boilerplate built to fake two-way binding and ask for the signal-era replacement
-- `@Directive` — the decorator for behaviour attached to an existing element (highlight, autofocus, permission-hide) instead of a new template; reviewers show a `@Component` with an empty template used only to add behaviour and ask what it should have been
-- `@HostListener` — binds an event on the component's own host element from the class; reviewers show a directive calling raw `addEventListener` in `ngOnInit` (never removed, so it leaks) and expect this instead
-- `@HostBinding` — binds a property, class, or style on the host element declaratively; interviewers ask how a directive toggles a CSS class without reaching for `nativeElement`
-- `@Input()` alias (`@Input('name')`) — renames the public binding name, so the parent must bind the alias and not the class property; reviewers show a parent binding the property name and ask why the value is always `undefined`
+### Components and templates
+- `@Component` â€” selector, template, styles, `standalone: true`; interviewers ask what standalone means and why Angular 17+ uses it by default
+- `imports` array on `@Component` â€” every directive, pipe, or component used in the template must be listed here; forgetting one causes a clear Angular error; interviewers ask why Angular 17+ moved away from NgModules
+- Data binding: interpolation `{{ }}`, property `[]`, event `()`, two-way `[()]` â€” the four types; interviewers ask the difference between `[]` and `{{}}`
+- `input()` and `output()` â€” signal-based component communication; interviewers ask "how does data flow between parent and child?"
+- `input()` vs `input.required<T>()` â€” `input()` needs a default value or the type becomes `T | undefined`; `input.required<T>()` has no default and throws at compile time if the parent does not pass it; interviewers ask which one to use for a value the component cannot render without (e.g. an `id`)
+- `@if`, `@for`, `@empty`, `@else` â€” new control flow syntax; `@for` requires a `track` expression for performance; interviewers ask why `track` matters
+- `@switch`, `@case`, `@default` â€” control flow alternative to chained `@if`/`@else if` when checking one value against several fixed options (e.g. a status field); interviewers ask when to reach for `@switch` instead of multiple `@if` blocks (readability once there are 3+ branches)
+- `@let` â€” declares a local template variable from an expression, reused across the same template block without recalculating it; interviewers ask how you avoid calling the same `computed()` or method multiple times in one template
+- Template reference variables â€” `#ref` on any template element gives a typed handle to it; pass `ref.value` to a method without a signal or form control; interviewers ask how you read an input value without reactive forms
+- `ng-content` â€” content projection; lets a parent inject arbitrary HTML into a child's template slot; interviewers ask how you build a reusable layout wrapper in Angular
+- `[class.x]` binding â€” applies a single CSS class when the condition is true; simpler and more readable than `ngClass` for a single class; interviewers ask the difference from `ngClass`
+- `ngClass` â€” applies multiple CSS classes conditionally using an object map `{ 'class': condition }`; reach for it when two or more classes depend on component state; interviewers ask when to use it instead of `[class.x]`
 
-### Content projection and template references
-- `ng-content` — content projection; lets a parent inject arbitrary HTML into a child's template slot; interviewers ask how you build a reusable layout wrapper in Angular
-- `ng-content select` and `ngProjectAs` — multi-slot projection is how one wrapper component accepts header, body, and footer markup separately; interviewers ask how a design-system card takes several distinct chunks of content
-- `ng-content` vs configuration inputs — projecting markup versus passing a config object, and why projection scales better for a design-system shell; interviewers ask which you'd use for a reusable card or panel
-- `ng-template` and `TemplateRef` — a template declared but not rendered until something asks for it; interviewers ask what an `ng-template` renders on its own (nothing) and why that is the point
-- `ngTemplateOutlet` — renders a `TemplateRef` with a context object; interviewers ask how a parent passes a custom cell or row template into a reusable table component
-- Template reference variables — `#ref` on any template element gives a typed handle to it; pass `ref.value` to a method without a signal or form control; interviewers ask how you read an input value without reactive forms
-- `@ViewChild` vs `@ContentChild` — `@ViewChild` queries the component's own template, `@ContentChild` queries what a parent projected into it; reviewers show a `@ViewChild` returning `undefined` for a projected element and expect this distinction
-- `viewChild()` / `viewChildren()` / `contentChild()` signal queries — the Angular 17.2+ replacement for the decorators, readable as signals and free of the `static` timing problem; interviewers ask what replaces `@ViewChild({ static: false })`
+### Lifecycle and tooling
+- `@ViewChild` â€” accessing a child element or component from the class after the view is built; needed for `MatSort` and `MatPaginator` in `ngAfterViewInit`
+- Lifecycle hooks: `ngOnInit` (run logic on load), `ngAfterViewInit` (first safe moment to use `@ViewChild`), `ngOnDestroy` (cleanup) â€” interviewers ask when each fires and why
+- `constructor` vs `ngOnInit` â€” the constructor only wires up dependency injection and runs before Angular has set the component's inputs; `ngOnInit` runs once after the first input binding, so data fetching and any logic that reads an `input()`/`@Input()` value belongs there, not in the constructor; interviewers ask "why fetch data in `ngOnInit` and not the constructor?"
+- Angular CLI essentials â€” `ng generate component/service/guard`, `ng serve`, `ng build` â€” interviewers ask how you scaffold a new feature and what the difference is between `ng serve` (dev server with live reload) and `ng build` (production bundle)
 
-### Template syntax and rendering
-- Data binding: interpolation `{{ }}`, property `[]`, event `()`, two-way `[()]` — the four types; interviewers ask the difference between `[]` and `{{}}`
-- `@if`, `@for`, `@empty`, `@else` — new control flow syntax; `@for` requires a `track` expression for performance; interviewers ask why `track` matters
-- `track: $index` as an anti-pattern — tracking by index instead of a stable id means Angular reuses the DOM node of whatever now sits at that position, so row state (focus, a checkbox, an open editor) attaches to the wrong item after a delete or reorder; reviewers show a list that "loses" its state and ask why the track expression is the bug
-- `@switch`, `@case`, `@default` — control flow alternative to chained `@if`/`@else if` when checking one value against several fixed options (e.g. a status field); interviewers ask when to reach for `@switch` instead of multiple `@if` blocks (readability once there are 3+ branches)
-- `@let` — declares a local template variable from an expression, reused across the same template block without recalculating it; interviewers ask how you avoid calling the same `computed()` or method multiple times in one template
-- `[class.x]` binding — applies a single CSS class when the condition is true; simpler and more readable than `ngClass` for a single class; interviewers ask the difference from `ngClass`
-- `ngClass` — applies multiple CSS classes conditionally using an object map `{ 'class': condition }`; reach for it when two or more classes depend on component state; interviewers ask when to use it instead of `[class.x]`
-- `[style.prop]` binding vs `ngStyle` — the style-side twin of `[class.x]` vs `ngClass`, including the unit suffix form (`[style.width.px]`); interviewers ask how you set one computed dimension without inventing a CSS class for it
-- Calling a method directly in a template binding (`{{ getTotal() }}`, `[disabled]="isInvalid()"`) — re-runs on every change-detection cycle instead of once; reviewers show a slow component built this way and expect the fix to be a `computed()` or a pure pipe, not the method itself
-- A getter used as a template binding (`get total()`) — runs on every change-detection pass exactly like a method call, but hides the cost behind property syntax; reviewers show the getter next to the method version and ask whether it is any better (it is not)
-- Safe navigation operator `?.` in templates — the template renders once before async/HTTP data arrives, so `user.name` throws "Cannot read properties of undefined"; `user?.name` renders nothing until the value exists; interviewers ask how you guard a template against not-yet-loaded data
-- `@defer` blocks (`@placeholder`, `@loading`, triggers like `on viewport`/`on interaction`) — Angular 17+ template-level lazy loading that delays downloading a heavy component's code until needed; interviewers ask "how do you defer a heavy widget below the fold without a lazy route?"
-
-### Lifecycle hooks
-- Lifecycle hooks: `ngOnInit` (run logic on load), `ngAfterViewInit` (first safe moment to use `@ViewChild`), `ngOnDestroy` (cleanup) — interviewers ask when each fires and why
-- `constructor` vs `ngOnInit` — the constructor only wires up dependency injection and runs before Angular has set the component's inputs; `ngOnInit` runs once after the first input binding, so data fetching and any logic that reads an `input()`/`@Input()` value belongs there, not in the constructor; interviewers ask "why fetch data in `ngOnInit` and not the constructor?"
-- A lifecycle hook that never runs — Angular calls hooks by name, so a typo (`ngOnInIt`) or a class that does not declare the method exactly compiles fine and the code silently never executes; reviewers show initialisation logic that "does nothing" and expect this diagnosis
-- `@ViewChild` — accessing a child element or component from the class after the view is built; needed for `MatSort` and `MatPaginator` in `ngAfterViewInit`
-- `@ViewChild` `{ static: true }` vs `{ static: false }` — `static: true` resolves before `ngOnInit` but only works when the query is not inside an `@if`/`@for`; the default `false` leaves it `undefined` until `ngAfterViewInit`; reviewers show a `@ViewChild` read in `ngOnInit` coming back `undefined` and ask for the two possible fixes
-- `ChangeDetectorRef.detectChanges()` sprinkled in to "make the view update" — the manual call almost always compensates for a real cause elsewhere (a mutation instead of a new reference, or work running outside the zone); reviewers show one and ask what it is hiding
-- `markForCheck()` vs `detectChanges()` — `markForCheck()` marks the ancestor path dirty for the next pass, `detectChanges()` re-checks this view synchronously right now; interviewers ask which one an `OnPush` component needs after an async callback
-
-### Signals — state and derivation
-- `signal()`, `signal.set()`, `signal.update()` — creating and mutating reactive state; `set()` replaces the value, `update()` uses the previous value; interviewers ask which one to use when adding an item to an array
-- `computed()` — derived state that recalculates automatically when its dependencies change; used for filtered lists, stats, and role-aware UI; returns a value and cannot be set directly
-- Reading a signal without calling it — `@if (isAdmin)` or `{{ count }}` binds the signal *function*, which is always truthy and never updates; reviewers show a permission check that lets every user through and ask what is wrong
-- Signal reference vs snapshot — `service.signal` (no parentheses) stores the live signal and stays reactive; `service.signal()` reads the value once and never updates; storing the snapshot in a property is a common bug
-- Signal immutability — mutating an array/object in place (`items().push(x)`, `set(items())`) keeps the same reference, so `OnPush` and dependent `computed()`s never see a change; reviewers show in-place mutation and ask why the UI doesn't refresh (fix: `set([...items(), x])`)
-- The `equal` option on `signal()` — signals compare by reference by default, so `set()` with a structurally identical object still notifies every dependent; interviewers ask why an "unchanged" object keeps triggering re-renders and what you would pass to stop it
-- Derived state copied into a writable signal — recomputing a `total` by hand into its own `signal()` alongside the list creates two sources of truth that drift apart; interviewers show both and ask why the derived value must be a `computed()`
-- `signal.asReadonly()` — a service that exposes a writable signal lets any component call `.set()` on shared state directly; interviewers show a component mutating a service's signal and ask how you'd protect it
-
-### Signals — effects and pitfalls
-- `effect()` — runs a side effect when a tracked signal changes; must be created inside a constructor or injection context, never outside; cannot modify a signal inside — that creates an infinite loop
-- `computed()` vs `effect()` — `computed()` returns a derived value (filtered list, boolean flag); `effect()` performs a side effect with no return value (save to localStorage, sync to a non-reactive library); the most common mistake is using `effect()` to derive values when `computed()` is the right tool
-- `effect()` + localStorage pattern — initialise a signal from localStorage, then use `effect()` to keep them in sync on every change
-- `untracked()` — reads a signal inside an `effect()` or `computed()` without registering it as a dependency; interviewers ask how you read auxiliary state in an effect without making the effect re-run every time that state changes
-- The `effect()` cleanup callback (`onCleanup`) — cancels the previous run's timer, listener, or subscription before the effect runs again; interviewers ask what stops an effect leaking one interval per change
+### Signals
+- `signal()`, `signal.set()`, `signal.update()` â€” creating and mutating reactive state; `set()` replaces the value, `update()` uses the previous value; interviewers ask which one to use when adding an item to an array
+- `computed()` â€” derived state that recalculates automatically when its dependencies change; used for filtered lists, stats, and role-aware UI; returns a value and cannot be set directly
+- `effect()` â€” runs an external side effect when tracked signals change; use `computed()` for derived
+  state and avoid writing feedback loops that repeatedly trigger the same effect
+- `computed()` vs `effect()` â€” `computed()` returns a derived value (filtered list, boolean flag); `effect()` performs a side effect with no return value (save to localStorage, sync to a non-reactive library); the most common mistake is using `effect()` to derive values when `computed()` is the right tool
+- `effect()` + localStorage pattern â€” initialise a signal from localStorage, then use `effect()` to keep them in sync on every change
+- Signal reference vs snapshot â€” `service.signal` (no parentheses) stores the live signal and stays reactive; `service.signal()` reads the value once and never updates; storing the snapshot in a property is a common bug
 
 ### Services and dependency injection
-- `@Injectable({ providedIn: 'root' })` — what dependency injection is, what a singleton service means, and why Angular uses it instead of importing classes directly
-- `inject()` — the modern way to inject a service; no constructor needed in Angular 17+
-- `@Injectable()` missing on a service that injects other services — Angular cannot read the constructor's dependency metadata and fails when it tries to create the instance; reviewers show a plain class with a constructor dependency and ask why DI breaks
-- Creating a service with `new SomeService()` — bypasses DI entirely, so the instance receives none of its own dependencies and is not the shared singleton; reviewers show it inside a component and ask what breaks
-- Component-level `providers` vs `providedIn: 'root'` — listing a service in a component's own `providers` array creates a fresh, non-singleton instance scoped to that component and its children, instead of the shared root singleton; interviewers show two component instances with desynced state and ask why (or ask when you'd deliberately want a scoped instance)
-- `inject()` outside an injection context — calling `inject()` inside a callback, event handler, or a plain function (not the constructor or field initializer) throws a runtime error; interviewers show it misused and ask why it fails
-- `InjectionToken<T>` — the way to inject something that is not a class, such as an API base URL or a feature-flag config object; interviewers ask how you provide a plain value or an interface through DI when there is no class to name
-- `useClass` / `useValue` / `useFactory` / `useExisting` — the four provider recipes; interviewers ask how you swap a real service for a fake, or for an environment-specific implementation, without touching a single consumer
-- `multi: true` providers — one token holding an array of implementations, which is how `HTTP_INTERCEPTORS` accepts several interceptors at once; interviewers ask why registering a second interceptor silently replaced the first
-- `@Optional()` and `@SkipSelf()` — resolution modifiers over the injector hierarchy; interviewers ask how you make a dependency optional, or deliberately skip a component-level provider to reach the root one
+- `@Injectable({ providedIn: 'root' })` â€” what dependency injection is, what a singleton service means, and why Angular uses it instead of importing classes directly
+- `inject()` â€” the modern way to inject a service; no constructor needed in Angular 17+
+- `HttpClient` â€” making GET, POST, PUT, DELETE, PATCH calls with typed responses; interviewers ask "how do you call a REST API from Angular?"
+- `HttpParams` â€” building query parameters programmatically for filtered API calls; used in TimeTrack for `?month=2025-05&status=SUBMITTED` on the entries endpoint
+- Error handling: `catchError` + loading/error signal pattern â€” how to show loading state and handle a failed HTTP call without crashing the app
 
-### Service layer and HTTP
-- `HttpClient` — making GET, POST, PUT, DELETE, PATCH calls with typed responses; interviewers ask "how do you call a REST API from Angular?"
-- `HttpClient.get<T>()` without the generic type parameter — the response is typed as `Object`, so every downstream field access is unchecked and a backend rename fails silently at runtime; interviewers ask what supplying the type actually buys you
-- `HttpParams` — building query parameters programmatically for filtered API calls; used in TimeTrack for `?month=2025-05&status=SUBMITTED` on the entries endpoint
-- `HttpHeaders` immutability — `headers.set()` returns a new instance instead of mutating in place, so a header assigned to a discarded object never reaches the server; reviewers show the mutated-and-dropped version and ask why the request arrives without it
-- File upload with `FormData` and download with `responseType: 'blob'` — the two non-JSON HTTP shapes an internal enterprise app always ends up needing; interviewers ask how you post a file to a Spring endpoint and how you save the PDF it returns
-- Error handling: `catchError` + loading/error signal pattern — how to show loading state and handle a failed HTTP call without crashing the app
-- Business logic living in the component instead of the service — HTTP calls, response mapping, and validation written into the component class; the wrong-layer finding reviewers plant most often, and the expected answer names testability and reuse, not style
-- A service that calls `subscribe()` internally and returns `void` — swallows the stream, so callers cannot chain it, handle its error, or cancel it; reviewers show it and expect the service to return the `Observable` and the component to subscribe
-- Mapping API responses to domain models inside the service — keeping the backend DTO shape out of components so a contract change touches one file; interviewers ask what happens across the app when the backend renames a field
-- One service per API resource — why a component never injects `HttpClient` directly; interviewers ask who owns the URL and the response shape once three components need the same endpoint
-- `shareReplay(1)` for HTTP response caching — without it, the same GET fires once per subscriber (e.g. three components reading the same lookup data); interviewers ask "the network tab shows the same call three times, how do you fix it?"
-
-### RxJS operators and streams
-- `Observable` and `subscribe` — what reactive programming means and why `HttpClient` returns Observables instead of Promises
-- Cold vs hot Observables — an `HttpClient` Observable is cold, so every subscriber triggers its own request rather than sharing one; interviewers ask why the same stream fired three times, and this is the concept `shareReplay` exists to fix
-- `pipe` and key operators: `map`, `filter`, `switchMap`, `debounceTime`, `catchError` — what each does and a real use case for each
-- `tap` — performs a side effect inside a pipe without altering the stream; interviewers ask where logging, a cache write, or a loading flag belongs in an operator chain
-- `switchMap` vs `mergeMap` vs `concatMap` vs `exhaustMap` — the flattening-operator choice: `switchMap` cancels the in-flight request (typeahead search), `exhaustMap` ignores new emissions while one is running (prevent double-submit on a save button), `concatMap` queues them in order, `mergeMap` runs all in parallel; interviewers describe a scenario and ask which operator fits
-- The typeahead pipeline: `debounceTime` + `distinctUntilChanged` + `switchMap` — the search-as-you-type chain, where `debounceTime` waits for a pause, `distinctUntilChanged` drops a repeated term, and `switchMap` cancels the superseded request; this is the single most common Angular live-coding task at Spanish consultancies
-- Nested `subscribe()` inside `subscribe()` — chaining a dependent HTTP call by subscribing inside another subscription instead of flattening with `switchMap`/`mergeMap`; reviewers show the "callback pyramid" and ask what's wrong and how to fix it
-- `catchError` that swallows the failure — returning `of([])` or `of(null)` with no logging and no user-facing error makes a failed request indistinguishable from an empty result; reviewers show it and ask how the user would ever learn the call failed
-- `firstValueFrom` / `lastValueFrom` — the replacement for the removed `toPromise()`; interviewers ask what happens when the source completes without emitting, and when a Promise is acceptable at all in an Angular codebase
-
-### RxJS — combining streams and resilience
-- `forkJoin` — run multiple HTTP calls in parallel and wait for all to complete; used on the TimeTrack dashboard to load stat cards simultaneously
-- `combineLatest` — recombines several *ongoing* sources (filter, page, sort) and re-emits whenever any of them changes; interviewers ask how it differs from `forkJoin`, which waits for every source to complete and emits once
-- `startWith` — a `combineLatest` pipeline emits nothing until every source has emitted at least once, so one silent source keeps the whole table empty; interviewers ask why the list never loads on first render
-- `retry` / `retry({ count, delay })` and `timeout` — resilience on a flaky GET, and why you never blindly retry a non-idempotent POST; interviewers ask what you do about intermittent 503s from a backend you do not control
-- `finalize` — runs on both the success and the error path, which is where a loading flag is turned off; reviewers show a spinner that stays forever after a failed call and ask what is missing
-- Optimistic vs pessimistic UI updates — updating the signal immediately and rolling back on error, versus waiting for the server response before updating the view; interviewers probe this on delete/toggle actions where perceived speed matters
-
-### Subscription management and leaks
-- Memory leak risk — what happens when you call `subscribe()` without ever unsubscribing; why it matters in a long-running SPA
-- `takeUntil(destroy$)` with a `Subject` — the pre-16 unsubscribe pattern, where `ngOnDestroy` calls `destroy$.next()` to complete every piped stream; it is in every legacy codebase, and interviewers asking "dame tres formas de evitar memory leaks" expect this alongside the `async` pipe and `takeUntilDestroyed()`
-- `takeUntilDestroyed` + `DestroyRef` — automatic unsubscription when the component is destroyed; the modern default from Angular 16+
-- `async` pipe — subscribes in the template and unsubscribes automatically; the alternative to calling `subscribe()` manually in the class
-- Choosing between the three unsubscribe strategies — the `async` pipe when the template is the only consumer, `takeUntilDestroyed` when the class subscribes, and `takeUntil(destroy$)` only when you are reading pre-16 code; interviewers ask which one you would actually write today and expect a default, not a list
-- Multiple `async` pipes on the same Observable — each `| async` opens its own subscription, so the same HTTP call fires once per usage in the template; reviewers show a template with two `| async` on one source and ask how to share a single subscription (`@if (obs$ | async as x)`)
+### RxJS
+- `Observable` and `subscribe` â€” what reactive programming means and why `HttpClient` returns Observables instead of Promises
+- `pipe` and key operators: `map`, `filter`, `switchMap`, `debounceTime`, `catchError` â€” what each does and a real use case for each
+- `forkJoin` â€” run multiple HTTP calls in parallel and wait for all to complete; used on the TimeTrack dashboard to load stat cards simultaneously
+- `takeUntilDestroyed` + `DestroyRef` â€” automatic unsubscription when the component is destroyed; interviewers ask "how do you avoid memory leaks in Angular?"
+- `async` pipe â€” subscribes in the template and unsubscribes automatically; the alternative to calling `subscribe()` manually in the class
+- Memory leak risk â€” what happens when you call `subscribe()` without ever unsubscribing; why it matters in a long-running SPA
 
 ### RxJS Interop
-- `toSignal()` — converts an Observable (e.g. `HttpClient.get()`) into a signal; Angular subscribes and unsubscribes automatically; interviewers ask "how do you use HttpClient results in the template with the signals model?"
-- `initialValue` option on `toSignal()` — the Observable has not emitted when the component first renders; without `initialValue` the signal is `undefined`, which crashes a template that loops over it; always set it for calls that return an array
-- `toSignal()` injection context rule — must be called in the class body or constructor, never inside `ngOnInit` or an event handler; calling it outside an injection context throws a runtime error
-- `toSignal()` vs `subscribe()` — use `toSignal()` when the template displays the data directly; use `subscribe()` + `takeUntilDestroyed` when you need to update multiple signals or trigger a side effect from one response
-- `toObservable()` — converts a signal into an Observable stream so you can pipe it through `debounceTime` and `switchMap`; used for search-as-you-type when the search term is stored as a signal; like `toSignal()` it must be called in an injection context, and interviewers ask candidates to name both interop functions correctly
-- Where signals end and RxJS begins — signals hold state the template reads, RxJS models event streams and async pipelines, and `toSignal()`/`toObservable()` sit at the seam; interviewers ask directly "do signals replace RxJS?" and expect the boundary, not a yes or no
+- `toSignal()` â€” converts an Observable (e.g. `HttpClient.get()`) into a signal; Angular subscribes and unsubscribes automatically; interviewers ask "how do you use HttpClient results in the template with the signals model?"
+- `initialValue` option on `toSignal()` â€” supplies a value before the first emission when the consumer
+  cannot accept `undefined`; it is optional when the source emits synchronously or the type/template
+  handles absence
+- `toSignal()` injection context rule â€” call it in an injection context by default, or provide an
+  explicit `Injector` when conversion must happen elsewhere
+- `toSignal()` vs `subscribe()` â€” use `toSignal()` when the template displays the data directly; use `subscribe()` + `takeUntilDestroyed` when you need to update multiple signals or trigger a side effect from one response
+- `toObservable()` â€” converts a signal into an Observable so RxJS operators such as `debounceTime`
+  and `switchMap` can drive search or other asynchronous pipelines
 
-### Routing and navigation
-- `provideRouter`, `routerLink`, `RouterOutlet`, `routerLinkActive` — the building blocks of Angular navigation
-- `ActivatedRoute` — `snapshot.paramMap.get()` for route params, `queryParamMap` for query params; the correct way to read URL data inside a component
-- Route params vs query params — params are part of the path (`/entries/:id`), query params are optional extras (`?month=2025-05`); interviewers ask when to use each
-- `snapshot` vs Observable `paramMap` — use `snapshot` when the component is destroyed on navigation away (the standard case); subscribe to `paramMap` only when the id can change while the component stays alive, such as a next/previous button on the same route
-- Stale data from `snapshot` on a self-navigating route — navigating from `/entries/5` to `/entries/6` reuses the component instance, so `ngOnInit` never fires again and a `snapshot`-based page keeps showing the old record; reviewers show a detail page whose next/previous buttons change the URL but not the content and expect this diagnosis
-- `withComponentInputBinding()` — binds route params and query params straight to the component's `input()`s, so a detail component never injects `ActivatedRoute` at all; interviewers ask how you avoid repeating the same param-reading boilerplate in every routed component
-- `router.navigate()` with `relativeTo` vs `routerLink` — programmatic versus declarative navigation, and how a relative path resolves against the current route; interviewers ask when navigation belongs in the class rather than the template
-- Nested routes and a child `RouterOutlet` — modelling a master/detail or tabbed section in the URL instead of in component state; interviewers ask "should this tab be a route?" and expect deep-linking and the back button as the deciding argument
-- Route `data` — static per-route metadata (required role, breadcrumb) declared in the route config instead of hardcoded inside each component; interviewers ask where a route's required role should be declared
-- Route `title` and `TitleStrategy` — setting the document title declaratively per route; interviewers ask how the browser tab updates on navigation
-- `Router.events` (`NavigationStart` / `NavigationEnd` / `NavigationError`) — the stream a global loading bar, analytics, and scroll handling subscribe to; interviewers ask how you show progress while a lazy route downloads
+### Routing
+- `provideRouter`, `routerLink`, `RouterOutlet`, `routerLinkActive` â€” the building blocks of Angular navigation
+- `ActivatedRoute` â€” `snapshot.paramMap.get()` for route params, `queryParamMap` for query params; the correct way to read URL data inside a component
+- Route params vs query params â€” params are part of the path (`/entries/:id`), query params are optional extras (`?month=2025-05`); interviewers ask when to use each
+- `snapshot` vs Observable `paramMap` â€” use `snapshot` when the component is destroyed on navigation away (the standard case); subscribe to `paramMap` only when the id can change while the component stays alive, such as a next/previous button on the same route
+- `CanActivateFn` guard â€” protecting a route; returns `true` to allow or `router.createUrlTree()` to redirect; do not use `router.navigate()` inside a guard â€” it causes double navigation
+- `noAuthGuard` â€” the reverse of `authGuard`; redirects an already-logged-in user away from the login page; without it, the browser back button can land an authenticated user on the login form
+- `CanDeactivateFn` guard â€” warning before leaving a page with unsaved changes; the guard receives the component instance to check its state
+- Lazy loading: `loadComponent`, `loadChildren` â€” why it reduces the initial bundle size; interviewers ask "how do you improve Angular startup performance?"
+- `HttpInterceptorFn` â€” intercepting every outgoing request to add the JWT token and handling 401 errors globally in one place, not in every service
 
-### Router configuration and URL state
-- `pathMatch: 'full'` vs `'prefix'` — a `''` redirect left on the default `prefix` matches every single route, so the app bounces to home from everywhere; reviewers show exactly that config and expect the one-word fix
-- The wildcard `**` route and array order — the router takes the first match, so a `**` placed above the real routes swallows the whole app; interviewers ask how you serve a 404 page and where the route must sit
-- Lazy loading: `loadComponent`, `loadChildren` — why it reduces the initial bundle size; interviewers ask "how do you improve Angular startup performance?"
-- `loadComponent` vs `loadChildren` — the per-route versus per-feature lazy boundary and what each does to the bundle graph; interviewers ask where you would cut a given app
-- `withPreloading(PreloadAllModules)` — lazy routes make the first click slow, so the router downloads the remaining chunks in the background after bootstrap; interviewers ask how you keep lazy loading without paying for it on every navigation
-- `queryParamsHandling: 'merge'` and `replaceUrl` — keeping the active filter in the URL while changing the page, without stacking a history entry per keystroke; interviewers ask what the back button should do after a filter change
-- `withHashLocation()` vs the default `PathLocationStrategy` — the client-side workaround for the deep-link 404 when ops will not add the server rewrite rule; interviewers ask what you do when you cannot touch the nginx config
-- A `routes.ts` per feature instead of one flat app-level array — how routing stays readable past ~20 routes; interviewers ask how the routing config scales on a real project
+### Reactive forms
+- `FormGroup`, `FormControl`, `FormBuilder` â€” the three pieces of a reactive form; `FormBuilder` is the shorthand for creating groups with less code
+- Built-in validators: `Validators.required`, `Validators.min`, `Validators.email` â€” the most common validations
+- Custom validators â€” a function that returns `null` (valid) or `{ key: true }` (invalid); used when built-in validators are not enough
+- `form.markAllAsTouched()` â€” triggers all validation messages on a submit attempt; without it errors only appear after the user touches each field individually
+- `form.patchValue()` vs `form.setValue()` â€” `patchValue()` updates only the fields you pass and ignores missing ones; `setValue()` requires every field and throws an error if one is missing; interviewers ask the difference when discussing edit forms
+- `form.reset()`, `form.dirty` â€” resetting after save, and checking for unsaved changes before navigating away
+- `setErrors({ key: true })` â€” setting a custom error on a control programmatically (e.g. duplicate name); clears automatically when validators re-run on the next keystroke
+- Showing errors in the template: `control.hasError('key')` + `control.touched` â€” the pattern every Angular form uses to display validation messages
+- `FormArray` â€” holds a dynamic list of form controls accessed by index instead of by name; use when the number of fields is not known upfront (e.g. "add another phone number"); `formArrayName` on the container div, `[formControlName]="$index"` on each input; interviewers ask the difference from `FormGroup`
 
-### Route protection and data loading
-- `CanActivateFn` guard — protecting a route; returns `true` to allow or `router.createUrlTree()` to redirect; do not use `router.navigate()` inside a guard — it causes double navigation
-- `CanMatchFn` vs `CanActivateFn` — `CanActivate` runs after the route matched, so the lazy chunk has already downloaded; `CanMatch` decides whether the route matches at all, which both prevents the download and lets a different component win the same URL by role; interviewers ask which guard stops an unauthorised user from even fetching the admin bundle
-- `CanActivateChild` — one guard protecting a whole nested section instead of being repeated on every child route; interviewers ask how you protect an admin area with ten sub-routes without ten guard entries
-- `noAuthGuard` — the reverse of `authGuard`; redirects an already-logged-in user away from the login page; without it, the browser back button can land an authenticated user on the login form
-- `CanDeactivateFn` guard — warning before leaving a page with unsaved changes; the guard receives the component instance to check its state
-- `HttpInterceptorFn` — intercepting every outgoing request to add the JWT token and handling 401 errors globally in one place, not in every service
-- Class-based `HttpInterceptor` + the `HTTP_INTERCEPTORS` multi-provider — the pre-15 form still present in most consultancy codebases, the exact sibling of the `CanActivate` class-vs-function pair; interviewers show one and ask for the functional equivalent and how both coexist mid-migration
-- Interceptor execution order — interceptors run in registration order on the way out and in reverse on the way back; interviewers ask why the auth header is missing from the request the logging interceptor recorded
-- Global `ErrorHandler` provider — the root-level hook that catches whatever no `catchError` handled, which is how a team reports client-side crashes centrally; interviewers ask where an uncaught runtime error actually goes
-- Route resolver vs loading in `ngOnInit` — resolving data before the route activates (no empty flash, navigation blocks until ready) versus fetching inside the component with a loading signal; interviewers ask "where do you fetch a detail page's data and what's the tradeoff?"
-
-### Reactive forms — building and validating
-- `FormGroup`, `FormControl`, `FormBuilder` — the three pieces of a reactive form; `FormBuilder` is the shorthand for creating groups with less code
-- Reactive vs template-driven forms — the decision, not just the syntax; reactive forms for complex, dynamic, or heavily validated forms and testability, template-driven for a handful of simple fields with `ngModel`; interviewers ask "which would you choose for this form and why?"
-- Typed reactive forms `FormGroup<T>` / `FormControl<T>` (Angular 14+) — `.value` is typed instead of `any`, so a renamed or missing control fails at compile time; interviewers ask what problem untyped forms had, and the standard take-home (form + validation + service) exercises this directly
-- `NonNullableFormBuilder` — by default a typed control's value is `string | null` because `reset()` can null it, which is why `form.value.email` is not simply `string`; interviewers ask why the type has a `null` in it and how you remove it properly
-- Nested `FormGroup` and `formGroupName` — modelling a sub-object (an `address` block) so `form.value` matches the backend DTO shape without a mapping step; interviewers ask how a form maps onto nested JSON
-- Built-in validators: `Validators.required`, `Validators.min`, `Validators.email` — the most common validations
-- Custom validators — a function that returns `null` (valid) or `{ key: true }` (invalid); used when built-in validators are not enough
-- Cross-field validators on the `FormGroup` — password/confirm and start-date/end-date checks compare two controls, so the validator goes on the group and the resulting error lives on the group rather than on either control; interviewers ask where the "passwords don't match" message actually comes from
-- `AsyncValidatorFn` — a validator returning an Observable, used for "is this email already taken?" against the backend, leaving the control in `PENDING` while it resolves; interviewers ask what the submit button does during the check
-- `updateOn: 'blur' | 'submit'` — moves validation off every keystroke, which is also what makes an async validator affordable; interviewers ask how you stop firing a request per character typed
-- `form.markAllAsTouched()` — triggers all validation messages on a submit attempt; without it errors only appear after the user touches each field individually
-- Showing errors in the template: `control.hasError('key')` + `control.touched` — the pattern every Angular form uses to display validation messages
-
-### Form state and integration
-- `form.patchValue()` vs `form.setValue()` — `patchValue()` updates only the fields you pass and ignores missing ones; `setValue()` requires every field and throws an error if one is missing; interviewers ask the difference when discussing edit forms
-- `form.reset()`, `form.dirty` — resetting after save, and checking for unsaved changes before navigating away
-- Disabling a reactive control — the plain `disabled` HTML attribute on a `formControlName` input logs a warning and is ignored, because the control's state is owned by the model (`control.disable()` / `enable()`); reviewers show the attribute version and ask why the console complains
-- `getRawValue()` vs `value` — `value` omits disabled controls, so a field the user could not edit silently disappears from the payload you POST; reviewers show a request body missing a field and expect this cause
-- `statusChanges` and `VALID` / `INVALID` / `PENDING` — driving the submit button from the form's own status instead of a hand-maintained boolean; interviewers ask why `form.valid` is false while nothing on screen looks wrong (a pending async validator)
-- `setErrors({ key: true })` — setting a custom error on a control programmatically (e.g. duplicate name); clears automatically when validators re-run on the next keystroke
-- Mapping a server's 400 validation response back onto controls — deciding between one global error banner and calling `setErrors` per field so the message appears under the input that caused it; interviewers ask how backend validation surfaces in your form
-- `ControlValueAccessor` — the interface that lets your own component be driven by `formControlName` like a native input; interviewers ask how you turn a bespoke star-rating, currency, or tag-picker component into a real form control
-- The `FormGroup` as the single source of truth — mirroring `valueChanges` into a parallel signal creates two copies of the same state that drift; interviewers ask why you would not keep form values in a signal alongside the form
-- `FormArray` — holds a dynamic list of form controls accessed by index instead of by name; use when the number of fields is not known upfront (e.g. "add another phone number"); `formArrayName` on the container div, `[formControlName]="$index"` on each input; interviewers ask the difference from `FormGroup`
-
-### Pipes and localised formatting
-- Built-in pipes: `date`, `number`, `currency`, `uppercase`, `slice` — what each formats and when to reach for it
-- Custom pipes: `@Pipe({ name: '...' })`, `transform()` method — when to create one (logic that repeats across multiple templates)
-- Pure vs impure pipes — a pure pipe (the default) only re-runs when its input reference changes, so it shows stale data if fed a mutated array or external state; `pure: false` re-runs on every change-detection cycle instead, which is a performance trap; reviewers show a pipe that doesn't update, or one that runs too often, and ask why
-- `LOCALE_ID` and `registerLocaleData` — Angular ships `en-US` only, which is why `| date` renders American order and `| currency` prints `$` in an app built for a Spanish client; interviewers ask how you localise formatting app-wide rather than patching each pipe call
-- `MAT_DATE_LOCALE` and the Material date adapter — the datepicker has its own locale token, so it still shows `MM/DD/YYYY` after `LOCALE_ID` is set correctly; interviewers ask why fixing the pipe did not fix the picker
+- Built-in pipes: `date`, `number`, `currency`, `uppercase`, `slice` â€” what each formats and when to reach for it
+- Custom pipes: `@Pipe({ name: '...' })`, `transform()` method â€” when to create one (logic that repeats across multiple templates)
 
 ### Component styles
-- View encapsulation — Angular scopes component CSS by adding unique attributes to each template element; styles in `component.css` only apply to elements you wrote in that template; interviewers ask "why doesn't my CSS rule apply to Angular Material's internal elements?"
-- `styleUrls` vs inline `styles` in `@Component` — both go through the same view encapsulation, so writing rules inline does not let them escape the component or leak into a child; the array form is only for a handful of component-local rules; interviewers ask whether the inline form changes the scoping (it does not)
-- Global `styles.css` for Material internals — Angular Material renders its own internal HTML without the component's scoping attribute; to override Material internals (e.g. `.mat-sort-header-container`), the rule must go in `styles.css`; a rule that silently fails in component CSS almost always works in `styles.css`
-- `:host` selector — targets the component's own wrapper element from inside its CSS file; custom elements are `inline` by default and need `:host { display: block }` to behave as block elements; interviewers ask how you style the outer element of a component without touching the parent's CSS
-- `::ng-deep` (deprecated) — a CSS combinator that bypassed encapsulation to reach Material internals; you will see it in almost every enterprise Angular codebase built before 2022; the correct modern replacement is to put the rule in `styles.css`
-- A style problem that appears only after `ng build` — style optimisation, minification, and the `budgets` limit apply to the production configuration and not to `ng serve`, so a layout that breaks solely in the built output points at the build configuration rather than the CSS; interviewers use the "it worked in `ng serve`" scenario to see whether you know where to look
+- View encapsulation â€” Angular scopes component CSS by adding unique attributes to each template element; styles in `component.css` only apply to elements you wrote in that template; interviewers ask "why doesn't my CSS rule apply to Angular Material's internal elements?"
+- Global `styles.css` for Material internals â€” Angular Material renders its own internal HTML without the component's scoping attribute; to override Material internals (e.g. `.mat-sort-header-container`), the rule must go in `styles.css`; a rule that silently fails in component CSS almost always works in `styles.css`
+- `:host` selector â€” targets the component's own wrapper element from inside its CSS file; custom elements are `inline` by default and need `:host { display: block }` to behave as block elements; interviewers ask how you style the outer element of a component without touching the parent's CSS
+- `::ng-deep` (deprecated) â€” a CSS combinator that bypassed encapsulation to reach Material internals; you will see it in almost every enterprise Angular codebase built before 2022; the correct modern replacement is to put the rule in `styles.css`
 
-### Workspace configuration
-- `main.ts` + `bootstrapApplication()` — the standalone entry point that mounts the root component into `index.html`; interviewers ask "where does an Angular app actually start?" now that there is no root NgModule
-- `app.config.ts` / `ApplicationConfig` `providers` array — the central place app-wide providers are registered in a standalone app; interviewers ask where you'd register `provideHttpClient()`, `provideRouter()`, or an interceptor
-- `provideHttpClient()` — `HttpClient` is unusable until this is registered; a `NullInjectorError: No provider for HttpClient` on first run is the most common blank-project failure; interviewers ask why an injected `HttpClient` throws at startup
-- `provideAnimations()` / `provideAnimationsAsync()` — Angular Material components that animate (`MatDialog`, `MatSnackBar`) fail or mis-render without this provider registered, even though the component is correctly in `imports`
-- `angular.json` architect targets — the file that defines what `ng serve`, `ng build`, and `ng test` actually run (which builder, with which options); interviewers ask where the output path, the assets list, or the global stylesheet is configured, because the CLI reads this file rather than following conventions
-- `assets` and `styles` arrays in `angular.json` — an image or a third-party CSS file that is never listed here is 404 in the browser despite existing on disk; interviewers ask how a file that nothing imports reaches the served app
-- `tsconfig.json` vs `tsconfig.app.json` — the workspace splits a base config from the per-target ones, which is why a `paths` alias or a `strict` flag set in the wrong file resolves in the editor but breaks the build
-- Angular, TypeScript, and Node version coupling — each Angular major supports a specific TypeScript and Node range, so a mismatched environment fails at install or build with a version-range error rather than a code error; interviewers ask how you would read that message
-- `environment.ts` / `environment.prod.ts` — where the API base URL and per-build config live; interviewers ask how the app points at localhost in dev and the real API in production without changing a line of code
-- Secrets do not belong in `environment.ts` — every value bundled into the frontend ships inside the JavaScript the browser downloads, so an API key or token placed there is public no matter which build replaced it; this is the AI-generated-code review gotcha applied to Angular, and interviewers ask what in that file is safe to commit
-- `fileReplacements` in `angular.json` — the build-config mechanism that swaps `environment.ts` for `environment.prod.ts` on a production build; interviewers ask how the environment file actually gets replaced (it is not the code that chooses — the builder does)
-
-### Build and compilation
-- Ahead-of-Time (AOT) compilation vs JIT — templates are compiled to JavaScript at build time rather than in the browser, which is why a template error surfaces during `ng build` and not at runtime; interviewers ask what the Angular compiler does with an `.html` file and why AOT is the default
-- `strictTemplates` in `angularCompilerOptions` — the flag that makes the compiler type-check bindings inside the HTML, not just the `.ts`; interviewers ask how a wrong `[input]` type is caught at build time, and why this is the flag that breaks a migration
-- `ng build` type-checks through the CLI's own pipeline, not bare `tsc` — a green editor is not proof the build passes; interviewers ask why `ng build` reports errors the IDE never showed
-- Development vs production build — dev keeps source maps and dev-mode assertions, production applies AOT optimisation, minification, and tree-shaking, and enforces stricter checks; interviewers ask why an error appears only in prod or only in dev
-- The `application` (esbuild) builder vs the legacy `browser` (webpack) builder — the default changed in Angular 17, which is why build times and the shape of `dist/` differ after a version bump; interviewers ask what changed in the build when nothing changed in the code
-- `budgets` in `angular.json` — the bundle-size thresholds that turn a compiling build into a warning or a hard CI failure; interviewers ask what "exceeded maximum budget" means and how a team stops the bundle growing unnoticed
-- Bundle analysis (`ng build --stats-json` plus source-map-explorer) — what you actually run once a budget fails, to see which dependency owns the megabytes instead of guessing; interviewers ask how you find out *why* the bundle grew
-- `ng serve` vs `ng build` — `ng serve` builds in memory and writes nothing to disk, `ng build` produces the deployable `dist/` folder; interviewers ask why `dist/` is empty while the app is running in the browser
-
-### CLI and tooling
-- Angular CLI essentials — `ng generate component/service/guard`, `ng serve`, `ng build`; interviewers ask how you scaffold a new feature and what the difference is between the dev server and a production bundle
-- Schematics — the code-generation mechanism behind `ng generate`, `ng add`, and `ng update`; interviewers ask what actually writes those four files and edits `app.config.ts` for you
-- `ng add` vs `npm install` — `ng add` runs a schematic that installs *and* registers providers, styles, and config (this is how Angular Material is meant to be added); a plain `npm install` leaves the library present but the app unconfigured; interviewers ask how you added Material
-- `ng update` vs bumping the version in `package.json` — `ng update` runs migration schematics that rewrite your code for the new major; a raw npm bump does not, which is why the app then fails to compile; interviewers ask how you take a project from one major version to the next
-- Angular's release cadence and support window — a new major roughly every six months with about eighteen months of support, which is why a client project sitting on v12 is out of support and why upgrades are done one major at a time; interviewers ask what it means that the codebase you are joining is four versions behind
-- ESLint (`angular-eslint`) and Prettier — the team-level enforcement layer above the compiler, catching what type-checking cannot (unused injectables, template accessibility rules, naming conventions); interviewers ask how code style stays consistent across a shared consultancy codebase
-- `package.json` scripts and `package-lock.json` — the lockfile is why CI installs the exact same dependency tree as your machine, and the `^` range is why it would not without one; interviewers ask why a build passes locally and fails in CI
-- `ng new` prompts — routing, stylesheet format, SSR/zoneless: the scaffold decisions made in the first thirty seconds that are awkward to reverse later; interviewers hand you a blank IDE and expect you to justify your answers
-
-### Deploying and serving
-- The `dist/` output as static files — an Angular build is a folder of HTML, JS, and CSS handed to nginx, Apache, or S3, not a running Node process; interviewers ask "how do you deploy an Angular app?" and expect this distinction
-- Deep-link 404 after deploy — refreshing on `/entries/5` asks the static server for a file that does not exist, so the fix is a server rewrite rule pointing every unmatched path at `index.html`, not an Angular change; interviewers ask why routing works inside the app but breaks on reload
-- `--base-href` — an app deployed under a subpath serves a blank page and 404s its own JS bundles because asset and router URLs resolve against the domain root; interviewers ask what changes when the app is not hosted at `/`
-- CORS error in local development — the browser blocks a call from `localhost:4200` to an API on another origin unless the server sends the right headers; interviewers ask why the call is blocked and expect you to know it is a server-side (backend) fix, not an Angular one
-- `proxy.conf.json` + `ng serve --proxy-config` — routes `/api` calls through the Angular dev server so the browser sees a same-origin request, sidestepping CORS while developing locally; interviewers ask how you talk to a backend on a different port in dev
-
-### Security in the browser
-- Angular's default output sanitisation — interpolated and property-bound values are escaped before they reach the DOM, which is why `{{ userInput }}` cannot inject a `<script>`; interviewers ask what actually protects an Angular app from XSS out of the box, and a candidate who answers "nothing, you sanitise manually" fails the question
-- `DomSanitizer.bypassSecurityTrustHtml` / `bypassSecurityTrustResourceUrl` — the explicit escape hatch, and the single place XSS re-enters an Angular app; reviewers show one applied to user-supplied content and expect the objection, not an explanation of the API
-- `HttpClient` XSRF support (`withXsrfConfiguration`) — Angular reads the CSRF cookie and echoes it back as a header, which is exactly what Spring Security's CSRF filter is checking for; interviewers ask how the frontend cooperates with backend CSRF protection
-
-> Token storage (`localStorage` vs `httpOnly` cookie), the fact that `[innerHTML]` bypasses Angular's escaping, and "client-side role checks are UX, not security" are owned by the **Security** topic and deliberately not repeated here.
-
-### Accessibility
-- Label association and `aria-describedby` on a validation message — how a screen-reader user learns which field failed and why; Spanish public-sector contracts (a large share of Indra and NTT Data work) make this a requirement rather than a nicety, and interviewers on those accounts ask
-- A `<div (click)>` used as a button — it takes no keyboard focus, does not fire on Enter or Space, and announces nothing to assistive technology; reviewers plant one and expect `<button>` as the answer, not a `tabindex` patch on top
-- Focus management around dialogs — trapping focus inside an open modal and returning it to the trigger on close (`MatDialog` handles both by default via `autoFocus` and `restoreFocus`); interviewers ask where keyboard focus goes when a Material dialog opens and closes
-- `LiveAnnouncer` / `aria-live` — announcing an async result such as "3 entries found" that a sighted user simply sees appear; interviewers ask how a screen reader learns that a filtered table updated
-
-### Debugging Angular errors
-- `NG####` error codes — the numeric prefix identifies the error class and the top *application* frame of the trace points at your file, not the framework frames below it; interviewers paste a raw console dump and ask what the code means
-- Bootstrap-time throw — an error in a root provider or `APP_INITIALIZER` kills the app before any component renders, producing a white page with a completely green terminal; interviewers ask which failures `ng serve` can never report
-- `ExpressionChangedAfterItHasBeenCheckedError` (NG0100) — the dev-mode error thrown when a value read in the template changes between Angular's first and verification change-detection pass (e.g. a parent field set inside a child's `ngAfterViewInit`, or a getter that mutates state); interviewers show the stack trace and ask what causes it and how to fix it
-- `NullInjectorError: No provider for X` (NG0201) — the most common startup crash: a service without `providedIn: 'root'` isn't in any provider scope, or a token was never provided; interviewers paste the red console error and ask what it means
-- Circular dependency in DI (NG0200) — service A injects service B and B injects A, so Angular cannot construct either; interviewers ask how you'd recognise and break the cycle
-- "Can't bind to 'X' since it isn't a known property" (NG0303) — reading the error correctly: it means a missing `imports` entry, a typo in an input name, or an unimported directive — not a broken component; interviewers hand you the red build and ask you to interpret it
-- "'x' is not a known element" (NG0304) — the sibling of NG0303, and the distinction is the point: NG0303 is a bad *property* on an element Angular knows, NG0304 is an unrecognised *element*, meaning an unimported component or a misspelled selector; interviewers hand you one of the two and ask which mistake it is
-- Duplicate `@for` track key (NG0955) — two items resolving to the same `track` expression (or a `null` id) throws at runtime; interviewers ask why a list crashes only once real backend data arrives
-- A 401 loop in the auth interceptor — an interceptor that redirects or retries on 401 without excluding the login and refresh calls re-triggers itself endlessly; interviewers ask why the app hangs after a wrong password
-- View not updating after code runs outside Angular's zone — a value changed inside a raw `setTimeout`, `addEventListener`, or a third-party library callback doesn't refresh the view because change detection never ran; interviewers ask "the data changed but the screen didn't — why?"
-
-### Performance and change detection
-- Zone.js and default change detection — what it means conceptually; why signals and `OnPush` reduce unnecessary re-renders
-- Zoneless change detection (`provideZonelessChangeDetection`) — Angular 18+ can drop Zone.js entirely and schedule rendering from signals and template events instead; interviewers ask what stops working in a zoneless app, and the answer (state mutated outside a signal, values set in a bare `setTimeout`) is why the rest of this file insists on immutable signal updates
-- `OnPush` change detection strategy — the component only re-renders when an input reference changes or an event fires inside it; signals are fully compatible with `OnPush`; senior devs use it and will ask if you understand it
-- `OnPush` as an app-wide default — the tradeoff between far fewer re-renders and a whole class of "the view didn't update" bugs that appear as soon as data is mutated rather than replaced; interviewers ask whether they'd set it on every component
-- `NgZone.runOutsideAngular()` and `ngZone.run()` — keeps a high-frequency third-party callback (a chart, a map, a websocket firing 60 times a second) from triggering change detection on every tick, re-entering only to commit state; interviewers ask why adding one library made the whole app crawl
-- Angular DevTools — the browser extension that shows the component tree and the current input/signal values; interviewers ask how you'd inspect why a component isn't rendering
-- The change-detection profiler — records which components re-render and what each cycle costs, which is what tells you where the time actually goes instead of scattering `OnPush` and `track` everywhere; interviewers ask "the app feels slow, what is your first step?"
-- Rendering a very large list — choosing between server-side paging, `@defer`, and virtual scrolling (`cdk-virtual-scroll-viewport`); interviewers ask what you would do with 10,000 rows outside a table
-
-### State management strategy
-- Local signal vs shared-service signal vs a store library — the junior-level decision of where state should live; interviewers ask "when do plain services and signals stop being enough that you'd reach for NgRx?" and expect "most apps never need a store" as the honest baseline answer
-- Signals vs a `BehaviorSubject`-based service for shared application state — coverage explains each mechanism separately; interviewers ask directly "starting a new Angular 17+ app, which would you use for shared state and why?"
-- Server state vs client state — data fetched from the API (cacheable, can go stale, belongs to the backend) and local UI state (filters, open dialog, form draft) have different lifecycles and do not belong in the same bag of signals; interviewers ask whether everything from HTTP should live in your store
-- Refreshing the view after a mutation — once a POST or PUT succeeds, choosing between refetching the list, patching the local signal, and trusting the response body; interviewers ask "you just created an entry, how does the table find out?"
-- State that must survive a reload — deciding between the URL (query params), `localStorage`, and in-memory service state for things like the active filter and page number; interviewers ask what happens when the user refreshes on page 3 of a filtered table
-- Cross-tree component communication — deciding between lifting state to a coordinator, `input()`/`output()` drilling, and a shared service when two non-parent-child components must share state; the coordinator pattern covers the parent-orchestrated case, this is the decision for siblings or unrelated branches
-
-### Patterns and component design
-- Smart / dumb component pattern — the smart component fetches data and handles events; the dumb component only displays and emits; makes components reusable and testable
-- Coordinator pattern — a smart page that orchestrates multiple dumb children; all state lives in the coordinator; interviewers ask "how do you manage state in Angular?"
-- Placing the smart/dumb boundary at the route — the routed page component owns HTTP, routing, and state while every child below stays pure; interviewers ask where the boundary goes and why not one level deeper
-- Component extraction criteria — repetition, genuinely independent state, or a template grown past comprehension; interviewers ask "when would you split this 300-line component?" and do not accept "when it feels long"
-- Passing a whole domain object vs individual primitive inputs — the tradeoff between coupling a reusable component to your model and churning a long input list; interviewers ask which they'd choose for a card meant to be reused
-- A component with a dozen inputs and outputs — usually the symptom of a boundary drawn in the wrong place or a missing wrapper component; interviewers show one and ask how you would redesign it
-- Role-aware UI — `isAdmin = computed(() => authService.currentUser()?.role === 'admin')`; controls which elements render using `@if (isAdmin())`; the key difference from route guards: guards block navigation, role-aware UI cleans the interface for non-admin users
-- Core / Feature / Shared folder structure — `core/` for guards, interceptors, singleton services; `pages/` for feature areas; `shared/` for reusable components; standard in enterprise Angular at Spanish consultancies
-- HTTP interceptor as a cross-cutting concern — one interceptor handles auth headers and global error responses for the whole app, not repeated in every service; interviewers ask what genuinely belongs there (auth header, 401 redirect) versus what must stay per-call (a 404 that really means "empty state")
+### Patterns
+- Smart / dumb component pattern â€” the smart component fetches data and handles events; the dumb component only displays and emits; makes components reusable and testable
+- Coordinator pattern â€” a smart page that orchestrates multiple dumb children; all state lives in the coordinator; interviewers ask "how do you manage state in Angular?"
+- Role-aware UI â€” `isAdmin = computed(() => authService.currentUser()?.role === 'admin')`; controls which elements render using `@if (isAdmin())`; the key difference from route guards: guards block navigation, role-aware UI cleans the interface for non-admin users
+- Core / Feature / Shared folder structure â€” `core/` for guards, interceptors, singleton services; `pages/` for feature areas; `shared/` for reusable components; standard in enterprise Angular at Spanish consultancies
+- HTTP interceptor as a cross-cutting concern â€” one interceptor handles auth headers and global error responses for the whole app, not repeated in every service
 
 ### Angular Material
+- `MatTable` with `MatTableDataSource`, `MatSort`, `MatPaginator` â€” the standard way to display tabular data; interviewers at consultancies expect you to know this combination
+- `MatDialog` â€” opening a modal, passing data in with `MAT_DIALOG_DATA`, and reading the result with `afterClosed()`
+- Form fields: `mat-form-field`, `mat-error`, `ErrorStateMatcher` â€” how Material shows validation errors inside styled form fields
+- `MatSnackBar` â€” user feedback after actions (save, delete, error); injected as a service, not added to `imports`
+- Custom theming: scoped `mat.theme()` in a component stylesheet â€” how to apply a different colour to one component without changing the whole app
 
-> Angular Material has its own topic file (`notes/angular-material/coverage.md`) covering the component set, theming, the CDK, accessibility and harness testing in full. Nothing is duplicated here — study it as its own topic.
+### Testing
+- Jasmine: `describe`, `it`, `expect`, `beforeEach` â€” the test structure Angular uses by default; required from project 07 onwards
+- `TestBed.configureTestingModule` â€” sets up the Angular DI context for a test so you can inject real services and mocks
+- Testing a service with `TestBed` â€” how to inject the service and call its methods in a test; what you verify and why
+- `spyOn(service, 'method')` â€” replaces a real method with a controlled fake; use `.and.returnValue()` to control what it returns; use `.toHaveBeenCalledWith()` to assert it was called correctly; the standard way to isolate the unit under test
+- `provideHttpClientTesting()` + `HttpTestingController` â€” the current standalone setup intercepts
+  HTTP calls without a network; recognise `HttpClientTestingModule` as the deprecated module-based
+  equivalent in older consultancy code
+- What to test in a service â€” the business logic: correct return value, correct error thrown, correct state change after the call
 
-### Interoperability with the Spring Boot backend
-- `LocalDate` / `LocalDateTime` over JSON — they arrive as ISO strings, never as a `Date`, so `| date` fails on the raw value and a naive `new Date('2026-07-19')` shifts the day by the browser's timezone; interviewers ask how a date survives the round trip intact
-- Spring's `Page<T>` response shape (`content`, `totalElements`, `number`, `size`) — the exact contract a server-side `MatPaginator` binds to; interviewers ask how the paginator knows the total row count when the browser only received twenty rows
-- Java enums over JSON — arrive as plain strings and are typed as a TS union or enum on the front end; interviewers ask what happens to the UI when the backend adds a new status value the switch does not handle
-- The validation error body (Spring's `ProblemDetail` / field-error list) — the per-field contract the form maps back onto controls, which is why the backend's error shape is a frontend concern; interviewers ask what the API must return for you to show a message under the right input
-- 401 vs 403 from Spring Security — 401 means not authenticated, so redirect to login; 403 means authenticated but not permitted, so show a message and never log the user out; reviewers show an interceptor that clears the token on 403 and ask what the user experiences
-- Who owns the API contract — hand-written TypeScript interfaces kept in sync by hand versus generating a client from the backend's OpenAPI document; interviewers ask how the two sides stay aligned when a field is renamed, and expect you to know the generated option exists
-
-### Testing — setup and mechanics
-- Jasmine: `describe`, `it`, `expect`, `beforeEach` — the test structure Angular uses by default; required from project 07 onwards
-- Karma vs Jasmine — Karma is the test *runner* that launches a browser and reports results, Jasmine is the *framework* that provides `describe`/`it`/`expect`; `ng test` starts both, which is why a freshly scaffolded project already has one passing spec; interviewers ask what each piece does when a candidate says "I use Karma to write tests"
-- Jest as the alternative runner — Karma is deprecated and job postings increasingly name "Jasmine / Jest / Karma" together, so you must be able to say what Jest changes (no real browser, faster, its own mocking API) even if you have only used Karma; interviewers ask which runner you have actually worked with
-- Testing a service vs testing a component — a service test needs no fixture and no change detection, a component test needs `createComponent` plus `detectChanges` and asserts on rendered DOM; interviewers ask which is cheaper and why most of a suite should be service tests
-- `TestBed.configureTestingModule` — sets up the Angular DI context for a test so you can inject real services and mocks
-- `ComponentFixture` — what `TestBed.createComponent()` returns, giving you `.componentInstance` (the class), `.nativeElement` (the rendered DOM), and `.detectChanges()`; interviewers ask how you reach the rendered HTML from a test
-- `fixture.detectChanges()` — Angular does not run change detection automatically inside a test, so the template renders nothing until you call it; interviewers ask why a freshly created component's DOM is empty
-- A fresh `TestBed` per `it` — `beforeEach` rebuilds the module and component so specs cannot leak state into each other; interviewers ask why a test passes alone but fails when the whole suite runs
-
-### Testing services and HTTP
-- Testing a service with `TestBed` — how to inject the service and call its methods in a test; what you verify and why
-- What to test in a service — the business logic: correct return value, correct error thrown, correct state change after the call
-- `spyOn(service, 'method')` — replaces a real method with a controlled fake; use `.and.returnValue()` to control what it returns and `.toHaveBeenCalledWith()` to assert it was called correctly; the standard way to isolate the unit under test
-- Spy vs stub vs mock — a spy wraps or replaces one method and records the calls, a stub is a fake object returning canned values, a mock is a fake you also assert expectations on; interviewers ask for the distinction the moment a candidate says "I mocked the service"
-- `jasmine.createSpyObj('AuthService', ['login'])` — builds an entire fake dependency in one call; interviewers ask how you keep a component test away from the real HTTP service
-- `{ provide: RealService, useValue: mock }` in `configureTestingModule` — the DI override that swaps a real token for the fake; interviewers ask how you inject a fake `Router` or `AuthService`
-- Faking `ActivatedRoute` — a routed detail component reads an id from the URL, so its test must provide a stub exposing `snapshot.paramMap` (or a `paramMap` Observable); interviewers ask how you test a component that depends on the route without starting the router
-- A spied method must return the right *shape* — `spy.and.returnValue(of(data))`, not the raw array, or the caller's `.subscribe()`/`toSignal()` crashes on a value that is not an Observable; the single most common junior test failure
-- `provideHttpClient()` + `provideHttpClientTesting()` — the standalone-era replacement for the deprecated `HttpClientTestingModule`; interviewers check whether the candidate knows the Angular 17+ form
-- `HttpTestingController` — `expectOne(url)` asserts exactly one matching request was made and `req.flush(data)` supplies the mock response; interviewers ask how you test a service without a real backend
-- `req.flush(null, { status: 500, statusText: 'Server Error' })` — how you drive the `catchError` branch from a test; interviewers ask how you cover the failure path, not just the happy one
-- `httpMock.verify()` — fails the spec if any request was made that the test never expected; interviewers ask what stops a test passing while the service quietly fired an extra call
-
-### Testing components and async
-- `fixture.componentRef.setInput('name', value)` — the supported way to drive a signal `input()` from a test; assigning to the property directly skips the binding pipeline and does not work with signal inputs; interviewers ask how you test a dumb component's inputs
-- Testing an `output()` — subscribe to the child's output in the spec and assert the emitted payload after triggering the DOM event; interviewers ask how you verify a presentational component emits correctly
-- Triggering a DOM event in a test — `element.dispatchEvent(new Event('input'))` or `debugEl.triggerEventHandler('click')`, each followed by `detectChanges()`; interviewers ask how you simulate a user typing into a reactive-form input
-- `DebugElement` and `By.css()` vs `nativeElement.querySelector()` — the Angular abstraction also exposes a matched child's component instance, which is how you assert the child received the right input; interviewers ask how you check what was passed down
-- Testing a signal — the value is read synchronously (`component.count()`) so state assertions need no async helper, but the *rendered* value still needs `fixture.detectChanges()`; interviewers ask why the class value is correct while the DOM is stale
-- Testing a `computed()` — you drive its source signals and assert the result; you never mock a computed, which is what makes it a testing-friendly shape; interviewers probe whether the candidate tests inputs or internals
-- Testing an `effect()` — effects run on change detection or `TestBed.flushEffects()`, so an assertion placed immediately after `set()` sees nothing; interviewers ask why the effect "never fired" in the test
-- `fakeAsync` + `tick()` — runs asynchronous code synchronously against a virtual clock so `setTimeout` and `debounceTime` can be advanced deterministically; interviewers ask how you test a `debounceTime(300)` search without really waiting 300 ms
-- `tick()` vs `flush()` — `tick(ms)` advances the virtual clock by a set amount, `flush()` drains every pending macrotask whatever its delay; interviewers ask which you use when you don't know the debounce value
-- `flushMicrotasks()` — settles pending promises without advancing the virtual clock at all; interviewers ask why a `tick(0)` test of a promise-based service still asserts on stale state
-- "N timer(s) still in the queue" — a `fakeAsync` spec fails at teardown when a timer or interval was never flushed; interviewers show the error and ask what it is telling you
-- `fakeAsync` vs `waitForAsync` — `fakeAsync` controls virtual time but cannot handle real XHR, `waitForAsync` + `fixture.whenStable()` waits on genuinely async work but gives you no time control; interviewers ask which fits a `debounceTime` test and which fits a real promise
-
-### Testing quality and strategy
-- Tests that pass but prove nothing — a component test missing `fixture.detectChanges()` (so bindings never render), a spec with no `expect`, or an assertion that only checks the mock's own return value instead of the code under test; reviewers show a green test suite and ask what it actually proves
-- An assertion written inside a `subscribe()` callback — if the Observable never emits, the callback never runs, nothing is asserted, and the spec still goes green; reviewers show exactly this and ask what it proves
-- `spyOn` applied to the method under test — stubbing the very unit being tested, so the assertion only verifies the spy; the canonical "green suite that tests the mock"
-- Testing behaviour vs testing implementation — asserting that a private method was called, or reading internal fields, produces a suite that breaks on every refactor without catching a single bug; interviewers ask what makes a test brittle
-- Shallow component testing (`NO_ERRORS_SCHEMA`, `overrideComponent`) — isolating a component from heavy children so the spec stays fast, and the integration bugs that choice stops catching; interviewers ask the tradeoff rather than the syntax
-- Code coverage as a false signal — `ng test --code-coverage` happily reports 90% on a suite that asserts almost nothing, because coverage measures lines executed, not behaviour verified; interviewers ask whether a high number means the code is tested
-- The test pyramid in an Angular suite — service logic first, then guards and interceptors, then component templates, because each layer up costs more to write and breaks more often; interviewers hand you an hour and ask what you would cover
-- Mocking the service vs using `HttpTestingController` — stubbing the collaborator or letting the real service run against a fake network; interviewers ask which boundary you'd fake and why
-- Testing a functional guard or interceptor — `CanActivateFn` and `HttpInterceptorFn` are plain functions that call `inject()`, so they must be invoked inside `TestBed.runInInjectionContext()`; interviewers ask how you unit-test a guard now that it is no longer a class
-- Testing that a component navigated — spying on `router.navigate` is the cheap junior-level assertion; `provideRouter([])` with a real router is the fuller alternative; interviewers ask how you verify a redirect
-- Regression test — a spec that reproduces the reported bug and fails before the fix is applied; interviewers ask what proves a fix actually addressed the reported behaviour rather than something adjacent
-
-### Legacy code recognition — needed on day one at a consultancy
-- `@Input()` and `@Output()` decorators — legacy equivalent of `input()` and `output()`; you will see these in every existing consultancy codebase
-- `EventEmitter` — used with `@Output()` to emit values to the parent; replaced by `output()` in Angular 17+
-- `NgModule` — `declarations`, `imports`, `exports`, `providers`; how pre-standalone Angular apps are structured; most consultancy projects still use this
-- Migrating an NgModule app to standalone incrementally — a standalone component can be imported by an NgModule and vice versa, so the migration proceeds file by file rather than big-bang; interviewers at consultancies ask how you would start on a legacy codebase
-- Class-based `CanActivate` guard — the pre-15 `implements CanActivate` service class still present in existing codebases; interviewers show one and ask for the functional `CanActivateFn` equivalent
-- `*ngIf` and `*ngFor` — legacy structural directives; still widely used; `*ngFor` does not require `track` but performs worse without it
-- `trackBy` on `*ngFor` — the legacy equivalent of `track`, written as a component method `(index, item) => item.id` and passed by reference; interviewers hand you a legacy list that re-creates every DOM node on refresh and ask what is missing
-- `ngModel` and `FormsModule` — template-driven two-way binding with the `[()]` banana-in-a-box syntax; simpler than reactive forms for standalone fields; still widely used in existing consultancy codebases
-- `ngOnChanges` — lifecycle hook that fires every time an `@Input()` value changes; receives a `SimpleChanges` object with the previous and current value; the signals equivalent is `effect()`
-- `BehaviorSubject` — holds the current value and emits it immediately to new subscribers; the most common pattern for shared state before signals; interviewers ask the difference from `Subject`
-- `Subject` — emits to currently active subscribers only; late subscribers miss values emitted before they subscribed; used for one-time events rather than shared state; interviewers ask the difference from `BehaviorSubject`
+### Legacy code recognition â€” needed on day one at a consultancy
+- `@Input()` and `@Output()` decorators â€” legacy equivalent of `input()` and `output()`; you will see these in every existing consultancy codebase
+- `EventEmitter` â€” used with `@Output()` to emit values to the parent; replaced by `output()` in Angular 17+
+- `NgModule` â€” `declarations`, `imports`, `exports`, `providers`; how pre-standalone Angular apps are structured; most consultancy projects still use this
+- `*ngIf` and `*ngFor` â€” legacy structural directives; still widely used; `*ngFor` does not require `track` but performs worse without it
+- `ngModel` and `FormsModule` â€” template-driven two-way binding with the `[()]` banana-in-a-box syntax; simpler than reactive forms for standalone fields; still widely used in existing consultancy codebases
+- Zone.js and default change detection â€” what it means conceptually; why signals and `OnPush` reduce unnecessary re-renders
+- `OnPush` change detection strategy â€” Angular marks the view from new input references, template
+  events, signal/async-pipe notifications, or explicit change-detector APIs; in-place mutation can
+  hide changes because no notification carries a new reference
+- `ngOnChanges` â€” lifecycle hook that fires every time an `@Input()` value changes; receives a `SimpleChanges` object with the previous and current value; the signals equivalent is `effect()`
+- `BehaviorSubject` â€” holds the current value and emits it immediately to new subscribers; the most common pattern for shared state before signals; interviewers ask the difference from `Subject`
+- `Subject` â€” emits to currently active subscribers only; late subscribers miss values emitted before they subscribed; used for one-time events rather than shared state; interviewers ask the difference from `BehaviorSubject`
 
 ---
 
 ## Angular Material
 
-Topics a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026. Every item must be explainable with a real example from one of the projects. Angular Material is standard in Spanish consultancies — interviewers expect you to have used it in a real app, not just read the docs.
+Topics a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026. Every item must be explainable with a real example from one of the projects. Angular Material is standard in Spanish consultancies â€” interviewers expect you to have used it in a real app, not just read the docs.
 
 ---
 
-### Setup and module wiring
+### Theming and setup
 
-- `ng add @angular/material` — the correct way to install Angular Material; interviewers may ask what it does (adds the package, configures theming, imports fonts and icons in `index.html`)
-- `ng add` vs `npm install @angular/material` — `ng add` runs a schematic that edits `angular.json`, `index.html` and the app config; `npm install` only downloads the package; interviewers ask why Material "doesn't work at all" after a plain install
-- Standalone `imports: []` array — every Material component or directive used in a template must be listed in that component's own `imports`; interviewers ask why a Material component renders as plain markup when the import is missing
-- Missing component module vs missing directive module — a missing component module fails loudly (`'mat-x' is not a known element`), a missing directive module (`matInput`, `matTooltip`, `matButton`) fails silently with unstyled output; interviewers ask why an input "looks wrong" but nothing errors
-- Mapping a symbol back to its `Mat*Module` — `mat-option` comes from `MatSelectModule`, `matInput` from `MatInputModule` (not `MatFormFieldModule`); interviewers test whether you can unblock yourself without searching
-- `MatFormFieldModule` + `MatInputModule` as a required pair — importing one without the other leaves the field broken; the most common first-render failure in a take-home
-- `provideAnimations()` / `provideAnimationsAsync()` in `app.config.ts` — dialogs, menus and ripples depend on it; interviewers ask which app-level provider Material needs before anything animates
-- `provideNativeDateAdapter()` in `app.config.ts` — required for `MatDatepicker`; missing it causes a runtime error; interviewers test whether you know where providers go in a standalone app
-- Angular Material vs Angular CDK — the CDK is the unstyled behaviour layer (overlay, a11y, portal, table) that Material is built on; interviewers ask what the CDK is and when you would use it directly
-- Shared `MaterialModule` barrel — the pre-standalone pattern still found in legacy consultancy codebases; interviewers ask what it was for and why a v19 app imports per component instead (tree-shaking, explicit dependencies)
-- `ng update @angular/material` — the migration schematic that rewrites deprecated APIs and theme syntax on a major bump, and the things it cannot fix for you (custom overrides of internal classes); interviewers ask how you would upgrade the Material app you inherited
-- Angular Material vs PrimeNG, ng-zorro, or a hand-built component set — interviewers ask why a consultancy standardises on Material and what you would argue when the client already owns a design system
-
----
-
-### Theming — palettes and tokens
-
-- `mat.theme()` in `material-theme.scss` — the v19+ way to define the app's color palette; interviewers ask why you use this instead of overriding CSS classes directly (CSS variables, upgrade-safe)
-- Context-specific theme — scoping `mat.theme()` to a CSS class (e.g. `.btn-danger`) to apply a different palette to one component; interviewers ask how to make a red delete button without hardcoding colors
-- `mat.$red-palette` and other prebuilt palettes — used inside a scoped `mat.theme()` to change a component's color variant; interviewers ask which approach to use vs `var(--mat-sys-error)` for a single color
-- `--mat-sys-*` design tokens — the CSS custom properties `mat.theme()` emits; interviewers ask how you reuse the app's palette inside your own components' CSS instead of hardcoding hex values
-- Typography and density options in `mat.theme()` — the same mixin controls the font stack and how compact components are; interviewers ask how you fit more rows on an enterprise data screen without overriding heights by hand
-- Generating a theme from the client's brand colour — the palette is derived from a source hex rather than picked from the prebuilt set; interviewers ask what you do when the corporate blue is not one of Material's palettes
-- Angular Material vs Bootstrap or Tailwind — interviewers ask why a consultancy app picks a component library (accessible, tested components, design consistency) and what you give up (bundle size, opinionated look, harder visual customisation)
-- When NOT to use a Material component — plain HTML and CSS for simple layout, static text, or a purely decorative box; interviewers ask why you would not import `MatCardModule` just to draw a border
-
----
-
-### Theming — legacy syntax, dark mode and overrides
-
-- Material Design 2 vs Material Design 3 — the design-system generation behind the API you are looking at; M2 apps configure theme *maps* in Sass, M3 apps emit CSS *system tokens*; interviewers ask which generation the codebase is on and what changed for you as a developer
-- Legacy theme syntax (`mat.define-palette()`, `mat.define-light-theme()`, `@include mat.all-component-themes($theme)`) — the shape of most existing consultancy codebases; interviewers hand you that Sass file and ask you to read it and describe the path to `mat.theme()`
-- Prebuilt theme CSS in `angular.json` styles (e.g. `indigo-pink.css`) vs a custom Sass theme — the prebuilt file is what `ng add` wires up by default; interviewers ask when a real project has to move off it
-- Dark mode with `mat.theme()` — one theme definition plus a `color-scheme` and a root class or `prefers-color-scheme` query, rather than a duplicated set of styles; interviewers ask how you ship a theme switcher without writing every rule twice
-- The theme stylesheet must be global — a theme included only inside a component's stylesheet never reaches the CDK overlay container, so dialogs, menus and selects render unthemed; interviewers ask why the dialog came out white in a dark app
-- `[color]="primary | accent | warn"` — the M2-era colouring input, reduced or removed for many components under M3; interviewers show it in a snippet and ask whether it still does anything in a v19 app
-- `mat.<component>-overrides()` mixins — the supported per-component token API for changing one component's radius, height, or colour; interviewers ask the safe way to restyle the card without touching `.mat-mdc-card`
-
----
-
-### Form fields
-
-- `mat-form-field` — wrapper that gives Material styling to an input; interviewers ask why it must always contain a control (`matInput` or `mat-select`) and cannot be used alone
-- `mat-label` — floating label that animates up when the field has focus or a value; interviewers ask what makes it float (focus or non-empty value)
-- `matInput` — directive on `<input>` or `<textarea>` to style it inside `mat-form-field`; interviewers ask why you write `matInput` on a native `<input>` instead of using a Material component directly
-- `mat-error` — shows validation error text; interviewers ask when it appears by default (invalid + touched) and how to change that behaviour (`ErrorStateMatcher`)
-- `mat-hint` — helper text always visible below the field; interviewers ask the difference between `mat-hint` and `mat-error` (hint is always visible; error appears conditionally)
-- `mat-label` vs `placeholder` — a placeholder disappears as soon as the user types and is not announced as the control's label; interviewers ask why placeholder-as-label is an accessibility failure
-- `appearance="fill"` vs `appearance="outline"` — the two supported values in current Material and what an enterprise form typically uses; interviewers ask what happens with an unsupported value
-- `subscriptSizing="dynamic"` on `mat-form-field` — removes the reserved space for hint/error; interviewers ask why a form field and a button won't align vertically in a flex row (the reserved space is the reason)
-- `ErrorStateMatcher` — interface that controls when `mat-error` appears; interviewers ask how to make errors show only after the user clicks submit, not on blur — this is a standard dialog pattern
-- `mat-error` placed outside `mat-form-field` — renders as unstyled text and is never tied to the control's `aria-describedby`; interviewers test placement
-- `matPrefix` and `matSuffix` — place an icon, a currency symbol, or a password-visibility toggle inside the field rather than beside it; interviewers ask how you build a show/hide password input without breaking the floating label
-- Several `mat-error` elements on one field — Material renders only the first *visible* one, so each message must be gated on its own error key with `@if`; interviewers ask how "required" and "invalid format" show up as distinct messages instead of one always winning
-- The `required` attribute vs `Validators.required` — the attribute draws the asterisk, the validator is what actually blocks submission, and a field carrying only one of them looks or behaves wrong; interviewers show a field marked required that submits empty and ask which half is missing
-
----
-
-### Material with reactive forms
-
-- `ControlValueAccessor` — the interface every Material control implements, which is why `formControlName` binds to `matInput`, `mat-select` and `mat-checkbox` unchanged; interviewers ask what makes a component usable inside a reactive form
-- `ReactiveFormsModule` in the standalone `imports` — omitting it makes `formGroup` an unknown attribute and the form silently never binds; interviewers ask what error you actually get
-- `formControlName` without an enclosing `[formGroup]` — throws `formControlName must be used with a parent formGroup`; a classic snippet bug in the code-review round
-- `[disabled]` on a `formControlName` control — triggers Angular's reactive-forms warning; the correct way is `control.disable()`; a gotcha interviewers use to separate copy-paste from understanding
-- Server-side validation errors in `mat-error` — calling `setErrors()` on the control after an API 400; interviewers ask how a backend "email already exists" error reaches the Material field
-- Cross-field validation with Material — a `FormGroup`-level validator (e.g. password confirmation) has no single field to attach `mat-error` to; interviewers ask where that message is rendered
-- `FormArray` with Material — rendering N repeated `mat-form-field` rows the user can add and remove; interviewers ask how a dynamic form is built
-
----
-
-### Select and options
-
-- `mat-select` + `mat-option` — styled dropdown inside `mat-form-field`; interviewers ask the difference between `value="pending"` (literal string) and `[value]="status"` (property binding from a variable)
-- `(selectionChange)` vs `[(value)]` — `selectionChange` fires on user pick and requires a method; `[(value)]` is two-way binding and keeps the signal in sync automatically; interviewers ask when to use each
-- `mat-optgroup` — groups options under a label; interviewers may ask how to visually separate options without disabling them
-- `multiple` attribute on `mat-select` — makes the value an array; interviewers ask what changes in the form value when `multiple` is enabled
-- `[compareWith]` on `mat-select` — required when options are objects, because the pre-selected value is a different reference than the option; interviewers ask why an edit dialog shows an empty select even though the value is set
-- Form value vs displayed text — `mat-select` stores the bound `[value]`, not the option's label; interviewers ask what actually gets sent to the API when options are objects
-- `mat-option` used outside `mat-select` or `mat-autocomplete` — renders unstyled and does nothing; interviewers ask what parent an option requires
-- A select with thousands of options — every `mat-option` is a real DOM node, so the dropdown freezes the browser; the answer is a server-side searched autocomplete or CDK virtual scroll, not a bigger select; interviewers ask what happens to your status dropdown when the lookup table has 5,000 rows
-
----
-
-### Autocomplete and chips
-
-- `mat-autocomplete` + `[matAutocomplete]` on a `matInput` — the type-ahead control; interviewers ask which Material component you reach for on a "search as you type" field and why it is not `mat-select` (the user types free text, the option list is filtered and may come from the server)
-- `[displayWith]` on `mat-autocomplete` — the function that converts the selected object back into the text shown in the input; interviewers ask why the field shows `[object Object]` after picking an option
-- `requireSelection` on `mat-autocomplete` — clears text the user typed but never selected, so the control cannot hold a string that matches no option; interviewers ask what the form submits when the user types half a name and tabs away
-- Validating that an autocomplete holds a real option — a custom validator comparing the control value against the option list, for the cases `requireSelection` does not cover; interviewers ask how you stop an invalid free-text value reaching the API
-- `mat-chip-grid` + `matChipInput` — the input-style chip list bound to a `FormControl`, used for tag and recipient fields; interviewers ask how you build a "add a tag and press Enter" input
-- `mat-chip-set` vs `mat-chip-listbox` vs `mat-chip-grid` — display-only, selectable, and editable-input variants of the same visual element; interviewers ask which one a read-only filter summary uses and which one a tag editor uses
-
----
-
-### Table — structure
-
-- `mat-table` attribute on `<table>` — turns a native table into a Material table; interviewers ask what the four required pieces are (`displayedColumns`, `ng-container matColumnDef`, `*matCellDef`, the two `<tr>` rows at the bottom)
-- `matColumnDef` on `ng-container` — defines one column; value must match exactly one string in `displayedColumns`; interviewers ask what happens if the name doesn't match (column does not render)
-- `*matHeaderCellDef` / `*matCellDef` — structural directives that define the header and data cell templates for a column; interviewers ask why both are needed
-- `*matHeaderRowDef` / `*matRowDef` — render the header row and one data row per item; both reference `displayedColumns`; interviewers ask why you don't need to change these when adding or removing columns
-- `*matNoDataRow` — empty state row shown when `dataSource` has no items; interviewers ask why `[attr.colspan]="displayedColumns.length"` is used (to span all columns)
-- `<table mat-table>` vs `<mat-table>` — the native-table and flex rendering modes; interviewers ask why mixing `<tr>` row definitions with the flex form breaks the layout
-- `trackBy` on `matRowDef` — tells Angular how to identify a row so it is not destroyed and rebuilt on every refresh; interviewers ask why the whole table flickers when data reloads
-- `@if` vs `computed()` for conditional columns — wrapping `ng-container matColumnDef` in `@if` causes a Material error because the column is never registered; the correct pattern is `displayColumns = computed(...)` that includes or excludes the column name
-- Sticky header and sticky columns — `sticky` on the header row definition and `sticky` / `stickyEnd` on a `matColumnDef`; interviewers ask how the header stays visible down a long table and what the scroll container must provide for it to work
-- Expandable detail rows — `multiTemplateDataRows` on the table plus a second `matRowDef` with a `when` predicate; interviewers ask how a row expands to reveal detail without opening a dialog
-- A row-level click competing with a control inside the row — the button's event bubbles to the row handler unless you call `$event.stopPropagation()`; interviewers show a delete button inside a clickable row and ask why deleting also navigates
-
----
-
-### Table — data source and data flow
-
-- `MatTableDataSource` — wrapper around an array that handles sorting, filtering, and pagination; interviewers ask why you use it instead of a plain array (automatic sort + paginate behaviour)
-- `MatTableDataSource` with `effect()` — when data comes from a signal input, use `effect()` to assign `dataSource.data = tasks()` and keep the source in sync
-- Raw array bound to `[dataSource]` while `sort` and `paginator` are assigned — sorting and paging silently do nothing because they only work through `MatTableDataSource`; interviewers show this and ask why clicking a header has no effect
-- Mutating the array in place instead of reassigning `dataSource.data` — the table does not re-render; interviewers ask why a newly pushed row never appears
-- `filterPredicate` on `MatTableDataSource` — customises which fields the filter string matches; interviewers ask how to filter on one column only instead of the whole row
-- Client-side vs server-side sorting and pagination — `MatTableDataSource` sorts and pages an in-memory array; interviewers ask what changes when the API paginates (bind `[length]`, react to `(page)`, drop the in-memory data source)
-- `mat-table` vs a plain `<table>` vs a grid library — interviewers ask when Material's table is enough and what you would do with a hundred thousand rows
-- `sortingDataAccessor` on `MatTableDataSource` — customises which value is read when sorting, which is what makes a nested property or a date string sort correctly; interviewers ask why clicking the header of a `user.name` column reorders nothing
-- The default `filterPredicate` behaviour — it concatenates every field into one lowercase string, so the filter term must be lowercased and trimmed before assignment; interviewers ask why searching "Ana" returns no rows while "ana" works
-- `SelectionModel` from `@angular/cdk/collections` — the supported holder for multi-row selection, including the header select-all and its indeterminate state; interviewers ask how you build bulk delete on a table
-- Server-side sorting with `(matSortChange)` — you stop assigning `dataSource.sort` and instead send the active column and direction to the API; interviewers ask what the request looks like and why the in-memory sort must be disabled at the same time
-
----
-
-### Sorting
-
-- `MatSort` + `MatSortModule` — add column sorting to a Material table; interviewers ask the difference between `MatSort` (the class, needed for `@ViewChild`) and `MatSortModule` (the module, needed in the `imports` array)
-- `matSort` on `<table>` and `mat-sort-header` on `<th>` — `mat-sort-header` goes on the `<th>` element, not on the `ng-container`; a common mistake interviewers test for
-- `@ViewChild(MatSort)` in `ngAfterViewInit` — interviewers ask why you must connect `dataSource.sort = this.sort` in `ngAfterViewInit` and not in the constructor (template doesn't exist yet in the constructor)
-- `matSortActive` + `matSortDirection` — set the initially sorted column declaratively; interviewers ask how a table can arrive already sorted
-- Column name vs data property key — `MatSort` sorts by the `matColumnDef` name, so a mismatch with the object's property leaves the header toggling with no reordering; interviewers ask what `MatSort` actually reads
-- View encapsulation and `styles.css` — sort header internals cannot be styled from component CSS because Angular's scoped attributes don't reach directive-generated elements; global `styles.css` is required; interviewers ask why centering a sort header column from component CSS doesn't work
-- `disableClear` and the three-state sort cycle — by default a header cycles ascending → descending → unsorted, and `disableClear` removes that third state; interviewers ask whether a table should be allowed to return to "no sort" and what the user sees in each case
-
----
-
-### Paginator
-
-- `MatPaginator` + `MatPaginatorModule` — adds page controls to a table; same `@ViewChild` + `ngAfterViewInit` pattern as `MatSort`; interviewers ask why the paginator must be placed outside and after the `</table>` closing tag
-- `[pageSize]` + `[pageSizeOptions]` — configure default rows per page and the size options the user can pick
-- `[length]` on `MatPaginator` — the total row count, required when the API pages server-side; interviewers ask why the page count is wrong when the response only contains one page
-- Reset to first page after filter — `this.dataSource.paginator.firstPage()` after applying a filter; interviewers ask what happens without it (user stays on the page they were on, which may now be empty)
-- `@ViewChild` on an element inside `@if` — the reference is `undefined` in `ngAfterViewInit` because the element does not exist yet; interviewers show a paginator inside a loading `@if` and ask why it never binds
-- `MatPaginatorIntl` — the injection token that supplies the paginator's labels; interviewers at Spanish consultancies ask how you translate "Items per page" to Spanish
-- The `@ViewChild` setter pattern for sort and paginator — assigning inside a setter (`@ViewChild(MatPaginator) set paginator(p) { ... }`) keeps working when the element appears later because it was inside an `@if` or arrived after loading, which `ngAfterViewInit` alone does not; interviewers ask for the robust alternative once the table is behind a loading flag
-- Client-side `MatPaginator` vs paging driven by the API — deciding by dataset size and by who owns filtering: in-memory paging is one line and dies past a few thousand rows, server paging needs `[length]`, a `(page)` handler and query params but is the only option at scale; interviewers ask where your cut-off is and why
-
----
-
-### Tabs, cards and expansion panels
-
-- `mat-card` structure — `mat-card-header`, `mat-card-content`, `mat-card-actions`; interviewers ask what each section is for and which are optional
-- `appearance="outlined"` vs default `raised` — `outlined` is flat with a border; `raised` has a shadow; interviewers ask when to use each (outlined for forms and panels; raised for stat cards that need to stand out)
-- `mat-tab-group` + `mat-tab` — the tabbed panel every settings and detail screen ends up needing; interviewers ask how you build one and how it differs from routing to separate pages
-- `<ng-template matTabContent>` — makes a tab's content build only when the tab is first opened; without it every tab renders on load and all four fire their HTTP calls at once; interviewers ask why opening the page triggered four requests
-- A tab selection that survives a reload — binding `[selectedIndex]` and `(selectedIndexChange)` to a query param so the tab is linkable and the back button behaves; interviewers ask why resetting to tab 0 on refresh counts as a defect
-- `mat-expansion-panel` and `mat-accordion` (with `multi`) — collapsible sections for a long settings or summary page; interviewers ask when an accordion is a better fit than tabs (many sections, several open at once, no equal footing)
-
----
-
----
-
-### Dialog
-
-- `MatDialog` service + `MatDialogRef` — the two-part system for dialogs; `MatDialog` is injected in the parent to open; `MatDialogRef` is injected in the dialog to close and return data
-- `dialog.open(ComponentClass, config)` — interviewers ask what the first argument is (the component class itself, not a string or template)
-- `afterClosed().subscribe()` — where the parent listens for the dialog result; interviewers ask what value is emitted when the user clicks Cancel or clicks outside (`undefined`)
-- `MAT_DIALOG_DATA` — injection token to read data passed from the parent into the dialog; interviewers ask how the dialog knows it is in add vs edit mode (check if `data` is `null`)
-- `patchValue()` vs `setValue()` — `patchValue()` fills only the fields you pass; `setValue()` requires all fields; interviewers ask which one to use when pre-filling a dialog for edit
-- `mat-dialog-title` / `mat-dialog-content` / `mat-dialog-actions` — must be siblings, never nested; interviewers ask what breaks if you nest them (Material applies different padding and scroll to each — nesting corrupts the layout)
-- `mat-dialog-close` attribute on Cancel button — closes the dialog immediately with no data and no TypeScript needed; interviewers ask when you would replace it with a custom `onCancel()` method (when you need to check for unsaved changes)
-- `disableClose: true` in the dialog config — blocks Esc and backdrop dismissal; interviewers ask how you stop a user losing typed data by clicking outside a form dialog
-- `autoFocus: false` in the dialog config — prevents the focus ring appearing on the first button when the dialog opens; interviewers ask why a button looks selected when the dialog opens (autoFocus is on by default)
-- Confirmation dialog pattern — reusable dialog that takes `title`, `message`, `confirmLabel` as `MAT_DIALOG_DATA` and returns `true` on confirm; interviewers ask where the destructive action button goes (always last, on the right)
-- Typing the dialog generically — `dialog.open<TComponent, TData, TResult>(...)` is what makes `afterClosed()` emit a typed result instead of `any`; interviewers ask how the caller knows the shape of what came back
-- Dialog sizing and small screens — a fixed `width: '600px'` makes the dialog unusable on a phone, so real config pairs it with `maxWidth: '95vw'` and a `maxHeight`; interviewers ask what happens to your dialog on mobile
-
----
-
-### Snackbar
-
-- `MatSnackBar` is a service — no `imports` array entry needed; interviewers ask how it differs from other Material components (it is injected directly, not declared in imports)
-- `snackBar.open(message, actionLabel, { duration })` — the three parameters; interviewers ask what happens if `duration` is omitted (snackbar stays open until the user clicks the action)
-- `MatSnackBar` vs `MatDialog` — snackbar does not block the user and closes automatically; dialog blocks the user and requires interaction; interviewers ask which to use after a successful form submit (snackbar)
-- Coordinator pattern for snackbar — always call `snackBar.open()` in the page component after `afterClosed()` returns a result, never inside the dialog; interviewers ask why calling it inside the dialog is wrong (the dialog doesn't know if the save succeeded)
-- `panelClass` on a snackbar — the supported way to style it, because the snackbar renders in the overlay container where component CSS never reaches; interviewers ask why a custom success/error colour silently has no effect
-- `openFromComponent()` + `MAT_SNACK_BAR_DATA` — how you render a snackbar with an icon or any markup, once `open(message, action)` is not enough; interviewers ask how you show a branded error toast
-- `snackBarRef.onAction()` — the stream that fires when the user clicks the action label, which is how "Undo" after a delete is implemented; interviewers ask how you give the user a way back from a destructive action
-- Only one snackbar shows at a time — opening a second immediately dismisses the first, so two operations finishing together lose a message; interviewers ask what the user actually sees when a bulk save reports per-item results
+- `ng add @angular/material` â€” the correct way to install Angular Material; interviewers may ask what it does (adds the package, configures theming, imports fonts and icons in `index.html`)
+- `mat.theme()` in `material-theme.scss` â€” the v19+ way to define the app's color palette; interviewers ask why you use this instead of overriding CSS classes directly (CSS variables, upgrade-safe)
+- `provideNativeDateAdapter()` in `app.config.ts` â€” required for `MatDatepicker`; missing it causes a runtime error; interviewers test whether you know where providers go in a standalone app
 
 ---
 
 ### Buttons and icons
 
-- `matButton` variants (`filled`, `outlined`, `elevated`, `tonal`) — when to use each; interviewers ask which variant is for the primary action (`filled`) and which for secondary (`outlined`)
-- `<button mat-button>` (component syntax, pre-v19) vs `matButton` (directive on a native button, v19+) — interviewers show the old form in a modern app and ask which is current
-- `matIconButton` — circle icon-only button used in table rows and toolbars; interviewers ask why you pair it with `aria-label` (no visible text — screen readers need the description)
-- `matFab` / `matMiniFab` — floating action button for the one dominant page action; interviewers ask when you would use FAB vs a regular button
-- `matButton` on a `<div>` — the element is not focusable or keyboard-activatable; interviewers ask why a "button" cannot be reached with Tab
-- `disabled` on a Material button does not stop a click on a wrapping element — the event still reaches a clickable parent row; interviewers show a disabled button inside a clickable row and ask why the row action still fires
-- `<mat-icon>` — how Material icons work; icon names come from Google Material Symbols; interviewers may ask how you add an icon to a button and where the font is loaded
-- `<mat-icon>` rendering the literal word instead of a glyph — the Material Symbols font link is missing from `index.html`; interviewers show the broken output and ask what is missing
-- Material Icons vs Material Symbols — the two icon fonts have different names and ligatures, which is why every icon breaks at once after an upgrade or a copied `index.html`; interviewers show a page of literal words and ask which font the app is actually loading
-- `MatIconRegistry.addSvgIcon()` with `DomSanitizer.bypassSecurityTrustResourceUrl` — how the designer's own SVG set becomes usable as `<mat-icon svgIcon="logo">`; interviewers ask why the sanitizer call is required and whether it is safe here (it is, because the URL is yours, not user input)
-- Icon font vs self-hosted SVG icons — the Google font link is a request to an external CDN, which fails on an air-gapped intranet and is often blocked by a bank's CSP or privacy review; interviewers on enterprise accounts ask why an internal app does not use the CDN link
+- `matButton` variants (`filled`, `outlined`, `elevated`, `tonal`) â€” when to use each; interviewers ask which variant is for the primary action (`filled`) and which for secondary (`outlined`)
+- `matIconButton` â€” circle icon-only button used in table rows and toolbars; interviewers ask why you pair it with `aria-label` (no visible text â€” screen readers need the description)
+- `matFab` / `matMiniFab` â€” floating action button for the one dominant page action; interviewers ask when you would use FAB vs a regular button
+- `<mat-icon>` â€” how Material icons work; icon names come from Google Material Symbols; interviewers may ask how you add an icon to a button and where the font is loaded
 
 ---
 
-### Navigation shell — Toolbar, Sidenav
+### Form fields
 
-- `mat-toolbar` — persistent app header; `justify-content: space-between` or a flex spacer element (`flex: 1 1 auto`) to push title left and actions right; interviewers ask how to position items on opposite sides
-- `mat-sidenav-container` / `mat-sidenav` / `mat-sidenav-content` — the three-element structure that is always required; interviewers ask what each one does and why you cannot put just `mat-sidenav` on its own
-- `mode="side"` vs `mode="over"` — `side` shows next to content with no backdrop; `over` floats above content with a backdrop; interviewers ask which mode an enterprise app shell uses
-- `[opened]="!!currentUser()"` — how to show/hide the sidenav reactively; `!!` converts `User | null` to `boolean`; interviewers ask why `[opened]="currentUser()"` causes a type error
-- Keep `mat-sidenav-container` always in the DOM — if you wrap it in `@if`, the `router-outlet` inside disappears on logout; the sidenav itself uses `[opened]` to hide; interviewers ask why the login page goes blank after logout (container was removed)
-- Full-height app shell CSS — the height chain (`html → body → app-root → mat-sidenav-container`); `overflow: hidden` on `app-root` is the key rule; interviewers ask why the toolbar scrolls away with the content (missing `overflow: hidden`)
-- `mat-nav-list` + `mat-list-item` — correct elements for navigation links inside the sidenav; interviewers ask what `routerLinkActive` adds (a CSS class when the route matches)
-- `mat-nav-list` vs `mat-list` for links — `mat-list` renders items that are not navigable or announced as links; interviewers ask the difference and why it matters for a screen reader
-- `routerLinkActive` + `[activated]` pattern — `#rla="routerLinkActive"` gives access to `rla.isActive`, which is passed to Material's built-in active style via `[activated]`; interviewers ask the difference between the class approach and the `[activated]` approach
-- `BreakpointObserver` — CDK service used to switch the sidenav between `side` and `over` by viewport width; interviewers ask how the app shell adapts on mobile
+- `mat-form-field` â€” wrapper that gives Material styling to an input; interviewers ask why it must always contain a control (`matInput` or `mat-select`) and cannot be used alone
+- `mat-label` â€” floating label that animates up when the field has focus or a value; interviewers ask what makes it float (focus or non-empty value)
+- `matInput` â€” directive on `<input>` or `<textarea>` to style it inside `mat-form-field`; interviewers ask why you write `matInput` on a native `<input>` instead of using a Material component directly
+- `mat-error` â€” shows validation error text; interviewers ask when it appears by default (invalid + touched) and how to change that behaviour (`ErrorStateMatcher`)
+- `mat-hint` â€” helper text always visible below the field; interviewers ask the difference between `mat-hint` and `mat-error` (hint is always visible; error appears conditionally)
 
 ---
 
-### Menu
+### Select and options
 
-- `mat-menu` + `MatMenuModule` — a dropdown list of actions triggered by a button; interviewers ask when to use it over several separate `matIconButton` elements in a table row (too many actions to show inline, or actions that need labels)
-- `[matMenuTriggerFor]="menuRef"` — connects a trigger button to the menu using a template reference variable; interviewers ask how the button knows which menu to open when there are several menus on the same page (one `#ref` per row)
-- `mat-menu-item` — each clickable row inside the menu; behaves like a button and can call a method directly with `(click)`
-- `[matMenuTriggerData]` — passes per-row context to a single shared menu template; interviewers show every row opening the same menu with the wrong item and ask how the row data is supplied
+- `mat-select` + `mat-option` â€” styled dropdown inside `mat-form-field`; interviewers ask the difference between `value="pending"` (literal string) and `[value]="status"` (property binding from a variable)
+- `(selectionChange)` vs `[(value)]` â€” `selectionChange` fires on user pick and requires a method; `[(value)]` is two-way binding and keeps the signal in sync automatically; interviewers ask when to use each
+- `mat-optgroup` â€” groups options under a label; interviewers may ask how to visually separate options without disabling them
+- `multiple` attribute on `mat-select` â€” makes the value an array; interviewers ask what changes in the form value when `multiple` is enabled
 
 ---
 
-### Datepicker
+### Table
 
-- `MatDatepicker` three-element structure — `[matDatepicker]="ref"` on the input, `<mat-datepicker-toggle [for]="ref">` for the icon, and `<mat-datepicker #ref>` as the popup; interviewers ask why all three are needed
-- Value is a `Date` object, not a string — when the `FormControl` is typed as `string | null`, the cast requires `as unknown as Date`; interviewers ask how to format the date for an API call (`.toISOString().split('T')[0]`)
-- `MAT_DATE_LOCALE` set to `es-ES` — the calendar and, crucially, the *parser* follow this token, so without it a Spanish user typing `31/12/2026` gets a validation error because the field is reading it as month 31; interviewers at Spanish consultancies ask why the date input rejects a perfectly valid date
-- `DateAdapter` implementations (native vs Luxon vs Moment) and `MAT_DATE_FORMATS` — the adapter decides what a "date" is and the formats token decides how it is displayed and parsed, independently of the locale; interviewers ask how you get `dd/MM/yyyy` on screen while the API receives ISO
-- `[min]`, `[max]` and `[matDatepickerFilter]` — restricting the selectable range and blocking individual days such as weekends; interviewers ask how you stop a booking form accepting a past date
-- The datepicker's own error keys (`matDatepickerParse`, `matDatepickerMin`, `matDatepickerMax`) — which `mat-error` fires depends on whether the user typed something unparseable or picked something out of range; interviewers ask how you show a different message for each
-- The timezone off-by-one — the picker returns local midnight, so `toISOString()` shifts the date back a day for any negative UTC offset and forward for some positive ones; interviewers ask why the saved date is one day earlier than the one the user clicked
-- `mat-date-range-input` + `mat-date-range-picker` — a start/end pair bound to a `FormGroup` with `matStartDate` and `matEndDate`; interviewers ask how you build a "from–to" filter on a report screen
+- `mat-table` attribute on `<table>` â€” turns a native table into a Material table; interviewers ask what the four required pieces are (`displayedColumns`, `ng-container matColumnDef`, `*matCellDef`, the two `<tr>` rows at the bottom)
+- `matColumnDef` on `ng-container` â€” defines one column; value must match exactly one string in `displayedColumns`; interviewers ask what happens if the name doesn't match (column does not render)
+- `*matHeaderCellDef` / `*matCellDef` â€” structural directives that define the header and data cell templates for a column; interviewers ask why both are needed
+- `*matHeaderRowDef` / `*matRowDef` â€” render the header row and one data row per item; both reference `displayedColumns`; interviewers ask why you don't need to change these when adding or removing columns
+- `*matNoDataRow` â€” empty state row shown when `dataSource` has no items; interviewers ask why `[attr.colspan]="displayedColumns.length"` is used (to span all columns)
+- `MatTableDataSource` â€” wrapper around an array that handles sorting, filtering, and pagination; interviewers ask why you use it instead of a plain array (automatic sort + paginate behaviour)
+
+---
+
+### Sorting
+
+- `MatSort` + `MatSortModule` â€” add column sorting to a Material table; interviewers ask the difference between `MatSort` (the class, needed for `@ViewChild`) and `MatSortModule` (the module, needed in the `imports` array)
+- `matSort` on `<table>` and `mat-sort-header` on `<th>` â€” `mat-sort-header` goes on the `<th>` element, not on the `ng-container`; a common mistake interviewers test for
+- `@ViewChild(MatSort)` in `ngAfterViewInit` â€” interviewers ask why you must connect `dataSource.sort = this.sort` in `ngAfterViewInit` and not in the constructor (template doesn't exist yet in the constructor)
+- View encapsulation and `styles.css` â€” sort header internals cannot be styled from component CSS because Angular's scoped attributes don't reach directive-generated elements; global `styles.css` is required; interviewers ask why centering a sort header column from component CSS doesn't work
+
+---
+
+### Paginator
+
+- `MatPaginator` + `MatPaginatorModule` â€” adds page controls to a table; same `@ViewChild` + `ngAfterViewInit` pattern as `MatSort`; interviewers ask why the paginator must be placed outside and after the `</table>` closing tag
+- `[pageSize]` + `[pageSizeOptions]` â€” configure default rows per page and the size options the user can pick
+- Reset to first page after filter â€” `this.dataSource.paginator.firstPage()` after applying a filter; interviewers ask what happens without it (user stays on the page they were on, which may now be empty)
+
+---
+
+### Dialog
+
+- `MatDialog` service + `MatDialogRef` â€” the two-part system for dialogs; `MatDialog` is injected in the parent to open; `MatDialogRef` is injected in the dialog to close and return data
+- `dialog.open(ComponentClass, config)` â€” interviewers ask what the first argument is (the component class itself, not a string or template)
+- `afterClosed().subscribe()` â€” where the parent listens for the dialog result; interviewers ask what value is emitted when the user clicks Cancel or clicks outside (`undefined`)
+- `MAT_DIALOG_DATA` â€” injection token to read data passed from the parent into the dialog; interviewers ask how the dialog knows it is in add vs edit mode (check if `data` is `null`)
+- `patchValue()` vs `setValue()` â€” `patchValue()` fills only the fields you pass; `setValue()` requires all fields; interviewers ask which one to use when pre-filling a dialog for edit
+- `mat-dialog-title` / `mat-dialog-content` / `mat-dialog-actions` â€” must be siblings, never nested; interviewers ask what breaks if you nest them (Material applies different padding and scroll to each â€” nesting corrupts the layout)
+- `mat-dialog-close` attribute on Cancel button â€” closes the dialog immediately with no data and no TypeScript needed; interviewers ask when you would replace it with a custom `onCancel()` method (when you need to check for unsaved changes)
+- `autoFocus: false` in the dialog config â€” prevents the focus ring appearing on the first button when the dialog opens; interviewers ask why a button looks selected when the dialog opens (autoFocus is on by default)
+- Confirmation dialog pattern â€” reusable dialog that takes `title`, `message`, `confirmLabel` as `MAT_DIALOG_DATA` and returns `true` on confirm; interviewers ask where the destructive action button goes (always last, on the right)
+
+---
+
+### Snackbar
+
+- `MatSnackBar` is a service â€” no `imports` array entry needed; interviewers ask how it differs from other Material components (it is injected directly, not declared in imports)
+- `snackBar.open(message, actionLabel, { duration })` â€” the three parameters; interviewers ask what happens if `duration` is omitted (snackbar stays open until the user clicks the action)
+- `MatSnackBar` vs `MatDialog` â€” snackbar does not block the user and closes automatically; dialog blocks the user and requires interaction; interviewers ask which to use after a successful form submit (snackbar)
+- Coordinator pattern for snackbar â€” always call `snackBar.open()` in the page component after `afterClosed()` returns a result, never inside the dialog; interviewers ask why calling it inside the dialog is wrong (the dialog doesn't know if the save succeeded)
+
+---
+
+### Navigation shell â€” Toolbar, Sidenav
+
+- `mat-toolbar` â€” persistent app header; `justify-content: space-between` or a flex spacer element (`flex: 1 1 auto`) to push title left and actions right; interviewers ask how to position items on opposite sides
+- `mat-sidenav-container` / `mat-sidenav` / `mat-sidenav-content` â€” the three-element structure that is always required; interviewers ask what each one does and why you cannot put just `mat-sidenav` on its own
+- `mode="side"` vs `mode="over"` â€” `side` shows next to content with no backdrop; `over` floats above content with a backdrop; interviewers ask which mode an enterprise app shell uses
+- `[opened]="!!currentUser()"` â€” how to show/hide the sidenav reactively; `!!` converts `User | null` to `boolean`; interviewers ask why `[opened]="currentUser()"` causes a type error
+- Keep `mat-sidenav-container` always in the DOM â€” if you wrap it in `@if`, the `router-outlet` inside disappears on logout; the sidenav itself uses `[opened]` to hide; interviewers ask why the login page goes blank after logout (container was removed)
+- Full-height app shell CSS â€” the height chain (`html â†’ body â†’ app-root â†’ mat-sidenav-container`); `overflow: hidden` on `app-root` is the key rule; interviewers ask why the toolbar scrolls away with the content (missing `overflow: hidden`)
+- `mat-nav-list` + `mat-list-item` â€” correct elements for navigation links inside the sidenav; interviewers ask what `routerLinkActive` adds (a CSS class when the route matches)
+- `routerLinkActive` + `[activated]` pattern â€” `#rla="routerLinkActive"` gives access to `rla.isActive`, which is passed to Material's built-in active style via `[activated]`; interviewers ask the difference between the class approach and the `[activated]` approach
+
+---
+
+### Additional UI components
+
+- `mat-card` structure â€” `mat-card-header`, `mat-card-content`, `mat-card-actions`; interviewers ask what each section is for and which are optional
+- `appearance="outlined"` vs default `raised` â€” `outlined` is flat with a border; `raised` has a shadow; interviewers ask when to use each (outlined for forms and panels; raised for stat cards that need to stand out)
+
+---
+
+- `MatDatepicker` three-element structure â€” `[matDatepicker]="ref"` on the input, `<mat-datepicker-toggle [for]="ref">` for the icon, and `<mat-datepicker #ref>` as the popup; interviewers ask why all three are needed
+- Datepicker value type â€” with the native adapter the control should be typed `Date | null`; forcing a
+  `string | null` control through `as unknown as Date` hides a modelling error instead of converting
+  the date deliberately at the API boundary
 
 ---
 
 ### Stepper
 
-- `[linear]="true"` + `[stepControl]="formGroup"` — forces the user to complete each step in order; interviewers ask what `[linear]="true"` does without `[stepControl]` (allows skipping — `[stepControl]` is what blocks invalid steps)
-- `stepper.next()` does not validate — when navigation buttons are outside the stepper, `stepper.next()` moves unconditionally; you must call `markAllAsTouched()` and check `form.valid` manually before calling it; interviewers ask what happens if you just call `stepper.next()` directly
-- `stepper.selectedIndex` — used to show different buttons per step (Next on step 0, Back + Submit on step 1); available in the template because `#stepper` is a template reference variable
-- `[completed]` and `[editable]` on a `mat-step` — mark a step done manually, or lock it so the user cannot go back and change it; interviewers ask how you stop someone editing the payment step after it was charged
-- `showError` on the stepper plus `<ng-template matStepLabel>` — how an invalid step is surfaced in the header instead of failing silently on submit; interviewers ask how the user learns *which* step is wrong
+- `[linear]="true"` + `[stepControl]="formGroup"` â€” forces the user to complete each step in order; interviewers ask what `[linear]="true"` does without `[stepControl]` (allows skipping â€” `[stepControl]` is what blocks invalid steps)
+- Programmatic step navigation â€” a linear stepper still enforces completion rules; calling
+  `markAllAsTouched()` before `next()` is a UX choice for surfacing errors, not a replacement for the
+  stepper's validity checks
+- `stepper.selectedIndex` â€” used to show different buttons per step (Next on step 0, Back + Submit on step 1); available in the template because `#stepper` is a template reference variable
+- `FormBuilder.group({ field: ['default', validators] })` â€” shorthand for creating form groups; interviewers ask what the array syntax means (first element is the default value, second is validators)
 
 ---
 
-### Selection controls — checkbox, radio, toggle
+### Checkbox and radio button
 
-- `mat-checkbox` + `MatCheckboxModule` — styled checkbox bound with `formControlName` or `[(ngModel)]`; interviewers ask how to bind it inside a reactive form the same way as a text input
-- `indeterminate` state on `mat-checkbox` — a third visual state (dash, not check) used for a "select all" checkbox when only some child rows are selected; interviewers ask how a table header checkbox shows partial selection
-- `mat-radio-group` + `mat-radio-button` — radio buttons must be wrapped in `mat-radio-group` so only one can be selected at a time; interviewers ask what breaks if you skip the group wrapper (every button becomes independently selectable)
-- Checkbox vs radio button — checkbox is for independent boolean choices or multi-select; radio is for picking exactly one option from a fixed set; interviewers ask which one to use for a status field with 3 fixed values (radio, or `mat-select` if there are many options)
-- `mat-slide-toggle` vs `mat-checkbox` — a toggle signals a setting that takes effect immediately, a checkbox signals a value submitted later with the form; interviewers ask which one belongs on a settings screen and which inside a create dialog
-- `(change)` on `mat-checkbox` emits a `MatCheckboxChange`, not a boolean — a handler written as `onChange($event)` writes the whole event object into the model; reviewers show it and ask what actually ends up in the form value (the fix is `$event.checked`)
-- `mat-slider` with a nested `<input matSliderThumb>` — the v17+ structure replaced the old single-element `<mat-slider [value]>`; interviewers show the legacy form and ask why it renders nothing after an upgrade
+- `mat-checkbox` + `MatCheckboxModule` â€” styled checkbox bound with `formControlName` or `[(ngModel)]`; interviewers ask how to bind it inside a reactive form the same way as a text input
+- `indeterminate` state on `mat-checkbox` â€” a third visual state (dash, not check) used for a "select all" checkbox when only some child rows are selected; interviewers ask how a table header checkbox shows partial selection
+- `mat-radio-group` + `mat-radio-button` â€” radio buttons must be wrapped in `mat-radio-group` so only one can be selected at a time; interviewers ask what breaks if you skip the group wrapper (every button becomes independently selectable)
+- Checkbox vs radio button â€” checkbox is for independent boolean choices or multi-select; radio is for picking exactly one option from a fixed set; interviewers ask which one to use for a status field with 3 fixed values (radio, or `mat-select` if there are many options)
 
 ---
 
 ### Tooltip and progress indicators
 
-- `matTooltip` directive — shows a short text hint on hover or focus; interviewers ask why you would add it to an icon-only button even though it already has `aria-label` (tooltip is for sighted users on hover, `aria-label` is for screen readers — they serve different users)
-- `matTooltipPosition` — controls where the tooltip appears (`above`, `below`, `left`, `right`); interviewers rarely test the syntax but expect you to know the directive exists
-- `matTooltip` on a disabled button — never appears, because a disabled element receives no pointer events; interviewers show the snippet and ask why the hint never shows (the fix is a wrapper element)
-- `mat-progress-spinner` — circular loading indicator; interviewers ask where you would use it (while waiting for an HTTP response, same role as the CSS spinner used in earlier Angular projects)
-- `mat-progress-bar` — horizontal loading indicator; `mode="indeterminate"` for unknown duration, `mode="determinate"` with `[value]` for a known percentage; interviewers ask the difference between the two modes
-- Loading state pattern with Material — disable the submit button and show `mat-progress-spinner` while a signal like `isLoading()` is true; interviewers ask how you prevent a double form submission while a request is in flight
-- A tooltip must never be the only place information lives — it is unreachable on touch devices and unreliable for assistive technology, so a label that exists only as a tooltip is inaccessible; interviewers show "the explanation is in the tooltip" and ask why that fails review
+- `matTooltip` directive â€” shows a short text hint on hover or focus; interviewers ask why you would add it to an icon-only button even though it already has `aria-label` (tooltip is for sighted users on hover, `aria-label` is for screen readers â€” they serve different users)
+- `matTooltipPosition` â€” controls where the tooltip appears (`above`, `below`, `left`, `right`); interviewers rarely test the syntax but expect you to know the directive exists
+- `mat-progress-spinner` â€” circular loading indicator; interviewers ask where you would use it (while waiting for an HTTP response, same role as the CSS spinner used in earlier Angular projects)
+- `mat-progress-bar` â€” horizontal loading indicator; `mode="indeterminate"` for unknown duration, `mode="determinate"` with `[value]` for a known percentage; interviewers ask the difference between the two modes
+- Loading state pattern with Material â€” disable the submit button and show `mat-progress-spinner` while a signal like `isLoading()` is true; interviewers ask how you prevent a double form submission while a request is in flight
 
 ---
 
-### Choosing the right component
+### Menu
 
-- Dialog vs snackbar vs inline `mat-error` — matching the level of interruption to the message; interviewers give a scenario (validation failure, delete confirmation, background save succeeded) and ask which surface you use
-- `mat-menu` vs `mat-select` — a menu triggers actions, a select edits a form value; interviewers ask why a status dropdown inside a form is not a menu
-- `mat-tab-group` vs `mat-stepper` — tabs let the user jump between independent views in any order; a stepper enforces a sequence; interviewers ask which fits a multi-step create flow
-- `MatDialog` vs a hand-rolled modal `div` — Material's dialog service brings a focus trap, backdrop, Esc handling and ARIA roles for free; interviewers ask what you would have to reimplement yourself
-- Wrapping a Material component in your own — when a project-specific wrapper (confirm dialog, page header, table shell) is worth it and when it is over-abstraction; interviewers ask how you decide
-- `<ng-content>` content projection over Material — building a reusable panel that accepts arbitrary content instead of a dozen `@Input()` strings; interviewers ask why projection is the better boundary
-- The cost of a wrapper component — it must re-expose every input and output of the component it hides; interviewers ask the downside of wrapping `matButton` in an `<app-button>`
-- What a component library actually provides — tested keyboard interaction, focus management, ARIA wiring and a consistent visual language, none of which is what a junior first notices (the styling); interviewers ask what you would lose by hand-building the same control and expect the behaviour answer, not the CSS one
-- Choosing a control by the size of the option set — a handful of options is radio buttons, a few dozen is `mat-select`, hundreds with free text is `mat-autocomplete`, and many simultaneous values is chips; interviewers give you "one of 3", "one of 500", and "several tags" and ask which control for each
-- Reaching for Material when the client rejects the Material look — the ladder is theme it, then wrap it, then drop to the unstyled CDK primitives, and only then hand-build; interviewers ask how far Material can be pushed before it stops being the right choice
-
----
-
-### Accessibility with Material
-
-- What Material gives you for free vs what you must still add — roles, focus trap and keyboard navigation are built in; `aria-label`, label association and colour contrast are still your job; interviewers ask what accessibility work remains after choosing Material
-- `aria-label` on an icon-only control — a `matIconButton` has no visible text, so without it a screen reader announces nothing useful; interviewers ask how a screen-reader user perceives your table row actions
-- `aria-hidden="true"` on a decorative `<mat-icon>` — without it the ligature text is read out loud; interviewers ask how to hide a purely decorative icon from assistive tech
-- Clickable `<div>` vs a real `<button>` — a div with `(click)` is not focusable and not activatable by keyboard even when it looks identical; interviewers ask why it is a defect
-- Dialog focus management — Material traps focus inside the dialog on open and restores it to the trigger on close; interviewers ask what `autoFocus: false` costs in accessibility terms
-- `LiveAnnouncer` (`@angular/cdk/a11y`) — announces a change that causes no focus shift (a sort change, an async result, a snackbar) to a screen reader; interviewers ask how a non-sighted user learns the snackbar appeared
-- What `mat-form-field` wires for you automatically — it generates the control's `id`, points the label's `for` at it, and links hint and error text through `aria-describedby`; interviewers ask what accessibility work is already done for you, and why adding your own `<label>` beside a Material input is redundant or actively harmful
-- Colour contrast of a custom theme — a brand palette fed into `mat.theme()` can still fail WCAG AA, because Material generates a coherent palette, not a compliant one; interviewers ask how you verify contrast and what you tell the client when their corporate colour fails
-
----
-
-### Reading Material runtime errors
-
-- `mat-form-field must contain a MatFormFieldControl` — the most common Material runtime error; interviewers show it and ask the causes (no `matInput` on the input, the directive misspelled, or `MatInputModule` not imported)
-- `'mat-x' is not a known element` — the standalone-component symptom of a missing module in the `imports` array; interviewers show the message and ask which single line fixes it
-- `NullInjectorError: No provider for MatDialogRef` — thrown when a dialog component is rendered directly by a route or a test instead of being opened through `MatDialog`; interviewers ask why the ref cannot be injected outside a dialog context
-- `NullInjectorError: No provider for DateAdapter` — the concrete failure of a missing `provideNativeDateAdapter()`; interviewers ask how you read a `NullInjectorError` to identify which provider is missing
-- `Could not find column with id "x"` — `displayedColumns` names a column that has no `matColumnDef`; interviewers ask how this differs from the reverse case (an extra `matColumnDef` renders nothing and throws nothing)
-- `ExpressionChangedAfterItHasBeenCheckedError` — Angular's dev-mode change-detection guard, hit when Material state is mutated during the same tick a parent binding is read; interviewers ask what change detection is doing when it throws and why it never appears in production
-- Where the real cause sits in a Material stack trace — the first framework frame rather than the last application frame; interviewers ask how you start debugging an error you have never seen before
-- A `MatTableDataSource` rebuilt on every change-detection pass — constructing it in a getter or inline in the template hands the table a brand-new instance each tick, so sort and page state silently reset and nothing errors; reviewers show it and ask why the table "forgets" the sorted column
-- `[(ngModel)]` on a control inside a reactive `[formGroup]` — mixing the two form APIs on one control; Angular warns and the reactive value is the one that counts; interviewers show the snippet and ask which API wins
-- Fixing the symptom vs fixing the cause on a Material error — adding the missing module clears `'mat-x' is not a known element`, but the same message on a component that *is* imported points at a stale build or a wrong selector instead; interviewers ask how you decide whether the obvious fix is the real one
-
----
-
-### Styling Material — overlays and tokens
-
-- The CDK overlay container — dialogs, menus, selects, tooltips and datepickers render in a container appended to `<body>`, outside your component's DOM subtree; interviewers ask why styling a dialog from the parent's CSS has no effect
-- `panelClass` config option — the supported way to style an overlay component, by attaching a class that the global stylesheet targets
-- Overriding a `--mat-sys-*` token vs overriding a `.mat-mdc-*` class — the token is a public, upgrade-safe surface; the internal class name can change on any version bump; interviewers ask what breaks on the next Material upgrade
-- Specificity against Material's own classes — why a component override "does nothing" and why reaching for `!important` is a symptom, not a fix
-- The MDC layer underneath Material (`.mdc-*` and `.mat-mdc-*` class names) — since v15 Material wraps Google's Material Components for Web, which is why the inspected DOM looks unfamiliar and why those class names are explicitly not a public API; interviewers ask what changed in Material v15 and why your old overrides stopped working
-- `ViewEncapsulation.None` to reach Material internals — it works, but it removes scoping for *every* rule in that component, so the styles leak app-wide; interviewers ask the cost and when it is still the defensible choice
-- Bundle impact of Material imports — standalone per-component imports let unused components tree-shake, which is the real argument against the old `MaterialModule` barrel; interviewers ask whether importing twenty `Mat*Module`s costs anything
-
----
-
-### The CDK beyond Material
-
-- `@angular/cdk` as the unstyled behaviour layer — overlay, accessibility, drag-drop, virtual scroll and the table primitives Material itself is built on; interviewers ask what you reach for when the client's design rules out the Material look but you still want the behaviour and a11y for free
-- `cdkDrag` + `cdkDropList` + `moveItemInArray` — drag-and-drop reordering, where the drop handler must reorder the *array* and not merely accept the DOM move; interviewers ask why a list that looks reordered reverts on the next render
-- `cdk-virtual-scroll-viewport` + `*cdkVirtualFor` with `itemSize` — renders only the visible rows for very large lists; interviewers ask why `itemSize` is required and what breaks when rows have variable heights
-- `cdkTrapFocus` / `FocusTrap` — the accessibility primitive `MatDialog` uses internally, keeping Tab inside an open modal; interviewers ask what a focus trap prevents and where you would need one outside a dialog
-- `BreakpointObserver` with the `Breakpoints` constants (`Handset`, `Web`, `TabletPortrait`) — named breakpoints instead of pixel values hardcoded in TypeScript; interviewers ask how the sidenav switches between `side` and `over` as the window resizes
-- `Clipboard` service / `cdkCopyToClipboard` — copying a value with user feedback; interviewers ask how you implement "copy the invoice number" and confirm it happened
-
----
-
-### Layout and overflow with Material
-
-- The height chain for scroll containers — a Material component that scrolls needs every ancestor to have a defined height; interviewers ask why `height: 100%` does nothing when the parent has no height
-- `mat-sidenav-container` owns its own scroll context — a page-level `overflow` rule on top of it produces a double scrollbar or a dead scroll; interviewers ask why the page scrolls twice
-- Horizontal overflow on a wide `mat-table` — the table breaks the layout unless wrapped in a container with `overflow-x: auto`; interviewers ask how you make a table responsive without hiding columns
-- `mat-dialog-content` max-height and internal scroll — long content must live inside it and not in `mat-dialog-actions`; interviewers ask what breaks visually when it does not
-- Flex children and the `min-width: auto` default — it stops a table or form field from shrinking and causes overflow; interviewers ask why `min-width: 0` fixes a broken flex row
-
----
-
-### Testing Material components
-
-- Material modules in `TestBed.configureTestingModule({ imports: [...] })` — the component under test needs its Material modules imported in the test too; interviewers ask why the test throws an unknown-element error when the app itself runs fine
-- `NoopAnimationsModule` in tests — replaces real animations so dialogs and menus resolve synchronously; interviewers ask why a Material test hangs or the overlay never appears
-- `fixture.detectChanges()` before querying the DOM — Material renders on change detection, so a query before it returns null; the most common cause of a failing first Material test
-- Component harnesses (`@angular/cdk/testing`) — the supported way to drive Material UI, loaded through `TestbedHarnessEnvironment.loader(fixture)`; interviewers ask why `By.css('.mat-mdc-button')` is a brittle test (internal classes are not a public API)
-- Harness vs `DebugElement` querying — a harness expresses intent (`await button.click()`) instead of DOM structure; the decision question in any Material testing round
-- Testing overlay-rendered components — a dialog, menu or snackbar renders outside the fixture, so `fixture.nativeElement` finds nothing; the document root loader is needed instead
-- `TestbedHarnessEnvironment.documentRootLoader(fixture)` vs `.loader(fixture)` — the plain loader only sees the component's own DOM, so anything in the overlay container (dialog, menu, select panel, snackbar) is invisible to it; interviewers ask which loader finds an open dialog and why there are two
-- `HarnessPredicate` filters such as `MatButtonHarness.with({ text: 'Guardar' })` — selects one instance among several by intent rather than by index or CSS class; interviewers ask how you click the right button when the page has five
-- Harness calls are asynchronous — every harness method returns a promise, so specs are `async`/`await`, and a forgotten `await` produces a test that asserts nothing and still goes green; interviewers ask why the harness spec passes when the behaviour is broken
-- Overlay cleanup between specs — a dialog or menu left open leaks into the next test's document; interviewers ask why one spec passes alone and fails inside the suite
-- Mocking `MatDialog` in a parent component test — a spy whose `open()` returns an object with `afterClosed: () => of(result)`; interviewers ask how you test "the user confirmed" without opening a real dialog
-- Testing a dialog component in isolation — providing `MAT_DIALOG_DATA` and a `MatDialogRef` spy through `TestBed` providers; interviewers ask how the dialog gets its data when there is no parent
-- Asserting `MatSnackBar` was called — spying on the injected service instead of reading the overlay DOM; interviewers ask which assertion is more stable and why
+- `mat-menu` + `MatMenuModule` â€” a dropdown list of actions triggered by a button; interviewers ask when to use it over several separate `matIconButton` elements in a table row (too many actions to show inline, or actions that need labels)
+- `[matMenuTriggerFor]="menuRef"` â€” connects a trigger button to the menu using a template reference variable; interviewers ask how the button knows which menu to open when there are several menus on the same page (one `#ref` per row)
+- `mat-menu-item` â€” each clickable row inside the menu; behaves like a button and can call a method directly with `(click)`
 
 ---
 
@@ -768,1233 +300,443 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 Topics a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026.
 Every item must be explainable with a real example from the TimeTrack project.
 
-### Project setup and Spring Boot fundamentals
+### Project setup
 
-- `@SpringBootApplication` — combines `@Configuration`, `@EnableAutoConfiguration`, and `@ComponentScan`; interviewers ask "what does this annotation replace in a traditional Spring app?" and "why must the class be in the root package?"
-- Auto-configuration mechanism — `@EnableAutoConfiguration` inspects the classpath and conditionally creates beans (`@ConditionalOnClass`, `@ConditionalOnMissingBean`), which is why adding a starter "just works" with no XML; interviewers ask "how does Spring Boot know how to configure your `DataSource`?" and expect the classpath-scanning + conditional-beans answer, not just "it is automatic"
-- Spring Boot starters — a starter (`spring-boot-starter-web`, `-data-jpa`, `-security`) is a curated dependency bundle that pulls in a whole layer's libraries with compatible versions in one line; interviewers ask "what is a starter and what does `spring-boot-starter-web` actually bring in?" — it separates someone who added dependencies from someone who understands the build
-- Spring Boot vs classic Spring Framework — Boot is Spring plus opinionated auto-configuration, starters, and an embedded server; the same app in classic Spring means XML or Java config, an external Tomcat, and a WAR to deploy; Indra's postings say "Suite de Spring (Spring Framework, Spring Boot…)", so both names land in the same interview and "what does Boot actually add?" is the question that follows
-- `SpringApplication.run(App.class, args)` — the line that actually boots the app: it creates the `ApplicationContext`, runs component scanning and auto-configuration, and starts the embedded Tomcat; interviewers ask "what does `SpringApplication.run` actually do?" — naming the annotation but not the call that executes it exposes a candidate who never wrote a main class from zero
-- Spring Initializr (`start.spring.io`) — the standard way to bootstrap: Maven + Java 17/21 + Spring Boot 3, group/artifact (which becomes the root package), and the starters ticked up front (Web, Data JPA, PostgreSQL Driver, Validation, Security, Lombok); in a live-coding round interviewers watch whether you generate the skeleton in a minute or start hunting for a tutorial
-- Embedded server (Tomcat) — Spring Boot packages an embedded servlet container inside the fat jar, so `java -jar app.jar` starts Tomcat on port 8080 with no external application server and no WAR to deploy; interviewers ask "how does your app serve HTTP without a Tomcat installed?" — a classic Spring-Boot-vs-classic-Spring differentiator
-- Package structure convention (`controller`, `service`, `repository`, `model`, `dto`, `config`, `exception`) — the layout every consultancy codebase uses, and a class placed *outside* the main class's root package is never scanned, so the bean silently does not exist; interviewers read your folder tree before they read your code
-- `jakarta.*` vs `javax.*` — Spring Boot 3 on Java 17 moved every EE import from `javax.persistence` / `javax.validation` to `jakarta.*`; mixing the two means the annotations compile but Hibernate and the validator silently ignore them; postings that ask for "Java 17 / Spring Boot 3" make this a live trap the moment you copy an older tutorial
-
-### Auto-configuration — how Boot decides what to create
-
-- Where auto-configurations are registered — each starter jar carries a `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` file (it was `spring.factories` before Boot 2.7) listing its candidate configuration classes, which is the concrete thing that turns "a jar on the classpath" into "beans in your context"; interviewers who liked your `@ConditionalOnClass` answer follow with "and where is that list actually written down?"
-- The conditions evaluation report (`--debug`) — printing "Positive matches" and "Negative matches" tells you exactly which auto-configuration fired, which backed off, and on which condition; interviewers ask "you added a starter and the bean you expected is not there — how do you find out why?" and expect you to read the report rather than guess
-- `@SpringBootApplication(exclude = ...)` — switches off one auto-configuration you do not want, the classic being `DataSourceAutoConfiguration` in a service with no database; interviewers ask what you do when the app refuses to start demanding a datasource URL it should not need
-- `scanBasePackages` — widens component scanning when a class legitimately lives outside the main class's package tree, instead of moving the class; interviewers pair it with the root-package rule to check you understand scanning is a *convention*, not magic
-- `@ConditionalOnProperty` on your own bean — the same conditional mechanism Boot uses internally, applied to your code so a stub payment gateway or a data-seeding runner exists only when a flag is set; interviewers ask how you switch a bean on per environment without inventing a `@Profile` for every combination
-- `ApplicationContext` vs `BeanFactory` — `BeanFactory` is the bare dependency-injection container, `ApplicationContext` is the one Boot actually builds and adds events, internationalisation, and resource loading on top; interviewers ask "what exactly is 'the container' you keep referring to?" once you have said three times that Spring creates your objects
-
----
-
-### The toolchain — Maven and the JDK
-
-- Maven: `pom.xml` structure, adding a dependency — how the project is built and how libraries are pulled in; interviewers ask what `spring-boot-starter-parent` does (manages all dependency versions via a BOM so you do not write version tags)
-- GAV coordinates (`groupId:artifactId:version`) — the three-part address that uniquely identifies every dependency on Maven Central and in the `pom.xml`; you find a library by its GAV on `mvnrepository.com`, and `spring-boot-starter-parent` supplies the version for managed dependencies so you omit the tag; interviewers ask what uniquely identifies a dependency and how you knew which version to write
-- Maven Central and the local `~/.m2` cache — dependencies are downloaded once from Maven Central into the per-user `.m2/repository` and reused across projects, which is why the first build is slow and why a corrupted download is fixed by deleting the artifact from that folder; interviewers ask "where do your dependencies actually come from, and where do they live after download?"
-- Maven standard directory layout — `src/main/java` for code, `src/main/resources` for config and static assets, `src/test/java` for tests; Maven and the IDE only look in these exact folders, so a class or a `data.sql` placed anywhere else is invisible with no error; the first thing you get right in a blank project
-- The Maven Wrapper (`mvnw` / `mvnw.cmd`) — the scripts Initializr ships so the project builds with the pinned Maven version on a machine that has no Maven installed; a take-home is expected to run with `./mvnw spring-boot:run` on the reviewer's laptop, and a candidate who only ever clicked the green arrow in IntelliJ cannot say what those two files in the repo root are
-- `mvnw: Permission denied` / CRLF line endings on a fresh clone — the wrapper script can lose its execute bit or carry Windows line endings, so `./mvnw` fails on the reviewer's Linux or macOS machine before Maven even starts; fixed with `chmod +x mvnw` or `sh mvnw`; a first-run failure that has nothing to do with your code, and you must recognise it as a shell error, not a build error
-- JDK version mismatch — `<java.version>` in the `pom.xml`, the SDK selected in the IDE, and `JAVA_HOME` must agree, or the build fails with "invalid target release" or `UnsupportedClassVersionError … class file has wrong version 65.0`; the single most common reason a fresh clone will not compile, and interviewers ask what that error actually means (bytecode compiled for a newer JDK than the one running it)
-- Re-importing after editing `pom.xml` — a newly added dependency stays unresolved (red imports, `package does not exist`) until the IDE re-imports the Maven project or `mvn -U` re-resolves it; in a live-coding round the candidate who stares at a red import for five minutes after adding a starter has never set a project up from zero
-- `.gitignore` for a Spring Boot deliverable — `target/`, `.idea/`, and any file holding real credentials must never be committed; a take-home submitted with a 40 MB `target/` folder or a JWT secret inside `application.properties` is judged before a line of code is read
-- The `-parameters` compiler flag and `@PathVariable` names — since Spring Boot 3.2 parameter names are no longer inferred from bytecode unless the code is compiled with `-parameters` (the `spring-boot-maven-plugin` adds it; a bare `javac` or a misconfigured IDE build does not), so `@PathVariable Long id` fails at runtime with "Name for argument … not specified" unless the name is declared explicitly; interviewers on a Boot 3 codebase ask why the same controller works under Maven and dies when built differently
-
-- `mvn dependency:tree` and transitive version conflicts — two libraries dragging in different versions of the same jar compile fine and then fail at runtime with `NoSuchMethodError` or `NoClassDefFoundError`; the tree shows who pulled what, and `<dependencyManagement>` or an `<exclusion>` is the fix; interviewers ask what is happening when code that compiles blows up on a missing method
-- Dependency `<scope>` — `runtime` for the PostgreSQL driver (needed to run, never imported in your code), `provided`/`optional` for Lombok (compile-time only, must not ship to consumers), `test` for test libraries; interviewers point at the driver in your `pom.xml` and ask why it carries a scope the others do not
-
----
-
-### Lombok
-
-- Lombok is a compile-time annotation processor — it *generates* the getters into the `.class` file, so with annotation processing switched off in the IDE the build fails with `cannot find symbol: method getId()` even though `@Data` is right there; interviewers use it to check you understand Lombok is not runtime magic
-- Lombok `@Data` — generates getters, setters, `equals()`, `hashCode()`, and `toString()`; interviewers ask "what does `@Data` generate?" — a standard question when reviewing entity code
-- Lombok `@NoArgsConstructor` — generates an empty constructor required by JPA to instantiate entities when reading from the database; omitting it causes a runtime error on startup
-- Lombok `@AllArgsConstructor` vs `@RequiredArgsConstructor` — `@AllArgsConstructor` takes every field; `@RequiredArgsConstructor` takes only `final` and `@NonNull` fields; interviewers ask which to use for a service class with constructor injection (`@RequiredArgsConstructor` — it picks up only the `private final` dependencies)
-- Lombok `@Builder` on an entity — `@Builder` generates an all-args constructor that suppresses the implicit no-arg one JPA needs, so it must be paired with `@NoArgsConstructor` **and** `@AllArgsConstructor`; and any field with an initialiser (`= new ArrayList<>()`, `= Status.DRAFT`) needs `@Builder.Default` or the builder silently overwrites it with `null`; the purest "annotation that silently does nothing" snippet in a Spring PR
-
-### Configuration — where properties come from
-
-- `application.properties` / `application.yml` — same semantics, different syntax; YAML nests and is what you meet in enterprise codebases; interviewers do not test the syntax, they test that you know the two are interchangeable
-- `src/main/resources` is the classpath root — `application.properties`, `data.sql` and `application-{profile}.properties` are found because that folder is packaged onto the classpath, not because of their path on disk; a properties file dropped next to the main class or in the project root is silently never read and the app boots with all defaults; interviewers ask "where does Spring find `application.properties`?" and expect "the classpath", not "the project folder"
-- `@Value("${property.name}")` — injects a single config value at startup; the app fails fast if the key is missing rather than throwing a `NullPointerException` at runtime
-- `@Value` that stays null — injection only happens on container-managed beans, so a `@Value` field is null in a class you created with `new`, in a `static` field, and inside the constructor (it is injected *after* construction); interviewers show a null config value and ask why
-- `@ConfigurationProperties` — binds a group of related properties to a class at once; cleaner than many individual `@Value` annotations for grouped config like `app.jwt.secret` and `app.jwt.expiration`
-- Relaxed binding of environment variables — Spring maps `SPRING_DATASOURCE_URL` to `spring.datasource.url` and `APP_JWT_SECRET` to `app.jwt.secret` (uppercase, dots become underscores), which is exactly how a container or a reviewer overrides your config without touching a file; interviewers ask "how does an env var end up setting a property?" and expect the naming rule, not "it just works"
-
-### Profiles, secrets, and startup config
-
-- Keeping secrets out of source control — inject them as environment variables with `${VAR_NAME}` so the app fails at startup when one is missing; a JWT secret hardcoded in a committed `application.properties` is a finding in any code review
-- Where env vars live for a local run — the IntelliJ run configuration's Environment variables field (never a committed file), and Spring Boot does not read a `.env` file natively; the concrete answer to "the take-home needs `JWT_SECRET` — where do you put it when you press run?"
-- Property precedence — command-line args beat environment variables, which beat `application-{profile}.properties`, which beats `application.properties`; interviewers ask "the value in your properties file and the one in the container env differ — which wins?"
-- Profiles: `application-dev.properties`, `spring.profiles.active`, `@Profile("dev")` on a bean — separating config per environment and swapping a fake implementation for the real one locally; asked in any interview about real-world deployment
-- Activating a profile at runtime — `--spring.profiles.active=dev` as a program argument, the `SPRING_PROFILES_ACTIVE` env var, or `-Dspring-boot.run.profiles=dev` through the Maven plugin, all overriding what the properties file says; interviewers ask "how do you run the same jar with the test profile without editing anything?"
-- Build once, configure per environment — the same jar and the same Docker image are promoted from dev to production and only the environment variables change; you never rebuild the artifact per environment or bake a profile into the image; interviewers ask "how does the identical jar run against two different databases?"
-- `server.port` — how you move the app off 8080; the immediate fix when startup fails with the port already in use
-- `CommandLineRunner` / `ApplicationRunner` vs `@PostConstruct` vs `data.sql` — three places to run startup code, differing in whether the whole context is ready; interviewers ask where you would seed data and why not in the constructor
-
-- Multi-document YAML profiles — one `application.yml` split by `---` with `spring.config.activate.on-profile`, rather than a file per environment; interviewers ask how a single file holds both dev and prod config and expect the separator, not "you copy the file"
-- Where secrets live beyond an environment variable — env vars are readable by any process listing and are exposed through `/actuator/env`, so real deployments inject them from a secret manager (Vault, AWS Secrets Manager, a Kubernetes Secret) at runtime; interviewers accept the env var for a take-home and then ask what a bank does instead
-
----
-
-### Wiring the database — datasource, schema, and seeding
-
-- PostgreSQL driver and the datasource properties — `spring.datasource.url` (`jdbc:postgresql://localhost:5432/db`), `username`, `password`; the wiring you must write from memory in a take-home; interviewers ask "what exactly connects Spring to your database?" and expect the JDBC URL shape, not "Spring Boot does it"
-- The database itself must already exist — Spring Boot and Hibernate create *tables*, never the *database*, so the first run against a fresh machine fails with `FATAL: database "timetrack" does not exist` until you create it in pgAdmin; interviewers ask what `ddl-auto=update` does and does not create
-- `spring.jpa.hibernate.ddl-auto` values (`none`, `validate`, `update`, `create`, `create-drop`) — controls whether Hibernate touches the schema at startup; `update` is convenient in development but dangerous in production because it silently alters tables and never drops columns, so real deployments use `validate` or `none` plus Flyway; interviewers ask "which value do you run in production?"
-- Hibernate's implicit naming strategy — a `createdAt` field maps to a `created_at` column by default (snake case), which is why a hand-written `data.sql` or a manually created table that uses `createdAt` fails schema validation; interviewers ask what column name your entity maps to when you never wrote `@Column(name = …)`
-- `data.sql` — Spring Boot runs this file on startup to seed the database; used in TimeTrack to create the first manager account; interviewers ask "how did you create the first user if there is no register endpoint?"
-- `data.sql` runs *before* Hibernate creates the tables — so with `ddl-auto=update` the seed script fails with `relation "users" does not exist` unless you set `spring.jpa.defer-datasource-initialization=true`, and against a real (non-embedded) database it does not run at all without `spring.sql.init.mode=always`; the first-run failure of the exact seeding approach every tutorial recommends
-- `spring.jpa.show-sql=true` and `logging.level.org.hibernate.SQL=DEBUG` — the switch that prints the SQL Hibernate actually generates; the first thing you turn on when a query returns the wrong rows or an endpoint is slow; interviewers ask "how do you know what SQL your repository is running?"
-
-### Build, run, and the developer loop
-
-- Maven lifecycle (`validate` → `compile` → `test` → `package` → `install`) — running `package` runs the tests first, which is why a failing test blocks the build; interviewers ask "what does `mvn install` do that `mvn compile` does not?" — a candidate who only ever clicked the green arrow in IntelliJ cannot answer
-- `mvn clean` and the `target/` folder — where compiled classes and the fat jar land, why it is git-ignored, and why "clean" fixes the ghost bug where the code you just changed is clearly not the code running
-- `mvn spring-boot:run` vs `java -jar target/app.jar` — the dev loop versus how the app actually runs in production and inside the Docker `ENTRYPOINT`; interviewers ask how the deployed artifact differs from what runs on your laptop
-- `spring-boot-maven-plugin` — repackages the jar into an executable fat jar with the embedded Tomcat and a `Main-Class` manifest; without it `java -jar` fails with "no main manifest attribute"; interviewers ask what makes a Spring Boot jar runnable
-- `mvn test` and `-DskipTests` — running the suite the way CI does, and the flag that skips it; knowing the flag exists is fine, reaching for it to turn a red build green is the answer that fails you
-- Surefire test-naming convention — `mvn test` only discovers classes named `*Test`, `*Tests` or `Test*`, so a correctly written test class with another name is silently skipped and CI stays green having run zero tests; distinct from the wrong-`@Test`-import trap (here the annotation is right and the *filename* is why nothing runs); interviewers ask why Maven reports "Tests run: 0" when the test file clearly exists
-- `spring-boot-devtools` and the "my change did nothing" loop — devtools restarts the context when classes are recompiled, but without it (or without triggering a rebuild) you are exercising the previously compiled class and testing a fix that is not running; the same family of ghost bug as a stale `target/`, and interviewers care that you can tell "my fix is wrong" apart from "my fix is not deployed"
-- Reading a Java stack trace — read bottom-up through the `Caused by:` chain to the root cause, skip the framework frames, and find the first line that belongs to *your* package; interviewers paste a 60-line trace and ask "what is wrong?" — the single skill that separates a candidate who can be left alone from one who cannot
-- The startup log as a checklist — `Started Application in X seconds`, the Tomcat port line, the HikariPool line, the Hibernate DDL lines; interviewers ask "how do you know the app started correctly?" and expect you to name what you look for, not "it did not crash"
-- `docker compose logs -f app` — where the stack trace lives when the app runs in a container and there is no IDE console; a container that keeps restarting is diagnosed by reading its logs and its exit code, not by running it again; interviewers in Docker-flavoured rounds ask exactly this
-- IntelliJ debugger — breakpoint, step over/into, Evaluate Expression, inspecting the request DTO mid-flight; the expected way to answer "the value is wrong, where does it come from?" — debugging with `System.out.println` is visibly slower in a live-coding round
+- `@SpringBootApplication` â€” combines `@Configuration`, `@EnableAutoConfiguration`, and `@ComponentScan`; interviewers ask "what does this annotation replace in a traditional Spring app?" and "why must the class be in the root package?"
+- `application.properties` â€” where datasource, JPA settings, and JWT config go; interviewers ask how you keep credentials out of source control (environment variables with `${VAR_NAME}` syntax; app fails at startup if the variable is missing â€” better than a silent null at runtime)
+- Profiles: `application-dev.properties`, `spring.profiles.active` â€” separating config per environment; asked in any interview about real-world deployment
+- Maven: `pom.xml` structure, adding a dependency, `mvn clean install` â€” how the project is built and how libraries are pulled in; interviewers ask what `spring-boot-starter-parent` does (manages all dependency versions via a BOM so you do not write version tags)
+- Lombok `@Data` â€” generates getters, setters, `equals()`, `hashCode()`, and `toString()`; interviewers ask "what does `@Data` generate?" â€” a standard question when reviewing entity code
+- Lombok `@NoArgsConstructor` â€” generates an empty constructor required by JPA to instantiate entities when reading from the database; omitting it causes a runtime error on startup
+- Lombok `@AllArgsConstructor` vs `@RequiredArgsConstructor` â€” `@AllArgsConstructor` takes every field; `@RequiredArgsConstructor` takes only `final` and `@NonNull` fields; interviewers ask which to use for a service class with constructor injection (`@RequiredArgsConstructor` â€” it picks up only the `private final` dependencies)
+- `@Slf4j` â€” Lombok annotation that generates a `log` field; `log.info()`, `log.warn()`, `log.error()`; seen in every production codebase and asked about in code reviews
+- `data.sql` â€” Spring Boot runs this file on startup to seed the database; used in TimeTrack to create the first manager account; interviewers ask "how did you create the first user if there is no register endpoint?"
 
 ### REST controllers
 
-- Layered architecture: controller → service → repository — the controller handles HTTP and DTO mapping, the service holds business logic and the transaction boundary, the repository handles persistence; interviewers ask "why have a service layer instead of calling the repository from the controller?" — separation of concerns, testability, and one place for `@Transactional` and business rules (the general layered/service-layer pattern is owned by the Architecture coverage; this item is its Spring Boot framing)
-- `@RestController` — combines `@Controller` and `@ResponseBody`; every return value is serialised to JSON by Jackson automatically; interviewers ask "what is the difference between `@Controller` and `@RestController`?" — `@Controller` is for server-rendered HTML; always use `@RestController` for a REST API
-- `@RequestMapping` — sets the base URL path for all methods in the class; combined with method-level annotations (`@GetMapping`, `@PostMapping`) to form the full URL
-- `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping` — method-level annotations for each HTTP verb; `@PatchMapping` is used for partial updates and state transitions (submit, approve, reject); tested in every technical screening
-- `@PathVariable` — reads a variable from the URL path (`/{id}`); the name inside `{}` must match the parameter name or be declared explicitly with `@PathVariable("id")`; interviewers ask "what happens if the names don't match?"
-- `@RequestBody` — reads the JSON body and converts it to a Java object via Jackson; requires the client to send `Content-Type: application/json`; used with `@Valid` to trigger validation
-- `@RequestParam` — reads query string parameters (`?month=2025-05`); can be `required = false` with a `defaultValue`; used for optional filters, not for required resource identifiers
-- `ResponseEntity<T>` — the correct way to control the HTTP status code; interviewers ask "why not just return the object directly?" — because the status code is part of the API contract and without it every method returns 200
-- Jackson serialisation — Spring Boot uses Jackson automatically to convert Java objects to JSON on the way out and JSON to Java on the way in; interviewers ask "how does Spring Boot convert your return value to JSON?" — Jackson is the answer; it reads public getters or Lombok-generated ones
-- `DispatcherServlet` and the request lifecycle — the single front controller Spring Boot registers to receive every HTTP request; it consults handler mappings to find the `@RequestMapping` method matching the URL and verb, invokes it, and runs the return value through Jackson; interviewers open with "walk me through how a request reaches your controller method" — knowing the annotations but not the servlet that routes to them exposes surface-level knowledge
-- Date binding in `@RequestParam` / `@PathVariable` — a `LocalDate` parameter is rejected with a 400 unless the client sends ISO-8601 or the parameter carries `@DateTimeFormat`; interviewers show a report endpoint filtered by month and ask why the request fails
-- Ambiguous mapping at startup — two controller methods declaring the same verb and path make the whole context fail to start with `Ambiguous mapping. Cannot map ... method`; a self-inflicted failure caused by copy-pasting an endpoint
-
-- `@RequestHeader` — reads a value that is neither in the path, the query string, nor the body: a correlation id, an `Accept-Language`, or the raw `Authorization` when no filter has parsed it yet; supports `required = false` and a default; interviewers ask how a controller gets at a header
-- `consumes` and `produces` on a mapping — `consumes` declares what the endpoint accepts, so a wrong `Content-Type` is 415; `produces` declares what it returns, so an `Accept` it cannot satisfy is 406; interviewers ask you to tell 415 and 406 apart and say which side of the exchange each one blames
-- `MultipartFile` uploads — `consumes = MULTIPART_FORM_DATA`, the file bound alongside a `@RequestPart` DTO, and `spring.servlet.multipart.max-file-size`, whose modest default rejects a real document with an error that does not look like a size problem; interviewers ask what the endpoint looks like when the client must attach a PDF
-- `@ModelAttribute` for query-parameter objects — a filter endpoint with six optional params binds into one object that can carry its own validation, instead of six method arguments; interviewers ask how you keep a report endpoint's signature readable
-
----
-
-### API design and the HTTP contract
-
-- HTTP status conventions: 200 GET/PUT success, 201 POST success, 204 DELETE success, 400 validation error, 401 missing or invalid token, 403 authenticated but not allowed, 404 not found, 409 duplicate — tested in every technical interview
-- `201 Created` + `Location` header — a POST that creates a resource returns the URI of the new resource via `ResponseEntity.created(uri)`, not just the body; interviewers ask "what exactly does your POST return?" and the missing `Location` header is the tell of a candidate who never read the REST contract
-- `PUT` vs `PATCH` — `PUT` replaces the whole resource (omitted fields are cleared), `PATCH` applies a partial update; interviewers ask which one you used for the update endpoint and what happens to the fields the client did not send
-- "Field absent" vs "field set to null" in a PATCH — a nullable DTO field cannot tell the two apart, so a partial update either overwrites everything the client omitted or can never clear a value on purpose; the honest answers are `Optional<T>` fields, `JsonNullable`, or a map-based patch; interviewers ask it the moment you say "I used PATCH for partial updates"
-- Idempotency of the HTTP verbs — GET, PUT, and DELETE leave the same state when repeated; POST does not; interviewers ask "the client times out and retries your POST — what happens?" and expect you to see the duplicate row and name the fix
-- Resource naming — plural nouns and no verbs in the path (`POST /api/entries`, never `/api/createEntry`), sub-resources for ownership (`/projects/{id}/entries`); interviewers show a verb-in-URL endpoint and ask what is wrong with it
-- State transitions as endpoints — a workflow action (submit, approve, reject) has no natural verb in REST, so it is modelled as `PATCH /entries/{id}/submit`; interviewers ask "how did you model approve/reject without breaking REST?" — one of the highest-signal design questions for TimeTrack
-- Query params vs path variables — the path identifies a resource, the query string filters, sorts, and paginates a collection; interviewers ask "why is `month` a `@RequestParam` and `id` a `@PathVariable`?"
-- 404 vs 403 for a resource you do not own — returning 403 confirms the resource exists and lets an attacker enumerate ids; returning 404 hides its existence entirely; interviewers ask "user A requests entry 42, which belongs to user B — what status do you return, and why is 403 arguably a leak?"
-- A machine-readable error code, not just a message — a hardcoded English string forces the Angular client to display whatever the backend wrote, while a stable `code` (`ENTRY_ALREADY_SUBMITTED`) lets the frontend branch and translate; interviewers on a full-stack team ask "how does the frontend show this error in Spanish?"
-- Breaking vs non-breaking change, and API versioning — adding an optional field is safe; renaming or removing one breaks every deployed Angular client, which is why you version (`/api/v1/...`); interviewers ask "you need to change a response field the frontend depends on — what do you do?" and expect "additive if possible, new version if breaking"
-- Soft delete — `active = false` instead of `deleteById()`; preserves historical data and the audit trail; interviewers ask "what happens to existing time entries when a project is deleted?"
-
-- A bare array vs an envelope in a list response — a top-level JSON array leaves nowhere to add pagination metadata later without breaking every client, which is why `Page<T>`'s wrapper shape (or an explicit `{ "data": [...], "total": n }`) is the safer contract; interviewers ask what you change when the client suddenly needs the total count, and who breaks when you do
-- The OpenAPI document as the contract the frontend codes against — springdoc publishes it from your annotations, and the Angular side derives its interfaces, endpoints, and response shapes from `/swagger-ui.html` instead of guessing or waiting; interviewers on full-stack rounds ask how the frontend knows the response shape before the backend is finished
-
----
-
-### Business logic and domain modelling
-
-- Anemic entities with the logic in the service (the Spring norm) vs a rich domain model — Spring codebases put every rule in the service and leave the entity as a data bag; the alternative puts the invariant on the entity itself (`entry.submit()` refuses unless the status is `DRAFT`), where nothing can bypass it; interviewers ask "what stops someone calling `setStatus(APPROVED)` from anywhere in the codebase?" — the highest-signal design question in the TimeTrack workflow
-- Guarding the state machine in one place — `DRAFT → SUBMITTED → APPROVED/REJECTED` written as scattered `if` checks across three service methods drifts the moment a fourth is added; one `canTransitionTo()` method or a transition map is the reviewable version; interviewers ask "which transitions are illegal, and where in your code is that written down?"
-- Where a derived value is computed — hours worked can be a persisted column (fast to query, goes stale when an entry is edited), a `@Transient` getter (always right, invisible to SQL), or a `SUM` in the query; interviewers ask "where does the monthly total come from, and what happens when an entry changes?"
-
-### DTOs and the entity boundary
-
-- Request DTO vs Response DTO — why you never expose the JPA entity directly over the API (couples the API to the DB schema, risks leaking sensitive fields like the password hash, over-fetches data the client does not need); interviewers always ask this
-- Separate DTOs per operation (`CreateRequest`, `UpdateRequest`, `Response`) — one shared DTO forces every field to be nullable and makes validation impossible to express; interviewers ask "why not one `TimeEntryDto` for everything?"
-- `toResponse()` mapping pattern — entity-to-DTO conversion extracted to one private helper in the service layer; keeps controllers free of mapping logic and avoids repeating the same field assignments in every method
-- Manual mapping vs MapStruct vs reflective mappers — manual is explicit and debuggable but repetitive; MapStruct generates the mapper at compile time so a renamed field breaks the build; `ModelMapper`/`BeanUtils.copyProperties` map by reflection and silently skip a field whose name changed, with no compile error and no failing test; interviewers ask "how do you map entity to DTO, and would that scale to 40 endpoints?"
-- Java `record` as a DTO — an immutable, boilerplate-free carrier that Jackson serialises via its canonical constructor and on which Bean Validation still works; interviewers ask "why a `record` for the DTO but a class for the entity?" — JPA needs a no-arg constructor and mutable fields, so records fit DTOs only
-- Nested DTO vs flattened id in a response — embedding a full `UserDto` inside the entry response over-fetches and couples the response shape to another resource; returning `userId` (plus at most a display name) keeps it flat and lets the client decide what to load; interviewers ask "does your entry response include the whole user object or just its id, and why?"
-- `@JsonIgnore` — prevents a field from appearing in the JSON response; used on the `password` field so the API never returns hashed passwords; interviewers ask "why doesn't your API expose the password?"
-- Never return `Page<Entity>` or an entity from a controller — the entity leaks the schema and its lazy relations blow up or over-fetch during serialisation; map with `page.map(this::toResponse)`; interviewers show `return repo.findAll(pageable)` and ask what is wrong with it
-- Infinite recursion on a bidirectional relation — serialising an entity makes Jackson bounce parent → child → parent until `StackOverflowError`; `@JsonManagedReference`/`@JsonBackReference` patch it, but the real fix is not serialising entities at all; the concrete failure that justifies the DTO rule
-- Mass assignment / over-posting — binding a request DTO that carries `id`, `role`, or `status` lets the client set fields it must not control; the request DTO exposes only the writable fields; interviewers show a DTO with a `role` field and ask what an attacker can do
-
-### Jackson and the JSON data types
-
-- What Jackson needs to deserialise — a DTO with only `@Getter` and no no-arg constructor or setters fails with `Cannot construct instance of…`; interviewers show a failing `@RequestBody` and ask what Jackson actually requires
-- The response comes back as `{}` — Jackson serialises through public getters, so a DTO with private fields and no `@Getter` (and no `record`) produces an empty object with a 200 status and no error anywhere in the log; the serialisation twin of the `Cannot construct instance of…` probe, and interviewers show the empty body and ask what is missing
-- A `@RequestBody` field that silently arrives null — Jackson matches JSON keys to property names, so a client sending `user_id` leaves `userId` null with no error, producing a 500 later or a validation 400 you cannot explain; the fix is `@JsonProperty("user_id")` or agreeing the contract; interviewers show a request that "works" but persists nulls
-- Boolean getter naming — a `private boolean isActive` field gets the getter `isActive()`, so Jackson names the JSON key `active`, not `isActive`, silently breaking the contract with the Angular client; interviewers show the "renamed" boolean field and ask where a JSON property name actually comes from (the getter, not the field)
-- Unknown enum value in the body — Jackson throws `HttpMessageNotReadableException` (400) and the match is case-sensitive; you handle it in the advice or the client gets an unreadable default body; interviewers ask what your API returns when a client sends `"status": "draft"`
-- Java 8 date/time in JSON — `LocalDateTime` serialises as an ISO string thanks to `jackson-datatype-jsr310` (auto-registered by Boot, lost the moment you hand-build an `ObjectMapper`), and `@JsonFormat` pins a custom pattern; interviewers ask why the Angular client cannot parse your dates
-- `LocalDate` vs `LocalDateTime` vs `Instant`, and storing UTC — which type maps to which column, why timestamps are stored in UTC and converted at the edge, and why `java.util.Date` is never used in new code; interviewers ask what type your `createdAt` is and what timezone the database holds
-- `BigDecimal` for money and decimal hours — `double` loses precision on money and totals; use `BigDecimal` with `@Column(precision, scale)` and compare with `.compareTo()`, not `.equals()`; a standard probe in any billing or timesheet domain
-
-- `@JsonInclude(NON_NULL)` — whether null fields appear in the response is a contract decision and not a cosmetic one: dropping them shrinks the payload but leaves the Angular client unable to distinguish "not sent" from "explicitly null"; interviewers ask why half the response fields vanished after someone added the annotation globally
-- Global Jackson configuration through `spring.jackson.*` — the property-naming strategy, the date format, and `FAIL_ON_UNKNOWN_PROPERTIES` are set once in properties (or a `Jackson2ObjectMapperBuilderCustomizer`), never by annotating forty DTO fields; interviewers ask what you touch when the Angular team wants `snake_case` across the whole API
-- Unknown properties in the request body — Boot disables `FAIL_ON_UNKNOWN_PROPERTIES` by default, so a field the client sends that your DTO does not declare is silently discarded rather than rejected; interviewers ask whether that is the behaviour you want, since the same leniency hides a misspelled field name for weeks
-
----
+- `@RestController` â€” combines `@Controller` and `@ResponseBody`; every return value is serialised to JSON by Jackson automatically; interviewers ask "what is the difference between `@Controller` and `@RestController`?" â€” `@Controller` is for server-rendered HTML; always use `@RestController` for a REST API
+- `@RequestMapping` â€” sets the base URL path for all methods in the class; combined with method-level annotations (`@GetMapping`, `@PostMapping`) to form the full URL
+- `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping` â€” method-level annotations for each HTTP verb; `@PatchMapping` is used for partial updates and state transitions (submit, approve, reject); tested in every technical screening
+- `@PathVariable` â€” reads a variable from the URL path (`/{id}`); the name inside `{}` must match the parameter name or be declared explicitly with `@PathVariable("id")`; interviewers ask "what happens if the names don't match?"
+- `@RequestBody` â€” reads the JSON body and converts it to a Java object via Jackson; requires the client to send `Content-Type: application/json`; used with `@Valid` to trigger validation
+- `@RequestParam` â€” reads query string parameters (`?month=2025-05`); can be `required = false` with a `defaultValue`; used for optional filters, not for required resource identifiers
+- `ResponseEntity<T>` â€” use it when status or headers vary dynamically; fixed statuses can use
+  `@ResponseStatus`, while returning a body directly intentionally uses the framework's normal status
+- Jackson serialisation â€” Spring Boot uses Jackson automatically to convert Java objects to JSON on the way out and JSON to Java on the way in; interviewers ask "how does Spring Boot convert your return value to JSON?" â€” Jackson is the answer; it reads public getters or Lombok-generated ones
+- Request and response DTO implementation â€” define separate Java records/classes for incoming and
+  outgoing contracts, attach validation only to untrusted input, and map explicitly at the service
+  boundary
+- `toResponse()` mapping pattern â€” entity-to-DTO conversion extracted to one private helper in the service layer; keeps controllers free of mapping logic and avoids repeating the same field assignments in every method
+- `@JsonIgnore` â€” prevents a field from appearing in the JSON response; used on the `password` field so the API never returns hashed passwords; interviewers ask "why doesn't your API expose the password?"
 
 ### Dependency injection and beans
 
-- Inversion of Control (IoC) and dependency injection — the Spring container creates your objects and wires their dependencies instead of you calling `new`; interviewers open the topic with "what is dependency injection?" and expect the IoC container as the answer, plus why it makes code testable (you inject a mock in a test instead of the real dependency)
-- Component scanning and the bean lifecycle — `@ComponentScan` scans the main class's package downwards, instantiates every stereotype-annotated class, injects its dependencies, then runs `@PostConstruct`; interviewers open with "walk me through what happens between `main()` and your service being ready" and expect that scan → instantiate → inject → initialise sequence, not "Spring does it automatically"
-- Bean scope and the singleton default — Spring beans are singleton-scoped by default (one shared instance for the whole app), which is why a `@Service` must be stateless and thread-safe; interviewers ask "what scope is a `@Service` by default, and is it safe for two concurrent requests?" — the gotcha is storing mutable per-request state in a field of a singleton bean
-- `@Service`, `@Repository`, `@Component`, `@Controller` — all four register the class as a Spring bean; `@Repository` also translates JPA/Hibernate exceptions into Spring's `DataAccessException`; interviewers ask "what is the difference between `@Service` and `@Component`?" — semantics and layer readability
-- `@Component` vs `@Bean` — `@Component` lets component scanning register a class *you own*; `@Bean` registers an object *you construct yourself* inside a `@Configuration` class, which is the only option for a third-party class whose source you cannot annotate; interviewers ask "when can you not use `@Component`?"
-- Constructor injection — preferred over `@Autowired` field injection; makes dependencies explicit, `final`, and easy to mock in tests without starting Spring; Spring infers it automatically when the class has one constructor; interviewers ask "why not field injection?"
-- Creating a collaborator with `new` instead of injecting it — a hand-constructed object is invisible to the container, so it gets no injected dependencies, no `@Transactional`/`@PreAuthorize` proxy, and is not the shared singleton; interviewers show a service `new`-ing its own collaborator and ask which Spring features that object silently loses
-- Circular dependency between two beans — with constructor injection Spring fails fast at startup with `The dependencies of some of the beans form a cycle`; the real fix is to redesign (extract the shared logic into a third bean), not to hide it behind `@Lazy` or field injection; a pressure question because juniors "fix" the symptom instead of the design
-- `@Qualifier` / `@Primary` — needed when two classes implement the same interface and Spring cannot decide which one to inject; `@Primary` sets a default, `@Qualifier("beanName")` picks one explicitly; interviewers ask "what happens if two `@Service` classes implement the same interface and you inject the interface type?" (Spring throws at startup unless you resolve it)
-- Interface + implementation for a service, or just a class — the indirection only pays when there is a second implementation; Spring proxies concrete classes fine and Mockito mocks them, so "you need it for testing" is out of date; interviewers ask "why does your `TimeEntryService` (not) have an interface?" and the honest trade-off beats the cargo-culted answer
-- Filter vs `HandlerInterceptor` vs `@Aspect` for a cross-cutting concern — a filter sits at the servlet level and sees every request including the security chain, an interceptor runs around the controller and knows which handler method was selected, an AOP aspect wraps any bean method; interviewers ask "how would you log every incoming request, or time every service call?" and expect you to pick one and say why the other two do not fit
-- Calling another HTTP API — `RestTemplate` is in maintenance, `WebClient` is the reactive client, `RestClient` (Boot 3.2+) is the modern synchronous choice; interviewers ask "your service needs to call an external API — what do you inject?"
+- `@Service`, `@Repository`, `@Component`, `@Controller` â€” all four register the class as a Spring bean; `@Repository` also translates JPA/Hibernate exceptions into Spring's `DataAccessException`; interviewers ask "what is the difference between `@Service` and `@Component`?" â€” semantics and layer readability
+- `@Bean` in a `@Configuration` class â€” the way to register library classes you cannot annotate with `@Component`; used in `SecurityConfig` to expose `BCryptPasswordEncoder` and `AuthenticationManager`; interviewers ask "why did you define a `@Bean` for `BCryptPasswordEncoder`?"
+- Constructor injection â€” preferred over `@Autowired` field injection; makes dependencies explicit, `final`, and easy to mock in tests without starting Spring; Spring infers it automatically when the class has one constructor; interviewers ask "why not field injection?"
+- `@Value("${property.name}")` â€” injects a single config value from `application.properties` at startup; the app fails fast if the key is missing rather than throwing a `NullPointerException` at runtime
+- `@ConfigurationProperties` â€” binds a group of related properties to a class at once; cleaner than many individual `@Value` annotations when you have grouped config like `app.jwt.secret` and `app.jwt.expiration`
+- `@Qualifier` / `@Primary` â€” needed when two classes implement the same interface and Spring cannot decide which one to inject; `@Primary` sets a default, `@Qualifier("beanName")` picks one explicitly at the injection point; interviewers ask "what happens if you have two `@Service` classes implementing the same interface and inject the interface type?" (Spring throws at startup unless you resolve the ambiguity with one of these)
 
----
+### Spring Data JPA â€” entity and relationship mapping
 
-### Bean lifecycle and proxies
+- `@Entity` â€” marks the Java class as a JPA entity; Hibernate manages its lifecycle and maps it to a database table; omitting it means Hibernate ignores the class completely with no error
+- `@Table(name = "users")` â€” sets the table name; always required for the `User` entity because `user` is a reserved word in PostgreSQL; convention: use plural lowercase names (`users`, `projects`, `time_entries`) to avoid reserved-word conflicts
+- `@Id` â€” marks the primary key field; without it Hibernate throws a `MappingException` on startup
+- `IDENTITY` vs sequence id generation â€” both work with PostgreSQL; identity requires the insert to
+  obtain each id and can limit batching, while sequences support allocation, whose gaps are normal
+  and not evidence of missing rows
+- `@Column(nullable = false)` and `@Column(unique = true)` â€” add `NOT NULL` and `UNIQUE` constraints; Hibernate reflects them in the schema when `ddl-auto=update`; interviewers inspect entity annotations for missing constraints
+- `@ManyToOne(fetch = FetchType.LAZY)` and `@JoinColumn(name = "user_id")` â€” the entity on the "many" side holds the FK column; `@JoinColumn` names that column; interviewers ask "which entity owns the foreign key and why?"
+- `@OneToMany(mappedBy = "user")` â€” the inverse side of the relationship; `mappedBy` points to the field in the other entity that owns the FK; omitting `mappedBy` causes JPA to create an unexpected join table
+- `@ManyToMany` â€” models a many-to-many relationship; requires a join table; interviewers ask about relationships and this is the third type they expect you to know after `@ManyToOne` and `@OneToMany`
+- `cascade = CascadeType.ALL` and `orphanRemoval = true` â€” `cascade` propagates save/delete operations to children automatically; `orphanRemoval` deletes a child when it is removed from the parent's collection; interviewers ask the difference between the two
+- `@Enumerated(EnumType.STRING)` â€” stores the enum name (`DRAFT`, `SUBMITTED`) instead of its position number; using the default `ORDINAL` means inserting a new value in the middle of the enum silently corrupts every existing row; interviewers always ask why `STRING` is the safe choice
+- `@CreationTimestamp` / `@UpdateTimestamp` (Hibernate) vs `@PrePersist` (JPA) â€” `@CreationTimestamp` is Hibernate-specific and sets the field automatically; `@PrePersist` is the JPA-standard lifecycle callback that runs before the first insert; interviewers ask "did you set `createdAt` manually?" and which approach you chose and why
 
-- Eager singletons and `@Lazy` — every singleton is built at startup, which is precisely why a broken bean fails the boot instead of the first request that touches it; `@Lazy` defers creation and therefore defers the failure to runtime, so it is a deliberate trade rather than an optimisation; interviewers ask why the app refuses to start rather than erroring on the endpoint
-- `@PreDestroy` and graceful shutdown — Spring closes the context on a JVM shutdown hook, and `server.shutdown=graceful` lets in-flight requests finish instead of being severed mid-transaction; interviewers on container-flavoured rounds ask what happens to a half-finished request when the orchestrator sends SIGTERM
-- JDK dynamic proxy vs CGLIB — Spring wraps an interface-implementing bean in a JDK proxy and a plain class by subclassing it with CGLIB, which is *why* `private`, `final`, and self-invoked methods escape `@Transactional` and `@PreAuthorize`; interviewers ask "you said the proxy cannot intercept that — what is the proxy actually made of?", and this single answer unifies three separate gotchas
-- `ApplicationEventPublisher` and `@EventListener` — decouples a side effect (an audit row, a notification) from the method that triggers it, without the publisher knowing who listens; interviewers ask how you add a second side effect to `approve()` without touching the approval logic, and this is the Spring-native alternative to injecting a fourth collaborator
+### Spring Data JPA â€” repositories, queries, and performance
 
----
+- `JpaRepository` built-in methods: `save()`, `findById()`, `findAll()`, `deleteById()`, `existsById()` â€” what Spring provides without writing any SQL; interviewers ask "what does `JpaRepository` give you for free?"
+- `save()` insert vs update â€” Spring Data delegates to entity-newness detection, normally using
+  version/id state or `Persistable.isNew()`; it is not universally equivalent to checking only
+  `id == null`
+- Derived query methods: `findByEmail(String email)` â€” Spring reads the method name and generates the SQL; no `@Query` needed for simple lookups; interviewers test how far the naming convention goes (`findByTypeAndUserId`, `existsByEmail`)
+- `@Query` with JPQL â€” custom queries for aggregations and complex filtering; JPQL uses entity class names and field names, not table names and column names; needed for the reports endpoint in TimeTrack
+- Pagination: `Pageable`, `Page<T>`, `PageRequest.of(page, size)` â€” the standard way to return lists in production; interviewers ask "what happens if you return `findAll()` on a table with 100,000 rows?"
+- N+1 problem â€” one query loads the list, then N extra queries load each lazy relationship in a loop; fix with `JOIN FETCH` in `@Query` or with `@EntityGraph`; one of the most common JPA interview questions
+- `FetchType.LAZY` vs `FetchType.EAGER` â€” `LAZY` loads the relationship only when you access the field; `EAGER` loads it on every query; `@ManyToOne` defaults to `EAGER` â€” a surprising gotcha; always declare `FetchType.LAZY` explicitly on `@ManyToOne`; interviewers ask "what is the default fetch type for `@ManyToOne`?"
 
-### Spring Data JPA — entity mapping
+### Exception handling
 
-- `@Entity` — marks the Java class as a JPA entity; Hibernate manages its lifecycle and maps it to a database table; omitting it means Hibernate ignores the class completely with no error
-- `@Table(name = "users")` — sets the table name; always required for the `User` entity because `user` is a reserved word in PostgreSQL; convention: plural lowercase names (`users`, `projects`, `time_entries`) to avoid reserved-word conflicts
-- `@Id` — marks the primary key field; without it Hibernate throws a `MappingException` on startup
-- Surrogate key vs natural key — a synthetic auto-generated `Long id` instead of a natural column like `email` as `@Id`, because a natural key is mutable (an email change would cascade into every foreign key) and wider to index; interviewers ask "why not make email the primary key?" and expect the stability and FK-width trade-off
-- `@GeneratedValue(strategy = GenerationType.IDENTITY)` — delegates id generation to the database's auto-increment (`BIGSERIAL` in PostgreSQL); the default `AUTO` strategy creates a shared sequence that increments by 50, leaving large gaps — always use `IDENTITY` in PostgreSQL projects
-- `@Column(nullable = false)` and `@Column(unique = true)` — add `NOT NULL` and `UNIQUE` constraints; Hibernate reflects them in the schema when `ddl-auto=update`; interviewers inspect entity annotations for missing constraints
-- `@Column(unique = true)` is DDL metadata, not runtime validation — it only has teeth if Hibernate generated the schema, so under `ddl-auto=validate` with a Flyway script that forgot the index, duplicates go straight in and the annotation enforces nothing; interviewers show a `unique = true` email field next to a migration without the constraint and ask what actually stops the duplicate
-- `@Enumerated(EnumType.STRING)` — stores the enum name (`DRAFT`, `SUBMITTED`) instead of its position number; the default `ORDINAL` means inserting a value in the middle of the enum silently corrupts every existing row, and even with `STRING` *renaming* a constant breaks every persisted row; interviewers always ask why `STRING` is the safe choice
-- `equals()` / `hashCode()` on a JPA entity — the field-based version Lombok's `@Data` generates breaks the moment the entity goes into a `HashSet` before persist (the id is null, then changes on insert, so the object is lost in the set); the safe contract is a constant `hashCode()` with id-based `equals()`; interviewers hand you an entity and ask "is this safe in a `Set`?"
-- Lombok `@Data` on a JPA entity — `toString()` over a bidirectional relation recurses into a `StackOverflowError` and `equals`/`hashCode` can trigger lazy loading; interviewers show an `@Data` entity and ask "any problem with this?" — the safe answer is to exclude relations or use `@Getter`/`@Setter` with id-based equality
-- `@CreationTimestamp` / `@UpdateTimestamp` (Hibernate) vs `@PrePersist` (JPA) — `@CreationTimestamp` is Hibernate-specific and sets the field automatically; `@PrePersist` is the JPA-standard lifecycle callback that runs before the first insert; interviewers ask "did you set `createdAt` manually?" and which approach you chose
-- `@Version` (optimistic locking) — the field that stops a lost update: two users load the same row, both save, and without it the second write silently overwrites the first; with it Hibernate checks the version and the loser gets `ObjectOptimisticLockingFailureException`, which you map to a 409; interviewers ask "two managers approve the same entry at the same time — what happens?"
+- `@RestControllerAdvice` â€” combines `@ControllerAdvice` with `@ResponseBody` for JSON-oriented
+  handlers; plain advice can also return JSON when its handler uses `ResponseEntity` or `@ResponseBody`
+- `@ExceptionHandler(SomeException.class)` â€” handles one specific exception type and maps it to the right HTTP status code; Spring calls it automatically when the exception propagates from any controller
+- Custom exception classes extending `RuntimeException` â€” unchecked so they propagate without `throws` declarations; named after what went wrong (`ResourceNotFoundException`); interviewers ask "why `RuntimeException` and not `Exception`?"
+- `MethodArgumentNotValidException` â€” Spring throws this when `@Valid` on a `@RequestBody` fails; handle it in `@RestControllerAdvice` to return 400 with field-level error messages; not catching it results in a verbose default Spring error body
+- Error response format â€” always return a consistent `{ "message": "...", "status": 404 }` body; the Angular client must be able to parse any error the same way; interviewers ask "what does your API return when a resource is not found?"
+- Soft delete â€” `active = false` instead of `deleteById()`; preserves historical data and audit trail; interviewers ask "what happens to existing time entries when a project is deleted?"
 
-- Lombok `@Data` on a JPA entity — the generated `equals`/`hashCode`/`toString` touch every field including lazy relations, so putting the entity in a `HashSet` or simply logging it triggers a load or a `LazyInitializationException`; `@Data` on a DTO is fine, on an entity it is a trap; interviewers use it as the "did you copy this from an AI?" probe
-- `@Embeddable` / `@Embedded` — groups fields that belong together (an address, a money amount) into a value-object class mapped onto columns of the *same* table, with `@AttributeOverride` when names collide; interviewers ask how you avoid eight loose address fields on the entity without inventing a second table
+### Spring Security â€” setup and authorization
 
----
+- `@Configuration`, `@EnableWebSecurity`, and `@EnableMethodSecurity` â€” Boot can activate web
+  security without explicitly adding `@EnableWebSecurity`; `@EnableMethodSecurity` is the separate
+  switch required for `@PreAuthorize`
+- `SecurityFilterChain` â€” a bean that configures CSRF, session policy, route permissions, and filter
+  order; applications may define multiple ordered chains for different request matchers
+- Route rules: `.requestMatchers("/api/auth/**").permitAll()` and `.anyRequest().authenticated()` â€” all public and protected routes in one place; order matters â€” specific rules must be declared before the catch-all; interviewers ask "how do you make the login endpoint public without exposing everything?"
+- `@PreAuthorize("hasRole('MANAGER')")` â€” method-level role check that runs after the JWT is validated; requires `@EnableMethodSecurity` on `SecurityConfig`; silently ignored without it â€” the most common authorization bug in junior code
+- CORS with Spring Security â€” a shared `CorsConfigurationSource` keeps policy central and lets the
+  security chain handle preflight; `@CrossOrigin` can still be valid for deliberately local
+  controller policy
 
-### The persistence context — what Hibernate is actually doing
+### Spring Security â€” authentication and JWT
 
-- The four entity states — transient (created with `new`, no id, unknown to JPA), managed (inside the persistence context and dirty-checked), detached (the transaction ended, so changes go nowhere), removed (queued for delete); interviewers ask "I changed a field and nothing happened — which state was the object in?", and these four names are the vocabulary every other JPA answer depends on
-- The first-level cache — two `findById(1L)` calls inside one transaction issue one SELECT, because the persistence context returns the same managed instance; interviewers ask how many queries a method runs and use the answer to check you understand the context is a cache, not merely a change tracker
-- `persist()` vs `merge()` behind `save()` — `persist` attaches a genuinely new instance, `merge` copies a detached object's state onto a managed copy and returns *that* copy, so discarding the return value of `save()` on a detached entity is a real bug; interviewers ask what `save()` returns and why it may not be the object you handed it
-- Flush timing — Hibernate writes at commit or before a query that would be affected, not at the moment you call the setter, which is why the SQL in your log appears "late" and why a test that never flushes sees nothing in the database; interviewers ask when the UPDATE is actually sent
-
----
-
-### Spring Data JPA — relationships
-
-- `@ManyToOne(fetch = FetchType.LAZY)` and `@JoinColumn(name = "user_id")` — the entity on the "many" side holds the FK column; `@JoinColumn` names that column; interviewers ask "which entity owns the foreign key and why?"
-- `@OneToMany(mappedBy = "user")` — the inverse side of the relationship; `mappedBy` points to the field in the other entity that owns the FK; omitting `mappedBy` causes JPA to create an unexpected join table
-- `@ManyToMany` — models a many-to-many relationship; requires a join table; interviewers ask about relationships and this is the third type they expect you to know after `@ManyToOne` and `@OneToMany`
-- Bidirectional relationship consistency — setting only the child's `@ManyToOne` leaves the parent's in-memory collection stale, and adding to the `mappedBy` collection alone writes no FK at all because the inverse side is not the owner; the fix is a helper method that sets both sides; interviewers show `project.getEntries().add(e)` and ask whether the foreign key is written
-- `cascade = CascadeType.ALL` and `orphanRemoval = true` — `cascade` propagates save/delete operations to children automatically; `orphanRemoval` deletes a child when it is removed from the parent's collection; interviewers ask the difference between the two
-
-- The owning side of a bidirectional relationship — the side holding the foreign key (`@ManyToOne`, or the side without `mappedBy`) is the only one Hibernate consults when deciding what to write, so setting only the `@OneToMany` side saves nothing and produces a silent no-op; interviewers ask why the child row was never persisted
-- Cascade declared on the wrong side — `cascade = CascadeType.ALL` on a `@ManyToOne` means deleting one time entry deletes its whole project, and every other entry with it; cascade belongs on the parent's `@OneToMany`, and `REMOVE` almost never belongs on the many side; reviewers show the annotation and ask what your delete endpoint actually deletes
-- A join table that grows its own columns — the moment the link carries data (`assigned_at`, `role_on_project`), `@ManyToMany` stops being viable and the join becomes its own entity with two `@ManyToOne`s; interviewers ask what changes in your mapping when the client wants to know *when* a user joined a project
-
----
-
-### Spring Data JPA — repositories and queries
-
-- JPA vs Hibernate — JPA is the specification (the `@Entity`, `@Id` annotations and the `EntityManager` interface); Hibernate is the default implementation Spring Boot ships; interviewers ask "are JPA and Hibernate the same thing?" — the spec/implementation distinction separates a candidate who understands the stack from one who memorised annotations
-- `JpaRepository` built-in methods: `save()`, `findById()`, `findAll()`, `deleteById()`, `existsById()` — what Spring provides without writing any SQL; interviewers ask "what does `JpaRepository` give you for free?"
-- `findById()` returns `Optional<T>`, not the entity or `null` — forces you to handle the not-found case explicitly with `.orElseThrow(...)`; calling `.get()` instead throws an opaque `NoSuchElementException` (a 500) where you wanted a 404; a snippet interviewers put in front of you precisely because it compiles
-- `deleteById()` on a missing id — throws `EmptyResultDataAccessException`, so a "safe" delete endpoint returns 500 instead of 404 unless you check `existsById` first or catch it; interviewers ask what your DELETE returns for an unknown id
-- `save()` insert vs update — `save()` inserts when `id == null` and merges (updates) when `id` is already set; no separate `insert()` and `update()` methods needed; interviewers ask how Spring Data decides which operation to run
-- Persistence context and dirty checking — an entity loaded inside a `@Transactional` method is *managed*, so changing one of its fields is written to the database on commit **without ever calling `save()`**; interviewers show a service method with no `save()` and ask "does this update the row?" — answering "no" exposes a candidate who has never understood the persistence context
-- `save()` vs `saveAndFlush()` — `save()` only registers the change and the SQL runs at commit; `saveAndFlush()` forces the SQL immediately, which matters when the next line reads through a native query or you need a DB constraint to fail right there; interviewers ask when the difference is actually visible
-- Derived query methods: `findByEmail(String email)` — Spring reads the method name and generates the SQL; no `@Query` needed for simple lookups; interviewers test how far the naming convention goes (`findByTypeAndUserId`, `existsByEmail`)
-- `@Query` with JPQL, and `nativeQuery = true` — JPQL is portable and works on entity and field names; a native query is raw SQL tied to the database and bypasses the persistence context; interviewers ask when you would drop to native and what you lose
-- Parameter binding, not string concatenation — concatenating a value into a JPQL or native query reintroduces SQL injection; always bind with `:param` and `@Param`; interviewers ask whether using JPA makes you immune to injection (it does not, if you concatenate)
-- `@Modifying` on an update/delete `@Query` — without it Spring tries to run the statement as a `SELECT` and throws `Can not issue data manipulation statements with executeQuery()`; it also needs a `@Transactional` boundary, and `clearAutomatically = true` because the persistence context still holds stale entities after a bulk update; a top "what is wrong with this snippet?" probe
-- Spring Data JPA vs `JdbcTemplate` and plain SQL — JPA buys you the persistence context, dirty checking, and free CRUD, but it hides the SQL and fights you on reporting queries and bulk writes, where a native query or `JdbcTemplate` is the honest choice; interviewers ask "when would you *not* use JPA?" and a candidate who thinks JPA is always right has never written a report
-
-- `EntityManager` and `@PersistenceContext` — the JPA interface `JpaRepository` is built on, and what you inject directly for a dynamic Criteria query or a manual `flush()`/`detach()`; interviewers ask what sits underneath Spring Data to check the repository interface is not the deepest layer you know
-
----
-
-### JPA performance — fetching, N+1, and pagination
-
-- N+1 problem — one query loads the list, then N extra queries load each lazy relationship in a loop; fix with `JOIN FETCH` in `@Query` or with `@EntityGraph`; one of the most common JPA interview questions
-- A repository call inside a loop — `for (id : ids) repo.findById(id)` is a self-inflicted N+1; the fix is `findAllById` or a single query with `IN`; interviewers show the loop and expect you to name it as N+1 without prompting
-- `FetchType.LAZY` vs `FetchType.EAGER` — `LAZY` loads the relationship only when you access the field; `EAGER` loads it on every query; `@ManyToOne` defaults to `EAGER` — a surprising gotcha; always declare `FetchType.LAZY` explicitly on `@ManyToOne`; interviewers ask "what is the default fetch type for `@ManyToOne`?"
-- `spring.jpa.open-in-view` (default `true`) — Spring keeps the Hibernate session open until the response is rendered, so lazy relations load *during JSON serialisation* and `LazyInitializationException` never surfaces in dev while a DB connection is pinned for the whole request; interviewers show a controller returning an entity with a lazy list that "works" and ask why — and why every team disables it
-- Projections (interface-based or a DTO constructor in JPQL) — fetch only the columns you return instead of hydrating a whole 20-column entity; interviewers ask how you avoid loading everything to return two fields
-- Indexing the columns you filter on — a derived query on `userId` and `date` scans the table until an index exists (`@Table(indexes = …)` or a Flyway `CREATE INDEX`), and every index costs write time and storage; interviewers ask "the query is slow and it is not N+1 — what next?" and expect the index and its write-cost trade-off
-- Pagination: `Pageable`, `Page<T>`, `PageRequest.of(page, size)` — the standard way to return lists in production; interviewers ask "what happens if you return `findAll()` on a table with 100,000 rows?"
-- `Page<T>` vs `Slice<T>` — `Page` runs an extra `COUNT` query to know the total; `Slice` only knows whether a next page exists and skips the count; interviewers ask which you return and what the count costs on a large table
-- Unbounded page size and sort injection — a client sending `?size=100000` is honoured unless you cap it (`spring.data.web.pageable.max-page-size`, `@PageableDefault`), and an unvalidated `?sort=password` orders by a column you never meant to expose; the pressure follow-up to the happy-path `Pageable` answer
-- Dynamic filtering — combining optional filters (project, status, date range) without writing 2ⁿ derived methods; the junior answers are one `@Query` with `:param IS NULL OR field = :param`, plus knowing `Specification`/Criteria exists for the general case; interviewers ask "the client can filter by any combination of three fields — how do you implement that?"
-
-- `MultipleBagFetchException` and pagination with `JOIN FETCH` — you cannot `JOIN FETCH` two `List` collections in one query, and fetching a collection alongside a `Pageable` makes Hibernate log "applying in memory" and page the entire result set in RAM; the fixes are a `Set`, a second query, or `@BatchSize`; interviewers ask what went wrong right after your N+1 fix "worked"
-- Batch inserts — saving thousands of rows one `save()` at a time issues one round trip each; `saveAll` plus `hibernate.jdbc.batch_size` (and `order_inserts`) groups them, and `GenerationType.IDENTITY` silently disables batching altogether because Hibernate needs each generated id immediately; interviewers ask why the import endpoint takes minutes
-- `@EnableCaching` and `@Cacheable` — Spring's cache abstraction for reference data re-read on every request, paired with `@CacheEvict` on the write path; the risks are a stale cache nobody invalidated and a cache key that forgot a parameter; interviewers ask what you would do about a repeated query *and* what you would get wrong doing it
-
----
-
-### Exception handling — the global advice
-
-- `@RestControllerAdvice` — marks the global exception handler; combines `@ControllerAdvice` and `@ResponseBody`; using `@ControllerAdvice` alone returns HTML error pages, not JSON; interviewers ask "why `@RestControllerAdvice` and not `@ControllerAdvice`?"
-- `@ExceptionHandler(SomeException.class)` — handles one specific exception type and maps it to the right HTTP status code; Spring calls it automatically when the exception propagates from any controller
-- Custom exception classes extending `RuntimeException` — unchecked so they propagate without `throws` declarations; named after what went wrong (`ResourceNotFoundException`); interviewers ask "why `RuntimeException` and not `Exception`?"
-- One exception per business case vs a single `BusinessException` with a code — the trade-off between a class explosion and losing the ability to map each case to a distinct HTTP status; interviewers ask how you decided
-- `@ResponseStatus` on the exception class vs `@ExceptionHandler` in the advice — the annotation is a one-liner that sets the status but gives no control over the body; the advice gives you the JSON contract the Angular client parses; interviewers ask why you chose one
-- Handler resolution order — Spring picks the most specific matching `@ExceptionHandler`, so a catch-all does not shadow your 404 handler, but a handler declared on a common superclass collapses two different failures into one status; interviewers ask which handler wins
-- Catch-all `@ExceptionHandler(Exception.class)` — the last-resort handler that turns anything unanticipated into a clean 500; without it a raw stack trace and internal class names reach the client; interviewers ask "what does your API return when something you did not foresee blows up?"
-- A catch-all that swallows Spring Security's own exceptions — `@ExceptionHandler(Exception.class)` also matches the `AccessDeniedException` thrown by `@PreAuthorize` during controller invocation, so every legitimate 403 is silently rewritten into a 500 and the frontend can no longer tell "forbidden" from "server broken"; interviewers show the advice next to a `@PreAuthorize` endpoint and ask why the role check "returns 500"
-- Never leak internal detail in the error body — no stack traces, no SQL, no raw `e.getMessage()` from a database exception; log the detail server-side and return a generic message; interviewers frame it as a security question hidden inside an error-handling one
-- Rethrowing without chaining the cause — `throw new BusinessException(e.getMessage())` discards the original stack trace, so the log stops at the rethrow and the root cause is gone; the fix is the two-arg constructor `new BusinessException(msg, e)`; interviewers show the message-only rethrow and ask what the production log will be missing
-- `try/catch` in the controller instead of the advice — catching in the controller and hand-building a `ResponseEntity.status(500)` duplicates the advice, breaks the centralised error contract, and usually loses the correct status; interviewers show a controller full of `try/catch` next to a working advice and ask what is wrong with handling errors there
-- Error response format — a consistent `{ "message": "...", "status": 404 }` body so the Angular client parses every error the same way; Spring Boot 3 also ships `ProblemDetail` (RFC 7807: `type`, `title`, `status`, `detail`), and knowing the standard exists separates a candidate who designed a contract from one who returned a random map
-
-- An error id in the response and the detail in the log — the client receives `{"code": "...", "traceId": "8f3c..."}` while the stack trace stays server-side, which satisfies "never leak internals" and "we still have to debug production" at the same time; interviewers ask how you find the request behind a user's "it failed at 14:32"
-- An exception thrown inside a security filter escapes `@RestControllerAdvice` — the filter chain runs before `DispatcherServlet`, so an `ExpiredJwtException` raised while parsing the token becomes a raw container 500 instead of your JSON error shape; the fix is catching it in the filter and delegating to the `AuthenticationEntryPoint`; interviewers ask why the global handler never fires for authentication errors
-
----
-
-### Mapping framework exceptions to status codes
-
-- `MethodArgumentNotValidException` — Spring throws it when `@Valid` on a `@RequestBody` fails; handle it in the advice to return 400 with field-level messages; not catching it results in a verbose default Spring error body
-- `MethodArgumentTypeMismatchException` — a client calling `/api/entries/abc` where the path variable is a `Long` fails *before* your method ever runs and, unhandled, returns Spring's default body; you map it in the advice to a clean 400; the general form of the date-binding trap, and interviewers ask "what does your API return when the id is not a number?"
-- `MissingServletRequestParameterException` — a required `@RequestParam` the client omits fails before your method runs and, unhandled, returns Spring's default body instead of a clean 400; the third member of the trio with the type mismatch and the invalid body; interviewers ask "the report endpoint needs `?month=` and the client leaves it out — what does your API return?"
-- `NonUniqueResultException` on a single-result derived query — `findByEmail` returning one `User` throws "query did not return a unique result" the day a duplicate row exists, turning a `UNIQUE` constraint that was never enforced into a 500; interviewers ask what happens when two rows match and why the missing DB constraint is a second bug
-- `DataIntegrityViolationException` — the wrapper Spring throws when the database rejects a write (unique, `NOT NULL`, foreign key); catching it and returning 409 is how a duplicate email becomes a clean error instead of a 500; interviewers ask why you check in the service *and* still keep the DB constraint
-- Exceptions thrown inside a filter bypass `@RestControllerAdvice` — the security filter chain runs *before* `DispatcherServlet`, so a malformed token failing in `JwtFilter` never reaches the global handler and the client gets a raw container error page unless you write the JSON response in the filter itself; interviewers use it to test whether you know where the advice actually sits in the pipeline
-- `AccessDeniedHandler` — the 403 counterpart of `AuthenticationEntryPoint`: an authenticated user who fails a `@PreAuthorize` is denied inside the filter chain, so the advice never sees it and the client gets an empty body unless you register this hook; interviewers ask for both by name once you say that filter exceptions bypass the advice
-- JWT parsing exceptions in the filter (`ExpiredJwtException`, `SignatureException`, `MalformedJwtException`) — each means something different (past `exp`; forged or signed with another secret; garbage or a missing `Bearer ` prefix), and all are thrown where the advice cannot help, so you catch them in the filter and write the 401 body yourself; interviewers ask "the token stops working after an hour — which exception, and what does the client do next?"
+- `UserDetailsService.loadUserByUsername()` â€” the one method you implement to tell Spring how to load your users from the database; called automatically by `DaoAuthenticationProvider` during login; you never call it yourself
+- `BCryptPasswordEncoder` â€” one-way hashing with a random salt; interviewers ask "why hash and not encrypt?" â€” there is no need to recover the original password, and hashing is irreversible even if the database is compromised; also ask "why BCrypt?" â€” the work factor makes brute-force slow
+- `AuthenticationManager.authenticate()` â€” Spring's login coordinator; calling it internally triggers `DaoAuthenticationProvider`, which calls `UserDetailsService` and `BCryptPasswordEncoder`; you expose it as a `@Bean` so `AuthService` can inject it
+- `OncePerRequestFilter` â€” the base class for `JwtFilter`; guaranteed to run exactly once per request; reads the `Authorization: Bearer` header, validates the token, and sets the authenticated user in `SecurityContextHolder`
+- `SecurityContextHolder` â€” thread-local storage where `JwtFilter` places the authenticated user for the current request; services call it to get the logged-in user without trusting client-supplied IDs in the request body
+- `UsernamePasswordAuthenticationToken` 2-arg vs 3-arg â€” 2-arg (no authorities) is unverified credentials passed to `authenticate()`; 3-arg (with authorities) is a confirmed authentication stored in `SecurityContextHolder`; the distinction matters when reading JwtFilter code
+- JJWT signing and parsing â€” convert the configured key into a `SecretKey`, sign issued claims, and
+  parse through the same algorithm/key so tampering, expiry, and malformed tokens fail before the
+  request reaches a controller
+- JWT claim-to-authority mapping â€” load the user or map trusted role claims into Spring Security
+  authorities before placing the authenticated token in `SecurityContextHolder`
 
 ### Bean validation
 
-- `@Valid` on `@RequestBody` — activates validation on the incoming DTO at the controller boundary; without it every constraint annotation on the DTO compiles but is silently ignored at runtime; tested by every interviewer who looks at controller code
-- `spring-boot-starter-validation` dependency — required; without it `@NotBlank` and `@Email` compile fine but do nothing at runtime; a common source of confusing bugs when setting a project up from scratch
-- `@NotNull` vs `@NotEmpty` vs `@NotBlank` — `@NotNull` rejects only null; `@NotEmpty` rejects null and empty but allows whitespace; `@NotBlank` rejects null, empty, and whitespace-only; for String fields always `@NotBlank`; interviewers ask the difference between all three
-- `@Positive`, `@Size`, `@Email`, `@Min`, `@Max`, `@Pattern` — common validators for positive numbers, string length, email format, numeric bounds, and custom regex; interviewers expect you to recall at least three without checking the docs
-- `@Validated` on the controller class — required to validate `@PathVariable` and `@RequestParam`; `@Valid` only works on `@RequestBody`, so without it a negative id in the URL is never rejected
-- `ConstraintViolationException` vs `MethodArgumentNotValidException` — `@Valid` on a body throws the second, `@Validated` on path variables throws the first; each needs its own `@ExceptionHandler` or the other falls through to the generic 500
-- Constraints on the entity instead of the DTO — `@NotBlank` on an `@Entity` field is only checked by Hibernate at flush time, not at the controller boundary, so an invalid request travels through the whole service and surfaces as a 500 from inside the transaction rather than a clean 400; interviewers show an annotated entity next to a controller with no `@Valid` and ask what the client actually receives
-- `@Valid` does not cascade — a nested DTO field or a `List` of DTOs is not validated unless the field itself carries `@Valid`; a silent gotcha interviewers plant in a code-review snippet
-- Custom constraint (`@Constraint` + `ConstraintValidator`) and cross-field rules (`@AssertTrue`) — how you express a rule the built-in annotations cannot, such as `endTime` after `startTime`; interviewers ask where a rule spanning two fields belongs, and `@NotNull` on each field is not the answer
-- Validation groups (`OnCreate`, `OnUpdate`) — the same DTO where `id` must be absent on create and present on update, without duplicating the class; interviewers ask how you avoid two nearly identical DTOs
-- The three validation layers — format and presence on the DTO (`@NotBlank`), business rules that need other data in the service (a `SUBMITTED` entry cannot be edited), integrity invariants in the database (`UNIQUE`, `NOT NULL`) as the last line of defence; interviewers ask "where do you validate, and why in more than one place?" — the answer is that each layer stops a different failure, not that it is duplication
-
-- Validation messages and internationalisation — `@NotBlank(message = "{entry.hours.required}")` resolves through `ValidationMessages.properties` or a `MessageSource`, so the Angular client shows Spanish without the backend hardcoding the sentence; interviewers on a Spanish-market product ask where the text the user actually reads comes from
-- `@Validated` on a `@ConfigurationProperties` class — constraint annotations on the config object make the app refuse to boot when a required property is missing or malformed, instead of failing on the first request that needs it; interviewers ask how you guarantee the JWT secret is present and long enough *before* traffic arrives
-
----
+- `@Valid` on `@RequestBody` â€” activates validation on the incoming DTO at the controller boundary; without it all the constraint annotations on the DTO are compiled but silently ignored at runtime; this is tested by every interviewer who looks at controller code
+- `spring-boot-starter-validation` dependency â€” the required Maven dependency; without it `@NotBlank` and `@Email` compile fine but do nothing at runtime; a common source of confusing bugs when setting up a project from scratch
+- `@NotNull` vs `@NotEmpty` vs `@NotBlank` â€” `@NotNull` rejects only null; `@NotEmpty` rejects null and empty string but allows whitespace; `@NotBlank` rejects null, empty, and whitespace-only strings; for String fields always use `@NotBlank`; interviewers ask the difference between all three
+- `@Positive`, `@Size`, `@Email`, `@Min`, `@Max`, `@Pattern` â€” common validators for positive numbers, string length, email format, numeric bounds, and custom regex; interviewers expect you to recall at least three without checking the docs
+- Controller method validation â€” current Spring MVC validates constrained method parameters and may
+  raise `HandlerMethodValidationException`; type-level `@Validated` selects the older AOP validation
+  path, so exception handling must match the chosen model
+- Body vs method validation failures â€” invalid `@RequestBody` binding and invalid method parameters
+  use different exception families; handle both deliberately instead of assuming every violation is
+  a `ConstraintViolationException`
 
 ### Transactions
 
-- `@Transactional` — wraps the service method in a database transaction; if an unchecked exception propagates out, every DB write in that method rolls back; required for any method that writes to more than one table
-- The right `@Transactional` import — `org.springframework.transaction.annotation.Transactional`, not `jakarta.transaction.Transactional`; the Jakarta one compiles and is even honoured by Spring, but it has no `readOnly`, `propagation`, or `isolation` attributes and different rollback semantics; the "the annotation is there, so why is the behaviour different?" snippet, and the sibling of the `jakarta` vs `javax` trap
-- Where `@Transactional` belongs — on the service layer; Spring Data repositories are already transactional per method, and controllers do not touch the database directly and should never carry it
-- `@Transactional(readOnly = true)` — signals Hibernate to skip dirty checking at the end of the method, so it no longer compares entity state against snapshots; saves memory and time on large read queries
-- Private method gotcha — `@Transactional` on a `private` method is silently ignored because Spring creates a proxy and proxies cannot intercept private calls; a classic trap that catches candidates who memorised the annotation but not the mechanism
-- Self-invocation gotcha — calling a `public @Transactional` method from another method of the *same class* also starts no transaction, because the internal call goes straight to `this` and never through the proxy; interviewers ask it separately ("it is public, so why does nothing roll back?")
-- Checked exceptions do not roll back — Spring rolls back on `RuntimeException` and `Error` only, so a checked exception propagating out **commits** the transaction unless you declare `rollbackFor = Exception.class`; a "would you approve this PR?" trap distinct from the swallowed-exception one
-- Catching an exception swallows the rollback — if you catch a `RuntimeException` inside a `@Transactional` method and do not re-throw, Spring sees no exception and commits; the data is written even though the operation failed
-- `UnexpectedRollbackException` — "Transaction silently rolled back because it has been marked as rollback-only": an inner `@Transactional` method threw, you caught it and carried on, but the outer transaction was already doomed, so the failure surfaces at commit far from its cause; the pressure follow-up to "what happens if you swallow the exception?"
-- `LazyInitializationException` — thrown when you touch a `LAZY` relationship after the Hibernate session closes (outside the `@Transactional` boundary); fix by mapping to a DTO inside the transactional method or by `JOIN FETCH` in the query
-- Optimistic (`@Version`) vs pessimistic (`SELECT … FOR UPDATE`) locking — optimistic assumes conflicts are rare and fails the loser at commit (no DB locks, the client retries); pessimistic locks the row up front and serialises the writers (correct under real contention, but it blocks and can deadlock); interviewers ask "why `@Version` instead of locking the row?"
-- `REQUIRES_NEW` propagation — always starts a new, independent transaction regardless of an existing one; used when an inner operation such as an audit-log write must commit even if the outer transaction rolls back
+- `@Transactional` â€” wraps the service method in a database transaction; if any unchecked exception propagates out, all DB writes in that method roll back automatically; required for any method that writes to more than one table
+- `@Transactional(readOnly = true)` â€” signals Hibernate to skip dirty-checking at the end of the method; interviewers ask "what is the benefit?" â€” Hibernate no longer needs to compare entity state against snapshots, which saves memory and time on large queries
+- Private method gotcha â€” `@Transactional` on a `private` method is silently ignored because Spring creates a proxy and proxies cannot intercept private calls; must be on a `public` method; a classic interview trap that catches candidates who memorised the annotation but did not understand how it works
+- `LazyInitializationException` â€” thrown when you access a `LAZY` relationship after the Hibernate session is closed (outside the `@Transactional` boundary); fix by converting to DTO inside the `@Transactional` method, or by using `JOIN FETCH` to load the relationship eagerly in the query
+- Where `@Transactional` belongs â€” on the service layer; Spring Data repositories are already transactional per method; controllers do not interact with the database directly and should never have it
+- Catching exceptions swallows the rollback â€” if you catch a `RuntimeException` inside a `@Transactional` method and do not re-throw it, Spring sees no exception and commits the transaction; the data is written even though the operation failed; a hidden gotcha interviewers include in code review questions
 
-- Default propagation `REQUIRED` — a `@Transactional` service method calling another joins the *existing* transaction rather than opening a second one, which is why the inner method's failure rolls the outer one back too; interviewers ask "service A calls service B, both `@Transactional` — how many transactions are there?", and `REQUIRES_NEW` only means anything once you can answer that
-- Isolation levels — PostgreSQL defaults to `READ_COMMITTED`, which still permits non-repeatable reads and phantoms within one transaction; raising it buys correctness at the cost of throughput and serialization failures you then have to retry; interviewers ask which anomaly your default still allows and why you did not simply set `SERIALIZABLE`
-- Calling an external HTTP API inside a transaction — the database connection stays checked out for the whole call, so one slow third party drains the pool, and a rollback cannot undo the remote side effect anyway; the remote call belongs outside the transactional boundary; interviewers ask what is wrong with a `@Transactional` method that also invoices the customer
-- Connection pool exhaustion — `HikariPool-1 - Connection is not available, request timed out after 30000ms` means every connection is held, usually by long transactions, `open-in-view` on a slow endpoint, or a leak; you hunt the slow transaction and compare `maximum-pool-size` against what the database permits rather than raising the number blindly; interviewers deliberately separate this from the pool *initialization* failure because the causes share nothing
+### Testing
 
----
+- JUnit 5: `@Test`, `@BeforeEach`, `assertEquals`, `assertThrows` â€” the minimum annotations and assertions to write a service unit test; included automatically via `spring-boot-starter-test`
+- `@ExtendWith(MockitoExtension.class)` â€” activates Mockito in a plain JUnit test without loading any Spring context; the fastest test type; interviewers ask "why not use `@SpringBootTest` for all tests?" â€” startup cost and isolation
+- Mockito: `@Mock`, `@InjectMocks`, `when().thenReturn()`, `doThrow()`, `verify()` â€” mocking dependencies to test one class in isolation without a database or Spring context
+- Arrange / Act / Assert â€” the standard three-part structure every test must follow; interviewers expect to see it named in test comments or test method bodies and will ask you to explain it if the pattern is missing
+- Mockito mock vs context bean override â€” `@Mock` creates a standalone test double; current Spring
+  tests use `@MockitoBean` to replace a context bean, while `@MockBean` is legacy Boot syntax
+- `@WebMvcTest` â€” loads a focused MVC slice; collaborators must be supplied through explicit mock
+  bean overrides or imports rather than being replaced automatically
+- `jsonPath()` â€” the assertion method inside `@WebMvcTest` tests that reads a field from the JSON response: `.andExpect(jsonPath("$.id").value(1))`; interviewers ask "how do you verify the response body in a controller test?"
+- `@SpringBootTest` â€” loads the full Spring application context, but external infrastructure is real
+  only when the test config chooses it; use it for wiring and end-to-end application integration
+  rather than every service rule
+- `@DataJpaTest` â€” tests only the repository layer against an in-memory H2 database; does not load controllers or services; used to verify that derived query methods and `@Query` methods return the correct data
+- Layered testing strategy â€” service tests (JUnit + Mockito, fast, isolated), controller tests (`@WebMvcTest`, no DB), integration tests (`@SpringBootTest`, slow); consultancies ask "how do you test your backend?" â€” naming the three layers is the expected answer
 
-### Spring Security — the filter chain and configuration
+### Tooling
 
-- `@Configuration` + `@EnableWebSecurity` + `@EnableMethodSecurity` — the three annotations that activate Spring Security and method-level role checks; `@EnableMethodSecurity` is silently ignored if missing — `@PreAuthorize` will compile and run but protect nothing
-- `SecurityFilterChain` — the single `@Bean` that configures CSRF (disabled for JWT), session policy (`STATELESS`), route permissions, and the JWT filter order; every JWT-secured Spring Boot app has exactly one
-- Route rules: `.requestMatchers("/api/auth/**").permitAll()` and `.anyRequest().authenticated()` — all public and protected routes in one place; order matters — specific rules must come before the catch-all; interviewers ask "how do you make the login endpoint public without exposing everything?"
-- Why CSRF is disabled for a JWT API, and when that stops being true — CSRF attacks work because the browser attaches credentials automatically, which it never does for an `Authorization: Bearer` header your JS sets by hand; move the token into a cookie and CSRF protection has to come straight back on; interviewers say "you disabled CSRF — justify it", then ask whether the answer still holds with a cookie
-- CORS configuration in `SecurityFilterChain` — required when Angular (4200) calls Spring Boot (8080); configured inside the Security layer via a `CorsConfigurationSource` bean, not with `@CrossOrigin` on controllers, because the Security filter runs before controllers see the request; `allowedOrigins("*")` together with `allowCredentials(true)` is rejected by the browser and insecure anyway
-- `AuthenticationEntryPoint` — the hook Spring Security calls when an unauthenticated request hits a protected route; by default Spring returns an empty 403, so you implement it to return the semantically correct 401 with a JSON body; interviewers ask "should a missing or invalid token return 401 or 403?" — 401 means "who are you?", 403 means "valid token, wrong role"
-
-- `addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)` — the JWT filter must run before the filter that would otherwise attempt form login, so the `SecurityContext` is already populated by the time the authorization filter inspects it; register it later and every request is anonymous; interviewers ask where in the chain your filter goes and what breaks if it goes at the end — the single most-asked JWT configuration question
-- A custom filter must always call `filterChain.doFilter` — returning early when the `Authorization` header is absent silently breaks every `permitAll()` endpoint, because the request never reaches the rest of the chain; interviewers ask why login itself started returning nothing
-- `shouldNotFilter` for public routes — the JWT filter still executes on `/api/auth/login`, so a missing or malformed header must not throw there; you either return early after calling `doFilter` or override `shouldNotFilter`; interviewers ask why login returns 401 in a chain that explicitly declares it `permitAll()`
-- Preflight `OPTIONS` rejected with 401 — the browser sends the preflight without the `Authorization` header, so a chain that authenticates every request kills it before any CORS header is written; enabling `cors()` in the chain puts the CORS filter first; interviewers ask why the browser fails while Postman succeeds
-- Multiple `SecurityFilterChain` beans — a second chain with its own `securityMatcher` and `@Order` lets `/actuator/**` use basic auth while `/api/**` uses JWT; the first matching chain handles the request completely; interviewers ask how you protect Actuator differently from your API
-
----
-
-### Spring Security — authorization and the current user
-
-- `@PreAuthorize("hasRole('MANAGER')")` — method-level role check that runs after the JWT is validated; requires `@EnableMethodSecurity`; silently ignored without it — the most common authorization bug in junior code
-- `hasRole` vs `hasAuthority` and the `ROLE_` prefix — `hasRole('MANAGER')` matches the authority `ROLE_MANAGER`, so building `UserDetails` with `new SimpleGrantedAuthority(role.name())` and no prefix makes every `@PreAuthorize` silently return 403; interviewers show the two lines together and ask why authorization fails
-- Method security is proxy-based — like `@Transactional`, `@PreAuthorize` is skipped entirely when the annotated method is called from inside the same bean; the security-flavoured version of the self-invocation trap
-- Proxies cannot override `final` — a `final` method (or a method on a `final` class) annotated `@Transactional` or `@PreAuthorize` is silently ignored because Spring's CGLIB proxy subclasses your class and cannot override `final`; the third member of the proxy-limitation family after `private` and self-invocation; interviewers show a `final` service method and ask why nothing rolls back
-- Route rules in the chain vs `@PreAuthorize` on the method — the chain gives one readable map of the API's public and protected surface; the annotation lives next to the rule it protects and can reason about the method's arguments; interviewers ask where you put authorization and what happens when the two disagree (both must pass — the chain runs first)
-- Ownership (object-level) authorization — a role check alone still lets user A fetch `/api/entries/42` belonging to user B; the service must compare the resource owner against `SecurityContextHolder`, and must never trust a `userId` sent in the request body; interviewers give you the URL and ask "what stops me reading someone else's data?" — the most common real vulnerability in junior code
-- `@AuthenticationPrincipal` vs `SecurityContextHolder` — the idiomatic way a controller reads the logged-in user is an injected `@AuthenticationPrincipal UserDetails` (or a `Principal` parameter), while a service reaches into the `SecurityContextHolder` thread-local; interviewers show a controller taking `userId` as a `@RequestParam` and ask where the current user should come from
-- Modelling roles: an enum on `User` vs a roles table vs granular authorities — an enum is enough for `USER`/`MANAGER` but cannot express "may approve but not delete"; interviewers ask "the client wants a third role that only reads reports — what changes in your model?"
-
-- SpEL inside `@PreAuthorize` / `@PostAuthorize` — `@PreAuthorize("#id == authentication.principal.id or hasRole('MANAGER')")` states ownership declaratively, but a rule needing a database lookup belongs in the service or in a bean referenced as `@perms.canEdit(#id)`; interviewers ask where the ownership rule lives and then push on what happens once it needs the entity itself
-- Anonymous authentication is not `null` — an unauthenticated request still carries an `AnonymousAuthenticationToken` in the `SecurityContextHolder`, so a hand-rolled `getAuthentication() != null` ownership check waves a logged-out caller straight through; interviewers plant that null check and ask who gets past it
-
----
-
-### Spring Security — authentication
-
-- `UserDetailsService.loadUserByUsername()` — the one method you implement to tell Spring how to load your users from the database; called automatically by `DaoAuthenticationProvider` during login; you never call it yourself
-- `BCryptPasswordEncoder` — one-way hashing with a random salt; interviewers ask "why hash and not encrypt?" — there is no need to recover the original password, and hashing is irreversible even if the database is stolen; and "why BCrypt?" — the work factor makes brute force slow
-- `encode(raw).equals(storedHash)` is always false — BCrypt salts every hash, so the same password hashes differently each time; you must call `matches(raw, storedHash)`; a one-line snippet that instantly separates candidates who understand hashing from those who copied it
-- `AuthenticationManager.authenticate()` — Spring's login coordinator; calling it triggers `DaoAuthenticationProvider`, which calls `UserDetailsService` and the password encoder; you expose it as a `@Bean` so `AuthService` can inject it
-- `OncePerRequestFilter` — the base class for `JwtFilter`; guaranteed to run exactly once per request; reads the `Authorization: Bearer` header, validates the token, and sets the authenticated user in `SecurityContextHolder`
-- `SecurityContextHolder` — thread-local storage where `JwtFilter` places the authenticated user for the current request; services read it to get the logged-in user instead of trusting client-supplied ids
-- `UsernamePasswordAuthenticationToken` 2-arg vs 3-arg — 2-arg (no authorities) is unverified credentials passed to `authenticate()`; 3-arg (with authorities) is a confirmed authentication stored in `SecurityContextHolder`; the distinction matters when reading `JwtFilter` code
-
-- `DelegatingPasswordEncoder` and the `{bcrypt}` prefix — Spring's default encoder stores the algorithm inline in the hash, so the app can still verify old hashes while writing new ones in a stronger algorithm; `There is no PasswordEncoder mapped for the id "null"` means a user row was inserted without going through `encode()`; interviewers use that exact message to check you know encoding happens at registration, not at login
-- Brute force and user enumeration on the login endpoint — an unthrottled `/api/auth/login` invites credential stuffing, and distinct "user not found" versus "wrong password" messages tell an attacker which emails exist; the answers are one generic message plus attempt lockout or delay; interviewers ask what protects your login beyond hashing
-
----
-
-### JWT — design and trade-offs
-
-- JWT structure: `header.payload.signature` — the header encodes the algorithm (HS256), the payload the claims (`sub`, `iat`, `exp`), the signature proves the token was not tampered with; interviewers ask "what is inside a JWT?"
-- Verifying the signature vs decoding the token — reading claims straight from the base64 payload trusts a token anyone can forge; you must verify with the key before trusting a claim; interviewers ask "what stops a user editing `\"role\":\"MANAGER\"` into their own token?"
-- JWT secret strength and storage — HS256 needs a key of at least 256 bits, and a secret committed in `application.properties` is a finding in any review; interviewers ask where your secret lives and what happens if it is eight characters long
-- JWT claims design — which claims you embed is a design decision: putting the role in the token means a demoted user keeps the old role until `exp`, and any mutable profile data goes stale the same way; the alternative is looking the role up per request at the cost of a DB hit; interviewers ask "do you store the role in the JWT — and what happens when I demote the user?"
-- JWT cannot be invalidated before expiry — once issued it is valid until `exp` passes; there is no server-side state to delete; the practical answer is a short expiry (15–60 min), and a Redis blacklist restores revocability at the cost of reintroducing state; interviewers test this trade-off directly
-- Session-based vs JWT — sessions store state on the server (instant revocation, harder to scale horizontally); JWT stores it on the client (stateless, scales easily, cannot be revoked before expiry); interviewers ask "why JWT instead of sessions?"
-- HS256 vs RS256 — HS256 uses one shared secret (right for a single backend); RS256 uses a key pair (needed when several services verify the same token without sharing a secret); interviewers ask which you chose and why
-- Access token vs refresh token — the access token is short-lived and sent on every request; the refresh token is long-lived and used only to mint a new access token; interviewers ask "since a JWT cannot be revoked, how do you keep expiry short without logging the user out every 15 minutes?"
-
-- `ExpiredJwtException` vs `SignatureException` vs `MalformedJwtException` — expiry means a legitimate but stale token, a signature failure means the secret differs or the payload was tampered with, and malformed means the string is not a JWT at all; interviewers name one and ask what the client must have done to cause it
-
----
-
-### Testing — unit tests with JUnit 5 and Mockito
-
-- JUnit 5: `@Test`, `@BeforeEach`, `assertEquals`, `assertThrows` — the minimum annotations and assertions to write a service unit test; included automatically via `spring-boot-starter-test`
-- The wrong `@Test` import — `org.junit.Test` (JUnit 4) on a JUnit 5 class means the method is silently never executed and the build stays green; the flagship "annotation that does nothing" probe
-- `@ExtendWith(MockitoExtension.class)` — activates Mockito in a plain JUnit test without loading any Spring context; the fastest test type; interviewers ask "why not use `@SpringBootTest` for everything?" — startup cost and isolation
-- Mockito: `@Mock`, `@InjectMocks`, `when().thenReturn()`, `doThrow()`, `verify()` — mocking dependencies to test one class in isolation without a database or a Spring context
-- `@MockBean` vs `@Mock` — `@Mock` creates a Mockito mock with no Spring; `@MockBean` creates a mock **and** replaces the real bean in the application context; use it inside `@WebMvcTest` and `@SpringBootTest`, and using `@Mock` there gives you a `NullPointerException` because Spring never injects it; since Boot 3.4 the annotation is `@MockitoBean` — `@MockBean` is deprecated, and reaching for the old name marks code copied from a 2021 tutorial
-- `@BeforeAll` / `@AfterAll` must be `static` in JUnit 5 — a non-static `@BeforeAll` never runs (or throws) unless the class uses `@TestInstance(PER_CLASS)`, so shared setup silently never executes; interviewers plant it next to `@BeforeEach` to check you know the two have different lifecycle rules
-- `assertEquals(expected, actual)` argument order — swapping the arguments still passes and fails identically, but the failure message reads backwards ("expected 5 but was 3" when 5 was the real value) and sends you to debug the wrong side; a small review catch that shows whether you actually read assertion output
-- Arrange / Act / Assert — the three-part structure every test follows; interviewers expect to see it and will ask you to explain it if the pattern is missing
-- `ArgumentCaptor` — `verify(repo).save(any())` proves only that *something* was saved; capturing the argument and asserting on its fields (the status is `DRAFT`, the owner is the authenticated user) is what turns an interaction check into a real assertion; interviewers ask "how do you prove the object you persisted was the right one?"
-- Mockito strict stubs — `MockitoExtension` runs in `STRICT_STUBS`, so a `when()` the code never calls fails with `UnnecessaryStubbingException`, and `verify()` on an interaction that did not happen fails with "Wanted but not invoked"; both are the test telling you your assumption about the code is wrong (usually: the branch you think you are testing is never reached), not noise to silence with `lenient()`; interviewers ask how you read a failing Mockito test
-
-- `@ParameterizedTest` with `@CsvSource` / `@ValueSource` — one test method covering every illegal status transition instead of ten near-identical methods; interviewers ask how you would test all four transitions without copy-pasting the spec
-- AssertJ (`assertThat(...).isInstanceOf(...).hasMessageContaining(...)`, `assertThatThrownBy`) — it ships inside `spring-boot-starter-test` and is what real Spring codebases assert with; interviewers notice immediately when a candidate only knows `assertEquals` and cannot assert fluently on an object's fields
-- Stubbing voids and proving absence — `doNothing()` / `doThrow()` for `void` methods, plus `verify(repo, never()).save(any())` and `verifyNoInteractions(emailService)` to prove the rejected path did *not* write; interviewers ask "how do you test that nothing was saved?", and a spec that only checks the exception has tested half the requirement
-
----
-
-### Testing — what a test actually proves
-
-- Tests that pass but prove nothing — stubbing `save()` to return its own input and then asserting on the stub tests Mockito, not your logic; `verify()` proves an interaction happened, an assertion proves the result is right, and a test with no assertion is not a test; interviewers show such a test and ask "what would break if I deleted the method body?"
-- A controller test that calls the controller method directly — instantiating the controller and calling `controller.create(dto)` runs no Jackson binding, no `@Valid`, no `@PreAuthorize`, and no status-code mapping, so the test is green while every one of those is broken; only `MockMvc` exercises the real pipeline; the highest-value "this test proves nothing" snippet after the stub-only test
-- What you should not test, and what coverage proves — getters, Lombok output, and the framework itself (that `save()` saves) are noise; interviewers ask "you have 90% coverage, what does that prove?" and expect "coverage is not correctness", plus testing behaviour rather than implementation
-- Test the branch, not the happy path — for the TimeEntry workflow the meaningful tests are the illegal transitions (editing a `SUBMITTED` entry, approving your own), which is exactly what consultancies read as the difference between writing tests and writing assertions
-- Layered testing strategy — service tests (JUnit + Mockito, fast, isolated), controller tests (`@WebMvcTest`, no DB), integration tests (`@SpringBootTest`, slow); consultancies ask "how do you test your backend?" and naming the three layers is the expected answer
-
-### Testing — the web and persistence layers
-
-- `@WebMvcTest` — loads only the web layer and replaces services with a mocked bean; tests routing, status codes, and validation with no real database; the right tool for controller behaviour
-- `MockMvc` — the object a `@WebMvcTest` uses to fire a simulated HTTP request (`mockMvc.perform(...)`) with no server and no database; interviewers ask what a controller test actually proves — and what it does not (nothing is persisted)
-- `jsonPath()` — the assertion that reads a field out of the JSON response (`.andExpect(jsonPath("$.id").value(1))`); interviewers ask how you verify the response body in a controller test
-- `@WithMockUser(roles = "MANAGER")` — how a web-layer test exercises a `@PreAuthorize`-protected endpoint; without it every request is 401, and the security filters only run at all if the config is imported; interviewers ask "how do you test that a USER gets 403 on the approve endpoint?"
-- `@DataJpaTest` — tests only the repository layer against an in-memory H2 database; does not load controllers or services; used to verify derived queries and `@Query` methods return the right data
-- `@DataJpaTest` rolls back without flushing — the test transaction never commits, so the insert may never reach the database and a test asserting that a `UNIQUE` or `NOT NULL` constraint rejects a bad row passes for the wrong reason; you need `saveAndFlush()` or `TestEntityManager.flush()` to make the constraint actually fire; the repository-layer version of "green but proves nothing"
-- `@SpringBootTest` — full integration test; loads the whole context including the database; slow but catches wiring issues and missing `@Transactional`; reserve it for critical paths
-- `Failed to load ApplicationContext` — the test starts a real context and dies on a missing property or datasource while the app itself boots fine; the fix is `@ActiveProfiles("test")` with its own properties, or dropping to a slice test that needs no context at all; interviewers ask why a test fails at startup when the application does not
-- H2 is not PostgreSQL — the in-memory database accepts types, reserved words and constraints the real one rejects, so a green repository test can still fail in production; Testcontainers runs the real PostgreSQL in Docker; interviewers ask whether your tests run against the same engine as production
-- `@ActiveProfiles("test")` + `application-test.properties` — how tests get their own datasource instead of writing to your dev database; interviewers ask "do your tests write to your real database?" and the wrong answer is a red flag on data hygiene
-- Test isolation — `@SpringBootTest` writes survive between tests unless the class is `@Transactional` (rolled back per test); a suite that only passes in a given order is a red flag; interviewers ask how you keep integration tests repeatable
-
-- `@SpringBootTest(webEnvironment = RANDOM_PORT)` with `TestRestTemplate` — the only test that starts a real server and exercises the actual filter chain, JSON serialization, and status codes end to end; interviewers ask what `MockMvc` does *not* prove and expect you to name the real-port variant
-- Faking an external HTTP dependency with WireMock — an integration test cannot call a third-party API, so you stand up a stub server and assert your client's behaviour on 200, on 500, and on a timeout; it is named explicitly alongside JUnit and Mockito in the microservices postings, so interviewers ask how you test the code that calls another service
-- Proving a rollback actually happened — asserting that the method threw is not enough; the test must re-read through the repository and confirm the row is absent; interviewers ask how you know the failed operation did not half-write
-
----
-
-### Exercising the API — Postman and HTTP failures
-
-- Postman request essentials — method and URL, `Content-Type: application/json`, the raw JSON body, and the `Authorization: Bearer <token>` header; every take-home asks you to demonstrate the endpoints, and interviewers ask "how did you test this?" before they ever ask about JUnit
-- Postman environments and variables (`{{baseUrl}}`, `{{token}}`) — saving the login token into a variable so the reviewer can run the whole collection; a flat list of hardcoded requests looks amateur next to a proper environment
-- 415 Unsupported Media Type — the response when the body is JSON but the `Content-Type` header is missing, meaning Spring found no message converter; the classic "my POST doesn't work" moment in a live-coding round
-- 405 Method Not Allowed vs 404 — the URL exists but for another verb, versus the path matching no mapping at all; two failures you must tell apart in five seconds from the response alone
-- Verify the write in the database, not only in the response — a 201 with a body proves the controller returned, not that the row committed; you check in pgAdmin (or with a follow-up `GET`) before calling the endpoint done; interviewers ask "how do you know the entry was actually saved?"
-- `curl` as the fallback — hitting an endpoint from a terminal on a server where no GUI exists; interviewers in ops-flavoured rounds ask you to test an endpoint without Postman
-
-### Production debugging — startup failures
-
-- The `APPLICATION FAILED TO START` block — Spring Boot's failure analyzer prints a `Description:` and an `Action:` section that literally states the fix; interviewers ask "the app will not start, what is your first move?" and the expected answer is "read the Action line" — juniors scroll straight past the one paragraph written for them
-- `Port 8080 was already in use` — kill the process holding the port or set `server.port`; the most common first-run failure and a standard warm-up question
-- `UnsatisfiedDependencyException` / `NoSuchBeanDefinitionException` — "no qualifying bean of type X": the class has no stereotype annotation, or it sits outside the root package so scanning never reached it, or you injected an interface with no implementation; interviewers ask what "bean not found" actually means and expect the scanning explanation
-- `BeanDefinitionOverrideException` — two beans registered under the same name (a `@Bean` method colliding with a scanned component) crash startup with "bean definition … already defined"; the fix is renaming or removing one, never `spring.main.allow-bean-definition-overriding=true`; interviewers use it to check you read the failure instead of reaching for the override flag
-- `Failed to configure a DataSource: 'url' attribute is not specified` — `spring-boot-starter-data-jpa` is on the classpath but no datasource properties exist; the failure that proves auto-configuration is conditional on your config, not magic
-- `HikariPool-1 - Exception during pool initialization` — the properties *are* there and the database is the problem: `Connection refused` (PostgreSQL is not running or is on another port), `password authentication failed`, or `database … does not exist`; interviewers separate "no datasource configured" from "datasource configured but unreachable" because the fix lives in a completely different place
-- `Cannot load driver class: org.postgresql.Driver` — the PostgreSQL driver is missing from the `pom.xml` or absent from the runtime classpath; interviewers use it to check you understand that JPA is not, by itself, a database connection
-- `localhost` inside a container is the container itself — a datasource url of `jdbc:postgresql://localhost:5432/db` works on your laptop and fails inside Docker Compose, where the host must be the compose service name (`db`); the single most common "it works on my machine, it dies in Compose" failure, and interviewers ask what changes in the URL when you containerise
-- The app starts before PostgreSQL is ready — `depends_on` waits for the container to start, not for the database to accept connections, so the first boot crashes on connection refused; the fixes are a Compose `healthcheck` with `condition: service_healthy` or a restart policy; interviewers use it to check you know the difference between "container up" and "service ready"
-- Schema validation failure under `ddl-auto=validate` — `missing column [x] in table [y]` means the entity and the real table have drifted apart; the fix is a migration, never switching to `update`; interviewers ask exactly this to see whether you would let Hibernate rewrite a production schema
-- It worked yesterday and fails today with no code change — the checklist is environmental: a missing environment variable, the wrong `spring.profiles.active`, an unreachable DB host, an expired secret; interviewers ask it to test whether you reason about the environment or only about code
-
-### Production debugging — runtime failures and performance
-
-- The Whitelabel Error Page / a bare 500 — an exception escaped the controller and no `@ExceptionHandler` matched; the body tells you nothing, so the answer is always "go and read the server log"; interviewers ask what a 500 tells you (that *your* code failed, not the client's request)
-- `server.error.include-message` — Spring Boot 3 blanks the exception message in the default `/error` body for safety, so the text you threw shows up as `"message": ""`; you set `include-message=always` (and `include-stacktrace=on_param`) locally and leave both off in production; interviewers show the blank message and ask where the text went
-- Anatomy of a log line — timestamp, level, PID, thread, logger class, message; you filter for `ERROR` and read upwards from the failing request; interviewers ask how you find one broken request inside thousands of lines
-- `/actuator/metrics/http.server.requests` — the endpoint timing Actuator records per route (count, total time, max), which is how you prove where the eight seconds actually go before proposing an index or a `JOIN FETCH`; interviewers reject an optimisation offered before any measurement
-- Diagnosing a slow endpoint — turn on SQL logging and count the queries (N+1 is the usual verdict), check whether the filtered column is indexed, check whether the endpoint returns an unbounded list, and measure before and after; interviewers ask "this endpoint takes 8 seconds, what do you check first?" and the ranked checklist *is* the answer
-- Seeing the bound parameter values, not `?` — `show-sql` prints the SQL with placeholders, so you add `logging.level.org.hibernate.orm.jdbc.bind=TRACE` to see the values actually sent; interviewers ask "the query looks right but returns nothing — how do you know what it ran with?"
-- `logging.level.org.springframework.security=DEBUG` — Security rejects requests inside the filter chain with no useful log, so a 403 with no stack trace anywhere is debugged by turning this on and reading which filter denied the request; interviewers ask "your endpoint returns 403 and the log is empty — what now?", and "I would add a print in the controller" proves you do not know the request never reached it
-- Works in Postman, fails from the browser with a CORS error — Postman sends no `Origin` and no preflight, so the failure only appears from Angular, where the browser's `OPTIONS` preflight is rejected by the security filter chain before any controller runs; interviewers hand you exactly this symptom to test whether you know *where* CORS is evaluated in the pipeline
-- `OutOfMemoryError: Java heap space` — almost always an unbounded `findAll()` on a large table or a full-collection load; the fix is pagination, not a bigger `-Xmx`; the follow-up to the `findAll()` question
-- `NullPointerException` in a service — in Spring the two boring causes are an unwrapped `Optional` from `findById()` and a dependency that is null because the object was created with `new` and Spring never injected it; interviewers show the trace and ask you to name the likely cause without seeing the code
-- `/actuator/health` as the first check — is the process alive, and does the `db` component report `UP`; it separates "the app is down" from "the app is up but cannot reach the database" before you read a single log line
-
-### Logging and observability
-
-- `@Slf4j` — Lombok generates the `log` field; `log.info()`, `log.warn()`, `log.error()`; seen in every production codebase and asked about in code reviews
-- The log levels and what each means — `ERROR` (broke, needs attention), `WARN` (recoverable or suspicious), `INFO` (business milestones), `DEBUG` (developer detail, off in production); interviewers ask "what would you log in the approve endpoint?" and a candidate who answers `log.info` on every line has never operated a service
-- Parameterised logging — `log.info("Approved entry {}", id)` skips building the string when the level is disabled, unlike concatenation; a small but classic code-review question
-- `log.error("msg", e)` vs `log.error(e.getMessage())` — passing the exception logs the full stack trace; passing only the message discards the cause and makes production debugging impossible; juniors do this constantly, so interviewers look for it in your `catch` blocks
-- `e.printStackTrace()` and the empty `catch` block — printing to stderr bypasses the logging framework entirely (no level, no timestamp, invisible in any log aggregator), and a `catch` that logs nothing and returns `null` turns a failure into a silent wrong result; both are automatic blocking comments in a PR review
-- What you must never log — passwords, raw JWTs, whole request bodies with personal data; `log.info("login request {}", request)` prints the raw password because Lombok's `@ToString` includes every field
-- Spring Boot Actuator — `spring-boot-starter-actuator` exposes `/actuator/health` and `/actuator/info`, which is what a container orchestrator probes to decide whether your service is alive; interviewers in Docker-flavoured roles ask "how does ops know your app is up?"
-- Actuator endpoint exposure — `management.endpoints.web.exposure.include=*` publishes `/env`, `/beans` and `/heapdump`, leaking your properties (JWT secret included) to anyone who asks; interviewers reviewing a config file ask which endpoints you expose and whether they are secured
-
-- Securing Actuator and adding a custom `HealthIndicator` — expose only `health` and `info` publicly, put the rest behind a role or on a separate `management.server.port`, and implement an indicator so `/actuator/health` reflects a dependency you actually care about; interviewers ask both "how does ops know you are up?" and "who else can read that endpoint?"
-- Correlation id and the logging MDC — putting a request id into the MDC and the log pattern is what lets you follow one user's request through thousands of interleaved lines from concurrent threads; interviewers ask how you trace a single request on a busy server, and "I search by timestamp" is the wrong answer
-- Logs go to stdout in a container — you do not write `logging.file.name` in production, because the platform collects stdout and there is no file to fetch from a dead container; the format (JSON for an aggregator) then becomes a config decision; interviewers in Docker rounds ask where your log file lives and the correct answer is that there is not one
-
----
-
-### Tooling and schema evolution
-
-- Docker: `Dockerfile` for a Spring Boot app — `FROM eclipse-temurin`, `COPY target/*.jar app.jar`, `ENTRYPOINT`; interviewers ask "how do you containerise a Spring Boot application?"
-- Multi-stage `Dockerfile` — `COPY target/*.jar` only works if somebody ran Maven on the host first, so a CI machine with no JDK needs a build stage (`FROM maven … RUN mvn package`) feeding a slim runtime stage; interviewers ask "how does the image get built on a machine that has neither Maven nor a JDK?"
-- `docker-compose.yml` — runs Spring Boot and PostgreSQL together with one command; interviewers ask "how does someone run your project locally without installing PostgreSQL separately?"
-- Flyway — database migrations as versioned SQL scripts (`V1__init.sql`); teams use it instead of `ddl-auto=update` because scripts are reviewable, tracked in git, and safe to run in production; interviewers ask about migration strategy in any production-focused screening
-- A Flyway migration is immutable once applied — editing an already-run `V1__init.sql` changes its checksum and Flyway refuses to start; you write `V2__...` instead; interviewers ask what happens if you "just fix" a migration that is already in production
-- Adding a `NOT NULL` column to a table that has rows — the three-step migration (add it nullable, backfill with an `UPDATE`, then add the constraint), because a single `ALTER TABLE ... NOT NULL` fails on existing data; the "how would you evolve the schema?" question always lands here
-- `ddl-auto=validate` + Flyway — the production pairing: Flyway owns the schema and Hibernate only checks that the entities match it, failing fast on drift; interviewers ask "what stops your entity and your table from disagreeing?"
-- springdoc-openapi / Swagger UI — one dependency generates the live API contract at `/swagger-ui.html` from your controller and DTO annotations, which is how the Angular team consumes your endpoints; interviewers ask "how does the frontend know your API without asking you?"
-- Baselining Flyway on a database that already exists — a project grown under `ddl-auto=update` already has tables, so `V1__init.sql` must describe the current schema and `baselineOnMigrate` tells Flyway to start from there instead of refusing to run against a non-empty database; interviewers ask how you introduce migrations into a project that never had them
-- A JRE base image, a non-root `USER`, and `.dockerignore` — shipping the full JDK roughly doubles the image, running as root is a finding in any security review, and without `.dockerignore` the build context swallows `target/` and `.git`; interviewers reading your Dockerfile ask about all three
-- Layered jars (`layertools`) — a fat jar is a single Docker layer, so changing one line re-ships every dependency; extracting dependency, loader, and application layers means only the last one changes on rebuild; interviewers ask why pushing your image takes minutes for a one-word fix
-- `@Scheduled` + `@EnableScheduling` — the standard way to run periodic work such as a nightly reminder for unsubmitted timesheets, with a cron expression; interviewers ask how you run a scheduled job and immediately follow with "and when you scale to two instances?" (both fire it unless something like ShedLock or a database lock coordinates them)
-- `@Async` + `@EnableAsync` — moves slow work off the request thread onto a configured `TaskExecutor`, with the same proxy limitation as `@Transactional`: a self-invoked `@Async` method just runs synchronously; interviewers ask how you stop an email send adding two seconds to the response
-
----
-
-### Microservices — the awareness a junior is expected to have
-
-Named in roughly 3 of every 8 target postings (explicitly at UST/BCNC and in the banking-sector roles) alongside Spring Boot. No consultancy expects a junior to have designed a distributed system, but they do expect you to know what the word means and to defend the monolith you actually built.
-
-- What a microservice is, against the monolith you built — one deployable unit per business capability with its own database, instead of one application owning every table; interviewers ask you to define it and are checking for "own database and own deployment", not a recital of the term
-- Why Spring Boot is the framework this is built with — the embedded server and the executable fat jar are exactly what make a service independently runnable and deployable, which is the property the whole architecture depends on; interviewers ask what Boot contributes to a microservices stack beyond being convenient
-- Monolith vs microservices as a defensible decision — you built TimeTrack as a monolith on purpose: one team, one database, transactions that are a single `@Transactional` rather than a distributed saga, and one thing to deploy; interviewers ask "would you split this into microservices?" and the answer they want is a reasoned no, not enthusiasm
-- What method calls become across a service boundary — an in-process call becomes a network call that can be slow, fail, or partially succeed, so retries, timeouts, and idempotency stop being optional; interviewers ask what actually gets harder once the service is split
-- Naming the Spring Cloud pieces without claiming to have wired them — service discovery (Eureka), an API gateway, centralised configuration (Config Server), and declarative HTTP clients (OpenFeign); interviewers ask "how do services find each other?" and the honest junior answer names the problem each piece solves and says you have not implemented them
-- Where the shared database anti-pattern bites — two services writing the same tables reintroduces the coupling the split was meant to remove, which is why data ownership per service is the defining rule; interviewers use it to check whether you understand the split is about data, not about folder structure
+- Docker: `Dockerfile` for a Spring Boot app â€” `FROM eclipse-temurin`, `COPY target/*.jar app.jar`, `ENTRYPOINT`; interviewers ask "how do you containerise a Spring Boot application?"
+- `docker-compose.yml` â€” runs Spring Boot and PostgreSQL together with one command; interviewers ask "how does someone run your project locally without installing PostgreSQL separately?"
+- Flyway â€” database migrations as versioned SQL scripts (`V1__init.sql`); why teams use it instead of `ddl-auto=update` (scripts are reviewable, tracked in git, and safe to run in production â€” `update` can silently alter a production table); interviewers ask about migration strategy in any production-focused screening
 
 ---
 
 ## Java
 
 Java language concepts needed to write and understand Spring Boot code.
-Nothing beyond what appears in a real Spring Boot project — not a general Java course.
+Nothing beyond what appears in a real Spring Boot project â€” not a general Java course.
 Every item must be explainable with a real example from TimeTrack or the Java notes.
 
 ### Variables, types, and Strings
 
-- `int` vs `long` — use `int` for most whole numbers, `long` for large numbers and database IDs; the `L` suffix is required for long literals (`1234567890L`) — forgetting it is a common mistake interviewers spot
-- `primitive` vs wrapper class (`long` vs `Long`) — wrapper classes can be `null`; interviewers ask "why does your entity ID use `Long` and not `long`?" — because JPA sets the ID to `null` before the first save; a `long` cannot be `null` so it would cause a compile error
-- `String.equals()` vs `==` — `==` compares memory addresses, not content; using `==` to compare Strings is the most common beginner bug interviewers check for in every Java code review; always use `.equals()`
-- String pool / literal interning — string literals (`"hi"`) are placed in a shared pool, so `==` between two identical literals is accidentally `true`, while `new String("hi")` or a runtime-built string is a separate object and returns `false`; interviewers use this as the follow-up to `==` vs `.equals()` to check you understand *why* `==` sometimes appears to work on Strings and know never to rely on it
-- `String.isBlank()` vs `String.isEmpty()` — `isEmpty()` is true only when length is 0; `isBlank()` is also true when the string is all spaces; maps directly to understanding `@NotBlank` (rejects blanks and spaces) vs `@NotNull` (only rejects null); interviewers ask this when reviewing DTO validation
-- `String.formatted()` — Java 15+ template substitution (`"User %s not found".formatted(id)`); the Java equivalent of JavaScript template literals; appears in custom exception messages
-- `BigDecimal` for money — `double` cannot represent 0.1 exactly in binary; interviewers ask "what type would you use for a price field and why?"; the correct answer is `BigDecimal` — it does exact arithmetic; `double` produces rounding errors after a few operations
-- `var` — local type inference (Java 10+); the type is still fixed at compile time — Java just infers it from the right side; only valid for local variables, not fields, parameters, or return types; you will see it in code reviews even if you do not write it yourself
-- String immutability — every operation (`toUpperCase()`, `+`, `replace()`) returns a new `String` object instead of changing the original; interviewers ask "why does `result += name` inside a loop perform badly?" — each iteration allocates a new object that the garbage collector must clean up
-- `StringBuilder` — mutable buffer for building a string inside a loop; `sb.append(x)` modifies the same object instead of creating a new one each time; interviewers ask when to reach for it instead of `+` (loops, not single-line concatenation — the compiler already optimises that case)
-- autoboxing / unboxing — the compiler silently converts between a primitive and its wrapper (`long` ↔ `Long`); unboxing a `null` wrapper into a primitive throws `NullPointerException`; interviewers show `long id = mapThatMightReturnNull.get(key)` and ask what blows up and why
-- `Integer` / `Long` cache and `==` on boxed values — boxed values from -128 to 127 are cached, so `==` on two boxed `100L` is accidentally `true` but two boxed `1000L` is `false`; interviewers use this gotcha to check you never compare wrapper objects with `==`, only `.equals()`
+- `int` vs `long` â€” use `long` when the numeric range can exceed `int`; an `L` suffix is required only
+  when the integer literal itself does not fit in `int`, because smaller literals widen automatically
+- `primitive` vs wrapper class (`long` vs `Long`) â€” wrappers can represent `null`; a primitive JPA id
+  compiles but defaults to `0`, so it cannot represent the unsaved state as clearly as `Long`
+- `String.equals()` vs `==` â€” `==` compares memory addresses, not content; using `==` to compare Strings is the most common beginner bug interviewers check for in every Java code review; always use `.equals()`
+- `String.isBlank()` vs `String.isEmpty()` â€” `isEmpty()` is true only when length is 0; `isBlank()` is also true when the string is all spaces; maps directly to understanding `@NotBlank` (rejects blanks and spaces) vs `@NotNull` (only rejects null); interviewers ask this when reviewing DTO validation
+- `String.formatted()` â€” Java 15+ template substitution (`"User %s not found".formatted(id)`); the Java equivalent of JavaScript template literals; appears in custom exception messages
+- `BigDecimal` for money â€” `double` cannot represent 0.1 exactly in binary; interviewers ask "what type would you use for a price field and why?"; the correct answer is `BigDecimal` â€” it does exact arithmetic; `double` produces rounding errors after a few operations
+- `var` â€” local type inference (Java 10+); the type is still fixed at compile time â€” Java just infers it from the right side; only valid for local variables, not fields, parameters, or return types; you will see it in code reviews even if you do not write it yourself
+- String immutability â€” every operation (`toUpperCase()`, `+`, `replace()`) returns a new `String` object instead of changing the original; interviewers ask "why does `result += name` inside a loop perform badly?" â€” each iteration allocates a new object that the garbage collector must clean up
+- `StringBuilder` â€” mutable buffer for building a string inside a loop; `sb.append(x)` modifies the same object instead of creating a new one each time; interviewers ask when to reach for it instead of `+` (loops, not single-line concatenation â€” the compiler already optimises that case)
 
-- `StringBuilder` vs `StringBuffer` — both build strings mutably, but `StringBuffer` is the legacy synchronised one and you pay for locking you never use; interviewers ask which you would reach for and why concatenating in a loop with `+` is the thing you are avoiding in the first place
-- Why immutability is worth it — an immutable `String` can be shared without defensive copies, cached, safely used as a map key (its hash never changes), and cannot be altered after a security check has passed it; interviewers ask "why is `String` immutable?" and want the consequences, not the fact
-- Text blocks (`"""`, Java 15+) — multi-line literals for SQL, JSON, and expected test payloads without escaped quotes and `\n`; interviewers ask how you embed a JSON fixture in a test without it becoming unreadable
-- `strip()` vs `trim()` — `trim()` only removes characters below U+0020 while `strip()` is Unicode-aware, which matters the moment real user input carries a non-breaking space; interviewers use it as the "do you know the modern API?" probe
-- `BigDecimal.equals` vs `compareTo` — `equals` also compares the scale, so `2.0` and `2.00` are not equal while `compareTo` returns 0; interviewers show a test that fails "for no reason" and expect this
-- Constructing a `BigDecimal` correctly — `new BigDecimal(0.1)` captures the binary rounding error you were trying to escape, so it is always `BigDecimal.valueOf(0.1)` or the `String` constructor, plus `setScale(2, RoundingMode.HALF_UP)` before display; interviewers ask why the money total came out with fifteen decimals
-- Integer division and silent overflow — `5 / 2` is `2` because both operands are `int`, and an `int` sum past `2^31-1` wraps around without an error; interviewers plant an average calculation that returns a whole number and ask what happened
-- `Integer.parseInt` vs `Integer.valueOf` — `parseInt` returns a primitive `int`, `valueOf` returns an `Integer` from the cache for small values; interviewers pair it with the `Integer` cache gotcha to check you know which one allocates
-
----
-
-### Control flow and source structure
-
-- Classic `switch` fall-through — without `break` at the end of a case, execution continues into the next case even if it does not match; one of the most common Java bugs interviewers ask candidates to spot in a code review
-- Switch expression (Java 14+) — `->` syntax that returns a value directly and removes fall-through entirely; the compiler warns if a case is missing; interviewers ask why this form is safer than the classic statement and expect you to know it is the standard pattern for handling enum status fields in a service method
-- `package` declaration must mirror the folder path — the declared package and the directory the file sits in have to match or the compiler refuses to build; interviewers ask this when a candidate drags a file to another folder in the IDE and cannot explain the resulting error
-- `import` resolves a name, it does not load anything — an import only tells the compiler which class a simple name refers to; the class itself must be on the classpath, and `java.lang` needs no import because it is imported implicitly; interviewers ask what an import actually does to separate it from a JavaScript `import`, which really does fetch a module
-- Fully-qualified class names and same-name collisions — when two libraries expose a class with the same simple name (`java.util.Date` and `java.sql.Date`) you can import only one and must write the other in full; interviewers show a file that needs both and ask how you resolve it
-
-### Compiling and running Java
-
-- JDK vs JRE vs JVM — the JDK contains the compiler (`javac`) and the tools, the JVM executes bytecode, the JRE is the runtime subset; interviewers ask this to check you understand why a machine with only a runtime cannot build the project
-- Compile-time vs runtime failure — the compiler checks syntax, types, and signatures; anything that depends on a *value* (a null reference, a bad cast, a missing class on the classpath) can only fail while running; interviewers show a list of errors and ask you to classify them, because "it compiles" proves almost nothing
-- Reading the common compiler messages — `cannot find symbol`, `incompatible types`, `unreported exception X must be caught or declared to be thrown`, `class Y is public, should be declared in a file named Y.java`; interviewers expect you to translate each into the fix without searching, since these are the four you will hit weekly
-- `NoClassDefFoundError` vs `ClassNotFoundException` — both mean a class the code needs is not on the classpath at runtime even though it compiled fine; the usual cause is a dependency declared with the wrong scope or missing from the package; interviewers ask why a `provided`-scope library breaks the deployed application
-- `NoSuchMethodError` — the code was compiled against one version of a library and a different version is on the classpath at runtime; it is a runtime error with a clean compile, and the way you find it is by inspecting the dependency tree; interviewers use it for "it works on my machine, it breaks in the pipeline"
-
-- Source, bytecode, and the JVM — `javac` turns `.java` into `.class` bytecode that any JVM can run, which is what "write once, run anywhere" actually means and why the JVM, not the code, is the portable part; interviewers ask what a `.class` file contains
-- The classpath — the list of directories and jars the JVM searches for classes at runtime, which is why a class that compiled fine can still be "not found" when you run it; interviewers ask what the classpath is before asking about `ClassNotFoundException`
-- Reflection — reading and invoking a class's members by name at runtime; it is the mechanism behind component scanning, `@Autowired` injection, Hibernate instantiating your entities, and Jackson mapping JSON, which is exactly why those things need a no-arg constructor and `RUNTIME` retention; interviewers ask "how does Spring create an object it has never seen?"
-- Java version literacy — Java 8 gave lambdas, streams, `java.time` and `Optional`; Java 11 added the HTTP client; Java 17 added records, sealed types, pattern matching for `instanceof`, switch expressions and text blocks; Java 21 added pattern matching for `switch` and virtual threads; LTS releases are why client projects sit on 8, 11, or 17; postings name Java 8 *and* Java 17 side by side, so interviewers ask which you have used and what the newer one gives you
-
----
+- Classic `switch` fall-through â€” without `break` at the end of a case, execution continues into the next case even if it does not match; one of the most common Java bugs interviewers ask candidates to spot in a code review
+- Switch expression (Java 14+) â€” `->` syntax returns a value and removes fall-through; the expression
+  must be exhaustive, so a missing case is a compile-time error rather than a warning
 
 ### Classes and objects
 
-- Classes, fields, constructors — every Spring component is a class; interviewers ask "what is an object in the context of a Spring bean?"
-- `private final` fields — why Spring Boot services use them: dependencies cannot change after construction, makes the class easier to unit test; the constructor injection pattern depends on this
-- Access modifiers: `public`, `private`, `protected` — what each restricts and why Spring Boot services use `private` for fields and `public` for methods
-- Package-private (default) access — a field or method with no modifier is visible only within the same package, not public; interviewers list all four levels and expect you to name the "default" one because it is the one juniors forget
-- `this` keyword — disambiguates between a field and a constructor parameter; appears in Lombok-generated code and custom constructors
-- No-arg (default) constructor — Java gives a class a public no-arg constructor only when you declare no constructor at all; the moment you add any constructor that default disappears; interviewers ask "why does your JPA entity need a no-arg constructor?" — Hibernate instantiates the entity by reflection and then sets the fields, so an entity that has only an all-args constructor fails at runtime
-- `static` methods and fields — belong to the class, not to any instance; `Map.of()`, `Integer.parseInt()`, `Objects.equals()`, and utility factory methods are all `static`; interviewers ask "why can't a `static` method access instance fields?" (because there is no instance)
-- Encapsulation — fields are `private`, accessed through getters/setters; this is what Lombok's `@Data` generates; Spring Data reads and writes entity fields through this pattern
-
-- Why an abstract class still has a constructor — it cannot be instantiated on its own, but the subclass's constructor calls `super(...)` to initialise the inherited state; interviewers ask what a constructor is for on a class you can never `new`
-- Constructor chaining and initialisation order — the implicit `super()` runs first, then field initialisers and instance blocks, then the constructor body, and `this(...)` delegates to another constructor of the same class; interviewers ask why a field read inside the parent constructor is still null
-- Nested classes — a `static` nested class stands alone, an inner (non-static) class holds an implicit reference to its outer instance and can therefore keep it alive as a memory leak, and an anonymous class is the pre-lambda way to implement a one-method interface on the spot; interviewers ask the difference and where you have seen each
-
----
-
-### Object identity and immutable data
-
-- `instanceof` — checks the runtime type of an object; appears in `equals()` overrides (`if (!(obj instanceof Employee other)) return false`) and in exception handlers; pattern matching form (`instanceof Dog dog`) is Java 16+ and is in the notes
-- `equals()` and `hashCode()` — always override both together; `HashMap` and `HashSet` use `hashCode()` to find the bucket and `equals()` to confirm the match; breaking the contract causes silent bugs; Lombok `@Data` generates both automatically — interviewers ask "what does `@Data` generate?"
-- `Objects.equals(a, b)` — null-safe comparison utility; equivalent to `a != null && a.equals(b)` but shorter and cleaner; use inside `equals()` overrides to avoid NullPointerException
-- Records (Java 16+) — `record CreateUserRequest(String name, String email) {}` generates the constructor, getters, `equals`, `hashCode`, and `toString` automatically; immutable by design; interviewers ask "have you seen records used as DTOs?" because it shows you know modern Java
-- Record vs class, and why an entity cannot be a record — a record is the right shape for a request/response payload (immutable, value equality, no Lombok needed) but Hibernate needs a no-arg constructor and mutable fields, so an entity stays a class; interviewers ask "why is your DTO a record and your entity is not?"
-- Immutability as a design default — a class with `final` fields and no setters cannot be changed by a caller after construction, which removes a whole class of surprise bugs and makes the object safe to share; interviewers ask "when would you make a class immutable and what do you gain?"
-- Static factory method vs constructor — a factory (`Optional.of()`, `Employee.of(...)`) can carry a meaningful name, validate before constructing, and return a cached or subclass instance, none of which a constructor can do; interviewers ask why `Optional` has no public constructor
-
-- The `equals` contract stated properly — reflexive, symmetric, transitive, consistent, and false against `null`; equal objects must have equal hash codes, but equal hash codes do *not* imply equal objects; interviewers ask you to state it, then ask whether a `hashCode()` returning a constant is legal (it is, and it degrades every `HashMap` lookup to a linear scan)
-- `equals`/`hashCode` on a JPA entity — the id is null until the row is persisted, so an entity added to a `HashSet` before saving lands in the wrong bucket afterwards, and generating them from *all* fields drags lazy relations into the comparison; the usual answer is a business key or only the id with the caveat understood; interviewers ask what you would include and why the naive Lombok answer is a trap
-- A record's compact constructor — validation and normalisation written once without repeating the parameter list, since a record's fields are final and assigned for you; interviewers ask where you would reject a negative amount in a record DTO
-
----
-
-### Inheritance and polymorphism
-
-- `extends` and `super` — a subclass inherits a parent's fields and methods; `super(...)` calls the parent constructor and `super.method()` calls the overridden parent method; interviewers ask you to distinguish inheritance from implementing an interface (single `extends` vs many `implements`) and where Spring uses it (your custom exception `extends RuntimeException`)
-- Polymorphism (runtime dispatch) — a variable of the parent/interface type can hold any subclass, and the overridden method chosen is decided at runtime, not compile time; this is why Spring can inject any implementation of an interface without the caller knowing which one; the classic "what is polymorphism, show an example" question
-- `final` (variable, method, class) — `final` on a variable forbids reassignment, on a method forbids overriding it in a subclass, on a class forbids extending it at all; interviewers ask "what does `final` mean in these three places?" because juniors only know the field case, and it explains why a `private final` service dependency cannot be swapped after construction
-- Composition over inheritance — the default rule is to hold a collaborator as a field rather than extend a class, because inheritance couples you to the parent's internals and you only get one; interviewers ask "where do you actually use `extends` in a Spring Boot app?" and the honest answer is custom exceptions and framework base classes, almost nothing else
-
-- `Object` as the universal superclass — every class extends it implicitly, which is where `equals`, `hashCode`, `toString`, and `getClass` come from and why you can put anything in a `List<Object>`; interviewers ask what a class with no `extends` still inherits
-- What cannot be overridden — a `static` method redeclared in a subclass is *hidden*, not overridden (the reference type decides which runs), and `private` and `final` methods are not polymorphic at all; interviewers show a static method called through a subclass reference and ask which body executes
-
----
-
-### Memory and value semantics
-
-- Pass-by-value (Java has no pass-by-reference) — Java always copies the argument; for objects it copies the *reference*, so a method can mutate the object's fields (the caller sees it) but reassigning the parameter changes nothing for the caller; interviewers ask "does the caller see the change?" to catch candidates who confuse Java with C++
-- Stack vs heap — local variables and object *references* live on the per-method call stack, while the objects themselves live on the shared heap; interviewers ask this to test whether you truly understand pass-by-value (the reference is copied on the stack, the object on the heap is shared) and where a `NullPointerException` really comes from
-- Garbage collection — Java reclaims heap objects automatically once nothing can reach them any more, so there is no manual `free()`/`delete` like in C++; interviewers ask "how is memory managed in Java?" and expect you to name the garbage collector and connect it to why `result += name` in a loop is wasteful — each iteration leaves an unreachable `String` behind for the GC to clean up
-
-- A memory leak in a garbage-collected language — the collector frees what is unreachable, so a leak is something still *reachable* that should not be: a `static` collection that only ever grows, an unclosed resource, a cache with no eviction, or an inner class pinning its outer instance; `OutOfMemoryError: Java heap space` is the symptom, and `System.gc()` is only a hint the JVM may ignore; interviewers ask how you can leak memory when Java "handles memory for you"
-
----
-
-### Concurrency — the awareness a junior needs
-
-Not because a junior writes threaded code, but because every Spring application *is* multi-threaded: one bean instance serves many simultaneous requests, and this is where interviewers find out whether a candidate understands that.
-
-- Shared mutable state in a singleton bean — a Spring `@Service` is one instance shared by every request thread, so an instance field holding per-request data is read and overwritten by concurrent users; it works perfectly in local testing and corrupts under load; interviewers ask "your service has a `private User currentUser` field — what happens with two simultaneous requests?"
-- What a race condition is — two threads reading and writing the same state with no ordering guarantee, so the result depends on timing; the classic is `count++`, which is three operations (read, add, write) and not one; interviewers ask why a counter under load ends up lower than the number of increments
-- `synchronized` and `volatile` at naming depth — `synchronized` serialises access to a critical section, `volatile` only guarantees visibility of a value across threads and does *not* make `count++` atomic; interviewers ask which one fixes the counter and expect you to know `volatile` alone does not
-- `HashMap` vs `ConcurrentHashMap` vs `Collections.synchronizedMap` — a plain `HashMap` written concurrently can corrupt its internal structure or spin forever, `ConcurrentHashMap` is the designed-for-concurrency answer, and the wrapper merely locks the whole map; interviewers ask which one belongs in a shared cache field
-- `AtomicInteger` and friends — lock-free atomic operations for the counter case, which is the right answer before reaching for `synchronized`; interviewers ask how you count requests safely
-- Thread-safety of shared utilities — `SimpleDateFormat` is mutable and unsafe to share as a static field (a genuine production bug that produces wrong dates under load), while `DateTimeFormatter` and `String` are immutable and therefore safe; interviewers ask why the modern date API changed this
-- The vocabulary you must recognise — `Thread`, `Runnable`, `Callable`, `ExecutorService` and thread pools, and Spring's `@Async` sitting on top of them; interviewers do not ask a junior to write them, but they do expect you to know what the words mean when a senior uses them
-
----
+- Classes, fields, constructors â€” every Spring component is a class; interviewers ask "what is an object in the context of a Spring bean?"
+- `private final` fields â€” why Spring Boot services use them: dependencies cannot change after construction, makes the class easier to unit test; the constructor injection pattern depends on this
+- Access modifiers: `public`, `private`, `protected` â€” what each restricts and why Spring Boot services use `private` for fields and `public` for methods
+- `this` keyword â€” disambiguates between a field and a constructor parameter; appears in Lombok-generated code and custom constructors
+- `static` methods and fields â€” belong to the class, not to any instance; `Map.of()`, `Integer.parseInt()`, `Objects.equals()`, and utility factory methods are all `static`; interviewers ask "why can't a `static` method access instance fields?" (because there is no instance)
+- `instanceof` â€” checks the runtime type of an object; appears in `equals()` overrides (`if (!(obj instanceof Employee other)) return false`) and in exception handlers; pattern matching form (`instanceof Dog dog`) is Java 16+ and is in the notes
+- `equals()` and `hashCode()` â€” always override both together; `HashMap` and `HashSet` use `hashCode()` to find the bucket and `equals()` to confirm the match; breaking the contract causes silent bugs; Lombok `@Data` generates both automatically â€” interviewers ask "what does `@Data` generate?"
+- `Objects.equals(a, b)` â€” null-safe equality that returns true when both references are null and
+  otherwise delegates to `a.equals(b)` without throwing
+- Encapsulation â€” fields are `private`, accessed through getters/setters; this is what Lombok's `@Data` generates; Spring Data reads and writes entity fields through this pattern
+- Records (Java 16+) â€” generate a canonical constructor, component accessors such as `name()`,
+  `equals`, `hashCode`, and `toString`; they do not generate JavaBean getters such as `getName()`
 
 ### Interfaces and abstract classes
 
-- Interfaces: how to define and implement — why Spring uses them everywhere (`JpaRepository`, `UserDetailsService`); interviewers ask "why does Spring prefer interfaces over concrete classes?"
-- Interface vs abstract class — interface: "this class CAN do X" (a class can implement many); abstract class: "this class IS a type of X" (a class can extend only one); interviewers ask this to test if the candidate understands when to choose each
-- Default methods in interfaces (Java 8+) — interfaces can have a concrete implementation with `default`; Spring's `JpaRepository` uses them to provide built-in behaviour; a class can override a default method or use it as-is
-- Implementing multiple interfaces — common in Spring Security (your `User` entity may implement both your domain interface and Spring Security's `UserDetails`)
-- `@Override` — marks a method that implements an interface or overrides a parent; the compiler catches mismatches; appears in `loadUserByUsername()` and custom exception constructors; omitting it is not a bug but it removes the safety check
-- Overriding vs overloading — overriding: same method name and signature in a subclass (decided at runtime); overloading: same method name with different parameters in the same class (decided at compile time); interviewers show code and ask "is this an override or an overload?"
-- Functional interfaces — an interface with exactly one abstract method; this is what makes lambda syntax possible; `@FunctionalInterface` enforces the constraint; built-ins: `Predicate<T>` (filter/test), `Function<T, R>` (transform), `Consumer<T>` (consume with no return), `Supplier<T>` (produce with no input); interviewers ask "what type does this lambda implement?"
-- Why Spring Boot prefers interfaces for dependencies — you can swap implementations without changing the caller; the foundation of testable, loosely coupled code
-- Interface-per-service vs the concrete class alone — the `UserService` + `UserServiceImpl` pair is a convention, not a law: an interface with exactly one implementation adds indirection for nothing, but it is what lets you swap or stub the collaborator later; interviewers ask "do you always create both? why?" and want a reasoned answer rather than cargo cult
-- Program to the interface in declarations — write `List<X> x = new ArrayList<>()` and `Map<K, V>` rather than `ArrayList`/`HashMap` on the left-hand side, so callers depend on the capability and not the implementation; a standard code-review comment interviewers expect you to justify
+- Interfaces: how to define and implement â€” why Spring uses them everywhere (`JpaRepository`, `UserDetailsService`); interviewers ask "why does Spring prefer interfaces over concrete classes?"
+- Interface vs abstract class â€” interface: "this class CAN do X" (a class can implement many); abstract class: "this class IS a type of X" (a class can extend only one); interviewers ask this to test if the candidate understands when to choose each
+- Default methods in interfaces (Java 8+) â€” interfaces can have a concrete implementation with `default`; Spring's `JpaRepository` uses them to provide built-in behaviour; a class can override a default method or use it as-is
+- Implementing multiple interfaces â€” common in Spring Security (your `User` entity may implement both your domain interface and Spring Security's `UserDetails`)
+- `@Override` â€” marks a method that implements an interface or overrides a parent; the compiler catches mismatches; appears in `loadUserByUsername()` and custom exception constructors; omitting it is not a bug but it removes the safety check
+- Overriding vs overloading â€” overriding: same method name and signature in a subclass (decided at runtime); overloading: same method name with different parameters in the same class (decided at compile time); interviewers show code and ask "is this an override or an overload?"
+- Functional interfaces â€” an interface with exactly one abstract method; this is what makes lambda syntax possible; `@FunctionalInterface` enforces the constraint; built-ins: `Predicate<T>` (filter/test), `Function<T, R>` (transform), `Consumer<T>` (consume with no return), `Supplier<T>` (produce with no input); interviewers ask "what type does this lambda implement?"
+- Why Spring Boot prefers interfaces for dependencies â€” you can swap implementations without changing the caller; the foundation of testable, loosely coupled code
 
 ### Generics
 
-- `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` — reading and writing typed containers in Spring Boot code
-- Why generics exist — catch type errors at compile time instead of at runtime; without generics, a `List` could hold any type and every `.get()` required a cast that could fail at runtime
-- Generics hold reference types only, not primitives — `List<int>` does not compile; you write `List<Integer>` and autoboxing bridges the two; interviewers show `List<int>` and ask why it fails, tying generics back to the wrapper-vs-primitive distinction
-- Raw types (`List` with no type parameter) — still legal for backward compatibility, but they switch off every generic check, produce "unchecked" warnings, and move the failure to a runtime `ClassCastException`; interviewers show a raw `List` and ask what the compiler has stopped doing for you
-- Type erasure — generic type information exists only at compile time and is erased from the bytecode, which is why you cannot overload on `List<String>` vs `List<Integer>`, cannot write `x instanceof List<String>`, and cannot do `new T[]`; interviewers use it to explain several "why won't this compile?" snippets
-- `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()` — the correct way to handle a value that might not exist
-- `Optional.get()` vs `Optional.orElseThrow()` — `get()` throws `NoSuchElementException` with no useful message if empty; `orElseThrow()` lets you throw a meaningful exception with context; interviewers treat `get()` as a red flag in code review — it is the same problem as returning `null`
-- `if (o.isPresent()) return o.get();` is the reviewable smell — `Optional` is meant to be chained with `map`/`filter`/`orElseThrow`, not unwrapped with a manual check, which is just a null check with extra syntax; interviewers show both forms and ask you to rewrite the first
-- `Optional` is a return type, never a field or a parameter — it is not serialisable, JPA cannot map it, and an `Optional` that can itself be null is a double negative; interviewers ask "would you make an entity field `Optional<String>`?" and the answer is no
-- Why returning `null` is a problem — forces every caller to null-check; `Optional` makes the absence explicit in the return type; interviewers ask "why Optional instead of null?"
-
-- Generics are invariant — a `List<Dog>` is *not* a `List<Animal>`, because if it were you could add a `Cat` through the wider reference; interviewers hand you the assignment, ask why it does not compile, and are checking you can explain the danger rather than recite the rule
-- Wildcards and PECS — `? extends T` when you only read from the structure (a producer), `? super T` when you only write into it (a consumer); interviewers ask what `List<? extends Number>` lets you do and why you cannot add to it
-- Writing a generic method — `<T> T firstOrNull(List<T> items)` and bounded parameters like `<T extends Comparable<T>>`; interviewers ask you to write a small generic utility on the spot, which is where a candidate who only *consumes* generics is exposed
-
----
-
-### Optional
-
-- `Optional<T>` as a return type — makes "there may be nothing here" part of the signature instead of a null the caller forgets to check; this is why `findById` returns one; interviewers ask what problem it solves and expect "the compiler forces the caller to consider absence"
-- `get()` vs `orElseThrow()` — `get()` on an empty `Optional` throws `NoSuchElementException` with no context, `orElseThrow(() -> new EntryNotFoundException(id))` throws the exception your `@RestControllerAdvice` maps to a 404; reviewers show `.get()` and expect the objection
-- `orElse` vs `orElseGet` — the argument to `orElse` is evaluated *always*, even when the value is present, so an expensive default or one with a side effect runs when it should not; `orElseGet` takes a supplier and only runs on absence; interviewers show `orElse(repository.findDefault())` and ask what it costs
-- `map` vs `flatMap` on an `Optional` — `map` wraps the result, so a mapper that itself returns an `Optional` gives you `Optional<Optional<T>>`; `flatMap` is the one that keeps it flat; interviewers ask when you need each
-- `Optional` as a field or a method parameter — it is designed as a return type only: it is not serialisable, it adds a wrapper to every access, and an optional parameter is better expressed as an overload; interviewers ask where `Optional` does *not* belong
-- `ifPresent` and `isPresent` — the callback form keeps the flow declarative while `isPresent()` followed by `get()` is just a null check wearing a costume; interviewers show the second form and ask what was gained
-
----
+- `List<T>`, `Optional<T>`, `Page<T>`, `ResponseEntity<T>` â€” reading and writing typed containers in Spring Boot code
+- Why generics exist â€” catch type errors at compile time instead of at runtime; without generics, a `List` could hold any type and every `.get()` required a cast that could fail at runtime
+- `Optional<T>` in depth: `orElseThrow()`, `orElse()`, `isPresent()`, `map()`, `ifPresent()` â€” the correct way to handle a value that might not exist
+- `Optional.get()` vs `Optional.orElseThrow()` â€” `get()` throws `NoSuchElementException` with no useful message if empty; `orElseThrow()` lets you throw a meaningful exception with context; interviewers treat `get()` as a red flag in code review â€” it is the same problem as returning `null`
+- Why returning `null` is a problem â€” forces every caller to null-check; `Optional` makes the absence explicit in the return type; interviewers ask "why Optional instead of null?"
 
 ### Streams and lambdas
 
-- Lambda expressions — anonymous functions used wherever a functional interface is expected; `e -> e.isActive()` is the most common form in service methods; interviewers ask you to read a lambda and explain what it does
-- Method references — shorthand for a lambda that only calls one method: `this::toResponse`, `Employee::getName`, `System.out::println`; when both forms are used in the same codebase interviewers ask "can you explain what this reference does?"
-- Stream pipeline: `filter()`, `map()`, `collect()` — the core pattern for transforming a list; `filter` keeps matching elements, `map` transforms each element, `collect` builds the result; interviewers ask you to write a pipeline from a description
-- `findFirst()` — returns `Optional<T>`; the safe way to get one item from a filtered stream without throwing
-- `anyMatch()` / `allMatch()` — return a boolean; used instead of a for loop when you only need to check a condition across a list
-- `mapToInt().sum()` — pattern for summing a numeric field across a list: `employees.stream().mapToInt(Employee::getAge).sum()`; avoids creating intermediate objects; interviewers may ask you to refactor a for loop that sums a field
-- `Collectors.groupingBy()` — groups elements into `Map<Key, List<Value>>`; used when a service must return data organised by a field (status, department, date); interviewers ask you to read the result type
-- `.toList()` vs `collect(Collectors.toList())` — `.toList()` is Java 16+ and returns an immutable list; `collect(Collectors.toList())` returns a mutable list; if the next line calls `.add()` on the result, `.toList()` will throw; interviewers ask the difference when reviewing modern Java code
-- Stream vs for loop — streams express intent clearly (`filter` + `map`); for loops are clearer when the logic is complex or when you need early exit with `break`; know when to choose each
-- Intermediate vs terminal operations (lazy evaluation) — `filter`/`map` are intermediate and do nothing until a terminal operation (`collect`, `forEach`, `findFirst`) runs; a stream with no terminal operation never executes; interviewers ask "does this `filter` run?" to test whether you know streams are lazy, not eager
-- Side effects inside a lambda — a `forEach` that adds to a list declared outside the stream, or a `map` that saves to the database, defeats the point of a pipeline built on pure transformations and breaks outright if the stream is ever parallel; interviewers show a `forEach` mutating an external list and ask you to rewrite it with `collect`
+- Lambda expressions â€” anonymous functions used wherever a functional interface is expected; `e -> e.isActive()` is the most common form in service methods; interviewers ask you to read a lambda and explain what it does
+- Method references â€” shorthand for a lambda that only calls one method: `this::toResponse`, `Employee::getName`, `System.out::println`; when both forms are used in the same codebase interviewers ask "can you explain what this reference does?"
+- Stream pipeline: `filter()`, `map()`, `collect()` â€” the core pattern for transforming a list; `filter` keeps matching elements, `map` transforms each element, `collect` builds the result; interviewers ask you to write a pipeline from a description
+- `findFirst()` â€” returns `Optional<T>`; the safe way to get one item from a filtered stream without throwing
+- `anyMatch()` / `allMatch()` â€” return a boolean; used instead of a for loop when you only need to check a condition across a list
+- `mapToInt().sum()` â€” pattern for summing a numeric field across a list: `employees.stream().mapToInt(Employee::getAge).sum()`; avoids creating intermediate objects; interviewers may ask you to refactor a for loop that sums a field
+- `Collectors.groupingBy()` â€” groups elements into `Map<Key, List<Value>>`; used when a service must return data organised by a field (status, department, date); interviewers ask you to read the result type
+- `.toList()` vs `collect(Collectors.toList())` â€” `.toList()` is Java 16+ and returns an immutable list; `collect(Collectors.toList())` returns a mutable list; if the next line calls `.add()` on the result, `.toList()` will throw; interviewers ask the difference when reviewing modern Java code
+- Stream vs for loop â€” streams express intent clearly (`filter` + `map`); for loops are clearer when the logic is complex or when you need early exit with `break`; know when to choose each
 
-- `flatMap` on a stream — flattens a stream of collections into one stream of elements, which is the "every role of every user" or "every entry of every project" operation; interviewers ask the difference from `map` and it is the single most common streams follow-up
-- `reduce` — folds a stream into one value with an identity and a combining function, which is what `sum()` and `joining()` are specialised versions of; interviewers ask you to total a `BigDecimal` column, where `reduce(BigDecimal.ZERO, BigDecimal::add)` is the answer and `mapToDouble` is the wrong one
-- The `Collectors` beyond `toList` — `toMap` (which throws `IllegalStateException` on a duplicate key unless you pass a merge function), `joining`, `counting`, `summingInt`, `partitioningBy`, and `groupingBy` with a downstream collector; interviewers ask you to build a `Map<Status, Long>` count and watch whether you reach for a loop
-- A stream is single-use — reusing one after a terminal operation throws `IllegalStateException: stream has already been operated upon or closed`; interviewers ask why assigning a stream to a variable and consuming it twice fails
-- Stateful operations — `sorted` and `distinct` must buffer the whole stream before they can emit, which is what makes them expensive on a large source, unlike `filter` and `map`; interviewers ask which operations cost memory
-- `peek` is for debugging, not side effects — it may be skipped entirely when the pipeline can be optimised, so a `peek` that saves entities silently does nothing; reviewers show `list.stream().map(this::save).count()` and ask whether `save` runs
-- `findFirst` vs `findAny` — identical on a sequential stream, but `findAny` lets a parallel stream return whichever element it reaches first; interviewers ask why both exist
-- `parallelStream()` — splits work across the shared common ForkJoinPool, which pays only for large CPU-bound stateless work and is close to always wrong inside a web request, since it does not carry the transaction or security context and competes with every other request; interviewers ask when you would use it and the good answer is "almost never here"
-- Effectively-final capture — a lambda can only capture a local variable that is never reassigned, which is why you cannot accumulate into a counter inside `forEach`; interviewers show that exact attempt and ask for the stream-native fix
-- `this` inside a lambda vs inside an anonymous class — a lambda has no scope of its own, so `this` is the enclosing instance, while in an anonymous class `this` is the anonymous object; interviewers use it to check you know a lambda is not just shorthand for an anonymous class
-- The wider functional interfaces — `BiFunction`, `UnaryOperator`, `BinaryOperator`, `BiPredicate`, and the primitive variants that avoid boxing; interviewers ask what `BinaryOperator<BigDecimal>` describes once you have named the core four
-- The four kinds of method reference — static (`Integer::parseInt`), bound instance (`this::save`), unbound instance (`String::length`), and constructor (`Employee::new`); interviewers show `String::length` used where a `Function<String, Integer>` is expected and ask which kind it is
+### Exceptions
 
----
-
-### Exceptions — mechanics
-
-- `Throwable` hierarchy: `Error` vs `Exception` — `Error` (`StackOverflowError`, `OutOfMemoryError`) signals a JVM-level failure you are not meant to catch, `Exception` is application-level, and both sit under `Throwable`; interviewers ask "why does `catch (Exception e)` not catch everything, and why is `catch (Throwable)` wrong?"
-- Checked vs unchecked exceptions — why Spring Boot uses unchecked (`RuntimeException` subclasses): they do not need to be declared in the method signature and propagate freely to `@RestControllerAdvice`
-- `RuntimeException` vs `Exception` — `RuntimeException` is unchecked (no `throws` declaration needed); `Exception` is checked (must declare with `throws` or catch it); always extend `RuntimeException` for custom exceptions in Spring Boot so they propagate without boilerplate
-- `try` / `catch` / `throws` — reading Spring Boot exception handling code; `throws` in a method signature is a contract: the caller must handle it
+- Checked vs unchecked exceptions â€” why Spring Boot uses unchecked (`RuntimeException` subclasses): they do not need to be declared in the method signature and propagate freely to `@RestControllerAdvice`
+- `RuntimeException` vs `Exception` â€” `RuntimeException` is unchecked (no `throws` declaration needed); `Exception` is checked (must declare with `throws` or catch it); always extend `RuntimeException` for custom exceptions in Spring Boot so they propagate without boilerplate
+- `try` / `catch` / `throws` â€” reading Spring Boot exception handling code; `throws` in a method signature is a contract: the caller must handle it
 - Creating a custom exception: `extends RuntimeException`, constructor that accepts a message, why you name it after what went wrong (`ResourceNotFoundException`)
-- Designing the exception hierarchy — one abstract base (`AppException`) with a subclass per failure type lets the global handler catch the base and stay small, whereas a flat set of unrelated `RuntimeException`s forces a new handler method for every error; interviewers ask how you would add a new error type without touching the advice
-- `throw new SomeException()` — how it propagates up the call stack until `@RestControllerAdvice` catches it and returns a JSON error response
-- `finally` — always runs even when the `try` returns or throws, used for cleanup; the gotcha is that a `return` inside `finally` overrides the try's return and swallows the exception; interviewers use it to test control-flow depth
-- try-with-resources — the modern way to guarantee a resource (`Connection`, `InputStream`) is closed via `AutoCloseable`, replacing a hand-written `finally { close(); }`; interviewers ask how you close resources safely and expect this over manual cleanup
-- exception chaining / cause constructor (`throw new X(msg, cause)`) — how you rethrow while preserving the original stack trace; interviewers ask "if you catch and rethrow, how do you avoid losing where it really failed?" and a missing cause is a classic junior mistake that hides the real error
-- catch-block ordering — a more specific exception must be caught before a more general one, or the code does not compile (`catch (Exception e)` before `catch (IllegalArgumentException e)` is a compile error); interviewers use it as a quick pressure check on how catch resolution works
+- `throw new SomeException()` â€” how it propagates up the call stack until `@RestControllerAdvice` catches it and returns a JSON error response
 
-- Multi-catch (`catch (SQLException | IOException e)`) — one block for two unrelated exceptions, where the variable is implicitly final and the types must not be in a subtype relationship with each other; interviewers ask when you would use it instead of catching a common supertype
-- An overriding method cannot broaden checked exceptions — a subclass may declare fewer or narrower checked exceptions than the method it overrides, never more, because callers only know the parent's contract; interviewers ask why their override does not compile
-- Swallowing an exception — an empty `catch` block, or one whose whole body is `e.printStackTrace()`, loses the failure: nothing is logged with context, nothing is rethrown, and the caller proceeds as if it worked; reviewers plant it and expect "log with context or rethrow wrapped", plus the point that `printStackTrace` writes outside the logging framework entirely
+### Collections
 
----
-
-### The exceptions you will actually hit
-
-- `NullPointerException` — the most common runtime failure; interviewers ask where it comes from (calling a method on `null`, unboxing a `null` wrapper, `Optional.get()` on an empty Optional) and how you prevent it (`Optional`, `Objects.requireNonNull`, null checks); not knowing its causes reads as no real Java experience
-- Helpful NullPointerException messages (Java 14+) — the JVM now names the exact expression that was null (`Cannot invoke "User.getName()" because "user" is null`), so a line with three chained calls no longer leaves you guessing which one failed; interviewers paste the message and expect you to point at the dereference instead of adding print statements
-- `StackOverflowError` — every method call pushes a frame onto the call stack, so recursion with no exit condition (or two objects whose `toString()` call each other) fills it and the JVM gives up; interviewers ask what causes it because it shows up in almost every first project with a bidirectional relationship
-- `ClassCastException` — a cast fails at runtime because the object is not the type you claimed; interviewers pair it with `instanceof` and ask why the compiler allowed the cast in the first place
-- `NumberFormatException` — thrown by `Integer.parseInt("abc")`; the real source is almost always untrusted input arriving as a String, so the answer interviewers want is validating at the boundary rather than catching it deep in a service
-- `IndexOutOfBoundsException` — off-by-one on `list.get(size)` or treating an empty result as populated; the message prints both the offending index and the size, and interviewers expect you to read the two numbers rather than re-run the code
-- `IllegalArgumentException` vs `IllegalStateException` — the two exceptions you throw *on purpose*: the first for a parameter that is invalid on its own, the second for an object that is in the wrong state for the call; interviewers ask which one fits a given validation and treat a bare `RuntimeException` as a smell
-
-### Collections — choosing and using
-
-- `List` — the one that keeps insertion order and permits duplicates, which is why every repository query and service return type is a `List<User>` and why the order the database gave you survives to the JSON; interviewers ask what a `List` guarantees that the other two do not
-- `Map` — lookup by key rather than by position, which is what makes `Map.of("message", "Not found")` an instant response body and what turns an O(n) scan for a matching id into O(1); interviewers ask what you would use to look something up by id inside a loop
-- `Set` — rejects duplicates by using `equals`/`hashCode` on the elements themselves, which is exactly why it models a user's roles and why putting a badly-implemented entity in one silently admits two "identical" rows; interviewers ask what a `Set` uses to decide two elements are the same
-- When to use each in a Spring Boot context — `List` for ordered results from queries, `Map` for ad-hoc response bodies, `Set` for relationship collections where duplicates are meaningless
-- Choosing by the operation you need, not by habit — need uniqueness → `Set`, need lookup by key → `Map`, need order and index → `List`; interviewers ask "what would you store a user's roles in, and why not a `List`?" to see whether the choice was reasoned or automatic
-- `HashMap` vs `LinkedHashMap` vs `TreeMap` — `HashMap` gives no order guarantee at all, `LinkedHashMap` preserves insertion order, `TreeMap` keeps keys sorted; a response that must come back in a stable order is a requirement, not an implementation detail, and interviewers ask which one you would pick
-- `ArrayList` vs `LinkedList` — `ArrayList` is backed by an array (fast random access via `get(i)`, slow insert/remove in the middle); `LinkedList` is a chain of nodes (slow `get(i)`, fast insert/remove in the middle); interviewers ask this as a data-structure tradeoff question even though `ArrayList` is what you actually use in almost every Spring Boot project
-- Immutable collection factories — `List.of()`, `Map.of()`, `Arrays.asList()`, and `.toList()` return collections that reject `add`/`remove` with `UnsupportedOperationException`; the bug is never the list, it is the caller assuming it could be modified; interviewers ask what that exception means when it appears in a stack trace
-
-- `HashSet` vs `LinkedHashSet` vs `TreeSet` — the `Set` mirror of the `Map` ordering trio: no order, insertion order, sorted order; a `TreeSet` needs its elements to be `Comparable` or to be given a `Comparator`, and throws `ClassCastException` at runtime if neither holds; interviewers ask which one preserves the order you inserted
-- `Queue` and `Deque` — FIFO and double-ended access, with `ArrayDeque` as the modern replacement for the legacy synchronised `Stack` and `Vector`; interviewers ask what you would use for a processing queue and whether `Stack` is still appropriate
-- `Arrays.asList` vs `List.of` — `Arrays.asList` returns a fixed-size view where `set` works but `add` throws, while `List.of` is fully immutable so even `set` throws; interviewers show `add` on one of them and ask which exception and why they differ
-- `list.remove(1)` on a `List<Integer>` — the `int` overload wins over the `Object` one, so it removes the element at *index* 1 rather than the value 1; interviewers plant it as a pure gotcha and expect `remove(Integer.valueOf(1))`
-
----
-
-### Collections — ordering, identity, and cost
-
-- `Comparable<T>` vs `Comparator<T>` — `Comparable` is implemented inside the class itself (`compareTo()`) and defines one natural order; `Comparator` is defined outside the class (`compare()`, or `Comparator.comparing()`) and supports multiple sort orders without changing the class; interviewers ask which one to use when you need to sort the same list two different ways
-- `Comparator.comparing()` — sorts a list by a field: `list.stream().sorted(Comparator.comparing(Employee::getName))`; used in service methods when you need a specific order that the query does not guarantee; interviewers ask you to read and explain the comparator
-- `ConcurrentModificationException` — thrown when you call `list.remove()` directly inside a for-each loop over that same list; the for-each loop uses an internal iterator that detects the structural change and fails fast; interviewers ask how to safely remove items while iterating (`removeIf()` is the cleanest fix; an explicit `Iterator.remove()` also works)
-- Mutating a field after the object is in a `HashSet` — the set placed it in a bucket derived from the old `hashCode()`, so once the field changes the object is in the wrong bucket and `contains()` returns false for an object that is physically inside the set; interviewers describe exactly that symptom and ask why
-- Defensive copies from a getter — returning the internal `List` directly lets any caller mutate your object's state behind its back, which is why a getter on a collection field often returns a copy or an unmodifiable view; interviewers ask how you protect an entity's collection
-- Cost of the collection operation you chose — `HashMap.get()` and `Set.contains()` are constant time while `List.contains()` and `indexOf()` scan the whole list, so a `list.contains()` inside a loop over another list turns an O(n) job into O(n²); the standard refactor is to build a `Map` of the lookup side once, and interviewers hand you exactly that nested loop to fix
-
-- How a `HashMap` finds a value — `hashCode()` picks the bucket, `equals()` then distinguishes entries inside it, collisions chain in a list that converts to a tree past a threshold, and the map resizes and rehashes when it passes its load factor; interviewers ask "what happens when you call `get`?" and this is what separates a candidate who uses maps from one who understands them
-- What a `HashMap` key must guarantee — a stable `hashCode` consistent with `equals`, which is why a mutable object used as a key becomes unfindable and why `String` and enums are the safe defaults; interviewers ask what makes a good key
-- `Iterable` and `Iterator` — the for-each loop compiles down to an `Iterator`, which is exactly why removing from the collection inside the loop throws `ConcurrentModificationException` while `iterator.remove()` is legal; interviewers ask what the enhanced for loop actually does
-- Composing comparators — `Comparator.comparing(Entry::getDate).thenComparing(Entry::getProject).reversed()`, plus `nullsFirst` for a nullable field; interviewers ask you to sort by two fields and watch whether you hand-write a comparison chain
-- A `Comparator` inconsistent with `equals` — a `TreeSet` and `TreeMap` decide identity by comparison, not by `equals`, so a comparator that returns 0 for two distinct objects silently drops one of them; interviewers ask why an element disappeared from a sorted set
-
----
+- `List` â€” ordered, allows duplicates; used in repository results and service return types (`List<User>`)
+- `Map` â€” key-value pairs; `Map.of("message", "Not found")` for quick immutable error response bodies; Spring serialises it to JSON automatically
+- `Set` â€” no duplicates; used in many-to-many relationships (e.g. a user's set of roles or permissions)
+- When to use each in a Spring Boot context â€” `List` for ordered results from queries, `Map` for ad-hoc response bodies, `Set` for relationship collections where duplicates are meaningless
+- `ArrayList` vs `LinkedList` â€” `ArrayList` provides fast indexed access; `LinkedList` still needs
+  O(n) traversal to locate a middle position and is only O(1) to insert/remove once an iterator is
+  already there, so `ArrayList` is the normal application default
+- `Comparable<T>` vs `Comparator<T>` â€” `Comparable` is implemented inside the class itself (`compareTo()`) and defines one natural order; `Comparator` is defined outside the class (`compare()`, or `Comparator.comparing()`) and supports multiple sort orders without changing the class; interviewers ask which one to use when you need to sort the same list two different ways
+- `Comparator.comparing()` â€” sorts a list by a field: `list.stream().sorted(Comparator.comparing(Employee::getName))`; used in service methods when you need a specific order that the query does not guarantee; interviewers ask you to read and explain the comparator
+- `ConcurrentModificationException` â€” thrown when you call `list.remove()` directly inside a for-each loop over that same list; the for-each loop uses an internal iterator that detects the structural change and fails fast; interviewers ask how to safely remove items while iterating (`removeIf()` is the cleanest fix; an explicit `Iterator.remove()` also works)
 
 ### Enums
 
-- Defining an enum — used for `Role` (EMPLOYEE, MANAGER) and `EntryStatus` (DRAFT, SUBMITTED, APPROVED, REJECTED) in TimeTrack; interviewers ask you to show one from the project
-- Using enums in `switch` expressions — the clean way to handle each status in a service method; exhaustive by default so the compiler warns if a case is missing
-- Enums carry fields and behaviour, not just names — a constant can hold a label, a code, or an HTTP status and expose it through a method, which removes the `switch` that would otherwise be duplicated everywhere the enum is used; interviewers ask how you would attach a display name to each status
-- Enum vs a lookup table in the database — an enum is compile-time-safe but a new value needs a code change and a redeploy, while a table lets the business add values at runtime with no type safety; interviewers ask which you would choose for "status" and which for something the client edits
-- `@Enumerated(EnumType.STRING)` vs `EnumType.ORDINAL` — `STRING` stores the name ("MANAGER") in the database; `ORDINAL` stores the position (0, 1, 2); if you add a new value in the middle of the enum, `ORDINAL` silently breaks all existing records; interviewers always ask why `STRING` is the safe choice
-
-- `values()`, `name()`, `ordinal()`, and `valueOf()` — `valueOf` throws `IllegalArgumentException` on a string that matches no constant, which is exactly what happens when the client posts an unknown status; interviewers ask what your API does with `"PENDINGG"` in the request body
-- Enum constants are singletons — the JVM guarantees one instance per constant, so `==` is safe and even correct on enums, and they work as keys in the specialised `EnumMap`/`EnumSet`; interviewers ask whether you should compare enums with `equals` or `==` and want the reasoning, not a preference
-
----
+- Defining an enum â€” used for `Role` (EMPLOYEE, MANAGER) and `EntryStatus` (DRAFT, SUBMITTED, APPROVED, REJECTED) in TimeTrack; interviewers ask you to show one from the project
+- Using enums in `switch` expressions â€” the clean way to handle each status in a service method; exhaustive by default so the compiler warns if a case is missing
+- `@Enumerated(EnumType.STRING)` vs `EnumType.ORDINAL` â€” `STRING` stores the name ("MANAGER") in the database; `ORDINAL` stores the position (0, 1, 2); if you add a new value in the middle of the enum, `ORDINAL` silently breaks all existing records; interviewers always ask why `STRING` is the safe choice
 
 ### Annotations
 
-- What annotations are — metadata attached to a class, method, or field that Spring reads at runtime to configure behaviour; they do not change what the code does on their own — they are instructions to the framework
-- An annotation does nothing until something reads it — an annotation is inert metadata; unless a runtime reflection scan, a generated proxy, or a compile-time processor looks for it, it has no effect whatsoever; this single mechanism explains every "the annotation is right there but nothing happens" bug interviewers plant in a review snippet
-- `@Retention` — decides whether the annotation survives into the `.class` file and is visible at runtime (`RUNTIME`) or is discarded (`SOURCE`, `CLASS`, the default); a framework that reads annotations reflectively can only see `RUNTIME` ones; interviewers show a custom annotation being ignored and ask why
-- `@Target` — restricts which elements an annotation may be placed on (type, method, field, parameter); putting one where it is not legal either fails to compile or is quietly skipped, which is the first thing a reviewer checks when an annotation has no effect
-- Annotation attributes and the `value` shorthand — `@Foo("x")` is shorthand for `@Foo(value = "x")`, and every other attribute must be named; assuming a default or naming the wrong attribute changes behaviour with no error; interviewers hand you an unfamiliar annotation and ask you to read its attributes
-- Meta-annotations — annotations that annotate other annotations; `@Service` is composed of `@Component` with a semantic label; this is why `@Service` and `@Repository` behave the same way as `@Component` for dependency injection — they are all discovered by Spring's component scan
-- How to read an unfamiliar annotation — look at what it is composed of (meta-annotations), what it enables (like `@EnableMethodSecurity`), and which layer it belongs to; this skill matters because Spring Boot code is dense with annotations you did not write yourself
+- What annotations are â€” metadata attached to a class, method, or field that Spring reads at runtime to configure behaviour; they do not change what the code does on their own â€” they are instructions to the framework
+- Meta-annotations â€” annotations that annotate other annotations; `@Service` is composed of `@Component` with a semantic label; this is why `@Service` and `@Repository` behave the same way as `@Component` for dependency injection â€” they are all discovered by Spring's component scan
+- How to read an unfamiliar annotation â€” look at what it is composed of (meta-annotations), what it enables (like `@EnableMethodSecurity`), and which layer it belongs to; this skill matters because Spring Boot code is dense with annotations you did not write yourself
 
 ### Date and time
 
-- `LocalDate` — a date without time (`2025-05-14`); used for the `date` field on a TimeEntry; immutable and thread-safe unlike the legacy `java.util.Date`
-- `LocalDateTime` — a date with time (`2025-05-14T09:30:00`); used for `createdAt` and `updatedAt` timestamps; also immutable
-- `LocalDate` vs `LocalDateTime` — use `LocalDate` when time is not relevant (a deadline, a work date); use `LocalDateTime` when you need the exact moment something happened; they are different types — mixing them causes a compile error; interviewers ask which one you used for each field and why
-- Why not `java.util.Date` — it is mutable, poorly designed, and replaced by the `java.time` API in Java 8; interviewers ask this directly when they see date fields in your project
-- `DateTimeFormatter` — formatting a date for display or for an API response; `DateTimeFormatter.ISO_LOCAL_DATE` produces the standard `2025-05-14` format
-- JPA mapping — Spring Boot serialises `LocalDate` and `LocalDateTime` to JSON automatically via Jackson when `jackson-datatype-jsr310` is on the classpath (included with `spring-boot-starter-web`)
-
-- `Instant` vs `ZonedDateTime` vs `OffsetDateTime` — `Instant` is a point on the global timeline (the right type for a `createdAt` audit stamp), while the other two attach a zone or an offset so the same instant can be shown as local time; interviewers ask which type stores "the exact moment this record was created" in a system with users in several countries
-- `Duration` vs `Period` — `Duration` measures time-based amounts (hours, minutes, seconds), `Period` measures date-based ones (years, months, days), and mixing them is why "one month" cannot be expressed as a fixed number of hours; interviewers ask which one you use to compute worked hours between two `LocalDateTime`s (`Duration.between(start, end).toMinutes()`)
-
----
+- `LocalDate` â€” a date without time (`2025-05-14`); used for the `date` field on a TimeEntry; immutable and thread-safe unlike the legacy `java.util.Date`
+- `LocalDateTime` â€” a local wall-clock date and time with no offset or timezone; suitable when the
+  business meaning is local, but it cannot identify one exact instant globally
+- `LocalDate` vs `LocalDateTime` vs `Instant` â€” use `LocalDate` for a calendar date,
+  `LocalDateTime` for a timezone-free local value, and `Instant` for an exact point on the UTC
+  timeline; interviewers ask which contract a timestamp field actually needs
+- Why not `java.util.Date` â€” it is mutable, poorly designed, and replaced by the `java.time` API in Java 8; interviewers ask this directly when they see date fields in your project
+- `DateTimeFormatter` â€” formatting a date for display or for an API response; `DateTimeFormatter.ISO_LOCAL_DATE` produces the standard `2025-05-14` format
+- JPA mapping â€” Spring Boot serialises `LocalDate` and `LocalDateTime` to JSON automatically via Jackson when `jackson-datatype-jsr310` is on the classpath (included with `spring-boot-starter-web`)
 
 ### Maven
 
-- `pom.xml` structure: `groupId`, `artifactId`, `version`, `dependencies`, `build` — what each section does and where to add a new library
-- How to add a dependency — search Maven Central, copy the `<dependency>` block, Maven downloads it automatically on the next build
-- Build lifecycle: `clean`, `compile`, `test`, `package`, `install` — what `mvn clean install` does and why it is the standard command to build and test before pushing
-- Dependency scopes: `compile` (default, always available), `test` (only in tests), `provided` (available at runtime but not packaged) — why `spring-boot-starter-test` uses `test` scope; interviewers ask what scope to use for a testing library
-- Transitive dependencies and `mvn dependency:tree` — every dependency drags in its own, so libraries you never declared end up on the classpath and two of them can demand different versions of the same thing; the tree is how you see who pulled what, and it is the first move when a `NoSuchMethodError` appears; interviewers ask how you would debug that
-- Nearest-wins version resolution — when two paths in the tree lead to the same library at different versions, Maven picks the one closest to your project rather than the newest, which is how a build silently downgrades a library; interviewers ask why the parent POM pins versions instead of trusting resolution
-- Why `mvn clean` fixes "impossible" errors — `target/` holds compiled classes from previous builds, so a renamed or deleted source file can leave a stale `.class` on the classpath that keeps working until you wipe it; interviewers ask when `clean` is genuinely necessary rather than superstition
-- `-DskipTests` vs `-Dmaven.test.skip=true` — the first compiles the tests but does not run them, the second does not even compile them; interviewers ask the difference because reaching for either to make a red build go green is hiding a failure, not fixing one
-- `settings.xml` and internal mirrors — a consultancy points Maven at a corporate Nexus or Artifactory instead of Maven Central through the per-user `settings.xml`, so a first build failing with `Could not transfer artifact … Connection refused` on a client laptop is a configuration problem, not a code one; day-one reality on a client project
+- `pom.xml` structure: `groupId`, `artifactId`, `version`, `dependencies`, `build` â€” what each section does and where to add a new library
+- How to add a dependency â€” search Maven Central, copy the `<dependency>` block, Maven downloads it automatically on the next build
+- Build lifecycle: `clean`, `compile`, `test`, `package`, `install` â€” what `mvn clean install` does and why it is the standard command to build and test before pushing
+- Dependency scopes â€” `compile` is the default, `test` is available only to tests, and `provided` is
+  available for compile/test but omitted from the runtime artifact because the target JDK/container
+  is expected to supply it
 
 ---
 
 ## Architecture
 
 Patterns and decisions a junior at a Spanish consultancy must explain confidently.
-Not just what they are — but why they were chosen and what the tradeoff is.
+Not just what they are â€” but why they were chosen and what the tradeoff is.
 Every answer must be anchored to a real example from Victor's projects.
 
-> This is the topic stage 4 tests hardest. Per `_shared-context.md`, the live technical interview is
-> the decisive filter, and juniors fail it for being unable to justify a decision — "why JWT?", "why
-> DTOs?", "why soft delete?". Every item here should end in an argument you could defend out loud.
+### REST
 
-### REST — resources and verbs
-
-- REST principles: stateless, resources, HTTP verbs, uniform interface — the four constraints that define REST; interviewers ask "is your API RESTful and how do you know?"
-- Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action
-- Idempotency — `GET`, `PUT`, `DELETE` are idempotent; `POST` is not; interviewers ask "what happens if the client sends the same DELETE request twice?"
-- `PATCH` vs `PUT` — `PUT` replaces the whole resource; `PATCH` changes one part; used in TimeTrack for status transitions (submit, approve, reject)
-- Modelling an action that is a verb — "approve a timesheet" has no HTTP verb, so the three real options are `PATCH /entries/{id}` with a new status, a sub-resource `POST /entries/{id}/approval`, or an explicit command endpoint; interviewers ask precisely because REST gives you no obvious answer and they want to hear you choose
-- CORS — a browser security rule that blocks requests from a different origin (e.g. Angular on port 4200 calling Spring Boot on port 8080); the fix is always on the server, never in the browser or client code; if Postman works but the Angular app does not, CORS is the cause; interviewers ask where the fix lives
-- Query parameters for filtering and pagination — `GET /api/entries?month=2025-05&status=SUBMITTED`; query params carry optional filtering; the backend reads them with `@RequestParam`, the frontend sends them with `HttpParams`; never use a request body on `GET` requests
-- A search too complex for query parameters — a filter with ten optional fields and nested conditions does not fit in a URL, so `POST /entries/search` is the accepted compromise; interviewers ask how you square that with "POST creates things" and want you to name it as a deliberate trade, not an accident
-- Sub-resource URL vs flat collection with a filter — `GET /api/projects/{id}/entries` says the child only exists inside the parent; `GET /api/entries?projectId=5` says it is a flat collection you happen to filter; interviewers ask which you chose because it exposes whether you designed the URL space or just grew it one endpoint at a time
-- Offset pagination vs cursor/keyset — offset makes the database count and discard every skipped row, and rows shifting under the user cause duplicates and gaps between pages; interviewers ask what breaks on page 900 of a live table
-- The pagination response envelope (`content`, `page`, `size`, `totalElements`) — a bare JSON array has nowhere to carry the metadata, which is why the wrapper exists and why adding it later is a breaking change; interviewers ask what your list endpoint returns
-- Bulk operations — a user submitting thirty entries in one request versus thirty requests, and what status code partial success gets (there is no clean one, which is the point); interviewers ask how you would design it and are testing whether you notice the problem
-- Why REST and not GraphQL or RPC — the standard for Spanish consultancy APIs; REST is simpler to implement and understand at junior level
-
-### REST — status codes and the error contract
-
-- HTTP status codes — `200 OK` (success with body), `201 Created` (POST that creates a resource), `204 No Content` (DELETE with no body), `400 Bad Request` (invalid client data), `404 Not Found` (wrong ID); sending the wrong code misleads clients and tools
-- `401 Unauthorized` vs `403 Forbidden` — 401 means no valid credentials (who are you?); 403 means valid credentials but insufficient permissions (you are not allowed); interviewers ask this because it tests whether the candidate understands authentication vs authorisation
-- `400` vs `422 Unprocessable Entity` — 400 is a malformed request the server could not parse or bind, 422 is a well-formed request that breaks a business rule; interviewers ask for a case where 400 is the wrong code and want "the JSON was fine, the dates were backwards"
-- `409 Conflict` — the code for a clash with current state: submitting an already-approved entry, or creating a duplicate the unique constraint rejects; juniors return 400 for everything, and interviewers notice
-- `200 OK` carrying an error object in the body — forces every client to parse the payload to discover whether the call worked, defeating the entire status-code system; reviewers show it and expect the objection
-- One error response shape across the whole API — a consistent body (RFC 7807 problem detail: `type`, `title`, `status`, `detail`, `instance`, or your own equivalent) so the frontend writes one error handler rather than three; interviewers ask what your API returns on failure
-- One global translation point rather than try/catch per controller — the exception-to-status mapping lives in a single advice class, which is what keeps the contract consistent as endpoints multiply; interviewers ask where a `ProjectNotFoundException` becomes a 404
-- What an unhandled exception leaks by default — the framework's default error page returns stack traces and internal class names to the client, which is a security finding and not merely untidy; interviewers ask what the user sees when something you did not anticipate goes wrong
-- A correlation id on every request and error response — the field that lets support find one user's failure among a day of logs; interviewers ask how you would investigate "it broke at 14:32" and expect this rather than a timestamp search
-
-### API evolution and compatibility
-
-- Who your consumer is — an Angular app you deploy yourself versus another team's service you do not control; the answer decides whether changing a field is a five-minute edit or a coordinated release, and interviewers ask it before any versioning discussion
-- Why the frontend and the backend are never live at the same instant — during a rollout the old client is still calling the new API, so every change must stay compatible with the previous client for at least one release; interviewers ask "you deployed the API first — what does the old Angular bundle see?"
-- Expand and contract (parallel change) — add the new field, migrate every consumer, then remove the old one in a later release; the standard way to make a breaking change without breaking anyone, and the answer interviewers want instead of "I'd just rename it"
-- Tolerant reader — a client should ignore JSON fields it does not recognise rather than fail on them; interviewers ask what happens to your Angular app when the backend adds a field, and "nothing" is only true if the client is tolerant
-- URL versioning (`/api/v1/...`) vs header versioning — the URL is visible, cacheable, and trivially testable in a browser, the header is cleaner but invisible to everyone debugging; interviewers ask which you would pick and, more pointedly, whether you versioned at all and why not
-- Additive vs breaking changes — adding an optional field is safe, adding a required request field is not, and adding an enum value breaks any client that switches exhaustively on it; interviewers ask for three of each and the enum case is the one juniors miss
-- The OpenAPI document as the published contract — generated from your code or written first and implemented against; either way it is what the consuming team actually reads; interviewers ask how the frontend learns your API without asking you
+- REST principles: stateless, resources, HTTP verbs, uniform interface â€” the four constraints that define REST; interviewers ask "is your API RESTful and how do you know?"
+- Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) â€” why REST uses nouns and the HTTP verb carries the action
+- Resource modelling â€” paths identify resources and relationships, while HTTP methods express the
+  operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model
+- Why REST and not GraphQL or RPC â€” the standard for Spanish consultancy APIs; REST is simpler to implement and understand at junior level
 
 ### Layered architecture
 
-- Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; they communicate only through HTTP; Angular never queries the database directly; the backend controls what data is exposed and who can access it
-- Controller → Service → Repository — what each layer owns and what it must not do; interviewers ask "where does business logic live?"
-- Service layer — the class (`@Service`) that holds business rules, validation beyond bean validation, and orchestration between repositories; interviewers ask "why not put this logic in the controller?" — because the controller would then be impossible to reuse from another entry point (a scheduled job, a CLI command) and impossible to unit test without starting the whole web layer
-- Repository pattern — an interface (`JpaRepository<Entity, Id>`) that hides how data is actually fetched from the database behind method calls like `findByEmail()`; interviewers ask "what does the repository pattern give you?" — the service does not know or care if the data comes from PostgreSQL, an in-memory list, or a different ORM; this is what makes the service testable with a mock repository
-- Why business logic belongs in the service — the controller must not decide; the repository must not know the rules; the service is the only place
-- Why the controller must not call the repository directly — bypasses the business rules layer; makes the code impossible to test in isolation
-- MVC — Model (data + business logic), View (what the user sees), Controller (receives input, coordinates the other two); interviewers ask "do you know MVC?" expecting you to map it onto your own stack, not recite the textbook triangle
-- MVC vs Layered Architecture — MVC is for apps that render HTML (controller returns a View); Layered Architecture is for REST APIs (controller returns JSON, the View is a separate SPA); layered architecture is really MVC with the Model split into Service (business logic) and Repository (data access) because one combined Model layer gets too large for a real application
-- State machine pattern — a workflow where status transitions follow fixed rules (DRAFT → SUBMITTED → APPROVED/REJECTED); the service enforces which transitions are valid
-- Dependencies point downward only — the controller may call the service and the service the repository, never the reverse; an entity or repository that references a service is an inverted dependency, and interviewers show a class diagram and ask what is wrong with it
-- Change amplification as a design smell — when adding one field forces an edit in the controller, the DTO, the mapper, the service, the entity and the test, the layers have become pass-through boilerplate; interviewers ask when layering earns its cost and when it is ceremony
-
-### Structure smells and refactoring boundaries
-
-- The anaemic domain model — entities reduced to getters and setters with every rule in the service; it is the normal Spring style rather than an automatic defect, and the useful answer names where it stops working (rules duplicated across services because no object owns them); interviewers ask whether it is a smell and want a position, not a verdict
-- Where the entity↔DTO mapper lives, and hand-written vs generated — a mapper in the service keeps the controller clean, and MapStruct removes boilerplate at the cost of a generated layer nobody can step through; interviewers ask which you used and why
-- A circular dependency between two services — Spring fails at startup, and the three ways out are extracting the shared logic into a third service, inverting one direction with an event, or admitting the two were one concept; interviewers ask how you would break the cycle rather than how you would silence it
-- Splitting a service that has grown past comprehension — you split on cohesion, by use case or by aggregate, never on line count; interviewers ask "your service is 900 lines, what now?" and "I'd split it in half" is a failing answer
-- A `utils` / `helpers` / `common` package as a design smell — it is where logic lands when nobody decided which layer owns it, and it grows forever because nothing is ever obviously out of scope; interviewers ask what its existence tells them about the codebase
-
-### Where a responsibility belongs
-
-- Why the service must not know about HTTP — a service that returns `ResponseEntity` or a status code can no longer be called from a scheduled job, another service, or a test without inventing a fake request; interviewers ask "could you call this method without a web request?"
-- A domain exception as the contract between the service and the controller — the service throws `ProjectNotFoundException` and stays ignorant of 404; the translation to a status code happens at the edge, which is what lets one rule serve every entry point
-- Swallowing an exception and returning success — a `catch` that logs and lets the method return `200 OK` leaves the caller unable to tell success from silent failure; the most common junior bug and a favourite pressure question
-- Where a validation rule belongs when three layers could host it — bean validation on the request DTO checks shape, the service checks rules that need the database or another entity, a database constraint is the last line; juniors scatter the same rule across all three and the copies drift apart
-- Where a cross-cutting backend concern belongs — request logging or an auth check goes in a filter or an interceptor, never copied into every controller method; interviewers ask where you would add logging to every endpoint and expect one insertion point, not thirty edits
-- Where the authorisation check is enforced — on the server, always; a route guard and a hidden button improve the interface but the endpoint is still reachable with curl, so the frontend is never the boundary; interviewers ask whether your guard is security and the answer is no
-- Constructor injection as an architectural argument, not a Spring preference — the constructor makes every dependency visible and impossible to ignore, so a class with eight of them announces that it does too much, and the class stays instantiable in a plain unit test without a container; interviewers ask why not field injection and "Spring recommends it" is the weak half of the answer
-- `UserService` + `UserServiceImpl` — the interface-plus-implementation convention that fills legacy Spring codebases; interviewers ask whether the interface is genuine abstraction or ritual, and the honest answer (one implementation, Spring proxies fine without it) scores higher than repeating the habit
-
-### System shape and structure
-
-- Package by layer vs package by feature — `controller/ service/ repository/` at the top level versus `project/ user/ timeentry/` each holding their own layers; interviewers ask how you would structure the project at 40 entities, and knowing both is what lets you navigate a legacy codebase and defend a new one
-- Monolith vs microservices — one deployable versus many independently deployed services; what a split actually buys (independent deploy and scaling) against what it costs (network calls, distributed transactions, ops); "microservices are more modern" is a failing answer and interviewers ask this of juniors specifically to hear the tradeoff
-- The modular monolith as the honest middle ground — one deployable with enforced internal module boundaries, which buys most of the organisational benefit without the distributed-systems bill; interviewers ask "how would you scale this?" and this is the answer that shows judgement rather than fashion
-- Where your own app would split, and what breaks at the seam — naming the boundary (users and identity versus time tracking and reporting) and what stops working across it: no more SQL joins, no more single transaction, a network call that can half-fail; interviewers ask you to do this to your own project
-- Synchronous REST vs asynchronous messaging between services — a REST call couples the caller to the callee's availability, messaging decouples them at the cost of eventual consistency and much harder debugging; interviewers want the tradeoff named, not a preference
-- Layered vs hexagonal (ports and adapters) — hexagonal puts the domain in the centre and pushes the database and HTTP out to interchangeable adapters; consultancy interviewers drop the word to see whether you can say what it means and why layered was enough for your project
-- Why the Angular app and the Spring Boot API are separate deployables — the frontend is a folder of static files on nginx or a CDN, the backend is a running JVM process; interviewers ask whether CORS still exists in production, and the answer depends entirely on this choice
-- One repository with `backend/` and `frontend/` versus two repositories — how the project gets cloned, built, versioned and reviewed in one pass; interviewers ask because the answer reveals whether you thought past your own machine
-- The architecture that looks right and is wrong for the size — four layers, an interface per service, and a mapper for a CRUD screen is a real cost with no return at this scale; interviewers deliberately provoke with "this is over-engineered for a timesheet app" and are testing whether you can defend the layer count *or* concede it
+- Frontend/backend separation â€” Angular runs in the browser and Spring Boot runs on a server; they communicate only through HTTP; Angular never queries the database directly; the backend controls what data is exposed and who can access it
+- Controller â†’ Service â†’ Repository â€” what each layer owns and what it must not do; interviewers ask "where does business logic live?"
+- Service layer â€” the class (`@Service`) that holds business rules, validation beyond bean validation, and orchestration between repositories; interviewers ask "why not put this logic in the controller?" â€” because the controller would then be impossible to reuse from another entry point (a scheduled job, a CLI command) and impossible to unit test without starting the whole web layer
+- Repository pattern â€” places data-access operations behind an interface so application logic does
+  not contain queries directly; a JPA repository still carries persistence semantics and is not a
+  promise that every storage technology is interchangeable
+- Why business logic belongs in the service â€” the controller must not decide; the repository must not know the rules; the service is the only place
+- Why the controller must not call the repository directly â€” bypasses the business rules layer; makes the code impossible to test in isolation
+- MVC â€” separates input coordination, presentation, and application/domain state; it is not limited
+  to server-rendered HTML and is a different design axis from controller/service/repository layering
+- MVC vs layered architecture â€” MVC organises interaction and presentation responsibilities, while
+  layers organise dependency direction; a system can use both without one being a subtype of the other
+- State machine pattern â€” a workflow where status transitions follow fixed rules (DRAFT â†’ SUBMITTED â†’ APPROVED/REJECTED); the service enforces which transitions are valid
 
 ### DTO pattern
 
-- Why not expose entities directly — the entity belongs to the database layer; exposing it couples your API shape to your DB schema; a field rename breaks all clients
-- DTO vs entity as the pair — an entity is a persistence object with an identity, a lifecycle managed by the ORM and a mapping to a table, while a DTO is a plain data carrier shaped by the API contract and owned by nobody else; interviewers ask you to state the difference in one sentence before they ask why you use both
-- Request DTO vs Response DTO — validate on the way in (client data is untrusted); control what goes out (you built it, you trust it)
-- Where mapping happens — in the service layer, not the controller; the controller never sees the entity
-- What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
-- One DTO per use case vs one shared DTO — a DTO reused by create, update and read drifts into a bag of nullable fields serving three endpoints badly; interviewers ask why the create payload and the response are separate classes
-- A response DTO that mirrors every entity field — the DTO exists but insulates nothing; recognising a "DTO in name only" is what separates having read about the pattern from having applied it
-- A lazy association reaching the serializer — if the entity escapes to the JSON layer, the serializer walks the relation after the transaction has closed and you get either a failure or an accidental extra query per row; this is the concrete cost of skipping the DTO, and interviewers ask what actually goes wrong rather than accepting "it is bad practice"
-- How deep the response graph goes — nesting a child DTO versus returning just its id and letting the client fetch it; nesting saves a round trip and risks shipping half the database in one response; interviewers ask where you stopped and why
-- Why a response DTO should be immutable — nothing downstream of the mapping should be able to alter what the client receives; interviewers ask what a Java `record` buys you over a mutable class here
-
+- Why not expose entities directly â€” the entity belongs to the database layer; exposing it couples your API shape to your DB schema; a field rename breaks all clients
+- Request DTO vs Response DTO â€” validate on the way in (client data is untrusted); control what goes out (you built it, you trust it)
+- Where mapping happens â€” in the service layer, not the controller; the controller never sees the entity
+- What changes when you add a field to the entity but not the DTO â€” nothing visible to the client; the DTO is the public contract
 
 ### Data access decisions
 
-- N+1 problem — when JPA loads a list of entities and fires one extra query per entity to load a related field; causes serious performance problems silently; fix with `JOIN FETCH` or `@EntityGraph`
-- Soft delete vs hard delete — `active = false` instead of `DELETE FROM`; preserves historical data, prevents orphaned records, allows recovery
-- What soft delete costs — every query must now remember the filter, unique constraints still see the deleted rows, and the table only grows; interviewers ask for the downside because a candidate who names only the benefits has not used it
-- Pagination — why you always paginate list endpoints in production; returning 100,000 rows crashes the server and the client
-- `@Transactional` as a design decision — when a service method writes to two tables, both operations must succeed or both must roll back
-- Sequence-generated id vs UUID as the primary key — a sequence is compact and index-friendly but leaks how many rows exist and collides when two databases merge; a UUID is globally unique and larger; interviewers ask which you chose and expect a reason, not a default
-- Enum column vs lookup table for a status — an enum is type-safe and readable but a new status needs a redeploy; a table makes the set of statuses data the business can change; interviewers ask what happens when the client invents a sixth status
-- Audit columns on every table (`createdAt`, `updatedAt`, who changed it) — real systems need to answer "when did this row change and who did it", and interviewers ask because a schema without them signals someone who has never supported a system in production
-- Storing every timestamp in UTC and converting at the edge — the database holds one canonical instant and the client renders local time; interviewers probe this hard on any time-tracking or booking domain, where a user in the Canaries and one in Madrid must see the same entry differently
-- `BigDecimal` rather than `double` for money and decimal hours — binary floating point cannot represent 0.1 exactly, so totals drift by cents and a sum of hours stops matching what the user typed; interviewers use it as a precision-awareness check on exactly this domain
-
-### Schema design and evolution
-
-- Defending a schema field by field — every foreign key, every nullable column and every unique constraint is a decision, and interviewers put your diagram on screen and ask why each one is the way it is; a column that is nullable "just in case" is the one they pick
-- Normalisation to third normal form as the default, and where you would break it — denormalisation is only defensible with a stated read pattern behind it (a reporting screen that would otherwise join five tables per row); interviewers ask for one place you would denormalise and why
-- `@ManyToMany` versus an explicit join entity — the plain many-to-many works only while the link carries no data of its own, and the moment it needs a role, a start date, or an amount, it must become an entity; interviewers ask what happens when the client wants to know *when* a user joined a project
-- Which columns get an index and what an index costs — an index makes reads faster and every write slower, and the reflex "add an index" without naming the query it serves is what interviewers are listening for
-- Database constraints as the last line of defence — the service validates, but two concurrent requests can both pass validation and only a unique constraint stops both from being written; interviewers ask why you need the constraint if the service already checks
-- Versioned migrations (Flyway or Liquibase) versus `ddl-auto: update` — migrations are reviewable, ordered, and reproducible on every environment, while `update` silently guesses and never drops anything; `ddl-auto: update` in production is a red flag interviewers actively look for
-- Zero-downtime schema change — the migration ships first and stays backward compatible with the running version, then the code follows; it is expand-and-contract applied to the database, and interviewers ask for the order of operations
-
-### Transactions and consistency boundaries
-
-- The transaction boundary belongs on the service method — that is the unit of business work, whereas the repository call is one step inside it and the controller is too late; interviewers ask where `@Transactional` goes and want the reasoning about the unit of work, not the annotation's location
-- `@Transactional(readOnly = true)` on query paths — tells the ORM it need not track changes and lets the database route or optimise the read; interviewers ask what it buys and a candidate who has never set it usually has not thought about read paths at all
-- A side effect inside a transaction that cannot be rolled back — an email sent or a payment charged before a later failure rolls the database back leaves the two permanently disagreeing; the work belongs after commit; interviewers ask what happens when the method throws after the email goes out
-- A transaction that spans a call to another system — you hold a database connection and its locks for the whole network round trip, so one slow third party degrades everything; interviewers ask what is wrong with the design rather than with the code
-- Optimistic locking versus pessimistic — a version column lets both managers load the entry and fails the second write with a clear conflict, while a lock makes the second wait; interviewers give you two people approving the same timesheet and ask what each one sees
-- Isolation-level awareness — enough to name your database's default (read committed for PostgreSQL), what a dirty read and a non-repeatable read are, and why you did not simply turn isolation to the maximum; interviewers rarely go deeper than this with a junior but do expect the vocabulary
-
-### Statelessness, idempotency and scaling
-
-> Auth *design* — JWT vs sessions, access vs refresh tokens, where the token is stored, and why a JWT cannot be revoked — is owned by the **Security** topic and deliberately not repeated here. What stays below is the system-shape consequence of choosing a stateless scheme.
-
-- Why stateless auth matters for APIs consumed by Angular — no shared session state; the API can run on multiple servers without sticky sessions
-- What breaks when you run two instances behind a load balancer — anything held in memory (a cache, a counter, a rate limiter), scheduled jobs that now fire twice, files written to the local disk, and any assumption of sticky sessions; interviewers ask this to find out whether "stateless" was a word you repeated or a property you understood
-- Making a POST idempotent — a client that times out and retries must not create two timesheets, and the answers are an idempotency key the server remembers or a natural unique constraint that rejects the duplicate; interviewers ask what happens when the user double-clicks submit
-- What to cache and how to invalidate it — caching the project list is cheap and safe, caching an approval status serves stale data to the person who just changed it; the invalidation strategy is the hard half and interviewers ask for it specifically
-- HTTP caching (`ETag`, `Cache-Control`) — the caching layer you already have before adding any infrastructure, letting the client skip a download when nothing changed; interviewers ask who benefits and the answer includes the server, not just the browser
-- Vertical versus horizontal scaling — you add instances of a stateless API easily and the relational database is the part that does not follow for free, which is why it is the first bottleneck; interviewers ask which part of your system scales worst
-- Where rate limiting belongs — at the gateway or a filter in front of the application, not inside the service, because it is a cross-cutting concern about traffic rather than a business rule; a junior is not asked to build it but is expected to know it exists and where it goes
+- Soft delete vs hard delete â€” `active = false` instead of `DELETE FROM`; preserves historical data, prevents orphaned records, allows recovery
+- Pagination â€” why you always paginate list endpoints in production; returning 100,000 rows crashes the server and the client
+- Consistency boundary â€” one business operation may require several writes to succeed or fail as a
+  unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics
 
 ### Angular patterns
 
-> The mechanics of smart/dumb components, the coordinator pattern, module boundaries and the HTTP interceptor live in the **Angular** topic. What stays here is only the part an architecture interview asks about: who owns the contract between the two sides.
-
-- Two sibling features needing the same data — fetch twice, lift the state to a common parent, or cache it in a shared service; each choice trades a round trip against a staleness risk; interviewers ask what happens when one of the two updates it
-- Who owns the TypeScript interfaces that mirror the backend DTOs — hand-maintained or generated from the OpenAPI document, and what breaks the day the API renames a field; interviewers ask because the answer reveals whether the two sides of your project were designed together
-- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
-
-### Deployment topology and operations
-
-- The production topology drawn end to end — browser, then a CDN or nginx serving the Angular bundle, then the API, then the database; where TLS terminates and why the database is never publicly reachable; interviewers hand you a whiteboard and ask for exactly this
-- What `docker-compose up` actually starts in your project and what changes for production — one command bringing up the API and PostgreSQL on a shared network is the developer story, while production replaces the database with a managed one and the compose file with an orchestrator; `_shared-context.md` records that in 2026 being unable to explain this reads as behind
-- Configuration comes from the environment, not from a file baked into the artifact — the same image is promoted from dev to production and only the injected variables change, which is also why a hardcoded secret is an architectural defect and not just a security one; interviewers name hardcoded secrets as a probe for AI-generated code
-- The CI pipeline as an architectural boundary — build, test, package, image, deploy, in that order, with the test stage as the gate that stops a broken merge; interviewers ask what runs when you open a pull request
-- Cloud awareness at recognition level — where this would run on Azure or AWS, and what a managed database and a container registry remove from your job; roughly 3 in 8 target postings name public cloud, and a junior is expected to recognise the shape rather than operate it
-- Health and readiness endpoints and who consumes them — the load balancer and the orchestrator, deciding whether to send traffic and whether to restart the container; interviewers ask how the platform knows your app is alive
-
-### Non-functional requirements and observability
-
-- What a non-functional requirement is, with numbers attached — "fast" is not a requirement while "the month view returns in under 500 ms for 2,000 entries" is; interviewers ask you to name three for your own app and vagueness is the failure mode
-- Logs versus metrics versus traces — logs are individual events, metrics are aggregated numbers over time, and traces follow one request across components; interviewers ask what you would reach for to answer "is the API slow right now?" versus "why did this one request fail?"
-- What must never appear in a log — tokens, passwords, full request bodies containing personal data; interviewers treat logging a JWT as the same class of error as committing one
-- How you find out an endpoint is slow and where you look first — the database query, an N+1, and payload size, in that order, before anything more exotic; interviewers ask for your first move and a candidate who starts by adding caching has skipped the diagnosis
-
-### Technical debt and refactoring
-
-- Technical debt defined honestly — a deliberate shortcut taken with the cost understood, which is different from a mistake; naming one you took in your own project and why is a maturity signal rather than a confession, and interviewers ask for it precisely to see whether you can
-- The boy-scout rule versus a rewrite — given two days you improve what you touch on the way past, because a rewrite trades a working system with known bugs for a new one with unknown ones; interviewers pose the two-day scenario and watch which instinct comes first
-- Refactoring safely when there are no tests — the first step is a characterisation test that pins the current behaviour, not the edit; interviewers ask how you dare change code nobody has tested
-- The strangler fig — replacing a legacy module route by route while both run, rather than a big-bang cutover; interviewers ask how you would modernise a system you cannot switch off
-
-### Working in a codebase you did not write
-
-- Identifying a class's layer from its annotation — `@RestController`, `@Service`, `@Repository`, `@Entity` and `@Configuration` each pin a class to exactly one layer; interviewers open an unfamiliar class and ask what it is and what it is allowed to call
-- Identifying a class's layer from its name suffix — `...Controller`, `...ServiceImpl`, `...Repository`, `...Mapper`, `...Config`, `...Exception`; naming convention is the fastest navigation tool in a codebase with no documentation, which is every consultancy codebase
-- Following a request end to end from a URL — find the mapped path, then the service method it calls, then the repository query underneath; this is the literal first task a junior is given on day one and interviewers simulate it
-- Blast radius before editing — a service method called from four controllers is not a local change, and finding its callers comes before changing its signature; interviewers ask what you check before you touch a shared method
-- The ripple of adding one field — how many artifacts a single new column touches before it reaches the client; interviewers give exactly this task and count how many of them you forget
-- Reading the existing tests as the specification — in an undocumented codebase the test suite is the closest thing to a statement of intended behaviour, and a test that fails after your change is telling you what you broke
-- The composite code-review drill — given one unfamiliar, usually AI-generated service, naming every architectural defect at once: an entity returned from the endpoint, `@Transactional` on the wrong layer, the repository called from the controller, an exception swallowed; the 2026 stage-4 interview shows the snippet and counts how many you find, so practising them individually is not enough
-- Disagreeing with the architecture on the team you are assigned to — you raise it once with a concrete cost, then follow the team's convention; interviewers ask because a consultancy places you on someone else's codebase and the wrong answer is rewriting it
-
-### Justifying architectural choices
-
-- The "what + why + result" formula — every architecture decision must be explainable as: what you chose, why you chose it, and what problem it avoids or enables; answers like "I used coordinator because the page is big" do not pass a technical interview
-- Comparing real alternatives — an architecture decision only exists when there was a real alternative; interviewers ask "why not the simpler option?" and expect a specific tradeoff, not a general preference
-- Three rehearsed decisions with the alternative you rejected for each — this is the literal script of stage 4, and it is the one preparation that cannot be improvised in the room; interviewers ask for exactly this and a candidate hunting for an example has already lost the point
-- Anchoring decisions to your own projects — in 2026 interviewers expect you to refer to code you actually wrote; "in project 05 I used coordinator because three siblings shared the same task list and lifting state to a parent avoided prop drilling" is a passing answer; a textbook definition is not
-- "What would you do differently if you rebuilt it today?" — the self-critique question, where having no answer reads as having done no reflection and a long list reads as having no conviction; interviewers ask it of every candidate
-- "Which part of your design breaks first at a hundred times the load?" — a pressure question testing whether you know your own bottleneck, and the honest answer usually names the database or an unpaginated query
-- Coupling and cohesion — the two words that explain why a change in one place broke three others (coupling) and why a class that does one thing is easier to change (cohesion); interviewers expect this vocabulary when you criticise a design, not "it was messy"
-- Where architecture happens in a sprint — a user story becomes a design decision during refinement and planning, and technical work that has no story gets one; roughly 6 in 8 postings name Scrum or Kanban, so interviewers ask how a requirement reached your architecture rather than assuming it appeared
-- Estimating a small feature and saying what the estimate includes — "export the month to CSV" is not just the endpoint, it is the tests, the migration if any, the review, and the deploy; interviewers ask because consultancy delivery runs on estimates and juniors quote only the coding
-- Recognising a pattern in code you did not write — naming the structure from its shape (a coordinator, a repository, a state machine) and stating its tradeoff on the spot; the 2026 stage-4 interview now shows an unfamiliar, often AI-generated snippet and asks what the structure is doing, not what the syntax means
+- Smart / dumb component pattern â€” the smart component fetches data and handles events; the dumb component only displays and emits; separation makes testing easier and code more readable
+- Coordinator pattern â€” a smart page that delegates display to multiple dumb children; all state lives in the coordinator; interviewers ask "how do you manage state in Angular?"
+- HTTP interceptor as a cross-cutting concern â€” one interceptor adds auth headers and handles global errors for the entire app; the alternative (doing it in every service) breaks DRY
+- When a coordinator grows too large â€” the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
 
 ### Testing strategy
 
-> The vocabulary — unit vs integration, the test pyramid, mock vs stub, and what an assertion-free test proves — is owned by the **General** topic. What stays here is the design judgement: what you would cover, what mocking costs you, and what a painful test says about the code.
+- Why you test the service layer independently â€” business rules live there; testing them directly without HTTP gives fast, focused feedback
+- Testability as a design signal â€” a class that cannot be exercised without booting unrelated layers
+  often has hidden dependencies or mixed responsibilities
+- Contract tests at boundaries â€” when two layers or services exchange a DTO, test the contract where
+  drift would break integration rather than duplicating every unit test
 
-- Unit test vs integration test — unit tests one method in isolation (fast, no context); integration test loads the full stack (slow, catches wiring issues)
-- Why you test the service layer independently — business rules live there; testing them directly without HTTP gives fast, focused feedback
-- Spy vs mock — a spy wraps a real object and lets every unstubbed call reach the real method; interviewers ask when you would ever want the real code to run inside a test double
-- Deciding what to mock and what to keep real — mocking everything produces a suite that only exercises the mocks while the query, the transaction and the mapping go untested; interviewers ask what your service test would still catch if the SQL underneath were wrong
-- Why you do not test a private method directly — it is reached through the public method that uses it, and wanting to test it alone is the signal that it should be its own class
+### Design qualities and boundaries
 
-### Testing strategy — cost, environment and signals
-
-- What the web-layer test actually covers — serialization, validation, status codes and the security chain, which is exactly what a service test cannot see; the tradeoff is that loading a slice is slower than a plain unit test and loading the whole context is slower again; interviewers ask what each level buys
-- The test database decision — an in-memory database is fast and accepts SQL the real one rejects, a real containerised database is slow and honest; interviewers ask whether your tests run against the same engine as production and a green suite on the wrong engine proves less than it appears
-- Coverage percentage as a target — coverage measures lines executed, not behaviour verified, so a suite can report 90% and assert almost nothing; interviewers ask what number you aim for and the good answer redirects to what is covered rather than how much
-- A flaky test — caused by shared state, real time, or ordering between specs; you fix the cause or delete the test, and retrying it in CI is the option that quietly destroys trust in the whole suite; interviewers ask what you do with one
-- Testability as a design signal — "this class is hard to test" almost always means it does too much or constructs its own dependencies, so the difficulty is information about the design rather than about testing; interviewers ask what a painful test is telling you
-- Whether you write tests first — a position either way is fine and defensible, having no position is not; interviewers ask about TDD mainly to see whether testing is a habit or an afterthought
+- Coupling â€” the number and strength of dependencies between modules; lower coupling limits the
+  blast radius of a change
+- Cohesion â€” how strongly a module's responsibilities belong together; high cohesion is the reason
+  related business rules stay in one service or feature
+- Dependency direction â€” outer delivery and persistence details may depend on application contracts,
+  while business rules should not depend on HTTP or database APIs
+- Package by feature vs package by layer â€” feature packaging keeps one use case together; layer
+  packaging makes technical roles obvious but scatters a change across the tree
+- Composition over inheritance â€” assembling focused collaborators avoids inheriting behaviour and
+  state a subtype does not need
+- Over-engineering â€” an abstraction is justified by a real variation or repeated pressure, not by a
+  hypothetical future requirement
+- Technical debt â€” a deliberate shortcut has a known cost and follow-up condition; accidental
+  complexity without ownership is simply a defect
+- Monolith vs microservices awareness â€” a monolith deploys one application and keeps local calls and
+  transactions simple; microservices add independent deployment but also network failure, distributed
+  data, and operational cost, so a junior project should not split without a real scaling boundary
 
 ### SOLID
 
-- Single Responsibility — a class should have one reason to change, which is why the controller changes when the API contract moves, the service when a business rule moves, and the repository when the query moves; interviewers ask you to name the reason each of your classes would change, and a class with two answers is the one they are hunting
-- Open/Closed — you should be able to add behaviour without editing what already works; the canonical violation is a `switch` on status that must be reopened for every new status, and the fix is polymorphism or a strategy per case; interviewers hand you exactly that switch and ask what happens when the client invents a sixth status
-- Liskov Substitution — a subtype can replace its parent without breaking the caller; why `JpaRepository` implementations are interchangeable
-- Interface Segregation — a client should not be forced to depend on methods it never calls, which is why `UserDetailsService` has one method rather than fifteen; interviewers ask what goes wrong with a fat interface and the answer is that every implementer pays for every method
-- Dependency Inversion — high-level code should depend on an abstraction rather than a concrete class, which is the whole basis of Spring's container and Angular's `inject()`; interviewers ask which principle dependency injection is an application of
-- Composition over inheritance — inheritance couples you to a parent's whole shape forever, while composition lets you assemble behaviour and swap a piece; interviewers ask where you used inheritance in your project and whether you should have
-- The Law of Demeter — `a.getB().getC().getD()` binds you to the internals of three classes, so any of them can break you; interviewers show a train wreck and ask why it is a problem beyond looking ugly
-- DRY taken too far — duplication is cheaper than the wrong abstraction, because a shared class serving two things that only looked alike ends up with flags and branches for both; interviewers ask when you would deliberately leave duplicated code
-- YAGNI and over-engineering — being able to name something you deliberately did *not* build is a stronger signal than the list of patterns you applied; interviewers ask what you left out
+- Single Responsibility â€” one class, one reason to change; controllers handle HTTP, services handle rules, repositories handle data
+- Open/Closed â€” extend behaviour without modifying existing code; add a new feature by adding new code, not changing existing code
+- Liskov Substitution â€” a subtype can replace its parent without breaking the caller; why `JpaRepository` implementations are interchangeable
+- Interface Segregation â€” prefer small specific interfaces over one large one; `UserDetailsService` has one method, not fifteen
+- Dependency Inversion â€” depend on abstractions, not concrete classes; the entire Spring DI model and Angular's `inject()` are built on this principle
 
 ---
 
 ## Security
 
 Web security concepts a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026.
-Every item must be explainable with a real example from one of the projects — not just a textbook definition.
+Every item must be explainable with a real example from one of the projects â€” not just a textbook definition.
 
-### Security principles and the OWASP Top 10
+### Security mindset and baseline
 
-- The OWASP Top 10 — the industry's reference list of web application risk categories; you are expected to name several of them (broken access control, cryptographic failures, injection, security misconfiguration, vulnerable and outdated components) and to say which you consider the highest risk in your own app and why; interviewers at banking and public-sector accounts ask for it by name, and "I've heard of it" is a visible gap
-- Security misconfiguration as a category — the flaw is not in code you wrote but in a default nobody turned off: an exposed actuator, a `permitAll` left on a forgotten endpoint, the H2 console reachable in production, Swagger UI published, CORS set to `*`, or default credentials; interviewers ask you to name the category and give two examples from your own stack
-- Defence in depth — no single control is trusted on its own, which is why the role is checked in the route guard *and* at the endpoint, and why the database user is restricted even though injection is already prevented by parameterised queries; interviewers ask why you bothered with the second layer once the first one works
-- Allow-list over block-list — you define what is permitted and reject everything else, because any list of forbidden values is incomplete against an attacker who encodes around it; this is the principle underneath parameterised queries, HTML sanitisers, and CORS origin config, and interviewers use "why not just strip the dangerous characters?" to test whether you know why filtering fails
-
----
+- OWASP Top 10 â€” a periodically updated map of common web-application risk categories; a junior
+  should recognise broken access control, injection, security misconfiguration, and vulnerable
+  dependencies without memorising an outdated category order
+- Defence in depth â€” client checks, server authorisation, validation, and least-privilege database
+  access overlap so one failed control does not expose the whole system
+- Allow-list over block-list â€” defining accepted origins, roles, fields, or input shapes is safer
+  than trying to enumerate every malicious value an attacker might invent
 
 ### Authentication and authorisation
-- Authentication vs authorisation — authentication confirms who you are (login); authorisation confirms what you are allowed to do (role check); interviewers always ask the difference and expect an example from a real project
-- 401 vs 403 — `401 Unauthorized` means not authenticated (no token, expired token, invalid token); `403 Forbidden` means authenticated but not authorised (valid token, wrong role); interviewers test this pair because the HTTP names are confusing and juniors routinely mix them up
-- Session-based auth — the server stores a session in memory and gives the client a cookie; stateful; does not scale horizontally without shared session storage; asked as a contrast to JWT
-- Token-based auth (JWT) — the client stores the token and sends it with every request; the server validates it without storing anything; stateless; interviewers ask why stateless auth matters for scaling
-- Role-based access control — `EMPLOYEE` vs `MANAGER` in TimeTrack; enforced in Spring Boot with `@PreAuthorize` and in Angular with route guards; interviewers ask where each enforcement layer lives and why you need both
-- Generic authentication error messages — login failure always returns one generic message ("invalid credentials"), never "wrong password" or "email not found"; a specific message lets an attacker enumerate which emails are registered; interviewers ask why `BadCredentialsException` is handled with one generic message instead of two
-- Roles vs granular permissions — a role is a coarse label (`MANAGER`), a permission is a fine-grained capability (`REPORT_APPROVE`); a role model stops scaling the moment the client asks for "may approve but not delete"; interviewers ask when you would move from one to the other
-
-- Horizontal vs vertical privilege escalation — horizontal is reaching another user's data at the same permission level (reading someone else's timesheet), vertical is acquiring a higher role (an employee performing a manager's approval); interviewers ask for one example of each, and candidates who know the first often cannot name the second
-- Logging out of a stateless API — there is no server session to destroy, so "logout" is the client deleting its own copy of the token while the token itself stays valid until it expires; this is why short expiry is the real control and why genuine revocation means reintroducing server state; interviewers ask "what actually happens when a user logs out?" to find out whether stateless auth was understood or memorised
-
----
+- Authentication vs authorisation â€” authentication confirms who you are (login); authorisation confirms what you are allowed to do (role check); interviewers always ask the difference and expect an example from a real project
+- 401 vs 403 â€” `401 Unauthorized` means not authenticated (no token, expired token, invalid token); `403 Forbidden` means authenticated but not authorised (valid token, wrong role); interviewers test this pair because the HTTP names are confusing and juniors routinely mix them up
+- Session-based auth â€” the server stores a session in memory and gives the client a cookie; stateful; does not scale horizontally without shared session storage; asked as a contrast to JWT
+- Token-based auth (JWT) â€” the client stores the token and sends it with every request; the server validates it without storing anything; stateless; interviewers ask why stateless auth matters for scaling
+- Role-based access control â€” `EMPLOYEE` vs `MANAGER` in TimeTrack; enforced in Spring Boot with `@PreAuthorize` and in Angular with route guards; interviewers ask where each enforcement layer lives and why you need both
+- Generic authentication error messages â€” login failure always returns one generic message ("invalid credentials"), never "wrong password" or "email not found"; a specific message lets an attacker enumerate which emails are registered; interviewers ask why `BadCredentialsException` is handled with one generic message instead of two
 
 ### JWT
-- JWT structure: header, payload, signature — header says the algorithm (`HS256`); payload carries claims (`sub`, `iat`, `exp`, `role`); signature is an HMAC of header+payload using the secret; interviewers ask what each part contains and why
-- JWT payload is not encrypted — the payload is Base64-encoded, not encrypted; anyone can decode it; never put passwords or sensitive data in a JWT; interviewers ask "is a JWT secure?" to test whether the candidate knows Base64 is not encryption
-- How the signature is verified — the server recomputes the HMAC with its own secret and compares; if the payload was changed, the signature does not match; this is how the server detects tampering without storing the token
-- Why you cannot fake a JWT without the secret — the signature is bound to the exact bytes of the header and payload; any change invalidates it; asked to check understanding of why JWT can be trusted
-- Access token vs refresh token — access token is short-lived (15 min to 1 hour); refresh token is long-lived and used only to get a new access token; limits the window of attack if an access token is stolen
-- Where to store the token in the browser — `localStorage` is accessible to JavaScript (XSS risk); `HttpOnly` cookie is not accessible to JavaScript (CSRF risk instead); interviewers ask this to test awareness of trade-offs
-- JWT expiry — the `exp` claim sets a timestamp; expired tokens are rejected by `JwtFilter`; why short-lived tokens reduce the damage if a token is stolen
-- A JWT is a bearer credential — whoever holds the token *is* the user until `exp`, and the server has no way to tell a thief from the owner because there is no session to check; this is why token lifetime is the blast radius; interviewers ask "your token leaks — what can the attacker do, and for how long?"
+- JWT structure: header, payload, signature â€” header says the algorithm (`HS256`); payload carries claims (`sub`, `iat`, `exp`, `role`); signature is an HMAC of header+payload using the secret; interviewers ask what each part contains and why
+- JWT payload is not encrypted â€” the payload is Base64-encoded, not encrypted; anyone can decode it; never put passwords or sensitive data in a JWT; interviewers ask "is a JWT secure?" to test whether the candidate knows Base64 is not encryption
+- How the signature is verified â€” the server recomputes the HMAC with its own secret and compares; if the payload was changed, the signature does not match; this is how the server detects tampering without storing the token
+- Why you cannot fake a JWT without the secret â€” the signature is bound to the exact bytes of the header and payload; any change invalidates it; asked to check understanding of why JWT can be trusted
+- Access token vs refresh token â€” access token is short-lived (15 min to 1 hour); refresh token is long-lived and used only to get a new access token; limits the window of attack if an access token is stolen
+- Where to store the token in the browser â€” `localStorage` is accessible to JavaScript (XSS risk); `HttpOnly` cookie is not accessible to JavaScript (CSRF risk instead); interviewers ask this to test awareness of trade-offs
+- JWT expiry â€” the `exp` claim sets a timestamp; expired tokens are rejected by `JwtFilter`; why short-lived tokens reduce the damage if a token is stolen
 
-- An `HttpOnly` cookie does not stop XSS from acting as the user — injected JavaScript cannot *read* the cookie, but it can still fire authenticated requests from the victim's browser, and the browser attaches the cookie for it; the token never needs to be stolen to be used; interviewers use this to break the "HttpOnly solves XSS" reflex
-- Never put a token in a URL — query strings land in browser history, in the `Referer` header sent to third parties, and in proxy and server access logs, so a `?token=...` leaks into places nobody audits; interviewers ask where the token travels and expect the `Authorization` header
-
----
-
-### Cryptography and secrets
-- Hashing vs encryption — hashing is one-way (you cannot reverse it); encryption is two-way (you can decrypt with the key); interviewers always ask the difference because candidates frequently confuse them
-- Why passwords are hashed and not encrypted — if the database is stolen, the attacker cannot recover plaintext passwords from hashes without brute-forcing every possible input
-- BCrypt — a slow hashing algorithm with a built-in random salt; slow is intentional because it resists brute-force attacks; `BCryptPasswordEncoder` in Spring Boot uses it by default with 10 rounds
-- Salting — a random value added to the input before hashing; prevents two users with the same password from having the same hash in the database; BCrypt handles salting automatically
-- Encoding vs hashing vs encryption — the three-way version of the pair: Base64 is encoding (reversible, no key, no security at all), hashing is one-way, encryption is two-way with a key; interviewers ask it this way because candidates who can define "hashing vs encryption" still describe Base64 as encryption
-- BCrypt work factor — the cost is stored inside the hash string itself, which is why the same encoder can still verify old hashes after the cost is raised; interviewers ask why you would raise it and what it costs on every login
-- What a leaked signing secret means — anyone with the HS256 secret can mint a valid token for any user and any role, so a leaked secret is a total authentication bypass, not a partial one; rotating it invalidates every token already issued at once; interviewers ask "your secret was pushed to GitHub — what now?"
-
-- Why a *fast* hash is the wrong password hash — SHA-256 and MD5 are cryptographically strong and deliberately fast, which is exactly what lets an attacker try billions of candidates per second against a stolen table; password hashing wants deliberate slowness (BCrypt, Argon2); interviewers offer SHA-256 as a plausible-sounding answer to see whether you take it
-- Rainbow tables — precomputed hash-to-password lookups that make an unsalted hash instantly reversible; this is the concrete attack a salt exists to defeat, so "why salt?" should be answered with the attack named rather than with "so the hashes differ"
-- Where secrets actually live — the JWT signing secret, the database password and any API key come from environment variables or externalised configuration, never hardcoded and never committed; interviewers open your `application.properties` to check, and `_shared-context.md` records this as the single most common flaw in AI-generated Spring Boot code
-- A committed secret stays in the git history — deleting it in a later commit removes it from the working tree and not from the repository, so anyone with a clone still has it and the only real remedy is rotating the secret; interviewers ask "you pushed a key and then removed it — are you safe?" and expect rotation, not a revert
-
----
-
-### Injection and untrusted input
-- SQL injection — the attacker injects SQL into a user input field to manipulate the query; parameterised queries (which JPA uses automatically) prevent it; interviewers ask "how does JPA protect against SQL injection?"
-- Where JPA stops protecting you — a concatenated JPQL string, a dynamically built `@Query`, a native query, or a sort column taken from the client are all still injectable; interviewers push past "JPA parameterises everything" to see whether the candidate knows the exception
-- Least privilege for the application's database role — the app connects with a role that can read and write rows but cannot `DROP` a table or read another schema, so a successful injection is capped at what that role can reach; interviewers ask "injection got through — how bad is it?"
-- XSS (Cross-Site Scripting) — the attacker injects malicious JavaScript into a page that runs in other users' browsers and can steal tokens from `localStorage`; Angular escapes all template values by default, which prevents most XSS
-- Stored vs reflected XSS — a stored payload is persisted and hits every viewer of that page; a reflected one needs the victim to follow a crafted link; the distinction explains why escaping on output matters more than filtering on input
-- `[innerHTML]` bypasses Angular's XSS protection — Angular deliberately skips escaping when you use `[innerHTML]`; any user-provided content rendered with `[innerHTML]` creates an XSS risk; interviewers ask "can Angular still get XSS?" to test whether the candidate knows the exception
-
-- DOM-based XSS — the payload never reaches the server at all; client-side JavaScript writes attacker-controlled input (a URL fragment, a query parameter) straight into the DOM, so no amount of server-side escaping helps; it is the third type that completes stored and reflected, and interviewers ask for all three
-- XSS vs CSRF as the pair — XSS runs the attacker's script inside your page, so it can read anything the page can and act as the user; CSRF never runs any script on your site, it simply makes the victim's browser send a request that the browser helpfully authenticates with an ambient cookie; interviewers ask you to state the difference in one sentence because candidates routinely blur them
-- Sanitising HTML you genuinely have to render — when user-supplied HTML must be displayed, the answer is an allow-list sanitiser that permits known-safe tags, never a hand-written filter that strips `<script>`; interviewers ask what you do when escaping is not an option, and "I remove the dangerous tags" is the failing answer
-
----
-
-### Trusting the client — the server is the boundary
-- Trust boundaries in a full-stack app — everything arriving from the browser (body, headers, path ids, hidden fields) is attacker-controlled, and the boundary begins at the controller; interviewers ask "which of these values can you trust?" as the idea that unifies IDOR, mass assignment, and client-side validation
-- Why you validate on the server even when you validate on the client — client-side validation can be bypassed with Postman or browser DevTools; the server is the only boundary you can trust; `@NotBlank` and `@Valid` in Spring Boot enforce this
-- Mass assignment risk of exposing entities directly — if a controller binds the request body straight to the `@Entity`, a malicious client can set fields it should never control, like `role: "MANAGER"` or `active: true`, by adding them to the JSON body; DTOs close this hole because the request DTO only declares the fields a client is allowed to send; interviewers ask "what could go wrong if you skip the request DTO and bind the entity directly?"
-- Broken access control (IDOR) — the #1 risk on the OWASP Top 10; the attacker changes a client-controlled id (`userId`, an order id in a URL) to access or modify another user's data; the fix is deriving ownership from `SecurityContextHolder` (the verified JWT), never from a field the client sent; interviewers ask "what could go wrong if you trust a userId sent by the client?"
-- Client-side role checks are UX, not security — hiding a button in Angular or reading `role` from the decoded token only shapes the interface; the endpoint stays callable directly; interviewers ask "what stops me calling your MANAGER endpoint from Postman?"
-- CSRF (Cross-Site Request Forgery) — the attacker tricks a logged-in user's browser into making an unwanted request; works because cookies are sent automatically by the browser; JWT in the `Authorization` header prevents it because the browser does not attach headers automatically (only cookies)
-- The synchroniser token pattern — what CSRF protection actually does: the server issues a per-session random value that must be echoed back on every state-changing request, which an attacker's site cannot read; you need to be able to describe it to justify switching it off
-
-- Format validation is not business validation — `@NotBlank` and `@Email` prove a field is well-formed, not that `hours = -40` or an end date before the start date is legal; the rule belongs in the service, and interviewers use exactly this to show that validation annotations are not by themselves a security control
-- File upload risks — the filename is attacker-controlled and can carry path traversal, the declared content type is simply a claim the client makes, an SVG is executable HTML, and an unbounded size is a denial of service; the defences are a generated name, storage outside the web root, a size cap, and serving uploads from a different origin; interviewers ask "your app accepts a profile picture — name three things that go wrong"
-- Cookie flags: `HttpOnly`, `Secure`, `SameSite` — `HttpOnly` hides the cookie from JavaScript, `Secure` stops it being sent over plain HTTP, and `SameSite` stops the browser attaching it to cross-site requests, which is the modern browser-level CSRF defence; interviewers ask you to name all three and say what each one stops
-- Safe versus state-changing HTTP methods — a `GET` must never change state, because browsers, prefetchers and crawlers issue them freely and both caching and CSRF defences assume `GET` is safe; interviewers ask why `GET /entries/5/delete` is a security problem and not merely poor REST
-
----
+### Cryptography basics
+- Hashing vs encryption â€” hashing is one-way (you cannot reverse it); encryption is two-way (you can decrypt with the key); interviewers always ask the difference because candidates frequently confuse them
+- Why passwords are hashed and not encrypted â€” if the database is stolen, the attacker cannot recover plaintext passwords from hashes without brute-forcing every possible input
+- BCrypt â€” a slow hashing algorithm with a built-in random salt; slow is intentional because it resists brute-force attacks; `BCryptPasswordEncoder` in Spring Boot uses it by default with 10 rounds
+- Salting â€” a random value added to the input before hashing; prevents two users with the same password from having the same hash in the database; BCrypt handles salting automatically
 
 ### CORS
-- What an origin is — the combination of protocol + domain + port; `http://localhost:4200` and `http://localhost:8080` are two different origins even though they share the same domain; the basis for understanding why Angular and Spring Boot conflict in development
-- What CORS is — the browser enforces the Same-Origin Policy by default, blocking JavaScript from reading responses from a different origin; CORS lets servers explicitly allow specific cross-origin requests
-- CORS is enforced by the browser, not the server — the server always receives and processes the request; the browser blocks the response from reaching JavaScript; this is why Postman works but Angular does not when CORS is misconfigured; interviewers test this distinction
-- Why it matters for Angular + Spring Boot — Angular runs on port 4200, Spring Boot on 8080; without CORS configuration the browser blocks every API call even though the server responds correctly
-- How CORS is configured in Spring Boot — `CorsConfigurationSource` registered inside `SecurityFilterChain`; specifies allowed origins, methods, and headers; interviewers ask where it goes in a Spring Security project
-- Preflight requests — the browser sends an `OPTIONS` request before any POST with a JSON body or any request with an `Authorization` header; the server must respond with the correct CORS headers or the real request is blocked
-- CORS is not authorisation — an allowed origin authenticates nobody, and a restrictive policy protects no endpoint; it only governs which sites' JavaScript may read a response; interviewers ask it of any candidate who calls CORS "a security feature that protects the API"
-- A CORS-blocked request reports no status code — the browser surfaces a rejected preflight as a generic network error with `status 0`, not the real backend status, so the Network tab shows a failure that looks nothing like the 401 or 500 the server actually sent; interviewers ask why the error has no status and expect you to distinguish a CORS block from an auth failure
-- Over-permissive CORS as a real vulnerability — `allowedOrigins("*")` with credentials, or reflecting the caller's `Origin` back, lets any site read authenticated responses on the victim's behalf; interviewers ask why `*` is not simply "the easy setting"
+- What an origin is â€” the combination of protocol + domain + port; `http://localhost:4200` and `http://localhost:8080` are two different origins even though they share the same domain; the basis for understanding why Angular and Spring Boot conflict in development
+- What CORS is â€” the browser enforces the Same-Origin Policy by default, blocking JavaScript from reading responses from a different origin; CORS lets servers explicitly allow specific cross-origin requests
+- CORS is enforced by the browser â€” a simple request may reach the server before JavaScript is denied
+  access to the response, while a failed preflight prevents the browser from sending the real
+  cross-origin request
+- Why it matters for Angular + Spring Boot â€” Angular runs on port 4200, Spring Boot on 8080; without CORS configuration the browser blocks every API call even though the server responds correctly
+- Preflight requests â€” the browser sends an `OPTIONS` request before any POST with a JSON body or any request with an `Authorization` header; the server must respond with the correct CORS headers or the real request is blocked
 
-### Information disclosure
-- Stack traces returned to the client — an unhandled exception reveals framework versions, package structure, SQL, and file paths that map the attack surface for free; interviewers ask "what does a 500 with a stack trace tell an attacker?"
-- Verbose errors vs debuggability — the tension between a message useful to a developer and one useful to an attacker is resolved by logging the detail server-side and returning a generic message plus a correlation id; a standard decision question
-- Mapping a database constraint violation to an HTTP response — a unique violation is a `409 Conflict` and a foreign key violation a `400`/`404`, never a raw `500` echoing the SQL, because the constraint name and table names leak the schema to the client
-- User enumeration beyond the login form — registration and password reset can each reveal whether an email exists through a different message, status code, or response shape, even when login is careful; interviewers extend the generic-message rule to the endpoints candidates forget
-- Timing-based user enumeration — if a missing user returns immediately while an existing one pays the BCrypt cost, response time alone leaks account existence despite identical messages; the pressure follow-up that separates a memorised rule from an understood mechanism
-- Over-returning fields in a response — a response that serialises the entity leaks `passwordHash`, internal ids, or another user's email; the outbound mirror of mass assignment; interviewers ask why you need a *response* DTO and not only a request DTO
-- What must never appear in a log line — an access token, a password, or a full request body of personal data; logs are shipped to a central system half the company can read, so a logged JWT is a credential leak with a long tail; interviewers ask how you would debug a failure you cannot reproduce and expect you to name what you would *not* print
-- Debug endpoints exposed in production — `/actuator/env`, `/actuator/heapdump`, Swagger UI, and the H2 console hand an attacker configuration and sometimes secrets; interviewers ask what you expose by adding the actuator starter and leaving it open
+### Common vulnerabilities
+- SQL injection â€” the attacker injects SQL into a user input field to manipulate the query; parameterised queries (which JPA uses automatically) prevent it; interviewers ask "how does JPA protect against SQL injection?"
+- XSS (Cross-Site Scripting) â€” the attacker injects malicious JavaScript into a page that runs in other users' browsers and can steal tokens from `localStorage`; Angular escapes all template values by default, which prevents most XSS
+- Angular HTML sanitisation â€” Angular sanitises untrusted values bound to `[innerHTML]`; the dangerous
+  escape hatch is trusting attacker-controlled markup through `DomSanitizer.bypassSecurityTrustHtml`
+- CSRF (Cross-Site Request Forgery) â€” the attacker tricks a logged-in user's browser into making an unwanted request; works because cookies are sent automatically by the browser; JWT in the `Authorization` header prevents it because the browser does not attach headers automatically (only cookies)
+- Why you validate on the server even when you validate on the client â€” client-side validation can be bypassed with Postman or browser DevTools; the server is the only boundary you can trust; `@NotBlank` and `@Valid` in Spring Boot enforce this
+- Mass assignment risk of exposing entities directly â€” if a controller binds the request body straight to the `@Entity`, a malicious client can set fields it should never control, like `role: "MANAGER"` or `active: true`, by adding them to the JSON body; DTOs close this hole because the request DTO only declares the fields a client is allowed to send; interviewers ask "what could go wrong if you skip the request DTO and bind the entity directly?"
 
-### Attacks on login and credentials
-- Brute force and credential stuffing — unlimited login attempts let an attacker test leaked password lists against your users, which is why a generic error message alone is not a defence; interviewers ask "what stops someone hammering your `/login`?"
-- Rate limiting login attempts — throttling by IP or by account is the standard answer to brute force; interviewers ask what stops someone hammering `/login` and expect a concrete throttle, not just a generic error message
-- Account lockout and its denial-of-service trade-off — locking an account after N failures lets an attacker deliberately lock out a known user; interviewers use it to see whether you can name the cost of the defence you just proposed
-- Password policy — a minimum length beats complexity rules, and a reused password defeats hashing entirely because the attacker already has it; interviewers use it as a judgement question about why the familiar "one uppercase and one symbol" advice is weak
-- Password reset as the second authentication surface — the reset token must be single-use, short-lived, and unguessable, and the flow must not confirm whether the email exists; interviewers ask about it because candidates secure login and forget the door beside it
+### Login, disclosure, and transport
 
-### Transport and dependency risk
-- Why HTTPS is non-optional for token auth — over plain HTTP the `Authorization` header travels in cleartext and any hop on the path can read the token, so every JWT guarantee assumes TLS underneath; interviewers ask what protects the token between browser and server
-- What TLS actually protects — confidentiality and integrity *in transit* only; it does nothing about a compromised client, a stolen token, or a vulnerable server; interviewers ask it to catch candidates who treat HTTPS as blanket security
-- `Content-Security-Policy` — restricts which script sources the browser will execute, the header-level defence behind XSS; interviewers ask what stops an injected `<script>` from running once it is already on the page
-- `X-Frame-Options` — blocks your page from being framed by an attacker's site, the defence against clickjacking; interviewers ask what a hidden iframe layered over your app can make a user click
-- `X-Content-Type-Options: nosniff` — stops the browser guessing a response's type and executing an uploaded file as script; Spring Security sets it by default, which interviewers ask you to notice rather than configure
-- Known-vulnerable dependencies — a CVE in a transitive library is exploitable without any flaw in your own code, which is why `dependency-check`/`npm audit` output belongs in the build; interviewers ask how you know your dependencies are safe and expect Log4Shell named as the reference case
-- `Strict-Transport-Security` (HSTS) — tells the browser to refuse plain HTTP for this domain from now on, closing the window where the very first request is unencrypted and interceptable; it belongs with the other headers you should be able to name and say what each one stops, rather than configure from memory
-- Whether to act on a reported CVE — the decision is not automatic: you check whether your code reaches the vulnerable path, whether a patched version exists, and what upgrading it drags in, because blindly bumping a transitive dependency can break the build while ignoring a reachable one is negligence; interviewers ask "the scanner flagged 40 vulnerabilities, what do you do on Monday?" and want triage, not a blanket answer
+- Brute force and rate limiting â€” repeated login attempts need throttling by account and network
+  signal; permanent account lockout is itself abusable, so the trade-off matters
+- User enumeration beyond messages â€” status codes, response shape, and large timing differences can
+  reveal whether an account exists even when the visible message is generic
+- Password reset â€” use a short-lived, single-use random token and invalidate it after success; never
+  email the existing password or trust only an account identifier
+- Information disclosure â€” stack traces, internal IDs, over-returned entity fields, and secrets in
+  logs give attackers system knowledge even when no direct exploit exists
+- Exposed operational endpoints â€” Actuator, Swagger, debug consoles, and heap dumps expand the attack
+  surface; sensitive values may be sanitised, but the endpoints still require deliberate access
+- TLS as a precondition â€” bearer tokens and passwords are readable in transit without HTTPS, so JWT
+  signing never replaces transport encryption
+- Dependency vulnerabilities â€” a known CVE matters when the vulnerable component and code path are
+  actually reachable; patching dependencies is part of application security, not separate housekeeping
 
 ---
 
@@ -2002,258 +744,91 @@ Every item must be explainable with a real example from one of the projects — 
 
 TypeScript as used in Angular and Spring Boot full-stack projects. Every item must be explainable with a real example from one of the projects. Interviewers test whether you understand why a feature exists and what the gotchas are, not just whether you can write the syntax.
 
-### Why TypeScript exists
-
-- TypeScript as a strict superset of JavaScript — every valid `.js` file is already valid TypeScript, which is what makes adoption incremental and what makes the compiler a checker bolted onto JavaScript rather than a separate language; interviewers open with "what does TypeScript give you that JavaScript doesn't" and want "the error surfaces at compile time instead of at 3am in production", not "it adds types"
-- Type-checking and transpilation are two separate jobs — the modern Angular build strips types with esbuild without checking them while `tsc` performs the checking pass, which is exactly why a type error can fail `ng build` and never interrupt a running `ng serve`; interviewers ask who actually enforces your types
-- What the compiler cannot promise — types describe your *intent* about data you do not control, so a backend that changes its response shape produces perfectly typed code that is simply wrong at runtime; interviewers ask what TypeScript does *not* protect you from, and a candidate who answers "nothing, it's type safe" has misunderstood the tool
-
----
-
 ### Types
 
-- Primitive types: `string`, `number`, `boolean`, `null`, `undefined`, `void` — the building blocks; interviewers ask what `void` means for function return types and the difference between `null` (explicit absence) and `undefined` (not yet assigned)
-- Type inference — TypeScript guesses the type from the assigned value; interviewers ask when you still need to declare the type explicitly (function parameters, complex structures, return types that are not obvious)
-- `any` vs `unknown` — `any` disables type checking completely; `unknown` forces you to check the type before using it; interviewers ask why `any` is a code smell and when `unknown` is the right choice (external API responses, user input)
-- `never` — the type for values that can never exist; used in exhaustive switch checks and functions that always throw; shows you understand the type system beyond everyday usage
-- Union types: `string | number`, `'admin' | 'user'` — a value that can be one of several types; used constantly for roles, status fields, and nullable signals (`Employee | null`)
-- Intersection types: `Employee & { permissions: string[] }` — the result must satisfy all combined types; the `type` equivalent of `interface extends`; interviewers ask the difference between intersection and extension
-- Literal types: `type Direction = 'left' | 'right'` — restricts a field to specific constant values; interviewers ask the difference between `string` and `'admin' | 'user'` (the literal type catches typos at compile time)
-- Tuple types `[string, number]` — a fixed-length array where each position has its own type; interviewers ask when a tuple beats an object (rarely — an object names its fields, a tuple only positions them)
-
-- Index-access types (`Employee['id']`) — reads a property's type out of an existing type instead of restating it, so renaming the model updates every derived annotation; interviewers ask how you type a variable that must always match a model field
-- `keyof typeof CONFIG` — the idiom that turns a runtime constant object into a union of its keys by combining the `typeof` value operator with `keyof`; interviewers ask how you type a lookup key so that renaming a config entry breaks the build rather than failing silently
-
----
-
-### Structural typing and assignability
-
-- Structural typing ("duck typing") — TypeScript decides compatibility by shape, not by declared name, so any object with the right fields satisfies an interface it never declared; interviewers contrast it with Java's nominal typing and ask whether a class is assignable to an interface without `implements` (it is)
-- Excess property checking — a fresh object literal errors on unknown extra properties, but the same object assigned through an intermediate variable does not; the canonical "why does this compile here and not there?" screening puzzle
-- The assignability ladder of `any`, `unknown` and `never` — `any` flows in both directions, `unknown` accepts everything but is assignable to nothing without narrowing, `never` is assignable to everything and accepts nothing; interviewers ask you to place all three relative to each other
-- `{}`, `object` and `Function` as types — `{}` accepts any non-null value including numbers and strings, and `Function` gives no call-signature safety; interviewers use `{}` to test whether you read it as "empty object"
-- Branded / nominal typing — because typing is structural, `EmployeeId` and `ProjectId` declared as plain `number` are freely interchangeable; interviewers ask what structural typing costs you and how you would stop two ids being swapped
-
-- Array assignability is deliberately unsound — `Dog[]` is assignable to `Animal[]`, so the compiler happily lets you push a `Cat` into what is really an array of dogs; it is a known hole accepted for convenience, and interviewers use it to find out whether you believe TypeScript is a proof system or a very good linter
-- Fewer parameters is assignable to more — `arr.map(x => x.id)` compiles even though `map` passes three arguments, because a function that ignores trailing parameters can never misuse them; interviewers show the arity mismatch and ask why it is not an error
-
----
+- Primitive types: `string`, `number`, `boolean`, `null`, `undefined`, `void` â€” the building blocks; interviewers ask what `void` means for function return types and the difference between `null` (explicit absence) and `undefined` (not yet assigned)
+- Type inference â€” TypeScript guesses the type from the assigned value; interviewers ask when you still need to declare the type explicitly (function parameters, complex structures, return types that are not obvious)
+- `any` vs `unknown` â€” `any` disables type checking completely; `unknown` forces you to check the type before using it; interviewers ask why `any` is a code smell and when `unknown` is the right choice (external API responses, user input)
+- `never` â€” the type for values that can never exist; used in exhaustive switch checks and functions that always throw; shows you understand the type system beyond everyday usage
+- Union types: `string | number`, `'admin' | 'user'` â€” a value that can be one of several types; used constantly for roles, status fields, and nullable signals (`Employee | null`)
+- Intersection types: `Employee & { permissions: string[] }` â€” the result must satisfy all combined types; the `type` equivalent of `interface extends`; interviewers ask the difference between intersection and extension
+- Literal types: `type Direction = 'left' | 'right'` â€” restricts a field to specific constant values; interviewers ask the difference between `string` and `'admin' | 'user'` (the literal type catches typos at compile time)
 
 ### Interfaces and type aliases
 
-- `interface` vs `type` — both define an object shape; `interface` is preferred for data models (supports `extends` and declaration merging); `type` is required for unions, intersections, and computed types; tested in every TypeScript screening
-- Optional properties: `name?: string` — the field can be `undefined`; interviewers ask how this affects form validation (optional fields do not need `Validators.required`) and how `name?: string` differs from `name: string | undefined`
-- `readonly` properties — the value cannot be changed after the object is created; interviewers ask the difference between `readonly` (property constraint) and `const` (variable constraint)
-- Extending interfaces: `interface AdminUser extends User` — adds new fields to an existing shape; interviewers contrast this with the `&` intersection approach on type aliases
-- Declaration merging — two `interface User` declarations in the same scope merge into a single type, while two `type User` aliases are a duplicate-identifier error; this is the concrete mechanism behind the "interface for models" preference, not a style opinion
-- Interfaces are open, type aliases are closed — a consumer can augment a third-party interface but never a type alias; interviewers ask when that openness is a feature and when it is a hazard in your own domain models
-
-- `readonly T[]` / `ReadonlyArray<T>` — `readonly` on a property only stops reassignment of the reference, so a `readonly items` array can still be mutated with `push`; making the collection genuinely immutable requires the array type itself; interviewers ask why the `readonly` field they just mutated compiled
-
----
+- `interface` vs `type` â€” both define an object shape; `interface` is preferred for data models (supports `extends` and declaration merging); `type` is required for unions, intersections, and computed types; tested in every TypeScript screening
+- Optional properties: `name?: string` â€” the field can be `undefined`; interviewers ask how this affects form validation (optional fields do not need `Validators.required`) and how `name?: string` differs from `name: string | undefined`
+- `readonly` properties â€” the value cannot be changed after the object is created; interviewers ask the difference between `readonly` (property constraint) and `const` (variable constraint)
+- Extending interfaces: `interface AdminUser extends User` â€” adds new fields to an existing shape; interviewers contrast this with the `&` intersection approach on type aliases
 
 ### Enums
 
-- TypeScript enums: `enum Status { DRAFT = 'DRAFT', SUBMITTED = 'SUBMITTED' }` — used in Angular models that mirror Java backend enums; interviewers ask how to expose an enum in a template (must be assigned to a class property — templates cannot access imports directly)
-- `const enum` vs regular `enum` — `const enum` is erased at compile time and inlined as raw values (smaller bundle, no runtime object); regular `enum` keeps the runtime object and supports `Object.values()`; interviewers ask which to use when you need to iterate the values
-- String enums vs union types — both restrict a field to a set of values; union types (`type Status = 'DRAFT' | 'SUBMITTED'`) generate less compiled code; string enums are used when values need to be iterated with `Object.values()`; a common confusable pair in Angular interviews
-- Numeric enum reverse mapping — `enum Status { DRAFT, SUBMITTED }` compiles to an object holding both directions, so `Status[0] === 'DRAFT'` and `Object.keys(Status)` returns twice the entries you expect; the classic "what does this print?" trap that string enums do not have
-- A numeric enum in an API contract — the compiled numeric value does not match the string the backend actually sends in JSON, which is why a DTO field mirroring a Java enum must be a string enum or a string union; interviewers ask what arrives on the wire
+- TypeScript enums: `enum Status { DRAFT = 'DRAFT', SUBMITTED = 'SUBMITTED' }` â€” used in Angular models that mirror Java backend enums; interviewers ask how to expose an enum in a template (must be assigned to a class property â€” templates cannot access imports directly)
+- `const enum` vs regular `enum` â€” `const enum` is erased at compile time and inlined as raw values (smaller bundle, no runtime object); regular `enum` keeps the runtime object and supports `Object.values()`; interviewers ask which to use when you need to iterate the values
+- String enums vs union types â€” both restrict a field to a set of values; union types (`type Status = 'DRAFT' | 'SUBMITTED'`) generate less compiled code; string enums are used when values need to be iterated with `Object.values()`; a common confusable pair in Angular interviews
 
 ### Generics
 
-- `Array<T>`, `Observable<T>`, `Signal<T>` — generics appear everywhere in Angular; the `T` tells you what the container holds; interviewers ask you to read a type signature out loud and explain what it means
-- Writing a generic function or interface — `function getFirst<T>(arr: T[]): T` — write the logic once and it works for any type while remaining type-safe; tested when discussing reusable utility functions in services
-- Generic constraints: `function findById<T extends { id: number }>(items: T[], id: number)` — restricts which types are allowed; interviewers ask why constraints exist and what error TypeScript gives when the constraint is not met
-- Why generics exist — `http.get<Employee[]>('/api/employees')` means you get `Employee[]`, not `any`; type errors are caught at compile time, not at runtime; interviewers ask why calling `http.get()` without a type parameter is a problem
-- `keyof` — produces a union of an object type's property names as string literals (`keyof Employee` is `'id' | 'name' | 'email' | ...`); interviewers ask how built-in utility types like `Pick<T, K extends keyof T>` use it to restrict `K` to only real property names of `T`, instead of accepting any string
-- Inference vs an explicit type argument — `http.get('/api/employees')` infers `Object` because there is no value argument to infer from, while `http.get<Employee[]>(...)` states it; interviewers ask where TypeScript's inference gets its information and when you are forced to supply the argument yourself
-- Default type parameters: `interface Box<T = string>` — the type used when the caller omits the argument; interviewers ask what `T` is in a call that passes no type
-- When *not* to write a generic — a type parameter used at exactly one call site with one concrete type is indirection with no payoff; interviewers probe whether you reach for generics reflexively or because a real contract varies
+- `Array<T>`, `Observable<T>`, `Signal<T>` â€” generics appear everywhere in Angular; the `T` tells you what the container holds; interviewers ask you to read a type signature out loud and explain what it means
+- Writing a generic function or interface â€” `function getFirst<T>(arr: T[]): T | undefined`
+  preserves the element type while honestly modelling an empty array
+- Generic constraints: `function findById<T extends { id: number }>(items: T[], id: number)` â€” restricts which types are allowed; interviewers ask why constraints exist and what error TypeScript gives when the constraint is not met
+- Why generics exist â€” `http.get<Employee[]>('/api/employees')` means you get `Employee[]`, not `any`; type errors are caught at compile time, not at runtime; interviewers ask why calling `http.get()` without a type parameter is a problem
+- `keyof` â€” produces a union of an object type's property names as string literals (`keyof Employee` is `'id' | 'name' | 'email' | ...`); interviewers ask how built-in utility types like `Pick<T, K extends keyof T>` use it to restrict `K` to only real property names of `T`, instead of accepting any string
 
 ### Utility types
 
-- `Partial<T>` vs `Required<T>` — `Partial` makes all properties optional (used in update/PATCH request objects); `Required` makes all properties required (the opposite); interviewers ask which fits a PATCH endpoint vs a POST endpoint
-- `Readonly<T>` — all properties become readonly; prevents accidental mutation; used to signal immutability in DTOs and config objects passed around the app
-- `Pick<T, K>` vs `Omit<T, K>` — `Pick` keeps only the named fields; `Omit` removes the named fields; the most commonly confused utility pair; `Omit<Employee, 'id'>` is the canonical create-form pattern where the id is generated by the backend
-- `Record<K, V>` — a typed key-value map; `Record<string, number>` used for lookup tables and dictionaries in services; interviewers ask when to use `Record` vs a plain interface or a `Map`
-- Index signature `{ [key: string]: T }` vs `Record<string, T>` — both describe an object with dynamic keys of the same value type; `Record` is the shorthand utility type and the more common choice in application code; interviewers ask why both exist (index signatures predate `Record` and are still needed when mixing dynamic keys with some fixed known properties in the same interface)
-- Deriving a type instead of hand-writing it — building the create-DTO as `Omit<Employee, 'id'>` so one edit to `Employee` propagates everywhere; interviewers ask why this beats declaring a second independent interface that will silently drift
-- The `typeof` type operator on a value — `typeof CONFIG` reuses a constant's already-inferred type instead of declaring a parallel interface beside it; interviewers ask where a type should come from when the value is the source of truth
-
-- `NonNullable<T>` — strips `null` and `undefined` out of a union, which is how you name "the same type, but after the guard"; interviewers ask how you express the post-check type without rewriting the union by hand
-- `ReturnType<typeof fn>` and `Parameters<typeof fn>` — derive a type from a function that already exists rather than restating its shape and letting the two drift; interviewers ask where a type should come from when a function is the source of truth
-- `Awaited<T>` — unwraps the value inside a `Promise`, including nested ones; interviewers ask what type `await service.load()` produces and how you name it without calling the function
-- `Readonly<T>` is shallow — it freezes the top-level properties only, so a nested object inside a `Readonly<Config>` is still fully mutable; reviewers show a "readonly" object being modified two levels down and ask why the compiler allowed it
-
----
+- `Partial<T>` vs `Required<T>` â€” `Partial` makes all properties optional (used in update/PATCH request objects); `Required` makes all properties required (the opposite); interviewers ask which fits a PATCH endpoint vs a POST endpoint
+- `Readonly<T>` â€” all properties become readonly; prevents accidental mutation; used to signal immutability in DTOs and config objects passed around the app
+- `Pick<T, K>` vs `Omit<T, K>` â€” `Pick` keeps only the named fields; `Omit` removes the named fields; the most commonly confused utility pair; `Omit<Employee, 'id'>` is the canonical create-form pattern where the id is generated by the backend
+- `Record<K, V>` â€” a typed key-value map; `Record<string, number>` used for lookup tables and dictionaries in services; interviewers ask when to use `Record` vs a plain interface or a `Map`
+- Index signature `{ [key: string]: T }` vs `Record<string, T>` â€” both describe an object with dynamic keys of the same value type; `Record` is the shorthand utility type and the more common choice in application code; interviewers ask why both exist (index signatures predate `Record` and are still needed when mixing dynamic keys with some fixed known properties in the same interface)
 
 ### Narrowing and type guards
 
-- `typeof` narrowing — works for primitive types (`'string'`, `'number'`, `'boolean'`); the classic gotcha: `typeof null === 'object'` — always check `=== null` separately when a value could be null
-- `instanceof` narrowing — works for class instances; used in catch blocks with custom error classes; interviewers ask when to use `typeof` vs `instanceof` (primitives vs class instances)
-- `in` narrowing — checks if a property exists on an object; used to distinguish between two interfaces in a union when the types share some but not all properties
-- Truthiness narrowing — a simple `if (value)` check narrows out `null` and `undefined`; gotcha: `0`, `false`, and `''` are also falsy — use `!= null` explicitly when those are valid values you want to keep
-- Discriminated unions — a shared property with a unique literal value (`status: 'loading' | 'success' | 'error'`) lets TypeScript narrow automatically inside a switch; the standard pattern for async states in Angular; interviewers ask how this differs from a plain union
-- Custom type guards: `user is Employee` — a function whose return type is a type predicate; tells TypeScript to narrow the type if the function returns `true`; tested when discussing services that work with complex union types
-- Exhaustiveness check with `never` — assign an unhandled switch case to `never` in the default branch; TypeScript errors if a new union variant is added without a handler; shows understanding of the type system beyond everyday patterns
-- Narrowing is lost inside a callback — a value narrowed to non-null widens back to the full union inside a closure, because the compiler cannot prove when the callback will run; interviewers show the "why is it possibly null again?" snippet that every Angular developer hits
-- Narrowing is invalidated by an intervening call — a mutable property narrowed by an `if` re-widens after any method call, since that call could have reassigned it; the reason the fix is to copy the value into a `const` first
-- `const` narrowing holds, `let` narrowing does not — control-flow analysis runs top-down and a `let` reassigned in a branch re-widens; interviewers show a snippet and ask what the IDE hover reports at each line
-- A discriminated union needs a literal discriminant — if the tag field is typed `string` instead of `'loading' | 'success' | 'error'`, the switch narrows nothing and every branch keeps the full union; interviewers ask why an apparently correct discriminated union is not narrowing
-- `.filter(Boolean)` does not narrow — the result stays `(T | null)[]` unless the predicate is declared as a type guard (`(x): x is T => x != null`); interviewers ask why the type did not change after the filter
-
-
----
+- `typeof` narrowing â€” works for primitive types (`'string'`, `'number'`, `'boolean'`); the classic gotcha: `typeof null === 'object'` â€” always check `=== null` separately when a value could be null
+- `instanceof` narrowing â€” works for class instances; used in catch blocks with custom error classes; interviewers ask when to use `typeof` vs `instanceof` (primitives vs class instances)
+- `in` narrowing â€” checks if a property exists on an object; used to distinguish between two interfaces in a union when the types share some but not all properties
+- Truthiness narrowing â€” a simple `if (value)` check narrows out `null` and `undefined`; gotcha: `0`, `false`, and `''` are also falsy â€” use `!= null` explicitly when those are valid values you want to keep
+- Discriminated unions â€” a shared property with a unique literal value (`status: 'loading' | 'success' | 'error'`) lets TypeScript narrow automatically inside a switch; the standard pattern for async states in Angular; interviewers ask how this differs from a plain union
+- Custom type guards: `user is Employee` â€” a function whose return type is a type predicate; tells TypeScript to narrow the type if the function returns `true`; tested when discussing services that work with complex union types
+- Exhaustiveness check with `never` â€” assign an unhandled switch case to `never` in the default branch; TypeScript errors if a new union variant is added without a handler; shows understanding of the type system beyond everyday patterns
 
 ### Null safety and type assertions
 
-- `?.` optional chaining — stops evaluation and returns `undefined` if the left side is `null` or `undefined`; used constantly in Angular templates with nullable signals; interviewers ask when to prefer `?.` over `!` (when you are not 100% certain the value exists)
-- `??` vs `||` — `??` returns the right side only when the left is `null` or `undefined`; `||` also triggers on `0`, `false`, and `''`; always use `??` when `0` or empty string is a valid value you want to keep
-- `!` non-null assertion — removes `null` and `undefined` from the type without any runtime check; if the value is actually null, you get a runtime crash with no TypeScript warning; interviewers ask why `?.` is usually safer
-- `as` type assertion — tells TypeScript "I know the type better than you"; does not validate or convert the data; used in Angular forms where the compiler cannot infer the exact type; gotcha: a wrong assertion fails silently at runtime
-- `as unknown as T` double assertion — used when two types have no overlap and TypeScript refuses a direct `as` cast; `formValue.startDate as unknown as Date` is the pattern from `MatDatepicker`; interviewers ask why it goes through `unknown` (every type is assignable to and from `unknown`)
-- Definite assignment assertion `name!: string` on a class property — distinct from the `!` operator on an expression; it promises the compiler that something outside the constructor assigns the field, which is why it appears on `@Input()` and `@ViewChild` fields; interviewers ask who is responsible for keeping that promise
-- `// @ts-ignore` vs `// @ts-expect-error` — both suppress the next line's error, but `@ts-expect-error` itself errors once the line stops failing, so it cannot rot silently in the codebase; interviewers ask which belongs in a real project and why
-
-- `?.()` and `?.[]` — optional chaining also covers calls and index access (`callback?.()`, `arr?.[0]`), which is how you invoke an optional callback without wrapping it in an `if`; interviewers show `obj.fn?.()` and ask what happens when `fn` is absent (nothing, and the expression is `undefined`)
-- `satisfies` vs `as` — `satisfies` checks a value against a type while *keeping* the narrow literal types it inferred, whereas `as` overwrites the inferred type and silences the error along with it; it is the modern replacement for `as` on config objects, and interviewers ask which of the two still catches a typo in a key
-
----
+- `?.` optional chaining â€” stops evaluation and returns `undefined` if the left side is `null` or `undefined`; used constantly in Angular templates with nullable signals; interviewers ask when to prefer `?.` over `!` (when you are not 100% certain the value exists)
+- `??` vs `||` â€” `??` returns the right side only when the left is `null` or `undefined`; `||` also triggers on `0`, `false`, and `''`; always use `??` when `0` or empty string is a valid value you want to keep
+- `!` non-null assertion â€” removes `null` and `undefined` from the type without any runtime check; if the value is actually null, you get a runtime crash with no TypeScript warning; interviewers ask why `?.` is usually safer
+- `as` type assertion â€” tells TypeScript "I know the type better than you"; does not validate or convert the data; used in Angular forms where the compiler cannot infer the exact type; gotcha: a wrong assertion fails silently at runtime
+- `as unknown as T` double assertion â€” bypasses TypeScript's overlap check and is therefore a code
+  smell at application boundaries; fix the source model or perform a real conversion instead of
+  using it to silence an incompatible date, DTO, or library type
 
 ### Classes and access modifiers
 
-- `public`, `private`, `protected`, `readonly` — `private` restricts access to the same class; `protected` also allows subclasses; `readonly` is about immutability, not visibility; interviewers ask the difference between `private` and `protected` and when to use each
-- `private` vs `readonly` — confusable pair: `private` controls who can access the property; `readonly` controls whether it can be reassigned; both can be combined (`private readonly`) and often are for injected dependencies
-- Constructor shorthand — `constructor(private http: HttpClient) {}` declares, creates, and assigns a class property in one step; the standard DI pattern in older Angular code; you must read it instantly when reviewing existing codebases
-- Classes as types — a TypeScript class can be used as a type without a separate interface; the `CanDeactivateFn<MyComponent>` pattern relies on this; interviewers may show this pattern and ask what type the component parameter has
-- `private` is compile-time only — unlike Java's `private`, the field is a plain property in the emitted JavaScript and is reachable at runtime; interviewers with a Java background use this to test whether you know what TypeScript actually enforces (the `#name` syntax is the real runtime-private one)
-- `implements` — forces a class to satisfy an interface's shape without inheriting anything; interviewers ask how you enforce a contract on a class when there is no base class to extend
-
-- `abstract class` vs `interface` — an abstract class can carry shared implementation and state and forces `extends` (so a class gets only one), while an interface is erased at compile time and constrains shape alone; interviewers with a Java background ask which you would pick for a family of services that share behaviour
-- `static` members — belong to the class itself rather than to any instance, which is where a constant or a factory helper goes; interviewers ask why `static` survives compilation into real JavaScript while `private` semantics do not
-- `super()` in a derived constructor — must be called before anything touches `this`, and the base class's parameter properties arrive as ordinary inherited fields; interviewers ask what breaks when a subclass forgets it
-
----
+- `public`, `private`, `protected`, `readonly` â€” `private` restricts access to the same class; `protected` also allows subclasses; `readonly` is about immutability, not visibility; interviewers ask the difference between `private` and `protected` and when to use each
+- `private` vs `readonly` â€” confusable pair: `private` controls who can access the property; `readonly` controls whether it can be reassigned; both can be combined (`private readonly`) and often are for injected dependencies
+- Constructor shorthand â€” `constructor(private http: HttpClient) {}` declares, creates, and assigns a class property in one step; the standard DI pattern in older Angular code; you must read it instantly when reviewing existing codebases
+- Classes as types â€” a TypeScript class can be used as a type without a separate interface; the `CanDeactivateFn<MyComponent>` pattern relies on this; interviewers may show this pattern and ask what type the component parameter has
 
 ### `as const`
 
-- Type widening problem — TypeScript widens object property types by default: `{ mode: 'edit' }` infers `{ mode: string }` not `{ mode: 'edit' }`, even with `const`; `const` only prevents reassigning the variable, not mutating properties; interviewers ask why `const` alone is not enough
-- `as const` on objects — makes all properties `readonly` and infers literal types instead of widened ones; used for nav config objects and shared constants; interviewers ask what two things `as const` does (readonly + literal type inference)
-- `as const` on arrays — turns an array into a `readonly` tuple with exact element types; without it TypeScript only knows `string[]` and loses the actual values; with it TypeScript knows each exact element
-- Widening of a `let` binding — `let mode = 'edit'` infers `string` while `const mode = 'edit'` keeps `'edit'`; interviewers ask why passing the `let` variable into a parameter typed `'edit' | 'view'` fails when the inline string compiles
+- Type widening problem â€” TypeScript widens object property types by default: `{ mode: 'edit' }` infers `{ mode: string }` not `{ mode: 'edit' }`, even with `const`; `const` only prevents reassigning the variable, not mutating properties; interviewers ask why `const` alone is not enough
+- `as const` on objects â€” makes all properties `readonly` and infers literal types instead of widened ones; used for nav config objects and shared constants; interviewers ask what two things `as const` does (readonly + literal type inference)
+- `as const` on arrays â€” turns an array into a `readonly` tuple with exact element types; without it TypeScript only knows `string[]` and loses the actual values; with it TypeScript knows each exact element
 
 ### Arrow functions and functions
 
-- Arrow functions vs function declarations — arrow functions inherit `this` from the surrounding scope; function declarations have their own `this`; matters when writing callbacks inside Angular class methods where you need to access `this`
-- Default parameters, rest parameters — reduce function overloads; `...args: string[]` collects remaining arguments into an array; common in Angular utility functions and service methods
-- Return type annotations — make the function's contract explicit; the compiler catches when the actual return does not match the declared type; interviewers ask when TypeScript can infer the return type and when you must declare it
-- `void` vs `undefined` as a return type — a callback typed `() => void` accepts an implementation that returns a value (the return is simply ignored), which is why `arr.forEach(x => this.list.push(x))` compiles; interviewers use it to test whether you know `void` is a contextual contract, not a strict one
-- Optional parameter vs a parameter typed `| undefined` — `f(a?: string)` lets the caller omit the argument entirely, `f(a: string | undefined)` forces them to pass `undefined` explicitly; the call-signature twin of the `name?: string` property gotcha
-- An `async` method always returns `Promise<T>` — declaring the return as `T` is a compile error and declaring it `Promise<any>` throws away the contract; a routine review finding in Angular services
-- Function overload signatures — several declarations sitting over one implementation, where the implementation signature itself is not callable; interviewers ask when overloads beat a single union parameter
-
-- Typing a destructured parameter with defaults — `function load({ page = 1, size = 20 }: Query = {})` puts the annotation on the pattern as a whole and the final `= {}` makes the whole argument optional; interviewers show it because the syntax is routinely misread as three separate annotations
-
----
+- Arrow functions vs function declarations â€” arrow functions inherit `this` from the surrounding scope; function declarations have their own `this`; matters when writing callbacks inside Angular class methods where you need to access `this`
+- Default parameters, rest parameters â€” reduce function overloads; `...args: string[]` collects remaining arguments into an array; common in Angular utility functions and service methods
+- Return type annotations â€” make the function's contract explicit; the compiler catches when the actual return does not match the declared type; interviewers ask when TypeScript can infer the return type and when you must declare it
 
 ### Modules and decorators
 
-- `import` / `export` — named exports (multiple per file) vs default export (one per file); Angular uses named exports for components and services; interviewers ask why Angular avoids default exports (named exports keep the name fixed at the source, making refactoring safer)
-- Barrel files (`index.ts`) — re-export multiple symbols from a folder so callers import from the folder path, not individual files; common in large consultancy Angular projects in shared module folders; you will encounter these when reading existing code
-- What a decorator is in Angular's context — `@Component`, `@Injectable`, `@Pipe` attach metadata to a class that Angular reads at startup; without the decorator, Angular does not know the class is a component
-- How TypeScript decorators work conceptually — a function that receives the class and can modify or annotate it; you use them everywhere in Angular but rarely write custom ones at junior level; interviewers test that you know they are functions, not language keywords
-- `import type` — marks an import as type-only so it is erased from the emitted JavaScript instead of surviving as a real runtime import; interviewers ask what problem it solves (accidental side-effect imports and circular dependencies between model files)
-
-- A `.ts` file with no top-level `import` or `export` is a global script, not a module — which is why two unrelated files declaring the same `const` collide with "Cannot redeclare block-scoped variable"; the fix is an `export {}`, and interviewers use the error to check you know what actually makes a file a module
-- `esModuleInterop` / `allowSyntheticDefaultImports` — the flags that let `import x from 'cjs-lib'` work against a CommonJS package that has no real default export; interviewers ask why an identical import line works in one project and fails in another
-
----
-
-### Types at runtime
-
-- Type erasure — every type, interface, generic parameter and `as` cast disappears at compile time and the emitted JavaScript contains none of it; interviewers show a snippet and ask what the compiled JS looks like
-- An interface cannot be used with `instanceof` — the check needs a value that exists at runtime, and only a class survives compilation; interviewers ask why `error instanceof MyError` works but `x instanceof Employee` fails when `Employee` is an interface
-- Nothing type-checks at runtime — `typeof` and `instanceof` inspect JavaScript values, not TypeScript types, so verifying that an HTTP response really matches `Employee` requires a type guard or a validator you write yourself
-- What a generic compiles to — `function first<T>(a: T[]): T` emits a plain untyped JavaScript function, which is why you cannot write `new T()` or `T[]`; interviewers with a Java background ask how this compares to Java's own erasure
-- A compile error does not stop the emit — `tsc` still writes JavaScript unless `noEmitOnError` is set; interviewers ask whether a red squiggle in the IDE means the app will not run
-
-### Strict mode
-
-- `strict: true` — an umbrella flag switching on a whole family of checks (`strictNullChecks`, `noImplicitAny`, `strictPropertyInitialization`, `strictFunctionTypes`, `useUnknownInCatchVariables` and more); interviewers ask you to name at least three of them
-- `strictNullChecks` — with it off, `null` and `undefined` are assignable to every type, which makes a `user: User` annotation prove nothing and `?.` look redundant; interviewers ask what this single flag changes about the type `string`
-- `noImplicitAny` — an un-annotated parameter silently becomes `any` and disables checking through the whole function body; interviewers ask why an untyped callback parameter is a hole in an otherwise typed codebase
-- `strictPropertyInitialization` — a class field declared but never assigned in the constructor becomes an error, which is why Angular component fields carry `!`; interviewers ask which of the three responses (`!`, `| undefined`, a default value) is the honest one
-- `useUnknownInCatchVariables` — the flag that makes `catch (e)` produce `unknown` rather than `any`; interviewers ask what forced the narrowing habit into your error handling
-- `noUncheckedIndexedAccess` — makes `arr[0]` and `record[key]` return `T | undefined`, surfacing the commonest runtime crash at compile time; interviewers ask why array indexing is unsound by default and why this flag is off even inside `strict`
-- `noUnusedLocals` — errors on a declared-but-unused variable; opt-in separately from `strict` and routinely mistaken for part of it, which is why a build can fail over something `strict: true` never checks
-- `noUnusedParameters` — the same check applied to function parameters, with the leading-underscore convention as the documented escape hatch for a parameter you must declare but cannot use
-- `noImplicitReturns` — errors when only some code paths of a function return a value; interviewers ask what the return type of a function with a missing `return` in one branch actually is
-- `noFallthroughCasesInSwitch` — errors on a `case` that runs into the next without `break` or `return`; recognised as the compiler catching a bug class that a discriminated-union switch otherwise hides
-- Turning `strictNullChecks` on in an existing codebase — every possibly-absent value errors at once, so the migration is per-file rather than a blanket `!` sweep; a realistic consultancy question about inheriting a legacy Angular project
-
-### Reading compiler errors
-
-- `TS2322: Type 'X' is not assignable to type 'Y'` — the commonest TypeScript error; interviewers ask which side is the source and which the target (`'X'` is what you assigned, `'Y'` is what was declared)
-- `TS2345: Argument of type 'X' is not assignable to parameter of type 'Y'` — the call-site twin of TS2322; the distinction matters because the fix lives in the argument you passed rather than the variable you declared
-- Reading the `Types of property 'x' are incompatible` cascade — a long TS2322 message nests deeper with each line and the real mismatch sits at the *last* line, not the first; interviewers paste a wall of error text and watch where you look
-- `TS2339: Property 'x' does not exist on type 'Y'` — the compiler knows only the declared shape; interviewers ask the three real causes (a typo, a field missing from the interface, a value narrowed to the wrong union member) and why `as any` is not a fix
-- `TS2339` on a union type — the property exists on only some members, so the fix is narrowing rather than asserting; the canonical trigger for reaching for a discriminated union
-- `TS18048: 'x' is possibly 'undefined'` (and `TS18047` for `null`) — the strict-null errors an Angular developer hits daily; interviewers ask which of `?.`, `??`, an early `if` guard and `!` are real fixes and which merely silences the compiler
-- `TS7006: Parameter 'x' implicitly has an 'any' type` — the flagship `noImplicitAny` error on untyped callback parameters; interviewers ask why it does *not* appear for a callback passed to a typed API (contextual typing infers the parameter)
-- `TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'X'` — indexing an object with a plain `string` variable; the two correct fixes are a `keyof X` typed key or an index signature, not `(obj as any)[key]`
-- `TS2564: Property 'x' has no initializer and is not definitely assigned in the constructor` — the `strictPropertyInitialization` error on `@Input()` and `@ViewChild` fields; interviewers ask what you would do about it
-- `TS2307: Cannot find module 'x' or its corresponding type declarations` — interviewers ask you to distinguish a package that is genuinely not installed from one installed but shipping no types
-- `TS2769: No overload matches this call` — the error shape produced by overloaded APIs like `HttpClient.get` and `FormBuilder.group`; interviewers ask why the message lists several candidates and which block actually matters
-
-### The compiler and tsconfig
-
-- `tsconfig.json` — the file telling `tsc` which files belong to the project and under which rules; a file matched by neither `include` nor `files` is still opened by the editor but never type-checked by the build, which is why "the build ignores my error" happens
-- `target` — the JavaScript version the compiler emits; lowering it downlevels `async/await`, classes and optional chaining into helper code, which is why bundle size and browser support hang off this one line
-- `module` — the format the compiler emits `import` statements in (`ESNext`, `CommonJS`); interviewers ask why the same source file produces `import` in one build and `require` in another
-- `moduleResolution` — the algorithm the compiler uses to locate an import on disk (`node`, `bundler`, `node16`); the commonest cause of a "Cannot find module" error that is not a missing package; interviewers ask why the package is installed and the import still fails
-- `lib` — which built-in type declarations are available; interviewers ask why `document` is unknown in a Node project, or why a method the runtime clearly supports still errors
-- `paths` and `baseUrl` — path aliases that let you import `@app/shared/...` instead of a trail of `../../../`; the gotcha is that the alias must be configured for the bundler too, or the editor looks fine while the build fails
-- `skipLibCheck` — skips type-checking the `.d.ts` files of dependencies; interviewers ask why nearly every real project enables it and what you give up
-- `extends` in a tsconfig — a config inherits a base file and overrides only what it changes, which is how `tsconfig.app.json` and `tsconfig.spec.json` sit on top of the root config in every Angular project; interviewers ask why tests compile under a different configuration from the app
-- `sourceMap` — maps the running JavaScript back to your original TypeScript so breakpoints and stack traces point at source; interviewers ask how you debug TypeScript in a browser that only runs JavaScript
-- The editor's TypeScript version vs the project's — the IDE may run its own bundled compiler while the build uses the one in `node_modules`, which is how an error appears only in CI or only in the editor
-
-### Third-party types and declarations
-
-- `.d.ts` declaration files — files carrying types only and emitting no JavaScript; interviewers ask where the types for a plain-JavaScript library actually live
-- `@types/*` packages and DefinitelyTyped — types published separately from the library itself; interviewers ask why installing a package can still leave you with "could not find a declaration file" and what you install to fix it
-- Bundled types vs `@types` — a modern library ships its own declarations via `types` in its `package.json`, so no companion package is needed; interviewers ask how you tell which route a given dependency takes
-- `declare module` — the pragmatic way to type or silence an untyped import when no `@types` package exists; the alternative to scattering `any` at the boundary
-- `declare global` — how a value injected by the build (a global constant, an added `window` property) gets a type; interviewers ask where the type for something that no import produced comes from
-
-- `allowJs` and `checkJs` with JSDoc annotations — how a legacy JavaScript file gets type-checked in place before anyone renames it to `.ts`; this is the realistic answer to "how would you introduce TypeScript into an existing project", and "rewrite everything" is the answer that fails it
-
----
-
-### Typing the API boundary
-
-- `http.get<Employee[]>()` is a claim, not a check — the generic only labels the response and no validation runs, so a renamed backend field yields `undefined` at runtime with a completely green build; the canonical full-stack junior question
-- Runtime validation at the boundary — a hand-written type guard or a schema validator is the only thing that makes the declared type true for data you did not construct; interviewers ask where in the app that check belongs
-- Hand-written interfaces mirroring backend DTOs drift silently — nothing links the TypeScript interface to the Java DTO, so a backend rename compiles fine on the frontend; interviewers ask how you keep the two contracts in sync and what the failure actually looks like
-- JSON has no date type — a Spring Boot `LocalDate` arrives as a string, so a response interface declaring `startDate: Date` is a lie that compiles; interviewers ask where the conversion belongs
-- `field?: string` vs `field: string | null` across the wire — an absent key and an explicit JSON `null` are different payloads, and interviewers test that you do not treat them as interchangeable when mirroring a nullable backend column
-- Separate request and response types — modelling `CreateEmployeeRequest` without `id` apart from `Employee`; interviewers ask what goes wrong when one interface serves both directions (optional-field creep until nothing is guaranteed)
-- `JSON.parse()` returns `any` — the parsed value is unknown at compile time, so assigning it straight into a typed variable silently disables checking; the safe move is `unknown` followed by narrowing
-
-- Typing a `Promise`-returning method — `Promise<Employee>` is the declared contract and `await` unwraps it, whereas an unannotated `async` method quietly infers the union of every branch it returns; interviewers ask what `await this.load()` is typed as when one branch returns `null`
-- `@typescript-eslint` as the second enforcement layer — `no-explicit-any`, `no-non-null-assertion` and `no-floating-promises` are linter rules and not compiler errors, which is why a build passes while CI still fails; consultancy postings ask for "calidad de código mediante buenas prácticas" and interviewers ask what actually stops an `any` reaching `main`
-
----
-
-### Modelling domain state and errors
-
-- Modelling async state as a discriminated union — `loading | success | error` as one union instead of three parallel `data` / `loading` / `error` fields; interviewers ask why the union makes impossible states unrepresentable
-- Optional-flag soup vs a union — four independent `isDraft` / `isSubmitted` / `approvedBy?` style fields allow sixteen combinations of which only four are legal; interviewers ask you to re-model an existing flags-based type and say how many states you removed
-- Narrowing a caught error — under strict mode `catch (e)` types `e` as `unknown`, so reading `e.message` fails with `'e' is of type 'unknown'` until you narrow with `instanceof Error`; interviewers ask why `catch (e: any)` is the wrong habit
-- You cannot type what a function throws — TypeScript has no checked exceptions, so a `throw` is invisible in the signature and the caller learns nothing from the types; interviewers ask how a caller is supposed to know what can go wrong
-- Returning a result union instead of throwing — `{ ok: true, data } | { ok: false, error }` as an alternative to an exception a component must remember to catch; interviewers ask the tradeoff for a service method
-- Typing the API's error body — the payload inside an `HttpErrorResponse` is a real backend contract, not `any`; interviewers ask how you would declare and narrow it
+- `import` / `export` â€” named exports (multiple per file) vs default export (one per file); Angular uses named exports for components and services; interviewers ask why Angular avoids default exports (named exports keep the name fixed at the source, making refactoring safer)
+- Barrel files (`index.ts`) â€” re-export multiple symbols from a folder so callers import from the folder path, not individual files; common in large consultancy Angular projects in shared module folders; you will encounter these when reading existing code
+- What a decorator is in Angular's context â€” `@Component`, `@Injectable`, `@Pipe` attach metadata to a class that Angular reads at startup; without the decorator, Angular does not know the class is a component
+- How TypeScript decorators work conceptually â€” a function that receives the class and can modify or annotate it; you use them everywhere in Angular but rarely write custom ones at junior level; interviewers test that you know they are functions, not language keywords
 
 ---
 
@@ -2262,333 +837,115 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 Topics a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026.
 Every item must be explainable with a real example from one of the projects, not a textbook definition.
 
-### Types and equality
-- Primitive types (`string`, `number`, `boolean`, `null`, `undefined`, `symbol`, `bigint`) vs reference types (objects, arrays, functions) — primitives are compared by value; objects are compared by reference; interviewers test this with `{} === {}` (false) or ask why two arrays with the same content are not equal
-- `typeof` — returns the type as a string; the classic gotcha: `typeof null === 'object'` is a historical bug that was never fixed; every interviewer knows this and some will ask about it explicitly to test depth of knowledge
-- `typeof` vs `instanceof` — `typeof` checks the primitive type; `instanceof` checks if a value was created by a specific class or constructor; use `instanceof` in `catch` blocks to distinguish error types; `typeof null` is wrong for null-checking — use `value === null`
-- `==` vs `===` — loose equality performs type coercion before comparing; strict equality checks value AND type; always use `===`; the one valid exception is `value == null`, which catches both `null` and `undefined` in one check without coercing other values
-- Truthy vs falsy — the 6 falsy values: `false`, `0`, `''`, `null`, `undefined`, `NaN`; everything else is truthy; interviewers test edge cases: `[]` and `{}` are truthy; `'0'` is truthy; `0` is falsy
-- `null` vs `undefined` — `null` is intentional absence of a value, set by the developer; `undefined` means a variable was declared but never assigned, set automatically by JavaScript; asked in almost every first JavaScript interview
-- Boxing of primitives — `'abc'.length` works because the engine temporarily wraps the primitive in a `String` object and then discards it; this is also why assigning a property to a primitive silently does nothing (`let x = 'a'; x.foo = 1; x.foo` is `undefined`)
-
-- `Array.isArray()` vs `typeof` — `typeof []` returns `'object'`, exactly like `typeof null`, so `typeof` cannot detect an array at all and `Array.isArray` is the only reliable check; interviewers ask "how do you know this is an array?" as the direct sibling of the `typeof null` gotcha
-- Deep equality is not built in — `===` on two structurally identical objects is `false` because it compares references, and JavaScript ships no `deepEqual`; interviewers ask how you would compare two API payloads and expect the `JSON.stringify` shortcut *plus* its key-order caveat
-- `Symbol` — a primitive guaranteed to be unique, invisible to `Object.keys` and `JSON.stringify`, and the mechanism behind well-known hooks like `Symbol.iterator`; interviewers ask what it is actually for once you have named it
-
----
-
-### Coercion rules
-- Implicit type coercion — `'5' + 3` is `'53'` (string concatenation) but `'5' - 3` is `2` (numeric subtraction); the `+` operator triggers concatenation when either operand is a string; interviewers show arithmetic expressions with mixed types to test whether the candidate can predict the result
-- Left-to-right evaluation of `+` — `1 + 2 + '3'` is `'33'` but `'1' + 2 + 3` is `'123'`; the operator evaluates strictly left to right, so where the string appears in the chain changes the whole result; the single most reused output-prediction question
-- Unary `+` vs binary `+` — `+'5'` converts a string to a number while `'5' + 5` concatenates; the same symbol runs two different algorithms depending on how many operands it has; interviewers mix both into one expression
-- The abstract equality algorithm — the fixed coercion steps `==` applies: `null` and `undefined` equal only each other; a number vs a string coerces the string to a number; a boolean is coerced to a number *first*, which is why `[] == false` and `'0' == false` are both `true`; interviewers hand over a table of comparisons and ask which are true
-- `ToPrimitive` — how an object becomes a primitive in `+` and `==`: `valueOf` is tried first in an arithmetic context, `toString` in a string context; the mechanism behind every "weird JavaScript" puzzle rather than a list of memorised results
-- Array-to-string coercion — `[]` becomes `''` and `[1, 2]` becomes `'1,2'` via `join`, which is why `[] + []` is `''` and `[1] == 1` is `true`; usually the punchline of a coercion quickfire
-- Which operations produce `NaN` — `'a' * 2`, `undefined + 1` and `0/0` give `NaN`, while `1/0` gives `Infinity`; a candidate who only memorised `NaN !== NaN` fails the prediction question
+### Types, equality, and coercion
+- Primitive types (`string`, `number`, `boolean`, `null`, `undefined`, `symbol`, `bigint`) vs reference types (objects, arrays, functions) â€” primitives are compared by value; objects are compared by reference; interviewers test this with `{} === {}` (false) or ask why two arrays with the same content are not equal
+- `typeof` â€” returns the type as a string; the classic gotcha: `typeof null === 'object'` is a historical bug that was never fixed; every interviewer knows this and some will ask about it explicitly to test depth of knowledge
+- `typeof` vs `instanceof` â€” `typeof` checks the primitive type; `instanceof` checks if a value was created by a specific class or constructor; use `instanceof` in `catch` blocks to distinguish error types; `typeof null` is wrong for null-checking â€” use `value === null`
+- `==` vs `===` â€” loose equality performs type coercion before comparing; strict equality checks value AND type; always use `===`; the one valid exception is `value == null`, which catches both `null` and `undefined` in one check without coercing other values
+- Truthy vs falsy â€” falsy values are `false`, numeric zero (including `-0`), `0n`, `''`, `null`,
+  `undefined`, and `NaN`; arrays, objects, and the string `'0'` are truthy, which is the edge case
+  interviewers usually probe
+- `null` vs `undefined` â€” `null` is intentional absence of a value, set by the developer; `undefined` means a variable was declared but never assigned, set automatically by JavaScript; asked in almost every first JavaScript interview
+- Implicit type coercion â€” `'5' + 3` is `'53'` (string concatenation) but `'5' - 3` is `2` (numeric subtraction); the `+` operator triggers concatenation when either operand is a string; interviewers show arithmetic expressions with mixed types to test whether the candidate can predict the result
 
 ### Numbers
-- `NaN === NaN` is `false` — `NaN` is the only value in JavaScript that is not equal to itself; interviewers ask this directly to test whether you actually understand `NaN` or just know the name
-- `Number.isNaN()` vs global `isNaN()` — `isNaN()` coerces its argument to a number first, so `isNaN('hello')` is `true`; `Number.isNaN()` does not coerce, so `Number.isNaN('hello')` is `false`; the safe choice is always `Number.isNaN()`; a confusable pair tested in junior screenings
-- The floating point problem — `0.1 + 0.2 !== 0.3` because binary floating point cannot represent most decimals exactly; interviewers ask "why would this fail in a money calculation?" and expect `toFixed()` for display or integer cents for calculation as the answer
-- `parseInt()` vs `Number()` — `parseInt('42px')` returns `42` (stops at the first non-numeric character); `Number('42px')` returns `NaN` (rejects anything that is not a clean number); interviewers ask which to use when parsing a value like `'100px'` from a CSS string
-- `toFixed(n)` — rounds to `n` decimal places and returns a **string**, not a number; forgetting the return type causes a bug when the result is used in further arithmetic without converting back; used to format prices in TimeTrack-style apps
-- `toFixed` rounds the binary value, not the decimal one — `(1.005).toFixed(2)` gives `'1.00'` because `1.005` is really stored as slightly less than `1.005`; interviewers show a money total that lost a cent and ask where it went
-
-- `Number.MAX_SAFE_INTEGER` and `BigInt` — JavaScript numbers are doubles, so an integer above 2^53 loses precision the instant `JSON.parse` reads it; a Java `Long` id from a Spring Boot API is exactly this case, and the fix is serialising it as a string; interviewers on a full-stack round ask why an id came back subtly wrong
-
----
+- `NaN === NaN` is `false` â€” `NaN` is the only value in JavaScript that is not equal to itself; interviewers ask this directly to test whether you actually understand `NaN` or just know the name
+- `Number.isNaN()` vs global `isNaN()` â€” `isNaN()` coerces its argument to a number first, so `isNaN('hello')` is `true`; `Number.isNaN()` does not coerce, so `Number.isNaN('hello')` is `false`; the safe choice is always `Number.isNaN()`; a confusable pair tested in junior screenings
+- The floating point problem â€” `0.1 + 0.2 !== 0.3` because binary floating point cannot represent most decimals exactly; interviewers ask "why would this fail in a money calculation?" and expect `toFixed()` for display or integer cents for calculation as the answer
+- `parseInt()` vs `Number()` â€” `parseInt('42px')` returns `42` (stops at the first non-numeric character); `Number('42px')` returns `NaN` (rejects anything that is not a clean number); interviewers ask which to use when parsing a value like `'100px'` from a CSS string
+- `toFixed(n)` â€” rounds to `n` decimal places and returns a **string**, not a number; forgetting the return type causes a bug when the result is used in further arithmetic without converting back; used to format prices in TimeTrack-style apps
 
 ### Variables and scope
-- `var` vs `let` vs `const` — `var` is function-scoped and hoisted as `undefined`; `let` and `const` are block-scoped; use `const` by default; use `let` only when reassignment is needed; `var` is avoided in all modern code; tested in every screening
-- Hoisting — `var` declarations are moved to the top of their scope and initialised as `undefined`; function declarations are fully hoisted and can be called before their line; function expressions (including arrow functions assigned to variables) are not fully hoisted; interviewers ask "what does this code output?" with code that calls a function before it is defined
-- Function declarations are hoisted above `var` of the same name — the identifier holds the function until the assignment line runs and overwrites it; interviewers print the same name before and after that line to see whether hoisting is understood as an order, not a slogan
-- Temporal Dead Zone (TDZ) — `let` and `const` are hoisted but not initialised; accessing them before the declaration line throws a `ReferenceError`; interviewers ask this to distinguish candidates who understand `let` deeply from those who just know to avoid `var`
-- Shadowing — an inner declaration hides an outer one of the same name for the whole inner block; combined with the TDZ, reading the name before the inner `let` throws instead of falling back to the outer variable
-- Closures — a function that retains access to variables from its outer scope even after the outer function has returned; appears in Angular `computed()`, event handlers, and services with private state; interviewers ask "what is a closure and give me a real example?"
-- Closures over a loop variable — `var` in a `for` loop shares one binding, so every deferred callback sees the final value; `let` creates a fresh binding per iteration; the canonical `for (var i…) setTimeout(() => console.log(i))` printing `3 3 3` instead of `0 1 2`
-- IIFE — an immediately invoked function expression creates a private scope on the spot; the pre-`let` fix for the loop-closure problem and still the thing to recognise when a screening shows legacy code
+- `var` vs `let` vs `const` â€” `var` is function-scoped and hoisted as `undefined`; `let` and `const` are block-scoped; use `const` by default; use `let` only when reassignment is needed; `var` is avoided in all modern code; tested in every screening
+- Hoisting â€” `var` declarations are moved to the top of their scope and initialised as `undefined`; function declarations are fully hoisted and can be called before their line; function expressions (including arrow functions assigned to variables) are not fully hoisted; interviewers ask "what does this code output?" with code that calls a function before it is defined
+- Temporal Dead Zone (TDZ) â€” `let` and `const` are hoisted but not initialised; accessing them before the declaration line throws a `ReferenceError`; interviewers ask this to distinguish candidates who understand `let` deeply from those who just know to avoid `var`
+- Closures â€” a function that retains access to variables from its outer scope even after the outer function has returned; appears in Angular `computed()`, event handlers, and services with private state; interviewers ask "what is a closure and give me a real example?"
 
-- Strict mode — ES modules and class bodies are strict automatically, which is why an undeclared assignment throws instead of quietly creating a global and why `this` is `undefined` rather than `window` in a detached method; interviewers ask what changed between an old `<script>` and a module
-- What a closure costs — a listener, interval, or callback holds its entire enclosing scope alive, so an uncleaned handler keeps a whole component's data out of the garbage collector's reach; interviewers ask what a closure costs, not merely what it is, and this is the mechanism behind every "why must I unsubscribe?" answer
+### Functions and `this`
+- Function declarations vs expressions vs arrow functions â€” declarations are hoisted; arrow functions are expressions and are not hoisted; the key choice in practice is declaration vs arrow, not declaration vs expression
+- `this` in regular functions â€” refers to the caller at runtime; in a standalone function call it is `undefined` (strict mode) or `window` (non-strict); the most common source of `this` bugs when a class method is passed as a callback without binding
+- Arrow functions and `this` â€” arrow functions inherit `this` from the surrounding scope at definition time; they have no own `this`; this is why Angular uses arrow functions in class properties and callbacks â€” the component's `this` is always available
+- `bind`, `call`, `apply` â€” explicitly set `this` on a function; `bind` returns a new function; `call` and `apply` invoke it immediately (the difference is how arguments are passed); interviewers show older Angular or JavaScript code with these and ask what they do
+- Default parameters and rest parameters â€” `function f(role = 'employee')` reduces overloads; `...args` collects remaining arguments into an array; interviewers ask how a default parameter differs from `|| 'default'` inside the function body (the `||` version incorrectly treats `0` and `''` as missing)
+- Higher-order functions â€” functions that take or return other functions; the foundation of `map`, `filter`, and every RxJS operator; interviewers ask "what is a higher-order function?" and expect a real example from array methods or Angular pipes
 
----
-
-### Functions and parameters
-- Function declarations vs expressions vs arrow functions — declarations are hoisted; arrow functions are expressions and are not hoisted; the key choice in practice is declaration vs arrow, not declaration vs expression
-- Arrow implicit return vs block body — `x => ({ ...x })` returns the object, `x => { ...x }` returns `undefined` because a block body needs an explicit `return`; the top cause of a `map` that produces `[undefined, undefined, undefined]`
-- Default parameters and rest parameters — `function f(role = 'employee')` reduces overloads; `...args` collects remaining arguments into an array; interviewers ask how a default parameter differs from `|| 'default'` inside the function body (the `||` version incorrectly treats `0` and `''` as missing)
-- Higher-order functions — functions that take or return other functions; the foundation of `map`, `filter`, and every RxJS operator; interviewers ask "what is a higher-order function?" and expect a real example from array methods or Angular pipes
-- Callbacks receive more arguments than you think — `['1','2','3'].map(parseInt)` returns `[1, NaN, NaN]` because `map` passes the index as `parseInt`'s radix; the canonical "what is wrong with this line?" snippet, and the reason to wrap in `x => parseInt(x, 10)`
-- The `arguments` object — array-like but not an array, and absent inside arrow functions; interviewers show a legacy function using `arguments` and ask why it breaks when rewritten as an arrow
-- Guard clauses vs nested `if` — returning early on the invalid cases keeps the happy path at one indent level; one of the most common live refactor requests in a code-review round
-- Options object vs positional parameters — beyond two or three parameters, and for any boolean flag, named properties read better and let the signature grow without breaking call sites; `save(user, true)` is the classic "improve this signature" prompt
-
-### `this` and function references
-- `this` in regular functions — refers to the caller at runtime; in a standalone function call it is `undefined` (strict mode) or `window` (non-strict); the most common source of `this` bugs when a class method is passed as a callback without binding
-- Arrow functions and `this` — arrow functions inherit `this` from the surrounding scope at definition time; they have no own `this`; this is why Angular uses arrow functions in class properties and callbacks — the component's `this` is always available
-- `this` binding precedence — the fixed resolution order (`new` > explicit `bind`/`call`/`apply` > method call on an object > default); knowing the order answers every "what is `this` here?" puzzle instead of memorising individual cases
-- Losing `this` on detachment — `const f = obj.method; f()` and `arr.map(this.format)` both lose the receiver because `this` is decided at the call site, not where the function was written; the fix is an arrow wrapper or `bind`; reviewers show the broken line verbatim
-- `bind`, `call`, `apply` — explicitly set `this` on a function; `bind` returns a new function; `call` and `apply` invoke it immediately (the difference is how arguments are passed); interviewers show older Angular or JavaScript code with these and ask what they do
-- Function identity — every arrow function literal creates a new reference, so `removeEventListener` with a fresh arrow never removes the original listener and two "identical" callbacks are never `===`; the mechanism behind listeners that will not detach
-
-### Mutation, copying, and references
-- `const` does not make an object immutable — it prevents rebinding the variable, not mutating its contents; `const user = {}` still allows `user.name = 'x'`; asked in almost every junior screening as a one-line trap
-- Arguments are passed by value, but the value can be a reference — reassigning a parameter is invisible to the caller while mutating an object parameter changes the caller's object; interviewers show both side by side and ask what the caller sees after the call
-- Shallow copy vs deep copy — spread and `Object.assign` copy only the first level, so a nested object stays shared and editing it through the "copy" corrupts the original; interviewers show an immutable-looking state update that is not one and ask why the source changed
-- `structuredClone()` vs `JSON.parse(JSON.stringify(obj))` — the native deep-copy handles `Date`, `Map`, `Set` and cycles, while the JSON round-trip silently turns a `Date` into a string and drops `undefined` and functions; interviewers ask "how do you deep copy?" and expect the JSON trick's losses named
-- Mutating vs non-mutating array methods — `push`, `pop`, `splice`, `sort`, `reverse`, `fill` mutate in place; `map`, `filter`, `slice`, `concat`, `toSorted`, `toReversed` return a new array; interviewers expect the mutating list from memory because those are what silently break Angular signal updates and shared state
-- A non-mutating call whose result is discarded — `arr.map(...)` or `str.replace(...)` written as a bare statement does nothing at all; a construct that silently no-ops and a favourite plant in a review snippet
-- Sharing one object reference across list items — pushing the same object N times means editing one row edits all of them; the cause of "why did every row change?"
-- Pure functions and side effects — a function that only depends on its arguments and mutates nothing is trivially testable and safe to call twice; interviewers show two snippets and ask which is easier to unit test and why
-
-### Arrays — searching and transforming
-- `map` — transforms every element and returns a new array of the same length; does not mutate the original; most common use: converting API response objects to view models; interviewers expect this as the default tool for transformation
-- `filter` — returns a new array containing only elements that pass the test; always returns an array (never `undefined`); used for filtering lists by status, role, or search term
-- `reduce` — accumulates all elements into one value: a number, an object, a string, or another array; signature: `reduce(callback, initialValue)`; used for totals and grouping by category; interviewers ask the signature and expect a working example
-- A `reduce` callback that does not return the accumulator — the accumulator becomes `undefined` on the second iteration and the whole reduction collapses; interviewers hide the missing `return` inside a grouping example
-- `reduce` on an empty array with no initial value — throws `TypeError: Reduce of empty array with no initial value`; the concrete reason the initial value is not optional in real code
-- `find` vs `filter` — `find` returns the first matching element or `undefined`; `filter` always returns an array; interviewers show both and ask which to use when looking up a user by id (answer: `find`)
-- `findIndex`, `some`, `every`, `includes` — searching without a loop; interviewers ask "which method would you use to check if any task is overdue?" (answer: `some`); "check if a role exists in an array?" (answer: `includes`)
-- `forEach` vs `map` — `forEach` returns `undefined` and is only for side effects; `map` returns a new array and is for transformation; using `forEach` and pushing results into a new array instead of using `map` is a classic junior mistake
-- Method chaining — `filter().map().sort()` — each method receives the output of the previous one; the pattern behind Angular `computed(() => tasks().filter(...).map(...))` signals; interviewers show a chained pipeline and ask what each step produces
-- The cost of chaining vs one loop — each `filter`/`map` walks the array again; interviewers ask whether that matters and the right answer at UI list sizes is no, favour readability and only fuse passes when profiling says so
-
-- `flat` and `flatMap` — flatten a nested array one level (or `Infinity`) and map-then-flatten in a single pass; the expected answer to "give me one array of every task across all projects", where the naive version is a nested `map` producing an array of arrays
-- `at(-1)` — reads from the end without `arr[arr.length - 1]`, and returns `undefined` rather than throwing on an empty array; a small but visible modern-syntax tell in a code review
-- `Array.from` and spreading an iterable — the standard ways to turn a `NodeList`, a `Set`, or an array-like `{ length: n }` into a real array so the array methods become available; interviewers ask why `.map` is missing on a `querySelectorAll` result
-
----
-
-### Arrays — ordering, mutation, and holes
-- `sort` mutation — `sort` modifies the original array in place; the default sort is lexicographic, which breaks numbers (`[10, 9, 2].sort()` gives `[10, 2, 9]`); to sort numbers correctly: `.sort((a, b) => a - b)`; to sort without mutating: `[...arr].sort(...)`
-- A comparator must return a number, not a boolean — `sort((a, b) => a > b)` is a real bug because the engine needs negative / zero / positive to order the pair; the result is engine-dependent and looks "almost sorted"
-- Multi-key sorting with `||` — `sort((a, b) => a.status.localeCompare(b.status) || b.date - a.date)` falls through to the next key only when the previous comparison returns `0`; the standard tie-break idiom in a take-home
-- `splice` vs `slice` — near-identical names and opposite behaviour: `splice` mutates and returns the removed elements, `slice` leaves the original alone and returns a copy; a confusable pair planted in review snippets
-- Mutating an array while iterating it — removing items with `splice` inside a `forEach` or indexed `for` skips elements because the indices shift underneath the loop; the classic "one item always survives" bug, and the reason to build a new array with `filter`
-- Sparse arrays and holes — `new Array(3)` and `[1, , 3]` contain holes that `map` and `forEach` skip entirely, while `for...of` and spread visit them as `undefined`; the answer to "why doesn't `new Array(3).map((_, i) => i)` work?" (use `Array.from({ length: 3 })`)
-- `includes` vs `indexOf` for `NaN` — `[NaN].indexOf(NaN)` is `-1` because `indexOf` uses strict equality, while `includes` uses SameValueZero and finds it; interviewers plant a `NaN` lookup to see who knows why the search silently fails
-- `length` is writable — `arr.length = 0` truncates the array in place and assigning past the end creates holes; a surprising piece of behaviour behind some legacy "clear the array" code
-
-- `sort` is stable — equal elements keep their relative order, which is what makes "sort by date, then sort by project" a valid two-pass alternative to writing one multi-key comparator; interviewers ask whether the second sort can be trusted not to scramble the first
-
----
-
-### Grouping and shaping API data
-- Grouping with `reduce` into a lookup object — the canonical `reduce((acc, item) => { (acc[key] ??= []).push(item); return acc; }, {})` shape; the single most common live-coding task ("group these entries by project"), and interviewers watch for the returned accumulator and the supplied initial value
-- `Object.groupBy` — the modern native replacement for the reduce-grouping idiom; interviewers ask whether you know it exists and what its browser and Node support implies before you reach for it in a real project
-- Building a lookup map instead of a nested `find` — a `find()` inside a `map()` is accidentally O(n²); keying the second list into a `Map` by id first makes the join O(1) per item; interviewers show the nested version and ask what is wrong with it
-- Joining two API responses client-side — merging `users` and `tasks` by `userId` into one view model; the step that follows the two parallel fetches in almost every take-home
-- Spreading the accumulator vs mutating it in `reduce` — `{ ...acc, [k]: v }` rebuilds the whole object on every iteration and is O(n²), while `acc[k] = v; return acc` mutates an object nobody else owns and is the intended form; interviewers ask which one the code in front of them actually does
-- Choosing an array or a keyed structure for the data shape — an array preserves order and maps directly onto a list render, a `Map`/object keyed by id gives O(1) lookup and update; interviewers ask how you would store a list you must both render in order and update by id
+### Arrays
+- `map` â€” transforms every element and returns a new array of the same length; does not mutate the original; most common use: converting API response objects to view models; interviewers expect this as the default tool for transformation
+- `filter` â€” returns a new array containing only elements that pass the test; always returns an array (never `undefined`); used for filtering lists by status, role, or search term
+- `reduce` â€” accumulates all elements into one value: a number, an object, a string, or another array; signature: `reduce(callback, initialValue)`; used for totals and grouping by category; interviewers ask the signature and expect a working example
+- `find` vs `filter` â€” `find` returns the first matching element or `undefined`; `filter` always returns an array; interviewers show both and ask which to use when looking up a user by id (answer: `find`)
+- `findIndex`, `some`, `every`, `includes` â€” searching without a loop; interviewers ask "which method would you use to check if any task is overdue?" (answer: `some`); "check if a role exists in an array?" (answer: `includes`)
+- `forEach` vs `map` â€” `forEach` returns `undefined` and is only for side effects; `map` returns a new array and is for transformation; using `forEach` and pushing results into a new array instead of using `map` is a classic junior mistake
+- `sort` mutation â€” `sort` modifies the original array in place; the default sort is lexicographic, which breaks numbers (`[10, 9, 2].sort()` gives `[10, 2, 9]`); to sort numbers correctly: `.sort((a, b) => a - b)`; to sort without mutating: `[...arr].sort(...)`
+- Method chaining â€” `filter().map().sort()` â€” each method receives the output of the previous one; the pattern behind Angular `computed(() => tasks().filter(...).map(...))` signals; interviewers show a chained pipeline and ask what each step produces
 
 ### Objects and JSON
-- Object literals, shorthand properties, computed keys — `{ name }` instead of `{ name: name }`; `{ [key]: value }` for dynamic keys; interviewers expect shorthand as natural everyday syntax, not something that needs explaining
-- Object destructuring — `const { name, role } = user`; rename with `{ name: userName }`; default value with `{ city = 'Madrid' }`; destructuring in function parameters `function display({ name, role })`; used constantly in Angular to unpack API responses and component inputs
-- Array destructuring — `const [first, second] = items`; skip elements with `[, , third]`; swap variables with `[a, b] = [b, a]`; used when consuming tuple-like return values
-- Spread in objects — `{ ...obj, key: newValue }` creates a shallow copy with overrides; used for immutable state updates in Angular signals (`employees.update(list => list.map(e => e.id === id ? { ...e, ...changes } : e))`)
-- `Object.keys`, `Object.values`, `Object.entries` — iterate over an object's properties as arrays; `Object.entries` is most useful because it gives key-value pairs; `Object.fromEntries` converts them back; interviewers ask which to use when you need both key and value in the loop body
-- Object keys are always strings — `obj[1]` and `obj['1']` are the same slot, and using an object as a key stores it under `'[object Object]'`; the concrete reason `Map` exists
-- Property key ordering — integer-like keys come first in ascending numeric order, then string keys in insertion order; the reason `Object.keys({ b: 1, 2: 1, a: 1, 1: 1 })` puts the numbers first
-- `Object.assign` vs spread — both merge objects; `Object.assign` mutates the target object; spread creates a new object; prefer spread in modern code; both produce a shallow copy
-- `Object.freeze` — makes an object's top-level properties immutable; useful for configuration constants; shallow — nested objects inside a frozen object are still mutable
-- `JSON.stringify` / `JSON.parse` — convert between JavaScript objects and JSON strings; `JSON.stringify` silently drops `undefined` values and functions; `JSON.parse` throws `SyntaxError` on invalid input and must be wrapped in `try/catch`; used in the Angular localStorage pattern for persisting signal state
-- An absent property vs an explicit `null` in a payload — omitting a key and sending `null` are different on the wire and behave differently with default parameters and `??`; interviewers ask which one a `PATCH` should send to clear a field
-
-- `Object.hasOwn(obj, key)` vs `obj.hasOwnProperty(key)` — the modern static form works on objects created with `Object.create(null)` and cannot be shadowed by a property literally named `hasOwnProperty`; it is the confusable pair behind the defensive `for...in` guard you will see in legacy code
-- The second and third arguments of `JSON.stringify` — the replacer filters or transforms keys (stripping a password before logging) and the third argument pretty-prints with indentation; interviewers ask how you log a payload readably without dumping a secret into the console
-- `toJSON` and why a `Date` round-trips as a string — `JSON.stringify` calls the object's `toJSON`, so a `Date` becomes an ISO string and `JSON.parse` has no way to know it should be a `Date` again; this is why a parsed object is never quite the object you serialised, and it is the same mechanism behind the Spring Boot `LocalDate` question
-- `localStorage` and `sessionStorage` — synchronous, string-only key-value storage with a small quota, so every object passes through `JSON.stringify`/`parse` and every read blocks the main thread; `sessionStorage` dies with the tab; this is the vanilla mechanism under the Angular persisted-state pattern
-
----
-
-### Prototypes and classes
-- Class syntax — `constructor`, methods, and `this` as the instance; every Angular component, service, pipe, and guard is a class; interviewers ask how JavaScript classes relate to prototypes — classes are syntactic sugar, the underlying mechanism is still the prototype chain
-- The prototype chain — property lookup walks up the `[[Prototype]]` links until it reaches `null`; the mechanism behind method sharing, `instanceof`, and why adding to `Array.prototype` changes every array in the program; interviewers ask what actually happens when you call a method you never defined on the object
-- What `new` does — creates an empty object, links it to the constructor's prototype, binds `this` to it, and returns it unless the constructor explicitly returns another object; explains what a constructor gives back and why forgetting `new` used to leak properties onto the global object
-- Private fields `#` — `#salary` is enforced at runtime by the JavaScript engine; TypeScript's `private` keyword is compile-time only and is erased in the compiled output; interviewers ask the difference when discussing Angular services with internal state that should not be accessible from outside
-- Getters and setters — `get salary()` / `set salary(value)` control how a property is read and written without changing the call syntax; used to add validation logic or computed formatting; Angular signals use a similar getter-like access pattern
-- Static methods and properties — belong to the class itself, not to instances; called as `ClassName.method()` without `new`; used in Angular for utility methods and configuration objects that should not depend on instance state
-- `extends` and `super` — `extends` inherits from a parent class; `super()` must be called before using `this` in the child constructor; `super.method()` calls the parent method; interviewers ask what happens if you forget `super()` (it throws a `ReferenceError`)
-- A closure vs a class for a stateful helper — a closure gives real privacy and a tiny surface, a class gives `instanceof`, inheritance, and multiple instances; interviewers ask which you would pick for a counter or a cache and why
+- Object literals, shorthand properties, computed keys â€” `{ name }` instead of `{ name: name }`; `{ [key]: value }` for dynamic keys; interviewers expect shorthand as natural everyday syntax, not something that needs explaining
+- Object destructuring â€” `const { name, role } = user`; rename with `{ name: userName }`; default value with `{ city = 'Madrid' }`; destructuring in function parameters `function display({ name, role })`; used constantly in Angular to unpack API responses and component inputs
+- Array destructuring â€” `const [first, second] = items`; skip elements with `[, , third]`; swap variables with `[a, b] = [b, a]`; used when consuming tuple-like return values
+- Spread in objects â€” `{ ...obj, key: newValue }` creates a shallow copy with overrides; the shallow copy is the most important detail â€” nested objects are still references, not new copies; used for immutable state updates in Angular signals (`employees.update(list => list.map(e => e.id === id ? { ...e, ...changes } : e))`)
+- `Object.keys`, `Object.values`, `Object.entries` â€” iterate over an object's properties as arrays; `Object.entries` is most useful because it gives key-value pairs; `Object.fromEntries` converts them back; interviewers ask which to use when you need both key and value in the loop body
+- `Object.assign` vs spread â€” both merge objects; `Object.assign` mutates the target object; spread creates a new object; prefer spread in modern code; both produce a shallow copy
+- `Object.freeze` â€” makes an object's top-level properties immutable; useful for configuration constants; shallow â€” nested objects inside a frozen object are still mutable
+- `JSON.stringify` / `JSON.parse` â€” convert between JavaScript objects and JSON strings; `JSON.stringify` silently drops `undefined` values and functions; `JSON.parse` throws `SyntaxError` on invalid input and must be wrapped in `try/catch`; used in the Angular localStorage pattern for persisting signal state
 
 ### Strings and regular expressions
-- String immutability — strings cannot be changed in place; every method returns a new string; `str[0] = 'x'` does nothing silently; a common source of confusion when coming from a mutable mindset
-- Template literals — backtick strings with `${}` interpolation; support multiline without `\n`; any expression can go inside `${}`; interviewers expect template literals as the default over string concatenation
-- `includes` vs `indexOf` for a substring check — `includes` returns a boolean and reads as intent, `indexOf` returns a position and the legacy `!== -1` idiom hides an off-by-one waiting to happen; interviewers show the `indexOf(x) > 0` bug (which misses a match at position 0) and ask what is wrong
-- `startsWith` and `endsWith` — the readable replacements for slicing a string and comparing, used for a prefix filter or a file-extension check; interviewers ask how you test a prefix without a regex
-- `split` — turns a string into an array on a separator, which is how a CSV line, a comma-separated tag field, or an ISO date becomes workable data; interviewers pair it with `join` and ask you to round-trip a list
-- `trim` — removes leading and trailing whitespace, and the reason a login fails when the user pasted an email with a trailing space; interviewers ask where user input should be normalised
-- `replace` vs `replaceAll` — `replace` with a string pattern changes only the *first* match, which is why a substitution silently misses the rest; you either pass a `/g` regex or use `replaceAll`; the single most common string gotcha in a review
-- `toLowerCase` for case-insensitive comparison — the standard way to make a search filter or an email match behave, and the reason a filter appears broken when only one side is normalised; interviewers ask why "Ana" finds nothing when the data says "ana"
-- String iteration and code units — `length` and index access count UTF-16 units while `for...of` yields whole code points, so an emoji has `length` 2 and a naive reverse corrupts it; asked whenever "reverse a string" comes up
-- Regex pattern syntax — `/pattern/flags`; common flags: `i` (case insensitive), `g` (global — find all matches, not just the first); interviewers expect you to know what the `g` flag does and what happens without it
-- `.test(str)` — returns a boolean; used in `Validators.pattern()` for Angular form validation and in conditional logic ("is this a valid email format?")
-- `.match(regex)` and `str.replace(regex, replacement)` — `match` returns the matching parts as an array; `replace` with the `g` flag replaces all occurrences; without `g` only the first match is replaced — a common source of bugs
+- String immutability â€” strings cannot be changed in place; every method returns a new string; `str[0] = 'x'` does nothing silently; a common source of confusion when coming from a mutable mindset
+- Template literals â€” backtick strings with `${}` interpolation; support multiline without `\n`; any expression can go inside `${}`; interviewers expect template literals as the default over string concatenation
+- Search methods: `includes`, `startsWith`, `endsWith`, `indexOf` â€” boolean checks for presence and position; `indexOf` returns -1 if not found; used in search filtering (check if a name includes the search term) and URL parsing
+- Transformation methods: `slice`, `split`, `trim`, `replace`, `toLowerCase`, `toUpperCase` â€” `split` converts a string into an array; `trim` removes leading/trailing whitespace; `replace` replaces the first match by default; interviewers may ask how to split a CSV string into an array
+- Regex pattern syntax â€” `/pattern/flags`; common flags: `i` (case insensitive), `g` (global â€” find all matches, not just the first); interviewers expect you to know what the `g` flag does and what happens without it
+- `.test(str)` â€” returns a boolean; used in `Validators.pattern()` for Angular form validation and in conditional logic ("is this a valid email format?")
+- `.match(regex)` and `str.replace(regex, replacement)` â€” `match` returns the matching parts as an array; `replace` with the `g` flag replaces all occurrences; without `g` only the first match is replaced â€” a common source of bugs
 
-### Sets and Maps
-- `Set` — collection of unique values; duplicates are automatically ignored; order is preserved; `has()` is O(1) while `Array.includes()` is O(n) — the performance difference is the reason to choose Set over Array for large collections
-- Deduplication pattern: `[...new Set(array)]` — the most common Set use case; interviewers ask "how would you remove duplicates from an array?" — this is the expected modern answer
-- `Map` — key-value collection where keys can be any type, not just strings; insertion order is guaranteed; `.size` built in; used when the key is a non-string value such as an object, a number, or an enum
-- `Map` vs plain object — plain objects accept only string and Symbol keys; Maps accept any type as key; Maps are better for frequent add and delete operations; plain objects are better for fixed data shapes like DTOs and configuration
-- `Set` vs `Array` — use Set when uniqueness matters or when you need fast `has()` lookups; use Array when index access or method chaining (map/filter) is needed; use `[...new Set(arr)]` to convert back to an array
+- `Set` vs `Array` â€” use Set when uniqueness matters or when you need fast `has()` lookups; use Array when index access or method chaining (map/filter) is needed; use `[...new Set(arr)]` to convert back to an array
 
-- A `Set` deduplicates by reference, not by value — `new Set([{id:1}, {id:1}])` keeps both entries because the two objects are different references, so the trick that works beautifully on strings and numbers quietly does nothing on objects; interviewers hand you a list of DTOs and ask why the duplicates survived
-
----
-
-### Promises and async/await
-- Callbacks — the original async pattern; callback hell is deeply nested callbacks that handle sequential operations; Promises and `async`/`await` were introduced specifically to solve this readability and error-handling problem
-- Promises: `then`, `catch`, `finally` — `then` runs on resolve; `catch` runs on reject; `finally` always runs regardless of outcome; interviewers ask when to use `finally` vs putting cleanup code after the `try/catch`
-- The Promise executor runs synchronously — the function passed to `new Promise` executes immediately; only the `.then` callbacks are deferred; interviewers slip this into an ordering puzzle to catch candidates who assume the whole construct is asynchronous
-- What a `.then` returns feeds the next one — returning a plain value wraps it, returning a Promise makes the chain wait for it, and returning nothing passes `undefined` down; interviewers build a three-link chain and ask what each link receives
-- A `throw` inside a chain skips to the nearest `.catch` — the intermediate `.then` handlers are bypassed, and a `.then` placed *after* the `.catch` still runs because the chain has recovered
-- `Promise.all` — runs multiple promises in parallel; resolves when ALL finish; rejects immediately if ANY fails; use when all data is required before rendering; the RxJS equivalent in Angular is `forkJoin`
-- `Promise.allSettled` vs `Promise.all` — `allSettled` never rejects; it waits for all promises and returns each result with `{ status: 'fulfilled' | 'rejected', value | reason }`; use when some requests can fail independently without aborting the rest
-- `Promise.race` vs `Promise.any` — `race` settles with the first promise to settle, *including* a rejection; `any` resolves with the first one that actually succeeds; interviewers ask which implements a timeout wrapper (answer: `race`)
-- `async` / `await` — syntactic sugar over Promises; makes async code read like synchronous code; `await` can only be used inside an `async` function; an `async` function always returns a Promise even if it returns a plain value
-- Sequential vs parallel `await` — `const a = await f(); const b = await g()` is sequential (waits one at a time); `const [a, b] = await Promise.all([f(), g()])` is parallel; sequential is only correct when the second call depends on the first or the API rate-limits
-- Promise vs Observable in Angular — Promises emit one value and start immediately; Observables are lazy (start on subscribe), can emit multiple values, and can be cancelled with `takeUntilDestroyed()`; `firstValueFrom()` converts an Observable to a Promise; interviewers ask why Angular's `HttpClient` returns Observables instead of Promises
-
-- Constructing a Promise by hand — `new Promise((resolve, reject) => ...)` is how you wrap a callback or timer API that predates promises, and writing `delay(ms)` is the classic live-coding warm-up; interviewers ask you to promisify a legacy callback function on the spot
-- Retry with backoff — a loop of awaited attempts with a growing delay and a rethrow once the attempts run out; the standard "make this flaky call resilient" task, and the naive version that retries instantly is the failing answer
-- `AggregateError` — what `Promise.any` rejects with when every input fails, carrying all the reasons in `.errors`; the natural follow-up once you have distinguished `race` from `any`
-- Asynchronous is not parallel — the event loop interleaves *waiting*, it does not run your JavaScript on two threads, so `Promise.all` speeds up ten HTTP calls and does nothing for ten heavy computations; Web Workers are the only real parallelism in the browser; interviewers ask whether `Promise.all` makes the CPU work faster
-
----
-
-### Execution order and the event loop
-- The call stack — every function call pushes a frame and every return pops one; the stack must be empty before the event loop can run a queued callback, which is the real reason a long synchronous function freezes the page; interviewers ask what "single-threaded" actually costs you
-- Event loop — JavaScript is single-threaded; microtasks (Promise callbacks) run before macrotasks (setTimeout); `Promise.then()` runs before `setTimeout` even at 0ms delay; explains why long synchronous code blocks the UI even if it calls no async functions
-- The microtask queue is drained completely between macrotasks — every pending `.then` runs before the next `setTimeout` callback gets a turn; the mechanism behind the canonical log / `setTimeout(0)` / `Promise.resolve().then()` / log ordering puzzle asked verbatim in screenings
-- An `async` function body runs synchronously up to its first `await` — everything after that `await` is scheduled as a microtask; explains why a `console.log` placed before the `await` prints before the caller's next line
-- `setTimeout(fn, 0)` is not immediate — it is a macrotask with a minimum clamp, so it runs after all synchronous code and after every pending microtask; interviewers use it as the anchor of the ordering question
-
-### Async failure modes
-- Forgetting `await` — the call returns a pending Promise instead of the value, so `if (result)` is always truthy, the next line operates on a Promise object, and the surrounding `try/catch` catches nothing; the single most common async defect in a review
-- Unhandled promise rejection — a rejected Promise with no `.catch` and no `await` fails silently, logging `Uncaught (in promise)` while the app carries on in a broken state; interviewers ask why nothing crashed but the screen stayed empty
-- A `try/catch` around a call that is not awaited — the `try` block exits before the Promise settles, so the rejection escapes; the reason behind "I do have a try/catch and it still blew up"
-- Errors thrown inside `setTimeout` or a plain callback escape the surrounding `try/catch` — the callback runs later on a fresh call stack that the `try` no longer wraps
-- `await` inside `forEach` does not wait — `forEach` ignores the returned Promise, so the loop finishes before any of the work does; the fix is `for...of` with `await` for sequential work or `Promise.all(list.map(...))` for parallel
-- Out-of-order responses — a fast second search request can resolve before a slow first one and get overwritten by stale data; the reason `switchMap`, a request id, or cancellation exists; interviewers describe a user typing quickly and ask what goes wrong
-- `AbortController` and `signal` — cancels an in-flight `fetch` so a stale response never lands; the vanilla equivalent of Angular's `takeUntilDestroyed()`; asked as "how do you cancel a request the user no longer needs?"
-
-### Error handling
-- `try` / `catch` / `finally` — `try` is the code that might throw; `catch` receives the error object; `finally` always runs for cleanup (hide a spinner, close a connection); interviewers ask when to use `finally` vs putting code after the `try/catch` block (answer: `finally` guarantees execution even if `catch` also throws)
-- A `return` inside `finally` overrides the `return` in `try` — the real value is silently discarded; a small trap that shows whether the candidate knows `finally` runs *after* the return value is computed
-- `Error` object: `message`, `name`, `stack` — `stack` shows the full call chain that led to the error; essential for debugging production bugs; `name` distinguishes error types before `instanceof` is possible
-- Custom error classes — extending `Error` to create `ValidationError`, `HttpError`, etc.; lets you use `instanceof` in `catch` to handle different error types differently; interviewers ask how to distinguish a network error from a validation error without checking arbitrary properties
-- Silently swallowing errors — catching an error and doing nothing (or only `console.error`) is the most common junior mistake; the caller has no idea the operation failed; always either handle fully (show a message) or re-throw with `throw error`
-- Error handling with `async`/`await` — `try/catch` catches both synchronous errors and rejected Promises inside an `async` function; the correct pattern for Angular services that call `firstValueFrom()` or `fetch()`
-- Throwing vs returning a result value — throwing suits genuinely exceptional cases while returning `null` or a result object suits expected outcomes like "not found"; interviewers ask what your service does when a lookup finds nothing and why
-- Where to catch — catch at the boundary that can actually react (the component or UI layer) rather than wrapping every function; interviewers ask why a `try/catch` in every method is a smell
-- Normalising errors at the API boundary — converting HTTP status codes and network failures into one internal error shape before the UI sees them; interviewers ask how the component tells a 401 apart from a 500 or from "no connection"
-- Failing fast vs substituting a fallback — deciding whether missing data should surface an error or silently default; interviewers ask why `?? 0` on a failed price fetch can be worse than showing the error
-
-- `new Error(message, { cause })` — attaches the original error when you wrap and rethrow, so the low-level reason survives as the error crosses layers instead of being replaced by your friendlier message; interviewers ask how you rethrow without destroying the trail back to the real failure
-
----
-
-### Runtime errors and debugging
-- `TypeError: Cannot read properties of undefined (reading 'x')` — the most common runtime error in JavaScript and Angular; it means the *parent* was `undefined`, not the property; interviewers paste the exact message and ask which link of the chain was actually missing
-- `TypeError: x is not a function` — the value exists but is not callable: a misspelled method, an object where a function was expected, or a class method that lost its receiver; interviewers ask what happened rather than how to silence it
-- `ReferenceError` vs `TypeError` — `ReferenceError` means the binding does not exist at all (a typo, a missing import, the TDZ); `TypeError` means it exists and holds `undefined` or the wrong kind of value; a favourite "read this error and tell me the cause" pair
-- `undefined` because the data has not arrived yet — the field is empty because the HTTP response is still in flight, not because the code is wrong; the classic Angular junior bug, and interviewers ask how you tell "not loaded yet" apart from "genuinely absent"
-- Reading a stack trace — the top frame is where it threw and the frames below are the callers; interviewers show a pasted trace and ask which line you would open first and why
-- Breakpoints vs `console.log` — a breakpoint pauses execution and exposes the whole scope and call stack, while a log only shows what you already guessed you would need; interviewers ask how you debug when you do not yet know which variable is wrong
-- The call stack and scope panels — reading who called the failing function and what the local and closure variables held at that moment; the concrete content behind "walk me through how you would debug this"
-- The console holds a live reference to logged objects — an object logged before a mutation is displayed already mutated, which is why "the log lies"; log a snapshot (a copy or a primitive) when the value changes later
-- Source maps — the browser shows bundled, minified code unless a source map maps it back to the original file; explains why a production stack trace looks nothing like the code you wrote
-- `console.error` vs `console.warn` vs `console.log` — different severity levels that DevTools filters separately, and only `console.error` captures a stack trace with the message; interviewers probe whether logging is a deliberate choice or a reflex
-- `console.table` and `console.dir` — render an array of objects as a readable grid and expand a full object or DOM node, instead of scrolling a wall of collapsed logs; the fastest way to eyeball an API response
-- `window.onerror` and the `unhandledrejection` event — the global hooks where uncaught errors and rejections finally surface; the vanilla concept behind centralised logging and Angular's `ErrorHandler`
-
-### Dates and time
-- Creating a `Date` — `new Date()`, `new Date(isoString)`, `new Date(year, monthIndex, day)`; the month argument is zero-indexed (`0` is January) while the day is not; the first off-by-one an interviewer looks for in a take-home
-- ISO 8601 strings — `'2026-07-18T10:30:00Z'` is what a Spring Boot API returns for an `Instant` or `LocalDateTime`, and `new Date(iso)` parses it reliably, while `new Date('18/07/2026')` is implementation-dependent; interviewers ask how you get an API timestamp into a JavaScript date safely
-- `toISOString()` — serialises back to UTC for sending to the backend; it always ends in `Z` and shifts the value to UTC, so a Spanish local date can come out as the previous day; the standard "why is my date one day off?" bug
-- `Invalid Date` — an unparseable date does not throw; it produces a `Date` whose `getTime()` is `NaN`, detected with `Number.isNaN(d.getTime())` and never with a string comparison; a pressure question about why a silent failure reached production
-- Timestamps and date arithmetic — `Date.now()` and `getTime()` return milliseconds since the Unix epoch, so subtracting two dates gives milliseconds that you divide down to hours worked; exactly the calculation a TimeTrack-style exercise asks for
-- `getFullYear`, `getDate` and `getHours` — the accessors that read local-time components off a `Date`, with `getFullYear` being the one that replaced the two-digit `getYear`; interviewers ask which fields you read to build a calendar cell
-- `getDay` returns the day of the week with `0` meaning Sunday — not Monday, and not the day of the month (that is `getDate`); it is the gotcha behind every Spanish calendar that renders shifted by one column, and interviewers on any scheduling domain ask for it
-- `Date` objects are mutable — `setDate()` and friends modify the original in place, so copy with `new Date(d)` before adjusting; the reason a shared date drifts across a component
-- Local time vs UTC accessors — `getHours()` reads the browser's timezone while `getUTCHours()` reads UTC; interviewers ask which one to use when grouping entries "by day" for a user in Madrid against UTC data from the server
-- Why teams add a date library — `date-fns` and `Day.js` exist because native parsing, formatting, and arithmetic are verbose and locale-poor; interviewers ask whether you would add the dependency in a take-home and want a justified answer, not a reflex
-
-### Formatting for a Spanish locale
-- `Intl.NumberFormat('es-ES')` — formats numbers with the Spanish convention (`.` for thousands, `,` for decimals); hardcoded `toFixed(2)` output is the junior tell in a Spanish take-home
-- Currency formatting — `Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' })` produces `1.234,56 €` with the symbol after the number; a reviewer checks whether euros were formatted or concatenated with `'€'`
-- `toLocaleDateString('es-ES')` and `Intl.DateTimeFormat` — render `18/07/2026` instead of the US `7/18/2026`, with an options object (`day`, `month: 'long'`, `year`) controlling which parts appear; expected over manual string slicing
-- `localeCompare` — the correct comparator for sorting names in Spanish, because `a > b` compares code units and pushes `á` and `ñ` after `z`; interviewers ask why a sorted list of Spanish surnames looks wrong
-- `Intl.RelativeTimeFormat` — renders "hace 3 días" without hand-rolled pluralisation; worth recognising rather than memorising, but knowing it exists separates you from a candidate who writes an if-chain
-- Format at the display edge only — store and compute with raw numbers and `Date` objects and format at render time; interviewers probe this by asking what happens when you sort a list of strings that are already formatted as `'1.234,56 €'`
-
-### Fetch and HTTP from the browser
-- `fetch()` — returns a Promise that resolves to a `Response`, and the body needs a second `await` (`await res.json()`); interviewers ask why two awaits are needed (the headers arrive before the body has finished streaming)
-- `fetch` does not reject on 4xx or 5xx — only a network failure rejects, so you must check `res.ok` and throw yourself; the number one fetch gotcha and a guaranteed review comment on a take-home
-- Sending JSON — `method`, `headers: { 'Content-Type': 'application/json' }`, and `body: JSON.stringify(payload)`; omitting the header or the `stringify` is why a Spring `@RequestBody` endpoint answers 415 or 400
-- `URLSearchParams` — builds and percent-encodes a query string like `?status=OPEN&page=2` correctly instead of concatenating; matters as soon as a Spanish search field contains spaces or accents
-- `fetch` vs Angular's `HttpClient` — `fetch` is a Promise-based browser API with no interceptors and no automatic JSON handling; `HttpClient` returns Observables and adds interceptors, typing, and testability; interviewers ask why an Angular app does not just use `fetch`
+### Async JavaScript
+- Callbacks â€” the original async pattern; callback hell is deeply nested callbacks that handle sequential operations; Promises and `async`/`await` were introduced specifically to solve this readability and error-handling problem
+- Promises: `then`, `catch`, `finally` â€” `then` runs on resolve; `catch` runs on reject; `finally` always runs regardless of outcome; interviewers ask when to use `finally` vs putting cleanup code after the `try/catch`
+- `Promise.all` â€” observes several already-created promises concurrently, resolves when all fulfil,
+  and rejects when one rejects; it does not itself start work or guarantee parallel execution
+- `Promise.allSettled` vs `Promise.all` â€” `allSettled` never rejects; it waits for all promises and returns each result with `{ status: 'fulfilled' | 'rejected', value | reason }`; use when some requests can fail independently without aborting the rest
+- `async` / `await` â€” syntactic sugar over Promises; makes async code read like synchronous code; `await` can only be used inside an `async` function; an `async` function always returns a Promise even if it returns a plain value
+- Sequential vs concurrent `await` â€” awaiting each producer before creating the next serialises them;
+  create independent promises first and await them together when their underlying operations can overlap
+- Event loop â€” JavaScript is single-threaded; microtasks (Promise callbacks) run before macrotasks (setTimeout); `Promise.then()` runs before `setTimeout` even at 0ms delay; explains why long synchronous code blocks the UI even if it calls no async functions
+- Promise vs Observable in Angular â€” Promises emit one value and start immediately; Observables are lazy (start on subscribe), can emit multiple values, and can be cancelled with `takeUntilDestroyed()`; `firstValueFrom()` converts an Observable to a Promise; interviewers ask why Angular's `HttpClient` returns Observables instead of Promises
 
 ### Modules
-- Named exports vs default export — Angular uses only named exports; named exports are safer to refactor because editors auto-rename them; default exports let the importer choose any name, which makes automated refactoring unreliable
-- `import { name as alias }` and `import * as namespace` — renaming to avoid naming conflicts; namespace import bundles all exports into one object; used when consuming libraries that export many things at once
-- ESM vs CommonJS — `import`/`export` against `require`/`module.exports`, switched by `"type": "module"` in `package.json`; the concrete explanation for `Cannot use import statement outside a module` when a script is run under Node
-- Barrel pattern — an `index.ts` file that re-exports everything from a folder so imports stay clean; `import { X, Y } from './feature'` instead of long relative paths; common in large Angular feature modules
-- Dynamic imports and lazy loading — `import('./module').then(m => m.Class)` loads code only when needed; Angular uses this in `loadComponent:` routing to reduce the initial bundle size; interviewers ask how lazy loading works and why it matters for app startup performance
-- Tree-shaking — the bundler (esbuild) removes exported code that is never imported anywhere; only works reliably with named exports; one of the reasons Angular convention forbids default exports
+- Named exports vs default export â€” Angular uses only named exports; named exports are safer to refactor because editors auto-rename them; default exports let the importer choose any name, which makes automated refactoring unreliable
+- `import { name as alias }` and `import * as namespace` â€” renaming to avoid naming conflicts; namespace import bundles all exports into one object; used when consuming libraries that export many things at once
+- Barrel pattern â€” an `index.ts` file that re-exports everything from a folder so imports stay clean; `import { X, Y } from './feature'` instead of long relative paths; common in large Angular feature modules
+- Dynamic imports and lazy loading â€” `import('./module').then(m => m.Class)` loads code only when needed; Angular uses this in `loadComponent:` routing to reduce the initial bundle size; interviewers ask how lazy loading works and why it matters for app startup performance
+- Tree-shaking â€” a bundler can remove unused statically analysable ESM code when side effects permit
+  it; both named and default exports can be tree-shaken
 
-- A module is evaluated once and cached — every file importing it shares the same instance, which is what makes a module-level object an accidental application-wide singleton, and a circular import resolves to a partially initialised module rather than an error; interviewers ask what happens when two files import each other
-
----
-
-### npm and the build toolchain
-- `package.json` — `dependencies` ship to production while `devDependencies` only build and test the app, and the `scripts` block is the first thing a reviewer opens in a submitted take-home; interviewers ask which section a testing library belongs in
-- `npm install` vs `npm ci` — `install` resolves versions and may rewrite the lockfile; `ci` installs exactly what `package-lock.json` pins and is what a CI pipeline runs; interviewers ask why the lockfile is committed
-- Semantic versioning ranges — `^1.2.3` accepts minor updates, `~1.2.3` only patches, and an exact pin accepts none; the concrete mechanism behind "it works on my machine" and why the lockfile settles it
-- `node_modules` is never committed — it is regenerated from `package.json` plus the lockfile and belongs in `.gitignore`; a committed `node_modules` in a take-home is an immediate negative signal
-- What a bundler does — resolves the module graph, transpiles, and emits browser-ready files; the reason code written with `import` needs a build step at all, and the answer to "what is `ng build` actually doing?"
+### Error handling
+- `try` / `catch` / `finally` â€” `try` is the code that might throw; `catch` receives the error object; `finally` always runs for cleanup (hide a spinner, close a connection); interviewers ask when to use `finally` vs putting code after the `try/catch` block (answer: `finally` guarantees execution even if `catch` also throws)
+- `Error` object: `message`, `name`, `stack` â€” `stack` shows the full call chain that led to the error; essential for debugging production bugs; `name` distinguishes error types before `instanceof` is possible
+- Custom error classes â€” extending `Error` to create `ValidationError`, `HttpError`, etc.; lets you use `instanceof` in `catch` to handle different error types differently; interviewers ask how to distinguish a network error from a validation error without checking arbitrary properties
+- Silently swallowing errors â€” catching an error and doing nothing is the most common junior mistake; the caller has no idea the operation failed; always either handle fully (show a message) or re-throw with `throw error`
+- Error handling with `async`/`await` â€” `try/catch` catches both synchronous errors and rejected Promises inside an `async` function; the correct pattern for Angular services that call `firstValueFrom()` or `fetch()`
 
 ### Loops and iteration
-- Classic `for` loop — `for (let i = 0; i < arr.length; i++)`; still the right tool when you need the index itself or must skip/step irregularly; interviewers ask why most modern code prefers `for...of` or array methods over this form (less error-prone — no off-by-one risk on the condition or increment)
-- `for...of` vs `for...in` — `for...of` iterates the values of any iterable (arrays, strings, Sets, Maps); `for...in` iterates the string keys of an object; using `for...in` on an array is a classic bug — it gives `'0'`, `'1'`, `'2'` as strings, not the array values
-- `for...in` walks the prototype chain — it lists inherited enumerable keys too, which is why legacy code guards it with `hasOwnProperty` and why `Object.keys` is the modern answer
-- The iterable protocol — `for...of`, spread, and destructuring all consume `Symbol.iterator`, which is why they work on arrays, strings, `Set` and `Map` but throw `TypeError: x is not iterable` on a plain object
-- When to use a loop vs array methods — `map`, `filter`, `reduce` are preferred for data transformation; `for...of` is the right choice when you need early exit with `break` or when the loop body contains `await`; `forEach` cannot `break` and returns `undefined`
-- `break` and `continue` — `break` exits the loop immediately; `continue` skips the rest of the current iteration; the main reason to choose `for...of` over `forEach` when early exit is needed
-- `while` loop — repeats while a condition is true; use when the number of iterations is not known in advance (polling for a result, retrying an operation, reading paginated data)
-- `while` vs `do...while` — `while` checks the condition before the first run and may execute zero times; `do...while` runs the body once before checking, guaranteeing at least one execution; interviewers ask for a real case where `do...while` is the right choice (e.g. show a menu at least once, then repeat while the user wants to continue)
+- Classic `for` loop â€” `for (let i = 0; i < arr.length; i++)`; still the right tool when you need the index itself or must skip/step irregularly; interviewers ask why most modern code prefers `for...of` or array methods over this form (less error-prone â€” no off-by-one risk on the condition or increment)
+- `for...of` vs `for...in` â€” `for...of` iterates the values of any iterable (arrays, strings, Sets, Maps); `for...in` iterates the string keys of an object; using `for...in` on an array is a classic bug â€” it gives `'0'`, `'1'`, `'2'` as strings, not the array values
+- When to use a loop vs array methods â€” `map`, `filter`, `reduce` are preferred for data transformation; `for...of` is the right choice when you need early exit with `break` or when the loop body contains `await`; `forEach` cannot `break` and returns `undefined`
+- `break` and `continue` â€” `break` exits the loop immediately; `continue` skips the rest of the current iteration; the main reason to choose `for...of` over `forEach` when early exit is needed
+- `while` loop â€” repeats while a condition is true; use when the number of iterations is not known in advance (polling for a result, retrying an operation, reading paginated data)
+- `while` vs `do...while` â€” `while` checks the condition before the first run and may execute zero times; `do...while` runs the body once before checking, guaranteeing at least one execution; interviewers ask for a real case where `do...while` is the right choice (e.g. show a menu at least once, then repeat while the user wants to continue)
 
 ### DOM events
-- Event bubbling — a click on a child element also triggers click handlers on every ancestor element up to the document root; interviewers show a card with a button inside, both with click handlers, and ask why both fire
-- `stopPropagation()` — prevents the event from travelling further up the DOM tree; used when a button inside a card should not also trigger the card's own click handler; requires passing `$event` in the Angular template with `(click)="handler($event)"`
-- `preventDefault()` — cancels the browser's default behaviour for that element: form submission and page reload, link navigation, checkbox toggle; used in Angular form submits and custom `<a>` link overrides
-- `stopPropagation` vs `preventDefault` — independent methods; `stopPropagation` controls where the event travels in the DOM; `preventDefault` controls what the browser does after the event; interviewers show a form submit and ask which one prevents the page reload
-- `event.target` vs `event.currentTarget` — `target` is the element actually clicked, `currentTarget` is the element the handler is attached to; the confusable pair that explains most bubbling bugs
-- Event delegation — one listener on a parent handles events from any number of children by inspecting `event.target`; the answer to "how do you handle clicks on a list whose rows change?"
-- A listener registered twice — re-running the registration code (a repeated init, a subscription never cleaned up) adds a second identical handler and the effect happens twice; interviewers ask why the counter jumped by two
-- `removeEventListener` needs the same function reference — an inline arrow cannot be removed because a new function object was created, so the listener accumulates; the mechanism behind "I removed it and it still fires"
-- Listeners and subscriptions that are never cleaned up — the handler keeps a reference to state from a destroyed component, so it keeps running and holding memory; interviewers ask what happens if you never unsubscribe
-
-- The three event phases — capture, target, bubble — and `addEventListener(fn, { capture: true })` to handle on the way *down*; interviewers ask which phase your handler runs in and why an outer listener could possibly fire before an inner one
-- Listener options `once` and `passive` — `once: true` removes the handler after its first call (so you stop hand-writing the removal), and `passive: true` promises you will not call `preventDefault`, letting the browser scroll without waiting for your code; asked as "how would you fix a janky scroll listener?"
-- Direct DOM manipulation — `querySelector`, `createElement`, `append`, `classList`, and `textContent` versus `innerHTML`; the vanilla-JS round still asks for a list rendered without a framework, and `textContent` is the safe default because `innerHTML` parses markup
-- Throttling versus debouncing — debounce fires once after the burst has stopped, throttle fires at most once per interval during it; interviewers ask which a scroll or resize handler needs, and the point is that debounce feels broken there because nothing happens until the user stops
-
----
+- Event bubbling â€” a click on a child element also triggers click handlers on every ancestor element up to the document root; interviewers show a card with a button inside, both with click handlers, and ask why both fire
+- `stopPropagation()` â€” prevents the event from travelling further up the DOM tree; used when a button inside a card should not also trigger the card's own click handler; requires passing `$event` in the Angular template with `(click)="handler($event)"`
+- `preventDefault()` â€” cancels the browser's default behaviour for that element: form submission and page reload, link navigation, checkbox toggle; used in Angular form submits and custom `<a>` link overrides
+- `stopPropagation` vs `preventDefault` â€” independent methods; `stopPropagation` controls where the event travels in the DOM; `preventDefault` controls what the browser does after the event; interviewers show a form submit and ask which one prevents the page reload
 
 ### Modern syntax (ES6+)
-- Optional chaining `?.` — safely accesses a nested property that might be `null` or `undefined` without throwing; `user?.address?.city` returns `undefined` instead of a `TypeError`; used in Angular templates and services when API data may be partially missing
-- `?.` short-circuits the whole chain, and only on the guarded link — `a?.b.c` does not protect `.c` when `b` is `undefined`, while `obj?.method()` skips the entire call (and never evaluates its arguments) when `obj` is nullish; interviewers show a partially guarded chain and ask whether it can still throw
-- Optional chaining used to hide a real bug — `user?.name` on a value that should never be missing silently swallows a data error instead of failing fast; interviewers ask when `?.` is the wrong tool
-- Nullish coalescing `??` vs `||` — `??` falls back only when the left side is `null` or `undefined`; `||` also triggers on `0`, `false`, and `''`; interviewers test this with a count or price field where `0` is a valid value that should not be replaced by a default
-- Short-circuit evaluation returns an operand, not a boolean — `a || b` evaluates to one of the two values, which is why `value || 'default'` works at all and why `count && <Row/>` can render a literal `0`
-- `??` cannot be mixed with `||` or `&&` unparenthesised — the combination is a `SyntaxError` by design, because the intended precedence would be ambiguous
-- Logical assignment: `||=`, `&&=`, `??=` — shorthand for conditional assignment; `a ??= 'default'` assigns only if `a` is `null` or `undefined`; interviewers may show these to test whether the candidate can read modern JavaScript they did not write
-- `setTimeout`, `setInterval`, and `clearInterval` — the timer APIs behind polling, a live elapsed-time counter, and debounce; the leak is forgetting to clear the interval when the component goes away
-- Debouncing — delaying a function call until a rapid burst of events stops, implemented with a closure holding a `setTimeout` id that each new call clears; Angular does it with RxJS `debounceTime()` on search inputs, but a vanilla round asks you to write it, and it doubles as the standard closure exercise
-- Generators (`function*` and `yield`) — produce values lazily, pausing at each `yield` until the caller asks for the next one, and they are the readable way to implement `Symbol.iterator`; recognition level is enough, but you must be able to say what pauses and who resumes it
-- `for await...of` and async iterators — consume a paginated or streamed source one chunk at a time without loading everything first; interviewers ask how you would loop over pages until the API reports there are no more
-- `WeakMap` and `WeakSet` — hold their keys weakly, so an entry vanishes once the key object is garbage-collected; the correct structure for metadata attached to DOM nodes or a cache that must not keep its own contents alive; interviewers ask why a normal `Map` would leak there
+- Optional chaining `?.` â€” safely accesses a nested property that might be `null` or `undefined` without throwing; `user?.address?.city` returns `undefined` instead of a `TypeError`; used in Angular templates and services when API data may be partially missing
+- Nullish coalescing `??` vs `||` â€” `??` falls back only when the left side is `null` or `undefined`; `||` also triggers on `0`, `false`, and `''`; interviewers test this with a count or price field where `0` is a valid value that should not be replaced by a default
+- Logical assignment: `||=`, `&&=`, `??=` â€” shorthand for conditional assignment; `a ??= 'default'` assigns only if `a` is `null` or `undefined`; interviewers may show these to test whether the candidate can read modern JavaScript they did not write
+- Debouncing concept â€” delaying a function call until after a rapid burst of events stops; used in Angular with RxJS `debounceTime()` on search inputs to avoid sending a request on every keystroke; interviewers ask "why are you using `debounceTime`?" â€” the expected answer is "to wait until the user stops typing before sending the API request"
 
 ---
 
@@ -2596,776 +953,285 @@ Every item must be explainable with a real example from one of the projects, not
 
 Topics a junior must explain confidently to pass a technical screening at NTT Data, Capgemini, or Indra in 2026. Every item must be explainable with a real example from one of the Angular projects.
 
-### The cascade and value resolution
-- The cascade resolution order — origin and importance first, then specificity, then source order; interviewers give a snippet where a *less* specific rule wins and expect the candidate to name the step that decided it, not just recite specificity numbers
-- Source order as the tiebreak — when two rules have identical specificity the last one declared wins; the "which colour renders?" snippet always includes one equal-specificity pair to see if the candidate reaches for it
-- Inline `!important` vs author `!important` — an inline `!important` beats an `!important` in a stylesheet; interviewers use this as the top of the "which rule wins" ladder
-- `!important` vs `!important` — between two important declarations, normal specificity and source order decide; a pressure question that exposes people who think `!important` is a single on/off switch
-- Inherited vs non-inherited properties — `color`, `font-*`, `line-height`, `visibility` and `cursor` pass down to children; `border`, `padding`, `margin`, `background` and `display` do not; interviewers ask why setting `font-family` on `body` styles the whole page but setting `border` on `body` does not
-- Inheritance loses to any matching declaration — a browser default rule on `<a>` or `<button>` beats a colour inherited from `body`; the canned puzzle is "I set `body { color: white }`, why is the link still blue?"
-- `inherit`, `initial`, `unset` and `revert` — `unset` means `inherit` on inherited properties and `initial` on the rest, `revert` goes back to the browser default; interviewers ask which one resets a button to look like plain text, or how you undo a rule in a shared stylesheet you cannot delete
-- Computed value vs used value — `width: 50%` computes to a percentage and is only resolved to pixels at layout time; explains why `getComputedStyle` returns pixels for some properties and the authored value for others
-- An invalid value drops only its own declaration — a typo like `widht` or `margin: 10 px` makes the browser discard that one line with no error anywhere, leaving the rest of the block working; the number-one "my CSS is not applying" cause that has nothing to do with specificity
-- An invalid selector invalidates the whole rule — unlike a bad declaration, a malformed selector kills every declaration in the block; interviewers ask why one line is ignored in one case and the entire rule in the other
-
-### Selectors and specificity
-- Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — how to target elements by relationship; interviewers show a selector and ask which elements it matches
-- Pseudo-classes: `:hover`, `:focus`, `:nth-child`, `:first-child`, `:last-child`, `:not()` — `:not()` excludes elements from a rule; `:focus` is essential for keyboard accessibility; tested in code review questions
-- `:focus` vs `:focus-visible` — `:focus` triggers on every way of focusing an element, including a mouse click; `:focus-visible` only shows the ring when the browser decides keyboard navigation is likely (Tab key); interviewers ask why a button gets an ugly focus ring on click and how `:focus-visible` fixes it without removing accessibility for keyboard users
-- Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers
-- Specificity scoring — inline styles beat IDs (`1-0-0`) beat classes (`0-1-0`) beat elements (`0-0-1`); the rule with the highest score wins, not the one that appears last; interviewers give two rules and ask which one applies
-- Specificity columns are not additive — ten chained classes still lose to one ID; interviewers ask candidates to score `#nav .item a` against `.nav .item .link.active` and watch for the ones who add the numbers up
-- The universal selector and combinators add no specificity — `*`, `>`, `+` and `~` all score `0-0-0`, so `div > p` is no more specific than `p`; a junior who assumes otherwise mis-predicts the snippet
-- `:is()` and `:where()` — both group selectors, but `:is()` takes the specificity of its most specific argument while `:where()` always scores zero; `:where()` is the modern way to ship overridable base styles instead of reaching for `!important` — a confusable pair
-- Over-qualified selectors — `div.card` or `.page .card .card__title` raise specificity for no benefit and force the next developer into `!important`; the concrete defect a reviewer flags in a BEM codebase
-
-- `:nth-child()` vs `:nth-of-type()` — the first counts *all* siblings and the second only the matching elements, which is the canned "why doesn't `p:nth-child(2)` hit my second paragraph?" snippet when a heading sits above it
-- Attribute selectors — `[type="text"]`, `[disabled]`, `[class^="icon-"]`; they carry class-level specificity and are how you style a control you cannot add a class to, which happens constantly with third-party and Material markup
-- Form-state pseudo-classes — `:disabled`, `:checked`, `:required`, `:invalid`, `:placeholder-shown`; the trap is that `:invalid` matches an empty required field *before* the user has typed anything, which is why real validation styling waits for `:user-invalid` or a touched class
-- Stylable pseudo-elements beyond `::before`/`::after` — `::placeholder`, `::selection`, `::marker`, `::first-line`; each accepts only a small subset of properties, so interviewers ask what you can actually change on a placeholder
-- `:has()` — the relational selector (`.card:has(img)`) that finally lets a parent be styled by its children; baseline-supported by 2026 and the reason a class of JavaScript class-toggles is no longer needed
-- `@layer` — assigns rules to named cascade layers, where an unlayered author rule beats any layered one regardless of specificity; the modern way to tame a third-party stylesheet without reaching for `!important`
-
----
-
 ### Box model
-- `margin`, `padding`, `border`, `content` — what each layer is and how they stack; interviewers draw the box model and ask you to label it or explain why two elements are not touching even though margin is set to 0
-- `box-sizing: border-box` — makes `width` include padding and border; the default `content-box` adds them on top, causing sizing surprises; setting it globally in a reset makes layouts predictable
-- The box-width arithmetic puzzle — `width: 100px; padding: 20px; border: 5px` renders 150px wide under `content-box` and 100px under `border-box`; the single most reused canned CSS screening question
-- Collapsing margins — two adjacent vertical margins collapse into one (the larger wins, not the sum); the most common box model surprise in interviews
-- What stops margin collapsing — padding, a border, an `overflow` other than `visible`, or a flex/grid parent between the two margins; interviewers follow the collapsing question with "so how would you prevent it?"
-- Margin on the child vs padding on the parent — a child's margin escapes a parent that has no border or padding, so the spacing appears outside the card instead of inside it; the reviewer's fix is padding on the parent
-- CSS reset pattern — `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }` removes browser defaults and ensures consistent sizing; interviewers ask why `::before` and `::after` are included alongside `*`
+- `margin`, `padding`, `border`, `content` â€” what each layer is and how they stack; interviewers draw the box model and ask you to label it or explain why two elements are not touching even though margin is set to 0
+- `box-sizing: border-box` â€” makes `width` include padding and border; the default `content-box` adds them on top, causing sizing surprises; setting it globally in a reset makes layouts predictable
+- Collapsing margins â€” two adjacent vertical margins collapse into one (the larger wins, not the sum); the most common box model surprise in interviews
+- CSS reset pattern â€” `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }` removes browser defaults and ensures consistent sizing; interviewers ask why `::before` and `::after` are included alongside `*`
 
 ### Display and layout
-- `display: block`, `inline`, `inline-block` — block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width
-- Which declarations an inline box ignores — `width`, `height` and vertical margins have no effect, while horizontal margins and padding do apply; interviewers give a styled `<span>` and ask which lines actually render
-- `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening
-- Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?"
-- Flexbox vs Grid for a wrapping card list — with `flex-wrap` each line sizes independently so the last row's items stretch or misalign, while Grid keeps every column aligned across rows; interviewers ask which you would pick and why the Flexbox version "looks wrong on the last row"
-- Layout properties on the wrong side — `justify-content` or `gap` on an element that is not `display: flex`/`grid` does nothing, and `flex-direction` on an item rather than the container is equally inert; interviewers paste a "centering doesn't work" snippet where the parent is still `display: block`
-- When NOT to reach for Flexbox or Grid — normal document flow already stacks block elements, so wrapping a plain vertical stack in a flex container is over-engineering; interviewers probe it with "why is this `display: flex` here?"
-- The whitespace gap between `inline-block` items — HTML whitespace renders as a real space character, producing an unexplained ~4px gap; the reason flex and grid replaced `inline-block` layouts
-- `height: 100%` needs a parent with a resolved height — a percentage height resolves against the parent's computed height, so it collapses to nothing when the ancestor chain up to `html`/`body` is `auto`; the most common "why won't this fill the screen?" failure
-- `float` and `position: absolute` are mutually exclusive — absolute or fixed positioning forces `float` to compute to `none`; a snippet with both is a deliberate trap
-
-- `float` and the clearfix — what floats were originally for, why a floated child collapses its parent's height, and why `display: flow-root` replaced the hack; you need this purely to read the legacy consultancy CSS you will be handed
-- `pointer-events: none` and `user-select: none` — switch off hit-testing and text selection respectively; the accessibility trap is that `pointer-events: none` does not remove the element from the tab order, so a "disabled" button styled this way is still reachable and activatable by keyboard
-
----
-
-### Flexbox
-- Container properties: `flex-direction`, `justify-content`, `align-items`, `gap` — the four set on almost every flex container; not knowing these will fail the "build a navbar" question in any screening
-- `flex-wrap: wrap` — controls whether items wrap to the next line when space runs out; `nowrap` (default) shrinks items to fit; `wrap` moves them to a new row; asked when discussing responsive card layouts
-- Item properties: `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `align-self` — `flex: 1` makes an item fill remaining space; `flex-shrink: 0` prevents an icon or button from shrinking next to a growing input
-- The `flex` shorthand expansion — `flex: 1` means `1 1 0%`, `flex: auto` means `1 1 auto`, `flex: none` means `0 0 auto`; interviewers ask why an item with `flex: 1` appears to ignore its own `width`
-- The main axis and cross axis — `justify-content` works on the main axis, `align-items` on the cross axis; the axis flips with `flex-direction: column`; interviewers ask "how do you center something vertically inside a flex container?"
-- `min-width: auto` on flex items — a flex item refuses to shrink below its content's intrinsic size, so a long name or a table inside `flex: 1` overflows instead of truncating; the fix is `min-width: 0`; the single most-asked flex gotcha and the reason `text-overflow: ellipsis` "does not work" inside flex
-- `flex-shrink: 1` is the default — items shrink below the `width` you set them when space is tight; interviewers ask why a fixed width on a flex item is not respected
-- `align-items: stretch` is the default — flex children fill the cross axis unless told otherwise, which is why a card looks unexpectedly full-height and an image looks distorted inside a flex row
-- `gap` vs margins for spacing children — `gap` applies only *between* items, so it needs no `:last-child` margin reset or negative-margin wrapper; interviewers use it to date a candidate's CSS
-- `margin: auto` on flex items — absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
-- Properties that do nothing on a flex item — `float`, `clear` and `vertical-align` are ignored once the parent is a flex container; interviewers show old float code inside a flex parent and ask why it has no effect
-
-- `align-content` vs `align-items` on a flex container — `align-items` positions items on the cross axis within their line, while `align-content` distributes the *lines* of a wrapped container and does nothing at all when `flex-wrap: nowrap`; it is the reason `align-items: center` "does nothing" on a multi-row flex list
-
----
-
-### CSS Grid
-- `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer
-- `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries
-- `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns
-- `minmax(0, 1fr)` vs `1fr` — a bare `1fr` track has an automatic minimum of its content size, so long content overflows the track; `minmax(0, 1fr)` lets it actually shrink; the Grid twin of the flex `min-width: 0` fix
-- `auto-fill` vs `auto-fit` — both create as many columns as fit; `auto-fill` keeps empty column tracks (items stay at their minimum size); `auto-fit` collapses empty tracks (items stretch to fill the space); a confusable pair tested in interviews
-- `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed
-
-- `grid-template-areas` — names regions and draws them as an ASCII map, which is far more readable than line numbers for a page-level layout and can be redrawn wholesale inside a media query; interviewers ask when the named syntax earns its keep
-- The implicit grid — `grid-auto-rows`, `grid-auto-columns` and `grid-auto-flow: row | column | dense`; items beyond the tracks you declared land in auto-created ones, which is why row heights suddenly stop matching; interviewers ask what happens to the items you never explicitly placed
-- `justify-items`/`align-items`/`place-items` versus `justify-content`/`align-content` — the first set positions each item inside its own track, the second distributes the whole track set inside the container; it is the most-confused pair in Grid and interviewers hand you a snippet using the wrong one
-- Container queries (`@container` with `container-type: inline-size`) — size a component by the width of its container rather than of the viewport, which is the correct tool for a card that appears both in a narrow sidebar and full width; interviewers ask how they differ from media queries
-
----
-
-### Position
-- `static`, `relative`, `absolute`, `fixed`, `sticky` — `static` is the default and is not a positioning context; `relative` creates the context for absolute children; `fixed` is always relative to the viewport; `sticky` sticks at a scroll threshold
-- How `absolute` finds its reference point — positions relative to the nearest ancestor with a non-static position; if no ancestor qualifies, it uses the page itself; not adding `position: relative` to the parent is the most common positioning bug
-- Why `position: sticky` silently does nothing — it needs a threshold (`top`, `bottom`…), it only sticks within its direct parent's box, and any ancestor with `overflow: hidden/auto/scroll` becomes the scroll container and kills it; interviewers use it because it fails with no error at all
-- `transform`, `filter` and `will-change` create a containing block — an ancestor with any of them becomes the reference for `fixed` and `absolute` descendants even while it is `position: static`, which is why a fixed header suddenly scrolls with the page or a modal misplaces itself inside an animated card
-- `z-index` and stacking context — only works on non-static elements; properties like `transform` and `opacity < 1` create a new stacking context that resets z-index within it; interviewers ask why a modal appears behind the navbar even with `z-index: 9999`
-- `z-index` competes only among siblings in the same stacking context — a child with `z-index: 9999` can never escape a parent whose context sits lower; the mechanism behind the modal-behind-header bug, distinct from merely knowing that `transform` creates a context
-- `z-index` works on flex and grid items without positioning — the documented exception to "z-index only applies to positioned elements"
-- Painting order without `z-index` — backgrounds first, then non-positioned blocks, then floats, then inline content, then positioned elements in source order; interviewers ask which of two overlapping untouched divs is on top and why
-- `inset: 0` — shorthand for `top: 0; right: 0; bottom: 0; left: 0`; used in modal overlays to cover the full viewport; interviewers who review your code expect you to know this shorthand
-
-- Responsive images are markup, not CSS — `srcset`/`sizes` and `<picture>` decide which *file* is downloaded, while CSS only sizes whatever already arrived; interviewers ask whether serving a smaller image on mobile is a CSS job and the answer is no
-
----
-
-### Responsive design
-- Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach
-- Breakpoints: `768px` (tablet), `1024px` (desktop) — the most common values in real Angular projects; a junior must justify these numbers and explain that `auto-fill` grid can eliminate breakpoints entirely for card grids
-- Content-driven vs device-driven breakpoints — a breakpoint pinned to a memorised phone width leaves the layout broken at every other width, while one placed where the design actually fails holds across devices; the reasoning behind why `768px` is a convention rather than a rule
-- Media queries vs intrinsic responsive CSS — `minmax()`, `clamp()`, `auto-fit` and `min()` remove whole breakpoint blocks; interviewers ask when a media query is still unavoidable, and the answer is layout *rearrangement* (sidebar becomes top nav), not mere resizing
-- The viewport meta tag — without `width=device-width, initial-scale=1` in `index.html` a mobile browser renders at a fake ~980px width and every media query behaves as if it were desktop; the first thing to check when "the responsive CSS does nothing on the phone"
-- Browser zoom and CSS pixels — zooming changes the viewport measured in CSS pixels, so `min-width` media queries do fire at 200% zoom; interviewers ask whether zoom is handled by media queries or by `rem`, and what breaks in a fixed-`px` layout
-- Overlapping media queries — a `max-width` and a `min-width` query that both match at the boundary are resolved by source order; interviewers show two queries and ask which one wins at exactly 768px
-- Fluid images — `max-width: 100%; height: auto` on `img` prevents images from overflowing their container and keeps the aspect ratio; standard in every CSS reset; not knowing this is a recognisable beginner mistake
-- `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
-- `color-scheme` property — tells the browser the page supports light and dark so it renders form controls, scrollbars and default backgrounds accordingly; interviewers ask why inputs still look light after you wrote a dark theme with `prefers-color-scheme`
-
-### Units
-- `px` — absolute and predictable; used for borders, border-radius, and box-shadow blur; avoid for font sizes because `px` ignores the user's browser accessibility font size setting
-- `%` — relative to the parent's value on the same axis; for vertical `padding` and `margin`, `%` is relative to the parent's **width**, not height — a common surprise in interviews
-- `em` — relative to the current element's font size; compounds through nesting, which makes it hard to predict in deeply nested components; prefer `rem` by default
-- `em` resolves against the element's own font size, except on `font-size` itself — so `font-size: 1.5em; padding: 1em` in one rule gives a padding based on the *new* size; a classic prediction trap
-- `rem` — relative to the root font size (`16px` by default); does not compound; the safe choice for font sizes and spacing; `rem` vs `em` is a classic confusable pair
-- When `em` is actually the right choice — component-internal padding on a button so it scales with that button's own `font-size`, giving one rule for a small and a large variant; interviewers ask for a case where `em` beats `rem` instead of the usual "always use rem"
-- Never override the root font size in `px` — `html { font-size: 16px }` (or a careless `62.5%` trick) discards the user's browser font-size preference and silently defeats every `rem` in the codebase; the gotcha behind the `rem` rule
-- Choosing a unit per property — `rem` for font size and spacing, `px` for borders, shadows and radii, `%`/`fr` for layout widths; interviewers hand you a design and ask which unit each value should use, because mixing them arbitrarily is a maintainability problem
-- Which properties accept a unitless number — `line-height`, `z-index`, `opacity` and `flex-grow` take one by design, and `0` is valid for any length, but everywhere else a bare number is not a length; interviewers mix valid and invalid unitless values in one block and ask which lines survive
-- `vw` and `vh` — relative to the viewport width and height; `min-height: 100vh` is safer than `height: 100vh` because it grows with content instead of clipping it
+- `display: block`, `inline`, `inline-block` â€” block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width
+- `display: none` vs `visibility: hidden` â€” `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening
+- Flexbox vs Grid â€” Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?"
 
 ### Angular-specific CSS
-- View encapsulation — Angular scopes component styles by adding a unique attribute to every element in the template; styles in `component.scss` only apply to that component's own elements, not to child components; interviewers ask "why does your style not apply inside the child component?"
-- `ViewEncapsulation.Emulated` vs `None` vs `ShadowDom` — `Emulated` (the default) rewrites selectors with an attribute, `None` makes the component's styles global for the rest of the session, `ShadowDom` uses real browser isolation and also blocks global styles from entering; interviewers ask what breaks when someone "fixes" a scoping problem by switching to `None`
-- Why an Angular component style beats an equally specific global rule — encapsulation appends an attribute selector, which raises the component rule's specificity; interviewers ask why the rule they added in `styles.css` "does nothing"
-- `:host` selector — targets the component's root element from within its own styles; used to set `display: block` or add margin to the component itself; not knowing this is a red flag for an Angular role
-- `:host-context()` — styles a component according to a class on an ancestor outside its own encapsulation, such as `.dark-theme` on `<body>`; interviewers ask how a component reacts to a theme class it does not own
-- When to use `styles.css` vs component styles — `styles.css` for global rules (body, html, Angular Material overrides); component styles for everything specific to one component; interviewers ask why Angular Material overrides go in `styles.css` and not in a component file
-- Order in the global `styles` array is cascade order — the listed stylesheets are concatenated in that order, so a reset placed after a theme silently overrides it; explains the override that works until someone reorders the list
-- `::ng-deep` — deprecated but still widely used in consultancy codebases; pierces view encapsulation to style child component internals that cannot otherwise be reached; interviewers ask why it is deprecated and what the modern alternative is
-- `::ng-deep` without `:host` — leaks the rule globally because the compiled selector carries no scoping attribute; the correct form is `:host ::ng-deep .child`; the single most common Angular CSS review defect
-- Encapsulation does not reach markup Angular did not render for that component — content projected through `<ng-content>` keeps the parent's scoping attribute, and CDK overlays (dialogs, menus) are attached at `<body>`; the reason a dialog's styles must live in `styles.css`
+- View encapsulation â€” Angular scopes component styles by adding a unique attribute to every element in the template; styles in `component.scss` only apply to that component's own elements, not to child components; interviewers ask "why does your style not apply inside the child component?"
+- `:host` selector â€” targets the component's root element from within its own styles; used to set `display: block` or add margin to the component itself; not knowing this is a red flag for an Angular role
+- When to use `styles.css` vs component styles â€” `styles.css` for global rules (body, html, Angular Material overrides); component styles for everything specific to one component; interviewers ask why Angular Material overrides go in `styles.css` and not in a component file
+- `::ng-deep` â€” deprecated but still widely used in consultancy codebases; pierces view encapsulation to style child component internals that cannot otherwise be reached; interviewers ask why it is deprecated and what the modern alternative is
 
-### SCSS in an Angular project
-- SCSS vs CSS — SCSS is a preprocessor compiled to plain CSS before the browser ever sees it; the browser never understands `.scss`, which is why the build step exists; interviewers ask "what does the browser actually receive?" and a junior who thinks the browser reads SCSS is exposed immediately
-- What the build does to stylesheets — global styles are compiled and bundled into one hashed file while component styles are inlined per component; a junior must be able to say why the shipped CSS looks nothing like the source
-- Nesting and the `&` parent selector — `&:hover`, `&--featured` and `&__title` reference the enclosing selector so BEM names can be composed; interviewers ask what `&` compiles to and why deep nesting is discouraged
-- SCSS variables (`$var`) vs CSS custom properties (`--var`) — `$` values are resolved at compile time and vanish from the output, `--` values are live in the browser and readable by JavaScript; a confusable pair, and the direct reason a `$` variable cannot power a runtime theme switcher
-- `@use` vs `@import` — `@import` is deprecated in Sass and duplicates code when a partial is loaded twice; `@use` loads a file once and namespaces its members; interviewers ask because legacy Angular codebases are mid-migration
-- Partials and the `_` prefix — a file named `_variables.scss` is never compiled to its own CSS output and exists only to be loaded by another file; the most common "why is my SCSS file producing nothing?" confusion
-- `@mixin` / `@include` — a reusable, optionally parameterised block of declarations for repeated patterns such as a media query or a button base; interviewers ask when a mixin is the right tool rather than a shared class
-- `@extend` vs a mixin — `@extend` merges selectors into one rule (smaller output, but it couples unrelated selectors and can cause surprising selector explosions) while a mixin duplicates declarations but stays predictable; the standard tradeoff question
+### Selectors and specificity
+- Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` â€” how to target elements by relationship; interviewers show a selector and ask which elements it matches
+- Pseudo-classes: `:hover`, `:focus`, `:nth-child`, `:first-child`, `:last-child`, `:not()` â€” `:not()` excludes elements from a rule; `:focus` is essential for keyboard accessibility; tested in code review questions
+- `:focus` vs `:focus-visible` â€” `:focus` triggers on every way of focusing an element, including a mouse click; `:focus-visible` only shows the ring when the browser decides keyboard navigation is likely (Tab key); interviewers ask why a button gets an ugly focus ring on click and how `:focus-visible` fixes it without removing accessibility for keyboard users
+- Pseudo-elements: `::before`, `::after` â€” insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers
+- Specificity scoring â€” inline styles beat IDs (`1-0-0`) beat classes (`0-1-0`) beat elements (`0-0-1`); the rule with the highest score wins, not the one that appears last; interviewers give two rules and ask which one applies
+- `!important` â€” raises a declaration into the important cascade, after which origin, layer, and
+  specificity still resolve competing important declarations; use it sparingly because it makes
+  overrides harder to reason about
 
-- `@forward` and an index partial — re-exports several partials from one entry file so a component writes a single `@use` instead of five; it is the standard shape of a real `styles/` folder, and interviewers who named SASS in the posting ask how you organise it
-- SASS maps and `map.get` — a `$colors` map as the single token source, read with `map.get($colors, 'primary')`; the structure that makes a palette editable in one place before CSS custom properties take over at runtime
-- `@each` over a map to generate modifier classes — the loop that emits `.btn--primary`, `.btn--danger` and so on from the token map rather than by hand; the canonical demonstration that SASS is a language and not just nesting
-- `@if` / `@else` with mixin arguments — a `respond-to('tablet')` mixin that resolves a breakpoint *name* to a media query, which is the strongest justification for a mixin over a shared class; interviewers ask for a real case where a mixin beats a class
-- SASS built-in modules — `math.div()` replaced the `/` operator (a slash is now a separator) and `color.adjust()`/`color.scale()` replaced `lighten()`/`darken()`; a stylesheet still using the old functions is one that has not been migrated, and recognising that is the point
-- `@use ... with ($primary: ...)` — configures a library's `!default` variables at load time, which is the supported way to theme a SASS library instead of overriding its compiled output afterwards
+### Flexbox
+- Container properties: `flex-direction`, `justify-content`, `align-items`, `gap` â€” the four set on almost every flex container; not knowing these will fail the "build a navbar" question in any screening
+- `flex-wrap: wrap` â€” controls whether items wrap to the next line when space runs out; `nowrap` (default) shrinks items to fit; `wrap` moves them to a new row; asked when discussing responsive card layouts
+- Item properties: `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `align-self` â€” `flex: 1` makes an item fill remaining space; `flex-shrink: 0` prevents an icon or button from shrinking next to a growing input
+- The main axis and cross axis â€” `justify-content` works on the main axis, `align-items` on the cross axis; the axis flips with `flex-direction: column`; interviewers ask "how do you center something vertically inside a flex container?"
+- `margin: auto` on flex items â€” absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
 
----
+### CSS Grid
+- `grid-template-columns` and `gap` â€” the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer
+- `repeat()` function â€” `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries
+- `fr` unit â€” distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns
+- `auto-fill` vs `auto-fit` â€” both create as many columns as fit; `auto-fill` keeps empty column tracks (items stay at their minimum size); `auto-fit` collapses empty tracks (items stretch to fill the space); a confusable pair tested in interviews
+- `grid-column` and `grid-row` â€” placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed
 
-### Accessibility — colour and focus
-- Contrast ratio and the AA thresholds — `4.5:1` for body text and `3:1` for large text; interviewers hand you a designer's grey-on-white (`#999`, roughly `2.8:1`) and ask whether you ship it, because public-sector delivery makes AA a contractual requirement rather than a preference
-- Contrast applies to non-text UI too — icons, form-field borders and focus indicators need `3:1` against their surroundings; juniors assume contrast is a text-only rule and ship an invisible focus ring on a coloured background
-- Never convey information by colour alone — a red border on an invalid field or a green/red status chip is unreadable to colour-blind users; the fix is a redundant cue (text, icon, shape) beside the colour; a standard code-review rejection at consultancies
-- `outline: none` as a defect — removing the browser's focus indicator makes the app unusable by keyboard with no visible replacement; interviewers ask you to justify to a designer why this is a bug and not a style choice
-- `outline-offset` — pushes the focus ring away from the element's edge so it stays visible on rounded or tightly packed controls; the practical piece juniors miss when replacing a removed outline
+### Position
+- `static`, `relative`, `absolute`, `fixed`, `sticky` â€” the common positioning modes; `fixed`
+  normally uses the viewport but a transformed or filtered ancestor can establish its containing
+  block, while `sticky` is constrained by its scrolling ancestor
+- How `absolute` finds its reference point â€” positions relative to the nearest ancestor that
+  establishes a containing block; otherwise it falls back to the initial containing block
+- `z-index` and stacking context â€” applies to positioned boxes and flex/grid items; properties such
+  as `transform` and `opacity < 1` create a new stacking context, explaining why a large number
+  cannot escape an ancestor's stacking order
+- `inset: 0` â€” shorthand for `top: 0; right: 0; bottom: 0; left: 0`; used in modal overlays to cover the full viewport; interviewers who review your code expect you to know this shorthand
 
-### Accessibility — reading order, motion and zoom
-- Focus order follows DOM order, not visual order — `flex-direction: row-reverse`, `order`, and out-of-source grid placement move an element visually without moving it in the tab sequence, so Tab appears to jump around the screen; the classic CSS-owned accessibility trap
-- Hidden from sight vs hidden from assistive technology — `display: none` and `visibility: hidden` remove the element from the accessibility tree and from tab order, while `opacity: 0` and `width/height: 0` leave it focusable and announced; interviewers ask why a keyboard user can tab into an invisible button
-- The visually-hidden (`sr-only`) pattern — the `position: absolute` + `1px` + `clip-path` + `overflow: hidden` utility that keeps content in the accessibility tree while removing it from view; used for skip links and icon-button labels; interviewers ask why `text-indent: -9999px` or `font-size: 0` are not equivalent
-- `@media (prefers-reduced-motion: reduce)` — respects the OS setting used by people with vestibular disorders, for whom large motion causes nausea; you shorten or remove transforms inside it rather than deleting all feedback; expected in 2026 alongside `prefers-color-scheme`
-- Text must survive zoom and resize — content has to reflow at 320px and scale to 200% without loss, so a fixed `height`, `overflow: hidden`, or `white-space: nowrap` on a text container turns a zoom into hidden content; interviewers ask what breaks in your layout at 200%
-- Minimum target size — interactive controls need roughly `24×24` CSS pixels, reached with padding or an enlarged pseudo-element hit area rather than by scaling a 16px icon; asked about icon-only buttons in dense toolbars
-- `content` in `::before` / `::after` is announced by most screen readers — an icon-font glyph is read out as a garbage character, so decorative pseudo-elements use `content: ""` and anything meaningful needs real markup or a visually-hidden label
-- `cursor: pointer` on a non-interactive element — makes a `<div>` look clickable while it stays unfocusable and unannounced; the CSS symptom of a missing native `<button>`
+### Responsive design
+- Mobile-first with `@media (min-width: ...)` â€” base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach
+- Breakpoints: `768px` (tablet), `1024px` (desktop) â€” the most common values in real Angular projects; a junior must justify these numbers and explain that `auto-fill` grid can eliminate breakpoints entirely for card grids
+- Fluid images â€” `max-width: 100%; height: auto` on `img` prevents images from overflowing their container and keeps the aspect ratio; standard in every CSS reset; not knowing this is a recognisable beginner mistake
+- `@media (prefers-color-scheme: dark)` â€” applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
 
-- Logical properties — `margin-inline`, `padding-block`, `inset-inline-start` follow the writing direction, so one stylesheet serves both LTR and RTL without a mirrored copy; relevant the moment a consultancy project adds an Arabic or Hebrew locale, and interviewers on multi-locale accounts ask
-- Deciding what you can ship — caniuse or Baseline checked against the browser matrix written into the client's contract; support is a project decision documented somewhere, not a personal judgement call, and interviewers ask who decides
-
----
-
-### Debugging CSS in DevTools
-- Styles pane vs Computed pane — Styles lists every rule the browser matched, in winning order; Computed shows the single resolved value actually in use after cascade, inheritance and unit resolution; interviewers ask "the rule is right there in Styles, so why is the element still 16px?" and expect you to open Computed
-- Struck-through declarations — a crossed-out property lost, and the three reasons are different: overridden by a higher-specificity or later rule, invalid syntax, or not applicable to that element's display type; only one of them is a specificity problem
-- The box model panel — the nested content/padding/border/margin diagram with live numbers; answers "where is that extra 8px coming from?" without reading any CSS
-- The user-agent stylesheet — the browser's own default rules, shown greyed out; explains margins on `<h1>` and `<ul>` you never wrote and the `<button>` font that ignores your body font; the reason a CSS reset exists at all
-- Force-pinning `:hover` / `:focus` / `:active` — holds an element in a state so its rules stay inspectable, since moving the mouse to DevTools would otherwise drop the hover
-- A parent's formatting context overrides a child's own declarations — `display: flex` on the parent nullifies the child's `float` and `vertical-align`, while the parent's `overflow` or `transform` decides the child's clipping and containing block; interviewers ask why a correct-looking rule on the element itself has no effect
-- Editing a rule with no visible effect — the usual causes are editing a rule that is already overridden, targeting the wrong element, or a later shorthand resetting your longhand; a classic "your fix does nothing" pressure question
-- Stylesheet sourcemaps — map a rule in DevTools back to the `.scss` line that generated it; without them you are debugging compiled output; the practical answer to "how do you find which SCSS file produced this rule?"
-
-### Overflow, scrollbars and the viewport
-- `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows
-- `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport
-- Scrollable container pattern — `overflow-y: auto` with a fixed `max-height` creates a scroll area without triggering a page scroll; `auto` vs `scroll` is a confusable pair: `auto` is invisible when not needed, `scroll` is always visible
-- `overflow: hidden` has side effects beyond clipping — it establishes a block formatting context, so it also contains floats, stops margin collapsing through the element, and becomes the scroll ancestor that breaks any `sticky` descendant
-- What makes a page scroll sideways — a single child wider than its containing block (a fixed width, an unbreakable string, a negative margin) propagates overflow up to the document; `overflow-x: hidden` on `body` only hides it and turns `body` into the scroll container, killing every `sticky` descendant
-- `100vw` vs `100%` — `100vw` ignores the vertical scrollbar's width and is therefore wider than the visible area on desktop, which is the usual cause of a phantom horizontal scrollbar; a confusable pair
-- `svh`, `lvh` and `dvh` — mobile browsers grow and shrink their toolbar while scrolling, so `100vh` is the *large* viewport and clips content behind the bar; `dvh` follows the current one; interviewers ask why a full-screen mobile layout is cut off at the bottom on iOS Safari
-- Scrollbar width changes layout — a classic desktop scrollbar occupies real horizontal space, so a centred page shifts sideways the moment a dialog sets `overflow: hidden` on `body`; `scrollbar-gutter: stable` reserves the space; interviewers ask why the page "jumps" when a modal opens
-- `overflow-wrap: break-word` and `word-break` — force a long unbroken string (a URL, an email, a German compound noun) to wrap instead of blowing out of its container; interviewers show a broken card and ask why `overflow: hidden` is the wrong fix
-
-- `scroll-behavior: smooth` and `scroll-margin-top` — an anchor target lands hidden underneath a sticky header unless `scroll-margin-top` offsets it, and the smooth behaviour itself must be gated behind `prefers-reduced-motion`; interviewers ask why the in-page link jumps to the wrong place
-- CSS scroll snapping — `scroll-snap-type` on the container plus `scroll-snap-align` on the children builds a carousel with no JavaScript at all; interviewers ask whether a carousel needs a library
-- Locking the background scroll behind a modal — `overflow: hidden` on `body` loses the user's scroll position and shifts the layout by the width of the disappearing scrollbar; interviewers ask why a dialog library bothers to handle this for you
-
----
-
-### `auto` and intrinsic sizing
-- `margin: 0 auto` only centres an element with a definite width — with `width: auto` the auto margins resolve to zero and nothing moves; the single most reused CSS screening puzzle
-- Absolute centring with `inset: 0; margin: auto` — auto margins on an absolutely positioned box with opposite offsets and a fixed size split the leftover space on both axes; interviewers ask for a way to centre without flexbox
-- `width: auto` resolves differently by formatting context — a block fills its containing block, while a float, an inline-block, or an absolutely positioned box shrinks to fit its content; a candidate who says "auto means full width" is caught here
-- `min-content`, `max-content` and `fit-content` — size a box from its content rather than its container; the vocabulary that explains *why* the flex and grid overflow bugs happen rather than just how to patch them
-- Block formatting context — a container whose height collapses around floated children, or whose child's margin escapes it, is fixed by establishing a BFC with `overflow: hidden` or `display: flow-root`; the follow-up to the margin-collapsing question
-
-### Shorthand properties
-- A shorthand resets every longhand it omits to its initial value — `background: red` written after `background-image` silently deletes the image; interviewers show the two lines in that order and ask what renders
-- `font` shorthand — sets style, variant, weight, size, line-height and family at once and resets any of them not listed, which is why `font: 16px Arial` silently kills a previously declared `font-weight: bold`
-- Margin and padding value order — one, two, three and four values map to all sides / vertical-horizontal / top-horizontal-bottom / clockwise from top; interviewers read out `margin: 10px 20px 30px` and ask for the left margin
-- `border` shorthand and `currentColor` — omitting the colour makes the border take the element's `color`, which is how a border changes on `:hover` without being restated
-- A later shorthand replaces the whole set rather than merging — adding `transition: color .3s` cancels an earlier `transition: all .2s` instead of adding to it
+### Units
+- `px` â€” a CSS reference pixel, useful for thin borders and other fixed details; root-relative units
+  usually respect user text-size preferences more naturally for typography and scalable spacing
+- `%` â€” relative to the parent's value on the same axis; for vertical `padding` and `margin`, `%` is relative to the parent's **width**, not height â€” a common surprise in interviews
+- `em` â€” relative to the current element's font size; compounds through nesting, which makes it hard to predict in deeply nested components; prefer `rem` by default
+- `rem` â€” relative to the root font size (`16px` by default); does not compound; the safe choice for font sizes and spacing; `rem` vs `em` is a classic confusable pair
+- `vw` and `vh` â€” relative to the viewport width and height; `min-height: 100vh` is safer than `height: 100vh` because it grows with content instead of clipping it
 
 ### Transitions and animations
-- `transition` — smooth change for a specific property on state change; always place it on the base element, not on `:hover`, so it runs in both directions; putting it on `:hover` makes the exit instant — a classic interview trap
-- `transition: all` — animates every property including layout ones, causing jank and unintended animations; reviewers expect an explicit property list
-- Not every property is interpolatable — `height: auto` and `display` cannot be transitioned, so the rule silently does nothing; the reason `max-height`, `opacity` + `visibility`, or `grid-template-rows: 0fr → 1fr` are used instead
-- `transform` — `translateX/Y`, `scale`, `rotate` change visual appearance without affecting layout; other elements do not shift; fast because the browser handles it on the GPU without recalculating the page
-- `transform` vs `top/left` for movement — animating `top` or `left` triggers a full layout recalculation every frame; `transform: translate()` does not; interviewers ask which is more performant and why — a confusable pair
-- `@keyframes` and `animation` — multi-step animations; `animation-iteration-count: infinite` for loading spinners; `animation-fill-mode: forwards` keeps the final state after the animation ends instead of snapping back
-- Animations sit above normal author declarations in the cascade — a running animation overrides a matching rule regardless of its specificity, which is why the element snaps back the instant the animation ends without `animation-fill-mode: forwards`
-- `!important` is ignored inside `@keyframes` — the declaration is dropped rather than winning; a pressure question for candidates who claim `!important` always wins
-
-- `transition-timing-function` and `cubic-bezier()` — `ease` is the default, `linear` reads as mechanical, `ease-out` suits entrances; paired with `transition-delay` to stagger a list; interviewers ask why an animation "feels wrong" when the timing is the only thing left
-- Reflow vs repaint vs composite — only `transform` and `opacity` can be handled by the compositor without re-running layout or paint, which is the actual reason they are the cheap properties to animate; `will-change` buys a layer at the cost of memory and a new stacking context, so it is applied narrowly and removed afterwards
-
----
+- `transition` â€” smooth change for a specific property on state change; always place it on the base element, not on `:hover`, so it runs in both directions; putting it on `:hover` makes the exit instant â€” a classic interview trap
+- `transform` â€” `translateX/Y`, `scale`, and `rotate` change visual appearance without changing
+  normal-flow geometry; browsers can often composite transforms efficiently, but GPU promotion is
+  not guaranteed
+- `transform` vs `top/left` for movement â€” transforms commonly avoid layout while positional changes
+  can trigger it; profile when performance matters instead of treating either rendering path as an
+  unconditional guarantee
+- `@keyframes` and `animation` â€” multi-step animations; `animation-iteration-count: infinite` for loading spinners; `animation-fill-mode: forwards` keeps the final state after the animation ends instead of snapping back
 
 ### Typography
-- `font-size` with `rem` — `px` ignores the user's browser font size preference and breaks accessibility; `rem` scales with the root setting; interviewers ask why a font size set in `px` is bad practice for accessibility
-- `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight
-- Synthetic bold and italic — when the loaded font file lacks the requested weight or style the browser fakes it by smearing or slanting the glyphs, which is why declaring `600` does not mean a real `600` exists
-- `line-height` unitless value — `1.5` means 1.5× the current font size; a unitless value scales correctly when font size changes; `line-height: 24px` breaks as soon as the font size changes
-- `line-height: 1.5` vs `line-height: 150%` — the unitless value is inherited as a ratio and recomputed per child, while the percentage is computed once on the parent and inherited as a fixed length; the difference between inheriting a value and inheriting a computed value
-- Text truncation — `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present; interviewers ask why removing any one of them breaks the effect and what each one does individually
-- `-webkit-line-clamp` for multi-line truncation — truncates at N lines instead of one; the counterpart to the single-line ellipsis trio, and interviewers use the pair to check you know one-line truncation is not the general case
-- `text-transform` — `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display
-- `font-family` fallback stack — listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name
+- `font-size` with `rem` â€” `rem` follows the root size and composes consistently with user settings;
+  fixed pixels are not automatically inaccessible, but a scalable type system is easier to zoom and
+  maintain
+- `font-weight` numeric values â€” `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight
+- `line-height` unitless value â€” `1.5` means 1.5Ã— the current font size; a unitless value scales correctly when font size changes; `line-height: 24px` breaks as soon as the font size changes
+- Text truncation â€” `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present; interviewers ask why removing any one of them breaks the effect and what each one does individually
+- `text-transform` â€” `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display
+- `font-family` fallback stack â€” listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name
 
-- `@font-face` and self-hosting — `src` with `format()`, plus `font-display` and `unicode-range` subsetting; self-hosting instead of the Google Fonts CDN is a data-protection requirement on Spanish public-sector work rather than a preference, and interviewers on those accounts ask directly
-- `white-space` values — `nowrap`, `pre`, `pre-wrap`, `pre-line`; `pre-wrap` is what preserves a user's line breaks in a comment field without also preserving every stray space; interviewers ask how you render stored multi-line text faithfully
-
----
-
-### CSS variables and design tokens
-- `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates
-- `:root` vs component scope — declaring on `:root` makes the variable globally available; scoping to a specific selector limits it to that element's subtree; interviewers ask why Angular Material theming variables are declared on `:root`
-- CSS variables inherit — redeclaring a variable on a container overrides it for that whole subtree, which is how `.card--danger { --color-primary: red }` themes one section without duplicating a single rule; the mechanism behind per-page theming
-- CSS variables are live at runtime — a CSS variable can be changed by JavaScript with `element.style.setProperty('--name', value)`, enabling runtime theming without recompiling; hardcoded values cannot be changed this way; interviewers ask how you would implement a simple theme switcher
-- `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
-- An undefined variable invalidates the whole declaration — `var()` is substituted at computed-value time, so a typo in the name does not fall back to the previous rule; the property resolves to its inherited or initial value instead, which is why one typo wipes a colour entirely
-- Primitive tokens vs semantic tokens — a raw layer (`--blue-500`) referenced by a meaning layer (`--color-primary`) so a rebrand touches one declaration; interviewers at consultancies ask how you would structure variables for a design system rather than declaring colours ad hoc
+### CSS variables
+- `--variable-name` and `var()` â€” define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates
+- `:root` vs component scope â€” declaring on `:root` makes the variable globally available; scoping to a specific selector limits it to that element's subtree; interviewers ask why Angular Material theming variables are declared on `:root`
+- CSS variables are live at runtime â€” a CSS variable can be changed by JavaScript with `element.style.setProperty('--name', value)`, enabling runtime theming without recompiling; hardcoded values cannot be changed this way; interviewers ask how you would implement a simple theme switcher
+- `var()` with a fallback â€” `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 
 ### Colors and transparency
-- Color formats: `hex`, `rgb()`, `hsl()` — `hex` is most common for fixed colors; `rgba()` adds transparency and is preferred for overlays and shadows; `hsl` makes color variations easy (just change the lightness value); interviewers ask which format to choose and why
-- `opacity` vs `rgba` transparency — `opacity` affects the element AND all its children; `rgba` only affects the specific property it is applied to; classic interview question: "why does `opacity: 0.5` on a card fade the text too, but `background: rgba(0,0,0,0.5)` does not?"
-- `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value
-- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
+- Color formats: `hex`, `rgb()`, `hsl()` â€” `hex` is most common for fixed colors; `rgba()` adds transparency and is preferred for overlays and shadows; `hsl` makes color variations easy (just change the lightness value); interviewers ask which format to choose and why
+- `opacity` vs `rgba` transparency â€” `opacity` affects the element AND all its children; `rgba` only affects the specific property it is applied to; classic interview question: "why does `opacity: 0.5` on a card fade the text too, but `background: rgba(0,0,0,0.5)` does not?"
+- `rgba` for overlays and shadows â€” `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value
+- `currentColor` â€” a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
 
 ### Borders, shadows, and backgrounds
-- `box-shadow` syntax: `offset-x offset-y blur spread color` — interviewers show a value like `0 4px 12px rgba(0,0,0,0.12)` and ask what each part controls; `spread` is optional and often omitted; color should always use `rgba`
-- `border-radius: 50%` vs `border-radius: 9999px` — `50%` makes a circle but only when the element is square; `9999px` creates a pill shape at any aspect ratio; interviewers ask which one to use for an avatar vs a badge — a confusable pair
-- `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
-- `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair
-- A background image reserves no space — an element carrying only a `background-image` has zero intrinsic size and collapses until content or an explicit height gives it one; the reason `background-image` is the wrong choice for a meaningful content image
-- `outline` vs `border` — `outline` is drawn outside the border and occupies no layout space, so adding one on focus never shifts the surrounding elements the way a `border` does; interviewers ask which of the two belongs on a focus ring and why — a confusable pair
-- `aspect-ratio` — locks an element's width-to-height ratio (`aspect-ratio: 16 / 9`) so it scales without distortion when only one dimension is known; replaces the older padding-percentage hack for responsive video and image containers; interviewers ask how you reserve space for an image before it loads to avoid layout shift
+- `box-shadow` syntax: `offset-x offset-y blur spread color` â€” spread is optional, and transparent
+  colour can use modern `rgb(... / alpha)`, hex alpha, HSL, `rgba()`, or a design token
+- `border-radius: 50%` vs `border-radius: 9999px` â€” `50%` makes a circle but only when the element is square; `9999px` creates a pill shape at any aspect ratio; interviewers ask which one to use for an avatar vs a badge â€” a confusable pair
+- `background-size: cover` vs `background-size: contain` â€” `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
+- `object-fit: cover` â€” same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags â€” a confusable pair
+- `outline` vs `border` â€” `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it
+- `aspect-ratio` â€” locks an element's width-to-height ratio (`aspect-ratio: 16 / 9`) so it scales without distortion when only one dimension is known; replaces the older padding-percentage hack for responsive video and image containers; interviewers ask how you reserve space for an image before it loads to avoid layout shift
 
-- Gradients and the `background` shorthand — `linear-gradient()` counts as an image, several comma-separated layers stack front to back, and the `url() no-repeat center / cover` slash syntax sets position and size in one go; interviewers ask you to read that shorthand aloud
-- `backdrop-filter: blur()` — the frosted-glass effect behind a modal, which needs a translucent background colour to be visible at all and is genuinely expensive to composite; interviewers ask what it costs before they ask how to write it
-
----
-
-### Font and image loading
-- FOUT vs FOIT — a flash of *unstyled* text versus a flash of *invisible* text while a web font downloads; a confusable pair, and interviewers ask which one the browser does by default and which one you should prefer
-- `font-display: swap` — renders the fallback immediately and swaps when the web font arrives, trading a layout shift for text that is never invisible; interviewers ask what that tradeoff costs the user
-- Font metric mismatch — the fallback and the web font have different character widths and line heights, so the whole page reflows on swap; the reason the fallback stack is chosen for metric similarity rather than merely "a font that exists"
-- The layout shift caused by the font swap — when the fallback is replaced by the web font the whole page reflows, which is what `font-display: swap` trades against text being invisible; interviewers ask why "just use `swap`" is not automatically the right answer
-- `width` and `height` attributes on `<img>` — modern browsers derive an aspect ratio from them and reserve the space before the image arrives, even when CSS controls the final size; the reason "just size it in CSS" is the wrong answer for images
+### Overflow
+- `overflow: visible`, `hidden`, `scroll`, `auto` â€” `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows
+- `overflow-x` and `overflow-y` â€” control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport
+- Scrollable container pattern â€” `overflow-y: auto` with a fixed `max-height` creates a scroll area without triggering a page scroll; `auto` vs `scroll` is a confusable pair: `auto` is invisible when not needed, `scroll` is always visible
 
 ### CSS functions
-- `calc()` — mixes different units in one expression; `calc(100% - 64px)` subtracts a fixed header height from the full viewport; spaces around `+` and `-` are required; interviewers ask when `calc()` is necessary and why neither pure percentage nor pure `px` can solve the same problem
-- `clamp(min, preferred, max)` — creates a value that scales fluidly between limits; `font-size: clamp(1rem, 2.5vw, 2rem)` replaces multiple breakpoint overrides for font size; tested because it signals modern CSS knowledge
-- `min()` and `max()` — `min(100%, 600px)` is equivalent to `max-width: 600px; width: 100%`; `max(1rem, 5%)` ensures a minimum even when using a relative unit; useful for containers that should be fluid on mobile and capped on desktop
+- `calc()` â€” mixes different units in one expression; `calc(100% - 64px)` subtracts a fixed header height from the full viewport; spaces around `+` and `-` are required; interviewers ask when `calc()` is necessary and why neither pure percentage nor pure `px` can solve the same problem
+- `clamp(min, preferred, max)` â€” creates a value that scales fluidly between limits; `font-size: clamp(1rem, 2.5vw, 2rem)` replaces multiple breakpoint overrides for font size; tested because it signals modern CSS knowledge
+- `min()` and `max()` â€” `min(100%, 600px)` is equivalent to `max-width: 600px; width: 100%`; `max(1rem, 5%)` ensures a minimum even when using a relative unit; useful for containers that should be fluid on mobile and capped on desktop
 
-- `ch` as the readable-line-length unit — `max-width: 65ch` caps a paragraph at roughly 65 characters and adapts to the font actually rendered, which a `px` cap cannot; interviewers ask what governs a comfortable measure
-
----
-
-### CSS delivery and performance
-
-- CSS is render-blocking — the browser will not paint until it has built the CSSOM, so the size and number of stylesheets directly delay first paint; this is why critical CSS is inlined and the rest deferred, and interviewers ask why CSS blocks rendering when JavaScript can be deferred
-- Where stylesheet weight actually comes from — unpurged utility classes, a partial imported twice through two entry points, and a theme shipped for every component whether used or not; interviewers hand you "the bundle budget is failing" and want the first three places you look
-- The DevTools Coverage panel — reports unused CSS bytes per file, which is the only empirical handle on dead styles, while still not being proof (a rule used only in a modal shows as unused until the modal opens); interviewers ask how you would find out whether a class is used at all
-
----
-
-### Naming and stylesheet organisation
-- Block, element (`__`), modifier (`--`) — `.card`, `.card__title`, `.card--featured`; a naming convention that makes class names predictable in global stylesheets; interviewers at consultancies ask about CSS organisation because shared CSS becomes unmaintainable without a convention
-- Why BEM keeps specificity low — each rule is a single class selector (`0-1-0`); nested selectors like `.card .card__title` raise specificity and become hard to override; BEM avoids nesting in the CSS file
-- The flat element rule — BEM elements never nest in the class name; even if `.card__body` contains a title, the class is `.card__title`, not `.card__body__title`; depth lives in the HTML, not in the class name — a common mistake when first learning BEM
-- When BEM applies in Angular — Angular view encapsulation handles component isolation; BEM is still needed for global styles in `styles.css` and shared components in `shared/` where encapsulation does not help
-- Utility classes vs component classes — utilities (`.mt-4`, `.flex`) are single-purpose and composed in the template while component classes (`.user-card__title`) name a thing and live in the stylesheet; interviewers hand you a file mixing both and ask you to name the two conventions and when each fits
-- Where a shared style belongs — the decision chain runs component styles → shared component → global stylesheet → design token; interviewers ask where you would put a button style used by three features and expect a component, not a global class
-- The vendor override file — a dedicated global file holding overrides of a third-party library's internals, isolated so an upgrade breaks in one known place rather than across every component
-- Why overriding a library's internal classes is fragile — internal class names are not a public API and can change on any release; interviewers ask what breaks when you upgrade Angular Material after deep-styling its internals
-
-- Utility-first (Tailwind) vs BEM and SCSS — utilities remove the naming problem and the dead-CSS problem at the cost of noisy templates, while BEM keeps markup clean at the cost of a stylesheet that rots; interviewers ask which you would argue for on a consultancy project, and Victor's real Tailwind experience makes this a question he should welcome
-- Linting stylesheets — Stylelint plus Prettier enforce property ordering and can forbid `!important` or ID selectors in CI; the team-scale answer to "how do you keep CSS consistent across six developers", where a style guide nobody enforces is not one
-
----
-
-### Changing shared CSS safely
-- Blast radius of a shared class — a class in a global stylesheet is an unbounded public API, so `.card` has as many callers as there are templates referencing it and CSS offers no way to enumerate them; interviewers ask why editing a shared class is riskier than editing a component style
-- Additive change over modification — adding a modifier class leaves existing usages untouched, whereas editing the base class changes all of them; interviewers ask how you introduce a variant without regressions
-- The cost of a copy-pasted variant — duplicating `.btn` into `.btn-red` decouples it from every future fix to the base and doubles the maintenance; the trade-off against a modifier is a standard code-review question
-- Dead CSS cannot be proven dead — CSS has no compiler or static reference check and class names can be composed at runtime, so nobody can be sure a rule is unused; interviewers ask why old rules accumulate and never get deleted
-- Global stylesheet rot — global rules have unbounded scope, so every addition raises the chance of an unrelated regression; interviewers ask why a team forbids new global CSS and where the style should go instead
-- Why a legacy codebase accumulates `!important` — it is the symptom of unreachable specificity (library styles, over-nested selectors, unclear source order), not laziness; interviewers ask you to diagnose the cause rather than condemn the keyword
-- The specificity arms race — each override raises specificity, so the file becomes progressively harder to change; the way out is lowering the offending rule's specificity rather than raising yours
-- The ordered ways to beat a rule without `!important` — later source order at equal specificity, an added class, a scoping ancestor, or fixing the offending rule itself; a decision question about which is least damaging
-- Build-time purging removes classes it cannot see — a class name composed at runtime is stripped from the production bundle while working perfectly in development; a classic "works locally, breaks in prod" pressure question
-
-### Browser defaults and cross-browser support
-- Why a CSS reset exists — browsers ship different default margins, list styles, form-control appearance and font sizes, so identical markup renders differently across Chrome, Firefox and Safari; the point is predictability, not tidiness
-- Reset vs normalize — a reset zeroes browser defaults outright while normalize keeps the sensible ones and only smooths the differences; interviewers ask which you chose for your project and why
-- Form controls are the least stylable surface — `<select>`, checkboxes, date inputs and scrollbars are drawn by the OS or browser and largely resist CSS; interviewers ask why a designer's select box cannot be reproduced with CSS alone and what `appearance: none` buys you
-- `@supports` feature queries — apply a rule only when the browser understands the property, so a modern feature degrades instead of breaking
-- Declaration order as a fallback mechanism — writing the widely supported value first and the modern one immediately after means an old browser keeps the first and a new one takes the second, with no feature detection required; interviewers ask how you ship a new property safely without `@supports`
-- Vendor prefixes are generated by the build — the Angular CLI's PostCSS step adds them from the project's `browserslist` target rather than you writing them by hand; interviewers check whether you know where the browser support target is actually configured
+### BEM naming
+- Block, element (`__`), modifier (`--`) â€” `.card`, `.card__title`, `.card--featured`; a naming convention that makes class names predictable in global stylesheets; interviewers at consultancies ask about CSS organisation because shared CSS becomes unmaintainable without a convention
+- Why BEM keeps specificity low â€” each rule is a single class selector (`0-1-0`); nested selectors like `.card .card__title` raise specificity and become hard to override; BEM avoids nesting in the CSS file
+- The flat element rule â€” BEM elements never nest in the class name; even if `.card__body` contains a title, the class is `.card__title`, not `.card__body__title`; depth lives in the HTML, not in the class name â€” a common mistake when first learning BEM
+- When BEM applies in Angular â€” Angular view encapsulation handles component isolation; BEM is still needed for global styles in `styles.css` and shared components in `shared/` where encapsulation does not help
 
 ---
 
 ## SQL
 
-Topics a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026. Database is PostgreSQL. Every item must be explainable with a real query — from the bookstore exercises or the TimeTrack data model.
+Topics a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026. Database is PostgreSQL. Every item must be explainable with a real query â€” from the bookstore exercises or the TimeTrack data model.
 
 ---
 
 ### JOINs
 
-- `INNER JOIN` — returns only rows where both tables have a match; the most common JOIN; `JOIN` without a keyword defaults to `INNER JOIN`
-- `LEFT JOIN` — returns all rows from the left table with `NULL` on the right when there is no match; used for "show all users even if they have no time entries"
-- `INNER JOIN` vs `LEFT JOIN` — `INNER` excludes rows with no match on either side; `LEFT` keeps all left rows and fills the right side with `NULL`; choosing the wrong one is the most common JOIN mistake in junior code
-- Finding missing data with `LEFT JOIN` — `WHERE right_table.id IS NULL` after a `LEFT JOIN` returns every left row with no match on the right; the standard pattern for "which projects have no time entries?"
-- `RIGHT JOIN` — mirror of `LEFT JOIN`; rarely used because any `RIGHT JOIN` can be rewritten as a `LEFT JOIN` by swapping the tables; tested to check you understand the symmetry
-- `FULL OUTER JOIN` — returns all rows from both sides with `NULL` where there is no match; used to find unmatched rows on either side at once
-- Multiple JOINs — you can chain as many JOINs as needed; interviewers ask you to write a query joining three tables, for example `time_entries → users → projects`
-- Self JOIN — a table joined to itself using two aliases, used to compare rows within the same table (e.g. "which employees share the same manager?" or "find duplicate emails"); interviewers ask how you join a table to itself when there is only one `FROM` clause to work with
-- Table aliases in JOINs — `FROM books b JOIN authors a ON b.author_id = a.id`; makes queries readable and is required when two joined tables share a column name
-
----
-
-- `JOIN ... USING (column)` and `NATURAL JOIN` — `USING` collapses the shared column into one output column, while `NATURAL JOIN` guesses the join keys from every matching name and silently changes meaning the day somebody adds a column called `created_at` to both tables; interviewers ask why `NATURAL JOIN` is banned in real codebases
-- Semi-join and anti-join as vocabulary — `EXISTS` expresses a semi-join (rows that have a match, without duplicating them) and `NOT EXISTS` or `LEFT JOIN ... IS NULL` an anti-join; interviewers use the terms in code review and expect you to recognise the shapes rather than define them
-
----
-
-### JOIN pitfalls and row multiplication
-
-- Condition in `ON` vs in `WHERE` for an outer join — a condition in `ON` is applied while matching rows, a condition in `WHERE` after the join is built; for an `INNER JOIN` the two are equivalent, for a `LEFT JOIN` they are not; interviewers ask exactly this before showing you a broken query
-- `WHERE` on the right table silently turning a `LEFT JOIN` into an `INNER JOIN` — a filter like `WHERE p.status = 'active'` discards the `NULL`-filled rows the `LEFT JOIN` just produced; the fix is moving the condition into the `ON` clause; the most-reviewed silent JOIN bug at junior level
-- Row multiplication on a one-to-many join — the parent row repeats once per matching child, so the result has more rows than the parent table; interviewers give you two small tables and ask exactly how many rows come out
-- Fan-out inflating `SUM` and `AVG` — aggregating a parent column across those duplicated rows double-counts it, so a report total comes back an exact multiple of the real number; interviewers hand you a query that "adds up wrong" and ask why
-- Pre-aggregation in a CTE vs `COUNT(DISTINCT ...)` — grouping in a subquery removes the duplicated rows a fan-out created, while `COUNT(DISTINCT ...)` only hides them; interviewers ask which of the two you would ship
-- Accidental cross join — a missing or wrong `ON` condition produces the Cartesian product `n × m`; small tables hide it, large ones make it explode; interviewers show a join without a predicate and ask for the row count
-- Joining on mismatched types — joining `varchar` to `int` forces a cast that prevents index use and often errors outright in PostgreSQL; a schema-level smell a reviewer looks for
-- `NULL` in a join key — a `NULL` never matches anything in any join type, so those rows vanish from an `INNER JOIN` and keep `NULL`s on the right in a `LEFT JOIN`; interviewers ask why a row "disappeared" after adding a join
-- `COUNT(*)` after a `LEFT JOIN` returning 1 instead of 0 — the unmatched row exists as all-`NULL` and `COUNT(*)` still counts it; `COUNT(child.id)` returns the real `0`; the practical payoff of the `COUNT(*)` vs `COUNT(column)` distinction
-
----
-
-- An explicit `CROSS JOIN` as a deliberate tool — producing every combination is right when you actually want the grid, such as every project against every month so a report shows empty periods as zero rows; interviewers check that you can tell it apart from the accidental Cartesian product you just diagnosed
+- `INNER JOIN` â€” returns only rows where both tables have a match; the most common JOIN; `JOIN` without a keyword defaults to `INNER JOIN`
+- `LEFT JOIN` â€” returns all rows from the left table with `NULL` on the right when there is no match; used for "show all users even if they have no time entries"
+- `INNER JOIN` vs `LEFT JOIN` â€” `INNER` excludes rows with no match on either side; `LEFT` keeps all left rows and fills the right side with `NULL`; choosing the wrong one is the most common JOIN mistake in junior code
+- Finding missing data with `LEFT JOIN` â€” `WHERE right_table.id IS NULL` after a `LEFT JOIN` returns every left row with no match on the right; the standard pattern for "which projects have no time entries?"
+- `RIGHT JOIN` â€” mirror of `LEFT JOIN`; rarely used because any `RIGHT JOIN` can be rewritten as a `LEFT JOIN` by swapping the tables; tested to check you understand the symmetry
+- `FULL OUTER JOIN` â€” returns all rows from both sides with `NULL` where there is no match; used to find unmatched rows on either side at once
+- Multiple JOINs â€” you can chain as many JOINs as needed; interviewers ask you to write a query joining three tables, for example `time_entries â†’ users â†’ projects`
+- Self JOIN â€” a table joined to itself using two aliases, used to compare rows within the same table (e.g. "which employees share the same manager?" or "find duplicate emails"); interviewers ask how you join a table to itself when there is only one `FROM` clause to work with
+- Table aliases in JOINs â€” `FROM books b JOIN authors a ON b.author_id = a.id`; makes queries readable and is required when two joined tables share a column name
 
 ---
 
 ### Aggregates and grouping
 
-- `COUNT(*)` vs `COUNT(column)` — `COUNT(*)` counts all rows including those with `NULL`; `COUNT(column)` counts only non-`NULL` values; interviewers ask this difference explicitly
-- `COUNT(DISTINCT column)` — counts unique non-`NULL` values; the usual correction when a join has duplicated rows and a plain `COUNT` overstates; notably more expensive than `COUNT(*)`
-- `SUM`, `AVG`, `MIN`, `MAX` — all ignore `NULL` values automatically; `AVG(price)` on `[10, NULL, 30]` returns `20`, not `13.33`; a common source of unexpected results in junior code
-- `SUM` over zero rows returns `NULL`, not `0` — `COUNT` returns `0` but `SUM`, `AVG` and `MAX` return `NULL` when nothing matches, which is why a dashboard total renders blank for a project with no entries; the fix is `COALESCE(SUM(...), 0)`
-- An aggregate without `GROUP BY` always returns exactly one row — even against an empty table — while the same query with `GROUP BY` returns zero rows; the row-count prediction that separates memorised syntax from understanding grouping
-- `GROUP BY` rule — every column in `SELECT` must either appear in `GROUP BY` or be inside an aggregate function; breaking this rule causes a PostgreSQL error; the most common GROUP BY mistake in junior code
-- Adding a column to `GROUP BY` to silence the error changes the grouping — the query now splits into finer groups and every number in the report changes; interviewers ask what happens when you "just add the column to make the error go away"
-- `GROUP BY` with `LEFT JOIN` — when joining before grouping, include all non-aggregated columns from the joined table in `GROUP BY`; use `LEFT JOIN` so groups with zero matches still appear with `COUNT = 0`
-- `HAVING` — filters groups after aggregation; `WHERE` filters rows before grouping; `WHERE` cannot use aggregate functions, `HAVING` can; interviewers always ask the difference
-- `HAVING` without `GROUP BY` — legal, and treats the entire result as a single group; interviewers use it to check whether you understand grouping as a phase of the pipeline rather than as a keyword
-- Conditional aggregation with `CASE WHEN` — `SUM(CASE WHEN status = 'approved' THEN hours ELSE 0 END)` aggregates only a subset of rows; used for reporting by status in TimeTrack; interviewers ask "how would you count only approved entries per project?"
-- `FILTER (WHERE ...)` — PostgreSQL shorthand for conditional aggregation: `COUNT(*) FILTER (WHERE status = 'approved')`; same result as `CASE WHEN` but cleaner for simple conditions
-
----
-
-- `COUNT(1)` vs `COUNT(*)` — PostgreSQL produces an identical plan for both, so "`COUNT(1)` is faster" is folklore; interviewers plant it deliberately to see whether you repeat a received opinion or reason from what the planner actually does
-- `ARRAY_AGG` — collects the grouped values into a real PostgreSQL array instead of the delimited string `STRING_AGG` produces; interviewers ask which of the two you would hand back to an API and expect the array when the client has to iterate
+- `COUNT(*)` vs `COUNT(column)` â€” `COUNT(*)` counts all rows including those with `NULL`; `COUNT(column)` counts only non-`NULL` values; interviewers ask this difference explicitly
+- `SUM`, `AVG`, `MIN`, `MAX` â€” all ignore `NULL` values automatically; `AVG(price)` on `[10, NULL, 30]` returns `20`, not `13.33`; a common source of unexpected results in junior code
+- `GROUP BY` rule â€” every column in `SELECT` must either appear in `GROUP BY` or be inside an aggregate function; breaking this rule causes a PostgreSQL error; the most common GROUP BY mistake in junior code
+- `GROUP BY` with `LEFT JOIN` â€” when joining before grouping, include all non-aggregated columns from the joined table in `GROUP BY`; use `LEFT JOIN` so groups with zero matches still appear with `COUNT = 0`
+- `HAVING` â€” filters groups after aggregation; `WHERE` filters rows before grouping; `WHERE` cannot use aggregate functions, `HAVING` can; interviewers always ask the difference
+- Conditional aggregation with `CASE WHEN` â€” `SUM(CASE WHEN status = 'approved' THEN hours ELSE 0 END)` aggregates only a subset of rows; used for reporting by status in TimeTrack; interviewers ask "how would you count only approved entries per project?"
+- `FILTER (WHERE ...)` â€” PostgreSQL shorthand for conditional aggregation: `COUNT(*) FILTER (WHERE status = 'approved')`; same result as `CASE WHEN` but cleaner for simple conditions
 
 ---
 
 ### Querying basics
 
-- SQL execution order — `FROM + JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT`; the foundation for understanding why aliases work in `ORDER BY` but not in `WHERE` or `HAVING`
-- Where a `SELECT` alias is visible — usable in `GROUP BY` and `ORDER BY` because those run after `SELECT`, rejected in `WHERE` and `HAVING` because those run before it; interviewers ask why the same alias works in one clause and errors in another
-- `SELECT *` vs named columns — always specify columns in application code; `SELECT *` fetches data you do not need, sends more over the network, and breaks when the schema changes
-- `CASE WHEN` in `SELECT` — `CASE WHEN is_active THEN 'Active' ELSE 'Inactive' END AS status` produces a conditional column for each row; interviewers ask you to add a status label to a result set
-- `CASE WHEN` in `SELECT` vs inside an aggregate — in `SELECT` it produces a new column per row; inside `SUM(CASE WHEN ...)` it filters which rows contribute to the aggregate; same syntax, very different behavior
-- `SELECT DISTINCT` — removes duplicate rows from the result; PostgreSQL treats `NULL` as a duplicate and keeps only one; use to explore unique values in a column
-- `DISTINCT` applies to the whole row, not the first column — adding a column to the `SELECT` list can make the result *larger*; the usual surprise when someone adds `id` to a "distinct names" query
-- `DISTINCT` vs `GROUP BY` — both return the same rows when `GROUP BY` selects only its grouping columns, so they are interchangeable there; neither is a fix for a broken join, only a mask over duplicated rows; interviewers ask whether they are equivalent
-- `DISTINCT ON` — PostgreSQL-specific; keeps one row per group while returning multiple columns; the column inside `DISTINCT ON (...)` must be the leftmost column in `ORDER BY`
-- `||` string concatenation — joins two text values into one column, e.g. `first_name || ' ' || last_name AS full_name`; interviewers ask how you build a display name from separate columns without a function call
-- `UNION` vs `UNION ALL` — `UNION` combines the results of two queries and removes duplicate rows; `UNION ALL` keeps every row including duplicates and is faster because it skips the duplicate check; interviewers ask which one to use when you know the two result sets cannot overlap (`UNION ALL` — no reason to pay for a duplicate scan)
-- `UNION` column rules — both queries must return the same number of columns with compatible types; column names in the result come from the first query; interviewers ask what happens if the column types do not match (PostgreSQL raises an error or silently casts, depending on the mismatch)
+- SQL execution order â€” `FROM + JOIN â†’ WHERE â†’ GROUP BY â†’ HAVING â†’ SELECT â†’ ORDER BY â†’ LIMIT`; the foundation for understanding why aliases work in `ORDER BY` but not in `WHERE` or `HAVING`
+- `SELECT *` vs named columns â€” always specify columns in application code; `SELECT *` fetches data you do not need, sends more over the network, and breaks when the schema changes
+- `CASE WHEN` in `SELECT` â€” `CASE WHEN is_active THEN 'Active' ELSE 'Inactive' END AS status` produces a conditional column for each row; interviewers ask you to add a status label to a result set
+- `CASE WHEN` in `SELECT` vs inside an aggregate â€” in `SELECT` it produces a new column per row; inside `SUM(CASE WHEN ...)` it filters which rows contribute to the aggregate; same syntax, very different behavior
+- `SELECT DISTINCT` â€” removes duplicate rows from the result; PostgreSQL treats `NULL` as a duplicate and keeps only one; use to explore unique values in a column
+- `DISTINCT ON` â€” PostgreSQL-specific; keeps one row per group while returning multiple columns; the column inside `DISTINCT ON (...)` must be the leftmost column in `ORDER BY`
+- `ORDER BY` with `NULLS FIRST` / `NULLS LAST` â€” PostgreSQL treats `NULL` as the largest value by default; `ASC` puts `NULL` last, `DESC` puts `NULL` first; override with `NULLS FIRST` or `NULLS LAST`
+- `LIMIT` always with `ORDER BY` â€” without `ORDER BY`, `LIMIT` returns an arbitrary set of rows that can change between queries; always pair them
+- `OFFSET` for pagination â€” `LIMIT 10 OFFSET 20` skips 20 rows and returns the next 10; formula: `OFFSET = (page âˆ’ 1) Ã— page_size`
+- `||` string concatenation â€” joins two text values into one column, e.g. `first_name || ' ' || last_name AS full_name`; interviewers ask how you build a display name from separate columns without a function call
+- `UNION` vs `UNION ALL` â€” `UNION` combines the results of two queries and removes duplicate rows; `UNION ALL` keeps every row including duplicates and is faster because it skips the duplicate check; interviewers ask which one to use when you know the two result sets cannot overlap (`UNION ALL` â€” no reason to pay for a duplicate scan)
+- `UNION` column rules â€” both queries must return the same number of columns with compatible types; column names in the result come from the first query; interviewers ask what happens if the column types do not match (PostgreSQL raises an error or silently casts, depending on the mismatch)
 
 ---
 
-- Grouping by an expression — `GROUP BY DATE_TRUNC('month', work_date)` is legal, and the same expression must appear in `SELECT` (PostgreSQL also lets you group by the output alias); this is the mechanism behind every monthly report, and interviewers ask you to build one live
-- `ORDER BY 2` by ordinal position — sorts by the second selected column; it is valid SQL and it breaks silently the day someone reorders the `SELECT` list, so interviewers ask whether you would ship it in application code
-- An `ORDER BY` inside a subquery or CTE is not binding — only the outermost one is guaranteed, so a sort buried in a `WITH` block can be discarded by the planner; interviewers ask why the result came back unordered despite the sort you wrote
+### Filtering and NULL handling
 
----
-
-### Set operations
-
-- `UNION` vs `UNION ALL` — both stack two result sets, but `UNION` also deduplicates and therefore sorts, so `UNION ALL` is the default when you already know the rows are distinct; interviewers ask which one you would use and expect the cost of the deduplication named
-- `INTERSECT` — returns only the rows present in *both* queries, which is the direct answer to "which users appear in both lists" without a join; interviewers ask for it once you have used `IN` for the same question
-- `EXCEPT` — returns the rows of the first query that are absent from the second, the standard way to diff two tables or two environments and the set-based twin of `NOT EXISTS`; interviewers ask how you would find what one table has and the other does not
-- Column count and type rules — every branch of a set operation must return the same number of columns in compatible types, and the result takes its column names from the first branch; interviewers show a mismatched `UNION` and ask why it will not run
-- Where `ORDER BY` and `LIMIT` go in a set operation — once, at the very end, applying to the combined result; putting them on the first branch is the usual mistake and interviewers use it to check you understand the branches are evaluated before being combined
-
----
-
-### Sorting, pagination, and determinism
-
-- `ORDER BY` with `NULLS FIRST` / `NULLS LAST` — PostgreSQL treats `NULL` as the largest value by default; `ASC` puts `NULL` last, `DESC` puts `NULL` first; override with `NULLS FIRST` or `NULLS LAST`
-- `LIMIT` always with `ORDER BY` — without `ORDER BY`, `LIMIT` returns an arbitrary set of rows that can change between queries; always pair them
-- `ORDER BY` with ties is non-deterministic — rows sharing the same sort key can come back in any order and that order can change between runs; always add a unique tiebreaker column; interviewers ask why a paginated list shows the same record on two different pages
-- `OFFSET` for pagination — `LIMIT 10 OFFSET 20` skips 20 rows and returns the next 10; formula: `OFFSET = (page − 1) × page_size`
-- Deep `OFFSET` is not free — `OFFSET 100000` makes the database read and discard 100 000 rows on every request, so page 10 000 is far slower than page 1; interviewers ask how you paginate a table that grew to millions of rows
-- Keyset (seek) pagination — `WHERE id > :last_seen ORDER BY id LIMIT 20` stays constant-cost regardless of depth because it seeks straight into the index; the standard answer to the deep-`OFFSET` problem
-- Pagination drift under concurrent writes — inserts and deletes between two page requests shift rows across page boundaries, so `OFFSET` paging silently skips or repeats records; the correctness argument for keyset pagination, not just the performance one
-
----
-
-### Filtering and pattern matching
-
-- `WHERE` cannot use aliases — `WHERE` runs before `SELECT`, so column aliases do not exist yet; you must repeat the expression rather than use the alias
-- `WHERE` conditions are not guaranteed to short-circuit — PostgreSQL may reorder an `AND` chain, so a guard like `x <> 0 AND 10 / x > 1` can still raise a division error; the safe forms are `CASE` or `NULLIF`
-- `LIKE` vs `ILIKE` — `LIKE` is case-sensitive; `ILIKE` is PostgreSQL-specific and case-insensitive; `%` matches any sequence of characters, `_` matches exactly one character
-- `LIKE` never matches `NULL` — even `column LIKE '%'` skips `NULL` rows, so a "match everything" search filter silently drops them; interviewers ask why a filter that should be a no-op changed the row count
-- Negating a boolean column drops the `NULL`s — `WHERE NOT is_active` excludes rows where `is_active IS NULL`, so "inactive users" misses everyone the flag was never set for
-- `IN` vs multiple `OR` — `IN (list)` is cleaner and optimized internally by PostgreSQL; preferred when checking against more than two values
-- `BETWEEN` with timestamps — `BETWEEN '2024-01-01' AND '2024-06-30'` silently excludes events after midnight on June 30; safer to cast before comparing: `created_at::date BETWEEN '2024-01-01' AND '2024-06-30'`
-
----
-
-- `= ANY (...)` and `> ALL (...)` — `IN` is literally shorthand for `= ANY`, and `ANY`/`ALL` extend the same idea to the comparison operators; interviewers use it to check you understand `IN` as an operator rather than as a piece of syntax you memorised
-
----
-
-### NULL and three-valued logic
-
-- Three-valued logic — every comparison returns `TRUE`, `FALSE` or `UNKNOWN`, and `WHERE` keeps only the `TRUE` rows; `UNKNOWN` is discarded exactly like `FALSE` but behaves differently once you wrap it in `NOT`; the mechanism underneath every `NULL` surprise in SQL
-- `NULL = NULL` returns `NULL`, not `true` — two unknowns cannot be proven equal; interviewers ask "are two NULLs equal in SQL?" as the entry point to the whole topic
-- `IS NULL` vs `= NULL` — `WHERE price = NULL` never matches any row because `NULL` is not a value; always use `IS NULL` and `IS NOT NULL`; interviewers ask why `= NULL` does not work
-- `AND` / `OR` with `NULL` — `true AND NULL` returns `NULL`, but `false AND NULL` returns `false`; `false OR NULL` returns `NULL`, but `true OR NULL` returns `true`; a `WHERE` filter without an `IS NULL` check can silently exclude rows
-- `NOT IN` with a `NULL` in the subquery — returns zero rows for every candidate, because comparing against the `NULL` makes the whole chain `UNKNOWN`; the most-reused SQL trick question in a Spanish quickfire screening
-- `NOT EXISTS` vs `NOT IN` — `NOT EXISTS` is `NULL`-safe and returns the intuitive result while `NOT IN` silently returns nothing; interviewers ask which one you would write, after showing you the empty result
-- `IS DISTINCT FROM` — the `NULL`-safe inequality operator, which treats `NULL` as a comparable value instead of yielding `UNKNOWN`; the correct tool when a nullable column must genuinely be compared
-- `NULL` in a `UNIQUE` constraint — PostgreSQL considers every `NULL` distinct from every other, so a `UNIQUE` column accepts unlimited `NULL` rows; a uniqueness rule that must also cover missing values needs `NOT NULL` or a partial index
-- `NULL` in `CHECK` vs in `WHERE` — a `CHECK` constraint passes when the condition evaluates to `UNKNOWN` while `WHERE` rejects it, so the same expression admits a row on insert and then hides it on select
-- `NULL` under `GROUP BY` and `DISTINCT` — grouping and de-duplication treat two `NULL`s as the same value even though `=` never does; the inconsistency is deliberate and interviewers use it as a follow-up
-- `COALESCE(value, fallback)` — returns the first non-`NULL` value; used to replace `NULL` with a default (`0`, `''`, `'Unknown'`) so the application never has to handle `NULL` from the query result
-- `NULLIF(a, b)` — returns `NULL` if `a = b`, otherwise returns `a`; most common use: avoid division by zero with `SUM(...) / NULLIF(COUNT(*), 0)`
-
----
-
-### Type behaviour at runtime
-
-- Integer division truncates silently — `5 / 2` returns `2`, so `SUM(hours) / COUNT(*)` on integer columns drops the fraction with no error at all; cast one operand (`::numeric`) to get a decimal; a standard quickfire item and a wrong-number bug that produces no message
-- Division by zero raises an error, it does not return `NULL` — the whole query aborts mid-report instead of degrading; `NULLIF(denominator, 0)` converts the failure into a `NULL` result you can then `COALESCE`
-- PostgreSQL refuses implicit casts MySQL would perform — comparing an `integer` column to a text value fails with `operator does not exist`; the fix is an explicit `::` cast or correcting the column type; interviewers migrating candidates from MySQL ask why the same query stopped working
-- Comparing a `TIMESTAMP` to a `DATE` — the date is coerced to midnight, so `created_at = '2026-07-18'` matches almost nothing; the mechanism behind the `BETWEEN` gotcha and the reason to compare with `::date` or a half-open range
-- `NUMERIC` vs `FLOAT` equality — `0.1 + 0.2 = 0.3` is false in floating point and true in `NUMERIC`; the concrete demonstration of why money is never stored as `FLOAT`
-- Collation decides sort order — `ORDER BY name` uses the database collation, so accented and uppercase Spanish names sort differently than a naive byte comparison and differently between locales; interviewers ask why the alphabetical list looks wrong
-- Values are case-sensitive even though unquoted identifiers are not — `SELECT * FROM Users` resolves fine while `WHERE name = 'ana'` misses `'Ana'`; candidates routinely confuse the two rules
-- `CHAR(n)` pads with trailing spaces — comparisons ignore the padding, so values that compare equal have different lengths; the reason to use `VARCHAR` or `TEXT` and never `CHAR`
+- `WHERE` cannot use aliases â€” `WHERE` runs before `SELECT`, so column aliases do not exist yet; you must repeat the expression rather than use the alias
+- `IS NULL` vs `= NULL` â€” `WHERE price = NULL` never matches any row because `NULL` is not a value; always use `IS NULL` and `IS NOT NULL`; interviewers ask why `= NULL` does not work
+- `AND` / `OR` with `NULL` â€” `true AND NULL` returns `NULL`, but `false AND NULL` returns `false`; `false OR NULL` returns `NULL`, but `true OR NULL` returns `true`; a `WHERE` filter without an `IS NULL` check can silently exclude rows
+- `COALESCE(value, fallback)` â€” returns the first non-`NULL` value; used to replace `NULL` with a default (`0`, `''`, `'Unknown'`) so the application never has to handle `NULL` from the query result
+- `NULLIF(a, b)` â€” returns `NULL` if `a = b`, otherwise returns `a`; most common use: avoid division by zero with `SUM(...) / NULLIF(COUNT(*), 0)`
+- `LIKE` vs `ILIKE` â€” `LIKE` is case-sensitive; `ILIKE` is PostgreSQL-specific and case-insensitive; `%` matches any sequence of characters, `_` matches exactly one character
+- `IN` vs multiple `OR` â€” `IN (list)` is cleaner and optimized internally by PostgreSQL; preferred when checking against more than two values
+- `BETWEEN` with timestamps â€” `BETWEEN '2024-01-01' AND '2024-06-30'` silently excludes events after midnight on June 30; safer to cast before comparing: `created_at::date BETWEEN '2024-01-01' AND '2024-06-30'`
 
 ---
 
 ### Subqueries, CTEs, and views
 
-- Subquery in `WHERE` — `WHERE price > (SELECT AVG(price) FROM books)` — you cannot use `AVG` directly in `WHERE`; the subquery runs first and its result is used by the outer query
-- Subquery in `FROM` (derived table) — a query used as a table; must have an alias; used to filter on an aggregated result because `WHERE` cannot use aggregate functions
-- Scalar subquery in `SELECT` — returns exactly one value used as a column in the result; runs once per row and can be slow on large tables; interviewers ask when this would cause a performance problem
-- `IN` vs `EXISTS` — `IN` collects all results from the subquery first; `EXISTS` stops as soon as it finds one match and is faster on large tables; interviewers ask when you would prefer one over the other
-- Subquery vs `JOIN` — most `WHERE` subqueries can be rewritten as a `JOIN`, which the database can optimize better; prefer a `JOIN` when readable; use a subquery when you need an aggregate in a filter
-- `WITH` (CTE) — names a subquery so it can be referenced by name in the same query; makes multi-step queries readable; interviewers ask "when would you use a CTE instead of a subquery?"
-- Multiple CTEs — chain CTEs with commas; each CTE can reference the ones defined before it; used to build complex queries step by step without nesting
-- `CREATE VIEW` — saves a query in the database with a name; queried like a table but runs the underlying query live on every access; used to avoid repeating complex JOINs across different parts of an application
-- What belongs in a view — a repeated read-only projection, or a stable shape held steady over a changing schema; not a hiding place for business logic the service layer must own; interviewers ask what you would put in a view and what you would keep in Java
-- Updatable views and their limits — a simple single-table view accepts an `UPDATE`, one built on JOINs or aggregates does not; the reason a view is a read-side tool
-- View vs materialized view — a regular view runs the query live every time; a materialized view stores the result on disk and must be refreshed manually with `REFRESH MATERIALIZED VIEW`; regular views are for convenience, materialized views are for performance
+- Subquery in `WHERE` â€” `WHERE price > (SELECT AVG(price) FROM books)` â€” you cannot use `AVG` directly in `WHERE`; the subquery runs first and its result is used by the outer query
+- Subquery in `FROM` (derived table) â€” a query used as a table; must have an alias; used to filter on an aggregated result because `WHERE` cannot use aggregate functions
+- Scalar subquery in `SELECT` â€” returns exactly one value used as a column in the result; runs once per row and can be slow on large tables; interviewers ask when this would cause a performance problem
+- `IN` vs `EXISTS` â€” `IN` collects all results from the subquery first; `EXISTS` stops as soon as it finds one match and is faster on large tables; interviewers ask when you would prefer one over the other
+- Subquery vs `JOIN` â€” most `WHERE` subqueries can be rewritten as a `JOIN`, which the database can optimize better; prefer a `JOIN` when readable; use a subquery when you need an aggregate in a filter
+- `WITH` (CTE) â€” names a subquery so it can be referenced by name in the same query; makes multi-step queries readable; interviewers ask "when would you use a CTE instead of a subquery?"
+- Multiple CTEs â€” chain CTEs with commas; each CTE can reference the ones defined before it; used to build complex queries step by step without nesting
+- `CREATE VIEW` â€” saves a query in the database with a name; queried like a table but runs the underlying query live on every access; used to avoid repeating complex JOINs across different parts of an application
+- View vs materialized view â€” a regular view runs the query live every time; a materialized view stores the result on disk and must be refreshed manually with `REFRESH MATERIALIZED VIEW`; regular views are for convenience, materialized views are for performance
 
 ---
 
-- A correlated subquery — one that references a column from the outer query and therefore re-runs once per outer row, which is why a tidy-looking `SELECT` with a per-row subquery collapses on a large table; interviewers show one and expect you to name why it does not scale and how a join or a window function replaces it
-- CTEs are no longer an optimisation fence — before PostgreSQL 12 a `WITH` was always materialised, and since 12 the planner may inline it unless you write `MATERIALIZED` explicitly; interviewers ask whether a CTE is slower than the equivalent subquery and want the version-aware answer rather than the old rule
+### DML â€” modifying data
 
----
-
-### DML — modifying data
-
-- `INSERT INTO ... VALUES (...)` — adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty
-- Multi-row `INSERT` — `INSERT INTO books (title, author_id) VALUES (...), (...), (...)` inserts many rows in one statement, one round trip and one transaction; interviewers ask why this beats a loop of single inserts, which is the write-side twin of the N+1 problem
-- `COPY` vs `INSERT` for bulk loading — `COPY` streams a CSV straight into a table far faster than thousands of `INSERT`s; interviewers ask how you would load a 100 000-row CSV into PostgreSQL
-- Insert order with foreign keys — parent rows must exist before the rows that reference them, or the `REFERENCES` check rejects the insert; the first thing that breaks in a hand-written seed file
-- Resetting the sequence after inserting explicit ids — seeding rows with hardcoded `id` values leaves the `SERIAL` sequence behind, so the next application insert fails with a duplicate key error; fixed with `setval`; a nasty gotcha that separates people who have seeded a real database from those who have not
-- `RETURNING` — `INSERT INTO users (...) VALUES (...) RETURNING id` — returns the generated ID without a second `SELECT`; PostgreSQL-specific; interviewers ask "how do you get the new ID after an INSERT?"
-- `UPDATE ... SET ... WHERE` — always include `WHERE` or every row in the table is updated; one of the most common catastrophic mistakes in junior code
-- `DELETE FROM ... WHERE` — always include `WHERE` or every row is deleted; always verify the affected rows with a matching `SELECT` before running `DELETE` on production data
-- Wrapping a destructive statement in an explicit transaction — running the `UPDATE` or `DELETE` inside `BEGIN`, checking the reported row count, and only then `COMMIT`; interviewers ask how you would run a one-off data fix against production
-- `DELETE` vs `TRUNCATE` — `DELETE` supports `WHERE`, logs every row, and can be rolled back; `TRUNCATE` removes all rows instantly, does not support `WHERE`, and resets `SERIAL` counters; never use `TRUNCATE` in application code
-- `ON CONFLICT` (upsert) — `INSERT ... ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name` — atomic insert-or-update; avoids the race condition of a `SELECT` + `INSERT` pair; `EXCLUDED` refers to the values that would have been inserted
-
----
-
-- `UPDATE ... FROM` — PostgreSQL's syntax for updating one table from a join against another, and the correct alternative to a correlated subquery that re-runs per row; interviewers ask how you would back-fill a column from a related table
-- Finding duplicates — `GROUP BY email HAVING COUNT(*) > 1` is the canonical query and the one interviewers ask for before they ask you to add the `UNIQUE` constraint that prevents them
-- Deleting duplicates while keeping one row — `ROW_NUMBER()` inside a CTE partitioned by the duplicate key, then deleting where the number is greater than one; the standard follow-up to "now clean it up so the constraint can actually be added"
+- `INSERT INTO ... VALUES (...)` â€” adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty
+- `RETURNING` â€” `INSERT INTO users (...) VALUES (...) RETURNING id` â€” returns the generated ID without a second `SELECT`; PostgreSQL-specific; interviewers ask "how do you get the new ID after an INSERT?"
+- `UPDATE ... SET ... WHERE` â€” always include `WHERE` or every row in the table is updated; one of the most common catastrophic mistakes in junior code
+- `DELETE FROM ... WHERE` â€” always include `WHERE` or every row is deleted; always verify the affected rows with a matching `SELECT` before running `DELETE` on production data
+- `DELETE` vs `TRUNCATE` â€” `DELETE` supports `WHERE` and processes matching rows; `TRUNCATE`
+  removes all rows with a stronger table lock and resets sequences only when `RESTART IDENTITY` is
+  requested; choose deliberately rather than treating either as universally safe
+- `ON CONFLICT` (upsert) â€” `INSERT ... ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name` â€” atomic insert-or-update; avoids the race condition of a `SELECT` + `INSERT` pair; `EXCLUDED` refers to the values that would have been inserted
 
 ---
 
 ### Transactions
 
-- `BEGIN` / `COMMIT` / `ROLLBACK` — groups multiple statements so they either all succeed or all fail; `ROLLBACK` undoes everything since `BEGIN`; the SQL-level mechanism that `@Transactional` wraps in Spring Boot
-- Atomicity — the transaction is all or nothing, so a failure halfway through leaves the database exactly as it was; this is the property `@Transactional` is bought for and the one interviewers ask you to illustrate with a two-table write
-- Consistency — the database moves from one valid state to another and never lands with a constraint violated, which is why a rollback is the only correct response to a failed constraint mid-transaction
-- Isolation — concurrent transactions do not see each other's uncommitted changes, and *how strictly* is exactly what the isolation level controls; interviewers use this letter as the doorway to the isolation-level question
-- Durability — once the commit returns, the data survives a crash because it is already on disk in the write-ahead log; interviewers ask what "committed" actually guarantees
-- The three read anomalies — a dirty read sees another transaction's uncommitted data, a non-repeatable read gets a different value for the same row read twice, and a phantom read gets different *rows* for the same query; interviewers name them in quickfire and want a one-line example of each, not a definition of isolation in the abstract
-- The four isolation levels — `READ UNCOMMITTED`, `READ COMMITTED`, `REPEATABLE READ`, `SERIALIZABLE` — and which anomaly each one stops; the follow-up that catches candidates reciting the ANSI table is that PostgreSQL never permits dirty reads even at the lowest level, so its `READ UNCOMMITTED` behaves as `READ COMMITTED`
-- Optimistic vs pessimistic locking as a decision — pessimistic takes the lock up front with `SELECT ... FOR UPDATE`, optimistic detects the clash at write time and makes the loser retry; interviewers ask which fits a low-contention web application and expect the retry cost weighed against the lock's held time
-- `@Transactional` connection — Spring Boot wraps the method in `BEGIN` / `COMMIT` and automatically issues `ROLLBACK` on an unchecked exception; interviewers ask "what happens if the second save fails inside a `@Transactional` method?"
-- Read committed is PostgreSQL's default isolation level — every statement sees a fresh snapshot of committed data, so two identical reads inside one transaction can return different rows; interviewers ask what a concurrent transaction can and cannot see from inside yours
-- The aborted-transaction state — after any error inside a transaction every following statement fails with `current transaction is aborted, commands ignored until end of transaction block`; you must `ROLLBACK` before the session is usable again; interviewers ask why the next, perfectly valid query also failed
-- Lost update from read-modify-write — two transactions read the same value, both write it back, and one update vanishes with no error; the concrete problem row locking and optimistic locking exist to solve
-- `SELECT ... FOR UPDATE` — locks the selected rows so a concurrent transaction cannot modify them until you commit; the raw-SQL fix for a read-then-write race; interviewers ask how you stop two requests both booking the last free slot
-- Row-level locks from `UPDATE` — an `UPDATE` holds a lock on every row it touches until the transaction ends, which is why one uncommitted transaction can block every other writer
-- An open, uncommitted transaction is worse than a slow query — the session sits `idle in transaction` holding its locks indefinitely, so writers queue behind it while the CPU stays idle; the classic cause of a database that "hangs" rather than fails
-- `deadlock detected` — two transactions each hold a lock the other needs, so PostgreSQL kills one of them; caused by updating the same rows in a different order, and prevented by touching rows in a consistent order and keeping transactions short
-- `SAVEPOINT` — a named checkpoint inside a transaction; `ROLLBACK TO name` undoes only the work since that checkpoint; used internally by Hibernate; good to know it exists without needing to write it yourself
+- `BEGIN` / `COMMIT` / `ROLLBACK` â€” groups multiple statements so they either all succeed or all fail; `ROLLBACK` undoes everything since `BEGIN`; the SQL-level mechanism that `@Transactional` wraps in Spring Boot
+- ACID properties â€” Atomicity is all-or-nothing, Consistency preserves declared invariants from one
+  valid state to another, Isolation controls interference between concurrent transactions, and
+  Durability preserves committed work
+- `SAVEPOINT` â€” a named checkpoint inside a transaction; `ROLLBACK TO name` undoes only the work since that checkpoint; used internally by Hibernate; good to know it exists without needing to write it yourself
 
 ---
 
 ### Window functions
 
-- `ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)` — assigns a unique sequential number to each row within a partition; used to get "the latest time entry per user" by filtering `WHERE row_num = 1` in an outer query; a very common interview pattern
-- `RANK()` vs `ROW_NUMBER()` — `RANK()` gives tied rows the same number and skips the next (1, 1, 3); `ROW_NUMBER()` always gives a unique number regardless of ties (1, 2, 3); when you need exactly one row per group, use `ROW_NUMBER()`
-- `LAG()` and `LEAD()` — access the previous or next row's value without a self-join; `LAG(hours)` returns the value from the previous row in the partition; used to compare consecutive time entries
-- `SUM() OVER (PARTITION BY ...)` — running total within a group without collapsing rows; unlike `GROUP BY`, it keeps every row and adds a cumulative column alongside the existing data
+- `ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)` â€” assigns a unique sequential number to each row within a partition; used to get "the latest time entry per user" by filtering `WHERE row_num = 1` in an outer query; a very common interview pattern
+- `RANK()` vs `ROW_NUMBER()` â€” `RANK()` gives tied rows the same number and skips the next (1, 1, 3); `ROW_NUMBER()` always gives a unique number regardless of ties (1, 2, 3); when you need exactly one row per group, use `ROW_NUMBER()`
+- `LAG()` and `LEAD()` â€” access the previous or next row's value without a self-join; `LAG(hours)` returns the value from the previous row in the partition; used to compare consecutive time entries
+- `SUM() OVER (PARTITION BY ...)` â€” running total within a group without collapsing rows; unlike `GROUP BY`, it keeps every row and adds a cumulative column alongside the existing data
 
 ---
 
-- `DENSE_RANK()` — the third member of the trio: ties share a number and the next value does not skip, so tied firsts give 1, 1, 2 where `RANK()` gives 1, 1, 3 and `ROW_NUMBER()` gives 1, 2, 3; interviewers put tied data on the screen and ask for all three outputs
-- A window function cannot appear in `WHERE` or `HAVING` — windows are computed *after* those clauses run, so filtering on `ROW_NUMBER()` means wrapping the query in a subquery or CTE; it is the logical-execution-order payoff and the first error every junior hits with windows
-- Window function vs `GROUP BY` — `GROUP BY` collapses the rows and gives you one per group, a window keeps every row and adds the aggregate alongside it; interviewers ask when you would reach for each, and "show each entry next to its project total" is the case only a window answers
-- The default window frame — `SUM() OVER (ORDER BY date)` accumulates because the implicit frame runs from the start of the partition to the current row, while `SUM() OVER (PARTITION BY project)` with no `ORDER BY` repeats the group total on every row; interviewers ask why adding an `ORDER BY` changed the numbers
-- "The second highest value" as a live exercise — solvable with `OFFSET 1`, with a correlated subquery, or with `DENSE_RANK`; interviewers ask which one is still correct when two rows tie for first, and only the ranking version answers cleanly
+### Schema design
 
----
-
-### Date and string functions
-
-The surface a live SQL exercise actually exercises. Stalling on a function name here reads as never having written SQL by hand, whatever else you can explain.
-
-- `DATE_TRUNC` — snaps a timestamp down to the start of its month, week or day, which is what makes `GROUP BY DATE_TRUNC('month', work_date)` the backbone of every period report; interviewers ask you to produce a monthly total from raw timestamps
-- `EXTRACT(YEAR FROM ...)` / `DATE_PART` — pulls one field out of a date so you can group by year, month number, or weekday; the companion to `DATE_TRUNC`, and interviewers ask when each is the right tool (truncate to keep periods ordered, extract to bucket across periods)
-- What subtraction returns — two timestamps give an `INTERVAL`, two `DATE`s give a plain integer number of days; interviewers ask what type comes back before they ask you to compute a duration, because the answer decides whether you can sum it
-- `AGE(a, b)` vs plain subtraction — `AGE` returns a human-readable years/months/days interval while subtraction returns a flat elapsed amount; interviewers ask how you would compute someone's age in completed years
-- `INTERVAL` arithmetic — `NOW() - INTERVAL '30 days'` is how a "last 30 days" filter is written, and it composes with the `>=` predicate that keeps the query sargable
-- The core string toolkit — `UPPER`, `LOWER`, `TRIM`, `LENGTH`, `SUBSTRING`, `REPLACE` and `SPLIT_PART`; a live exercise routinely asks you to normalise or slice a text column and expects these without a lookup
-- `||` with a `NULL` operand returns `NULL` — so one missing middle name blanks the entire concatenated display name; the fixes are `COALESCE` around each piece or `CONCAT_WS`, which skips nulls for you; interviewers show exactly this blank column and ask what happened
-
----
-
-### Schema design — constraints and integrity
-
-- Primary key — uniquely identifies each row; `SERIAL` or `BIGSERIAL` in PostgreSQL; every table needs exactly one; interviewers ask "what is the primary key of your `time_entries` table?"
-- Foreign key — a column that references the primary key of another table; PostgreSQL rejects an `INSERT` if the referenced row does not exist; this guarantee is called referential integrity
-- Which side of a 1:N carries the foreign key — it lives on the "many" table whichever entity feels primary in the domain, because one `users` row cannot hold many `time_entry` ids in a single column; interviewers ask where the FK goes and why it cannot go on `users`
-- Composite primary key on a junction table — `PRIMARY KEY (order_id, book_id)` enforces "no duplicate pair" for free, while a surrogate `id` does not unless you add a `UNIQUE`; interviewers ask which you would choose for `order_items` and why
-- `ON DELETE` behavior — `RESTRICT` (default) rejects the delete if dependent rows exist; `CASCADE` deletes dependent rows automatically; `SET NULL` sets the foreign key to `NULL`; interviewers ask "what happens if you delete a user who has time entries?"
-- `NOT NULL` constraint — the column must always have a value; used on required fields like `email`, `password`, `status`; interviewers ask why you chose to add it
-- `UNIQUE` constraint — no two rows can have the same value in that column; used on `email` to prevent duplicate accounts; automatically creates an index in PostgreSQL
-- Multi-column and partial `UNIQUE` — `UNIQUE (user_id, work_date)` enforces uniqueness over a pair, and a partial unique index (`WHERE deleted_at IS NULL`) over a subset of rows; the answer to "how do you stop one user logging two entries for the same day?"
-- `CHECK` constraint — validates a condition on insert or update; `CHECK (hours > 0 AND hours <= 24)` rejects invalid data at the database level, not just the application level
-- Constraint in the database vs validation in the application — application checks are advisory and bypassed by migrations, scripts and any other client; the database constraint is the only enforced guarantee; interviewers ask whether Bean Validation makes the `CHECK` unnecessary, and the answer is that you duplicate it on purpose
-- A constraint violation is a race the application check cannot win — a duplicate can pass a prior `SELECT` and still fail at insert time because another request committed in between; the reason the `UNIQUE` constraint is required even with a service-layer duplicate check
-
----
-
-- `ON UPDATE CASCADE` — propagates a changed parent key down to the children, and it exists mainly because natural keys change; interviewers use it to close the loop on why a surrogate key is the default (a key that never changes needs no cascade)
-
----
-
-### Schema design — modelling decisions
-
-- Relationship types — one-to-many (1:N) is the most common; the foreign key always goes on the "many" side; many-to-many (N:M) needs a junction table (e.g. `order_items` linking `orders` and `books`)
-- Natural key vs surrogate key — using `email` or a business code as the primary key versus a generated `id`; business values change, and a changed primary key cascades into every referencing row; interviewers ask why juniors default to surrogate keys and expect that reason
-- `SERIAL` vs `GENERATED ALWAYS AS IDENTITY` — `SERIAL` is legacy PostgreSQL shorthand that creates a hidden sequence, `IDENTITY` is the SQL-standard form now recommended for new code; interviewers who follow PostgreSQL ask which one a fresh schema should use
-- UUID vs a sequential integer key — a UUID lets the client generate the id before the row exists, but it indexes worse because inserts land randomly across the B-tree instead of appending; interviewers ask "why not UUID everywhere?"
-- Normalization concept — storing `project_id` instead of copying `project_name` avoids duplication; changing the project name requires only one `UPDATE` in one place; interviewers ask "what problem does normalization solve?"
-- Transitive dependency in a table — a non-key column that depends on another non-key column instead of on the key (storing `project_name` beside `project_id`); interviewers show a denormalised table and ask what is wrong with it, not for the normal form's number
-- Deliberate denormalisation — storing a computed `total_hours` or a copied `project_name` to avoid an expensive aggregate, accepting that the copy can go stale; interviewers ask when duplicating data is the right call and how you keep it consistent
-- PostgreSQL `ENUM` type vs a `CHECK` constraint on a status column — the `ENUM` needs a migration to add a value while the `CHECK` is edited in place, and a free-text column with neither admits typos that silently break every `WHERE status = 'approved'`; interviewers ask how you would constrain `time_entries.status`
-- Lookup table for a status column — a referenced table costs a JOIN on every read but lets the set of valid values be edited at runtime by the application rather than by a migration; interviewers ask when the extra table earns its keep
-- Soft delete vs hard delete — a `deleted_at` column keeps history and preserves foreign keys, but every query must now filter it and one forgotten filter resurrects deleted rows in a report; interviewers ask what breaks when you soft-delete a user whose `email` must stay unique
-- Database `DEFAULT NOW()` vs Hibernate `@CreationTimestamp` for `created_at` — interviewers ask what happens to the database default when the ORM always sends the column explicitly, and the answer is that the default never fires
-- Reading a schema out loud — describing the TimeTrack data model: "three tables; `users` and `projects` are independent; `time_entries` links to both via foreign keys"; interviewers ask "explain your database structure"
-
----
-
-- 1NF, 2NF and 3NF by name — Spanish screenings still ask "¿qué es la tercera forma normal?" verbatim, so you need a one-line definition of each plus a table that violates it (repeating groups, a non-key column depending on part of a composite key, a non-key column depending on another non-key column); spotting the problem without the label is not enough when the interviewer asks by number
-- Modelling a one-to-one relationship — either a shared primary key or a `UNIQUE` foreign key, and the prior question interviewers actually care about is why you split the table at all rather than adding the columns
-- A self-referencing foreign key — `manager_id INT REFERENCES users(id)` models a hierarchy inside one table and must be nullable so the root has somewhere to stop; interviewers pair it directly with the self-join question
-- Reading an ER diagram — crow's-foot notation for 1:1, 1:N and N:M plus the optional and mandatory marks; take-home statements ship a diagram rather than prose and expect you to translate it straight into DDL
+- Primary key â€” one optional table constraint, possibly composite, that uniquely identifies rows;
+  application tables normally define one even though SQL does not require every table to have it
+- Foreign key â€” one or more columns referencing a primary or other unique candidate key;
+  PostgreSQL rejects values with no referenced row, enforcing referential integrity
+- `ON DELETE` behavior â€” `RESTRICT` (default) rejects the delete if dependent rows exist; `CASCADE` deletes dependent rows automatically; `SET NULL` sets the foreign key to `NULL`; interviewers ask "what happens if you delete a user who has time entries?"
+- `NOT NULL` constraint â€” the column must always have a value; used on required fields like `email`, `password`, `status`; interviewers ask why you chose to add it
+- `UNIQUE` constraint â€” no two rows can have the same value in that column; used on `email` to prevent duplicate accounts; automatically creates an index in PostgreSQL
+- `CHECK` constraint â€” validates a condition on insert or update; `CHECK (hours > 0 AND hours <= 24)` rejects invalid data at the database level, not just the application level
+- Relationship types â€” one-to-many (1:N) is the most common; the foreign key always goes on the "many" side; many-to-many (N:M) needs a junction table (e.g. `order_items` linking `orders` and `books`)
+- Normalization concept â€” storing `project_id` instead of copying `project_name` avoids duplication; changing the project name requires only one `UPDATE` in one place; interviewers ask "what problem does normalization solve?"
+- Reading a schema out loud â€” describing the TimeTrack data model: "three tables; `users` and `projects` are independent; `time_entries` links to both via foreign keys"; interviewers ask "explain your database structure"
 
 ---
 
 ### Data types
 
-- `VARCHAR(n)` vs `TEXT` — both have identical storage performance in PostgreSQL; `VARCHAR(n)` documents an intended maximum length; `TEXT` is for content with no meaningful upper limit; the practical difference is intent, not performance
-- Choosing a `VARCHAR` length too small — a limit that fits today's emails and rejects tomorrow's tokens turns into a migration on a live table; a standard review finding on a hand-written schema
-- `INT` vs `SERIAL` vs `BIGSERIAL` — `INT` is a plain integer; `SERIAL` is an auto-incrementing integer used for primary keys; `BIGSERIAL` handles very large tables; interviewers from MySQL ask "what is the equivalent of `AUTO_INCREMENT`?"
-- `NUMERIC(p,s)` vs `FLOAT` — `FLOAT` is an approximation that compounds rounding errors over time; `NUMERIC(10,2)` stores exact decimals; always use `NUMERIC` for prices and financial values; interviewers ask "why would you not use `FLOAT` for money?"
-- Choosing the unit a quantity is stored in — hours as `NUMERIC(5,2)` versus minutes as `INT`; interviewers ask how you would store `hours` in `time_entries` and expect the precision argument, not a shrug
-- `TIMESTAMP` vs `TIMESTAMPTZ` — `TIMESTAMP` stores the date and time exactly as entered, ignoring time zones; `TIMESTAMPTZ` converts to UTC on write and back to the session time zone on read; always use `TIMESTAMPTZ` for `created_at` in a web application
-- `DATE` vs `TIMESTAMPTZ` for a business day — a work date has no time component and no time zone, so storing it as a timestamp shifts it a day across zone boundaries; interviewers ask which type `time_entries.work_date` should be
-- Where time zone conversion happens — the database stores UTC and the presentation layer converts to the user's zone; interviewers ask how you would show a work day correctly to employees in two countries
-- `BOOLEAN` — stores `true` or `false`; PostgreSQL accepts `true`, `'t'`, `'yes'`, `1` as input — always write `true` / `false` for readability; used for flags like `is_active`
-- `JSONB` column vs a proper table — `JSONB` fits genuinely schemaless payloads and is wrong for anything you filter, join, or constrain; interviewers ask why you would not "just put the settings in a JSON column"
-- Array column vs junction table — a PostgreSQL array avoids a JOIN but gives up foreign keys and referential integrity entirely; interviewers ask why you would not store `tag_ids` as an array
-
----
-
-### DDL — creating and evolving a schema
-
-- `CREATE DATABASE` vs `CREATE SCHEMA` — a database is a separate connection target and PostgreSQL cannot join across two of them; a schema is a namespace inside one database that you can join across freely; interviewers ask which one you would use to separate two modules
-- `CREATE TABLE` written by hand — the column list, types, `NOT NULL`, `DEFAULT` and constraint clauses in one statement; every live-coding exercise starts here, and candidates who only ever used `ddl-auto` freeze at a blank editor
-- Column-level vs table-level constraint syntax — `email VARCHAR(255) UNIQUE` versus `CONSTRAINT uq_users_email UNIQUE (email)`; interviewers ask why you would name a constraint, and the answer is readable error messages and being able to `DROP` it by name later
-- `REFERENCES` inline in `CREATE TABLE` — `user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE`; interviewers ask what order the tables must be created in, since the referenced table has to exist first
-- `DEFAULT` in DDL — `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`; the default applies only when the column is omitted, so an `INSERT` that names it explicitly with `NULL` still fails the `NOT NULL`
-- `CREATE TABLE IF NOT EXISTS` — makes a setup script re-runnable; the difference between a script you can execute twice and one that fails the second time is what makes a seed file usable by a reviewer
-- `DROP TABLE` vs `DROP TABLE ... CASCADE` — a plain `DROP` fails while another table's foreign key depends on it; `CASCADE` drops the dependent constraints too; interviewers ask what `CASCADE` actually removes
-- `ALTER TABLE ... ADD COLUMN` — the safe additive change; adding it as `NOT NULL` to a table that already has rows fails unless you also give a `DEFAULT`, which is the standard follow-up question
-- `ALTER TABLE ... ALTER COLUMN TYPE` — every existing value must be castable to the new type and PostgreSQL rewrites the whole table; interviewers ask what happens to the rows that do not fit
-- `ALTER TABLE ... ADD CONSTRAINT` on a populated table — adding a `UNIQUE` or `CHECK` fails if any existing row violates it; the interviewer is probing whether you think about the data already there, not just the new rule
-- `ALTER TABLE ... RENAME COLUMN` — trivial in SQL and yet it breaks every query and entity mapping that referenced the old name; the standard opener for "why are schema changes risky?"
-- DDL is transactional in PostgreSQL — `BEGIN; ALTER TABLE ...; ROLLBACK;` really does undo the change, unlike MySQL or Oracle where DDL commits implicitly; candidates coming from those databases are surprised and interviewers ask them to confirm it
-
----
-
-### Working with a live database
-
-- `psql` vs a GUI client — `psql` is the terminal client shipped with PostgreSQL and pgAdmin or DBeaver wrap the same protocol; interviewers ask whether you can operate without a GUI, because servers rarely have one
-- `\dt` and `\l` — list the tables of the current database and the databases on the server; the orientation step in an unknown schema during a live exercise
-- `\d table_name` output — reads back the columns, types, defaults, indexes and foreign keys of a table; the verification step after writing DDL by hand
-- `information_schema` and `pg_catalog` — the system views that let you query the schema itself (`SELECT * FROM information_schema.columns WHERE table_name = 'users'`); interviewers ask how you would list every table without a GUI
-- The `public` schema — the default schema an unqualified `CREATE TABLE` lands in; interviewers ask where your table actually went
-- `search_path` — the ordered list of schemas PostgreSQL scans to resolve an unqualified table name; explains how the very same query finds the table in one session and raises `relation does not exist` in another
-- Qualified vs unqualified table names — `app.users` versus `users`; you qualify explicitly in migrations and in anything run by a different role, precisely because `search_path` differs per session
-- Role vs user in PostgreSQL — they are the same object and a "user" is simply a role with `LOGIN`; the first surprise for anyone arriving from MySQL
-- `GRANT` on a table — gives a role `SELECT`, `INSERT`, `UPDATE` or `DELETE` on it; interviewers ask which privileges the application's own database user should hold and why it must not be a superuser
-- Object ownership — the role that created a table owns it and can alter or drop it regardless of grants; explains permission errors that look inexplicable after a migration ran as a different user
-- Importing a `.sql` dump — `psql -d mydb -f dump.sql` or `\i file.sql` runs a script against a database; the take-home instruction "restore the attached dump and answer these questions" assumes you can do this unaided
-- `pg_dump` — produces a reloadable copy of a whole database; interviewers ask how you would get production-shaped data onto your laptop to reproduce a bug
-
----
-
-### Reading PostgreSQL errors
-
-- `duplicate key value violates unique constraint "users_email_key"` — the exact text of a `UNIQUE` violation, and the constraint name in the message tells you which column failed; interviewers show the raw log line and ask which statement caused it
-- `insert or update on table "time_entries" violates foreign key constraint` — the referenced row does not exist; its mirror image, `update or delete on table "users" violates foreign key constraint on table "time_entries"`, means a dependent row still does; interviewers ask you to tell the two apart
-- `null value in column "email" violates not-null constraint` — the `NOT NULL` failure; the fix is a value, a `DEFAULT`, or admitting the column should be nullable, and most of the time it signals a data bug rather than a schema bug
-- `new row for relation "time_entries" violates check constraint "time_entries_hours_check"` — the `CHECK` failure message; interviewers follow up with why the database validates at all when the application already did
-- `column "u.name" must appear in the GROUP BY clause or be used in an aggregate function` — the literal text of the `GROUP BY` rule; interviewers paste it and expect both fixes named (add the column to `GROUP BY`, or wrap it in an aggregate) plus which one preserves the intended grouping
-- `more than one row returned by a subquery used as an expression` — a scalar subquery matched several rows; interviewers ask why it worked in development and failed in production (the data grew) and what the fix is
-- `relation "users" does not exist` — the three real causes a junior must be able to enumerate: connected to the wrong database, the wrong `search_path`, or a quoted-identifier case problem
-- `invalid input syntax for type integer: "abc"` — a value that cannot be cast; interviewers ask where it typically comes from (an unvalidated request parameter) and which layer should have caught it first
-- SQLSTATE codes — every PostgreSQL error carries a code (`23505` unique violation, `23503` foreign key, `23502` not null, `23514` check); interviewers ask how you distinguish "duplicate email" from any other failure in code, since parsing the message text is fragile
-- The row count changes at each join step — every join can only keep or multiply rows, never reduce them below the driving table unless it is an `INNER JOIN`, so comparing the count before and after each one localises where a report inflated
-
----
-
-### Indexes
-
-- What an index is — a sorted data structure that speeds up reads on a column at the cost of slower writes; primary keys and `UNIQUE` columns are indexed automatically; foreign key columns used in JOINs benefit most from a manual index
-- PostgreSQL does not index a foreign key column — it indexes the *referenced* key only, so the child side of every `@ManyToOne` stays unindexed until you create it yourself; the single most common missing index in a junior schema
-- When to add an index — columns frequently used in `WHERE`, `JOIN ON`, or `ORDER BY` on large tables; when you see a `Seq Scan` on a large table in `EXPLAIN` output
-- When NOT to index — small tables, columns with very few distinct values (a `status` column with three options gains little), and columns that are updated very frequently
-- The write cost of an index — every `INSERT` and `UPDATE` must also update each index on the table, so an over-indexed hot table has slow writes and grows on disk; the concrete meaning of "an index is not free"
-- Redundant indexes — an index on `(a)` is already served by an index on `(a, b)`, and `PRIMARY KEY` and `UNIQUE` create theirs automatically; the duplicate costs write throughput for nothing
-- Composite index column order — a multi-column index only helps queries filtering on its leftmost columns, so an index on `(user_id, work_date)` serves `WHERE user_id = ?` but not `WHERE work_date = ?`; interviewers ask why their two-column index is being ignored
-- Non-sargable predicates — wrapping an indexed column in a function or cast (`WHERE DATE(created_at) = '2024-01-01'`) disables the index and forces a `Seq Scan`; rewrite it as a range on the raw column; the most common "the index does nothing" review finding
-- Leading-wildcard `LIKE` — `LIKE '%term%'` cannot use a B-tree index because the index is sorted by prefix, while `LIKE 'term%'` can; interviewers ask why the search box got slow at a million rows
-
----
-
-- Index-only scan and covering indexes — when every column a query needs is already in the index, PostgreSQL never touches the table at all, which is what `Index Only Scan` in a plan is telling you and why `INCLUDE` columns exist; interviewers ask what makes a scan "only"
-- `CREATE INDEX CONCURRENTLY` — builds the index without taking a write lock, at the cost of a slower build that can leave an invalid index behind if it fails; the answer to "how do you add an index to a table that is serving traffic"
-
----
-
-### Reading a query plan and diagnosing slowness
-
-- `EXPLAIN` — shows the query plan and whether an index is being used; `Seq Scan` means every row is read; `Index Scan` means the index was used; run this when a query is slow before adding an index
-- `EXPLAIN` vs `EXPLAIN ANALYZE` — `EXPLAIN` shows the planner's estimate without running the query, `EXPLAIN ANALYZE` actually executes it and reports real times and row counts; the difference matters because you must not run `EXPLAIN ANALYZE` on an `UPDATE` in production
-- Estimated vs actual rows in a plan — a large gap between the two means the planner is working from stale statistics and chose the wrong plan; interviewers ask why a query that used an index yesterday does a `Seq Scan` today
-- A `Seq Scan` is sometimes the correct plan — when a query returns a large fraction of the table, reading it sequentially beats thousands of random index lookups; "there is a Seq Scan" is not automatically a bug, and interviewers use this to separate memorised advice from understanding
-- `ANALYZE` and table statistics — the planner estimates row counts from collected column statistics, which go stale after a bulk load and degrade every plan until they are refreshed
-- `pg_stat_activity` — the view listing current sessions, their state (`active`, `idle in transaction`) and the query each is running; the first thing you look at when the database appears stuck rather than slow
-- `statement_timeout` — makes a long-running query fail fast instead of hanging forever and tying up its connection; interviewers ask how you stop one bad query from exhausting the pool
-- `ALTER TABLE` takes an exclusive lock — it blocks every read and write on that table for its duration, which is how a "small migration" takes a production API down; interviewers ask what you check before running one on a live table
-
----
-
-- Reading a plan node's numbers — `cost=0.00..431.00 rows=1200 width=36` is startup cost, total cost, estimated rows, and average row width in bytes; interviewers paste a plan and expect you to read it aloud rather than only scan it for the word `Seq Scan`
-- Nested Loop vs Hash Join vs Merge Join — a nested loop over a large unindexed inner side is the classic slow join, a hash join means the planner expects enough rows to be worth building a hash table, and a merge join means both inputs are already sorted; interviewers ask what the join node tells you about the data volume the planner is assuming
-
----
-
-### Programmable database objects
-
-- Triggers — a function fired automatically on `INSERT`, `UPDATE` or `DELETE`, most often used for audit columns or a history table; interviewers ask why behaviour hidden in the database makes an application harder to reason about, since nothing in the Java code says it happens
-- Stored procedures and functions — worth recognising because legacy consultancy codebases are full of them; interviewers ask whether business logic belongs in the database or in the Java service layer and expect the testability, version-control and portability argument rather than a flat preference
+- `VARCHAR(n)` vs `TEXT` â€” both have identical storage performance in PostgreSQL; `VARCHAR(n)` documents an intended maximum length; `TEXT` is for content with no meaningful upper limit; the practical difference is intent, not performance
+- `INT` vs `SERIAL` vs `BIGSERIAL` â€” `INT` is a plain integer; `SERIAL` is an auto-incrementing integer used for primary keys; `BIGSERIAL` handles very large tables; interviewers from MySQL ask "what is the equivalent of `AUTO_INCREMENT`?"
+- `NUMERIC(p,s)` vs `FLOAT` â€” `FLOAT` is an approximation that compounds rounding errors over time; `NUMERIC(10,2)` stores exact decimals; always use `NUMERIC` for prices and financial values; interviewers ask "why would you not use `FLOAT` for money?"
+- `TIMESTAMP` vs `TIMESTAMPTZ` â€” `TIMESTAMP` stores the date and time exactly as entered, ignoring time zones; `TIMESTAMPTZ` converts to UTC on write and back to the session time zone on read; always use `TIMESTAMPTZ` for `created_at` in a web application
+- `BOOLEAN` â€” stores true, false, or null; use SQL literals `TRUE` and `FALSE` because PostgreSQL does
+  not generally treat an unquoted integer `1` as a boolean
 
 ---
 
 ### PostgreSQL specifics
 
-- `::` cast operator — `created_at::date` converts a timestamp to a date; `'5'::int` converts a string to an integer; shorter PostgreSQL syntax for standard SQL `CAST(value AS type)`; used constantly in `WHERE` and `JOIN` conditions involving dates
-- `ILIKE` — case-insensitive pattern matching; not available in MySQL or SQL Server; interviewers switching from MySQL ask why `LIKE` is not finding results they expect
-- `DISTINCT ON` — keeps one row per group while returning multiple columns; not available in standard SQL; the column in `DISTINCT ON (...)` must be leftmost in `ORDER BY`
-- `RETURNING` — `INSERT`, `UPDATE`, and `DELETE` can return the affected rows in a single statement; avoids a second `SELECT`; not standard SQL
-- Single quotes vs double quotes — single quotes delimit string literals and double quotes delimit identifiers, so `WHERE name = "Victor"` fails with `column "Victor" does not exist`; interviewers use exactly that error to test the distinction
-- Unquoted identifiers are folded to lowercase — a column created as `createdAt` without quotes becomes `createdat`, while one created as `"createdAt"` must be quoted forever after; interviewers ask why a column generated by a tool only works when quoted
-- `DATE_TRUNC('month', date)` — truncates a timestamp to the start of the month; used to `GROUP BY` month in reports; `DATE_TRUNC('year', ...)` works the same way for yearly grouping
-- `NOW()` vs `CURRENT_DATE` — `NOW()` returns the current timestamp including time; `CURRENT_DATE` returns today's date with no time; used in date range filters and default column values
-- `INTERVAL` — `NOW() - INTERVAL '30 days'` filters recent data; used in `WHERE` clauses and CTEs for relative date ranges; `INTERVAL '1 month'` works with months and years
-- `STRING_AGG(column, separator)` — concatenates values from multiple rows into one string per group, e.g. `STRING_AGG(name, ', ')` to list all project names for a user on one line; PostgreSQL-specific; interviewers ask how you would turn grouped rows into a single comma-separated column for a report
+- `::` cast operator â€” `created_at::date` converts a timestamp to a date; `'5'::int` converts a string to an integer; shorter PostgreSQL syntax for standard SQL `CAST(value AS type)`; used constantly in `WHERE` and `JOIN` conditions involving dates
+- `ILIKE` â€” case-insensitive pattern matching; not available in MySQL or SQL Server; interviewers switching from MySQL ask why `LIKE` is not finding results they expect
+- `DISTINCT ON` â€” keeps one row per group while returning multiple columns; not available in standard SQL; the column in `DISTINCT ON (...)` must be leftmost in `ORDER BY`
+- `RETURNING` â€” `INSERT`, `UPDATE`, and `DELETE` can return the affected rows in a single statement; avoids a second `SELECT`; not standard SQL
+- `DATE_TRUNC('month', date)` â€” truncates a timestamp to the start of the month; used to `GROUP BY` month in reports; `DATE_TRUNC('year', ...)` works the same way for yearly grouping
+- `NOW()` vs `CURRENT_DATE` â€” `NOW()` returns the current timestamp including time; `CURRENT_DATE` returns today's date with no time; used in date range filters and default column values
+- `INTERVAL` â€” `NOW() - INTERVAL '30 days'` filters recent data; used in `WHERE` clauses and CTEs for relative date ranges; `INTERVAL '1 month'` works with months and years
+- `STRING_AGG(column, separator)` â€” concatenates values from multiple rows into one string per group, e.g. `STRING_AGG(name, ', ')` to list all project names for a user on one line; PostgreSQL-specific; interviewers ask how you would turn grouped rows into a single comma-separated column for a report
 
 ---
 
-### Writing a report query
+### Performance basics
 
-- Mapping a requirement onto the clause skeleton — turning "per project, total approved hours this month, only projects above 40h" into `FROM/JOIN → WHERE → GROUP BY → HAVING → ORDER BY`; this decomposition, not the syntax, is what a live-coding exercise actually measures
-- Choosing the driving table — starting `FROM` the entity the report is "per", so a `LEFT JOIN` can preserve the groups with zero rows; the reason a report silently drops the projects nobody logged time against
-- Zero-row groups in a report — `COUNT` returns `0` but `SUM` returns `NULL` for an empty group, so the cell renders blank; wrap it as `COALESCE(SUM(hours), 0)`; interviewers show the blank cells and ask you to explain them
-- Aliasing output columns — `AS total_hours`; the deliverable is read by a human and a reviewer notices an unnamed `sum` column
-- Formatting in the query vs in the application — `ROUND(SUM(hours)::numeric, 2)` versus letting Angular format the value; interviewers ask where presentation belongs and expect the layer argument
+- What an index is â€” a sorted data structure that speeds up reads on a column at the cost of slower writes; primary keys and `UNIQUE` columns are indexed automatically; foreign key columns used in JOINs benefit most from a manual index
+- When to add an index â€” columns frequently used in `WHERE`, `JOIN ON`, or `ORDER BY` on large tables; when you see a `Seq Scan` on a large table in `EXPLAIN` output
+- When NOT to index â€” small tables, columns with very few distinct values (a `status` column with three options gains little), and columns that are updated very frequently
+- `EXPLAIN` â€” shows the query plan and whether an index is being used; `Seq Scan` means every row is read; `Index Scan` means the index was used; run this when a query is slow before adding an index
 
 ---
 
@@ -3375,258 +1241,82 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ### Core workflow
 
-- `init`, `clone` — `init` starts a repo from scratch locally; `clone` downloads an existing remote repo; interviewers ask: "how would you start working on this project on a new machine?" (answer: clone, not init)
-- The three areas — working directory, staging area, repository; interviewers ask "what is the staging area for?" — it exists so you can commit part of your changes, not everything at once
-- `add`, `commit` — staging specific files and saving a snapshot; a common question is "why do you stage before committing?" and "what is the difference between `git add .` and `git add filename`?"
-- `git add -p` (patch staging) — stages selected hunks within one file, so a working tree where two changes got mixed together still produces two atomic commits; the standard answer to "you wrote two unrelated changes in the same file, how do you commit them separately?"
-- `push`, `pull`, `fetch` — `push` sends commits to the remote; `pull` downloads and merges; `fetch` downloads without merging; interviewers ask the pull vs fetch difference every time
-- `status`, `log --oneline`, `diff --staged` — essential inspection commands; `diff --staged` shows what will go into the next commit (not what is just modified); `log --oneline` is the standard compact view
-- `git log` flags (`--graph`, `--all`, `--author`, `filename`) — reading the full history of a project; interviewers may show a branched log and ask to explain it; `--graph --all` makes the branch structure visible
-- `git show <commit>` — displays the full diff of one specific commit; the fast way to answer "what exactly did this commit change?" without scrolling through `git log -p`; used constantly when explaining your own commit history in a technical interview
-- `user.email` set globally vs per repository — the cause of commits landing in a client's repo under the wrong identity, which matters at a consultancy where your commits are attributed across several accounts; `git log --format='%an %ae'` is how you notice
+- `init`, `clone` â€” `init` starts a repo from scratch locally; `clone` downloads an existing remote repo; interviewers ask: "how would you start working on this project on a new machine?" (answer: clone, not init)
+- The three areas â€” working directory, staging area, repository; interviewers ask "what is the staging area for?" â€” it exists so you can commit part of your changes, not everything at once
+- `add`, `commit` â€” staging specific files and saving a snapshot; a common question is "why do you stage before committing?" and "what is the difference between `git add .` and `git add filename`?"
+- `push`, `pull`, `fetch` â€” `push` sends commits to the remote; `pull` downloads and merges; `fetch` downloads without merging; interviewers ask the pull vs fetch difference every time
+- `status`, `log --oneline`, `diff --staged` â€” essential inspection commands; `diff --staged` shows what will go into the next commit (not what is just modified); `log --oneline` is the standard compact view
+- `git log` flags (`--graph`, `--all`, `--author`, `filename`) â€” reading the full history of a project; interviewers may show a branched log and ask to explain it; `--graph --all` makes the branch structure visible
+- `git show <commit>` â€” displays the full diff of one specific commit; the fast way to answer "what exactly did this commit change?" without scrolling through `git log -p`; used constantly when explaining your own commit history in a technical interview
+- `git blame` â€” shows who last modified each line of a file and in which commit; used to find context for unfamiliar code; interviewers ask "how do you find out when this line was added and by whom?"
 
-- `git clean -fd` — removes *untracked* files, which `reset --hard` never touches because it only restores what Git is already tracking; interviewers say "I discarded everything and the new files are still there" and expect you to know these are two different commands for two different sets of files
-- HTTPS vs SSH remotes and credential storage — a clone or push failing at a client is almost always authentication rather than Git, and the fix is an SSH key or a personal access token plus the credential helper; interviewers ask how you set up a new machine on day one
-- `git clone --depth 1` — a shallow clone downloads only the latest commit instead of years of history, which is how a CI job and a first look at a 4 GB client repo stay fast; interviewers ask why a pipeline clones differently from a developer
+### Branching and HEAD
 
----
-
-### The Git model — commits, branches, and HEAD
-
-- A commit is an immutable snapshot with a parent pointer — it stores the whole tree state plus a link back to the commit it came from, and history is that chain of backward links; interviewers ask you to draw the history after three commits and expect arrows pointing at the parent, not forward
-- The commit ID is a hash of its content — the SHA is computed over the snapshot, message, author *and parent ID*, which is the single fact that explains why rebase, amend and cherry-pick all produce new IDs
-- Commits are never modified — every apparent edit writes a new commit object and moves a pointer to it; interviewers ask "can you change an old commit message?" and expect "you replace the commit, you do not edit it"
-- Rewriting one commit changes every commit after it — because a commit's ID includes its parent's ID, the change cascades downstream; interviewers ask "you reworded commit 5 of 10, how many IDs changed?"
-- A branch is a movable pointer, not a container of files — it is a reference holding a single commit ID, which is why creating a branch is instant and costs nothing, and why committing simply advances that pointer
-- `HEAD` pointer — marks your current position in the history; always points to the tip of the current branch; you see it in `git log` and error messages — understanding it is required to read them correctly
-- `HEAD` names a branch, and the branch names a commit — that indirection is what detached HEAD removes; interviewers use it to check you can explain why commits made while detached belong to no branch
-- `HEAD~1`, `HEAD~2` notation — "one commit before HEAD", "two commits before HEAD"; used in `git reset HEAD~1` and `git rebase -i HEAD~3`; interviewers show a reset or rebase command and ask "what does this do?"
-- `HEAD^` vs `HEAD~` — `^n` selects the n-th *parent* and is only meaningful on a merge commit, while `~n` walks n commits back along the first parent; interviewers write `HEAD^2` and ask what it selects
-- Ancestor and descendant — B descends from A if you can walk parent links from B back to A; the definition that makes fast-forward precise, since it is possible only when the target is a descendant of the current tip
-- Detached HEAD — happens when you checkout a specific commit ID instead of a branch; new commits are not attached to any branch and can be lost; fix with `git checkout -b new-branch-name`
-- A commit can be on many branches at once — "being on a branch" means reachable by walking parents from that branch's tip, not owned by it; explains why a merged feature's commits all appear in `git log main`
-
-- Branches and tags are files under `.git/refs` — a ref is literally a forty-character SHA sitting in a text file (or collected into `packed-refs`), which is the concrete proof behind "a branch is just a pointer"; interviewers use it to find out whether the pointer model is understood or recited
-
----
-
-### Branching and merging
-
-- `branch`, `checkout`, `switch` — creating and switching branches; `switch` is the modern alternative to `checkout` for branches (Git 2.23+); interviewers may ask which you prefer and why
-- `git branch -d` vs `git branch -D` — `-d` is a safe delete (fails if the branch has unmerged changes); `-D` is a force delete; interviewers ask "what happens if you try to delete a branch that hasn't been merged?"
-- Deleting a branch does not delete its commits — it removes a pointer, and the commits survive unreferenced until garbage collection; interviewers ask "did I lose my work when I deleted that branch?"
-- Branch naming conventions — `feat/`, `fix/`, `technology/##-project-name`; tested in team process questions: "how do you organise branches in a team?"
-- A ticket ID in the branch name — `feat/PROJ-123-add-login` links the branch to the board item, which is how a consultancy keeps traceability from a client requirement down to a commit; interviewers ask why the convention exists beyond tidiness
-- `merge` — joins branches; creates a merge commit when both branches have advanced since they split; the merge commit has two parents and preserves the full history
-- Fast-forward merge vs three-way merge — fast-forward: pointer just moves forward (no divergence, no extra commit); three-way: both branches have new commits, so Git creates a merge commit with two parents; interviewers ask when each one happens
-- The merge base (common ancestor) — the most recent commit reachable from both branches; a three-way merge compares each side against it to decide what genuinely changed and what is a conflict; the concept underneath "diverged" and "unrelated histories" alike
-- `--no-ff` merge — forces a merge commit even where a fast-forward was possible, so a whole feature stays visible as one unit in the history; interviewers ask why a team would require it
-- `git cherry-pick` — applies a specific commit from another branch onto the current one; used to apply a hotfix to main without merging the whole feature branch; use sparingly — it duplicates commits and can confuse the history
-- When `cherry-pick` is legitimate — porting a single fix between release lines; anywhere else it is a smell signalling that the branching model is not doing its job
+- `HEAD` pointer â€” marks the currently checked-out commit, usually through the current branch name;
+  in detached HEAD it points directly to a commit that may not be a branch tip
+- `HEAD~1`, `HEAD~2` notation â€” "one commit before HEAD", "two commits before HEAD"; used in `git reset HEAD~1` and `git rebase -i HEAD~3`; interviewers show a reset or rebase command and ask "what does this do?"
+- Detached HEAD â€” happens when you checkout a specific commit ID instead of a branch; new commits are not attached to any branch and can be lost; fix with `git checkout -b new-branch-name`
+- `branch`, `checkout`, `switch` â€” creating and switching branches; `switch` is the modern alternative to `checkout` for branches (Git 2.23+); interviewers may ask which you prefer and why
+- `git branch -d` vs `git branch -D` â€” `-d` is a safe delete (fails if the branch has unmerged changes); `-D` is a force delete; interviewers ask "what happens if you try to delete a branch that hasn't been merged?"
+- Branch naming conventions â€” `feat/`, `fix/`, `technology/##-project-name`; tested in team process questions: "how do you organise branches in a team?"
+- `merge` â€” joins branches; creates a merge commit when both branches have advanced since they split; the merge commit has two parents and preserves the full history
+- Fast-forward merge vs three-way merge â€” fast-forward: pointer just moves forward (no divergence, no extra commit); three-way: both branches have new commits, so Git creates a merge commit with two parents; interviewers ask when each one happens
+- `git cherry-pick` â€” applies a specific commit from another branch onto the current one; used to apply a hotfix to main without merging the whole feature branch; use sparingly â€” it duplicates commits and can confuse the history
 
 ### Rebase
 
-- What `rebase` does — replays your commits on top of another branch as if you had started from there; the rebased commits get new IDs; result is a linear history with no merge commit
-- `rebase` vs `merge` — rebase gives a cleaner, linear history; merge preserves exactly when branches diverged; teams pick one convention and stick to it; interviewers ask "what does your team use and why?"
-- The golden rule of rebase — never rebase a branch that other people are working on; rebasing rewrites commit IDs — anyone who pulled those commits will have a broken history
-- `git rebase -i` (interactive rebase) — opens an editor to squash, reword, reorder, or drop commits; the standard way to clean up a messy local history before opening a PR; only safe on commits not yet pushed
-- Resolving a conflict during rebase — Git pauses on the first conflicting commit instead of stopping the whole operation; fix the file, `git add`, then `git rebase --continue` to move to the next commit, or `git rebase --abort` to cancel and return to the state before the rebase started; interviewers ask this to check you understand rebase replays commits one at a time, unlike a merge conflict which happens once
-- Noticing a bad rebase one command too late — once the rebase has finished, `--abort` is no longer available and the way back is `git reset --hard ORIG_HEAD`; interviewers ask what you do when you realise the mistake after the operation completed
-- `git rebase --skip` — drops the commit currently being replayed, which is what you need when a conflict resolution leaves that commit empty; the third exit juniors never name beside continue and abort
-- Which side is "ours" during a rebase — inverted compared with a merge, because the upstream branch is checked out and your commits are replayed on top of it; interviewers use it to test whether you know what rebase mechanically does
-- Refreshing a stale branch: merge `main` in vs rebase onto `main` — merging is safe while a PR is open but leaves noise commits, rebasing keeps the branch clean but rewrites IDs; interviewers ask which you do and why the answer changes once review has started
-- Rebasing a branch with an open PR — rewriting the IDs detaches existing review comments from their commits and forces a re-read; the real cost behind an "always rebase" convention
-- `git merge --abort` vs `git rebase --abort` — both cancel the operation in progress and restore the pre-operation state; the names mirror each other but apply to different commands; interviewers ask "what do you do if a merge or rebase goes wrong halfway through?" expecting you to know the matching abort command exists for each
-
-### Merge conflicts
-
-- What causes a conflict — two branches modify the same line of the same file; Git stops the merge and asks you to decide which version to keep; conflicts are not errors, they are Git asking for a human decision
-- Conflict markers (`<<<<`, `====`, `>>>>`) — `<<<< HEAD` is your version; `>>>> branch-name` is the incoming version; `====` is the separator; you delete all three markers after choosing the final version
-- Git treats a conflict as resolved the moment the path is staged — it never checks that you removed the markers, which is why `<<<<<<<` reaches a codebase often enough to be a standard review catch
-- `git checkout --ours` / `--theirs` — takes one entire side of a conflicted file; the shortcut that silently discards everything the other side did, and the reason reviewers distrust a merge resolved with it
-- A wrongly resolved conflict still compiles — keeping both sides or dropping the incoming change produces valid code with duplicated or missing logic; interviewers ask how you know your resolution was actually correct
-- Semantic conflict — both branches merge cleanly and the result is still wrong, because one side renamed a method or changed a contract the other side relies on; the proof that "no conflict" never means "correct merge"
-- Resolving a conflict on someone else's branch — the resolution is committed as your work in the merge commit, so `git blame` attributes the reconciled lines to whoever resolved them rather than to either original author; interviewers ask who shows up in blame after a conflicted merge
-- `git merge --abort` — cancels an in-progress merge and returns to the state before you ran `git merge`; use when the conflicts are too complex to resolve right now
-- Previewing what a merge will bring in — `git log --oneline HEAD..<branch>` lists the commits that would arrive before you run the merge; the antidote to "the merge pulled in forty commits I did not expect"
-- Avoiding conflicts — pull from the target branch frequently; keep feature branches short-lived; communicate with teammates about which files each person is touching
-
-- Conflicts in generated files (`package-lock.json`, `pom.xml`, a built asset) — the resolution is to take one side and regenerate, never to hand-merge the markers, because a hand-stitched lockfile describes a dependency tree that exists on nobody's machine; interviewers ask because it is the conflict a junior meets weekly
-- Line-ending conflicts between Windows and Linux (`core.autocrlf`, `.gitattributes`) — a whole file shows as modified or conflicted although nobody changed a line of it, because CRLF and LF differ on every line; developing on Windows against a Linux CI is exactly the setup that produces it, and interviewers at consultancies with mixed teams ask what causes a full-file diff
-
----
-
-### Undoing changes
-
-- `git restore` — discards changes in the working directory without touching history; `--staged` unstages a file; the safe everyday tool for "I changed this but I don't want to keep it"
-- `git reset --soft` vs `--mixed` vs `--hard` — soft: undo commit, keep changes staged; mixed: undo commit, keep changes unstaged; hard: undo commit and discard changes permanently; `--hard` causes data loss
-- `reset` in graph terms — it moves the branch pointer to another commit and leaves the abandoned commits untouched but unreferenced; the difference between destroying history and losing the path back to it
-- The reset rule — only use `git reset` on commits that have NOT been pushed to GitHub; if the commit is already on the remote, use `git revert` instead; breaking this rule causes problems for everyone who pulled
-- `git revert` — creates a new commit that undoes a previous one; the original commit stays visible in the history; safe on shared branches because it does not rewrite history
-- `git reset` vs `git revert` — reset rewrites history (local only, before push); revert creates a new commit (safe on shared branches, after push); interviewers ask this pair specifically and consistently
-- `git revert -m 1` on a merge commit — a merge has two parents, so Git cannot infer which side to keep; `-m 1` means "keep the branch I merged into"; the question that follows "you merged a broken PR into main, now what?"
-- The reverted-merge trap — after reverting a merge, merging the same branch again brings nothing back, because those commits are still ancestors of HEAD; you have to revert the revert
-- `ORIG_HEAD` — the position HEAD held before a merge, rebase or reset; `git reset --hard ORIG_HEAD` is the one-step undo of a merge that pulled in the wrong thing
-- `git reflog` — records every position HEAD has been at, including after `git reset --hard`; keeps data for 90 days; the recovery tool when you think you lost commits with a hard reset
+- What `rebase` does â€” replays your commits on top of another branch as if you had started from there; the rebased commits get new IDs; result is a linear history with no merge commit
+- `rebase` vs `merge` â€” rebase gives a cleaner, linear history; merge preserves exactly when branches diverged; teams pick one convention and stick to it; interviewers ask "what does your team use and why?"
+- The golden rule of rebase â€” never rebase a branch that other people are working on; rebasing rewrites commit IDs â€” anyone who pulled those commits will have a broken history
+- `git rebase -i` (interactive rebase) â€” opens an editor to squash, reword, reorder, or drop commits; the standard way to clean up a messy local history before opening a PR; only safe on commits not yet pushed
+- Resolving a conflict during rebase â€” Git pauses on the first conflicting commit instead of stopping the whole operation; fix the file, `git add`, then `git rebase --continue` to move to the next commit, or `git rebase --abort` to cancel and return to the state before the rebase started; interviewers ask this to check you understand rebase replays commits one at a time, unlike a merge conflict which happens once
+- `git merge --abort` vs `git rebase --abort` â€” both cancel the operation in progress and restore the pre-operation state; the names mirror each other but apply to different commands; interviewers ask "what do you do if a merge or rebase goes wrong halfway through?" expecting you to know the matching abort command exists for each
 
 ### Remote and collaboration
 
-- `remote`, `origin` — `origin` is the default alias for the remote URL; every `push` and `pull` uses it; interviewers ask "what is origin?" — the answer is an alias for the remote URL, not a branch name
-- `origin/main` is a remote-tracking pointer — a *local*, read-only reference recording where the remote's branch was at your last fetch; interviewers ask "what is `origin/main`?" and reject "the branch on GitHub"
-- Remote-tracking refs are only as fresh as your last fetch — nothing updates them in the background, so `git status` can confidently report "up to date" against a week-old snapshot; the reason `fetch` is the first diagnostic step
-- What `fetch` changes — it downloads new objects and moves your remote-tracking pointers, never touching your branch or working directory; that is precisely why it is the safe half of `pull`
-- `git pull` = `fetch` + `merge` by default — the reason a merge commit appears on a junior's feature branch without them ever typing `git merge`; interviewers ask where that "Merge branch 'main' of…" commit came from
-- `git pull --rebase` (and the `pull.rebase` config) — replays your local commits on top of the fetched ones instead of merging, which is the standard team convention and the fix for a history full of sync-merge noise
-- `git push -u` (upstream tracking) — `-u` links your local branch to the remote branch; after setting it once, `git push` alone works; interviewers ask "what does the `-u` flag do?"
-- `git fetch --prune` — deletes remote-tracking refs for branches that no longer exist on the server; explains why `git branch -r` keeps listing branches everyone else deleted months ago
-- Starting from a colleague's remote branch — `git switch --track origin/feature` creates a local branch tracking theirs; asked when they check whether you can join a feature already in flight
+- `remote`, `origin` â€” `origin` is the default alias for the remote URL; every `push` and `pull` uses it; interviewers ask "what is origin?" â€” the answer is an alias for the remote URL, not a branch name
+- `git push -u` (upstream tracking) â€” `-u` links your local branch to the remote branch; after setting it once, `git push` alone works; interviewers ask "what does the `-u` flag do?"
+- Pull requests â€” a request to merge a branch with a description of what changed and why; the place for code review before changes reach main; the merge does not happen automatically
+- PR description format â€” `## Changes` lists what changed; `## Why` explains the main decision; must make sense to someone who has not read the code; this is documentation that lives permanently with the commit history
+- PR merge strategies â€” squash (all PR commits become one), merge commit (full PR history preserved), rebase merge (replays commits linearly, no merge commit); interviewers ask "what merge strategy does your team use and why?"
+- Code review â€” checking that the code does what the PR says, handles edge cases, is readable, has no obvious security issues, and includes tests; even in solo projects, reading your own diff before merging catches bugs
 
-- Fork vs clone — a fork is a server-side copy you own and can push to, which is what you use when you have no write access to the original; interviewers ask it to check you understand why open-source and external-contractor workflows differ from an internal team branching inside one repository
-- Git submodules — a pinned reference to another repository nested inside this one, which is why a fresh clone leaves the folder empty until it is initialised; a junior is expected to recognise one in a legacy client repo and know why the build failed, not to design with them
+### Merge conflicts
 
----
-
-### Pull requests and code review
-
-- Pull requests — a request to merge a branch with a description of what changed and why; the place for code review before changes reach main; the merge does not happen automatically
-- PR description format — `## Changes` lists what changed; `## Why` explains the main decision; must make sense to someone who has not read the code; this is documentation that lives permanently with the commit history
-- PR merge strategies — squash (all PR commits become one), merge commit (full PR history preserved), rebase merge (replays commits linearly, no merge commit); interviewers ask "what merge strategy does your team use and why?"
-- What squashing costs — the PR collapses into one revertible commit, but the reasoning trail disappears and `git blame` attributes every line of the feature to a single commit and author; the tradeoff behind choosing a strategy
-- Code review — checking that the code does what the PR says, handles edge cases, is readable, has no obvious security issues, and includes tests; even in solo projects, reading your own diff before merging catches bugs
-- PR size decides whether review happens at all — a small diff gets read, a two-thousand-line diff gets approved unread, so review quality collapses with size; interviewers ask what you do with a huge PR and expect "split it", not "review it anyway"
-- Self-review before requesting review — reading your own `git diff main...HEAD` first strips debug statements, commented-out blocks and stray files; interviewers probe this when a junior's PR contains a leftover `console.log`
-- Review comment vs blocking objection — a suggestion can be discussed or declined while a blocking objection must be resolved before the merge button works; the concept is who owns the decision, and interviewers ask how you respond to feedback you disagree with
-- A PR that silently contains another branch's commits — caused by branching off a feature branch instead of `main`; you spot it because the diff shows files you never touched, and you fix it by rebasing onto the right base
-- Draft pull request — opens the PR for visibility while keeping the merge blocked, which is how work in progress becomes reviewable without becoming mergeable
-
-### Commit quality
-
-- Conventional Commits format — `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `style:`, `perf:`; the standard in professional teams; interviewers ask "how do you write a commit message?" — they expect this format, not "fixed bug"
-- Conventional Commits as machine input — the prefix is what changelog and version-bump tooling parses, which is the answer to "why this exact format and not free text?"
-- Atomic commits — one logical change per commit; interviewers ask "what does atomic mean?" — one commit = one thing that can be reverted independently; the opposite is a commit that mixes five unrelated changes
-- Good commit message — present tense, explains WHY not what, short; the history must be readable without the code; interviewers ask "show me a commit from your project and explain why you wrote it that way"
-- Subject line vs body — the short subject says what changed, and the body after a blank line carries the why and the alternatives rejected; interviewers ask where the reasoning goes when a junior puts everything in a single `-m`
-- Spotting a mixed-concern commit from its file list — a commit touching a controller, a `.gitignore` and a stylesheet is almost never one logical change, and the file list gives it away faster than the message does
-- `fixup!` and "fix typo" commits — commits that only patch an earlier commit on the same branch should be squashed before review; interviewers ask what you do with a PR whose eleven commits include six saying "fix"
-- Why granular commits still matter under a squash convention — commits are written for the reviewer, not only for the permanent history, and they are what makes a regression traceable to one small change later
-- A ticket ID in the commit message — the string the board matches on to link the commit to its story and move the card; the second half of the traceability convention interviewers probe at consultancies
-
-- Git hooks and `--no-verify` — `pre-commit` and `commit-msg` hooks run linters and enforce the Conventional Commits format on your machine before the commit exists, and `--no-verify` skips them; interviewers ask what rejected your commit and whether skipping it is ever acceptable (only when the hook itself is broken, never to dodge the check)
-
----
-
-### `.gitignore` and files that must never be committed
-
-- What it does — tells Git to never track specific files; files listed here never appear in `git status`, never get staged, and never get committed
-- Common entries: `node_modules/`, `target/`, `.env`, `.angular/`, `*.class` — what each ignores and why it must not be committed; interviewers ask "why is `.env` in `.gitignore`?" (security — it contains API keys and secrets that must never be pushed)
-- Commit inputs, ignore outputs — `package-lock.json` and `pom.xml` are tracked so every machine resolves identical dependency versions, while `dist/` and `target/` are generated and excluded; juniors regularly get this rule backwards
-- Build artefacts and IDE folders in a diff — `target/`, `dist/`, `node_modules/`, `.idea/`, `.vscode/` produce enormous, permanently conflicting diffs; spotting them in a PR file list is a standard reviewer catch
-- Project `.gitignore` vs a global gitignore — project build output belongs in the committed file that the whole team shares, while editor and OS noise (`.idea/`, `.DS_Store`) belongs in your personal global ignore rather than in everyone's repo
-- `git rm --cached` — stops tracking a file that was already committed by mistake; the file stays on disk but Git stops watching it; the correct command after you realise `.env` was committed before `.gitignore` was created
-- Creating `.gitignore` before the first commit — if you add a file to `.gitignore` after it was already committed, Git keeps tracking it; you must use `git rm --cached` first to stop tracking it
-- Purging a file from the entire history — removing a committed secret for real means rewriting every commit that contains it (`git filter-repo`, BFG) and forcing every collaborator to re-clone; a junior is expected to know it is possible, disruptive, and never the first response
-
-### Reading Git's output when something fails
-
-- `git status` as the primary diagnostic — its output names the state the repo is in (merging, rebasing, detached, diverged) and prints the commands out of it; interviewers describe a broken repo and listen for whether you read the tool before reaching for a memorised command
-- `! [rejected] ... (non-fast-forward)` on push — the remote branch holds commits yours does not contain, so moving its pointer to yours would drop them; the most common junior push failure, and the moment interviewers check you integrate rather than force
-- "Your branch and 'origin/x' have diverged, and have N and M different commits each" — both histories advanced past the shared ancestor; interviewers ask for the three legal exits (merge, rebase, or reset to the remote) and what each does to your N commits
-- `error: Your local changes to <file> would be overwritten by merge` — Git aborts before touching anything because the operation would destroy uncommitted work; the three safe exits are commit, stash, or discard
-- `You have unmerged paths` — the repo is mid-merge with conflicted files in the index, and nothing else can be committed until every conflicted path is staged
-- `fatal: refusing to merge unrelated histories` — the two branches share no common ancestor, so there is no merge base to compare against; typically a local `init` repo pushed at a remote that was created with its own README
-- `fatal: The current branch has no upstream branch` — a local branch with no tracking ref, which is why `git status` cannot report ahead or behind until `push -u` creates it
-- `Everything up-to-date` when you expected commits to go — you never committed, or you are on a different branch than you think; a pressure question that exposes a fuzzy grasp of branch versus working tree
-
-### Recovering from a bad state
-
-- Commit reachability — a commit survives as long as some ref (branch, tag, HEAD, or the reflog) can reach it; nothing is deleted by `reset`, only unreferenced, which is the mechanism behind every reflog recovery answer
-- Garbage collection and the reflog expiry window — an unreachable commit is pruned once its reflog entry expires (90 days by default), which is why "the reflog will save you" carries a deadline rather than a guarantee
-- What the reflog cannot recover — work that was never committed, since unstaged edits killed by `restore` or a `reset --hard` on a dirty tree never became objects at all; interviewers use it to separate real understanding from "reflog fixes everything"
-- Commits made in detached HEAD are unreferenced, not lost — you find them in `git reflog` and rescue them with `git branch <name> <sha>`; interviewers use this to test the pointer model, because the instinctive junior belief is that the work is gone
-- Restoring a deleted branch — `git reflog` gives you the old tip's SHA and `git branch <name> <sha>` re-creates the pointer at it; interviewers want the two concrete commands, not "the commits are still there somewhere"
-- A commit made on the wrong branch — point the correct branch at the current commit, then reset the wrong branch back; interviewers ask it because the naive answer (copy the files somewhere) reveals no model of branches as pointers
-- Commits already pushed to the wrong branch — reset is no longer available because the branch is shared, so the fix becomes a revert on the wrong branch plus a cherry-pick onto the right one
-- `git stash pop` on a conflict — the changes are applied with markers and the stash entry is kept, so nothing is lost; interviewers ask whether a failed pop deletes the stash
-- Recovering a dropped stash — stashes are commits too, so a dropped or popped one stays reachable through the stash reflog until garbage collection
-
-### History rewriting and its blast radius
-
-- `git commit --amend` — replaces the last commit with a new object carrying a new SHA; safe only before pushing, and the reason the next push is rejected after amending something already on the remote
-- `git push --force` vs `--force-with-lease` — plain force moves the remote pointer regardless, erasing commits a colleague pushed since your last fetch; `--force-with-lease` refuses if the remote moved, which is why it is the one teams allow
-- When a force-push is legitimate — only on a branch nobody else builds on, such as your own PR branch after an interactive rebase; never on `main` or any shared branch
-- Recovering a colleague's commits erased by a force-push — the machine that had them still holds the old tip in its reflog, so the branch can be re-pointed and pushed back; the follow-up to "have you ever broken a repo?"
-- Wrong author identity on a commit — the name and email are baked into the commit object, so correcting them rewrites the commit and changes its ID; `git log --format='%an %ae'` is how you notice
-- What every collaborator must do after a shared branch is rewritten — their local branch still points at the old tip, so a plain `pull` merges the discarded commits straight back in; the fix is `git reset --hard origin/<branch>`, and interviewers ask why "just pull" makes the situation worse
-
-### Branch protection and what reaches `main`
-
-- Branch protection rules — repository settings that block direct pushes, force-pushes and deletion on `main`; interviewers ask what actually stops someone pushing straight to main, and the answer is a server-side rule, not team goodwill
-- Why `main` must always be deployable — it is the branch a pipeline or a client deploys from, so anything half-finished on it blocks the whole team; the reason work in progress lives on branches at all
-- Required pull request review — a protection setting that keeps the merge button disabled until the approvals exist; interviewers ask what enforces code review and expect "the repository, not the process document"
-- Required status checks — the build and tests must pass before merging is possible, which is the mechanism that turns "tests pass" from a suggestion into a gate
-- "Branch is out of date with base" — a protection option demanding your branch include the latest `main` before merging, which is why you refresh a branch even when nothing conflicts
-- Force-push protection — protected branches reject a rewrite outright, which is what makes the golden rule of rebase enforceable rather than merely agreed
-- `CODEOWNERS` — a file mapping paths to the people whose review is mandatory for changes there; also how you discover who owns an area of an unfamiliar codebase
-- Delete branch on merge — merged branches are removed automatically so the remote reflects live work only; interviewers probe how a shared repo avoids accumulating dozens of dead branches
-
-- What actually triggers a pipeline — a push to a branch, opening or updating a pull request, or pushing a tag, each typically running a different job; interviewers ask why the PR build and the `main` build are not the same run and expect the event distinction
-- Green locally, red in CI — CI starts from a clean clone containing only what is committed, so the usual cause is a file that is untracked or ignored on your machine and therefore absent from the build; interviewers use it as the pressure question that tests whether you know what your repository actually contains
-
----
-
-### Branching models and team conventions
-
-- Git Flow — `main` plus `develop`, `feature/`, `release/` and `hotfix/` branches; the model most Spanish consultancies still run in legacy projects, so interviewers ask what `develop` is for and why newer teams dropped it
-- GitHub Flow — one long-lived `main` plus short-lived feature branches merged through pull requests; the model behind Victor's own repositories, and he must be able to name it as the one he uses
-- Trunk-based development — everyone integrates small changes into `main` many times a day behind very short-lived branches and feature flags; interviewers expect a named model, not "we make branches"
-- Choosing a model by release cadence — continuous deployment favours trunk-based or GitHub Flow while scheduled versioned releases justify Git Flow's overhead; interviewers probe whether you picked a model for a reason or by habit
-- Branch per feature vs branch per developer — per-feature keeps the branch's scope reviewable and its revert atomic, while per-developer mixes unrelated work into one PR
-- Short-lived branches — the longer a branch lives the further it diverges and the more expensive the eventual conflicts, which is the concrete reason behind "integrate often" rather than a slogan
-- What a branching model costs as the team grows — more parallel long-lived branches means far more conflict surface and integration debt; asked as "what would you change if the team went from five to fifty?"
-- The hotfix path to production — an urgent fix branches from the released state rather than the feature line, and is merged back into both `main` and the development line so the next release does not silently drop it
-
-### Releases and tags
-
-- `git tag` — a permanent name pinned to one commit, marking exactly what was released; the answer to "how does the team know which commit is in production right now?"
-- Lightweight vs annotated tags — an annotated tag carries author, date and message and is what release tooling expects, while a lightweight one is just a name; the confusable pair for tags
-- Unlike a branch, a tag does not move — both are pointers to a commit, but a tag is meant to stay fixed while a branch advances with every commit
-- `git log <tag>..<tag>` — lists every commit between two releases, which is how release notes and "what shipped this sprint" are produced from the repository itself
-- Release branch vs a tag on `main` — a tag suffices while only one version is live, but a release branch becomes necessary once you must patch an old version while `main` has moved on
-- `git describe` — names the current commit relative to the nearest tag (`v1.3.0-14-gabc1234`), telling you how far a build has drifted from a release
-
-### Reading a history you did not write
-
-- `git log --follow <file>` — keeps tracing a file across renames, which plain `git log <file>` stops at; Git stores no rename, it infers one from content similarity, and interviewers probe this the moment you claim you can read a legacy repo
-- `git log -S "text"` (the pickaxe) — finds the commits where a string appeared or disappeared; the way to locate when a constant or config key was introduced when it no longer exists in HEAD
-- `git log -S` vs `-G` — `-S` reports commits that changed the number of occurrences, `-G` matches any diff line touching the pattern; a confusable pair that shows whether you actually search history or just grep the working tree
-- `git log -L :function:file` — shows the evolution of a single function rather than the whole file; the answer to reviewing one method's history inside a two-thousand-line class
-- `git log --no-merges` and `--merges` — separates real work from integration commits, since the default log in a merge-heavy repo is unreadable
-- `git log --first-parent` — follows only the mainline so each merged PR appears as a single entry; the concept that lets you answer "what landed on main last sprint"
-- `git blame` — shows who last modified each line of a file and in which commit; used to find context for unfamiliar code; interviewers ask "how do you find out when this line was added and by whom?"
-- `git blame -w` — ignores whitespace-only changes, so a re-indent or a bracket move stops rewriting the blame of every line it touched
-- `git blame --ignore-rev <sha>` (and `blame.ignoreRevsFile`) — skips a known reformatting commit so blame reports the last meaningful author instead of whoever ran the formatter; the follow-up interviewers add straight after the basic blame question
-- `git show` on a merge commit prints no diff by default — a merge is compared against two parents at once, so Git needs to be asked for a combined diff; the gotcha that reveals whether you understand parents
-- `git branch --contains <commit>` — tells you which branches already include a given commit, which is exactly how you verify that a hotfix reached production
-
-- `git bisect` — a binary search over the history that pins the exact commit introducing a regression in a handful of steps instead of two hundred; interviewers ask "a bug appeared somewhere in the last 200 commits, how do you find it?" and expect the tool by name, plus the observation that it only works well because the commits are atomic
-
----
-
-### Comparing points in history
-
-- Two-dot `A..B` — everything reachable from B but not from A, which is what B added since they diverged
-- Three-dot `A...B` in `git diff` — compares against the merge base rather than against A's current tip, so it shows only your branch's own changes; the exact confusion behind "why does my PR show files I never touched?"
-- `git diff main..feature` (two dots) on a stale branch — it also reports `main`'s newer commits, inverted, which is why the two-dot diff of a branch is almost never the thing you meant to review
-- `git diff <tag>..<tag>` — what a release actually contained; the standard answer when a client asks what went out on Friday
-- `git log -p <file>` vs `git show <commit>` — the full patch history of one file versus the complete diff of one commit; interviewers ask which you reach for when blame points at a huge refactor
-- Reading `git log --graph --all` — telling which vertical line is which branch, where a branch forked and where it merged back; interviewers put a graph on screen and ask you to narrate it
+- What causes a conflict â€” two branches modify the same line of the same file; Git stops the merge and asks you to decide which version to keep; conflicts are not errors, they are Git asking for a human decision
+- Conflict markers (`<<<<`, `====`, `>>>>`) â€” `<<<< HEAD` is your version; `>>>> branch-name` is the incoming version; `====` is the separator; you delete all three markers after choosing the final version
+- `git merge --abort` â€” cancels an in-progress merge and returns to the state before you ran `git merge`; use when the conflicts are too complex to resolve right now
+- Avoiding conflicts â€” pull from the target branch frequently; keep feature branches short-lived; communicate with teammates about which files each person is touching
 
 ### Stash
 
-- `git stash`, `git stash pop` — saves uncommitted changes to a temporary stack so you can switch branches without committing unfinished work; `pop` restores and removes the stash from the list
-- `git stash apply` vs `git stash pop` — `apply` restores the stash but keeps it in the list; `pop` restores and deletes it; interviewers ask the difference when you say you use stash regularly
-- `git stash list` — shows all saved stashes with an index and name; important when you have multiple stashes and need to restore a specific one with `git stash pop stash@{1}`
-- `git stash` skips untracked files by default — the "my new file did not come back" case, fixed with `-u`; an apparent data loss that is really a misunderstanding of what stash captures
+- `git stash`, `git stash pop` â€” saves uncommitted changes to a temporary stack so you can switch branches without committing unfinished work; `pop` restores and removes the stash from the list
+- `git stash apply` vs `git stash pop` â€” `apply` restores the stash but keeps it in the list; `pop` restores and deletes it; interviewers ask the difference when you say you use stash regularly
+- `git stash list` â€” shows all saved stashes with an index and name; important when you have multiple stashes and need to restore a specific one with `git stash pop stash@{1}`
+
+### Undoing changes
+
+- `git restore` â€” discards changes in the working directory without touching history; `--staged` unstages a file; the safe everyday tool for "I changed this but I don't want to keep it"
+- `git reset --soft` vs `--mixed` vs `--hard` â€” soft: undo commit, keep changes staged; mixed: undo commit, keep changes unstaged; hard: undo commit and discard changes permanently; `--hard` causes data loss
+- The reset rule â€” only use `git reset` on commits that have NOT been pushed to GitHub; if the commit is already on the remote, use `git revert` instead; breaking this rule causes problems for everyone who pulled
+- `git revert` â€” creates a new commit that undoes a previous one; the original commit stays visible in the history; safe on shared branches because it does not rewrite history
+- `git reset` vs `git revert` â€” reset rewrites history (local only, before push); revert creates a new commit (safe on shared branches, after push); interviewers ask this pair specifically and consistently
+- `git reflog` â€” records recent local ref movements and can recover commits after a reset; retention
+  is configurable and unreachable entries commonly expire sooner than reachable ones, so it is a
+  recovery opportunity rather than a 90-day guarantee
+
+### .gitignore
+
+- What it does â€” tells Git to never track specific files; files listed here never appear in `git status`, never get staged, and never get committed
+- Common entries: `node_modules/`, `target/`, `.env`, `.angular/`, `*.class` â€” what each ignores and why it must not be committed; interviewers ask "why is `.env` in `.gitignore`?" (security â€” it contains API keys and secrets that must never be pushed)
+- `git rm --cached` â€” stops tracking a file that was already committed by mistake; the file stays on disk but Git stops watching it; the correct command after you realise `.env` was committed before `.gitignore` was created
+- Creating `.gitignore` before the first commit â€” if you add a file to `.gitignore` after it was already committed, Git keeps tracking it; you must use `git rm --cached` first to stop tracking it
+
+### Commit quality
+
+- Conventional Commits format â€” `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `style:`, `perf:`; the standard in professional teams; interviewers ask "how do you write a commit message?" â€” they expect this format, not "fixed bug"
+- Atomic commits â€” one logical change per commit; interviewers ask "what does atomic mean?" â€” one commit = one thing that can be reverted independently; the opposite is a commit that mixes five unrelated changes
+- Good commit message â€” present tense, explains WHY not what, short; the history must be readable without the code; interviewers ask "show me a commit from your project and explain why you wrote it that way"
 
 ---
 
@@ -3634,281 +1324,115 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 Cross-cutting concepts that appear in interviews regardless of the stack. These come up at every stage: the HR call, the technical test review, and the live technical interview. Every item must be explainable with a real example from a project.
 
-### HTTP methods and semantics
+### HTTP methods and request structure
 
-- HTTP methods — `GET`, `POST`, `PUT`, `PATCH`, `DELETE`: each expresses the intent of the request; interviewers ask you to choose the right method for a given scenario and justify it (e.g. why POST for login, why PUT vs PATCH for an update endpoint)
-- `PUT` vs `PATCH` — PUT replaces the entire resource; PATCH updates only the specified fields; the most common confusable pair in REST API discussions; asked in every technical interview that touches a REST endpoint
-- Idempotency — a request is idempotent if calling it multiple times leaves the system in the same state; `GET`, `PUT`, `DELETE` are idempotent; `POST` is not; interviewers use this to test whether you know REST semantics beyond CRUD names
-- Safe methods vs idempotent methods — a safe method changes no state at all (`GET`), an idempotent one may change state but repeating it harmlessly lands on the same result (`PUT`, `DELETE`); interviewers push past "idempotent" to ask why retrying a timed-out `PUT` is fine while retrying a `POST` can create two records
-- Path parameters vs query parameters vs request body — path params identify which resource (`/users/5`); query params filter or configure (`?status=active`); the body carries data to create or update; interviewers ask you to choose the right placement for a given field
-- HTTPS vs HTTP — TLS encrypts the connection so headers and body (including the JWT) cannot be read in transit; required for any API that handles passwords or tokens; interviewers ask why you would never send a password over plain HTTP
-- Request/response lifecycle — Angular component → HTTP interceptor → browser → Spring Security filter chain → controller → service → repository → response travels back; interviewers ask you to trace a login request end-to-end to test architectural understanding
+- HTTP methods â€” `GET`, `POST`, `PUT`, `PATCH`, `DELETE`: each expresses the intent of the request; interviewers ask you to choose the right method for a given scenario and justify it (e.g. why POST for login, why PUT vs PATCH for an update endpoint)
+- `PUT` vs `PATCH` â€” PUT replaces the entire resource; PATCH updates only the specified fields; the most common confusable pair in REST API discussions; asked in every technical interview that touches a REST endpoint
+- Idempotency â€” repeating an idempotent request has the same intended effect as sending it once;
+  HTTP defines `GET`, `PUT`, and `DELETE` as idempotent, while `POST` has no idempotency guarantee
+  unless the application deliberately adds one
+- Headers â€” `Authorization: Bearer <token>` carries the JWT; `Content-Type: application/json` tells the server the body format; `Accept` specifies the expected response format; interviewers ask which header is used for authentication and what happens if you omit `Content-Type`
+- Path parameters vs query parameters vs request body â€” path params identify which resource (`/users/5`); query params filter or configure (`?status=active`); the body carries data to create or update; interviewers ask you to choose the right placement for a given field
+- HTTPS vs HTTP â€” TLS encrypts the connection so headers and body (including the JWT) cannot be read in transit; required for any API that handles passwords or tokens; interviewers ask why you would never send a password over plain HTTP
+- Request/response lifecycle â€” Angular component â†’ HTTP interceptor â†’ browser â†’ Spring Security filter chain â†’ controller â†’ service â†’ repository â†’ response travels back; interviewers ask you to trace a login request end-to-end to test architectural understanding
 
-### Reading the raw HTTP exchange
+### HTTP status codes
 
-- Anatomy of a request — a request line (`POST /api/entries HTTP/1.1`), a block of headers, a blank line, then the optional body; interviewers show a curl transcript or Postman's raw view and ask you to point at the method, the path, the headers, and where the body starts
-- Anatomy of a response — a status line (`HTTP/1.1 201 Created`), response headers, a blank line, then the body; interviewers ask where the status code physically sits and why a client can react to it before the body has finished arriving
-- Headers — `Authorization: Bearer <token>` carries the JWT; `Content-Type: application/json` tells the server the body format; `Accept` specifies the expected response format; interviewers ask which header is used for authentication and what happens if you omit `Content-Type`
-- Request headers vs response headers — `Authorization` and `Content-Type` are sent upward; `Set-Cookie`, `Location` and `Cache-Control` come back down; juniors routinely hunt for a response header in the request pane of DevTools and conclude the server never sent it
-- `Content-Type` vs `Accept` — `Content-Type` describes the body you are sending, `Accept` describes the representation you want back; interviewers ask which one causes a `415 Unsupported Media Type` and which causes a `406 Not Acceptable`
-- `application/json` vs `application/x-www-form-urlencoded` vs `multipart/form-data` — three body encodings on the wire; interviewers ask which one a file upload uses and why binary cannot be carried safely as `key=value` text
-- Percent-encoding in the query string — a space, `&`, `=` or `/` inside a parameter value must be escaped or the server parses it as extra parameters; interviewers use a search box containing an ampersand to check you know the escaping layer exists
-
-### HTTP status codes — choosing the right one
-
-- 2xx success codes — `200 OK` for a successful read or update, `201 Created` after a POST that creates a resource, `204 No Content` after a DELETE (success but no body); interviewers ask which to use after each HTTP method and why 201 is not the default for every POST
-- `400 Bad Request` — the payload is invalid or fails validation; returned by Spring Boot automatically when `@Valid` fails; shows you understand the difference between a client error and a server error
-- `400` vs `422 Unprocessable Entity` — 400 for input the server cannot parse or bind; 422 for well-formed input that breaks a business rule; interviewers ask which one you return when the JSON is valid but the end date precedes the start date
-- `401 Unauthorized` vs `403 Forbidden` — 401 means unauthenticated (no token or invalid token); 403 means authenticated but not allowed (wrong role); the most common confusable pair in security discussions
-- `401` vs `403` in Spring Security — Spring Security returns 403 for both unauthenticated and unauthorised requests by default; a custom `AuthenticationEntryPoint` is required to correctly return 401 for missing or invalid tokens; this gotcha is asked in technical interviews
-- `404 Not Found` vs `409 Conflict` — 404 when the resource does not exist; 409 when the action conflicts with existing data (duplicate email, name already taken); shows semantic awareness beyond just 400 and 500
-- `405 Method Not Allowed` — the path exists but not for that verb; the standard symptom of a frontend sending `POST` to an endpoint mapped as `@PutMapping`, and it is diagnosed straight from the request line
-- Returning `200 OK` with an error payload — a body containing `{"error": ...}` under a 200 breaks every client's error handling, because the status code is the contract the client branches on; interviewers show this snippet in the review round
-
-### Failure responses and who produced them
-
-- `500 Internal Server Error` — an unhandled exception reached the framework; if the API returns 500, something was not caught by `@ControllerAdvice`; interviewers ask what you would do to prevent it
-- `(failed) net::ERR_CONNECTION_REFUSED` vs a `500` — a connection error means nothing ever answered on that host and port (server down, wrong port, wrong protocol); a 500 means the server ran your code and it threw; the first is an infrastructure fault and the second an application fault, and confusing them sends a junior to debug the wrong system
-- `502` / `504` from a gateway vs a `500` from the app — a proxy or load balancer produced the error because the app timed out or was unreachable; interviewers ask who wrote the error page when the body does not look like your API's error format
-- A `2xx` in the server log with an error in the browser — the server answered correctly and the failure happened after the response arrived (a blocked read, a JSON parse error, a wrong content type); interviewers use it to check you can localise a bug to a layer instead of blaming "the API"
-- `3xx` redirects and the `Location` header — a `301` or `302` tells the client to re-request a different URL and the browser follows automatically, producing two rows in the Network tab; interviewers ask why a redirect to a login page appears where JSON was expected
-- `301` vs `302` — permanent versus temporary; the browser caches a 301 and keeps honouring it after the server is fixed, which is why a wrong permanent redirect is far harder to undo
-
-### Caching and conditional requests
-
-- `Cache-Control` — `no-store`, `no-cache` and `max-age` decide whether the browser may reuse a response without asking again; interviewers ask why a deployed frontend still serves the old bundle after a release
-- `ETag` and `If-None-Match` — the server sends a version fingerprint, the browser echoes it on the next request, and a match returns `304` with no body; interviewers ask how a browser revalidates a cached response without re-downloading the payload
-- `304 Not Modified` — a successful response that carries no body because the cached copy is still valid; interviewers ask why the payload size is zero while the page still renders
-- `Last-Modified` and `If-Modified-Since` — the timestamp variant of the conditional handshake, weaker than `ETag` because one-second granularity means two edits within the same second are served stale; interviewers ask why `ETag` is preferred
-- Why `GET` is cacheable and `POST` is not — caching layers rely on the safety and idempotency guarantees of the method, which is the practical payoff of REST semantics rather than trivia
+- 2xx success codes â€” `200 OK` for a successful read or update, `201 Created` after a POST that creates a resource, `204 No Content` after a DELETE (success but no body); interviewers ask which to use after each HTTP method and why 201 is not the default for every POST
+- `400 Bad Request` â€” the payload is invalid or fails validation; returned by Spring Boot automatically when `@Valid` fails; shows you understand the difference between a client error and a server error
+- `401 Unauthorized` vs `403 Forbidden` â€” 401 means unauthenticated (no token or invalid token); 403 means authenticated but not allowed (wrong role); the most common confusable pair in security discussions
+- `404 Not Found` vs `409 Conflict` â€” 404 when the resource does not exist; 409 when the action conflicts with existing data (duplicate email, name already taken); shows semantic awareness beyond just 400 and 500
+- `500 Internal Server Error` â€” the server encountered an unexpected failure; global error handling
+  should format and log it consistently, not disguise every genuine server fault as a client error
 
 ### JSON and serialization
 
-- JSON data types — objects `{}`, arrays `[]`, strings, numbers, booleans, null; keys must be double-quoted strings; no trailing commas; tested when debugging a `400` caused by malformed JSON
-- Jackson — Spring Boot uses Jackson automatically to convert between JSON and Java objects; `@RestController` triggers automatic serialization without any configuration; interviewers ask how Spring Boot "knows" to return JSON
-- `@JsonProperty` — maps a JSON key to a Java field with a different name; necessary when the API contract uses snake_case (`user_name`) but the Java class uses camelCase (`userName`)
-- `JSON.parse()` vs `JSON.stringify()` — `stringify` converts a JavaScript object to a JSON string; `parse` converts it back; only needed for `localStorage`, never for `HttpClient` calls (Angular handles JSON automatically); confusing them leads to storing `[object Object]` in localStorage
+- JSON data types â€” objects `{}`, arrays `[]`, strings, numbers, booleans, null; keys must be double-quoted strings; no trailing commas; tested when debugging a `400` caused by malformed JSON
+- Jackson â€” Spring Boot uses Jackson automatically to convert between JSON and Java objects; `@RestController` triggers automatic serialization without any configuration; interviewers ask how Spring Boot "knows" to return JSON
+- `@JsonProperty` â€” maps a JSON key to a Java field with a different name; necessary when the API contract uses snake_case (`user_name`) but the Java class uses camelCase (`userName`)
+- `JSON.parse()` vs `JSON.stringify()` â€” `stringify` converts a JavaScript object to a JSON string; `parse` converts it back; only needed for `localStorage`, never for `HttpClient` calls (Angular handles JSON automatically); confusing them leads to storing `[object Object]` in localStorage
 
 ### Error handling
 
-- `catchError` in Angular services — intercepts HTTP errors in the Observable stream before they reach the component; returns a safe fallback value (empty array, null) so the app keeps running; tested in every Angular service review
-- HTTP interceptor for global errors — the right place to handle 401 (expired token → redirect to login) and network failures; one interceptor replaces `catchError` in every service for these global concerns
-- `catchError` in service vs interceptor — service-level handles specific, local failures; interceptor handles global concerns (token expiry, network outage); interviewers ask which approach you would use for a given scenario and why
-- `@ControllerAdvice` + `@ExceptionHandler` — maps custom exceptions to HTTP status codes in one class; the Spring Boot equivalent of Angular's error interceptor; without it, every unhandled exception returns a generic 500 with no useful message for the client
-- Error propagation — throw errors upward and handle them once at the outermost layer; never swallow an exception silently without at least logging it; catching and re-throwing without adding information hides the root cause
-- Scope of a `try` block — wrapping a whole method body hides which statement can actually fail and makes the recovery path meaningless; keep the `try` around the risky call; a standard review-round observation
-- Catch-log-rethrow at every layer — one failure produces a duplicated stack trace per layer, so the log suggests several errors where there was only one; interviewers show a log holding three traces and ask how many things actually broke
-- Fail fast vs graceful degradation — some failures must kill the request, others should fall back to a default; interviewers ask whether a failed sidebar widget call should break the whole page, and the concept being tested is that the answer depends on whether the data is essential
+- Local error recovery â€” a caller may replace a failed operation with a fallback only when that
+  fallback is semantically honest; silently converting every failure into empty data fabricates success
+- HTTP interceptor for global errors â€” the right place to handle 401 (expired token â†’ redirect to login) and network failures; one interceptor replaces `catchError` in every service for these global concerns
+- `catchError` in service vs interceptor â€” service-level handles specific, local failures; interceptor handles global concerns (token expiry, network outage); interviewers ask which approach you would use for a given scenario and why
+- `@ControllerAdvice` + `@ExceptionHandler` â€” maps custom exceptions to HTTP status codes in one class; the Spring Boot equivalent of Angular's error interceptor; without it, every unhandled exception returns a generic 500 with no useful message for the client
+- Error propagation â€” throw errors upward and handle them once at the outermost layer; never swallow an exception silently without at least logging it; catching and re-throwing without adding information hides the root cause
 
 ### Software testing
 
-- Unit test — tests one class or method in isolation with all dependencies mocked; no database, no HTTP, no Spring context; runs in milliseconds; the base of the testing pyramid
-- Integration test — tests multiple real components working together; the Spring context starts and the real database is used; slower than unit tests; written with `@SpringBootTest` in Spring Boot
-- End-to-end (E2E) test — tests the full user flow through a real browser; the slowest and the fewest; covers only the most critical user journeys
-- Testing pyramid — more unit tests than integration, more integration than E2E; interviewers ask the ratio and why (unit tests are cheap and fast; E2E tests are expensive and slow; the pyramid shape reflects the right investment)
-- Mock vs stub — a mock is a fake dependency you can configure and verify (check how it was called afterwards); a stub just returns a fixed value with no verification; in practice "mock" is used for both; Mockito handles both in Java
-- JUnit 5 + Mockito — the standard tools for Spring Boot unit tests; interviewers expect you to explain how to write `when(...).thenReturn(...)` and `verify(...)` in a service test without touching the database
-- Jasmine + TestBed — the standard tools for Angular service tests and component tests; `TestBed` creates a minimal Angular module for testing without a real browser
-
-### What makes a test worth writing
-
-- Assertion-free test — a test that calls the method and never asserts anything passes forever and proves nothing; the canonical "tests that pass but never catch a bug" snippet handed over in the 2026 code-review round
-- Tautological mock test — stubbing a collaborator to return X and then asserting the method returns X re-tests Mockito rather than your logic; interviewers ask what such a test would catch if the method body were deleted
-- Verifying a call vs asserting on the result — `verify()` proves an interaction happened, not that the outcome is correct, and over-verifying couples the test to the implementation so any refactor breaks it
-- Happy-path-only suite — high line coverage with no null, empty, boundary or exception case; interviewers ask "what does this test *not* cover?" because that is where the bug lives
-- Code coverage percentage as a misleading metric — coverage counts lines executed, not behaviour verified, so an assertion-free suite can report 90%; interviewers ask whether 100% coverage means the code works
-- Non-deterministic test — a test reading `LocalDateTime.now()`, a random value, or a real network call is flaky by construction; the fix concept is injecting the varying thing (a fixed `Clock`, a seed) so the assertion is stable
-- Arrange-Act-Assert (Given/When/Then) — the three-part shape that makes a test readable at a glance; interviewers judge test readability alongside correctness because an unreadable test is not maintained
-- Over-mocking as a design smell — a test that needs five mocks is telling you the class under test has too many dependencies; interviewers use it to bridge testing into Single Responsibility
-- What to test and what not to test — business rules and branching logic, not getters, framework wiring, or the mocks you just configured; interviewers ask where you would start on an untested service
-
-### Debugging and diagnosis
-
-- Startup failure vs runtime failure — a startup failure means configuration or wiring is wrong and the app never served a request; a runtime failure means the app is up and one path breaks; they have disjoint causes, so this is the first question to ask before reading any code
-- Reading the *first* error, not the last — a cascade in a startup log usually has one true cause at the top and consequences below it; this is the deliberate inverse of the `Caused by:` rule for a single stack trace, and confusing the two sends you to the wrong line
-- Minimal reproduction — a failure you cannot trigger on demand cannot be verified as fixed; reducing it to the smallest input or steps that still break is simultaneously the diagnosis and the future regression test
-- Bisecting a failure by layer — walk browser → network → controller → service → repository → database and find where the data stops, instead of reading all the code hoping to spot it; interviewers ask "where would you put the first breakpoint?"
-- Confounded changes — when two edits ship together, a passing result cannot attribute the fix to either one, so neither change has actually been verified; interviewers ask how you would confirm which of two edits resolved the bug
-- The client as a variable in a failed call — issuing the same request outside the framework (curl, Postman) removes interceptors, base URLs and serialisation from the picture, isolating whether the bug is in the request itself or in the code that built it; interviewers ask how you would narrow down "the frontend can't call the API"
-- Conditional breakpoint — a breakpoint that only fires when an expression is true (`id == 42`), which is the only practical tool for a bug that appears on one record out of thousands; naming it separates a candidate who has debugged from one who has read about debugging
-- Debugger vs log statement — a debugger needs the process attached and the bug reproducible locally, while logs are the only option in a deployed environment; interviewers ask which you reach for and expect the answer to depend on where the bug happens
-- Browser Network tab as the client/server split — if the response already contains the correct JSON the bug is in the frontend; if the response is wrong or missing the bug is behind the API; interviewers ask exactly this to test diagnostic method rather than tool familiarity
-- Browser Console vs Network tab — the Console shows JavaScript exceptions, the Network tab shows wire traffic; a blank page with a clean Network tab is a rendering or JS error, not an API failure
-- Comparing the sent payload against what the endpoint expects — most 400s are diagnosed by reading the actual request body rather than the server code; interviewers ask "the endpoint returns 400, what is your first step?"
-
-### Build and run outside the IDE
-
-- Build artifact — the single packaged output that actually gets deployed: a Spring Boot fat JAR containing the compiled classes and an embedded server, or an Angular `dist/` folder of static files; interviewers ask "what do you actually deploy?" and expect the artifact, not "the repository"
-- `java -jar app.jar` vs running from the IDE — the IDE runs loose classes with its own classpath and run configuration, while the artifact runs standalone with only what was packaged; the classic cause of "it works in IntelliJ but not from the terminal", usually an env var that only ever existed in the run configuration
-- Compile time vs build time vs runtime — compilation turns source into bytecode, the build packages it and can bake values in permanently, runtime is when the process is alive and reads its environment; interviewers use this to check you understand why some settings can change without a rebuild and some cannot
-- The app crashing vs the app never starting — a startup failure kills the process before any request is served, a crash happens under traffic on a specific request; interviewers ask "the container exits immediately, where do you look?" and the answer is the startup log, not the endpoint
-- Port already in use — a previous process still holds the socket, so the new one dies at startup with `Address already in use`; interviewers use it as the smallest possible debugging probe, expecting you to recognise the message rather than restart the machine
-
-### Configuration and environment variables
-
-- Why secrets must never be committed — a committed secret is permanently visible in git history even after deletion; it must be treated as compromised and rotated immediately; tested in every project review that handles tokens or API keys
-- `${VAR_NAME}` in `application.properties` — Spring Boot reads the environment variable at startup and substitutes the value; `@Value("${app.jwt.secret}")` injects the resolved value into a class field
-- Fail-fast on missing variables — if a required variable is not set and has no default value, Spring Boot fails at startup with a clear error instead of a `NullPointerException` at runtime; this is intentional — fail early and loudly
-- `${VAR:fallback}` default syntax — supplies a value when the variable is absent, which deliberately removes the fail-fast behaviour above; interviewers ask when a default is appropriate (a port) and when it is dangerous (a JWT secret with a hardcoded fallback that silently ships to production)
-- `.env.example` — documents which variables are required without exposing real values; safe to commit; the real secrets live in OS environment variables, IntelliJ run configuration, or a secret manager — never in a committed file
-- Configuration precedence — later sources override earlier ones: defaults in code, then the properties file, then OS environment variables, then command-line flags; interviewers ask "the file says port 8080 but it started on 9090 — why?" and expect the override chain rather than a guess
-- Externalised configuration — the same artifact must run in every environment with only its configuration changed; interviewers ask why you would not build a separate JAR per environment, and the answer is that you would no longer be shipping the artifact you tested
-- Config vs secret — a value that merely changes per environment is configuration, a value that must never be readable is a secret, and the two are stored differently; interviewers ask whether the database URL and the database password are handled the same way
-
-### Containerisation (Docker)
-
-- What a container is — a lightweight, isolated process that bundles the app with its exact runtime and dependencies so it behaves the same on every machine; interviewers ask "what problem does Docker solve?" and expect the "works on my machine" answer, not a recital of virtualisation theory
-- Container vs virtual machine — a container shares the host OS kernel and starts in milliseconds; a VM ships a whole guest OS and is far heavier; interviewers ask the difference to check you understand why containers, not VMs, became the standard for shipping services
-- Image vs container — an image is the immutable blueprint built from a `Dockerfile`; a container is a running instance of that image; the most common Docker confusable pair, asked the same way as "class vs object"
-- `Dockerfile` — the recipe that builds an image step by step (base image, copy the build artifact, set the entry point); interviewers ask what each instruction does and why each line becomes a cached layer
-- `docker-compose up` — starts every service declared in `docker-compose.yml` (e.g. Spring Boot + PostgreSQL) with one command and one network; interviewers ask "how does a new developer run your project without installing PostgreSQL by hand?" — this is the expected answer
-- Environment variables in Compose — config and secrets (DB URL, JWT secret) are passed to the container through the `environment` block or an `.env` file, never baked into the image; interviewers ask how you keep credentials out of an image that may be shared or pushed to a registry
-- Why containerisation matters in a consultancy — identical environments across dev, CI, and production remove a whole class of "it ran locally" deployment bugs; in 2026 large Spanish consultancies treat basic Docker fluency as a baseline expectation, so not being able to explain `docker-compose up` reads as behind
-
-### Running containers day to day
-
-- Why the image must be rebuilt after a code change — the image is an immutable snapshot taken at build time, so editing a source file changes nothing until `docker compose up --build`; the single most common "my fix didn't apply" moment for a junior
-- `environment:` values vs values baked by the build — a Compose `environment:` entry is read at process start, so one image can serve every deployment, whereas anything consumed during the build requires a rebuilt image to change; interviewers ask how you point the same image at a different database
-- `localhost` inside a container is the container itself — a backend container reaching its database at `localhost:5432` fails, because on a Compose network you address the other service by its service name; interviewers ask this exact scenario since it separates people who ran Docker from people who read about it
-- Port mapping `8081:8080` — the left side is the host port and the right side the port inside the container; interviewers ask why the app "isn't reachable" when only `EXPOSE` was declared and no mapping was made
-- The container filesystem is ephemeral — anything written inside a container disappears when it is removed, which is why a PostgreSQL container loses every row; interviewers ask "your database is empty after restarting, what happened?"
-- Volumes — map a host directory or a named volume onto a container path so data outlives the container; interviewers ask which part of a Compose stack needs one, and the answer is the database, not the stateless app
-- `docker compose down` vs `down -v` — the second also deletes the named volumes and therefore the database contents; the destructive confusable pair of this section
-- Container logs as the primary debugging surface — with no IDE attached, `docker compose logs` is where a startup failure or stack trace is actually read; interviewers ask how you diagnose a container that keeps restarting
-- `.dockerignore` — keeps `target/`, `node_modules/` and `.env` out of the build context, which speeds the build and stops secrets being copied into a layer; interviewers ask how a secret ends up inside an image that was never committed
-- Pinning the base image tag instead of `:latest` — `latest` makes a build non-reproducible because the same `Dockerfile` yields different images over time; interviewers probe this as a reproducibility question, not Docker trivia
-
-### Why it behaves differently there
-
-- "Works on my machine" traced to a concrete cause — the honest answers are a different dependency or JDK version, a config value that only exists in the IDE run configuration, or data that only exists in the local database; interviewers want the specific cause because the vague answer signals someone who has never debugged an environment
-- Timezone differences between machine and container — a container commonly runs UTC while the laptop runs local time, so timestamps shift by hours; interviewers ask why storing UTC and formatting at the edge is the safe pattern
-- Locale differences — the default locale changes number and date formatting and some string-casing edge cases, so output differs between environments unless the locale is set explicitly; the quieter twin of the timezone gotcha
-- Environment parity as the goal — dev, CI and production should differ only in configuration and data, never in runtime version or topology; interviewers ask what containerisation actually buys you and expect parity, not "it's lightweight"
-
-### Base64
-
-- Base64 is not encryption — it is reversible text encoding for binary data using 64 printable characters; anyone can decode it in one step; interviewers ask this specifically to catch candidates who confuse encoding with security
-- JWT structure — header and payload are Base64-encoded JSON separated by dots; the third part is a cryptographic signature; paste any JWT on jwt.io to read the header and payload directly; only the signature provides security
-- `btoa()` / `atob()` — the browser functions for encoding and decoding Base64 strings; `Decoders.BASE64.decode()` is the JJWT equivalent in Spring Boot for converting the Base64 signing key to bytes
+- Unit test â€” verifies one unit of behaviour through a small boundary; collaborators may be real,
+  stubbed, faked, or mocked depending on what keeps the test focused
+- Integration test â€” verifies selected real components working together; it may load part or all of
+  an application and may use real or controlled infrastructure depending on the boundary under test
+- End-to-end (E2E) test â€” tests the full user flow through a real browser; the slowest and the fewest; covers only the most critical user journeys
+- Testing pyramid â€” a heuristic that favours many fast focused tests and fewer expensive broad tests;
+  it communicates trade-offs, not a universal numeric ratio
+- Mock vs stub â€” a mock is a fake dependency you can configure and verify (check how it was called afterwards); a stub just returns a fixed value with no verification; in practice "mock" is used for both; Mockito handles both in Java
+- Jasmine + TestBed â€” the standard tools for Angular service tests and component tests; `TestBed` creates a minimal Angular module for testing without a real browser
 
 ### Browser storage
 
-- `localStorage` — persists after the tab closes; used for JWT tokens in Angular projects; accessible from JavaScript, which makes it vulnerable to XSS token theft
-- `sessionStorage` — cleared when the tab closes; not shared between tabs; same API as `localStorage`; used for temporary state that should not survive a browser restart
-- Cookies — sent automatically with every HTTP request to the matching domain; `HttpOnly` flag prevents JavaScript from reading them; `Secure` restricts them to HTTPS; `SameSite=Strict` prevents CSRF
-- `localStorage` vs `HttpOnly` cookie for JWT — the production tradeoff; localStorage is simple but XSS can steal the token; HttpOnly cookies are XSS-safe but require CSRF protection and `withCredentials: true` in Angular; interviewers ask which you would choose in production and why
-- Cookies travel automatically, `Authorization` does not — the browser attaches matching cookies to every request with no code, while a token header must be set by an interceptor on each call; interviewers ask which mechanism still works after a full page reload and why
-- Storage limits and shape — a few megabytes, strings only, and synchronous (so a large read blocks the main thread); interviewers ask why you would not cache a large API response set in `localStorage`
-- Where non-token state belongs — in-memory service state, `sessionStorage` or `localStorage`, decided by whether the value must survive a reload, a tab close, or neither; interviewers ask where you would keep a half-filled form or a chosen theme
+- `localStorage` â€” persists after the tab closes; used for JWT tokens in Angular projects; accessible from JavaScript, which makes it vulnerable to XSS token theft
+- `sessionStorage` â€” cleared when the tab closes; not shared between tabs; same API as `localStorage`; used for temporary state that should not survive a browser restart
+- Cookies â€” sent automatically with matching requests; `HttpOnly` blocks JavaScript access,
+  `Secure` restricts transport to HTTPS, and `SameSite` mitigates cross-site requests without being a
+  universal replacement for CSRF protection
+
+### Environment variables
+
+- Why secrets must never be committed â€” a committed secret is permanently visible in git history even after deletion; it must be treated as compromised and rotated immediately; tested in every project review that handles tokens or API keys
+- `${VAR_NAME}` in `application.properties` â€” Spring Boot reads the environment variable at startup and substitutes the value; `@Value("${app.jwt.secret}")` injects the resolved value into a class field
+- Fail-fast on missing variables â€” if a required variable is not set and has no default value, Spring Boot fails at startup with a clear error instead of a `NullPointerException` at runtime; this is intentional â€” fail early and loudly
+- `.env.example` â€” documents which variables are required without exposing real values; safe to commit; the real secrets live in OS environment variables, IntelliJ run configuration, or a secret manager â€” never in a committed file
+
+### Containerisation (Docker)
+
+- What a container is â€” a lightweight, isolated process that bundles the app with its exact runtime and dependencies so it behaves the same on every machine; interviewers ask "what problem does Docker solve?" and expect the "works on my machine" answer, not a recital of virtualisation theory
+- Container vs virtual machine â€” a container shares the host OS kernel and starts in milliseconds; a VM ships a whole guest OS and is far heavier; interviewers ask the difference to check you understand why containers, not VMs, became the standard for shipping services
+- Image vs container â€” an image is the immutable blueprint built from a `Dockerfile`; a container is a running instance of that image; the most common Docker confusable pair, asked the same way as "class vs object"
+- `Dockerfile` â€” the recipe that builds an image step by step (base image, copy the build artifact, set the entry point); interviewers ask what each instruction does and why each line becomes a cached layer
+- `docker-compose up` â€” starts every service declared in `docker-compose.yml` (e.g. Spring Boot + PostgreSQL) with one command and one network; interviewers ask "how does a new developer run your project without installing PostgreSQL by hand?" â€” this is the expected answer
+- Environment variables in Compose â€” config and secrets (DB URL, JWT secret) are passed to the container through the `environment` block or an `.env` file, never baked into the image; interviewers ask how you keep credentials out of an image that may be shared or pushed to a registry
+- Why containerisation matters in a consultancy â€” identical environments across dev, CI, and production remove a whole class of "it ran locally" deployment bugs; in 2026 large Spanish consultancies treat basic Docker fluency as a baseline expectation, so not being able to explain `docker-compose up` reads as behind
+
+### Base64
+
+- Base64 is not encryption â€” it is reversible text encoding for binary data using 64 printable characters; anyone can decode it in one step; interviewers ask this specifically to catch candidates who confuse encoding with security
+- `btoa()` / `atob()` â€” browser functions for basic Base64 text conversion; they do not add
+  confidentiality or integrity and have Unicode limitations that production code must handle
+- Text encoding vs binary encoding â€” UTF-8 maps characters to bytes while Base64 maps bytes to safe
+  text; confusing these layers produces corrupted non-ASCII data and false security assumptions
 
 ### Logging
 
-- Why not `System.out.println()` / `console.log()` for debugging production code — print statements cannot be turned off, are not timestamped, and are lost once the terminal closes; interviewers ask "how would you debug an issue in a deployed app without a debugger attached?" — logs are the expected answer
-- Log levels — `DEBUG` (detailed, dev only), `INFO` (normal events, e.g. "user logged in"), `WARN` (something unexpected but recoverable), `ERROR` (something failed); interviewers ask what level you would use for a caught exception that the app recovered from (`WARN`, not `ERROR`, if the request still succeeded)
-- Logs vs exceptions in error handling — an exception interrupts the current operation and must be handled or propagated; a log is a side note that does not change control flow; interviewers ask why you would still log an exception even after it is already handled by `@RestControllerAdvice` (loses the stack trace otherwise — the client only sees a clean message, but the server needs the detail to debug)
-- What must never reach a log — passwords, raw JWTs and personal data; interviewers show a line that dumps the whole request object and ask what you would remove, because a log file is read by more people than the database
-- Choosing the log level per environment — `DEBUG` locally and `INFO` or `WARN` in production, changed by configuration rather than by editing and redeploying code; interviewers ask how you would raise verbosity on an app that is already running
-
-- Character-encoding mismatches — accented names arriving as `Ã±` mean the bytes were written as UTF-8 and read as something else, and the mismatch hides between the terminal, the database's encoding, and a container's default locale; it is the third member of the timezone-and-locale family and interviewers on any Spanish-language product ask where you would look
-
----
-
-### SOLID
-
-> SOLID is owned by the **Architecture** topic, where it is anchored to real project decisions and paired with coupling, cohesion and the concrete violations interviewers show you. It is deliberately not duplicated here.
+- Why not `System.out.println()` / `console.log()` for debugging production code â€” print statements cannot be turned off, are not timestamped, and are lost once the terminal closes; interviewers ask "how would you debug an issue in a deployed app without a debugger attached?" â€” logs are the expected answer
+- Log levels â€” `DEBUG` (detailed, dev only), `INFO` (normal events, e.g. "user logged in"), `WARN` (something unexpected but recoverable), `ERROR` (something failed); interviewers ask what level you would use for a caught exception that the app recovered from (`WARN`, not `ERROR`, if the request still succeeded)
+- Logs vs exceptions in error handling â€” an exception interrupts the current operation and must be handled or propagated; a log is a side note that does not change control flow; interviewers ask why you would still log an exception even after it is already handled by `@RestControllerAdvice` (loses the stack trace otherwise â€” the client only sees a clean message, but the server needs the detail to debug)
 
 ### Code principles
 
-- DRY — extract shared logic into a service or utility instead of repeating it; interviewers ask "what would you do if you saw the same code in three places?" — the answer is extract, not copy
-- KISS — the simplest solution that works is the right one; complexity is a cost that must be justified; interviewers probe this when they see overcomplicated junior code or bloated AI-generated boilerplate
-- YAGNI — do not build features for hypothetical future requirements; adding pagination before it is needed, or building a plugin system for a feature with one implementation, are the classic examples; common in AI-generated code
-- DRY vs premature abstraction — two blocks that merely look alike may be a coincidence rather than duplication, and extracting too early creates a shared abstraction that fights both callers when they diverge; interviewers ask when you would deliberately *not* deduplicate
-- Technical debt as a deliberate decision — a shortcut taken knowingly and written down as a ticket is debt; the same shortcut taken unknowingly is a defect; interviewers ask how you would handle a deadline that forces the shortcut
-- Code smell — a surface symptom pointing at a deeper design problem rather than a bug: a long method, a god class, a long parameter list, a class reaching repeatedly into another object's data; interviewers ask you to name three you would flag on sight, because "clean code" without concrete smells is a slogan
-- Refactoring, precisely — changing the structure without changing the behaviour, which is only safe when tests already pin that behaviour down; interviewers ask what separates refactoring from rewriting, and the presence of tests is the whole answer
-- Naming versus comments — a comment explaining *what* the code does is usually a rename waiting to happen, while a comment explaining *why* a non-obvious decision was made is the one worth keeping; interviewers use a commented block to check which kind you write
+- DRY â€” extract shared logic into a service or utility instead of repeating it; interviewers ask "what would you do if you saw the same code in three places?" â€” the answer is extract, not copy
+- KISS â€” the simplest solution that works is the right one; complexity is a cost that must be justified; interviewers probe this when they see overcomplicated junior code or bloated AI-generated boilerplate
+- YAGNI â€” do not build features for hypothetical future requirements; adding pagination before it is needed, or building a plugin system for a feature with one implementation, are the classic examples; common in AI-generated code
 
-### Agile and Scrum — the framework
+### Agile and delivery awareness
 
-Named in ~6 of every 8 junior postings at Spanish consultancies ("metodologías ágiles", "Scrum/Kanban") and asked in almost every HR call — you will be placed on a Scrum team from day one, so recruiters check you know the ceremonies and vocabulary even without formal team experience.
-
-- Agile vs waterfall — waterfall plans the whole project up front and delivers once at the end; agile delivers small working increments in short cycles and adapts to feedback; interviewers ask why consultancies moved to agile (requirements change, and a client wants to see working software early, not after six months)
-- Scrum vs Kanban — Scrum works in fixed-length sprints with defined roles and ceremonies; Kanban is a continuous flow of tasks pulled from a board with work-in-progress limits and no sprints; interviewers ask the difference and when a team would pick one over the other
-- Sprint — a fixed time-box (usually 2 weeks) in which the team commits to a set of items and delivers a potentially shippable increment; interviewers ask how long a sprint is and what "done" means at the end of one
-- The four Scrum ceremonies — sprint planning (decide what to build this sprint), daily stand-up (15-min sync: what I did, what I'll do, any blocker), sprint review (demo the increment to stakeholders), retrospective (the team improves its own process); interviewers ask you to describe the daily stand-up because it is the one a junior attends every morning
-- Refinement (grooming) — the session where upcoming backlog items are clarified and estimated so that planning is not the first time anyone reads them; interviewers ask in which ceremony estimation actually happens, because juniors reflexively answer "planning"
-- Scrum roles — Product Owner (owns and prioritises the backlog, represents the client), Scrum Master (removes blockers, protects the process, not a manager), Development Team (builds the increment); interviewers ask who decides priority (the PO, not the developer) and who a junior raises a blocker to (the Scrum Master)
-- Product backlog vs sprint backlog — the product backlog is the full prioritised list of everything the product might need; the sprint backlog is the subset the team pulled in for the current sprint; interviewers ask where a new feature request goes (the product backlog, for the PO to prioritise — not straight into the current sprint)
-- Where a junior fits — you take a story from the sprint backlog, implement it on a feature branch, open a PR for review, and demo it at the sprint review; interviewers ask this to confirm you understand your day-to-day inside the process, not just the theory
-
-### Working a story
-
-- User story — a requirement written from the user's perspective: "As a [role], I want [goal] so that [benefit]"; interviewers ask you to phrase a feature as a user story to check you think in terms of user value, not just tasks
-- Story points and estimation — relative effort estimates (often a Fibonacci-like scale) rather than hours, because relative sizing is more reliable than time guesses at junior level; interviewers ask why teams estimate in points instead of hours
-- Definition of Done — the shared checklist an item must meet to count as finished (code reviewed, tested, merged, meets acceptance criteria); interviewers ask what "done" means on your team to check you don't call code "done" when it only compiles locally
-- Acceptance criteria vs Definition of Done — acceptance criteria are per-story and describe what that specific story must do to be accepted; the Definition of Done is a team-wide quality bar identical for every story; interviewers ask the difference because confusing the two is the clearest sign of someone who has never worked a real ticket
-- Sprint goal — the one-sentence outcome the sprint aims at, which is what the team protects when scope has to be cut; interviewers ask what happens when the team cannot finish everything, and the expected answer is dropping items while keeping the goal
-- An unfinished item at sprint end — an incomplete story is not "half done"; it returns to the backlog and is re-estimated, with no partial credit; interviewers ask this to test whether you understand that points measure delivered increments, not effort spent
-- Velocity — the average points a team actually completes per sprint, used to forecast how much to pull into the next one; interviewers ask what velocity is for and why comparing it between teams is meaningless, since points are relative to one team's own scale
-- Why a junior's estimate is expected to be wrong — estimation error is a known property of inexperience, which is exactly why teams size relatively and correct through velocity instead of trusting individual numbers; interviewers ask what you do on realising mid-sprint that a story is twice the size you thought
-- Blocker — an impediment the team cannot resolve within the sprint (missing credentials, a dependency on another team, an ambiguous requirement); interviewers ask when you would raise one and to whom, because a junior sitting silently on a blocker for two days is the failure mode they screen for
-- Splitting a story too big for one sprint — vertical slices that each deliver working end-to-end value, rather than horizontal "backend this sprint, frontend next"; interviewers ask how you would break down a feature you cannot finish
-- Spike — a time-boxed investigation ticket whose deliverable is knowledge (a decision, a proof of concept) rather than shippable code; interviewers ask how you would ticket "we don't know whether this library can do X"
-
-### Tickets and requirements
-
-- What makes a bug ticket actionable — environment, exact steps to reproduce, expected result, actual result, and evidence (a log excerpt, a screenshot, the request and response); interviewers ask you to describe a bug report because a ticket saying "it doesn't work" is unassignable and is the most common junior failure on a client project
-- What an intermittent bug ticket must capture — timestamps, correlation IDs and logs from the occurrences that *were* observed, since reproduction steps do not exist yet and the ticket is otherwise unassignable; interviewers ask what you file for a bug that only happens sometimes
-- Defect vs change request — a defect is behaviour that contradicts the agreed specification and is fixed at no extra cost; a change request is new scope and is negotiated and billed; consultancy interviewers ask this because a junior who "just adds it because the client asked" gives away contracted hours
-- Story vs task vs bug vs epic — a story is user-facing value, a task is a technical unit beneath it, a bug is defective existing behaviour, an epic spans sprints; interviewers ask you to classify an item to check you can navigate a real board
-- Ticket states and who closes them — an item flows to-do → in progress → in review → QA → done, and the developer is not the one who declares it done after QA validation; interviewers ask this to check you do not equate "merged" with "accepted"
-- Traceability from ticket to code — the ticket ID travels into the branch name, the commits and the PR title so any line of production code can be traced back to the requirement that justified it; interviewers ask why the ID matters, and the answer is audit and impact analysis on a client engagement, not tidiness
-- An ambiguous requirement is a defect in the ticket — an unclear acceptance criterion is resolved with the Product Owner before implementation, because guessing produces work that is rejected at review; interviewers frame it as "the story doesn't say what happens when the list is empty"
-- Scope creep — small additions accepted informally mid-sprint that were never estimated or agreed; interviewers ask what you do when a client asks you directly for "one small extra thing", and the concept is that scope changes go through the PO and the backlog
-- Non-functional requirement — a constraint on how the system behaves (response time, availability, browser support, accessibility) rather than what it does; interviewers ask for an example because juniors list only features, and NFRs are what client contracts are actually held to
-
-### Environments and releases
-
-- The environment chain dev → test/QA → staging → production — each is a progressively more production-like copy, and promotion moves the same built artifact forward rather than rebuilding it; interviewers ask why staging exists when test already passed, and the answer is production-like data, configuration and integrations
-- Release vs deploy — a deploy puts code onto an environment, a release makes it available to users; interviewers ask this to check you know code can sit in production switched off
-- Rollback — returning production to the previous known-good version when a release fails, which is why the previous artifact is kept and why an irreversible database migration is dangerous; interviewers ask "the release broke production at 18:00, what happens now?" and expect rollback rather than a hotfix under pressure
-- Hotfix — an urgent fix branched from what is actually in production rather than from the current development line, then merged back; interviewers ask why you cannot simply ship the dev branch, and the answer is that it contains unreleased, unverified work
-- CI pipeline as a merge gate — an automated build and test run on every push that must pass before a merge is allowed; interviewers ask what happens when the pipeline goes red on your branch, and the concept is that it is yours to fix and it blocks everyone once it is on the shared branch
-- Smoke test after a deploy — a minimal check that the deployed system is alive and its critical path works, distinct from the full test suite; interviewers ask how you know a deploy actually succeeded
-
----
-
-### Cloud awareness
-
-Named in roughly 3 of every 8 target postings (Indra's "proyectos sobre cloud pública" is the explicit one). Nobody expects a junior to operate a cloud platform, but they do expect you to recognise the shape of one and know what changes when the app stops running on your laptop.
-
-- What a managed service is — the provider runs the database, the queue or the container platform, so you stop patching, backing up and scaling it and start paying for it; interviewers ask what a managed database buys you and expect the operational answer rather than "it's in the cloud"
-- Where a containerised app actually runs — an image is pushed to a registry and a service pulls and runs it, which is the same image you built locally rather than a rebuild; interviewers ask how your `docker build` output reaches production
-- Configuration and secrets at deploy time — the environment variables that were a `.env` file locally arrive from the platform's configuration or secret store, which is exactly why the twelve-factor rule matters; interviewers ask where the production database password lives
-- What does not change — your Spring Boot jar, your SQL and your Angular bundle are identical; the cloud changes who runs them and how they are configured, not what they are; interviewers ask whether you would need to rewrite the app to deploy it and the honest answer is no
-
----
-
-### Reviewing code — what to look for
-
-Distinct from Git's pull-request mechanics: this is the judgement you apply once the diff is open. The 2026 technical interview is largely a review round.
-
-- What a reviewer actually checks, in order — does it do what the ticket says, is it correct at the edges, is the new behaviour tested, and is it named so the next person understands it; interviewers ask because a junior who only comments on formatting adds nothing to a team
-- Reviewability is a property of the change — a small single-purpose diff gets a genuine review while a two-thousand-line one gets an approval nobody read; interviewers ask why you would split a change and want the reviewer's attention budget named
-- Unrelated changes inside one review — a formatting sweep bundled with a bug fix hides the fix inside the noise; the same atomicity rule as commits, applied to the diff
-- Separating a blocking objection from a preference — a correctness or security problem blocks, a naming quibble does not, and treating both the same way makes a reviewer easy to ignore; interviewers ask how you decide what is worth a comment
-- Being asked "why did you do it this way?" — the second follow-up is what exposes code that was copied rather than reasoned about; this is the review round's real question, and it is why every line you submit must be defensible
-
----
-
-### Working with AI as a developer
-
-`_shared-context.md` records this as the defining change of 2026: the question moved from "can you write the code?" to "can you explain it, defend it, and catch what the assistant got wrong?" These are concepts a screening now tests directly.
-
-- Using an assistant professionally — expected rather than suspect in 2026, but the code you submit is yours and is judged as yours; interviewers ask how you use Copilot or Cursor and are equally wary of "never" and "for everything"
-- Never commit code you cannot explain — the single rule separating a developer from a prompt runner, and interviewers test it by pointing at any line of your own project and asking why it is there
-- The defects AI reliably produces at junior level — a hardcoded secret instead of an environment variable, `@Transactional` on the controller instead of the service, the wrong validation annotation (`@NotNull` where `@NotBlank` was meant), a test that asserts nothing, and an N+1 query from a missing fetch strategy; the 2026 technical test increasingly hands you a snippet containing several of these and counts how many you find
-- Verifying a claim about an unfamiliar framework — you check the official documentation and run it, because a confidently invented API name reads perfectly and compiles nowhere; interviewers ask how you check an answer you cannot yet evaluate
-- AI on a take-home — the deliverable is graded by whether you can defend it live, so anything you cannot explain is a liability rather than a shortcut; interviewers ask what you would disclose and the honest position is the defensible one
+- Scrum roles â€” Product Owner prioritises value, Scrum Master facilitates the framework, and
+  Developers deliver the increment; interviewers expect recognition rather than certification detail
+- Sprint and increment â€” a sprint is a fixed iteration and the increment is the usable result that
+  meets the Definition of Done
+- Planning, daily Scrum, review, and retrospective â€” each event has a distinct purpose: select work,
+  inspect progress, inspect the product, and improve the process
+- User story and acceptance criteria â€” the story expresses user value while acceptance criteria make
+  the behaviour testable; they are not interchangeable with implementation tasks
+- Definition of Done â€” a shared quality gate such as reviewed, tested, integrated, and deployable;
+  it prevents each person from using a private meaning of â€œfinishedâ€
+- CI/CD awareness â€” continuous integration builds and tests small merged changes; continuous delivery
+  keeps a releasable artefact, while deployment automation is a later operational depth
+- Cloud awareness â€” AWS or Azure provides managed compute, storage, networking, and databases;
+  junior coverage is recognising the deployment model, not designing cloud infrastructure
 
 ---

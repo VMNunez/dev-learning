@@ -80,19 +80,17 @@ for what they hire for). You are screening a candidate at the target level and t
 that topic's `notes/{topic}/coverage.md` (and its section in `notes/coverage.md` if the topic file is
 missing) plus `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`.
 
-Write the questions you would actually ask to decide whether this candidate really knows {TOPIC} — **as
-many as you genuinely would use; do not stop at a fixed number, be exhaustive.** A capped interviewer
-finds only the gaps that fit its question budget (a real run returned 13 gaps and looked convergent while
-uncapped angles found 80+ more). "Uncapped" governs the *number of questions*, not the size of the report:
-keep each question a terse one-liner and put the substance in the gap items, or a report that overruns the
-tool's inline limit has to be recovered from a persisted file before it can be used.
+Write the questions you would actually use to decide whether this junior candidate meets the hiring
+floor. Cover the recurring market requirements, ordinary fundamentals, important confusable pairs,
+and a small number of pressure cases. Do not expand into every question a specialist interviewer
+could invent.
 
 Mix conceptual, decision ("why X over Y"), and pressure/gotcha questions, and lean on the recurring
-requirements in the job-market evidence. For each question, check whether the current coverage gives the
-candidate what they'd need to answer it. Return only the **gaps** — the questions coverage does NOT
-support — each as a proposed item in the standard's format (`concept — interview-anchored sentence`),
-tagged with its section. Do not rewrite existing items. Be adversarial: assume the coverage is incomplete
-until your questions prove otherwise.
+requirements in the job-market evidence. For each question, check whether the current coverage gives
+the candidate what they need. Return at most **10 material gaps** whose absence could realistically
+filter the current target candidate, each as a proposed item in the standard's format and tagged with
+its section. Also return counts for supported, duplicate, post-junior, and other-owner questions. Do
+not rewrite existing items or propose future depth as junior coverage.
 
 ---
 
