@@ -2,10 +2,10 @@
 
 Plan status: current
 Coverage: notes/spring-boot/coverage/junior.md
-Coverage SHA-256: a73b6f28cf85c94d458b83137a0cda66c5fb82db0375771f147db5e5f5421838
+Coverage SHA-256: ce0561c896a42e311316d766cf5786e570d60813bf97738c9383de0e87202090
 Generated: 2026-07-24
 
-## 01 — Project setup
+## 01 — Spring Boot foundations
 
 Status: pending
 Action: audit
@@ -15,243 +15,355 @@ Depends on: none
 
 Coverage concepts:
 
-- `@SpringBootApplication` — combines `@Configuration`, `@EnableAutoConfiguration`, and `@ComponentScan`; interviewers ask "what does this annotation replace in a traditional Spring app?" and "why must the class be in the root package?"
-- `application.properties` — where datasource, JPA settings, and JWT config go; interviewers ask how you keep credentials out of source control (environment variables with `${VAR_NAME}` syntax; app fails at startup if the variable is missing — better than a silent null at runtime)
-- Profiles: `application-dev.properties`, `spring.profiles.active` — separating config per environment; asked in any interview about real-world deployment
-- Maven: `pom.xml` structure, adding a dependency, `mvn clean install` — how the project is built and how libraries are pulled in; interviewers ask what `spring-boot-starter-parent` does (manages all dependency versions via a BOM so you do not write version tags)
-- Lombok `@Data` — generates getters, setters, `equals()`, `hashCode()`, and `toString()`; interviewers ask "what does `@Data` generate?" — a standard question when reviewing entity code
-- Lombok `@NoArgsConstructor` — generates an empty constructor required by JPA to instantiate entities when reading from the database; omitting it causes a runtime error on startup
-- Lombok `@AllArgsConstructor` vs `@RequiredArgsConstructor` — `@AllArgsConstructor` takes every field; `@RequiredArgsConstructor` takes only `final` and `@NonNull` fields; interviewers ask which to use for a service class with constructor injection (`@RequiredArgsConstructor` — it picks up only the `private final` dependencies)
-- `@Slf4j` — Lombok annotation that generates a `log` field; `log.info()`, `log.warn()`, `log.error()`; seen in every production codebase and asked about in code reviews
-- `data.sql` — Spring Boot runs this file on startup to seed the database; used in TimeTrack to create the first manager account; interviewers ask "how did you create the first user if there is no register endpoint?"
+- Spring Framework vs Spring Boot — distinguish the core container and framework modules from Boot's opinionated auto-configuration, starters, executable packaging, and operational defaults
 
-Rationale: These concepts form the coherent coverage group “Project setup”.
+- `@SpringBootApplication` — combines configuration, auto-configuration, and component scanning; place it in a root package so the default scan reaches application components
 
-## 02 — REST controllers
+- Auto-configuration and starters — Boot configures infrastructure conditionally from the classpath, properties, and existing beans, while starters provide a compatible dependency set rather than generating application code
+
+- Embedded server and executable JAR — a servlet web starter supplies an embedded server so the packaged application can run without deploying a WAR to an external container
+
+Rationale: These concepts establish what Spring Boot adds to Spring and trace the executable application's core startup mechanism before configuration details.
+
+## 02 — Project setup and configuration
+
+Status: pending
+Action: audit
+English: notes/spring-boot/junior/en/01-basics.md
+Spanish: notes/spring-boot/junior/es/01-basicos.md
+Depends on: 01
+
+Coverage concepts:
+
+- Externalized configuration and property precedence — keep environment-specific values outside code and recognise that command-line arguments, environment variables, profile files, and base configuration can override one another
+
+- Profiles — activate environment-specific beans and configuration deliberately without treating a profile as a secrets store
+
+- `spring-boot-starter-parent` and dependency management — inherit compatible dependency and plugin versions while distinguishing that Boot-specific build behaviour from Maven's generic lifecycle
+
+- Spring Boot Maven plugin — package an executable archive and run the application through Boot-specific goals without confusing the plugin with dependency management
+
+- Lombok on managed entities — generated equality, hash, string, and constructors can interact badly with identifiers, lazy relationships, and JPA's accessible no-argument construction requirement, so generated members must be chosen deliberately
+
+- Lombok constructors and Spring injection — `@RequiredArgsConstructor` can express constructor injection for final dependencies, while all-argument constructors are usually the wrong service boundary
+
+- SQL initialization — understand when Boot runs `schema.sql` and `data.sql`, how initialization differs for embedded and external databases, and why migrations are safer for durable production schema changes
+
+Rationale: These concepts belong together because they configure, build, package, and initialise the same Spring Boot application.
+
+## 03 — REST controllers
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/02-rest-controllers.md
 Spanish: notes/spring-boot/junior/es/02-controladores-rest.md
-Depends on: 01
+Depends on: 02
 
 Coverage concepts:
 
-- `@RestController` — combines `@Controller` and `@ResponseBody`; every return value is serialised to JSON by Jackson automatically; interviewers ask "what is the difference between `@Controller` and `@RestController`?" — `@Controller` is for server-rendered HTML; always use `@RestController` for a REST API
+- Spring MVC request dispatch — follow a request through the servlet dispatcher, handler mapping, argument resolution, message conversion, controller, and exception handling when diagnosing a failed endpoint
+
+- `@Controller` vs `@RestController` — use view-oriented controller semantics for rendered responses and response-body semantics for APIs whose return values are written through message converters
+
 - `@RequestMapping` — sets the base URL path for all methods in the class; combined with method-level annotations (`@GetMapping`, `@PostMapping`) to form the full URL
-- `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping` — method-level annotations for each HTTP verb; `@PatchMapping` is used for partial updates and state transitions (submit, approve, reject); tested in every technical screening
-- `@PathVariable` — reads a variable from the URL path (`/{id}`); the name inside `{}` must match the parameter name or be declared explicitly with `@PathVariable("id")`; interviewers ask "what happens if the names don't match?"
+
+- HTTP method mappings — select a method-specific mapping that matches the operation's HTTP semantics, including partial updates or state transitions rather than treating every write as POST
+
+- `@PathVariable` vs `@RequestParam` — bind resource identity from the route and optional filtering or control values from the query string, with names and required/default behaviour declared explicitly
+
 - `@RequestBody` — reads the JSON body and converts it to a Java object via Jackson; requires the client to send `Content-Type: application/json`; used with `@Valid` to trigger validation
-- `@RequestParam` — reads query string parameters (`?month=2025-05`); can be `required = false` with a `defaultValue`; used for optional filters, not for required resource identifiers
+
 - `ResponseEntity<T>` — use it when status or headers vary dynamically; fixed statuses can use
   `@ResponseStatus`, while returning a body directly intentionally uses the framework's normal status
-- Jackson serialisation — Spring Boot uses Jackson automatically to convert Java objects to JSON on the way out and JSON to Java on the way in; interviewers ask "how does Spring Boot convert your return value to JSON?" — Jackson is the answer; it reads public getters or Lombok-generated ones
+
+- HTTP message conversion and Jackson — content negotiation and configured message converters turn request and response bodies into Java values and JSON rather than the controller serialising text manually
+
 - Request and response DTO implementation — define separate Java records/classes for incoming and
   outgoing contracts, attach validation only to untrusted input, and map explicitly at the service
   boundary
+
 - `toResponse()` mapping pattern — entity-to-DTO conversion extracted to one private helper in the service layer; keeps controllers free of mapping logic and avoids repeating the same field assignments in every method
-- `@JsonIgnore` — prevents a field from appearing in the JSON response; used on the `password` field so the API never returns hashed passwords; interviewers ask "why doesn't your API expose the password?"
 
-Rationale: These concepts form the coherent coverage group “REST controllers”.
+- DTO allow-listing vs `@JsonIgnore` — shape public responses with dedicated DTOs; use ignore annotations as a local serialization rule, not as the only protection against exposing entity secrets
 
-## 03 — Dependency injection and beans
+Rationale: These concepts follow one HTTP request across Spring MVC and define the API boundary, its inputs, outputs, and DTO mapping.
+
+## 04 — Dependency injection and beans
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/03-dependency-injection.md
 Spanish: notes/spring-boot/junior/es/03-inyeccion-dependencias.md
-Depends on: 02
+Depends on: 03
 
 Coverage concepts:
 
-- `@Service`, `@Repository`, `@Component`, `@Controller` — all four register the class as a Spring bean; `@Repository` also translates JPA/Hibernate exceptions into Spring's `DataAccessException`; interviewers ask "what is the difference between `@Service` and `@Component`?" — semantics and layer readability
-- `@Bean` in a `@Configuration` class — the way to register library classes you cannot annotate with `@Component`; used in `SecurityConfig` to expose `BCryptPasswordEncoder` and `AuthenticationManager`; interviewers ask "why did you define a `@Bean` for `BCryptPasswordEncoder`?"
-- Constructor injection — preferred over `@Autowired` field injection; makes dependencies explicit, `final`, and easy to mock in tests without starting Spring; Spring infers it automatically when the class has one constructor; interviewers ask "why not field injection?"
-- `@Value("${property.name}")` — injects a single config value from `application.properties` at startup; the app fails fast if the key is missing rather than throwing a `NullPointerException` at runtime
-- `@ConfigurationProperties` — binds a group of related properties to a class at once; cleaner than many individual `@Value` annotations when you have grouped config like `app.jwt.secret` and `app.jwt.expiration`
-- `@Qualifier` / `@Primary` — needed when two classes implement the same interface and Spring cannot decide which one to inject; `@Primary` sets a default, `@Qualifier("beanName")` picks one explicitly at the injection point; interviewers ask "what happens if you have two `@Service` classes implementing the same interface and inject the interface type?" (Spring throws at startup unless you resolve the ambiguity with one of these)
+- Component stereotypes — use `@Component` and its layer-specific stereotypes to make application classes discoverable while preserving responsibility and repository exception translation
 
-Rationale: These concepts form the coherent coverage group “Dependency injection and beans”.
+- `@Bean` vs component scanning — register third-party instances or explicit construction logic in configuration and use scanning for application-owned component classes
 
-## 04 — Spring Data JPA — entity and relationship mapping
+- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor
+
+- `@Value` vs `@ConfigurationProperties` — inject an isolated value directly or bind and validate a cohesive typed configuration group when several related settings belong together
+
+- `@Qualifier` vs `@Primary` — select one bean explicitly at an injection point or declare a default candidate when several beans satisfy the same dependency type
+
+- Bean scope and the singleton default — application beans are singleton-scoped by default, so mutable request-specific state on a service can leak across users and threads
+
+- Bean lifecycle and startup failures — distinguish component scanning, bean creation, dependency resolution, and application startup so missing beans, ambiguous injection, and circular dependencies can be diagnosed from the failure report
+
+Rationale: These concepts explain how Spring discovers, creates, selects, configures, and injects the objects used by the application layers.
+
+## 05 — Spring Data JPA — entity and relationship mapping
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/04-spring-data-jpa.md
 Spanish: notes/spring-boot/junior/es/04-spring-data-jpa.md
-Depends on: 03
+Depends on: 04
 
 Coverage concepts:
 
-- `@Entity` — marks the Java class as a JPA entity; Hibernate manages its lifecycle and maps it to a database table; omitting it means Hibernate ignores the class completely with no error
-- `@Table(name = "users")` — sets the table name; always required for the `User` entity because `user` is a reserved word in PostgreSQL; convention: use plural lowercase names (`users`, `projects`, `time_entries`) to avoid reserved-word conflicts
+- Persistence context and entity state — recognise managed, detached, and removed entities and understand why dirty checking can flush a managed change without another repository `save()`
+
+- `@Entity` — marks a class as a managed persistence type; without it Hibernate does not map the class and repositories or relationships that expect an entity fail during configuration or use
+
+- Entity table naming — use `@Table` when the mapped table differs from the default and avoid reserved-word conflicts through a deliberate physical name, quoting policy, or naming strategy
+
 - `@Id` — marks the primary key field; without it Hibernate throws a `MappingException` on startup
-- `IDENTITY` vs sequence id generation — both work with PostgreSQL; identity requires the insert to
-  obtain each id and can limit batching, while sequences support allocation, whose gaps are normal
-  and not evidence of missing rows
-- `@Column(nullable = false)` and `@Column(unique = true)` — add `NOT NULL` and `UNIQUE` constraints; Hibernate reflects them in the schema when `ddl-auto=update`; interviewers inspect entity annotations for missing constraints
-- `@ManyToOne(fetch = FetchType.LAZY)` and `@JoinColumn(name = "user_id")` — the entity on the "many" side holds the FK column; `@JoinColumn` names that column; interviewers ask "which entity owns the foreign key and why?"
+
+- `IDENTITY` vs sequence id generation — recognise the database mechanisms behind generated identifiers and choose a strategy compatible with the target database
+
+- JPA column nullability and uniqueness — map schema intent while remembering that durable database constraints should be delivered through reviewed migrations rather than relying on `ddl-auto=update`
+
+- Many-to-one ownership — map the foreign-key side with `@ManyToOne` and name its column with `@JoinColumn`
+
 - `@OneToMany(mappedBy = "user")` — the inverse side of the relationship; `mappedBy` points to the field in the other entity that owns the FK; omitting `mappedBy` causes JPA to create an unexpected join table
-- `@ManyToMany` — models a many-to-many relationship; requires a join table; interviewers ask about relationships and this is the third type they expect you to know after `@ManyToOne` and `@OneToMany`
-- `cascade = CascadeType.ALL` and `orphanRemoval = true` — `cascade` propagates save/delete operations to children automatically; `orphanRemoval` deletes a child when it is removed from the parent's collection; interviewers ask the difference between the two
-- `@Enumerated(EnumType.STRING)` — stores the enum name (`DRAFT`, `SUBMITTED`) instead of its position number; using the default `ORDINAL` means inserting a new value in the middle of the enum silently corrupts every existing row; interviewers always ask why `STRING` is the safe choice
-- `@CreationTimestamp` / `@UpdateTimestamp` (Hibernate) vs `@PrePersist` (JPA) — `@CreationTimestamp` is Hibernate-specific and sets the field automatically; `@PrePersist` is the JPA-standard lifecycle callback that runs before the first insert; interviewers ask "did you set `createdAt` manually?" and which approach you chose and why
-- `JpaRepository` built-in methods: `save()`, `findById()`, `findAll()`, `deleteById()`, `existsById()` — what Spring provides without writing any SQL; interviewers ask "what does `JpaRepository` give you for free?"
-- `save()` insert vs update — Spring Data delegates to entity-newness detection, normally using
-  version/id state or `Persistable.isNew()`; it is not universally equivalent to checking only
-  `id == null`
-- Derived query methods: `findByEmail(String email)` — Spring reads the method name and generates the SQL; no `@Query` needed for simple lookups; interviewers test how far the naming convention goes (`findByTypeAndUserId`, `existsByEmail`)
-- `@Query` with JPQL — custom queries for aggregations and complex filtering; JPQL uses entity class names and field names, not table names and column names; needed for the reports endpoint in TimeTrack
-- Pagination: `Pageable`, `Page<T>`, `PageRequest.of(page, size)` — the standard way to return lists in production; interviewers ask "what happens if you return `findAll()` on a table with 100,000 rows?"
+
+- Many-to-many ownership — map the join table on one owning side with `@JoinTable` and point the inverse side back with `mappedBy` rather than creating two independent associations
+
+- Cascade vs orphan removal — propagate selected persistence operations to related entities or delete a managed child when it is removed from its parent's collection
+
+- Enum string vs ordinal persistence — store stable names when enum reordering or insertion must not silently change the meaning of existing rows
+
+- Hibernate timestamps vs JPA lifecycle callbacks — choose provider convenience or portable entity callbacks deliberately when populating audit timestamps
+
+- `JpaRepository` CRUD contract — recognise the inherited persistence, lookup, existence, listing, and deletion operations before declaring redundant repository methods
+
+- `save()` insert vs update — recognise that Spring Data decides whether an entity is new before delegating to persistence, so `save()` is not a synonym for SQL INSERT
+
+- Derived query methods — let Spring Data derive simple lookups and existence checks from repository method names, switching approach when the name stops expressing the query clearly
+
+- JPQL vs native SQL in `@Query` — prefer entity and attribute names for portable persistence queries and opt into database SQL only when the required behaviour justifies tighter coupling
+
+- Spring Data pagination — accept `Pageable` and return a bounded result instead of loading an unbounded table through `findAll()`
+
+- `Page<T>` vs `Slice<T>` — return total-count metadata only when the client needs it, because a slice can answer whether another chunk exists without an additional count query
+
 - N+1 problem — one query loads the list, then N extra queries load each lazy relationship in a loop; fix with `JOIN FETCH` in `@Query` or with `@EntityGraph`; one of the most common JPA interview questions
-- `FetchType.LAZY` vs `FetchType.EAGER` — `LAZY` loads the relationship only when you access the field; `EAGER` loads it on every query; `@ManyToOne` defaults to `EAGER` — a surprising gotcha; always declare `FetchType.LAZY` explicitly on `@ManyToOne`; interviewers ask "what is the default fetch type for `@ManyToOne`?"
 
-Rationale: These concepts form the coherent coverage group “Spring Data JPA — entity and relationship mapping, Spring Data JPA — repositories, queries, and performance”.
+- `FetchType.LAZY` vs `FetchType.EAGER` — distinguish deferred from mandatory relationship loading, know the JPA defaults, and select fetching from each use case rather than treating global eager loading as an N+1 fix
 
-## 05 — Exception handling
+- Open EntityManager in View — recognise that Boot's web default can keep lazy loading available during response rendering, why this can hide query behaviour, and why DTO mapping should happen inside an explicit service transaction
+
+Rationale: Entity mapping and repository behaviour form one persistence learning unit because both are implemented and studied in the existing Spring Data JPA note.
+
+## 06 — Exception handling
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/05-exception-handling.md
 Spanish: notes/spring-boot/junior/es/05-manejo-excepciones.md
-Depends on: 04
+Depends on: 05
 
 Coverage concepts:
 
 - `@RestControllerAdvice` — combines `@ControllerAdvice` with `@ResponseBody` for JSON-oriented
   handlers; plain advice can also return JSON when its handler uses `ResponseEntity` or `@ResponseBody`
+
 - `@ExceptionHandler(SomeException.class)` — handles one specific exception type and maps it to the right HTTP status code; Spring calls it automatically when the exception propagates from any controller
-- Custom exception classes extending `RuntimeException` — unchecked so they propagate without `throws` declarations; named after what went wrong (`ResourceNotFoundException`); interviewers ask "why `RuntimeException` and not `Exception`?"
+
+- Domain exceptions — represent meaningful application failures and understand why unchecked exceptions cross service boundaries without compulsory `throws` declarations
+
 - `MethodArgumentNotValidException` — Spring throws this when `@Valid` on a `@RequestBody` fails; handle it in `@RestControllerAdvice` to return 400 with field-level error messages; not catching it results in a verbose default Spring error body
-- Error response format — always return a consistent `{ "message": "...", "status": 404 }` body; the Angular client must be able to parse any error the same way; interviewers ask "what does your API return when a resource is not found?"
-- Soft delete — `active = false` instead of `deleteById()`; preserves historical data and audit trail; interviewers ask "what happens to existing time entries when a project is deleted?"
 
-Rationale: These concepts form the coherent coverage group “Exception handling”.
+- Error response contract — map failures to consistent status and body fields so API clients can handle validation, absence, conflict, and unexpected errors predictably
 
-## 06 — Spring Security — setup and authorization
+- Filter-chain exceptions vs controller advice — exceptions raised before controller dispatch do not automatically pass through `@RestControllerAdvice`, so authentication failures need handling at the security boundary
+
+- Filter vs MVC interceptor vs controller advice — use servlet filters for request-chain concerns, interceptors around mapped handlers, and advice for controller exception/response behaviour
+
+Rationale: These concepts form the complete failure path from a domain or framework exception to a stable HTTP error response.
+
+## 07 — Spring Security — authorization and JWT authentication
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/06-security-jwt.md
 Spanish: notes/spring-boot/junior/es/06-seguridad-jwt.md
-Depends on: 05
+Depends on: 06
 
 Coverage concepts:
 
 - `@Configuration`, `@EnableWebSecurity`, and `@EnableMethodSecurity` — Boot can activate web
   security without explicitly adding `@EnableWebSecurity`; `@EnableMethodSecurity` is the separate
   switch required for `@PreAuthorize`
-- `SecurityFilterChain` — a bean that configures CSRF, session policy, route permissions, and filter
-  order; applications may define multiple ordered chains for different request matchers
-- Route rules: `.requestMatchers("/api/auth/**").permitAll()` and `.anyRequest().authenticated()` — all public and protected routes in one place; order matters — specific rules must be declared before the catch-all; interviewers ask "how do you make the login endpoint public without exposing everything?"
+
+- `SecurityFilterChain` — configure CSRF, session policy, route permissions, and custom filter order in the request security chain
+
+- Security route rules — declare specific public and role-protected matchers before the authenticated catch-all because matcher order controls which rule applies
+
 - `@PreAuthorize("hasRole('MANAGER')")` — method-level role check that runs after the JWT is validated; requires `@EnableMethodSecurity` on `SecurityConfig`; silently ignored without it — the most common authorization bug in junior code
+
 - CORS with Spring Security — a shared `CorsConfigurationSource` keeps policy central and lets the
   security chain handle preflight; `@CrossOrigin` can still be valid for deliberately local
   controller policy
+
+- Preflight through the security chain — permit or correctly process browser `OPTIONS` requests so authentication rules do not reject the preflight before the real cross-origin request is sent
+
+- Authentication vs authorization failures — return an authentication response when credentials are missing or invalid and an access-denied response when an authenticated principal lacks authority
+
+- CSRF in stateless bearer-token APIs — justify disabling or retaining CSRF from how credentials are transported, rather than assuming every REST API is automatically safe
+
+- Stateless JWT vs server sessions — configure bearer-token APIs with stateless session management and explain the scalability, revocation, and browser-security trade-offs rather than choosing JWT by default
+
 - `UserDetailsService.loadUserByUsername()` — the one method you implement to tell Spring how to load your users from the database; called automatically by `DaoAuthenticationProvider` during login; you never call it yourself
-- `BCryptPasswordEncoder` — one-way hashing with a random salt; interviewers ask "why hash and not encrypt?" — there is no need to recover the original password, and hashing is irreversible even if the database is compromised; also ask "why BCrypt?" — the work factor makes brute-force slow
+
+- `PasswordEncoder` and BCrypt — verify salted adaptive password hashes through the encoder contract rather than decrypting or comparing raw values
+
+- `DelegatingPasswordEncoder` and encoded-id prefixes — recognise stored values such as `{bcrypt}...` and preserve an upgrade path when password encoding schemes change
+
 - `AuthenticationManager.authenticate()` — Spring's login coordinator; calling it internally triggers `DaoAuthenticationProvider`, which calls `UserDetailsService` and `BCryptPasswordEncoder`; you expose it as a `@Bean` so `AuthService` can inject it
-- `OncePerRequestFilter` — the base class for `JwtFilter`; guaranteed to run exactly once per request; reads the `Authorization: Bearer` header, validates the token, and sets the authenticated user in `SecurityContextHolder`
+
+- `OncePerRequestFilter` — process JWT authentication once in the normal request dispatch and always continue or terminate the filter chain deliberately
+
 - `SecurityContextHolder` — thread-local storage where `JwtFilter` places the authenticated user for the current request; services call it to get the logged-in user without trusting client-supplied IDs in the request body
+
+- Anonymous authentication — an unauthenticated request may still have an anonymous `Authentication` object, so code must check authentication state rather than assuming the context value is null
+
 - `UsernamePasswordAuthenticationToken` 2-arg vs 3-arg — 2-arg (no authorities) is unverified credentials passed to `authenticate()`; 3-arg (with authorities) is a confirmed authentication stored in `SecurityContextHolder`; the distinction matters when reading JwtFilter code
+
 - JJWT signing and parsing — convert the configured key into a `SecretKey`, sign issued claims, and
   parse through the same algorithm/key so tampering, expiry, and malformed tokens fail before the
   request reaches a controller
+
 - JWT claim-to-authority mapping — load the user or map trusted role claims into Spring Security
   authorities before placing the authenticated token in `SecurityContextHolder`
 
-Rationale: These concepts form the coherent coverage group “Spring Security — setup and authorization, Spring Security — authentication and JWT”.
+Rationale: Security configuration and JWT authentication belong together because the filter chain turns a token into the authenticated principal used by route and method authorization.
 
-## 07 — Bean validation
+## 08 — Bean validation
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/07-validation.md
 Spanish: notes/spring-boot/junior/es/07-validacion.md
-Depends on: 06
+Depends on: 07
 
 Coverage concepts:
 
-- `@Valid` on `@RequestBody` — activates validation on the incoming DTO at the controller boundary; without it all the constraint annotations on the DTO are compiled but silently ignored at runtime; this is tested by every interviewer who looks at controller code
-- `spring-boot-starter-validation` dependency — the required Maven dependency; without it `@NotBlank` and `@Email` compile fine but do nothing at runtime; a common source of confusing bugs when setting up a project from scratch
-- `@NotNull` vs `@NotEmpty` vs `@NotBlank` — `@NotNull` rejects only null; `@NotEmpty` rejects null and empty string but allows whitespace; `@NotBlank` rejects null, empty, and whitespace-only strings; for String fields always use `@NotBlank`; interviewers ask the difference between all three
-- `@Positive`, `@Size`, `@Email`, `@Min`, `@Max`, `@Pattern` — common validators for positive numbers, string length, email format, numeric bounds, and custom regex; interviewers expect you to recall at least three without checking the docs
-- Controller method validation — current Spring MVC validates constrained method parameters and may
-  raise `HandlerMethodValidationException`; type-level `@Validated` selects the older AOP validation
-  path, so exception handling must match the chosen model
+- `@Valid` on `@RequestBody` — trigger cascaded validation of the deserialized request DTO at the controller boundary before business logic runs
+
+- Validation starter and runtime integration — include Jakarta Validation plus its implementation and Spring integration so constraints are discovered and executed rather than merely present as metadata
+
+- `@NotNull` vs `@NotEmpty` vs `@NotBlank` — choose whether null, emptiness, or whitespace-only text violates the input contract rather than applying one constraint to every field type
+
+- Constraint selection — choose semantic constraints for sign, size, format, range, or pattern so the annotation matches the business rule rather than merely rejecting some bad examples
+
+- Controller method validation — apply constraints to controller parameters and handle their failures separately from request-body binding errors
+
 - Body vs method validation failures — invalid `@RequestBody` binding and invalid method parameters
   use different exception families; handle both deliberately instead of assuming every violation is
   a `ConstraintViolationException`
 
-Rationale: These concepts form the coherent coverage group “Bean validation”.
+- `@Valid` vs `@Validated` — use standard cascaded validation for request objects and Spring's validation groups or method-level proxy features only when those additional semantics are required
 
-## 08 — Transactions
+Rationale: These concepts form one input-validation boundary, from activating constraints to handling the distinct failure models for bodies and method parameters.
+
+## 09 — Transactions
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/08-transactions.md
 Spanish: notes/spring-boot/junior/es/08-transacciones.md
-Depends on: 07
+Depends on: 08
 
 Coverage concepts:
 
-- `@Transactional` — wraps the service method in a database transaction; if any unchecked exception propagates out, all DB writes in that method roll back automatically; required for any method that writes to more than one table
-- `@Transactional(readOnly = true)` — signals Hibernate to skip dirty-checking at the end of the method; interviewers ask "what is the benefit?" — Hibernate no longer needs to compare entity state against snapshots, which saves memory and time on large queries
-- Private method gotcha — `@Transactional` on a `private` method is silently ignored because Spring creates a proxy and proxies cannot intercept private calls; must be on a `public` method; a classic interview trap that catches candidates who memorised the annotation but did not understand how it works
+- `@Transactional` atomicity and rollback — group one business operation in a transaction and know that the default rollback rules differ for unchecked and checked exceptions
+
+- `@Transactional(readOnly = true)` — declares read intent and may let the transaction manager or persistence provider optimise work, but it is not a database-enforced ban on writes
+
+- Transaction proxy boundaries — a private or self-invoked method bypasses normal proxy interception, so place transactional entry points on externally invoked, proxy-eligible service methods
+
 - `LazyInitializationException` — thrown when you access a `LAZY` relationship after the Hibernate session is closed (outside the `@Transactional` boundary); fix by converting to DTO inside the `@Transactional` method, or by using `JOIN FETCH` to load the relationship eagerly in the query
-- Where `@Transactional` belongs — on the service layer; Spring Data repositories are already transactional per method; controllers do not interact with the database directly and should never have it
-- Catching exceptions swallows the rollback — if you catch a `RuntimeException` inside a `@Transactional` method and do not re-throw it, Spring sees no exception and commits the transaction; the data is written even though the operation failed; a hidden gotcha interviewers include in code review questions
 
-Rationale: These concepts form the coherent coverage group “Transactions”.
+- Service transaction boundaries — place business-operation transactions around coordinated repository work rather than stretching persistence concerns into controllers
 
-## 09 — Testing
+- Caught exceptions and rollback — swallowing a failure inside a transactional method can let the proxy observe normal completion and commit unless rollback is re-established deliberately
+
+Rationale: These concepts share the transaction proxy boundary and explain atomicity, persistence-context lifetime, and rollback behaviour as one mechanism.
+
+## 10 — Testing
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/09-testing.md
 Spanish: notes/spring-boot/junior/es/09-testing.md
-Depends on: 08
+Depends on: 09
 
 Coverage concepts:
 
-- JUnit 5: `@Test`, `@BeforeEach`, `assertEquals`, `assertThrows` — the minimum annotations and assertions to write a service unit test; included automatically via `spring-boot-starter-test`
-- `@ExtendWith(MockitoExtension.class)` — activates Mockito in a plain JUnit test without loading any Spring context; the fastest test type; interviewers ask "why not use `@SpringBootTest` for all tests?" — startup cost and isolation
-- Mockito: `@Mock`, `@InjectMocks`, `when().thenReturn()`, `doThrow()`, `verify()` — mocking dependencies to test one class in isolation without a database or Spring context
-- Arrange / Act / Assert — the standard three-part structure every test must follow; interviewers expect to see it named in test comments or test method bodies and will ask you to explain it if the pattern is missing
+- Plain service unit tests — use JUnit and Mockito without a Spring context when the risk is business logic and collaborator interaction rather than framework wiring
+
 - Mockito mock vs context bean override — `@Mock` creates a standalone test double; current Spring
   tests use `@MockitoBean` to replace a context bean, while `@MockBean` is legacy Boot syntax
+
 - `@WebMvcTest` — loads a focused MVC slice; collaborators must be supplied through explicit mock
   bean overrides or imports rather than being replaced automatically
-- `jsonPath()` — the assertion method inside `@WebMvcTest` tests that reads a field from the JSON response: `.andExpect(jsonPath("$.id").value(1))`; interviewers ask "how do you verify the response body in a controller test?"
+
+- `MockMvc` — exercise mapped controller requests without a live server and assert status, headers, JSON, validation, and exception mapping at the MVC boundary
+
+- JSON-path MVC assertions — verify specific response fields and structures through `MockMvc` instead of comparing an entire JSON string
+
 - `@SpringBootTest` — loads the full Spring application context, but external infrastructure is real
   only when the test config chooses it; use it for wiring and end-to-end application integration
   rather than every service rule
-- `@DataJpaTest` — tests only the repository layer against an in-memory H2 database; does not load controllers or services; used to verify that derived query methods and `@Query` methods return the correct data
-- Layered testing strategy — service tests (JUnit + Mockito, fast, isolated), controller tests (`@WebMvcTest`, no DB), integration tests (`@SpringBootTest`, slow); consultancies ask "how do you test your backend?" — naming the three layers is the expected answer
 
-Rationale: These concepts form the coherent coverage group “Testing”.
+- `@DataJpaTest` — load a focused persistence slice and use its default embedded-database replacement or an explicitly configured real database according to query-fidelity risk
 
-## 10 — Tooling
+- Test database fidelity — an in-memory replacement is fast but can hide PostgreSQL-specific behaviour, so database-sensitive integration tests need deliberately configured real infrastructure
+
+- Test configuration and profiles — override external dependencies and settings for tests without weakening production configuration or relying on a developer's local environment
+
+- Unit vs slice vs full-context tests — choose an isolated class test, a focused Spring layer, or the complete application context according to the mechanism and configuration risk under test
+
+Rationale: These concepts build a gradual testing strategy from isolated service tests through MVC and persistence slices to full-context integration tests.
+
+## 11 — Tooling
 
 Status: pending
 Action: audit
 English: notes/spring-boot/junior/en/10-tooling.md
 Spanish: notes/spring-boot/junior/es/10-herramientas.md
-Depends on: 09
+Depends on: 10
 
 Coverage concepts:
 
-- Docker: `Dockerfile` for a Spring Boot app — `FROM eclipse-temurin`, `COPY target/*.jar app.jar`, `ENTRYPOINT`; interviewers ask "how do you containerise a Spring Boot application?"
-- `docker-compose.yml` — runs Spring Boot and PostgreSQL together with one command; interviewers ask "how does someone run your project locally without installing PostgreSQL separately?"
-- Flyway — database migrations as versioned SQL scripts (`V1__init.sql`); why teams use it instead of `ddl-auto=update` (scripts are reviewable, tracked in git, and safe to run in production — `update` can silently alter a production table); interviewers ask about migration strategy in any production-focused screening
+- Spring Boot container packaging — build and run the executable application artifact in a container while supplying configuration externally and leaving generic container orchestration to the General topic
 
-Rationale: These concepts form the coherent coverage group “Tooling”.
+- Flyway vs `ddl-auto=update` — evolve schemas through ordered, reviewable migrations rather than allowing runtime ORM metadata to mutate a durable production database implicitly
+
+- OpenAPI generation — expose a reviewable HTTP contract for frontend and QA consumers while verifying that generated operations, validation, and error responses match actual behaviour
+
+- Startup diagnostics and logging — read Boot's condition/failure output and structured application logs to distinguish configuration, bean creation, port, and datasource failures before changing code
+
+Rationale: These tools prepare the application for repeatable packaging, schema evolution, API collaboration, and startup diagnosis.
 
 ## Unassigned existing notes
 
-- notes/spring-boot/junior/en/01-basics.md — no junior coverage group is assigned to this legacy file.
-- notes/spring-boot/junior/en/11-business-logic-domain-modeling.md — no junior coverage group is assigned to this legacy file.
-- notes/spring-boot/junior/en/12-production-debugging.md — no junior coverage group is assigned to this legacy file.
-- notes/spring-boot/junior/en/13-logging-observability.md — no junior coverage group is assigned to this legacy file.
-- notes/spring-boot/junior/en/14-specifications-criteria-api.md — no junior coverage group is assigned to this legacy file.
-- notes/spring-boot/junior/en/15-spring-profiles.md — no junior coverage group is assigned to this legacy file.
+- notes/spring-boot/junior/en/11-business-logic-domain-modeling.md — its domain-modelling material is not owned by any selected-level Spring Boot coverage bullet.
+- notes/spring-boot/junior/en/12-production-debugging.md — its production-debugging material is not owned by any selected-level Spring Boot coverage bullet.
+- notes/spring-boot/junior/en/13-logging-observability.md — its logging and observability material is not owned by any selected-level Spring Boot coverage bullet.
+- notes/spring-boot/junior/en/14-specifications-criteria-api.md — its Specifications and Criteria API material is not owned by any selected-level Spring Boot coverage bullet.
+- notes/spring-boot/junior/en/15-spring-profiles.md — profiles are covered inside the existing basics sequence, so this later standalone note is not required by the selected-level plan.
