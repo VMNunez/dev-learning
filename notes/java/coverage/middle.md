@@ -2,17 +2,24 @@
 
 Concepts expected once core Java semantics are fluent and the developer must design maintainable concurrent and library-facing code.
 
-## Modern language modelling
+## Language modelling and API design
 
-- Records — model immutable data carriers and understand generated equality, accessors, and constructor constraints
 - Sealed classes and interfaces — constrain a hierarchy so exhaustive domain modelling is explicit
-- Pattern matching — use modern `instanceof` and switch patterns without hiding unclear domain boundaries
+- Record invariants and defensive copying — enforce valid immutable data in compact constructors when record components include mutable objects
+- Pattern-matching switch and guarded cases — model exhaustive type-based decisions without turning domain design into procedural branching
 
 ## Generics and reflection
 
 - Bounded wildcards and PECS — design producer/consumer APIs without unsafe casts or unnecessary invariance
 - Generic type erasure — recognise runtime type limitations and the consequences for reflection and overloaded APIs
 - Reflection and runtime annotations — inspect metadata deliberately while understanding lost compile-time safety and framework cost
+- Meta-annotations and annotation processing — design annotation contracts and distinguish compile-time processors from runtime reflection or framework scanning
+
+## Streams and collection design
+
+- Primitive stream specialisations and numeric aggregation — use `IntStream`, `LongStream`, or `DoubleStream` when boxing would obscure a measured or API-relevant cost
+- Downstream collectors and multi-level grouping — design `groupingBy`, partitioning, reduction, and map results whose types remain understandable to callers
+- Custom collection API contracts — expose mutability, ordering, null, ownership, and defensive-copy guarantees explicitly at service and library boundaries
 
 ## Concurrency foundations
 
