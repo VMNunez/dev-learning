@@ -1,6 +1,6 @@
----
-description: Define or refresh the required scope for one topic — what a junior must know, what is deferred (runs inside Codex)
-argument-hint: TOPIC=Angular|SQL|Java|Spring Boot|...|all  (NOTES_PATH optional — derived from TOPIC)
+﻿---
+description: Define or refresh one topic at junior, middle, or senior level (runs inside Codex)
+argument-hint: TOPIC=Angular|Angular Material|SQL|Java|Spring Boot|... LEVEL=junior|middle|senior
 ---
 
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching roles; use its Codex mapping and do not invent model identifiers.

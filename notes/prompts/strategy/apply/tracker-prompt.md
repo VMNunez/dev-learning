@@ -154,10 +154,10 @@ judge which skills the offers keep asking for. You do **not** need to write any 
      `message` mode).
 3. Give **2–4 concrete actions**, ranked. Each must be something you can act on, e.g.:
    - "Two consultancies rejected after asking for Docker — run `evidence-intake` on those offers so it
-     reaches `coverage.md`, then prioritise the Docker topic."
+     reaches `coverage-junior.md`, then prioritise the Docker topic."
    - "LinkedIn gets replies, InfoJobs is silent — shift volume to LinkedIn."
 4. If a skill gap shows up in the offers, **suggest running `evidence-intake-prompt`** on those postings
-   so the signal reaches `coverage.md` — do not edit coverage yourself. Analysis here, market-nourishing
+   so the signal reaches `coverage-junior.md` — do not edit coverage yourself. Analysis here, market-nourishing
    there.
 
 ---
@@ -165,7 +165,7 @@ judge which skills the offers keep asking for. You do **not** need to write any 
 ## Important rules
 
 1. **Write data, don't interpret it into other files.** This prompt owns the tracker and the archive.
-   Coverage/learning decisions belong to `evidence-intake` → `coverage`. Never edit `coverage.md` or
+   Coverage/learning decisions belong to `evidence-intake` → `coverage`. Never edit `coverage-junior.md` or
    `ROADMAP.md` from here.
 2. **The archived posting is what was actually sent.** Never overwrite an existing `job_posting.md` or
    rewrite `outcome.md` history — append.

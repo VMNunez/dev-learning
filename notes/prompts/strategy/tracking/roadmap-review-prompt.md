@@ -6,15 +6,15 @@ Run this **inside the supported agent runtime** (it dispatches subagents; a plai
 configuration to fill in — paste the whole prompt into a fresh the supported agent runtime chat as it is.
 
 This prompt updates `ROADMAP.md` so it shows the optimal path from current progress to full coverage
-of `notes/coverage.md` — through projects, study blocks, and practice. Run it whenever a project
-finishes, `notes/coverage.md` changes significantly, or it has been a while since the last check.
+of `notes/coverage-junior.md` — through projects, study blocks, and practice. Run it whenever a project
+finishes, `notes/coverage-junior.md` changes significantly, or it has been a while since the last check.
 
 > **▶ Run first:** `progress-update` — the Step 2 gap analysis reads `PROGRESS.md` directly; a stale one produces wrong results.
 
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this orchestrator's own `_last-run-report-roadmap-review.md` (this folder is shared with `progress-update`, which owns the unsuffixed `_last-run-report.md`) and, if its `Status` is `open`, surface that finding in one line before proceeding — surface only, never apply it in this run.
 
 It runs as an **orchestrator**: two cold fact-gathering subagents feed a doer (the gap analysis and
-the active project's PLANNING.md summary — so neither `coverage.md` nor a PLANNING.md ever loads into
+the active project's PLANNING.md summary — so neither `coverage-junior.md` nor a PLANNING.md ever loads into
 the doer's own context), the doer applies the edits, then two cold reviewer subagents run in sequence
 — one mechanical (ROADMAP + standard only) and one cross-file — each independently verifying its own
 invariants and fixing any it finds violated. That reviewer tail is the point of the design — the
@@ -35,11 +35,11 @@ instead of re-printing the rules; the reviewers verify against it.
 
 ````
 I want you to review and update ROADMAP.md so it shows the optimal path from my current
-progress to full coverage of everything in notes/coverage.md — through projects, study
+progress to full coverage of everything in notes/coverage-junior.md — through projects, study
 blocks, and practice.
 
 You are the **orchestrator**. In Step 2 you launch two cold fact-gathering subagents (gap analysis +
-active-project summary) so `notes/coverage.md` and the PLANNING.md never load into your own context;
+active-project summary) so `notes/coverage-junior.md` and the PLANNING.md never load into your own context;
 you (the doer) apply the edits in Steps 3–5 from their reports; then in Step 6 you launch two cold
 reviewer subagents, one after the other, that independently verify and fix the result. Finish with
 the report and the commit blocks.
@@ -50,7 +50,7 @@ Step 0 also includes the run-start check stated above this fenced block.
 > is currently active — a feature branch is the normal case; name it in the final report. If you are
 > on **`main`**, stop and ask Victor which branch to use — `main` never receives direct commits.
 
-> **Verifiable reads (the shared session rules non-negotiable):** `notes/coverage.md` is near the Read tool's
+> **Verifiable reads (the shared session rules non-negotiable):** `notes/coverage-junior.md` is near the Read tool's
 > silent 2000-line truncation limit. Subagent 2a and Reviewer 2 must run `wc -l` on it before
 > reading, use `offset` passes to the real end if needed, and state **"N lines, read to EOF"** in
 > their report — treat a report without that line as unusable (re-dispatch once; if it fails again,
@@ -63,7 +63,7 @@ Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, 
 (daily schedule, study order) is already loaded into your context by the supported agent runtime — do not re-read it.
 
 `ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
-references `notes/coverage.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
+references `notes/coverage-junior.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
 not repeat them. What each file is for, what ROADMAP contains (stable vs living sections), and the
 gate-based sequencing rules are all defined in `_roadmap-standard.md` — read them there before
 editing.
@@ -72,7 +72,7 @@ editing.
 
 ## Step 1 — Read the current state (doer — only what the merge itself needs)
 
-Read only these two — coverage.md and the active PLANNING.md are gathered by subagents in Step 2,
+Read only these two — coverage-junior.md and the active PLANNING.md are gathered by subagents in Step 2,
 never by you:
 
 1. `PROGRESS.md` — what projects are done and what concepts are already covered. This is the
@@ -98,13 +98,13 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 
 **Subagent 2a — gap analysis.** Its instruction:
 
-> Read `notes/coverage.md` (the target: every concept required for the job) and `PROGRESS.md` (the
+> Read `notes/coverage-junior.md` (the target: every concept required for the job) and `PROGRESS.md` (the
 > actual: what is already learned). Identify which concepts are still uncovered: present in
-> coverage.md but not yet in PROGRESS.md — treat a concept as covered if PROGRESS.md has an
+> coverage-junior.md but not yet in PROGRESS.md — treat a concept as covered if PROGRESS.md has an
 > equivalent entry even with different wording. If you are **not sure** whether an entry really
 > covers a concept, do NOT silently drop it — list it in a separate "borderline" group with one
 > line saying which PROGRESS.md entry might cover it; a hidden gap is worse than a doubtful one.
-> Group by topic, following the order in coverage.md:
+> Group by topic, following the order in coverage-junior.md:
 > Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript →
 > JavaScript → SQL → CSS → Git → General.
 >
@@ -112,10 +112,10 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > consultancies. Skip: CQRS, event sourcing, JVM tuning, Kubernetes internals, Angular zone.js
 > internals, algorithms beyond basic data structures.
 >
-> Also return, verbatim, the SQL topic list from coverage.md's SQL section (topic names + any
-> in/out-of-scope markers) — the doer needs it to reconcile a table without opening coverage.md.
+> Also return, verbatim, the SQL topic list from coverage-junior.md's SQL section (topic names + any
+> in/out-of-scope markers) — the doer needs it to reconcile a table without opening coverage-junior.md.
 >
-> Run `wc -l notes/coverage.md` before reading it (silent 2000-line Read truncation — use `offset`
+> Run `wc -l notes/coverage-junior.md` before reading it (silent 2000-line Read truncation — use `offset`
 > passes if needed) and include "N lines, read to EOF" in your report.
 > Return **only**: (1) the uncovered-concept list, one line per concept, grouped by topic; (2) the
 > borderline group (may be empty); (3) the SQL topic list; (4) the read-to-EOF line. No excerpts of
@@ -180,7 +180,7 @@ Update the three study-block sections to match the canonical values in `_roadmap
 ("Canonical study-block references"):
 
 **12:30 block — SQL then practice:** reconcile the SQL topic table against the SQL topic list that
-subagent 2a returned from coverage.md (add missing topics, remove out-of-scope topics, sync ✅ / 🔜
+subagent 2a returned from coverage-junior.md (add missing topics, remove out-of-scope topics, sync ✅ / 🔜
 markers to PROGRESS.md).
 
 **13:30 block — Notes then interview prep:** confirm the notes study order matches the canonical
@@ -206,9 +206,9 @@ PROGRESS.md. If a fact is wrong, fix the specific sentence. Nothing else.
 After applying the edits, do a quick self-check against `_roadmap-standard.md`:
 - No calendar date in a project milestone, gate condition, or "CV rule" — only in the applications
   strategy section and the daily schedule header.
-- No content duplicates PROGRESS.md or coverage.md word-for-word — reference them instead.
+- No content duplicates PROGRESS.md or coverage-junior.md word-for-word — reference them instead.
 - The active project has a concrete, verifiable gate condition.
-- Each future project in the sequence names which specific coverage.md gaps it closes.
+- Each future project in the sequence names which specific coverage-junior.md gaps it closes.
 - The file reads as a forward-looking strategy document, not a concept list.
 
 Do not treat this self-check as the final word — Step 6 verifies it independently.
@@ -225,7 +225,7 @@ exactly why they catch what a long single context skips. Each loads only the fil
 need. Wait for both before writing the report.
 
 **Reviewer 1 — mechanical invariants** (reads only `_roadmap-standard.md` and `ROADMAP.md` — it must
-NOT open PROGRESS.md or coverage.md; its checks don't need them). Its instruction:
+NOT open PROGRESS.md or coverage-junior.md; its checks don't need them). Its instruction:
 
 > You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
 > ROADMAP contract), then the freshly edited `ROADMAP.md`. Read nothing else. Verify each invariant
@@ -250,24 +250,24 @@ NOT open PROGRESS.md or coverage.md; its checks don't need them). Its instructio
 **Reviewer 2 — cross-file consistency** (launch only after Reviewer 1 has finished). Its instruction:
 
 > You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
-> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage.md`.
+> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage-junior.md`.
 > Verify each invariant below **from scratch** — do not trust that the edits are correct. For each
 > violation, **fix it directly in ROADMAP.md**, then report what you changed and why.
 >
-> 1. **No duplication.** No passage duplicates PROGRESS.md or coverage.md word-for-word — it must
+> 1. **No duplication.** No passage duplicates PROGRESS.md or coverage-junior.md word-for-word — it must
 >    reference them instead. Cut any restated concept list and point to the source file.
 > 2. **Future projects (🔜) name their gaps.** Every future project in the sequence names which
->    specific coverage.md gaps it closes. If one does not, add the gap mapping (compute it from
->    coverage.md vs PROGRESS.md).
+>    specific coverage-junior.md gaps it closes. If one does not, add the gap mapping (compute it from
+>    coverage-junior.md vs PROGRESS.md).
 > 3. **Active project (⏳) gate.** The active project has a concrete, verifiable gate condition — a
 >    state that is true or false regardless of the date. If it is vague or date-based, rewrite it as a
 >    gate.
-> 4. **SQL table.** The SQL topic table matches the SQL section of coverage.md (no missing topic, no
+> 4. **SQL table.** The SQL topic table matches the SQL section of coverage-junior.md (no missing topic, no
 >    out-of-scope topic) and its ✅ / 🔜 markers agree with PROGRESS.md.
 > 5. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if PROGRESS.md shows its
 >    goals complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
 >
-> Run `wc -l notes/coverage.md` before reading it (silent 2000-line Read truncation — use `offset`
+> Run `wc -l notes/coverage-junior.md` before reading it (silent 2000-line Read truncation — use `offset`
 > passes if needed) and include "N lines, read to EOF" in your report.
 > Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` plus the
 > read-to-EOF line — no file excerpts, no reasoning trace. If everything passed with no fixes, say
@@ -287,7 +287,7 @@ Fold both reviewers' fixes and findings into the report below.
 
 Include both the doer's edits (Steps 1–5) and the two reviewers' fixes (Step 6) in this table.
 
-**Remaining knowledge gaps** — concepts in coverage.md not yet in PROGRESS.md. Split them into
+**Remaining knowledge gaps** — concepts in coverage-junior.md not yet in PROGRESS.md. Split them into
 two groups; the split is the point, not the length:
 
 - *Gaps the plan already owns* — for each, name what closes it (a project in the sequence, the SQL
@@ -298,9 +298,9 @@ two groups; the split is the point, not the length:
   and no study block accounts for. These are holes in the plan, not in Victor's study, and they
   are what this review exists to surface. If a whole topic has no PROGRESS.md section at all
   (Architecture and Security were both in this state on 2026-07-21), say so as one line for the
-  topic rather than listing its concepts — coverage.md owns the full list.
+  topic rather than listing its concepts — coverage-junior.md owns the full list.
 
-Never restate coverage.md — reference it for detail.
+Never restate coverage-junior.md — reference it for detail.
 
 **New project candidates added** — list only candidates added in Step 3 that were not in
 ROADMAP before this review. For each: project name, what it covers technically, which gap

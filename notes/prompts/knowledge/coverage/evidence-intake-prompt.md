@@ -102,17 +102,17 @@ Rules:
 ## Step 2b — Mid/senior postings on the target stack → `## Techo`
 
 A posting that is **on Victor's stack but above his level** (3+ años, or an explicit senior gate) is not
-waste: it shows **where the bar is heading**, which is what the `notes/{topic}/future-learning.md` files
-are for. Add it to the `## Techo` section instead of `## Raw postings`, same block format, with the
+waste: it shows **where the bar is heading**, which informs `coverage-middle.md` and
+`coverage-senior.md`. Add it to `## Techo` instead of `## Raw postings`, with the
 required years on the `Captured:` line.
 
 The separation is the whole point — keep it strict:
 - `## Techo` postings **never** enter the Synthesis denominator and **never** raise a frequency. The
   Synthesis counts `## Raw postings` only.
-- They **never** justify adding a coverage item. A skill appearing *only* in `## Techo` is by definition
-  something Victor does not need yet — that is the signal, not a gap.
+- They never justify adding a junior item. They may corroborate middle or senior placement when the
+  responsibility level matches; a single posting is still not sufficient evidence by itself.
 - After adding a posting, update the "Qué señala este techo" bullets at the end of the section, and route
-  each new signal to the topic whose `future-learning.md` should eventually absorb it (name the file).
+  each signal to its topic and proposed level (`coverage-middle.md` or `coverage-senior.md`).
 
 If a posting is off-stack entirely (not Java/Spring/Angular), drop it — it goes in neither section, only
 in the report's skipped line.
@@ -145,7 +145,7 @@ Print a short summary:
 | Postings added (junior → Raw postings) | [company — role — source, one per line] |
 | Postings added to `## Techo` (mid/senior) | [company — role — years required, or "none"] |
 | Postings dropped (off-stack) | [company — role — reason, or "none"] |
-| future-learning signals from `## Techo` | [signal → target future-learning.md file, or "none"] |
+| later-level signals from `## Techo` | [signal → target topic + middle/senior level, or "none"] |
 | Synthesis changes | [requirement — old freq → new freq; new skills added] |
 | New "signals to watch" | [list or "none"] |
 | Footer count | [old N → new N] |

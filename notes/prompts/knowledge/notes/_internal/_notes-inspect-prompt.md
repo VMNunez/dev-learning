@@ -17,7 +17,7 @@ file, so every file is judged at the same depth.
 
 **What it does NOT do.** It does not resolve TODOs, does not survey TODOs across the folder (the
 planner owns that), does not analyse coverage gaps or sequence, does not create or rename files, does
-not touch `future-learning.md`, and does not write any note prose. One file, quality judgment only.
+not touch any `coverage-*.md` file, and does not write any note prose. One file, quality judgment only.
 
 ---
 

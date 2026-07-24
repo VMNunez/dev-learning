@@ -1,204 +1,136 @@
-# Coverage standard — what a good coverage.md contains
+# Coverage standard — levelled learning scope
 
-This is the **shared standard** for coverage files. It is not a runnable prompt — it holds no
-configuration and does nothing on its own. Two prompts read it:
+This is the shared contract for `coverage-prompt.md` and `coverage-audit-prompt.md`.
 
-- `coverage-prompt.md` reads it to **create/update one topic's** `coverage.md`.
-- `coverage-audit-prompt.md` reads it to **audit all** of `notes/coverage.md` globally.
+## Artifact model
 
-Both used to carry their own copy of these rules; keeping them here once means the two can never drift.
-Each prompt adds only its own *flow* (per-topic edit vs global convergence) on top of this standard.
+Every topic owns three non-overlapping scope files:
 
----
+- `coverage-junior.md` — everything Victor must know to obtain and perform well in the current target junior or junior-mid role.
+- `coverage-middle.md` — the next professional level: concepts expected once the junior foundation is complete and the developer works with growing autonomy.
+- `coverage-senior.md` — concepts expected at senior level, including multi-team ownership, deep production diagnosis, platform concerns, and justified specialisation.
 
-## What coverage.md is
+Two global mirrors provide cross-topic analysis:
 
-`coverage.md` is the **single source of truth** for everything Victor must learn about a topic. It is
-**derived from what the job requires, not from the notes.** The notes are then written to cover every
-item in coverage — never the other way around.
+- `notes/coverage-junior.md`
+- `notes/coverage-middle.md`
+- `notes/coverage-senior.md`
 
-- If an item is in coverage but not in the notes yet → that is a gap in the notes.
-- If the notes cover something not in coverage → extra material, fine to keep, but not required.
+The mirrors are generated artifacts. Topic files are the sources of truth.
 
-Downstream, `knowledge/notes/notes-audit.md` and `knowledge/interview-prep/notes-and-interview-prep-prompt.md` use coverage as their baseline:
-every item is a required topic that must be covered by at least one note. No exceptions. So the state
-of the notes never limits what goes in coverage — if the notes are sparse or missing, derive coverage
-entirely from what Spanish consultancies test at junior level; the gap just means notes must be written.
+## Progression gate
 
-> **Projects are a vehicle to practise coverage items — they do not define coverage scope.** Never use
-> the project list to decide what belongs in coverage.
+Levels are sequential:
 
----
+1. Build, study, practise, and consolidate the junior level.
+2. Start middle material only after junior notes and interview preparation cover every junior item and practical checks show that Victor can explain and apply them without assistance.
+3. Start senior material only after the middle level is consolidated or a real job responsibility makes it immediately relevant.
 
-## The job target is the source — never hardcode it
+The gate controls study order, not file existence. Middle coverage may be mapped in advance so the progression is visible, but downstream middle authoring must not become active while the junior gate is open.
 
-What counts as "in scope" is defined by **Victor's job target**, and that target lives in
-`ROADMAP.md` (current phase, deadline, what is post-junior) and `notes/prompts/_internal/_shared-context.md`
-(profile, the Spanish job market 2026, the AI factor). **Read both** before deciding scope — do not
-rely on values written into a prompt.
+## The job target defines scope
 
-Any concrete mention below — "junior Angular + Spring Boot", "NTT Data / Capgemini", "August–September
-2026" — is an **illustration of what the source currently says**, not a fixed value. If ROADMAP.md and
-`_shared-context.md` say something different (a new deadline, a shifted target role, new companies),
-**they win** — the coverage must reflect the source, not the example.
+Read `ROADMAP.md` and `_shared-context.md` before making scope decisions. Current examples such as “Angular + Spring Boot”, named consultancies, or a target date are illustrations only; the source files win whenever the target changes.
 
-### Two sources: a deep market analysis, complemented by real postings
+Use two evidence sources:
 
-Coverage scope rests on **two sources that reinforce each other**, and the first is primary. Neither
-gives the true picture alone: the exhaustive analysis reveals the *real state of the market* — what a
-junior is actually asked, the whole surface of it — and the real postings corroborate that with hard
-frequency and the market's exact wording. Only together do they produce the complete, realistic view
-coverage is built on.
+1. A deep analysis of current screenings, practical tests, maintained codebases, and day-to-day expectations for the target level. Use live web evidence when available.
+2. `_job-market-evidence.md` as corroboration and frequency signal. Its junior postings can raise the junior floor. Its `## Techo` section may inform middle or senior placement but can never raise the junior floor.
 
-1. **A deep analysis of the target market — the backbone.** Reason thoroughly about what a junior for
-   the target role and companies (per ROADMAP + `_shared-context`) is actually asked in screenings,
-   technical interviews, and take-homes, and — when possible — back it with a **live web search of
-   current Spanish junior postings and interview norms** for the stack. This analysis is always
-   required; it is never a mere fallback. It is what makes coverage reflect the whole market, not only
-   the few postings that happen to be on file.
-2. **Real postings — the corroboration.** `notes/prompts/_internal/_job-market-evidence.md` holds real postings
-   from the target companies, distilled into recurring requirements. They **complement** the analysis:
-   they confirm it, add a frequency signal (`~7/9`), surface the exact wording the market uses, and —
-   on a concrete point where a real posting clearly conflicts with the analysis — the posting wins
-   (real data beats an unverified guess).
+Sparse evidence never proves that a fundamental is unnecessary.
 
-Neither source alone is enough. The evidence file is a small, partial sample, so it can only *raise*
-the floor, never lower it — a requirement's absence from it is not proof a junior does not need it. And
-the analysis without the postings drifts toward what the model imagines rather than what the market
-prints. Use both: where they conflict on a concrete point, evidence wins; everywhere else, the deep
-analysis defines the floor. Evidence raises the floor, it does not lower the ceiling.
+## Level definitions
 
-**Cover the market first, then expand — but the expansion is not optional.** Sequence the work: first
-make every recurring market requirement map to an item (the priority floor), then expand to the
-interview fundamentals and confusable pairs the postings under-list. The order is a priority, not a
-licence to stop at the market: a section is not allowed to be "rich" in extras while a `~8/8` recurring
-requirement has no item — but neither is it done just because the market requirements are covered. The
-fundamentals a junior is still tested on are equally required for completeness.
+### Junior
 
-> **When the evidence is thin, its silences are not signals.** `_job-market-evidence.md` currently holds
-> only a handful of partial postings — a small, noisy sample. A skill *not* appearing there does **not**
-> mean a junior for the target role does not need it. When the evidence is thin or empty, treat the
-> model's reasoned per-topic analysis of what a junior at the target role and companies must know as an
-> **equally required floor**: run the completeness test (below) in full for every section, and let real
-> evidence override that analysis only where the two actually conflict — never let a sparse file quietly
-> shrink coverage.
+Include a concept when its absence would materially weaken Victor's candidacy or early job performance:
 
----
+- recurring requirement in target junior postings;
+- ordinary framework/language mechanism needed to read and write common code;
+- standard screening, take-home, debugging, or code-review filter;
+- important confusable pair that exposes shallow understanding;
+- inexpensive practical differentiator such as meaningful unit testing;
+- maintained-code recognition required on day one at a consultancy.
 
-## Deciding what is IN and what is OUT
+Do not require production-scale ownership, specialist tuning, framework internals, or distributed-system design.
 
-Think from the perspective of a technical interviewer at one of the target companies who has ~30
-minutes with a candidate at the target level. Ask: *"What would I ask to test whether they really know
-this topic?"* The answers are the coverage items. Then apply the filter:
+### Middle
 
-**IN coverage — must be there:**
-- The candidate is expected to explain it confidently out loud.
-- The candidate is expected to write it, read it, or recognise it in a real codebase.
-- Not knowing it would make the interviewer doubt the candidate's competence.
+Include a concept when it normally becomes expected from a developer with autonomy beyond assigned junior tasks:
 
-**OUT → goes to `future-learning.md`:**
-- Real and worth learning, but only relevant after landing the first job.
-- Too advanced for the target screening (mid-level architecture, performance tuning, distributed
-  systems, patterns only seniors use).
-- Belongs to a future project or a post-hire growth stage.
-- Someone who doesn't know it would not be filtered out at the target level in the target year.
+- owns a feature or service boundary end to end;
+- diagnoses production behaviour rather than only implementing the happy path;
+- designs reusable APIs, shared state, integration boundaries, or testing strategy;
+- evaluates trade-offs across several valid approaches;
+- handles performance, resilience, security, or maintainability at application/team scale;
+- reviews junior work and prevents recurring design defects.
 
-If a concept fits neither category, it is not needed at all — do not add it anywhere.
+Do not import senior organisational architecture, platform ownership, deep internals, or rare specialisation.
 
-### The AI factor
+### Senior
 
-For each concept, ask:
-- Easy to generate with AI but hard to explain? → **must be in coverage.**
-- The kind of thing an interviewer shows as a snippet and asks "what does this do and why?" →
-  **must be in coverage.**
-- Something only a mid-level developer needs, regardless of AI? → **future-learning.**
+Include when the responsibility normally requires senior-level ownership:
 
----
+- multi-team or organisational architecture;
+- specialist performance, runtime, database, security, or compiler work;
+- experimental or emerging APIs not yet a realistic level requirement;
+- infrastructure/product-specific tools learned when a real role requires them;
+- concepts whose value depends on production scale and responsibility beyond middle autonomy.
 
-## Every section needs all three item types
+## No numeric budgets
 
-The interview-prep system that consumes coverage generates three kinds of questions — conceptual
-(~55%), decision (~35%), pressure (~10%). A section with only conceptual items is incomplete: it
-generates only one kind of question, which is the most common gap and the one interviewers use to
-filter juniors. Before closing any section, confirm it has at least one of each:
+There is no minimum, target, or maximum item count.
 
-- **Conceptual** — "what is X and how does it work?" e.g. `@Transactional — what it does and at which
-  layer it belongs`.
-- **Decision** — "why X instead of Y?" e.g. `JWT vs sessions — when to choose each and the tradeoff
-  for a stateless REST API`.
-- **Pressure** — a gotcha or edge case that exposes shallow understanding e.g. `@Transactional on a
-  private method — silently ignored because Spring cannot proxy it`.
+Item count is an outcome of evidence and level calibration, never a quota or brake. A correct topic may contain 20, 50, 100, or 200 items.
 
----
+Stop only when all conditions hold:
 
-## Confusable pairs — both sides, as separate items
+1. every recurring market requirement for the selected level maps to an item;
+2. ordinary fundamentals, practical decisions, pressure cases, and important confusable pairs are covered;
+3. every retained item belongs to this topic and this level;
+4. a fresh adversarial pass finds only duplicates, another topic's ownership, another level, or unjustified specialisation.
 
-Pairs of similar concepts are a standard interview filter. When a section touches one side of a
-confusable pair, include the other as its own item, with a description that draws the difference.
-Examples by topic (not exhaustive — apply the same logic to any topic):
-- Spring Boot: `@NotNull` vs `@NotBlank`, `LAZY` vs `EAGER`, `@Component` vs `@Bean`,
-  `@Service` vs `@Repository` vs `@Component`, `findById` Optional vs throw, `save()` vs `saveAndFlush()`
-- Angular: `Subject` vs `BehaviorSubject`, `signal()` vs `computed()`, `ngIf` vs `@if`,
-  `async pipe` vs manual subscribe, `Observable` vs `Promise`, `constructor` vs `ngOnInit`
-- Java: `==` vs `.equals()`, `checked` vs `unchecked` exceptions
-- SQL: `WHERE` vs `HAVING`, `JOIN` vs `LEFT JOIN`, `COUNT(*)` vs `COUNT(column)`, `TRUNCATE` vs
-  `DELETE`, `UNION` vs `UNION ALL`, `EXISTS` vs `IN`
-- TypeScript: `interface` vs `type`, `any` vs `unknown`, `?.` vs `??`
-- Architecture: `PUT` vs `PATCH`, `401` vs `403`, unit vs integration test, `DTO` vs entity,
-  soft delete vs hard delete
-- Security: authentication vs authorisation, hashing vs encryption, `XSS` vs `CSRF`, access vs
-  refresh token
+Never use “could an interviewer ask this?”; that criterion is unbounded. Use “would not knowing this materially weaken performance at the selected level?”
 
----
+## Topic isolation
 
-## Item format and file format
+One coverage-prompt execution processes exactly one topic and one level. `TOPIC = all` is not supported.
 
-**Each item:** `concept name or syntax — one sentence anchored to interview context`. The description
-is mandatory and must answer "why does this belong in coverage?" — the signal the interviewer is
-probing for, not a tutorial definition. Use language like "interviewers ask…", "tested in every
-technical screening", "the most common source of bugs in junior code".
+Related topics remain independent. In particular:
 
-**Good vs bad item:**
-- ❌ `@Transactional — manages database transactions`
-- ✅ `@Transactional — defines an atomic service-layer boundary so its database writes commit or
-  roll back together; interviewers use it to test whether you place transactions around a complete
-  business operation`
+- Angular and Angular Material always run separately.
+- Security owns threats and defences; Angular/Spring Boot keep concrete client/server integration.
+- General owns neutral HTTP, JSON, testing vocabulary, configuration, and container awareness.
+- Architecture owns framework-neutral boundaries and design decisions.
+- SQL owns database behaviour; Spring Boot owns JPA/Spring implementation.
+- Java owns language semantics; Spring Boot owns framework behaviour.
+- JavaScript owns Promise semantics; Angular owns Observable/RxJS integration.
+- CSS owns cascade and layout; Angular Material owns Material APIs, overlays, tokens, and components.
 
-The bad item is a dictionary definition. The good item names one mechanism and the signal the
-interviewer is testing. Proxy limitations such as private methods belong in their own item.
+When a run discovers another topic's concept, route a proposal to `_cross-topic-inbox.md`; never author it in the current topic.
 
-**One concept per item — functional requirement, not style.** Never group multiple concepts in one
-bullet (if a bullet lists `@Entity`, `@Table`, `@Id` together, split them). Notes are audited per
-item, interview questions are generated per item, and project gap analysis maps per item — a grouped
-bullet breaks all three downstream steps.
+## Item and file format
 
-**File format rules:**
-- Plain `- ` bullets. No checkboxes (`[ ]`), no numbered lists.
-- Inline backticks for annotations/class/method names are encouraged (`` `@Transactional` ``). Fenced
-  code blocks (triple backtick) are **not** allowed — no implementation, no method bodies, no examples.
-- Sections grouped by theme, with functional, specific names ("Spring Data JPA", "Bean validation",
-  "Smart/dumb pattern" — good; "Annotations", "Patterns", "Basics" — too vague).
-- Aim for 5–10 items per section. More than 12 → split. Fewer than 3 → merge into a related section.
+- One independently studyable concept per bullet.
+- Comparisons may name both sides when the comparison itself is the concept.
+- Format: `concept — one concise sentence naming the practical decision, mechanism, or level signal`.
+- Plain `- ` bullets; no checkboxes, numbered lists, or fenced code.
+- Functional section names.
+- Split a section when it becomes difficult to scan; merge sections that do not represent a useful concern. Do not use numeric section-size rules.
+- Order by filtering/competency risk within the selected level.
+- No conduct, storytelling scripts, ticket workflow, or generic interview behaviour.
+- No concept may appear in more than one of `coverage-junior.md`, `coverage-middle.md`, and `coverage-senior.md`.
 
----
+## Quality test
 
-## Ordering — filtering-risk order, and the note-sequence caveat
+For each section verify:
 
-Order sections from **highest filtering risk** (most likely to cause rejection if unknown) to lowest,
-and items within a section foundational-first, then more specific.
+- conceptual understanding: what mechanism is operating;
+- decision quality: when and why to choose an approach;
+- pressure resistance: common failure, edge case, or misleading alternative;
+- factual accuracy against current primary documentation;
+- correct topic and level ownership.
 
-> **This is not the study order.** Coverage is ordered by interview risk; `notes-audit` builds the
-> notes in **pedagogical/narrative order** (each concept arrives because the previous made it
-> necessary). The two orders differ on purpose — `notes-plan` re-sequences for the narrative thread.
-> So do not force coverage into a teaching sequence, and do not expect the notes to follow coverage's
-> order file-for-file.
+The final question is:
 
----
-
-## The completeness test — before finalising a section or file
-
-Answer honestly: *"If Victor studied only the items here, could he handle the common screening
-questions and practical tasks that materially filter a junior candidate for the target role?"* Do
-not optimise for every question an interviewer could invent. A section is complete when it covers
-the recurring market floor, ordinary junior fundamentals, the important confusable pairs, and the
-three item types without importing post-hire depth.
+> If Victor mastered only this file, would he cover the realistic expectations of this topic at this level without studying the next level prematurely?

@@ -2,7 +2,7 @@
 
 **Internal component of `sql-exercises-prompt.md`. Not runnable on its own** — it assumes the shell has
 already resolved `{FILE}`, `{COUNT}`, `{FOCUS}` and `{REVIEW}`, read `notes/prompts/_internal/_session-rules.md`, `PLANNING.md`,
-`PROGRESS.md` and `coverage.md`, and printed the resolution block.
+`PROGRESS.md` and `coverage-junior.md`, and printed the resolution block.
 
 Split out 2026-07-22: a run is either practice or review, never both, so carrying the other branch was
 ~40% of the file for nothing. The shell reads only the branch its `MODE` names.
@@ -148,19 +148,19 @@ Generate {COUNT} exercises for {TOPIC}, numbered starting from N+1.
 introduce that concept; Standard and Challenge explore its edge cases and combinations.
 Do not cover other parts of the topic.
 
-**If FOCUS is blank:** cover the full topic. `notes/sql/coverage.md` is the **single source of
+**If FOCUS is blank:** cover the full topic. `notes/sql/coverage-junior.md` is the **single source of
 truth for concept scope** — read the sections the §6 step declares (resolved as described below),
 and ensure every concept item listed there is addressed across the exercises. The topic-specific
 rules further below are **exercise format, structural constraints, and concrete seeds** (e.g. the
 BEGIN/ROLLBACK wrapper for DML, the four-task format for normalization, a specific Challenge to
 build) — they are *not* the scope list and must never be read as one.
 
-**Reconciliation rule — coverage.md always wins on scope.** The seed bullets below were written
-once and coverage.md evolves; do not assume they still match. On any disagreement about *which
-concepts* to cover, coverage.md is authoritative: include a concept it lists even if no seed
-mentions it, and drop a seed concept coverage.md no longer lists. The seeds only ever supply
-*format and concrete examples* for the concepts coverage.md defines — treat a seed that names a
-concept as an illustration, not as permission to add scope coverage.md dropped.
+**Reconciliation rule — coverage-junior.md always wins on scope.** The seed bullets below were written
+once and coverage-junior.md evolves; do not assume they still match. On any disagreement about *which
+concepts* to cover, coverage-junior.md is authoritative: include a concept it lists even if no seed
+mentions it, and drop a seed concept coverage-junior.md no longer lists. The seeds only ever supply
+*format and concrete examples* for the concepts coverage-junior.md defines — treat a seed that names a
+concept as an illustration, not as permission to add scope coverage-junior.md dropped.
 
 **Which sections to read — resolve them from the plan, never from a list kept here.** The §6 step
 that owns {TOPIC} already declares them:
@@ -183,7 +183,7 @@ Two stop conditions, both silent-scope-loss bugs if allowed to fall through to t
 
 - **The step declares no `**Coverage:**` line** → stop and report it. The plan standard (B) requires
   one on every step; a step without it is a planning gap, exactly like a missing `COUNT`.
-- **A section named on that line does not exist verbatim in `notes/sql/coverage.md`** → stop and
+- **A section named on that line does not exist verbatim in `notes/sql/coverage-junior.md`** → stop and
   report it. It means the plan and coverage have drifted apart, and `sql-plan-audit` is what fixes
   that, not this run.
 
@@ -280,10 +280,10 @@ yours this run. **Headings are matched case- and separator-insensitively**: the 
 hyphens **is** the block — do not report it as missing.
 
 - If the file has no block for `{TOPIC}` (a topic added to coverage but not yet seeded), generate from
-  `notes/sql/coverage.md` alone and say so in one line. A missing seed block is a gap to fill later,
+  `notes/sql/coverage-junior.md` alone and say so in one line. A missing seed block is a gap to fill later,
   never a reason to skip the topic.
 - Seeds are structure and ideas, **not scope**: the reconciliation rule above still governs, and
-  `coverage.md` always wins on what belongs in the batch.
+  `coverage-junior.md` always wins on what belongs in the batch.
 
 ---
 

@@ -31,7 +31,7 @@ Use PROJECT_PATH and SCOPE wherever the prompt refers to {PROJECT_PATH} and {SCO
 You are a security reviewer with an **attacker's mindset**, auditing one slice of a junior portfolio
 project before it is shown to Spanish consultancy interviewers. Read **only what your hunt needs** —
 keep your context for the slice's code:
-- `notes/security/coverage.md` — the full junior security scope (this is what you audit against).
+- `notes/security/coverage-junior.md` — the full junior security scope (this is what you audit against).
 - `notes/prompts/projects/review/_internal/_review-standard.md` — **only** the "Security scope — the cold pass"
   section. Skip the code-quality/correctness/test checklists (the flow reviewer's job) and the backlog
   machinery (the orchestrator's).
@@ -75,7 +75,7 @@ space; if an area is genuinely clean, say so.
 
 Return, for **this slice only**, a findings table, most severe first:
 
-`| Severity (High/Medium/Low) | File | Finding | Fix | Why an interviewer cares | Related notes/security/coverage.md item |`
+`| Severity (High/Medium/Low) | File | Finding | Fix | Why an interviewer cares | Related notes/security/coverage-junior.md item |`
 
 Then a one-line **trace**: for a resource, every endpoint you checked (✅ safe / ⚠️ finding); for
 `security-infra`, every area above — as proof you covered the whole slice. If an area is clean, say

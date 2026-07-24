@@ -10,7 +10,7 @@ file that decides what gets drilled in the daily SQL block was written by hand a
 reviewed by anything cold. It is also the file that rots fastest — every closed step, every new
 coverage section and every prompt change leaves it slightly less true.
 
-**Run it whenever:** a step closes · `notes/sql/coverage.md` grows · the exercise prompt changes ·
+**Run it whenever:** a step closes · `notes/sql/coverage-junior.md` grows · the exercise prompt changes ·
 or the plan simply feels out of date. It is safe to run repeatedly; a clean plan comes back unchanged.
 
 > **▶ Run first:** nothing. A stale `PROGRESS.md` is one of the findings, not a prerequisite.
@@ -40,7 +40,7 @@ SCOPE = full
 ```
 
 - `SCOPE = full` — the normal run: all four specialists.
-- `SCOPE = extend` — only reconcile with `notes/sql/coverage.md` and add the steps it now needs
+- `SCOPE = extend` — only reconcile with `notes/sql/coverage-junior.md` and add the steps it now needs
   (specialists 2 and 1, in that order — the same first two of a full run). Use after a
   `coverage-audit` run added sections.
 
@@ -81,7 +81,7 @@ Gather the ground truth the specialists check the plan against. Counts, never co
   (§8 — *Progress tracking*; §9 is the quality-gate table and holds no counts). These
   are the numbers the history gate protects — the numbers on disk cannot regress, since this flow
   never touches the exercise files, so a gate that only re-greps disk checks nothing.
-- `grep -n "^## " notes/sql/coverage.md` → the current section list.
+- `grep -n "^## " notes/sql/coverage-junior.md` → the current section list.
 
 Hand this snapshot to specialists 2 and 3. It is evidence, not a finding: the plan is wrong only where
 it disagrees with it.
@@ -113,7 +113,7 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 | # | Concern | Owns | Also reads |
 |---|---------|------|------------|
 | 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | §2, §3, §6, §7 · `ROADMAP.md` (for B2) |
-| 2 | `coverage-and-steps` | **Invariants 1, 2, 10** · **B10** | `notes/sql/coverage.md` · §5, §6, §Z · the Phase 1 section list |
+| 2 | `coverage-and-steps` | **Invariants 1, 2, 10** · **B10** | `notes/sql/coverage-junior.md` · §5, §6, §Z · the Phase 1 section list |
 | 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11** | §0, §5, §6, §8 · `PROGRESS.md` · **the Phase 1 snapshot** |
 | 4 | `loop-and-fence` | **Section A** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9** · **Section E** | §0, §2, §3, §4, §8b, §Z · `sql-exercises-prompt.md` |
 
@@ -128,7 +128,7 @@ updated), §1 its three lines, §4 its automated/manual marks. A row the plan in
 required one — a *next gate* where *next revision point* belongs — passes a presence check and fails
 this one, and it is exactly how off-scope tracks creep back into §0.
 
-**Specialist 2 is the extension engine.** For every `## ` section of `notes/sql/coverage.md` not
+**Specialist 2 is the extension engine.** For every `## ` section of `notes/sql/coverage-junior.md` not
 claimed by a step, it does not merely report the gap — it **writes the new step**, to Section C's
 shape, inserted at the dependency position B1 justifies, with its own file in §5 and its row in §8.
 Existing step numbers are preserved where possible and closed steps are never renumbered into

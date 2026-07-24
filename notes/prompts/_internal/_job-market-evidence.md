@@ -16,7 +16,7 @@ is its **complement**, not its replacement:
   *absence* here is not proof a junior does not need it. When it is empty or stale, the deep analysis
   still stands on its own — coverage never shrinks just because the file is thin.
 - **The `## Techo` section is off-limits to coverage.** It holds mid/senior postings (3+ años) kept only
-  to show where the bar is heading, and it feeds the `future-learning.md` files — never coverage, never
+  to show where the bar is heading, and it feeds the `coverage-senior.md` files — never coverage, never
   the Synthesis frequencies. A skill that appears *only* there is by definition one Victor does not need
   yet. Read the Raw postings + Synthesis; skip `Techo`.
 
@@ -156,7 +156,7 @@ y cloud**; entorno **Agile** con equipos internacionales.
 
 > **Regla dura, léela antes de usar esta sección.** Estas ofertas exigen explícitamente 3+ años y están
 > **fuera del perfil objetivo**. Existen aquí por una única razón: mostrar **hacia dónde va el listón**,
-> para alimentar los `future-learning.md` de cada topic. **Nunca** entran en el denominador de la
+> para alimentar los `coverage-senior.md` de cada topic. **Nunca** entran en el denominador de la
 > Synthesis, **nunca** suben el suelo junior, y `coverage-prompt` / `coverage-audit` **no pueden usarlas
 > para añadir items a coverage**. Un skill que solo aparece aquí es, por definición, algo que Victor
 > todavía NO necesita. Confundir estas dos secciones rompe el propósito del fichero.
@@ -222,7 +222,7 @@ diseño**.
 Nota de proceso: "**Even if you don't have 100% of the required knowledge, we would love to meet you!**"
 — la propia oferta invita a aplicar sin cumplir el 100%.
 
-**Qué señala este techo (lectura para `future-learning.md`, no para coverage):**
+**Qué señala este techo (lectura para `coverage-senior.md`, no para coverage):**
 - **Testing con taxonomía completa** — en junior el testing casi no se exige por escrito; a partir de
   mid se pide desglosado (unitario / integración / E2E). Misma curva en las cuatro ofertas, y en la
   senior de Barcelona con herramienta por nivel: **JUnit 5 + Mockito** (unit), **WireMock** (mocking de
@@ -230,12 +230,12 @@ Nota de proceso: "**Even if you don't have 100% of the required knowledge, we wo
   importante: **JUnit 5 y Mockito son los mismos del suelo junior (~4/13)** — no cambian al subir de
   nivel, solo se les añaden capas alrededor. Lo que estudies ahora no se tira.
 - **Métricas de calidad de código: SonarQube y JaCoCo** — cobertura y análisis estático como requisito
-  con nombre propio. Es el paso natural después de "escribir tests" → `java/future-learning.md`.
+  con nombre propio. Es el paso natural después de "escribir tests" → `java/coverage-middle.md`.
 - **Seguridad nombrada como bloque propio: Spring Security + OAuth2 + JWT** — es exactamente la pila del
   Step 6 del proyecto 07, listada como stack senior. Refuerza que ese trabajo no es material de práctica:
-  es la misma pieza que se usa arriba. OAuth2 es el escalón que aún no tocas → `security/future-learning.md`.
+  es la misma pieza que se usa arriba. OAuth2 es el escalón que aún no tocas → `security/coverage-middle.md`.
 - **SOLID + patrones de diseño** — nombrados como *hard skill* con entidad propia, no como adorno.
-  Es lo más cercano al nivel actual de Victor de todo el techo → candidato natural a `java/future-learning.md`.
+  Es lo más cercano al nivel actual de Victor de todo el techo → candidato natural a `java/coverage-middle.md`.
 - **CI/CD nombrado como "cultura DevOps"** — en las tres ofertas del techo, y con herramienta concreta
   (GitLab CI, Jenkins). **Kubernetes** aparece en dos de tres: Docker ya está en el suelo junior (~3/13),
   Kubernetes es el escalón inmediatamente siguiente y claramente fuera de junior.
@@ -252,7 +252,7 @@ Nota de proceso: "**Even if you don't have 100% of the required knowledge, we wo
   mercado, pero en centros concretos el francés abre puertas que el inglés no. Dato a tener presente si
   el mercado se pone difícil, no un objetivo actual.
 - **Java 8-17 con "streams, interfaces" nombrados aparte** — a 2 años ya no basta "saber Java": piden las
-  piezas del lenguaje moderno. **Streams** es la que Victor aún no ha tocado → `java/future-learning.md`.
+  piezas del lenguaje moderno. **Streams** es la que Victor aún no ha tocado → `java/coverage-middle.md`.
 - **IA / GenAI dentro del stack Java** — Spring AI, SDK de Anthropic Claude, **MCP** y **RAG** listados
   como stack de proyecto, no como I+D. Es la primera vez que aparece en el fichero y encaja con lo que
   ya está anotado en `notes/ai-development/future-learning.md` (estudiar tras el primer empleo). El dato
@@ -261,9 +261,9 @@ Nota de proceso: "**Even if you don't have 100% of the required knowledge, we wo
   Java 25, así que el backend está alineado con lo que pide una oferta senior de 2026. Útil para el CV.
 - **Referencia salarial** — Second Window paga **30–33k** por 3 años de Java + Angular fullstack en
   Madrid. Útil como ancla para negociar más adelante; el suelo junior queda por debajo de esa banda.
-- **Arquitectura Hexagonal / DDD táctico** — el salto arquitectónico de mid → `architecture/future-learning.md`.
+- **Arquitectura Hexagonal / DDD táctico** — el salto arquitectónico de mid → `architecture/coverage-middle.md`.
 - **Angular avanzado: NgRx, Signals, Nx** — la oferta de Zemsania es la única del fichero donde Angular
-  es el eje y el backend el complemento. → `angular/future-learning.md`.
+  es el eje y el backend el complemento. → `angular/coverage-middle.md`.
 - **APIs REST con adjetivos** (rendimiento, escalabilidad, seguridad) — a los 3 años ya no se pide
   "saber hacer REST", se pide hacerlas bien. Ese es el salto real junior → mid.
 

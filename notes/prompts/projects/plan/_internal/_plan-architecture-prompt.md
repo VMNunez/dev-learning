@@ -38,7 +38,7 @@ Before starting, read:
   (Tradeoffs), and the "Design-correctness checks". This is the shape and the bar.
 - `PROGRESS.md` — what architecture and patterns Victor has **already** built and can be assumed known
   (the previous project's layers, guards, coordinator pattern, layered backend, JWT filter, etc.).
-- `notes/coverage.md` — the architecture section: which architectural concepts are still gaps.
+- `notes/coverage-junior.md` — the architecture section: which architectural concepts are still gaps.
 - `{PROJECT}/PLANNING.md` — the draft the author just wrote. §6, §3, §7, §10, §20 are your focus.
   The Read tool truncates files over 2000 lines silently — check `wc -l` first and, if near or over
   2000, read in passes with `offset` to the real end (§20 lives in the tail).
@@ -58,7 +58,7 @@ Read the author's §6 and the entities/API it rests on. Answer, in order:
    pattern the project is supposed to teach, or collapses two layers that should stay separate.
 3. **Is the ONE new architectural concept right?** A project should introduce **one** major
    architectural idea beyond the previous one (per §3 and §6). Name it. Is it a genuine gap from
-   coverage.md, teachable through this domain, and defensible at junior level? If the author picked
+   coverage-junior.md, teachable through this domain, and defensible at junior level? If the author picked
    two, recommend keeping one and deferring the other; if none, recommend the strongest gap.
 4. **Do the tradeoffs (§20) reflect real architectural choices?** Each `[X] over [Y] — [reason]` must be
    a decision Victor can defend, not a default. Fix hollow reasons.

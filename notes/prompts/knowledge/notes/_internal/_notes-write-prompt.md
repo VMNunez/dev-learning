@@ -37,6 +37,7 @@ budget stays on writing that file well.
 ## Replace the [ ] with your value and delete the brackets.
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+LEVEL = [junior | middle | senior]
 FILE  = [exact en/ file path, e.g. notes/java/en/08-exceptions.md]
 
 TASK = [what to do this run — copy the worklist row, or describe it, e.g.
@@ -95,7 +96,7 @@ translator's job (stage T). The one exception is **reading** the `es/` file to f
 markers (see Step 1): Victor adds his doubts in the `es/` file, so you read them there as *input*, but
 you write your answer in `{FILE}` (English). You never edit the `es/` file.
 
-Do not read or edit `coverage.md`, `future-learning.md`, or any sibling note's body — if you notice a
+Do not read or edit any `coverage-*.md` file, or any sibling note's body — if you notice a
 gap that belongs elsewhere, mention it in the summary instead of acting on it.
 
 ---

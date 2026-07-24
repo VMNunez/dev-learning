@@ -72,7 +72,8 @@ Only add a link if you are certain of the correct URL and sub-section — if not
 
 ## Bilingual notes — English and Spanish
 
-Each topic folder has `en/` and `es/` subfolders. `coverage.md`, `future-learning.md`, and
+Each topic folder has `en/` and `es/` subfolders. `coverage-junior.md`, `coverage-middle.md`,
+`coverage-senior.md`, and
 `layer-reference.md` live in the topic root — never inside `en/` or `es/`.
 
 **File naming convention — mandatory:**

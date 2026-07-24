@@ -225,8 +225,9 @@ Notes exist in two languages. Each topic folder contains two subfolders — `en/
 notes/java/
   en/  ← numbered English note files (e.g. 09-streams-lambdas.md)
   es/  ← numbered Spanish note files (same numeric prefix, Spanish-translated name — e.g. 08-exceptions.md ↔ 08-excepciones.md)
-  coverage.md        ← stays in the root (not language-specific)
-  future-learning.md ← stays in the root
+  coverage-junior.md ← junior level, stays in the root
+  coverage-middle.md ← middle level, stays in the root
+  coverage-senior.md ← senior level, stays in the root
   layer-reference.md ← stays in the root (spring-boot only)
 ```
 
@@ -247,23 +248,23 @@ notes/java/
   - TODO resolved in an `en/` file → re-sync the same content into `es/` if the counterpart exists
 - Spanish versions use the same structure and code blocks — only the prose is translated into Spanish. Code comments may also be translated. **The Spanish prose must read as natural Spanish, not as a word-for-word translation of the English.** The content and message must be identical across both languages, but each version should read as if it were written natively in that language — same idea, same emphasis, different words where needed. Literal translations that sound awkward or robotic in Spanish are not acceptable. Structural labels like `Purpose:`, `File:`, and `Docs:` must be translated to `Propósito:`, `Archivo:`, and `Docs:` (Docs stays as-is — it is a common abbreviation in Spanish developer contexts).
 - `en/` and `es/` must always contain the same set of numbered files, paired by numeric prefix. Whenever a file is created in `en/`, create the Spanish version in `es/` immediately. Whenever a section is added or a TODO is resolved in an `en/` file, apply the same change in `es/`. The two folders are never allowed to be out of sync.
-- If the `en/` or `es/` subfolder does not exist yet, create it before writing any files into it. If numbered files are still in the topic root (not yet migrated), move them to `en/` with `git mv` and create the Spanish counterparts in `es/` — non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) always stay in the root.
-- `coverage.md`, `future-learning.md`, and `layer-reference.md` are not translated — they live only in the topic root.
+- If the `en/` or `es/` subfolder does not exist yet, create it before writing any files into it. If numbered files are still in the topic root (not yet migrated), move them to `en/` with `git mv` and create the Spanish counterparts in `es/` — non-numbered files (`coverage-junior.md`, `coverage-middle.md`, `coverage-senior.md`, `layer-reference.md`) always stay in the root.
+- `coverage-junior.md`, `coverage-middle.md`, `coverage-senior.md`, and `layer-reference.md` are not translated — they live only in the topic root.
 
 ### Subfolders and their purpose
 
-- `notes/git/` — `en/` and `es/` for numbered files; git-workflow.md stays in root; next file: `12-...`; future-learning.md in root
-- `notes/javascript/` — `en/` and `es/` for numbered files; next file: `16-...`; future-learning.md in root
-- `notes/typescript/` — `en/` and `es/` for numbered files; next file: `08-...`; future-learning.md in root
-- `notes/css/` — `en/` and `es/` for numbered files; next file: `18-...`; future-learning.md in root
-- `notes/sql/` — `en/` and `es/` for numbered files; next file: `15-...`; future-learning.md in root
-- `notes/architecture/` — `en/` and `es/` for numbered files; next file: `06-...`; future-learning.md in root (includes microservices as a concept-only entry)
-- `notes/angular/` — `en/` and `es/` for numbered files; next file: `19-...`; future-learning.md in root
-- `notes/java/` — `en/` and `es/` for numbered files; next file: `16-...`; future-learning.md in root
-- `notes/spring-boot/` — `en/` and `es/` for numbered files; next file: `16-...`; future-learning.md and layer-reference.md in root
-- `notes/angular-material/` — `en/` and `es/` for numbered files; next file: `16-...`
-- `notes/general/` — not yet migrated to `en/`/`es/` (files sit in the topic root); next file: `13-...`; future-learning.md in root
-- `notes/security/` — `en/` and `es/` for numbered files; next file: `06-...`; future-learning.md in root
+- `notes/git/` — `en/` and `es/` for numbered files; git-workflow.md stays in root; next file: `12-...`; all three coverage level files in root
+- `notes/javascript/` — `en/` and `es/` for numbered files; next file: `16-...`; all three coverage level files in root
+- `notes/typescript/` — `en/` and `es/` for numbered files; next file: `08-...`; all three coverage level files in root
+- `notes/css/` — `en/` and `es/` for numbered files; next file: `18-...`; all three coverage level files in root
+- `notes/sql/` — `en/` and `es/` for numbered files; next file: `15-...`; all three coverage level files in root
+- `notes/architecture/` — `en/` and `es/` for numbered files; next file: `06-...`; all three coverage level files in root (includes microservices as a concept-only entry)
+- `notes/angular/` — `en/` and `es/` for numbered files; next file: `19-...`; all three coverage level files in root
+- `notes/java/` — `en/` and `es/` for numbered files; next file: `16-...`; all three coverage level files in root
+- `notes/spring-boot/` — `en/` and `es/` for numbered files; next file: `16-...`; all three coverage level files and layer-reference.md in root
+- `notes/angular-material/` — `en/` and `es/` for numbered files; next file: `16-...`; all three coverage level files in root
+- `notes/general/` — not yet migrated to `en/`/`es/` (files sit in the topic root); next file: `13-...`; all three coverage level files in root
+- `notes/security/` — `en/` and `es/` for numbered files; next file: `06-...`; all three coverage level files in root
 - `notes/interview-prep/en/` and `notes/interview-prep/es/` — Q&A study files, one file per topic: `angular.md`, `typescript.md`, `architecture.md`, `general.md`, `javascript.md`, `css.md`, `git.md`, `sql.md`, `java.md`, `spring-boot.md`, `security.md`
 - `notes/interview-prep/projects/` — one file per project with specific questions about that project's implementation decisions; generated by `portfolio-audit`
 - `notes/prompts/` — the prompt system (see "The study system" below); `notes/prompts/README.md` is the index
@@ -359,7 +360,7 @@ everything commits on the branch you're on — is simpler to remember than a spl
 
 The full study system runs through prompts in `notes/prompts/`, **used in separate conversations
 — never in the main daily session.** They build and audit notes, plan and review projects,
-run practice, and keep ROADMAP.md / PROGRESS.md / coverage.md in sync.
+run practice, and keep ROADMAP.md / PROGRESS.md / the three coverage levels in sync.
 
 **Full map of every prompt, how they connect, and the order to run them → `notes/prompts/README.md`.**
 
@@ -372,11 +373,13 @@ Two shared files the prompts depend on:
 - `notes/prompts/_internal/_batch-mode.md` — per-target prompts (coverage, notes, projects, etc.) accept
   `all` to run on every topic/project at once instead of one by one.
 
-The three hub files everything reads from or writes to:
+The five hub files everything reads from or writes to:
 
 | Hub file | Source of truth for |
 |----------|---------------------|
-| `notes/coverage.md` | what to learn |
+| `notes/coverage-junior.md` | junior scope |
+| `notes/coverage-middle.md` | middle scope |
+| `notes/coverage-senior.md` | senior scope |
 | `PROGRESS.md` | what has been learned |
 | `{project}/PLANNING.md` | what a project builds |
 

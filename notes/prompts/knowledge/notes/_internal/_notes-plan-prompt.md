@@ -34,6 +34,7 @@ subagent, not by Victor):
 ## Replace the [ ] with your value and delete the brackets.
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+LEVEL = [junior | middle | senior]
 NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/en/ | notes/security/en/]
 
 ## This is an internal component — always dispatched for ONE topic by notes-audit (which expands
@@ -49,7 +50,7 @@ Notes on specific topics:
   inspect, migrate, or add `es`-parity rows for it here. Java is audited on its own `TOPIC = Java` run;
   auditing it as part of Spring Boot would rebuild the whole Java folder (a scope blow-up) and, in a
   `TOPIC = all` batch, would audit Java twice.
-  coverage.md lives in notes/spring-boot/ root only — read it from there, not from notes/java/.
+  coverage-{LEVEL}.md lives in notes/spring-boot/ root only — read it from there, not from notes/java/.
   → **General rule for multi-folder NOTES_PATH:** only the folder whose name matches TOPIC is the audit
   target; every other folder listed is read-only context — read it, never plan/inspect/migrate it.
 - Java: focus on language concepts needed to write Spring Boot code — classes, interfaces,
@@ -98,7 +99,7 @@ exactly.
 - If numbered files exist in the root: create `en/` if it does not exist, then run `git mv` for each
   file to move it into `en/`. Do NOT copy or recreate — `git mv` only, so git tracks the rename and
   the content is preserved.
-- Non-numbered files (`coverage.md`, `future-learning.md`, `layer-reference.md`) always stay in the
+- Non-numbered files (`coverage-junior.md`, `coverage-middle.md`, `coverage-senior.md`, `layer-reference.md`) always stay in the
   root — never move them.
 - Report every file moved.
 
@@ -132,14 +133,12 @@ note prose, which is the write prompt's job. Instead:
 
 ### Step 2 — Coverage and gap analysis (read-only)
 
-**Read `coverage.md` first.** It lives in the topic root, not inside `en/` (e.g. for
-`NOTES_PATH = notes/java/en/`, read `notes/java/coverage.md`). Every item in it is a required topic
+**Read `coverage-{LEVEL}.md` first.** It lives in the topic root, not inside `en/` (e.g. for
+`NOTES_PATH = notes/java/en/`, read `notes/java/coverage-{LEVEL}.md`). Every item in it is a required topic
 for Victor's objective (junior at a Spanish consultancy with Angular + Spring Boot). It is the
-ceiling — do not plan files for topics not listed there. If no `coverage.md` exists, rely on rule 1
-below and your knowledge of what junior Angular + Spring Boot interviews at Spanish consultancies
-require.
+ceiling — do not plan files for topics not listed there. If no `coverage-{LEVEL}.md` exists, stop and run `coverage-prompt` for the selected topic and level.
 
-Then survey every numbered file in `{NOTES_PATH}` (skip `future-learning.md`, `coverage.md`,
+Then survey every numbered file in `{NOTES_PATH}` (skip all `coverage-*.md` files,
 `layer-reference.md`, and anything not starting with a two-digit number) — **at headings level, not
 full prose**: for each file, read its heading structure (`grep -n "^##" <file>`) plus its opening
 section, enough to know what it covers and how it hands off. Do NOT load every file's full body into
@@ -167,7 +166,7 @@ target** folder, never in the context folder.
    whole: can Victor learn the topic end-to-end from files 01–N without looking elsewhere for the
    basics? Is there a logical progression where each file builds on the previous? Is the folder sparse
    (2 files where it clearly needs 5)? Add the missing pieces as worklist items — but stay within
-   `coverage.md` as the ceiling. If no `coverage.md` exists, limit new files to the rule-1 gaps only.
+   `coverage-{LEVEL}.md` as the ceiling.
 
    Order the worklist as a **narrative journey**, not just by number: each file should arrive because
    the previous one made it necessary (see "Narrative thread" in the standard). For every row, add to
@@ -186,7 +185,7 @@ you finish. Each inspector reads its single file in full and appends its own `fi
 So here you only **list** the pre-existing numbered files that must be inspected — do not open them
 against the checklist, do not write any `fix-quality` or `add-docs-link` rows yourself. Under the
 "Existing files to inspect" heading of the worklist, print every numbered `.md` file currently in the
-**audit target** folder — the one whose name matches TOPIC (skip `future-learning.md`, `coverage.md`,
+**audit target** folder — the one whose name matches TOPIC (skip all `coverage-*.md` files,
 `layer-reference.md`, and anything not starting with a two-digit number). **Do NOT list files from a
 read-only context folder** — e.g. on a Spring Boot run, list the files in `notes/spring-boot/en/`
 only, never the `notes/java/en/` files (those are inspected on their own `TOPIC = Java` run). The
@@ -196,17 +195,9 @@ rebuilt — listing the context folder is exactly the scope blow-up this split p
 > Files you plan as **new** (`create-file` / `create-es` rows) are NOT inspected — they are authored
 > and reviewed fresh, so they never appear in the inspect list. Only files that already exist do.
 
-### Step 4 — `future-learning.md` (edits to this reference file allowed)
+### Step 4 — Level-boundary check
 
-Read `future-learning.md` in the topic root. It is a reference list, not a study note, so you may
-edit it directly.
-- **Promote:** for each listed concept now in scope (it appears in `coverage.md`, OR the active
-  project's `PLANNING.md` lists it as an objective for a completed step), remove it from
-  `future-learning.md` and add a `create-file` worklist item for it.
-- **Demote:** if the survey surfaced a concept that is real and worth knowing but still beyond a
-  junior screening or belongs to a future project, add it to `future-learning.md` (create the file
-  with a short intro and at least one `## Phase` section if it does not exist). Do not plan a full
-  note for premature concepts.
+Read `coverage-junior.md`, `coverage-middle.md`, and `coverage-senior.md`. Do not promote or demote concepts here; only the coverage prompts own level placement. If a selected-level concept is absent from its coverage file or duplicated across levels, report a coverage-system gap and stop that row. Never create notes from a higher level to fill a perceived gap in the selected level.
 
 ---
 
@@ -224,7 +215,7 @@ edit it directly.
   counter.
 
 The only files you may modify are: the `en`/`es` folder structure (Step 0 migration only — never a
-translation), and `future-learning.md` (Step 4).
+translation), and the level-boundary check (Step 4).
 
 ---
 
@@ -233,7 +224,7 @@ translation), and `future-learning.md` (Step 4).
 The worklist is not just printed — **write it to a file** so it survives across conversations and can
 be consumed by the write prompt (or an orchestrator) without Victor re-typing anything.
 
-**Write it to `notes/{TOPIC}/notes-worklist.md`** (topic root, next to `coverage.md` — NOT inside
+**Write it to `notes/{TOPIC}/notes-worklist.md`** (topic root, next to `coverage-{LEVEL}.md` — NOT inside
 `en/`). Overwrite it if it already exists. Order the rows in study sequence (00-intro first, then by
 number). Use exactly this structure so it can be parsed and auto-checked later:
 
@@ -282,8 +273,7 @@ This file is a **temporary work artifact**, not study content — do not commit 
 
 Also print the same worklist as a table in the chat so Victor sees it immediately. Then print:
 
-**Structural fixes applied this run** (Step 0 migrations, `es/` files created, `future-learning.md`
-edits) — with a status per file.
+**Structural fixes applied this run** (Step 0 migrations, `es/` files created and level-boundary checks) — with a status per file.
 
 **TODO pattern → recommended standard change** (if any): one specific sentence to add to
 `_note-quality-standard.md`. Victor decides whether to accept it.

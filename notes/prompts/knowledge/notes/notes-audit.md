@@ -16,8 +16,10 @@ one's work, so it catches what the last trusted — and because C never sees the
 `es/` as the native study text Victor actually reads. No worklist approval, no per-file launching —
 one command does everything.
 
-> **▶ Run first:** `coverage-prompt` for the topic — notes-audit builds notes to cover every item in
-> `coverage.md`; if coverage is missing or stale, the notes will be too.
+> **▶ Run first:** `coverage-prompt` for the same topic and level — notes-audit builds notes to cover
+> every item in `coverage-{LEVEL}.md`; if coverage is missing or stale, the notes will be too.
+> Middle authoring is blocked until junior is consolidated; senior authoring is blocked until both
+> junior and middle are consolidated.
 
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
@@ -50,6 +52,7 @@ approve, no per-file launching, no commits to run yourself. Pick the recipe:
 ```
 SCOPE   = folder
 TOPIC   = Java
+LEVEL   = junior
 FILE    =            ← leave blank
 TASK    =            ← leave blank
 ```
@@ -58,6 +61,7 @@ TASK    =            ← leave blank
 ```
 SCOPE   = file
 TOPIC   = Java
+LEVEL   = junior
 FILE    = notes/java/en/08-exceptions.md
 TASK    =            ← blank means "audit it and bring it fully to standard, resolving any TODOs"
 ```
@@ -80,6 +84,7 @@ TASK    =            ← blank means "audit it and bring it fully to standard, r
 ## Configuration — edit only this block
 
 SCOPE   = [folder | file]
+LEVEL   = [junior | middle | senior]
 
 ## folder mode:
 TOPIC   = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
@@ -94,7 +99,11 @@ FILE    = [exact en/ file path, e.g. notes/java/en/08-exceptions.md]
 TASK    = [what to do to it; leave blank to mean "audit it and bring it fully to standard, resolving
            any TODOs"]
 
-Use SCOPE, TOPIC, FILE, and TASK wherever the prompt refers to {SCOPE}, {TOPIC}, {FILE}, or {TASK}.
+Use SCOPE, TOPIC, LEVEL, FILE, and TASK wherever the prompt refers to {SCOPE}, {TOPIC}, {LEVEL}, {FILE}, or {TASK}.
+
+Before later-level authoring, verify the progression gate. `middle` requires complete junior notes,
+interview preparation, and practical recall; `senior` requires the same evidence for both junior and
+middle. If the required gate is not demonstrably closed, stop without creating later-level notes.
 
 ---
 
@@ -146,10 +155,12 @@ no-ops). Otherwise, for a single topic, follow the branch directly.
 
 Launch one `role-appropriate` subagent, `reasoning tier: standard`, `execution: foreground`:
 
-> Read `notes/prompts/knowledge/notes/_internal/_notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
+> Read `notes/prompts/knowledge/notes/_internal/_notes-plan-prompt.md` and execute it in full for
+> `TOPIC = {TOPIC}` and `LEVEL = {LEVEL}`
 > (derive `NOTES_PATH` as that prompt specifies — for Spring Boot, both `notes/java/en/` and
 > `notes/spring-boot/en/`). Do the folder setup, `en`/`es` parity, gap + sequence analysis,
-> `future-learning.md`, assign concrete file numbers, and write `notes/{TOPIC}/notes-worklist.md`.
+> all three coverage level files, assign concrete file numbers for the selected level, and write
+> `notes/{TOPIC}/notes-worklist.md`.
 > Do the Step 0/Step 4 structural commit as that prompt says (never commit `notes-worklist.md`).
 > Report the worklist rows you wrote.
 
@@ -218,7 +229,7 @@ an unfinished predecessor).
 **Subagent A — English author.** Launch one `role-appropriate` subagent, `reasoning tier: deep`:
 
 > Read `notes/prompts/knowledge/notes/_internal/_notes-write-prompt.md` and execute it in full for a single file:
-> - `TOPIC` = «topic» · `FILE` = «file» · `TASK` = «task» · `REWRITE_MODE` = «mode»
+> - `TOPIC` = «topic» · `LEVEL` = {LEVEL} · `FILE` = «file» · `TASK` = «task» · `REWRITE_MODE` = «mode»
 >
 > Work in **English only** (`en/`): resolve TODOs (reading the `es/` only to find Victor's markers),
 > quality-audit, complete to the standard, self-check. **Do NOT create or edit the `es/` file, do NOT

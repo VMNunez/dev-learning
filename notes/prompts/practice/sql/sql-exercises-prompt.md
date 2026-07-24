@@ -196,7 +196,7 @@ nobody reads it at the start of the next run.
 - `notes/prompts/_internal/_session-rules.md` — daily schedule and teaching context (my profile and the market are in `notes/prompts/_internal/_shared-context.md`).
 - `practice/sql/PLANNING.md` — **the SQL learning plan.** It owns the step order, the file numbering, how many exercises each file targets, and which coverage sections each step claims. If this prompt and that plan ever disagree about a path or an order, the plan wins and this prompt is the thing to fix.
 - `PROGRESS.md` — the SQL section shows which topics are already solid.
-- `notes/sql/coverage.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
+- `notes/sql/coverage-junior.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
 My profile is in `notes/prompts/_internal/_shared-context.md`.
 
@@ -219,7 +219,7 @@ step numbers**: Step 0 alone spans files `01` and `02`, because one file carries
   ─ 13 indexes ─ 14 live-database ─ 15 report-queries
 ```
 
-Why this order and not the coverage.md order:
+Why this order and not the coverage-junior.md order:
 - **joins before aggregation** — in a real screening `GROUP BY` almost always sits on top of a join.
 - **aggregation before join-pitfalls** — every pitfall worth drilling *is* an aggregate over a broken
   join: fan-out inflating `SUM`, `COUNT(*)` vs `COUNT(column)` after a `LEFT JOIN`, pre-aggregating in

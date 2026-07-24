@@ -12,27 +12,27 @@ the run date and a short scope note, and commits both files together. Victor nev
 
 **How to read it:** each cell is the **date of the last completed run** on that target, with a scope
 note when the run was partial. An empty cell means **pending** — the current version of that prompt
-has not been run on that target. Output files that predate the prompt (e.g. the old `coverage.md`
+has not been run on that target. Output files that predate the prompt (e.g. the old `coverage-junior.md`
 files created before `coverage-prompt` existed) do NOT count as runs — the cell stays empty until the
 prompt itself has been executed. Prompts may read this file as a gate (e.g. `coverage-audit` only
 runs once the whole coverage-prompt column is filled).
 
 ## Per-topic prompts
 
-| Topic | coverage-prompt | notes-audit | interview-prep-audit | notes-and-interview-prep |
-|---|---|---|---|---|
-| Angular | 2026-07-24 | | | |
-| Angular Material | 2026-07-18 | | | |
-| Spring Boot | 2026-07-13 | 2026-07-15 | | |
-| Java | 2026-07-18 | | | |
-| Architecture | 2026-07-18 | | | |
-| Security | 2026-07-18 | | | |
-| TypeScript | 2026-07-18 | | | |
-| JavaScript | 2026-07-18 | | | |
-| CSS | 2026-07-19 | | | |
-| SQL | 2026-07-18 | | | |
-| Git | 2026-07-19 | | | |
-| General | 2026-07-19 | | | |
+| Topic | Coverage J | Coverage M | Coverage S | Notes J | Notes M | Notes S | Interview J | Interview M | Interview S | Sync J | Sync M | Sync S |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Angular | 2026-07-24 | | | | | | | | | | | |
+| Angular Material | 2026-07-18 | | | | | | | | | | | |
+| Spring Boot | 2026-07-13 | | | 2026-07-15 | | | | | | | | |
+| Java | 2026-07-18 | | | | | | | | | | | |
+| Architecture | 2026-07-18 | | | | | | | | | | | |
+| Security | 2026-07-18 | | | | | | | | | | | |
+| TypeScript | 2026-07-18 | | | | | | | | | | | |
+| JavaScript | 2026-07-18 | | | | | | | | | | | |
+| CSS | 2026-07-19 | | | | | | | | | | | |
+| SQL | 2026-07-18 | | | | | | | | | | | |
+| Git | 2026-07-19 | | | | | | | | | | | |
+| General | 2026-07-19 | | | | | | | | | | | |
 
 ## Per-project prompts
 
@@ -50,7 +50,7 @@ runs once the whole coverage-prompt column is filled).
 
 | Prompt | Last run |
 |---|---|
-| coverage-audit | 2026-07-19 (all 12 topics) |
+| coverage-audit | 2026-07-19 (junior, legacy pre-level split) |
 | sql-plan-audit | 2026-07-22 (SCOPE = full) |
 | evidence-intake | 2026-07-21 (MODE = search, +4 postings → 12) |
 | progress-update | 2026-07-16 (MODE = active) |

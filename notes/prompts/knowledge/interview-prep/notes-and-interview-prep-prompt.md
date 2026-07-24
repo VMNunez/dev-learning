@@ -21,6 +21,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
+LEVEL = [junior | middle | senior]
 TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/ (not yet migrated to en/-es/ — use the topic root, no Spanish mirror) | notes/security/en/]
 FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
@@ -43,8 +44,10 @@ Notes on specific topics:
 - Java: focus on language concepts needed to write Spring Boot code only.
 - SQL: database is PostgreSQL.
 
-Use TOPIC, NOTES_PATH, and FILE wherever the prompt refers to {TOPIC}, {NOTES_PATH}, or {FILE}.
+Use TOPIC, NOTES_PATH, FILE, and LEVEL wherever the prompt refers to {TOPIC}, {NOTES_PATH}, {FILE}, or {LEVEL}.
 
+
+Progression gate: middle interview-prep authoring requires consolidated junior notes, questions, and practical recall; senior requires consolidated junior and middle levels. Stop if the required gate is not closed.
 ---
 
 ## Purpose
@@ -114,7 +117,7 @@ Read in this order:
 3. `notes/interview-prep/en/{FILE}.md` — in full (`wc -l` first; see the verifiable-reads rule).
 4. `notes/interview-prep/es/{FILE}.md` — headings + question count per section (parity check).
 
-Note: `coverage.md` and `future-learning.md` live in the topic root (e.g. `notes/java/`), not inside `en/` or `es/`.
+Note: all three `coverage-*.md` files live in the topic root (e.g. `notes/java/`), not inside `en/` or `es/`.
 
 Build a mental map of:
 - Every concept section covered in the notes (## and ### headings)

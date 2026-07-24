@@ -29,6 +29,7 @@ bar actually gets applied every time.
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
+LEVEL = [junior | middle | senior]
 FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
        → notes/interview-prep/en/{FILE}.md
        → notes/interview-prep/es/{FILE}.md
@@ -44,14 +45,14 @@ MODE = [full | correct]
          and all four audit sections (missing topics, weak answers, imbalances, missing questions).
        → correct: a focused "I just wrote/edited this file — correct it" pass. Does ONLY the en/es
          sync check, TODO resolution (mirrored), the always-allowed format/priority tidy, and the
-         weak-answer report. SKIPS the coverage.md check and audit sections 1, 3, and 4 — it does not
+         weak-answer report. SKIPS the coverage-{LEVEL}.md check and audit sections 1, 3, and 4 — it does not
          hunt for missing topics or add new questions.
 
-Use FILE, SECTION, and MODE wherever the prompt refers to {FILE}, {SECTION}, or {MODE}.
+Use FILE, LEVEL, SECTION, and MODE wherever the prompt refers to {FILE}, {SECTION}, or {MODE}.
 
 Notes on specific files:
 - angular: Angular framework questions. **Angular Material has no file of its own** — its questions
-  live here under Material sections, so this run also verifies `notes/angular-material/coverage.md`
+  live here under Material sections, so this run also verifies `notes/angular-material/coverage-{LEVEL}.md`
   (see Step 3).
 - spring-boot: Spring Boot framework questions (auto-configuration, controllers, beans, JPA). Java
   language questions live in java.md, not here.
@@ -64,6 +65,8 @@ Notes on specific files:
 - architecture: REST principles, layered architecture, MVC, coordinator, smart/dumb, service layer,
   repository. Not framework internals — those belong in spring-boot.md or angular.md.
 
+
+Progression gate: middle interview-prep authoring requires consolidated junior notes, questions, and practical recall; senior requires consolidated junior and middle levels. Stop if the required gate is not closed.
 ---
 
 You are auditing Victor's interview preparation. Do deep work on the scope you are given only — do not
@@ -143,16 +146,16 @@ change.
 always rewriting a passive answer to "I used", always adding a project reference), report it in the
 summary as a recommended one-sentence rule to add to the standard. Do not add the rule yourself.
 
-## Step 3 — coverage.md check (full mode only)
+## Step 3 — coverage-{LEVEL}.md check (full mode only)
 
-Read the topic's coverage: `notes/{FILE}/coverage.md` (for spring-boot, `notes/spring-boot/coverage.md`;
-for java, `notes/java/coverage.md`). **For `angular`, also read `notes/angular-material/coverage.md`** —
+Read the topic's coverage: `notes/{FILE}/coverage-{LEVEL}.md` (for spring-boot, `notes/spring-boot/coverage-{LEVEL}.md`;
+for java, `notes/java/coverage-{LEVEL}.md`). **For `angular`, also read `notes/angular-material/coverage-{LEVEL}.md`** —
 Angular Material has no interview-prep file of its own; by convention its questions live in `angular.md`
 under Material sections, so its coverage items must be verified here too or they go untested. If it
 exists, list every concept and verify each one that belongs in the run's scope has at least one
-question. Treat any uncovered concept as a required addition in Step 6.4, and label it "coverage.md
-concept — added". If coverage.md does not exist, rely on your knowledge of what junior Angular +
-Spring Boot interviews at Spanish consultancies require.
+question. Treat any uncovered concept as a required addition in Step 6.4, and label it
+"coverage-{LEVEL}.md concept — added". If the selected coverage file does not exist, stop and run
+`coverage-prompt` for that topic and level.
 
 ## Step 4 — Priority markers
 
@@ -174,12 +177,12 @@ Fix violations in both files and report what was fixed.
 > frequency signal. Treat every `often`/`sometimes` question as **required** — it must appear in the
 > file as a well-worded question, phrased the way the market asks it — and use the list to calibrate the
 > realism and wording of everything you write in Step 6. If no list was provided (standalone run), rely
-> on coverage.md and your knowledge of what the target screenings ask.
+> on coverage-{LEVEL}.md and your knowledge of what the target screenings ask.
 
 **6.1 Missing topics.** Topics not covered in `{SECTION}` that the target companies would ask, given
-the stack. Include every coverage.md concept with no question and every `often`/`sometimes` item from
+the stack. Include every coverage-{LEVEL}.md concept with no question and every `often`/`sometimes` item from
 the market-question list. One sentence per topic on why they ask it. If a topic you identify is NOT in
-coverage.md, flag it `[coverage gap]` so Victor can add it there separately.
+coverage-{LEVEL}.md, flag it `[coverage gap]` so Victor can add it there separately.
 
 **6.2 Weak answers (report only — never rewrite without a TODO).** Answers that fail the quality bar in
 the standard: vague, too theoretical, not in Victor's voice, or missing a real-project anchor when the
@@ -196,7 +199,7 @@ voice + Junior tip if Conceptual / Red flag if Decision-based or Pressure + a **
 block** if it is the kind of question an interviewer poses with code — see "Sourcing real code"),
 reference a real project when it is about a pattern or decision, and add to BOTH files (translated). If a question logically
 belongs in a different section than `{SECTION}`, note it in the summary instead of adding it here.
-Flag any new question whose concept is not in coverage.md with `[coverage gap]`.
+Flag any new question whose concept is not in coverage-{LEVEL}.md with `[coverage gap]`.
 
 ## Execution — apply, don't just report
 
@@ -206,7 +209,7 @@ independent reviewer runs next and owns the commit. Leave your work in the worki
 Then report:
 - The coverage status for `{SECTION}` (or per section, if `all`): ✅ Complete / 🔧 Fixed / ➕ Added.
 - **Weak answers found** (from 6.2) — question + what is missing.
-- **Coverage gaps found** — concepts added that are not in coverage.md.
+- **Coverage gaps found** — concepts added that are not in coverage-{LEVEL}.md.
 - **TODO patterns detected** — recommended one-sentence rule additions for the standard.
 - The one-line commit message you would use (the orchestrator — or the reviewer on a standalone run — will run it):
   `docs: audit {FILE} interview prep — <one-line summary of main fixes>`.

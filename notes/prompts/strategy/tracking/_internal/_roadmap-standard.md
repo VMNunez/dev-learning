@@ -14,7 +14,7 @@ gap analysis → update living sections → apply → independent review) on top
 
 ## What each file is for
 
-- `notes/coverage.md` — SOURCE OF TRUTH for what Victor must learn. Every concept needed for a junior
+- `notes/coverage-junior.md` — SOURCE OF TRUTH for what Victor must learn. Every concept needed for a junior
   Angular + Spring Boot role at a Spanish consultancy.
 - `PROGRESS.md` — SOURCE OF TRUTH for what he has already learned. Project status, completed steps,
   and concepts covered so far.
@@ -81,9 +81,9 @@ Rules for project sections:
 
 ## Canonical study-block references
 
-**12:30 block — SQL topic table.** Kept in sync against the SQL section of `notes/coverage.md`:
-- Add any SQL topic present in coverage.md but missing from the ROADMAP table.
-- Remove any topic that coverage.md marks as out of scope.
+**12:30 block — SQL topic table.** Kept in sync against the SQL section of `notes/coverage-junior.md`:
+- Add any SQL topic present in coverage-junior.md but missing from the ROADMAP table.
+- Remove any topic that coverage-junior.md marks as out of scope.
 - Status markers (✅ / 🔜) must match what PROGRESS.md shows.
 
 **13:30 block — Notes study order.** The order must be exactly:
@@ -104,7 +104,7 @@ factually wrong per PROGRESS.md.
 
 ## No duplication
 
-No content in ROADMAP.md duplicates `PROGRESS.md` or `notes/coverage.md` word-for-word — reference
+No content in ROADMAP.md duplicates `PROGRESS.md` or `notes/coverage-junior.md` word-for-word — reference
 them instead. ROADMAP is a forward-looking strategy document, not a concept list and not a progress
-tracker. If a passage restates a concept list already owned by PROGRESS.md or coverage.md, cut it and
+tracker. If a passage restates a concept list already owned by PROGRESS.md or coverage-junior.md, cut it and
 point to the source file.

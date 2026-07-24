@@ -20,8 +20,8 @@ Run this when PROGRESS.md feels out of sync: after finishing a step or a project
 of sessions, or before running `plan-audit` (its gap analysis reads PROGRESS.md). If
 PROGRESS.md is incomplete, that gap analysis is wrong.
 
-**This prompt does NOT read `notes/coverage.md`.** Coverage tracks what Victor must *learn* —
-PROGRESS.md tracks what he *has learned*. A stale coverage.md does not affect this prompt.
+**This prompt does NOT read `notes/coverage-junior.md`.** Coverage tracks what Victor must *learn* —
+PROGRESS.md tracks what he *has learned*. A stale coverage-junior.md does not affect this prompt.
 
 **Internal piece this orchestrates** (never launched directly):
 `_concept-extraction-standard.md` — the Format A/B/C extraction contract each project subagent runs.
@@ -65,7 +65,7 @@ Tracks: the projects table · per-project concept summaries (one paragraph each)
 (the detailed concept list by topic: Angular, Java, Spring Boot, CSS, SQL…) · simulation progress ·
 complementary skills.
 
-Does NOT contain: explanations (→ notes/) · future learning (→ future-learning.md) · architecture or
+Does NOT contain: explanations (→ notes/) · future learning (→ coverage-senior.md) · architecture or
 strategy (→ ROADMAP.md).
 
 **Entry format:** one line per concept. Key syntax/API in backticks, optional short dash-clause.

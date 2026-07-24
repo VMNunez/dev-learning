@@ -23,7 +23,7 @@ whole-topic detection and the final per-topic commit. No per-topic launching: on
 everything.
 
 > **▶ Run first:** `coverage-prompt` for the topic — the Q&A is built to cover every item in the
-> topic's `coverage.md`; if coverage is missing or stale, the Q&A will be too. Optional:
+> topic's `coverage-{LEVEL}.md`; if coverage is missing or stale, the Q&A will be too. Optional:
 > `evidence-intake` to refresh `_job-market-evidence.md`, which the market-analysis stage (M) reads.
 
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read `_internal/_last-run-report-interview-prep-audit.md` (not the `notes-and-interview-prep` one beside it) and, if its `Status` is `open`, surface that finding in one line before proceeding.
@@ -79,12 +79,13 @@ DRY_RUN = false
 ````
 ## Configuration — edit only this block
 
+LEVEL = [junior | middle | senior]
 FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security | all]
        → notes/interview-prep/en/{FILE}.md + notes/interview-prep/es/{FILE}.md
        → FILE = all audits every topic in turn — see notes/prompts/_internal/_batch-mode.md. Order:
          angular, spring-boot, java, architecture, security, typescript, sql, javascript, css, git, general.
        → Angular Material has no file of its own: the `angular` run also verifies
-         notes/angular-material/coverage.md and places any Material questions in angular.md
+         notes/angular-material/coverage-{LEVEL}.md and places any Material questions in angular.md
          (the author handles this in its Step 3).
 
 SECTION = [all | ## Routing | ## Forms | ...]   ← "all" for the whole file, or one exact heading
@@ -98,8 +99,10 @@ MODE = [full | correct]
 
 DRY_RUN = [false | true]
 
-Use FILE, SECTION, MODE, and DRY_RUN wherever the prompt refers to {FILE}, {SECTION}, {MODE}, {DRY_RUN}.
+Use LEVEL, FILE, SECTION, MODE, and DRY_RUN wherever the prompt refers to {LEVEL}, {FILE}, {SECTION}, {MODE}, {DRY_RUN}.
 
+
+Progression gate: middle interview-prep authoring requires consolidated junior notes, questions, and practical recall; senior requires consolidated junior and middle levels. Stop if the required gate is not closed.
 ---
 
 You are the orchestrator for building Victor's interview Q&A, hands-off.
@@ -203,7 +206,7 @@ the obvious gaps, not the ones that matter):
 Wait for G and keep its gap list — **also tagged by section**.
 
 **Build the per-section work list (orchestrator).** Read the `##` section headings in
-`notes/interview-prep/en/{FILE}.md` and the topic's `coverage.md` sections. If `{SECTION}` ≠ all, the
+`notes/interview-prep/en/{FILE}.md` and the topic's `coverage-{LEVEL}.md` sections. If `{SECTION}` ≠ all, the
 list is just that one section. For each section, assemble its **slice**: the M questions tagged to it +
 the G gaps tagged to it + its coverage items. Also run the light **en/es file-level sync check** here
 (same sections, same question counts on each side) and route each mismatch into the owning section's
@@ -307,7 +310,7 @@ git commit -m "<that topic's commit message>"
 ```
 
 Then print the consolidated summary across all topics processed: weak answers found (add a TODO to get
-each fixed next run), coverage gaps found (add to coverage.md via `coverage-prompt`), and TODO patterns
+each fixed next run), coverage gaps found (add to coverage-{LEVEL}.md via `coverage-prompt`), and TODO patterns
 detected (recommended standard rule additions).
 
 ## Hard rules
