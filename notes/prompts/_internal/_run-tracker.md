@@ -25,7 +25,7 @@ is the first retained execution.
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Angular | | | | | | | | | | | | | | | |
 | Angular Material | | | | | | | | | | | | | | | |
-| Spring Boot | | | | | | | | | | | | | | | |
+| Spring Boot | 2026-07-24 — completed — 103 items; mirror parity; notes plan stale | | | | | | | | | | | | | | |
 | Java | 2026-07-24 — completed — 111 items; mirror parity; notes plan stale | | | | | | | | | | | | | | |
 | Architecture | | | | | | | | | | | | | | | |
 | Security | | | | | | | | | | | | | | | |
