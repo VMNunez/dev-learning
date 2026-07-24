@@ -928,7 +928,9 @@ Use `HttpClientTestingModule` and `HttpTestingController` to assert the request 
 
 Out of scope for this project. Per CLAUDE.md "Testing rules", component (TestBed) tests are introduced in **project 08**. Project 07 tests services only.
 
-For each new testing concept (JUnit 5 + Mockito, `HttpClientTestingModule`), add one interview question to `notes/interview-prep/en/` and `notes/interview-prep/es/` (same question, both files).
+For each new testing concept (JUnit 5 + Mockito, `HttpClientTestingModule`), add one interview
+question to `notes/interview-prep/junior/en/` and `notes/interview-prep/junior/es/` (same question,
+both files).
 
 ---
 

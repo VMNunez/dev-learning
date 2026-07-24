@@ -98,7 +98,8 @@ backlog inside its folder). If it does **not** exist: stop and report "no PROJEC
 ## Interview-question quality bar
 
 The question bank lives at `notes/interview-prep/projects/{PROJECT_NAME}.md` (`{PROJECT_NAME}` = the
-last path segment, e.g. `07-timetrack`). It complements the topic-based files in `interview-prep/en/`
+last path segment, e.g. `07-timetrack`). It complements the levelled topic-based files in
+`interview-prep/{LEVEL}/en/`
 and `es/` — these are **project-specific**, about the actual implementation decisions made here.
 
 **Every question must:**
@@ -131,7 +132,7 @@ covering the same decision or code path as an existing one, even if worded diffe
 # Interview Questions — {PROJECT_NAME}
 
 Questions specific to the implementation decisions made in this project.
-Use these alongside the topic-based files in interview-prep/en/ and es/.
+Use these alongside the topic-based files in `interview-prep/{LEVEL}/en/` and `es/`.
 
 ## Architecture & Patterns
 [coordinator, smart/dumb, layered architecture, etc.]

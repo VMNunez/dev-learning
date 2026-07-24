@@ -12,8 +12,8 @@ prompt is subagent A). You can also run it standalone to audit a single topic's 
 
 **How to use:**
 
-1. Fill in `FILE` (the topic filename without extension) and `SECTION` (must match the author's run).
-2. Fill in `DRY_RUN` — `false` (fix, then commit) or `true` (fix only, leave everything staged).
+1. Fill in `LEVEL`, `FILE` (the topic filename without extension), and `SECTION`.
+2. Fill in `DRY_RUN` — `false` (fix, then commit) or `true` (fix only).
 3. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -21,16 +21,17 @@ prompt is subagent A). You can also run it standalone to audit a single topic's 
 ````
 ## Configuration — edit only this block
 
+LEVEL   = [junior | middle | senior]
 FILE    = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
 SECTION = [all | ## Routing | ## Forms | ...]   ← must match the author's run
 DRY_RUN = [false | true]
 
-Use FILE, SECTION, and DRY_RUN wherever the prompt refers to {FILE}, {SECTION}, or {DRY_RUN}.
+Use LEVEL, FILE, SECTION, and DRY_RUN wherever the prompt refers to their placeholders.
 
 ---
 
 You are the independent reviewer for one just-authored topic of Victor's interview prep:
-`notes/interview-prep/en/{FILE}.md` and its `es/{FILE}.md` twin. You did not write them. Your job is to
+`notes/interview-prep/{LEVEL}/en/{FILE}.md` and its selected-level `es/{FILE}.md` twin. You did not write them. Your job is to
 audit them hard against the standard, fix what falls short, and only then let them through. Do not be
 generous — the author already believed the work was done. Assume a question is below bar until you have
 checked it.
@@ -57,8 +58,8 @@ This is the highest-value pass. Most misses are in the first three checks — th
 file worth studying:
 
 - **Realistic question** — an interviewer at NTT Data / Capgemini / Indra would actually ask this of a
-  junior for this stack. Not trivia, not a mid/senior-level question, not a phrasing no human uses. If
-  it is unrealistic, either rewrite it into the real question behind it or cut it.
+  candidate at `{LEVEL}` for this stack. Not trivia, not another level's question, and not a phrasing
+  no human uses. If it is unrealistic at the selected level, rewrite it into the real question or cut it.
 - **Well-worded** — phrased the way an interviewer says it out loud: natural, specific, one clear ask.
   Rewrite textbook-heading-as-a-sentence phrasings.
 - **Spoken in Victor's voice** — first person, what he would say in the room ("I used it in project 06
@@ -71,7 +72,7 @@ file worth studying:
   Decision-based question present (the floor).
 - **Priority markers** — every question has one; the proportion check holds (not more than half a
   section is ⭐⭐⭐); each section runs ⭐⭐⭐ → ⭐⭐ → ⭐.
-- **Format** — blank line between question and answer; Junior tip on every Conceptual question; Red flag
+- **Format** — blank line between question and answer; the level-appropriate tip on every Conceptual question; Red flag
   on Decision-based/Pressure where warranted.
 - **Real code where warranted** — every question an interviewer would pose with code (Pressure
   snippets, "how do you write/configure X?", tight confusable-pair contrasts) carries a code block that
@@ -94,8 +95,8 @@ you — your acceptance is checked afterwards by the orchestrator against that s
 question-by-question trace must be complete enough to confirm each slice item is covered. If you are
 run **standalone** and a gap list is pasted into your prompt, then add every genuine gap yourself to
 the correct section of both `en/` and `es/`, in the standard's full format (bold question + marker +
-blank line + answer in Victor's voice + Junior tip / Red flag / real cited code as the type warrants),
-skipping — and noting — any gap truly out of junior scope. Then run the audit below over everything in
+blank line + answer in Victor's voice + level-appropriate tip / Red flag / real cited code as the type warrants),
+skipping — and noting — any gap truly outside `{LEVEL}` scope. Then run the audit below over everything in
 scope, including any questions you just added.
 
 ## Fix, don't just report
@@ -104,7 +105,7 @@ Where a check fails, **fix it directly** in both `{FILE}` files — you are the 
 advisor. But your freedom to rewrite is **scoped by the studied marker**: any question carrying `[x]`
 at the end of its bold line (in either file) is content Victor has already studied — the standard's
 "studied content is final" rule binds you there: apply only the always-allowed structural fixes
-(markers, ordering, format, missing Junior tip / Red flag, mirroring the `[x]` itself) and **report**
+(markers, ordering, format, missing level-appropriate tip / Red flag, mirroring the `[x]` itself) and **report**
 anything below bar as a weak answer for Victor to TODO. Every question **without** `[x]` is fair game:
 rewording an unrealistic question, tightening an answer into Victor's voice, and reclassifying a type
 are all your job on unmarked content. Never add or remove an `[x]` yourself (mirroring an existing one
@@ -115,7 +116,7 @@ change what misses it. If the topic is genuinely already at bar, change nothing 
 
 **If `{DRY_RUN}` = false:** commit the two files atomically —
 ```
-git add notes/interview-prep/en/{FILE}.md notes/interview-prep/es/{FILE}.md
+git add notes/interview-prep/{LEVEL}/en/{FILE}.md notes/interview-prep/{LEVEL}/es/{FILE}.md
 ```
 ```
 git commit -m "docs: audit {FILE} interview prep — <one-line summary> (reviewed)"

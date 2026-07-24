@@ -3,7 +3,7 @@ name: study-content-writer
 description: >
   Load and apply Victor's quality standards WHENEVER you are about to write, refine, complete,
   or resolve a TODO in a study-notes file (notes/{topic}/{level}/en/ or es/) or an interview-prep Q&A
-  file (notes/interview-prep/en/ or es/) DURING A DAILY SESSION — i.e. any time outside the
+  file (`notes/interview-prep/{LEVEL}/en/` or `es/`) DURING A DAILY SESSION — i.e. any time outside the
   dedicated /notes-audit or /interview-prep-audit runs. These standards otherwise only load inside
   those separate audit pipelines, so inline note/Q&A writing silently misses the bar. Trigger on
   requests like "add a note about X", "write up what we just learned", "add an interview question
@@ -21,7 +21,7 @@ hit the exact same quality bar the pipeline would, so daily-session notes are ne
 
 - Writing or refining a **note** (`notes/{topic}/en|es/*.md`) →
   read `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` in full.
-- Writing or refining an **interview question** (`notes/interview-prep/en|es/*.md`) →
+- Writing or refining an **interview question** (`notes/interview-prep/{LEVEL}/en|es/*.md`) →
   read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` in full.
 - If the task touches both, read both.
 

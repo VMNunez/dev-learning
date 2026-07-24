@@ -25,8 +25,8 @@ LEVEL = [junior | middle | senior]
 TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
 NOTES_PATH = [notes/{topic}/{LEVEL}/en/]
 FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
-             → notes/interview-prep/en/{FILE}.md
-             → notes/interview-prep/es/{FILE}.md
+             → notes/interview-prep/{LEVEL}/en/{FILE}.md
+             → notes/interview-prep/{LEVEL}/es/{FILE}.md
 
 ## TOPIC = all runs every topic in turn (NOTES_PATH and FILE derived per topic) —
 ## see notes/prompts/_internal/_batch-mode.md. Order: Angular, Angular Material, Spring Boot, Java,
@@ -48,6 +48,10 @@ Use TOPIC, NOTES_PATH, FILE, and LEVEL wherever the prompt refers to {TOPIC}, {N
 
 
 Progression gate: middle interview-prep authoring requires consolidated junior notes, questions, and practical recall; senior requires consolidated junior and middle levels. Stop if the required gate is not closed.
+
+Require the selected Q&A file's coverage fingerprint(s) to match the exact current coverage bytes.
+If missing or stale, stop and run `interview-prep-audit` in `MODE = full`; this prompt never refreshes
+fingerprints.
 ---
 
 ## Purpose
@@ -114,8 +118,8 @@ Read in this order:
    about what the section covers. Skip any non-numbered files.
 2. The Spanish counterpart: replace `en/` with `es/` in {NOTES_PATH} — headings level too, only to
    confirm parity (same sections exist on both sides).
-3. `notes/interview-prep/en/{FILE}.md` — in full (`wc -l` first; see the verifiable-reads rule).
-4. `notes/interview-prep/es/{FILE}.md` — headings + question count per section (parity check).
+3. `notes/interview-prep/{LEVEL}/en/{FILE}.md` — in full (`wc -l` first; see the verifiable-reads rule).
+4. `notes/interview-prep/{LEVEL}/es/{FILE}.md` — headings + question count per section (parity check).
 
 Note: all three `coverage-*.md` files live in the topic root (e.g. `notes/java/`), not inside `en/` or `es/`.
 
@@ -149,11 +153,12 @@ Then, **one target section at a time, sequentially** (never overlap — the runs
 files), dispatch a cold `role-appropriate` subagent (`reasoning tier: deep`, `execution: foreground`):
 
 > Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` (the bar). You are adding
-> questions to ONE section — `«## heading»` — of `notes/interview-prep/{FILE}.md`. Read that section in
-> both `en/{FILE}.md` and `es/{FILE}.md` **in full, top to bottom** (`en/` is the canonical source —
+> questions to ONE section — `«## heading»` — of the selected-level Q&A pair. Read that section in
+> both `notes/interview-prep/{LEVEL}/en/{FILE}.md` and
+> `notes/interview-prep/{LEVEL}/es/{FILE}.md` **in full, top to bottom** (`en/` is the canonical source —
 > author there first, then translate to `es/` as native Spanish); create the section heading in both
 > files if it does not exist. Add a question for each gap below, in the standard's exact format (bold
-> question + priority marker + blank line + answer + Junior tip if Conceptual / Red flag if
+> question + priority marker + blank line + answer + the level-appropriate tip if Conceptual / Red flag if
 > Decision-based or Pressure), with **real cited code where the question warrants it** (see the
 > standard's "Real code" rule) and **respecting the `[x]` studied marker** (never rewrite a studied
 > question; reordering is allowed),
@@ -173,7 +178,7 @@ Wait for each subagent before dispatching the next. Note each added question in 
 
 ## Step 3 — Interview prep → Notes
 
-For every question in `en/{FILE}.md`: is there at least one note file in {NOTES_PATH}
+For every question in `notes/interview-prep/{LEVEL}/en/{FILE}.md`: is there at least one note file in {NOTES_PATH}
 that covers the concept this question is about?
 
 A question is "backed" if the concept appears as a section or sub-section in any numbered

@@ -16,15 +16,32 @@ standard.
 
 ## What an interview-prep file is
 
-`notes/interview-prep/en/{topic}.md` (and its `es/` twin) is a **Q&A bank for one topic**, built to
-prepare Victor for a junior Angular + Java Spring Boot screening at a Spanish IT consultancy (NTT Data,
-Capgemini, Indra, and similar) — the target in `ROADMAP.md` and `notes/prompts/_internal/_shared-context.md`.
-Read both before judging any question: every question and answer is measured against what a real
-interviewer at those companies would filter a junior on.
+`notes/interview-prep/{LEVEL}/en/{topic}.md` (and its `es/` twin) is a **Q&A bank for one topic at
+one professional level**, built to prepare Victor for the target role and progression defined in
+`ROADMAP.md` and `notes/prompts/_internal/_shared-context.md`. Read both before judging any question:
+every question and answer is measured against what a real interviewer would expect from a candidate
+at the selected level.
 
-It is **derived from `coverage/{LEVEL}.md`**: every item in the selected topic and level must have at least one
-question. Coverage says *what* to test; this file turns each item into a question the way an
+It is **derived from `coverage/{LEVEL}.md`**: every item in the selected topic and level must have at
+least one question. Coverage says *what* to test; this file turns each item into a question the way an
 interviewer would actually ask it, and an answer the way Victor would actually say it out loud.
+Questions from different levels never share a file.
+
+Every Q&A file stores the exact lowercase SHA-256 digest of its source coverage bytes:
+
+```text
+Coverage SHA-256: <64 lowercase hexadecimal characters>
+```
+
+For Angular, which also owns Angular Material interview questions, store both fingerprints:
+
+```text
+Coverage SHA-256 (Angular): <digest>
+Coverage SHA-256 (Angular Material): <digest>
+```
+
+A missing or mismatched fingerprint means the Q&A is stale and requires a full
+`interview-prep-audit`; it is not permission to mix in another level.
 
 > The three things that make this file worth studying — enforced throughout — are: the questions are
 > **realistic** (actually asked, not invented), **well-worded** (phrased as an interviewer phrases
@@ -33,7 +50,7 @@ interviewer would actually ask it, and an answer the way Victor would actually s
 
 **Where "realistic" comes from — the same two sources coverage uses.** A question is realistic because it
 is grounded, not guessed. Per `_coverage-standard.md` ("Two sources"), the backbone is a **deep analysis
-of the real questions** a junior for this stack is actually asked at the target companies — web-backed
+of the real questions** a candidate at the selected level is actually asked at the target companies — web-backed
 when possible — and `notes/prompts/_internal/_job-market-evidence.md` **corroborates** it with the recurring
 requirements and the exact wording the market prints. The analysis is primary and defines the floor; the
 evidence sharpens it and overrides it only where a real posting concretely conflicts. Together they keep
@@ -73,7 +90,7 @@ without `[x]` is fair game — rewrite it freely to raise it to the bar.
 - Resolve TODO markers (a TODO from Victor always overrides `[x]` — he is asking for the change).
 - Assign or fix the priority marker; reorder by priority within a section (never across sections).
 - Fix structural format violations (missing blank line between question and answer).
-- Add a missing Junior tip (Conceptual) or Red flag (Decision-based / Pressure).
+- Add a missing level-appropriate interview tip (Conceptual) or Red flag (Decision-based / Pressure).
 - Mirror the `[x]` marker itself between `en/` and `es/`.
 
 **NOT allowed on a studied question without a TODO:**
@@ -90,11 +107,11 @@ allowed; new questions are born unmarked.
 
 ## Question types — definitions
 
-Every question is one of three types. Use these definitions to classify, to decide on Junior tips and
+Every question is one of three types. Use these definitions to classify, to decide on interview tips and
 Red flags, and to count ratios.
 
 - **Conceptual** — asks "what is X?" or "how does X work?" Tests understanding of a concept, not
-  syntax. *e.g. "What is `@Transactional` and what does it do?"* Only Conceptual questions get a Junior tip.
+  syntax. *e.g. "What is `@Transactional` and what does it do?"* Only Conceptual questions get an interview tip.
 - **Decision-based** — asks "why did you choose X?" or "when would you use X instead of Y?" Tests
   whether the candidate can justify a decision and knows the tradeoff. *e.g. "Why JWT instead of
   sessions?"* Encouraged to have a Red flag.
@@ -116,15 +133,15 @@ regardless of size.
 
 ## Priority markers
 
-Every question carries a marker for how often it is asked at Spanish consultancies in a junior
-interview for this topic:
+Every question carries a marker for how often it is asked at Spanish consultancies at the selected
+professional level for this topic:
 
 - **⭐⭐⭐** — asked in almost every interview for this topic; not answering it filters the candidate out
   immediately. Foundational, commonly misunderstood, or basic-competence signal.
 - **⭐⭐** — asked often when the interviewer goes past the basics; survivable in a first screen, but a
   weak impression in a full technical round.
 - **⭐** — a niche detail or edge case only the most thorough interviewers probe; missing it is not a
-  dealbreaker at junior level.
+  dealbreaker at the selected level.
 
 **Proportion check:** in a typical 8–12 question section, expect ~3–4 ⭐⭐⭐, ~4–5 ⭐⭐, ~1–2 ⭐. If more
 than half a section is ⭐⭐⭐, downgrade the excess — keep ⭐⭐⭐ for the 3–4 most foundational, reassign
@@ -151,10 +168,12 @@ projects when the question is about a pattern or a decision.
 - Every question has a **priority marker** at the end of the bold line.
 
 Optional elements after the answer, by type:
-- **Conceptual only** — a blank line, then a Junior tip as two consecutive blockquote lines, English
-  then Spanish:
-  > **Junior tip:** short advice on how to explain it clearly in an interview
-  > **Consejo de entrevista:** the same advice in Spanish
+- **Conceptual only** — a blank line, then a level-appropriate tip. Junior files preserve the existing
+  `Junior tip` label; middle and senior use `Interview tip`. Spanish always uses
+  `Consejo de entrevista:`:
+  > **Junior tip:** short advice on how to explain it clearly in a junior interview
+  > **Interview tip:** short advice calibrated to a middle or senior interview
+  > **Consejo de entrevista:** the matching advice in Spanish
 - **Decision-based and Pressure (encouraged)** — a blank line, then one line:
   Red flag answer: what a weak candidate would say and why it fails.
 - **Any question the interviewer would pose with code** — a blank line, then a real code block (see
@@ -165,12 +184,16 @@ Optional elements after the answer, by type:
 The practice prompts (`sql-exercises`, `simulation-review`, `code-review`) add a question or two to a
 Q&A file whenever a gap surfaces during practice — not through the full audit pipeline. They follow
 the **same** structure above (bold question + priority marker + blank line + answer in Victor's voice
-+ Junior tip if Conceptual / Red flag if Decision-based or Pressure + a real cited code block where an
++ the level-appropriate tip if Conceptual / Red flag if Decision-based or Pressure + a real cited code block where an
 interviewer would pose it with code). On top of that structure, these four rules govern every
 practice-driven insertion, so each prompt references them here instead of restating them:
 
-- **Both languages, always.** Add the question to `en/{topic}.md` **and** `es/{topic}.md` at once,
-  translated — never one without the other. Junior-tip label in `es/` is `Consejo de entrevista:`.
+- **Selected level only.** The caller must resolve the current professional level and add the question
+  only to `notes/interview-prep/{LEVEL}/en/{topic}.md` and its Spanish twin. Never default silently
+  to a shared or different-level file.
+- **Both languages, always.** Add the question to the selected level's `en/{topic}.md` **and**
+  `es/{topic}.md` at once, translated — never one without the other. Junior-tip label in `es/` is
+  `Consejo de entrevista:`.
 - **Deduplicate by concept, not wording.** Before adding, scan the target section for a question that
   already tests the same concept. If one exists, skip it — even if the phrasing differs.
 - **Place under the matching `##` section**, creating the section only if none fits. Then reorder
@@ -184,8 +207,8 @@ practice-driven insertion, so each prompt references them here instead of restat
 An answer is interview-ready only when all of these hold:
 
 - **Realistic question.** The question is one an interviewer at the target companies would actually ask
-  a junior — not a trivia question, not a mid/senior-level question, not a phrasing no human uses. If
-  you would not hear it in a real screening for this stack, it does not belong.
+  a candidate at the selected level — not trivia, not a question owned by another level, and not a
+  phrasing no human uses. If you would not hear it in a real screening at that level, it does not belong.
 - **Well-worded.** Phrased the way an interviewer phrases it out loud — natural, specific, one clear
   ask. Not a textbook heading turned into a sentence.
 - **Spoken in Victor's voice.** First person, what he would say in the room — "I used it in project 06
@@ -252,5 +275,5 @@ A section is done only when ALL hold:
 - Every answer passes the "explain every word" test, or carries a TODO flagging it for rewrite.
 - `en/` and `es/` are in sync — same sections, same questions, same order.
 
-Do not stop at 2–3 questions per section. A weak junior gets filtered because one topic was thin —
-better to over-prepare a section than to leave a gap a recruiter finds first.
+Do not stop at 2–3 questions per section. A candidate can be filtered because one topic was thin —
+better to cover the realistic level requirements than to leave a gap an interviewer finds first.

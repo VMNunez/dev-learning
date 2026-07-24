@@ -10,7 +10,7 @@ ratio and priority order (both per-section). Around that sit two light, whole-to
 stages that write nothing:
 
 1. **Market analysis (M)** — a web-backed specialist gathers the *real questions actually asked* of a
-   junior for this stack at the target companies, tagged by section, so the Q&A mirrors real interviews.
+   candidate at the selected level for this stack at the target companies, tagged by section.
 2. **Adversarial gap-hunt (G)** — a senior-interviewer hat writes, uncapped, the questions it would
    really ask and returns, tagged by section, the ones the file still misses.
 3. **Per-section Author (A) → Reviewer (B)** — for each section in turn, a fresh author writes/audits
@@ -81,7 +81,7 @@ DRY_RUN = false
 
 LEVEL = [junior | middle | senior]
 FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security | all]
-       → notes/interview-prep/en/{FILE}.md + notes/interview-prep/es/{FILE}.md
+       → notes/interview-prep/{LEVEL}/en/{FILE}.md + notes/interview-prep/{LEVEL}/es/{FILE}.md
        → FILE = all audits every topic in turn — see notes/prompts/_internal/_batch-mode.md. Order:
          angular, spring-boot, java, architecture, security, typescript, sql, javascript, css, git, general.
        → Angular Material has no file of its own: the `angular` run also verifies
@@ -103,6 +103,9 @@ Use LEVEL, FILE, SECTION, MODE, and DRY_RUN wherever the prompt refers to {LEVEL
 
 
 Progression gate: middle interview-prep authoring requires consolidated junior notes, questions, and practical recall; senior requires consolidated junior and middle levels. Stop if the required gate is not closed.
+
+The Q&A files for different levels are physically separate. Never read from or write to another
+level as a substitute for a missing selected-level file.
 ---
 
 You are the orchestrator for building Victor's interview Q&A, hands-off.
@@ -123,6 +126,16 @@ First read
 enforcing. You stay light: you dispatch subagents, wait, and collect — you never hold every topic's
 Q&A in your own context.
 
+For each selected topic, calculate the lowercase SHA-256 digest over the exact UTF-8 bytes of
+`notes/{topic}/coverage/{LEVEL}.md` before dispatch. For Angular calculate Angular and Angular Material
+separately. Compare them with the selected-level EN and ES metadata:
+
+- matching in both files → current;
+- missing or different → stale, continue only in `MODE = full`;
+- EN/ES metadata differs → parity failure that this run must fix.
+
+Never copy a fingerprint from another level or trust a timestamp in its place.
+
 ## Decide the topic list
 
 - **`FILE` is one topic** → the list is just that topic (with `{SECTION}` and `{MODE}` as given).
@@ -131,6 +144,11 @@ Q&A in your own context.
 
 Process topics **one at a time, sequentially** — never overlap them, because each topic's reviewer
 commits and parallel commits race the git index.
+
+If the selected-level EN/ES pair does not exist, create an empty bilingual skeleton for that topic.
+Derive its initial `##` work list from the selected coverage sections plus the M/G classifications;
+do not borrow headings or questions from another level. Write fingerprints only after the new pair
+passes the complete audit.
 
 ## Per-topic pipeline — whole-topic detection, then per-SECTION deep work
 
@@ -158,16 +176,16 @@ subagents of a section, because they edit the same two files.
 **Stage M — interview-question market analysis (full mode only).** Launch one `role-appropriate`
 subagent, `reasoning tier: deep`, `execution: foreground` (market judgment shapes every question downstream):
 
-> You are a specialist in junior technical interviews at Spanish IT consultancies. Read `ROADMAP.md`
+> You are a specialist in technical interviews for **«level» candidates** at Spanish IT consultancies. Read `ROADMAP.md`
 > and `notes/prompts/_internal/_shared-context.md` for the candidate's exact target role, companies, stack, and
 > timeline, and `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` for what a good
 > interview question is. The topic is «topic».
 >
-> Produce the **real questions actually asked** of a junior for this stack on «topic» at the target
+> Produce the **real questions actually asked** of a «level» candidate for this stack on «topic» at the target
 > companies:
-> - Run a **live web search** for current Spanish junior interview questions on «topic» in this stack
+> - Run a **live web search** for current Spanish «level» interview questions on «topic» in this stack
 >   (the target companies plus Tecnoempleo / InfoJobs / LinkedIn España and "preguntas entrevista
->   junior {topic} España" style sources); quote the question text you find and date it. If web search
+>   «level» {topic} España" style sources); quote the question text you find and date it. If web search
 >   is unavailable, say so and use your trained knowledge of the 2026 Spanish market.
 > - Cross-check `notes/prompts/_internal/_job-market-evidence.md` (real postings on file) as a complement — which
 >   «topic» skills recur, and the exact wording the market uses.
@@ -187,8 +205,9 @@ the obvious gaps, not the ones that matter):
 
 > You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
 > `notes/prompts/_internal/_shared-context.md` for the exact role/companies, and
-> `notes/prompts/_internal/_job-market-evidence.md` for what they hire for). You have ~30 minutes with a junior
-> candidate and the topic is «topic». Read `notes/interview-prep/en/«topic».md` and
+> `notes/prompts/_internal/_job-market-evidence.md` for what they hire for). You have ~30 minutes with a
+> **«level» candidate** and the topic is «topic». Read
+> `notes/interview-prep/«level»/en/«topic».md` and
 > `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`.
 >
 > Write the questions you would actually ask to decide whether this candidate really knows «topic» —
@@ -206,7 +225,7 @@ the obvious gaps, not the ones that matter):
 Wait for G and keep its gap list — **also tagged by section**.
 
 **Build the per-section work list (orchestrator).** Read the `##` section headings in
-`notes/interview-prep/en/{FILE}.md` and the topic's `coverage/{LEVEL}.md` sections. If `{SECTION}` ≠ all, the
+`notes/interview-prep/{LEVEL}/en/{FILE}.md` and the topic's `coverage/{LEVEL}.md` sections. If `{SECTION}` ≠ all, the
 list is just that one section. For each section, assemble its **slice**: the M questions tagged to it +
 the G gaps tagged to it + its coverage items. Also run the light **en/es file-level sync check** here
 (same sections, same question counts on each side) and route each mismatch into the owning section's
@@ -279,6 +298,11 @@ the cross-section view, so it belongs here, not in a per-section subagent:
   where an interviewer is likeliest to ask it, remove the other.
 - **en/es parity** — same sections, same order, same question count on both sides.
 - **Global priority sanity** — no section is more than half ⭐⭐⭐.
+- **Coverage fingerprint** — after all substantive and parity gates pass, write the exact current
+  coverage SHA-256 value required by the standard to both language files. For Angular, write both
+  the Angular and Angular Material coverage fingerprints. A stale fingerprint is expected at run
+  start and must be reported; only a successful full audit may refresh it. `MODE = correct` must stop
+  on a missing or mismatched fingerprint and request `MODE = full`.
 
 Fix a stray duplicate or ordering issue directly (structural, not authoring). Then commit per
 `{DRY_RUN}` — **one atomic commit for the whole topic** (the `en/` + `es/` pair). **Safety check
@@ -299,11 +323,11 @@ holding eleven topics' worth of it is exactly the context saturation this per-se
 made and the per-topic verdict table (author status · reviewer verdict · commit). List any topic that
 failed so it can be re-run (`FILE` = that topic).
 
-**If `{DRY_RUN}` = true:** nothing was committed — all changes are staged in the working tree for Victor
+**If `{DRY_RUN}` = true:** nothing was committed — all changes remain in the working tree for Victor
 to read. Print the atomic commit sequence to run after reviewing the diff, one topic per pair of blocks:
 
 ```
-git add notes/interview-prep/en/<topic>.md notes/interview-prep/es/<topic>.md
+git add notes/interview-prep/<level>/en/<topic>.md notes/interview-prep/<level>/es/<topic>.md
 ```
 ```
 git commit -m "<that topic's commit message>"

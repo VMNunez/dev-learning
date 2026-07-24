@@ -35,9 +35,11 @@ DIFFICULTY  = [intro | standard | challenge]   → default: standard
 ISSUE_COUNT = [number of issues to plant]       → default: 4
 FOCUS       = [optional — a concept to centre the snippet on, e.g. "JWT filter", "reactive forms",
               "LEFT JOIN + NULL", "@Transactional". Leave blank to mix issues across the topic.]
+LEVEL       = [junior | middle | senior]
 
 Validation — before anything else:
 - If TYPE is blank: print "Error: TYPE is required (angular | spring-boot | sql)." and stop.
+- If LEVEL is blank: print "Error: LEVEL is required (junior | middle | senior)." and stop.
 - If DIFFICULTY is blank: use standard. If ISSUE_COUNT is blank or below 2: use 4.
 
 ---
@@ -132,9 +134,13 @@ For each **distinct concept** behind a missed issue or a false positive, add one
 question. If I found everything cleanly, skip this step.
 
 Route each question to the topic file for {TYPE}:
-- angular → `notes/interview-prep/{en,es}/angular.md`
-- spring-boot → `notes/interview-prep/{en,es}/spring-boot.md`
-- sql → `notes/interview-prep/{en,es}/sql.md`
+- angular → `notes/interview-prep/{LEVEL}/{en,es}/angular.md`
+- spring-boot → `notes/interview-prep/{LEVEL}/{en,es}/spring-boot.md`
+- sql → `notes/interview-prep/{LEVEL}/{en,es}/sql.md`
+
+Before adding a question, require the target pair's stored coverage fingerprint(s) to match the
+current `{LEVEL}` coverage. If stale or missing, report the question in chat and route the user to a
+full `interview-prep-audit`; do not write into a stale bank.
 
 Then add each following **"Adding questions from outside the audit (practice prompts)"** in
 `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` — it defines the question format,
@@ -149,7 +155,7 @@ project when the question is about a pattern or decision.
 Only if interview questions were added. One command per code block:
 
 ```
-git add notes/interview-prep/en/{TYPE}.md notes/interview-prep/es/{TYPE}.md
+git add notes/interview-prep/{LEVEL}/en/{TYPE}.md notes/interview-prep/{LEVEL}/es/{TYPE}.md
 ```
 
 ```

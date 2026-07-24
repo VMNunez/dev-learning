@@ -31,9 +31,9 @@ bar actually gets applied every time.
 
 LEVEL = [junior | middle | senior]
 FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
-       → notes/interview-prep/en/{FILE}.md
-       → notes/interview-prep/es/{FILE}.md
-       → FILE can also be a path to ONE language file (e.g. notes/interview-prep/en/angular.md):
+       → notes/interview-prep/{LEVEL}/en/{FILE}.md
+       → notes/interview-prep/{LEVEL}/es/{FILE}.md
+       → FILE can also be a path to ONE language file (e.g. notes/interview-prep/junior/en/angular.md):
          derive the topic from it and audit it together with its twin in the other language.
 
 SECTION = [all | ## Routing | ## Forms | ## JOINs | ...]
@@ -49,6 +49,9 @@ MODE = [full | correct]
          hunt for missing topics or add new questions.
 
 Use FILE, LEVEL, SECTION, and MODE wherever the prompt refers to {FILE}, {SECTION}, or {MODE}.
+
+Reject any explicit path whose embedded level differs from `LEVEL`. Never fall back to the legacy
+shared `notes/interview-prep/en/` or `es/` paths.
 
 Notes on specific files:
 - angular: Angular framework questions. **Angular Material has no file of its own** — its questions
@@ -166,7 +169,8 @@ only). New questions added in Step 6 get a marker too and are merged into this o
 ## Step 5 — Format check
 
 Scan every question in `{SECTION}` of both files. Enforce the mandatory format from the standard: blank
-line between the bold question and the answer, a priority marker on the bold line. Add a Junior tip to
+line between the bold question and the answer, a priority marker on the bold line. Add the standard's
+level-appropriate interview tip to
 any Conceptual question missing one; add a Red flag to any Decision-based/Pressure question missing one.
 Fix violations in both files and report what was fixed.
 
@@ -195,7 +199,7 @@ per section. Flag any section missing Decision-based or Pressure entirely, and f
 **6.4 Missing questions.** Every realistic question the target companies would ask that is not yet in
 `{SECTION}`. Do not cap at 3–5 — add until the section is genuinely interview-ready. Each new question:
 follow the question format in the standard (bold question + marker + blank line + answer in Victor's
-voice + Junior tip if Conceptual / Red flag if Decision-based or Pressure + a **real, cited code
+voice + the level-appropriate tip if Conceptual / Red flag if Decision-based or Pressure + a **real, cited code
 block** if it is the kind of question an interviewer poses with code — see "Sourcing real code"),
 reference a real project when it is about a pattern or decision, and add to BOTH files (translated). If a question logically
 belongs in a different section than `{SECTION}`, note it in the summary instead of adding it here.

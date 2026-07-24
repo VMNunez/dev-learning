@@ -45,6 +45,7 @@ SIMULATION_FILE = practice/simulations/sql/05-inventory.md
 
 TIME_USED       = [minutes used — exact, no rounding — e.g. 74]
 MODE            = [review | hint — leave blank for review]
+LEVEL           = [junior | middle | senior]
 
 TYPE is auto-detected from SIMULATION_FILE — do not fill it in:
 - path contains /angular/     → angular
@@ -190,9 +191,13 @@ or 2, target the most important gap. If every dimension scored 3, write a reinfo
 about the strongest pattern applied correctly in this solution.
 
 Route each question to the topic file for the simulation TYPE:
-- Angular → `notes/interview-prep/{en,es}/angular.md`
-- Spring Boot → `notes/interview-prep/{en,es}/spring-boot.md`
-- SQL → `notes/interview-prep/{en,es}/sql.md`
+- Angular → `notes/interview-prep/{LEVEL}/{en,es}/angular.md`
+- Spring Boot → `notes/interview-prep/{LEVEL}/{en,es}/spring-boot.md`
+- SQL → `notes/interview-prep/{LEVEL}/{en,es}/sql.md`
+
+Before adding a question, require the target pair's stored coverage fingerprint(s) to match the
+current `{LEVEL}` coverage. If stale or missing, include the proposed question in the review report
+and request a full `interview-prep-audit`; do not write into a stale bank.
 
 Then add each following **"Adding questions from outside the audit (practice prompts)"** in
 `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` — it defines the question format,
@@ -252,7 +257,7 @@ git add {SIMULATION_FILE} practice/simulations/TRACKER.md PROGRESS.md
 ```
 If (and only if) questions were added, also stage the two exact Q&A files:
 ```
-git add notes/interview-prep/en/{topic}.md notes/interview-prep/es/{topic}.md
+git add notes/interview-prep/{LEVEL}/en/{topic}.md notes/interview-prep/{LEVEL}/es/{topic}.md
 ```
 
 ```
