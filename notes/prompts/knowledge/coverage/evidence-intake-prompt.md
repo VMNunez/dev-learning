@@ -168,7 +168,7 @@ against this prompt's declared outputs, the three bullets written to
 `notes/prompts/knowledge/coverage/_internal/_last-run-report-evidence-intake.md`, its own commit, then
 the refinement step behind a cold reviewer.
 
-This prompt was the only one of the 24 without a self-report, on the reasoning that the tracker row
+This prompt was once the only runnable entry point without a self-report, on the reasoning that the tracker row
 already recorded that it ran. That records *that* it ran, never *how* — and it writes
 `_job-market-evidence.md`, the root three other prompts anchor their market analysis to, so a silent
 defect here propagates into coverage and the interview Q&A with nothing downstream able to see it.

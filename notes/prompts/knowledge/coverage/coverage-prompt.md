@@ -2,6 +2,8 @@
 
 Create or recalibrate one topic at one professional level.
 
+> **▶ Run first:** nothing — this is the per-topic producer for coverage and the selected global mirror.
+
 ## Configuration
 
 ```text
@@ -145,7 +147,8 @@ Validate:
 
 ## Step 6 — Update mode
 
-Dry run never commits or updates the tracker.
+Dry run never writes coverage artifacts, but its self-report and `dry-run` tracker outcome are still
+committed as execution evidence.
 
 In update mode:
 
@@ -156,6 +159,10 @@ In update mode:
 5. Update the run tracker cell for the topic and level.
 6. Commit self-report and tracker together.
 7. Verify both commits with `git show --stat`.
+
+For step 4, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in full. Its
+declared report path is `_internal/_last-run-report-coverage-prompt.md`; update the selected
+Coverage J/M/S cell in `_internal/_run-tracker.md`.
 
 ## Final summary
 

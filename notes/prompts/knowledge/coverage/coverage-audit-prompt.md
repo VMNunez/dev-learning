@@ -2,6 +2,9 @@
 
 Global convergence pass for one professional level after every topic has been processed individually by `coverage-prompt`.
 
+> **▶ Run first:** `coverage-prompt` for every topic at this `LEVEL` — the tracker gate below verifies
+> that the complete per-topic pass has finished.
+
 ## Configuration
 
 ```text
@@ -10,6 +13,16 @@ MODE = [update | dry-run]
 ```
 
 Run junior, middle, and senior audits separately. This audit never authors a missing topic from scratch; it flags that topic for its own coverage-prompt execution.
+
+## Runtime contract
+
+Before dispatching roles, read:
+
+- `notes/prompts/_internal/_agent-runtime-standard.md`
+- the active platform adapter
+
+Use canonical roles and reasoning tiers from the runtime standard. Analysts and reviewers are cold
+and read-only. If a required role cannot be dispatched, stop; there is no single-agent fallback.
 
 ## Required sources
 
@@ -106,7 +119,8 @@ Validate:
 
 ## Step 6 — Update mode
 
-Dry run makes no commits or tracker changes.
+Dry run makes no coverage commits, but its self-report and `dry-run` tracker outcome are still
+committed as execution evidence.
 
 Update mode:
 
@@ -116,6 +130,10 @@ Update mode:
 4. Write the coverage-audit self-report and update the audit tracker row with level and date.
 5. Commit report and tracker together.
 6. Verify commits with `git show --stat`.
+
+For step 4, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in full. Its
+declared report path is `_internal/_last-run-report.md`; update the `coverage-audit` row in
+`_internal/_run-tracker.md`.
 
 ## Final report
 

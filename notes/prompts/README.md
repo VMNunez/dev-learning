@@ -31,19 +31,20 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 - **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
   before dispatching any role.
 
-Both launcher catalogs contain exactly 24 files and must reference the same 24 canonical entry points.
+Both launcher catalogs contain exactly 25 files and must reference the same 25 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt.
 
 ---
 
 ## Prompts you launch vs. internal pieces you never touch
 
-Every file in this folder is a `.md` prompt, but **not every file is something you run.** One rule
-tells them apart, and it is the filename:
+Most files in this folder are `.md` prompt-system artifacts, but **not every Markdown file is
+something you run**; the validator is the one `.ps1` utility. One filename rule separates runnable
+Markdown entry points from internal Markdown:
 
 > **A leading `_` means "never launch this".** No underscore, and it is yours to run.
 
-**Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the ten families
+**Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the twelve families
 and this root, which holds the shared session/runtime contracts, preflight, recommendation ledger,
 self-report contracts, market context, batch rules and run tracker. Open any
 folder under `notes/prompts/` and you see its runnable prompts and one `_internal/`, never a mix you
@@ -54,12 +55,12 @@ the filenames anyway, so a file keeps its marking if it is ever moved or quoted 
 
 **Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 24 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 25 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation, or just use its slash command. **24 files, listed below.**
+  conversation, or just use its slash command. **25 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
   "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -69,29 +70,31 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 24 runnable prompts — each with a slash command of the same name
+### The 25 runnable prompts — each with a slash command of the same name
 
 | Group | Prompts |
 |---|---|
-| Knowledge | `coverage-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
+| Knowledge | `coverage-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
 | Projects | `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
 | Practice | `sql-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
 
-Two flavors among these 24, both launched the same way (paste config into a new chat):
+Two flavors among these 25, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
-  `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt` and
-  `sql-plan-audit` (both fan out to cold subagents and run the orchestrator contract, even though
-  they read as single-target) — run entirely inside a supported agent runtime and hand you a finished result (and,
-  where noted, a commit) with no further input from you. **Twelve prompts**, and the set is defined by
-  which self-report they run: these twelve execute `_pipeline-self-report.md`.
+  `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt`,
+  `notes-plan-prompt`, and `sql-plan-audit` (they run the orchestrator contract even when the target
+  is singular) — run entirely inside a supported agent runtime and hand you a finished result (and,
+  where noted, a commit) with no further input from you. **Thirteen prompts**, and the set is defined by
+  which self-report they run: these thirteen execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
 
-Either way, **every run writes its own `_last-run-report*.md` and every orchestrator also updates
-`_run-tracker.md`.** Both count as declared outputs of every prompt and are checked by the close-out —
+Either way, **every run writes its own `_last-run-report*.md` and updates `_run-tracker.md`.**
+Orchestrators record target-level state; `notes-audit` additionally records every planned EN/ES pair,
+and single-shot prompts update their latest-execution table. Completed, blocked, and dry-run outcomes
+remain distinguishable. Both files count as declared outputs of every prompt and are checked by the close-out —
 they are not repeated in the per-prompt rows below only because they are universal, not because they
 are exempt.
 
@@ -103,12 +106,12 @@ are exempt.
 `_sql-plan-standard.md`, `_sql-exercise-seeds.md`, `_sql-exercises-practice.md`,
 `_sql-exercises-review.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`,
-`_single-shot-self-report.md` (the same contract for the twelve non-orchestrator prompts: close-out check against declared outputs, three bullets, refinement behind a cold reviewer),
+`_single-shot-self-report.md` (the same contract for the twelve non-orchestrator prompts: close-out check against declared outputs, tracker update, three bullets, refinement behind a cold reviewer),
 `_pipeline-self-report.md` (the shared final step every orchestrator runs: five bullets on how the run
 itself went, written to `_last-run-report*.md` in the orchestrator's own `_internal/` folder and
 auto-committed with `_run-tracker.md` — the
 evidence that decides whether a frozen prompt gets reopened), plus every
-`notes-plan-prompt.md` / `_notes-write-prompt.md` / `_notes-review-prompt.md` / `_notes-translate-prompt.md` / `_notes-review-es-prompt.md`,
+`_notes-write-prompt.md` / `_notes-review-prompt.md` / `_notes-translate-prompt.md` / `_notes-review-es-prompt.md`,
 `_interview-prep-write-prompt.md` / `_interview-prep-review-prompt.md`,
 `_plan-write-prompt.md` / `_plan-architecture-prompt.md` / `_plan-review-prompt.md`,
 `_readme-write-prompt.md` / `_readme-review-prompt.md`,
@@ -269,9 +272,9 @@ Each generated file, with who writes it and who depends on it:
 Pipeline view:
 
 ```
-coverage-prompt / coverage-audit ─► notes/coverage-{junior|middle|senior}.md
+coverage-prompt / coverage-audit ─► notes/coverage/{junior|middle|senior}.md
         │
-        ├─► notes-audit (folder|file) ─► [plan] → [inspect per existing file] → per file: en-author → en-reviewer → translator → es-reviewer subagents ─► notes/*.md ─┐
+        ├─► notes-plan ─► notes-audit (one TOPIC + LEVEL + NOTE) ─► en-author → en-reviewer → translator → es-reviewer ─► one EN/ES pair ─┐
         ├─► interview-prep-audit ─► interview-prep/*.md ─┐
         │        └─ notes-and-interview-prep keeps both in sync
         │                                                   │

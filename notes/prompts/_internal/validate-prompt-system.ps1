@@ -1,9 +1,14 @@
 [CmdletBinding()]
 param(
-    [string]$RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
+    [string]$RepositoryRoot
 )
 
 $ErrorActionPreference = 'Stop'
+if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
+    $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
+}
+
+$expectedRunnableCount = 25
 $promptRoot = Join-Path $RepositoryRoot 'notes\prompts'
 $claudeRoot = Join-Path $RepositoryRoot '.claude\commands'
 $codexRoot = Join-Path $RepositoryRoot '.codex\commands'
@@ -58,9 +63,9 @@ $runnable = @(Get-RunnablePrompts)
 $claudeLaunchers = @(Get-ChildItem -LiteralPath $claudeRoot -File -Filter '*.md')
 $codexLaunchers = @(Get-ChildItem -LiteralPath $codexRoot -File -Filter '*.md')
 
-if ($runnable.Count -ne 24) { Add-ValidationError "Expected 24 runnable prompts; found $($runnable.Count)." }
-if ($claudeLaunchers.Count -ne 24) { Add-ValidationError "Expected 24 Claude launchers; found $($claudeLaunchers.Count)." }
-if ($codexLaunchers.Count -ne 24) { Add-ValidationError "Expected 24 Codex launchers; found $($codexLaunchers.Count)." }
+if ($runnable.Count -ne $expectedRunnableCount) { Add-ValidationError "Expected $expectedRunnableCount runnable prompts; found $($runnable.Count)." }
+if ($claudeLaunchers.Count -ne $expectedRunnableCount) { Add-ValidationError "Expected $expectedRunnableCount Claude launchers; found $($claudeLaunchers.Count)." }
+if ($codexLaunchers.Count -ne $expectedRunnableCount) { Add-ValidationError "Expected $expectedRunnableCount Codex launchers; found $($codexLaunchers.Count)." }
 
 $expectedTargets = @(
     $runnable |
@@ -88,17 +93,13 @@ foreach ($claudeLauncher in $claudeLaunchers) {
 
     $claudeText = [System.IO.File]::ReadAllText($claudeLauncher.FullName)
     $codexText = [System.IO.File]::ReadAllText($codexLauncher)
-    $normalizedClaude = $claudeText.Replace('Claude Code', '<runtime>').Replace('Claude', '<runtime>')
-    $normalizedCodex = [regex]::Replace(
-        $codexText,
-        '\r?\nRead `notes/prompts/_internal/_agent-runtime-standard\.md` before dispatching roles; use its Codex mapping and do not invent model identifiers\.\r?\n',
-        "`n"
-    )
-    $normalizedCodex = $normalizedCodex.Replace('Codex', '<runtime>')
-    $normalizedClaude = [regex]::Replace($normalizedClaude.Replace("`r`n", "`n"), '\n{3,}', "`n`n")
-    $normalizedCodex = [regex]::Replace($normalizedCodex.Replace("`r`n", "`n"), '\n{3,}', "`n`n")
-    if ($normalizedClaude.Trim() -ne $normalizedCodex.Trim()) {
-        Add-ValidationError "Launcher adapters diverge functionally: $($claudeLauncher.Name)."
+    foreach ($launcherContract in @(
+        @{ Name = 'Claude'; Text = $claudeText },
+        @{ Name = 'Codex'; Text = $codexText }
+    )) {
+        if ($launcherContract.Text -notmatch 'execute it in full') {
+            Add-ValidationError "$($launcherContract.Name) launcher does not delegate full execution: $($claudeLauncher.Name)."
+        }
     }
 }
 
@@ -124,6 +125,61 @@ foreach ($prompt in $runnable) {
     $text = [System.IO.File]::ReadAllText($prompt.FullName)
     if ($text -notmatch '_agent-runtime-standard\.md') {
         Add-ValidationError "Runnable prompt lacks the runtime contract: $($prompt.FullName)."
+    }
+    if ($text -notmatch 'Run first') {
+        Add-ValidationError "Runnable prompt lacks a Run first declaration: $($prompt.FullName)."
+    }
+}
+
+$pipelinePromptPaths = @(
+    'knowledge\coverage\coverage-audit-prompt.md',
+    'knowledge\coverage\coverage-prompt.md',
+    'knowledge\interview-prep\interview-prep-audit.md',
+    'knowledge\interview-prep\notes-and-interview-prep-prompt.md',
+    'knowledge\notes\notes-audit.md',
+    'knowledge\notes\notes-plan-prompt.md',
+    'practice\sql\sql-plan-audit.md',
+    'projects\plan\plan-audit.md',
+    'projects\portfolio\portfolio-audit.md',
+    'projects\readme\readme-audit.md',
+    'projects\review\review-audit.md',
+    'strategy\tracking\progress-update-prompt.md',
+    'strategy\tracking\roadmap-review-prompt.md'
+)
+
+if ($pipelinePromptPaths.Count -ne 13) {
+    Add-ValidationError "Expected 13 pipeline prompts; found $($pipelinePromptPaths.Count)."
+}
+
+foreach ($prompt in $runnable) {
+    $relativePath = $prompt.FullName.Substring($promptRoot.Length + 1)
+    $text = [System.IO.File]::ReadAllText($prompt.FullName)
+    $expectedSelfReport = if ($relativePath -in $pipelinePromptPaths) {
+        '_pipeline-self-report.md'
+    } else {
+        '_single-shot-self-report.md'
+    }
+    if ($text -notmatch [regex]::Escape($expectedSelfReport)) {
+        Add-ValidationError "Runnable prompt lacks its expected self-report contract ($expectedSelfReport): $($prompt.FullName)."
+    }
+}
+
+$trackerText = [System.IO.File]::ReadAllText((Join-Path $promptRoot '_internal\_run-tracker.md'))
+$singleShotPrompts = @($runnable | Where-Object {
+    $_.FullName.Substring($promptRoot.Length + 1) -notin $pipelinePromptPaths
+})
+if ($singleShotPrompts.Count -ne 12) {
+    Add-ValidationError "Expected 12 single-shot prompts; found $($singleShotPrompts.Count)."
+}
+foreach ($prompt in $singleShotPrompts) {
+    $promptName = [System.IO.Path]::GetFileNameWithoutExtension($prompt.Name)
+    if ($trackerText -notmatch "(?m)^\|\s*$([regex]::Escape($promptName))\s*\|") {
+        Add-ValidationError "Single-shot tracker row missing: $promptName."
+    }
+}
+foreach ($requiredTrackerContract in @('## Notes file executions', '## Single-shot prompt executions', 'completed|blocked|dry-run')) {
+    if ($trackerText -notmatch [regex]::Escape($requiredTrackerContract)) {
+        Add-ValidationError "Run tracker lacks '$requiredTrackerContract'."
     }
 }
 
@@ -154,7 +210,7 @@ foreach ($adapterName in @('AGENTS.md', 'CLAUDE.md')) {
 }
 
 $representativeContracts = @{
-    'knowledge\notes\notes-audit.md' = @('Runtime contract', 'worklist', 'commit')
+    'knowledge\notes\notes-audit.md' = @('Runtime contract', 'coverage-fingerprinted plan', 'TOPIC + LEVEL + NOTE', 'commit')
     'projects\review\review-audit.md' = @('Runtime contract', 'PROJECT-BACKLOG.md', 'commit')
     'practice\sql\sql-exercises-prompt.md' = @('Runtime contract', 'Brief blocking questions', 'MODE')
     'strategy\tracking\progress-update-prompt.md' = @('Runtime contract', 'PROGRESS.md', 'active branch')
@@ -181,10 +237,11 @@ if ($errors.Count -gt 0) {
     exit 1
 }
 
-Write-Output 'PASS: 24 canonical prompts'
-Write-Output 'PASS: 24 Claude launchers'
-Write-Output 'PASS: 24 Codex launchers'
-Write-Output 'PASS: launcher parity and canonical runtime isolation'
+Write-Output "PASS: $expectedRunnableCount canonical prompts"
+Write-Output "PASS: $expectedRunnableCount Claude launchers"
+Write-Output "PASS: $expectedRunnableCount Codex launchers"
+Write-Output 'PASS: launcher target parity, full delegation, and canonical runtime isolation'
+Write-Output 'PASS: runnable prompt entry-point and self-report contracts'
 Write-Output 'PASS: representative contract dry runs'
 Write-Output 'PASS: external-path failure simulation'
 Write-Output 'PASS: thin session adapters share one rules source'
