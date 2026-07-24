@@ -26,7 +26,7 @@ is the first retained execution.
 | Angular | | | | | | | | | | | | | | | |
 | Angular Material | | | | | | | | | | | | | | | |
 | Spring Boot | 2026-07-24 — completed — 103 items; mirror parity; notes plan stale | 2026-07-24 — completed — 11 entries; 103 concepts; mirror parity | 0/11 complete — completed | | | | | | | | | | | | | |
-| Java | 2026-07-24 — completed — 111 items; mirror parity; notes plan current | 2026-07-24 — completed — 15 entries; 111 concepts; mirror parity | 0/15 complete — completed | | | | | | | | | | | | |
+| Java | 2026-07-24 — completed — 111 items; mirror parity; notes plan current | 2026-07-24 — completed — 15 entries; 111 concepts; mirror parity | 1/15 complete — completed | | | | | | | | | | | | |
 | Architecture | | | | | | | | | | | | | | | |
 | Security | | | | | | | | | | | | | | | |
 | TypeScript | | | | | | | | | | | | | | | |
@@ -48,6 +48,7 @@ marking the note complete.
 
 | Topic | Level | Note | English | Spanish | Plan status | Last run | Last outcome |
 |---|---|---|---|---|---|---|---|
+| Java | junior | 00 | `notes/java/junior/en/00-intro-java.md` | `notes/java/junior/es/00-intro-java.md` | complete | 2026-07-24 | completed — 2/2 assigned concepts covered; four stages passed |
 
 ## Per-project prompts
 
