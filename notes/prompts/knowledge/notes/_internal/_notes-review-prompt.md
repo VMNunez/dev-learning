@@ -19,7 +19,8 @@ to land the file).
 
 **How to use:**
 
-1. Fill in `TOPIC` and `FILE` (the exact `en/` file just authored).
+1. Fill in `TOPIC`, `FILE` (the exact `en/` file just authored), and `TASK` (the complete selected
+   persistent-plan entry).
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -29,8 +30,9 @@ to land the file).
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
 FILE  = [exact en/ file path just authored, e.g. notes/java/junior/en/08-exceptions.md]
+TASK  = [complete selected persistent-plan entry]
 
-Use TOPIC and FILE wherever the prompt refers to {TOPIC} or {FILE}.
+Use TOPIC, FILE, and TASK wherever the prompt refers to their placeholders.
 
 ---
 
@@ -58,6 +60,10 @@ Before starting, read:
 - The sibling files already in `{FILE}`'s `en/` folder — to catch duplicated examples/concepts and
   broken or missing forward/cross-topic references.
 
+Treat TASK as an acceptance contract. Coverage bullets define required scope, but a file that names
+or demonstrates them without achieving TASK's `Learning outcome`, resolving every `Must answer`, and
+respecting `Prerequisites` is below bar.
+
 ## Audit checklist — run every point on every section
 
 For each section of the file, check:
@@ -83,6 +89,15 @@ For each section of the file, check:
   definition) and closes by handing off to the next; where a sibling uses a shared example domain, this
   file stays consistent with it. Read the neighbouring files to check the seams.
 - **No duplication** — no example or concept repeats a sibling file in the same folder.
+- **Plan contract** — the learning outcome is achieved, every must-answer question is resolved in
+  the prose, no undeclared or later prerequisite is assumed, and the closing handoff is real.
+- **Introduction invariant** — when the entry prefix is `00` or its narrative role is topic
+  introduction, the file defines the topic and its practical purpose, establishes the recurring
+  mental model, connects it honestly to Victor's existing stack and target work, and maps the
+  complete learning route. Apply this to both created and pre-existing files.
+
+Covering every assigned bullet is necessary but not sufficient. Fix a file that still reads like
+reference documentation instead of a chapter capable of teaching the planned outcome from zero.
 
 ## Fix, don't just report
 
@@ -103,6 +118,8 @@ Report your **verdict** for this file:
 - `PASS` (no changes needed) or `FIXED` (with a short bullet list of what you corrected and why).
 - The **"N lines, read to EOF"** line for `{FILE}`.
 - The **section-by-section trace** (every heading → PASS or the fix).
+- A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
+  handoff; and, when applicable, every introduction invariant → PASS or the fix.
 - The coverage status (✅/🔧/➕) and the files touched (`en/` only).
 
 ````

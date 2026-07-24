@@ -1,6 +1,6 @@
 # Notes Plan Prompt
 
-Create or reconcile the persistent study-file plan for one topic and one professional level.
+Create or reconcile the persistent pedagogical study-file plan for one topic and one professional level.
 This prompt plans only. It never authors, reviews, translates, or commits study-note prose.
 It does classify pre-existing bilingual notes across professional levels and relocates an intact
 English/Spanish pair when the evidence makes the correct level unambiguous.
@@ -107,24 +107,59 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
 1. Read every coverage bullet and preserve its exact text.
 2. Inspect the now-classified note filenames and headings in `EN_DIR` and `ES_DIR`. Do not
    quality-audit prose.
-3. Build a gradual study sequence. Group concepts only when they form one coherent learning unit.
-   There is no target or maximum number of files.
+3. Build a gradual zero-assumption study sequence. Group concepts only when they form one coherent
+   learning unit and can be taught to one clear learning outcome. There is no target or maximum
+   number of files.
 4. Assign every selected-level coverage bullet to exactly one entry. Never paraphrase a coverage
    bullet in the assignment list.
 5. Do not assign bullets from either sibling level.
-6. Prefer an existing English file when its topic matches the group. Otherwise allocate the next
-   unused two-digit number. Numbering starts at `01` independently in every level.
+6. Prefer an existing English file when its topic matches the group. At `LEVEL = junior`, reserve
+   `00` for the required topic introduction and allocate subsequent files from the next unused
+   two-digit number. Middle and senior continue their level-specific sequence from `01`; they build
+   on a consolidated earlier level rather than reintroducing the whole topic.
 7. An entry is:
    - `audit` when its English file already exists;
    - `create` when it does not.
 8. Every new or existing entry begins `pending`, except an old `complete` entry may remain complete
-   only when its English path, Spanish path, and exact assigned bullet set are unchanged and both
-   files still exist.
+   only when its English path, Spanish path, exact assigned bullet set, and complete pedagogical
+   contract are unchanged and both files still exist. A newly added or materially changed learning
+   outcome, prerequisite, must-answer question, handoff, or introduction contract reopens the entry
+   to `pending`; prose previously accepted against a weaker plan has not passed the new contract.
 9. Existing notes that cannot be justified by this level's coverage go under `## Unassigned existing
    notes`. They are never silently deleted or treated as required study files.
 10. On reconciliation, report added, removed, regrouped, preserved-complete, and unassigned entries.
 11. A note relocated into the selected level participates like any other existing note and therefore
     receives `Action: audit`. A note relocated out cannot remain assigned by the selected plan.
+12. Give every entry the complete pedagogical contract from `_note-quality-standard.md`: narrative
+    role, observable learning outcome, prerequisites, must-answer questions, and handoff. Coverage
+    bullets define required scope, not the maximum explanation needed to teach it.
+13. At `LEVEL = junior`, treat the topic introduction as a required learning unit. An existing `00`
+    file receives the same full introduction contract under `Action: audit`; never assume that an
+    existing first file already introduces the topic. If no `00` exists, allocate `00` for the
+    introduction before normal numbering begins at `01`. Its orientation may go beyond literal
+    coverage-bullet wording without importing concepts from another professional level.
+14. Validate the complete route: no entry may rely on an unlisted or later prerequisite; every
+    chapter must pick up a reason created by earlier chapters and hand off to a real later entry (or,
+    for the final entry, close the selected-level journey).
+
+## Cold pedagogical review
+
+After drafting or reconciling the complete plan, dispatch one cold reviewer. Give it only the selected
+coverage, `_note-quality-standard.md`, existing note headings, and the proposed plan. It does not edit
+files. It must challenge:
+
+- for junior, whether `00` fulfils the complete topic-introduction contract;
+- whether every learning outcome is achievable from the declared prerequisites;
+- concepts or terms used before they are taught;
+- chapters grouped around a label rather than one teachable mental model;
+- missing must-answer questions that would leave the assigned concepts recognisable but unexplained;
+- broken narrative handoffs, oversized chapters, and disconnected files;
+- whether the route can teach the topic from zero as Victor's only study source.
+
+Acceptance proof must include `N entries reviewed`, an explicit intro verdict, a prerequisite-order
+verdict, and every proposed correction. Re-dispatch once if that proof is absent. Apply accepted
+findings, then repeat exact coverage assignment and route validation. If the reviewer cannot be
+dispatched or fails twice, stop; there is no single-agent fallback.
 
 ## Required plan format
 
@@ -144,12 +179,26 @@ English: notes/angular/junior/en/01-components.md
 Spanish: notes/angular/junior/es/01-componentes.md
 Depends on: none
 
+Narrative role: concise explanation of why this chapter exists at this point in the journey.
+
+Learning outcome: one observable sentence stating what Victor can understand, explain, or apply.
+
+Prerequisites: none or earlier entry numbers only.
+
+Must answer:
+
+- concrete learner question the finished note must resolve
+- concrete learner question the finished note must resolve
+
 Coverage concepts:
 
 - exact coverage bullet
 - exact coverage bullet
 
 Rationale: one concise explanation of why these concepts belong together.
+
+Handoff: what this chapter unlocks and why the next chapter follows, or how the final chapter closes
+the selected-level journey.
 
 ## Unassigned existing notes
 
@@ -172,6 +221,12 @@ Rules:
 - `Action` is exactly `create` or `audit`.
 - Paths are repository-relative and remain inside the selected topic and level.
 - `Depends on` contains `none` or earlier entry numbers only.
+- `Prerequisites` contains `none` or earlier entry numbers only and agrees with `Depends on`;
+  `Depends on` remains the mechanical execution gate while `Prerequisites` states the learning
+  assumptions.
+- `Narrative role`, `Learning outcome`, `Must answer`, and `Handoff` are non-empty and specific.
+- Every `Must answer` item is a learner question, not a restatement of a coverage bullet.
+- At junior, entry `00` satisfies the complete introduction contract for both `create` and `audit`.
 - A missing Spanish file does not change `Action`; the notes pipeline creates or synchronises it.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned across levels.
 - Omit `## Legacy notes requiring split` when empty. If it is non-empty, the run is blocked and no
@@ -200,4 +255,6 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 
 Report topic, level, coverage fingerprint, entry count, concept count, create/audit counts,
 preserved-complete count, every legacy classification decision, relocations, split blockers,
-unassigned existing notes, mirror parity, and commit or `dry-run`.
+unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,
+learning-outcome count, prerequisite-order verdict, handoff count, concepts-used-before-taught
+verdict, and commit or `dry-run`.

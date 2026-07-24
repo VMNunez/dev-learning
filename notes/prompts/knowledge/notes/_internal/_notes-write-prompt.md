@@ -59,7 +59,8 @@ Use TOPIC, LEVEL, FILE, TASK, and REWRITE_MODE wherever the prompt refers to the
 
 ---
 
-I want you to do deep work on ONE English notes file: {FILE}. Do only what {TASK} asks — do not wander
+I want you to do deep work on ONE English notes file: {FILE}. `{TASK}` contains the selected plan
+entry's pedagogical contract and exact coverage assignment. Do only what {TASK} asks — do not wander
 into other files or folder-level work. **Verifiable read (the shared session rules non-negotiable):** before reading
 `{FILE}` (or the `es/` for TODO markers), run `wc -l` on it — the Read tool truncates at 2000 lines
 silently; if a file is near or over that, read it in passes with `offset` to the real end, and state
@@ -173,9 +174,18 @@ If TASK asks to create the file, add a section, or complete a thin one, write it
 in `_note-quality-standard.md`. The persistent plan already owns the exact number and path; never
 renumber the file here.
 
-If TASK is `create-file` for `00-intro-{topic}.md`, cover the four intro points from the standard:
-high-level mental model, key concepts that appear everywhere, how it differs from JS/TS/React, and a
-one-paragraph map of the rest of the notes.
+Coverage bullets define required level scope, not sufficient teaching prose. Add the orientation,
+prerequisite explanations, worked examples, contrasts, and transitions needed to achieve TASK's
+`Learning outcome` and resolve every `Must answer` question from zero. Do not use this permission to
+import sibling-level scope.
+
+If the selected entry has prefix `00` or TASK's `Narrative role` identifies it as the topic
+introduction, enforce the complete introduction contract from the standard **regardless of whether
+Action is `create` or `audit`, the exact filename, or REWRITE_MODE**. Existing prose protection never
+protects an incomplete introduction: TASK explicitly requires that contract. Cover what the topic is
+and is used for, its high-level mental model and recurring characteristics, genuine contrasts with
+Victor's existing stack, how it fits his target work, and a one-paragraph map of the complete note
+journey without prematurely teaching later chapters.
 
 ## Step 4 — Self-check gate (before you finish)
 
@@ -186,6 +196,9 @@ The English reviewer (B) audits this file next, but do not lean on that — hand
 - Signature texture is present where the section warrants it (worked example, a diagram for anything
   structural, callouts, tables explained) — and no section visibly drops below its neighbours.
 - No example or concept duplicates a sibling file you read; forward/cross-topic references are marked.
+- TASK's `Learning outcome`, every `Must answer`, declared `Prerequisites`, and `Handoff` are
+  substantively satisfied. Bullet coverage alone is not a pass.
+- If this is the topic introduction, every introduction invariant from the standard is present.
 - The **fact-check gate** held: every code fragment, class/config name, dependency, version-specific
   API, `File:` path and `Docs:` link in the file was verified against the live source, not written from
   memory — anything unverifiable is a `TODO`, never a plausible guess.
@@ -233,6 +246,8 @@ Leave your English work in the working tree and report:
 - A short summary of what changed in `{FILE}`, and **which sections you touched** — the translator
   needs this to know what to (re)translate in the `es/`.
 - Which TODOs you resolved (so T clears the matching `es/` markers).
+- A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
+  handoff; and, when applicable, every introduction invariant → PASS or the work completed.
 
 If any issues remain in existing prose that you did not change (standard mode, no TODO), list them so
 Victor can add a TODO next run:

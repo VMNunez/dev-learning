@@ -35,8 +35,10 @@ FILE = [exact planned English path]
 ES_FILE = [exact planned Spanish path]
 PLAN = [notes/{topic}/coverage/notes-plan-{LEVEL}.md]
 NOTE = [two-digit entry number]
+TASK = [complete selected persistent-plan entry]
 
-Use these exact values wherever their placeholders appear.
+Use these exact values wherever their placeholders appear. TASK is allowed context; the English note
+is not.
 
 ---
 
@@ -85,6 +87,13 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
   the commit — a broken `es/` link that ships here is one no later stage will catch.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if
   translated, read as natural Spanish.
+- **Standalone learning outcome** — studying only the Spanish must let Victor achieve TASK's
+  `Learning outcome`, follow its declared prerequisites, understand every `Must answer`, and reach
+  its handoff. If the prose is present but unclear, fix the Spanish. If the required idea is absent,
+  report a structural gap and do not mark the plan entry complete.
+- **Introduction invariant** — for entry `00` or a topic-introduction narrative role, the Spanish
+  must independently explain what the topic is and is used for, establish the mental model, connect
+  it to Victor's existing stack and target work, and map the complete note route.
 
 ## Section-by-section trace (mandatory — proof you read to the end)
 
@@ -101,6 +110,10 @@ neighbours have, a missing callout, a code block that exists in no form), do not
 in context and this stage deliberately lacks it.
 
 If the Spanish is genuinely already native and at bar, change nothing and record `PASS`.
+
+Before committing, report a pedagogical-contract trace covering the learning outcome, every
+must-answer question, prerequisites, handoff, and any applicable introduction invariant. A structural
+gap in that trace blocks the status change and commit; return it to the English author/reviewer stage.
 
 ## Finish
 

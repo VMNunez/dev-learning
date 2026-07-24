@@ -2,7 +2,7 @@
 
 This is the **shared writing standard** for study notes. It is not a runnable prompt — it holds
 no configuration block and does nothing on its own. Every piece of the notes pipeline reads it:
-the public planner (`notes-plan-prompt.md`) for grouping only, both reviewers
+the public planner (`notes-plan-prompt.md`) for pedagogical sequencing, both reviewers
 (`_notes-review-prompt.md`, `_notes-review-es-prompt.md`) to judge against the bar, and the author and translator
 (`_notes-write-prompt.md`, `_notes-translate-prompt.md`) to produce to it.
 
@@ -165,6 +165,38 @@ Concretely, every file (beyond `00-intro`) must:
 The `00-intro` file is the map of this journey: it must lay out, in one paragraph, the route the rest
 of the files take and why they are ordered that way. When auditing, check the **seams between files**,
 not just each file in isolation — a topic can be made of strong pages and still read as disconnected.
+
+### Persistent-plan pedagogical contract
+
+Coverage bullets define **what belongs at the selected professional level**. They are neither prose
+requirements nor a ceiling on the orientation, prerequisite explanations, examples, contrasts, and
+transitions required to teach those concepts from zero.
+
+Every persistent-plan entry must therefore carry:
+
+- `Narrative role:` why this chapter exists at this exact point in the journey;
+- `Learning outcome:` what Victor can understand, explain, or apply after studying it;
+- `Prerequisites:` earlier plan entries whose concepts the chapter may assume;
+- `Must answer:` the concrete learner questions the finished note must resolve;
+- `Handoff:` what the chapter unlocks and why the next planned chapter follows.
+
+These fields are acceptance criteria for authoring and review, not decorative metadata. Covering all
+assigned coverage bullets is necessary but insufficient when the file still cannot achieve its
+learning outcome from zero.
+
+Every topic introduction has an additional invariant, regardless of whether its action is `create`
+or `audit` and regardless of its exact filename. An entry is the topic introduction when it has the
+`00` prefix or its narrative role says so. It must establish:
+
+1. what the topic is and the practical problem or work it serves;
+2. a high-level mental model and the characteristics that appear throughout the topic;
+3. how it relates to or differs from Victor's existing JavaScript/TypeScript/React knowledge where
+   that comparison genuinely clarifies;
+4. how it fits Victor's target stack and work;
+5. a one-paragraph map of the complete `01 → N` learning route and why that order is used.
+
+The introduction previews later concepts without teaching them prematurely. Introductory orientation
+is pedagogical scaffolding and does not need a synthetic coverage bullet of its own.
 
 ### Zero-assumption rule — the most important rule in this section
 
