@@ -21,7 +21,7 @@ runs once the whole coverage-prompt column is filled).
 
 | Topic | coverage-prompt | notes-audit | interview-prep-audit | notes-and-interview-prep |
 |---|---|---|---|---|
-| Angular | 2026-07-18 | | | |
+| Angular | 2026-07-24 | | | |
 | Angular Material | 2026-07-18 | | | |
 | Spring Boot | 2026-07-13 | 2026-07-15 | | |
 | Java | 2026-07-18 | | | |
