@@ -53,7 +53,7 @@ alone.
 A folder loaded into one context is what makes an inspector skim the tail; that is why inspection is
 one file per subagent.
 
-> **Verifiable read (CLAUDE.md non-negotiable):** before reading, run `wc -l` on `{FILE}` and its
+> **Verifiable read (the shared session rules non-negotiable):** before reading, run `wc -l` on `{FILE}` and its
 > `es/` counterpart. The Read tool truncates at 2000 lines **silently** — if a file is near or over
 > that, read it in passes with `offset` until the real end. Your report must state **"N lines, read
 > to EOF"** for each file read whole; the orchestrator rejects a report without it.

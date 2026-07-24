@@ -1,6 +1,8 @@
 # Progress Update Prompt — orchestrator
 
-Run this **inside Claude Code**. It reconciles `PROGRESS.md` with what each project's `PLANNING.md`
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It reconciles `PROGRESS.md` with what each project's `PLANNING.md`
 **declares** — never with the code; the extraction standard forbids subagents from reading it, so a
 fixed bug or refactor is invisible here until the plan records it. Hands-off: an orchestrator
 that **fans out one cold subagent per project** to extract that project's concepts, plus one subagent
@@ -43,7 +45,7 @@ Use MODE wherever the prompt refers to {MODE}.
 ---
 
 > **Branch guard (step 0):** run `git branch --show-current`. PROGRESS.md commits on whatever branch
-> is currently active (CLAUDE.md) — a feature branch is the normal case; name it in the final
+> is currently active (the shared session rules) — a feature branch is the normal case; name it in the final
 > report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
 > direct commits, only merges via PR.
 
@@ -81,13 +83,13 @@ Read:
 1. `PROGRESS.md` — the current version. Learn its exact structure, section order, and format. Note
    the projects table and each project's status. Treat statuses as a starting point — the subagents
    verify them.
-2. The "Current study progress" and "Active project" lines of CLAUDE.md — general orientation only
-   (which project is active). CLAUDE.md is already loaded into your context by Claude Code; do **not**
+2. The "Current study progress" and "Active project" lines of the shared session rules — general orientation only
+   (which project is active). the shared session rules is already loaded into your context by the supported agent runtime; do **not**
    re-read the file. It is updated by hand and may lag; do not treat it as authoritative.
 
 Decide the project scope from `{MODE}`:
 - **active** — only the in-progress project (⏳). Find it in the PROGRESS.md projects table or the
-  CLAUDE.md "Active project" line.
+  the shared session rules "Active project" line.
 - **all** — every project below.
 
 Project paths, in order:
@@ -104,8 +106,8 @@ These few lines are all a project subagent needs for the Format B step-status fa
 
 ## Step A — Fan out one subagent per project
 
-For **each** project in scope, launch a `general-purpose` subagent, `run_in_background: false`,
-**`model: sonnet`** — extraction is pattern-matching against an explicit standard (find the concept
+For **each** project in scope, launch a `role-appropriate` subagent, `execution: foreground`,
+**`reasoning tier: standard`** — extraction is pattern-matching against an explicit standard (find the concept
 lines, route with the Step 4 table), not judgment; the report contract + the orchestrator's
 re-dispatch rule catch a bad report, so the top model buys nothing here. In
 `MODE: all`, launch them all in a single message so they run in parallel (they only read — no
@@ -131,7 +133,7 @@ Wait for every project subagent to finish and collect its report. Keep the repor
 
 ## Step B — Subagent: audit SQL exercises
 
-Launch one `general-purpose` subagent, `run_in_background: false`, **`model: haiku`** — it runs two
+Launch one `role-appropriate` subagent, `execution: foreground`, **`reasoning tier: mechanical`** — it runs two
 git commands and formats their output; no judgment involved, and the zero-file guard already covers
 the one failure mode:
 
@@ -323,7 +325,7 @@ step's heading in PLANNING.md — that makes the next run self-sufficient.
 
 ## Step F — Commit
 
-PROGRESS.md follows the active branch per CLAUDE.md (2026-07-14 — `main` only receives merges via
+PROGRESS.md follows the active branch per the shared session rules (2026-07-14 — `main` only receives merges via
 PR). Per the commit-hygiene rule, run
 `git status` right before the add and again right before the commit — confirm nothing but
 PROGRESS.md gets staged (`git restore --staged` anything else). Then:

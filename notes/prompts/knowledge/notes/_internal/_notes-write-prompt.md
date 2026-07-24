@@ -60,7 +60,7 @@ or {REWRITE_MODE}.
 ---
 
 I want you to do deep work on ONE English notes file: {FILE}. Do only what {TASK} asks — do not wander
-into other files or folder-level work. **Verifiable read (CLAUDE.md non-negotiable):** before reading
+into other files or folder-level work. **Verifiable read (the shared session rules non-negotiable):** before reading
 `{FILE}` (or the `es/` for TODO markers), run `wc -l` on it — the Read tool truncates at 2000 lines
 silently; if a file is near or over that, read it in passes with `offset` to the real end, and state
 **"N lines, read to EOF"** in your report for every file you had to process end-to-end. **You write
@@ -74,7 +74,7 @@ the full standard in English.
 > not written yet still gets the one-line forward-reference marker from the standard).
 
 Before starting, read:
-- CLAUDE.md — teaching rules and the "next file:" counters (update the counter only if you create a
+- the shared session rules — teaching rules and the "next file:" counters (update the counter only if you create a
   new numbered file this run).
 - notes/prompts/_internal/_shared-context.md — my profile and the Spanish job market 2026.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — THE writing standard. This is your bar. Apply
@@ -87,7 +87,7 @@ Before starting, read:
 
 ## Scope — this run touches exactly ONE file
 
-- `{FILE}` (the `en/` file) — and nothing else, except CLAUDE.md's "next file:" counter, and only if
+- `{FILE}` (the `en/` file) — and nothing else, except the shared session rules' "next file:" counter, and only if
   this run creates a new numbered file.
 
 You do **not** create, read for editing, or touch the `es/` counterpart to *write* it — that is the
@@ -114,7 +114,7 @@ shipped fabricated code and version-facts into eight files — an annotation pla
 not carry it, a `JwtService` and a `JwtProperties` that are not in the repo, a whole
 `Transaction`/`TransactionService` domain that was invented, `@MockBean` where Boot 4 needs
 `@MockitoBean`, `spring-boot-starter-web` where the project uses `-webmvc`, plus roughly eight Baeldung
-URLs built from a plausible-looking pattern. Every one was caught only because reviewer B ran on Opus
+URLs built from a plausible-looking pattern. Every one was caught only because reviewer B ran on deep-reasoning
 with an explicit fact-check mandate; on a cheaper reviewer they reach Victor's study notes as confident,
 wrong material. Reviewer B is the backstop — it is not the reason you may write from memory.
 
@@ -173,7 +173,7 @@ voice, forward-reference notes, cross-topic preview callouts.
 
 If TASK asks to create the file, add a section, or complete a thin one, write it to the full standard
 in `_note-quality-standard.md`. When creating a new numbered file, use the next available number from
-CLAUDE.md and update that counter.
+the shared session rules and update that counter.
 
 If TASK is `create-file` for `00-intro-{topic}.md`, cover the four intro points from the standard:
 high-level mental model, key concepts that appear everywhere, how it differs from JS/TS/React, and a

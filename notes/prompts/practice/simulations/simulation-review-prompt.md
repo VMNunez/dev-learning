@@ -1,5 +1,7 @@
 # Simulation Review Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. Fill in the configuration block, paste the prompt into a new chat, then paste your solution code at the very end.
 
 Run this after you finish a timed simulation — no notes, no AI, timer stopped. You get the kind of feedback a real consultancy test reviewer would give.
@@ -57,7 +59,7 @@ MODE behaviour:
 
 ## Context
 
-Before starting, read CLAUDE.md (teaching rules) and `notes/prompts/_internal/_shared-context.md`
+Before starting, read the shared session rules (teaching rules) and `notes/prompts/_internal/_shared-context.md`
 (my profile, and what Spanish consultancies look for).
 
 I just completed the simulation at {SIMULATION_FILE} under real conditions: no notes,
@@ -240,7 +242,7 @@ This section has two writers: this prompt (primary — it holds the Step 2 verdi
 file). Their output must be **identical**; if the format or the three rules above ever drift apart,
 the two will overwrite each other on every run. Change them together or not at all.
 
-PROGRESS.md follows the active branch (CLAUDE.md 2026-07-14 — `main` only receives merges via PR),
+PROGRESS.md follows the active branch (the shared session rules 2026-07-14 — `main` only receives merges via PR),
 so it commits alongside the other two.
 
 Then show the commit message:

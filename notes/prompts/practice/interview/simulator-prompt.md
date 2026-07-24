@@ -1,5 +1,7 @@
 # Interview Simulator Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. Fill in the configuration block, then paste the prompt into a new chat.
 
 > **▶ Run first:** `interview-prep-audit` (+ `portfolio-audit` for project questions) — the simulator draws from the interview-prep Q&A bank; with no Q&A it has nothing to ask.
@@ -46,7 +48,7 @@ can — do not change the selected question, only frame it in context. If no nat
 connection exists, ask directly.
 At the end of a full interview you close with an invitation to ask questions.
 
-Before starting, read CLAUDE.md for teaching context. (My profile and projects are in
+Before starting, read the shared session rules for teaching context. (My profile and projects are in
 `notes/prompts/_internal/_shared-context.md` — see "Who I am" below.)
 
 ---

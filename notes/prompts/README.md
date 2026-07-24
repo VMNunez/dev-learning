@@ -9,13 +9,30 @@ projects are completed.
 > before it (or `nothing`). You never have to cross-check the dependency map below before running one —
 > the prompt tells you at the top.
 
-This file is the map: what each prompt does, **what it reads, what it generates**, how they feed
-each other, and which prompts are still missing. CLAUDE.md only links here.
+This file is the map: what each prompt does, what it reads and generates, and how the same workflows run in Claude Code and Codex.
 
-> **Two files every prompt reads.** Almost all of them start by reading `CLAUDE.md` (teaching
-> rules, folder structure, "next file:" counters) and `notes/prompts/_internal/_shared-context.md` (my
-> profile, situation, the market). To keep the tables below readable, those two are not repeated
-> in each "Reads" cell — assume them.
+> **Shared runtime context.** Every session starts from its thin platform adapter (`CLAUDE.md` or
+> `AGENTS.md`), which delegates to `_internal/_session-rules.md`. Runnable prompts also read
+> `_internal/_agent-runtime-standard.md`; almost all read `_internal/_shared-context.md`.
+
+---
+
+## Platform adapters
+
+The workflow files in `notes/prompts/` are canonical and platform-neutral. They name roles
+(`author`, `reviewer`, `analyst`, `orchestrator`, `mechanical checker`), reasoning tiers
+(`deep`, `standard`, `mechanical`), and execution modes (`parallel`, `sequential`, `foreground`).
+`_internal/_agent-runtime-standard.md` maps those terms to each runtime:
+
+- **Claude Code:** launch from `.claude/commands/`; its adapter selects an available Claude model for
+  each canonical reasoning tier.
+- **Codex:** launch from `.codex/commands/`; its adapter uses Codex collaboration tools and does not
+  invent model identifiers.
+- **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
+  before dispatching any role.
+
+Both launcher catalogs contain exactly 24 files and must reference the same 24 canonical entry points.
+Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt.
 
 ---
 
@@ -27,17 +44,17 @@ tells them apart, and it is the filename:
 > **A leading `_` means "never launch this".** No underscore, and it is yours to run.
 
 **Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the ten families
-and this root, which holds the five files the whole system shares (`_shared-context.md`,
-`_pipeline-self-report.md`, `_batch-mode.md`, `_job-market-evidence.md`, `_run-tracker.md`). Open any
+and this root, which holds the shared session/runtime contracts, preflight, recommendation ledger,
+self-report contracts, market context, batch rules and run tracker. Open any
 folder under `notes/prompts/` and you see its runnable prompts and one `_internal/`, never a mix you
 have to read prefixes to sort. Standards, subagent steps and `_last-run-report*.md` files all live
 there; a new one goes in `_internal/` too, **including a report a pipeline has not written yet** — the
 path a prompt is told to write to counts, not just the files already on disk. The `_` prefix stays on
 the filenames anyway, so a file keeps its marking if it is ever moved or quoted out of context.
 
-**Inside Claude Code you do not need the rule at all: type `/` and the list is the answer.** Every
+**Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 24 commands in `.claude/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 24 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
@@ -66,7 +83,7 @@ Two flavors among these 24, both launched the same way (paste config into a new 
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
   `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt` and
   `sql-plan-audit` (both fan out to cold subagents and run the orchestrator contract, even though
-  they read as single-target) — run entirely inside Claude Code and hand you a finished result (and,
+  they read as single-target) — run entirely inside a supported agent runtime and hand you a finished result (and,
   where noted, a commit) with no further input from you. **Twelve prompts**, and the set is defined by
   which self-report they run: these twelve execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
@@ -107,7 +124,7 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | Hub file | Source of truth for | Written by | Read by |
 |----------|---------------------|------------|---------|
 | `notes/coverage.md` | **what I must learn** | `coverage-prompt`, `coverage-audit-prompt` | notes/interview-prep audits, `plan-audit`, `roadmap-review`, `sql-exercises` |
-| `PROGRESS.md` | **what I have learned** | `progress-update-prompt` (+ Claude per step in session) | `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`, `sql-exercises` |
+| `PROGRESS.md` | **what I have learned** | `progress-update-prompt` (+ the coding agent per step in session) | `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`, `sql-exercises` |
 | `{project}/PLANNING.md` | **what a project builds** | `plan-audit` | `readme-audit`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review` |
 
 ---
@@ -116,7 +133,7 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 
 ### Knowledge — build and audit study content
 
-| Prompt | What it does | Reads (besides CLAUDE.md + _shared-context) | Generates / updates |
+| Prompt | What it does | Reads (besides the shared session rules + _shared-context) | Generates / updates |
 |--------|--------------|----------------------------------------------|---------------------|
 | `knowledge/coverage/_coverage-standard.md` | *Internal.* The **shared coverage standard** both coverage prompts read (scope logic, three item types, confusable pairs, AI factor, item/file format, the job-target-is-the-source rule). Not runnable. | — | — |
 | `knowledge/coverage/_cross-topic-inbox.md` | *Internal.* The **durable handoff** between coverage runs: when a run finds a gap owned by another topic, it files the item here under that topic instead of only mentioning it in a summary. Every coverage run reads its own heading at Step 1 and clears what it consumed; `coverage-audit` sweeps all headings. Not runnable. | — | — |
@@ -124,38 +141,38 @@ Everything orbits three sources of truth. Most prompts exist to write one of the
 | `knowledge/coverage/coverage-prompt.md` | Defines the required scope for **one** topic — what a junior must know, what is deferred. Two subagents bracket the generation: a **deep market-analysis subagent** (Step 2, web-backed, anchored to Victor's objectives — the primary source) and an **adversarial interviewer subagent** (Step 4a) to hunt missing items; real postings complement the analysis. | `_coverage-standard.md`, `ROADMAP.md`, `_job-market-evidence.md`, the topic's note files, `future-learning.md` | `notes/{topic}/coverage.md`, syncs `notes/coverage.md`, updates `future-learning.md`; **clears this topic's heading in `_internal/_cross-topic-inbox.md` (Step 1) and appends to other topics' headings (Step 4a, own commit)** |
 | `knowledge/coverage/coverage-audit-prompt.md` | **Global** convergence pass over all of `notes/coverage.md`; runs a **market-fit check** (Step 2b): a deep analysis of what the target junior market asks (primary), complemented by the job-market evidence, to keep coverage matched to the market — fills gaps, fixes item quality, and **detects** missing topics (e.g. testing, docker), delegating their authoring to `coverage-prompt`. Runs as a hands-off orchestrator (analysts A/B/C/D as cold subagents). Run once after every topic has a coverage file. | `_coverage-standard.md`, `notes/coverage.md`, every `notes/{topic}/coverage.md`, `notes/prompts/_internal/_job-market-evidence.md`, `ROADMAP.md` | `notes/coverage.md` + each topic `coverage.md`, `future-learning.md` files; flags new topics for `coverage-prompt` |
 | `knowledge/coverage/evidence-intake-prompt.md` | Nourishes `notes/prompts/_internal/_job-market-evidence.md`: `paste` mode adds full offers you provide, `search` mode web-searches a batch of current Spanish junior postings; both append Raw-posting blocks, re-tally the Synthesis, and commit. Run it whenever you see real postings. | `_job-market-evidence.md`, `_coverage-standard.md`, `ROADMAP.md` | `notes/prompts/_internal/_job-market-evidence.md` (new Raw-posting blocks **and** the re-tallied Synthesis — appending without re-tallying is a skipped step), its row in `_internal/_run-tracker.md` |
-| `knowledge/notes/notes-audit.md` | **THE entry point — the only notes prompt you launch.** Runs **inside Claude Code**, hands-off. `SCOPE = folder` audits/completes a whole topic; `SCOPE = file` audits one file. Existing files are quality-flagged one cold subagent each, then every file goes through four cold stages — English author (A) → English reviewer (B) → translator en→es (T) → `en/`-blind Spanish reviewer (C) — with `en/` as the canonical source, then committed (one atomic commit per file, made by C). | its seven internal pieces (below) | `notes/{topic}/notes-worklist.md` (the plan stage — **it names the exact file list this run owes; the close-out checks the built files against it, not against a wildcard**), every file on it as `en/*.md` + `es/*.md` with one atomic commit per file, the `next file:` counter in `CLAUDE.md` |
+| `knowledge/notes/notes-audit.md` | **THE entry point — the only notes prompt you launch.** Runs **inside a supported agent runtime**, hands-off. `SCOPE = folder` audits/completes a whole topic; `SCOPE = file` audits one file. Existing files are quality-flagged one cold subagent each, then every file goes through four cold stages — English author (A) → English reviewer (B) → translator en→es (T) → `en/`-blind Spanish reviewer (C) — with `en/` as the canonical source, then committed (one atomic commit per file, made by C). | its seven internal pieces (below) | `notes/{topic}/notes-worklist.md` (the plan stage — **it names the exact file list this run owes; the close-out checks the built files against it, not against a wildcard**), every file on it as `en/*.md` + `es/*.md` with one atomic commit per file, the `next file:` counter in `notes/prompts/_internal/_session-rules.md` |
 | `knowledge/notes/_note-quality-standard.md` | *Internal.* The **shared writing standard** every piece reads (format modes, rule 3, signature elements, anticipate-the-TODO). Not runnable. | — | — |
 | `knowledge/notes/_notes-plan-prompt.md` | *Internal (folder mode).* Surveys a topic folder, does the `en`/`es` sync, and writes the ordered **worklist** — no note prose. | `notes/{topic}/coverage.md`, the topic's notes (en + es), `future-learning.md` | `en`/`es` structure, `future-learning.md`, `notes-worklist.md` |
 | `knowledge/notes/_notes-inspect-prompt.md` | *Internal (quality inspector, folder mode).* Judges **one** pre-existing file against the standard — read-only on prose — and appends `fix-quality` / `add-docs-link` rows to the worklist. Never fixes, never batches. | `_note-quality-standard.md`, the one file (en + es), sibling headings | `notes-worklist.md` rows |
-| `knowledge/notes/_notes-write-prompt.md` | *Internal (stage A — English author).* Deep, high-standard work on **one `en/`** file: resolve TODOs (reading `es/` only for markers), complete it, self-check. Writes English only — never the `es/`. Does **not** commit. | `_note-quality-standard.md`, the one `en/` file, sibling files, `PROGRESS.md` | that one `en/*.md`, the `CLAUDE.md` counter |
+| `knowledge/notes/_notes-write-prompt.md` | *Internal (stage A — English author).* Deep, high-standard work on **one `en/`** file: resolve TODOs (reading `es/` only for markers), complete it, self-check. Writes English only — never the `es/`. Does **not** commit. | `_note-quality-standard.md`, the one `en/` file, sibling files, `PROGRESS.md` | that one `en/*.md`, the `notes/prompts/_internal/_session-rules.md` counter |
 | `knowledge/notes/_notes-review-prompt.md` | *Internal (stage B — English reviewer).* Independent auditor for **one `en/`** file: fixes what falls short in English. The `es/` does not exist yet. Never touches `es/`, never commits. | `_note-quality-standard.md`, the one `en/` file, sibling files | the audited `en/*.md` |
 | `knowledge/notes/_notes-translate-prompt.md` | *Internal (stage T — translator).* Takes the finished, canonical `en/` file and produces/re-syncs its `es/` counterpart: exact structural parity, native-Spanish prose, clears leftover `es/` TODO markers. Does not change the English, does not commit. | the canonical `en/` file, the existing `es/` (if any), `_note-quality-standard.md` | that one `es/*.md` |
 | `knowledge/notes/_notes-review-es-prompt.md` | *Internal (stage C — Spanish reviewer, `en/`-blind).* Reads **only** the `es/` file, judges it as a standalone native-Spanish text, fixes calque/flow, then marks the row and commits. Never opens the `en/`. | `_note-quality-standard.md`, the one `es/` file, sibling `es/` files | the `es/*.md`, the worklist checkbox, one atomic commit |
-| `knowledge/interview-prep/interview-prep-audit.md` | **THE entry point — the only interview-prep prompt you launch.** Runs **inside Claude Code**, hands-off. Builds/audits the **interview Q&A** for one topic (or `all`): light whole-topic detection — market-analysis (M, web-backed) + adversarial gap-hunt (G) — then **one cold author (A) + one cold reviewer (B) per SECTION**, with a trace/slice acceptance gate; only the orchestrator commits, once per topic. `DRY_RUN` stages without committing. | its internal pieces (below), `notes/{topic}/coverage.md`, `_job-market-evidence.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md`, one atomic commit per topic |
+| `knowledge/interview-prep/interview-prep-audit.md` | **THE entry point — the only interview-prep prompt you launch.** Runs **inside a supported agent runtime**, hands-off. Builds/audits the **interview Q&A** for one topic (or `all`): light whole-topic detection — market-analysis (M, web-backed) + adversarial gap-hunt (G) — then **one cold author (A) + one cold reviewer (B) per SECTION**, with a trace/slice acceptance gate; only the orchestrator commits, once per topic. `DRY_RUN` stages without committing. | its internal pieces (below), `notes/{topic}/coverage.md`, `_job-market-evidence.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md`, one atomic commit per topic |
 | `knowledge/interview-prep/_interview-prep-standard.md` | *Internal.* The **shared Q&A standard** the author, reviewer, and cross-reference prompts read (question types + ratio, priority markers, question format, the answer quality bar — realistic/well-worded/Victor's voice, real cited code from his projects, bilingual contract, studied-content-is-final via the `[x]` marker, section-complete). Not runnable. | — | — |
 | `knowledge/interview-prep/_interview-prep-write-prompt.md` | *Internal (author).* Full audit of **one** topic: en/es sync, resolve TODOs, coverage check, priority markers, format, and the four audit sections. Does not commit. | `_interview-prep-standard.md`, `notes/{topic}/coverage.md`, `interview-prep/en/` + `es/` | `interview-prep/en/{file}.md` + `es/{file}.md` (working tree) |
 | `knowledge/interview-prep/_interview-prep-review-prompt.md` | *Internal (reviewer).* Independent second pass on **one** section/topic: enforces realistic, well-worded, Victor's-voice questions with real anchors; rewrites only unmarked (non-`[x]`) content, fixes what falls short in `en/` + `es/`; commits only on standalone runs (under the orchestrator it leaves the tree). | `_interview-prep-standard.md`, `interview-prep/en/` + `es/` | the audited `interview-prep/*.md`, one atomic commit |
-| `knowledge/interview-prep/notes-and-interview-prep-prompt.md` | Closes gaps **between** notes and Q&A in both directions (every note concept has a question, every question has a note). Run after the two above. | the topic notes + `interview-prep/en/` + `es/` | the topic `notes/*.md` and `interview-prep/en/` + `es/`, `CLAUDE.md` counter |
+| `knowledge/interview-prep/notes-and-interview-prep-prompt.md` | Closes gaps **between** notes and Q&A in both directions (every note concept has a question, every question has a note). Run after the two above. | the topic notes + `interview-prep/en/` + `es/` | the topic `notes/*.md` and `interview-prep/en/` + `es/`, `notes/prompts/_internal/_session-rules.md` counter |
 
 ### Projects — plan, document, review
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `projects/plan/plan-audit.md` | **THE entry point — the only project-plan prompt you launch.** Runs **inside Claude Code**, hands-off. `new` mode plans the next project (gap-analyses PROGRESS vs coverage, picks it, writes a full PLANNING.md), runs an **architecture advisor** on §6/§3/§20, then audits it with **five cold specialist reviewers — one per concern** (architecture · data-model-api · rules-security · steps-tests · branches-coverage) before the orchestrator makes the single commit; `review` mode runs the same five specialists on an existing PLANNING.md (one project or `all`). Specialists never commit. `DRY_RUN` leaves everything in the working tree. | its four internal pieces (below) | `{project}/PLANNING.md`; adds a row to `PROGRESS.md`; marks the choice in `ROADMAP.md`; one atomic commit |
+| `projects/plan/plan-audit.md` | **THE entry point — the only project-plan prompt you launch.** Runs **inside a supported agent runtime**, hands-off. `new` mode plans the next project (gap-analyses PROGRESS vs coverage, picks it, writes a full PLANNING.md), runs an **architecture advisor** on §6/§3/§20, then audits it with **five cold specialist reviewers — one per concern** (architecture · data-model-api · rules-security · steps-tests · branches-coverage) before the orchestrator makes the single commit; `review` mode runs the same five specialists on an existing PLANNING.md (one project or `all`). Specialists never commit. `DRY_RUN` leaves everything in the working tree. | its four internal pieces (below) | `{project}/PLANNING.md`; adds a row to `PROGRESS.md`; marks the choice in `ROADMAP.md`; one atomic commit |
 | `projects/plan/_planning-standard.md` | *Internal.* The **shared PLANNING.md contract** both the author and reviewer read (the 24-section template + what makes each pass, done-condition formats, HTTP status conventions, professional implementation order, branch-strategy rules, quality-gate rules, consistency invariants, the two project formats). Not runnable. | — | — |
 | `projects/plan/_plan-write-prompt.md` | *Internal (author, new mode).* Gap-analyses, chooses the next project, designs it, and writes the complete PLANNING.md to the standard + the ROADMAP/PROGRESS edits. Does not commit. | `_planning-standard.md`, `PROGRESS.md`, `notes/coverage.md`, `ROADMAP.md`, last project's `PLANNING.md` | `{project}/PLANNING.md`, `ROADMAP.md`, `PROGRESS.md` (working tree) |
 | `projects/plan/_plan-architecture-prompt.md` | *Internal (architecture advisor, new mode only).* Judges the drafted architecture (§6), the one new architectural concept (§3), and the tradeoffs (§20) against Victor's level and the coverage gaps; fixes over/under-engineering directly in those sections. Does not commit. | `_planning-standard.md` (its slice), `{project}/PLANNING.md` (§3/§6/§20), `PROGRESS.md` | the sharpened §3/§6/§20 (working tree) |
 | `projects/plan/_plan-review-prompt.md` | *Internal (specialist reviewer).* Dispatched **once per concern** by the orchestrator (`SCOPE` = architecture · data-model-api · rules-security · steps-tests · branches-coverage): audits only its slice against the standard, fixes directly, returns a check-by-check trace. Never commits — the orchestrator owns the single commit (a standalone `SCOPE = all` run doesn't commit either). | `_planning-standard.md` (its slice), `{project}/PLANNING.md`, `PROGRESS.md` (architecture scope only) | the audited slice of `PLANNING.md` (working tree) |
-| `projects/readme/readme-audit.md` | **THE entry point — the only readme prompt you launch.** Runs **inside Claude Code**, hands-off. Reviews and fixes a project's README(s) to the standard — for full-stack, one author + cold-reviewer subagent pair **per README** (global / backend / frontend). Run before the portfolio gate (`portfolio-audit` reads the READMEs; `review-audit` does not). **Not auto-committed** — hands Victor the commit (project-folder files). Ends with a **pipeline self-report** written to `projects/readme/_internal/_last-run-report.md` (auto-committed — prompt-system machinery): five bullets on how the run itself went (report discipline, trace verification, coherence, failure protocol), read later to decide if these prompts need changing. | its three internal pieces (below) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack), `projects/readme/_internal/_last-run-report.md` |
+| `projects/readme/readme-audit.md` | **THE entry point — the only readme prompt you launch.** Runs **inside a supported agent runtime**, hands-off. Reviews and fixes a project's README(s) to the standard — for full-stack, one author + cold-reviewer subagent pair **per README** (global / backend / frontend). Run before the portfolio gate (`portfolio-audit` reads the READMEs; `review-audit` does not). **Not auto-committed** — hands Victor the commit (project-folder files). Ends with a **pipeline self-report** written to `projects/readme/_internal/_last-run-report.md` (auto-committed — prompt-system machinery): five bullets on how the run itself went (report discipline, trace verification, coherence, failure protocol), read later to decide if these prompts need changing. | its three internal pieces (below) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack), `projects/readme/_internal/_last-run-report.md` |
 | `projects/readme/_readme-standard.md` | *Internal.* The **single source of README rules** every piece reads (the two project formats, quality filter, in-progress scan, the 12 global-README rules + section order, full-stack global additions, the backend 9 sections, the frontend 7 sections, the commit rule). Not runnable. | — | — |
 | `projects/readme/_readme-write-prompt.md` | *Internal (author).* Writes/fixes **one** README (global \| backend \| frontend) to the standard's rules for that target. Does not commit. | `_readme-standard.md`, `{project}/PLANNING.md`, the existing README | that one README (working tree) |
 | `projects/readme/_readme-review-prompt.md` | *Internal (reviewer).* Independent second pass on **one** README: audits against the standard (recruiter + interviewer lens), fixes what falls short directly. Does not commit. | `_readme-standard.md`, `{project}/PLANNING.md`, the README | the audited README |
-| `projects/review/review-audit.md` | **THE entry point — the only project-review prompt you launch.** Runs **inside Claude Code**, hands-off. Reviews a built project against its PLANNING.md by **vertical slice**: it maps the resources/features, then fans out cold subagents **per slice** — a flow reviewer (quality + correctness + tests) and a security reviewer per backend resource, plus cross-cutting (`persistence-config`, `security-infra`), the frontend features + `frontend-infra`, and one learning-objectives pass — then merges every slice's findings into the backlog. **Not auto-committed** — writes the backlog and hands Victor the commit (project-folder file, feature-branch workflow). Ends with a **pipeline self-report** written to `projects/review/_internal/_last-run-report.md` (auto-committed — prompt-system machinery): five bullets on how the run itself went (slice mapping, report discipline, trace verification, dedup), read later to decide if these prompts need changing. | its internal pieces (below) | `PROJECT-BACKLOG.md` (per-project task list + "Last reviewed" date), `projects/review/_internal/_last-run-report.md` |
+| `projects/review/review-audit.md` | **THE entry point — the only project-review prompt you launch.** Runs **inside a supported agent runtime**, hands-off. Reviews a built project against its PLANNING.md by **vertical slice**: it maps the resources/features, then fans out cold subagents **per slice** — a flow reviewer (quality + correctness + tests) and a security reviewer per backend resource, plus cross-cutting (`persistence-config`, `security-infra`), the frontend features + `frontend-infra`, and one learning-objectives pass — then merges every slice's findings into the backlog. **Not auto-committed** — writes the backlog and hands Victor the commit (project-folder file, feature-branch workflow). Ends with a **pipeline self-report** written to `projects/review/_internal/_last-run-report.md` (auto-committed — prompt-system machinery): five bullets on how the run itself went (slice mapping, report discipline, trace verification, dedup), read later to decide if these prompts need changing. | its internal pieces (below) | `PROJECT-BACKLOG.md` (per-project task list + "Last reviewed" date), `projects/review/_internal/_last-run-report.md` |
 | `projects/review/_review-standard.md` | *Internal.* The **shared review contract** all pieces read (the two project formats, 30-day gate, scope limit, the full code-quality checklist with bad-vs-good examples, the security scope, the correctness scope + severity rule, the test-quality scope, the learning-objectives rubric, the task/priority/effort + backlog format). Not runnable. | — | — |
 | `projects/review/_review-flow-prompt.md` | *Internal (per-slice functional reviewer).* Reviews **one vertical slice** — a backend resource's `model→repository→service→controller→DTO→tests` flow, a frontend feature, or a cross-cutting area (`persistence-config` / `frontend-infra`) — running quality + correctness + test lenses on it; returns a findings table + trace. Does not edit or commit. | `_review-standard.md`, `{project}/PLANNING.md`, that slice's source | findings table (returned to the orchestrator) |
 | `projects/review/_review-security-prompt.md` | *Internal (per-slice security reviewer, full-stack only).* Attacker-hat pass on **one slice** — a backend resource's endpoints (authz/ownership/injection/data-exposure), or cross-cutting `security-infra` (SecurityConfig, JWT, CORS, hashing, secrets) — against `notes/security/coverage.md`; returns a findings table (each a High backlog task) + trace. Does not edit or commit. | `_review-standard.md`, `notes/security/coverage.md`, `{project}/PLANNING.md`, that slice's `backend` source | findings table (returned to the orchestrator) |
-| `projects/portfolio/portfolio-audit.md` | **THE entry point — the only portfolio prompt you launch.** Runs **inside Claude Code**, hands-off. The final go/no-go gate per project (last link in the per-project chain): an author + cold-reviewer subagent pair build the project-specific interview-question bank, then the orchestrator computes the verdict and (if not ❌) writes the CV bullet + GitHub description; if ✅ Ready it also updates the GitHub profile README (`dev/portfolio/VMNunez`, separate repo — commit/push printed for Victor). The author+reviewer pair runs **once per bank section**, never on the whole bank. `DRY_RUN` leaves everything in the working tree. | its three internal pieces (below) | `interview-prep/projects/{project}.md`, `notes/cv/cv-bullets.md`, `dev/portfolio/VMNunez/README.md` (✅ only), `projects/portfolio/_internal/_last-run-report.md`, one atomic commit |
+| `projects/portfolio/portfolio-audit.md` | **THE entry point — the only portfolio prompt you launch.** Runs **inside a supported agent runtime**, hands-off. The final go/no-go gate per project (last link in the per-project chain): an author + cold-reviewer subagent pair build the project-specific interview-question bank, then the orchestrator computes the verdict and (if not ❌) writes the CV bullet + GitHub description; if ✅ Ready it also updates the GitHub profile README (`dev/portfolio/VMNunez`, separate repo — commit/push printed for Victor). The author+reviewer pair runs **once per bank section**, never on the whole bank. `DRY_RUN` leaves everything in the working tree. | its three internal pieces (below) | `interview-prep/projects/{project}.md`, `notes/cv/cv-bullets.md`, `dev/portfolio/VMNunez/README.md` (✅ only), `projects/portfolio/_internal/_last-run-report.md`, one atomic commit |
 | `projects/portfolio/_portfolio-standard.md` | *Internal.* The **shared portfolio-gate contract** all three pieces read (what the gate is for, the two-check verdict logic, the interview-question quality bar + file template, the CV-bullet and GitHub-description formats, the two project formats). Not runnable. | — | — |
 | `projects/portfolio/_portfolio-write-prompt.md` | *Internal (author).* Dispatched **once per bank section**: reads only that section's code area (the standard's canonical table) + PLANNING.md and writes that section's exhaustive questions to the standard. Does not compute the verdict or commit. | `_portfolio-standard.md`, `{project}/PLANNING.md`, `ROADMAP.md`, that section's code area | that section of `interview-prep/projects/{project}.md` (working tree) |
 | `projects/portfolio/_portfolio-review-prompt.md` | *Internal (reviewer).* Independent second pass on the question bank: hunts thin/weak/duplicate questions against the real code, fixes them directly. Does not commit (the orchestrator bundles the commit). | `_portfolio-standard.md`, the question bank, the project source | the audited `interview-prep/projects/{project}.md` |
@@ -199,7 +216,7 @@ accurate; `apply/` produces the job-application material.
 | `strategy/apply/cv-prompt.md` | `create` / `review` / `tailor` the one-page Spanish CV (ATS-checked). `tailor` adapts it to a pasted job offer with a `HAVE / PARTIAL / MISSING` gap analysis, and feeds that offer into the job-market evidence. | `_application-standard.md`, `PROGRESS.md`, `ROADMAP.md`, `notes/cv/cv-bullets.md`, the existing CV in `personal/job-search/` | Saves the CV to `personal/job-search/` **outside the repo** (never committed, so the close-out checks the path's **mtime is from this run** — existence alone passes on a file an earlier run left): `master/` for create/review, `applications/` for tailor. `tailor` also appends the posting to `notes/prompts/_internal/_job-market-evidence.md` |
 | `strategy/apply/linkedin-prompt.md` | Drafts every LinkedIn section + 3 posts, ready to paste. | `_application-standard.md`, `PROGRESS.md`, `ROADMAP.md` | **Output only** — LinkedIn text (not stored in the repo). **No repo file, so the close-out has nothing to check: instead name each section actually drafted (headline, about, experience, projects, skills, 3 posts) against the set this prompt owes.** |
 | `strategy/apply/cover-letter-prompt.md` | `letter` (formal one-page *carta de presentación*) / `message` (short 5–6 line recruiter message) tailored to a pasted offer, in the same Spanish voice as the CV. | `_application-standard.md`, `PROGRESS.md`, `ROADMAP.md`, the pasted offer | **Output only** — cover-letter/message text (not stored in the repo). **No repo file, so the close-out names the mode's obligations instead: the letter/message itself, and that it was tailored to the pasted offer rather than generic.** |
-| `strategy/apply/profile-readme-prompt.md` | `sync` (pull in fact deltas only) / `optimize` (full re-evaluation against the job target) for the GitHub profile README. The repeatable entry point so Claude never needs to be re-briefed on that repo's context each time. | `dev/portfolio/VMNunez/CLAUDE.md` (standing context + gap list), that repo's `README.md`, `PROGRESS.md`, the active project's `PLANNING.md`, `personal/job-search/internship-daw.md` | Edits `dev/portfolio/VMNunez/README.md` + its `CLAUDE.md` gap list directly (separate repo, never committed from here — the close-out checks both paths' **mtime is from this run**, not just that they exist) |
+| `strategy/apply/profile-readme-prompt.md` | `sync` (pull in fact deltas only) / `optimize` (full re-evaluation against the job target) for the GitHub profile README. The repeatable entry point so the coding agent never needs to be re-briefed on that repo's context each time. | the profile repo's `{platform-adapter}` (standing context + gap list), that repo's `README.md`, `PROGRESS.md`, the active project's `PLANNING.md`, `personal/job-search/internship-daw.md` | Edits `dev/portfolio/VMNunez/README.md` + the external adapter's gap list directly (separate repo, never committed from here — the close-out checks both paths' **mtime is from this run**, not just that they exist) |
 | `strategy/apply/tracker-prompt.md` | `log` a new application / `update` an outcome + feedback / `analyze` the tracker for patterns. Records the job search as data and surfaces skill gaps to feed `evidence-intake`. | `_application-standard.md`, the local tracker in `personal/job-search/` | Writes `personal/job-search/tracker.csv` + `applications/<empresa>-<puesto>/` **outside the repo** (never committed — close-out checks **mtime is from this run**); `analyze` writes nothing, so it names its findings instead of passing on an empty list, and suggests `evidence-intake` |
 
 ---
@@ -219,7 +236,7 @@ Each generated file, with who writes it and who depends on it:
   `cv-prompt` (tailor mode, as it tailors to each offer) → read by `coverage-prompt`, `coverage-audit`,
   and both their subagents, plus `interview-prep-audit`'s market-analysis stage. *Real postings that
   anchor coverage and the interview Q&A to the market.*
-- **`PROGRESS.md`** — written by `progress-update` (and by Claude after each step in the daily
+- **`PROGRESS.md`** — written by `progress-update` (and by the coding agent after each step in the daily
   session) → read by `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`,
   `sql-exercises`. *Stale PROGRESS = wrong gap analysis in `plan-audit` and `roadmap-review`.*
 - **`{project}/PLANNING.md`** — written by `plan-audit` (new mode) → read by `readme-audit`,
@@ -338,26 +355,24 @@ processes every target in order, one commit per target. Full rules: `notes/promp
 
 ---
 
-## Model tiering — every subagent dispatch names its model
+## Runtime-neutral reasoning tiers
 
-Every orchestrator specifies `model:` on each Agent dispatch, so the cost/quality tradeoff is decided
-once, in the prompt, and never inherited by accident from whatever model the session happens to run
-(completed 2026-07-16). The criterion:
+Every orchestrator specifies a canonical reasoning tier on each dispatch. Platform adapters decide
+how that tier is fulfilled; canonical prompts never name a vendor model or agent API. The criterion:
 
 > **If the output's quality is guaranteed by structure — an explicit standard, a report contract, a
 > trace gate that rejects incomplete work — tier down. If it is guaranteed only by judgment — writing
-> prose, designing, translating, deciding what matters — top tier.**
+> prose, designing, translating, deciding what matters — use `deep`.**
 
-- **haiku** — pure command-running and formatting (the SQL exercise counter).
-- **sonnet** — pattern-matching and conformance against an explicit standard: concept extraction,
+- **mechanical** — pure command-running and deterministic formatting.
+- **standard** — pattern-matching and conformance against an explicit standard: concept extraction,
   notes inspect/translate/es-review, README review + consistency check, roadmap fact-gathering.
-- **opus / top** — everything that authors, rewrites, or judges: plan author + advisor + specialists
-  (pinned in `plan-audit.md`), notes/README/interview-prep authors, interview-prep market + gap-hunt +
-  reviewer (it rewrites), portfolio author + reviewer (go/no-go gate), roadmap reviewers, review-audit
-  flow/security.
+- **deep** — everything that authors, rewrites, or judges: plan author + advisor + specialists,
+  notes/README/interview-prep authors, portfolio author + reviewer, roadmap reviewers, and project
+  flow/security reviewers.
 
-**A new prompt must pick a tier per dispatch using this criterion — never leave `model:` unspecified.**
-Re-tiering an existing dispatch needs a real run's self-report as evidence, per the frozen-prompts rule.
+A new prompt must pick a canonical tier per dispatch. Re-tiering an existing dispatch needs a real
+run's self-report as evidence, per the frozen-prompts rule.
 
 ---
 

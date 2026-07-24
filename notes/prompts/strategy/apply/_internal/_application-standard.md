@@ -27,7 +27,7 @@ generic praise, and never pad a junior profile with what it cannot back up.
 
 Before generating anything, read these files:
 
-1. `CLAUDE.md` — stack and study context (profile, internship, and market are in
+1. `notes/prompts/_internal/_session-rules.md` — stack and study context (profile, internship, and market are in
    `notes/prompts/_internal/_shared-context.md`).
 2. `notes/prompts/_internal/_shared-context.md` — profile, internship details, and target companies.
 3. `PROGRESS.md` — all completed projects and every concept learned.

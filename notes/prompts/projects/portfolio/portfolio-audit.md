@@ -1,6 +1,11 @@
 # Portfolio audit — the single entry point for the portfolio gate
 
-Run this **inside Claude Code**. It is the only portfolio prompt Victor launches. It runs the **final
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+> **External-path preflight:** Before reading or writing `dev/portfolio/VMNunez`, execute
+> `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
+
+Run this **inside the supported agent runtime**. It is the only portfolio prompt Victor launches. It runs the **final
 go/no-go gate** on a finished project, hands-off: is it ready to show a recruiter and reference in a job
 application **today**? It produces four things (see `_portfolio-standard.md`):
 
@@ -33,7 +38,7 @@ It is the last link in the per-project chain: `plan-audit` → build → `readme
 
 ## How to use — recipes
 
-Open a fresh chat **inside Claude Code**, paste the whole prompt below, fill only the config block, and
+Open a fresh chat **inside the supported agent runtime**, paste the whole prompt below, fill only the config block, and
 let it run to the end. Pick the recipe:
 
 **A · Gate one project**
@@ -73,7 +78,7 @@ Use PROJECT_PATH and DRY_RUN wherever the prompt refers to {PROJECT_PATH} and {D
 You are the orchestrator for the portfolio gate, hands-off.
 
 > **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
-> branch is currently active (CLAUDE.md) — a feature branch is the normal case; name it in the final
+> branch is currently active (the shared session rules) — a feature branch is the normal case; name it in the final
 > report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
 > direct commits, only merges via PR.
 
@@ -108,8 +113,8 @@ First decide which sections are **present** (does the project have auth? tests?)
 ones. Then process the present sections **one at a time, sequentially** — they all edit the same
 question file, so never overlap. For each section, run author then reviewer; neither commits.
 
-**Subagent A — author (this section).** Launch a `general-purpose` subagent, `model: opus`,
-`run_in_background: false` (judging which code decisions are interview-worthy is the whole task):
+**Subagent A — author (this section).** Launch a `role-appropriate` subagent, `reasoning tier: deep`,
+`execution: foreground` (judging which code decisions are interview-worthy is the whole task):
 
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-write-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
@@ -119,7 +124,7 @@ question file, so never overlap. For each section, run author then reviewer; nei
 > **question count and any decision you could not cover** — the reviewer re-walks the code itself.
 
 Wait for A. Then **subagent B — reviewer (this section).** Launch a second, independent
-`general-purpose` subagent, `model: opus`, `run_in_background: false` (it re-walks the code hunting
+`role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground` (it re-walks the code hunting
 decisions the author missed — same judgment as authoring; this is the portfolio's go/no-go gate,
 the wrong place to save):
 

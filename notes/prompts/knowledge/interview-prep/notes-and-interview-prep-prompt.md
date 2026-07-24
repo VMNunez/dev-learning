@@ -1,5 +1,7 @@
 # Notes ↔ Interview Prep Cross-Reference Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. Fill in the configuration block, then paste everything into a new chat.
 
 > **▶ Run first:** `notes-audit` **and** `interview-prep-audit` for this topic — this prompt only finds and fixes gaps between notes and Q&A, so it assumes both sides are already built and quality-checked.
@@ -51,14 +53,14 @@ This prompt does one thing: find and fix gaps between notes and interview prep �
 directions. It does not audit quality, fix formatting, or resolve TODOs. Run the individual
 prompts first for that.
 
-Before starting, read CLAUDE.md (teaching rules, subfolder structure) and
+Before starting, read the shared session rules (teaching rules, subfolder structure) and
 `notes/prompts/_internal/_shared-context.md` (my profile and the market context).
 
 > **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
-> branch is currently active (CLAUDE.md) — a feature branch is the normal case. If you are on
+> branch is currently active (the shared session rules) — a feature branch is the normal case. If you are on
 > **`main`**, stop and ask Victor which branch to use — `main` never receives direct commits.
 
-> **Verifiable reads (CLAUDE.md non-negotiable):** the Read tool truncates at 2000 lines
+> **Verifiable reads (the shared session rules non-negotiable):** the Read tool truncates at 2000 lines
 > **silently**, and some notes/Q&A files are near that. Before any whole-file read (here in
 > detection, or by a dispatched subagent on its unit), run `wc -l`; if the file is near or over
 > 2000 lines, read it in `offset` passes to the real end. Every dispatched subagent's report must
@@ -78,8 +80,8 @@ Split this run into two kinds of work, and never mix them:
 - **Closing a gap is DEEP per-unit work** — writing a Q&A answer to `_interview-prep-standard.md`, or
   authoring a note file/section to `_note-quality-standard.md`, is exactly the writing bar the notes
   and interview-prep pipelines split file-by-file. **Never write it inline here, and never batch it.**
-  Once the gap lists are ready, **dispatch one cold `general-purpose` subagent per atomic unit, in
-  sequence, always `model: opus`** (authoring to the notes/Q&A quality bar — judgment work, per the
+  Once the gap lists are ready, **dispatch one cold `role-appropriate` subagent per atomic unit, in
+  sequence, always `reasoning tier: deep`** (authoring to the notes/Q&A quality bar — judgment work, per the
   model-tiering convention in `notes/prompts/README.md`; even at higher token cost) to author the fix:
   - **notes → prep** → the atomic unit is **one `##` section** of the topic's Q&A pair (`en/` +
     `es/`) — one subagent per target section, as Step 2 details (never the whole topic in one context).
@@ -141,7 +143,7 @@ Q&A file: **group the gaps by target section**, and for a section that does not 
 heading here so the subagent creates it.
 
 Then, **one target section at a time, sequentially** (never overlap — the runs edit the same two
-files), dispatch a cold `general-purpose` subagent (`model: opus`, `run_in_background: false`):
+files), dispatch a cold `role-appropriate` subagent (`reasoning tier: deep`, `execution: foreground`):
 
 > Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` (the bar). You are adding
 > questions to ONE section — `«## heading»` — of `notes/interview-prep/{FILE}.md`. Read that section in
@@ -178,13 +180,13 @@ note file. Use judgment — exact name matching is not required.
 of unbacked questions and, for each, decide its **target note file** — an existing file to extend
 (pick the closest-topic file from the headings read in Step 1) or a new file to create. Group the
 gaps by target file so each file is touched once. **Assign the concrete number to every new file here**
-(start from the "next file:" counter in CLAUDE.md and increment in study-sequence order) — the
+(start from the "next file:" counter in the shared session rules and increment in study-sequence order) — the
 orchestrator owns numbering so sequential runs never collide. Do NOT write any note prose inline: a
 note file is one atomic unit and its writing bar is the deep work the Execution model reserves for a
 cold subagent.
 
 Then, **one target note file at a time, sequentially** (never overlap — the runs commit), dispatch a
-cold `general-purpose` subagent (`model: opus`, `run_in_background: false`):
+cold `role-appropriate` subagent (`reasoning tier: deep`, `execution: foreground`):
 
 > Read `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` (the writing bar) and, before writing,
 > the first section of `notes/java/es/08-excepciones.md` to calibrate. You are creating/extending ONE
@@ -195,7 +197,7 @@ cold `general-purpose` subagent (`model: opus`, `run_in_background: false`):
 > the anticipate-the-TODO pass — in the correct mode for the folder (structured for
 > `notes/java/en/` and `notes/spring-boot/en/`, conversational otherwise). Author in `en/` first (the
 > canonical source), then re-sync the `es/` counterpart as native Spanish; create the full `es/` file
-> if it does not exist. If you create a new numbered file, bump the "next file:" counter in CLAUDE.md. Do NOT
+> if it does not exist. If you create a new numbered file, bump the "next file:" counter in the shared session rules. Do NOT
 > commit. Return a **section-by-section trace** of the file (every `##`/`###` with PASS or what you
 > wrote) as proof you read it whole, plus which questions it now backs.
 > ```
@@ -245,10 +247,10 @@ List only files that were actually modified. Always one command per code block:
 git add <list only modified files — include en/{FILE}.md and es/{FILE}.md only if questions were added; include note files only if created or modified>
 ```
 
-If CLAUDE.md was updated (new file counter), add it separately:
+If the shared session rules was updated (new file counter), add it separately:
 
 ```
-git add CLAUDE.md
+git add the shared session rules
 ```
 
 ```

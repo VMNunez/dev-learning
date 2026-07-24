@@ -1,6 +1,6 @@
 # Pipeline self-report — shared final step for every orchestrator
 
-**Internal component. Not runnable.** Every Claude-Code orchestrator ends its run by executing this
+**Internal component. Not runnable.** Every the coding agent-Code orchestrator ends its run by executing this
 step (its last section points here). The goal: each real run leaves behind evidence about **how the
 pipeline itself behaved**, so the prompts can be refined from what actually went wrong instead of
 theory. The prompts stay **frozen** between runs — a self-report showing a real failure is the only
@@ -29,6 +29,11 @@ reader tell a live finding from a done one at a glance, instead of re-deriving i
 2026-07-19 a Verdict written as a to-do list had to be rewritten as a record precisely because the
 next reader would otherwise re-apply changes that already existed). A clean run's status is `open` and
 stays `open` — there was nothing to apply.
+
+Before these bullets, reconcile every prompt-change recommendation from this run with
+`notes/prompts/_internal/_recommendation-ledger.md`. Create or update a row with state `open`,
+`accepted`, `applied`, or `rejected`. Historical reports remain unchanged; the ledger is the current
+status source.
 
 Then these five bullets — honest, including "nothing to report". Keep each one short; a bullet only
 earns extra lines when it is reporting something that actually went wrong:
@@ -146,8 +151,8 @@ reject one, name the failed condition in the Verdict so the same zombie is not r
 **Independent review before you apply — a cold subagent, never your own saturated judgement.** A
 self-report exists to surface what broke, so every finding arrives framed "fix me", and the author of
 the fix is the same tired context that just ran a long pipeline: two reasons the edit needs a second,
-independent pair of eyes. Draft the edit, then dispatch **one cold `general-purpose` subagent
-(`model: opus`** — this is the quality gate and it fires rarely) with four inputs: the finding
+independent pair of eyes. Draft the edit, then dispatch **one cold `role-appropriate` subagent
+(`reasoning tier: deep`** — this is the quality gate and it fires rarely) with four inputs: the finding
 as the report states it, the current prompt section it targets, your drafted replacement, and **the whole
 prompt file, read end-to-end**. The last one is not context, it is what makes two of the questions
 answerable: condition 4 asks whether the text already handles this *somewhere the run failed to look*,
@@ -164,7 +169,7 @@ tie always goes to `open`, never to editing on your own. **Record the verdict in
 `cold reviewer: approve | approve-with-tightening | reject`, beside the Verdict. It is the only trace the
 gate ran at all: an applied edit with no such line is indistinguishable on disk from a self-approval, and
 a later reader must treat it as one. The reviewer's return must open with `N lines, read to EOF` for the
-prompt file (CLAUDE.md's whole-file rule — the Read tool truncates past 2000 lines in silence); without
+prompt file (the shared session rules' whole-file rule — the Read tool truncates past 2000 lines in silence); without
 it you cannot tell a whole-file judgement from a skim, so treat the verdict as a reject.
 
 **The prompt has a health budget — refinement is net-neutral above it.** The thing being protected is

@@ -88,8 +88,8 @@ Rules for project sections:
 
 **13:30 block — Notes study order.** The order must be exactly:
 `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
-Confirm ROADMAP's version of this block matches exactly. **If CLAUDE.md defines a different order,
-CLAUDE.md wins** — update ROADMAP to match it.
+Confirm ROADMAP's version of this block matches exactly. **If the shared session rules defines a different order,
+the shared session rules wins** — update ROADMAP to match it.
 
 **LeetCode gate conditions.** ROADMAP.md has a section listing 5 gate conditions that must all be met
 before starting LeetCode. One condition references the notes study order ("notes complete for X

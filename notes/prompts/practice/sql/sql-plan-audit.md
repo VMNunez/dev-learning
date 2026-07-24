@@ -1,6 +1,8 @@
 # SQL plan audit — the entry point for keeping `practice/sql/PLANNING.md` good
 
-Run this **inside Claude Code**. It audits and extends the SQL practice plan against
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It audits and extends the SQL practice plan against
 `_sql-plan-standard.md`, fixes what falls short, and commits — hands-off.
 
 Why it exists: the projects have `plan-audit` and the concept lists have `coverage-audit`, but the
@@ -31,7 +33,7 @@ one of them is **removed**, not preserved. This flow likewise never runs, schedu
 
 ## How to use
 
-Open a fresh chat inside Claude Code and paste the config block.
+Open a fresh chat inside the supported agent runtime and paste the config block.
 
 ```
 SCOPE = full
@@ -58,7 +60,7 @@ plan in your own context and you never read the standard** — the moment you st
 cold-reviewer property is gone.
 
 > **Branch guard (step 0b, right after the run-start check):** `git branch --show-current`. Study materials commit on the active branch
-> (CLAUDE.md). On **`main`**, stop and ask Victor which branch to use.
+> (the shared session rules). On **`main`**, stop and ask Victor which branch to use.
 
 ## Phase 1 — Evidence snapshot (orchestrator, counts only)
 
@@ -96,7 +98,7 @@ step born in this run ships unreviewed — the one ripple re-dispatch allowed pe
 substitute for reviewing work that did not exist yet. #3 and #4 follow because counts and prompt paths
 are only true of the final set of steps.
 
-For each, launch a fresh `general-purpose` subagent, `model: opus`, `run_in_background: false`:
+For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`:
 
 > Read `notes/prompts/practice/sql/_internal/_sql-plan-standard.md` — **only the sections your concern owns**, listed
 > below — and audit `practice/sql/PLANNING.md` against them. Fix what falls short **directly in the
@@ -193,7 +195,7 @@ git commit -m "docs: audit practice/sql/PLANNING.md — <one-line summary of the
 ```
 
 **`practice/sql/PLANNING.md` is machinery, not Victor's work** — a tracking document this pipeline
-authors, so CLAUDE.md's auto-commit exception covers it exactly as it covers a project `PLANNING.md`.
+authors, so the shared session rules' auto-commit exception covers it exactly as it covers a project `PLANNING.md`.
 **The exercise files are Victor's and are never touched here** — not staged, not edited, not
 renumbered. A specialist wanting an exercise file changed says so in its trace; the orchestrator
 reports it as a recommendation. Same for `sql-exercises-prompt.md`: if specialist 4 concludes the
@@ -202,7 +204,7 @@ mid-audit.
 
 ## Hard rules
 
-- **Top model for every subagent** (`model: opus`). Four cold auditors firing rarely on the file that
+- **Top model for every subagent** (`reasoning tier: deep`). Four cold auditors firing rarely on the file that
   governs months of study is the wrong place to save tokens.
 - **Strict sequence, never parallel** — one file, four editors.
 - **Never write the plan from nothing.** This audits and extends; a missing plan is reported.

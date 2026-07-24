@@ -48,7 +48,7 @@ the heading names are.
 A living table, updated at the start of every session. Columns: **Current step · Current branch · Done
 condition · Next gate · Phase · Last updated**. Write it with dashes when creating a new plan; the first
 session fills it in. The **Current branch** must be the exact `feat/…` branch from §22 that covers the
-current step — this is what Claude reads first each session, so the branch is right there next to the
+current step — this is what the coding agent reads first each session, so the branch is right there next to the
 step instead of buried in §22. **Next gate** names the next §23 gate and what triggers it (e.g.
 "G3 — backend review (`review-audit`, `REVIEW_SCOPE = backend`), when `feat/timeentry-workflow`
 merges"), so the checkpoint is visible from the step you are on rather than remembered at the end.
@@ -160,7 +160,7 @@ with three-quarters of its scope unbuilt.
 The plan must include
 three dedicated steps explicitly: **backend tests** (JUnit 5 + Mockito unit tests, plus the one slice
 test type this project introduces — `@WebMvcTest` or `@DataJpaTest` — if any), **Angular tests** (level
-per CLAUDE.md "Testing rules"), and a **SQL complement** step.
+per the shared session rules "Testing rules"), and a **SQL complement** step.
 - **Pass:** every step has a done condition; every done condition is valid (format below) **and covers
   the step's full listed scope**; each step introduces at most one major new concept; no step spans
   more than a few days of work (a whole app tier in one step fails — split it); the three dedicated
@@ -190,7 +190,7 @@ object's state — never only `verify(...)` that a method was called. No trivial
   test; every §8 business rule mapped to a test; the slice-test line present (even if "none yet — added
   in project 0X"); the assertion-quality rule stated.
 - (Reminder, not a check: interview questions for new testing concepts are added during daily
-  sessions per CLAUDE.md — no piece of this pipeline writes interview-prep files.)
+  sessions per the shared session rules — no piece of this pipeline writes interview-prep files.)
 
 ### 17. Key rule
 One paragraph: the single most important thing to remember about this project.
@@ -216,7 +216,7 @@ merges to `main` only when every step is done. Follows the branch rules below.
 ### 23. Quality gates — which prompt to run when
 The checkpoint plan as a table (**Gate · Trigger · Prompt + config · Why**), followed by the
 **closure checklist**. Each gate ties a concrete point in the build (a §22 branch closing, a §15 phase
-finishing) to the one prompt that runs there, so Claude can say *"this branch just merged — run
+finishing) to the one prompt that runs there, so the coding agent can say *"this branch just merged — run
 `review-audit` with `REVIEW_SCOPE = backend` now"* instead of quality checks being remembered at the
 end. The closure checklist is what makes the project's own **definition of done** explicit: the project
 is not closed until every gate has run. Follows the quality-gate rules below.
@@ -317,7 +317,7 @@ same way its §15 steps are split (e.g. `feat/angular-shell-auth`, `feat/angular
 G4 gate one unreviewably large diff.
 
 For each branch, define:
-- **Branch name** — `feat/short-description` (CLAUDE.md convention).
+- **Branch name** — `feat/short-description` (the shared session rules convention).
 - **Covers** — which implementation steps / §15 steps it contains.
 - **Opens** — when it is created (after the previous feature branch's PR merges, or at Step 1 for the
   first one).

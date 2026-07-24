@@ -40,7 +40,7 @@ derive it automatically per target from the prompt's "Batch targets" note. Do no
 
 ## Commits
 
-**One commit per target** — keep history atomic, exactly as CLAUDE.md requires. Never squash several
+**One commit per target** — keep history atomic, exactly as the shared session rules requires. Never squash several
 targets into one commit. Show all commit blocks together at the end, in order, each as its own
 `git add` + `git commit` pair (one command per code block).
 

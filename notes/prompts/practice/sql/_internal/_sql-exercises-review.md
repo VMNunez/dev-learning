@@ -1,7 +1,7 @@
 # `sql-exercises` — MODE = review branch
 
 **Internal component of `sql-exercises-prompt.md`. Not runnable on its own** — it assumes the shell has
-already resolved `{FILE}`, read `CLAUDE.md`, `PLANNING.md`, `PROGRESS.md` and `coverage.md`, and
+already resolved `{FILE}`, read `notes/prompts/_internal/_session-rules.md`, `PLANNING.md`, `PROGRESS.md` and `coverage.md`, and
 printed the resolution block.
 
 Split out 2026-07-22: a run is either practice or review, never both, so carrying the other branch was
@@ -434,7 +434,7 @@ If every attempted exercise was ✅, skip the appending half but still run the c
 
 ### Step 6 — Commit message
 
-**Branch:** SQL exercises and PROGRESS.md commit on **whatever branch is active** (CLAUDE.md
+**Branch:** SQL exercises and PROGRESS.md commit on **whatever branch is active** (the shared session rules
 2026-07-14 — study materials follow the active branch; `main` only receives merges via PR). No
 branch switch, no separate SQL branch.
 

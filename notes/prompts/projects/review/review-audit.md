@@ -1,6 +1,8 @@
 # Review audit — the single entry point for reviewing a project
 
-Run this **inside Claude Code**. It is the only review-audit prompt Victor launches. It reviews a
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It is the only review-audit prompt Victor launches. It reviews a
 **built** project against the contract its own `PLANNING.md` set — code quality, correctness, security,
 and tests — and writes a prioritized list of improvement tasks to `{PROJECT_PATH}/PROJECT-BACKLOG.md`.
 That backlog is what `portfolio-audit` reads for its go/no-go verdict, so a security hole found here
@@ -39,7 +41,7 @@ full-stack only).
 
 ## How to use — recipes
 
-Open a fresh chat **inside Claude Code**, paste the whole prompt below, fill only the config block, and
+Open a fresh chat **inside the supported agent runtime**, paste the whole prompt below, fill only the config block, and
 let it run. Pick the recipe:
 
 **A · Review one project**
@@ -67,7 +69,7 @@ REVIEW_SCOPE = backend
 - Angular projects 01–06 are frontend-only: they get the frontend flow slices, the learning-objectives
   pass, their own `PROJECT-BACKLOG.md` and a commit — but no security pass (no backend to attack).
 - **After the run:** commit the backlog with the command the orchestrator hands you, then in your next
-  main session just say the review ran — Claude reads the auto-committed
+  main session just say the review ran — the coding agent reads the auto-committed
   `projects/review/_last-run-report.md` (Step 6) and tells you whether these prompts need a change
   (they stay frozen unless that report shows a real failure).
 
@@ -152,7 +154,7 @@ backlog. The standard's scope limit already forbids this; Step 0 is where it bec
 Step 0 is the only place that knows which steps are done.
 
 **Tests are part of that exclusion, and it is derived from the project number — not from the ✅ marks.**
-Per CLAUDE.md ("Testing rules"), testing enters the roadmap at **project 07** (services: JUnit/Jasmine)
+Per the shared session rules ("Testing rules"), testing enters the roadmap at **project 07** (services: JUnit/Jasmine)
 and **project 08** (components: TestBed). So:
 - **Projects 01–06:** tests are **out of scope entirely**. Their `.spec.ts` files are untouched Angular
   CLI scaffold — empty `should create` assertions are the expected state, not a gap.
@@ -184,31 +186,31 @@ every task is tagged `[frontend]`. **Full-stack:** run every step.
 
 ### Model policy — per slice, to protect the findings that matter while saving tokens
 Pass an explicit `model` override on every dispatch, matched to how much deep reasoning the slice needs.
-**Finding a correctness bug or a vulnerability is generative, adversarial reasoning → Opus; checking
-structure/patterns against a fixed checklist is verification → Sonnet (~1/5 the cost).** The backend is
+**Finding a correctness bug or a vulnerability is generative, adversarial reasoning → deep-reasoning; checking
+structure/patterns against a fixed checklist is verification → standard-reasoning (~1/5 the cost).** The backend is
 where a missed bug is costly and where a weak model skims past subtle flaws — so it never drops below
-Opus. Frontend flow and the learning-objectives pass are largely structural verification and ride Sonnet.
+deep-reasoning. Frontend flow and the learning-objectives pass are largely structural verification and ride standard-reasoning.
 
 | Role | `model:` | Why |
 |------|----------|-----|
-| **Orchestrator (this context / session)** | **Opus** | It maps the slices, dedups across them, and word-crafts each backlog task with its priority. Run the session on Opus. |
-| **Step 1 — backend flow (per resource)** | **`opus`** | Correctness on the real path: N+1, transaction boundaries, §8 business rules — the subtle bugs a lighter model misses. |
-| **Step 1 — backend security (per resource)** | **`opus`** | Adversarial hunt for authz/ownership/injection/exposure — the review's analog of coverage's Analyst C; never drop it. |
-| **Step 2 — persistence-config flow** | **`opus`** | Datasource/transactions/fetch/N+1 — subtle backend correctness, same bar as Step 1 flow. |
-| **Step 2 — security-infra** | **`opus`** | SecurityConfig, JWT filter, CORS, hashing, secrets — the highest-stakes attack surface. |
-| Step 3 — frontend flow (per feature + frontend-infra) | `sonnet` | Component/service split, subscription cleanup, validation timing, tests — structural pattern-matching, lower stakes. |
-| Step 3b — cross-slice consistency (per tier) | `sonnet` | Comparing slices against a fixed list of axes — verification, not generation. |
-| Step 4 — learning-objectives | `sonnet` | Locate each concept and mark ✅/⚠️/❌ against the rubric — verification, not generation. |
+| **Orchestrator (this context / session)** | **deep-reasoning** | It maps the slices, dedups across them, and word-crafts each backlog task with its priority. Run the session on deep-reasoning. |
+| **Step 1 — backend flow (per resource)** | **`deep`** | Correctness on the real path: N+1, transaction boundaries, §8 business rules — the subtle bugs a lighter model misses. |
+| **Step 1 — backend security (per resource)** | **`deep`** | Adversarial hunt for authz/ownership/injection/exposure — the review's analog of coverage's Analyst C; never drop it. |
+| **Step 2 — persistence-config flow** | **`deep`** | Datasource/transactions/fetch/N+1 — subtle backend correctness, same bar as Step 1 flow. |
+| **Step 2 — security-infra** | **`deep`** | SecurityConfig, JWT filter, CORS, hashing, secrets — the highest-stakes attack surface. |
+| Step 3 — frontend flow (per feature + frontend-infra) | `standard` | Component/service split, subscription cleanup, validation timing, tests — structural pattern-matching, lower stakes. |
+| Step 3b — cross-slice consistency (per tier) | `standard` | Comparing slices against a fixed list of axes — verification, not generation. |
+| Step 4 — learning-objectives | `standard` | Locate each concept and mark ✅/⚠️/❌ against the rubric — verification, not generation. |
 
-Never drop the backend flow or any security slice below Opus (those are the passes that catch the bugs
-and holes that block portfolio-ready), and never drop the orchestrator below Opus (it writes the
-backlog). If Victor asks for maximum saving, the two Sonnet slices are already the cheapest safe setting —
+Never drop the backend flow or any security slice below deep-reasoning (those are the passes that catch the bugs
+and holes that block portfolio-ready), and never drop the orchestrator below deep-reasoning (it writes the
+backlog). If Victor asks for maximum saving, the two standard-reasoning slices are already the cheapest safe setting —
 do not push backend or security down to save tokens. **Step 5 re-dispatches use the same model the
 original slice used.**
 
 ### Step 1 — Backend, one flow + one security reviewer per resource
-For **each** backend resource, dispatch two `general-purpose` subagents, `run_in_background: false`
-(flow → `model: opus`, security → `model: opus`):
+For **each** backend resource, dispatch two `role-appropriate` subagents, `execution: foreground`
+(flow → `reasoning tier: deep`, security → `reasoning tier: deep`):
 
 > **(flow)** Read `notes/prompts/projects/review/_internal/_review-flow-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `TIER = backend`, `SCOPE = «resource»`. Trace the resource's full
@@ -223,7 +225,7 @@ For **each** backend resource, dispatch two `general-purpose` subagents, `run_in
 Collect every table.
 
 ### Step 2 — Backend, cross-cutting reviewers
-Dispatch (both `model: opus`):
+Dispatch (both `reasoning tier: deep`):
 > **(flow)** `_review-flow-prompt.md` with `TIER = backend`, `SCOPE = persistence-config` — datasource,
 > `application.properties`, transactions, fetch/N+1, docker env.
 > **(security)** `_review-security-prompt.md` with `SCOPE = security-infra` — SecurityConfig, JWT filter,
@@ -232,7 +234,7 @@ Dispatch (both `model: opus`):
 Collect both tables.
 
 ### Step 3 — Frontend, one flow reviewer per feature (+ frontend-infra)
-For **each** frontend feature, and once for `frontend-infra`, dispatch (`model: sonnet`):
+For **each** frontend feature, and once for `frontend-infra`, dispatch (`reasoning tier: standard`):
 > `_review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
 > service split, types, state, subscription cleanup, validation timing, and that slice's tests.
 
@@ -242,7 +244,7 @@ Collect every table.
 The one reviewer allowed to look **across** slices — because consistency is a property *between* them and
 a slice reviewer structurally cannot see it. It reads **narrowly and widely**: only the axes below, over
 every feature of the tier, never the full code. Run it for each tier in {REVIEW_SCOPE} (frontend on
-Angular 01–06). Dispatch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
+Angular 01–06). Dispatch one `role-appropriate` subagent, `reasoning tier: standard`, `execution: foreground`:
 
 > Read `notes/prompts/projects/review/_internal/_review-standard.md` — **only** the "Pattern consistency across the
 > project" block and the priority rules. Then, across **every** feature of `TIER = «tier»` in
@@ -264,8 +266,8 @@ which the local finding cannot.
 
 ### Step 4 — Learning-objectives pass (one subagent)
 **Skip this step entirely if {REVIEW_SCOPE} is `backend` or `frontend`** — it judges whole-project
-concept coverage and only makes sense on a `full` run. Dispatch one `general-purpose` subagent,
-`model: sonnet`, `run_in_background: false`:
+concept coverage and only makes sense on a `full` run. Dispatch one `role-appropriate` subagent,
+`reasoning tier: standard`, `execution: foreground`:
 > Read `notes/prompts/projects/review/_internal/_review-standard.md` ("Learning-objectives rubric" — that section
 > only) and, from `{PROJECT_PATH}/PLANNING.md`, only §3 (new concepts) / §4 (review concepts). Then
 > work **concept by concept, not file by file**: for each concept, locate where it should live with a
@@ -395,8 +397,8 @@ failure. Also print the report in chat.
   index, by design: a second copy of the date would drift out of sync with the backlog.
 - **Security findings are always High**, and findings are deduplicated across every slice.
 - **Model per slice, always explicit** (see Model policy): backend flow + every security slice + the
-  orchestrator run on **Opus**; frontend flow and learning-objectives on **Sonnet**. Never drop backend
-  or security below Opus to save tokens — those are the passes that catch what blocks portfolio-ready.
+  orchestrator run on **deep-reasoning**; frontend flow and learning-objectives on **standard-reasoning**. Never drop backend
+  or security below deep-reasoning to save tokens — those are the passes that catch what blocks portfolio-ready.
 - **No trace, no review.** A slice counts as reviewed only when its trace covers every file/endpoint
   the slice owns (verified in Step 5 against the Step 0 map). Failed or partial reports get one
   re-dispatch, then an explicit "not reviewed" in the summary — never a silent pass.

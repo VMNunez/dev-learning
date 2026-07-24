@@ -44,7 +44,7 @@ version — your judgment must come from the Spanish text alone, the way Victor 
 **This prompt audits exactly ONE `es/` file — never a batch.** Read it **in full, top to bottom** —
 do not skim, do not stop early, reach the last line.
 
-> **Verifiable read (CLAUDE.md non-negotiable):** run `wc -l` on the `es/` file before reading — the
+> **Verifiable read (the shared session rules non-negotiable):** run `wc -l` on the `es/` file before reading — the
 > Read tool truncates at 2000 lines **silently**; if it is near or over that, read it in passes with
 > `offset` to the real end. Your report must state **"N lines, read to EOF"**; the orchestrator
 > rejects a report without it.
@@ -107,7 +107,7 @@ You are the last stage in the chain, so you own the single atomic commit for thi
    find the row whose path is `{FILE}` (the `en/` path), flip `- [ ] #N · {FILE}` → `- [x] #N · {FILE}`
    (that one line only).
 2. Commit this one file atomically: `git add` the `es/` path, the `en/` path **only if this build
-   modified it** (on a translation-only row it did not), and CLAUDE.md only if
+   modified it** (on a translation-only row it did not), and the shared session rules only if
    the counter was bumped (never add `notes-worklist.md`). Before `git add`, run `git status` and
    confirm only the intended `notes/` paths are staged. Commit message covers what actually changed:
    `docs: add {TOPIC} note NN — <topic> (reviewed en + es)`, or

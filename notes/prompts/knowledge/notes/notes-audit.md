@@ -1,6 +1,8 @@
 # Notes audit — the single entry point for building notes
 
-Run this **inside Claude Code**. It is the only notes prompt Victor launches. It builds study notes to
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It is the only notes prompt Victor launches. It builds study notes to
 the full quality standard, hands-off, in two shapes:
 
 - `SCOPE = folder` — audit and complete a whole topic (gap analysis → build every file needed).
@@ -31,7 +33,7 @@ author) · `_notes-review-prompt.md` (English reviewer) · `_notes-translate-pro
 > `git revert` away rather than something to catch before it lands.
 >
 > **Branch guard (step 0, before dispatching anything):** run `git branch --show-current`. Study
-> materials commit on **whatever branch is currently active** (CLAUDE.md, "Study materials follow the
+> materials commit on **whatever branch is currently active** (the shared session rules, "Study materials follow the
 > active branch", changed 2026-07-14) — a feature branch is the normal, expected case; just name the
 > branch in the final report. The one branch that must stop the run is **`main`**: it never receives
 > direct commits, only merges via PR — if you are on `main`, stop and ask Victor which branch to use.
@@ -40,7 +42,7 @@ author) · `_notes-review-prompt.md` (English reviewer) · `_notes-translate-pro
 
 ## How to use — recipes
 
-Open a fresh chat **inside Claude Code**, paste the whole prompt below (config block + instructions),
+Open a fresh chat **inside the supported agent runtime**, paste the whole prompt below (config block + instructions),
 fill only the config block, and let it run to the end. You touch nothing else — no worklist to
 approve, no per-file launching, no commits to run yourself. Pick the recipe:
 
@@ -108,22 +110,22 @@ on, you never need that trace again — carry only the per-row status forward in
 Pass an explicit `model` override on **every** subagent dispatch, matched to how much deep reasoning
 the stage needs. Quality lives in authoring mechanism-deep prose (A), in catching subtle bugs and
 false facts (B), and in judging existing files against the standard (the inspectors — their own prompt
-calls it "the heaviest attention work", and a `CLEAN` verdict closes a file with no Opus stage ever
-seeing it) — keep those on **Opus**. Translation and calque/link-fixing (T, C) and the planner's
-mechanical folder survey are lighter — run those on **Sonnet** (~1/5 the cost).
+calls it "the heaviest attention work", and a `CLEAN` verdict closes a file with no deep-reasoning stage ever
+seeing it) — keep those on **deep-reasoning**. Translation and calque/link-fixing (T, C) and the planner's
+mechanical folder survey are lighter — run those on **standard-reasoning** (~1/5 the cost).
 
 | Stage | Dispatch `model:` |
 |-------|-------------------|
-| Planner (Phase 1) | `sonnet` |
-| **Inspectors (Phase 1.5)** | **`opus`** |
-| **A — English author** | **`opus`** |
-| **B — English reviewer** | **`opus`** |
-| T — translator | `sonnet` |
-| C — Spanish reviewer (commits) | `sonnet` |
+| Planner (Phase 1) | `standard` |
+| **Inspectors (Phase 1.5)** | **`deep`** |
+| **A — English author** | **`deep`** |
+| **B — English reviewer** | **`deep`** |
+| T — translator | `standard` |
+| C — Spanish reviewer (commits) | `standard` |
 
-This is the default. If Victor says "run the whole thing on Sonnet" (max token saving, accept some risk
-on the deep catches), pass `sonnet` everywhere instead and note it in the final report. Never silently
-drop A/B or the inspectors below Opus — those are the downgrades that cost quality.
+This is the default. If Victor says "run the whole thing on standard-reasoning" (max token saving, accept some risk
+on the deep catches), pass `standard` everywhere instead and note it in the final report. Never silently
+drop A/B or the inspectors below deep-reasoning — those are the downgrades that cost quality.
 
 ## If SCOPE = folder and TOPIC = all
 
@@ -142,7 +144,7 @@ no-ops). Otherwise, for a single topic, follow the branch directly.
 
 ### Phase 1 — Plan (one planning subagent)
 
-Launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
+Launch one `role-appropriate` subagent, `reasoning tier: standard`, `execution: foreground`:
 
 > Read `notes/prompts/knowledge/notes/_internal/_notes-plan-prompt.md` and execute it in full for `TOPIC = {TOPIC}`
 > (derive `NOTES_PATH` as that prompt specifies — for Spring Boot, both `notes/java/en/` and
@@ -161,7 +163,7 @@ file is judged at full attention in its own cold context (never a batch — that
 split exists to prevent).
 
 Read the "Existing files to inspect" list from the worklist. For **each** file in it, **in order**,
-launch one `general-purpose` subagent, `model: opus`, `run_in_background: false` (never overlap them — they all
+launch one `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground` (never overlap them — they all
 append to the same worklist file and parallel writes would race):
 
 > Read `notes/prompts/knowledge/notes/_internal/_notes-inspect-prompt.md` and execute it in full for a single file:
@@ -202,7 +204,7 @@ unvalidated auto-generated content, in which case use `first-pass`. Then do "Fin
 Four stages, always in this order: **English author (A) → English reviewer (B) → translator (T) →
 Spanish reviewer (C)**. `en/` is the canonical source: A and B finish and review the English *before*
 any Spanish exists, then T produces the `es/` from that final English, then C reads the `es/` cold and
-commits. Each stage is a cold subagent, `run_in_background: false`, and you **wait for each before
+commits. Each stage is a cold subagent, `execution: foreground`, and you **wait for each before
 launching the next** — never overlap them (parallel commits race the git index; a stage must never see
 an unfinished predecessor).
 
@@ -213,7 +215,7 @@ an unfinished predecessor).
 > English (e.g. an inspector merged `fix-quality` flags into it), the English is NOT final — run all
 > four stages. For every other row, run all four stages.
 
-**Subagent A — English author.** Launch one `general-purpose` subagent, `model: opus`:
+**Subagent A — English author.** Launch one `role-appropriate` subagent, `reasoning tier: deep`:
 
 > Read `notes/prompts/knowledge/notes/_internal/_notes-write-prompt.md` and execute it in full for a single file:
 > - `TOPIC` = «topic» · `FILE` = «file» · `TASK` = «task» · `REWRITE_MODE` = «mode»
@@ -226,8 +228,8 @@ an unfinished predecessor).
 Wait for A. If A reports it could not complete the file (blocked, missing context), skip B/T/C, leave
 the row `[ ]` (folder mode), note it, and move on — do not translate or commit a partial file.
 
-**Subagent B — English reviewer (`en/` only).** Launch a second, independent `general-purpose`
-subagent, `model: opus`:
+**Subagent B — English reviewer (`en/` only).** Launch a second, independent `role-appropriate`
+subagent, `reasoning tier: deep`:
 
 > Read `notes/prompts/knowledge/notes/_internal/_notes-review-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
@@ -239,7 +241,7 @@ subagent, `model: opus`:
 
 Wait for B before starting T.
 
-**Subagent T — translator (`en/` → `es/`).** Launch a third, independent `general-purpose` subagent, `model: sonnet`:
+**Subagent T — translator (`en/` → `es/`).** Launch a third, independent `role-appropriate` subagent, `reasoning tier: standard`:
 
 > Read `notes/prompts/knowledge/notes/_internal/_notes-translate-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
@@ -252,7 +254,7 @@ Wait for B before starting T.
 Wait for T before starting C.
 
 **Subagent C — Spanish reviewer (`es/` only, `en/`-blind).** Launch a fourth, independent
-`general-purpose` subagent, `model: sonnet`:
+`role-appropriate` subagent, `reasoning tier: standard`:
 
 > Read `notes/prompts/knowledge/notes/_internal/_notes-review-es-prompt.md` and execute it in full:
 > - `TOPIC` = «topic» · `FILE` = «file»
@@ -260,9 +262,9 @@ Wait for T before starting C.
 > Read ONLY the `es/` counterpart (never open the `en/` file), audit it as a standalone native-Spanish
 > study text, fix calque and flow directly, then — as the last stage — mark the worklist row `[x]` if
 > one exists and commit this one file atomically (`en/` + `es/`). On a **create-file row**, also stage
-> `CLAUDE.md` in that same commit **if** the author bumped its "next file:" counter for this new note —
+> `notes/prompts/_internal/_session-rules.md` in that same commit **if** the author bumped its "next file:" counter for this new note —
 > the counter bump is the structural record of adding the file, so it belongs to that one logical
-> change; verify the `CLAUDE.md` diff is only the counter line before including it. Report your verdict
+> change; verify the `notes/prompts/_internal/_session-rules.md` diff is only the counter line before including it. Report your verdict
 > (PASS/FIXED + Spanish fixes), any structural gaps it could not fix, files touched, and the commit hash.
 
 Wait for C before starting anything else.
@@ -270,7 +272,7 @@ Wait for C before starting anything else.
 **Verify every trace — the trace is a gate, not decoration (orchestrator).** B, T, and C — and A
 whenever `REWRITE_MODE = first-pass` (unvalidated content is where a skipped tail hurts most) — must each
 return a section-by-section trace (every `##`/`###` heading with PASS or the fix made) **and the line
-"N lines, read to EOF"** for the file it processed (CLAUDE.md, whole-file reads must be verifiable —
+"N lines, read to EOF"** for the file it processed (the shared session rules, whole-file reads must be verifiable —
 the Read tool truncates at 2000 lines silently, and some notes already exceed that). After each of
 those stages, before launching the next, check its trace against the file's actual headings — get them
 with `grep -n "^##" <file>` (never with another Read, which can truncate exactly like the one you are
@@ -306,7 +308,7 @@ build), leave the worklist in place and list the failed row so it can be re-run 
   and, when reviewing/auditing, return a **section-by-section trace** (every `##`/`###` heading with
   PASS or the fix made) as proof it reached the last line. If you are ever tempted to "save spawns" by
   handing one subagent a batch of files, that is the mistake — do not.
-- **Full reads must be verifiable (CLAUDE.md non-negotiable).** Every per-file subagent runs `wc -l`
+- **Full reads must be verifiable (the shared session rules non-negotiable).** Every per-file subagent runs `wc -l`
   on its file before reading; if the file is near or over 2000 lines it reads in passes with `offset`
   to the real end, and every report states **"N lines, read to EOF"**. The orchestrator rejects a
   report that lacks this line for a file the stage had to read whole (see the trace gate above).
@@ -319,7 +321,7 @@ build), leave the worklist in place and list the failed row so it can be re-run 
 - **Before every `git add`/`git commit`, run `git status` and confirm only the intended `notes/`
   paths are staged.** A project code file left staged from an earlier, unrelated step can silently
   ride along into a notes commit — `git restore --staged` anything that isn't a notes file. **The one
-  allowed non-`notes/` path is `CLAUDE.md` on a create-file row, and only when its diff is nothing but
+  allowed non-`notes/` path is `notes/prompts/_internal/_session-rules.md` on a create-file row, and only when its diff is nothing but
   the "next file:" counter bump for the note being added** — it rides with that file's commit as one
   logical change. Anything else staged is a mistake to restore.
 - **Four subagents per file, English author → English reviewer → translator → Spanish reviewer; rows

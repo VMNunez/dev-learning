@@ -1,5 +1,7 @@
 # Coverage Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. Fill in the two values in the configuration block, then paste everything into a new chat.
 
 Use this prompt when you want to create a new `coverage.md` for a notes folder, or update an existing one when new concepts have been learned, the project scope has changed, or topics need to be promoted from `future-learning.md`.
@@ -99,16 +101,16 @@ Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
 I want you to create or update the coverage.md file for {TOPIC}.
 
 > **Branch guard (step 0, before anything else):** run `git branch --show-current`. Study materials
-> commit on whatever branch is currently active (CLAUDE.md, "Study materials follow the active
+> commit on whatever branch is currently active (the shared session rules, "Study materials follow the active
 > branch") — a feature branch is the normal case; just name the branch in the final summary. The one
 > branch that must stop the run is **`main`**: it never receives direct commits, only merges via PR —
 > if you are on `main`, stop and ask Victor which branch to use.
 
-> **Generator-model guard (step 0, same moment):** the model-policy table below names **Opus** for
+> **Generator-model guard (step 0, same moment):** the model-policy table below names **deep-reasoning** for
 > the generator (this session), because this session *is* the author of every coverage item — the
 > real quality bottleneck. Nothing in the run flow can enforce the session's own model, so confirm it
-> yourself before Step 1: if you are not running on Opus, **stop and tell Victor to switch the session
-> to Opus** (`/model opus`) before continuing — do not word-craft coverage items on a weaker model.
+> yourself before Step 1: if you are not running on deep-reasoning, **stop and tell Victor to switch the session
+> to deep-reasoning** (`select the `deep` reasoning tier`) before continuing — do not word-craft coverage items on a weaker model.
 > The subagent `model:` overrides do not cover this — they set the *subagents'* models, never the
 > session's. (why: R1)
 
@@ -125,7 +127,7 @@ Before starting, read:
 - `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — **the standard: what a good coverage.md contains**
   (what belongs in scope, the three item types, confusable pairs, the AI factor, item/file format).
   Everything about *content quality* lives there — this prompt only adds the *per-topic flow* on top.
-- `CLAUDE.md` — teaching rules and the notes/ subfolder structure.
+- `notes/prompts/_internal/_session-rules.md` — teaching rules and the notes/ subfolder structure.
 - `notes/prompts/_internal/_shared-context.md` — my profile, the **Spanish job market 2026**, and the **AI
   factor 2026**.
 - `ROADMAP.md` — the current phase, deadline, and what is post-junior scope. This is the source of the
@@ -206,18 +208,18 @@ Pass an explicit `model` override on every subagent dispatch:
 
 | Role | `model:` | Why |
 |------|----------|-----|
-| **Generator (this context / session)** | **Opus** | It word-crafts every coverage item to the standard — the real quality bottleneck. Run the session on Opus. |
-| Step 2 — market analyst | `sonnet` | Web-search + list; retrieval-heavy, and the Opus generator judges the result against the standard afterwards. |
-| **Step 4a — every adversarial angle** | **`opus`** | Generating genuinely hard interview gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. |
-| **Step 4b — standard reviewer** | **`opus`** | It is the only check on the run's own output, and judging an item against a written standard is the same craft as writing one — a weaker model rubber-stamps. |
+| **Generator (this context / session)** | **deep-reasoning** | It word-crafts every coverage item to the standard — the real quality bottleneck. Run the session on deep-reasoning. |
+| Step 2 — market analyst | `standard` | Web-search + list; retrieval-heavy, and the deep-reasoning generator judges the result against the standard afterwards. |
+| **Step 4a — every adversarial angle** | **`deep`** | Generating genuinely hard interview gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. |
+| **Step 4b — standard reviewer** | **`deep`** | It is the only check on the run's own output, and judging an item against a written standard is the same craft as writing one — a weaker model rubber-stamps. |
 
-This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on Sonnet with A/B bumped to Opus; **here the session IS the author**, so it runs on Opus. If Victor wants maximum saving and accepts more risk, the market analyst can stay Sonnet — but **never drop a 4a angle below Opus, and never save tokens by running fewer angles**: that is the pass that finds the holes, and a coverage file with holes silently propagates into the notes and the interview prep.
+This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on standard-reasoning with A/B bumped to deep-reasoning; **here the session IS the author**, so it runs on deep-reasoning. If Victor wants maximum saving and accepts more risk, the market analyst can stay standard-reasoning — but **never drop a 4a angle below deep-reasoning, and never save tokens by running fewer angles**: that is the pass that finds the holes, and a coverage file with holes silently propagates into the notes and the interview prep.
 
 ---
 
 ## Step 1 — Read the existing state
 
-> **Verifiable reads (CLAUDE.md non-negotiable) — applies to every whole-file read in this prompt.**
+> **Verifiable reads (the shared session rules non-negotiable) — applies to every whole-file read in this prompt.**
 > The Read tool truncates at 2000 lines **silently**. Before reading any file end-to-end, run `wc -l`
 > on it; if it is near or over 2000 lines, read it in passes with `offset` to the real end.
 >
@@ -278,7 +280,7 @@ Victor's objectives — the backbone defined in the standard's "Two sources" sec
 postings complementing it. Run that analysis in a **cold subagent** so it can web-search without
 bloating this context.
 
-**In Claude Code:** launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
+**In the supported agent runtime:** launch one `role-appropriate` subagent, `reasoning tier: standard`, `execution: foreground`:
 
 > You are a specialist in the Spanish IT job market for junior developers. Read `ROADMAP.md` and
 > `notes/prompts/_internal/_shared-context.md` for the candidate's exact objectives (target role, companies,
@@ -313,7 +315,7 @@ whether they really know this?"), the IN/OUT filter, the AI factor, and the conf
 defined in `_coverage-standard.md`. The job target (role, companies, deadline) comes from ROADMAP +
 `_shared-context`, never from a value baked into this prompt.
 
-**Not in Claude Code (plain chat):** do the analysis yourself, explicitly — reason through what the
+**Not in the supported agent runtime (plain chat):** do the analysis yourself, explicitly — reason through what the
 Spanish market asks a junior with these objectives for {TOPIC}, use a web search if the environment
 allows, cross-check the evidence file, and write the market-demand item list *before* deriving coverage.
 The independence is weaker than a real subagent, so actually produce the list; do not skip to writing.
@@ -445,8 +447,8 @@ it is deliberately the most expensive one.** Two rules make it work (why: R4):
 >
 > Either way the consolidation is a single pass and the generator is still the only editor.
 
-**In Claude Code:** launch these as **parallel** `general-purpose` subagents, `model: opus`,
-`run_in_background: false`. Adapt the angle list to {TOPIC} in two ways, both required:
+**In the supported agent runtime:** launch these as **parallel** `role-appropriate` subagents, `reasoning tier: deep`,
+`execution: foreground`. Adapt the angle list to {TOPIC} in two ways, both required:
 
 - **Substitute, don't just subtract.** When a numbered angle is meaningless for the topic (a
   "production debugging" angle makes no sense for CSS; a "take-home from a blank IDE" angle makes no
@@ -627,7 +629,7 @@ Three routing rules when handling the discards:
   > consolidation, when nothing has been written yet; by the time the sync runs, the cost of a wrong
   > call has already been paid twice. Step 4b's cold review sits on the same principle. (why: R12)
 
-**Not in Claude Code (plain chat):** run the angles yourself, one at a time and explicitly — switch
+**Not in the supported agent runtime (plain chat):** run the angles yourself, one at a time and explicitly — switch
 hats per angle, generate the probes cold and uncapped, list the gaps, then add the genuine ones. The
 independence is much weaker than real subagents, so actually write the probes out; do not skim the
 coverage and declare it complete.
@@ -672,7 +674,7 @@ padding the input is how a narrow check turns into an expensive one that reviews
 > '^- '` gives the inherited bullets, and anything in the new file matching one of those lines verbatim
 > is moved, not new. (why: R23)
 
-**In Claude Code:** one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
+**In the supported agent runtime:** one `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`:
 
 > You are reviewing coverage items written by another engineer, against a written standard. Read
 > `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — it is the authority; where your taste and
@@ -880,7 +882,7 @@ Report the before/after and the analyst's frequency signal plainly, and leave th
 (why: R19)
 
 **Commit the changes yourself.** Coverage files live under `notes/`, so this is one of the
-cases where Claude commits directly (CLAUDE.md "Non-negotiables" exception for `notes/` and
+cases where the coding agent commits directly (the shared session rules "Non-negotiables" exception for `notes/` and
 `notes/prompts/`) — do not hand the commands to Victor. No `Co-Authored-By` lines. The commit
 must be atomic — only the coverage files, nothing else.
 

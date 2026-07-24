@@ -1,6 +1,8 @@
 # Evidence Intake Prompt
 
-Use in a **separate conversation** (ideally inside Claude Code, so `search` mode can web-search). Fill
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Use in a **separate conversation** (ideally inside the supported agent runtime, so `search` mode can web-search). Fill
 the config block, paste the prompt into a new chat, and — in `paste` mode — paste the offers at the end.
 
 This is the dedicated way to **nourish `notes/prompts/_internal/_job-market-evidence.md`** — the real-postings file
@@ -149,7 +151,7 @@ Print a short summary:
 | Footer count | [old N → new N] |
 
 The evidence file is committed (public data, no personal info). It lives under `notes/prompts/`, so
-**commit it directly** (CLAUDE.md's notes/prompts exception — do not hand the commands to Victor),
+**commit it directly** (the shared session rules' notes/prompts exception — do not hand the commands to Victor),
 with the mandatory double check:
 1. `git status` — confirm only `notes/prompts/_internal/_job-market-evidence.md` is about to be staged.
 2. `git add notes/prompts/_internal/_job-market-evidence.md`

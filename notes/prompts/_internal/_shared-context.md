@@ -4,7 +4,7 @@ This file is **not a prompt**. It is the single place that holds the context eve
 to repeat: who I am, where I stand, my projects, and the market I am aiming at. Prompts read the
 sections they need instead of copying them — so a fact changes here once, not in sixteen files.
 
-Keep this in sync with `CLAUDE.md` (which holds a condensed profile) whenever something changes.
+Keep this in sync with `_session-rules.md` (which holds a condensed profile) whenever something changes.
 
 ---
 
@@ -88,7 +88,7 @@ to the bar. It is not a pep talk — it is the real picture.
 
 ## Projects
 
-`CLAUDE.md` and `PROGRESS.md` are authoritative — if this list is outdated, use them instead.
+`_session-rules.md` and `PROGRESS.md` are authoritative — if this list is outdated, use them instead.
 Projects are a vehicle to practise concepts; they do not define what must be learned.
 
 - **01 — todo list:** components, signals, services, directives

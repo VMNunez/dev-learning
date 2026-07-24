@@ -1,6 +1,8 @@
 # Interview-prep audit — the single entry point for building interview Q&A
 
-Run this **inside Claude Code**. It is the only interview-prep prompt Victor launches. It builds the
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It is the only interview-prep prompt Victor launches. It builds the
 interview Q&A for a topic to the full quality standard, hands-off. The key design point: **the deep
 work — authoring and reviewing questions — is done one cold subagent per SECTION, not per whole topic
 file.** A section is small enough to keep full attention on, yet complete enough to check the type
@@ -38,7 +40,7 @@ defined inline in the per-topic pipeline below — they are dispatch-only, with 
 
 ## How to use — recipes
 
-Open a fresh chat **inside Claude Code**, paste the whole prompt below, fill only the config block, and
+Open a fresh chat **inside the supported agent runtime**, paste the whole prompt below, fill only the config block, and
 let it run to the end. You touch nothing else — no per-topic launching, no commits to run (unless
 `DRY_RUN = true`). Pick the recipe:
 
@@ -103,11 +105,11 @@ Use FILE, SECTION, MODE, and DRY_RUN wherever the prompt refers to {FILE}, {SECT
 You are the orchestrator for building Victor's interview Q&A, hands-off.
 
 > **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
-> branch is currently active (CLAUDE.md) — a feature branch is the normal case; name it in the final
+> branch is currently active (the shared session rules) — a feature branch is the normal case; name it in the final
 > report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
 > direct commits, only merges via PR.
 
-> **Verifiable reads (CLAUDE.md non-negotiable):** any subagent that must read a whole file (G reads
+> **Verifiable reads (the shared session rules non-negotiable):** any subagent that must read a whole file (G reads
 > the full `en/` Q&A; A and B read both `en/`+`es/` files to locate their section) runs `wc -l`
 > first — the Read tool truncates at 2000 lines **silently** — and reads with `offset` passes to the
 > real end if the file is near or over that. G's report must state **"N lines, read to EOF"** for
@@ -150,8 +152,8 @@ subagents of a section, because they edit the same two files.
 
 ### Whole-topic detection (light — needs the cross-section view)
 
-**Stage M — interview-question market analysis (full mode only).** Launch one `general-purpose`
-subagent, `model: opus`, `run_in_background: false` (market judgment shapes every question downstream):
+**Stage M — interview-question market analysis (full mode only).** Launch one `role-appropriate`
+subagent, `reasoning tier: deep`, `execution: foreground` (market judgment shapes every question downstream):
 
 > You are a specialist in junior technical interviews at Spanish IT consultancies. Read `ROADMAP.md`
 > and `notes/prompts/_internal/_shared-context.md` for the candidate's exact target role, companies, stack, and
@@ -176,8 +178,8 @@ subagent, `model: opus`, `run_in_background: false` (market judgment shapes ever
 Wait for M and keep its list — **it must be tagged by section** (each question carries the `##` heading
 it belongs to), so you can hand each section only its own slice later.
 
-**Stage G — adversarial gap-hunt (full mode only).** Launch a fresh, independent `general-purpose`
-subagent, `model: opus`, `run_in_background: false` (adversarial creativity — a cheap model finds
+**Stage G — adversarial gap-hunt (full mode only).** Launch a fresh, independent `role-appropriate`
+subagent, `reasoning tier: deep`, `execution: foreground` (adversarial creativity — a cheap model finds
 the obvious gaps, not the ones that matter):
 
 > You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
@@ -214,7 +216,7 @@ slice. This is structural detection — do it in your own context; **do not auth
 For **each section in the work list, in order**, run Author then Reviewer. Never overlap sections, and
 never overlap a section's two subagents — they edit the same two files. Neither subagent commits.
 
-**Author (A).** Launch a fresh `general-purpose` subagent, `model: opus`, `run_in_background: false`
+**Author (A).** Launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`
 (writes bilingual Q&A in Victor's voice — prose quality is the product):
 
 > Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-write-prompt.md` and execute it for
@@ -236,8 +238,8 @@ Wait for A. If A reports it could not complete the section (blocked, missing con
 section's reviewer, note it, and move to the next section — do not leave a half-authored section for
 the reviewer.
 
-**Reviewer (B).** Launch a fresh, independent `general-purpose` subagent, `model: opus`,
-`run_in_background: false` (it rewrites weak questions freely — that is authoring, not checklist
+**Reviewer (B).** Launch a fresh, independent `role-appropriate` subagent, `reasoning tier: deep`,
+`execution: foreground` (it rewrites weak questions freely — that is authoring, not checklist
 verification):
 
 > Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-review-prompt.md` and execute it for

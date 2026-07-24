@@ -340,7 +340,7 @@ unlikely combination is Low.
 
 ## Test-quality scope — the test review
 
-> **Projects 01–06 have no tests, by design — never report their absence.** Per CLAUDE.md ("Testing
+> **Projects 01–06 have no tests, by design — never report their absence.** Per the shared session rules ("Testing
 > rules"), testing enters the roadmap at project **07** (services) and project **08** (components). In
 > 01–06 the `.spec.ts` files are untouched Angular CLI scaffold: an empty `should create` is the expected
 > state. In 07, component tests are likewise out of scope. Missing tests, empty specs and weak assertions

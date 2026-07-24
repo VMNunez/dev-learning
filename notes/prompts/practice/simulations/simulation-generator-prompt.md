@@ -1,5 +1,7 @@
 # Simulation Generator Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. Fill in the configuration block, then paste the prompt into a new chat.
 
 The `practice/simulations/` folder started with a fixed bank of 15 hand-written timed tests. This prompt
@@ -39,7 +41,7 @@ Validation — before anything else:
 
 ## Context
 
-Before starting, read `CLAUDE.md` and `notes/prompts/_internal/_shared-context.md`. The tests must look like
+Before starting, read `notes/prompts/_internal/_session-rules.md` and `notes/prompts/_internal/_shared-context.md`. The tests must look like
 what a Spanish consultancy actually hands a junior in the take-home stage (stage 3) — a realistic
 enterprise mini-task, clean acceptance criteria, doable in the time limit. Not a toy, not a
 multi-day project.
@@ -148,7 +150,7 @@ git add practice/simulations/{TYPE}/ practice/simulations/TRACKER.md
 git commit -m "docs: add {COUNT} {TYPE} simulation(s) — [main skill targeted]"
 ```
 
-> Branch note: study materials commit on **whatever branch is currently active** (`CLAUDE.md`,
+> Branch note: study materials commit on **whatever branch is currently active** (`notes/prompts/_internal/_session-rules.md`,
 > 2026-07-14) — `main` never receives direct commits, only merges via PR. Run `git branch --show-current`
 > first; if it returns `main`, stop and ask which branch to use.
 

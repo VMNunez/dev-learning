@@ -76,7 +76,7 @@ and report weak ones instead of rewriting; everything unmarked you may rewrite f
 (`SECTION = all` on a standalone run means the whole file — then work section by section within it.)
 
 Before starting, read:
-- CLAUDE.md — teaching rules and subfolder structure.
+- the shared session rules — teaching rules and subfolder structure.
 - notes/prompts/_internal/_shared-context.md — Victor's profile, projects, and the Spanish job market 2026.
 - notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md — THE bar. Every definition
   (question types, priority markers, question format, the answer quality bar, the bilingual contract,

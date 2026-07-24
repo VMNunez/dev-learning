@@ -38,7 +38,7 @@ Before starting, read:
 - The existing target README (`{PROJECT_PATH}/README.md` for `global`, `.../backend/README.md` for
   `backend`, `.../frontend/README.md` for `frontend`) — if it exists.
 
-Do **not** re-read `CLAUDE.md` — it is already injected into your context automatically; Victor's
+Do **not** re-read `notes/prompts/_internal/_session-rules.md` — it is already injected into your context automatically; Victor's
 profile and the market live in `notes/prompts/_internal/_shared-context.md` if a section genuinely needs them.
 
 **Scoped code reading.** When a section must be checked against the real code (API endpoints, tests,

@@ -47,6 +47,11 @@ Header: today's date · the run's configuration (the resolved key values) · a *
 `open` if the Verdict names a change nobody has applied yet, `applied in <hash>` once the prompt has
 been edited to address it. A clean run's status is `open` and stays `open`.
 
+Before these bullets, reconcile every prompt-change recommendation from this run with
+`notes/prompts/_internal/_recommendation-ledger.md`. Create or update a row with state `open`,
+`accepted`, `applied`, or `rejected`. Historical reports remain unchanged; the ledger is the current
+status source.
+
 Then exactly these three bullets, honest, including "nothing to report". Keep each short; a bullet earns
 extra lines only when reporting something that actually went wrong:
 
@@ -90,7 +95,7 @@ the evidence is freshest and the version you executed was the honest, unmodified
 When you reject a finding, **name the failed condition in the Verdict** so the same zombie is not
 re-proposed next run.
 
-**Independent review before applying.** Dispatch one cold `general-purpose` subagent (`model: opus`)
+**Independent review before applying.** Dispatch one cold `role-appropriate` subagent (`reasoning tier: deep`)
 with four inputs: the finding as the report states it, the prompt section it targets, your
 drafted replacement, and **the whole prompt file, read end-to-end**. The last one is what makes
 condition 4 answerable at all: "already covered somewhere the run failed to look" cannot be judged from
@@ -104,7 +109,7 @@ it approves. If it rejects, or you cannot dispatch it, the finding stays `open` 
 recoverable via its `Status` line, a self-approved bad edit is not. **Record the verdict in the report** —
 one line, `cold reviewer: approve | approve-with-tightening | reject`, beside the Verdict. It is the only
 trace the gate ran: an applied edit with no such line is indistinguishable on disk from a self-approval.
-The reviewer's return must open with `N lines, read to EOF` for the prompt file (CLAUDE.md's whole-file
+The reviewer's return must open with `N lines, read to EOF` for the prompt file (the shared session rules' whole-file
 rule); without it, treat the verdict as a reject — you cannot tell a whole-file judgement from a skim.
 
 **Growth is capped.** Over ~500 lines the edit must be net-neutral: the reviewer names what stale caveat

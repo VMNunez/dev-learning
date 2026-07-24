@@ -50,7 +50,7 @@ focused context per reviewer; a specialist that reads everything defeats it.
 - `notes/prompts/projects/plan/_internal/_planning-standard.md` — **only the parts your `{SCOPE}` row lists in
   the "Reads from the standard" column below**, plus "Two project formats" (every scope needs it to
   derive the format). Read the standard in full **only** when `{SCOPE}` = all.
-- `CLAUDE.md` — **only** `steps-tests` reads it, and only the "Testing rules" section. Other scopes
+- `notes/prompts/_internal/_session-rules.md` — **only** `steps-tests` reads it, and only the "Testing rules" section. Other scopes
   skip it entirely.
 - `PROGRESS.md` — **only** `architecture` reads it (to judge level-appropriateness). Other scopes
   skip it entirely.
@@ -159,7 +159,7 @@ once, after every concern's specialist has run. Leave your fixes in the working 
 - Ripples: one line per cross-concern ripple another specialist must reconcile (`none` if none).
 
 **If `{SCOPE}` = all (standalone run):** never commit — commit authority belongs to the orchestrators
-(CLAUDE.md's auto-commit exception covers them, not a standalone reviewer). Leave all changes in the
+(the shared session rules' auto-commit exception covers them, not a standalone reviewer). Leave all changes in the
 working tree and print the commit sequence for Victor:
 `git add {PROJECT}/PLANNING.md` · `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`
 (`{DRY_RUN}` only affects whether you print the sequence as "ready to run" or as a preview).

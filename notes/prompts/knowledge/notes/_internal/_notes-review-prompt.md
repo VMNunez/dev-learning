@@ -46,7 +46,7 @@ end you MUST produce a **section-by-section trace**: list every `##`/`###` headi
 to each, write PASS or the specific fix you made in it. That trace is your proof you read to the end —
 a review without it is not accepted.
 
-> **Verifiable read (CLAUDE.md non-negotiable):** run `wc -l {FILE}` before reading — the Read tool
+> **Verifiable read (the shared session rules non-negotiable):** run `wc -l {FILE}` before reading — the Read tool
 > truncates at 2000 lines **silently**; if the file is near or over that, read it in passes with
 > `offset` to the real end. Your report must state **"N lines, read to EOF"**; the orchestrator
 > rejects a review without it.

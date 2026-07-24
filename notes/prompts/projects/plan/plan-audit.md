@@ -1,6 +1,8 @@
 # Project plan audit — the single entry point for planning a project
 
-Run this **inside Claude Code**. It is the only project-plan prompt Victor launches. It builds or
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It is the only project-plan prompt Victor launches. It builds or
 audits a project's `PLANNING.md` to the full standard, hands-off, in two shapes:
 
 - `MODE = new` — plan the next project: gap-analyse PROGRESS vs coverage, pick the best next project,
@@ -35,7 +37,7 @@ one command does everything.
 
 ## How to use — recipes
 
-Open a fresh chat **inside Claude Code**, paste the whole prompt below (config block + instructions),
+Open a fresh chat **inside the supported agent runtime**, paste the whole prompt below (config block + instructions),
 fill only the config block, and let it run to the end. Pick the recipe:
 
 **A · Plan the next project** (a project just finished; plan the next one)
@@ -87,7 +89,7 @@ Use MODE and PROJECT wherever the prompt refers to {MODE} or {PROJECT}.
 You are the orchestrator for building Victor's project plans, hands-off.
 
 > **Branch guard (step 0):** run `git branch --show-current`. Study/tracking materials commit on
-> whatever branch is currently active (CLAUDE.md) — a feature branch is the normal case; name it in
+> whatever branch is currently active (the shared session rules) — a feature branch is the normal case; name it in
 > the final report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never
 > receives direct commits, only merges via PR.
 
@@ -101,7 +103,7 @@ audit the plan in your own context.
 
 ### Phase 1 — Author (one writing subagent)
 
-Launch one `general-purpose` subagent, `model: opus`, `run_in_background: false`:
+Launch one `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`:
 
 > Read `notes/prompts/projects/plan/_internal/_plan-write-prompt.md` and execute it in full
 > (`PROJECT = {PROJECT}` — blank means auto-detect). Do the gap analysis, choose the next project,
@@ -115,7 +117,7 @@ report — do not run the architecture advisor or reviewer on nothing.
 
 ### Phase 1b — Architecture advisor (one architecture subagent)
 
-Launch a `general-purpose` subagent, `model: opus`, `run_in_background: false`, on the plan the author just wrote:
+Launch a `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`, on the plan the author just wrote:
 
 > Read `notes/prompts/projects/plan/_internal/_plan-architecture-prompt.md` and execute it in full for
 > `PROJECT = «the chosen project folder path»`. Judge the drafted architecture (§6), the one new
@@ -184,8 +186,8 @@ For an **Angular project (01–06)**, skip concerns whose sections the plan does
 backend API/security) — the reviewer prompt derives the format, but do not dispatch a concern with
 nothing to audit. For a **full-stack project (07+)**, run all five.
 
-For **each** concern in order, launch a fresh, independent `general-purpose` subagent,
-`model: opus`, `run_in_background: false`:
+For **each** concern in order, launch a fresh, independent `role-appropriate` subagent,
+`reasoning tier: deep`, `execution: foreground`:
 
 > Read `notes/prompts/projects/plan/_internal/_plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
 > `SCOPE = «this concern»`, `DRY_RUN = true` (that is plan-review's own no-commit switch — the
@@ -232,7 +234,7 @@ Report the commit made and each specialist's verdict/trace.
 ## Hard rules
 
 - **Model tier: every subagent in this flow launches with the top model available** (pass
-  `model: opus` — or the session's higher tier if one exists — on each Agent call; never haiku, and
+  `reasoning tier: deep` — or the session's higher tier if one exists — on each Agent call; never haiku, and
   never silently inherit a cheap session model). This is deliberate, not an oversight to optimize:
   the author designs what Victor will learn for a month, the advisor and specialists rewrite plan
   prose — quality here is guaranteed by judgment, not by structure, so it is the wrong place to save
@@ -241,7 +243,7 @@ Report the commit made and each specialist's verdict/trace.
 
 - **Auto-commit is authorized for this flow — always** (Victor retired the `DRY_RUN` condition
   2026-07-16). His global rule is "never auto-commit"; he lifted it for the audit orchestrators, and
-  the authorship boundary in CLAUDE.md holds: PLANNING.md / ROADMAP.md / PROGRESS.md are system
+  the authorship boundary in the shared session rules holds: PLANNING.md / ROADMAP.md / PROGRESS.md are system
   machinery, never his code or `practice/` work. **The orchestrator commits once** (the specialist
   reviewers never do) — unless a gate failed, in which case it aborts without committing. It applies
   nowhere else — normal sessions still hand Victor the command.

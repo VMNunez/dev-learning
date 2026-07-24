@@ -1,7 +1,7 @@
 # `sql-exercises` — MODE = practice branch
 
 **Internal component of `sql-exercises-prompt.md`. Not runnable on its own** — it assumes the shell has
-already resolved `{FILE}`, `{COUNT}`, `{FOCUS}` and `{REVIEW}`, read `CLAUDE.md`, `PLANNING.md`,
+already resolved `{FILE}`, `{COUNT}`, `{FOCUS}` and `{REVIEW}`, read `notes/prompts/_internal/_session-rules.md`, `PLANNING.md`,
 `PROGRESS.md` and `coverage.md`, and printed the resolution block.
 
 Split out 2026-07-22: a run is either practice or review, never both, so carrying the other branch was

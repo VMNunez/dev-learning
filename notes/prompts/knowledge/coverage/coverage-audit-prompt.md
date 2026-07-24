@@ -1,5 +1,7 @@
 # Coverage Audit Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. No configuration needed — paste everything into a new chat and run.
 
 Use this prompt to audit `notes/coverage.md` for completeness, detect missing topics, and ensure every section reflects what Spanish consultancies actually test in 2026.
@@ -16,7 +18,7 @@ Use this prompt to audit `notes/coverage.md` for completeness, detect missing to
 > pending topics ("run `coverage-prompt` on: …") so Victor knows exactly what is left.
 
 > **Branch guard (also step 0):** run `git branch --show-current`. Study materials commit on
-> whatever branch is currently active (CLAUDE.md, "Study materials follow the active branch") — a
+> whatever branch is currently active (the shared session rules, "Study materials follow the active branch") — a
 > feature branch is the normal case; name it in the final summary. If you are on **`main`**, stop
 > and ask Victor which branch to use — `main` never receives direct commits, only merges via PR.
 
@@ -55,7 +57,7 @@ and reports the gaps) is not optional or per-doubt here — it runs for every to
 the per-topic loop (see the Execution model), the fastest way to prove a section is complete rather than
 assume it.
 
-(CLAUDE.md and ROADMAP.md are read in Step 1.)
+(the shared session rules and ROADMAP.md are read in Step 1.)
 
 ---
 
@@ -72,7 +74,7 @@ more than one thing. Two failures to avoid, both of which degrade quality:
 
 So the work is split two ways at once — **by topic** and **by concern** — under a strict role divide:
 
-**Analysts (cold `general-purpose` subagents) — read-only, one concern, return a list. Never edit any
+**Analysts (cold `role-appropriate` subagents) — read-only, one concern, return a list. Never edit any
 file.** Two kinds run: **per-topic analysts (A, B, C)** — dispatched once per topic, each given exactly
 one topic and one job — and **one global analyst (D)** — dispatched a single time across the whole file,
 because its concern (cross-topic consistency) only exists in the space *between* topics and cannot be
@@ -113,24 +115,24 @@ which keeps even the whole-file work out of the editing context.
 ### Model policy — per analyst, to protect quality while saving tokens
 
 Pass an explicit `model` override on every dispatch, matched to how much deep reasoning the concern
-needs. The **generative "find what's missing" passes** need Opus; the **verification "check what's
-present" passes** are lighter and run on Sonnet (~1/5 the cost).
+needs. The **generative "find what's missing" passes** need deep-reasoning; the **verification "check what's
+present" passes** are lighter and run on standard-reasoning (~1/5 the cost).
 
 | Role | `model:` | Why |
 |------|----------|-----|
-| **Orchestrator (this context / session)** | **Opus** | It is the only editor — it word-crafts every applied item to the standard. Run the session on Opus. |
-| A — Market-fit | `sonnet` | Web-search + map evidence→items; the Opus orchestrator judges each proposed item before applying. |
-| B — Internal quality | `sonnet` | Runs a fixed checklist over existing items + an item-by-item trace — verification, not generation. |
-| **C — Adversarial interviewer** | **`opus`** | Writing the hardest questions (uncapped) and spotting the hole coverage misses is the deepest reasoning in the audit. |
-| D — Cross-topic consistency | `sonnet` | Pattern-matches duplicates / misplaced / post-junior items across sections — verification. |
+| **Orchestrator (this context / session)** | **deep-reasoning** | It is the only editor — it word-crafts every applied item to the standard. Run the session on deep-reasoning. |
+| A — Market-fit | `standard` | Web-search + map evidence→items; the deep-reasoning orchestrator judges each proposed item before applying. |
+| B — Internal quality | `standard` | Runs a fixed checklist over existing items + an item-by-item trace — verification, not generation. |
+| **C — Adversarial interviewer** | **`deep`** | Writing the hardest questions (uncapped) and spotting the hole coverage misses is the deepest reasoning in the audit. |
+| D — Cross-topic consistency | `standard` | Pattern-matches duplicates / misplaced / post-junior items across sections — verification. |
 
-Never drop C below Opus (it is the pass that proves a section complete) and never drop the orchestrator
-below Opus (it writes the items). If Victor asks for maximum saving, A may also stay Sonnet as-is; the
-one non-negotiable Opus roles are the session and Analyst C.
+Never drop C below deep-reasoning (it is the pass that proves a section complete) and never drop the orchestrator
+below deep-reasoning (it writes the items). If Victor asks for maximum saving, A may also stay standard-reasoning as-is; the
+one non-negotiable deep-reasoning roles are the session and Analyst C.
 
 **Per-topic loop (sequential, one topic fully done before the next):**
-1. Dispatch Analyst A (`model: sonnet`), then B (`model: sonnet`), then C (`model: opus`) for the topic
-   (`run_in_background: false`). Dispatch each one by telling it to read its section (A / B / C) in
+1. Dispatch Analyst A (`reasoning tier: standard`), then B (`reasoning tier: standard`), then C (`reasoning tier: deep`) for the topic
+   (`execution: foreground`). Dispatch each one by telling it to read its section (A / B / C) in
    `notes/prompts/knowledge/coverage/_internal/_coverage-analyst-mandates.md` with {TOPIC} filled in, plus only
    the files its concern needs (listed in the analyst-split rules above).
    Collect their three lists. **Acceptance check per analyst:** every report must carry the
@@ -147,7 +149,7 @@ one non-negotiable Opus roles are the session and Analyst C.
    and stop. Do not tell an analyst a file is "the thinnest", "freshly regenerated", or "probably
    under-covered": the damage is asymmetric — a "thin" prior invites invented gaps, a "fine" prior
    suppresses real ones — and it lands hardest on Analyst C, whose independent judgement is the whole
-   reason it runs on Opus (told once that an 85-line file was thinnest, C overturned the prior and
+   reason it runs on deep-reasoning (told once that an 85-line file was thinnest, C overturned the prior and
    returned 71/98 supported). A genuine scope boundary — which sibling topic owns what — is a **routing
    rule**, never an expectation about what the analyst will find.
 1b. Read `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md`, take the entries under `## {TOPIC}`
@@ -178,7 +180,7 @@ Doing one topic end-to-end keeps the orchestrator's editing context small (one s
 each commit-ready, without any analyst ever holding more than a single concern.
 
 **Global cross-topic pass (once, after the per-topic loop):** dispatch Analyst D a single time
-(`model: sonnet`, `run_in_background: false`) over the finished `notes/coverage.md`, collect its three lists (duplicates,
+(`reasoning tier: standard`, `execution: foreground`) over the finished `notes/coverage.md`, collect its three lists (duplicates,
 misplaced items, scope-demotion candidates), and apply the surviving ones in Step 4. Run it **after** all
 per-topic loops so it judges the sections in their post-edit state — otherwise it would flag overlaps the
 per-topic passes are about to change anyway. Because D reads the whole file, running it last also means
@@ -201,7 +203,7 @@ Any change to `notes/coverage.md` must immediately be reflected in the correspon
 
 ## Step 1 — Read the system state
 
-> **Verifiable reads (CLAUDE.md non-negotiable) — applies to every whole-file read in this audit,
+> **Verifiable reads (the shared session rules non-negotiable) — applies to every whole-file read in this audit,
 > by the orchestrator and by every analyst.** The Read tool truncates at 2000 lines **silently**, and
 > `notes/coverage.md` passed that limit long ago — it stood at 3914 lines after the 2026-07-19 run and
 > grows with every audit, so a single Read call now returns barely half of it. A truncated read here
@@ -214,7 +216,7 @@ Any change to `notes/coverage.md` must immediately be reflected in the correspon
 Read these files before making any decision:
 
 1. `notes/coverage.md` — the primary input
-2. `CLAUDE.md` — learning objectives and notes folder structure (profile and market are in
+2. `notes/prompts/_internal/_session-rules.md` — learning objectives and notes folder structure (profile and market are in
    `notes/prompts/_internal/_shared-context.md`, read above)
 3. `ROADMAP.md` — current phase, what is in progress, what is post-junior scope
 
@@ -253,7 +255,7 @@ it never writes a new topic's `coverage.md`:
    creates coverage from scratch and is the single-responsibility prompt for that. After it runs, this
    audit's normal per-topic loop (A/B/C) will pick the topic up like any other.
 3. **Register the new topic across the machinery — otherwise coverage names it but nothing downstream builds it.** A coverage file with no home in the rest of the system produces notes and Q&A for a topic no other prompt knows exists. Flag each of these in the final summary under "New-topic registration needed" (Victor applies them, since they touch prompts this audit does not own):
-   - **CLAUDE.md** — add the topic to the `notes/` subfolders list (with its `next file:` counter) and, if it is study-relevant, to the 13:30 notes study order.
+   - **the shared session rules** — add the topic to the `notes/` subfolders list (with its `next file:` counter) and, if it is study-relevant, to the 13:30 notes study order.
    - **notes-audit / notes-plan** — add the topic to the `TOPIC` enum in both (the batch order lives in notes-audit only; notes-plan never runs batched).
    - **interview-prep-audit / interview-prep-write** — if the topic gets its own Q&A file, add it to the `FILE` enum and the batch order; if it folds into an existing file (like Angular Material into `angular.md`), note that routing instead.
    - **notes-and-interview-prep** — add it to the `TOPIC`/`FILE`/`NOTES_PATH` config and batch order.
@@ -274,14 +276,14 @@ briefs. The per-topic loop above dispatches each analyst to read its own section
 - **Analyst A — market-fit** (mandate: Step 2b): does coverage meet what the market asks for this topic?
 - **Analyst B — internal quality** (mandate: Step 3): does each existing item pass the standard's bar?
 - **Analyst C — adversarial interviewer** (mandate: Step 4a): would a real interviewer find a hole the
-  coverage cannot answer? Runs on `opus`.
+  coverage cannot answer? Runs on `deep`.
 
 ---
 
 ## Step 4 — Apply Analyst D's cross-topic findings
 
 Analyst D's mandate is in `_coverage-analyst-mandates.md` ("Analyst D"). Dispatch it once, after the
-per-topic loop, `model: sonnet`, over the finished `notes/coverage.md`; collect its three lists
+per-topic loop, `reasoning tier: standard`, over the finished `notes/coverage.md`; collect its three lists
 (duplicates, misplaced items, scope-demotion candidates) and apply the survivors here. Run it last so
 it judges the sections in their post-edit state, and because reading the whole file is its job, not the
 orchestrator's.
@@ -346,7 +348,7 @@ Print the summary:
 |--------|--------|
 | Sync corrections (pre-audit) | [topic — what differed] |
 | New topic detected → run coverage-prompt | [topic — criteria met + target position, or "none"] |
-| New-topic registration needed | [per new folder: the CLAUDE.md / notes-audit / interview-prep / simulator edits Victor must apply, or "none"] |
+| New-topic registration needed | [per new folder: the the shared session rules / notes-audit / interview-prep / simulator edits Victor must apply, or "none"] |
 | Market-fit gaps filled | [topic — recurring requirement (freq) that had no/thin item] |
 | Over-coverage demotion candidates | [item — no posting supports it, not a fundamental] |
 | Sections with gaps filled | [topic — what was added] |
@@ -376,7 +378,7 @@ Stable means: every topic for Victor's objective is represented, every section h
 Apply all changes directly to the files. Do not describe what you would write — write it.
 
 **Commit the changes yourself.** Coverage files live under `notes/`, so this is one of the cases where
-Claude commits directly (CLAUDE.md "Non-negotiables" exception for `notes/` and `notes/prompts/`) — do
+the coding agent commits directly (the shared session rules "Non-negotiables" exception for `notes/` and `notes/prompts/`) — do
 not hand the commands to Victor. No `Co-Authored-By` lines.
 
 **Mandatory safety check before committing — never skip it:**

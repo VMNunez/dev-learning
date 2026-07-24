@@ -1,5 +1,7 @@
 # HR Screen Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. Fill in the configuration block, then paste the prompt into a new chat.
 
 The hiring process has 5 stages; stage 2 is a **non-technical HR call** — motivation, "why this

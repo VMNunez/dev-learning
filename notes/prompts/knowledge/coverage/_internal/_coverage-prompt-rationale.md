@@ -21,7 +21,7 @@ prompt. Never inline a new war story back into the prompt.
 
 ## R1 — The generator-model guard
 
-A real run consolidated its items on Sonnet and shipped standard violations that only an Opus re-pass
+A real run consolidated its items at the `standard` tier and shipped standard violations that only a `deep` re-pass
 caught: one unsplit 16-item section and two merged multi-concept items. The session *is* the author of
 every coverage item, so its own model is the quality bottleneck — and nothing in the run flow can
 enforce it, because the `model:` overrides set the subagents' models, never the session's. Hence a
@@ -116,7 +116,7 @@ four standard angles had converged elsewhere and looked complete.
 
 ## R8 — Why angle reports go to files, not into the chat
 
-Six or seven uncapped Opus angles returning 130–230 proposals directly into the session is the single
+Six or seven uncapped deep-reasoning angles returning 130–230 proposals directly into the session is the single
 biggest context spike of the run, and it lands on the same context that must then word-craft every item
 and finish the admin steps. With reports on disk the generator consolidates incrementally — one angle
 file at a time, merged into a single deduplicated worklist — and never holds all the raw reports at once.

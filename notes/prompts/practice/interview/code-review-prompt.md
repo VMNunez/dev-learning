@@ -1,5 +1,7 @@
 # Code Review Practice Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. Fill in the configuration block, then paste the prompt into a new chat.
 
 This trains the newest filter in 2026 technical tests: you are shown a flawed snippet — often the
@@ -42,7 +44,7 @@ Validation — before anything else:
 
 ## Context
 
-Before starting, read `CLAUDE.md` (teaching rules) and `notes/prompts/_internal/_shared-context.md`
+Before starting, read `notes/prompts/_internal/_session-rules.md` (teaching rules) and `notes/prompts/_internal/_shared-context.md`
 (my profile, and especially the **"Spanish job market 2026"** and **"AI factor 2026"** sections —
 they list the exact mistakes interviewers test for in the code-review step).
 

@@ -1,5 +1,7 @@
 # Cover Letter Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
 Use in a **separate conversation**. Fill in the configuration block, then paste the offer at the end.
 
 Run this when an offer asks for a cover letter, or when you want to write directly to a recruiter. The
@@ -36,7 +38,7 @@ CONTACTO = [recruiter name if you have one — used to open the message | blank]
 ## Before starting
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared application standard.
-From it, a cover letter uses the **sources to read** (`CLAUDE.md`, `notes/prompts/_internal/_shared-context.md`,
+From it, a cover letter uses the **sources to read** (`notes/prompts/_internal/_session-rules.md`, `notes/prompts/_internal/_shared-context.md`,
 `PROGRESS.md`, `ROADMAP.md`, the optional `notes/cv/cv-bullets.md`, and your existing CV in
 `personal/job-search`), the **keyword awareness**, the **Spanish / no-buzzword voice**, and the
 **defensibility rule** (the bullet format and project-selection heuristic are CV/LinkedIn machinery —

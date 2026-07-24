@@ -70,7 +70,7 @@ do the mechanical/structural fixes, and produce an ordered worklist of writing t
 NOT write or rewrite any note prose. That happens later, one file at a time, with _notes-write-prompt.md.
 
 Before starting, read:
-- CLAUDE.md — teaching rules, subfolder structure, and the "next file:" counters.
+- the shared session rules — teaching rules, subfolder structure, and the "next file:" counters.
 - notes/prompts/_internal/_shared-context.md — my profile, the Spanish job market 2026, and the AI factor.
   The gaps you look for are framed by what Spanish consultancies filter juniors on.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the writing standard. You read it to *judge*
@@ -216,7 +216,7 @@ edit it directly.
 - Do not resolve TODOs.
 - Do not add sections to existing files, and do not create the `00-intro` or any new numbered file's
   content — only *list* them as worklist items.
-- Do not update the "next file:" counter in CLAUDE.md — the write prompt does that when it actually
+- Do not update the "next file:" counter in the shared session rules — the write prompt does that when it actually
   creates a file. **But you MUST assign the concrete number to every new file in the worklist** (start
   from the "next file:" counter and increment in study-sequence order). If you leave numbers for the
   subagents to choose, parallel-in-time runs would each grab the same "next" number and collide. The

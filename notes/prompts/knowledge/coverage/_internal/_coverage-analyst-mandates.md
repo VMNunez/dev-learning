@@ -1,7 +1,7 @@
 # Coverage-audit analyst mandates — A, B, C, D
 
 **Internal component. Not runnable on its own.** These are the four read-only mandates the
-`coverage-audit-prompt.md` orchestrator dispatches. Each analyst is a cold `general-purpose` subagent
+`coverage-audit-prompt.md` orchestrator dispatches. Each analyst is a cold `role-appropriate` subagent
 given exactly one topic (A, B, C) or the whole file (D), one concern, and this file's matching section.
 They live here rather than in the orchestrator so the orchestrator's own context stays light — it points
 each dispatch at its section and holds only the flow. The role divide, model policy, and per-topic loop
@@ -71,7 +71,7 @@ annotation-placement rules and what breaks when they are wrong.
 
 ## Analyst C — adversarial interviewer (Step 4a)
 
-Run once per topic on `model: opus` — this is the deepest reasoning in the audit and proves a section
+Run once per topic on `reasoning tier: deep` — this is the deepest reasoning in the audit and proves a section
 complete rather than assuming it. Analyst C **returns a gap list** and edits nothing.
 
 You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
@@ -98,7 +98,7 @@ until your questions prove otherwise.
 
 ## Analyst D — cross-topic consistency (Step 4)
 
-Run **once**, `model: sonnet`, over the whole of `notes/coverage.md` after the per-topic loop.
+Run **once**, `reasoning tier: standard`, over the whole of `notes/coverage.md` after the per-topic loop.
 Cross-topic consistency cannot be judged one section at a time — a duplicate lives in two sections at
 once — so D is the one analyst with a global view. It holds exactly one concern and **returns three
 lists, editing nothing**; the orchestrator applies the survivors.

@@ -1,7 +1,9 @@
 # Roadmap Review Prompt — orchestrator
 
-Run this **inside Claude Code** (it dispatches subagents; a plain chat cannot run it). No
-configuration to fill in — paste the whole prompt into a fresh Claude Code chat as it is.
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime** (it dispatches subagents; a plain chat cannot run it). No
+configuration to fill in — paste the whole prompt into a fresh the supported agent runtime chat as it is.
 
 This prompt updates `ROADMAP.md` so it shows the optimal path from current progress to full coverage
 of `notes/coverage.md` — through projects, study blocks, and practice. Run it whenever a project
@@ -48,7 +50,7 @@ Step 0 also includes the run-start check stated above this fenced block.
 > is currently active — a feature branch is the normal case; name it in the final report. If you are
 > on **`main`**, stop and ask Victor which branch to use — `main` never receives direct commits.
 
-> **Verifiable reads (CLAUDE.md non-negotiable):** `notes/coverage.md` is near the Read tool's
+> **Verifiable reads (the shared session rules non-negotiable):** `notes/coverage.md` is near the Read tool's
 > silent 2000-line truncation limit. Subagent 2a and Reviewer 2 must run `wc -l` on it before
 > reading, use `offset` passes to the real end if needed, and state **"N lines, read to EOF"** in
 > their report — treat a report without that line as unusable (re-dispatch once; if it fails again,
@@ -57,8 +59,8 @@ Step 0 also includes the run-start check stated above this fenced block.
 First read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` — the stable ROADMAP contract this
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
-Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, and the market). CLAUDE.md
-(daily schedule, study order) is already loaded into your context by Claude Code — do not re-read it.
+Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, and the market). the shared session rules
+(daily schedule, study order) is already loaded into your context by the supported agent runtime — do not re-read it.
 
 `ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
 references `notes/coverage.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
@@ -90,9 +92,9 @@ phases (July, August, September) are past, current, or still ahead.
 
 ## Step 2 — Fan out two cold fact-gathering subagents
 
-Launch **both** `general-purpose` subagents in a single message so they run in parallel
-(`model: sonnet` for both — they cross-reference lists and report facts, no judgment;
-`run_in_background: false`; they only read). Wait for both reports before Step 3.
+Launch **both** `role-appropriate` subagents in a single message so they run in parallel
+(`reasoning tier: standard` for both — they cross-reference lists and report facts, no judgment;
+`execution: foreground`; they only read). Wait for both reports before Step 3.
 
 **Subagent 2a — gap analysis.** Its instruction:
 
@@ -182,7 +184,7 @@ subagent 2a returned from coverage.md (add missing topics, remove out-of-scope t
 markers to PROGRESS.md).
 
 **13:30 block — Notes then interview prep:** confirm the notes study order matches the canonical
-string exactly; if CLAUDE.md differs, CLAUDE.md wins.
+string exactly; if the shared session rules differs, the shared session rules wins.
 
 **LeetCode gate conditions:** verify the topics in the study-order gate condition match the
 high-priority topics per the standard (angular, spring-boot, java, architecture, and any topic added
@@ -215,8 +217,8 @@ Do not treat this self-check as the final word — Step 6 verifies it independen
 
 ## Step 6 — Two independent reviewer subagents (sequential)
 
-Launch **two cold `general-purpose` subagents, one after the other** (`model: opus` — they re-derive
-career-strategy judgements and fix ROADMAP.md prose; `run_in_background: false` —
+Launch **two cold `role-appropriate` subagents, one after the other** (`reasoning tier: deep` — they re-derive
+career-strategy judgements and fix ROADMAP.md prose; `execution: foreground` —
 never in parallel: both fix ROADMAP.md directly, and concurrent edits to the same file conflict).
 They have none of your context — each re-derives its judgements from the files alone, which is
 exactly why they catch what a long single context skips. Each loads only the files its own checks
@@ -236,8 +238,8 @@ NOT open PROGRESS.md or coverage.md; its checks don't need them). Its instructio
 >    condition (per the standard's ❌→✅ examples) and log it.
 > 2. **Notes study order.** The 13:30 study order equals the canonical string in the standard exactly:
 >    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
->    (CLAUDE.md is normally already in your context; if not, read its "Daily study blocks" section.
->    If its order differs from the standard, CLAUDE.md wins).
+>    (the shared session rules is normally already in your context; if not, read its "Daily study blocks" section.
+>    If its order differs from the standard, the shared session rules wins).
 > 3. **LeetCode gate topics.** The study-order gate condition lists exactly the high-priority topics
 >    per the standard (angular, spring-boot, java, architecture, security if added in that range) and
 >    does NOT list typescript, sql, javascript, css, or git.
@@ -312,9 +314,9 @@ most at risk. If the pace looks tight, propose one concrete trade-off.
 
 If any phase was newly promoted to ✅ in this review, add this reminder:
 "Phase X is now closed — if a project also finished, update PROGRESS.md's project table and
-CLAUDE.md's 'Current study progress' section too, per CLAUDE.md's instructions."
+the shared session rules' 'Current study progress' section too, per the shared session rules' instructions."
 
-ROADMAP.md commits on whatever branch is currently active (CLAUDE.md, "Study materials follow the
+ROADMAP.md commits on whatever branch is currently active (the shared session rules, "Study materials follow the
 active branch", changed 2026-07-14 — `main` only receives merges via PR). Per the commit-hygiene rule, run
 `git status` right before the add and again right before the commit — confirm nothing but
 ROADMAP.md gets staged (`git restore --staged` anything else). Then:

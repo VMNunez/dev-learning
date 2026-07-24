@@ -1,5 +1,10 @@
 # CV Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+> **External-path preflight:** Before reading or writing `personal/job-search/`, execute
+> `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
+
 Use in a **separate conversation**. Fill in the configuration block before pasting.
 
 Run this when you are ready to write or update your CV for Spanish consultancy applications.
@@ -41,7 +46,7 @@ BASE_CV    = [tailor mode only: path to the master CV to start from | auto — t
 ## Before starting
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared standard both
-application prompts follow. It defines the **sources to read** (`CLAUDE.md`,
+application prompts follow. It defines the **sources to read** (`notes/prompts/_internal/_session-rules.md`,
 `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
 `notes/cv/cv-bullets.md`, and your existing CV in `personal/job-search`), the **universal bullet format**, the **ATS keyword pool** (required +
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the

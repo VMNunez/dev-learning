@@ -1,6 +1,11 @@
 # Tracker Prompt
 
-Use in a **separate conversation** (ideally inside Claude Code, so it can read/write the local files).
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+> **External-path preflight:** Before reading or writing `personal/job-search/`, execute
+> `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
+
+Use in a **separate conversation** (ideally inside the supported agent runtime, so it can read/write the local files).
 Fill in the configuration block before pasting.
 
 Run this to keep your **job-application tracker** current: register a new application, record the
