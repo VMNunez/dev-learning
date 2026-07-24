@@ -1,11 +1,11 @@
 # Last run report — notes-plan-prompt
 
 Date: 2026-07-24
-Target: Spring Boot / junior / update
+Target: Java / junior / update
 Status: open
 
-- **Plan vs reality** — The local reconciliation was correctly sized: 11 existing-file entries cover all 103 selected-level concepts, with five unassigned existing notes.
-- **Report discipline** — Nothing to report; no subagents were required or dispatched.
-- **Failures & retries** — The bundled Node runtime was needed after `node` was absent from `PATH`; the first `git add` was sandbox-blocked and succeeded after approval.
-- **Rule friction and rule breaches** — No rule friction or breach; mirror parity, exact assignment, declared files, commit history, and zero required dispatches were checked against disk.
+- **Plan vs reality** — The legacy-classification gate stopped the run before plan reconciliation because several existing pairs contain substantive material owned by more than one level or topic.
+- **Report discipline** — Two read-only analysts returned complete per-file decisions with line-count and EOF evidence; no output had to be discarded.
+- **Failures & retries** — No subagent failed or required re-dispatch.
+- **Rule friction and rule breaches** — No rule breach; mirror parity and all 16 bilingual pairs were checked, and the cold pedagogical reviewer was correctly not dispatched because the split blocker stops planning before that stage.
 - **Verdict** — pipeline clean
