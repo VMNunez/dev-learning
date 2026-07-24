@@ -97,7 +97,7 @@ condensed copy, so keep the two in sync.
 
 - **Responder siempre en español** en las sesiones de estudio — esta es la preferencia actual de Victor
 - **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, session rules, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
-- Las notas en `notes/{topic}/es/` sí se escriben en español — ese es su propósito
+- Las notas en `notes/{topic}/{level}/es/` sí se escriben en español — ese es su propósito
 - **Pausado 2026-07-14: no corregir el inglés de Victor durante las sesiones de estudio** — mientras las sesiones sean en español, no añadir correcciones de inglés al final de las respuestas. Retomar si Victor lo pide de nuevo.
 - Usar vocabulario técnico real en inglés dentro de las explicaciones en español — *deploy, refactor, boilerplate, breaking change, merge conflict, trade-off, edge case, under the hood* — porque Victor los escuchará así en el trabajo
 - Usar también vocabulario de consultora en inglés dentro del español — *sprint, stand-up, deliverable, stakeholder, onboarding, scope, deadline* — por la misma razón
@@ -210,24 +210,29 @@ Not the main focus now, but keep them in mind. How the coding agent applies each
 
 ## notes/ folder
 
-All format, structure, writing style, and organisation rules → `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` (the shared writing standard). Read it before writing or editing any notes file. To build or audit notes there is **one entry point**: `notes/prompts/knowledge/notes/notes-audit.md` — run it in a supported agent runtime with `SCOPE = folder` (a whole topic) or `SCOPE = file` (one file); it plans, authors, and independently reviews each file with cold subagents, then commits atomically, hands-off. It orchestrates its seven internal pieces in `knowledge/notes/` (`_note-quality-standard`, `notes-plan`, `notes-inspect`, `notes-write`, `notes-review`, `notes-translate`, `notes-review-es`) — you never launch those directly. The coding agent can write notes files directly (Markdown docs, and code notes for Angular/SQL/Java) — Victor does not need to write these himself.
+All format, structure, writing style, and organisation rules → `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md`. First run `notes-plan-prompt` for one topic and level; it writes a persistent, coverage-fingerprinted file map without authoring prose. Then run `notes-audit` with `TOPIC + LEVEL + NOTE`; it builds exactly one planned English/Spanish pair through the four cold stages and marks that plan entry complete. Folder-wide generation, arbitrary file paths, and temporary worklists are unsupported.
 
-**Detail standard — applies to every notes file written in a session, not only in the audit prompt.** Victor's quality bar is high for every topic; the best reference is the first section of `notes/java/es/08-excepciones.md`. Two rules carry most of the weight:
+**Detail standard — applies to every notes file written in a session, not only in the audit prompt.** Victor's quality bar is high for every topic; the best reference is the first section of `notes/java/junior/es/08-excepciones.md`. Two rules carry most of the weight:
 - **Explain the mechanism, not just the behaviour.** State *why* something works the way it does, under the hood, step by step — not only what it does. Describing behaviour without tracing the mechanism is the number-one reason Victor has to add TODOs (e.g. don't say "the exception travels up the stack" without explaining what the stack is, how methods are stacked, and why "up" means "toward the caller").
 - **Anticipate his "why?" before he asks it.** Before finalizing a section, simulate the chained "why does this work?" / "does this mean that?" questions he would ask and make sure the prose already answers them. Never mention an action in the abstract ("you can rethrow it") without the concrete code snippet.
 - The signature texture of a finished note: open with the pain not the definition; one worked example carried through the whole section; ASCII diagrams for anything structural; real-world analogies; abundant `> blockquote` callouts (roughly one per non-obvious sub-concept); a sentence explaining how to read every table; exact error messages; MAL/BIEN labelled examples.
 
 ### Bilingual notes — English and Spanish
 
-Notes exist in two languages. Each topic folder contains two subfolders — `en/` and `es/` — mirroring the interview-prep convention:
+Notes exist in two languages and three sequential levels:
 
 ```
 notes/java/
-  en/  ← numbered English note files (e.g. 09-streams-lambdas.md)
-  es/  ← numbered Spanish note files (same numeric prefix, Spanish-translated name — e.g. 08-exceptions.md ↔ 08-excepciones.md)
-  coverage-junior.md ← junior level, stays in the root
-  coverage-middle.md ← middle level, stays in the root
-  coverage-senior.md ← senior level, stays in the root
+  coverage/
+    junior.md
+    middle.md
+    senior.md
+    notes-plan-junior.md
+  junior/
+    en/  ← numbered English note files
+    es/  ← matching Spanish note files
+  middle/en/ + middle/es/
+  senior/en/ + senior/es/
   layer-reference.md ← stays in the root (spring-boot only)
 ```
 
@@ -247,24 +252,14 @@ notes/java/
   - New section added to an existing `en/` file → if the `es/` counterpart exists, translate the section there too; if not, note it but don't create the whole file
   - TODO resolved in an `en/` file → re-sync the same content into `es/` if the counterpart exists
 - Spanish versions use the same structure and code blocks — only the prose is translated into Spanish. Code comments may also be translated. **The Spanish prose must read as natural Spanish, not as a word-for-word translation of the English.** The content and message must be identical across both languages, but each version should read as if it were written natively in that language — same idea, same emphasis, different words where needed. Literal translations that sound awkward or robotic in Spanish are not acceptable. Structural labels like `Purpose:`, `File:`, and `Docs:` must be translated to `Propósito:`, `Archivo:`, and `Docs:` (Docs stays as-is — it is a common abbreviation in Spanish developer contexts).
-- `en/` and `es/` must always contain the same set of numbered files, paired by numeric prefix. Whenever a file is created in `en/`, create the Spanish version in `es/` immediately. Whenever a section is added or a TODO is resolved in an `en/` file, apply the same change in `es/`. The two folders are never allowed to be out of sync.
-- If the `en/` or `es/` subfolder does not exist yet, create it before writing any files into it. If numbered files are still in the topic root (not yet migrated), move them to `en/` with `git mv` and create the Spanish counterparts in `es/` — non-numbered files (`coverage-junior.md`, `coverage-middle.md`, `coverage-senior.md`, `layer-reference.md`) always stay in the root.
-- `coverage-junior.md`, `coverage-middle.md`, `coverage-senior.md`, and `layer-reference.md` are not translated — they live only in the topic root.
+- Within each level, `en/` and `es/` must contain matching numbered files after a plan entry completes.
+- Coverage and persistent plans live in `coverage/`; they are not translated.
+- Numbering restarts at `01` for each level. A plan entry is the authority for both exact paths.
 
 ### Subfolders and their purpose
 
-- `notes/git/` — `en/` and `es/` for numbered files; git-workflow.md stays in root; next file: `12-...`; all three coverage level files in root
-- `notes/javascript/` — `en/` and `es/` for numbered files; next file: `16-...`; all three coverage level files in root
-- `notes/typescript/` — `en/` and `es/` for numbered files; next file: `08-...`; all three coverage level files in root
-- `notes/css/` — `en/` and `es/` for numbered files; next file: `18-...`; all three coverage level files in root
-- `notes/sql/` — `en/` and `es/` for numbered files; next file: `15-...`; all three coverage level files in root
-- `notes/architecture/` — `en/` and `es/` for numbered files; next file: `06-...`; all three coverage level files in root (includes microservices as a concept-only entry)
-- `notes/angular/` — `en/` and `es/` for numbered files; next file: `19-...`; all three coverage level files in root
-- `notes/java/` — `en/` and `es/` for numbered files; next file: `16-...`; all three coverage level files in root
-- `notes/spring-boot/` — `en/` and `es/` for numbered files; next file: `16-...`; all three coverage level files and layer-reference.md in root
-- `notes/angular-material/` — `en/` and `es/` for numbered files; next file: `16-...`; all three coverage level files in root
-- `notes/general/` — not yet migrated to `en/`/`es/` (files sit in the topic root); next file: `13-...`; all three coverage level files in root
-- `notes/security/` — `en/` and `es/` for numbered files; next file: `06-...`; all three coverage level files in root
+- Every active topic uses the same `coverage/`, `junior/`, `middle/`, and `senior/` layout.
+- Existing pre-migration notes belong to `junior`; their presence does not make their plan entry complete.
 - `notes/interview-prep/en/` and `notes/interview-prep/es/` — Q&A study files, one file per topic: `angular.md`, `typescript.md`, `architecture.md`, `general.md`, `javascript.md`, `css.md`, `git.md`, `sql.md`, `java.md`, `spring-boot.md`, `security.md`
 - `notes/interview-prep/projects/` — one file per project with specific questions about that project's implementation decisions; generated by `portfolio-audit`
 - `notes/prompts/` — the prompt system (see "The study system" below); `notes/prompts/README.md` is the index
@@ -377,9 +372,9 @@ The five hub files everything reads from or writes to:
 
 | Hub file | Source of truth for |
 |----------|---------------------|
-| `notes/coverage-junior.md` | junior scope |
-| `notes/coverage-middle.md` | middle scope |
-| `notes/coverage-senior.md` | senior scope |
+| `notes/coverage/junior.md` | junior scope |
+| `notes/coverage/middle.md` | middle scope |
+| `notes/coverage/senior.md` | senior scope |
 | `PROGRESS.md` | what has been learned |
 | `{project}/PLANNING.md` | what a project builds |
 

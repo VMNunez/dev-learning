@@ -2,9 +2,8 @@
 
 This is the **shared writing standard** for study notes. It is not a runnable prompt — it holds
 no configuration block and does nothing on its own. Every piece of the notes pipeline reads it:
-the planner (`_notes-plan-prompt.md`) for the gap analysis only (judging file quality is delegated to
-the inspector), the inspector and both reviewers (`_notes-inspect-prompt.md`, `_notes-review-prompt.md`,
-`_notes-review-es-prompt.md`) to judge against the bar, and the author and translator
+the public planner (`notes-plan-prompt.md`) for grouping only, both reviewers
+(`_notes-review-prompt.md`, `_notes-review-es-prompt.md`) to judge against the bar, and the author and translator
 (`_notes-write-prompt.md`, `_notes-translate-prompt.md`) to produce to it.
 
 Keeping the standard in one file is deliberate: the writing bar is long and detailed, and it must
@@ -20,19 +19,19 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
 
 | Concept type | Correct folder |
 |---|---|
-| Security concepts (CORS, XSS, JWT design, AuthN/AuthZ) | notes/security/en/ |
-| Cross-cutting concepts (HTTP, JSON, env vars, testing, SOLID) | notes/general/en/ |
-| Spring Boot implementation (annotations, filters, config, JPA) | notes/spring-boot/en/ |
-| Pure Java language concepts | notes/java/en/ |
-| Angular patterns and framework concepts | notes/angular/en/ |
-| Angular Material components | notes/angular-material/en/ |
-| Architecture patterns (REST, layered, MVC) | notes/architecture/en/ |
+| Security concepts (CORS, XSS, JWT design, AuthN/AuthZ) | notes/security/{LEVEL}/en/ |
+| Cross-cutting concepts (HTTP, JSON, env vars, testing, SOLID) | notes/general/{LEVEL}/en/ |
+| Spring Boot implementation (annotations, filters, config, JPA) | notes/spring-boot/{LEVEL}/en/ |
+| Pure Java language concepts | notes/java/{LEVEL}/en/ |
+| Angular patterns and framework concepts | notes/angular/{LEVEL}/en/ |
+| Angular Material components | notes/angular-material/{LEVEL}/en/ |
+| Architecture patterns (REST, layered, MVC) | notes/architecture/{LEVEL}/en/ |
 
 ---
 
 ## Format modes
 
-- `notes/java/en/` and `notes/spring-boot/en/` — **structured mode**: the file opens with a
+- `notes/java/junior/en/` and `notes/spring-boot/junior/en/` — **structured mode**: the file opens with a
   `# [Topic Name]` title followed by a general `Docs:` link to the main reference page
   for the whole topic; each section has three fields:
   `Purpose:` (one sentence — who calls it, when, and why), `File:` (real path to the project
@@ -50,9 +49,9 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
   metadata fields; use `##` for top-level topic sections and `###` for sub-concepts within them —
   when adding a section to an existing file, match the heading level already in use.
 
-> **Spring Boot notes lean on Java concepts.** When writing a `notes/spring-boot/en/` note, the code
+> **Spring Boot notes lean on Java concepts.** When writing a `notes/spring-boot/junior/en/` note, the code
 > almost always uses pure-Java language features (generics, exceptions, interfaces). Read the
-> existing `notes/java/en/` files so you anchor those consistently — and when a Spring note leans on
+> existing `notes/java/junior/en/` files so you anchor those consistently — and when a Spring note leans on
 > a Java concept covered there, link to it rather than re-explaining it (see the cross-file link rule
 > in rule 3).
 
@@ -72,9 +71,8 @@ Only add a link if you are certain of the correct URL and sub-section — if not
 
 ## Bilingual notes — English and Spanish
 
-Each topic folder has `en/` and `es/` subfolders. `coverage-junior.md`, `coverage-middle.md`,
-`coverage-senior.md`, and
-`layer-reference.md` live in the topic root — never inside `en/` or `es/`.
+Each topic has `{LEVEL}/en/` and `{LEVEL}/es/`. Coverage and persistent plans live in
+`notes/{topic}/coverage/`; `layer-reference.md` remains in the topic root when present.
 
 **File naming convention — mandatory:**
 - Files in `en/` use English names: `03-methods.md`, `07-collections.md`, `08-exceptions.md`.
@@ -304,7 +302,7 @@ Study the *shape* of the move from draft to finished, not just the topic.
 
 The lesson: the draft was not *wrong*, it was *behaviour-only*. Every TODO disappeared once the
 mechanism was traced with a diagram, a worked example, and a callout for the misleading word. The
-full finished text is the first section of `notes/java/es/08-excepciones.md` — read it before writing
+full finished text is the first section of `notes/java/junior/es/08-excepciones.md` — read it before writing
 a new file to calibrate.
 
 ### The rest of the writing rules
@@ -366,8 +364,8 @@ a new file to calibrate.
   add one sentence of reminder — short enough that the reader can continue without opening the other
   file if they roughly remember the concept. The link is for deep review; the sentence is so the flow
   of the current file is never broken.
-- **Code concept sections (methods, classes, annotations)** *(structured mode — notes/java/en/ and
-  notes/spring-boot/en/ only)*: each section starts with three metadata lines: `Purpose:` — one
+- **Code concept sections (methods, classes, annotations)** *(structured mode — notes/java/junior/en/ and
+  notes/spring-boot/junior/en/ only)*: each section starts with three metadata lines: `Purpose:` — one
   sentence: who calls it, when, and why; `File:` — real path to the file where this code was applied;
   check PROGRESS.md to find which project covers this concept, then confirm in that project's
   PLANNING.md, then locate the actual file; if no project covers it yet, use a representative generic

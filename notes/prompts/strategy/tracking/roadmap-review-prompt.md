@@ -6,8 +6,8 @@ Run this **inside the supported agent runtime** (it dispatches subagents; a plai
 configuration to fill in — paste the whole prompt into a fresh the supported agent runtime chat as it is.
 
 This prompt updates `ROADMAP.md` so it shows the optimal path from current progress to full coverage
-of `notes/coverage-junior.md` — through projects, study blocks, and practice. Run it whenever a project
-finishes, `notes/coverage-junior.md` changes significantly, or it has been a while since the last check.
+of `notes/coverage/junior.md` — through projects, study blocks, and practice. Run it whenever a project
+finishes, `notes/coverage/junior.md` changes significantly, or it has been a while since the last check.
 
 > **▶ Run first:** `progress-update` — the Step 2 gap analysis reads `PROGRESS.md` directly; a stale one produces wrong results.
 
@@ -35,11 +35,11 @@ instead of re-printing the rules; the reviewers verify against it.
 
 ````
 I want you to review and update ROADMAP.md so it shows the optimal path from my current
-progress to full coverage of everything in notes/coverage-junior.md — through projects, study
+progress to full coverage of everything in notes/coverage/junior.md — through projects, study
 blocks, and practice.
 
 You are the **orchestrator**. In Step 2 you launch two cold fact-gathering subagents (gap analysis +
-active-project summary) so `notes/coverage-junior.md` and the PLANNING.md never load into your own context;
+active-project summary) so `notes/coverage/junior.md` and the PLANNING.md never load into your own context;
 you (the doer) apply the edits in Steps 3–5 from their reports; then in Step 6 you launch two cold
 reviewer subagents, one after the other, that independently verify and fix the result. Finish with
 the report and the commit blocks.
@@ -50,7 +50,7 @@ Step 0 also includes the run-start check stated above this fenced block.
 > is currently active — a feature branch is the normal case; name it in the final report. If you are
 > on **`main`**, stop and ask Victor which branch to use — `main` never receives direct commits.
 
-> **Verifiable reads (the shared session rules non-negotiable):** `notes/coverage-junior.md` is near the Read tool's
+> **Verifiable reads (the shared session rules non-negotiable):** `notes/coverage/junior.md` is near the Read tool's
 > silent 2000-line truncation limit. Subagent 2a and Reviewer 2 must run `wc -l` on it before
 > reading, use `offset` passes to the real end if needed, and state **"N lines, read to EOF"** in
 > their report — treat a report without that line as unusable (re-dispatch once; if it fails again,
@@ -63,7 +63,7 @@ Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, 
 (daily schedule, study order) is already loaded into your context by the supported agent runtime — do not re-read it.
 
 `ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
-references `notes/coverage-junior.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
+references `notes/coverage/junior.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
 not repeat them. What each file is for, what ROADMAP contains (stable vs living sections), and the
 gate-based sequencing rules are all defined in `_roadmap-standard.md` — read them there before
 editing.
@@ -98,7 +98,7 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 
 **Subagent 2a — gap analysis.** Its instruction:
 
-> Read `notes/coverage-junior.md` (the target: every concept required for the job) and `PROGRESS.md` (the
+> Read `notes/coverage/junior.md` (the target: every concept required for the job) and `PROGRESS.md` (the
 > actual: what is already learned). Identify which concepts are still uncovered: present in
 > coverage-junior.md but not yet in PROGRESS.md — treat a concept as covered if PROGRESS.md has an
 > equivalent entry even with different wording. If you are **not sure** whether an entry really
@@ -115,7 +115,7 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > Also return, verbatim, the SQL topic list from coverage-junior.md's SQL section (topic names + any
 > in/out-of-scope markers) — the doer needs it to reconcile a table without opening coverage-junior.md.
 >
-> Run `wc -l notes/coverage-junior.md` before reading it (silent 2000-line Read truncation — use `offset`
+> Run `wc -l notes/coverage/junior.md` before reading it (silent 2000-line Read truncation — use `offset`
 > passes if needed) and include "N lines, read to EOF" in your report.
 > Return **only**: (1) the uncovered-concept list, one line per concept, grouped by topic; (2) the
 > borderline group (may be empty); (3) the SQL topic list; (4) the read-to-EOF line. No excerpts of
@@ -250,7 +250,7 @@ NOT open PROGRESS.md or coverage-junior.md; its checks don't need them). Its ins
 **Reviewer 2 — cross-file consistency** (launch only after Reviewer 1 has finished). Its instruction:
 
 > You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
-> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage-junior.md`.
+> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage/junior.md`.
 > Verify each invariant below **from scratch** — do not trust that the edits are correct. For each
 > violation, **fix it directly in ROADMAP.md**, then report what you changed and why.
 >
@@ -267,7 +267,7 @@ NOT open PROGRESS.md or coverage-junior.md; its checks don't need them). Its ins
 > 5. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if PROGRESS.md shows its
 >    goals complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
 >
-> Run `wc -l notes/coverage-junior.md` before reading it (silent 2000-line Read truncation — use `offset`
+> Run `wc -l notes/coverage/junior.md` before reading it (silent 2000-line Read truncation — use `offset`
 > passes if needed) and include "N lines, read to EOF" in your report.
 > Report **only** a short table of `Invariant | Verdict (pass / fixed) | What you changed` plus the
 > read-to-EOF line — no file excerpts, no reasoning trace. If everything passed with no fixes, say

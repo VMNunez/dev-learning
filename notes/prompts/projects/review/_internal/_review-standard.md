@@ -265,7 +265,7 @@ whole-project pass.
 
 The checklist above catches known failure modes but is a fixed list. Full-stack projects also get an
 **adversarial, systematic pass**: a cold reviewer with an attacker's mindset reads the real code against
-the full junior security scope in `notes/security/coverage-junior.md` and hunts for what the checklist does not
+the full junior security scope in `notes/security/coverage/junior.md` and hunts for what the checklist does not
 name — missing/inconsistent authorization, missing ownership checks (can user A read/edit user B's data
 by changing an id?), entities leaking past the DTO boundary (password hashes, internal fields), secrets
 in committed files, JWT design flaws, CORS config, input-validation gaps, SQL-injection surface (native
@@ -301,7 +301,7 @@ is not needed, because a reviewer's High that turns out to rest on a silent plan
 
 Every confirmed vulnerability becomes a **High** task in the backlog (a security hole looks unprofessional
 faster than any missing feature). The "Related coverage item" column ties each finding to
-`notes/security/coverage-junior.md`, so fixing the task doubles as interview prep on that item. Hardening beyond
+`notes/security/coverage/junior.md`, so fixing the task doubles as interview prep on that item. Hardening beyond
 junior scope goes in the chat summary, not the backlog.
 
 ---

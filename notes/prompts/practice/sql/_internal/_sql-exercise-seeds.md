@@ -7,7 +7,7 @@ concrete exercise ideas worth drilling — the accumulated judgement about what 
 that topic, including the traps worth building a question around and the Challenge that ties the topic
 together.
 
-**What this is NOT: the scope list.** `notes/sql/coverage-junior.md` defines what must be learned, and the
+**What this is NOT: the scope list.** `notes/sql/coverage/junior.md` defines what must be learned, and the
 reconciliation rule in the prompt's Step 3 governs any conflict — **coverage-junior.md always wins on scope.**
 A concept here that coverage-junior.md dropped is stale and comes out; a coverage section with no seed here is
 generated from coverage-junior.md directly, never skipped.

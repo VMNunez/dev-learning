@@ -30,9 +30,10 @@ in your report; the English is not yours to touch.
 ## Configuration — edit only this block
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
-FILE  = [exact en/ file path (the canonical source), e.g. notes/java/en/08-exceptions.md]
+LEVEL = [junior | middle | senior]
+FILE  = [exact en/ file path (the canonical source), e.g. notes/java/junior/en/08-exceptions.md]
 
-Use TOPIC and FILE wherever the prompt refers to {TOPIC} or {FILE}.
+Use TOPIC, LEVEL, and FILE wherever the prompt refers to their placeholders.
 
 ---
 
@@ -51,7 +52,7 @@ marker Victor wrote in the `es/` (the English author already resolved the doubt 
 Before starting, read:
 - `{FILE}` — the canonical English source (your input, do not change it).
 - The existing `es/` counterpart, if any (you are re-syncing it, not starting blind).
-- The first section of `notes/java/es/08-excepciones.md` — the reference for what finished, native
+- The first section of `notes/java/junior/es/08-excepciones.md` — the reference for what finished, native
   Spanish notes read like.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bilingual rules and the Spanish-prose
   expectations (structural labels, calque list).
@@ -70,7 +71,8 @@ native Spanish**, not a word-for-word calque of the English.
   counterpart by its Spanish name** — `[10-genericos.md](10-genericos.md)`, not the English filename.
   The `es/` folder is self-contained: every internal link resolves to a file that exists in `es/`.
   Never carry an English filename into an `es/` link (it becomes a broken link the moment the reader
-  clicks it). If you are unsure of a sibling's exact Spanish filename, list `notes/{TOPIC}/es/` and
+  clicks it). If you are unsure of a sibling's exact Spanish filename, list the selected
+  `notes/{TOPIC}/{LEVEL}/es/` directory and
   match by numeric prefix. Prose-only references with no markdown link stay prose-only.
 - **Prose is native Spanish.** Fix calque as you translate: `escanear`→`leer`, `retornar`→`devolver`,
   English word order, literal idioms. Translate structural labels: `Purpose:`→`Propósito:`,
@@ -87,13 +89,13 @@ reached the last line instead of stopping at the middle of the file.
 
 ## Finish
 
-**You do not commit and do not mark the worklist row** — the Spanish reviewer (C) reads your `es/`
+**You do not commit and do not mark the persistent plan entry** — the Spanish reviewer (C) reads your `es/`
 cold, polishes naturalness, and owns the single atomic commit. Leave the `es/` file in the working
 tree and report:
 - `TRANSLATED` (created the `es/`) or `RE-SYNCED` (updated an existing `es/`).
 - The **"N lines, read to EOF"** line for `{FILE}` (and the prior `es/`, if read).
 - The section-by-section trace.
-- The the shared session rules "next file:" counter is the author's to bump — you never touch it.
+- The persistent plan owns paths and numbering — you never change either.
 - Any English sentence you believe is wrong (for a follow-up author run — you did **not** change it).
 
 ````

@@ -10,7 +10,7 @@ independently rediscovering it.
 
 **That is not hypothetical.** The TypeScript run (2026-07-18) routed four Angular-owned concepts out;
 Angular's own coverage run had already happened that same day and had *not* found them. Nothing in the
-pipeline would have caught it: `coverage-audit`'s Analyst D reads `notes/coverage-junior.md` for duplicates,
+pipeline would have caught it: `coverage-audit`'s Analyst D reads `notes/coverage/junior.md` for duplicates,
 misplaced items and post-junior demotions, so a concept **absent from every section** is invisible to it.
 
 ## Contract
@@ -29,7 +29,7 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ---
 
-*(No entries pending. The four Angular items routed from the TypeScript run on 2026-07-18 were consumed by the Angular coverage run the same day — all four added to `notes/angular/coverage-junior.md`.)*
+*(No entries pending. The four Angular items routed from the TypeScript run on 2026-07-18 were consumed by the Angular coverage run the same day — all four added to `notes/angular/coverage/junior.md`.)*
 
 ## Angular
 

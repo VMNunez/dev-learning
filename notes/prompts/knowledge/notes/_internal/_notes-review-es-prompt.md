@@ -21,8 +21,7 @@ section is missing content (not just badly worded), that is a structural gap C r
 
 **How to use:**
 
-1. Fill in `TOPIC` and `FILE` — note that `FILE` names the `en/` path only to derive the `es/` path;
-   this prompt reads the **`es/` counterpart** (same number prefix) and nothing else.
+1. Fill in the selected level, exact English and Spanish paths, persistent plan, and note number.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -31,14 +30,18 @@ section is missing content (not just badly worded), that is a structural gap C r
 ## Configuration — edit only this block
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
-FILE  = [exact en/ file path; this prompt reads its es/ counterpart, e.g. notes/java/en/08-exceptions.md → notes/java/es/08-excepciones.md]
+LEVEL = [junior | middle | senior]
+FILE = [exact planned English path]
+ES_FILE = [exact planned Spanish path]
+PLAN = [notes/{topic}/coverage/notes-plan-{LEVEL}.md]
+NOTE = [two-digit entry number]
 
-Use TOPIC and FILE wherever the prompt refers to {TOPIC} or {FILE}.
+Use these exact values wherever their placeholders appear.
 
 ---
 
-You are the independent **Spanish** reviewer for one file. Derive the `es/` counterpart of `{FILE}`
-(same number prefix) and read **only that file**. Do **not** open, read, or reference the `en/`
+You are the independent **Spanish** reviewer for one file. Read only `{ES_FILE}`. Do **not** open,
+read, or reference the `en/`
 version — your judgment must come from the Spanish text alone, the way Victor experiences it.
 
 **This prompt audits exactly ONE `es/` file — never a batch.** Read it **in full, top to bottom** —
@@ -52,7 +55,7 @@ do not skim, do not stop early, reach the last line.
 Before starting, read:
 - `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` — the bar (bilingual rules, voice, signature
   texture), in full.
-- The first section of `notes/java/es/08-excepciones.md` — the calibration reference for a finished
+- The first section of `notes/java/junior/es/08-excepciones.md` — the calibration reference for a finished
   Spanish note.
 - **Not the `en/` file.** That is the one file you must not read.
 
@@ -75,9 +78,9 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
   English inside the Spanish prose — that is correct, not a calque.
 - **Callouts and tables** — `> blockquote` callouts read naturally in Spanish; every table still has
   its "cómo leer esto" sentence in Spanish.
-- **Internal links resolve inside `es/`** — every markdown link to a sibling note must point at a file
-  that **exists in `notes/{TOPIC}/es/`** by its Spanish name (e.g. `10-genericos.md`, not
-  `10-generics.md`). List `notes/{TOPIC}/es/` and check each internal link against it; fix any link
+- **Internal links resolve inside the selected level's `es/`** — every markdown link to a sibling note
+  must point at a file that exists in `notes/{TOPIC}/{LEVEL}/es/` by its Spanish name (e.g. `10-genericos.md`, not
+  `10-generics.md`). List `notes/{TOPIC}/{LEVEL}/es/` and check each internal link against it; fix any link
   that carries an English filename or names a file that is not there. This is the last defence before
   the commit — a broken `es/` link that ships here is one no later stage will catch.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if
@@ -102,16 +105,11 @@ If the Spanish is genuinely already native and at bar, change nothing and record
 ## Finish
 
 You are the last stage in the chain, so you own the single atomic commit for this file:
-1. Mark the worklist row done: derive `notes/{TOPIC}/notes-worklist.md` (topic name lowercased with
-   hyphens). **If the worklist does not exist (file mode / standalone run), skip this step.** Otherwise
-   find the row whose path is `{FILE}` (the `en/` path), flip `- [ ] #N · {FILE}` → `- [x] #N · {FILE}`
-   (that one line only).
-2. Commit this one file atomically: `git add` the `es/` path, the `en/` path **only if this build
-   modified it** (on a translation-only row it did not), and the shared session rules only if
-   the counter was bumped (never add `notes-worklist.md`). Before `git add`, run `git status` and
-   confirm only the intended `notes/` paths are staged. Commit message covers what actually changed:
-   `docs: add {TOPIC} note NN — <topic> (reviewed en + es)`, or
-   `docs: add es translation for {TOPIC} note NN` on a translation-only row.
+1. Verify `{PLAN}` has a current fingerprint and entry `{NOTE}` still resolves to `{FILE}` and
+   `{ES_FILE}`. Change only that entry's `Status: pending` to `Status: complete`.
+2. Commit `{FILE}`, `{ES_FILE}`, and `{PLAN}` atomically. Before `git add` and before `git commit`, run
+   `git status --short`, confirm the exact intended paths, and stage no wildcard. Use:
+   `docs(notes): complete {TOPIC} {LEVEL} note {NOTE}`.
 
 Then report your **verdict**:
 - `PASS` (no changes) or `FIXED` (bullet list of the Spanish fixes).

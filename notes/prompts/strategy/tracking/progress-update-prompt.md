@@ -20,7 +20,7 @@ Run this when PROGRESS.md feels out of sync: after finishing a step or a project
 of sessions, or before running `plan-audit` (its gap analysis reads PROGRESS.md). If
 PROGRESS.md is incomplete, that gap analysis is wrong.
 
-**This prompt does NOT read `notes/coverage-junior.md`.** Coverage tracks what Victor must *learn* —
+**This prompt does NOT read `notes/coverage/junior.md`.** Coverage tracks what Victor must *learn* —
 PROGRESS.md tracks what he *has learned*. A stale coverage-junior.md does not affect this prompt.
 
 **Internal piece this orchestrates** (never launched directly):

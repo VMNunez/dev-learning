@@ -174,9 +174,9 @@ No project is finished without tests. Tests are not a step — they are part of 
 
 ### Project 08 — after 07
 
-Planned using `notes/prompts/projects/plan/plan-audit.md` (`MODE = new`) — run it inside Claude Code when project 07 is complete. It reads `notes/coverage-junior.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project — an author subagent drafts it and a cold reviewer audits and fixes it before it commits, hands-off. Run it once, get a full plan.
+Planned using `notes/prompts/projects/plan/plan-audit.md` (`MODE = new`) — run it inside Claude Code when project 07 is complete. It reads `notes/coverage/junior.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project — an author subagent drafts it and a cold reviewer audits and fixes it before it commits, hands-off. Run it once, get a full plan.
 
-**Project 08 candidate ideas** — each names the `notes/coverage-junior.md` gaps it closes (gaps that project 07 does not touch):
+**Project 08 candidate ideas** — each names the `notes/coverage/junior.md` gaps it closes (gaps that project 07 does not touch):
 
 - **Invoice Manager** — clients, products, invoices. Covers: many-to-many, Pageable, `@Query`, PDF export.
   Closes: JPA pagination (`Page` vs `Slice`), owning side of a many-to-many, custom JPQL, N+1 and
@@ -371,7 +371,7 @@ What matters most:
 | Open source contribution                              | When stable                                  | Real collaboration outside the company project                                                  |
 | Full AI-assisted development practice                 | When fundamentals are solid — see gate below | Learn to build faster with AI tools without losing the ability to explain and defend every line |
 
-Each topic has `coverage-junior.md`, `coverage-middle.md`, and `coverage-senior.md`, plus matching
+Each topic has `coverage/junior.md`, `coverage/middle.md`, and `coverage/senior.md`, plus matching
 global mirrors. Study progression is strict: consolidate junior notes, interview preparation, and
 practice before activating middle; consolidate middle before activating senior. Concepts move between
 levels only through the coverage prompts, never implicitly during notes work.

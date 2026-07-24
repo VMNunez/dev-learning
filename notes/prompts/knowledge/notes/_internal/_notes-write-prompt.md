@@ -24,9 +24,9 @@ budget stays on writing that file well.
 **How to use:**
 
 1. Fill in `TOPIC`.
-2. Fill in `FILE` — the exact `en/` file to work on (e.g. `notes/angular/en/06-http-rxjs.md`). For a
+2. Fill in `FILE` — the exact `en/` file to work on (e.g. `notes/angular/junior/en/06-http-rxjs.md`). For a
    brand-new file that does not exist yet, still name its intended path here.
-3. Fill in `TASK` — what this run should do to the file (from the worklist, or free-form).
+3. Fill in `TASK` — the selected persistent-plan entry, including its exact assigned concepts.
 4. Fill in `REWRITE_MODE` — `standard` (protect existing prose) or `first-pass` (allow full rewrites).
 5. Paste the entire prompt below into a new chat.
 
@@ -38,9 +38,9 @@ budget stays on writing that file well.
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
 LEVEL = [junior | middle | senior]
-FILE  = [exact en/ file path, e.g. notes/java/en/08-exceptions.md]
+FILE  = [exact en/ file path, e.g. notes/java/junior/en/08-exceptions.md]
 
-TASK = [what to do this run — copy the worklist row, or describe it, e.g.
+TASK = [what to do this run — copy the persistent plan entry, or describe it, e.g.
         "resolve TODOs + fix WHY-before-code in §3" | "create the file from scratch"
         | "add a section on optimistic locking"]
 
@@ -55,8 +55,7 @@ REWRITE_MODE = [standard | first-pass]
          content Victor has not validated yet. After the run, the file is validated — use standard
          from then on.
 
-Use TOPIC, FILE, TASK, and REWRITE_MODE wherever the prompt refers to {TOPIC}, {FILE}, {TASK},
-or {REWRITE_MODE}.
+Use TOPIC, LEVEL, FILE, TASK, and REWRITE_MODE wherever the prompt refers to their placeholders.
 
 ---
 
@@ -75,28 +74,26 @@ the full standard in English.
 > not written yet still gets the one-line forward-reference marker from the standard).
 
 Before starting, read:
-- the shared session rules — teaching rules and the "next file:" counters (update the counter only if you create a
-  new numbered file this run).
+- the shared session rules — teaching and level-layout rules.
 - notes/prompts/_internal/_shared-context.md — my profile and the Spanish job market 2026.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — THE writing standard. This is your bar. Apply
   it in full to everything you write this run: zero-assumption, second-order completeness, signature
   elements, the anticipate-the-TODO pass, format mode, Docs link priority. Before writing a new file,
-  read the first section of notes/java/es/08-excepciones.md to calibrate the *depth* (read it for the
+  read the first section of notes/java/junior/es/08-excepciones.md to calibrate the *depth* (read it for the
   texture, not to copy Spanish — you write English).
 
 ---
 
 ## Scope — this run touches exactly ONE file
 
-- `{FILE}` (the `en/` file) — and nothing else, except the shared session rules' "next file:" counter, and only if
-  this run creates a new numbered file.
+- `{FILE}` (the planned `en/` file) — and nothing else.
 
 You do **not** create, read for editing, or touch the `es/` counterpart to *write* it — that is the
 translator's job (stage T). The one exception is **reading** the `es/` file to find Victor's TODO
 markers (see Step 1): Victor adds his doubts in the `es/` file, so you read them there as *input*, but
 you write your answer in `{FILE}` (English). You never edit the `es/` file.
 
-Do not read or edit any `coverage-*.md` file, or any sibling note's body — if you notice a
+Do not edit any `coverage/*.md` file, or any sibling note's body — if you notice a
 gap that belongs elsewhere, mention it in the summary instead of acting on it.
 
 ---
@@ -173,8 +170,8 @@ voice, forward-reference notes, cross-topic preview callouts.
 ## Step 3 — Complete the file to the standard (rule 3)
 
 If TASK asks to create the file, add a section, or complete a thin one, write it to the full standard
-in `_note-quality-standard.md`. When creating a new numbered file, use the next available number from
-the shared session rules and update that counter.
+in `_note-quality-standard.md`. The persistent plan already owns the exact number and path; never
+renumber the file here.
 
 If TASK is `create-file` for `00-intro-{topic}.md`, cover the four intro points from the standard:
 high-level mental model, key concepts that appear everywhere, how it differs from JS/TS/React, and a
@@ -228,7 +225,7 @@ After a first-pass run, note in the summary that the file is now validated so Vi
 
 ## Output — report (you do NOT commit)
 
-You never commit and never mark the worklist row — later stages (T translates, C commits) own that.
+You never commit and never mark the persistent plan entry — stage C owns that.
 Leave your English work in the working tree and report:
 
 - The **"N lines, read to EOF"** line for every file you processed end-to-end.

@@ -22,7 +22,7 @@ Capgemini, Indra, and similar) — the target in `ROADMAP.md` and `notes/prompts
 Read both before judging any question: every question and answer is measured against what a real
 interviewer at those companies would filter a junior on.
 
-It is **derived from `coverage-{LEVEL}.md`**: every item in the selected topic and level must have at least one
+It is **derived from `coverage/{LEVEL}.md`**: every item in the selected topic and level must have at least one
 question. Coverage says *what* to test; this file turns each item into a question the way an
 interviewer would actually ask it, and an answer the way Victor would actually say it out loud.
 
@@ -242,7 +242,7 @@ person would answer by talking.
 ## When a section is complete
 
 A section is done only when ALL hold:
-- Every `coverage-{LEVEL}.md` concept that belongs in the section has at least one question.
+- Every `coverage/{LEVEL}.md` concept that belongs in the section has at least one question.
 - Every question a Spanish consultancy would realistically ask about the topic is covered.
 - The type ratio is roughly on target (or, for <5 questions, at least 1 Decision-based question present).
 - Every question is realistic, well-worded, and answered in Victor's voice per the quality bar above.

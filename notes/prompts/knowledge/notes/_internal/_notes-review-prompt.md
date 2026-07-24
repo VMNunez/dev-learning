@@ -28,7 +28,7 @@ to land the file).
 ## Configuration — edit only this block
 
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
-FILE  = [exact en/ file path just authored, e.g. notes/java/en/08-exceptions.md]
+FILE  = [exact en/ file path just authored, e.g. notes/java/junior/en/08-exceptions.md]
 
 Use TOPIC and FILE wherever the prompt refers to {TOPIC} or {FILE}.
 
@@ -53,7 +53,7 @@ a review without it is not accepted.
 
 Before starting, read:
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bar you audit against, in full.
-- The first section of notes/java/es/08-excepciones.md — the calibration reference for "finished"
+- The first section of notes/java/junior/es/08-excepciones.md — the calibration reference for "finished"
   (read it for depth/texture; you audit English).
 - The sibling files already in `{FILE}`'s `en/` folder — to catch duplicated examples/concepts and
   broken or missing forward/cross-topic references.
@@ -95,7 +95,7 @@ text to leave a mark.
 
 ## Finish
 
-**You never commit, never mark the worklist row, and never touch the `es/` file.** Leave your fixed
+**You never commit, never mark the persistent plan entry, and never touch the `es/` file.** Leave your fixed
 `en/` file in the working tree and hand off to the translator (T), which produces the `es/` from your
 finished English; the Spanish reviewer (C) then commits.
 

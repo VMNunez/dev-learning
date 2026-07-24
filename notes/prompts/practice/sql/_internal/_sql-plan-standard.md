@@ -25,7 +25,7 @@ technique-to-step mapping lived inside `simulation-generator-prompt.md` alone �
 already in the bank all required Step 7 material and nothing Victor reads daily said so.
 
 Its two inputs, and it never invents beyond them:
-- **`notes/sql/coverage-junior.md`** — what must be learned. Every step claims sections of it; a concept that
+- **`notes/sql/coverage/junior.md`** — what must be learned. Every step claims sections of it; a concept that
   belongs to SQL and is missing goes *there*, never into this plan.
 - **`ROADMAP.md`** — why, and by when. The ordering serves the current objective (a junior Angular +
   Java role in Spain, technical screening first) and the pace fits the daily block it defines.
@@ -119,7 +119,7 @@ Every §6 entry has exactly these fields. A missing field is a finding.
 
 **Why here:** <one sentence: what it needs from the previous step, or why a screening asks it early>
 **Exercises:** practice/sql/NN-name.sql — <count> (split into runs if over the ceiling)
-**Coverage:** <verbatim section names from notes/sql/coverage-junior.md>
+**Coverage:** <verbatim section names from notes/sql/coverage/junior.md>
 **Reinforces:** <which earlier step, through which concept>
 **Moment 2 config:** `TOPIC = <the exercise prompt's topic value>`, `COUNT = <n>`
 **Focus:** <the concepts to narrow onto, or `none — the whole topic`>
@@ -152,7 +152,7 @@ and two steps may legitimately share a `TOPIC` with different focus.
 number, so a standard numbering these differently from the plan hands two specialists each other's
 checks. Aligned 2026-07-22.
 
-1. Every section of `notes/sql/coverage-junior.md` is claimed by exactly one step, or excluded in §Z with a
+1. Every section of `notes/sql/coverage/junior.md` is claimed by exactly one step, or excluded in §Z with a
    reason. None unclaimed, none claimed twice.
 2. Every step names a file that appears in §5's step table, and every file in that table belongs to a
    step. **Declared exception:** the revision files (`R{n}-repaso.sql`) belong to a §8b point, not a
@@ -191,7 +191,7 @@ format or quality bar.
 | Artefact | Owner | This plan may say |
 |----------|-------|-------------------|
 | Exercise content, difficulty split, file format | `sql-exercises-prompt.md` | how many, which topic, which focus |
-| The concept list | `notes/sql/coverage-junior.md` | which sections a step claims |
+| The concept list | `notes/sql/coverage/junior.md` | which sections a step claims |
 | What has been learned | `PROGRESS.md` | that closing a step updates it |
 | The mistake log | `practice/sql/MISTAKES.md` (written by the review run) | that revision points read it |
 | Notes, interview Q&A | their own prompts, run separately by Victor | one line in §Z. Nothing else. |

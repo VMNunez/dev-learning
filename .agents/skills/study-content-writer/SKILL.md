@@ -2,7 +2,7 @@
 name: study-content-writer
 description: >
   Load and apply Victor's quality standards WHENEVER you are about to write, refine, complete,
-  or resolve a TODO in a study-notes file (notes/{topic}/en/ or es/) or an interview-prep Q&A
+  or resolve a TODO in a study-notes file (notes/{topic}/{level}/en/ or es/) or an interview-prep Q&A
   file (notes/interview-prep/en/ or es/) DURING A DAILY SESSION — i.e. any time outside the
   dedicated /notes-audit or /interview-prep-audit runs. These standards otherwise only load inside
   those separate audit pipelines, so inline note/Q&A writing silently misses the bar. Trigger on
@@ -36,7 +36,7 @@ Apply their format modes, signature elements, and rules exactly.
    "does this mean that?" questions and make the prose already answer them. Never mention an action
    in the abstract without the concrete code snippet.
 
-The gold-standard reference for texture is the first section of `notes/java/es/08-excepciones.md`:
+The gold-standard reference for texture is the first section of `notes/java/junior/es/08-excepciones.md`:
 open with the pain not the definition; one worked example carried through; ASCII diagrams for
 anything structural; real-world analogies; abundant `> blockquote` callouts (~one per non-obvious
 sub-concept); a sentence explaining how to read every table; exact error messages; MAL/BIEN examples.

@@ -50,7 +50,7 @@ Read these in order. They are the inputs to every decision this prompt makes.
 3. `PROGRESS.md` — the master record of every project completed and concept learned. The single source
    of truth for project history — do not infer it from the shared session rules or ROADMAP.md. Read the full Angular,
    Spring Boot, and SQL sections.
-4. `notes/coverage-junior.md` — the target: every concept Victor must know before applying. Every item not in
+4. `notes/coverage/junior.md` — the target: every concept Victor must know before applying. Every item not in
    PROGRESS.md is a gap. **This is the largest file this pipeline reads (1600+ lines and growing) and
    the gap analysis needs all of it** — the Read tool truncates at 2000 lines silently, so check
    `wc -l` first and, if near or over 2000, read in passes with `offset` to the real end; a truncated
@@ -71,7 +71,7 @@ git history). If PROGRESS looks behind — a finished project not recorded, a st
 the table — **stop and report** "PROGRESS.md looks stale — run `progress-update` first", rather than
 planning on bad data.
 
-Compare `notes/coverage-junior.md` against `PROGRESS.md` to find what is not yet learned.
+Compare `notes/coverage/junior.md` against `PROGRESS.md` to find what is not yet learned.
 
 **Filter the gaps to what matters.** Keep only concepts that: appear in the Angular, Spring Boot, Java,
 Architecture, or SQL sections of coverage-junior.md; are likely in a junior interview at NTT Data, Capgemini,

@@ -24,9 +24,11 @@ Use the runtime's planning and collaboration facilities. Canonical tiers are not
 
 ## Resolve paths
 
-- `TARGET_FILE = {NOTES_PATH}coverage-{LEVEL}.md`
-- `SIBLING_FILES = the other two files among coverage-junior.md, coverage-middle.md, and coverage-senior.md`
-- `GLOBAL_MIRROR = notes/coverage-{LEVEL}.md`
+- `TOPIC_ROOT = notes/{topic}/` unless NOTES_PATH explicitly provides that topic root
+- `TARGET_FILE = {TOPIC_ROOT}coverage/{LEVEL}.md`
+- `SIBLING_FILES = the other two files in {TOPIC_ROOT}coverage/`
+- `GLOBAL_MIRROR = notes/coverage/{LEVEL}.md`
+- `NOTES_PLAN = {TOPIC_ROOT}coverage/notes-plan-{LEVEL}.md`
 
 ## Required sources
 
@@ -138,6 +140,8 @@ Validate:
 6. no normalized concept occurs in more than one of the three level files;
 7. the selected file contains no obvious other-topic section;
 8. `git diff --check` passes and the complete declared diff is inspected.
+9. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256. A mismatch is the expected
+   automatic stale signal: report that `notes-plan-prompt` must run before another note can be built.
 
 ## Step 6 — Update mode
 
@@ -165,6 +169,7 @@ Report:
 - market analyst and reviewer completion;
 - qualitative stopping-rule result;
 - mirror parity;
+- notes-plan state (`missing`, `current`, or `stale`);
 - files and commits;
 - unresolved risks or `none`.
 

@@ -6,15 +6,15 @@ This is the shared contract for `coverage-prompt.md` and `coverage-audit-prompt.
 
 Every topic owns three non-overlapping scope files:
 
-- `coverage-junior.md` — everything Victor must know to obtain and perform well in the current target junior or junior-mid role.
-- `coverage-middle.md` — the next professional level: concepts expected once the junior foundation is complete and the developer works with growing autonomy.
-- `coverage-senior.md` — concepts expected at senior level, including multi-team ownership, deep production diagnosis, platform concerns, and justified specialisation.
+- `coverage/junior.md` — everything Victor must know to obtain and perform well in the current target junior or junior-mid role.
+- `coverage/middle.md` — the next professional level: concepts expected once the junior foundation is complete and the developer works with growing autonomy.
+- `coverage/senior.md` — concepts expected at senior level, including multi-team ownership, deep production diagnosis, platform concerns, and justified specialisation.
 
 Two global mirrors provide cross-topic analysis:
 
-- `notes/coverage-junior.md`
-- `notes/coverage-middle.md`
-- `notes/coverage-senior.md`
+- `notes/coverage/junior.md`
+- `notes/coverage/middle.md`
+- `notes/coverage/senior.md`
 
 The mirrors are generated artifacts. Topic files are the sources of truth.
 
@@ -119,7 +119,7 @@ When a run discovers another topic's concept, route a proposal to `_cross-topic-
 - Split a section when it becomes difficult to scan; merge sections that do not represent a useful concern. Do not use numeric section-size rules.
 - Order by filtering/competency risk within the selected level.
 - No conduct, storytelling scripts, ticket workflow, or generic interview behaviour.
-- No concept may appear in more than one of `coverage-junior.md`, `coverage-middle.md`, and `coverage-senior.md`.
+- No concept may appear in more than one of `coverage/junior.md`, `coverage/middle.md`, and `coverage/senior.md`.
 
 ## Quality test
 

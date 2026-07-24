@@ -375,14 +375,14 @@ Only when 4c set a row to `done ✅`. Rewrite the §0 table:
 
 The step-complete ritual is PLANNING.md §4, and it has **exactly one manual item** plus the exit
 question — both outside this prompt's reach:
-- **`notes/sql/coverage-junior.md`** — if the batch surfaced a concept genuinely missing from coverage, Victor
+- **`notes/sql/coverage/junior.md`** — if the batch surfaced a concept genuinely missing from coverage, Victor
   adds it there (§4, item 3). This prompt never edits coverage.
 - **The exit question**, answered aloud from memory. §3 is explicit that a score alone never closes a
   step.
 
 So never print "step closed" on the strength of a score alone. If 4c set the row to `done ✅`, print:
 "Ejercicios del paso [N] cerrados. Para cerrar el paso entero falta responder la exit question de
-memoria, y añadir a `notes/sql/coverage-junior.md` cualquier concepto que haya salido aquí y no esté."
+memoria, y añadir a `notes/sql/coverage/junior.md` cualquier concepto que haya salido aquí y no esté."
 
 **Do not name notes, Q&A or simulations as blockers.** They are separate tracks (PLANNING.md §Z), no
 step closes on one, and telling Victor a note is "missing to close the step" is precisely the scope
@@ -397,7 +397,7 @@ If any answer was ⚠️ or ❌, **record each distinct conceptual gap in the `#
 Concept | Sev | What went wrong | Exercises`. One row per *concept*, not per exercise: three exercises
 that all failed on `WHERE` vs `HAVING` are one row, with all three numbers in `Exercises`.
 
-- **`Coverage section` is the heading from `notes/sql/coverage-junior.md`, copied verbatim** — not a
+- **`Coverage section` is the heading from `notes/sql/coverage/junior.md`, copied verbatim** — not a
   paraphrase and not the step name. If the gap fits no existing heading, write the closest one and say
   so in one line in the chat; that mismatch is a signal for the next `coverage-audit`, not a licence to
   invent a section name here.

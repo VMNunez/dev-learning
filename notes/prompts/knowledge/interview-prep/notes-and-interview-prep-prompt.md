@@ -23,7 +23,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 LEVEL = [junior | middle | senior]
 TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
-NOTES_PATH = [notes/angular/en/ | notes/angular-material/en/ | notes/css/en/ | notes/javascript/en/ | notes/typescript/en/ | notes/sql/en/ | notes/java/en/ | notes/spring-boot/en/ | notes/architecture/en/ | notes/git/en/ | notes/general/ (not yet migrated to en/-es/ — use the topic root, no Spanish mirror) | notes/security/en/]
+NOTES_PATH = [notes/{topic}/{LEVEL}/en/]
 FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
              → notes/interview-prep/en/{FILE}.md
              → notes/interview-prep/es/{FILE}.md
@@ -33,13 +33,13 @@ FILE       = [angular | css | javascript | typescript | sql | java | spring-boot
 ## Architecture, Security, TypeScript, JavaScript, CSS, SQL, Git, General.
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/spring-boot/en/, notes/java/en/ (comma-separated — read both;
+- Spring Boot: set NOTES_PATH = notes/spring-boot/{LEVEL}/en/, notes/java/{LEVEL}/en/ (comma-separated — read both;
   Spring Boot code uses Java language concepts). Before marking a JWT or security question as
-  unbacked, also check notes/security/en/ — JWT design and token invalidation concepts live
+  unbacked, also check notes/security/{LEVEL}/en/ — JWT design and token invalidation concepts live
   there by folder convention.
-- Angular Material: set NOTES_PATH = notes/angular-material/en/, FILE = angular. For direction 2,
+- Angular Material: set NOTES_PATH = notes/angular-material/{LEVEL}/en/, FILE = angular. For direction 2,
   check only questions under Angular Material sections of angular.md — questions in other
-  sections (Components, Signals, Routing, Forms, etc.) are backed by notes/angular/en/ and are
+  sections (Components, Signals, Routing, Forms, etc.) are backed by notes/angular/{LEVEL}/en/ and are
   out of scope for this run.
 - Java: focus on language concepts needed to write Spring Boot code only.
 - SQL: database is PostgreSQL.
@@ -192,13 +192,13 @@ Then, **one target note file at a time, sequentially** (never overlap — the ru
 cold `role-appropriate` subagent (`reasoning tier: deep`, `execution: foreground`):
 
 > Read `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` (the writing bar) and, before writing,
-> the first section of `notes/java/es/08-excepciones.md` to calibrate. You are creating/extending ONE
+> the first section of `notes/java/junior/es/08-excepciones.md` to calibrate. You are creating/extending ONE
 > note file: `«en/ path»` (number `«N»` if new). Read that file (and its `es/` counterpart, and the
 > sibling files in its `en/` folder) **in full, top to bottom** to avoid duplicating an example and to
 > wire references. Author the section(s) that back these questions to the full standard — problem
 > before definition, context before any code block, personal-guide voice, mechanism not just behaviour,
 > the anticipate-the-TODO pass — in the correct mode for the folder (structured for
-> `notes/java/en/` and `notes/spring-boot/en/`, conversational otherwise). Author in `en/` first (the
+> `notes/java/junior/en/` and `notes/spring-boot/junior/en/`, conversational otherwise). Author in `en/` first (the
 > canonical source), then re-sync the `es/` counterpart as native Spanish; create the full `es/` file
 > if it does not exist. If you create a new numbered file, bump the "next file:" counter in the shared session rules. Do NOT
 > commit. Return a **section-by-section trace** of the file (every `##`/`###` with PASS or what you

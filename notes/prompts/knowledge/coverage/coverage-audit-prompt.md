@@ -20,8 +20,8 @@ Read to EOF with verified line counts:
 - `_shared-context.md`
 - `ROADMAP.md`
 - `_job-market-evidence.md`
-- `notes/coverage-{LEVEL}.md`
-- every topic's `coverage-junior.md`, `coverage-middle.md`, and `coverage-senior.md`
+- `notes/coverage/{LEVEL}.md`
+- every topic's `coverage/junior.md`, `coverage/middle.md`, and `coverage/senior.md`
 - `_internal/_cross-topic-inbox.md`
 - `_run-tracker.md`
 - previous coverage-audit self-report
@@ -90,7 +90,7 @@ Both are cold, read-only, and must report selected files read to EOF. Apply acce
 
 ## Step 5 — Rebuild global mirror
 
-Rebuild `notes/coverage-{LEVEL}.md` completely from each topic's `coverage-{LEVEL}.md` in study-priority order:
+Rebuild `notes/coverage/{LEVEL}.md` completely from each topic's `coverage/{LEVEL}.md` in study-priority order:
 
 Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git → General.
 

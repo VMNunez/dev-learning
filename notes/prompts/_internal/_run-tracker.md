@@ -19,20 +19,20 @@ runs once the whole coverage-prompt column is filled).
 
 ## Per-topic prompts
 
-| Topic | Coverage J | Coverage M | Coverage S | Notes J | Notes M | Notes S | Interview J | Interview M | Interview S | Sync J | Sync M | Sync S |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Angular | 2026-07-24 | | | | | | | | | | | |
-| Angular Material | 2026-07-18 | | | | | | | | | | | |
-| Spring Boot | 2026-07-13 | | | 2026-07-15 | | | | | | | | |
-| Java | 2026-07-18 | | | | | | | | | | | |
-| Architecture | 2026-07-18 | | | | | | | | | | | |
-| Security | 2026-07-18 | | | | | | | | | | | |
-| TypeScript | 2026-07-18 | | | | | | | | | | | |
-| JavaScript | 2026-07-18 | | | | | | | | | | | |
-| CSS | 2026-07-19 | | | | | | | | | | | |
-| SQL | 2026-07-18 | | | | | | | | | | | |
-| Git | 2026-07-19 | | | | | | | | | | | |
-| General | 2026-07-19 | | | | | | | | | | | |
+| Topic | Coverage J | Coverage M | Coverage S | Plan J | Plan M | Plan S | Notes J | Notes M | Notes S | Interview J | Interview M | Interview S | Sync J | Sync M | Sync S |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Angular | 2026-07-24 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| Angular Material | 2026-07-18 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| Spring Boot | 2026-07-13 | | | 2026-07-24 (migration seed) | | | 2026-07-15 | | | | | | | | |
+| Java | 2026-07-18 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| Architecture | 2026-07-18 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| Security | 2026-07-18 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| TypeScript | 2026-07-18 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| JavaScript | 2026-07-18 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| CSS | 2026-07-19 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| SQL | 2026-07-18 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| Git | 2026-07-19 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
+| General | 2026-07-19 | | | 2026-07-24 (migration seed) | | | | | | | | | | | |
 
 ## Per-project prompts
 

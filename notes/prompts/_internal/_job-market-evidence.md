@@ -230,12 +230,12 @@ Nota de proceso: "**Even if you don't have 100% of the required knowledge, we wo
   importante: **JUnit 5 y Mockito son los mismos del suelo junior (~4/13)** — no cambian al subir de
   nivel, solo se les añaden capas alrededor. Lo que estudies ahora no se tira.
 - **Métricas de calidad de código: SonarQube y JaCoCo** — cobertura y análisis estático como requisito
-  con nombre propio. Es el paso natural después de "escribir tests" → `java/coverage-middle.md`.
+  con nombre propio. Es el paso natural después de "escribir tests" → `java/coverage/middle.md`.
 - **Seguridad nombrada como bloque propio: Spring Security + OAuth2 + JWT** — es exactamente la pila del
   Step 6 del proyecto 07, listada como stack senior. Refuerza que ese trabajo no es material de práctica:
-  es la misma pieza que se usa arriba. OAuth2 es el escalón que aún no tocas → `security/coverage-middle.md`.
+  es la misma pieza que se usa arriba. OAuth2 es el escalón que aún no tocas → `security/coverage/middle.md`.
 - **SOLID + patrones de diseño** — nombrados como *hard skill* con entidad propia, no como adorno.
-  Es lo más cercano al nivel actual de Victor de todo el techo → candidato natural a `java/coverage-middle.md`.
+  Es lo más cercano al nivel actual de Victor de todo el techo → candidato natural a `java/coverage/middle.md`.
 - **CI/CD nombrado como "cultura DevOps"** — en las tres ofertas del techo, y con herramienta concreta
   (GitLab CI, Jenkins). **Kubernetes** aparece en dos de tres: Docker ya está en el suelo junior (~3/13),
   Kubernetes es el escalón inmediatamente siguiente y claramente fuera de junior.
@@ -252,7 +252,7 @@ Nota de proceso: "**Even if you don't have 100% of the required knowledge, we wo
   mercado, pero en centros concretos el francés abre puertas que el inglés no. Dato a tener presente si
   el mercado se pone difícil, no un objetivo actual.
 - **Java 8-17 con "streams, interfaces" nombrados aparte** — a 2 años ya no basta "saber Java": piden las
-  piezas del lenguaje moderno. **Streams** es la que Victor aún no ha tocado → `java/coverage-middle.md`.
+  piezas del lenguaje moderno. **Streams** es la que Victor aún no ha tocado → `java/coverage/middle.md`.
 - **IA / GenAI dentro del stack Java** — Spring AI, SDK de Anthropic Claude, **MCP** y **RAG** listados
   como stack de proyecto, no como I+D. Es la primera vez que aparece en el fichero y encaja con lo que
   ya está anotado en `notes/ai-development/future-learning.md` (estudiar tras el primer empleo). El dato
@@ -261,9 +261,9 @@ Nota de proceso: "**Even if you don't have 100% of the required knowledge, we wo
   Java 25, así que el backend está alineado con lo que pide una oferta senior de 2026. Útil para el CV.
 - **Referencia salarial** — Second Window paga **30–33k** por 3 años de Java + Angular fullstack en
   Madrid. Útil como ancla para negociar más adelante; el suelo junior queda por debajo de esa banda.
-- **Arquitectura Hexagonal / DDD táctico** — el salto arquitectónico de mid → `architecture/coverage-middle.md`.
+- **Arquitectura Hexagonal / DDD táctico** — el salto arquitectónico de mid → `architecture/coverage/middle.md`.
 - **Angular avanzado: NgRx, Signals, Nx** — la oferta de Zemsania es la única del fichero donde Angular
-  es el eje y el backend el complemento. → `angular/coverage-middle.md`.
+  es el eje y el backend el complemento. → `angular/coverage/middle.md`.
 - **APIs REST con adjetivos** (rendimiento, escalabilidad, seguridad) — a los 3 años ya no se pide
   "saber hacer REST", se pide hacerlas bien. Ese es el salto real junior → mid.
 
