@@ -10,28 +10,31 @@ each prompt's `_last-run-report*.md`; this file stores concise operational state
 date, target/mode, outcome, and concise result, then commits report and tracker together. Victor never
 fills it by hand (though he may correct it).
 
-**How to read it:** new records use `YYYY-MM-DD — completed|blocked|dry-run — concise result`. An
-empty cell means **pending**: the current prompt version has not run on that target. Historical cells
-that contain only a date are legacy completed runs. Output files that predate the prompt do not count
-as executions. Prompts may read this file as a gate, but only a `completed` result (including legacy
-completed dates) satisfies a prerequisite; `blocked` and `dry-run` do not.
+**How to read it:** records use `YYYY-MM-DD — completed|blocked|dry-run — concise result`. An empty
+cell means **pending**: the current prompt version has not run on that target. Output files that
+predate the current prompt version do not count as executions. Prompts may read this file as a gate,
+but only a `completed` result satisfies a prerequisite; `blocked` and `dry-run` do not.
+
+**Tracking baseline reset:** 2026-07-24. Earlier execution records were cleared after the prompt
+system changed. Only runs recorded from this baseline onward are valid; the Java Junior coverage run
+is the first retained execution.
 
 ## Per-topic prompts
 
 | Topic | Coverage J | Coverage M | Coverage S | Plan J | Plan M | Plan S | Notes J | Notes M | Notes S | Interview J | Interview M | Interview S | Sync J | Sync M | Sync S |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Angular | 2026-07-24 | | | 2026-07-24 (migration seed) | | | 0/9 complete — pending | | | | | | | | |
-| Angular Material | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/14 complete — pending | | | | | | | | |
-| Spring Boot | 2026-07-13 | | | 2026-07-24 (migration seed) | | | 0/10 complete — pending | | | | | | | | |
-| Java | 2026-07-24 — completed — 111 items; mirror parity; notes plan stale | | | 2026-07-24 (migration seed) | | | 0/11 complete — pending | | | | | | | | |
-| Architecture | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/7 complete — pending | | | | | | | | |
-| Security | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/4 complete — pending | | | | | | | | |
-| TypeScript | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/8 complete — pending | | | | | | | | |
-| JavaScript | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/13 complete — pending | | | | | | | | |
-| CSS | 2026-07-19 | | | 2026-07-24 (migration seed) | | | 0/16 complete — pending | | | | | | | | |
-| SQL | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/10 complete — pending | | | | | | | | |
-| Git | 2026-07-19 | | | 2026-07-24 (migration seed) | | | 0/8 complete — pending | | | | | | | | |
-| General | 2026-07-19 | | | 2026-07-24 (migration seed) | | | 0/11 complete — pending | | | | | | | | |
+| Angular | | | | | | | | | | | | | | | |
+| Angular Material | | | | | | | | | | | | | | | |
+| Spring Boot | | | | | | | | | | | | | | | |
+| Java | 2026-07-24 — completed — 111 items; mirror parity; notes plan stale | | | | | | | | | | | | | | |
+| Architecture | | | | | | | | | | | | | | | |
+| Security | | | | | | | | | | | | | | | |
+| TypeScript | | | | | | | | | | | | | | | |
+| JavaScript | | | | | | | | | | | | | | | |
+| CSS | | | | | | | | | | | | | | | |
+| SQL | | | | | | | | | | | | | | | |
+| Git | | | | | | | | | | | | | | | |
+| General | | | | | | | | | | | | | | | |
 
 The Notes J/M/S cells are summaries, written as `X/Y complete` plus the last outcome. Their denominator
 comes from the corresponding notes plan, never from counting files on disk.
@@ -49,22 +52,22 @@ marking the note complete.
 
 | Project | plan-audit | review-audit | readme-audit | portfolio-audit |
 |---|---|---|---|---|
-| 01-todo-list | 2026-07-21 (MODE = review) | | | |
+| 01-todo-list | | | | |
 | 02-weather-app | | | | |
 | 03-expense-tracker | | | | |
 | 04-meal-finder | | | | |
 | 05-task-manager | | | | |
 | 06-hr-portal | | | | |
-| 07-timetrack | 2026-07-21 (MODE = review) | 2026-07-23 (backend only) | | |
+| 07-timetrack | | | | |
 
 ## Global pipeline prompts (no per-target scope)
 
 | Prompt | Last run |
 |---|---|
-| coverage-audit | 2026-07-19 (junior, legacy pre-level split) |
-| sql-plan-audit | 2026-07-22 (SCOPE = full) |
-| progress-update | 2026-07-16 (MODE = active) |
-| roadmap-review | 2026-07-21 |
+| coverage-audit | |
+| sql-plan-audit | |
+| progress-update | |
+| roadmap-review | |
 
 ## Single-shot prompt executions
 
@@ -76,7 +79,7 @@ work; prompts with no target use `global`.
 | code-review-prompt | | | pending | |
 | cover-letter-prompt | | | pending | |
 | cv-prompt | | | pending | |
-| evidence-intake-prompt | 2026-07-21 | search | completed | 4 postings added; 12 total |
+| evidence-intake-prompt | | | pending | |
 | hr-screen-prompt | | | pending | |
 | linkedin-prompt | | | pending | |
 | profile-readme-prompt | | | pending | |
