@@ -2,6 +2,8 @@
 
 Create or reconcile the persistent study-file plan for one topic and one professional level.
 This prompt plans only. It never authors, reviews, translates, or commits study-note prose.
+It does classify pre-existing bilingual notes across professional levels and relocates an intact
+English/Spanish pair when the evidence makes the correct level unambiguous.
 
 > **▶ Run first:** `coverage-prompt` for this exact topic and level — the plan fingerprints that
 > coverage and refuses to proceed when the global mirror differs.
@@ -39,15 +41,54 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 
 The plan is a committed source of truth. It is not a temporary worklist.
 
+The topic's three level directories and three coverage files are all classification inputs. `LEVEL`
+selects the plan being produced; it does not mean existing files in that directory are assumed to
+belong there.
+
 ## Guards
 
 1. Read the active adapter, `_session-rules.md`, `_note-quality-standard.md`, and all three topic
    coverage files.
-2. Stop on `main`.
-3. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
-4. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
+2. Inventory every English and Spanish note in all three level directories. Read every English note
+   end-to-end before classifying it; `en/` is canonical. Verify that its Spanish counterpart exists
+   and has matching substantive headings before relocating either file. Follow the repository's
+   line-count and read-to-EOF rule.
+3. Stop on `main`.
+4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
+5. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
    middle to be closed. Planning later levels is blocked just like authoring them.
-5. Preserve unrelated working-tree changes.
+6. Preserve unrelated working-tree changes.
+
+## Legacy note classification and relocation
+
+Run this stage before building the selected-level entries. It exists because pre-plan notes may all
+sit under `junior/` even when their actual content belongs to middle or senior.
+
+1. Compare every substantive section of every existing English note with all three coverage files.
+   Classify from the mechanism and responsibility being taught, not from the current folder, numeric
+   prefix, title, project chronology, length, or words such as "production" in isolation.
+2. Keep a note at its current level when its central learning unit belongs there. Extra examples or
+   brief forward references to a later level do not promote the whole note.
+3. Relocate a complete English/Spanish pair when all substantive sections form one coherent unit
+   owned by a different level. Move both languages together; never relocate one side alone.
+4. At the destination, allocate the next unused two-digit number for that level. Preserve the
+   English and Spanish slugs, preserve all prose byte-for-byte apart from link/path corrections, and
+   keep the same new numeric prefix on both files.
+5. Update repository-relative Markdown links that target or originate from a relocated file. Verify
+   every changed local link resolves after the move.
+6. If a current or destination plan already references a relocated path, reconcile that entry's two
+   paths. Do not mark it complete unless its exact coverage set and both relocated files still meet
+   the normal preservation rule.
+7. Do not force a move when one file contains substantive sections owned by multiple levels. Record
+   it under `## Legacy notes requiring split`, with a heading-level routing map and the reason a
+   byte-preserving move is impossible, then stop the run as `blocked`. Splitting or rewriting prose
+   belongs to the notes author/reviewer pipeline, not this planner.
+8. Do not leave an intact, unambiguously mis-levelled pair under `## Unassigned existing notes`.
+   `Unassigned` is only for material not owned by any coverage bullet at any level, duplicates, or a
+   blocked mixed-level file already listed in the split section.
+
+Before planning continues, report the classification decision for every pre-existing pair as
+`keep`, `move <current level> -> <correct level>`, `unassigned`, or `requires split`.
 
 ## Coverage fingerprint
 
@@ -64,7 +105,8 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
 ## Planning algorithm
 
 1. Read every coverage bullet and preserve its exact text.
-2. Inspect existing note filenames and headings in `EN_DIR` and `ES_DIR`. Do not quality-audit prose.
+2. Inspect the now-classified note filenames and headings in `EN_DIR` and `ES_DIR`. Do not
+   quality-audit prose.
 3. Build a gradual study sequence. Group concepts only when they form one coherent learning unit.
    There is no target or maximum number of files.
 4. Assign every selected-level coverage bullet to exactly one entry. Never paraphrase a coverage
@@ -81,6 +123,8 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
 9. Existing notes that cannot be justified by this level's coverage go under `## Unassigned existing
    notes`. They are never silently deleted or treated as required study files.
 10. On reconciliation, report added, removed, regrouped, preserved-complete, and unassigned entries.
+11. A note relocated into the selected level participates like any other existing note and therefore
+    receives `Action: audit`. A note relocated out cannot remain assigned by the selected plan.
 
 ## Required plan format
 
@@ -110,6 +154,15 @@ Rationale: one concise explanation of why these concepts belong together.
 ## Unassigned existing notes
 
 - path — concise reason it is not owned by this level plan
+
+## Legacy notes requiring split
+
+- English: path
+  Spanish: path
+  Routing:
+  - `## Exact heading` → middle — exact matching coverage bullet or concise ownership reason
+  - `## Exact heading` → senior — exact matching coverage bullet or concise ownership reason
+  Blocker: concise explanation of why the pair cannot be moved intact
 ```
 
 Rules:
@@ -121,11 +174,15 @@ Rules:
 - `Depends on` contains `none` or earlier entry numbers only.
 - A missing Spanish file does not change `Action`; the notes pipeline creates or synchronises it.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned across levels.
+- Omit `## Legacy notes requiring split` when empty. If it is non-empty, the run is blocked and no
+  relocation or selected plan commit occurs; the proposed plan and routing map are still reported.
 
 ## Update mode
 
-Write only `PLAN`. Before staging and before committing, run `git status --short` and stage the exact
-plan path only. Commit:
+Write `PLAN` plus any unambiguous bilingual relocations, required local-link corrections, and path
+reconciliations in already-existing affected sibling plans. Do not alter note prose. Before staging
+and before committing, run `git status --short`; stage only these declared outputs and verify every
+moved pair and affected link. Commit:
 
 ```text
 docs(notes): plan {topic} {level} study files
@@ -142,4 +199,5 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 ## Final report
 
 Report topic, level, coverage fingerprint, entry count, concept count, create/audit counts,
-preserved-complete count, unassigned existing notes, mirror parity, and commit or `dry-run`.
+preserved-complete count, every legacy classification decision, relocations, split blockers,
+unassigned existing notes, mirror parity, and commit or `dry-run`.
