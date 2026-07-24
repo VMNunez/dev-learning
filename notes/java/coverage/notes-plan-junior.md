@@ -7,7 +7,7 @@ Generated: 2026-07-24
 
 ## 00 — Java execution foundations
 
-Status: pending
+Status: complete
 Action: audit
 English: notes/java/junior/en/00-intro-java.md
 Spanish: notes/java/junior/es/00-intro-java.md
