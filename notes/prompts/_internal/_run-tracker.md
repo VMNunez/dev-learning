@@ -23,7 +23,7 @@ completed dates) satisfies a prerequisite; `blocked` and `dry-run` do not.
 | Angular | 2026-07-24 | | | 2026-07-24 (migration seed) | | | 0/9 complete — pending | | | | | | | | |
 | Angular Material | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/14 complete — pending | | | | | | | | |
 | Spring Boot | 2026-07-13 | | | 2026-07-24 (migration seed) | | | 0/10 complete — pending | | | | | | | | |
-| Java | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/11 complete — pending | | | | | | | | |
+| Java | 2026-07-24 — completed — 111 items; mirror parity; notes plan stale | | | 2026-07-24 (migration seed) | | | 0/11 complete — pending | | | | | | | | |
 | Architecture | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/7 complete — pending | | | | | | | | |
 | Security | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/4 complete — pending | | | | | | | | |
 | TypeScript | 2026-07-18 | | | 2026-07-24 (migration seed) | | | 0/8 complete — pending | | | | | | | | |
