@@ -8,132 +8,125 @@ Order follows study priority: Angular → Angular Material → Spring Boot → J
 
 ## Angular
 
-Topics a junior must know to pass a technical screening for Angular roles at Spanish consultancies in 2026.
-Every item must be explainable with a real example from at least one of the six Angular projects or TimeTrack.
+# Minimum Coverage â€” Angular
 
-### Components and templates
-- `@Component` â€” selector, template, styles, `standalone: true`; interviewers ask what standalone means and why Angular 17+ uses it by default
-- `imports` array on `@Component` â€” every directive, pipe, or component used in the template must be listed here; forgetting one causes a clear Angular error; interviewers ask why Angular 17+ moved away from NgModules
-- Data binding: interpolation `{{ }}`, property `[]`, event `()`, two-way `[()]` â€” the four types; interviewers ask the difference between `[]` and `{{}}`
-- `input()` and `output()` â€” signal-based component communication; interviewers ask "how does data flow between parent and child?"
-- `input()` vs `input.required<T>()` â€” `input()` needs a default value or the type becomes `T | undefined`; `input.required<T>()` has no default and throws at compile time if the parent does not pass it; interviewers ask which one to use for a value the component cannot render without (e.g. an `id`)
-- `@if`, `@for`, `@empty`, `@else` â€” new control flow syntax; `@for` requires a `track` expression for performance; interviewers ask why `track` matters
-- `@switch`, `@case`, `@default` â€” control flow alternative to chained `@if`/`@else if` when checking one value against several fixed options (e.g. a status field); interviewers ask when to reach for `@switch` instead of multiple `@if` blocks (readability once there are 3+ branches)
-- `@let` â€” declares a local template variable from an expression, reused across the same template block without recalculating it; interviewers ask how you avoid calling the same `computed()` or method multiple times in one template
-- Template reference variables â€” `#ref` on any template element gives a typed handle to it; pass `ref.value` to a method without a signal or form control; interviewers ask how you read an input value without reactive forms
-- `ng-content` â€” content projection; lets a parent inject arbitrary HTML into a child's template slot; interviewers ask how you build a reusable layout wrapper in Angular
-- `[class.x]` binding â€” applies a single CSS class when the condition is true; simpler and more readable than `ngClass` for a single class; interviewers ask the difference from `ngClass`
-- `ngClass` â€” applies multiple CSS classes conditionally using an object map `{ 'class': condition }`; reach for it when two or more classes depend on component state; interviewers ask when to use it instead of `[class.x]`
+Minimum hiring floor for a junior or junior-mid Angular developer targeting Spanish consultancies in 2026.
+Items are ordered by filtering risk and cover both modern Angular and the legacy patterns common in maintained enterprise codebases.
 
-### Lifecycle and tooling
-- `@ViewChild` â€” accessing a child element or component from the class after the view is built; needed for `MatSort` and `MatPaginator` in `ngAfterViewInit`
-- Lifecycle hooks: `ngOnInit` (run logic on load), `ngAfterViewInit` (first safe moment to use `@ViewChild`), `ngOnDestroy` (cleanup) â€” interviewers ask when each fires and why
-- `constructor` vs `ngOnInit` â€” the constructor only wires up dependency injection and runs before Angular has set the component's inputs; `ngOnInit` runs once after the first input binding, so data fetching and any logic that reads an `input()`/`@Input()` value belongs there, not in the constructor; interviewers ask "why fetch data in `ngOnInit` and not the constructor?"
-- Angular CLI essentials â€” `ng generate component/service/guard`, `ng serve`, `ng build` â€” interviewers ask how you scaffold a new feature and what the difference is between `ng serve` (dev server with live reload) and `ng build` (production bundle)
+### Components and template data flow
 
-### Signals
-- `signal()`, `signal.set()`, `signal.update()` â€” creating and mutating reactive state; `set()` replaces the value, `update()` uses the previous value; interviewers ask which one to use when adding an item to an array
-- `computed()` â€” derived state that recalculates automatically when its dependencies change; used for filtered lists, stats, and role-aware UI; returns a value and cannot be set directly
-- `effect()` â€” runs an external side effect when tracked signals change; use `computed()` for derived
-  state and avoid writing feedback loops that repeatedly trigger the same effect
-- `computed()` vs `effect()` â€” `computed()` returns a derived value (filtered list, boolean flag); `effect()` performs a side effect with no return value (save to localStorage, sync to a non-reactive library); the most common mistake is using `effect()` to derive values when `computed()` is the right tool
-- `effect()` + localStorage pattern â€” initialise a signal from localStorage, then use `effect()` to keep them in sync on every change
-- Signal reference vs snapshot â€” `service.signal` (no parentheses) stores the live signal and stays reactive; `service.signal()` reads the value once and never updates; storing the snapshot in a property is a common bug
+- Standalone `@Component` â€” explain how Angular turns a class, template, and styles into a self-contained UI unit with directly declared dependencies
+- Component `imports` â€” identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure
+- Interpolation vs property binding â€” distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]`
+- Event binding â€” handle a template event with `()` and explain why the template delegates behaviour to the component class
+- Two-way binding â€” recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
+- `model()` â€” expose a writable child value with its matching change output when a reusable component genuinely owns two-way binding
+- `input()` vs `input.required()` â€” model optional and mandatory parent-to-child data without hiding absence behind an unsafe default
+- `output()` â€” send typed child events to a parent without making the child depend on the parent's implementation
+- `@if` vs `@switch` â€” choose branching conditions or fixed-value cases so mutually exclusive UI states remain readable
+- `@for` and `track` â€” render collections with stable identity so Angular can reuse DOM nodes instead of recreating them
+- Content projection with `ng-content` â€” recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
+- Components vs attribute directives â€” use a component when behaviour owns a view and a directive when behaviour augments an existing host element
 
-### Services and dependency injection
-- `@Injectable({ providedIn: 'root' })` â€” what dependency injection is, what a singleton service means, and why Angular uses it instead of importing classes directly
-- `inject()` â€” the modern way to inject a service; no constructor needed in Angular 17+
-- `HttpClient` â€” making GET, POST, PUT, DELETE, PATCH calls with typed responses; interviewers ask "how do you call a REST API from Angular?"
-- `HttpParams` â€” building query parameters programmatically for filtered API calls; used in TimeTrack for `?month=2025-05&status=SUBMITTED` on the entries endpoint
-- Error handling: `catchError` + loading/error signal pattern â€” how to show loading state and handle a failed HTTP call without crashing the app
+### Lifecycle and dependency injection
 
-### RxJS
-- `Observable` and `subscribe` â€” what reactive programming means and why `HttpClient` returns Observables instead of Promises
-- `pipe` and key operators: `map`, `filter`, `switchMap`, `debounceTime`, `catchError` â€” what each does and a real use case for each
-- `forkJoin` â€” run multiple HTTP calls in parallel and wait for all to complete; used on the TimeTrack dashboard to load stat cards simultaneously
-- `takeUntilDestroyed` + `DestroyRef` â€” automatic unsubscription when the component is destroyed; interviewers ask "how do you avoid memory leaks in Angular?"
-- `async` pipe â€” subscribes in the template and unsubscribes automatically; the alternative to calling `subscribe()` manually in the class
-- Memory leak risk â€” what happens when you call `subscribe()` without ever unsubscribing; why it matters in a long-running SPA
+- Angular dependency injection â€” explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves
+- `@Injectable({ providedIn: 'root' })` â€” recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton
+- `inject()` vs constructor injection â€” recognise both supported injection styles and choose consistently without confusing construction with lifecycle work
+- Provider scope â€” distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
+- `constructor` vs `ngOnInit` â€” reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs
+- `ngOnChanges` â€” react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
+- View queries and `ngAfterViewInit` â€” treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences
+- Destruction cleanup â€” tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view
 
-### RxJS Interop
-- `toSignal()` â€” converts an Observable (e.g. `HttpClient.get()`) into a signal; Angular subscribes and unsubscribes automatically; interviewers ask "how do you use HttpClient results in the template with the signals model?"
-- `initialValue` option on `toSignal()` â€” supplies a value before the first emission when the consumer
-  cannot accept `undefined`; it is optional when the source emits synchronously or the type/template
-  handles absence
-- `toSignal()` injection context rule â€” call it in an injection context by default, or provide an
-  explicit `Injector` when conversion must happen elsewhere
-- `toSignal()` vs `subscribe()` â€” use `toSignal()` when the template displays the data directly; use `subscribe()` + `takeUntilDestroyed` when you need to update multiple signals or trigger a side effect from one response
-- `toObservable()` â€” converts a signal into an Observable so RxJS operators such as `debounceTime`
-  and `switchMap` can drive search or other asynchronous pipelines
+### Signals and local state
 
-### Routing
-- `provideRouter`, `routerLink`, `RouterOutlet`, `routerLinkActive` â€” the building blocks of Angular navigation
-- `ActivatedRoute` â€” `snapshot.paramMap.get()` for route params, `queryParamMap` for query params; the correct way to read URL data inside a component
-- Route params vs query params â€” params are part of the path (`/entries/:id`), query params are optional extras (`?month=2025-05`); interviewers ask when to use each
-- `snapshot` vs Observable `paramMap` â€” use `snapshot` when the component is destroyed on navigation away (the standard case); subscribe to `paramMap` only when the id can change while the component stays alive, such as a next/previous button on the same route
-- `CanActivateFn` guard â€” protecting a route; returns `true` to allow or `router.createUrlTree()` to redirect; do not use `router.navigate()` inside a guard â€” it causes double navigation
-- `noAuthGuard` â€” the reverse of `authGuard`; redirects an already-logged-in user away from the login page; without it, the browser back button can land an authenticated user on the login form
-- `CanDeactivateFn` guard â€” warning before leaving a page with unsaved changes; the guard receives the component instance to check its state
-- Lazy loading: `loadComponent`, `loadChildren` â€” why it reduces the initial bundle size; interviewers ask "how do you improve Angular startup performance?"
-- `HttpInterceptorFn` â€” intercepting every outgoing request to add the JWT token and handling 401 errors globally in one place, not in every service
+- `signal()` â€” hold reactive local or service state and read it by calling the signal rather than treating it as a plain value
+- `set()` vs `update()` â€” replace state directly or derive the next immutable value from the previous one
+- `computed()` â€” derive read-only state from signals so the value stays consistent without manual synchronisation
+- `effect()` â€” perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state
+- `computed()` vs `effect()` â€” choose a returned derived value for UI state and an effect only for synchronisation with an external system
+- Signal reference vs snapshot â€” preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot
+- Immutable updates with signals â€” replace object or array references so state changes remain predictable across signals and `OnPush` views
+- `signal()` vs `computed()` â€” keep writable source state in a signal and expose read-only derivations through a computed signal
 
-### Reactive forms
-- `FormGroup`, `FormControl`, `FormBuilder` â€” the three pieces of a reactive form; `FormBuilder` is the shorthand for creating groups with less code
-- Built-in validators: `Validators.required`, `Validators.min`, `Validators.email` â€” the most common validations
-- Custom validators â€” a function that returns `null` (valid) or `{ key: true }` (invalid); used when built-in validators are not enough
-- `form.markAllAsTouched()` â€” triggers all validation messages on a submit attempt; without it errors only appear after the user touches each field individually
-- `form.patchValue()` vs `form.setValue()` â€” `patchValue()` updates only the fields you pass and ignores missing ones; `setValue()` requires every field and throws an error if one is missing; interviewers ask the difference when discussing edit forms
-- `form.reset()`, `form.dirty` â€” resetting after save, and checking for unsaved changes before navigating away
-- `setErrors({ key: true })` â€” setting a custom error on a control programmatically (e.g. duplicate name); clears automatically when validators re-run on the next keystroke
-- Showing errors in the template: `control.hasError('key')` + `control.touched` â€” the pattern every Angular form uses to display validation messages
-- `FormArray` â€” holds a dynamic list of form controls accessed by index instead of by name; use when the number of fields is not known upfront (e.g. "add another phone number"); `formArrayName` on the container div, `[formControlName]="$index"` on each input; interviewers ask the difference from `FormGroup`
+### HTTP integration
 
-- Built-in pipes: `date`, `number`, `currency`, `uppercase`, `slice` â€” what each formats and when to reach for it
-- Custom pipes: `@Pipe({ name: '...' })`, `transform()` method â€” when to create one (logic that repeats across multiple templates)
+- Typed `HttpClient` requests â€” call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON
+- `HttpParams` immutability â€” build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged
+- Cold HTTP Observables â€” recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
 
-### Component styles
-- View encapsulation â€” Angular scopes component CSS by adding unique attributes to each template element; styles in `component.css` only apply to elements you wrote in that template; interviewers ask "why doesn't my CSS rule apply to Angular Material's internal elements?"
-- Global `styles.css` for Material internals â€” Angular Material renders its own internal HTML without the component's scoping attribute; to override Material internals (e.g. `.mat-sort-header-container`), the rule must go in `styles.css`; a rule that silently fails in component CSS almost always works in `styles.css`
-- `:host` selector â€” targets the component's own wrapper element from inside its CSS file; custom elements are `inline` by default and need `:host { display: block }` to behave as block elements; interviewers ask how you style the outer element of a component without touching the parent's CSS
-- `::ng-deep` (deprecated) â€” a CSS combinator that bypassed encapsulation to reach Material internals; you will see it in almost every enterprise Angular codebase built before 2022; the correct modern replacement is to put the rule in `styles.css`
+### RxJS streams and pipelines
 
-### Patterns
-- Smart / dumb component pattern â€” the smart component fetches data and handles events; the dumb component only displays and emits; makes components reusable and testable
-- Coordinator pattern â€” a smart page that orchestrates multiple dumb children; all state lives in the coordinator; interviewers ask "how do you manage state in Angular?"
-- Role-aware UI â€” `isAdmin = computed(() => authService.currentUser()?.role === 'admin')`; controls which elements render using `@if (isAdmin())`; the key difference from route guards: guards block navigation, role-aware UI cleans the interface for non-admin users
-- Core / Feature / Shared folder structure â€” `core/` for guards, interceptors, singleton services; `pages/` for feature areas; `shared/` for reusable components; standard in enterprise Angular at Spanish consultancies
-- HTTP interceptor as a cross-cutting concern â€” one interceptor handles auth headers and global error responses for the whole app, not repeated in every service
+- `Observable` vs `Promise` â€” compare stream composition and cancellation with a single eventual Promise while recognising that Observables may be cold or hot and may emit once or many times
+- `subscribe()` callbacks â€” handle next and error outcomes deliberately and keep presentation state consistent after a failed request
+- `map()` vs `tap()` â€” transform emitted data with `map()` and reserve `tap()` for observation or side effects
+- `switchMap()` â€” cancel a stale inner request when a newer search term or route value arrives
+- Search pipeline operators â€” combine `debounceTime()`, `distinctUntilChanged()`, and `switchMap()` to avoid premature, duplicate, and stale requests
+- `catchError()` â€” recover, translate, or rethrow an error without silently converting every failure into successful empty data
+- `async` pipe vs manual subscription â€” prefer template-managed subscription for displayed streams and subscribe imperatively only when a side effect requires it
+- Subscription cleanup â€” use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete
+- `toSignal()` vs manual subscription â€” expose a displayed Observable as signal state while keeping imperative subscription for deliberate multi-step side effects
+- `toSignal()` vs `toObservable()` â€” convert in the direction required by the consumer instead of wrapping reactive primitives back and forth without purpose
 
-### Angular Material
-- `MatTable` with `MatTableDataSource`, `MatSort`, `MatPaginator` â€” the standard way to display tabular data; interviewers at consultancies expect you to know this combination
-- `MatDialog` â€” opening a modal, passing data in with `MAT_DIALOG_DATA`, and reading the result with `afterClosed()`
-- Form fields: `mat-form-field`, `mat-error`, `ErrorStateMatcher` â€” how Material shows validation errors inside styled form fields
-- `MatSnackBar` â€” user feedback after actions (save, delete, error); injected as a service, not added to `imports`
-- Custom theming: scoped `mat.theme()` in a component stylesheet â€” how to apply a different colour to one component without changing the whole app
+### Routing and cross-cutting HTTP behaviour
 
-### Testing
-- Jasmine: `describe`, `it`, `expect`, `beforeEach` â€” the test structure Angular uses by default; required from project 07 onwards
-- `TestBed.configureTestingModule` â€” sets up the Angular DI context for a test so you can inject real services and mocks
-- Testing a service with `TestBed` â€” how to inject the service and call its methods in a test; what you verify and why
-- `spyOn(service, 'method')` â€” replaces a real method with a controlled fake; use `.and.returnValue()` to control what it returns; use `.toHaveBeenCalledWith()` to assert it was called correctly; the standard way to isolate the unit under test
-- `provideHttpClientTesting()` + `HttpTestingController` â€” the current standalone setup intercepts
-  HTTP calls without a network; recognise `HttpClientTestingModule` as the deprecated module-based
-  equivalent in older consultancy code
-- What to test in a service â€” the business logic: correct return value, correct error thrown, correct state change after the call
+- Router configuration â€” connect `provideRouter`, route definitions, `routerLink`, and `RouterOutlet` into a navigable standalone application
+- `ActivatedRoute` params and query params â€” read route identity from `paramMap` and optional Angular view filters from `queryParamMap`
+- `ActivatedRoute.snapshot` vs observable params â€” use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
+- Lazy route loading â€” use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it
+- `loadComponent` vs `loadChildren` â€” lazy-load one routed component or an entire child route tree according to the feature boundary
+- Declarative vs programmatic navigation â€” use `routerLink` in templates and `Router.navigate()` when component logic determines the destination
+- Wildcard routes and redirect order â€” place a `**` fallback last because Angular uses first-match-wins route evaluation
+- `CanActivateFn` guards â€” return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect
+- Route guards vs backend authorisation â€” treat guards as client-side navigation control, never as enforcement of data access
+- `CanDeactivateFn` guards â€” protect unsaved form state while recognising that browser or process termination may bypass application navigation
+- Functional HTTP interceptors â€” centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop
 
-### Legacy code recognition â€” needed on day one at a consultancy
-- `@Input()` and `@Output()` decorators â€” legacy equivalent of `input()` and `output()`; you will see these in every existing consultancy codebase
-- `EventEmitter` â€” used with `@Output()` to emit values to the parent; replaced by `output()` in Angular 17+
-- `NgModule` â€” `declarations`, `imports`, `exports`, `providers`; how pre-standalone Angular apps are structured; most consultancy projects still use this
-- `*ngIf` and `*ngFor` â€” legacy structural directives; still widely used; `*ngFor` does not require `track` but performs worse without it
-- `ngModel` and `FormsModule` â€” template-driven two-way binding with the `[()]` banana-in-a-box syntax; simpler than reactive forms for standalone fields; still widely used in existing consultancy codebases
-- Zone.js and default change detection â€” what it means conceptually; why signals and `OnPush` reduce unnecessary re-renders
-- `OnPush` change detection strategy â€” Angular marks the view from new input references, template
-  events, signal/async-pipe notifications, or explicit change-detector APIs; in-place mutation can
-  hide changes because no notification carries a new reference
-- `ngOnChanges` â€” lifecycle hook that fires every time an `@Input()` value changes; receives a `SimpleChanges` object with the previous and current value; the signals equivalent is `effect()`
-- `BehaviorSubject` â€” holds the current value and emits it immediately to new subscribers; the most common pattern for shared state before signals; interviewers ask the difference from `Subject`
-- `Subject` â€” emits to currently active subscribers only; late subscribers miss values emitted before they subscribed; used for one-time events rather than shared state; interviewers ask the difference from `BehaviorSubject`
+### Reactive forms and template transformation
+
+- `FormControl`, `FormGroup`, and `FormBuilder` â€” model controls and groups explicitly and use the builder as concise construction syntax rather than a different forms model
+- Typed reactive forms â€” keep control nullability and value types aligned with the API model so casts do not hide invalid form states
+- Built-in validators â€” combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary
+- Custom validators â€” return `null` or a keyed error object from a pure validation function so templates can identify the failed rule
+- Validation display state â€” combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction
+- `markAllAsTouched()` â€” surface all invalid controls after a submit attempt without changing whether the form is valid
+- `setValue()` vs `patchValue()` â€” choose strict full-shape assignment or deliberate partial updates when prefilling edit forms
+- `dirty`, `reset()`, and server errors â€” distinguish local edits, reset the saved baseline, and avoid losing backend errors through an immediate validator rerun
+- `FormArray` vs `FormGroup` â€” model a dynamic indexed collection separately from a fixed set of named controls
+- Built-in vs custom pipes â€” keep pure display transformation in templates and avoid hiding business logic or expensive impure work in a pipe
+- Pure vs impure pipes â€” prefer cached pure transformation and recognise that an impure pipe runs on every change-detection cycle
+- Form `valueChanges` â€” compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers
+
+### Change detection
+
+- Default change detection and Zone.js awareness â€” explain at a high level why asynchronous work can trigger checks across the component tree in established Angular applications
+- `OnPush` change detection â€” recognise the notifications that mark a view for checking and why in-place mutation can leave an input-based view stale
+- Signals with `OnPush` â€” explain how a signal read in a template notifies Angular without treating signals as a reason to mutate objects in place
+- Production-build verification â€” run a production build because template compilation, budgets, and optimisation can expose failures hidden by the development server
+
+### Testing Angular behaviour
+
+- Vitest vs Jasmine/Karma recognition â€” use the current CLI's Vitest default while reading Jasmine/Karma suites that remain common in maintained consultancy projects
+- Test structure and assertions â€” use `describe`, setup hooks, `it`, and meaningful expectations to express behaviour rather than mere object existence
+- `TestBed` â€” configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies
+- Service unit tests â€” isolate business or state logic and verify observable outputs, state transitions, and collaborator calls
+- Spies and test doubles â€” control a collaborator with `vi.spyOn()` in Vitest or `spyOn()` in Jasmine and assert the interaction without reproducing its implementation
+- HTTP tests with `provideHttpClientTesting()` â€” intercept a request with `HttpTestingController`, assert method, URL, and body, then flush the intended response
+- `provideHttpClientTesting()` vs `HttpClientTestingModule` â€” use the standalone provider in current code and recognise the deprecated module-based setup in older suites
+- HTTP error tests â€” flush an error response and assert the service's observable or state follows the documented failure path
+- Component tests â€” verify rendered behaviour and user interaction instead of asserting only that the component can be constructed
+
+### Legacy enterprise code recognition
+
+- `NgModule` â€” read `declarations`, `imports`, `exports`, and `providers` in pre-standalone applications without treating modules as required in new features
+- Signal inputs/outputs vs `@Input()`/`@Output()` â€” use current function APIs in new code and recognise decorator plus `EventEmitter` communication in maintained applications
+- `*ngIf` vs `@if` â€” read both syntaxes and understand that the modern block syntax does not require importing `NgIf`
+- `*ngFor` `trackBy` vs `@for` `track` â€” preserve stable identity in both template generations
+- Template-driven vs reactive forms â€” recognise `ngModel` for simple template-owned fields and choose reactive forms for explicit, testable form models
+- `Subject` vs `BehaviorSubject` â€” distinguish event broadcasting from state that immediately exposes its latest value to new subscribers
+- `Observable` naming and `$` convention â€” read established code that marks streams with a trailing `$` without assuming the convention changes runtime behaviour
+- Angular CLI build workflow â€” use generation, development, test, and production-build commands and recognise that a successful dev server does not prove the production build succeeds
 
 ---
 

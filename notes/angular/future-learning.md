@@ -1,164 +1,37 @@
 # Angular — Future Learning Roadmap
 
-Topics to study once the current foundation is solid. The goal of this file is not to overwhelm — it is to tell you what exists, why it matters, and when to pick it up. Nothing here is needed for the first job interview.
+Useful Angular depth deferred until it becomes relevant after the first role. These items do not duplicate the current junior hiring floor.
 
----
+## Team-scale state and component APIs
 
-## Phase 1 — After landing the first job
+- NgRx Store — learn actions, reducers, selectors, and effects after a real application exposes the limits of local service state
+- `@ngrx/signals` — evaluate signal-store patterns after understanding the team and tooling trade-offs of established NgRx
+- `ControlValueAccessor` — build reusable custom controls that participate fully in Angular forms once native and Material controls are insufficient
 
-These are things you will encounter in real project work within the first few months. Not needed for the portfolio — needed to contribute effectively on a team.
+## Advanced reactive integration
 
-### Preloading strategies
+- `toSignal()` configuration and injection context — control initial values, synchronous requirements, equality, cleanup, and custom injectors when the basic conversion is insufficient
+- `forkJoin()` vs `combineLatest()` — coordinate one-time completion or continuing latest-value streams when a feature depends on several sources
+- RxJS retry and finalisation policies — apply `retry()` and `finalize()` only after defining which failures are safe to repeat and which UI state must always be cleared
 
-By default, lazy routes are only downloaded when the user navigates to them — there is a small delay on first visit. Preloading strategies tell Angular to download certain routes in the background while the user is idle.
+## Rendering and loading strategies
 
-```typescript
-import { PreloadAllModules } from '@angular/router';
+- Route preloading strategies — balance first-navigation latency against background bandwidth after measuring a production application's route usage
+- `@defer` blocks — delay heavy template dependencies with viewport, interaction, or idle triggers when bundle analysis identifies a meaningful benefit
+- Signal `resource()` APIs — revisit the stable signal-native asynchronous loading API when it is adopted in maintained consultancy codebases
+- `ChangeDetectorRef` — use manual marking, detection, or detachment only for integrations that Angular's normal notifications cannot model cleanly
+- Modern Angular animations — use native CSS with `animate.enter` and `animate.leave`, and recognise the deprecated `@angular/animations` package in maintained code
 
-provideRouter(routes, withPreloading(PreloadAllModules))
-```
+## Platform-scale Angular
 
-`PreloadAllModules` downloads all lazy routes after the initial load. You can also write a custom strategy that only preloads specific routes. Relevant for production apps where perceived performance matters.
+- Angular CDK primitives — build accessible overlays, drag-and-drop interactions, and virtual scrolling beyond the ready-made Material components
+- Server-side rendering and hydration — improve public-page SEO and first render when the product is not an authenticated internal SPA
+- Micro-frontends and module federation — split deployment ownership only when multiple teams require independent release boundaries
+- Angular Elements — package Angular components as custom elements for non-Angular hosts in specialist integration scenarios
 
-### ChangeDetectorRef — manual change detection control
+## Advanced production diagnostics
 
-In most Angular apps with signals you will never need this. But in existing codebases, third-party libraries often update data outside Angular's awareness. `ChangeDetectorRef` lets you trigger a check manually:
-
-- `cdr.detectChanges()` — force an immediate check of this component
-- `cdr.markForCheck()` — mark the component dirty so Angular checks it on the next cycle
-- `cdr.detach()` — remove the component from the change detection tree entirely (advanced, rarely needed)
-
-You will encounter this in legacy code that integrates charting libraries, Google Maps, or WebSockets. With signals, the need is rare — signals always notify Angular automatically.
-
-### Angular CDK — Component Dev Kit
-
-The lower-level toolkit from the Angular Material team. Does not have visual components — it has primitives:
-
-| CDK feature | What it does |
-|-------------|-------------|
-| Virtual Scrolling | Renders only visible rows for a list of thousands of items |
-| Drag and Drop | `cdkDrag` / `cdkDropList` — full drag-and-drop without a library |
-| Overlay | Position a panel relative to an element (the base of Material dialogs) |
-| Accessibility | Focus management, keyboard navigation primitives |
-
-Relevant when your team builds custom UI components beyond what Material provides.
-
-### `resource()` API — signal-based async data loading
-
-A newer Angular API (still maturing through experimental/developer-preview stages across recent versions) that wraps an async loader function and exposes its result, loading state, and error as signals — without manually writing `toSignal()` + `catchError()` + a separate loading signal.
-
-```typescript
-userResource = resource({
-  request: () => this.userId(),
-  loader: ({ request }) => fetch(`/api/users/${request}`).then(r => r.json()),
-});
-```
-
-Why to wait: the API is still settling and most consultancy codebases in 2026 are not using it yet — `HttpClient` + `toSignal()` is still the pattern you will see and be asked about. Revisit once it stabilizes and appears in real project work.
-
-### `@defer` blocks — template-level lazy loading
-
-Angular 17+ syntax that delays loading a heavy component until it is needed:
-
-```html
-@defer (on viewport) {
-  <app-heavy-chart [data]="chartData" />
-} @placeholder {
-  <div class="chart-skeleton"></div>
-}
-```
-
-The component code is not downloaded until the block enters the viewport (or on interaction, on idle, after a timer — many triggers available). Practical for dashboards with many charts or heavy third-party components.
-
----
-
-## Phase 2 — After 6–12 months of experience
-
-These require working in a real codebase to understand properly. The concepts make more sense once you have felt the pain they solve.
-
-### NgRx — global state management
-
-The Redux pattern for Angular. Used in large apps where many components across different pages need to share the same state. Still the dominant state management solution in enterprise Angular at NTT Data, Capgemini, and similar.
-
-Core concepts: `Store` (single source of truth), `Actions` (events that describe what happened), `Reducers` (pure functions that update state), `Effects` (handle side effects like HTTP calls), `Selectors` (derive data from the store).
-
-Why to wait: NgRx adds significant boilerplate and complexity. Without understanding why global state is needed (you will feel this in a large app), the pattern seems pointless. Learn it after you have worked in an app where signal-based services were not enough.
-
-The modern alternative: `@ngrx/signals` store — same ideas, signal-based, much less boilerplate. This is where new projects are heading.
-
-### `ControlValueAccessor` — custom form controls
-
-Interface that lets you build your own component and plug it into Angular's reactive form system — so it works with `formControlName`, `Validators`, and `mat-error` natively.
-
-Example use: a custom phone number input with country code, a star rating component, a date range picker — components that behave like a standard form field from the outside but have complex internal logic.
-
-Why to wait: you need solid reactive forms experience first. You also need to encounter a case where a native input is not enough — otherwise the abstraction feels unnecessary.
-
-### Angular animations module
-
-Angular has a built-in animation system based on Web Animations API: `trigger()`, `state()`, `transition()`, `animate()`. Used for route transitions, expanding panels, animating list items in and out.
-
-```typescript
-trigger('fadeIn', [
-  transition(':enter', [
-    style({ opacity: 0 }),
-    animate('200ms ease-in', style({ opacity: 1 }))
-  ])
-])
-```
-
-You already know CSS transitions and `@keyframes` — Angular animations are more powerful because they can be driven by component state and applied to route-level transitions. Relevant when the design requires coordinated animations across components.
-
----
-
-## Phase 3 — Mid-level (12–24 months)
-
-### `@ngrx/signals` store
-
-The modern replacement for NgRx Classic. Signal-based global state with much less boilerplate. This is what new Angular projects at consultancies will use going forward.
-
-```typescript
-const EmployeeStore = signalStore(
-  withState({ employees: [] as Employee[], isLoading: false }),
-  withMethods((store) => ({
-    loadEmployees: rxMethod<void>(/* ... */),
-  }))
-);
-```
-
-Learn NgRx Classic first to understand why the signals approach is better — the contrast makes it click.
-
-### Server-Side Rendering (SSR) with Angular
-
-Angular Universal is now integrated into the Angular CLI. SSR renders the page on the server before sending it to the browser — important for public-facing apps where SEO and first-contentful-paint matter.
-
-```bash
-ng new my-app --ssr
-```
-
-Not relevant for internal enterprise dashboards (which are behind auth and not indexed by search engines) but important for customer-facing Angular apps.
-
-### Micro-frontends
-
-Multiple Angular apps (or apps from different frameworks) that run inside one shell. Each team owns one "micro-app" and deploys it independently. Used in very large consultancy platforms where 10+ teams work on the same product.
-
-Tools: Webpack Module Federation (widely used), Native Federation (Angular-specific, modern).
-
-Why to wait: requires understanding deployment, build systems, and inter-team communication. Not a day-one topic — a senior track topic.
-
-### Performance profiling and optimization
-
-- `ng build --stats-json` + Webpack Bundle Analyzer — visualise what is in your bundle and where to cut
-- Angular DevTools — inspect change detection and component tree performance
-- `trackBy` in `@for` — prevent unnecessary DOM re-renders in large lists
-- `OnPush` + signals as the default — you already know this; applying it consistently matters at scale
-- Image optimization with `NgOptimizedImage` — lazy loads images, prevents layout shift
-
----
-
-## What NOT to study prematurely
-
-- **Webpack configuration** — Angular CLI abstracts this. Only relevant if you eject or need custom plugins. Rare.
-- **Custom Angular schematics** — CLI generators for your own patterns. Very senior, very niche.
-- **Angular Elements** — Package an Angular component as a Web Component for use outside Angular. Specialist use case.
-- **Zone.js internals** — The change detection mechanism Angular is moving away from. Signal-based Angular reduces dependency on it. Understanding it at a deep level is not needed at junior or mid level.
+- Bundle analysis and performance profiling — use Angular DevTools and build statistics to locate measured rendering or bundle bottlenecks before optimising
+- Custom webpack configuration — extend the CLI build only when a concrete unsupported integration justifies the maintenance cost
+- Custom Angular schematics — automate organisation-specific code generation after a team has stable conventions worth encoding
+- Zone.js internals and zoneless migration — study task patching and scheduling deeply when maintaining or migrating a large application's change-detection model
