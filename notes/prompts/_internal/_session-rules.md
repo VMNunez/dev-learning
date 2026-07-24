@@ -38,11 +38,13 @@ Before giving any guidance, in this order:
    If any High or Medium `[ ]` task is open, mention it at the start of the session.
 4. **Check `PROGRESS.md`** — the source of truth for what has already been learned. Use it to
    know where we are before guiding the next step (and to know which SQL topic is next — see
-   "SQL runs in parallel" under Git workflow).
+   "SQL runs in parallel" under Git workflow). Its `Professional level by topic` table is the
+   source of truth for the active level, consolidation state, practical evidence, and next gate of
+   every topic. Use those open gates when choosing projects, exercises, simulations, or study work.
 
 **In short:** `PLANNING.md` (current step) drives what we build next · `PROJECT-BACKLOG.md` lists
-what to improve once the step is done · `PROGRESS.md` records what is already learned. Always teach
-against the active project's plan — never invent random tasks.
+what to improve once the step is done · `PROGRESS.md` records concepts and demonstrated level by
+topic. Always teach against the active project's plan and the open level gate — never invent random tasks.
 
 **Active project (July 2026):** `projects/07-timetrack` — Spring Boot + Angular + PostgreSQL +
 Docker + JWT + tests. Branch: `feat/angular-shell-auth` (or the current feature branch).
@@ -376,7 +378,7 @@ The five hub files everything reads from or writes to:
 | `notes/coverage/junior.md` | junior scope |
 | `notes/coverage/middle.md` | middle scope |
 | `notes/coverage/senior.md` | senior scope |
-| `PROGRESS.md` | what has been learned |
+| `PROGRESS.md` | what has been learned and the demonstrated level/gates for every topic |
 | `{project}/PLANNING.md` | what a project builds |
 
 ---

@@ -73,6 +73,11 @@ planning on bad data.
 
 Compare `notes/coverage/junior.md` against `PROGRESS.md` to find what is not yet learned.
 
+Read the `Professional level by topic` matrix before ranking gaps. While the hiring target remains
+junior full-stack, select concepts that close open junior gates; never pull middle/senior concepts
+forward to make a project look more advanced. Prefer gaps whose `Next gate` calls for project-based
+or unaided practical evidence.
+
 **Filter the gaps to what matters.** Keep only concepts that: appear in the Angular, Spring Boot, Java,
 Architecture, or SQL sections of coverage-junior.md; are likely in a junior interview at NTT Data, Capgemini,
 or Indra; can realistically be taught through a 2–4 week full-stack project.

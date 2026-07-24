@@ -127,7 +127,7 @@ consume one of these sources of truth.
 | `notes/coverage/junior.md` | **junior scope** | `coverage-prompt`, `coverage-audit-prompt` | current notes/interview-prep audits, `plan-audit`, `roadmap-review`, `sql-exercises` |
 | `notes/coverage/middle.md` | **middle scope after junior consolidation** | `coverage-prompt`, `coverage-audit-prompt` | level-aware notes/interview-prep audits |
 | `notes/coverage/senior.md` | **senior scope after middle consolidation** | `coverage-prompt`, `coverage-audit-prompt` | level-aware notes/interview-prep audits |
-| `PROGRESS.md` | **what I have learned** | `progress-update-prompt` (+ the coding agent per step in session) | `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`, `sql-exercises` |
+| `PROGRESS.md` | **what I have learned and demonstrated level by topic** | `progress-update-prompt` (+ the coding agent per step in session) | `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`, `sql-exercises`, simulation/interview planning |
 | `{project}/PLANNING.md` | **what a project builds** | `plan-audit` | `readme-audit`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review` |
 
 ---

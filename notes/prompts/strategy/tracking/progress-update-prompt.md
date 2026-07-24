@@ -63,7 +63,7 @@ contract each project subagent follows and the shape of what it returns.
 
 Tracks: the projects table · per-project concept summaries (one paragraph each) · technology sections
 (the detailed concept list by topic: Angular, Java, Spring Boot, CSS, SQL…) · simulation progress ·
-complementary skills.
+complementary skills · the professional-level matrix by topic.
 
 Does NOT contain: explanations (→ notes/) · future learning (→ coverage-senior.md) · architecture or
 strategy (→ ROADMAP.md).
@@ -86,6 +86,9 @@ Read:
 2. The "Current study progress" and "Active project" lines of the shared session rules — general orientation only
    (which project is active). the shared session rules is already loaded into your context by the supported agent runtime; do **not**
    re-read the file. It is updated by hand and may lag; do not treat it as authoritative.
+3. For each topic row in `Professional level by topic`, inspect the selected level's persistent notes
+   plan and interview-prep fingerprint/run state at headings/status level only. These artifacts prove
+   consolidation; do not load their prose.
 
 Decide the project scope from `{MODE}`:
 - **active** — only the in-progress project (⏳). Find it in the PROGRESS.md projects table or the
@@ -280,6 +283,24 @@ All zeros if none — that makes it visible the block has not started.
 - Keep existing content — remove nothing unless factually wrong or a duplicate.
 - Do not reformat correct entries; do not expand entries — one line per concept, maximum.
 
+### D7 — Professional level by topic
+
+Refresh the matrix without duplicating coverage concepts:
+
+- `Knowledge consolidation`: count `complete` and total numbered entries in the active level's
+  persistent notes plan; report whether the selected-level Q&A fingerprint is current.
+- `Practical evidence`: preserve explicit evidence already recorded and add only verified project,
+  exercise, simulation, or unaided-recall evidence from this run.
+- `Next gate`: name the first unmet consolidation or practical condition.
+- Never promote `building` to `demonstrated` from file completion alone. Promotion requires all notes
+  entries complete, current selected-level Q&A, and at least one explicit unaided practical or
+  explanation check for that topic.
+- Never activate middle while junior is not demonstrated, or senior while middle is not demonstrated.
+- Middle promotion requires explicit autonomous ownership evidence. Senior promotion requires real
+  production, platform, or multi-team ownership; notes, interview prep, and personal projects alone
+  can never produce `Senior — demonstrated`.
+- If evidence is insufficient, keep the existing conservative level and state what remains open.
+
 ---
 
 ## Step E — Apply the edits and print the diff
@@ -293,6 +314,7 @@ went wrong. Then print:
 **Changes made:**
 | Section | Added | Corrected | Removed |
 |---------|-------|-----------|---------|
+| Professional level by topic | | | |
 | Projects table | | | |
 | Angular | | | |
 | Java | | | |

@@ -17,7 +17,7 @@ gap analysis → update living sections → apply → independent review) on top
 - `notes/coverage/junior.md` — SOURCE OF TRUTH for what Victor must learn. Every concept needed for a junior
   Angular + Spring Boot role at a Spanish consultancy.
 - `PROGRESS.md` — SOURCE OF TRUTH for what he has already learned. Project status, completed steps,
-  and concepts covered so far.
+  concepts covered so far, and demonstrated professional level by topic.
 - `ROADMAP.md` — the forward-looking strategy: the path from where he is to where he needs to be,
   through projects and study blocks. It **references** the other two — it does not repeat them.
 
@@ -49,6 +49,21 @@ once. Only change if something is factually wrong:
 - Project sequence (which project comes next and why)
 - SQL topic table (12:30 block)
 - Notes study order (13:30 block)
+- Level strategy gates when the target role or demonstrated-level matrix changes
+
+## Level-aware sequencing
+
+Before employment, ROADMAP prioritises a demonstrated junior full-stack baseline. Project, exercise,
+simulation, and study choices must close open junior gates from PROGRESS.md before importing middle
+scope. Backend specialisation is a post-job or evidence-triggered direction: Spring Boot, Java, SQL,
+Architecture, and Security may advance first once the role shows which depth matters, while frontend
+topics can remain maintained at demonstrated junior.
+
+Middle and senior are responsibility levels, not syllabus-completion badges: middle needs autonomous
+feature or service ownership, and senior needs production/platform or multi-team ownership.
+
+ROADMAP references the level matrix but never copies its per-topic statuses. PROGRESS owns current
+level; ROADMAP owns the strategy resulting from it.
 
 ---
 

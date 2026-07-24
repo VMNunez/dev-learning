@@ -5,6 +5,42 @@
 
 ---
 
+## Professional level by topic
+
+This table is the source of truth for Victor's **demonstrated level**, not merely which syllabus or
+files exist. Coverage defines the target; notes and interview prep consolidate it; projects,
+exercises, simulations, and unaided explanation demonstrate it.
+
+**Level labels:**
+
+- `Junior — building`: the junior scope is active, but at least one consolidation or practical gate remains open.
+- `Junior — demonstrated`: junior notes and Q&A are current and Victor has applied and explained the
+  topic without assistance.
+- `Middle — building/demonstrated`: available only after junior is demonstrated; demonstrated middle
+  additionally requires evidence of autonomous feature or service ownership.
+- `Senior — building/demonstrated`: available only after middle is demonstrated; senior cannot be
+  awarded from notes or personal projects alone—it requires production, platform, or multi-team ownership.
+
+| Topic | Current tracked level | Knowledge consolidation | Practical evidence | Next gate |
+|---|---|---|---|---|
+| Angular | Junior — building | Notes 0/9; junior Q&A pending full audit | Projects 01–06; project 07 frontend pending | Complete junior notes, Q&A, then an unaided Angular simulation |
+| Angular Material | Junior — building | Notes 0/14; shares Angular junior Q&A | Projects 05–06 | Complete junior notes and the Material sections of Angular Q&A |
+| Spring Boot | Junior — building | Notes 0/10; junior Q&A pending full audit | Project 07 backend | Complete junior notes/Q&A and rebuild one backend slice unaided |
+| Java | Junior — building | Notes 0/11; junior Q&A pending full audit | Applied in project 07 | Complete junior notes/Q&A and pass an unaided Java/Spring explanation check |
+| Architecture | Junior — building | Notes 0/7; junior Q&A pending full audit | Layered and coordinator patterns across projects | Complete junior notes/Q&A and defend project 07 decisions unaided |
+| Security | Junior — building | Notes 0/4; junior Q&A pending full audit | Guards/interceptors in project 06; JWT/RBAC in project 07 | Complete junior notes/Q&A and explain the auth flow unaided |
+| TypeScript | Junior — building | Notes 0/8; junior Q&A pending full audit | Projects 01–07 | Complete junior notes/Q&A and demonstrate typed implementation unaided |
+| SQL | Junior — building | Notes 0/10; junior Q&A pending full audit | PostgreSQL project work; exercises in progress | Complete junior notes/Q&A and pass the planned SQL reviews/simulation |
+| JavaScript | Junior — building | Notes 0/13; junior Q&A pending full audit | Applied throughout Angular projects | Complete junior notes/Q&A and pass an unaided fundamentals check |
+| CSS | Junior — building | Notes 0/16; junior Q&A pending full audit | Projects 01–06 | Complete junior notes/Q&A and reproduce a responsive layout unaided |
+| Git | Junior — building | Notes 0/8; junior Q&A pending full audit | Daily feature-branch workflow | Complete junior notes/Q&A and explain the collaboration workflow |
+| General | Junior — building | Notes 0/11; junior Q&A pending full audit | HTTP, testing, debugging, configuration across projects | Complete junior notes/Q&A and demonstrate the cross-cutting concepts |
+
+Promotion is evidence-based. Completing files alone never changes `building` to `demonstrated`;
+practical evidence alone also does not bypass incomplete or stale knowledge artifacts.
+
+---
+
 ## Projects
 
 | # | Project | Key concepts | Status | Live |

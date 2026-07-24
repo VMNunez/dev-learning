@@ -100,6 +100,36 @@ In order of impact:
 
 ---
 
+## Level strategy — junior breadth before specialisation
+
+The immediate hiring strategy is a **demonstrated junior full-stack baseline**, not premature
+middle/senior depth. `PROGRESS.md` owns the current level of every topic; this roadmap uses that matrix
+to decide what comes next without duplicating its statuses.
+
+Before the first developer job:
+
+1. Close the highest-risk junior gaps across Angular, Spring Boot, Java, Architecture, Security,
+   TypeScript, SQL, JavaScript, CSS, Git, and General.
+2. Prioritise Angular + Spring Boot + Java + Architecture + Security because they drive the target
+   full-stack role, while still bringing every supporting topic to a credible junior baseline.
+3. Choose projects, exercises, notes, interview sessions, and simulations from the **open junior
+   gates** in `PROGRESS.md`; do not introduce middle material merely because it is interesting.
+4. A topic reaches `Junior — demonstrated` only when knowledge consolidation and practical,
+   unaided evidence both pass.
+
+Backend is the intended long-term direction, but specialisation starts when real work, job postings,
+or repeated practical gaps provide evidence for it. After employment, backend topics may advance to
+middle first—Spring Boot, Java, SQL, Architecture, and Security—while frontend topics remain maintained
+at a demonstrated junior level. The job determines which backend depth is valuable; the roadmap does
+not guess it in advance.
+
+This produces two different decisions:
+
+- **Before employment:** maximise hireability through junior full-stack coverage and fluency.
+- **After employment:** deepen the topics the role actually rewards, with backend as the preferred path.
+
+---
+
 ## Phase plan
 
 | #   | Goal                                              | Project (08:00)                                                    | SQL → Practice (12:30)                                            | Interview prep (13:30)                        | Status     |
