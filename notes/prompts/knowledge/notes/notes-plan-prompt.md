@@ -3,6 +3,9 @@
 Create or reconcile the persistent study-file plan for one topic and one professional level.
 This prompt plans only. It never authors, reviews, translates, or commits study-note prose.
 
+> **▶ Run first:** `coverage-prompt` for this exact topic and level — the plan fingerprints that
+> coverage and refuses to proceed when the global mirror differs.
+
 ## Configuration
 
 ```text
@@ -12,6 +15,17 @@ MODE = [update | dry-run]
 ```
 
 One execution handles exactly one topic and one level. `TOPIC = all` is unsupported.
+
+## Runtime contract
+
+Before dispatching roles, read:
+
+- `notes/prompts/_internal/_agent-runtime-standard.md`
+- the active platform adapter
+
+Use canonical roles and reasoning tiers from the runtime standard. Any delegated analysis is
+read-only. If a required role cannot be dispatched, stop unless its instruction explicitly permits
+a local fallback.
 
 ## Paths
 
@@ -120,8 +134,10 @@ docs(notes): plan {topic} {level} study files
 Dry run prints the complete proposed plan and reconciliation summary without writing or committing.
 
 After the plan commit, execute `_pipeline-self-report.md`: write
-`_internal/_last-run-report-notes-plan.md`, update the selected `Plan J/M/S` tracker cell, and commit
-those two files together. Dry run does neither.
+`_internal/_last-run-report-notes-plan.md`, update the selected `Plan J/M/S` tracker cell, recalculate
+the matching Notes J/M/S summary as `complete entries / total entries`, and commit the report and
+tracker together. Dry run does not write `PLAN`, but it still writes and commits its self-report plus
+a `dry-run` tracker outcome without replacing the persisted denominator.
 
 ## Final report
 

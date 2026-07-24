@@ -1,6 +1,6 @@
 # Pipeline self-report — shared final step for every orchestrator
 
-**Internal component. Not runnable.** Every the coding agent-Code orchestrator ends its run by executing this
+**Internal component. Not runnable.** Every orchestrator ends its run by executing this
 step (its last section points here). The goal: each real run leaves behind evidence about **how the
 pipeline itself behaved**, so the prompts can be refined from what actually went wrong instead of
 theory. The prompts stay **frozen** between runs — a self-report showing a real failure is the only
@@ -63,6 +63,16 @@ lists, in order:
 **"Generates / updates"** cell as the list — **plus this run's own report file and `_run-tracker.md`**,
 which every run produces and the table deliberately does not repeat. Does each exist, and did *this run*
 write it?
+
+**Tracker outcome.** Every invocation updates `_run-tracker.md` once configuration and target
+resolution have succeeded, including `completed`, `blocked`, and `dry-run` outcomes. Use the
+orchestrator's existing target cell/row where one exists; otherwise use `## Global prompt
+executions`. Record the date, resolved target/mode, outcome, and a concise result. A blocked run names
+the failed gate, and a dry run never looks completed. If the orchestrator is `notes-audit`, also
+upsert one row in `## Notes file executions`, keyed by `TOPIC + LEVEL + NOTE`, with both resolved
+language paths, plan status, last outcome, and date. Recalculate the matching Notes J/M/S summary
+cell as `complete entries / total entries`; the notes plan remains the authority for which entries
+exist.
 
 **(b) The probe is `git status` *and* `git log`.** Most orchestrators commit before reaching this step
 (per file in `notes-audit`, per topic in `interview-prep-audit`, the inbox in `coverage-prompt`), so a

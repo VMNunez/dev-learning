@@ -38,6 +38,16 @@ the role split. Correct isolation matters more than reproducing a historical mod
 - If a role cannot be dispatched, the orchestrator performs the role locally only when the prompt
   explicitly permits a single-agent fallback; otherwise stop without partial commits.
 
+## Runnable close-out contract
+
+Every runnable entry point ends through its declared `_pipeline-self-report.md` or
+`_single-shot-self-report.md`. After configuration and target resolution, an instruction to `stop`
+means stop content work, record the failed gate as `blocked`, and execute that close-out; it does not
+mean silently abandon the run. Successful dry runs close out as `dry-run`. Only a run that satisfies
+its content acceptance gates closes out as `completed`. The report and `_run-tracker.md` update are
+execution evidence, not target artifacts, so they are still written and committed for blocked and
+dry-run outcomes.
+
 ## Runtime mappings
 
 ### Claude Code
@@ -65,4 +75,3 @@ The runtime never changes who owns an artifact:
 - A dry run never commits target artifacts.
 - Before every authorized commit, inspect status immediately before staging and immediately before
   committing. Stage only the declared outputs.
-

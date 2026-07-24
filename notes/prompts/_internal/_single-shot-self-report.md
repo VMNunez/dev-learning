@@ -1,7 +1,7 @@
 # Single-shot self-report — shared final step for every non-orchestrator prompt
 
-**Internal component. Not runnable.** Twelve of the 24 runnable prompts end by executing this step; the
-other twelve end by executing `_pipeline-self-report.md`. Same purpose: each real run
+**Internal component. Not runnable.** Twelve of the 25 runnable prompts end by executing this step; the
+other thirteen end by executing `_pipeline-self-report.md`. Same purpose: each real run
 leaves evidence about **how the prompt itself behaved**, so it improves from what went wrong instead of
 from theory. Prompts stay **frozen** between runs — a report showing a real failure is the only thing
 that reopens one.
@@ -42,6 +42,13 @@ them against disk does not depend on remembering.
 
 Write `_last-run-report-<prompt-name>.md` in **this prompt's family `_internal/` folder**, overwriting
 the previous one.
+
+Update `notes/prompts/_internal/_run-tracker.md` in the same close-out. Every invocation gets a
+tracker record once its configuration is resolved, including `completed`, `blocked`, and `dry-run`
+outcomes. Update this prompt's row in `## Single-shot prompt executions` with the date, resolved
+target/mode, outcome, and a concise result. A blocked run records the blocking gate; a dry run records
+what was inspected without implying that outputs were written. Never turn a failed run into
+`completed` merely because its report and tracker update succeeded.
 
 Header: today's date · the run's configuration (the resolved key values) · a **`Status:` line** —
 `open` if the Verdict names a change nobody has applied yet, `applied in <hash>` once the prompt has
@@ -118,7 +125,10 @@ the war-story belongs in the report, not in the prompt.
 
 **Commit flow.** Apply the approved edit, commit it alone (`docs: <prompt> — refine from the run that
 just finished`), read the hash from `git log` (never memory), set the report's `Status: applied in
-<hash>`, and commit the report again. Print one line naming what went in and one naming what came out.
+<hash>`, and commit the report plus tracker together. When no prompt edit is approved, commit the
+report plus tracker as the run record. Immediately before staging and immediately before committing,
+run `git status`; stage only those declared paths. Print one line naming what went in and one naming
+what came out.
 
 ## Step 5 — Run-start check (this prompt's step 0, not its last)
 
