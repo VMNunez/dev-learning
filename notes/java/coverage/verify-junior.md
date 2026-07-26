@@ -1,7 +1,7 @@
 # Coverage Verify — Java junior
 
-Verdict: superseded
-Coverage SHA-256: 212137ab34b0e8e99b6c2259206921868f3ec1f241077afeee63bd0ac46692d0
+Verdict: complete
+Coverage SHA-256: 4c9d4cc95f4edfde8378c8fdb98ebfe521cae8344eb43202dd463702edce3245
 Verified: 2026-07-26
 
 ## Open gaps
