@@ -532,6 +532,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 ### Collections and generics
 
 - Arrays vs collections — arrays have a fixed length and indexed elements, while collection APIs provide resizable and semantic data structures
+- Array access and bounds — index elements with `[i]` and read length via the `.length` field (a field, not a method, unlike `String.length()` or `List.size()`), knowing that an out-of-range index throws `ArrayIndexOutOfBoundsException`
 - `List` — preserve encounter order and allow duplicates when position or sequence matters
 - `Set` — represent unique elements when duplicates have no meaning
 - `Map` — associate unique keys with values and distinguish missing keys from keys explicitly mapped to `null`
