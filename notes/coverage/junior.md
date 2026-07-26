@@ -500,6 +500,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Interface vs abstract class — interfaces support multiple contract inheritance and default behaviour, while abstract classes can also provide constructors and shared instance state
 - Default methods — an interface may provide inherited behaviour while preserving the implementing class's ability to override it
 - Multiple interfaces — one class can satisfy several contracts even though it can extend only one class
+- Anonymous inner classes — recognise inline implementations such as `new Runnable() {...}` or `new Comparator<>() {...}` in maintained code and read them as the pre-lambda form of a functional-interface or abstract-type instance
 - `@Override` — ask the compiler to verify that a method really implements or overrides an inherited declaration
 - Overriding vs overloading — overriding replaces inherited instance behaviour at runtime; overloading selects among different parameter lists at compile time
 - `instanceof` and pattern variables — test a runtime type before using subtype behaviour without an unsafe cast
@@ -519,8 +520,10 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 ### Strings and decimal values
 
 - String immutability — String operations return new values rather than modifying the original object
+- Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code
 - `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
 - `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
+- String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException`
 - `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings
 - Floating-point representation and comparison — `double` and `float` cannot represent most decimals exactly, so `==` between them is unreliable and `NaN` is never equal to itself, which is why floating-point equality needs a tolerance or `BigDecimal`
 - Integer vs floating-point division by zero — integer division by zero throws `ArithmeticException`, while floating-point division by zero produces `Infinity` or `NaN` instead of failing
@@ -533,6 +536,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `Set` — represent unique elements when duplicates have no meaning
 - `Map` — associate unique keys with values and distinguish missing keys from keys explicitly mapped to `null`
 - `ArrayList`, `HashSet`, and `HashMap` — recognise the normal general-purpose implementations for list, set, and map semantics
+- Map accumulator idioms — use `getOrDefault` and `computeIfAbsent` for the common count-or-group pattern instead of manual get-check-put null handling
 - Collection interfaces vs implementations — declare the weakest useful contract such as `List` while choosing a concrete implementation such as `ArrayList` at construction
 - Collection factories and copies — `List.of`, `Set.of`, and `Map.of` reject nulls and return unmodifiable collections, which still does not make mutable elements deeply immutable
 - `ArrayList` vs `LinkedList` — prefer `ArrayList` for normal application access; linked nodes do not make locating a middle position constant-time
