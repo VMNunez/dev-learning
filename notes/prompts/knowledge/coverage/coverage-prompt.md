@@ -49,6 +49,27 @@ Count lines before every whole-file read and read to EOF:
 
 For Spring Boot, also inspect Java coverage headings and `notes/spring-boot/layer-reference.md`.
 
+## Run scope — full recalibration or consuming verify gaps
+
+This prompt has two shapes; Step 0 fixes which one and records it in the plan.
+
+**Full recalibration** (default) runs every step. Use it whenever this topic/level coverage does not yet exist, any recalibration trigger is active — a roadmap, market, or standard change, an unresolved recommendation, or a pending `_cross-topic-inbox.md` entry under this topic — or you are unsure.
+
+**Verify-gap fast path** applies only when all of these hold:
+
+- `verify-{LEVEL}.md` exists with `Verdict: gaps` and a non-empty `## Open gaps`;
+- its stored `Coverage SHA-256` matches the current `TARGET_FILE`, so the gaps were raised against today's bytes;
+- no `_cross-topic-inbox.md` entry is pending under this topic;
+- no other recalibration trigger is active.
+
+Its purpose is to not re-derive the whole market floor just to add an already-verified gap: the floor was set when this coverage was built, and `verify` already read the file to EOF under the market-floor lens to raise the gap. It changes exactly three steps:
+
+- **Step 1 is skipped** — the floor is not re-derived.
+- **Step 2 is scoped to the open gaps** — judge each open gap exactly as Step 2 already mandates (record add/discard), plus any single move an accepted gap forces; do not re-classify every existing item.
+- **Step 4 dispatches one cold reviewer**, scoped to the added and moved items: placement, ownership, duplication across the three level files, and factual accuracy.
+
+Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, the Step 5 mirror rebuild and validation, and the Step 6 commits and self-report — runs unchanged. The "verify gaps are proposals, never pre-approved" rule is never relaxed. When unsure whether a trigger is active, run the full recalibration. The runtime contract's stop-on-dispatch-failure rule applies to the roles the selected scope actually dispatches; a scope that does not dispatch the market analyst or the second reviewer is not a fallback and does not trip that rule.
+
 ## Step 0 — Guards and plan
 
 1. Stop on `main`.
@@ -59,8 +80,12 @@ For Spring Boot, also inspect Java coverage headings and `notes/spring-boot/laye
 6. For middle, inspect junior progression evidence. For senior, inspect both junior and middle
    progression evidence. Mapping a later level is allowed before consolidation; downstream authoring is not.
    State the current gate explicitly.
+7. Determine the run scope (full recalibration or verify-gap fast path — see "Run scope" above) and
+   record it in the plan; when unsure, choose full recalibration.
 
 ## Step 1 — Establish the level floor
+
+*Skipped in the verify-gap fast path (see Run scope).*
 
 Dispatch one cold market analyst. It receives only the target role, selected level, standard, relevant evidence, and this mandate:
 
@@ -78,6 +103,8 @@ Acceptance proof:
 Re-dispatch once if proof is missing.
 
 ## Step 2 — Classify the existing topic
+
+*In the verify-gap fast path this is scoped to the open gaps only (see Run scope).*
 
 Read all three topic files to EOF and classify every existing item:
 
@@ -103,6 +130,8 @@ Before closing the draft, run an adversarial pass. Stop when it yields only dupl
 ## Step 4 — Cold final review
 
 Dispatch two cold reviewers after the draft exists.
+
+*In the verify-gap fast path, dispatch one scoped reviewer instead (see Run scope).*
 
 ### Reviewer A — level calibration
 
@@ -174,6 +203,7 @@ Coverage J/M/S cell in `_internal/_run-tracker.md`.
 Report:
 
 - branch, mode, topic, and level;
+- run scope (full recalibration or verify-gap fast path);
 - progression-gate state;
 - selected file lines/items before and after;
 - all whole-file EOF confirmations;
