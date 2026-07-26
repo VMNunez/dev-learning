@@ -49,7 +49,8 @@
       "Bash(awk '/^## /{if\\(s!=\"\"\\)print c\" -- \"s; s=$0; c=0; next} /^- /{c++} END{print c\" -- \"s}' notes/css/coverage/junior.md)",
       "Bash(awk '$1<3 || $1>12 {print \"VIOLATION: \"$0} END{print \"checked\"}')",
       "Bash(java -version)",
-      "Bash(javac -version)"
+      "Bash(javac -version)",
+      "Bash(grep -nE \"^\\\\s*- \\\\[ \\\\]|^\\\\s*\\\\d+\\\\. |^\\\\s*\\\\`\\\\`\\\\`\" notes/java/coverage/junior.md)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Victor\\AppData\\Local\\Temp\\claude\\c--Users-Victor-Documents-main-dev-learning\\9e52193b-28aa-4145-95e5-a53c43613507\\scratchpad"
