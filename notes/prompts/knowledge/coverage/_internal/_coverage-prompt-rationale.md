@@ -7,15 +7,39 @@ It exists because the prompt grew by accretion — every run appended its lesson
 paragraph next to the rule it produced, until roughly half the file was history rather than
 instruction. Splitting them keeps the prompt executable and keeps the evidence intact.
 
-**How to use it.** The prompt carries the rule; each rule that came from a real incident carries a
-`(why: R-n)` pointer to the entry here. You do **not** need to read this file to execute a run.
-Read the relevant entry when you are tempted to weaken, skip, or "simplify" a rule — every one of
-these was written because a run already tried that and paid for it. A rule whose rationale you
-cannot find here is a rule nobody has yet had to learn the hard way; treat it as provisional.
+**How to use it.** You do **not** need to read this file to execute a run. Read the relevant entry
+when you are tempted to weaken, skip, or "simplify" a rule — every one of these was written because a
+run already tried that and paid for it. A rule whose rationale you cannot find here is a rule nobody
+has yet had to learn the hard way; treat it as provisional.
 
 **How to add to it.** When a run's self-report surfaces a failure that changes the prompt, add a new
-`R-n` entry here with the date and the concrete cost, and put only the rule plus its pointer in the
-prompt. Never inline a new war story back into the prompt.
+`R-n` entry here with the date and the concrete cost. Never inline a war story back into the prompt.
+
+---
+
+## Restructure note — `coverage-prompt` no longer uses the angle engine
+
+**Read this before any R-n entry.** `coverage-prompt.md` was restructured after these entries were
+written. The old prompt generated items by fanning out **6–7 uncapped "angles"** and reconciled them
+through a `Step 4a/4b/4c` sync into a **single** `notes/coverage.md` mirror. That engine is the reason
+coverage grew without bound and mixed seniority levels — the exact failure that motivated the redesign.
+The current prompt instead uses **one cold market analyst + two cold reviewers** (calibration and
+ownership) against **three per-level mirrors** (`notes/coverage/{junior|middle|senior}.md`), with a
+qualitative stopping rule and no numeric budget. It carries **no `(why: R-n)` pointers**.
+
+So the entries below are evidence, not all of them live rules. They are **kept intact** — the war
+stories are permanent — but each has a current status. Some depth lessons did not die; they **migrated
+to `coverage-verify`** (the completeness gate), whose mechanism-layer and inheriting-code lenses are
+R5–R7 in a bounded, verification-only form rather than an unbounded generator.
+
+| Status | Meaning | Entries |
+|---|---|---|
+| **LIVE** | still describes a rule in the current `coverage-prompt` | R1, R2, R3, R9, R10, R11, R13, R16, R18, R19, R20, R21, R22 |
+| **MIGRATED → `coverage-verify`** | the lesson survives as a bounded lens in the gate, not the generator | R5, R6, R7 |
+| **HISTORICAL — angle era, retired** | tied to the removed angle engine, `Step 4a-c` sync, or the single mirror | R4, R8, R12, R14, R15, R17, R23, R24 |
+
+When you next refine `coverage-prompt` from a real run, retag any entry this list gets wrong — the map
+is maintained, the prose beneath it is not rewritten.
 
 ---
 
