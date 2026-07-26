@@ -47,3 +47,7 @@ is still the source, and the owning topic's three level files remain its only sc
 ## Git
 
 *(Empty — the three items routed from the General run on 2026-07-19 were all consumed and added by the Git coverage run the same day.)*
+
+## General
+
+- Jackson ownership boundary (proposed level: junior · source run: Spring Boot junior coverage, 2026-07-26) — `notes/coverage/junior.md` currently carries under General: "Jackson — Spring Boot uses Jackson automatically to convert between JSON and Java objects; `@RestController` triggers automatic serialization without any configuration". Per the standard, General owns *neutral* JSON while Spring Boot owns the framework's message conversion; Spring Boot junior already owns "HTTP message conversion and Jackson" plus the response-shaping and deserialization-requirement items. The General item should be narrowed to neutral JSON (or removed as a Spring Boot duplicate) when the General topic next runs.
