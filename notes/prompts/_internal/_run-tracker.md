@@ -25,7 +25,7 @@ is the first retained execution.
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Angular | | | | | | | | | | | | | | | | | | |
 | Angular Material | | | | | | | | | | | | | | | | | | |
-| Spring Boot | 2026-07-26 — completed — 130 items; full recalibration; mirror parity; notes plan stale | | 2026-07-24 — completed — 11 entries; 103 concepts; mirror parity | 0/11 complete — completed | | | | | | | | | | | | | | |
+| Spring Boot | 2026-07-26 — completed — 130 items; full recalibration; mirror parity; notes plan stale | 2026-07-26 — gaps — 3 verified gaps; SHA 2de211f1; notes-plan blocked pending coverage-prompt update | 2026-07-24 — completed — 11 entries; 103 concepts; mirror parity | 0/11 complete — completed | | | | | | | | | | | | | | |
 | Java | 2026-07-26 — completed — 121 items; consumed array-access gap (fast path); mirror parity; notes plan stale | 2026-07-26 — complete — 121 items pass strict bar; SHA 4c9d4cc9 matches coverage; notes-plan unblocked | 2026-07-26 — completed — 16 entries; 121 concepts; 0 create / 16 audit; mirror parity; cold review applied | 0/16 complete — completed | | | | | | | | | | | | | | |
 | Architecture | | | | | | | | | | | | | | | | | | |
 | Security | | | | | | | | | | | | | | | | | | |
