@@ -451,7 +451,6 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 ---
 
 ## Java
-# Junior Coverage — Java
 
 Java language and core-library concepts needed to read, write, test, and debug ordinary Spring Boot application code.
 Framework behaviour remains in Spring Boot coverage; examples here may use Spring-shaped classes when they expose a Java mechanism.
@@ -468,6 +467,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Integer arithmetic — recognise integer division, overflow, and the need to promote an operand when fractional or wider arithmetic is required
 - Operators and short-circuit evaluation — use arithmetic, comparison, logical, and assignment operators and explain why `&&` and `||` may skip the right operand
 - `if` / `else` — select one branch from boolean conditions and order conditions so specific or exceptional cases are not hidden by broader ones
+- Conditional (ternary) operator — `condition ? a : b` chooses one of two values as an expression, unlike an `if` / `else` statement, which does not itself produce a value
 - `for`, enhanced `for`, `while`, and `do-while` — choose counted iteration, element traversal, pre-checked repetition, or post-checked repetition according to the loop contract
 - `break`, `continue`, and `return` — distinguish leaving a loop, skipping to its next iteration, and leaving the current method
 - Classic `switch` fall-through — without `break`, a matching statement case continues into later cases and can create a hidden logic bug
@@ -480,6 +480,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Java pass-by-value — every argument is copied; for an object the copied value is a reference, so a method can mutate that object but cannot replace the caller's variable
 - Call stack and method returns — each call creates a frame holding its local state, and returning or throwing removes frames toward the caller
 - Overloading — methods share a name but have different parameter lists, and the compiler selects the applicable signature
+- Varargs — a `Type...` parameter accepts zero or more arguments collected into an array and must be the last parameter, as seen in APIs such as `List.of` and `String.format`
 - Constructor defaults and chaining — recognise when Java supplies a no-argument constructor, chain overloads with `this(...)`, and initialise the superclass first through `super(...)`
 - `static` vs instance members — static state and behaviour belong to the class, while instance members require a particular object
 - Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
@@ -492,8 +493,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `this` — refer to the current instance and disambiguate a field from a parameter with the same name
 - Encapsulation — keep representation private and expose behaviour or controlled access so callers cannot bypass class invariants
 - Access modifiers — distinguish `public`, `protected`, package-private, and `private` visibility when reading code across packages and hierarchies
-- `final` variables, fields, methods, and classes — prevent reassignment, overriding, or inheritance as applicable; a final reference does not make its object immutable
-- `private final` fields — a constructor can assign the reference once and later methods cannot replace it, although the referenced object may still be mutable
+- `final` variables, fields, methods, and classes — prevent reassignment, overriding, or inheritance as applicable; a final field must be assigned exactly once (typically in the constructor), yet a final reference still does not make its object immutable
 - Inheritance vs composition — inheritance models an is-a relationship, while composition builds behaviour from has-a collaborators and avoids unnecessary coupling
 - Polymorphism and dynamic dispatch — a parent or interface reference can hold different implementations, and an overridden instance method is selected from the runtime object
 - Interfaces — define a contract that unrelated classes can implement and allow callers to depend on behaviour rather than one concrete class
@@ -565,6 +565,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `findFirst`, `anyMatch`, and `allMatch` — express search and predicate checks with the appropriate Optional or boolean result
 - Stream side effects vs loops — keep stream transformations side-effect free and choose a loop when stateful branching or early control flow is clearer
 - `Stream.toList()` vs `Collectors.toList()` — `Stream.toList()` returns an unmodifiable list, while `Collectors.toList()` makes no mutability guarantee
+- `Collectors.joining` and `Collectors.toMap` — gather a stream into a delimited String or a key/value map, leaving multi-level grouping to a later level
 
 ### Exceptions and diagnostics
 
@@ -585,9 +586,10 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Annotation metadata — understand that an annotation records metadata and that its target and retention determine where it may appear and whether runtime tools can inspect it
 - Reading unfamiliar annotations — consult the annotation's documented contract and recognise whether the compiler, a runtime framework, or another tool processes it
 
-### Date, decimal, and API literacy
+### Date, time, and API literacy
 
 - `LocalDate`, `LocalDateTime`, and `Instant` — choose a calendar date, timezone-free local date-time, or exact UTC timeline point according to the business contract
+- `Duration` vs `Period` — measure an elapsed time-based amount with `Duration` and a calendar date-based amount with `Period`, rather than computing intervals by hand
 - Date-time immutability and formatting — use `java.time` and `DateTimeFormatter` instead of mutable legacy date APIs and ambiguous hand-built strings
 - Javadoc and API signatures — navigate official API documentation and infer required arguments, return types, exceptions, and generic contracts
 
