@@ -9,7 +9,6 @@ Concepts expected from a Spring Boot developer who owns production behaviour bey
 - Multiple security chains — order matcher-specific `SecurityFilterChain` beans when one application exposes genuinely different security boundaries
 - Filter dispatch control — decide whether a `OncePerRequestFilter` participates in async or error dispatches and test those paths explicitly
 - MVC method-validation models — align exception handling with built-in method validation or the older AOP-based `@Validated` path when maintaining mixed framework generations
-- `AuthenticationEntryPoint` and `AccessDeniedHandler` — control unauthenticated and forbidden responses at the security boundary
 - Spring Boot Actuator — expose and secure health, metrics, and diagnostic endpoints for operations
 - Application caching — place `@Cacheable`, eviction, and cache keys around stable reads without serving stale business state
 - OpenAPI contract maintenance — keep generated documentation aligned with validation, error responses, and consumer-visible DTOs
