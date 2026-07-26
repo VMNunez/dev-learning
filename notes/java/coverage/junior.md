@@ -70,6 +70,8 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
 - `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
 - `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings
+- Floating-point representation and comparison — `double` and `float` cannot represent most decimals exactly, so `==` between them is unreliable and `NaN` is never equal to itself, which is why floating-point equality needs a tolerance or `BigDecimal`
+- Integer vs floating-point division by zero — integer division by zero throws `ArithmeticException`, while floating-point division by zero produces `Infinity` or `NaN` instead of failing
 - `BigDecimal` for money and decimal arithmetic — avoid binary floating-point error, remember operations return new values, and choose explicit scale and rounding for division
 
 ## Collections and generics
