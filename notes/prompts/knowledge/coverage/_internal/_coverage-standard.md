@@ -10,7 +10,7 @@ Every topic owns three non-overlapping scope files:
 - `coverage/middle.md` — the next professional level: concepts expected once the junior foundation is complete and the developer works with growing autonomy.
 - `coverage/senior.md` — concepts expected at senior level, including multi-team ownership, deep production diagnosis, platform concerns, and justified specialisation.
 
-Two global mirrors provide cross-topic analysis:
+Three global mirrors — one per level — provide cross-topic analysis:
 
 - `notes/coverage/junior.md`
 - `notes/coverage/middle.md`
