@@ -4,7 +4,20 @@ Plan status: current
 Coverage: notes/java/coverage/junior.md
 Coverage SHA-256: 4c9d4cc95f4edfde8378c8fdb98ebfe521cae8344eb43202dd463702edce3245
 Generated: 2026-07-26
-Study order: the entry number is the reading order, 00 → 15. Three legacy filenames do not match it — entry 04 uses `15-memory-model.md`, entry 08 uses `10-generics.md`, and entry 09 uses `07-collections.md`. The files are not renumbered because renaming existing bilingual notes is outside this planner's authority.
+Study order: the entry number is the reading order, 00 → 15. It is **not** the number in the filename. Only entries 00–03 coincide; from entry 04 onward the filenames are legacy and must be read from the `English:` / `Spanish:` line of each entry, never guessed from the number. Two causes: `15-memory-model.md` was promoted to entry 04, which shifts every later file one place behind its entry; and generics/collections are swapped relative to the filenames, so entry 08 reads `10-generics.md` and entry 09 reads `07-collections.md`. Full correspondence:
+
+| Entry | English file | Entry | English file |
+| --- | --- | --- | --- |
+| 00 | `00-intro-java.md` | 08 | `10-generics.md` |
+| 01 | `01-variables-types.md` | 09 | `07-collections.md` |
+| 02 | `02-control-flow.md` | 10 | `08-exceptions.md` |
+| 03 | `03-methods.md` | 11 | `09-streams-lambdas.md` |
+| 04 | `15-memory-model.md` | 12 | `11-enums.md` |
+| 05 | `04-oop-classes.md` | 13 | `12-dates.md` |
+| 06 | `05-interfaces-abstract.md` | 14 | `13-annotations.md` |
+| 07 | `06-inheritance-polymorphism.md` | 15 | `14-maven.md` |
+
+The files are not renumbered because renaming existing bilingual notes is outside this planner's authority.
 
 ## 00 — Java execution foundations
 
