@@ -21,20 +21,20 @@ is the first retained execution.
 
 ## Per-topic prompts
 
-| Topic | Coverage J | Plan J | Notes J | Interview J | Sync J | Coverage M | Plan M | Notes M | Interview M | Sync M | Coverage S | Plan S | Notes S | Interview S | Sync S |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Angular | | | | | | | | | | | | | | | |
-| Angular Material | | | | | | | | | | | | | | | |
-| Spring Boot | 2026-07-24 — completed — 103 items; mirror parity; notes plan stale | 2026-07-24 — completed — 11 entries; 103 concepts; mirror parity | 0/11 complete — completed | | | | | | | | | | | | | |
-| Java | 2026-07-24 — completed — 111 items; mirror parity; notes plan current | 2026-07-24 — blocked — legacy notes require split before plan reconciliation | 1/15 complete — blocked | | | | | | | | | | | | |
-| Architecture | | | | | | | | | | | | | | | |
-| Security | | | | | | | | | | | | | | | |
-| TypeScript | | | | | | | | | | | | | | | |
-| JavaScript | | | | | | | | | | | | | | | |
-| CSS | | | | | | | | | | | | | | | |
-| SQL | | | | | | | | | | | | | | | |
-| Git | | | | | | | | | | | | | | | |
-| General | | | | | | | | | | | | | | | |
+| Topic | Coverage J | Verify J | Plan J | Notes J | Interview J | Sync J | Coverage M | Verify M | Plan M | Notes M | Interview M | Sync M | Coverage S | Verify S | Plan S | Notes S | Interview S | Sync S |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Angular | | | | | | | | | | | | | | | | | | |
+| Angular Material | | | | | | | | | | | | | | | | | | |
+| Spring Boot | 2026-07-24 — completed — 103 items; mirror parity; notes plan stale | | 2026-07-24 — completed — 11 entries; 103 concepts; mirror parity | 0/11 complete — completed | | | | | | | | | | | | | | |
+| Java | 2026-07-24 — completed — 111 items; mirror parity; notes plan current | | 2026-07-24 — blocked — 15-entry plan approved; commit unavailable | 0/15 complete — blocked | | | | | | | | | | | | | | |
+| Architecture | | | | | | | | | | | | | | | | | | |
+| Security | | | | | | | | | | | | | | | | | | |
+| TypeScript | | | | | | | | | | | | | | | | | | |
+| JavaScript | | | | | | | | | | | | | | | | | | |
+| CSS | | | | | | | | | | | | | | | | | | |
+| SQL | | | | | | | | | | | | | | | | | | |
+| Git | | | | | | | | | | | | | | | | | | |
+| General | | | | | | | | | | | | | | | | | | |
 
 Columns are grouped by level (J, then M, then S), with Coverage → Plan → Notes → Interview → Sync
 inside each level. The Notes J/M/S cells are summaries, written as `X/Y complete` plus the last outcome. Their denominator

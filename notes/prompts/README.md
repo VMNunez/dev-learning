@@ -31,7 +31,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 - **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
   before dispatching any role.
 
-Both launcher catalogs contain exactly 25 files and must reference the same 25 canonical entry points.
+Both launcher catalogs contain exactly 26 files and must reference the same 26 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt.
 
 ---
@@ -55,12 +55,12 @@ the filenames anyway, so a file keeps its marking if it is ever moved or quoted 
 
 **Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 25 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 26 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation, or just use its slash command. **25 files, listed below.**
+  conversation, or just use its slash command. **26 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
   "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -70,23 +70,23 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 25 runnable prompts — each with a slash command of the same name
+### The 26 runnable prompts — each with a slash command of the same name
 
 | Group | Prompts |
 |---|---|
-| Knowledge | `coverage-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
+| Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
 | Projects | `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
 | Practice | `sql-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
 
-Two flavors among these 25, both launched the same way (paste config into a new chat):
+Two flavors among these 26, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
   `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt`,
-  `notes-plan-prompt`, and `sql-plan-audit` (they run the orchestrator contract even when the target
-  is singular) — run entirely inside a supported agent runtime and hand you a finished result (and,
-  where noted, a commit) with no further input from you. **Thirteen prompts**, and the set is defined by
-  which self-report they run: these thirteen execute `_pipeline-self-report.md`.
+  `coverage-verify-prompt`, `notes-plan-prompt`, and `sql-plan-audit` (they run the orchestrator contract
+  even when the target is singular) — run entirely inside a supported agent runtime and hand you a
+  finished result (and, where noted, a commit) with no further input from you. **Fourteen prompts**, and
+  the set is defined by which self-report they run: these fourteen execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
@@ -145,6 +145,7 @@ consume one of these sources of truth.
 | `knowledge/coverage/_cross-topic-inbox.md` | *Internal.* The **durable handoff** between coverage runs: when a run finds a gap owned by another topic, it files the item here under that topic instead of only mentioning it in a summary. Every coverage run reads its own heading at Step 1 and clears what it consumed; `coverage-audit` sweeps all headings. Not runnable. | — | — |
 | `knowledge/coverage/_coverage-prompt-rationale.md` | *Internal.* The **evidence behind the rules** in `coverage-prompt.md` — each real run's failure, what it cost, and the worked example, as numbered `R-n` entries the prompt points at. Keeps the prompt executable while the history stays intact. Read an entry before weakening or skipping the rule it justifies; a run's self-report adds new entries here, never inline in the prompt. Not runnable. | — | — |
 | `knowledge/coverage/coverage-prompt.md` | Defines one topic at one selected level (`junior`, `middle`, or `senior`). One cold market analyst establishes the real competency floor and two cold reviewers challenge level calibration, factual quality, and ownership. There are no numeric budgets. One execution handles exactly one topic; `all` is unsupported, so Angular and Angular Material always run separately. | `_coverage-standard.md`, `ROADMAP.md`, `_job-market-evidence.md`, all three topic level files, `_cross-topic-inbox.md` | `notes/{topic}/coverage/{LEVEL}.md`, syncs `notes/coverage/{LEVEL}.md`, and moves concepts between level files when required |
+| `knowledge/coverage/coverage-verify-prompt.md` | Completeness gate for one topic at one level, run **after** `coverage-prompt` and **before** `notes-plan`. Read-only over coverage: one cold reviewer judges whether the generated file, mastered alone, covers the job target — market floor, the mechanism layer for language topics, the inheriting-code surface for stack topics, and objective fit — and it emits a verdict plus a durable findings file stamped with the coverage SHA. A `gaps` verdict blocks `notes-plan`; the findings feed back into `coverage-prompt` update. | `_coverage-standard.md`, `ROADMAP.md`, `_job-market-evidence.md`, the selected topic level file and both siblings | `notes/{topic}/coverage/verify-{LEVEL}.md` (verdict + findings), its `_internal/_last-run-report-coverage-verify.md`, and the Verify J/M/S tracker cell |
 | `knowledge/coverage/coverage-audit-prompt.md` | Global convergence pass for one selected level after every topic has run `coverage-prompt` for that level. Audits market fit, fundamentals, level boundaries, ownership, and missing topics. | `_coverage-standard.md`, all three global mirrors and topic level files, `_job-market-evidence.md`, `ROADMAP.md` | the selected global mirror plus justified cross-level moves; flags new topics for separate coverage-prompt runs |
 | `knowledge/coverage/evidence-intake-prompt.md` | Nourishes `notes/prompts/_internal/_job-market-evidence.md`: `paste` mode adds full offers you provide, `search` mode web-searches a batch of current Spanish junior postings; both append Raw-posting blocks, re-tally the Synthesis, and commit. Run it whenever you see real postings. | `_job-market-evidence.md`, `_coverage-standard.md`, `ROADMAP.md` | `notes/prompts/_internal/_job-market-evidence.md` (new Raw-posting blocks **and** the re-tallied Synthesis — appending without re-tallying is a skipped step), its row in `_internal/_run-tracker.md` |
 | `knowledge/notes/notes-plan-prompt.md` | Persistent pedagogical planner for exactly one topic and level. Classifies legacy bilingual notes, maps every selected-level coverage concept exactly once, gives each chapter a learning outcome/prerequisites/must-answer questions/handoff, enforces the `00` introduction contract, and runs one cold learning-sequence review before fingerprinting the plan. | all three topic coverages, selected mirror, existing notes across all three levels, `_note-quality-standard.md` | `notes/{topic}/coverage/notes-plan-{LEVEL}.md` plus any verified bilingual relocations and affected plan-path reconciliations |
@@ -237,6 +238,10 @@ Each generated file, with who writes it and who depends on it:
   `coverage-prompt` / `coverage-audit-prompt`. Level-aware notes and interview-prep consume the selected
   mirror; current project planning, roadmap review, and SQL practice intentionally consume junior.
   *Coverage is the root — downstream work assumes the selected level is correct.*
+- **`notes/{topic}/coverage/verify-{LEVEL}.md`** — written by `coverage-verify` (verdict + findings,
+  stamped with the coverage SHA) → read by `notes-plan` as a hard gate (it refuses to plan on a missing,
+  `gaps`, or stale verdict) and by `coverage-prompt` update (it consumes the open gaps as proposed items).
+  *The completeness checkpoint between coverage and the study map.*
 - **`notes/prompts/_internal/_job-market-evidence.md`** — written by `evidence-intake` (dedicated intake) and
   `cv-prompt` (tailor mode, as it tailors to each offer) → read by `coverage-prompt`, `coverage-audit`,
   and both their subagents, plus `interview-prep-audit`'s market-analysis stage. *Real postings that
@@ -314,14 +319,16 @@ Practice (its own loop, fed by coverage):
 
 **Auditing knowledge (one topic)**
 1. `coverage-prompt` — define/refresh exactly one topic and level (Angular and Angular Material separately)
-2. `notes-plan-prompt` with the same `TOPIC + LEVEL` — generate or refresh the persistent study map
-3. `notes-audit` with `TOPIC + LEVEL + NOTE` — build exactly one planned English/Spanish pair
-4. Repeat `notes-audit` for every pending plan entry, in dependency order, until the selected
+2. `coverage-verify` with the same `TOPIC + LEVEL` — gate that the coverage is complete for the job
+   target before it becomes a study map; a `gaps` verdict sends you back to `coverage-prompt` update
+3. `notes-plan-prompt` with the same `TOPIC + LEVEL` — generate or refresh the persistent study map
+4. `notes-audit` with `TOPIC + LEVEL + NOTE` — build exactly one planned English/Spanish pair
+5. Repeat `notes-audit` for every pending plan entry, in dependency order, until the selected
    `notes-plan-{LEVEL}.md` contains only `Status: complete`
-5. `interview-prep-audit` with the same `LEVEL` and topic `FILE` — build the isolated level Q&A;
+6. `interview-prep-audit` with the same `LEVEL` and topic `FILE` — build the isolated level Q&A;
    it stops if that topic's notes plan is stale, pending, or missing either language file
-6. `notes-and-interview-prep` — reconcile the completed notes and Q&A in both directions
-7. After all topics have that level, run `coverage-audit`, then `roadmap-review`
+7. `notes-and-interview-prep` — reconcile the completed notes and Q&A in both directions
+8. After all topics have that level, run `coverage-audit`, then `roadmap-review`
 
 The unit changes at each stage: coverage and planning process one **topic + level**; `notes-audit`
 processes one **planned file pair**; `interview-prep-audit` processes the completed **topic + level**
@@ -359,7 +366,7 @@ processes every target in order, one commit per target. Full rules: `notes/promp
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**),
   `simulation-generator`, `code-review` (`TYPE = all`).
-- **One target only:** `coverage-prompt`, `notes-plan-prompt`, and `notes-audit`.
+- **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, and `notes-audit`.
 - **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `cv`,
   `linkedin`, and `simulator` full mode — these cover everything in one run by design.
   `progress-update` defaults to `MODE = active` (only the in-progress project); set `MODE = all`

@@ -43,7 +43,9 @@ Count lines before every whole-file read and read to EOF:
 5. `_job-market-evidence.md`
 6. all three topic scope files when present
 7. this topic's heading in `_internal/_cross-topic-inbox.md`
-8. the previous coverage-prompt self-report
+8. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
+   the completeness gate
+9. the previous coverage-prompt self-report
 
 For Spring Boot, also inspect Java coverage headings and `notes/spring-boot/layer-reference.md`.
 
@@ -86,7 +88,7 @@ Read all three topic files to EOF and classify every existing item:
 - **DELETE** — incorrect, obsolete, duplicated, non-conceptual, or irrelevant.
 - **ROUTE** — belongs to another topic; keep only a concrete implementation twin when justified.
 
-Correct factual errors before making scope decisions. Apply this topic's inbox entries through the same classification and clear every processed entry.
+Correct factual errors before making scope decisions. Apply this topic's inbox entries through the same classification and clear every processed entry. Apply each open gap from `verify-{LEVEL}.md` the same way — judge it against the standard, add or discard it, and say which in the summary; a gap the gate raised is a proposal, never a pre-approved item.
 
 ## Step 3 — Draft the selected level
 
@@ -152,7 +154,10 @@ committed as execution evidence.
 
 In update mode:
 
-1. Commit changed topic scope files and the selected global mirror atomically.
+1. Commit changed topic scope files and the selected global mirror atomically. When `verify-{LEVEL}.md`
+   supplied gaps, blank its `## Open gaps` to `*(none)*` and set `Verdict: superseded` in the same
+   commit, so no run re-proposes a consumed gap; the changed coverage bytes also stale the gate's stored
+   SHA, forcing a fresh coverage-verify before `notes-plan`.
 2. Commit inbox routing separately only when another topic receives proposals.
 3. Before every add and commit, inspect status and stage only declared paths.
 4. Write the pipeline self-report.

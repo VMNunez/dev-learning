@@ -8,7 +8,7 @@ if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
     $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 }
 
-$expectedRunnableCount = 25
+$expectedRunnableCount = 26
 $promptRoot = Join-Path $RepositoryRoot 'notes\prompts'
 $claudeRoot = Join-Path $RepositoryRoot '.claude\commands'
 $codexRoot = Join-Path $RepositoryRoot '.codex\commands'
@@ -134,6 +134,7 @@ foreach ($prompt in $runnable) {
 $pipelinePromptPaths = @(
     'knowledge\coverage\coverage-audit-prompt.md',
     'knowledge\coverage\coverage-prompt.md',
+    'knowledge\coverage\coverage-verify-prompt.md',
     'knowledge\interview-prep\interview-prep-audit.md',
     'knowledge\interview-prep\notes-and-interview-prep-prompt.md',
     'knowledge\notes\notes-audit.md',
@@ -147,8 +148,8 @@ $pipelinePromptPaths = @(
     'strategy\tracking\roadmap-review-prompt.md'
 )
 
-if ($pipelinePromptPaths.Count -ne 13) {
-    Add-ValidationError "Expected 13 pipeline prompts; found $($pipelinePromptPaths.Count)."
+if ($pipelinePromptPaths.Count -ne 14) {
+    Add-ValidationError "Expected 14 pipeline prompts; found $($pipelinePromptPaths.Count)."
 }
 
 foreach ($prompt in $runnable) {

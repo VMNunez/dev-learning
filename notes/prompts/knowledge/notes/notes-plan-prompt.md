@@ -5,8 +5,10 @@ This prompt plans only. It never authors, reviews, translates, or commits study-
 It does classify pre-existing bilingual notes across professional levels and relocates an intact
 English/Spanish pair when the evidence makes the correct level unambiguous.
 
-> **▶ Run first:** `coverage-prompt` for this exact topic and level — the plan fingerprints that
-> coverage and refuses to proceed when the global mirror differs.
+> **▶ Run first:** `coverage-verify` for this exact topic and level — it gates that the coverage this
+> plan will map is complete for the job target. `coverage-verify` itself runs after `coverage-prompt`.
+> The plan fingerprints the coverage and refuses to proceed when the global mirror differs or the gate
+> has not passed the current coverage.
 
 ## Configuration
 
@@ -34,6 +36,7 @@ a local fallback.
 Derive the topic slug by lowercasing and replacing spaces with hyphens.
 
 - `COVERAGE = notes/{topic}/coverage/{LEVEL}.md`
+- `VERIFY = notes/{topic}/coverage/verify-{LEVEL}.md`
 - `PLAN = notes/{topic}/coverage/notes-plan-{LEVEL}.md`
 - `EN_DIR = notes/{topic}/{LEVEL}/en/`
 - `ES_DIR = notes/{topic}/{LEVEL}/es/`
@@ -55,9 +58,13 @@ belong there.
    line-count and read-to-EOF rule.
 3. Stop on `main`.
 4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
-5. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
+5. Stop if `VERIFY` is missing, its `Verdict` is not `complete`, or its stored `Coverage SHA-256`
+   differs from the current SHA-256 of `COVERAGE`. A missing or stale gate means the completeness check
+   has not passed this exact coverage: report `blocked` naming which of the three it was, and direct the
+   run to `coverage-verify` (and, if the verdict was `gaps`, to `coverage-prompt` update first).
+6. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
    middle to be closed. Planning later levels is blocked just like authoring them.
-6. Preserve unrelated working-tree changes.
+7. Preserve unrelated working-tree changes.
 
 ## Legacy note classification and relocation
 
