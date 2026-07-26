@@ -26,7 +26,7 @@ is the first retained execution.
 | Angular | | | | | | | | | | | | | | | | | | |
 | Angular Material | | | | | | | | | | | | | | | | | | |
 | Spring Boot | 2026-07-24 — completed — 103 items; mirror parity; notes plan stale | | 2026-07-24 — completed — 11 entries; 103 concepts; mirror parity | 0/11 complete — completed | | | | | | | | | | | | | | |
-| Java | 2026-07-26 — completed — 120 items; consumed 4 verify gaps (fast path); mirror parity; notes plan stale | 2026-07-26 — gaps — 1 verified gap (array access/bounds); rejected ClassCastException secondary as restatement; feed to coverage-prompt then re-verify | 2026-07-26 — blocked — Guard 5: verify-junior superseded, SHA stale vs current coverage; run coverage-verify | 0/15 complete — blocked | | | | | | | | | | | | | | |
+| Java | 2026-07-26 — completed — 121 items; consumed array-access gap (fast path); mirror parity; notes plan stale | 2026-07-26 — superseded — array-access gap consumed by coverage-prompt; re-verify pending | 2026-07-26 — blocked — Guard 5: verify-junior superseded, SHA stale vs current coverage; run coverage-verify | 0/15 complete — blocked | | | | | | | | | | | | | | |
 | Architecture | | | | | | | | | | | | | | | | | | |
 | Security | | | | | | | | | | | | | | | | | | |
 | TypeScript | | | | | | | | | | | | | | | | | | |
