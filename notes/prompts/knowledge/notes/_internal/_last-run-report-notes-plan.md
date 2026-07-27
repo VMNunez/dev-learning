@@ -2,10 +2,10 @@
 
 Date: 2026-07-27
 Target: Spring Boot / junior / update
-Status: open
+Status: applied in 9b4d4b1
 
-- **Plan vs reality** — No work split occurred. Guard 5 failed at step 0 (`verify-junior.md` verdict is `gaps`, not `complete`), so no planning, classification, relocation, or cold review was dispatched. The guard fired exactly as written.
-- **Report discipline** — Not applicable; no subagent was dispatched.
-- **Failures & retries** — None.
-- **Rule friction and rule breaches** — No breach. The run-start check ran this time and surfaced the previous report's `open` status (REC-011) to Victor before any work, which is the item the last run recorded as breached. No friction: Guard 5 names all three failure conditions and the exact remediation route, and the run needed no interpretation to stop.
-- **Verdict** — pipeline clean. REC-011 remains `open` and unreproduced (this run never reached the planning algorithm, so it produced no new evidence for or against it). Prompt is 267 lines, well inside budget.
+- **Plan vs reality** — The split held: 16 read-only analysts (one per English note, no folder-wide context), one cold pedagogical reviewer, one cold gate on the prompt edit. Sizing was right for classification and wrong for the plan itself — the pedagogical reviewer returned two `[blocking]` oversized-chapter findings the run could not act on (see bullet 4).
+- **Report discipline** — Two of the sixteen analysts opened with a literal `N lines, read to EOF` instead of the real count, giving the number only in the following sentence; both were otherwise complete and were accepted rather than re-dispatched. Nothing had to be discarded.
+- **Failures & retries** — None. No re-dispatch was needed; the pedagogical reviewer's acceptance proof (`16 entries reviewed`, both verdicts, 29 numbered corrections) was complete on the first dispatch.
+- **Rule friction and rule breaches** — One breach: the run-start check was skipped. The previous report's `Status: open` (REC-011) was not surfaced to Victor before work began; it was found only at close-out. Cost: nothing material this run, because the run went on to reproduce REC-011 independently — but that is luck, not the check working. One friction, and it is REC-011 reproduced on a second topic: rule 6's numbering collided with rule 14's route validation, so a reviewer-endorsed split of two 24-concept entries (one on a 2384-line file, past the quality standard's truncation danger point) had to be rejected because the split-off halves would have sorted after the five entries that depend on them. This time the finding cleared the bar and was applied.
+- **Verdict** — change applied: rule 6 now permits same-level renumbering of a bilingual pair so filename order and study order stay identical, with the three companion edits (classification vocabulary, Update mode's declared outputs, Final report field) the gate required to make it operable. `cold reviewer: approve-with-tightening` — tightened text and all three companion edits applied verbatim. Prompt is 280 lines, inside budget. Second consecutive report naming a skipped step (last run: none; the run before, per REC-011's source, the same numbering collision) — the skipped run-start check is the item to watch on the next invocation.
