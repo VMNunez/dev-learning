@@ -95,7 +95,8 @@ sit under `junior/` even when their actual content belongs to middle or senior.
    blocked mixed-level file already listed in the split section.
 
 Before planning continues, report the classification decision for every pre-existing pair as
-`keep`, `move <current level> -> <correct level>`, `unassigned`, or `requires split`.
+`keep`, `move <current level> -> <correct level>`, `renumber NN -> MM`, `unassigned`, or
+`requires split`.
 
 ## Coverage fingerprint
 
@@ -123,7 +124,18 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
 6. Prefer an existing English file when its topic matches the group. At `LEVEL = junior`, reserve
    `00` for the required topic introduction and allocate subsequent files from the next unused
    two-digit number. Middle and senior continue their level-specific sequence from `01`; they build
-   on a consolidated earlier level rather than reintroducing the whole topic.
+   on a consolidated earlier level rather than reintroducing the whole topic. When the correct route
+   needs a chapter between two existing ones — including when one existing file carries more than one
+   teachable mental model and must become two — renumbering existing bilingual pairs inside the same
+   level is permitted so that filename order and study order stay identical. A renumbering moves the
+   English and Spanish files together, never crosses a level boundary, preserves both slugs and all
+   prose byte-for-byte apart from link corrections, updates every repository-relative link that
+   targets a renumbered file, and is reported per pair as `renumber NN -> MM`. A renumbered pair is
+   still an existing note and keeps `Action: audit`. Dividing one file's prose remains the notes
+   author/reviewer pipeline's work, not this planner's: the plan declares both entries and their
+   paths, and the new file's entry is `Action: create`. This is a same-level route repair and never
+   populates `## Legacy notes requiring split`, which stays reserved for pairs whose sections are
+   owned by different levels.
 7. An entry is:
    - `audit` when its English file already exists;
    - `create` when it does not.
@@ -241,8 +253,8 @@ Rules:
 
 ## Update mode
 
-Write `PLAN` plus any unambiguous bilingual relocations, required local-link corrections, and path
-reconciliations in already-existing affected sibling plans. Do not alter note prose. Before staging
+Write `PLAN` plus any unambiguous bilingual relocations, same-level renumberings, required local-link
+corrections, and path reconciliations in already-existing affected sibling plans. Do not alter note prose. Before staging
 and before committing, run `git status --short`; stage only these declared outputs and verify every
 moved pair and affected link. Commit:
 
@@ -261,7 +273,8 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 ## Final report
 
 Report topic, level, coverage fingerprint, entry count, concept count, create/audit counts,
-preserved-complete count, every legacy classification decision, relocations, split blockers,
+preserved-complete count, every legacy classification decision, relocations, renumberings, split
+blockers,
 unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,
 learning-outcome count, prerequisite-order verdict, handoff count, concepts-used-before-taught
 verdict, and commit or `dry-run`.
