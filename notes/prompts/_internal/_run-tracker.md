@@ -25,7 +25,7 @@ is the first retained execution.
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Angular | | | | | | | | | | | | | | | | | | |
 | Angular Material | | | | | | | | | | | | | | | | | | |
-| Spring Boot | 2026-07-27 — completed — 136 items; verify-gap fast path; 4 gaps judged (3 added, 1 moved to middle); mirror parity; notes plan stale | 2026-07-27 — completed — verdict `gaps`, 4 verified (3 reviewer + 1 orchestrator); SHA 056a9820; notes-plan stays blocked | 2026-07-27 — blocked — Guard 5: verify-junior verdict `gaps`; run coverage-prompt update then coverage-verify | 0/11 complete — completed | | | | | | | | | | | | | | |
+| Spring Boot | 2026-07-27 — completed — 136 items; verify-gap fast path; 4 gaps judged (3 added, 1 moved to middle); mirror parity; notes plan stale | 2026-07-27 — complete — 136 items pass strict bar; zero gaps; SHA 43a1261f matches coverage; notes-plan unblocked | 2026-07-27 — blocked — Guard 5: verify-junior verdict `gaps`; run coverage-prompt update then coverage-verify | 0/11 complete — completed | | | | | | | | | | | | | | |
 | Java | 2026-07-26 — completed — 121 items; consumed array-access gap (fast path); mirror parity; notes plan stale | 2026-07-26 — complete — 121 items pass strict bar; SHA 4c9d4cc9 matches coverage; notes-plan unblocked | 2026-07-26 — completed — 16 entries; 121 concepts; 0 create / 16 audit; mirror parity; cold review applied | 0/16 complete — completed | | | | | | | | | | | | | | |
 | Architecture | | | | | | | | | | | | | | | | | | |
 | Security | | | | | | | | | | | | | | | | | | |
