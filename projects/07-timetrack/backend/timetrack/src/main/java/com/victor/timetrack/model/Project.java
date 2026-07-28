@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,10 @@ public class Project {
     private String name;
 
     private String description;
-    private Boolean active = true;
+
+    @ColumnDefault("true")
+    @Column(nullable = false)
+    private boolean active = true;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

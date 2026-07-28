@@ -47,7 +47,7 @@ public class ProjectService {
                 .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
 
 
-        if (!isManager && !project.getActive()) {
+        if (!isManager && !project.isActive()) {
             throw new ResourceNotFoundException("Project not found with id: " + id);
         }
 
@@ -90,7 +90,7 @@ public class ProjectService {
         response.setId(project.getId());
         response.setName(project.getName());
         response.setDescription(project.getDescription());
-        response.setActive(project.getActive());
+        response.setActive(project.isActive());
         response.setCreatedAt(project.getCreatedAt());
         return response;
     }

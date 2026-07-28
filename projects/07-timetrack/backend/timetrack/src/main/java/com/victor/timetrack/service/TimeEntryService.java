@@ -52,7 +52,7 @@ public class TimeEntryService {
             throw new BusinessRuleViolationException("Date cannot be in the future");
         }
 
-        if (!project.getActive()) {
+        if (!project.isActive()) {
             throw new BusinessRuleViolationException("Project is not active");
         }
 
@@ -191,7 +191,7 @@ public class TimeEntryService {
             throw new BusinessRuleViolationException("Date cannot be in the future");
         }
 
-        if (!project.getActive()) {
+        if (!project.isActive()) {
             throw new BusinessRuleViolationException("Project is not active");
         }
 
