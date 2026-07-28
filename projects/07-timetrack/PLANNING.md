@@ -11,12 +11,12 @@ Update this table at the start of every session. It is the authoritative pointer
 
 | | |
 |---|---|
-| **Current step** | G3 backend backlog fix (not a §15 step) — the High tasks from `review-audit` + the deferred `PATCH /api/entries/{id}/reopen`. **Step 7a — Angular shell + auth is the next learning step**, it starts once this signs G3 off |
+| **Current step** | G3 backend backlog fix (not a §15 step). **Every High task is closed and `reopen` is built — G3's sign-off condition is met.** Work continuing on the branch is Medium/Low backlog, which G3 does not require (G7 does). **Step 7a — Angular shell + auth is the next learning step** |
 | **Current branch** | `fix/backend-backlog` (§22 "Backlog-fix branches" — `feat/angular-shell-auth` is not opened yet; it is created from `projects/07-timetrack` when this branch merges) |
-| **Done condition** | Postman: PATCH /api/entries/{id}/reopen on a REJECTED own entry returns 200 — status DRAFT (and every High backend task in `PROJECT-BACKLOG.md` is `[x]`). Then Step 7a's own: Browser: login at localhost:4200 redirects to /dashboard inside the shell; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login |
-| **Next gate** | G3 sign-off — the backend review has run, but its **High** backlog tasks (including the `PATCH /api/entries/{id}/reopen` endpoint) are still open on `fix/backend-backlog`. G4 (frontend review) follows when `feat/angular-manager-pages` merges |
+| **Done condition** | ✅ met — every High backend task in `PROJECT-BACKLOG.md` is `[x]`, and Postman confirmed `PATCH /api/entries/{id}/reopen` on a REJECTED own entry returns 200 with status DRAFT. Step 7a's own done condition takes over next: Browser: login at localhost:4200 redirects to /dashboard inside the shell; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login |
+| **Next gate** | G3 sign-off — **unblocked**: the backend review has run and all its High tasks are fixed. Signing off = PR `fix/backend-backlog` into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges |
 | **Phase** | Backend backlog / G3 sign-off — Frontend (Phase 5) starts at Step 7a |
-| **Last updated** | 2026-07-21 |
+| **Last updated** | 2026-07-28 |
 
 ---
 
@@ -53,7 +53,7 @@ Concepts this project teaches for the first time. (Steps 1–3 are now done and 
 | JPQL aggregation queries | Spring Boot | Reports — hours grouped by project and by employee |
 | Interface projections for query results | Spring Boot | Report rows mapped straight from `SELECT ... AS alias` — no class, no manual mapping |
 | `@RestControllerAdvice` GlobalExceptionHandler | Spring Boot | Consistent JSON error bodies |
-| `data.sql` startup seeding | Spring Boot | First manager account with no register endpoint |
+| Profile-gated startup seeding (`CommandLineRunner` + `@Profile`) | Spring Boot | First manager account with no register endpoint — seeded in Java so the credential comes from an env var at runtime instead of a hash committed in `data.sql` |
 | JUnit 5 + Mockito unit tests | Spring Boot | First backend tests |
 | Angular consuming a real REST API end to end | Angular | First time the frontend talks to a backend you built |
 | Docker + docker-compose | Deployment | One command runs app + database locally |
@@ -157,7 +157,7 @@ See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-
 | email | String | VARCHAR | not null, unique | Used as the login username |
 | password | String | VARCHAR | not null | BCrypt hash, never plain text |
 | role | Role (enum) | VARCHAR | not null | `EMPLOYEE` or `MANAGER` — stored as string via `@Enumerated(STRING)` |
-| active | Boolean | BOOLEAN | not null, default true | Soft delete — inactive users cannot log in |
+| active | boolean | BOOLEAN | not null, default true | Soft delete — inactive users cannot log in. Primitive `boolean` initialised to `true`, not `Boolean`: a nullable wrapper unboxes to a `NullPointerException` (500) if a row is ever written outside JPA |
 | createdAt | LocalDateTime | TIMESTAMP | not null | Set by `@CreationTimestamp` |
 
 ### Project
@@ -166,7 +166,7 @@ See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-
 | id | Long | BIGINT | PK, sequence-generated | Same `AUTO` → Hibernate-sequence behaviour as `User.id` |
 | name | String | VARCHAR | not null, unique | Project name shown in selectors |
 | description | String | VARCHAR | nullable | Optional context |
-| active | Boolean | BOOLEAN | not null, default true | Inactive projects cannot receive new entries |
+| active | boolean | BOOLEAN | not null, default true | Inactive projects cannot receive new entries. Primitive `boolean` for the same unboxing reason as `User.active` |
 | createdAt | LocalDateTime | TIMESTAMP | not null | Set by `@CreationTimestamp` |
 
 ### TimeEntry
@@ -186,7 +186,7 @@ See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-
 ### Relationships
 - **User → TimeEntry:** one-to-many. The FK lives on `TimeEntry.user` (`@ManyToOne`); `User` may expose `@OneToMany(mappedBy = "user")` only if a user needs to read their own entries through the entity graph — otherwise skip it and query through the repository.
 - **Project → TimeEntry:** one-to-many. The FK lives on `TimeEntry.project` (`@ManyToOne`).
-- **Fetch type:** `@ManyToOne` defaults to `EAGER`. Keep the default here — every TimeEntry response needs its user and project anyway, and the tables are small. (If lists grow, switch to `LAZY` + a fetch-join query; out of scope for the MVP.)
+- **Fetch type:** both `@ManyToOne` are explicitly `FetchType.LAZY`. The JPA default is `EAGER`, which fired 1 + 2N queries on `GET /api/entries` (the classic N+1). The fix is not LAZY alone — with `open-in-view=false` a lazy proxy read outside a transaction throws `LazyInitializationException` — but LAZY **plus** a `LEFT JOIN FETCH` on both relations, added by `TimeEntrySpecifications.fetchUserAndProject()` and guarded by `query.getResultType()` so it is skipped on `COUNT` queries. Every TimeEntry response does need its user and project, so they are always fetched — the point is fetching them in **one** query, not N.
 - **Cascade:** **none** on either `@ManyToOne`. Timesheet history is owned by the company, not by the user or the project that happens to reference it, so a delete on the parent must never propagate. With no cascade and a not-null FK, a hard `DELETE` on a referenced user or project is simply rejected by the FK constraint — which is why both parents use soft delete (`active = false`) instead: the row stays, the entries keep pointing at it, and history is preserved.
 
 ---
@@ -214,7 +214,7 @@ APPROVED     REJECTED ─────────┘
 - Employee can only see their own entries
 - Employee can only edit or delete their **own** DRAFT entries (ownership resolved from the JWT via `SecurityContextHolder`, never from a client-supplied `userId`)
 - Employee can only submit their **own** DRAFT entries
-- Only the owner (EMPLOYEE, ownership resolved from the JWT) can re-open one of their **REJECTED** entries — this is the only transition into DRAFT after creation, and it exists so the entry can be corrected and resubmitted (the resubmit loop in the diagram above). Re-opening an entry in any other status is rejected. *(Planned rule — the endpoint was not part of the built Step 5 scope and is still to be implemented.)*
+- Only the owner (EMPLOYEE, ownership resolved from the JWT) can re-open one of their **REJECTED** entries — this is the only transition into DRAFT after creation, and it exists so the entry can be corrected and resubmitted (the resubmit loop in the diagram above). Re-opening an entry in any other status is rejected (409). *(Deferred out of Step 5, built on `fix/backend-backlog` and Postman-verified on 2026-07-22.)*
 - Manager can see all entries from all users
 - Manager can only approve or reject SUBMITTED entries; a manager never edits, submits or re-opens an entry
 - A manager cannot approve or reject **their own** entries (segregation of duties) — the caller's id is resolved from the JWT and compared to the entry's owner; a match is refused (403). A manager never logs hours in this system (`POST /api/entries` is EMPLOYEE-only, and the UI hides every logging control from managers), so the only way a manager can own an entry is by having been promoted from EMPLOYEE while holding entries — those are reviewed by a different manager. Modelling a manager who bills hours would require an approver hierarchy (each user's entries routed to *their* line manager), which is deliberately out of scope
@@ -223,7 +223,32 @@ APPROVED     REJECTED ─────────┘
 - Hours must be between 0.5 and 24
 - Cannot submit entries for an inactive project
 - Inactive users cannot log in — their entries remain in the database unchanged
-- Default password for new accounts: `Timetrack2024!` — shown once in the UI after creation; employee must change it on first login (requires `mustChangePassword` field on User — skip for MVP, add as a note in the README)
+- A user deactivated *after* their token was issued loses access on their next request, not when the token expires — `JwtFilter` runs the loaded `UserDetails` through an `AccountStatusUserDetailsChecker`, so the login-time `active` check cannot be bypassed by an already-issued token
+
+> ⚠️ **OPEN DECISION — initial password for new accounts.** This rule previously read: *"Default password
+> `Timetrack2024!`, shown once in the UI after creation; employee must change it on first login (requires
+> `mustChangePassword` on User — skip for MVP)."* That design does not survive its own MVP cut: with
+> `mustChangePassword` dropped **and no change-password endpoint anywhere in §10**, a fixed literal stops
+> being an *initial* password and becomes the **permanent, identical, git-committed** password of every
+> employee account — the same class of flaw that got `data.sql`'s seeded hash removed in §9. The built code
+> instead takes the password from the manager in `CreateUserRequest`, which matches neither the old rule nor
+> §10. Three candidates, to be decided before Step 7c builds the Team page:
+> 1. **Backend generates a random password per user** (`SecureRandom`), returned once in the create response and shown in the §17 snackbar — keeps the planned UX, no shared secret, needs a `CreateUserResponse` separate from `UserResponse` so the plaintext appears nowhere else
+> 2. **Manager supplies the password** — what the code does today; no secret in git, but the manager knows every employee's permanent password
+> 3. **Implement the full flow** — `mustChangePassword` + a change-password endpoint, i.e. un-cut the piece the MVP dropped
+>
+> Whichever is chosen, §10's `POST /api/users` row, §13's `user-dialog`, §17's Team page and the
+> `PROJECT-BACKLOG.md` DTO-reconciliation + password-policy tasks all have to move with it. **A dedicated
+> change-password endpoint is missing from §10 regardless** and should be recorded as an explicit
+> out-of-scope note in the README rather than left as a silent gap.
+
+> ⚠️ **OPEN DECISION — which statuses count toward reports.** §8 never stated this rule, and the code
+> diverged as a direct result: `getHoursByProject` / `getHoursByEmployee` count **APPROVED only** (the
+> deliberate 2026-07-22 "only hours a manager signed off" fix), while `ReportService.getSummary` counts
+> **APPROVED + SUBMITTED**. A manager summing the by-project rows will not match the summary card for the
+> same month. Decide one rule — the coherent option is all three aggregates APPROVED-only, with pending
+> hours kept as a clearly-labelled separate breakout on the summary — and write it here, not only in the
+> code. Tracked as a Medium in `PROJECT-BACKLOG.md`.
 
 ---
 
@@ -232,13 +257,20 @@ APPROVED     REJECTED ─────────┘
 **Initial data — first manager account**
 
 There is no public register endpoint, so the first manager account must exist before anyone can log in.
-Solution: `src/main/resources/data.sql` — Spring Boot runs this file on startup and inserts the seed user.
-```sql
-INSERT INTO users (name, email, password, role, active, created_at)
-VALUES ('Admin', 'admin@timetrack.com', '$2a$10$...bcrypt_hash...', 'MANAGER', true, NOW())
-ON CONFLICT DO NOTHING;
-```
-The BCrypt hash must be pre-generated for a known password (e.g. `Admin2024!`).
+
+**Solution: `config/DataInitializer.java`** — a `CommandLineRunner` annotated `@Profile("dev")`, so the
+bean is not even instantiated outside the `dev` profile and the seed can never reach a deployed
+environment. It reads the admin's email, name and password from `application-dev.properties`
+(`app.admin.*`), with the password itself taken from the `ADMIN_PASSWORD` environment variable, and hashes
+it at runtime through the existing `PasswordEncoder` bean. The runner is idempotent — a
+`findByEmail(...).isPresent()` guard makes a second boot a no-op.
+
+> **Replaced `data.sql` on 2026-07-23 — and the reason is the point.** The original plan seeded the account
+> from `src/main/resources/data.sql` with a pre-generated BCrypt hash and `ON CONFLICT DO NOTHING`, running
+> on every boot via `spring.sql.init.mode=always`. That put a real credential hash in git — public,
+> offline-crackable, and shipped to every future environment including Docker (Step 11). Generating the hash
+> in Java at runtime from an env var fixes all three at once. This is the version worth defending in an
+> interview; the `data.sql` approach is the one to describe as *what it replaced and why*.
 
 ---
 
@@ -270,9 +302,12 @@ Test every endpoint in Postman as soon as it is created. Do not wait until the w
 POST /api/auth/login       → returns JWT
 ```
 
-**Token lifetime:** 24h (`app.jwt.expiration=86400000` in `application.properties`). When a token
-expires mid-session the API returns 401 — the Angular interceptor (Step 7a) catches it, clears the
-stored session, and redirects to `/login`. Expiry is handled once in the interceptor, never per page.
+**Token lifetime:** 60 min (`app.jwt.expiration=3600000` in `application.properties`). Cut from the
+original 24h on 2026-07-28: a token stolen from `localStorage` was valid for a full day, and with no
+refresh-token flow in scope, 60 min is the balance between a usable work session and a bounded blast
+radius. When a token expires mid-session the API returns 401 — the Angular interceptor (Step 7a) catches
+it, clears the stored session, and redirects to `/login`. Expiry is handled once in the interceptor,
+never per page. The access/refresh trade-off is documented in `backend/README.md`.
 
 ### Error contract — what every non-2xx response looks like
 
@@ -297,9 +332,22 @@ field-level map the reactive forms consume to show a message under each input (S
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
 | `GET /api/users` | MANAGER | List all users (employees and managers) | — | `200` + `List<UserResponse>` |
-| `POST /api/users` | MANAGER | Create a user account with the default password | `CreateUserRequest` — `name`, `email`, `role` | `201` + `UserResponse` · `400` validation · `409` email already exists |
-| `PUT /api/users/{id}` | MANAGER | Update name, role, or reactivate/deactivate | `UpdateUserRequest` — `name`, `role`, `active` (optional — applied only when non-null) | `200` + `UserResponse` · `404` user not found |
+| `POST /api/users` | MANAGER | Create a user account | `CreateUserRequest` — `name`, `email`, `role`, `password`⚠️ | `201` + `UserResponse` · `400` validation · `409` email already exists |
+| `PUT /api/users/{id}` | MANAGER | Update name, role, email⚠️, or reactivate/deactivate | `UpdateUserRequest` — `name`, `role`, `email`⚠️, `active` (optional — applied only when non-null) | `200` + `UserResponse` · `404` user not found · `409` email already in use |
 | `DELETE /api/users/{id}` | MANAGER | Deactivate account (soft delete — sets `active = false`) | — | `204` no body · `404` user not found |
+
+> ⚠️ **These two rows now describe the built code, and both fields are contested.** They previously read
+> `name, email, role` (no password) on create and `name, role` (no email) on update. Two separate open
+> questions:
+> - **`password` on create** — depends entirely on the initial-password decision in §8. If the random-generated
+>   option wins, this field disappears again and the response becomes a `CreateUserResponse` carrying the
+>   generated plaintext once. There is also **no password strength rule anywhere** (`@NotBlank` only, so a
+>   1-character password is accepted) — that gap collapses into whichever option is chosen.
+> - **`email` on update** — the plan contradicted *itself* here, not just the code: this row said `name, role`
+>   while §13's `user-dialog` and §17's Team page both describe editing the email. The code implements the
+>   email change (with a duplicate check → 409). Since email **is** the login identity, allowing a manager to
+>   change it is a real decision with a real consequence, not a detail: pick it deliberately and make §13/§17
+>   agree.
 
 ### Projects (`ProjectController`)
 
@@ -336,9 +384,19 @@ field-level map the reactive forms consume to show a message under each input (S
 
 | Method · Path | Role | Description | Query params | Response |
 |---|---|---|---|---|
-| `GET /api/reports/summary` | MANAGER | Month totals: total hours, total entries, approved vs pending | `month` — String `YYYY-MM`, required | `200` + summary body — `totalHours`, `totalEntries`, `approvedHours`, `pendingHours` · `400` month missing or malformed |
-| `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectName`, `totalHours` |
-| `GET /api/reports/by-employee` | MANAGER | Hours grouped by employee | `month` — required | `200` + `List<EmployeeHoursReportResponse>` — `userName`, `totalHours` |
+| `GET /api/reports/summary` | MANAGER | Month totals: total hours, total entries, approved vs pending | `month` — String `YYYY-MM`, required | `200` + `ReportSummaryResponse` — `totalHours`, `totalEntries`, `approvedHours`, `pendingHours` · `400` month missing or malformed |
+| `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours` |
+| `GET /api/reports/by-employee` | MANAGER | Hours grouped by employee | `month` — required | `200` + `List<EmployeeHoursReportResponse>` — `userId`, `userName`⚠️, `totalHours` |
+
+> ⚠️ **Naming mismatch, open.** The built projection getter is `getEmployeeName()`, so the JSON field is
+> `employeeName`, not the `userName` documented here (`projectName` on the by-project row *does* match).
+> The Step 7c Reports table will bind to whichever the plan says and read `undefined` if they disagree.
+> Rename the getter + its JPQL `AS` alias to `userName`, or amend this row to `employeeName` — tracked as a
+> Medium in `PROJECT-BACKLOG.md`.
+>
+> Both aggregates group by **id and name** (not name alone), so two employees with the same display name
+> stay separate rows and a rename does not split history; the id is also the frontend's row key.
+> Which statuses these three endpoints count is an **open decision** — see the ⚠️ in §8.
 
 > **Collection endpoints return the full list (no `Pageable`) by design** — see the §20 tradeoff line;
 > the month filter bounds every report and the entries list in practice.
@@ -349,10 +407,12 @@ field-level map the reactive forms consume to show a message under each input (S
 
 ```
 src/main/resources/
-├── application.properties     (DB connection, JPA config, JWT secret)
-└── data.sql                   (first manager account seed — runs on startup)
+├── application.properties      (DB connection, JPA config, JWT secret + expiry)
+└── application-dev.properties  (dev-only: show-sql, app.admin.* seed values)
 
 src/main/java/com/victor/timetrack/
+├── config/
+│   └── DataInitializer.java         (@Profile("dev") CommandLineRunner — seeds the first manager)
 ├── controller/
 │   ├── AuthController.java          (POST /api/auth/login — public)
 │   ├── UserController.java          (/api/users — MANAGER only)
@@ -367,9 +427,10 @@ src/main/java/com/victor/timetrack/
 │   ├── TimeEntryService.java        (entry CRUD, ownership checks, status transitions)
 │   └── ReportService.java           (monthly aggregations for the three report endpoints)
 ├── repository/
-│   ├── UserRepository.java          (findByEmail, existsByEmail)
-│   ├── ProjectRepository.java       (findByActiveTrue)
-│   └── TimeEntryRepository.java     (filtered finders + the report aggregation queries)
+│   ├── UserRepository.java          (findByEmail)
+│   ├── ProjectRepository.java       (findByActiveTrue, existsByName)
+│   ├── TimeEntryRepository.java     (JpaSpecificationExecutor + the report aggregation queries)
+│   └── TimeEntrySpecifications.java (static Specification factories — one per optional filter + the fetch-join)
 ├── model/
 │   ├── User.java           (@Entity — account, role, active flag)
 │   ├── Project.java        (@Entity — project, active flag)
@@ -383,24 +444,28 @@ src/main/java/com/victor/timetrack/
 │   │   ├── UpdateProjectRequest.java         (name + description)
 │   │   ├── CreateTimeEntryRequest.java       (projectId, date, hours, description — also used by PUT)
 │   │   ├── RejectRequest.java              (rejectionNote body for PATCH /reject)
-│   │   ├── CreateUserRequest.java          (planned — Team page user management)
-│   │   └── UpdateUserRequest.java          (planned — Team page user management)
+│   │   ├── CreateUserRequest.java          (name, email, role, password — see the ⚠️ in §10)
+│   │   └── UpdateUserRequest.java          (name, email, role, active — see the ⚠️ in §10)
 │   └── response/
 │       ├── AuthResponse.java                    (token + name + role)
 │       ├── UserResponse.java                    (id, name, email, role, active — never the hash)
 │       ├── ProjectResponse.java                 (id, name, description, active)
 │       ├── TimeEntryResponse.java               (flattened user/project names + status, no entities)
+│       ├── ReportSummaryResponse.java         (totalHours, totalEntries, approvedHours, pendingHours)
 │       ├── ProjectHoursReportResponse.java    (interface projection — hours grouped by project)
 │       ├── EmployeeHoursReportResponse.java   (interface projection — hours grouped by employee)
 │       └── ErrorResponse.java                 (uniform JSON error body from GlobalExceptionHandler)
 ├── exception/
-│   ├── GlobalExceptionHandler.java   (@ControllerAdvice — returns clean JSON errors)
-│   ├── ResourceNotFoundException.java (→ 404)
-│   └── UnauthorizedException.java     (ownership / wrong-state violation → 403 / 409)
+│   ├── GlobalExceptionHandler.java        (@RestControllerAdvice — returns clean JSON errors)
+│   ├── ResourceNotFoundException.java     (→ 404)
+│   ├── BusinessRuleViolationException.java (input-data rule broken: hours range, future date, inactive project → 400)
+│   ├── InvalidStateTransitionException.java (illegal workflow transition → 409)
+│   └── UnauthorizedException.java         (ownership violation → 403 — name predates the status, see the backlog Low)
 └── security/
-    ├── JwtUtil.java         (generates and validates the token, reads its claims)
-    ├── JwtFilter.java       (OncePerRequestFilter — puts the user in the SecurityContext)
-    └── SecurityConfig.java  (filter chain, public routes, BCryptPasswordEncoder)
+    ├── JwtUtil.java                  (generates and validates the token, reads its claims)
+    ├── JwtFilter.java                (OncePerRequestFilter — puts the user in the SecurityContext)
+    ├── JwtAuthenticationEntryPoint.java (unauthenticated request → 401 JSON instead of an empty 403)
+    └── SecurityConfig.java           (filter chain, public routes, CORS, BCryptPasswordEncoder)
 ```
 
 ---
@@ -430,7 +495,7 @@ src/app/
 │   ├── projects/                 ← project CRUD table, manager only
 │   ├── approvals/                ← SUBMITTED entries queue, approve / reject
 │   ├── team/                     ← user list, manager only
-│   │   └── user-dialog/          ← add and edit user (name, email, role)
+│   │   └── user-dialog/          ← add and edit user (name, role, + email/password per the §8/§10 ⚠️)
 │   └── reports/                  ← monthly report views (summary, by project, by employee)
 └── shared/
     ├── components/
@@ -571,7 +636,9 @@ Stat cards + user table + "Add member" button.
 ```
 
 "Add member" opens a dialog: name + email + role selector (Employee / Manager).
-After creation, a snackbar shows the default password (`Timetrack2024!`) so the manager can share it.
+After creation, a snackbar shows the new account's password so the manager can share it — **but what that
+password is, and therefore whether the dialog also has a password field, is the open decision in §8.**
+Do not build this page before that is settled.
 The 🗑 icon deactivates the account (soft delete) — it does not delete data.
 Empty state: "No team members yet. Add your first member."
 
@@ -752,6 +819,15 @@ Hours by project                    Hours by employee
 └────────────────────────┘          └────────────────────────┘
 ```
 
+**Where each card's number comes from** — only the first is served by `/api/reports/summary`:
+- "Total hours" — `GET /api/reports/summary?month=`, read `totalHours`
+- "Employees" — the **length of the by-employee array**, not a summary field
+- "Projects" — the **length of the by-project array**, not a summary field
+
+All three report calls run in parallel with `forkJoin` on month change. Note the summary card and the two
+tables can currently disagree — see the reportable-status ⚠️ in §8; that must be settled before this page
+is built, or the page will display two different totals for the same month.
+
 ---
 
 ### Inspiration
@@ -797,10 +873,12 @@ This is the first Spring Boot project. Each step introduces one new concept.
 
 ### Step 4 — Role-based authorization ✅
 - Add `role` and `active` to `User` (EMPLOYEE / MANAGER)
-- Create `data.sql` with the first manager account
+- Seed the first manager account on startup
 - `@PreAuthorize("hasRole('MANAGER')")` on project and user write endpoints
 - `SecurityContextHolder` to read the current user inside a service
-- **New concepts:** `@PreAuthorize` role checks, `data.sql` seeding, `SecurityContextHolder`
+- **New concepts:** `@PreAuthorize` role checks, startup seeding, `SecurityContextHolder`
+- **Built as `data.sql`, replaced 2026-07-23** by the profile-gated `DataInitializer` (§9) — the step is
+  still ✅ on the concept it taught; the seeding *mechanism* changed for the security reason recorded in §9
 - **Review concepts:** JWT flow (token now carries the role)
 - **Done condition:** `Postman: POST /api/projects with EMPLOYEE token returns 403; with MANAGER token returns 201`
 
@@ -815,7 +893,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - **Review concepts:** soft delete, `SecurityContextHolder`
 - **Done condition:** `Postman: POST /api/entries returns 201 — status DRAFT; PATCH /api/entries/{id}/approve as employee returns 403; as manager on a SUBMITTED entry returns 200 — status APPROVED`
 - **Concept learned:** hard delete (`deleteById`) is correct here — `TimeEntry` has no `active` field like `Project`/`User`, and only DRAFT entries can be removed, so nothing worth preserving is lost. Bean Validation (`@NotBlank`/`@NotNull` + `@Valid`) was added across all request DTOs (`CreateProjectRequest`, `UpdateProjectRequest`, `CreateTimeEntryRequest`, `RejectRequest`) as part of this step, plus a `PUT /api/entries/{id}` (edit DRAFT) and `DELETE /api/entries/{id}` (delete DRAFT) endpoint — both reusing the owner + DRAFT-only guards, and PUT re-running create's business rules (future date, inactive project, hours range) since it replaces the whole resource.
-- **Deferred out of this step (not built):** `PATCH /api/entries/{id}/reopen` (EMPLOYEE, owner-only, REJECTED → DRAFT) — the §10 endpoint that closes the resubmit loop in the workflow diagram. Step 5 stays ✅ on the scope it actually shipped; the endpoint is a **backend-backlog task** (`PROJECT-BACKLOG.md`), built on the current `fix/backend-backlog` branch and required before the G3 backend review is signed off. Its unit test is listed in Section 16.
+- **Deferred out of this step, built later:** `PATCH /api/entries/{id}/reopen` (EMPLOYEE, owner-only, REJECTED → DRAFT) — the §10 endpoint that closes the resubmit loop in the workflow diagram. Step 5 stays ✅ on the scope it actually shipped; the endpoint was built as a **backend-backlog task** on `fix/backend-backlog` and Postman-verified on 2026-07-22. Its unit test is listed in Section 16. Building it surfaced a related fix applied in the same pass: every state-machine guard was throwing `BusinessRuleViolationException` (400) for what is really a state conflict, so `InvalidStateTransitionException` (409) was split out, leaving 400 for input-data rules only.
 
 ### Step 6 — Reports ✅
 - Aggregate queries with JPQL
@@ -896,7 +974,7 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 |---|---|---|
 | `TimeEntryService.create` | Saves a DRAFT entry | future date → throws; inactive project → throws; hours < 0.5 or > 24 → throws |
 | `TimeEntryService.update` / `.delete` | Edits / removes an own DRAFT entry | entry not DRAFT → throws; caller is not the owner → throws; update re-runs create's rules (future date, hours range, inactive project) |
-| `TimeEntryService.getEntries` | EMPLOYEE gets only their own entries; MANAGER gets all | filters (`month`, `status`, `projectId`) narrow the result; an employee never receives another user's entry |
+| `TimeEntryService.findByFilter` | EMPLOYEE gets only their own entries; MANAGER gets all | filters (`month`, `status`, `projectId`) narrow the result; an employee never receives another user's entry; a MANAGER-only `userId` supplied by an EMPLOYEE caller is overwritten with their own id |
 | `TimeEntryService.submit` | DRAFT → SUBMITTED | entry not DRAFT → throws; caller is not the owner → throws |
 | `TimeEntryService.reopen` | REJECTED → DRAFT for the owner | entry not REJECTED → throws; caller is not the owner → throws; MANAGER caller → throws |
 | `TimeEntryService.approve` | SUBMITTED → APPROVED | entry not SUBMITTED → throws; entry id not found → `ResourceNotFoundException`; caller is the entry's owner → `UnauthorizedException` (403) |
@@ -904,7 +982,8 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `ProjectService.create` | Saves a project | duplicate name → throws (409) |
 | `UserService.create` | Saves user, password BCrypt-hashed | duplicate email → throws (409) |
 | `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password |
-| `ReportService.summaryByProject` | Groups hours per project for the month | empty month → returns empty list, not null |
+| `ReportService.getHoursByProject` / `.getHoursByEmployee` | Groups hours per project / per employee for the month | empty month → returns empty list, not null; only the statuses §8 declares reportable are summed |
+| `ReportService.getSummary` | Returns the month's four totals | empty month → all zeros, no exception; `totalHours` equals the sum of its own breakdown fields |
 
 **Backend — slice tests:** none in project 07. This is the first project with tests, so it introduces
 only the unit level (JUnit 5 + Mockito). The slice types (`@WebMvcTest` for controllers, `@DataJpaTest`
@@ -1036,7 +1115,7 @@ Format: `[what you did] to [why it matters]` — one line each, 6-8 maximum.
 - Soft delete for users and projects to preserve historical timesheet data
 - Workflow states (DRAFT → SUBMITTED → APPROVED / REJECTED) to support the resubmit flow and audit trail
 - Manager-only account creation to prevent self-assignment of the Manager role
-- data.sql seed for the first manager account to avoid a setup endpoint that must be removed after first use
+- Profile-gated runtime seeding of the first manager account to avoid both a setup endpoint that must be removed after first use and a credential hash committed to git
 
 ---
 
@@ -1094,10 +1173,16 @@ coverage table.
 The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
 open for the whole project. It only merges into `main` when Step 11 is done.
 
-**Immediate action:** `feat/reports` has merged, so the backend feature branches are all closed.
-`fix/backend-backlog` is the live branch — finish the High backend backlog tasks and the `reopen`
-endpoint there, PR it into `projects/07-timetrack` to sign G3 off, then create
-`feat/angular-shell-auth` for Step 7a.
+**Immediate action (2026-07-28):** `feat/reports` has merged, so the backend feature branches are all
+closed. `fix/backend-backlog` is the live branch, and **its closing condition is already met** — every High
+backend task is `[x]` and `reopen` passed its Postman check on 2026-07-22. It is ready to PR into
+`projects/07-timetrack` to sign G3 off, after which `feat/angular-shell-auth` is created for Step 7a.
+
+Medium and Low backlog tasks are still open and continue to be worked on this branch. That is a
+deliberate choice, not a blocker: **G3 requires only the Highs**, while **G7 (`portfolio-audit`) blocks its
+✅ Ready verdict on any open High *or* Medium**. So the Mediums have to be closed before the project can be
+declared finished — but not before the frontend can start. Either sequence is valid; what matters is that
+the branch is not held open under the impression that G3 is still blocked.
 
 ---
 
