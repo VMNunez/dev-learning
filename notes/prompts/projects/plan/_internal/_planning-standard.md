@@ -12,9 +12,8 @@
   to** (its template sections, its invariant numbers, its design-check numbers) — never the whole
   file; only a standalone `SCOPE = all` run reads it in full.
 
-Keeping the contract in one file is why the two never drift: the writer and the reviewer are held to
-exactly the same bar. If a rule about PLANNING.md changes, it changes **here** — never inside the
-write or review prompt.
+If a rule about PLANNING.md changes, it changes **here**, never inside the write or review prompt —
+that is what holds the writer and the reviewer to the same bar.
 
 ---
 
@@ -30,10 +29,6 @@ The template below has 24 sections (0–23). Which of them apply depends on the 
   checks: done-condition format in the learning plan, no vague rules / TBD placeholders, and internal
   consistency between the sections that are present. Read its "Key patterns introduced" table and the
   listed learning objectives instead of the numbered sections.
-
-The write prompt only ever creates **full-stack** plans (the next project is always full-stack from 07
-on), so the writer always uses the full template. The Angular carve-out matters only for the reviewer
-when auditing an old project.
 
 ---
 
@@ -73,10 +68,9 @@ The **Topic** column is a controlled vocabulary, not free text — downstream, `
 extraction standard trusts it *over its own heuristics* to route each concept into PROGRESS.md, so a
 loose value ("Backend", "Java/Spring") mis-files the concept silently. Valid values are exactly the
 PROGRESS.md section names: **Angular · CSS · TypeScript · Java · Spring Boot · Architecture ·
-Security · Deployment · General · SQL**. One value per row. The line that trips people up: a concept
-is **Java** if it exists in Java regardless of Spring (`Optional<T>`, `BigDecimal.compareTo()`,
-wrapper types, `try/catch`); a Spring annotation or Spring-only contract is **Spring Boot** even
-though it lives in a `.java` file (`Optional<T>` is Java; `@Autowired` is Spring).
+Security · Deployment · General · SQL**. One value per row. A concept is **Java** if it exists without
+Spring (`Optional<T>`, `BigDecimal.compareTo()`, `try/catch`); a Spring annotation or Spring-only
+contract is **Spring Boot** even inside a `.java` file (`Optional<T>` is Java; `@Autowired` is Spring).
 - **Pass:** each concept is specific ("pagination with `Pageable`" = good; "Spring Boot" = too vague),
   every Topic is one of the valid section names above (Java vs Spring Boot split correctly), and
   every row has a reason in the third column. Only concepts not yet in PROGRESS.md.
@@ -101,9 +95,8 @@ backend layer rules (controller never calls the repository, entities never leave
 **and an equivalent block of Angular rules**. The frontend half of the plan is what the coding agent
 reads every session once the backend is done, so it is held to the same bar: **every rule must be
 violable and detectable** — a reviewer can point at a file and say "this one breaks it". A label with
-no observable consequence is not a rule. `Coordinator pattern — the page owns state` is a label;
-`A page component owns all state; children receive via @Input and emit via @Output, and never inject a
-data service` is a rule. The Angular block covers at minimum:
+no observable consequence is not a rule (design check 7 is where this is enforced). The Angular block
+covers at minimum:
 - **State ownership** — where state lives, and who owns it when two pages read the same endpoint.
 - **Service boundary** — what a `core/services/` service may and may not do (HTTP call + mapping to the
   model; never UI concerns, never navigation).
@@ -159,37 +152,64 @@ employee-only / manager-only / shared.
 
 Then one line per piece of **shared state**: for every endpoint consumed by more than one page, where
 that data lives and who owns it — a shared service holding a signal, or each page fetching
-independently. This is the frontend's first architecture decision and the one that is otherwise
-discovered mid-build, after two pages have already solved it differently.
+independently.
 - **Pass:** every file in the tree carries its one-line comment — the same bar §12 is held to; an
   unannotated frontend tree fails even when the folder names are right. The routes table covers every
   page in the tree, each with its guards. Every endpoint read by two or more pages has its ownership
   line. No page appears in the tree without a route, and no route without a page.
 
 ### 14. UI design
-In this order: **1)** color palette table (Role/status · Hex · Usage) — Material-friendly, primary +
-accent different from the previous project · **2)** Material components table (component → page(s)
-that use it) · **3)** view-by-view ASCII wireframes, one per page (layout, key interactive elements,
-empty states, role-specific variations) · **4)** visual inspiration (2–3 real apps).
+In this order: **1)** colour palette table (Role/status · Hex · Usage) — Material-friendly, primary +
+accent different from the previous project · **2)** design-system table · **3)** Material components
+table (component → page(s) that use it) · **4)** view-by-view ASCII wireframes, one per page ·
+**5)** motion and accessibility · **6)** visual inspiration (2–3 real apps) · **7)** the visual QA
+checklist.
 
-Each wireframe specifies **all three states of the page, not only the happy one**: what it renders while
-the data loads, what it renders when the call fails, and what it renders when the call succeeds with
-nothing in it (the empty state). A junior frontend is judged on exactly these — a demo that flashes a
-blank page for two seconds and shows nothing at all when the API is down reads as unfinished, however
-good the backend behind it is.
+**The target is an attractive app, not merely a correct one.** A recruiter judges the demo in two
+minutes, and consistency is what reads as professional — so §14 fixes the values before the first page.
 
-The **visual inspiration** table is a working reference, not decoration: each row names the app, the
-link, and **the one concrete element to take from it** ("status badge shape and colour weight", "how the
-filter bar sits above the table") — never "general inspiration". At least one palette or layout decision
-in this section must trace back to a named row, otherwise the table is not being used. Prefer real
-products in the project's own domain over dribbble shots: a recruiter recognises the former.
+Each wireframe specifies **all three states, not only the happy one** — loading, failed call, and
+succeeded-with-nothing — plus key interactive elements and role-specific variations. A junior frontend
+is judged on exactly these.
+
+**Design system — a table of decisions, each violable in the §6 sense** (a reviewer can open a
+stylesheet and point at the break):
+- **Theming mechanism** — the framework's supported theming API, in one named file; never CSS overrides
+  of component internals, which break on every framework upgrade.
+- **Palette intent vs generated ramp** — where the framework generates tonal colours, the hex is the
+  *intent*; the rendered value may differ and must not be forced back.
+- **Domain/status colours as named tokens** — declared once, consumed by the component that owns them.
+- **Typography** — the framework's type scale mapped to roles (page title, section heading, body,
+  metric, label). No font-size in a component stylesheet.
+- **Spacing** — one grid (e.g. 8px) with its allowed values, page padding, gaps. No arbitrary pixels.
+- **Elevation, shape, density** — from the theme, set once, never hand-written per component.
+- **Dark mode** — in or out, with a reason. Absent is not a decision.
+
+**Motion** — feedback, not decoration: transitions fire on state change only, nothing loops to look
+busy, `prefers-reduced-motion` is honoured. Skeleton placeholders animate — a static skeleton reads as a
+broken page. **Accessibility floor** — icon-only buttons carry a label; status is never colour alone;
+contrast verified at the rendered size; focus visible; every action reachable by keyboard.
+
+The **visual inspiration** table is a working reference: each row names the app, the link, and **the one
+concrete element to take from it** ("status badge shape and colour weight") — never "general
+inspiration". At least one palette or layout decision traces back to a named row. Prefer real products
+in the project's domain over dribbble shots: a recruiter recognises the former.
+
+The **visual QA checklist** is the finish bar, run over **every page in one sitting** at the end of the
+last frontend step — the only point where drift between pages built on different days is visible. It
+checks at minimum: type scale and spacing obeyed; all three states reachable on every page; contrast and
+colour-alone; labels and keyboard reach; the declared breakpoints; motion budget; and that the
+screenshots the README needs exist.
 
 Finally, one line on **responsive intent**: which layouts collapse on a narrow viewport (tables, the
-sidenav), or an explicit §20 tradeoff saying the demo targets desktop. A recruiter opens the link on a
-phone.
+sidenav), or an explicit §20 tradeoff saying the demo targets desktop.
 - **Pass:** every page in §13 has a wireframe; every wireframe names its empty state; every page that
   loads data declares its loading **and** its error state — a page specified only in its success state
-  fails; the responsive intent is stated here or documented as a §20 tradeoff.
+  fails; the design-system table is present and every row is a *decision* (a row naming a value without
+  saying where it is defined or who consumes it fails), including an explicit dark-mode ruling; the
+  motion and accessibility blocks are present; the inspiration table names one concrete element per row
+  and at least one §14 decision traces back to a named row; the visual QA checklist is present; the
+  responsive intent is stated here or documented as a §20 tradeoff.
 
 ### 15. Progressive learning plan
 Every development step. Each step has: a short title · what is built (2–4 bullets) · which NEW
@@ -200,9 +220,8 @@ introduce **one major concept at a time**. Step 1 is always "Project setup".
 **Step sizing:** a step is a few days of work, never weeks. A phase that is inherently large — the
 Angular frontend is the canonical case: shell + auth + several pages — must be split into multiple
 steps (shell/auth first, then pages in dependency order, 2–3 pages max per step), each with its own
-done condition. **A step's done condition must cover the step's full listed scope**: if the bullets
-build seven pages, a condition that only proves login + one table is invalid — the step could "pass"
-with three-quarters of its scope unbuilt.
+done condition. **A step's done condition must cover the step's full listed scope**: a condition proving
+login + one table does not close a step that builds seven pages.
 
 The plan must include
 three dedicated steps explicitly: **backend tests** (JUnit 5 + Mockito unit tests, plus the one slice
@@ -285,11 +304,8 @@ Every done condition (§0 and every step in §15) must follow **one** of these e
 - `pgAdmin: [query or visible table state]`
 
 **A step that builds UI pages must prove one non-happy state.** The `Browser:` condition covers the
-populated success path *and* at least one of: the empty state, the loading state, or the error state of
-a page the step built. `Browser: an employee creates an entry at /entries and the table updates` is a
-half-condition — the step passes with a page that renders nothing while it waits and nothing at all when
-the API is down. Those are the states a demo actually fails in, and the ones §14 now makes the plan
-declare; the done condition is what forces them to be built rather than planned. Extend the condition
+populated success path *and* at least one of the empty, loading, or error states of a page the step
+built — §14 makes the plan declare them; this is what forces them to be built. Extend the condition
 rather than adding a step: `…and the table shows its empty state before the first entry exists`.
 
 These are the only valid formats. Never use vague conditions like "the feature works", "it renders
@@ -337,7 +353,8 @@ PLANNING.md.
 8. **Manual backend test with auth** — login → JWT → every endpoint with correct token/role; test 401
    (no token) and 403 (wrong role) explicitly.
 9. **Frontend scaffolding** — Angular routing, TS interfaces mirroring the DTOs, auth service, HTTP
-   interceptor, route guards.
+   interceptor, route guards, and the §14 design system (theme, type scale, spacing, colour tokens)
+   set up before the first page exists.
 10. **Feature pages** — one at a time in dependency order: login first, then the simplest resource,
     then more complex pages.
 11. **Backend tests** — JUnit 5 + Mockito unit tests, one step per service class (happy path + edge
@@ -348,11 +365,9 @@ PLANNING.md.
 14. **Docker** — `docker-compose.yml` with the database service; app image if time allows. Late by
     design — Docker wraps a working app, not a work in progress.
 15. **Deploy** — a public URL a recruiter can open, with the demo credentials in the global README.
-    `docker-compose up` proves the app runs on *your* machine; it is not a link anyone can click, and a
-    full-stack project with no reachable demo is judged worse than a frontend-only one with a live link,
-    however much more it is worth technically. Free-tier hosting for the API + database and a static
-    host for the Angular build is enough. If the project genuinely will not be deployed, that is a §20
-    tradeoff with a reason — not a silent omission.
+    `docker-compose up` proves the app runs on *your* machine; it is not a link anyone can click.
+    Free-tier hosting for the API + database and a static host for the Angular build is enough. If the
+    project genuinely will not be deployed, that is a §20 tradeoff with a reason — not a silent omission.
 16. **README** — all three READMEs after the project works.
 
 Each step in §15 should be traceable to one or more items here. If two items are combined into one
@@ -368,14 +383,12 @@ step, explain why (e.g. "repository has no custom logic so it is combined with t
 
 Group the implementation steps into **coherent feature branches — never one branch per step**. A
 branch spans a logical, self-contained chunk with a clear "done" (e.g. all backend security steps
-together, all CRUD + workflow together, the frontend shell + auth together). One branch per step
-creates PR noise with no isolation benefit; the goal is one branch per feature.
+together, all CRUD + workflow together, the frontend shell + auth together).
 
 **Branch scope must be comparable across the whole project.** If the backend phases each got a
 feature-sized branch (auth, workflow, reports), the frontend is never one giant branch — split it the
 same way its §15 steps are split (e.g. `feat/angular-shell-auth`, `feat/angular-entries`,
-`feat/angular-manager-pages`). A branch spanning weeks of work defeats PR-sized review and gives the
-G4 gate one unreviewably large diff.
+`feat/angular-manager-pages`).
 
 For each branch, define:
 - **Branch name** — `feat/short-description` (the shared session rules convention).
@@ -399,14 +412,10 @@ that.
 
 ## Quality-gate rules (§23)
 
-A **gate** is a checkpoint where a quality prompt runs. Gates exist for two reasons, and both matter:
-
-1. **Catch defects while they are still cheap.** Reviewing the backend the moment it is done — instead
-   of at the very end — means the frontend is never built on top of an API with a broken authorization
-   rule. A bug found after the frontend consumes it costs two fixes, not one.
-2. **Spend tokens once, on the right surface.** A gate is scoped (`REVIEW_SCOPE = backend`) precisely so
-   the same code is not re-reviewed in every later run. **Never plan a `full` review as a routine
-   gate** — `full` is for a first review or a final sweep, not for a tier already reviewed.
+A **gate** is a checkpoint where a quality prompt runs, for two reasons: defects are caught while they
+are still cheap (a bug found after the frontend consumes it costs two fixes, not one), and each surface
+is reviewed once. A gate is therefore scoped (`REVIEW_SCOPE = backend`) — **never plan a `full` review
+as a routine gate**; `full` is for a first review or a final sweep, not a tier already reviewed.
 
 The gates below are **derived from the real dependency map** in `notes/prompts/README.md` ("How the
 prompts feed each other"): a prompt is placed at the point where the file it *reads* has just become
@@ -446,9 +455,6 @@ verbatim into the plan (as unchecked boxes) and tick each one as it happens:
 - [ ] The project branch has been merged into `main` via PR
 ```
 
-**The project is closed only when every box is ticked.** A ❌ or ⚠️ verdict at G7 means going back and
-fixing, not shipping — that is the whole point of having a gate there.
-
 - **Pass:** G1–G8 all present, in order, each with a concrete trigger naming a real §22 branch or §15
   step; G3 and G4 are tier-scoped (never `full`); the prerequisite chain is stated; the closure
   checklist is present with all nine boxes.
@@ -480,19 +486,18 @@ Cross-checks between sections. A finished plan satisfies all of them; the review
 10. **§0 Next gate vs §23** — the Next gate in §0 is one of the gates defined in §23, and it is the
    first one whose trigger has not fired yet given the §0 Current step. A plan pointing at G5 (READMEs)
    while the backend review (G3) has never run is wrong — the prerequisite chain forbids it.
+11. **Visual QA checklist vs learning plan (§14 ↔ §15)** — §14's visual QA checklist exists, and the
+   last frontend step in §15 names it in its done condition. A checklist nobody is required to run is
+   decoration.
 
 ---
 
 ## Design-correctness checks — is each decision *defensible*, not just *present*?
 
-The consistency invariants above prove the plan is internally coherent. These prove the design
-decisions are **sound enough to defend in an interview** — the difference between a *complete* plan and
-a *perfect* one. The reviewer runs each; the author should already satisfy them.
-
-**The bar for every check here is Victor's actual objective** — a junior / junior-mid interview at a
-Spanish consultancy (see `_shared-context.md`) — not abstract best practice. A decision passes when it
-survives an interviewer's "why?", and a gap matters in proportion to how likely an interviewer is to
-probe it.
+The invariants above prove the plan is internally coherent; these prove its decisions are **sound enough
+to defend in an interview**. The bar is Victor's actual objective — a junior / junior-mid interview at a
+Spanish consultancy (see `_shared-context.md`), not abstract best practice: a decision passes when it
+survives an interviewer's "why?", and a gap matters in proportion to how likely one is to probe it.
 
 1. **Relationship fetch types (§7)** — every `EAGER` is justified (the default should be `LAZY`; flag
    any `EAGER` without a stated reason). Every cascade choice matches the ownership described.
@@ -521,14 +526,11 @@ probe it.
      if the project relies on `ddl-auto`.
 7. **Frontend rules are rules, not labels (§6)** — take any two entries from §6's Angular block and ask:
    *could a reviewer open a file and say "this one breaks it"?* If the answer needs interpretation, the
-   entry is a label and fails. This check exists because the frontend half of a plan drifts into
-   pattern names — "coordinator pattern", "smart/dumb components" — that read as decisions but constrain
-   nothing, while the backend half states rules that can be violated.
+   entry is a label and fails — the failure mode is pattern names that constrain nothing.
 8. **State ownership is decided, not discovered (§13)** — every endpoint consumed by more than one page
    has its ownership line, and the choice is consistent with §6's state-ownership rule. Two pages
    independently fetching the same data is a valid answer; *not answering* is not.
 9. **Frontend interview test (§6/§13/§20)** — the mirror of check 5, applied to the frontend. At least
    one §20 tradeoff is a frontend decision (state management, component library, fetching strategy) and
    its reason survives an interviewer's "why?". "The app was small enough that a signal in a service
-   beat the ceremony of a store" passes; "Angular recommends it" and "it is the modern way" fail. Angular
-   is the differentiator in the target market — an interviewer probes it at least as hard as the API.
+   beat the ceremony of a store" passes; "Angular recommends it" and "it is the modern way" fail.
