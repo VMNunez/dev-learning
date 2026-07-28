@@ -60,7 +60,7 @@ marking the note complete.
 | 04-meal-finder | | | | |
 | 05-task-manager | | | | |
 | 06-hr-portal | | | | |
-| 07-timetrack | | | | |
+| 07-timetrack | 2026-07-28 (review mode, completed) | | | |
 
 ## Global pipeline prompts (no per-target scope)
 
