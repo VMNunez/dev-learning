@@ -11,7 +11,7 @@ Update this table at the start of every session. It is the authoritative pointer
 
 | | |
 |---|---|
-| **Current step** | G3 backend backlog fix (not a §15 step). **Every High task is closed and `reopen` is built — G3's sign-off condition is met.** Work continuing on the branch is Medium/Low backlog, which G3 does not require (G7 does). **Step 7a — Angular shell + auth is the next learning step** |
+| **Current step** | G3 backend backlog fix (not a §15 step). **Every High task is closed and `reopen` is built — G3's sign-off condition is met.** Work continuing on the branch is Medium/Low backlog, which G3 does not require (G7 does). **Step 7a — Angular shell + auth is the next learning step, but one Medium gates it:** the account-password flow (`SecureRandom` + `CreateUserResponse` + `PATCH /api/users/me/password`) must be built and merged first — Step 7a's shell ships the dialog that calls it. Every *other* Medium/Low can wait for G7 |
 | **Current branch** | `fix/backend-backlog` (§22 "Backlog-fix branches" — `feat/angular-shell-auth` is not opened yet; it is created from `projects/07-timetrack` when this branch merges) |
 | **Done condition** | ✅ met — `Postman: PATCH /api/entries/{id}/reopen on a REJECTED own entry returns 200 — status DRAFT` (verified 2026-07-22), and every High backend task in `PROJECT-BACKLOG.md` is `[x]`. Step 7a's own done condition takes over next: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **unblocked**: the backend review has run and all its High tasks are fixed. Signing off = PR `fix/backend-backlog` into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges |
@@ -102,7 +102,7 @@ Concepts from earlier projects this project reinforces.
 | Database | PostgreSQL | Local instance via pgAdmin; same DB used in Docker |
 | ORM | Spring Data JPA + Hibernate | `JpaRepository` + derived queries; JPQL for reports |
 | Frontend | Angular + Angular Material | Teal M3 theme, compact density (§14); Core/Feature/Shared structure |
-| Local setup | Docker + docker-compose | App + Postgres in one command (Step 9) |
+| Local setup | Docker + docker-compose | App + Postgres in one command (Step 11) |
 | Tests | JUnit 5 + Mockito (backend), Jasmine + TestBed (frontend) | Services only — component tests start at project 08 |
 
 ---
@@ -710,6 +710,10 @@ the teal / compact / flat identity above.
 
 ### Design system — decided once, obeyed by all eight pages
 
+> **"Eight pages" throughout §14 and §20 means eight *views*, not eight routes.** §13 lists seven routes;
+> `/dashboard` renders two genuinely different pages (employee and manager variants), which is why the
+> visual QA checklist has eight screens to walk.
+
 This project is a portfolio piece: a recruiter opens it for about two minutes, on an unknown screen, and
 judges it before reading a line of code. What makes it look professional is not decoration — it is
 **consistency**. Eight pages built on different days drift unless the values below are fixed up front, so
@@ -851,7 +855,10 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
 #### Login
 
 Split layout — two columns:
-- Left: dark teal background (the palette's darkest primary tone), app logo, tagline ("Track your time. Get recognised.")
+- Left: a dark teal panel, app logo, tagline ("Track your time. Get recognised."). Take the colour from a
+  **theme token** (the M3 primary container / a dark tone of the generated ramp), never a hand-picked hex —
+  the design-system table forbids forcing the seed colour back with CSS, and this panel is the one place
+  tempting enough to break it
 - Right: white background, form card centred vertically
 
 ```
@@ -1137,7 +1144,8 @@ Report for  [May 2025 ▼]
 
 ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
 │ 240h         │  │ 5            │  │ 3            │
-│ Total hours  │  │ Employees    │  │ Projects     │
+│ Approved     │  │ Employees    │  │ Projects     │
+│ this month   │  │              │  │              │
 └──────────────┘  └──────────────┘  └──────────────┘
 
 Hours by project                    Hours by employee
@@ -1149,12 +1157,15 @@ Hours by project                    Hours by employee
 ```
 
 **Where each card's number comes from** — only the first is served by `/api/reports/summary`:
-- "Total hours" — `GET /api/reports/summary?month=`, read `approvedHours`
+- "Approved this month" — `GET /api/reports/summary?month=`, read `approvedHours`. The card is **not**
+  labelled "Total hours": it counts APPROVED only (§8), and a label that says "total" over a filtered
+  number is the exact mismatch the §8 reporting rule was written to remove — the same correction already
+  applied to the manager dashboard's card
 - "Employees" — the **length of the by-employee array**, not a summary field
 - "Projects" — the **length of the by-project array**, not a summary field
 
 All three report calls run in parallel with `forkJoin` on month change. Because every aggregate counts
-`APPROVED` only (§8), the "Total hours" card equals the sum of either table exactly — that reconciliation
+`APPROVED` only (§8), the "Approved this month" card equals the sum of either table exactly — that reconciliation
 is the point of the rule, and it is worth asserting in a test.
 
 Empty state (a month with no approved hours): "No approved hours for this month yet." replaces the cards
@@ -1249,6 +1260,14 @@ own done condition covering its **full** scope, and each falls inside exactly on
 share `feat/angular-manager-pages`, since §22's rule is one branch per coherent feature, never one per step.
 
 #### Step 7a — Shell + auth
+
+> **Backend prerequisite — the one Medium that gates this step.** The toolbar dialog below calls
+> `PATCH /api/users/me/password`, which does not exist yet: the account-password flow (`SecureRandom`
+> generation · `CreateUserResponse` · the endpoint itself) is an open **Medium** in `PROJECT-BACKLOG.md`,
+> not a §15 step, and it must be built on `fix/backend-backlog` and merged **before**
+> `feat/angular-shell-auth` opens. No other Medium or Low blocks this step — only this one, because 7a
+> ships its consumer.
+
 - Angular project with Angular Material; `environment.ts` with the API base URL
 - **The §14 design system is set up here, before any page exists** — `styles/material-theme.scss` with the
   scoped `mat.theme()` (teal-based M3 palette, compact density, 4px shape token), the four `--status-*` custom properties,
@@ -1484,8 +1503,11 @@ Write when the frontend is complete (after Step 7d).
 **1. Folder structure** — one-line explanation per folder, why it exists.
 
 **2. State management approach**
-- Signals for local component state
-- Services for shared state across pages
+- Signals for page state — the page component under `pages/` owns every signal for its route (§6)
+- **No cross-page cache.** Two pages reading the same endpoint each fetch it on their own load; a
+  `core/services/` service issues the call and maps the response, and holds no state (§6, §13's table)
+- `AuthService` is the single app-wide exception — token + current user, persisted with `effect()`,
+  because auth outlives every route
 - Coordinator pattern — page owns all state, child components receive and emit
 
 **3. Key patterns**
@@ -1498,6 +1520,7 @@ Write when the frontend is complete (after Step 7d).
 - `status-badge` — coloured badge used in entries, approvals and dashboard
 - `confirm-dialog` — reusable confirmation before any destructive action
 - `reject-dialog` — rejection note input, used in approvals
+- `change-password-dialog` — self-service password change, opened from the shell user menu (not routed)
 
 **5. Tradeoffs**
 - Signals over NgRx — app complexity did not justify a state management library
@@ -1573,21 +1596,26 @@ coverage table.
 
 | Branch | Covers | Opens | Closes |
 |---|---|---|---|
-| `fix/backend-backlog` | The **High** backend tasks from G3's `review-audit` run, plus the deferred `PATCH /api/entries/{id}/reopen` endpoint (see Step 5's "Deferred out of this step" line) — no §15 step | After G3's `review-audit` wrote `PROJECT-BACKLOG.md` | When every High backend task in `PROJECT-BACKLOG.md` is `[x]` and `reopen` passes its Postman check (`PATCH /api/entries/{id}/reopen` on a REJECTED own entry returns 200 with status DRAFT) — this is what signs G3 off. PR into `projects/07-timetrack`. |
+| `fix/backend-backlog` | The **High** backend tasks from G3's `review-audit` run, plus the deferred `PATCH /api/entries/{id}/reopen` endpoint (see Step 5's "Deferred out of this step" line) **and the account-password-flow Medium**, which Step 7a depends on — no §15 step | After G3's `review-audit` wrote `PROJECT-BACKLOG.md` | When every High backend task in `PROJECT-BACKLOG.md` is `[x]`, `reopen` passes its Postman check (`PATCH /api/entries/{id}/reopen` on a REJECTED own entry returns 200 with status DRAFT) — this is what signs G3 off — **and `PATCH /api/users/me/password` returns 204 for a correct current password and 400 with `fieldErrors.currentPassword` for a wrong one**, so Step 7a has an endpoint to build against. PR into `projects/07-timetrack`. |
 
 The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
 open for the whole project. It only merges into `main` when Step 11 is done.
 
-**Immediate action (2026-07-28):** `feat/reports` has merged, so the backend feature branches are all
-closed. `fix/backend-backlog` is the live branch, and **its closing condition is already met** — every High
-backend task is `[x]` and `reopen` passed its Postman check on 2026-07-22. It is ready to PR into
-`projects/07-timetrack` to sign G3 off, after which `feat/angular-shell-auth` is created for Step 7a.
+**Immediate action (2026-07-29):** `feat/reports` has merged, so the backend feature branches are all
+closed. `fix/backend-backlog` is the live branch and **G3's condition is already met** — every High backend
+task is `[x]` and `reopen` passed its Postman check on 2026-07-22.
 
-Medium and Low backlog tasks are still open and continue to be worked on this branch. That is a
-deliberate choice, not a blocker: **G3 requires only the Highs**, while **G7 (`portfolio-audit`) blocks its
-✅ Ready verdict on any open High *or* Medium**. So the Mediums have to be closed before the project can be
-declared finished — but not before the frontend can start. Either sequence is valid; what matters is that
-the branch is not held open under the impression that G3 is still blocked.
+**One Medium is finished on this branch before it PRs: the account-password flow.** It is not a G3
+requirement — it is a **Step 7a requirement**, because 7a's shell ships the `change-password-dialog` that
+calls `PATCH /api/users/me/password`, an endpoint that does not exist yet. Building the consumer before
+the endpoint would leave the step unable to pass its own done condition. So: finish that Medium here → PR
+`fix/backend-backlog` into `projects/07-timetrack` (which also signs G3 off) → create
+`feat/angular-shell-auth` for Step 7a.
+
+The **remaining** Medium and Low tasks stay open and do not block the frontend. **G3 requires only the
+Highs**, while **G7 (`portfolio-audit`) blocks its ✅ Ready verdict on any open High *or* Medium** — so they
+must close before the project is declared finished, just not before Angular starts. The distinction that
+matters: the password Medium is sequenced by a *dependency*, the others only by the closing gate.
 
 ---
 
