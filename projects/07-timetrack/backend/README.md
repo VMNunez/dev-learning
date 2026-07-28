@@ -157,6 +157,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `TimeEntry.user` and `TimeEntry.project` are `@ManyToOne(fetch = FetchType.LAZY)` — `@ManyToOne` defaults to `EAGER`, which would trigger one extra query per relationship per row (1 query for the list + up to 2N extra queries). `TimeEntrySpecifications.fetchUserAndProject()` adds an explicit `LEFT JOIN FETCH` on both relationships so the listing endpoint loads entries, users and projects in a single query. The fetch is skipped when `query.getResultType()` is `Long` (the pagination count query), since a fetch join is invalid there.
 
+### Two-layer validation on `hours` ✓
+
+`TimeEntry.hours` is constrained at both ends, deliberately kept as two layers rather than one: `@Column(precision = 4, scale = 2)` on the entity guarantees the DB never stores more precision than the field is meant to hold, and `@DecimalMin("0.5")` / `@DecimalMax("24")` / `@Digits(integer = 2, fraction = 2)` on `CreateTimeEntryRequest` reject an out-of-range or over-precise value at the HTTP boundary with a 400, before it ever reaches the service. `TimeEntryService` also keeps its own manual 0.5–24 check — redundant with the DTO validation for HTTP requests, but it protects the business rule for any future non-HTTP caller of the service.
+
 ---
 
 ## Tradeoffs
