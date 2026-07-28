@@ -54,6 +54,7 @@ public class ProjectService {
         return toResponse(project);
 
     }
+
     @Transactional
     public ProjectResponse create(CreateProjectRequest request) {
         Project project = new Project();
@@ -69,6 +70,11 @@ public class ProjectService {
     public ProjectResponse update(Long id, UpdateProjectRequest request) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+
+        if (request.getActive() != null) {
+            project.setActive(request.getActive());
+        }
+
         project.setName(request.getName());
         project.setDescription(request.getDescription());
 
