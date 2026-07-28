@@ -6,6 +6,7 @@ import com.victor.timetrack.dto.response.ProjectResponse;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.repository.ProjectRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,10 @@ public class ProjectService {
 
     @Transactional
     public ProjectResponse create(CreateProjectRequest request) {
+        if (projectRepository.existsByName(request.getName())) {
+            throw new DataIntegrityViolationException("A project with this name already exists");
+        }
+
         Project project = new Project();
         project.setName(request.getName());
         project.setDescription(request.getDescription());
@@ -73,6 +78,10 @@ public class ProjectService {
 
         if (request.getActive() != null) {
             project.setActive(request.getActive());
+        }
+
+        if (!project.getName().equals(request.getName()) && projectRepository.existsByName(request.getName())) {
+            throw new DataIntegrityViolationException("A project with this name already exists");
         }
 
         project.setName(request.getName());
