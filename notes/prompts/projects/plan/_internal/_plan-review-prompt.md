@@ -4,7 +4,8 @@ This is the **reviewer half** of the project-plan pipeline. It audits one `PLANN
 contract in `_planning-standard.md` and **fixes what falls short directly in the file**. A plan is
 authored whole, but reviewed by **specialists**: `plan-audit.md` dispatches this prompt once per concern
 (`{SCOPE}` = architecture · data-model-api · ui-design · rules-security · steps-tests ·
-branches-coverage), so each
+branches-coverage · whole-plan) — all but the last own one concern; `whole-plan` runs last and owns only
+cross-slice coherence — so each
 cold subagent owns a small, defined slice it cannot skim. It serves two callers:
 
 - **`new` mode** — after the author (subagent A) and the architecture advisor write a fresh plan, the
@@ -26,7 +27,7 @@ PROJECT = [projects/01-todo-list | projects/02-weather-app | projects/03-expense
            projects/04-meal-finder | projects/05-task-manager | projects/06-hr-portal |
            projects/07-timetrack | ... — the folder path of the plan to audit]
 SCOPE   = [all | architecture | data-model-api | ui-design | rules-security | steps-tests |
-           branches-coverage]
+           branches-coverage | whole-plan]
           → the audit orchestrator dispatches ONE concern per subagent; "all" is for a standalone run.
 DRY_RUN = [false | true]
 
@@ -48,7 +49,9 @@ focused context per reviewer; a specialist that reads everything defeats it.
 - `{PROJECT}/PLANNING.md` — the file to audit, read in **tiers**: your own sections in full · the
   sections your invariants cross-reference in full (e.g. `ui-design` needs §13's page list for
   invariant 3, not its annotated file tree — stop at the routes table) · everything else headings-only, just
-  enough to know the plan's shape. Never read tail sections your slice does not touch.
+  enough to know the plan's shape. Never read tail sections your slice does not touch. **`whole-plan` is
+  the sole exception to the tiered read** — it reads the file end to end by definition; the tier rules
+  above bind the six concern scopes only.
 - `notes/prompts/projects/plan/_internal/_planning-standard.md` — **only the parts your `{SCOPE}` row lists in
   the "Reads from the standard" column below**, plus "Two project formats" (every scope needs it to
   derive the format). Read the standard in full **only** when `{SCOPE}` = all.
@@ -99,6 +102,7 @@ cross-concern ripple in your report so the orchestrator routes it).
 | `rules-security` | §8 business rules (no vague/TBD; state diagram present) · §0 current step + its done-condition format · invariant 7 (routes/roles↔API-security) · design checks 2 (no dead/orphan states) and 3 (endpoint roles vs ownership) | template §0/§8 · done-condition format · invariant 7 · design checks 2–3 |
 | `steps-tests` | §15 steps (each a valid done condition; one major concept per step; the three dedicated test steps present) · §16 testing plan (specific method/service names; edge cases named) · **§3 Pass criteria** (each concept specific; every Topic one of the controlled-vocabulary section names, Java vs Spring Boot split correctly — you already read §3 for invariant 4) · done-condition format in §15 (`rules-security` owns §0's) · invariants 4–5 (new-concepts↔steps, testing-plan↔steps) · design check 4 (one concept per step) | template §3/§15/§16 · done-condition format · professional implementation order · invariants 4–5 · design check 4 |
 | `branches-coverage` | §22 branches (`feat/…` naming; cover every §15 step, none double-assigned; one per phase; concrete open/close) · **§23 quality gates** (G1–G8 present, in build order; the review gates G3/G4 tier-scoped, never `full`; the prerequisite chain G3/G4 → G5 → G6 → G7 → G8 stated; the closure checklist present with all nine boxes; every trigger names a real §22 branch / §15 step) · **section coverage** (all 24 present for full-stack — a missing section is critical, add it) · invariants 6, 8, 9 and 10 (branches↔steps, §0-branch↔§22, gates↔branches, §0-next-gate↔§23) | template §22/§23 · branch-strategy rules · quality-gate rules · the 24-section list (headings only) · invariants 6, 8, 9, 10 |
+| `whole-plan` | Runs **last**, reads the whole file end to end — **coherence, not conformance**; do not re-run another row's checks. Twelve checks: the ten sections no other row owns (§1 · §2 · §4 · §5 · §9 · §11 · §17 · §18 · §19 · §21 — for these ten only, also check content against the standard's pass line, since no other row does) · cross-section contradictions (a rule in one section broken by prose in another) · `PROJECT-BACKLOG.md` against the plan's recorded decisions. Fix directly; emit no ripples; trace is always twelve rows | the 24-section list · the "what makes it pass" line for §1/§2/§4/§5/§9/§11/§17/§18/§19/§21 only — no standard section in full |
 
 `SCOPE = all` (standalone run) means run **every** row over the whole plan, reading the standard in full.
 

@@ -11,8 +11,8 @@ audits a project's `PLANNING.md` to the full standard, hands-off, in two shapes:
   commit (one project, or `PROJECT = all` for every project in turn).
 
 Both shapes use the same quality pipeline: the plan is **authored whole (new mode only), then audited
-and fixed by six cold specialist reviewers — one per concern** (architecture · data-model-api ·
-ui-design · rules-security · steps-tests · branches-coverage) — before the orchestrator commits it. New mode adds
+and fixed by seven cold specialist reviewers — six owning one concern each** (architecture · data-model-api ·
+ui-design · rules-security · steps-tests · branches-coverage) **plus a final `whole-plan` coherence pass** — before the orchestrator commits it. New mode adds
 an **architecture advisor** between the author and the specialists (Phase 1b). Authoring stays
 whole because a plan's sections cross-reference; review is split so each specialist owns a small slice
 it cannot skim, catching what the author trusted. No report to apply by hand, no per-file launching —
@@ -131,7 +131,9 @@ nothing, that is fine — continue to the reviewer.
 
 ### Phase 2 — Review (specialist reviewers, one concern each)
 
-Do **not** hand one subagent the whole 24-section plan to audit — it would skim the last sections. Run
+Do **not** hand one subagent the whole 24-section plan to audit **against the standard** — it would skim
+the last sections. (The final `whole-plan` specialist does read the whole file, but it runs twelve
+enumerated coherence checks, not the standard's conformance checks. Different read, different risk.) Run
 the **specialist reviewers** defined in "Specialist review procedure" below over the just-authored plan.
 They fix directly and do not commit. Then go to "Finishing" (the orchestrator commits the plan + the
 ROADMAP.md / PROGRESS.md edits left in the working tree).
@@ -140,7 +142,7 @@ ROADMAP.md / PROGRESS.md edits left in the working tree).
 
 ### PROJECT = all
 Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block's
-Batch note and run the **single-project review below once per project**, fully finishing one (all six
+Batch note and run the **single-project review below once per project**, fully finishing one (all seven
 specialists + the orchestrator commit) before starting the next — never overlap, since the orchestrator
 commits per project and parallel commits race the git index. Put each project's report under a
 `### [project]` heading, and after the last one
@@ -176,12 +178,13 @@ Then run the **specialist reviewers** defined in "Specialist review procedure" b
 
 ## Specialist review procedure (used by both modes)
 
-The plan is reviewed by **six specialists, each owning one concrete concern** — so each cold subagent
+The plan is reviewed by **seven specialists — six owning one concrete concern, plus a final whole-plan
+coherence pass** — so each cold subagent
 audits a small, defined slice it cannot leave half-done. Dispatch them **sequentially**, in this order
 (they all edit the same `PLANNING.md`, so never overlap; none commits):
 
 1. `architecture` · 2. `data-model-api` · 3. `ui-design` · 4. `rules-security` · 5. `steps-tests` ·
-6. `branches-coverage`
+6. `branches-coverage` · 7. `whole-plan`
 
 `ui-design` runs **after** `data-model-api` because it audits §14 against §13's page list, which that
 concern may still be fixing. It is its own concern rather than §14 riding at the tail of
@@ -192,7 +195,7 @@ For an **Angular project (01–06)**, skip concerns whose sections the plan does
 backend API/security) — the reviewer prompt derives the format, but do not dispatch a concern with
 nothing to audit. `ui-design` is the one concern that **always** runs, on both formats: an Angular-only
 plan has no numbered §14, so it audits whatever design/palette part that plan has. For a **full-stack
-project (07+)**, run all six.
+project (07+)**, run all seven.
 
 For **each** concern in order, launch a fresh, independent `role-appropriate` subagent,
 `reasoning tier: deep`, `execution: foreground`:
@@ -206,6 +209,29 @@ For **each** concern in order, launch a fresh, independent `role-appropriate` su
 > directly in the file, and **do NOT commit** — the orchestrator commits once after every concern.
 > Return your verdict and the **check-by-check trace of your slice** in that prompt's compact report
 > format (one line per check — never paste plan content), plus any cross-concern ripple to reconcile.
+
+**After the six concerns, dispatch one last specialist, `SCOPE = whole-plan`.** It runs last because it
+reads the file the other six have finished fixing, and it is the only reviewer that reads `PLANNING.md`
+end to end in one context. It audits **coherence, not conformance** — the six already checked every
+section they own against the standard, and re-running those checks is not its job. Its slice is twelve
+checks:
+
+- **The ten sections no concern owns — §1, §2, §4, §5, §9, §11, §17, §18, §19, §21 — one check each.**
+  These are the exception to "coherence, not conformance": they have no other owner, so for these ten it
+  checks content against the standard's pass line as well as against the rest of the plan.
+  `branches-coverage` only checks that they exist.
+- **Cross-section contradictions** — a rule stated in one section and broken by prose in another, where
+  the second section's owner has no reason to read the first.
+- **`PROJECT-BACKLOG.md` against the plan** — the task list Victor actually executes is read by no other
+  specialist, so a decision recorded in §8 can ship while the backlog still states the version it
+  superseded.
+
+It fixes what it finds directly and emits no ripples (there is no later specialist to route them to). It
+does not commit. Its trace is **twelve rows, always** — one per orphan section (✅ or the fix made), one
+for contradictions, one for the backlog — so the acceptance check below applies to it unchanged; a short
+trace is a skim, and "nothing found" is a ✅ in a row, never a missing row. It runs on **both formats**: on
+an Angular plan (01–06) it audits whichever of the ten sections that plan has, and skips the backlog check
+if the project has no `PROJECT-BACKLOG.md`.
 
 Wait for each specialist before dispatching the next. Collect their traces and any ripples; if a ripple
 lands in a concern already reviewed, re-dispatch that one specialist to reconcile it — **at most one
@@ -260,9 +286,12 @@ Report the commit made and each specialist's verdict/trace.
 - **The plan is authored whole, reviewed by specialists — one concern per subagent.** Authoring needs
   the whole plan in one context (the sections cross-reference); review does not, so it is split into
   six cold specialists (architecture · data-model-api · ui-design · rules-security · steps-tests ·
-  branches-coverage), each owning a small slice it cannot skim and returning a check-by-check trace.
+  branches-coverage), each owning a small slice it cannot skim and returning a check-by-check trace,
+  **and closed by a seventh `whole-plan` pass that owns only what a slice structurally cannot see: the
+  ten unowned sections, cross-section contradictions, and `PROJECT-BACKLOG.md`.**
 - **Strict sequence, never overlapping.** new mode: author → architecture advisor → the six
-  specialists (in order) → orchestrator commit; review mode: the six specialists → orchestrator commit.
+  specialists (in order) → `whole-plan` → orchestrator commit; review mode: the six specialists →
+  `whole-plan` → orchestrator commit.
   Each must see the previous one's finished work, and they all edit the same file. (The architecture
   advisor is new-mode only, on the author side; the `architecture` specialist reviewer independently
   re-checks §6/§3/§20 in both modes.)
