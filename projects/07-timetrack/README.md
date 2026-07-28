@@ -117,6 +117,7 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - Startup seeding in Java over `data.sql` — BCrypt hash built at runtime from an env var, never committed to git
 - Idempotent seed — `findByEmail(...).isPresent()` guard replaces SQL's `ON CONFLICT DO NOTHING`
 - Foreign key `ON DELETE RESTRICT` — can't delete a parent row while a child still references it (SQL state `23503`)
+- SLF4J `Logger` over `System.out.println` — log levels, automatic context (timestamp/thread/class), and proper stacktrace formatting via `log.error("message", e)`
 
 ---
 
