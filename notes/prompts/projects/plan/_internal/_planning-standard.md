@@ -282,8 +282,6 @@ object's state — never only `verify(...)` that a method was called. No trivial
 - **Pass:** specific method/service/component names (not "test the service"); edge cases named per
   test; every §8 business rule mapped to a test; the slice-test line present (even if "none yet — added
   in project 0X"); the assertion-quality rule stated.
-- (Reminder, not a check: interview questions for new testing concepts are added during daily
-  sessions per the shared session rules — no piece of this pipeline writes interview-prep files.)
 
 ### 17. Key rule
 One paragraph: the single most important thing to remember about this project.
@@ -516,6 +514,10 @@ Cross-checks between sections. A finished plan satisfies all of them; the review
 11. **Visual QA checklist vs learning plan (§14 ↔ §15)** — §14's visual QA checklist exists, and the
    last frontend step in §15 names it in its done condition. A checklist nobody is required to run is
    decoration.
+12. **§10 endpoints vs consumers (§10 ↔ §13)** — every endpoint in §10 is either called by a route,
+   component or dialog named in §13, or explicitly ruled backend-only in §10 with a one-line reason.
+   An endpoint with neither is a defect: the plan builds, tests and documents something the app can
+   never reach.
 
 ---
 
