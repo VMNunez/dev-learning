@@ -153,6 +153,10 @@ private ProjectResponse toResponse(Project project) {
 
 Every service method is explicitly `@Transactional` (writes) or `@Transactional(readOnly = true)` (reads). Without it, each repository call runs as its own auto-commit transaction — a read-then-write method like `update` or `submit` would have no atomic boundary between the `find` and the `save`. `readOnly = true` also lets Hibernate skip dirty-checking on methods that never mutate an entity.
 
+### N+1 prevention on `GET /api/entries`
+
+`TimeEntry.user` and `TimeEntry.project` are `@ManyToOne(fetch = FetchType.LAZY)` — `@ManyToOne` defaults to `EAGER`, which would trigger one extra query per relationship per row (1 query for the list + up to 2N extra queries). `TimeEntrySpecifications.fetchUserAndProject()` adds an explicit `LEFT JOIN FETCH` on both relationships so the listing endpoint loads entries, users and projects in a single query. The fetch is skipped when `query.getResultType()` is `Long` (the pagination count query), since a fetch join is invalid there.
+
 ---
 
 ## Tradeoffs

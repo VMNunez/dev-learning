@@ -158,7 +158,9 @@ public class TimeEntryService {
                 .where(TimeEntrySpecifications.hasUserId(userId))
                 .and(TimeEntrySpecifications.hasProjectId(projectId))
                 .and(TimeEntrySpecifications.hasStatus(status))
-                .and(TimeEntrySpecifications.dateBetween(start, end));
+                .and(TimeEntrySpecifications.dateBetween(start, end))
+                .and(TimeEntrySpecifications.fetchUserAndProject());
+
 
         return timeEntryRepository.findAll(spec)
                 .stream()

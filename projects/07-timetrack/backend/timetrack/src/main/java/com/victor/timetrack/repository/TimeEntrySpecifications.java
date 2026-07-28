@@ -2,12 +2,23 @@ package com.victor.timetrack.repository;
 
 import com.victor.timetrack.model.EntryStatus;
 import com.victor.timetrack.model.TimeEntry;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 
 
 public class TimeEntrySpecifications {
+    public static Specification<TimeEntry> fetchUserAndProject() {
+        return (root, query, cb) -> {
+            if (Long.class != query.getResultType() && long.class != query.getResultType()) {
+                root.fetch("user", JoinType.LEFT);
+                root.fetch("project", JoinType.LEFT);
+            }
+            return cb.conjunction();
+        };
+    }
+
     public static Specification<TimeEntry> hasUserId(Long userId) {
         return ((root, query, criteriaBuilder) ->
                 userId == null ?
