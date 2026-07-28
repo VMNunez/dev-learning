@@ -217,6 +217,7 @@ APPROVED     REJECTED ─────────┘
 - Only the owner (EMPLOYEE, ownership resolved from the JWT) can re-open one of their **REJECTED** entries — this is the only transition into DRAFT after creation, and it exists so the entry can be corrected and resubmitted (the resubmit loop in the diagram above). Re-opening an entry in any other status is rejected. *(Planned rule — the endpoint was not part of the built Step 5 scope and is still to be implemented.)*
 - Manager can see all entries from all users
 - Manager can only approve or reject SUBMITTED entries; a manager never edits, submits or re-opens an entry
+- A manager cannot approve or reject **their own** entries (segregation of duties) — the caller's id is resolved from the JWT and compared to the entry's owner; a match is refused (403). A manager never logs hours in this system (`POST /api/entries` is EMPLOYEE-only, and the UI hides every logging control from managers), so the only way a manager can own an entry is by having been promoted from EMPLOYEE while holding entries — those are reviewed by a different manager. Modelling a manager who bills hours would require an approver hierarchy (each user's entries routed to *their* line manager), which is deliberately out of scope
 - A rejection note is mandatory when rejecting — a reject with a blank note is refused (400) and the entry stays SUBMITTED
 - Cannot log entries for a future date
 - Hours must be between 0.5 and 24
@@ -319,8 +320,8 @@ field-level map the reactive forms consume to show a message under each input (S
 | `DELETE /api/entries/{id}` | EMPLOYEE | Delete own `DRAFT` entry (hard delete — a draft has no history value) | — | `204` no body · `403` not the owner · `409` entry not in `DRAFT` |
 | `PATCH /api/entries/{id}/submit` | EMPLOYEE | Own entry `DRAFT → SUBMITTED` | — | `200` + `TimeEntryResponse` · `403` not the owner · `409` entry not in `DRAFT` |
 | `PATCH /api/entries/{id}/reopen` | EMPLOYEE | Own entry `REJECTED → DRAFT` so it can be corrected and resubmitted | — | `200` + `TimeEntryResponse` · `403` not the owner · `409` entry not in `REJECTED` |
-| `PATCH /api/entries/{id}/approve` | MANAGER | `SUBMITTED → APPROVED` | — | `200` + `TimeEntryResponse` · `409` entry not in `SUBMITTED` |
-| `PATCH /api/entries/{id}/reject` | MANAGER | `SUBMITTED → REJECTED` | `RejectRequest` — `rejectionNote` | `200` + `TimeEntryResponse` · `400` note missing · `409` entry not in `SUBMITTED` |
+| `PATCH /api/entries/{id}/approve` | MANAGER | `SUBMITTED → APPROVED` | — | `200` + `TimeEntryResponse` · `403` caller is the entry's owner · `409` entry not in `SUBMITTED` |
+| `PATCH /api/entries/{id}/reject` | MANAGER | `SUBMITTED → REJECTED` | `RejectRequest` — `rejectionNote` | `200` + `TimeEntryResponse` · `400` note missing · `403` caller is the entry's owner · `409` entry not in `SUBMITTED` |
 
 **Query params on `GET /api/entries`** — all optional, combinable:
 
@@ -898,8 +899,8 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `TimeEntryService.getEntries` | EMPLOYEE gets only their own entries; MANAGER gets all | filters (`month`, `status`, `projectId`) narrow the result; an employee never receives another user's entry |
 | `TimeEntryService.submit` | DRAFT → SUBMITTED | entry not DRAFT → throws; caller is not the owner → throws |
 | `TimeEntryService.reopen` | REJECTED → DRAFT for the owner | entry not REJECTED → throws; caller is not the owner → throws; MANAGER caller → throws |
-| `TimeEntryService.approve` | SUBMITTED → APPROVED | entry not SUBMITTED → throws; entry id not found → `ResourceNotFoundException` |
-| `TimeEntryService.reject` | SUBMITTED → REJECTED + note saved | entry not SUBMITTED → throws; missing note → throws |
+| `TimeEntryService.approve` | SUBMITTED → APPROVED | entry not SUBMITTED → throws; entry id not found → `ResourceNotFoundException`; caller is the entry's owner → `UnauthorizedException` (403) |
+| `TimeEntryService.reject` | SUBMITTED → REJECTED + note saved | entry not SUBMITTED → throws; missing note → throws; caller is the entry's owner → `UnauthorizedException` (403) |
 | `ProjectService.create` | Saves a project | duplicate name → throws (409) |
 | `UserService.create` | Saves user, password BCrypt-hashed | duplicate email → throws (409) |
 | `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password |

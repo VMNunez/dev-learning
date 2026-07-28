@@ -105,8 +105,15 @@ public class TimeEntryService {
 
     @Transactional
     public TimeEntryResponse approve(Long id) {
+        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+
+        if (timeEntry.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("Managers cannot approve their own time entries");
+        }
 
         if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
             throw new InvalidStateTransitionException("Manager can only approve SUBMITTED entries");
@@ -121,8 +128,15 @@ public class TimeEntryService {
 
     @Transactional
     public TimeEntryResponse reject(Long id, String rejectionNote) {
+        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+
+        if (timeEntry.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("Managers cannot reject their own time entries");
+        }
 
         if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
             throw new InvalidStateTransitionException("Manager can only reject SUBMITTED entries");
