@@ -3,7 +3,8 @@
 This is the **reviewer half** of the project-plan pipeline. It audits one `PLANNING.md` against the
 contract in `_planning-standard.md` and **fixes what falls short directly in the file**. A plan is
 authored whole, but reviewed by **specialists**: `plan-audit.md` dispatches this prompt once per concern
-(`{SCOPE}` = architecture · data-model-api · rules-security · steps-tests · branches-coverage), so each
+(`{SCOPE}` = architecture · data-model-api · ui-design · rules-security · steps-tests ·
+branches-coverage), so each
 cold subagent owns a small, defined slice it cannot skim. It serves two callers:
 
 - **`new` mode** — after the author (subagent A) and the architecture advisor write a fresh plan, the
@@ -24,7 +25,8 @@ either** — it leaves the fixes in the working tree and prints the commit comma
 PROJECT = [projects/01-todo-list | projects/02-weather-app | projects/03-expense-tracker |
            projects/04-meal-finder | projects/05-task-manager | projects/06-hr-portal |
            projects/07-timetrack | ... — the folder path of the plan to audit]
-SCOPE   = [all | architecture | data-model-api | rules-security | steps-tests | branches-coverage]
+SCOPE   = [all | architecture | data-model-api | ui-design | rules-security | steps-tests |
+           branches-coverage]
           → the audit orchestrator dispatches ONE concern per subagent; "all" is for a standalone run.
 DRY_RUN = [false | true]
 
@@ -44,8 +46,8 @@ then let it through.
 **Reading map — load only what your `{SCOPE}` needs.** The point of the specialist split is a small,
 focused context per reviewer; a specialist that reads everything defeats it.
 - `{PROJECT}/PLANNING.md` — the file to audit, read in **tiers**: your own sections in full · the
-  sections your invariants cross-reference in full (e.g. `data-model-api` needs §14's page list for
-  invariant 3, not its ASCII wireframes — stop at the headings) · everything else headings-only, just
+  sections your invariants cross-reference in full (e.g. `ui-design` needs §13's page list for
+  invariant 3, not its annotated file tree — stop at the routes table) · everything else headings-only, just
   enough to know the plan's shape. Never read tail sections your slice does not touch.
 - `notes/prompts/projects/plan/_internal/_planning-standard.md` — **only the parts your `{SCOPE}` row lists in
   the "Reads from the standard" column below**, plus "Two project formats" (every scope needs it to
@@ -54,8 +56,8 @@ focused context per reviewer; a specialist that reads everything defeats it.
   skip it entirely.
 - `PROGRESS.md` — **only** `architecture` reads it (to judge level-appropriateness). Other scopes
   skip it entirely.
-- Other projects' `PLANNING.md` — **only** `data-model-api`, and **only their §14**, to verify this
-  plan's visual identity actually differs from the published ones. Read that section alone.
+- Other projects' `PLANNING.md` — **only** `ui-design`, and **only their §14**, to verify this plan's
+  visual identity actually differs from the published ones. Read that section alone.
 
 **Apply the right format.** Per the standard's "Two project formats": full-stack (07+) → the full
 24-section audit; Angular (01–06) → audit only the sections that project actually has, plus the
@@ -92,10 +94,8 @@ cross-concern ripple in your report so the orchestrator routes it).
 | `{SCOPE}` | Owns (sections · invariants · design checks) | Reads from the standard |
 |---|---|---|
 | `architecture` | §6 layering — **both rule blocks, backend layers and Angular** · §3 the one new architectural concept · §20 tradeoffs · design check 5 (interview test on every §6/§20 reason) · design check 6 (enterprise-gap sweep — read §10, the §15 Docker step, and §20 just deep enough to verify each listed gap is addressed or documented as a tradeoff) · design checks 7 and 9 (the Angular rules are violable, not labels; at least one frontend tradeoff survives "why?") | template §3/§6/§20 · "Design-correctness checks" |
-| `data-model-api` | §7 entities (all five columns; each relationship = fetch type + cascade + reason) · §10 endpoints · §12/§13 folder structures — **§13 annotated to the same bar as §12, plus its shared-state ownership lines** · **§14 UI design** — the whole section: the visual identity statement (three named axes, each contrasted
-against what the earlier projects did, and consistent with the design-system table below it — to check
-this you read the §14 palette/density/shape/typography rows of the other published plans, that section
-only, never a whole plan) · the design-system table (theming, typography, spacing, tokens, density, explicit dark-mode ruling), motion, the accessibility floor, the inspiration table's one-concrete-element and traceability rules, the visual QA checklist, every page's loading/error/empty state, responsive intent · invariants 1–3 and 11 (entities↔repos, API↔controllers, pages↔wireframes, visual-QA↔§15) · design checks 1 (fetch types justified) and 8 (state ownership decided, not discovered) | template §7/§10/§12/§13/§14 · HTTP status conventions · invariants 1–3 and 11 · design checks 1 and 8 |
+| `data-model-api` | §7 entities (all five columns; each relationship = fetch type + cascade + reason) · §10 endpoints · §12/§13 folder structures — **§13 annotated to the same bar as §12, plus its shared-state ownership lines** · invariants 1–2 (entities↔repos, API↔controllers) · design checks 1 (fetch types justified) and 8 (state ownership decided, not discovered) | template §7/§10/§12/§13 · HTTP status conventions · invariants 1–2 · design checks 1 and 8 |
+| `ui-design` | **§14, the whole section** — the visual identity statement (three named axes, each contrasted against what the earlier projects did, and consistent with the design-system table below it: to check this, read the §14 palette/density/shape/typography rows of the other published plans, that section only, never a whole plan) · the design-system table (theming mechanism in one named file, typography, spacing grid, status tokens, elevation/shape/density, explicit dark-mode ruling — each row a decision naming where the value lives and who consumes it) · the Material components table · every page's wireframe with its loading/error/empty states and role variations · motion · the accessibility floor · the inspiration table's one-concrete-element and traceability rules · the visual QA checklist · responsive intent · invariants 3 and 11 (pages↔wireframes, visual-QA↔§15) | template §13 (its page list and routes table only, as invariant 3's other side) · template §14 · invariants 3 and 11 |
 | `rules-security` | §8 business rules (no vague/TBD; state diagram present) · §0 current step + its done-condition format · invariant 7 (routes/roles↔API-security) · design checks 2 (no dead/orphan states) and 3 (endpoint roles vs ownership) | template §0/§8 · done-condition format · invariant 7 · design checks 2–3 |
 | `steps-tests` | §15 steps (each a valid done condition; one major concept per step; the three dedicated test steps present) · §16 testing plan (specific method/service names; edge cases named) · **§3 Pass criteria** (each concept specific; every Topic one of the controlled-vocabulary section names, Java vs Spring Boot split correctly — you already read §3 for invariant 4) · done-condition format in §15 (`rules-security` owns §0's) · invariants 4–5 (new-concepts↔steps, testing-plan↔steps) · design check 4 (one concept per step) | template §3/§15/§16 · done-condition format · professional implementation order · invariants 4–5 · design check 4 |
 | `branches-coverage` | §22 branches (`feat/…` naming; cover every §15 step, none double-assigned; one per phase; concrete open/close) · **§23 quality gates** (G1–G8 present, in build order; the review gates G3/G4 tier-scoped, never `full`; the prerequisite chain G3/G4 → G5 → G6 → G7 → G8 stated; the closure checklist present with all nine boxes; every trigger names a real §22 branch / §15 step) · **section coverage** (all 24 present for full-stack — a missing section is critical, add it) · invariants 6, 8, 9 and 10 (branches↔steps, §0-branch↔§22, gates↔branches, §0-next-gate↔§23) | template §22/§23 · branch-strategy rules · quality-gate rules · the 24-section list (headings only) · invariants 6, 8, 9, 10 |
@@ -126,8 +126,8 @@ disagree, the standard wins.
 done condition in your slice, mark ✅ valid or ⚠️ vague against the four formats in the standard. For
 each ⚠️, rewrite it to a valid format.
 
-**4. Internal consistency** *(split by the table: 1–3 and 11 `data-model-api` · 4–5 `steps-tests` ·
-7 `rules-security` · 6 and 8 `branches-coverage`)*. Run only the invariants your `{SCOPE}` owns. Fix
+**4. Internal consistency** *(split by the table: 1–2 `data-model-api` · 3 and 11 `ui-design` ·
+4–5 `steps-tests` · 7 `rules-security` · 6 and 8 `branches-coverage`)*. Run only the invariants your `{SCOPE}` owns. Fix
 each mismatch.
 
 **5. Design correctness** *(split by the table: 1 and 8 `data-model-api` · 2–3 `rules-security` ·
@@ -155,7 +155,7 @@ rewrite good text to leave a mark.
 
 **If `{SCOPE}` ≠ all (dispatched by the orchestrator):** do **not** commit — the orchestrator commits
 once, after every concern's specialist has run. Leave your fixes in the working tree. Your report is
-**compact and bounded** — it lands in the orchestrator's context, and five verbose reports saturate it:
+**compact and bounded** — it lands in the orchestrator's context, and six verbose reports saturate it:
 - Line 1 — verdict: `PASS` (no changes) or `FIXED: n fixes`.
 - The **check-by-check trace of your slice** as a table, **one line per check, ≤15 words per line**:
   `| check | ✅ / fix made |`. Every section/invariant/design check your `{SCOPE}` owns must have a

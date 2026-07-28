@@ -11,8 +11,8 @@ audits a project's `PLANNING.md` to the full standard, hands-off, in two shapes:
   commit (one project, or `PROJECT = all` for every project in turn).
 
 Both shapes use the same quality pipeline: the plan is **authored whole (new mode only), then audited
-and fixed by five cold specialist reviewers — one per concern** (architecture · data-model-api ·
-rules-security · steps-tests · branches-coverage) — before the orchestrator commits it. New mode adds
+and fixed by six cold specialist reviewers — one per concern** (architecture · data-model-api ·
+ui-design · rules-security · steps-tests · branches-coverage) — before the orchestrator commits it. New mode adds
 an **architecture advisor** between the author and the specialists (Phase 1b). Authoring stays
 whole because a plan's sections cross-reference; review is split so each specialist owns a small slice
 it cannot skim, catching what the author trusted. No report to apply by hand, no per-file launching —
@@ -140,12 +140,12 @@ ROADMAP.md / PROGRESS.md edits left in the working tree).
 
 ### PROJECT = all
 Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block's
-Batch note and run the **single-project review below once per project**, fully finishing one (all five
+Batch note and run the **single-project review below once per project**, fully finishing one (all six
 specialists + the orchestrator commit) before starting the next — never overlap, since the orchestrator
 commits per project and parallel commits race the git index. Put each project's report under a
 `### [project]` heading, and after the last one
 print the `_batch-mode.md` summary table (`Project | Result | Sections fixed`). **Condense as you go:**
-once a project is committed, its five specialist traces are spent — carry forward only one line per
+once a project is committed, its six specialist traces are spent — carry forward only one line per
 project (`project · verdict · n fixes · commit hash`) and drop the traces from your working notes, or
 seven projects of traces will crowd out the later ones. If the run gets too
 long, finish the current project completely and stop with the "Completed / Remaining" line — a re-run
@@ -176,15 +176,23 @@ Then run the **specialist reviewers** defined in "Specialist review procedure" b
 
 ## Specialist review procedure (used by both modes)
 
-The plan is reviewed by **five specialists, each owning one concrete concern** — so each cold subagent
+The plan is reviewed by **six specialists, each owning one concrete concern** — so each cold subagent
 audits a small, defined slice it cannot leave half-done. Dispatch them **sequentially**, in this order
 (they all edit the same `PLANNING.md`, so never overlap; none commits):
 
-1. `architecture` · 2. `data-model-api` · 3. `rules-security` · 4. `steps-tests` · 5. `branches-coverage`
+1. `architecture` · 2. `data-model-api` · 3. `ui-design` · 4. `rules-security` · 5. `steps-tests` ·
+6. `branches-coverage`
+
+`ui-design` runs **after** `data-model-api` because it audits §14 against §13's page list, which that
+concern may still be fixing. It is its own concern rather than §14 riding at the tail of
+`data-model-api` for the same reason this phase is split at all: a slice that ends in a long section
+gets skimmed there.
 
 For an **Angular project (01–06)**, skip concerns whose sections the plan does not have (e.g. no
 backend API/security) — the reviewer prompt derives the format, but do not dispatch a concern with
-nothing to audit. For a **full-stack project (07+)**, run all five.
+nothing to audit. `ui-design` is the one concern that **always** runs, on both formats: an Angular-only
+plan has no numbered §14, so it audits whatever design/palette part that plan has. For a **full-stack
+project (07+)**, run all six.
 
 For **each** concern in order, launch a fresh, independent `role-appropriate` subagent,
 `reasoning tier: deep`, `execution: foreground`:
@@ -251,10 +259,10 @@ Report the commit made and each specialist's verdict/trace.
   PROGRESS.md (they are one logical change: registering the new project). Never `git add .`.
 - **The plan is authored whole, reviewed by specialists — one concern per subagent.** Authoring needs
   the whole plan in one context (the sections cross-reference); review does not, so it is split into
-  five cold specialists (architecture · data-model-api · rules-security · steps-tests ·
+  six cold specialists (architecture · data-model-api · ui-design · rules-security · steps-tests ·
   branches-coverage), each owning a small slice it cannot skim and returning a check-by-check trace.
-- **Strict sequence, never overlapping.** new mode: author → architecture advisor → the five
-  specialists (in order) → orchestrator commit; review mode: the five specialists → orchestrator commit.
+- **Strict sequence, never overlapping.** new mode: author → architecture advisor → the six
+  specialists (in order) → orchestrator commit; review mode: the six specialists → orchestrator commit.
   Each must see the previous one's finished work, and they all edit the same file. (The architecture
   advisor is new-mode only, on the author side; the `architecture` specialist reviewer independently
   re-checks §6/§3/§20 in both modes.)
