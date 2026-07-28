@@ -13,10 +13,10 @@ Update this table at the start of every session. It is the authoritative pointer
 |---|---|
 | **Current step** | G3 backend backlog fix (not a §15 step). **Every High task is closed and `reopen` is built — G3's sign-off condition is met.** Work continuing on the branch is Medium/Low backlog, which G3 does not require (G7 does). **Step 7a — Angular shell + auth is the next learning step, but one Medium gates it:** the account-password flow (`SecureRandom` + `CreateUserResponse` + `PATCH /api/users/me/password`) must be built and merged first — Step 7a's shell ships the dialog that calls it. Every *other* Medium/Low can wait for G7 |
 | **Current branch** | `fix/backend-backlog` (§22 "Backlog-fix branches" — `feat/angular-shell-auth` is not opened yet; it is created from `projects/07-timetrack` when this branch merges) |
-| **Done condition** | ✅ met — `Postman: PATCH /api/entries/{id}/reopen on a REJECTED own entry returns 200 — status DRAFT` (verified 2026-07-22), and every High backend task in `PROJECT-BACKLOG.md` is `[x]`. Step 7a's own done condition takes over next: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
+| **Done condition** | ✅ met — `Postman: PATCH /api/entries/{id}/reopen on a REJECTED own entry returns 200 — status DRAFT` (verified 2026-07-22), and every High backend task in `PROJECT-BACKLOG.md` is `[x]`. Step 7a's own done condition takes over next, exactly as §15 states it: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **unblocked**: the backend review has run and all its High tasks are fixed. Signing off = PR `fix/backend-backlog` into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges |
 | **Phase** | Backend backlog / G3 sign-off — Frontend (Phase 5) starts at Step 7a |
-| **Last updated** | 2026-07-28 |
+| **Last updated** | 2026-07-29 |
 
 ---
 
@@ -37,6 +37,9 @@ monthly hours reports.
 - Role-based authorization in Spring Security is a skill used in every Spring Boot project
 - Spanish consultancies use timesheet tools every day — this domain is immediately relatable to interviewers
 - It is rare in junior portfolios — most people build finance trackers or todo apps
+- It adds what project 06 could not show: 06 was Angular-only against a mock service, so this is the first
+  project with a backend Victor wrote — a real REST API, a database schema, server-side authorization and a
+  JSON contract two independent apps agree on
 
 ---
 
@@ -90,6 +93,11 @@ Concepts from earlier projects this project reinforces.
 | Auth persistence with signal + `effect()` | Project 06 | Token + current user kept in localStorage |
 | Soft delete | Project 07 (Step 2) | Reused for users and projects |
 | `MatSidenav` app shell | Project 06 | Same fixed toolbar + scrollable content layout |
+
+Every row above comes from an earlier project except **soft delete**, which is the one *intra-project*
+reuse: it is introduced here in Step 2 (projects) and then applied again to users in Step 4, so it is
+recorded in this table rather than in §3's new-concepts list, where Step 2's single major concept is the
+DTO boundary.
 
 ---
 
@@ -476,9 +484,11 @@ Test every endpoint in Postman as soon as it is created. Do not wait until the w
 - Add each endpoint to its folder as you build it
 
 **For each endpoint, check:**
-- Correct HTTP status code (200, 201, 204, 400, 404...)
-- Correct JSON response body
-- Error cases (missing fields, wrong id, etc.)
+- Correct HTTP status code — including the two this project's taxonomy turns on: **403** for a role or
+  ownership refusal and **409** for a state conflict, never 400 for either (§8, §12)
+- Correct JSON response body — the uniform `ErrorResponse` shape from §10 on every non-2xx, with
+  `fieldErrors` present on a `@Valid` 400
+- Error cases (missing fields, wrong id, wrong role, wrong source status)
 
 **GET requests** — also testable in the browser (`http://localhost:8080/api/...`)
 **POST / PUT / DELETE** — Postman only
@@ -628,7 +638,7 @@ it differently mid-build:
 | `GET /api/entries?status=SUBMITTED` | Manager dashboard ("Pending approval" card + review list) · Approvals page (queue) | **Each page fetches independently.** Approving from the dashboard refetches only the dashboard; the Approvals page is re-read when the user navigates to it |
 | `GET /api/projects` | Projects page · Entries filter bar · entry-dialog project selector · Manager dashboard ("Active projects" card) | **Each page fetches independently** on load. The entry-dialog receives the already-loaded list from its parent page through `MatDialog` data — it does not call `ProjectService` itself |
 | `GET /api/users` | Team page · Manager dashboard ("Team members" card) · Approvals employee filter | **Each page fetches independently** |
-| `GET /api/reports/summary?month=` | Reports page ("Total hours" card) · Manager dashboard ("Approved this month" card) | **Each page fetches independently**, for its own selected month |
+| `GET /api/reports/summary?month=` | Reports page ("Approved this month" card) · Manager dashboard ("Approved this month" card) | **Each page fetches independently**, for its own selected month |
 | — current user + token (no endpoint after login) | App shell (name, role-filtered sidebar) · both guards · every role-aware page | **`AuthService`** — the one piece of app-wide state, a signal persisted to `localStorage` with `effect()`. Auth outlives every route, so a page cannot own it |
 | Pending-approvals count (`MatBadge` in the shell) | App shell only | Owned by the **shell component**, which issues its own `GET /api/entries?status=SUBMITTED` on load. It is deliberately **not** live-synced with the Approvals page — approving an entry does not decrement the badge until the next navigation. Keeping it live would need exactly the shared store §20 rejects, for a badge |
 
@@ -1010,7 +1020,7 @@ Four stat cards + pending approvals list with quick actions.
 ```
 ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
 │ 5        │ │ 5        │ │ 240h     │ │ 3        │
-│ Pending  │ │ Team     │ │ Total    │ │ Active   │
+│ Pending  │ │ Team     │ │ Approved │ │ Active   │
 │ approval │ │ members  │ │ this mo. │ │ projects │
 └──────────┘ └──────────┘ └──────────┘ └──────────┘
 
@@ -1025,7 +1035,7 @@ Waiting for your review
 **How stat cards get their data:**
 - "Pending approval" — `GET /api/entries?status=SUBMITTED`, count results
 - "Team members" — `GET /api/users`, count results
-- "Total this mo." — `GET /api/reports/summary?month=2025-05`, read `approvedHours` (approved hours only, per §8 — label the card "Approved this month" so the number and its meaning agree)
+- "Approved this mo." — `GET /api/reports/summary?month=2025-05`, read `approvedHours`. The card is labelled with what it counts (approved hours only, per §8), never "Total"
 - "Active projects" — `GET /api/projects`, count active ones
 - Four separate API calls on dashboard load — all run in parallel with `forkJoin`
 
