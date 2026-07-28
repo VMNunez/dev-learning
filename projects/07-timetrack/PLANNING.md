@@ -20,6 +20,17 @@ Update this table at the start of every session. It is the authoritative pointer
 
 ---
 
+## 1. Project title and one-line description
+
+**TimeTrack** — a timesheet app where employees log the hours they work on company projects and
+managers review each entry, approving or rejecting it with a note.
+
+Used by two roles: **employees**, who create, edit and submit their own time entries, and
+**managers**, who own the projects and the team, approve or reject submitted hours, and read the
+monthly hours reports.
+
+---
+
 ## 2. Why this project
 
 - The workflow pattern (DRAFT → SUBMITTED → APPROVED / REJECTED) appears in almost every enterprise app
@@ -90,7 +101,7 @@ Concepts from earlier projects this project reinforces.
 | Auth | Spring Security + JWT | Stateless; secret from `${JWT_SECRET}` env var |
 | Database | PostgreSQL | Local instance via pgAdmin; same DB used in Docker |
 | ORM | Spring Data JPA + Hibernate | `JpaRepository` + derived queries; JPQL for reports |
-| Frontend | Angular + Angular Material | Indigo theme; Core/Feature/Shared structure |
+| Frontend | Angular + Angular Material | Teal M3 theme, compact density (§14); Core/Feature/Shared structure |
 | Local setup | Docker + docker-compose | App + Postgres in one command (Step 9) |
 | Tests | JUnit 5 + Mockito (backend), Jasmine + TestBed (frontend) | Services only — component tests start at project 08 |
 
@@ -292,6 +303,16 @@ APPROVED     REJECTED ─────────┘
 > terminal state in practice while the diagram, the business rule and the endpoint all say it is not, and
 > the resubmit loop that justifies the whole state machine would be dead code.
 >
+> **Changing your own password must be reachable from the UI.** The same argument as the Re-open action
+> above, applied to the endpoint this rule introduces: every authenticated user reaches a
+> **Change password** item in the app shell's user menu, which opens a `change-password-dialog` (current
+> password + new password + confirm) calling `PATCH /api/users/me/password`; a `400` carrying
+> `fieldErrors.currentPassword` renders under the current-password input, and success closes the dialog
+> with a snackbar. It is a dialog, not a route, because it is an action on the logged-in user rather than
+> a place in the app — no new guard, no new route. Without it, "password change is self-service" would be
+> a claim no user can act on, and the generated initial password would in practice be permanent — exactly
+> the flaw this whole ruling was written to remove.
+>
 > **Deliberately out of scope:** `mustChangePassword` — *forcing* the change at first login needs the
 > frontend to intercept every route until it happens, which is Step 7a work for little MVP value. Record it
 > in `backend/README.md` as a known limitation, not as an oversight.
@@ -368,7 +389,7 @@ field-level map the reactive forms consume to show a message under each input (S
 |---|---|---|---|---|
 | `POST /api/auth/login` | public | Authenticate and issue a JWT | `LoginRequest` — `email`, `password` | `200` + `AuthResponse` — `token`, `name`, `role` · `401` on bad credentials or inactive user |
 
-### Users (`UserController` — MANAGER only)
+### Users (`UserController` — MANAGER only, except `PATCH /me/password`)
 
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
@@ -478,7 +499,7 @@ src/main/java/com/victor/timetrack/
 │   └── DataInitializer.java         (@Profile("dev") CommandLineRunner — seeds the first manager)
 ├── controller/
 │   ├── AuthController.java          (POST /api/auth/login — public)
-│   ├── UserController.java          (/api/users — MANAGER only)
+│   ├── UserController.java          (/api/users — MANAGER only, except PATCH /me/password: any authenticated user)
 │   ├── ProjectController.java       (/api/projects)
 │   ├── TimeEntryController.java     (/api/entries + the workflow PATCH endpoints)
 │   └── ReportController.java        (/api/reports — MANAGER only)
@@ -549,7 +570,7 @@ src/app/
 │       ├── auth.service.ts       ← login, logout, current user + role
 │       ├── entry.service.ts      ← /api/entries CRUD + the workflow PATCH calls
 │       ├── project.service.ts    ← /api/projects
-│       ├── user.service.ts       ← /api/users (Team page)
+│       ├── user.service.ts       ← /api/users (Team page, manager dashboard card, Approvals employee filter) + changePassword() → PATCH /api/users/me/password
 │       └── report.service.ts     ← /api/reports (the three monthly reports)
 ├── pages/
 │   ├── login/                    ← email + password form, both roles
@@ -564,6 +585,7 @@ src/app/
 │   └── reports/                  ← monthly report views (summary, by project, by employee)
 └── shared/
     ├── components/
+    │   ├── change-password-dialog/ ← current + new password form, opened from the shell user menu (not routed) → PATCH /api/users/me/password
     │   ├── confirm-dialog/     ← generic yes/no confirmation, used before every delete
     │   ├── reject-dialog/     ← rejection note input, used in Approvals
     │   └── status-badge/      ← coloured badge, used in Entries, Approvals, Dashboard
@@ -589,6 +611,10 @@ The two `authGuard`-only routes above (`/dashboard`, `/entries`) are shared by b
 manager variants call MANAGER-only endpoints — see the §8 rule **"Shared routes stay role-aware"** for
 which calls are gated and why the API, not the rendering, is the boundary.
 
+The route list above is complete: **`change-password-dialog` adds no route**. It is opened from the app
+shell's user menu via `MatDialog` (§8 ruling, §14 wireframe) — an action on the logged-in user, not a
+place in the app — so it needs no guard and no entry here.
+
 ### Shared state — who owns each multi-page endpoint
 
 The §6 rule decides this once for the whole app: **the page component under `pages/` owns the state for
@@ -610,13 +636,39 @@ it differently mid-build:
 
 ## 14. UI design
 
+### Visual identity — what makes this look like a different product
+
+TimeTrack is an internal payroll-adjacent tool: the feeling to hit is **calm operational instrument**, not
+the friendly consumer app 05 was or the generic corporate portal 06 was. A timesheet is read many times a
+day by people who want the numbers, so the app is quiet, dense and flat. It differs from **every published
+project** on four axes, each one a single theming decision:
+
+- **Palette** — a cool **teal** primary (`#00695C` intent) on a light-neutral grey surface, with the four
+  status colours as the only saturated ink on screen. Project 05 used a warm **violet** palette and project
+  06 shipped Material's **default indigo/blue**; nothing in the portfolio is teal, and the coolness is the
+  point — money and hours should not look playful.
+- **Density and rhythm** — **compact** Material density on an **8px** grid. Projects 05 and 06 both ran
+  Material's default (comfortable) density with generous card padding; here ten table rows must fit on a
+  laptop screen, because the table is the app.
+- **Shape** — **flat**: cards at elevation 0 with a 1px outline, and a small **4px** corner radius. 05 and
+  06 both used the default rounded, elevated Material card. Flat surfaces plus one accent colour is what
+  makes a data screen readable.
+- **Data presentation** — the dominant surface is the **dense data table with an inline status badge**, and
+  stat cards are a thin summary strip above it. 05 led with a card/board grid and 06 with form-centred
+  pages; leading with the table is a different Material layout to build and to defend.
+
+Layout skeleton stays a `MatSidenav` shell (as in 06) on purpose — a role-filtered sidebar is the correct
+shell for seven routes, and the identity is carried by the four axes above, not by moving navigation for
+the sake of it.
+
 ### App shell
 
-Same pattern as project 06 — `MatSidenav` with a fixed toolbar and a scrollable content area.
+`MatSidenav` with a fixed toolbar and a scrollable content area — the same skeleton as project 06, wearing
+the teal / compact / flat identity above.
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  toolbar: logo + app name + user name + logout  │
+│  toolbar: logo + app name + user menu ▼         │
 ├──────────────┬──────────────────────────────────┤
 │              │                                  │
 │   sidebar    │        page content              │
@@ -637,7 +689,9 @@ Same pattern as project 06 — `MatSidenav` with a fixed toolbar and a scrollabl
 
 - Sidebar links filtered by role — only one section is shown depending on who is logged in
 - `MatBadge` on Approvals link showing the count of pending SUBMITTED entries
-- Toolbar shows the logged-in user's name
+- Toolbar shows the logged-in user's name as a `MatMenu` trigger; the menu holds **Change password** and
+  **Log out**, in that order. "Change password" opens the shared `change-password-dialog` (wireframe below)
+  — per the §8 ruling it is a dialog, not a route, so it needs no new guard and no entry in §13's route list
 
 ---
 
@@ -645,7 +699,7 @@ Same pattern as project 06 — `MatSidenav` with a fixed toolbar and a scrollabl
 
 | Role | Colour | Usage |
 |---|---|---|
-| Primary | Indigo (`#3F51B5`) | Toolbar, buttons, active links |
+| Primary | Teal (`#00695C`) | Toolbar, buttons, active links |
 | DRAFT | Grey | Status badge |
 | SUBMITTED | Blue (`#1976D2`) | Status badge |
 | APPROVED | Green (`#388E3C`) | Status badge |
@@ -665,12 +719,12 @@ stylesheet and point at the break.
 | Decision | The rule |
 |---|---|
 | **Theming** | One `styles/material-theme.scss` holding a scoped `mat.theme()` (Angular Material v19 uses the M3 API). Component stylesheets **never** override Material internals with CSS — that is the pattern that breaks on every Material upgrade |
-| **Primary colour** | An indigo-based M3 palette. `#3F51B5` above is the **Material 2** indigo, kept as the intent; under M3 the theme generates its own tonal ramp, so the rendered hex will differ and that is correct — do not force the old hex back |
+| **Primary colour** | A teal-based M3 palette, declared once in `material-theme.scss`. `#00695C` above is the **intent**; under M3 the theme generates its own tonal ramp from it, so the rendered hex will differ and that is correct — do not force the seed hex back with CSS |
 | **Status colours** | Four CSS custom properties (`--status-draft`, `--status-submitted`, `--status-approved`, `--status-rejected`) declared once in the global stylesheet and consumed **only** by `status-badge`. They are not theme colours; no other component may reference them |
 | **Typography** | Material's type scale only. Page title `headline-small`, section heading `title-medium`, table and body text `body-medium`, stat-card number `display-small`, card label `body-small` muted. **No `font-size` in a component stylesheet** |
 | **Spacing** | An 8px grid: 8 · 16 · 24 · 32. Page padding 24 desktop / 16 below 600px, gap between cards 16, vertical gap between sections 32. No arbitrary pixel values |
-| **Elevation & shape** | Cards at elevation 1, dialogs at 3, from Material — never a hand-written `box-shadow`. One corner radius, taken from the theme |
-| **Density** | `MatTable` and form fields use Material's compact density, so ten rows fit on a laptop screen without scrolling. Density is set in the theme, not per table |
+| **Elevation & shape** | Flat, per the identity: cards are `<mat-card appearance="outlined">` at elevation 0 with a 1px outline; only overlays lift — dialogs at elevation 3, menus/snackbars at Material's default. Never a hand-written `box-shadow`. One 4px corner radius, set as the theme's shape token and never overridden per component |
+| **Density** | Material's **compact** density, set once in `mat.theme()` and inherited by every `MatTable` and form field — so ten rows fit on a laptop screen without scrolling. Never set per table |
 | **Dark mode** | **Out of scope, deliberately.** One theme finished properly beats two half-done, and the demo is judged in light mode. Revisit in project 08 |
 
 ---
@@ -733,7 +787,7 @@ pages in one sitting — that is the only way inconsistency becomes visible:
 | `MatToolbar` | Top bar |
 | `MatCard` | Stat cards on dashboard and reports |
 | `MatTable` + `MatSort` + `MatPaginator` | Entries, Projects, Approvals |
-| `MatDialog` | Entry form (add and edit), reject dialog, confirm dialog |
+| `MatDialog` | Entry form (add and edit), reject dialog, confirm dialog, change-password dialog |
 | `MatDatepicker` | Date field in entry form |
 | `MatSelect` | Project selector in entry form, month filter |
 | `MatChip` (or styled `<span>`) | Status badges |
@@ -741,7 +795,7 @@ pages in one sitting — that is the only way inconsistency becomes visible:
 | `MatBadge` | Pending count on Approvals sidebar link |
 | `MatProgressSpinner` | Loading state on every async page |
 | `MatTooltip` | Approve/reject buttons in the approvals table |
-| `MatMenu` | User menu in toolbar (logout) |
+| `MatMenu` | User menu in toolbar (change password, logout) |
 | `MatFab` | "Log hours" floating action button on the entries page |
 
 ---
@@ -771,6 +825,7 @@ repeated in each wireframe. A page that renders only its success table is incomp
 | Team | Skeleton cards + spinner over the table | `mat-error` + Retry | "No team members yet. Add your first member." |
 | Reports | Skeleton cards + spinner over both tables | `mat-error` + Retry for the whole `forkJoin` | "No approved hours for this month yet." in place of the cards and both tables |
 | Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input (400); anything else in a `mat-error` at the dialog foot — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
+| Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `mat-error` at the dialog foot, dialog stays open | n/a — a form dialog always opens with its fields |
 
 ---
 
@@ -796,7 +851,7 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
 #### Login
 
 Split layout — two columns:
-- Left: dark indigo background, app logo, tagline ("Track your time. Get recognised.")
+- Left: dark teal background (the palette's darkest primary tone), app logo, tagline ("Track your time. Get recognised.")
 - Right: white background, form card centred vertically
 
 ```
@@ -814,6 +869,43 @@ Split layout — two columns:
 ```
 
 No register link — accounts are created by the manager from the Team page.
+
+---
+
+#### Change password — dialog (`shared/components/change-password-dialog`)
+
+Not a page and not a route: opened from the **Change password** item in the app shell's user menu, for
+either role. It is the only UI for the §8 self-service rule — without it the backend-generated initial
+password would be permanent in practice.
+
+```
+┌──────────────────────────────────────┐
+│  Change password                  ✕  │
+│                                      │
+│  Current password  [password input]  │
+│  ⚠ Current password is incorrect     │
+│                                      │
+│  New password      [password input]  │
+│  Confirm new       [password input]  │
+│                                      │
+│         [Cancel]  [Change password]  │
+└──────────────────────────────────────┘
+```
+
+- Calls `PATCH /api/users/me/password` with `currentPassword` + `newPassword`; `204` closes the dialog and
+  a snackbar confirms "Password changed". No re-login and no token refresh — the JWT stays valid
+- **Loading** — the Change password button shows its spinner and all three fields disable while the call is
+  in flight, exactly as the other form dialogs
+- **Error** — a `400` carrying `fieldErrors.currentPassword` renders **under the current-password input**
+  (the ⚠ line in the wireframe), never as a dialog-level error: the user must see *which* field is wrong.
+  `fieldErrors.newPassword` (the 8–72 length rule) renders under the new-password input. Any other failure
+  is a `mat-error` at the dialog foot. The dialog never closes on error, so nothing typed is lost
+- **Empty** — n/a, a form dialog always opens with its three fields
+- "Confirm new" is validated **on the frontend only** (a cross-field validator on the reactive form) — the
+  backend has no `confirmPassword` field in `ChangePasswordRequest` (§10), so this error never comes from a
+  `fieldErrors` map
+- Both password inputs use a `MatIconButton` suffix to toggle visibility, with an `aria-label` per the
+  accessibility floor; the dialog goes full-screen below 600px like every other dialog
 
 ---
 
@@ -1075,15 +1167,19 @@ approval" line under the card or a fourth card clearly labelled as pending — n
 
 ### Inspiration
 
-These are real timesheet or dashboard apps worth looking at for reference:
+Real products in this domain — a recruiter recognises them. **One concrete element per row**, not "general
+inspiration":
 
-| App | URL | What to look at |
+| App | URL | The one element to take |
 |---|---|---|
-| Clockify | [clockify.me](https://clockify.me) | Dashboard layout, time entry table, status badges |
-| Harvest | [getharvest.com](https://www.getharvest.com) | Reports page, project summary cards |
-| Toggl Track | [toggl.com/track](https://toggl.com/track) | Entry list design, clean sidebar |
-| Linear | [linear.app](https://linear.app) | Status badge design, sidebar navigation |
-| Dribbble — timesheet | [dribbble.com/search/timesheet-dashboard](https://dribbble.com/search/timesheet-dashboard) | Visual inspiration, card layouts |
+| Clockify | [clockify.me](https://clockify.me) | The **row height and column order of the entry table** — date, project, hours, description, status — which is exactly the Entries table above |
+| Harvest | [getharvest.com](https://www.getharvest.com) | The **thin summary strip of numbers above the report tables**, rather than large hero cards |
+| Toggl Track | [toggl.com/track](https://toggl.com/track) | The **teal-on-neutral primary** used sparingly against a grey surface |
+| Linear | [linear.app](https://linear.app) | The **flat, low-radius status badge**: small caps text on a tinted fill, no shadow |
+
+**Traceability** — two identity decisions come straight from this table: the *palette* axis (cool teal on a
+light-neutral surface) from the Toggl row, and the *shape* axis (flat, 4px radius, outlined surfaces) from
+the Linear row. The `status-badge` component is built to that Linear description.
 
 ---
 
@@ -1155,18 +1251,27 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 #### Step 7a — Shell + auth
 - Angular project with Angular Material; `environment.ts` with the API base URL
 - **The §14 design system is set up here, before any page exists** — `styles/material-theme.scss` with the
-  scoped `mat.theme()` (indigo-based M3 palette, compact density), the four `--status-*` custom properties,
+  scoped `mat.theme()` (teal-based M3 palette, compact density, 4px shape token), the four `--status-*` custom properties,
   and the spacing/type rules. Every later step inherits it; retrofitting a theme across eight built pages
   is the expensive way to do this
 - Auth service + JWT in localStorage; auth guard + manager guard
 - HTTP interceptor: attaches the token **and handles 401 mid-session** (clear session → redirect to `/login`) — see the token-lifetime note in the REST API section
 - App shell: `MatSidenav` + toolbar, sidebar links filtered by role; Login page
+- Toolbar user menu (`MatMenu`) with **Change password** + **Log out**, and the shared
+  `change-password-dialog` it opens — a dialog, not a route (§13) — calling
+  `UserService.changePassword()` → `PATCH /api/users/me/password`. It ships here rather than in a later
+  page step because the menu that opens it is part of the shell, and every authenticated user needs it
+  from the moment logins work with a generated password
+- The dialog renders its declared §14 states: spinner in the "Change password" button with all three
+  fields disabled while saving, and the `400` `fieldErrors.currentPassword` / `fieldErrors.newPassword`
+  messages under their own inputs with the dialog staying open (a wrong current password must not log
+  the user out)
 - The Login page ships its declared §14 states from the start: spinner inside the "Log in" button with the
   form disabled while the call is in flight, and a `mat-error` under the form on `401` (§6's Async-states
   rule; Login has no empty state — it loads no data)
 - **New concepts:** Angular consuming a real REST API end to end
 - **Review concepts:** route guards, HTTP interceptor, auth persistence, `MatSidenav` shell
-- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
+- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
 
 #### Step 7b — Employee flow: dashboard + entries
 - Employee dashboard (stat cards from one `GET /api/entries?month=` call) + recent entries
@@ -1216,8 +1321,8 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   `fieldErrors` on 400, the 401 that must not half-authenticate
 - Component tests are NOT in scope — per CLAUDE.md they start at project 08; this project tests services only
 - **New concepts:** Angular service unit testing with `HttpClientTestingModule`
-- **Review concepts:** auth, entry and report services
-- **Done condition:** `Terminal: ng test passes — AuthService, EntryService and ReportService specs all green; getEntries issues a GET to /api/entries with no empty params when a filter is unset, and a failed login leaves the token unstored`
+- **Review concepts:** auth, entry, user and report services
+- **Done condition:** `Terminal: ng test passes — AuthService, EntryService, UserService and ReportService specs all green; getEntries issues a GET to /api/entries with no empty params when a filter is unset, changePassword surfaces the 400 fieldErrors without clearing the session, and a failed login leaves the token unstored`
 
 ### Step 10 — SQL complement
 - In `sql/`, hand-write the SQL that Hibernate generates for the main report queries (the `GROUP BY` aggregations) and for `GET /api/entries` with filters
@@ -1292,6 +1397,7 @@ whose test asserts a stored token or a signal.
 | `EntryService.getEntries` | GETs `/api/entries` and returns the typed `TimeEntry[]` | `month`, `status` and `projectId` appear as query params **only when supplied** — an unset filter sends no empty param; a `[]` response returns an empty array, not null |
 | `EntryService.approve` | PATCHes `/api/entries/{id}/approve` with no body and returns the updated `TimeEntry` | the id is interpolated into the path, not sent as a param; **the service stores nothing** — the returned value is the only channel (§6 Service boundary), so the caller page is what refetches |
 | `EntryService.create` | POSTs the entry and returns the created `TimeEntry` | a 400 surfaces the `fieldErrors` map from the §10 error contract to the caller, un-swallowed, so the reactive form can bind a message per input |
+| `UserService.changePassword` | PATCHes `/api/users/me/password` with `{currentPassword, newPassword}` and completes on `204` with no body to map | a `400` surfaces the `fieldErrors` map (`currentPassword` / `newPassword`) to the dialog un-swallowed; the current password travels in the body only, never in the URL; the service stores nothing and does **not** clear the session on that `400` |
 | `ReportService.getSummary` | GETs `/api/reports/summary?month=` and returns the typed summary | a 403 (EMPLOYEE calling a MANAGER endpoint) surfaces an error the caller can handle rather than resolving to a partial object |
 
 ### Angular — components
@@ -1424,7 +1530,8 @@ Format: `[option chosen] over [option rejected] — [reason]`
 - Soft delete over hard delete — `TimeEntry.user`/`project` are not-null FKs with no cascade, so a real DELETE either fails or forces deleting the entries with it; timesheet history is legal-audit data that must survive a person leaving
 - docker-compose over separate manual setup — one command runs the full project locally
 - Return-all over `Pageable` pagination on GET /api/entries — a team's monthly entries are dozens of rows, not thousands; the month filter already bounds the result. Pagination is the first change if teams grow
-- Signals in the page component over a state-management library (NgRx) — seven pages, each reading its own endpoint and sharing nothing but the logged-in user; a store would add actions, reducers and effects for state that never leaves one route. NgRx becomes worth it when two distant pages must stay in sync live
+- Signals in the page component over a state-management library (NgRx) — eight pages, each reading its own endpoint and sharing nothing but the logged-in user; a store would add actions, reducers and effects for state that never leaves one route. NgRx becomes worth it when two distant pages must stay in sync live
+- Local `docker-compose` over a deployed public URL — the portfolio value of this project is the backend it is the first of (layering, JWT, workflow), which a recruiter reads in the code and the READMEs; a free-tier API + database host that cold-starts and expires would add hosting work without adding a new concept. Deployment is a project 08 objective, where the app is the demo
 - `ddl-auto=update` over Flyway migrations — single developer, schema still evolving with the plan; versioned migrations become necessary the moment a second environment or teammate exists
 
 ---
