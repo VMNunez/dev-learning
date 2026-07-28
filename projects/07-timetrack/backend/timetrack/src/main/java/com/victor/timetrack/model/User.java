@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -32,5 +35,8 @@ public class User {
     @ColumnDefault("true")
     @Column(nullable = false)
     private boolean active = true;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
 }
