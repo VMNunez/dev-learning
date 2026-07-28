@@ -21,5 +21,6 @@ public class CreateTimeEntryRequest {
     private BigDecimal hours;
 
     @NotBlank
+    @Size(max = 255)
     private String description;
 }
