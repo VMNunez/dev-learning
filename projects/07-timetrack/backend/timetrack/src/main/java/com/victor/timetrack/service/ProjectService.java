@@ -9,6 +9,7 @@ import com.victor.timetrack.repository.ProjectRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +22,7 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<ProjectResponse> getAll() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -34,6 +36,7 @@ public class ProjectService {
 
     }
 
+    @Transactional(readOnly = true)
     public ProjectResponse getById(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
@@ -51,7 +54,7 @@ public class ProjectService {
         return toResponse(project);
 
     }
-
+    @Transactional
     public ProjectResponse create(CreateProjectRequest request) {
         Project project = new Project();
         project.setName(request.getName());
@@ -62,6 +65,7 @@ public class ProjectService {
         return toResponse(saved);
     }
 
+    @Transactional
     public ProjectResponse update(Long id, UpdateProjectRequest request) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
@@ -73,6 +77,7 @@ public class ProjectService {
         return toResponse(saved);
     }
 
+    @Transactional
     public void delete(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));

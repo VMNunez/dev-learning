@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ public class TimeEntryService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public TimeEntryResponse create(CreateTimeEntryRequest request) {
 
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
@@ -73,6 +75,7 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    @Transactional
     public TimeEntryResponse submit(Long id) {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
@@ -96,6 +99,7 @@ public class TimeEntryService {
 
     }
 
+    @Transactional
     public TimeEntryResponse approve(Long id) {
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
@@ -111,6 +115,7 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    @Transactional
     public TimeEntryResponse reject(Long id, String rejectionNote) {
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
@@ -127,6 +132,7 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    @Transactional(readOnly = true)
     public List<TimeEntryResponse> findByFilter(Long userId, Long projectId, EntryStatus status, YearMonth month) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -160,6 +166,7 @@ public class TimeEntryService {
                 .toList();
     }
 
+    @Transactional
     public TimeEntryResponse update(Long id, CreateTimeEntryRequest request) {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
@@ -202,6 +209,7 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    @Transactional
     public TimeEntryResponse reopen(Long id) {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
@@ -225,6 +233,7 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    @Transactional
     public void delete(Long id) {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)

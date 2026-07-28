@@ -9,6 +9,7 @@ import com.victor.timetrack.repository.TimeEntryRepository;
 import com.victor.timetrack.repository.TimeEntrySpecifications;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,18 +24,21 @@ public class ReportService {
         this.timeEntryRepository = timeEntryRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<ProjectHoursReportResponse> getHoursByProject(YearMonth month) {
         LocalDate start = month.atDay(1);
         LocalDate end = month.atEndOfMonth();
         return timeEntryRepository.getHoursByProject(start, end);
     }
 
+    @Transactional(readOnly = true)
     public List<EmployeeHoursReportResponse> getHoursByEmployee(YearMonth month) {
         LocalDate start = month.atDay(1);
         LocalDate end = month.atEndOfMonth();
         return timeEntryRepository.getHoursByEmployee(start, end);
     }
 
+    @Transactional(readOnly = true)
     public ReportSummaryResponse getSummary(YearMonth month) {
         LocalDate start = month.atDay(1);
         LocalDate end = month.atEndOfMonth();

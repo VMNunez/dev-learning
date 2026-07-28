@@ -9,6 +9,7 @@ import com.victor.timetrack.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +24,12 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponse> getAll() {
         return userRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    @Transactional
     public UserResponse create(CreateUserRequest request) {
         Optional<User> user = userRepository.findByEmail(request.getEmail());
 
@@ -45,6 +48,7 @@ public class UserService {
         return toResponse(saved);
     }
 
+    @Transactional
     public UserResponse update(Long id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
@@ -67,6 +71,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public void delete(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
