@@ -52,15 +52,22 @@ Read the author's §6 and the entities/API it rests on. Answer, in order:
 1. **Is the layering correct for the domain?** Controller → Service → Repository → DB, DTOs at the
    boundary, entities never returned. Is business logic in the service (not the controller, not the
    repository)? Is anything forced into a layer where it does not belong?
-2. **Is it level-appropriate?** Flag **over-engineering** — a pattern Victor has not learned and does
+2. **Is the Angular rule block real?** §6 must state frontend engineering rules alongside the backend
+   layer rules, and each must be **violable and detectable** — a reviewer can open a file and say "this
+   breaks it". Pattern names with no observable consequence ("coordinator pattern", "smart/dumb
+   components") are labels; rewrite them as rules. Check the block answers where state lives when two
+   pages read the same endpoint, what a `core/services/` service may not do, and what an async page
+   renders while loading and on failure. The frontend is the differentiator in the target market — hold
+   it to the bar you hold the layering to, not a softer one.
+3. **Is it level-appropriate?** Flag **over-engineering** — a pattern Victor has not learned and does
    not need here (CQRS, event sourcing, hexagonal ports/adapters, a mapper framework where a hand
    constructor is clearer, microservices). Flag **under-engineering** — a design that skips the very
    pattern the project is supposed to teach, or collapses two layers that should stay separate.
-3. **Is the ONE new architectural concept right?** A project should introduce **one** major
+4. **Is the ONE new architectural concept right?** A project should introduce **one** major
    architectural idea beyond the previous one (per §3 and §6). Name it. Is it a genuine gap from
    coverage-junior.md, teachable through this domain, and defensible at junior level? If the author picked
    two, recommend keeping one and deferring the other; if none, recommend the strongest gap.
-4. **Do the tradeoffs (§20) reflect real architectural choices?** Each `[X] over [Y] — [reason]` must be
+5. **Do the tradeoffs (§20) reflect real architectural choices?** Each `[X] over [Y] — [reason]` must be
    a decision Victor can defend, not a default. Fix hollow reasons.
 
 ---
@@ -70,7 +77,8 @@ Read the author's §6 and the entities/API it rests on. Answer, in order:
 Where the architecture is wrong, over/under-engineered, or the new concept is misjudged, **fix the
 relevant sections directly** in `{PROJECT}/PLANNING.md`:
 - Rewrite §6 (plain-language explanation + ASCII layer diagram + the named new pattern and where it
-  fits) so it is correct and level-appropriate.
+  fits) so it is correct and level-appropriate — **including the Angular rule block**, converting every
+  label into a rule that can be broken.
 - Adjust §3 so the architectural concept introduced is the right single one, with a real reason.
 - Fix §20 tradeoffs whose reason is hollow.
 - If a change to the architecture ripples into entities (§7) or the API (§10) — e.g. removing an

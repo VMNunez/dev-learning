@@ -151,12 +151,16 @@ from env never hardcoded, which claims and why).
 **4e — Spring Boot folder structure.** The complete backend tree, one-line comment per file (per the
 standard's §12 layout).
 
-**4f — Angular folder structure.** The complete frontend tree, one-line comment per file (per §13),
-plus the routes: path per page, guards per route, employee-only / manager-only / shared.
+**4f — Angular folder structure.** The complete frontend tree, one-line comment per file (per §13) —
+held to the same annotation bar as the backend tree in 4e, not a list of folder names — plus the routes
+(path per page, guards per route, employee-only / manager-only / shared) and, per §13, one ownership
+line for every endpoint that more than one page consumes.
 
 **4g — UI design.** Color palette (role/status · hex · usage — Material-friendly, primary + accent
 different from the previous project), Material components (component → page), a wireframe for **every**
-page (layout, interactive elements, empty states, role variations), and 2–3 real apps for inspiration.
+page, and 2–3 real apps for inspiration. Each wireframe covers the page's **three states** per §14 —
+loading, error, and empty — not only the populated happy path, plus its role variations. Close with the
+responsive intent line.
 
 **4h — Angular Material component list.** Per page: name + route, which Material components appear,
 what the smart component does vs the dumb children, which components open dialogs and their contents.

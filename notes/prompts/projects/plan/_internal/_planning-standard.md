@@ -96,6 +96,26 @@ is NOT classic MVC and why. Then name the new architectural patterns this projec
 previous one, where each fits in the layer model, and why. If all patterns are the same as the
 previous project, say so — do not invent gaps.
 
+**Both tiers get engineering rules, not just a diagram.** After the diagram, the section states the
+backend layer rules (controller never calls the repository, entities never leave the service layer, …)
+**and an equivalent block of Angular rules**. The frontend half of the plan is what the coding agent
+reads every session once the backend is done, so it is held to the same bar: **every rule must be
+violable and detectable** — a reviewer can point at a file and say "this one breaks it". A label with
+no observable consequence is not a rule. `Coordinator pattern — the page owns state` is a label;
+`A page component owns all state; children receive via @Input and emit via @Output, and never inject a
+data service` is a rule. The Angular block covers at minimum:
+- **State ownership** — where state lives, and who owns it when two pages read the same endpoint.
+- **Service boundary** — what a `core/services/` service may and may not do (HTTP call + mapping to the
+  model; never UI concerns, never navigation).
+- **Component conventions** — standalone components, `inject()` over constructor injection, and the
+  change-detection strategy.
+- **Typing** — `shared/models/` interfaces mirror the response DTOs exactly; no `any` at an API boundary.
+- **Subscription lifetime** — `async` pipe or `takeUntilDestroyed`; never an unmanaged `.subscribe()`.
+- **Async states** — what every page that loads data renders while loading and when the call fails.
+- **Pass:** the ASCII diagram is present; **both** rule blocks (backend layers and Angular) are present;
+  every rule in both is violable and detectable — a block of labels fails even if it names the right
+  patterns; the new-patterns-vs-previous-project paragraph is present.
+
 ### 7. Entities
 For each entity, a table of fields. Columns: **Field · Java type · SQL type · Constraints · Notes**.
 Then a **Relationships** section: which entity owns each foreign key, fetch type and why, cascade
@@ -137,12 +157,33 @@ folder per feature) · `shared/components/` · `shared/models/` (interfaces mirr
 Followed by the **Angular routes table**: path per page, which guards protect it, whether it is
 employee-only / manager-only / shared.
 
+Then one line per piece of **shared state**: for every endpoint consumed by more than one page, where
+that data lives and who owns it — a shared service holding a signal, or each page fetching
+independently. This is the frontend's first architecture decision and the one that is otherwise
+discovered mid-build, after two pages have already solved it differently.
+- **Pass:** every file in the tree carries its one-line comment — the same bar §12 is held to; an
+  unannotated frontend tree fails even when the folder names are right. The routes table covers every
+  page in the tree, each with its guards. Every endpoint read by two or more pages has its ownership
+  line. No page appears in the tree without a route, and no route without a page.
+
 ### 14. UI design
 In this order: **1)** color palette table (Role/status · Hex · Usage) — Material-friendly, primary +
 accent different from the previous project · **2)** Material components table (component → page(s)
 that use it) · **3)** view-by-view ASCII wireframes, one per page (layout, key interactive elements,
 empty states, role-specific variations) · **4)** visual inspiration (2–3 real apps).
-- **Pass:** every page has a wireframe.
+
+Each wireframe specifies **all three states of the page, not only the happy one**: what it renders while
+the data loads, what it renders when the call fails, and what it renders when the call succeeds with
+nothing in it (the empty state). A junior frontend is judged on exactly these — a demo that flashes a
+blank page for two seconds and shows nothing at all when the API is down reads as unfinished, however
+good the backend behind it is.
+
+Finally, one line on **responsive intent**: which layouts collapse on a narrow viewport (tables, the
+sidenav), or an explicit §20 tradeoff saying the demo targets desktop. A recruiter opens the link on a
+phone.
+- **Pass:** every page in §13 has a wireframe; every wireframe names its empty state; every page that
+  loads data declares its loading **and** its error state — a page specified only in its success state
+  fails; the responsive intent is stated here or documented as a §20 tradeoff.
 
 ### 15. Progressive learning plan
 Every development step. Each step has: a short title · what is built (2–4 bullets) · which NEW
@@ -292,7 +333,13 @@ PLANNING.md.
 13. **SQL complement** — write by hand in `practice/sql/` the SQL Hibernate generates for the main queries.
 14. **Docker** — `docker-compose.yml` with the database service; app image if time allows. Late by
     design — Docker wraps a working app, not a work in progress.
-15. **README** — all three READMEs after the project works.
+15. **Deploy** — a public URL a recruiter can open, with the demo credentials in the global README.
+    `docker-compose up` proves the app runs on *your* machine; it is not a link anyone can click, and a
+    full-stack project with no reachable demo is judged worse than a frontend-only one with a live link,
+    however much more it is worth technically. Free-tier hosting for the API + database and a static
+    host for the Angular build is enough. If the project genuinely will not be deployed, that is a §20
+    tradeoff with a reason — not a silent omission.
+16. **README** — all three READMEs after the project works.
 
 Each step in §15 should be traceable to one or more items here. If two items are combined into one
 step, explain why (e.g. "repository has no custom logic so it is combined with the entity step").
@@ -458,3 +505,16 @@ probe it.
      Docker step's bullets.
    - **Schema evolution** — migrations (Flyway/Liquibase) at least named as the rejected option in §20
      if the project relies on `ddl-auto`.
+7. **Frontend rules are rules, not labels (§6)** — take any two entries from §6's Angular block and ask:
+   *could a reviewer open a file and say "this one breaks it"?* If the answer needs interpretation, the
+   entry is a label and fails. This check exists because the frontend half of a plan drifts into
+   pattern names — "coordinator pattern", "smart/dumb components" — that read as decisions but constrain
+   nothing, while the backend half states rules that can be violated.
+8. **State ownership is decided, not discovered (§13)** — every endpoint consumed by more than one page
+   has its ownership line, and the choice is consistent with §6's state-ownership rule. Two pages
+   independently fetching the same data is a valid answer; *not answering* is not.
+9. **Frontend interview test (§6/§13/§20)** — the mirror of check 5, applied to the frontend. At least
+   one §20 tradeoff is a frontend decision (state management, component library, fetching strategy) and
+   its reason survives an interviewer's "why?". "The app was small enough that a signal in a service
+   beat the ceremony of a store" passes; "Angular recommends it" and "it is the modern way" fail. Angular
+   is the differentiator in the target market — an interviewer probes it at least as hard as the API.
