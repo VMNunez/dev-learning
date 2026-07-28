@@ -10,12 +10,12 @@ import java.time.LocalDate;
 
 public class TimeEntrySpecifications {
     public static Specification<TimeEntry> fetchUserAndProject() {
-        return (root, query, cb) -> {
+        return (root, query, criteriaBuilder) -> {
             if (Long.class != query.getResultType() && long.class != query.getResultType()) {
                 root.fetch("user", JoinType.LEFT);
                 root.fetch("project", JoinType.LEFT);
             }
-            return cb.conjunction();
+            return criteriaBuilder.conjunction();
         };
     }
 
@@ -40,10 +40,10 @@ public class TimeEntrySpecifications {
                         criteriaBuilder.equal(root.get("status"), status));
     }
 
-    public static Specification<TimeEntry> dateBetween(LocalDate start, LocalDate end){
+    public static Specification<TimeEntry> dateBetween(LocalDate start, LocalDate end) {
         return ((root, query, criteriaBuilder) ->
-                (start == null || end == null)?
-                        criteriaBuilder.conjunction():
-                        criteriaBuilder.between(root.get("date"),start,end));
+                (start == null || end == null) ?
+                        criteriaBuilder.conjunction() :
+                        criteriaBuilder.between(root.get("date"), start, end));
     }
 }
