@@ -297,7 +297,7 @@ field-level map the reactive forms consume to show a message under each input (S
 |---|---|---|---|---|
 | `GET /api/users` | MANAGER | List all users (employees and managers) | — | `200` + `List<UserResponse>` |
 | `POST /api/users` | MANAGER | Create a user account with the default password | `CreateUserRequest` — `name`, `email`, `role` | `201` + `UserResponse` · `400` validation · `409` email already exists |
-| `PUT /api/users/{id}` | MANAGER | Update name or role | `UpdateUserRequest` — `name`, `role` | `200` + `UserResponse` · `404` user not found |
+| `PUT /api/users/{id}` | MANAGER | Update name, role, or reactivate/deactivate | `UpdateUserRequest` — `name`, `role`, `active` (optional — applied only when non-null) | `200` + `UserResponse` · `404` user not found |
 | `DELETE /api/users/{id}` | MANAGER | Deactivate account (soft delete — sets `active = false`) | — | `204` no body · `404` user not found |
 
 ### Projects (`ProjectController`)
@@ -306,7 +306,7 @@ field-level map the reactive forms consume to show a message under each input (S
 |---|---|---|---|---|
 | `GET /api/projects` | both | Employee: active projects only · Manager: all projects | — | `200` + `List<ProjectResponse>` |
 | `POST /api/projects` | MANAGER | Create a project | `CreateProjectRequest` — `name`, `description` | `201` + `ProjectResponse` · `400` validation · `409` duplicate name |
-| `PUT /api/projects/{id}` | MANAGER | Update name or description | `UpdateProjectRequest` — `name`, `description` | `200` + `ProjectResponse` · `404` project not found |
+| `PUT /api/projects/{id}` | MANAGER | Update name, description, or reactivate/deactivate | `UpdateProjectRequest` — `name`, `description`, `active` (optional — applied only when non-null) | `200` + `ProjectResponse` · `404` project not found |
 | `DELETE /api/projects/{id}` | MANAGER | Deactivate project (soft delete — sets `active = false`) | — | `204` no body · `404` project not found |
 
 ### Time entries (`TimeEntryController`)

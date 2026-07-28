@@ -60,10 +60,13 @@ public class UserService {
                 throw new DataIntegrityViolationException("Email already in use");
             }
         }
-
+        
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setRole(request.getRole());
+        if (request.getActive() != null) {
+            user.setActive(request.getActive());
+        }
 
         User saved = userRepository.save(user);
 

@@ -17,4 +17,5 @@ public class UpdateUserRequest {
 
     @NotNull
     private Role role;
+    private Boolean active;
 }
