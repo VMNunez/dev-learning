@@ -149,6 +149,10 @@ private ProjectResponse toResponse(Project project) {
 
 `@ControllerAdvice` catches exceptions across all controllers and returns consistent JSON error responses instead of Spring's default HTML error page.
 
+### Transactional boundaries ✓
+
+Every service method is explicitly `@Transactional` (writes) or `@Transactional(readOnly = true)` (reads). Without it, each repository call runs as its own auto-commit transaction — a read-then-write method like `update` or `submit` would have no atomic boundary between the `find` and the `save`. `readOnly = true` also lets Hibernate skip dirty-checking on methods that never mutate an entity.
+
 ---
 
 ## Tradeoffs
