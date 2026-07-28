@@ -168,6 +168,7 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 - JWT over session-based auth — stateless API requires no server memory per user; any instance can validate the token
 - Soft delete over hard delete — deleting a user would orphan all their time entries; soft delete preserves the full audit trail
 - RuntimeException over checked exceptions — Spring Boot convention; caught globally with `@ControllerAdvice` at the boundary
+- 60-minute JWT expiration with no refresh token — a shorter-lived access token limits the damage window of a stolen token; without a refresh token, a session idle past 60 minutes forces a fresh login instead of silently renewing. A refresh-token flow is out of scope for this MVP
 
 ---
 
