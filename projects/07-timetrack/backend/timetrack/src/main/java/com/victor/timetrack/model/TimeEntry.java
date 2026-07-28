@@ -15,24 +15,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="time_entries")
+@Table(name = "time_entries")
 public class TimeEntry {
     @Id
     @GeneratedValue
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id",nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="project_id",nullable = false)
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 4, scale = 2)
     private BigDecimal hours;
 
     @Column(nullable = false)
