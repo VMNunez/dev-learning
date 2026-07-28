@@ -55,7 +55,7 @@ Concepts this project teaches for the first time. (Steps 1–3 are now done and 
 | Interface projections for query results | Spring Boot | Report rows mapped straight from `SELECT ... AS alias` — no class, no manual mapping |
 | `@RestControllerAdvice` GlobalExceptionHandler | Spring Boot | Consistent JSON error bodies |
 | Profile-gated startup seeding (`CommandLineRunner` + `@Profile`) | Spring Boot | First manager account with no register endpoint — seeded in Java so the credential comes from an env var at runtime instead of a hash committed in `data.sql` |
-| JUnit 5 + Mockito unit tests | Spring Boot | First backend tests |
+| JUnit 5 + Mockito unit tests | Java | First backend tests — JUnit and Mockito are plain Java libraries, usable with no Spring context at all, so the concept files under Java even though the class under test is a Spring service |
 | Angular consuming a real REST API end to end | Angular | First time the frontend talks to a backend you built |
 | Docker + docker-compose | Deployment | One command runs app + database locally |
 
@@ -120,12 +120,39 @@ Browser                               Server
                                           └────────────────────┘
 ```
 
-**Rules:**
+**Backend layer rules:**
 - Controller only handles HTTP — reads the request, calls the service, returns the response. No logic.
 - Service contains all business rules — validation, state transitions, role checks.
 - Repository only reads and writes data. No logic.
 - Controllers never call the repository directly.
 - Entities are never returned directly from the API — always map to a DTO first.
+
+**Angular rules:**
+Same bar as the backend block: each line is violable — a reviewer can open a file and point at the break.
+- **State ownership** — the page component under `pages/` owns all state for its route (signals declared
+  in the page class). Child components receive data through `input()` and report through `output()`, and
+  never inject a `core/services/` service. The one exception is `AuthService`, whose current-user signal
+  is app-wide state read directly by the shell and the guards.
+- **Shared endpoints** — when two pages read the same endpoint, each page fetches it independently on
+  its own load; no cross-page cache. `GET /api/entries?month=` is read by both the dashboard and the
+  entries page, and each calls it for itself.
+- **Service boundary** — a `core/services/` service does exactly two things: issue the HTTP call and map
+  the response to a `shared/models/` interface. It never navigates (`Router` is injected in pages and
+  guards only), never opens a dialog or snackbar, and never holds page state. `AuthService` is the single
+  exception: it also holds the token + current-user signal, because auth state outlives every page.
+- **Component conventions** — every component is `standalone: true`, declares
+  `changeDetection: ChangeDetectionStrategy.OnPush`, and gets its dependencies through `inject()`, never
+  through a constructor parameter list.
+- **Typing** — every `shared/models/` interface mirrors one backend response DTO field for field. No
+  `any` at an API boundary: `http.get<TimeEntry[]>(...)` is typed, and a response shape that has no model
+  gets one before the call is written.
+- **Subscription lifetime** — a template consumes an observable through the `async` pipe; a subscription
+  in a class is wrapped in `takeUntilDestroyed()`. A bare `.subscribe()` with no teardown is a defect,
+  including in a dialog.
+- **Async states** — every page that loads data renders three states explicitly: a `MatProgressSpinner`
+  while `loading()` is true, a `mat-error` message plus a retry button when the call fails, and the empty
+  message from §14 when the call succeeds with zero rows. A page that renders only the success table is
+  incomplete.
 
 **What this is NOT:**
 This is not classic MVC. In classic MVC (e.g. Spring Boot + Thymeleaf), the Controller renders HTML and returns it to the browser — the View lives inside the same application.
@@ -143,6 +170,11 @@ Project 06 was frontend-only (Component + Core/Feature/Shared architecture), so 
 - **REST API + SPA separation** — backend and frontend are two independent apps sharing only a JSON contract, instead of one app rendering its own View. This is why it is not classic MVC.
 - **DTO boundary (Controller ↔ Service)** — a translation layer between persistence and HTTP so the API controls exactly what it exposes and entities never leak across the wire.
 - **State machine workflow (DRAFT → SUBMITTED → APPROVED / REJECTED)** — lives in the Service layer; transitions are enforced business rules, not free-form field edits.
+
+On the frontend the architecture is deliberately unchanged from project 06 — same Core/Feature/Shared
+layout, same page-owns-state coordinator split, same guard + interceptor pair. Nothing new is invented
+there so the novelty budget of this project goes to the backend; what is new for Angular is only the
+data source (a real API you built, instead of a mock service).
 
 See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-layered-architecture.md) for the full layered architecture explanation.
 
@@ -222,7 +254,8 @@ APPROVED     REJECTED ─────────┘
 - A rejection note is mandatory when rejecting — a reject with a blank note is refused (400) and the entry stays SUBMITTED
 - Cannot log entries for a future date
 - Hours must be between 0.5 and 24
-- Cannot submit entries for an inactive project
+- Cannot submit entries for an inactive project — refused **400** (`BusinessRuleViolationException`, the same input-data tier as a future date or an out-of-range hours value; it is a property of the data being submitted, not of the entry's workflow state). The same 400 applies to `POST` and `PUT`, which re-run the rule. **`409` (`InvalidStateTransitionException`) is reserved for state conflicts only** — an entry that is not in the status the transition requires (submit/edit/delete on a non-`DRAFT` entry, reopen on a non-`REJECTED` one, approve/reject on a non-`SUBMITTED` one)
+- **Shared routes stay role-aware.** `/dashboard` and `/entries` are reachable by both roles (`authGuard` only, §13), so the manager-only data they show — `GET /api/users`, `GET /api/reports/summary`, the `?status=SUBMITTED` review list — is requested **only** in the manager variant of the page, chosen from `AuthService`'s role signal. The API is the real boundary: an EMPLOYEE that reached those calls would get `403`, so the role-aware rendering is a UX decision, never the protection
 - Inactive users cannot log in — their entries remain in the database unchanged
 - A user deactivated *after* their token was issued loses access on their next request, not when the token expires — `JwtFilter` runs the loaded `UserDetails` through an `AccountStatusUserDetailsChecker`, so the login-time `active` check cannot be bypassed by an already-issued token
 
@@ -370,10 +403,10 @@ field-level map the reactive forms consume to show a message under each input (S
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
 | `GET /api/entries` | both | Employee: own entries only (ownership from the JWT) · Manager: all entries | — (see query filters below) | `200` + `List<TimeEntryResponse>` |
-| `POST /api/entries` | EMPLOYEE | Create an entry in `DRAFT` for the authenticated user | `CreateTimeEntryRequest` — `projectId`, `date`, `hours`, `description` | `201` + `TimeEntryResponse` · `400` validation (future date, hours outside 0.5–24) · `409` inactive project |
-| `PUT /api/entries/{id}` | EMPLOYEE | Edit own `DRAFT` entry | `CreateTimeEntryRequest` | `200` + `TimeEntryResponse` · `403` not the owner · `404` entry not found · `409` entry not in `DRAFT` |
+| `POST /api/entries` | EMPLOYEE | Create an entry in `DRAFT` for the authenticated user | `CreateTimeEntryRequest` — `projectId`, `date`, `hours`, `description` | `201` + `TimeEntryResponse` · `400` validation — future date, hours outside 0.5–24, **inactive project** (all three are `BusinessRuleViolationException`, the input-data tier of §12's taxonomy; `409` is reserved for state conflicts) |
+| `PUT /api/entries/{id}` | EMPLOYEE | Edit own `DRAFT` entry | `CreateTimeEntryRequest` | `200` + `TimeEntryResponse` · `400` validation — PUT replaces the whole resource, so it re-runs create's rules (future date, hours range, inactive project) · `403` not the owner · `404` entry not found · `409` entry not in `DRAFT` |
 | `DELETE /api/entries/{id}` | EMPLOYEE | Delete own `DRAFT` entry (hard delete — a draft has no history value) | — | `204` no body · `403` not the owner · `404` entry not found · `409` entry not in `DRAFT` |
-| `PATCH /api/entries/{id}/submit` | EMPLOYEE | Own entry `DRAFT → SUBMITTED` | — | `200` + `TimeEntryResponse` · `403` not the owner · `404` entry not found · `409` entry not in `DRAFT` |
+| `PATCH /api/entries/{id}/submit` | EMPLOYEE | Own entry `DRAFT → SUBMITTED` | — | `200` + `TimeEntryResponse` · `400` the entry's project is inactive (§8: "cannot submit entries for an inactive project") · `403` not the owner · `404` entry not found · `409` entry not in `DRAFT` |
 | `PATCH /api/entries/{id}/reopen` | EMPLOYEE | Own entry `REJECTED → DRAFT` so it can be corrected and resubmitted | — | `200` + `TimeEntryResponse` · `403` not the owner · `404` entry not found · `409` entry not in `REJECTED` |
 | `PATCH /api/entries/{id}/approve` | MANAGER | `SUBMITTED → APPROVED` | — | `200` + `TimeEntryResponse` · `403` caller is the entry's owner · `404` entry not found · `409` entry not in `SUBMITTED` |
 | `PATCH /api/entries/{id}/reject` | MANAGER | `SUBMITTED → REJECTED` | `RejectRequest` — `rejectionNote` | `200` + `TimeEntryResponse` · `400` note missing · `403` caller is the entry's owner · `404` entry not found · `409` entry not in `SUBMITTED` |
@@ -552,6 +585,27 @@ src/app/
 /reports            → authGuard + managerGuard
 ```
 
+The two `authGuard`-only routes above (`/dashboard`, `/entries`) are shared by both roles and their
+manager variants call MANAGER-only endpoints — see the §8 rule **"Shared routes stay role-aware"** for
+which calls are gated and why the API, not the rendering, is the boundary.
+
+### Shared state — who owns each multi-page endpoint
+
+The §6 rule decides this once for the whole app: **the page component under `pages/` owns the state for
+its route, each page fetches for itself on its own load, and there is no cross-page cache.** `AuthService`
+is the single app-wide exception. One line per endpoint read by more than one page, so no two pages solve
+it differently mid-build:
+
+| Endpoint | Pages that read it | Owner |
+|---|---|---|
+| `GET /api/entries?month=` | Employee dashboard (stat cards + recent list) · Entries page (table) | **Each page fetches independently** into its own `entries` signal. The dashboard asks for the current month; the entries page asks for whatever the filter bar holds — the same URL with different params, so a shared cache would be wrong more often than right. Refetch after every mutation on the page that made it |
+| `GET /api/entries?status=SUBMITTED` | Manager dashboard ("Pending approval" card + review list) · Approvals page (queue) | **Each page fetches independently.** Approving from the dashboard refetches only the dashboard; the Approvals page is re-read when the user navigates to it |
+| `GET /api/projects` | Projects page · Entries filter bar · entry-dialog project selector · Manager dashboard ("Active projects" card) | **Each page fetches independently** on load. The entry-dialog receives the already-loaded list from its parent page through `MatDialog` data — it does not call `ProjectService` itself |
+| `GET /api/users` | Team page · Manager dashboard ("Team members" card) · Approvals employee filter | **Each page fetches independently** |
+| `GET /api/reports/summary?month=` | Reports page ("Total hours" card) · Manager dashboard ("Approved this month" card) | **Each page fetches independently**, for its own selected month |
+| — current user + token (no endpoint after login) | App shell (name, role-filtered sidebar) · both guards · every role-aware page | **`AuthService`** — the one piece of app-wide state, a signal persisted to `localStorage` with `effect()`. Auth outlives every route, so a page cannot own it |
+| Pending-approvals count (`MatBadge` in the shell) | App shell only | Owned by the **shell component**, which issues its own `GET /api/entries?status=SUBMITTED` on load. It is deliberately **not** live-synced with the Approvals page — approving an entry does not decrement the badge until the next navigation. Keeping it live would need exactly the shared store §20 rejects, for a badge |
+
 ---
 
 ## 14. UI design
@@ -618,6 +672,51 @@ Same pattern as project 06 — `MatSidenav` with a fixed toolbar and a scrollabl
 | `MatTooltip` | Approve/reject buttons in the approvals table |
 | `MatMenu` | User menu in toolbar (logout) |
 | `MatFab` | "Log hours" floating action button on the entries page |
+
+---
+
+### The three states of every page
+
+§6's **Async states** rule applies to every page below, so it is specified once here instead of being
+repeated in each wireframe. A page that renders only its success table is incomplete.
+
+- **Loading** — a centred `MatProgressSpinner` replaces the content area while the page's `loading()`
+  signal is true. Stat cards render as skeleton cards (the card outline with a grey bar instead of the
+  number), never as `0` — a real zero and "not loaded yet" must not look the same
+- **Error** — the call failed: a `mat-error` line with the backend `message` from the §10 `ErrorResponse`
+  plus a **Retry** button that re-issues the same call. No table, no cards, no empty message. A `401` is
+  not a page error — the interceptor has already redirected to `/login`
+- **Empty** — the call succeeded with zero rows: the per-page message named in its wireframe below, plus
+  the primary action where one exists ("Log your first entry", "Add your first member")
+
+| Page | Loading | Error | Empty |
+|---|---|---|---|
+| Login | Spinner inside the "Log in" button, form disabled | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry | n/a — no data load |
+| Dashboard (employee) | Skeleton cards + spinner over the recent list | `mat-error` + Retry, replacing both cards and list | "You have not logged any hours yet" + "Log your first entry" |
+| Dashboard (manager) | Skeleton cards + spinner over the review list | `mat-error` + Retry — one failed `forkJoin` call fails the whole load, since a dashboard with three of four cards is misleading | "No pending approvals. Your team is up to date." |
+| Entries | Spinner over the table, filter bar stays enabled | `mat-error` + Retry above the table | "No entries found for this period" + "Log your first entry" (button hidden for managers) |
+| Projects | Skeleton cards + spinner over the table | `mat-error` + Retry | "No projects yet. Create your first project." |
+| Approvals | Spinner over the table, filter bar stays enabled | `mat-error` + Retry | "No pending approvals. Your team is up to date." |
+| Team | Skeleton cards + spinner over the table | `mat-error` + Retry | "No team members yet. Add your first member." |
+| Reports | Skeleton cards + spinner over both tables | `mat-error` + Retry for the whole `forkJoin` | "No approved hours for this month yet." in place of the cards and both tables |
+| Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input (400); anything else in a `mat-error` at the dialog foot — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
+
+---
+
+### Responsive intent
+
+Desktop-first, but the demo must survive a recruiter opening the link on a phone:
+
+- **Sidenav** — `mode="side"` and permanently open at ≥ 1024px; below that it becomes `mode="over"`,
+  closed by default and opened by a hamburger button in the toolbar
+- **Tables** — every `MatTable` sits in an `overflow-x: auto` wrapper so a narrow viewport scrolls the
+  table instead of the page. Below 600px the Entries and Approvals tables hide the Description column
+  (the least load-bearing) rather than shrinking every column
+- **Stat cards** — a CSS grid with `repeat(auto-fit, minmax(200px, 1fr))`, so four cards reflow to two
+  and then one with no breakpoint of their own
+- **Login** — the two-column split collapses to the form card alone below 768px; the branding panel is
+  hidden, not stacked
+- **Dialogs** — `MatDialog` opens full-screen below 600px
 
 ---
 
@@ -836,6 +935,11 @@ Stat cards + table with CRUD actions.
 └──────────────────────────────────────────────────┘
 ```
 
+- The 🗑 icon deactivates the project (soft delete) — an inactive project keeps its entries and simply
+  stops accepting new ones, so the row stays in the table with an "Inactive" status
+- Empty state: "No projects yet. Create your first project." + the "+ New project" button
+- Loading and error states as declared in "The three states of every page"
+
 ---
 
 #### Approvals page — Manager
@@ -889,6 +993,9 @@ Hours by project                    Hours by employee
 All three report calls run in parallel with `forkJoin` on month change. Because every aggregate counts
 `APPROVED` only (§8), the "Total hours" card equals the sum of either table exactly — that reconciliation
 is the point of the rule, and it is worth asserting in a test.
+
+Empty state (a month with no approved hours): "No approved hours for this month yet." replaces the cards
+and both tables — the month selector stays enabled so another month can be picked without a reload.
 
 `pendingHours` is **not** one of these three cards. Surface it separately — e.g. a "· 24h awaiting
 approval" line under the card or a fourth card clearly labelled as pending — never added into the total.
@@ -968,19 +1075,23 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - **Done condition:** `Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours }`
 - **Concept learned:** interface projections (`ProjectHoursReportResponse`, `EmployeeHoursReportResponse`) let Spring Data build a proxy per result row directly from `SELECT ... AS alias` — no class, no manual mapping — as long as each getter's name matches an alias exactly (Java Bean convention: strip `get`, lowercase first letter). `YearMonth` is received in the controller but converted to a `LocalDate` start/end range in the service (business logic), not the controller. Repositories are organized by **entity** (`TimeEntryRepository` owns both report queries, since their `FROM` is `TimeEntry`), a different axis than controllers/services, which are organized by **feature** (`ReportController`/`ReportService`). Found and fixed two real bugs surfaced by the Postman test pass: `MissingServletRequestParameterException` and `MethodArgumentTypeMismatchException` aren't `RuntimeException`s / weren't specifically handled, so a missing or malformed `?month=` fell through to `500` — worse, the missing-param case revealed a genuine Spring Security gotcha where Spring's internal forward to `/error` gets rejected as unauthenticated (`401`) because `JwtFilter` skips error dispatches by default and `/error` was never excluded from `.anyRequest().authenticated()`.
 
-### Step 7 — Angular frontend (split into 7a / 7b / 7c)
+### Step 7 — Angular frontend (split into 7a / 7b / 7c / 7d)
 
 One step per coherent slice, days not weeks — same granularity the backend had. Each sub-step has its
-own branch (§22) and its own done condition covering its **full** scope.
+own done condition covering its **full** scope, and each falls inside exactly one §22 branch — 7c and 7d
+share `feat/angular-manager-pages`, since §22's rule is one branch per coherent feature, never one per step.
 
 #### Step 7a — Shell + auth
 - Angular project with Angular Material and the indigo theme; `environment.ts` with the API base URL
 - Auth service + JWT in localStorage; auth guard + manager guard
 - HTTP interceptor: attaches the token **and handles 401 mid-session** (clear session → redirect to `/login`) — see the token-lifetime note in the REST API section
 - App shell: `MatSidenav` + toolbar, sidebar links filtered by role; Login page
+- The Login page ships its declared §14 states from the start: spinner inside the "Log in" button with the
+  form disabled while the call is in flight, and a `mat-error` under the form on `401` (§6's Async-states
+  rule; Login has no empty state — it loads no data)
 - **New concepts:** Angular consuming a real REST API end to end
 - **Review concepts:** route guards, HTTP interceptor, auth persistence, `MatSidenav` shell
-- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
+- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
 
 #### Step 7b — Employee flow: dashboard + entries
 - Employee dashboard (stat cards from one `GET /api/entries?month=` call) + recent entries
@@ -988,14 +1099,29 @@ own branch (§22) and its own done condition covering its **full** scope.
 - **Re-open action on REJECTED rows** (owner only, §8/§14): calls `PATCH /api/entries/{id}/reopen`, the row returns to DRAFT and the edit / delete / submit icons take over; the row also surfaces the manager's `rejectionNote`
 - Shared components: `status-badge`, `confirm-dialog`
 - Reactive forms consume the `fieldErrors` map from the error contract — message under each input on 400
+- Both pages render the three §14 states, not just the success table: `MatProgressSpinner` while
+  `loading()` is true (skeleton cards on the dashboard), `mat-error` + **Retry** when the call fails, and
+  the per-page empty message ("No entries found for this period" / "You have not logged any hours yet")
 - **Review concepts:** coordinator pattern, reactive forms, MatTable/MatDialog, signals + `computed()`
-- **Done condition:** `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input`
+- **Done condition:** `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input`
 
-#### Step 7c — Manager pages
-- Manager dashboard (`forkJoin` stat cards) + pending approvals list
-- Projects page (CRUD); Approvals page + shared `reject-dialog`; Team page + `user-dialog`; Reports page
+#### Step 7c — Manager review flow: dashboard, approvals, projects
+- Manager dashboard (`forkJoin` stat cards) + pending approvals list with inline approve / reject
+- Approvals page (filter bar + queue) with the shared `reject-dialog`; `MatBadge` pending count in the shell
+- Projects page (CRUD) reusing `confirm-dialog` for the soft-delete confirmation
+- Three §14 states on each page: skeleton cards / spinner over the table, `mat-error` + Retry (one failed
+  `forkJoin` call fails the whole dashboard load), and the per-page empty message
 - **Review concepts:** `forkJoin`, role-aware UI, MatTable, `MatBadge`
-- **Done condition:** `Browser: as MANAGER, approve one entry and reject another (with note) at /approvals; create a project at /projects and a user at /team; /reports renders both hours tables for a selected month`
+- **Done condition:** `Browser: as MANAGER, approve one entry and reject another (with note) at /approvals and the dashboard "Pending approval" card drops; create and deactivate a project at /projects; with the queue emptied /approvals shows "No pending approvals. Your team is up to date."`
+
+#### Step 7d — Manager admin: team + reports
+- Team page + `user-dialog` (name, email, role — no password field); the generated password is surfaced once
+  in a copyable snackbar from the `CreateUserResponse` (§14)
+- Reports page: month selector, summary cards and the two `forkJoin` hours tables
+- Same three §14 states on both pages; the Reports empty state replaces the cards and both tables while the
+  month selector stays enabled
+- **Review concepts:** reactive forms, MatTable, `forkJoin`, role-aware UI
+- **Done condition:** `Browser: as MANAGER, create a user at /team and the generated password appears once in the snackbar; /reports renders both hours tables for a selected month and shows "No approved hours for this month yet." for a month with none`
 
 ### Step 8 — Backend tests
 - JUnit 5 + Mockito — one test per service method
@@ -1041,7 +1167,7 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `TimeEntryService.create` | Saves a DRAFT entry | future date → throws; inactive project → throws; hours < 0.5 or > 24 → throws |
 | `TimeEntryService.update` / `.delete` | Edits / removes an own DRAFT entry | entry not DRAFT → throws; caller is not the owner → throws; update re-runs create's rules (future date, hours range, inactive project) |
 | `TimeEntryService.findByFilter` | EMPLOYEE gets only their own entries; MANAGER gets all | filters (`month`, `status`, `projectId`) narrow the result; an employee never receives another user's entry; a MANAGER-only `userId` supplied by an EMPLOYEE caller is overwritten with their own id |
-| `TimeEntryService.submit` | DRAFT → SUBMITTED | entry not DRAFT → throws; caller is not the owner → throws |
+| `TimeEntryService.submit` | DRAFT → SUBMITTED | entry not DRAFT → throws `InvalidStateTransitionException` (409); caller is not the owner → throws; **the entry's project is inactive → throws `BusinessRuleViolationException` (400)** and the entry stays DRAFT (the §8 rule "cannot submit entries for an inactive project") |
 | `TimeEntryService.reopen` | REJECTED → DRAFT for the owner | entry not REJECTED → throws; caller is not the owner → throws; MANAGER caller → throws |
 | `TimeEntryService.approve` | SUBMITTED → APPROVED | entry not SUBMITTED → throws; entry id not found → `ResourceNotFoundException`; caller is the entry's owner → `UnauthorizedException` (403) |
 | `TimeEntryService.reject` | SUBMITTED → REJECTED + note saved | entry not SUBMITTED → throws; missing note → throws; caller is the entry's owner → `UnauthorizedException` (403) |
@@ -1056,7 +1182,10 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 issued loses access on their next request" lives in `JwtFilter` /
 `AccountStatusUserDetailsChecker`, not in a service, so no Mockito test can reach it. It is verified
 manually in Postman (deactivate a user, reuse their still-valid token → `401`) and becomes a
-`@WebMvcTest` from project 08. Every other §8 rule maps to a row in the table above.
+`@WebMvcTest` from project 08. The §8 rule **"shared routes stay role-aware"** is likewise not a service
+test: its enforcement is the `@PreAuthorize` on the MANAGER-only endpoints (already asserted through the
+role rows above), and the role-aware *rendering* is a component concern, which project 07 does not test.
+Every other §8 rule maps to a row in the table above.
 
 **Backend — slice tests:** none in project 07. This is the first project with tests, so it introduces
 only the unit level (JUnit 5 + Mockito). The slice types (`@WebMvcTest` for controllers, `@DataJpaTest`
@@ -1156,7 +1285,7 @@ IntelliJ + local PostgreSQL, without Docker.
 
 ### frontend/README.md — planned sections
 
-Write when the frontend is complete (after Step 7c).
+Write when the frontend is complete (after Step 7d).
 
 **1. Folder structure** — one-line explanation per folder, why it exists.
 
@@ -1207,6 +1336,7 @@ Format: `[option chosen] over [option rejected] — [reason]`
 - Soft delete over hard delete — `TimeEntry.user`/`project` are not-null FKs with no cascade, so a real DELETE either fails or forces deleting the entries with it; timesheet history is legal-audit data that must survive a person leaving
 - docker-compose over separate manual setup — one command runs the full project locally
 - Return-all over `Pageable` pagination on GET /api/entries — a team's monthly entries are dozens of rows, not thousands; the month filter already bounds the result. Pagination is the first change if teams grow
+- Signals in the page component over a state-management library (NgRx) — seven pages, each reading its own endpoint and sharing nothing but the logged-in user; a store would add actions, reducers and effects for state that never leaves one route. NgRx becomes worth it when two distant pages must stay in sync live
 - `ddl-auto=update` over Flyway migrations — single developer, schema still evolving with the plan; versioned migrations become necessary the moment a second environment or teammate exists
 
 ---
@@ -1234,7 +1364,7 @@ one branch per coherent feature, never one per step.
 | `feat/reports` | Step 6 — Reports | After `feat/timeentry-workflow` merges | When Step 6's done condition passes |
 | `feat/angular-shell-auth` | Step 7a — Shell + auth | After `feat/reports` merges | When Step 7a's done condition passes |
 | `feat/angular-entries` | Step 7b — Employee flow: dashboard + entries | After `feat/angular-shell-auth` merges | When Step 7b's done condition passes |
-| `feat/angular-manager-pages` | Step 7c — Manager pages | After `feat/angular-entries` merges | When Step 7c's done condition passes — the last frontend branch, triggers G4 |
+| `feat/angular-manager-pages` | Steps 7c–7d — Manager review flow + manager admin pages | After `feat/angular-entries` merges | When Step 7d's done condition passes — the last frontend branch, triggers G4 |
 | `feat/backend-tests` | Step 8 — Backend tests | After `feat/angular-manager-pages` merges | When Step 8's done condition passes |
 | `feat/angular-tests` | Step 9 — Angular tests | After `feat/backend-tests` merges | When Step 9's done condition passes |
 | — (no dedicated branch) | Step 10 — SQL complement | — | Commits go on whatever branch is active at the time, per CLAUDE.md's rule (2026-07-14) that study materials follow the active branch — `main` only receives merges via PR |
@@ -1278,7 +1408,7 @@ become accurate — not remembered at the very end. The project is not closed un
 | **G1 — Step ritual** | Every learning-plan step's done condition passes | *(no prompt — the `step-complete` skill fires in-session)* | Keeps PLANNING ✅ / PROGRESS.md / README true as you go, so the later gates read accurate files. |
 | **G2 — Plan drift** | Only if the learning plan / branch strategy change mid-build (scope cut, steps reordered) | `plan-audit` · `MODE = review` · `PROJECT = projects/07-timetrack` | Every later gate checks the code against PLANNING.md. A stale plan silently invalidates all of them. Skip if the plan never moved. |
 | **G3 — Backend review** | `feat/reports` merges — backend complete (Steps 1–6), **before Step 7 (Angular frontend) starts**. Signed off only when every **High** backend task in `PROJECT-BACKLOG.md` — including the deferred `PATCH /api/entries/{id}/reopen` endpoint — is fixed on `fix/backend-backlog` and merged | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = backend` | Correctness + security on the API **before** the frontend is built against it. Fix the High tasks it writes to `PROJECT-BACKLOG.md` before moving on. |
-| **G4 — Frontend review** | `feat/angular-manager-pages` merges — Steps 7a–7c complete | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = frontend` | The backend is **not** re-reviewed (its tier is already dated in the backlog), so this costs a fraction of a `full` run. |
+| **G4 — Frontend review** | `feat/angular-manager-pages` merges — Steps 7a–7d complete | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = frontend` | The backend is **not** re-reviewed (its tier is already dated in the backlog), so this costs a fraction of a `full` run. |
 | **G5 — READMEs** | Every **High** task from G3/G4 is fixed and committed | `readme-audit` · `PROJECT_PATH = projects/07-timetrack` | Hard prerequisite of G7: `portfolio-audit` reads the READMEs, so running it first would judge a document that is about to change. |
 | **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | G7 and `cv-prompt` both read `PROGRESS.md`. If it is stale, the portfolio verdict and the CV bullet are built on a wrong picture of what you learned. |
 | **G7 — Portfolio go/no-go** | After G5 **and** G6 | `portfolio-audit` · `PROJECT_PATH = projects/07-timetrack` | The closing gate. Reads `PROJECT-BACKLOG.md` — an unfixed High/Medium from G3/G4 blocks the ✅ Ready verdict. Produces the CV bullet + the project question bank. |
