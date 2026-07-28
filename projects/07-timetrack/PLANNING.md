@@ -654,6 +654,77 @@ Same pattern as project 06 — `MatSidenav` with a fixed toolbar and a scrollabl
 
 ---
 
+### Design system — decided once, obeyed by all eight pages
+
+This project is a portfolio piece: a recruiter opens it for about two minutes, on an unknown screen, and
+judges it before reading a line of code. What makes it look professional is not decoration — it is
+**consistency**. Eight pages built on different days drift unless the values below are fixed up front, so
+these are decisions, not suggestions, and each one is violable in the §6 sense: a reviewer can open a
+stylesheet and point at the break.
+
+| Decision | The rule |
+|---|---|
+| **Theming** | One `styles/material-theme.scss` holding a scoped `mat.theme()` (Angular Material v19 uses the M3 API). Component stylesheets **never** override Material internals with CSS — that is the pattern that breaks on every Material upgrade |
+| **Primary colour** | An indigo-based M3 palette. `#3F51B5` above is the **Material 2** indigo, kept as the intent; under M3 the theme generates its own tonal ramp, so the rendered hex will differ and that is correct — do not force the old hex back |
+| **Status colours** | Four CSS custom properties (`--status-draft`, `--status-submitted`, `--status-approved`, `--status-rejected`) declared once in the global stylesheet and consumed **only** by `status-badge`. They are not theme colours; no other component may reference them |
+| **Typography** | Material's type scale only. Page title `headline-small`, section heading `title-medium`, table and body text `body-medium`, stat-card number `display-small`, card label `body-small` muted. **No `font-size` in a component stylesheet** |
+| **Spacing** | An 8px grid: 8 · 16 · 24 · 32. Page padding 24 desktop / 16 below 600px, gap between cards 16, vertical gap between sections 32. No arbitrary pixel values |
+| **Elevation & shape** | Cards at elevation 1, dialogs at 3, from Material — never a hand-written `box-shadow`. One corner radius, taken from the theme |
+| **Density** | `MatTable` and form fields use Material's compact density, so ten rows fit on a laptop screen without scrolling. Density is set in the theme, not per table |
+| **Dark mode** | **Out of scope, deliberately.** One theme finished properly beats two half-done, and the demo is judged in light mode. Revisit in project 08 |
+
+---
+
+### Motion
+
+Animation here is feedback, not decoration — the bar is "the app feels responsive", not "the app moves".
+
+- **Skeleton cards pulse.** A static skeleton reads as a broken page; a slow opacity keyframe reads as
+  loading. This is the one animation that is not optional, because §14 mandates skeletons everywhere
+- **Sidenav** uses Material's built-in slide in `over` mode — do not customise it
+- **Dialogs and snackbars** keep Material's default enter/leave. No custom transitions
+- **Approve / reject** gives its feedback through the snackbar and the row disappearing on refetch; no
+  bespoke row animation
+- **Budget:** any transition is ≤ 200ms and fires on a state change only. Nothing animates on page load,
+  nothing loops, nothing moves purely to look busy
+- **`prefers-reduced-motion`** disables the skeleton pulse — a media query in the global stylesheet
+
+---
+
+### Accessibility floor
+
+Small list, non-negotiable, and cheap if done as each page is built rather than at the end:
+
+- **Every icon-only button carries an `aria-label`.** ✏ 🗑 ✓ ✕ ➤ are the entire interaction on Entries,
+  Projects, Team and Approvals — without labels those four pages are unusable with a screen reader
+- **Status is never conveyed by colour alone.** The badge always shows its text; the colour reinforces it
+- **Check the four status colours at badge size** against the 4.5:1 AA contrast ratio on white, and darken
+  the green and the blue if they fall short. Verify, do not assume — small text on a coloured chip is the
+  usual place this fails
+- **Focus stays visible** — never `outline: none` without a replacement. `MatDialog` already traps focus:
+  do not break it
+- **Every table action is reachable by keyboard**, in the order the row reads
+
+---
+
+### Visual QA — the finish bar
+
+The gap between "it works" and "it looks finished" is where portfolio projects usually die, so it gets a
+checklist rather than good intentions. Run it **at the end of Step 7d, before gate G4**, over all eight
+pages in one sitting — that is the only way inconsistency becomes visible:
+
+- [ ] Every page uses the type scale and the 8px grid — no stray `font-size`, no arbitrary margin
+- [ ] The three states (loading · error · empty) are reachable on every page: throttle the network for
+      loading, stop the backend for error, filter to a month with no data for empty
+- [ ] All four status colours pass contrast at badge size, and no status reads by colour alone
+- [ ] Every icon-only button has an `aria-label`; every table action is reachable by tab
+- [ ] At 1024, 768 and 375px wide: no horizontal page scroll, sidenav behaves per the responsive rules,
+      tables scroll inside their wrapper, dialogs go full-screen below 600
+- [ ] Skeletons pulse; nothing else animates on load; `prefers-reduced-motion` stops the pulse
+- [ ] Two screenshots worth putting in the README exist — the manager dashboard and the entries page
+
+---
+
 ### Material components used
 
 | Component | Where |
@@ -1082,7 +1153,11 @@ own done condition covering its **full** scope, and each falls inside exactly on
 share `feat/angular-manager-pages`, since §22's rule is one branch per coherent feature, never one per step.
 
 #### Step 7a — Shell + auth
-- Angular project with Angular Material and the indigo theme; `environment.ts` with the API base URL
+- Angular project with Angular Material; `environment.ts` with the API base URL
+- **The §14 design system is set up here, before any page exists** — `styles/material-theme.scss` with the
+  scoped `mat.theme()` (indigo-based M3 palette, compact density), the four `--status-*` custom properties,
+  and the spacing/type rules. Every later step inherits it; retrofitting a theme across eight built pages
+  is the expensive way to do this
 - Auth service + JWT in localStorage; auth guard + manager guard
 - HTTP interceptor: attaches the token **and handles 401 mid-session** (clear session → redirect to `/login`) — see the token-lifetime note in the REST API section
 - App shell: `MatSidenav` + toolbar, sidebar links filtered by role; Login page
@@ -1120,8 +1195,11 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - Reports page: month selector, summary cards and the two `forkJoin` hours tables
 - Same three §14 states on both pages; the Reports empty state replaces the cards and both tables while the
   month selector stays enabled
+- **The §14 Visual QA checklist runs here**, over all eight pages at once — this is the last frontend step,
+  so it is the only point where inconsistency between pages built on different days is visible. Anything it
+  finds is fixed now, not filed: G4 is the next gate and a portfolio verdict comes after it
 - **Review concepts:** reactive forms, MatTable, `forkJoin`, role-aware UI
-- **Done condition:** `Browser: as MANAGER, create a user at /team and the generated password appears once in the snackbar; /reports renders both hours tables for a selected month and shows "No approved hours for this month yet." for a month with none`
+- **Done condition:** `Browser: as MANAGER, create a user at /team and the generated password appears once in the snackbar; /reports renders both hours tables for a selected month and shows "No approved hours for this month yet." for a month with none; the §14 Visual QA checklist passes on all eight pages at 1024, 768 and 375px`
 
 ### Step 8 — Backend tests
 - JUnit 5 + Mockito — one test per service method
