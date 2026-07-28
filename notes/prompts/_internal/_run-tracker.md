@@ -60,7 +60,7 @@ marking the note complete.
 | 04-meal-finder | | | | |
 | 05-task-manager | | | | |
 | 06-hr-portal | | | | |
-| 07-timetrack | 2026-07-28 (review mode, completed — frontend pass: §6 Angular rules, §13/§14 state contract, Step 7c split) | | | |
+| 07-timetrack | 2026-07-28 (review mode, completed — six-specialist pass: §1 added, §14 visual design system written from scratch, change-password dialog wired §10→§16) | | | |
 
 ## Global pipeline prompts (no per-target scope)
 
