@@ -39,7 +39,13 @@ Then these five bullets — honest, including "nothing to report". Keep each one
 earns extra lines when it is reporting something that actually went wrong:
 
 1. **Plan vs reality** — did the work split (subagents, slices, sections, files) turn out right, or
-   was something missing / mis-sized?
+   was something missing / mis-sized? **Name your evidence.** Green traces are self-reports by the same
+   subagents whose work is in question, so on their own they support only "the machinery ran" — never
+   "the output is sound". If this pipeline has a step that reads the **finished artefact whole** and is
+   not written by the slice owners (`plan-audit`'s `whole-plan` pass), its findings are this bullet's
+   evidence and outrank the traces — defects caught *after* every slice went green are the measure of
+   whether the split worked. If there is no such step, say so in one clause and claim no more than the
+   traces prove.
 2. **Report discipline** — did any subagent return output that had to be trimmed or discarded
    (code dumps, narrative, overlong reports)?
 3. **Failures & retries** — subagents that failed, were re-dispatched, or returned unusable work; how
