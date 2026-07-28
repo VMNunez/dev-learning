@@ -91,6 +91,10 @@ public class TimeEntryService {
             throw new InvalidStateTransitionException("Employee can only submit DRAFT entries");
         }
 
+        if (!timeEntry.getProject().isActive()) {
+            throw new BusinessRuleViolationException("Cannot submit an entry for an inactive project");
+        }
+
         timeEntry.setStatus(EntryStatus.SUBMITTED);
 
         TimeEntry saved = timeEntryRepository.save(timeEntry);
@@ -223,8 +227,8 @@ public class TimeEntryService {
             throw new UnauthorizedException("You can only reopen your own entries");
         }
 
-        if(timeEntry.getStatus() != EntryStatus.REJECTED){
-            throw  new InvalidStateTransitionException("Employee can only reopen REJECTED entries");
+        if (timeEntry.getStatus() != EntryStatus.REJECTED) {
+            throw new InvalidStateTransitionException("Employee can only reopen REJECTED entries");
         }
 
         timeEntry.setStatus(EntryStatus.DRAFT);
