@@ -178,6 +178,12 @@ nothing in it (the empty state). A junior frontend is judged on exactly these �
 blank page for two seconds and shows nothing at all when the API is down reads as unfinished, however
 good the backend behind it is.
 
+The **visual inspiration** table is a working reference, not decoration: each row names the app, the
+link, and **the one concrete element to take from it** ("status badge shape and colour weight", "how the
+filter bar sits above the table") — never "general inspiration". At least one palette or layout decision
+in this section must trace back to a named row, otherwise the table is not being used. Prefer real
+products in the project's own domain over dribbble shots: a recruiter recognises the former.
+
 Finally, one line on **responsive intent**: which layouts collapse on a narrow viewport (tables, the
 sidenav), or an explicit §20 tradeoff saying the demo targets desktop. A recruiter opens the link on a
 phone.
@@ -277,6 +283,14 @@ Every done condition (§0 and every step in §15) must follow **one** of these e
 - `Browser: [what is visible or interactive] at [route]`
 - `Terminal: [test command] passes — [count] tests, [key assertion named]`
 - `pgAdmin: [query or visible table state]`
+
+**A step that builds UI pages must prove one non-happy state.** The `Browser:` condition covers the
+populated success path *and* at least one of: the empty state, the loading state, or the error state of
+a page the step built. `Browser: an employee creates an entry at /entries and the table updates` is a
+half-condition — the step passes with a page that renders nothing while it waits and nothing at all when
+the API is down. Those are the states a demo actually fails in, and the ones §14 now makes the plan
+declare; the done condition is what forces them to be built rather than planned. Extend the condition
+rather than adding a step: `…and the table shows its empty state before the first entry exists`.
 
 These are the only valid formats. Never use vague conditions like "the feature works", "it renders
 correctly", or "the API is ready" — they are not testable. When auditing, mark each condition:

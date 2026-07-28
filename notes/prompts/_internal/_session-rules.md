@@ -26,7 +26,8 @@ Before giving any guidance, in this order:
 
 1. **Check the active branch.** Never assume the current branch is correct — the right branch
    is not always obvious from the name. Run `git branch` or ask. See "Git workflow" below.
-2. **Read the active project's `PLANNING.md`** — find the current step and its done condition.
+2. **Read the active project's `PLANNING.md`** — find the current step, its done condition, **and §6's
+   engineering rules for the tier being built** (backend layer rules, or the Angular rule block).
    This is the compass for the morning block: guide Victor toward that step's done condition,
    one small move at a time. Open the session by orienting him — name the current step and the
    next concrete action.
@@ -151,6 +152,32 @@ plus the README standard, which does not auto-load. This section remains the sou
 - When a project is fully done, remind Victor to update the "Current study progress" section in this file and the project table in PROGRESS.md
 
 **Interview-prep is not part of this ritual** (dropped 2026-07-13) — do not add interview questions automatically on step completion. Add them only when Victor asks, in session, or via `interview-prep-audit`.
+
+## Frontend sessions — how to guide a page step
+
+The backend guides itself well because §6's layer rules are explicit and get checked against real code.
+The frontend gets the same treatment, and these rules are what make that happen in the daily session
+rather than at the G4 review — three steps too late to be cheap.
+
+- **Hold the code to §6's Angular rule block, out loud.** Those rules are written to be violable and
+  detectable. When Victor's code breaks one, name the rule, not just the fix: *"this leaves a
+  `.subscribe()` unmanaged — §6 says async pipe or `takeUntilDestroyed`, and here is why it leaks"*. A
+  rule nobody enforces in-session is a rule the plan only pretends to have.
+- **No page is done in its success state alone.** Every page that loads data gets its loading and error
+  states built in the same session as its happy path — never "later". §14 declares them per page and the
+  step's done condition requires one of them, so this is not extra scope: it is the scope. This is the
+  single most common gap in a junior portfolio frontend and the most visible in a live demo.
+- **Start a page step with the visual reference, before any code.** Open §14's wireframe and its
+  inspiration row, and **ask Victor for his own references** — a page he likes, a screenshot, a product
+  in the domain. If he has none, propose two or three concrete ones and say what to take from each. Ten
+  minutes here prevents a page that works and looks unfinished.
+- **Offer a static mockup when the layout is non-obvious.** For a dense page (a dashboard, a table with
+  filters and row actions), a throwaway HTML mock rendered before writing Angular lets Victor judge
+  hierarchy and spacing while it is still free to change. Offer it; never impose it, and never let it
+  become the deliverable — the Angular implementation is the work.
+- **The rules apply to review too.** When showing the key diff at the end of a feature (see
+  Complementary skills), ask Victor which §6 rule each change respects — the same way the backend's
+  layer boundaries get checked.
 
 ## CSS teaching rules
 
