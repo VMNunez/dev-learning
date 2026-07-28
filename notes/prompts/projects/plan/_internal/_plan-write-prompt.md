@@ -59,6 +59,12 @@ Read these in order. They are the inputs to every decision this prompt makes.
    "What 'ready' means" gate list.
 6. The last completed project's `PLANNING.md` (check PROGRESS.md for the number, then read
    `projects/0X-name/PLANNING.md`). This is the reference for depth and structure — match it.
+7. **The §14 of every other published project** — read only that section (grep the "UI design" heading
+   and read to the next one; do not load whole plans). You need the palette, density, shape, typography
+   and layout skeleton each one already used, because 4g must differ from **all** of them, not just the
+   last. Note them in a short table you keep for 4g. Projects 01–06 have no numbered sections — read
+   whatever design/palette part their legacy plan has, and if one has none, look at its README
+   screenshots or its theme file instead.
 
 ---
 
@@ -156,24 +162,47 @@ held to the same annotation bar as the backend tree in 4e, not a list of folder 
 (path per page, guards per route, employee-only / manager-only / shared) and, per §13, one ownership
 line for every endpoint that more than one page consumes.
 
-**4g — UI design.** Color palette (role/status · hex · usage — Material-friendly, primary + accent
-different from the previous project), Material components (component → page), a wireframe for **every**
-page, and 2–3 real apps for inspiration. Each wireframe covers the page's **three states** per §14 —
-loading, error, and empty — not only the populated happy path, plus its role variations. Close with the
-responsive intent line.
+**4g — Visual identity.** Do this **before** picking a single hex. Read the visual-identity rules in the
+standard's §14, then decide what this app should *feel* like given its domain, and choose the axes that
+carry it — palette, density and rhythm, shape, typography, layout skeleton, dominant data surface. At
+least three must differ from **every** published project (Step 1 gave you their §14 tables): name the
+axis, what the earlier projects did, and what this one does instead. Two constraints shape the choice:
+it must be reachable by **configuring Angular Material**, not by fighting it with CSS; and each axis
+should teach something — a different layout skeleton or a different dominant surface means a Material
+layout Victor has not built yet, while reusing the last project's means a step of copying.
 
-**4h — Angular Material component list.** Per page: name + route, which Material components appear,
-what the smart component does vs the dumb children, which components open dialogs and their contents.
+**4h — UI design.** Fill the rest of §14 in the standard's order, every block, each one a decision the
+identity from 4g already implies:
+- **Palette** (role/status · hex · usage), Material-friendly and consistent with the identity.
+- **Design system** — theming mechanism in one named file, palette intent vs generated ramp, status
+  colours as named tokens, the type scale mapped to roles, the spacing grid and its allowed values,
+  elevation/shape/density, and an explicit dark-mode ruling with a reason. Every row must say **where
+  the value is defined and who consumes it** — a row that only names a value is not a decision.
+- **Material components** — component → page(s).
+- **Wireframes** — one per page, each covering the **three states** (loading, error, empty), key
+  interactive elements, and role variations.
+- **Motion and accessibility** — transitions on state change only, `prefers-reduced-motion` honoured,
+  animated skeletons; icon-only buttons labelled, status never colour alone, contrast checked at the
+  rendered size, focus visible, everything keyboard-reachable.
+- **Inspiration** — 2–3 real products in this domain, each row naming **the one concrete element** to
+  take from it, with at least one §14 decision traced back to a named row.
+- **Visual QA checklist** — the finish bar run over every page in one sitting; the last frontend step in
+  §15 must name it in its done condition.
+- The responsive intent line (or an explicit §20 tradeoff).
 
-**4i — Implementation order.** Map the build to the **professional implementation order in the
+**4i — Component composition.** Per page: name + route, what the smart component does vs the dumb
+children, which components open dialogs and their contents. (The Material component → page mapping is
+already in 4h; this is the composition layer on top of it.)
+
+**4j — Implementation order.** Map the build to the **professional implementation order in the
 standard**. Every §15 step must trace to one or more items in that sequence; if two are combined,
 explain why.
 
-**4j — Git branch strategy.** Group the implementation steps into coherent feature branches per the
+**4k — Git branch strategy.** Group the implementation steps into coherent feature branches per the
 **branch rules in the standard** (never one branch per step). For each branch: name, covers, opens,
 closes. Confirm the project branch stays open for the whole project.
 
-**4k — Test plan.** Design the test plan per the standard's §16 before writing it: for each service, the
+**4l — Test plan.** Design the test plan per the standard's §16 before writing it: for each service, the
 methods and the edge cases to test; which business rules from §8 need a test that proves enforcement;
 the one slice test type this project introduces (`@WebMvcTest` and/or `@DataJpaTest`) and what it
 asserts; the Angular service and (from 08) component tests. Keep it level-appropriate — mostly unit, a

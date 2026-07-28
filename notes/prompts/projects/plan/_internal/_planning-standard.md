@@ -159,14 +159,36 @@ independently.
   line. No page appears in the tree without a route, and no route without a page.
 
 ### 14. UI design
-In this order: **1)** colour palette table (Role/status · Hex · Usage) — Material-friendly, primary +
-accent different from the previous project · **2)** design-system table · **3)** Material components
-table (component → page(s) that use it) · **4)** view-by-view ASCII wireframes, one per page ·
-**5)** motion and accessibility · **6)** visual inspiration (2–3 real apps) · **7)** the visual QA
-checklist.
+In this order: **1)** the visual identity statement · **2)** colour palette table (Role/status · Hex ·
+Usage) · **3)** design-system table · **4)** Material components table (component → page(s) that use
+it) · **5)** view-by-view ASCII wireframes, one per page · **6)** motion and accessibility ·
+**7)** visual inspiration (2–3 real apps) · **8)** the visual QA checklist.
 
 **The target is an attractive app, not merely a correct one.** A recruiter judges the demo in two
 minutes, and consistency is what reads as professional — so §14 fixes the values before the first page.
+
+**Visual identity — every project looks like a different product.** The portfolio is read as a set: a
+recruiter opening three projects that share one palette, one card, one density reads *one template used
+three times*, which undersells the work. So each new plan chooses its **own** identity, and the plan
+opens §14 by stating it in 3–5 lines: the domain feeling it targets (a payroll tool and a booking app
+should not feel alike), and the concrete decisions that carry it. The identity must differ from **every
+published project**, not merely the previous one, on at least **three** of these axes, each named
+explicitly with what the earlier projects did:
+- **Palette** — hue family and temperature of primary + accent, and whether the surface is light-neutral,
+  tinted, or dark-first.
+- **Density and rhythm** — the spacing grid's base value and Material density setting; compact
+  data-dense screens vs airy generous ones.
+- **Shape** — corner radius scale and how flat or elevated surfaces read.
+- **Typography** — the type family and how much contrast there is between headings and body.
+- **Layout skeleton** — sidenav vs top-bar vs dashboard-grid, and how a list-plus-detail page is arranged.
+- **Data presentation** — the dominant surface (table, card grid, timeline, board) for the main resource.
+
+The identity is a **learning device, not decoration**: each axis is one theming decision Victor
+implements once in the theme file and defends in an interview ("I set density to compact because the
+main screen is a data table"). Choosing a different skeleton or a different dominant surface than the
+last project teaches a new Material layout; repeating them teaches nothing. Stay inside what Angular
+Material supports — the identity comes from *configuring the framework differently*, never from
+hand-written CSS fighting it (that would break the theming rule below).
 
 Each wireframe specifies **all three states, not only the happy one** — loading, failed call, and
 succeeded-with-nothing — plus key interactive elements and role-specific variations. A junior frontend
@@ -203,7 +225,12 @@ screenshots the README needs exist.
 
 Finally, one line on **responsive intent**: which layouts collapse on a narrow viewport (tables, the
 sidenav), or an explicit §20 tradeoff saying the demo targets desktop.
-- **Pass:** every page in §13 has a wireframe; every wireframe names its empty state; every page that
+- **Pass:** the visual identity statement is present, names at least three differentiating axes, and for
+  each one says what the earlier projects did — "a fresh modern look" with no axis named fails, and so
+  does an axis that only restates this project's value without the contrast; the palette, density,
+  shape and typography rows of the design-system table actually match the identity claimed (an identity
+  promising compact data-density and a design system on an airy 16px grid is two plans, not one); every
+  page in §13 has a wireframe; every wireframe names its empty state; every page that
   loads data declares its loading **and** its error state — a page specified only in its success state
   fails; the design-system table is present and every row is a *decision* (a row naming a value without
   saying where it is defined or who consumes it fails), including an explicit dark-mode ruling; the
