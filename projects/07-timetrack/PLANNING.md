@@ -1131,12 +1131,15 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - **Done condition:** `Terminal: mvn test passes — TimeEntryServiceTest, UserServiceTest, ProjectServiceTest, AuthServiceTest and ReportServiceTest all green; approve_throwsWhenNotSubmitted and getSummary_approvedHoursEqualsByProjectSum asserted`
 
 ### Step 9 — Angular tests
-- Jasmine + TestBed with `HttpClientTestingModule` — one test per service
-- Verify the HTTP call, the URL, and the error path (see Section 16)
+- Jasmine + TestBed with `HttpClientTestingModule` — one test per service method listed in Section 16
+- Assert the request (URL, method, params, body) and the returned typed value; only `AuthService` asserts
+  stored state, because §6's Service-boundary rule says the other services hold none
+- Cover the edge cases in Section 16, not only the happy path — the unset-filter param, the un-swallowed
+  `fieldErrors` on 400, the 401 that must not half-authenticate
 - Component tests are NOT in scope — per CLAUDE.md they start at project 08; this project tests services only
 - **New concepts:** Angular service unit testing with `HttpClientTestingModule`
-- **Review concepts:** auth and entry services
-- **Done condition:** `Terminal: ng test passes — AuthService and EntryService specs both green; getEntries issues a GET to /api/entries and a 401 response surfaces an error asserted`
+- **Review concepts:** auth, entry and report services
+- **Done condition:** `Terminal: ng test passes — AuthService, EntryService and ReportService specs all green; getEntries issues a GET to /api/entries with no empty params when a filter is unset, and a failed login leaves the token unstored`
 
 ### Step 10 — SQL complement
 - In `sql/`, hand-write the SQL that Hibernate generates for the main report queries (the `GROUP BY` aggregations) and for `GET /api/entries` with filters
@@ -1198,13 +1201,20 @@ was called. No trivial "it exists" tests.
 ### Angular — services (Jasmine + TestBed, Step 9)
 
 Use `HttpClientTestingModule` and `HttpTestingController` to assert the request without a real backend.
+Same bar as the backend table: name the method, the request it must issue, and the edge cases — not
+"it works". **What a service test may assert is bounded by §6's Service-boundary rule:** a
+`core/services/` service issues the call and maps the response, so the assertions are about the
+*request* and the *returned typed value*. Only `AuthService` also owns state, so it is the only service
+whose test asserts a stored token or a signal.
 
-| Service | What the test verifies |
-|---|---|
-| `AuthService.login` | POSTs to `/api/auth/login`; on success stores the token and sets `currentUser` |
-| `EntryService.getEntries` | GETs `/api/entries` with the right query params; returns the typed list |
-| `EntryService.approve` | PATCHes `/api/entries/{id}/approve`; updates local state on success |
-| error path | a 401/403 response surfaces an error the caller can handle |
+| Service method | Happy path | Edge cases to cover |
+|---|---|---|
+| `AuthService.login` | POSTs `{email, password}` to `/api/auth/login`; on 200 stores the token in `localStorage` and sets the `currentUser` signal with the role from the response | wrong password → 401 leaves the token unstored and `currentUser` null (a failed login must not half-authenticate); the request body carries the password only in the POST body, never as a query param |
+| `AuthService.logout` | Clears the token and resets `currentUser` to null | called with no session stored → does not throw |
+| `EntryService.getEntries` | GETs `/api/entries` and returns the typed `TimeEntry[]` | `month`, `status` and `projectId` appear as query params **only when supplied** — an unset filter sends no empty param; a `[]` response returns an empty array, not null |
+| `EntryService.approve` | PATCHes `/api/entries/{id}/approve` with no body and returns the updated `TimeEntry` | the id is interpolated into the path, not sent as a param; **the service stores nothing** — the returned value is the only channel (§6 Service boundary), so the caller page is what refetches |
+| `EntryService.create` | POSTs the entry and returns the created `TimeEntry` | a 400 surfaces the `fieldErrors` map from the §10 error contract to the caller, un-swallowed, so the reactive form can bind a message per input |
+| `ReportService.getSummary` | GETs `/api/reports/summary?month=` and returns the typed summary | a 403 (EMPLOYEE calling a MANAGER endpoint) surfaces an error the caller can handle rather than resolving to a partial object |
 
 ### Angular — components
 
