@@ -39,6 +39,7 @@ public class TimeEntry {
     private String description;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EntryStatus status = EntryStatus.DRAFT;
 
     private String rejectionNote;
