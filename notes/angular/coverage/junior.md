@@ -10,13 +10,20 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]`
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
-- `model()` — expose a writable child value with its matching change output when a reusable component genuinely owns two-way binding
 - `input()` vs `input.required()` — model optional and mandatory parent-to-child data without hiding absence behind an unsafe default
 - `output()` — send typed child events to a parent without making the child depend on the parent's implementation
 - `@if` vs `@switch` — choose branching conditions or fixed-value cases so mutually exclusive UI states remain readable
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them
+- Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state
+- Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions
 - Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
 - Components vs attribute directives — use a component when behaviour owns a view and a directive when behaviour augments an existing host element
+
+## Application bootstrap and component styles
+
+- `bootstrapApplication()` — identify the standalone root component and the application-level providers that start a modern Angular application
+- Application provider boundary — register application-wide capabilities at bootstrap rather than scattering their providers through component scopes
+- `styleUrl`/`styleUrls` vs inline `styles` — locate a component's styles and choose external files or small inline rules without confusing either form with global CSS
 
 ## Lifecycle and dependency injection
 
@@ -45,33 +52,41 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON
 - `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged
 - Cold HTTP Observables — recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
+- Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state
 
 ## RxJS streams and pipelines
 
 - `Observable` vs `Promise` — compare stream composition and cancellation with a single eventual Promise while recognising that Observables may be cold or hot and may emit once or many times
+- `Observable` vs `Subject` — distinguish a declarative subscribable stream from a subject that can be imperatively fed and multicast, rather than using a subject as the default state container
 - `subscribe()` callbacks — handle next and error outcomes deliberately and keep presentation state consistent after a failed request
 - `map()` vs `tap()` — transform emitted data with `map()` and reserve `tap()` for observation or side effects
 - `switchMap()` — cancel a stale inner request when a newer search term or route value arrives
+- `switchMap()` vs `mergeMap()` — cancel replaceable work with `switchMap()` and preserve deliberate concurrent inner work with `mergeMap()` instead of choosing by habit
 - Search pipeline operators — combine `debounceTime()`, `distinctUntilChanged()`, and `switchMap()` to avoid premature, duplicate, and stale requests
+- Nested subscriptions vs flattening operators — compose dependent asynchronous work in one pipeline so cancellation, errors, and cleanup remain visible
 - `catchError()` — recover, translate, or rethrow an error without silently converting every failure into successful empty data
+- `finalize()` — clear loading or other lifecycle state when a stream completes or errors without duplicating cleanup across success and failure callbacks
 - `async` pipe vs manual subscription — prefer template-managed subscription for displayed streams and subscribe imperatively only when a side effect requires it
 - Subscription cleanup — use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete
 - `toSignal()` vs manual subscription — expose a displayed Observable as signal state while keeping imperative subscription for deliberate multi-step side effects
-- `toSignal()` vs `toObservable()` — convert in the direction required by the consumer instead of wrapping reactive primitives back and forth without purpose
 
 ## Routing and cross-cutting HTTP behaviour
 
 - Router configuration — connect `provideRouter`, route definitions, `routerLink`, and `RouterOutlet` into a navigable standalone application
+- Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
 - `ActivatedRoute` params and query params — read route identity from `paramMap` and optional Angular view filters from `queryParamMap`
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it
 - `loadComponent` vs `loadChildren` — lazy-load one routed component or an entire child route tree according to the feature boundary
 - Declarative vs programmatic navigation — use `routerLink` in templates and `Router.navigate()` when component logic determines the destination
 - Wildcard routes and redirect order — place a `**` fallback last because Angular uses first-match-wins route evaluation
+- Redirect `pathMatch` — use `pathMatch: 'full'` for an empty-path redirect when prefix matching would otherwise catch every URL
 - `CanActivateFn` guards — return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect
 - Route guards vs backend authorisation — treat guards as client-side navigation control, never as enforcement of data access
 - `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation
 - Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop
+- Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable
+- `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure
 
 ## Reactive forms and template transformation
 
@@ -82,10 +97,12 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction
 - `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid
 - `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms
+- Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
 - `dirty`, `reset()`, and server errors — distinguish local edits, reset the saved baseline, and avoid losing backend errors through an immediate validator rerun
+- Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls
 - `FormArray` vs `FormGroup` — model a dynamic indexed collection separately from a fixed set of named controls
 - Built-in vs custom pipes — keep pure display transformation in templates and avoid hiding business logic or expensive impure work in a pipe
-- Pure vs impure pipes — prefer cached pure transformation and recognise that an impure pipe runs on every change-detection cycle
+- Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
 - Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers
 
 ## Change detection
@@ -94,18 +111,25 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `OnPush` change detection — recognise the notifications that mark a view for checking and why in-place mutation can leave an input-based view stale
 - Signals with `OnPush` — explain how a signal read in a template notifies Angular without treating signals as a reason to mutate objects in place
 - Production-build verification — run a production build because template compilation, budgets, and optimisation can expose failures hidden by the development server
+- Build-time configuration vs frontend secrets — configure public environment-dependent values at build or deployment time while recognising that anything shipped to the browser can be read by a user
+- Angular template sanitisation — distinguish escaped interpolation from context-sensitive sanitisation and treat `bypassSecurityTrust...` as an explicit trust-boundary decision
 
 ## Testing Angular behaviour
 
 - Vitest vs Jasmine/Karma recognition — use the current CLI's Vitest default while reading Jasmine/Karma suites that remain common in maintained consultancy projects
-- Test structure and assertions — use `describe`, setup hooks, `it`, and meaningful expectations to express behaviour rather than mere object existence
 - `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies
 - Service unit tests — isolate business or state logic and verify observable outputs, state transitions, and collaborator calls
 - Spies and test doubles — control a collaborator with `vi.spyOn()` in Vitest or `spyOn()` in Jasmine and assert the interaction without reproducing its implementation
 - HTTP tests with `provideHttpClientTesting()` — intercept a request with `HttpTestingController`, assert method, URL, and body, then flush the intended response
 - `provideHttpClientTesting()` vs `HttpClientTestingModule` — use the standalone provider in current code and recognise the deprecated module-based setup in older suites
+- `HttpTestingController.verify()` — fail a test when expected requests remain outstanding or unexpected requests were left unresolved
 - HTTP error tests — flush an error response and assert the service's observable or state follows the documented failure path
-- Component tests — verify rendered behaviour and user interaction instead of asserting only that the component can be constructed
+- `ComponentFixture` — trigger change detection, query rendered DOM, simulate an interaction, and assert visible component behaviour rather than mere construction
+
+## Debugging and maintained-code navigation
+
+- Angular error triage — use compiler output, runtime error context, dependency-injection traces, router events, and the browser Network panel to locate the failing boundary before changing code
+- Feature-flow tracing — follow a route through its page component, injected service, HTTP call, reactive state, template states, and test before modifying an unfamiliar maintained feature
 
 ## Legacy enterprise code recognition
 
@@ -116,4 +140,4 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Template-driven vs reactive forms — recognise `ngModel` for simple template-owned fields and choose reactive forms for explicit, testable form models
 - `Subject` vs `BehaviorSubject` — distinguish event broadcasting from state that immediately exposes its latest value to new subscribers
 - `Observable` naming and `$` convention — read established code that marks streams with a trailing `$` without assuming the convention changes runtime behaviour
-- Angular CLI build workflow — use generation, development, test, and production-build commands and recognise that a successful dev server does not prove the production build succeeds
+- Angular CLI workspace configuration — read configured targets and package scripts in a maintained workspace instead of assuming every project uses the CLI defaults
