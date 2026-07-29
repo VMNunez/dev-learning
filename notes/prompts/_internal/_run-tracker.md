@@ -30,7 +30,7 @@ is the first retained execution.
 | Architecture | | | | | | | | | | | | | | | | | | |
 | Security | | | | | | | | | | | | | | | | | | |
 | TypeScript | | | | | | | | | | | | | | | | | | |
-| JavaScript | 2026-07-29 — completed — 121 items; full recalibration; Promise/Observable ownership fixed; mirror parity; notes-plan refresh next | | | | | | | | | | | | | | | | | |
+| JavaScript | 2026-07-29 — completed — 123 items; full recalibration; ownership routes applied; mirror parity; notes-plan refresh next | | | | | | | | | | | | | | | | | |
 | CSS | | | | | | | | | | | | | | | | | | |
 | SQL | 2026-07-29 — completed — 133 items; verify-gap fast path; 4 gaps accepted; mirror parity; notes-plan refresh next | 2026-07-29 — completed — gaps consumed; verdict superseded; verification optional | 2026-07-29 — completed — 17 entries; 133 concepts; 3 create / 14 audit; 14 English notes classified keep; 0 relocations; mirror parity; cold review applied | 0/17 complete — completed | | | | | | | | | | | | | | |
 | Git | | | | | | | | | | | | | | | | | | |
