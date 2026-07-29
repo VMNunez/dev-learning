@@ -169,6 +169,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `GET /api/reports/summary`, `by-project` and `by-employee` all filter to `EntryStatus.APPROVED` only, so the summary card's `approvedHours` always equals the sum of either detail table for the same month. `pendingHours` stays a separate, explicitly-named field and is never folded into a total — the DRAFT → SUBMITTED → APPROVED workflow only produces numbers a manager can trust if unapproved hours never leak into one.
 
+### Extracted entry validation ✓
+
+`TimeEntryService.create` and `update` both check the same three business rules (future date, active project, hours in range). `validateEntryData(request, project)` holds that logic once, called from both methods, with `MIN_HOURS`/`MAX_HOURS` as class constants instead of re-instantiated `BigDecimal` literals.
+
 ### Two-layer validation on `hours` ✓
 
 `TimeEntry.hours` is constrained at both ends, deliberately kept as two layers rather than one: `@Column(precision = 4, scale = 2)` on the entity guarantees the DB never stores more precision than the field is meant to hold, and `@DecimalMin("0.5")` / `@DecimalMax("24")` / `@Digits(integer = 2, fraction = 2)` on `CreateTimeEntryRequest` reject an out-of-range or over-precise value at the HTTP boundary with a 400, before it ever reaches the service. `TimeEntryService` also keeps its own manual 0.5–24 check — redundant with the DTO validation for HTTP requests, but it protects the business rule for any future non-HTTP caller of the service.
