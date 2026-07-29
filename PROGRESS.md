@@ -367,6 +367,8 @@ practical evidence alone also does not bypass incomplete or stale knowledge arti
 - `MissingServletRequestParameterException` is not a `RuntimeException` (it descends from `ServletException`) — a generic `@ExceptionHandler(RuntimeException.class)` catch-all never sees it; needs its own handler
 - Spring Security `/error` gotcha — an unhandled exception resolved via `sendError()` triggers an internal forward to `/error`, which `JwtFilter` skips by default (`OncePerRequestFilter.shouldNotFilterErrorDispatch()`), so `/error` gets rejected as unauthenticated (`401`) unless explicitly excluded from `.anyRequest().authenticated()` — the real fix is catching the exception before `sendError()` ever runs
 - `MethodArgumentTypeMismatchException` — thrown when a `@RequestParam` value can't convert to the target type (e.g. `?month=2025-13`); is a `RuntimeException`, so it reaches a generic catch-all, but silently with the wrong status unless given its own handler
+- `SecureRandom` for generating an initial account password — `java.util.Random` is seeded and predictable; `java.security.SecureRandom` is the cryptographically secure source required for anything an attacker could exploit by guessing it
+- A dedicated exception per response shape, not just per status code — `InvalidCurrentPasswordException` exists next to `BusinessRuleViolationException` even though both map to 400, so its `@ExceptionHandler` can always attach `fieldErrors.currentPassword` with no conditional branching inside a shared handler
 
 ---
 
