@@ -61,10 +61,11 @@ belong there.
 4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
 5. Read `VERIFY` but never stop on it. Record its state as `verified` (present, `Verdict = complete`, and
    its stored `Coverage SHA-256` matches the current SHA-256 of `COVERAGE`) or `unverified` naming which
-   of the three failed — missing, `gaps`, or stale SHA. When `unverified`, continue planning the coverage
-   as it stands, mark the resulting plan as built on unverified coverage in `PLAN` and in the final
-   summary, and direct the follow-up to `coverage-verify` (and, if the verdict was `gaps`, to
-   `coverage-prompt` update first, which consumes the findings).
+   of the three failed — missing, `gaps`/`superseded`, or stale SHA. When `unverified`, continue planning
+   the coverage as it stands and mark the resulting plan as built on unverified coverage in `PLAN` and
+   in the final summary. Do not send the workflow back to `coverage-verify`: after
+   `coverage-prompt → coverage-verify → coverage-prompt`, this planning run is the intended next step.
+   A new verification is optional later evidence, never a prerequisite for planning or authoring notes.
 6. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
    middle to be closed. Planning later levels is blocked just like authoring them.
 7. Preserve unrelated working-tree changes.

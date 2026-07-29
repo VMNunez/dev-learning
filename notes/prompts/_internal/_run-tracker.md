@@ -32,7 +32,7 @@ is the first retained execution.
 | TypeScript | | | | | | | | | | | | | | | | | | |
 | JavaScript | | | | | | | | | | | | | | | | | | |
 | CSS | | | | | | | | | | | | | | | | | | |
-| SQL | 2026-07-29 — completed — 133 items; verify-gap fast path; 4 gaps accepted; mirror parity; notes plan stale | 2026-07-29 — completed — gaps consumed; verdict superseded; re-verify required | | | | | | | | | | | | | | | | |
+| SQL | 2026-07-29 — completed — 133 items; verify-gap fast path; 4 gaps accepted; mirror parity; notes-plan refresh next | 2026-07-29 — completed — gaps consumed; verdict superseded; verification optional | | | | | | | | | | | | | | | | |
 | Git | | | | | | | | | | | | | | | | | | |
 | General | | | | | | | | | | | | | | | | | | |
 

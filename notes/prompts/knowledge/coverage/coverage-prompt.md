@@ -192,7 +192,8 @@ Validate:
 7. the selected file contains no obvious other-topic section;
 8. `git diff --check` passes and the complete declared diff is inspected.
 9. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256. A mismatch is the expected
-   automatic stale signal: report that `notes-plan-prompt` must run before another note can be built.
+   refresh signal: report `notes-plan-prompt` as the next step so it can remap the final coverage
+   before another note is built. This is not a return to `coverage-verify`.
 
 ## Step 6 — Update mode
 
@@ -204,8 +205,9 @@ In update mode:
 1. Commit changed topic scope files and the selected global mirror atomically. When `verify-{LEVEL}.md`
    supplied gaps, blank its `## Open gaps` to `*(none)*` and set `Verdict: superseded` in the same
    commit, so no run re-proposes a consumed gap; the changed coverage bytes also stale the gate's stored
-   SHA, so `coverage-verify` should be re-run — `notes-plan` records the stale gate but is not blocked
-   by it.
+   SHA. That superseded verification is execution history, not a new gate: continue directly to
+   `notes-plan-prompt`. A fresh `coverage-verify` may be run later for new completeness evidence, but
+   it is never required before planning or authoring notes.
 2. Commit inbox routing separately only when another topic receives proposals.
 3. Before every add and commit, inspect status and stage only declared paths.
 4. Write the pipeline self-report.
@@ -230,7 +232,8 @@ Report:
 - market analyst and reviewer completion;
 - qualitative stopping-rule result;
 - mirror parity;
-- notes-plan state (`missing`, `current`, or `stale`);
+- notes-plan state (`missing`, `current`, or `refresh required`) and, for `refresh required`, name
+  `notes-plan-prompt` as the next step without sending the workflow back to `coverage-verify`;
 - files and commits;
 - unresolved risks or `none`.
 
