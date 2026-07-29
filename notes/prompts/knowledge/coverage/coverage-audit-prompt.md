@@ -31,13 +31,15 @@ Read to EOF with verified line counts:
 - `_internal/_coverage-standard.md`
 - `_session-rules.md`
 - `_shared-context.md`
-- `ROADMAP.md`
 - `_job-market-evidence.md`
 - `notes/coverage/{LEVEL}.md`
 - every topic's `coverage/junior.md`, `coverage/middle.md`, and `coverage/senior.md`
 - `_internal/_cross-topic-inbox.md`
 - `_run-tracker.md`
 - previous coverage-audit self-report
+
+`ROADMAP.md`, notes, practice plans, project plans, and project code are downstream artifacts. Do not
+use them to add, remove, or raise a coverage requirement.
 
 ## Step 0 — Guards
 
@@ -59,6 +61,9 @@ Dispatch cold read-only analysts for independent concerns:
 For junior, mid/senior postings must not raise the floor. For middle, analysts must distinguish autonomous application/team ownership from senior platform or organisational responsibility.
 
 Each analyst returns evidence, not edits, and confirms all whole-file reads to EOF.
+Every analyst receives `_shared-context.md`, current market evidence, and the coverage standard as the
+scope authorities. None may inspect or infer requirements from `ROADMAP.md`, notes, exercises,
+projects, or plans.
 
 ## Step 2 — Converge the selected level
 
@@ -102,6 +107,8 @@ After edits, dispatch:
 - **Ownership/quality reviewer** — grouped items, duplicate ownership, weak wording, and exact item count reviewed.
 
 Both are cold, read-only, and must report selected files read to EOF. Apply accepted findings without expanding into the next level.
+Both reviewers use the same source hierarchy as the analysts; downstream artifacts cannot justify a
+gap or a level placement.
 
 ## Step 5 — Rebuild global mirror
 

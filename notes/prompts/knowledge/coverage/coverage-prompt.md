@@ -39,13 +39,15 @@ Count lines before every whole-file read and read to EOF:
 1. `_internal/_coverage-standard.md`
 2. `_session-rules.md`
 3. `_shared-context.md`
-4. `ROADMAP.md`
-5. `_job-market-evidence.md`
-6. all three topic scope files when present
-7. this topic's heading in `_internal/_cross-topic-inbox.md`
-8. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
+4. `_job-market-evidence.md`
+5. all three topic scope files when present
+6. this topic's heading in `_internal/_cross-topic-inbox.md`
+7. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
    the completeness gate
-9. the previous coverage-prompt self-report
+8. the previous coverage-prompt self-report
+
+`ROADMAP.md`, notes, practice plans, project plans, and project code are downstream artifacts, not
+scope evidence. Do not read them to establish or raise the competency floor.
 
 For Spring Boot, also inspect Java coverage headings and `notes/spring-boot/layer-reference.md`.
 
@@ -53,7 +55,7 @@ For Spring Boot, also inspect Java coverage headings and `notes/spring-boot/laye
 
 This prompt has two shapes; Step 0 fixes which one and records it in the plan.
 
-**Full recalibration** (default) runs every step. Use it whenever this topic/level coverage does not yet exist, any recalibration trigger is active — a roadmap, market, or standard change, an unresolved recommendation, or a pending `_cross-topic-inbox.md` entry under this topic — or you are unsure.
+**Full recalibration** (default) runs every step. Use it whenever this topic/level coverage does not yet exist, any recalibration trigger is active — a shared-context, job-market-evidence, or coverage-standard change, an unresolved recommendation, or a pending `_cross-topic-inbox.md` entry under this topic — or you are unsure.
 
 **Verify-gap fast path** applies only when all of these hold:
 
@@ -87,7 +89,10 @@ Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, th
 
 *Skipped in the verify-gap fast path (see Run scope).*
 
-Dispatch one cold market analyst. It receives only the target role, selected level, standard, relevant evidence, and this mandate:
+Dispatch one cold market analyst. It receives only the target role, selected level,
+`_coverage-standard.md`, `_shared-context.md`, `_job-market-evidence.md`, current live evidence, and
+this mandate. It must not inspect `ROADMAP.md`, existing topic coverage, notes, practice plans, project
+plans, or project code:
 
 > Identify concepts whose absence would materially weaken a developer at the selected topic and level. Use current live evidence when available. Separate recurring requirements, ordinary fundamentals, practical autonomy signals, and differentiators. Do not inspect existing topic scope files and do not edit files. Do not impose an item count.
 
@@ -163,6 +168,10 @@ Reads all three topic level files, the relevant global mirrors, targeted owner f
 - confirmation: `N items reviewed`.
 
 Both reports must state the selected file's line count and that it was read to EOF. Re-dispatch a failed reviewer once. Apply accepted findings, then repeat factual and mechanical checks.
+
+Both reviewers judge scope only from the target in `_shared-context.md`, current market evidence,
+ordinary fundamentals, and the standard's level definitions. A concept's presence in `ROADMAP.md`,
+notes, exercises, projects, or plans is never evidence that it belongs at the selected level.
 
 ## Step 5 — Rebuild and validate the level mirror
 

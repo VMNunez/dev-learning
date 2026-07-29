@@ -30,7 +30,15 @@ The gate controls study order, not file existence. Middle coverage may be mapped
 
 ## The job target defines scope
 
-Read `ROADMAP.md` and `_shared-context.md` before making scope decisions. Current examples such as “Angular + Spring Boot”, named consultancies, or a target date are illustrations only; the source files win whenever the target changes.
+`_shared-context.md` defines the target role, stack, market, and personal constraints.
+`_job-market-evidence.md`, current live evidence, and the level definitions in this standard determine
+which competencies that target requires.
+
+`ROADMAP.md` is a downstream planning artifact. It may organise the order, timing, practice, and
+demonstration of coverage, but its topic lists, phase tables, project ideas, and learning gates must
+never add, remove, or raise a coverage requirement. The same boundary applies to notes, exercise
+plans, project plans, and existing project code: they may provide examples or evidence that a concept
+has been encountered, but their contents do not establish the professional-level floor.
 
 Use two evidence sources:
 

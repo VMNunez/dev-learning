@@ -45,10 +45,12 @@ Count lines before every whole-file read and read to EOF:
 1. `_internal/_coverage-standard.md`
 2. `_session-rules.md`
 3. `_shared-context.md`
-4. `ROADMAP.md`
-5. `_internal/_job-market-evidence.md`
-6. `COVERAGE` and both `SIBLINGS`
-7. the previous coverage-verify self-report
+4. `_internal/_job-market-evidence.md`
+5. `COVERAGE` and both `SIBLINGS`
+6. the previous coverage-verify self-report
+
+`ROADMAP.md`, notes, practice plans, project plans, and project code are downstream artifacts. They
+must not supply proposed gaps or raise the selected-level floor.
 
 ## Step 0 — Guards and run-start check
 
@@ -67,7 +69,7 @@ Count lines before every whole-file read and read to EOF:
 ## Step 1 — Cold completeness review
 
 Dispatch one cold read-only reviewer. It receives the target role and level, the standard, the selected
-coverage file, both siblings, and relevant market evidence. Do not pass it size, freshness, or
+coverage file, both siblings, `_shared-context.md`, and relevant market evidence. Do not pass it size, freshness, or
 under/over-coverage priors — an orchestrator-supplied hint contaminates the adversarial pass. Its
 mandate:
 
@@ -86,6 +88,8 @@ mandate:
 > Do not report items already present, items owned by a sibling level, items owned by another topic, or
 > unjustified specialisation. For each real gap return: the proposed one-sentence item, the section it
 > would join, and one line on why not knowing it would materially weaken performance at this level.
+> Do not inspect or infer requirements from `ROADMAP.md`, notes, exercises, projects, or plans. Those
+> artifacts consume coverage; they do not define it.
 
 Acceptance proof: the reviewer states `COVERAGE` line count and that it was read to EOF, names which
 lenses applied to this topic shape, and confirms it reported only same-topic, same-level gaps.
