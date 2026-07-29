@@ -1,7 +1,9 @@
 package com.victor.timetrack.controller;
 
+import com.victor.timetrack.dto.request.ChangePasswordRequest;
 import com.victor.timetrack.dto.request.CreateUserRequest;
 import com.victor.timetrack.dto.request.UpdateUserRequest;
+import com.victor.timetrack.dto.response.CreateUserResponse;
 import com.victor.timetrack.dto.response.UserResponse;
 import com.victor.timetrack.service.UserService;
 import jakarta.validation.Valid;
@@ -28,7 +30,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
-    public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest request){
+    public ResponseEntity<CreateUserResponse> create(@Valid @RequestBody CreateUserRequest request){
         return ResponseEntity.status(201).body(userService.create(request));
     }
 
@@ -36,6 +38,12 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request){
         return ResponseEntity.status(200).body(userService.update(id,request));
+    }
+
+    @PatchMapping("/me/password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request){
+        userService.changePassword(request);
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('MANAGER')")

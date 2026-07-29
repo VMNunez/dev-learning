@@ -1,23 +1,31 @@
 package com.victor.timetrack.service;
 
+import com.victor.timetrack.dto.request.ChangePasswordRequest;
 import com.victor.timetrack.dto.request.CreateUserRequest;
 import com.victor.timetrack.dto.request.UpdateUserRequest;
+import com.victor.timetrack.dto.response.CreateUserResponse;
 import com.victor.timetrack.dto.response.UserResponse;
+import com.victor.timetrack.exception.InvalidCurrentPasswordException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final String ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -30,22 +38,32 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse create(CreateUserRequest request) {
+    public CreateUserResponse create(CreateUserRequest request) {
         Optional<User> user = userRepository.findByEmail(request.getEmail());
 
         if (user.isPresent()) {
             throw new DataIntegrityViolationException("Email already in use");
         }
 
+        String generatedPassword = generatePassword();
+
         User newUser = new User();
         newUser.setName(request.getName());
         newUser.setEmail(request.getEmail());
-        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setPassword(passwordEncoder.encode(generatedPassword));
         newUser.setRole(request.getRole());
 
         User saved = userRepository.save(newUser);
 
-        return toResponse(saved);
+        CreateUserResponse response = new CreateUserResponse();
+        response.setId(saved.getId());
+        response.setName(saved.getName());
+        response.setEmail(saved.getEmail());
+        response.setRole(saved.getRole());
+        response.setActive(saved.isActive());
+        response.setGeneratedPassword(generatedPassword);
+
+        return response;
     }
 
     @Transactional
@@ -60,7 +78,7 @@ public class UserService {
                 throw new DataIntegrityViolationException("Email already in use");
             }
         }
-        
+
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setRole(request.getRole());
@@ -81,6 +99,30 @@ public class UserService {
 
         user.setActive(false);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest request) {
+        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+
+        if(!passwordEncoder.matches(request.getCurrentPassword(),user.getPassword())){
+            throw  new InvalidCurrentPasswordException("Current password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        userRepository.save(user);
+    }
+
+
+    private String generatePassword() {
+        StringBuilder sb = new StringBuilder(12);
+        for (int i = 0; i < 12; i++) {
+            sb.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+        }
+        return sb.toString();
     }
 
     private UserResponse toResponse(User user) {
