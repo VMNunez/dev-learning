@@ -2,116 +2,376 @@
 
 Plan status: current
 Coverage: notes/architecture/coverage/junior.md
-Coverage SHA-256: fcaf714b23d80537eb98b990fc54ccb79d5fe63f29ada53525d5078fad628c3b
-Generated: 2026-07-24
+Coverage SHA-256: 31dde116f1202ff22cc9355c684cbff9a9a88118a53d7356be2d6bb05dacc35e
+Coverage verification: verified — complete current SHA
+Generated: 2026-07-29
 
-## 01 — REST
+## 00 — Architecture orientation
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/00-architecture-orientation.md
+Spanish: notes/architecture/junior/es/00-orientacion-sobre-arquitectura.md
+Depends on: none
+Pending additions: none
+
+Narrative role: Introduce architecture as the discipline of making and defending system-shaping choices, contrast that concern with Victor's React and TypeScript component/code decisions, establish the journey's boundary-and-trade-off mental model, and locate it in his Angular and Spring Boot work.
+
+Learning outcome: Given a small Angular/Spring system, identify one concrete boundary, name the quality trade-off it creates, distinguish that system-shaping decision from a React component or TypeScript implementation choice, and explain the complete route used to evaluate it.
+
+Prerequisites: none.
+
+Must answer:
+
+- What practical problem does software architecture solve for a team maintaining an application?
+- Which recurring ideas should Victor look for when reading every later chapter?
+- How is choosing a system boundary different from choosing React component state or a TypeScript implementation technique, and where can those smaller choices still express an architectural constraint?
+- How does architecture connect the Angular frontend, Spring Boot backend, and their API without replacing framework-specific knowledge?
+- How does one paragraph name and connect the complete `01` → `17` route—fundamentals, REST, layers, MVC, DTOs, data, components, testability, design qualities, dependency mechanisms, failure and packaging, composition and refactoring, system shapes, business workflows, Adapter/Facade, decisions/review, and SOLID—and explain why that order is used?
+
+Coverage concepts:
+
+- none
+
+Rationale: Junior architecture needs a zero-assumption map before individual coverage concepts can form a connected mental model.
+
+Handoff: With the purpose and route visible, file 01 gives precise names to architecture, design, implementation, boundaries, and the quality trade-offs that drive them.
+
+## 01 — Architecture fundamentals
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/01-architecture-fundamentals.md
+Spanish: notes/architecture/junior/es/01-fundamentos-de-arquitectura.md
+Depends on: 00
+Pending additions: none
+
+Narrative role: Supply the foundational vocabulary needed to distinguish system-wide choices from local code and logical boundaries from deployment boundaries.
+
+Learning outcome: Classify a choice as architecture, design, or implementation; distinguish layers, tiers, modules, and services; and justify a choice through explicit quality-attribute trade-offs.
+
+Prerequisites: 00.
+
+Must answer:
+
+- Which scope and consequences distinguish architecture from design and implementation?
+- How can one application contain several logical layers while running in one tier?
+- When does a logical module become a separately deployed service, and what new costs appear?
+- How do architectural drivers prevent claims that one structure is simply “best”?
+
+Coverage concepts:
+
+- Software architecture vs design vs implementation — architecture sets system-wide boundaries and
+  dependency constraints, design patterns solve narrower recurring problems, and implementation is the
+  concrete code that realises those decisions
+- Layer vs tier — a layer is a logical separation of responsibility inside the code, while a tier is
+  a separately deployed or executed part of the system; three layers can still run in one backend tier
+- Logical module vs deployed service — a module groups a cohesive responsibility inside an application,
+  while a separately deployed service adds a network and operational boundary
+- Architectural drivers and quality attributes — connect a structural choice to requirements such as
+  maintainability, testability, security, performance, availability, and scalability and name the
+  trade-off rather than claiming one design maximises every quality
+
+Rationale: These concepts form the vocabulary for locating a boundary and evaluating why it exists before studying concrete API and code structures.
+
+Handoff: Once boundary types and drivers are clear, file 02 applies them to the first visible boundary in Victor's stack: the REST API.
+
+## 02 — REST API boundaries
 
 Status: pending
 Action: audit
 English: notes/architecture/junior/en/02-rest-api.md
-Spanish: notes/architecture/junior/es/02-rest-api.md
-Depends on: none
+Spanish: notes/architecture/junior/es/02-api-rest.md
+Depends on: 01
+Pending additions: none
+
+Narrative role: Apply architectural boundaries to client-server communication by treating URLs, methods, names, and stateless requests as one coherent resource contract.
+
+Learning outcome: Model a small REST API around resources, explain its boundary constraints, and detect names whose implied guarantee disagrees with the actual query.
+
+Prerequisites: 01.
+
+Must answer:
+
+- Which constraints make REST a client-server architectural style rather than a URL naming convention?
+- Why does the HTTP method carry the action while the path names a resource?
+- How do paths express resources and their relationships without becoming verb-heavy commands?
+- Why is a misleading endpoint or field name an architectural contract defect even when the query runs correctly?
+- Which existing CORS section belongs in Security rather than this Architecture chapter, and how should the audit replace it with a short cross-topic link instead of re-teaching it?
 
 Coverage concepts:
 
-- REST principles: stateless, resources, HTTP verbs, uniform interface — the four constraints that define REST; interviewers ask "is your API RESTful and how do you know?"
+- REST architectural style — keep client and server responsibilities separate, make requests stateless,
+  and expose a uniform resource interface so calls do not depend on hidden conversational state
 - Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action
 - Resource modelling — paths identify resources and relationships, while HTTP methods express the
   operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model
-- Why REST and not GraphQL or RPC — the standard for Spanish consultancy APIs; REST is simpler to implement and understand at junior level
+- A name must not imply a guarantee the query does not enforce — an endpoint or field named after a
+  narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
+  with no role filter) reads as correct until someone relies on the implied filter; rename to what the
+  data actually is, or add the filter, but never leave the two disagreeing
 
-Rationale: These concepts form the coherent coverage group “REST”.
+Rationale: All four concepts govern whether the network boundary presents one truthful, uniform resource model.
 
-## 02 — Layered architecture
+Handoff: A coherent external API still needs an internal path for policy and persistence; file 03 traces that path through layered architecture.
+
+## 03 — Layered architecture
 
 Status: pending
 Action: audit
 English: notes/architecture/junior/en/03-layered-architecture.md
-Spanish: notes/architecture/junior/es/03-layered-architecture.md
-Depends on: 01
+Spanish: notes/architecture/junior/es/03-arquitectura-por-capas.md
+Depends on: 02
+Pending additions: none
+
+Narrative role: Move behind the API boundary and assign HTTP translation, application policy, and persistence access to explicit layers with a controlled dependency direction.
+
+Learning outcome: Trace a request through controller, service, and repository; distinguish a domain rule preview from application orchestration; place policy in the reusable application boundary; and explain why dependencies must not bypass it.
+
+Prerequisites: 02.
+
+Must answer:
+
+- What does the browser/server boundary change about how Angular reaches data?
+- What does each controller, service, and repository layer own and exclude?
+- Why is the service layer reusable and independently testable when policy stays out of HTTP and persistence code?
+- What does a repository contract hide, and which persistence semantics can it still expose?
+- Why does a controller-to-repository shortcut make policy and focused tests brittle?
+- In which direction should a dependency crossing a layer boundary point?
+- At this point in the route, what is a use case—an actor's goal completed through one application
+  boundary with a meaningful result—and why may it coordinate several collaborators instead of
+  meaning one controller method?
+- What is the zero-assumption distinction between a domain rule (what the business permits) and
+  application orchestration (how one use case coordinates collaborators), before file 14 teaches it
+  formally?
+- Which existing DTO section must be relocated or removed in favour of file 05, and which existing state-machine section must be relocated or reduced to a forward link to file 14 so this chapter keeps one layered-architecture mental model?
 
 Coverage concepts:
 
-- Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; they communicate only through HTTP; Angular never queries the database directly; the backend controls what data is exposed and who can access it
-- Controller → Service → Repository — what each layer owns and what it must not do; interviewers ask "where does business logic live?"
-- Service layer — the class (`@Service`) that holds business rules, validation beyond bean validation, and orchestration between repositories; interviewers ask "why not put this logic in the controller?" — because the controller would then be impossible to reuse from another entry point (a scheduled job, a CLI command) and impossible to unit test without starting the whole web layer
-- Repository pattern — places data-access operations behind an interface so application logic does
-  not contain queries directly; a JPA repository still carries persistence semantics and is not a
+- Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; the client
+  reaches the backend through an explicit network API boundary, commonly HTTP, and never queries the
+  database directly
+- Controller → Service → Repository — controllers translate HTTP, services apply and orchestrate
+  business rules, and repositories encapsulate persistence access
+- Service layer — the application boundary that holds business rules, validation beyond structural
+  input checks, and orchestration between persistence ports so another entry point can reuse the policy and tests can
+  exercise it without the web layer
+- Repository pattern — places data-access operations behind a contract so application logic does
+  not contain queries directly; a repository abstraction still carries persistence semantics and is not a
   promise that every storage technology is interchangeable
-- Why business logic belongs in the service — the controller must not decide; the repository must not know the rules; the service is the only place
-- Why the controller must not call the repository directly — bypasses the business rules layer; makes the code impossible to test in isolation
+- Business-rule placement — keep application rules outside delivery and persistence code so another
+  entry point can reuse them and focused tests do not require the web or database layer
+- Why the controller should not call the repository directly — it bypasses application policy, mixes
+  HTTP and persistence responsibilities, and makes changes and focused tests more brittle
+- Layered dependency direction — higher-level policy should not depend directly on delivery or
+  persistence details; dependencies crossing a boundary point through an appropriate contract
+
+Rationale: These concepts define one request path, the responsibility of every layer on it, and the dependency rule that keeps application policy reusable.
+
+Handoff: Layers organise dependency direction; file 04 separates that concern from MVC's model for organising interaction and presentation.
+
+## 04 — MVC and layered architecture
+
+Status: pending
+Action: audit
+English: notes/architecture/junior/en/04-mvc.md
+Spanish: notes/architecture/junior/es/04-mvc.md
+Depends on: 03
+Pending additions: none
+
+Narrative role: Prevent a common category error by placing MVC and controller/service/repository layering on two compatible but different design axes.
+
+Learning outcome: Explain the responsibilities separated by MVC, contrast them with layered dependency direction, and show how one application can use both.
+
+Prerequisites: 03.
+
+Must answer:
+
+- Which interaction, presentation, and state responsibilities does MVC separate?
+- Why is MVC not limited to server-rendered HTML?
+- How can MVC and controller/service/repository layering coexist without either being a subtype of the other?
+
+Coverage concepts:
+
 - MVC — separates input coordination, presentation, and application/domain state; it is not limited
   to server-rendered HTML and is a different design axis from controller/service/repository layering
 - MVC vs layered architecture — MVC organises interaction and presentation responsibilities, while
   layers organise dependency direction; a system can use both without one being a subtype of the other
-- State machine pattern — a workflow where status transitions follow fixed rules (DRAFT → SUBMITTED → APPROVED/REJECTED); the service enforces which transitions are valid
 
-Rationale: These concepts form the coherent coverage group “Layered architecture”.
+Rationale: The direct contrast gives Victor one stable mental model for two structures that share words but solve different organisational problems.
 
-## 03 — DTO pattern
+Handoff: With internal responsibilities separated, file 05 designs the transport contracts that prevent the external API from exposing persistence models.
 
-Status: pending
-Action: audit
-English: notes/architecture/junior/en/05-component-patterns.md
-Spanish: notes/architecture/junior/es/05-component-patterns.md
-Depends on: 02
-
-Coverage concepts:
-
-- Why not expose entities directly — the entity belongs to the database layer; exposing it couples your API shape to your DB schema; a field rename breaks all clients
-- Request DTO vs Response DTO — validate on the way in (client data is untrusted); control what goes out (you built it, you trust it)
-- Where mapping happens — in the service layer, not the controller; the controller never sees the entity
-- What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
-- Smart / dumb component pattern — the smart component fetches data and handles events; the dumb component only displays and emits; separation makes testing easier and code more readable
-- Coordinator pattern — a smart page that delegates display to multiple dumb children; all state lives in the coordinator; interviewers ask "how do you manage state in Angular?"
-- HTTP interceptor as a cross-cutting concern — one interceptor adds auth headers and handles global errors for the entire app; the alternative (doing it in every service) breaks DRY
-- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
-
-Rationale: These concepts form the coherent coverage group “DTO pattern, Angular patterns”.
-
-## 04 — Data access decisions
-
-Status: pending
-Action: audit
-English: notes/architecture/junior/en/01-architecture-decisions.md
-Spanish: notes/architecture/junior/es/01-architecture-decisions.md
-Depends on: 03
-
-Coverage concepts:
-
-- Soft delete vs hard delete — `active = false` instead of `DELETE FROM`; preserves historical data, prevents orphaned records, allows recovery
-- Pagination — why you always paginate list endpoints in production; returning 100,000 rows crashes the server and the client
-- Consistency boundary — one business operation may require several writes to succeed or fail as a
-  unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics
-
-Rationale: These concepts form the coherent coverage group “Data access decisions”.
-
-## 05 — Testing strategy
+## 05 — DTO contracts
 
 Status: pending
 Action: create
-English: notes/architecture/junior/en/06-testing-strategy.md
-Spanish: notes/architecture/junior/es/06-testing-strategy.md
+English: notes/architecture/junior/en/05-dto-contracts.md
+Spanish: notes/architecture/junior/es/05-contratos-dto.md
 Depends on: 04
+Pending additions: none
+
+Narrative role: Protect the API boundary by separating untrusted request shapes and stable response shapes from persistence and domain representations.
+
+Learning outcome: Design request and response DTOs for a use case, place each mapping at the correct boundary, and evolve the public contract without unintentionally exposing entity changes.
+
+Prerequisites: 04.
+
+Must answer:
+
+- Which persistence coupling and disclosure risks appear when an entity becomes the API contract?
+- Why do request DTO validation and business-invariant validation remain different responsibilities?
+- How does a response DTO control outward stability and disclosure?
+- At which boundary should each transport or persistence mapping happen?
+- Why can an entity field change remain invisible to clients?
+- When do create and update operations need different request shapes?
+- Which changes are additive, and when is explicit versioning needed?
+
+Coverage concepts:
+
+- Why not expose persistence entities directly — a JPA entity is coupled to persistence concerns;
+  exposing it couples the API shape to the database mapping and can disclose fields unintentionally
+- Request DTO — represent and structurally validate untrusted input without confusing transport
+  validation with business invariants
+- Response DTO — shape a stable outward representation and minimise field disclosure independently of
+  the internal persistence or domain model
+- Mapping placement — translate transport DTOs at the application/API boundary and persistence models
+  at the persistence boundary; avoid making controllers own business rules or exposing entities as contracts
+- What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
+- Create vs Update request DTOs — separate them when the operations have different validation,
+  optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match
+- Backward-compatible API evolution — treat public fields and semantics as consumer contracts and
+  prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients
+
+Rationale: These concepts all define how a transport contract remains deliberately different from internal models across creation, mapping, disclosure, and evolution.
+
+Handoff: Stable transport contracts raise the next boundary question: how much data persists, returns, or changes atomically; file 06 handles those data-access decisions.
+
+## 06 — Data access decisions
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/06-data-access-decisions.md
+Spanish: notes/architecture/junior/es/06-decisiones-de-acceso-a-datos.md
+Depends on: 05
+Pending additions: none
+
+Narrative role: Show how retention, collection size, and atomic business operations become explicit architectural contracts rather than incidental database behaviour.
+
+Learning outcome: Choose and defend a deletion, pagination, and consistency boundary for a small use case while naming each option's complexity and ownership.
+
+Prerequisites: 05.
+
+Must answer:
+
+- Which audit, recovery, and historical-reference needs justify soft delete despite its filtering and uniqueness costs?
+- When should a collection boundary use a page or cursor rather than return every row?
+- How does architecture choose an atomic business boundary without duplicating SQL or Spring transaction mechanics?
+
+Coverage concepts:
+
+- Soft delete vs hard delete — retain a record when audit, recovery, or historical references justify
+  the extra filtering and uniqueness complexity; otherwise permanent deletion may be the simpler contract
+- Pagination — bound large collection responses when volume can grow, choosing an explicit page or
+  cursor contract instead of assuming every list is safely returned at once
+- Consistency boundary — one business operation may require several writes to succeed or fail as a
+  unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics
+
+Rationale: Each decision sets a data-facing boundary whose correct choice depends on business guarantees and explicit operational cost.
+
+Handoff: After backend data boundaries, file 07 applies the same responsibility discipline to Angular feature and presentation components.
+
+## 07 — Component boundaries
+
+Status: pending
+Action: audit
+English: notes/architecture/junior/en/07-component-patterns.md
+Spanish: notes/architecture/junior/es/07-patrones-de-componentes.md
+Depends on: 06
+Pending additions: none
+
+Narrative role: Carry boundary thinking into the frontend by separating feature coordination and state ownership from focused presentation, while previewing Single Responsibility as distinct reasons to change before file 17 consolidates the principle.
+
+Learning outcome: Split a page into a coordinator and presentational children, place state according to its reuse boundary, and recognise when the coordinator needs extraction.
+
+Prerequisites: 06.
+
+Must answer:
+
+- Which integration work belongs to a container and which rendering work belongs to a presentational component?
+- When should a page own feature state, and when should independently reusable state move to a service?
+- Which growth signals mean a coordinator should extract a service or become several sub-pages?
+- How does “different reasons to change” make the extraction signal more precise than component size, and why is this only an SRP preview before file 17?
+- Why must the audit rebuild this legacy chapter around the declared container/coordinator contract rather than append new sections to its project-specific structure?
+
+Coverage concepts:
+
+- Container / presentational component pattern — a container owns feature integration while focused
+  presentation components render inputs and emit user intent without fetching their own remote data
+- Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
+  children, while shared or independently reusable state may belong in a service rather than in the page
+- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
+
+Rationale: All three concepts answer where a frontend feature's state, integration, rendering, and growing responsibilities should live.
+
+Handoff: Boundaries should make focused verification easier; file 08 uses tests and test doubles as feedback about whether the design achieved that goal.
+
+## 08 — Testability feedback
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/08-testability-feedback.md
+Spanish: notes/architecture/junior/es/08-feedback-de-testabilidad.md
+Depends on: 07
+Pending additions: none
+
+Narrative role: Turn test friction into observable evidence about hidden dependencies, mixed responsibilities, and misplaced policy.
+
+Learning outcome: Define and sketch a focused unit/service test, distinguish test doubles from mocks, and diagnose design coupling from unrelated bootstrapping or a mock graph whose collaborators do not belong to the tested responsibility.
+
+Prerequisites: 07.
+
+Must answer:
+
+- Why does testing the service directly isolate business-rule feedback from HTTP?
+- What makes a test a unit test, and what does “service test” mean here without implying that every service test uses the same framework setup?
+- What is a test double, when is a mock one kind of test double, and why should the terms not be treated as synonyms?
+- What does bootstrapping mean, and what hidden dependency or responsibility problem can starting unrelated layers reveal?
+- When does a long list of unrelated mocks indicate that the production class owns too much, and why is mock count alone not evidence when every collaborator is cohesive and necessary?
 
 Coverage concepts:
 
 - Why you test the service layer independently — business rules live there; testing them directly without HTTP gives fast, focused feedback
 - Testability as a design signal — a class that cannot be exercised without booting unrelated layers
   often has hidden dependencies or mixed responsibilities
-- Contract tests at boundaries — when two layers or services exchange a DTO, test the contract where
-  drift would break integration rather than duplicating every unit test
+- Test doubles as coupling feedback — a unit test that needs many unrelated mocks often signals a class
+  with too many responsibilities or hidden boundary dependencies
 
-Rationale: These concepts form the coherent coverage group “Testing strategy”.
+Rationale: These concepts treat focused tests and their setup cost as one feedback loop for the architecture of application policy.
 
-## 06 — Design qualities and boundaries
+Handoff: Test feedback exposes coupling; file 09 begins the diagnosis by making qualities, dependency graphs, cycles, and boundary direction visible.
+
+## 09 — Design qualities and dependency graphs
 
 Status: pending
 Action: create
-English: notes/architecture/junior/en/07-design-qualities-and-boundaries.md
-Spanish: notes/architecture/junior/es/07-design-qualities-and-boundaries.md
-Depends on: 05
+English: notes/architecture/junior/en/09-design-qualities-and-dependency-graphs.md
+Spanish: notes/architecture/junior/es/09-cualidades-de-diseno-y-grafos-de-dependencias.md
+Depends on: 08
+Pending additions: none
+
+Narrative role: Make change propagation visible by combining coupling, cohesion, information hiding, dependency direction, and cycles in one drawable dependency-graph model.
+
+Learning outcome: Draw and annotate a dependency graph for a small feature, locate a circular dependency or boundary violation, and justify either moving a responsibility or introducing a stable contract to correct it.
+
+Prerequisites: 08.
+
+Must answer:
+
+- How should nodes and directed edges be labelled so a dependency graph makes change propagation visible?
+- How do coupling, cohesion, and information hiding predict the blast radius of a change?
+- How can the graph expose a cycle or wrong-way edge?
+- When should responsibility move to restore cohesion, and when is a stable contract a justified boundary?
 
 Coverage concepts:
 
@@ -119,40 +379,312 @@ Coverage concepts:
   blast radius of a change
 - Cohesion — how strongly a module's responsibilities belong together; high cohesion is the reason
   related business rules stay in one service or feature
+- Encapsulation and information hiding — expose the smallest stable module contract callers need and
+  keep implementation details private so internal changes do not ripple through the codebase
 - Dependency direction — outer delivery and persistence details may depend on application contracts,
   while business rules should not depend on HTTP or database APIs
-- Package by feature vs package by layer — feature packaging keeps one use case together; layer
-  packaging makes technical roles obvious but scatters a change across the tree
-- Composition over inheritance — assembling focused collaborators avoids inheriting behaviour and
-  state a subtype does not need
-- Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
-  hypothetical future requirement
-- Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
-  complexity without ownership is simply a defect
-- Monolith vs microservices awareness — a monolith deploys one application and keeps local calls and
-  transactions simple; microservices add independent deployment but also network failure, distributed
-  data, and operational cost, so a junior project should not split without a real scaling boundary
+- Dependency graph and circular dependencies — follow which module depends on which and break a cycle
+  by relocating responsibility or introducing a justified boundary, not by hiding it with global access
 
-Rationale: These concepts form the coherent coverage group “Design qualities and boundaries”.
+Rationale: These concepts are the qualities and graph-reading tools needed to observe how responsibilities and changes travel through code boundaries.
 
-## 07 — SOLID
+Handoff: Once dependency edges are visible, file 10 explains the abstraction and injection mechanisms used to make those edges explicit without mistaking a language interface or DI container for good design.
+
+## 10 — Dependency mechanisms
 
 Status: pending
 Action: create
-English: notes/architecture/junior/en/08-solid.md
-Spanish: notes/architecture/junior/es/08-solid.md
-Depends on: 06
+English: notes/architecture/junior/en/10-dependency-mechanisms.md
+Spanish: notes/architecture/junior/es/10-mecanismos-de-dependencias.md
+Depends on: 09
+Pending additions: none
+
+Narrative role: Give precise names to stable abstractions, language interfaces, external collaborator supply, policy-level inversion, and hidden service lookup.
+
+Learning outcome: Given a dependency edge, distinguish its abstraction from the interface mechanism, show how injection supplies the collaborator, and judge whether the design actually inverts policy or merely hides lookup.
+
+Prerequisites: 09.
+
+Must answer:
+
+- Why is an abstraction a stable idea or contract while an interface is only one possible language mechanism?
+- What does dependency injection do at object construction or framework wiring time?
+- Which dependency direction must change before injection also supports Dependency Inversion?
+- Why does a service locator hide a class's real collaborators and weaken focused tests?
 
 Coverage concepts:
 
-- Single Responsibility — one class, one reason to change; controllers handle HTTP, services handle rules, repositories handle data
-- Open/Closed — extend behaviour without modifying existing code; add a new feature by adding new code, not changing existing code
-- Liskov Substitution — a subtype can replace its parent without breaking the caller; why `JpaRepository` implementations are interchangeable
-- Interface Segregation — prefer small specific interfaces over one large one; `UserDetailsService` has one method, not fifteen
-- Dependency Inversion — depend on abstractions, not concrete classes; the entire Spring DI model and Angular's `inject()` are built on this principle
+- Abstraction vs interface — an abstraction defines the stable idea or contract callers depend on,
+  while an interface is one language mechanism that can express it and is not valuable by itself
+- Dependency injection vs Dependency Inversion — injection supplies a collaborator from outside,
+  while the SOLID principle directs high-level policy to depend on abstractions; injection can be used
+  without achieving inversion
+- Dependency injection vs service locator — explicit constructor or framework injection reveals a
+  class's collaborators, while pulling dependencies from a global registry hides them and weakens tests
 
-Rationale: These concepts form the coherent coverage group “SOLID”.
+Rationale: These three distinctions prevent framework wiring and interface syntax from being mistaken for an architecture whose high-level policy truly owns its contracts.
+
+Handoff: Explicit dependency mechanisms still cross delivery, error, and source-tree boundaries; file 11 decides where failures are translated and how feature work is packaged.
+
+## 11 — Failure and packaging boundaries
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/11-failure-and-packaging-boundaries.md
+Spanish: notes/architecture/junior/es/11-limites-de-fallos-y-empaquetado.md
+Depends on: 10
+Pending additions: none
+
+Narrative role: Apply dependency direction to two maintained-code decisions: the boundary that owns outward error translation and the source layout that keeps a feature's changes local.
+
+Learning outcome: Place failure translation at the boundary with enough context and compare package-by-feature, package-by-layer, horizontal layers, and vertical slices for one concrete change.
+
+Prerequisites: 10.
+
+Must answer:
+
+- Which boundary knows enough to translate an infrastructure or domain failure into a stable outward error?
+- Why should framework exceptions not leak through the public contract?
+- What change-locality trade-off separates package-by-feature from package-by-layer?
+- How do horizontal layers and vertical feature slices group the same delivery, application, and persistence code along different axes?
+
+Coverage concepts:
+
+- Boundary failure ownership — translate infrastructure and domain failures at the boundary that has
+  enough context to produce a stable outward error contract without leaking framework exceptions
+- Package by feature vs package by layer — feature packaging keeps one use case together; layer
+  packaging makes technical roles obvious but scatters a change across the tree
+- Horizontal layering vs vertical feature slices — layers group code by technical role, while a
+  feature slice groups the delivery, application, and persistence pieces that change for one capability
+
+Rationale: These concepts locate responsibility at boundaries that must contain change: outward failures and the code files touched by one capability.
+
+Handoff: With dependency, error, and packaging boundaries explicit, file 12 examines proportionate local design moves for reshaping responsibilities under real change pressure.
+
+## 12 — Composition, refactoring, and design pressure
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/12-composition-refactoring-and-design-pressure.md
+Spanish: notes/architecture/junior/es/12-composicion-refactorizacion-y-presion-de-diseno.md
+Depends on: 11
+Pending additions: none
+
+Narrative role: Convert dependency analysis into proportionate design action, first scaffolding inheritance and subtyping so composition is a meaningful alternative, then distinguishing delegation, deduplication, extraction, over-engineering, and owned debt.
+
+Learning outcome: Given a class relationship or repeated rule, distinguish inheritance/subtyping from composition/delegation and choose a proportionate refactoring because of present change pressure rather than speculative flexibility.
+
+Prerequisites: 11.
+
+Must answer:
+
+- What does inheritance give a subtype in terms of parent behaviour and state, and what caller-visible substitution claim does subtyping add?
+- Why can composition avoid inheriting behaviour or state a subtype does not need?
+- How does delegation differ from composition even when both appear in the same design?
+- What real variation or repeated pressure justifies an abstraction?
+- Which duplicated knowledge can diverge, and which similar code should remain separate?
+- When does Extract Method clarify intent rather than merely shorten a method?
+- What makes a shortcut technical debt instead of unowned accidental complexity?
+
+Coverage concepts:
+
+- Composition over inheritance — assembling focused collaborators avoids inheriting behaviour and
+  state a subtype does not need
+- Composition vs delegation — composition assembles or owns collaborators, while delegation forwards a
+  responsibility to one of them; they often work together but describe different relationships
+- Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
+  hypothetical future requirement
+- DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
+  superficially similar code with different reasons to change into one abstraction
+- Extract Method — move a coherent block behind a well-named method when that clarifies intent or
+  centralises one repeated rule, not merely to reduce line count
+- Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
+  complexity without ownership is simply a defect
+
+Rationale: These are proportional responses to concrete design pressure, united by the need to improve changeability without adding unjustified structure.
+
+Handoff: Local structure is now deliberate; file 13 widens the view to deployment shape and communication timing, where distribution introduces qualitatively different costs.
+
+## 13 — System shapes and interaction
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/13-system-shapes-and-interaction.md
+Spanish: notes/architecture/junior/es/13-formas-de-sistema-e-interaccion.md
+Depends on: 12
+Pending additions: none
+
+Narrative role: Scale boundary reasoning from classes and modules to deployment units and communication styles without treating distribution as automatic maturity.
+
+Learning outcome: Contrast unstructured, modular, and distributed application shapes and choose synchronous or asynchronous interaction while naming operational and consistency consequences.
+
+Prerequisites: 12.
+
+Must answer:
+
+- Which simplicity does a monolith retain, and which network, data, and operational costs do microservices add?
+- How can a modular monolith enforce useful boundaries inside one deployment?
+- Which real independent-deployment or scaling pressure justifies a service boundary, and why is placing a module behind HTTP not enough to make it a good service?
+- What temporal coupling does a synchronous request create?
+- Which delivery, ordering, and consistency concerns accompany asynchronous events?
+
+Coverage concepts:
+
+- Monolith vs microservices awareness — a monolith deploys one application and keeps local calls and
+  transactions simple; microservices add independent deployment but also network failure, distributed
+  data, and operational cost, so a junior project should not split without a real scaling boundary
+- Modular monolith vs unstructured monolith — one deployment can still enforce feature boundaries and
+  dependency direction; a monolith becomes problematic when unrelated responsibilities freely couple
+- Synchronous request vs asynchronous event — a direct call gives an immediate result and temporal
+  coupling, while an event decouples timing but introduces delayed consistency, delivery, and ordering concerns
+
+Rationale: The three concepts compare system-scale boundary and interaction choices through the new costs each choice creates.
+
+Handoff: Whether calls are local or distributed, a use case still needs clear business ownership; file 14 separates domain validity from application coordination and models workflow transitions.
+
+## 14 — Business rules and workflows
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/14-business-rules-and-workflows.md
+Spanish: notes/architecture/junior/es/14-reglas-de-negocio-y-flujos.md
+Depends on: 13
+Pending additions: none
+
+Narrative role: Focus the architecture on business behaviour by defining a use case as one actor goal completed through the application boundary, separating what must be valid from its orchestration, and centralising workflow transitions.
+
+Learning outcome: Distinguish a domain rule from application orchestration and model a workflow whose valid state transitions are enforced at one business boundary.
+
+Prerequisites: 13.
+
+Must answer:
+
+- What is a use case, which actor goal and result bound it, and why is it not merely one controller method?
+- Which statement belongs to the domain because it defines business validity?
+- Which repository and collaborator coordination belongs to application orchestration?
+- How do explicit states and allowed transitions prevent invalid workflow moves from being checked inconsistently?
+
+Coverage concepts:
+
+- Domain rule vs application orchestration — a domain rule states what is valid in the business,
+  while application orchestration coordinates repositories and collaborators to complete a use case
+- State machine pattern — model a workflow as explicit states and allowed transitions so invalid moves
+  such as APPROVED → DRAFT are rejected at one business boundary
+
+Rationale: Both concepts identify where business meaning lives and how one use-case boundary coordinates and protects it.
+
+Handoff: Business policy often meets vendor or subsystem interfaces; file 15 introduces Adapter and Facade as focused boundary patterns for those encounters.
+
+## 15 — Adapter and Facade boundaries
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/15-adapter-and-facade-boundaries.md
+Spanish: notes/architecture/junior/es/15-limites-con-adapter-y-facade.md
+Depends on: 14
+Pending additions: none
+
+Narrative role: Provide two maintained-code patterns for stopping incompatible vendor details or subsystem complexity from spreading into application callers.
+
+Learning outcome: Recognise when to translate an external interface with Adapter and when to simplify a subsystem with Facade without moving all business policy into either boundary.
+
+Prerequisites: 14.
+
+Must answer:
+
+- Which interface mismatch does an Adapter translate, and which application contract should remain stable?
+- Which complexity does a Facade hide from callers?
+- Why must neither pattern become a second home for unrelated business logic?
+- How do Adapter and Facade differ when both sit at a boundary?
+
+Coverage concepts:
+
+- Adapter pattern — translate an external or incompatible interface into the contract the application
+  expects so vendor details do not spread through business code
+- Facade pattern — expose a small use-case-oriented interface over a complicated subsystem without
+  turning the facade into a second home for all business logic
+
+Rationale: Both patterns protect callers at a boundary, but one translates an interface while the other simplifies access to a subsystem.
+
+Handoff: With concrete boundaries and patterns available, file 16 records why material choices were made and verifies that diagrams and reviews still match the code.
+
+## 16 — Architecture decisions and review
+
+Status: pending
+Action: audit
+English: notes/architecture/junior/en/16-architecture-decisions.md
+Spanish: notes/architecture/junior/es/16-decisiones-de-arquitectura.md
+Depends on: 15
+Pending additions: none
+
+Narrative role: Turn architectural reasoning into maintainable evidence through decision records, truthful diagrams, and dependency-aware code review.
+
+Learning outcome: Write a concise ADR, draw one context/container/component or dependency diagram for a concrete system, verify every shown edge against real runtime calls or code dependencies, and review a change by tracing those responsibilities.
+
+Prerequisites: 15.
+
+Must answer:
+
+- Which context, option, rejected alternatives, and consequences make an ADR useful to a later maintainer?
+- How can a context, container, component, or dependency diagram make a falsifiable claim about the code?
+- What path through the dependency graph should an architecture-focused review trace?
+- How do reviewers distinguish an intended boundary from an aspirational box that the implementation violates?
+- Which thin legacy sections must the audit materially expand so ADR context/options/consequences, one edge-verified diagram, and architecture-focused review become teachable mechanisms rather than a README advice list?
+
+Coverage concepts:
+
+- Architectural decision record (ADR) — capture the context, chosen option, rejected alternatives, and
+  consequences of a material decision so later maintainers know why the constraint exists
+- Architecture diagram as a code claim — a small context, container, component, or dependency diagram
+  must match real runtime and dependency boundaries rather than presenting aspirational boxes
+- Architecture-focused code review — trace a change through its dependency graph and verify that each
+  responsibility and dependency still respects the declared boundaries before approving it
+
+Rationale: These practices preserve, communicate, and continuously verify the architectural constraints established throughout the route.
+
+Handoff: The recorded choices now need a compact review vocabulary; file 17 closes the junior journey by applying all five SOLID principles with their real qualifications.
+
+## 17 — SOLID
+
+Status: pending
+Action: create
+English: notes/architecture/junior/en/17-solid.md
+Spanish: notes/architecture/junior/es/17-solid.md
+Depends on: 16
+Pending additions: none
+
+Narrative role: Consolidate the route's responsibility, extension, substitution, contract, and dependency lessons into five principles used during design discussion and code review.
+
+Learning outcome: Diagnose a concrete design problem with the appropriate SOLID principle, read Liskov substitution in terms of caller-visible preconditions, postconditions, and invariants, and propose a proportionate correction without reducing any principle to a slogan.
+
+Prerequisites: 16.
+
+Must answer:
+
+- Which independent actors or policies create distinct reasons for a class to change?
+- Why does Open/Closed permit changing a poor abstraction or responding to new requirements?
+- What do subtype, substitutability, precondition, postcondition, and invariant mean before applying Liskov Substitution?
+- Why may a subtype not strengthen accepted-input preconditions, weaken promised-output postconditions, or break invariants its caller relies on?
+- How does a small cohesive client contract reduce forced dependencies in implementations and tests?
+- Why can dependency injection exist without Dependency Inversion?
+
+Coverage concepts:
+
+- Single Responsibility — split a class when unrelated actors or policies make it change for different
+  reasons, not simply because it has many lines or methods
+- Open/Closed — keep stable abstractions open to extension without treating existing code as forbidden
+  to change when requirements or a poor abstraction demand it
+- Liskov Substitution — a subtype can replace its parent only when it preserves the caller-visible
+  contract, including valid inputs, promised outputs, and invariants
+- Interface Segregation — give a client the smallest cohesive contract it needs so implementations and
+  tests are not forced to depend on unrelated operations
+- Dependency Inversion — high-level policy depends on stable abstractions rather than lower-level
+  details; dependency injection is a delivery mechanism that may help but does not guarantee this design
+
+Rationale: SOLID restates the route's central architectural pressures as five distinct diagnostic lenses rather than universal recipes.
+
+Handoff: This closes the junior journey: Victor can now identify boundaries, trace dependencies and business policy, choose proportionate patterns and system shapes, and defend or review those choices through explicit trade-offs.
 
 ## Unassigned existing notes
 
-- notes/architecture/junior/en/04-mvc.md — no junior coverage group is assigned to this legacy file.
+- none
