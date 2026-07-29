@@ -1,11 +1,11 @@
 # Last run report — notes-plan-prompt
 
-Date: 2026-07-27
-Target: Spring Boot / junior / update
-Status: applied in 9b4d4b1
+Date: 2026-07-29
+Target: SQL / junior / update
+Status: open
 
-- **Plan vs reality** — The split held: 16 read-only analysts (one per English note, no folder-wide context), one cold pedagogical reviewer, one cold gate on the prompt edit. Sizing was right for classification and wrong for the plan itself — the pedagogical reviewer returned two `[blocking]` oversized-chapter findings the run could not act on (see bullet 4).
-- **Report discipline** — Two of the sixteen analysts opened with a literal `N lines, read to EOF` instead of the real count, giving the number only in the following sentence; both were otherwise complete and were accepted rather than re-dispatched. Nothing had to be discarded.
-- **Failures & retries** — None. No re-dispatch was needed; the pedagogical reviewer's acceptance proof (`16 entries reviewed`, both verdicts, 29 numbered corrections) was complete on the first dispatch.
-- **Rule friction and rule breaches** — One breach: the run-start check was skipped. The previous report's `Status: open` (REC-011) was not surfaced to Victor before work began; it was found only at close-out. Cost: nothing material this run, because the run went on to reproduce REC-011 independently — but that is luck, not the check working. One friction, and it is REC-011 reproduced on a second topic: rule 6's numbering collided with rule 14's route validation, so a reviewer-endorsed split of two 24-concept entries (one on a 2384-line file, past the quality standard's truncation danger point) had to be rejected because the split-off halves would have sorted after the five entries that depend on them. This time the finding cleared the bar and was applied.
-- **Verdict** — change applied: rule 6 now permits same-level renumbering of a bilingual pair so filename order and study order stay identical, with the three companion edits (classification vocabulary, Update mode's declared outputs, Final report field) the gate required to make it operable. `cold reviewer: approve-with-tightening` — tightened text and all three companion edits applied verbatim. Prompt is 280 lines, inside budget. Second consecutive report naming a skipped step (last run: none; the run before, per REC-011's source, the same numbering collision) — the skipped run-start check is the item to watch on the next invocation.
+- **Plan vs reality** — One cold pedagogical reviewer read the finished plan whole, rejected the coverage-order draft, and then passed the corrected 17-entry route after two focused gates. The whole-plan review was essential evidence: it caught forward prerequisites, oversized grouping, missing canonical legacy entries, and five truncated multiline bullets that mechanical first-line counting missed.
+- **Report discipline** — The reviewer returned the required line counts, `17 entries reviewed`, explicit verdicts, and bounded corrections; no output was discarded.
+- **Failures & retries** — The first draft failed pedagogical review. The route was rebuilt, the first correction gate found five remaining blocker classes, and the final focused gate passed all of them.
+- **Rule friction and rule breaches** — No mandatory step was skipped. The initial mechanical comparison treated only lines beginning with `- ` as complete bullets and therefore missed continuation-line truncation; the reviewer caught the defect before commit, and the final block-level comparison proved all 133 exact bullets present once. Required dispatches: 1 cold reviewer dispatched / 1 required, plus two focused re-reviews of the corrected artifact.
+- **Verdict** — pipeline clean. No prompt change worth considering: the prompt already required exact bullet preservation and cold review, and those existing gates prevented the faulty draft from shipping. Prompt is 320 lines, inside budget.
