@@ -1,14 +1,20 @@
-# Coverage prompt — last run self-report
+# Pipeline self-report — 2026-07-29 — Architecture junior update
 
-**Date:** 2026-07-29 · **Target:** TOPIC = TypeScript, LEVEL = junior, MODE = update · **Branch:** `fix/backend-backlog`
-**Status:** open — clean run; no prompt change recommended
+Status: open
 
-Recommendation-ledger reconciliation: no recommendation was created or reproduced by this run, so `_recommendation-ledger.md` is unchanged.
-
-1. **Plan vs reality** — The verify-gap fast path correctly reduced the run to four proposed gaps and one scoped cold reviewer; the reviewer accepted all four after reading the finished three-level artifact. No independent whole-artifact verifier exists beyond that mandated review.
-2. **Report discipline** — The reviewer returned the required EOF proof, four item verdicts, placement, ownership, duplication, factual checks, and no material narrative required trimming.
-3. **Failures & retries** — No subagent failed and no re-dispatch was required. The sandboxed staging attempt could not create `.git/index.lock`; the approved scoped retry succeeded.
-4. **Rule friction and rule breaches** — The mirror parity check initially exposed one extra blank line introduced during the mechanical rebuild; it was removed before commit and parity then passed. Guards, the 1/1 required dispatch, review, validations, content commit, and close-out all ran; no mandatory step was skipped.
-5. **Verdict** — pipeline clean.
-
-Close-out evidence: declared coverage outputs landed in `8475fb5`; required dispatches 1/1 completed (one scoped cold reviewer; market analyst and second reviewer skipped by the verify-gap fast-path contract); `coverage-prompt.md` is 241 lines; report and tracker commit follows.
+- **Plan vs reality** — The one market analyst plus two whole-artifact cold reviewers was the right
+  split: all 3/3 required dispatches ran, and the reviewers found calibration, ownership, and factual
+  defects after the draft rather than merely confirming their own work.
+- **Report discipline** — All three returns followed their evidence-only contracts and included the
+  required line counts and EOF confirmations; none required trimming or discarding.
+- **Failures & retries** — No subagent failed or required re-dispatch. The first mechanical mirror
+  rebuild changed encoding outside the target section; the diff-size guard caught it and the rebuild
+  was repeated with explicit UTF-8 handling. Sandboxed staging failed on `.git/index.lock`; the approved
+  scoped retry succeeded.
+- **Rule friction and rule breaches** — The previous report path was initially resolved against the
+  shared internal folder instead of the coverage orchestrator's internal folder, so the Step 0
+  recommendation check ran late during close-out. The recovered previous report was clean and had no
+  unresolved recommendation, so content was unaffected. PowerShell's implicit text encoding also made
+  the first mirror rewrite unsafe, but declared diff inspection prevented it from landing.
+- **Verdict** — pipeline completed with one late Step 0 guard; this was a discipline lapse, not a prompt
+  defect, so no prompt change is justified.
