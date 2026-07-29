@@ -109,7 +109,7 @@ getField(employee, 'phone');  // ❌ compile error — not a key of Employee
 
 ## Utility types — review
 
-These are built-in generics that transform existing types. Already covered in `01-typescript-utilities.md`, but the connection to generics:
+These are built-in generics that transform existing types. Already covered in `10-typescript-utilities.md`, but the connection to generics:
 
 ```ts
 Partial<Employee>       // makes all properties optional
