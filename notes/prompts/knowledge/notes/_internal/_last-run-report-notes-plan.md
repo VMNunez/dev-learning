@@ -1,11 +1,11 @@
 # Last run report — notes-plan-prompt
 
 Date: 2026-07-29
-Target: SQL / junior / update
+Target: Angular / junior / update
 Status: open
 
-- **Plan vs reality** — One cold pedagogical reviewer read the finished 17-entry plan (3 create / 14 audit) whole, rejected the coverage-order draft, and then passed the corrected route after two focused gates. The whole-plan review was essential evidence: it caught forward prerequisites, oversized grouping, missing canonical legacy entries, and five truncated multiline bullets that mechanical first-line counting missed.
-- **Report discipline** — The reviewer returned the required line counts, `17 entries reviewed`, explicit verdicts, and bounded corrections; no output was discarded.
-- **Failures & retries** — The first draft failed pedagogical review. The route was rebuilt, the first correction gate found five remaining blocker classes, and the final focused gate passed all of them.
-- **Rule friction and rule breaches** — No mandatory step was skipped. The initial mechanical comparison treated only lines beginning with `- ` as complete bullets and therefore missed continuation-line truncation; the reviewer caught the defect before commit, and the final block-level comparison proved all 133 exact bullets present once. Required dispatches: 1 cold reviewer dispatched / 1 required, plus two focused re-reviews of the corrected artifact.
-- **Verdict** — pipeline clean. No prompt change worth considering: the prompt already required exact bullet preservation and cold review, and those existing gates prevented the faulty draft from shipping. Prompt is 320 lines, inside budget.
+- **Plan vs reality** — The required cold whole-plan review rejected the 12-entry draft: exact coverage assignment passed, but the persisted note numbering, real prerequisites, and proposed learning order diverged. The existing 18 English notes have no Spanish counterparts, so the bilingual-only renumbering rule prevented an accepted route repair.
+- **Report discipline** — The reviewer returned the three required EOF line counts, `12 entries reviewed`, explicit intro/prerequisite/concepts-before-taught verdicts, and bounded corrections; no reviewer output was discarded.
+- **Failures & retries** — The first reviewer dispatch ran unusually long and was interrupted once, then resumed with a request to return its already-gathered verdict. Its final proof was usable. The draft failed acceptance, so no plan artifact was committed.
+- **Rule friction and rule breaches** — Required dispatches: 1 cold reviewer dispatched / 1 required. The run did not complete verifiable end-to-end reads of every English note before classification; that guard breach reinforces the blocked outcome. The bilingual renumbering rule and the “missing Spanish does not change Action” rule do not state how to repair a physically misordered all-English legacy set, but no prompt edit is proposed from one blocked run.
+- **Verdict** — change worth considering: define the planner outcome when pedagogical order requires renumbering but every legacy Spanish counterpart is missing. The run remains blocked; prompt is 320 lines, inside budget.
