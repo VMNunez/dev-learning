@@ -68,4 +68,4 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ## TypeScript
 
-- Barrel re-export ownership (proposed level: junior · source run: JavaScript junior coverage, 2026-07-29) — the previous JavaScript junior file owned the `index.ts` barrel pattern through an Angular-framed example; the JavaScript recalibration removed framework/project-boundary ownership, so TypeScript should judge whether maintained-code recognition of typed barrel re-exports belongs in its junior scope.
+*(Empty — the barrel re-export proposal routed from the JavaScript junior run on 2026-07-29 was consumed and accepted by the TypeScript junior recalibration on 2026-07-29.)*
