@@ -38,7 +38,7 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ## Angular Material
 
-- Angular CDK primitives (proposed level: middle · source run: Angular junior coverage, 2026-07-29) — overlays, drag-and-drop, portals, and virtual scrolling were stored in Angular middle, but the coverage standard assigns Material APIs and overlays to Angular Material; judge whether these lower-level primitives belong in Angular Material middle.
+*(Empty — the Angular CDK proposal routed from the Angular junior coverage run on 2026-07-29 was consumed by the Angular Material junior recalibration on 2026-07-29 and accepted as already represented in Angular Material middle.)*
 
 ## Spring Boot
 
