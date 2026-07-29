@@ -144,14 +144,38 @@ Worked examples:
 ```
 ## Closed
 
-- 2026-07-28 · **[Low]** `[backend]` — `show-sql` moved to `application-dev.properties` → README
+### Backend
+
+#### High
+
 - 2026-07-09 · **[High]** `[backend]` — `UserResponse` DTO stops the BCrypt hash leaking → README, PROGRESS, coverage spring-boot/junior
+
+#### Medium
+
+*No medium tasks closed yet.*
+
+#### Low
+
+- 2026-07-28 · **[Low]** `[backend]` — `show-sql` moved to `application-dev.properties` → README
 - 2026-07-09 · **[Low]** `[backend]` — fail-fast manual checks kept as the project's convention — DECISION, no code change → PLANNING §6, notes/spring-boot/en/05
+
+### Frontend
+
+*No frontend tasks closed yet — Step 7a (Angular) has not started.*
 ```
 
 Ledger rules:
 
-- **Newest first.**
+- **Split by tier, then by priority, then newest first within each priority.** `## Closed` carries a
+  `### Backend` and a `### Frontend` subsection, each with `#### High` / `#### Medium` / `#### Low`
+  underneath — the same two-level split `## Tasks` uses, so a closed finding is found the same way an
+  open one is. Put the line under its tier's *and* its priority's heading; keep the inline
+  `` `[tier]` `` tag and the `**[Priority]**` marker on the line anyway — a partial-scope review run
+  greps for them, and the line must stay self-describing if it is ever read out of context. A tier with
+  nothing closed yet keeps its heading plus one italic placeholder line; an empty priority inside a
+  tier that does have closed tasks keeps its heading with a placeholder too.
+- **Filing a line under its priority heading is the one reordering allowed.** Everything else about
+  ledger order is frozen (see the never-delete rule below).
 - The `→` tail is the point of the whole line: it tells a future `review-audit` that this finding is
   closed *and* where its knowledge now lives, so it is not re-raised as a new finding.
 - A **design decision with no code change** must say `DECISION, no code change` in the line. That entry

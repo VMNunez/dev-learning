@@ -425,7 +425,8 @@ a partial-scope run can rewrite its own tier's tasks and leave the other tier's 
 `- [ ] **[High]** `[backend]` — [Task description] *(Effort: [Small])*`
 
 **Both `## Tasks` and `## Closed` are split into `### Backend` and `### Frontend` subsections**, each
-with the usual `#### High` / `#### Medium` / `#### Low` grouping under `## Tasks`. The inline `[tier]`
+with the same `#### High` / `#### Medium` / `#### Low` grouping underneath — in `## Closed` too, so a
+closed finding is filed exactly where an open one of the same priority would be. The inline `[tier]`
 tag stays on every line even inside its own section — it is what a partial-scope run greps for. A tier
 with nothing in it keeps its heading and one italic placeholder line, so a full-stack project never
 looks like its frontend was reviewed and found clean when it simply does not exist yet. Group tasks by
