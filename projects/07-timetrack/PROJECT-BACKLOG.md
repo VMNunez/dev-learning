@@ -27,7 +27,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 - [ ] **[Medium]** `[backend]` — Decide what the reports do with soft-deleted projects and users: the aggregates filter on neither, so a project deactivated mid-month still appears as a report row with no `active` flag for the client to interpret. Keeping them is defensible (the hours *were* worked) — but return the flag in the projection so the behaviour is chosen, not accidental *(Effort: Small)*
 - [ ] **[Medium]** `[backend]` — Introduce a separate `UpdateTimeEntryRequest` DTO: `PUT /api/entries/{id}` reuses `CreateTimeEntryRequest`, while the projects resource has the `CreateProjectRequest`/`UpdateProjectRequest` pair. Same problem, two solutions — pattern inconsistency reads as junior even when each half works *(Effort: Small)*
 - [ ] **[Medium]** `[backend]` — Rename the by-employee projection field: `EmployeeHoursReportResponse.getEmployeeName()` (:6) produces the JSON field `employeeName`, but the same DTO already exposes **`userId`**, so the projection is inconsistent with *itself* — and `ProjectHoursReportResponse` sets the sibling precedent with `projectId`/`projectName`. Rename the getter and its JPQL `AS` alias to `userName`. **Decided 2026-07-28** (PLANNING §10): the tiebreaker was the existing `userId`, not style preference. Without it the Step 7c Reports table binds to `userName` and reads `undefined` *(Effort: Small)*
-- [ ] **[Medium]** `[backend]` — Extract the duplicated entry validation in `TimeEntryService`: the three business checks (future date, project active, hours 0.5–24) are copy-pasted verbatim in `create` (:40) and `update` (:163), including re-instantiating `new BigDecimal("0.5")`/`("24")` each time. Pull them into a private `validateEntryData(request, project)` used by both, and hoist the bounds to `static final BigDecimal MIN_HOURS`/`MAX_HOURS`. The submit-inactive-project gap above is exactly the divergence this duplication invites *(Effort: Small)*
 
 #### Low
 
@@ -61,6 +60,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 ### Backend
 
+- 2026-07-29 · **[Medium]** `[backend]` — duplicated entry validation in `TimeEntryService` extracted into `validateEntryData` + `MIN_HOURS`/`MAX_HOURS` constants → architecture coverage/junior, PROGRESS, backend README
 - 2026-07-29 · **[Medium]** `[backend]` — `ReportSummaryResponse` reconciled: `totalHours` removed, `totalEntries` filtered to APPROVED → README, PROGRESS, PLANNING §8/§10 (already planned), coverage spring-boot/junior
 - 2026-07-29 · **[Medium]** `[backend]` — `JwtUtil.isValid` now checks subject and expiration explicitly, not as a `parseClaims` side effect → README, PROGRESS, coverage spring-boot/junior (already covered)
 - 2026-07-29 · **[Medium]** `[backend]` — account-password flow (`SecureRandom` generation, `CreateUserResponse`, `PATCH /api/users/me/password`) → PLANNING §8/§10/§12, README, PROGRESS, security/coverage/junior
