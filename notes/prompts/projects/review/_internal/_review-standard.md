@@ -429,7 +429,11 @@ with the same `#### High` / `#### Medium` / `#### Low` grouping underneath — i
 closed finding is filed exactly where an open one of the same priority would be. The inline `[tier]`
 tag stays on every line even inside its own section — it is what a partial-scope run greps for. A tier
 with nothing in it keeps its heading and one italic placeholder line, so a full-stack project never
-looks like its frontend was reviewed and found clean when it simply does not exist yet. Group tasks by
+looks like its frontend was reviewed and found clean when it simply does not exist yet. **An empty
+priority heading gets a placeholder too** — `*No open High tasks.*` under `## Tasks`, `*No High tasks
+closed yet.*` under `## Closed` — never a bare heading with blank space under it: a reader cannot tell
+whether that means "nothing outstanding here" or "this section was never filled in", and the first is
+the good news a backlog should state out loud. Group tasks by
 tier and priority, not by which review run produced them: a task's origin date lives in its own text
 when it matters, and per-run headings fragment the file until the same priority appears five times.
 

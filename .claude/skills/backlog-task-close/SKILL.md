@@ -171,9 +171,13 @@ Ledger rules:
   underneath — the same two-level split `## Tasks` uses, so a closed finding is found the same way an
   open one is. Put the line under its tier's *and* its priority's heading; keep the inline
   `` `[tier]` `` tag and the `**[Priority]**` marker on the line anyway — a partial-scope review run
-  greps for them, and the line must stay self-describing if it is ever read out of context. A tier with
-  nothing closed yet keeps its heading plus one italic placeholder line; an empty priority inside a
-  tier that does have closed tasks keeps its heading with a placeholder too.
+  greps for them, and the line must stay self-describing if it is ever read out of context.
+- **No heading is ever left bare — empty means a placeholder line, not blank space.** A tier with
+  nothing closed keeps its heading plus one italic line; so does every empty priority inside it
+  (`*No High tasks closed yet.*`). The same applies to `## Tasks` when you remove the last task at a
+  priority: leave `*No open High tasks.*` behind, never an empty heading. A blank section reads as
+  "never filled in" when it actually means "nothing outstanding" — and at a priority Victor just
+  cleared, that is the opposite of the message.
 - **Filing a line under its priority heading is the one reordering allowed.** Everything else about
   ledger order is frozen (see the never-delete rule below).
 - The `→` tail is the point of the whole line: it tells a future `review-audit` that this finding is
