@@ -1,7 +1,10 @@
 # Project Backlog — TimeTrack
 
 Improvement tasks for this project, written by `notes/prompts/projects/review/review-audit.md`.
-Completed tasks stay checked off (✅) — never delete them, only add or update.
+A finished task is closed by the `backlog-task-close` skill: its concept goes into coverage / README /
+PLANNING / PROGRESS, and only then does the verbose entry collapse into one dated line in `## Closed`.
+That ledger is append-only and authoritative — a review never re-raises what it already closes.
+(Entries still checked off inline (✅) predate the ledger, 2026-07-29; they collapse as they are revisited.)
 
 **Last Reviewed — backend:** 2026-07-23
 **Last Reviewed — frontend:** never
@@ -128,3 +131,11 @@ Full backend review (all 12 slices + the cross-slice consistency pass) run after
 - [ ] **[Low]** `[backend]` — Signal duplicate email/name with a domain exception instead of manually throwing `DataIntegrityViolationException` — a Spring DAO exception meant for DB-layer violations, used here as a business signal in both `UserService.create/update` (duplicate email) and, since 2026-07-28, `ProjectService.create/update` (duplicate name). Both map to 409 correctly via the same generic handler, but that handler ignores the exception's custom message and always returns the fixed "A resource with this value already exists" — so a dedicated `DuplicateResourceException` (or per-resource subclasses) would fix two things at once: the workaround pattern, and let each caller's specific message ("A project with this name already exists" / "Email already in use") actually reach the client instead of being silently discarded *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Unify enum-status comparison in `TimeEntryService`: `submit`/`reopen`/`create` compare status with `==`/`!=` while `approve`/`reject`/`update` use `.equals()`. Both are correct for enums; pick one (`==` is idiomatic and null-safe) and apply it throughout *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Remove the now-vestigial `spring.jpa.defer-datasource-initialization=true` from `application.properties`: it only mattered while `data.sql` seeded on startup, and that was replaced by the profile-gated `DataInitializer` on 2026-07-23. Harmless but dead config *(Effort: Small)*
+
+## Closed
+
+<!-- Append-only ledger, newest first. Written by the `backlog-task-close` skill once a task's concept
+     has landed in coverage / README / PLANNING / PROGRESS. Format:
+     - YYYY-MM-DD · **[Priority]** `[tier]` — short summary → where the concept landed
+     Never delete or reorder a line here: a review run reads this to avoid re-raising a closed finding,
+     and a `DECISION, no code change` line is the only surviving record of a deliberate choice. -->
