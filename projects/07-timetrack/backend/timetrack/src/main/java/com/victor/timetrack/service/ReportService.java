@@ -58,14 +58,11 @@ public class ReportService {
                 .map(TimeEntry::getHours)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalHours = approvedHours.add(pendingHours);
-
         int totalEntries = (int) entries.stream()
-                .filter(e -> e.getStatus() == EntryStatus.APPROVED || e.getStatus() == EntryStatus.SUBMITTED)
+                .filter(e -> e.getStatus() == EntryStatus.APPROVED)
                 .count();
 
         ReportSummaryResponse response = new ReportSummaryResponse();
-        response.setTotalHours(totalHours);
         response.setTotalEntries(totalEntries);
         response.setApprovedHours(approvedHours);
         response.setPendingHours(pendingHours);
