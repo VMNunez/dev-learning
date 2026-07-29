@@ -11,6 +11,10 @@ Every answer must be anchored to a real example from Victor's projects.
 - Resource modelling — paths identify resources and relationships, while HTTP methods express the
   operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model
 - Why REST and not GraphQL or RPC — the standard for Spanish consultancy APIs; REST is simpler to implement and understand at junior level
+- A name must not imply a guarantee the query does not enforce — an endpoint or field named after a
+  narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
+  with no role filter) reads as correct until someone relies on the implied filter; rename to what the
+  data actually is, or add the filter, but never leave the two disagreeing
 
 ## Layered architecture
 
