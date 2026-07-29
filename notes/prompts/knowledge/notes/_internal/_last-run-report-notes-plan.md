@@ -1,18 +1,20 @@
 # Last run report — notes-plan-prompt
 
 Date: 2026-07-29
-Target: Architecture / junior / update
+Target: Security / junior / update
 Status: open
 
-- **Plan vs reality** — The cold whole-plan review rejected the first route for an incomplete
-  introduction, late prerequisites, and an oversized dependency chapter. The corrected 18-entry
-  artefact passed a second complete review plus exact coverage, mirror, fingerprint, path, and route
-  validation.
-- **Report discipline** — The reviewer returned EOF evidence, explicit intro, prerequisite-order,
-  and concepts-before-taught verdicts, and bounded corrections; no reviewer output was discarded.
-- **Failures & retries** — No dispatch failed. The quality gate required two correction passes; both
-  were applied and the same cold reviewer approved the final prerequisite repair.
-- **Rule friction and rule breaches** — Required dispatches: 1 cold reviewer / 1 required. The
-  optional analyst initially misclassified a same-level future split as a blocker; the orchestrator
-  rejected that conclusion before authoring. No mandatory gate or declared output was skipped.
+- **Plan vs reality** — The cold whole-plan review rejected the first 13-entry route because the
+  introduction contract was underspecified and CSRF appeared before its mechanism was taught. The
+  corrected 13-entry artefact passed the second complete review plus exact 95/95 coverage,
+  fingerprint, mirror, path, and route validation.
+- **Report discipline** — The reviewer returned bounded findings and EOF evidence. Its first report
+  called the 95 concepts “entries”, so the final review was re-dispatched to obtain the required
+  accurate `13 entries reviewed` acceptance proof.
+- **Failures & retries** — No dispatch failed. One required correction pass and one proof
+  re-dispatch were completed; the reviewer accepted the corrected introduction, prerequisite order,
+  concepts-before-taught order, and zero-assumption route.
+- **Rule friction and rule breaches** — Required dispatches: 1 cold reviewer / 1 required. The first
+  mechanical comparison inherited mojibake from PowerShell output; the corrupted draft was repaired
+  before validation, review, staging, or commit. No mandatory gate or declared output was skipped.
 - **Verdict** — pipeline clean. Prompt is 327 lines, inside the health budget.
