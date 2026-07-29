@@ -34,6 +34,10 @@ Every answer must be anchored to a real example from Victor's projects.
 - Request DTO vs Response DTO — validate on the way in (client data is untrusted); control what goes out (you built it, you trust it)
 - Where mapping happens — in the service layer, not the controller; the controller never sees the entity
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
+- Separate Create/Update request DTOs even when their fields match today — they represent distinct
+  intents on the same resource, and an update-only field (e.g. reactivating a soft-deleted record) can
+  be added to one without disturbing the creation contract; picking one pattern for one resource and a
+  different one for another reads as inconsistency, not pragmatism
 
 ## Data access decisions
 
