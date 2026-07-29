@@ -813,6 +813,9 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 - Function parameter and return types — express callable contracts, including optional parameters and honest `undefined` results
 - Function type syntax — type callbacks and stored functions by their parameter and return contracts
+- Contextual typing — infer an inline callback's parameter and return types from the surrounding expected function type and recognise when extracting it removes that context
+- Callback parameter assignability — allow a callback to ignore supplied arguments without marking those parameters optional, because an optional parameter means the caller may omit it
+- Contextual `void` return assignability — allow a callback expected as `() => void` to return a value that the caller discards while distinguishing an explicitly declared `(): void` function body, which cannot return that value
 - Optional parameters vs parameters containing `undefined` — distinguish a call that may omit an argument from one that must pass an argument whose value may be `undefined`
 - Default parameters — allow omission at the call site while supplying a value inside the implementation
 - Rest parameters — type a variadic remainder as an array without confusing it with a spread argument at the call site
@@ -827,6 +830,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ### Narrowing and safe control flow
 
+- Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point
 - `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value
