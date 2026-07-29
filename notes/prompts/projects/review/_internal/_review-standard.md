@@ -424,6 +424,14 @@ sentence) · the task list as checkboxes. Task line:
 a partial-scope run can rewrite its own tier's tasks and leave the other tier's untouched:
 `- [ ] **[High]** `[backend]` — [Task description] *(Effort: [Small])*`
 
+**Both `## Tasks` and `## Closed` are split into `### Backend` and `### Frontend` subsections**, each
+with the usual `#### High` / `#### Medium` / `#### Low` grouping under `## Tasks`. The inline `[tier]`
+tag stays on every line even inside its own section — it is what a partial-scope run greps for. A tier
+with nothing in it keeps its heading and one italic placeholder line, so a full-stack project never
+looks like its frontend was reviewed and found clean when it simply does not exist yet. Group tasks by
+tier and priority, not by which review run produced them: a task's origin date lives in its own text
+when it matters, and per-run headings fragment the file until the same priority appears five times.
+
 **Closed tasks live in a `## Closed` ledger, not in the task list.** When Victor finishes a task, the
 in-session `backlog-task-close` skill pushes its concept into coverage / README / PLANNING / PROGRESS
 and then collapses the verbose entry into one dated ledger line ending in `→ where the concept landed`
