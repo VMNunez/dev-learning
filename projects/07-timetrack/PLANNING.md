@@ -145,6 +145,9 @@ Browser                               Server
 - Repository only reads and writes data. No logic.
 - Controllers never call the repository directly.
 - Entities are never returned directly from the API — always map to a DTO first.
+- Every resource keeps a separate `Create*Request`/`Update*Request` DTO pair, even when their fields
+  are identical today — the two operations are distinct intents, so an update-only field never forces
+  a change to the creation contract.
 
 **Angular rules:**
 Same bar as the backend block: each line is violable — a reviewer can open a file and point at the break.
