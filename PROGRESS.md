@@ -369,6 +369,17 @@ practical evidence alone also does not bypass incomplete or stale knowledge arti
 - `MethodArgumentTypeMismatchException` — thrown when a `@RequestParam` value can't convert to the target type (e.g. `?month=2025-13`); is a `RuntimeException`, so it reaches a generic catch-all, but silently with the wrong status unless given its own handler
 - `SecureRandom` for generating an initial account password — `java.util.Random` is seeded and predictable; `java.security.SecureRandom` is the cryptographically secure source required for anything an attacker could exploit by guessing it
 - A dedicated exception per response shape, not just per status code — `InvalidCurrentPasswordException` exists next to `BusinessRuleViolationException` even though both map to 400, so its `@ExceptionHandler` can always attach `fieldErrors.currentPassword` with no conditional branching inside a shared handler
+- `@Transactional(readOnly = true)` on read methods, `@Transactional` on write methods — the atomic boundary that was missing across every service; repository calls without it each auto-commit as their own transaction
+- N+1 on `GET /api/entries` fixed with `FetchType.LAZY` + `LEFT JOIN FETCH` via a `Specification`, guarded by `query.getResultType()` so it's skipped on the pagination `COUNT` query
+- `GROUP BY te.project.id, te.project.name` (not name alone) — two entities with the same display name would otherwise collapse into one aggregate row
+- `@Column(precision = 4, scale = 2)` + `@DecimalMin`/`@DecimalMax`/`@Digits` — constrains a `BigDecimal` at both the DB column and the DTO boundary
+- Boxed `Boolean` → primitive `boolean` renames Lombok's getter `getX()` → `isX()` — applied to `Project.active`, mirroring the earlier `User.active` fix
+- Optional `Boolean active` on an Update DTO, applied only when non-null — reactivation without breaking `PUT`'s full-replacement contract
+- Segregation of duties — a manager cannot approve/reject their own entry; ownership resolved from `SecurityContextHolder`, same pattern as every other ownership check
+- Bare `@GeneratedValue` → `AUTO` — Hibernate 6 picks a sequence generator on PostgreSQL, not native identity/auto-increment
+- `AccountStatusUserDetailsChecker` in `JwtFilter` — re-validates account status on every request, not only at login, so a token issued before deactivation is rejected on its next use
+- `@Size(max = ...)` bounding every unconstrained request string, including `@Size(max = 72)` on login password to match BCrypt's real truncation boundary
+- `app.jwt.expiration` cut from 24h to 60min — usable session length vs the blast radius of a token stolen from `localStorage`
 
 ---
 

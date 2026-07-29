@@ -120,6 +120,17 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - SLF4J `Logger` over `System.out.println` — log levels, automatic context (timestamp/thread/class), and proper stacktrace formatting via `log.error("message", e)`
 - `SecureRandom` over `Random` — generating an initial account password with a predictable seed would let an attacker reconstruct it; `SecureRandom` draws from a cryptographically secure source instead
 - A dedicated exception per response shape, not just per status code — `InvalidCurrentPasswordException` exists next to `BusinessRuleViolationException` even though both map to 400, so its handler can always attach `fieldErrors.currentPassword` with no conditional logic inside a shared handler
+- `@Transactional` / `@Transactional(readOnly = true)` — an atomic write boundary on every service write method, and read-only intent declared on every pure-read method so the persistence provider can skip dirty checking
+- N+1 fix — `@ManyToOne(fetch = FetchType.LAZY)` plus a `LEFT JOIN FETCH` added through a `Specification`, guarded by `query.getResultType()` so it's skipped on `COUNT` queries
+- `GROUP BY` on id **and** name — grouping a report aggregate by display name alone silently merges two rows that happen to share a name; grouping by id keeps them separate and gives the frontend a stable row key
+- `@Column(precision, scale)` + `@DecimalMin`/`@DecimalMax`/`@Digits` — constrains a `BigDecimal` field at both the DB column and the request DTO, so an over-precision value gets a 400 instead of silently losing precision at the DB's default scale
+- Boxed `Boolean` → primitive `boolean` renames Lombok's generated getter from `getX()` to `isX()` — applied to `Project.active` the same way as the earlier `User.active` fix, updating every call site
+- Optional field on an Update DTO (`Boolean active`, applied only when non-null) — lets `PUT` stay a full-replacement contract while still supporting reactivation of a soft-deleted row
+- Segregation of duties — a manager cannot approve or reject their own time entry; ownership is resolved from the JWT via `SecurityContextHolder`, the same pattern used for every other ownership check
+- Bare `@GeneratedValue` resolves to `AUTO` — Hibernate 6 picks a sequence generator on PostgreSQL, not native identity/auto-increment, even though the plan's entity tables originally said "auto-increment"
+- `AccountStatusUserDetailsChecker` — re-validates the loaded `UserDetails`' account status inside `JwtFilter` on every request, so a token issued before deactivation is rejected on its very next request instead of staying valid until it expires
+- `@Size(max = ...)` on every unconstrained request string, including a lower bound (72) for login password — matches BCrypt's real truncation boundary, capping the CPU an unauthenticated caller can force
+- Token lifetime as a tradeoff — cutting `app.jwt.expiration` from 24h to 60min balances a usable work session against the blast radius of a token stolen from `localStorage`
 
 ---
 
