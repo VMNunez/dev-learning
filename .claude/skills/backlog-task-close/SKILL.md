@@ -144,14 +144,23 @@ Worked examples:
 ```
 ## Closed
 
+### Backend
+
 - 2026-07-28 · **[Low]** `[backend]` — `show-sql` moved to `application-dev.properties` → README
 - 2026-07-09 · **[High]** `[backend]` — `UserResponse` DTO stops the BCrypt hash leaking → README, PROGRESS, coverage spring-boot/junior
 - 2026-07-09 · **[Low]** `[backend]` — fail-fast manual checks kept as the project's convention — DECISION, no code change → PLANNING §6, notes/spring-boot/en/05
+
+### Frontend
+
+*No frontend tasks closed yet — Step 7a (Angular) has not started.*
 ```
 
 Ledger rules:
 
-- **Newest first.**
+- **Split by tier, then newest first within each tier.** `## Closed` carries a `### Backend` and a
+  `### Frontend` subsection, mirroring the same split in `## Tasks`. Put the line under its tier's
+  heading; keep the inline `` `[tier]` `` tag on the line anyway — a partial-scope review run greps for
+  it. A tier with nothing closed yet keeps its heading plus one italic placeholder line.
 - The `→` tail is the point of the whole line: it tells a future `review-audit` that this finding is
   closed *and* where its knowledge now lives, so it is not re-raised as a new finding.
 - A **design decision with no code change** must say `DECISION, no code change` in the line. That entry
