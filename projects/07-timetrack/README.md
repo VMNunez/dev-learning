@@ -118,6 +118,8 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - Idempotent seed — `findByEmail(...).isPresent()` guard replaces SQL's `ON CONFLICT DO NOTHING`
 - Foreign key `ON DELETE RESTRICT` — can't delete a parent row while a child still references it (SQL state `23503`)
 - SLF4J `Logger` over `System.out.println` — log levels, automatic context (timestamp/thread/class), and proper stacktrace formatting via `log.error("message", e)`
+- `SecureRandom` over `Random` — generating an initial account password with a predictable seed would let an attacker reconstruct it; `SecureRandom` draws from a cryptographically secure source instead
+- A dedicated exception per response shape, not just per status code — `InvalidCurrentPasswordException` exists next to `BusinessRuleViolationException` even though both map to 400, so its handler can always attach `fieldErrors.currentPassword` with no conditional logic inside a shared handler
 
 ---
 

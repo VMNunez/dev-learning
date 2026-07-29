@@ -296,13 +296,20 @@ APPROVED     REJECTED ─────────┘
 > **Status ruling — a wrong current password is `400`, not `403` or `401`** *(decided 2026-07-28)*. The
 > earlier `403` broke this plan's own convention, where `403` means *the caller's role or ownership does not
 > permit this action*. On `/api/users/me/password` neither can fail: the caller is authenticated and owns
-> `/me` by definition, so nothing about authorization is being refused. Against the exception taxonomy in
-> §12 the check is a `BusinessRuleViolationException` — an input-data rule broken, exactly like a future
-> date or an out-of-range hours value — which the handler already maps to `400`. `401` is worse than
+> `/me` by definition, so nothing about authorization is being refused. `401` is worse than
 > wrong: the Angular interceptor treats every `401` as an expired session and redirects to `/login`, so a
 > single typo in the current-password field would log the user out mid-change. `400` also lets the response
 > reuse the `fieldErrors` contract (§10), putting the message under the offending input instead of on a
 > generic error banner.
+>
+> **Implemented as a dedicated `InvalidCurrentPasswordException`, not `BusinessRuleViolationException`**
+> *(decided 2026-07-29, during implementation)*. Both map to the same `400`, so the status ruling above is
+> unaffected — the question was only which exception type carries the check. A dedicated type keeps
+> `GlobalExceptionHandler` a pure function of exception type: `handleInvalidCurrentPassword` always attaches
+> `fieldErrors.currentPassword`, with no branching inside `handleBusinessRuleViolation` to decide whether
+> *this particular* business-rule violation happens to have a field to report. Same precedent as
+> `InvalidStateTransitionException` existing alongside `BusinessRuleViolationException` (§12) — a distinct
+> exception type when the response shape, not just the status code, differs.
 >
 > **Re-opening a rejected entry must be reachable from the UI.** The owner (EMPLOYEE) sees a **Re-open**
 > action on every one of their `REJECTED` rows in the Entries page — it calls
@@ -556,6 +563,7 @@ src/main/java/com/victor/timetrack/
 │   ├── ResourceNotFoundException.java     (→ 404)
 │   ├── BusinessRuleViolationException.java (input-data rule broken: hours range, future date, inactive project → 400)
 │   ├── InvalidStateTransitionException.java (illegal workflow transition → 409)
+│   ├── InvalidCurrentPasswordException.java (wrong currentPassword on self-service change → 400, fieldErrors.currentPassword)
 │   └── UnauthorizedException.java         (ownership violation → 403 — name predates the status, see the backlog Low)
 └── security/
     ├── JwtUtil.java                  (generates and validates the token, reads its claims)
@@ -1388,7 +1396,7 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `TimeEntryService.reject` | SUBMITTED → REJECTED + note saved | entry not SUBMITTED → throws; missing note → throws; caller is the entry's owner → `UnauthorizedException` (403) |
 | `ProjectService.create` | Saves a project | duplicate name → throws (409) |
 | `UserService.create` | Saves the user with a generated password, stored BCrypt-hashed | duplicate email → throws (409); the returned `generatedPassword` is **not** what is persisted (the stored value is a hash that `matches()` it); two consecutive creates produce different passwords |
-| `UserService.changePassword` | Replaces the caller's hash when the current password matches | wrong current password → throws `BusinessRuleViolationException` (**400**, `fieldErrors.currentPassword` — the §8 status ruling); the new hash differs from the old one and `matches()` the new password |
+| `UserService.changePassword` | Replaces the caller's hash when the current password matches | wrong current password → throws `InvalidCurrentPasswordException` (**400**, `fieldErrors.currentPassword` — the §8 status ruling); the new hash differs from the old one and `matches()` the new password |
 | `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password |
 | `ReportService.getHoursByProject` / `.getHoursByEmployee` | Groups hours per project / per employee for the month | empty month → returns empty list, not null; only the statuses §8 declares reportable are summed |
 | `ReportService.getSummary` | Returns the month's approved hours, pending hours and approved entry count | empty month → all zeros, no exception; `approvedHours` **equals the sum of `getHoursByProject`** for the same month (the §8 reconciliation rule, asserted); DRAFT and REJECTED entries change no field |
