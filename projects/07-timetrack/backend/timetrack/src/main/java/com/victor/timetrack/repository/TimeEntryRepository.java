@@ -14,19 +14,19 @@ import java.util.List;
 public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long>, JpaSpecificationExecutor<TimeEntry> {
 
     @Query("""
-            SELECT te.project.id AS projectId, te.project.name AS projectName, SUM(te.hours) AS totalHours
+            SELECT te.project.id AS projectId, te.project.name AS projectName, SUM(te.hours) AS totalHours,te.project.active AS active
             FROM TimeEntry te
             WHERE te.date BETWEEN :start AND :end AND te.status = com.victor.timetrack.model.EntryStatus.APPROVED
-            GROUP BY te.project.id, te.project.name
+            GROUP BY te.project.id, te.project.name, te.project.active
             
             """)
     List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate start, @Param("end") LocalDate end);
 
     @Query("""
-            SELECT te.user.name AS userName,te.user.id AS userId, SUM(te.hours) AS totalHours
+            SELECT te.user.name AS userName,te.user.id AS userId, SUM(te.hours) AS totalHours,te.user.active AS active
             FROM TimeEntry te
             WHERE te.date BETWEEN :start AND :end AND te.status = com.victor.timetrack.model.EntryStatus.APPROVED
-            GROUP BY te.user.id, te.user.name
+            GROUP BY te.user.id, te.user.name, te.user.active
             """)
     List<UserHoursReportResponse> getHoursByUser(@Param("start") LocalDate start, @Param("end") LocalDate end);
 }

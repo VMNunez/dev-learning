@@ -6,4 +6,5 @@ public interface UserHoursReportResponse {
     Long getUserId();
     String getUserName();
     BigDecimal getTotalHours();
+    boolean isActive();
 }
