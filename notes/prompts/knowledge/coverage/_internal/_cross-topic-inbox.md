@@ -64,4 +64,4 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ## JavaScript
 
-- Promise/Observable ownership boundary (proposed level: junior · source run: Angular junior coverage, 2026-07-29) — JavaScript junior currently owns `Promise vs Observable in Angular`, while the standard assigns Promise semantics to JavaScript and Observable/RxJS integration to Angular; narrow JavaScript to Promise semantics and leave the applied comparison in Angular.
+*(Empty — the Promise/Observable ownership proposal routed from the Angular junior run on 2026-07-29 was consumed by the JavaScript junior recalibration on 2026-07-29; JavaScript now owns Promise semantics only, while Angular retains Observable/RxJS integration.)*

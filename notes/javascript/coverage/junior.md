@@ -1,114 +1,157 @@
-# Minimum Coverage — JavaScript
+# Junior Coverage — JavaScript
 
-Topics a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026.
-Every item must be explainable with a real example from one of the projects, not a textbook definition.
+JavaScript language knowledge required to read, write, debug, and review ordinary frontend and full-stack code without importing Angular-, TypeScript-, or platform-level ownership.
 
-## Types, equality, and coercion
-- Primitive types (`string`, `number`, `boolean`, `null`, `undefined`, `symbol`, `bigint`) vs reference types (objects, arrays, functions) — primitives are compared by value; objects are compared by reference; interviewers test this with `{} === {}` (false) or ask why two arrays with the same content are not equal
-- `typeof` — returns the type as a string; the classic gotcha: `typeof null === 'object'` is a historical bug that was never fixed; every interviewer knows this and some will ask about it explicitly to test depth of knowledge
-- `typeof` vs `instanceof` — `typeof` checks the primitive type; `instanceof` checks if a value was created by a specific class or constructor; use `instanceof` in `catch` blocks to distinguish error types; `typeof null` is wrong for null-checking — use `value === null`
-- `==` vs `===` — loose equality performs type coercion before comparing; strict equality checks value AND type; always use `===`; the one valid exception is `value == null`, which catches both `null` and `undefined` in one check without coercing other values
-- Truthy vs falsy — falsy values are `false`, numeric zero (including `-0`), `0n`, `''`, `null`,
-  `undefined`, and `NaN`; arrays, objects, and the string `'0'` are truthy, which is the edge case
-  interviewers usually probe
-- `null` vs `undefined` — `null` is intentional absence of a value, set by the developer; `undefined` means a variable was declared but never assigned, set automatically by JavaScript; asked in almost every first JavaScript interview
-- Implicit type coercion — `'5' + 3` is `'53'` (string concatenation) but `'5' - 3` is `2` (numeric subtraction); the `+` operator triggers concatenation when either operand is a string; interviewers show arithmetic expressions with mixed types to test whether the candidate can predict the result
+## Runtime values, types, and conversion
 
-## Numbers
-- `NaN === NaN` is `false` — `NaN` is the only value in JavaScript that is not equal to itself; interviewers ask this directly to test whether you actually understand `NaN` or just know the name
-- `Number.isNaN()` vs global `isNaN()` — `isNaN()` coerces its argument to a number first, so `isNaN('hello')` is `true`; `Number.isNaN()` does not coerce, so `Number.isNaN('hello')` is `false`; the safe choice is always `Number.isNaN()`; a confusable pair tested in junior screenings
-- The floating point problem — `0.1 + 0.2 !== 0.3` because binary floating point cannot represent most decimals exactly; interviewers ask "why would this fail in a money calculation?" and expect `toFixed()` for display or integer cents for calculation as the answer
-- `parseInt()` vs `Number()` — `parseInt('42px')` returns `42` (stops at the first non-numeric character); `Number('42px')` returns `NaN` (rejects anything that is not a clean number); interviewers ask which to use when parsing a value like `'100px'` from a CSS string
-- `toFixed(n)` — rounds to `n` decimal places and returns a **string**, not a number; forgetting the return type causes a bug when the result is used in further arithmetic without converting back; used to format prices in TimeTrack-style apps
+- JavaScript vs TypeScript runtime guarantees — TypeScript checks and erases types before execution, so JavaScript still receives unchecked runtime values
+- Primitive values vs objects — primitives behave as immutable values, while objects, arrays, and functions are reference-bearing mutable objects
+- `typeof` and its edge cases — inspect broad runtime categories while recognising `typeof null === "object"` and that arrays require a separate check
+- `Array.isArray` vs `typeof` — identify arrays explicitly because `typeof` reports them as objects
+- `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked
+- `null` vs `undefined` — distinguish intentional absence from missing or uninitialised values without assuming every API uses them consistently
+- Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy
+- Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion
+- `==` vs `===` — use strict equality by default and read loose-equality coercion safely in maintained legacy code
+- `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default
+- Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined`
+- Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute
 
-## Variables and scope
-- `var` vs `let` vs `const` — `var` is function-scoped and hoisted as `undefined`; `let` and `const` are block-scoped; use `const` by default; use `let` only when reassignment is needed; `var` is avoided in all modern code; tested in every screening
-- Hoisting — `var` declarations are moved to the top of their scope and initialised as `undefined`; function declarations are fully hoisted and can be called before their line; function expressions (including arrow functions assigned to variables) are not fully hoisted; interviewers ask "what does this code output?" with code that calls a function before it is defined
-- Temporal Dead Zone (TDZ) — `let` and `const` are hoisted but not initialised; accessing them before the declaration line throws a `ReferenceError`; interviewers ask this to distinguish candidates who understand `let` deeply from those who just know to avoid `var`
-- Closures — a function that retains access to variables from its outer scope even after the outer function has returned; appears in Angular `computed()`, event handlers, and services with private state; interviewers ask "what is a closure and give me a real example?"
+## Numbers and strings
 
-## Functions and `this`
-- Function declarations vs expressions vs arrow functions — declarations are hoisted; arrow functions are expressions and are not hoisted; the key choice in practice is declaration vs arrow, not declaration vs expression
-- `this` in regular functions — refers to the caller at runtime; in a standalone function call it is `undefined` (strict mode) or `window` (non-strict); the most common source of `this` bugs when a class method is passed as a callback without binding
-- Arrow functions and `this` — arrow functions inherit `this` from the surrounding scope at definition time; they have no own `this`; this is why Angular uses arrow functions in class properties and callbacks — the component's `this` is always available
-- `bind`, `call`, `apply` — explicitly set `this` on a function; `bind` returns a new function; `call` and `apply` invoke it immediately (the difference is how arguments are passed); interviewers show older Angular or JavaScript code with these and ask what they do
-- Default parameters and rest parameters — `function f(role = 'employee')` reduces overloads; `...args` collects remaining arguments into an array; interviewers ask how a default parameter differs from `|| 'default'` inside the function body (the `||` version incorrectly treats `0` and `''` as missing)
-- Higher-order functions — functions that take or return other functions; the foundation of `map`, `filter`, and every RxJS operator; interviewers ask "what is a higher-order function?" and expect a real example from array methods or Angular pipes
+- `NaN` and `Number.isNaN` — detect failed numeric results without the coercion performed by the global `isNaN`
+- Numeric parsing vs conversion — choose `parseInt` or `parseFloat` for an accepted numeric prefix and `Number` for a wholly numeric input
+- Floating-point precision — avoid exact decimal assumptions and represent money with an appropriate integer or decimal strategy
+- Safe integers and `Infinity` — recognise when ordinary `number` arithmetic no longer represents integer results reliably or becomes non-finite
+- `toFixed` return type — format decimal places while remembering that the result is a string, not a number
+- String immutability — treat every string transformation as producing a new value
+- Template literals — interpolate expressions and multiline text without fragile concatenation
+- String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed
+- `slice` vs `substring` — extract a range while accounting for negative indexes and reversed arguments
+- String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source
+- String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics
+- Unicode code-unit recognition — know that string length and indexing can split some visible characters and avoid character-count assumptions
+- Basic regular expressions — read and write simple search or validation patterns with common flags and choose among `test`, `match`, and `replace`
 
-## Arrays
-- `map` — transforms every element and returns a new array of the same length; does not mutate the original; most common use: converting API response objects to view models; interviewers expect this as the default tool for transformation
-- `filter` — returns a new array containing only elements that pass the test; always returns an array (never `undefined`); used for filtering lists by status, role, or search term
-- `reduce` — accumulates all elements into one value: a number, an object, a string, or another array; signature: `reduce(callback, initialValue)`; used for totals and grouping by category; interviewers ask the signature and expect a working example
-- `find` vs `filter` — `find` returns the first matching element or `undefined`; `filter` always returns an array; interviewers show both and ask which to use when looking up a user by id (answer: `find`)
-- `findIndex`, `some`, `every`, `includes` — searching without a loop; interviewers ask "which method would you use to check if any task is overdue?" (answer: `some`); "check if a role exists in an array?" (answer: `includes`)
-- `forEach` vs `map` — `forEach` returns `undefined` and is only for side effects; `map` returns a new array and is for transformation; using `forEach` and pushing results into a new array instead of using `map` is a classic junior mistake
-- `sort` mutation — `sort` modifies the original array in place; the default sort is lexicographic, which breaks numbers (`[10, 9, 2].sort()` gives `[10, 2, 9]`); to sort numbers correctly: `.sort((a, b) => a - b)`; to sort without mutating: `[...arr].sort(...)`
-- Method chaining — `filter().map().sort()` — each method receives the output of the previous one; the pattern behind Angular `computed(() => tasks().filter(...).map(...))` signals; interviewers show a chained pipeline and ask what each step produces
+## Variables, scope, and control flow
 
-## Objects and JSON
-- Object literals, shorthand properties, computed keys — `{ name }` instead of `{ name: name }`; `{ [key]: value }` for dynamic keys; interviewers expect shorthand as natural everyday syntax, not something that needs explaining
-- Object destructuring — `const { name, role } = user`; rename with `{ name: userName }`; default value with `{ city = 'Madrid' }`; destructuring in function parameters `function display({ name, role })`; used constantly in Angular to unpack API responses and component inputs
-- Array destructuring — `const [first, second] = items`; skip elements with `[, , third]`; swap variables with `[a, b] = [b, a]`; used when consuming tuple-like return values
-- Spread in objects — `{ ...obj, key: newValue }` creates a shallow copy with overrides; the shallow copy is the most important detail — nested objects are still references, not new copies; used for immutable state updates in Angular signals (`employees.update(list => list.map(e => e.id === id ? { ...e, ...changes } : e))`)
-- `Object.keys`, `Object.values`, `Object.entries` — iterate over an object's properties as arrays; `Object.entries` is most useful because it gives key-value pairs; `Object.fromEntries` converts them back; interviewers ask which to use when you need both key and value in the loop body
-- `Object.assign` vs spread — both merge objects; `Object.assign` mutates the target object; spread creates a new object; prefer spread in modern code; both produce a shallow copy
-- `Object.freeze` — makes an object's top-level properties immutable; useful for configuration constants; shallow — nested objects inside a frozen object are still mutable
-- `JSON.stringify` / `JSON.parse` — convert between JavaScript objects and JSON strings; `JSON.stringify` silently drops `undefined` values and functions; `JSON.parse` throws `SyntaxError` on invalid input and must be wrapped in `try/catch`; used in the Angular localStorage pattern for persisting signal state
+- `var` vs `let` vs `const` — prefer block-scoped declarations, default to `const`, and recognise function-scoped `var` in maintained code
+- Rebinding vs mutation — understand that `const` prevents assigning a different binding but does not freeze an object
+- Lexical scope and shadowing — resolve a name from its nearest enclosing scope and avoid hiding an outer binding accidentally
+- Hoisting — predict the different pre-declaration behaviour of function declarations, `var`, and lexical declarations
+- Temporal Dead Zone — recognise why reading a `let` or `const` binding before its declaration throws
+- Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow
+- `switch` semantics — use explicit cases and breaks while recognising fall-through when reading existing code
+- Classic `for` loop — use explicit initialisation, condition, and update when index or irregular stepping control is required
+- `while` vs `do...while` — choose whether the condition must be checked before the first iteration or after one guaranteed execution
+- `break` vs `continue` — exit a loop or skip only its current iteration without obscuring the control flow
 
-## Strings and regular expressions
-- String immutability — strings cannot be changed in place; every method returns a new string; `str[0] = 'x'` does nothing silently; a common source of confusion when coming from a mutable mindset
-- Template literals — backtick strings with `${}` interpolation; support multiline without `\n`; any expression can go inside `${}`; interviewers expect template literals as the default over string concatenation
-- Search methods: `includes`, `startsWith`, `endsWith`, `indexOf` — boolean checks for presence and position; `indexOf` returns -1 if not found; used in search filtering (check if a name includes the search term) and URL parsing
-- Transformation methods: `slice`, `split`, `trim`, `replace`, `toLowerCase`, `toUpperCase` — `split` converts a string into an array; `trim` removes leading/trailing whitespace; `replace` replaces the first match by default; interviewers may ask how to split a CSV string into an array
-- Regex pattern syntax — `/pattern/flags`; common flags: `i` (case insensitive), `g` (global — find all matches, not just the first); interviewers expect you to know what the `g` flag does and what happens without it
-- `.test(str)` — returns a boolean; used in `Validators.pattern()` for Angular form validation and in conditional logic ("is this a valid email format?")
-- `.match(regex)` and `str.replace(regex, replacement)` — `match` returns the matching parts as an array; `replace` with the `g` flag replaces all occurrences; without `g` only the first match is replaced — a common source of bugs
+## Functions, closures, and `this`
 
-- `Set` vs `Array` — use Set when uniqueness matters or when you need fast `has()` lookups; use Array when index access or method chaining (map/filter) is needed; use `[...new Set(arr)]` to convert back to an array
+- Function declarations vs function expressions — choose and read them with awareness of their different hoisting behaviour
+- Arrow functions vs regular functions — choose concise lexical capture or a function with its own dynamic `this` and `arguments`
+- Function parameters and return values — handle missing and extra arguments deliberately and recognise that a function without `return` yields `undefined`
+- Default parameters — apply a fallback only when the supplied argument is `undefined`
+- Rest parameters — collect remaining arguments into a real array without relying on the legacy `arguments` object
+- First-class and higher-order functions — pass, store, return, and compose functions as ordinary values
+- Callbacks — follow control flow when another function decides when and with which arguments a callback runs
+- Closures — explain how a function retains access to its lexical environment and how captured mutable state changes over time
+- Regular-function `this` — determine `this` from the call site rather than the function's definition location
+- Arrow-function `this` — recognise lexical capture and avoid using arrows where a method needs a dynamic receiver
+- Lost method context — diagnose a method extracted or passed as a callback whose original receiver is no longer present
+- `bind` vs `call` vs `apply` — recognise creating a bound function versus invoking immediately with an explicit receiver
+- Pure transformations vs side effects — separate deterministic data work from I/O, DOM mutation, timers, and shared-state changes when practical
 
-## Async JavaScript
-- Callbacks — the original async pattern; callback hell is deeply nested callbacks that handle sequential operations; Promises and `async`/`await` were introduced specifically to solve this readability and error-handling problem
-- Promises: `then`, `catch`, `finally` — `then` runs on resolve; `catch` runs on reject; `finally` always runs regardless of outcome; interviewers ask when to use `finally` vs putting cleanup code after the `try/catch`
-- `Promise.all` — observes several already-created promises concurrently, resolves when all fulfil,
-  and rejects when one rejects; it does not itself start work or guarantee parallel execution
-- `Promise.allSettled` vs `Promise.all` — `allSettled` never rejects; it waits for all promises and returns each result with `{ status: 'fulfilled' | 'rejected', value | reason }`; use when some requests can fail independently without aborting the rest
-- `async` / `await` — syntactic sugar over Promises; makes async code read like synchronous code; `await` can only be used inside an `async` function; an `async` function always returns a Promise even if it returns a plain value
-- Sequential vs concurrent `await` — awaiting each producer before creating the next serialises them;
-  create independent promises first and await them together when their underlying operations can overlap
-- Event loop — JavaScript is single-threaded; microtasks (Promise callbacks) run before macrotasks (setTimeout); `Promise.then()` runs before `setTimeout` even at 0ms delay; explains why long synchronous code blocks the UI even if it calls no async functions
-- Promise vs Observable in Angular — Promises emit one value and start immediately; Observables are lazy (start on subscribe), can emit multiple values, and can be cancelled with `takeUntilDestroyed()`; `firstValueFrom()` converts an Observable to a Promise; interviewers ask why Angular's `HttpClient` returns Observables instead of Promises
+## Objects, prototypes, and copying
 
-## Modules
-- Named exports vs default export — Angular uses only named exports; named exports are safer to refactor because editors auto-rename them; default exports let the importer choose any name, which makes automated refactoring unreliable
-- `import { name as alias }` and `import * as namespace` — renaming to avoid naming conflicts; namespace import bundles all exports into one object; used when consuming libraries that export many things at once
-- Barrel pattern — an `index.ts` file that re-exports everything from a folder so imports stay clean; `import { X, Y } from './feature'` instead of long relative paths; common in large Angular feature modules
-- Dynamic imports and lazy loading — `import('./module').then(m => m.Class)` loads code only when needed; Angular uses this in `loadComponent:` routing to reduce the initial bundle size; interviewers ask how lazy loading works and why it matters for app startup performance
-- Tree-shaking — a bundler can remove unused statically analysable ESM code when side effects permit
-  it; both named and default exports can be tree-shaken
+- Object literals and property access — use shorthand, computed keys, and dot or bracket notation according to whether a key is static or dynamic
+- Object destructuring — bind, rename, and default selected properties while remembering defaults apply only to `undefined`
+- Property existence vs an `undefined` value — distinguish `Object.hasOwn`, legacy `hasOwnProperty`, the `in` operator, and a property read when inherited or explicitly undefined properties matter
+- Own vs inherited properties — avoid treating prototype-chain members as an object's own input data
+- `Object.keys`, `Object.values`, and `Object.entries` — enumerate own enumerable string-keyed properties in the form the operation needs
+- `Object.fromEntries` — rebuild an object from transformed key-value pairs
+- Object spread vs `Object.assign` — create a shallow merged object or mutate an explicit target deliberately
+- Reference identity and aliasing — predict how two variables can observe mutations to the same object
+- Shallow vs deep copying — recognise that spread and `Object.assign` retain nested references and use `structuredClone` only for supported data
+- `Object.freeze` depth — prevent top-level writes without assuming nested objects become immutable
+- Prototype delegation — understand that property lookup can continue through an object's prototype chain
+- Class construction and instance methods — read `constructor` and instance behaviour as class syntax built on prototype delegation
+- Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes
+- Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
+- JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it
+- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing
 
-## Error handling
-- `try` / `catch` / `finally` — `try` is the code that might throw; `catch` receives the error object; `finally` always runs for cleanup (hide a spinner, close a connection); interviewers ask when to use `finally` vs putting code after the `try/catch` block (answer: `finally` guarantees execution even if `catch` also throws)
-- `Error` object: `message`, `name`, `stack` — `stack` shows the full call chain that led to the error; essential for debugging production bugs; `name` distinguishes error types before `instanceof` is possible
-- Custom error classes — extending `Error` to create `ValidationError`, `HttpError`, etc.; lets you use `instanceof` in `catch` to handle different error types differently; interviewers ask how to distinguish a network error from a validation error without checking arbitrary properties
-- Silently swallowing errors — catching an error and doing nothing is the most common junior mistake; the caller has no idea the operation failed; always either handle fully (show a message) or re-throw with `throw error`
-- Error handling with `async`/`await` — `try/catch` catches both synchronous errors and rejected Promises inside an `async` function; the correct pattern for Angular services that call `firstValueFrom()` or `fetch()`
+## Arrays and iteration
 
-## Loops and iteration
-- Classic `for` loop — `for (let i = 0; i < arr.length; i++)`; still the right tool when you need the index itself or must skip/step irregularly; interviewers ask why most modern code prefers `for...of` or array methods over this form (less error-prone — no off-by-one risk on the condition or increment)
-- `for...of` vs `for...in` — `for...of` iterates the values of any iterable (arrays, strings, Sets, Maps); `for...in` iterates the string keys of an object; using `for...in` on an array is a classic bug — it gives `'0'`, `'1'`, `'2'` as strings, not the array values
-- When to use a loop vs array methods — `map`, `filter`, `reduce` are preferred for data transformation; `for...of` is the right choice when you need early exit with `break` or when the loop body contains `await`; `forEach` cannot `break` and returns `undefined`
-- `break` and `continue` — `break` exits the loop immediately; `continue` skips the rest of the current iteration; the main reason to choose `for...of` over `forEach` when early exit is needed
-- `while` loop — repeats while a condition is true; use when the number of iterations is not known in advance (polling for a result, retrying an operation, reading paginated data)
-- `while` vs `do...while` — `while` checks the condition before the first run and may execute zero times; `do...while` runs the body once before checking, guaranteeing at least one execution; interviewers ask for a real case where `do...while` is the right choice (e.g. show a menu at least once, then repeat while the user wants to continue)
+- Array destructuring — bind positions, skip entries, use defaults, and collect remaining elements
+- Array spread — create a shallow array copy or combine iterables without implying a deep clone
+- Mutating vs non-mutating array methods — recognise when an operation changes the original collection and when it returns a new one
+- `map` — transform each present element into a result array without using it merely for side effects
+- `filter` — retain all matching elements and always return an array
+- `find` vs `filter` — choose one matching value or every matching value
+- `some` vs `every` — express existential or universal checks with short-circuiting
+- `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
+- `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
+- `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation
+- Array sorting — provide an appropriate comparator and account for `sort` mutating the array
+- Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline
+- `for...of` vs `for...in` — iterate iterable values or enumerable property keys without using object-key iteration accidentally on arrays
+- Array methods vs explicit loops — prefer declarative transformations, but use a loop when early exit, irregular stepping, or awaited sequential work is clearer
+- `Set` vs `Array` — choose uniqueness and membership lookup or ordered indexed collection behaviour
+- `Map` vs plain object — choose arbitrary key types and collection APIs or string-keyed record-like data
 
-## DOM events
-- Event bubbling — a click on a child element also triggers click handlers on every ancestor element up to the document root; interviewers show a card with a button inside, both with click handlers, and ask why both fire
-- `stopPropagation()` — prevents the event from travelling further up the DOM tree; used when a button inside a card should not also trigger the card's own click handler; requires passing `$event` in the Angular template with `(click)="handler($event)"`
-- `preventDefault()` — cancels the browser's default behaviour for that element: form submission and page reload, link navigation, checkbox toggle; used in Angular form submits and custom `<a>` link overrides
-- `stopPropagation` vs `preventDefault` — independent methods; `stopPropagation` controls where the event travels in the DOM; `preventDefault` controls what the browser does after the event; interviewers show a form submit and ask which one prevents the page reload
+## Asynchronous JavaScript
 
-## Modern syntax (ES6+)
-- Optional chaining `?.` — safely accesses a nested property that might be `null` or `undefined` without throwing; `user?.address?.city` returns `undefined` instead of a `TypeError`; used in Angular templates and services when API data may be partially missing
-- Nullish coalescing `??` vs `||` — `??` falls back only when the left side is `null` or `undefined`; `||` also triggers on `0`, `false`, and `''`; interviewers test this with a count or price field where `0` is a valid value that should not be replaced by a default
-- Logical assignment: `||=`, `&&=`, `??=` — shorthand for conditional assignment; `a ??= 'default'` assigns only if `a` is `null` or `undefined`; interviewers may show these to test whether the candidate can read modern JavaScript they did not write
-- Debouncing concept — delaying a function call until after a rapid burst of events stops; used in Angular with RxJS `debounceTime()` on search inputs to avoid sending a request on every keystroke; interviewers ask "why are you using `debounceTime`?" — the expected answer is "to wait until the user stops typing before sending the API request"
+- Promise states and settlement — distinguish pending, fulfilled, and rejected outcomes and understand that a promise settles only once
+- Promise creation vs observation — know that `then` and combinators observe work represented by promises rather than making JavaScript parallel
+- Promise chaining and returned values — return values or promises from handlers so the next link receives the intended result
+- Promise rejection propagation — understand when `catch` recovers, when rethrowing preserves failure, and why a missing returned chain becomes floating work
+- `finally` semantics — perform cleanup without replacing the original outcome unless the callback itself throws or rejects
+- `async` function return values — recognise that every `async` function returns a promise even when its source returns a plain value
+- `await` and error propagation — suspend only the current async function and catch rejected awaited promises at the correct boundary
+- Sequential vs concurrent awaits — serialize dependent operations and start independent operations before awaiting them together
+- `Promise.all` failure behaviour — await all required independent results while accepting fail-fast rejection
+- `Promise.allSettled` vs `Promise.all` — retain every outcome when independent failures should not discard successful results
+- `Promise.race` vs `Promise.any` — choose the first settled outcome or the first fulfilled outcome and recognise aggregate rejection when every input rejects
+- Missing `await` or `return` defects — diagnose callers that continue before work finishes or cannot observe a rejected promise
+- Async callbacks in `forEach` — recognise that `forEach` does not await callback promises and choose an explicit sequential or concurrent pattern
+- Call stack, tasks, and microtasks — predict run-to-completion and why promise reactions run before later timer tasks
+- Long synchronous work and responsiveness — understand that blocking the call stack delays rendering, events, timers, and promise reactions
+- `AbortController` recognition — signal abort to supported operations that observe its signal and distinguish intentional aborts from ordinary failures
+
+## Modules and maintained code
+
+- Named vs default exports — choose stable explicit names or a single conventional module value and import each form correctly
+- Static imports and module scope — avoid accidental globals and rely on statically analysable dependencies
+- Import aliases and namespace imports — resolve naming collisions and consume a module as a namespace when appropriate
+- Dynamic imports — load a module on demand while handling the returned promise and keeping framework-specific lazy loading elsewhere
+- Legacy JavaScript recognition — read `var`, callback-heavy code, constructor functions, prototype methods, and handler patterns without making obsolete libraries a study target
+
+## Browser events and resources
+
+- DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
+- Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs
+- Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately
+- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
+- Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
+- Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
+- `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
+- Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant
+
+## Errors and runtime boundaries
+
+- `Error` objects — preserve useful message, cause, name, and stack context when creating or wrapping a failure
+- `throw` control flow — stop normal execution with a meaningful error value that the correct boundary can handle
+- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently
+- Synchronous throws vs promise rejections — trace failures through the correct call-stack or asynchronous observation path
+- Fetch settlement mechanics — recognise that the promise rejects for request failures but fulfils with a response for HTTP status outcomes
+- Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime
+
+## Debugging and performance
+
+- Breakpoints and stepping — pause execution and follow the actual control path instead of guessing from source alone
+- Watches, console inspection, and stack traces — inspect changing values and reconstruct the call path that produced a failure
+- Network and async inspection — correlate requests and scheduled work with the code that initiated them
+- Debounce vs throttle — choose quiet-period execution or a maximum execution rate for bursty events without treating RxJS operators as JavaScript
+- Basic performance diagnosis — measure before changing code and avoid repeated expensive work in hot loops or handlers without entering engine-level tuning
+- AI-generated JavaScript review — check runtime inputs, coercion, mutation, async completion, cleanup, error propagation, and observable behaviour before accepting generated code
