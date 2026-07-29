@@ -186,7 +186,8 @@ In update mode:
 1. Commit changed topic scope files and the selected global mirror atomically. When `verify-{LEVEL}.md`
    supplied gaps, blank its `## Open gaps` to `*(none)*` and set `Verdict: superseded` in the same
    commit, so no run re-proposes a consumed gap; the changed coverage bytes also stale the gate's stored
-   SHA, forcing a fresh coverage-verify before `notes-plan`.
+   SHA, so `coverage-verify` should be re-run — `notes-plan` records the stale gate but is not blocked
+   by it.
 2. Commit inbox routing separately only when another topic receives proposals.
 3. Before every add and commit, inspect status and stage only declared paths.
 4. Write the pipeline self-report.

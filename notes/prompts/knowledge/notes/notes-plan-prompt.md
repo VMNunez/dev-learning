@@ -5,10 +5,11 @@ This prompt plans only. It never authors, reviews, translates, or commits study-
 It does classify pre-existing bilingual notes across professional levels and relocates an intact
 English/Spanish pair when the evidence makes the correct level unambiguous.
 
-> **▶ Run first:** `coverage-verify` for this exact topic and level — it gates that the coverage this
-> plan will map is complete for the job target. `coverage-verify` itself runs after `coverage-prompt`.
-> The plan fingerprints the coverage and refuses to proceed when the global mirror differs or the gate
-> has not passed the current coverage.
+> **▶ Run first:** `coverage-prompt` for this exact topic and level — the coverage files are the input
+> this plan maps, and it refuses to proceed when they are missing or differ from the global mirror.
+> `coverage-verify` is recommended but **advisory**: it reports whether the coverage is complete for the
+> job target, and a missing, stale, or `gaps` verdict is recorded in this plan's report without stopping
+> the run.
 
 ## Configuration
 
@@ -58,10 +59,12 @@ belong there.
    line-count and read-to-EOF rule.
 3. Stop on `main`.
 4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
-5. Stop if `VERIFY` is missing, its `Verdict` is not `complete`, or its stored `Coverage SHA-256`
-   differs from the current SHA-256 of `COVERAGE`. A missing or stale gate means the completeness check
-   has not passed this exact coverage: report `blocked` naming which of the three it was, and direct the
-   run to `coverage-verify` (and, if the verdict was `gaps`, to `coverage-prompt` update first).
+5. Read `VERIFY` but never stop on it. Record its state as `verified` (present, `Verdict = complete`, and
+   its stored `Coverage SHA-256` matches the current SHA-256 of `COVERAGE`) or `unverified` naming which
+   of the three failed — missing, `gaps`, or stale SHA. When `unverified`, continue planning the coverage
+   as it stands, mark the resulting plan as built on unverified coverage in `PLAN` and in the final
+   summary, and direct the follow-up to `coverage-verify` (and, if the verdict was `gaps`, to
+   `coverage-prompt` update first, which consumes the findings).
 6. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
    middle to be closed. Planning later levels is blocked just like authoring them.
 7. Preserve unrelated working-tree changes.
@@ -188,6 +191,7 @@ dispatched or fails twice, stop; there is no single-agent fallback.
 Plan status: current
 Coverage: notes/angular/coverage/junior.md
 Coverage SHA-256: <digest>
+Coverage verification: verified | unverified — <missing verify file | verdict gaps | stale SHA>
 Generated: YYYY-MM-DD
 
 ## 01 — Components and templates
@@ -272,7 +276,8 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 
 ## Final report
 
-Report topic, level, coverage fingerprint, entry count, concept count, create/audit counts,
+Report topic, level, coverage fingerprint, the coverage-verification state (`verified` or `unverified`
+with the reason and the follow-up run needed), entry count, concept count, create/audit counts,
 preserved-complete count, every legacy classification decision, relocations, renumberings, split
 blockers,
 unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,

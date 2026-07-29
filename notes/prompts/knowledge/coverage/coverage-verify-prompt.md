@@ -139,9 +139,13 @@ is `_internal/_last-run-report-coverage-verify.md`; update the selected Verify J
 
 ## What happens next
 
-- `Verdict = complete` (SHA matching current coverage) is what `notes-plan` requires before it will plan.
-- `Verdict = gaps` blocks `notes-plan`. Re-run `coverage-prompt` in update mode: it reads `FINDINGS`,
-  judges each open gap through its own Step 2 classification, and adds or discards it. That changes the
+This gate is advisory, not blocking. It never stops `notes-plan` from running; it tells the run how much
+of the coverage it can trust.
+
+- `Verdict = complete` (SHA matching current coverage) means `notes-plan` plans against verified coverage.
+- `Verdict = gaps`, a missing verdict, or a stale SHA does not stop `notes-plan` — the plan proceeds and
+  records the degraded gate state in its report. Feed `FINDINGS` to `coverage-prompt` in update mode: it
+  judges each open gap through its own Step 2 classification and adds or discards it. That changes the
   coverage bytes, so this gate's stored SHA no longer matches — re-run coverage-verify, and the loop
   closes when it returns `complete`.
 
