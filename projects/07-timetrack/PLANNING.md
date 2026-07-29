@@ -464,8 +464,8 @@ field-level map the reactive forms consume to show a message under each input (S
 | Method · Path | Role | Description | Query params | Response |
 |---|---|---|---|---|
 | `GET /api/reports/summary` | MANAGER | Month totals: approved hours, pending hours, approved entry count | `month` — String `YYYY-MM`, required | `200` + `ReportSummaryResponse` — `approvedHours`, `pendingHours`, `totalEntries` · `400` month missing or malformed |
-| `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours` |
-| `GET /api/reports/by-user` | MANAGER | Hours grouped by user | `month` — required | `200` + `List<UserHoursReportResponse>` — `userId`, `userName`, `totalHours` |
+| `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours`, `active` |
+| `GET /api/reports/by-user` | MANAGER | Hours grouped by user | `month` — required | `200` + `List<UserHoursReportResponse>` — `userId`, `userName`, `totalHours`, `active` |
 
 > **All three count `APPROVED` entries only** — the §8 reporting rule. `pendingHours` is the single
 > deliberate exception and is never folded into a total, which is why `totalHours` was removed from
@@ -479,6 +479,13 @@ field-level map the reactive forms consume to show a message under each input (S
 > implied a role guarantee the code never enforced; `by-user` names what the query actually returns.
 > Adding the missing filter was rejected — it would hide real billable hours. Done while Step 7a has
 > not started, so the endpoint had zero consumers to migrate.
+>
+> **Soft-deleted rows stay in the report, flagged (decided 2026-07-29):** neither `by-project` nor
+> `by-user` filters on `Project.active`/`User.active` — a project or user deactivated mid-month still
+> appears with its full hours, because the hours were genuinely worked. What changed is that both
+> queries now select and group by the entity's `active` column too, so `ProjectHoursReportResponse`/
+> `UserHoursReportResponse` expose it and the client can render an "archived" state instead of a row
+> that looks identical to an active one.
 >
 > Both aggregates group by **id and name** (not name alone), so two users with the same display name
 > stay separate rows and a rename does not split history; the id is also the frontend's row key.
