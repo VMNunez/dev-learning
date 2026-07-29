@@ -229,6 +229,7 @@ practical evidence alone also does not bypass incomplete or stale knowledge arti
 ### Architecture patterns applied
 - Smart/dumb component pattern — page fetches data, components display it
 - Shared utility functions — DRY across components
+- Extract Method — duplicated business-rule checks pulled into one private helper (e.g. `validateEntryData`), called from both `create` and `update` instead of copy-pasted
 - Single Responsibility — one component, one job
 - Shared models in `src/app/models/` — used across multiple pages
 - Shared services in `src/app/services/` — singleton, shared state
