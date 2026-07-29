@@ -22,7 +22,11 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
+*No open High tasks.*
+
 #### Medium
+
+*No open Medium tasks.*
 
 #### Low
 
