@@ -385,6 +385,7 @@ practical evidence alone also does not bypass incomplete or stale knowledge arti
 - `AccountStatusUserDetailsChecker` in `JwtFilter` — re-validates account status on every request, not only at login, so a token issued before deactivation is rejected on its next use
 - `@Size(max = ...)` bounding every unconstrained request string, including `@Size(max = 72)` on login password to match BCrypt's real truncation boundary
 - `app.jwt.expiration` cut from 24h to 60min — usable session length vs the blast radius of a token stolen from `localStorage`
+- Adding a non-aggregated column to a `GROUP BY` query's `SELECT` requires adding it to `GROUP BY` too — surfaced adding `te.project.active`/`te.user.active` to the report projections; Postgres rejects the query otherwise, it is not just a style rule
 
 ---
 
