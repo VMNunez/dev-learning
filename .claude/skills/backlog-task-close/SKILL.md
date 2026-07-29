@@ -176,16 +176,25 @@ to the ledger, with the reason in place of the concept tail: `→ dropped: super
 
 ## Commits
 
-Per CLAUDE.md and the shared session rules. Do **not** bundle these — one atomic commit per file:
+Per CLAUDE.md and the shared session rules. Do **not** bundle these — one atomic commit per file.
+Everything below lands on the **active branch** (`main` only receives merges via PR).
 
-- `notes/{topic}/coverage/*.md` — a `notes/` study file. Give Victor the commit command in the standard
-  two-block format (`git add` block, then `git commit` block); double-check `git status` first so no
-  project code file is staged with it.
-- `PROJECT-BACKLOG.md`, `PLANNING.md`, `README.md`, `PROGRESS.md` — these follow the **active branch**
-  (`main` only receives merges via PR). Hand Victor the commit commands, one command per code block.
+**You commit yourself:**
 
-Never run `git commit` yourself here. The backlog auto-commit authorization belongs to the
-`review-audit` orchestrator, not to this in-session ritual.
+- `notes/{topic}/coverage/*.md` — a `notes/` study file, already covered by the standing authorization.
+- `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit` and by this skill,
+  never by Victor, so the authorship boundary puts it on your side. Its own atomic commit, separate
+  from the coverage one.
+
+**Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
+then `git commit` block), one command per block:
+
+- Any **project code** he wrote to fix the task.
+- `PLANNING.md`, `README.md`, `PROGRESS.md` — these three still go to him from this in-session ritual;
+  only their dedicated orchestrators (`progress-update`, `roadmap-review`) may commit them directly.
+
+Before every commit you run, apply the hygiene rule: `git status` right before `git add` and right
+before `git commit`, so no project code file is staged alongside a doc file.
 
 ---
 
