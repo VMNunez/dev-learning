@@ -45,17 +45,22 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Checkbox, radio, and select choice — use checkboxes for independent booleans or multi-select, radio buttons for a small visible single-choice set, and a select when compactness or option count warrants it
 - Checkbox vs slide toggle — use a checkbox for selection or confirmation and `mat-slide-toggle` for a boolean setting whose change is presented as immediately active
 - Checkbox indeterminate state — represent partial aggregate selection visually without confusing it with a third submitted boolean value
+- Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control
+- Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions
+- Datepicker constraints and validation — use `min`, `max`, and `matDatepickerFilter` for selectable-date rules and surface the resulting Material validation errors instead of validating only after submission
 
 ## Tables, sorting, filtering, and pagination
 
 - Material table structure — connect column definitions, header and cell templates, displayed column order, and header/data row definitions through matching column identifiers
 - `matColumnDef` identity — keep the column ID consistent with `displayedColumns` and configure an accessor when the displayed value does not map directly to a row property
 - Header and cell definition roles — use `matHeaderCellDef` for column labels and `matCellDef` for per-row values rather than mixing structural and data concerns
+- Table refresh after collection changes — assign or emit a new data array, or call `renderRows()` after mutating a raw array, because `mat-table` does not observe in-place structural changes automatically
 - Empty table state — use `matNoDataRow` or an equivalent full-width row only after distinguishing an empty successful result from loading and failure
 - Table data-source choices — choose a plain array, observable/custom `DataSource`, or `MatTableDataSource` according to who owns retrieval, transformation, and lifecycle
 - `MatTableDataSource` scope — use the convenience class for simple client-side sorting, filtering, and pagination, not as a server-side data-access abstraction
 - Sort integration — connect `MatSort` after the view exists, mark only sortable headers, and handle nested or derived values through a sorting accessor or server query
 - Paginator integration — connect `MatPaginator` for client data or translate page events into backend parameters without paginating the same result twice
+- Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded
 - Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product
 - Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
 - Table selection and row actions — keep row identity explicit and prevent nested action buttons from accidentally triggering row selection or navigation
@@ -89,8 +94,6 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Tabs vs route navigation — use `mat-tab-group` for related in-page views and routes for destinations that need navigation history, deep links, or independent URLs
 - Card structure and appearance — group related content with optional header, content, and actions and choose raised or outlined emphasis consistently
 - Stepper linear flow — pair `linear` with step controls so validity governs progression rather than relying only on button handlers
-- Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control
-- Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions
 
 ## Accessibility, responsiveness, and testing
 

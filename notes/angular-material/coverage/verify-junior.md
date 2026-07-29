@@ -1,11 +1,10 @@
 # Coverage Verify — Angular Material Junior
 
-Verdict: gaps
+Verdict: superseded
 Coverage SHA-256: 26635841e160194a93285e01c2e6a08a6a4926898585981371dd6369abeb608a
 Verified: 2026-07-29
+Superseded by Coverage SHA-256: e877e9089c193d5cbf71ded3033b25a2ae9c6c1144d1fed58eed74d3f0d761b9
 
 ## Open gaps
 
-- Table refresh after collection changes — emit or assign a new data array, or call `renderRows()` after mutating a raw array, because `mat-table` does not observe in-place structural changes automatically [Tables, sorting, filtering, and pagination]
-- Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded [Tables, sorting, filtering, and pagination]
-- Datepicker constraints and validation — use `min`, `max`, and `matDatepickerFilter` for selectable-date rules and surface the resulting Material validation errors instead of validating only after submission [Navigation and information containers]
+*(none)*
