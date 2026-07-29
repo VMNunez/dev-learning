@@ -33,7 +33,17 @@ TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java
 LEVEL = [junior | middle | senior]
 FILE  = [exact en/ file path (the canonical source), e.g. notes/java/junior/en/08-exceptions.md]
 
-Use TOPIC, LEVEL, and FILE wherever the prompt refers to their placeholders.
+SCOPE = [full | append-only — with append-only, list the exact English headings that were appended]
+
+Use TOPIC, LEVEL, FILE, and SCOPE wherever the prompt refers to their placeholders.
+
+> **`SCOPE = append-only`: the `es/` file is FROZEN.** Victor refined it and declared it final, and this
+> run exists only to add coverage that arrived later. Translate **only the appended English headings
+> named in SCOPE** and append their Spanish counterparts at the matching position. Do not re-sync, do not
+> re-translate, do not "improve" and do not clear a `TODO:` marker anywhere else — every pre-existing
+> byte of the `es/` stays as it is, even where it now diverges from the English. Structural parity is
+> owed only for the appended sections. Your trace marks every other heading `frozen`, and your report
+> must include a `git diff` proving the `es/` changes are additions only.
 
 ---
 

@@ -147,6 +147,15 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    contract are unchanged and both files still exist. A newly added or materially changed learning
    outcome, prerequisite, must-answer question, handoff, or introduction contract reopens the entry
    to `pending`; prose previously accepted against a weaker plan has not passed the new contract.
+   `refined` is the exception to this entire rule. It is Victor's manual freeze, set only by him, and it
+   outranks every reconciliation rule here. This plan never sets it, never clears it, and never
+   downgrades it to `pending` or `complete` for any reason — not a changed contract, not a changed
+   bullet set, not a renumber, not a `Plan status: stale` rebuild. When a `refined` entry gains coverage
+   bullets or a materially changed contract, keep `Status: refined`, leave the existing prose out of
+   scope, and list only the newly owed bullets verbatim under that entry's `Pending additions:` field,
+   appending to what is already there and never rewriting or dropping an unconsumed one. Reconciliation
+   reports these as `refined + N additions`, never as reopened entries. A `refined` entry whose English
+   or Spanish file is missing is reported as a broken freeze and left untouched for Victor to resolve.
 9. Existing notes that cannot be justified by this level's coverage go under `## Unassigned existing
    notes`. They are never silently deleted or treated as required study files.
 10. On reconciliation, report added, removed, regrouped, preserved-complete, and unassigned entries.
@@ -201,6 +210,7 @@ Action: audit
 English: notes/angular/junior/en/01-components.md
 Spanish: notes/angular/junior/es/01-componentes.md
 Depends on: none
+Pending additions: none
 
 Narrative role: concise explanation of why this chapter exists at this point in the journey.
 
@@ -240,8 +250,11 @@ the selected-level journey.
 Rules:
 
 - Entry headings are unique and ordered numerically.
-- `Status` is exactly `pending` or `complete`.
+- `Status` is exactly `pending`, `complete`, or `refined`.
 - `Action` is exactly `create` or `audit`.
+- `Pending additions` is `none` or a list of coverage bullets quoted verbatim from `COVERAGE`. It is
+  meaningful only on a `refined` entry; on `pending` and `complete` entries it is always `none`, because
+  their whole bullet set is already in scope.
 - Paths are repository-relative and remain inside the selected topic and level.
 - `Depends on` contains `none` or earlier entry numbers only.
 - `Prerequisites` contains `none` or earlier entry numbers only and agrees with `Depends on`;
@@ -254,6 +267,21 @@ Rules:
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned across levels.
 - Omit `## Legacy notes requiring split` when empty. If it is non-empty, the run is blocked and no
   relocation or selected plan commit occurs; the proposed plan and routing map are still reported.
+
+## The `refined` freeze
+
+`complete` means the pipeline finished the entry. `refined` means Victor has since taken the pair to his
+own bar with TODOs and considers the prose final. The two are not the same guarantee, and only the
+second one is protected from the pipeline.
+
+Victor sets `Status: refined` by hand in `PLAN`; no prompt ever assigns it. From that moment the pair's
+existing prose is immutable to the whole notes pipeline in both languages. The only mutation any prompt
+may still perform on a `refined` entry is **appending** material for a coverage bullet listed under
+`Pending additions:` — new sections added to `en/`, their Spanish counterparts appended to `es/`, every
+pre-existing byte in both files untouched. `notes-audit` runs that append in its append-only mode and
+clears the consumed bullets; nothing else about the files may change.
+
+To hand a refined file back to the normal pipeline, Victor sets its status back to `pending` himself.
 
 ## Update mode
 
@@ -270,7 +298,8 @@ Dry run prints the complete proposed plan and reconciliation summary without wri
 
 After the plan commit, execute `_pipeline-self-report.md`: write
 `_internal/_last-run-report-notes-plan.md`, update the selected `Plan J/M/S` tracker cell, recalculate
-the matching Notes J/M/S summary as `complete entries / total entries`, and commit the report and
+the matching Notes J/M/S summary as `complete entries / total entries` — a `refined` entry counts as
+complete unless it carries unconsumed `Pending additions` — and commit the report and
 tracker together. Dry run does not write `PLAN`, but it still writes and commits its self-report plus
 a `dry-run` tracker outcome without replacing the persisted denominator.
 
@@ -278,7 +307,8 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 
 Report topic, level, coverage fingerprint, the coverage-verification state (`verified` or `unverified`
 with the reason and the follow-up run needed), entry count, concept count, create/audit counts,
-preserved-complete count, every legacy classification decision, relocations, renumberings, split
+preserved-complete count, every `refined` entry with the count of `Pending additions` it now carries
+(and any broken freeze), every legacy classification decision, relocations, renumberings, split
 blockers,
 unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,
 learning-outcome count, prerequisite-order verdict, handoff count, concepts-used-before-taught

@@ -31,8 +31,19 @@ to land the file).
 TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
 FILE  = [exact en/ file path just authored, e.g. notes/java/junior/en/08-exceptions.md]
 TASK  = [complete selected persistent-plan entry]
+SCOPE = [full | append-only — with append-only, list the exact headings the author appended]
 
-Use TOPIC, FILE, and TASK wherever the prompt refers to their placeholders.
+Use TOPIC, FILE, TASK, and SCOPE wherever the prompt refers to their placeholders.
+
+> **`SCOPE = append-only` overrides every "fix it directly" instruction below for existing prose.**
+> Victor has refined this file and declared it final; the run exists only to add coverage that arrived
+> later. Audit and fix **only the appended headings named in SCOPE**. Every other byte of `{FILE}` is
+> immutable — you still read the whole file (you need it to judge the seams, duplication, and
+> terminology of the new sections) and you still produce the full section trace, but outside the
+> appended sections the trace records `frozen` plus any issue you found, never a fix. Do not enforce the
+> plan contract, the introduction invariant, or `Docs:` links against frozen sections. Your report must
+> include a `git diff` proving your changes are confined to the appended sections; a diff touching a
+> pre-existing line is a failed review.
 
 ---
 

@@ -44,12 +44,20 @@ TASK = [what to do this run — copy the persistent plan entry, or describe it, 
         "resolve TODOs + fix WHY-before-code in §3" | "create the file from scratch"
         | "add a section on optimistic locking"]
 
-REWRITE_MODE = [standard | first-pass]
+REWRITE_MODE = [standard | first-pass | append-only]
        → standard (default): existing prose is final unless marked with a TODO or unless TASK
          explicitly asks to rewrite a named section. Do not reword, restructure, or "improve" text
          that is already written. Report other quality issues in the summary — Victor adds a TODO if
          he wants a fix. (Adding NEW sections and NEW files is always allowed and is not "existing
          text".)
+       → append-only: the file is FROZEN. Victor has refined it and declared the prose final. Every
+         existing byte is immutable — no rewording, restructuring, reordering, renumbering, link or
+         heading fix inside existing text, and no TODO resolution (a TODO inside frozen prose is
+         reported, not resolved). You may only APPEND new sections for the coverage bullets named in
+         TASK, placed where they read best without moving any existing section. Report every quality
+         miss you see in the existing prose instead of fixing it. Your report must include a `git diff`
+         over the file proving additions only, with the pre-existing headings unchanged and in their
+         original order; a diff that removes or modifies a pre-existing line is a failed run.
        → first-pass: existing prose is NOT protected. Run the per-section checklist below on every
          section and rewrite directly where it fails. Use this only once per file, on auto-generated
          content Victor has not validated yet. After the run, the file is validated — use standard
@@ -121,6 +129,9 @@ wrong material. Reviewer B is the backstop — it is not the reason you may writ
 
 ## Step 1 — Resolve TODOs (if TASK includes them)
 
+**Skip this step entirely in `append-only` mode** — a TODO sitting in frozen prose is Victor's own
+working note, not a work order. List the ones you saw in your report and change nothing.
+
 Victor adds his doubts as markers in the **`es/`** file (that is where he studies), so **read the
 `es/` counterpart to find them**, then also scan `{FILE}` itself. Markers appear as `TODO:`,
 `<!-- TODO: -->`, or `// TODO`. Two forms:
@@ -156,7 +167,8 @@ Check `{FILE}` against the standard in `_note-quality-standard.md`: WHY before t
 repeating patterns, correct format mode, file-level and section-level `Docs:` links, personal-guide
 voice, forward-reference notes, cross-topic preview callouts.
 
-**Action rules:**
+**Action rules** (in `append-only` mode none of them apply to existing sections — report everything and
+add nothing outside your new sections; they apply normally *within* the sections you appended):
 - **Missing `Docs:` links** (file- or section-level) → **add them directly**. They are new content,
   not modifications to existing text. Follow the link priority in the standard. If you are not certain
   of the exact URL/sub-section, write `Docs: TODO — add link` — never guess.
@@ -181,8 +193,10 @@ import sibling-level scope.
 
 If the selected entry has prefix `00` or TASK's `Narrative role` identifies it as the topic
 introduction, enforce the complete introduction contract from the standard **regardless of whether
-Action is `create` or `audit`, the exact filename, or REWRITE_MODE**. Existing prose protection never
-protects an incomplete introduction: TASK explicitly requires that contract. Cover what the topic is
+Action is `create` or `audit`, or the exact filename**. Existing prose protection never protects an
+incomplete introduction: TASK explicitly requires that contract. The single exception is
+`append-only` — a frozen file is Victor's decision and outranks the introduction contract; report the
+missing invariants and leave the prose alone. Cover what the topic is
 and is used for, its high-level mental model and recurring characteristics, genuine contrasts with
 Victor's existing stack, how it fits his target work, and a one-paragraph map of the complete note
 journey without prematurely teaching later chapters.

@@ -36,9 +36,20 @@ ES_FILE = [exact planned Spanish path]
 PLAN = [notes/{topic}/coverage/notes-plan-{LEVEL}.md]
 NOTE = [two-digit entry number]
 TASK = [complete selected persistent-plan entry]
+SCOPE = [full | append-only — with append-only, list the exact Spanish headings that were appended]
 
 Use these exact values wherever their placeholders appear. TASK is allowed context; the English note
 is not.
+
+> **`SCOPE = append-only`: `{ES_FILE}` is FROZEN outside the appended headings.** Victor refined this
+> pair and declared the prose final. Review and fix **only** the sections named in SCOPE; every other
+> byte stays exactly as it is, and your trace marks those headings `frozen` with any issue you spotted
+> reported, never fixed. Do not judge the pedagogical contract or the introduction invariant against
+> frozen sections — a structural gap there is Victor's call, not a blocker. In the plan you change only
+> the consumed bullets in `Pending additions` (to `none` when all are consumed) and you leave
+> `Status: refined` untouched; you never write `Status: complete` on a refined entry. Commit message:
+> `docs(notes): extend refined {TOPIC} {LEVEL} note {NOTE} with {N} coverage additions`. Your report
+> must include a `git diff` over both files proving additions only.
 
 ---
 
@@ -119,7 +130,8 @@ gap in that trace blocks the status change and commit; return it to the English 
 
 You are the last stage in the chain, so you own the single atomic commit for this file:
 1. Verify `{PLAN}` has a current fingerprint and entry `{NOTE}` still resolves to `{FILE}` and
-   `{ES_FILE}`. Change only that entry's `Status: pending` to `Status: complete`.
+   `{ES_FILE}`. Change only that entry's `Status: pending` to `Status: complete` — in `append-only`
+   mode, change only its `Pending additions` and leave `Status: refined` as it is.
 2. Commit `{FILE}`, `{ES_FILE}`, and `{PLAN}` atomically. Before `git add` and before `git commit`, run
    `git status --short`, confirm the exact intended paths, and stage no wildcard. Use:
    `docs(notes): complete {TOPIC} {LEVEL} note {NOTE}`.

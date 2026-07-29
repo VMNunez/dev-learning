@@ -326,7 +326,14 @@ Practice (its own loop, fed by coverage):
 3. `notes-plan-prompt` with the same `TOPIC + LEVEL` — generate or refresh the persistent study map
 4. `notes-audit` with `TOPIC + LEVEL + NOTE` — build exactly one planned English/Spanish pair
 5. Repeat `notes-audit` for every pending plan entry, in dependency order, until the selected
-   `notes-plan-{LEVEL}.md` contains only `Status: complete`
+   `notes-plan-{LEVEL}.md` contains only `Status: complete` (or `refined`)
+   - **Freezing a note you have polished:** once you have taken a pair to your own bar with TODOs, set
+     its plan entry to `Status: refined` by hand. No prompt sets, clears, or downgrades that status, and
+     from then on the existing prose in `en/` and `es/` is immutable to the whole pipeline. If coverage
+     later adds a bullet to that entry, `notes-plan` records it under the entry's `Pending additions:`
+     instead of reopening the entry, and `notes-audit` runs in append-only mode: it appends the new
+     sections in both languages, proves with a diff that it changed nothing else, clears the consumed
+     bullets, and leaves the status `refined`. Set it back to `pending` yourself to unfreeze it.
 6. `interview-prep-audit` with the same `LEVEL` and topic `FILE` — build the isolated level Q&A;
    it stops if that topic's notes plan is stale, pending, or missing either language file
 7. `notes-and-interview-prep` — reconcile the completed notes and Q&A in both directions
