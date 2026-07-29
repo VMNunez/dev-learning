@@ -57,7 +57,8 @@
       "PowerShell(git add notes/spring-boot/coverage/verify-junior.md)",
       "PowerShell(git commit -m \"docs\\(coverage\\): verify spring boot junior coverage - 3 gaps\")",
       "PowerShell(git add notes/prompts/knowledge/coverage/_internal/_last-run-report-coverage-verify.md notes/prompts/_internal/_run-tracker.md)",
-      "PowerShell(git commit -m \"docs: pipeline self-report for coverage-verify run on Spring Boot junior\")"
+      "PowerShell(git commit -m \"docs: pipeline self-report for coverage-verify run on Spring Boot junior\")",
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\\\\projects\\\\07-timetrack\\\\PLANNING.md\" | Measure-Object -Line\\).Lines)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Victor\\AppData\\Local\\Temp\\claude\\c--Users-Victor-Documents-main-dev-learning\\9e52193b-28aa-4145-95e5-a53c43613507\\scratchpad"
