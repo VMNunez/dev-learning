@@ -65,3 +65,7 @@ is still the source, and the owning topic's three level files remain its only sc
 ## JavaScript
 
 *(Empty — the Promise/Observable ownership proposal routed from the Angular junior run on 2026-07-29 was consumed by the JavaScript junior recalibration on 2026-07-29; JavaScript now owns Promise semantics only, while Angular retains Observable/RxJS integration.)*
+
+## TypeScript
+
+- Barrel re-export ownership (proposed level: junior · source run: JavaScript junior coverage, 2026-07-29) — the previous JavaScript junior file owned the `index.ts` barrel pattern through an Angular-framed example; the JavaScript recalibration removed framework/project-boundary ownership, so TypeScript should judge whether maintained-code recognition of typed barrel re-exports belongs in its junior scope.
