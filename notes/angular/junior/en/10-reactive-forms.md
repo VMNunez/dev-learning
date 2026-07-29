@@ -497,7 +497,7 @@ When the user types again, Angular re-runs all validators on the control. This *
 
 ## Duplicate check pattern in onSubmit()
 
-When you have a service-level duplicate check (see [04-services.md](./04-services.md)), the standard pattern in `onSubmit()` is:
+When you have a service-level duplicate check (see [04-dependency-injection.md](./04-dependency-injection.md)), the standard pattern in `onSubmit()` is:
 
 1. Reset any previous error state
 2. Check for the duplicate **before** the save logic

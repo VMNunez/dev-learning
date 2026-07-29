@@ -38,7 +38,7 @@ Positions: `above`, `below`, `left`, `right`, plus `before` / `after` (which fli
 
 Docs: https://material.angular.io/components/progress-spinner/overview — read: "Modes"
 
-The circular spinner plays the same role as the hand-made CSS `.spinner` div from the earlier Angular projects (see [06-http-rxjs.md](../../../angular/junior/en/06-http-rxjs.md)) — show it while you wait for an HTTP response, then hide it when the data arrives.
+The circular spinner plays the same role as the hand-made CSS `.spinner` div from the earlier Angular projects (see [08-http.md](../../../angular/junior/en/08-http.md)) — show it while you wait for an HTTP response, then hide it when the data arrives.
 
 ```html
 @if (isLoading()) {

@@ -173,7 +173,7 @@ constructor() {
 }
 ```
 
-`patchValue()` fills each form control with the matching field from the task object. See the [reactive forms notes](../../../angular/junior/en/07-reactive-forms.md) for more detail.
+`patchValue()` fills each form control with the matching field from the task object. See the [reactive forms notes](../../../angular/junior/en/10-reactive-forms.md) for more detail.
 
 The `onSubmit()` and `dialogRef.close()` stay exactly the same — the parent decides what to do with the result.
 

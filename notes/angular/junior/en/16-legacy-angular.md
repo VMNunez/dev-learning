@@ -76,7 +76,7 @@ currentUser = signal<User | null>(null);
 setUser(user: User) { this.currentUser.set(user); }
 ```
 
-The signal version needs no `asObservable()`, no manual subscription in the component, and no `takeUntilDestroyed`. The template reads `currentUser()` directly and Angular handles the rest. This is the same `currentUser` signal used in project 06 for role-aware UI (see [14-role-aware-ui.md](./14-role-aware-ui.md)).
+The signal version needs no `asObservable()`, no manual subscription in the component, and no `takeUntilDestroyed`. The template reads `currentUser()` directly and Angular handles the rest. This is the same `currentUser` signal used in project 06 for role-aware UI (see [14-role-aware-ui.md](./_legacy/14-role-aware-ui.md)).
 
 ## EventEmitter — the legacy @Output
 
@@ -96,7 +96,7 @@ onDelete(id: number) {
 ```
 
 ```typescript
-// modern — output() (see 01-components.md)
+// modern — output() (see 02-components-templates.md)
 taskDeleted = output<number>();
 
 onDelete(id: number) {
