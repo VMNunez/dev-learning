@@ -130,6 +130,10 @@ review without taking on specialist or production-platform ownership.
 
 ## XSS and output safety
 
+- Dangerous browser sinks and safe rendering — prefer framework text binding and text-only DOM APIs;
+  treat HTML-parsing DOM writes, script-capable URL assignments, eval-like execution, and trust-bypass
+  APIs as review hotspots, applying sink-specific avoidance, contextual encoding or sanitisation, or
+  URL allow-listing
 - Cross-site scripting (XSS) — distinguish stored, reflected, and DOM-based script injection and
   understand how injected code can act with the victim's browser privileges
 - Context-sensitive output handling — HTML text, attributes, URLs, JavaScript, and CSS have different
@@ -222,6 +226,9 @@ review without taking on specialist or production-platform ownership.
 
 ## Security testing and code review
 
+- Hostile-input security tests — exercise injection metacharacters, traversal sequences, oversized
+  payloads, disallowed fields, and unsafe output contexts at trust boundaries instead of testing
+  validation only with ordinary invalid values
 - Negative authentication tests — cover missing, malformed, expired, and tampered credentials rather
   than testing only successful login
 - Permission-outcome tests — prove anonymous, permitted, and wrong-role outcomes instead of testing
