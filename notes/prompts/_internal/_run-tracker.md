@@ -32,7 +32,7 @@ is the first retained execution.
 | TypeScript | | | | | | | | | | | | | | | | | | |
 | JavaScript | | | | | | | | | | | | | | | | | | |
 | CSS | | | | | | | | | | | | | | | | | | |
-| SQL | | | | | | | | | | | | | | | | | | |
+| SQL | 2026-07-29 — completed — 129 items; full recalibration; 84→129; mirror parity; notes plan stale | | | | | | | | | | | | | | | | | |
 | Git | | | | | | | | | | | | | | | | | | |
 | General | | | | | | | | | | | | | | | | | | |
 
