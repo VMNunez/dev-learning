@@ -880,10 +880,12 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - `null` vs `undefined` — distinguish intentional absence from missing or uninitialised values without assuming every API uses them consistently
 - Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy
 - Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion
+- `+` operator: numeric addition vs string concatenation — predict coercion and left-to-right evaluation when either operand becomes a string instead of assuming arithmetic
 - `==` vs `===` — use strict equality by default and read loose-equality coercion safely in maintained legacy code
 - `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default
 - Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined`
 - Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute
+- Logical operators return operand values — predict that `&&`, `||`, and `??` yield one of their operands rather than a coerced boolean while still short-circuiting evaluation
 - Logical assignment operators — read `||=`, `&&=`, and `??=` as conditional assignment without confusing their different trigger conditions
 
 ### Numbers and strings
@@ -947,6 +949,7 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - Class construction and instance methods — read `constructor` and instance behaviour as class syntax built on prototype delegation
 - Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
+- `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
 - JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it
 - `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing
 
@@ -955,6 +958,7 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - Array destructuring — bind positions, skip entries, use defaults, and collect remaining elements
 - Array spread — create a shallow array copy or combine iterables without implying a deep clone
 - Mutating vs non-mutating array methods — recognise when an operation changes the original collection and when it returns a new one
+- `slice` vs `splice` on arrays — choose non-mutating range extraction or in-place removal, replacement, and insertion without confusing their return values or mutation effects
 - `map` — transform each present element into a result array without using it merely for side effects
 - `filter` — retain all matching elements and always return an array
 - `find` vs `filter` — choose one matching value or every matching value
@@ -973,6 +977,7 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 
 - Promise states and settlement — distinguish pending, fulfilled, and rejected outcomes and understand that a promise settles only once
 - Promise creation vs observation — know that `then` and combinators observe work represented by promises rather than making JavaScript parallel
+- Promise executor timing — predict that the executor passed to `new Promise` runs synchronously while settlement reactions registered with `then`, `catch`, or `finally` run as microtasks
 - Promise chaining and returned values — return values or promises from handlers so the next link receives the intended result
 - Promise rejection propagation — understand when `catch` recovers, when rethrowing preserves failure, and why a missing returned chain becomes floating work
 - `finally` semantics — perform cleanup without replacing the original outcome unless the callback itself throws or rejects
