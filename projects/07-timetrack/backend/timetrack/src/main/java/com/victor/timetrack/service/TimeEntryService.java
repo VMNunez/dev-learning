@@ -28,6 +28,8 @@ public class TimeEntryService {
     private final TimeEntryRepository timeEntryRepository;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private static final BigDecimal MIN_HOURS = new BigDecimal("0.5");
+    private static final BigDecimal MAX_HOURS = new BigDecimal("24");
 
     public TimeEntryService(
             TimeEntryRepository timeEntryRepository,
@@ -40,7 +42,6 @@ public class TimeEntryService {
 
     @Transactional
     public TimeEntryResponse create(CreateTimeEntryRequest request) {
-
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
@@ -48,20 +49,7 @@ public class TimeEntryService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
 
-        if (request.getDate().isAfter(LocalDate.now())) {
-            throw new BusinessRuleViolationException("Date cannot be in the future");
-        }
-
-        if (!project.isActive()) {
-            throw new BusinessRuleViolationException("Project is not active");
-        }
-
-        BigDecimal min = new BigDecimal("0.5");
-        BigDecimal max = new BigDecimal("24");
-
-        if (request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max) > 0) {
-            throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
-        }
+        validateEntryData(request, project);
 
         TimeEntry timeEntry = new TimeEntry();
         timeEntry.setUser(user);
@@ -205,21 +193,8 @@ public class TimeEntryService {
             throw new InvalidStateTransitionException("You can only update DRAFT entries");
         }
 
-        if (request.getDate().isAfter(LocalDate.now())) {
-            throw new BusinessRuleViolationException("Date cannot be in the future");
-        }
-
-        if (!project.isActive()) {
-            throw new BusinessRuleViolationException("Project is not active");
-        }
-
-        BigDecimal min = new BigDecimal("0.5");
-        BigDecimal max = new BigDecimal("24");
-
-        if (request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max) > 0) {
-            throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
-        }
-
+        validateEntryData(request, project);
+        
         timeEntry.setProject(project);
         timeEntry.setDate(request.getDate());
         timeEntry.setHours(request.getHours());
@@ -270,6 +245,20 @@ public class TimeEntryService {
         }
 
         timeEntryRepository.deleteById(id);
+    }
+
+    private void validateEntryData(CreateTimeEntryRequest request, Project project) {
+        if (request.getDate().isAfter(LocalDate.now())) {
+            throw new BusinessRuleViolationException("Date cannot be in the future");
+        }
+
+        if (!project.isActive()) {
+            throw new BusinessRuleViolationException("Project is not active");
+        }
+
+        if (request.getHours().compareTo(MIN_HOURS) < 0 || request.getHours().compareTo(MAX_HOURS) > 0) {
+            throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
+        }
     }
 
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
