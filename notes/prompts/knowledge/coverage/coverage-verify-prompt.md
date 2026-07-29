@@ -57,8 +57,11 @@ must not supply proposed gaps or raise the selected-level floor.
 1. Stop on `main`.
 2. Read this prompt's `_internal/_last-run-report-coverage-verify.md` if it exists; surface an `open`
    finding in one line and leave it alone.
-3. Stop if `COVERAGE` is missing or differs from the `## {TOPIC}` section in `GLOBAL_MIRROR` — a stale
-   mirror means `coverage-prompt` has not finished; there is nothing trustworthy to verify.
+3. Stop if `COVERAGE` is missing or its ordered section headings and bullets differ from the
+   `## {TOPIC}` section in `GLOBAL_MIRROR`. Compare canonical content rather than raw text: topic-file
+   `##` section headings correspond to `###` headings inside the mirror's topic section; ignore only
+   that expected heading-depth difference. Any other heading, bullet, or ordering difference means the
+   mirror is stale, `coverage-prompt` has not finished, and there is nothing trustworthy to verify.
 4. Compute the lowercase SHA-256 digest of the exact UTF-8 bytes of `COVERAGE`. This is what the
    findings file stamps, so `notes-plan` can tell a verified verdict from a stale one.
 5. For middle, state that the junior gate must be consolidated; for senior, junior and middle. The gate
