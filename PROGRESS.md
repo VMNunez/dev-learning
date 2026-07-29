@@ -373,6 +373,7 @@ practical evidence alone also does not bypass incomplete or stale knowledge arti
 - `@Transactional(readOnly = true)` on read methods, `@Transactional` on write methods — the atomic boundary that was missing across every service; repository calls without it each auto-commit as their own transaction
 - N+1 on `GET /api/entries` fixed with `FetchType.LAZY` + `LEFT JOIN FETCH` via a `Specification`, guarded by `query.getResultType()` so it's skipped on the pagination `COUNT` query
 - `GROUP BY te.project.id, te.project.name` (not name alone) — two entities with the same display name would otherwise collapse into one aggregate row
+- `ReportSummaryResponse` reconciliation — dropped `totalHours` (approved + pending) and filtered `totalEntries` to `APPROVED` only, so `approvedHours` always equals the sum shown by `by-project`/`by-employee` for the same month
 - `@Column(precision = 4, scale = 2)` + `@DecimalMin`/`@DecimalMax`/`@Digits` — constrains a `BigDecimal` at both the DB column and the DTO boundary
 - Boxed `Boolean` → primitive `boolean` renames Lombok's getter `getX()` → `isX()` — applied to `Project.active`, mirroring the earlier `User.active` fix
 - Optional `Boolean active` on an Update DTO, applied only when non-null — reactivation without breaking `PUT`'s full-replacement contract
