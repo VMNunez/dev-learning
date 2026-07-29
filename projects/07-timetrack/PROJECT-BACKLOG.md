@@ -25,7 +25,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 #### Medium
 
 - [ ] **[Medium]** `[backend]` — Decide what the reports do with soft-deleted projects and users: the aggregates filter on neither, so a project deactivated mid-month still appears as a report row with no `active` flag for the client to interpret. Keeping them is defensible (the hours *were* worked) — but return the flag in the projection so the behaviour is chosen, not accidental *(Effort: Small)*
-- [ ] **[Medium]** `[backend]` — Rename the by-employee projection field: `EmployeeHoursReportResponse.getEmployeeName()` (:6) produces the JSON field `employeeName`, but the same DTO already exposes **`userId`**, so the projection is inconsistent with *itself* — and `ProjectHoursReportResponse` sets the sibling precedent with `projectId`/`projectName`. Rename the getter and its JPQL `AS` alias to `userName`. **Decided 2026-07-28** (PLANNING §10): the tiebreaker was the existing `userId`, not style preference. Without it the Step 7c Reports table binds to `userName` and reads `undefined` *(Effort: Small)*
 
 #### Low
 
@@ -59,6 +58,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 ### Backend
 
+- 2026-07-29 · **[Medium]** `[backend]` — `by-employee` renamed to `by-user` end to end (endpoint, DTO, getters, JPQL alias) — the query never filtered by role → architecture coverage/junior, PLANNING §8/§10, PROGRESS, backend README
 - 2026-07-29 · **[Medium]** `[backend]` — `UpdateTimeEntryRequest` split from `CreateTimeEntryRequest`, matching the projects Create/Update DTO pair → architecture coverage/junior, PLANNING §6, PROGRESS, backend README
 - 2026-07-29 · **[Medium]** `[backend]` — duplicated entry validation in `TimeEntryService` extracted into `validateEntryData` + `MIN_HOURS`/`MAX_HOURS` constants → architecture coverage/junior, PROGRESS, backend README
 - 2026-07-29 · **[Medium]** `[backend]` — `ReportSummaryResponse` reconciled: `totalHours` removed, `totalEntries` filtered to APPROVED → README, PROGRESS, PLANNING §8/§10 (already planned), coverage spring-boot/junior
