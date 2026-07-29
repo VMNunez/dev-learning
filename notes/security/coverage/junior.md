@@ -1,75 +1,235 @@
-# Minimum Coverage — Security
+# Junior Coverage — Security
 
-Web security concepts a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026.
-Every item must be explainable with a real example from one of the projects — not just a textbook definition.
+Application-security concepts a junior Angular + Spring Boot developer must understand, apply, and
+review without taking on specialist or production-platform ownership.
 
-## Security mindset and baseline
+## Security reasoning and trust boundaries
 
-- OWASP Top 10 — a periodically updated map of common web-application risk categories; a junior
-  should recognise broken access control, injection, security misconfiguration, and vulnerable
-  dependencies without memorising an outdated category order
-- Defence in depth — client checks, server authorisation, validation, and least-privilege database
-  access overlap so one failed control does not expose the whole system
-- Allow-list over block-list — defining accepted origins, roles, fields, or input shapes is safer
-  than trying to enumerate every malicious value an attacker might invent
+- OWASP Top 10 — use the current edition as an awareness map of recurring web-application risk
+  categories, not as a checklist whose category order should be memorised
+- Threat vs vulnerability — distinguish a possible cause of harm from the weakness that lets the
+  threat succeed
+- Asset and control — identify what needs protection and the defence that reduces a specific risk to it
+- Trust boundaries — treat the browser, API, database, third-party services, build environment, and
+  network as separate zones whose inputs and identities require verification
+- Parsing is not trust — route parameters, headers, cookies, JSON, hidden fields, and decoded token
+  claims remain attacker-controlled even after a framework has parsed them successfully
+- Least privilege and deny by default — grant users, tokens, components, and database accounts only
+  the access they need, while leaving unmatched actions inaccessible
+- Defence in depth — combine validation, authorisation, safe APIs, output encoding, transport
+  protection, and monitoring because no single control is sufficient
+- Allow-list over block-list — define accepted origins, roles, fields, formats, and ranges instead of
+  trying to enumerate every malicious value
+- Secure defaults and fail closed — an absent rule, invalid credential, unexpected exception, or
+  unavailable dependency must not silently make a protected operation public
 
 ## Authentication and authorisation
-- Authentication vs authorisation — authentication confirms who you are (login); authorisation confirms what you are allowed to do (role check); interviewers always ask the difference and expect an example from a real project
-- 401 vs 403 — `401 Unauthorized` means not authenticated (no token, expired token, invalid token); `403 Forbidden` means authenticated but not authorised (valid token, wrong role); interviewers test this pair because the HTTP names are confusing and juniors routinely mix them up
-- Session-based auth — the server stores a session in memory and gives the client a cookie; stateful; does not scale horizontally without shared session storage; asked as a contrast to JWT
-- Token-based auth (JWT) — the client stores the token and sends it with every request; the server validates it without storing anything; stateless; interviewers ask why stateless auth matters for scaling
-- Role-based access control — `EMPLOYEE` vs `MANAGER` in TimeTrack; enforced in Spring Boot with `@PreAuthorize` and in Angular with route guards; interviewers ask where each enforcement layer lives and why you need both
-- Generic authentication error messages — login failure always returns one generic message ("invalid credentials"), never "wrong password" or "email not found"; a specific message lets an attacker enumerate which emails are registered; interviewers ask why `BadCredentialsException` is handled with one generic message instead of two
-- Segregation of duties — a user must not be able to approve or sign off their own action in an approval workflow, even if their role would otherwise permit it; enforced by comparing the resource owner (resolved from the authenticated identity, never a client-supplied id) against the caller before the role check is allowed to succeed
 
-## JWT
-- JWT structure: header, payload, signature — header says the algorithm (`HS256`); payload carries claims (`sub`, `iat`, `exp`, `role`); signature is an HMAC of header+payload using the secret; interviewers ask what each part contains and why
-- JWT payload is not encrypted — the payload is Base64-encoded, not encrypted; anyone can decode it; never put passwords or sensitive data in a JWT; interviewers ask "is a JWT secure?" to test whether the candidate knows Base64 is not encryption
-- How the signature is verified — the server recomputes the HMAC with its own secret and compares; if the payload was changed, the signature does not match; this is how the server detects tampering without storing the token
-- Why you cannot fake a JWT without the secret — the signature is bound to the exact bytes of the header and payload; any change invalidates it; asked to check understanding of why JWT can be trusted
-- Access token vs refresh token — access token is short-lived (15 min to 1 hour); refresh token is long-lived and used only to get a new access token; limits the window of attack if an access token is stolen
-- Where to store the token in the browser — `localStorage` is accessible to JavaScript (XSS risk); `HttpOnly` cookie is not accessible to JavaScript (CSRF risk instead); interviewers ask this to test awareness of trade-offs
-- JWT expiry — the `exp` claim sets a timestamp; expired tokens are rejected by `JwtFilter`; why short-lived tokens reduce the damage if a token is stolen
+- Authentication vs authorisation — authentication verifies an identity, while authorisation decides
+  what that authenticated identity may do
+- Identification vs authentication — a username, email, or token subject names a claimed identity,
+  while credential verification establishes whether the claim is genuine
+- Credentials, identity, and session state — a password proves identity at login, while a session ID
+  or bearer token carries the resulting authenticated state across later requests
+- Server-side enforcement — Angular guards and hidden buttons improve navigation and UX but never
+  replace permission checks on every protected backend operation
+- Role-based access control — map roles or authorities consistently and prevent clients from assigning
+  privileged roles to themselves
+- Layered authorisation rules — request-level and method-level checks can reinforce each other but must
+  not leave gaps or contradictory policy
+- Object-level authorisation (BOLA/IDOR) — verify access to the specific requested record instead of
+  assuming that any logged-in user may use any identifier
+- Horizontal vs vertical privilege escalation — distinguish accessing another user's resources from
+  gaining a more privileged role or operation
+- Trusted identity for ownership checks — derive the caller from the authenticated security context
+  rather than accepting an owner or user ID from the request body
+- Collection vs detail authorisation — a filter on a list endpoint does not protect the matching
+  read, update, or delete endpoint, so each operation must enforce the same visibility rule
+- Input validation vs authorisation — valid data shape and business values do not prove that the caller
+  has permission to perform the requested action
 
-## Cryptography basics
-- Hashing vs encryption — hashing is one-way (you cannot reverse it); encryption is two-way (you can decrypt with the key); interviewers always ask the difference because candidates frequently confuse them
-- Why passwords are hashed and not encrypted — if the database is stolen, the attacker cannot recover plaintext passwords from hashes without brute-forcing every possible input
-- BCrypt — a slow hashing algorithm with a built-in random salt; slow is intentional because it resists brute-force attacks; `BCryptPasswordEncoder` in Spring Boot uses it by default with 10 rounds
-- Salting — a random value added to the input before hashing; prevents two users with the same password from having the same hash in the database; BCrypt handles salting automatically
-- `SecureRandom` vs `Random` for security-sensitive values — `java.util.Random` is seeded and predictable (an attacker who observes enough output can reconstruct the seed and predict future values); `java.security.SecureRandom` draws from a cryptographically secure source and must be used for anything an attacker could exploit by guessing it, like a generated initial password or a reset token
+## Session and token lifecycle
 
-## CORS
-- What an origin is — the combination of protocol + domain + port; `http://localhost:4200` and `http://localhost:8080` are two different origins even though they share the same domain; the basis for understanding why Angular and Spring Boot conflict in development
-- What CORS is — the browser enforces the Same-Origin Policy by default, blocking JavaScript from reading responses from a different origin; CORS lets servers explicitly allow specific cross-origin requests
-- CORS is enforced by the browser — a simple request may reach the server before JavaScript is denied
-  access to the response, while a failed preflight prevents the browser from sending the real
-  cross-origin request
-- Why it matters for Angular + Spring Boot — Angular runs on port 4200, Spring Boot on 8080; without CORS configuration the browser blocks every API call even though the server responds correctly
-- Preflight requests — the browser sends an `OPTIONS` request before any POST with a JSON body or any request with an `Authorization` header; the server must respond with the correct CORS headers or the real request is blocked
+- Session-based vs token-based authentication — compare server-held session state with self-contained
+  bearer tokens, including storage, scaling, revocation, and CSRF consequences
+- Authentication vs session management — verifying credentials creates authenticated state, while
+  propagation, expiry, renewal, rotation, and invalidation govern its later lifecycle
+- Session fixation and hijacking — accept only server-generated unpredictable session identifiers,
+  rotate them after authentication or privilege changes, and invalidate server-side state on logout
+- Bearer-token possession — anyone who obtains a bearer token can use it, so URLs, logs, screenshots,
+  error messages, and analytics must not expose it
 
-## Common vulnerabilities
-- SQL injection — the attacker injects SQL into a user input field to manipulate the query; parameterised queries (which JPA uses automatically) prevent it; interviewers ask "how does JPA protect against SQL injection?"
-- XSS (Cross-Site Scripting) — the attacker injects malicious JavaScript into a page that runs in other users' browsers and can steal tokens from `localStorage`; Angular escapes all template values by default, which prevents most XSS
-- Angular HTML sanitisation — Angular sanitises untrusted values bound to `[innerHTML]`; the dangerous
-  escape hatch is trusting attacker-controlled markup through `DomSanitizer.bypassSecurityTrustHtml`
-- CSRF (Cross-Site Request Forgery) — the attacker tricks a logged-in user's browser into making an unwanted request; works because cookies are sent automatically by the browser; JWT in the `Authorization` header prevents it because the browser does not attach headers automatically (only cookies)
-- Why you validate on the server even when you validate on the client — client-side validation can be bypassed with Postman or browser DevTools; the server is the only boundary you can trust; `@NotBlank` and `@Valid` in Spring Boot enforce this
-- Broken object-level authorization (BOLA) — a filter enforced on a collection endpoint (e.g. "employees see only active projects") is not automatically enforced on the matching detail endpoint; each endpoint must apply the rule independently, and the correct refusal is 404, not 403, so the resource's existence is never confirmed to a caller who should not see it
-- Mass assignment risk of exposing entities directly — if a controller binds the request body straight to the `@Entity`, a malicious client can set fields it should never control, like `role: "MANAGER"` or `active: true`, by adding them to the JSON body; DTOs close this hole because the request DTO only declares the fields a client is allowed to send; interviewers ask "what could go wrong if you skip the request DTO and bind the entity directly?"
+## JWT validation
 
-## Login, disclosure, and transport
+- JWT structure — distinguish the header, claim set, and signature without assuming every JWT uses the
+  same signing algorithm
+- JWT encoding vs encryption — Base64url makes header and payload readable; a signed JWT detects
+  tampering but does not make its claims secret
+- Signature or MAC vs encryption — a signature or message authentication code provides integrity and
+  authenticity, while encryption provides confidentiality
+- JWT signature verification — accept a token only after verifying its signature with the configured
+  trusted key and rejecting algorithms the application did not choose
+- JWT signing-key strength — load a sufficiently strong random or generated key from trusted
+  configuration because moving a weak human password out of source control does not make it secure
+- JWT issuer and audience validation — bind a token to the authority that issued it and the service
+  intended to accept it instead of trusting any token signed by a familiar key
+- JWT temporal-claim validation — enforce expiry and any applicable not-before time rather than
+  accepting a token outside its valid window
+- JWT subject and application-claim validation — treat identity, role, and other claims as input to
+  policy checks rather than proof that every requested action is allowed
+- JWT tampering resistance — changing header or payload bytes invalidates the signature unless the
+  attacker can produce a valid signature with the trusted signing key
+- JWT expiry — short-lived access tokens reduce the useful lifetime of a stolen credential but do not
+  prevent misuse before expiry
+- Access token vs refresh token — use a short-lived access token for APIs and a more protected,
+  longer-lived refresh token only to obtain new access tokens
+- Logout and revocation limits — deleting a browser token ends local use but does not invalidate an
+  already issued stateless token unless the server adds revocation state or waits for expiry
 
-- Brute force and rate limiting — repeated login attempts need throttling by account and network
-  signal; permanent account lockout is itself abusable, so the trade-off matters
-- User enumeration beyond messages — status codes, response shape, and large timing differences can
-  reveal whether an account exists even when the visible message is generic
-- Password reset — use a short-lived, single-use random token and invalidate it after success; never
-  email the existing password or trust only an account identifier
-- Information disclosure — stack traces, internal IDs, over-returned entity fields, and secrets in
-  logs give attackers system knowledge even when no direct exploit exists
-- Exposed operational endpoints — Actuator, Swagger, debug consoles, and heap dumps expand the attack
-  surface; sensitive values may be sanitised, but the endpoints still require deliberate access
-- TLS as a precondition — bearer tokens and passwords are readable in transit without HTTPS, so JWT
-  signing never replaces transport encryption
-- Dependency vulnerabilities — a known CVE matters when the vulnerable component and code path are
-  actually reachable; patching dependencies is part of application security, not separate housekeeping
+## Passwords, recovery, and abuse resistance
+
+- Hashing vs encryption vs encoding — hashing is one-way verification, encryption is reversible with a
+  key, and encoding only changes representation
+- Password hashing — store passwords with a slow adaptive password-hashing function such as BCrypt,
+  never as plaintext, reversible encryption, or a fast general-purpose hash
+- Salt — use a unique random salt per password so equal passwords do not produce equal stored hashes;
+  a standard password encoder manages it with the hash
+- Work factor — tune the password hash cost so verification is deliberately expensive for attackers
+  but still acceptable for legitimate logins
+- Password verification — delegate hash parsing, salt handling, and verification to a maintained
+  password encoder instead of comparing raw passwords or hashes manually
+- Security-sensitive randomness — generate reset tokens, initial secrets, and other guess-sensitive values
+  from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream
+- Brute-force defence — throttle repeated authentication attempts using account and network signals
+  without relying on permanent lockout that attackers can abuse for denial of service
+- Password reset — use a short-lived, single-use, unpredictable token, invalidate it after success,
+  and never email the existing password or trust only an account identifier
+- Multi-factor authentication awareness — recognise that a second independent factor reduces the
+  damage from a stolen password without requiring a junior to design an enterprise identity system
+- Generic authentication failures — keep login status, response shape, message, and observable timing
+  sufficiently consistent that they do not reveal whether an account exists
+- Endpoint abuse limiting — recognise that registration, reset, verification, and expensive API
+  operations also need bounded throttling, while distributed policy design remains a later-level task
+
+## Same-Origin Policy and CORS
+
+- Same-Origin Policy and origin — the browser isolates script access by scheme, host, and port, so
+  `http://localhost:4200` and `http://localhost:8080` are different origins
+- CORS purpose — the server uses response headers to let a browser relax the Same-Origin Policy for
+  selected cross-origin requests
+- CORS is not authorisation — it limits browser JavaScript, not Postman, curl, servers, or attackers,
+  so protected APIs still require authentication and authorisation
+- Simple vs preflighted CORS requests — a simple request may reach the server before the browser hides
+  its response, while a failed `OPTIONS` preflight prevents the real non-simple request
+- Preflight triggers — methods, content types, or headers outside the CORS safelist, including
+  `Authorization` and JSON request content, require the browser to check permission first
+- Credentialed CORS — credentialed cross-origin requests require an explicit allowed origin and cannot
+  combine credentials with an `Access-Control-Allow-Origin: *` wildcard
+- Minimal CORS policy — allow only the origins, methods, headers, and credential mode the deployed
+  client actually needs
+
+## XSS and output safety
+
+- Cross-site scripting (XSS) — distinguish stored, reflected, and DOM-based script injection and
+  understand how injected code can act with the victim's browser privileges
+- Context-sensitive output handling — HTML text, attributes, URLs, JavaScript, and CSS have different
+  safe output rules, so generic input sanitisation cannot replace framework escaping
+
+## CSRF, cookies, and browser storage
+
+- Cross-site request forgery (CSRF) — an attacker abuses credentials the browser attaches
+  automatically, especially cookies, to make an unwanted state-changing request
+- CSRF defences — use anti-CSRF tokens or a custom-header design whose preflight is denied to untrusted
+  origins, with `SameSite` as defence in depth rather than the only control
+- Secure cookie attributes — understand how `HttpOnly`, `Secure`, and `SameSite` reduce script access,
+  insecure transport, and cross-site sending respectively
+- Token storage in browsers — Web Storage exposes tokens to JavaScript and therefore XSS, while
+  `HttpOnly` cookies reduce token theft but require deliberate CSRF and cookie controls
+
+## Injection, validation, and unsafe input
+
+- Server-side validation — client validation improves UX but can be bypassed, so the API must validate
+  every untrusted request independently
+- Syntactic vs semantic validation — validate shape and range as well as business facts such as
+  ownership, allowed state transitions, and permitted relationships
+- Validation vs sanitisation vs output encoding — distinguish rejecting invalid data, transforming
+  data, and rendering it safely in a specific output context
+- SQL injection — bind query parameters and never concatenate untrusted input into SQL or JPQL;
+  an ORM cannot make string-built queries safe
+- Injection beyond SQL — avoid building shell commands, templates, expressions, paths, or log records
+  by concatenating unchecked input
+- Unsafe deserialisation — accept constrained DTO and data formats instead of reconstructing arbitrary
+  attacker-selected object types or enabling polymorphic type resolution casually
+- Mass assignment / over-posting — constrain request DTO fields so a client cannot set roles,
+  ownership, approval state, audit metadata, or other server-controlled properties
+
+## Resource and destination controls
+
+- Path traversal — normalise and constrain file paths so user-controlled names cannot escape the
+  intended storage directory
+- File upload validation — constrain size and allowed content using server-side inspection rather than
+  trusting the supplied filename or `Content-Type`
+- File upload storage and serving — generate storage names, keep uploaded content outside executable
+  paths, and serve it with deliberate authorisation and content handling
+- Server-side request forgery (SSRF) awareness — do not let arbitrary user-supplied URLs make the
+  server reach internal or otherwise restricted network resources
+- Open redirect awareness — validate redirect destinations rather than forwarding directly to a
+  client-controlled URL
+
+## Sensitive data and disclosure
+
+- Data minimisation — collect, retain, process, and return only the sensitive or personal data the
+  feature genuinely needs
+- Response DTOs and sensitive fields — never serialize password hashes, secrets, internal claims, or
+  unnecessary personal data merely because they exist on an entity
+- Error-response hygiene — return stable useful errors without stack traces, SQL details, filesystem
+  paths, internal class names, or secrets
+- Security logging hygiene — record useful authentication and authorisation events while excluding
+  passwords, tokens, session IDs, authorisation headers, and unnecessary personal data
+- Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or
+  private responses must not remain in browser or shared caches
+
+## Secrets and transport
+
+- Secrets vs ordinary configuration — keep passwords, signing keys, and API credentials out of source
+  code, committed configuration, frontend bundles, container images, and test fixtures
+- Frontend secrecy impossibility — any value shipped in an Angular bundle is visible to the user, so
+  embedded API keys are not secrets
+- Secret injection — environment variables or a secret store separate credentials from source code,
+  but logs, diagnostics, process inspection, and overly broad access can still expose them
+- TLS as a precondition — HTTPS protects credentials and data in transit; JWT signing, hashing,
+  validation, and authorisation solve different problems and do not replace it
+
+## Hardening and security headers
+
+- Development vs production hardening — default credentials, debug modes, verbose errors, test data,
+  and permissive development settings must not reach production
+- Protection-disablement review — disabling CSRF, authentication, frame protection, or other secure
+  defaults requires an explicit threat-model reason rather than a convenient fix
+- Administrative endpoint exposure — management, documentation, debug, metrics, and dump endpoints
+  expand the attack surface and require deliberate exposure and access control
+- Security-header recognition — understand the protection signalled by CSP, `frame-ancestors`,
+  `X-Content-Type-Options: nosniff`, Referrer-Policy, and HSTS, and notice unsafe absence or values
+
+## Dependency and supply-chain hygiene
+
+- Supported dependency baseline — keep frameworks, libraries, plugins, and base images on supported
+  versions rather than accumulating known unpatched risk
+- Lockfiles and dependency provenance — preserve reviewed dependency resolution and investigate
+  unexpected package, plugin, repository, or lockfile changes
+- Vulnerability-alert handling — check whether the project uses an affected version, avoid blind
+  suppression or upgrading, and escalate when deeper reachability or risk analysis is required
+
+## Security testing and code review
+
+- Negative authentication tests — cover missing, malformed, expired, and tampered credentials rather
+  than testing only successful login
+- Permission-outcome tests — prove anonymous, permitted, and wrong-role outcomes instead of testing
+  only the authorised happy path
+- Horizontal and vertical escalation tests — deliberately use one user's credentials against another
+  user's resource and a normal account against an administrative action
+- Security configuration regression — verify that new and unmatched endpoints remain protected and
+  that broad matcher order does not accidentally make a protected path public
+- AI-generated security review — treat configuration that appears to work as untrusted until its
+  secrets, disabled protections, broad matchers, client claims, ownership checks, output handling, and
+  logging consequences have been examined
