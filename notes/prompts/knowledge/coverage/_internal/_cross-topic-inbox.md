@@ -36,6 +36,10 @@ is still the source, and the owning topic's three level files remain its only sc
 
 *(Empty — the two items routed from the CSS run on 2026-07-19 were both consumed and added by the coverage-audit run on 2026-07-19: `styleUrls` vs inline `styles` and the production-build-only style problem, both in the "Component styles" section.)*
 
+## Angular Material
+
+- Angular CDK primitives (proposed level: middle · source run: Angular junior coverage, 2026-07-29) — overlays, drag-and-drop, portals, and virtual scrolling were stored in Angular middle, but the coverage standard assigns Material APIs and overlays to Angular Material; judge whether these lower-level primitives belong in Angular Material middle.
+
 ## Spring Boot
 
 *(Empty — all 12 entries were consumed by the coverage-audit run on 2026-07-19. **Nine were added**: Lombok `@Data` on an entity, the owning side, the OpenAPI consumer view, the filter exception escaping `@RestControllerAdvice`, the JWT exception taxonomy, `DelegatingPasswordEncoder`/`{bcrypt}`, anonymous authentication not being null, the `doFilter` control-flow rule, and the preflight `OPTIONS` 401. **Three were discarded as already covered**: the singleton/stateless data-leak consequence is already the explicit gotcha on the "Bean scope and the singleton default" item, the JDBC URL anatomy is already carried by the datasource-properties item, and the three-way `Connection refused` discrimination is already spelled out in the Hikari pool-initialization item.)*
@@ -55,3 +59,9 @@ is still the source, and the owning topic's three level files remain its only sc
 ## General
 
 - Jackson ownership boundary (proposed level: junior · source run: Spring Boot junior coverage, 2026-07-26) — `notes/coverage/junior.md` currently carries under General: "Jackson — Spring Boot uses Jackson automatically to convert between JSON and Java objects; `@RestController` triggers automatic serialization without any configuration". Per the standard, General owns *neutral* JSON while Spring Boot owns the framework's message conversion; Spring Boot junior already owns "HTTP message conversion and Jackson" plus the response-shaping and deserialization-requirement items. The General item should be narrowed to neutral JSON (or removed as a Spring Boot duplicate) when the General topic next runs.
+- Test structure and assertions (proposed level: junior · source run: Angular junior coverage, 2026-07-29) — `describe`, setup hooks, individual test cases, and meaningful expectations are runner-neutral testing vocabulary; General should own the concept, while Angular keeps TestBed, fixtures, and framework-specific test mechanisms.
+- Angular testing ownership boundary (proposed level: junior · source run: Angular junior coverage, 2026-07-29) — General junior currently owns `Jasmine + TestBed`, but TestBed is Angular-specific and already covered by Angular junior; narrow the General item to neutral test-runner recognition or remove the Angular-specific duplicate.
+
+## JavaScript
+
+- Promise/Observable ownership boundary (proposed level: junior · source run: Angular junior coverage, 2026-07-29) — JavaScript junior currently owns `Promise vs Observable in Angular`, while the standard assigns Promise semantics to JavaScript and Observable/RxJS integration to Angular; narrow JavaScript to Promise semantics and leave the applied comparison in Angular.
