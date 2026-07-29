@@ -153,6 +153,29 @@ plus the README standard, which does not auto-load. This section remains the sou
 
 **Interview-prep is not part of this ritual** (dropped 2026-07-13) — do not add interview questions automatically on step completion. Add them only when Victor asks, in session, or via `interview-prep-audit`.
 
+### After every `PROJECT-BACKLOG.md` task is closed — the same discipline, one level down
+
+(The platform's `backlog-task-close` skill fires on this event and walks the full checklist. This
+section remains the source of truth. Added 2026-07-29.)
+
+A backlog task is a concept the plan never anticipated — it came out of a review — so closing it means
+pushing it back into the artefacts that did not know about it. Checking the box is the *last* step,
+never the only one:
+
+- `notes/{topic}/coverage/{level}.md` — if the concept is missing, add it, in concept form (never
+  "what Victor did in project 07"). Route the topic with the concept-extraction standard.
+- `projects/0X-name/README.md` — a short bullet in "What I learned", only if not already represented
+- `projects/0X-name/PLANNING.md` — if the concept belongs to the project's engineering contract, add it
+  to the **rules section** it belongs to; never invent a retroactive step
+- `PROGRESS.md` — the concept, one specific thing per line
+- `PROJECT-BACKLOG.md` — **only then** remove the verbose task entry and collapse it into one dated
+  line in the `## Closed` ledger, ending in `→ where the concept landed`. This is what stops the
+  backlog growing without bound. The ledger is append-only; a design decision closed with no code
+  change must say so, because that line is its only surviving record.
+
+If one of the five does not apply, say so out loud — a silent skip is the failure this ritual exists
+to prevent.
+
 ## Frontend sessions — how to guide a page step
 
 The backend guides itself well because §6's layer rules are explicit and get checked against real code.
