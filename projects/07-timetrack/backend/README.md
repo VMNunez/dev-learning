@@ -48,7 +48,7 @@ Spring Boot REST API for the TimeTrack project.
 |---|---|---|---|
 | GET | `/api/reports/summary` | Manager | Total hours and entries for a month |
 | GET | `/api/reports/by-project` | Manager | Hours grouped by project |
-| GET | `/api/reports/by-employee` | Manager | Hours grouped by employee |
+| GET | `/api/reports/by-user` | Manager | Hours grouped by user |
 
 ---
 
@@ -171,7 +171,11 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 ### Reconciled report aggregates ✓
 
-`GET /api/reports/summary`, `by-project` and `by-employee` all filter to `EntryStatus.APPROVED` only, so the summary card's `approvedHours` always equals the sum of either detail table for the same month. `pendingHours` stays a separate, explicitly-named field and is never folded into a total — the DRAFT → SUBMITTED → APPROVED workflow only produces numbers a manager can trust if unapproved hours never leak into one.
+`GET /api/reports/summary`, `by-project` and `by-user` all filter to `EntryStatus.APPROVED` only, so the summary card's `approvedHours` always equals the sum of either detail table for the same month. `pendingHours` stays a separate, explicitly-named field and is never folded into a total — the DRAFT → SUBMITTED → APPROVED workflow only produces numbers a manager can trust if unapproved hours never leak into one.
+
+### Honest naming on `by-user` ✓
+
+`GET /api/reports/by-employee` was renamed to `/by-user`: the query groups `TimeEntry.user` with no role filter, so a manager who was promoted from EMPLOYEE still shows up with their historical hours — correctly, since those hours are still billable. `by-employee` implied a role guarantee the code never enforced; `by-user` names what the query actually returns. `EmployeeHoursReportResponse`/`getEmployeeName()` were renamed to `UserHoursReportResponse`/`getUserName()` for the same reason.
 
 ### Extracted entry validation ✓
 
