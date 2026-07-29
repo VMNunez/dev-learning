@@ -1,14 +1,14 @@
 # Coverage prompt — last run self-report
 
-**Date:** 2026-07-29 · **Target:** TOPIC = Angular Material, LEVEL = junior, MODE = update · **Branch:** `fix/backend-backlog`
+**Date:** 2026-07-29 · **Target:** TOPIC = JavaScript, LEVEL = junior, MODE = update · **Branch:** `fix/backend-backlog`
 **Status:** open — clean run; no prompt change recommended
 
 Recommendation-ledger reconciliation: no recommendation was created or reproduced by this run, so `_recommendation-ledger.md` is unchanged.
 
-1. **Plan vs reality** — The verify-gap fast path correctly reduced the run to one scoped cold reviewer. Its review trace proves the mandated machinery ran; there is no separate whole-artifact verifier beyond that reviewer, so the trace does not by itself prove the output is sound.
-2. **Report discipline** — The reviewer returned only the requested EOF proofs, accepted findings, and verdict; nothing required trimming or discarding.
+1. **Plan vs reality** — The market analyst plus two cold final reviewers covered the declared role split; their EOF proofs establish that the machinery ran, while the required complete diff inspection and mechanical parity checks provide the orchestrator's artifact evidence. There is no separate whole-artifact verifier beyond the two final reviewers.
+2. **Report discipline** — All three subagents returned the requested evidence and findings without code dumps or unusable narrative.
 3. **Failures & retries** — No subagent failed and no re-dispatch was needed.
-4. **Rule friction and rule breaches** — The first sandboxed `git add` could not create `.git/index.lock`; the approved retry succeeded. No mandatory prompt step was skipped or shipped incorrectly.
+4. **Rule friction and rule breaches** — The first mirror rebuild decoded UTF-8 through the PowerShell default code page and produced a noisy whole-file diff; the orchestrator detected and repaired it before staging, then re-ran exact mirror parity and `git diff --check`. The sandboxed `git add` could not create `.git/index.lock`; the approved retry succeeded. No mandatory prompt step was skipped or shipped incorrectly.
 5. **Verdict** — pipeline clean.
 
-Close-out evidence: declared coverage outputs landed in `c07a22c`; required dispatches 1/1 completed (one scoped cold reviewer); `coverage-prompt.md` is 241 lines; report and tracker commit follows.
+Close-out evidence: declared coverage outputs landed in `5580b10`; required dispatches 3/3 completed (one market analyst and two cold reviewers); `coverage-prompt.md` is 241 lines; report and tracker commit follows.
