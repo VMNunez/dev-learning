@@ -30,19 +30,21 @@ public class JwtUtil {
 
     }
 
-    public String extractUsername(String token){
+    public String extractUsername(String token) {
         return parseClaims(token).getSubject();
     }
 
-    public boolean isValid(String token,String email){
-        try{
-            return extractUsername(token).equals(email);
-        } catch (JwtException e){
+    public boolean isValid(String token, String email) {
+        try {
+            Claims claims = parseClaims(token);
+
+            return claims.getSubject().equals(email) && claims.getExpiration().after(new Date());
+        } catch (JwtException e) {
             return false;
         }
     }
 
-    private Claims parseClaims(String token){
+    private Claims parseClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
