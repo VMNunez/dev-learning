@@ -5,10 +5,10 @@
 
 Recommendation-ledger reconciliation: no recommendation was created or reproduced by this run, so `_recommendation-ledger.md` is unchanged.
 
-1. **Plan vs reality** — The market analyst plus two cold final reviewers covered the declared role split; their EOF proofs establish that the machinery ran, while the required complete diff inspection and mechanical parity checks provide the orchestrator's artifact evidence. There is no separate whole-artifact verifier beyond the two final reviewers.
-2. **Report discipline** — All three subagents returned the requested evidence and findings without code dumps or unusable narrative.
+1. **Plan vs reality** — The verify-gap fast path correctly required one scoped cold reviewer; its EOF proof establishes that the mandatory review ran, while the complete diff inspection and mechanical checks provide the orchestrator's artifact evidence. There is no separate whole-artifact verifier.
+2. **Report discipline** — The reviewer returned the requested concise per-gap verdicts and EOF evidence; nothing required trimming or discarding.
 3. **Failures & retries** — No subagent failed and no re-dispatch was needed.
-4. **Rule friction and rule breaches** — The first mirror rebuild decoded UTF-8 through the PowerShell default code page and produced a noisy whole-file diff; the orchestrator detected and repaired it before staging, then re-ran exact mirror parity and `git diff --check`. A post-commit inherited-concept audit found two implicit items and one unrouted genuine concept; corrective coverage and separate inbox commits landed before close-out. The sandboxed `git add` could not create `.git/index.lock`; the approved retry succeeded. No mandatory prompt step remained skipped or shipped incorrectly.
+4. **Rule friction and rule breaches** — The first mirror-parity probe modelled the topic introduction incorrectly; comparison against the established mirror shape isolated the harmless generated-file separator, after which bullet order, headings, duplicates, forbidden syntax, SHA, and the complete diff were checked. Sandboxed staging could not create `.git/index.lock`, and the approved scoped retry succeeded. No mandatory step was skipped.
 5. **Verdict** — pipeline clean.
 
-Close-out evidence: declared coverage outputs landed in `5580b10` and corrective commit `ec18f5c`; cross-topic routing landed separately in `d4ee395`; required dispatches 3/3 completed (one market analyst and two cold reviewers); `coverage-prompt.md` is 241 lines; report and tracker commit follows.
+Close-out evidence: declared coverage outputs landed in `dfec6e5`; required dispatches 1/1 completed (one scoped cold reviewer); `coverage-prompt.md` is 241 lines; report and tracker commit follows.
