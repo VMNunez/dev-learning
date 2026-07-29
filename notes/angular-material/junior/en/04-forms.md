@@ -104,7 +104,7 @@ get email() {
 }
 ```
 
-> `mat-error` relies on Angular Material's error detection logic — by default, it shows when the field is `invalid` and `touched`. To change when errors appear (for example, only on submit), use `ErrorStateMatcher`. See the [dialog notes](11-dialog.md) for the pattern.
+> `mat-error` relies on Angular Material's error detection logic — by default, it shows when the field is `invalid` and `touched`. To change when errors appear (for example, only on submit), use `ErrorStateMatcher`. See the [dialog notes](10-dialog.md) for the pattern.
 
 > `mat-error` also works with **custom errors** set via `setErrors()` — not just built-in validators. If you call `this.form.controls.name.setErrors({ duplicateName: true })`, the field becomes invalid and `mat-error` shows automatically. Then use `hasError('duplicateName')` in the template. See [06-reactive-forms.md — Custom form errors](../../../angular/junior/en/10-reactive-forms.md#custom-form-errors--seterrors).
 

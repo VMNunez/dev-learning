@@ -45,7 +45,7 @@ A menu is always two parts wired together by a **template reference variable**: 
 
 | Situation | Use |
 |---|---|
-| 1–2 actions per row | Inline `matIconButton` (edit, delete) — see [01-button.md](./01-button.md) |
+| 1–2 actions per row | Inline `matIconButton` (edit, delete) — see [02-button.md](./02-button.md) |
 | 3+ actions, or actions that need text labels | `mat-menu` behind a `more_vert` button |
 | Page-level actions that don't fit the toolbar | `mat-menu` from a toolbar button |
 

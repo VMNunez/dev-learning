@@ -76,6 +76,6 @@ The form value is the `value` of the selected button — here a string like `'ac
 | One yes/no decision ("accept terms", "is admin") | `mat-checkbox` |
 | Tick several from a list ("notify by email, SM, push") | several `mat-checkbox` |
 | Pick exactly one from a small fixed set (status with 3 values) | `mat-radio-group` |
-| Pick exactly one from many options (country, department) | `mat-select` (see [06-select.md](./06-select.md)) |
+| Pick exactly one from many options (country, department) | `mat-select` (see [05-select.md](./05-select.md)) |
 
 The interview version: for a status field with **3 fixed values**, use radio buttons (or `mat-select` if the list grows long). Use a checkbox only when the answer is a single true/false.
