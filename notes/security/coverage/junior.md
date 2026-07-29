@@ -20,6 +20,7 @@ Every item must be explainable with a real example from one of the projects — 
 - Token-based auth (JWT) — the client stores the token and sends it with every request; the server validates it without storing anything; stateless; interviewers ask why stateless auth matters for scaling
 - Role-based access control — `EMPLOYEE` vs `MANAGER` in TimeTrack; enforced in Spring Boot with `@PreAuthorize` and in Angular with route guards; interviewers ask where each enforcement layer lives and why you need both
 - Generic authentication error messages — login failure always returns one generic message ("invalid credentials"), never "wrong password" or "email not found"; a specific message lets an attacker enumerate which emails are registered; interviewers ask why `BadCredentialsException` is handled with one generic message instead of two
+- Segregation of duties — a user must not be able to approve or sign off their own action in an approval workflow, even if their role would otherwise permit it; enforced by comparing the resource owner (resolved from the authenticated identity, never a client-supplied id) against the caller before the role check is allowed to succeed
 
 ## JWT
 - JWT structure: header, payload, signature — header says the algorithm (`HS256`); payload carries claims (`sub`, `iat`, `exp`, `role`); signature is an HMAC of header+payload using the secret; interviewers ask what each part contains and why
@@ -53,6 +54,7 @@ Every item must be explainable with a real example from one of the projects — 
   escape hatch is trusting attacker-controlled markup through `DomSanitizer.bypassSecurityTrustHtml`
 - CSRF (Cross-Site Request Forgery) — the attacker tricks a logged-in user's browser into making an unwanted request; works because cookies are sent automatically by the browser; JWT in the `Authorization` header prevents it because the browser does not attach headers automatically (only cookies)
 - Why you validate on the server even when you validate on the client — client-side validation can be bypassed with Postman or browser DevTools; the server is the only boundary you can trust; `@NotBlank` and `@Valid` in Spring Boot enforce this
+- Broken object-level authorization (BOLA) — a filter enforced on a collection endpoint (e.g. "employees see only active projects") is not automatically enforced on the matching detail endpoint; each endpoint must apply the rule independently, and the correct refusal is 404, not 403, so the resource's existence is never confirmed to a caller who should not see it
 - Mass assignment risk of exposing entities directly — if a controller binds the request body straight to the `@Entity`, a malicious client can set fields it should never control, like `role: "MANAGER"` or `active: true`, by adding them to the JSON body; DTOs close this hole because the request DTO only declares the fields a client is allowed to send; interviewers ask "what could go wrong if you skip the request DTO and bind the entity directly?"
 
 ## Login, disclosure, and transport
