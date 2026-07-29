@@ -2,6 +2,7 @@ package com.victor.timetrack.controller;
 
 import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
 import com.victor.timetrack.dto.request.RejectRequest;
+import com.victor.timetrack.dto.request.UpdateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.model.EntryStatus;
 import com.victor.timetrack.service.TimeEntryService;
@@ -64,7 +65,7 @@ public class TimeEntryController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PutMapping("/{id}")
     public ResponseEntity<TimeEntryResponse> update(@PathVariable Long id,
-                                                    @Valid @RequestBody CreateTimeEntryRequest request) {
+                                                    @Valid @RequestBody UpdateTimeEntryRequest request) {
         return ResponseEntity.status(200).body(timeEntryService.update(id, request));
     }
 

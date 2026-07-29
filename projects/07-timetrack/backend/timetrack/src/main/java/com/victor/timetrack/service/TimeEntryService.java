@@ -1,6 +1,7 @@
 package com.victor.timetrack.service;
 
 import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
+import com.victor.timetrack.dto.request.UpdateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.exception.BusinessRuleViolationException;
 import com.victor.timetrack.exception.InvalidStateTransitionException;
@@ -49,7 +50,7 @@ public class TimeEntryService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
 
-        validateEntryData(request, project);
+        validateEntryData(request.getDate(), request.getHours(), project);
 
         TimeEntry timeEntry = new TimeEntry();
         timeEntry.setUser(user);
@@ -175,7 +176,7 @@ public class TimeEntryService {
     }
 
     @Transactional
-    public TimeEntryResponse update(Long id, CreateTimeEntryRequest request) {
+    public TimeEntryResponse update(Long id, UpdateTimeEntryRequest request) {
         String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
@@ -193,8 +194,8 @@ public class TimeEntryService {
             throw new InvalidStateTransitionException("You can only update DRAFT entries");
         }
 
-        validateEntryData(request, project);
-        
+        validateEntryData(request.getDate(), request.getHours(), project);
+
         timeEntry.setProject(project);
         timeEntry.setDate(request.getDate());
         timeEntry.setHours(request.getHours());
@@ -247,8 +248,8 @@ public class TimeEntryService {
         timeEntryRepository.deleteById(id);
     }
 
-    private void validateEntryData(CreateTimeEntryRequest request, Project project) {
-        if (request.getDate().isAfter(LocalDate.now())) {
+    private void validateEntryData(LocalDate date, BigDecimal hours, Project project) {
+        if (date.isAfter(LocalDate.now())) {
             throw new BusinessRuleViolationException("Date cannot be in the future");
         }
 
@@ -256,7 +257,7 @@ public class TimeEntryService {
             throw new BusinessRuleViolationException("Project is not active");
         }
 
-        if (request.getHours().compareTo(MIN_HOURS) < 0 || request.getHours().compareTo(MAX_HOURS) > 0) {
+        if (hours.compareTo(MIN_HOURS) < 0 || hours.compareTo(MAX_HOURS) > 0) {
             throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
         }
     }
