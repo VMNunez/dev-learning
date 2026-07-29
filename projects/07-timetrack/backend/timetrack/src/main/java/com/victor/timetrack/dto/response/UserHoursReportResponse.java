@@ -2,8 +2,8 @@ package com.victor.timetrack.dto.response;
 
 import java.math.BigDecimal;
 
-public interface EmployeeHoursReportResponse {
+public interface UserHoursReportResponse {
     Long getUserId();
-    String getEmployeeName();
+    String getUserName();
     BigDecimal getTotalHours();
 }

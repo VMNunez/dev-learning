@@ -1,6 +1,6 @@
 package com.victor.timetrack.service;
 
-import com.victor.timetrack.dto.response.EmployeeHoursReportResponse;
+import com.victor.timetrack.dto.response.UserHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
 import com.victor.timetrack.dto.response.ReportSummaryResponse;
 import com.victor.timetrack.model.EntryStatus;
@@ -32,10 +32,10 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
-    public List<EmployeeHoursReportResponse> getHoursByEmployee(YearMonth month) {
+    public List<UserHoursReportResponse> getHoursByUser(YearMonth month) {
         LocalDate start = month.atDay(1);
         LocalDate end = month.atEndOfMonth();
-        return timeEntryRepository.getHoursByEmployee(start, end);
+        return timeEntryRepository.getHoursByUser(start, end);
     }
 
     @Transactional(readOnly = true)
