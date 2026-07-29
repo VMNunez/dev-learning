@@ -884,6 +884,7 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 - `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default
 - Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined`
 - Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute
+- Logical assignment operators — read `||=`, `&&=`, and `??=` as conditional assignment without confusing their different trigger conditions
 
 ### Numbers and strings
 
@@ -1009,6 +1010,7 @@ TypeScript as used in Angular and Spring Boot full-stack projects. Every item mu
 ### Errors and runtime boundaries
 
 - `Error` objects — preserve useful message, cause, name, and stack context when creating or wrapping a failure
+- Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text
 - `throw` control flow — stop normal execution with a meaningful error value that the correct boundary can handle
 - `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently
 - Synchronous throws vs promise rejections — trace failures through the correct call-stack or asynchronous observation path
