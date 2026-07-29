@@ -24,8 +24,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-- [ ] **[Medium]** `[backend]` — Decide what the reports do with soft-deleted projects and users: the aggregates filter on neither, so a project deactivated mid-month still appears as a report row with no `active` flag for the client to interpret. Keeping them is defensible (the hours *were* worked) — but return the flag in the projection so the behaviour is chosen, not accidental *(Effort: Small)*
-
 #### Low
 
 - [ ] **[Low]** `[backend]` — Extract a shared `currentUser()` / `isManager()` helper: the `SecurityContextHolder` → `findByEmail` lookup is copy-pasted across five `TimeEntryService` methods, `Objects.requireNonNull(getAuthentication())` appears six times, and `"ROLE_MANAGER"` is a magic string in both `TimeEntryService` and `ProjectService` — compare against the `Role` enum instead. Repetition in the one place that decides *who the caller is* is exactly where auth bugs hide *(Effort: Small)*
@@ -58,6 +56,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 ### Backend
 
+- 2026-07-29 · **[Medium]** `[backend]` — reports expose `active` flag for soft-deleted projects/users, hours kept unchanged → PLANNING §10, backend README, PROGRESS (coverage already had projection/GROUP BY concepts)
 - 2026-07-29 · **[Medium]** `[backend]` — `by-employee` renamed to `by-user` end to end (endpoint, DTO, getters, JPQL alias) — the query never filtered by role → architecture coverage/junior, PLANNING §8/§10, PROGRESS, backend README
 - 2026-07-29 · **[Medium]** `[backend]` — `UpdateTimeEntryRequest` split from `CreateTimeEntryRequest`, matching the projects Create/Update DTO pair → architecture coverage/junior, PLANNING §6, PROGRESS, backend README
 - 2026-07-29 · **[Medium]** `[backend]` — duplicated entry validation in `TimeEntryService` extracted into `validateEntryData` + `MIN_HOURS`/`MAX_HOURS` constants → architecture coverage/junior, PROGRESS, backend README
