@@ -165,6 +165,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `JwtUtil.isValid` parses the token once and checks the subject **and** `getExpiration().after(new Date())` explicitly, instead of relying on `extractUsername` throwing as a side effect of parsing. Makes the expiration check a deliberate decision in the code, not an accident of call order.
 
+### Reconciled report aggregates ✓
+
+`GET /api/reports/summary`, `by-project` and `by-employee` all filter to `EntryStatus.APPROVED` only, so the summary card's `approvedHours` always equals the sum of either detail table for the same month. `pendingHours` stays a separate, explicitly-named field and is never folded into a total — the DRAFT → SUBMITTED → APPROVED workflow only produces numbers a manager can trust if unapproved hours never leak into one.
+
 ### Two-layer validation on `hours` ✓
 
 `TimeEntry.hours` is constrained at both ends, deliberately kept as two layers rather than one: `@Column(precision = 4, scale = 2)` on the entity guarantees the DB never stores more precision than the field is meant to hold, and `@DecimalMin("0.5")` / `@DecimalMax("24")` / `@Digits(integer = 2, fraction = 2)` on `CreateTimeEntryRequest` reject an out-of-range or over-precise value at the HTTP boundary with a 400, before it ever reaches the service. `TimeEntryService` also keeps its own manual 0.5–24 check — redundant with the DTO validation for HTTP requests, but it protects the business rule for any future non-HTTP caller of the service.
