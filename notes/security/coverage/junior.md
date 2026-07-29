@@ -35,6 +35,7 @@ Every item must be explainable with a real example from one of the projects — 
 - Why passwords are hashed and not encrypted — if the database is stolen, the attacker cannot recover plaintext passwords from hashes without brute-forcing every possible input
 - BCrypt — a slow hashing algorithm with a built-in random salt; slow is intentional because it resists brute-force attacks; `BCryptPasswordEncoder` in Spring Boot uses it by default with 10 rounds
 - Salting — a random value added to the input before hashing; prevents two users with the same password from having the same hash in the database; BCrypt handles salting automatically
+- `SecureRandom` vs `Random` for security-sensitive values — `java.util.Random` is seeded and predictable (an attacker who observes enough output can reconstruct the seed and predict future values); `java.security.SecureRandom` draws from a cryptographically secure source and must be used for anything an attacker could exploit by guessing it, like a generated initial password or a reset token
 
 ## CORS
 - What an origin is — the combination of protocol + domain + port; `http://localhost:4200` and `http://localhost:8080` are two different origins even though they share the same domain; the basis for understanding why Angular and Spring Boot conflict in development
