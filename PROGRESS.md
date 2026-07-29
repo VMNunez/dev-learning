@@ -231,6 +231,7 @@ practical evidence alone also does not bypass incomplete or stale knowledge arti
 - Shared utility functions — DRY across components
 - Extract Method — duplicated business-rule checks pulled into one private helper (e.g. `validateEntryData`), called from both `create` and `update` instead of copy-pasted
 - Create/Update DTO pair — `UpdateTimeEntryRequest` kept separate from `CreateTimeEntryRequest` even though their fields match today, matching the existing `CreateProjectRequest`/`UpdateProjectRequest` pattern
+- Honest naming over implied guarantees — `GET /api/reports/by-employee` renamed to `/by-user` because the query groups by `TimeEntry.user` with no role filter, so the old name implied a filter the code never enforced
 - Single Responsibility — one component, one job
 - Shared models in `src/app/models/` — used across multiple pages
 - Shared services in `src/app/services/` — singleton, shared state
