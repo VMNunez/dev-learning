@@ -141,6 +141,10 @@ private ProjectResponse toResponse(Project project) {
 }
 ```
 
+### Create/Update DTO pair ✓
+
+Every resource (`Project`, `TimeEntry`) has a separate `Create*Request` and `Update*Request`, even where their fields are identical today — the two operations represent distinct intents, and an update-only field (like reactivating a soft-deleted record) can be added to one without touching the creation contract.
+
 ### Soft delete ✓
 
 `DELETE /api/projects/{id}` sets `active = false` — no data is permanently removed. Inactive projects cannot receive new time entries, but all historical data remains queryable.
