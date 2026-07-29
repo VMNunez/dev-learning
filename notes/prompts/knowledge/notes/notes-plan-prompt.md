@@ -8,8 +8,8 @@ English/Spanish pair when the evidence makes the correct level unambiguous.
 > **▶ Run first:** `coverage-prompt` for this exact topic and level — the coverage files are the input
 > this plan maps, and it refuses to proceed when they are missing or differ from the global mirror.
 > `coverage-verify` is recommended but **advisory**: it reports whether the coverage is complete for the
-> job target, and a missing, stale, or `gaps` verdict is recorded in this plan's report without stopping
-> the run.
+> job target. A consumed `superseded` verdict records a completed review cycle; a missing, stale, or
+> open `gaps` verdict is recorded without stopping the run.
 
 ## Configuration
 
@@ -59,13 +59,16 @@ belong there.
    line-count and read-to-EOF rule.
 3. Stop on `main`.
 4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
-5. Read `VERIFY` but never stop on it. Record its state as `verified` (present, `Verdict = complete`, and
-   its stored `Coverage SHA-256` matches the current SHA-256 of `COVERAGE`) or `unverified` naming which
-   of the three failed — missing, `gaps`/`superseded`, or stale SHA. When `unverified`, continue planning
-   the coverage as it stands and mark the resulting plan as built on unverified coverage in `PLAN` and
-   in the final summary. Do not send the workflow back to `coverage-verify`: after
-   `coverage-prompt → coverage-verify → coverage-prompt`, this planning run is the intended next step.
-   A new verification is optional later evidence, never a prerequisite for planning or authoring notes.
+5. Read `VERIFY` but never stop on it. Record one of three states:
+   - `verified` — `Verdict = complete` and its stored `Coverage SHA-256` matches the current `COVERAGE`;
+   - `reviewed` — `Verdict = superseded`, no open gaps, and `Superseded by Coverage SHA-256` matches
+     current `COVERAGE`, proving that a `coverage-prompt → coverage-verify → coverage-prompt` cycle
+     consumed the findings into these exact bytes;
+   - `unverified` — missing findings, an open `gaps` verdict, or any other stale SHA.
+   All three states continue planning. `reviewed` is a completed cycle, not a degraded gate and not a
+   reason to request another verification. When `unverified`, record the reason without blocking.
+   Victor may start a fresh reassessment later, but zero gaps is never required before planning or
+   authoring notes.
 6. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
    middle to be closed. Planning later levels is blocked just like authoring them.
 7. Preserve unrelated working-tree changes.
@@ -201,7 +204,7 @@ dispatched or fails twice, stop; there is no single-agent fallback.
 Plan status: current
 Coverage: notes/angular/coverage/junior.md
 Coverage SHA-256: <digest>
-Coverage verification: verified | unverified — <missing verify file | verdict gaps | stale SHA>
+Coverage verification: verified | reviewed | unverified — <complete current SHA | gaps consumed and superseded | missing/open/stale findings>
 Generated: YYYY-MM-DD
 
 ## 01 — Components and templates
@@ -306,8 +309,9 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 
 ## Final report
 
-Report topic, level, coverage fingerprint, the coverage-verification state (`verified` or `unverified`
-with the reason and the follow-up run needed), entry count, concept count, create/audit counts,
+Report topic, level, coverage fingerprint, the coverage-verification state (`verified`, `reviewed`, or
+`unverified`, with the reason; never prescribe repeated verification until zero gaps), entry count,
+concept count, create/audit counts,
 preserved-complete count, every `refined` entry with the count of `Pending additions` it now carries
 (and any broken freeze), every legacy classification decision, relocations, renumberings, split
 blockers,

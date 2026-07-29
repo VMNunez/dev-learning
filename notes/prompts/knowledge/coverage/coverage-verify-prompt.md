@@ -152,9 +152,10 @@ of the coverage it can trust.
 - `Verdict = complete` (SHA matching current coverage) means `notes-plan` plans against verified coverage.
 - `Verdict = gaps`, a missing verdict, or a stale SHA does not stop `notes-plan` — the plan proceeds and
   records the degraded gate state in its report. Feed `FINDINGS` to `coverage-prompt` in update mode: it
-  judges each open gap through its own Step 2 classification and adds or discards it. That changes the
-  coverage bytes, so this gate's stored SHA no longer matches — re-run coverage-verify, and the loop
-  closes when it returns `complete`.
+  judges each open gap through its own Step 2 classification and adds or discards it. Once that update
+  marks the findings `superseded`, the review cycle is complete and the next step is `notes-plan`.
+  Re-running `coverage-verify` until it returns zero gaps is never required. Victor may start a fresh
+  reassessment later when useful; that is a new optional pass, not continuation of the current loop.
 
 ## Final summary
 

@@ -12,4 +12,6 @@ Configuration from the user: $ARGUMENTS
 Rules:
 - Read-only over coverage: this gate never edits a coverage file. It writes only its findings file, self-report, and tracker.
 - Execute the cold completeness reviewer through canonical runtime tiers; never treat tier names as literal model IDs, and do not pass it size or freshness priors.
-- A `gaps` verdict blocks notes-plan. Feed the findings back through `coverage-prompt` update, then re-verify.
+- A `gaps` verdict is advisory and never blocks notes-plan. Feed the findings through one
+  `coverage-prompt` update; once consumed, continue to notes-plan. Any later re-verification is an
+  optional new reassessment, never a loop that must reach zero gaps.
