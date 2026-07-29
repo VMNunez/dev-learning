@@ -1,16 +1,28 @@
-# Minimum Coverage — Architecture
+# Junior Coverage — Architecture
 
-Patterns and decisions a junior at a Spanish consultancy must explain confidently.
-Not just what they are — but why they were chosen and what the tradeoff is.
-Every answer must be anchored to a real example from Victor's projects.
+Framework-neutral boundaries and design decisions a junior at a Spanish consultancy must understand,
+apply in a small codebase, and defend with concrete trade-offs.
 
-## REST
+## Architecture fundamentals
 
-- REST principles: stateless, resources, HTTP verbs, uniform interface — the four constraints that define REST; interviewers ask "is your API RESTful and how do you know?"
+- Software architecture vs design vs implementation — architecture sets system-wide boundaries and
+  dependency constraints, design patterns solve narrower recurring problems, and implementation is the
+  concrete code that realises those decisions
+- Layer vs tier — a layer is a logical separation of responsibility inside the code, while a tier is
+  a separately deployed or executed part of the system; three layers can still run in one backend tier
+- Logical module vs deployed service — a module groups a cohesive responsibility inside an application,
+  while a separately deployed service adds a network and operational boundary
+- Architectural drivers and quality attributes — connect a structural choice to requirements such as
+  maintainability, testability, security, performance, availability, and scalability and name the
+  trade-off rather than claiming one design maximises every quality
+
+## API and resource boundaries
+
+- REST architectural style — keep client and server responsibilities separate, make requests stateless,
+  and expose a uniform resource interface so calls do not depend on hidden conversational state
 - Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action
 - Resource modelling — paths identify resources and relationships, while HTTP methods express the
   operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model
-- Why REST and not GraphQL or RPC — the standard for Spanish consultancy APIs; REST is simpler to implement and understand at junior level
 - A name must not imply a guarantee the query does not enforce — an endpoint or field named after a
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
@@ -18,43 +30,59 @@ Every answer must be anchored to a real example from Victor's projects.
 
 ## Layered architecture
 
-- Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; they communicate only through HTTP; Angular never queries the database directly; the backend controls what data is exposed and who can access it
-- Controller → Service → Repository — what each layer owns and what it must not do; interviewers ask "where does business logic live?"
-- Service layer — the class (`@Service`) that holds business rules, validation beyond bean validation, and orchestration between repositories; interviewers ask "why not put this logic in the controller?" — because the controller would then be impossible to reuse from another entry point (a scheduled job, a CLI command) and impossible to unit test without starting the whole web layer
-- Repository pattern — places data-access operations behind an interface so application logic does
-  not contain queries directly; a JPA repository still carries persistence semantics and is not a
+- Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; the client
+  reaches the backend through an explicit network API boundary, commonly HTTP, and never queries the
+  database directly
+- Controller → Service → Repository — controllers translate HTTP, services apply and orchestrate
+  business rules, and repositories encapsulate persistence access
+- Service layer — the application boundary that holds business rules, validation beyond structural
+  input checks, and orchestration between persistence ports so another entry point can reuse the policy and tests can
+  exercise it without the web layer
+- Repository pattern — places data-access operations behind a contract so application logic does
+  not contain queries directly; a repository abstraction still carries persistence semantics and is not a
   promise that every storage technology is interchangeable
-- Why business logic belongs in the service — the controller must not decide; the repository must not know the rules; the service is the only place
-- Why the controller must not call the repository directly — bypasses the business rules layer; makes the code impossible to test in isolation
+- Business-rule placement — keep application rules outside delivery and persistence code so another
+  entry point can reuse them and focused tests do not require the web or database layer
+- Why the controller should not call the repository directly — it bypasses application policy, mixes
+  HTTP and persistence responsibilities, and makes changes and focused tests more brittle
 - MVC — separates input coordination, presentation, and application/domain state; it is not limited
   to server-rendered HTML and is a different design axis from controller/service/repository layering
 - MVC vs layered architecture — MVC organises interaction and presentation responsibilities, while
   layers organise dependency direction; a system can use both without one being a subtype of the other
-- State machine pattern — a workflow where status transitions follow fixed rules (DRAFT → SUBMITTED → APPROVED/REJECTED); the service enforces which transitions are valid
+- Layered dependency direction — higher-level policy should not depend directly on delivery or
+  persistence details; dependencies crossing a boundary point through an appropriate contract
 
 ## DTO pattern
 
-- Why not expose entities directly — the entity belongs to the database layer; exposing it couples your API shape to your DB schema; a field rename breaks all clients
-- Request DTO vs Response DTO — validate on the way in (client data is untrusted); control what goes out (you built it, you trust it)
-- Where mapping happens — in the service layer, not the controller; the controller never sees the entity
+- Why not expose persistence entities directly — a JPA entity is coupled to persistence concerns;
+  exposing it couples the API shape to the database mapping and can disclose fields unintentionally
+- Request DTO — represent and structurally validate untrusted input without confusing transport
+  validation with business invariants
+- Response DTO — shape a stable outward representation and minimise field disclosure independently of
+  the internal persistence or domain model
+- Mapping placement — translate transport DTOs at the application/API boundary and persistence models
+  at the persistence boundary; avoid making controllers own business rules or exposing entities as contracts
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
-- Separate Create/Update request DTOs even when their fields match today — they represent distinct
-  intents on the same resource, and an update-only field (e.g. reactivating a soft-deleted record) can
-  be added to one without disturbing the creation contract; picking one pattern for one resource and a
-  different one for another reads as inconsistency, not pragmatism
+- Create vs Update request DTOs — separate them when the operations have different validation,
+  optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match
+- Backward-compatible API evolution — treat public fields and semantics as consumer contracts and
+  prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients
 
 ## Data access decisions
 
-- Soft delete vs hard delete — `active = false` instead of `DELETE FROM`; preserves historical data, prevents orphaned records, allows recovery
-- Pagination — why you always paginate list endpoints in production; returning 100,000 rows crashes the server and the client
+- Soft delete vs hard delete — retain a record when audit, recovery, or historical references justify
+  the extra filtering and uniqueness complexity; otherwise permanent deletion may be the simpler contract
+- Pagination — bound large collection responses when volume can grow, choosing an explicit page or
+  cursor contract instead of assuming every list is safely returned at once
 - Consistency boundary — one business operation may require several writes to succeed or fail as a
   unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics
 
-## Angular patterns
+## Presentation boundaries
 
-- Smart / dumb component pattern — the smart component fetches data and handles events; the dumb component only displays and emits; separation makes testing easier and code more readable
-- Coordinator pattern — a smart page that delegates display to multiple dumb children; all state lives in the coordinator; interviewers ask "how do you manage state in Angular?"
-- HTTP interceptor as a cross-cutting concern — one interceptor adds auth headers and handles global errors for the entire app; the alternative (doing it in every service) breaks DRY
+- Container / presentational component pattern — a container owns feature integration while focused
+  presentation components render inputs and emit user intent without fetching their own remote data
+- Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
+  children, while shared or independently reusable state may belong in a service rather than in the page
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
 
 ## Testing strategy
@@ -62,8 +90,8 @@ Every answer must be anchored to a real example from Victor's projects.
 - Why you test the service layer independently — business rules live there; testing them directly without HTTP gives fast, focused feedback
 - Testability as a design signal — a class that cannot be exercised without booting unrelated layers
   often has hidden dependencies or mixed responsibilities
-- Contract tests at boundaries — when two layers or services exchange a DTO, test the contract where
-  drift would break integration rather than duplicating every unit test
+- Test doubles as coupling feedback — a unit test that needs many unrelated mocks often signals a class
+  with too many responsibilities or hidden boundary dependencies
 
 ## Design qualities and boundaries
 
@@ -71,28 +99,80 @@ Every answer must be anchored to a real example from Victor's projects.
   blast radius of a change
 - Cohesion — how strongly a module's responsibilities belong together; high cohesion is the reason
   related business rules stay in one service or feature
+- Encapsulation and information hiding — expose the smallest stable module contract callers need and
+  keep implementation details private so internal changes do not ripple through the codebase
 - Dependency direction — outer delivery and persistence details may depend on application contracts,
   while business rules should not depend on HTTP or database APIs
+- Dependency graph and circular dependencies — follow which module depends on which and break a cycle
+  by relocating responsibility or introducing a justified boundary, not by hiding it with global access
+- Abstraction vs interface — an abstraction defines the stable idea or contract callers depend on,
+  while an interface is one language mechanism that can express it and is not valuable by itself
+- Dependency injection vs Dependency Inversion — injection supplies a collaborator from outside,
+  while the SOLID principle directs high-level policy to depend on abstractions; injection can be used
+  without achieving inversion
+- Dependency injection vs service locator — explicit constructor or framework injection reveals a
+  class's collaborators, while pulling dependencies from a global registry hides them and weakens tests
+- Boundary failure ownership — translate infrastructure and domain failures at the boundary that has
+  enough context to produce a stable outward error contract without leaking framework exceptions
 - Package by feature vs package by layer — feature packaging keeps one use case together; layer
   packaging makes technical roles obvious but scatters a change across the tree
+- Horizontal layering vs vertical feature slices — layers group code by technical role, while a
+  feature slice groups the delivery, application, and persistence pieces that change for one capability
 - Composition over inheritance — assembling focused collaborators avoids inheriting behaviour and
   state a subtype does not need
+- Composition vs delegation — composition assembles or owns collaborators, while delegation forwards a
+  responsibility to one of them; they often work together but describe different relationships
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
-- Extract Method / DRY — identical business logic copy-pasted across two methods (e.g. the same
-  validation block in a service's `create` and `update`) is a bug waiting to diverge, not just
-  duplication; pulling it into one private helper (plus hoisting repeated literals to named constants)
-  means a rule changes in exactly one place
+- DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
+  superficially similar code with different reasons to change into one abstraction
+- Extract Method — move a coherent block behind a well-named method when that clarifies intent or
+  centralises one repeated rule, not merely to reduce line count
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
   complexity without ownership is simply a defect
 - Monolith vs microservices awareness — a monolith deploys one application and keeps local calls and
   transactions simple; microservices add independent deployment but also network failure, distributed
   data, and operational cost, so a junior project should not split without a real scaling boundary
+- Modular monolith vs unstructured monolith — one deployment can still enforce feature boundaries and
+  dependency direction; a monolith becomes problematic when unrelated responsibilities freely couple
+- Synchronous request vs asynchronous event — a direct call gives an immediate result and temporal
+  coupling, while an event decouples timing but introduces delayed consistency, delivery, and ordering concerns
+
+## Business behaviour
+
+- Domain rule vs application orchestration — a domain rule states what is valid in the business,
+  while application orchestration coordinates repositories and collaborators to complete a use case
+
+## Workflow modelling
+
+- State machine pattern — model a workflow as explicit states and allowed transitions so invalid moves
+  such as APPROVED → DRAFT are rejected at one business boundary
+
+## Boundary patterns in maintained code
+
+- Adapter pattern — translate an external or incompatible interface into the contract the application
+  expects so vendor details do not spread through business code
+- Facade pattern — expose a small use-case-oriented interface over a complicated subsystem without
+  turning the facade into a second home for all business logic
+
+## Architecture decisions and review
+
+- Architectural decision record (ADR) — capture the context, chosen option, rejected alternatives, and
+  consequences of a material decision so later maintainers know why the constraint exists
+- Architecture diagram as a code claim — a small context, container, component, or dependency diagram
+  must match real runtime and dependency boundaries rather than presenting aspirational boxes
+- Architecture-focused code review — trace a change through its dependency graph and verify that each
+  responsibility and dependency still respects the declared boundaries before approving it
 
 ## SOLID
 
-- Single Responsibility — one class, one reason to change; controllers handle HTTP, services handle rules, repositories handle data
-- Open/Closed — extend behaviour without modifying existing code; add a new feature by adding new code, not changing existing code
-- Liskov Substitution — a subtype can replace its parent without breaking the caller; why `JpaRepository` implementations are interchangeable
-- Interface Segregation — prefer small specific interfaces over one large one; `UserDetailsService` has one method, not fifteen
-- Dependency Inversion — depend on abstractions, not concrete classes; the entire Spring DI model and Angular's `inject()` are built on this principle
+- Single Responsibility — split a class when unrelated actors or policies make it change for different
+  reasons, not simply because it has many lines or methods
+- Open/Closed — keep stable abstractions open to extension without treating existing code as forbidden
+  to change when requirements or a poor abstraction demand it
+- Liskov Substitution — a subtype can replace its parent only when it preserves the caller-visible
+  contract, including valid inputs, promised outputs, and invariants
+- Interface Segregation — give a client the smallest cohesive contract it needs so implementations and
+  tests are not forced to depend on unrelated operations
+- Dependency Inversion — high-level policy depends on stable abstractions rather than lower-level
+  details; dependency injection is a delivery mechanism that may help but does not guarantee this design

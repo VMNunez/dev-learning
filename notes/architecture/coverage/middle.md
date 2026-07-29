@@ -18,5 +18,16 @@ Concepts expected when a developer begins owning boundaries and trade-offs acros
 
 ## Design patterns in context
 
-- Strategy, Factory, Builder, Observer, and Decorator — recognise the problem each pattern solves and avoid applying names without the corresponding pressure
+- Strategy pattern — vary behaviour behind a stable contract when independent algorithms or policies
+  must evolve without branching through the caller
+- Factory pattern — own creation policy when selecting and assembling concrete collaborators is a
+  responsibility that should not leak into consumers
+- Builder pattern — construct complex objects step by step when optional combinations or readability
+  justify more machinery than a constructor or factory method
+- Observer pattern — decouple publishers from subscribers while defining lifecycle, ordering, and
+  failure behaviour explicitly
+- Decorator pattern — add behaviour around a collaborator without subclass proliferation while
+  preserving the wrapped contract
+- Contract-testing strategy — define executable provider/consumer boundary checks when independently
+  evolving services or modules would otherwise discover contract drift only after integration
 - Pattern trade-offs — compare added indirection with the concrete variation or coupling the pattern removes
