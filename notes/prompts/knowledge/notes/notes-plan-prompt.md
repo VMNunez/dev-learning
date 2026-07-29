@@ -54,9 +54,11 @@ belong there.
 1. Read the active adapter, `_session-rules.md`, `_note-quality-standard.md`, and all three topic
    coverage files.
 2. Inventory every English and Spanish note in all three level directories. Read every English note
-   end-to-end before classifying it; `en/` is canonical. Verify that its Spanish counterpart exists
-   and has matching substantive headings before relocating either file. Follow the repository's
-   line-count and read-to-EOF rule.
+   end-to-end before classifying it; `en/` is canonical. Verify whether its Spanish counterpart exists
+   and, when present, has matching substantive headings before relocating either file. A legacy note
+   that exists only in English may still be renumbered inside the same level under Planning algorithm
+   step 6; it may not be relocated across levels without its Spanish counterpart. Follow the
+   repository's line-count and read-to-EOF rule.
 3. Stop on `main`.
 4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
 5. Read `VERIFY` but never stop on it. Record one of three states:
@@ -101,9 +103,9 @@ sit under `junior/` even when their actual content belongs to middle or senior.
    `Unassigned` is only for material not owned by any coverage bullet at any level, duplicates, or a
    blocked mixed-level file already listed in the split section.
 
-Before planning continues, report the classification decision for every pre-existing pair as
-`keep`, `move <current level> -> <correct level>`, `renumber NN -> MM`, `unassigned`, or
-`requires split`.
+Before planning continues, report the classification decision for every pre-existing pair or
+English-only note as `keep`, `move <current level> -> <correct level>`, `renumber NN -> MM`
+(`English-only` when applicable), `unassigned`, or `requires split`.
 
 ## Coverage fingerprint
 
@@ -133,12 +135,16 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    two-digit number. Middle and senior continue their level-specific sequence from `01`; they build
    on a consolidated earlier level rather than reintroducing the whole topic. When the correct route
    needs a chapter between two existing ones — including when one existing file carries more than one
-   teachable mental model and must become two — renumbering existing bilingual pairs inside the same
-   level is permitted so that filename order and study order stay identical. A renumbering moves the
-   English and Spanish files together, never crosses a level boundary, preserves both slugs and all
-   prose byte-for-byte apart from link corrections, updates every repository-relative link that
-   targets a renumbered file, and is reported per pair as `renumber NN -> MM`. A renumbered pair is
-   still an existing note and keeps `Action: audit`. Dividing one file's prose remains the notes
+   teachable mental model and must become two — renumbering existing notes inside the same level is
+   permitted so that filename order and study order stay identical. When both languages exist, the
+   renumbering moves the English and Spanish files together. When a legacy note exists only in English,
+   Victor's standing authorization permits renumbering that English file alone; the plan assigns the
+   same new prefix to the missing Spanish path so `notes-audit` creates it later. Never create a fake
+   Spanish copy or translate prose in this planner. Either form never crosses a level boundary,
+   preserves every existing slug and all prose byte-for-byte apart from link corrections, updates
+   every repository-relative link that targets the renumbered file, and is reported as
+   `renumber NN -> MM` (add `English-only` when applicable). A renumbered existing English note keeps
+   `Action: audit`. Dividing one file's prose remains the notes
    author/reviewer pipeline's work, not this planner's: the plan declares both entries and their
    paths, and the new file's entry is `Action: create`. This is a same-level route repair and never
    populates `## Legacy notes requiring split`, which stays reserved for pairs whose sections are
@@ -289,8 +295,9 @@ To hand a refined file back to the normal pipeline, Victor sets its status back 
 
 ## Update mode
 
-Write `PLAN` plus any unambiguous bilingual relocations, same-level renumberings, required local-link
-corrections, and path reconciliations in already-existing affected sibling plans. Do not alter note prose. Before staging
+Write `PLAN` plus any unambiguous bilingual relocations, permitted same-level bilingual or English-only
+renumberings, required local-link corrections, and path reconciliations in already-existing affected
+sibling plans. Do not alter note prose. Before staging
 and before committing, run `git status --short`; stage only these declared outputs and verify every
 moved pair and affected link. Commit:
 
