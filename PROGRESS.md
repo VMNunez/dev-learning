@@ -331,6 +331,7 @@ practical evidence alone also does not bypass incomplete or stale knowledge arti
 - `SecurityContextHolder` — thread-local storage where `JwtFilter` stores the authenticated user for the current request; controllers read from it to know who is logged in
 - `OncePerRequestFilter` — base class for filters that run exactly once per request; extend it to write a custom filter
 - `JwtFilter` — reads the `Authorization` header, validates the JWT, sets the user in `SecurityContextHolder`; runs before every controller
+- `JwtUtil.isValid` explicit expiration check — `getExpiration().after(new Date())` decided in code, not left as a side effect of `parseClaims` throwing on an expired token
 - `.requestMatchers("/api/auth/**").permitAll()` — make specific routes public without a token
 - `.anyRequest().authenticated()` — require a valid JWT for every other route
 - `.addFilterBefore(filter, class)` — insert a custom filter into the chain before Spring's default one
