@@ -424,6 +424,14 @@ sentence) · the task list as checkboxes. Task line:
 a partial-scope run can rewrite its own tier's tasks and leave the other tier's untouched:
 `- [ ] **[High]** `[backend]` — [Task description] *(Effort: [Small])*`
 
-Preserve tasks already checked off (✅) — never delete completed items; only update or add. The backlog
+**Closed tasks live in a `## Closed` ledger, not in the task list.** When Victor finishes a task, the
+in-session `backlog-task-close` skill pushes its concept into coverage / README / PLANNING / PROGRESS
+and then collapses the verbose entry into one dated ledger line ending in `→ where the concept landed`
+(a no-code-change verdict is recorded as `DECISION, no code change`). That ledger is **append-only and
+authoritative**: read it before writing findings and never re-raise a finding it already closes —
+especially a deliberate design decision, whose only surviving record is that line. A review run never
+deletes, rewrites or reorders ledger lines; it only adds new `[ ]` tasks. Any older backlog that still
+carries checked-off (✅) entries inline is fine — leave them where they are, they collapse as Victor
+closes the rest. The backlog
 lives in the project folder, so it follows the project's normal **feature-branch → PR → main** workflow
 — it is **not** a direct-to-main study file and is **not** auto-committed.
