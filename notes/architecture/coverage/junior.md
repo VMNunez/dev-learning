@@ -71,6 +71,10 @@ Every answer must be anchored to a real example from Victor's projects.
   state a subtype does not need
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
+- Extract Method / DRY — identical business logic copy-pasted across two methods (e.g. the same
+  validation block in a service's `create` and `update`) is a bug waiting to diverge, not just
+  duplication; pulling it into one private helper (plus hoisting repeated literals to named constants)
+  means a rule changes in exactly one place
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
   complexity without ownership is simply a defect
 - Monolith vs microservices awareness — a monolith deploys one application and keeps local calls and
