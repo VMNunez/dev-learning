@@ -336,7 +336,7 @@ APPROVED     REJECTED ─────────┘
 > in `backend/README.md` as a known limitation, not as an oversight.
 
 **Reporting rules** *(decided 2026-07-28)*
-- **Every hours figure in a report counts `APPROVED` entries only.** All three endpoints — `summary`, `by-project`, `by-employee` — apply the identical filter, so the summary card always equals the sum of the table beneath it
+- **Every hours figure in a report counts `APPROVED` entries only.** All three endpoints — `summary`, `by-project`, `by-user` — apply the identical filter, so the summary card always equals the sum of the table beneath it
 - `pendingHours` (SUBMITTED) is the one exception and stays a **separate, explicitly-named field**. It is a workload signal for the manager — "this much is waiting for you" — and is never folded into a total
 - `totalEntries` counts `APPROVED` entries, for the same reason
 - DRAFT and REJECTED never appear in any report
@@ -344,7 +344,7 @@ APPROVED     REJECTED ─────────┘
 > **Why.** The whole DRAFT → SUBMITTED → APPROVED state machine exists so the manager's numbers can be
 > trusted — these are the hours a company bills and pays against. Mixing unapproved hours into a total
 > silently defeats it. This rule was never written in §8, and the code diverged as a direct result:
-> `getHoursByProject`/`getHoursByEmployee` filtered to APPROVED (the deliberate 2026-07-22 fix) while
+> `getHoursByProject`/`getHoursByUser` filtered to APPROVED (the deliberate 2026-07-22 fix) while
 > `getSummary` counted APPROVED + SUBMITTED, so the same month produced two different totals.
 >
 > **Consequence for the code:** `totalHours` (= approved + pending) is the field that *caused* the
@@ -465,18 +465,22 @@ field-level map the reactive forms consume to show a message under each input (S
 |---|---|---|---|---|
 | `GET /api/reports/summary` | MANAGER | Month totals: approved hours, pending hours, approved entry count | `month` — String `YYYY-MM`, required | `200` + `ReportSummaryResponse` — `approvedHours`, `pendingHours`, `totalEntries` · `400` month missing or malformed |
 | `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours` |
-| `GET /api/reports/by-employee` | MANAGER | Hours grouped by employee | `month` — required | `200` + `List<EmployeeHoursReportResponse>` — `userId`, `userName`, `totalHours` |
+| `GET /api/reports/by-user` | MANAGER | Hours grouped by user | `month` — required | `200` + `List<UserHoursReportResponse>` — `userId`, `userName`, `totalHours` |
 
 > **All three count `APPROVED` entries only** — the §8 reporting rule. `pendingHours` is the single
 > deliberate exception and is never folded into a total, which is why `totalHours` was removed from
 > `ReportSummaryResponse`: it was the field that let the summary disagree with the tables.
 >
-> **Field naming (decided 2026-07-28):** the by-employee projection getter is renamed
-> `getEmployeeName()` → `getUserName()`, with its JPQL `AS` alias renamed to match. The tiebreaker was
-> objective rather than stylistic: the same DTO already exposes **`userId`**, so `employeeName` made the
-> projection inconsistent with itself, and `projectId`/`projectName` sets the sibling precedent.
+> **Endpoint and field naming (decided 2026-07-29):** `GET /api/reports/by-employee` is renamed to
+> `/by-user`, and `EmployeeHoursReportResponse`/`getEmployeeName()` to `UserHoursReportResponse`/
+> `getUserName()`, with the JPQL `AS` alias renamed to match. The reason is not stylistic: the query
+> groups `TimeEntry.user` with no role filter, so a user promoted from EMPLOYEE to MANAGER still shows
+> up with their historical hours — correctly, since those hours are still billable. `by-employee`
+> implied a role guarantee the code never enforced; `by-user` names what the query actually returns.
+> Adding the missing filter was rejected — it would hide real billable hours. Done while Step 7a has
+> not started, so the endpoint had zero consumers to migrate.
 >
-> Both aggregates group by **id and name** (not name alone), so two employees with the same display name
+> Both aggregates group by **id and name** (not name alone), so two users with the same display name
 > stay separate rows and a rename does not split history; the id is also the frontend's row key.
 
 > **Collection endpoints return the full list (no `Pageable`) by design** — see the §20 tradeoff line;
@@ -559,7 +563,7 @@ src/main/java/com/victor/timetrack/
 │       ├── TimeEntryResponse.java               (flattened user/project names + status, no entities)
 │       ├── ReportSummaryResponse.java         (approvedHours, pendingHours, totalEntries)
 │       ├── ProjectHoursReportResponse.java    (interface projection — hours grouped by project)
-│       ├── EmployeeHoursReportResponse.java   (interface projection — hours grouped by employee)
+│       ├── UserHoursReportResponse.java       (interface projection — hours grouped by user)
 │       └── ErrorResponse.java                 (uniform JSON error body from GlobalExceptionHandler)
 ├── exception/
 │   ├── GlobalExceptionHandler.java        (@RestControllerAdvice — returns clean JSON errors)
@@ -1182,7 +1186,7 @@ Hours by project                    Hours by employee
   labelled "Total hours": it counts APPROVED only (§8), and a label that says "total" over a filtered
   number is the exact mismatch the §8 reporting rule was written to remove — the same correction already
   applied to the manager dashboard's card
-- "Employees" — the **length of the by-employee array**, not a summary field
+- "Employees" — the **length of the by-user array**, not a summary field
 - "Projects" — the **length of the by-project array**, not a summary field
 
 All three report calls run in parallel with `forkJoin` on month change. Because every aggregate counts
@@ -1268,11 +1272,11 @@ This is the first Spring Boot project. Each step introduces one new concept.
 
 ### Step 6 — Reports ✅
 - Aggregate queries with JPQL
-- Summary by project and by employee for a given month
+- Summary by project and by user for a given month
 - **New concepts:** JPQL aggregation queries, query filters with `@RequestParam`, interface projections for query results
 - **Review concepts:** `@PreAuthorize` (reports are MANAGER only)
 - **Done condition:** `Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours }`
-- **Concept learned:** interface projections (`ProjectHoursReportResponse`, `EmployeeHoursReportResponse`) let Spring Data build a proxy per result row directly from `SELECT ... AS alias` — no class, no manual mapping — as long as each getter's name matches an alias exactly (Java Bean convention: strip `get`, lowercase first letter). `YearMonth` is received in the controller but converted to a `LocalDate` start/end range in the service (business logic), not the controller. Repositories are organized by **entity** (`TimeEntryRepository` owns both report queries, since their `FROM` is `TimeEntry`), a different axis than controllers/services, which are organized by **feature** (`ReportController`/`ReportService`). Found and fixed two real bugs surfaced by the Postman test pass: `MissingServletRequestParameterException` and `MethodArgumentTypeMismatchException` aren't `RuntimeException`s / weren't specifically handled, so a missing or malformed `?month=` fell through to `500` — worse, the missing-param case revealed a genuine Spring Security gotcha where Spring's internal forward to `/error` gets rejected as unauthenticated (`401`) because `JwtFilter` skips error dispatches by default and `/error` was never excluded from `.anyRequest().authenticated()`.
+- **Concept learned:** interface projections (`ProjectHoursReportResponse`, `UserHoursReportResponse`) let Spring Data build a proxy per result row directly from `SELECT ... AS alias` — no class, no manual mapping — as long as each getter's name matches an alias exactly (Java Bean convention: strip `get`, lowercase first letter). `YearMonth` is received in the controller but converted to a `LocalDate` start/end range in the service (business logic), not the controller. Repositories are organized by **entity** (`TimeEntryRepository` owns both report queries, since their `FROM` is `TimeEntry`), a different axis than controllers/services, which are organized by **feature** (`ReportController`/`ReportService`). Found and fixed two real bugs surfaced by the Postman test pass: `MissingServletRequestParameterException` and `MethodArgumentTypeMismatchException` aren't `RuntimeException`s / weren't specifically handled, so a missing or malformed `?month=` fell through to `500` — worse, the missing-param case revealed a genuine Spring Security gotcha where Spring's internal forward to `/error` gets rejected as unauthenticated (`401`) because `JwtFilter` skips error dispatches by default and `/error` was never excluded from `.anyRequest().authenticated()`.
 
 ### Step 7 — Angular frontend (split into 7a / 7b / 7c / 7d)
 
@@ -1401,7 +1405,7 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `UserService.create` | Saves the user with a generated password, stored BCrypt-hashed | duplicate email → throws (409); the returned `generatedPassword` is **not** what is persisted (the stored value is a hash that `matches()` it); two consecutive creates produce different passwords |
 | `UserService.changePassword` | Replaces the caller's hash when the current password matches | wrong current password → throws `InvalidCurrentPasswordException` (**400**, `fieldErrors.currentPassword` — the §8 status ruling); the new hash differs from the old one and `matches()` the new password |
 | `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password |
-| `ReportService.getHoursByProject` / `.getHoursByEmployee` | Groups hours per project / per employee for the month | empty month → returns empty list, not null; only the statuses §8 declares reportable are summed |
+| `ReportService.getHoursByProject` / `.getHoursByUser` | Groups hours per project / per user for the month | empty month → returns empty list, not null; only the statuses §8 declares reportable are summed |
 | `ReportService.getSummary` | Returns the month's approved hours, pending hours and approved entry count | empty month → all zeros, no exception; `approvedHours` **equals the sum of `getHoursByProject`** for the same month (the §8 reconciliation rule, asserted); DRAFT and REJECTED entries change no field |
 
 **The one §8 rule with no unit test, stated deliberately:** "a user deactivated *after* their token was
