@@ -5,10 +5,10 @@
 
 Recommendation-ledger reconciliation: no recommendation was created or reproduced by this run, so `_recommendation-ledger.md` is unchanged.
 
-1. **Plan vs reality** — The cold market analyst and both whole-file reviewers ran as planned; the reviewers' findings materially corrected level placement, ownership, and item granularity. There is no separate whole-artifact verifier, so soundness beyond those cold reviews rests on the orchestrator's factual and mechanical checks.
-2. **Report discipline** — All three subagent reports followed their requested evidence and acceptance formats; none required trimming or discarding.
-3. **Failures & retries** — No subagent failed and no re-dispatch was required. The sandboxed content commit could not create `.git/index.lock`; the approved scoped retry succeeded.
-4. **Rule friction and rule breaches** — The first mechanical mirror rewrite changed line endings across the generated file; rebuilding from the committed bytes reduced the final diff to the declared TypeScript section. All guards, dispatches, EOF proofs, validations, commits, and tracker close-out ran; no mandatory rule was skipped.
+1. **Plan vs reality** — The verify-gap fast path correctly reduced the run to four proposed gaps and one scoped cold reviewer; the reviewer accepted all four after reading the finished three-level artifact. No independent whole-artifact verifier exists beyond that mandated review.
+2. **Report discipline** — The reviewer returned the required EOF proof, four item verdicts, placement, ownership, duplication, factual checks, and no material narrative required trimming.
+3. **Failures & retries** — No subagent failed and no re-dispatch was required. The sandboxed staging attempt could not create `.git/index.lock`; the approved scoped retry succeeded.
+4. **Rule friction and rule breaches** — The mirror parity check initially exposed one extra blank line introduced during the mechanical rebuild; it was removed before commit and parity then passed. Guards, the 1/1 required dispatch, review, validations, content commit, and close-out all ran; no mandatory step was skipped.
 5. **Verdict** — pipeline clean.
 
-Close-out evidence: declared coverage outputs landed in `d9cc1d4`; required dispatches 3/3 completed (one market analyst and two cold reviewers); `coverage-prompt.md` is 241 lines; report and tracker commit follows.
+Close-out evidence: declared coverage outputs landed in `8475fb5`; required dispatches 1/1 completed (one scoped cold reviewer; market analyst and second reviewer skipped by the verify-gap fast-path contract); `coverage-prompt.md` is 241 lines; report and tracker commit follows.
