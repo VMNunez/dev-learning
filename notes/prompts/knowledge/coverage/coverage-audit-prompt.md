@@ -70,7 +70,9 @@ Allowed actions:
 - move a concept between junior, middle, and senior;
 - route a concept to its owning topic through the inbox;
 - correct factual errors;
-- delete duplicates, obsolete claims, and non-concepts;
+- delete duplicates, non-concepts, and plainly wrong claims — never a real concept: anything that
+  names a genuine concept is moved to another level or routed to its owning topic instead, and when
+  in doubt between deleting and moving, move;
 - split or merge unclear sections.
 
 No numeric item budget or section-size target exists. Do not add or remove concepts to reach a count.

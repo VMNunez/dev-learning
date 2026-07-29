@@ -112,8 +112,17 @@ Read all three topic files to EOF and classify every existing item:
 - **MOVE DOWN** — belongs in junior while reviewing middle.
 - **MOVE UP** — belongs in middle while reviewing junior.
 - **MOVE TO SENIOR** — requires senior-level ownership, production scale, platform depth, or justified specialisation.
-- **DELETE** — incorrect, obsolete, duplicated, non-conceptual, or irrelevant.
+- **DELETE** — duplicated, non-conceptual, or plainly wrong text (see the limit below).
 - **ROUTE** — belongs to another topic; keep only a concrete implementation twin when justified.
+
+**DELETE never removes a real concept.** It applies to exact duplicates (the surviving copy stays),
+non-conceptual filler such as dictionary definitions, and claims that are simply wrong with no
+correct concept behind them. Anything that names a genuine concept is relocated instead — junior,
+middle, senior, or another topic's inbox. "Too basic", "too advanced", "not on the current market
+floor", and "the file is getting long" are reasons to MOVE, never to DELETE. Items already present in
+the file are assumed to be there on purpose — often because they appear in the repository's own
+projects — so when in doubt between deleting and moving, move. Every DELETE is listed individually in
+the final summary with its reason.
 
 Correct factual errors before making scope decisions. Apply this topic's inbox entries through the same classification and clear every processed entry. Apply each open gap from `verify-{LEVEL}.md` the same way — judge it against the standard, add or discard it, and say which in the summary; a gap the gate raised is a proposal, never a pre-approved item.
 
