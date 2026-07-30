@@ -11,10 +11,7 @@ import com.victor.timetrack.model.*;
 import com.victor.timetrack.repository.ProjectRepository;
 import com.victor.timetrack.repository.TimeEntryRepository;
 import com.victor.timetrack.repository.TimeEntrySpecifications;
-import com.victor.timetrack.repository.UserRepository;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,30 +19,28 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TimeEntryService {
     private final TimeEntryRepository timeEntryRepository;
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
     private static final BigDecimal MIN_HOURS = new BigDecimal("0.5");
     private static final BigDecimal MAX_HOURS = new BigDecimal("24");
+
 
     public TimeEntryService(
             TimeEntryRepository timeEntryRepository,
             ProjectRepository projectRepository,
-            UserRepository userRepository) {
+            AuthenticatedUserProvider authenticatedUserProvider) {
         this.timeEntryRepository = timeEntryRepository;
         this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
+        this.authenticatedUserProvider = authenticatedUserProvider;
     }
 
     @Transactional
     public TimeEntryResponse create(CreateTimeEntryRequest request) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        User user = authenticatedUserProvider.currentUser();
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
@@ -66,9 +61,7 @@ public class TimeEntryService {
 
     @Transactional
     public TimeEntryResponse submit(Long id) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
@@ -94,9 +87,7 @@ public class TimeEntryService {
 
     @Transactional
     public TimeEntryResponse approve(Long id) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
@@ -117,9 +108,7 @@ public class TimeEntryService {
 
     @Transactional
     public TimeEntryResponse reject(Long id, String rejectionNote) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
@@ -141,10 +130,7 @@ public class TimeEntryService {
 
     @Transactional(readOnly = true)
     public List<TimeEntryResponse> findByFilter(Long userId, Long projectId, EntryStatus status, YearMonth month) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        boolean isManager = Objects.requireNonNull(auth).getAuthorities().stream()
-                .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
+        boolean isManager = authenticatedUserProvider.isManager();
 
         LocalDate start = null;
         LocalDate end = null;
@@ -155,9 +141,7 @@ public class TimeEntryService {
         }
 
         if (!isManager) {
-            String email = auth.getName();
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+            User user = authenticatedUserProvider.currentUser();
             userId = user.getId();
         }
 
@@ -177,9 +161,7 @@ public class TimeEntryService {
 
     @Transactional
     public TimeEntryResponse update(Long id, UpdateTimeEntryRequest request) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        User user = authenticatedUserProvider.currentUser();
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
@@ -207,9 +189,7 @@ public class TimeEntryService {
 
     @Transactional
     public TimeEntryResponse reopen(Long id) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
@@ -231,9 +211,7 @@ public class TimeEntryService {
 
     @Transactional
     public void delete(Long id) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 

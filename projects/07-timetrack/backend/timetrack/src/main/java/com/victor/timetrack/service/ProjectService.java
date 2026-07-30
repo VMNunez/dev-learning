@@ -7,29 +7,24 @@ import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.repository.ProjectRepository;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, AuthenticatedUserProvider authenticatedUserProvider) {
         this.projectRepository = projectRepository;
+        this.authenticatedUserProvider = authenticatedUserProvider;
     }
 
     @Transactional(readOnly = true)
     public List<ProjectResponse> getAll() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        boolean isManager = Objects.requireNonNull(auth).getAuthorities().stream()
-                .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
-
+        boolean isManager = authenticatedUserProvider.isManager();
 
         return isManager
                 ? projectRepository.findAll().stream().map(this::toResponse).toList()
@@ -42,11 +37,7 @@ public class ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        boolean isManager = Objects.requireNonNull(auth).getAuthorities().stream()
-                .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
-
+        boolean isManager = authenticatedUserProvider.isManager();
 
         if (!isManager && !project.isActive()) {
             throw new ResourceNotFoundException("Project not found with id: " + id);

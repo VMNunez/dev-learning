@@ -10,26 +10,26 @@ import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final String ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticatedUserProvider authenticatedUserProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticatedUserProvider = authenticatedUserProvider;
     }
 
     @Transactional(readOnly = true)
@@ -103,9 +103,7 @@ public class UserService {
 
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        User user = authenticatedUserProvider.currentUser();
 
         if(!passwordEncoder.matches(request.getCurrentPassword(),user.getPassword())){
             throw  new InvalidCurrentPasswordException("Current password is incorrect");
