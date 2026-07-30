@@ -104,16 +104,23 @@ If nothing was written — the common already-covered path — this sub-step is 
 
 ---
 
-## 2 — Project README: "What I learned"
+## 2 — Project README: land the concept
 
-**Read `notes/prompts/projects/readme/_internal/_readme-standard.md` before touching the README** —
-same reason as above, it only auto-loads inside `readme-audit`.
+**Invoke the `readme-concept-add` skill** with the concept from step 0. It owns this decision end to end:
+deriving which READMEs exist from the project number, routing the concept by **audience** to the global /
+backend / frontend file, checking whether it is already represented, and writing it in that section's own
+format under the README standard. Do not reproduce its logic here and do not pick the file yourself.
 
-Add a short bullet if the concept is not represented. Short bullets, **no explanations** — the details
-live in `notes/`, never in the README. If the existing bullets already cover it, say so and move on;
-a README with one bullet per bug fix is a worse README.
+Two things to pass it explicitly, because they are this ritual's context and not the skill's:
 
-Note which README: on a full-stack project, the tier's README if the project has per-tier ones.
+- **The concept, not step 0's PROGRESS.md routing.** A technology section is not a README audience.
+- **A design decision with no code change** can still be a real README entry — a convention deliberately
+  kept is exactly what the Tradeoffs section is for. Pass it through and let the skill decide.
+
+A backlog task's concept is almost always tier-level, so the common answer is a **Key patterns** entry in
+the tier README — not "What I learned", which the standard gives only to the global file. If the concept is
+already represented, the skill reports **nothing written**; that is a good outcome, and a README with one
+bullet per bug fix is a worse README. Fold its report rows into this ritual's final table.
 
 ---
 
@@ -236,8 +243,10 @@ Everything below lands on the **active branch** (`main` only receives merges via
 then `git commit` block), one command per block:
 
 - Any **project code** he wrote to fix the task.
-- `PLANNING.md`, `README.md`, `PROGRESS.md` — these three still go to him from this in-session ritual;
-  only their dedicated orchestrators (`progress-update`, `roadmap-review`) may commit them directly.
+- `PLANNING.md`, `PROGRESS.md` — these still go to him from this in-session ritual; only their dedicated
+  orchestrators (`progress-update`, `roadmap-review`) may commit them directly.
+- `README.md` — handed back by `readme-concept-add`, which gives Victor the command itself, one per README
+  actually changed. Do not restage it here.
 
 Before every commit you run, apply the hygiene rule: `git status` right before `git add` and right
 before `git commit`, so no project code file is staged alongside a doc file.
@@ -255,7 +264,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Evidence marker | marked `✅ 07` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
 | Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
-| README | bullet added |
+| README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |
 | PLANNING.md | added to §6 engineering rules |
 | PROGRESS.md | concept added under Spring Boot |
 | Backlog | task collapsed into `## Closed` |

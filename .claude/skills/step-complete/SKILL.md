@@ -93,15 +93,24 @@ correct signal that a remap is due.
 
 Fold both skills' report rows into this ritual's final table.
 
-## 4 — Project README: "What I learned"
+## 4 — Project README: land the step's concepts
 
-**Before touching the README, read `notes/prompts/projects/readme/_internal/_readme-standard.md`** — like the
-note standards, it only auto-loads inside `readme-audit`, so an inline edit without it silently
-misses the format. Keep the entries short bullets, no explanations (details belong in `notes/`).
+**Invoke the `readme-concept-add` skill** with the step's concepts. It owns this decision end to end:
+deriving which READMEs exist from the project number, routing each concept by **audience** to the global /
+backend / frontend file, checking whether it is already represented, and writing it in that section's own
+format under the README standard. Do not reproduce its logic here and do not pick the file yourself.
 
-If the existing bullets already cover the step's concepts, **say so and add nothing**. A README with one
-bullet per step is a worse README than one that names what the project taught. On a full-stack project with
-per-tier READMEs, note which tier's README you edited.
+Two things to pass it explicitly, because they are this ritual's context and not the skill's:
+
+- **The concepts, not step 2's PROGRESS.md sections.** That routing answers a different question — a
+  technology section is not a README audience.
+- **The tier the code landed in, as a hint only.** The skill routes by who needs to read the concept, not
+  by which folder changed; handing it the tier as the answer is how an API contract ends up buried in a
+  backend README instead of the global one.
+
+If the existing entries already cover the step's concepts, the skill will report **nothing written**, and
+that is a good outcome — a README with one bullet per step is worse than one that names what the project
+taught. Fold its report rows into this ritual's final table.
 
 ## Commits
 
@@ -111,7 +120,9 @@ Everything lands on the **active branch** (`main` only receives merges via PR).
 - `notes/**/coverage/*.md` — committed by `coverage-bullet-add` and `coverage-mark` themselves, under the
   standing `notes/` authorization. Do not re-stage those files here; when both ran in the same close they
   fold the authoring and the marking into one coverage commit.
-- `PLANNING.md`, the README, `PROGRESS.md` — **give Victor the commands** in the standard two-block format
+- The README — handed back by `readme-concept-add`, which hands Victor the command itself, one per README
+  actually changed. Do not restage it here; the README follows the project's feature-branch → PR workflow.
+- `PLANNING.md`, `PROGRESS.md` — **give Victor the commands** in the standard two-block format
   (`git add` block, then `git commit` block), one command per block. Only their dedicated orchestrators
   (`progress-update`, `roadmap-review`) may commit them directly.
 
@@ -135,4 +146,4 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Topic chosen | `spring-boot` — the framework mechanism, not the neutral boundary rule |
 | Evidence marker | marked `✅ 07` — 24/139 junior bullets demonstrated |
 | `/notes-plan` owed | yes — `/notes-plan spring-boot junior`, run once at end of session |
-| README | 2 bullets added (backend README) |
+| README | `backend` / Key patterns — 2 entries added; 1 concept already represented |
