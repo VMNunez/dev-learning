@@ -10,13 +10,13 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `Array.isArray` vs `typeof` — identify arrays explicitly because `typeof` reports them as objects
 - `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked
 - `null` vs `undefined` — distinguish intentional absence from missing or uninitialised values without assuming every API uses them consistently
-- Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy
+- Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy ✅ 01-todo-list
 - Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion
 - `+` operator: numeric addition vs string concatenation — predict coercion and left-to-right evaluation when either operand becomes a string instead of assuming arithmetic
 - `==` vs `===` — use strict equality by default and read loose-equality coercion safely in maintained legacy code
 - `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default
 - Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined`
-- Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute
+- Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute ✅ 01-todo-list
 - Logical operators return operand values — predict that `&&`, `||`, and `??` yield one of their operands rather than a coerced boolean while still short-circuiting evaluation
 - Logical assignment operators — read `||=`, `&&=`, and `??=` as conditional assignment without confusing their different trigger conditions
 
@@ -31,20 +31,20 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Template literals — interpolate expressions and multiline text without fragile concatenation
 - String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed
 - `slice` vs `substring` — extract a range while accounting for negative indexes and reversed arguments
-- String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source
+- String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source ✅ 01-todo-list
 - String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics
 - Unicode code-unit recognition — know that string length and indexing can split some visible characters and avoid character-count assumptions
 - Basic regular expressions — read and write simple search or validation patterns with common flags and choose among `test`, `match`, and `replace`
 
 ## Variables, scope, and control flow
 
-- `var` vs `let` vs `const` — prefer block-scoped declarations, default to `const`, and recognise function-scoped `var` in maintained code
+- `var` vs `let` vs `const` — prefer block-scoped declarations, default to `const`, and recognise function-scoped `var` in maintained code ✅ 01-todo-list
 - Rebinding vs mutation — understand that `const` prevents assigning a different binding but does not freeze an object
 - Lexical scope and shadowing — resolve a name from its nearest enclosing scope and avoid hiding an outer binding accidentally
 - Hoisting — predict the different pre-declaration behaviour of function declarations, `var`, and lexical declarations
 - Temporal Dead Zone — recognise why reading a `let` or `const` binding before its declaration throws
 - Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow
-- `switch` semantics — use explicit cases and breaks while recognising fall-through when reading existing code
+- `switch` semantics — use explicit cases and breaks while recognising fall-through when reading existing code ✅ 01-todo-list
 - Classic `for` loop — use explicit initialisation, condition, and update when index or irregular stepping control is required
 - `while` vs `do...while` — choose whether the condition must be checked before the first iteration or after one guaranteed execution
 - `break` vs `continue` — exit a loop or skip only its current iteration without obscuring the control flow
@@ -52,12 +52,12 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 ## Functions, closures, and `this`
 
 - Function declarations vs function expressions — choose and read them with awareness of their different hoisting behaviour
-- Arrow functions vs regular functions — choose concise lexical capture or a function with its own dynamic `this` and `arguments`
+- Arrow functions vs regular functions — choose concise lexical capture or a function with its own dynamic `this` and `arguments` ✅ 01-todo-list
 - Function parameters and return values — handle missing and extra arguments deliberately and recognise that a function without `return` yields `undefined`
 - Default parameters — apply a fallback only when the supplied argument is `undefined`
 - Rest parameters — collect remaining arguments into a real array without relying on the legacy `arguments` object
-- First-class and higher-order functions — pass, store, return, and compose functions as ordinary values
-- Callbacks — follow control flow when another function decides when and with which arguments a callback runs
+- First-class and higher-order functions — pass, store, return, and compose functions as ordinary values ✅ 01-todo-list
+- Callbacks — follow control flow when another function decides when and with which arguments a callback runs ✅ 01-todo-list
 - Closures — explain how a function retains access to its lexical environment and how captured mutable state changes over time
 - Regular-function `this` — determine `this` from the call site rather than the function's definition location
 - Arrow-function `this` — recognise lexical capture and avoid using arrows where a method needs a dynamic receiver
@@ -67,14 +67,14 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 
 ## Objects, prototypes, and copying
 
-- Object literals and property access — use shorthand, computed keys, and dot or bracket notation according to whether a key is static or dynamic
+- Object literals and property access — use shorthand, computed keys, and dot or bracket notation according to whether a key is static or dynamic ✅ 01-todo-list
 - Object destructuring — bind, rename, and default selected properties while remembering defaults apply only to `undefined`
 - Property existence vs an `undefined` value — distinguish `Object.hasOwn`, legacy `hasOwnProperty`, the `in` operator, and a property read when inherited or explicitly undefined properties matter
 - Own vs inherited properties — avoid treating prototype-chain members as an object's own input data
 - `Object.keys`, `Object.values`, and `Object.entries` — enumerate own enumerable string-keyed properties in the form the operation needs
 - `Object.fromEntries` — rebuild an object from transformed key-value pairs
-- Object spread vs `Object.assign` — create a shallow merged object or mutate an explicit target deliberately
-- Reference identity and aliasing — predict how two variables can observe mutations to the same object
+- Object spread vs `Object.assign` — create a shallow merged object or mutate an explicit target deliberately ✅ 01-todo-list
+- Reference identity and aliasing — predict how two variables can observe mutations to the same object ✅ 01-todo-list
 - Shallow vs deep copying — recognise that spread and `Object.assign` retain nested references and use `structuredClone` only for supported data
 - `Object.freeze` depth — prevent top-level writes without assuming nested objects become immutable
 - Prototype delegation — understand that property lookup can continue through an object's prototype chain
@@ -88,11 +88,11 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 ## Arrays and iteration
 
 - Array destructuring — bind positions, skip entries, use defaults, and collect remaining elements
-- Array spread — create a shallow array copy or combine iterables without implying a deep clone
-- Mutating vs non-mutating array methods — recognise when an operation changes the original collection and when it returns a new one
+- Array spread — create a shallow array copy or combine iterables without implying a deep clone ✅ 01-todo-list
+- Mutating vs non-mutating array methods — recognise when an operation changes the original collection and when it returns a new one ✅ 01-todo-list
 - `slice` vs `splice` on arrays — choose non-mutating range extraction or in-place removal, replacement, and insertion without confusing their return values or mutation effects
-- `map` — transform each present element into a result array without using it merely for side effects
-- `filter` — retain all matching elements and always return an array
+- `map` — transform each present element into a result array without using it merely for side effects ✅ 01-todo-list
+- `filter` — retain all matching elements and always return an array ✅ 01-todo-list
 - `find` vs `filter` — choose one matching value or every matching value
 - `some` vs `every` — express existential or universal checks with short-circuiting
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup

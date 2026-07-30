@@ -10,9 +10,11 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
-- `input()` vs `input.required()` — model optional and mandatory parent-to-child data without hiding absence behind an unsafe default ✅ 01-todo-list
+- `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data
+- `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
 - `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
-- `@if` vs `@switch` — choose branching conditions or fixed-value cases so mutually exclusive UI states remain readable ✅ 01-todo-list
+- `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
+- `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
 - Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
 - Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions
@@ -31,7 +33,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 - Angular dependency injection — explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves ✅ 01-todo-list
 - `@Injectable({ providedIn: 'root' })` — recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton ✅ 01-todo-list
-- `inject()` vs constructor injection — recognise both supported injection styles and choose consistently without confusing construction with lifecycle work ✅ 01-todo-list
+- `inject()` — obtain a dependency in an injection context without a constructor parameter, the style current Angular code prefers ✅ 01-todo-list
+- Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` and configured providers — inject typed configuration or other non-class dependencies and recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs
@@ -77,7 +80,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ## Routing and cross-cutting HTTP behaviour
 
-- Router configuration — connect `provideRouter`, route definitions, `routerLink`, and `RouterOutlet` into a navigable standalone application
+- Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
+- Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
 - `ActivatedRoute` params and query params — read route identity from `paramMap` and optional Angular view filters from `queryParamMap`
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes

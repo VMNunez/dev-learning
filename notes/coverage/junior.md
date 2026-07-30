@@ -20,9 +20,11 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
-- `input()` vs `input.required()` — model optional and mandatory parent-to-child data without hiding absence behind an unsafe default ✅ 01-todo-list
+- `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data
+- `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
 - `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
-- `@if` vs `@switch` — choose branching conditions or fixed-value cases so mutually exclusive UI states remain readable ✅ 01-todo-list
+- `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
+- `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
 - Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
 - Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions
@@ -41,7 +43,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 - Angular dependency injection — explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves ✅ 01-todo-list
 - `@Injectable({ providedIn: 'root' })` — recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton ✅ 01-todo-list
-- `inject()` vs constructor injection — recognise both supported injection styles and choose consistently without confusing construction with lifecycle work ✅ 01-todo-list
+- `inject()` — obtain a dependency in an injection context without a constructor parameter, the style current Angular code prefers ✅ 01-todo-list
+- Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` and configured providers — inject typed configuration or other non-class dependencies and recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs
@@ -87,7 +90,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ### Routing and cross-cutting HTTP behaviour
 
-- Router configuration — connect `provideRouter`, route definitions, `routerLink`, and `RouterOutlet` into a navigable standalone application
+- Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
+- Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
 - `ActivatedRoute` params and query params — read route identity from `paramMap` and optional Angular view filters from `queryParamMap`
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
@@ -1169,13 +1173,13 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `Array.isArray` vs `typeof` — identify arrays explicitly because `typeof` reports them as objects
 - `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked
 - `null` vs `undefined` — distinguish intentional absence from missing or uninitialised values without assuming every API uses them consistently
-- Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy
+- Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy ✅ 01-todo-list
 - Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion
 - `+` operator: numeric addition vs string concatenation — predict coercion and left-to-right evaluation when either operand becomes a string instead of assuming arithmetic
 - `==` vs `===` — use strict equality by default and read loose-equality coercion safely in maintained legacy code
 - `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default
 - Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined`
-- Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute
+- Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute ✅ 01-todo-list
 - Logical operators return operand values — predict that `&&`, `||`, and `??` yield one of their operands rather than a coerced boolean while still short-circuiting evaluation
 - Logical assignment operators — read `||=`, `&&=`, and `??=` as conditional assignment without confusing their different trigger conditions
 
@@ -1190,20 +1194,20 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Template literals — interpolate expressions and multiline text without fragile concatenation
 - String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed
 - `slice` vs `substring` — extract a range while accounting for negative indexes and reversed arguments
-- String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source
+- String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source ✅ 01-todo-list
 - String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics
 - Unicode code-unit recognition — know that string length and indexing can split some visible characters and avoid character-count assumptions
 - Basic regular expressions — read and write simple search or validation patterns with common flags and choose among `test`, `match`, and `replace`
 
 ### Variables, scope, and control flow
 
-- `var` vs `let` vs `const` — prefer block-scoped declarations, default to `const`, and recognise function-scoped `var` in maintained code
+- `var` vs `let` vs `const` — prefer block-scoped declarations, default to `const`, and recognise function-scoped `var` in maintained code ✅ 01-todo-list
 - Rebinding vs mutation — understand that `const` prevents assigning a different binding but does not freeze an object
 - Lexical scope and shadowing — resolve a name from its nearest enclosing scope and avoid hiding an outer binding accidentally
 - Hoisting — predict the different pre-declaration behaviour of function declarations, `var`, and lexical declarations
 - Temporal Dead Zone — recognise why reading a `let` or `const` binding before its declaration throws
 - Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow
-- `switch` semantics — use explicit cases and breaks while recognising fall-through when reading existing code
+- `switch` semantics — use explicit cases and breaks while recognising fall-through when reading existing code ✅ 01-todo-list
 - Classic `for` loop — use explicit initialisation, condition, and update when index or irregular stepping control is required
 - `while` vs `do...while` — choose whether the condition must be checked before the first iteration or after one guaranteed execution
 - `break` vs `continue` — exit a loop or skip only its current iteration without obscuring the control flow
@@ -1211,12 +1215,12 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Functions, closures, and `this`
 
 - Function declarations vs function expressions — choose and read them with awareness of their different hoisting behaviour
-- Arrow functions vs regular functions — choose concise lexical capture or a function with its own dynamic `this` and `arguments`
+- Arrow functions vs regular functions — choose concise lexical capture or a function with its own dynamic `this` and `arguments` ✅ 01-todo-list
 - Function parameters and return values — handle missing and extra arguments deliberately and recognise that a function without `return` yields `undefined`
 - Default parameters — apply a fallback only when the supplied argument is `undefined`
 - Rest parameters — collect remaining arguments into a real array without relying on the legacy `arguments` object
-- First-class and higher-order functions — pass, store, return, and compose functions as ordinary values
-- Callbacks — follow control flow when another function decides when and with which arguments a callback runs
+- First-class and higher-order functions — pass, store, return, and compose functions as ordinary values ✅ 01-todo-list
+- Callbacks — follow control flow when another function decides when and with which arguments a callback runs ✅ 01-todo-list
 - Closures — explain how a function retains access to its lexical environment and how captured mutable state changes over time
 - Regular-function `this` — determine `this` from the call site rather than the function's definition location
 - Arrow-function `this` — recognise lexical capture and avoid using arrows where a method needs a dynamic receiver
@@ -1226,14 +1230,14 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ### Objects, prototypes, and copying
 
-- Object literals and property access — use shorthand, computed keys, and dot or bracket notation according to whether a key is static or dynamic
+- Object literals and property access — use shorthand, computed keys, and dot or bracket notation according to whether a key is static or dynamic ✅ 01-todo-list
 - Object destructuring — bind, rename, and default selected properties while remembering defaults apply only to `undefined`
 - Property existence vs an `undefined` value — distinguish `Object.hasOwn`, legacy `hasOwnProperty`, the `in` operator, and a property read when inherited or explicitly undefined properties matter
 - Own vs inherited properties — avoid treating prototype-chain members as an object's own input data
 - `Object.keys`, `Object.values`, and `Object.entries` — enumerate own enumerable string-keyed properties in the form the operation needs
 - `Object.fromEntries` — rebuild an object from transformed key-value pairs
-- Object spread vs `Object.assign` — create a shallow merged object or mutate an explicit target deliberately
-- Reference identity and aliasing — predict how two variables can observe mutations to the same object
+- Object spread vs `Object.assign` — create a shallow merged object or mutate an explicit target deliberately ✅ 01-todo-list
+- Reference identity and aliasing — predict how two variables can observe mutations to the same object ✅ 01-todo-list
 - Shallow vs deep copying — recognise that spread and `Object.assign` retain nested references and use `structuredClone` only for supported data
 - `Object.freeze` depth — prevent top-level writes without assuming nested objects become immutable
 - Prototype delegation — understand that property lookup can continue through an object's prototype chain
@@ -1247,11 +1251,11 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Arrays and iteration
 
 - Array destructuring — bind positions, skip entries, use defaults, and collect remaining elements
-- Array spread — create a shallow array copy or combine iterables without implying a deep clone
-- Mutating vs non-mutating array methods — recognise when an operation changes the original collection and when it returns a new one
+- Array spread — create a shallow array copy or combine iterables without implying a deep clone ✅ 01-todo-list
+- Mutating vs non-mutating array methods — recognise when an operation changes the original collection and when it returns a new one ✅ 01-todo-list
 - `slice` vs `splice` on arrays — choose non-mutating range extraction or in-place removal, replacement, and insertion without confusing their return values or mutation effects
-- `map` — transform each present element into a result array without using it merely for side effects
-- `filter` — retain all matching elements and always return an array
+- `map` — transform each present element into a result array without using it merely for side effects ✅ 01-todo-list
+- `filter` — retain all matching elements and always return an array ✅ 01-todo-list
 - `find` vs `filter` — choose one matching value or every matching value
 - `some` vs `every` — express existential or universal checks with short-circuiting
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
