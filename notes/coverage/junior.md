@@ -389,7 +389,8 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - `@PreAuthorize("hasRole('MANAGER')")` — a method-level check evaluated after authentication, which is silently ignored unless method security is enabled
 - URL rules vs method-level checks — the two enforcement points are independent, so a permitted route can still be refused by an annotation and a protected route is refused before the method is ever reached
 - `hasRole` vs `hasAuthority` and the `ROLE_` prefix — role checks add the prefix for you while authority checks compare the stored string literally, so a mismatch between how authorities are persisted and how they are checked rejects a correctly authenticated user
-- `AuthenticationEntryPoint` and `AccessDeniedHandler` — the two components that produce the response when the request is unauthenticated or authenticated without sufficient authority, and the only way to give those failures the same JSON error contract as the rest of the API
+- `AuthenticationEntryPoint` — produces the response when a request arrives unauthenticated, and is the only way to give that failure the same JSON error contract as the rest of the API, because it fires in the filter chain before any controller advice can see it
+- `AccessDeniedHandler` — produces the response when an authenticated caller lacks the required authority, the security-boundary counterpart to handling `AccessDeniedException` in controller advice; where the refusal happens decides which one fires
 - Re-checking account status per request, not just at login — a token issued before an account is disabled stays technically valid until it expires, so a stateless JWT filter must re-run an account-status check (`AccountStatusUserDetailsChecker`) on every request against the freshly loaded `UserDetails`, not rely on the check `loadUserByUsername` already ran once at login
 - Stateless session configuration — a bearer-token API sets the session creation policy so no server session is established, which is what makes each request stand alone
 - CSRF configuration for a bearer-token API — the decision to disable or retain CSRF follows from how credentials travel, so a cookie-authenticated endpoint in the same application still needs it
@@ -580,10 +581,12 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `flatMap` — transform each element into zero or more elements and flatten the nested results into one stream
 - `sorted` and `distinct` — order elements or remove duplicates while recognising their dependence on comparison and equality contracts
 - `reduce` and simple aggregation — combine stream elements into one result with an identity or accumulator whose operation is associative
-- `findFirst`, `anyMatch`, and `allMatch` — express search and predicate checks with the appropriate Optional or boolean result
+- `anyMatch` — answer whether at least one element satisfies a predicate, short-circuiting on the first match rather than materialising a filtered collection to test that it is non-empty
+- `findFirst` and `allMatch` — retrieve the first matching element as an `Optional`, or assert that every element satisfies a predicate, choosing the result type the caller actually needs
 - Stream side effects vs loops — keep stream transformations side-effect free and choose a loop when stateful branching or early control flow is clearer
 - `Stream.toList()` vs `Collectors.toList()` — `Stream.toList()` returns an unmodifiable list, while `Collectors.toList()` makes no mutability guarantee
-- `Collectors.joining` and `Collectors.toMap` — gather a stream into a delimited String or a key/value map, leaving multi-level grouping to a later level
+- `Collectors.toMap` — gather a stream into a key/value map, supplying a merge function because a duplicate key otherwise throws instead of silently overwriting
+- `Collectors.joining` — gather a stream of text into one delimited String, with an optional prefix and suffix, instead of accumulating with a manual separator flag
 
 ### Exceptions and diagnostics
 
@@ -592,7 +595,8 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Exception propagation and stack unwinding — an uncaught exception removes call frames until a compatible handler is found or the thread terminates
 - Targeted `try` / `catch` / `finally` — catch only failures that can be handled or contextualised and use `finally` for cleanup that must run
 - Try-with-resources — close `AutoCloseable` resources on both success and failure without duplicating cleanup code
-- Custom exceptions and preserved causes — name a meaningful failure and pass the original cause when adding context
+- Custom exception types — name a meaningful failure with a dedicated unchecked type so a caller or a boundary handler can react to that failure specifically instead of parsing a message string
+- Preserved exception causes — pass the original throwable into the wrapping exception so the trace still shows where the failure actually started
 - Do not swallow exceptions — an empty or over-broad catch hides the failure and leaves callers unable to distinguish success from corruption
 - Reading stack traces — identify the exception type, message, cause chain, and first relevant application frame before changing code
 

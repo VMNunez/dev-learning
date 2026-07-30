@@ -118,10 +118,12 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `flatMap` — transform each element into zero or more elements and flatten the nested results into one stream
 - `sorted` and `distinct` — order elements or remove duplicates while recognising their dependence on comparison and equality contracts
 - `reduce` and simple aggregation — combine stream elements into one result with an identity or accumulator whose operation is associative
-- `findFirst`, `anyMatch`, and `allMatch` — express search and predicate checks with the appropriate Optional or boolean result
+- `anyMatch` — answer whether at least one element satisfies a predicate, short-circuiting on the first match rather than materialising a filtered collection to test that it is non-empty
+- `findFirst` and `allMatch` — retrieve the first matching element as an `Optional`, or assert that every element satisfies a predicate, choosing the result type the caller actually needs
 - Stream side effects vs loops — keep stream transformations side-effect free and choose a loop when stateful branching or early control flow is clearer
 - `Stream.toList()` vs `Collectors.toList()` — `Stream.toList()` returns an unmodifiable list, while `Collectors.toList()` makes no mutability guarantee
-- `Collectors.joining` and `Collectors.toMap` — gather a stream into a delimited String or a key/value map, leaving multi-level grouping to a later level
+- `Collectors.toMap` — gather a stream into a key/value map, supplying a merge function because a duplicate key otherwise throws instead of silently overwriting
+- `Collectors.joining` — gather a stream of text into one delimited String, with an optional prefix and suffix, instead of accumulating with a manual separator flag
 
 ## Exceptions and diagnostics
 
@@ -130,7 +132,8 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Exception propagation and stack unwinding — an uncaught exception removes call frames until a compatible handler is found or the thread terminates
 - Targeted `try` / `catch` / `finally` — catch only failures that can be handled or contextualised and use `finally` for cleanup that must run
 - Try-with-resources — close `AutoCloseable` resources on both success and failure without duplicating cleanup code
-- Custom exceptions and preserved causes — name a meaningful failure and pass the original cause when adding context
+- Custom exception types — name a meaningful failure with a dedicated unchecked type so a caller or a boundary handler can react to that failure specifically instead of parsing a message string
+- Preserved exception causes — pass the original throwable into the wrapping exception so the trace still shows where the failure actually started
 - Do not swallow exceptions — an empty or over-broad catch hides the failure and leaves callers unable to distinguish success from corruption
 - Reading stack traces — identify the exception type, message, cause chain, and first relevant application frame before changing code
 
