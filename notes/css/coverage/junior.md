@@ -48,14 +48,14 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
   normally uses the viewport but a transformed or filtered ancestor can establish its containing
   block, while `sticky` is constrained by its scrolling ancestor
 - How `absolute` finds its reference point — positions relative to the nearest ancestor that
-  establishes a containing block; otherwise it falls back to the initial containing block
+  establishes a containing block; otherwise it falls back to the initial containing block ✅ 03-expense-tracker
 - `z-index` and stacking context — applies to positioned boxes and flex/grid items; properties such
   as `transform` and `opacity < 1` create a new stacking context, explaining why a large number
   cannot escape an ancestor's stacking order
 - `inset: 0` — shorthand for `top: 0; right: 0; bottom: 0; left: 0`; used in modal overlays to cover the full viewport; interviewers who review your code expect you to know this shorthand
 
 ## Responsive design
-- Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach
+- Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach ✅ 03-expense-tracker
 - Breakpoints: `768px` (tablet), `1024px` (desktop) — the most common values in real Angular projects; a junior must justify these numbers and explain that `auto-fill` grid can eliminate breakpoints entirely for card grids
 - Fluid images — `max-width: 100%; height: auto` on `img` prevents images from overflowing their container and keeps the aspect ratio; standard in every CSS reset; not knowing this is a recognisable beginner mistake
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected

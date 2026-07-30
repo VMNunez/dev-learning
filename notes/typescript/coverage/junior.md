@@ -69,14 +69,14 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 - `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
-- Type assertions — override the compiler's interpretation without converting or validating the runtime value
+- Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist
 
 ## Utility and derived types
 
 - `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch
-- `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain
+- `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
 - Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists

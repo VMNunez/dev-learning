@@ -27,7 +27,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
 - Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
-- Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions
+- Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions ✅ 03-expense-tracker
 - Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
 - Components vs attribute directives — use a component when behaviour owns a view and a directive when behaviour augments an existing host element
 - Custom attribute directives and host interaction — implement reusable host-element behaviour and connect host properties or events through directive host bindings and listeners without taking ownership of the element's view
@@ -92,13 +92,13 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 ### Routing and cross-cutting HTTP behaviour
 
 - Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
-- Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable
+- Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
 - `ActivatedRoute` params and query params — read route identity from `paramMap` and optional Angular view filters from `queryParamMap`
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it
 - `loadComponent` vs `loadChildren` — lazy-load one routed component or an entire child route tree according to the feature boundary
-- Declarative vs programmatic navigation — use `routerLink` in templates and `Router.navigate()` when component logic determines the destination
+- Declarative vs programmatic navigation — use `routerLink` in templates and `Router.navigate()` when component logic determines the destination ✅ 03-expense-tracker
 - Wildcard routes and redirect order — place a `**` fallback last because Angular uses first-match-wins route evaluation
 - Redirect `pathMatch` — use `pathMatch: 'full'` for an empty-path redirect when prefix matching would otherwise catch every URL
 - `CanActivateFn` guards — return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect
@@ -110,13 +110,13 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ### Reactive forms and template transformation
 
-- `FormControl` and `FormGroup` — model individual controls and grouped control sets explicitly so the form's shape, validators, and value types live in TypeScript rather than in the template
+- `FormControl` and `FormGroup` — model individual controls and grouped control sets explicitly so the form's shape, validators, and value types live in TypeScript rather than in the template ✅ 03-expense-tracker
 - `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model
 - Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states
-- Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary
+- Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary ✅ 03-expense-tracker
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule
-- Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction
-- `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid
+- Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction ✅ 03-expense-tracker
+- `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid ✅ 03-expense-tracker
 - `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms
 - Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
 - `dirty`, `reset()`, and server errors — distinguish local edits, reset the saved baseline, and avoid losing backend errors through an immediate validator rerun
@@ -1122,14 +1122,14 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 - `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
-- Type assertions — override the compiler's interpretation without converting or validating the runtime value
+- Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist
 
 ### Utility and derived types
 
 - `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch
-- `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain
+- `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
 - Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists
@@ -1249,7 +1249,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
-- JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it
+- JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
 - `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing
 
 ### Arrays and iteration
@@ -1264,9 +1264,9 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `some` vs `every` — express existential or universal checks with short-circuiting
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
-- `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation
+- `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
 - Array sorting — provide an appropriate comparator and account for `sort` mutating the array
-- Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline
+- Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline ✅ 03-expense-tracker
 - `for...of` vs `for...in` — iterate iterable values or enumerable property keys without using object-key iteration accidentally on arrays
 - Array methods vs explicit loops — prefer declarative transformations, but use a loop when early exit, irregular stepping, or awaited sequential work is clearer
 - `Set` vs `Array` — choose uniqueness and membership lookup or ordered indexed collection behaviour
@@ -1310,7 +1310,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
 - Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant
-- Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it
+- Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it ✅ 03-expense-tracker
 
 ### Errors and runtime boundaries
 
@@ -1381,14 +1381,14 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
   normally uses the viewport but a transformed or filtered ancestor can establish its containing
   block, while `sticky` is constrained by its scrolling ancestor
 - How `absolute` finds its reference point — positions relative to the nearest ancestor that
-  establishes a containing block; otherwise it falls back to the initial containing block
+  establishes a containing block; otherwise it falls back to the initial containing block ✅ 03-expense-tracker
 - `z-index` and stacking context — applies to positioned boxes and flex/grid items; properties such
   as `transform` and `opacity < 1` create a new stacking context, explaining why a large number
   cannot escape an ancestor's stacking order
 - `inset: 0` — shorthand for `top: 0; right: 0; bottom: 0; left: 0`; used in modal overlays to cover the full viewport; interviewers who review your code expect you to know this shorthand
 
 ### Responsive design
-- Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach
+- Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach ✅ 03-expense-tracker
 - Breakpoints: `768px` (tablet), `1024px` (desktop) — the most common values in real Angular projects; a junior must justify these numbers and explain that `auto-fill` grid can eliminate breakpoints entirely for card grids
 - Fluid images — `max-width: 100%; height: auto` on `img` prevents images from overflowing their container and keeps the aspect ratio; standard in every CSS reset; not knowing this is a recognisable beginner mistake
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected

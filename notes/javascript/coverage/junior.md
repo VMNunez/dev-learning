@@ -82,7 +82,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
-- JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it
+- JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
 - `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing
 
 ## Arrays and iteration
@@ -97,9 +97,9 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `some` vs `every` — express existential or universal checks with short-circuiting
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
-- `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation
+- `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
 - Array sorting — provide an appropriate comparator and account for `sort` mutating the array
-- Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline
+- Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline ✅ 03-expense-tracker
 - `for...of` vs `for...in` — iterate iterable values or enumerable property keys without using object-key iteration accidentally on arrays
 - Array methods vs explicit loops — prefer declarative transformations, but use a loop when early exit, irregular stepping, or awaited sequential work is clearer
 - `Set` vs `Array` — choose uniqueness and membership lookup or ordered indexed collection behaviour
@@ -143,7 +143,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
 - Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant
-- Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it
+- Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it ✅ 03-expense-tracker
 
 ## Errors and runtime boundaries
 
