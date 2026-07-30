@@ -129,6 +129,63 @@ When a run discovers another topic's concept, route a proposal to `_cross-topic-
 - No conduct, storytelling scripts, ticket workflow, or generic interview behaviour.
 - No concept may appear in more than one of `coverage/junior.md`, `coverage/middle.md`, and `coverage/senior.md`.
 
+## Evidence markers
+
+A coverage bullet may carry one trailing **evidence marker** recording the project where the concept
+was first applied in code:
+
+```
+- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests ✅ 07
+```
+
+Rules:
+
+- **Format is exactly `✅ NN`**, at the end of the bullet, after the concept sentence, where `NN` is the
+  two-digit project number. Nothing else follows it. One marker per bullet.
+- **Applied in project code only.** The marker means Victor wrote code that uses the concept in that
+  project. Studying the concept in `notes/` does not earn it, and neither does reading about it in a
+  review finding. An unmarked bullet therefore means "not yet demonstrated", never "not yet studied".
+- **First project wins.** The marker is never updated when a later project uses the same concept again;
+  its purpose is to date the first demonstration.
+- **The marker is state, not scope.** It is written by the `coverage-mark` skill from a completed step or
+  a closed backlog task — never by a coverage authoring or audit pass, and never by hand while writing
+  bullets. Both mirrors of a bullet carry the same marker (see below).
+- **Preserve it verbatim when rewording.** A converging or reformulating pass may rewrite a bullet's
+  concept sentence freely, but must carry the existing marker onto the rewritten bullet unchanged. A
+  bullet whose concept survives in different words has not lost its demonstration. Dropping a marker
+  silently destroys the only record of it — treat it exactly as seriously as the notes-plan coverage SHA.
+- **Markers are not checkboxes.** The prohibition on `- [ ]` / `- [x]` bullets in *Item and file format*
+  stands unchanged; the marker is trailing text on a plain `- ` bullet.
+- A bullet may only be **removed** with its marker if the concept genuinely leaves the level. When a
+  concept moves between levels or topics, the marker moves with it.
+
+### Markers are excluded from the coverage digest
+
+Four downstream prompts — `notes-plan`, `notes-audit`, `coverage-verify`, `interview-prep-audit` — store a
+`Coverage SHA-256` over a coverage file to certify *which scope their output was mapped against*. Evidence
+markers are not scope. If they entered the digest, every closed step would change the bytes and forge a
+"the plan owes a remap" signal for work that has not moved an inch.
+
+So the digest is computed over the file's **scope bytes**: the exact UTF-8 bytes of the file with every
+trailing evidence marker removed — for each line, drop a trailing ` ✅ NN` (the space, the mark, the space,
+the two digits) and nothing else. No other normalisation: no trimming, case folding, or reordering. Two
+files that differ only in their markers therefore have the same digest, which is exactly the intent.
+
+One canonical command, so every prompt produces the same digest for the same scope:
+
+```bash
+sed -E 's/ ✅ [0-9]{2}$//' notes/{topic}/coverage/{LEVEL}.md | sha256sum
+```
+
+Every prompt that computes or compares a coverage digest must use it, and any run that
+reports a digest mismatch must state that it stripped markers first — otherwise a false mismatch and a
+real one are indistinguishable in the report.
+
+Because the markers make the level file a progress instrument as well as a scope file, an unmarked
+majority is expected and correct: coverage is the hiring floor, and most of it is met by study and by
+practice, not by project code. The count of marked bullets answers one specific question — how much of
+the floor Victor can prove with something he built.
+
 ## Quality test
 
 For each section verify:
