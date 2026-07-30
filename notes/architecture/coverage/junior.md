@@ -128,7 +128,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
-  superficially similar code with different reasons to change into one abstraction ✅ 07-timetrack
+  superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
   centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental

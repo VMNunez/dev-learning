@@ -32,7 +32,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed ✅ 02-weather-app
 - `slice` vs `substring` — extract a range while accounting for negative indexes and reversed arguments
 - String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source ✅ 01-todo-list
-- String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics
+- String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics ✅ 05-task-manager
 - Unicode code-unit recognition — know that string length and indexing can split some visible characters and avoid character-count assumptions
 - Basic regular expressions — read and write simple search or validation patterns with common flags and choose among `test`, `match`, and `replace`
 
@@ -136,7 +136,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 ## Browser events and resources
 
 - DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
-- Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs
+- Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs ✅ 05-task-manager
 - Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately ✅ 04-meal-finder
 - `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable

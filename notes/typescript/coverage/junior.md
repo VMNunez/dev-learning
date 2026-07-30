@@ -21,7 +21,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## Object contracts
 
 - `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
-- Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined`
+- Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
 - `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
@@ -71,7 +71,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
 - Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion
-- Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist
+- Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist ✅ 05-task-manager
 
 ## Utility and derived types
 

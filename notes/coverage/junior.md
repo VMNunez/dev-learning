@@ -46,11 +46,11 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `inject()` — obtain a dependency in an injection context without a constructor parameter, the style current Angular code prefers ✅ 01-todo-list
 - Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
-- `InjectionToken` — inject typed configuration or other non-class dependencies through a token rather than a class type
+- `InjectionToken` — inject typed configuration or other non-class dependencies through a token rather than a class type ✅ 05-task-manager
 - Configured provider recipes — recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
-- View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences
+- View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences ✅ 05-task-manager
 - Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view ✅ 02-weather-app
 
 ### Signals and local state
@@ -121,7 +121,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid ✅ 03-expense-tracker
 - `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms
 - Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
-- `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes
+- `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes ✅ 05-task-manager
 - `reset()` and server errors — reset the saved baseline and avoid losing backend errors through an immediate validator rerun
 - Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls
 - `FormArray` vs `FormGroup` — model a dynamic indexed collection separately from a fixed set of named controls
@@ -175,44 +175,44 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 ### Setup and component model
 
-- Angular Material, Material Design, and the CDK — distinguish the styled Angular component library, the design system it implements, and the lower-level behaviour primitives it builds upon
-- `ng add @angular/material` — use the library schematic to install Material and the CDK and apply the selected animation, typography, and theme setup
+- Angular Material, Material Design, and the CDK — distinguish the styled Angular component library, the design system it implements, and the lower-level behaviour primitives it builds upon ✅ 05-task-manager
+- `ng add @angular/material` — use the library schematic to install Material and the CDK and apply the selected animation, typography, and theme setup ✅ 05-task-manager
 - Material-specific imports and providers — recognise which components need a template import and which features, such as date handling, also need a provider
-- Material composition boundary — combine Material interaction primitives with ordinary Angular state, forms, templates, and CSS instead of treating the library as page architecture
+- Material composition boundary — combine Material interaction primitives with ordinary Angular state, forms, templates, and CSS instead of treating the library as page architecture ✅ 05-task-manager
 - Version-matched documentation and migrations — consult the docs for the installed Angular Material major version and use official update tooling instead of copying obsolete selectors or theming APIs
 
 ### Theming and styling boundaries
 
 - Prebuilt vs custom themes — choose a prebuilt theme for fast setup or a Sass theme when the product needs controlled colour, typography, or density
-- Theme application — recognise that a Material theme controls colour, typography, and density, and ensure the application emits the required core and component styles once
-- `mat.theme()` — apply a supported Material 3 theme without depending on the generated component DOM
+- Theme application — recognise that a Material theme controls colour, typography, and density, and ensure the application emits the required core and component styles once ✅ 05-task-manager
+- `mat.theme()` — apply a supported Material 3 theme without depending on the generated component DOM ✅ 05-task-manager
 - Supported theming vs internal selectors — prefer theme tokens, mixins, and public host classes because internal DOM and CSS classes are private and may change between releases
-- Page layout vs component theming — use application CSS for layout, spacing, and responsive composition while using Material APIs for component internals
-- Overlay styling boundary — recognise that dialogs, menus, selects, tooltips, and snack bars render in an overlay container outside the opener's component subtree
+- Page layout vs component theming — use application CSS for layout, spacing, and responsive composition while using Material APIs for component internals ✅ 05-task-manager
+- Overlay styling boundary — recognise that dialogs, menus, selects, tooltips, and snack bars render in an overlay container outside the opener's component subtree ✅ 05-task-manager
 
 ### Buttons, icons, menus, and tooltips
 
-- Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions
+- Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
 - Icon buttons and accessible names — pair `matIconButton` actions with an `aria-label` or equivalent name because an icon or tooltip alone is not a reliable accessible label
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
-- `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically
+- `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
 - Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions
 
 ### Form-field composition and selection controls
 
-- `mat-form-field` composition — combine a compatible control with its label, hint, prefix or suffix, and error presentation while Angular forms remain the state authority
-- `matInput` — enhance a native input or textarea inside a form field while preserving its native value, type, and form semantics
-- `mat-label` and `mat-error` — distinguish identification of a control from conditional validation feedback shown under the field
+- `mat-form-field` composition — combine a compatible control with its label, hint, prefix or suffix, and error presentation while Angular forms remain the state authority ✅ 05-task-manager
+- `matInput` — enhance a native input or textarea inside a form field while preserving its native value, type, and form semantics ✅ 05-task-manager
+- `mat-label` and `mat-error` — distinguish identification of a control from conditional validation feedback shown under the field ✅ 05-task-manager
 - `mat-hint` — attach persistent guidance to a form field without confusing it with a validation error
-- Material controls with reactive forms — bind controls through `formControl` or `formControlName` and avoid a second source of truth through parallel value bindings
-- Error-state timing — understand when Material displays form-field errors and connect that presentation to the form's validity and interaction or submission policy
-- `mat-select` and `mat-option` — model single or multiple selection with values whose types match the form control and distinguish literal attributes from property bindings
+- Material controls with reactive forms — bind controls through `formControl` or `formControlName` and avoid a second source of truth through parallel value bindings ✅ 05-task-manager
+- Error-state timing — understand when Material displays form-field errors and connect that presentation to the form's validity and interaction or submission policy ✅ 05-task-manager
+- `mat-select` and `mat-option` — model single or multiple selection with values whose types match the form control and distinguish literal attributes from property bindings ✅ 05-task-manager
 - Material select vs native select — choose `mat-select` for Material-specific presentation and a native `<select matNativeControl>` when native accessibility, performance, or platform behaviour is the better fit
 - Select vs autocomplete — use a select for a closed choice set and `mat-autocomplete` when users type into an input and choose from matching suggestions
 - Basic `mat-autocomplete` — connect an input to a local option panel and distinguish the displayed label from the stored object or identifier
-- Selection events vs form values — react to `selectionChange` only for side effects and read the form control for the authoritative selected value
+- Selection events vs form values — react to `selectionChange` only for side effects and read the form control for the authoritative selected value ✅ 05-task-manager
 - `mat-optgroup` — group a long option set semantically without pretending group labels are selectable values
 - Checkbox, radio, and select choice — use checkboxes for independent booleans or multi-select, radio buttons for a small visible single-choice set, and a select when compactness or option count warrants it
 - Checkbox vs slide toggle — use a checkbox for selection or confirmation and `mat-slide-toggle` for a boolean setting whose change is presented as immediately active
@@ -223,30 +223,30 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 ### Tables, sorting, filtering, and pagination
 
-- Material table structure — connect column definitions, header and cell templates, displayed column order, and header/data row definitions through matching column identifiers
-- `matColumnDef` identity — keep the column ID consistent with `displayedColumns` and configure an accessor when the displayed value does not map directly to a row property
-- Header and cell definition roles — use `matHeaderCellDef` for column labels and `matCellDef` for per-row values rather than mixing structural and data concerns
-- Table refresh after collection changes — assign or emit a new data array, or call `renderRows()` after mutating a raw array, because `mat-table` does not observe in-place structural changes automatically
-- Empty table state — use `matNoDataRow` or an equivalent full-width row only after distinguishing an empty successful result from loading and failure
-- Table data-source choices — choose a plain array, observable/custom `DataSource`, or `MatTableDataSource` according to who owns retrieval, transformation, and lifecycle
-- `MatTableDataSource` scope — use the convenience class for simple client-side sorting, filtering, and pagination, not as a server-side data-access abstraction
-- Sort integration — connect `MatSort` after the view exists, mark only sortable headers, and handle nested or derived values through a sorting accessor or server query
-- Paginator integration — connect `MatPaginator` for client data or translate page events into backend parameters without paginating the same result twice
+- Material table structure — connect column definitions, header and cell templates, displayed column order, and header/data row definitions through matching column identifiers ✅ 05-task-manager
+- `matColumnDef` identity — keep the column ID consistent with `displayedColumns` and configure an accessor when the displayed value does not map directly to a row property ✅ 05-task-manager
+- Header and cell definition roles — use `matHeaderCellDef` for column labels and `matCellDef` for per-row values rather than mixing structural and data concerns ✅ 05-task-manager
+- Table refresh after collection changes — assign or emit a new data array, or call `renderRows()` after mutating a raw array, because `mat-table` does not observe in-place structural changes automatically ✅ 05-task-manager
+- Empty table state — use `matNoDataRow` or an equivalent full-width row only after distinguishing an empty successful result from loading and failure ✅ 05-task-manager
+- Table data-source choices — choose a plain array, observable/custom `DataSource`, or `MatTableDataSource` according to who owns retrieval, transformation, and lifecycle ✅ 05-task-manager
+- `MatTableDataSource` scope — use the convenience class for simple client-side sorting, filtering, and pagination, not as a server-side data-access abstraction ✅ 05-task-manager
+- Sort integration — connect `MatSort` after the view exists, mark only sortable headers, and handle nested or derived values through a sorting accessor or server query ✅ 05-task-manager
+- Paginator integration — connect `MatPaginator` for client data or translate page events into backend parameters without paginating the same result twice ✅ 05-task-manager
 - Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded
-- Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product
+- Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product ✅ 05-task-manager
 - Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
 - Table selection and row actions — keep row identity explicit and prevent nested action buttons from accidentally triggering row selection or navigation
 - Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset
 
 ### Dialogs and confirmation flows
 
-- `MatDialog` and `MatDialogRef` — open overlay content from the caller and control its lifecycle and result through the returned reference
-- Dialog component input — use `MAT_DIALOG_DATA` for an explicit, typed input boundary rather than reaching into caller state
-- Dialog result channel — close with an explicit typed result and consume `afterClosed()` so the caller distinguishes success, cancellation, and dismissal
-- Confirm/cancel semantics — perform destructive work only after an affirmative result and treat backdrop, Escape, and cancel-button dismissal consistently
+- `MatDialog` and `MatDialogRef` — open overlay content from the caller and control its lifecycle and result through the returned reference ✅ 05-task-manager
+- Dialog component input — use `MAT_DIALOG_DATA` for an explicit, typed input boundary rather than reaching into caller state ✅ 05-task-manager
+- Dialog result channel — close with an explicit typed result and consume `afterClosed()` so the caller distinguishes success, cancellation, and dismissal ✅ 05-task-manager
+- Confirm/cancel semantics — perform destructive work only after an affirmative result and treat backdrop, Escape, and cancel-button dismissal consistently ✅ 05-task-manager
 - Default dismissal vs `disableClose` — preserve backdrop and Escape dismissal by default and disable them only when the interaction has a justified alternative exit because dialogs are expected to remain keyboard operable
-- Dialog content structure — keep title, content, and actions as sibling regions so layout, scrolling, labelling, and action placement remain correct
-- Declarative vs programmatic closing — use `mat-dialog-close` for simple results and a handler when validation, unsaved changes, or asynchronous work must run before closing
+- Dialog content structure — keep title, content, and actions as sibling regions so layout, scrolling, labelling, and action placement remain correct ✅ 05-task-manager
+- Declarative vs programmatic closing — use `mat-dialog-close` for simple results and a handler when validation, unsaved changes, or asynchronous work must run before closing ✅ 05-task-manager
 - Dialog focus management — preserve an accessible name, focus trap, sensible initial focus, focus restoration, and Escape behaviour unless a justified accessible alternative exists
 - Dialog viewport constraints — use width and maximum-size configuration so overlay content remains usable without overflowing small viewports
 
@@ -269,7 +269,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 ### Accessibility, responsiveness, and testing
 
-- Built-in accessibility vs application responsibility — rely on supported Material semantics and keyboard behaviour while still providing labels, logical focus order, and meaningful state communication
+- Built-in accessibility vs application responsibility — rely on supported Material semantics and keyboard behaviour while still providing labels, logical focus order, and meaningful state communication ✅ 05-task-manager
 - Responsive Material composition — adapt sidenav mode, dialog dimensions, action density, and wide-table presentation because Material components do not make a page responsive automatically
 - Material component harnesses — test supported user-visible behaviour through stable harness APIs instead of querying private DOM structure or CSS classes
 - Harness interaction tests — use component-specific harness methods to verify critical validation feedback, dialog results, and table interactions rather than snapshotting generated markup
@@ -761,7 +761,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
-  superficially similar code with different reasons to change into one abstraction ✅ 07-timetrack
+  superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
   centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
@@ -1083,7 +1083,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Object contracts
 
 - `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
-- Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined`
+- Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
 - `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
@@ -1133,7 +1133,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
 - Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion
-- Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist
+- Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist ✅ 05-task-manager
 
 ### Utility and derived types
 
@@ -1208,7 +1208,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed ✅ 02-weather-app
 - `slice` vs `substring` — extract a range while accounting for negative indexes and reversed arguments
 - String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source ✅ 01-todo-list
-- String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics
+- String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics ✅ 05-task-manager
 - Unicode code-unit recognition — know that string length and indexing can split some visible characters and avoid character-count assumptions
 - Basic regular expressions — read and write simple search or validation patterns with common flags and choose among `test`, `match`, and `replace`
 
@@ -1312,7 +1312,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Browser events and resources
 
 - DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
-- Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs
+- Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs ✅ 05-task-manager
 - Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately ✅ 04-meal-finder
 - `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
@@ -1354,7 +1354,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `display: block`, `inline`, `inline-block` — block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width ✅ 04-meal-finder
 - `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening
 - Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?" ✅ 04-meal-finder
-- `table-layout: fixed` — take column widths from the first row instead of measuring every cell, which is what makes equal-width columns and predictable truncation possible in a wide data table; the default `auto` sizes columns from their content
+- `table-layout: fixed` — take column widths from the first row instead of measuring every cell, which is what makes equal-width columns and predictable truncation possible in a wide data table; the default `auto` sizes columns from their content ✅ 05-task-manager
 
 ### Angular-specific CSS
 - View encapsulation — Angular scopes component styles by adding a unique attribute to every element in the template; styles in `component.scss` only apply to that component's own elements, not to child components; interviewers ask "why does your style not apply inside the child component?" ✅ 01-todo-list
@@ -1447,7 +1447,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `box-shadow` syntax: `offset-x offset-y blur spread color` — spread is optional, and transparent
   colour can use modern `rgb(... / alpha)`, hex alpha, HSL, `rgba()`, or a design token ✅ 02-weather-app
 - `border-radius: 50%` — makes a circle only when the element is square, which is why it works for avatars and loading spinners and produces an ellipse on any other aspect ratio ✅ 02-weather-app
-- `border-radius: 9999px` — creates a pill shape at any aspect ratio, which is why badges and chips use it; `50%` vs `9999px` is a confusable pair interviewers test with avatar vs badge
+- `border-radius: 9999px` — creates a pill shape at any aspect ratio, which is why badges and chips use it; `50%` vs `9999px` is a confusable pair interviewers test with avatar vs badge ✅ 05-task-manager
 - `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
 - `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair ✅ 04-meal-finder
 - `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it ✅ 01-todo-list
@@ -1459,7 +1459,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Scrollable container pattern — `overflow-y: auto` with a fixed `max-height` creates a scroll area without triggering a page scroll; `auto` vs `scroll` is a confusable pair: `auto` is invisible when not needed, `scroll` is always visible ✅ 04-meal-finder
 
 ### CSS functions
-- `calc()` — mixes different units in one expression; `calc(100% - 64px)` subtracts a fixed header height from the full viewport; spaces around `+` and `-` are required; interviewers ask when `calc()` is necessary and why neither pure percentage nor pure `px` can solve the same problem
+- `calc()` — mixes different units in one expression; `calc(100% - 64px)` subtracts a fixed header height from the full viewport; spaces around `+` and `-` are required; interviewers ask when `calc()` is necessary and why neither pure percentage nor pure `px` can solve the same problem ✅ 05-task-manager
 - `clamp(min, preferred, max)` — creates a value that scales fluidly between limits; `font-size: clamp(1rem, 2.5vw, 2rem)` replaces multiple breakpoint overrides for font size; tested because it signals modern CSS knowledge
 - `min()` and `max()` — `min(100%, 600px)` is equivalent to `max-width: 600px; width: 100%`; `max(1rem, 5%)` ensures a minimum even when using a relative unit; useful for containers that should be fluid on mobile and capped on desktop
 

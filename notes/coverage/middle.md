@@ -47,7 +47,7 @@ Concepts expected when a developer can adapt Angular Material to a production de
 
 ### CDK and scale-oriented components
 
-- Angular CDK — choose low-level overlay, portal, drag-drop, and accessibility primitives when Material has no suitable component
+- Angular CDK — choose low-level overlay, portal, drag-drop, and accessibility primitives when Material has no suitable component ✅ 05-task-manager
 - Virtual scrolling — render large collections through `CdkVirtualScrollViewport` and understand its fixed/dynamic sizing trade-offs
 - `MatAutocomplete` with remote data — combine form streams, cancellation, loading, and option identity for production lookup fields
 - Hierarchical and dense navigation — choose `MatTree`, tabs, or expansion panels according to information structure rather than appearance

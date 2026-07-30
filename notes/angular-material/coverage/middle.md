@@ -9,11 +9,11 @@ Concepts expected when a developer can adapt Angular Material to a production de
 - Selective theme emission — choose all-component or per-component base, colour, typography, and density mixins while preventing duplicated CSS output
 - Runtime dark mode — switch complete theme token sets while preserving contrast and user preference
 - Material custom form controls — integrate a `ControlValueAccessor` with `mat-form-field`, validation, focus, and error state
-- Custom error-state policies — implement and provide an `ErrorStateMatcher` when the product's submission or cross-field rules cannot use Material's default interaction timing
+- Custom error-state policies — implement and provide an `ErrorStateMatcher` when the product's submission or cross-field rules cannot use Material's default interaction timing ✅ 05-task-manager
 
 ## CDK and scale-oriented components
 
-- Angular CDK — choose low-level overlay, portal, drag-drop, and accessibility primitives when Material has no suitable component
+- Angular CDK — choose low-level overlay, portal, drag-drop, and accessibility primitives when Material has no suitable component ✅ 05-task-manager
 - Virtual scrolling — render large collections through `CdkVirtualScrollViewport` and understand its fixed/dynamic sizing trade-offs
 - `MatAutocomplete` with remote data — combine form streams, cancellation, loading, and option identity for production lookup fields
 - Hierarchical and dense navigation — choose `MatTree`, tabs, or expansion panels according to information structure rather than appearance
