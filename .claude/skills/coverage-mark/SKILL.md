@@ -9,7 +9,7 @@ description: >
   as a progress instrument: how much of the junior floor Victor can prove with something he built. The
   failure mode this exists for is a concept applied in a project that leaves no trace on the coverage
   checklist, so months later the file cannot distinguish "never studied" from "shipped it in project 06".
-  Do NOT use it to add new bullets (that is the coverage step of the calling ritual, or `/coverage`), to
+  Do NOT use it to add new bullets (that is `coverage-bullet-add`, or `/coverage`), to
   mark something merely studied in notes, or inside the `coverage` / `coverage-audit` pipelines — those
   passes preserve markers, they never author them.
 ---
@@ -23,8 +23,9 @@ before editing anything.** It only auto-loads inside the `/coverage` pipeline, a
 format and its preservation contract.
 
 This skill only ever *appends a marker to an existing bullet*. It never writes, rewords, or deletes a
-bullet. If the concept has no bullet, that is the calling ritual's coverage step (or `/coverage`) — say so
-and stop; do not author scope here.
+bullet. If the concept has no bullet, that is `coverage-bullet-add`'s job (or `/coverage`) — say so and
+stop; do not author scope here. The calling ritual runs that skill *before* this one, so a missing bullet at
+this point usually means it was deliberately not authored.
 
 ---
 

@@ -55,68 +55,22 @@ because the fix happened in a Spring project (`Optional<T>` is Java; `@Transacti
 
 ## 1 — Coverage: is the concept already there?
 
-**First pick the topic, and do not reuse step 0's answer blindly.** Step 0 routed the concept to a
-**PROGRESS.md section**; this step needs the **`notes/` topic that owns the concept**, and the two
-vocabularies do not match. `notes/` has its own coverage per topic — currently `angular`,
-`angular-material`, `architecture`, `css`, `general`, `git`, `java`, `javascript`, `security`,
-`spring-boot`, `sql`, `typescript` — while the Step 4 mapping table folds several of those into one
-section (its "Spring annotation / bean / **security** / JPA → Spring Boot" row is the one that bites:
-followed literally it files an access-control concept under `spring-boot` even though `notes/security/`
-owns it).
+**Invoke the `coverage-bullet-add` skill**, passing the concept from step 0 and the level Victor is
+currently working at. It owns this decision end to end: routing the concept to its owning `notes/` topic
+by altitude, searching the level file, authoring the bullet under the right section if it is missing,
+mirroring it into `notes/coverage/{LEVEL}.md` with a diff check, and reporting the `/notes-plan` remap the
+new bullet owes. Do not reproduce its logic here, and do not re-derive the topic routing yourself.
 
-**The authority is the topic-ownership list in `_coverage-standard.md`** (the "Security owns threats and
-defences; Angular/Spring Boot keep concrete client/server integration" block). You are already reading
-that standard before writing a bullet — read that block and apply it literally rather than re-deriving
-the routing here.
+Two things to pass it explicitly, because they are this ritual's context and not the skill's:
 
-The test it encodes is **altitude, not subject matter**. The technology-neutral topics (`security`,
-`architecture`, `general`) own the concept — what a thing is, which threat it answers, which boundary it
-draws. The technology topics (`spring-boot`, `angular`, `java`, `sql`, `typescript`,
-`angular-material`) own its concrete application in that stack. So the same subject legitimately appears
-in two topics at two altitudes, and that is **not** duplication:
+- **Do not hand it step 0's routing as the answer.** Step 0 routed the concept to a *PROGRESS.md section*;
+  the skill needs the *`notes/` topic*, and the two vocabularies do not match. Give it the concept, not
+  the section.
+- **A design decision with no code change** can still be a real concept — pass it through, and let the
+  skill decide whether it belongs on the checklist.
 
-- "what a JWT is, and what a signature protects against" → `security`; "issuing and validating a JWT in
-  a Spring filter chain" → `spring-boot`.
-- "BOLA — a client reaching another user's object by changing an id" → `security`; "`@PreAuthorize` on
-  the mutation endpoints" → `spring-boot`.
-- "grouping by a display name merges two distinct rows" (database behaviour) → `sql`; "the same
-  aggregate expressed as JPQL with `@Query`" → `spring-boot`.
-
-What must never happen is the *same altitude* written twice. A framework class name in the bullet
-(`AccountStatusUserDetailsChecker`, `SecurityFilterChain`) is decisive evidence it is the technology
-topic's, however security-flavoured the subject is.
-
-Past closes in the `## Closed` ledger are the precedent to match — they routed BOLA and segregation of
-duties to `security`, and DRY to `architecture`. When the *other* topic has a real claim at its own
-altitude, do not author it there yourself: the standard is explicit that a concept belonging to another
-topic goes as a proposal under that topic's heading in
-`notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md`, never straight into its file. Say in
-the report which topic you chose and why.
-
-Then open that topic's coverage file for **the level Victor is currently working at** —
-`notes/{topic}/coverage/{junior|middle|senior}.md`. Search for the concept (grep the key symbol, not
-the task's wording — the coverage file names concepts, not fixes). Search the **sibling topic** too when
-the routing was a close call: the concept may already be covered there, which settles the ownership
-question for you.
-
-**If it is already covered:** say so and name the exact bullet. Nothing to write. This is the common
-case and it is a *good* outcome — it means the review found a gap in the code, not in the curriculum.
-
-**If it is missing:** add it. **Read
-`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` first** — it only auto-loads inside
-the `/coverage` pipeline, so an inline edit without it will break the file's contract. The two rules
-that inline edits break most often:
-
-- **Concepts, not conduct.** A coverage bullet describes *what a junior must understand*, never *what
-  Victor did in project 07*. Write "declarative transaction boundaries — a service method that performs
-  several writes needs them to commit or roll back as one unit"; never "added `@Transactional` to
-  `TimeEntryService.submit()`".
-- **Placement.** It goes under the existing section its subject belongs to, in that section's voice and
-  bullet shape. Do not open a new section for a single concept, and do not append to the end of the
-  file.
-
-If the concept genuinely belongs to a **level above** the one Victor is on, add it there and say so —
-that is a signal about his trajectory, not a mistake.
+The common outcome is **already covered**, and that is a *good* result: it means the review found a gap in
+the code, not in the curriculum. Fold the skill's report rows into this ritual's final table.
 
 ### 1a — Mark the concept as demonstrated
 
@@ -124,8 +78,8 @@ that is a signal about his trajectory, not a mistake.
 sub-step that keeps the coverage file honest about what Victor can *prove*, and it runs on the common
 "already covered" path too, which is precisely where a close would otherwise leave no trace.
 
-**Invoke the `coverage-mark` skill**, passing the concept, the topic you just determined, the level, and
-the project number. It appends the `✅ NN` evidence marker to the matching bullet in the topic file and the
+**Invoke the `coverage-mark` skill**, passing the concept, **the topic `coverage-bullet-add` reported** (not
+step 0's PROGRESS.md section), the level, and the project number. It appends the `✅ NN` evidence marker to the matching bullet in the topic file and the
 mirror, and reports the level's marked/total count. Do not reproduce its logic here.
 
 Two cases it will report back as skipped, both correct:
@@ -135,47 +89,18 @@ Two cases it will report back as skipped, both correct:
 
 Fold its report rows into this ritual's final table.
 
-### 1b — Mirror the bullet, then hand the plan to its own prompt
+### 1b — Carry the skill's owed work into the session
 
-Applies only if step 1 actually wrote a new bullet. If the concept was already covered, this sub-step is
-**n/a** — say so and move on.
+The mirror write, the diff check, and the `/notes-plan` decision all happen **inside
+`coverage-bullet-add`** — this sub-step does not repeat them. What it owns is what the skill hands back:
 
-Three artifacts hold a coverage concept, and this ritual owns exactly two of them.
+- If the skill reports **`/notes-plan {topic} {LEVEL}` owed**, surface it in this ritual's report table and
+  keep it for the *end of the session*. One run per affected topic+level, batched — several closes touching
+  the same topic and level are still a single owed run, and it is never run per bullet.
+- If the skill reports **drift it found but did not fix** (bullets missing from the mirror that predate this
+  task), say so as its own decision. Do not fold someone else's drift into this close.
 
-**Write the bullet into both coverage files** — verbatim, at **the level you just determined** (junior /
-middle / senior; check which, never assume). These two are byte-identical copies, so there is no judgment
-to delegate:
-
-1. `notes/{topic}/coverage/{LEVEL}.md` — the canonical file, already written above.
-2. `notes/coverage/{LEVEL}.md` — the global mirror. Same bullet, same relative position, inside
-   `## {TOPIC}`; the topic file's `##` section headings appear here demoted to `###`.
-
-Then verify, because landing the bullet in one file and not the other is worse than not landing it: sort
-the canonical file's bullets and the mirror's `## {TOPIC}` bullets and `diff` them — they must be
-identical sets. Report the count. If that surfaces *other* missing bullets, drift predating this task,
-say so and treat it as its own decision; do not silently fold it into this close.
-
-**Do not touch `notes/{topic}/coverage/notes-plan-{LEVEL}.md`, and do not touch its `Coverage SHA-256`.**
-
-Assigning a bullet to a chapter is not bookkeeping — `notes-plan-prompt` dispatches a **cold pedagogical
-reviewer** for it, and gives every entry the full contract from `_note-quality-standard.md`: the
-`Must answer:` questions, prerequisites, handoff, and route validation. Reproducing that by hand from a
-"which coverage section is it under" heuristic substitutes a shortcut for a reviewed judgment and skips
-the contract outright. That is not a token saving, it is worse output at the same price.
-
-The stale SHA is the correct end state: it is the signal that the plan owes a remap. Never overwrite it
-to make the mismatch go away — the hash certifies which coverage bytes the plan was mapped against, so
-forging it leaves the plan incomplete and destroys the only mechanism that could detect it.
-
-**Instead, report that `/notes-plan {topic} {LEVEL}` is owed.** That prompt is a reconciliation pass
-designed to be re-run: it reports added / removed / regrouped / preserved-complete entries, and a
-`refined` entry that gains bullets keeps its freeze and collects them under `Pending additions:` rather
-than being reopened. Two practical notes for the report:
-
-- **Batch it.** One run per affected topic+level at the *end* of the session, not one per bullet. Several
-  closes touching the same topic and level are still a single owed run.
-- If no `notes-plan-{LEVEL}.md` exists for that level, **nothing is owed at all** — that level's notes
-  have never been planned, so there is no plan to remap. Say so; it is not a defect.
+If nothing was written — the common already-covered path — this sub-step is **n/a**; say so and move on.
 
 ---
 
@@ -300,7 +225,9 @@ Everything below lands on the **active branch** (`main` only receives merges via
 
 **You commit yourself:**
 
-- `notes/{topic}/coverage/*.md` — a `notes/` study file, already covered by the standing authorization.
+- `notes/**/coverage/*.md` — handled by `coverage-bullet-add` and `coverage-mark`, which commit their own
+  writes under the standing `notes/` authorization. Do not re-stage those files here; if both skills ran in
+  the same close, they fold the authoring and the marking into one coverage commit.
 - `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit` and by this skill,
   never by Victor, so the authorship boundary puts it on your side. Its own atomic commit, separate
   from the coverage one.
