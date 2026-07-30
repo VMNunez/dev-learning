@@ -9,7 +9,7 @@ description: >
   and the global mirror when it is missing, and reports the `/notes-plan` remap the new bullet owes. The
   failure mode this exists for is a concept a project taught that never enters the curriculum: the code
   ships, the checklist still says "never studied", and the coverage file slowly stops describing what
-  Victor actually knows. Do NOT use it to append the `✅ NN` evidence marker (that is `coverage-mark`), to
+  Victor actually knows. Do NOT use it to append the `✅ NN-slug` evidence marker (that is `coverage-mark`), to
   add scope for something merely studied in notes, to write `notes-plan-{LEVEL}.md` or touch its
   `Coverage SHA-256`, or inside the `coverage` / `coverage-audit` / `coverage-verify` pipelines — those
   own bulk authoring and must not be second-guessed bullet by bullet.
@@ -26,7 +26,7 @@ It owns the topic-ownership list, the bullet format, and the section-placement r
 that standard, it does not restate or override it.
 
 This skill is the authoring half of a pair. The marking half is `coverage-mark`, which appends the
-`✅ NN` evidence marker to a bullet that already exists. Keep them separate: **this skill never writes a
+`✅ NN-slug` evidence marker to a bullet that already exists. Keep them separate: **this skill never writes a
 marker, and `coverage-mark` never writes a bullet.** The calling ritual runs both.
 
 ---
@@ -137,7 +137,7 @@ For each topic+level you wrote to, **recount — never increment**:
 
 ```bash
 grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md
-grep -cE ' ✅ [0-9]{2}$' notes/{topic}/coverage/{LEVEL}.md
+grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+$' notes/{topic}/coverage/{LEVEL}.md
 ```
 
 Rewrite that one cell and the level's `**Total**` cell (recount the column, do not add your delta to

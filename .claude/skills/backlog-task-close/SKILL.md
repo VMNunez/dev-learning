@@ -79,7 +79,7 @@ sub-step that keeps the coverage file honest about what Victor can *prove*, and 
 "already covered" path too, which is precisely where a close would otherwise leave no trace.
 
 **Invoke the `coverage-mark` skill**, passing the concept, **the topic `coverage-bullet-add` reported** (not
-step 0's PROGRESS.md section), the level, and the project number. It appends the `✅ NN` evidence marker to the matching bullet in the topic file and the
+step 0's PROGRESS.md section), the level, and the project's folder name. It appends the `✅ NN-slug` evidence marker to the matching bullet in the topic file and the
 mirror, and reports the level's marked/total count. Do not reproduce its logic here.
 
 Two cases it will report back as skipped, both correct:
@@ -261,7 +261,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 |---|---|
 | Coverage (`spring-boot/junior`) | already covered — "declarative transaction boundaries" |
 | Topic chosen | `security` — access-control rule, not the Spring mechanism (PROGRESS section was Spring Boot) |
-| Evidence marker | marked `✅ 07` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
+| Evidence marker | marked `✅ 07-timetrack` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
 | Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |

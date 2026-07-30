@@ -138,7 +138,7 @@ The orchestrator is the only repository editor.
 
 Write `TARGET_FILE`, move reclassified material to the correct level file, and route other-topic proposals to the inbox.
 
-An existing bullet carrying a `✅ NN` evidence marker keeps that marker verbatim through KEEP HERE, any
+An existing bullet carrying a `✅ NN-slug` evidence marker keeps that marker verbatim through KEEP HERE, any
 MOVE, ROUTE, or factual correction — including when the concept sentence is rewritten from scratch. This
 step is the one most likely to destroy markers, because it redrafts a whole level file: never author a
 marker here, and never drop one. Read "Evidence markers" in the standard first.
@@ -189,7 +189,7 @@ Rebuild only `## {TOPIC}` in `GLOBAL_MIRROR` from `TARGET_FILE`:
 
 Validate:
 
-1. local/mirror bullet text and order match — including each bullet's trailing `✅ NN` evidence marker,
+1. local/mirror bullet text and order match — including each bullet's trailing `✅ NN-slug` evidence marker,
    which is part of the bullet text and must appear identically in both files;
 2. local/mirror headings match;
 3. expected top-level topics remain exactly once;

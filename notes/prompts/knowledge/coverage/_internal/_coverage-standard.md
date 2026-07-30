@@ -135,13 +135,16 @@ A coverage bullet may carry one trailing **evidence marker** recording the proje
 was first applied in code:
 
 ```
-- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests ✅ 07
+- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests ✅ 07-timetrack
 ```
 
 Rules:
 
-- **Format is exactly `✅ NN`**, at the end of the bullet, after the concept sentence, where `NN` is the
-  two-digit project number. Nothing else follows it. One marker per bullet.
+- **Format is exactly `✅ NN-slug`**, at the end of the bullet, after the concept sentence, where `NN-slug`
+  is the project's folder name under `projects/` verbatim — the two-digit number, a hyphen, and the
+  kebab-case name (`07-timetrack`, `03-expense-tracker`). Nothing else follows it. One marker per bullet.
+  The number alone would be unreadable in a file scanned months later; the folder name is the identifier
+  that already exists, so it never has to be invented or kept in sync with a second list of names.
 - **Applied in project code only.** The marker means Victor wrote code that uses the concept in that
   project. Studying the concept in `notes/` does not earn it, and neither does reading about it in a
   review finding. An unmarked bullet therefore means "not yet demonstrated", never "not yet studied".
@@ -167,14 +170,15 @@ markers are not scope. If they entered the digest, every closed step would chang
 "the plan owes a remap" signal for work that has not moved an inch.
 
 So the digest is computed over the file's **scope bytes**: the exact UTF-8 bytes of the file with every
-trailing evidence marker removed — for each line, drop a trailing ` ✅ NN` (the space, the mark, the space,
-the two digits) and nothing else. No other normalisation: no trimming, case folding, or reordering. Two
+trailing evidence marker removed — for each line, drop a trailing ` ✅ NN-slug` (the space, the mark, the
+space, the project folder name) and nothing else. No other normalisation: no trimming, case folding, or
+reordering. Two
 files that differ only in their markers therefore have the same digest, which is exactly the intent.
 
 One canonical command, so every prompt produces the same digest for the same scope:
 
 ```bash
-sed -E 's/ ✅ [0-9]{2}$//' notes/{topic}/coverage/{LEVEL}.md | sha256sum
+sed -E 's/ ✅ [0-9]{2}-[a-z0-9-]+$//' notes/{topic}/coverage/{LEVEL}.md | sha256sum
 ```
 
 Every prompt that computes or compares a coverage digest must use it, and any run that

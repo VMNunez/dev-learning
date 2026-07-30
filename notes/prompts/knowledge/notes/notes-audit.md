@@ -52,7 +52,7 @@ Before dispatching any role:
 2. Require `NOTE` to be exactly two digits.
 3. Require exactly one `## {NOTE} — ...` entry in `PLAN`.
 4. Calculate SHA-256 over `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every trailing
-   ` ✅ NN` evidence marker stripped, per the canonical command in "Evidence markers" in
+   ` ✅ NN-slug` evidence marker stripped, per the canonical command in "Evidence markers" in
    `_coverage-standard.md`. Stop with `run notes-plan-prompt` when it differs from `Coverage SHA-256` in
    `PLAN`, and say in the stop message that markers were stripped first.
 5. Require `Plan status: current`.

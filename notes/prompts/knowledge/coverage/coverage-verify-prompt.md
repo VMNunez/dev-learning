@@ -63,7 +63,7 @@ must not supply proposed gaps or raise the selected-level floor.
    that expected heading-depth difference. Any other heading, bullet, or ordering difference means the
    mirror is stale, `coverage-prompt` has not finished, and there is nothing trustworthy to verify.
 4. Compute the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
-   trailing ` ✅ NN` evidence marker stripped, per the canonical command in "Evidence markers" in
+   trailing ` ✅ NN-slug` evidence marker stripped, per the canonical command in "Evidence markers" in
    `_coverage-standard.md`. This is what the
    findings file stamps, so `notes-plan` can tell a verified verdict from a stale one.
 5. For middle, state that the junior gate must be consolidated; for senior, junior and middle. The gate

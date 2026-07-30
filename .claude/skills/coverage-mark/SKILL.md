@@ -1,10 +1,10 @@
 ---
 name: coverage-mark
 description: >
-  Mark a coverage bullet as demonstrated in project code, with the project number, WHENEVER a concept
+  Mark a coverage bullet as demonstrated in project code, with the project's folder name, WHENEVER a concept
   has just been applied in a project — called by the `step-complete` and `backlog-task-close` rituals as
   their coverage sub-step, and directly when Victor asks ("marca esto como visto en el coverage", "esto
-  ya lo hemos aplicado en el 07", "mark this bullet as covered"). It appends the `✅ NN` evidence marker
+  ya lo hemos aplicado en el 07", "mark this bullet as covered"). It appends the `✅ NN-slug` evidence marker
   to the matching bullet in both the topic coverage file and the global mirror, so the level file doubles
   as a progress instrument: how much of the junior floor Victor can prove with something he built. The
   failure mode this exists for is a concept applied in a project that leaves no trace on the coverage
@@ -31,8 +31,8 @@ this point usually means it was deliberately not authored.
 
 ## 1 — Establish what was demonstrated, and in which project
 
-State in one sentence the concept and the project number (`NN`, two digits, from the project folder
-name). "Demonstrated" has one meaning: **Victor wrote code in that project that uses the concept**. All
+State in one sentence the concept and the project's folder name (`NN-slug`, e.g. `07-timetrack`, taken
+from `projects/` verbatim). "Demonstrated" has one meaning: **Victor wrote code in that project that uses the concept**. All
 of these are *not* demonstrations, and each must be reported as skipped rather than marked:
 
 - the concept appears in a review finding, a backlog task, or a note, but no code was written;
@@ -69,7 +69,7 @@ the few honest signals about his trajectory.
 
 ## 3 — Append the marker to both files
 
-Append ` ✅ NN` to the end of the bullet, after the concept sentence, nothing following it. Verbatim
+Append ` ✅ NN-slug` to the end of the bullet, after the concept sentence, nothing following it. Verbatim
 identical edit in both:
 
 1. `notes/{topic}/coverage/{LEVEL}.md` — the source of truth.
@@ -98,7 +98,7 @@ inherits any error already in it:
 
 ```bash
 grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md
-grep -cE ' ✅ [0-9]{2}$' notes/{topic}/coverage/{LEVEL}.md
+grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+$' notes/{topic}/coverage/{LEVEL}.md
 ```
 
 Rewrite that one cell, then the level's `**Total**` cell (recount as the sum of the column's
@@ -115,8 +115,8 @@ One row per concept, inside the calling ritual's report table when there is one:
 
 | Concept | Topic / level | Result |
 |---|---|---|
-| declarative transaction boundaries | `spring-boot` / junior | marked ✅ 07 (topic + mirror, 24/139 marked) |
-| proxy-based annotation behaviour | `spring-boot` / junior | already marked ✅ 06 — left as is |
+| declarative transaction boundaries | `spring-boot` / junior | marked ✅ 07-timetrack (topic + mirror, 24/139 marked) |
+| proxy-based annotation behaviour | `spring-boot` / junior | already marked ✅ 06-hr-portal — left as is |
 | BOLA on the mutation endpoints | `security` / junior | not marked — no bullet exists yet, flagged as a possible gap |
 | fail-fast manual checks | `spring-boot` / junior | not marked — DECISION, no code change |
 

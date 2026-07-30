@@ -28,7 +28,7 @@ interviewer would actually ask it, and an answer the way Victor would actually s
 Questions from different levels never share a file.
 
 Every Q&A file stores the exact lowercase SHA-256 digest of its source coverage file's **scope bytes** —
-its exact UTF-8 bytes with every trailing ` ✅ NN` evidence marker stripped, per "Evidence markers" in
+its exact UTF-8 bytes with every trailing ` ✅ NN-slug` evidence marker stripped, per "Evidence markers" in
 `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`:
 
 ```text
