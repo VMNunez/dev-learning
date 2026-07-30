@@ -21,9 +21,17 @@ but only a `completed` result satisfies a prerequisite; `blocked` and `dry-run` 
 
 **Stale flags on `Plan` cells.** A `Plan J|M|S` cell may end in ` · ⚠ stale YYYY-MM-DD (+N bullets)`.
 It means coverage gained scope after that plan ran, so `/notes-plan {topic} {level}` is **owed** — the
-run on record is real but no longer maps the whole checklist. The flag is appended, never a
-replacement, so the execution record survives underneath it; the next `notes-plan` run rewrites the
-whole cell and the flag disappears on its own. A flagged cell does **not** satisfy a prerequisite.
+run on record is real but no longer maps the whole checklist. The flag is appended to the execution
+record, never a replacement for it, so the record survives underneath it; the next `notes-plan` run
+rewrites the whole cell and the flag disappears on its own. A flagged cell does **not** satisfy a
+prerequisite.
+
+**One flag per cell — the count accumulates.** "Appended" governs the flag's relationship to the
+execution record, never to an earlier flag. A cell already carrying ` · ⚠ stale 2026-07-30 (+4 bullets)`
+that gains one more bullet becomes ` · ⚠ stale 2026-07-30 (+5 bullets)` — the date moves to today and
+`N` is the running total of bullets added since the plan ran. Never write a second flag beside the
+first: what the cell has to answer is "how far has this plan drifted", and a list of dated increments
+makes the reader do arithmetic to find out.
 
 **Tracking baseline reset:** 2026-07-24. Earlier execution records were cleared after the prompt
 system changed. Only runs recorded from this baseline onward are valid; the Java Junior coverage run
@@ -33,7 +41,7 @@ is the first retained execution.
 
 | Topic | Coverage J | Verify J | Plan J | Notes J | Interview J | Sync J | Coverage M | Verify M | Plan M | Notes M | Interview M | Sync M | Coverage S | Verify S | Plan S | Notes S | Interview S | Sync S |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Angular | 2026-07-29 — completed — 108 items; verify-gap fast path; 5 gaps accepted; mirror parity; notes-plan refresh next | 2026-07-29 — completed — gaps consumed; verdict superseded by SHA a22f33f6; fresh verification optional | 2026-07-29 — completed — 17 entries; 108 concepts; 3 create / 14 audit; English-only legacy renumber authorised by Victor; mirror parity; cold review passed · ⚠ stale 2026-07-30 (+4 bullets) · ⚠ stale 2026-07-30 (+1 bullets) | 0/17 complete — completed | | | | | | | | | | | | | |
+| Angular | 2026-07-29 — completed — 108 items; verify-gap fast path; 5 gaps accepted; mirror parity; notes-plan refresh next | 2026-07-29 — completed — gaps consumed; verdict superseded by SHA a22f33f6; fresh verification optional | 2026-07-29 — completed — 17 entries; 108 concepts; 3 create / 14 audit; English-only legacy renumber authorised by Victor; mirror parity; cold review passed · ⚠ stale 2026-07-30 (+5 bullets) | 0/17 complete — completed | | | | | | | | | | | | | |
 | Angular Material | 2026-07-29 — completed — 73 items; verify-gap fast path; mirror parity; notes-plan refresh next | 2026-07-29 — completed — 3 gaps | 2026-07-29 — completed — 16 entries; 73 concepts; 3 create / 13 audit; English-only legacy renumbering; mirror parity; cold review applied | 0/16 complete — completed | | | | | | | | | | | | | | |
 | Spring Boot | 2026-07-27 — completed — 136 items; verify-gap fast path; 4 gaps judged (3 added, 1 moved to middle); mirror parity; notes plan stale | 2026-07-27 — complete — 136 items pass strict bar; zero gaps; SHA 43a1261f matches coverage; notes-plan unblocked | 2026-07-27 — completed — 16 entries; 136 concepts; 2 create / 14 audit; 16 pairs classified `keep`; 0 relocations; mirror parity; cold review applied | 0/16 complete — completed | | | | | | | | | | | | | | |
 | Java | 2026-07-26 — completed — 121 items; consumed array-access gap (fast path); mirror parity; notes plan stale | 2026-07-26 — complete — 121 items pass strict bar; SHA 4c9d4cc9 matches coverage; notes-plan unblocked | 2026-07-26 — completed — 16 entries; 121 concepts; 0 create / 16 audit; mirror parity; cold review applied | 0/16 complete — completed | | | | | | | | | | | | | | |
