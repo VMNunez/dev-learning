@@ -142,11 +142,20 @@ committed as execution evidence.
 Update mode:
 
 1. Commit selected-level topic files, any cross-level moves, and the selected mirror atomically.
-2. Commit inbox routing separately when changed.
-3. Check status immediately before each add and commit; stage declared paths only.
-4. Write the coverage-audit self-report and update the audit tracker row with level and date.
-5. Commit report and tracker together.
-6. Verify commits with `git show --stat`.
+2. Refresh the `## Coverage demonstrated` table in `PROGRESS.md`, in that same commit. This pass moves
+   denominators across **every** topic at once, so a stale table after it is the widest drift the
+   instrument can carry.
+   **`progress-update-prompt.md` step D8 owns the table's format, its counting rule, and the `*`
+   provisional mark — read D8 and follow it.** Recount with the two greps there, never by adjusting the
+   printed values: rewrite the whole column for the audited level plus its `**Total**`, and any cell of
+   another level whose file a cross-level move changed. Additions, deletions, and moves all land here;
+   a marker that legitimately left the level with its concept lowers a numerator, and that must show.
+   Never touch `Professional level by topic` — denominators moving is not a promotion or a demotion.
+3. Commit inbox routing separately when changed.
+4. Check status immediately before each add and commit; stage declared paths only.
+5. Write the coverage-audit self-report and update the audit tracker row with level and date.
+6. Commit report and tracker together.
+7. Verify commits with `git show --stat`.
 
 For step 4, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in full. Its
 declared report path is `_internal/_last-run-report.md`; update the `coverage-audit` row in
@@ -160,6 +169,7 @@ Include:
 - whole-file EOF evidence;
 - analyst and reviewer completion;
 - added, moved down/up, moved to senior, deleted, corrected, and routed counts by topic;
+- the audited level's `**Total**` cell in the `Coverage demonstrated` table, before and after;
 - missing-topic detections;
 - qualitative stopping-rule result;
 - mirror parity;

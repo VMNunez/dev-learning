@@ -314,6 +314,13 @@ Refresh the matrix without duplicating coverage concepts:
 Refresh the `Coverage demonstrated` table — one row per topic, one column per level, each cell the
 share of that level's coverage bullets carrying an evidence marker.
 
+**This step owns the table's format; it is not its only writer.** Four others keep it current as they
+work — the `coverage-mark` and `coverage-bullet-add` skills for a single bullet, `coverage-prompt` for
+one topic+level, `coverage-audit` for a whole level. Each defers to the format, counting rule, and `*`
+convention defined here, so all five must produce identical output; change this block and they follow,
+change one of them alone and they fight. Your role is the **safety net**: recount every cell and fix
+what a run missed. A cell you correct is a `Corrected` in the Step E diff, not an `Added`.
+
 Count from the **topic** files, `notes/{topic}/coverage/{LEVEL}.md`, never from the
 `notes/coverage/{LEVEL}.md` mirror: the mirror can lag its topics, and a denominator that depends on
 which file you opened is not a measurement. Two counts per file, no file contents loaded:

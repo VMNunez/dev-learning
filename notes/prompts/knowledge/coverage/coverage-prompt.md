@@ -217,12 +217,21 @@ In update mode:
    execution history, not a new gate: continue directly to `notes-plan-prompt`. A fresh
    `coverage-verify` may be run later for new completeness evidence, but it is never required before
    planning or authoring notes.
-2. Commit inbox routing separately only when another topic receives proposals.
-3. Before every add and commit, inspect status and stage only declared paths.
-4. Write the pipeline self-report.
-5. Update the run tracker cell for the topic and level.
-6. Commit self-report and tracker together.
-7. Verify both commits with `git show --stat`.
+2. Refresh the `## Coverage demonstrated` table in `PROGRESS.md` for this topic and level, in the same
+   commit as the coverage files. Authoring changes the denominator, so leaving the table alone makes it
+   overstate the demonstrated share until the next `progress-update` run.
+   **`progress-update-prompt.md` step D8 owns the table's format, its counting rule, and the `*`
+   provisional mark — read D8 and follow it.** Recount the cell with the two greps there rather than
+   adjusting the printed value, rewrite that cell and the level's `**Total**`, and drop the `*` from the
+   cell now that this run has recorded a coverage execution for the level. If cross-level moves changed
+   another level's file, recount those cells too. Touch no other row, and never touch
+   `Professional level by topic` — a denominator that moved is not a promotion or a demotion.
+3. Commit inbox routing separately only when another topic receives proposals.
+4. Before every add and commit, inspect status and stage only declared paths.
+5. Write the pipeline self-report.
+6. Update the run tracker cell for the topic and level.
+7. Commit self-report and tracker together.
+8. Verify both commits with `git show --stat`.
 
 For step 4, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in full. Its
 declared report path is `_internal/_last-run-report-coverage-prompt.md`; update the selected
