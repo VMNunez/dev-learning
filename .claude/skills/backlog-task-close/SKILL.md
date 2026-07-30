@@ -54,9 +54,38 @@ because the fix happened in a Spring project (`Optional<T>` is Java; `@Transacti
 
 ## 1 — Coverage: is the concept already there?
 
-Open the routed topic's coverage file for **the level Victor is currently working at** —
+**First pick the topic, and do not reuse step 0's answer blindly.** Step 0 routed the concept to a
+**PROGRESS.md section**; this step needs the **`notes/` topic that owns the concept**, and the two
+vocabularies do not match. `notes/` has its own coverage per topic — currently `angular`,
+`angular-material`, `architecture`, `css`, `general`, `git`, `java`, `javascript`, `security`,
+`spring-boot`, `sql`, `typescript` — while the Step 4 mapping table folds several of those into one
+section (its "Spring annotation / bean / **security** / JPA → Spring Boot" row is the one that bites:
+followed literally it files an access-control concept under `spring-boot` even though `notes/security/`
+owns it).
+
+Pick by **what the concept teaches, not where the fix happened**:
+
+- an access-control or attack-surface rule (BOLA, segregation of duties, enumeration) → `security`,
+  even though the code was Spring;
+- a design principle (DRY, Extract Method, layering) → `architecture`;
+- a pure language construct (`Optional<T>`, boxing) → `java`;
+- set-theory / query semantics that would hold outside JPA (`GROUP BY` correctness, joins) → weigh
+  `sql` against `spring-boot`;
+- the Spring mechanism itself (annotations, beans, filter chain, JPA mapping) → `spring-boot`.
+
+Past closes in the `## Closed` ledger are the precedent to match — they already routed BOLA and
+segregation of duties to `security`, and DRY to `architecture`. **If a concept genuinely straddles two
+topics, do not write it into both.** Put it in the one that owns it and, when the other topic has a real
+claim, add it as a proposal under that topic's heading in
+`notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` — that file exists precisely so a
+concept routed out of one topic is not lost until the owning topic's own run judges it. Say in the report
+which topic you chose and why.
+
+Then open that topic's coverage file for **the level Victor is currently working at** —
 `notes/{topic}/coverage/{junior|middle|senior}.md`. Search for the concept (grep the key symbol, not
-the task's wording — the coverage file names concepts, not fixes).
+the task's wording — the coverage file names concepts, not fixes). Search the **sibling topic** too when
+the routing was a close call: the concept may already be covered there, which settles the ownership
+question for you.
 
 **If it is already covered:** say so and name the exact bullet. Nothing to write. This is the common
 case and it is a *good* outcome — it means the review found a gap in the code, not in the curriculum.
@@ -266,6 +295,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Target | Result |
 |---|---|
 | Coverage (`spring-boot/junior`) | already covered — "declarative transaction boundaries" |
+| Topic chosen | `security` — access-control rule, not the Spring mechanism (PROGRESS section was Spring Boot) |
 | Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | bullet added |
