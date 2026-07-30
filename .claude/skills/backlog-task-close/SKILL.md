@@ -77,55 +77,47 @@ that inline edits break most often:
 If the concept genuinely belongs to a **level above** the one Victor is on, add it there and say so —
 that is a signal about his trajectory, not a mistake.
 
-### 1b — A new bullet lands in three files, not one
+### 1b — Mirror the bullet, then hand the plan to its own prompt
 
-A coverage concept lives **verbatim in three synced files**; `coverage-prompt.md` is what normally keeps
-them aligned, and it is not running here. So if — and only if — step 1 actually wrote a new bullet,
-write it into all three by hand, at **the level you just determined** (junior / middle / senior — check
-which one, never assume, and never let a middle concept land in the junior plan).
+Applies only if step 1 actually wrote a new bullet. If the concept was already covered, this sub-step is
+**n/a** — say so and move on.
 
-This exists to avoid re-running `/coverage` or `/notes-plan` for a single bullet: that cost is absurd
-for one point. But the sync is only worth doing *honestly* — see the SHA rule below.
+Three artifacts hold a coverage concept, and this ritual owns exactly two of them.
 
-**1. `notes/{topic}/coverage/{LEVEL}.md`** — the canonical file, already written above.
+**Write the bullet into both coverage files** — verbatim, at **the level you just determined** (junior /
+middle / senior; check which, never assume). These two are byte-identical copies, so there is no judgment
+to delegate:
 
-**2. `notes/{topic}/coverage/notes-plan-{LEVEL}.md`** — the plan that assigns every coverage bullet to a
-chapter. A bullet that reaches coverage but no chapter is a concept no note will ever teach, which is
-the real damage this step prevents.
+1. `notes/{topic}/coverage/{LEVEL}.md` — the canonical file, already written above.
+2. `notes/coverage/{LEVEL}.md` — the global mirror. Same bullet, same relative position, inside
+   `## {TOPIC}`; the topic file's `##` section headings appear here demoted to `###`.
 
-- **If the file does not exist, stop here and say so.** Only levels whose notes have been planned have
-  one (often junior only). There is nothing to sync — not a defect.
-- Add the bullet, text **identical** to the canonical file, to the `Coverage concepts:` list of the
-  chapter that teaches it. Pick the chapter from the coverage **section** the bullet sits under, not
-  from the bullet's wording; keep the same relative order the coverage file has.
-- **If no existing chapter fits, do not invent one and do not force it into the nearest chapter.** Leave
-  the plan untouched, leave the SHA stale, and report that `notes-plan-prompt` is needed for this topic
-  — a new chapter is a planning decision, not a bookkeeping one.
-- Each chapter also has a `Must answer:` list. Add a question there when the new concept has a failure
-  mode a reader would hit (that is what those questions are for); if you do not, **say so explicitly**
-  in the report rather than leaving it silently unasked.
-- **Then update the stored `Coverage SHA-256`** to `sha256sum` of the canonical `{LEVEL}.md` (files are
-  LF in this repo — compute it on the file as committed, and if a mismatch ever looks suspicious, rule
-  out CRLF before treating it as drift). `coverage-prompt` Step 5 validation #9 reads a mismatch as
-  "notes-plan is stale, re-run `notes-plan-prompt`".
-- **Never update that SHA unless the bullets really were mapped.** The hash certifies *which coverage
-  bytes this plan was built against*. Overwriting it without doing the mapping forges that certificate:
-  the plan stays incomplete and the one mechanism that could detect it is gone. Silencing the alarm is
-  worse than the drift.
+Then verify, because landing the bullet in one file and not the other is worse than not landing it: sort
+the canonical file's bullets and the mirror's `## {TOPIC}` bullets and `diff` them — they must be
+identical sets. Report the count. If that surfaces *other* missing bullets, drift predating this task,
+say so and treat it as its own decision; do not silently fold it into this close.
 
-**3. `notes/coverage/{LEVEL}.md`** — the global mirror. Same bullet, same relative order, inside
-`## {TOPIC}`; the topic file's `##` section headings appear here demoted to `###`.
+**Do not touch `notes/{topic}/coverage/notes-plan-{LEVEL}.md`, and do not touch its `Coverage SHA-256`.**
 
-**Verify before moving on** — landing the bullet in only some of the three is worse than not landing it,
-and the check is two commands:
+Assigning a bullet to a chapter is not bookkeeping — `notes-plan-prompt` dispatches a **cold pedagogical
+reviewer** for it, and gives every entry the full contract from `_note-quality-standard.md`: the
+`Must answer:` questions, prerequisites, handoff, and route validation. Reproducing that by hand from a
+"which coverage section is it under" heuristic substitutes a shortcut for a reviewed judgment and skips
+the contract outright. That is not a token saving, it is worse output at the same price.
 
-- the stored SHA equals `sha256sum` of the canonical file;
-- the canonical file's bullets and the mirror's `## {TOPIC}` bullets are **identical sets** (sort both,
-  `diff` them). Report the bullet count. This is the check that catches drift older than today's edit —
-  if it surfaces unrelated missing bullets, say so and treat them as their own decision, do not silently
-  fold them into this task's close.
+The stale SHA is the correct end state: it is the signal that the plan owes a remap. Never overwrite it
+to make the mismatch go away — the hash certifies which coverage bytes the plan was mapped against, so
+forging it leaves the plan incomplete and destroys the only mechanism that could detect it.
 
-If step 1 found the concept already covered, this whole sub-step is **n/a** — say so and move on.
+**Instead, report that `/notes-plan {topic} {LEVEL}` is owed.** That prompt is a reconciliation pass
+designed to be re-run: it reports added / removed / regrouped / preserved-complete entries, and a
+`refined` entry that gains bullets keeps its freeze and collects them under `Pending additions:` rather
+than being reopened. Two practical notes for the report:
+
+- **Batch it.** One run per affected topic+level at the *end* of the session, not one per bullet. Several
+  closes touching the same topic and level are still a single owed run.
+- If no `notes-plan-{LEVEL}.md` exists for that level, **nothing is owed at all** — that level's notes
+  have never been planned, so there is no plan to remap. Say so; it is not a defect.
 
 ---
 
@@ -274,7 +266,8 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Target | Result |
 |---|---|
 | Coverage (`spring-boot/junior`) | already covered — "declarative transaction boundaries" |
-| 3-file coverage sync | n/a — no new bullet written (or: bullet added to coverage + notes-plan-junior, SHA refreshed, global mirror updated) |
+| Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
+| `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | bullet added |
 | PLANNING.md | added to §6 engineering rules |
 | PROGRESS.md | concept added under Spring Boot |
