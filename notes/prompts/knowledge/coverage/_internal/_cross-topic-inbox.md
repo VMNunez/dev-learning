@@ -50,6 +50,8 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ## Security
 
+- **From Git junior coverage recalibration (2026-07-30):** classify the response to a credential committed in repository history, including rotation or revocation after exposure; Git owns the fact that deleting or ignoring the current file does not erase existing commits, while Security owns credential invalidation and incident response.
+
 *(Empty — all three entries routed from the General run on 2026-07-19 were consumed by the coverage-audit run the same day and **all three discarded as already covered**: the CORS section already opens with the scheme+host+port definition of an origin, already names the `Authorization` header and a JSON content type as what triggers the preflight, and already carries "CORS is not authorisation" verbatim along with the Postman-versus-browser framing. The General run routed items Security already had.)*
 
 ## Git
