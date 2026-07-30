@@ -62,12 +62,7 @@ public class TimeEntryService {
     @Transactional
     public TimeEntryResponse submit(Long id) {
         User user = authenticatedUserProvider.currentUser();
-        TimeEntry timeEntry = timeEntryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
-
-        if (!timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only submit your own time entries");
-        }
+        TimeEntry timeEntry = findOwnedEntry(id, user);
 
         if (timeEntry.getStatus() != EntryStatus.DRAFT) {
             throw new InvalidStateTransitionException("Employee can only submit DRAFT entries");
@@ -162,15 +157,10 @@ public class TimeEntryService {
     @Transactional
     public TimeEntryResponse update(Long id, UpdateTimeEntryRequest request) {
         User user = authenticatedUserProvider.currentUser();
+        TimeEntry timeEntry = findOwnedEntry(id, user);
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
-        TimeEntry timeEntry = timeEntryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
-
-        if (!timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only update your own time entries");
-        }
 
         if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
             throw new InvalidStateTransitionException("You can only update DRAFT entries");
@@ -190,12 +180,7 @@ public class TimeEntryService {
     @Transactional
     public TimeEntryResponse reopen(Long id) {
         User user = authenticatedUserProvider.currentUser();
-        TimeEntry timeEntry = timeEntryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
-
-        if (!timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only reopen your own entries");
-        }
+        TimeEntry timeEntry = findOwnedEntry(id, user);
 
         if (timeEntry.getStatus() != EntryStatus.REJECTED) {
             throw new InvalidStateTransitionException("Employee can only reopen REJECTED entries");
@@ -212,18 +197,18 @@ public class TimeEntryService {
     @Transactional
     public void delete(Long id) {
         User user = authenticatedUserProvider.currentUser();
-        TimeEntry timeEntry = timeEntryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
-
-        if (!timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only delete your own time entries");
-        }
-
+        TimeEntry timeEntry = findOwnedEntry(id, user);
         if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
             throw new InvalidStateTransitionException("You can only delete DRAFT entries");
         }
 
         timeEntryRepository.deleteById(id);
+    }
+
+    private TimeEntry findOwnedEntry(Long id, User user) {
+        return timeEntryRepository.findById(id)
+                .filter(entry -> entry.getUser().getId().equals(user.getId()))
+                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
     }
 
     private void validateEntryData(LocalDate date, BigDecimal hours, Project project) {
