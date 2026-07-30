@@ -77,6 +77,26 @@ that inline edits break most often:
 If the concept genuinely belongs to a **level above** the one Victor is on, add it there and say so —
 that is a signal about his trajectory, not a mistake.
 
+### 1b — A new bullet lands in three files, not one
+
+A coverage concept lives **verbatim in three synced files**; `coverage-prompt.md` is what normally keeps
+them aligned, and it is not running here. So if — and only if — step 1 actually wrote a new bullet,
+write it into all three by hand, at **the level you just determined** (junior / middle / senior — check
+which one, never assume, and never let a middle concept land in the junior plan):
+
+1. `notes/{topic}/coverage/{LEVEL}.md` — the canonical file, already done above.
+2. `notes/{topic}/coverage/notes-plan-{LEVEL}.md` — under the `Coverage concepts:` list of the chapter
+   that teaches it, bullet text **identical** to (1). Then **recompute that file's stored
+   `Coverage SHA-256`** against the new `{LEVEL}.md`: `coverage-prompt` Step 5 validation #9 treats a
+   mismatch as "notes-plan is stale, re-run `notes-plan-prompt`", which is the expensive run this whole
+   sync exists to avoid.
+3. `notes/coverage/{LEVEL}.md` — the global mirror. Same bullet, same relative order, inside
+   `## {TOPIC}`; note that the topic file's `##` section headings appear here demoted to `###`.
+
+The point is that landing a bullet in only one of the three is worse than not landing it: the next
+pipeline run detects drift and forces the full rebuild anyway. If step 1 found the concept already
+covered, this sub-step is **n/a** — say so and move on.
+
 ---
 
 ## 2 — Project README: "What I learned"
@@ -224,6 +244,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Target | Result |
 |---|---|
 | Coverage (`spring-boot/junior`) | already covered — "declarative transaction boundaries" |
+| 3-file coverage sync | n/a — no new bullet written (or: bullet added to coverage + notes-plan-junior, SHA refreshed, global mirror updated) |
 | README | bullet added |
 | PLANNING.md | added to §6 engineering rules |
 | PROGRESS.md | concept added under Spring Boot |
