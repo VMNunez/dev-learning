@@ -48,7 +48,8 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Checkbox indeterminate state — represent partial aggregate selection visually without confusing it with a third submitted boolean value
 - Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control
 - Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions
-- Datepicker constraints and validation — use `min`, `max`, and `matDatepickerFilter` for selectable-date rules and surface the resulting Material validation errors instead of validating only after submission
+- Datepicker selectable-date constraints — use `min`, `max`, and `matDatepickerFilter` to declare which dates the calendar and the input will accept
+- Datepicker validation feedback — surface the validation errors those constraints produce instead of letting an out-of-range value fail only after submission
 
 ## Tables, sorting, filtering, and pagination
 
@@ -64,7 +65,8 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded
 - Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product ✅ 05-task-manager
 - Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
-- Table selection and row actions — keep row identity explicit and prevent nested action buttons from accidentally triggering row selection or navigation
+- Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to
+- Nested interactive controls in rows — prevent action buttons inside a row from accidentally triggering row selection or navigation
 - Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset
 
 ## Dialogs and confirmation flows
