@@ -102,7 +102,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline ✅ 03-expense-tracker
 - `for...of` vs `for...in` — iterate iterable values or enumerable property keys without using object-key iteration accidentally on arrays
 - Array methods vs explicit loops — prefer declarative transformations, but use a loop when early exit, irregular stepping, or awaited sequential work is clearer
-- `Set` vs `Array` — choose uniqueness and membership lookup or ordered indexed collection behaviour
+- `Set` vs `Array` — choose uniqueness and membership lookup or ordered indexed collection behaviour ✅ 04-meal-finder
 - `Map` vs plain object — choose arbitrary key types and collection APIs or string-keyed record-like data
 
 ## Asynchronous JavaScript
@@ -137,7 +137,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 
 - DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
 - Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs
-- Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately
+- Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately ✅ 04-meal-finder
 - `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them

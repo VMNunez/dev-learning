@@ -27,7 +27,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
 - Index signatures — model dynamic property names whose values share a type and avoid fixed members that contradict the signature
 - Classes as types — recognise that a class declaration creates both a runtime constructor value and an instance type
-- `implements` — check that a class instance satisfies a contract without assuming the interface changes the emitted class at runtime
+- `implements` — check that a class instance satisfies a contract without assuming the interface changes the emitted class at runtime ✅ 04-meal-finder
 - Abstract classes vs interfaces — recognise shared implementation plus an unconstructable base class versus an erased shape-only contract
 - Parameter properties — read constructor parameters that declare and initialise class fields in one TypeScript shorthand
 - TypeScript access modifiers vs ECMAScript `#private` fields — distinguish compile-time visibility from privacy that JavaScript enforces at runtime

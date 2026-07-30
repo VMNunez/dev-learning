@@ -47,8 +47,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `signal()` — hold reactive local or service state and read it by calling the signal rather than treating it as a plain value ✅ 01-todo-list
 - `set()` vs `update()` — replace state directly or derive the next immutable value from the previous one ✅ 01-todo-list
 - `computed()` — derive read-only state from signals so the value stays consistent without manual synchronisation ✅ 01-todo-list
-- `effect()` — perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state
-- `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system
+- `effect()` — perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state ✅ 04-meal-finder
+- `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system ✅ 04-meal-finder
 - Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot ✅ 01-todo-list
 - Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
 - `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
@@ -84,7 +84,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
 - Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
-- `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing
+- `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
 - `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it

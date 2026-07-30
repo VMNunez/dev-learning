@@ -57,8 +57,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `signal()` — hold reactive local or service state and read it by calling the signal rather than treating it as a plain value ✅ 01-todo-list
 - `set()` vs `update()` — replace state directly or derive the next immutable value from the previous one ✅ 01-todo-list
 - `computed()` — derive read-only state from signals so the value stays consistent without manual synchronisation ✅ 01-todo-list
-- `effect()` — perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state
-- `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system
+- `effect()` — perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state ✅ 04-meal-finder
+- `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system ✅ 04-meal-finder
 - Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot ✅ 01-todo-list
 - Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
 - `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
@@ -94,7 +94,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
 - Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
-- `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing
+- `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
 - `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it
@@ -1086,7 +1086,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
 - Index signatures — model dynamic property names whose values share a type and avoid fixed members that contradict the signature
 - Classes as types — recognise that a class declaration creates both a runtime constructor value and an instance type
-- `implements` — check that a class instance satisfies a contract without assuming the interface changes the emitted class at runtime
+- `implements` — check that a class instance satisfies a contract without assuming the interface changes the emitted class at runtime ✅ 04-meal-finder
 - Abstract classes vs interfaces — recognise shared implementation plus an unconstructable base class versus an erased shape-only contract
 - Parameter properties — read constructor parameters that declare and initialise class fields in one TypeScript shorthand
 - TypeScript access modifiers vs ECMAScript `#private` fields — distinguish compile-time visibility from privacy that JavaScript enforces at runtime
@@ -1275,7 +1275,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline ✅ 03-expense-tracker
 - `for...of` vs `for...in` — iterate iterable values or enumerable property keys without using object-key iteration accidentally on arrays
 - Array methods vs explicit loops — prefer declarative transformations, but use a loop when early exit, irregular stepping, or awaited sequential work is clearer
-- `Set` vs `Array` — choose uniqueness and membership lookup or ordered indexed collection behaviour
+- `Set` vs `Array` — choose uniqueness and membership lookup or ordered indexed collection behaviour ✅ 04-meal-finder
 - `Map` vs plain object — choose arbitrary key types and collection APIs or string-keyed record-like data
 
 ### Asynchronous JavaScript
@@ -1310,7 +1310,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 - DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
 - Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs
-- Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately
+- Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately ✅ 04-meal-finder
 - `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
@@ -1348,9 +1348,9 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - CSS reset pattern — `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }` removes browser defaults and ensures consistent sizing; interviewers ask why `::before` and `::after` are included alongside `*` ✅ 01-todo-list
 
 ### Display and layout
-- `display: block`, `inline`, `inline-block` — block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width
+- `display: block`, `inline`, `inline-block` — block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width ✅ 04-meal-finder
 - `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening
-- Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?"
+- Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?" ✅ 04-meal-finder
 
 ### Angular-specific CSS
 - View encapsulation — Angular scopes component styles by adding a unique attribute to every element in the template; styles in `component.scss` only apply to that component's own elements, not to child components; interviewers ask "why does your style not apply inside the child component?" ✅ 01-todo-list
@@ -1376,11 +1376,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `margin: auto` on flex items — absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
 
 ### CSS Grid
-- `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer
-- `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries
-- `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns
+- `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
+- `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries ✅ 04-meal-finder
+- `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns ✅ 04-meal-finder
 - `auto-fill` vs `auto-fit` — both create as many columns as fit; `auto-fill` keeps empty column tracks (items stay at their minimum size); `auto-fit` collapses empty tracks (items stretch to fill the space); a confusable pair tested in interviews
-- `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed
+- `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed ✅ 04-meal-finder
 
 ### Position
 - `static`, `relative`, `absolute`, `fixed`, `sticky` — the common positioning modes; `fixed`
@@ -1395,7 +1395,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ### Responsive design
 - Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach ✅ 03-expense-tracker
-- Breakpoints: `768px` (tablet), `1024px` (desktop) — the most common values in real Angular projects; a junior must justify these numbers and explain that `auto-fill` grid can eliminate breakpoints entirely for card grids
+- Breakpoints: `768px` (tablet), `1024px` (desktop) — the most common values in real Angular projects; a junior must justify these numbers and explain that `auto-fill` grid can eliminate breakpoints entirely for card grids ✅ 04-meal-finder
 - Fluid images — `max-width: 100%; height: auto` on `img` prevents images from overflowing their container and keeps the aspect ratio; standard in every CSS reset; not knowing this is a recognisable beginner mistake
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
 
@@ -1408,7 +1408,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `vw` and `vh` — relative to the viewport width and height; `min-height: 100vh` is safer than `height: 100vh` because it grows with content instead of clipping it ✅ 01-todo-list
 
 ### Transitions and animations
-- `transition` — smooth change for a specific property on state change; always place it on the base element, not on `:hover`, so it runs in both directions; putting it on `:hover` makes the exit instant — a classic interview trap
+- `transition` — smooth change for a specific property on state change; always place it on the base element, not on `:hover`, so it runs in both directions; putting it on `:hover` makes the exit instant — a classic interview trap ✅ 04-meal-finder
 - `transform` — `translateX/Y`, `scale`, and `rotate` change visual appearance without changing
   normal-flow geometry; browsers can often composite transforms efficiently, but GPU promotion is
   not guaranteed ✅ 02-weather-app
@@ -1421,8 +1421,8 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `font-size` with `rem` — `rem` follows the root size and composes consistently with user settings;
   fixed pixels are not automatically inaccessible, but a scalable type system is easier to zoom and
   maintain ✅ 01-todo-list
-- `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight
-- `line-height` unitless value — `1.5` means 1.5× the current font size; a unitless value scales correctly when font size changes; `line-height: 24px` breaks as soon as the font size changes
+- `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight ✅ 04-meal-finder
+- `line-height` unitless value — `1.5` means 1.5× the current font size; a unitless value scales correctly when font size changes; `line-height: 24px` breaks as soon as the font size changes ✅ 04-meal-finder
 - Text truncation — `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present; interviewers ask why removing any one of them breaks the effect and what each one does individually
 - `text-transform` — `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display ✅ 02-weather-app
 - `font-family` fallback stack — listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name ✅ 01-todo-list
@@ -1445,14 +1445,14 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `border-radius: 50%` — makes a circle only when the element is square, which is why it works for avatars and loading spinners and produces an ellipse on any other aspect ratio ✅ 02-weather-app
 - `border-radius: 9999px` — creates a pill shape at any aspect ratio, which is why badges and chips use it; `50%` vs `9999px` is a confusable pair interviewers test with avatar vs badge
 - `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
-- `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair
+- `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair ✅ 04-meal-finder
 - `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it ✅ 01-todo-list
 - `aspect-ratio` — locks an element's width-to-height ratio (`aspect-ratio: 16 / 9`) so it scales without distortion when only one dimension is known; replaces the older padding-percentage hack for responsive video and image containers; interviewers ask how you reserve space for an image before it loads to avoid layout shift
 
 ### Overflow
-- `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows
+- `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport
-- Scrollable container pattern — `overflow-y: auto` with a fixed `max-height` creates a scroll area without triggering a page scroll; `auto` vs `scroll` is a confusable pair: `auto` is invisible when not needed, `scroll` is always visible
+- Scrollable container pattern — `overflow-y: auto` with a fixed `max-height` creates a scroll area without triggering a page scroll; `auto` vs `scroll` is a confusable pair: `auto` is invisible when not needed, `scroll` is always visible ✅ 04-meal-finder
 
 ### CSS functions
 - `calc()` — mixes different units in one expression; `calc(100% - 64px)` subtracts a fixed header height from the full viewport; spaces around `+` and `-` are required; interviewers ask when `calc()` is necessary and why neither pure percentage nor pure `px` can solve the same problem
