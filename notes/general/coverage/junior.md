@@ -5,7 +5,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 ## HTTP requests and resource semantics
 
 - Client–server request/response model — trace how a client sends a request and receives a response without treating either framework as the protocol itself ✅ 02-weather-app
-- URL anatomy — distinguish scheme, host, port, path, query, and fragment so an incorrect endpoint can be diagnosed precisely
+- URL anatomy — distinguish scheme, host, port, path, query, and fragment so an incorrect endpoint can be diagnosed precisely ✅ 02-weather-app
 - URI vs URL — distinguish a resource identifier from the subset that also describes where and how to access it
 - REST resource and representation model — model domain resources behind representations instead of treating endpoint paths as remote procedure names
 - Collection vs item URI — use stable noun-based paths to distinguish a resource collection from one identified member

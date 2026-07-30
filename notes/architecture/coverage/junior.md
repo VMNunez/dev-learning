@@ -130,7 +130,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
-  centralises one repeated rule, not merely to reduce line count
+  centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
   complexity without ownership is simply a defect
 - Monolith vs microservices awareness — a monolith deploys one application and keeps local calls and

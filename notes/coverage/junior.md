@@ -65,7 +65,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ### HTTP integration
 
-- `provideHttpClient()` and its feature functions — enable `HttpClient` application-wide at bootstrap and opt into behaviour such as the Fetch backend or interceptors through explicit `with...()` features instead of separate providers
+- `provideHttpClient()` and its feature functions — enable `HttpClient` application-wide at bootstrap and opt into behaviour such as the Fetch backend or interceptors through explicit `with...()` features instead of separate providers ✅ 02-weather-app
 - Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON ✅ 02-weather-app
 - `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged
 - Cold HTTP Observables — recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
@@ -753,7 +753,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
-  centralises one repeated rule, not merely to reduce line count
+  centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
   complexity without ownership is simply a defect
 - Monolith vs microservices awareness — a monolith deploys one application and keeps local calls and
@@ -1805,7 +1805,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 ### HTTP requests and resource semantics
 
 - Client–server request/response model — trace how a client sends a request and receives a response without treating either framework as the protocol itself ✅ 02-weather-app
-- URL anatomy — distinguish scheme, host, port, path, query, and fragment so an incorrect endpoint can be diagnosed precisely
+- URL anatomy — distinguish scheme, host, port, path, query, and fragment so an incorrect endpoint can be diagnosed precisely ✅ 02-weather-app
 - URI vs URL — distinguish a resource identifier from the subset that also describes where and how to access it
 - REST resource and representation model — model domain resources behind representations instead of treating endpoint paths as remote procedure names
 - Collection vs item URI — use stable noun-based paths to distinguish a resource collection from one identified member
