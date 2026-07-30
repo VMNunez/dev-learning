@@ -123,7 +123,36 @@ identical sets. **Report the count.**
 If that surfaces *other* missing bullets — drift predating this concept — say so and treat it as its own
 decision. Do not silently fold someone else's drift into this write.
 
-## 5 — Report the `/notes-plan` remap, never perform it
+## 5 — Update the PROGRESS.md coverage table
+
+A new bullet raises that level's denominator, so the `## Coverage demonstrated` table in `PROGRESS.md`
+now overstates the demonstrated share until it is recounted. Refresh it in the same run that wrote the
+bullet.
+
+**`progress-update-prompt.md` step D8 owns the table's format, its counting rule, and the `*`
+provisional mark. Read D8 and follow it; never restate or re-derive its arithmetic here.** Refresh only
+the cells you changed.
+
+For each topic+level you wrote to, **recount — never increment**:
+
+```bash
+grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md
+grep -cE ' ✅ [0-9]{2}$' notes/{topic}/coverage/{LEVEL}.md
+```
+
+Rewrite that one cell and the level's `**Total**` cell (recount the column, do not add your delta to
+the printed total). Change no other row, and never touch `Professional level by topic` — adding scope
+lowers a percentage without anything having been unlearned, and that must not read as a demotion.
+
+Two cases that are **not** table updates: a concept already covered (nothing was written, so nothing
+moved), and a proposal routed to `_cross-topic-inbox.md` (no bullet exists yet in the other topic).
+Say so rather than editing.
+
+Unlike `coverage-mark`, you never move the numerator: a new bullet starts unmarked, even for a concept
+the project just demonstrated. `coverage-mark` marks it immediately afterwards, and one recount after
+both writes covers the two.
+
+## 6 — Report the `/notes-plan` remap, never perform it
 
 **Do not touch `notes/{topic}/coverage/notes-plan-{LEVEL}.md`, and do not touch its `Coverage SHA-256`.**
 
@@ -162,6 +191,10 @@ same run both wrote the bullet and marked it — in which case the calling ritua
 ```
 docs(coverage): add <concept> to <topic> <level>
 ```
+
+`PROGRESS.md` goes **in that same commit** — the table edit is the same logical change as the bullet.
+When the calling ritual hands its commits to Victor rather than running them (the in-session
+`backlog-task-close` rule), hand this one over too instead of committing behind it.
 
 ## Report
 

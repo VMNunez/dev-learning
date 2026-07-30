@@ -83,7 +83,33 @@ Then verify, because a marker landing in one file and not the other is the drift
 otherwise introduce into a diff-verified pair: grep `✅` in the topic file and in the mirror's
 `## {TOPIC}` section and confirm the two sets of marked bullets are identical. Report both counts.
 
-## 4 — Report
+## 4 — Update the PROGRESS.md coverage table
+
+The `## Coverage demonstrated` table in `PROGRESS.md` is the instrument this marker feeds. A marker
+written without refreshing it leaves the table reading lower than reality until the next
+`progress-update` run — the same silent-staleness failure the marker itself exists to prevent.
+
+**`progress-update-prompt.md` step D8 owns the table's format, its counting rule, and the `*`
+provisional mark. Read D8 and follow it; never restate or re-derive its arithmetic here.** Your job is
+narrower: refresh only the cells you just changed.
+
+For each topic+level you marked, **recount — never increment**. Arithmetic on the old cell silently
+inherits any error already in it:
+
+```bash
+grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md
+grep -cE ' ✅ [0-9]{2}$' notes/{topic}/coverage/{LEVEL}.md
+```
+
+Rewrite that one cell, then the level's `**Total**` cell (recount as the sum of the column's
+numerators over the sum of its denominators — do not add your delta to the printed total). Change no
+other row, and never touch `Professional level by topic`: a rising percentage is not a promotion, per
+D7. If the topic has no row, the table predates that topic — say so and stop rather than inventing one.
+
+Only the numerator moves here. If the same run also added a bullet, `coverage-bullet-add` moved the
+denominator; one recount after both writes covers them together.
+
+## 5 — Report
 
 One row per concept, inside the calling ritual's report table when there is one:
 
@@ -94,8 +120,9 @@ One row per concept, inside the calling ritual's report table when there is one:
 | BOLA on the mutation endpoints | `security` / junior | not marked — no bullet exists yet, flagged as a possible gap |
 | fail-fast manual checks | `spring-boot` / junior | not marked — DECISION, no code change |
 
-Include the marked/total count for the level file you touched. That number is the point of the whole
-mechanism, so it belongs in every report.
+Include the marked/total count for the level file you touched, and state the PROGRESS.md cell as it
+now reads (`spring-boot / junior: 24/139 (17%)`). That number is the point of the whole mechanism, so
+it belongs in every report.
 
 ## Commits
 
@@ -108,8 +135,13 @@ new bullet in the same session:
 docs(coverage): mark <concept> as demonstrated in project NN
 ```
 
+`PROGRESS.md` goes **in that same commit** — the table edit is the same logical change as the marker,
+and splitting them lets one land without the other.
+
 When called from `step-complete` or `backlog-task-close`, fold this into that ritual's coverage commit
-only if the same run also wrote the bullet; otherwise keep it separate.
+only if the same run also wrote the bullet; otherwise keep it separate. When the calling ritual hands
+its commits to Victor rather than running them (the in-session `backlog-task-close` rule), hand this
+one over too instead of committing behind it.
 
 ## Backfill
 
