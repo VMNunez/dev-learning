@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Extract a shared `currentUser()` / `isManager()` helper: the `SecurityContextHolder` → `findByEmail` lookup is copy-pasted across five `TimeEntryService` methods, `Objects.requireNonNull(getAuthentication())` appears six times, and `"ROLE_MANAGER"` is a magic string in both `TimeEntryService` and `ProjectService` — compare against the `Role` enum instead. Repetition in the one place that decides *who the caller is* is exactly where auth bugs hide *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Close the entry-id existence oracle: `TimeEntryService` returns 404 for a non-existent id but 403 for another user's id, so an EMPLOYEE can enumerate which entry ids exist across the whole table. Return 404 for both — treat a non-owned entry as not found *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Set CORS `allowCredentials(false)` in `SecurityConfig:65-68` (auth travels in the `Authorization` header, not cookies, so credentialed CORS buys nothing and only locks the config into the stricter rules) and move the hardcoded `localhost:4200` origin into an `app.cors.allowed-origins` property so a deployed frontend does not need a recompile *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Mint the JWT from the authenticated principal, not the request body: `AuthService:21-24` discards the `Authentication` returned by `authenticationManager.authenticate(...)` and passes `request.getEmail()` to `generateToken`. Not exploitable today (`findByEmail` is an exact match), but taking the subject from unvalidated input rather than the verified identity is the habit that becomes a bug elsewhere *(Effort: Small)*
@@ -118,6 +117,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-07-30 · **[Low]** `[backend]` — `currentUser()`/`isManager()` extracted into `AuthenticatedUserProvider`, `"ROLE_MANAGER"` replaced with `"ROLE_" + Role.MANAGER.name()` → already covered (spring-boot/junior `SecurityContextHolder` + `ROLE_` prefix, architecture/junior Extract Method/DRY), PLANNING §6 already had the rule, PROGRESS already had Extract Method + SecurityContextHolder
 - 2026-07-29 · **[Low]** `[backend]` — fail-fast manual checks kept as the project's convention — DECISION, no code change → already in README, PROGRESS
 - 2026-07-28 · **[Low]** `[backend]` — `show-sql` confirmed intentional, moved to `application-dev.properties` → already in README, PROGRESS
 
