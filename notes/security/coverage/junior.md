@@ -26,7 +26,7 @@ review without taking on specialist or production-platform ownership.
 ## Authentication and authorisation
 
 - Authentication vs authorisation — authentication verifies an identity, while authorisation decides
-  what that authenticated identity may do ✅ 07-timetrack
+  what that authenticated identity may do ✅ 06-hr-portal
 - Identification vs authentication — a username, email, or token subject names a claimed identity,
   while credential verification establishes whether the claim is genuine
 - Credentials, identity, and session state — a password proves identity at login, while a session ID
@@ -34,7 +34,7 @@ review without taking on specialist or production-platform ownership.
 - Server-side enforcement — Angular guards and hidden buttons improve navigation and UX but never
   replace permission checks on every protected backend operation ✅ 07-timetrack
 - Role-based access control — map roles or authorities consistently and prevent clients from assigning
-  privileged roles to themselves
+  privileged roles to themselves ✅ 06-hr-portal
 - Layered authorisation rules — request-level and method-level checks can reinforce each other but must
   not leave gaps or contradictory policy ✅ 07-timetrack
 - Object-level authorisation (BOLA/IDOR) — verify access to the specific requested record instead of

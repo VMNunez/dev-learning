@@ -118,7 +118,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Boundary failure ownership — translate infrastructure and domain failures at the boundary that has
   enough context to produce a stable outward error contract without leaking framework exceptions ✅ 07-timetrack
 - Package by feature vs package by layer — feature packaging keeps one use case together; layer
-  packaging makes technical roles obvious but scatters a change across the tree ✅ 07-timetrack
+  packaging makes technical roles obvious but scatters a change across the tree ✅ 06-hr-portal
 - Horizontal layering vs vertical feature slices — layers group code by technical role, while a
   feature slice groups the delivery, application, and persistence pieces that change for one capability
 - Composition over inheritance — assembling focused collaborators avoids inheriting behaviour and

@@ -18,5 +18,5 @@ Concepts expected when a developer can adapt Angular Material to a production de
 - `MatAutocomplete` with remote data — combine form streams, cancellation, loading, and option identity for production lookup fields
 - Hierarchical and dense navigation — choose `MatTree`, tabs, or expansion panels according to information structure rather than appearance
 - Multi-value inputs — implement chips, selection, removal, keyboard interaction, and validation for tag-like data
-- Programmatic stepper navigation — drive step movement from component code without bypassing linear validity, focus, or error presentation
+- Programmatic stepper navigation — drive step movement from component code without bypassing linear validity, focus, or error presentation ✅ 06-hr-portal
 - Conditional stepper flows — include, skip, or reorder steps according to earlier answers while keeping the linear contract coherent

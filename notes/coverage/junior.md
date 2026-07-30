@@ -96,26 +96,26 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
 - `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
-- `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path
-- `[queryParams]` on `routerLink` — set optional view state on the destination URL while navigating declaratively so the resulting page stays linkable and reproducible
+- `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path ✅ 06-hr-portal
+- `[queryParams]` on `routerLink` — set optional view state on the destination URL while navigating declaratively so the resulting page stays linkable and reproducible ✅ 06-hr-portal
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
-- Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it
+- Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it ✅ 06-hr-portal
 - `loadComponent` vs `loadChildren` — lazy-load one routed component or an entire child route tree according to the feature boundary
 - Declarative vs programmatic navigation — use `routerLink` in templates and `Router.navigate()` when component logic determines the destination ✅ 03-expense-tracker
-- Wildcard routes and redirect order — place a `**` fallback last because Angular uses first-match-wins route evaluation
-- Redirect `pathMatch` — use `pathMatch: 'full'` for an empty-path redirect when prefix matching would otherwise catch every URL
-- `CanActivateFn` guards — return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect
-- Stacked route guards — compose several guards on one route and recognise that every one must allow activation, which keeps authentication and authorisation as separate reusable checks
+- Wildcard routes and redirect order — place a `**` fallback last because Angular uses first-match-wins route evaluation ✅ 06-hr-portal
+- Redirect `pathMatch` — use `pathMatch: 'full'` for an empty-path redirect when prefix matching would otherwise catch every URL ✅ 06-hr-portal
+- `CanActivateFn` guards — return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect ✅ 06-hr-portal
+- Stacked route guards — compose several guards on one route and recognise that every one must allow activation, which keeps authentication and authorisation as separate reusable checks ✅ 06-hr-portal
 - Route guards vs backend authorisation — treat guards as client-side navigation control, never as enforcement of data access
-- `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation
-- Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop
-- Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable
+- `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation ✅ 06-hr-portal
+- Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop ✅ 06-hr-portal
+- Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable ✅ 06-hr-portal
 - `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure
 
 ### Reactive forms and template transformation
 
 - `FormControl` and `FormGroup` — model individual controls and grouped control sets explicitly so the form's shape, validators, and value types live in TypeScript rather than in the template ✅ 03-expense-tracker
-- `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model
+- `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model ✅ 06-hr-portal
 - Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary ✅ 03-expense-tracker
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule
@@ -179,7 +179,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 - Angular Material, Material Design, and the CDK — distinguish the styled Angular component library, the design system it implements, and the lower-level behaviour primitives it builds upon ✅ 05-task-manager
 - `ng add @angular/material` — use the library schematic to install Material and the CDK and apply the selected animation, typography, and theme setup ✅ 05-task-manager
-- Material-specific imports and providers — recognise which components need a template import and which features, such as date handling, also need a provider
+- Material-specific imports and providers — recognise which components need a template import and which features, such as date handling, also need a provider ✅ 06-hr-portal
 - Material composition boundary — combine Material interaction primitives with ordinary Angular state, forms, templates, and CSS instead of treating the library as page architecture ✅ 05-task-manager
 - Version-matched documentation and migrations — consult the docs for the installed Angular Material major version and use official update tooling instead of copying obsolete selectors or theming APIs
 
@@ -219,9 +219,9 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Checkbox, radio, and select choice — use checkboxes for independent booleans or multi-select, radio buttons for a small visible single-choice set, and a select when compactness or option count warrants it
 - Checkbox vs slide toggle — use a checkbox for selection or confirmation and `mat-slide-toggle` for a boolean setting whose change is presented as immediately active
 - Checkbox indeterminate state — represent partial aggregate selection visually without confusing it with a third submitted boolean value
-- Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control
+- Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control ✅ 06-hr-portal
 - Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions
-- Datepicker selectable-date constraints — use `min`, `max`, and `matDatepickerFilter` to declare which dates the calendar and the input will accept
+- Datepicker selectable-date constraints — use `min`, `max`, and `matDatepickerFilter` to declare which dates the calendar and the input will accept ✅ 06-hr-portal
 - Datepicker validation feedback — surface the validation errors those constraints produce instead of letting an out-of-range value fail only after submission
 
 ### Tables, sorting, filtering, and pagination
@@ -238,7 +238,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded
 - Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product ✅ 05-task-manager
 - Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
-- Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to
+- Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to ✅ 06-hr-portal
 - Nested interactive controls in rows — prevent action buttons inside a row from accidentally triggering row selection or navigation
 - Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset
 
@@ -248,7 +248,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Dialog component input — use `MAT_DIALOG_DATA` for an explicit, typed input boundary rather than reaching into caller state ✅ 05-task-manager
 - Dialog result channel — close with an explicit typed result and consume `afterClosed()` so the caller distinguishes success, cancellation, and dismissal ✅ 05-task-manager
 - Confirm/cancel semantics — perform destructive work only after an affirmative result and treat backdrop, Escape, and cancel-button dismissal consistently ✅ 05-task-manager
-- Default dismissal vs `disableClose` — preserve backdrop and Escape dismissal by default and disable them only when the interaction has a justified alternative exit because dialogs are expected to remain keyboard operable
+- Default dismissal vs `disableClose` — preserve backdrop and Escape dismissal by default and disable them only when the interaction has a justified alternative exit because dialogs are expected to remain keyboard operable ✅ 06-hr-portal
 - Dialog content structure — keep title, content, and actions as sibling regions so layout, scrolling, labelling, and action placement remain correct ✅ 05-task-manager
 - Declarative vs programmatic closing — use `mat-dialog-close` for simple results and a handler when validation, unsaved changes, or asynchronous work must run before closing ✅ 05-task-manager
 - Dialog focus management — preserve an accessible name, focus trap, sensible initial focus, focus restoration, and Escape behaviour unless a justified accessible alternative exists
@@ -256,20 +256,20 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 ### Feedback, loading, and progress
 
-- Snack bar vs dialog — use a snack bar for brief non-blocking feedback and a dialog for focused input or a decision that requires interaction
-- `MatSnackBar.open()` lifecycle — provide concise content and ensure the feature imports the snack-bar API it uses
-- Timed vs actionable snack bars — auto-dismiss informational feedback after a suitable duration but keep an action available long enough for the user to perceive and operate it
+- Snack bar vs dialog — use a snack bar for brief non-blocking feedback and a dialog for focused input or a decision that requires interaction ✅ 06-hr-portal
+- `MatSnackBar.open()` lifecycle — provide concise content and ensure the feature imports the snack-bar API it uses ✅ 06-hr-portal
+- Timed vs actionable snack bars — auto-dismiss informational feedback after a suitable duration but keep an action available long enough for the user to perceive and operate it ✅ 06-hr-portal
 - Progress spinner vs progress bar — choose a spinner for local indeterminate waiting, an indeterminate bar for page or section activity, and a determinate bar only when a real percentage exists
 
 ### Navigation and information containers
 
-- Toolbar composition — use `mat-toolbar` for persistent application-level actions and ordinary flex layout to position its content
-- Sidenav structure — compose `mat-sidenav-container`, `mat-sidenav`, and `mat-sidenav-content` so the drawer and main content share the required layout context
+- Toolbar composition — use `mat-toolbar` for persistent application-level actions and ordinary flex layout to position its content ✅ 06-hr-portal
+- Sidenav structure — compose `mat-sidenav-container`, `mat-sidenav`, and `mat-sidenav-content` so the drawer and main content share the required layout context ✅ 06-hr-portal
 - Sidenav modes — choose `side`, `push`, or `over` according to available space and whether content should resize, shift, or sit behind an overlay
-- Navigation lists and active state — use `mat-nav-list` and Material list items for navigation while Angular Router remains responsible for navigation and route activity
+- Navigation lists and active state — use `mat-nav-list` and Material list items for navigation while Angular Router remains responsible for navigation and route activity ✅ 06-hr-portal
 - Tabs vs route navigation — use `mat-tab-group` for related in-page views and routes for destinations that need navigation history, deep links, or independent URLs
-- Card structure and appearance — group related content with optional header, content, and actions and choose raised or outlined emphasis consistently
-- Stepper linear flow — pair `linear` with step controls so validity governs progression rather than relying only on button handlers
+- Card structure and appearance — group related content with optional header, content, and actions and choose raised or outlined emphasis consistently ✅ 06-hr-portal
+- Stepper linear flow — pair `linear` with step controls so validity governs progression rather than relying only on button handlers ✅ 06-hr-portal
 
 ### Accessibility, responsiveness, and testing
 
@@ -755,7 +755,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Boundary failure ownership — translate infrastructure and domain failures at the boundary that has
   enough context to produce a stable outward error contract without leaking framework exceptions ✅ 07-timetrack
 - Package by feature vs package by layer — feature packaging keeps one use case together; layer
-  packaging makes technical roles obvious but scatters a change across the tree ✅ 07-timetrack
+  packaging makes technical roles obvious but scatters a change across the tree ✅ 06-hr-portal
 - Horizontal layering vs vertical feature slices — layers group code by technical role, while a
   feature slice groups the delivery, application, and persistence pieces that change for one capability
 - Composition over inheritance — assembling focused collaborators avoids inheriting behaviour and
@@ -847,7 +847,7 @@ review without taking on specialist or production-platform ownership.
 ### Authentication and authorisation
 
 - Authentication vs authorisation — authentication verifies an identity, while authorisation decides
-  what that authenticated identity may do ✅ 07-timetrack
+  what that authenticated identity may do ✅ 06-hr-portal
 - Identification vs authentication — a username, email, or token subject names a claimed identity,
   while credential verification establishes whether the claim is genuine
 - Credentials, identity, and session state — a password proves identity at login, while a session ID
@@ -855,7 +855,7 @@ review without taking on specialist or production-platform ownership.
 - Server-side enforcement — Angular guards and hidden buttons improve navigation and UX but never
   replace permission checks on every protected backend operation ✅ 07-timetrack
 - Role-based access control — map roles or authorities consistently and prevent clients from assigning
-  privileged roles to themselves
+  privileged roles to themselves ✅ 06-hr-portal
 - Layered authorisation rules — request-level and method-level checks can reinforce each other but must
   not leave gaps or contradictory policy ✅ 07-timetrack
 - Object-level authorisation (BOLA/IDOR) — verify access to the specific requested record instead of
@@ -1073,7 +1073,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation
 - Type inference and explicit annotations — rely on clear local inference while annotating parameters, public contracts, and deliberately constrained return values ✅ 01-todo-list
 - Primitive value types — use `string`, `number`, and `boolean` without confusing primitive annotations with boxed object types ✅ 01-todo-list
-- `null` vs `undefined` — distinguish explicit nullish absence from a missing or uninitialised value under strict checking
+- `null` vs `undefined` — distinguish explicit nullish absence from a missing or uninitialised value under strict checking ✅ 06-hr-portal
 - `void` vs `never` — distinguish a function result callers ignore from a control-flow path that cannot produce any value
 - `object` vs `Object` vs `{}` — avoid broad object-like types whose assignability differs from the specific property shape an application contract needs
 - `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type
@@ -1191,11 +1191,11 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked
 - `null` vs `undefined` — distinguish intentional absence from missing or uninitialised values without assuming every API uses them consistently
 - Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy ✅ 01-todo-list
-- Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion
+- Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion ✅ 06-hr-portal
 - `+` operator: numeric addition vs string concatenation — predict coercion and left-to-right evaluation when either operand becomes a string instead of assuming arithmetic
 - `==` vs `===` — use strict equality by default and read loose-equality coercion safely in maintained legacy code
-- `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default
-- Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined`
+- `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default ✅ 06-hr-portal
+- Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined` ✅ 06-hr-portal
 - Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute ✅ 01-todo-list
 - Logical operators return operand values — predict that `&&`, `||`, and `??` yield one of their operands rather than a coerced boolean while still short-circuiting evaluation
 - Logical assignment operators — read `||=`, `&&=`, and `??=` as conditional assignment without confusing their different trigger conditions
@@ -1248,7 +1248,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Objects, prototypes, and copying
 
 - Object literals and property access — use shorthand, computed keys, and dot or bracket notation according to whether a key is static or dynamic ✅ 01-todo-list
-- Object destructuring — bind, rename, and default selected properties while remembering defaults apply only to `undefined`
+- Object destructuring — bind, rename, and default selected properties while remembering defaults apply only to `undefined` ✅ 06-hr-portal
 - Property existence vs an `undefined` value — distinguish `Object.hasOwn`, legacy `hasOwnProperty`, the `in` operator, and a property read when inherited or explicitly undefined properties matter
 - Own vs inherited properties — avoid treating prototype-chain members as an object's own input data
 - `Object.keys`, `Object.values`, and `Object.entries` — enumerate own enumerable string-keyed properties in the form the operation needs
@@ -1273,7 +1273,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `slice` vs `splice` on arrays — choose non-mutating range extraction or in-place removal, replacement, and insertion without confusing their return values or mutation effects
 - `map` — transform each present element into a result array without using it merely for side effects ✅ 01-todo-list
 - `filter` — retain all matching elements and always return an array ✅ 01-todo-list
-- `find` vs `filter` — choose one matching value or every matching value
+- `find` vs `filter` — choose one matching value or every matching value ✅ 06-hr-portal
 - `some` vs `every` — express existential or universal checks with short-circuiting
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
@@ -1362,7 +1362,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ### Angular-specific CSS
 - View encapsulation — Angular scopes component styles by adding a unique attribute to every element in the template; styles in `component.scss` only apply to that component's own elements, not to child components; interviewers ask "why does your style not apply inside the child component?" ✅ 01-todo-list
-- `:host` selector — targets the component's root element from within its own styles; used to set `display: block` or add margin to the component itself; not knowing this is a red flag for an Angular role
+- `:host` selector — targets the component's root element from within its own styles; used to set `display: block` or add margin to the component itself; not knowing this is a red flag for an Angular role ✅ 06-hr-portal
 - When to use `styles.css` vs component styles — `styles.css` for global rules (body, html, Angular Material overrides); component styles for everything specific to one component; interviewers ask why Angular Material overrides go in `styles.css` and not in a component file ✅ 01-todo-list
 - `::ng-deep` — deprecated but still widely used in consultancy codebases; pierces view encapsulation to style child component internals that cannot otherwise be reached; interviewers ask why it is deprecated and what the modern alternative is
 
@@ -1370,7 +1370,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — how to target elements by relationship; interviewers show a selector and ask which elements it matches ✅ 01-todo-list
 - Pseudo-classes: `:hover`, `:focus`, `:nth-child`, `:first-child`, `:last-child`, `:not()` — `:not()` excludes elements from a rule; `:focus` is essential for keyboard accessibility; tested in code review questions ✅ 01-todo-list
 - `:focus` vs `:focus-visible` — `:focus` triggers on every way of focusing an element, including a mouse click; `:focus-visible` only shows the ring when the browser decides keyboard navigation is likely (Tab key); interviewers ask why a button gets an ugly focus ring on click and how `:focus-visible` fixes it without removing accessibility for keyboard users
-- Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers
+- Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
 - Specificity scoring — inline styles beat IDs (`1-0-0`) beat classes (`0-1-0`) beat elements (`0-0-1`); the rule with the highest score wins, not the one that appears last; interviewers give two rules and ask which one applies
 - `!important` — raises a declaration into the important cascade, after which origin, layer, and
   specificity still resolve competing important declarations; use it sparingly because it makes
@@ -1378,7 +1378,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ### Flexbox
 - Container properties: `flex-direction`, `justify-content`, `align-items`, `gap` — the four set on almost every flex container; not knowing these will fail the "build a navbar" question in any screening ✅ 01-todo-list
-- `flex-wrap: wrap` — controls whether items wrap to the next line when space runs out; `nowrap` (default) shrinks items to fit; `wrap` moves them to a new row; asked when discussing responsive card layouts
+- `flex-wrap: wrap` — controls whether items wrap to the next line when space runs out; `nowrap` (default) shrinks items to fit; `wrap` moves them to a new row; asked when discussing responsive card layouts ✅ 06-hr-portal
 - Item properties: `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `align-self` — `flex: 1` makes an item fill remaining space; `flex-shrink: 0` prevents an icon or button from shrinking next to a growing input ✅ 01-todo-list
 - The main axis and cross axis — `justify-content` works on the main axis, `align-items` on the cross axis; the axis flips with `flex-direction: column`; interviewers ask "how do you center something vertically inside a flex container?" ✅ 01-todo-list
 - `margin: auto` on flex items — absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
@@ -1431,7 +1431,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
   maintain ✅ 01-todo-list
 - `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight ✅ 04-meal-finder
 - `line-height` unitless value — `1.5` means 1.5× the current font size; a unitless value scales correctly when font size changes; `line-height: 24px` breaks as soon as the font size changes ✅ 04-meal-finder
-- Text truncation — `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present; interviewers ask why removing any one of them breaks the effect and what each one does individually
+- Text truncation — `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present; interviewers ask why removing any one of them breaks the effect and what each one does individually ✅ 06-hr-portal
 - `text-transform` — `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display ✅ 02-weather-app
 - `font-family` fallback stack — listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name ✅ 01-todo-list
 
@@ -1459,7 +1459,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ### Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
-- `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport
+- `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — `overflow-y: auto` with a fixed `max-height` creates a scroll area without triggering a page scroll; `auto` vs `scroll` is a confusable pair: `auto` is invisible when not needed, `scroll` is always visible ✅ 04-meal-finder
 
 ### CSS functions

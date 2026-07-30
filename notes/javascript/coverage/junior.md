@@ -11,11 +11,11 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked
 - `null` vs `undefined` — distinguish intentional absence from missing or uninitialised values without assuming every API uses them consistently
 - Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy ✅ 01-todo-list
-- Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion
+- Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion ✅ 06-hr-portal
 - `+` operator: numeric addition vs string concatenation — predict coercion and left-to-right evaluation when either operand becomes a string instead of assuming arithmetic
 - `==` vs `===` — use strict equality by default and read loose-equality coercion safely in maintained legacy code
-- `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default
-- Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined`
+- `||` vs `??` — preserve valid `0`, `false`, and empty-string values by using nullish fallback when only absence should trigger a default ✅ 06-hr-portal
+- Optional chaining forms — use `obj?.prop`, `obj?.[key]`, and `fn?.()` to stop property access or calls only for `null` or `undefined` ✅ 06-hr-portal
 - Logical short-circuiting — use `&&`, `||`, and `??` with awareness that skipped operands do not execute ✅ 01-todo-list
 - Logical operators return operand values — predict that `&&`, `||`, and `??` yield one of their operands rather than a coerced boolean while still short-circuiting evaluation
 - Logical assignment operators — read `||=`, `&&=`, and `??=` as conditional assignment without confusing their different trigger conditions
@@ -68,7 +68,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 ## Objects, prototypes, and copying
 
 - Object literals and property access — use shorthand, computed keys, and dot or bracket notation according to whether a key is static or dynamic ✅ 01-todo-list
-- Object destructuring — bind, rename, and default selected properties while remembering defaults apply only to `undefined`
+- Object destructuring — bind, rename, and default selected properties while remembering defaults apply only to `undefined` ✅ 06-hr-portal
 - Property existence vs an `undefined` value — distinguish `Object.hasOwn`, legacy `hasOwnProperty`, the `in` operator, and a property read when inherited or explicitly undefined properties matter
 - Own vs inherited properties — avoid treating prototype-chain members as an object's own input data
 - `Object.keys`, `Object.values`, and `Object.entries` — enumerate own enumerable string-keyed properties in the form the operation needs
@@ -93,7 +93,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `slice` vs `splice` on arrays — choose non-mutating range extraction or in-place removal, replacement, and insertion without confusing their return values or mutation effects
 - `map` — transform each present element into a result array without using it merely for side effects ✅ 01-todo-list
 - `filter` — retain all matching elements and always return an array ✅ 01-todo-list
-- `find` vs `filter` — choose one matching value or every matching value
+- `find` vs `filter` — choose one matching value or every matching value ✅ 06-hr-portal
 - `some` vs `every` — express existential or universal checks with short-circuiting
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results

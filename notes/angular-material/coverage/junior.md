@@ -6,7 +6,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 - Angular Material, Material Design, and the CDK — distinguish the styled Angular component library, the design system it implements, and the lower-level behaviour primitives it builds upon ✅ 05-task-manager
 - `ng add @angular/material` — use the library schematic to install Material and the CDK and apply the selected animation, typography, and theme setup ✅ 05-task-manager
-- Material-specific imports and providers — recognise which components need a template import and which features, such as date handling, also need a provider
+- Material-specific imports and providers — recognise which components need a template import and which features, such as date handling, also need a provider ✅ 06-hr-portal
 - Material composition boundary — combine Material interaction primitives with ordinary Angular state, forms, templates, and CSS instead of treating the library as page architecture ✅ 05-task-manager
 - Version-matched documentation and migrations — consult the docs for the installed Angular Material major version and use official update tooling instead of copying obsolete selectors or theming APIs
 
@@ -46,9 +46,9 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Checkbox, radio, and select choice — use checkboxes for independent booleans or multi-select, radio buttons for a small visible single-choice set, and a select when compactness or option count warrants it
 - Checkbox vs slide toggle — use a checkbox for selection or confirmation and `mat-slide-toggle` for a boolean setting whose change is presented as immediately active
 - Checkbox indeterminate state — represent partial aggregate selection visually without confusing it with a third submitted boolean value
-- Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control
+- Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control ✅ 06-hr-portal
 - Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions
-- Datepicker selectable-date constraints — use `min`, `max`, and `matDatepickerFilter` to declare which dates the calendar and the input will accept
+- Datepicker selectable-date constraints — use `min`, `max`, and `matDatepickerFilter` to declare which dates the calendar and the input will accept ✅ 06-hr-portal
 - Datepicker validation feedback — surface the validation errors those constraints produce instead of letting an out-of-range value fail only after submission
 
 ## Tables, sorting, filtering, and pagination
@@ -65,7 +65,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded
 - Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product ✅ 05-task-manager
 - Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
-- Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to
+- Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to ✅ 06-hr-portal
 - Nested interactive controls in rows — prevent action buttons inside a row from accidentally triggering row selection or navigation
 - Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset
 
@@ -75,7 +75,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Dialog component input — use `MAT_DIALOG_DATA` for an explicit, typed input boundary rather than reaching into caller state ✅ 05-task-manager
 - Dialog result channel — close with an explicit typed result and consume `afterClosed()` so the caller distinguishes success, cancellation, and dismissal ✅ 05-task-manager
 - Confirm/cancel semantics — perform destructive work only after an affirmative result and treat backdrop, Escape, and cancel-button dismissal consistently ✅ 05-task-manager
-- Default dismissal vs `disableClose` — preserve backdrop and Escape dismissal by default and disable them only when the interaction has a justified alternative exit because dialogs are expected to remain keyboard operable
+- Default dismissal vs `disableClose` — preserve backdrop and Escape dismissal by default and disable them only when the interaction has a justified alternative exit because dialogs are expected to remain keyboard operable ✅ 06-hr-portal
 - Dialog content structure — keep title, content, and actions as sibling regions so layout, scrolling, labelling, and action placement remain correct ✅ 05-task-manager
 - Declarative vs programmatic closing — use `mat-dialog-close` for simple results and a handler when validation, unsaved changes, or asynchronous work must run before closing ✅ 05-task-manager
 - Dialog focus management — preserve an accessible name, focus trap, sensible initial focus, focus restoration, and Escape behaviour unless a justified accessible alternative exists
@@ -83,20 +83,20 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 ## Feedback, loading, and progress
 
-- Snack bar vs dialog — use a snack bar for brief non-blocking feedback and a dialog for focused input or a decision that requires interaction
-- `MatSnackBar.open()` lifecycle — provide concise content and ensure the feature imports the snack-bar API it uses
-- Timed vs actionable snack bars — auto-dismiss informational feedback after a suitable duration but keep an action available long enough for the user to perceive and operate it
+- Snack bar vs dialog — use a snack bar for brief non-blocking feedback and a dialog for focused input or a decision that requires interaction ✅ 06-hr-portal
+- `MatSnackBar.open()` lifecycle — provide concise content and ensure the feature imports the snack-bar API it uses ✅ 06-hr-portal
+- Timed vs actionable snack bars — auto-dismiss informational feedback after a suitable duration but keep an action available long enough for the user to perceive and operate it ✅ 06-hr-portal
 - Progress spinner vs progress bar — choose a spinner for local indeterminate waiting, an indeterminate bar for page or section activity, and a determinate bar only when a real percentage exists
 
 ## Navigation and information containers
 
-- Toolbar composition — use `mat-toolbar` for persistent application-level actions and ordinary flex layout to position its content
-- Sidenav structure — compose `mat-sidenav-container`, `mat-sidenav`, and `mat-sidenav-content` so the drawer and main content share the required layout context
+- Toolbar composition — use `mat-toolbar` for persistent application-level actions and ordinary flex layout to position its content ✅ 06-hr-portal
+- Sidenav structure — compose `mat-sidenav-container`, `mat-sidenav`, and `mat-sidenav-content` so the drawer and main content share the required layout context ✅ 06-hr-portal
 - Sidenav modes — choose `side`, `push`, or `over` according to available space and whether content should resize, shift, or sit behind an overlay
-- Navigation lists and active state — use `mat-nav-list` and Material list items for navigation while Angular Router remains responsible for navigation and route activity
+- Navigation lists and active state — use `mat-nav-list` and Material list items for navigation while Angular Router remains responsible for navigation and route activity ✅ 06-hr-portal
 - Tabs vs route navigation — use `mat-tab-group` for related in-page views and routes for destinations that need navigation history, deep links, or independent URLs
-- Card structure and appearance — group related content with optional header, content, and actions and choose raised or outlined emphasis consistently
-- Stepper linear flow — pair `linear` with step controls so validity governs progression rather than relying only on button handlers
+- Card structure and appearance — group related content with optional header, content, and actions and choose raised or outlined emphasis consistently ✅ 06-hr-portal
+- Stepper linear flow — pair `linear` with step controls so validity governs progression rather than relying only on button handlers ✅ 06-hr-portal
 
 ## Accessibility, responsiveness, and testing
 
