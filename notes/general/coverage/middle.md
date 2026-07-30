@@ -15,3 +15,5 @@ Framework-neutral concepts expected when a developer owns integration and operat
 - Big O reasoning — compare time and space growth while recognising that real input sizes and constants still matter
 - Functional-programming principles — apply purity, immutability, and composition where they reduce hidden state rather than as a style mandate
 - Backpressure awareness — recognise when producers can outpace consumers in streams, queues, or real-time connections
+- Request correlation and trace context — propagate identifiers across services so production logs and traces can reconstruct one distributed request
+- Test-double selection — choose among dummy, stub, fake, mock, and spy roles from the boundary and verification strategy rather than treating every replacement as a mock

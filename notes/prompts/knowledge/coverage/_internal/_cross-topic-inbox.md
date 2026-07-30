@@ -58,9 +58,7 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ## General
 
-- Jackson ownership boundary (proposed level: junior · source run: Spring Boot junior coverage, 2026-07-26) — `notes/coverage/junior.md` currently carries under General: "Jackson — Spring Boot uses Jackson automatically to convert between JSON and Java objects; `@RestController` triggers automatic serialization without any configuration". Per the standard, General owns *neutral* JSON while Spring Boot owns the framework's message conversion; Spring Boot junior already owns "HTTP message conversion and Jackson" plus the response-shaping and deserialization-requirement items. The General item should be narrowed to neutral JSON (or removed as a Spring Boot duplicate) when the General topic next runs.
-- Test structure and assertions (proposed level: junior · source run: Angular junior coverage, 2026-07-29) — `describe`, setup hooks, individual test cases, and meaningful expectations are runner-neutral testing vocabulary; General should own the concept, while Angular keeps TestBed, fixtures, and framework-specific test mechanisms.
-- Angular testing ownership boundary (proposed level: junior · source run: Angular junior coverage, 2026-07-29) — General junior currently owns `Jasmine + TestBed`, but TestBed is Angular-specific and already covered by Angular junior; narrow the General item to neutral test-runner recognition or remove the Angular-specific duplicate.
+*(Empty — the three proposals were consumed by the General junior full recalibration on 2026-07-30: framework-specific Jackson and TestBed ownership was removed, while neutral serialization, test structure, setup, and meaningful assertions were retained or added.)*
 
 ## JavaScript
 
