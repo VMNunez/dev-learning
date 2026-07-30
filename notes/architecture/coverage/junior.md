@@ -83,7 +83,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 ## Presentation boundaries
 
 - Container / presentational component pattern — a container owns feature integration while focused
-  presentation components render inputs and emit user intent without fetching their own remote data
+  presentation components render inputs and emit user intent without fetching their own remote data ✅ 01-todo-list
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level

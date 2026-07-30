@@ -15,33 +15,33 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ### Components and template data flow
 
-- Standalone `@Component` — explain how Angular turns a class, template, and styles into a self-contained UI unit with directly declared dependencies
-- Component `imports` — identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure
-- Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]`
-- Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class
+- Standalone `@Component` — explain how Angular turns a class, template, and styles into a self-contained UI unit with directly declared dependencies ✅ 01-todo-list
+- Component `imports` — identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure ✅ 01-todo-list
+- Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
+- Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
-- `input()` vs `input.required()` — model optional and mandatory parent-to-child data without hiding absence behind an unsafe default
-- `output()` — send typed child events to a parent without making the child depend on the parent's implementation
-- `@if` vs `@switch` — choose branching conditions or fixed-value cases so mutually exclusive UI states remain readable
-- `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them
-- Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state
+- `input()` vs `input.required()` — model optional and mandatory parent-to-child data without hiding absence behind an unsafe default ✅ 01-todo-list
+- `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
+- `@if` vs `@switch` — choose branching conditions or fixed-value cases so mutually exclusive UI states remain readable ✅ 01-todo-list
+- `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
+- Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
 - Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions
 - Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
 - Components vs attribute directives — use a component when behaviour owns a view and a directive when behaviour augments an existing host element
 - Custom attribute directives and host interaction — implement reusable host-element behaviour and connect host properties or events through directive host bindings and listeners without taking ownership of the element's view
-- Conditional class and style binding — use focused class and style bindings for dynamic presentation and recognise `ngClass` or `ngStyle` when maintained templates apply several values together
+- Conditional class and style binding — use focused class and style bindings for dynamic presentation and recognise `ngClass` or `ngStyle` when maintained templates apply several values together ✅ 01-todo-list
 
 ### Application bootstrap and component styles
 
-- `bootstrapApplication()` — identify the standalone root component and the application-level providers that start a modern Angular application
-- Application provider boundary — register application-wide capabilities at bootstrap rather than scattering their providers through component scopes
-- `styleUrl`/`styleUrls` vs inline `styles` — locate a component's styles and choose external files or small inline rules without confusing either form with global CSS
+- `bootstrapApplication()` — identify the standalone root component and the application-level providers that start a modern Angular application ✅ 01-todo-list
+- Application provider boundary — register application-wide capabilities at bootstrap rather than scattering their providers through component scopes ✅ 01-todo-list
+- `styleUrl`/`styleUrls` vs inline `styles` — locate a component's styles and choose external files or small inline rules without confusing either form with global CSS ✅ 01-todo-list
 
 ### Lifecycle and dependency injection
 
-- Angular dependency injection — explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves
-- `@Injectable({ providedIn: 'root' })` — recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton
-- `inject()` vs constructor injection — recognise both supported injection styles and choose consistently without confusing construction with lifecycle work
+- Angular dependency injection — explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves ✅ 01-todo-list
+- `@Injectable({ providedIn: 'root' })` — recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton ✅ 01-todo-list
+- `inject()` vs constructor injection — recognise both supported injection styles and choose consistently without confusing construction with lifecycle work ✅ 01-todo-list
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` and configured providers — inject typed configuration or other non-class dependencies and recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs
@@ -51,14 +51,14 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ### Signals and local state
 
-- `signal()` — hold reactive local or service state and read it by calling the signal rather than treating it as a plain value
-- `set()` vs `update()` — replace state directly or derive the next immutable value from the previous one
-- `computed()` — derive read-only state from signals so the value stays consistent without manual synchronisation
+- `signal()` — hold reactive local or service state and read it by calling the signal rather than treating it as a plain value ✅ 01-todo-list
+- `set()` vs `update()` — replace state directly or derive the next immutable value from the previous one ✅ 01-todo-list
+- `computed()` — derive read-only state from signals so the value stays consistent without manual synchronisation ✅ 01-todo-list
 - `effect()` — perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state
 - `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system
-- Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot
-- Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views
-- `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal
+- Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot ✅ 01-todo-list
+- Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
+- `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
 
 ### HTTP integration
 
@@ -700,7 +700,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 ### Presentation boundaries
 
 - Container / presentational component pattern — a container owns feature integration while focused
-  presentation components render inputs and emit user intent without fetching their own remote data
+  presentation components render inputs and emit user intent without fetching their own remote data ✅ 01-todo-list
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
@@ -1051,22 +1051,22 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Type-system foundations
 
 - TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation
-- Type inference and explicit annotations — rely on clear local inference while annotating parameters, public contracts, and deliberately constrained return values
-- Primitive value types — use `string`, `number`, and `boolean` without confusing primitive annotations with boxed object types
+- Type inference and explicit annotations — rely on clear local inference while annotating parameters, public contracts, and deliberately constrained return values ✅ 01-todo-list
+- Primitive value types — use `string`, `number`, and `boolean` without confusing primitive annotations with boxed object types ✅ 01-todo-list
 - `null` vs `undefined` — distinguish explicit nullish absence from a missing or uninitialised value under strict checking
 - `void` vs `never` — distinguish a function result callers ignore from a control-flow path that cannot produce any value
 - `object` vs `Object` vs `{}` — avoid broad object-like types whose assignability differs from the specific property shape an application contract needs
 - `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type
 - Structural typing — compatibility depends on required members rather than declared names, which explains both convenient object assignment and accidental shape compatibility
-- Union types — model a value that may have one of several types and narrow it before using member-specific operations
+- Union types — model a value that may have one of several types and narrow it before using member-specific operations ✅ 01-todo-list
 - Intersection types — require a value to satisfy all combined object contracts without confusing an intersection with a runtime merge
-- Literal types and widening — preserve a finite set of allowed values instead of letting them widen to general `string`, `number`, or `boolean`
-- Array types — express variable-length homogeneous collections with `T[]` or `Array<T>` and account for indexed elements
+- Literal types and widening — preserve a finite set of allowed values instead of letting them widen to general `string`, `number`, or `boolean` ✅ 01-todo-list
+- Array types — express variable-length homogeneous collections with `T[]` or `Array<T>` and account for indexed elements ✅ 01-todo-list
 - Tuples — model a fixed sequence of positional element types and prefer named object fields when positions would obscure meaning
 
 ### Object contracts
 
-- `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging
+- `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined`
 - `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
@@ -1080,16 +1080,16 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ### Functions and generics
 
-- Function parameter and return types — express callable contracts, including optional parameters and honest `undefined` results
+- Function parameter and return types — express callable contracts, including optional parameters and honest `undefined` results ✅ 01-todo-list
 - Function type syntax — type callbacks and stored functions by their parameter and return contracts
-- Contextual typing — infer an inline callback's parameter and return types from the surrounding expected function type and recognise when extracting it removes that context
+- Contextual typing — infer an inline callback's parameter and return types from the surrounding expected function type and recognise when extracting it removes that context ✅ 01-todo-list
 - Callback parameter assignability — allow a callback to ignore supplied arguments without marking those parameters optional, because an optional parameter means the caller may omit it
 - Contextual `void` return assignability — allow a callback expected as `() => void` to return a value that the caller discards while distinguishing an explicitly declared `(): void` function body, which cannot return that value
 - Optional parameters vs parameters containing `undefined` — distinguish a call that may omit an argument from one that must pass an argument whose value may be `undefined`
 - Default parameters — allow omission at the call site while supplying a value inside the implementation
 - Rest parameters — type a variadic remainder as an array without confusing it with a spread argument at the call site
 - Function overloads — read multiple public call signatures with one compatible implementation and avoid using overloads where a union is clearer
-- Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type
+- Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type ✅ 01-todo-list
 - Generic functions and interfaces — relate input and output types without replacing that relationship with `any`
 - Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
@@ -1140,7 +1140,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Type modules and declarations
 
 - Barrel re-exports — read `index.ts` aggregation in maintained TypeScript code while avoiding cycles and hidden dependency boundaries
-- Type-only imports and exports — mark a dependency as type-only so the compiler and configured module emitter can handle it without treating the symbol as a runtime value
+- Type-only imports and exports — mark a dependency as type-only so the compiler and configured module emitter can handle it without treating the symbol as a runtime value ✅ 01-todo-list
 - Module resolution — understand that compiler settings map an import specifier to a source or declaration file and diagnose common unresolved-module errors
 - Consuming type declarations and `@types` packages — recognise how JavaScript libraries acquire compile-time types and why declarations do not add runtime code, leaving declaration authoring to later levels
 
@@ -1327,10 +1327,10 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 Topics a junior must explain confidently to pass a technical screening at NTT Data, Capgemini, or Indra in 2026. Every item must be explainable with a real example from one of the Angular projects.
 
 ### Box model
-- `margin`, `padding`, `border`, `content` — what each layer is and how they stack; interviewers draw the box model and ask you to label it or explain why two elements are not touching even though margin is set to 0
-- `box-sizing: border-box` — makes `width` include padding and border; the default `content-box` adds them on top, causing sizing surprises; setting it globally in a reset makes layouts predictable
+- `margin`, `padding`, `border`, `content` — what each layer is and how they stack; interviewers draw the box model and ask you to label it or explain why two elements are not touching even though margin is set to 0 ✅ 01-todo-list
+- `box-sizing: border-box` — makes `width` include padding and border; the default `content-box` adds them on top, causing sizing surprises; setting it globally in a reset makes layouts predictable ✅ 01-todo-list
 - Collapsing margins — two adjacent vertical margins collapse into one (the larger wins, not the sum); the most common box model surprise in interviews
-- CSS reset pattern — `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }` removes browser defaults and ensures consistent sizing; interviewers ask why `::before` and `::after` are included alongside `*`
+- CSS reset pattern — `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }` removes browser defaults and ensures consistent sizing; interviewers ask why `::before` and `::after` are included alongside `*` ✅ 01-todo-list
 
 ### Display and layout
 - `display: block`, `inline`, `inline-block` — block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width
@@ -1338,14 +1338,14 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?"
 
 ### Angular-specific CSS
-- View encapsulation — Angular scopes component styles by adding a unique attribute to every element in the template; styles in `component.scss` only apply to that component's own elements, not to child components; interviewers ask "why does your style not apply inside the child component?"
+- View encapsulation — Angular scopes component styles by adding a unique attribute to every element in the template; styles in `component.scss` only apply to that component's own elements, not to child components; interviewers ask "why does your style not apply inside the child component?" ✅ 01-todo-list
 - `:host` selector — targets the component's root element from within its own styles; used to set `display: block` or add margin to the component itself; not knowing this is a red flag for an Angular role
-- When to use `styles.css` vs component styles — `styles.css` for global rules (body, html, Angular Material overrides); component styles for everything specific to one component; interviewers ask why Angular Material overrides go in `styles.css` and not in a component file
+- When to use `styles.css` vs component styles — `styles.css` for global rules (body, html, Angular Material overrides); component styles for everything specific to one component; interviewers ask why Angular Material overrides go in `styles.css` and not in a component file ✅ 01-todo-list
 - `::ng-deep` — deprecated but still widely used in consultancy codebases; pierces view encapsulation to style child component internals that cannot otherwise be reached; interviewers ask why it is deprecated and what the modern alternative is
 
 ### Selectors and specificity
-- Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — how to target elements by relationship; interviewers show a selector and ask which elements it matches
-- Pseudo-classes: `:hover`, `:focus`, `:nth-child`, `:first-child`, `:last-child`, `:not()` — `:not()` excludes elements from a rule; `:focus` is essential for keyboard accessibility; tested in code review questions
+- Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — how to target elements by relationship; interviewers show a selector and ask which elements it matches ✅ 01-todo-list
+- Pseudo-classes: `:hover`, `:focus`, `:nth-child`, `:first-child`, `:last-child`, `:not()` — `:not()` excludes elements from a rule; `:focus` is essential for keyboard accessibility; tested in code review questions ✅ 01-todo-list
 - `:focus` vs `:focus-visible` — `:focus` triggers on every way of focusing an element, including a mouse click; `:focus-visible` only shows the ring when the browser decides keyboard navigation is likely (Tab key); interviewers ask why a button gets an ugly focus ring on click and how `:focus-visible` fixes it without removing accessibility for keyboard users
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers
 - Specificity scoring — inline styles beat IDs (`1-0-0`) beat classes (`0-1-0`) beat elements (`0-0-1`); the rule with the highest score wins, not the one that appears last; interviewers give two rules and ask which one applies
@@ -1354,10 +1354,10 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
   overrides harder to reason about
 
 ### Flexbox
-- Container properties: `flex-direction`, `justify-content`, `align-items`, `gap` — the four set on almost every flex container; not knowing these will fail the "build a navbar" question in any screening
+- Container properties: `flex-direction`, `justify-content`, `align-items`, `gap` — the four set on almost every flex container; not knowing these will fail the "build a navbar" question in any screening ✅ 01-todo-list
 - `flex-wrap: wrap` — controls whether items wrap to the next line when space runs out; `nowrap` (default) shrinks items to fit; `wrap` moves them to a new row; asked when discussing responsive card layouts
-- Item properties: `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `align-self` — `flex: 1` makes an item fill remaining space; `flex-shrink: 0` prevents an icon or button from shrinking next to a growing input
-- The main axis and cross axis — `justify-content` works on the main axis, `align-items` on the cross axis; the axis flips with `flex-direction: column`; interviewers ask "how do you center something vertically inside a flex container?"
+- Item properties: `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `align-self` — `flex: 1` makes an item fill remaining space; `flex-shrink: 0` prevents an icon or button from shrinking next to a growing input ✅ 01-todo-list
+- The main axis and cross axis — `justify-content` works on the main axis, `align-items` on the cross axis; the axis flips with `flex-direction: column`; interviewers ask "how do you center something vertically inside a flex container?" ✅ 01-todo-list
 - `margin: auto` on flex items — absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
 
 ### CSS Grid
@@ -1386,11 +1386,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ### Units
 - `px` — a CSS reference pixel, useful for thin borders and other fixed details; root-relative units
-  usually respect user text-size preferences more naturally for typography and scalable spacing
+  usually respect user text-size preferences more naturally for typography and scalable spacing ✅ 01-todo-list
 - `%` — relative to the parent's value on the same axis; for vertical `padding` and `margin`, `%` is relative to the parent's **width**, not height — a common surprise in interviews
 - `em` — relative to the current element's font size; compounds through nesting, which makes it hard to predict in deeply nested components; prefer `rem` by default
-- `rem` — relative to the root font size (`16px` by default); does not compound; the safe choice for font sizes and spacing; `rem` vs `em` is a classic confusable pair
-- `vw` and `vh` — relative to the viewport width and height; `min-height: 100vh` is safer than `height: 100vh` because it grows with content instead of clipping it
+- `rem` — relative to the root font size (`16px` by default); does not compound; the safe choice for font sizes and spacing; `rem` vs `em` is a classic confusable pair ✅ 01-todo-list
+- `vw` and `vh` — relative to the viewport width and height; `min-height: 100vh` is safer than `height: 100vh` because it grows with content instead of clipping it ✅ 01-todo-list
 
 ### Transitions and animations
 - `transition` — smooth change for a specific property on state change; always place it on the base element, not on `:hover`, so it runs in both directions; putting it on `:hover` makes the exit instant — a classic interview trap
@@ -1405,21 +1405,21 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ### Typography
 - `font-size` with `rem` — `rem` follows the root size and composes consistently with user settings;
   fixed pixels are not automatically inaccessible, but a scalable type system is easier to zoom and
-  maintain
+  maintain ✅ 01-todo-list
 - `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight
 - `line-height` unitless value — `1.5` means 1.5× the current font size; a unitless value scales correctly when font size changes; `line-height: 24px` breaks as soon as the font size changes
 - Text truncation — `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present; interviewers ask why removing any one of them breaks the effect and what each one does individually
 - `text-transform` — `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display
-- `font-family` fallback stack — listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name
+- `font-family` fallback stack — listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name ✅ 01-todo-list
 
 ### CSS variables
-- `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates
-- `:root` vs component scope — declaring on `:root` makes the variable globally available; scoping to a specific selector limits it to that element's subtree; interviewers ask why Angular Material theming variables are declared on `:root`
+- `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates ✅ 01-todo-list
+- `:root` vs component scope — declaring on `:root` makes the variable globally available; scoping to a specific selector limits it to that element's subtree; interviewers ask why Angular Material theming variables are declared on `:root` ✅ 01-todo-list
 - CSS variables are live at runtime — a CSS variable can be changed by JavaScript with `element.style.setProperty('--name', value)`, enabling runtime theming without recompiling; hardcoded values cannot be changed this way; interviewers ask how you would implement a simple theme switcher
 - `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 
 ### Colors and transparency
-- Color formats: `hex`, `rgb()`, `hsl()` — `hex` is most common for fixed colors; `rgba()` adds transparency and is preferred for overlays and shadows; `hsl` makes color variations easy (just change the lightness value); interviewers ask which format to choose and why
+- Color formats: `hex`, `rgb()`, `hsl()` — `hex` is most common for fixed colors; `rgba()` adds transparency and is preferred for overlays and shadows; `hsl` makes color variations easy (just change the lightness value); interviewers ask which format to choose and why ✅ 01-todo-list
 - `opacity` vs `rgba` transparency — `opacity` affects the element AND all its children; `rgba` only affects the specific property it is applied to; classic interview question: "why does `opacity: 0.5` on a card fade the text too, but `background: rgba(0,0,0,0.5)` does not?"
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value
 - `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
@@ -1430,7 +1430,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `border-radius: 50%` vs `border-radius: 9999px` — `50%` makes a circle but only when the element is square; `9999px` creates a pill shape at any aspect ratio; interviewers ask which one to use for an avatar vs a badge — a confusable pair
 - `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
 - `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair
-- `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it
+- `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it ✅ 01-todo-list
 - `aspect-ratio` — locks an element's width-to-height ratio (`aspect-ratio: 16 / 9`) so it scales without distortion when only one dimension is known; replaces the older padding-percentage hack for responsive video and image containers; interviewers ask how you reserve space for an image before it loads to avoid layout shift
 
 ### Overflow

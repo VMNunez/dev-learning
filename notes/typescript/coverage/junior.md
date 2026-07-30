@@ -5,22 +5,22 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## Type-system foundations
 
 - TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation
-- Type inference and explicit annotations — rely on clear local inference while annotating parameters, public contracts, and deliberately constrained return values
-- Primitive value types — use `string`, `number`, and `boolean` without confusing primitive annotations with boxed object types
+- Type inference and explicit annotations — rely on clear local inference while annotating parameters, public contracts, and deliberately constrained return values ✅ 01-todo-list
+- Primitive value types — use `string`, `number`, and `boolean` without confusing primitive annotations with boxed object types ✅ 01-todo-list
 - `null` vs `undefined` — distinguish explicit nullish absence from a missing or uninitialised value under strict checking
 - `void` vs `never` — distinguish a function result callers ignore from a control-flow path that cannot produce any value
 - `object` vs `Object` vs `{}` — avoid broad object-like types whose assignability differs from the specific property shape an application contract needs
 - `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type
 - Structural typing — compatibility depends on required members rather than declared names, which explains both convenient object assignment and accidental shape compatibility
-- Union types — model a value that may have one of several types and narrow it before using member-specific operations
+- Union types — model a value that may have one of several types and narrow it before using member-specific operations ✅ 01-todo-list
 - Intersection types — require a value to satisfy all combined object contracts without confusing an intersection with a runtime merge
-- Literal types and widening — preserve a finite set of allowed values instead of letting them widen to general `string`, `number`, or `boolean`
-- Array types — express variable-length homogeneous collections with `T[]` or `Array<T>` and account for indexed elements
+- Literal types and widening — preserve a finite set of allowed values instead of letting them widen to general `string`, `number`, or `boolean` ✅ 01-todo-list
+- Array types — express variable-length homogeneous collections with `T[]` or `Array<T>` and account for indexed elements ✅ 01-todo-list
 - Tuples — model a fixed sequence of positional element types and prefer named object fields when positions would obscure meaning
 
 ## Object contracts
 
-- `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging
+- `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined`
 - `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
@@ -34,16 +34,16 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## Functions and generics
 
-- Function parameter and return types — express callable contracts, including optional parameters and honest `undefined` results
+- Function parameter and return types — express callable contracts, including optional parameters and honest `undefined` results ✅ 01-todo-list
 - Function type syntax — type callbacks and stored functions by their parameter and return contracts
-- Contextual typing — infer an inline callback's parameter and return types from the surrounding expected function type and recognise when extracting it removes that context
+- Contextual typing — infer an inline callback's parameter and return types from the surrounding expected function type and recognise when extracting it removes that context ✅ 01-todo-list
 - Callback parameter assignability — allow a callback to ignore supplied arguments without marking those parameters optional, because an optional parameter means the caller may omit it
 - Contextual `void` return assignability — allow a callback expected as `() => void` to return a value that the caller discards while distinguishing an explicitly declared `(): void` function body, which cannot return that value
 - Optional parameters vs parameters containing `undefined` — distinguish a call that may omit an argument from one that must pass an argument whose value may be `undefined`
 - Default parameters — allow omission at the call site while supplying a value inside the implementation
 - Rest parameters — type a variadic remainder as an array without confusing it with a spread argument at the call site
 - Function overloads — read multiple public call signatures with one compatible implementation and avoid using overloads where a union is clearer
-- Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type
+- Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type ✅ 01-todo-list
 - Generic functions and interfaces — relate input and output types without replacing that relationship with `any`
 - Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
@@ -94,7 +94,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## Type modules and declarations
 
 - Barrel re-exports — read `index.ts` aggregation in maintained TypeScript code while avoiding cycles and hidden dependency boundaries
-- Type-only imports and exports — mark a dependency as type-only so the compiler and configured module emitter can handle it without treating the symbol as a runtime value
+- Type-only imports and exports — mark a dependency as type-only so the compiler and configured module emitter can handle it without treating the symbol as a runtime value ✅ 01-todo-list
 - Module resolution — understand that compiler settings map an import specifier to a source or declaration file and diagnose common unresolved-module errors
 - Consuming type declarations and `@types` packages — recognise how JavaScript libraries acquire compile-time types and why declarations do not add runtime code, leaving declaration authoring to later levels
 

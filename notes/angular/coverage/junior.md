@@ -5,33 +5,33 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ## Components and template data flow
 
-- Standalone `@Component` — explain how Angular turns a class, template, and styles into a self-contained UI unit with directly declared dependencies
-- Component `imports` — identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure
-- Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]`
-- Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class
+- Standalone `@Component` — explain how Angular turns a class, template, and styles into a self-contained UI unit with directly declared dependencies ✅ 01-todo-list
+- Component `imports` — identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure ✅ 01-todo-list
+- Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
+- Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
-- `input()` vs `input.required()` — model optional and mandatory parent-to-child data without hiding absence behind an unsafe default
-- `output()` — send typed child events to a parent without making the child depend on the parent's implementation
-- `@if` vs `@switch` — choose branching conditions or fixed-value cases so mutually exclusive UI states remain readable
-- `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them
-- Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state
+- `input()` vs `input.required()` — model optional and mandatory parent-to-child data without hiding absence behind an unsafe default ✅ 01-todo-list
+- `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
+- `@if` vs `@switch` — choose branching conditions or fixed-value cases so mutually exclusive UI states remain readable ✅ 01-todo-list
+- `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
+- Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
 - Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions
 - Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
 - Components vs attribute directives — use a component when behaviour owns a view and a directive when behaviour augments an existing host element
 - Custom attribute directives and host interaction — implement reusable host-element behaviour and connect host properties or events through directive host bindings and listeners without taking ownership of the element's view
-- Conditional class and style binding — use focused class and style bindings for dynamic presentation and recognise `ngClass` or `ngStyle` when maintained templates apply several values together
+- Conditional class and style binding — use focused class and style bindings for dynamic presentation and recognise `ngClass` or `ngStyle` when maintained templates apply several values together ✅ 01-todo-list
 
 ## Application bootstrap and component styles
 
-- `bootstrapApplication()` — identify the standalone root component and the application-level providers that start a modern Angular application
-- Application provider boundary — register application-wide capabilities at bootstrap rather than scattering their providers through component scopes
-- `styleUrl`/`styleUrls` vs inline `styles` — locate a component's styles and choose external files or small inline rules without confusing either form with global CSS
+- `bootstrapApplication()` — identify the standalone root component and the application-level providers that start a modern Angular application ✅ 01-todo-list
+- Application provider boundary — register application-wide capabilities at bootstrap rather than scattering their providers through component scopes ✅ 01-todo-list
+- `styleUrl`/`styleUrls` vs inline `styles` — locate a component's styles and choose external files or small inline rules without confusing either form with global CSS ✅ 01-todo-list
 
 ## Lifecycle and dependency injection
 
-- Angular dependency injection — explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves
-- `@Injectable({ providedIn: 'root' })` — recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton
-- `inject()` vs constructor injection — recognise both supported injection styles and choose consistently without confusing construction with lifecycle work
+- Angular dependency injection — explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves ✅ 01-todo-list
+- `@Injectable({ providedIn: 'root' })` — recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton ✅ 01-todo-list
+- `inject()` vs constructor injection — recognise both supported injection styles and choose consistently without confusing construction with lifecycle work ✅ 01-todo-list
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` and configured providers — inject typed configuration or other non-class dependencies and recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs
@@ -41,14 +41,14 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ## Signals and local state
 
-- `signal()` — hold reactive local or service state and read it by calling the signal rather than treating it as a plain value
-- `set()` vs `update()` — replace state directly or derive the next immutable value from the previous one
-- `computed()` — derive read-only state from signals so the value stays consistent without manual synchronisation
+- `signal()` — hold reactive local or service state and read it by calling the signal rather than treating it as a plain value ✅ 01-todo-list
+- `set()` vs `update()` — replace state directly or derive the next immutable value from the previous one ✅ 01-todo-list
+- `computed()` — derive read-only state from signals so the value stays consistent without manual synchronisation ✅ 01-todo-list
 - `effect()` — perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state
 - `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system
-- Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot
-- Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views
-- `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal
+- Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot ✅ 01-todo-list
+- Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
+- `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
 
 ## HTTP integration
 
