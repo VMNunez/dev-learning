@@ -143,6 +143,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
 - Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant
+- Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it
 
 ## Errors and runtime boundaries
 
