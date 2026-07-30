@@ -2,7 +2,7 @@
 
 Plan status: current
 Coverage: notes/spring-boot/coverage/junior.md
-Coverage SHA-256: b85dce644979764bbe36254f284d7466376c0d7fbc6138ba58fc5c1466e73b18
+Coverage SHA-256: 43a1261ffb5b6c97fac6c115e6785cceabbab620ec29885247101ac1ac453b98
 Generated: 2026-07-27
 
 ## 00 — What Spring Boot is and how this topic is organised
