@@ -62,7 +62,9 @@ must not supply proposed gaps or raise the selected-level floor.
    `##` section headings correspond to `###` headings inside the mirror's topic section; ignore only
    that expected heading-depth difference. Any other heading, bullet, or ordering difference means the
    mirror is stale, `coverage-prompt` has not finished, and there is nothing trustworthy to verify.
-4. Compute the lowercase SHA-256 digest of the exact UTF-8 bytes of `COVERAGE`. This is what the
+4. Compute the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
+   trailing ` ✅ NN` evidence marker stripped, per the canonical command in "Evidence markers" in
+   `_coverage-standard.md`. This is what the
    findings file stamps, so `notes-plan` can tell a verified verdict from a stale one.
 5. For middle, state that the junior gate must be consolidated; for senior, junior and middle. The gate
    controls study order, not whether this verification may run.

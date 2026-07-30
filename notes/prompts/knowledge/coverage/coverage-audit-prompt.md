@@ -80,6 +80,10 @@ Allowed actions:
   in doubt between deleting and moving, move;
 - split or merge unclear sections.
 
+Every one of those actions must carry any existing `✅ NN` evidence marker onto the surviving bullet
+unchanged — a reworded, moved, or re-routed concept keeps its demonstration. Read "Evidence markers" in
+the standard before editing a bullet that has one.
+
 No numeric item budget or section-size target exists. Do not add or remove concepts to reach a count.
 
 Apply the qualitative stopping rule:
@@ -124,6 +128,10 @@ Validate:
 - no normalized concept occurs in more than one level file for the same topic;
 - ownership duplicates across topics are resolved or explicitly justified as concrete implementation twins;
 - no checkbox, numbered coverage item, or fenced code exists;
+- every `✅ NN` evidence marker present before the run is still present after it, on the bullet whose
+  concept it belongs to, in both the topic file and the mirror — see "Evidence markers" in the standard.
+  Reformulating a bullet carries its marker across; only a concept genuinely leaving the level may take
+  its marker with it, and that must be named explicitly in the final report;
 - `git diff --check` and complete diff inspection pass.
 
 ## Step 6 — Update mode

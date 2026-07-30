@@ -109,7 +109,10 @@ English-only note as `keep`, `move <current level> -> <correct level>`, `renumbe
 
 ## Coverage fingerprint
 
-Calculate the lowercase SHA-256 digest of the exact UTF-8 bytes of `COVERAGE`.
+Calculate the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
+trailing ` ✅ NN` evidence marker stripped, using the canonical command in "Evidence markers" in
+`_coverage-standard.md`. Markers record where a concept was demonstrated, not what the scope is, so a
+closed step must never look like a stale plan.
 
 The plan stores it as:
 

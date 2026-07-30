@@ -60,7 +60,8 @@ This prompt has two shapes; Step 0 fixes which one and records it in the plan.
 **Verify-gap fast path** applies only when all of these hold:
 
 - `verify-{LEVEL}.md` exists with `Verdict: gaps` and a non-empty `## Open gaps`;
-- its stored `Coverage SHA-256` matches the current `TARGET_FILE`, so the gaps were raised against today's bytes;
+- its stored `Coverage SHA-256` matches the current `TARGET_FILE`'s **scope bytes** (evidence markers
+  stripped — see "Evidence markers" in the standard), so the gaps were raised against today's scope;
 - no `_cross-topic-inbox.md` entry is pending under this topic;
 - no other recalibration trigger is active.
 
@@ -137,6 +138,11 @@ The orchestrator is the only repository editor.
 
 Write `TARGET_FILE`, move reclassified material to the correct level file, and route other-topic proposals to the inbox.
 
+An existing bullet carrying a `✅ NN` evidence marker keeps that marker verbatim through KEEP HERE, any
+MOVE, ROUTE, or factual correction — including when the concept sentence is rewritten from scratch. This
+step is the one most likely to destroy markers, because it redrafts a whole level file: never author a
+marker here, and never drop one. Read "Evidence markers" in the standard first.
+
 Apply the standard's item format, topic ownership, level definitions, and qualitative stopping rule. Never add or remove an item to satisfy a numeric count.
 
 Before closing the draft, run an adversarial pass. Stop when it yields only duplicates, different-level material, another topic's ownership, or unjustified specialisation.
@@ -183,7 +189,8 @@ Rebuild only `## {TOPIC}` in `GLOBAL_MIRROR` from `TARGET_FILE`:
 
 Validate:
 
-1. local/mirror bullet text and order match;
+1. local/mirror bullet text and order match — including each bullet's trailing `✅ NN` evidence marker,
+   which is part of the bullet text and must appear identically in both files;
 2. local/mirror headings match;
 3. expected top-level topics remain exactly once;
 4. no checkbox, numbered coverage item, or fenced code exists;
@@ -191,7 +198,8 @@ Validate:
 6. no normalized concept occurs in more than one of the three level files;
 7. the selected file contains no obvious other-topic section;
 8. `git diff --check` passes and the complete declared diff is inspected.
-9. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256. A mismatch is the expected
+9. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256 over `TARGET_FILE`'s scope bytes
+   (evidence markers stripped, per the standard's canonical command). A mismatch is the expected
    refresh signal: report `notes-plan-prompt` as the next step so it can remap the final coverage
    before another note is built. This is not a return to `coverage-verify`.
 

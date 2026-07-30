@@ -128,8 +128,9 @@ First read
 enforcing. You stay light: you dispatch subagents, wait, and collect — you never hold every topic's
 Q&A in your own context.
 
-For each selected topic, calculate the lowercase SHA-256 digest over the exact UTF-8 bytes of
-`notes/{topic}/coverage/{LEVEL}.md` before dispatch. For Angular calculate Angular and Angular Material
+For each selected topic, calculate the lowercase SHA-256 digest over the **scope bytes** of
+`notes/{topic}/coverage/{LEVEL}.md` before dispatch — its exact UTF-8 bytes with every trailing ` ✅ NN`
+evidence marker stripped, per the canonical command in "Evidence markers" in `_coverage-standard.md`. For Angular calculate Angular and Angular Material
 separately. Compare them with the selected-level EN and ES metadata:
 
 - matching in both files → current;
