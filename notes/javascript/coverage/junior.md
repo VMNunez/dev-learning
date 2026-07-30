@@ -28,8 +28,8 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Safe integers and `Infinity` — recognise when ordinary `number` arithmetic no longer represents integer results reliably or becomes non-finite
 - `toFixed` return type — format decimal places while remembering that the result is a string, not a number
 - String immutability — treat every string transformation as producing a new value
-- Template literals — interpolate expressions and multiline text without fragile concatenation
-- String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed
+- Template literals — interpolate expressions and multiline text without fragile concatenation ✅ 02-weather-app
+- String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed ✅ 02-weather-app
 - `slice` vs `substring` — extract a range while accounting for negative indexes and reversed arguments
 - String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source ✅ 01-todo-list
 - String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics
@@ -87,7 +87,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 
 ## Arrays and iteration
 
-- Array destructuring — bind positions, skip entries, use defaults, and collect remaining elements
+- Array destructuring — bind positions, skip entries, use defaults, and collect remaining elements ✅ 02-weather-app
 - Array spread — create a shallow array copy or combine iterables without implying a deep clone ✅ 01-todo-list
 - Mutating vs non-mutating array methods — recognise when an operation changes the original collection and when it returns a new one ✅ 01-todo-list
 - `slice` vs `splice` on arrays — choose non-mutating range extraction or in-place removal, replacement, and insertion without confusing their return values or mutation effects

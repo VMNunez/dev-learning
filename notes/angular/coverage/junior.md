@@ -10,7 +10,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
-- `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data
+- `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data ✅ 02-weather-app
 - `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
 - `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
 - `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
@@ -37,10 +37,10 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` and configured providers — inject typed configuration or other non-class dependencies and recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
-- `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs
+- `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
 - View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences
-- Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view
+- Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view ✅ 02-weather-app
 
 ## Signals and local state
 
@@ -55,16 +55,16 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ## HTTP integration
 
-- Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON
+- Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON ✅ 02-weather-app
 - `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged
 - Cold HTTP Observables — recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
-- Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state
+- Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state ✅ 02-weather-app
 
 ## RxJS streams and pipelines
 
 - `Observable` vs `Promise` — compare stream composition and cancellation with a single eventual Promise while recognising that Observables may be cold or hot and may emit once or many times
 - `Observable` vs `Subject` — distinguish a declarative subscribable stream from a subject that can be imperatively fed and multicast, rather than using a subject as the default state container
-- `subscribe()` callbacks — handle next and error outcomes deliberately and keep presentation state consistent after a failed request
+- `subscribe()` callbacks — handle next and error outcomes deliberately and keep presentation state consistent after a failed request ✅ 02-weather-app
 - `map()` vs `tap()` — transform emitted data with `map()` and reserve `tap()` for observation or side effects
 - `switchMap()` — cancel a stale inner request when a newer search term or route value arrives
 - `switchMap()` vs `mergeMap()` — cancel replaceable work with `switchMap()` and preserve deliberate concurrent inner work with `mergeMap()` instead of choosing by habit
@@ -75,7 +75,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `catchError()` placement around flattening operators — recover inside an inner request when the outer interaction stream must remain alive and catch outside only when terminating the whole pipeline is intended
 - `finalize()` — clear loading or other lifecycle state when a stream completes or errors without duplicating cleanup across success and failure callbacks
 - `async` pipe vs manual subscription — prefer template-managed subscription for displayed streams and subscribe imperatively only when a side effect requires it
-- Subscription cleanup — use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete
+- Subscription cleanup — use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete ✅ 02-weather-app
 - `toSignal()` vs manual subscription — expose a displayed Observable as signal state while keeping imperative subscription for deliberate multi-step side effects
 
 ## Routing and cross-cutting HTTP behaviour
@@ -110,7 +110,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `dirty`, `reset()`, and server errors — distinguish local edits, reset the saved baseline, and avoid losing backend errors through an immediate validator rerun
 - Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls
 - `FormArray` vs `FormGroup` — model a dynamic indexed collection separately from a fixed set of named controls
-- Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class
+- Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class ✅ 02-weather-app
 - Custom pipes — extract a reusable pure display transformation behind a pipe without hiding business logic or expensive impure work in it
 - Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
 - Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers

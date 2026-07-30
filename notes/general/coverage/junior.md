@@ -4,7 +4,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 ## HTTP requests and resource semantics
 
-- Client–server request/response model — trace how a client sends a request and receives a response without treating either framework as the protocol itself
+- Client–server request/response model — trace how a client sends a request and receives a response without treating either framework as the protocol itself ✅ 02-weather-app
 - URL anatomy — distinguish scheme, host, port, path, query, and fragment so an incorrect endpoint can be diagnosed precisely
 - URI vs URL — distinguish a resource identifier from the subset that also describes where and how to access it
 - REST resource and representation model — model domain resources behind representations instead of treating endpoint paths as remote procedure names
@@ -92,7 +92,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Required configuration and fail-fast startup — reject a missing mandatory value early with a clear diagnostic rather than failing later in unrelated code
 - Default configuration — provide a default only when it is safe and semantically valid for every context where it may be used
 - Development, test, staging, and production — use each environment for a distinct confidence level without assuming staging is an exact copy of production
-- Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts
+- Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts ✅ 02-weather-app
 - Configuration parity — keep environment differences explicit and minimal so deployment failures are not caused by hidden local assumptions
 - Example environment file — document required variable names with safe placeholder values without committing real credentials
 - Effective-configuration debugging — compare the value actually used in each environment rather than assuming the intended source won

@@ -20,7 +20,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
-- `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data
+- `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data ✅ 02-weather-app
 - `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
 - `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
 - `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
@@ -47,10 +47,10 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` and configured providers — inject typed configuration or other non-class dependencies and recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
-- `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs
+- `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
 - View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences
-- Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view
+- Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view ✅ 02-weather-app
 
 ### Signals and local state
 
@@ -65,16 +65,16 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ### HTTP integration
 
-- Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON
+- Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON ✅ 02-weather-app
 - `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged
 - Cold HTTP Observables — recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
-- Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state
+- Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state ✅ 02-weather-app
 
 ### RxJS streams and pipelines
 
 - `Observable` vs `Promise` — compare stream composition and cancellation with a single eventual Promise while recognising that Observables may be cold or hot and may emit once or many times
 - `Observable` vs `Subject` — distinguish a declarative subscribable stream from a subject that can be imperatively fed and multicast, rather than using a subject as the default state container
-- `subscribe()` callbacks — handle next and error outcomes deliberately and keep presentation state consistent after a failed request
+- `subscribe()` callbacks — handle next and error outcomes deliberately and keep presentation state consistent after a failed request ✅ 02-weather-app
 - `map()` vs `tap()` — transform emitted data with `map()` and reserve `tap()` for observation or side effects
 - `switchMap()` — cancel a stale inner request when a newer search term or route value arrives
 - `switchMap()` vs `mergeMap()` — cancel replaceable work with `switchMap()` and preserve deliberate concurrent inner work with `mergeMap()` instead of choosing by habit
@@ -85,7 +85,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `catchError()` placement around flattening operators — recover inside an inner request when the outer interaction stream must remain alive and catch outside only when terminating the whole pipeline is intended
 - `finalize()` — clear loading or other lifecycle state when a stream completes or errors without duplicating cleanup across success and failure callbacks
 - `async` pipe vs manual subscription — prefer template-managed subscription for displayed streams and subscribe imperatively only when a side effect requires it
-- Subscription cleanup — use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete
+- Subscription cleanup — use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete ✅ 02-weather-app
 - `toSignal()` vs manual subscription — expose a displayed Observable as signal state while keeping imperative subscription for deliberate multi-step side effects
 
 ### Routing and cross-cutting HTTP behaviour
@@ -120,7 +120,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `dirty`, `reset()`, and server errors — distinguish local edits, reset the saved baseline, and avoid losing backend errors through an immediate validator rerun
 - Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls
 - `FormArray` vs `FormGroup` — model a dynamic indexed collection separately from a fixed set of named controls
-- Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class
+- Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class ✅ 02-weather-app
 - Custom pipes — extract a reusable pure display transformation behind a pipe without hiding business logic or expensive impure work in it
 - Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
 - Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers
@@ -707,7 +707,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Container / presentational component pattern — a container owns feature integration while focused
   presentation components render inputs and emit user intent without fetching their own remote data ✅ 01-todo-list
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
-  children, while shared or independently reusable state may belong in a service rather than in the page
+  children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
 
 ### Testing strategy
@@ -1096,7 +1096,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Function overloads — read multiple public call signatures with one compatible implementation and avoid using overloads where a union is clearer
 - Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type ✅ 01-todo-list
 - Generic functions and interfaces — relate input and output types without replacing that relationship with `any`
-- Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract
+- Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract ✅ 02-weather-app
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
 - `keyof` — derive a union of valid property names from an existing object contract
 - Indexed access types — obtain a property's value type from an existing object contract without duplicating it
@@ -1119,7 +1119,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Null safety and assertions
 
 - `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
-- Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash
+- Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
 - Type assertions — override the compiler's interpretation without converting or validating the runtime value
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist
@@ -1192,8 +1192,8 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Safe integers and `Infinity` — recognise when ordinary `number` arithmetic no longer represents integer results reliably or becomes non-finite
 - `toFixed` return type — format decimal places while remembering that the result is a string, not a number
 - String immutability — treat every string transformation as producing a new value
-- Template literals — interpolate expressions and multiline text without fragile concatenation
-- String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed
+- Template literals — interpolate expressions and multiline text without fragile concatenation ✅ 02-weather-app
+- String search — choose `includes`, `startsWith`, `endsWith`, or `indexOf` according to whether a boolean or position is needed ✅ 02-weather-app
 - `slice` vs `substring` — extract a range while accounting for negative indexes and reversed arguments
 - String splitting and trimming — turn delimited text into parts and remove surrounding whitespace without mutating the source ✅ 01-todo-list
 - String case conversion and replacement — normalise case or replace one or all matches according to the operation's semantics
@@ -1251,7 +1251,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ### Arrays and iteration
 
-- Array destructuring — bind positions, skip entries, use defaults, and collect remaining elements
+- Array destructuring — bind positions, skip entries, use defaults, and collect remaining elements ✅ 02-weather-app
 - Array spread — create a shallow array copy or combine iterables without implying a deep clone ✅ 01-todo-list
 - Mutating vs non-mutating array methods — recognise when an operation changes the original collection and when it returns a new one ✅ 01-todo-list
 - `slice` vs `splice` on arrays — choose non-mutating range extraction or in-place removal, replacement, and insertion without confusing their return values or mutation effects
@@ -1401,11 +1401,11 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `transition` — smooth change for a specific property on state change; always place it on the base element, not on `:hover`, so it runs in both directions; putting it on `:hover` makes the exit instant — a classic interview trap
 - `transform` — `translateX/Y`, `scale`, and `rotate` change visual appearance without changing
   normal-flow geometry; browsers can often composite transforms efficiently, but GPU promotion is
-  not guaranteed
+  not guaranteed ✅ 02-weather-app
 - `transform` vs `top/left` for movement — transforms commonly avoid layout while positional changes
   can trigger it; profile when performance matters instead of treating either rendering path as an
   unconditional guarantee
-- `@keyframes` and `animation` — multi-step animations; `animation-iteration-count: infinite` for loading spinners; `animation-fill-mode: forwards` keeps the final state after the animation ends instead of snapping back
+- `@keyframes` and `animation` — multi-step animations; `animation-iteration-count: infinite` for loading spinners; `animation-fill-mode: forwards` keeps the final state after the animation ends instead of snapping back ✅ 02-weather-app
 
 ### Typography
 - `font-size` with `rem` — `rem` follows the root size and composes consistently with user settings;
@@ -1414,7 +1414,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight
 - `line-height` unitless value — `1.5` means 1.5× the current font size; a unitless value scales correctly when font size changes; `line-height: 24px` breaks as soon as the font size changes
 - Text truncation — `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present; interviewers ask why removing any one of them breaks the effect and what each one does individually
-- `text-transform` — `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display
+- `text-transform` — `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display ✅ 02-weather-app
 - `font-family` fallback stack — listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name ✅ 01-todo-list
 
 ### CSS variables
@@ -1426,13 +1426,13 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ### Colors and transparency
 - Color formats: `hex`, `rgb()`, `hsl()` — `hex` is most common for fixed colors; `rgba()` adds transparency and is preferred for overlays and shadows; `hsl` makes color variations easy (just change the lightness value); interviewers ask which format to choose and why ✅ 01-todo-list
 - `opacity` vs `rgba` transparency — `opacity` affects the element AND all its children; `rgba` only affects the specific property it is applied to; classic interview question: "why does `opacity: 0.5` on a card fade the text too, but `background: rgba(0,0,0,0.5)` does not?"
-- `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value
+- `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
 - `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
 
 ### Borders, shadows, and backgrounds
 - `box-shadow` syntax: `offset-x offset-y blur spread color` — spread is optional, and transparent
-  colour can use modern `rgb(... / alpha)`, hex alpha, HSL, `rgba()`, or a design token
-- `border-radius: 50%` — makes a circle only when the element is square, which is why it works for avatars and loading spinners and produces an ellipse on any other aspect ratio
+  colour can use modern `rgb(... / alpha)`, hex alpha, HSL, `rgba()`, or a design token ✅ 02-weather-app
+- `border-radius: 50%` — makes a circle only when the element is square, which is why it works for avatars and loading spinners and produces an ellipse on any other aspect ratio ✅ 02-weather-app
 - `border-radius: 9999px` — creates a pill shape at any aspect ratio, which is why badges and chips use it; `50%` vs `9999px` is a confusable pair interviewers test with avatar vs badge
 - `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
 - `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair
@@ -1803,7 +1803,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 ### HTTP requests and resource semantics
 
-- Client–server request/response model — trace how a client sends a request and receives a response without treating either framework as the protocol itself
+- Client–server request/response model — trace how a client sends a request and receives a response without treating either framework as the protocol itself ✅ 02-weather-app
 - URL anatomy — distinguish scheme, host, port, path, query, and fragment so an incorrect endpoint can be diagnosed precisely
 - URI vs URL — distinguish a resource identifier from the subset that also describes where and how to access it
 - REST resource and representation model — model domain resources behind representations instead of treating endpoint paths as remote procedure names
@@ -1891,7 +1891,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Required configuration and fail-fast startup — reject a missing mandatory value early with a clear diagnostic rather than failing later in unrelated code
 - Default configuration — provide a default only when it is safe and semantically valid for every context where it may be used
 - Development, test, staging, and production — use each environment for a distinct confidence level without assuming staging is an exact copy of production
-- Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts
+- Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts ✅ 02-weather-app
 - Configuration parity — keep environment differences explicit and minimal so deployment failures are not caused by hidden local assumptions
 - Example environment file — document required variable names with safe placeholder values without committing real credentials
 - Effective-configuration debugging — compare the value actually used in each environment rather than assuming the intended source won

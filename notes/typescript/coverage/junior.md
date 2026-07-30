@@ -45,7 +45,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Function overloads — read multiple public call signatures with one compatible implementation and avoid using overloads where a union is clearer
 - Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type ✅ 01-todo-list
 - Generic functions and interfaces — relate input and output types without replacing that relationship with `any`
-- Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract
+- Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract ✅ 02-weather-app
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
 - `keyof` — derive a union of valid property names from an existing object contract
 - Indexed access types — obtain a property's value type from an existing object contract without duplicating it
@@ -68,7 +68,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## Null safety and assertions
 
 - `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
-- Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash
+- Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
 - Type assertions — override the compiler's interpretation without converting or validating the runtime value
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist
