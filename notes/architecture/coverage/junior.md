@@ -27,6 +27,9 @@ apply in a small codebase, and defend with concrete trade-offs.
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
   data actually is, or add the filter, but never leave the two disagreeing
+- Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
+  summary and its detail tables are computed independently, a summary built on a looser filter than its
+  breakdown produces a total that cannot equal the sum of the rows the client is shown
 
 ## Layered architecture
 
