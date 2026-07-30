@@ -33,7 +33,8 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 - `mat-form-field` composition — combine a compatible control with its label, hint, prefix or suffix, and error presentation while Angular forms remain the state authority
 - `matInput` — enhance a native input or textarea inside a form field while preserving its native value, type, and form semantics
-- `mat-label`, `mat-hint`, and `mat-error` — distinguish identification, persistent guidance, and conditional validation feedback
+- `mat-label` and `mat-error` — distinguish identification of a control from conditional validation feedback shown under the field
+- `mat-hint` — attach persistent guidance to a form field without confusing it with a validation error
 - Material controls with reactive forms — bind controls through `formControl` or `formControlName` and avoid a second source of truth through parallel value bindings
 - Error-state timing — understand when Material displays form-field errors and connect that presentation to the form's validity and interaction or submission policy
 - `mat-select` and `mat-option` — model single or multiple selection with values whose types match the form control and distinguish literal attributes from property bindings
