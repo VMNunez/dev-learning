@@ -63,23 +63,34 @@ section (its "Spring annotation / bean / **security** / JPA → Spring Boot" row
 followed literally it files an access-control concept under `spring-boot` even though `notes/security/`
 owns it).
 
-Pick by **what the concept teaches, not where the fix happened**:
+**The authority is the topic-ownership list in `_coverage-standard.md`** (the "Security owns threats and
+defences; Angular/Spring Boot keep concrete client/server integration" block). You are already reading
+that standard before writing a bullet — read that block and apply it literally rather than re-deriving
+the routing here.
 
-- an access-control or attack-surface rule (BOLA, segregation of duties, enumeration) → `security`,
-  even though the code was Spring;
-- a design principle (DRY, Extract Method, layering) → `architecture`;
-- a pure language construct (`Optional<T>`, boxing) → `java`;
-- set-theory / query semantics that would hold outside JPA (`GROUP BY` correctness, joins) → weigh
-  `sql` against `spring-boot`;
-- the Spring mechanism itself (annotations, beans, filter chain, JPA mapping) → `spring-boot`.
+The test it encodes is **altitude, not subject matter**. The technology-neutral topics (`security`,
+`architecture`, `general`) own the concept — what a thing is, which threat it answers, which boundary it
+draws. The technology topics (`spring-boot`, `angular`, `java`, `sql`, `typescript`,
+`angular-material`) own its concrete application in that stack. So the same subject legitimately appears
+in two topics at two altitudes, and that is **not** duplication:
 
-Past closes in the `## Closed` ledger are the precedent to match — they already routed BOLA and
-segregation of duties to `security`, and DRY to `architecture`. **If a concept genuinely straddles two
-topics, do not write it into both.** Put it in the one that owns it and, when the other topic has a real
-claim, add it as a proposal under that topic's heading in
-`notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` — that file exists precisely so a
-concept routed out of one topic is not lost until the owning topic's own run judges it. Say in the report
-which topic you chose and why.
+- "what a JWT is, and what a signature protects against" → `security`; "issuing and validating a JWT in
+  a Spring filter chain" → `spring-boot`.
+- "BOLA — a client reaching another user's object by changing an id" → `security`; "`@PreAuthorize` on
+  the mutation endpoints" → `spring-boot`.
+- "grouping by a display name merges two distinct rows" (database behaviour) → `sql`; "the same
+  aggregate expressed as JPQL with `@Query`" → `spring-boot`.
+
+What must never happen is the *same altitude* written twice. A framework class name in the bullet
+(`AccountStatusUserDetailsChecker`, `SecurityFilterChain`) is decisive evidence it is the technology
+topic's, however security-flavoured the subject is.
+
+Past closes in the `## Closed` ledger are the precedent to match — they routed BOLA and segregation of
+duties to `security`, and DRY to `architecture`. When the *other* topic has a real claim at its own
+altitude, do not author it there yourself: the standard is explicit that a concept belonging to another
+topic goes as a proposal under that topic's heading in
+`notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md`, never straight into its file. Say in
+the report which topic you chose and why.
 
 Then open that topic's coverage file for **the level Victor is currently working at** —
 `notes/{topic}/coverage/{junior|middle|senior}.md`. Search for the concept (grep the key symbol, not
