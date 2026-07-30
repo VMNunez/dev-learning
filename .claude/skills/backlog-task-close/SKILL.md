@@ -82,20 +82,50 @@ that is a signal about his trajectory, not a mistake.
 A coverage concept lives **verbatim in three synced files**; `coverage-prompt.md` is what normally keeps
 them aligned, and it is not running here. So if — and only if — step 1 actually wrote a new bullet,
 write it into all three by hand, at **the level you just determined** (junior / middle / senior — check
-which one, never assume, and never let a middle concept land in the junior plan):
+which one, never assume, and never let a middle concept land in the junior plan).
 
-1. `notes/{topic}/coverage/{LEVEL}.md` — the canonical file, already done above.
-2. `notes/{topic}/coverage/notes-plan-{LEVEL}.md` — under the `Coverage concepts:` list of the chapter
-   that teaches it, bullet text **identical** to (1). Then **recompute that file's stored
-   `Coverage SHA-256`** against the new `{LEVEL}.md`: `coverage-prompt` Step 5 validation #9 treats a
-   mismatch as "notes-plan is stale, re-run `notes-plan-prompt`", which is the expensive run this whole
-   sync exists to avoid.
-3. `notes/coverage/{LEVEL}.md` — the global mirror. Same bullet, same relative order, inside
-   `## {TOPIC}`; note that the topic file's `##` section headings appear here demoted to `###`.
+This exists to avoid re-running `/coverage` or `/notes-plan` for a single bullet: that cost is absurd
+for one point. But the sync is only worth doing *honestly* — see the SHA rule below.
 
-The point is that landing a bullet in only one of the three is worse than not landing it: the next
-pipeline run detects drift and forces the full rebuild anyway. If step 1 found the concept already
-covered, this sub-step is **n/a** — say so and move on.
+**1. `notes/{topic}/coverage/{LEVEL}.md`** — the canonical file, already written above.
+
+**2. `notes/{topic}/coverage/notes-plan-{LEVEL}.md`** — the plan that assigns every coverage bullet to a
+chapter. A bullet that reaches coverage but no chapter is a concept no note will ever teach, which is
+the real damage this step prevents.
+
+- **If the file does not exist, stop here and say so.** Only levels whose notes have been planned have
+  one (often junior only). There is nothing to sync — not a defect.
+- Add the bullet, text **identical** to the canonical file, to the `Coverage concepts:` list of the
+  chapter that teaches it. Pick the chapter from the coverage **section** the bullet sits under, not
+  from the bullet's wording; keep the same relative order the coverage file has.
+- **If no existing chapter fits, do not invent one and do not force it into the nearest chapter.** Leave
+  the plan untouched, leave the SHA stale, and report that `notes-plan-prompt` is needed for this topic
+  — a new chapter is a planning decision, not a bookkeeping one.
+- Each chapter also has a `Must answer:` list. Add a question there when the new concept has a failure
+  mode a reader would hit (that is what those questions are for); if you do not, **say so explicitly**
+  in the report rather than leaving it silently unasked.
+- **Then update the stored `Coverage SHA-256`** to `sha256sum` of the canonical `{LEVEL}.md` (files are
+  LF in this repo — compute it on the file as committed, and if a mismatch ever looks suspicious, rule
+  out CRLF before treating it as drift). `coverage-prompt` Step 5 validation #9 reads a mismatch as
+  "notes-plan is stale, re-run `notes-plan-prompt`".
+- **Never update that SHA unless the bullets really were mapped.** The hash certifies *which coverage
+  bytes this plan was built against*. Overwriting it without doing the mapping forges that certificate:
+  the plan stays incomplete and the one mechanism that could detect it is gone. Silencing the alarm is
+  worse than the drift.
+
+**3. `notes/coverage/{LEVEL}.md`** — the global mirror. Same bullet, same relative order, inside
+`## {TOPIC}`; the topic file's `##` section headings appear here demoted to `###`.
+
+**Verify before moving on** — landing the bullet in only some of the three is worse than not landing it,
+and the check is two commands:
+
+- the stored SHA equals `sha256sum` of the canonical file;
+- the canonical file's bullets and the mirror's `## {TOPIC}` bullets are **identical sets** (sort both,
+  `diff` them). Report the bullet count. This is the check that catches drift older than today's edit —
+  if it surfaces unrelated missing bullets, say so and treat them as their own decision, do not silently
+  fold them into this task's close.
+
+If step 1 found the concept already covered, this whole sub-step is **n/a** — say so and move on.
 
 ---
 
