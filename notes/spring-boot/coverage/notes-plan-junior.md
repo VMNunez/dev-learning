@@ -2,7 +2,7 @@
 
 Plan status: current
 Coverage: notes/spring-boot/coverage/junior.md
-Coverage SHA-256: 43a1261ffb5b6c97fac6c115e6785cceabbab620ec29885247101ac1ac453b98
+Coverage SHA-256: b85dce644979764bbe36254f284d7466376c0d7fbc6138ba58fc5c1466e73b18
 Generated: 2026-07-27
 
 ## 00 — What Spring Boot is and how this topic is organised
@@ -293,6 +293,8 @@ Coverage concepts:
 - Derived query methods — let Spring Data derive simple lookups and existence checks from repository method names, switching approach when the name stops expressing the query clearly
 - JPQL vs native SQL in `@Query` — prefer entity and attribute names for portable persistence queries and opt into database SQL only when the required behaviour justifies tighter coupling
 - Interface-based projections — declare a getter-only interface matching the `AS` aliases of a `@Query` (or a derived query's implicit column names) and Spring Data populates it without a full entity or DTO class; read-only, and the getter names must match the aliases exactly
+- `GROUP BY` on an identifying column, not just a display name — grouping by a name alone silently merges two distinct rows that happen to share that name; group by the id (and select the name alongside it) so an aggregate stays correct even when values collide
+- Reconciling report aggregates — when several endpoints derive totals from the same underlying rows (a headline summary and its detail tables), every one of them must apply the identical filter criteria; a summary computed with a looser filter than its breakdown produces a total that cannot equal the sum of the rows the user sees
 - `@Modifying` write queries — a declared update or delete query needs the modifying marker and an active transaction, and it bypasses the persistence context, so already-loaded entities can be left stale afterwards
 - Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically
 - `Page<T>` vs `Slice<T>` — return total-count metadata only when the client needs it, because a slice can answer whether another chunk exists without an additional count query
@@ -411,6 +413,7 @@ Coverage concepts:
 - URL rules vs method-level checks — the two enforcement points are independent, so a permitted route can still be refused by an annotation and a protected route is refused before the method is ever reached
 - `hasRole` vs `hasAuthority` and the `ROLE_` prefix — role checks add the prefix for you while authority checks compare the stored string literally, so a mismatch between how authorities are persisted and how they are checked rejects a correctly authenticated user
 - `AuthenticationEntryPoint` and `AccessDeniedHandler` — the two components that produce the response when the request is unauthenticated or authenticated without sufficient authority, and the only way to give those failures the same JSON error contract as the rest of the API
+- Re-checking account status per request, not just at login — a token issued before an account is disabled stays technically valid until it expires, so a stateless JWT filter must re-run an account-status check (`AccountStatusUserDetailsChecker`) on every request against the freshly loaded `UserDetails`, not rely on the check `loadUserByUsername` already ran once at login
 - Stateless session configuration — a bearer-token API sets the session creation policy so no server session is established, which is what makes each request stand alone
 - CSRF configuration for a bearer-token API — the decision to disable or retain CSRF follows from how credentials travel, so a cookie-authenticated endpoint in the same application still needs it
 - CORS with Spring Security — a shared `CorsConfigurationSource` keeps policy central and lets the security chain handle preflight; `@CrossOrigin` can still be valid for deliberately local controller policy
