@@ -6,7 +6,8 @@ description: >
   committed (or he says the step is done: "step X terminado", "hemos acabado el step", "mark the
   step complete", "ya está el step"). CLAUDE.md mandates updating three places after every completed
   step, and the real failure mode is doing it partially — updating PROGRESS.md but forgetting the
-  ✅ in PLANNING.md or the README. This skill makes the ritual atomic: all three or flag why not.
+  ✅ in PLANNING.md or the README. This skill makes the ritual atomic: all three, plus marking the
+  step's concepts as demonstrated in the coverage files, or flag why not.
   Interview-prep is NOT part of this ritual (dropped 2026-07-13 — Victor adds those separately,
   on request, not automatically on step completion). Do NOT trigger for ordinary commits mid-step,
   notes-only sessions, or the audit pipelines. (Projects 01-06 are closed - their extraction format,
@@ -16,8 +17,10 @@ description: >
 # Step-completion ritual (daily session)
 
 A learning-plan step just finished. CLAUDE.md ("After every learning plan step is completed")
-requires three updates — do all of them, in this order, without being asked. If one genuinely does
-not apply, say so explicitly instead of silently skipping it.
+requires three updates — PLANNING.md, PROGRESS.md, the README — and this ritual adds a fourth,
+coverage evidence marking (step 3), so the step's concepts are recorded as *demonstrated* and not only
+as done. Do all four, in this order, without being asked. If one genuinely does not apply, say so
+explicitly instead of silently skipping it.
 
 Interview-prep questions are **not** part of this ritual — Victor asked (2026-07-13) to stop adding
 them automatically on step completion. Only add interview-prep questions when he asks for them
@@ -45,7 +48,22 @@ sub-headings to the new step status (e.g. "Steps 1–5 done, Step 6 in progress"
 follows the active branch (CLAUDE.md, 2026-07-14 — `main` only receives merges via PR) — commit it
 from the repo root.
 
-## 3 — Project README: "What I learned"
+## 3 — Coverage: mark what the step demonstrated
+
+The step's concepts were just written in code. **Invoke the `coverage-mark` skill** with the concepts you
+extracted in step 2, the level Victor is working at, and the project number; it finds each concept's bullet
+in `notes/{topic}/coverage/{LEVEL}.md` and its mirror and appends the `✅ NN` evidence marker, so the
+coverage file records how much of the hiring floor is demonstrated and not only planned.
+
+Route the concepts with the **topic-ownership block in
+`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`**, not with step 2's PROGRESS.md
+routing — the two vocabularies differ (`notes/security/` owns an access-control concept that PROGRESS.md
+files under Spring Boot). `coverage-mark` states this rule; follow the version in that skill.
+
+This step **never adds a coverage bullet**. A concept with no bullet is reported as a possible gap and left
+for `/coverage`; authoring scope is not part of a step close.
+
+## 4 — Project README: "What I learned"
 
 **Before touching the README, read `notes/prompts/projects/readme/_internal/_readme-standard.md`** — like the
 note standards, it only auto-loads inside `readme-audit`, so an inline edit without it silently

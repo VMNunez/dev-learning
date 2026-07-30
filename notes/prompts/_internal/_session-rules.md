@@ -147,6 +147,11 @@ plus the README standard, which does not auto-load. This section remains the sou
   - Projects 08+: read the "New concepts introduced" list in the completed step (references Section 3); use the "Topic" column to route each concept to the right section
   - Also update the project summary line in PROGRESS.md to reflect the new step status (e.g. "Step 1 ✓ Step 2 ✓ Step 3 in progress ⏳")
   - In PROGRESS.md, each item must be one specific thing — never group multiple concepts in one line
+- `notes/{topic}/coverage/{level}.md` **+ its global mirror `notes/coverage/{level}.md`** — append the
+  ` ✅ NN` evidence marker to the bullet of every concept the step demonstrated in code, `NN` being the
+  project number. The platform's `coverage-mark` skill owns this; the contract is "Evidence markers" in
+  `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`. Marking never adds a bullet — a
+  concept with no bullet is reported as a possible gap and left to `coverage`.
 - `projects/0X-projectname/README.md` — update the "What I learned" section
 - `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed
 - When a project is fully done, remind Victor to update the "Current study progress" section in this file and the project table in PROGRESS.md
@@ -164,6 +169,9 @@ never the only one:
 
 - `notes/{topic}/coverage/{level}.md` — if the concept is missing, add it, in concept form (never
   "what Victor did in project 07"). Route the topic with the concept-extraction standard.
+- the same coverage bullet, **marked ` ✅ NN`** with the project number when the fix is code Victor wrote
+  — on the "already covered" path too, which is the common one. A design decision with no code change
+  demonstrates nothing and is left unmarked. Same contract and same `coverage-mark` skill as above.
 - `projects/0X-name/README.md` — a short bullet in "What I learned", only if not already represented
 - `projects/0X-name/PLANNING.md` — if the concept belongs to the project's engineering contract, add it
   to the **rules section** it belongs to; never invent a retroactive step

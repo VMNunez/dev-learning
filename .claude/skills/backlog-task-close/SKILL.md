@@ -16,8 +16,9 @@ description: >
 # Backlog-task closing ritual (daily session)
 
 A task from `{PROJECT_PATH}/PROJECT-BACKLOG.md` just finished. Checking its box is the *last* thing you
-do, not the first. Walk all six steps below in order, without being asked. If one genuinely does not
-apply, **say so explicitly** in the chat summary instead of silently skipping it.
+do, not the first. Walk every step below in order (0 through 5, including sub-steps 1a and 1b), without
+being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead of
+silently skipping it.
 
 This is the task-level twin of the `step-complete` skill. That one fires on a **learning-plan step**
 (PLANNING §15 / project 07's learning plan) and touches three files. This one fires on a **backlog
@@ -116,6 +117,23 @@ that inline edits break most often:
 
 If the concept genuinely belongs to a **level above** the one Victor is on, add it there and say so —
 that is a signal about his trajectory, not a mistake.
+
+### 1a — Mark the concept as demonstrated
+
+**Applies either way** — whether step 1 found the bullet already covered or had to write it. This is the
+sub-step that keeps the coverage file honest about what Victor can *prove*, and it runs on the common
+"already covered" path too, which is precisely where a close would otherwise leave no trace.
+
+**Invoke the `coverage-mark` skill**, passing the concept, the topic you just determined, the level, and
+the project number. It appends the `✅ NN` evidence marker to the matching bullet in the topic file and the
+mirror, and reports the level's marked/total count. Do not reproduce its logic here.
+
+Two cases it will report back as skipped, both correct:
+
+- a **design decision with no code change** — nothing was built, so nothing is demonstrated;
+- a concept already marked from an earlier project — first project wins.
+
+Fold its report rows into this ritual's final table.
 
 ### 1b — Mirror the bullet, then hand the plan to its own prompt
 
@@ -307,6 +325,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 |---|---|
 | Coverage (`spring-boot/junior`) | already covered — "declarative transaction boundaries" |
 | Topic chosen | `security` — access-control rule, not the Spring mechanism (PROGRESS section was Spring Boot) |
+| Evidence marker | marked `✅ 07` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
 | Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | bullet added |

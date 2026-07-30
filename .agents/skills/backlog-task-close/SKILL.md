@@ -16,7 +16,8 @@ description: >
 # Backlog-task closing ritual (daily session)
 
 A task from `{PROJECT_PATH}/PROJECT-BACKLOG.md` just finished. Checking its box is the *last* thing you
-do, not the first. Walk all six steps below in order, without being asked. If one genuinely does not
+do, not the first. Walk every step below in order (0 through 5, including sub-step 1a), without being
+asked. If one genuinely does not
 apply, **say so explicitly** in the chat summary instead of silently skipping it.
 
 This is the task-level twin of the `step-complete` skill. That one fires on a **learning-plan step**
@@ -78,6 +79,22 @@ If the concept genuinely belongs to a **level above** the one Victor is on, add 
 that is a signal about his trajectory, not a mistake.
 
 ---
+
+### 1a — Mark the concept as demonstrated
+
+**Applies either way** — whether the bullet was already covered or had to be written. It is the
+"already covered" path, the common one, where a close would otherwise leave no trace of what Victor can
+actually *prove*.
+
+**Invoke the `coverage-mark` skill**, passing the concept, the topic, the level, and the project number.
+It appends the ` ✅ NN` evidence marker to the matching bullet in the topic coverage file and in the global
+mirror `notes/coverage/{LEVEL}.md`, and reports the level's marked/total count. Do not reproduce its logic
+here; the contract is "Evidence markers" in
+`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`.
+
+Two skipped cases it will report back, both correct: a **design decision with no code change** (nothing was
+built, so nothing is demonstrated), and a concept already marked from an earlier project (first project
+wins). Fold its rows into this ritual's final report.
 
 ## 2 — Project README: "What I learned"
 
@@ -215,6 +232,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Target | Result |
 |---|---|
 | Coverage (`spring-boot/junior`) | already covered — "declarative transaction boundaries" |
+| Evidence marker | marked `✅ 07` — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
 | README | bullet added |
 | PLANNING.md | added to §6 engineering rules |
 | PROGRESS.md | concept added under Spring Boot |
