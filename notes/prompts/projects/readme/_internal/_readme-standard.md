@@ -66,6 +66,24 @@ short snippet says it better.
 file. Do not rewrite sections that are already correct — only touch what needs to change. Record what
 changed for the summary at the end.
 
+**Which README owns a concept.** On a full-stack project the tier a file changed in is a *hint*, not the
+answer — the question is which reader needs the concept. Four outcomes:
+
+- **A pattern or technical decision** (layered architecture, DTO boundary, transaction boundaries, a route
+  guard, an HTTP interceptor, a role-aware component) → the tier README that implements it, section
+  **Key patterns**.
+- **A tradeoff** — X chosen, Y given up → that tier's **Tradeoffs**.
+- **A concept that defines what the project is**, legible to a non-technical reader → the global README's
+  **What I learned**.
+- **A concept that crosses tiers** (an API contract, a shared error format) → the global README, plus one
+  line in the tier that *implements* it. Never in both tiers.
+
+Global + one tier is the only pair a single concept may appear in, and only when it passes the recruiter
+lens on the global side and the interviewer lens on the tier side. Interviewer-lens-only means tier-only.
+
+**`What I learned` is a global-README section.** The backend and frontend section lists below do not
+include it, and it must never be created there — a tier concept goes to Key patterns or Tradeoffs.
+
 ---
 
 ## Global README rules — the 12 rules
