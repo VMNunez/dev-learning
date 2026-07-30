@@ -98,7 +98,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
 - `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path ✅ 06-hr-portal
 - `[queryParams]` on `routerLink` — set optional view state on the destination URL while navigating declaratively so the resulting page stays linkable and reproducible ✅ 06-hr-portal
-- `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
+- `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes ✅ 04-meal-finder
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it ✅ 06-hr-portal
 - `loadComponent` vs `loadChildren` — lazy-load one routed component or an entire child route tree according to the feature boundary
 - Declarative vs programmatic navigation — use `routerLink` in templates and `Router.navigate()` when component logic determines the destination ✅ 03-expense-tracker
@@ -116,12 +116,12 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 - `FormControl` and `FormGroup` — model individual controls and grouped control sets explicitly so the form's shape, validators, and value types live in TypeScript rather than in the template ✅ 03-expense-tracker
 - `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model ✅ 06-hr-portal
-- Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states
+- Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states ✅ 03-expense-tracker
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary ✅ 03-expense-tracker
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule
 - Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction ✅ 03-expense-tracker
 - `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid ✅ 03-expense-tracker
-- `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms
+- `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms ✅ 05-task-manager
 - Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
 - `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes ✅ 05-task-manager
 - `reset()` and server errors — reset the saved baseline and avoid losing backend errors through an immediate validator rerun
@@ -138,7 +138,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `OnPush` change detection — recognise the notifications that mark a view for checking and why in-place mutation can leave an input-based view stale
 - Signals with `OnPush` — explain how a signal read in a template notifies Angular without treating signals as a reason to mutate objects in place
 - Production-build verification — run a production build because template compilation, budgets, and optimisation can expose failures hidden by the development server
-- Build-time configuration vs frontend secrets — configure public environment-dependent values at build or deployment time while recognising that anything shipped to the browser can be read by a user
+- Build-time configuration vs frontend secrets — configure public environment-dependent values at build or deployment time while recognising that anything shipped to the browser can be read by a user ✅ 02-weather-app
 - Angular template sanitisation — distinguish escaped interpolation from context-sensitive sanitisation and treat `bypassSecurityTrust...` as an explicit trust-boundary decision
 
 ### Testing Angular behaviour
@@ -285,7 +285,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 ### Beans, injection, and startup diagnosis
 
 - Component stereotypes — use `@Component` and its layer-specific stereotypes to make application classes discoverable while keeping each layer's responsibility explicit ✅ 07-timetrack
-- `@Repository` exception translation — the stereotype converts provider-specific persistence failures into Spring's `DataAccessException` family, so a constraint breach surfaces as `DataIntegrityViolationException` and can be mapped to a deliberate status
+- `@Repository` exception translation — the stereotype converts provider-specific persistence failures into Spring's `DataAccessException` family, so a constraint breach surfaces as `DataIntegrityViolationException` and can be mapped to a deliberate status ✅ 07-timetrack
 - `@Bean` vs component scanning — register third-party instances or explicit construction logic in configuration and use scanning for application-owned component classes ✅ 07-timetrack
 - Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor ✅ 07-timetrack
 - Lombok constructors and Spring injection — `@RequiredArgsConstructor` can express constructor injection for final dependencies, while all-argument constructors are usually the wrong service boundary
@@ -369,7 +369,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - JPQL vs native SQL in `@Query` — prefer entity and attribute names for portable persistence queries and opt into database SQL only when the required behaviour justifies tighter coupling ✅ 07-timetrack
 - Interface-based projections — declare a getter-only interface matching the `AS` aliases of a `@Query` (or a derived query's implicit column names) and Spring Data populates it without a full entity or DTO class; read-only, and the getter names must match the aliases exactly ✅ 07-timetrack
 - `@Modifying` write queries — a declared update or delete query needs the modifying marker and an active transaction, and it bypasses the persistence context, so already-loaded entities can be left stale afterwards
-- Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically
+- Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically ✅ 07-timetrack
 - `Page<T>` vs `Slice<T>` — return total-count metadata only when the client needs it, because a slice can answer whether another chunk exists without an additional count query
 
 ### Query behaviour and diagnosis
@@ -444,7 +444,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - Datasource and persistence properties — connect the application to a real database through its URL, credentials, and driver settings, and recognise what each `ddl-auto` value does to an existing schema ✅ 07-timetrack
 - Profiles — activate environment-specific beans and configuration deliberately without treating a profile as a secrets store ✅ 07-timetrack
 - `@Value` vs `@ConfigurationProperties` — inject an isolated value directly or bind and validate a cohesive typed configuration group when several related settings belong together
-- SQL initialization — understand when Boot runs `schema.sql` and `data.sql` and how initialization differs for embedded and external databases
+- SQL initialization — understand when Boot runs `schema.sql` and `data.sql` and how initialization differs for embedded and external databases ✅ 07-timetrack
 
 ### Boot runtime model and packaging
 
@@ -713,7 +713,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Soft delete vs hard delete — retain a record when audit, recovery, or historical references justify
   the extra filtering and uniqueness complexity; otherwise permanent deletion may be the simpler contract ✅ 07-timetrack
 - Pagination — bound large collection responses when volume can grow, choosing an explicit page or
-  cursor contract instead of assuming every list is safely returned at once
+  cursor contract instead of assuming every list is safely returned at once ✅ 07-timetrack
 - Consistency boundary — one business operation may require several writes to succeed or fail as a
   unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics ✅ 07-timetrack
 
@@ -969,7 +969,7 @@ review without taking on specialist or production-platform ownership.
 - Secure cookie attributes — understand how `HttpOnly`, `Secure`, and `SameSite` reduce script access,
   insecure transport, and cross-site sending respectively
 - Token storage in browsers — Web Storage exposes tokens to JavaScript and therefore XSS, while
-  `HttpOnly` cookies reduce token theft but require deliberate CSRF and cookie controls
+  `HttpOnly` cookies reduce token theft but require deliberate CSRF and cookie controls ✅ 07-timetrack
 
 ### Injection, validation, and unsafe input
 
@@ -1136,7 +1136,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
 - Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
-- Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion
+- Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion ✅ 06-hr-portal
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist ✅ 05-task-manager
 
 ### Utility and derived types
@@ -1274,7 +1274,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `map` — transform each present element into a result array without using it merely for side effects ✅ 01-todo-list
 - `filter` — retain all matching elements and always return an array ✅ 01-todo-list
 - `find` vs `filter` — choose one matching value or every matching value ✅ 06-hr-portal
-- `some` vs `every` — express existential or universal checks with short-circuiting
+- `some` vs `every` — express existential or universal checks with short-circuiting ✅ 04-meal-finder
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
 - `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
@@ -1318,7 +1318,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
 - Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs ✅ 05-task-manager
 - Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately ✅ 04-meal-finder
-- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
+- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions ✅ 04-meal-finder
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
@@ -1356,7 +1356,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ### Display and layout
 - `display: block`, `inline`, `inline-block` — block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width ✅ 04-meal-finder
-- `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening
+- `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening ✅ 05-task-manager
 - Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?" ✅ 04-meal-finder
 - `table-layout: fixed` — take column widths from the first row instead of measuring every cell, which is what makes equal-width columns and predictable truncation possible in a wide data table; the default `auto` sizes columns from their content ✅ 05-task-manager
 
@@ -1570,9 +1570,9 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 ### Schema operations
 
 - `CREATE TABLE` — defines columns, data types, defaults, and constraints together; read the full definition before loading data because the database, not the application, enforces it
-- `ALTER TABLE` — evolves an existing table by adding, changing, or dropping columns and constraints; versioned migration tooling belongs to the application stack, while SQL owns the resulting schema change
+- `ALTER TABLE` — evolves an existing table by adding, changing, or dropping columns and constraints; versioned migration tooling belongs to the application stack, while SQL owns the resulting schema change ✅ 07-timetrack
 - `DROP` vs deleting rows — `DROP` removes the database object itself, whereas `DELETE` and `TRUNCATE` keep the table and remove data
-- `DEFAULT` — supplies a value only when an insert omits the column; it does not replace an explicitly inserted `NULL`, and it does not backfill old rows unless the schema change does so
+- `DEFAULT` — supplies a value only when an insert omits the column; it does not replace an explicitly inserted `NULL`, and it does not backfill old rows unless the schema change does so ✅ 07-timetrack
 
 ---
 
@@ -1590,7 +1590,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ### DML — modifying data
 
-- `INSERT INTO ... VALUES (...)` — adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty
+- `INSERT INTO ... VALUES (...)` — adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty ✅ 07-timetrack
 - Multi-row `INSERT` and `INSERT ... SELECT` — insert several value tuples in one statement or populate a table from a query while matching target columns and compatible types
 - `RETURNING` — `INSERT INTO users (...) VALUES (...) RETURNING id` — returns the generated ID without a second `SELECT`; PostgreSQL-specific; interviewers ask "how do you get the new ID after an INSERT?"
 - `UPDATE ... SET ... WHERE` — always include `WHERE` or every row in the table is updated; one of the most common catastrophic mistakes in junior code
@@ -1851,8 +1851,8 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Timeouts and retries — bound waiting and retry only when the operation and failure mode make repetition safe, adding idempotency controls when required
 - Transport vs protocol vs application failure — separate inability to connect, an HTTP error status, and a successful HTTP response whose domain result is unsuccessful
 - API-call debugging workflow — inspect URL, method, status, headers, and body before blaming client or server framework code
-- Same-origin and CORS recognition — identify an origin from scheme, host, and port and distinguish a browser-enforced CORS or preflight failure from an HTTP response produced by application logic
-- Collection query contract — define filtering, sorting, pagination inputs, stable ordering, and response metadata so clients can navigate a changing collection predictably
+- Same-origin and CORS recognition — identify an origin from scheme, host, and port and distinguish a browser-enforced CORS or preflight failure from an HTTP response produced by application logic ✅ 07-timetrack
+- Collection query contract — define filtering, sorting, pagination inputs, stable ordering, and response metadata so clients can navigate a changing collection predictably ✅ 07-timetrack
 
 ### JSON and API contracts
 
@@ -1865,7 +1865,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Date and time representation — agree an explicit interoperable string format and time-zone meaning instead of relying on environment-specific parsing ✅ 07-timetrack
 - OpenAPI recognition — read operations, parameters, schemas, responses, and examples in a machine-readable HTTP API contract
 - OpenAPI specification vs interactive documentation — distinguish the contract document from tools such as Swagger UI that render and exercise it
-- API client tools — use Postman or `curl` to inspect and reproduce an HTTP exchange without treating a successful manual request as complete automated verification
+- API client tools — use Postman or `curl` to inspect and reproduce an HTTP exchange without treating a successful manual request as complete automated verification ✅ 07-timetrack
 
 ### Error handling and diagnostics
 

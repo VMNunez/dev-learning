@@ -5,7 +5,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 ## Beans, injection, and startup diagnosis
 
 - Component stereotypes — use `@Component` and its layer-specific stereotypes to make application classes discoverable while keeping each layer's responsibility explicit ✅ 07-timetrack
-- `@Repository` exception translation — the stereotype converts provider-specific persistence failures into Spring's `DataAccessException` family, so a constraint breach surfaces as `DataIntegrityViolationException` and can be mapped to a deliberate status
+- `@Repository` exception translation — the stereotype converts provider-specific persistence failures into Spring's `DataAccessException` family, so a constraint breach surfaces as `DataIntegrityViolationException` and can be mapped to a deliberate status ✅ 07-timetrack
 - `@Bean` vs component scanning — register third-party instances or explicit construction logic in configuration and use scanning for application-owned component classes ✅ 07-timetrack
 - Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor ✅ 07-timetrack
 - Lombok constructors and Spring injection — `@RequiredArgsConstructor` can express constructor injection for final dependencies, while all-argument constructors are usually the wrong service boundary
@@ -89,7 +89,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - JPQL vs native SQL in `@Query` — prefer entity and attribute names for portable persistence queries and opt into database SQL only when the required behaviour justifies tighter coupling ✅ 07-timetrack
 - Interface-based projections — declare a getter-only interface matching the `AS` aliases of a `@Query` (or a derived query's implicit column names) and Spring Data populates it without a full entity or DTO class; read-only, and the getter names must match the aliases exactly ✅ 07-timetrack
 - `@Modifying` write queries — a declared update or delete query needs the modifying marker and an active transaction, and it bypasses the persistence context, so already-loaded entities can be left stale afterwards
-- Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically
+- Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically ✅ 07-timetrack
 - `Page<T>` vs `Slice<T>` — return total-count metadata only when the client needs it, because a slice can answer whether another chunk exists without an additional count query
 
 ## Query behaviour and diagnosis
@@ -164,7 +164,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - Datasource and persistence properties — connect the application to a real database through its URL, credentials, and driver settings, and recognise what each `ddl-auto` value does to an existing schema ✅ 07-timetrack
 - Profiles — activate environment-specific beans and configuration deliberately without treating a profile as a secrets store ✅ 07-timetrack
 - `@Value` vs `@ConfigurationProperties` — inject an isolated value directly or bind and validate a cohesive typed configuration group when several related settings belong together
-- SQL initialization — understand when Boot runs `schema.sql` and `data.sql` and how initialization differs for embedded and external databases
+- SQL initialization — understand when Boot runs `schema.sql` and `data.sql` and how initialization differs for embedded and external databases ✅ 07-timetrack
 
 ## Boot runtime model and packaging
 

@@ -88,7 +88,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
 - `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path ✅ 06-hr-portal
 - `[queryParams]` on `routerLink` — set optional view state on the destination URL while navigating declaratively so the resulting page stays linkable and reproducible ✅ 06-hr-portal
-- `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
+- `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes ✅ 04-meal-finder
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it ✅ 06-hr-portal
 - `loadComponent` vs `loadChildren` — lazy-load one routed component or an entire child route tree according to the feature boundary
 - Declarative vs programmatic navigation — use `routerLink` in templates and `Router.navigate()` when component logic determines the destination ✅ 03-expense-tracker
@@ -106,12 +106,12 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 - `FormControl` and `FormGroup` — model individual controls and grouped control sets explicitly so the form's shape, validators, and value types live in TypeScript rather than in the template ✅ 03-expense-tracker
 - `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model ✅ 06-hr-portal
-- Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states
+- Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states ✅ 03-expense-tracker
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary ✅ 03-expense-tracker
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule
 - Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction ✅ 03-expense-tracker
 - `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid ✅ 03-expense-tracker
-- `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms
+- `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms ✅ 05-task-manager
 - Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
 - `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes ✅ 05-task-manager
 - `reset()` and server errors — reset the saved baseline and avoid losing backend errors through an immediate validator rerun
@@ -128,7 +128,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `OnPush` change detection — recognise the notifications that mark a view for checking and why in-place mutation can leave an input-based view stale
 - Signals with `OnPush` — explain how a signal read in a template notifies Angular without treating signals as a reason to mutate objects in place
 - Production-build verification — run a production build because template compilation, budgets, and optimisation can expose failures hidden by the development server
-- Build-time configuration vs frontend secrets — configure public environment-dependent values at build or deployment time while recognising that anything shipped to the browser can be read by a user
+- Build-time configuration vs frontend secrets — configure public environment-dependent values at build or deployment time while recognising that anything shipped to the browser can be read by a user ✅ 02-weather-app
 - Angular template sanitisation — distinguish escaped interpolation from context-sensitive sanitisation and treat `bypassSecurityTrust...` as an explicit trust-boundary decision
 
 ## Testing Angular behaviour

@@ -33,8 +33,8 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Timeouts and retries — bound waiting and retry only when the operation and failure mode make repetition safe, adding idempotency controls when required
 - Transport vs protocol vs application failure — separate inability to connect, an HTTP error status, and a successful HTTP response whose domain result is unsuccessful
 - API-call debugging workflow — inspect URL, method, status, headers, and body before blaming client or server framework code
-- Same-origin and CORS recognition — identify an origin from scheme, host, and port and distinguish a browser-enforced CORS or preflight failure from an HTTP response produced by application logic
-- Collection query contract — define filtering, sorting, pagination inputs, stable ordering, and response metadata so clients can navigate a changing collection predictably
+- Same-origin and CORS recognition — identify an origin from scheme, host, and port and distinguish a browser-enforced CORS or preflight failure from an HTTP response produced by application logic ✅ 07-timetrack
+- Collection query contract — define filtering, sorting, pagination inputs, stable ordering, and response metadata so clients can navigate a changing collection predictably ✅ 07-timetrack
 
 ## JSON and API contracts
 
@@ -47,7 +47,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Date and time representation — agree an explicit interoperable string format and time-zone meaning instead of relying on environment-specific parsing ✅ 07-timetrack
 - OpenAPI recognition — read operations, parameters, schemas, responses, and examples in a machine-readable HTTP API contract
 - OpenAPI specification vs interactive documentation — distinguish the contract document from tools such as Swagger UI that render and exercise it
-- API client tools — use Postman or `curl` to inspect and reproduce an HTTP exchange without treating a successful manual request as complete automated verification
+- API client tools — use Postman or `curl` to inspect and reproduce an HTTP exchange without treating a successful manual request as complete automated verification ✅ 07-timetrack
 
 ## Error handling and diagnostics
 

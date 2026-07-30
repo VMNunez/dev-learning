@@ -76,7 +76,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Soft delete vs hard delete — retain a record when audit, recovery, or historical references justify
   the extra filtering and uniqueness complexity; otherwise permanent deletion may be the simpler contract ✅ 07-timetrack
 - Pagination — bound large collection responses when volume can grow, choosing an explicit page or
-  cursor contract instead of assuming every list is safely returned at once
+  cursor contract instead of assuming every list is safely returned at once ✅ 07-timetrack
 - Consistency boundary — one business operation may require several writes to succeed or fail as a
   unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics ✅ 07-timetrack
 

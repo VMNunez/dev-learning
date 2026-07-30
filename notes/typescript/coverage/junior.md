@@ -70,7 +70,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
 - Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
-- Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion
+- Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion ✅ 06-hr-portal
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist ✅ 05-task-manager
 
 ## Utility and derived types

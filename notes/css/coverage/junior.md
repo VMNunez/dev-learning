@@ -10,7 +10,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ## Display and layout
 - `display: block`, `inline`, `inline-block` — block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width ✅ 04-meal-finder
-- `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening
+- `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening ✅ 05-task-manager
 - Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?" ✅ 04-meal-finder
 - `table-layout: fixed` — take column widths from the first row instead of measuring every cell, which is what makes equal-width columns and predictable truncation possible in a wide data table; the default `auto` sizes columns from their content ✅ 05-task-manager
 

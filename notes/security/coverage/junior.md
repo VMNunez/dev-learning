@@ -148,7 +148,7 @@ review without taking on specialist or production-platform ownership.
 - Secure cookie attributes — understand how `HttpOnly`, `Secure`, and `SameSite` reduce script access,
   insecure transport, and cross-site sending respectively
 - Token storage in browsers — Web Storage exposes tokens to JavaScript and therefore XSS, while
-  `HttpOnly` cookies reduce token theft but require deliberate CSRF and cookie controls
+  `HttpOnly` cookies reduce token theft but require deliberate CSRF and cookie controls ✅ 07-timetrack
 
 ## Injection, validation, and unsafe input
 
