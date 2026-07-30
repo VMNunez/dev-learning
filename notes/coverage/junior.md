@@ -94,7 +94,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
 - Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
-- `ActivatedRoute` params and query params — read route identity from `paramMap` and optional Angular view filters from `queryParamMap`
+- `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing
+- `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it
 - `loadComponent` vs `loadChildren` — lazy-load one routed component or an entire child route tree according to the feature boundary
