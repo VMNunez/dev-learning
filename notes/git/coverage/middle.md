@@ -4,9 +4,7 @@ Concepts expected when a developer helps maintain team history, release flow, an
 
 ## Investigation and release history
 
-- Annotated tags and semantic versions — mark immutable release points with metadata tied to a release policy
-- `git bisect` — use binary search over history to identify the first bad commit with a reproducible check
-- Reflog-based recovery — recover locally reachable commits after destructive-looking branch or reset mistakes
+- Semantic version and release-tag policy — maintain release identifiers intended to remain stable and align them with the team's compatibility policy
 
 ## Team workflow design
 
