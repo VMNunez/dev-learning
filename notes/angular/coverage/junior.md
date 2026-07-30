@@ -100,7 +100,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ## Reactive forms and template transformation
 
-- `FormControl`, `FormGroup`, and `FormBuilder` — model controls and groups explicitly and use the builder as concise construction syntax rather than a different forms model
+- `FormControl` and `FormGroup` — model individual controls and grouped control sets explicitly so the form's shape, validators, and value types live in TypeScript rather than in the template
+- `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model
 - Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule

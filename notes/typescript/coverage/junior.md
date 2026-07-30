@@ -76,7 +76,8 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## Utility and derived types
 
 - `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch
-- `Pick<T, K>` vs `Omit<T, K>` — derive a shape by retaining or removing selected keys while keeping the source model as the relationship
+- `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain
+- `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
 - Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists
 - `NonNullable<T>` — remove `null` and `undefined` from a union only after program logic guarantees their absence

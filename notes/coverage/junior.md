@@ -110,7 +110,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 
 ### Reactive forms and template transformation
 
-- `FormControl`, `FormGroup`, and `FormBuilder` — model controls and groups explicitly and use the builder as concise construction syntax rather than a different forms model
+- `FormControl` and `FormGroup` — model individual controls and grouped control sets explicitly so the form's shape, validators, and value types live in TypeScript rather than in the template
+- `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model
 - Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule
@@ -1128,7 +1129,8 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Utility and derived types
 
 - `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch
-- `Pick<T, K>` vs `Omit<T, K>` — derive a shape by retaining or removing selected keys while keeping the source model as the relationship
+- `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain
+- `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
 - Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists
 - `NonNullable<T>` — remove `null` and `undefined` from a union only after program logic guarantees their absence
