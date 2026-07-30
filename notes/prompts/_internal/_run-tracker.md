@@ -10,10 +10,20 @@ each prompt's `_last-run-report*.md`; this file stores concise operational state
 date, target/mode, outcome, and concise result, then commits report and tracker together. Victor never
 fills it by hand (though he may correct it).
 
+**One exception — the `coverage-bullet-add` skill** appends a stale flag to a `Plan` cell (see below).
+It is the only writer that is not a prompt close-out, because the debt it records is created in a daily
+session, where no prompt runs at all. It writes nothing else in this file.
+
 **How to read it:** records use `YYYY-MM-DD — completed|blocked|dry-run — concise result`. An empty
 cell means **pending**: the current prompt version has not run on that target. Output files that
 predate the current prompt version do not count as executions. Prompts may read this file as a gate,
 but only a `completed` result satisfies a prerequisite; `blocked` and `dry-run` do not.
+
+**Stale flags on `Plan` cells.** A `Plan J|M|S` cell may end in ` · ⚠ stale YYYY-MM-DD (+N bullets)`.
+It means coverage gained scope after that plan ran, so `/notes-plan {topic} {level}` is **owed** — the
+run on record is real but no longer maps the whole checklist. The flag is appended, never a
+replacement, so the execution record survives underneath it; the next `notes-plan` run rewrites the
+whole cell and the flag disappears on its own. A flagged cell does **not** satisfy a prerequisite.
 
 **Tracking baseline reset:** 2026-07-24. Earlier execution records were cleared after the prompt
 system changed. Only runs recorded from this baseline onward are valid; the Java Junior coverage run

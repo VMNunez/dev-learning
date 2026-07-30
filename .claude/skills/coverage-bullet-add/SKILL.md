@@ -6,7 +6,8 @@ description: >
   their coverage authoring sub-step, and directly when Victor asks ("añade esto al coverage", "esto no
   está en el coverage del junior, escríbelo", "add a coverage bullet for this"). It routes the concept to
   its owning `notes/` topic by altitude, searches the level file, writes the bullet in both the topic file
-  and the global mirror when it is missing, and reports the `/notes-plan` remap the new bullet owes. The
+  and the global mirror when it is missing, and reports the `/notes-plan` remap the new bullet owes while
+  flagging that debt in `_run-tracker.md` so it outlives the session. The
   failure mode this exists for is a concept a project taught that never enters the curriculum: the code
   ships, the checklist still says "never studied", and the coverage file slowly stops describing what
   Victor actually knows. Do NOT use it to append the `✅ NN-slug` evidence marker (that is `coverage-mark`), to
@@ -176,6 +177,36 @@ than being reopened. Two practical notes for the report:
 - If no `notes-plan-{LEVEL}.md` exists for that level, **nothing is owed at all** — that level's notes have
   never been planned, so there is no plan to remap. Say so; it is not a defect.
 
+## 7 — Record the debt in the run tracker
+
+A report in the chat dies with the conversation. `notes/prompts/_internal/_run-tracker.md` is where Victor
+reads what the prompt system owes him, and it records **runs that happened**, not **runs that are owed** —
+so a topic whose `Plan` cell says `completed` reads as up to date the moment after a bullet made it stale.
+Close that gap in the same run, or the batched `/notes-plan` survives only as long as the session does.
+
+Only when step 6 concluded a run **is** owed: in the `Per-topic prompts` table, find the topic's row and its
+`Plan J|M|S` column for the level you wrote to, and **append** to the cell:
+
+```
+ · ⚠ stale YYYY-MM-DD (+N bullets)
+```
+
+Rules, all of which exist because this cell already holds something worth keeping:
+
+- **Append, never overwrite.** The execution record underneath is the only trace that the plan ever ran;
+  replacing it to show a debt destroys the thing the debt is measured against.
+- **Recount `N`, do not increment blindly.** If the cell is already flagged, this run raises the existing
+  count and updates the date to today — one flag per cell, never two.
+- **Never clear a flag.** `notes-plan` rewrites the whole cell when it runs, which removes it. A flag
+  cleared by anything else is a debt hidden rather than paid.
+- **No plan, no flag.** If step 6 found no `notes-plan-{LEVEL}.md`, nothing is owed, so nothing is
+  recorded — an empty `Plan` cell already reads as pending and needs no help.
+- **A bullet routed to `_cross-topic-inbox.md` flags nothing.** No bullet landed in that topic's file, so
+  its plan still maps the whole checklist. The proposal is the other topic's decision to make.
+
+`coverage-mark` has no equivalent step and must not grow one: evidence markers are excluded from the
+coverage digest, so marking a bullet owes no remap at all.
+
 ---
 
 ## Commits
@@ -196,6 +227,11 @@ docs(coverage): add <concept> to <topic> <level>
 When the calling ritual hands its commits to Victor rather than running them (the in-session
 `backlog-task-close` rule), hand this one over too instead of committing behind it.
 
+`_run-tracker.md` goes in that same commit as well. The stale flag is a consequence of the bullet, not a
+separate change, and splitting them lets a crash between the two commits leave a bullet on file with its
+debt unrecorded — the exact failure step 7 exists to prevent. It lives under `notes/prompts/`, so it is
+covered by the same standing authorization.
+
 ## Report
 
 One row per concept, folded into the calling ritual's report table when there is one:
@@ -208,4 +244,6 @@ One row per concept, folded into the calling ritual's report table when there is
 | structured logging with correlation ids | `general` / junior | not authored — proposal routed to `_cross-topic-inbox.md` |
 
 Always include: the topic you chose **and why** (the altitude argument, one clause), the mirror diff count,
-and whether `/notes-plan {topic} {LEVEL}` is owed.
+and whether `/notes-plan {topic} {LEVEL}` is owed — and when it is, confirm the tracker cell now carries the
+stale flag. "Owed" reported without the flag written is a half-done run: it is the chat-only report that
+step 7 exists to replace.
