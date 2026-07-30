@@ -6,16 +6,16 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 
 - Git vs GitHub or GitLab — Git records distributed repository history; hosting platforms add remote storage, pull requests, permissions, and collaboration services
 - Distributed repository model — each normal clone contains local history and can create commits without a network connection
-- `git init` vs `git clone` — initialise a new local repository or copy an existing repository with its remote configuration and remote-tracking references
-- Working tree, index, and `HEAD` — distinguish current files, the staged next snapshot, and the currently checked-out commit
+- `git init` vs `git clone` — initialise a new local repository or copy an existing repository with its remote configuration and remote-tracking references ✅ 01-todo-list
+- Working tree, index, and `HEAD` — distinguish current files, the staged next snapshot, and the currently checked-out commit ✅ 01-todo-list
 - Snapshot and parent model — a commit identifies a staged project snapshot plus parent links rather than storing a simple chronological edit log
 - Tracked, untracked, and ignored files — recognise whether Git already follows a path, has not added it, or excludes it through ignore rules
-- Clean, unstaged, staged, and untracked states — read `git status` before deciding which inspection or mutation command is safe
-- `git diff` vs `git diff --staged` — inspect unstaged working-tree changes or the exact staged changes prepared for the next commit
-- `git add` and path scope — stage only intended files, directories, or pathspecs instead of accidentally including unrelated work
+- Clean, unstaged, staged, and untracked states — read `git status` before deciding which inspection or mutation command is safe ✅ 01-todo-list
+- `git diff` vs `git diff --staged` — inspect unstaged working-tree changes or the exact staged changes prepared for the next commit ✅ 01-todo-list
+- `git add` and path scope — stage only intended files, directories, or pathspecs instead of accidentally including unrelated work ✅ 01-todo-list
 - `git add -p` — select individual hunks to construct focused commits and exclude debug, formatting, or secret changes
-- `git commit` — create a new snapshot from the index, not automatically from every modified working-tree file
-- `git log --oneline --graph --decorate --all` — read compact history, branch topology, and reference positions
+- `git commit` — create a new snapshot from the index, not automatically from every modified working-tree file ✅ 01-todo-list
+- `git log --oneline --graph --decorate --all` — read compact history, branch topology, and reference positions ✅ 01-todo-list
 - `git log -- <path>` — trace the history that affected a specific file without treating unrelated commits as evidence
 - `git show <commit>` — inspect one commit's metadata and patch to understand exactly what it introduced
 - Revision selection — use commit hashes, branch names, tags, and `HEAD` to identify commits for inspection or operations
@@ -24,28 +24,28 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 
 ## Commit discipline
 
-- Atomic commits — keep one coherent change independently reviewable and revertible instead of mixing unrelated work
-- Selective staging before commit — inspect and stage the intended scope so generated files, secrets, and drive-by edits do not enter history
-- Meaningful commit messages — write concise imperative subjects and add decision context when the reason is not evident from the change
-- Conventional Commits — recognise `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, and related types when the repository adopts that convention
+- Atomic commits — keep one coherent change independently reviewable and revertible instead of mixing unrelated work ✅ 01-todo-list
+- Selective staging before commit — inspect and stage the intended scope so generated files, secrets, and drive-by edits do not enter history ✅ 01-todo-list
+- Meaningful commit messages — write concise imperative subjects and add decision context when the reason is not evident from the change ✅ 01-todo-list
+- Conventional Commits — recognise `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, and related types when the repository adopts that convention ✅ 01-todo-list
 
 ## User and repository configuration
 
 - Git configuration scopes — distinguish system, global, and local settings and use repository-specific overrides when appropriate
-- Commit identity — configure `user.name` and `user.email` deliberately because commits record author and committer metadata
+- Commit identity — configure `user.name` and `user.email` deliberately because commits record author and committer metadata ✅ 01-todo-list
 - Line-ending policy — recognise CRLF/LF noise and follow repository configuration such as `.gitattributes` instead of committing mass rewrites
 - Executable-bit changes — recognise permission-only diffs and avoid accidental file-mode changes across operating systems
 - Signed commits and tags awareness — recognise verified-object requirements without treating signing infrastructure or hosting branch protection as junior ownership
 
 ## Branches, `HEAD`, and integration
 
-- Branch reference — understand a branch as a movable name for a commit rather than a copy of the project
-- `HEAD` and the current branch — know that `HEAD` normally refers through the checked-out branch and moves when that branch gains a commit
+- Branch reference — understand a branch as a movable name for a commit rather than a copy of the project ✅ 01-todo-list
+- `HEAD` and the current branch — know that `HEAD` normally refers through the checked-out branch and moves when that branch gains a commit ✅ 01-todo-list
 - Detached `HEAD` — recognise checkout at a commit rather than a branch and create or switch to a branch before work becomes difficult to retain
-- `git branch`, `git switch`, and branch-oriented `git checkout` — create, list, and change branches while recognising the newer focused command and the older multi-purpose command
+- `git branch`, `git switch`, and branch-oriented `git checkout` — create, list, and change branches while recognising the newer focused command and the older multi-purpose command ✅ 01-todo-list
 - Correct branch base — update and verify the intended base before creating a feature branch so it does not begin from stale or unrelated history
 - Safe branch deletion — use `git branch -d` for merged work and treat `-D` as a deliberate discard that requires prior verification
-- Fast-forward vs three-way merge — distinguish moving a branch reference forward from creating a merge commit from divergent histories
+- Fast-forward vs three-way merge — distinguish moving a branch reference forward from creating a merge commit from divergent histories ✅ 01-todo-list
 - Merge commit parentage — recognise that a true merge commit normally has two parents and preserves the integration point
 - `git merge` vs `git rebase` — choose history-preserving integration or private-history replay according to repository policy and collaboration risk
 - Rebase mechanics — understand that Git replays commits onto a new base, creates new commit identities, and can pause once per replayed commit
@@ -54,23 +54,23 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 - Stateful-operation controls — use `git status` to identify an in-progress merge, rebase, cherry-pick, or revert before choosing the matching continue, skip, or abort action
 - `git cherry-pick` — apply one known commit to the current branch for a targeted workflow while recognising the duplicated history and conflict risk
 - Lightweight vs annotated tags — recognise a direct commit label versus a tag object with metadata and optional signature, while release-policy ownership remains above junior
-- Team branching policy recognition — follow the repository's feature-branch, trunk-based, GitFlow, release, or hotfix convention without treating one workflow as universal
+- Team branching policy recognition — follow the repository's feature-branch, trunk-based, GitFlow, release, or hotfix convention without treating one workflow as universal ✅ 01-todo-list
 
 ## Remotes and collaborative review
 
-- Remote and `origin` — understand a remote as a named repository URL and `origin` as a conventional default name, not a branch or the cloud itself
+- Remote and `origin` — understand a remote as a named repository URL and `origin` as a conventional default name, not a branch or the cloud itself ✅ 01-todo-list
 - Clone vs hosting-platform fork — distinguish making a local working copy from creating a server-side repository copy with its own collaboration remotes
 - Remote inspection and configuration — list remote names and URLs and add, rename, or change a remote deliberately when diagnosing repository connectivity
 - Local branch vs remote-tracking reference — distinguish writable local `main` from the last fetched observation `origin/main`
 - Ahead, behind, and diverged tracking states — read whether local, remote, or both histories contain new commits before choosing push or integration
 - `git fetch` — update remote-tracking references without integrating them into the current branch
-- `git pull` — fetch and then integrate according to the configured merge or rebase policy, so inspect divergence when automatic integration is risky
-- `git push` — send reachable local objects and request a remote reference update rather than uploading arbitrary working-tree files
-- Upstream tracking — connect a local branch to its usual remote branch so status, pull, and push can infer their counterpart
+- `git pull` — fetch and then integrate according to the configured merge or rebase policy, so inspect divergence when automatic integration is risky ✅ 01-todo-list
+- `git push` — send reachable local objects and request a remote reference update rather than uploading arbitrary working-tree files ✅ 01-todo-list
+- Upstream tracking — connect a local branch to its usual remote branch so status, pull, and push can infer their counterpart ✅ 01-todo-list
 - Non-fast-forward push rejection — fetch and integrate remote work instead of bypassing the safety check with a blind force push
 - Force-push safety — recognise shared-history danger and use `--force-with-lease` only when rewriting an explicitly authorised private branch
-- Feature branch and pull-request flow — push isolated work, open a review request, address feedback, validate updates, and merge under repository policy
-- Pull request vs Git — recognise pull or merge requests as hosting-platform review objects built around Git branches and commits
+- Feature branch and pull-request flow — push isolated work, open a review request, address feedback, validate updates, and merge under repository policy ✅ 01-todo-list
+- Pull request vs Git — recognise pull or merge requests as hosting-platform review objects built around Git branches and commits ✅ 01-todo-list
 - Pull-request merge strategies — distinguish merge commit, squash merge, and rebase merge by their effect on final history
 - Diff-based code review — verify intended behaviour, tests, edge cases, secrets, generated files, format churn, and unrelated scope before approving
 - Review-update strategy — add focused follow-up commits or perform policy-approved private cleanup without rewriting shared history unexpectedly
@@ -105,9 +105,9 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 
 ## Ignore and history boundaries
 
-- `.gitignore` scope — prevent matching untracked paths from being offered for addition without assuming it removes files already tracked
+- `.gitignore` scope — prevent matching untracked paths from being offered for addition without assuming it removes files already tracked ✅ 02-weather-app
 - Ignore patterns and negation — apply directory, wildcard, anchored, and `!` exception rules carefully because parent-directory exclusion affects reinclusion
-- Generated-path policy — ignore build output, dependencies, and local IDE state according to the repository's actual toolchain
-- Local secret-file exclusion — ignore environment and credential files so they are not accidentally added, while recognising ignore rules are not a secret store
+- Generated-path policy — ignore build output, dependencies, and local IDE state according to the repository's actual toolchain ✅ 01-todo-list
+- Local secret-file exclusion — ignore environment and credential files so they are not accidentally added, while recognising ignore rules are not a secret store ✅ 02-weather-app
 - Already tracked ignored file — remove the path from the index when appropriate because adding a later ignore rule does not stop tracking it
 - Committed-history boundary — deleting or ignoring the current file does not erase sensitive content from existing commits

@@ -13,7 +13,7 @@ Concepts expected once the junior Angular foundation is consolidated and a devel
 
 - `toSignal()` configuration and injection context — control initial values, equality, cleanup, and custom injectors when basic conversion is insufficient
 - `toSignal()` vs `toObservable()` — cross the signal/Observable boundary in the direction required by an integration without wrapping reactive primitives back and forth
-- `forkJoin()` vs `combineLatest()` — coordinate one-time completion or continuing latest-value streams according to source behaviour
+- `forkJoin()` vs `combineLatest()` — coordinate one-time completion or continuing latest-value streams according to source behaviour ✅ 02-weather-app
 - RxJS retry policies — retry only failures whose operation and failure mode make another attempt safe
 
 ## Rendering, loading, and diagnostics

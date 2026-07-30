@@ -20,7 +20,7 @@ Concepts expected once the junior Angular foundation is consolidated and a devel
 ### Advanced reactive integration
 
 - `toSignal()` configuration and injection context — control initial values, equality, cleanup, and custom injectors when basic conversion is insufficient
-- `forkJoin()` vs `combineLatest()` — coordinate one-time completion or continuing latest-value streams according to source behaviour
+- `forkJoin()` vs `combineLatest()` — coordinate one-time completion or continuing latest-value streams according to source behaviour ✅ 02-weather-app
 - RxJS retry and finalisation policies — retry only safe failures and guarantee loading cleanup with a deliberate `finalize()` boundary
 
 ### Rendering, loading, and diagnostics

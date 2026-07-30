@@ -149,6 +149,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 
 - `LocalDate`, `LocalDateTime`, and `Instant` — choose a calendar date, timezone-free local date-time, or exact UTC timeline point according to the business contract ✅ 07-timetrack
 - `Duration` vs `Period` — measure an elapsed time-based amount with `Duration` and a calendar date-based amount with `Period`, rather than computing intervals by hand
+- `YearMonth` — represent a whole month as one value when no day is meaningful, and derive its date range with `atDay` and `atEndOfMonth` instead of assembling boundary dates by hand ✅ 07-timetrack
 - Date-time immutability and formatting — use `java.time` and `DateTimeFormatter` instead of mutable legacy date APIs and ambiguous hand-built strings
 - Javadoc and API signatures — navigate official API documentation and infer required arguments, return types, exceptions, and generic contracts
 
