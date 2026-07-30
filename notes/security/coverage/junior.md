@@ -188,6 +188,9 @@ review without taking on specialist or production-platform ownership.
   unnecessary personal data merely because they exist on an entity
 - Error-response hygiene — return stable useful errors without stack traces, SQL details, filesystem
   paths, internal class names, or secrets
+- Resource-existence disclosure — distinguishing "forbidden" from "not found" lets a caller enumerate
+  which identifiers exist, so an object the caller may not reach is reported as missing unless that
+  caller is entitled to know it exists ✅ 07
 - Security logging hygiene — record useful authentication and authorisation events while excluding
   passwords, tokens, session IDs, authorisation headers, and unnecessary personal data
 - Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or

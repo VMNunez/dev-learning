@@ -559,6 +559,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 
 - `Optional<T>` as a return contract — make an absent result explicit when absence is normal, rather than using it for every nullable field or parameter
 - `Optional.map` and `ifPresent` — transform a present value or run a side effect without manually branching on presence
+- `Optional.filter` — reject a present value that fails a predicate by turning it into an empty Optional, so one terminal operation handles both absence and rejection ✅ 07
 - `Optional.orElseGet` and `orElseThrow` — produce a lazy fallback or fail with a meaningful exception instead of calling unchecked `get`
 - `orElse` vs `orElseGet` — `orElse` evaluates its fallback eagerly, while `orElseGet` calls its supplier only when the Optional is empty
 - `Predicate<T>` — represent a test from one input to a boolean result
@@ -988,6 +989,9 @@ review without taking on specialist or production-platform ownership.
   unnecessary personal data merely because they exist on an entity
 - Error-response hygiene — return stable useful errors without stack traces, SQL details, filesystem
   paths, internal class names, or secrets
+- Resource-existence disclosure — distinguishing "forbidden" from "not found" lets a caller enumerate
+  which identifiers exist, so an object the caller may not reach is reported as missing unless that
+  caller is entitled to know it exists ✅ 07
 - Security logging hygiene — record useful authentication and authorisation events while excluding
   passwords, tokens, session IDs, authorisation headers, and unnecessary personal data
 - Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or
