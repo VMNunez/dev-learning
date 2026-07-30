@@ -20,8 +20,12 @@ Run this when PROGRESS.md feels out of sync: after finishing a step or a project
 of sessions, or before running `plan-audit` (its gap analysis reads PROGRESS.md). If
 PROGRESS.md is incomplete, that gap analysis is wrong.
 
-**This prompt does NOT read `notes/coverage/junior.md`.** Coverage tracks what Victor must *learn* —
-PROGRESS.md tracks what he *has learned*. A stale coverage-junior.md does not affect this prompt.
+**Coverage is read for one thing only: counting evidence markers (D8).** Coverage defines what Victor
+must *learn*; PROGRESS.md records what he *has learned*. The two stayed separate until the `✅ NN`
+evidence marker made the coverage file carry demonstrated state as well as scope. So this prompt
+counts markers and totals per topic and level, and reads nothing else from those files — never a
+concept, never a bullet's text. A stale or incomplete coverage level affects only its own denominator
+in the D8 table, never any other section.
 
 **Internal piece this orchestrates** (never launched directly):
 `_concept-extraction-standard.md` — the Format A/B/C extraction contract each project subagent runs.
@@ -300,6 +304,52 @@ Refresh the matrix without duplicating coverage concepts:
   production, platform, or multi-team ownership; notes, interview prep, and personal projects alone
   can never produce `Senior — demonstrated`.
 - If evidence is insufficient, keep the existing conservative level and state what remains open.
+- **The D8 percentages never promote a level.** A topic at 100% demonstrated coverage stays
+  `building` until the unaided practical or explanation check in the rules above is met. The ratio is
+  an instrument, not a gate; treating it as one would let file bookkeeping award a level that no
+  demonstration backs.
+
+### D8 — Coverage demonstrated by topic and level
+
+Refresh the `Coverage demonstrated` table — one row per topic, one column per level, each cell the
+share of that level's coverage bullets carrying an evidence marker.
+
+Count from the **topic** files, `notes/{topic}/coverage/{LEVEL}.md`, never from the
+`notes/coverage/{LEVEL}.md` mirror: the mirror can lag its topics, and a denominator that depends on
+which file you opened is not a measurement. Two counts per file, no file contents loaded:
+
+```bash
+grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md      # total   — the denominator
+grep -cE ' ✅ [0-9]{2}$' notes/{topic}/coverage/{LEVEL}.md   # marked  — the numerator
+```
+
+Cell format is exactly `marked/total (P%)`, `P` rounded to a whole number — `34/86 (40%)`. A level
+with no file yet is `—`, not `0/0`.
+
+**Provisional denominators.** Read `notes/prompts/_internal/_run-tracker.md`. If the `Coverage {J|M|S}`
+cell for that topic and level is empty, the level was never authored by the coverage pipeline, so its
+total is a stub that will move. Suffix that cell with `*` and keep the footnote below the table
+explaining the mark. Remove the `*` once the tracker records a run.
+
+Write the table with the totals row, immediately after `Professional level by topic`:
+
+```
+## Coverage demonstrated
+
+Share of each level's coverage bullets applied in project code (the `✅ NN` marker). Counted from the
+per-topic coverage files. This is evidence of application, not of study, and it never promotes a
+level in the matrix above.
+
+| Topic | Junior | Middle | Senior |
+|---|---|---|---|
+| Angular | 34/108 (31%) | 0/13 (0%)* | 0/6 (0%)* |
+| … | | | |
+| **Total** | **34/1213 (3%)** | … | … |
+
+`*` provisional denominator — that level's coverage has not been generated yet.
+```
+
+Topic rows in the same order as the matrix above, so the two tables read together.
 
 ---
 
@@ -315,6 +365,7 @@ went wrong. Then print:
 | Section | Added | Corrected | Removed |
 |---------|-------|-----------|---------|
 | Professional level by topic | | | |
+| Coverage demonstrated | | | |
 | Projects table | | | |
 | Angular | | | |
 | Java | | | |
