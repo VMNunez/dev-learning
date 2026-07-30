@@ -7,25 +7,25 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Client–server request/response model — trace how a client sends a request and receives a response without treating either framework as the protocol itself ✅ 02-weather-app
 - URL anatomy — distinguish scheme, host, port, path, query, and fragment so an incorrect endpoint can be diagnosed precisely ✅ 02-weather-app
 - URI vs URL — distinguish a resource identifier from the subset that also describes where and how to access it
-- REST resource and representation model — model domain resources behind representations instead of treating endpoint paths as remote procedure names
-- Collection vs item URI — use stable noun-based paths to distinguish a resource collection from one identified member
-- HTTP methods — choose `GET`, `POST`, `PUT`, `PATCH`, or `DELETE` from the intended resource operation rather than from habit
-- Safe vs idempotent methods — safe methods do not request a state change, while repeating an idempotent request has the same intended effect as sending it once
-- `PUT` vs `PATCH` — use complete replacement semantics for PUT and partial modification semantics for PATCH when the API contract supports them
-- Path parameters vs query parameters vs request body — use the path for resource identity, the query for optional selection or representation controls, and the body for a submitted representation
-- HTTP headers and body — keep request metadata in headers and the submitted representation in the body
+- REST resource and representation model — model domain resources behind representations instead of treating endpoint paths as remote procedure names ✅ 07-timetrack
+- Collection vs item URI — use stable noun-based paths to distinguish a resource collection from one identified member ✅ 07-timetrack
+- HTTP methods — choose `GET`, `POST`, `PUT`, `PATCH`, or `DELETE` from the intended resource operation rather than from habit ✅ 07-timetrack
+- Safe vs idempotent methods — safe methods do not request a state change, while repeating an idempotent request has the same intended effect as sending it once ✅ 07-timetrack
+- `PUT` vs `PATCH` — use complete replacement semantics for PUT and partial modification semantics for PATCH when the API contract supports them ✅ 07-timetrack
+- Path parameters vs query parameters vs request body — use the path for resource identity, the query for optional selection or representation controls, and the body for a submitted representation ✅ 07-timetrack
+- HTTP headers and body — keep request metadata in headers and the submitted representation in the body ✅ 07-timetrack
 - `Content-Type` vs `Accept` — declare the media type being sent separately from the response media types the client can process
-- Stateless HTTP — understand that HTTP defines no conversational session while an application may carry state in each request or look it up through an identifier such as a session cookie
+- Stateless HTTP — understand that HTTP defines no conversational session while an application may carry state in each request or look it up through an identifier such as a session cookie ✅ 07-timetrack
 - HTTPS vs HTTP — recognise that HTTPS applies TLS protection to HTTP traffic in transit while HTTP alone provides no transport encryption
 - Basic web request path — recognise DNS resolution, connection to a host and port, TLS negotiation for HTTPS, and the later HTTP exchange as distinct failure points
 
 ## HTTP responses, failures, and caching
 
-- HTTP status-code families — use 1xx, 2xx, 3xx, 4xx, and 5xx as protocol-level categories before inspecting the application error body
-- `200 OK`, `201 Created`, and `204 No Content` — select the success status from whether the operation returns a representation, creates a resource, or intentionally returns no body
+- HTTP status-code families — use 1xx, 2xx, 3xx, 4xx, and 5xx as protocol-level categories before inspecting the application error body ✅ 07-timetrack
+- `200 OK`, `201 Created`, and `204 No Content` — select the success status from whether the operation returns a representation, creates a resource, or intentionally returns no body ✅ 07-timetrack
 - `400 Bad Request` vs `422 Unprocessable Content` — recognise 400 as a broad perceived client-request error and 422 as understood media type and syntax whose instructions cannot be processed, while following the API's documented convention
-- `401 Unauthorized` vs `403 Forbidden` — distinguish missing or invalid authentication from an authenticated identity lacking permission
-- `404 Not Found` vs `409 Conflict` — distinguish an absent resource from a request that conflicts with current resource state
+- `401 Unauthorized` vs `403 Forbidden` — distinguish missing or invalid authentication from an authenticated identity lacking permission ✅ 07-timetrack
+- `404 Not Found` vs `409 Conflict` — distinguish an absent resource from a request that conflicts with current resource state ✅ 07-timetrack
 - `500 Internal Server Error` vs `503 Service Unavailable` — distinguish an unexpected server failure from temporary inability to serve the request
 - Redirect semantics — recognise that 3xx responses point the client elsewhere and that method-preserving redirects differ from redirects commonly followed as GET
 - `301`/`302`/`303` vs `307`/`308` redirects — recognise when common clients may follow with GET and when the original method and body must be preserved
@@ -40,23 +40,23 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 - JSON value model — recognise objects, arrays, strings, numbers, booleans, and `null`, with double-quoted object keys and no trailing commas
 - JSON object vs array — distinguish a named property collection from an ordered value collection when reading or designing a payload
-- Missing field vs explicit `null` — treat absence and an explicit null value as separate contract states unless the API defines them as equivalent
+- Missing field vs explicit `null` — treat absence and an explicit null value as separate contract states unless the API defines them as equivalent ✅ 07-timetrack
 - JSON limitations — recognise that JSON has no native date, `undefined`, binary, or distinct integer type, so an API must define representations for them
-- Serialization vs deserialization — distinguish converting an in-memory value to a transport representation from reconstructing a value from that representation
+- Serialization vs deserialization — distinguish converting an in-memory value to a transport representation from reconstructing a value from that representation ✅ 07-timetrack
 - Contract naming and type mismatches — diagnose failures caused by different property names, nesting, nullability, or expected value types across a boundary
-- Date and time representation — agree an explicit interoperable string format and time-zone meaning instead of relying on environment-specific parsing
+- Date and time representation — agree an explicit interoperable string format and time-zone meaning instead of relying on environment-specific parsing ✅ 07-timetrack
 - OpenAPI recognition — read operations, parameters, schemas, responses, and examples in a machine-readable HTTP API contract
 - OpenAPI specification vs interactive documentation — distinguish the contract document from tools such as Swagger UI that render and exercise it
 - API client tools — use Postman or `curl` to inspect and reproduce an HTTP exchange without treating a successful manual request as complete automated verification
 
 ## Error handling and diagnostics
 
-- Error propagation — let a failure travel to a boundary that can add context or choose a response instead of swallowing it or catching and rethrowing without value
+- Error propagation — let a failure travel to a boundary that can add context or choose a response instead of swallowing it or catching and rethrowing without value ✅ 07-timetrack
 - Local error recovery — substitute a fallback only when it is semantically honest; converting every failure into empty data fabricates success
-- Error message vs diagnostic detail — give consumers a stable safe message while preserving technical context for diagnosis
-- Exception vs log — understand that an exception changes control flow while a log records an event without handling it
+- Error message vs diagnostic detail — give consumers a stable safe message while preserving technical context for diagnosis ✅ 07-timetrack
+- Exception vs log — understand that an exception changes control flow while a log records an event without handling it ✅ 07-timetrack
 - Structured logging — record searchable fields and context rather than relying on unstructured print statements
-- Log levels — choose `DEBUG`, `INFO`, `WARN`, or `ERROR` from operational meaning rather than using one level for every event
+- Log levels — choose `DEBUG`, `INFO`, `WARN`, or `ERROR` from operational meaning rather than using one level for every event ✅ 07-timetrack
 - Reproducible debugging — establish reliable steps and the smallest failing input before changing code so the effect of a fix can be verified
 - Boundary isolation — reduce a failure to the client, network, API, persistence, or external dependency before investigating implementation detail
 - Stack trace and cause chain — read the failure type, message, frames, and nested causes from the first relevant application frame outward
@@ -87,9 +87,9 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 ## Configuration and environments
 
-- Configuration vs code — keep environment-dependent values outside program logic so the same artifact can run in different contexts
-- Configuration sources — recognise environment variables, configuration files, and command-line inputs and determine which value wins when sources overlap
-- Required configuration and fail-fast startup — reject a missing mandatory value early with a clear diagnostic rather than failing later in unrelated code
+- Configuration vs code — keep environment-dependent values outside program logic so the same artifact can run in different contexts ✅ 07-timetrack
+- Configuration sources — recognise environment variables, configuration files, and command-line inputs and determine which value wins when sources overlap ✅ 07-timetrack
+- Required configuration and fail-fast startup — reject a missing mandatory value early with a clear diagnostic rather than failing later in unrelated code ✅ 07-timetrack
 - Default configuration — provide a default only when it is safe and semantically valid for every context where it may be used
 - Development, test, staging, and production — use each environment for a distinct confidence level without assuming staging is an exact copy of production
 - Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts ✅ 02-weather-app

@@ -276,142 +276,142 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 
 ### Beans, injection, and startup diagnosis
 
-- Component stereotypes — use `@Component` and its layer-specific stereotypes to make application classes discoverable while keeping each layer's responsibility explicit
+- Component stereotypes — use `@Component` and its layer-specific stereotypes to make application classes discoverable while keeping each layer's responsibility explicit ✅ 07-timetrack
 - `@Repository` exception translation — the stereotype converts provider-specific persistence failures into Spring's `DataAccessException` family, so a constraint breach surfaces as `DataIntegrityViolationException` and can be mapped to a deliberate status
-- `@Bean` vs component scanning — register third-party instances or explicit construction logic in configuration and use scanning for application-owned component classes
-- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor
+- `@Bean` vs component scanning — register third-party instances or explicit construction logic in configuration and use scanning for application-owned component classes ✅ 07-timetrack
+- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor ✅ 07-timetrack
 - Lombok constructors and Spring injection — `@RequiredArgsConstructor` can express constructor injection for final dependencies, while all-argument constructors are usually the wrong service boundary
 - `@Qualifier` vs `@Primary` — select one bean explicitly at an injection point or declare a default candidate when several beans satisfy the same dependency type
 - Bean scope and the singleton default — application beans are singleton-scoped by default, so mutable request-specific state on a service can leak across users and threads
 - Proxy-based annotation behaviour — Spring applies transaction, security, and similar annotations by wrapping the bean in a proxy, so the annotation only takes effect on an injected bean invoked from outside and silently does nothing on a `new` instance or an internal call
 - Bean lifecycle and startup failures — distinguish component scanning, bean creation, dependency resolution, and application startup so missing beans, ambiguous injection, and circular dependencies can be diagnosed from the failure report
 - Startup diagnostics — read Boot's condition and failure-analysis output to distinguish configuration, bean creation, port, and datasource failures before changing code
-- Application logging — obtain a logger through the SLF4J facade rather than printing to standard output, and raise or lower a package's level from configuration so a running application can be investigated without editing code
+- Application logging — obtain a logger through the SLF4J facade rather than printing to standard output, and raise or lower a package's level from configuration so a running application can be investigated without editing code ✅ 07-timetrack
 
 ### REST controllers
 
 - Spring MVC request dispatch — follow a request through the servlet dispatcher, handler mapping, argument resolution, message conversion, controller, and exception handling when diagnosing a failed endpoint
-- `@Controller` vs `@RestController` — use view-oriented controller semantics for rendered responses and response-body semantics for APIs whose return values are written through message converters
-- `@RequestMapping` without a method attribute — a class-level mapping contributes the shared path prefix, but the same annotation on a method matches every HTTP verb unless the verb is narrowed
-- HTTP method mappings — select a method-specific mapping that matches the operation's HTTP semantics, including partial updates or state transitions rather than treating every write as POST
-- `@PathVariable` vs `@RequestParam` — bind resource identity from the route and optional filtering or control values from the query string, with names and required/default behaviour declared explicitly
-- `@RequestBody` — bind the request body to a Java object through the configured message converters instead of parsing the payload manually
+- `@Controller` vs `@RestController` — use view-oriented controller semantics for rendered responses and response-body semantics for APIs whose return values are written through message converters ✅ 07-timetrack
+- `@RequestMapping` without a method attribute — a class-level mapping contributes the shared path prefix, but the same annotation on a method matches every HTTP verb unless the verb is narrowed ✅ 07-timetrack
+- HTTP method mappings — select a method-specific mapping that matches the operation's HTTP semantics, including partial updates or state transitions rather than treating every write as POST ✅ 07-timetrack
+- `@PathVariable` vs `@RequestParam` — bind resource identity from the route and optional filtering or control values from the query string, with names and required/default behaviour declared explicitly ✅ 07-timetrack
+- `@RequestBody` — bind the request body to a Java object through the configured message converters instead of parsing the payload manually ✅ 07-timetrack
 - Unsupported media type on a request body — body binding is selected by the request's declared content type, so a missing or non-JSON `Content-Type` is rejected before the controller runs rather than surfacing as a validation failure
-- `ResponseEntity<T>` — use it when status or headers vary dynamically; fixed statuses can use `@ResponseStatus`, while returning a body directly intentionally uses the framework's normal status
+- `ResponseEntity<T>` — use it when status or headers vary dynamically; fixed statuses can use `@ResponseStatus`, while returning a body directly intentionally uses the framework's normal status ✅ 07-timetrack
 - Created responses and the resource location — build the new resource's URI from the current request when reporting a successful creation, rather than returning the entity with a default status
-- HTTP message conversion and Jackson — content negotiation and configured message converters turn request and response bodies into Java values and JSON rather than the controller serialising text manually
-- Jackson response shaping — rename, omit, or format individual fields through serialization annotations, and know that Boot registers Java date/time support so temporal fields serialise as ISO text rather than numeric objects
-- Jackson deserialization requirements — an incoming body is populated through a record's canonical constructor, an annotated creator, or a no-argument constructor plus mutators, which is why an otherwise valid DTO can arrive with every field null
+- HTTP message conversion and Jackson — content negotiation and configured message converters turn request and response bodies into Java values and JSON rather than the controller serialising text manually ✅ 07-timetrack
+- Jackson response shaping — rename, omit, or format individual fields through serialization annotations, and know that Boot registers Java date/time support so temporal fields serialise as ISO text rather than numeric objects ✅ 07-timetrack
+- Jackson deserialization requirements — an incoming body is populated through a record's canonical constructor, an annotated creator, or a no-argument constructor plus mutators, which is why an otherwise valid DTO can arrive with every field null ✅ 07-timetrack
 - Bidirectional relationship serialization — returning an entity whose association points back at its owner makes Jackson recurse until the response fails, so break the cycle at the boundary with a response DTO rather than patching it with reference annotations
-- Request and response DTO implementation — implement incoming and outgoing contracts as separate records or classes and attach validation constraints to the untrusted input type only
-- Entity-to-DTO mapping implementation — write the conversion by hand or generate it with an annotation-processor mapper whose implementation class exists only after a build, which is why a missing generated mapper is a build-configuration problem rather than absent source code
+- Request and response DTO implementation — implement incoming and outgoing contracts as separate records or classes and attach validation constraints to the untrusted input type only ✅ 07-timetrack
+- Entity-to-DTO mapping implementation — write the conversion by hand or generate it with an annotation-processor mapper whose implementation class exists only after a build, which is why a missing generated mapper is a build-configuration problem rather than absent source code ✅ 07-timetrack
 - `@JsonIgnore` and serialization access — an ignore annotation suppresses a field in both directions unless the access mode is narrowed, so it is a local serialization rule rather than a substitute for a dedicated response type
 - Outbound HTTP calls — a Spring Boot service that consumes another API uses the framework's synchronous HTTP client; recognise the current fluent client and the older template still present in maintained codebases
 
 ### Request validation
 
-- `@Valid` on `@RequestBody` — trigger cascaded validation of the deserialized request DTO at the controller boundary before business logic runs
+- `@Valid` on `@RequestBody` — trigger cascaded validation of the deserialized request DTO at the controller boundary before business logic runs ✅ 07-timetrack
 - Nested and collection cascading — a nested object's own constraints run only when the field or the collection's type argument is marked `@Valid`, while container element constraints such as `List<@NotBlank String>` are checked without it, so a validated outer DTO can silently accept an invalid inner payload
-- Validation starter and runtime integration — include Jakarta Validation plus its implementation and Spring integration so constraints are discovered and executed rather than merely present as metadata
-- `@NotNull` vs `@NotEmpty` vs `@NotBlank` — choose whether null, emptiness, or whitespace-only text violates the input contract rather than applying one constraint to every field type
-- Constraint selection — choose semantic constraints for sign, size, format, range, or pattern so the annotation matches the business rule rather than merely rejecting some bad examples
-- Bean constraints vs database constraints — a validation annotation rejects bad input before business logic with a client error, while a column constraint fails at flush time as a server error, so the same rule expressed only in the schema produces the wrong response
+- Validation starter and runtime integration — include Jakarta Validation plus its implementation and Spring integration so constraints are discovered and executed rather than merely present as metadata ✅ 07-timetrack
+- `@NotNull` vs `@NotEmpty` vs `@NotBlank` — choose whether null, emptiness, or whitespace-only text violates the input contract rather than applying one constraint to every field type ✅ 07-timetrack
+- Constraint selection — choose semantic constraints for sign, size, format, range, or pattern so the annotation matches the business rule rather than merely rejecting some bad examples ✅ 07-timetrack
+- Bean constraints vs database constraints — a validation annotation rejects bad input before business logic with a client error, while a column constraint fails at flush time as a server error, so the same rule expressed only in the schema produces the wrong response ✅ 07-timetrack
 - Controller method validation — apply constraints to controller parameters and handle their failures separately from request-body binding errors
 - Body vs method validation failures — invalid `@RequestBody` binding and invalid method parameters use different exception families; handle both deliberately instead of assuming every violation is a `ConstraintViolationException`
 - `@Valid` vs `@Validated` — use standard cascaded validation for request objects and Spring's validation groups or method-level proxy features only when those additional semantics are required
 
 ### Exception handling and error responses
 
-- `@RestControllerAdvice` — combines `@ControllerAdvice` with `@ResponseBody` for JSON-oriented handlers; plain advice can also return JSON when its handler uses `ResponseEntity` or `@ResponseBody`
-- `@ExceptionHandler` resolution — the most specific declared exception type wins over a supertype handler, and an advice's scope decides which controllers it serves, so an unexpectedly generic response usually means the wrong handler matched
+- `@RestControllerAdvice` — combines `@ControllerAdvice` with `@ResponseBody` for JSON-oriented handlers; plain advice can also return JSON when its handler uses `ResponseEntity` or `@ResponseBody` ✅ 07-timetrack
+- `@ExceptionHandler` resolution — the most specific declared exception type wins over a supertype handler, and an advice's scope decides which controllers it serves, so an unexpectedly generic response usually means the wrong handler matched ✅ 07-timetrack
 - `ResponseStatusException` and `@ResponseStatus` on an exception — a status can be attached at the throw site or to the exception type instead of through advice; recognise all three routes because maintained code mixes them and the advice never fires for a status already resolved
-- Domain exceptions — represent meaningful application failures as dedicated types so a handler can map each one to its intended status
-- `MethodArgumentNotValidException` — Spring throws this when `@Valid` on a `@RequestBody` fails; handle it in `@RestControllerAdvice` to return 400 with field-level error messages; not catching it results in a verbose default Spring error body
-- Error response contract — map failures to consistent status and body fields so API clients can handle validation, absence, conflict, and unexpected errors predictably
+- Domain exceptions — represent meaningful application failures as dedicated types so a handler can map each one to its intended status ✅ 07-timetrack
+- `MethodArgumentNotValidException` — Spring throws this when `@Valid` on a `@RequestBody` fails; handle it in `@RestControllerAdvice` to return 400 with field-level error messages; not catching it results in a verbose default Spring error body ✅ 07-timetrack
+- Error response contract — map failures to consistent status and body fields so API clients can handle validation, absence, conflict, and unexpected errors predictably ✅ 07-timetrack
 - Boot's default error handling — an exception no handler claims is forwarded to the built-in `/error` endpoint, which builds the status, timestamp, and path body and omits the exception message and binding details until the matching `server.error.include-*` properties are enabled
-- Filter-chain exceptions vs controller advice — exceptions raised before controller dispatch do not automatically pass through `@RestControllerAdvice`, so authentication failures need handling at the security boundary
+- Filter-chain exceptions vs controller advice — exceptions raised before controller dispatch do not automatically pass through `@RestControllerAdvice`, so authentication failures need handling at the security boundary ✅ 07-timetrack
 - Filter vs MVC interceptor vs controller advice — use servlet filters for request-chain concerns, interceptors around mapped handlers, and advice for controller exception/response behaviour
 
 ### Spring Data JPA — entity and relationship mapping
 
 - Persistence context and entity state — recognise managed, detached, and removed entities and understand why dirty checking can flush a managed change without another repository `save()`
-- `@Entity` requirements — a mapped type needs an identifier, an accessible no-argument constructor, and a non-final class, and a class missing the annotation entirely is not mapped at all
-- Entity table naming — use `@Table` when the mapped table differs from the default and avoid reserved-word conflicts through a deliberate physical name, quoting policy, or naming strategy
-- Identifier mapping and generation — mark the primary key and choose between identity columns and sequences according to the target database, because a bootstrap failure over a missing or unsupported identifier is reported before the application serves a request
-- JPA column nullability and uniqueness — express schema intent on the mapping so the generated or validated schema matches the domain rules
-- Lombok generated equality on entities — identifier-based `equals` and `hashCode` behave inconsistently while an entity is still unsaved, so generated implementations must be chosen deliberately rather than accepted by default
-- Lombok generated `toString` on entities — including associations in a generated string can trigger lazy loading or recurse across a bidirectional relationship, so relationship fields must be excluded
-- Boxed vs primitive boolean fields and Lombok getter naming — a `Boolean` field defaults to `getX()`, while a primitive `boolean` field defaults to `isX()` (JavaBean convention); switching a field's type to close a nullable-unboxing bug renames every call site's getter, and the compiler catches the mismatch
-- Many-to-one ownership — map the foreign-key side with `@ManyToOne` and name its column with `@JoinColumn`
+- `@Entity` requirements — a mapped type needs an identifier, an accessible no-argument constructor, and a non-final class, and a class missing the annotation entirely is not mapped at all ✅ 07-timetrack
+- Entity table naming — use `@Table` when the mapped table differs from the default and avoid reserved-word conflicts through a deliberate physical name, quoting policy, or naming strategy ✅ 07-timetrack
+- Identifier mapping and generation — mark the primary key and choose between identity columns and sequences according to the target database, because a bootstrap failure over a missing or unsupported identifier is reported before the application serves a request ✅ 07-timetrack
+- JPA column nullability and uniqueness — express schema intent on the mapping so the generated or validated schema matches the domain rules ✅ 07-timetrack
+- Lombok generated equality on entities — identifier-based `equals` and `hashCode` behave inconsistently while an entity is still unsaved, so generated implementations must be chosen deliberately rather than accepted by default ✅ 07-timetrack
+- Lombok generated `toString` on entities — including associations in a generated string can trigger lazy loading or recurse across a bidirectional relationship, so relationship fields must be excluded ✅ 07-timetrack
+- Boxed vs primitive boolean fields and Lombok getter naming — a `Boolean` field defaults to `getX()`, while a primitive `boolean` field defaults to `isX()` (JavaBean convention); switching a field's type to close a nullable-unboxing bug renames every call site's getter, and the compiler catches the mismatch ✅ 07-timetrack
+- Many-to-one ownership — map the foreign-key side with `@ManyToOne` and name its column with `@JoinColumn` ✅ 07-timetrack
 - `@OneToMany(mappedBy = "user")` — the inverse side of the relationship; `mappedBy` points to the field in the other entity that owns the FK; a one-to-many with neither `mappedBy` nor `@JoinColumn` produces an unexpected join table
 - Many-to-many ownership — map the join table on one owning side with `@JoinTable` and point the inverse side back with `mappedBy` rather than creating two independent associations
 - Cascade vs orphan removal — propagate selected persistence operations to related entities or delete a managed child when it is removed from its parent's collection
-- Enum string vs ordinal persistence — store stable names when enum reordering or insertion must not silently change the meaning of existing rows
-- Hibernate timestamps vs JPA lifecycle callbacks — choose provider convenience or portable entity callbacks deliberately when populating audit timestamps
+- Enum string vs ordinal persistence — store stable names when enum reordering or insertion must not silently change the meaning of existing rows ✅ 07-timetrack
+- Hibernate timestamps vs JPA lifecycle callbacks — choose provider convenience or portable entity callbacks deliberately when populating audit timestamps ✅ 07-timetrack
 - Flyway vs `ddl-auto=update` — evolve schemas through ordered, reviewable migrations rather than allowing runtime ORM metadata to mutate a durable production database implicitly
 
 ### Spring Data JPA — repositories and queries
 
-- `JpaRepository` CRUD contract — recognise the inherited persistence, lookup, existence, listing, and deletion operations before declaring redundant repository methods
-- `Optional` single-result contract — Spring Data returns an absent value rather than null from a single-result finder, which is what makes the "not found" branch explicit at the service boundary
+- `JpaRepository` CRUD contract — recognise the inherited persistence, lookup, existence, listing, and deletion operations before declaring redundant repository methods ✅ 07-timetrack
+- `Optional` single-result contract — Spring Data returns an absent value rather than null from a single-result finder, which is what makes the "not found" branch explicit at the service boundary ✅ 07-timetrack
 - `findById` vs `getReferenceById` — one loads the row immediately and reports absence, the other returns an uninitialised reference that is cheap for setting a foreign key but fails on first access outside an open persistence context
-- `save()` insert vs update — recognise that Spring Data decides whether an entity is new before delegating to persistence, so `save()` is not a synonym for SQL INSERT
-- Derived query methods — let Spring Data derive simple lookups and existence checks from repository method names, switching approach when the name stops expressing the query clearly
-- JPQL vs native SQL in `@Query` — prefer entity and attribute names for portable persistence queries and opt into database SQL only when the required behaviour justifies tighter coupling
-- Interface-based projections — declare a getter-only interface matching the `AS` aliases of a `@Query` (or a derived query's implicit column names) and Spring Data populates it without a full entity or DTO class; read-only, and the getter names must match the aliases exactly
+- `save()` insert vs update — recognise that Spring Data decides whether an entity is new before delegating to persistence, so `save()` is not a synonym for SQL INSERT ✅ 07-timetrack
+- Derived query methods — let Spring Data derive simple lookups and existence checks from repository method names, switching approach when the name stops expressing the query clearly ✅ 07-timetrack
+- JPQL vs native SQL in `@Query` — prefer entity and attribute names for portable persistence queries and opt into database SQL only when the required behaviour justifies tighter coupling ✅ 07-timetrack
+- Interface-based projections — declare a getter-only interface matching the `AS` aliases of a `@Query` (or a derived query's implicit column names) and Spring Data populates it without a full entity or DTO class; read-only, and the getter names must match the aliases exactly ✅ 07-timetrack
 - `@Modifying` write queries — a declared update or delete query needs the modifying marker and an active transaction, and it bypasses the persistence context, so already-loaded entities can be left stale afterwards
 - Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically
 - `Page<T>` vs `Slice<T>` — return total-count metadata only when the client needs it, because a slice can answer whether another chunk exists without an additional count query
 
 ### Query behaviour and diagnosis
 
-- Generated-statement logging — enable Hibernate's SQL and binding output to see the statements the repository layer actually issues, because query count and shape are invisible from Java code alone
-- N+1 problem — one query loads the list, then N extra queries load each lazy relationship in a loop; fix with `JOIN FETCH` in `@Query` or with `@EntityGraph`
-- `FetchType.LAZY` vs `FetchType.EAGER` — deferred versus mandatory relationship loading, with the defaults deliberately asymmetric: to-one associations load eagerly and to-many associations lazily, so fetching must be chosen per use case rather than fixed globally
+- Generated-statement logging — enable Hibernate's SQL and binding output to see the statements the repository layer actually issues, because query count and shape are invisible from Java code alone ✅ 07-timetrack
+- N+1 problem — one query loads the list, then N extra queries load each lazy relationship in a loop; fix with `JOIN FETCH` in `@Query` or with `@EntityGraph` ✅ 07-timetrack
+- `FetchType.LAZY` vs `FetchType.EAGER` — deferred versus mandatory relationship loading, with the defaults deliberately asymmetric: to-one associations load eagerly and to-many associations lazily, so fetching must be chosen per use case rather than fixed globally ✅ 07-timetrack
 - Write timing and deferred failure — a persistence call stages work that reaches the database at flush or commit, so a constraint violation is reported at the transaction boundary rather than on the line that appeared to cause it
-- Open EntityManager in View — recognise that Boot's web default can keep lazy loading available during response rendering, why this can hide query behaviour, and why DTO mapping should happen inside an explicit service transaction
+- Open EntityManager in View — recognise that Boot's web default can keep lazy loading available during response rendering, why this can hide query behaviour, and why DTO mapping should happen inside an explicit service transaction ✅ 07-timetrack
 
 ### Transactions
 
-- `@Transactional` atomicity and rollback — group one business operation in a transaction and know that the default rollback rules differ for unchecked and checked exceptions
+- `@Transactional` atomicity and rollback — group one business operation in a transaction and know that the default rollback rules differ for unchecked and checked exceptions ✅ 07-timetrack
 - Spring's `@Transactional` vs the Jakarta annotation — two importable annotations of the same name carry different rollback defaults, so the import decides the behaviour
-- `@Transactional(readOnly = true)` — declares read intent so the provider can skip dirty checking, while whether writes are actually refused depends on the driver and database rather than on Spring
-- Transaction boundary placement — put the annotation on the externally invoked, proxy-eligible service method that spans the whole business operation, not on a controller, a private method, or a single repository call
-- Spring Data repository default transactionality — repository CRUD methods carry their own `@Transactional`, so an unannotated service commits every call as its own transaction with no atomicity across them, which is why the service boundary is a deliberate decision rather than an optional annotation
-- `LazyInitializationException` — thrown when you access a `LAZY` relationship after the Hibernate session is closed (outside the `@Transactional` boundary); fix by converting to DTO inside the `@Transactional` method, or by using `JOIN FETCH` to load the relationship eagerly in the query
+- `@Transactional(readOnly = true)` — declares read intent so the provider can skip dirty checking, while whether writes are actually refused depends on the driver and database rather than on Spring ✅ 07-timetrack
+- Transaction boundary placement — put the annotation on the externally invoked, proxy-eligible service method that spans the whole business operation, not on a controller, a private method, or a single repository call ✅ 07-timetrack
+- Spring Data repository default transactionality — repository CRUD methods carry their own `@Transactional`, so an unannotated service commits every call as its own transaction with no atomicity across them, which is why the service boundary is a deliberate decision rather than an optional annotation ✅ 07-timetrack
+- `LazyInitializationException` — thrown when you access a `LAZY` relationship after the Hibernate session is closed (outside the `@Transactional` boundary); fix by converting to DTO inside the `@Transactional` method, or by using `JOIN FETCH` to load the relationship eagerly in the query ✅ 07-timetrack
 - Caught exceptions and rollback — swallowing a failure inside a transactional method can let the proxy observe normal completion and commit unless rollback is re-established deliberately
 
 ### Spring Security — chain configuration and access rules
 
-- Web security activation — Boot activates web security from the classpath without an explicit enabling annotation, while method security is a separate switch that must be turned on deliberately
-- `SecurityFilterChain` — declare the chain as a bean and place a custom authentication filter at the correct position relative to the framework's own filters, because order decides what has already run when it executes
-- Security route rules — declare specific public and role-protected matchers before the authenticated catch-all because matcher order controls which rule applies
-- `@PreAuthorize("hasRole('MANAGER')")` — a method-level check evaluated after authentication, which is silently ignored unless method security is enabled
-- URL rules vs method-level checks — the two enforcement points are independent, so a permitted route can still be refused by an annotation and a protected route is refused before the method is ever reached
-- `hasRole` vs `hasAuthority` and the `ROLE_` prefix — role checks add the prefix for you while authority checks compare the stored string literally, so a mismatch between how authorities are persisted and how they are checked rejects a correctly authenticated user
-- `AuthenticationEntryPoint` — produces the response when a request arrives unauthenticated, and is the only way to give that failure the same JSON error contract as the rest of the API, because it fires in the filter chain before any controller advice can see it
+- Web security activation — Boot activates web security from the classpath without an explicit enabling annotation, while method security is a separate switch that must be turned on deliberately ✅ 07-timetrack
+- `SecurityFilterChain` — declare the chain as a bean and place a custom authentication filter at the correct position relative to the framework's own filters, because order decides what has already run when it executes ✅ 07-timetrack
+- Security route rules — declare specific public and role-protected matchers before the authenticated catch-all because matcher order controls which rule applies ✅ 07-timetrack
+- `@PreAuthorize("hasRole('MANAGER')")` — a method-level check evaluated after authentication, which is silently ignored unless method security is enabled ✅ 07-timetrack
+- URL rules vs method-level checks — the two enforcement points are independent, so a permitted route can still be refused by an annotation and a protected route is refused before the method is ever reached ✅ 07-timetrack
+- `hasRole` vs `hasAuthority` and the `ROLE_` prefix — role checks add the prefix for you while authority checks compare the stored string literally, so a mismatch between how authorities are persisted and how they are checked rejects a correctly authenticated user ✅ 07-timetrack
+- `AuthenticationEntryPoint` — produces the response when a request arrives unauthenticated, and is the only way to give that failure the same JSON error contract as the rest of the API, because it fires in the filter chain before any controller advice can see it ✅ 07-timetrack
 - `AccessDeniedHandler` — produces the response when an authenticated caller lacks the required authority, the security-boundary counterpart to handling `AccessDeniedException` in controller advice; where the refusal happens decides which one fires
-- Re-checking account status per request, not just at login — a token issued before an account is disabled stays technically valid until it expires, so a stateless JWT filter must re-run an account-status check (`AccountStatusUserDetailsChecker`) on every request against the freshly loaded `UserDetails`, not rely on the check `loadUserByUsername` already ran once at login
-- Stateless session configuration — a bearer-token API sets the session creation policy so no server session is established, which is what makes each request stand alone
-- CSRF configuration for a bearer-token API — the decision to disable or retain CSRF follows from how credentials travel, so a cookie-authenticated endpoint in the same application still needs it
-- CORS with Spring Security — a shared `CorsConfigurationSource` keeps policy central and lets the security chain handle preflight; `@CrossOrigin` can still be valid for deliberately local controller policy
-- Preflight through the security chain — permit or correctly process browser `OPTIONS` requests so authentication rules do not reject the preflight before the real cross-origin request is sent
+- Re-checking account status per request, not just at login — a token issued before an account is disabled stays technically valid until it expires, so a stateless JWT filter must re-run an account-status check (`AccountStatusUserDetailsChecker`) on every request against the freshly loaded `UserDetails`, not rely on the check `loadUserByUsername` already ran once at login ✅ 07-timetrack
+- Stateless session configuration — a bearer-token API sets the session creation policy so no server session is established, which is what makes each request stand alone ✅ 07-timetrack
+- CSRF configuration for a bearer-token API — the decision to disable or retain CSRF follows from how credentials travel, so a cookie-authenticated endpoint in the same application still needs it ✅ 07-timetrack
+- CORS with Spring Security — a shared `CorsConfigurationSource` keeps policy central and lets the security chain handle preflight; `@CrossOrigin` can still be valid for deliberately local controller policy ✅ 07-timetrack
+- Preflight through the security chain — permit or correctly process browser `OPTIONS` requests so authentication rules do not reject the preflight before the real cross-origin request is sent ✅ 07-timetrack
 
 ### Spring Security — authentication and JWT
 
-- `UserDetailsService.loadUserByUsername()` — the one method you implement to tell Spring how to load your users from the database; called automatically by `DaoAuthenticationProvider` during login; you never call it yourself
-- `PasswordEncoder` contract — verify a submitted password by matching it against the stored encoded value through the encoder, never by comparing or reversing the stored string
+- `UserDetailsService.loadUserByUsername()` — the one method you implement to tell Spring how to load your users from the database; called automatically by `DaoAuthenticationProvider` during login; you never call it yourself ✅ 07-timetrack
+- `PasswordEncoder` contract — verify a submitted password by matching it against the stored encoded value through the encoder, never by comparing or reversing the stored string ✅ 07-timetrack
 - `DelegatingPasswordEncoder` and encoded-id prefixes — recognise stored values such as `{bcrypt}...` and understand that the prefix is what selects the encoder used to verify them
-- `AuthenticationManager` delegation — authenticating a submitted credential runs the configured provider, which loads the user through `UserDetailsService` and verifies the password through the encoder
-- Exposing the authentication manager — the manager is not injectable by default, so a login service that authenticates programmatically must publish it as a bean from the security configuration
-- `OncePerRequestFilter` — process JWT authentication once in the normal request dispatch and always continue or terminate the filter chain deliberately
-- `SecurityContextHolder` — thread-local storage where the authentication filter places the authenticated principal for the current request, and where a service reads it from
+- `AuthenticationManager` delegation — authenticating a submitted credential runs the configured provider, which loads the user through `UserDetailsService` and verifies the password through the encoder ✅ 07-timetrack
+- Exposing the authentication manager — the manager is not injectable by default, so a login service that authenticates programmatically must publish it as a bean from the security configuration ✅ 07-timetrack
+- `OncePerRequestFilter` — process JWT authentication once in the normal request dispatch and always continue or terminate the filter chain deliberately ✅ 07-timetrack
+- `SecurityContextHolder` — thread-local storage where the authentication filter places the authenticated principal for the current request, and where a service reads it from ✅ 07-timetrack
 - `@AuthenticationPrincipal` — resolve the authenticated user as a controller method argument instead of reaching into the static context holder
 - Anonymous authentication — an unauthenticated request may still have an anonymous `Authentication` object, so code must check authentication state rather than assuming the context value is null
-- `UsernamePasswordAuthenticationToken` 2-arg vs 3-arg — 2-arg (no authorities) is unverified credentials passed to `authenticate()`; 3-arg (with authorities) is a confirmed authentication stored in `SecurityContextHolder`; the distinction matters when reading JwtFilter code
-- JWT issuance — derive a signing key from configured secret material and sign the claims the application will later trust, keeping that material out of the source tree
+- `UsernamePasswordAuthenticationToken` 2-arg vs 3-arg — 2-arg (no authorities) is unverified credentials passed to `authenticate()`; 3-arg (with authorities) is a confirmed authentication stored in `SecurityContextHolder`; the distinction matters when reading JwtFilter code ✅ 07-timetrack
+- JWT issuance — derive a signing key from configured secret material and sign the claims the application will later trust, keeping that material out of the source tree ✅ 07-timetrack
 - JWT validation failure modes — parsing under the same algorithm and key distinguishes an expired token, a malformed token, and a bad signature, and each should reach the client as a deliberate response rather than a server error
-- JWT claim-to-authority mapping — load the user or map trusted role claims into Spring Security authorities before placing the authenticated token in `SecurityContextHolder`
+- JWT claim-to-authority mapping — load the user or map trusted role claims into Spring Security authorities before placing the authenticated token in `SecurityContextHolder` ✅ 07-timetrack
 
 ### Testing
 
@@ -430,10 +430,10 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 
 ### Configuration and profiles
 
-- Externalized configuration and property precedence — keep environment-specific values outside code and recognise that command-line arguments, environment variables, profile files, and base configuration can override one another
-- Profile-specific configuration files — profile values live either in an `application-{profile}` file or in one multi-document file whose sections are separated by `---` in YAML or `#---` in properties and selected with `spring.config.activate.on-profile`
-- Datasource and persistence properties — connect the application to a real database through its URL, credentials, and driver settings, and recognise what each `ddl-auto` value does to an existing schema
-- Profiles — activate environment-specific beans and configuration deliberately without treating a profile as a secrets store
+- Externalized configuration and property precedence — keep environment-specific values outside code and recognise that command-line arguments, environment variables, profile files, and base configuration can override one another ✅ 07-timetrack
+- Profile-specific configuration files — profile values live either in an `application-{profile}` file or in one multi-document file whose sections are separated by `---` in YAML or `#---` in properties and selected with `spring.config.activate.on-profile` ✅ 07-timetrack
+- Datasource and persistence properties — connect the application to a real database through its URL, credentials, and driver settings, and recognise what each `ddl-auto` value does to an existing schema ✅ 07-timetrack
+- Profiles — activate environment-specific beans and configuration deliberately without treating a profile as a secrets store ✅ 07-timetrack
 - `@Value` vs `@ConfigurationProperties` — inject an isolated value directly or bind and validate a cohesive typed configuration group when several related settings belong together
 - SQL initialization — understand when Boot runs `schema.sql` and `data.sql` and how initialization differs for embedded and external databases
 
@@ -441,7 +441,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 
 - Spring Framework vs Spring Boot — distinguish the core container and framework modules from Boot's opinionated auto-configuration, starters, executable packaging, and operational defaults
 - `@SpringBootApplication` — combines configuration, auto-configuration, and component scanning; place it in a root package so the default scan reaches application components
-- Auto-configuration and starters — Boot configures infrastructure conditionally from the classpath, properties, and existing beans, while starters provide a compatible dependency set rather than generating application code
+- Auto-configuration and starters — Boot configures infrastructure conditionally from the classpath, properties, and existing beans, while starters provide a compatible dependency set rather than generating application code ✅ 07-timetrack
 - Embedded server and executable JAR — a servlet web starter supplies an embedded server so the packaged application can run without deploying a WAR to an external container
 - `spring-boot-starter-parent` and dependency management — inherit compatible dependency and plugin versions while distinguishing that Boot-specific build behaviour from Maven's generic lifecycle
 - Spring Boot Maven plugin — package an executable archive and run the application through Boot-specific goals without confusing the plugin with dependency management
@@ -473,7 +473,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Variables, declared types, initialization, and scope — know where a local, parameter, field, or block variable exists and that local variables must be definitely assigned before use
 - Primitive vs reference types — primitives hold a value, while reference variables identify objects and may be `null`
 - `int` vs `long` — choose `long` when the range can exceed `int`; use an `L` suffix only when the integer literal itself does not fit in `int`
-- Primitive vs wrapper types — wrappers support generics and `null`, while unboxing a null wrapper throws `NullPointerException`
+- Primitive vs wrapper types — wrappers support generics and `null`, while unboxing a null wrapper throws `NullPointerException` ✅ 07-timetrack
 - Numeric conversions and casts — widening conversions are normally safe, while narrowing can lose range or precision and therefore requires an explicit cast
 - Integer arithmetic — recognise integer division, overflow, and the need to promote an operand when fractional or wider arithmetic is required
 - Operators and short-circuit evaluation — use arithmetic, comparison, logical, and assignment operators and explain why `&&` and `||` may skip the right operand
@@ -493,26 +493,26 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Overloading — methods share a name but have different parameter lists, and the compiler selects the applicable signature
 - Varargs — a `Type...` parameter accepts zero or more arguments collected into an array and must be the last parameter, as seen in APIs such as `List.of` and `String.format`
 - Constructor defaults and chaining — recognise when Java supplies a no-argument constructor, chain overloads with `this(...)`, and initialise the superclass first through `super(...)`
-- `static` vs instance members — static state and behaviour belong to the class, while instance members require a particular object
+- `static` vs instance members — static state and behaviour belong to the class, while instance members require a particular object ✅ 07-timetrack
 - Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
 - Object aliasing — two references can point to the same mutable object, so a change through one reference is visible through the other
-- `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries
+- `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries ✅ 07-timetrack
 
 ### Classes and object-oriented behaviour
 
-- Classes, objects, fields, and constructors — define state and behaviour, create instances, and establish valid initial state during construction
-- `this` — refer to the current instance and disambiguate a field from a parameter with the same name
-- Encapsulation — keep representation private and expose behaviour or controlled access so callers cannot bypass class invariants
-- Access modifiers — distinguish `public`, `protected`, package-private, and `private` visibility when reading code across packages and hierarchies
-- `final` variables, fields, methods, and classes — prevent reassignment, overriding, or inheritance as applicable; a final field must be assigned exactly once (typically in the constructor), yet a final reference still does not make its object immutable
+- Classes, objects, fields, and constructors — define state and behaviour, create instances, and establish valid initial state during construction ✅ 07-timetrack
+- `this` — refer to the current instance and disambiguate a field from a parameter with the same name ✅ 07-timetrack
+- Encapsulation — keep representation private and expose behaviour or controlled access so callers cannot bypass class invariants ✅ 07-timetrack
+- Access modifiers — distinguish `public`, `protected`, package-private, and `private` visibility when reading code across packages and hierarchies ✅ 07-timetrack
+- `final` variables, fields, methods, and classes — prevent reassignment, overriding, or inheritance as applicable; a final field must be assigned exactly once (typically in the constructor), yet a final reference still does not make its object immutable ✅ 07-timetrack
 - Inheritance vs composition — inheritance models an is-a relationship, while composition builds behaviour from has-a collaborators and avoids unnecessary coupling
-- Polymorphism and dynamic dispatch — a parent or interface reference can hold different implementations, and an overridden instance method is selected from the runtime object
-- Interfaces — define a contract that unrelated classes can implement and allow callers to depend on behaviour rather than one concrete class
+- Polymorphism and dynamic dispatch — a parent or interface reference can hold different implementations, and an overridden instance method is selected from the runtime object ✅ 07-timetrack
+- Interfaces — define a contract that unrelated classes can implement and allow callers to depend on behaviour rather than one concrete class ✅ 07-timetrack
 - Interface vs abstract class — interfaces support multiple contract inheritance and default behaviour, while abstract classes can also provide constructors and shared instance state
 - Default methods — an interface may provide inherited behaviour while preserving the implementing class's ability to override it
 - Multiple interfaces — one class can satisfy several contracts even though it can extend only one class
 - Anonymous inner classes — recognise inline implementations such as `new Runnable() {...}` or `new Comparator<>() {...}` in maintained code and read them as the pre-lambda form of a functional-interface or abstract-type instance
-- `@Override` — ask the compiler to verify that a method really implements or overrides an inherited declaration
+- `@Override` — ask the compiler to verify that a method really implements or overrides an inherited declaration ✅ 07-timetrack
 - Overriding vs overloading — overriding replaces inherited instance behaviour at runtime; overloading selects among different parameter lists at compile time
 - `instanceof` and pattern variables — test a runtime type before using subtype behaviour without an unsafe cast
 - Records — use a concise data carrier with final components and generated accessors, canonical construction, `equals`, `hashCode`, and `toString`
@@ -520,97 +520,97 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 
 ### Equality and hashing
 
-- Identity vs value equality — `==` compares primitive values or reference identity, while `equals` expresses semantic equality for objects
+- Identity vs value equality — `==` compares primitive values or reference identity, while `equals` expresses semantic equality for objects ✅ 07-timetrack
 - `String.equals()` vs `==` — compare String content with `equals`; `==` only asks whether both references identify the same object
 - Wrapper equality and boxing — automatic boxing/unboxing converts between primitives and wrappers, but wrapper `==` may appear to work because of caching and must not be used for value equality
 - `Objects.equals(a, b)` — perform null-safe object equality by handling nulls before delegating to `equals`
-- The `equals` / `hashCode` contract — equal objects must have equal hash codes, and both methods must change together for correct `HashSet` and `HashMap` behaviour
-- Mutable hash keys — changing fields used by `equals` or `hashCode` after insertion can make an entry effectively unreachable in a hash-based collection
+- The `equals` / `hashCode` contract — equal objects must have equal hash codes, and both methods must change together for correct `HashSet` and `HashMap` behaviour ✅ 07-timetrack
+- Mutable hash keys — changing fields used by `equals` or `hashCode` after insertion can make an entry effectively unreachable in a hash-based collection ✅ 07-timetrack
 - `toString()` — provide a useful textual representation for diagnostics without exposing secrets or relying on it as a serialization contract
 
 ### Strings and decimal values
 
 - String immutability — String operations return new values rather than modifying the original object
-- Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code
+- Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code ✅ 07-timetrack
 - `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
 - `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
 - String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException`
 - `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings
 - Floating-point representation and comparison — `double` and `float` cannot represent most decimals exactly, so `==` between them is unreliable and `NaN` is never equal to itself, which is why floating-point equality needs a tolerance or `BigDecimal`
 - Integer vs floating-point division by zero — integer division by zero throws `ArithmeticException`, while floating-point division by zero produces `Infinity` or `NaN` instead of failing
-- `BigDecimal` for money and decimal arithmetic — avoid binary floating-point error, remember operations return new values, and choose explicit scale and rounding for division
+- `BigDecimal` for money and decimal arithmetic — avoid binary floating-point error, remember operations return new values, and choose explicit scale and rounding for division ✅ 07-timetrack
 
 ### Collections and generics
 
 - Arrays vs collections — arrays have a fixed length and indexed elements, while collection APIs provide resizable and semantic data structures
 - Array access and bounds — index elements with `[i]` and read length via the `.length` field (a field, not a method, unlike `String.length()` or `List.size()`), knowing that an out-of-range index throws `ArrayIndexOutOfBoundsException`
-- `List` — preserve encounter order and allow duplicates when position or sequence matters
+- `List` — preserve encounter order and allow duplicates when position or sequence matters ✅ 07-timetrack
 - `Set` — represent unique elements when duplicates have no meaning
 - `Map` — associate unique keys with values and distinguish missing keys from keys explicitly mapped to `null`
 - `ArrayList`, `HashSet`, and `HashMap` — recognise the normal general-purpose implementations for list, set, and map semantics
 - Map accumulator idioms — use `getOrDefault` and `computeIfAbsent` for the common count-or-group pattern instead of manual get-check-put null handling
-- Collection interfaces vs implementations — declare the weakest useful contract such as `List` while choosing a concrete implementation such as `ArrayList` at construction
-- Collection factories and copies — `List.of`, `Set.of`, and `Map.of` reject nulls and return unmodifiable collections, which still does not make mutable elements deeply immutable
+- Collection interfaces vs implementations — declare the weakest useful contract such as `List` while choosing a concrete implementation such as `ArrayList` at construction ✅ 07-timetrack
+- Collection factories and copies — `List.of`, `Set.of`, and `Map.of` reject nulls and return unmodifiable collections, which still does not make mutable elements deeply immutable ✅ 07-timetrack
 - `ArrayList` vs `LinkedList` — prefer `ArrayList` for normal application access; linked nodes do not make locating a middle position constant-time
 - Iteration and safe removal — do not structurally modify a collection through the collection itself during for-each iteration; use `removeIf` or the iterator's own `remove`
 - Practical complexity recognition — distinguish linear list search from expected constant-time hash lookup without treating Big-O as a substitute for measurement
 - `Comparable<T>` vs `Comparator<T>` — define one natural order inside a type or multiple external orderings without changing that type
 - `Comparator.comparing()` — build a field-based ordering and compose tie-breakers when the primary key is equal
 - Equality vs ordering consistency — understand that sorted sets and maps treat `compareTo` or `compare` returning zero as the same key even when `equals` disagrees
-- Generic types and methods — use type parameters such as `List<User>` and `<T>` to preserve compile-time type safety and avoid casts
+- Generic types and methods — use type parameters such as `List<User>` and `<T>` to preserve compile-time type safety and avoid casts ✅ 07-timetrack
 - Raw types and diamond inference — avoid raw collections that discard type checks and use `<>` when the compiler can infer constructor type arguments
 - Generic invariance — `List<Dog>` is not a subtype of `List<Animal>` because adding another Animal through that alias would break type safety
 - Wildcard recognition — read `?`, `? extends T`, and `? super T` in library signatures without attempting advanced generic API design
-- Nested generic APIs — read types such as `Optional<User>`, `Page<User>`, and `ResponseEntity<List<User>>` by working from the outer container inward
+- Nested generic APIs — read types such as `Optional<User>`, `Page<User>`, and `ResponseEntity<List<User>>` by working from the outer container inward ✅ 07-timetrack
 
 ### Optional, lambdas, and streams
 
-- `Optional<T>` as a return contract — make an absent result explicit when absence is normal, rather than using it for every nullable field or parameter
+- `Optional<T>` as a return contract — make an absent result explicit when absence is normal, rather than using it for every nullable field or parameter ✅ 07-timetrack
 - `Optional.map` and `ifPresent` — transform a present value or run a side effect without manually branching on presence
 - `Optional.filter` — reject a present value that fails a predicate by turning it into an empty Optional, so one terminal operation handles both absence and rejection ✅ 07-timetrack
-- `Optional.orElseGet` and `orElseThrow` — produce a lazy fallback or fail with a meaningful exception instead of calling unchecked `get`
+- `Optional.orElseGet` and `orElseThrow` — produce a lazy fallback or fail with a meaningful exception instead of calling unchecked `get` ✅ 07-timetrack
 - `orElse` vs `orElseGet` — `orElse` evaluates its fallback eagerly, while `orElseGet` calls its supplier only when the Optional is empty
-- `Predicate<T>` — represent a test from one input to a boolean result
-- `Function<T, R>` — represent a transformation from an input type to an output type
+- `Predicate<T>` — represent a test from one input to a boolean result ✅ 07-timetrack
+- `Function<T, R>` — represent a transformation from an input type to an output type ✅ 07-timetrack
 - `Consumer<T>` — accept a value for a side effect without returning a result
-- `Supplier<T>` — produce a value without receiving an input
-- Lambda expressions — pass small pieces of behaviour to APIs while keeping parameter and return types consistent with the target functional interface
-- Method references — use forms such as `Employee::getName` when a lambda only delegates to an existing method
-- Stream pipeline lifecycle — create a lazy intermediate pipeline and trigger it once with a terminal operation; a consumed stream cannot be reused
-- `filter`, `map`, and `toList` — select and transform elements into a result without mutating the source collection
+- `Supplier<T>` — produce a value without receiving an input ✅ 07-timetrack
+- Lambda expressions — pass small pieces of behaviour to APIs while keeping parameter and return types consistent with the target functional interface ✅ 07-timetrack
+- Method references — use forms such as `Employee::getName` when a lambda only delegates to an existing method ✅ 07-timetrack
+- Stream pipeline lifecycle — create a lazy intermediate pipeline and trigger it once with a terminal operation; a consumed stream cannot be reused ✅ 07-timetrack
+- `filter`, `map`, and `toList` — select and transform elements into a result without mutating the source collection ✅ 07-timetrack
 - `flatMap` — transform each element into zero or more elements and flatten the nested results into one stream
 - `sorted` and `distinct` — order elements or remove duplicates while recognising their dependence on comparison and equality contracts
-- `reduce` and simple aggregation — combine stream elements into one result with an identity or accumulator whose operation is associative
-- `anyMatch` — answer whether at least one element satisfies a predicate, short-circuiting on the first match rather than materialising a filtered collection to test that it is non-empty
+- `reduce` and simple aggregation — combine stream elements into one result with an identity or accumulator whose operation is associative ✅ 07-timetrack
+- `anyMatch` — answer whether at least one element satisfies a predicate, short-circuiting on the first match rather than materialising a filtered collection to test that it is non-empty ✅ 07-timetrack
 - `findFirst` and `allMatch` — retrieve the first matching element as an `Optional`, or assert that every element satisfies a predicate, choosing the result type the caller actually needs
 - Stream side effects vs loops — keep stream transformations side-effect free and choose a loop when stateful branching or early control flow is clearer
 - `Stream.toList()` vs `Collectors.toList()` — `Stream.toList()` returns an unmodifiable list, while `Collectors.toList()` makes no mutability guarantee
-- `Collectors.toMap` — gather a stream into a key/value map, supplying a merge function because a duplicate key otherwise throws instead of silently overwriting
+- `Collectors.toMap` — gather a stream into a key/value map, supplying a merge function because a duplicate key otherwise throws instead of silently overwriting ✅ 07-timetrack
 - `Collectors.joining` — gather a stream of text into one delimited String, with an optional prefix and suffix, instead of accumulating with a manual separator flag
 
 ### Exceptions and diagnostics
 
-- Checked vs unchecked exceptions — checked exceptions must be caught or declared, while `RuntimeException` subclasses do not carry that compile-time requirement
-- `throw` vs `throws` — a `throw` statement evaluates an exception reference and completes abruptly, while a `throws` clause declares possible checked failures to callers
+- Checked vs unchecked exceptions — checked exceptions must be caught or declared, while `RuntimeException` subclasses do not carry that compile-time requirement ✅ 07-timetrack
+- `throw` vs `throws` — a `throw` statement evaluates an exception reference and completes abruptly, while a `throws` clause declares possible checked failures to callers ✅ 07-timetrack
 - Exception propagation and stack unwinding — an uncaught exception removes call frames until a compatible handler is found or the thread terminates
-- Targeted `try` / `catch` / `finally` — catch only failures that can be handled or contextualised and use `finally` for cleanup that must run
+- Targeted `try` / `catch` / `finally` — catch only failures that can be handled or contextualised and use `finally` for cleanup that must run ✅ 07-timetrack
 - Try-with-resources — close `AutoCloseable` resources on both success and failure without duplicating cleanup code
-- Custom exception types — name a meaningful failure with a dedicated unchecked type so a caller or a boundary handler can react to that failure specifically instead of parsing a message string
+- Custom exception types — name a meaningful failure with a dedicated unchecked type so a caller or a boundary handler can react to that failure specifically instead of parsing a message string ✅ 07-timetrack
 - Preserved exception causes — pass the original throwable into the wrapping exception so the trace still shows where the failure actually started
-- Do not swallow exceptions — an empty or over-broad catch hides the failure and leaves callers unable to distinguish success from corruption
+- Do not swallow exceptions — an empty or over-broad catch hides the failure and leaves callers unable to distinguish success from corruption ✅ 07-timetrack
 - Reading stack traces — identify the exception type, message, cause chain, and first relevant application frame before changing code
 
 ### Enums and annotations
 
-- Enums — model a closed set of named domain values instead of scattering magic Strings through control flow
-- Enum identity and behaviour — compare enum constants safely with `==` and allow fields or methods when each constant needs domain data or behaviour
+- Enums — model a closed set of named domain values instead of scattering magic Strings through control flow ✅ 07-timetrack
+- Enum identity and behaviour — compare enum constants safely with `==` and allow fields or methods when each constant needs domain data or behaviour ✅ 07-timetrack
 - Enums in switch expressions — let the compiler enforce that every known constant is handled when no default branch hides omissions
 - Annotation metadata — understand that an annotation records metadata and that its target and retention determine where it may appear and whether runtime tools can inspect it
 - Reading unfamiliar annotations — consult the annotation's documented contract and recognise whether the compiler, a runtime framework, or another tool processes it
 
 ### Date, time, and API literacy
 
-- `LocalDate`, `LocalDateTime`, and `Instant` — choose a calendar date, timezone-free local date-time, or exact UTC timeline point according to the business contract
+- `LocalDate`, `LocalDateTime`, and `Instant` — choose a calendar date, timezone-free local date-time, or exact UTC timeline point according to the business contract ✅ 07-timetrack
 - `Duration` vs `Period` — measure an elapsed time-based amount with `Duration` and a calendar date-based amount with `Period`, rather than computing intervals by hand
 - Date-time immutability and formatting — use `java.time` and `DateTimeFormatter` instead of mutable legacy date APIs and ambiguous hand-built strings
 - Javadoc and API signatures — navigate official API documentation and infer required arguments, return types, exceptions, and generic contracts
@@ -619,11 +619,11 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 
 Maven is ecosystem tooling rather than Java language syntax; this section owns generic Java-build mechanics, while Spring Boot coverage owns starter, parent, and plugin behaviour.
 
-- Maven coordinates — identify an artifact through `groupId`, `artifactId`, and `version`
-- `pom.xml` build structure — locate dependencies, plugins, properties, and inherited configuration without confusing their roles
-- Dependency resolution — locate an artifact in Maven Central, add its coordinates, and let Maven resolve transitive dependencies while inspecting unexpected versions
+- Maven coordinates — identify an artifact through `groupId`, `artifactId`, and `version` ✅ 07-timetrack
+- `pom.xml` build structure — locate dependencies, plugins, properties, and inherited configuration without confusing their roles ✅ 07-timetrack
+- Dependency resolution — locate an artifact in Maven Central, add its coordinates, and let Maven resolve transitive dependencies while inspecting unexpected versions ✅ 07-timetrack
 - Build lifecycle — distinguish `clean`, `compile`, `test`, `package`, and `install` and know that a later lifecycle phase runs the earlier phases
-- Dependency scopes — distinguish compile, runtime, test, and provided classpaths so libraries are available only where intended
+- Dependency scopes — distinguish compile, runtime, test, and provided classpaths so libraries are available only where intended ✅ 07-timetrack
 - Maven Wrapper — use the repository's pinned Maven launcher so local and CI builds use a consistent Maven version
 
 ## Architecture
@@ -637,7 +637,7 @@ apply in a small codebase, and defend with concrete trade-offs.
   dependency constraints, design patterns solve narrower recurring problems, and implementation is the
   concrete code that realises those decisions
 - Layer vs tier — a layer is a logical separation of responsibility inside the code, while a tier is
-  a separately deployed or executed part of the system; three layers can still run in one backend tier
+  a separately deployed or executed part of the system; three layers can still run in one backend tier ✅ 07-timetrack
 - Logical module vs deployed service — a module groups a cohesive responsibility inside an application,
   while a separately deployed service adds a network and operational boundary
 - Architectural drivers and quality attributes — connect a structural choice to requirements such as
@@ -647,66 +647,66 @@ apply in a small codebase, and defend with concrete trade-offs.
 ### API and resource boundaries
 
 - REST architectural style — keep client and server responsibilities separate, make requests stateless,
-  and expose a uniform resource interface so calls do not depend on hidden conversational state
-- Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action
+  and expose a uniform resource interface so calls do not depend on hidden conversational state ✅ 07-timetrack
+- Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action ✅ 07-timetrack
 - Resource modelling — paths identify resources and relationships, while HTTP methods express the
-  operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model
+  operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model ✅ 07-timetrack
 - A name must not imply a guarantee the query does not enforce — an endpoint or field named after a
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
-  data actually is, or add the filter, but never leave the two disagreeing
+  data actually is, or add the filter, but never leave the two disagreeing ✅ 07-timetrack
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
-  breakdown produces a total that cannot equal the sum of the rows the client is shown
+  breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack
 
 ### Layered architecture
 
 - Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; the client
   reaches the backend through an explicit network API boundary, commonly HTTP, and never queries the
-  database directly
+  database directly ✅ 07-timetrack
 - Controller → Service → Repository — controllers translate HTTP, services apply and orchestrate
-  business rules, and repositories encapsulate persistence access
+  business rules, and repositories encapsulate persistence access ✅ 07-timetrack
 - Service layer — the application boundary that holds business rules, validation beyond structural
   input checks, and orchestration between persistence ports so another entry point can reuse the policy and tests can
-  exercise it without the web layer
+  exercise it without the web layer ✅ 07-timetrack
 - Repository pattern — places data-access operations behind a contract so application logic does
   not contain queries directly; a repository abstraction still carries persistence semantics and is not a
-  promise that every storage technology is interchangeable
+  promise that every storage technology is interchangeable ✅ 07-timetrack
 - Business-rule placement — keep application rules outside delivery and persistence code so another
-  entry point can reuse them and focused tests do not require the web or database layer
+  entry point can reuse them and focused tests do not require the web or database layer ✅ 07-timetrack
 - Why the controller should not call the repository directly — it bypasses application policy, mixes
-  HTTP and persistence responsibilities, and makes changes and focused tests more brittle
+  HTTP and persistence responsibilities, and makes changes and focused tests more brittle ✅ 07-timetrack
 - MVC — separates input coordination, presentation, and application/domain state; it is not limited
   to server-rendered HTML and is a different design axis from controller/service/repository layering
 - MVC vs layered architecture — MVC organises interaction and presentation responsibilities, while
   layers organise dependency direction; a system can use both without one being a subtype of the other
 - Layered dependency direction — higher-level policy should not depend directly on delivery or
-  persistence details; dependencies crossing a boundary point through an appropriate contract
+  persistence details; dependencies crossing a boundary point through an appropriate contract ✅ 07-timetrack
 
 ### DTO pattern
 
 - Why not expose persistence entities directly — a JPA entity is coupled to persistence concerns;
-  exposing it couples the API shape to the database mapping and can disclose fields unintentionally
+  exposing it couples the API shape to the database mapping and can disclose fields unintentionally ✅ 07-timetrack
 - Request DTO — represent and structurally validate untrusted input without confusing transport
-  validation with business invariants
+  validation with business invariants ✅ 07-timetrack
 - Response DTO — shape a stable outward representation and minimise field disclosure independently of
-  the internal persistence or domain model
+  the internal persistence or domain model ✅ 07-timetrack
 - Mapping placement — translate transport DTOs at the application/API boundary and persistence models
-  at the persistence boundary; avoid making controllers own business rules or exposing entities as contracts
+  at the persistence boundary; avoid making controllers own business rules or exposing entities as contracts ✅ 07-timetrack
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
 - Create vs Update request DTOs — separate them when the operations have different validation,
-  optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match
+  optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match ✅ 07-timetrack
 - Backward-compatible API evolution — treat public fields and semantics as consumer contracts and
-  prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients
+  prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients ✅ 07-timetrack
 
 ### Data access decisions
 
 - Soft delete vs hard delete — retain a record when audit, recovery, or historical references justify
-  the extra filtering and uniqueness complexity; otherwise permanent deletion may be the simpler contract
+  the extra filtering and uniqueness complexity; otherwise permanent deletion may be the simpler contract ✅ 07-timetrack
 - Pagination — bound large collection responses when volume can grow, choosing an explicit page or
   cursor contract instead of assuming every list is safely returned at once
 - Consistency boundary — one business operation may require several writes to succeed or fail as a
-  unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics
+  unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics ✅ 07-timetrack
 
 ### Presentation boundaries
 
@@ -744,9 +744,9 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Dependency injection vs service locator — explicit constructor or framework injection reveals a
   class's collaborators, while pulling dependencies from a global registry hides them and weakens tests
 - Boundary failure ownership — translate infrastructure and domain failures at the boundary that has
-  enough context to produce a stable outward error contract without leaking framework exceptions
+  enough context to produce a stable outward error contract without leaking framework exceptions ✅ 07-timetrack
 - Package by feature vs package by layer — feature packaging keeps one use case together; layer
-  packaging makes technical roles obvious but scatters a change across the tree
+  packaging makes technical roles obvious but scatters a change across the tree ✅ 07-timetrack
 - Horizontal layering vs vertical feature slices — layers group code by technical role, while a
   feature slice groups the delivery, application, and persistence pieces that change for one capability
 - Composition over inheritance — assembling focused collaborators avoids inheriting behaviour and
@@ -756,7 +756,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
-  superficially similar code with different reasons to change into one abstraction
+  superficially similar code with different reasons to change into one abstraction ✅ 07-timetrack
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
   centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
@@ -772,12 +772,12 @@ apply in a small codebase, and defend with concrete trade-offs.
 ### Business behaviour
 
 - Domain rule vs application orchestration — a domain rule states what is valid in the business,
-  while application orchestration coordinates repositories and collaborators to complete a use case
+  while application orchestration coordinates repositories and collaborators to complete a use case ✅ 07-timetrack
 
 ### Workflow modelling
 
 - State machine pattern — model a workflow as explicit states and allowed transitions so invalid moves
-  such as APPROVED → DRAFT are rejected at one business boundary
+  such as APPROVED → DRAFT are rejected at one business boundary ✅ 07-timetrack
 
 ### Boundary patterns in maintained code
 
@@ -798,7 +798,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 ### SOLID
 
 - Single Responsibility — split a class when unrelated actors or policies make it change for different
-  reasons, not simply because it has many lines or methods
+  reasons, not simply because it has many lines or methods ✅ 07-timetrack
 - Open/Closed — keep stable abstractions open to extension without treating existing code as forbidden
   to change when requirements or a poor abstraction demand it
 - Liskov Substitution — a subtype can replace its parent only when it preserves the caller-visible
@@ -825,45 +825,45 @@ review without taking on specialist or production-platform ownership.
 - Trust boundaries — treat the browser, API, database, third-party services, build environment, and
   network as separate zones whose inputs and identities require verification
 - Parsing is not trust — route parameters, headers, cookies, JSON, hidden fields, and decoded token
-  claims remain attacker-controlled even after a framework has parsed them successfully
+  claims remain attacker-controlled even after a framework has parsed them successfully ✅ 07-timetrack
 - Least privilege and deny by default — grant users, tokens, components, and database accounts only
-  the access they need, while leaving unmatched actions inaccessible
+  the access they need, while leaving unmatched actions inaccessible ✅ 07-timetrack
 - Defence in depth — combine validation, authorisation, safe APIs, output encoding, transport
-  protection, and monitoring because no single control is sufficient
+  protection, and monitoring because no single control is sufficient ✅ 07-timetrack
 - Allow-list over block-list — define accepted origins, roles, fields, formats, and ranges instead of
-  trying to enumerate every malicious value
+  trying to enumerate every malicious value ✅ 07-timetrack
 - Secure defaults and fail closed — an absent rule, invalid credential, unexpected exception, or
-  unavailable dependency must not silently make a protected operation public
+  unavailable dependency must not silently make a protected operation public ✅ 07-timetrack
 
 ### Authentication and authorisation
 
 - Authentication vs authorisation — authentication verifies an identity, while authorisation decides
-  what that authenticated identity may do
+  what that authenticated identity may do ✅ 07-timetrack
 - Identification vs authentication — a username, email, or token subject names a claimed identity,
   while credential verification establishes whether the claim is genuine
 - Credentials, identity, and session state — a password proves identity at login, while a session ID
   or bearer token carries the resulting authenticated state across later requests
 - Server-side enforcement — Angular guards and hidden buttons improve navigation and UX but never
-  replace permission checks on every protected backend operation
+  replace permission checks on every protected backend operation ✅ 07-timetrack
 - Role-based access control — map roles or authorities consistently and prevent clients from assigning
   privileged roles to themselves
 - Layered authorisation rules — request-level and method-level checks can reinforce each other but must
-  not leave gaps or contradictory policy
+  not leave gaps or contradictory policy ✅ 07-timetrack
 - Object-level authorisation (BOLA/IDOR) — verify access to the specific requested record instead of
-  assuming that any logged-in user may use any identifier
+  assuming that any logged-in user may use any identifier ✅ 07-timetrack
 - Horizontal vs vertical privilege escalation — distinguish accessing another user's resources from
-  gaining a more privileged role or operation
+  gaining a more privileged role or operation ✅ 07-timetrack
 - Trusted identity for ownership checks — derive the caller from the authenticated security context
-  rather than accepting an owner or user ID from the request body
+  rather than accepting an owner or user ID from the request body ✅ 07-timetrack
 - Collection vs detail authorisation — a filter on a list endpoint does not protect the matching
-  read, update, or delete endpoint, so each operation must enforce the same visibility rule
+  read, update, or delete endpoint, so each operation must enforce the same visibility rule ✅ 07-timetrack
 - Input validation vs authorisation — valid data shape and business values do not prove that the caller
   has permission to perform the requested action
 
 ### Session and token lifecycle
 
 - Session-based vs token-based authentication — compare server-held session state with self-contained
-  bearer tokens, including storage, scaling, revocation, and CSRF consequences
+  bearer tokens, including storage, scaling, revocation, and CSRF consequences ✅ 07-timetrack
 - Authentication vs session management — verifying credentials creates authenticated state, while
   propagation, expiry, renewal, rotation, and invalidation govern its later lifecycle
 - Session fixation and hijacking — accept only server-generated unpredictable session identifiers,
@@ -874,25 +874,25 @@ review without taking on specialist or production-platform ownership.
 ### JWT validation
 
 - JWT structure — distinguish the header, claim set, and signature without assuming every JWT uses the
-  same signing algorithm
+  same signing algorithm ✅ 07-timetrack
 - JWT encoding vs encryption — Base64url makes header and payload readable; a signed JWT detects
   tampering but does not make its claims secret
 - Signature or MAC vs encryption — a signature or message authentication code provides integrity and
   authenticity, while encryption provides confidentiality
 - JWT signature verification — accept a token only after verifying its signature with the configured
-  trusted key and rejecting algorithms the application did not choose
+  trusted key and rejecting algorithms the application did not choose ✅ 07-timetrack
 - JWT signing-key strength — load a sufficiently strong random or generated key from trusted
-  configuration because moving a weak human password out of source control does not make it secure
+  configuration because moving a weak human password out of source control does not make it secure ✅ 07-timetrack
 - JWT issuer and audience validation — bind a token to the authority that issued it and the service
   intended to accept it instead of trusting any token signed by a familiar key
 - JWT temporal-claim validation — enforce expiry and any applicable not-before time rather than
-  accepting a token outside its valid window
+  accepting a token outside its valid window ✅ 07-timetrack
 - JWT subject and application-claim validation — treat identity, role, and other claims as input to
-  policy checks rather than proof that every requested action is allowed
+  policy checks rather than proof that every requested action is allowed ✅ 07-timetrack
 - JWT tampering resistance — changing header or payload bytes invalidates the signature unless the
   attacker can produce a valid signature with the trusted signing key
 - JWT expiry — short-lived access tokens reduce the useful lifetime of a stolen credential but do not
-  prevent misuse before expiry
+  prevent misuse before expiry ✅ 07-timetrack
 - Access token vs refresh token — use a short-lived access token for APIs and a more protected,
   longer-lived refresh token only to obtain new access tokens
 - Logout and revocation limits — deleting a browser token ends local use but does not invalidate an
@@ -903,15 +903,15 @@ review without taking on specialist or production-platform ownership.
 - Hashing vs encryption vs encoding — hashing is one-way verification, encryption is reversible with a
   key, and encoding only changes representation
 - Password hashing — store passwords with a slow adaptive password-hashing function such as BCrypt,
-  never as plaintext, reversible encryption, or a fast general-purpose hash
+  never as plaintext, reversible encryption, or a fast general-purpose hash ✅ 07-timetrack
 - Salt — use a unique random salt per password so equal passwords do not produce equal stored hashes;
-  a standard password encoder manages it with the hash
+  a standard password encoder manages it with the hash ✅ 07-timetrack
 - Work factor — tune the password hash cost so verification is deliberately expensive for attackers
   but still acceptable for legitimate logins
 - Password verification — delegate hash parsing, salt handling, and verification to a maintained
-  password encoder instead of comparing raw passwords or hashes manually
+  password encoder instead of comparing raw passwords or hashes manually ✅ 07-timetrack
 - Security-sensitive randomness — generate reset tokens, initial secrets, and other guess-sensitive values
-  from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream
+  from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream ✅ 07-timetrack
 - Brute-force defence — throttle repeated authentication attempts using account and network signals
   without relying on permanent lockout that attackers can abuse for denial of service
 - Password reset — use a short-lived, single-use, unpredictable token, invalidate it after success,
@@ -919,16 +919,16 @@ review without taking on specialist or production-platform ownership.
 - Multi-factor authentication awareness — recognise that a second independent factor reduces the
   damage from a stolen password without requiring a junior to design an enterprise identity system
 - Generic authentication failures — keep login status, response shape, message, and observable timing
-  sufficiently consistent that they do not reveal whether an account exists
+  sufficiently consistent that they do not reveal whether an account exists ✅ 07-timetrack
 - Endpoint abuse limiting — recognise that registration, reset, verification, and expensive API
   operations also need bounded throttling, while distributed policy design remains a later-level task
 
 ### Same-Origin Policy and CORS
 
 - Same-Origin Policy and origin — the browser isolates script access by scheme, host, and port, so
-  `http://localhost:4200` and `http://localhost:8080` are different origins
+  `http://localhost:4200` and `http://localhost:8080` are different origins ✅ 07-timetrack
 - CORS purpose — the server uses response headers to let a browser relax the Same-Origin Policy for
-  selected cross-origin requests
+  selected cross-origin requests ✅ 07-timetrack
 - CORS is not authorisation — it limits browser JavaScript, not Postman, curl, servers, or attackers,
   so protected APIs still require authentication and authorisation
 - Simple vs preflighted CORS requests — a simple request may reach the server before the browser hides
@@ -965,19 +965,19 @@ review without taking on specialist or production-platform ownership.
 ### Injection, validation, and unsafe input
 
 - Server-side validation — client validation improves UX but can be bypassed, so the API must validate
-  every untrusted request independently
+  every untrusted request independently ✅ 07-timetrack
 - Syntactic vs semantic validation — validate shape and range as well as business facts such as
-  ownership, allowed state transitions, and permitted relationships
+  ownership, allowed state transitions, and permitted relationships ✅ 07-timetrack
 - Validation vs sanitisation vs output encoding — distinguish rejecting invalid data, transforming
   data, and rendering it safely in a specific output context
 - SQL injection — bind query parameters and never concatenate untrusted input into SQL or JPQL;
-  an ORM cannot make string-built queries safe
+  an ORM cannot make string-built queries safe ✅ 07-timetrack
 - Injection beyond SQL — avoid building shell commands, templates, expressions, paths, or log records
   by concatenating unchecked input
 - Unsafe deserialisation — accept constrained DTO and data formats instead of reconstructing arbitrary
   attacker-selected object types or enabling polymorphic type resolution casually
 - Mass assignment / over-posting — constrain request DTO fields so a client cannot set roles,
-  ownership, approval state, audit metadata, or other server-controlled properties
+  ownership, approval state, audit metadata, or other server-controlled properties ✅ 07-timetrack
 
 ### Resource and destination controls
 
@@ -997,9 +997,9 @@ review without taking on specialist or production-platform ownership.
 - Data minimisation — collect, retain, process, and return only the sensitive or personal data the
   feature genuinely needs
 - Response DTOs and sensitive fields — never serialize password hashes, secrets, internal claims, or
-  unnecessary personal data merely because they exist on an entity
+  unnecessary personal data merely because they exist on an entity ✅ 07-timetrack
 - Error-response hygiene — return stable useful errors without stack traces, SQL details, filesystem
-  paths, internal class names, or secrets
+  paths, internal class names, or secrets ✅ 07-timetrack
 - Resource-existence disclosure — distinguishing "forbidden" from "not found" lets a caller enumerate
   which identifiers exist, so an object the caller may not reach is reported as missing unless that
   caller is entitled to know it exists ✅ 07-timetrack
@@ -1011,20 +1011,20 @@ review without taking on specialist or production-platform ownership.
 ### Secrets and transport
 
 - Secrets vs ordinary configuration — keep passwords, signing keys, and API credentials out of source
-  code, committed configuration, frontend bundles, container images, and test fixtures
+  code, committed configuration, frontend bundles, container images, and test fixtures ✅ 07-timetrack
 - Frontend secrecy impossibility — any value shipped in an Angular bundle is visible to the user, so
   embedded API keys are not secrets
 - Secret injection — environment variables or a secret store separate credentials from source code,
-  but logs, diagnostics, process inspection, and overly broad access can still expose them
+  but logs, diagnostics, process inspection, and overly broad access can still expose them ✅ 07-timetrack
 - TLS as a precondition — HTTPS protects credentials and data in transit; JWT signing, hashing,
   validation, and authorisation solve different problems and do not replace it
 
 ### Hardening and security headers
 
 - Development vs production hardening — default credentials, debug modes, verbose errors, test data,
-  and permissive development settings must not reach production
+  and permissive development settings must not reach production ✅ 07-timetrack
 - Protection-disablement review — disabling CSRF, authentication, frame protection, or other secure
-  defaults requires an explicit threat-model reason rather than a convenient fix
+  defaults requires an explicit threat-model reason rather than a convenient fix ✅ 07-timetrack
 - Administrative endpoint exposure — management, documentation, debug, metrics, and dump endpoints
   expand the attack surface and require deliberate exposure and access control
 - Security-header recognition — understand the protection signalled by CSP, `frame-ancestors`,
@@ -1494,9 +1494,9 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `SUM` and `AVG` — both ignore `NULL`; `SUM` adds the known values and `AVG` divides by the count of known values, so `AVG` does not treat missing values as zero
 - `MIN` and `MAX` — return the smallest or largest non-`NULL` input and work with ordered types such as numbers, text, and dates
 - Aggregate results on empty input — `COUNT` returns `0`, while `SUM`, `AVG`, `MIN`, and `MAX` return `NULL` when no input rows remain; use `COALESCE` only when the result contract truly requires a default
-- `GROUP BY` rule — selected expressions normally need to be grouped or aggregated; PostgreSQL also permits columns it can prove functionally dependent on a grouped primary key, but explicit grouping is clearer in portable junior SQL
+- `GROUP BY` rule — selected expressions normally need to be grouped or aggregated; PostgreSQL also permits columns it can prove functionally dependent on a grouped primary key, but explicit grouping is clearer in portable junior SQL ✅ 07-timetrack
 - `GROUP BY` with `LEFT JOIN` — when joining before grouping, include all non-aggregated columns from the joined table in `GROUP BY`; use `LEFT JOIN` so groups with zero matches still appear with `COUNT = 0`
-- `GROUP BY` on an identifying column, not just a display name — grouping by a name alone silently merges two distinct rows that happen to share that name; group by the id (and select the name alongside it) so an aggregate stays correct even when values collide
+- `GROUP BY` on an identifying column, not just a display name — grouping by a name alone silently merges two distinct rows that happen to share that name; group by the id (and select the name alongside it) so an aggregate stays correct even when values collide ✅ 07-timetrack
 - `HAVING` — filters groups after aggregation; `WHERE` filters rows before grouping; `WHERE` cannot use aggregate functions, `HAVING` can; interviewers always ask the difference
 - Conditional aggregation with `CASE WHEN` — `SUM(CASE WHEN status = 'approved' THEN hours ELSE 0 END)` aggregates only a subset of rows; used for reporting by status in TimeTrack; interviewers ask "how would you count only approved entries per project?"
 - `FILTER (WHERE ...)` — PostgreSQL shorthand for conditional aggregation: `COUNT(*) FILTER (WHERE status = 'approved')`; same result as `CASE WHEN` but cleaner for simple conditions
@@ -1618,17 +1618,17 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 ### Schema design
 
 - Primary key — one optional table constraint, possibly composite, that uniquely identifies rows;
-  application tables normally define one even though SQL does not require every table to have it
+  application tables normally define one even though SQL does not require every table to have it ✅ 07-timetrack
 - Foreign key — one or more columns referencing a primary or other unique candidate key;
-  PostgreSQL rejects values with no referenced row, enforcing referential integrity
-- `ON DELETE` behavior — PostgreSQL defaults to `NO ACTION`; `RESTRICT` also rejects referenced-row deletion but cannot be deferred, `CASCADE` deletes dependent rows, and `SET NULL` clears a nullable foreign key
-- `NOT NULL` constraint — the column must always have a value; used on required fields like `email`, `password`, `status`; interviewers ask why you chose to add it
-- `UNIQUE` constraint — rejects duplicate non-`NULL` keys and creates a supporting unique B-tree index; PostgreSQL permits multiple `NULL` values by default unless `NULLS NOT DISTINCT` is requested
+  PostgreSQL rejects values with no referenced row, enforcing referential integrity ✅ 07-timetrack
+- `ON DELETE` behavior — PostgreSQL defaults to `NO ACTION`; `RESTRICT` also rejects referenced-row deletion but cannot be deferred, `CASCADE` deletes dependent rows, and `SET NULL` clears a nullable foreign key ✅ 07-timetrack
+- `NOT NULL` constraint — the column must always have a value; used on required fields like `email`, `password`, `status`; interviewers ask why you chose to add it ✅ 07-timetrack
+- `UNIQUE` constraint — rejects duplicate non-`NULL` keys and creates a supporting unique B-tree index; PostgreSQL permits multiple `NULL` values by default unless `NULLS NOT DISTINCT` is requested ✅ 07-timetrack
 - Composite uniqueness — a `UNIQUE` constraint across several columns enforces a business rule on the combination, such as one membership per `(user_id, project_id)`
 - `CHECK` constraint and `NULL` — a check rejects `FALSE` but accepts `TRUE` or `UNKNOWN`, so `CHECK (hours > 0)` still needs `NOT NULL` when hours are required
-- One-to-many relationships — place the foreign key on the many side so each child references one parent while a parent can own several children
+- One-to-many relationships — place the foreign key on the many side so each child references one parent while a parent can own several children ✅ 07-timetrack
 - Many-to-many relationships — use a junction table with two foreign keys and usually a composite uniqueness rule so each pair appears only once
-- Natural vs surrogate keys — a surrogate key gives the row a stable technical identity, while a natural business key still needs a `UNIQUE` constraint when the domain says it cannot repeat
+- Natural vs surrogate keys — a surrogate key gives the row a stable technical identity, while a natural business key still needs a `UNIQUE` constraint when the domain says it cannot repeat ✅ 07-timetrack
 - Normalization and data anomalies — store each fact in the relation determined by its key so inserts, updates, and deletes do not require inconsistent copies; formal normal-form analysis belongs to middle
 - Reading a relational schema — identify each table's grain, primary key, foreign keys, nullability, and relationship cardinality before constructing a query
 
@@ -1638,9 +1638,9 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 - `VARCHAR(n)` vs `TEXT` — both have identical storage performance in PostgreSQL; `VARCHAR(n)` documents an intended maximum length; `TEXT` is for content with no meaningful upper limit; the practical difference is intent, not performance
 - Integer identity columns vs `SERIAL` — `GENERATED ... AS IDENTITY` is the SQL-standard PostgreSQL choice for generated integer keys; `SERIAL` is legacy shorthand that creates a separate sequence and default, while `BIGINT`/`BIGSERIAL` widen the range
-- `NUMERIC(p,s)` vs `FLOAT` — `FLOAT` is an approximation that compounds rounding errors over time; `NUMERIC(10,2)` stores exact decimals; always use `NUMERIC` for prices and financial values; interviewers ask "why would you not use `FLOAT` for money?"
+- `NUMERIC(p,s)` vs `FLOAT` — `FLOAT` is an approximation that compounds rounding errors over time; `NUMERIC(10,2)` stores exact decimals; always use `NUMERIC` for prices and financial values; interviewers ask "why would you not use `FLOAT` for money?" ✅ 07-timetrack
 - Integer division and explicit casts — integer divided by integer truncates the fractional part in PostgreSQL; cast an operand to `NUMERIC` when the result must retain decimals
-- `DATE` vs `TIMESTAMP` / `TIMESTAMPTZ` — use `DATE` for a calendar value with no time of day, `TIMESTAMP` for a local wall-clock value, and `TIMESTAMPTZ` for an instant shared across time zones
+- `DATE` vs `TIMESTAMP` / `TIMESTAMPTZ` — use `DATE` for a calendar value with no time of day, `TIMESTAMP` for a local wall-clock value, and `TIMESTAMPTZ` for an instant shared across time zones ✅ 07-timetrack
 - `TIMESTAMP` vs `TIMESTAMPTZ` — `TIMESTAMP` stores the date and time exactly as entered, ignoring time zones; `TIMESTAMPTZ` converts to UTC on write and back to the session time zone on read; always use `TIMESTAMPTZ` for `created_at` in a web application
 - `BOOLEAN` — stores true, false, or null; use SQL literals `TRUE` and `FALSE` because PostgreSQL does
   not generally treat an unquoted integer `1` as a boolean
@@ -1681,7 +1681,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ### Query workflow and SQL review
 
-- Bound parameters — keep SQL structure separate from runtime values through prepared-statement or framework placeholders, preserving correct typing and reusable statement structure
+- Bound parameters — keep SQL structure separate from runtime values through prepared-statement or framework placeholders, preserving correct typing and reusable statement structure ✅ 07-timetrack
 - Query construction from a business question — decide the result grain first, then identify tables, join paths, filters, grouping, and ordering before writing syntax
 - Incremental query debugging — inspect a small sample after each join, filter, and aggregation, and predict the expected row count so errors are found where they enter
 - Report-total verification — compare complex report totals with simpler control queries at the intended grain before trusting the result
@@ -1814,25 +1814,25 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Client–server request/response model — trace how a client sends a request and receives a response without treating either framework as the protocol itself ✅ 02-weather-app
 - URL anatomy — distinguish scheme, host, port, path, query, and fragment so an incorrect endpoint can be diagnosed precisely ✅ 02-weather-app
 - URI vs URL — distinguish a resource identifier from the subset that also describes where and how to access it
-- REST resource and representation model — model domain resources behind representations instead of treating endpoint paths as remote procedure names
-- Collection vs item URI — use stable noun-based paths to distinguish a resource collection from one identified member
-- HTTP methods — choose `GET`, `POST`, `PUT`, `PATCH`, or `DELETE` from the intended resource operation rather than from habit
-- Safe vs idempotent methods — safe methods do not request a state change, while repeating an idempotent request has the same intended effect as sending it once
-- `PUT` vs `PATCH` — use complete replacement semantics for PUT and partial modification semantics for PATCH when the API contract supports them
-- Path parameters vs query parameters vs request body — use the path for resource identity, the query for optional selection or representation controls, and the body for a submitted representation
-- HTTP headers and body — keep request metadata in headers and the submitted representation in the body
+- REST resource and representation model — model domain resources behind representations instead of treating endpoint paths as remote procedure names ✅ 07-timetrack
+- Collection vs item URI — use stable noun-based paths to distinguish a resource collection from one identified member ✅ 07-timetrack
+- HTTP methods — choose `GET`, `POST`, `PUT`, `PATCH`, or `DELETE` from the intended resource operation rather than from habit ✅ 07-timetrack
+- Safe vs idempotent methods — safe methods do not request a state change, while repeating an idempotent request has the same intended effect as sending it once ✅ 07-timetrack
+- `PUT` vs `PATCH` — use complete replacement semantics for PUT and partial modification semantics for PATCH when the API contract supports them ✅ 07-timetrack
+- Path parameters vs query parameters vs request body — use the path for resource identity, the query for optional selection or representation controls, and the body for a submitted representation ✅ 07-timetrack
+- HTTP headers and body — keep request metadata in headers and the submitted representation in the body ✅ 07-timetrack
 - `Content-Type` vs `Accept` — declare the media type being sent separately from the response media types the client can process
-- Stateless HTTP — understand that HTTP defines no conversational session while an application may carry state in each request or look it up through an identifier such as a session cookie
+- Stateless HTTP — understand that HTTP defines no conversational session while an application may carry state in each request or look it up through an identifier such as a session cookie ✅ 07-timetrack
 - HTTPS vs HTTP — recognise that HTTPS applies TLS protection to HTTP traffic in transit while HTTP alone provides no transport encryption
 - Basic web request path — recognise DNS resolution, connection to a host and port, TLS negotiation for HTTPS, and the later HTTP exchange as distinct failure points
 
 ### HTTP responses, failures, and caching
 
-- HTTP status-code families — use 1xx, 2xx, 3xx, 4xx, and 5xx as protocol-level categories before inspecting the application error body
-- `200 OK`, `201 Created`, and `204 No Content` — select the success status from whether the operation returns a representation, creates a resource, or intentionally returns no body
+- HTTP status-code families — use 1xx, 2xx, 3xx, 4xx, and 5xx as protocol-level categories before inspecting the application error body ✅ 07-timetrack
+- `200 OK`, `201 Created`, and `204 No Content` — select the success status from whether the operation returns a representation, creates a resource, or intentionally returns no body ✅ 07-timetrack
 - `400 Bad Request` vs `422 Unprocessable Content` — recognise 400 as a broad perceived client-request error and 422 as understood media type and syntax whose instructions cannot be processed, while following the API's documented convention
-- `401 Unauthorized` vs `403 Forbidden` — distinguish missing or invalid authentication from an authenticated identity lacking permission
-- `404 Not Found` vs `409 Conflict` — distinguish an absent resource from a request that conflicts with current resource state
+- `401 Unauthorized` vs `403 Forbidden` — distinguish missing or invalid authentication from an authenticated identity lacking permission ✅ 07-timetrack
+- `404 Not Found` vs `409 Conflict` — distinguish an absent resource from a request that conflicts with current resource state ✅ 07-timetrack
 - `500 Internal Server Error` vs `503 Service Unavailable` — distinguish an unexpected server failure from temporary inability to serve the request
 - Redirect semantics — recognise that 3xx responses point the client elsewhere and that method-preserving redirects differ from redirects commonly followed as GET
 - `301`/`302`/`303` vs `307`/`308` redirects — recognise when common clients may follow with GET and when the original method and body must be preserved
@@ -1847,23 +1847,23 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 - JSON value model — recognise objects, arrays, strings, numbers, booleans, and `null`, with double-quoted object keys and no trailing commas
 - JSON object vs array — distinguish a named property collection from an ordered value collection when reading or designing a payload
-- Missing field vs explicit `null` — treat absence and an explicit null value as separate contract states unless the API defines them as equivalent
+- Missing field vs explicit `null` — treat absence and an explicit null value as separate contract states unless the API defines them as equivalent ✅ 07-timetrack
 - JSON limitations — recognise that JSON has no native date, `undefined`, binary, or distinct integer type, so an API must define representations for them
-- Serialization vs deserialization — distinguish converting an in-memory value to a transport representation from reconstructing a value from that representation
+- Serialization vs deserialization — distinguish converting an in-memory value to a transport representation from reconstructing a value from that representation ✅ 07-timetrack
 - Contract naming and type mismatches — diagnose failures caused by different property names, nesting, nullability, or expected value types across a boundary
-- Date and time representation — agree an explicit interoperable string format and time-zone meaning instead of relying on environment-specific parsing
+- Date and time representation — agree an explicit interoperable string format and time-zone meaning instead of relying on environment-specific parsing ✅ 07-timetrack
 - OpenAPI recognition — read operations, parameters, schemas, responses, and examples in a machine-readable HTTP API contract
 - OpenAPI specification vs interactive documentation — distinguish the contract document from tools such as Swagger UI that render and exercise it
 - API client tools — use Postman or `curl` to inspect and reproduce an HTTP exchange without treating a successful manual request as complete automated verification
 
 ### Error handling and diagnostics
 
-- Error propagation — let a failure travel to a boundary that can add context or choose a response instead of swallowing it or catching and rethrowing without value
+- Error propagation — let a failure travel to a boundary that can add context or choose a response instead of swallowing it or catching and rethrowing without value ✅ 07-timetrack
 - Local error recovery — substitute a fallback only when it is semantically honest; converting every failure into empty data fabricates success
-- Error message vs diagnostic detail — give consumers a stable safe message while preserving technical context for diagnosis
-- Exception vs log — understand that an exception changes control flow while a log records an event without handling it
+- Error message vs diagnostic detail — give consumers a stable safe message while preserving technical context for diagnosis ✅ 07-timetrack
+- Exception vs log — understand that an exception changes control flow while a log records an event without handling it ✅ 07-timetrack
 - Structured logging — record searchable fields and context rather than relying on unstructured print statements
-- Log levels — choose `DEBUG`, `INFO`, `WARN`, or `ERROR` from operational meaning rather than using one level for every event
+- Log levels — choose `DEBUG`, `INFO`, `WARN`, or `ERROR` from operational meaning rather than using one level for every event ✅ 07-timetrack
 - Reproducible debugging — establish reliable steps and the smallest failing input before changing code so the effect of a fix can be verified
 - Boundary isolation — reduce a failure to the client, network, API, persistence, or external dependency before investigating implementation detail
 - Stack trace and cause chain — read the failure type, message, frames, and nested causes from the first relevant application frame outward
@@ -1894,9 +1894,9 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 ### Configuration and environments
 
-- Configuration vs code — keep environment-dependent values outside program logic so the same artifact can run in different contexts
-- Configuration sources — recognise environment variables, configuration files, and command-line inputs and determine which value wins when sources overlap
-- Required configuration and fail-fast startup — reject a missing mandatory value early with a clear diagnostic rather than failing later in unrelated code
+- Configuration vs code — keep environment-dependent values outside program logic so the same artifact can run in different contexts ✅ 07-timetrack
+- Configuration sources — recognise environment variables, configuration files, and command-line inputs and determine which value wins when sources overlap ✅ 07-timetrack
+- Required configuration and fail-fast startup — reject a missing mandatory value early with a clear diagnostic rather than failing later in unrelated code ✅ 07-timetrack
 - Default configuration — provide a default only when it is safe and semantically valid for every context where it may be used
 - Development, test, staging, and production — use each environment for a distinct confidence level without assuming staging is an exact copy of production
 - Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts ✅ 02-weather-app

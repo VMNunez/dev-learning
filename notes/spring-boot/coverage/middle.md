@@ -6,7 +6,7 @@ Concepts expected from a Spring Boot developer who owns production behaviour bey
 
 - Custom Spring Data entity newness — use version/id inspection or `Persistable.isNew()` deliberately when assigned identifiers or unusual lifecycle rules make the default decision incorrect
 - Identifier generation performance — evaluate sequence allocation and identity batching trade-offs only when measured persistence throughput or database portability makes them relevant
-- Dynamic query construction with `Specification<T>` — compose type-safe Criteria API predicates through `JpaSpecificationExecutor` so a query carries only the filters actually supplied, instead of a JPQL string whose every optional parameter needs its own null check
+- Dynamic query construction with `Specification<T>` — compose type-safe Criteria API predicates through `JpaSpecificationExecutor` so a query carries only the filters actually supplied, instead of a JPQL string whose every optional parameter needs its own null check ✅ 07-timetrack
 - Multiple security chains — order matcher-specific `SecurityFilterChain` beans when one application exposes genuinely different security boundaries
 - Filter dispatch control — decide whether a `OncePerRequestFilter` participates in async or error dispatches and test those paths explicitly
 - MVC method-validation models — align exception handling with built-in method validation or the older AOP-based `@Validated` path when maintaining mixed framework generations

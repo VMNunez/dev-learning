@@ -13,45 +13,45 @@ review without taking on specialist or production-platform ownership.
 - Trust boundaries — treat the browser, API, database, third-party services, build environment, and
   network as separate zones whose inputs and identities require verification
 - Parsing is not trust — route parameters, headers, cookies, JSON, hidden fields, and decoded token
-  claims remain attacker-controlled even after a framework has parsed them successfully
+  claims remain attacker-controlled even after a framework has parsed them successfully ✅ 07-timetrack
 - Least privilege and deny by default — grant users, tokens, components, and database accounts only
-  the access they need, while leaving unmatched actions inaccessible
+  the access they need, while leaving unmatched actions inaccessible ✅ 07-timetrack
 - Defence in depth — combine validation, authorisation, safe APIs, output encoding, transport
-  protection, and monitoring because no single control is sufficient
+  protection, and monitoring because no single control is sufficient ✅ 07-timetrack
 - Allow-list over block-list — define accepted origins, roles, fields, formats, and ranges instead of
-  trying to enumerate every malicious value
+  trying to enumerate every malicious value ✅ 07-timetrack
 - Secure defaults and fail closed — an absent rule, invalid credential, unexpected exception, or
-  unavailable dependency must not silently make a protected operation public
+  unavailable dependency must not silently make a protected operation public ✅ 07-timetrack
 
 ## Authentication and authorisation
 
 - Authentication vs authorisation — authentication verifies an identity, while authorisation decides
-  what that authenticated identity may do
+  what that authenticated identity may do ✅ 07-timetrack
 - Identification vs authentication — a username, email, or token subject names a claimed identity,
   while credential verification establishes whether the claim is genuine
 - Credentials, identity, and session state — a password proves identity at login, while a session ID
   or bearer token carries the resulting authenticated state across later requests
 - Server-side enforcement — Angular guards and hidden buttons improve navigation and UX but never
-  replace permission checks on every protected backend operation
+  replace permission checks on every protected backend operation ✅ 07-timetrack
 - Role-based access control — map roles or authorities consistently and prevent clients from assigning
   privileged roles to themselves
 - Layered authorisation rules — request-level and method-level checks can reinforce each other but must
-  not leave gaps or contradictory policy
+  not leave gaps or contradictory policy ✅ 07-timetrack
 - Object-level authorisation (BOLA/IDOR) — verify access to the specific requested record instead of
-  assuming that any logged-in user may use any identifier
+  assuming that any logged-in user may use any identifier ✅ 07-timetrack
 - Horizontal vs vertical privilege escalation — distinguish accessing another user's resources from
-  gaining a more privileged role or operation
+  gaining a more privileged role or operation ✅ 07-timetrack
 - Trusted identity for ownership checks — derive the caller from the authenticated security context
-  rather than accepting an owner or user ID from the request body
+  rather than accepting an owner or user ID from the request body ✅ 07-timetrack
 - Collection vs detail authorisation — a filter on a list endpoint does not protect the matching
-  read, update, or delete endpoint, so each operation must enforce the same visibility rule
+  read, update, or delete endpoint, so each operation must enforce the same visibility rule ✅ 07-timetrack
 - Input validation vs authorisation — valid data shape and business values do not prove that the caller
   has permission to perform the requested action
 
 ## Session and token lifecycle
 
 - Session-based vs token-based authentication — compare server-held session state with self-contained
-  bearer tokens, including storage, scaling, revocation, and CSRF consequences
+  bearer tokens, including storage, scaling, revocation, and CSRF consequences ✅ 07-timetrack
 - Authentication vs session management — verifying credentials creates authenticated state, while
   propagation, expiry, renewal, rotation, and invalidation govern its later lifecycle
 - Session fixation and hijacking — accept only server-generated unpredictable session identifiers,
@@ -62,25 +62,25 @@ review without taking on specialist or production-platform ownership.
 ## JWT validation
 
 - JWT structure — distinguish the header, claim set, and signature without assuming every JWT uses the
-  same signing algorithm
+  same signing algorithm ✅ 07-timetrack
 - JWT encoding vs encryption — Base64url makes header and payload readable; a signed JWT detects
   tampering but does not make its claims secret
 - Signature or MAC vs encryption — a signature or message authentication code provides integrity and
   authenticity, while encryption provides confidentiality
 - JWT signature verification — accept a token only after verifying its signature with the configured
-  trusted key and rejecting algorithms the application did not choose
+  trusted key and rejecting algorithms the application did not choose ✅ 07-timetrack
 - JWT signing-key strength — load a sufficiently strong random or generated key from trusted
-  configuration because moving a weak human password out of source control does not make it secure
+  configuration because moving a weak human password out of source control does not make it secure ✅ 07-timetrack
 - JWT issuer and audience validation — bind a token to the authority that issued it and the service
   intended to accept it instead of trusting any token signed by a familiar key
 - JWT temporal-claim validation — enforce expiry and any applicable not-before time rather than
-  accepting a token outside its valid window
+  accepting a token outside its valid window ✅ 07-timetrack
 - JWT subject and application-claim validation — treat identity, role, and other claims as input to
-  policy checks rather than proof that every requested action is allowed
+  policy checks rather than proof that every requested action is allowed ✅ 07-timetrack
 - JWT tampering resistance — changing header or payload bytes invalidates the signature unless the
   attacker can produce a valid signature with the trusted signing key
 - JWT expiry — short-lived access tokens reduce the useful lifetime of a stolen credential but do not
-  prevent misuse before expiry
+  prevent misuse before expiry ✅ 07-timetrack
 - Access token vs refresh token — use a short-lived access token for APIs and a more protected,
   longer-lived refresh token only to obtain new access tokens
 - Logout and revocation limits — deleting a browser token ends local use but does not invalidate an
@@ -91,15 +91,15 @@ review without taking on specialist or production-platform ownership.
 - Hashing vs encryption vs encoding — hashing is one-way verification, encryption is reversible with a
   key, and encoding only changes representation
 - Password hashing — store passwords with a slow adaptive password-hashing function such as BCrypt,
-  never as plaintext, reversible encryption, or a fast general-purpose hash
+  never as plaintext, reversible encryption, or a fast general-purpose hash ✅ 07-timetrack
 - Salt — use a unique random salt per password so equal passwords do not produce equal stored hashes;
-  a standard password encoder manages it with the hash
+  a standard password encoder manages it with the hash ✅ 07-timetrack
 - Work factor — tune the password hash cost so verification is deliberately expensive for attackers
   but still acceptable for legitimate logins
 - Password verification — delegate hash parsing, salt handling, and verification to a maintained
-  password encoder instead of comparing raw passwords or hashes manually
+  password encoder instead of comparing raw passwords or hashes manually ✅ 07-timetrack
 - Security-sensitive randomness — generate reset tokens, initial secrets, and other guess-sensitive values
-  from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream
+  from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream ✅ 07-timetrack
 - Brute-force defence — throttle repeated authentication attempts using account and network signals
   without relying on permanent lockout that attackers can abuse for denial of service
 - Password reset — use a short-lived, single-use, unpredictable token, invalidate it after success,
@@ -107,16 +107,16 @@ review without taking on specialist or production-platform ownership.
 - Multi-factor authentication awareness — recognise that a second independent factor reduces the
   damage from a stolen password without requiring a junior to design an enterprise identity system
 - Generic authentication failures — keep login status, response shape, message, and observable timing
-  sufficiently consistent that they do not reveal whether an account exists
+  sufficiently consistent that they do not reveal whether an account exists ✅ 07-timetrack
 - Endpoint abuse limiting — recognise that registration, reset, verification, and expensive API
   operations also need bounded throttling, while distributed policy design remains a later-level task
 
 ## Same-Origin Policy and CORS
 
 - Same-Origin Policy and origin — the browser isolates script access by scheme, host, and port, so
-  `http://localhost:4200` and `http://localhost:8080` are different origins
+  `http://localhost:4200` and `http://localhost:8080` are different origins ✅ 07-timetrack
 - CORS purpose — the server uses response headers to let a browser relax the Same-Origin Policy for
-  selected cross-origin requests
+  selected cross-origin requests ✅ 07-timetrack
 - CORS is not authorisation — it limits browser JavaScript, not Postman, curl, servers, or attackers,
   so protected APIs still require authentication and authorisation
 - Simple vs preflighted CORS requests — a simple request may reach the server before the browser hides
@@ -153,19 +153,19 @@ review without taking on specialist or production-platform ownership.
 ## Injection, validation, and unsafe input
 
 - Server-side validation — client validation improves UX but can be bypassed, so the API must validate
-  every untrusted request independently
+  every untrusted request independently ✅ 07-timetrack
 - Syntactic vs semantic validation — validate shape and range as well as business facts such as
-  ownership, allowed state transitions, and permitted relationships
+  ownership, allowed state transitions, and permitted relationships ✅ 07-timetrack
 - Validation vs sanitisation vs output encoding — distinguish rejecting invalid data, transforming
   data, and rendering it safely in a specific output context
 - SQL injection — bind query parameters and never concatenate untrusted input into SQL or JPQL;
-  an ORM cannot make string-built queries safe
+  an ORM cannot make string-built queries safe ✅ 07-timetrack
 - Injection beyond SQL — avoid building shell commands, templates, expressions, paths, or log records
   by concatenating unchecked input
 - Unsafe deserialisation — accept constrained DTO and data formats instead of reconstructing arbitrary
   attacker-selected object types or enabling polymorphic type resolution casually
 - Mass assignment / over-posting — constrain request DTO fields so a client cannot set roles,
-  ownership, approval state, audit metadata, or other server-controlled properties
+  ownership, approval state, audit metadata, or other server-controlled properties ✅ 07-timetrack
 
 ## Resource and destination controls
 
@@ -185,9 +185,9 @@ review without taking on specialist or production-platform ownership.
 - Data minimisation — collect, retain, process, and return only the sensitive or personal data the
   feature genuinely needs
 - Response DTOs and sensitive fields — never serialize password hashes, secrets, internal claims, or
-  unnecessary personal data merely because they exist on an entity
+  unnecessary personal data merely because they exist on an entity ✅ 07-timetrack
 - Error-response hygiene — return stable useful errors without stack traces, SQL details, filesystem
-  paths, internal class names, or secrets
+  paths, internal class names, or secrets ✅ 07-timetrack
 - Resource-existence disclosure — distinguishing "forbidden" from "not found" lets a caller enumerate
   which identifiers exist, so an object the caller may not reach is reported as missing unless that
   caller is entitled to know it exists ✅ 07-timetrack
@@ -199,20 +199,20 @@ review without taking on specialist or production-platform ownership.
 ## Secrets and transport
 
 - Secrets vs ordinary configuration — keep passwords, signing keys, and API credentials out of source
-  code, committed configuration, frontend bundles, container images, and test fixtures
+  code, committed configuration, frontend bundles, container images, and test fixtures ✅ 07-timetrack
 - Frontend secrecy impossibility — any value shipped in an Angular bundle is visible to the user, so
   embedded API keys are not secrets
 - Secret injection — environment variables or a secret store separate credentials from source code,
-  but logs, diagnostics, process inspection, and overly broad access can still expose them
+  but logs, diagnostics, process inspection, and overly broad access can still expose them ✅ 07-timetrack
 - TLS as a precondition — HTTPS protects credentials and data in transit; JWT signing, hashing,
   validation, and authorisation solve different problems and do not replace it
 
 ## Hardening and security headers
 
 - Development vs production hardening — default credentials, debug modes, verbose errors, test data,
-  and permissive development settings must not reach production
+  and permissive development settings must not reach production ✅ 07-timetrack
 - Protection-disablement review — disabling CSRF, authentication, frame protection, or other secure
-  defaults requires an explicit threat-model reason rather than a convenient fix
+  defaults requires an explicit threat-model reason rather than a convenient fix ✅ 07-timetrack
 - Administrative endpoint exposure — management, documentation, debug, metrics, and dump endpoints
   expand the attack surface and require deliberate exposure and access control
 - Security-header recognition — understand the protection signalled by CSP, `frame-ancestors`,

@@ -63,7 +63,7 @@ Concepts expected from a Spring Boot developer who owns production behaviour bey
 
 - `AuthenticationEntryPoint` and `AccessDeniedHandler` — control unauthenticated and forbidden responses at the security boundary
 - Spring Boot Actuator — expose and secure health, metrics, and diagnostic endpoints for operations
-- Dynamic query construction with `Specification<T>` — compose type-safe Criteria API predicates through `JpaSpecificationExecutor` so a query carries only the filters actually supplied, instead of a JPQL string whose every optional parameter needs its own null check
+- Dynamic query construction with `Specification<T>` — compose type-safe Criteria API predicates through `JpaSpecificationExecutor` so a query carries only the filters actually supplied, instead of a JPQL string whose every optional parameter needs its own null check ✅ 07-timetrack
 - Application caching — place `@Cacheable`, eviction, and cache keys around stable reads without serving stale business state
 - OpenAPI contract maintenance — keep generated documentation aligned with validation, error responses, and consumer-visible DTOs
 

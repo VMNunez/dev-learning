@@ -9,7 +9,7 @@ apply in a small codebase, and defend with concrete trade-offs.
   dependency constraints, design patterns solve narrower recurring problems, and implementation is the
   concrete code that realises those decisions
 - Layer vs tier — a layer is a logical separation of responsibility inside the code, while a tier is
-  a separately deployed or executed part of the system; three layers can still run in one backend tier
+  a separately deployed or executed part of the system; three layers can still run in one backend tier ✅ 07-timetrack
 - Logical module vs deployed service — a module groups a cohesive responsibility inside an application,
   while a separately deployed service adds a network and operational boundary
 - Architectural drivers and quality attributes — connect a structural choice to requirements such as
@@ -19,66 +19,66 @@ apply in a small codebase, and defend with concrete trade-offs.
 ## API and resource boundaries
 
 - REST architectural style — keep client and server responsibilities separate, make requests stateless,
-  and expose a uniform resource interface so calls do not depend on hidden conversational state
-- Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action
+  and expose a uniform resource interface so calls do not depend on hidden conversational state ✅ 07-timetrack
+- Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action ✅ 07-timetrack
 - Resource modelling — paths identify resources and relationships, while HTTP methods express the
-  operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model
+  operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model ✅ 07-timetrack
 - A name must not imply a guarantee the query does not enforce — an endpoint or field named after a
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
-  data actually is, or add the filter, but never leave the two disagreeing
+  data actually is, or add the filter, but never leave the two disagreeing ✅ 07-timetrack
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
-  breakdown produces a total that cannot equal the sum of the rows the client is shown
+  breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack
 
 ## Layered architecture
 
 - Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; the client
   reaches the backend through an explicit network API boundary, commonly HTTP, and never queries the
-  database directly
+  database directly ✅ 07-timetrack
 - Controller → Service → Repository — controllers translate HTTP, services apply and orchestrate
-  business rules, and repositories encapsulate persistence access
+  business rules, and repositories encapsulate persistence access ✅ 07-timetrack
 - Service layer — the application boundary that holds business rules, validation beyond structural
   input checks, and orchestration between persistence ports so another entry point can reuse the policy and tests can
-  exercise it without the web layer
+  exercise it without the web layer ✅ 07-timetrack
 - Repository pattern — places data-access operations behind a contract so application logic does
   not contain queries directly; a repository abstraction still carries persistence semantics and is not a
-  promise that every storage technology is interchangeable
+  promise that every storage technology is interchangeable ✅ 07-timetrack
 - Business-rule placement — keep application rules outside delivery and persistence code so another
-  entry point can reuse them and focused tests do not require the web or database layer
+  entry point can reuse them and focused tests do not require the web or database layer ✅ 07-timetrack
 - Why the controller should not call the repository directly — it bypasses application policy, mixes
-  HTTP and persistence responsibilities, and makes changes and focused tests more brittle
+  HTTP and persistence responsibilities, and makes changes and focused tests more brittle ✅ 07-timetrack
 - MVC — separates input coordination, presentation, and application/domain state; it is not limited
   to server-rendered HTML and is a different design axis from controller/service/repository layering
 - MVC vs layered architecture — MVC organises interaction and presentation responsibilities, while
   layers organise dependency direction; a system can use both without one being a subtype of the other
 - Layered dependency direction — higher-level policy should not depend directly on delivery or
-  persistence details; dependencies crossing a boundary point through an appropriate contract
+  persistence details; dependencies crossing a boundary point through an appropriate contract ✅ 07-timetrack
 
 ## DTO pattern
 
 - Why not expose persistence entities directly — a JPA entity is coupled to persistence concerns;
-  exposing it couples the API shape to the database mapping and can disclose fields unintentionally
+  exposing it couples the API shape to the database mapping and can disclose fields unintentionally ✅ 07-timetrack
 - Request DTO — represent and structurally validate untrusted input without confusing transport
-  validation with business invariants
+  validation with business invariants ✅ 07-timetrack
 - Response DTO — shape a stable outward representation and minimise field disclosure independently of
-  the internal persistence or domain model
+  the internal persistence or domain model ✅ 07-timetrack
 - Mapping placement — translate transport DTOs at the application/API boundary and persistence models
-  at the persistence boundary; avoid making controllers own business rules or exposing entities as contracts
+  at the persistence boundary; avoid making controllers own business rules or exposing entities as contracts ✅ 07-timetrack
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
 - Create vs Update request DTOs — separate them when the operations have different validation,
-  optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match
+  optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match ✅ 07-timetrack
 - Backward-compatible API evolution — treat public fields and semantics as consumer contracts and
-  prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients
+  prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients ✅ 07-timetrack
 
 ## Data access decisions
 
 - Soft delete vs hard delete — retain a record when audit, recovery, or historical references justify
-  the extra filtering and uniqueness complexity; otherwise permanent deletion may be the simpler contract
+  the extra filtering and uniqueness complexity; otherwise permanent deletion may be the simpler contract ✅ 07-timetrack
 - Pagination — bound large collection responses when volume can grow, choosing an explicit page or
   cursor contract instead of assuming every list is safely returned at once
 - Consistency boundary — one business operation may require several writes to succeed or fail as a
-  unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics
+  unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics ✅ 07-timetrack
 
 ## Presentation boundaries
 
@@ -116,9 +116,9 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Dependency injection vs service locator — explicit constructor or framework injection reveals a
   class's collaborators, while pulling dependencies from a global registry hides them and weakens tests
 - Boundary failure ownership — translate infrastructure and domain failures at the boundary that has
-  enough context to produce a stable outward error contract without leaking framework exceptions
+  enough context to produce a stable outward error contract without leaking framework exceptions ✅ 07-timetrack
 - Package by feature vs package by layer — feature packaging keeps one use case together; layer
-  packaging makes technical roles obvious but scatters a change across the tree
+  packaging makes technical roles obvious but scatters a change across the tree ✅ 07-timetrack
 - Horizontal layering vs vertical feature slices — layers group code by technical role, while a
   feature slice groups the delivery, application, and persistence pieces that change for one capability
 - Composition over inheritance — assembling focused collaborators avoids inheriting behaviour and
@@ -128,7 +128,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
-  superficially similar code with different reasons to change into one abstraction
+  superficially similar code with different reasons to change into one abstraction ✅ 07-timetrack
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
   centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
@@ -144,12 +144,12 @@ apply in a small codebase, and defend with concrete trade-offs.
 ## Business behaviour
 
 - Domain rule vs application orchestration — a domain rule states what is valid in the business,
-  while application orchestration coordinates repositories and collaborators to complete a use case
+  while application orchestration coordinates repositories and collaborators to complete a use case ✅ 07-timetrack
 
 ## Workflow modelling
 
 - State machine pattern — model a workflow as explicit states and allowed transitions so invalid moves
-  such as APPROVED → DRAFT are rejected at one business boundary
+  such as APPROVED → DRAFT are rejected at one business boundary ✅ 07-timetrack
 
 ## Boundary patterns in maintained code
 
@@ -170,7 +170,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 ## SOLID
 
 - Single Responsibility — split a class when unrelated actors or policies make it change for different
-  reasons, not simply because it has many lines or methods
+  reasons, not simply because it has many lines or methods ✅ 07-timetrack
 - Open/Closed — keep stable abstractions open to extension without treating existing code as forbidden
   to change when requirements or a poor abstraction demand it
 - Liskov Substitution — a subtype can replace its parent only when it preserves the caller-visible
