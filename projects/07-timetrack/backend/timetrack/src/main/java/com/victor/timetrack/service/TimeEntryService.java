@@ -6,7 +6,7 @@ import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.exception.BusinessRuleViolationException;
 import com.victor.timetrack.exception.InvalidStateTransitionException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
-import com.victor.timetrack.exception.UnauthorizedException;
+import com.victor.timetrack.exception.ForbiddenOperationException;
 import com.victor.timetrack.model.*;
 import com.victor.timetrack.repository.ProjectRepository;
 import com.victor.timetrack.repository.TimeEntryRepository;
@@ -87,7 +87,7 @@ public class TimeEntryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
         if (timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Managers cannot approve their own time entries");
+            throw new ForbiddenOperationException("Managers cannot approve their own time entries");
         }
 
         if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
@@ -108,7 +108,7 @@ public class TimeEntryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
         if (timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Managers cannot reject their own time entries");
+            throw new ForbiddenOperationException("Managers cannot reject their own time entries");
         }
 
         if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {

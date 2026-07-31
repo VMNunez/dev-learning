@@ -81,8 +81,8 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.CONFLICT, e.getMessage()));
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException e) {
+    @ExceptionHandler(ForbiddenOperationException.class)
+    public ResponseEntity<ErrorResponse> handleForbiddenOperation(ForbiddenOperationException e) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(buildError(HttpStatus.FORBIDDEN, e.getMessage()));

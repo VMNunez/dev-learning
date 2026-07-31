@@ -197,9 +197,13 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `AuthService.login` uses `authentication.getName()` — the value `AuthenticationManager.authenticate(...)` returns after checking the credentials — to generate the token and look up the user, never `request.getEmail()` directly. Both resolve to the same value today (`findByEmail` is an exact match), but taking the subject from unvalidated input rather than the verified identity is the habit that becomes exploitable the moment lookup logic changes.
 
+### `ForbiddenOperationException` — a status-honest name, distinct from `AccessDeniedException` ✓
+
+Renamed from `UnauthorizedException`, which mapped to 403 while its name suggested 401. It has no inheritance relationship with Spring Security's own `AccessDeniedException` — both resolve to 403 today, but each is caught by its own `@ExceptionHandler` in `GlobalExceptionHandler`, because one is a framework-thrown refusal from `@PreAuthorize` and the other is a hand-thrown business rule (segregation of duties on `approve`/`reject`).
+
 ### A non-owned entry is `404`, not `403` ✓
 
-`TimeEntryService.findOwnedEntry(id, user)` chains `findById(id)` → `Optional.filter` (the ownership test) → `orElseThrow`, so "this id does not exist" and "this id is not yours" leave through the same throw with the same message. Returning 403 for the second case would make the status code an enumeration oracle: an EMPLOYEE could probe ids on `submit`/`update`/`reopen`/`delete` and learn which entries exist across the whole table without reading one. `approve`/`reject` keep their 403 (`UnauthorizedException`) because that refusal is segregation of duties, not ownership — a MANAGER already sees every entry, so the status discloses nothing they could not read from the listing.
+`TimeEntryService.findOwnedEntry(id, user)` chains `findById(id)` → `Optional.filter` (the ownership test) → `orElseThrow`, so "this id does not exist" and "this id is not yours" leave through the same throw with the same message. Returning 403 for the second case would make the status code an enumeration oracle: an EMPLOYEE could probe ids on `submit`/`update`/`reopen`/`delete` and learn which entries exist across the whole table without reading one. `approve`/`reject` keep their 403 (`ForbiddenOperationException`) because that refusal is segregation of duties, not ownership — a MANAGER already sees every entry, so the status discloses nothing they could not read from the listing.
 
 ---
 
@@ -249,7 +253,7 @@ src/main/java/com/victor/timetrack/
 ├── exception/                         (Step 3)
 │   ├── GlobalExceptionHandler.java
 │   ├── ResourceNotFoundException.java
-│   └── UnauthorizedException.java
+│   └── ForbiddenOperationException.java
 └── security/                          (Step 3)
     ├── JwtUtil.java
     ├── JwtFilter.java

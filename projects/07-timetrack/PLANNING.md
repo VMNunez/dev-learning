@@ -596,7 +596,7 @@ src/main/java/com/victor/timetrack/
 │   ├── BusinessRuleViolationException.java (input-data rule broken: hours range, future date, inactive project → 400)
 │   ├── InvalidStateTransitionException.java (illegal workflow transition → 409)
 │   ├── InvalidCurrentPasswordException.java (wrong currentPassword on self-service change → 400, fieldErrors.currentPassword)
-│   └── UnauthorizedException.java         (segregation of duties on approve/reject → 403 — name predates the status, see the backlog Low)
+│   └── ForbiddenOperationException.java   (segregation of duties on approve/reject → 403)
 └── security/
     ├── JwtUtil.java                  (generates and validates the token, reads its claims)
     ├── JwtFilter.java                (OncePerRequestFilter — puts the user in the SecurityContext)
@@ -1424,8 +1424,8 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `TimeEntryService.findByFilter` | EMPLOYEE gets only their own entries; MANAGER gets all | filters (`month`, `status`, `projectId`) narrow the result; an employee never receives another user's entry; a MANAGER-only `userId` supplied by an EMPLOYEE caller is overwritten with their own id |
 | `TimeEntryService.submit` | DRAFT → SUBMITTED | entry not DRAFT → throws `InvalidStateTransitionException` (409); caller is not the owner → `ResourceNotFoundException` (404), indistinguishable from an unknown id; **the entry's project is inactive → throws `BusinessRuleViolationException` (400)** and the entry stays DRAFT (the §8 rule "cannot submit entries for an inactive project") |
 | `TimeEntryService.reopen` | REJECTED → DRAFT for the owner | entry not REJECTED → throws; caller is not the owner → `ResourceNotFoundException` (404), indistinguishable from an unknown id; MANAGER caller → throws |
-| `TimeEntryService.approve` | SUBMITTED → APPROVED | entry not SUBMITTED → throws; entry id not found → `ResourceNotFoundException`; caller is the entry's owner → `UnauthorizedException` (403) |
-| `TimeEntryService.reject` | SUBMITTED → REJECTED + note saved | entry not SUBMITTED → throws; missing note → throws; caller is the entry's owner → `UnauthorizedException` (403) |
+| `TimeEntryService.approve` | SUBMITTED → APPROVED | entry not SUBMITTED → throws; entry id not found → `ResourceNotFoundException`; caller is the entry's owner → `ForbiddenOperationException` (403) |
+| `TimeEntryService.reject` | SUBMITTED → REJECTED + note saved | entry not SUBMITTED → throws; missing note → throws; caller is the entry's owner → `ForbiddenOperationException` (403) |
 | `ProjectService.create` | Saves a project | duplicate name → throws (409) |
 | `UserService.create` | Saves the user with a generated password, stored BCrypt-hashed | duplicate email → throws (409); the returned `generatedPassword` is **not** what is persisted (the stored value is a hash that `matches()` it); two consecutive creates produce different passwords |
 | `UserService.changePassword` | Replaces the caller's hash when the current password matches | wrong current password → throws `InvalidCurrentPasswordException` (**400**, `fieldErrors.currentPassword` — the §8 status ruling); the new hash differs from the old one and `matches()` the new password |
