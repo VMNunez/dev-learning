@@ -149,6 +149,10 @@ Every resource (`Project`, `TimeEntry`) has a separate `Create*Request` and `Upd
 
 `DELETE /api/projects/{id}` sets `active = false` — no data is permanently removed. Inactive projects cannot receive new time entries, but all historical data remains queryable.
 
+### Externalized CORS configuration ✓
+
+The allowed origin is loaded from `app.cors.allowed-origins` via `@Value`, not hardcoded in `SecurityConfig` — an environment-specific value stays outside compiled code. `allowCredentials(false)` because auth travels in the `Authorization` header, not cookies, so credentialed CORS is unnecessary and only forces the stricter same-exact-origin matching for no benefit.
+
 ### GlobalExceptionHandler *(Step 3 — coming soon)*
 
 `@ControllerAdvice` catches exceptions across all controllers and returns consistent JSON error responses instead of Spring's default HTML error page.

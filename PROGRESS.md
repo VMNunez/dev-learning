@@ -420,6 +420,8 @@ workflow to the first project that established it rather than to code inside tha
 - `app.jwt.expiration` cut from 24h to 60min — usable session length vs the blast radius of a token stolen from `localStorage`
 - Adding a non-aggregated column to a `GROUP BY` query's `SELECT` requires adding it to `GROUP BY` too — surfaced adding `te.project.active`/`te.user.active` to the report projections; Postgres rejects the query otherwise, it is not just a style rule
 - 404 instead of 403 for a resource the caller does not own — a distinct "forbidden" response turns the status code into an id-enumeration oracle; 403 is kept only where the caller may legitimately know the resource exists
+- `allowCredentials(false)` on `CorsConfiguration` — auth travels in the `Authorization` header, not cookies, so credentialed CORS buys nothing and only locks the config into stricter same-exact-origin matching
+- CORS allowed origin moved from a hardcoded string to `app.cors.allowed-origins`, injected with `@Value` — a single isolated value vs `@ConfigurationProperties` for a grouped setting
 
 ---
 
