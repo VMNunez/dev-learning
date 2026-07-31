@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Add `ORDER BY SUM(te.hours) DESC` to both report queries — §14 shows both tables sorted by hours descending, and without it the row order is whatever Postgres returns, pushing the sort onto Angular and making the endpoint non-deterministic to test *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Replace the magic status codes with the enum: `ResponseEntity.status(200)` in `TimeEntryController` (5×) and `ReportController` (2×) should be `.ok(...)`, and `ResponseEntity.status(201)` in `ProjectController:36` should be `HttpStatus.CREATED`. `noContent()` is already used correctly on delete, so the classes are internally inconsistent *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Decide the contract for `GET /api/users`: `UserService.getAll()` returns every user including soft-deleted ones, unpaginated. Returning inactive users to a manager is defensible per §10, but the Team page needs the `active` flag surfaced clearly — and the unbounded `findAll()` wants a `Pageable` once the table grows *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Consistency: `UserController.getAll()` (:22-25) returns a raw `List<UserResponse>` while every other controller method wraps its body in `ResponseEntity<T>` (`AuthController`, `ProjectController`, `TimeEntryController`, `ReportController`). Spring wraps a bare return value in a 200 identically, so this is behaviourally equivalent — a pure style outlier — but the resource layer should return `ResponseEntity` uniformly. Pairs with the magic-status-code Low above (same `ResponseEntity`-hygiene theme) *(Effort: Small)*
@@ -114,6 +113,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-07-31 · **[Low]** `[backend]` — both report queries ordered by hours desc, name asc as tiebreaker → sql coverage/junior (new bullet + multi-column sorting, ✅ 07-timetrack), PLANNING §10 ordering rule added, backend README Key patterns, PROGRESS
 - 2026-07-31 · **[Low]** `[backend]` — `UnauthorizedException` renamed to `ForbiddenOperationException`, distinguished from Spring's `AccessDeniedException` → spring-boot coverage/junior (new bullet, ✅ 07-timetrack), backend README, PROGRESS; PLANNING file-path refs updated, no rule added
 - 2026-07-31 · **[Low]** `[backend]` — JWT subject taken from verified `Authentication`, not request body — already fixed 2026-07-28 as a side effect of commit `a40ff50` → security coverage/junior already covered (✅ 07-timetrack), backend README, PROGRESS; PLANNING §6 already documents the rule
 - 2026-07-31 · **[Low]** `[backend]` — CORS `allowCredentials(false)` (token-based auth, not cookies) + allowed origin externalized to `app.cors.allowed-origins` via `@Value` → spring-boot coverage/junior (marked ✅ 07-timetrack), backend README Key patterns, PROGRESS — PLANNING: not planned, config polish, no rule added
