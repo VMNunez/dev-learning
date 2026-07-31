@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Set CORS `allowCredentials(false)` in `SecurityConfig:65-68` (auth travels in the `Authorization` header, not cookies, so credentialed CORS buys nothing and only locks the config into the stricter rules) and move the hardcoded `localhost:4200` origin into an `app.cors.allowed-origins` property so a deployed frontend does not need a recompile *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Mint the JWT from the authenticated principal, not the request body: `AuthService:21-24` discards the `Authentication` returned by `authenticationManager.authenticate(...)` and passes `request.getEmail()` to `generateToken`. Not exploitable today (`findByEmail` is an exact match), but taking the subject from unvalidated input rather than the verified identity is the habit that becomes a bug elsewhere *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Rename `UnauthorizedException`: it is mapped to **403 Forbidden** in `GlobalExceptionHandler:66-71` while its name says 401. A name that lies about its status is small but visible *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Add `ORDER BY SUM(te.hours) DESC` to both report queries — §14 shows both tables sorted by hours descending, and without it the row order is whatever Postgres returns, pushing the sort onto Angular and making the endpoint non-deterministic to test *(Effort: Small)*
@@ -117,6 +116,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-07-31 · **[Low]** `[backend]` — CORS `allowCredentials(false)` (token-based auth, not cookies) + allowed origin externalized to `app.cors.allowed-origins` via `@Value` → spring-boot coverage/junior (marked ✅ 07-timetrack), backend README Key patterns, PROGRESS — PLANNING: not planned, config polish, no rule added
 - 2026-07-30 · **[Low]** `[backend]` — entry-id existence oracle closed: a non-owned entry is 404, not 403 → security + java coverage/junior (new bullets, ✅ 07-timetrack), PLANNING §8 status ruling + §10/§11/§21, backend README, PROGRESS
 - 2026-07-30 · **[Low]** `[backend]` — `currentUser()`/`isManager()` extracted into `AuthenticatedUserProvider`, `"ROLE_MANAGER"` replaced with `"ROLE_" + Role.MANAGER.name()` → already covered (spring-boot/junior `SecurityContextHolder` + `ROLE_` prefix, architecture/junior Extract Method/DRY), PLANNING §6 already had the rule, PROGRESS already had Extract Method + SecurityContextHolder
 - 2026-07-29 · **[Low]** `[backend]` — fail-fast manual checks kept as the project's convention — DECISION, no code change → already in README, PROGRESS
