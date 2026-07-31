@@ -20,7 +20,9 @@
       "Read(//c/Users/Victor/Documents/main/dev/**)",
       "Read(//c/Users/Victor/.claude/projects/c--Users-Victor-Documents-main-dev-learning/memory/**)",
       "WebSearch",
-      "WebFetch(domain:www.baeldung.com)"
+      "WebFetch(domain:www.baeldung.com)",
+      "Bash(python \"C:/Users/Victor/AppData/Local/Temp/claude/c--Users-Victor-Documents-main-dev-learning/17263473-5e10-4547-91e5-816a3988547e/scratchpad/mark01.py\")",
+      "Bash(python \"C:/Users/Victor/AppData/Local/Temp/claude/c--Users-Victor-Documents-main-dev-learning/8e4f72f0-33d3-4f77-913e-2aebf28993e6/scratchpad/markgit.py\")"
     ],
     "additionalDirectories": []
   }
