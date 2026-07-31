@@ -222,6 +222,7 @@ Renamed from `UnauthorizedException`, which mapped to 403 while its name suggest
 - RuntimeException over checked exceptions — Spring Boot convention; caught globally with `@ControllerAdvice` at the boundary
 - 60-minute JWT expiration with no refresh token — a shorter-lived access token limits the damage window of a stolen token; without a refresh token, a session idle past 60 minutes forces a fresh login instead of silently renewing. A refresh-token flow is out of scope for this MVP
 - No forced password change on first login — a `mustChangePassword` flag would need frontend route interception to enforce, cut deliberately for the MVP; a new account keeps its generated password until the user changes it voluntarily via `PATCH /api/users/me/password`
+- No `GET /{id}` for entries or users — the UI is entirely tables and dialogs, with no detail view and no deep-linkable route, so an edit dialog opens from a row the page already holds and a single-resource fetch would re-request data that is already in memory. What this gives up is real: no shareable URL for one entry, a dialog lost on refresh, and an edit that starts from a snapshot rather than the current row. Acceptable here because only an entry's own owner and a manager can edit anything, so two people racing on one row is not a realistic case, and the list is refetched after every mutation
 - No password reset flow — resetting a forgotten password needs an email channel to deliver a reset link/token, which is out of scope; today a manager deactivates and recreates the account instead
 
 ---
