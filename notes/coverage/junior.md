@@ -445,7 +445,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - Profile-specific configuration files — profile values live either in an `application-{profile}` file or in one multi-document file whose sections are separated by `---` in YAML or `#---` in properties and selected with `spring.config.activate.on-profile` ✅ 07-timetrack
 - Datasource and persistence properties — connect the application to a real database through its URL, credentials, and driver settings, and recognise what each `ddl-auto` value does to an existing schema ✅ 07-timetrack
 - Profiles — activate environment-specific beans and configuration deliberately without treating a profile as a secrets store ✅ 07-timetrack
-- `@Value` vs `@ConfigurationProperties` — inject an isolated value directly or bind and validate a cohesive typed configuration group when several related settings belong together
+- `@Value` vs `@ConfigurationProperties` — inject an isolated value directly or bind and validate a cohesive typed configuration group when several related settings belong together ✅ 07-timetrack
 - SQL initialization — understand when Boot runs `schema.sql` and `data.sql` and how initialization differs for embedded and external databases ✅ 07-timetrack
 
 ### Boot runtime model and packaging
