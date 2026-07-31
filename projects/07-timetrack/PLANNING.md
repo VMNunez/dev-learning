@@ -406,6 +406,18 @@ radius. When a token expires mid-session the API returns 401 — the Angular int
 it, clears the stored session, and redirects to `/login`. Expiry is handled once in the interceptor,
 never per page. The access/refresh trade-off is documented in `backend/README.md`.
 
+### Success responses — status and `Location`
+
+Every controller states its status through a `ResponseEntity` factory (`ok`, `created`, `noContent`),
+never a bare `status(200)`: the status is a checked constant, not an `int`.
+
+**Every `201` carries a `Location` header** holding the created resource's URI, built from the current
+request rather than a hardcoded path. `POST /api/projects` returns `Location: /api/projects/{id}`, and
+the same applies to `/api/entries` and `/api/users`. The client follows what the server sent instead of
+assembling that URL from its own copy of the route scheme. Note that `entries` and `users` have no
+`GET /{id}` yet: the URI is still the resource's real address — `PUT` and `DELETE` act on it — so the
+header stays correct, and the missing read endpoint is a gap in the API, not a reason to omit it.
+
 ### Error contract — what every non-2xx response looks like
 
 All errors return the same `ErrorResponse` body from `GlobalExceptionHandler`:
