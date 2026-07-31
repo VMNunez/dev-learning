@@ -309,7 +309,8 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - `@RequestBody` — bind the request body to a Java object through the configured message converters instead of parsing the payload manually ✅ 07-timetrack
 - Unsupported media type on a request body — body binding is selected by the request's declared content type, so a missing or non-JSON `Content-Type` is rejected before the controller runs rather than surfacing as a validation failure
 - `ResponseEntity<T>` — use it when status or headers vary dynamically; fixed statuses can use `@ResponseStatus`, while returning a body directly intentionally uses the framework's normal status ✅ 07-timetrack
-- Created responses and the resource location — build the new resource's URI from the current request when reporting a successful creation, rather than returning the entity with a default status
+- `ResponseEntity` status factories — `ok`, `created`, `noContent`, and `badRequest` state the response's meaning at the call site, so the status is a checked constant rather than an integer literal no compiler can validate ✅ 07-timetrack
+- Created responses and the resource location — build the new resource's URI from the current request when reporting a successful creation, rather than returning the entity with a default status ✅ 07-timetrack
 - HTTP message conversion and Jackson — content negotiation and configured message converters turn request and response bodies into Java values and JSON rather than the controller serialising text manually ✅ 07-timetrack
 - Jackson response shaping — rename, omit, or format individual fields through serialization annotations, and know that Boot registers Java date/time support so temporal fields serialise as ISO text rather than numeric objects ✅ 07-timetrack
 - Jackson deserialization requirements — an incoming body is populated through a record's canonical constructor, an annotated creator, or a no-argument constructor plus mutators, which is why an otherwise valid DTO can arrive with every field null ✅ 07-timetrack
@@ -1846,6 +1847,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 - HTTP status-code families — use 1xx, 2xx, 3xx, 4xx, and 5xx as protocol-level categories before inspecting the application error body ✅ 07-timetrack
 - `200 OK`, `201 Created`, and `204 No Content` — select the success status from whether the operation returns a representation, creates a resource, or intentionally returns no body ✅ 07-timetrack
+- `Location` on a `201` — the response names the created resource's own URI, so the client follows what the server sent instead of assembling that URL from its own copy of the route scheme ✅ 07-timetrack
 - `400 Bad Request` vs `422 Unprocessable Content` — recognise 400 as a broad perceived client-request error and 422 as understood media type and syntax whose instructions cannot be processed, while following the API's documented convention
 - `401 Unauthorized` vs `403 Forbidden` — distinguish missing or invalid authentication from an authenticated identity lacking permission ✅ 07-timetrack
 - `404 Not Found` vs `409 Conflict` — distinguish an absent resource from a request that conflicts with current resource state ✅ 07-timetrack
