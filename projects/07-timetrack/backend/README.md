@@ -185,6 +185,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `ProjectHoursReportResponse`/`UserHoursReportResponse` expose `isActive()`, sourced from `te.project.active`/`te.user.active` added to the `by-project`/`by-user` JPQL `SELECT` and `GROUP BY`. A soft-deleted project or user still keeps its historical hours in the aggregate — the work was real — but the flag lets the client distinguish "still active" from "archived" instead of guessing from a row that silently stopped appearing.
 
+### Report row order is part of the contract ✓
+
+`by-project` and `by-user` end with `ORDER BY SUM(te.hours) DESC, te.project.name ASC` (and `te.user.name ASC`). A `GROUP BY` guarantees no row order, so without it the sort fell to Angular and the endpoint was non-deterministic to test. The trailing name key resolves ties, making the ordering total — two rows with equal hours cannot swap between calls.
+
 ### Extracted entry validation ✓
 
 `TimeEntryService.create` and `update` both check the same three business rules (future date, active project, hours in range). `validateEntryData(request, project)` holds that logic once, called from both methods, with `MIN_HOURS`/`MAX_HOURS` as class constants instead of re-instantiated `BigDecimal` literals.
