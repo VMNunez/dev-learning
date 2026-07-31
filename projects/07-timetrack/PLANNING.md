@@ -484,6 +484,11 @@ field-level map the reactive forms consume to show a message under each input (S
 | `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours`, `active` |
 | `GET /api/reports/by-user` | MANAGER | Hours grouped by user | `month` — required | `200` + `List<UserHoursReportResponse>` — `userId`, `userName`, `totalHours`, `active` |
 
+> **`by-project` and `by-user` are ordered by hours descending, ties broken by name ascending.** The row
+> order is part of the contract, not an accident: a `GROUP BY` guarantees none, so the query states it
+> rather than leaving the sort to Angular. The name key makes the ordering total, so equal-hour rows
+> cannot swap between two identical calls — which is what makes the endpoint testable.
+>
 > **All three count `APPROVED` entries only** — the §8 reporting rule. `pendingHours` is the single
 > deliberate exception and is never folded into a total, which is why `totalHours` was removed from
 > `ReportSummaryResponse`: it was the field that let the summary disagree with the tables.
