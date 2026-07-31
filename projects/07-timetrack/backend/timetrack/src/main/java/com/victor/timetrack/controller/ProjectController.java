@@ -8,7 +8,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -33,13 +35,18 @@ public class ProjectController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
     public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectRequest request){
-        return ResponseEntity.status(201).body(projectService.create(request));
+        ProjectResponse created = projectService.create(request);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(created);
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponse> update(@PathVariable Long id,@Valid @RequestBody UpdateProjectRequest request){
-        return ResponseEntity.status(200).body(projectService.update(id, request));
+        return ResponseEntity.ok(projectService.update(id, request));
     }
 
     @PreAuthorize("hasRole('MANAGER')")

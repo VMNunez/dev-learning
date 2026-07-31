@@ -26,18 +26,18 @@ public class ReportController {
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("/by-project")
     public ResponseEntity<List<ProjectHoursReportResponse>> getHoursByProject(@RequestParam YearMonth month){
-        return ResponseEntity.status(200).body(reportService.getHoursByProject(month));
+        return ResponseEntity.ok(reportService.getHoursByProject(month));
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("/by-user")
     public ResponseEntity<List<UserHoursReportResponse>> getHoursByUser(@RequestParam YearMonth month){
-        return ResponseEntity.status(200).body(reportService.getHoursByUser(month));
+        return ResponseEntity.ok(reportService.getHoursByUser(month));
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("/summary")
     public ResponseEntity<ReportSummaryResponse> getSummary(@RequestParam YearMonth month){
-        return ResponseEntity.status(200).body(reportService.getSummary(month));
+        return ResponseEntity.ok(reportService.getSummary(month));
     }
 }
