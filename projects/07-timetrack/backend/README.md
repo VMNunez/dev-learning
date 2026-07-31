@@ -185,6 +185,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `ProjectHoursReportResponse`/`UserHoursReportResponse` expose `isActive()`, sourced from `te.project.active`/`te.user.active` added to the `by-project`/`by-user` JPQL `SELECT` and `GROUP BY`. A soft-deleted project or user still keeps its historical hours in the aggregate — the work was real — but the flag lets the client distinguish "still active" from "archived" instead of guessing from a row that silently stopped appearing.
 
+### Status codes are named, and a `201` says where ✓
+
+Every controller returns its status through a factory — `ok`, `created`, `noContent` — instead of `ResponseEntity.status(200)`, so the status is a checked constant rather than an `int` the compiler cannot validate. The three `POST` endpoints go through `created(location)`, whose URI is built with `ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")`: the response carries a `Location` header naming the new resource, so the client never has to assemble that URL from its own copy of the route scheme.
+
 ### Report row order is part of the contract ✓
 
 `by-project` and `by-user` end with `ORDER BY SUM(te.hours) DESC, te.project.name ASC` (and `te.user.name ASC`). A `GROUP BY` guarantees no row order, so without it the sort fell to Angular and the endpoint was non-deterministic to test. The trailing name key resolves ties, making the ordering total — two rows with equal hours cannot swap between calls.
