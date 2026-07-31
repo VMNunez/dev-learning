@@ -193,6 +193,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `TimeEntry.hours` is constrained at both ends, deliberately kept as two layers rather than one: `@Column(precision = 4, scale = 2)` on the entity guarantees the DB never stores more precision than the field is meant to hold, and `@DecimalMin("0.5")` / `@DecimalMax("24")` / `@Digits(integer = 2, fraction = 2)` on `CreateTimeEntryRequest` reject an out-of-range or over-precise value at the HTTP boundary with a 400, before it ever reaches the service. `TimeEntryService` also keeps its own manual 0.5–24 check — redundant with the DTO validation for HTTP requests, but it protects the business rule for any future non-HTTP caller of the service.
 
+### JWT subject taken from the verified `Authentication`, not the request body ✓
+
+`AuthService.login` uses `authentication.getName()` — the value `AuthenticationManager.authenticate(...)` returns after checking the credentials — to generate the token and look up the user, never `request.getEmail()` directly. Both resolve to the same value today (`findByEmail` is an exact match), but taking the subject from unvalidated input rather than the verified identity is the habit that becomes exploitable the moment lookup logic changes.
+
 ### A non-owned entry is `404`, not `403` ✓
 
 `TimeEntryService.findOwnedEntry(id, user)` chains `findById(id)` → `Optional.filter` (the ownership test) → `orElseThrow`, so "this id does not exist" and "this id is not yours" leave through the same throw with the same message. Returning 403 for the second case would make the status code an enumeration oracle: an EMPLOYEE could probe ids on `submit`/`update`/`reopen`/`delete` and learn which entries exist across the whole table without reading one. `approve`/`reject` keep their 403 (`UnauthorizedException`) because that refusal is segregation of duties, not ownership — a MANAGER already sees every entry, so the status discloses nothing they could not read from the listing.

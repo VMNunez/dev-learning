@@ -422,6 +422,7 @@ workflow to the first project that established it rather than to code inside tha
 - 404 instead of 403 for a resource the caller does not own — a distinct "forbidden" response turns the status code into an id-enumeration oracle; 403 is kept only where the caller may legitimately know the resource exists
 - `allowCredentials(false)` on `CorsConfiguration` — auth travels in the `Authorization` header, not cookies, so credentialed CORS buys nothing and only locks the config into stricter same-exact-origin matching
 - CORS allowed origin moved from a hardcoded string to `app.cors.allowed-origins`, injected with `@Value` — a single isolated value vs `@ConfigurationProperties` for a grouped setting
+- `jwtUtil.generateToken(authentication.getName())` instead of `request.getEmail()` — the JWT subject comes from the verified `Authentication`, not the unvalidated login body
 
 ---
 
