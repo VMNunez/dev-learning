@@ -7,6 +7,10 @@ import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.model.EntryStatus;
 import com.victor.timetrack.service.TimeEntryService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.YearMonth;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/entries")
@@ -26,11 +29,15 @@ public class TimeEntryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TimeEntryResponse>> findByFilter(@RequestParam(required = false) Long userId,
-                                                                @RequestParam(required = false) Long projectId,
-                                                                @RequestParam(required = false) EntryStatus status,
-                                                                @RequestParam(required = false) YearMonth month) {
-        return ResponseEntity.ok(timeEntryService.findByFilter(userId, projectId, status, month));
+    public ResponseEntity<Page<TimeEntryResponse>> findByFilter(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long projectId,
+            @RequestParam(required = false) EntryStatus status,
+            @RequestParam(required = false) YearMonth month,
+            @PageableDefault(size = 20, sort = {"date", "id"},
+                    direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(timeEntryService.findByFilter(userId, projectId, status, month, pageable));
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -52,7 +59,7 @@ public class TimeEntryController {
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PatchMapping("/{id}/reopen")
-    public ResponseEntity<TimeEntryResponse> reopen(@PathVariable Long id){
+    public ResponseEntity<TimeEntryResponse> reopen(@PathVariable Long id) {
         return ResponseEntity.ok(timeEntryService.reopen(id));
     }
 

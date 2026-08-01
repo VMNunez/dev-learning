@@ -4,13 +4,18 @@ import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
 import com.victor.timetrack.dto.request.UpdateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.exception.BusinessRuleViolationException;
+import com.victor.timetrack.exception.ForbiddenOperationException;
 import com.victor.timetrack.exception.InvalidStateTransitionException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
-import com.victor.timetrack.exception.ForbiddenOperationException;
-import com.victor.timetrack.model.*;
+import com.victor.timetrack.model.EntryStatus;
+import com.victor.timetrack.model.Project;
+import com.victor.timetrack.model.TimeEntry;
+import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.ProjectRepository;
 import com.victor.timetrack.repository.TimeEntryRepository;
 import com.victor.timetrack.repository.TimeEntrySpecifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
 
 @Service
 public class TimeEntryService {
@@ -124,7 +128,8 @@ public class TimeEntryService {
     }
 
     @Transactional(readOnly = true)
-    public List<TimeEntryResponse> findByFilter(Long userId, Long projectId, EntryStatus status, YearMonth month) {
+    public Page<TimeEntryResponse> findByFilter(Long userId, Long projectId, EntryStatus status, YearMonth month,
+                                                Pageable pageable) {
         boolean isManager = authenticatedUserProvider.isManager();
 
         LocalDate start = null;
@@ -147,11 +152,8 @@ public class TimeEntryService {
                 .and(TimeEntrySpecifications.dateBetween(start, end))
                 .and(TimeEntrySpecifications.fetchUserAndProject());
 
-
-        return timeEntryRepository.findAll(spec)
-                .stream()
-                .map(this::toResponse)
-                .toList();
+        return timeEntryRepository.findAll(spec, pageable)
+                .map(this::toResponse);
     }
 
     @Transactional
