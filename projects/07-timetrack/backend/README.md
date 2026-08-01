@@ -225,6 +225,10 @@ Renamed from `UnauthorizedException`, which mapped to 403 while its name suggest
 
 A duplicate email or project name is refused by `DuplicateResourceException`, thrown by `UserService` and `ProjectService` before the `save`. It previously reused Spring's `DataIntegrityViolationException`, which belongs to the `DataAccessException` family `@Repository` translates persistence failures into — a claim that the database rejected the write, made at a point where the database had not been asked. The handler for it stays, because a concurrent create can still breach the unique index for real, and it keeps returning a fixed message: that message is written by Hibernate and names the constraint and the statement. Splitting the types is what lets the domain handler return `e.getMessage()`, so "Email already in use" and "A project with this name already exists" reach the client instead of one generic 409.
 
+### `fieldErrors` is a per-control channel, not a validation-only one ✓
+
+`DuplicateResourceException` carries the offending field name (`email`, `name`) alongside its message, so its handler emits `fieldErrors` on a **409** exactly as `MethodArgumentNotValidException` does on a 400. The alternative — reserving the map for `@Valid` failures — would make a reactive form branch on the status to decide whether a message belongs under an input or at the dialog foot, and would leave the most common error in the Team dialog detached from the field that caused it. The status says what kind of failure it is; the map says which control owns it. The field travels in the exception rather than being hardcoded in the handler because the same type is thrown from two resources.
+
 ---
 
 ## Tradeoffs
