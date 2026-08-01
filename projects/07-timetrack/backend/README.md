@@ -199,6 +199,10 @@ Every controller returns its status through a factory — `ok`, `created`, `noCo
 
 `by-project` and `by-user` end with `ORDER BY SUM(te.hours) DESC, te.project.name ASC` (and `te.user.name ASC`). A `GROUP BY` guarantees no row order, so without it the sort fell to Angular and the endpoint was non-deterministic to test. The trailing name key resolves ties, making the ordering total — two rows with equal hours cannot swap between calls.
 
+### Every collection endpoint declares its order ✓
+
+The report rule above generalised: `ProjectService` and `UserService` hand a `Sort` to the repository — `findAll(Sort)` and `findByActiveTrue(Sort)`, where `Sort` is a Spring Data special parameter applied on top of a derived query rather than parsed as a criterion. Without it the rows arrive in PostgreSQL heap order, which an unrelated `UPDATE` reshuffles. Projects sort by `name`; users sort `active` desc, `name` asc, `id` asc — `name` is not unique on `users`, so the id is what makes that ordering total.
+
 ### Extracted entry validation ✓
 
 `TimeEntryService.create` and `update` both check the same three business rules (future date, active project, hours in range). `validateEntryData(request, project)` holds that logic once, called from both methods, with `MIN_HOURS`/`MAX_HOURS` as class constants instead of re-instantiated `BigDecimal` literals.
