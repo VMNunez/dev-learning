@@ -22,7 +22,9 @@ Before dispatching roles, read:
 - `notes/prompts/_internal/_agent-runtime-standard.md`
 - the active platform adapter
 
-Use the runtime's planning and collaboration facilities. Canonical tiers are not literal model IDs. Subagents are read-only. If the market analyst or either cold reviewer cannot be dispatched, stop; there is no single-agent fallback.
+Use the runtime's planning and collaboration facilities. Canonical tiers are not literal model IDs.
+Subagents are read-only. If the market analyst, either normal cold reviewer, or the first-run boundary
+reviewer when required cannot be dispatched, stop; there is no single-agent fallback.
 
 ## Resolve paths
 
@@ -33,7 +35,7 @@ Use the runtime's planning and collaboration facilities. Canonical tiers are not
 - `NOTES_PLAN = {TOPIC_ROOT}coverage/notes-plan-{LEVEL}.md`
 - `TOPIC_BOUNDARY = this topic's row in _internal/_topic-ownership.md`
 - `ADJACENT_TOPICS = the complete comparison set declared by TOPIC_BOUNDARY`
-- `FIRST_TOPIC_RUN = TARGET_FILE does not exist`
+- `FIRST_TOPIC_RUN = the selected Coverage tracker cell has no completed run` (scaffold files do not count)
 
 ## Required sources
 
@@ -152,6 +154,10 @@ boundary as **KEEP WITH ADJACENT OWNER** or **MOVE TO NEW TOPIC**. A move remove
 preserves its evidence marker verbatim, and records every affected topic and level. Never satisfy a new
 topic by copying an existing bullet or by leaving normalized twins on both sides.
 
+Before editing, capture the complete trailing evidence marker from every marked bullet in every affected
+topic file and mirror. After editing, compare those marker multisets byte-for-byte. Rewording, changing
+level, or changing topic never changes or drops a marker; any mismatch blocks the draft and commit.
+
 ## Step 3 — Draft the selected level
 
 The orchestrator is the only repository editor.
@@ -191,9 +197,26 @@ Reads all three topic level files, every adjacent topic's three level files, the
 - missing important confusable pairs;
 - duplicate or misplaced ownership;
 - unclear section structure;
+- evidence markers missing, altered, duplicated, or detached from a surviving moved concept;
 - confirmation: `N items reviewed`.
 
 Both reports must state the selected file's line count and that it was read to EOF. Re-dispatch a failed reviewer once. Apply accepted findings, then repeat factual and mechanical checks.
+
+### Reviewer C — first-run boundary migration only
+
+When `FIRST_TOPIC_RUN` is true, dispatch one additional cold reviewer after A and B. It reads the
+ownership registry, the new topic's three final files, every adjacent topic's three final files, the
+affected mirrors, and the pre-run versions from Git. It returns only:
+
+- concepts copied or left under more than one owner;
+- moves that violate the registered boundary;
+- marked concepts whose complete evidence marker is missing, altered, duplicated, or attached to the
+  wrong surviving concept;
+- confirmation: `N moved concepts and M pre-run markers reviewed`.
+
+Its report must state every whole-file line count and EOF confirmation. Re-dispatch once if the proof is
+missing; a failed second report blocks the run. This reviewer never proposes new scope—the market and
+normal reviewers own that judgment.
 
 Both reviewers judge scope only from the target in `_shared-context.md`, current market evidence,
 ordinary fundamentals, and the standard's level definitions. A concept's presence in `ROADMAP.md`,
@@ -222,8 +245,9 @@ Validate:
 6. no normalized concept occurs in more than one of the three level files;
 7. the selected file contains no obvious other-topic section;
 8. no normalized concept occurs in the selected topic and any adjacent topic at any level;
-9. `git diff --check` passes and the complete declared diff is inspected.
-10. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256 over `TARGET_FILE`'s scope bytes
+9. the pre/post evidence-marker multisets match exactly across every affected topic file and mirror;
+10. `git diff --check` passes and the complete declared diff is inspected.
+11. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256 over `TARGET_FILE`'s scope bytes
    (evidence markers stripped, per the standard's canonical command). A mismatch is the expected
    refresh signal: report `notes-plan-prompt` as the next step so it can remap the final coverage
    before another note is built. This is not a return to `coverage-verify`.
@@ -275,6 +299,7 @@ Report:
 - all whole-file EOF confirmations;
 - kept, moved down/up, moved to senior, deleted, corrected, and routed counts;
 - market analyst and reviewer completion;
+- first-run boundary reviewer completion or `n/a`;
 - qualitative stopping-rule result;
 - mirror parity;
 - notes-plan state (`missing`, `current`, or `refresh required`) and, for `refresh required`, name

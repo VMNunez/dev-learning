@@ -280,6 +280,13 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Material component harnesses — test supported user-visible behaviour through stable harness APIs instead of querying private DOM structure or CSS classes
 - Harness interaction tests — use component-specific harness methods to verify critical validation feedback, dialog results, and table interactions rather than snapshotting generated markup
 
+## Spring
+
+Scope pending the first `coverage-prompt` run. That run owns the boundary migration from adjacent
+topics and must preserve every existing evidence marker verbatim.
+
+---
+
 ## Spring Boot
 
 Concepts needed to build, test, explain, and debug a conventional Spring Boot REST application at junior level.

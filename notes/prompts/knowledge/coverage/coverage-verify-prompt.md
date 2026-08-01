@@ -11,7 +11,7 @@ on its next update run.
 ## Configuration
 
 ```text
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [one registered topic from `_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
 MODE  = [update | dry-run]
 ```

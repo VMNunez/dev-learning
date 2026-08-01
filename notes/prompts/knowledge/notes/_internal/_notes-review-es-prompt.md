@@ -29,7 +29,7 @@ section is missing content (not just badly worded), that is a structural gap C r
 ````
 ## Configuration — edit only this block
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
 FILE = [exact planned English path]
 ES_FILE = [exact planned Spanish path]

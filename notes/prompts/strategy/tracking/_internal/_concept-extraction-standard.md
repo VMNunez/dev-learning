@@ -96,19 +96,22 @@ Route every extracted concept to exactly one section using this mapping:
 | Frontend testing (Jasmine, TestBed, `HttpClientTestingModule`, spies…) | Angular |
 | CSS property, layout technique, animation | CSS |
 | TypeScript utility type (`Omit`, `??`, `?.`…) | TypeScript |
-| Spring annotation / bean / security / JPA (`@Value`, `@Component`, `@Configuration`, `@Bean`, `@PreAuthorize`…) | Spring Boot |
+| Core Spring container / bean / proxy / transaction mechanism (`ApplicationContext`, `@Component`, `@Bean`, scopes, `@Transactional`…) | Spring |
+| Spring Boot runtime or concrete integration (`@Value`, `@ConfigurationProperties`, auto-configuration, starters, Actuator, Spring Data JPA, `@PreAuthorize`…) | Spring Boot |
 | Backend testing (JUnit 5, Mockito, `@ExtendWith`, `@Mock`, `@InjectMocks`…) | Spring Boot |
 | **Pure** Java language construct (`Optional<T>`, `long` vs `Long`, wrapper classes, `try/catch`, access modifiers, default field values like `private Boolean active = true`) | Java |
 | Docker, containerisation, `docker-compose` | General |
 | Cloud hosting, build config, env vars, CI/CD (Netlify…) | Deployment |
 
-> **"Pure Java" vs "Spring annotation" — the line that trips people up.** A concept is *pure Java* if
+> **"Pure Java" vs "Spring" vs "Spring Boot" — the line that trips people up.** A concept is *pure Java* if
 > it exists in Java regardless of Spring. A Spring annotation that merely appears inside a `.java`
-> file is **not** pure Java — it goes to Spring Boot. `Optional<T>` is Java; `@Autowired` is Spring.
+> file is **not** pure Java. Core container/proxy/bean behaviour goes to Spring; Boot startup,
+> auto-configuration, externalized configuration and concrete Boot-stack integration go to Spring Boot.
+> `Optional<T>` is Java; `@Transactional` proxy semantics are Spring; conditional auto-configuration is Spring Boot.
 
 > **Format C shortcut:** the Section 3 "Topic" column already names the section — trust it over the
 > heuristics above when they disagree, **but only if the value is a valid section name** (Angular ·
-> CSS · TypeScript · Java · Spring Boot · Architecture · Security · Deployment · General · SQL —
+> CSS · TypeScript · Java · Spring · Spring Boot · Architecture · Security · Deployment · General · SQL —
 > the controlled vocabulary `_planning-standard.md` §3 requires). If a Topic value is anything else
 > ("Backend", "Java/Spring", blank), fall back to the heuristics for that row and flag the invalid
 > value in your report so the orchestrator can surface it.

@@ -22,7 +22,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 ## Replace the [ ] with your value and delete the brackets.
 
 LEVEL = [junior | middle | senior]
-TOPIC      = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
+TOPIC      = [one registered topic from `../coverage/_internal/_topic-ownership.md` | all]
 NOTES_PATH = [notes/{topic}/{LEVEL}/en/]
 FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
              → notes/interview-prep/{LEVEL}/en/{FILE}.md

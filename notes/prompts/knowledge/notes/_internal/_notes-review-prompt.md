@@ -28,7 +28,7 @@ to land the file).
 ````
 ## Configuration — edit only this block
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md`]
 FILE  = [exact en/ file path just authored, e.g. notes/java/junior/en/08-exceptions.md]
 TASK  = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact headings the author appended]

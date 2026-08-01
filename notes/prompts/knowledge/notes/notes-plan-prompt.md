@@ -14,7 +14,7 @@ English/Spanish pair when the evidence makes the correct level unambiguous.
 ## Configuration
 
 ```text
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [one registered topic from `../coverage/_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
 MODE = [update | dry-run]
 ```

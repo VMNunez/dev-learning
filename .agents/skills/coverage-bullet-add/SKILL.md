@@ -21,9 +21,10 @@ description: >
 A concept was just applied in project code. This skill answers one question — **is it on the checklist,
 and if not, does it belong there?** — and writes the bullet when the answer is yes.
 
-**Read `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` before editing anything.** It
+**Read `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` and
+`notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` before editing anything.** They
 only auto-loads inside the `/coverage` pipeline, so an inline edit without it breaks the file's contract.
-It owns the topic-ownership list, the bullet format, and the section-placement rule; this skill applies
+Together they own the topic registry, bullet format, and section-placement rule; this skill applies
 that standard, it does not restate or override it.
 
 This skill is the authoring half of a pair. The marking half is `coverage-mark`, which appends the
@@ -38,18 +39,17 @@ Do not reuse a PROGRESS.md routing here. The calling ritual may have already rou
 **Step 4 mapping table** in `_concept-extraction-standard.md`, but that table routes to a **PROGRESS.md
 section**, and this skill needs the **`notes/` topic that owns the concept**. The two vocabularies do not
 match. `notes/` topics are currently `angular`, `angular-material`, `architecture`, `css`, `general`,
-`git`, `java`, `javascript`, `security`, `spring-boot`, `sql`, `typescript`, while the mapping table folds
+`git`, `java`, `javascript`, `security`, `spring`, `spring-boot`, `sql`, `typescript`, while the mapping table folds
 several of those into one section — its "Spring annotation / bean / **security** / JPA → Spring Boot" row
 is the one that bites, because followed literally it files an access-control concept under `spring-boot`
 when `notes/security/` owns it.
 
-**The authority is the topic-ownership list in the standard's "Topic isolation" section** ("Security owns
-threats and defences; Angular/Spring Boot keep concrete client/server integration"). Read that block and
-apply it literally.
+**The authority is `_topic-ownership.md`.** Resolve the owning row and its adjacent topics; the standard's
+"Topic isolation" section defines how to apply that registry. Never route from a hard-coded topic list.
 
 The test it encodes is **altitude, not subject matter**. The technology-neutral topics (`security`,
 `architecture`, `general`) own the concept — what a thing is, which threat it answers, which boundary it
-draws. The technology topics (`spring-boot`, `angular`, `java`, `sql`, `typescript`, `css`,
+draws. The technology topics (`spring`, `spring-boot`, `angular`, `java`, `sql`, `typescript`, `css`,
 `angular-material`) own its concrete application in that stack. The same subject legitimately appears in
 two topics at two altitudes, and that is **not** duplication:
 
@@ -59,6 +59,8 @@ two topics at two altitudes, and that is **not** duplication:
   mutation endpoints" → `spring-boot`.
 - "grouping by a display name merges two distinct rows" (database behaviour) → `sql`; "the same aggregate
   expressed as JPQL with `@Query`" → `spring-boot`.
+- "declarative transaction boundaries use proxy interception" → `spring`; "Boot configures the
+  transaction manager from the datasource" → `spring-boot`.
 
 What must never happen is the *same altitude* written twice. A framework class name in the bullet
 (`AccountStatusUserDetailsChecker`, `SecurityFilterChain`) is decisive evidence it is the technology
@@ -74,8 +76,15 @@ Open `notes/{topic}/coverage/{junior|middle|senior}.md` for **the level Victor i
 check which, never assume. Grep the concept's **key symbol, not the wording of the step or task**: the
 coverage file names concepts, not fixes.
 
+If the topic's selected Coverage tracker cell has no completed run, its files are only scaffolding.
+Do not author a one-off bullet into an uncalibrated topic. Route the proposal to that topic's inbox
+heading and report that its first `/coverage` run must establish and migrate the baseline.
+
 Search the **sibling topic** too when the routing in step 1 was a close call. The concept may already be
 covered there, which settles the ownership question for you.
+
+An adjacent bullet carrying an evidence marker is never copied or recreated. Route the ownership issue
+to the inbox so `/coverage` can move the original bullet with its complete marker verbatim.
 
 **If it is already covered:** say so and name the exact bullet. Nothing to write; return. This is the
 common case and it is a *good* outcome — it means the project exercised the curriculum rather than
@@ -238,7 +247,7 @@ One row per concept, folded into the calling ritual's report table when there is
 
 | Concept | Topic / level | Result |
 |---|---|---|
-| declarative transaction boundaries | `spring-boot` / junior | already covered — no write |
+| declarative transaction boundaries | `spring` / junior | already covered — no write |
 | BOLA via object id substitution | `security` / junior | bullet added under "Access control" + mirror, 141/141 match |
 | Material overlay token theming | `angular-material` / middle | added one level up — above Victor's current level, flagged |
 | structured logging with correlation ids | `general` / junior | not authored — proposal routed to `_cross-topic-inbox.md` |

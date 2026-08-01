@@ -11,7 +11,7 @@ prompt never scans or completes a whole folder.
 ## Configuration
 
 ```text
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [one registered topic from `../coverage/_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
 NOTE = [two-digit plan entry, for example 01]
 ```

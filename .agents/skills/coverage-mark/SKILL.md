@@ -21,8 +21,8 @@ description: >
 A concept was just **applied in project code**. This skill records that on the coverage checklist.
 
 **Read `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, section "Evidence markers",
-before editing anything.** It only auto-loads inside the `/coverage` pipeline, and it owns the marker's
-format and its preservation contract.
+and `_topic-ownership.md` before editing anything.** They own the marker's format, preservation
+contract, and topic boundary.
 
 This skill only ever *appends a marker to an existing bullet*. It never writes, rewords, or deletes a
 bullet. If the concept has no bullet, that is `coverage-bullet-add`'s job (or `/coverage`) — say so and
@@ -47,10 +47,13 @@ A backlog-task fix *is* code Victor wrote, so it does earn the marker.
 
 ## 2 — Find the bullet, in the right topic and level
 
-Route the concept to its owning `notes/` topic with the **topic-ownership block in
-`_coverage-standard.md`** ("Security owns threats and defences…"). The test is **altitude, not subject
+Route the concept to its owning `notes/` topic with **`_topic-ownership.md`**. The test is **altitude, not subject
 matter** — the same rule `backlog-task-close` step 1 applies, and if that ritual is what called you, reuse
 the topic it already determined rather than re-deriving it.
+
+If that topic's selected Coverage tracker cell has no completed run, stop: its files are scaffolding and
+there is no calibrated bullet to mark. Route the concept through `coverage-bullet-add`; the first
+`/coverage` run will move any existing adjacent bullet together with its marker.
 
 Open `notes/{topic}/coverage/{junior|middle|senior}.md` for the level in question and grep for the
 concept's key symbol, not the wording of the step or task. Then:
@@ -64,6 +67,9 @@ concept's key symbol, not the wording of the step or task. Then:
   involved. When two bullets are genuinely both demonstrated, mark both and say so.
 - **Already marked** — leave it alone and report the existing marker. First project wins; a later project
   reusing the concept never overwrites it, and this is the expected outcome for common concepts.
+
+If the matching bullet was moved between topics or levels, the complete existing marker must already
+have moved verbatim with it. Never remove and recreate the marker; report any mismatch as blocking drift.
 
 Cross-level check: if the bullet lives at a level **above** the one Victor is working at, mark it there
 anyway and say so — demonstrating a middle-level concept in a junior project is real evidence, and one of
@@ -140,8 +146,8 @@ One row per concept, inside the calling ritual's report table when there is one:
 
 | Concept | Topic / level | Result |
 |---|---|---|
-| declarative transaction boundaries | `spring-boot` / junior | marked ✅ 07-timetrack — "every service write method carries `@Transactional`, reads `readOnly = true`" (topic + mirror, 24/139 marked) |
-| proxy-based annotation behaviour | `spring-boot` / junior | already marked ✅ 06-hr-portal — left as is, clause not backfilled |
+| declarative transaction boundaries | `spring` / junior | marked ✅ 07-timetrack — "every service write method carries `@Transactional`, reads `readOnly = true`" (topic + mirror, 24/139 marked) |
+| proxy-based annotation behaviour | `spring` / junior | already marked ✅ 06-hr-portal — left as is, clause not backfilled |
 | BOLA on the mutation endpoints | `security` / junior | not marked — no bullet exists yet, flagged as a possible gap |
 | fail-fast manual checks | `spring-boot` / junior | not marked — DECISION, no code change |
 

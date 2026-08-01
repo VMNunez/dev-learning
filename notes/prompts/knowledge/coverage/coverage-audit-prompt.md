@@ -139,6 +139,8 @@ Validate:
   concept it belongs to, in both the topic file and the mirror — see "Evidence markers" in the standard.
   Reformulating a bullet carries its marker across; only a concept genuinely leaving the level may take
   its marker with it, and that must be named explicitly in the final report;
+- the complete evidence-marker multiset across all topic files and the rebuilt mirror is byte-identical
+  before and after the run; a topic/level move relocates a marker but never rewrites or drops it;
 - `git diff --check` and complete diff inspection pass.
 
 ## Step 6 — Update mode

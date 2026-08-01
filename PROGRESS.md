@@ -25,6 +25,7 @@ exercises, simulations, and unaided explanation demonstrate it.
 |---|---|---|---|---|
 | Angular | Junior — building | Notes 0/9; junior Q&A pending full audit | Projects 01–06; project 07 frontend pending | Complete junior notes, Q&A, then an unaided Angular simulation |
 | Angular Material | Junior — building | Notes 0/14; shares Angular junior Q&A | Projects 05–06 | Complete junior notes and the Material sections of Angular Q&A |
+| Spring | Junior — planned | Coverage and notes plan pending first run | Core mechanisms already used inside project 07; evidence migration pending | Run Spring junior coverage, then build its notes plan |
 | Spring Boot | Junior — building | Notes 0/10; junior Q&A pending full audit | Project 07 backend | Complete junior notes/Q&A and rebuild one backend slice unaided |
 | Java | Junior — building | Notes 0/11; junior Q&A pending full audit | Applied in project 07 | Complete junior notes/Q&A and pass an unaided Java/Spring explanation check |
 | Architecture | Junior — building | Notes 0/7; junior Q&A pending full audit | Layered and coordinator patterns across projects | Complete junior notes/Q&A and defend project 07 decisions unaided |
@@ -51,6 +52,7 @@ level in the table above.
 |---|---|---|---|
 | Angular | 62/122 (51%) | 1/13 (8%)* | 0/6 (0%)* |
 | Angular Material | 46/76 (61%) | 3/13 (23%)* | 0/3 (0%)* |
+| Spring | — | — | — |
 | Spring Boot | 86/144 (60%) | 1/16 (6%)* | 0/5 (0%)* |
 | Java | 47/126 (37%) | 1/14 (7%)* | 0/5 (0%)* |
 | Architecture | 33/68 (49%) | 0/15 (0%)* | 0/5 (0%)* |
@@ -303,6 +305,12 @@ workflow to the first project that established it rather than to code inside tha
 - Netlify — deploy Angular apps from GitHub
 - Environment variables — secure API key injection with `set-env.js`
 - Build configuration — base directory, build command, publish directory
+
+---
+
+## Spring
+
+*Coverage and concept migration pending the first Spring coverage run.*
 
 ---
 

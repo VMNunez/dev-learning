@@ -331,7 +331,8 @@ grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+' notes/{topic}/coverage/{LEVEL}.md   # marked
 ```
 
 Cell format is exactly `marked/total (P%)`, `P` rounded to a whole number — `34/86 (40%)`. A level
-with no file yet is `—`, not `0/0`.
+with no file yet is `—`, not `0/0`. A newly admitted topic may have a zero-bullet scaffold file before
+its first completed Coverage tracker run; that cell is also `—`, because no denominator exists yet.
 
 **Provisional denominators.** Read `notes/prompts/_internal/_run-tracker.md`. If the `Coverage {J|M|S}`
 cell for that topic and level is empty, the level was never authored by the coverage pipeline, so its

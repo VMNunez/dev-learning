@@ -118,11 +118,12 @@ invalid run.
 Related topics remain independent. In particular:
 
 - Angular and Angular Material always run separately.
-- Security owns threats and defences; Angular/Spring Boot keep concrete client/server integration.
+- Security owns threats and defences; Angular/Spring/Spring Boot keep concrete framework integration.
 - General owns neutral HTTP, JSON, testing vocabulary, configuration, and container awareness.
 - Architecture owns framework-neutral boundaries and design decisions.
-- SQL owns database behaviour; Spring Boot owns JPA/Spring implementation.
-- Java owns language semantics; Spring Boot owns framework behaviour.
+- SQL owns database behaviour; Spring Boot owns Spring Data/JPA and Boot datasource integration.
+- Java owns language semantics; Spring owns core framework behaviour; Spring Boot owns Boot behaviour
+  and concrete Boot-stack integration.
 - JavaScript owns Promise semantics; Angular owns Observable/RxJS integration.
 - CSS owns cascade and layout; Angular Material owns Material APIs, overlays, tokens, and components.
 

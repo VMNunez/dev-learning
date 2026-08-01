@@ -104,9 +104,8 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > equivalent entry even with different wording. If you are **not sure** whether an entry really
 > covers a concept, do NOT silently drop it — list it in a separate "borderline" group with one
 > line saying which PROGRESS.md entry might cover it; a hidden gap is worse than a doubtful one.
-> Group by topic, following the order in coverage-junior.md:
-> Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript →
-> JavaScript → SQL → CSS → Git → General.
+> Group by topic in the acyclic order derived from
+> `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md`; never maintain a second hard-coded list.
 >
 > Filter to what actually comes up in junior Angular + Spring Boot interviews at Spanish
 > consultancies. Skip: CQRS, event sourcing, JVM tuning, Kubernetes internals, Angular zone.js

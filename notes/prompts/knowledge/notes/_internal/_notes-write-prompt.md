@@ -36,7 +36,7 @@ budget stays on writing that file well.
 ## Configuration — edit only this block
 ## Replace the [ ] with your value and delete the brackets.
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
 FILE  = [exact en/ file path, e.g. notes/java/junior/en/08-exceptions.md]
 

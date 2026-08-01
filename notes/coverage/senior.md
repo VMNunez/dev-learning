@@ -30,6 +30,12 @@ Senior or specialist Material work beyond normal product-level component usage.
 
 ---
 
+## Spring
+
+Scope pending the first `coverage-prompt` run after junior and middle boundary migration.
+
+---
+
 ## Spring Boot
 
 Senior, specialist, or infrastructure-dependent topics beyond the middle Spring Boot progression.

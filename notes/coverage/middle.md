@@ -55,6 +55,12 @@ Concepts expected when a developer can adapt Angular Material to a production de
 
 ---
 
+## Spring
+
+Scope pending the first `coverage-prompt` run after junior boundary migration.
+
+---
+
 ## Spring Boot
 
 Concepts expected from a Spring Boot developer who owns production behaviour beyond straightforward CRUD services.

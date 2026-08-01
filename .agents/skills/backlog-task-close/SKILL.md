@@ -55,6 +55,11 @@ writing anything**. It only auto-loads inside `progress-update`, so an inline cl
 mis-routes silently. The trap it exists for: pure Java constructs landing under Spring Boot just
 because the fix happened in a Spring project (`Optional<T>` is Java; `@Transactional` is Spring).
 
+Also read `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` before invoking the coverage
+skills. PROGRESS routing and coverage ownership both distinguish `Spring` (container, beans, proxies,
+transactions) from `Spring Boot` (auto-configuration, runtime, externalized configuration, and concrete
+Boot-stack integration).
+
 ---
 
 ## 1 — Coverage: is the concept already there?
@@ -76,6 +81,10 @@ Two things to pass it explicitly, because they are this ritual's context and not
 The common outcome is **already covered**, and that is a *good* result: it means the review found a gap in
 the code, not in the curriculum. Fold the skill's report rows into this ritual's final table.
 
+If the selected topic has no completed Coverage tracker run, treat its files as scaffolding: the skill
+routes the concept to the inbox and reports the first `/coverage` run as owed. Never bypass that gate by
+adding a lone bullet to a new topic during a backlog close.
+
 ### 1a — Mark the concept as demonstrated
 
 **Applies either way** — whether step 1 found the bullet already covered or had to write it. This is the
@@ -92,6 +101,11 @@ Two cases it will report back as skipped, both correct:
 - a concept already marked from an earlier project — first project wins.
 
 Fold its report rows into this ritual's final table.
+
+**Marker preservation is a close blocker.** If ownership moved a previously marked bullet from an
+adjacent topic, the entire `✅ NN-slug — {evidence}` suffix must exist verbatim on the surviving bullet
+in its new topic and in the matching global mirror. Do not remove/recreate it or mark it as a new
+demonstration. A mismatch stops the close before the backlog entry reaches the ledger.
 
 ### 1b — Carry the skill's owed work into the session
 
@@ -263,7 +277,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 
 | Target | Result |
 |---|---|
-| Coverage (`spring-boot/junior`) | already covered — "declarative transaction boundaries" |
+| Coverage (`spring/junior`) | already covered — "declarative transaction boundaries" |
 | Topic chosen | `security` — access-control rule, not the Spring mechanism (PROGRESS section was Spring Boot) |
 | Evidence marker | marked `✅ 07-timetrack` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
 | Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |

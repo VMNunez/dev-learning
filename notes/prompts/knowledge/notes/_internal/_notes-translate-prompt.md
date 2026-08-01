@@ -29,7 +29,7 @@ in your report; the English is not yours to touch.
 ````
 ## Configuration — edit only this block
 
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
 FILE  = [exact en/ file path (the canonical source), e.g. notes/java/junior/en/08-exceptions.md]
 
