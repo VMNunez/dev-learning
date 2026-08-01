@@ -282,7 +282,7 @@ APPROVED     REJECTED ─────────┘
 - Cannot log entries for a future date
 - Hours must be between 0.5 and 24
 - Cannot submit entries for an inactive project — refused **400** (`BusinessRuleViolationException`, the same input-data tier as a future date or an out-of-range hours value; it is a property of the data being submitted, not of the entry's workflow state). The same 400 applies to `POST` and `PUT`, which re-run the rule. **`409` (`InvalidStateTransitionException`) is reserved for state conflicts only** — an entry that is not in the status the transition requires (submit/edit/delete on a non-`DRAFT` entry, reopen on a non-`REJECTED` one, approve/reject on a non-`SUBMITTED` one)
-- **Shared routes stay role-aware.** `/dashboard` and `/entries` are reachable by both roles (`authGuard` only, §13), so the manager-only data they show — `GET /api/users`, `GET /api/reports/summary`, the `?status=SUBMITTED` review list — is requested **only** in the manager variant of the page, chosen from `AuthService`'s role signal. The API is the real boundary: an EMPLOYEE that reached those calls would get `403`, so the role-aware rendering is a UX decision, never the protection
+- **Shared routes stay role-aware.** `/dashboard` and `/entries` are reachable by both roles (`authGuard` only, §13), so the manager-only data they show — `GET /api/users`, the `?status=SUBMITTED` review list — is requested **only** in the manager variant of the page, chosen from `AuthService`'s role signal. The API is the real boundary: an EMPLOYEE that reached those calls would get `403`, so the role-aware rendering is a UX decision, never the protection
 - Inactive users cannot log in — their entries remain in the database unchanged
 - A user deactivated *after* their token was issued loses access on their next request, not when the token expires — `JwtFilter` runs the loaded `UserDetails` through an `AccountStatusUserDetailsChecker`, so the login-time `active` check cannot be bypassed by an already-issued token
 
@@ -521,11 +521,11 @@ than the handler hardcoding it.
 | `size` | int, default `20`, capped at `100` | Rows per page; a larger request is silently clamped to the cap |
 | `sort` | `field,dir` — repeatable | Overrides the default `date` desc, `id` desc |
 
-### Reports (`ReportController` — MANAGER only)
+### Reports (`ReportController` — MANAGER only, except `GET /summary`)
 
 | Method · Path | Role | Description | Query params | Response |
 |---|---|---|---|---|
-| `GET /api/reports/summary` | MANAGER | Month totals: approved hours, pending hours, approved entry count | `month` — String `YYYY-MM`, required | `200` + `ReportSummaryResponse` — `approvedHours`, `pendingHours`, `totalEntries` · `400` month missing or malformed |
+| `GET /api/reports/summary` | Any authenticated user | Month totals: approved hours, pending hours, approved entry count — **scoped to the caller**: an EMPLOYEE gets their own, a MANAGER the whole company | `month` — String `YYYY-MM`, required | `200` + `ReportSummaryResponse` — `approvedHours`, `pendingHours`, `totalEntries` · `400` month missing or malformed |
 | `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours`, `active` |
 | `GET /api/reports/by-user` | MANAGER | Hours grouped by user | `month` — required | `200` + `List<UserHoursReportResponse>` — `userId`, `userName`, `totalHours`, `active` |
 
@@ -533,6 +533,15 @@ than the handler hardcoding it.
 > order is part of the contract, not an accident: a `GROUP BY` guarantees none, so the query states it
 > rather than leaving the sort to Angular. The name key makes the ordering total, so equal-hour rows
 > cannot swap between two identical calls — which is what makes the endpoint testable.
+>
+> **Role as scope, not as a gate (decided 2026-08-01).** `summary` is the one report both roles call, so
+> its `@PreAuthorize` only asserts `isAuthenticated()` and the ownership rule is applied in the service —
+> the same rule `GET /api/entries` uses (employee → own, manager → all), expressed by adding the caller's
+> id to the `Specification` rather than by branching the query. An annotation cannot express it, because
+> the role decides *which rows the answer is built from*, not whether the call is allowed. The scope
+> applies to the whole entry set, never field by field: all three numbers derive from one filtered list,
+> so a mixed-scope response — own hours beside company-wide pending hours — is not representable.
+> `by-project` and `by-user` stay MANAGER-only; they aggregate across people by definition.
 >
 > **All three count `APPROVED` entries only** — the §8 reporting rule. `pendingHours` is the single
 > deliberate exception and is never folded into a total, which is why `totalHours` was removed from
@@ -633,7 +642,7 @@ src/main/java/com/victor/timetrack/
 │   ├── UserController.java          (/api/users — MANAGER only, except PATCH /me/password: any authenticated user)
 │   ├── ProjectController.java       (/api/projects)
 │   ├── TimeEntryController.java     (/api/entries + the workflow PATCH endpoints)
-│   └── ReportController.java        (/api/reports — MANAGER only)
+│   └── ReportController.java        (/api/reports — MANAGER only, except GET /summary: any authenticated user, scoped)
 ├── service/
 │   ├── AuthService.java             (authenticates credentials and issues the JWT)
 │   ├── UserService.java             (user CRUD + soft delete + SecureRandom password generation and self-service change)
@@ -761,7 +770,7 @@ it differently mid-build:
 | `GET /api/entries?status=SUBMITTED` | Manager dashboard ("Pending approval" card + review list) · Approvals page (queue) | **Each page fetches independently.** Approving from the dashboard refetches only the dashboard; the Approvals page is re-read when the user navigates to it |
 | `GET /api/projects` | Projects page · Entries filter bar · entry-dialog project selector · Manager dashboard ("Active projects" card) | **Each page fetches independently** on load. The entry-dialog receives the already-loaded list from its parent page through `MatDialog` data — it does not call `ProjectService` itself |
 | `GET /api/users` | Team page · Manager dashboard ("Team members" card) · Approvals employee filter | **Each page fetches independently** |
-| `GET /api/reports/summary?month=` | Reports page ("Approved this month" card) · Manager dashboard ("Approved this month" card) | **Each page fetches independently**, for its own selected month |
+| `GET /api/reports/summary?month=` | Reports page ("Approved this month" card) · Manager dashboard ("Approved this month" card) · Employee dashboard ("Approved this month" card, scoped by the token) | **Each page fetches independently**, for its own selected month |
 | — current user + token (no endpoint after login) | App shell (name, role-filtered sidebar) · both guards · every role-aware page | **`AuthService`** — the one piece of app-wide state, a signal persisted to `localStorage` with `effect()`. Auth outlives every route, so a page cannot own it |
 | Pending-approvals count (`MatBadge` in the shell) | App shell only | Owned by the **shell component**, which issues its own `GET /api/entries?status=SUBMITTED` on load. It is deliberately **not** live-synced with the Approvals page — approving an entry does not decrement the badge until the next navigation. Keeping it live would need exactly the shared store §20 rejects, for a badge |
 
@@ -1138,9 +1147,9 @@ Recent entries
   is paged, so a client-side sum would silently report the first page's hours as the month's. The rule
   outlives pagination anyway: a total is the database's job, not the browser's — summing it in Angular
   means fetching every row of the month to add one column
-- The employee dashboard therefore needs `GET /api/reports/summary` **scoped to the caller**, the same
-  ownership rule `GET /api/entries` already applies (employee → own, manager → all). The endpoint is
-  MANAGER-only and company-wide today, so widening it is a prerequisite of this page
+- The employee dashboard therefore reads `GET /api/reports/summary`, which is **scoped to the caller** by
+  the same ownership rule `GET /api/entries` applies (employee → own, manager → all) — see the §10 reports
+  ruling. The page sends no role and no user id: the token decides what the totals cover
 - "Pending review" and "Approved this month" are counts, and a paged response carries them exactly:
   `page.totalElements` with `?status=…&size=1`, which is cheaper than the old count-the-array approach
 - The recent-entries table below the cards is the one genuine consumer of the list itself, and it reads
@@ -1396,7 +1405,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - Aggregate queries with JPQL
 - Summary by project and by user for a given month
 - **New concepts:** JPQL aggregation queries, query filters with `@RequestParam`, interface projections for query results
-- **Review concepts:** `@PreAuthorize` (reports are MANAGER only)
+- **Review concepts:** `@PreAuthorize` (`by-project` and `by-user` are MANAGER only; `summary` is scoped to the caller instead)
 - **Done condition:** `Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours }`
 - **Concept learned:** interface projections (`ProjectHoursReportResponse`, `UserHoursReportResponse`) let Spring Data build a proxy per result row directly from `SELECT ... AS alias` — no class, no manual mapping — as long as each getter's name matches an alias exactly (Java Bean convention: strip `get`, lowercase first letter). `YearMonth` is received in the controller but converted to a `LocalDate` start/end range in the service (business logic), not the controller. Repositories are organized by **entity** (`TimeEntryRepository` owns both report queries, since their `FROM` is `TimeEntry`), a different axis than controllers/services, which are organized by **feature** (`ReportController`/`ReportService`). Found and fixed two real bugs surfaced by the Postman test pass: `MissingServletRequestParameterException` and `MethodArgumentTypeMismatchException` aren't `RuntimeException`s / weren't specifically handled, so a missing or malformed `?month=` fell through to `500` — worse, the missing-param case revealed a genuine Spring Security gotcha where Spring's internal forward to `/error` gets rejected as unauthenticated (`401`) because `JwtFilter` skips error dispatches by default and `/error` was never excluded from `.anyRequest().authenticated()`.
 
@@ -1528,7 +1537,7 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `UserService.changePassword` | Replaces the caller's hash when the current password matches | wrong current password → throws `InvalidCurrentPasswordException` (**400**, `fieldErrors.currentPassword` — the §8 status ruling); the new hash differs from the old one and `matches()` the new password |
 | `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password |
 | `ReportService.getHoursByProject` / `.getHoursByUser` | Groups hours per project / per user for the month | empty month → returns empty list, not null; only the statuses §8 declares reportable are summed |
-| `ReportService.getSummary` | Returns the month's approved hours, pending hours and approved entry count | empty month → all zeros, no exception; `approvedHours` **equals the sum of `getHoursByProject`** for the same month (the §8 reconciliation rule, asserted); DRAFT and REJECTED entries change no field |
+| `ReportService.getSummary` | Returns the month's approved hours, pending hours and approved entry count | empty month → all zeros, no exception; `approvedHours` **equals the sum of `getHoursByProject`** for the same month (the §8 reconciliation rule, asserted); DRAFT and REJECTED entries change no field; an EMPLOYEE caller gets only their own entries in all three figures, a MANAGER the whole company |
 
 **The one §8 rule with no unit test, stated deliberately:** "a user deactivated *after* their token was
 issued loses access on their next request" lives in `JwtFilter` /
@@ -1564,7 +1573,7 @@ whose test asserts a stored token or a signal.
 | `EntryService.approve` | PATCHes `/api/entries/{id}/approve` with no body and returns the updated `TimeEntry` | the id is interpolated into the path, not sent as a param; **the service stores nothing** — the returned value is the only channel (§6 Service boundary), so the caller page is what refetches |
 | `EntryService.create` | POSTs the entry and returns the created `TimeEntry` | a 400 surfaces the `fieldErrors` map from the §10 error contract to the caller, un-swallowed, so the reactive form can bind a message per input |
 | `UserService.changePassword` | PATCHes `/api/users/me/password` with `{currentPassword, newPassword}` and completes on `204` with no body to map | a `400` surfaces the `fieldErrors` map (`currentPassword` / `newPassword`) to the dialog un-swallowed; the current password travels in the body only, never in the URL; the service stores nothing and does **not** clear the session on that `400` |
-| `ReportService.getSummary` | GETs `/api/reports/summary?month=` and returns the typed summary | a 403 (EMPLOYEE calling a MANAGER endpoint) surfaces an error the caller can handle rather than resolving to a partial object |
+| `ReportService.getSummary` | GETs `/api/reports/summary?month=` and returns the typed summary | both roles call it and the backend decides the scope, so the service takes no role argument and the component never asks who is logged in — the employee and manager dashboards share one call |
 
 ### Angular — components
 
