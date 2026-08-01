@@ -282,8 +282,86 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 ## Spring
 
-Scope pending the first `coverage-prompt` run. That run owns the boundary migration from adjacent
-topics and must preserve every existing evidence marker verbatim.
+Core Spring Framework mechanisms a junior Java developer must understand to read, test, and debug conventional Spring applications without confusing them with Spring Boot conveniences.
+
+### Container and bean registration
+
+- Inversion of Control and dependency injection — the container creates and connects application objects so classes declare collaborators instead of locating or constructing infrastructure themselves
+- `ApplicationContext` and the IoC container — recognise the runtime registry that holds bean definitions, creates managed objects, resolves dependencies, and publishes framework services
+- Bean vs ordinary object — Spring lifecycle, injection, scopes, and proxy-backed annotations apply only to objects obtained from the container, not to instances created with `new`
+- Component stereotypes — use `@Component` and its layer-specific stereotypes to make application classes discoverable while keeping each layer's responsibility explicit ✅ 07-timetrack
+- `@Repository` exception translation — with Spring's persistence-exception translation infrastructure, the stereotype lets provider-specific failures surface through the portable `DataAccessException` hierarchy ✅ 07-timetrack
+- Component scanning — understand that scanning searches configured packages for candidate components, so a valid stereotype outside the scan boundary still produces a missing-bean failure
+- `@Configuration` and `@Bean` — register third-party instances or explicit construction logic in Java configuration and use scanning for application-owned component classes ✅ 07-timetrack
+- `@Bean` method dependencies — declare collaborators as method parameters so the container resolves them instead of calling other factory methods as hidden service locators
+- Bean names and type lookup — beans are normally resolved by type, while names become relevant when several candidates share that type or external integration refers to a bean explicitly
+- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor ✅ 07-timetrack
+- Lombok constructors and Spring injection — `@RequiredArgsConstructor` can express constructor injection for final dependencies, while an all-argument constructor is usually the wrong service boundary
+- `@Autowired` requiredness — an autowired dependency is required by default; constructor inference removes the annotation, while `Optional`, `ObjectProvider`, or explicit requiredness changes absence semantics deliberately
+- Collection and map injection — inject all beans of a type when at least one strategy is part of the contract; use an explicitly optional form when an empty set is valid
+- `ObjectProvider<T>` — defer or optionally request a dependency when its availability or scope genuinely varies instead of hiding a required collaborator behind null
+- `@Qualifier` vs `@Primary` — select one bean explicitly at an injection point or declare a default candidate when several beans satisfy the same dependency type
+- Dependency resolution failures — distinguish no candidate, multiple candidates, and a dependency cycle before changing annotations at random
+- Circular dependencies — treat a constructor cycle as a design signal that responsibilities or dependency direction need correction rather than hiding it with field injection
+
+### Scope and lifecycle
+
+- Singleton scope and stateless services — the default shares one bean instance across callers, so mutable request-specific state on a service can leak across users and threads
+- Singleton bean scope vs Singleton pattern — Spring's scope means one managed instance per bean definition in a container, not a class-enforced global instance with a private constructor
+- Prototype scope — the container creates a new instance each time that bean is requested, unlike the shared singleton default
+- Web-aware request and session scopes — recognise per-request and per-session lifetimes so request-specific state is not placed on a shared singleton
+- Scope vs thread safety — bean scope controls instance lifetime and sharing, while thread safety depends on how mutable state is accessed
+- Bean lifecycle phases — follow instantiation, dependency injection, initialization callbacks, ready use, and destruction so a failure can be placed in the correct phase
+- `@PostConstruct` and `@PreDestroy` — run lifecycle work after injection or before managed destruction without putting operational work in a constructor
+
+### Proxies and AOP
+
+- Cross-cutting concerns and AOP — apply behaviour such as transactions, security, caching, or logging around a method call without mixing that infrastructure policy into the method body
+- Proxy-based annotation behaviour — Spring wraps eligible beans, so advice applies when a call crosses the proxy and silently does nothing on an unmanaged instance or self-invocation
+- Self-invocation — a method calling another advised method on `this` bypasses the proxy, so moving the boundary or calling another bean is normally clearer than reaching for the proxy manually
+- Proxy infrastructure activation — an annotation such as `@Transactional` or `@Validated` needs the matching Spring infrastructure; the annotation alone is inert in a bare context that has not enabled its processor
+
+### Transaction abstraction
+
+- `@Transactional` atomicity and rollback — group one business operation in a transaction and know that unchecked exceptions roll back by default while checked exceptions require an explicit rule ✅ 07-timetrack
+- Spring's `@Transactional` vs the Jakarta annotation — two importable annotations with the same name use different attributes and integration semantics, so the import is part of the behaviour even though both normally roll back unchecked exceptions by default
+- Transaction boundary placement — put the annotation on the externally invoked service method that spans the business operation, not on a controller, private helper, or isolated repository call ✅ 07-timetrack
+- Method-level vs class-level `@Transactional` — a method annotation overrides class-level transaction metadata, so broad defaults belong on the class and exceptional boundaries stay explicit on methods
+- Transactional proxy limitations — `new` instances, self-invocation, and non-proxy-eligible methods do not open the transaction the annotation appears to promise
+- `@Transactional(readOnly = true)` — declare read intent so integrations may optimise work, without treating it as a portable guarantee that the database will reject writes ✅ 07-timetrack
+- Caught exceptions and rollback — swallowing a failure can let the proxy observe normal completion and commit unless rollback is re-established deliberately
+- Transaction propagation `REQUIRED` — recognise the default join-or-create behaviour so nested service calls participate in one boundary instead of assuming every annotation opens an independent transaction
+
+### Events, resources, and environment
+
+- Spring application events vs external messaging — `ApplicationEventPublisher` notifies `@EventListener` methods in-process and synchronously by default; it provides neither broker durability nor cross-process delivery
+- Spring `Resource` abstraction — read classpath, filesystem, and URL-backed content through one interface without assuming every resource is a normal file
+- `Environment` and profiles — query active profiles and property sources as framework context while keeping environment-specific values outside business logic
+- `@Value` placeholders — inject a small scalar value or expression while preferring typed configuration binding when a cohesive settings group belongs to Boot configuration
+
+### Validation integration
+
+- Jakarta Validation vs Spring validation — Jakarta constraints describe bean rules, while Spring adapts validation into data binding, method interception, and web integration
+- `@Valid` vs `@Validated` — standard `@Valid` triggers cascaded bean validation, while Spring's `@Validated` also selects validation groups and participates in method-validation integration
+- Cascaded validation — nested objects require `@Valid` at the relationship boundary or their own constraints remain metadata that never runs
+- Method validation through a proxy — constraints on service parameters or return values require the method-validation infrastructure and a call through the managed proxy
+- Binding errors vs business-rule failures — structural conversion and validation belong at the input boundary, while repository-backed or actor-dependent invariants remain application logic
+
+### Spring testing foundations
+
+- Plain unit test vs Spring test context — instantiate a class directly when only its logic matters and load the container only when bean wiring or framework behaviour is the risk
+- Spring TestContext Framework — build and cache an application context for tests while integrating lifecycle callbacks, profiles, properties, and dependency injection
+- `@ContextConfiguration` — declare the configuration classes or resources that a framework-level test context needs without loading a complete Boot application
+- Test property and profile overrides — activate controlled configuration for a test without weakening production defaults or depending on a developer machine
+- Transactional test rollback — a Spring-managed test transaction normally rolls back after each test, which isolates database state but can hide behaviour that occurs only at commit
+
+### Maintained-code recognition
+
+- Field and setter injection — recognise `@Autowired` on fields or setters in existing code and explain the hidden-dependency and testability trade-offs compared with constructor injection
+- `@Autowired` vs `@Inject` vs `@Resource` — recognise Spring, Jakarta, and name-oriented legacy injection annotations while preferring one consistent constructor-injection style in new code
+- XML bean definitions — read legacy `<bean>` and component-scan configuration as another source of bean definitions without making XML the default for new code
+- `BeanFactory` vs `ApplicationContext` — recognise the lower-level bean factory contract while using the application context for events, resources, environment, and normal application integration
+- `javax.*` vs `jakarta.*` validation and lifecycle imports — current Spring generations use Jakarta namespaces, while maintained code may still use the pre-migration packages
 
 ---
 
@@ -291,17 +369,8 @@ topics and must preserve every existing evidence marker verbatim.
 
 Concepts needed to build, test, explain, and debug a conventional Spring Boot REST application at junior level.
 
-### Beans, injection, and startup diagnosis
+### Startup callbacks and diagnosis
 
-- Component stereotypes — use `@Component` and its layer-specific stereotypes to make application classes discoverable while keeping each layer's responsibility explicit ✅ 07-timetrack
-- `@Repository` exception translation — the stereotype converts provider-specific persistence failures into Spring's `DataAccessException` family, so a constraint breach surfaces as `DataIntegrityViolationException` and can be mapped to a deliberate status ✅ 07-timetrack
-- `@Bean` vs component scanning — register third-party instances or explicit construction logic in configuration and use scanning for application-owned component classes ✅ 07-timetrack
-- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor ✅ 07-timetrack
-- Lombok constructors and Spring injection — `@RequiredArgsConstructor` can express constructor injection for final dependencies, while all-argument constructors are usually the wrong service boundary
-- `@Qualifier` vs `@Primary` — select one bean explicitly at an injection point or declare a default candidate when several beans satisfy the same dependency type
-- Bean scope and the singleton default — application beans are singleton-scoped by default, so mutable request-specific state on a service can leak across users and threads
-- Proxy-based annotation behaviour — Spring applies transaction, security, and similar annotations by wrapping the bean in a proxy, so the annotation only takes effect on an injected bean invoked from outside and silently does nothing on a `new` instance or an internal call
-- Bean lifecycle and startup failures — distinguish component scanning, bean creation, dependency resolution, and application startup so missing beans, ambiguous injection, and circular dependencies can be diagnosed from the failure report
 - `CommandLineRunner` startup callback — run one-off work once after the context is fully built and every bean is available, instead of a constructor or static initialiser that fires before the application is ready; it runs on every boot, so the work must be idempotent ✅ 07-timetrack
 - Startup diagnostics — read Boot's condition and failure-analysis output to distinguish configuration, bean creation, port, and datasource failures before changing code
 - Application logging — obtain a logger through the SLF4J facade rather than printing to standard output, and raise or lower a package's level from configuration so a running application can be investigated without editing code ✅ 07-timetrack
@@ -337,7 +406,6 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - Bean constraints vs database constraints — a validation annotation rejects bad input before business logic with a client error, while a column constraint fails at flush time as a server error, so the same rule expressed only in the schema produces the wrong response ✅ 07-timetrack
 - Controller method validation — apply constraints to controller parameters and handle their failures separately from request-body binding errors
 - Body vs method validation failures — invalid `@RequestBody` binding and invalid method parameters use different exception families; handle both deliberately instead of assuming every violation is a `ConstraintViolationException`
-- `@Valid` vs `@Validated` — use standard cascaded validation for request objects and Spring's validation groups or method-level proxy features only when those additional semantics are required
 
 ### Exception handling and error responses
 
@@ -392,15 +460,10 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - Write timing and deferred failure — a persistence call stages work that reaches the database at flush or commit, so a constraint violation is reported at the transaction boundary rather than on the line that appeared to cause it
 - Open EntityManager in View — recognise that Boot's web default can keep lazy loading available during response rendering, why this can hide query behaviour, and why DTO mapping should happen inside an explicit service transaction ✅ 07-timetrack
 
-### Transactions
+### Transaction-aware persistence
 
-- `@Transactional` atomicity and rollback — group one business operation in a transaction and know that the default rollback rules differ for unchecked and checked exceptions ✅ 07-timetrack
-- Spring's `@Transactional` vs the Jakarta annotation — two importable annotations of the same name carry different rollback defaults, so the import decides the behaviour
-- `@Transactional(readOnly = true)` — declares read intent so the provider can skip dirty checking, while whether writes are actually refused depends on the driver and database rather than on Spring ✅ 07-timetrack
-- Transaction boundary placement — put the annotation on the externally invoked, proxy-eligible service method that spans the whole business operation, not on a controller, a private method, or a single repository call ✅ 07-timetrack
-- Spring Data repository default transactionality — repository CRUD methods carry their own `@Transactional`, so an unannotated service commits every call as its own transaction with no atomicity across them, which is why the service boundary is a deliberate decision rather than an optional annotation ✅ 07-timetrack
-- `LazyInitializationException` — thrown when you access a `LAZY` relationship after the Hibernate session is closed (outside the `@Transactional` boundary); fix by converting to DTO inside the `@Transactional` method, or by using `JOIN FETCH` to load the relationship eagerly in the query ✅ 07-timetrack
-- Caught exceptions and rollback — swallowing a failure inside a transactional method can let the proxy observe normal completion and commit unless rollback is re-established deliberately
+- Spring Data repository default transactionality — repository CRUD methods carry their own transaction boundary, so an unannotated service commits every call independently with no atomicity across the whole use case ✅ 07-timetrack
+- `LazyInitializationException` — thrown when you access a `LAZY` relationship after the Hibernate session is closed; fix by converting to a DTO inside the service transaction or loading the relationship deliberately in the query ✅ 07-timetrack
 
 ### Spring Security — chain configuration and access rules
 
@@ -472,7 +535,6 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - `jakarta.*` vs `javax.*` imports — recognise that current Boot versions moved the persistence, validation, and servlet namespaces, so a maintained codebase or a copied snippet on the wrong namespace fails to compile or is silently ignored
 - `SecurityFilterChain` bean vs `WebSecurityConfigurerAdapter` — current configuration declares a chain bean with the lambda DSL, while the removed adapter base class survives in maintained codebases and in most copied examples, so recognise both and know why one no longer compiles
 - Repository interface hierarchy — `CrudRepository`, `PagingAndSortingRepository`, and `JpaRepository` extend one another with progressively more operations, so recognise which one a maintained codebase declared and what that choice does and does not provide
-- Field injection and `@Autowired` — recognise the older field- and setter-injected style still common in maintained code, and be able to state what constructor injection gives up when it is replaced
 - Service interface plus `Impl` implementation — recognise the pervasive split where the injected type is an interface and the behaviour lives in a separate implementation class, and know that Boot proxies classes by default, so the interface is a maintained-code convention and a test-substitution seam rather than a technical requirement for proxying
 
 ### Delivery and API contract
