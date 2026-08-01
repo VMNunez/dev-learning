@@ -441,6 +441,9 @@ workflow to the first project that established it rather than to code inside tha
 - `@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)` — serialises pages as `PagedModel` (`content` + `page`) instead of reflecting over the internal `PageImpl`
 - An `@Enable*` annotation makes Boot's matching autoconfiguration back off — it dropped `spring.data.web.pageable.max-page-size` and the cap fell back to Spring Data's 2000 default
 - `PageableHandlerMethodArgumentResolverCustomizer` bean — sets the max page size once the property-driven path is no longer active
+- `findAll(Sort)` and a `Sort` appended to a derived query (`findByActiveTrue(Sort)`) — a special parameter applied on top of the query, never parsed as a criterion
+- `Sort.by("name").ascending()` vs `Sort.by(Sort.Order.desc(..), Sort.Order.asc(..))` — the second is what allows mixed directions, since `.ascending()` applies to every key at once
+- A `Sort` on a `boolean` column: `active` descending puts `true` first, because SQL orders `false` below `true`
 
 ---
 
