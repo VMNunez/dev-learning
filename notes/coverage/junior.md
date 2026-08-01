@@ -796,6 +796,11 @@ apply in a small codebase, and defend with concrete trade-offs.
 
 - State machine pattern — model a workflow as explicit states and allowed transitions so invalid moves
   such as APPROVED → DRAFT are rejected at one business boundary ✅ 07-timetrack
+- Actor-dependent transitions — when a transition is gated on a mutable attribute of the actor such as a
+  role, changing that attribute can strand entities in a state no actor is able to leave, so the change
+  itself becomes part of the workflow's invariants ✅ 07-timetrack — `UserService.update` refuses a
+  promotion to MANAGER while the user still holds DRAFT or REJECTED entries, whose submit and reopen
+  transitions are EMPLOYEE-only
 
 ### Boundary patterns in maintained code
 
