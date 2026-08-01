@@ -247,6 +247,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `GET /api/reports/summary` serves both roles, so the role is not the gate: `@PreAuthorize("isAuthenticated()")` states that the check lives further in, and `ReportService` adds `hasUserId(...)` to the `Specification` — `null` for a manager, the caller's own id for an employee, since a `null` argument makes that specification the neutral element of the `AND`. One query, one code path, and the three aggregates scope themselves because they all read the filtered list. The identity comes from `AuthenticatedUserProvider`, never from a request parameter. `by-project` and `by-user` keep `hasRole('MANAGER')`, so the contrast between the two kinds of authorisation is visible in one screen of the controller.
 
+### A role change is a workflow transition too ✓
+
+`PUT /api/users/{id}` refuses a promotion to MANAGER with `409` while the user still holds `DRAFT` or `REJECTED` entries. `submit` and `reopen` are `hasRole('EMPLOYEE')` and resolve ownership from the JWT, so those rows would become unreachable by every actor in the system — invisible to reports and to the approvals queue, but still listed to their owner. The state machine's transitions are gated on the actor's role, which makes the role mutable input to it, so the point where the role changes is where that assumption is guarded. Narrow by construction: the check runs only when the role actually changes to MANAGER, leaving reactivation through the same endpoint untouched.
+
 ---
 
 ## Tradeoffs
