@@ -12,8 +12,10 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 - Tracked, untracked, and ignored files — recognise whether Git already follows a path, has not added it, or excludes it through ignore rules
 - Clean, unstaged, staged, and untracked states — read `git status` before deciding which inspection or mutation command is safe ✅ 01-todo-list
 - `git diff` vs `git diff --staged` — inspect unstaged working-tree changes or the exact staged changes prepared for the next commit ✅ 01-todo-list
+- Revision and branch comparison with `git diff` — compare two snapshots directly and use `base...feature` to diff the merge base against the feature tip
 - `git add` and path scope — stage only intended files, directories, or pathspecs instead of accidentally including unrelated work ✅ 01-todo-list
 - `git add -p` — select individual hunks to construct focused commits and exclude debug, formatting, or secret changes
+- File deletion and rename tracking — stage removals and moves deliberately while recognising that `git mv` is a convenience and Git infers renames from content
 - `git commit` — create a new snapshot from the index, not automatically from every modified working-tree file ✅ 01-todo-list
 - `git log --oneline --graph --decorate --all` — read compact history, branch topology, and reference positions ✅ 01-todo-list
 - `git log -- <path>` — trace the history that affected a specific file without treating unrelated commits as evidence
@@ -32,17 +34,18 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 ## User and repository configuration
 
 - Git configuration scopes — distinguish system, global, and local settings and use repository-specific overrides when appropriate
-- Commit identity — configure `user.name` and `user.email` deliberately because commits record author and committer metadata ✅ 01-todo-list
+- Author vs committer identity — configure `user.name` and `user.email` deliberately and recognise that rebasing or cherry-picking can preserve the author while recording a different committer ✅ 01-todo-list
 - Line-ending policy — recognise CRLF/LF noise and follow repository configuration such as `.gitattributes` instead of committing mass rewrites
 - Executable-bit changes — recognise permission-only diffs and avoid accidental file-mode changes across operating systems
-- Signed commits and tags awareness — recognise verified-object requirements without treating signing infrastructure or hosting branch protection as junior ownership
+- Signed Git objects awareness — recognise verified commit or tag requirements without treating signing infrastructure or hosting branch protection as junior ownership
 
 ## Branches, `HEAD`, and integration
 
 - Branch reference — understand a branch as a movable name for a commit rather than a copy of the project ✅ 01-todo-list
 - `HEAD` and the current branch — know that `HEAD` normally refers through the checked-out branch and moves when that branch gains a commit ✅ 01-todo-list
 - Detached `HEAD` — recognise checkout at a commit rather than a branch and create or switch to a branch before work becomes difficult to retain
-- `git branch`, `git switch`, and branch-oriented `git checkout` — create, list, and change branches while recognising the newer focused command and the older multi-purpose command ✅ 01-todo-list
+- `git branch` operations — create, list, rename, and delete local branch references deliberately ✅ 01-todo-list
+- `git switch` vs branch-oriented `git checkout` — change branches while recognising the newer focused command and the older multi-purpose command
 - Correct branch base — update and verify the intended base before creating a feature branch so it does not begin from stale or unrelated history
 - Safe branch deletion — use `git branch -d` for merged work and treat `-D` as a deliberate discard that requires prior verification
 - Fast-forward vs three-way merge — distinguish moving a branch reference forward from creating a merge commit from divergent histories ✅ 01-todo-list
@@ -56,7 +59,7 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 - Lightweight vs annotated tags — recognise a direct commit label versus a tag object with metadata and optional signature, while release-policy ownership remains above junior
 - Team branching policy recognition — follow the repository's feature-branch, trunk-based, GitFlow, release, or hotfix convention without treating one workflow as universal ✅ 01-todo-list
 
-## Remotes and collaborative review
+## Remotes and synchronisation
 
 - Remote and `origin` — understand a remote as a named repository URL and `origin` as a conventional default name, not a branch or the cloud itself ✅ 01-todo-list
 - Clone vs hosting-platform fork — distinguish making a local working copy from creating a server-side repository copy with its own collaboration remotes
@@ -69,15 +72,20 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 - Upstream tracking — connect a local branch to its usual remote branch so status, pull, and push can infer their counterpart ✅ 01-todo-list
 - Non-fast-forward push rejection — fetch and integrate remote work instead of bypassing the safety check with a blind force push
 - Force-push safety — recognise shared-history danger and use `--force-with-lease` only when rewriting an explicitly authorised private branch
+
+## Pull requests and hosted review
+
 - Feature branch and pull-request flow — push isolated work, open a review request, address feedback, validate updates, and merge under repository policy ✅ 01-todo-list
 - Pull request vs Git — recognise pull or merge requests as hosting-platform review objects built around Git branches and commits ✅ 01-todo-list
 - Pull-request merge strategies — distinguish merge commit, squash merge, and rebase merge by their effect on final history
+- Required reviews and status checks — recognise when branch protection blocks a merge, inspect failed checks, and update the same pull-request branch before trying again
 - Diff-based code review — verify intended behaviour, tests, edge cases, secrets, generated files, format churn, and unrelated scope before approving
 - Review-update strategy — add focused follow-up commits or perform policy-approved private cleanup without rewriting shared history unexpectedly
-- Remote branch cleanup — distinguish deleting a remote branch from deleting its local counterpart and prune stale remote-tracking references when needed
+- Remote branch deletion — distinguish deleting a branch on the remote from deleting its local counterpart
+- Remote-tracking cleanup — prune stale remote-tracking references after confirming their remote branches no longer exist
 - Authentication failures vs history problems — separate HTTPS token or credential-helper and SSH-key permissions from merge, divergence, and push-history errors
 
-## Conflicts and safe recovery
+## Conflict resolution
 
 - Conflict causes — recognise incompatible edits such as same-region changes, modify/delete cases, renames, or competing file additions that Git cannot combine safely
 - Conflict markers — read `<<<<<<<`, `=======`, and `>>>>>>>` as competing sides while using surrounding intent rather than choosing markers mechanically
@@ -85,8 +93,12 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 - Merge vs rebase conflict context — account for the operation when interpreting current and incoming sides because replay can invert an intuitive `ours`/`theirs` assumption
 - Abort semantics — use the operation-specific abort command to return as closely as possible to the pre-operation state when resolution should not continue
 - Conflict prevention — keep branches short-lived, integrate the target regularly, coordinate overlapping work, and review the diff before sharing
-- `git restore` vs `git restore --staged` — discard working-tree changes or unstage index changes while understanding which copy remains
-- `git reset --soft`, `--mixed`, and `--hard` — move a branch while retaining changes staged, retaining them unstaged, or discarding tracked working-tree and index changes
+
+## Undo, recovery, and investigation
+
+- `git restore` vs legacy path checkout or reset — use the focused command to restore working-tree content or unstage index changes while recognising older `git checkout -- <path>` and `git reset <path>` instructions
+- Path restoration from a selected revision — use `git restore --source=<revision> -- <path>` to recover one path from a known snapshot without moving the branch or changing unrelated work
+- `git reset --soft`, `--mixed`, and `--hard` — move the current branch when `HEAD` is attached, or `HEAD` itself when detached, while retaining changes staged, retaining them unstaged, or discarding tracked working-tree and index changes
 - `git reset` vs `git revert` — rewrite a local reference or create an additive inverse commit, preferring revert for published shared history
 - `git commit --amend` — replace the latest local commit's content or message and recognise that the commit identity changes
 - `git reflog` recovery — locate recent local reference movements after reset, rebase, or branch deletion while treating retention as a recovery window, not durable backup
