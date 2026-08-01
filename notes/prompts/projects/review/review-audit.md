@@ -330,22 +330,34 @@ whose neighbours are marked is squarely at level. (The global `notes/coverage/{L
 the same bullets and markers; either answers the question, so read whichever you already have open.)
 **An unmarked bullet means "not yet marked", not "not covered"** — the marker went live 2026-07-30 and
 the backfill is still finishing, so absence of a ✅ is never evidence *against* a concept being at
-level. Then apply the necessity test: **at level** → normal task · **above level but strictly necessary for this
+level.
+
+**Route each concept to its topic before grepping** — the authority is the "Topic isolation" section of
+`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` (altitude, not subject matter: the
+neutral topics own the principle, the technology topics own the mechanism). The gates differ sharply
+between topics, so a bad routing flips the verdict; when it is a close call, grep both and take the
+lower gate.
+
+Then apply the necessity test: **at level** → normal task · **above level but strictly necessary for this
 project to be correct** → keep it, tag the line `⬆ {level} — reason` · **above level and merely nice**
-→ drop it from `## Tasks` and list it in the chat summary under *"beyond the current gate"* with what
-would make it due. Necessity beats level every time; never downgrade a real defect to keep the list
-short.
+→ out of `## Tasks`, into the backlog's `## Beyond the current gate` section *and* the chat summary,
+with the gate that would make it due. Necessity beats level every time; never downgrade a real defect
+to keep the list short.
+
+**Read `## Beyond the current gate` before writing anything**, alongside the `## Closed` ledger: a
+finding already parked there is not re-raised while its gate holds, and one whose gate has since moved
+leaves the section and becomes a normal task.
 
 First print a brief chat summary: **Overall quality** (Strong/Good/Needs work + one sentence) · **Top
 findings** (2–3) · **Learning objectives** (how many ✅/⚠️/❌) · **Slices reviewed** (count) · **Beyond
-the current gate** (the findings the level-fit pass kept out of the backlog, one line each with its
-level and what would make it due — this is the only place they survive, so never omit the section;
-write `none` when it is empty).
+the current gate** (how many findings the level-fit pass parked, and how many lines it graduated back
+into `## Tasks` because their gate had moved — `none` when both are zero).
 
 Then update `{PROJECT_PATH}/PROJECT-BACKLOG.md` (create it if missing) per the standard's backlog
 format: the **per-tier "Last Reviewed" lines**, the overall quality rating, and the full task list as
-checkboxes, **each task tagged with its tier** (`[backend]` / `[frontend]`). Preserve tasks already
-checked off (✅).
+checkboxes, **each task tagged with its tier** (`[backend]` / `[frontend]`), and the
+`## Beyond the current gate` section for what the level-fit pass parked (same tier tag; create the
+section if missing, with a placeholder line when it is empty). Preserve tasks already checked off (✅).
 
 **Stamp today's date only on the tiers this run actually reviewed** — a `backend` run sets
 `**Last Reviewed — backend:**` to today and leaves the `frontend` line exactly as it was (a date, or

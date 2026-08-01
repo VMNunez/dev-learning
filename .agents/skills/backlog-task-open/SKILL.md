@@ -163,6 +163,12 @@ looked at again, which is the cost this whole pass exists to avoid.
   closes" is re-checkable later, "not now" is not. A later run that finds the gate has moved removes
   the marker and triages normally — and note that generating a level for the first time **is** a gate
   moving, since a deferral resting on an ungenerated `middle.md` was resting on a guess.
+
+  **Do not move the line into the backlog's `## Beyond the current gate` section.** That section is
+  `review-audit`'s, for findings it parked *before* they ever became tasks; `⏸ Deferred` is this
+  skill's, for a task that already exists and that Victor has now looked at. Same idea, two owners, and
+  collapsing them would hide which judgement was made — a parked finding was never triaged against
+  `PLANNING.md` or the ledger, a deferred one was.
 - **Dropped** → to the ledger via `backlog-task-close`, as a `DECISION, no code change` line whose
   `→` tail says *why it will never be right for this project*. That line is what stops the next
   `review-audit` re-raising it.

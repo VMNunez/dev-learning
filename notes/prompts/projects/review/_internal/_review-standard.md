@@ -433,7 +433,22 @@ Classify each task's core concept against the evidence, not impression:
   level but never rule on one, and absence there proves nothing. The asterisk is the same fact the
   `_run-tracker.md` `Coverage J|M|S` cells carry — read the table, not the tracker.
 - **The coverage files** — grep the concept in `notes/{topic}/coverage/junior.md`, then `middle.md` and
-  `senior.md`, to place *this specific concept* once the tables have set the topic's gate. The
+  `senior.md`, to place *this specific concept* once the tables have set the topic's gate.
+
+  **Route the concept to its topic before grepping, and the authority is the "Topic isolation" section
+  of `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`** — the same list
+  `coverage-bullet-add` obeys, so the two never disagree about where a concept lives. The test it
+  encodes is **altitude, not subject matter**: the technology-neutral topics (`security`,
+  `architecture`, `general`) own the *principle*, the technology topics (`spring-boot`, `angular`,
+  `java`, `sql`, `typescript`, `css`, `angular-material`, `git`) own the *mechanism* that implements
+  it. A framework class or annotation in the bullet means it is the technology topic's.
+
+  Guessing here is not cheap: the topics sit at very different gates — 59% junior in Spring Boot
+  against 37% in Java as of 2026-08-01 — so routing `@Transactional` to the wrong one can flip the
+  verdict on a task. When the routing is a genuine close call, grep **both** files and take the lower
+  gate; a task is above level only when it is above level in every topic that could own it.
+
+  The
   `✅ NN-slug` markers show which bullets are already demonstrated in project code. The global
   `notes/coverage/{LEVEL}.md` mirror holds the same bullets and markers, so either file answers it.
   **An unmarked bullet means "not yet marked", not "not covered"** — the marker went live 2026-07-30 and
@@ -454,9 +469,14 @@ That gives three outcomes:
   `- [ ] **[High]** `[backend]` — Task description ⬆ *middle — the API contract in §10 cannot be honoured without it* *(Effort: Medium)*`
   The tag is what lets `backlog-task-close` mark the concept cross-level in coverage instead of
   silently filing it as junior.
-- **Above level and not necessary** — it does **not** go in `## Tasks`. It goes in the chat summary
-  under *"beyond the current gate"*, with its level and what would make it due. This is the same rule
-  that already sends beyond-junior security hardening to the summary, generalized to every lens.
+- **Above level and not necessary** — it does **not** go in `## Tasks`. It goes in the backlog's
+  **`## Beyond the current gate`** section (below), *and* gets one line in the chat summary.
+
+  Writing it to the file is the whole point: a finding that is real, correct and merely early is
+  exactly the kind that a chat-only note loses at the end of the session, so the next `review-audit`
+  rediscovers it and re-spends the judgement to discard it again. It is the same reasoning behind
+  `backlog-task-open`'s `⏸ Deferred` marker — a verdict re-derived every run is a verdict that was
+  never recorded.
 
 Never soften a real defect into "above level" to keep the backlog short: the necessity test asks
 whether the *project* needs it, never whether the fix is inconvenient. When the two halves disagree —
@@ -498,6 +518,30 @@ trade bad. The task is still open and still `[ ]`; the marker records the verdic
 re-derived every session. **Preserve the marker verbatim and never delete it**: removing it silently
 re-opens a question Victor already answered. Only `backlog-task-open` clears it, on a later run that
 finds the gate has moved.
+
+**Findings the level-fit pass kept out live in `## Beyond the current gate`**, between `## Tasks` and
+`## Closed`. They are not tasks — nothing there is meant to be worked on now — so they never carry a
+checkbox, a priority or an effort, and they are never counted in the quality rating. One line each:
+
+```
+- **{topic} / {level}** `[tier]` — the finding, in one sentence *(raised YYYY-MM-DD; due when {what moves the gate})*
+```
+
+The `[tier]` tag is there for the same reason it is on every task line: a partial-scope run rewrites
+only its own tier's lines here and leaves the other tier's untouched.
+
+The `due when` clause is what makes the section re-checkable instead of a graveyard: name the gate
+("when the Spring Boot junior gate closes"), never a vague "later". On each run, **re-read this section
+before writing any task and re-check whether a gate has moved** — a line whose gate has closed is
+deleted from here and filed as a normal task, and generating a level for the first time counts as a
+gate moving, since a line resting on an asterisked cell was resting on a guess. A finding already
+listed here is **not re-raised into `## Tasks`** while its gate still holds; update its wording if the
+code changed, but never duplicate it. Unlike `## Closed`, this section is **not** append-only — its
+lines are meant to graduate out of it.
+
+Do not use it as a dumping ground for anything inconvenient: only findings that passed the necessity
+test as *real but early* belong here. A defect the project needs fixed is a task, whatever level it
+sits at.
 
 **Closed tasks live in a `## Closed` ledger, not in the task list.** When Victor finishes a task, the
 in-session `backlog-task-close` skill pushes its concept into coverage / README / PLANNING / PROGRESS
