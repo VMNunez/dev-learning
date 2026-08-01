@@ -174,6 +174,10 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    appending to what is already there and never rewriting or dropping an unconsumed one. Reconciliation
    reports these as `refined + N additions`, never as reopened entries. A `refined` entry whose English
    or Spanish file is missing is reported as a broken freeze and left untouched for Victor to resolve.
+   Every pre-existing bullet under that entry's `Coverage concepts` is also a coverage lock. Compare
+   scope text with trailing evidence markers stripped: if coverage moved, reworded, deleted, split,
+   merged, routed, or reordered one, stop and report a broken coverage lock. Never reconcile the
+   refined entry to the changed coverage and never treat the replacement as a `Pending addition`.
 9. Existing notes that cannot be justified by this level's coverage go under `## Unassigned existing
    notes`. They are never silently deleted or treated as required study files.
 10. On reconciliation, report added, removed, regrouped, preserved-complete, and unassigned entries.
@@ -298,6 +302,12 @@ may still perform on a `refined` entry is **appending** material for a coverage 
 `Pending additions:` — new sections added to `en/`, their Spanish counterparts appended to `es/`, every
 pre-existing byte in both files untouched. `notes-audit` runs that append in its append-only mode and
 clears the consumed bullets; nothing else about the files may change.
+
+The same freeze protects the assigned coverage scope: every existing `Coverage concepts` bullet stays
+in the same coverage topic, level, section, and relative locked-bullet order with identical scope text.
+A trailing project evidence marker may still be added because it is metadata, not curriculum scope.
+An entry merely present in the plan but still `pending` or `complete` creates no coverage lock and may
+be remapped normally.
 
 To hand a refined file back to the normal pipeline, Victor sets its status back to `pending` himself.
 

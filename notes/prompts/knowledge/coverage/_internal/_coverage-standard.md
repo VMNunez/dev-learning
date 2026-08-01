@@ -35,6 +35,31 @@ adds it there instead of duplicating it at the selected level or merely reportin
 incidental prerequisite-integrity pass, not a substitute for running `coverage-prompt` and
 `coverage-verify` explicitly for every level.
 
+## Refined-note coverage lock
+
+Coverage remains recalibratable only until Victor freezes the study material built from it. The lock
+authority is the persistent notes plan:
+
+- an exact bullet listed under `Coverage concepts` in an entry with `Status: refined` is **locked**;
+- a locked bullet's **scope text** — the complete line with its trailing evidence marker stripped —
+  never changes, nor may its section, topic, level, or order relative to the other locked bullets in
+  that note; it is never deleted, merged, split, or routed;
+- `Status: complete` is not a lock: it means the notes pipeline finished, but Victor has not declared
+  the pair final. `pending` is not a lock either, even when the plan already assigns the bullet;
+- therefore a bullet assigned to a planned note that has not been generated, or to any non-refined
+  entry, may still move and the notes plan must be refreshed afterwards;
+- new coverage may still be added after a note is refined. `notes-plan` may assign it through that
+  entry's `Pending additions`, but this never authorizes changing its already locked bullets;
+- only Victor can remove the lock by changing the entry from `refined` back to `pending`.
+
+Evidence metadata is the only allowed mutation: `coverage-mark` may append a new trailing
+`✅ NN-slug — {evidence}` marker to a locked bullet, and every later coverage run preserves it under
+the normal marker rules. That records project demonstration without changing the locked scope bytes.
+
+Market or level calibration never overrides this study lock. If later evidence says a locked bullet
+would now be placed elsewhere, report a **locked placement conflict** and leave the bullet exactly
+where it is. Never create a duplicate at the preferred destination to simulate a move.
+
 ## The job target defines scope
 
 `_shared-context.md` defines the target role, stack, market, and personal constraints.

@@ -34,7 +34,10 @@ reviewer when required cannot be dispatched, stop; there is no single-agent fall
 - `TARGET_FILE = {TOPIC_ROOT}coverage/{LEVEL}.md`
 - `SIBLING_FILES = the other two files in {TOPIC_ROOT}coverage/`
 - `GLOBAL_MIRROR = notes/coverage/{LEVEL}.md`
-- `NOTES_PLAN = {TOPIC_ROOT}coverage/notes-plan-{LEVEL}.md`
+- `NOTES_PLANS = all existing notes-plan-{junior|middle|senior}.md files for this topic and every
+  adjacent topic whose coverage may move`
+- `LOCKED_BULLETS = Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched by
+  exact scope text after stripping any trailing evidence marker from plan and coverage copies`
 - `TOPIC_BOUNDARY = this topic's row in _internal/_topic-ownership.md`
 - `ADJACENT_TOPICS = the complete comparison set declared by TOPIC_BOUNDARY`
 - `FIRST_TOPIC_RUN = the selected Coverage tracker cell has no completed run` (scaffold files do not count)
@@ -49,10 +52,12 @@ Count lines before every whole-file read and read to EOF:
 4. `_job-market-evidence.md`
 5. `_internal/_topic-ownership.md`
 6. all three topic scope files when present
-7. this topic's heading in `_internal/_cross-topic-inbox.md`
-8. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
+7. `NOTES_PLANS` when present, including every complete `Status: refined` entry and its exact
+   `Coverage concepts` list
+8. this topic's heading in `_internal/_cross-topic-inbox.md`
+9. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
    the completeness gate
-9. the previous coverage-prompt self-report
+10. the previous coverage-prompt self-report
 
 On full recalibration, also read all three coverage files of every `ADJACENT_TOPICS` entry to EOF.
 On a first topic run, these reads are the mandatory boundary-migration input, not optional context.
@@ -105,6 +110,9 @@ Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, th
    floors: they are not only context for the selected level.
 9. Determine the run scope (full recalibration or verify-gap fast path — see "Run scope" above) and
    record it in the plan; when unsure, choose full recalibration.
+10. Build `LOCKED_BULLETS` before classification. Stop if a refined entry names a bullet that is absent
+    from its recorded topic/level coverage: the freeze is already broken and must not be guessed back
+    into place.
 
 ## Step 1 — Establish the level floor
 
@@ -135,6 +143,9 @@ Re-dispatch once if proof is missing.
 Read all three topic files to EOF and classify every existing item:
 
 - **KEEP HERE** — belongs to the selected level and topic.
+- **LOCKED IN PLACE** — assigned to a `Status: refined` notes-plan entry; preserve its scope text
+  byte-for-byte after stripping the trailing evidence marker, even when current calibration would
+  place it elsewhere, and record the placement conflict.
 - **MOVE TO JUNIOR** — belongs to the junior foundation, regardless of the selected level.
 - **MOVE TO MIDDLE** — belongs to middle autonomy, regardless of the selected level.
 - **MOVE TO SENIOR** — belongs to senior ownership, production scale, platform depth, or justified specialisation.
@@ -162,6 +173,13 @@ the file are assumed to be there on purpose — often because they appear in the
 projects — so when in doubt between deleting and moving, move. Every DELETE is listed individually in
 the final summary with its reason.
 
+The refined-note lock outranks every classification except `LOCKED IN PLACE`. Never reword the scope text, move,
+delete, merge, split, route, or reorder a `LOCKED_BULLET`, and never create a normalized twin at the
+destination that calibration would otherwise prefer. Bullets assigned only to `pending` or `complete`
+entries remain movable; report the resulting notes-plan fingerprint mismatch so `notes-plan` remaps
+them before further note authoring. Appending a valid evidence marker remains allowed and does not
+change the lock.
+
 Correct factual errors before making scope decisions. Apply this topic's inbox entries through the
 same classification and clear every processed entry. Apply each level-prefixed open gap from
 `verify-{LEVEL}.md` the same way: remove the metadata prefix, verify or correct its target level, then
@@ -174,7 +192,9 @@ boundary as **KEEP WITH ADJACENT OWNER** or **MOVE TO NEW TOPIC**. A move remove
 preserves its evidence marker verbatim, and records every affected topic and level. Never satisfy a new
 topic by copying an existing bullet or by leaving normalized twins on both sides.
 
-Before editing, capture the complete trailing evidence marker from every marked bullet in every affected
+Before editing, capture every `LOCKED_BULLET` with its topic, level, section, byte-exact scope text
+(trailing evidence marker stripped), and
+relative order inside its refined entry. Also capture the complete trailing evidence marker from every marked bullet in every affected
 topic file and mirror. After editing, compare those marker multisets byte-for-byte. Rewording, changing
 level, or changing topic never changes or drops a marker; any mismatch blocks the draft and commit.
 
@@ -222,6 +242,7 @@ Reads all three topic level files, every adjacent topic's three level files, the
 - duplicate or misplaced ownership;
 - unclear section structure;
 - evidence markers missing, altered, duplicated, or detached from a surviving moved concept;
+- locked bullets altered, moved, reordered, duplicated, or detached from their refined plan entry;
 - confirmation: `N items reviewed`.
 
 Both reports must state the selected file's line count and that it was read to EOF. Re-dispatch a failed reviewer once. Apply accepted findings, then repeat factual and mechanical checks.
@@ -273,8 +294,10 @@ Validate:
 7. the selected file contains no obvious other-topic section;
 8. no normalized concept occurs in the selected topic and any adjacent topic at any level;
 9. the pre/post evidence-marker multisets match exactly across every affected topic file and mirror;
-10. `git diff --check` passes and the complete declared diff is inspected.
-11. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256 over `TARGET_FILE`'s scope bytes
+10. every locked bullet's scope text remains byte-identical in the same section, topic, level, and refined plan
+    entry, with its relative locked-bullet order unchanged;
+11. `git diff --check` passes and the complete declared diff is inspected.
+12. For every affected notes plan, recalculate its stored coverage SHA-256 over its level file's scope bytes
    (evidence markers stripped, per the standard's canonical command). A mismatch is the expected
    refresh signal: report `notes-plan-prompt` as the next step so it can remap the final coverage
    before another note is built. This is not a return to `coverage-verify`.
@@ -293,6 +316,8 @@ In update mode:
    `Superseded middle prerequisite SHA-256: <digest> | n/a`. Fingerprint every prerequisite applicable
    to `LEVEL`, whether or not that particular file changed, and thereby prove which final dependency
    chain consumed the gaps.
+   Preserve `## Locked placement conflicts` unchanged as historical evidence; consuming actionable
+   gaps never erases a conflict Victor deliberately chose to freeze.
    No run re-proposes a consumed gap. That superseded verification is
    execution history, not a new gate: continue directly to `notes-plan-prompt`. A fresh
    `coverage-verify` may be run later for new completeness evidence, but it is never required before
@@ -329,6 +354,7 @@ Report:
 - selected file lines/items before and after;
 - all whole-file EOF confirmations;
 - kept, prerequisite gaps added by level, moved to junior/middle/senior, deleted, corrected, and routed counts;
+- locked-bullet count and every locked placement conflict;
 - market analyst and reviewer completion;
 - first-run boundary reviewer completion or `n/a`;
 - qualitative stopping-rule result;

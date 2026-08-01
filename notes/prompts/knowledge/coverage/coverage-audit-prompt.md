@@ -35,6 +35,8 @@ Read to EOF with verified line counts:
 - `_internal/_topic-ownership.md`
 - `notes/coverage/{LEVEL}.md`
 - every topic's `coverage/junior.md`, `coverage/middle.md`, and `coverage/senior.md`
+- every existing topic `notes-plan-{junior|middle|senior}.md`, extracting exact locked bullets from
+  `Coverage concepts` under `Status: refined` entries
 - `_internal/_cross-topic-inbox.md`
 - `_run-tracker.md`
 - previous coverage-audit self-report
@@ -51,6 +53,8 @@ use them to add, remove, or raise a coverage requirement.
 4. Surface unresolved previous recommendations.
 5. Plan all analysis, editing, validation, mirror rebuild, self-report, tracker update, and commits.
 6. Preserve unrelated working-tree changes.
+7. Build the complete locked-bullet registry before analysis. Stop on a broken freeze: a refined entry
+   whose exact assigned bullet is absent from its recorded topic and level.
 
 ## Step 1 — Independent analyses
 
@@ -83,6 +87,14 @@ Allowed actions:
   names a genuine concept is moved to another level or routed to its owning topic instead, and when
   in doubt between deleting and moving, move;
 - split or merge unclear sections.
+
+None of these actions applies to a locked bullet. A bullet assigned under `Coverage concepts` in a
+`Status: refined` plan entry keeps byte-identical scope text (trailing evidence marker stripped) in
+the same section, topic, level, and relative locked-bullet order. Record later calibration disagreement
+as a locked placement conflict; never move
+the bullet or create a duplicate at the preferred destination. A valid evidence marker may still be
+appended without changing the lock. Bullets in `pending` or `complete`
+entries remain movable and trigger the normal notes-plan refresh.
 
 Every one of those actions must carry any existing `✅ NN-slug — {evidence}` evidence marker onto the surviving bullet
 unchanged — a reworded, moved, or re-routed concept keeps its demonstration. Read "Evidence markers" in
@@ -141,6 +153,8 @@ Validate:
   its marker with it, and that must be named explicitly in the final report;
 - the complete evidence-marker multiset across all topic files and the rebuilt mirror is byte-identical
   before and after the run; a topic/level move relocates a marker but never rewrites or drops it;
+- every locked bullet's scope text remains byte-identical in the same section, topic, level, and refined plan entry,
+  with the same relative order among that entry's locked bullets;
 - `git diff --check` and complete diff inspection pass.
 
 ## Step 6 — Update mode
@@ -178,6 +192,7 @@ Include:
 - whole-file EOF evidence;
 - analyst and reviewer completion;
 - added, moved down/up, moved to senior, deleted, corrected, and routed counts by topic;
+- locked-bullet count and every locked placement conflict;
 - the audited level's `**Total**` cell in the `Coverage demonstrated` table, before and after;
 - missing-topic detections;
 - qualitative stopping-rule result;

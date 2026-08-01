@@ -39,6 +39,9 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 - `PREREQUISITES = none for junior; junior for middle; junior and middle for senior`
 - `GLOBAL_MIRRORS = notes/coverage/{level}.md for LEVEL and every PREREQUISITES level`
 - `FINDINGS = notes/{topic}/coverage/verify-{LEVEL}.md`
+- `NOTES_PLANS = all existing notes-plan-{junior|middle|senior}.md files for this topic`
+- `LOCKED_BULLETS = Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched by
+  exact scope text after stripping any trailing evidence marker from plan and coverage copies`
 
 ## Required sources
 
@@ -49,7 +52,8 @@ Count lines before every whole-file read and read to EOF:
 3. `_shared-context.md`
 4. `_internal/_job-market-evidence.md`
 5. `COVERAGE` and both `SIBLINGS`
-6. the previous coverage-verify self-report
+6. `NOTES_PLANS` when present, to identify locked bullets
+7. the previous coverage-verify self-report
 
 `ROADMAP.md`, notes, practice plans, project plans, and project code are downstream artifacts. They
 must not supply proposed gaps or raise the selected-level floor.
@@ -109,6 +113,11 @@ mandate:
 > Do not inspect or infer requirements from `ROADMAP.md`, notes, exercises, projects, or plans. Those
 > artifacts consume coverage; they do not define it.
 
+The reviewer may flag that current calibration would place a locked bullet elsewhere, but labels it
+`locked placement conflict`, not an open gap. It never proposes moving, rewriting, deleting, routing,
+or duplicating that bullet. A bullet assigned to `pending` or `complete` remains normally
+recalibratable; only `Status: refined` creates the lock.
+
 Acceptance proof: the reviewer states the line count and EOF confirmation for `COVERAGE` and every
 `PREREQUISITES` file, names which lenses applied to this topic shape, and confirms every gap has one
 same-topic target level no higher than `LEVEL`.
@@ -123,6 +132,9 @@ the target level when the concept is real but misclassified; never discard a rea
 it belongs to an earlier prerequisite. What survives is the verified gap list, grouped by target
 level. Run one adversarial pass of your own; add only what the reviewer missed and the standard
 supports, including prerequisite-integrity gaps exposed by the selected level.
+
+Record locked placement conflicts separately from actionable gaps. They do not change `Verdict` and
+must never be converted into a duplicate proposal at another level.
 
 ## Step 3 — Write the findings and the verdict
 
@@ -142,6 +154,10 @@ Verified: YYYY-MM-DD
 ## Open gaps
 
 - [junior | middle | senior] concept — one concise sentence naming the mechanism or level signal [proposed section]
+
+## Locked placement conflicts
+
+- [current level] exact locked coverage bullet — preferred placement and evidence, no edit permitted
 ```
 
 `Coverage SHA-256` always fingerprints the selected file for compatibility with `notes-plan`.
@@ -149,6 +165,7 @@ Prerequisite fields fingerprint only levels earlier than `LEVEL`; every non-appl
 When the verdict is `complete`, the `## Open gaps` body is exactly `*(none)*`. The level prefix is
 findings metadata, not part of the proposed coverage bullet; `coverage-prompt` removes it before
 judging the item.
+When no conflict exists, `## Locked placement conflicts` is exactly `*(none)*`.
 
 Dry run prints the verdict and gap list without writing `FINDINGS`.
 
@@ -186,4 +203,4 @@ of the coverage it can trust.
 Report branch, mode, topic, level, progression-gate state, every reviewed coverage file's line count
 with EOF confirmation, selected and prerequisite SHAs, reviewer completion and lenses applied,
 verified-gap count by target level, the verdict, the findings path (or `dry-run`), and unresolved risks
-or `none`. Do not finish while a plan item remains incomplete.
+or `none`, including every locked placement conflict. Do not finish while a plan item remains incomplete.
