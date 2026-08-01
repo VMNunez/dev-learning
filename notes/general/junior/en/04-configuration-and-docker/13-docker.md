@@ -2,7 +2,7 @@
 
 Docs: https://docs.docker.com/get-started/docker-overview/ → read: "What is a container?"
 
-The **implementation** (the actual `Dockerfile` and `docker-compose.yml` for a Spring Boot + PostgreSQL app) lives in [spring-boot/10-tooling.md](../../../spring-boot/junior/en/10-tooling.md). This file is the **conceptual** side — what containers are, and the confusable pairs interviewers test.
+The **implementation** (the actual `Dockerfile` and `docker-compose.yml` for a Spring Boot + PostgreSQL app) lives in [spring-boot/10-tooling.md](../../../../spring-boot/junior/en/10-tooling.md). This file is the **conceptual** side — what containers are, and the confusable pairs interviewers test.
 
 ---
 
