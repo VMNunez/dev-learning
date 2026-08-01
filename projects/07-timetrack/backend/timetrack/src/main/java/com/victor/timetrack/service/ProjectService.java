@@ -18,7 +18,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final AuthenticatedUserProvider authenticatedUserProvider;
     private static final Sort NAME_ASC = Sort.by("name").ascending();
-    
+
     public ProjectService(ProjectRepository projectRepository, AuthenticatedUserProvider authenticatedUserProvider) {
         this.projectRepository = projectRepository;
         this.authenticatedUserProvider = authenticatedUserProvider;
