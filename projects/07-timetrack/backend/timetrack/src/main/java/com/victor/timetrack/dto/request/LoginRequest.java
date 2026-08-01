@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +17,7 @@ public class LoginRequest {
     @Email
     private String email;
 
+    @ToString.Exclude
     @NotBlank
     @Size(max = 72)
     private String password;
