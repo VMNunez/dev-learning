@@ -45,7 +45,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[frontend]` — Consume the paged `GET /api/entries` server-side: `MatPaginator` with `length` bound to `page.totalElements` and page events translated into `?page`/`?size`, never `MatTableDataSource`'s client-side paging on top of an already-paged response. Carried over 2026-08-01 from the backend pagination task, which paged the endpoint while Step 7a was still unbuilt precisely so this would be built right the first time instead of migrated. `Paginator integration` and `Reset pagination after filtering` are junior-gate bullets (`notes/angular-material/coverage/junior.md`) marked only from 05-task-manager, where the paging was client-side — this is the first server-side instance. Two traps the coverage bullets name: paginating the same result twice, and leaving the paginator on a page that no longer exists after the filter bar narrows the result. Belongs to Step 7b (Entries page), and is the reason the response carries `totalElements` at all *(Effort: Medium)*
+*No open Low tasks.*
 
 ## Closed
 
