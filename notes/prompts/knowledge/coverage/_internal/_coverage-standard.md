@@ -104,6 +104,17 @@ Never use “could an interviewer ask this?”; that criterion is unbounded. Use
 
 One coverage-prompt execution processes exactly one topic and one level. `TOPIC = all` is not supported.
 
+`_topic-ownership.md` is the boundary registry. Every topic must be registered before authoring, and
+every full recalibration reads its row plus the coverage of its declared adjacent topics. The registry
+does not define scope bullets; it prevents two topic files from claiming the same concept family.
+
+A new topic is a schema change to the curriculum, not an empty folder. Admit it only with explicit user
+authorization, an independently useful professional competency, an ownership statement, exclusions,
+and a complete adjacent-topic set. Its first coverage run performs a boundary migration: classify the
+relevant bullets in all three levels of every adjacent topic, keep one owner, preserve evidence markers,
+and move rather than copy. Rebuilding only the new topic while leaving the old owners unchanged is an
+invalid run.
+
 Related topics remain independent. In particular:
 
 - Angular and Angular Material always run separately.

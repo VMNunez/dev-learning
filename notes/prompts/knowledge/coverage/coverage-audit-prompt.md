@@ -32,6 +32,7 @@ Read to EOF with verified line counts:
 - `_session-rules.md`
 - `_shared-context.md`
 - `_job-market-evidence.md`
+- `_internal/_topic-ownership.md`
 - `notes/coverage/{LEVEL}.md`
 - every topic's `coverage/junior.md`, `coverage/middle.md`, and `coverage/senior.md`
 - `_internal/_cross-topic-inbox.md`
@@ -45,9 +46,11 @@ use them to add, remove, or raise a coverage requirement.
 
 1. Stop on `main`.
 2. Inspect the tracker. Every topic must have a completed `coverage-prompt` cell for the selected level; otherwise stop and list the pending topics.
-3. Surface unresolved previous recommendations.
-4. Plan all analysis, editing, validation, mirror rebuild, self-report, tracker update, and commits.
-5. Preserve unrelated working-tree changes.
+3. Validate the ownership registry: every coverage topic appears exactly once, every adjacent
+   relationship is reciprocal, and every mirror-position predecessor resolves into one acyclic order.
+4. Surface unresolved previous recommendations.
+5. Plan all analysis, editing, validation, mirror rebuild, self-report, tracker update, and commits.
+6. Preserve unrelated working-tree changes.
 
 ## Step 1 — Independent analyses
 
@@ -56,7 +59,8 @@ Dispatch cold read-only analysts for independent concerns:
 - **Market fit** — compare the selected level with current target-role evidence and flag missing or inflated requirements.
 - **Fundamentals and confusable pairs** — find ordinary competency gaps that postings may omit.
 - **Level boundaries** — detect concepts placed below or above the responsibility level they require.
-- **Topic ownership** — find duplicates and concepts owned by another topic.
+- **Topic ownership** — use the registry boundaries and mandatory adjacency sets to find duplicates,
+  concepts owned by another topic, and boundary rows that no longer describe the real division.
 
 For junior, mid/senior postings must not raise the floor. For middle, analysts must distinguish autonomous application/team ownership from senior platform or organisational responsibility.
 
@@ -101,7 +105,9 @@ A new topic is justified only when:
 2. it supports enough independent concepts to be more than a section in an existing owner;
 3. it is relevant to the selected target level.
 
-Flag it for a separate `coverage-prompt` run. Do not create it here.
+Flag it for the admission contract in `_topic-ownership.md`, requiring explicit user authorization,
+an ownership boundary, exclusions, adjacent topics, and mirror position before a separate first
+`coverage-prompt` run. Do not create or register it here.
 
 ## Step 4 — Cold final review
 
@@ -116,9 +122,9 @@ gap or a level placement.
 
 ## Step 5 — Rebuild global mirror
 
-Rebuild `notes/coverage/{LEVEL}.md` completely from each topic's `coverage/{LEVEL}.md` in study-priority order:
-
-Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git → General.
+Rebuild `notes/coverage/{LEVEL}.md` completely from each registered topic's `coverage/{LEVEL}.md` in
+the acyclic order derived from `_topic-ownership.md`'s `Mirror position` column. Never maintain a
+second hard-coded topic list here.
 
 Validate:
 
@@ -127,6 +133,7 @@ Validate:
 - no exact duplicate occurs within a topic;
 - no normalized concept occurs in more than one level file for the same topic;
 - ownership duplicates across topics are resolved or explicitly justified as concrete implementation twins;
+- every adjacency relationship is reciprocal and every registered topic appears in the derived order;
 - no checkbox, numbered coverage item, or fenced code exists;
 - every `✅ NN-slug — {evidence}` evidence marker present before the run is still present after it, on the bullet whose
   concept it belongs to, in both the topic file and the mirror — see "Evidence markers" in the standard.

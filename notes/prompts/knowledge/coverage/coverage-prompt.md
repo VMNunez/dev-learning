@@ -7,7 +7,7 @@ Create or recalibrate one topic at one professional level.
 ## Configuration
 
 ```text
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security]
+TOPIC = [one registered topic from `_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
 NOTES_PATH = [optional — derive from TOPIC]
 MODE = [update | dry-run]
@@ -31,6 +31,9 @@ Use the runtime's planning and collaboration facilities. Canonical tiers are not
 - `SIBLING_FILES = the other two files in {TOPIC_ROOT}coverage/`
 - `GLOBAL_MIRROR = notes/coverage/{LEVEL}.md`
 - `NOTES_PLAN = {TOPIC_ROOT}coverage/notes-plan-{LEVEL}.md`
+- `TOPIC_BOUNDARY = this topic's row in _internal/_topic-ownership.md`
+- `ADJACENT_TOPICS = the complete comparison set declared by TOPIC_BOUNDARY`
+- `FIRST_TOPIC_RUN = TARGET_FILE does not exist`
 
 ## Required sources
 
@@ -40,11 +43,15 @@ Count lines before every whole-file read and read to EOF:
 2. `_session-rules.md`
 3. `_shared-context.md`
 4. `_job-market-evidence.md`
-5. all three topic scope files when present
-6. this topic's heading in `_internal/_cross-topic-inbox.md`
-7. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
+5. `_internal/_topic-ownership.md`
+6. all three topic scope files when present
+7. this topic's heading in `_internal/_cross-topic-inbox.md`
+8. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
    the completeness gate
-8. the previous coverage-prompt self-report
+9. the previous coverage-prompt self-report
+
+On full recalibration, also read all three coverage files of every `ADJACENT_TOPICS` entry to EOF.
+On a first topic run, these reads are the mandatory boundary-migration input, not optional context.
 
 `ROADMAP.md`, notes, practice plans, project plans, and project code are downstream artifacts, not
 scope evidence. Do not read them to establish or raise the competency floor.
@@ -55,7 +62,7 @@ For Spring Boot, also inspect Java coverage headings and `notes/spring-boot/laye
 
 This prompt has two shapes; Step 0 fixes which one and records it in the plan.
 
-**Full recalibration** (default) runs every step. Use it whenever this topic/level coverage does not yet exist, any recalibration trigger is active — a shared-context, job-market-evidence, or coverage-standard change, an unresolved recommendation, or a pending `_cross-topic-inbox.md` entry under this topic — or you are unsure.
+**Full recalibration** (default) runs every step. Use it whenever this topic/level coverage does not yet exist, its ownership row or an adjacent boundary changed, any other recalibration trigger is active — a shared-context, job-market-evidence, or coverage-standard change, an unresolved recommendation, or a pending `_cross-topic-inbox.md` entry under this topic — or you are unsure.
 
 **Verify-gap fast path** applies only when all of these hold:
 
@@ -63,6 +70,7 @@ This prompt has two shapes; Step 0 fixes which one and records it in the plan.
 - its stored `Coverage SHA-256` matches the current `TARGET_FILE`'s **scope bytes** (evidence markers
   stripped — see "Evidence markers" in the standard), so the gaps were raised against today's scope;
 - no `_cross-topic-inbox.md` entry is pending under this topic;
+- neither this topic's ownership row nor an adjacent boundary changed since its last coverage run;
 - no other recalibration trigger is active.
 
 Its purpose is to not re-derive the whole market floor just to add an already-verified gap: the floor was set when this coverage was built, and `verify` already read the file to EOF under the market-floor lens to raise the gap. It changes exactly three steps:
@@ -80,10 +88,16 @@ Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, th
 3. Create a plan containing every step, validation, mirror rebuild, self-report, tracker update, and update-mode commits.
 4. Run `git status --short` and preserve unrelated changes.
 5. Confirm one topic only.
-6. For middle, inspect junior progression evidence. For senior, inspect both junior and middle
+6. Resolve `TOPIC_BOUNDARY` and `ADJACENT_TOPICS`. Stop if the topic is unregistered, an adjacent topic
+   is missing from the registry, or the relationship is not reciprocal. A missing topic must first go
+   through the admission contract in `_topic-ownership.md`; never infer and silently create its boundary.
+7. Set `FIRST_TOPIC_RUN`. If true, require the admission decision, force full recalibration, add the
+   boundary migration and every affected local/global file to the plan, and state that no existing
+   bullet will be copied into the new topic.
+8. For middle, inspect junior progression evidence. For senior, inspect both junior and middle
    progression evidence. Mapping a later level is allowed before consolidation; downstream authoring is not.
    State the current gate explicitly.
-7. Determine the run scope (full recalibration or verify-gap fast path — see "Run scope" above) and
+9. Determine the run scope (full recalibration or verify-gap fast path — see "Run scope" above) and
    record it in the plan; when unsure, choose full recalibration.
 
 ## Step 1 — Establish the level floor
@@ -132,11 +146,17 @@ the final summary with its reason.
 
 Correct factual errors before making scope decisions. Apply this topic's inbox entries through the same classification and clear every processed entry. Apply each open gap from `verify-{LEVEL}.md` the same way — judge it against the standard, add or discard it, and say which in the summary; a gap the gate raised is a proposal, never a pre-approved item.
 
+On full recalibration, compare every retained or proposed concept against all three files of every
+adjacent topic. On `FIRST_TOPIC_RUN`, classify every adjacent bullet that could fall inside the new
+boundary as **KEEP WITH ADJACENT OWNER** or **MOVE TO NEW TOPIC**. A move removes the old bullet,
+preserves its evidence marker verbatim, and records every affected topic and level. Never satisfy a new
+topic by copying an existing bullet or by leaving normalized twins on both sides.
+
 ## Step 3 — Draft the selected level
 
 The orchestrator is the only repository editor.
 
-Write `TARGET_FILE`, move reclassified material to the correct level file, and route other-topic proposals to the inbox.
+Write `TARGET_FILE`, move reclassified material to the correct level file, and route other-topic proposals to the inbox. On `FIRST_TOPIC_RUN`, also apply accepted boundary moves to adjacent topic files; the orchestrator remains the only repository editor.
 
 An existing bullet carrying a `✅ NN-slug — {evidence}` evidence marker keeps that marker verbatim through KEEP HERE, any
 MOVE, ROUTE, or factual correction — including when the concept sentence is rewritten from scratch. This
@@ -165,7 +185,7 @@ Reads the three final topic coverage files, target, evidence, and standard. Retu
 
 ### Reviewer B — quality and ownership
 
-Reads all three topic level files, the relevant global mirrors, targeted owner files, and standard. Returns only:
+Reads all three topic level files, every adjacent topic's three level files, the relevant global mirrors, targeted owner files, the ownership registry, and standard. Returns only:
 
 - grouped or dictionary-definition items;
 - missing important confusable pairs;
@@ -187,6 +207,10 @@ Rebuild only `## {TOPIC}` in `GLOBAL_MIRROR` from `TARGET_FILE`:
 - bullets and order remain identical;
 - introduction appears once.
 
+If the first-run boundary migration changed an adjacent topic/level, rebuild that topic heading in the
+matching global mirror from its source file in the same run. A new topic is not complete while an old
+mirror still contains a moved concept.
+
 Validate:
 
 1. local/mirror bullet text and order match — including each bullet's trailing `✅ NN-slug — {evidence}` evidence marker,
@@ -197,8 +221,9 @@ Validate:
 5. no exact duplicate exists;
 6. no normalized concept occurs in more than one of the three level files;
 7. the selected file contains no obvious other-topic section;
-8. `git diff --check` passes and the complete declared diff is inspected.
-9. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256 over `TARGET_FILE`'s scope bytes
+8. no normalized concept occurs in the selected topic and any adjacent topic at any level;
+9. `git diff --check` passes and the complete declared diff is inspected.
+10. If `NOTES_PLAN` exists, recalculate its stored coverage SHA-256 over `TARGET_FILE`'s scope bytes
    (evidence markers stripped, per the standard's canonical command). A mismatch is the expected
    refresh signal: report `notes-plan-prompt` as the next step so it can remap the final coverage
    before another note is built. This is not a return to `coverage-verify`.
@@ -242,6 +267,8 @@ Coverage J/M/S cell in `_internal/_run-tracker.md`.
 Report:
 
 - branch, mode, topic, and level;
+- ownership boundary, adjacent topics, and whether this was the first topic run;
+- for a first topic run, every boundary move and affected local/global mirror;
 - run scope (full recalibration or verify-gap fast path);
 - progression-gate state;
 - selected file lines/items before and after;
