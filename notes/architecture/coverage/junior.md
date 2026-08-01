@@ -63,6 +63,9 @@ apply in a small codebase, and defend with concrete trade-offs.
   validation with business invariants ✅ 07-timetrack
 - Response DTO — shape a stable outward representation and minimise field disclosure independently of
   the internal persistence or domain model ✅ 07-timetrack
+- Framework types are not response contracts — a library's implementation class serialised by reflection
+  makes the payload shape an internal detail of a dependency; wrap it in a DTO you own so an upgrade
+  cannot silently change the API ✅ 07-timetrack
 - Mapping placement — translate transport DTOs at the application/API boundary and persistence models
   at the persistence boundary; avoid making controllers own business rules or exposing entities as contracts ✅ 07-timetrack
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract

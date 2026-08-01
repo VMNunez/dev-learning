@@ -373,7 +373,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - JPQL vs native SQL in `@Query` — prefer entity and attribute names for portable persistence queries and opt into database SQL only when the required behaviour justifies tighter coupling ✅ 07-timetrack
 - Interface-based projections — declare a getter-only interface matching the `AS` aliases of a `@Query` (or a derived query's implicit column names) and Spring Data populates it without a full entity or DTO class; read-only, and the getter names must match the aliases exactly ✅ 07-timetrack
 - `@Modifying` write queries — a declared update or delete query needs the modifying marker and an active transaction, and it bypasses the persistence context, so already-loaded entities can be left stale afterwards
-- Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically
+- Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically ✅ 07-timetrack
 - `Page<T>` vs `Slice<T>` — return total-count metadata only when the client needs it, because a slice can answer whether another chunk exists without an additional count query
 
 ### Query behaviour and diagnosis
@@ -705,6 +705,9 @@ apply in a small codebase, and defend with concrete trade-offs.
   validation with business invariants ✅ 07-timetrack
 - Response DTO — shape a stable outward representation and minimise field disclosure independently of
   the internal persistence or domain model ✅ 07-timetrack
+- Framework types are not response contracts — a library's implementation class serialised by reflection
+  makes the payload shape an internal detail of a dependency; wrap it in a DTO you own so an upgrade
+  cannot silently change the API ✅ 07-timetrack
 - Mapping placement — translate transport DTOs at the application/API boundary and persistence models
   at the persistence boundary; avoid making controllers own business rules or exposing entities as contracts ✅ 07-timetrack
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
@@ -1534,7 +1537,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `ORDER BY` with `NULLS FIRST` / `NULLS LAST` — PostgreSQL treats `NULL` as the largest value by default; `ASC` puts `NULL` last, `DESC` puts `NULL` first; override with `NULLS FIRST` or `NULLS LAST`
 - No guaranteed row order without `ORDER BY` — a result set is an unordered set, so `GROUP BY`, an index scan, or insertion order can make rows look sorted while the engine stays free to return them differently on the next run; an order a caller depends on has to be stated, never inherited from how the rows happened to be produced ✅ 07-timetrack
 - `LIMIT` always with `ORDER BY` — without `ORDER BY`, `LIMIT` returns an arbitrary set of rows that can change between queries; always pair them
-- Stable ordering — pagination needs a deterministic tie-breaker such as the primary key after a non-unique sort column; otherwise equal values can move between pages
+- Stable ordering — pagination needs a deterministic tie-breaker such as the primary key after a non-unique sort column; otherwise equal values can move between pages ✅ 07-timetrack
 - Multi-column sorting — PostgreSQL resolves `ORDER BY` keys from left to right, so later keys break ties from earlier ones and each key can choose `ASC` or `DESC` ✅ 07-timetrack
 - `OFFSET` for pagination — `LIMIT 10 OFFSET 20` skips 20 rows and returns the next 10; formula: `OFFSET = (page − 1) × page_size`
 - `||` string concatenation — joins two text values into one column, e.g. `first_name || ' ' || last_name AS full_name`; interviewers ask how you build a display name from separate columns without a function call
