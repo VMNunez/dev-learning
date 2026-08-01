@@ -38,7 +38,7 @@ re-derive all of it and would still miss the session history.
 
 Quote the task line verbatim first, so what is being judged is on screen.
 
-Then read, in this order — **all four, before forming any opinion**:
+Then read, in this order — **all six, before forming any opinion**:
 
 1. **The code the task names.** Open the actual files and lines. The task's line numbers may have moved
    since the review ran; find the real thing rather than trusting the citation.
@@ -57,9 +57,10 @@ Then read, in this order — **all four, before forming any opinion**:
      topic's `Coverage J|M|S` cell in `notes/prompts/_internal/_run-tracker.md` first. A `completed`
      junior cell makes `junior.md` real evidence — presence means the concept is due now. An **empty**
      cell means that level was never run through `/coverage`, so its file is a provisional sketch:
-     presence there is a guess and **absence proves nothing at all**. As of 2026-08-01 every `Coverage M`
-     and `Coverage S` cell is empty, which is exactly why `PROGRESS.md` marks those columns `*`. Until
-     they are generated, `middle.md`/`senior.md` may *suggest* a level, never rule on one.
+     presence there is a guess and **absence proves nothing at all**. An ungenerated level's file may
+     *suggest* a level, never rule on one. Read the cell every run rather than assuming which levels
+     exist: the answer changes the moment a `/coverage` run lands, and a deferral resting on a
+     then-empty cell was resting on a guess.
    - **`PROGRESS.md`** — `Professional level by topic` for where he actually stands in that topic, and
      `Coverage demonstrated` for how much of that level he can already prove.
    - **`notes/prompts/_internal/_shared-context.md`** — the target role, the market, and the timeline.
@@ -79,11 +80,22 @@ Then read, in this order — **all four, before forming any opinion**:
    also **not needed yet**. Levels are sequential by the coverage standard's progression gate, so
    "middle" means *not yet*, never *wrong*.
 
+6. **The other open tasks**, in the same `## Tasks` list. Two things only, both cheap to spot and
+   expensive to miss:
+   - **Overlap** — another open task that would change the same code. Fixing both separately does the
+     work twice and makes the second one look like a false positive when it is really already done.
+   - **Precedence** — a task whose fix changes what this one should be. If B restructures the layer A
+     lives in, doing A first means writing it twice; if A must land before B compiles, say so.
+
+   If either holds, name the other task in the verdict and say which order the two should be worked in.
+   This is reading a list that is already in the file being triaged — it is not re-reviewing the
+   project.
+
 If the task is a **decision task** — one whose text already says "decide before touching it", with two
 or three defensible outcomes listed — the reviewer has already flagged that it needs this pass. Those
 never skip it.
 
-## 2 — Reach one of four verdicts
+## 2 — Reach one of five verdicts
 
 State which one, in one sentence, with the evidence that decided it.
 
@@ -93,8 +105,8 @@ State which one, in one sentence, with the evidence that decided it.
   on 2026-08-01: the review listed 2 sites, the actual change was 4, including a call site that would
   not compile and a documented contract in §10.)
 - **Valid, wrong moment** — the finding is correct, **and not necessary yet**. Both halves are
-  required: above-level alone never earns this verdict. Cite which of step 1's three sources supports
-  it — and if the citation is a `middle.md`/`senior.md` bullet, say that the level is ungenerated, so
+  required: above-level alone never earns this verdict. Cite which of the three level sources in
+  step 1.5 supports it — and if the citation is a `middle.md`/`senior.md` bullet, say that the level is ungenerated, so
   it is a suggestion rather than proof. Then separate the two outcomes, because they are not the same
   thing:
   - **Defer** — real, correct, and above the currently open gate. It becomes due when the gate moves.
@@ -102,8 +114,14 @@ State which one, in one sentence, with the evidence that decided it.
     cannot have, or scope the plan deliberately excluded.
 
   Say which, with the evidence, and let Victor choose; do not decide for him.
-- **False positive** — the code is correct as it stands, and the reviewer was missing context. Name the
-  context it was missing.
+- **Already resolved** — the finding was real when the review ran, and later work has since fixed it.
+  `review-audit` is a snapshot of one commit; a `step-complete` or a neighbouring task can close a
+  finding in passing. This is **not** a false positive, and must never be recorded as one: the ledger
+  line would claim the code was always right, which misleads the next reviewer as badly as leaving the
+  task open. Prove it — the current code, and the commit that changed it (`git log -S` on the thing the
+  task named) — then close it via `backlog-task-close` with that commit in the `→` tail.
+- **False positive** — the code is correct as it stands **and always was**, and the reviewer was missing
+  context. Name the context it was missing.
 
 The bar for "false positive" is **evidence, not taste**: a documented rule in PLANNING, a `DECISION`
 line in the ledger, or a mechanism the reviewer misread. "I would have written it differently" is not a
@@ -137,12 +155,17 @@ looked at again, which is the cost this whole pass exists to avoid.
   `→` tail says *why it will never be right for this project*. That line is what stops the next
   `review-audit` re-raising it.
 
+**Already resolved** → do not fix anything, and do not teach the concept as if it were pending. Take it
+to `backlog-task-close` as a `DECISION, no code change` line whose `→` tail names the commit that fixed
+it. If the concept never reached coverage / README when it was fixed in passing — likely, since nobody
+knew it was closing a backlog task — that closing ritual is where the debt gets paid.
+
 **False positive** → do not fix anything. Take it straight to `backlog-task-close`, which collapses it
 into the `## Closed` ledger as `DECISION, no code change` with the reason in the `→` tail. That line is
 the only thing standing between the same non-bug and the next `review-audit` run re-raising it, so it
 must say *why* the code is right, not merely that the task was dropped.
 
-In all three routes the task leaves this skill with a decision attached. A task that is read and then
+In every route the task leaves this skill with a decision attached. A task that is read and then
 worked on with no verdict stated is this skill not having run.
 
 ## 4 — Report
@@ -152,8 +175,8 @@ Compact, four lines, before any teaching begins:
 | | |
 |---|---|
 | Task | *(quoted, one line)* |
-| Checked | code · PLANNING §N · ledger · N consumers · level (`{topic}/{level}.md`) |
-| Verdict | valid as written / valid, real scope is N sites / valid but deferred / valid but dropped / false positive |
+| Checked | code · PLANNING §N · ledger · N consumers · level (`{topic}/{level}.md`) · open tasks |
+| Verdict | valid as written / valid, real scope is N sites / valid but deferred / valid but dropped / already resolved in `{commit}` / false positive |
 | Why | the one piece of evidence that decided it |
 
 The `Checked` row names the level file the concept was found in, even when the verdict is "valid as
