@@ -20,6 +20,6 @@ Concepts expected when a developer owns authentication integration and operation
 - TLS termination and certificate lifecycle — understand where HTTPS terminates, how certificates renew, and which hop remains protected
 - Secrets rotation — replace credentials without source changes or avoidable downtime
 - Segregation of duties — design independent approval and sign-off controls so privileged workflows
-  cannot be completed by the same actor ✅ 07-timetrack
+  cannot be completed by the same actor ✅ 07-timetrack — `approve`/`reject` refuse a manager whose id matches the entry's owner
 - Vulnerability reachability and risk acceptance — analyse affected components, configuration, and
   reachable code paths, then document remediation priority or a justified acceptance decision
