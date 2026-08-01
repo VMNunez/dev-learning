@@ -19,9 +19,12 @@ import java.util.List;
 @Service
 public class ReportService {
     private final TimeEntryRepository timeEntryRepository;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
 
-    public ReportService(TimeEntryRepository timeEntryRepository) {
+
+    public ReportService(TimeEntryRepository timeEntryRepository, AuthenticatedUserProvider authenticatedUserProvider) {
         this.timeEntryRepository = timeEntryRepository;
+        this.authenticatedUserProvider = authenticatedUserProvider;
     }
 
     @Transactional(readOnly = true)
@@ -43,8 +46,14 @@ public class ReportService {
         LocalDate start = month.atDay(1);
         LocalDate end = month.atEndOfMonth();
 
+        Long userId = null;
+        if (!authenticatedUserProvider.isManager()) {
+            userId = authenticatedUserProvider.currentUser().getId();
+        }
+
         Specification<TimeEntry> spec = Specification
-                .where(TimeEntrySpecifications.dateBetween(start, end));
+                .where(TimeEntrySpecifications.dateBetween(start, end))
+                .and(TimeEntrySpecifications.hasUserId(userId));
 
         List<TimeEntry> entries = timeEntryRepository.findAll(spec);
 

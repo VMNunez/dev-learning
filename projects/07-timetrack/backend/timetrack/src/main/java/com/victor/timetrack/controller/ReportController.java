@@ -35,7 +35,7 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getHoursByUser(month));
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/summary")
     public ResponseEntity<ReportSummaryResponse> getSummary(@RequestParam YearMonth month){
         return ResponseEntity.ok(reportService.getSummary(month));
