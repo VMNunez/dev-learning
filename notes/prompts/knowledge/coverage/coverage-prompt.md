@@ -25,7 +25,7 @@ Before dispatching roles, read:
 - the active platform adapter
 
 Use the runtime's planning and collaboration facilities. Canonical tiers are not literal model IDs.
-Subagents are read-only. If the market analyst, either normal cold reviewer, or the first-run boundary
+Subagents are read-only. If the market analyst, either normal cold reviewer, or the new-topic boundary
 reviewer when required cannot be dispatched, stop; there is no single-agent fallback.
 
 ## Resolve paths
@@ -41,7 +41,13 @@ reviewer when required cannot be dispatched, stop; there is no single-agent fall
   coverage copies; [ ] concepts are not locked`
 - `TOPIC_BOUNDARY = this topic's row in _internal/_topic-ownership.md`
 - `ADJACENT_TOPICS = the complete comparison set declared by TOPIC_BOUNDARY`
-- `FIRST_TOPIC_RUN = the selected Coverage tracker cell has no completed run` (scaffold files do not count)
+- `FIRST_LEVEL_RUN = the selected Coverage tracker cell has no completed run` (scaffold files do not count)
+- `FIRST_TOPIC_RUN = no Coverage J/M/S tracker cell for this topic has a completed run`
+- `NEW_TOPIC_RUN = FIRST_TOPIC_RUN and the topic has an explicit admission decision under
+  "Admitting a new topic" in _internal/_topic-ownership.md`
+- A registered topic that predates the admission contract and has no admission decision is legacy,
+  not new. Its first run uses full recalibration and the normal adjacent-topic comparison; it never
+  invents a retroactive admission.
 
 ## Required sources
 
@@ -61,7 +67,7 @@ Count lines before every whole-file read and read to EOF:
 10. the previous coverage-prompt self-report
 
 On full recalibration, also read all three coverage files of every `ADJACENT_TOPICS` entry to EOF.
-On a first topic run, these reads are the mandatory boundary-migration input, not optional context.
+On a `NEW_TOPIC_RUN`, these reads are the mandatory boundary-migration input, not optional context.
 
 `ROADMAP.md`, notes, practice plans, project plans, and project code are downstream artifacts, not
 scope evidence. Do not read them to establish or raise the competency floor.
@@ -102,9 +108,11 @@ Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, th
 6. Resolve `TOPIC_BOUNDARY` and `ADJACENT_TOPICS`. Stop if the topic is unregistered, an adjacent topic
    is missing from the registry, or the relationship is not reciprocal. A missing topic must first go
    through the admission contract in `_topic-ownership.md`; never infer and silently create its boundary.
-7. Set `FIRST_TOPIC_RUN`. If true, require the admission decision, force full recalibration, add the
-   boundary migration and every affected local/global file to the plan, and state that no existing
-   bullet will be copied into the new topic.
+7. Set `FIRST_LEVEL_RUN`, `FIRST_TOPIC_RUN`, and `NEW_TOPIC_RUN`. `FIRST_LEVEL_RUN` forces full
+   recalibration. A legacy `FIRST_TOPIC_RUN` classifies its existing bullets normally and performs the
+   full adjacent-topic comparison. Only `NEW_TOPIC_RUN` requires the admission decision, adds the
+   boundary migration and every affected local/global file to the plan, and states that no
+   adjacent-owner bullet will be copied into the new topic; an accepted ownership transfer is a move.
 8. For middle, inspect junior progression evidence. For senior, inspect both junior and middle
    progression evidence. Mapping a later level is allowed before consolidation; downstream authoring is not.
    State the current gate explicitly. Treat those earlier coverage files as cumulative prerequisite
@@ -188,7 +196,7 @@ add or discard it and say which in the summary. A gap the gate raised is a propo
 pre-approved item.
 
 On full recalibration, compare every retained or proposed concept against all three files of every
-adjacent topic. On `FIRST_TOPIC_RUN`, classify every adjacent bullet that could fall inside the new
+adjacent topic. On `NEW_TOPIC_RUN`, classify every adjacent bullet that could fall inside the new
 boundary as **KEEP WITH ADJACENT OWNER** or **MOVE TO NEW TOPIC**. A move removes the old bullet,
 preserves its evidence marker verbatim, and records every affected topic and level. Never satisfy a new
 topic by copying an existing bullet or by leaving normalized twins on both sides.
@@ -205,7 +213,7 @@ The orchestrator is the only repository editor.
 
 Write `TARGET_FILE`, add confirmed prerequisite gaps to the correct earlier level file, move
 reclassified material to the correct level file, and route other-topic proposals to the inbox. On
-`FIRST_TOPIC_RUN`, also apply accepted boundary moves to adjacent topic files; the orchestrator remains
+`NEW_TOPIC_RUN`, also apply accepted boundary moves to adjacent topic files; the orchestrator remains
 the only repository editor.
 
 An existing bullet carrying a `✅ NN-slug — {evidence}` evidence marker keeps that marker verbatim through KEEP HERE, any
@@ -248,9 +256,9 @@ Reads all three topic level files, every adjacent topic's three level files, the
 
 Both reports must state the selected file's line count and that it was read to EOF. Re-dispatch a failed reviewer once. Apply accepted findings, then repeat factual and mechanical checks.
 
-### Reviewer C — first-run boundary migration only
+### Reviewer C — new-topic boundary migration only
 
-When `FIRST_TOPIC_RUN` is true, dispatch one additional cold reviewer after A and B. It reads the
+When `NEW_TOPIC_RUN` is true, dispatch one additional cold reviewer after A and B. It reads the
 ownership registry, the new topic's three final files, every adjacent topic's three final files, the
 affected mirrors, and the pre-run versions from Git. It returns only:
 
@@ -279,7 +287,7 @@ Rebuild `## {TOPIC}` in `GLOBAL_MIRROR` from `TARGET_FILE`:
 If a prerequisite-integrity finding or cross-level move changed a sibling level, rebuild this topic's
 heading in that level's global mirror too. No local sibling edit may ship with a stale mirror.
 
-If the first-run boundary migration changed an adjacent topic/level, rebuild that topic heading in the
+If the new-topic boundary migration changed an adjacent topic/level, rebuild that topic heading in the
 matching global mirror from its source file in the same run. A new topic is not complete while an old
 mirror still contains a moved concept.
 
@@ -348,8 +356,9 @@ Coverage J/M/S cell in `_internal/_run-tracker.md`.
 Report:
 
 - branch, mode, topic, and level;
-- ownership boundary, adjacent topics, and whether this was the first topic run;
-- for a first topic run, every boundary move and affected local/global mirror;
+- ownership boundary, adjacent topics, and the `FIRST_LEVEL_RUN`, `FIRST_TOPIC_RUN`, and
+  `NEW_TOPIC_RUN` states;
+- for a `NEW_TOPIC_RUN`, every boundary move and affected local/global mirror;
 - run scope (full recalibration or verify-gap fast path);
 - progression-gate state;
 - selected file lines/items before and after;
@@ -357,7 +366,7 @@ Report:
 - kept, prerequisite gaps added by level, moved to junior/middle/senior, deleted, corrected, and routed counts;
 - locked-bullet count and every locked placement conflict;
 - market analyst and reviewer completion;
-- first-run boundary reviewer completion or `n/a`;
+- new-topic boundary reviewer completion or `n/a`;
 - qualitative stopping-rule result;
 - mirror parity;
 - notes-plan state (`missing`, `current`, or `refresh required`) and, for `refresh required`, name
