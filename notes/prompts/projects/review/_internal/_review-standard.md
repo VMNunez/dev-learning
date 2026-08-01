@@ -437,6 +437,14 @@ the good news a backlog should state out loud. Group tasks by
 tier and priority, not by which review run produced them: a task's origin date lives in its own text
 when it matters, and per-run headings fragment the file until the same priority appears five times.
 
+**A task marked `⏸ Deferred YYYY-MM-DD — reason` has already been triaged and is not re-raised.** The
+in-session `backlog-task-open` skill writes that marker when a finding is correct but sits above the
+currently open learning gate — the concept lives in `middle.md`/`senior.md`, or the timeline makes the
+trade bad. The task is still open and still `[ ]`; the marker records the verdict so it is not
+re-derived every session. **Preserve the marker verbatim and never delete it**: removing it silently
+re-opens a question Victor already answered. Only `backlog-task-open` clears it, on a later run that
+finds the gate has moved.
+
 **Closed tasks live in a `## Closed` ledger, not in the task list.** When Victor finishes a task, the
 in-session `backlog-task-close` skill pushes its concept into coverage / README / PLANNING / PROGRESS
 and then collapses the verbose entry into one dated ledger line ending in `→ where the concept landed`

@@ -50,6 +50,22 @@ Then read, in this order — **all four, before forming any opinion**:
 4. **What else touches it.** Grep for every consumer of the thing being changed — the other call sites,
    the DTO's other readers, the documented contract, the planned frontend that will consume it. This is
    what catches the "the review said 2 sites, the compiler will find 4" case.
+5. **Whether the concept is at Victor's level**, from the three sources that answer it with evidence
+   rather than impression:
+   - **The coverage files** — grep the concept in `notes/{topic}/coverage/junior.md`, then `middle.md`
+     and `senior.md`. This is the sharpest signal available: the level file a concept sits in *is* the
+     curriculum's ruling on when it is due. A finding whose concept only exists in `middle.md` is
+     above the open gate by the project's own definition, not by opinion.
+   - **`PROGRESS.md`** — `Professional level by topic` for where he actually stands in that topic, and
+     `Coverage demonstrated` for how much of that level he can already prove.
+   - **`notes/prompts/_internal/_shared-context.md`** — the target role, the market, and the timeline.
+     A task that costs a week and teaches nothing a junior screening probes is a bad trade with
+     interviews close, however correct it is.
+
+   Note the asymmetry: **a concept above the gate is a reason to defer, never to dismiss.** Levels are
+   sequential by the coverage standard's progression gate, so "middle" means *not yet*, not *wrong* —
+   and Victor demonstrating one early is a real signal about his trajectory, which is why the closing
+   ritual marks it cross-level rather than skipping it.
 
 If the task is a **decision task** — one whose text already says "decide before touching it", with two
 or three defensible outcomes listed — the reviewer has already flagged that it needs this pass. Those
@@ -64,9 +80,15 @@ State which one, in one sentence, with the evidence that decided it.
   Restate the true scope *before* teaching, so Victor works from the real list. (The `fieldErrors` task
   on 2026-08-01: the review listed 2 sites, the actual change was 4, including a call site that would
   not compile and a documented contract in §10.)
-- **Valid, wrong moment** — the finding is correct but should not be done now: it belongs to a level
-  above where Victor is, it is a production concern this portfolio project will never have, or it costs
-  more than it teaches with interviews close. Say so and let him choose; do not decide for him.
+- **Valid, wrong moment** — the finding is correct but should not be done now. Cite which of step 1's
+  three sources says so: the concept lives only in `middle.md`/`senior.md`, `PROGRESS.md` puts him
+  earlier in that topic than the task assumes, or `_shared-context.md`'s timeline makes the trade bad.
+  Then separate the two outcomes, because they are not the same thing:
+  - **Defer** — real, correct, and above the currently open gate. It becomes due when the gate moves.
+  - **Drop** — will never be right *for this project*: a production-scale concern a portfolio app
+    cannot have, or scope the plan deliberately excluded.
+
+  Say which, with the evidence, and let Victor choose; do not decide for him.
 - **False positive** — the code is correct as it stands, and the reviewer was missing context. Name the
   context it was missing.
 
@@ -83,9 +105,23 @@ save work. The whole point of this pass is that its verdict can be trusted in bo
 and the theory first, let Victor try it himself, give code only if he asks (his standing teach-first
 rule). Carry the corrected scope into that explanation so he is not working from the task's wrong list.
 
-**Valid, wrong moment** → put the choice to Victor with the tradeoff stated. If he defers it, the task
-stays open and untouched; annotate nothing. If he drops it, it goes to the ledger via
-`backlog-task-close` as a `DECISION, no code change` line with the reason.
+**Valid, wrong moment** → put the choice to Victor with the tradeoff stated, then record what he
+decides. A verdict that lives only in the chat is re-derived from scratch every session the task is
+looked at again, which is the cost this whole pass exists to avoid.
+
+- **Deferred** → the task stays in `## Tasks`, still `[ ]`, still real, with its verdict appended to
+  the line so it is not re-triaged:
+
+  ```
+  ⏸ Deferred YYYY-MM-DD — <reason, and what would make it due>
+  ```
+
+  Name the gate, not just the delay: "concept sits in `java/middle.md`; due when the junior gate
+  closes" is re-checkable later, "not now" is not. A later run that finds the gate has moved removes
+  the marker and triages normally.
+- **Dropped** → to the ledger via `backlog-task-close`, as a `DECISION, no code change` line whose
+  `→` tail says *why it will never be right for this project*. That line is what stops the next
+  `review-audit` re-raising it.
 
 **False positive** → do not fix anything. Take it straight to `backlog-task-close`, which collapses it
 into the `## Closed` ledger as `DECISION, no code change` with the reason in the `→` tail. That line is
@@ -102,9 +138,13 @@ Compact, four lines, before any teaching begins:
 | | |
 |---|---|
 | Task | *(quoted, one line)* |
-| Checked | code · PLANNING §N · ledger · N consumers |
-| Verdict | valid as written / valid, real scope is N sites / valid, wrong moment / false positive |
+| Checked | code · PLANNING §N · ledger · N consumers · level (`{topic}/{level}.md`) |
+| Verdict | valid as written / valid, real scope is N sites / valid but deferred / valid but dropped / false positive |
 | Why | the one piece of evidence that decided it |
+
+The `Checked` row names the level file the concept was found in, even when the verdict is "valid as
+written" — that is the cheapest possible proof the level question was actually asked rather than
+assumed, and it is the row that would otherwise quietly stop being true.
 
 Then, and only then, start the explanation.
 
