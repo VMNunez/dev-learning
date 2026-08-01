@@ -18,7 +18,7 @@ Concepts expected once core Java semantics are fluent and the developer must des
 ## Streams and collection design
 
 - Primitive stream specialisations and numeric aggregation — use `IntStream`, `LongStream`, or `DoubleStream` when boxing would obscure a measured or API-relevant cost
-- Downstream collectors and multi-level grouping — design `groupingBy`, partitioning, reduction, and map results whose types remain understandable to callers
+- Downstream collectors and multi-level grouping — design `groupingBy`, partitioning, reduction, and map results whose types remain understandable to callers ✅ 07-timetrack
 - Custom collection API contracts — expose mutability, ordering, null, ownership, and defensive-copy guarantees explicitly at service and library boundaries
 
 ## Concurrency foundations
