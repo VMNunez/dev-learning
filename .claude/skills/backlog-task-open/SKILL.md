@@ -53,19 +53,31 @@ Then read, in this order — **all four, before forming any opinion**:
 5. **Whether the concept is at Victor's level**, from the three sources that answer it with evidence
    rather than impression:
    - **The coverage files** — grep the concept in `notes/{topic}/coverage/junior.md`, then `middle.md`
-     and `senior.md`. This is the sharpest signal available: the level file a concept sits in *is* the
-     curriculum's ruling on when it is due. A finding whose concept only exists in `middle.md` is
-     above the open gate by the project's own definition, not by opinion.
+     and `senior.md`. **Weight these by whether the level has actually been generated**: check the
+     topic's `Coverage J|M|S` cell in `notes/prompts/_internal/_run-tracker.md` first. A `completed`
+     junior cell makes `junior.md` real evidence — presence means the concept is due now. An **empty**
+     cell means that level was never run through `/coverage`, so its file is a provisional sketch:
+     presence there is a guess and **absence proves nothing at all**. As of 2026-08-01 every `Coverage M`
+     and `Coverage S` cell is empty, which is exactly why `PROGRESS.md` marks those columns `*`. Until
+     they are generated, `middle.md`/`senior.md` may *suggest* a level, never rule on one.
    - **`PROGRESS.md`** — `Professional level by topic` for where he actually stands in that topic, and
      `Coverage demonstrated` for how much of that level he can already prove.
    - **`notes/prompts/_internal/_shared-context.md`** — the target role, the market, and the timeline.
      A task that costs a week and teaches nothing a junior screening probes is a bad trade with
      interviews close, however correct it is.
 
-   Note the asymmetry: **a concept above the gate is a reason to defer, never to dismiss.** Levels are
-   sequential by the coverage standard's progression gate, so "middle" means *not yet*, not *wrong* —
-   and Victor demonstrating one early is a real signal about his trajectory, which is why the closing
-   ritual marks it cross-level rather than skipping it.
+   **The test is necessity, not level purity.** Being above the gate is not disqualifying on its own:
+   some above-level concepts are unavoidable, and that is normal — a junior project will occasionally
+   need a middle concept, exactly as a middle one will later need a senior concept. Ask instead:
+
+   > Is this **strictly necessary** for the project to be correct, or for the work in front of us right
+   > now? If yes, do it at whatever level it sits, and let the closing ritual mark it cross-level —
+   > demonstrating one early is a real signal about Victor's trajectory. If it is merely *nice*, prefer
+   > the level he is on and the objectives he is working toward.
+
+   So an above-level concept is never dismissed for being above level; it is deferred only when it is
+   also **not needed yet**. Levels are sequential by the coverage standard's progression gate, so
+   "middle" means *not yet*, never *wrong*.
 
 If the task is a **decision task** — one whose text already says "decide before touching it", with two
 or three defensible outcomes listed — the reviewer has already flagged that it needs this pass. Those
@@ -80,10 +92,11 @@ State which one, in one sentence, with the evidence that decided it.
   Restate the true scope *before* teaching, so Victor works from the real list. (The `fieldErrors` task
   on 2026-08-01: the review listed 2 sites, the actual change was 4, including a call site that would
   not compile and a documented contract in §10.)
-- **Valid, wrong moment** — the finding is correct but should not be done now. Cite which of step 1's
-  three sources says so: the concept lives only in `middle.md`/`senior.md`, `PROGRESS.md` puts him
-  earlier in that topic than the task assumes, or `_shared-context.md`'s timeline makes the trade bad.
-  Then separate the two outcomes, because they are not the same thing:
+- **Valid, wrong moment** — the finding is correct, **and not necessary yet**. Both halves are
+  required: above-level alone never earns this verdict. Cite which of step 1's three sources supports
+  it — and if the citation is a `middle.md`/`senior.md` bullet, say that the level is ungenerated, so
+  it is a suggestion rather than proof. Then separate the two outcomes, because they are not the same
+  thing:
   - **Defer** — real, correct, and above the currently open gate. It becomes due when the gate moves.
   - **Drop** — will never be right *for this project*: a production-scale concern a portfolio app
     cannot have, or scope the plan deliberately excluded.
@@ -118,7 +131,8 @@ looked at again, which is the cost this whole pass exists to avoid.
 
   Name the gate, not just the delay: "concept sits in `java/middle.md`; due when the junior gate
   closes" is re-checkable later, "not now" is not. A later run that finds the gate has moved removes
-  the marker and triages normally.
+  the marker and triages normally — and note that generating a level for the first time **is** a gate
+  moving, since a deferral resting on an ungenerated `middle.md` was resting on a guess.
 - **Dropped** → to the ledger via `backlog-task-close`, as a `DECISION, no code change` line whose
   `→` tail says *why it will never be right for this project*. That line is what stops the next
   `review-audit` re-raising it.
