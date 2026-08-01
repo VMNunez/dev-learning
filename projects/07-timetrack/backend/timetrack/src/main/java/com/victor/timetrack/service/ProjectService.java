@@ -3,10 +3,10 @@ package com.victor.timetrack.service;
 import com.victor.timetrack.dto.request.CreateProjectRequest;
 import com.victor.timetrack.dto.request.UpdateProjectRequest;
 import com.victor.timetrack.dto.response.ProjectResponse;
+import com.victor.timetrack.exception.DuplicateResourceException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.repository.ProjectRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +50,7 @@ public class ProjectService {
     @Transactional
     public ProjectResponse create(CreateProjectRequest request) {
         if (projectRepository.existsByName(request.getName())) {
-            throw new DataIntegrityViolationException("A project with this name already exists");
+            throw new DuplicateResourceException("A project with this name already exists");
         }
 
         Project project = new Project();
@@ -72,7 +72,7 @@ public class ProjectService {
         }
 
         if (!project.getName().equals(request.getName()) && projectRepository.existsByName(request.getName())) {
-            throw new DataIntegrityViolationException("A project with this name already exists");
+            throw new DuplicateResourceException("A project with this name already exists");
         }
 
         project.setName(request.getName());

@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
         errorResponse.setFieldErrors(errors);
         return ResponseEntity.badRequest().body(errorResponse);
     }
-    
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException e) {
         return ResponseEntity
@@ -75,6 +75,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidStateTransitionException.class)
     public ResponseEntity<ErrorResponse> handleInvalidStateTransition(InvalidStateTransitionException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(buildError(HttpStatus.CONFLICT, e.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException e){
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(buildError(HttpStatus.CONFLICT, e.getMessage()));
@@ -125,7 +132,6 @@ public class GlobalExceptionHandler {
         errorResponse.setFieldErrors(Map.of("currentPassword", List.of(e.getMessage())));
         return ResponseEntity.badRequest().body(errorResponse);
     }
-
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException e) {

@@ -5,11 +5,11 @@ import com.victor.timetrack.dto.request.CreateUserRequest;
 import com.victor.timetrack.dto.request.UpdateUserRequest;
 import com.victor.timetrack.dto.response.CreateUserResponse;
 import com.victor.timetrack.dto.response.UserResponse;
+import com.victor.timetrack.exception.DuplicateResourceException;
 import com.victor.timetrack.exception.InvalidCurrentPasswordException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(request.getEmail());
 
         if (user.isPresent()) {
-            throw new DataIntegrityViolationException("Email already in use");
+            throw new DuplicateResourceException("Email already in use");
         }
 
         String generatedPassword = generatePassword();
@@ -75,7 +75,7 @@ public class UserService {
             Optional<User> userExist = userRepository.findByEmail(request.getEmail());
 
             if (userExist.isPresent()) {
-                throw new DataIntegrityViolationException("Email already in use");
+                throw new DuplicateResourceException("Email already in use");
             }
         }
 
