@@ -90,7 +90,7 @@ public class TimeEntryService {
             throw new ForbiddenOperationException("Managers cannot approve their own time entries");
         }
 
-        if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
+        if (timeEntry.getStatus() != EntryStatus.SUBMITTED) {
             throw new InvalidStateTransitionException("Manager can only approve SUBMITTED entries");
         }
 
@@ -111,7 +111,7 @@ public class TimeEntryService {
             throw new ForbiddenOperationException("Managers cannot reject their own time entries");
         }
 
-        if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
+        if (timeEntry.getStatus() != EntryStatus.SUBMITTED) {
             throw new InvalidStateTransitionException("Manager can only reject SUBMITTED entries");
         }
 
@@ -162,7 +162,7 @@ public class TimeEntryService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
 
-        if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
+        if (timeEntry.getStatus() != EntryStatus.DRAFT) {
             throw new InvalidStateTransitionException("You can only update DRAFT entries");
         }
 
@@ -198,7 +198,7 @@ public class TimeEntryService {
     public void delete(Long id) {
         User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = findOwnedEntry(id, user);
-        if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
+        if (timeEntry.getStatus() != EntryStatus.DRAFT) {
             throw new InvalidStateTransitionException("You can only delete DRAFT entries");
         }
 
