@@ -2,8 +2,8 @@
 
 Status: open
 
-- **Plan vs reality** — The required 1/1 market analyst and 2/2 normal cold reviewers ran; the finished-artifact reviews found four missing fundamentals, two level moves, three factual corrections, and one grouped item, so the role split performed substantive work.
-- **Report discipline** — Required reports supplied line-count and EOF evidence; the market report was broader than the acceptance summary needed but remained usable.
-- **Failures & retries** — Reviewer B completed against the pre-edit draft; the one permitted re-dispatch re-read the final 60-item artifact and passed, after which its last grouped-item finding was applied and mechanically revalidated at 61 items.
-- **Rule friction and rule breaches** — An extra read-only boundary inventory stalled and was cancelled without affecting a mandatory dispatch. No guard, authorship, marker, mirror, validation, or commit boundary was skipped; the 310-line prompt remains below the health-budget smoke alarm.
-- **Verdict** — Pipeline clean; the stale-review retry and cancelled optional inventory are execution events already covered by the existing protocol, so no prompt change is worth considering.
+- **Plan vs reality** — The verify-gap fast path correctly needed 1/1 scoped cold reviewer and no market analyst or normal reviewer pair; the reviewer read the finished artifact and returned no findings.
+- **Report discipline** — The scoped reviewer supplied every required line count and EOF confirmation in a concise findings-only report.
+- **Failures & retries** — A market analyst was dispatched before the fast-path guard was fully resolved, then cancelled before its result was used; no mandatory dispatch failed or needed a retry.
+- **Rule friction and rule breaches** — Step 0 scope resolution should have completed before any dispatch; the premature analyst launch was a sequencing lapse, but it did not affect content or bypass a gate. The 310-line prompt remains below the health-budget smoke alarm.
+- **Verdict** — Pipeline clean; the sequencing lapse is already prohibited by the explicit Step 0 ordering and would not have changed the artifact, so no prompt change is worth considering.
