@@ -30,12 +30,23 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- [ ] **[Low]** `[backend]` — Give `GET /api/projects` and `GET /api/users` a deterministic `ORDER BY`, the way the report queries already have one. Both currently return in whatever order PostgreSQL reads the heap — the observed `/api/projects` output ran 202, 203, 252, 302, 1, 55, which can change from nothing more than an unrelated row update. Surfaced 2026-08-01 as the control call while verifying the entries pagination. The §10 ordering rule added 2026-07-31 covers only `by-project`/`by-user`, so these two are outside it by omission rather than by decision; the rule should be generalised to every collection endpoint, and §10's rows updated. Unlike the entries list this is not a pagination bug — there are no pages to swap rows between — but the Team and Projects tables would reshuffle between visits for no reason the user can see. Name ascending is the obvious key; decide whether inactive rows sort last *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Scope `GET /api/reports/summary` to the caller so an EMPLOYEE gets their own month totals, applying the same ownership rule `GET /api/entries` already uses (employee → own, manager → all). Opened 2026-08-01 while closing the entries-pagination task: §17's employee dashboard was documented as summing the entries list client-side, which a paged response turns into "the first page's hours". The ruling taken that day sends stat-card totals to an aggregation endpoint instead — but `ReportController` is MANAGER-only and `summary` aggregates company-wide, so the endpoint the ruling points at cannot serve an employee yet. §17 now records the rule and names this widening as a prerequisite of the page. Blocking for Step 7a's employee dashboard, not for anything already built *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Decide what the self-approval check in `TimeEntryService.approve`/`reject` is for, now that it is nearly unreachable: it refuses a manager whose own id matches the entry's owner (403, segregation of duties), but `POST /api/entries` and `PATCH /{id}/submit` are both `@PreAuthorize("hasRole('EMPLOYEE')")`, so a MANAGER can never create an entry nor move one into `SUBMITTED` — and `approve`/`reject` only accept `SUBMITTED`. The single path that reaches it is the promotion case §8 already documents: an EMPLOYEE with `SUBMITTED` entries whose role is changed to MANAGER via `PUT /api/users/{id}`. Surfaced 2026-07-30 while writing the Postman plan for the entry-id oracle task, which could not exercise the check without flipping a role mid-test. Three defensible outcomes — keep it as documented defence in depth and add the promotion case to the §21 test table so it is deliberately covered; make the promotion path explicit in §8's rule text; or, if the promotion case is judged out of scope, say so and keep the check anyway (removing it would make a future `POST /api/entries` relaxation silently unsafe). **Do not remove it without deciding first** *(Effort: Small)*
 
 ### Frontend
 
-*No frontend tasks yet — Step 7a (Angular) has not started.*
+#### High
+
+*No open High tasks.*
+
+#### Medium
+
+*No open Medium tasks.*
+
+#### Low
+
+- [ ] **[Low]** `[frontend]` — Consume the paged `GET /api/entries` server-side: `MatPaginator` with `length` bound to `page.totalElements` and page events translated into `?page`/`?size`, never `MatTableDataSource`'s client-side paging on top of an already-paged response. Carried over 2026-08-01 from the backend pagination task, which paged the endpoint while Step 7a was still unbuilt precisely so this would be built right the first time instead of migrated. `Paginator integration` and `Reset pagination after filtering` are junior-gate bullets (`notes/angular-material/coverage/junior.md`) marked only from 05-task-manager, where the paging was client-side — this is the first server-side instance. Two traps the coverage bullets name: paginating the same result twice, and leaving the paginator on a page that no longer exists after the filter bar narrows the result. Belongs to Step 7b (Entries page), and is the reason the response carries `totalElements` at all *(Effort: Medium)*
 
 ## Closed
 
