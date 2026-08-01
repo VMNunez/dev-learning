@@ -438,6 +438,14 @@ Each value is an **array**, because one field can fail several constraints at on
 too long and malformed) and Bean Validation reports every one. A form renders the first message or all
 of them, but the contract never decides that by discarding violations on the way out.
 
+**`fieldErrors` is not exclusive to `@Valid` 400s.** It is the channel for *any* failure attributable to
+one input, whatever its status: a wrong current password carries `fieldErrors.currentPassword` on a 400,
+and a duplicate email or project name carries `fieldErrors.email` / `fieldErrors.name` on a **409**. The
+status answers what kind of failure it is; the map answers which control it belongs under. A form binds
+`fieldErrors` when present and falls back to `message` when absent, with no branching on the status — so
+an exception that concerns one field carries that field's name (`DuplicateResourceException`), rather
+than the handler hardcoding it.
+
 ### Auth — request/response detail
 
 | Method · Path | Role | Description | Request body | Response |
@@ -552,7 +560,8 @@ Test every endpoint in Postman as soon as it is created. Do not wait until the w
   refusal, **404** for a resource the caller does not own (§8 status ruling — indistinguishable from a
   non-existent id), and **409** for a state conflict, never 400 for any of them (§8, §12)
 - Correct JSON response body — the uniform `ErrorResponse` shape from §10 on every non-2xx, with
-  `fieldErrors` present on a `@Valid` 400
+  `fieldErrors` present on a `@Valid` 400 **and on any other single-field failure** — the 409 on a
+  duplicate email or project name, the 400 on a wrong current password (§10)
 - Error cases (missing fields, wrong id, wrong role, wrong source status)
 
 **GET requests** — also testable in the browser (`http://localhost:8080/api/...`)
@@ -905,7 +914,7 @@ repeated in each wireframe. A page that renders only its success table is incomp
 | Approvals | Spinner over the table, filter bar stays enabled | `mat-error` + Retry | "No pending approvals. Your team is up to date." |
 | Team | Skeleton cards + spinner over the table | `mat-error` + Retry | "No team members yet. Add your first member." |
 | Reports | Skeleton cards + spinner over both tables | `mat-error` + Retry for the whole `forkJoin` | "No approved hours for this month yet." in place of the cards and both tables |
-| Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input (400); anything else in a `mat-error` at the dialog foot — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
+| Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input — a `@Valid` 400, or the 409 on a duplicate email / project name (§10); anything else in a `mat-error` at the dialog foot — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
 | Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `mat-error` at the dialog foot, dialog stays open | n/a — a form dialog always opens with its fields |
 
 ---
