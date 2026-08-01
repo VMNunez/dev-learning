@@ -1,8 +1,10 @@
 # Coverage Prompt
 
-Create or recalibrate one topic at one professional level.
+Create or recalibrate one topic with one professional level as the primary target. Later-level runs
+also protect the completeness of their prerequisite levels.
 
-> **▶ Run first:** nothing — this is the per-topic producer for coverage and the selected global mirror.
+> **▶ Run first:** nothing — this is the per-topic producer for coverage and every global mirror its
+> classifications affect.
 
 ## Configuration
 
@@ -98,7 +100,8 @@ Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, th
    bullet will be copied into the new topic.
 8. For middle, inspect junior progression evidence. For senior, inspect both junior and middle
    progression evidence. Mapping a later level is allowed before consolidation; downstream authoring is not.
-   State the current gate explicitly.
+   State the current gate explicitly. Treat those earlier coverage files as cumulative prerequisite
+   floors: they are not only context for the selected level.
 9. Determine the run scope (full recalibration or verify-gap fast path — see "Run scope" above) and
    record it in the plan; when unsure, choose full recalibration.
 
@@ -131,11 +134,23 @@ Re-dispatch once if proof is missing.
 Read all three topic files to EOF and classify every existing item:
 
 - **KEEP HERE** — belongs to the selected level and topic.
-- **MOVE DOWN** — belongs in junior while reviewing middle.
-- **MOVE UP** — belongs in middle while reviewing junior.
-- **MOVE TO SENIOR** — requires senior-level ownership, production scale, platform depth, or justified specialisation.
+- **MOVE TO JUNIOR** — belongs to the junior foundation, regardless of the selected level.
+- **MOVE TO MIDDLE** — belongs to middle autonomy, regardless of the selected level.
+- **MOVE TO SENIOR** — belongs to senior ownership, production scale, platform depth, or justified specialisation.
 - **DELETE** — duplicated, non-conceptual, or plainly wrong text (see the limit below).
 - **ROUTE** — belongs to another topic; keep only a concrete implementation twin when justified.
+
+Then run the cumulative prerequisite-integrity check:
+
+- when `LEVEL = middle`, check whether the middle scope assumes any material junior concept absent
+  from `coverage/junior.md`;
+- when `LEVEL = senior`, check whether the senior scope assumes any material junior or middle concept
+  absent from the corresponding earlier file;
+- add each confirmed missing prerequisite directly to its correct earlier level, subject to the same
+  market, ownership, one-concept, deduplication, and evidence-marker rules as selected-level items;
+- do not expand this into a complete fresh market derivation for the earlier levels. Record incidental
+  gaps found while calibrating the selected level; explicit earlier-level runs remain responsible for
+  proving those levels complete.
 
 **DELETE never removes a real concept.** It applies to exact duplicates (the surviving copy stays),
 non-conceptual filler such as dictionary definitions, and claims that are simply wrong with no
@@ -162,7 +177,10 @@ level, or changing topic never changes or drops a marker; any mismatch blocks th
 
 The orchestrator is the only repository editor.
 
-Write `TARGET_FILE`, move reclassified material to the correct level file, and route other-topic proposals to the inbox. On `FIRST_TOPIC_RUN`, also apply accepted boundary moves to adjacent topic files; the orchestrator remains the only repository editor.
+Write `TARGET_FILE`, add confirmed prerequisite gaps to the correct earlier level file, move
+reclassified material to the correct level file, and route other-topic proposals to the inbox. On
+`FIRST_TOPIC_RUN`, also apply accepted boundary moves to adjacent topic files; the orchestrator remains
+the only repository editor.
 
 An existing bullet carrying a `✅ NN-slug — {evidence}` evidence marker keeps that marker verbatim through KEEP HERE, any
 MOVE, ROUTE, or factual correction — including when the concept sentence is rewritten from scratch. This
@@ -184,6 +202,7 @@ Dispatch two cold reviewers after the draft exists.
 Reads the three final topic coverage files, target, evidence, and standard. Returns only:
 
 - missing selected-level requirements;
+- missing prerequisite requirements in every earlier level required by the selected level;
 - items placed too low or too high;
 - cross-level contradictions or duplicates;
 - factual errors;
@@ -224,11 +243,14 @@ notes, exercises, projects, or plans is never evidence that it belongs at the se
 
 ## Step 5 — Rebuild and validate the level mirror
 
-Rebuild only `## {TOPIC}` in `GLOBAL_MIRROR` from `TARGET_FILE`:
+Rebuild `## {TOPIC}` in `GLOBAL_MIRROR` from `TARGET_FILE`:
 
 - topic `##` headings become `###`;
 - bullets and order remain identical;
 - introduction appears once.
+
+If a prerequisite-integrity finding or cross-level move changed a sibling level, rebuild this topic's
+heading in that level's global mirror too. No local sibling edit may ship with a stale mirror.
 
 If the first-run boundary migration changed an adjacent topic/level, rebuild that topic heading in the
 matching global mirror from its source file in the same run. A new topic is not complete while an old
@@ -259,7 +281,7 @@ committed as execution evidence.
 
 In update mode:
 
-1. Commit changed topic scope files and the selected global mirror atomically. When `verify-{LEVEL}.md`
+1. Commit changed topic scope files and every affected global mirror atomically. When `verify-{LEVEL}.md`
    supplied gaps, blank its `## Open gaps` to `*(none)*` and set `Verdict: superseded` in the same
    commit, add `Superseded by Coverage SHA-256: <new TARGET_FILE digest>`, and thereby prove which final
    coverage consumed the gaps. No run re-proposes a consumed gap. That superseded verification is
@@ -297,7 +319,7 @@ Report:
 - progression-gate state;
 - selected file lines/items before and after;
 - all whole-file EOF confirmations;
-- kept, moved down/up, moved to senior, deleted, corrected, and routed counts;
+- kept, prerequisite gaps added by level, moved to junior/middle/senior, deleted, corrected, and routed counts;
 - market analyst and reviewer completion;
 - first-run boundary reviewer completion or `n/a`;
 - qualitative stopping-rule result;

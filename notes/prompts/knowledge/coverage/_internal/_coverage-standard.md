@@ -28,6 +28,13 @@ Levels are sequential:
 
 The gate controls study order, not file existence. Middle coverage may be mapped in advance so the progression is visible, but downstream middle authoring must not become active while the junior gate is open.
 
+Coverage calibration is cumulative. A middle run treats junior as its prerequisite floor; a senior
+run treats both junior and middle as prerequisite floors. The selected level remains the run's main
+authoring target, but if that work exposes a genuine missing prerequisite in an earlier level, the run
+adds it there instead of duplicating it at the selected level or merely reporting it. This is an
+incidental prerequisite-integrity pass, not a substitute for running `coverage-prompt` and
+`coverage-verify` explicitly for every level.
+
 ## The job target defines scope
 
 `_shared-context.md` defines the target role, stack, market, and personal constraints.
@@ -102,7 +109,9 @@ Never use “could an interviewer ask this?”; that criterion is unbounded. Use
 
 ## Topic isolation
 
-One coverage-prompt execution processes exactly one topic and one level. `TOPIC = all` is not supported.
+One coverage-prompt execution processes exactly one topic with one selected level as its primary
+target. It may correct sibling levels when classification or prerequisite-integrity findings require
+it. `TOPIC = all` is not supported.
 
 `_topic-ownership.md` is the boundary registry. Every topic must be registered before authoring, and
 every full recalibration reads its row plus the coverage of its declared adjacent topics. The registry
