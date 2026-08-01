@@ -875,6 +875,8 @@ review without taking on specialist or production-platform ownership.
   rather than accepting an owner or user ID from the request body ✅ 07-timetrack
 - Collection vs detail authorisation — a filter on a list endpoint does not protect the matching
   read, update, or delete endpoint, so each operation must enforce the same visibility rule ✅ 07-timetrack
+- Authorisation as scope, not only as a gate — when one endpoint serves several roles, the caller's role
+  can decide which records the response is built from rather than whether the call is refused ✅ 07-timetrack
 - Input validation vs authorisation — valid data shape and business values do not prove that the caller
   has permission to perform the requested action
 
