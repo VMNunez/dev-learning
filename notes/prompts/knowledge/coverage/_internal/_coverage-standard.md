@@ -40,7 +40,8 @@ incidental prerequisite-integrity pass, not a substitute for running `coverage-p
 Coverage remains recalibratable only until Victor freezes the study material built from it. The lock
 authority is the persistent notes plan:
 
-- an exact bullet listed under `Coverage concepts` in an entry with `Status: refined` is **locked**;
+- an exact bullet marked `[x]` under `Coverage concepts` in an entry with `Status: refined` is
+  **locked**; a `[ ]` concept is only planned or pending append and is not locked yet;
 - a locked bullet's **scope text** — the complete line with its trailing evidence marker stripped —
   never changes, nor may its section, topic, level, or order relative to the other locked bullets in
   that note; it is never deleted, merged, split, or routed;
@@ -48,8 +49,9 @@ authority is the persistent notes plan:
   the pair final. `pending` is not a lock either, even when the plan already assigns the bullet;
 - therefore a bullet assigned to a planned note that has not been generated, or to any non-refined
   entry, may still move and the notes plan must be refreshed afterwards;
-- new coverage may still be added after a note is refined. `notes-plan` may assign it through that
-  entry's `Pending additions`, but this never authorizes changing its already locked bullets;
+- new coverage may still be added after a note is refined. `notes-plan` assigns it as `[ ]` through
+  that entry's `Pending additions`; Stage C changes it to `[x]` only after both languages contain it,
+  and only then does it join the entry's already locked bullets;
 - only Victor can remove the lock by changing the entry from `refined` back to `pending`.
 
 Evidence metadata is the only allowed mutation: `coverage-mark` may append a new trailing
@@ -223,7 +225,9 @@ Rules:
   bullet whose concept survives in different words has not lost its demonstration. Dropping a marker
   silently destroys the only record of it — treat it exactly as seriously as the notes-plan coverage SHA.
 - **Markers are not checkboxes.** The prohibition on `- [ ]` / `- [x]` bullets in *Item and file format*
-  stands unchanged; the marker is trailing text on a plain `- ` bullet.
+  stands unchanged for coverage files; the marker is trailing text on a plain `- ` bullet. Persistent
+  notes plans may wrap the exact bullet in `[ ]`/`[x]` delivery metadata, which is stripped before
+  matching and never copied into coverage or its mirrors.
 - A bullet may only be **removed** with its marker if the concept genuinely leaves the level. When a
   concept moves between levels or topics, the marker moves with it.
 

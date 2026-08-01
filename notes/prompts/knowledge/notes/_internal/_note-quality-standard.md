@@ -180,6 +180,12 @@ Every persistent-plan entry must therefore carry:
 - `Must answer:` the concrete learner questions the finished note must resolve;
 - `Handoff:` what the chapter unlocks and why the next planned chapter follows.
 
+Its `Coverage concepts` list also records delivery state. `- [ ] {exact bullet}` means assigned but
+not yet incorporated into the bilingual note; `- [x] {exact bullet}` means the successful Stage C
+commit confirmed that both languages contain it. Strip the checkbox before matching the exact
+coverage bullet. Planning never marks a newly assigned concept `[x]`; only the notes pipeline does
+after authoring and review succeed.
+
 These fields are acceptance criteria for authoring and review, not decorative metadata. Covering all
 assigned coverage bullets is necessary but insufficient when the file still cannot achieve its
 learning outcome from zero.

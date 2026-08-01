@@ -57,8 +57,8 @@ Before dispatching any role:
    `PLAN`, and say in the stop message that markers were stripped first.
 5. Require `Plan status: current`.
 6. Require the entry's English and Spanish paths to remain inside the selected topic and level.
-7. Require every assigned bullet to exist verbatim in `COVERAGE`, exactly once in the complete plan,
-   and in neither sibling-level coverage file.
+7. Require every assigned bullet, after stripping its plan `[ ]`/`[x]` prefix, to exist verbatim in
+   `COVERAGE`, exactly once in the complete plan, and in neither sibling-level coverage file.
 8. Require the selected entry to contain non-empty `Narrative role`, `Learning outcome`,
    `Prerequisites`, `Must answer`, and `Handoff` fields. Require `Prerequisites` to contain only
    `none` or earlier entries and agree with the mechanical `Depends on` gate. Stop with
@@ -68,10 +68,13 @@ Before dispatching any role:
 10. Require every dependency entry to be `complete`.
 11. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
    middle to be closed.
-12. If the entry is already `complete`, verify both files exist and report a no-op.
+12. If the entry is already `complete`, require every assigned concept to be `[x]`, verify both files
+    exist, and report a no-op. A `complete` entry containing `[ ]` is malformed; stop with
+    `run notes-plan-prompt`.
 13. If the entry is `refined`, verify both files exist. With `Pending additions: none`, report a no-op
-    and stop — a refined pair with nothing owed is never re-processed. Otherwise run the whole pipeline
-    in **append-only mode** (below) for exactly those bullets. Never set, clear, or downgrade `refined`.
+    only when every concept is `[x]`, and stop — a refined pair with nothing owed is never re-processed.
+    Otherwise require the unchecked concept set to equal `Pending additions` exactly and run the whole
+    pipeline in **append-only mode** for exactly those bullets. Never set, clear, or downgrade `refined`.
 
 Guards 8 and 9 do not reopen a `refined` entry: a missing or malformed pedagogical contract on a frozen
 pair is reported, not fixed, because fixing it would mean rewriting prose Victor has declared final.
@@ -95,8 +98,9 @@ It binds every stage of this run:
 4. Every stage must prove the freeze held: a `git diff` over both files showing only additions, and the
    pre-existing headings unchanged and in their original order. A stage whose diff removes or modifies a
    pre-existing line has failed — revert it and re-dispatch that stage once.
-5. Stage C clears the consumed bullets from `Pending additions` (back to `none` when all are consumed)
-   and leaves `Status: refined` as it is. It never writes `complete`.
+5. Stage C marks each successfully consumed `Coverage concepts` checkbox from `[ ]` to `[x]`, clears
+   the same bullets from `Pending additions` (back to `none` when all are consumed), and leaves
+   `Status: refined` as it is. It never writes `complete`.
 
 Stage flags for this mode: Stage A gets `REWRITE_MODE = append-only`, stages B and T get
 `SCOPE = append-only` naming the appended sections, and Stage C reviews and commits only those sections.
@@ -153,9 +157,12 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
 
 - `PLAN`;
 - `NOTE`;
-- permission to change only this entry's `Status: pending` to `Status: complete` — or, in append-only
-  mode, to clear only the consumed bullets from `Pending additions` while `Status: refined` stays;
-- the exact assigned concepts and complete pedagogical contract;
+- permission to mark every successfully incorporated assigned concept `[x]` and then change only this
+  entry's `Status: pending` to `Status: complete` when no `[ ]` remains — or, in append-only mode, to
+  mark only the consumed additions `[x]` and clear those same bullets from `Pending additions` while
+  `Status: refined` stays;
+- the exact assigned concepts with checkbox metadata stripped, the unchecked concepts this run must
+  incorporate, and the complete pedagogical contract;
 - `SCOPE = append-only` and the appended headings when the entry is `refined`.
 
 It reads Spanish independently, fixes quality, verifies that Spanish alone achieves the pedagogical
@@ -188,7 +195,7 @@ stops the run. Never mark a partially verified or merely bullet-complete file co
 Report branch, topic, level, note, resolved paths, action, assigned-concept count, fingerprint match,
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, four stage results,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
-verdict, status transition, and commit. In append-only mode, also report the consumed bullets, the
+verdict, concept checkbox transitions, status transition, and commit. In append-only mode, also report the consumed bullets, the
 appended headings in both languages, the additions-only diff proof for each file, any quality issue
 observed in existing prose and deliberately left untouched, and the remaining `Pending additions`.
 

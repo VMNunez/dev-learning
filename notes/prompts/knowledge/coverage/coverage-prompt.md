@@ -36,8 +36,9 @@ reviewer when required cannot be dispatched, stop; there is no single-agent fall
 - `GLOBAL_MIRROR = notes/coverage/{LEVEL}.md`
 - `NOTES_PLANS = all existing notes-plan-{junior|middle|senior}.md files for this topic and every
   adjacent topic whose coverage may move`
-- `LOCKED_BULLETS = Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched by
-  exact scope text after stripping any trailing evidence marker from plan and coverage copies`
+- `LOCKED_BULLETS = [x] Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched
+  by exact scope text after stripping the checkbox and any trailing evidence marker from plan and
+  coverage copies; [ ] concepts are not locked`
 - `TOPIC_BOUNDARY = this topic's row in _internal/_topic-ownership.md`
 - `ADJACENT_TOPICS = the complete comparison set declared by TOPIC_BOUNDARY`
 - `FIRST_TOPIC_RUN = the selected Coverage tracker cell has no completed run` (scaffold files do not count)
@@ -52,7 +53,7 @@ Count lines before every whole-file read and read to EOF:
 4. `_job-market-evidence.md`
 5. `_internal/_topic-ownership.md`
 6. all three topic scope files when present
-7. `NOTES_PLANS` when present, including every complete `Status: refined` entry and its exact
+7. `NOTES_PLANS` when present, including every complete `Status: refined` entry and its checkbox-marked
    `Coverage concepts` list
 8. this topic's heading in `_internal/_cross-topic-inbox.md`
 9. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
@@ -110,7 +111,7 @@ Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, th
    floors: they are not only context for the selected level.
 9. Determine the run scope (full recalibration or verify-gap fast path — see "Run scope" above) and
    record it in the plan; when unsure, choose full recalibration.
-10. Build `LOCKED_BULLETS` before classification. Stop if a refined entry names a bullet that is absent
+10. Build `LOCKED_BULLETS` before classification. Stop if a refined entry's `[x]` bullet is absent
     from its recorded topic/level coverage: the freeze is already broken and must not be guessed back
     into place.
 
@@ -143,7 +144,7 @@ Re-dispatch once if proof is missing.
 Read all three topic files to EOF and classify every existing item:
 
 - **KEEP HERE** — belongs to the selected level and topic.
-- **LOCKED IN PLACE** — assigned to a `Status: refined` notes-plan entry; preserve its scope text
+- **LOCKED IN PLACE** — marked `[x]` in a `Status: refined` notes-plan entry; preserve its scope text
   byte-for-byte after stripping the trailing evidence marker, even when current calibration would
   place it elsewhere, and record the placement conflict.
 - **MOVE TO JUNIOR** — belongs to the junior foundation, regardless of the selected level.
@@ -176,9 +177,9 @@ the final summary with its reason.
 The refined-note lock outranks every classification except `LOCKED IN PLACE`. Never reword the scope text, move,
 delete, merge, split, route, or reorder a `LOCKED_BULLET`, and never create a normalized twin at the
 destination that calibration would otherwise prefer. Bullets assigned only to `pending` or `complete`
-entries remain movable; report the resulting notes-plan fingerprint mismatch so `notes-plan` remaps
-them before further note authoring. Appending a valid evidence marker remains allowed and does not
-change the lock.
+entries remain movable, as does a refined entry's `[ ]` pending addition; report the resulting
+notes-plan fingerprint mismatch so `notes-plan` remaps them before further note authoring. Appending a
+valid evidence marker remains allowed and does not change the lock.
 
 Correct factual errors before making scope decisions. Apply this topic's inbox entries through the
 same classification and clear every processed entry. Apply each level-prefixed open gap from

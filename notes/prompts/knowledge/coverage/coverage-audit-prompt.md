@@ -35,8 +35,8 @@ Read to EOF with verified line counts:
 - `_internal/_topic-ownership.md`
 - `notes/coverage/{LEVEL}.md`
 - every topic's `coverage/junior.md`, `coverage/middle.md`, and `coverage/senior.md`
-- every existing topic `notes-plan-{junior|middle|senior}.md`, extracting exact locked bullets from
-  `Coverage concepts` under `Status: refined` entries
+- every existing topic `notes-plan-{junior|middle|senior}.md`, extracting exact locked `[x]` bullets
+  from `Coverage concepts` under `Status: refined` entries; `[ ]` additions are not locked
 - `_internal/_cross-topic-inbox.md`
 - `_run-tracker.md`
 - previous coverage-audit self-report
@@ -54,7 +54,7 @@ use them to add, remove, or raise a coverage requirement.
 5. Plan all analysis, editing, validation, mirror rebuild, self-report, tracker update, and commits.
 6. Preserve unrelated working-tree changes.
 7. Build the complete locked-bullet registry before analysis. Stop on a broken freeze: a refined entry
-   whose exact assigned bullet is absent from its recorded topic and level.
+   whose exact `[x]` assigned bullet is absent from its recorded topic and level.
 
 ## Step 1 — Independent analyses
 
@@ -88,13 +88,13 @@ Allowed actions:
   in doubt between deleting and moving, move;
 - split or merge unclear sections.
 
-None of these actions applies to a locked bullet. A bullet assigned under `Coverage concepts` in a
+None of these actions applies to a locked bullet. A bullet marked `[x]` under `Coverage concepts` in a
 `Status: refined` plan entry keeps byte-identical scope text (trailing evidence marker stripped) in
 the same section, topic, level, and relative locked-bullet order. Record later calibration disagreement
 as a locked placement conflict; never move
 the bullet or create a duplicate at the preferred destination. A valid evidence marker may still be
-appended without changing the lock. Bullets in `pending` or `complete`
-entries remain movable and trigger the normal notes-plan refresh.
+appended without changing the lock. Bullets in `pending` or `complete` entries, and `[ ]` additions in
+a refined entry, remain movable and trigger the normal notes-plan refresh.
 
 Every one of those actions must carry any existing `✅ NN-slug — {evidence}` evidence marker onto the surviving bullet
 unchanged — a reworded, moved, or re-routed concept keeps its demonstration. Read "Evidence markers" in

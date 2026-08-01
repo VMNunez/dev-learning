@@ -40,8 +40,9 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 - `GLOBAL_MIRRORS = notes/coverage/{level}.md for LEVEL and every PREREQUISITES level`
 - `FINDINGS = notes/{topic}/coverage/verify-{LEVEL}.md`
 - `NOTES_PLANS = all existing notes-plan-{junior|middle|senior}.md files for this topic`
-- `LOCKED_BULLETS = Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched by
-  exact scope text after stripping any trailing evidence marker from plan and coverage copies`
+- `LOCKED_BULLETS = [x] Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched
+  by exact scope text after stripping the checkbox and any trailing evidence marker; [ ] concepts are
+  not locked`
 
 ## Required sources
 
@@ -115,8 +116,9 @@ mandate:
 
 The reviewer may flag that current calibration would place a locked bullet elsewhere, but labels it
 `locked placement conflict`, not an open gap. It never proposes moving, rewriting, deleting, routing,
-or duplicating that bullet. A bullet assigned to `pending` or `complete` remains normally
-recalibratable; only `Status: refined` creates the lock.
+or duplicating that bullet. A bullet assigned to `pending` or `complete`, or marked `[ ]` as a refined
+entry's pending addition, remains normally recalibratable; only `[x]` under `Status: refined` creates
+the lock.
 
 Acceptance proof: the reviewer states the line count and EOF confirmation for `COVERAGE` and every
 `PREREQUISITES` file, names which lenses applied to this topic shape, and confirms every gap has one

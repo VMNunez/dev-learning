@@ -174,10 +174,15 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    appending to what is already there and never rewriting or dropping an unconsumed one. Reconciliation
    reports these as `refined + N additions`, never as reopened entries. A `refined` entry whose English
    or Spanish file is missing is reported as a broken freeze and left untouched for Victor to resolve.
-   Every pre-existing bullet under that entry's `Coverage concepts` is also a coverage lock. Compare
+   Every pre-existing `[x]` bullet under that entry's `Coverage concepts` is also a coverage lock. Compare
    scope text with trailing evidence markers stripped: if coverage moved, reworded, deleted, split,
    merged, routed, or reordered one, stop and report a broken coverage lock. Never reconcile the
    refined entry to the changed coverage and never treat the replacement as a `Pending addition`.
+   Coverage-concept state is granular: preserve every existing `[x]`; add newly assigned concepts as
+   `[ ]`; and never mark one `[x]` merely because it was planned. For legacy plans without concept
+   checkboxes, migrate bullets under `complete` to `[x]`; under `refined`, migrate every bullet not
+   listed in `Pending additions` to `[x]` and each pending addition to `[ ]`; under `pending`, migrate
+   every bullet to `[ ]`. This is a metadata-only plan migration and never edits note prose.
 9. Existing notes that cannot be justified by this level's coverage go under `## Unassigned existing
    notes`. They are never silently deleted or treated as required study files.
 10. On reconciliation, report added, removed, regrouped, preserved-complete, and unassigned entries.
@@ -247,8 +252,8 @@ Must answer:
 
 Coverage concepts:
 
-- exact coverage bullet
-- exact coverage bullet
+- [ ] exact coverage bullet
+- [x] exact coverage bullet
 
 Rationale: one concise explanation of why these concepts belong together.
 
@@ -277,6 +282,17 @@ Rules:
 - `Pending additions` is `none` or a list of coverage bullets quoted verbatim from `COVERAGE`. It is
   meaningful only on a `refined` entry; on `pending` and `complete` entries it is always `none`, because
   their whole bullet set is already in scope.
+- Every `Coverage concepts` line is exactly `- [ ] {exact coverage bullet}` or
+  `- [x] {exact coverage bullet}`. The checkbox is plan metadata and is stripped before exact matching
+  against `COVERAGE`; trailing coverage evidence markers are handled by the normal scope-byte rule.
+- `[ ]` means the concept is assigned but has not yet been incorporated by a successful notes pipeline
+  run. `[x]` means the English and Spanish note pair contains it and Stage C committed that fact.
+- A `pending` entry may contain `[x]` concepts preserved from an earlier successful run when a changed
+  contract or newly assigned coverage reopened it; those checks are permanent history. Notes-audit
+  owes every unchecked concept, may review the whole non-refined note against its current contract,
+  and never clears an existing `[x]`.
+- `Status: complete` requires every assigned concept to be `[x]`. `Status: refined` may contain `[ ]`
+  only when those exact bullets also appear in `Pending additions`.
 - Paths are repository-relative and remain inside the selected topic and level.
 - `Depends on` contains `none` or earlier entry numbers only.
 - `Prerequisites` contains `none` or earlier entry numbers only and agrees with `Depends on`;
@@ -296,18 +312,20 @@ Rules:
 own bar with TODOs and considers the prose final. The two are not the same guarantee, and only the
 second one is protected from the pipeline.
 
-Victor sets `Status: refined` by hand in `PLAN`; no prompt ever assigns it. From that moment the pair's
+Victor sets `Status: refined` by hand in `PLAN`; no prompt ever assigns it. Before accepting the manual
+freeze, every current concept should be `[x]` and `Pending additions` should be `none`. From that moment the pair's
 existing prose is immutable to the whole notes pipeline in both languages. The only mutation any prompt
 may still perform on a `refined` entry is **appending** material for a coverage bullet listed under
 `Pending additions:` — new sections added to `en/`, their Spanish counterparts appended to `es/`, every
 pre-existing byte in both files untouched. `notes-audit` runs that append in its append-only mode and
 clears the consumed bullets; nothing else about the files may change.
 
-The same freeze protects the assigned coverage scope: every existing `Coverage concepts` bullet stays
+The same freeze protects the incorporated coverage scope: every `[x]` `Coverage concepts` bullet stays
 in the same coverage topic, level, section, and relative locked-bullet order with identical scope text.
 A trailing project evidence marker may still be added because it is metadata, not curriculum scope.
-An entry merely present in the plan but still `pending` or `complete` creates no coverage lock and may
-be remapped normally.
+An unchecked concept in `Pending additions` is not locked yet and may be remapped until the append-only
+pipeline marks it `[x]`. An entry merely present in the plan but still `pending` or `complete` creates
+no coverage lock and may be remapped normally.
 
 To hand a refined file back to the normal pipeline, Victor sets its status back to `pending` himself.
 
@@ -337,7 +355,7 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 Report topic, level, coverage fingerprint, the coverage-verification state (`verified`, `reviewed`, or
 `unverified`, with the reason; never prescribe repeated verification until zero gaps), entry count,
 concept count, create/audit counts,
-preserved-complete count, every `refined` entry with the count of `Pending additions` it now carries
+checked/unchecked concept counts, preserved-complete count, every `refined` entry with the count of `Pending additions` it now carries
 (and any broken freeze), every legacy classification decision, relocations, renumberings, split
 blockers,
 unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,
