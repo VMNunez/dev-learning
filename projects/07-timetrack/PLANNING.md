@@ -470,6 +470,7 @@ of them, but the contract never decides that by discarding violations on the way
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
 | `GET /api/projects` | both | Employee: active projects only · Manager: all projects | — | `200` + `List<ProjectResponse>` |
+| `GET /api/projects/{id}` | both | Employee: active projects only · Manager: any project. Target of the `Location` header returned by `POST` | — | `200` + `ProjectResponse` · `404` project not found **or inactive and the caller is an EMPLOYEE** |
 | `POST /api/projects` | MANAGER | Create a project | `CreateProjectRequest` — `name`, `description` | `201` + `ProjectResponse` · `400` validation · `409` duplicate name |
 | `PUT /api/projects/{id}` | MANAGER | Update name, description, or reactivate/deactivate | `UpdateProjectRequest` — `name`, `description`, `active` (optional — applied only when non-null) | `200` + `ProjectResponse` · `404` project not found |
 | `DELETE /api/projects/{id}` | MANAGER | Deactivate project (soft delete — sets `active = false`) | — | `204` no body · `404` project not found |
