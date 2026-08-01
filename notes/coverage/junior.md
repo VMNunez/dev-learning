@@ -1933,11 +1933,12 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Collection vs item URI — use stable noun-based paths to distinguish a resource collection from one identified member ✅ 07-timetrack
 - HTTP methods — choose `GET`, `POST`, `PUT`, `PATCH`, or `DELETE` from the intended resource operation rather than from habit ✅ 07-timetrack
 - Safe vs idempotent methods — safe methods do not request a state change, while repeating an idempotent request has the same intended effect as sending it once ✅ 07-timetrack
-- `PUT` vs `PATCH` — use complete replacement semantics for PUT and partial modification semantics for PATCH when the API contract supports them ✅ 07-timetrack
+- `PUT` vs `PATCH` — use PUT to replace the target resource state with the submitted representation and PATCH for a partial modification, following the API contract's omitted-field rules ✅ 07-timetrack
 - Path parameters vs query parameters vs request body — use the path for resource identity, the query for optional selection or representation controls, and the body for a submitted representation ✅ 07-timetrack
 - HTTP headers and body — keep request metadata in headers and the submitted representation in the body ✅ 07-timetrack
 - `Content-Type` vs `Accept` — declare the media type being sent separately from the response media types the client can process
 - Stateless HTTP — understand that HTTP defines no conversational session while an application may carry state in each request or look it up through an identifier such as a session cookie ✅ 07-timetrack
+- Cookie and session mechanics — recognise `Set-Cookie` as the response instruction that stores browser state and `Cookie` as the later request header that returns it, while security attributes remain a Security concern
 - HTTPS vs HTTP — recognise that HTTPS applies TLS protection to HTTP traffic in transit while HTTP alone provides no transport encryption
 - Basic web request path — recognise DNS resolution, connection to a host and port, TLS negotiation for HTTPS, and the later HTTP exchange as distinct failure points
 
@@ -1945,13 +1946,12 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 - HTTP status-code families — use 1xx, 2xx, 3xx, 4xx, and 5xx as protocol-level categories before inspecting the application error body ✅ 07-timetrack
 - `200 OK`, `201 Created`, and `204 No Content` — select the success status from whether the operation returns a representation, creates a resource, or intentionally returns no body ✅ 07-timetrack
-- `Location` on a `201` — the response names the created resource's own URI, so the client follows what the server sent instead of assembling that URL from its own copy of the route scheme ✅ 07-timetrack
+- `Location` on a `201` — when supplied, the header identifies a primary resource created by the request so the client need not assemble its URI from a copied route scheme ✅ 07-timetrack
 - `400 Bad Request` vs `422 Unprocessable Content` — recognise 400 as a broad perceived client-request error and 422 as understood media type and syntax whose instructions cannot be processed, while following the API's documented convention
 - `401 Unauthorized` vs `403 Forbidden` — distinguish missing or invalid authentication from an authenticated identity lacking permission ✅ 07-timetrack
 - `404 Not Found` vs `409 Conflict` — distinguish an absent resource from a request that conflicts with current resource state ✅ 07-timetrack
 - `500 Internal Server Error` vs `503 Service Unavailable` — distinguish an unexpected server failure from temporary inability to serve the request
 - Redirect semantics — recognise that 3xx responses point the client elsewhere and that method-preserving redirects differ from redirects commonly followed as GET
-- `301`/`302`/`303` vs `307`/`308` redirects — recognise when common clients may follow with GET and when the original method and body must be preserved
 - HTTP caching basics — recognise freshness directives, validators such as ETags, and conditional requests without treating caching as an automatic performance fix
 - Timeouts and retries — bound waiting and retry only when the operation and failure mode make repetition safe, adding idempotency controls when required
 - Transport vs protocol vs application failure — separate inability to connect, an HTTP error status, and a successful HTTP response whose domain result is unsuccessful
@@ -1985,6 +1985,11 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Stack trace and cause chain — read the failure type, message, frames, and nested causes from the first relevant application frame outward
 - Breakpoints and variable inspection — pause execution at a suspected path and compare actual state and control flow with the expected behaviour
 - Fix verification — rerun the original reproduction and a relevant regression check instead of treating disappearance during one manual attempt as proof
+- Logs vs metrics vs traces — distinguish event records, measurements over time, and the path of one request across components without requiring junior ownership of an observability platform
+
+### AI-assisted change verification
+
+- AI-generated change verification — treat generated code, tests, and configuration as untrusted proposals whose APIs, assumptions, edge cases, and meaningful checks must be validated before acceptance
 
 ### Software testing
 
@@ -1994,7 +1999,6 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Test-level selection — choose unit, integration, or end-to-end scope from the risk being proved rather than using one level for every defect
 - Testing pyramid — use many focused tests and fewer broad expensive tests as a trade-off heuristic, not a mandatory numeric ratio
 - Arrange–Act–Assert vs Given–When–Then — recognise equivalent structural and domain-oriented ways to separate setup, behaviour, and verification
-- Verification vs validation in testing — distinguish checking conformance to a specification from checking that the delivered behaviour solves the intended user need
 - Meaningful assertion — verify an observable result or interaction that would fail if the behaviour regressed, not merely that code executed
 - Test setup and teardown — create the required starting state and clean shared resources without hiding the scenario behind excessive fixtures
 - Test isolation and order independence — make each test establish its own state so running it alone or in another order produces the same result
@@ -2024,11 +2028,10 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 - Container vs virtual machine — distinguish an isolated process sharing the host kernel from a virtualised machine with its own guest operating system
 - Image vs container — distinguish an immutable packaged blueprint from a running instance with a writable runtime layer
-- Image tag vs digest — recognise that a tag can be moved to different image content while a digest identifies exact immutable content
 - `Dockerfile` vs Compose file — use a Dockerfile to build one image and Compose to define how multiple containers run together
 - Build vs run — separate producing an image from starting a container from that image
-- Container lifecycle — choose stop/start for the same container, restart for its process, recreate for changed runtime configuration, and rebuild for changed image content
-- Exposed vs published container port — distinguish image metadata about a listening port from the runtime mapping that makes a container port reachable through a host port
+- Container lifecycle — choose stop/start or restart for the same container, recreate it for changed runtime configuration, and rebuild its image for changed packaged content
+- Exposed vs published container port — distinguish image metadata documenting an intended container port from the runtime mapping that makes a container port reachable through a host port
 - Container service discovery — use the Compose service name between containers and recognise that `localhost` always means the current container
 - Bind mount vs named volume — choose direct host-file access or Docker-managed persistent storage from the development and data-lifecycle need
 - Ephemeral vs persistent container data — recognise what disappears with a container and what must live in a volume or external service
@@ -2039,10 +2042,13 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Containerised-stack debugging — inspect container status, logs, ports, service names, configuration, networks, and volumes before rebuilding blindly
 - Reproducible local stack — document enough build, configuration, and data-startup information for another developer to run the same services
 
-### CI/CD pipelines
+### Software delivery lifecycle and CI/CD
 
+- Software delivery lifecycle vs CI/CD pipeline — trace a change from requirement through maintenance while recognising that CI/CD automates only part of that broader lifecycle
 - Continuous integration — integrate small changes frequently into a shared codebase and verify them automatically before or after merge to expose integration failures early
 - Continuous delivery vs continuous deployment — distinguish keeping every pipeline-accepted change releasable from automatically releasing changes that pass the automated delivery path
+- Deployment vs release — distinguish placing an artifact in an environment from making its functionality available to users
+- Pipeline triggers and execution environments — recognise push, pull-request, merge, schedule, and manual triggers and diagnose jobs inside their isolated configured environment rather than assuming local-machine state
 - Pipeline stages — trace checkout, build, test, package, image, and deploy stages and identify which stage produced a failure
 - Build artifact — treat an identifiable, traceable build output as the input promoted through later checks and environments
 - Pipeline result limits — recognise that a green pipeline proves only the checks it actually ran, not that the product is defect-free
@@ -2061,6 +2067,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 ### Cloud awareness
 
-- Cloud resource awareness — recognise managed compute, storage, networking, and database resources without requiring junior ownership of cloud architecture
+- Cloud-hosted vs on-premises infrastructure — distinguish provider-operated infrastructure from systems run in an organisation's own facilities without assuming either model removes operational responsibility
+- Cloud resource and location awareness — recognise managed compute, storage, networking, databases, regions, and availability zones together with the customer responsibilities that a managed service does not remove
 
 ---
