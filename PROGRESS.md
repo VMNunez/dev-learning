@@ -429,6 +429,7 @@ workflow to the first project that established it rather than to code inside tha
 - `ForbiddenOperationException` vs Spring Security's `AccessDeniedException` — no inheritance relationship, each caught by its own `@ExceptionHandler` even though both resolve to the same status
 - `@ToString.Exclude` on `LoginRequest.password` — keeps the plaintext password out of Lombok's generated `toString()`, closing a logging exposure that no current code triggers but any future request-logging call would
 - `spring.jpa.defer-datasource-initialization=true` removed — only mattered while `data.sql` seeded on startup; dead once the profile-gated `DataInitializer` replaced it
+- `EntryStatus` comparisons unified to `==`/`!=` across `TimeEntryService` — `.equals()` was mixed in on some methods; both are correct for enums, `==` is idiomatic
 
 ---
 
