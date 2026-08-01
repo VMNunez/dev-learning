@@ -169,6 +169,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `User`, `Project` and `TimeEntry` use `@Getter`/`@Setter` instead of Lombok's `@Data`. `@Data` generates `equals`/`hashCode` over every field, including the database-generated `id` — but an entity's `id` is `null` until it is persisted, so an entity placed in a `HashSet`/`HashMap` before saving becomes unreachable in that collection once Hibernate assigns its `id` (the object's hash code changes after insertion). `@EqualsAndHashCode(onlyExplicitlyIncluded = true)` + `@EqualsAndHashCode.Include` on `id` makes identity depend only on the database key. `TimeEntry` also adds `@ToString(exclude = {"user", "project"})`: both are `@ManyToOne(fetch = FetchType.LAZY)`, and a generated `toString()` that includes them would trigger a lazy load — safe only inside an open transaction, and throwing `LazyInitializationException` otherwise (e.g. from a log call after the request completes).
 
+### Password excluded from `LoginRequest.toString()` ✓
+
+`LoginRequest` keeps `@Data` but adds `@ToString.Exclude` on `password`: `@Data`'s generated `toString()` otherwise includes every field, so the plaintext password would land in any future request-logging or framework body-dump call. No logger stringifies the request today, but the fix is one annotation and closes the gap before it becomes exploitable.
+
 ### Explicit JWT validation ✓
 
 `JwtUtil.isValid` parses the token once and checks the subject **and** `getExpiration().after(new Date())` explicitly, instead of relying on `extractUsername` throwing as a side effect of parsing. Makes the expiration check a deliberate decision in the code, not an accident of call order.
