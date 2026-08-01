@@ -390,6 +390,8 @@ workflow to the first project that established it rather than to code inside tha
 - `.roles(user.getRole().name())` in `UserDetailsServiceImpl` — derive the Spring Security authority from the entity's real role instead of a hardcoded string
 - `@PreAuthorize("hasRole('MANAGER')")` tested end-to-end in Postman — `POST /api/projects` returns 403 with an EMPLOYEE token and 201 with a MANAGER token
 - `DataIntegrityViolationException` — Spring's generic wrapper for any database constraint violation; handled in `GlobalExceptionHandler` to return 409 Conflict instead of a raw 500
+- `DuplicateResourceException` over hand-throwing `DataIntegrityViolationException` — a `DataAccessException` thrown from a service claims a persistence failure that never happened
+- A framework exception's handler cannot trust `e.getMessage()` — Hibernate writes it and it names the constraint and the statement, so only a domain exception's handler can return the message to the client
 - `TimeEntry` entity with `@ManyToOne` to `User` and `Project` — two foreign keys on the same entity, both `nullable = false`
 - State machine workflow — `EntryStatus` enum (`DRAFT` → `SUBMITTED` → `APPROVED`/`REJECTED`); each transition method checks the current status before changing it
 - PATCH with URL suffix for state transitions (`/{id}/submit`, `/{id}/approve`, `/{id}/reject`) — PATCH alone is ambiguous (many possible partial updates), so the suffix names which transition; PUT/POST/DELETE never need a suffix because the verb already says the one thing it can mean
