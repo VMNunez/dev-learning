@@ -456,7 +456,7 @@ than the handler hardcoding it.
 
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
-| `GET /api/users` | MANAGER | List all users (employees and managers) | — | `200` + `List<UserResponse>` |
+| `GET /api/users` | MANAGER | List all users — both roles, **and both active and deactivated accounts** (see the ruling below) | — | `200` + `List<UserResponse>`, each carrying `active` |
 | `POST /api/users` | MANAGER | Create a user account; the backend generates the password | `CreateUserRequest` — `name`, `email`, `role` | `201` + **`CreateUserResponse`** — `UserResponse` fields **+ `generatedPassword`** (returned this once only) · `400` validation · `409` email already exists |
 | `PUT /api/users/{id}` | MANAGER | Update name, email, role, or reactivate/deactivate | `UpdateUserRequest` — `name`, `email`, `role`, `active` (optional — applied only when non-null) | `200` + `UserResponse` · `404` user not found · `409` email already in use |
 | `PATCH /api/users/me/password` | any authenticated | Change **your own** password | `ChangePasswordRequest` — `currentPassword`, `newPassword` (8–72) | `204` no body · `400` validation, **and a wrong current password** — `fieldErrors.currentPassword` (see the §8 status ruling) |
@@ -472,6 +472,19 @@ than the handler hardcoding it.
 >   built behaviour is correct and guarded (duplicate check → 409, and only checked when the value actually
 >   changed), so the code stands and §13/§17 now agree with it. Email **is** the login identity, so this is
 >   a deliberately MANAGER-only operation, not an incidental field.
+
+> **Contract ruling — `GET /api/users` returns every account, unpaginated** *(decided 2026-08-01)*.
+> Two halves, both deliberate:
+> - **Deactivated accounts are included.** Soft delete is the only delete this API has, so an excluded
+>   account would be unreachable: `PUT /api/users/{id}` with `active = true` is the sole path back, and
+>   the manager can only invoke it on a row the list gave them. `UserResponse.active` is what lets the
+>   client tell the two apart, rendered as the §17 "Inactive" status.
+> - **No `Pageable`.** A company's headcount is tens of rows, and the endpoint's three consumers
+>   (§17 Team page, the manager dashboard "Team members" count, the Approvals employee filter) each need
+>   the *whole* list to be correct — a paginated response would silently reduce the Approvals filter to
+>   whoever landed on page one, and make the dashboard count a page size. This is a stronger reason than
+>   the general §20 return-all tradeoff: here pagination would break two features, not merely be
+>   unnecessary. It becomes a real question only if a single tenant's user table reaches thousands.
 
 ### Projects (`ProjectController`)
 
@@ -1007,23 +1020,32 @@ password would be permanent in practice.
 Stat cards + user table + "Add member" button.
 
 ```
-┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-│ 5            │  │ 4            │  │ 1            │
-│ Total        │  │ Employees    │  │ Managers     │
-└──────────────┘  └──────────────┘  └──────────────┘
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ 5            │  │ 4            │  │ 1            │  │ 1            │
+│ Total        │  │ Employees    │  │ Managers     │  │ Inactive     │
+└──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
 
-                                      [+ Add member]
-┌────────────────────────────────────────────────────┐
-│ Name         │ Email              │ Role     │     │
-│──────────────────────────────────────────────────│
-│ Ana García   │ ana@company.com    │ Employee │ ✏ 🗑 │
-│ Luis Martín  │ luis@company.com   │ Employee │ ✏ 🗑 │
-│ Sara López   │ sara@company.com   │ Manager  │ ✏ 🗑 │
-└────────────────────────────────────────────────────┘
+                                                       [+ Add member]
+┌──────────────────────────────────────────────────────────────┐
+│ Name         │ Email              │ Role     │ Status   │    │
+│─────────────────────────────────────────────────────────────│
+│ Ana García   │ ana@company.com    │ Employee │ Active   │ ✏ 🗑 │
+│ Luis Martín  │ luis@company.com   │ Employee │ Active   │ ✏ 🗑 │
+│ Sara López   │ sara@company.com   │ Manager  │ Active   │ ✏ 🗑 │
+│ Iván Ruiz    │ ivan@company.com   │ Employee │ Inactive │ ✏ 🗑 │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-The 🗑 icon deactivates the account (soft delete) — it does not delete data.
-Empty state: "No team members yet. Add your first member."
+- The 🗑 icon deactivates the account (soft delete) — it does not delete data. A deactivated user keeps
+  every entry they logged and simply cannot log in, so the row **stays in the table** with an "Inactive"
+  status, exactly as an archived project does on the Projects page
+- `GET /api/users` returns active and inactive accounts alike (§10), which is what makes reactivation
+  reachable: the ✏ dialog on an "Inactive" row is the only path back to `active = true` via
+  `PUT /api/users/{id}`. Hiding inactive users from the list would strand those accounts
+- The four cards count over the **whole** list: `Total`, and the `Employees`/`Managers` split, include
+  deactivated accounts; `Inactive` is the deactivated subset cutting across both roles. Four cards
+  rather than the Projects page's three because users carry two independent axes — role and status
+- Empty state: "No team members yet. Add your first member."
 
 ##### User form — dialog (`team/user-dialog`)
 
