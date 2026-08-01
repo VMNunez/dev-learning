@@ -1,9 +1,9 @@
-# Pipeline self-report — 2026-08-01 — Git junior update
+# Pipeline self-report — 2026-08-01 — Spring junior update
 
 Status: open
 
-- **Plan vs reality** — Full recalibration ran with 1/1 market analyst and 2/2 cold reviewers; both final-artifact reviewers found actionable issues, which is the strongest available evidence that the split performed real work.
-- **Report discipline** — All role reports stayed within their acceptance formats and included required line-count and EOF evidence; item counts remained informational.
-- **Failures & retries** — No role failed or required re-dispatch.
-- **Rule friction and rule breaches** — No mandatory step was skipped or shortcut. Disk and Git history confirm the four declared content outputs plus this report and tracker; mirror parity and mechanical checks passed, and the 258-line prompt remains below the health-budget smoke alarm.
-- **Verdict** — Pipeline clean; no prompt change is worth considering.
+- **Plan vs reality** — The first-run split dispatched 1/1 market analyst, 2/2 normal cold reviewers, and 1/1 boundary reviewer; the finished-artifact reviews found level, ownership, factual, and mirror defects, proving the review stages performed substantive work.
+- **Report discipline** — All role reports stayed within their acceptance formats and supplied the required line-count and EOF evidence; no report required trimming or dismissal.
+- **Failures & retries** — Boundary reviewer C correctly blocked a malformed junior mirror; the orchestrator rebuilt the affected mirrors and the one permitted re-dispatch passed with 18 moves and 7 pre-run markers reviewed.
+- **Rule friction and rule breaches** — A generated mirror replacement interleaved Spring and Spring Boot sections before validation; the mandatory parity and first-run boundary gates caught it before commit. No guard, dispatch, marker check, declared output, or commit boundary was skipped; the 310-line prompt remains below the health-budget smoke alarm.
+- **Verdict** — Pipeline clean; the mirror incident was an execution error already covered by existing validation rules, so no prompt change is worth considering.
