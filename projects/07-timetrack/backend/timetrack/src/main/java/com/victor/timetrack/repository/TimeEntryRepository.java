@@ -2,6 +2,7 @@ package com.victor.timetrack.repository;
 
 import com.victor.timetrack.dto.response.UserHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
+import com.victor.timetrack.model.EntryStatus;
 import com.victor.timetrack.model.TimeEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -9,9 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long>, JpaSpecificationExecutor<TimeEntry> {
+    boolean existsByUserIdAndStatusIn(Long userId, Collection<EntryStatus> statuses);
 
     @Query("""
             SELECT te.project.id AS projectId, te.project.name AS projectName, SUM(te.hours) AS totalHours, te.project.active AS active

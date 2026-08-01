@@ -7,8 +7,12 @@ import com.victor.timetrack.dto.response.CreateUserResponse;
 import com.victor.timetrack.dto.response.UserResponse;
 import com.victor.timetrack.exception.DuplicateResourceException;
 import com.victor.timetrack.exception.InvalidCurrentPasswordException;
+import com.victor.timetrack.exception.InvalidStateTransitionException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
+import com.victor.timetrack.model.EntryStatus;
+import com.victor.timetrack.model.Role;
 import com.victor.timetrack.model.User;
+import com.victor.timetrack.repository.TimeEntryRepository;
 import com.victor.timetrack.repository.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,12 +20,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final TimeEntryRepository timeEntryRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticatedUserProvider authenticatedUserProvider;
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -30,9 +37,13 @@ public class UserService {
             Sort.Order.desc("active"),
             Sort.Order.asc("name"),
             Sort.Order.asc("id"));
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticatedUserProvider authenticatedUserProvider) {
+    private static final Set<EntryStatus> NON_TERMINAL_STATUSES =
+            EnumSet.of(EntryStatus.DRAFT, EntryStatus.REJECTED);
+    
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                       AuthenticatedUserProvider authenticatedUserProvider, TimeEntryRepository timeEntryRepository) {
         this.userRepository = userRepository;
+        this.timeEntryRepository = timeEntryRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticatedUserProvider = authenticatedUserProvider;
     }
@@ -84,6 +95,16 @@ public class UserService {
             }
         }
 
+        boolean promotedToManager = request.getRole() == Role.MANAGER
+                && user.getRole() != Role.MANAGER;
+
+        if (promotedToManager
+                && timeEntryRepository.existsByUserIdAndStatusIn(user.getId(), NON_TERMINAL_STATUSES)) {
+            throw new InvalidStateTransitionException(
+                    "Cannot promote a user to MANAGER while they have DRAFT or REJECTED entries. "
+                            + "The user must submit, delete or resubmit them first");
+        }
+
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setRole(request.getRole());
@@ -110,8 +131,8 @@ public class UserService {
     public void changePassword(ChangePasswordRequest request) {
         User user = authenticatedUserProvider.currentUser();
 
-        if(!passwordEncoder.matches(request.getCurrentPassword(),user.getPassword())){
-            throw  new InvalidCurrentPasswordException("Current password is incorrect");
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new InvalidCurrentPasswordException("Current password is incorrect");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
