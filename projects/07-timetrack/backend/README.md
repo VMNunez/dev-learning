@@ -217,6 +217,10 @@ Renamed from `UnauthorizedException`, which mapped to 403 while its name suggest
 
 `TimeEntryService.findOwnedEntry(id, user)` chains `findById(id)` → `Optional.filter` (the ownership test) → `orElseThrow`, so "this id does not exist" and "this id is not yours" leave through the same throw with the same message. Returning 403 for the second case would make the status code an enumeration oracle: an EMPLOYEE could probe ids on `submit`/`update`/`reopen`/`delete` and learn which entries exist across the whole table without reading one. `approve`/`reject` keep their 403 (`ForbiddenOperationException`) because that refusal is segregation of duties, not ownership — a MANAGER already sees every entry, so the status discloses nothing they could not read from the listing.
 
+### Every validation violation reaches the client ✓
+
+`fieldErrors` is a `Map<String, List<String>>`, collected with `Collectors.groupingBy` + `Collectors.mapping`. The earlier `Collectors.toMap` needed a merge function to resolve duplicate keys, and `(existing, replacement) -> existing` silently dropped the second violation whenever one field failed two constraints at once — `email` both over `@Size(max = 255)` and failing `@Email` reached the client as a single message. Bean Validation evaluates every constraint; only the collection step was throwing the result away.
+
 ---
 
 ## Tradeoffs
