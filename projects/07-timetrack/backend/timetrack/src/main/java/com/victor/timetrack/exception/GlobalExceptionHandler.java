@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -41,18 +42,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
-        Map<String, String> errors = e.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(
+        Map<String, List<String>> errors = e.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.groupingBy(
                         FieldError::getField,
-                        FieldError::getDefaultMessage,
-                        (existing, replacement) -> existing
+                        Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())
                 ));
         ErrorResponse errorResponse = buildError(HttpStatus.BAD_REQUEST, "Validation failed");
         errorResponse.setFieldErrors(errors);
         return ResponseEntity.badRequest().body(errorResponse);
     }
-
-
+    
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException e) {
         return ResponseEntity
@@ -123,7 +122,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCurrentPasswordException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCurrentPassword(InvalidCurrentPasswordException e) {
         ErrorResponse errorResponse = buildError(HttpStatus.BAD_REQUEST, e.getMessage());
-        errorResponse.setFieldErrors(Map.of("currentPassword", e.getMessage()));
+        errorResponse.setFieldErrors(Map.of("currentPassword", List.of(e.getMessage())));
         return ResponseEntity.badRequest().body(errorResponse);
     }
 

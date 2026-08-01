@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -13,5 +14,5 @@ public class ErrorResponse {
     private int status;
     private String error;
     private String message;
-    private Map<String, String> fieldErrors;
+    private Map<String, List<String>> fieldErrors;
 }
