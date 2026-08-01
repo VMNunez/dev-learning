@@ -221,6 +221,10 @@ Renamed from `UnauthorizedException`, which mapped to 403 while its name suggest
 
 `fieldErrors` is a `Map<String, List<String>>`, collected with `Collectors.groupingBy` + `Collectors.mapping`. The earlier `Collectors.toMap` needed a merge function to resolve duplicate keys, and `(existing, replacement) -> existing` silently dropped the second violation whenever one field failed two constraints at once — `email` both over `@Size(max = 255)` and failing `@Email` reached the client as a single message. Bean Validation evaluates every constraint; only the collection step was throwing the result away.
 
+### `DuplicateResourceException` — a business signal, not a DAO exception ✓
+
+A duplicate email or project name is refused by `DuplicateResourceException`, thrown by `UserService` and `ProjectService` before the `save`. It previously reused Spring's `DataIntegrityViolationException`, which belongs to the `DataAccessException` family `@Repository` translates persistence failures into — a claim that the database rejected the write, made at a point where the database had not been asked. The handler for it stays, because a concurrent create can still breach the unique index for real, and it keeps returning a fixed message: that message is written by Hibernate and names the constraint and the statement. Splitting the types is what lets the domain handler return `e.getMessage()`, so "Email already in use" and "A project with this name already exists" reach the client instead of one generic 409.
+
 ---
 
 ## Tradeoffs
