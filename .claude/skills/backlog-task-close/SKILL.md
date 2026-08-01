@@ -20,6 +20,10 @@ do, not the first. Walk every step below in order (0 through 5, including sub-st
 being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead of
 silently skipping it.
 
+The task should already carry a verdict from `backlog-task-open`, which validated it against PLANNING,
+the ledger and its real scope before any work started. If it does not — the task was worked on without
+that pass — say so in the summary; a fix that was never triaged may have been the wrong fix.
+
 This is the task-level twin of the `step-complete` skill. That one fires on a **learning-plan step**
 (PLANNING §15 / project 07's learning plan) and touches three files. This one fires on a **backlog
 task** and touches five, because a backlog task is a *concept Victor did not plan to learn* — it came

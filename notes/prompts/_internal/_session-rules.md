@@ -158,6 +158,20 @@ plus the README standard, which does not auto-load. This section remains the sou
 
 **Interview-prep is not part of this ritual** (dropped 2026-07-13) — do not add interview questions automatically on step completion. Add them only when Victor asks, in session, or via `interview-prep-audit`.
 
+### Before a `PROJECT-BACKLOG.md` task is worked on — triage it first
+
+(The platform's `backlog-task-open` skill fires on this event. Added 2026-08-01.)
+
+A backlog task is written by `review-audit`, which reads the **code** and never reads `PLANNING.md`,
+the closed ledger, or Victor's level and interview target. So every task is a *hypothesis about the
+code*, not a ruling about the project, and it is validated before anything is taught or written:
+read the code it names, the PLANNING section that governs it, the `## Closed` ledger, and every other
+consumer of the thing being changed. Reach one of four verdicts — valid as written, valid with a
+corrected scope, valid but the wrong moment, or a false positive — and state the evidence for it. A
+false positive is not fixed; it goes to the ledger as `DECISION, no code change` with the reason, which
+is what stops the next review re-raising it. Only after a verdict does the normal teach-first
+explanation begin.
+
 ### After every `PROJECT-BACKLOG.md` task is closed — the same discipline, one level down
 
 (The platform's `backlog-task-close` skill fires on this event and walks the full checklist. This
