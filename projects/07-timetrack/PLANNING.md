@@ -148,6 +148,11 @@ Browser                               Server
 - Every resource keeps a separate `Create*Request`/`Update*Request` DTO pair, even when their fields
   are identical today — the two operations are distinct intents, so an update-only field never forces
   a change to the creation contract.
+- A business rule is refused with one of the project's **own** exception types, never by hand-throwing a
+  framework exception from a lower layer. Spring's `DataAccessException` family (`DataIntegrityViolationException`
+  and friends) belongs to `@Repository` translation and means the database rejected the write — a service
+  throwing one claims a persistence failure that never happened, and forces its handler to hide the message,
+  because when it *is* genuine the text is Hibernate's and names the constraint and the statement.
 
 **Angular rules:**
 Same bar as the backend block: each line is violable — a reviewer can open a file and point at the break.
@@ -616,6 +621,7 @@ src/main/java/com/victor/timetrack/
 │   ├── BusinessRuleViolationException.java (input-data rule broken: hours range, future date, inactive project → 400)
 │   ├── InvalidStateTransitionException.java (illegal workflow transition → 409)
 │   ├── InvalidCurrentPasswordException.java (wrong currentPassword on self-service change → 400, fieldErrors.currentPassword)
+│   ├── DuplicateResourceException.java    (duplicate email or project name → 409, caller-facing message)
 │   └── ForbiddenOperationException.java   (segregation of duties on approve/reject → 403)
 └── security/
     ├── JwtUtil.java                  (generates and validates the token, reads its claims)
