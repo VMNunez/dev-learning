@@ -3,7 +3,7 @@
 Combined senior-level coverage for every topic in the notes folder.
 Source files: one `coverage/senior.md` per topic folder — this file is a read-only mirror for cross-topic analysis.
 This level becomes active only after the middle level is complete and consolidated.
-Order follows study priority: Angular → Angular Material → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git → General.
+Order follows study priority: Angular → Angular Material → Spring → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git → General.
 
 ---
 
@@ -38,6 +38,7 @@ Senior or specialist Spring Framework depth that normally belongs to platform, f
 - Custom AOP infrastructure — build reusable advisors, proxy factories, or weaving integrations for organisational frameworks rather than application-local concerns
 - Transaction-manager implementation — extend Spring's transaction SPI for specialised resources or organisational infrastructure
 - Framework-wide context architecture — design context hierarchies, shared infrastructure, and extension conventions consumed by multiple applications or teams
+- TestContext infrastructure extension — implement custom execution listeners or context customisation only for reusable testing infrastructure that normal configuration cannot express
 - Ahead-of-time runtime hints — maintain reflection and proxy metadata for native compilation when building reusable Spring libraries and platforms
 - Spring Framework upgrade leadership — assess cross-application compatibility, deprecations, namespace migrations, and rollout strategy across many teams
 

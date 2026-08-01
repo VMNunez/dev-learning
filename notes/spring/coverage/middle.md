@@ -19,7 +19,6 @@ Core Spring Framework concepts expected when a developer owns reusable applicati
 - Propagation choices — select `REQUIRES_NEW`, `NESTED`, or non-transactional propagation only from a deliberate failure and consistency contract
 - Isolation and concurrency anomalies — choose an isolation level from the data anomaly the operation must prevent rather than escalating every transaction globally
 - Multiple transaction managers — route a boundary to the correct resource manager and recognise that separate managers do not provide distributed atomicity
-- Transaction resource participation — distinguish resources enrolled through Spring's transaction-aware integrations from external calls that cannot join the local atomic boundary
 
 ## Events, scheduling, and caching
 
@@ -33,6 +32,5 @@ Core Spring Framework concepts expected when a developer owns reusable applicati
 
 - Spring `Validator`, binding, and validation groups — implement reusable validation rules or phased constraint sets when annotations on one input model are insufficient
 - Custom type conversion — register converters or formatters for reusable boundary types instead of parsing the same representation in controllers
-- Test execution listeners and context customisation — extend the TestContext lifecycle only when reusable infrastructure cannot be expressed through normal configuration
 - Context caching and `@DirtiesContext` — preserve reusable test contexts and invalidate one only when a test mutates container state that cannot be restored
 - Framework integration testing — prove proxy advice, transaction boundaries, events, and lifecycle callbacks with a real Spring context where a plain unit test cannot observe them
