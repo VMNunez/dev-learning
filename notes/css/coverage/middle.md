@@ -5,8 +5,9 @@ Concepts expected when a developer owns component-system styling and responsive 
 ## Modern cascade and authoring
 
 - Cascade layers with `@layer` — order style origins deliberately without escalating selector specificity
-- `:has()` relational selectors — style an element from descendant or sibling state while considering selector cost and browser support
 - Native CSS nesting — organise related selectors without changing the resulting specificity unintentionally
+- Sass nesting vs native CSS nesting — compare their parsing and emitted-selector behaviour before migrating build-time Sass syntax to the platform
+- Deep BEM structures — keep element names flat rather than encoding DOM depth when a team chooses BEM for a large global stylesheet
 
 ## Component-responsive layout
 

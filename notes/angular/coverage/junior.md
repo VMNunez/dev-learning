@@ -28,6 +28,10 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `bootstrapApplication()` — identify the standalone root component and the application-level providers that start a modern Angular application ✅ 01-todo-list
 - Application provider boundary — register application-wide capabilities at bootstrap rather than scattering their providers through component scopes ✅ 01-todo-list
 - `styleUrl`/`styleUrls` vs inline `styles` — locate a component's styles and choose external files or small inline rules without confusing either form with global CSS ✅ 01-todo-list
+- View encapsulation — explain how Angular scopes emulated component styles with generated attributes and why a component rule does not normally style a child component's internal elements ✅ 01-todo-list
+- `:host` selector — target the component host from its own stylesheet when the custom element itself needs layout or state styling ✅ 06-hr-portal
+- Global vs component styles — keep application-wide rules and library overrides at the global boundary while leaving component-specific presentation with its component ✅ 01-todo-list
+- `::ng-deep` recognition — recognise the deprecated encapsulation escape hatch in maintained code and prefer supported library APIs, global rules, or explicit styling boundaries for new work
 
 ## Lifecycle and dependency injection
 

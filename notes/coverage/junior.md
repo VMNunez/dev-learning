@@ -8,10 +8,6 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 ## Angular
 
-# Minimum Coverage — Angular
-
-Minimum hiring floor for a junior or junior-mid Angular developer targeting Spanish consultancies in 2026.
-Items are ordered by filtering risk and cover both modern Angular and the legacy patterns common in maintained enterprise codebases.
 
 ### Components and template data flow
 
@@ -38,6 +34,10 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `bootstrapApplication()` — identify the standalone root component and the application-level providers that start a modern Angular application ✅ 01-todo-list
 - Application provider boundary — register application-wide capabilities at bootstrap rather than scattering their providers through component scopes ✅ 01-todo-list
 - `styleUrl`/`styleUrls` vs inline `styles` — locate a component's styles and choose external files or small inline rules without confusing either form with global CSS ✅ 01-todo-list
+- View encapsulation — explain how Angular scopes emulated component styles with generated attributes and why a component rule does not normally style a child component's internal elements ✅ 01-todo-list
+- `:host` selector — target the component host from its own stylesheet when the custom element itself needs layout or state styling ✅ 06-hr-portal
+- Global vs component styles — keep application-wide rules and library overrides at the global boundary while leaving component-specific presentation with its component ✅ 01-todo-list
+- `::ng-deep` recognition — recognise the deprecated encapsulation escape hatch in maintained code and prefer supported library APIs, global rules, or explicit styling boundaries for new work
 
 ### Lifecycle and dependency injection
 
@@ -170,8 +170,6 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `Subject` vs `BehaviorSubject` — distinguish event broadcasting from state that immediately exposes its latest value to new subscribers
 - `Observable` naming and `$` convention — read established code that marks streams with a trailing `$` without assuming the convention changes runtime behaviour
 - Angular CLI workspace configuration — read configured targets and package scripts in a maintained workspace instead of assuming every project uses the CLI defaults
-
----
 
 ## Angular Material
 
@@ -1437,8 +1435,6 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## CSS
 
-Topics a junior must explain confidently to pass a technical screening at NTT Data, Capgemini, or Indra in 2026. Every item must be explainable with a real example from one of the Angular projects.
-
 ### Box model
 - `margin`, `padding`, `border`, `content` — what each layer is and how they stack; interviewers draw the box model and ask you to label it or explain why two elements are not touching even though margin is set to 0 ✅ 01-todo-list
 - `box-sizing: border-box` — makes `width` include padding and border; the default `content-box` adds them on top, causing sizing surprises; setting it globally in a reset makes layouts predictable ✅ 01-todo-list
@@ -1446,45 +1442,63 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - CSS reset pattern — `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }` removes browser defaults and ensures consistent sizing; interviewers ask why `::before` and `::after` are included alongside `*` ✅ 01-todo-list
 
 ### Display and layout
-- `display: block`, `inline`, `inline-block` — block takes full width and starts on a new line; inline flows with text and ignores width and vertical margin; `inline-block` is both; interviewers ask why a `<span>` cannot have width ✅ 04-meal-finder
+- Normal flow — understand how block and inline boxes participate in document flow before using flex, grid, or positioning to change it
+- `display: block`, `inline`, `inline-block` — a block box normally fills the available inline space and starts on a new line; inline content participates in a line box and does not accept width; inline-block flows inline while accepting dimensions ✅ 04-meal-finder
 - `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening ✅ 05-task-manager
 - Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?" ✅ 04-meal-finder
 - `table-layout: fixed` — take column widths from the first row instead of measuring every cell, which is what makes equal-width columns and predictable truncation possible in a wide data table; the default `auto` sizes columns from their content ✅ 05-task-manager
 
-### Angular-specific CSS
-- View encapsulation — Angular scopes component styles by adding a unique attribute to every element in the template; styles in `component.scss` only apply to that component's own elements, not to child components; interviewers ask "why does your style not apply inside the child component?" ✅ 01-todo-list
-- `:host` selector — targets the component's root element from within its own styles; used to set `display: block` or add margin to the component itself; not knowing this is a red flag for an Angular role ✅ 06-hr-portal
-- When to use `styles.css` vs component styles — `styles.css` for global rules (body, html, Angular Material overrides); component styles for everything specific to one component; interviewers ask why Angular Material overrides go in `styles.css` and not in a component file ✅ 01-todo-list
-- `::ng-deep` — deprecated but still widely used in consultancy codebases; pierces view encapsulation to style child component internals that cannot otherwise be reached; interviewers ask why it is deprecated and what the modern alternative is
+### Sizing
+- `width`, `min-width`, and `max-width` — combine a preferred size with lower and upper bounds so a component can shrink and grow without becoming unusable
+- `height`, `min-height`, and `max-height` — prefer content-driven height and add constraints only when the interface has a real scrolling or viewport requirement
+- Intrinsic sizing — recognise `min-content`, `max-content`, and `fit-content()` as sizes derived from content rather than arbitrary fixed dimensions
+- Automatic minimum size in flex and grid — use `min-width: 0` or `min-height: 0` when a flex or grid child must be allowed to shrink instead of overflowing
+
+### Cascade and inheritance
+- Cascade decision order — resolve ordinary author declarations through importance, specificity, and source order rather than assuming the last rule always wins
+- Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately
+- Shorthand vs longhand declarations — understand that shorthands such as `margin`, `background`, and `border` set several longhands and can reset values that were declared earlier
 
 ### Selectors and specificity
+
+- Fundamental selectors and selector lists — distinguish type, class, ID, and universal selectors and use comma-separated lists without unintentionally broadening a rule
+
 - Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — how to target elements by relationship; interviewers show a selector and ask which elements it matches ✅ 01-todo-list
-- Pseudo-classes: `:hover`, `:focus`, `:nth-child`, `:first-child`, `:last-child`, `:not()` — `:not()` excludes elements from a rule; `:focus` is essential for keyboard accessibility; tested in code review questions ✅ 01-todo-list
-- `:focus` vs `:focus-visible` — `:focus` triggers on every way of focusing an element, including a mouse click; `:focus-visible` only shows the ring when the browser decides keyboard navigation is likely (Tab key); interviewers ask why a button gets an ugly focus ring on click and how `:focus-visible` fixes it without removing accessibility for keyboard users
+- Attribute selectors — target attribute presence or values without adding presentation-only classes, while avoiding selectors that accidentally match unrelated elements
+- `:has()` relational selector — read and write simple parent- or sibling-state selectors while keeping a class or state attribute as the clearer option when application logic already owns the state
+- Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
+- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
+- Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
+- `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
-- Specificity scoring — inline styles beat IDs (`1-0-0`) beat classes (`0-1-0`) beat elements (`0-0-1`); the rule with the highest score wins, not the one that appears last; interviewers give two rules and ask which one applies
+- Specificity scoring — compare inline styles, IDs, classes/attributes/pseudo-classes, and elements/pseudo-elements as separate columns; source order decides only after the relevant cascade criteria and specificity tie
 - `!important` — raises a declaration into the important cascade, after which origin, layer, and
   specificity still resolve competing important declarations; use it sparingly because it makes
   overrides harder to reason about
 
 ### Flexbox
-- Container properties: `flex-direction`, `justify-content`, `align-items`, `gap` — the four set on almost every flex container; not knowing these will fail the "build a navbar" question in any screening ✅ 01-todo-list
-- `flex-wrap: wrap` — controls whether items wrap to the next line when space runs out; `nowrap` (default) shrinks items to fit; `wrap` moves them to a new row; asked when discussing responsive card layouts ✅ 06-hr-portal
-- Item properties: `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `align-self` — `flex: 1` makes an item fill remaining space; `flex-shrink: 0` prevents an icon or button from shrinking next to a growing input ✅ 01-todo-list
-- The main axis and cross axis — `justify-content` works on the main axis, `align-items` on the cross axis; the axis flips with `flex-direction: column`; interviewers ask "how do you center something vertically inside a flex container?" ✅ 01-todo-list
+- Flex direction and axes — use `flex-direction` to establish the main axis and recognise that the cross axis changes with it ✅ 01-todo-list
+- Flex container alignment — distribute items on the main axis with `justify-content`, align them on the cross axis with `align-items`, and use `gap` for consistent space between items ✅ 01-todo-list
+- `flex-wrap: wrap` — controls whether items can move onto additional flex lines; with `nowrap` they stay on one line and may shrink or overflow according to flex sizing and their automatic minimum size ✅ 06-hr-portal
+- Flex sizing — explain how `flex-basis`, `flex-grow`, and `flex-shrink` negotiate an item's size and read the `flex` shorthand without assuming `flex: 1` means only “take remaining space” ✅ 01-todo-list
+- Per-item alignment — override the container's cross-axis alignment for one item with `align-self`
 - `margin: auto` on flex items — absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
 
 ### CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
 - `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries ✅ 04-meal-finder
+- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space
 - `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns ✅ 04-meal-finder
 - `auto-fill` vs `auto-fit` — both create as many columns as fit; `auto-fill` keeps empty column tracks (items stay at their minimum size); `auto-fit` collapses empty tracks (items stretch to fill the space); a confusable pair tested in interviews
 - `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed ✅ 04-meal-finder
+- Explicit vs implicit grid and auto-placement — distinguish declared tracks from rows or columns Grid creates when items have no explicit placement
+- Grid alignment — distinguish aligning items inside their grid areas with `justify-items`/`align-items` from aligning the grid tracks inside the container
 
 ### Position
-- `static`, `relative`, `absolute`, `fixed`, `sticky` — the common positioning modes; `fixed`
-  normally uses the viewport but a transformed or filtered ancestor can establish its containing
-  block, while `sticky` is constrained by its scrolling ancestor
+- `static` vs `relative` positioning — keep an element in normal flow and use relative offsets without removing its original layout space
+- `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it
+- `fixed` vs `sticky` positioning — distinguish a box normally anchored to the viewport from one that remains in flow until it reaches an inset within its scroll container
+- Sticky positioning conditions — supply an inset such as `top`, ensure the scroll container has room to scroll, and inspect ancestor overflow when sticky behaviour appears not to activate
 - How `absolute` finds its reference point — positions relative to the nearest ancestor that
   establishes a containing block; otherwise it falls back to the initial containing block ✅ 03-expense-tracker
 - `z-index` and stacking context — applies to positioned boxes and flex/grid items; properties such
@@ -1494,17 +1508,20 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ### Responsive design
 - Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach ✅ 03-expense-tracker
-- Breakpoints: `768px` (tablet), `1024px` (desktop) — the most common values in real Angular projects; a junior must justify these numbers and explain that `auto-fill` grid can eliminate breakpoints entirely for card grids ✅ 04-meal-finder
+- Content-driven breakpoints — add a breakpoint where the layout or content stops working rather than memorising device widths; intrinsic Grid patterns can remove some breakpoints entirely ✅ 04-meal-finder
 - Fluid images — `max-width: 100%; height: auto` on `img` prevents images from overflowing their container and keeps the aspect ratio; standard in every CSS reset; not knowing this is a recognisable beginner mistake
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
+- `prefers-reduced-motion` — remove or reduce non-essential movement for users who request it without disabling functional state feedback
+- Logical properties — use `margin-inline`, `padding-block`, and logical inset or size properties when layout should follow writing direction instead of hard-coded left and right
+- Responsive content testing — test narrow widths, zoom, long labels, translated text, and missing or oversized media because a layout is responsive only if real content can change without clipping
 
 ### Units
 - `px` — a CSS reference pixel, useful for thin borders and other fixed details; root-relative units
   usually respect user text-size preferences more naturally for typography and scalable spacing ✅ 01-todo-list
 - `%` — relative to the parent's value on the same axis; for vertical `padding` and `margin`, `%` is relative to the parent's **width**, not height — a common surprise in interviews
-- `em` — relative to the current element's font size; compounds through nesting, which makes it hard to predict in deeply nested components; prefer `rem` by default
-- `rem` — relative to the root font size (`16px` by default); does not compound; the safe choice for font sizes and spacing; `rem` vs `em` is a classic confusable pair ✅ 01-todo-list
-- `vw` and `vh` — relative to the viewport width and height; `min-height: 100vh` is safer than `height: 100vh` because it grows with content instead of clipping it ✅ 01-todo-list
+- `em` — usually resolves from the element's computed font size, while `font-size` itself uses the inherited parent size; nested font sizing can therefore compound
+- `rem` — relative to the root element's computed font size, commonly but not guaranteed to start at `16px`; it avoids nested compounding ✅ 01-todo-list
+- Viewport units — use `vw`/`vh` for the default viewport and recognise `svh`, `lvh`, and `dvh` when mobile browser chrome makes `100vh` unsuitable ✅ 01-todo-list
 
 ### Transitions and animations
 - `transition` — smooth change for a specific property on state change; always place it on the base element, not on `:hover`, so it runs in both directions; putting it on `:hover` makes the exit instant — a classic interview trap ✅ 04-meal-finder
@@ -1529,12 +1546,22 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ### CSS variables
 - `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates ✅ 01-todo-list
 - `:root` vs component scope — declaring on `:root` makes the variable globally available; scoping to a specific selector limits it to that element's subtree; interviewers ask why Angular Material theming variables are declared on `:root` ✅ 01-todo-list
-- CSS variables are live at runtime — a CSS variable can be changed by JavaScript with `element.style.setProperty('--name', value)`, enabling runtime theming without recompiling; hardcoded values cannot be changed this way; interviewers ask how you would implement a simple theme switcher
+- CSS variables participate in the runtime cascade — their values can change through selector state, media queries, inheritance, or an inline style without recompiling the stylesheet
 - `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 
+### Sass and maintainable authoring
+- Sass vs native CSS — use Sass for build-time authoring features and CSS custom properties for values that must participate in the runtime cascade or change without recompiling
+- Sass nesting — keep nesting shallow and use `&` for a component's states or modifiers without recreating the DOM tree as a high-specificity selector chain
+- Sass variables — use build-time constants when runtime cascade and inheritance are not required
+- Sass mixins — reuse a parameterised declaration group only when it removes meaningful repetition rather than hiding ordinary CSS
+- Sass modules and partials — split styles by concern and load explicit members without returning to global `@import` coupling
+- Reusable low-specificity selectors — prefer stable class selectors and a consistent naming convention so existing styles can be extended without specificity escalation
+
 ### Colors and transparency
-- Color formats: `hex`, `rgb()`, `hsl()` — `hex` is most common for fixed colors; `rgba()` adds transparency and is preferred for overlays and shadows; `hsl` makes color variations easy (just change the lightness value); interviewers ask which format to choose and why ✅ 01-todo-list
+- Color notation — read hex, RGB, and HSL representations and follow a consistent project convention rather than treating one notation as universally superior ✅ 01-todo-list
+- Alpha-channel colour — apply transparency to one colour with modern RGB/HSL, hex alpha, or legacy `rgba()` syntax instead of fading the entire element
 - `opacity` vs `rgba` transparency — `opacity` affects the element AND all its children; `rgba` only affects the specific property it is applied to; classic interview question: "why does `opacity: 0.5` on a card fade the text too, but `background: rgba(0,0,0,0.5)` does not?"
+- `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
 - `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
 
@@ -1551,20 +1578,23 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ### Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
-- Scrollable container pattern — `overflow-y: auto` with a fixed `max-height` creates a scroll area without triggering a page scroll; `auto` vs `scroll` is a confusable pair: `auto` is invisible when not needed, `scroll` is always visible ✅ 04-meal-finder
+- Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
+- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container
 
 ### CSS functions
 - `calc()` — mixes different units in one expression; `calc(100% - 64px)` subtracts a fixed header height from the full viewport; spaces around `+` and `-` are required; interviewers ask when `calc()` is necessary and why neither pure percentage nor pure `px` can solve the same problem ✅ 05-task-manager
 - `clamp(min, preferred, max)` — creates a value that scales fluidly between limits; `font-size: clamp(1rem, 2.5vw, 2rem)` replaces multiple breakpoint overrides for font size; tested because it signals modern CSS knowledge
-- `min()` and `max()` — `min(100%, 600px)` is equivalent to `max-width: 600px; width: 100%`; `max(1rem, 5%)` ensures a minimum even when using a relative unit; useful for containers that should be fluid on mobile and capped on desktop
+- `min()` and `max()` — select the smaller or larger computed value from mixed units while remembering that intrinsic sizing and `box-sizing` can make the result differ from a separate width plus max-width declaration
 
 ### BEM naming
 - Block, element (`__`), modifier (`--`) — `.card`, `.card__title`, `.card--featured`; a naming convention that makes class names predictable in global stylesheets; interviewers at consultancies ask about CSS organisation because shared CSS becomes unmaintainable without a convention
 - Why BEM keeps specificity low — each rule is a single class selector (`0-1-0`); nested selectors like `.card .card__title` raise specificity and become hard to override; BEM avoids nesting in the CSS file
-- The flat element rule — BEM elements never nest in the class name; even if `.card__body` contains a title, the class is `.card__title`, not `.card__body__title`; depth lives in the HTML, not in the class name — a common mistake when first learning BEM
-- When BEM applies in Angular — Angular view encapsulation handles component isolation; BEM is still needed for global styles in `styles.css` and shared components in `shared/` where encapsulation does not help
+- BEM alongside component scoping — treat BEM as one optional naming convention for predictable classes, especially in global CSS, rather than as a requirement imposed by Angular components
 
----
+### Browser debugging and compatibility
+- DevTools computed styles — inspect the matched rules, crossed-out declarations, inherited values, and final computed value before changing a selector blindly
+- DevTools box and layout inspection — use the box-model, flex, and grid overlays to diagnose spacing, alignment, track, and overflow problems from the browser's actual layout
+- CSS support and progressive enhancement — check current browser support for newer features, provide a usable baseline when necessary, and use `@supports` when conditional enhancement is clearer than browser-specific hacks
 
 ## SQL
 
