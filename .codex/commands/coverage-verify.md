@@ -14,6 +14,8 @@ Rules:
   integrity; senior checks junior and middle. It writes only its level-targeted findings file,
   self-report, and tracker.
 - Execute the cold completeness reviewer through canonical runtime tiers; never treat tier names as literal model IDs, and do not pass it size or freshness priors.
-- A `gaps` verdict is advisory and never blocks notes-plan. Feed the findings through one
-  `coverage-prompt` update; once consumed, continue to notes-plan. Any later re-verification is an
-  optional new reassessment, never a loop that must reach zero gaps.
+- A `gaps` verdict is advisory and never blocks notes-plan. **Do not invoke `coverage-prompt`,
+  `notes-plan`, or any other runnable workflow from this command.** Finish `coverage-verify` after
+  writing its findings, self-report, and tracker update, then report the suggested next command for
+  Victor to launch manually. Any later re-verification is an optional new reassessment, never a loop
+  that must reach zero gaps.

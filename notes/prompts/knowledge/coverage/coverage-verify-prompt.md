@@ -191,12 +191,18 @@ is `_internal/_last-run-report-coverage-verify.md`; update the selected Verify J
 This gate is advisory, not blocking. It never stops `notes-plan` from running; it tells the run how much
 of the coverage it can trust.
 
+**This section is handoff information, not authorization to execute another workflow.** The current
+run ends after Step 5 and the final summary. Never invoke `coverage-prompt`, `notes-plan`, or any other
+runnable prompt from `coverage-verify`; report the appropriate next command and wait for Victor to
+launch it manually.
+
 - `Verdict = complete` (selected SHA matching current coverage) means `notes-plan` plans against
   selected-level coverage whose cumulative prerequisite chain produced no exposed gap.
 - `Verdict = gaps`, a missing verdict, or a stale SHA does not stop `notes-plan` — the plan proceeds and
-  records the degraded gate state in its report. Feed `FINDINGS` to `coverage-prompt` in update mode: it
-  judges each open gap through its own Step 2 classification and adds or discards it. Once that update
-  marks the findings `superseded`, the review cycle is complete and the next step is `notes-plan`.
+  records the degraded gate state in its report. The suggested manual next command is
+  `coverage-prompt` in update mode: when Victor launches it, that separate run judges each open gap
+  through its own Step 2 classification and adds or discards it. Once that update marks the findings
+  `superseded`, the review cycle is complete and the suggested manual next step is `notes-plan`.
   Re-running `coverage-verify` until it returns zero gaps is never required. Victor may start a fresh
   reassessment later when useful; that is a new optional pass, not continuation of the current loop.
 
