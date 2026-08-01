@@ -85,7 +85,7 @@ marking the note complete.
 
 | Prompt | Last run |
 |---|---|
-| coverage-audit | |
+| coverage-audit | 2026-08-01 — completed — junior update; 1,344-item floor converged; 497 markers preserved; mirror parity; cold review passed |
 | sql-plan-audit | |
 | progress-update | |
 | roadmap-review | |
