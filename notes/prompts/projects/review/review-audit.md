@@ -325,7 +325,7 @@ reviewers read code, never the coverage files or `PROGRESS.md`. Read, once, for 
 - `notes/prompts/_internal/_shared-context.md` — target role and timeline.
 
 Then, per task, grep its core concept through `notes/{topic}/coverage/{junior,middle,senior}.md` — the
-`✅ NN-slug` markers there say which bullets Victor has already applied in project code, so a concept
+`✅ NN-slug — {evidence}` markers there say which bullets Victor has already applied in project code, so a concept
 whose neighbours are marked is squarely at level. (The global `notes/coverage/{LEVEL}.md` mirror carries
 the same bullets and markers; either answers the question, so read whichever you already have open.)
 **An unmarked bullet means "not yet marked", not "not covered"** — the marker went live 2026-07-30 and

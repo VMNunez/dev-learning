@@ -81,7 +81,7 @@ ritual exists to close. Authoring stays inside the skill, under the coverage sta
 ritual never writes a bullet inline.
 
 **3b — Mark it as demonstrated.** **Invoke the `coverage-mark` skill** with the same concepts, topic, level,
-and the project's folder name. It appends the `✅ NN-slug` evidence marker to the matching bullet in the topic file and
+and the project's folder name. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and
 the mirror, so the coverage file records how much of the hiring floor Victor can *prove* and not only what
 he planned. This runs on the already-covered path too — that is precisely where a close would otherwise
 leave no trace.

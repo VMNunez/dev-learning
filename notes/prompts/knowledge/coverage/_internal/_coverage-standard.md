@@ -132,19 +132,38 @@ When a run discovers another topic's concept, route a proposal to `_cross-topic-
 ## Evidence markers
 
 A coverage bullet may carry one trailing **evidence marker** recording the project where the concept
-was first applied in code:
+was first applied in code, **and what in that project demonstrates it**:
 
 ```
-- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests ✅ 07-timetrack
+- Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests ✅ 07-timetrack — every service takes its collaborators through a single constructor, no `@Autowired` field anywhere
 ```
 
 Rules:
 
-- **Format is exactly `✅ NN-slug`**, at the end of the bullet, after the concept sentence, where `NN-slug`
-  is the project's folder name under `projects/` verbatim — the two-digit number, a hyphen, and the
-  kebab-case name (`07-timetrack`, `03-expense-tracker`). Nothing else follows it. One marker per bullet.
-  The number alone would be unreadable in a file scanned months later; the folder name is the identifier
-  that already exists, so it never has to be invented or kept in sync with a second list of names.
+- **Format is exactly `✅ NN-slug — {evidence}`**, at the end of the bullet, after the concept sentence,
+  where `NN-slug` is the project's folder name under `projects/` verbatim — the two-digit number, a
+  hyphen, and the kebab-case name (`07-timetrack`, `03-expense-tracker`). One marker per bullet, and the
+  evidence clause is the last thing on the line. The number alone would be unreadable in a file scanned
+  months later; the folder name is the identifier that already exists, so it never has to be invented or
+  kept in sync with a second list of names.
+- **The evidence clause names what the project actually built.** It answers *why this project is judged
+  to demonstrate this bullet*, and its bar is **falsifiable**: a reader must be able to open the project
+  and confirm or refute it. Name the class, annotation, endpoint or mechanism — `Specification<TimeEntry>
+  composes the four optional filters`, not `uses specifications`. Roughly 8–20 words, present tense, no
+  trailing period.
+  - **Restating the bullet is the failure mode.** "uses constructor injection" adds nothing the bullet
+    did not already say and the marker did not already imply; it lengthens the file without making it
+    more checkable. If the only honest sentence available is a restatement, that is a signal the
+    demonstration is thin — say so rather than padding the line.
+  - **The evidence is the project's, not the session's.** It describes code that exists on disk, never
+    the step or review that led to it: "closed a backlog finding" is not evidence.
+  - It is written **once, by the project that first earns the marker**, and preserved verbatim
+    afterwards under the same rules as the marker itself.
+- **Markers written before 2026-08-01 carry no evidence clause**, and are valid without one — the clause
+  was added to the format on that date and is not applied retroactively, because reconstructing why a
+  project demonstrated a bullet months later invents a memory rather than recording one. A bare
+  `✅ NN-slug — {evidence}` is therefore an *old* marker, never a malformed one. Every tool that reads markers must
+  accept both forms; only newly written markers require the clause.
 - **Applied in project code only.** The marker means Victor wrote code that uses the concept in that
   project. Studying the concept in `notes/` does not earn it, and neither does reading about it in a
   review finding. An unmarked bullet therefore means "not yet demonstrated", never "not yet studied".
@@ -170,15 +189,22 @@ markers are not scope. If they entered the digest, every closed step would chang
 "the plan owes a remap" signal for work that has not moved an inch.
 
 So the digest is computed over the file's **scope bytes**: the exact UTF-8 bytes of the file with every
-trailing evidence marker removed — for each line, drop a trailing ` ✅ NN-slug` (the space, the mark, the
-space, the project folder name) and nothing else. No other normalisation: no trimming, case folding, or
-reordering. Two
-files that differ only in their markers therefore have the same digest, which is exactly the intent.
+trailing evidence marker removed — for each line, drop a trailing ` ✅ NN-slug — {evidence}` (the space, the mark, the
+space, the project folder name) **together with its ` — {evidence}` clause when one is present**, and
+nothing else. No other normalisation: no trimming, case folding, or reordering. Two files that differ
+only in their markers therefore have the same digest, which is exactly the intent.
 
-One canonical command, so every prompt produces the same digest for the same scope:
+The evidence clause is stripped for the same reason the marker is: it records what a *project* built, so
+it changes whenever a step or backlog task closes, while the curriculum's scope has not moved. Leaving it
+in the digest would forge a "the plan owes a remap" signal on every close — and a signal that fires
+without cause stops being read at all.
+
+One canonical command, so every prompt produces the same digest for the same scope. The clause is
+**optional** in the pattern, so pre-2026-08-01 bare markers strip identically and no stored digest is
+invalidated by the format change:
 
 ```bash
-sed -E 's/ ✅ [0-9]{2}-[a-z0-9-]+$//' notes/{topic}/coverage/{LEVEL}.md | sha256sum
+sed -E 's/ ✅ [0-9]{2}-[a-z0-9-]+( — .*)?$//' notes/{topic}/coverage/{LEVEL}.md | sha256sum
 ```
 
 Every prompt that computes or compares a coverage digest must use it, and any run that

@@ -4,8 +4,10 @@ description: >
   Mark a coverage bullet as demonstrated in project code, with the project's folder name, WHENEVER a concept
   has just been applied in a project — called by the `step-complete` and `backlog-task-close` rituals as
   their coverage sub-step, and directly when Victor asks ("marca esto como visto en el coverage", "esto
-  ya lo hemos aplicado en el 07", "mark this bullet as covered"). It appends the `✅ NN-slug` evidence marker
-  to the matching bullet in both the topic coverage file and the global mirror, so the level file doubles
+  ya lo hemos aplicado en el 07", "mark this bullet as covered"). It appends the
+  `✅ NN-slug — {evidence}` marker to the matching bullet in both the topic coverage file and the global
+  mirror — the project that proves it, and the one falsifiable clause saying what in that project proves
+  it — so the level file doubles
   as a progress instrument: how much of the junior floor Victor can prove with something he built. The
   failure mode this exists for is a concept applied in a project that leaves no trace on the coverage
   checklist, so months later the file cannot distinguish "never studied" from "shipped it in project 06".
@@ -67,10 +69,29 @@ Cross-level check: if the bullet lives at a level **above** the one Victor is wo
 anyway and say so — demonstrating a middle-level concept in a junior project is real evidence, and one of
 the few honest signals about his trajectory.
 
-## 3 — Append the marker to both files
+## 3 — Write the evidence clause
 
-Append ` ✅ NN-slug` to the end of the bullet, after the concept sentence, nothing following it. Verbatim
-identical edit in both:
+The marker says *where*; the clause says **why that project is judged to demonstrate this bullet**. Read
+the "Evidence markers" rules in `_coverage-standard.md` for the format; what this step owns is finding the
+sentence.
+
+Derive it from the **code**, not from the step or task that produced it. Name the concrete thing a reader
+could open and check — the class, annotation, endpoint, query or mechanism:
+
+| Bullet | Good clause | Why the bad one fails |
+|---|---|---|
+| Constructor injection | `every service takes its collaborators through a single constructor, no @Autowired field anywhere` | ~~`uses constructor injection`~~ — restates the bullet |
+| Dynamic query composition | `Specification<TimeEntry> composes the four optional filters on GET /api/entries` | ~~`built dynamic queries`~~ — not checkable |
+| Segregation of duties | `approve/reject refuse a manager whose id matches the entry's owner` | ~~`closed a backlog finding about self-approval`~~ — describes the session, not the code |
+
+**If the only honest clause is a restatement of the bullet, stop and say so** rather than padding the
+line: it means the code touched the concept without really demonstrating it, and that is worth telling
+Victor. Marking it anyway with filler is how the level file stops meaning anything.
+
+## 3b — Append the marker to both files
+
+Append ` ✅ NN-slug — {evidence}` to the end of the bullet, after the concept sentence, nothing following
+it. Verbatim identical edit in both:
 
 1. `notes/{topic}/coverage/{LEVEL}.md` — the source of truth.
 2. `notes/coverage/{LEVEL}.md` — the global mirror, inside `## {TOPIC}`, same bullet.
@@ -98,8 +119,12 @@ inherits any error already in it:
 
 ```bash
 grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md
-grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+$' notes/{topic}/coverage/{LEVEL}.md
+grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+' notes/{topic}/coverage/{LEVEL}.md
 ```
+
+The marker pattern is deliberately **unanchored**: a marker written before 2026-08-01 ends the line, a
+newer one is followed by its evidence clause, and both must count. Anchoring it with `$` would silently
+count only the old ones and report a collapsed numerator.
 
 Rewrite that one cell, then the level's `**Total**` cell (recount as the sum of the column's
 numerators over the sum of its denominators — do not add your delta to the printed total). Change no
@@ -115,8 +140,8 @@ One row per concept, inside the calling ritual's report table when there is one:
 
 | Concept | Topic / level | Result |
 |---|---|---|
-| declarative transaction boundaries | `spring-boot` / junior | marked ✅ 07-timetrack (topic + mirror, 24/139 marked) |
-| proxy-based annotation behaviour | `spring-boot` / junior | already marked ✅ 06-hr-portal — left as is |
+| declarative transaction boundaries | `spring-boot` / junior | marked ✅ 07-timetrack — "every service write method carries `@Transactional`, reads `readOnly = true`" (topic + mirror, 24/139 marked) |
+| proxy-based annotation behaviour | `spring-boot` / junior | already marked ✅ 06-hr-portal — left as is, clause not backfilled |
 | BOLA on the mutation endpoints | `security` / junior | not marked — no bullet exists yet, flagged as a possible gap |
 | fail-fast manual checks | `spring-boot` / junior | not marked — DECISION, no code change |
 
@@ -144,6 +169,12 @@ its commits to Victor rather than running them (the in-session `backlog-task-clo
 one over too instead of committing behind it.
 
 ## Backfill
+
+**Evidence clauses are never backfilled onto existing markers.** The clause entered the format on
+2026-08-01; the ~495 markers written before it stay bare, and that is deliberate — reconstructing why
+`01-todo-list` demonstrated a bullet months later invents a memory instead of recording one, and an
+invented clause is worse than none because it looks equally checkable. A bare marker is old, not broken.
+If a *new* marker lands on a bullet in a file full of bare ones, that is expected; do not "even them up".
 
 Projects 01–07 predate this mechanism, so their demonstrations are unmarked. Do **not** backfill
 opportunistically while closing a step — a partial backfill is worse than none, because a low count then

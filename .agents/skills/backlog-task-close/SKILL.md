@@ -83,7 +83,7 @@ sub-step that keeps the coverage file honest about what Victor can *prove*, and 
 "already covered" path too, which is precisely where a close would otherwise leave no trace.
 
 **Invoke the `coverage-mark` skill**, passing the concept, **the topic `coverage-bullet-add` reported** (not
-step 0's PROGRESS.md section), the level, and the project's folder name. It appends the `✅ NN-slug` evidence marker to the matching bullet in the topic file and the
+step 0's PROGRESS.md section), the level, and the project's folder name. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and the
 mirror, and reports the level's marked/total count. Do not reproduce its logic here.
 
 Two cases it will report back as skipped, both correct:

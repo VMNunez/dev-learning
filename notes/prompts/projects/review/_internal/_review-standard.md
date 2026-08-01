@@ -449,7 +449,7 @@ Classify each task's core concept against the evidence, not impression:
   gate; a task is above level only when it is above level in every topic that could own it.
 
   The
-  `✅ NN-slug` markers show which bullets are already demonstrated in project code. The global
+  `✅ NN-slug — {evidence}` markers show which bullets are already demonstrated in project code. The global
   `notes/coverage/{LEVEL}.md` mirror holds the same bullets and markers, so either file answers it.
   **An unmarked bullet means "not yet marked", not "not covered"** — the marker went live 2026-07-30 and
   the backfill is unfinished, so a missing ✅ is never evidence against a concept being at level.

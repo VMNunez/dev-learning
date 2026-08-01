@@ -21,7 +21,7 @@ of sessions, or before running `plan-audit` (its gap analysis reads PROGRESS.md)
 PROGRESS.md is incomplete, that gap analysis is wrong.
 
 **Coverage is read for one thing only: counting evidence markers (D8).** Coverage defines what Victor
-must *learn*; PROGRESS.md records what he *has learned*. The two stayed separate until the `✅ NN-slug`
+must *learn*; PROGRESS.md records what he *has learned*. The two stayed separate until the `✅ NN-slug — {evidence}`
 evidence marker made the coverage file carry demonstrated state as well as scope. So this prompt
 counts markers and totals per topic and level, and reads nothing else from those files — never a
 concept, never a bullet's text. A stale or incomplete coverage level affects only its own denominator
@@ -327,7 +327,7 @@ which file you opened is not a measurement. Two counts per file, no file content
 
 ```bash
 grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md      # total   — the denominator
-grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+$' notes/{topic}/coverage/{LEVEL}.md   # marked  — the numerator
+grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+' notes/{topic}/coverage/{LEVEL}.md   # marked  — the numerator
 ```
 
 Cell format is exactly `marked/total (P%)`, `P` rounded to a whole number — `34/86 (40%)`. A level
@@ -343,7 +343,7 @@ Write the table with the totals row, immediately after `Professional level by to
 ```
 ## Coverage demonstrated
 
-Share of each level's coverage bullets applied in project code (the `✅ NN-slug` marker). Counted from the
+Share of each level's coverage bullets applied in project code (the `✅ NN-slug — {evidence}` marker). Counted from the
 per-topic coverage files. This is evidence of application, not of study, and it never promotes a
 level in the matrix above.
 

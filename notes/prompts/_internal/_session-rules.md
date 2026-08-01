@@ -149,7 +149,7 @@ plus the README standard, which does not auto-load. This section remains the sou
   - Also update the project summary line in PROGRESS.md to reflect the new step status (e.g. "Step 1 ✓ Step 2 ✓ Step 3 in progress ⏳")
   - In PROGRESS.md, each item must be one specific thing — never group multiple concepts in one line
 - `notes/{topic}/coverage/{level}.md` **+ its global mirror `notes/coverage/{level}.md`** — append the
-  ` ✅ NN-slug` evidence marker to the bullet of every concept the step demonstrated in code, `NN-slug`
+  ` ✅ NN-slug — {evidence}` evidence marker to the bullet of every concept the step demonstrated in code, `NN-slug`
   being the project's folder name (`07-timetrack`). The platform's `coverage-mark` skill owns this; the contract is "Evidence markers" in
   `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`. Marking never adds a bullet — a
   concept with no bullet is reported as a possible gap and left to `coverage`.
@@ -184,7 +184,7 @@ never the only one:
 
 - `notes/{topic}/coverage/{level}.md` — if the concept is missing, add it, in concept form (never
   "what Victor did in project 07"). Route the topic with the concept-extraction standard.
-- the same coverage bullet, **marked ` ✅ NN-slug`** with the project's folder name when the fix is code Victor wrote
+- the same coverage bullet, **marked ` ✅ NN-slug — {evidence}`** with the project's folder name when the fix is code Victor wrote
   — on the "already covered" path too, which is the common one. A design decision with no code change
   demonstrates nothing and is left unmarked. Same contract and same `coverage-mark` skill as above.
 - `projects/0X-name/README.md` — a short bullet in "What I learned", only if not already represented

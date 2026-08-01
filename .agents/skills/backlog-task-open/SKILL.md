@@ -62,7 +62,7 @@ Then read, in this order — **all six, before forming any opinion**:
      then-asterisked cell was resting on a guess.
    - **The coverage files** — then grep the concept in `notes/{topic}/coverage/junior.md`, then
      `middle.md` and `senior.md`, to place *this* concept once the tables have set the topic's gate;
-     presence in a generated `junior.md` means it is due now. The `✅ NN-slug` markers show what is
+     presence in a generated `junior.md` means it is due now. The `✅ NN-slug — {evidence}` markers show what is
      already demonstrated in project code, and `notes/coverage/{LEVEL}.md` mirrors the same bullets and
      markers, so either file answers it. **An unmarked bullet means "not yet marked", not "not
      covered"** — the backfill that started 2026-07-30 is unfinished, so a missing ✅ is never evidence
