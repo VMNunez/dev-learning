@@ -7,6 +7,7 @@ import com.victor.timetrack.exception.DuplicateResourceException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.repository.ProjectRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,8 @@ import java.util.List;
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final AuthenticatedUserProvider authenticatedUserProvider;
-
+    private static final Sort NAME_ASC = Sort.by("name").ascending();
+    
     public ProjectService(ProjectRepository projectRepository, AuthenticatedUserProvider authenticatedUserProvider) {
         this.projectRepository = projectRepository;
         this.authenticatedUserProvider = authenticatedUserProvider;
@@ -27,8 +29,8 @@ public class ProjectService {
         boolean isManager = authenticatedUserProvider.isManager();
 
         return isManager
-                ? projectRepository.findAll().stream().map(this::toResponse).toList()
-                : projectRepository.findByActiveTrue().stream().map(this::toResponse).toList();
+                ? projectRepository.findAll(NAME_ASC).stream().map(this::toResponse).toList()
+                : projectRepository.findByActiveTrue(NAME_ASC).stream().map(this::toResponse).toList();
 
     }
 

@@ -10,6 +10,7 @@ import com.victor.timetrack.exception.InvalidCurrentPasswordException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,10 @@ public class UserService {
     private final AuthenticatedUserProvider authenticatedUserProvider;
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final String ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    private static final Sort TEAM_ORDER = Sort.by(
+            Sort.Order.desc("active"),
+            Sort.Order.asc("name"),
+            Sort.Order.asc("id"));
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticatedUserProvider authenticatedUserProvider) {
         this.userRepository = userRepository;
@@ -34,7 +39,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserResponse> getAll() {
-        return userRepository.findAll().stream().map(this::toResponse).toList();
+        return userRepository.findAll(TEAM_ORDER).stream().map(this::toResponse).toList();
     }
 
     @Transactional
