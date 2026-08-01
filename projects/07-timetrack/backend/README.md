@@ -149,6 +149,8 @@ Every resource (`Project`, `TimeEntry`) has a separate `Create*Request` and `Upd
 
 `DELETE /api/projects/{id}` sets `active = false` — no data is permanently removed. Inactive projects cannot receive new time entries, but all historical data remains queryable.
 
+The list endpoint is part of the pattern, not separate from it: `GET /api/users` returns deactivated accounts alongside active ones, each carrying its `active` flag. Reactivation is only reachable through `PUT /api/users/{id}`, so a list that filtered out inactive rows would strand every account it hid — with soft delete, hiding a row from the collection is the same as deleting it.
+
 ### Externalized CORS configuration ✓
 
 The allowed origin is loaded from `app.cors.allowed-origins` via `@Value`, not hardcoded in `SecurityConfig` — an environment-specific value stays outside compiled code. `allowCredentials(false)` because auth travels in the `Authorization` header, not cookies, so credentialed CORS is unnecessary and only forces the stricter same-exact-origin matching for no benefit.
@@ -239,6 +241,7 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 - 60-minute JWT expiration with no refresh token — a shorter-lived access token limits the damage window of a stolen token; without a refresh token, a session idle past 60 minutes forces a fresh login instead of silently renewing. A refresh-token flow is out of scope for this MVP
 - No forced password change on first login — a `mustChangePassword` flag would need frontend route interception to enforce, cut deliberately for the MVP; a new account keeps its generated password until the user changes it voluntarily via `PATCH /api/users/me/password`
 - No `GET /{id}` for entries or users — the UI is entirely tables and dialogs, with no detail view and no deep-linkable route, so an edit dialog opens from a row the page already holds and a single-resource fetch would re-request data that is already in memory. What this gives up is real: no shareable URL for one entry, a dialog lost on refresh, and an edit that starts from a snapshot rather than the current row. Acceptable here because only an entry's own owner and a manager can edit anything, so two people racing on one row is not a realistic case, and the list is refetched after every mutation
+- Return-all over `Pageable` on `GET /api/users` — headcount is tens of rows, and all three consumers of the endpoint (team table, dashboard count, the approvals employee filter) need the whole list to be correct: a paginated response would quietly reduce the filter to whoever landed on page one and turn the count into a page size. Pagination is the right call on collections that grow without a bound, which this one does not
 - No password reset flow — resetting a forgotten password needs an email channel to deliver a reset link/token, which is out of scope; today a manager deactivates and recreates the account instead
 
 ---
