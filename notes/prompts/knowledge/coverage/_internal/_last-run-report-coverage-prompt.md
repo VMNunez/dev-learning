@@ -1,9 +1,11 @@
-# Pipeline self-report — 2026-08-01 — CSS junior update
+# Pipeline self-report — 2026-08-01 — CSS junior verify-gap update
 
 Status: open
 
-- **Plan vs reality** — The 1/1 market analyst and 2/2 cold final reviewers produced the intended separation of market-floor, calibration, and ownership checks; there is no whole-artifact pass independent of those mandated reviewers, so their reports prove execution and the orchestrator's post-review mechanical checks prove parity and marker preservation.
-- **Report discipline** — Reports stayed within their acceptance shapes; no output required trimming or discard.
-- **Failures & retries** — No dispatch failed and no re-dispatch was required. The first-run boundary reviewer was correctly `n/a` because `FIRST_RUN=false`.
-- **Rule friction and rule breaches** — Reviewer B incorrectly treated pre-2026-08-01 bare evidence markers as malformed despite the standard explicitly grandfathering them; the finding was rejected and no marker was rewritten. No mandatory guard, role, validation, mirror, progress, commit, report, or tracker step was skipped.
-- **Verdict** — pipeline clean
+Ledger reconciliation: this run produced no prompt-change recommendation; no ledger row was added or updated.
+
+- **Plan vs reality** — The verify-gap fast path correctly skipped the market analyst, classified all 8 proposals, dispatched the required 1/1 scoped reviewer, and rebuilt the mirror; the reviewer caught one grouped item, which was split before the final mechanical checks. There is no independent whole-artifact pass beyond that mandated reviewer.
+- **Report discipline** — The reviewer returned the required 173-line draft EOF proof, `N items reviewed: 8`, and one concise actionable correction; nothing required trimming or discard.
+- **Failures & retries** — No dispatch failed and no re-dispatch was required; all eight proposals were accepted, with one represented as two independently studyable bullets after review.
+- **Rule friction and rule breaches** — PowerShell's rendered emoji search was unreliable for one marker-count probe, so the canonical `rg` count and zero removed-marker diff were used instead. No mandatory guard, role, validation, mirror, progress, commit, report, or tracker step was skipped.
+- **Verdict** — pipeline clean.
