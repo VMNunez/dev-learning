@@ -42,6 +42,8 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ## Spring Boot
 
+- Spring MVC configuration extension — customise converters, argument resolvers, interceptors, and CORS without replacing useful framework defaults accidentally (proposed level: middle · source run: Spring junior first-run boundary migration, 2026-08-01)
+
 *(Empty — all 12 entries were consumed by the coverage-audit run on 2026-07-19. **Nine were added**: Lombok `@Data` on an entity, the owning side, the OpenAPI consumer view, the filter exception escaping `@RestControllerAdvice`, the JWT exception taxonomy, `DelegatingPasswordEncoder`/`{bcrypt}`, anonymous authentication not being null, the `doFilter` control-flow rule, and the preflight `OPTIONS` 401. **Three were discarded as already covered**: the singleton/stateless data-leak consequence is already the explicit gotcha on the "Bean scope and the singleton default" item, the JDBC URL anatomy is already carried by the datasource-properties item, and the three-way `Connection refused` discrimination is already spelled out in the Hikari pool-initialization item.)*
 
 ## Java
