@@ -238,15 +238,15 @@ Everything below lands on the **active branch** (`main` only receives merges via
 - `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit` and by this skill,
   never by Victor, so the authorship boundary puts it on your side. Its own atomic commit, separate
   from the coverage one.
+- `PLANNING.md`, `PROGRESS.md`, `README.md` — authorized 2026-08-01. The ritual writes these entries
+  itself, so the authorship boundary puts them on your side too. One atomic commit each.
 
 **Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
 then `git commit` block), one command per block:
 
-- Any **project code** he wrote to fix the task.
-- `PLANNING.md`, `PROGRESS.md` — these still go to him from this in-session ritual; only their dedicated
-  orchestrators (`progress-update`, `roadmap-review`) may commit them directly.
-- `README.md` — handed back by `readme-concept-add`, which gives Victor the command itself, one per README
-  actually changed. Do not restage it here.
+- Any **project code** he wrote to fix the task. This is the whole of his side, and it does not move:
+  the authorship boundary is what the 2026-08-01 authorization turns on, so code stays his even though
+  every doc file around it is now yours.
 
 Before every commit you run, apply the hygiene rule: `git status` right before `git add` and right
 before `git commit`, so no project code file is staged alongside a doc file.

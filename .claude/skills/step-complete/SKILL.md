@@ -120,11 +120,12 @@ Everything lands on the **active branch** (`main` only receives merges via PR).
 - `notes/**/coverage/*.md` — committed by `coverage-bullet-add` and `coverage-mark` themselves, under the
   standing `notes/` authorization. Do not re-stage those files here; when both ran in the same close they
   fold the authoring and the marking into one coverage commit.
-- The README — handed back by `readme-concept-add`, which hands Victor the command itself, one per README
-  actually changed. Do not restage it here; the README follows the project's feature-branch → PR workflow.
-- `PLANNING.md`, `PROGRESS.md` — **give Victor the commands** in the standard two-block format
-  (`git add` block, then `git commit` block), one command per block. Only their dedicated orchestrators
-  (`progress-update`, `roadmap-review`) may commit them directly.
+- The README — committed by `readme-concept-add` itself, one commit per README actually changed. Do not
+  restage it here.
+- `PLANNING.md`, `PROGRESS.md`, `README.md` — **you commit these yourself**, authorized 2026-08-01, one
+  atomic commit each. The ritual writes their entries, so the authorship boundary puts them on your side.
+- Any **project code** Victor wrote for the step stays his — give him those commands in the standard
+  two-block format (`git add` block, then `git commit` block), one command per block.
 
 Before every commit you run, `git status` immediately before the `add` and before the `commit`, so no
 project code file is staged alongside a doc file.

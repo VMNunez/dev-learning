@@ -74,11 +74,16 @@ README entry is a recall line; the depth belongs in `notes/`, and linking beats 
 real but the honest entry would be long, that is the signal it belongs in `notes/` with a one-line pointer
 here — not a longer bullet.
 
-## 4 — Hand back the commit
+## 4 — Commit the README
 
-Apply the standard's **"Summary + commit rule"**: the README is not auto-committed by design, so write the
-fix to the working tree and **hand Victor the command** in the standard two-block format (`git add` block,
-then `git commit` block), one per README actually changed — never all three by default.
+**You commit it yourself**, authorized 2026-08-01 — this skill writes the entry, so the authorship
+boundary puts the file on your side. One atomic commit per README actually changed, never all three by
+default, on the active branch. Apply the hygiene rule: `git status` immediately before the `add` and
+before the `commit`, so no project code file is staged alongside it.
+
+```
+docs(readme): <what the entry names>
+```
 
 ## Report
 

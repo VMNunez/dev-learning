@@ -223,9 +223,9 @@ same run both wrote the bullet and marked it — in which case the calling ritua
 docs(coverage): add <concept> to <topic> <level>
 ```
 
-`PROGRESS.md` goes **in that same commit** — the table edit is the same logical change as the bullet.
-When the calling ritual hands its commits to Victor rather than running them (the in-session
-`backlog-task-close` rule), hand this one over too instead of committing behind it.
+`PROGRESS.md` goes **in that same commit** — the table edit is the same logical change as the bullet,
+and since 2026-08-01 the file is yours to commit in every flow, so there is no case left where the bullet
+lands and its table edit waits on Victor.
 
 `_run-tracker.md` goes in that same commit as well. The stale flag is a consequence of the bullet, not a
 separate change, and splitting them lets a crash between the two commits leave a bullet on file with its
