@@ -34,10 +34,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ErrorResponse> handleDisabled(DisabledException e){
+    public ResponseEntity<ErrorResponse> handleDisabled(DisabledException e) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(buildError(HttpStatus.UNAUTHORIZED,"Invalid email or password"));
+                .body(buildError(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -81,10 +81,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException e){
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(buildError(HttpStatus.CONFLICT, e.getMessage()));
+    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException e) {
+        ErrorResponse errorResponse = buildError(HttpStatus.CONFLICT, e.getMessage());
+        errorResponse.setFieldErrors(Map.of(e.getField(), List.of(e.getMessage())));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     @ExceptionHandler(ForbiddenOperationException.class)

@@ -50,7 +50,7 @@ public class ProjectService {
     @Transactional
     public ProjectResponse create(CreateProjectRequest request) {
         if (projectRepository.existsByName(request.getName())) {
-            throw new DuplicateResourceException("A project with this name already exists");
+            throw new DuplicateResourceException("name", "A project with this name already exists");
         }
 
         Project project = new Project();
@@ -72,7 +72,7 @@ public class ProjectService {
         }
 
         if (!project.getName().equals(request.getName()) && projectRepository.existsByName(request.getName())) {
-            throw new DuplicateResourceException("A project with this name already exists");
+            throw new DuplicateResourceException("name", "A project with this name already exists");
         }
 
         project.setName(request.getName());

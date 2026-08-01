@@ -42,7 +42,7 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(request.getEmail());
 
         if (user.isPresent()) {
-            throw new DuplicateResourceException("Email already in use");
+            throw new DuplicateResourceException("email", "Email already in use");
         }
 
         String generatedPassword = generatePassword();
@@ -75,7 +75,7 @@ public class UserService {
             Optional<User> userExist = userRepository.findByEmail(request.getEmail());
 
             if (userExist.isPresent()) {
-                throw new DuplicateResourceException("Email already in use");
+                throw new DuplicateResourceException("email", "Email already in use");
             }
         }
 
