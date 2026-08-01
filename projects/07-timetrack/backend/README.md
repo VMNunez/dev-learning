@@ -231,6 +231,14 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `DuplicateResourceException` carries the offending field name (`email`, `name`) alongside its message, so its handler emits `fieldErrors` on a **409** exactly as `MethodArgumentNotValidException` does on a 400. The alternative — reserving the map for `@Valid` failures — would make a reactive form branch on the status to decide whether a message belongs under an input or at the dialog foot, and would leave the most common error in the Team dialog detached from the field that caused it. The status says what kind of failure it is; the map says which control owns it. The field travels in the exception rather than being hardcoded in the handler because the same type is thrown from two resources.
 
+### `GET /api/entries` is paged, and a paged endpoint owes a total order ✓
+
+`@PageableDefault` binds `?page`, `?size` and `?sort` into a `Pageable`, and `JpaSpecificationExecutor.findAll(spec, pageable)` applies it on top of the dynamic `Specification` filters — the filters and the page compose, so no query was rewritten to gain pagination. `Page.map()` converts to `TimeEntryResponse` while keeping the metadata. Two parts are decisions rather than defaults: the sort is `date` desc with `id` desc as a unique tie-breaker, because without a unique key after a non-unique column two entries on the same day can swap between calls and a row is served twice or never; and the page size is capped at 100 through a `PageableHandlerMethodArgumentResolverCustomizer` bean, because an endpoint that honours any requested size is not bounded at all. Entries is the only collection here paged — it grows with every imputation, every user and every month, while users and projects are bounded by headcount and by the catalogue.
+
+### A page is serialised as a DTO, not as Spring Data's `PageImpl` ✓
+
+`@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)` makes pages leave as `PagedModel` — `content` plus a four-field `page` — instead of Jackson reflecting over `PageImpl` and emitting its eleven internal getters. `PageImpl` is a dependency's implementation class, so serialising it directly puts the payload's shape outside this project's control: a Spring Data upgrade could rename a getter and change the API without a line of code changing. It is the same boundary the DTO pattern already draws around entities, applied to the envelope rather than the items. The annotation carries a cost worth knowing: `@Enable*` makes Boot's matching autoconfiguration back off, which silently dropped `spring.data.web.pageable.max-page-size` and let the cap fall back to Spring Data's 2000 — hence the customizer bean above.
+
 ---
 
 ## Tradeoffs
