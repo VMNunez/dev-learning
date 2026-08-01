@@ -192,7 +192,7 @@ review without taking on specialist or production-platform ownership.
   which identifiers exist, so an object the caller may not reach is reported as missing unless that
   caller is entitled to know it exists ✅ 07-timetrack
 - Security logging hygiene — record useful authentication and authorisation events while excluding
-  passwords, tokens, session IDs, authorisation headers, and unnecessary personal data
+  passwords, tokens, session IDs, authorisation headers, and unnecessary personal data ✅ 07-timetrack
 - Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or
   private responses must not remain in browser or shared caches
 
