@@ -53,7 +53,7 @@ is the first retained execution.
 | CSS | | | | | | | | | | | | | | | | | | |
 | SQL | 2026-07-29 — completed — 133 items; verify-gap fast path; 4 gaps accepted; mirror parity; notes-plan refresh next | 2026-07-29 — completed — gaps consumed; verdict superseded; verification optional | 2026-07-29 — completed — 17 entries; 133 concepts; 3 create / 14 audit; 14 English notes classified keep; 0 relocations; mirror parity; cold review applied · ⚠ stale 2026-07-31 (+3 bullets) | 0/17 complete — completed | | | | | | | | | | | | | | |
 | Git | 2026-08-01 — completed — 92 junior items; full recalibration; 4 additions; 2 bullet splits; mirror parity; notes-plan refresh next | 2026-08-01 — completed — gaps consumed; verdict superseded by SHA f989cc0b | | | | | | | | | | | | | | | | | |
-| General | 2026-08-01 — completed — 113 junior items; full recalibration; 8 additions; 3 moved to middle; mirror parity; notes-plan refresh next | | | | | | | | | | | | | | | | | |
+| General | 2026-08-01 — completed — 113 junior items; full recalibration; 8 additions; 3 moved to middle; mirror parity; notes-plan refresh next | 2026-08-01 — completed — complete; zero gaps; SHA b0307fdc matches coverage | | | | | | | | | | | | | | | | | |
 
 Columns are grouped by level (J, then M, then S), with Coverage → Plan → Notes → Interview → Sync
 inside each level. The Notes J/M/S cells are summaries, written as `X/Y complete` plus the last outcome. Their denominator
