@@ -427,8 +427,11 @@ All errors return the same `ErrorResponse` body from `GlobalExceptionHandler`:
 Validation errors (400 from `@Valid`, via `MethodArgumentNotValidException`) additionally carry a
 field-level map the reactive forms consume to show a message under each input (Step 7b):
 ```json
-{ "status": 400, "message": "Validation failed", "fieldErrors": { "hours": "must be at most 24" } }
+{ "status": 400, "message": "Validation failed", "fieldErrors": { "hours": ["must be at most 24"] } }
 ```
+Each value is an **array**, because one field can fail several constraints at once (`email` can be both
+too long and malformed) and Bean Validation reports every one. A form renders the first message or all
+of them, but the contract never decides that by discarding violations on the way out.
 
 ### Auth — request/response detail
 
