@@ -51,7 +51,7 @@ is the first retained execution.
 | JavaScript | 2026-07-29 — completed — 128 items; verify-gap fast path; 5 gaps consumed; mirror parity; notes-plan refresh next | 2026-07-29 — completed — 5 gaps; SHA f35c4540; findings consumed by coverage update | 2026-07-29 — completed — 22 entries; 128 concepts; 7 create / 15 audit; 15 English-only legacy renumberings; mirror parity; cold review applied · ⚠ stale 2026-07-30 (+1 bullets) | 0/22 complete — completed | | | | | | | | | | | | | | |
 | CSS | | | | | | | | | | | | | | | | | | |
 | SQL | 2026-07-29 — completed — 133 items; verify-gap fast path; 4 gaps accepted; mirror parity; notes-plan refresh next | 2026-07-29 — completed — gaps consumed; verdict superseded; verification optional | 2026-07-29 — completed — 17 entries; 133 concepts; 3 create / 14 audit; 14 English notes classified keep; 0 relocations; mirror parity; cold review applied · ⚠ stale 2026-07-31 (+3 bullets) | 0/17 complete — completed | | | | | | | | | | | | | | |
-| Git | 2026-07-30 — completed — 86 junior items; full recalibration; 2 items moved down from middle; mirror parity; notes-plan refresh next | 2026-08-01 — completed — 2 gaps; SHA 253b61df matches coverage | | | | | | | | | | | | | | | | | |
+| Git | 2026-08-01 — completed — 92 junior items; full recalibration; 4 additions; 2 bullet splits; mirror parity; notes-plan refresh next | 2026-08-01 — completed — gaps consumed; verdict superseded by SHA f989cc0b | | | | | | | | | | | | | | | | | |
 | General | 2026-07-30 — completed — 108 junior items; full recalibration; 2 items moved to middle; mirror parity; notes-plan refresh next | | | | | | | | | | | | | | | | | |
 
 Columns are grouped by level (J, then M, then S), with Coverage → Plan → Notes → Interview → Sync
