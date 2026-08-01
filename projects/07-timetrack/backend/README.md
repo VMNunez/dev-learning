@@ -46,7 +46,7 @@ Spring Boot REST API for the TimeTrack project.
 
 | Method | URL | Role | Description |
 |---|---|---|---|
-| GET | `/api/reports/summary` | Manager | Total hours and entries for a month |
+| GET | `/api/reports/summary` | Any authenticated user | Total hours and entries for a month — scoped to the caller for an employee |
 | GET | `/api/reports/by-project` | Manager | Hours grouped by project |
 | GET | `/api/reports/by-user` | Manager | Hours grouped by user |
 
@@ -242,6 +242,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 ### A page is serialised as a DTO, not as Spring Data's `PageImpl` ✓
 
 `@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)` makes pages leave as `PagedModel` — `content` plus a four-field `page` — instead of Jackson reflecting over `PageImpl` and emitting its eleven internal getters. `PageImpl` is a dependency's implementation class, so serialising it directly puts the payload's shape outside this project's control: a Spring Data upgrade could rename a getter and change the API without a line of code changing. It is the same boundary the DTO pattern already draws around entities, applied to the envelope rather than the items. The annotation carries a cost worth knowing: `@Enable*` makes Boot's matching autoconfiguration back off, which silently dropped `spring.data.web.pageable.max-page-size` and let the cap fall back to Spring Data's 2000 — hence the customizer bean above.
+
+### A role can scope a response instead of refusing it ✓
+
+`GET /api/reports/summary` serves both roles, so the role is not the gate: `@PreAuthorize("isAuthenticated()")` states that the check lives further in, and `ReportService` adds `hasUserId(...)` to the `Specification` — `null` for a manager, the caller's own id for an employee, since a `null` argument makes that specification the neutral element of the `AND`. One query, one code path, and the three aggregates scope themselves because they all read the filtered list. The identity comes from `AuthenticatedUserProvider`, never from a request parameter. `by-project` and `by-user` keep `hasRole('MANAGER')`, so the contrast between the two kinds of authorisation is visible in one screen of the controller.
 
 ---
 
