@@ -1443,6 +1443,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ### Display and layout
 - Normal flow — understand how block and inline boxes participate in document flow before using flex, grid, or positioning to change it
+- Floats and clearing — recognise that a floated box leaves normal block flow while inline content wraps around it, and contain or clear legacy floats with `flow-root` or `clear` instead of using float as a modern layout system
 - `display: block`, `inline`, `inline-block` — a block box normally fills the available inline space and starts on a new line; inline content participates in a line box and does not accept width; inline-block flows inline while accepting dimensions ✅ 04-meal-finder
 - `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening ✅ 05-task-manager
 - Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?" ✅ 04-meal-finder
@@ -1451,11 +1452,13 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Sizing
 - `width`, `min-width`, and `max-width` — combine a preferred size with lower and upper bounds so a component can shrink and grow without becoming unusable
 - `height`, `min-height`, and `max-height` — prefer content-driven height and add constraints only when the interface has a real scrolling or viewport requirement
+- Percentage heights — understand that `height: 100%` needs a definite containing-block height, while `min-height` with a viewport unit is often the robust choice for a page that must fill the screen
 - Intrinsic sizing — recognise `min-content`, `max-content`, and `fit-content()` as sizes derived from content rather than arbitrary fixed dimensions
 - Automatic minimum size in flex and grid — use `min-width: 0` or `min-height: 0` when a flex or grid child must be allowed to shrink instead of overflowing
 
 ### Cascade and inheritance
 - Cascade decision order — resolve ordinary author declarations through importance, specificity, and source order rather than assuming the last rule always wins
+- Cascade origins — distinguish user-agent, user, and author declarations and know that origin and importance are resolved before specificity, so a more specific selector does not always win
 - Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately
 - Shorthand vs longhand declarations — understand that shorthands such as `margin`, `background`, and `border` set several longhands and can reset values that were declared earlier
 
@@ -1466,6 +1469,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — how to target elements by relationship; interviewers show a selector and ask which elements it matches ✅ 01-todo-list
 - Attribute selectors — target attribute presence or values without adding presentation-only classes, while avoiding selectors that accidentally match unrelated elements
 - `:has()` relational selector — read and write simple parent- or sibling-state selectors while keeping a class or state attribute as the clearer option when application logic already owns the state
+- `:is()` vs `:where()` — both group selector alternatives, but `:is()` takes the specificity of its most specific argument while `:where()` always contributes zero specificity
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
 - Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
@@ -1482,7 +1486,9 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `flex-wrap: wrap` — controls whether items can move onto additional flex lines; with `nowrap` they stay on one line and may shrink or overflow according to flex sizing and their automatic minimum size ✅ 06-hr-portal
 - Flex sizing — explain how `flex-basis`, `flex-grow`, and `flex-shrink` negotiate an item's size and read the `flex` shorthand without assuming `flex: 1` means only “take remaining space” ✅ 01-todo-list
 - Per-item alignment — override the container's cross-axis alignment for one item with `align-self`
+- `align-items` vs `align-content` — `align-items` positions items within a flex line, while `align-content` distributes multiple wrapped lines and has no visible effect when there is only one line
 - `margin: auto` on flex items — absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
+- Visual order vs DOM order — flex and grid reordering can change visual placement without changing DOM, reading, or keyboard-focus order, so source order must remain meaningful
 
 ### CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
@@ -1531,6 +1537,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `transform` vs `top/left` for movement — transforms commonly avoid layout while positional changes
   can trigger it; profile when performance matters instead of treating either rendering path as an
   unconditional guarantee
+- Interpolated vs discrete properties — properties such as `opacity` and `transform` can interpolate smoothly, while `display` changes discretely and should not be treated as an ordinary fade transition
 - `@keyframes` and `animation` — multi-step animations; `animation-iteration-count: infinite` for loading spinners; `animation-fill-mode: forwards` keeps the final state after the animation ends instead of snapping back ✅ 02-weather-app
 
 ### Typography
@@ -1564,6 +1571,8 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
 - `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
+- Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background
+- Non-colour cues — never make colour the only signal for status, validation, links, or interaction state; add text, an icon, shape, or another visible distinction
 
 ### Borders, shadows, and backgrounds
 - `box-shadow` syntax: `offset-x offset-y blur spread color` — spread is optional, and transparent
