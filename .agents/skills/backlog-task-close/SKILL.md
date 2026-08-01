@@ -16,9 +16,13 @@ description: >
 # Backlog-task closing ritual (daily session)
 
 A task from `{PROJECT_PATH}/PROJECT-BACKLOG.md` just finished. Checking its box is the *last* thing you
-do, not the first. Walk every step below in order (0 through 5, including sub-step 1a), without being
-asked. If one genuinely does not
-apply, **say so explicitly** in the chat summary instead of silently skipping it.
+do, not the first. Walk every step below in order (0 through 5, including sub-steps 1a and 1b), without
+being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead of
+silently skipping it.
+
+The task should already carry a verdict from `backlog-task-open`, which validated it against PLANNING,
+the ledger and its real scope before any work started. If it does not — the task was worked on without
+that pass — say so in the summary; a fix that was never triaged may have been the wrong fix.
 
 This is the task-level twin of the `step-complete` skill. That one fires on a **learning-plan step**
 (PLANNING §15 / project 07's learning plan) and touches three files. This one fires on a **backlog
@@ -55,57 +59,72 @@ because the fix happened in a Spring project (`Optional<T>` is Java; `@Transacti
 
 ## 1 — Coverage: is the concept already there?
 
-Open the routed topic's coverage file for **the level Victor is currently working at** —
-`notes/{topic}/coverage/{junior|middle|senior}.md`. Search for the concept (grep the key symbol, not
-the task's wording — the coverage file names concepts, not fixes).
+**Invoke the `coverage-bullet-add` skill**, passing the concept from step 0 and the level Victor is
+currently working at. It owns this decision end to end: routing the concept to its owning `notes/` topic
+by altitude, searching the level file, authoring the bullet under the right section if it is missing,
+mirroring it into `notes/coverage/{LEVEL}.md` with a diff check, and reporting the `/notes-plan` remap the
+new bullet owes. Do not reproduce its logic here, and do not re-derive the topic routing yourself.
 
-**If it is already covered:** say so and name the exact bullet. Nothing to write. This is the common
-case and it is a *good* outcome — it means the review found a gap in the code, not in the curriculum.
+Two things to pass it explicitly, because they are this ritual's context and not the skill's:
 
-**If it is missing:** add it. **Read
-`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` first** — it only auto-loads inside
-the `/coverage` pipeline, so an inline edit without it will break the file's contract. The two rules
-that inline edits break most often:
+- **Do not hand it step 0's routing as the answer.** Step 0 routed the concept to a *PROGRESS.md section*;
+  the skill needs the *`notes/` topic*, and the two vocabularies do not match. Give it the concept, not
+  the section.
+- **A design decision with no code change** can still be a real concept — pass it through, and let the
+  skill decide whether it belongs on the checklist.
 
-- **Concepts, not conduct.** A coverage bullet describes *what a junior must understand*, never *what
-  Victor did in project 07*. Write "declarative transaction boundaries — a service method that performs
-  several writes needs them to commit or roll back as one unit"; never "added `@Transactional` to
-  `TimeEntryService.submit()`".
-- **Placement.** It goes under the existing section its subject belongs to, in that section's voice and
-  bullet shape. Do not open a new section for a single concept, and do not append to the end of the
-  file.
-
-If the concept genuinely belongs to a **level above** the one Victor is on, add it there and say so —
-that is a signal about his trajectory, not a mistake.
-
----
+The common outcome is **already covered**, and that is a *good* result: it means the review found a gap in
+the code, not in the curriculum. Fold the skill's report rows into this ritual's final table.
 
 ### 1a — Mark the concept as demonstrated
 
-**Applies either way** — whether the bullet was already covered or had to be written. It is the
-"already covered" path, the common one, where a close would otherwise leave no trace of what Victor can
-actually *prove*.
+**Applies either way** — whether step 1 found the bullet already covered or had to write it. This is the
+sub-step that keeps the coverage file honest about what Victor can *prove*, and it runs on the common
+"already covered" path too, which is precisely where a close would otherwise leave no trace.
 
-**Invoke the `coverage-mark` skill**, passing the concept, the topic, the level, and the project number.
-It appends the ` ✅ NN` evidence marker to the matching bullet in the topic coverage file and in the global
-mirror `notes/coverage/{LEVEL}.md`, and reports the level's marked/total count. Do not reproduce its logic
-here; the contract is "Evidence markers" in
-`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`.
+**Invoke the `coverage-mark` skill**, passing the concept, **the topic `coverage-bullet-add` reported** (not
+step 0's PROGRESS.md section), the level, and the project's folder name. It appends the `✅ NN-slug` evidence marker to the matching bullet in the topic file and the
+mirror, and reports the level's marked/total count. Do not reproduce its logic here.
 
-Two skipped cases it will report back, both correct: a **design decision with no code change** (nothing was
-built, so nothing is demonstrated), and a concept already marked from an earlier project (first project
-wins). Fold its rows into this ritual's final report.
+Two cases it will report back as skipped, both correct:
 
-## 2 — Project README: "What I learned"
+- a **design decision with no code change** — nothing was built, so nothing is demonstrated;
+- a concept already marked from an earlier project — first project wins.
 
-**Read `notes/prompts/projects/readme/_internal/_readme-standard.md` before touching the README** —
-same reason as above, it only auto-loads inside `readme-audit`.
+Fold its report rows into this ritual's final table.
 
-Add a short bullet if the concept is not represented. Short bullets, **no explanations** — the details
-live in `notes/`, never in the README. If the existing bullets already cover it, say so and move on;
-a README with one bullet per bug fix is a worse README.
+### 1b — Carry the skill's owed work into the session
 
-Note which README: on a full-stack project, the tier's README if the project has per-tier ones.
+The mirror write, the diff check, and the `/notes-plan` decision all happen **inside
+`coverage-bullet-add`** — this sub-step does not repeat them. What it owns is what the skill hands back:
+
+- If the skill reports **`/notes-plan {topic} {LEVEL}` owed**, surface it in this ritual's report table and
+  keep it for the *end of the session*. One run per affected topic+level, batched — several closes touching
+  the same topic and level are still a single owed run, and it is never run per bullet.
+- If the skill reports **drift it found but did not fix** (bullets missing from the mirror that predate this
+  task), say so as its own decision. Do not fold someone else's drift into this close.
+
+If nothing was written — the common already-covered path — this sub-step is **n/a**; say so and move on.
+
+---
+
+## 2 — Project README: land the concept
+
+**Invoke the `readme-concept-add` skill** with the concept from step 0. It owns this decision end to end:
+deriving which READMEs exist from the project number, routing the concept by **audience** to the global /
+backend / frontend file, checking whether it is already represented, and writing it in that section's own
+format under the README standard. Do not reproduce its logic here and do not pick the file yourself.
+
+Two things to pass it explicitly, because they are this ritual's context and not the skill's:
+
+- **The concept, not step 0's PROGRESS.md routing.** A technology section is not a README audience.
+- **A design decision with no code change** can still be a real README entry — a convention deliberately
+  kept is exactly what the Tradeoffs section is for. Pass it through and let the skill decide.
+
+A backlog task's concept is almost always tier-level, so the common answer is a **Key patterns** entry in
+the tier README — not "What I learned", which the standard gives only to the global file. If the concept is
+already represented, the skill reports **nothing written**; that is a good outcome, and a README with one
+bullet per bug fix is a worse README. Fold its report rows into this ritual's final table.
 
 ---
 
@@ -212,16 +231,29 @@ to the ledger, with the reason in place of the concept tail: `→ dropped: super
 
 ## Commits
 
-Per AGENTS.md and the shared session rules. Do **not** bundle these — one atomic commit per file:
+Per CLAUDE.md and the shared session rules. Do **not** bundle these — one atomic commit per file.
+Everything below lands on the **active branch** (`main` only receives merges via PR).
 
-- `notes/{topic}/coverage/*.md` — a `notes/` study file. Give Victor the commit command in the standard
-  two-block format (`git add` block, then `git commit` block); double-check `git status` first so no
-  project code file is staged with it.
-- `PROJECT-BACKLOG.md`, `PLANNING.md`, `README.md`, `PROGRESS.md` — these follow the **active branch**
-  (`main` only receives merges via PR). Hand Victor the commit commands, one command per code block.
+**You commit yourself:**
 
-Never run `git commit` yourself here. The backlog auto-commit authorization belongs to the
-`review-audit` orchestrator, not to this in-session ritual.
+- `notes/**/coverage/*.md` — handled by `coverage-bullet-add` and `coverage-mark`, which commit their own
+  writes under the standing `notes/` authorization. Do not re-stage those files here; if both skills ran in
+  the same close, they fold the authoring and the marking into one coverage commit.
+- `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit` and by this skill,
+  never by Victor, so the authorship boundary puts it on your side. Its own atomic commit, separate
+  from the coverage one.
+- `PLANNING.md`, `PROGRESS.md`, `README.md` — authorized 2026-08-01. The ritual writes these entries
+  itself, so the authorship boundary puts them on your side too. One atomic commit each.
+
+**Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
+then `git commit` block), one command per block:
+
+- Any **project code** he wrote to fix the task. This is the whole of his side, and it does not move:
+  the authorship boundary is what the 2026-08-01 authorization turns on, so code stays his even though
+  every doc file around it is now yours.
+
+Before every commit you run, apply the hygiene rule: `git status` right before `git add` and right
+before `git commit`, so no project code file is staged alongside a doc file.
 
 ---
 
@@ -232,8 +264,11 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Target | Result |
 |---|---|
 | Coverage (`spring-boot/junior`) | already covered — "declarative transaction boundaries" |
-| Evidence marker | marked `✅ 07` — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
-| README | bullet added |
+| Topic chosen | `security` — access-control rule, not the Spring mechanism (PROGRESS section was Spring Boot) |
+| Evidence marker | marked `✅ 07-timetrack` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
+| Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
+| `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
+| README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |
 | PLANNING.md | added to §6 engineering rules |
 | PROGRESS.md | concept added under Spring Boot |
 | Backlog | task collapsed into `## Closed` |

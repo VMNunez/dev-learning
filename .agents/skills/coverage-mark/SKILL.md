@@ -1,15 +1,15 @@
 ---
 name: coverage-mark
 description: >
-  Mark a coverage bullet as demonstrated in project code, with the project number, WHENEVER a concept
+  Mark a coverage bullet as demonstrated in project code, with the project's folder name, WHENEVER a concept
   has just been applied in a project — called by the `step-complete` and `backlog-task-close` rituals as
   their coverage sub-step, and directly when Victor asks ("marca esto como visto en el coverage", "esto
-  ya lo hemos aplicado en el 07", "mark this bullet as covered"). It appends the `✅ NN` evidence marker
+  ya lo hemos aplicado en el 07", "mark this bullet as covered"). It appends the `✅ NN-slug` evidence marker
   to the matching bullet in both the topic coverage file and the global mirror, so the level file doubles
   as a progress instrument: how much of the junior floor Victor can prove with something he built. The
   failure mode this exists for is a concept applied in a project that leaves no trace on the coverage
   checklist, so months later the file cannot distinguish "never studied" from "shipped it in project 06".
-  Do NOT use it to add new bullets (that is the coverage step of the calling ritual, or `/coverage`), to
+  Do NOT use it to add new bullets (that is `coverage-bullet-add`, or `/coverage`), to
   mark something merely studied in notes, or inside the `coverage` / `coverage-audit` pipelines — those
   passes preserve markers, they never author them.
 ---
@@ -23,15 +23,16 @@ before editing anything.** It only auto-loads inside the `/coverage` pipeline, a
 format and its preservation contract.
 
 This skill only ever *appends a marker to an existing bullet*. It never writes, rewords, or deletes a
-bullet. If the concept has no bullet, that is the calling ritual's coverage step (or `/coverage`) — say so
-and stop; do not author scope here.
+bullet. If the concept has no bullet, that is `coverage-bullet-add`'s job (or `/coverage`) — say so and
+stop; do not author scope here. The calling ritual runs that skill *before* this one, so a missing bullet at
+this point usually means it was deliberately not authored.
 
 ---
 
 ## 1 — Establish what was demonstrated, and in which project
 
-State in one sentence the concept and the project number (`NN`, two digits, from the project folder
-name). "Demonstrated" has one meaning: **Victor wrote code in that project that uses the concept**. All
+State in one sentence the concept and the project's folder name (`NN-slug`, e.g. `07-timetrack`, taken
+from `projects/` verbatim). "Demonstrated" has one meaning: **Victor wrote code in that project that uses the concept**. All
 of these are *not* demonstrations, and each must be reported as skipped rather than marked:
 
 - the concept appears in a review finding, a backlog task, or a note, but no code was written;
@@ -68,7 +69,7 @@ the few honest signals about his trajectory.
 
 ## 3 — Append the marker to both files
 
-Append ` ✅ NN` to the end of the bullet, after the concept sentence, nothing following it. Verbatim
+Append ` ✅ NN-slug` to the end of the bullet, after the concept sentence, nothing following it. Verbatim
 identical edit in both:
 
 1. `notes/{topic}/coverage/{LEVEL}.md` — the source of truth.
@@ -82,19 +83,46 @@ Then verify, because a marker landing in one file and not the other is the drift
 otherwise introduce into a diff-verified pair: grep `✅` in the topic file and in the mirror's
 `## {TOPIC}` section and confirm the two sets of marked bullets are identical. Report both counts.
 
-## 4 — Report
+## 4 — Update the PROGRESS.md coverage table
+
+The `## Coverage demonstrated` table in `PROGRESS.md` is the instrument this marker feeds. A marker
+written without refreshing it leaves the table reading lower than reality until the next
+`progress-update` run — the same silent-staleness failure the marker itself exists to prevent.
+
+**`progress-update-prompt.md` step D8 owns the table's format, its counting rule, and the `*`
+provisional mark. Read D8 and follow it; never restate or re-derive its arithmetic here.** Your job is
+narrower: refresh only the cells you just changed.
+
+For each topic+level you marked, **recount — never increment**. Arithmetic on the old cell silently
+inherits any error already in it:
+
+```bash
+grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md
+grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+$' notes/{topic}/coverage/{LEVEL}.md
+```
+
+Rewrite that one cell, then the level's `**Total**` cell (recount as the sum of the column's
+numerators over the sum of its denominators — do not add your delta to the printed total). Change no
+other row, and never touch `Professional level by topic`: a rising percentage is not a promotion, per
+D7. If the topic has no row, the table predates that topic — say so and stop rather than inventing one.
+
+Only the numerator moves here. If the same run also added a bullet, `coverage-bullet-add` moved the
+denominator; one recount after both writes covers them together.
+
+## 5 — Report
 
 One row per concept, inside the calling ritual's report table when there is one:
 
 | Concept | Topic / level | Result |
 |---|---|---|
-| declarative transaction boundaries | `spring-boot` / junior | marked ✅ 07 (topic + mirror, 24/139 marked) |
-| proxy-based annotation behaviour | `spring-boot` / junior | already marked ✅ 06 — left as is |
+| declarative transaction boundaries | `spring-boot` / junior | marked ✅ 07-timetrack (topic + mirror, 24/139 marked) |
+| proxy-based annotation behaviour | `spring-boot` / junior | already marked ✅ 06-hr-portal — left as is |
 | BOLA on the mutation endpoints | `security` / junior | not marked — no bullet exists yet, flagged as a possible gap |
 | fail-fast manual checks | `spring-boot` / junior | not marked — DECISION, no code change |
 
-Include the marked/total count for the level file you touched. That number is the point of the whole
-mechanism, so it belongs in every report.
+Include the marked/total count for the level file you touched, and state the PROGRESS.md cell as it
+now reads (`spring-boot / junior: 24/139 (17%)`). That number is the point of the whole mechanism, so
+it belongs in every report.
 
 ## Commits
 
@@ -107,8 +135,13 @@ new bullet in the same session:
 docs(coverage): mark <concept> as demonstrated in project NN
 ```
 
+`PROGRESS.md` goes **in that same commit** — the table edit is the same logical change as the marker,
+and splitting them lets one land without the other.
+
 When called from `step-complete` or `backlog-task-close`, fold this into that ritual's coverage commit
-only if the same run also wrote the bullet; otherwise keep it separate.
+only if the same run also wrote the bullet; otherwise keep it separate. When the calling ritual hands
+its commits to Victor rather than running them (the in-session `backlog-task-close` rule), hand this
+one over too instead of committing behind it.
 
 ## Backfill
 
