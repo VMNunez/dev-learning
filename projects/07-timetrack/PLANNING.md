@@ -500,7 +500,7 @@ than the handler hardcoding it.
 
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
-| `GET /api/entries` | both | Employee: own entries only (ownership from the JWT) · Manager: all entries | — (see query filters below) | `200` + `List<TimeEntryResponse>` |
+| `GET /api/entries` | both | Employee: own entries only (ownership from the JWT) · Manager: all entries | — (see query filters below) | `200` + paged `TimeEntryResponse` — `content` plus a `page` object carrying `size`, `number`, `totalElements`, `totalPages` |
 | `POST /api/entries` | EMPLOYEE | Create an entry in `DRAFT` for the authenticated user | `CreateTimeEntryRequest` — `projectId`, `date`, `hours`, `description` | `201` + `TimeEntryResponse` · `400` validation — future date, hours outside 0.5–24, **inactive project** (all three are `BusinessRuleViolationException`, the input-data tier of §12's taxonomy; `409` is reserved for state conflicts) |
 | `PUT /api/entries/{id}` | EMPLOYEE | Edit own `DRAFT` entry | `CreateTimeEntryRequest` | `200` + `TimeEntryResponse` · `400` validation — PUT replaces the whole resource, so it re-runs create's rules (future date, hours range, inactive project) · `404` entry not found **or not owned by the caller** (§8 status ruling) · `409` entry not in `DRAFT` |
 | `DELETE /api/entries/{id}` | EMPLOYEE | Delete own `DRAFT` entry (hard delete — a draft has no history value) | — | `204` no body · `404` entry not found **or not owned by the caller** (§8 status ruling) · `409` entry not in `DRAFT` |
@@ -517,6 +517,9 @@ than the handler hardcoding it.
 | `projectId` | Long | Entries of one project |
 | `status` | `EntryStatus` | Entries in one workflow state |
 | `userId` | Long — **MANAGER only** | Entries of one employee (ignored for an EMPLOYEE caller, who is always scoped to their own) |
+| `page` | int, default `0` | Zero-based page index |
+| `size` | int, default `20`, capped at `100` | Rows per page; a larger request is silently clamped to the cap |
+| `sort` | `field,dir` — repeatable | Overrides the default `date` desc, `id` desc |
 
 ### Reports (`ReportController` — MANAGER only)
 
@@ -554,8 +557,21 @@ than the handler hardcoding it.
 > Both aggregates group by **id and name** (not name alone), so two users with the same display name
 > stay separate rows and a rename does not split history; the id is also the frontend's row key.
 
-> **Collection endpoints return the full list (no `Pageable`) by design** — see the §20 tradeoff line;
-> the month filter bounds every report and the entries list in practice.
+> **A collection endpoint is paginated when its volume grows without a bound; otherwise it returns the
+> full list.** `GET /api/entries` is the one collection that grows with every imputation, every user and
+> every month, so it is paged. Users, projects and the report aggregates are bounded by headcount, by
+> the project catalogue and by the month filter, and their consumers need the whole set to be correct
+> (see the `GET /api/users` contract ruling above) — pagination there would break features rather than
+> protect anything.
+>
+> **A paged endpoint owes a total order.** The default sort is `date` desc with `id` desc as the
+> tie-breaker: without a unique key after a non-unique column, two entries on the same day can swap
+> between two calls, so a row is served twice or never. The page cap (`size` ≤ 100) is part of the same
+> contract — an endpoint that honours any requested size is not bounded at all.
+>
+> **The paged payload is a DTO, not a framework type.** The response is `content` plus a four-field
+> `page` object, never Spring Data's `PageImpl` serialised by reflection: that class is a dependency's
+> internal detail, so letting it define the payload puts the API's shape outside this project's control.
 
 ---
 
@@ -1100,12 +1116,17 @@ Recent entries
 ```
 
 **How stat cards get their data:**
-- One call: `GET /api/entries?month=2025-05` (current month in YYYY-MM format, built on the frontend)
-- "This week" — filter results by current week dates on the frontend, sum hours
-- "This month" — sum all hours from the response
-- "Pending review" — count entries with status SUBMITTED
-- "Approved this month" — count entries with status APPROVED
-- One API call feeds all four cards — no extra endpoint needed
+- **Totals come from an aggregation endpoint, never from summing the entries list.** `GET /api/entries`
+  is paged, so a client-side sum would silently report the first page's hours as the month's. The rule
+  outlives pagination anyway: a total is the database's job, not the browser's — summing it in Angular
+  means fetching every row of the month to add one column
+- The employee dashboard therefore needs `GET /api/reports/summary` **scoped to the caller**, the same
+  ownership rule `GET /api/entries` already applies (employee → own, manager → all). The endpoint is
+  MANAGER-only and company-wide today, so widening it is a prerequisite of this page
+- "Pending review" and "Approved this month" are counts, and a paged response carries them exactly:
+  `page.totalElements` with `?status=…&size=1`, which is cheaper than the old count-the-array approach
+- The recent-entries table below the cards is the one genuine consumer of the list itself, and it reads
+  page 0 directly
 
 Empty state (new user): illustration + "You have not logged any hours yet" + "Log your first entry" button.
 
@@ -1660,7 +1681,7 @@ Format: `[option chosen] over [option rejected] — [reason]`
 - JWT over session-based auth — stateless API requires no server memory per user
 - Soft delete over hard delete — `TimeEntry.user`/`project` are not-null FKs with no cascade, so a real DELETE either fails or forces deleting the entries with it; timesheet history is legal-audit data that must survive a person leaving
 - docker-compose over separate manual setup — one command runs the full project locally
-- Return-all over `Pageable` pagination on GET /api/entries — a team's monthly entries are dozens of rows, not thousands; the month filter already bounds the result. Pagination is the first change if teams grow
+- `Pageable` pagination on GET /api/entries, return-all everywhere else — entries is the only collection here that grows without a bound, so it is the only one paged; the month filter narrows a result but does not cap it. Reversed the original return-all choice on 2026-08-01, while Step 7a was still unbuilt and the change cost a method signature rather than a rewritten table
 - Signals in the page component over a state-management library (NgRx) — eight pages, each reading its own endpoint and sharing nothing but the logged-in user; a store would add actions, reducers and effects for state that never leaves one route. NgRx becomes worth it when two distant pages must stay in sync live
 - Local `docker-compose` over a deployed public URL — the portfolio value of this project is the backend it is the first of (layering, JWT, workflow), which a recruiter reads in the code and the READMEs; a free-tier API + database host that cold-starts and expires would add hosting work without adding a new concept. Deployment is a project 08 objective, where the app is the demo
 - `ddl-auto=update` over Flyway migrations — single developer, schema still evolving with the plan; versioned migrations become necessary the moment a second environment or teammate exists
