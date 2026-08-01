@@ -456,7 +456,7 @@ than the handler hardcoding it.
 
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
-| `GET /api/users` | MANAGER | List all users — both roles, **and both active and deactivated accounts** (see the ruling below) | — | `200` + `List<UserResponse>`, each carrying `active` |
+| `GET /api/users` | MANAGER | List all users — both roles, **and both active and deactivated accounts** (see the ruling below), active first then alphabetical | — | `200` + `List<UserResponse>`, each carrying `active` |
 | `POST /api/users` | MANAGER | Create a user account; the backend generates the password | `CreateUserRequest` — `name`, `email`, `role` | `201` + **`CreateUserResponse`** — `UserResponse` fields **+ `generatedPassword`** (returned this once only) · `400` validation · `409` email already exists |
 | `PUT /api/users/{id}` | MANAGER | Update name, email, role, or reactivate/deactivate | `UpdateUserRequest` — `name`, `email`, `role`, `active` (optional — applied only when non-null) | `200` + `UserResponse` · `404` user not found · `409` email already in use |
 | `PATCH /api/users/me/password` | any authenticated | Change **your own** password | `ChangePasswordRequest` — `currentPassword`, `newPassword` (8–72) | `204` no body · `400` validation, **and a wrong current password** — `fieldErrors.currentPassword` (see the §8 status ruling) |
@@ -490,7 +490,7 @@ than the handler hardcoding it.
 
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
-| `GET /api/projects` | both | Employee: active projects only · Manager: all projects | — | `200` + `List<ProjectResponse>` |
+| `GET /api/projects` | both | Employee: active projects only · Manager: all projects. Alphabetical by name | — | `200` + `List<ProjectResponse>` |
 | `GET /api/projects/{id}` | both | Employee: active projects only · Manager: any project. Target of the `Location` header returned by `POST` | — | `200` + `ProjectResponse` · `404` project not found **or inactive and the caller is an EMPLOYEE** |
 | `POST /api/projects` | MANAGER | Create a project | `CreateProjectRequest` — `name`, `description` | `201` + `ProjectResponse` · `400` validation · `409` duplicate name |
 | `PUT /api/projects/{id}` | MANAGER | Update name, description, or reactivate/deactivate | `UpdateProjectRequest` — `name`, `description`, `active` (optional — applied only when non-null) | `200` + `ProjectResponse` · `404` project not found |
@@ -564,10 +564,28 @@ than the handler hardcoding it.
 > (see the `GET /api/users` contract ruling above) — pagination there would break features rather than
 > protect anything.
 >
-> **A paged endpoint owes a total order.** The default sort is `date` desc with `id` desc as the
-> tie-breaker: without a unique key after a non-unique column, two entries on the same day can swap
-> between two calls, so a row is served twice or never. The page cap (`size` ≤ 100) is part of the same
-> contract — an endpoint that honours any requested size is not bounded at all.
+> **Every collection endpoint owes a total order, paged or not.** A result set is unordered, so an
+> endpoint that states no order inherits whatever order the rows happen to be read in — and a single
+> unrelated `UPDATE` is enough to move a row, because PostgreSQL writes a new version of it. The order
+> is therefore declared: in the JPQL for the report aggregates, and through a `Sort` handed to the
+> repository for the rest. The keys must make the ordering **total** — a non-unique sort column needs a
+> unique tie-breaker after it, or two equal rows can swap between two identical calls.
+>
+> | Endpoint | Order |
+> |---|---|
+> | `GET /api/projects` | `name` asc — unique by the §8 duplicate-name rule, so no tie-breaker is needed. Both role branches share it, so the employee's filtered list is a sub-sequence of the manager's |
+> | `GET /api/users` | `active` desc, `name` asc, `id` asc — inactive accounts sort last so the §17 Team table reads without filtering; `name` is not unique, so `id` closes the order |
+> | `GET /api/entries` | `date` desc, `id` desc (see the paging rule below) |
+> | `GET /api/reports/by-project` · `by-user` | hours desc, name asc (see the reports rule above) |
+>
+> **For a paged endpoint the total order is what makes paging correct**, not merely testable: without a
+> unique key after a non-unique column, a row is served on two pages or on none. The page cap
+> (`size` ≤ 100) is part of the same contract — an endpoint that honours any requested size is not
+> bounded at all.
+>
+> One thing the order does **not** control: how text itself compares. `ORDER BY name` resolves through
+> the database's collation, so a locale-aware collation sorts `"nuevo"` before `"Project"` where `C`
+> would not. The endpoint guarantees a stable order, not a particular alphabet.
 >
 > **The paged payload is a DTO, not a framework type.** The response is `content` plus a four-field
 > `page` object, never Spring Data's `PageImpl` serialised by reflection: that class is a dependency's
