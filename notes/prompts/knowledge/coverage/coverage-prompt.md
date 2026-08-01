@@ -71,8 +71,9 @@ This prompt has two shapes; Step 0 fixes which one and records it in the plan.
 **Verify-gap fast path** applies only when all of these hold:
 
 - `verify-{LEVEL}.md` exists with `Verdict: gaps` and a non-empty `## Open gaps`;
-- its stored `Coverage SHA-256` matches the current `TARGET_FILE`'s **scope bytes** (evidence markers
-  stripped — see "Evidence markers" in the standard), so the gaps were raised against today's scope;
+- its stored `Coverage SHA-256` matches the current `TARGET_FILE`'s **scope bytes** and every applicable
+  prerequisite SHA matches its current earlier-level file (evidence markers stripped — see "Evidence
+  markers" in the standard), so every gap was raised against today's complete dependency chain;
 - no `_cross-topic-inbox.md` entry is pending under this topic;
 - neither this topic's ownership row nor an adjacent boundary changed since its last coverage run;
 - no other recalibration trigger is active.
@@ -161,7 +162,11 @@ the file are assumed to be there on purpose — often because they appear in the
 projects — so when in doubt between deleting and moving, move. Every DELETE is listed individually in
 the final summary with its reason.
 
-Correct factual errors before making scope decisions. Apply this topic's inbox entries through the same classification and clear every processed entry. Apply each open gap from `verify-{LEVEL}.md` the same way — judge it against the standard, add or discard it, and say which in the summary; a gap the gate raised is a proposal, never a pre-approved item.
+Correct factual errors before making scope decisions. Apply this topic's inbox entries through the
+same classification and clear every processed entry. Apply each level-prefixed open gap from
+`verify-{LEVEL}.md` the same way: remove the metadata prefix, verify or correct its target level, then
+add or discard it and say which in the summary. A gap the gate raised is a proposal, never a
+pre-approved item.
 
 On full recalibration, compare every retained or proposed concept against all three files of every
 adjacent topic. On `FIRST_TOPIC_RUN`, classify every adjacent bullet that could fall inside the new
@@ -283,8 +288,12 @@ In update mode:
 
 1. Commit changed topic scope files and every affected global mirror atomically. When `verify-{LEVEL}.md`
    supplied gaps, blank its `## Open gaps` to `*(none)*` and set `Verdict: superseded` in the same
-   commit, add `Superseded by Coverage SHA-256: <new TARGET_FILE digest>`, and thereby prove which final
-   coverage consumed the gaps. No run re-proposes a consumed gap. That superseded verification is
+   commit, add `Superseded by Coverage SHA-256: <new TARGET_FILE digest>`,
+   `Superseded junior prerequisite SHA-256: <digest> | n/a`, and
+   `Superseded middle prerequisite SHA-256: <digest> | n/a`. Fingerprint every prerequisite applicable
+   to `LEVEL`, whether or not that particular file changed, and thereby prove which final dependency
+   chain consumed the gaps.
+   No run re-proposes a consumed gap. That superseded verification is
    execution history, not a new gate: continue directly to `notes-plan-prompt`. A fresh
    `coverage-verify` may be run later for new completeness evidence, but it is never required before
    planning or authoring notes.

@@ -1,9 +1,10 @@
 # Coverage Verify Prompt
 
 Verify that one topic's already-generated coverage at one level is complete for the job target, before
-`notes-plan` turns it into a study map. This prompt is **read-only over coverage**: it never edits a
-coverage file. It emits a verdict and a durable findings file; `coverage-prompt` consumes the findings
-on its next update run.
+`notes-plan` turns it into a study map. Middle verification also protects junior prerequisite
+integrity; senior verification protects both junior and middle. This prompt is **read-only over
+coverage**: it never edits a coverage file. It emits a verdict and a durable findings file;
+`coverage-prompt` consumes the findings on its next update run.
 
 > **▶ Run first:** `coverage-prompt` for this exact topic and level — this gate fingerprints that
 > coverage and refuses to proceed when the global mirror differs.
@@ -35,7 +36,8 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 
 - `COVERAGE = notes/{topic}/coverage/{LEVEL}.md`
 - `SIBLINGS = the other two files in notes/{topic}/coverage/`
-- `GLOBAL_MIRROR = notes/coverage/{LEVEL}.md`
+- `PREREQUISITES = none for junior; junior for middle; junior and middle for senior`
+- `GLOBAL_MIRRORS = notes/coverage/{level}.md for LEVEL and every PREREQUISITES level`
 - `FINDINGS = notes/{topic}/coverage/verify-{LEVEL}.md`
 
 ## Required sources
@@ -57,15 +59,19 @@ must not supply proposed gaps or raise the selected-level floor.
 1. Stop on `main`.
 2. Read this prompt's `_internal/_last-run-report-coverage-verify.md` if it exists; surface an `open`
    finding in one line and leave it alone.
-3. Stop if `COVERAGE` is missing or its ordered section headings and bullets differ from the
-   `## {TOPIC}` section in `GLOBAL_MIRROR`. Compare canonical content rather than raw text: topic-file
-   `##` section headings correspond to `###` headings inside the mirror's topic section; ignore only
-   that expected heading-depth difference. Any other heading, bullet, or ordering difference means the
-   mirror is stale, `coverage-prompt` has not finished, and there is nothing trustworthy to verify.
+3. Stop if `COVERAGE` or a `PREREQUISITES` file is missing, or if any of them differs from its
+   `## {TOPIC}` section in the matching `GLOBAL_MIRRORS` file. Compare canonical content rather than
+   raw text: topic-file `##` section headings correspond to `###` headings inside the mirror's topic
+   section; ignore only that expected heading-depth difference. Any other heading, bullet, or ordering
+   difference means a mirror is stale, `coverage-prompt` has not finished, and there is nothing
+   trustworthy to verify.
 4. Compute the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
    trailing ` ✅ NN-slug — {evidence}` evidence marker stripped, per the canonical command in "Evidence markers" in
    `_coverage-standard.md`. This is what the
    findings file stamps, so `notes-plan` can tell a verified verdict from a stale one.
+   Compute the same digest for every `PREREQUISITES` file. These additional fingerprints prevent a
+   prerequisite finding from being consumed after the earlier-level scope it was judged against has
+   changed.
 5. For middle, state that the junior gate must be consolidated; for senior, junior and middle. The gate
    controls study order, not whether this verification may run.
 6. Run `git status --short` and preserve unrelated changes.
@@ -78,9 +84,11 @@ coverage file, both siblings, `_shared-context.md`, and relevant market evidence
 under/over-coverage priors — an orchestrator-supplied hint contaminates the adversarial pass. Its
 mandate:
 
-> Judge whether this file, mastered alone, covers the realistic expectations of this topic at this level
-> for the stated job target. Report only concepts that are genuinely missing at this level and owned by
-> this topic. Apply, at minimum, these lenses:
+> Judge whether the selected file, mastered together with its earlier levels, covers the realistic
+> expectations of this topic at this level for the stated job target. Report concepts genuinely
+> missing from the selected level and any material prerequisite the selected scope assumes but the
+> required earlier level lacks. Assign every gap to exactly one target level. Apply, at minimum, these
+> lenses:
 >
 > - **Market floor** — recurring requirements in target postings for this level that no item maps to.
 > - **Mechanism layer** (language topics — Java, JavaScript, TypeScript) — the predict-the-output and
@@ -89,24 +97,32 @@ mandate:
 >   and modifying a codebase you did not write demands, which postings assume rather than state.
 > - **Objective fit** — for middle/senior, flag generic-seniority items with no bearing on the target
 >   Angular + Java consultancy path; they are not this candidate's gaps.
+> - **Prerequisite integrity** — for middle, identify junior foundations the middle scope materially
+>   depends on but junior lacks; for senior, do the same across junior and middle. This is not a fresh
+>   independent market audit of the earlier levels: report only gaps exposed by the selected level's
+>   mechanisms, decisions, or responsibilities.
 >
-> Do not report items already present, items owned by a sibling level, items owned by another topic, or
-> unjustified specialisation. For each real gap return: the proposed one-sentence item, the section it
-> would join, and one line on why not knowing it would materially weaken performance at this level.
+> Do not report items already present in any level, items owned by another topic, or unjustified
+> specialisation. For each real gap return: its target level, the proposed one-sentence item, the
+> section it would join, and one line on why not knowing it would materially weaken performance at the
+> selected level or break its prerequisite chain.
 > Do not inspect or infer requirements from `ROADMAP.md`, notes, exercises, projects, or plans. Those
 > artifacts consume coverage; they do not define it.
 
-Acceptance proof: the reviewer states `COVERAGE` line count and that it was read to EOF, names which
-lenses applied to this topic shape, and confirms it reported only same-topic, same-level gaps.
+Acceptance proof: the reviewer states the line count and EOF confirmation for `COVERAGE` and every
+`PREREQUISITES` file, names which lenses applied to this topic shape, and confirms every gap has one
+same-topic target level no higher than `LEVEL`.
 Re-dispatch once if the proof is missing.
 
 ## Step 2 — Verify each finding
 
-The orchestrator verifies every reported gap against the standard and **does not edit coverage**. Reject
-a finding when the concept is already present (grep the coverage file), belongs to a sibling level or
-another topic, restates an existing bullet, or is unjustified specialisation. What survives is the
-verified gap list. Run one adversarial pass of your own; add only what the reviewer missed and the
-standard supports.
+The orchestrator verifies every reported gap against the standard and **does not edit coverage**. Grep
+all three topic files. Reject a finding when the concept is already present, belongs to another topic,
+restates an existing bullet, targets a level above `LEVEL`, or is unjustified specialisation. Correct
+the target level when the concept is real but misclassified; never discard a real gap merely because
+it belongs to an earlier prerequisite. What survives is the verified gap list, grouped by target
+level. Run one adversarial pass of your own; add only what the reviewer missed and the standard
+supports, including prerequisite-integrity gaps exposed by the selected level.
 
 ## Step 3 — Write the findings and the verdict
 
@@ -119,15 +135,20 @@ In update mode, write `FINDINGS` in this exact shape:
 
 Verdict: complete | gaps
 Coverage SHA-256: <64 lowercase hexadecimal characters>
+Junior prerequisite SHA-256: <64 lowercase hexadecimal characters> | n/a
+Middle prerequisite SHA-256: <64 lowercase hexadecimal characters> | n/a
 Verified: YYYY-MM-DD
 
 ## Open gaps
 
-- concept — one concise sentence naming the mechanism or level signal [proposed section]
+- [junior | middle | senior] concept — one concise sentence naming the mechanism or level signal [proposed section]
 ```
 
-When the verdict is `complete`, the `## Open gaps` body is exactly `*(none)*`. The list is written in the
-standard item format so `coverage-prompt` can judge each entry like any other proposed gap.
+`Coverage SHA-256` always fingerprints the selected file for compatibility with `notes-plan`.
+Prerequisite fields fingerprint only levels earlier than `LEVEL`; every non-applicable field is `n/a`.
+When the verdict is `complete`, the `## Open gaps` body is exactly `*(none)*`. The level prefix is
+findings metadata, not part of the proposed coverage bullet; `coverage-prompt` removes it before
+judging the item.
 
 Dry run prints the verdict and gap list without writing `FINDINGS`.
 
@@ -151,7 +172,8 @@ is `_internal/_last-run-report-coverage-verify.md`; update the selected Verify J
 This gate is advisory, not blocking. It never stops `notes-plan` from running; it tells the run how much
 of the coverage it can trust.
 
-- `Verdict = complete` (SHA matching current coverage) means `notes-plan` plans against verified coverage.
+- `Verdict = complete` (selected SHA matching current coverage) means `notes-plan` plans against
+  selected-level coverage whose cumulative prerequisite chain produced no exposed gap.
 - `Verdict = gaps`, a missing verdict, or a stale SHA does not stop `notes-plan` — the plan proceeds and
   records the degraded gate state in its report. Feed `FINDINGS` to `coverage-prompt` in update mode: it
   judges each open gap through its own Step 2 classification and adds or discards it. Once that update
@@ -161,6 +183,7 @@ of the coverage it can trust.
 
 ## Final summary
 
-Report branch, mode, topic, level, progression-gate state, `COVERAGE` line count with EOF confirmation,
-the coverage SHA, reviewer completion and lenses applied, verified-gap count, the verdict, the findings
-path (or `dry-run`), and unresolved risks or `none`. Do not finish while a plan item remains incomplete.
+Report branch, mode, topic, level, progression-gate state, every reviewed coverage file's line count
+with EOF confirmation, selected and prerequisite SHAs, reviewer completion and lenses applied,
+verified-gap count by target level, the verdict, the findings path (or `dry-run`), and unresolved risks
+or `none`. Do not finish while a plan item remains incomplete.

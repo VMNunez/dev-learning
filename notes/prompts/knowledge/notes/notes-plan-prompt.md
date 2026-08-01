@@ -38,6 +38,7 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 
 - `COVERAGE = notes/{topic}/coverage/{LEVEL}.md`
 - `VERIFY = notes/{topic}/coverage/verify-{LEVEL}.md`
+- `PREREQUISITES = none for junior; junior for middle; junior and middle for senior`
 - `PLAN = notes/{topic}/coverage/notes-plan-{LEVEL}.md`
 - `EN_DIR = notes/{topic}/{LEVEL}/en/`
 - `ES_DIR = notes/{topic}/{LEVEL}/es/`
@@ -62,12 +63,16 @@ belong there.
 3. Stop on `main`.
 4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
 5. Read `VERIFY` but never stop on it. Record one of three states:
-   - `verified` — `Verdict = complete` and its stored `Coverage SHA-256` matches the current `COVERAGE`;
-   - `reviewed` — `Verdict = superseded`, no open gaps, and `Superseded by Coverage SHA-256` matches
-     current `COVERAGE`, proving that a `coverage-prompt → coverage-verify → coverage-prompt` cycle
-     consumed the findings into these exact bytes;
+   - `verified` — `Verdict = complete`, its stored `Coverage SHA-256` matches the current `COVERAGE`,
+     and every applicable prerequisite SHA matches the current earlier-level scope bytes;
+   - `reviewed` — `Verdict = superseded`, no open gaps, `Superseded by Coverage SHA-256` matches current
+     `COVERAGE`, and every applicable `Superseded {level} prerequisite SHA-256` matches the current earlier-level
+     scope bytes, proving that a `coverage-prompt → coverage-verify → coverage-prompt` cycle consumed
+     the findings into this exact dependency chain;
    - `unverified` — missing findings, an open `gaps` verdict, or any other stale SHA.
-   All three states continue planning. `reviewed` is a completed cycle, not a degraded gate and not a
+   Missing legacy prerequisite fields on a middle or senior verdict make it `unverified`; run the
+   cumulative `coverage-verify` when a current chain verdict matters. All three states continue
+   planning. `reviewed` is a completed cycle, not a degraded gate and not a
    reason to request another verification. When `unverified`, record the reason without blocking.
    Victor may start a fresh reassessment later, but zero gaps is never required before planning or
    authoring notes.

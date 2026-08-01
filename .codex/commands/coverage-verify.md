@@ -10,7 +10,9 @@ Read `notes/prompts/knowledge/coverage/coverage-verify-prompt.md` and execute it
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- Read-only over coverage: this gate never edits a coverage file. It writes only its findings file, self-report, and tracker.
+- Read-only over coverage: this gate never edits a coverage file. Middle checks junior prerequisite
+  integrity; senior checks junior and middle. It writes only its level-targeted findings file,
+  self-report, and tracker.
 - Execute the cold completeness reviewer through canonical runtime tiers; never treat tier names as literal model IDs, and do not pass it size or freshness priors.
 - A `gaps` verdict is advisory and never blocks notes-plan. Feed the findings through one
   `coverage-prompt` update; once consumed, continue to notes-plan. Any later re-verification is an
