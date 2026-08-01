@@ -76,6 +76,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Floating-point representation and comparison — `double` and `float` cannot represent most decimals exactly, so `==` between them is unreliable and `NaN` is never equal to itself, which is why floating-point equality needs a tolerance or `BigDecimal`
 - Integer vs floating-point division by zero — integer division by zero throws `ArithmeticException`, while floating-point division by zero produces `Infinity` or `NaN` instead of failing
 - `BigDecimal` for money and decimal arithmetic — avoid binary floating-point error, remember operations return new values, and choose explicit scale and rounding for division ✅ 07-timetrack
+- `BigDecimal.equals()` vs `compareTo()` — recognise that `equals` includes scale while `compareTo` compares numerical value, and choose deliberately for money comparisons and collection keys
 
 ## Collections and generics
 
@@ -88,6 +89,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Map accumulator idioms — use `getOrDefault` and `computeIfAbsent` for the common count-or-group pattern instead of manual get-check-put null handling
 - Collection interfaces vs implementations — declare the weakest useful contract such as `List` while choosing a concrete implementation such as `ArrayList` at construction ✅ 07-timetrack
 - Collection factories and copies — `List.of`, `Set.of`, and `Map.of` reject nulls and return unmodifiable collections, which still does not make mutable elements deeply immutable ✅ 07-timetrack
+- `Arrays.asList()` vs `List.of()` and `List.copyOf()` — distinguish a fixed-size list backed by an array from an unmodifiable factory or copy, including mutation, null, and aliasing consequences
 - `ArrayList` vs `LinkedList` — prefer `ArrayList` for normal application access; linked nodes do not make locating a middle position constant-time
 - Iteration and safe removal — do not structurally modify a collection through the collection itself during for-each iteration; use `removeIf` or the iterator's own `remove`
 - Practical complexity recognition — distinguish linear list search from expected constant-time hash lookup without treating Big-O as a substitute for measurement

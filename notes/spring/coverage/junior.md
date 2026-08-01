@@ -11,13 +11,11 @@ Core Spring Framework mechanisms a junior Java developer must understand to read
 - `@Repository` exception translation — with Spring's persistence-exception translation infrastructure, the stereotype lets provider-specific failures surface through the portable `DataAccessException` hierarchy ✅ 07-timetrack
 - Component scanning — understand that scanning searches configured packages for candidate components, so a valid stereotype outside the scan boundary still produces a missing-bean failure
 - `@Configuration` and `@Bean` — register third-party instances or explicit construction logic in Java configuration and use scanning for application-owned component classes ✅ 07-timetrack
-- `@Bean` method dependencies — prefer parameters for explicit wiring that also works in lite configuration; calls between methods are container-intercepted only in full `@Configuration` mode with bean-method proxying enabled
 - Bean names and type lookup — beans are normally resolved by type, while names become relevant when several candidates share that type or external integration refers to a bean explicitly
 - Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor ✅ 07-timetrack
 - Lombok constructors and Spring injection — `@RequiredArgsConstructor` can express constructor injection for final dependencies, while an all-argument constructor is usually the wrong service boundary
 - `@Autowired` requiredness — an autowired dependency is required by default; constructor inference removes the annotation, while `Optional`, `ObjectProvider`, or explicit requiredness changes absence semantics deliberately
 - Collection injection — inject all beans of a type and know that empty resolution depends on the injection form: required fields or methods normally need a candidate, while a sole constructor or factory-method parameter may receive an empty collection
-- Map injection — inject beans of one value type under their bean names as keys when callers need both strategy lookup and container-defined identity
 - `ObjectProvider<T>` — defer or optionally request a dependency when its availability or scope genuinely varies instead of hiding a required collaborator behind null
 - `@Qualifier` vs `@Primary` — select one bean explicitly at an injection point or declare a default candidate when several beans satisfy the same dependency type
 - Dependency resolution failures — distinguish no candidate, multiple candidates, and a dependency cycle before changing annotations at random
@@ -28,7 +26,6 @@ Core Spring Framework mechanisms a junior Java developer must understand to read
 - Singleton scope and stateless services — the default shares one bean instance across callers, so mutable request-specific state on a service can leak across users and threads
 - Singleton bean scope vs Singleton pattern — Spring's scope means one managed instance per bean definition in a container, not a class-enforced global instance with a private constructor
 - Prototype scope — the container creates a new instance each time that bean is requested, unlike the shared singleton default
-- Shorter-lived beans inside singletons — direct injection resolves the dependency when the singleton is created, so use a provider or scoped proxy only when each runtime use genuinely needs the current prototype, request, or session instance
 - Web-aware request and session scopes — recognise per-request and per-session lifetimes so request-specific state is not placed on a shared singleton
 - Scope vs thread safety — bean scope controls instance lifetime and sharing, while thread safety depends on how mutable state is accessed
 - Eager singleton creation vs `@Lazy` — non-lazy singletons are normally pre-instantiated when the context refreshes, while lazy creation postpones construction, lifecycle work, and related failures until first use
@@ -50,7 +47,7 @@ Core Spring Framework mechanisms a junior Java developer must understand to read
 - Method-level vs class-level `@Transactional` — a method annotation overrides class-level transaction metadata, so broad defaults belong on the class and exceptional boundaries stay explicit on methods
 - Transactional proxy limitations — `new` instances, self-invocation, and non-proxy-eligible methods do not open the transaction the annotation appears to promise
 - `@Transactional(readOnly = true)` — declare read intent so integrations may optimise work, without treating it as a portable guarantee that the database will reject writes ✅ 07-timetrack
-- Caught exceptions and rollback — catching a failure inside the advised method can let its proxy observe normal completion, while catching an inner transactional failure may still leave the shared transaction rollback-only and make the outer commit fail
+- Caught exceptions and rollback — catching and suppressing an unchecked failure inside the advised method can let its proxy observe normal completion and commit remaining work
 - Transaction propagation `REQUIRED` — recognise the default join-or-create behaviour so nested service calls participate in one boundary instead of assuming every annotation opens an independent transaction
 - Transaction resource participation — a local Spring transaction covers only resources enlisted through its transaction-aware integrations; ordinary HTTP calls, files, or unenlisted messages do not roll back with the database
 

@@ -39,6 +39,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 ## JSON and API contracts
 
+- Relational vs NoSQL database families — recognise document and key-value models while choosing a relational database when joins, constraints, and transactions fit the data
 - JSON value model — recognise objects, arrays, strings, numbers, booleans, and `null`, with double-quoted object keys and no trailing commas
 - JSON object vs array — distinguish a named property collection from an ordered value collection when reading or designing a payload
 - Missing field vs explicit `null` — treat absence and an explicit null value as separate contract states unless the API defines them as equivalent ✅ 07-timetrack
@@ -70,6 +71,8 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - AI-generated change verification — treat generated code, tests, and configuration as untrusted proposals whose APIs, assumptions, edge cases, and meaningful checks must be validated before acceptance
 
 ## Software testing
+
+- Big O recognition — compare constant and linear growth in ordinary collection operations while remembering that real input sizes and constants still matter
 
 - Unit test — verify a small behaviour boundary quickly and isolate collaborators only when that keeps the test focused
 - Integration test — verify selected real components working together across a meaningful boundary
@@ -128,6 +131,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Deployment vs release — distinguish placing an artifact in an environment from making its functionality available to users
 - Pipeline triggers and execution environments — recognise push, pull-request, merge, schedule, and manual triggers and diagnose jobs inside their isolated configured environment rather than assuming local-machine state
 - Pipeline stages — trace checkout, build, test, package, image, and deploy stages and identify which stage produced a failure
+- CI platform recognition — recognise Jenkins, GitLab CI, and GitHub Actions as tools that execute repository-defined pipelines without treating one vendor's syntax as the CI/CD concept itself
 - Build artifact — treat an identifiable, traceable build output as the input promoted through later checks and environments
 - Pipeline result limits — recognise that a green pipeline proves only the checks it actually ran, not that the product is defect-free
 

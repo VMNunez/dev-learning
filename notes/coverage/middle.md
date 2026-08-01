@@ -9,10 +9,9 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 ## Angular
 
-Concepts expected once the junior Angular foundation is consolidated and a developer is becoming autonomous in a maintained production application.
-
 ### State and reusable component APIs
 
+- `model()` component APIs — expose a writable value and matching change output when a reusable component deliberately owns two-way binding
 - NgRx Store architecture — use actions, reducers, selectors, and effects when application-wide state requires explicit event flow and tooling
 - `@ngrx/signals` stores — model shared state with signal-store features while preserving clear ownership and side-effect boundaries
 - `ControlValueAccessor` — build a reusable custom control that participates in Angular forms, validation, disabled state, and touched state
@@ -20,30 +19,27 @@ Concepts expected once the junior Angular foundation is consolidated and a devel
 ### Advanced reactive integration
 
 - `toSignal()` configuration and injection context — control initial values, equality, cleanup, and custom injectors when basic conversion is insufficient
-- `forkJoin()` vs `combineLatest()` — coordinate one-time completion or continuing latest-value streams according to source behaviour ✅ 02-weather-app
-- RxJS retry and finalisation policies — retry only safe failures and guarantee loading cleanup with a deliberate `finalize()` boundary
+- `toSignal()` vs `toObservable()` — cross the signal/Observable boundary in the direction required by an integration without wrapping reactive primitives back and forth
+- RxJS retry policies — retry only failures whose operation and failure mode make another attempt safe
 
 ### Rendering, loading, and diagnostics
 
 - Route preloading strategies — balance later-navigation latency against background bandwidth using measured route usage
 - `@defer` blocks — choose viewport, interaction, or idle triggers for heavy template dependencies
-- Signal `resource()` APIs — evaluate signal-native asynchronous loading against established `HttpClient` and RxJS patterns
+- Signal `resource()` APIs — evaluate signal-native asynchronous loading against established `HttpClient` and RxJS patterns only when the project's Angular version provides the required stable API
 - `ChangeDetectorRef` — use manual marking, detection, or detachment only when normal Angular notifications cannot model an integration
-- Angular CDK primitives — build accessible overlays, drag-and-drop interactions, portals, and virtual scrolling beyond ready-made Material components
 - Bundle and rendering profiling — use Angular DevTools and build statistics to find a measured bottleneck before optimising
 
----
-
 ## Angular Material
-
-Concepts expected when a developer can adapt Angular Material to a production design system and select components beyond the junior table/form/dialog floor.
 
 ### Theming and custom controls
 
 - Custom theme palettes — define product palettes and semantic colours instead of relying only on prebuilt themes
 - Component and theme token overrides — customise a narrow visual contract without depending on brittle internal selectors
+- Selective theme emission — choose all-component or per-component base, colour, typography, and density mixins while preventing duplicated CSS output
 - Runtime dark mode — switch complete theme token sets while preserving contrast and user preference
 - Material custom form controls — integrate a `ControlValueAccessor` with `mat-form-field`, validation, focus, and error state
+- Custom error-state policies — implement and provide an `ErrorStateMatcher` when the product's submission or cross-field rules cannot use Material's default interaction timing ✅ 05-task-manager
 
 ### CDK and scale-oriented components
 
@@ -52,15 +48,16 @@ Concepts expected when a developer can adapt Angular Material to a production de
 - `MatAutocomplete` with remote data — combine form streams, cancellation, loading, and option identity for production lookup fields
 - Hierarchical and dense navigation — choose `MatTree`, tabs, or expansion panels according to information structure rather than appearance
 - Multi-value inputs — implement chips, selection, removal, keyboard interaction, and validation for tag-like data
-
----
+- Programmatic stepper navigation — drive step movement from component code without bypassing linear validity, focus, or error presentation ✅ 06-hr-portal
+- Conditional stepper flows — include, skip, or reorder steps according to earlier answers while keeping the linear contract coherent
 
 ## Spring
 
-Core Spring Framework concepts expected when a developer owns reusable application infrastructure and diagnoses proxy, transaction, lifecycle, and concurrency behaviour.
-
 ### Container extension and lifecycle
 
+- `@Bean` method dependencies — prefer parameters for explicit wiring that also works in lite configuration; calls between methods are container-intercepted only in full `@Configuration` mode with bean-method proxying enabled
+- Map injection — inject beans of one value type under their bean names as keys when callers need both strategy lookup and container-defined identity
+- Shorter-lived beans inside singletons — direct injection resolves the dependency when the singleton is created, so use a provider or scoped proxy only when each runtime use genuinely needs the current prototype, request, or session instance
 - Bean post-processors — understand and implement container hooks that inspect or wrap beans without confusing them with ordinary application services
 - Factory beans — expose an object created by specialised factory logic while distinguishing the factory bean from the object it produces
 - Programmatic bean registration — register definitions dynamically only when configuration cannot be expressed clearly through normal component or `@Bean` declarations
@@ -69,6 +66,7 @@ Core Spring Framework concepts expected when a developer owns reusable applicati
 
 ### AOP and transaction design
 
+- Shared-transaction rollback-only failure — catching an inner transactional failure may still leave the shared transaction rollback-only and make the outer commit fail
 - JDK vs class-based proxy constraints — diagnose interface exposure, final or private methods, and other proxy-strategy limits when advice is missing
 - Pointcut and advice design — target the smallest stable join-point set and avoid broad expressions that silently wrap unrelated application behaviour
 - Advice precedence — control ordering when transactions, retries, security, caching, or custom advice must observe failures in a specific sequence
@@ -92,11 +90,7 @@ Core Spring Framework concepts expected when a developer owns reusable applicati
 - Context caching and `@DirtiesContext` — preserve reusable test contexts and invalidate one only when a test mutates container state that cannot be restored
 - Framework integration testing — prove proxy advice, transaction boundaries, events, and lifecycle callbacks with a real Spring context where a plain unit test cannot observe them
 
----
-
 ## Spring Boot
-
-Concepts expected from a Spring Boot developer who owns production behaviour beyond straightforward CRUD services.
 
 ### Production boundaries and diagnostics
 
@@ -121,23 +115,26 @@ Concepts expected from a Spring Boot developer who owns production behaviour bey
 - Testcontainers — run integration tests against disposable real infrastructure instead of relying only on in-memory substitutes
 - Contract and integration testing — verify database, HTTP, and messaging boundaries where unit mocks cannot expose configuration errors
 
----
-
 ## Java
 
-Concepts expected once core Java semantics are fluent and the developer must design maintainable concurrent and library-facing code.
+### Language modelling and API design
 
-### Modern language modelling
-
-- Records — model immutable data carriers and understand generated equality, accessors, and constructor constraints
 - Sealed classes and interfaces — constrain a hierarchy so exhaustive domain modelling is explicit
-- Pattern matching — use modern `instanceof` and switch patterns without hiding unclear domain boundaries
+- Record invariants and defensive copying — enforce valid immutable data in compact constructors when record components include mutable objects
+- Pattern-matching switch and guarded cases — model exhaustive type-based decisions without turning domain design into procedural branching
 
 ### Generics and reflection
 
 - Bounded wildcards and PECS — design producer/consumer APIs without unsafe casts or unnecessary invariance
 - Generic type erasure — recognise runtime type limitations and the consequences for reflection and overloaded APIs
 - Reflection and runtime annotations — inspect metadata deliberately while understanding lost compile-time safety and framework cost
+- Meta-annotations and annotation processing — design annotation contracts and distinguish compile-time processors from runtime reflection or framework scanning
+
+### Streams and collection design
+
+- Primitive stream specialisations and numeric aggregation — use `IntStream`, `LongStream`, or `DoubleStream` when boxing would obscure a measured or API-relevant cost
+- Downstream collectors and multi-level grouping — design `groupingBy`, partitioning, reduction, and map results whose types remain understandable to callers ✅ 07-timetrack
+- Custom collection API contracts — expose mutability, ordering, null, ownership, and defensive-copy guarantees explicitly at service and library boundaries
 
 ### Concurrency foundations
 
@@ -146,11 +143,7 @@ Concepts expected once core Java semantics are fluent and the developer must des
 - `CompletableFuture` composition — combine asynchronous stages with explicit error handling and executor awareness
 - Synchronisation primitives — choose `synchronized`, locks, and concurrent collections according to the protected invariant
 
----
-
 ## Architecture
-
-Concepts expected when a developer begins owning boundaries and trade-offs across multiple features or services.
 
 ### Application boundaries
 
@@ -161,6 +154,7 @@ Concepts expected when a developer begins owning boundaries and trade-offs acros
 
 ### Distributed-system patterns
 
+- Synchronous request vs asynchronous event — a direct call gives an immediate result and temporal coupling, while an event decouples timing but introduces delayed consistency, delivery, and ordering concerns
 - API Gateway — centralise external routing and cross-cutting policies without moving business logic into the gateway
 - Circuit breaker — stop repeated calls to a failing dependency and define recovery behaviour
 - Event-driven architecture — publish domain-relevant events while handling delivery, ordering, idempotency, and eventual consistency
@@ -168,34 +162,46 @@ Concepts expected when a developer begins owning boundaries and trade-offs acros
 
 ### Design patterns in context
 
-- Strategy, Factory, Builder, Observer, and Decorator — recognise the problem each pattern solves and avoid applying names without the corresponding pressure
+- Architecture-focused code review — trace a change through its dependency graph and verify that each responsibility and dependency still respects the declared boundaries before approving it
+- Strategy pattern — vary behaviour behind a stable contract when independent algorithms or policies
+  must evolve without branching through the caller
+- Factory pattern — own creation policy when selecting and assembling concrete collaborators is a
+  responsibility that should not leak into consumers
+- Builder pattern — construct complex objects step by step when optional combinations or readability
+  justify more machinery than a constructor or factory method
+- Observer pattern — decouple publishers from subscribers while defining lifecycle, ordering, and
+  failure behaviour explicitly
+- Decorator pattern — add behaviour around a collaborator without subclass proliferation while
+  preserving the wrapped contract
+- Contract-testing strategy — define executable provider/consumer boundary checks when independently
+  evolving services or modules would otherwise discover contract drift only after integration
 - Pattern trade-offs — compare added indirection with the concrete variation or coupling the pattern removes
 
----
-
 ## Security
-
-Concepts expected when a developer owns authentication integration and operational defences rather than only consuming a JWT-protected API.
 
 ### Identity and token lifecycle
 
 - OAuth 2.0 roles and flows — distinguish client, resource owner, authorization server, and resource server in an appropriate authorization flow
 - OpenID Connect — add identity claims and an ID token to OAuth without confusing authentication with API authorization
-- Access-token and refresh-token rotation — limit access-token lifetime and detect refresh-token reuse
-- Token revocation — invalidate credentials before natural expiry using stateful revocation or short-lived-token strategies
+- Refresh-token rotation and reuse detection — operate the refresh-token family lifecycle and respond
+  when an already rotated credential is presented again
+- Token-revocation strategy — design and operate early invalidation using stateful revocation,
+  credential versioning, or deliberately short-lived access tokens
 
 ### Application and transport hardening
 
-- Rate limiting and brute-force defence — bound abusive traffic by identity and endpoint while preserving legitimate retries
-- Security headers — configure CSP, framing, content-type, referrer, and HSTS policies according to the deployed application
+- Distributed rate-limit policy — design limits across instances and identities, choose storage and
+  failure behaviour, and balance abusive traffic against legitimate retries
+- Security-header policy — design and operate CSP, framing, content-type, referrer, and HSTS policies
+  for the application's deployed content and integrations
 - TLS termination and certificate lifecycle — understand where HTTPS terminates, how certificates renew, and which hop remains protected
 - Secrets rotation — replace credentials without source changes or avoidable downtime
-
----
+- Segregation of duties — design independent approval and sign-off controls so privileged workflows
+  cannot be completed by the same actor ✅ 07-timetrack — `approve`/`reject` refuse a manager whose id matches the entry's owner
+- Vulnerability reachability and risk acceptance — analyse affected components, configuration, and
+  reachable code paths, then document remediation priority or a justified acceptance decision
 
 ## TypeScript
-
-Concepts expected when a developer designs reusable type-safe APIs instead of only consuming application models.
 
 ### Type transformation
 
@@ -204,42 +210,50 @@ Concepts expected when a developer designs reusable type-safe APIs instead of on
 - `infer` in conditional types — extract a component type from another type's structure
 - Template literal types — model constrained string protocols and event names from existing unions
 - Advanced utility-type composition — combine standard utilities without erasing required domain invariants
+- `Exclude<T, U>` and `Extract<T, U>` — filter union members by assignability when designing reusable derived contracts
+- `ReturnType<T>` and `Parameters<T>` — derive callable contracts without manually duplicating function signatures
+- Assertion functions — design `asserts` signatures whose runtime failure and compile-time narrowing remain aligned
+- Generic parameter defaults — provide ergonomic reusable APIs without hiding an important type choice
 
 ### API and project boundaries
 
-- `satisfies` — validate a value against a contract while retaining its narrower inferred type
 - Declaration merging and module augmentation — extend compatible library types without silently changing unrelated global contracts
+- `const enum` trade-offs — evaluate inlining against isolated compilation, library publication, and tooling compatibility
+- `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` — adopt stricter project-wide semantics and manage the migration cost across an application
 - Custom decorator typing — preserve constructor, method, and metadata types when a framework requires decorators
 - Project references and `tsc --build` — split large repositories into incremental type-checking boundaries
 - Declaration files — describe untyped JavaScript libraries and publish stable public TypeScript APIs
 
----
-
 ## JavaScript
-
-Concepts expected when a developer diagnoses asynchronous behaviour and designs reusable language-level abstractions.
 
 ### Async control and iteration
 
-- Debounce vs throttle implementation — control bursty events according to final-value or maximum-rate semantics
-- `AbortController` — propagate cancellation through supported asynchronous APIs and distinguish cancellation from failure
+- Timer-and-state mechanics for rate limiting — implement quiet-period and maximum-rate behaviour without duplicate calls or stale state
 - Iterators and iterable protocols — expose sequence traversal without leaking the collection's representation
 - Generators — implement lazy iteration and delegated sequences with explicit suspension points
 - Async iterators — consume paginated or streaming asynchronous data with backpressure-aware iteration
 
 ### Runtime objects and memory
 
+- `Object.is` edge semantics — choose SameValue comparison when `NaN` equality or signed zero must differ from strict equality
+- Sparse-array behaviour — diagnose holes, explicit `undefined`, length, and iteration-method differences in array-like data
 - `WeakMap` and weak references — associate metadata without preventing key collection and recognise nondeterministic cleanup
 - `Proxy` and `Reflect` — intercept object operations while preserving language invariants
 - `Symbol` — create collision-resistant property keys and implement well-known language protocols
-- Closures and memory retention — diagnose when long-lived callbacks retain objects that should be collectable
+- Retained-object diagnosis — trace long-lived callbacks and lexical environments that keep otherwise-unused objects collectable
 
----
+### Module graph diagnosis
+
+- Live module bindings — diagnose updates and initialisation order across imported and exported bindings
+- Circular module dependencies — resolve partially initialised or order-sensitive module graphs instead of masking the cycle
+- Tree-shaking constraints — design analyzable module boundaries and controlled side effects so bundlers can remove unused code
 
 ## CSS
 
 ### Modern cascade and authoring
 
+- `:has()` relational selector — read and write simple parent- or sibling-state selectors while keeping a class or state attribute as the clearer option when application logic already owns the state
+- `:is()` vs `:where()` — both group selector alternatives, but `:is()` takes the specificity of its most specific argument while `:where()` always contributes zero specificity
 - Cascade layers with `@layer` — order style origins deliberately without escalating selector specificity
 - Native CSS nesting — organise related selectors without changing the resulting specificity unintentionally
 - Sass nesting vs native CSS nesting — compare their parsing and emitted-selector behaviour before migrating build-time Sass syntax to the platform
@@ -247,51 +261,48 @@ Concepts expected when a developer diagnoses asynchronous behaviour and designs 
 
 ### Component-responsive layout
 
+- Intrinsic sizing — recognise `min-content`, `max-content`, and `fit-content()` as sizes derived from content rather than arbitrary fixed dimensions
 - Container queries — adapt a component to its available container rather than the global viewport
 - Subgrid — align nested content with an ancestor grid when independent nested tracks would drift
 - Registered custom properties with `@property` — give custom properties syntax, inheritance, and animatable initial values
 
 ## SQL
 
-Concepts expected when a developer diagnoses query behaviour and maintains database structures beyond routine application queries.
-
 ### Query diagnosis
 
 - `EXPLAIN ANALYZE` — compare planner estimates with actual execution while recognising that the statement really runs
 - Plan operators and row estimates — identify scans, joins, sorts, and cardinality errors before guessing at an index
 - Composite-index design — order columns according to real predicates, selectivity, and sorting needs
+- Query rewrites — compare equivalent joins, correlated subqueries, pre-aggregation, and set-based formulations using measured plans rather than universal speed rules
+- Partial, expression, and covering indexes — match specialised index structures to a measured predicate or access pattern
 
 ### Data modelling and advanced querying
 
+- `DENSE_RANK()` vs `RANK()` — both give ties the same rank, but `DENSE_RANK()` does not leave gaps after a tie; choose it when the next distinct value must receive the next consecutive rank
+- `LAG()` and `LEAD()` — access the previous or next row's value without a self-join; `LAG(hours)` returns the value from the previous row in the partition; use it for comparisons between consecutive rows
+- Partition total vs running total — `SUM(value) OVER (PARTITION BY group_key)` repeats the whole partition total; adding `ORDER BY` and an explicit cumulative frame produces a running total
 - Normal forms and deliberate denormalisation — remove update anomalies and justify duplication only for a measured access pattern
 - Recursive CTEs — traverse hierarchical or graph-shaped relational data with a safe termination condition
-- Materialized views — trade freshness and refresh cost for precomputed expensive reads
+- Views vs materialized views — a normal view stores a query and reads current base data, while a materialized view stores results and needs an explicit refresh; choose from freshness, read cost, and refresh cost
+- Window frames — choose `ROWS`, `RANGE`, or `GROUPS` boundaries deliberately for cumulative and moving analytics, including peer-row behaviour
+- Isolation anomalies — distinguish dirty reads, non-repeatable reads, phantom reads, and lost updates when selecting a transaction strategy
+- PostgreSQL snapshot behaviour — reason about statement snapshots in `READ COMMITTED` and transaction snapshots in stronger isolation levels
+- Row locking with `SELECT ... FOR UPDATE` — coordinate read-then-change workflows while keeping locked scopes and transaction duration small
 - Locking and deadlock diagnosis — recognise competing lock order and design transactions that reduce contention
-
----
 
 ## Git
 
-Concepts expected when a developer helps maintain team history, release flow, and repository automation.
-
 ### Investigation and release history
 
-- Annotated tags and semantic versions — mark immutable release points with metadata tied to a release policy
-- `git bisect` — use binary search over history to identify the first bad commit with a reproducible check
-- Reflog-based recovery — recover locally reachable commits after destructive-looking branch or reset mistakes
+- Semantic version and release-tag policy — maintain release identifiers intended to remain stable and align them with the team's compatibility policy
 
 ### Team workflow design
 
 - Git hooks — automate local checks while recognising that unshared hooks cannot enforce a team policy
 - Trunk-based development vs Git Flow — choose branch lifetime and release structure from delivery constraints rather than habit
 - `git worktree` — keep multiple checked-out branches without stashing or duplicating the repository
-- CI workflows triggered by Git — connect push and pull-request events to reproducible checks without storing secrets in the repository
-
----
 
 ## General
-
-Framework-neutral concepts expected when a developer owns integration and operational decisions across features.
 
 ### API evolution and communication
 
@@ -303,13 +314,11 @@ Framework-neutral concepts expected when a developer owns integration and operat
 
 ### Runtime and performance reasoning
 
+- CI workflows triggered by Git — connect push and pull-request events to reproducible checks without storing secrets in the repository
 - Caching layers — choose among browser, HTTP, application, and distributed caches and define invalidation after mastering HTTP freshness and validators
 - Image tag vs digest — choose a movable version label or exact immutable image identity according to the deployment's reproducibility requirement
-- Big O reasoning — compare time and space growth while recognising that real input sizes and constants still matter
 - Functional-programming principles — apply purity, immutability, and composition where they reduce hidden state rather than as a style mandate
 - Backpressure awareness — recognise when producers can outpace consumers in streams, queues, or real-time connections
 - Request correlation and trace context — propagate identifiers across services so production logs and traces can reconstruct one distributed request
 - Verification vs validation in testing — distinguish conformance to a specification from evidence that the delivered behaviour solves the intended user need
 - Test-double boundary design — choose among dummy, stub, fake, mock, and spy roles and decide which dependency boundary should be replaced rather than treating every collaborator as a mock
-
----

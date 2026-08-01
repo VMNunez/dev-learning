@@ -12,6 +12,9 @@ Concepts expected when a developer diagnoses query behaviour and maintains datab
 
 ## Data modelling and advanced querying
 
+- `DENSE_RANK()` vs `RANK()` — both give ties the same rank, but `DENSE_RANK()` does not leave gaps after a tie; choose it when the next distinct value must receive the next consecutive rank
+- `LAG()` and `LEAD()` — access the previous or next row's value without a self-join; `LAG(hours)` returns the value from the previous row in the partition; use it for comparisons between consecutive rows
+- Partition total vs running total — `SUM(value) OVER (PARTITION BY group_key)` repeats the whole partition total; adding `ORDER BY` and an explicit cumulative frame produces a running total
 - Normal forms and deliberate denormalisation — remove update anomalies and justify duplication only for a measured access pattern
 - Recursive CTEs — traverse hierarchical or graph-shaped relational data with a safe termination condition
 - Views vs materialized views — a normal view stores a query and reads current base data, while a materialized view stores results and needs an explicit refresh; choose from freshness, read cost, and refresh cost

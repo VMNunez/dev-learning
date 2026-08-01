@@ -11,6 +11,7 @@ Concepts expected when a developer begins owning boundaries and trade-offs acros
 
 ## Distributed-system patterns
 
+- Synchronous request vs asynchronous event — a direct call gives an immediate result and temporal coupling, while an event decouples timing but introduces delayed consistency, delivery, and ordering concerns
 - API Gateway — centralise external routing and cross-cutting policies without moving business logic into the gateway
 - Circuit breaker — stop repeated calls to a failing dependency and define recovery behaviour
 - Event-driven architecture — publish domain-relevant events while handling delivery, ordering, idempotency, and eventual consistency
@@ -18,6 +19,7 @@ Concepts expected when a developer begins owning boundaries and trade-offs acros
 
 ## Design patterns in context
 
+- Architecture-focused code review — trace a change through its dependency graph and verify that each responsibility and dependency still respects the declared boundaries before approving it
 - Strategy pattern — vary behaviour behind a stable contract when independent algorithms or policies
   must evolve without branching through the caller
 - Factory pattern — own creation policy when selecting and assembling concrete collaborators is a

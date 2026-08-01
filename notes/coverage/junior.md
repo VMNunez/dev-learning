@@ -8,7 +8,6 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 ## Angular
 
-
 ### Components and template data flow
 
 - Standalone `@Component` — explain how Angular turns a class, template, and styles into a self-contained UI unit with directly declared dependencies ✅ 01-todo-list
@@ -73,6 +72,8 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state ✅ 02-weather-app
 
 ### RxJS streams and pipelines
+
+- `forkJoin()` vs `combineLatest()` — coordinate one-time completion or continuing latest-value streams according to source behaviour ✅ 02-weather-app
 
 - `Observable` vs `Promise` — compare stream composition and cancellation with a single eventual Promise while recognising that Observables may be cold or hot and may emit once or many times
 - `Observable` vs `Subject` — distinguish a declarative subscribable stream from a subject that can be imperatively fed and multicast, rather than using a subject as the default state container
@@ -172,8 +173,6 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Angular CLI workspace configuration — read configured targets and package scripts in a maintained workspace instead of assuming every project uses the CLI defaults
 
 ## Angular Material
-
-Concepts needed to build, explain, test, and debug ordinary business interfaces with Angular Material at junior level.
 
 ### Setup and component model
 
@@ -280,8 +279,6 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 
 ## Spring
 
-Core Spring Framework mechanisms a junior Java developer must understand to read, test, and debug conventional Spring applications without confusing them with Spring Boot conveniences.
-
 ### Container and bean registration
 
 - Inversion of Control and dependency injection — the container creates and connects application objects so classes declare collaborators instead of locating or constructing infrastructure themselves
@@ -291,13 +288,11 @@ Core Spring Framework mechanisms a junior Java developer must understand to read
 - `@Repository` exception translation — with Spring's persistence-exception translation infrastructure, the stereotype lets provider-specific failures surface through the portable `DataAccessException` hierarchy ✅ 07-timetrack
 - Component scanning — understand that scanning searches configured packages for candidate components, so a valid stereotype outside the scan boundary still produces a missing-bean failure
 - `@Configuration` and `@Bean` — register third-party instances or explicit construction logic in Java configuration and use scanning for application-owned component classes ✅ 07-timetrack
-- `@Bean` method dependencies — prefer parameters for explicit wiring that also works in lite configuration; calls between methods are container-intercepted only in full `@Configuration` mode with bean-method proxying enabled
 - Bean names and type lookup — beans are normally resolved by type, while names become relevant when several candidates share that type or external integration refers to a bean explicitly
 - Constructor injection — prefer it over field injection so dependencies are explicit, final, and easy to supply in tests; Spring infers injection when a component has one constructor ✅ 07-timetrack
 - Lombok constructors and Spring injection — `@RequiredArgsConstructor` can express constructor injection for final dependencies, while an all-argument constructor is usually the wrong service boundary
 - `@Autowired` requiredness — an autowired dependency is required by default; constructor inference removes the annotation, while `Optional`, `ObjectProvider`, or explicit requiredness changes absence semantics deliberately
 - Collection injection — inject all beans of a type and know that empty resolution depends on the injection form: required fields or methods normally need a candidate, while a sole constructor or factory-method parameter may receive an empty collection
-- Map injection — inject beans of one value type under their bean names as keys when callers need both strategy lookup and container-defined identity
 - `ObjectProvider<T>` — defer or optionally request a dependency when its availability or scope genuinely varies instead of hiding a required collaborator behind null
 - `@Qualifier` vs `@Primary` — select one bean explicitly at an injection point or declare a default candidate when several beans satisfy the same dependency type
 - Dependency resolution failures — distinguish no candidate, multiple candidates, and a dependency cycle before changing annotations at random
@@ -308,7 +303,6 @@ Core Spring Framework mechanisms a junior Java developer must understand to read
 - Singleton scope and stateless services — the default shares one bean instance across callers, so mutable request-specific state on a service can leak across users and threads
 - Singleton bean scope vs Singleton pattern — Spring's scope means one managed instance per bean definition in a container, not a class-enforced global instance with a private constructor
 - Prototype scope — the container creates a new instance each time that bean is requested, unlike the shared singleton default
-- Shorter-lived beans inside singletons — direct injection resolves the dependency when the singleton is created, so use a provider or scoped proxy only when each runtime use genuinely needs the current prototype, request, or session instance
 - Web-aware request and session scopes — recognise per-request and per-session lifetimes so request-specific state is not placed on a shared singleton
 - Scope vs thread safety — bean scope controls instance lifetime and sharing, while thread safety depends on how mutable state is accessed
 - Eager singleton creation vs `@Lazy` — non-lazy singletons are normally pre-instantiated when the context refreshes, while lazy creation postpones construction, lifecycle work, and related failures until first use
@@ -330,7 +324,7 @@ Core Spring Framework mechanisms a junior Java developer must understand to read
 - Method-level vs class-level `@Transactional` — a method annotation overrides class-level transaction metadata, so broad defaults belong on the class and exceptional boundaries stay explicit on methods
 - Transactional proxy limitations — `new` instances, self-invocation, and non-proxy-eligible methods do not open the transaction the annotation appears to promise
 - `@Transactional(readOnly = true)` — declare read intent so integrations may optimise work, without treating it as a portable guarantee that the database will reject writes ✅ 07-timetrack
-- Caught exceptions and rollback — catching a failure inside the advised method can let its proxy observe normal completion, while catching an inner transactional failure may still leave the shared transaction rollback-only and make the outer commit fail
+- Caught exceptions and rollback — catching and suppressing an unchecked failure inside the advised method can let its proxy observe normal completion and commit remaining work
 - Transaction propagation `REQUIRED` — recognise the default join-or-create behaviour so nested service calls participate in one boundary instead of assuming every annotation opens an independent transaction
 - Transaction resource participation — a local Spring transaction covers only resources enlisted through its transaction-aware integrations; ordinary HTTP calls, files, or unenlisted messages do not roll back with the database
 
@@ -367,11 +361,7 @@ Core Spring Framework mechanisms a junior Java developer must understand to read
 - `BeanFactory` vs `ApplicationContext` — recognise the lower-level bean factory contract while using the application context for events, resources, environment, and normal application integration
 - `javax.*` vs `jakarta.*` validation and lifecycle imports — current Spring generations use Jakarta namespaces, while maintained code may still use the pre-migration packages
 
----
-
 ## Spring Boot
-
-Concepts needed to build, test, explain, and debug a conventional Spring Boot REST application at junior level.
 
 ### Startup callbacks and diagnosis
 
@@ -546,12 +536,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - Spring Boot container packaging — build and run the executable application artifact in a container while supplying configuration externally and leaving generic container orchestration to the General topic
 - OpenAPI generation — expose a browsable, generated HTTP contract for frontend and QA consumers from the existing controller and DTO declarations
 
----
-
 ## Java
-
-Java language and core-library concepts needed to read, write, test, and debug ordinary Spring Boot application code.
-Framework behaviour remains in Spring Boot coverage; examples here may use Spring-shaped classes when they expose a Java mechanism.
 
 ### Execution, variables, and control flow
 
@@ -626,6 +611,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Floating-point representation and comparison — `double` and `float` cannot represent most decimals exactly, so `==` between them is unreliable and `NaN` is never equal to itself, which is why floating-point equality needs a tolerance or `BigDecimal`
 - Integer vs floating-point division by zero — integer division by zero throws `ArithmeticException`, while floating-point division by zero produces `Infinity` or `NaN` instead of failing
 - `BigDecimal` for money and decimal arithmetic — avoid binary floating-point error, remember operations return new values, and choose explicit scale and rounding for division ✅ 07-timetrack
+- `BigDecimal.equals()` vs `compareTo()` — recognise that `equals` includes scale while `compareTo` compares numerical value, and choose deliberately for money comparisons and collection keys
 
 ### Collections and generics
 
@@ -638,6 +624,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Map accumulator idioms — use `getOrDefault` and `computeIfAbsent` for the common count-or-group pattern instead of manual get-check-put null handling
 - Collection interfaces vs implementations — declare the weakest useful contract such as `List` while choosing a concrete implementation such as `ArrayList` at construction ✅ 07-timetrack
 - Collection factories and copies — `List.of`, `Set.of`, and `Map.of` reject nulls and return unmodifiable collections, which still does not make mutable elements deeply immutable ✅ 07-timetrack
+- `Arrays.asList()` vs `List.of()` and `List.copyOf()` — distinguish a fixed-size list backed by an array from an unmodifiable factory or copy, including mutation, null, and aliasing consequences
 - `ArrayList` vs `LinkedList` — prefer `ArrayList` for normal application access; linked nodes do not make locating a middle position constant-time
 - Iteration and safe removal — do not structurally modify a collection through the collection itself during for-each iteration; use `removeIf` or the iterator's own `remove`
 - Practical complexity recognition — distinguish linear list search from expected constant-time hash lookup without treating Big-O as a substitute for measurement
@@ -716,9 +703,6 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ## Architecture
 
-Framework-neutral boundaries and design decisions a junior at a Spanish consultancy must understand,
-apply in a small codebase, and defend with concrete trade-offs.
-
 ### Architecture fundamentals
 
 - Software architecture vs design vs implementation — architecture sets system-wide boundaries and
@@ -737,8 +721,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - REST architectural style — keep client and server responsibilities separate, make requests stateless,
   and expose a uniform resource interface so calls do not depend on hidden conversational state ✅ 07-timetrack
 - Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action ✅ 07-timetrack
-- Resource modelling — paths identify resources and relationships, while HTTP methods express the
-  operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model ✅ 07-timetrack
+- Resource modelling — paths identify resources and relationships, while HTTP methods express the operation ✅ 07-timetrack
 - A name must not imply a guarantee the query does not enforce — an endpoint or field named after a
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
@@ -857,8 +840,6 @@ apply in a small codebase, and defend with concrete trade-offs.
   data, and operational cost, so a junior project should not split without a real scaling boundary
 - Modular monolith vs unstructured monolith — one deployment can still enforce feature boundaries and
   dependency direction; a monolith becomes problematic when unrelated responsibilities freely couple
-- Synchronous request vs asynchronous event — a direct call gives an immediate result and temporal
-  coupling, while an event decouples timing but introduces delayed consistency, delivery, and ordering concerns
 
 ### Business behaviour
 
@@ -888,8 +869,6 @@ apply in a small codebase, and defend with concrete trade-offs.
   consequences of a material decision so later maintainers know why the constraint exists
 - Architecture diagram as a code claim — a small context, container, component, or dependency diagram
   must match real runtime and dependency boundaries rather than presenting aspirational boxes
-- Architecture-focused code review — trace a change through its dependency graph and verify that each
-  responsibility and dependency still respects the declared boundaries before approving it
 
 ### SOLID
 
@@ -904,12 +883,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Dependency Inversion — high-level policy depends on stable abstractions rather than lower-level
   details; dependency injection is a delivery mechanism that may help but does not guarantee this design
 
----
-
 ## Security
-
-Application-security concepts a junior Angular + Spring Boot developer must understand, apply, and
-review without taking on specialist or production-platform ownership.
 
 ### Security reasoning and trust boundaries
 
@@ -1153,9 +1127,8 @@ review without taking on specialist or production-platform ownership.
 - AI-generated security review — treat configuration that appears to work as untrusted until its
   secrets, disabled protections, broad matchers, client claims, ownership checks, output handling, and
   logging consequences have been examined
-## TypeScript
 
-Concepts needed to read, write, debug, and review type-safe application code in a junior Angular role without confusing compile-time guarantees with runtime behaviour.
+## TypeScript
 
 ### Type-system foundations
 
@@ -1195,7 +1168,6 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Callback parameter assignability — allow a callback to ignore supplied arguments without marking those parameters optional, because an optional parameter means the caller may omit it
 - Contextual `void` return assignability — allow a callback expected as `() => void` to return a value that the caller discards while distinguishing an explicitly declared `(): void` function body, which cannot return that value
 - Optional parameters vs parameters containing `undefined` — distinguish a call that may omit an argument from one that must pass an argument whose value may be `undefined`
-- Default parameters — allow omission at the call site while supplying a value inside the implementation
 - Rest parameters — type a variadic remainder as an array without confusing it with a spread argument at the call site
 - Function overloads — read multiple public call signatures with one compatible implementation and avoid using overloads where a union is clearer
 - Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type ✅ 01-todo-list
@@ -1266,10 +1238,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Type-checking vs emitting — distinguish `tsc --noEmit` validation from generating JavaScript and recognise that a framework build may perform both
 - Compiler diagnostics — trace an incompatibility through the reported source locations and related types, then fix the contract instead of suppressing the error
 
----
-
 ## JavaScript
-
 
 ### Runtime values, types, and conversion
 
@@ -1436,24 +1405,23 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## CSS
 
 ### Box model
-- `margin`, `padding`, `border`, `content` — what each layer is and how they stack; interviewers draw the box model and ask you to label it or explain why two elements are not touching even though margin is set to 0 ✅ 01-todo-list
+- `margin`, `padding`, `border`, `content` — distinguish each box-model layer and trace how they determine visible size and spacing ✅ 01-todo-list
 - `box-sizing: border-box` — makes `width` include padding and border; the default `content-box` adds them on top, causing sizing surprises; setting it globally in a reset makes layouts predictable ✅ 01-todo-list
-- Collapsing margins — two adjacent vertical margins collapse into one (the larger wins, not the sum); the most common box model surprise in interviews
-- CSS reset pattern — `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }` removes browser defaults and ensures consistent sizing; interviewers ask why `::before` and `::after` are included alongside `*` ✅ 01-todo-list
+- Collapsing margins — adjacent vertical margins may collapse into one rather than add together, so diagnose spacing from the participating margins and formatting context
+- CSS reset pattern — apply sizing and baseline rules to elements and generated boxes deliberately instead of assuming browser defaults are identical ✅ 01-todo-list
 
 ### Display and layout
 - Normal flow — understand how block and inline boxes participate in document flow before using flex, grid, or positioning to change it
 - Floats and clearing — recognise that a floated box leaves normal block flow while inline content wraps around it, and contain or clear legacy floats with `flow-root` or `clear` instead of using float as a modern layout system
 - `display: block`, `inline`, `inline-block` — a block box normally fills the available inline space and starts on a new line; inline content participates in a line box and does not accept width; inline-block flows inline while accepting dimensions ✅ 04-meal-finder
-- `display: none` vs `visibility: hidden` — `none` removes the element from layout entirely (no space); `hidden` hides it but keeps its space; this pair is tested in every junior screening ✅ 05-task-manager
-- Flexbox vs Grid — Flexbox for one-dimensional layout (row or column); Grid for two-dimensional layout (rows AND columns at the same time); interviewers ask "when would you choose Grid over Flexbox?" ✅ 04-meal-finder
+- `display: none` vs `visibility: hidden` — remove an element from layout entirely or hide it while preserving its occupied space ✅ 05-task-manager
+- Flexbox vs Grid — choose one-dimensional alignment along a row or column or two-dimensional control across rows and columns ✅ 04-meal-finder
 - `table-layout: fixed` — take column widths from the first row instead of measuring every cell, which is what makes equal-width columns and predictable truncation possible in a wide data table; the default `auto` sizes columns from their content ✅ 05-task-manager
 
 ### Sizing
 - `width`, `min-width`, and `max-width` — combine a preferred size with lower and upper bounds so a component can shrink and grow without becoming unusable
 - `height`, `min-height`, and `max-height` — prefer content-driven height and add constraints only when the interface has a real scrolling or viewport requirement
 - Percentage heights — understand that `height: 100%` needs a definite containing-block height, while `min-height` with a viewport unit is often the robust choice for a page that must fill the screen
-- Intrinsic sizing — recognise `min-content`, `max-content`, and `fit-content()` as sizes derived from content rather than arbitrary fixed dimensions
 - Automatic minimum size in flex and grid — use `min-width: 0` or `min-height: 0` when a flex or grid child must be allowed to shrink instead of overflowing
 
 ### Cascade and inheritance
@@ -1466,10 +1434,8 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 - Fundamental selectors and selector lists — distinguish type, class, ID, and universal selectors and use comma-separated lists without unintentionally broadening a rule
 
-- Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — how to target elements by relationship; interviewers show a selector and ask which elements it matches ✅ 01-todo-list
+- Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — target elements through exact ancestry and sibling relationships ✅ 01-todo-list
 - Attribute selectors — target attribute presence or values without adding presentation-only classes, while avoiding selectors that accidentally match unrelated elements
-- `:has()` relational selector — read and write simple parent- or sibling-state selectors while keeping a class or state attribute as the clearer option when application logic already owns the state
-- `:is()` vs `:where()` — both group selector alternatives, but `:is()` takes the specificity of its most specific argument while `:where()` always contributes zero specificity
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
 - Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
@@ -1487,7 +1453,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Flex sizing — explain how `flex-basis`, `flex-grow`, and `flex-shrink` negotiate an item's size and read the `flex` shorthand without assuming `flex: 1` means only “take remaining space” ✅ 01-todo-list
 - Per-item alignment — override the container's cross-axis alignment for one item with `align-self`
 - `align-items` vs `align-content` — `align-items` positions items within a flex line, while `align-content` distributes multiple wrapped lines and has no visible effect when there is only one line
-- `margin: auto` on flex items — absorbs all available space on that side; used to push an action button to the right of a navbar without adding a wrapper element; interviewers show navbar code and ask how it works
+- `margin: auto` on flex items — absorb available space on the selected side to separate an item without adding a wrapper element
 - Visual order vs DOM order — flex and grid reordering can change visual placement without changing DOM, reading, or keyboard-focus order, so source order must remain meaningful
 
 ### CSS Grid
@@ -1495,7 +1461,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries ✅ 04-meal-finder
 - `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space
 - `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns ✅ 04-meal-finder
-- `auto-fill` vs `auto-fit` — both create as many columns as fit; `auto-fill` keeps empty column tracks (items stay at their minimum size); `auto-fit` collapses empty tracks (items stretch to fill the space); a confusable pair tested in interviews
+- `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch
 - `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed ✅ 04-meal-finder
 - Explicit vs implicit grid and auto-placement — distinguish declared tracks from rows or columns Grid creates when items have no explicit placement
 - Grid alignment — distinguish aligning items inside their grid areas with `justify-items`/`align-items` from aligning the grid tracks inside the container
@@ -1510,12 +1476,12 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `z-index` and stacking context — applies to positioned boxes and flex/grid items; properties such
   as `transform` and `opacity < 1` create a new stacking context, explaining why a large number
   cannot escape an ancestor's stacking order
-- `inset: 0` — shorthand for `top: 0; right: 0; bottom: 0; left: 0`; used in modal overlays to cover the full viewport; interviewers who review your code expect you to know this shorthand
+- `inset: 0` — set all four positioning offsets to zero with one shorthand, as in a viewport-covering overlay
 
 ### Responsive design
-- Mobile-first with `@media (min-width: ...)` — base styles for mobile, then `min-width` queries add complexity for wider screens; `max-width` (desktop-first) is less common because it starts with the complex case; interviewers ask why mobile-first is the recommended approach ✅ 03-expense-tracker
+- Mobile-first with `@media (min-width: ...)` — start from the constrained layout and add capabilities for wider viewports instead of undoing a complex desktop layout ✅ 03-expense-tracker
 - Content-driven breakpoints — add a breakpoint where the layout or content stops working rather than memorising device widths; intrinsic Grid patterns can remove some breakpoints entirely ✅ 04-meal-finder
-- Fluid images — `max-width: 100%; height: auto` on `img` prevents images from overflowing their container and keeps the aspect ratio; standard in every CSS reset; not knowing this is a recognisable beginner mistake
+- Fluid images — constrain an image to its container while preserving its intrinsic aspect ratio
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
 - `prefers-reduced-motion` — remove or reduce non-essential movement for users who request it without disabling functional state feedback
 - Logical properties — use `margin-inline`, `padding-block`, and logical inset or size properties when layout should follow writing direction instead of hard-coded left and right
@@ -1524,13 +1490,13 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Units
 - `px` — a CSS reference pixel, useful for thin borders and other fixed details; root-relative units
   usually respect user text-size preferences more naturally for typography and scalable spacing ✅ 01-todo-list
-- `%` — relative to the parent's value on the same axis; for vertical `padding` and `margin`, `%` is relative to the parent's **width**, not height — a common surprise in interviews
+- `%` — resolve against the relevant containing-block dimension, noting that percentage margins and padding use its inline size even on the vertical axis
 - `em` — usually resolves from the element's computed font size, while `font-size` itself uses the inherited parent size; nested font sizing can therefore compound
 - `rem` — relative to the root element's computed font size, commonly but not guaranteed to start at `16px`; it avoids nested compounding ✅ 01-todo-list
 - Viewport units — use `vw`/`vh` for the default viewport and recognise `svh`, `lvh`, and `dvh` when mobile browser chrome makes `100vh` unsuitable ✅ 01-todo-list
 
 ### Transitions and animations
-- `transition` — smooth change for a specific property on state change; always place it on the base element, not on `:hover`, so it runs in both directions; putting it on `:hover` makes the exit instant — a classic interview trap ✅ 04-meal-finder
+- `transition` — declare the animated property and timing on the base element so state changes animate in both directions ✅ 04-meal-finder
 - `transform` — `translateX/Y`, `scale`, and `rotate` change visual appearance without changing
   normal-flow geometry; browsers can often composite transforms efficiently, but GPU promotion is
   not guaranteed ✅ 02-weather-app
@@ -1544,15 +1510,15 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `font-size` with `rem` — `rem` follows the root size and composes consistently with user settings;
   fixed pixels are not automatically inaccessible, but a scalable type system is easier to zoom and
   maintain ✅ 01-todo-list
-- `font-weight` numeric values — `400` (normal), `600` (semibold), `700` (bold); interviewers ask why numeric values are used instead of the keyword `bold`, and whether every font supports every weight ✅ 04-meal-finder
+- `font-weight` numeric values — request standard weight positions while recognising that the selected font may not provide every intermediate weight ✅ 04-meal-finder
 - `line-height` unitless value — `1.5` means 1.5× the current font size; a unitless value scales correctly when font size changes; `line-height: 24px` breaks as soon as the font size changes ✅ 04-meal-finder
-- Text truncation — `white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` must all be present; interviewers ask why removing any one of them breaks the effect and what each one does individually ✅ 06-hr-portal
-- `text-transform` — `capitalize` displays stored lowercase values (`'active'`) as `'Active'` without changing the data; `uppercase` for labels and badges; tested in code review questions about status display ✅ 02-weather-app
-- `font-family` fallback stack — listing several fonts (`'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`) so the browser falls back if the first font is not installed; the last value should always be a generic family (`sans-serif`, `serif`, `monospace`); interviewers ask why you never list just one font name ✅ 01-todo-list
+- Text truncation — combine a non-wrapping line, clipped overflow, and ellipsis signalling because each property controls a different part of the effect ✅ 06-hr-portal
+- `text-transform` — change displayed casing for labels and badges without mutating the stored text ✅ 02-weather-app
+- `font-family` fallback stack — list compatible alternatives ending in a generic family so text remains usable when a preferred font is unavailable ✅ 01-todo-list
 
 ### CSS variables
 - `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates ✅ 01-todo-list
-- `:root` vs component scope — declaring on `:root` makes the variable globally available; scoping to a specific selector limits it to that element's subtree; interviewers ask why Angular Material theming variables are declared on `:root` ✅ 01-todo-list
+- `:root` vs component scope — expose a custom property globally or restrict it to one element subtree according to who owns the design token ✅ 01-todo-list
 - CSS variables participate in the runtime cascade — their values can change through selector state, media queries, inheritance, or an inline style without recompiling the stylesheet
 - `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 
@@ -1567,7 +1533,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ### Colors and transparency
 - Color notation — read hex, RGB, and HSL representations and follow a consistent project convention rather than treating one notation as universally superior ✅ 01-todo-list
 - Alpha-channel colour — apply transparency to one colour with modern RGB/HSL, hex alpha, or legacy `rgba()` syntax instead of fading the entire element
-- `opacity` vs `rgba` transparency — `opacity` affects the element AND all its children; `rgba` only affects the specific property it is applied to; classic interview question: "why does `opacity: 0.5` on a card fade the text too, but `background: rgba(0,0,0,0.5)` does not?"
+- `opacity` vs alpha-channel colour — fade the whole rendered element subtree or only the colour of one painted property
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
 - `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
@@ -1578,11 +1544,11 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `box-shadow` syntax: `offset-x offset-y blur spread color` — spread is optional, and transparent
   colour can use modern `rgb(... / alpha)`, hex alpha, HSL, `rgba()`, or a design token ✅ 02-weather-app
 - `border-radius: 50%` — makes a circle only when the element is square, which is why it works for avatars and loading spinners and produces an ellipse on any other aspect ratio ✅ 02-weather-app
-- `border-radius: 9999px` — creates a pill shape at any aspect ratio, which is why badges and chips use it; `50%` vs `9999px` is a confusable pair interviewers test with avatar vs badge ✅ 05-task-manager
+- `border-radius: 9999px` — create pill ends across changing aspect ratios while reserving `50%` for shapes derived from each axis ✅ 05-task-manager
 - `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
 - `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair ✅ 04-meal-finder
 - `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it ✅ 01-todo-list
-- `aspect-ratio` — locks an element's width-to-height ratio (`aspect-ratio: 16 / 9`) so it scales without distortion when only one dimension is known; replaces the older padding-percentage hack for responsive video and image containers; interviewers ask how you reserve space for an image before it loads to avoid layout shift
+- `aspect-ratio` — preserve a width-to-height ratio when one dimension is resolved and reserve predictable media space before content loads
 
 ### Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
@@ -1591,12 +1557,12 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container
 
 ### CSS functions
-- `calc()` — mixes different units in one expression; `calc(100% - 64px)` subtracts a fixed header height from the full viewport; spaces around `+` and `-` are required; interviewers ask when `calc()` is necessary and why neither pure percentage nor pure `px` can solve the same problem ✅ 05-task-manager
-- `clamp(min, preferred, max)` — creates a value that scales fluidly between limits; `font-size: clamp(1rem, 2.5vw, 2rem)` replaces multiple breakpoint overrides for font size; tested because it signals modern CSS knowledge
+- `calc()` — combine compatible values and units in one expression when neither a purely relative nor fixed size represents the constraint ✅ 05-task-manager
+- `clamp(min, preferred, max)` — scale a preferred value fluidly while enforcing explicit lower and upper bounds
 - `min()` and `max()` — select the smaller or larger computed value from mixed units while remembering that intrinsic sizing and `box-sizing` can make the result differ from a separate width plus max-width declaration
 
 ### BEM naming
-- Block, element (`__`), modifier (`--`) — `.card`, `.card__title`, `.card--featured`; a naming convention that makes class names predictable in global stylesheets; interviewers at consultancies ask about CSS organisation because shared CSS becomes unmaintainable without a convention
+- Block, element (`__`), modifier (`--`) — use predictable class roles in a global stylesheet while keeping names independent of DOM depth
 - Why BEM keeps specificity low — each rule is a single class selector (`0-1-0`); nested selectors like `.card .card__title` raise specificity and become hard to override; BEM avoids nesting in the CSS file
 - BEM alongside component scoping — treat BEM as one optional naming convention for predictable classes, especially in global CSS, rather than as a requirement imposed by Angular components
 
@@ -1607,22 +1573,18 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## SQL
 
-Topics a junior must know to pass a technical screening at NTT Data, Capgemini, or Indra in 2026. Database is PostgreSQL. Every item must be explainable with a real query — from the bookstore exercises or the TimeTrack data model.
-
----
-
 ### JOINs
 
 - `INNER JOIN` — returns only rows where both tables have a match; the most common JOIN; `JOIN` without a keyword defaults to `INNER JOIN`
 - `LEFT JOIN` — returns all rows from the left table with `NULL` on the right when there is no match; used for "show all users even if they have no time entries"
 - `INNER JOIN` vs `LEFT JOIN` — `INNER` excludes rows with no match on either side; `LEFT` keeps all left rows and fills the right side with `NULL`; choosing the wrong one is the most common JOIN mistake in junior code
 - Finding missing data with `LEFT JOIN` — `WHERE right_table.id IS NULL` after a `LEFT JOIN` returns every left row with no match on the right; the standard pattern for "which projects have no time entries?"
-- `RIGHT JOIN` — mirror of `LEFT JOIN`; rarely used because any `RIGHT JOIN` can be rewritten as a `LEFT JOIN` by swapping the tables; tested to check you understand the symmetry
+- `RIGHT JOIN` — mirror a `LEFT JOIN` and recognise that swapping table order can express the same outer-join relationship more conventionally
 - `FULL OUTER JOIN` — returns all rows from both sides with `NULL` where there is no match; used to find unmatched rows on either side at once
-- Multiple JOINs — you can chain as many JOINs as needed; interviewers ask you to write a query joining three tables, for example `time_entries → users → projects`
+- Multiple JOINs — chain relationships through several tables while keeping every join condition tied to the intended key path
 - JOIN cardinality and row multiplication — predict whether each relationship is one-to-one, one-to-many, or many-to-many before joining; apparent duplicates usually mean the join produced several legitimate matches, so `DISTINCT` must not be used as a blind repair
 - `ON` vs `WHERE` with an outer join — a condition in `ON` controls which right-side rows match while preserving unmatched left rows; moving that condition to `WHERE` can reject the `NULL`-extended rows and accidentally turn a `LEFT JOIN` into an inner join
-- Self JOIN — a table joined to itself using two aliases, used to compare rows within the same table (e.g. "which employees share the same manager?" or "find duplicate emails"); interviewers ask how you join a table to itself when there is only one `FROM` clause to work with
+- Self JOIN — assign separate aliases to one table so rows from that table can be related or compared with each other
 - `CROSS JOIN` — produces every combination of the two inputs; use it only when a Cartesian product is intentional and recognise a missing join condition as the accidental version
 - Table aliases in JOINs — `FROM books b JOIN authors a ON b.author_id = a.id`; makes queries readable and is required when two joined tables share a column name
 
@@ -1630,7 +1592,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ### Aggregates and grouping
 
-- `COUNT(*)` vs `COUNT(column)` — `COUNT(*)` counts all rows including those with `NULL`; `COUNT(column)` counts only non-`NULL` values; interviewers ask this difference explicitly
+- `COUNT(*)` vs `COUNT(column)` — count all input rows or only rows where the selected expression is non-`NULL`
 - `SUM` — add the known values of a numeric column across a group, ignoring `NULL` instead of treating it as zero ✅ 07-timetrack
 - `AVG` — divide the sum of known values by the count of known values, so a `NULL` lowers neither side and a missing value is never averaged in as a zero
 - `MIN` and `MAX` — return the smallest or largest non-`NULL` input and work with ordered types such as numbers, text, and dates
@@ -1638,8 +1600,8 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `GROUP BY` rule — selected expressions normally need to be grouped or aggregated; PostgreSQL also permits columns it can prove functionally dependent on a grouped primary key, but explicit grouping is clearer in portable junior SQL ✅ 07-timetrack
 - `GROUP BY` with `LEFT JOIN` — when joining before grouping, include all non-aggregated columns from the joined table in `GROUP BY`; use `LEFT JOIN` so groups with zero matches still appear with `COUNT = 0`
 - `GROUP BY` on an identifying column, not just a display name — grouping by a name alone silently merges two distinct rows that happen to share that name; group by the id (and select the name alongside it) so an aggregate stays correct even when values collide ✅ 07-timetrack
-- `HAVING` — filters groups after aggregation; `WHERE` filters rows before grouping; `WHERE` cannot use aggregate functions, `HAVING` can; interviewers always ask the difference
-- Conditional aggregation with `CASE WHEN` — `SUM(CASE WHEN status = 'approved' THEN hours ELSE 0 END)` aggregates only a subset of rows; used for reporting by status in TimeTrack; interviewers ask "how would you count only approved entries per project?"
+- `HAVING` — filter grouped results after aggregation while `WHERE` filters input rows before grouping
+- Conditional aggregation with `CASE WHEN` — make only rows satisfying a condition contribute to an aggregate without discarding other groups
 - `FILTER (WHERE ...)` — PostgreSQL shorthand for conditional aggregation: `COUNT(*) FILTER (WHERE status = 'approved')`; same result as `CASE WHEN` but cleaner for simple conditions
 
 ---
@@ -1652,7 +1614,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `WHERE` operators and precedence — comparisons, `NOT`, `AND`, and `OR` build row predicates; `NOT` binds before `AND`, and `AND` before `OR`, so use parentheses whenever the intended grouping is not immediately obvious
 - Computed expressions — arithmetic and string expressions can produce derived result columns; give them aliases and account for operand types such as integer division
 - `SELECT *` vs named columns — specify the required columns in application code; `SELECT *` can fetch unnecessary data and makes the result shape change whenever the schema changes
-- `CASE WHEN` in `SELECT` — `CASE WHEN is_active THEN 'Active' ELSE 'Inactive' END AS status` produces a conditional column for each row; interviewers ask you to add a status label to a result set
+- `CASE WHEN` in `SELECT` — derive one output value per row from ordered conditions
 - `CASE WHEN` in `SELECT` vs inside an aggregate — in `SELECT` it produces a new column per row; inside `SUM(CASE WHEN ...)` it filters which rows contribute to the aggregate; same syntax, very different behavior
 - `SELECT DISTINCT` — removes duplicate rows from the result; PostgreSQL treats `NULL` as a duplicate and keeps only one; use to explore unique values in a column
 - `DISTINCT ON` — PostgreSQL-specific; keeps one row per group while returning multiple columns; the column inside `DISTINCT ON (...)` must be the leftmost column in `ORDER BY`
@@ -1662,9 +1624,9 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - Stable ordering — pagination needs a deterministic tie-breaker such as the primary key after a non-unique sort column; otherwise equal values can move between pages ✅ 07-timetrack
 - Multi-column sorting — PostgreSQL resolves `ORDER BY` keys from left to right, so later keys break ties from earlier ones and each key can choose `ASC` or `DESC` ✅ 07-timetrack
 - `OFFSET` for pagination — `LIMIT 10 OFFSET 20` skips 20 rows and returns the next 10; formula: `OFFSET = (page − 1) × page_size`
-- `||` string concatenation — joins two text values into one column, e.g. `first_name || ' ' || last_name AS full_name`; interviewers ask how you build a display name from separate columns without a function call
-- `UNION` vs `UNION ALL` — `UNION` combines the results of two queries and removes duplicate rows; `UNION ALL` keeps every row including duplicates and is faster because it skips the duplicate check; interviewers ask which one to use when you know the two result sets cannot overlap (`UNION ALL` — no reason to pay for a duplicate scan)
-- `UNION` column rules — both queries must return the same number of columns with compatible types; column names in the result come from the first query; interviewers ask what happens if the column types do not match (PostgreSQL raises an error or silently casts, depending on the mismatch)
+- `||` string concatenation — combine text expressions into one output value while accounting for `NULL` propagation
+- `UNION` vs `UNION ALL` — remove duplicates across compatible result sets or retain every row and avoid unnecessary duplicate elimination
+- `UNION` column rules — align column counts and compatible types across branches while taking result column names from the first query
 - `INTERSECT` and `EXCEPT` — `INTERSECT` keeps rows present in both results and `EXCEPT` keeps rows from the first result that are absent from the second; both remove duplicates unless `ALL` is requested
 - SQL string literals vs quoted identifiers — single quotes delimit values, while double quotes delimit case-sensitive or otherwise special identifiers; unquoted PostgreSQL identifiers fold to lowercase
 
@@ -1673,7 +1635,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 ### Filtering and NULL handling
 
 - `WHERE` cannot use aliases — `WHERE` runs before `SELECT`, so column aliases do not exist yet; you must repeat the expression rather than use the alias
-- `IS NULL` vs `= NULL` — `WHERE price = NULL` never matches any row because `NULL` is not a value; always use `IS NULL` and `IS NOT NULL`; interviewers ask why `= NULL` does not work
+- `IS NULL` vs `= NULL` — test absence with `IS NULL` or `IS NOT NULL` because ordinary equality with `NULL` evaluates to unknown
 - `AND` / `OR` with `NULL` — `true AND NULL` returns `NULL`, but `false AND NULL` returns `false`; `false OR NULL` returns `NULL`, but `true OR NULL` returns `true`; a `WHERE` filter without an `IS NULL` check can silently exclude rows
 - `COALESCE(value, fallback)` — returns the first non-`NULL` value; use it when the query contract deliberately substitutes a default such as `0` or `'Unknown'`, without confusing missing data with a real value
 - `NULLIF(a, b)` — returns `NULL` if `a = b`, otherwise returns `a`; most common use: avoid division by zero with `SUM(...) / NULLIF(COUNT(*), 0)`
@@ -1692,7 +1654,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `IN` vs `EXISTS` — choose from result semantics and null behaviour rather than a universal speed rule: `IN` compares with a set of values, while correlated `EXISTS` asks whether at least one matching row exists; PostgreSQL may optimise either into a similar plan
 - Correlated subquery — references a column from the outer row and expresses a per-row relationship; compare it with `EXISTS`, a join, or pre-aggregation when the repeated relationship is hard to read or slow
 - Subquery vs `JOIN` — choose the form that expresses the required result cardinality clearly; a join can multiply rows while `EXISTS` only tests presence, and PostgreSQL can often optimise equivalent formulations similarly
-- `WITH` (CTE) — names a subquery so it can be referenced by name in the same query; makes multi-step queries readable; interviewers ask "when would you use a CTE instead of a subquery?"
+- `WITH` (CTE) — name an intermediate query for reuse and readability without assuming it is inherently faster than an inline subquery
 - Multiple CTEs — chain CTEs with commas; each CTE can reference the ones defined before it; used to build complex queries step by step without nesting
 - `CREATE VIEW` — saves a query in the database with a name; queried like a table but runs the underlying query live on every access; used to avoid repeating complex JOINs across different parts of an application
 
@@ -1723,7 +1685,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 - `INSERT INTO ... VALUES (...)` — adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty ✅ 07-timetrack
 - Multi-row `INSERT` and `INSERT ... SELECT` — insert several value tuples in one statement or populate a table from a query while matching target columns and compatible types
-- `RETURNING` — `INSERT INTO users (...) VALUES (...) RETURNING id` — returns the generated ID without a second `SELECT`; PostgreSQL-specific; interviewers ask "how do you get the new ID after an INSERT?"
+- `RETURNING` — obtain generated or changed values from a PostgreSQL data-modification statement without a second query
 - `UPDATE ... SET ... WHERE` — always include `WHERE` or every row in the table is updated; one of the most common catastrophic mistakes in junior code
 - `DELETE FROM ... WHERE` — always include `WHERE` or every row is deleted; always verify the affected rows with a matching `SELECT` before running `DELETE` on production data
 - `DELETE` vs `TRUNCATE` — `DELETE` supports `WHERE` and processes matching rows; `TRUNCATE`
@@ -1748,12 +1710,9 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 ### Window functions
 
-- `ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)` — assigns a unique sequential number to each row within a partition; used to get "the latest time entry per user" by filtering `WHERE row_num = 1` in an outer query; a very common interview pattern
+- `ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)` — assign a deterministic sequence within each partition, such as selecting one latest row per group in an outer query
 - `RANK()` vs `ROW_NUMBER()` — `RANK()` gives tied rows the same number and skips the next (1, 1, 3); `ROW_NUMBER()` always gives a unique number regardless of ties (1, 2, 3); when you need exactly one row per group, use `ROW_NUMBER()`
-- `DENSE_RANK()` vs `RANK()` — both give ties the same rank, but `DENSE_RANK()` does not leave gaps after a tie; choose it when the next distinct value must receive the next consecutive rank
-- `LAG()` and `LEAD()` — access the previous or next row's value without a self-join; `LAG(hours)` returns the value from the previous row in the partition; used to compare consecutive time entries
 - Aggregate result vs window result — `GROUP BY` collapses each group into one row, while an aggregate with `OVER` preserves every input row and adds a value calculated over its window
-- Partition total vs running total — `SUM(value) OVER (PARTITION BY group_key)` repeats the whole partition total; adding `ORDER BY` and an explicit cumulative frame produces a running total
 
 ---
 
@@ -1764,7 +1723,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - Foreign key — one or more columns referencing a primary or other unique candidate key;
   PostgreSQL rejects values with no referenced row, enforcing referential integrity ✅ 07-timetrack
 - `ON DELETE` behavior — PostgreSQL defaults to `NO ACTION`; `RESTRICT` also rejects referenced-row deletion but cannot be deferred, `CASCADE` deletes dependent rows, and `SET NULL` clears a nullable foreign key ✅ 07-timetrack
-- `NOT NULL` constraint — the column must always have a value; used on required fields like `email`, `password`, `status`; interviewers ask why you chose to add it ✅ 07-timetrack
+- `NOT NULL` constraint — reject missing values for fields whose domain contract requires a value ✅ 07-timetrack
 - `UNIQUE` constraint — rejects duplicate non-`NULL` keys and creates a supporting unique B-tree index; PostgreSQL permits multiple `NULL` values by default unless `NULLS NOT DISTINCT` is requested ✅ 07-timetrack
 - Composite uniqueness — a `UNIQUE` constraint across several columns enforces a business rule on the combination, such as one membership per `(user_id, project_id)`
 - `CHECK` constraint and `NULL` — a check rejects `FALSE` but accepts `TRUE` or `UNKNOWN`, so `CHECK (hours > 0)` still needs `NOT NULL` when hours are required
@@ -1780,7 +1739,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 - `VARCHAR(n)` vs `TEXT` — both have identical storage performance in PostgreSQL; `VARCHAR(n)` documents an intended maximum length; `TEXT` is for content with no meaningful upper limit; the practical difference is intent, not performance
 - Integer identity columns vs `SERIAL` — `GENERATED ... AS IDENTITY` is the SQL-standard PostgreSQL choice for generated integer keys; `SERIAL` is legacy shorthand that creates a separate sequence and default, while `BIGINT`/`BIGSERIAL` widen the range
-- `NUMERIC(p,s)` vs `FLOAT` — `FLOAT` is an approximation that compounds rounding errors over time; `NUMERIC(10,2)` stores exact decimals; always use `NUMERIC` for prices and financial values; interviewers ask "why would you not use `FLOAT` for money?" ✅ 07-timetrack
+- `NUMERIC(p,s)` vs `FLOAT` — choose exact fixed-precision decimals for money and approximated floating-point values for measurements that tolerate representation error ✅ 07-timetrack
 - Integer division and explicit casts — integer divided by integer truncates the fractional part in PostgreSQL; cast an operand to `NUMERIC` when the result must retain decimals
 - `DATE` vs `TIMESTAMP` / `TIMESTAMPTZ` — use `DATE` for a calendar value with no time of day, `TIMESTAMP` for a local wall-clock value, and `TIMESTAMPTZ` for an instant shared across time zones ✅ 07-timetrack
 - `TIMESTAMP` vs `TIMESTAMPTZ` — `TIMESTAMP` stores the date and time exactly as entered, ignoring time zones; `TIMESTAMPTZ` converts to UTC on write and back to the session time zone on read; always use `TIMESTAMPTZ` for `created_at` in a web application
@@ -1797,7 +1756,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - `EXTRACT` — returns one date/time field such as year, month, or hour for filtering or reporting; use it deliberately because applying a function to an indexed column can prevent a simple index condition
 - `NOW()` vs `CURRENT_DATE` — `NOW()` returns the transaction-start timestamp, while `CURRENT_DATE` returns the session's current date with no time component
 - `INTERVAL` — `NOW() - INTERVAL '30 days'` filters recent data; used in `WHERE` clauses and CTEs for relative date ranges; `INTERVAL '1 month'` works with months and years
-- `STRING_AGG(column, separator)` — concatenates values from multiple rows into one string per group, e.g. `STRING_AGG(name, ', ')` to list all project names for a user on one line; PostgreSQL-specific; interviewers ask how you would turn grouped rows into a single comma-separated column for a report
+- `STRING_AGG(column, separator)` — concatenate ordered values from multiple rows into one PostgreSQL result per group
 
 ---
 
@@ -1831,9 +1790,8 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 - Predicate-review failures — detect `NULL` comparisons, unsafe value interpolation, and date ranges that omit boundary rows
 - Mutation-review failures — detect unbounded `UPDATE` or `DELETE` statements and verify the intended affected-row set before execution
 - Pagination-review failures — require deterministic ordering and recognise when large `OFFSET` values make a different pagination strategy necessary
-## Git
 
-Git concepts a junior or junior-mid developer must understand to work safely in an Angular and Spring Boot team, review changes, and recover from ordinary mistakes.
+## Git
 
 ### Repository model and everyday inspection
 
@@ -1957,11 +1915,7 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 - Already tracked ignored file — remove the path from the index when appropriate because adding a later ignore rule does not stop tracking it
 - Committed-history boundary — deleting or ignoring the current file does not erase sensitive content from existing commits
 
----
-
 ## General
-
-Framework-neutral concepts a junior or junior-mid developer must understand across Angular and Spring Boot work. Framework implementations stay in their owning topics.
 
 ### HTTP requests and resource semantics
 
@@ -2000,6 +1954,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 ### JSON and API contracts
 
+- Relational vs NoSQL database families — recognise document and key-value models while choosing a relational database when joins, constraints, and transactions fit the data
 - JSON value model — recognise objects, arrays, strings, numbers, booleans, and `null`, with double-quoted object keys and no trailing commas
 - JSON object vs array — distinguish a named property collection from an ordered value collection when reading or designing a payload
 - Missing field vs explicit `null` — treat absence and an explicit null value as separate contract states unless the API defines them as equivalent ✅ 07-timetrack
@@ -2031,6 +1986,8 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - AI-generated change verification — treat generated code, tests, and configuration as untrusted proposals whose APIs, assumptions, edge cases, and meaningful checks must be validated before acceptance
 
 ### Software testing
+
+- Big O recognition — compare constant and linear growth in ordinary collection operations while remembering that real input sizes and constants still matter
 
 - Unit test — verify a small behaviour boundary quickly and isolate collaborators only when that keeps the test focused
 - Integration test — verify selected real components working together across a meaningful boundary
@@ -2089,6 +2046,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Deployment vs release — distinguish placing an artifact in an environment from making its functionality available to users
 - Pipeline triggers and execution environments — recognise push, pull-request, merge, schedule, and manual triggers and diagnose jobs inside their isolated configured environment rather than assuming local-machine state
 - Pipeline stages — trace checkout, build, test, package, image, and deploy stages and identify which stage produced a failure
+- CI platform recognition — recognise Jenkins, GitLab CI, and GitHub Actions as tools that execute repository-defined pipelines without treating one vendor's syntax as the CI/CD concept itself
 - Build artifact — treat an identifiable, traceable build output as the input promoted through later checks and environments
 - Pipeline result limits — recognise that a green pipeline proves only the checks it actually ran, not that the product is defect-free
 
@@ -2108,5 +2066,3 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 
 - Cloud-hosted vs on-premises infrastructure — distinguish provider-operated infrastructure from systems run in an organisation's own facilities without assuming either model removes operational responsibility
 - Cloud resource and location awareness — recognise managed compute, storage, networking, databases, regions, and availability zones together with the customer responsibilities that a managed service does not remove
-
----

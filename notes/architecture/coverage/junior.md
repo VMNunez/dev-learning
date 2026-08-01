@@ -21,8 +21,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - REST architectural style — keep client and server responsibilities separate, make requests stateless,
   and expose a uniform resource interface so calls do not depend on hidden conversational state ✅ 07-timetrack
 - Resource naming: plural nouns, no verbs in URLs (`/api/projects`, not `/api/getProjects`) — why REST uses nouns and the HTTP verb carries the action ✅ 07-timetrack
-- Resource modelling — paths identify resources and relationships, while HTTP methods express the
-  operation; interviewers use verb-heavy endpoints to test whether the API has a coherent model ✅ 07-timetrack
+- Resource modelling — paths identify resources and relationships, while HTTP methods express the operation ✅ 07-timetrack
 - A name must not imply a guarantee the query does not enforce — an endpoint or field named after a
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
@@ -141,8 +140,6 @@ apply in a small codebase, and defend with concrete trade-offs.
   data, and operational cost, so a junior project should not split without a real scaling boundary
 - Modular monolith vs unstructured monolith — one deployment can still enforce feature boundaries and
   dependency direction; a monolith becomes problematic when unrelated responsibilities freely couple
-- Synchronous request vs asynchronous event — a direct call gives an immediate result and temporal
-  coupling, while an event decouples timing but introduces delayed consistency, delivery, and ordering concerns
 
 ## Business behaviour
 
@@ -172,8 +169,6 @@ apply in a small codebase, and defend with concrete trade-offs.
   consequences of a material decision so later maintainers know why the constraint exists
 - Architecture diagram as a code claim — a small context, container, component, or dependency diagram
   must match real runtime and dependency boundaries rather than presenting aspirational boxes
-- Architecture-focused code review — trace a change through its dependency graph and verify that each
-  responsibility and dependency still respects the declared boundaries before approving it
 
 ## SOLID
 

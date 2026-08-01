@@ -12,9 +12,9 @@ Framework-neutral concepts expected when a developer owns integration and operat
 
 ## Runtime and performance reasoning
 
+- CI workflows triggered by Git — connect push and pull-request events to reproducible checks without storing secrets in the repository
 - Caching layers — choose among browser, HTTP, application, and distributed caches and define invalidation after mastering HTTP freshness and validators
 - Image tag vs digest — choose a movable version label or exact immutable image identity according to the deployment's reproducibility requirement
-- Big O reasoning — compare time and space growth while recognising that real input sizes and constants still matter
 - Functional-programming principles — apply purity, immutability, and composition where they reduce hidden state rather than as a style mandate
 - Backpressure awareness — recognise when producers can outpace consumers in streams, queues, or real-time connections
 - Request correlation and trace context — propagate identifiers across services so production logs and traces can reconstruct one distributed request
