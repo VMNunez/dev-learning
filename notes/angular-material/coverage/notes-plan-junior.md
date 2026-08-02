@@ -24,14 +24,15 @@ Must answer:
 
 - What problem does Angular Material solve, and what does it deliberately not solve?
 - What high-level component, theme, overlay, and accessibility characteristics recur throughout Material?
-- How do Material Design, Angular Material, and the CDK relate?
+- Which three things share the name "Material", and which of them is this topic actually about?
+- Which Angular fundamentals — reactive forms, Router, view queries, TestBed — does this route assume rather than teach, and in which chapter does each one first appear?
 - Which React or ordinary TypeScript ideas transfer, and what changes because Material components use Angular templates, dependency injection, and forms?
 - Where does Angular Material fit in Victor’s Angular + Spring Boot stack and ordinary consultancy business interfaces?
 - How does the canonical 01–15 route progress from setup and theming through controls, data, overlays, layout, and production-readiness, and why is it ordered that way?
 
 Coverage concepts:
 
-- none — introductory orientation contract
+none — introductory orientation contract, no coverage bullet is assigned to this entry
 
 Rationale: Introduction to Angular Material is one coherent learning unit at this point in the route.
 
@@ -46,7 +47,7 @@ Spanish: notes/angular-material/junior/es/01-configuracion-temas.md
 Depends on: 00
 Pending additions: none
 
-Narrative role: Establish a correct installation and styling mental model before using components.
+Narrative role: Establish a correct installation and styling mental model before using components. This chapter also owns the canonical account of `mat.theme()`: the "Customizing button colors (Angular Material v19+)" block currently living in `02-button.md` is theming content and migrates here, leaving 02 with a cross-link only, so the route never carries two competing accounts of the same API.
 
 Learning outcome: Install, configure, theme, and style Material without depending on private implementation details.
 
@@ -54,12 +55,13 @@ Prerequisites: 00
 
 Must answer:
 
+- What exactly is the CDK, and what does Angular Material add on top of it?
 - What does the Material schematic configure?
 - Which features need imports, providers, or both?
 - Why must the docs and migrations match the installed major version?
 - How are core and component colour, typography, and density styles emitted exactly once?
 - Where should page CSS end and Material theming begin?
-- Why do overlay components escape component-scoped CSS?
+- Why will dialogs, menus, selects, tooltips, and snack bars later ignore your component's scoped CSS?
 
 Coverage concepts:
 
@@ -75,9 +77,9 @@ Coverage concepts:
 - [ ] Page layout vs component theming — use application CSS for layout, spacing, and responsive composition while using Material APIs for component internals
 - [ ] Overlay styling boundary — recognise that dialogs, menus, selects, tooltips, and snack bars render in an overlay container outside the opener's component subtree
 
-Rationale: Setup, component model, and theming boundaries is one coherent learning unit at this point in the route.
+Rationale: Installation, theming, and the styling boundary are one unit because they answer a single question the learner cannot postpone — "where does my CSS stop and the library begin?". The schematic decides which styles exist, the theme decides what they contain, and the overlay/private-selector rules decide what the application may touch; teaching any one without the others produces the two classic junior failures, a theme emitted twice and a page styled through internal Material classes.
 
-Handoff: This unlocks buttons and icons in entry 02.
+Handoff: This unlocks buttons and icons in entry 02. The overlay boundary stated abstractly here is re-applied concretely against real components in entries 03, 05, 10, and 11.
 
 ## 02 — Buttons and icons
 
@@ -88,7 +90,7 @@ Spanish: notes/angular-material/junior/es/02-botones.md
 Depends on: 01
 Pending additions: none
 
-Narrative role: Introduce the smallest Material actions and their accessible meaning.
+Narrative role: Introduce the smallest Material actions and their accessible meaning. The existing file's "Customizing button colors (Angular Material v19+)" block is theming scope owned by entry 01 and leaves this chapter as a cross-link, so the audit removes it rather than restating it.
 
 Learning outcome: Choose and implement an appropriate labelled button or icon action.
 
@@ -121,27 +123,26 @@ Spanish: notes/angular-material/junior/es/03-menus.md
 Depends on: 02
 Pending additions: none
 
-Narrative role: Build contextual actions and supplementary help on top of basic buttons.
+Narrative role: Build contextual actions and supplementary help on top of basic buttons. This chapter absorbs the tooltip half of the retired `17-tooltip-progress.md`; its progress-indicator half belongs to entry 11.
 
-Learning outcome: Choose correctly between a menu, select, tooltip, and visible label.
+Learning outcome: Choose correctly between a menu, a tooltip, and a visible label for a contextual action.
 
 Prerequisites: 02
 
 Must answer:
 
-- Why is a menu for commands rather than values?
-- How does a trigger identify its menu?
+- Why is a menu for invoking commands rather than for capturing a value?
+- How does a trigger identify its menu, and what goes wrong when several rows share one reference?
 - Why can a tooltip never replace an accessible name or essential instruction?
 
 Coverage concepts:
 
 - [ ] `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline
-- [ ] Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
 - [ ] Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions
 
-Rationale: Menus and tooltips is one coherent learning unit at this point in the route.
+Rationale: A menu and a tooltip are the two things a button can reveal without leaving the page — one carries actions, the other carries words — so they share the trigger-and-overlay mental model introduced by entry 01 and are cheapest to contrast side by side. The menu-versus-select decision deliberately waits for entry 05, where the select exists and the comparison is teachable rather than promissory.
 
-Handoff: This unlocks form-field composition in entry 04.
+Handoff: This unlocks form-field composition in entry 04, where the page stops invoking commands and starts capturing values.
 
 ## 04 — Form-field composition
 
@@ -152,7 +153,7 @@ Spanish: notes/angular-material/junior/es/04-campos-formulario.md
 Depends on: 03
 Pending additions: none
 
-Narrative role: Connect Material presentation to Angular reactive-form state.
+Narrative role: Connect Material presentation to Angular reactive-form state. This chapter assumes reactive-forms fundamentals — `FormGroup`, `FormControl`, validators, `touched` and `dirty` — from the `angular` junior topic, and must bridge them explicitly before the first Material binding, because every control chapter from here to entry 14 rests on them.
 
 Learning outcome: Compose labelled inputs with guidance and validation while keeping the form control authoritative.
 
@@ -198,19 +199,23 @@ Must answer:
 - When is autocomplete a better model than select?
 - What should selectionChange do, and where is the selected value stored?
 - How do display labels differ from stored object identity?
+- When does `value` need to be a property binding rather than a literal attribute?
+- What does `mat-optgroup` group, and why is a group label never a selectable value?
+- Now that both exist, when is the right control a menu and when is it a select?
 
 Coverage concepts:
 
 - [ ] `mat-select` and `mat-option` — model single or multiple selection with values whose types match the form control and distinguish literal attributes from property bindings
+- [ ] Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
 - [ ] Material select vs native select — choose `mat-select` for Material-specific presentation and a native `<select matNativeControl>` when native accessibility, performance, or platform behaviour is the better fit
 - [ ] Select vs autocomplete — use a select for a closed choice set and `mat-autocomplete` when users type into an input and choose from matching suggestions
 - [ ] Basic `mat-autocomplete` — connect an input to a local option panel and distinguish the displayed label from the stored object or identifier
 - [ ] Selection events vs form values — react to `selectionChange` only for side effects and read the form control for the authoritative selected value
 - [ ] `mat-optgroup` — group a long option set semantically without pretending group labels are selectable values
 
-Rationale: Selects and autocomplete is one coherent learning unit at this point in the route.
+Rationale: Select, native select, and autocomplete are three answers to one question — how a closed or suggested choice becomes a typed form value — so the choice between them, and against a menu, is only teachable once all four are on the table. Grouping and the literal-versus-bound `value` distinction belong here because both are properties of the option list, not of the field wrapper taught in 04.
 
-Handoff: This unlocks checkboxes, radio buttons, and slide toggles in entry 06.
+Handoff: This unlocks checkboxes, radio buttons, and slide toggles in entry 06, where the choice set is small enough to stay visible instead of collapsing into a panel.
 
 ## 06 — Checkboxes, radio buttons, and slide toggles
 
@@ -273,7 +278,6 @@ Coverage concepts:
 - [ ] Datepicker selectable-date constraints — use `min`, `max`, and `matDatepickerFilter` to declare which dates the calendar and the input will accept
 - [ ] Datepicker validation feedback — surface the validation errors those constraints produce instead of letting an out-of-range value fail only after submission
 
-
 Rationale: Datepicker and date constraints is one coherent learning unit at this point in the route.
 
 Handoff: This unlocks table structure and row lifecycle in entry 08.
@@ -287,17 +291,21 @@ Spanish: notes/angular-material/junior/es/08-tablas.md
 Depends on: 07
 Pending additions: none
 
-Narrative role: Build the table mental model before adding transformations.
+Narrative role: Build the table mental model — columns, rows, refresh, and per-row interaction — before any transformation is layered on top. The existing file's sorting, filtering, and pagination sections are entry 09's scope and migrate out during the audit, so the two chapters never ship the same content twice.
 
-Learning outcome: Define stable columns, render rows, refresh changed collections, and distinguish empty from loading or failure.
+Learning outcome: Define stable columns, render rows, refresh changed collections, act on the correct record from inside a row, and distinguish empty from loading or failure.
 
 Prerequisites: 07
 
 Must answer:
 
 - How do column identifiers connect every table definition?
+- What do you configure when the displayed value does not map directly to a row property?
+- What can `[dataSource]` be given at this stage, and why is a plain array enough until entry 09?
 - Why does an in-place array mutation not necessarily refresh the table?
 - When is matNoDataRow actually the correct state?
+- How is row identity kept explicit, so a per-row control operates on the record it belongs to?
+- How do nested row actions avoid triggering row selection or navigation?
 
 Coverage concepts:
 
@@ -306,10 +314,12 @@ Coverage concepts:
 - [ ] Header and cell definition roles — use `matHeaderCellDef` for column labels and `matCellDef` for per-row values rather than mixing structural and data concerns
 - [ ] Table refresh after collection changes — assign or emit a new data array, or call `renderRows()` after mutating a raw array, because `mat-table` does not observe in-place structural changes automatically
 - [ ] Empty table state — use `matNoDataRow` or an equivalent full-width row only after distinguishing an empty successful result from loading and failure
+- [ ] Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to
+- [ ] Nested interactive controls in rows — prevent action buttons inside a row from accidentally triggering row selection or navigation
 
-Rationale: Table structure and row lifecycle is one coherent learning unit at this point in the route.
+Rationale: Everything here is the table's own anatomy — what a column is, what a row is, how the collection is refreshed, and what a control placed inside a row acts upon. Row identity and nested controls belong with the row that defines them, not with the transformation layer in 09: a junior who can sort a table but wires the delete button to the wrong record has learned the two in the wrong order.
 
-Handoff: This unlocks table data sources, sorting, filtering, and pagination in entry 09.
+Handoff: A row that renders correctly still cannot be searched, ordered, or paged. Entry 09 adds that transformation layer on top of the anatomy established here.
 
 ## 09 — Table data sources, sorting, filtering, and pagination
 
@@ -320,9 +330,9 @@ Spanish: notes/angular-material/junior/es/09-paginacion-tablas.md
 Depends on: 08
 Pending additions: none
 
-Narrative role: Add client- or server-owned transformations without mixing the two models.
+Narrative role: Add client- or server-owned transformations without mixing the two models. This chapter assumes Angular view queries — `@ViewChild` and `ngAfterViewInit` — from the `angular` junior topic, and must bridge the view-initialisation timing before connecting `MatSort` or `MatPaginator`, because "connect it after the view exists" is meaningless without it. It also absorbs the sorting, filtering, and pagination sections currently held by `08-table.md`.
 
-Learning outcome: Choose a data source and integrate sorting, filtering, pagination, selection, and row actions coherently.
+Learning outcome: Choose a data source and integrate sorting, filtering, and pagination coherently under a single owner.
 
 Prerequisites: 08
 
@@ -334,8 +344,6 @@ Must answer:
 - How do backend `length`, `pageIndex`, and `pageSize` keep a server-side paginator truthful?
 - Why must filtering define fields and normalisation explicitly?
 - Why must filtering reset an invalid current page?
-- How is row identity kept explicit?
-- How do nested row actions avoid triggering row navigation?
 
 Coverage concepts:
 
@@ -346,13 +354,11 @@ Coverage concepts:
 - [ ] Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded
 - [ ] Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product
 - [ ] Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
-- [ ] Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to
-- [ ] Nested interactive controls in rows — prevent action buttons inside a row from accidentally triggering row selection or navigation
 - [ ] Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset
 
-Rationale: Table data sources, sorting, filtering, and pagination is one coherent learning unit at this point in the route.
+Rationale: Sorting, filtering, and paging are not three features but one decision made three times — who owns the transformation, the browser or the backend. They are taught together because the failure they produce is shared: paginating an already-paginated result, or filtering a page instead of the set. Splitting them would hide the single question that governs all three.
 
-Handoff: This unlocks dialogs and confirmation flows in entry 10.
+Handoff: The row action established in entry 08 can now operate on a filtered, sorted page — but a destructive one must not fire on an unconfirmed click. That decision belongs in an overlay, which is entry 10.
 
 ## 10 — Dialogs and confirmation flows
 
@@ -374,6 +380,8 @@ Must answer:
 - What crosses MAT_DIALOG_DATA and what returns through MatDialogRef?
 - How should cancellation, backdrop, and Escape differ from confirmation?
 - When is disableClose justified?
+- Why must title, content, and actions be siblings rather than nested?
+- When is `mat-dialog-close` enough, and when do you need a handler instead?
 - What keeps a dialog usable and accessible on a small viewport?
 
 Coverage concepts:
@@ -401,7 +409,7 @@ Spanish: notes/angular-material/junior/es/11-snackbar.md
 Depends on: 10
 Pending additions: none
 
-Narrative role: Separate transient feedback from blocking decisions and measurable progress.
+Narrative role: Separate transient feedback from blocking decisions and measurable progress. This chapter absorbs the progress-indicator half of the retired `17-tooltip-progress.md`; its tooltip half belongs to entry 03.
 
 Learning outcome: Choose an appropriate feedback or progress component and configure its lifecycle accessibly.
 
@@ -410,6 +418,7 @@ Prerequisites: 10
 Must answer:
 
 - When should feedback block the user?
+- How do you inject and call `MatSnackBar.open()`, and what does each part of its configuration control?
 - When should a snack bar time out or expose an action?
 - When is progress determinate rather than indeterminate?
 
@@ -433,14 +442,15 @@ Spanish: notes/angular-material/junior/es/12-navegacion-lateral.md
 Depends on: 11
 Pending additions: none
 
-Narrative role: Compose an application shell while leaving navigation authority with Angular Router.
+Narrative role: Compose an application shell while leaving navigation authority with Angular Router. This chapter assumes Angular Router fundamentals from the `angular` junior topic and must bridge route activity before using any Material navigation state. It also absorbs the whole of the retired `16-toolbar.md`.
 
 Learning outcome: Build a responsive toolbar and sidenav shell and choose correctly between routes and tabs.
 
-Prerequisites: 00 and prior Angular Router knowledge; this entry must bridge route activity before using Material navigation state.
+Prerequisites: 11
 
 Must answer:
 
+- What does `mat-toolbar` actually own, and what is ordinary flex layout still responsible for?
 - How do the three sidenav elements share layout context?
 - How do side, push, and over change content behaviour?
 - Why does Router remain responsible for active navigation?
@@ -523,14 +533,14 @@ Status: pending
 Action: create
 English: notes/angular-material/junior/en/15-accessibility-testing.md
 Spanish: notes/angular-material/junior/es/15-accesibilidad-pruebas.md
-Depends on: 02–14 and prior Angular TestBed fundamentals
+Depends on: 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14
 Pending additions: none
 
-Narrative role: Close the junior route by testing public behaviour and adapting components to real users and screens.
+Narrative role: Close the junior route by testing public behaviour and adapting components to real users and screens. This chapter assumes Angular TestBed fundamentals from the `angular` junior topic, and must introduce the harness environment and loader before any component-specific harness API.
 
 Learning outcome: Audit application-owned accessibility and responsiveness and test Material behaviour through harnesses.
 
-Prerequisites: 02–14 and prior Angular TestBed fundamentals; this chapter must introduce the harness environment and loader before component-specific harness APIs.
+Prerequisites: 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14
 
 Must answer:
 
