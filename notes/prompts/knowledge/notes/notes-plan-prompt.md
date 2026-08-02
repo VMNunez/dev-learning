@@ -142,8 +142,12 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    Spanish copy or translate prose in this planner. Either form never crosses a level boundary,
    preserves every existing slug and all prose byte-for-byte apart from link corrections, updates
    every repository-relative link that targets the renumbered file, and is reported as
-   `renumber NN -> MM` (add `English-only` when applicable). A renumbered existing English note keeps
-   `Action: audit`. Dividing one file's prose remains the notes
+   `renumber NN -> MM` (add `English-only` when applicable). A file listed under `## Unassigned existing
+   notes` does not reserve its numeric prefix: when a required renumber target collides with one,
+   renumber the unassigned file to the next free prefix above the route's last entry, leave it listed as
+   unassigned with no plan entry and no Spanish path assigned, and report it as
+   `renumber NN -> MM (unassigned)`, adding `English-only` exactly as a normal renumber does.
+   A renumbered existing English note keeps `Action: audit`. Dividing one file's prose remains the notes
    author/reviewer pipeline's work, not this planner's: the plan declares both entries and their
    paths, and the new file's entry is `Action: create`. This is a same-level route repair and never
    populates `## Legacy notes requiring split`, which stays reserved for pairs whose sections are
