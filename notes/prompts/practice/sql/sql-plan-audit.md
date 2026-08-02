@@ -1,4 +1,4 @@
-# SQL plan audit — the entry point for keeping `practice/sql/PLANNING.md` good
+# SQL plan audit — the entry point for keeping the SQL exercise plan good
 
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
@@ -6,14 +6,21 @@ Run this **inside the supported agent runtime**. It audits and extends the SQL p
 `_sql-plan-standard.md`, fixes what falls short, and commits — hands-off.
 
 Why it exists: the projects have `plan-audit` and the concept lists have `coverage-audit`, but the
-file that decides what gets drilled in the daily SQL block was written by hand and has never been
-reviewed by anything cold. It is also the file that rots fastest — every closed step, every new
-coverage section and every prompt change leaves it slightly less true.
+files that decide what gets drilled in the daily SQL block rot fastest — every closed step, every new
+coverage section and every prompt change leaves them slightly less true.
 
-**Run it whenever:** a step closes · `notes/sql/coverage/junior.md` grows · the exercise prompt changes ·
+**The plan is two files** (`_sql-plan-standard.md`, Section A) and this prompt audits both:
+
+- `practice/sql/PLANNING.md` — **the doctrine**, level-neutral. This prompt owns it outright.
+- `practice/sql/PLANNING-{LEVEL}.md` — **the route** for the selected level. Written by
+  `sql-plan-prompt`; audited, corrected and extended here.
+
+**Run it whenever:** a step closes · `notes/sql/coverage/{LEVEL}.md` grows · the exercise prompt changes ·
 or the plan simply feels out of date. It is safe to run repeatedly; a clean plan comes back unchanged.
 
-> **▶ Run first:** nothing. A stale `PROGRESS.md` is one of the findings, not a prerequisite.
+> **▶ Run first:** `sql-plan-prompt` for this level, at least once — a route file that does not exist is
+> reported, never written from nothing (see Hard rules). A stale `PROGRESS.md` is a finding, not a
+> prerequisite.
 
 > **Run-start check (step 0a):** execute the check in `notes/prompts/_internal/_pipeline-self-report.md` — read
 > `_last-run-report-sql-plan-audit.md` and, if its `Status` is `open`, surface the finding in one line
@@ -37,10 +44,11 @@ Open a fresh chat inside the supported agent runtime and paste the config block.
 
 ```
 SCOPE = full
+LEVEL = junior
 ```
 
 - `SCOPE = full` — the normal run: all four specialists.
-- `SCOPE = extend` — only reconcile with `notes/sql/coverage/junior.md` and add the steps it now needs
+- `SCOPE = extend` — only reconcile with `notes/sql/coverage/{LEVEL}.md` and add the steps it now needs
   (specialists 2 and 1, in that order — the same first two of a full run). Use after a
   `coverage-audit` run added sections.
 
@@ -50,8 +58,15 @@ SCOPE = full
 ## Configuration — edit only this block
 
 SCOPE = [full | extend]
+LEVEL = [junior | middle | senior]
 
-The plan under audit is always `practice/sql/PLANNING.md`. There is no other target.
+The files under audit are always `practice/sql/PLANNING.md` (the doctrine) and
+`practice/sql/PLANNING-{LEVEL}.md` (that level's route). There are no other targets. `LEVEL` defaults
+to `junior` when left blank.
+
+**A doctrine finding is level-neutral by definition.** If a fix to `PLANNING.md` is only correct at the
+selected level, the fix belongs in the route file instead — that asymmetry is the signal that a section
+was put on the wrong side of the split.
 
 ---
 
@@ -76,12 +91,16 @@ Gather the ground truth the specialists check the plan against. Counts, never co
   The marker always sits **at the end of the exercise's header line**, one per exercise, in both header
   formats (`_sql-exercises-review.md` Step 2b forbids it on a line of its own). If scored > written for
   any file, the count is wrong: stop and report it rather than propagating it.
-- `grep -n "✅\|⏳\|done\|in progress" practice/sql/PLANNING.md` → the status baseline for the gate.
-- **The plan's own count rows, copied verbatim**: the §5 file table and the **§8** progress table
-  (§8 — *Progress tracking*; §9 is the quality-gate table and holds no counts). These
+- `grep -n "✅\|⏳\|done\|in progress" practice/sql/PLANNING-{LEVEL}.md` → the status baseline for the gate.
+- **The route's own count rows, copied verbatim**: its §1 file table and its §3 progress table. These
   are the numbers the history gate protects — the numbers on disk cannot regress, since this flow
   never touches the exercise files, so a gate that only re-greps disk checks nothing.
-- `grep -n "^## " notes/sql/coverage/junior.md` → the current section list.
+- `grep -n "^## " notes/sql/coverage/{LEVEL}.md` → the current section list.
+- **The route's `Coverage SHA-256` against a freshly recalculated one** (invariant 12, canonical command
+  in `_coverage-standard.md`). A mismatch is **reported, never repaired here**: recomputing the digest
+  without remapping the bullets would erase the only signal that `sql-plan-prompt` is owed a run. Say
+  `route stale — /sql-plan {LEVEL} owed` in the final report and let specialist 2 handle the bullets it
+  can see.
 
 Hand this snapshot to specialists 2 and 3. It is evidence, not a finding: the plan is wrong only where
 it disagrees with it.
@@ -101,8 +120,9 @@ are only true of the final set of steps.
 For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`:
 
 > Read `notes/prompts/practice/sql/_internal/_sql-plan-standard.md` — **only the sections your concern owns**, listed
-> below — and audit `practice/sql/PLANNING.md` against them. Fix what falls short **directly in the
-> file**. Do **NOT** commit. Return a **check-by-check trace**: one line per check you own,
+> below — and audit `practice/sql/PLANNING.md` (the doctrine) and `practice/sql/PLANNING-{LEVEL}.md`
+> (the route) against them. Fix what falls short **directly in the file your `Edits` column names, and
+> in no other**. Do **NOT** commit. Return a **check-by-check trace**: one line per check you own,
 > `check · verdict · what you changed (or "no change")`. Never paste plan content back. End with any
 > cross-concern ripple the orchestrator must reconcile.
 >
@@ -110,29 +130,39 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 > passes with `offset` to the real end. Open your report with "N lines, read to EOF" — a report
 > without that line is rejected.
 
-| # | Concern | Owns | Also reads |
-|---|---------|------|------------|
-| 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | §2, §3, §6, §7 · `ROADMAP.md` (for B2) |
-| 2 | `coverage-and-steps` | **Invariants 1, 2, 10** · **B10** | `notes/sql/coverage/junior.md` · §5, §6, §Z · the Phase 1 section list |
-| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11** | §0, §5, §6, §8 · `PROGRESS.md` · **the Phase 1 snapshot** |
-| 4 | `loop-and-fence` | **Section A** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9** · **Section E** | §0, §2, §3, §4, §8b, §Z · `sql-exercises-prompt.md` |
+| # | Concern | Owns | Edits | Also reads |
+|---|---------|------|-------|------------|
+| 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | route §2 | doctrine §2, §3, §7 · route §2 · `ROADMAP.md` (for B2) |
+| 2 | `coverage-and-steps` | **Invariants 1, 2, 10, 14** · **B10** | route §1, §2, its out-of-scope list | `notes/sql/coverage/{LEVEL}.md` · doctrine §Z · the Phase 1 section list |
+| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13** | route §1, §2, §3 · doctrine §0 | `PROGRESS.md` · **the Phase 1 snapshot** |
+| 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **Section E** | doctrine §0, §2, §3, §4, §8b, §Z · route header | `sql-exercises-prompt.md`, `sql-plan-prompt.md` |
+
+**The `Edits` column is a fence, not a hint.** Two files are open and four specialists run against them;
+a specialist writing outside its column is how the doctrine acquires a level-specific sentence. #1 and
+#2 never touch the doctrine at all. #4 owns the doctrine and touches the route only to check its header
+metadata is present and well-formed — it never edits a step.
 
 **The invariant numbers are the standard's Section D numbers, and Section D is numbered identically to
 the plan's own §10** — they were two different numbering schemes until 2026-07-22, which handed
 specialists 3 and 4 each other's checks (the plan's invariant 8 is the revision cadence, the standard's
 was the three counts). If a future edit renumbers either side, renumber both.
 
-**Section A is checked cell by cell.** "Present and non-empty" is not the bar: §0 must carry its six
-named rows (current step · current branch · done condition · next revision point · blocked on · last
-updated), §1 its three lines, §4 its automated/manual marks. A row the plan invented in place of a
+**Section A is checked cell by cell.** "Present and non-empty" is not the bar: doctrine §0 must carry
+its seven named rows (current level · current step · current branch · done condition · next revision
+point · blocked on · last updated), §1 its lines, §4 its automated/manual marks, and the route its full
+header metadata block. A row the plan invented in place of a
 required one — a *next gate* where *next revision point* belongs — passes a presence check and fails
 this one, and it is exactly how off-scope tracks creep back into §0.
 
-**Specialist 2 is the extension engine.** For every `## ` section of `notes/sql/coverage/junior.md` not
+**Specialist 2 is the extension engine.** For every `## ` section of `notes/sql/coverage/{LEVEL}.md` not
 claimed by a step, it does not merely report the gap — it **writes the new step**, to Section C's
-shape, inserted at the dependency position B1 justifies, with its own file in §5 and its row in §8.
-Existing step numbers are preserved where possible and closed steps are never renumbered into
-ambiguity. Conversely, a step claiming a section coverage no longer has is removed or re-pointed.
+shape, inserted at the dependency position B1 justifies, with its own file in the route's §1 and its row
+in §3. Existing step numbers are preserved where possible and closed steps are never renumbered.
+Conversely, a step claiming a section coverage no longer has is removed or re-pointed.
+
+**But scope landing on a *closed* step is not its business** (invariant 14). It records the bullets under
+that step's `**Pending additions:**` and moves on. Extending the route is this prompt's job; reopening
+graded work is nobody's.
 
 **Specialist 4 enforces the scope fence.** It is the one that keeps this plan about exercises:
 - Every prompt the plan tells Victor to run must **exist at that path** and its pasted config must use
@@ -140,7 +170,7 @@ ambiguity. Conversely, a step claiming a section coverage no longer has is remov
   or an invented key is a dead instruction that fails silently.
 - **And the reverse direction, which is the half that actually broke:** every value the prompt says it
   *derives from the plan* must be present in the plan **in the literal shape the prompt greps for**.
-  Read the prompt's Resolution table and check each source string against every §6 step — today that
+  Read the prompt's Resolution table and check each source string against every route §2 step — today that
   means a `**Moment 2 config:**` line carrying `COUNT = n`, and a `**Focus:**` line. A step missing
   either one stops the run, or worse, used to fall through to a silent default batch. Steps whose two
   runs share a `TOPIC` must also state each run's exercise range.
@@ -149,7 +179,7 @@ ambiguity. Conversely, a step claiming a section coverage no longer has is remov
   plan *describes* rather than *points at* (exercise format, note quality, Q&A shape) comes out too —
   Section E's table decides who owns what.
 - **§8c is the one exception and is not to be deleted.** Simulation *readiness* — which techniques the
-  closed steps of §8 unlock — is a fact about SQL knowledge and belongs here; simulation *content*
+  closed steps of the route unlock — is a fact about SQL knowledge and belongs here; simulation *content*
   (format, time limit, bank, tracker, config) does not. Check §8c states the first but not the second,
   and that its "Estado hoy" line agrees with §8's closed steps. A specialist that removes §8c wholesale
   has failed this check, not passed it.
@@ -171,8 +201,8 @@ itself in **every** occurrence before committing.
 
 ## Phase 3 — History gate
 
-Re-run the Phase 1 status greps **and re-read the §5 and §8 count rows**, comparing them against the
-verbatim copy taken in Phase 1. **Every step marked done before the run must still be marked done**,
+Re-run the Phase 1 status greps **and re-read the route's §1 and §3 count rows**, comparing them against
+the verbatim copy taken in Phase 1. **Every step marked done before the run must still be marked done**,
 and **every scored count in the plan must be ≥ what it was** — that is the half that matters, since
 the counts on disk never move here. Renumbered or reworded is fine; unmarked, downgraded or missing is
 a failure — a plan that loses the record of completed work is worse than an unaudited one.
@@ -188,13 +218,15 @@ Gate first: if the acceptance check or the history gate failed, do not commit.
 Otherwise `git status` → stage → `git status` again → commit:
 
 ```
-git add practice/sql/PLANNING.md
+git add practice/sql/PLANNING.md practice/sql/PLANNING-{LEVEL}.md
 ```
 ```
-git commit -m "docs: audit practice/sql/PLANNING.md — <one-line summary of the main fixes>"
+git commit -m "docs: audit SQL {level} plan — <one-line summary of the main fixes>"
 ```
 
-**`practice/sql/PLANNING.md` is machinery, not Victor's work** — a tracking document this pipeline
+Stage only the files that actually changed; an unchanged doctrine is not staged just because it was read.
+
+**Both plan files are machinery, not Victor's work** — a tracking document this pipeline
 authors, so the shared session rules' auto-commit exception covers it exactly as it covers a project `PLANNING.md`.
 **The exercise files are Victor's and are never touched here** — not staged, not edited, not
 renumbered. A specialist wanting an exercise file changed says so in its trace; the orchestrator
@@ -207,7 +239,12 @@ mid-audit.
 - **Top model for every subagent** (`reasoning tier: deep`). Four cold auditors firing rarely on the file that
   governs months of study is the wrong place to save tokens.
 - **Strict sequence, never parallel** — one file, four editors.
-- **Never write the plan from nothing.** This audits and extends; a missing plan is reported.
+- **Never write the plan from nothing.** This audits and extends. A missing `PLANNING-{LEVEL}.md` is
+  reported as "run `/sql-plan {LEVEL}` first" and the run stops — building a route cold is
+  `sql-plan-prompt`'s job, and it does it against the coverage fingerprint and a cold route reviewer
+  that this flow has no equivalent of.
+- **Never recompute the route's `Coverage SHA-256`.** Report the mismatch; the digest is the staleness
+  signal, and refreshing it without remapping the bullets destroys it.
 - **Findings are fixed in place, not reported for later.** A report Victor must apply by hand is the
   failure mode the whole system exists to avoid.
 - **Never schedule, run or edit the notes, Q&A or simulation tracks.**

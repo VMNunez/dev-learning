@@ -2,7 +2,7 @@
 
 **Internal component of `sql-exercises-prompt.md`. Not runnable on its own** — it assumes the shell has
 already resolved `{FILE}`, `{COUNT}`, `{FOCUS}` and `{REVIEW}`, read `notes/prompts/_internal/_session-rules.md`, `PLANNING.md`,
-`PROGRESS.md` and `coverage-junior.md`, and printed the resolution block.
+`PROGRESS.md` and `coverage/{LEVEL}.md`, and printed the resolution block.
 
 Split out 2026-07-22: a run is either practice or review, never both, so carrying the other branch was
 ~40% of the file for nothing. The shell reads only the branch its `MODE` names.
@@ -148,24 +148,24 @@ Generate {COUNT} exercises for {TOPIC}, numbered starting from N+1.
 introduce that concept; Standard and Challenge explore its edge cases and combinations.
 Do not cover other parts of the topic.
 
-**If FOCUS is blank:** cover the full topic. `notes/sql/coverage/junior.md` is the **single source of
-truth for concept scope** — read the sections the §6 step declares (resolved as described below),
+**If FOCUS is blank:** cover the full topic. `notes/sql/coverage/{LEVEL}.md` is the **single source of
+truth for concept scope** — read the sections the {PLAN} §2 step declares (resolved as described below),
 and ensure every concept item listed there is addressed across the exercises. The topic-specific
 rules further below are **exercise format, structural constraints, and concrete seeds** (e.g. the
 BEGIN/ROLLBACK wrapper for DML, the four-task format for normalization, a specific Challenge to
 build) — they are *not* the scope list and must never be read as one.
 
-**Reconciliation rule — coverage-junior.md always wins on scope.** The seed bullets below were written
-once and coverage-junior.md evolves; do not assume they still match. On any disagreement about *which
-concepts* to cover, coverage-junior.md is authoritative: include a concept it lists even if no seed
-mentions it, and drop a seed concept coverage-junior.md no longer lists. The seeds only ever supply
-*format and concrete examples* for the concepts coverage-junior.md defines — treat a seed that names a
-concept as an illustration, not as permission to add scope coverage-junior.md dropped.
+**Reconciliation rule — coverage/{LEVEL}.md always wins on scope.** The seed bullets below were written
+once and coverage/{LEVEL}.md evolves; do not assume they still match. On any disagreement about *which
+concepts* to cover, coverage/{LEVEL}.md is authoritative: include a concept it lists even if no seed
+mentions it, and drop a seed concept coverage/{LEVEL}.md no longer lists. The seeds only ever supply
+*format and concrete examples* for the concepts coverage/{LEVEL}.md defines — treat a seed that names a
+concept as an illustration, not as permission to add scope coverage/{LEVEL}.md dropped.
 
-**Which sections to read — resolve them from the plan, never from a list kept here.** The §6 step
+**Which sections to read — resolve them from the plan, never from a list kept here.** The {PLAN} §2 step
 that owns {TOPIC} already declares them:
 
-1. The path table in `sql-exercises-prompt.md` gives the **`PLANNING.md step`** number for {TOPIC}.
+1. The path table in `sql-exercises-prompt.md` gives the **`Route step`** number for {TOPIC}.
 2. That step's **`**Coverage:**`** line lists its coverage sections, verbatim. Those are the sections
    to read — all of them.
 3. When the step carries two runs with different TOPICs (Steps 5, 8, 9, 10), the run's own
@@ -174,7 +174,7 @@ that owns {TOPIC} already declares them:
    the 1NF/2NF/3NF items of `Schema design — modelling decisions`). The `Focus` resolution above
    already applies; this note only says where the narrowing comes from.
 
-`practice/sql/PLANNING.md` is the single source for all three of `COUNT`, `Focus` and `Coverage` —
+`{PLAN}` is the single source for all three of `COUNT`, `Focus` and `Coverage` —
 the same rule `sql-exercises-prompt.md` states for paths and order: **on any disagreement the plan
 wins and this prompt is the thing to fix.** A mapping duplicated here would drift the moment
 `sql-plan-audit SCOPE = extend` added a step, and nothing audits a table that lives in a prompt.
@@ -183,7 +183,7 @@ Two stop conditions, both silent-scope-loss bugs if allowed to fall through to t
 
 - **The step declares no `**Coverage:**` line** → stop and report it. The plan standard (B) requires
   one on every step; a step without it is a planning gap, exactly like a missing `COUNT`.
-- **A section named on that line does not exist verbatim in `notes/sql/coverage/junior.md`** → stop and
+- **A section named on that line does not exist verbatim in `notes/sql/coverage/{LEVEL}.md`** → stop and
   report it. It means the plan and coverage have drifted apart, and `sql-plan-audit` is what fixes
   that, not this run.
 
@@ -226,13 +226,13 @@ concepts already drilled (PLANNING.md Moment 2b). It changes two things and noth
 
 Also drop the new-concept restriction: deliberate repetition is the point of a review batch, so
 covering ground already covered is correct here and only here. Review batches are **not** counted
-against a step's target in PLANNING.md §5 and never flip a status in §8 — say so in the closing
+against a step's target in {PLAN} §1 and never flip a status in {PLAN} §3 — say so in the closing
 message: "Este lote es de repaso: no cuenta para el target del paso."
 
 **Cross-topic integration rule:** for the bookstore-based query topics from nulls onward
 (nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, indexes,
 live-database), at least one Challenge exercise must combine the current topic with a concept from an
-earlier topic — and **at least two from `subqueries` onward** (PLANNING.md §6 raises the floor at
+earlier topic — and **at least two from `subqueries` onward** ({PLAN} §2 raises the floor at
 Step 5, where the surface is finally wide enough for a real composition). The step's `**Reinforces:**`
 line names which earlier topic to combine with, so it is never a guess. Examples: a subquery Challenge that also requires a JOIN; a CTEs Challenge that uses
 GROUP BY inside a CTE; a window functions Challenge that filters with a WHERE clause using
@@ -280,10 +280,10 @@ yours this run. **Headings are matched case- and separator-insensitively**: the 
 hyphens **is** the block — do not report it as missing.
 
 - If the file has no block for `{TOPIC}` (a topic added to coverage but not yet seeded), generate from
-  `notes/sql/coverage/junior.md` alone and say so in one line. A missing seed block is a gap to fill later,
+  `notes/sql/coverage/{LEVEL}.md` alone and say so in one line. A missing seed block is a gap to fill later,
   never a reason to skip the topic.
 - Seeds are structure and ideas, **not scope**: the reconciliation rule above still governs, and
-  `coverage-junior.md` always wins on what belongs in the batch.
+  `coverage/{LEVEL}.md` always wins on what belongs in the batch.
 
 ---
 
@@ -298,7 +298,7 @@ already resolved from it before this branch opened. Use the resolved value; do n
 **One file, one schema (2026-07-22).** `practice/sql/01-basics.sql` is closed and is not in this
 table: it carries the pre-canonical schema, so nothing is ever appended to it again. A file whose
 SETUP block does not match the canonical schema is never extended — start the next numbered file
-instead, and update `practice/sql/PLANNING.md` §5 and §8.
+instead, and update `{PLAN}` §1 and §3.
 
 If the folder does not exist, create it. **Never invent a path** — `{FILE}` came from the shell's path
 table and is the only path this run may write to; if the shell could not resolve one, it has already

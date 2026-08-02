@@ -8,7 +8,7 @@ if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
     $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 }
 
-$expectedRunnableCount = 26
+$expectedRunnableCount = 27
 $promptRoot = Join-Path $RepositoryRoot 'notes\prompts'
 $claudeRoot = Join-Path $RepositoryRoot '.claude\commands'
 $codexRoot = Join-Path $RepositoryRoot '.codex\commands'
@@ -36,7 +36,7 @@ function Get-LauncherTargets {
         $text = [System.IO.File]::ReadAllText($launcher.FullName)
         $matches = [regex]::Matches(
             $text,
-            'notes/prompts/(?!_internal/)[A-Za-z0-9_./-]+\.md'
+            'notes/prompts/(?![A-Za-z0-9_./-]*_internal/)[A-Za-z0-9_./-]+\.md'
         )
         $canonical = @($matches.Value | Sort-Object -Unique)
         if ($canonical.Count -ne 1) {
@@ -140,6 +140,7 @@ $pipelinePromptPaths = @(
     'knowledge\notes\notes-audit.md',
     'knowledge\notes\notes-plan-prompt.md',
     'practice\sql\sql-plan-audit.md',
+    'practice\sql\sql-plan-prompt.md',
     'projects\plan\plan-audit.md',
     'projects\portfolio\portfolio-audit.md',
     'projects\readme\readme-audit.md',
@@ -148,8 +149,8 @@ $pipelinePromptPaths = @(
     'strategy\tracking\roadmap-review-prompt.md'
 )
 
-if ($pipelinePromptPaths.Count -ne 14) {
-    Add-ValidationError "Expected 14 pipeline prompts; found $($pipelinePromptPaths.Count)."
+if ($pipelinePromptPaths.Count -ne 15) {
+    Add-ValidationError "Expected 15 pipeline prompts; found $($pipelinePromptPaths.Count)."
 }
 
 foreach ($prompt in $runnable) {

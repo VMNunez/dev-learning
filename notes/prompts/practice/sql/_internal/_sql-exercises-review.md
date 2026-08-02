@@ -1,7 +1,7 @@
 # `sql-exercises` — MODE = review branch
 
 **Internal component of `sql-exercises-prompt.md`. Not runnable on its own** — it assumes the shell has
-already resolved `{FILE}`, read `notes/prompts/_internal/_session-rules.md`, `PLANNING.md`, `PROGRESS.md` and `coverage-junior.md`, and
+already resolved `{FILE}`, read `notes/prompts/_internal/_session-rules.md`, `PLANNING.md`, `PROGRESS.md` and `coverage/{LEVEL}.md`, and
 printed the resolution block.
 
 Split out 2026-07-22: a run is either practice or review, never both, so carrying the other branch was
@@ -49,7 +49,7 @@ Then, for each remaining exercise:
 "Nada que puntuar: los {n} ejercicios de [FILE] siguen sin responder. Respóndelos en pgAdmin (Moment 3
 del plan) y vuelve a pasar el review." and **stop — do not run Steps 2 to 6.** This is the state
 `02-execution-order-set-ops.sql` is in today, and it is not a score of 0: a score of 0 would flip the
-§8 row to `in progress ⏳` on the strength of work never attempted, and Step 3's three verdicts are all
+{PLAN} §3 row to `in progress ⏳` on the strength of work never attempted, and Step 3's three verdicts are all
 defined on a percentage that does not exist when the denominator is 0.
 
 **Partial-file detection:** if the first N exercises are all "Sin responder" and only later
@@ -233,7 +233,7 @@ Breakdown by level (attempted only):
 Conceptos a reforzar: [list the specific concepts that had ❌ or ⚠️ answers].
 Añado un batch de refuerzo al plan; luego ejecuta el prompt con MODE = practice y TOPIC = {TOPIC}."
 
-Then, in Step 4, append a reinforcement block to the {TOPIC} step in `practice/sql/PLANNING.md` §6,
+Then, in Step 4, append a reinforcement block to the {TOPIC} step in `{PLAN}` §2,
 **in exactly this shape** — it is what the shell's Resolution table reads, so a block written any other
 way resolves to nothing:
 
@@ -289,8 +289,8 @@ or state explicitly which one you skipped and why.
 > **Revision-point files (`R{n}-repaso.sql`) are the one exception, and it is deliberate.** Run **4a**
 > (any genuinely new concept still gets listed) and **Step 5** — closing the redeemed `MISTAKES.md`
 > rows *is* the purpose of the batch. **Skip 4b, 4c and 4d entirely**: a repaso batch is uncounted
-> (PLANNING.md §5 and §8b), so it never touches the exercises table, never moves a `Scored / target`
-> figure and never flips a §8 status. Print "Lote de repaso: no cuenta para ningún paso." and, in place
+> ({PLAN} §1 and the doctrine §8b), so it never touches the exercises table, never moves a `Scored / target`
+> figure and never flips a {PLAN} §3 status. Print "Lote de repaso: no cuenta para ningún paso." and, in place
 > of 4e, state which of the point's open rows closed and which are still open — a revision point clears
 > only when its span has no `## Open` row left.
 
@@ -340,9 +340,9 @@ path (`practice/sql/<NN>-<topic>.sql` — the flat-file convention is the real o
 at the end of the `## SQL` section — after the last existing `###` heading in that section and
 before the next `##` heading.
 
-#### 4c — PLANNING.md §8, the step row
+#### 4c — {PLAN} §3, the step row
 
-Open `practice/sql/PLANNING.md`. Find the row in the §8 table for the step this {TOPIC} belongs to —
+Open `practice/sql/PLANNING.md`. Find the row in the {PLAN} §3 table for the step this {TOPIC} belongs to —
 **the shell's path table gives the step number for {TOPIC}**. Update its **Scored / target** cell with
 the number of exercises this run actually graded ≥ 80%, and its **Status** cell:
 - score ≥ 80% **and** the step's target reached → `done ✅`
@@ -351,20 +351,20 @@ the number of exercises this run actually graded ≥ 80%, and its **Status** cel
 **A step spanning two files keeps a per-file breakdown in that cell** (Step 0 is the live case:
 `20 / 30 (01: 20/20 closed …; 02: 0/10 …)`). Do not flatten it to a bare fraction and do not rewrite
 the parenthetical for the file you did not review: update **only the clause for `{FILE}`**, then
-recompute the leading `scored / target` as the sum across the step's files. Same rule in §5, which
+recompute the leading `scored / target` as the sum across the step's files. Same rule in {PLAN} §1, which
 has **one row per file, not per step** — update the row whose file name is `{FILE}`.
 
-§5 of the plan defines three counts — *written*, *answered*, *scored* — and only **scored** moves a
+{PLAN} §1 defines three counts — *written*, *answered*, *scored* — and only **scored** moves a
 status. Do not write an answered-but-ungraded count into that cell; that conflation is what made the
 plan claim Step 0 was 40/40 when nothing had ever been reviewed.
 
 Then refresh the totals line under the table.
 
-#### 4d — PLANNING.md §0, the quick reference
+#### 4d — the doctrine §0, the quick reference
 
 Only when 4c set a row to `done ✅`. Rewrite the §0 table:
-- **Current step** → the next row in §8 that is not ✅
-- **Done condition** → that step's done condition, copied from its §6 entry
+- **Current step** → the next row in {PLAN} §3 that is not ✅
+- **Done condition** → that step's done condition, copied from its {PLAN} §2 entry
 - **Next revision point** → the first of R1–R5 in §8b whose trigger has not fired yet. Steps 1, 4, 7,
   10 and 12 each close one (R1–R5) — if this was one of them, the next one is the following R.
   **The row is "Next revision point", never "Next gate"** — §0 has six named rows and this is one of
@@ -375,14 +375,14 @@ Only when 4c set a row to `done ✅`. Rewrite the §0 table:
 
 The step-complete ritual is PLANNING.md §4, and it has **exactly one manual item** plus the exit
 question — both outside this prompt's reach:
-- **`notes/sql/coverage/junior.md`** — if the batch surfaced a concept genuinely missing from coverage, Victor
+- **`notes/sql/coverage/{LEVEL}.md`** — if the batch surfaced a concept genuinely missing from coverage, Victor
   adds it there (§4, item 3). This prompt never edits coverage.
 - **The exit question**, answered aloud from memory. §3 is explicit that a score alone never closes a
   step.
 
 So never print "step closed" on the strength of a score alone. If 4c set the row to `done ✅`, print:
 "Ejercicios del paso [N] cerrados. Para cerrar el paso entero falta responder la exit question de
-memoria, y añadir a `notes/sql/coverage/junior.md` cualquier concepto que haya salido aquí y no esté."
+memoria, y añadir a `notes/sql/coverage/{LEVEL}.md` cualquier concepto que haya salido aquí y no esté."
 
 **Do not name notes, Q&A or simulations as blockers.** They are separate tracks (PLANNING.md §Z), no
 step closes on one, and telling Victor a note is "missing to close the step" is precisely the scope
@@ -397,7 +397,7 @@ If any answer was ⚠️ or ❌, **record each distinct conceptual gap in the `#
 Concept | Sev | What went wrong | Exercises`. One row per *concept*, not per exercise: three exercises
 that all failed on `WHERE` vs `HAVING` are one row, with all three numbers in `Exercises`.
 
-- **`Coverage section` is the heading from `notes/sql/coverage/junior.md`, copied verbatim** — not a
+- **`Coverage section` is the heading from `notes/sql/coverage/{LEVEL}.md`, copied verbatim** — not a
   paraphrase and not the step name. If the gap fits no existing heading, write the closest one and say
   so in one line in the chat; that mismatch is a signal for the next `coverage-audit`, not a licence to
   invent a section name here.

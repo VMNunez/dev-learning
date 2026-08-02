@@ -20,8 +20,8 @@ Two modes:
 **How to use:** fill in `MODE` and `TOPIC`, paste the prompt into a new chat. That is the whole ritual.
 
 Everything left blank — which file, how many exercises, which concepts — comes from
-`practice/sql/PLANNING.md`, and this prompt reads it, so the default is always the plan. `COUNT` and
-`FILE` are there when you want to override that for one run. In `MODE = review` you do not need to
+`practice/sql/PLANNING-{LEVEL}.md`, and this prompt reads it, so the default is always the plan. `COUNT`
+and `FILE` are there when you want to override that for one run. In `MODE = review` you do not need to
 paste the exercise file either; it is read from disk.
 
 ---
@@ -30,7 +30,8 @@ paste the exercise file either; it is read from disk.
 ## Configuration — edit only this block
 
 MODE  = [practice | review]
-TOPIC = [R1 | R2 | R3 | R4 | R5   ← a revision point (§8b); everything below is a normal topic
+LEVEL = [junior | middle | senior]   ← blank means junior
+TOPIC = [R1 | R2 | R3 | R4 | R5   ← a revision point; everything below is a normal topic
          basics | joins | group-by | join-pitfalls | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
 COUNT =
 FILE  = practice/sql/01-basics.sql
@@ -49,13 +50,16 @@ FILE  = practice/sql/01-basics.sql
         practice/sql/14-live-database.sql
         practice/sql/15-report-queries.sql
 
-**That is the entire configuration.** Do not add keys. `MODE` and `TOPIC` are required; `COUNT` and
-`FILE` are optional overrides — they are there so Victor can pin the batch size or name the file
+**The `FILE` list above is the junior route's.** At `LEVEL = middle` or `senior` the files live under
+`practice/sql/{LEVEL}/` and their names come from that route's §1 table — read it, never guess a path.
+
+**That is the entire configuration.** Do not add keys. `MODE` and `TOPIC` are required; `LEVEL`, `COUNT`
+and `FILE` are optional overrides — they are there so Victor can pin the batch size or name the file
 explicitly when he wants to be sure what happens, and **blank is the normal state and never an
 error**. Blank means "derive it from the plan" (see the Resolution table). If more than one path is
 left under `FILE`, that is a half-finished edit: stop and ask which one, do not guess. If you feel
 the need to hand-tune anything *else* about a batch, the thing that needs changing is the step in
-`practice/sql/PLANNING.md`, not this run.
+`practice/sql/PLANNING-{LEVEL}.md`, not this run.
 
 ---
 
@@ -65,17 +69,26 @@ the need to hand-tune anything *else* about a batch, the thing that needs changi
 
 | Value | Where it comes from |
 |-------|---------------------|
-| `{FILE}` | the `FILE` key if Victor set it; otherwise the path table below, keyed by {TOPIC}. Never invent a path. |
-| `{COUNT}` | the `COUNT` key if Victor set it; otherwise the `COUNT = n` inside the **`**Moment 2 config:**`** line or block of the §6 step in `practice/sql/PLANNING.md` whose TOPIC matches. When the two differ, say so in one line ("COUNT del bloque = 6, el plan pide 10") and use his — the plan is the default, not a veto. |
-| `{FOCUS}` | the **`**Focus:**`** line of that same §6 step (every step has one; `none — the whole topic` is a real value, not a blank). |
-| `{REVIEW}` | `no`, unless the §6 block picked is a **Moment 2b reinforcement block** — the one `MODE = review` appends when a score came back under 60%, headed `**Moment 2b reinforcement block:**` — which sets it to `yes`. |
+| `{LEVEL}` | the `LEVEL` key if Victor set it; otherwise `junior`. It selects the route file: `{PLAN} = practice/sql/PLANNING-{LEVEL}.md`. If that file does not exist, print "Error: no existe `{PLAN}`. Corre `/sql-plan {LEVEL}` antes de generar ejercicios." and stop. |
+| `{FILE}` | the `FILE` key if Victor set it; otherwise the path table below at junior, or `{PLAN}`'s §1 table at middle and senior. Never invent a path. |
+| `{COUNT}` | the `COUNT` key if Victor set it; otherwise the `COUNT = n` inside the **`**Moment 2 config:**`** line or block of the `{PLAN}` §2 step whose TOPIC matches. When the two differ, say so in one line ("COUNT del bloque = 6, el plan pide 10") and use his — the plan is the default, not a veto. |
+| `{FOCUS}` | the **`**Focus:**`** line of that same §2 step (every step has one; `none — the whole topic` is a real value, not a blank). |
+| `{REVIEW}` | `no`, unless the §2 block picked is a **Moment 2b reinforcement block** — the one `MODE = review` appends when a score came back under 60%, headed `**Moment 2b reinforcement block:**` — which sets it to `yes`. |
 
-**The path table — `{FILE}` resolves from here, in both modes.** Flat files, numbered in study
-order; several topics share a file, and the second topic appends to the first rather than creating a
-new one.
+**Then check the route is current, and do not stop on it.** Recalculate the SHA-256 of
+`notes/sql/coverage/{LEVEL}.md`'s scope bytes (canonical command in `_coverage-standard.md`) and compare
+it with `{PLAN}`'s `Coverage SHA-256`. On a mismatch print one line — "Ruta desactualizada: coverage ha
+cambiado desde el último `/sql-plan {LEVEL}`" — and **continue**. A stale route still names a real step
+with a real count; it just may not map the newest bullets. That is a planning debt, not a reason to
+refuse a batch, and stopping here would block the daily block on a prompt run Victor has to schedule.
 
-| Topic | Path | PLANNING.md step |
-|-------|------|------------------|
+**The path table — `{FILE}` resolves from here at `{LEVEL} = junior`, in both modes.** Flat files,
+numbered in study order; several topics share a file, and the second topic appends to the first rather
+than creating a new one. **At middle and senior this table does not apply**: those routes keep their own
+§1 table under `practice/sql/{LEVEL}/`, and it is authoritative there exactly as this one is here.
+
+| Topic | Path | Route step |
+|-------|------|------------|
 | basics | practice/sql/02-execution-order-set-ops.sql | 0 |
 | joins | practice/sql/03-joins.sql | 1 |
 | group-by | practice/sql/04-aggregates.sql | 2 |
@@ -106,7 +119,7 @@ closed, so nothing is ever appended to it again (one file, one schema).
 `{REVIEW} = yes` means: a batch over concepts already drilled — no Intro tier, exercises labelled
 `[Repaso]`, repetition allowed, and **not** counted against the step's first-pass target.
 
-**Steps in §6 sometimes carry two runs.** Two cases, and they are disambiguated differently:
+**Steps in the route's §2 sometimes carry two runs.** Two cases, and they are disambiguated differently:
 - **Two runs with different `TOPIC`s** (Steps 5, 8, 9, 10) — the run is chosen by the `TOPIC` you were
   given. Nothing to decide.
 - **Two runs with the same `TOPIC`** (Step 1: `joins` twice) — every such run states its **exercise
@@ -120,13 +133,13 @@ last block in the step and its concepts have not yet been re-drilled since it wa
 ### `{TOPIC}` is a revision point (`R1`–`R5`) — resolve it from the mistake log
 
 A revision point is not a topic: it is a **span of steps** whose failures are re-drilled together
-(PLANNING.md §8b). Everything resolves differently, and **`practice` mode only** — `review` mode grades
+(la doctrina (`{PLAN}` §8b)). Everything resolves differently, and **`practice` mode only** — `review` mode grades
 the resulting file like any other.
 
 | Value | Where it comes from |
 |-------|---------------------|
-| `{FILE}` | the path table above: `practice/sql/R{n}-repaso.sql`. Its own file, never appended to a first-pass file — a repaso batch is uncounted (§5) and mixing it into a step's file corrupts that step's score. |
-| `{COUNT}` | `8`, unless Victor overrode it. Revision batches are not budgeted in §5. |
+| `{FILE}` | the path table above: `practice/sql/R{n}-repaso.sql`. Its own file, never appended to a first-pass file — a repaso batch is uncounted (route §1) and mixing it into a step's file corrupts that step's score. |
+| `{COUNT}` | `8`, unless Victor overrode it. Revision batches are not budgeted in route §1. |
 | `{REVIEW}` | always `yes`. |
 | `{FOCUS}` | **the open rows of `practice/sql/MISTAKES.md` whose `Step` falls in the span**, ordered by `Times` descending. This is the whole point of the mechanism: the batch drills what the record says was answered wrong, not what feels rusty. |
 
@@ -138,7 +151,7 @@ failed three times earns the batch before one failed once — weight the exercis
 of that list rather than splitting evenly.
 
 **If the span has no open rows, the point still fires** (§8b is explicit). `{FOCUS}` becomes the
-concepts of that span's steps that have appeared in the fewest exercises — read the §6 `**Concepts:**`
+concepts of that span's steps that have appeared in the fewest exercises — read the route §2 `**Concepts:**`
 lines for those steps and the exercise files themselves. Say in one line which case applied: "R2: 3
 filas abiertas en MISTAKES.md" or "R2: sin filas abiertas — foco por cobertura más fina".
 
@@ -157,19 +170,19 @@ Focus: {FOCUS}
 Validation:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
 - If {TOPIC} is not in the path table above: stop and report it.
-- **If {TOPIC} is `R1`–`R5`:** the §6-step rules below do not apply — a revision point has no step of its own. Skip straight to the revision-point resolution above. In `review` mode a repaso file is graded normally, but **it never updates §8, §5 or a step status** (see the review branch): it is uncounted by design.
+- **If {TOPIC} is `R1`–`R5`:** the route-§2-step rules below do not apply — a revision point has no step of its own. Skip straight to the revision-point resolution above. In `review` mode a repaso file is graded normally, but **it never updates the route §3, §1 or a step status** (see the review branch): it is uncounted by design.
 - If {TOPIC} is `R1`–`R5` in `practice` mode and `practice/sql/MISTAKES.md` does not exist: print "Error: no existe `practice/sql/MISTAKES.md`. Un punto de repaso deriva su foco de sus filas abiertas." and stop — do not fall back to a generic batch over the span. Generating one anyway is exactly the "revise what feels rusty" behaviour §8b exists to replace.
-- If `practice/sql/PLANNING.md` has no §6 step for {TOPIC}: print "Error: {TOPIC} no tiene step en el plan. Añádelo a §6 antes de correr esto." and stop — do not fall back to a default COUNT. A topic with no step is a planning gap, and silently generating 12 exercises hides it.
-- **If the §6 step exists but states no `COUNT` (or no `**Focus:**` line): print "Error: el step de {TOPIC} en §6 no declara [COUNT / Focus]. Arréglalo en `practice/sql/PLANNING.md` antes de correr esto." and stop.** A step missing the value is the same planning gap as a missing step, and this is the case that used to fall through to the minimum-4 warning below and quietly generate a batch nobody asked for. Never invent the value, never round to the minimum, never ask Victor for it.
+- If `{PLAN}` has no route §2 step for {TOPIC}: print "Error: {TOPIC} no tiene step en el plan. Añádelo a §2 de la ruta antes de correr esto." and stop — do not fall back to a default COUNT. A topic with no step is a planning gap, and silently generating 12 exercises hides it.
+- **If the route §2 step exists but states no `COUNT` (or no `**Focus:**` line): print "Error: el step de {TOPIC} en §2 de la ruta no declara [COUNT / Focus]. Arréglalo en `{PLAN}` antes de correr esto." and stop.** A step missing the value is the same planning gap as a missing step, and this is the case that used to fall through to the minimum-4 warning below and quietly generate a batch nobody asked for. Never invent the value, never round to the minimum, never ask Victor for it.
 - If Victor set `COUNT` explicitly and it is not a positive integer or is less than 4: print "Warning: COUNT must be at least 4 for the difficulty distribution to work. Using COUNT = 4." and use 4. **This applies only to a typed override** — a plan-derived COUNT is never silently corrected; it errors above.
-- **Target already met:** if §5 shows {FILE} has already *written* its step's first-pass target (e.g. `02-execution-order-set-ops.sql`, 10 of 10), print "El target first-pass de este archivo ya está escrito ({n}/{target}). ¿Generas un lote extra de repaso (no cuenta para el paso), o paras? (repaso / paro)" and wait. On `repaso`, continue with `{REVIEW} = yes`. This is the guard against re-generating over a step that only needs answering.
+- **Target already met:** if the route §1 shows {FILE} has already *written* its step's first-pass target (e.g. `02-execution-order-set-ops.sql`, 10 of 10), print "El target first-pass de este archivo ya está escrito ({n}/{target}). ¿Generas un lote extra de repaso (no cuenta para el paso), o paras? (repaso / paro)" and wait. On `repaso`, continue with `{REVIEW} = yes`. This is the guard against re-generating over a step that only needs answering.
 - In review mode: {COUNT}, {FOCUS} and {REVIEW} do not apply — only {FILE}. If {FILE} does not exist: print "Error: no existe [FILE]." and stop.
-- `TOPIC = all` is practice mode only; it walks every topic in the order below, resolving each one's COUNT and FOCUS from its own §6 step. See `notes/prompts/_internal/_batch-mode.md`. Review mode stays one file at a time.
+- `TOPIC = all` is practice mode only; it walks every topic in the order below, resolving each one's COUNT and FOCUS from its own route §2 step. See `notes/prompts/_internal/_batch-mode.md`. Review mode stays one file at a time.
 
 Topic order (study order, and also the file-number order): basics, joins, group-by, join-pitfalls,
 nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design,
 normalization, data-types, ddl, indexes, live-database, report-queries. This order, the file
-numbering and the step numbering are kept in sync with `practice/sql/PLANNING.md` — that file is the
+numbering and the step numbering are kept in sync with `{PLAN}` — that file is the
 source of truth. Several topics deliberately share one file (joins + join-pitfalls, subqueries +
 ctes, dml + transactions, schema-design + normalization, data-types + ddl); the path table above is
 authoritative.
@@ -194,9 +207,9 @@ nobody reads it at the start of the next run.
 
 **Before starting, read these four files:**
 - `notes/prompts/_internal/_session-rules.md` — daily schedule and teaching context (my profile and the market are in `notes/prompts/_internal/_shared-context.md`).
-- `practice/sql/PLANNING.md` — **the SQL learning plan.** It owns the step order, the file numbering, how many exercises each file targets, and which coverage sections each step claims. If this prompt and that plan ever disagree about a path or an order, the plan wins and this prompt is the thing to fix.
+- `{PLAN}` — **the SQL learning plan.** It owns the step order, the file numbering, how many exercises each file targets, and which coverage sections each step claims. If this prompt and that plan ever disagree about a path or an order, the plan wins and this prompt is the thing to fix.
 - `PROGRESS.md` — the SQL section shows which topics are already solid.
-- `notes/sql/coverage/junior.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
+- `notes/sql/coverage/{LEVEL}.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
 My profile is in `notes/prompts/_internal/_shared-context.md`.
 
@@ -208,7 +221,7 @@ SQL is not isolated from the rest of the stack. Where relevant, connect a concep
 Spring Boot or JPA equivalent in the exercise description (e.g. transactions → @Transactional,
 schema design → @Entity + @OneToMany, indexes → N+1 query problem).
 
-Study order (matches `practice/sql/PLANNING.md` §5 and §6 — the folder listing reads in the order the
+Study order (the junior route; matches `{PLAN}` §1 and §2 — the folder listing reads in the order the
 topics are learned, so the file numbers rise with study order even though **they no longer equal the
 step numbers**: Step 0 alone spans files `01` and `02`, because one file carries one schema):
 
@@ -219,7 +232,7 @@ step numbers**: Step 0 alone spans files `01` and `02`, because one file carries
   ─ 13 indexes ─ 14 live-database ─ 15 report-queries
 ```
 
-Why this order and not the coverage-junior.md order:
+Why this order and not the coverage file's order:
 - **joins before aggregation** — in a real screening `GROUP BY` almost always sits on top of a join.
 - **aggregation before join-pitfalls** — every pitfall worth drilling *is* an aggregate over a broken
   join: fan-out inflating `SUM`, `COUNT(*)` vs `COUNT(column)` after a `LEFT JOIN`, pre-aggregating in
@@ -230,7 +243,7 @@ Why this order and not the coverage-junior.md order:
 - **date functions before window functions** — a live exercise stalls on `DATE_TRUNC` first, and every
   monthly report is `GROUP BY DATE_TRUNC('month', ...)`.
 
-The reasoning per step is in PLANNING.md §6.
+The reasoning per step is in the route §2.
 
 ---
 
@@ -323,12 +336,12 @@ against this prompt's declared outputs in `notes/prompts/README.md`, the three b
 refinement step.
 
 **One tailoring of bullet 1 (`Config vs reality`), because this prompt derives more than it is given:**
-report whether the `{COUNT}` and `{FOCUS}` read from `PLANNING.md` §6 produced what the step actually
+report whether the `{COUNT}` and `{FOCUS}` read from `{PLAN}` §2 produced what the step actually
 needed, and whether `{FILE}` resolved to the right file. **A wrong derived value is a bug in the plan,
 not in this prompt** — name the file that needs the fix.
 
 Common rejections here, so they are not re-proposed every run: a fix that belongs in
-`practice/sql/PLANNING.md` is applied there, and a batch that felt mis-sized but produced correct
+`{PLAN}` is applied there, and a batch that felt mis-sized but produced correct
 exercises fails condition 3 (it changed the cost, not the result).
 [optional — paste an exercise file below this line only if your answers are not saved to disk yet;
 a paste overrides {FILE}]

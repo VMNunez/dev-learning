@@ -76,17 +76,17 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 |---|---|
 | Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
 | Projects | `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
-| Practice | `sql-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
+| Practice | `sql-plan-prompt`, `sql-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
 
-Two flavors among these 26, both launched the same way (paste config into a new chat):
+Two flavors among these 27, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
   `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt`,
-  `coverage-verify-prompt`, `notes-plan-prompt`, and `sql-plan-audit` (they run the orchestrator contract
+  `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, and `sql-plan-audit` (they run the orchestrator contract
   even when the target is singular) — run entirely inside a supported agent runtime and hand you a
-  finished result (and, where noted, a commit) with no further input from you. **Fourteen prompts**, and
-  the set is defined by which self-report they run: these fourteen execute `_pipeline-self-report.md`.
+  finished result (and, where noted, a commit) with no further input from you. **Fifteen prompts**, and
+  the set is defined by which self-report they run: these fifteen execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
@@ -197,11 +197,12 @@ down a flat list of ten files:
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `practice/sql/_sql-plan-standard.md` | *Internal.* The **bar `sql-plan-audit` checks the plan against** — required sections, the ten learning-design checks, the per-step field list, the consistency invariants, and who owns what. Not runnable. | — | — |
+| `practice/sql/_sql-plan-standard.md` | *Internal.* The **bar `sql-plan-prompt` builds to and `sql-plan-audit` checks against** — the doctrine/route split, the required sections of each file, the ten learning-design checks, the per-step field list, the fourteen consistency invariants, and who owns what. Not runnable. | — | — |
+| `practice/sql/sql-plan-prompt.md` | **Orchestrator.** The SQL track's `notes-plan`: turns `notes/sql/coverage/{LEVEL}.md` into an ordered, justified **exercise route** — steps, files, targets, revision points, exit questions, done conditions — with a `Coverage SHA-256` fingerprint and one cold route reviewer. Plans only: it never generates or grades an exercise, and never touches a `.sql` file. Its one-time migration splits the legacy `PLANNING.md` into doctrine + junior route. | `_sql-plan-standard.md`, `notes/sql/coverage/{LEVEL}.md`, `verify-{LEVEL}.md` (advisory), `notes/coverage/{LEVEL}.md`, `practice/sql/PLANNING.md`, `ROADMAP.md`, the exercise files (counted, never edited) | `practice/sql/PLANNING-{LEVEL}.md` (+ the one-time doctrine split) |
 | `practice/sql/_sql-exercises-practice.md` · `_sql-exercises-review.md` | *Internal.* The two **branches of `sql-exercises`** — generate-and-save, and grade-and-record. A run is one mode or the other, never both, so the shell reads only the branch its `MODE` names. Not runnable alone: both assume the shell already resolved `{FILE}`/`{COUNT}`/`{FOCUS}` and read the context files. | — | — |
 | `practice/sql/_sql-exercise-seeds.md` | *Internal.* Per-topic **structure and concrete exercise ideas** for `sql-exercises` Step 3 — the traps worth building a question around and each topic's Challenge. A run reads **only its own topic's block**. Scope still comes from `coverage-junior.md`, never from here. Not runnable. | — | — |
-| `practice/sql/sql-plan-audit.md` | **Orchestrator.** Audits **and extends** `practice/sql/PLANNING.md` against `_sql-plan-standard.md` — four cold specialists (learning-design · coverage-and-steps · counts-and-truth · loop-and-fence), history gate, single commit. `coverage-and-steps` writes the new steps for coverage sections nothing claims yet, so the plan grows as SQL grows. The plan it maintains covers **exercises only** — notes, Q&A and simulations are separate tracks Victor runs himself. | `_sql-plan-standard.md`, `practice/sql/PLANNING.md`, `notes/sql/coverage/junior.md`, `ROADMAP.md`, `PROGRESS.md`, `sql-exercises-prompt.md`, the exercise files (as evidence, never edited) | `practice/sql/PLANNING.md` |
-| `practice/sql/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises for the current step. `review` mode: grades my answers, scores them, and logs every ⚠️/❌ concept. Config is exactly four keys — `MODE`, `TOPIC`, `COUNT`, `FILE`; focus and review come from the step in `PLANNING.md`, never pasted. **Writes no notes and no Q&A** — those are separate tracks. | `practice/sql/PLANNING.md` (the step: topic, count, focus), `notes/sql/coverage/junior.md`, `PROGRESS.md`, the flat exercise files `practice/sql/NN-name.sql` | **Mode-conditional — the close-out checks only its own mode's list.** `practice` mode: `practice/sql/NN-name.sql`. `review` mode: `practice/sql/MISTAKES.md` + the SQL table in `PROGRESS.md`. Naming the other mode's file as "not applicable" is required; silently counting it as satisfied is not. |
+| `practice/sql/sql-plan-audit.md` | **Orchestrator.** Audits **and extends** the doctrine (`PLANNING.md`) and one level's route (`PLANNING-{LEVEL}.md`) against `_sql-plan-standard.md` — four cold specialists (learning-design · coverage-and-steps · counts-and-truth · loop-and-fence), each fenced to the file its `Edits` column names, history gate, single commit. `coverage-and-steps` writes the new steps for coverage sections nothing claims yet, so the plan grows as SQL grows. It never writes a route from nothing (that is `sql-plan-prompt`) and never recomputes the fingerprint. The plan it maintains covers **exercises only** — notes, Q&A and simulations are separate tracks Victor runs himself. | `_sql-plan-standard.md`, both plan files, `notes/sql/coverage/{LEVEL}.md`, `ROADMAP.md`, `PROGRESS.md`, `sql-exercises-prompt.md`, the exercise files (as evidence, never edited) | `practice/sql/PLANNING.md`, `practice/sql/PLANNING-{LEVEL}.md` |
+| `practice/sql/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises for the current step. `review` mode: grades my answers, scores them, and logs every ⚠️/❌ concept. Config is exactly five keys — `MODE`, `TOPIC`, `LEVEL`, `COUNT`, `FILE`; focus and review come from the step in `PLANNING-{LEVEL}.md`, never pasted. **Writes no notes and no Q&A** — those are separate tracks. | `practice/sql/PLANNING-{LEVEL}.md` (the step: topic, count, focus), `notes/sql/coverage/{LEVEL}.md`, `PROGRESS.md`, the flat exercise files `practice/sql/NN-name.sql` | **Mode-conditional — the close-out checks only its own mode's list.** `practice` mode: `practice/sql/NN-name.sql`. `review` mode: `practice/sql/MISTAKES.md` + the SQL table in `PROGRESS.md`. Naming the other mode's file as "not applicable" is required; silently counting it as satisfied is not. |
 | `practice/simulations/simulation-generator-prompt.md` | Creates new timed test specs (Angular / Spring Boot / SQL) in the existing format — the producer for the simulation bank. | `practice/simulations/{type}/` (existing specs), `practice/simulations/TRACKER.md` | new `practice/simulations/{type}/NN-*.md`; rows + counts in `practice/simulations/TRACKER.md` |
 | `practice/simulations/simulation-review-prompt.md` | Grades a finished timed simulation, gives a 3-score ideal solution, and adds questions only to the selected-level Q&A bank. `hint` mode guides mid-test. | the simulation spec, tracker, selected-level Q&A, + my pasted code | tracker, spec header, selected-level interview-prep pair |
 | `practice/interview/code-review-prompt.md` | Generates a flawed snippet to critique, grades the review, and records gaps only in the selected-level Q&A bank. | snippet generated fresh; selected-level Q&A | selected-level interview-prep pair |
@@ -261,10 +262,14 @@ Each generated file, with who writes it and who depends on it:
 - **`interview-prep/{LEVEL}/en/*.md` + `{LEVEL}/es/*.md`** — written by `interview-prep-audit`,
   `notes-and-interview-prep`, `simulation-review`, `code-review` → read by `simulator`.
 - **`interview-prep/projects/*.md`** — written by `portfolio-audit` → read by `simulator`.
-- **`practice/sql/PLANNING.md`** — written by `sql-plan-audit` → read by `sql-exercises` (every run
-  takes its topic, count and focus from the current step) and by `simulation-generator` in
-  `TYPE = sql` (a SQL test may only use techniques from steps already closed). *This is the SQL
-  track's contract, the same role a project's `PLANNING.md` plays.*
+- **`practice/sql/PLANNING-{LEVEL}.md`** — written by `sql-plan-prompt`, audited and extended by
+  `sql-plan-audit` → read by `sql-exercises` (every run takes its topic, count and focus from the
+  current step) and by `simulation-generator` in `TYPE = sql` (a SQL test may only use techniques from
+  steps already closed). *This is the SQL track's contract, the same role a project's `PLANNING.md`
+  plays, and its `Coverage SHA-256` is what says whether it still maps the whole checklist.*
+- **`practice/sql/PLANNING.md`** — the level-neutral **doctrine** (step loop, done-condition formats,
+  closing ritual, revision mechanism, gates, invariants), written by `sql-plan-audit` → read by every
+  prompt in the track. One doctrine, three routes.
 - **`practice/sql/MISTAKES.md`** — written by `sql-exercises` in `review` mode (one row per failed
   concept, with its `coverage-junior.md` section and how many times it has come back) → read by the revision
   points R1–R5 in `PLANNING.md` §8b, which take their focus from its open rows, highest count first.
@@ -297,12 +302,12 @@ progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.m
 
 Practice (its own loop, fed by coverage):
 
-  notes/sql/coverage/junior.md ─► sql-plan-audit ─► practice/sql/PLANNING.md ─┬─► sql-exercises ─► NN-*.sql
-                                                    ▲                 │        └─► MISTAKES.md ─┐
-                                                    └── the R1–R5 revision points read it ◄──────┘
-                                                                      │
-                                                                      └─► simulation-generator (sql)
-                                                                             (only closed steps)
+  notes/sql/coverage/{LEVEL}.md ─► sql-plan ─► PLANNING-{LEVEL}.md ─┬─► sql-exercises ─► NN-*.sql
+                                                  ▲          ▲       │     └─► MISTAKES.md ─┐
+                                    sql-plan-audit┘          └── the R1–R5 revision points ◄─┘
+                                    (+ PLANNING.md,                │
+                                       the doctrine)               └─► simulation-generator (sql)
+                                                                          (only closed steps)
 
   simulation-generator ─► simulations/{type}/ ─► simulation-review ─► TRACKER + topic Q&A ─► simulator
 ```
@@ -350,16 +355,19 @@ Q&A (deep work remains one section per agent). Never launch interview prep merel
 finished—the complete selected-level notes plan is its prerequisite.
 
 **The SQL track (the daily 12:30 block)**
-1. `coverage-prompt` (`TOPIC = sql`) — only when coverage is stale; it is the root of the plan
-2. `sql-plan-audit` — turns coverage into ordered steps in `practice/sql/PLANNING.md`. Re-run it when a
-   step closes, when coverage grows, or when the plan feels out of date
-3. per step, in the block itself: `sql-exercises` (`MODE = practice`) → answer them in pgAdmin →
-   `sql-exercises` (`MODE = review`) to grade. The step's topic, count and focus come from the plan
-4. at each revision point R1–R5 (every 3 scored files): `sql-exercises` again, focused on the open
+1. `coverage-prompt` (`TOPIC = sql`) → `coverage-verify` → `coverage-prompt` again to close the gaps —
+   only when coverage is stale; it is the root of the plan
+2. `sql-plan` (`LEVEL = junior`) — turns that coverage into the ordered route in
+   `practice/sql/PLANNING-junior.md`, fingerprinted. Re-run it when coverage grows
+3. `sql-plan-audit` — audits the route and the doctrine, and extends the route with steps for coverage
+   sections nothing claims yet. Re-run it when a step closes or the plan feels out of date
+4. per step, in the block itself: `sql-exercises` (`MODE = practice`) → answer them in pgAdmin →
+   `sql-exercises` (`MODE = review`) to grade. The step's topic, count and focus come from the route
+5. at each revision point R1–R5 (every 3 scored files): `sql-exercises` again, focused on the open
    rows of `MISTAKES.md`
-5. `simulation-generator` (`TYPE = sql`) — the first timed test is due once Step 5 closes; it refuses
+6. `simulation-generator` (`TYPE = sql`) — the first timed test is due once Step 5 closes; it refuses
    to use techniques from steps you have not closed
-6. after the last step: `progress-update`, then `roadmap-review`
+7. after the last step: `progress-update`, then `roadmap-review` — then `sql-plan` for the next level
 
 **Applying**
 1. `portfolio-audit` on each finished project (produces cv-bullets)

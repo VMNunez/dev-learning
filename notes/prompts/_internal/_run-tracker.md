@@ -69,6 +69,23 @@ marking the note complete.
 |---|---|---|---|---|---|---|---|
 | Java | junior | 00 | `notes/java/junior/en/00-intro-java.md` | `notes/java/junior/es/00-intro-java.md` | complete | 2026-07-24 | completed — 2/2 assigned concepts covered; four stages passed |
 
+## SQL exercise track
+
+The SQL **exercise** route, per level — distinct from the `SQL` row in the per-topic table above, which
+tracks the SQL *notes*. `sql-plan` writes the route (`practice/sql/PLANNING-{LEVEL}.md`); `sql-plan-audit`
+audits it together with the level-neutral doctrine (`practice/sql/PLANNING.md`).
+
+| Level | SQL plan | sql-plan-audit |
+|---|---|---|
+| junior | | |
+| middle | | |
+| senior | | |
+
+A `SQL plan` cell carries the same ` · ⚠ stale` flag rules as a `Plan J/M/S` cell above: coverage that
+grows after the route was planned makes the cell stale, and a stale cell does not satisfy the
+`sql-plan-audit` prerequisite. The flag here is written by `sql-plan-audit` when its fingerprint check
+fails, since no daily-session skill touches this route.
+
 ## Per-project prompts
 
 | Project | plan-audit | review-audit | readme-audit | portfolio-audit |
@@ -86,7 +103,6 @@ marking the note complete.
 | Prompt | Last run |
 |---|---|
 | coverage-audit | 2026-08-01 — completed — junior update; 1,344-item floor converged; 497 markers preserved; mirror parity; cold review passed |
-| sql-plan-audit | |
 | progress-update | |
 | roadmap-review | |
 
