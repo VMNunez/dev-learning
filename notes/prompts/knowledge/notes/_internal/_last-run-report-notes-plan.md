@@ -1,11 +1,11 @@
 # Last run report — notes-plan-prompt
 
 Date: 2026-08-02
-Target: General / junior / update
+Target: Angular / junior / update
 Status: open
 
-- **Plan vs reality** — The first completed cold whole-plan pass found an incomplete introduction, five concept-order defects, oversized or label-driven testing groups, and stale handoffs. The corrected 21-entry artefact passed the second whole-plan pass plus exact 116/116 assignment, path, mirror, and link validation.
-- **Report discipline** — The completed reviewer returned the required EOF evidence and bounded entry-specific corrections; no content dump had to be trimmed.
-- **Failures & retries** — The first reviewer stalled and was interrupted; a cold replacement completed the required review and one dependent correction pass. The retry protocol recovered without accepting an unreviewed plan.
-- **Rule friction and rule breaches** — Required dispatches: 1 cold reviewer / 1 required; 2 agents were dispatched because the first failed, and the replacement completed 2 sequential passes. The user-authorised thematic subfolders were compatible with the existing exact-path guard. No mandatory gate or declared output was skipped.
+- **Plan vs reality** — The mandated cold whole-plan pass found a real ordering defect and incomplete migration contracts; the orchestrator applied the accepted route corrections, then exact assignment, field, dependency, mirror, and path checks passed against the finished artefact.
+- **Report discipline** — The reviewer returned the required EOF evidence and bounded entry-specific corrections; no content dump had to be trimmed.
+- **Failures & retries** — One cold reviewer was required and one completed; no retry or unusable return occurred.
+- **Rule friction and rule breaches** — Required dispatches: 1 cold reviewer / 1 required and completed. The review also proposed note-prose moves and broader chapter splits; those stayed outside this planner's no-prose boundary. No mandatory gate or declared output was skipped.
 - **Verdict** — pipeline clean. Prompt is 363 lines, inside the health budget.
