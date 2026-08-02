@@ -85,9 +85,8 @@ This prompt has two shapes; Step 0 fixes which one and records it in the plan.
 **Verify-gap fast path** applies only when all of these hold:
 
 - `verify-{LEVEL}.md` exists with `Verdict: gaps` and a non-empty `## Open gaps`;
-- its stored `Coverage SHA-256` matches the current `TARGET_FILE`'s **scope bytes** and every applicable
-  prerequisite SHA matches its current earlier-level file (evidence markers stripped — see "Evidence
-  markers" in the standard), so every gap was raised against today's complete dependency chain;
+- its stored `Coverage SHA-256` matches the current `TARGET_FILE`'s **scope bytes** (evidence markers
+  stripped — see "Evidence markers" in the standard), so every gap was raised against today's scope;
 - no `_cross-topic-inbox.md` entry is pending under this topic;
 - neither this topic's ownership row nor an adjacent boundary changed since its last coverage run;
 - no other recalibration trigger is active.
@@ -324,11 +323,8 @@ In update mode:
 
 1. Commit changed topic scope files and every affected global mirror atomically. When `verify-{LEVEL}.md`
    supplied gaps, blank its `## Open gaps` to `*(none)*` and set `Verdict: superseded` in the same
-   commit, add `Superseded by Coverage SHA-256: <new TARGET_FILE digest>`,
-   `Superseded junior prerequisite SHA-256: <digest> | n/a`, and
-   `Superseded middle prerequisite SHA-256: <digest> | n/a`. Fingerprint every prerequisite applicable
-   to `LEVEL`, whether or not that particular file changed, and thereby prove which final dependency
-   chain consumed the gaps.
+   commit, add `Superseded by Coverage SHA-256: <new TARGET_FILE digest>`. That single fingerprint
+   proves which final scope consumed the gaps; earlier levels are not fingerprinted.
    Preserve `## Locked placement conflicts` unchanged as historical evidence; consuming actionable
    gaps never erases a conflict Victor deliberately chose to freeze.
    No run re-proposes a consumed gap. That superseded verification is

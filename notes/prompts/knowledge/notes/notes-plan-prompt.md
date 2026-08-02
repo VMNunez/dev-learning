@@ -62,20 +62,11 @@ belong there.
    repository's line-count and read-to-EOF rule.
 3. Stop on `main`.
 4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
-5. Read `VERIFY` but never stop on it. Record one of three states:
-   - `verified` — `Verdict = complete`, its stored `Coverage SHA-256` matches the current `COVERAGE`,
-     and every applicable prerequisite SHA matches the current earlier-level scope bytes;
-   - `reviewed` — `Verdict = superseded`, no open gaps, `Superseded by Coverage SHA-256` matches current
-     `COVERAGE`, and every applicable `Superseded {level} prerequisite SHA-256` matches the current earlier-level
-     scope bytes, proving that a `coverage-prompt → coverage-verify → coverage-prompt` cycle consumed
-     the findings into this exact dependency chain;
-   - `unverified` — missing findings, an open `gaps` verdict, or any other stale SHA.
-   Missing legacy prerequisite fields on a middle or senior verdict make it `unverified`; run the
-   cumulative `coverage-verify` when a current chain verdict matters. All three states continue
-   planning. `reviewed` is a completed cycle, not a degraded gate and not a
-   reason to request another verification. When `unverified`, record the reason without blocking.
-   Victor may start a fresh reassessment later, but zero gaps is never required before planning or
-   authoring notes.
+5. Read `VERIFY` but never stop on it, and never classify it into a stored status. Its verdict is
+   history: an open `gaps` verdict, a `superseded` one, missing findings, or no `VERIFY` file at all
+   all continue planning identically. Report the verdict you read in the final summary and move on.
+   Zero gaps is never required before planning or authoring notes, and this prompt never requests
+   another verification.
 6. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
    middle to be closed. Planning later levels is blocked just like authoring them.
 7. Preserve unrelated working-tree changes.
@@ -227,7 +218,6 @@ dispatched or fails twice, stop; there is no single-agent fallback.
 Plan status: current
 Coverage: notes/angular/coverage/junior.md
 Coverage SHA-256: <digest>
-Coverage verification: verified | reviewed | unverified — <complete current SHA | gaps consumed and superseded | missing/open/stale findings>
 Generated: YYYY-MM-DD
 
 ## 01 — Components and templates
@@ -352,8 +342,8 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 
 ## Final report
 
-Report topic, level, coverage fingerprint, the coverage-verification state (`verified`, `reviewed`, or
-`unverified`, with the reason; never prescribe repeated verification until zero gaps), entry count,
+Report topic, level, coverage fingerprint, the `VERIFY` verdict as read (never prescribe repeated
+verification until zero gaps), entry count,
 concept count, create/audit counts,
 checked/unchecked concept counts, preserved-complete count, every `refined` entry with the count of `Pending additions` it now carries
 (and any broken freeze), every legacy classification decision, relocations, renumberings, split

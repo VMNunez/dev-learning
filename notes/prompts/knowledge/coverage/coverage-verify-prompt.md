@@ -72,11 +72,9 @@ must not supply proposed gaps or raise the selected-level floor.
    trustworthy to verify.
 4. Compute the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
    trailing ` ✅ NN-slug — {evidence}` evidence marker stripped, per the canonical command in "Evidence markers" in
-   `_coverage-standard.md`. This is what the
-   findings file stamps, so `notes-plan` can tell a verified verdict from a stale one.
-   Compute the same digest for every `PREREQUISITES` file. These additional fingerprints prevent a
-   prerequisite finding from being consumed after the earlier-level scope it was judged against has
-   changed.
+   `_coverage-standard.md`. This is what the findings file stamps, so `coverage-prompt` can tell
+   whether its verify-gap fast path is judging today's scope. Fingerprint only `COVERAGE`; earlier
+   levels are not fingerprinted.
 5. For middle, state that the junior gate must be consolidated; for senior, junior and middle. The gate
    controls study order, not whether this verification may run.
 6. Run `git status --short` and preserve unrelated changes.
@@ -149,8 +147,6 @@ In update mode, write `FINDINGS` in this exact shape:
 
 Verdict: complete | gaps
 Coverage SHA-256: <64 lowercase hexadecimal characters>
-Junior prerequisite SHA-256: <64 lowercase hexadecimal characters> | n/a
-Middle prerequisite SHA-256: <64 lowercase hexadecimal characters> | n/a
 Verified: YYYY-MM-DD
 
 ## Open gaps
@@ -162,8 +158,8 @@ Verified: YYYY-MM-DD
 - [current level] exact locked coverage bullet — preferred placement and evidence, no edit permitted
 ```
 
-`Coverage SHA-256` always fingerprints the selected file for compatibility with `notes-plan`.
-Prerequisite fields fingerprint only levels earlier than `LEVEL`; every non-applicable field is `n/a`.
+`Coverage SHA-256` always fingerprints the selected file. It is the only fingerprint this prompt
+writes: earlier levels carry no field of their own.
 When the verdict is `complete`, the `## Open gaps` body is exactly `*(none)*`. The level prefix is
 findings metadata, not part of the proposed coverage bullet; `coverage-prompt` removes it before
 judging the item.
@@ -209,6 +205,6 @@ launch it manually.
 ## Final summary
 
 Report branch, mode, topic, level, progression-gate state, every reviewed coverage file's line count
-with EOF confirmation, selected and prerequisite SHAs, reviewer completion and lenses applied,
+with EOF confirmation, the selected SHA, reviewer completion and lenses applied,
 verified-gap count by target level, the verdict, the findings path (or `dry-run`), and unresolved risks
 or `none`, including every locked placement conflict. Do not finish while a plan item remains incomplete.

@@ -3,7 +3,6 @@
 Plan status: current
 Coverage: notes/spring/coverage/junior.md
 Coverage SHA-256: 73e2ef58b752604921127c902222c05a749987406b792406221708784b06e9a5
-Coverage verification: unverified — stale superseded SHA (stored 697939028a170aea887ead17a1882c22e168d4efcef1181025b38a789c79d082; current 73e2ef58b752604921127c902222c05a749987406b792406221708784b06e9a5)
 Generated: 2026-08-01
 
 ## 00 — Spring Framework orientation

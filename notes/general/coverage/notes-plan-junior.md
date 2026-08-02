@@ -3,7 +3,6 @@
 Plan status: current
 Coverage: notes/general/coverage/junior.md
 Coverage SHA-256: dc1c74e23846d01e93ffdc9f6544eac1ce5ff089144e6985ad821342a0467c6d
-Coverage verification: unverified — stale findings: verify-junior.md stores b0307fdcb3f492d9ca24150e7fd077e01a5f324767a38abe632abed79ca59f15
 Generated: 2026-08-02
 
 ## 00 — General engineering map

@@ -3,7 +3,6 @@
 Plan status: current
 Coverage: notes/architecture/coverage/junior.md
 Coverage SHA-256: 31dde116f1202ff22cc9355c684cbff9a9a88118a53d7356be2d6bb05dacc35e
-Coverage verification: verified — complete current SHA
 Generated: 2026-07-29
 
 ## 00 — Architecture orientation

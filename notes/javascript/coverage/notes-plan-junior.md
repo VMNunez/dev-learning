@@ -3,7 +3,6 @@
 Plan status: current
 Coverage: notes/javascript/coverage/junior.md
 Coverage SHA-256: 41e619395ad4a9873da4950eac567eae1db2709eb2c74e7ad7620b0e7b6448da
-Coverage verification: reviewed — gaps consumed and superseded
 Generated: 2026-07-29
 
 ## 00 — Introduction to JavaScript

@@ -3,7 +3,6 @@
 Plan status: current
 Coverage: notes/sql/coverage/junior.md
 Coverage SHA-256: 8bc2db5f2608d9470da9a28fb845bd7c0409cd33f29b091534e09dcec1d0a7bf
-Coverage verification: reviewed — gaps consumed and superseded
 Generated: 2026-07-29
 
 ## 00 — SQL and relational databases

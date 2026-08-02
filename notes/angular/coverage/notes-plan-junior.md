@@ -3,7 +3,6 @@
 Plan status: current
 Coverage: notes/angular/coverage/junior.md
 Coverage SHA-256: fc92b61ea2a839c2fbf1263949fde22b07609c2ef58c957d924a676e8c8bb8e5
-Coverage verification: unverified — superseded findings reference stale coverage SHA a22f33f6a38c3954de6c9ec4402ca0aab3fb12461787675379c6c34fef7e2984
 Generated: 2026-08-02
 
 ## 00 — Angular in the browser
