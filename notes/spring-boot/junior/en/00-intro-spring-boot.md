@@ -26,7 +26,7 @@ Docs: https://www.baeldung.com/spring-vs-spring-boot → read: the "Spring" and 
 
 Docs: https://www.baeldung.com/inversion-control-and-dependency-injection-in-spring → read: "What Is Inversion of Control?" and "What Is Dependency Injection?" (stop before the XML examples — Spring Boot uses annotations instead)
 
-Spring's central concept is **Inversion of Control (IoC)**: instead of your code creating the objects it depends on (`new TransactionRepository()`), you declare what you need and a container creates and hands it to you. That container is called the **ApplicationContext**, and the objects it manages are called **beans** — full explanation with the "why" in [03-dependency-injection.md](03-dependency-injection.md).
+Spring's central concept is **Inversion of Control (IoC)**: instead of your code creating the objects it depends on (`new TransactionRepository()`), you declare what you need and a container creates and hands it to you. That container is called the **ApplicationContext**, and the objects it manages are called **beans** — full explanation with the "why" in [18-dependency-injection.md](18-dependency-injection.md).
 
 The word "inversion" is doing real work there, so make it concrete. **Think of a restaurant kitchen.** Without IoC, every cook goes out and buys their own tomatoes: they decide the supplier, they carry the crate in, and if the supplier changes, every cook has to be retrained. With IoC there is a *storeroom manager* — you post a note saying "I need tomatoes" and a crate is on your bench when you arrive. The cook no longer *controls* where the tomatoes come from; that control was **inverted** and handed to the manager. Swapping the supplier is now one change in one place, and nobody in the kitchen notices. Spring's ApplicationContext is that storeroom manager, your `@Service` classes are the cooks, and the constructor parameter is the note.
 
@@ -87,17 +87,17 @@ Two consequences fall straight out of that, and both are exam questions. **Why m
 
 > **"Bean definition" is not the bean.** Step 4 does not create anything — it files a *recipe*: this class, this constructor, these parameter types. The object itself is only built in step 5. That two-phase split (**define everything, then build everything**) is what lets two beans depend on each other in any order — by the time construction starts, every recipe is already on the table, so it never matters which class the scanner happened to reach first. It is also why a missing bean fails at **startup**, not on the first request: Spring already knows, before serving anything, that some constructor asks for a type no recipe produces (`Parameter 0 of constructor in ...TimeEntryService required a bean of type '...TimeEntryRepository' that could not be found`).
 
-> **Step 5 builds the *singletons*, and that is nearly all of them.** By default a bean is a **singleton** — one instance for the whole app, created eagerly at startup. That is the default because your `@Service` and `@Repository` classes are stateless: they hold no per-user data, so one shared instance can serve every request and building it once is free. The exceptions are beans marked `@Lazy` (built on first use) or given a non-singleton scope, and those simply are not constructed in step 5 — their recipe waits. Scopes are covered in full in [03-dependency-injection.md](03-dependency-injection.md); for now, read "Spring instantiates them" as "Spring instantiates the singletons", which in TimeTrack is every bean you write.
+> **Step 5 builds the *singletons*, and that is nearly all of them.** By default a bean is a **singleton** — one instance for the whole app, created eagerly at startup. That is the default because your `@Service` and `@Repository` classes are stateless: they hold no per-user data, so one shared instance can serve every request and building it once is free. The exceptions are beans marked `@Lazy` (built on first use) or given a non-singleton scope, and those simply are not constructed in step 5 — their recipe waits. Scopes are covered in full in [18-dependency-injection.md](18-dependency-injection.md); for now, read "Spring instantiates them" as "Spring instantiates the singletons", which in TimeTrack is every bean you write.
 
 > **`@Service`, `@Repository` and `@RestController` are all `@Component` underneath.** Open their source and each one carries `@Component` as a *meta-annotation* — an annotation on the annotation. So the scanner in step 4 only ever looks for one thing. The extra names exist for **you** (they document the layer at a glance) and for a little extra framework behaviour on top. `@Repository` is the clearest case: it also switches on **exception translation**, so the vendor-specific error your database driver throws (a Postgres `SQLException` with an error code like `23505`) is caught and re-thrown as one of Spring's own (`DataIntegrityViolationException`). The payoff is that your service catches the *same* exception whether it is running against Postgres in production or H2 in a test — the driver stops leaking into your code. They are not four different mechanisms; they are one mechanism with four labels and a little extra wiring each.
 
 | Annotation | What it marks | Covered in full |
 |---|---|---|
-| `@Component` | Any Spring-managed class (generic) | [03-dependency-injection.md](03-dependency-injection.md) |
-| `@Service` | Business logic layer | [03-dependency-injection.md](03-dependency-injection.md) · rules inside it: [11-business-logic-domain-modeling.md](11-business-logic-domain-modeling.md) |
-| `@Repository` | Data access layer | [04-spring-data-jpa.md](04-spring-data-jpa.md) |
+| `@Component` | Any Spring-managed class (generic) | [18-dependency-injection.md](18-dependency-injection.md) |
+| `@Service` | Business logic layer | [18-dependency-injection.md](18-dependency-injection.md) · rules inside it: [11-business-logic-domain-modeling.md](11-business-logic-domain-modeling.md) |
+| `@Repository` | Data access layer | [03-spring-data-jpa.md](03-spring-data-jpa.md) |
 | `@RestController` | Web layer — handles HTTP | [02-rest-controllers.md](02-rest-controllers.md) |
-| `@Configuration` + `@Bean` | A bean you can't annotate directly (a library class) | [03-dependency-injection.md](03-dependency-injection.md) · used heavily in [06-security-jwt.md](06-security-jwt.md) |
+| `@Configuration` + `@Bean` | A bean you can't annotate directly (a library class) | [18-dependency-injection.md](18-dependency-injection.md) · used heavily in [06-security-jwt.md](06-security-jwt.md) |
 
 Read the third column as a promise, not a footnote: nothing in this file is explained to the level you will need — each row is the file that owes you the full mechanism, the real TimeTrack code, and the interview answer. This file only gives you the *shape* so those files have something to attach to.
 
@@ -122,7 +122,7 @@ HTTP request  →  [embedded Tomcat, port 8080]
      ↓
 [Service]                 ← business rules + @Transactional boundary         (08-transactions.md, 11-business-logic-domain-modeling.md)
      ↓
-[Repository]              ← talks to the database via Spring Data JPA        (04-spring-data-jpa.md)
+[Repository]              ← talks to the database via Spring Data JPA        (03-spring-data-jpa.md)
      ↓
 Database
 

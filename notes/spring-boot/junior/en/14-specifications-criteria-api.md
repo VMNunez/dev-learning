@@ -2,7 +2,7 @@
 
 Docs: https://www.baeldung.com/rest-api-search-language-spring-data-specifications → read: "Specifications" and "Multiple Specifications"
 
-You already know `@Query` with named parameters (file [04-spring-data-jpa.md](04-spring-data-jpa.md)) — you write the JPQL as a fixed string, Spring fills in `:paramName` at execution time. That works great when the query never changes shape. But `GET /api/entries` in project 07 has four *optional* filters — `userId`, `projectId`, `status`, `month` — and any subset of them can arrive on a given request: sometimes just `status`, sometimes all four, sometimes none. The query's `WHERE` clause needs a different shape depending on what showed up. That is the problem this file solves.
+You already know `@Query` with named parameters (file [03-spring-data-jpa.md](03-spring-data-jpa.md)) — you write the JPQL as a fixed string, Spring fills in `:paramName` at execution time. That works great when the query never changes shape. But `GET /api/entries` in project 07 has four *optional* filters — `userId`, `projectId`, `status`, `month` — and any subset of them can arrive on a given request: sometimes just `status`, sometimes all four, sometimes none. The query's `WHERE` clause needs a different shape depending on what showed up. That is the problem this file solves.
 
 ## The tempting fix, and why it breaks
 
@@ -158,7 +158,7 @@ List<TimeEntry> entries = timeEntryRepository.findAll(spec);
 | | `@Query` (JPQL/native) | `Specification` |
 |---|---|---|
 | Query shape | Fixed at compile time | Built at runtime, conditionally |
-| Good for | A query whose `WHERE`/`SELECT` never changes shape (e.g. the report aggregations in `04-spring-data-jpa.md`) | A query whose `WHERE` needs a different subset of conditions per call |
+| Good for | A query whose `WHERE`/`SELECT` never changes shape (e.g. the report aggregations in `03-spring-data-jpa.md`) | A query whose `WHERE` needs a different subset of conditions per call |
 | Readability | Reads like SQL — easy to eyeball | Reads like Java — more boilerplate, but composable |
 | The `IS NULL OR` optional-filter trick | Fragile — can hit Postgres type-inference errors like `42P18` | Not needed — absent filters just never contribute a predicate |
 

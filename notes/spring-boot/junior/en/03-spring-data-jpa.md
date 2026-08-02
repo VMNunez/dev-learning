@@ -5,7 +5,7 @@
 
 ---
 
-[03-dependency-injection.md](./03-dependency-injection.md) closed on a bean that should not exist. `TimeEntryRepository` is an **interface**. It has no body, no `@Repository`, no `@Component`, and there is no class anywhere in TimeTrack that implements it — yet `TimeEntryService`'s constructor asks for one, Spring finds one, and `findByUser(user)` comes back with rows from PostgreSQL. A container that only instantiates classes *you* wrote cannot explain that.
+[18-dependency-injection.md](./18-dependency-injection.md) closed on a bean that should not exist. `TimeEntryRepository` is an **interface**. It has no body, no `@Repository`, no `@Component`, and there is no class anywhere in TimeTrack that implements it — yet `TimeEntryService`'s constructor asks for one, Spring finds one, and `findByUser(user)` comes back with rows from PostgreSQL. A container that only instantiates classes *you* wrote cannot explain that.
 
 Here is what actually happens at startup. Spring Boot sees `spring-boot-starter-data-jpa` on the classpath and switches on **Spring Data's repository scanning**: it walks your packages looking not for annotated *classes* but for **interfaces that extend `Repository`** (which `JpaRepository` does, several levels up). For each one it finds, it does two things:
 

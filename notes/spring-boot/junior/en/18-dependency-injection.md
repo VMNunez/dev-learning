@@ -159,7 +159,7 @@ Read that list as *one annotation per layer of file 02*, not as four different m
 
 `@Repository` is the one exception with real behaviour: it also **translates persistence exceptions**. Hibernate throws its own exception types (`ConstraintViolationException`, `LazyInitializationException`); `@Repository` catches them and rethrows them as Spring's `DataAccessException` hierarchy. The payoff is that your *service* layer never has to import a Hibernate class to catch an error — it only ever sees Spring's consistent types, so swapping Hibernate for another JPA provider would not ripple upward.
 
-> **Where is `@Repository` in TimeTrack, then?** Nowhere — and that is correct. `UserRepository`, `ProjectRepository` and `TimeEntryRepository` are *interfaces* extending `JpaRepository`, and Spring Data detects and registers those itself, applying the exception translation without the annotation. You write `@Repository` by hand only on a repository class you implemented yourself. Full mechanism in [04-spring-data-jpa.md](./04-spring-data-jpa.md).
+> **Where is `@Repository` in TimeTrack, then?** Nowhere — and that is correct. `UserRepository`, `ProjectRepository` and `TimeEntryRepository` are *interfaces* extending `JpaRepository`, and Spring Data detects and registers those itself, applying the exception translation without the annotation. You write `@Repository` by hand only on a repository class you implemented yourself. Full mechanism in [03-spring-data-jpa.md](./03-spring-data-jpa.md).
 
 ---
 
@@ -536,4 +536,4 @@ The question file 02 ended on is answered. Nobody calls `new ProjectService(...)
 
 One bean in every wiring diagram of this file has been quietly cheating, though. `TimeEntryService`'s constructor asks for three repositories, and Spring finds all three — but you never wrote a single line of `TimeEntryRepository`'s body. It is an *interface*. There is no class implementing it anywhere in the project, no `@Repository` on it, no `new` — and yet at startup a real object appears in the context and `findAll()` returns rows from PostgreSQL. A container that only instantiates classes you wrote cannot explain that.
 
-[04-spring-data-jpa.md](./04-spring-data-jpa.md) is where that gets resolved: how Spring Data *generates* the implementation of a repository interface at runtime, how `@Entity` maps a class onto a table, and how a method called `findByActiveTrue()` — with no body at all — becomes a `SELECT`.
+[03-spring-data-jpa.md](./03-spring-data-jpa.md) is where that gets resolved: how Spring Data *generates* the implementation of a repository interface at runtime, how `@Entity` maps a class onto a table, and how a method called `findByActiveTrue()` — with no body at all — becomes a `SELECT`.

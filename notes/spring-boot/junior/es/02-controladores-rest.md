@@ -54,7 +54,7 @@ public class TransactionController {
 Algunas cosas que merece la pena notar en este ejemplo:
 
 - **Sí — cada capa tiene una referencia a la que tiene debajo.** El controlador declara `private final TransactionService service`. `private` porque ninguna otra clase lo necesita; `final` porque una vez que Spring lo establece en el constructor nunca cambia. Verás exactamente esta línea `private final` en cada controlador, service y clase que use un repositorio.
-- **El constructor es `public` y debe tener exactamente el mismo nombre que la clase** (`TransactionController`). Esa es la regla Java para cualquier constructor. Spring lo llama al arrancar y pasa el bean `TransactionService` automáticamente (inyección por constructor — ver [03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md)).
+- **El constructor es `public` y debe tener exactamente el mismo nombre que la clase** (`TransactionController`). Esa es la regla Java para cualquier constructor. Spring lo llama al arrancar y pasa el bean `TransactionService` automáticamente (inyección por constructor — ver [18-inyeccion-dependencias.md](./18-inyeccion-dependencias.md)).
 - **`this.service = service`** — el parámetro y el campo comparten el nombre `service`. `this.service` significa "el campo de este objeto"; el `service` a secas es el parámetro. La línea copia el parámetro inyectado en el campo para que el resto de la clase pueda usarlo.
 - **`TransactionResponse` es un DTO** (Data Transfer Object) — la forma que el API devuelve en lugar de la entidad raw. Los DTOs se explican completamente en la sección "DTOs" más abajo y en [layer-reference.md](../.../../../layer-reference.md).
 
@@ -431,7 +431,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 - Los dos type arguments son **la entidad** y **el tipo de su `@Id`** — `<User, Long>` porque `User.id` es un `Long`. Ponlos al revés y no compilará.
 - `findByEmail` es una **derived query** (query derivada): declaras el método, no escribes cuerpo, y Spring Data lee el *nombre* para generar `SELECT * FROM users WHERE email = ?`. Devuelve `Optional<User>` porque un email que no coincide con nada es un resultado normal, no un error. No lo usa `/api/users` — el login lo necesita (ver [06-seguridad-jwt.md](./06-seguridad-jwt.md)) — pero está en el archivo, así que está aquí.
-- **No lleva anotación `@Repository`**, y no hace falta ninguna: Spring Data detecta cada interfaz que extiende `JpaRepository` y registra el bean por sí mismo. Añadir `@Repository` es inofensivo y lo verás en muchos codebases; simplemente es redundante. El mecanismo completo está en [04-spring-data-jpa.md](./04-spring-data-jpa.md).
+- **No lleva anotación `@Repository`**, y no hace falta ninguna: Spring Data detecta cada interfaz que extiende `JpaRepository` y registra el bean por sí mismo. Añadir `@Repository` es inofensivo y lo verás en muchos codebases; simplemente es redundante. El mecanismo completo está en [03-spring-data-jpa.md](./03-spring-data-jpa.md).
 
 ### UserService
 
@@ -469,7 +469,7 @@ public class UserService {
 
 - **`@Service`** — Spring encuentra esta clase durante el `@ComponentScan` del archivo 01, crea una instancia (un bean) y la mantiene disponible para inyección
 - **`private final UserRepository userRepository`** — declara la dependencia; `final` porque nunca cambia después de que se ejecuta el constructor
-- **Inyección por constructor** — Spring ve el constructor único e inyecta el bean `UserRepository` automáticamente ([03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md))
+- **Inyección por constructor** — Spring ve el constructor único e inyecta el bean `UserRepository` automáticamente ([18-inyeccion-dependencias.md](./18-inyeccion-dependencias.md))
 - **`userRepository.findAll()`** — método built-in de `JpaRepository`; ningún SQL escrito por ti
 - **`user.isActive()`, no `getActive()`** — el campo es un `boolean` primitivo, y Lombok sigue la convención de JavaBeans de usar `isXxx()` para primitivos. `ProjectResponse.active` es el wrapper `Boolean`, así que *ese* sí es `getActive()`. Ambos aparecen en este archivo; la única diferencia es el tipo del campo, nada más.
 - **`toResponse()` es `private` y está al final** — ninguna otra clase lo necesita, así que va después de los métodos públicos que lo llaman. Este helper es el único sitio donde vive el mapeo entidad→DTO.
@@ -734,4 +734,4 @@ El 404 con el que empezaste este archivo ya desapareció. `@ComponentScan` ahora
 
 Pero mira otra vez la primerísima línea de cada controlador de este archivo — `private final ProjectService projectService`, rellenada por un constructor que tú nunca llamas. Nada en este archivo explicó *quién* lo llama. Escribiste `new` exactamente una vez, sobre una entidad `Project` dentro de un service; nunca escribiste `new ProjectService(...)` ni `new ProjectController(...)`, y sin embargo ambos objetos existen y están correctamente conectados entre sí en tiempo de ejecución. Las tres capas solo se mantienen desacopladas si algo externo a ellas hace el ensamblaje — y ese algo es el contenedor IoC.
 
-[03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md) es donde eso deja de ser magia: qué es realmente un bean, cómo `@Service`/`@Repository`/`@RestController` registran uno, cómo Spring elige el constructor y empareja cada parámetro con un bean, y por qué la inyección por constructor — no `@Autowired` en un campo — es la forma que cualquier revisor espera ver.
+[18-inyeccion-dependencias.md](./18-inyeccion-dependencias.md) es donde eso deja de ser magia: qué es realmente un bean, cómo `@Service`/`@Repository`/`@RestController` registran uno, cómo Spring elige el constructor y empareja cada parámetro con un bean, y por qué la inyección por constructor — no `@Autowired` en un campo — es la forma que cualquier revisor espera ver.

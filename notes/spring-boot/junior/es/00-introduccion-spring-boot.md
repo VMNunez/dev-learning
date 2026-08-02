@@ -26,7 +26,7 @@ Docs: https://www.baeldung.com/spring-vs-spring-boot → lee: las secciones "Spr
 
 Docs: https://www.baeldung.com/inversion-control-and-dependency-injection-in-spring → lee: "What Is Inversion of Control?" y "What Is Dependency Injection?" (párate antes de los ejemplos en XML — Spring Boot usa anotaciones en su lugar)
 
-El concepto central de Spring es la **Inversión de Control (IoC)**: en lugar de que tu código cree los objetos de los que depende (`new TransactionRepository()`), declaras lo que necesitas y un contenedor los crea y te los entrega. Ese contenedor se llama **ApplicationContext**, y los objetos que gestiona se llaman **beans** — explicación completa con el "por qué" en [03-inyeccion-dependencias.md](03-inyeccion-dependencias.md).
+El concepto central de Spring es la **Inversión de Control (IoC)**: en lugar de que tu código cree los objetos de los que depende (`new TransactionRepository()`), declaras lo que necesitas y un contenedor los crea y te los entrega. Ese contenedor se llama **ApplicationContext**, y los objetos que gestiona se llaman **beans** — explicación completa con el "por qué" en [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md).
 
 La palabra "inversión" está haciendo trabajo real ahí, así que vamos a concretarla. **Piensa en la cocina de un restaurante.** Sin IoC, cada cocinero sale a comprar sus propios tomates: decide el proveedor, carga la caja él mismo, y si el proveedor cambia, hay que reentrenar a cada cocinero por separado. Con IoC hay un *encargado de almacén*: dejas una nota diciendo "necesito tomates" y una caja aparece en tu mesa de trabajo cuando llegas. El cocinero ya no *controla* de dónde vienen los tomates; ese control se **invirtió** y pasó al encargado. Cambiar de proveedor ahora es un solo cambio en un solo sitio, y nadie en la cocina se entera. El ApplicationContext de Spring es ese encargado de almacén, tus clases `@Service` son los cocineros, y el parámetro del constructor es la nota.
 
@@ -87,17 +87,17 @@ Dos consecuencias salen directamente de ahí, y las dos son preguntas de examen.
 
 > **Una "definición de bean" no es el bean.** El paso 4 no crea nada — archiva una *receta*: esta clase, este constructor, estos tipos de parámetro. El objeto en sí solo se construye en el paso 5. Esa división en dos fases (**definir todo, luego construir todo**) es lo que permite que dos beans dependan el uno del otro en cualquier orden — para cuando empieza la construcción, cada receta ya está sobre la mesa, así que nunca importa a qué clase llegó primero el scanner. También es la razón por la que un bean que falta rompe en **el arranque**, no en el primer request: Spring ya sabe, antes de servir nada, que algún constructor pide un tipo que ninguna receta produce (`Parameter 0 of constructor in ...TimeEntryService required a bean of type '...TimeEntryRepository' that could not be found`).
 
-> **El paso 5 construye los *singletons*, y la inmensa mayoría de tus beans lo son.** Por defecto un bean es un **singleton** — una sola instancia para toda la app, creada de forma anticipada (_eager_) al arrancar. Es el defecto porque tus clases `@Service` y `@Repository` no tienen estado: no guardan datos por usuario, así que una única instancia compartida puede atender cada request y construirla una sola vez sale gratis. Las excepciones son los beans marcados `@Lazy` (se construyen en el primer uso) o con un scope distinto de singleton, y esos simplemente no se construyen en el paso 5 — su receta espera. Los scopes se cubren en profundidad en [03-inyeccion-dependencias.md](03-inyeccion-dependencias.md); por ahora, lee "Spring los instancia" como "Spring instancia los singletons", que en TimeTrack es cada bean que escribes.
+> **El paso 5 construye los *singletons*, y la inmensa mayoría de tus beans lo son.** Por defecto un bean es un **singleton** — una sola instancia para toda la app, creada de forma anticipada (_eager_) al arrancar. Es el defecto porque tus clases `@Service` y `@Repository` no tienen estado: no guardan datos por usuario, así que una única instancia compartida puede atender cada request y construirla una sola vez sale gratis. Las excepciones son los beans marcados `@Lazy` (se construyen en el primer uso) o con un scope distinto de singleton, y esos simplemente no se construyen en el paso 5 — su receta espera. Los scopes se cubren en profundidad en [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md); por ahora, lee "Spring los instancia" como "Spring instancia los singletons", que en TimeTrack es cada bean que escribes.
 
 > **`@Service`, `@Repository` y `@RestController` son todos `@Component` por debajo.** Abre su código fuente y cada uno lleva `@Component` como *meta-anotación* — una anotación sobre la anotación. Así que el scanner del paso 4 solo busca una cosa en realidad. Los nombres extra existen para **ti** (documentan la capa de un vistazo) y para un poco de comportamiento extra del framework encima. `@Repository` es el caso más claro: además activa la **traducción de excepciones**, así que el error específico del proveedor que lanza tu driver de base de datos (una `SQLException` de Postgres con un código de error como `23505`) se captura y se relanza como una de las propias excepciones de Spring (`DataIntegrityViolationException`). El beneficio es que tu servicio captura la *misma* excepción tanto si corre contra Postgres en producción como contra H2 en un test — el driver deja de filtrarse dentro de tu código. No son cuatro mecanismos distintos; son un solo mecanismo con cuatro etiquetas y un poco de cableado extra cada una.
 
 | Anotación | Qué marca | Cubierta a fondo |
 |---|---|---|
-| `@Component` | Cualquier clase gestionada por Spring (genérico) | [03-inyeccion-dependencias.md](03-inyeccion-dependencias.md) |
-| `@Service` | Capa de lógica de negocio | [03-inyeccion-dependencias.md](03-inyeccion-dependencias.md) · reglas dentro: [11-logica-de-negocio-modelado-dominio.md](11-logica-de-negocio-modelado-dominio.md) |
-| `@Repository` | Capa de acceso a datos | [04-spring-data-jpa.md](04-spring-data-jpa.md) |
+| `@Component` | Cualquier clase gestionada por Spring (genérico) | [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md) |
+| `@Service` | Capa de lógica de negocio | [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md) · reglas dentro: [11-logica-de-negocio-modelado-dominio.md](11-logica-de-negocio-modelado-dominio.md) |
+| `@Repository` | Capa de acceso a datos | [03-spring-data-jpa.md](03-spring-data-jpa.md) |
 | `@RestController` | Capa web — gestiona HTTP | [02-controladores-rest.md](02-controladores-rest.md) |
-| `@Configuration` + `@Bean` | Un bean que no puedes anotar directamente (una clase de librería) | [03-inyeccion-dependencias.md](03-inyeccion-dependencias.md) · muy usado en [06-seguridad-jwt.md](06-seguridad-jwt.md) |
+| `@Configuration` + `@Bean` | Un bean que no puedes anotar directamente (una clase de librería) | [18-inyeccion-dependencias.md](18-inyeccion-dependencias.md) · muy usado en [06-seguridad-jwt.md](06-seguridad-jwt.md) |
 
 Lee la tercera columna como una promesa, no como una nota al pie: nada en este archivo se explica al nivel que vas a necesitar — cada fila es el archivo que te debe el mecanismo completo, el código real de TimeTrack, y la respuesta de entrevista. Este archivo solo te da la *forma* para que esos archivos tengan algo donde engancharse.
 
@@ -122,7 +122,7 @@ Request HTTP  →  [Tomcat embebido, puerto 8080]
      ↓
 [Service]                     ← reglas de negocio + límite de @Transactional     (08-transacciones.md, 11-logica-de-negocio-modelado-dominio.md)
      ↓
-[Repository]                  ← habla con la base de datos vía Spring Data JPA   (04-spring-data-jpa.md)
+[Repository]                  ← habla con la base de datos vía Spring Data JPA   (03-spring-data-jpa.md)
      ↓
 Base de datos
 

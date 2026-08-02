@@ -243,7 +243,7 @@ org.hibernate.LazyInitializationException: could not initialize proxy
     [com.victor.timetrack.model.User#3] - no Session
 ```
 
-El `[com.victor.timetrack.model.User#3]` entre corchetes es la parte que te salva: Hibernate nombra la entidad exacta y el id para el que todavía sostenía un placeholder, así que te dice *qué* campo tocaste demasiado tarde — aquí, `User` con id 3. ([04-spring-data-jpa.md](./04-spring-data-jpa.md) cubre el mecanismo de LAZY/EAGER en sí; este archivo es donde se traza el límite.)
+El `[com.victor.timetrack.model.User#3]` entre corchetes es la parte que te salva: Hibernate nombra la entidad exacta y el id para el que todavía sostenía un placeholder, así que te dice *qué* campo tocaste demasiado tarde — aquí, `User` con id 3. ([03-spring-data-jpa.md](./03-spring-data-jpa.md) cubre el mecanismo de LAZY/EAGER en sí; este archivo es donde se traza el límite.)
 
 ```java
 // ❌ MAL — el service devuelve la entidad, así que el acceso ocurre después de que la sesión se cerró

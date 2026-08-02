@@ -54,7 +54,7 @@ public class TransactionController {
 A few things to read off this example:
 
 - **Yes — each layer holds a reference to the one below it.** The controller declares `private final TransactionService service`. `private` because no other class needs it; `final` because once Spring sets it in the constructor it never changes. You will see this exact `private final` dependency line in every controller, service, and repository-using class.
-- **The constructor is `public` and must be named exactly like the class** (`TransactionController`). That is the Java rule for any constructor. Spring calls it at startup and passes in the `TransactionService` bean automatically (constructor injection — see [03-dependency-injection.md](./03-dependency-injection.md)).
+- **The constructor is `public` and must be named exactly like the class** (`TransactionController`). That is the Java rule for any constructor. Spring calls it at startup and passes in the `TransactionService` bean automatically (constructor injection — see [18-dependency-injection.md](./18-dependency-injection.md)).
 - **`this.service = service`** — the parameter and the field share the name `service`. `this.service` means "the field of this object"; the bare `service` is the parameter. The line copies the injected parameter into the field so the rest of the class can use it.
 - **`TransactionResponse` is a DTO** (Data Transfer Object) — the shape the API sends back instead of the raw entity. DTOs are explained fully in the "DTOs" section below and in [layer-reference.md](../.../../../layer-reference.md).
 
@@ -431,7 +431,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 - The two type arguments are **the entity** and **the type of its `@Id`** — `<User, Long>` because `User.id` is a `Long`. Get them the wrong way round and it will not compile.
 - `findByEmail` is a **derived query**: you declare the method, write no body, and Spring Data reads the *name* to generate `SELECT * FROM users WHERE email = ?`. It returns `Optional<User>` because an email that matches nothing is a normal outcome, not an error. It is not used by `/api/users` — login needs it (see [06-security-jwt.md](./06-security-jwt.md)) — but it is in the file, so it is here.
-- **There is no `@Repository` annotation on it**, and none is needed: Spring Data detects every interface extending `JpaRepository` and registers the bean itself. Adding `@Repository` is harmless and you will see it in plenty of codebases; it is simply redundant. The full mechanism is in [04-spring-data-jpa.md](./04-spring-data-jpa.md).
+- **There is no `@Repository` annotation on it**, and none is needed: Spring Data detects every interface extending `JpaRepository` and registers the bean itself. Adding `@Repository` is harmless and you will see it in plenty of codebases; it is simply redundant. The full mechanism is in [03-spring-data-jpa.md](./03-spring-data-jpa.md).
 
 ### UserService
 
@@ -469,7 +469,7 @@ public class UserService {
 
 - **`@Service`** — Spring finds this class during the `@ComponentScan` from file 01, creates one instance (a bean), and keeps it available for injection
 - **`private final UserRepository userRepository`** — declare the dependency; `final` because it never changes after the constructor runs
-- **Constructor injection** — Spring sees the single constructor and passes in the `UserRepository` bean automatically ([03-dependency-injection.md](./03-dependency-injection.md))
+- **Constructor injection** — Spring sees the single constructor and passes in the `UserRepository` bean automatically ([18-dependency-injection.md](./18-dependency-injection.md))
 - **`userRepository.findAll()`** — built-in method from `JpaRepository`; no SQL written by you
 - **`user.isActive()`, not `getActive()`** — the field is a primitive `boolean`, and Lombok follows the JavaBeans convention of `isXxx()` for primitives. `ProjectResponse.active` is the wrapper `Boolean`, so *that* one is `getActive()`. Both appear in this file; the difference is the field type, nothing else.
 - **`toResponse()` is `private` and sits at the bottom** — no other class needs it, so it goes after the public methods that call it. This helper is the single place the entity→DTO mapping lives.
@@ -734,4 +734,4 @@ The 404 you started this file with is gone. `@ComponentScan` now finds real `@Re
 
 But look again at the very first line of every controller in this file — `private final ProjectService projectService`, filled by a constructor you never call. Nothing in this file explained *who* calls it. You wrote `new` exactly once, on a `Project` entity inside a service; you never wrote `new ProjectService(...)` or `new ProjectController(...)`, and yet both objects exist and are correctly wired to each other at runtime. Three layers only stay decoupled if something outside them does the assembling — and that something is the IoC container.
 
-[03-dependency-injection.md](./03-dependency-injection.md) is where that stops being magic: what a bean actually is, how `@Service`/`@Repository`/`@RestController` register one, how Spring picks the constructor and matches each parameter to a bean, and why constructor injection — not `@Autowired` on a field — is the form every reviewer expects to see.
+[18-dependency-injection.md](./18-dependency-injection.md) is where that stops being magic: what a bean actually is, how `@Service`/`@Repository`/`@RestController` register one, how Spring picks the constructor and matches each parameter to a bean, and why constructor injection — not `@Autowired` on a field — is the form every reviewer expects to see.

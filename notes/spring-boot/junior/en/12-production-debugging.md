@@ -417,7 +417,7 @@ spring.jpa.show-sql=true                       # already in your application.pro
 logging.level.org.hibernate.SQL=DEBUG          # the same thing, through the logging system
 ```
 
-Call the endpoint once and count the `select` lines. If a list endpoint returning 200 rows printed 401 queries, you have found it and it has a name — **N+1** ([04-spring-data-jpa.md](04-spring-data-jpa.md), "The N+1 problem"): one query to load the list, then one extra query *per row* to load each row's relations.
+Call the endpoint once and count the `select` lines. If a list endpoint returning 200 rows printed 401 queries, you have found it and it has a name — **N+1** ([03-spring-data-jpa.md](03-spring-data-jpa.md), "The N+1 problem"): one query to load the list, then one extra query *per row* to load each row's relations.
 
 And this is not hypothetical in TimeTrack. Look at what `getAll()` does today:
 
@@ -443,7 +443,7 @@ List<TimeEntry> findAllWithUserAndProject();
 
 **Step 2 — check the index.** If the query count is sane and one query is slow, the database is scanning rows it should be jumping straight to. A filter on `user_id` and `date` walks the whole `time_entries` table until an index exists on those columns. Add it in a migration (`CREATE INDEX idx_entries_user_date ON time_entries (user_id, date);`) and remember the trade-off, because that is the half interviewers listen for: every index makes reads faster and **writes slower** (each `INSERT` must also update the index) and costs storage. An index is a decision, not a freebie.
 
-**Step 3 — check whether the endpoint is unbounded.** Does it return `findAll()` on a table that will one day have 100,000 rows? Then no index saves you — you are shipping 100,000 rows over the wire and building 100,000 DTOs in memory. The fix is `Pageable` ([04-spring-data-jpa.md](04-spring-data-jpa.md)), and it is also the fix for the next section's `OutOfMemoryError`.
+**Step 3 — check whether the endpoint is unbounded.** Does it return `findAll()` on a table that will one day have 100,000 rows? Then no index saves you — you are shipping 100,000 rows over the wire and building 100,000 DTOs in memory. The fix is `Pageable` ([03-spring-data-jpa.md](03-spring-data-jpa.md)), and it is also the fix for the next section's `OutOfMemoryError`.
 
 **Step 4 — measure again.** Re-read the same Actuator metric. If the number did not move, your theory was wrong and you go back to step 1 — with the loop closed by data, not by "it feels faster now".
 
@@ -595,7 +595,7 @@ Read that message closely — it names *two* things, and the second is the one t
 Two causes cover nearly all of them:
 
 1. **A relation or `Optional` you assumed was populated.** Spring Data returns `Optional<T>` from `findById()` / `findByEmail()` precisely so you cannot forget the not-found case: calling `.get()` on an empty one throws where you wanted a clean 404. Your code already does the right thing everywhere — `.orElseThrow(() -> new ResourceNotFoundException(...))` — and that is not decoration: it converts a 500 into the 404 the API contract promises. The trace above is the sibling version of the same mistake, one layer in: `toResponse()` walks `timeEntry.getUser()` and `timeEntry.getProject()` with no null check, so any row that ever reached the table without a project (a bad manual `INSERT`, a migration, a test fixture) becomes an NPE the first time a manager lists entries.
-2. **A dependency that is null because the object was created with `new`.** Spring injects dependencies only into beans *it* constructs. Write `new TimeEntryService(...)` yourself — or, more subtly, `new` a helper class that has an `@Autowired` field — and Spring never touches that object, so the field stays null and you get an NPE on first use. The same mechanism explains why that object also silently loses `@Transactional` and `@PreAuthorize`: those live on the *proxy* Spring wraps around a bean, and an object you built with `new` has no proxy ([03-dependency-injection.md](03-dependency-injection.md)).
+2. **A dependency that is null because the object was created with `new`.** Spring injects dependencies only into beans *it* constructs. Write `new TimeEntryService(...)` yourself — or, more subtly, `new` a helper class that has an `@Autowired` field — and Spring never touches that object, so the field stays null and you get an NPE on first use. The same mechanism explains why that object also silently loses `@Transactional` and `@PreAuthorize`: those live on the *proxy* Spring wraps around a bean, and an object you built with `new` has no proxy ([18-dependency-injection.md](18-dependency-injection.md)).
 
 > **This is why the interviewer can name the cause without seeing your code.** Handed an NPE trace from a Spring service, they will guess one of those two, and be right most of the time. That is not a party trick — it is what "knowing the framework" actually looks like: the framework constrains the ways things can be null, so the space of causes is small.
 

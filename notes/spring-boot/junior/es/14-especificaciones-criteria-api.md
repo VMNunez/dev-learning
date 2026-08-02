@@ -2,7 +2,7 @@
 
 Docs: https://www.baeldung.com/rest-api-search-language-spring-data-specifications → leer: "Specifications" y "Multiple Specifications"
 
-Ya conoces `@Query` con parámetros nombrados (archivo [04-spring-data-jpa.md](04-spring-data-jpa.md)) — escribes la JPQL como un string fijo y Spring rellena los `:nombreParametro` en el momento de ejecutar. Eso funciona genial cuando la query nunca cambia de forma. Pero `GET /api/entries` del proyecto 07 tiene cuatro filtros *opcionales* — `userId`, `projectId`, `status`, `month` — y puede llegar cualquier combinación de ellos: a veces solo `status`, a veces los cuatro, a veces ninguno. El `WHERE` necesita una forma distinta según lo que haya llegado. Ese es el problema que resuelve este archivo.
+Ya conoces `@Query` con parámetros nombrados (archivo [03-spring-data-jpa.md](03-spring-data-jpa.md)) — escribes la JPQL como un string fijo y Spring rellena los `:nombreParametro` en el momento de ejecutar. Eso funciona genial cuando la query nunca cambia de forma. Pero `GET /api/entries` del proyecto 07 tiene cuatro filtros *opcionales* — `userId`, `projectId`, `status`, `month` — y puede llegar cualquier combinación de ellos: a veces solo `status`, a veces los cuatro, a veces ninguno. El `WHERE` necesita una forma distinta según lo que haya llegado. Ese es el problema que resuelve este archivo.
 
 ## El arreglo tentador, y por qué se rompe
 
@@ -159,7 +159,7 @@ List<TimeEntry> entries = timeEntryRepository.findAll(spec);
 | | `@Query` (JPQL/nativa) | `Specification` |
 |---|---|---|
 | Forma de la query | Fija en tiempo de compilación | Se construye en tiempo de ejecución, condicionalmente |
-| Buena para | Una query cuyo `WHERE`/`SELECT` nunca cambia de forma (p. ej. las agregaciones de reportes de `04-spring-data-jpa.md`) | Una query cuyo `WHERE` necesita un subconjunto distinto de condiciones en cada llamada |
+| Buena para | Una query cuyo `WHERE`/`SELECT` nunca cambia de forma (p. ej. las agregaciones de reportes de `03-spring-data-jpa.md`) | Una query cuyo `WHERE` necesita un subconjunto distinto de condiciones en cada llamada |
 | Legibilidad | Se lee como SQL — fácil de revisar a simple vista | Se lee como Java — más código de estructura, pero componible |
 | El truco `IS NULL OR` para filtros opcionales | Frágil — puede provocar errores de inferencia de tipos de Postgres como `42P18` | No hace falta — los filtros ausentes simplemente nunca aportan un predicado |
 

@@ -5,7 +5,7 @@
 
 ---
 
-[03-inyeccion-dependencias.md](./03-inyeccion-dependencias.md) se cerró con un bean que no debería existir. `TimeEntryRepository` es una **interfaz**. No tiene cuerpo, ni `@Repository`, ni `@Component`, y no hay ninguna clase en todo TimeTrack que la implemente — y aun así el constructor de `TimeEntryService` pide una, Spring encuentra una, y `findByUser(user)` devuelve filas reales de PostgreSQL. Un contenedor que solo instancia clases que *tú* escribiste no puede explicar esto.
+[18-inyeccion-dependencias.md](./18-inyeccion-dependencias.md) se cerró con un bean que no debería existir. `TimeEntryRepository` es una **interfaz**. No tiene cuerpo, ni `@Repository`, ni `@Component`, y no hay ninguna clase en todo TimeTrack que la implemente — y aun así el constructor de `TimeEntryService` pide una, Spring encuentra una, y `findByUser(user)` devuelve filas reales de PostgreSQL. Un contenedor que solo instancia clases que *tú* escribiste no puede explicar esto.
 
 Esto es lo que ocurre de verdad al arrancar. Spring Boot ve `spring-boot-starter-data-jpa` en el classpath y activa el **escaneo de repositorios de Spring Data**: recorre tus paquetes buscando no *clases* anotadas, sino **interfaces que extienden `Repository`** (que es justo lo que hace `JpaRepository`, varios niveles por encima). Por cada una que encuentra, hace dos cosas:
 
