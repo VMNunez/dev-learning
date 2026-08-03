@@ -65,19 +65,23 @@ contract each project subagent follows and the shape of what it returns.
 
 ## What PROGRESS.md is — and is not
 
-Tracks: the projects table · per-project concept summaries (one paragraph each) · technology sections
-(the detailed concept list by topic: Angular, Java, Spring Boot, CSS, SQL…) · simulation progress ·
-complementary skills · the professional-level matrix by topic.
+Tracks: the professional-level matrix by topic · the `Coverage demonstrated` percentage table · the
+projects table · per-project `**New concepts:**` summary lines (one paragraph each) · the SQL
+exercises tracker · simulation progress.
 
-Does NOT contain: explanations (→ notes/) · future learning (→ coverage-senior.md) · architecture or
-strategy (→ ROADMAP.md).
+Does NOT contain: **the inventory of concepts learned** (→ `notes/{topic}/coverage/{level}.md` and its
+mirror `notes/coverage/{level}.md`, where every bullet carries its ` ✅ NN-slug — {evidence}` marker) ·
+explanations (→ notes/) · future learning (→ senior coverage) · architecture or strategy (→ ROADMAP.md).
 
-**Entry format:** one line per concept. Key syntax/API in backticks, optional short dash-clause.
-- `signal()`, `signal.set()`, `signal.update()` — name is clear, no explanation needed
-- `effect()` — runs a side effect automatically when a tracked signal changes
-- `@PreAuthorize("hasRole('X')")` — method-level authorization; checked after JWT is validated
+**The per-technology concept sections (`## Angular`, `## Java`, `## Spring Boot`, `## CSS`, the SQL
+`### Querying data` block, `## Complementary skills in practice`) were deleted on 2026-08-03** because
+they were a second, evidence-free copy of the coverage files. **This prompt must never re-create them**,
+and must never add a concept bullet to PROGRESS.md. A concept extracted by a subagent has exactly two
+destinations here: the project's `**New concepts:**` summary line, and — outside this prompt — the
+coverage checklist.
 
-Never multi-line. If a concept needs more than one line, it belongs in notes/, not here.
+**Entry format** for the per-project `**New concepts:**` line: comma-separated, key syntax/API in
+backticks, no explanations. It is a summary of what the project introduced, not a checklist.
 
 ---
 
@@ -195,36 +199,32 @@ You now hold every subagent report and the full current PROGRESS.md. Merge:
 
 ### D1 — Concepts (from Step A reports)
 
-For each concept in each project report, check whether it already appears in the target technology
-section of PROGRESS.md. Add only genuinely missing concepts.
+The concepts a subagent extracted **do not become bullets in PROGRESS.md** — that inventory lives in the
+coverage files (see "What PROGRESS.md is — and is not"). Use them for exactly one thing here: checking
+that the project's `**New concepts:**` summary line in the `### Project NN` block still covers what the
+project introduced, and extending that one line if a genuinely new, specific concept is missing from it.
 
-> **`**Concept learned:**` lines are high-level summaries.** PROGRESS.md is often more granular (the
-> line says "JWT flow" but PROGRESS.md already has 10+ bullets on JWT internals). If a summary label
-> is already covered by existing detailed bullets, treat it as accounted for — do **not** add it as a
-> new one-liner. Only add a specific concept genuinely absent with no equivalent entry.
+> **`**Concept learned:**` lines are high-level summaries.** Do not expand one into several entries, and
+> do not add a label already implied by the line. The summary line is a paragraph, not a checklist.
 
 For the in-progress project, do not add concepts from the step still in progress — unless one already
-appears in PROGRESS.md (learned early), in which case leave it as-is, never remove it.
+appears in the summary line (learned early), in which case leave it as-is, never remove it.
 
-### D2 — Creating a missing technology section
+**If you find a concept that is missing from the coverage checklist**, do not write it anywhere in
+PROGRESS.md. Report it in the final table as coverage work owed, naming the concept and the topic, so
+it can be run through `coverage-bullet-add` afterwards.
 
-If a concept needs a section that does not exist yet, create it (same heading + one-line-bullet format
-as the others).
+### D2 — Deleted
 
-**Java section, first creation — special case.** Before adding new Java concepts, scan the Spring Boot
-section for entries that are *pure Java* constructs per the standard's definition (`Optional<T>`,
-`long` vs `Long`, primitive/wrapper types, `try/catch`, access modifiers, default field values like
-`private Boolean active = true`). **Move** those from Spring Boot to the new Java section — remove from
-Spring Boot, add to Java. Log each as Removed under Spring Boot and Added under Java in the diff. Place
-the new Java section after Spring Boot; place a new General section after SQL. Only after this cleanup,
-add remaining new Java concepts.
+There are no per-technology concept sections to create or maintain any more (removed 2026-08-03). If a
+past PROGRESS.md revision is used as a reference, ignore its `## Angular` / `## Java` / `## Spring Boot`
+/ `## CSS` / `## Complementary skills in practice` sections and the SQL `### Querying data` block —
+re-creating any of them is a defect, not a fix.
 
-### D3 — SQL section (from Step B report)
+### D3 — SQL exercises tracker (from Step B report)
 
-The SQL section has two parts — keep both:
-- **Part A — SQL concepts learned** (`SELECT DISTINCT`, `ORDER BY`, `IS NULL`…). These come from
-  project PLANNING.md SQL steps (Step A), not the exercises folder. Leave untouched here.
-- **Part B — Exercises tracker.** Rewrite it from the Step B counts, in this format:
+The SQL section is now **the exercises tracker only** — its `### Querying data` concept list was deleted
+on 2026-08-03 and is not restored. Rewrite the tracker from the Step B counts, in this format:
 
   ```
   ### Exercises completed
@@ -288,7 +288,9 @@ All zeros if none — that makes it visible the block has not started.
 
 - Keep the exact structure and section order of the current PROGRESS.md.
 - Keep existing content — remove nothing unless factually wrong or a duplicate.
-- Do not reformat correct entries; do not expand entries — one line per concept, maximum.
+- **Never add a section that is not already in the file.** PROGRESS.md's sections are fixed: the level
+  matrix, `Coverage demonstrated`, `Projects` + the per-project blocks, `SQL`, `Simulations`,
+  `Useful resources`. Adding any other section — above all a per-technology concept list — is a defect.
 
 ### D7 — Professional level by topic
 

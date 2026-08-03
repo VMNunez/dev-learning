@@ -296,22 +296,22 @@ or state explicitly which one you skipped and why.
 > in one line: "N ejercicios puntuados, M de ellos de repaso (no cuentan para el paso)."
 >
 > **Revision-point files (`R{n}-repaso.sql`) are the one exception, and it is deliberate.** Run **4a**
-> (any genuinely new concept still gets listed) and **Step 5** — closing the redeemed `MISTAKES.md`
+> (nothing to do since 2026-08-03) and **Step 5** — closing the redeemed `MISTAKES.md`
 > rows *is* the purpose of the batch. **Skip 4b, 4c and 4d entirely**: a repaso batch is uncounted
 > ({PLAN} §1 and the doctrine §8b), so it never touches the exercises table, never moves a `Scored / target`
 > figure and never flips a {PLAN} §3 status. Print "Lote de repaso: no cuenta para ningún paso." and, in place
 > of 4e, state which of the point's open rows closed and which are still open — a revision point clears
 > only when its span has no `## Open` row left.
 
-#### 4a — PROGRESS.md, the concept list
+#### 4a — Deleted (2026-08-03)
 
-Read PROGRESS.md, `## SQL` section. Add every concept this batch actually exercised to the concept
-list, **one specific line per concept**. Never group: `HAVING filters groups after aggregation, WHERE
-filters rows before it` is a line; "aggregation" is not. Skip concepts already listed — check before
-adding.
+This step used to copy every exercised concept into a `## SQL` concept list inside PROGRESS.md. **That
+list no longer exists** — it was a second, evidence-free copy of the SQL coverage file and was removed
+on 2026-08-03. The *what* is recorded in **4c-bis**, on the coverage bullets, where it carries its
+evidence marker; PROGRESS.md keeps only the *how many*, in 4b. Do not re-create the list.
 
-This is the half that has always been missed. The exercises table below records *how many*; this
-records *what*, and it is what `progress-update` and `cv-prompt` read downstream.
+If this batch exercised a concept with **no bullet in the SQL coverage file**, do not write it into
+PROGRESS.md: report it in 4e as coverage work owed, naming the concept and level.
 
 #### 4b — PROGRESS.md, the exercises table
 
