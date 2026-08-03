@@ -95,30 +95,7 @@ workflow to the first project that established it rather than to code inside tha
 | 04 | Meal finder | Route parameters, ActivatedRoute, effect(), computed(), localStorage, favourites | Done ✓ | [Live demo](https://04mealfinder.netlify.app/) |
 | 05 | Task manager | Angular Material, MatTable, MatDialog, CRUD, coordinator pattern, context-specific themes | Done ✓ | — |
 | 06 | HR portal | Route guards, lazy loading, HTTP interceptors, role-based access, MatSidenav, role-aware dashboard | Done ✓ | — |
-| 07 | TimeTrack | Spring Boot REST API, JWT, PostgreSQL, Angular full stack, TimeEntry workflow | In progress ⏳ | — |
-
----
-
-### Project 01 — To-do list
-**New concepts:** `@Component`, `input()`, `output()`, `@for`, `@if`, `@empty`, `@Injectable`, `inject()`, `signal()`, `signal.set()`, `signal.update()`, `computed()`, `[class.x]` binding, union types (`type`) · CSS: variables (`--color`, `var()`), flexbox basics, `:hover`, `:focus`, `border-radius`, `opacity`
-
-### Project 02 — Weather app
-**New concepts:** `HttpClient`, `subscribe`, `forkJoin`, `ngOnInit`, `takeUntilDestroyed`, `DestroyRef`, `number` pipe, `SlicePipe`, environment files · CSS: `@keyframes`, `animation`, CSS spinner (`border-top-color` + `rotate` + `border-radius: 50%`), `transition`, `transform: scale()`
-
-### Project 03 — Expense tracker
-**New concepts:** `FormGroup`, `FormControl`, `Validators.required`, `Validators.min()`, `markAllAsTouched()`, `form.reset()`, `routerLink`, `RouterOutlet`, `Router.navigate()`, `Omit<T, K>`, smart/dumb component pattern · CSS: `position: absolute/relative`, `@media (min-width)`, mobile-first
-
-### Project 04 — Meal finder
-**New concepts:** route params (`path: 'detail/:id'`), `ActivatedRoute`, `effect()`, `localStorage + effect()` pattern, `event.stopPropagation()`, `Array.some()`, `[...new Set()]`, `?.` optional chaining, `(input)` event, `(keyup.enter)`, `@else if`, `hasSearched` / `hasLoad` signal patterns · CSS: `overflow: hidden`, overlay with `position: absolute + top/right`, transition on base (not `:hover`), `display: inline-block` on `<a>`
-
-### Project 05 — Task manager
-**New concepts:** `mat.theme()`, `--mat-sys-*` design tokens, `MatTableModule`, `MatDialog.open()`, `afterClosed()`, `MAT_DIALOG_DATA`, `MatDialogRef.close()`, `patchValue()`, `NgClass`, coordinator pattern, `MatTableDataSource`, `MatSort`, `mat-sort-header`, `@ViewChild`, `ngAfterViewInit`, `ErrorStateMatcher`, confirmation dialog pattern, `autoFocus: false`, `DatePipe` · CSS: CSS grid (`grid-template-columns`, `gap`, `grid-column: 1 / -1`), `table-layout: fixed`, `.mat-column-*`, `border-radius: 9999px`, `text-transform: capitalize`
-
-### Project 06 — HR portal
-**New concepts:** `CanActivateFn`, `CanDeactivateFn`, `loadComponent` (lazy loading), `HttpInterceptorFn`, `req.clone({ setHeaders })`, `withInterceptors()`, `canActivate` stacking, auth persistence with `signal + effect`, `??` nullish coalescing, dual-mode dialog, `markAsPristine()`, `MatToolbar`, `MatSidenav`, `routerLinkActive`, `filteredNavLinks = computed()`, role-aware dashboard, signal reference vs snapshot · CSS: app shell scroll pattern (`overflow: hidden` on `app-root`), active link flash fix (`::before` + `:not(:hover)`), responsive breakpoints (`@media max-width`)
-
-### Project 07 — TimeTrack (in progress — Steps 1–6 done, Step 7 next)
-**New concepts:** Spring Boot setup, `@Entity`, JPA annotations, `JpaRepository`, custom repository methods, `Optional<T>`, `@Service`, layered architecture, `@RestController`, DTOs, `@Valid`, `ResponseEntity`, `@PathVariable`, `@RequestBody`, soft delete, JWT structure, `UserDetailsService`, `SecurityFilterChain`, `JwtFilter`, `BCryptPasswordEncoder`, `@PreAuthorize`, `@RestControllerAdvice`, `Role` enum, `@ColumnDefault`, `data.sql` seeding, `DataIntegrityViolationException` handling, `@ManyToOne` relationships, state machine workflow (DRAFT→SUBMITTED→APPROVED/REJECTED), PATCH for state transitions, role-based data filtering, Bean Validation across all request DTOs, hard delete vs soft delete
+| 07 | TimeTrack | Spring Boot REST API, JWT, PostgreSQL, Angular full stack, TimeEntry workflow | In progress ⏳ — Steps 1–6 done, Step 7 next | — |
 
 ---
 
