@@ -144,8 +144,8 @@ plus the README standard, which does not auto-load. This section remains the sou
 
 - `PROGRESS.md` — **status only, never a concept list** (changed 2026-08-03: the per-technology concept
   sections were deleted because they duplicated the coverage files without evidence). Update the
-  project's `### Project 0X` summary line to reflect the new step status (e.g. "Step 1 ✓ Step 2 ✓
-  Step 3 in progress ⏳"), its row in the Projects table if the status changed, and the
+  project's row in the `## Projects` table — its `Status` cell carries the step detail (e.g.
+  "In progress ⏳ — Steps 1–6 done, Step 7 next") — and the
   `Coverage demonstrated` percentages if new markers were added. The concepts themselves go to the
   coverage files below and nowhere else — never re-create a "## Angular"-style list of concepts here.
 - `notes/{topic}/coverage/{level}.md` **+ its global mirror `notes/coverage/{level}.md`** — append the

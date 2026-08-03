@@ -50,8 +50,8 @@ Write each concept as **one specific thing**, key syntax in backticks: never gro
 per-technology concept lists were deleted because they duplicated the coverage files without
 evidence). In PROGRESS.md you update:
 
-- the project's summary line / sub-headings to the new step status (e.g. "Steps 1–5 done, Step 6 in progress"),
-  and its row in the `## Projects` table if the status changed;
+- the project's row in the `## Projects` table — the `Status` cell carries the step detail
+  (e.g. `In progress ⏳ — Steps 1–5 done, Step 6 next`), and nothing else records it;
 - the `## Coverage demonstrated` percentages, if step 3 added markers or bullets;
 - the `Professional level by topic` row's evidence cell, if the step gives that table real practical
   evidence — a shipped, tested step is exactly the kind of demonstration that table is for.

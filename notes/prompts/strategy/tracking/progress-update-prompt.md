@@ -75,22 +75,23 @@ contract each project subagent follows and the shape of what it returns.
 ## What PROGRESS.md is — and is not
 
 Tracks: the professional-level matrix by topic · the `Coverage demonstrated` percentage table · the
-projects table · per-project `**New concepts:**` summary lines (one paragraph each) · the SQL
-exercises tracker · simulation progress.
+projects table (its `Status` cell carries the step detail) · the SQL exercises tracker ·
+simulation progress.
 
 Does NOT contain: **the inventory of concepts learned** (→ `notes/{topic}/coverage/{level}.md` and its
 mirror `notes/coverage/{level}.md`, where every bullet carries its ` ✅ NN-slug — {evidence}` marker) ·
 explanations (→ notes/) · future learning (→ senior coverage) · architecture or strategy (→ ROADMAP.md).
 
 **The per-technology concept sections (`## Angular`, `## Java`, `## Spring Boot`, `## CSS`, the SQL
-`### Querying data` block, `## Complementary skills in practice`) were deleted on 2026-08-03** because
-they were a second, evidence-free copy of the coverage files. **This prompt must never re-create them**,
-and must never add a concept bullet to PROGRESS.md. A concept extracted by a subagent has exactly two
-destinations here: the project's `**New concepts:**` summary line, and — outside this prompt — the
-coverage checklist.
+`### Querying data` block, `## Complementary skills in practice`) were deleted on 2026-08-03, and the
+per-project `**New concepts:**` blocks with them** — all of it was a second, evidence-free copy of the
+coverage files. **This prompt must never re-create any of it**, and must never write a concept into
+PROGRESS.md in any form. A concept a subagent extracts has exactly one destination, and it is outside
+this prompt: the coverage checklist, via `coverage-bullet-add` / `coverage-mark`.
 
-**Entry format** for the per-project `**New concepts:**` line: comma-separated, key syntax/API in
-backticks, no explanations. It is a summary of what the project introduced, not a checklist.
+The only per-project trace PROGRESS.md keeps is the row in the `## Projects` table: its `Key concepts`
+cell (a handful of headline topics, not an inventory) and its `Status` cell, which carries the step
+detail (e.g. `In progress ⏳ — Steps 1–6 done, Step 7 next`).
 
 ---
 
@@ -119,7 +120,7 @@ Project paths, in order:
   have a numbered Section 3, else Format B)
 
 For each project in scope, lift its `PROGRESS_HINT` from the PROGRESS.md you just read: the project's
-`### Project NN` summary heading, plus any `### Project NN` sub-heading inside a technology section.
+`## Projects` table row — its `Status` cell.
 These few lines are all a project subagent needs for the Format B step-status fallback.
 
 ---
@@ -208,20 +209,15 @@ You now hold every subagent report and the full current PROGRESS.md. Merge:
 
 ### D1 — Concepts (from Step A reports)
 
-The concepts a subagent extracted **do not become bullets in PROGRESS.md** — that inventory lives in the
-coverage files (see "What PROGRESS.md is — and is not"). Use them for exactly one thing here: checking
-that the project's `**New concepts:**` summary line in the `### Project NN` block still covers what the
-project introduced, and extending that one line if a genuinely new, specific concept is missing from it.
+**Nothing from the extracted concepts is written into PROGRESS.md** — that inventory lives in the
+coverage files (see "What PROGRESS.md is — and is not"), and the per-project concept blocks that used
+to receive it were deleted on 2026-08-03. The concepts serve one purpose in this run: sanity-checking
+the `Key concepts` cell of the project's row, which holds a handful of headline topics and is edited
+only when it is factually wrong or names something the project never did.
 
-> **`**Concept learned:**` lines are high-level summaries.** Do not expand one into several entries, and
-> do not add a label already implied by the line. The summary line is a paragraph, not a checklist.
-
-For the in-progress project, do not add concepts from the step still in progress — unless one already
-appears in the summary line (learned early), in which case leave it as-is, never remove it.
-
-**If you find a concept that is missing from the coverage checklist**, do not write it anywhere in
-PROGRESS.md. Report it in the final table as coverage work owed, naming the concept and the topic, so
-it can be run through `coverage-bullet-add` afterwards.
+**If you find a concept missing from the coverage checklist**, do not write it anywhere in PROGRESS.md.
+Report it in the final table as coverage work owed, naming the concept and the topic, so it can be run
+through `coverage-bullet-add` afterwards.
 
 ### D2 — Deleted
 
@@ -281,17 +277,12 @@ All zeros if none — that makes it visible the block has not started.
 
 - **Projects table:** fix any status marker that disagrees with a subagent's confirmed status. Done ✓
   = all learning steps complete; ⏳ = at least one still in progress; 🔜 = not started.
-- **Per-project summary heading** (`### Project NN` in the summaries block):
+- **The `Status` cell carries the step detail**, and it is the only place that does:
   - Done ✓ before this run: touch only if factually wrong.
-  - Still ⏳ after this run: update the parenthetical to the actual status (e.g. "Steps 1–3 done,
-    Step 4 in progress") and verify its `**New concepts:**` line covers every extracted concept.
-  - Newly completed this run (was ⏳, now Done ✓): **remove** the step-tracking parenthetical — the
-    format becomes `### Project NN — Name`, matching projects 01–06.
-- **Technology sub-headings:** if a section groups a project with a sub-heading like
-  `### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳)`, update its
-  parenthetical to the confirmed status (canonical: `(Step 1 ✓ … Step N in progress ⏳)`). If the
-  project just became Done ✓, remove the parenthetical. Summary heading and sub-headings must stay in
-  sync.
+  - Still ⏳ after this run: `In progress ⏳ — Steps 1–3 done, Step 4 next`.
+  - Newly completed this run (was ⏳, now Done ✓): drop the step detail — the cell becomes `Done ✓`.
+- There are no `### Project NN` blocks or technology sub-headings left to keep in sync (removed
+  2026-08-03). Do not re-create one.
 
 ### D6 — General merge rules
 
