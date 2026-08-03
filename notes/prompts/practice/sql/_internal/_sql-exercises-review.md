@@ -360,6 +360,10 @@ seeing exactly what is left.
 **If `{FILE}` has no row:** add one, in step order, with its §5 target, and say so in 4e — a missing row
 means the plan and PROGRESS.md disagree about the route.
 
+**Recompute the `Total` row of both tables** after editing any cell. They are the last row of each
+table and are derived, never accumulated by hand: sum the rows above. A total that no longer matches
+its own column is the failure this instruction exists for.
+
 **If the `## Practice completed` section does not exist:** do not invent a layout — report it in 4e
 as a structural finding. It was added on 2026-08-03 and its absence means PROGRESS.md is stale or was
 reverted, which is worth knowing before writing into it.

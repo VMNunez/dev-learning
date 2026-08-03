@@ -241,6 +241,16 @@ checks. Aligned 2026-07-22.
     step goes to its `**Pending additions:**` field, and a reinforcement run drills it. A plan that
     reopens a step whose exercises were answered and graded has thrown away the only record that they
     were.
+15. **The route has a projection in `PROGRESS.md`, and it is complete.** `## Practice completed` →
+    `### Exercise route` carries one roll-up row per level plus one detail table per level, and that
+    table holds **a row for every file the route declares** — including files not written yet, seeded by
+    `sql-plan-prompt` with `Corrected = —`, `First-pass / target = 0/{§5 target}`, `Status = not created`.
+    Pending files are never collapsed into a "12 files remaining" row: the whole point is seeing what is
+    left. Both tables end in a derived `Total` row, recomputed from the rows above by whoever last
+    edited a cell. A replan updates the projection in the same run — a route that grows a step while
+    PROGRESS.md still shows the old file list makes the percentage silently wrong, and a percentage
+    nobody can trust is worse than no percentage. Preserve graded figures across a replan (invariant 14
+    applies to the projection too).
 
 ---
 
@@ -254,6 +264,7 @@ format or quality bar.
 | Exercise content, difficulty split, file format | `sql-exercises-prompt.md` | how many, which topic, which focus |
 | The route: steps, files, counts, statuses, fingerprint | `sql-plan-prompt.md` (writes) · `sql-plan-audit.md` (audits) | — the route file *is* this |
 | Progress *inside* the route: §1 counts, §3 statuses, §2 `[x]` bullets | `sql-exercises-prompt.md` (review mode) | — the planner writes these fields' *structure*, never their values; it reads them, preserves them, and never reverses one. Only a scored exercise moves them. |
+| The `PROGRESS.md` projection of the route | `sql-plan-prompt.md` (seeds the level's rows and re-syncs them on a replan) · `sql-exercises-prompt.md` (moves the counts: `practice` the written denominator, `review` the graded numerators) · `sql-plan-audit.md` (audits, invariant 15) | — which figures it carries; never its layout, which is PROGRESS.md's own |
 | The doctrine: loop, formats, ritual, gates, invariants | `sql-plan-audit.md` | — the doctrine file *is* this. `sql-plan-prompt` reads it and reports findings against it; it edits it exactly once, in the one-time route migration. |
 | The concept list | `notes/sql/coverage/{LEVEL}.md` | which sections and bullets a step claims |
 | How much of the route is done | `PROGRESS.md` → `## Practice completed` | that generating and grading update it (the concept inventory lives in `notes/sql/coverage/{LEVEL}.md`, not there — its concept list was deleted 2026-08-03) |

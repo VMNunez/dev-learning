@@ -339,6 +339,9 @@ exactly what is left to do. So:
   pending files into a summary row.
 - **`{LEVEL}`'s roll-up row** — `Corrected` and `Route progress` at `0/{sum of §5 targets}`,
   `Steps closed` at `0/{§3 step count}`.
+- **Both `Total` rows** — the last row of each table. The roll-up's totals every level's figures (so a
+  newly planned route raises the shared denominator without touching another level's row); the detail
+  table's totals that level's files. Recompute them from the rows above; never carry a stale total.
 
 **Preserve every figure already there.** A replan keeps each existing row's `Corrected`,
 `First-pass / target` numerator and `Status`; it only adds rows for new files, updates targets the

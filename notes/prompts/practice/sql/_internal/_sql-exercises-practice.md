@@ -337,6 +337,9 @@ share a figure, so a middle batch never touches a junior row:
 batch is graded (review branch, Step 4b) — writing an exercise proves nothing. This is also what keeps
 extra and `[Repaso]` batches honest: they raise what you have to correct, never what the route has done.
 
+Then **recompute the `Total` row of both tables** — they are derived from the rows above, never
+accumulated by hand.
+
 The file's row already exists — `sql-plan` seeds a row for every file of the route when it plans the
 level, written or not. You are flipping its `Corrected` cell from `—` to a real count, not creating it.
 If the row is genuinely missing, add it in step order with its `{PLAN}` §5 target and say so: the plan
