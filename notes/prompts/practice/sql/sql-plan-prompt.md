@@ -53,6 +53,10 @@ exercise files, its steps, its progress table. **This prompt writes `PLAN` only.
 
 ## Guards
 
+0. **Run-start check.** Execute the check in `notes/prompts/_internal/_pipeline-self-report.md` — read
+   `notes/prompts/practice/sql/_internal/_last-run-report-sql-plan.md` (it may not exist yet; skip
+   silently) and, if its `Status:` line says `open`, surface the finding in **one line** to Victor and
+   continue. Never apply it here.
 1. Read the active adapter, `_session-rules.md`, `STANDARD`, `COVERAGE`, `DOCTRINE`, and — when it
    exists — `PLAN`. Follow the repository's line-count and read-to-EOF rule on each; `DOCTRINE` and
    `PLAN` are long files and a partial read is how a step's history gets silently dropped.
@@ -187,11 +191,23 @@ what moves a step to closed, and only a **scored** count does it.
   reopen a step whose exercises were already answered and graded.
 - Never renumber a closed step.
 
+**The `[x]` checkboxes follow the step, not the exercise files.** No other prompt writes them —
+`sql-exercises` in `review` mode updates `PLAN` §1 and §3 only — so this planner owns them, and the
+Guard 2 counts are per file and can never say *which* bullet a scored exercise drilled. Derive them from
+the step status instead: a step resolving to `closed ✅` carries every one of its bullets as `[x]`,
+except anything under `Pending additions`, which stays `[ ]`; every bullet of a `not started` or
+`in progress ⏳` step is `[ ]`. Never invent a `[x]` on an open step and never turn an existing `[x]`
+back into `[ ]` — the history gate treats a lost checkbox exactly as it treats a lost status.
+
 ## Cold route review
 
 After drafting or reconciling the complete plan, dispatch **one cold reviewer**, `reasoning tier: deep`,
-`execution: foreground`. Give it only `COVERAGE`, `STANDARD` Sections B and C, the exercise-file
-inventory from Guard 2, and the proposed plan. It does not edit files. It must challenge:
+`execution: foreground`. Give it only `COVERAGE`, `STANDARD` Sections B and C, `DOCTRINE` §3, the
+`ROADMAP.md` objective, the exercise-file inventory from Guard 2, and the proposed plan. The `DOCTRINE` §3 and `ROADMAP.md`
+inputs are not context: §3 holds the done-condition formats, so without it the reviewer can only check
+that a `Done` line looks plausible rather than that it is one of the formats; and `ROADMAP.md` is the
+only thing that can falsify a `Why here` claiming the objective pulls a step forward. It does not edit
+files. It must challenge:
 
 - whether every step's `Why here` survives contact with the step before it, or is a label;
 - whether a step could have been done first — which would mean it teaches nothing about composition (B3);
@@ -271,7 +287,8 @@ Rules:
 - `Status` in §3 is exactly `not started`, `in progress ⏳`, or `closed ✅`.
 - Every `Coverage bullets` line is exactly `- [ ] {exact bullet}` or `- [x] {exact bullet}`. The checkbox
   is plan metadata, stripped before exact matching against `COVERAGE`; trailing evidence markers are
-  handled by the normal scope-byte rule. `[x]` means a scored exercise has drilled it.
+  handled by the normal scope-byte rule. `[x]` means the step that owns it is closed — derived by the
+  rule in "Status is read, never invented", never judged bullet by bullet.
 - `Pending additions` is `none` or bullets quoted verbatim from `COVERAGE`. It is meaningful only on a
   closed step.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned to two steps.
@@ -284,12 +301,13 @@ Rules:
 
 ## History gate
 
-Before writing anything, take a verbatim copy of the existing `PLAN`'s §1 and §3 count rows and every
-status marker. After the reconciliation, compare:
+Before writing anything, take a verbatim copy of the existing `PLAN`'s §1 and §3 count rows, every
+status marker, and every §2 checked bullet. After the reconciliation, compare:
 
 - every step closed before the run is still closed;
 - every scored count is **≥** what it was;
-- every closed step keeps its number.
+- every closed step keeps its number;
+- no bullet went from `[x]` back to `[ ]`.
 
 The counts on disk never move in this run — this prompt does not touch a `.sql` file — so a gate that
 only re-greps disk checks nothing. On failure, fix it and re-check once; if it still fails, **abort
@@ -316,6 +334,12 @@ After the commit, execute `_pipeline-self-report.md`: write
 `notes/prompts/practice/sql/_internal/_last-run-report-sql-plan.md`, update the `SQL plan {J|M|S}` cell in
 `notes/prompts/_internal/_run-tracker.md`, and commit the report and tracker together. Dry run does not
 write `PLAN`, but it still writes and commits its self-report plus a `dry-run` tracker outcome.
+
+**A blocked run reports too.** Every stop after configuration and target resolution — a Guard that
+fired, a cold reviewer that failed twice, a history gate that aborted — still writes the self-report and
+a `blocked` tracker outcome naming the failed gate, then commits the two together. The abort leaves
+`PLAN` untouched; it does not leave the run invisible. A history-gate abort is the single most valuable
+entry this file can carry, and it is the one a stop-and-exit would silently discard.
 
 ## Final report
 
