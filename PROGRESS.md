@@ -99,26 +99,47 @@ workflow to the first project that established it rather than to code inside tha
 
 ---
 
-## SQL
+## Practice completed
 
-### Exercises completed
+Share of each practice track actually finished, counted from `practice/`. Exercises and simulations
+are **never added into one figure**: a graded exercise and a 90-minute timed test under interview
+conditions are not the same unit of work, and a total that mixed them would hide which of the two is
+missing. Like `Coverage demonstrated`, this is evidence of doing, and it never promotes a level.
 
-50 total exercises across 1 topic (40 answered, 10 pending)
+### Exercise route — `practice/sql/`
 
-| Topic | Folder | Exercises | Status |
-|-------|--------|-----------|--------|
-| basics / SELECT (part 1) | practice/sql/junior/01-basics.sql | 40 | closed ✅ — 40/40 scored 2026-07-22 (20 first-pass + 20 repaso); old schema, no longer extended |
-| basics / SELECT (part 2) | practice/sql/junior/02-execution-order-set-ops.sql | 10 | in progress ⏳ — written 2026-07-22, unanswered |
-| joins | practice/sql/junior/03-joins.sql | 0 | not started (file deleted 2026-07-22, to regenerate) |
+Denominator: the **first-pass target** of every file in the level's route
+(`practice/sql/PLANNING.md` §5). `[Repaso]` review batches are deliberately uncounted — they are
+extra work on top of the route, so counting them would inflate the figure.
 
----
+| Level | Exercises scored | Steps closed |
+|---|---|---|
+| SQL — junior | 20/200 (10%) | 0/14 |
+| SQL — middle | not planned | — |
+| SQL — senior | not planned | — |
 
-## Simulations
+| Step | File | Scored / target | Status |
+|---|---|---|---|
+| 0 | `01-basics.sql` | 20/20 | closed ✅ — 40 answered 2026-07-22, of which 20 first-pass count; legacy schema, not extended |
+| 0 | `02-execution-order-set-ops.sql` | 0/10 | in progress ⏳ — written 2026-07-22, unanswered |
+| 1 | `03-joins.sql` | 0/22 | not started — file deleted 2026-07-22, to regenerate |
+| 2–13 | `04-` … `15-` (12 files) | 0/148 | not created |
 
-- Angular: 0 completed (0 Pass, 0 Borderline, 0 Fail)
-- Spring Boot: 0 completed (0 Pass, 0 Borderline, 0 Fail)
-- SQL: 0 completed (0 Pass, 0 Borderline, 0 Fail)
-- Total: 0 / 15 minimum target
+### Timed simulations — `practice/simulations/`
+
+Denominator: the 15-test bank (5 per track). Counted from `practice/simulations/TRACKER.md`.
+
+| Track | Completed | Pass | Borderline | Fail |
+|---|---|---|---|---|
+| Angular | 0/5 (0%) | 0 | 0 | 0 |
+| Spring Boot | 0/5 (0%) | 0 | 0 | 0 |
+| SQL | 0/5 (0%) | 0 | 0 | 0 |
+| **Total** | **0/15 (0%)** | **0** | **0** | **0** |
+
+### LeetCode — `practice/leetcode/`
+
+Not started, and deliberately so: it is gated behind the Angular and Spring Boot gates in `ROADMAP.md`.
+Folder does not exist yet.
 
 ---
 
