@@ -203,7 +203,8 @@ checks. Aligned 2026-07-22.
    query is under it), *scored* (a review run graded it); only **scored** moves a status, and a plan
    reporting answered work as scored claims progress that never happened. Per-step counts for a shared
    file sum to that file's target, the route's §3 totals match its §1, and both match the exercise files
-   on disk and `PROGRESS.md`.
+   on disk and `PROGRESS.md`'s `## Practice completed` → `### Exercise route` (that level's roll-up row
+   and its own detail table — never another level's).
 4. No generation run exceeds the declared ceiling; a step above it is split into runs.
 5. Doctrine §0's current step is the first non-done row in the current level's route §3, and its
    *current level* row names a route file that exists.
@@ -255,7 +256,7 @@ format or quality bar.
 | Progress *inside* the route: §1 counts, §3 statuses, §2 `[x]` bullets | `sql-exercises-prompt.md` (review mode) | — the planner writes these fields' *structure*, never their values; it reads them, preserves them, and never reverses one. Only a scored exercise moves them. |
 | The doctrine: loop, formats, ritual, gates, invariants | `sql-plan-audit.md` | — the doctrine file *is* this. `sql-plan-prompt` reads it and reports findings against it; it edits it exactly once, in the one-time route migration. |
 | The concept list | `notes/sql/coverage/{LEVEL}.md` | which sections and bullets a step claims |
-| What has been learned | `PROGRESS.md` | that closing a step updates it |
+| How much of the route is done | `PROGRESS.md` → `## Practice completed` | that generating and grading update it (the concept inventory lives in `notes/sql/coverage/{LEVEL}.md`, not there — its concept list was deleted 2026-08-03) |
 | The mistake log | `practice/sql/MISTAKES.md` (written by the review run) | that revision points read it |
 | Notes, interview Q&A | their own prompts, run separately by Victor | one line in §Z. Nothing else. |
 | Simulations — what a test contains, its format, its time limit, the bank, the tracker | `simulation-generator-prompt.md` · `simulation-review-prompt.md` | one line in §Z **plus §8c: readiness only** — which techniques the closed steps unlock, and therefore what may be asked for today. Never the config, never the format. |

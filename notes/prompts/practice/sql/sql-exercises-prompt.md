@@ -236,7 +236,7 @@ nobody reads it at the start of the next run.
 **Before starting, read these four files:**
 - `notes/prompts/_internal/_session-rules.md` — daily schedule and teaching context (my profile and the market are in `notes/prompts/_internal/_shared-context.md`).
 - `{PLAN}` — **the SQL learning plan.** It owns the step order, the file numbering, how many exercises each file targets, and which coverage sections each step claims. If this prompt and that plan ever disagree about a path or an order, the plan wins and this prompt is the thing to fix.
-- `PROGRESS.md` — the SQL section shows which topics are already solid.
+- `PROGRESS.md` — `## Practice completed` → `### Exercise route`. Its roll-up says how much of this level's route is done; `{LEVEL}`'s detail table says which files are already `closed ✅`. Both branches write back into it: `practice` raises the `Corrected` denominator when it writes a batch, `review` raises the graded counts.
 - `notes/sql/coverage/{LEVEL}.md` — the source of truth for every SQL concept required at junior level. Read it now; in Step 3 you will use the section for {TOPIC} to define the concept scope for the exercises.
 
 My profile is in `notes/prompts/_internal/_shared-context.md`.
@@ -345,9 +345,9 @@ canonical schema. What happens next depends entirely on `MODE`, and the two bran
 
 | `MODE` | Read and execute, in full | What it does |
 |--------|---------------------------|--------------|
-| `practice` | `notes/prompts/practice/sql/_internal/_sql-exercises-practice.md` | checks existing state, writes the setup block if the file is new, generates {COUNT} exercises, saves them |
+| `practice` | `notes/prompts/practice/sql/_internal/_sql-exercises-practice.md` | checks existing state, writes the setup block if the file is new, generates {COUNT} exercises, saves them, and raises the `Corrected` denominator in PROGRESS.md |
 | `review` | `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` | reads the answered file, grades every answer, writes the correction markers, updates PROGRESS.md and MISTAKES.md |
-| `reinforce` | `notes/prompts/practice/sql/_internal/_sql-exercises-practice.md` | the same branch as `practice`, run with the four values its own block resolves — appends a `[Repaso]`-labelled batch to the file Victor named and advances nothing |
+| `reinforce` | `notes/prompts/practice/sql/_internal/_sql-exercises-practice.md` | the same branch as `practice`, run with the four values its own block resolves — appends a `[Repaso]`-labelled batch to the file Victor named. It advances no step and no route figure, but it **does** raise the `Corrected` denominator: a repaso exercise is still an exercise waiting to be graded |
 
 Do **not** open the other branch — it cannot apply to this run, and reading it is how a run ends up
 executing a step from the wrong mode. If `MODE` resolved to neither value, the Resolution validation

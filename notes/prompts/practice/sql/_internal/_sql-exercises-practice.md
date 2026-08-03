@@ -19,10 +19,10 @@ here applies unchanged except where a rule names that mode explicitly.
 ### Step 1 — Check existing state
 
 **PROGRESS.md:** read `## Practice completed` → `### Exercise route` (the section that replaced the old
-`## SQL` block on 2026-08-03). In its per-file table, find the row **whose `File` cell names `{FILE}`** —
-match on the file, never on a prose cell, which drifts. If that row's Status begins with `closed ✅` or
+`## SQL` block on 2026-08-03). In **`{LEVEL}`'s own detail table** — never another level's — find the row
+**whose `File` cell names `{FILE}`**; match on the file, never on a prose cell, which drifts. If that row's Status begins with `closed ✅` or
 `solid ✅`, print:
-"Este tema ya está marcado como sólido en PROGRESS.md. ¿Quieres más ejercicios de todos modos?
+"Este archivo ya está cerrado en PROGRESS.md. ¿Quieres más ejercicios de todos modos?
 Responde sí para continuar, o no para salir."
 Stop and wait for Victor's response. **Skip this question entirely when the shell resolved
 `MODE = reinforce`**: it asks whether he wants more exercises on a topic already marked solid, which is
