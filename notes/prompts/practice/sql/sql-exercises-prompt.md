@@ -10,7 +10,7 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 Two modes:
 
-- **`practice`** — generates exercises for a SQL topic and saves them to `practice/sql/`. If the topic file already exists, adds more exercises continuing the numbering.
+- **`practice`** — generates exercises for a SQL topic and saves them to `practice/sql/{LEVEL}/`. If the topic file already exists, adds more exercises continuing the numbering.
 - **`review`** — checks your answers. Paste the exercise file at the very end of the prompt.
 
 > **▶ Run first:** nothing — `practice` generates exercises from scratch; `review` reads the answered file from `{FILE}`.
@@ -20,7 +20,7 @@ Two modes:
 **How to use:** fill in `MODE` and `TOPIC`, paste the prompt into a new chat. That is the whole ritual.
 
 Everything left blank — which file, how many exercises, which concepts — comes from
-`practice/sql/PLANNING-{LEVEL}.md`, and this prompt reads it, so the default is always the plan. `COUNT`
+`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`, and this prompt reads it, so the default is always the plan. `COUNT`
 and `FILE` are there when you want to override that for one run. In `MODE = review` you do not need to
 paste the exercise file either; it is read from disk.
 
@@ -34,24 +34,25 @@ LEVEL = [junior | middle | senior]   ← blank means junior
 TOPIC = [R1 | R2 | R3 | R4 | R5   ← a revision point; everything below is a normal topic
          basics | joins | group-by | join-pitfalls | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
 COUNT =
-FILE  = practice/sql/01-basics.sql
-        practice/sql/02-execution-order-set-ops.sql
-        practice/sql/03-joins.sql
-        practice/sql/04-aggregates.sql
-        practice/sql/05-join-pitfalls.sql
-        practice/sql/06-nulls.sql
-        practice/sql/07-subqueries-ctes.sql
-        practice/sql/08-dates-strings.sql
-        practice/sql/09-window-functions.sql
-        practice/sql/10-dml-transactions.sql
-        practice/sql/11-schema-design.sql
-        practice/sql/12-data-types-ddl.sql
-        practice/sql/13-indexes.sql
-        practice/sql/14-live-database.sql
-        practice/sql/15-report-queries.sql
+FILE  = practice/sql/junior/01-basics.sql
+        practice/sql/junior/02-execution-order-set-ops.sql
+        practice/sql/junior/03-joins.sql
+        practice/sql/junior/04-aggregates.sql
+        practice/sql/junior/05-join-pitfalls.sql
+        practice/sql/junior/06-nulls.sql
+        practice/sql/junior/07-subqueries-ctes.sql
+        practice/sql/junior/08-dates-strings.sql
+        practice/sql/junior/09-window-functions.sql
+        practice/sql/junior/10-dml-transactions.sql
+        practice/sql/junior/11-schema-design.sql
+        practice/sql/junior/12-data-types-ddl.sql
+        practice/sql/junior/13-indexes.sql
+        practice/sql/junior/14-live-database.sql
+        practice/sql/junior/15-report-queries.sql
 
 **The `FILE` list above is the junior route's.** At `LEVEL = middle` or `senior` the files live under
 `practice/sql/{LEVEL}/` and their names come from that route's §1 table — read it, never guess a path.
+Every level takes its own directory; no level is flat.
 
 **That is the entire configuration.** Do not add keys. `MODE` and `TOPIC` are required; `LEVEL`, `COUNT`
 and `FILE` are optional overrides — they are there so Victor can pin the batch size or name the file
@@ -59,7 +60,7 @@ explicitly when he wants to be sure what happens, and **blank is the normal stat
 error**. Blank means "derive it from the plan" (see the Resolution table). If more than one path is
 left under `FILE`, that is a half-finished edit: stop and ask which one, do not guess. If you feel
 the need to hand-tune anything *else* about a batch, the thing that needs changing is the step in
-`practice/sql/PLANNING-{LEVEL}.md`, not this run.
+`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`, not this run.
 
 ---
 
@@ -69,7 +70,7 @@ the need to hand-tune anything *else* about a batch, the thing that needs changi
 
 | Value | Where it comes from |
 |-------|---------------------|
-| `{LEVEL}` | the `LEVEL` key if Victor set it; otherwise `junior`. It selects the route file: `{PLAN} = practice/sql/PLANNING-{LEVEL}.md`. If that file does not exist, print "Error: no existe `{PLAN}`. Corre `/sql-plan {LEVEL}` antes de generar ejercicios." and stop. |
+| `{LEVEL}` | the `LEVEL` key if Victor set it; otherwise `junior`. It selects the route file: `{PLAN} = practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`. If that file does not exist, print "Error: no existe `{PLAN}`. Corre `/sql-plan {LEVEL}` antes de generar ejercicios." and stop. |
 | `{FILE}` | the `FILE` key if Victor set it; otherwise the path table below at junior, or `{PLAN}`'s §1 table at middle and senior. Never invent a path. |
 | `{COUNT}` | the `COUNT` key if Victor set it; otherwise the `COUNT = n` inside the **`**Moment 2 config:**`** line or block of the `{PLAN}` §2 step whose TOPIC matches. When the two differ, say so in one line ("COUNT del bloque = 6, el plan pide 10") and use his — the plan is the default, not a veto. |
 | `{FOCUS}` | the **`**Focus:**`** line of that same §2 step (every step has one; `none — the whole topic` is a real value, not a blank). |
@@ -82,38 +83,39 @@ cambiado desde el último `/sql-plan {LEVEL}`" — and **continue**. A stale rou
 with a real count; it just may not map the newest bullets. That is a planning debt, not a reason to
 refuse a batch, and stopping here would block the daily block on a prompt run Victor has to schedule.
 
-**The path table — `{FILE}` resolves from here at `{LEVEL} = junior`, in both modes.** Flat files,
-numbered in study order; several topics share a file, and the second topic appends to the first rather
-than creating a new one. **At middle and senior this table does not apply**: those routes keep their own
-§1 table under `practice/sql/{LEVEL}/`, and it is authoritative there exactly as this one is here.
+**The path table — `{FILE}` resolves from here at `{LEVEL} = junior`, in both modes.** Files numbered in
+study order inside `practice/sql/junior/`; several topics share a file, and the second topic appends to
+the first rather than creating a new one. **At middle and senior this table does not apply**: those
+routes keep their own §1 table under `practice/sql/{LEVEL}/`, and it is authoritative there exactly as
+this one is here.
 
 | Topic | Path | Route step |
 |-------|------|------------|
-| basics | practice/sql/02-execution-order-set-ops.sql | 0 |
-| joins | practice/sql/03-joins.sql | 1 |
-| group-by | practice/sql/04-aggregates.sql | 2 |
-| join-pitfalls | practice/sql/05-join-pitfalls.sql | 3 |
-| nulls | practice/sql/06-nulls.sql | 4 |
-| subqueries | practice/sql/07-subqueries-ctes.sql | 5 |
-| ctes | practice/sql/07-subqueries-ctes.sql *(appends)* | 5 |
-| dates-strings | practice/sql/08-dates-strings.sql | 6 |
-| window-functions | practice/sql/09-window-functions.sql | 7 |
-| dml | practice/sql/10-dml-transactions.sql | 8 |
-| transactions | practice/sql/10-dml-transactions.sql *(appends)* | 8 |
-| schema-design | practice/sql/11-schema-design.sql | 9 |
-| normalization | practice/sql/11-schema-design.sql *(appends)* | 9 |
-| data-types | practice/sql/12-data-types-ddl.sql | 10 |
-| ddl | practice/sql/12-data-types-ddl.sql *(appends)* | 10 |
-| indexes | practice/sql/13-indexes.sql | 11 |
-| live-database | practice/sql/14-live-database.sql | 12 |
-| report-queries | practice/sql/15-report-queries.sql | 13 |
-| R1 | practice/sql/R1-repaso.sql | *(revision point — steps 0–1)* |
-| R2 | practice/sql/R2-repaso.sql | *(revision point — steps 2–4)* |
-| R3 | practice/sql/R3-repaso.sql | *(revision point — steps 5–7)* |
-| R4 | practice/sql/R4-repaso.sql | *(revision point — steps 8–10)* |
-| R5 | practice/sql/R5-repaso.sql | *(revision point — steps 11–12)* |
+| basics | practice/sql/junior/02-execution-order-set-ops.sql | 0 |
+| joins | practice/sql/junior/03-joins.sql | 1 |
+| group-by | practice/sql/junior/04-aggregates.sql | 2 |
+| join-pitfalls | practice/sql/junior/05-join-pitfalls.sql | 3 |
+| nulls | practice/sql/junior/06-nulls.sql | 4 |
+| subqueries | practice/sql/junior/07-subqueries-ctes.sql | 5 |
+| ctes | practice/sql/junior/07-subqueries-ctes.sql *(appends)* | 5 |
+| dates-strings | practice/sql/junior/08-dates-strings.sql | 6 |
+| window-functions | practice/sql/junior/09-window-functions.sql | 7 |
+| dml | practice/sql/junior/10-dml-transactions.sql | 8 |
+| transactions | practice/sql/junior/10-dml-transactions.sql *(appends)* | 8 |
+| schema-design | practice/sql/junior/11-schema-design.sql | 9 |
+| normalization | practice/sql/junior/11-schema-design.sql *(appends)* | 9 |
+| data-types | practice/sql/junior/12-data-types-ddl.sql | 10 |
+| ddl | practice/sql/junior/12-data-types-ddl.sql *(appends)* | 10 |
+| indexes | practice/sql/junior/13-indexes.sql | 11 |
+| live-database | practice/sql/junior/14-live-database.sql | 12 |
+| report-queries | practice/sql/junior/15-report-queries.sql | 13 |
+| R1 | practice/sql/junior/R1-repaso.sql | *(revision point — steps 0–1)* |
+| R2 | practice/sql/junior/R2-repaso.sql | *(revision point — steps 2–4)* |
+| R3 | practice/sql/junior/R3-repaso.sql | *(revision point — steps 5–7)* |
+| R4 | practice/sql/junior/R4-repaso.sql | *(revision point — steps 8–10)* |
+| R5 | practice/sql/junior/R5-repaso.sql | *(revision point — steps 11–12)* |
 
-`practice/sql/01-basics.sql` is deliberately absent: it carries the pre-canonical schema and is
+`practice/sql/junior/01-basics.sql` is deliberately absent: it carries the pre-canonical schema and is
 closed, so nothing is ever appended to it again (one file, one schema).
 
 `{REVIEW} = yes` means: a batch over concepts already drilled — no Intro tier, exercises labelled
@@ -138,7 +140,7 @@ the resulting file like any other.
 
 | Value | Where it comes from |
 |-------|---------------------|
-| `{FILE}` | the path table above: `practice/sql/R{n}-repaso.sql`. Its own file, never appended to a first-pass file — a repaso batch is uncounted (route §1) and mixing it into a step's file corrupts that step's score. |
+| `{FILE}` | the path table above: `practice/sql/{LEVEL}/R{n}-repaso.sql`. Its own file, never appended to a first-pass file — a repaso batch is uncounted (route §1) and mixing it into a step's file corrupts that step's score. |
 | `{COUNT}` | `8`, unless Victor overrode it. Revision batches are not budgeted in route §1. |
 | `{REVIEW}` | always `yes`. |
 | `{FOCUS}` | **the open rows of `practice/sql/MISTAKES.md` whose `Step` falls in the span**, ordered by `Times` descending. This is the whole point of the mechanism: the batch drills what the record says was answered wrong, not what feels rusty. |

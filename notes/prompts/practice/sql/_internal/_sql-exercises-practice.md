@@ -295,7 +295,7 @@ second topic appends to the first rather than creating a new file.
 The path table is in the shell (`sql-exercises-prompt.md`, under Resolution) — `{FILE}` was
 already resolved from it before this branch opened. Use the resolved value; do not re-derive it.
 
-**One file, one schema (2026-07-22).** `practice/sql/01-basics.sql` is closed and is not in this
+**One file, one schema (2026-07-22).** `practice/sql/junior/01-basics.sql` is closed and is not in this
 table: it carries the pre-canonical schema, so nothing is ever appended to it again. A file whose
 SETUP block does not match the canonical schema is never extended — start the next numbered file
 instead, and update `{PLAN}` §1 and §3.

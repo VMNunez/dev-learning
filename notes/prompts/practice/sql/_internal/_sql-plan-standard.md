@@ -8,7 +8,7 @@ audits against.
 | File | Holds | Written by |
 |------|-------|-----------|
 | `practice/sql/PLANNING.md` — *the doctrine* | the step loop, the done-condition formats, the closing ritual, branch rules, the revision mechanism, quality gates, invariants, closure, the out-of-scope fence. Identical whichever level is being drilled. | `sql-plan-audit` |
-| `practice/sql/PLANNING-{LEVEL}.md` — *the route* | that level's exercise files, its steps, its progress table, its coverage fingerprint. | `sql-plan-prompt` |
+| `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` — *the route* | that level's exercise files, its steps, its progress table, its coverage fingerprint. | `sql-plan-prompt` |
 
 One doctrine, three routes. The doctrine is written once because a step loop that says something
 different at middle than at junior is a step loop nobody trusts; the route is per level because the
@@ -67,7 +67,7 @@ Its two inputs, and it never invents beyond them:
 they now live in the route file as §1, §2 and §3. Each of their old positions keeps a one-line pointer
 at `PLANNING-{LEVEL}.md` so a cross-reference written before the split still lands somewhere true.
 
-### A2 — `practice/sql/PLANNING-{LEVEL}.md`, the route
+### A2 — `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`, the route
 
 | § | Section | Must contain |
 |---|---------|--------------|
@@ -142,7 +142,7 @@ Every route §2 entry has exactly these fields. A missing field is a finding.
 ### Step N — <topic> <status emoji>
 
 **Why here:** <one sentence: what it needs from the previous step, or why a screening asks it early>
-**Exercises:** practice/sql/NN-name.sql — <count> (split into runs if over the ceiling)
+**Exercises:** practice/sql/{LEVEL}/NN-name.sql — <count> (split into runs if over the ceiling)
 **Coverage:** <verbatim section names from notes/sql/coverage/{LEVEL}.md>
 **Reinforces:** <which earlier step, through which concept>
 **Moment 2 config:** `TOPIC = <the exercise prompt's topic value>`, `COUNT = <n>`
@@ -228,11 +228,14 @@ checks. Aligned 2026-07-22.
     digest no longer matches is **stale, not wrong**: it maps a checklist that has since grown, so
     `sql-exercises` says so in one line and continues, and `sql-plan-prompt` is owed a re-run. Without
     the digest, a coverage file can gain a whole section and nothing anywhere notices.
-13. **Level isolation.** Junior keeps the flat `practice/sql/NN-name.sql` layout it already has —
-    existing files are never renumbered or moved, being Victor's authored work and several of them
-    closed. Middle and senior take `practice/sql/{LEVEL}/`, each numbering from `01`. `MISTAKES.md`
-    stays one shared file for the whole track: a concept failed at junior and re-failed at middle is one
-    row, not two.
+13. **Level isolation.** Every level owns a directory — `practice/sql/{LEVEL}/` — holding its exercise
+    files, its revision files and its own `PLANNING-{LEVEL}.md`, each numbering from `01`. No level is
+    flat, so no numbering collides: the isolation is the folder. Junior's existing files are never
+    renumbered, being Victor's authored work and several of them closed; they were relocated into
+    `junior/` once, wholesale, when the layout was made symmetric (2026-08-03). Two files stay at
+    `practice/sql/` root because neither belongs to a level: `PLANNING.md`, the level-neutral doctrine,
+    and `MISTAKES.md`, one shared log for the whole track — a concept failed at junior and re-failed at
+    middle is one row, not two.
 14. **A closed step is never reopened and never renumbered.** New coverage scope landing on a closed
     step goes to its `**Pending additions:**` field, and a reinforcement run drills it. A plan that
     reopens a step whose exercises were answered and graded has thrown away the only record that they

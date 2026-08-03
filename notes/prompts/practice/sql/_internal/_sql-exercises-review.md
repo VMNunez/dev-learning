@@ -315,8 +315,8 @@ The table format is (4 columns — shared with `progress-update-prompt`):
 
 | Topic | Folder | Exercises | Status |
 |-------|--------|-----------|--------|
-| basics / SELECT | practice/sql/01-basics.sql | [count] | in progress ⏳ |
-| joins | practice/sql/03-joins.sql | [count] | solid ✅ |
+| basics / SELECT | practice/sql/junior/01-basics.sql | [count] | in progress ⏳ |
+| joins | practice/sql/junior/03-joins.sql | [count] | solid ✅ |
 ```
 
 The numbers above are placeholders showing the shape — read the real counts from the file you just
@@ -328,12 +328,14 @@ the `Topic` cell, which is free prose and has already drifted (`basics / SELECT 
 Update that row's `Exercises` and `Status` columns:
 - Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
 - Exercises: count all exercises in the reviewed file, including any previous batches
-- Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/03-joins.sql`)
+- Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/junior/03-joins.sql`)
 - Then refresh the `X total exercises across Y topics` summary line above the table to match the
   new column totals
 
 **If no row has `{FILE}` in its `Folder` cell:** add one. Fill `Folder` with the file's
-path (`practice/sql/<NN>-<topic>.sql` — the flat-file convention is the real one; a legacy subfolder would be `practice/sql/<NN>-<topic>/`).
+path (`practice/sql/{LEVEL}/<NN>-<topic>.sql` — one file per topic inside the level's directory; a
+legacy flat path `practice/sql/<NN>-<topic>.sql` or a per-topic subfolder `practice/sql/<NN>-<topic>/`
+is a pre-2026-08-03 leftover, and the row is rewritten to the level path rather than preserved).
 
 **If the `### Exercises completed` table does not exist in PROGRESS.md:** create it under a new
 `### Exercises completed` heading, with the 4-column format and the summary line above. Insert it
@@ -342,7 +344,7 @@ before the next `##` heading.
 
 #### 4c — {PLAN} §3, the step row
 
-Open `practice/sql/PLANNING.md`. Find the row in the {PLAN} §3 table for the step this {TOPIC} belongs to —
+Open `{PLAN}` (`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`). Find the row in its §3 table for the step this {TOPIC} belongs to —
 **the shell's path table gives the step number for {TOPIC}**. Update its **Scored / target** cell with
 the number of exercises this run actually graded ≥ 80%, and its **Status** cell:
 - score ≥ 80% **and** the step's target reached → `done ✅`
@@ -447,7 +449,7 @@ List only files that were actually modified. Always one command per code block.
 Use the exact folder path from the shell's path table (under Resolution) for {TOPIC} — not `sql/{TOPIC}/`:
 
 ```
-git add [exact path from Step 4 table] PROGRESS.md practice/sql/PLANNING.md
+git add [exact path from Step 4 table] PROGRESS.md practice/sql/{LEVEL}/PLANNING-{LEVEL}.md
 ```
 
 If Step 5 touched the mistake log:

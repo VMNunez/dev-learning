@@ -38,8 +38,8 @@ If a required role cannot be dispatched, stop unless its instruction explicitly 
 - `VERIFY = notes/sql/coverage/verify-{LEVEL}.md`
 - `GLOBAL_MIRROR = notes/coverage/{LEVEL}.md` (its SQL section)
 - `DOCTRINE = practice/sql/PLANNING.md`
-- `PLAN = practice/sql/PLANNING-{LEVEL}.md`
-- `EXERCISE_DIR = practice/sql/` at junior; `practice/sql/{LEVEL}/` at middle and senior
+- `PLAN = practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
+- `EXERCISE_DIR = practice/sql/{LEVEL}/` at every level
 - `MISTAKES = practice/sql/MISTAKES.md`
 - `STANDARD = notes/prompts/practice/sql/_internal/_sql-plan-standard.md`
 
@@ -119,19 +119,23 @@ step is.
 
 ## Exercise-file numbering across levels
 
-Junior keeps the flat `practice/sql/NN-name.sql` layout it already has. **Its existing files are never
-renumbered and never moved** — they are Victor's authored work and several are closed. Middle and senior
-take their own directory and their own sequence from `01`:
+Every level takes its own directory and its own sequence from `01`. There is no flat level, and no
+level's numbering collides with another's — the isolation is the folder, not the number:
 
 ```text
-practice/sql/01-basics.sql            ← junior, flat, historical
+practice/sql/junior/01-basics.sql
 practice/sql/middle/01-....sql
 practice/sql/senior/01-....sql
 ```
 
-Revision files follow their level: `practice/sql/R{n}-repaso.sql` at junior,
-`practice/sql/{LEVEL}/R{n}-repaso.sql` above it. `MISTAKES` stays one shared file for the whole track —
-a concept failed at junior and re-failed at middle is one row, not two.
+**Junior's existing files are never renumbered** — they are Victor's authored work and several are
+closed. They were relocated into `junior/` once, wholesale, when the layout was made symmetric
+(2026-08-03); nothing renames them again.
+
+The level's route file lives with its exercises: `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`. Revision
+files likewise: `practice/sql/{LEVEL}/R{n}-repaso.sql`. Two files stay at `practice/sql/` root because
+neither belongs to a level — `PLANNING.md`, the level-neutral doctrine, and `MISTAKES.md`, one shared
+log for the whole track: a concept failed at junior and re-failed at middle is one row, not two.
 
 ## Planning algorithm
 
@@ -233,7 +237,7 @@ Generated: YYYY-MM-DD
 ### Step 0 — Querying basics ⏳
 
 **Why here:** one sentence naming what it needs from the previous step, or why the objective pulls it forward.
-**Exercises:** practice/sql/02-execution-order-set-ops.sql — 10
+**Exercises:** practice/sql/junior/02-execution-order-set-ops.sql — 10
 **Coverage:** verbatim section names from notes/sql/coverage/junior.md
 **Reinforces:** which earlier step, through which concept — or `— (first step)`
 **Moment 2 config:** `TOPIC = basics`, `COUNT = 10`

@@ -72,7 +72,7 @@ marking the note complete.
 ## SQL exercise track
 
 The SQL **exercise** route, per level — distinct from the `SQL` row in the per-topic table above, which
-tracks the SQL *notes*. `sql-plan` writes the route (`practice/sql/PLANNING-{LEVEL}.md`); `sql-plan-audit`
+tracks the SQL *notes*. `sql-plan` writes the route (`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`); `sql-plan-audit`
 audits it together with the level-neutral doctrine (`practice/sql/PLANNING.md`).
 
 | Level | SQL plan | sql-plan-audit |

@@ -12,7 +12,7 @@ coverage section and every prompt change leaves them slightly less true.
 **The plan is two files** (`_sql-plan-standard.md`, Section A) and this prompt audits both:
 
 - `practice/sql/PLANNING.md` — **the doctrine**, level-neutral. This prompt owns it outright.
-- `practice/sql/PLANNING-{LEVEL}.md` — **the route** for the selected level. Written by
+- `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` — **the route** for the selected level. Written by
   `sql-plan-prompt`; audited, corrected and extended here.
 
 **Run it whenever:** a step closes · `notes/sql/coverage/{LEVEL}.md` grows · the exercise prompt changes ·
@@ -61,7 +61,7 @@ SCOPE = [full | extend]
 LEVEL = [junior | middle | senior]
 
 The files under audit are always `practice/sql/PLANNING.md` (the doctrine) and
-`practice/sql/PLANNING-{LEVEL}.md` (that level's route). There are no other targets. `LEVEL` defaults
+`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (that level's route). There are no other targets. `LEVEL` defaults
 to `junior` when left blank.
 
 **A doctrine finding is level-neutral by definition.** If a fix to `PLANNING.md` is only correct at the
@@ -91,7 +91,7 @@ Gather the ground truth the specialists check the plan against. Counts, never co
   The marker always sits **at the end of the exercise's header line**, one per exercise, in both header
   formats (`_sql-exercises-review.md` Step 2b forbids it on a line of its own). If scored > written for
   any file, the count is wrong: stop and report it rather than propagating it.
-- `grep -n "✅\|⏳\|done\|in progress" practice/sql/PLANNING-{LEVEL}.md` → the status baseline for the gate.
+- `grep -n "✅\|⏳\|done\|in progress" practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` → the status baseline for the gate.
 - **The route's own count rows, copied verbatim**: its §1 file table and its §3 progress table. These
   are the numbers the history gate protects — the numbers on disk cannot regress, since this flow
   never touches the exercise files, so a gate that only re-greps disk checks nothing.
@@ -120,7 +120,7 @@ are only true of the final set of steps.
 For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`:
 
 > Read `notes/prompts/practice/sql/_internal/_sql-plan-standard.md` — **only the sections your concern owns**, listed
-> below — and audit `practice/sql/PLANNING.md` (the doctrine) and `practice/sql/PLANNING-{LEVEL}.md`
+> below — and audit `practice/sql/PLANNING.md` (the doctrine) and `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
 > (the route) against them. Fix what falls short **directly in the file your `Edits` column names, and
 > in no other**. Do **NOT** commit. Return a **check-by-check trace**: one line per check you own,
 > `check · verdict · what you changed (or "no change")`. Never paste plan content back. End with any
@@ -218,7 +218,7 @@ Gate first: if the acceptance check or the history gate failed, do not commit.
 Otherwise `git status` → stage → `git status` again → commit:
 
 ```
-git add practice/sql/PLANNING.md practice/sql/PLANNING-{LEVEL}.md
+git add practice/sql/PLANNING.md practice/sql/{LEVEL}/PLANNING-{LEVEL}.md
 ```
 ```
 git commit -m "docs: audit SQL {level} plan — <one-line summary of the main fixes>"

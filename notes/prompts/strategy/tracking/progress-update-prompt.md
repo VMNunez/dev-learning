@@ -160,14 +160,17 @@ the one failure mode:
 >   looks wrong (e.g. zero for a file that clearly holds exercises) — and then only to recheck the
 >   headers, not to study it.
 >
-> Two file shapes exist: a flat file (`practice/sql/01-basics.sql`) or a subfolder (`practice/sql/02-joins/exercises.sql`).
+> Exercise files live one per topic inside their level's directory (`practice/sql/junior/01-basics.sql`).
+> Two legacy shapes may still appear on `main`: a flat `practice/sql/01-basics.sql` or a per-topic
+> subfolder `practice/sql/02-joins/exercises.sql` — report either under its level path.
 > The regex covers the two header patterns in use:
 > - `-- Exercise N:` at line start (sql-exercises-prompt topics: joins, group-by, subqueries…)
 > - `-- #N |` at line start, N one or more digits — `-- #1 |`, `-- #01 |`, `-- #40 |` (the basics file)
 >
 > Return **only** one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
-> Folder column (`practice/sql/01-basics.sql` for flat, `practice/sql/02-joins/` for subfolders; if a file
-> still lives at the legacy `sql/...` on either ref, report it under its `practice/sql/...` home). Only list topics
+> Folder column (`practice/sql/junior/01-basics.sql`; if a file still lives at a legacy `sql/...`,
+> flat `practice/sql/NN-...`, or per-topic-subfolder path on either ref, report it under its
+> `practice/sql/{LEVEL}/...` home). Only list topics
 > found by the commands above. Do not estimate; do not assign a status — the orchestrator does that.
 
 Wait and collect.
@@ -230,8 +233,8 @@ The SQL section has two parts — keep both:
 
   | Topic | Folder | Exercises | Status |
   |-------|--------|-----------|--------|
-  | basics / SELECT | practice/sql/01-basics.sql | N | solid ✅ |
-  | joins | practice/sql/02-joins/ | N | in progress ⏳ |
+  | basics / SELECT | practice/sql/junior/01-basics.sql | N | solid ✅ |
+  | joins | practice/sql/junior/03-joins.sql | N | in progress ⏳ |
   ```
 
   Status rules:
