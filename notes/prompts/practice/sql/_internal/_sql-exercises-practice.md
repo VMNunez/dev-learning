@@ -318,6 +318,30 @@ After saving, print the message matching the case:
   Step 2): "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Cada ejercicio es independiente — no hay bloque SETUP. Ábrelo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
 - Append: "Listo. {COUNT} ejercicios añadidos a [path]. Total en el archivo: {N+COUNT}. Abre el archivo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:' nuevo. Luego pégalo en el modo review."
 
+### Step 5 — Raise the `Corrected` denominator in PROGRESS.md
+
+Writing exercises creates work that exists but is not graded yet, and `## Practice completed` →
+`### Exercise route` has a column for exactly that. **Generating is the only moment that column's
+denominator can move**, so it is updated here and not in the review branch — a batch written today and
+graded next week would otherwise be invisible for a week, which is precisely when the number matters.
+
+Update two cells, and nothing else in that section:
+
+- the file's row in the per-file table: `Corrected` becomes `[already graded]/[N+COUNT]`;
+- the level's row in the roll-up: add `{COUNT}` to the denominator of `Corrected` and recompute its
+  percentage.
+
+**Do not touch `Route progress`, `First-pass / target`, or `Steps closed`.** Those move only when a
+batch is graded (review branch, Step 4b) — writing an exercise proves nothing. This is also what keeps
+extra and `[Repaso]` batches honest: they raise what you have to correct, never what the route has done.
+
+If the file is new, add its row to the per-file table in step order, taking its `First-pass / target`
+from `{PLAN}` §5. If `## Practice completed` does not exist, do not invent a layout — say so and carry on.
+
+PROGRESS.md commits on the active branch, in the **same commit** as the `.sql` file — the exercises and
+the count they created are one logical change. The `.sql` file is Victor's work, so print the commands
+rather than running them.
+
 ---
 
 <!-- ============================================================ -->

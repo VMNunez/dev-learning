@@ -322,14 +322,17 @@ are placeholders, never copy an example number into PROGRESS.md.
 **Table 1 — the roll-up, one row per level:**
 
 ```markdown
-| Level | Exercises scored | Steps closed |
-|---|---|---|
-| SQL — junior | [scored]/[target] ([pct]%) | [closed]/[total steps] |
+| Level | Corrected | Route progress | Steps closed |
+|---|---|---|---|
+| SQL — junior | [graded]/[written] ([pct]%) | [first-pass]/[route target] ([pct]%) | [closed]/[total steps] |
 ```
 
-- **Scored** = first-pass exercises graded across the whole level route, `[Repaso]` batches excluded
-  (same rule as the counting note at the top of Step 4). Add this batch's first-pass count to the
-  cell's current numerator; never recount the whole route from scratch.
+- **Corrected** = graded over *written*, `[Repaso]` and extra batches included. Its denominator is
+  raised by the practice branch when the batch is written (Branch A, Step 5); here you raise only its
+  **numerator**, by every exercise you just graded — repaso ones too.
+- **Route progress** = first-pass exercises graded across the whole level route, `[Repaso]` and extra
+  batches excluded (same rule as the counting note at the top of Step 4). Add this batch's first-pass
+  count to the cell's current numerator; never recount the whole route from scratch.
 - **Target** = the sum of the `First-pass target` column of `{PLAN}` §5. It changes only when the
   route itself is replanned — if you find it disagreeing with §5, fix it and say so in 4e.
 - **Steps closed** = steps whose done condition is met, i.e. the ones you would mark in §3. A step
@@ -337,11 +340,12 @@ are placeholders, never copy an example number into PROGRESS.md.
   the first one.
 
 **Table 2 — the per-file detail, one row per file.** Find the row **whose `File` cell names `{FILE}`**
-— match on the file, never on a prose cell. Update its `Scored / target` and `Status`:
+— match on the file, never on a prose cell. Update its `Corrected`, `First-pass / target` and `Status`:
 
 - Status: `closed ✅` if score ≥ 80%; `in progress ⏳` if score < 80%; leave `not created` untouched
   for files that do not exist yet.
-- `Scored / target`: this file's first-pass scored count over its §5 first-pass target.
+- `Corrected`: graded over written **in this file**, repaso included.
+- `First-pass / target`: this file's first-pass scored count over its §5 first-pass target.
 - Files not yet created may be collapsed into one summary row (e.g. `2–13 | 04- … 15- (12 files) | 0/148`).
   When a collapsed file is first written, split its own row out of that summary and lower the summary's
   target accordingly, so the two tables keep agreeing.
