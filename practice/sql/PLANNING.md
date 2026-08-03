@@ -119,7 +119,7 @@ TOPIC = R2
 
 El prompt reconoce `R1`–`R5`, abre `practice/sql/MISTAKES.md`, coge las filas abiertas cuyo `Step` cae
 en el span del punto, las ordena por `Times` descendente y **eso** es el foco. Escribe en
-`practice/sql/R2-repaso.sql`, su propio archivo. Si el span no tiene filas abiertas el punto se dispara
+`practice/sql/junior/R2-repaso.sql`, su propio archivo. Si el span no tiene filas abiertas el punto se dispara
 igual y el foco pasa a los conceptos del span menos ejercitados.
 
 **Revisita voluntaria de un tema** — `TOPIC` es el tema:
@@ -261,9 +261,10 @@ before, so it audits the numbers the ritual actually wrote.
 Nothing is invented mid-session. This is the complete inventory, decided up front, **with the exercise
 count each file ends at**.
 
-### Exercise files — `practice/sql/`
+### Exercise files — `practice/sql/junior/`
 
-Flat, numbered, matching `CLAUDE.md` ("flat files"). "Done" counts are what exists on `main` today.
+One file per topic, numbered in study order, inside the level's own directory (every level takes one;
+no level is flat). "Done" counts are what exists on `main` today.
 
 **Three counts, never conflated.**
 - *Written* = the prompt generated the statement.
@@ -340,7 +341,7 @@ so a graded legacy exercise is skipped as settled exactly like a current-format 
 2026-07-22; this file used to claim otherwise, which cost `01-basics.sql` its markers on the first
 review run).
 
-### Revision files — `practice/sql/R{n}-repaso.sql`
+### Revision files — `practice/sql/junior/R{n}-repaso.sql`
 
 Uno por punto de repaso de §8b, creado por su lote de Moment 2b (`TOPIC = R2`) y **no antes**. No están
 en la tabla de arriba porque no pertenecen a ningún step: **no tienen target, no cuentan para nada y
@@ -417,9 +418,9 @@ mechanical:
 topic — and because execution order is the mental model joins, aggregation and windows are all
 explained against.
 **Exercises:** dos archivos, uno por esquema.
-- `practice/sql/01-basics.sql` — **cerrado**: 40 respondidas (20 first-pass #01–#20 + 20 de repaso
+- `practice/sql/junior/01-basics.sql` — **cerrado**: 40 respondidas (20 first-pass #01–#20 + 20 de repaso
   #21–#40), **40/40 correctas** el 2026-07-22. Esquema v1 (el viejo). No se le añade nada más.
-- `practice/sql/02-execution-order-set-ops.sql` — 10 first-pass, escritas el 2026-07-22 con el esquema
+- `practice/sql/junior/02-execution-order-set-ops.sql` — 10 first-pass, escritas el 2026-07-22 con el esquema
   canónico y el formato actual. Sin responder todavía.
 **Coverage:** `Querying basics`, `Filtering and pattern matching`, `Sorting, pagination, and determinism`, `Set operations`
 **Reinforces:** — (first step)
@@ -453,7 +454,7 @@ lanza otro `practice` sobre este archivo.
 **Why here:** it needs only Step 0's clause skeleton, and it is the single most-tested SQL topic at
 junior level — in a real screening `GROUP BY` almost always sits on top of a join, so joins come
 before aggregation, not after.
-**Exercises:** `practice/sql/03-joins.sql` — 22, generated from scratch in **two runs of 11**. The
+**Exercises:** `practice/sql/junior/03-joins.sql` — 22, generated from scratch in **two runs of 11**. The
 original ten hand-written statements were deleted on 2026-07-22: they were never answered, and they
 carried the old thin schema, so regenerating gets the canonical one and the current exercise format
 (`-- Your answer:` + `-- ✅ Corregido` markers) instead of perpetuating the legacy format into a
@@ -493,7 +494,7 @@ Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 es
 **Why here:** it needs the join from Step 1, because the surface a screening asks you to aggregate is
 almost never a single table — and with joins + aggregation you can already answer the second question
 of a technical test.
-**Exercises:** `practice/sql/04-aggregates.sql` — 12
+**Exercises:** `practice/sql/junior/04-aggregates.sql` — 12
 **Coverage:** `Aggregates and grouping`
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
 **Moment 2 config:** `TOPIC = group-by`, `COUNT = 12`
@@ -513,7 +514,7 @@ with `CASE WHEN` and `FILTER (WHERE ...)`.
 **Why here:** every pitfall on its list is an *aggregate over a broken join*, so it cannot even be
 stated before Step 2 — and it is what separates "knows the syntax" from "has debugged a wrong report",
 which is the follow-up question after a join answer lands.
-**Exercises:** `practice/sql/05-join-pitfalls.sql` — 12
+**Exercises:** `practice/sql/junior/05-join-pitfalls.sql` — 12
 **Coverage:** `JOIN pitfalls and row multiplication`
 **Reinforces:** Steps 1 + 2 — every pitfall here is an **aggregate over a broken join**
 **Moment 2 config:** `TOPIC = join-pitfalls`, `COUNT = 12`
@@ -542,7 +543,7 @@ debugged a wrong report", and burying them inside the aggregation step loses the
 **Why here:** Steps 1–3 have already produced `NULL`s by hand (`LEFT JOIN`, `AVG` skipping them,
 `COUNT(*)` counting them), so this step explains a mechanism he has already been bitten by instead of
 describing one he has not met — and `NOT IN` with a `NULL` is a standard screening trap.
-**Exercises:** `practice/sql/06-nulls.sql` — 12
+**Exercises:** `practice/sql/junior/06-nulls.sql` — 12
 **Coverage:** `NULL and three-valued logic`
 **Reinforces:** Steps 1–3 — `LEFT JOIN` producing nulls, `AVG` skipping them, `COUNT(*)` counting them
 **Moment 2 config:** `TOPIC = nulls`, `COUNT = 12`
@@ -564,7 +565,7 @@ describing one he has not met — and `NOT IN` with a `NULL` is a standard scree
 **Why here:** it needs Step 3's pre-aggregation fix, which *is* a subquery in `FROM` — and it closes
 the set `ROADMAP.md` calls test-relevant (joins · aggregation · subqueries/CTEs), so it is the last
 step before the surface is wide enough for a realistic timed test.
-**Exercises:** `practice/sql/07-subqueries-ctes.sql` — 16 (two runs of 8)
+**Exercises:** `practice/sql/junior/07-subqueries-ctes.sql` — 16 (two runs of 8)
 **Coverage:** `Subqueries, CTEs, and views`
 **Reinforces:** Step 3 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see
 **Moment 2 config — run 1:** `TOPIC = subqueries`, `COUNT = 8`
@@ -585,7 +586,7 @@ and why they do not scale, `WITH` and chained CTEs, `CREATE VIEW`, view vs mater
 **Why here:** it needs Step 3's grouping-by-an-expression (`GROUP BY DATE_TRUNC('month', ...)` is the
 whole of monthly reporting), and it comes before window functions and the capstone because a live
 exercise stalls on a raw `TIMESTAMP` long before it stalls on `ROW_NUMBER`.
-**Exercises:** `practice/sql/08-dates-strings.sql` — 12
+**Exercises:** `practice/sql/junior/08-dates-strings.sql` — 12
 **Coverage:** `Date and string functions`, `PostgreSQL specifics`
 **Reinforces:** Step 3 — `GROUP BY DATE_TRUNC('month', ...)` is grouping by an expression
 **Moment 2 config:** `TOPIC = dates-strings`, `COUNT = 12`
@@ -609,7 +610,7 @@ specifics that ride along (`::` casting, `ILIKE`, `RETURNING`).
 **Why here:** a window is only explainable against what `GROUP BY` collapses (Step 3) and against
 execution order (Step 0) — and it is asked *after* the core in a screening, as the "and can you also…"
 question, never as the opener.
-**Exercises:** `practice/sql/09-window-functions.sql` — 12
+**Exercises:** `practice/sql/junior/09-window-functions.sql` — 12
 **Coverage:** `Window functions`
 **Reinforces:** Step 3 — a window keeps the rows `GROUP BY` collapses; Step 0 — execution order explains why a window cannot sit in `WHERE`
 **Moment 2 config:** `TOPIC = window-functions`, `COUNT = 12`
@@ -631,7 +632,7 @@ function cannot appear in `WHERE`, window vs `GROUP BY`, the default frame, "the
 **Why here:** finding duplicates needs Step 3's `HAVING COUNT(*) > 1` and deleting them keeping one
 needs Step 7's `ROW_NUMBER()`, so it cannot precede either — and it is where SQL meets the Spring Boot
 `@Transactional` the interviewer will actually ask about.
-**Exercises:** `practice/sql/10-dml-transactions.sql` — 16 (two runs of 8)
+**Exercises:** `practice/sql/junior/10-dml-transactions.sql` — 16 (two runs of 8)
 **Coverage:** `DML — modifying data`, `Transactions`
 **Reinforces:** Step 3 — `GROUP BY ... HAVING COUNT(*) > 1` is the duplicate-finding query; Step 7 — `ROW_NUMBER()` is how you delete duplicates keeping one
 **Moment 2 config — run 1:** `TOPIC = dml`, `COUNT = 8`
@@ -657,7 +658,7 @@ One step because in practice you learn transactions by wrapping a destructive `U
 **Why here:** a constraint is only meaningful once you have written the `UPDATE` it blocks (Step 8)
 and met the `NULL` it treats specially (Step 4) — and it is late because a screening asks you to
 *query* first and to *model* second, usually only in the second interview.
-**Exercises:** `practice/sql/11-schema-design.sql` — 12
+**Exercises:** `practice/sql/junior/11-schema-design.sql` — 12
 **Coverage:** `Schema design — constraints and integrity`, `Schema design — modelling decisions`
 **Reinforces:** Step 4 — `NULL` in a `UNIQUE` constraint; Step 8 — a constraint violation is the race an application check cannot win
 **Moment 2 config — run 1:** `TOPIC = schema-design`, `COUNT = 6`
@@ -680,7 +681,7 @@ redundant by Bean Validation, natural vs surrogate keys, soft vs hard delete, an
 **Why here:** it writes by hand the constraints Step 9 only reasoned about, so it needs that step
 first; putting DDL before modelling would produce syntax with nothing to say about why the column is
 `NOT NULL`.
-**Exercises:** `practice/sql/12-data-types-ddl.sql` — 12
+**Exercises:** `practice/sql/junior/12-data-types-ddl.sql` — 12
 **Coverage:** `Data types`, `DDL — creating and evolving a schema`
 **Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`
 **Moment 2 config — run 1:** `TOPIC = data-types`, `COUNT = 6`
@@ -704,7 +705,7 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 **Why here:** you cannot read a plan for a query shape you cannot yet write, so it comes after joins,
 aggregation and windows; and it needs Step 10's `CREATE TABLE` because `UNIQUE` and `PRIMARY KEY` are
 where a junior's first indexes actually come from.
-**Exercises:** `practice/sql/13-indexes.sql` — 12
+**Exercises:** `practice/sql/junior/13-indexes.sql` — 12
 **Coverage:** `Indexes`, `Reading a query plan and diagnosing slowness`
 **Reinforces:** Step 10 — `UNIQUE` and `PRIMARY KEY` create their index automatically; Step 1 — the join column is the one that needs one
 **Moment 2 config:** `TOPIC = indexes`, `COUNT = 12`
@@ -724,7 +725,7 @@ index, composite index column order, non-sargable predicates, leading-wildcard `
 **Why here:** every error it teaches to recognise is a Step 9 constraint firing, so the constraints
 must already be understood; it sits last before the capstone because it is the only step that leaves
 pgAdmin, and a server without a GUI is a job-day problem, not a screening one.
-**Exercises:** `practice/sql/14-live-database.sql` — 12
+**Exercises:** `practice/sql/junior/14-live-database.sql` — 12
 **Coverage:** `Working with a live database`, `Reading PostgreSQL errors`, `Type behaviour at runtime`
 **Reinforces:** Step 9 — every error message here is a constraint from that step firing
 **Moment 2 config:** `TOPIC = live-database`, `COUNT = 12`
@@ -746,7 +747,7 @@ The one step where you deliberately leave pgAdmin: a server does not have a GUI,
 
 **Why here:** last by definition — it introduces no syntax and instead composes every earlier step
 under time pressure, which is the one thing drilling topic by topic never produces on its own.
-**Exercises:** `practice/sql/15-report-queries.sql` — 8
+**Exercises:** `practice/sql/junior/15-report-queries.sql` — 8
 **Coverage:** `Writing a report query`
 **Reinforces:** everything; this is the integration step
 **Moment 2 config:** `TOPIC = report-queries`, `COUNT = 8`
