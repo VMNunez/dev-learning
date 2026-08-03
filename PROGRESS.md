@@ -108,22 +108,30 @@ missing. Like `Coverage demonstrated`, this is evidence of doing, and it never p
 
 ### Exercise route — `practice/sql/`
 
-Denominator: the **first-pass target** of every file in the level's route
-(`practice/sql/PLANNING.md` §5). `[Repaso]` review batches are deliberately uncounted — they are
-extra work on top of the route, so counting them would inflate the figure.
+Two different questions, so two different denominators — neither one alone is honest:
 
-| Level | Exercises scored | Steps closed |
-|---|---|---|
-| SQL — junior | 20/200 (10%) | 0/14 |
-| SQL — middle | not planned | — |
-| SQL — senior | not planned | — |
+- **Corrected** — of the exercises that *exist right now*, how many are graded. The denominator grows
+  every time `sql-exercises` writes a batch, extras and `[Repaso]` included. This is the working rhythm.
+- **Route progress** — how much of the level's planned route is done. The denominator is fixed: the sum
+  of the `First-pass target` column of `practice/sql/PLANNING.md` §5, the **whole** route including the
+  files not written yet. `[Repaso]` and extra batches do not count here — they are work on top of the
+  route, and counting them would show progress the route never made.
 
-| Step | File | Scored / target | Status |
+A single figure would lie in one direction or the other: corrected alone sits near 100% forever while
+twelve files remain unwritten; route progress alone makes extra practice invisible.
+
+| Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| 0 | `01-basics.sql` | 20/20 | closed ✅ — 40 answered 2026-07-22, of which 20 first-pass count; legacy schema, not extended |
-| 0 | `02-execution-order-set-ops.sql` | 0/10 | in progress ⏳ — written 2026-07-22, unanswered |
-| 1 | `03-joins.sql` | 0/22 | not started — file deleted 2026-07-22, to regenerate |
-| 2–13 | `04-` … `15-` (12 files) | 0/148 | not created |
+| SQL — junior | 40/50 (80%) | 20/200 (10%) | 0/14 |
+| SQL — middle | not planned | — | — |
+| SQL — senior | not planned | — | — |
+
+| Step | File | Corrected | First-pass / target | Status |
+|---|---|---|---|---|
+| 0 | `01-basics.sql` | 40/40 | 20/20 | closed ✅ — graded 2026-07-22; 20 first-pass + 20 `[Repaso]`, only the first-pass ones move the route |
+| 0 | `02-execution-order-set-ops.sql` | 0/10 | 0/10 | in progress ⏳ — written 2026-07-22, unanswered |
+| 1 | `03-joins.sql` | — | 0/22 | not started — file deleted 2026-07-22, to regenerate |
+| 2–13 | `04-` … `15-` (12 files) | — | 0/148 | not created |
 
 ### Timed simulations — `practice/simulations/`
 
