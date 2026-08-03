@@ -188,7 +188,8 @@ was first applied in code, **and what in that project demonstrates it**:
 
 Rules:
 
-- **Format is exactly `✅ NN-slug — {evidence}`**, at the end of the bullet, after the concept sentence,
+- **Format is exactly `✅ NN-slug — {evidence}`**, after the concept sentence and after the drill marker
+  below if the bullet carries one,
   where `NN-slug` is the project's folder name under `projects/` verbatim — the two-digit number, a
   hyphen, and the kebab-case name (`07-timetrack`, `03-expense-tracker`). One marker per bullet, and the
   evidence clause is the last thing on the line. The number alone would be unreadable in a file scanned
@@ -231,6 +232,31 @@ Rules:
 - A bullet may only be **removed** with its marker if the concept genuinely leaves the level. When a
   concept moves between levels or topics, the marker moves with it.
 
+### The drill marker — `✅ sql:{file-slug}`
+
+A second, narrower marker exists, and it answers a different question. The project marker above means
+*Victor built something that uses this*. The **drill marker** means *Victor solved graded exercises on
+this*, and it is written only by `sql-step-close`, only from exercises a cold grader scored:
+
+```
+- `LEFT JOIN` — returns all rows from the left table with `NULL` on the right when there is no match ✅ sql:03-joins ✅ 07-timetrack — the unassigned-entries report joins `time_entries` to `projects` and keeps the orphans
+```
+
+- **Format is exactly `✅ sql:{file-slug}`** — the exercise file's name under `practice/sql/{LEVEL}/`
+  without the `.sql` extension. **No evidence clause**: the file is the evidence, and a reader can open
+  it and find the graded exercises. Adding prose there would only restate the bullet.
+- **It sits before the project marker**, immediately after the concept sentence. That order is forced by
+  the project marker's free-text evidence clause — anything written after it is indistinguishable from
+  it, to a reader and to the digest command below.
+- **A bullet may carry both, one, or neither**, and the two never substitute for each other. Conflating
+  them costs the file its only honest answer to "can I prove this with something I built?" — the whole
+  reason markers exist.
+- **Only a scored exercise marks.** Written or answered is not enough, and a `[Repaso]` exercise marks
+  nothing (it drills ground already taken). A marker is never removed, and the first file wins.
+- **Level-local.** A junior exercise marks a junior bullet. It never reaches up into `middle.md`.
+- It is state, not scope: it obeys every rule above about preservation on reword and exclusion from the
+  digest.
+
 ### Markers are excluded from the coverage digest
 
 Four downstream prompts — `notes-plan`, `notes-audit`, `coverage-verify`, `interview-prep-audit` — store a
@@ -254,8 +280,13 @@ One canonical command, so every prompt produces the same digest for the same sco
 invalidated by the format change:
 
 ```bash
-sed -E 's/ ✅ [0-9]{2}-[a-z0-9-]+( — .*)?$//' notes/{topic}/coverage/{LEVEL}.md | sha256sum
+sed -E 's/ ✅ [0-9]{2}-[a-z0-9-]+( — .*)?$//; s/ ✅ sql:[0-9]{2}-[a-z0-9-]+$//' notes/{topic}/coverage/{LEVEL}.md | sha256sum
 ```
+
+**The two expressions run in that order and the order is load-bearing.** The project marker is stripped
+first because its evidence clause is free text that would otherwise swallow anything to its left; only
+once it is gone does a drill marker sit at end of line where the second expression can see it. Reversing
+them leaves every bullet that carries both markers with its project marker intact in the digest.
 
 Every prompt that computes or compares a coverage digest must use it, and any run that
 reports a digest mismatch must state that it stripped markers first — otherwise a false mismatch and a
