@@ -88,7 +88,7 @@ migration runs, `practice/sql/PLANNING.md` is a single 1000-line file holding bo
 Run this stage **only** at `LEVEL = junior`, and only when `PLAN` does not yet exist:
 
 1. Move **Section 5**, **Section 6** and **Section 8** out of `DOCTRINE` and into `PLAN`, **verbatim** —
-   every step's `Why here`, `Concepts`, `Exit question` and `Done` line, every count in the file tables,
+   every step's `Why here`, `Concepts`, `Q&A seed` and `Done` line, every count in the file tables,
    every status in the progress table, every dated annotation. This prose was written by hand and
    justifies a route that works; it is migrated, not regenerated. Renumber the sections in `PLAN` as
    §1 (files), §2 (steps), §3 (progress) and add the plan header below. Two normalisations are allowed
@@ -173,9 +173,11 @@ log for the whole track: a concept failed at junior and re-failed at middle is o
    `**Moment 2 config:**` line carrying `COUNT = n` and the literal `**Focus:**` line, because those two
    strings are what `sql-exercises` greps for. A step stating the same information in prose resolves to
    nothing and stops that run.
-9. Every step ends in an **exit question answered aloud** (B5) and a **done condition in a `DOCTRINE` §3
-   format, written out verbatim** (B6, invariant 7). `Review: ... ≥ 80% on X.sql` is not the format;
-   `Review: sql-exercises MODE = review scores ≥ 80% on X.sql` is.
+9. Every step ends in a **`**Q&A seed:**` line** (B5) and a **done condition in a `DOCTRINE` §3 format,
+   written out verbatim** (B6, invariant 7). `Review: ... ≥ 80% on X.sql` is not the format;
+   `Review: sql-grade scores ≥ 80% on X.sql` is. The seed is **not** a done condition and closes nothing
+   — it is a question handed to the interview-prep track (`DOCTRINE` §Z). The `Aloud:` format and the
+   two-condition rule were removed on 2026-08-03; a step closes on its scored condition alone.
 10. Place a **revision point every three exercise files** (B4, invariant 8), each drawing its focus from
     the open rows of `MISTAKES`, each writing to its own uncounted file. A revision batch never counts
     toward a target and never flips a status.
@@ -222,7 +224,7 @@ forward. It does not edit files. It must challenge:
 - whether a step could have been done first — which would mean it teaches nothing about composition (B3);
 - steps grouped around a coverage section name rather than one drillable skill;
 - concepts an exercise would need before the step that teaches them;
-- exit questions that test recognition instead of retrieval;
+- `Q&A seed` questions that test recognition instead of retrieval;
 - done conditions another person could not run and get the same verdict from (B6);
 - whether the revision cadence actually holds at every third file (B4);
 - whether the route, drilled in order, produces someone who passes the SQL half of a screening at this
@@ -276,8 +278,8 @@ Generated: YYYY-MM-DD
 
 **Pending additions:** none
 
-**Exit question:** one question, answered aloud, from memory
-**Done:** a §3 format from the doctrine, written out in full · exit question aloud
+**Q&A seed:** one question worth handing to the interview-prep track — closes nothing here
+**Done:** a §3 format from the doctrine, written out in full
 
 ## §3 — Progress
 
@@ -302,7 +304,7 @@ Rules:
   closed step.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned to two steps.
 - Every path is repository-relative and inside this level's `EXERCISE_DIR`.
-- `Why here`, `Reinforces`, `Focus`, `Concepts`, `Exit question` and `Done` are non-empty and specific.
+- `Why here`, `Reinforces`, `Focus`, `Concepts`, `Q&A seed` and `Done` are non-empty and specific.
   `none — the whole topic` is a value for `Focus`; a blank line is a finding.
 - The plan **names** the exercise prompt and points at it. It never describes exercise content, the
   difficulty split or the file format — `STANDARD` Section E decides who owns what.

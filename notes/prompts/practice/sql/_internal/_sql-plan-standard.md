@@ -156,8 +156,8 @@ Every route §2 entry has exactly these fields. A missing field is a finding.
 
 **Pending additions:** <none, or bullets coverage gained after this step closed>
 
-**Exit question:** <one question, answered aloud>
-**Done:** <a doctrine §3 format, written out in full> · exit question aloud
+**Q&A seed:** <one question for the interview-prep track — closes nothing here>
+**Done:** <a doctrine §3 format, written out in full>
 ```
 
 **The two bullet fields are what make the route reconcilable.** `**Coverage:**` names the sections a

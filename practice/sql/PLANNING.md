@@ -28,9 +28,9 @@ report queries TimeTrack needs without looking anything up.
 |---|---|
 | **Current step** | Step 0 — Querying basics (`01-basics.sql` cerrado con 20 first-pass; `02-execution-order-set-ops.sql` con 10 sin responder, target 30) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
-| **Done condition** | `Review: sql-exercises MODE = review scores ≥ 80% on 02-execution-order-set-ops.sql` |
+| **Done condition** | `Review: sql-grade scores ≥ 80% on 02-execution-order-set-ops.sql` |
 | **Next revision point** | R1 (§8b) — fires when Step 1 closes and `03-joins.sql` is scored |
-| **Blocked on** | nothing. Los 10 ejercicios ya están escritos en `02-execution-order-set-ops.sql`: toca ejecutar su bloque SETUP en pgAdmin, responderlos (Moment 3) y pasarlos por `MODE = review`. |
+| **Blocked on** | nothing. Los 10 ejercicios ya están escritos en `02-execution-order-set-ops.sql`: toca ejecutar su bloque SETUP en pgAdmin, responderlos (Moment 3) y corregirlos con `sql-grade`. |
 | **Last updated** | 2026-07-22 |
 
 ---
@@ -137,7 +137,7 @@ exercises `[Repaso]`, and excludes them from the step's target — all of it aut
 
 `{REVIEW} = yes` is derived from **una de tres cosas**, nunca de la pegada:
 - un `TOPIC` que es un punto de repaso (`R1`–`R5`) — siempre es un lote de repaso;
-- un **`**Moment 2b reinforcement block:**`** que un run de `MODE = review` añadió al step de §6 tras
+- un **`**Moment 2b reinforcement block:**`** que un run de `sql-grade` añadió al step de §6 tras
   puntuar por debajo del 60% — lleva su propio `COUNT` y su propio `**Focus:**`, sacados de los
   conceptos que fallaron;
 - o, en una revisita voluntaria, el guard "target already met": el prompt ve que el archivo ya tiene
@@ -149,7 +149,7 @@ exercises that re-covered the same ground at the same difficulty, buying three g
 its hour, and the line that would have fixed it was one nobody remembered to type.
 
 **Review runs do not advance a step.** They are not counted in §5's targets and never flip a status in
-§8 — a step closes on its first-pass exercises and its exit question. Review is maintenance on ground
+§8 — a step closes on its first-pass exercises alone. Review is maintenance on ground
 already taken.
 
 **They come labelled.** The prompt writes `-- Exercise N [Repaso]:` instead of
@@ -166,23 +166,21 @@ silently mixes both.
 
 ---
 
-### Moment 4 — Get them graded  ▶ RUN A PROMPT
+### Moment 4 — Get them graded  ▶ RUN A SKILL
 
 **Trigger:** once **every** exercise in the file has an answer — never partially.
-**Prompt:** the same `sql-exercises-prompt.md`, in another **new chat**, answered file pasted at the end.
-
-```
-MODE  = review
-TOPIC = <same TOPIC as Moment 2>
-```
+**Skill:** `sql-grade`, in the daily session. Say which file — *"corrige el 02"* — and nothing else.
+There is no config to paste and no new chat to open: the skill resolves the level and the file, and
+runs the grading prompt in a cold subagent.
 
 What it does, beyond printing a score:
 
 - **Writes `-- ✅ Corregido <fecha>`** under every answer it accepts, and **skips anything already
   marked** on later runs. So the score always measures the new batch, never a growing pile of
   already-validated work, and the file itself records what is settled.
-- **Updates `PROGRESS.md` twice** — the concept list (one line per concept) and the exercises table.
-- **Updates this file** — the §8 row (count + status) and, when a step closes, the §0 header.
+- **Updates `PROGRESS.md`** — the level roll-up, the file's row, and the recomputed `Total` rows.
+- **Updates the level's route file** — the step's §3 row, its §2 coverage checkboxes, and the §0 header
+  when the step closes.
 - **Re-checks every answer it accepted** with a cold subagent before writing any marker, and prints
   "Segunda pasada: N ✅ confirmados, M revertidos". A marker is permanent, so it is not written on a
   single grader's word.
@@ -190,62 +188,91 @@ What it does, beyond printing a score:
   run redeemed. It does **not** write to `notes/sql/` or `notes/interview-prep/` — those tracks are
   not planned here (§Z).
 
-It cannot close a step on its own, and it will say so: the exit question is outside its reach. That
-one is yours (Moment 5).
+**The counters move at any score.** A 60% is real information about twelve graded exercises, and
+withholding it would make a badly-scored file look like one nobody started. What a bad score blocks is
+the *step closing*, not the recording.
 
-**Below 80% → do not advance.** Re-run Moment 2 with `FOCUS` narrowed to the failed concepts, then
-repeat Moments 3–4. This is a hard stop, not a suggestion: every later step assumes the earlier one.
+**Below 80% → do not advance.** `sql-grade` stops there itself, names the failed concepts and offers the
+narrowed batch. This is a hard stop, not a suggestion: every later step assumes the earlier one.
 
 ---
 
-### Moment 5 — Close the step  ▶ RUN THE STEP RITUAL
+### Moment 5 — Close the step  ▶ AUTOMATIC
 
-**Trigger:** both done conditions met.
-**Prompt:** none — but the ritual in §4 is mandatory. Skipping it is what makes every later gate read
-stale files.
+**Trigger:** the step's done condition passes on its last file.
+**You run nothing.** `sql-grade` hands off to `sql-step-close` on the spot, and §4 happens without being
+asked for. The one thing to check is its report table — a skipped item is stated there, never silent.
 
 ---
 
 ## Section 3 — Done-condition format
 
-Every done condition in §0 and §6 uses **one** of these five formats exactly. Nothing else is valid —
+Every done condition in §0 and §6 uses **one** of these four formats exactly. Nothing else is valid —
 "I understand joins" is not testable and is not allowed. Each one is testable by someone else: another
 person can run it and get the same verdict without asking how you feel about the topic.
 
-- `Review: sql-exercises MODE = review scores ≥ [n]% on [file]`
+- `Review: sql-grade scores ≥ [n]% on [file]`
 - `pgAdmin: [query] returns [concrete result]`
 - `Terminal: [command] produces [concrete observable result]`
-- `Aloud: [the exit question] answered from memory, nothing open`
 - `Timed: [n] queries from prose in under [m] minutes each, no reference open`
 
-Every step closes on **two** conditions together: a scored condition (`Review:`, `pgAdmin:` or
-`Terminal:`) and the `Aloud:` exit question. The capstone replaces the first with a `Timed:` one.
-Nothing outside this list closes a step — a note being written or a question being added to the Q&A
-bank is a different track (§Z) and never a done condition here.
+**Every step closes on exactly one condition, and it is machine-checkable.** The capstone uses the
+`Timed:` format; every other step uses one of the first three. Nothing outside this list closes a step —
+a note being written or a question being added to the Q&A bank is a different track (§Z) and never a
+done condition here.
+
+> **The `Aloud:` format was removed on 2026-08-03, and with it the two-condition rule.** Every step used
+> to need a second condition — its exit question, answered aloud from memory — on the argument that a
+> score measures queries written with time to think, which does not distinguish recognising a concept
+> from recalling it. That argument is sound, but it describes **retrieval practice, which is the
+> `simulator` and interview-prep track's job** (§Z), not this one. Keeping it here bought nothing the
+> Q&A bank does not already do, and it put a manual, unautomatable gate in the middle of a ritual that
+> is otherwise fully mechanical — which is exactly how a ritual stops being run. The exit questions
+> themselves were not deleted: they survive in §6 as inert **`**Q&A seed:**`** lines, kept so a good
+> question is not lost. They oblige nothing — see §Z.
 
 ---
 
 ## Section 4 — Step-complete ritual
 
-**When a step's done conditions pass, update all three of these in the same commit.** This is the SQL
-equivalent of the `step-complete` skill, which only covers project steps and will not fire here.
-Partial updates are the real failure mode — do all three or write down why not.
+**The ritual is a skill, and the skill is the only way it is run.** Three of them cover the track, and
+they hand off to each other in one direction — you never invoke the second or the third yourself:
 
-**Two of the three are now automated** — `sql-exercises` in `review` mode does them (its Step 4), so the
-ritual is mostly a verification. Check them rather than redo them.
+| Skill | Fires when | What it owns |
+|---|---|---|
+| `sql-block-open` | you start the 12:30 block | read-only orientation: current step, unanswered exercises, open `MISTAKES.md` rows, which Moment is next. Writes nothing. |
+| `sql-grade` | you finished answering a file | grades it, then the traffic light: failures → back to fixing; clean → hands off to `sql-step-close` **only if this was the step's last file** |
+| `sql-step-close` | handed the step by `sql-grade` | the closing ritual below, end to end, without asking anything |
 
-1. **`PROGRESS.md`** *(automated)* — the SQL section, two edits: each concept added to the **concept
-   list** one specific line at a time (never grouped: `HAVING filters groups after aggregation, WHERE
-   filters rows before` is a line; "aggregation" is not), and the row in the **exercises table**
-   updated with the real count and status ✅ / ⏳.
-2. **This file** *(automated)* — the step's row in §8, and §0 refreshed (current step, done condition,
-   next revision point, last updated).
-3. **`notes/sql/coverage.md`** *(manual)* — if the step surfaced a concept genuinely missing from
-   coverage, add it there. Do not add it to this plan instead.
+`sql-grade` does not re-implement grading: it runs
+`notes/prompts/practice/sql/_internal/_sql-exercises-review.md` **in a cold subagent**, which is where
+Steps 4a–4e below actually happen. That isolation is not decoration — the prompt was written for a fresh
+chat, and a skill runs inside the session where the concept may have just been explained to you. A
+grader that remembers teaching you the answer is not a grader.
 
-A step is closed only when its scored condition has passed **and** the **exit question** has been
-answered aloud. A score alone never closes a step, and the prompt is instructed to say so rather than
-claim otherwise.
+**What a close touches, and who writes it:**
+
+1. **`PROGRESS.md`** *(automated, by the grading subagent)* — `## Practice completed` → `### Exercise
+   route`: the level's roll-up row, the file's row in the level table, and the recomputed `Total` rows of
+   both. **No concept list.** It was deleted on 2026-08-03 because it was an evidence-free second copy of
+   the coverage file; the *what* lives on the coverage bullets, the *how many* lives here. Do not
+   re-create it.
+2. **The level's route file** `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` *(automated)* — the step's row in
+   §3, its `**Coverage bullets:**` checkboxes in §2, and §0 refreshed when the step closes. (Until
+   `/sql-plan junior` runs its migration, §5/§6/§8 of *this* file are still the junior route and take
+   those edits instead.)
+3. **`notes/sql/coverage/{LEVEL}.md`** *(automated, by `sql-step-close`)* — every bullet the step's graded
+   exercises actually drilled gets the marker **`✅ sql:{file-slug}`**, e.g.
+   `✅ sql:02-execution-order-set-ops`. This is deliberately **not** the `✅ NN-slug` project marker that
+   `coverage-mark` writes: "I drilled it in an exercise" and "I shipped it in project 07" are different
+   claims, and a file that conflates them stops being able to answer either question. A bullet can carry
+   both. A bullet is never unmarked, and a `[Repaso]` exercise marks nothing.
+4. **A concept with no bullet at all** *(reported, not written)* — if the step exercised something the
+   coverage file does not list, `sql-step-close` reports it and stops there. Adding it is a `/coverage`
+   decision, not a side effect of a close.
+
+**Nothing in this ritual asks you a question.** If a step cannot close, the skill says why and stops; it
+never blocks waiting for an answer.
 
 Commit message: `docs: close SQL step N — <topic>`.
 
@@ -271,7 +298,7 @@ no level is flat). "Done" counts are what exists on `main` today.
 - *Answered* = the query is written under it. A file full of unanswered statements is worth nothing.
 - *Scored* = a `review` run has graded it ≥ 80%. **Only this one advances a step.**
   `02-execution-order-set-ops.sql` is at the first rung today: 10 statements *written*, 0 *answered*, so
-  there is nothing to score yet and `MODE = review` will refuse the file rather than record a 0.
+  there is nothing to score yet and `sql-grade` will refuse the file rather than record a 0.
   `01-basics.sql` is the opposite case — all 40 answers carry a
   `-- ✅ Corregido` marker, but only its 20 first-pass exercises count toward Step 0's target.
 - *Target* = the **first-pass** exercises the step needs. **Review batches (Moment 2b) are extra and
@@ -444,8 +471,8 @@ config de arriba se conserva porque el prompt lo lee para derivar `COUNT` y `Foc
 volver a ejecutarlo — el paso está en Moment 3, y el prompt avisa (guard "target already met") si se
 lanza otro `practice` sobre este archivo.
 
-**Exit question:** *why does an alias defined in `SELECT` work in `ORDER BY` but raise an error in `WHERE`?*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 02-execution-order-set-ops.sql` · exit question aloud
+**Q&A seed:** *why does an alias defined in `SELECT` work in `ORDER BY` but raise an error in `WHERE`?*
+**Done:** `Review: sql-grade scores ≥ 80% on 02-execution-order-set-ops.sql`
 
 ---
 
@@ -484,8 +511,8 @@ NOT EXISTS as an anti-join.
 Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 escribe el esquema canónico
 él mismo y no hay prompt de esquema legacy que contestar.
 
-**Exit question:** *given `authors` and `books`, which join do you use for "every author, including those with no books", and what does the row look like for an author with none?*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 03-joins.sql` (#01–#22) · exit question aloud
+**Q&A seed:** *given `authors` and `books`, which join do you use for "every author, including those with no books", and what does the row look like for an author with none?*
+**Done:** `Review: sql-grade scores ≥ 80% on 03-joins.sql` (#01–#22)
 
 ---
 
@@ -504,8 +531,8 @@ of a technical test.
 over zero rows returning `NULL`, the `GROUP BY` rule, `HAVING` vs `WHERE`, conditional aggregation
 with `CASE WHEN` and `FILTER (WHERE ...)`.
 
-**Exit question:** *`WHERE` vs `HAVING` — which runs first, and why can't `WHERE` use `COUNT(*)`?*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 04-aggregates.sql` · exit question aloud
+**Q&A seed:** *`WHERE` vs `HAVING` — which runs first, and why can't `WHERE` use `COUNT(*)`?*
+**Done:** `Review: sql-grade scores ≥ 80% on 04-aggregates.sql`
 
 ---
 
@@ -533,8 +560,8 @@ step and its own file rather than the back half of Step 1.
 It stays a separate step from Step 2 on purpose: these are what separate "knows the syntax" from "has
 debugged a wrong report", and burying them inside the aggregation step loses them.
 
-**Exit question:** *a report total comes back exactly double the real number. What is the first thing you check?*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 05-join-pitfalls.sql` · exit question aloud
+**Q&A seed:** *a report total comes back exactly double the real number. What is the first thing you check?*
+**Done:** `Review: sql-grade scores ≥ 80% on 05-join-pitfalls.sql`
 
 ---
 
@@ -552,8 +579,8 @@ describing one he has not met — and `NOT IN` with a `NULL` is a standard scree
 **Concepts:** `NULL = NULL`, `IS NULL` vs `= NULL`, `AND`/`OR` truth tables, `NOT IN` with a `NULL` in the subquery,
 `NOT EXISTS` vs `NOT IN`, `IS DISTINCT FROM`, `NULL` in `UNIQUE`, `COALESCE`, `NULLIF`.
 
-**Exit question:** *are two `NULL`s equal in SQL? Explain what `WHERE price = NULL` actually evaluates to.*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 06-nulls.sql` · exit question aloud
+**Q&A seed:** *are two `NULL`s equal in SQL? Explain what `WHERE price = NULL` actually evaluates to.*
+**Done:** `Review: sql-grade scores ≥ 80% on 06-nulls.sql`
 
 > **This closes the screening core.** Steps 1–4 are what a quickfire round asks — which is why
 > revision point **R2** (§8b) fires here, before anything is built on top of it.
@@ -576,8 +603,8 @@ step before the surface is wide enough for a realistic timed test.
 **Concepts:** subquery in `WHERE` / `FROM` / `SELECT`, `IN` vs `EXISTS`, subquery vs `JOIN`, correlated subqueries
 and why they do not scale, `WITH` and chained CTEs, `CREATE VIEW`, view vs materialized view.
 
-**Exit question:** *when would you reach for a CTE instead of a subquery, and is a CTE slower?*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 07-subqueries-ctes.sql` · exit question aloud
+**Q&A seed:** *when would you reach for a CTE instead of a subquery, and is a CTE slower?*
+**Done:** `Review: sql-grade scores ≥ 80% on 07-subqueries-ctes.sql`
 
 ---
 
@@ -600,8 +627,8 @@ specifics that ride along (`::` casting, `ILIKE`, `RETURNING`).
 **This step owns the whole `PostgreSQL specifics` coverage section** — Step 12 uses the same prompt
 `TOPIC` but claims different coverage sections.
 
-**Exit question:** *build a monthly total from a raw `TIMESTAMP` column. Which function, and why not `EXTRACT`?*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 08-dates-strings.sql` · exit question aloud
+**Q&A seed:** *build a monthly total from a raw `TIMESTAMP` column. Which function, and why not `EXTRACT`?*
+**Done:** `Review: sql-grade scores ≥ 80% on 08-dates-strings.sql`
 
 ---
 
@@ -619,8 +646,8 @@ question, never as the opener.
 **Concepts:** `ROW_NUMBER`, `RANK`, `DENSE_RANK`, `LAG`/`LEAD`, `SUM() OVER (PARTITION BY ...)`, why a window
 function cannot appear in `WHERE`, window vs `GROUP BY`, the default frame, "the second highest value".
 
-**Exit question:** *"the latest entry per user" — write the shape of the query and explain why you need a subquery around it.*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 09-window-functions.sql` · exit question aloud
+**Q&A seed:** *"the latest entry per user" — write the shape of the query and explain why you need a subquery around it.*
+**Done:** `Review: sql-grade scores ≥ 80% on 09-window-functions.sql`
 
 > Revision point **R3** (§8b) fires here: subqueries, dates and windows now sit on a core that has had
 > months to decay, and the mistake log is the only honest record of what slipped.
@@ -648,8 +675,8 @@ anomalies, the four isolation levels, `SELECT ... FOR UPDATE`, deadlocks, and th
 
 One step because in practice you learn transactions by wrapping a destructive `UPDATE` in one.
 
-**Exit question:** *what happens if the second `save()` fails inside a `@Transactional` method, and what SQL is Spring actually issuing?*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 10-dml-transactions.sql` · exit question aloud
+**Q&A seed:** *what happens if the second `save()` fails inside a `@Transactional` method, and what SQL is Spring actually issuing?*
+**Done:** `Review: sql-grade scores ≥ 80% on 10-dml-transactions.sql`
 
 ---
 
@@ -671,8 +698,8 @@ and met the `NULL` it treats specially (Step 4) — and it is late because a scr
 redundant by Bean Validation, natural vs surrogate keys, soft vs hard delete, and 1NF/2NF/3NF
 **by name** — Spanish screenings ask "¿qué es la tercera forma normal?" verbatim.
 
-**Exit question:** *explain the TimeTrack data model out loud in three sentences, then say where each foreign key lives and why it cannot go on the other side.*
-**Done:** `Review: sql-exercises MODE = review scores ≥ 80% on 11-schema-design.sql` · exit question aloud
+**Q&A seed:** *explain the TimeTrack data model out loud in three sentences, then say where each foreign key lives and why it cannot go on the other side.*
+**Done:** `Review: sql-grade scores ≥ 80% on 11-schema-design.sql`
 
 ---
 
@@ -695,8 +722,8 @@ first; putting DDL before modelling would produce syntax with nothing to say abo
 Written, not queried: the deliverable is a schema you can produce from a blank editor, because
 `ddl-auto` has been doing it for you in TimeTrack.
 
-**Exit question:** *write `CREATE TABLE time_entries` from memory, constraints included.*
-**Done:** `pgAdmin: the hand-written schema in 12-data-types-ddl.sql creates all three TimeTrack tables from empty, constraints included` · exit question aloud
+**Q&A seed:** *write `CREATE TABLE time_entries` from memory, constraints included.*
+**Done:** `pgAdmin: the hand-written schema in 12-data-types-ddl.sql creates all three TimeTrack tables from empty, constraints included`
 
 ---
 
@@ -715,8 +742,8 @@ where a junior's first indexes actually come from.
 index, composite index column order, non-sargable predicates, leading-wildcard `LIKE`, `EXPLAIN` vs
 `EXPLAIN ANALYZE`, estimated vs actual rows, when a `Seq Scan` is correct, the join node types.
 
-**Exit question:** *your two-column index on `(user_id, work_date)` is being ignored by a query filtering only on `work_date`. Why?*
-**Done:** `pgAdmin: EXPLAIN on a seeded table shows Seq Scan before CREATE INDEX and Index Scan after` · exit question aloud
+**Q&A seed:** *your two-column index on `(user_id, work_date)` is being ignored by a query filtering only on `work_date`. Why?*
+**Done:** `pgAdmin: EXPLAIN on a seeded table shows Seq Scan before CREATE INDEX and Index Scan after`
 
 ---
 
@@ -738,8 +765,8 @@ truncating silently, division by zero aborting the query, PostgreSQL refusing im
 
 The one step where you deliberately leave pgAdmin: a server does not have a GUI, and interviewers ask.
 
-**Exit question:** *`relation "users" does not exist` — name the three real causes.*
-**Done:** `Terminal: psql connects, \dt lists the TimeTrack tables, and \i loads a .sql file` · exit question aloud
+**Q&A seed:** *`relation "users" does not exist` — name the three real causes.*
+**Done:** `Terminal: psql connects, \dt lists the TimeTrack tables, and \i loads a .sql file`
 
 ---
 
@@ -761,8 +788,8 @@ target per exercise — nothing extra to add to the config.
 query: mapping the requirement onto the clause skeleton, choosing the driving table so zero-row groups
 survive, `COALESCE(SUM(...), 0)`, aliasing output columns, and where formatting belongs.
 
-**Exit question:** *"per project, total approved hours this month, only projects above 40h" — write it without stopping.*
-**Done (overrides the standard condition):** `Timed: 3 report requirements written correctly from prose in under 10 minutes each, no reference open` · exit question aloud
+**Q&A seed:** *"per project, total approved hours this month, only projects above 40h" — write it without stopping.*
+**Done (overrides the standard condition):** `Timed: 3 report requirements written correctly from prose in under 10 minutes each, no reference open`
 
 ---
 
@@ -1025,7 +1052,7 @@ shipping.
 ```
 - [x] practice/sql/ is current on the working branch (G0) — 2026-07-22
 - [x] coverage-prompt TOPIC=sql has run — coverage.md current (G2) — 2026-07-18
-- [ ] Steps 0–13 all closed, each with its §4 ritual (G1): scored condition + exit question aloud
+- [ ] Steps 0–13 all closed, each with its §4 ritual (G1) run by `sql-step-close`: scored condition met
 - [ ] All 200 first-pass exercises answered and scored ≥ 80% (review batches are extra and uncounted)
 - [ ] All five revision points R1–R5 (§8b) fired on cadence — no stale open rows in MISTAKES.md
 - [ ] Capstone timed condition met: 3 report queries from prose, under 10 minutes each
@@ -1041,7 +1068,12 @@ shipping.
 
 - **SQL notes** (`notes/sql/`) — run `/notes-audit` when Victor decides to. This plan never schedules a
   note, never lists a note file, and no step closes on one.
-- **SQL interview Q&A** (`notes/interview-prep/`) — run `/interview-prep-audit`. Same rule.
+- **SQL interview Q&A** (`notes/interview-prep/`) — run `/interview-prep-audit` when Victor decides to,
+  and only then. Since 2026-08-03 this track owns something this one used to keep: **retrieval from
+  memory**. Each step's `**Q&A seed:**` line in §6 is a question that would be worth having in the bank
+  one day — nothing more. **A seed is inert.** It closes nothing (§3), it is never owed work, no ritual
+  reports it as pending, and no skill offers to run `/interview-prep-audit` off the back of it. It sits
+  in the plan so the question is not lost; picking it up is Victor's call, on his schedule.
 - **SQL simulations** (`practice/simulations/`) — run the simulation prompts. Same rule, **con una
   excepción acotada: §8c**, que dice qué técnicas tienes desbloqueadas y por tanto qué puedes pedir.
   Eso es un hecho sobre tu conocimiento de SQL y esta es la única tabla que lo tiene. El formato del
