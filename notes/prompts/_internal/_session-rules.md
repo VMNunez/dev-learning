@@ -142,12 +142,12 @@ git commit -m "type: description"
 (The platform's `step-complete` skill fires on this event and walks this exact checklist —
 plus the README standard, which does not auto-load. This section remains the source of truth.)
 
-- `PROGRESS.md` — extract the concepts introduced in that step and add them to the correct technology section. How to extract depends on the project format:
-  - Projects 01–06: read "Key patterns introduced" table in PLANNING.md — every row is a concept
-  - Project 07: read the `**Concept learned:**` line of the completed step in the learning plan
-  - Projects 08+: read the "New concepts introduced" list in the completed step (references Section 3); use the "Topic" column to route each concept to the right section
-  - Also update the project summary line in PROGRESS.md to reflect the new step status (e.g. "Step 1 ✓ Step 2 ✓ Step 3 in progress ⏳")
-  - In PROGRESS.md, each item must be one specific thing — never group multiple concepts in one line
+- `PROGRESS.md` — **status only, never a concept list** (changed 2026-08-03: the per-technology concept
+  sections were deleted because they duplicated the coverage files without evidence). Update the
+  project's `### Project 0X` summary line to reflect the new step status (e.g. "Step 1 ✓ Step 2 ✓
+  Step 3 in progress ⏳"), its row in the Projects table if the status changed, and the
+  `Coverage demonstrated` percentages if new markers were added. The concepts themselves go to the
+  coverage files below and nowhere else — never re-create a "## Angular"-style list of concepts here.
 - `notes/{topic}/coverage/{level}.md` **+ its global mirror `notes/coverage/{level}.md`** — append the
   ` ✅ NN-slug — {evidence}` evidence marker to the bullet of every concept the step demonstrated in code, `NN-slug`
   being the project's folder name (`07-timetrack`). The platform's `coverage-mark` skill owns this; the contract is "Evidence markers" in
@@ -190,7 +190,9 @@ never the only one:
 - `projects/0X-name/README.md` — a short bullet in "What I learned", only if not already represented
 - `projects/0X-name/PLANNING.md` — if the concept belongs to the project's engineering contract, add it
   to the **rules section** it belongs to; never invent a retroactive step
-- `PROGRESS.md` — the concept, one specific thing per line
+- `PROGRESS.md` — **status only** (see the rule above): the project's step/status line and the
+  `Coverage demonstrated` percentages if the close added markers. The concept itself lives in the
+  coverage file, not here.
 - `PROJECT-BACKLOG.md` — **only then** remove the verbose task entry and collapse it into one dated
   line in the `## Closed` ledger, ending in `→ where the concept landed`. This is what stops the
   backlog growing without bound. The ledger is append-only; a design decision closed with no code

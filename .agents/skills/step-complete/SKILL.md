@@ -40,24 +40,25 @@ note under the step only if something changed versus the plan. This marker is wh
 `progress-update` runs self-sufficient (its Format B extraction reads ✅ before falling back to
 hints) — never skip it.
 
-## 2 — PROGRESS.md: extract the step's concepts
+## 2 — Extract the step's concepts, and update PROGRESS.md *status*
 
 Read the completed step's concept source per its format (project 07: the `**Concept learned:**`
-line; projects 08+: the "New concepts introduced" list routed by its Topic column). **Route each
-concept with the Step 4 mapping table in
-`notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md`** — read it before writing; like
-the README standard below, it only auto-loads inside `progress-update`, so an inline edit without
-it silently mis-routes (the trap it exists for: pure Java constructs like `Optional<T>` or
-`BigDecimal.compareTo()` land in Spring Boot just because they appeared in a Spring project —
-`Optional<T>` is Java; `@Autowired` is Spring). Write each concept as **one specific thing per
-line**, key syntax in backticks, optional short dash-clause, never multi-line. Also update the project's summary line /
-sub-headings to the new step status (e.g. "Steps 1–5 done, Step 6 in progress").
+line; projects 08+: the "New concepts introduced" list). Hold that list — steps 3 and 4 consume it.
+Write each concept as **one specific thing**, key syntax in backticks: never group two concepts.
 
-Two rules that keep the file honest:
+**PROGRESS.md is status only — it is not where the concepts go** (changed 2026-08-03: the
+per-technology concept lists were deleted because they duplicated the coverage files without
+evidence). In PROGRESS.md you update:
 
-- If a concept is **already recorded from an earlier step**, do not duplicate it. Say so.
-- If the step gives the `Professional level by topic` table real practical evidence, update that row's
-  evidence cell too — a shipped, tested step is exactly the kind of demonstration that table is for.
+- the project's summary line / sub-headings to the new step status (e.g. "Steps 1–5 done, Step 6 in progress"),
+  and its row in the `## Projects` table if the status changed;
+- the `## Coverage demonstrated` percentages, if step 3 added markers or bullets;
+- the `Professional level by topic` row's evidence cell, if the step gives that table real practical
+  evidence — a shipped, tested step is exactly the kind of demonstration that table is for.
+
+Never re-create a `## Angular`-style list of concepts in PROGRESS.md. The concepts land on the
+coverage checklist in step 3 and nowhere else; a concept already covered there is not repeated —
+say so instead.
 
 PROGRESS.md follows the active branch (CLAUDE.md, 2026-07-14 — `main` only receives merges via PR) — commit
 it from the repo root.
@@ -71,8 +72,9 @@ this order, for each concept from step 2:
 the level Victor is working at. It routes the concept to its owning `notes/` topic by altitude, searches the
 level file, writes the bullet under the right section when it is genuinely absent, mirrors it into
 `notes/coverage/{LEVEL}.md` with a diff check, and reports whether `/notes-plan {topic} {LEVEL}` is owed.
-Pass it the **concept, not step 2's PROGRESS.md section** — that routing answers a different question, and
-handing it over is how an access-control concept ends up under `spring-boot` when `notes/security/` owns it.
+Pass it the **concept itself, not a technology label you attached to it** — a label answers a different
+question, and handing it over is how an access-control concept ends up under `spring-boot` when
+`notes/security/` owns it.
 
 This is a deliberate change (2026-07-30): a step close used to only ever *flag* a missing bullet and leave
 it for `/coverage`. It now authors it, because the concepts a project teaches are exactly the ones the
@@ -102,8 +104,8 @@ format under the README standard. Do not reproduce its logic here and do not pic
 
 Two things to pass it explicitly, because they are this ritual's context and not the skill's:
 
-- **The concepts, not step 2's PROGRESS.md sections.** That routing answers a different question — a
-  technology section is not a README audience.
+- **The concepts, not a technology label.** A technology is not a README audience — the skill routes by
+  who needs to read the concept.
 - **The tier the code landed in, as a hint only.** The skill routes by who needs to read the concept, not
   by which folder changed; handing it the tier as the answer is how an API contract ends up buried in a
   backend README instead of the global one.
@@ -142,7 +144,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Target | Result |
 |---|---|
 | PLANNING.md | `### Step 5 — TimeEntry workflow ✅` |
-| PROGRESS.md | 3 concepts added under Spring Boot, 1 under Java; `Optional<T>` already recorded in Step 4 |
+| PROGRESS.md | status only — Step 5 marked done on the project line; coverage table 24/139 |
 | Coverage bullet | added "declarative transaction boundaries" to `spring-boot`/junior + mirror, 141/141 match |
 | Topic chosen | `spring-boot` — the framework mechanism, not the neutral boundary rule |
 | Evidence marker | marked `✅ 07-timetrack` — 24/139 junior bullets demonstrated |

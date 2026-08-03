@@ -49,16 +49,11 @@ Two kinds of task exist, and they close differently:
   real concept; PLANNING.md gets the convention recorded in its rules section rather than as a step;
   PROGRESS.md is usually **n/a** (nothing was demonstrated). Say which ones you skipped and why.
 
-Route the concept to its topic with the **Step 4 mapping table** in
-`notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md` — **read that file before
-writing anything**. It only auto-loads inside `progress-update`, so an inline close without it
-mis-routes silently. The trap it exists for: pure Java constructs landing under Spring Boot just
+Read `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` before invoking the coverage
+skills — the coverage topics distinguish `Spring` (container, beans, proxies, transactions) from
+`Spring Boot` (auto-configuration, runtime, externalized configuration, and concrete Boot-stack
+integration), and the trap they exist for is a pure Java construct landing under Spring Boot just
 because the fix happened in a Spring project (`Optional<T>` is Java; `@Transactional` is Spring).
-
-Also read `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` before invoking the coverage
-skills. PROGRESS routing and coverage ownership both distinguish `Spring` (container, beans, proxies,
-transactions) from `Spring Boot` (auto-configuration, runtime, externalized configuration, and concrete
-Boot-stack integration).
 
 ---
 
@@ -72,9 +67,8 @@ new bullet owes. Do not reproduce its logic here, and do not re-derive the topic
 
 Two things to pass it explicitly, because they are this ritual's context and not the skill's:
 
-- **Do not hand it step 0's routing as the answer.** Step 0 routed the concept to a *PROGRESS.md section*;
-  the skill needs the *`notes/` topic*, and the two vocabularies do not match. Give it the concept, not
-  the section.
+- **Give it the concept, not a technology label.** The skill needs the *`notes/` topic*, which it derives
+  by altitude; a label you attached in step 0 answers a different question.
 - **A design decision with no code change** can still be a real concept — pass it through, and let the
   skill decide whether it belongs on the checklist.
 
@@ -92,7 +86,7 @@ sub-step that keeps the coverage file honest about what Victor can *prove*, and 
 "already covered" path too, which is precisely where a close would otherwise leave no trace.
 
 **Invoke the `coverage-mark` skill**, passing the concept, **the topic `coverage-bullet-add` reported** (not
-step 0's PROGRESS.md section), the level, and the project's folder name. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and the
+a technology label), the level, and the project's folder name. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and the
 mirror, and reports the level's marked/total count. Do not reproduce its logic here.
 
 Two cases it will report back as skipped, both correct:
@@ -131,7 +125,7 @@ format under the README standard. Do not reproduce its logic here and do not pic
 
 Two things to pass it explicitly, because they are this ritual's context and not the skill's:
 
-- **The concept, not step 0's PROGRESS.md routing.** A technology section is not a README audience.
+- **The concept, not a technology label.** A technology is not a README audience.
 - **A design decision with no code change** can still be a real README entry — a convention deliberately
   kept is exactly what the Tradeoffs section is for. Pass it through and let the skill decide.
 
@@ -160,20 +154,20 @@ When you do edit PLANNING.md, keep it to the plan's own voice and format; do not
 
 ---
 
-## 4 — PROGRESS.md: record the concept
+## 4 — PROGRESS.md: status only, never the concept
 
-Add the concept to the routed technology section, using the routing you already did in step 0.
-Format rules (identical to `step-complete`, and non-negotiable):
+**The concept does not go in PROGRESS.md** (changed 2026-08-03: its per-technology concept lists were
+deleted because they duplicated the coverage files without evidence). Step 1 put the concept on the
+coverage checklist and step 2 marked it — that is its only home. Never re-create a `## Angular`-style
+list of concepts here.
 
-- **One specific thing per line.** Never group several concepts into one bullet.
-- Key syntax in backticks, optional short dash-clause after it.
-- **Never multi-line.**
+What you do update in PROGRESS.md:
 
-If PROGRESS.md's `Professional level by topic` table gains real evidence from this fix, update that
-row's practical-evidence cell too — a backlog task closed against a review finding is exactly the kind
-of demonstrated evidence that table is for.
+- the `## Coverage demonstrated` percentages, if step 1 or 2 added a bullet or a marker;
+- the `Professional level by topic` row's practical-evidence cell, if this fix gives it real evidence —
+  a backlog task closed against a review finding is exactly that kind of demonstration.
 
-If the concept is already recorded from an earlier step, do not duplicate it. Say so.
+If neither changed, PROGRESS.md is **n/a** for this close. Say so out loud.
 
 ---
 
@@ -198,7 +192,7 @@ Worked examples:
 
 #### High
 
-- 2026-07-09 · **[High]** `[backend]` — `UserResponse` DTO stops the BCrypt hash leaking → README, PROGRESS, coverage spring-boot/junior
+- 2026-07-09 · **[High]** `[backend]` — `UserResponse` DTO stops the BCrypt hash leaking → README, coverage spring-boot/junior
 
 #### Medium
 
@@ -278,11 +272,11 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Target | Result |
 |---|---|
 | Coverage (`spring/junior`) | already covered — "declarative transaction boundaries" |
-| Topic chosen | `security` — access-control rule, not the Spring mechanism (PROGRESS section was Spring Boot) |
+| Topic chosen | `security` — access-control rule, not the Spring mechanism |
 | Evidence marker | marked `✅ 07-timetrack` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
 | Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |
 | PLANNING.md | added to §6 engineering rules |
-| PROGRESS.md | concept added under Spring Boot |
+| PROGRESS.md | n/a — no new marker, evidence cell unchanged |
 | Backlog | task collapsed into `## Closed` |
