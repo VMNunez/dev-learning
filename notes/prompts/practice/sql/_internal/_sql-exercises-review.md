@@ -315,16 +315,22 @@ PROGRESS.md: report it in 4e as coverage work owed, naming the concept and level
 
 #### 4b — PROGRESS.md, `## Practice completed` → `### Exercise route`
 
-That section (added 2026-08-03) holds **two** tables for the exercise route, and this step updates
-both. Read the real figures from the file you just reviewed and from `{PLAN}` §5 — the shapes below
-are placeholders, never copy an example number into PROGRESS.md.
+That section (added 2026-08-03) holds a roll-up table plus **one detail table per level**, and this step
+updates the roll-up row and the detail table **of `{LEVEL}` only**. Levels never share a figure: a
+middle exercise never moves the junior route, and a junior file never appears in the middle table. If
+`{LEVEL}`'s detail table does not exist yet (its route was just planned), create it under a
+`#### {Level} — practice/sql/{LEVEL}/` heading in the same shape as the junior one, and fill the
+level's roll-up row from `{PLAN}` §5 instead of leaving it blank.
+
+Read the real figures from the file you just reviewed and from `{PLAN}` §5 — the shapes below are
+placeholders, never copy an example number into PROGRESS.md.
 
 **Table 1 — the roll-up, one row per level:**
 
 ```markdown
 | Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| SQL — junior | [graded]/[written] ([pct]%) | [first-pass]/[route target] ([pct]%) | [closed]/[total steps] |
+| **{Level}** | [graded]/[written] ([pct]%) | [first-pass]/[route target] ([pct]%) | [closed]/[total steps] |
 ```
 
 - **Corrected** = graded over *written*, `[Repaso]` and extra batches included. Its denominator is
