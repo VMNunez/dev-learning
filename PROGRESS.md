@@ -138,12 +138,28 @@ target, so there is no denominator to divide by. A blank cell here means "no rou
 
 #### Junior — `practice/sql/junior/`, 15 files across 14 steps
 
+Every file of the route has a row from the moment the route is planned, including the ones not written
+yet — the plan already knows their name, step and target (`practice/sql/PLANNING.md` §5), so a
+collapsed "12 files pending" row would hide exactly what is left to do. A row appears here when the
+**plan** declares the file, not when the file is created.
+
 | Step | File | Corrected | First-pass / target | Status |
 |---|---|---|---|---|
 | 0 | `01-basics.sql` | 40/40 | 20/20 | closed ✅ — graded 2026-07-22; 20 first-pass + 20 `[Repaso]`, only the first-pass ones move the route |
 | 0 | `02-execution-order-set-ops.sql` | 0/10 | 0/10 | in progress ⏳ — written 2026-07-22, unanswered |
 | 1 | `03-joins.sql` | — | 0/22 | not started — file deleted 2026-07-22, to regenerate |
-| 2–13 | `04-` … `15-` (12 files) | — | 0/148 | not created |
+| 2 | `04-aggregates.sql` | — | 0/12 | not created |
+| 3 | `05-join-pitfalls.sql` | — | 0/12 | not created |
+| 4 | `06-nulls.sql` | — | 0/12 | not created |
+| 5 | `07-subqueries-ctes.sql` | — | 0/16 | not created |
+| 6 | `08-dates-strings.sql` | — | 0/12 | not created |
+| 7 | `09-window-functions.sql` | — | 0/12 | not created |
+| 8 | `10-dml-transactions.sql` | — | 0/16 | not created |
+| 9 | `11-schema-design.sql` | — | 0/12 | not created |
+| 10 | `12-data-types-ddl.sql` | — | 0/12 | not created |
+| 11 | `13-indexes.sql` | — | 0/12 | not created |
+| 12 | `14-live-database.sql` | — | 0/12 | not created |
+| 13 | `15-report-queries.sql` | — | 0/8 | not created |
 
 #### Middle — `practice/sql/middle/`
 
