@@ -337,6 +337,13 @@ against this prompt's declared outputs in `notes/prompts/README.md`, the three b
 `notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md`, its own commit, then the
 refinement step.
 
+**Two tracker cells, not one.** The shared close-out updates this prompt's row in
+`## Single-shot prompt executions` — that row records the *run*. It cannot answer how far along the
+route Victor is, so also update the `Exercises` cell for `{LEVEL}` in `## SQL exercise track`:
+`X/Y steps closed — {outcome}`, with Y the step count in `{PLAN}` §3 and X its rows at `closed ✅`,
+both read from the plan and never from counting `.sql` files. Recalculate it on every run, including a
+`blocked` one and a `practice` run that closed nothing — an unchanged fraction is still a current one.
+
 **One tailoring of bullet 1 (`Config vs reality`), because this prompt derives more than it is given:**
 report whether the `{COUNT}` and `{FOCUS}` read from `{PLAN}` §2 produced what the step actually
 needed, and whether `{FILE}` resolved to the right file. **A wrong derived value is a bug in the plan,

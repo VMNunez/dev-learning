@@ -75,11 +75,19 @@ The SQL **exercise** route, per level — distinct from the `SQL` row in the per
 tracks the SQL *notes*. `sql-plan` writes the route (`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`); `sql-plan-audit`
 audits it together with the level-neutral doctrine (`practice/sql/PLANNING.md`).
 
-| Level | SQL plan | sql-plan-audit |
-|---|---|---|
-| junior | | |
-| middle | | |
-| senior | | |
+| Level | SQL plan | sql-plan-audit | Exercises |
+|---|---|---|---|
+| junior | | | |
+| middle | | | |
+| senior | | | |
+
+The `Exercises` cell is a **summary**, written like a `Notes J/M/S` cell: `X/Y steps closed` plus the
+last outcome, where Y is the step count in that level's `PLANNING-{LEVEL}.md` §3 and X the rows at
+`closed ✅`. Both numbers come from the plan, **never from counting `.sql` files on disk** — a level with
+no plan yet leaves the cell empty. `sql-exercises` writes it in its close-out, on every run including a
+`blocked` one; the three cells read left to right answer "route planned → route audited → how much of it
+I have actually drilled". There is deliberately no per-step table here: §3 of the plan already is one,
+and a second copy would only drift.
 
 A `SQL plan` cell carries the same ` · ⚠ stale` flag rules as a `Plan J/M/S` cell above: coverage that
 grows after the route was planned makes the cell stale, and a stale cell does not satisfy the

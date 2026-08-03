@@ -42,6 +42,8 @@ If a required role cannot be dispatched, stop unless its instruction explicitly 
 - `EXERCISE_DIR = practice/sql/{LEVEL}/` at every level
 - `MISTAKES = practice/sql/MISTAKES.md`
 - `STANDARD = notes/prompts/practice/sql/_internal/_sql-plan-standard.md`
+- `CONTEXT = notes/prompts/_internal/_shared-context.md`
+- `ROADMAP = ROADMAP.md`
 
 `PLAN` is a committed source of truth. It is not a temporary worklist.
 
@@ -57,7 +59,7 @@ exercise files, its steps, its progress table. **This prompt writes `PLAN` only.
    `notes/prompts/practice/sql/_internal/_last-run-report-sql-plan.md` (it may not exist yet; skip
    silently) and, if its `Status:` line says `open`, surface the finding in **one line** to Victor and
    continue. Never apply it here.
-1. Read the active adapter, `_session-rules.md`, `STANDARD`, `COVERAGE`, `DOCTRINE`, and — when it
+1. Read the active adapter, `_session-rules.md`, `CONTEXT`, `STANDARD`, `COVERAGE`, `DOCTRINE`, and — when it
    exists — `PLAN`. Follow the repository's line-count and read-to-EOF rule on each; `DOCTRINE` and
    `PLAN` are long files and a partial read is how a step's history gets silently dropped.
 2. Inventory `EXERCISE_DIR`: every exercise file, and per file its three counts, using **these exact
@@ -89,7 +91,12 @@ Run this stage **only** at `LEVEL = junior`, and only when `PLAN` does not yet e
    every step's `Why here`, `Concepts`, `Exit question` and `Done` line, every count in the file tables,
    every status in the progress table, every dated annotation. This prose was written by hand and
    justifies a route that works; it is migrated, not regenerated. Renumber the sections in `PLAN` as
-   §1 (files), §2 (steps), §3 (progress) and add the plan header below.
+   §1 (files), §2 (steps), §3 (progress) and add the plan header below. Two normalisations are allowed
+   on the way through, and only these two: the legacy route writes a closed step as `done ✅`, which
+   becomes `closed ✅` — the three §3 values are the format's, and a fourth spelling silently breaks
+   every status check downstream; and migrated coverage bullets, which carry no checkbox at all, arrive
+   as `- [ ]`, since no scored exercise has been recorded against a specific bullet yet. Neither
+   normalisation may change which steps are closed.
 2. Leave every other section in `DOCTRINE`, unchanged, and add one line under each moved section's old
    position pointing at `PLANNING-{LEVEL}.md`. Cross-references from `DOCTRINE` §4, §8b, §9, §10 and
    §Z into "§5/§6/§8" are rewritten to name the level file's new section number. This is the only edit
@@ -148,7 +155,9 @@ log for the whole track: a concept failed at junior and re-failed at middle is o
    applied afterwards.
 3. Build the route by **dependency, then by what a screening asks first** (B1, B2). Every step's
    position carries a one-sentence `Why here` that names what it needs from an earlier step, or why the
-   objective in `ROADMAP.md` pulls it forward. "Next in the coverage file" is not a reason.
+   objective pulls it forward. "Next in the coverage file" is not a reason. The objective is not a
+   slogan: `CONTEXT` states the role being targeted and the timeline, `ROADMAP` the gate this level
+   feeds. A step pulled forward "because it comes up in interviews" must name **which** target that is.
 4. Assign every coverage bullet of the selected level to exactly one step (invariant 1). A bullet this
    level deliberately does not drill goes under `## Out of scope at this level` with a reason, never
    silently dropped. Never paraphrase a coverage bullet in the assignment list.
@@ -191,23 +200,23 @@ what moves a step to closed, and only a **scored** count does it.
   reopen a step whose exercises were already answered and graded.
 - Never renumber a closed step.
 
-**The `[x]` checkboxes follow the step, not the exercise files.** No other prompt writes them —
-`sql-exercises` in `review` mode updates `PLAN` §1 and §3 only — so this planner owns them, and the
-Guard 2 counts are per file and can never say *which* bullet a scored exercise drilled. Derive them from
-the step status instead: a step resolving to `closed ✅` carries every one of its bullets as `[x]`,
-except anything under `Pending additions`, which stays `[ ]`; every bullet of a `not started` or
-`in progress ⏳` step is `[ ]`. Never invent a `[x]` on an open step and never turn an existing `[x]`
-back into `[ ]` — the history gate treats a lost checkbox exactly as it treats a lost status.
+**The `[x]` checkboxes are read too, and by the same rule.** `sql-exercises` in `review` mode marks a
+bullet the moment a scored exercise has drilled it — it is the only prompt that knows which bullet a
+given exercise tested, because it is the one that generated it. This planner **never sets a `[x]` and
+never clears one**. It writes `[ ]` on bullets it is adding to a step for the first time, carries every
+existing checkbox across verbatim through any reconciliation — renumbering, rewording, regrouping — and
+lets the history gate below catch a lost one. The Guard 2 counts are per file and can never say which
+bullet a scored exercise drilled; a planner that derives checkboxes from them is inventing progress.
 
 ## Cold route review
 
 After drafting or reconciling the complete plan, dispatch **one cold reviewer**, `reasoning tier: deep`,
 `execution: foreground`. Give it only `COVERAGE`, `STANDARD` Sections B and C, `DOCTRINE` §3, the
-`ROADMAP.md` objective, the exercise-file inventory from Guard 2, and the proposed plan. The `DOCTRINE` §3 and `ROADMAP.md`
-inputs are not context: §3 holds the done-condition formats, so without it the reviewer can only check
-that a `Done` line looks plausible rather than that it is one of the formats; and `ROADMAP.md` is the
-only thing that can falsify a `Why here` claiming the objective pulls a step forward. It does not edit
-files. It must challenge:
+objective as `CONTEXT` and `ROADMAP` state it, the exercise-file inventory from Guard 2, and the
+proposed plan. Those two extra inputs are not background: §3 holds the done-condition formats, so
+without it the reviewer can only check that a `Done` line looks plausible rather than that it is one of
+the formats; and the objective is the only thing that can falsify a `Why here` claiming it pulls a step
+forward. It does not edit files. It must challenge:
 
 - whether every step's `Why here` survives contact with the step before it, or is a label;
 - whether a step could have been done first — which would mean it teaches nothing about composition (B3);
@@ -287,8 +296,8 @@ Rules:
 - `Status` in §3 is exactly `not started`, `in progress ⏳`, or `closed ✅`.
 - Every `Coverage bullets` line is exactly `- [ ] {exact bullet}` or `- [x] {exact bullet}`. The checkbox
   is plan metadata, stripped before exact matching against `COVERAGE`; trailing evidence markers are
-  handled by the normal scope-byte rule. `[x]` means the step that owns it is closed — derived by the
-  rule in "Status is read, never invented", never judged bullet by bullet.
+  handled by the normal scope-byte rule. `[x]` means a scored exercise has drilled it, written by
+  `sql-exercises` and only preserved here — see "Status is read, never invented".
 - `Pending additions` is `none` or bullets quoted verbatim from `COVERAGE`. It is meaningful only on a
   closed step.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned to two steps.

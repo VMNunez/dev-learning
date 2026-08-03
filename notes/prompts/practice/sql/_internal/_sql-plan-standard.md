@@ -252,6 +252,7 @@ format or quality bar.
 |----------|-------|-------------------|
 | Exercise content, difficulty split, file format | `sql-exercises-prompt.md` | how many, which topic, which focus |
 | The route: steps, files, counts, statuses, fingerprint | `sql-plan-prompt.md` (writes) · `sql-plan-audit.md` (audits) | — the route file *is* this |
+| Progress *inside* the route: §1 counts, §3 statuses, §2 `[x]` bullets | `sql-exercises-prompt.md` (review mode) | — the planner writes these fields' *structure*, never their values; it reads them, preserves them, and never reverses one. Only a scored exercise moves them. |
 | The doctrine: loop, formats, ritual, gates, invariants | `sql-plan-audit.md` | — the doctrine file *is* this. `sql-plan-prompt` reads it and reports findings against it; it edits it exactly once, in the one-time route migration. |
 | The concept list | `notes/sql/coverage/{LEVEL}.md` | which sections and bullets a step claims |
 | What has been learned | `PROGRESS.md` | that closing a step updates it |

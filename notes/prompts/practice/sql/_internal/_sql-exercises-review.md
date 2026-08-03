@@ -274,7 +274,7 @@ the *last* topic of the step, never the first:
 | R4 | Step 10 — `12-data-types-ddl.sql` | `ddl` | `data-types`, which is only the first of that step's two runs |
 | R5 | Step 12 — `14-live-database.sql` | `live-database` | — |
 
-Fire it only when 4c actually set the step's row to `done ✅`. If it did not, the step is still open and
+Fire it only when 4c actually set the step's row to `closed ✅`. If it did not, the step is still open and
 no revision point has been reached. When one does fire, add: "Además, esto cierra el paso [N] del
 plan: toca el punto de repaso [R] antes de seguir — su foco son las filas abiertas de MISTAKES.md."
 Then proceed to Steps 4 and 5.
@@ -347,8 +347,11 @@ before the next `##` heading.
 Open `{PLAN}` (`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`). Find the row in its §3 table for the step this {TOPIC} belongs to —
 **the shell's path table gives the step number for {TOPIC}**. Update its **Scored / target** cell with
 the number of exercises this run actually graded ≥ 80%, and its **Status** cell:
-- score ≥ 80% **and** the step's target reached → `done ✅`
+- score ≥ 80% **and** the step's target reached → `closed ✅`
 - otherwise → `in progress ⏳`
+
+The three status values are exactly `not started`, `in progress ⏳` and `closed ✅`. `done ✅` is the
+legacy route's spelling and is never written into a `{PLAN}` §3 row.
 
 **A step spanning two files keeps a per-file breakdown in that cell** (Step 0 is the live case:
 `20 / 30 (01: 20/20 closed …; 02: 0/10 …)`). Do not flatten it to a bare fraction and do not rewrite
@@ -362,9 +365,31 @@ plan claim Step 0 was 40/40 when nothing had ever been reviewed.
 
 Then refresh the totals line under the table.
 
+#### 4c-bis — {PLAN} §2, the coverage bullets of that step
+
+This prompt is the only one that can do this, and `sql-plan` is explicitly forbidden from guessing it:
+you generated these exercises, so you alone know which coverage bullet each one tested. In the step's
+`**Coverage bullets:**` list, flip `- [ ]` to `- [x]` for **every bullet a graded exercise of this run
+actually drilled** — the concept was exercised and scored, not merely adjacent to the topic. Leave the
+rest untouched.
+
+Three rules, all of them the difference between a progress instrument and a decorative list:
+
+- **Only a scored exercise marks.** An exercise written or answered but not graded marks nothing, for the
+  same reason only *scored* moves a status in 4c.
+- **A bullet is never unmarked.** Not by a later batch, not by a re-review of the same file, not by a
+  repaso.
+- **A repaso batch marks nothing** (`{TOPIC}` = `R1`–`R5`). It is uncounted by design, and that includes
+  here.
+
+A step reaching `closed ✅` in 4c with `[ ]` bullets left is not an error to paper over: it means the
+route promised coverage the exercises never drilled. Leave the checkboxes honest and report it in the
+final summary as `step N closed with M unchecked bullets` — that line is what tells Victor a step needs
+a reinforcement run, and marking them all on close would erase exactly that signal.
+
 #### 4d — the doctrine §0, the quick reference
 
-Only when 4c set a row to `done ✅`. Rewrite the §0 table:
+Only when 4c set a row to `closed ✅`. Rewrite the §0 table:
 - **Current step** → the next row in {PLAN} §3 that is not ✅
 - **Done condition** → that step's done condition, copied from its {PLAN} §2 entry
 - **Next revision point** → the first of R1–R5 in §8b whose trigger has not fired yet. Steps 1, 4, 7,
@@ -382,7 +407,7 @@ question — both outside this prompt's reach:
 - **The exit question**, answered aloud from memory. §3 is explicit that a score alone never closes a
   step.
 
-So never print "step closed" on the strength of a score alone. If 4c set the row to `done ✅`, print:
+So never print "step closed" on the strength of a score alone. If 4c set the row to `closed ✅`, print:
 "Ejercicios del paso [N] cerrados. Para cerrar el paso entero falta responder la exit question de
 memoria, y añadir a `notes/sql/coverage/{LEVEL}.md` cualquier concepto que haya salido aquí y no esté."
 
