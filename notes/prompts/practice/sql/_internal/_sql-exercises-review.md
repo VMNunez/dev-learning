@@ -352,11 +352,13 @@ placeholders, never copy an example number into PROGRESS.md.
   for files that do not exist yet.
 - `Corrected`: graded over written **in this file**, repaso included.
 - `First-pass / target`: this file's first-pass scored count over its §5 first-pass target.
-- Files not yet created may be collapsed into one summary row (e.g. `2–13 | 04- … 15- (12 files) | 0/148`).
-  When a collapsed file is first written, split its own row out of that summary and lower the summary's
-  target accordingly, so the two tables keep agreeing.
 
-**If `{FILE}` has no row:** add one, in step order, with its §5 target.
+**Every file of the route has its own row, including the ones not written yet** — `sql-plan` seeds them
+all when it plans the level. Never collapse pending files into a summary row: the point of the table is
+seeing exactly what is left.
+
+**If `{FILE}` has no row:** add one, in step order, with its §5 target, and say so in 4e — a missing row
+means the plan and PROGRESS.md disagree about the route.
 
 **If the `## Practice completed` section does not exist:** do not invent a layout — report it in 4e
 as a structural finding. It was added on 2026-08-03 and its absence means PROGRESS.md is stale or was

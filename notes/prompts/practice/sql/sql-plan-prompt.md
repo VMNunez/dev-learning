@@ -325,12 +325,36 @@ record of completed work is worse than an unplanned one.
 
 ## Update mode
 
-Write `PLAN`, plus the one-time `DOCTRINE` split when the migration stage ran. Do not touch a single
-`.sql` file, `MISTAKES`, or `PROGRESS.md`. Before staging and before committing, run `git status --short`;
-stage only these declared outputs. Commit:
+Write `PLAN`, plus the one-time `DOCTRINE` split when the migration stage ran, plus **`{LEVEL}`'s two
+tables in `PROGRESS.md`** → `## Practice completed` → `### Exercise route`. Do not touch a single `.sql`
+file or `MISTAKES`.
+
+**Why this prompt owns those tables (2026-08-03).** They are a projection of §5: one row per file of the
+route, with its step and its first-pass target, *including the files not written yet*. Nobody else can
+seed them — the exercise prompts see one file at a time — and a table that only lists what exists hides
+exactly what is left to do. So:
+
+- **`{LEVEL}`'s detail table** — one row per §5 file, in step order: `Step`, `File`,
+  `Corrected` = `—`, `First-pass / target` = `0/{§5 target}`, `Status` = `not created`. Never collapse
+  pending files into a summary row.
+- **`{LEVEL}`'s roll-up row** — `Corrected` and `Route progress` at `0/{sum of §5 targets}`,
+  `Steps closed` at `0/{§3 step count}`.
+
+**Preserve every figure already there.** A replan keeps each existing row's `Corrected`,
+`First-pass / target` numerator and `Status`; it only adds rows for new files, updates targets the
+replan changed, and recomputes the roll-up denominators. A cell that says `40/40` is graded work and is
+never reset — same discipline as the History gate above, which rejects a plan that loses completed work.
+Write only `{LEVEL}`'s rows; another level's tables are not yours to touch.
+
+Before staging and before committing, run `git status --short`; stage only these declared outputs. Commit
+the plan and PROGRESS.md **separately** — the route and its projection are two logical changes:
 
 ```text
 docs(sql): plan {level} exercise route
+```
+
+```text
+docs(progress): seed the {level} exercise route table
 ```
 
 `PLANNING-{LEVEL}.md` is machinery, not Victor's work — a tracking document this pipeline authors, so

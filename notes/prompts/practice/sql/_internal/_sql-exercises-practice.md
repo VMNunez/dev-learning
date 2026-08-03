@@ -337,10 +337,10 @@ share a figure, so a middle batch never touches a junior row:
 batch is graded (review branch, Step 4b) — writing an exercise proves nothing. This is also what keeps
 extra and `[Repaso]` batches honest: they raise what you have to correct, never what the route has done.
 
-If the file is new, add its row to `{LEVEL}`'s detail table in step order, taking its
-`First-pass / target` from `{PLAN}` §5. If that level has no detail table yet, create it under a
-`#### {Level} — practice/sql/{LEVEL}/` heading in the same shape as the junior one, and fill the
-level's roll-up row from `{PLAN}` §5. If `## Practice completed` does not exist, do not invent a layout — say so and carry on.
+The file's row already exists — `sql-plan` seeds a row for every file of the route when it plans the
+level, written or not. You are flipping its `Corrected` cell from `—` to a real count, not creating it.
+If the row is genuinely missing, add it in step order with its `{PLAN}` §5 target and say so: the plan
+and PROGRESS.md disagree about the route, which is worth surfacing. If `## Practice completed` does not exist, do not invent a layout — say so and carry on.
 
 PROGRESS.md commits on the active branch, in the **same commit** as the `.sql` file — the exercises and
 the count they created are one logical change. The `.sql` file is Victor's work, so print the commands
