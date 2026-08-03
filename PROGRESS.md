@@ -120,11 +120,23 @@ Two different questions, so two different denominators — neither one alone is 
 A single figure would lie in one direction or the other: corrected alone sits near 100% forever while
 twelve files remain unwritten; route progress alone makes extra practice invisible.
 
+**Levels never share a figure.** Each level has its own route, its own target and its own files
+(`practice/sql/{LEVEL}/`), so a level is a row in the roll-up and a table of its own below. A middle
+exercise never counts toward the junior route, and a junior file never appears in the middle table.
+
+#### Roll-up — one row per level
+
 | Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| SQL — junior | 40/50 (80%) | 20/200 (10%) | 0/14 |
-| SQL — middle | not planned | — | — |
-| SQL — senior | not planned | — | — |
+| **Junior** | 40/50 (80%) | 20/200 (10%) | 0/14 |
+| **Middle** | — | — | — |
+| **Senior** | — | — | — |
+
+Middle and senior are blank because their routes are **not planned yet** — no coverage run, no `§5`
+target, so there is no denominator to divide by. A blank cell here means "no route exists", never
+"route exists and nothing done"; the day `sql-plan` writes one, its target fills in.
+
+#### Junior — `practice/sql/junior/`, 15 files across 14 steps
 
 | Step | File | Corrected | First-pass / target | Status |
 |---|---|---|---|---|
@@ -132,6 +144,14 @@ twelve files remain unwritten; route progress alone makes extra practice invisib
 | 0 | `02-execution-order-set-ops.sql` | 0/10 | 0/10 | in progress ⏳ — written 2026-07-22, unanswered |
 | 1 | `03-joins.sql` | — | 0/22 | not started — file deleted 2026-07-22, to regenerate |
 | 2–13 | `04-` … `15-` (12 files) | — | 0/148 | not created |
+
+#### Middle — `practice/sql/middle/`
+
+Route not planned. No files.
+
+#### Senior — `practice/sql/senior/`
+
+Route not planned. No files.
 
 ### Timed simulations — `practice/simulations/`
 
