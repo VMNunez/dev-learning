@@ -8,10 +8,11 @@
 
 Use in a **separate conversation**. Fill in the configuration block, then paste the prompt into a new chat.
 
-Two modes:
+Three modes:
 
 - **`practice`** — generates exercises for a SQL topic and saves them to `practice/sql/{LEVEL}/`. If the topic file already exists, adds more exercises continuing the numbering.
 - **`review`** — checks your answers. Paste the exercise file at the very end of the prompt.
+- **`reinforce`** — extra practice over a file you name, counted against nothing.
 
 > **▶ Run first:** nothing — `practice` generates exercises from scratch; `review` reads the answered file from `{FILE}`.
 
@@ -24,12 +25,16 @@ Everything left blank — which file, how many exercises, which concepts — com
 and `FILE` are there when you want to override that for one run. In `MODE = review` you do not need to
 paste the exercise file either; it is read from disk.
 
+`MODE = reinforce` is the third mode: extra practice over a file you name, on a day you feel like it. It
+counts for nothing and closes nothing — that is what makes it safe to run on a file whose step is
+already closed.
+
 ---
 
 ````
 ## Configuration — edit only this block
 
-MODE  = [practice | review]
+MODE  = [practice | review | reinforce]
 LEVEL = [junior | middle | senior]   ← blank means junior
 TOPIC = [R1 | R2 | R3 | R4 | R5   ← a revision point; everything below is a normal topic
          basics | joins | group-by | join-pitfalls | nulls | subqueries | ctes | dates-strings | window-functions | dml | transactions | schema-design | normalization | data-types | ddl | indexes | live-database | report-queries | all]
@@ -74,7 +79,7 @@ the need to hand-tune anything *else* about a batch, the thing that needs changi
 | `{FILE}` | the `FILE` key if Victor set it; otherwise the path table below at junior, or `{PLAN}`'s §1 table at middle and senior. Never invent a path. |
 | `{COUNT}` | the `COUNT` key if Victor set it; otherwise the `COUNT = n` inside the **`**Moment 2 config:**`** line or block of the `{PLAN}` §2 step whose TOPIC matches. When the two differ, say so in one line ("COUNT del bloque = 6, el plan pide 10") and use his — the plan is the default, not a veto. |
 | `{FOCUS}` | the **`**Focus:**`** line of that same §2 step (every step has one; `none — the whole topic` is a real value, not a blank). |
-| `{REVIEW}` | `no`, unless the §2 block picked is a **Moment 2b reinforcement block** — the one `MODE = review` appends when a score came back under 60%, headed `**Moment 2b reinforcement block:**` — which sets it to `yes`. |
+| `{REVIEW}` | `no`, unless `MODE = reinforce` (always `yes` — see its block below), or the §2 block picked is a **Moment 2b reinforcement block** — the one `MODE = review` appends when a score came back under 60%, headed `**Moment 2b reinforcement block:**` — which also sets it to `yes`. |
 
 **Then check the route is current, and do not stop on it.** Recalculate the SHA-256 of
 `notes/sql/coverage/{LEVEL}.md`'s scope bytes (canonical command in `_coverage-standard.md`) and compare
@@ -147,6 +152,26 @@ the resulting file like any other.
 
 Spans: `R1` → steps 0–1 · `R2` → steps 2–4 · `R3` → steps 5–7 · `R4` → steps 8–10 · `R5` → steps 11–12.
 
+### `MODE = reinforce` — extra practice on one file, asked for on the day
+
+A revision point is scheduled by the route; this is Victor asking for more of a file because he wants
+more. It reads the **`practice` branch** and differs from it in four resolved values:
+
+| Value | Where it comes from |
+|-------|---------------------|
+| `{FILE}` | the `FILE` key — **required here**, since nothing in the route selects it. Blank is an error, not a derivation. The batch appends to that same file, not to an `R{n}-repaso.sql`. |
+| `{COUNT}` | the `COUNT` key if Victor set it; otherwise `8`, as at a revision point. Not budgeted anywhere. |
+| `{REVIEW}` | always `yes` — no Intro tier, 60/40 Standard/Challenge, `[Repaso]` labels, repetition allowed. |
+| `{FOCUS}` | the open `MISTAKES.md` rows for that file's step, highest `Times` first. With none open, the step's `**Concepts:**` that appear in the fewest exercises of the file. Say in one line which case applied. |
+
+`{TOPIC}` still names the file's topic so the seed block resolves; it selects no step here.
+
+**This mode never advances anything.** It writes no count, closes no step, marks no coverage bullet —
+the `[Repaso]` labels are what carry that through to the review run. It is deliberately available on a
+file whose step is already `closed ✅`: re-drilling a closed step is the point, and a closed step is
+exactly what must not be reopened by drilling it. A missing `{PLAN}` step is not an error here either,
+which is the one place this mode is looser than `practice` — there is no target to plan against.
+
 **Read `practice/sql/MISTAKES.md` before anything else on these runs**, take the `## Open` rows whose
 `Step` is in the span, and build `{FOCUS}` from their `Concept` cells, highest `Times` first. A concept
 failed three times earns the batch before one failed once — weight the exercise count towards the top
@@ -171,6 +196,7 @@ Focus: {FOCUS}
 
 Validation:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
+- **In `reinforce` mode, if `FILE` is blank:** print "Error: `MODE = reinforce` necesita `FILE` — es el archivo que quieres repasar." and stop. Never fall back to the path table: the whole point of this mode is that Victor chose the file, and deriving one would silently drill something else. The `{PLAN}`-step errors below do not apply in this mode; a reinforce batch has no step to draw a COUNT or a target from.
 - If {TOPIC} is not in the path table above: stop and report it.
 - **If {TOPIC} is `R1`–`R5`:** the route-§2-step rules below do not apply — a revision point has no step of its own. Skip straight to the revision-point resolution above. In `review` mode a repaso file is graded normally, but **it never updates the route §3, §1 or a step status** (see the review branch): it is uncounted by design.
 - If {TOPIC} is `R1`–`R5` in `practice` mode and `practice/sql/MISTAKES.md` does not exist: print "Error: no existe `practice/sql/MISTAKES.md`. Un punto de repaso deriva su foco de sus filas abiertas." and stop — do not fall back to a generic batch over the span. Generating one anyway is exactly the "revise what feels rusty" behaviour §8b exists to replace.
@@ -321,6 +347,7 @@ canonical schema. What happens next depends entirely on `MODE`, and the two bran
 |--------|---------------------------|--------------|
 | `practice` | `notes/prompts/practice/sql/_internal/_sql-exercises-practice.md` | checks existing state, writes the setup block if the file is new, generates {COUNT} exercises, saves them |
 | `review` | `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` | reads the answered file, grades every answer, writes the correction markers, updates PROGRESS.md and MISTAKES.md |
+| `reinforce` | `notes/prompts/practice/sql/_internal/_sql-exercises-practice.md` | the same branch as `practice`, run with the four values its own block resolves — appends a `[Repaso]`-labelled batch to the file Victor named and advances nothing |
 
 Do **not** open the other branch — it cannot apply to this run, and reading it is how a run ends up
 executing a step from the wrong mode. If `MODE` resolved to neither value, the Resolution validation

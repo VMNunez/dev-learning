@@ -7,6 +7,9 @@ already resolved `{FILE}`, `{COUNT}`, `{FOCUS}` and `{REVIEW}`, read `notes/prom
 Split out 2026-07-22: a run is either practice or review, never both, so carrying the other branch was
 ~40% of the file for nothing. The shell reads only the branch its `MODE` names.
 
+`MODE = reinforce` reads this branch too, with `{REVIEW} = yes` and the file Victor named. Everything
+here applies unchanged except where a rule names that mode explicitly.
+
 ---
 
 ## MODE = practice
@@ -22,7 +25,10 @@ name match silently misses it and appends a duplicate row. If that row's Status 
 or `closed ✅`, print:
 "Este tema ya está marcado como sólido en PROGRESS.md. ¿Quieres más ejercicios de todos modos?
 Responde sí para continuar, o no para salir."
-Stop and wait for Victor's response.
+Stop and wait for Victor's response. **Skip this question entirely when the shell resolved
+`MODE = reinforce`**: it asks whether he wants more exercises on a topic already marked solid, which is
+the one thing that mode is *for*. The schema and legacy-format checks below still run — those protect
+the file, not the schedule.
 - If he responds with any affirmative (sí, si, yes, SÍ, claro, of course, etc.): continue to Step 2.
 - If his response is not affirmative, or he does not respond: print nothing else and stop.
 

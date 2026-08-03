@@ -286,6 +286,15 @@ Then proceed to Steps 4 and 5.
 Five things must move when a topic is scored, and the failure mode is doing one of them. Do all five,
 or state explicitly which one you skipped and why.
 
+> **`[Repaso]`-labelled exercises are uncounted wherever they live.** The exception below is written
+> around the revision-point *file*, but the label is the real carrier: a `MODE = reinforce` batch and a
+> Moment 2b reinforcement block both append `-- Exercise N [Repaso]:` exercises **into a step's own
+> file**, and counting those would inflate the step's `Scored / target` with work that was never part
+> of its first pass. So in 4b and 4c, count only exercises labelled `[Intro]`, `[Standard]` or
+> `[Challenge]`; in 4c-bis, a `[Repaso]` exercise marks no coverage bullet. Grade them normally, list
+> them in the summary, log their failures in `MISTAKES.md` — they just move no counter. State the split
+> in one line: "N ejercicios puntuados, M de ellos de repaso (no cuentan para el paso)."
+>
 > **Revision-point files (`R{n}-repaso.sql`) are the one exception, and it is deliberate.** Run **4a**
 > (any genuinely new concept still gets listed) and **Step 5** — closing the redeemed `MISTAKES.md`
 > rows *is* the purpose of the batch. **Skip 4b, 4c and 4d entirely**: a repaso batch is uncounted
