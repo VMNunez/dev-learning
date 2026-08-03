@@ -362,7 +362,8 @@ means the plan and PROGRESS.md disagree about the route.
 
 **Recompute the `Total` row of both tables** after editing any cell. They are the last row of each
 table and are derived, never accumulated by hand: sum the rows above. A total that no longer matches
-its own column is the failure this instruction exists for.
+its own column is the failure this instruction exists for. **Except `Corrected`, whose total cell stays
+`—`** — a correction backlog has no meaningful aggregate; leave the dash.
 
 **If the `## Practice completed` section does not exist:** do not invent a layout — report it in 4e
 as a structural finding. It was added on 2026-08-03 and its absence means PROGRESS.md is stale or was

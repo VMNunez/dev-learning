@@ -342,6 +342,9 @@ exactly what is left to do. So:
 - **Both `Total` rows** — the last row of each table. The roll-up's totals every level's figures (so a
   newly planned route raises the shared denominator without touching another level's row); the detail
   table's totals that level's files. Recompute them from the rows above; never carry a stale total.
+  **`Corrected` has no total in either table — its cell stays `—`.** It is a correction backlog that
+  rises on generation and falls on grading, so an aggregate of it measures nothing actionable. Leave
+  the dash; do not "fix" it by computing a sum.
 
 **Preserve every figure already there.** A replan keeps each existing row's `Corrected`,
 `First-pass / target` numerator and `Status`; it only adds rows for new files, updates targets the

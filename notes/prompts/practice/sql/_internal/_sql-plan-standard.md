@@ -247,7 +247,8 @@ checks. Aligned 2026-07-22.
     `sql-plan-prompt` with `Corrected = —`, `First-pass / target = 0/{§5 target}`, `Status = not created`.
     Pending files are never collapsed into a "12 files remaining" row: the whole point is seeing what is
     left. Both tables end in a derived `Total` row, recomputed from the rows above by whoever last
-    edited a cell. A replan updates the projection in the same run — a route that grows a step while
+    edited a cell — except its `Corrected` cell, which stays `—`, a correction backlog having no
+    meaningful aggregate. A replan updates the projection in the same run — a route that grows a step while
     PROGRESS.md still shows the old file list makes the percentage silently wrong, and a percentage
     nobody can trust is worse than no percentage. Preserve graded figures across a replan (invariant 14
     applies to the projection too).
