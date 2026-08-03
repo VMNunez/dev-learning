@@ -131,6 +131,11 @@ exercise never counts toward the junior route, and a junior file never appears i
 | **Junior** | 40/50 (80%) | 20/200 (10%) | 0/14 |
 | **Middle** | — | — | — |
 | **Senior** | — | — | — |
+| **Total** | **40/50 (80%)** | **20/200 (10%)** | **0/14** |
+
+The `Total` row spans levels, so today it equals Junior — the only planned route. It exists so the
+figure stays honest the day a second route appears: middle exercises add to the total without ever
+touching the junior row.
 
 Middle and senior are blank because their routes are **not planned yet** — no coverage run, no `§5`
 target, so there is no denominator to divide by. A blank cell here means "no route exists", never
@@ -160,6 +165,7 @@ collapsed "12 files pending" row would hide exactly what is left to do. A row ap
 | 11 | `13-indexes.sql` | — | 0/12 | not created |
 | 12 | `14-live-database.sql` | — | 0/12 | not created |
 | 13 | `15-report-queries.sql` | — | 0/8 | not created |
+| **Total** | **15 files** | **40/50 (80%)** | **20/200 (10%)** | **0/14 steps closed** |
 
 #### Middle — `practice/sql/middle/`
 
