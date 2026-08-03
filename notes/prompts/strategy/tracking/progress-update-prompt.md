@@ -1,5 +1,14 @@
 # Progress Update Prompt — orchestrator
 
+> **⚠ Pending redesign (noted 2026-08-03) — read before running.** PROGRESS.md is now maintained
+> incrementally by the closing rituals (`step-complete`, `backlog-task-close`, `coverage-mark`,
+> `sql-exercises review`, `simulation-review`), each writing its own cell in the session that produced
+> it. This prompt still rebuilds the whole file, so the two can overwrite each other. It is meant to be
+> demoted to an **auditor**: report drift instead of rewriting, and keep only `Professional level by
+> topic` as its own write — the one cell that needs all 13 topics at once and that no ritual can
+> compute. Until that rework lands, run this prompt sparingly (a gate or end of phase), and diff
+> `PROGRESS.md` afterwards before committing.
+
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
 Run this **inside the supported agent runtime**. It reconciles `PROGRESS.md` with what each project's `PLANNING.md`
