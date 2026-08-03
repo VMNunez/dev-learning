@@ -77,7 +77,7 @@ audits it together with the level-neutral doctrine (`practice/sql/PLANNING.md`).
 
 | Level | SQL plan | sql-plan-audit | Exercises |
 |---|---|---|---|
-| junior | | | |
+| junior | 2026-08-03 — blocked (Guard 4: mirror parity, 1 bullet missing from `notes/coverage/junior.md`) | | |
 | middle | | | |
 | senior | | | |
 
