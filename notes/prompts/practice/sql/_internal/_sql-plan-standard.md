@@ -39,8 +39,10 @@ already in the bank all required Step 7 material and nothing Victor reads daily 
 Its two inputs, and it never invents beyond them:
 - **`notes/sql/coverage/{LEVEL}.md`** — what must be learned at the level the route serves. Every step
   claims bullets of it; a concept that belongs to SQL and is missing goes *there*, never into this plan.
-- **`ROADMAP.md`** — why, and by when. The ordering serves the current objective (a junior Angular +
-  Java role in Spain, technical screening first) and the pace fits the daily block it defines.
+- **`ROADMAP.md`** — why, and by when, read at two sections only: `## 12:30–13:30 block — SQL then
+  practice` (the objective this ordering serves: a junior Angular + Java role in Spain, technical
+  screening first, and the Stage-1 → Stage-2 switch gate) and `## Daily schedule (fixed from June 2)`
+  (the block the pace has to fit). The rest of the file cannot falsify a route-ordering decision.
 
 ---
 
@@ -56,7 +58,7 @@ Its two inputs, and it never invents beyond them:
 | 3 | Done-condition format | The closed list of testable formats. |
 | 4 | What to update when a step closes | Every file that moves, marked *automated* (a prompt does it) or *manual*. |
 | 7 | Branch and commit rules | Which branch, who commits what, atomicity. |
-| 8b | Revision points | Where the track deliberately stops advancing and re-drills. Governed by B4. The cadence and the focus mechanism are doctrine; **which** points exist for a level, and their spans, live in that level's route. |
+| 8b | Revision points | Where the track deliberately stops advancing and re-drills. Governed by B4. **The cadence and the failure-driven focus mechanism only.** Which points exist for a level, their spans and their triggers live in that level's route §1 and are never restated here — a second copy here is what makes a route reorder require a doctrine edit. |
 | 8c | Simulation readiness | The technique-to-step mapping, and which techniques the closed steps have unlocked. Readiness only — see the exception in "What this plan is NOT". |
 | 9 | Quality gates | Which quality prompt runs at which checkpoint, and the hard prerequisite chain. |
 | 10 | Consistency invariants | The mechanical cross-checks in Section D. |
@@ -72,7 +74,7 @@ at `PLANNING-{LEVEL}.md` so a cross-reference written before the split still lan
 | § | Section | Must contain |
 |---|---------|--------------|
 | header | Plan metadata | `Plan status` · `Level` · `Coverage` path · `Coverage SHA-256` · `Doctrine` path · `Generated`. |
-| 1 | The exercise files | Every file, in order, with its target and the three counts (written / answered / scored). Revision files in their own table, with no target. |
+| 1 | The exercise files | Every file, in order, with its target and the three counts (written / answered / scored). Revision files in their own table, with no target, and that table carries each point's **span and trigger**, not just its filename. The route is their single source: a route whose spans or triggers are defined in the doctrine cannot be reordered without editing a level-neutral file, which is how a step-ordering correction becomes unapplicable. |
 | 2 | The steps | One entry per step, to the shape in Section C. |
 | 3 | Progress table | One row per step: scored/target, status. Mirrors `PROGRESS.md`. |
 | — | Out of scope at this level | Every coverage bullet deliberately not drilled here, with a reason. |

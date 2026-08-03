@@ -43,7 +43,10 @@ If a required role cannot be dispatched, stop unless its instruction explicitly 
 - `MISTAKES = practice/sql/MISTAKES.md`
 - `STANDARD = notes/prompts/practice/sql/_internal/_sql-plan-standard.md`
 - `CONTEXT = notes/prompts/_internal/_shared-context.md`
-- `ROADMAP = ROADMAP.md`
+- `ROADMAP = ROADMAP.md` → two sections only: `## 12:30–13:30 block — SQL then practice`, which carries
+  the SQL topic table and the Stage-1 → Stage-2 switch gate (the only thing in the file a `Why here` can
+  be falsified against), and `## Daily schedule (fixed from June 2)`, which defines the one-hour block a
+  step is sized in. Nothing else in the file bears on route ordering.
 
 `PLAN` is a committed source of truth. It is not a temporary worklist.
 
