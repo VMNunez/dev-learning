@@ -2,7 +2,8 @@
 
 Date: 2026-08-03
 Target: `LEVEL = junior`, `MODE = update`
-Status: open
+Status: applied in 49c1e62
+cold reviewer: approve-with-tightening (edits A and C) · reject (edit B)
 
 Outcome: **completed**. Guard 4 now passes (149/149 bullets, 18/18 sections identical to the mirror), so
 the run that was blocked on 2026-08-03 went through: the one-time doctrine migration ran, and
@@ -30,13 +31,30 @@ the run that was blocked on 2026-08-03 went through: the one-time doctrine migra
    That is a real seam in the doctrine/route split, not friction with this run's wording: §8b was
    supposed to keep the *mechanism* and hand the *points* to the route, and the migration spec (§5/§6/§8
    only) does not move them.
-5. **Verdict** — change worth considering: **the migration spec should move §8b's per-point table
-   (points, spans, and the files each re-drills) into the route alongside §5/§6/§8**, leaving the cadence
-   and the failure-driven focus mechanism in the doctrine. Evidence is this run: the route now owns its
-   revision-file table while the spans that define those same points stayed behind, and the first
-   ordering change the cold reviewer asked for was blocked by exactly that split. It clears the bar —
-   real (it happened), the prompt is silent where it needed to speak, and it changed the result (two
-   accepted findings went unapplied). Not drafted as an edit here: the fix belongs to
-   `_sql-plan-standard.md` §A1/§A2 and the doctrine as much as to this prompt, so it is a
-   `sql-plan-audit` scope decision rather than a one-line prompt tightening, and the tie goes to `open`.
-   Prompt length: `sql-plan-prompt.md` is 392 lines, under budget.
+5. **Verdict** — change applied: **the standard's A2 never gave the revision points' spans and triggers a
+   home in the route, so the doctrine kept the authoritative copy and a step-ordering correction became
+   unapplicable.** Evidence is this run: two accepted BLOCKING findings from the cold route reviewer
+   (reorder DML ahead of the date/string and window-function steps per `ROADMAP.md`'s Stage-2 switch
+   gate, and the "screening core" claim depending on it) went unapplied for exactly that reason. Clears
+   the bar: real, the standard was silent where it needed to speak, and it changed the result.
+
+   **This bullet was first written as "the migration spec should have moved §8b's table", which is
+   wrong and is corrected here.** A1 §8b already assigned the points to the route; the migration had
+   nowhere to move them *to*, because A2 lists only header/§1/§2/§3 and its §1 cell names the revision
+   *files* and not their spans. The cold reviewer caught the misdiagnosis and also established that the
+   migration section must not be touched at all — it is junior-only, one-time, and already spent.
+
+   Two edits applied in `49c1e62`, both as tightenings of existing lines rather than additions:
+   `_sql-plan-standard.md` A2 §1 now requires the span and trigger columns and names the route their
+   single source, and A1 §8b now forbids the doctrine from restating them. A third proposal — adding a
+   `Learning outcome` field to Section C, raised by Victor after the run — was **rejected by the cold
+   reviewer on bar condition 3**: the route reviewer caught label-shaped `Why here` lines and mis-sized
+   targets without it, and `Done`, `Q&A seed` and `Concepts` already carry the observable-outcome
+   information three times over. Recorded so it is not re-proposed; if the pedagogical bite is wanted,
+   the place to spend it is tightening Section C's `Why here` line, not a fourteenth field.
+
+   One follow-up this prompt may not perform, left for `sql-plan-audit`: the doctrine's own R1–R5 table
+   and its Spanish paragraph restating the step spans are now the duplicate the tightened A1 forbids,
+   and the route's revision table needs the `Trigger` column when they are stripped.
+   Prompt length: `sql-plan-prompt.md` 395 lines, `_sql-plan-standard.md` 278 — both under budget, so
+   one-in-one-out did not apply.
