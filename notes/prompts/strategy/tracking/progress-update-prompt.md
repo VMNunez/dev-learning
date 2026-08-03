@@ -75,8 +75,8 @@ contract each project subagent follows and the shape of what it returns.
 ## What PROGRESS.md is — and is not
 
 Tracks: the professional-level matrix by topic · the `Coverage demonstrated` percentage table · the
-projects table (its `Status` cell carries the step detail) · the SQL exercises tracker ·
-simulation progress.
+projects table (its `Status` cell carries the step detail) · the `Practice completed` block (SQL
+exercise route, timed simulations, LeetCode).
 
 Does NOT contain: **the inventory of concepts learned** (→ `notes/{topic}/coverage/{level}.md` and its
 mirror `notes/coverage/{level}.md`, where every bullet carries its ` ✅ NN-slug — {evidence}` marker) ·
@@ -226,52 +226,45 @@ past PROGRESS.md revision is used as a reference, ignore its `## Angular` / `## 
 / `## CSS` / `## Complementary skills in practice` sections and the SQL `### Querying data` block —
 re-creating any of them is a defect, not a fix.
 
-### D3 — SQL exercises tracker (from Step B report)
+### D3 — `## Practice completed` → `### Exercise route` (from Step B report)
 
-The SQL section is now **the exercises tracker only** — its `### Querying data` concept list was deleted
-on 2026-08-03 and is not restored. Rewrite the tracker from the Step B counts, in this format:
+The old `## SQL` section became the `### Exercise route` block of `## Practice completed` on
+2026-08-03 (its `### Querying data` concept list was deleted, not restored). You are the **safety net**
+here, not the primary writer: `sql-exercises MODE = review` (its Step 4b) updates both tables when a
+batch is graded, because that is where the score is decided. Both must produce **identical** output —
+change the two together or not at all.
 
-  ```
-  ### Exercises completed
+The block holds two tables, and the contract for each is written in that prompt's Step 4b. In short:
 
-  X total exercises across Y topics
+- **Roll-up, one row per level:** `Exercises scored` = first-pass exercises graded over the sum of the
+  `First-pass target` column of `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §5; `[Repaso]` batches are
+  uncounted. `Steps closed` = steps whose every file scored ≥ 80%.
+- **Per-file detail:** one row per file, `Scored / target` from §5, status `closed ✅` / `in progress ⏳`
+  / `not created`. Files that do not exist yet may stay collapsed in one summary row.
 
-  | Topic | Folder | Exercises | Status |
-  |-------|--------|-----------|--------|
-  | basics / SELECT | practice/sql/junior/01-basics.sql | N | solid ✅ |
-  | joins | practice/sql/junior/03-joins.sql | N | in progress ⏳ |
-  ```
+Never downgrade a `closed ✅`. If the two tables disagree with §5, report it rather than guessing which
+side is right.
 
-  Status rules:
-  - Keep any topic already `solid ✅` — never downgrade.
-  - A topic being converted from prose to the table for the first time → `in progress ⏳` (solid needs
-    an explicit sql-exercises-prompt review scoring above 80% — it cannot be inferred).
-  - Any topic with a file/folder not yet in PROGRESS.md → `in progress ⏳`.
-  - Victor upgrades to `solid ✅` manually after a review scores above 80%.
+### D4 — `## Practice completed` → `### Timed simulations` (from the Step C counts)
 
-  If the sub-section does not exist, create it. If it exists in another format, rewrite it as this
-  table (one of the few cases where reformatting is allowed).
+Same relationship: `notes/prompts/practice/simulations/simulation-review-prompt.md` (Step 5) is the
+primary writer, because it holds the Pass/Borderline/Fail verdict; you catch what it missed. Identical
+output required — if this format or Step C's counting rules ever drift from that prompt's, the two
+overwrite each other on every run.
 
-### D4 — Simulations section (from the Step C counts)
+Update the counts if the table exists; otherwise add:
 
-You are the **safety net** here, not the primary writer: `notes/prompts/practice/simulations/simulation-review-prompt.md`
-(Step 5) already refreshes this section when a simulation is reviewed, because that is where the
-Pass/Borderline/Fail verdict is decided. Your job is to catch what it missed. Both must produce
-**identical** output — if this format or Step C's counting rules ever drift from that prompt's, the
-two will overwrite each other on every run. Change them together or not at all.
-
-Update the counts if the section exists; otherwise add:
-
-```
-## Simulations
-
-- Angular: X completed (X Pass, X Borderline, X Fail)
-- Spring Boot: X completed (X Pass, X Borderline, X Fail)
-- SQL: X completed (X Pass, X Borderline, X Fail)
-- Total: X / 15 minimum target
+```markdown
+| Track | Completed | Pass | Borderline | Fail |
+|---|---|---|---|---|
+| Angular | X/5 (X%) | X | X | X |
+| Spring Boot | X/5 (X%) | X | X | X |
+| SQL | X/5 (X%) | X | X | X |
+| **Total** | **X/15 (X%)** | **X** | **X** | **X** |
 ```
 
-All zeros if none — that makes it visible the block has not started.
+All zeros if none — that makes it visible the block has not started. Denominators come from the number
+of rows per track in `practice/simulations/TRACKER.md`, not from this example.
 
 ### D5 — Projects table and headings (from Step A step-statuses)
 
@@ -289,8 +282,7 @@ All zeros if none — that makes it visible the block has not started.
 - Keep the exact structure and section order of the current PROGRESS.md.
 - Keep existing content — remove nothing unless factually wrong or a duplicate.
 - **Never add a section that is not already in the file.** PROGRESS.md's sections are fixed: the level
-  matrix, `Coverage demonstrated`, `Projects` + the per-project blocks, `SQL`, `Simulations`,
-  `Useful resources`. Adding any other section — above all a per-technology concept list — is a defect.
+  matrix, `Coverage demonstrated`, `Projects`, `Practice completed`, `Useful resources`. Adding any other section — above all a per-technology concept list — is a defect.
 
 ### D7 — Professional level by topic
 
@@ -390,7 +382,7 @@ went wrong. Then print:
 | Security | | | |
 | General | | | |
 | SQL | | | |
-| Simulations | | | |
+| Practice completed | | | |
 
 - **Added** = anything new — missing concepts, updated SQL counts, updated simulation counts, new
   per-project summary data.

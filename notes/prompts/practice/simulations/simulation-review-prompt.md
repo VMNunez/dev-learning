@@ -222,17 +222,21 @@ Update three files:
 Leave **Self-assessment** untouched in both files — Victor fills that himself before running
 this prompt.
 
-**PROGRESS.md** — refresh the `## Simulations` section. Once the TRACKER.md row above is updated,
-recount from TRACKER.md itself (it is small and already open) and rewrite the four lines:
+**PROGRESS.md** — refresh the `### Timed simulations` table inside `## Practice completed` (the
+section replaced the old `## Simulations` bullet list on 2026-08-03). Once the TRACKER.md row above is
+updated, recount from TRACKER.md itself (it is small and already open) and rewrite the table:
 
+```markdown
+| Track | Completed | Pass | Borderline | Fail |
+|---|---|---|---|---|
+| Angular | X/5 (X%) | X | X | X |
+| Spring Boot | X/5 (X%) | X | X | X |
+| SQL | X/5 (X%) | X | X | X |
+| **Total** | **X/15 (X%)** | **X** | **X** | **X** |
 ```
-## Simulations
 
-- Angular: X completed (X Pass, X Borderline, X Fail)
-- Spring Boot: X completed (X Pass, X Borderline, X Fail)
-- SQL: X completed (X Pass, X Borderline, X Fail)
-- Total: X / 15 minimum target
-```
+The denominators are the size of the test bank per track (5 each, 15 total) — if a track's bank ever
+grows, take the denominator from the number of rows in that TRACKER.md table, not from this example.
 
 Three counting rules, each easy to get silently wrong:
 - **Count the `Status` column, never `Self-assessment`.** The two columns use different scales —

@@ -313,43 +313,44 @@ evidence marker; PROGRESS.md keeps only the *how many*, in 4b. Do not re-create 
 If this batch exercised a concept with **no bullet in the SQL coverage file**, do not write it into
 PROGRESS.md: report it in 4e as coverage work owed, naming the concept and level.
 
-#### 4b — PROGRESS.md, the exercises table
+#### 4b — PROGRESS.md, `## Practice completed` → `### Exercise route`
 
-The table format is (4 columns — shared with `progress-update-prompt`):
+That section (added 2026-08-03) holds **two** tables for the exercise route, and this step updates
+both. Read the real figures from the file you just reviewed and from `{PLAN}` §5 — the shapes below
+are placeholders, never copy an example number into PROGRESS.md.
+
+**Table 1 — the roll-up, one row per level:**
 
 ```markdown
-### Exercises completed
-
-[N] total exercises across [M] topics
-
-| Topic | Folder | Exercises | Status |
-|-------|--------|-----------|--------|
-| basics / SELECT | practice/sql/junior/01-basics.sql | [count] | in progress ⏳ |
-| joins | practice/sql/junior/03-joins.sql | [count] | solid ✅ |
+| Level | Exercises scored | Steps closed |
+|---|---|---|
+| SQL — junior | [scored]/[target] ([pct]%) | [closed]/[total steps] |
 ```
 
-The numbers above are placeholders showing the shape — read the real counts from the file you just
-reviewed. Never copy an example figure into PROGRESS.md.
+- **Scored** = first-pass exercises graded across the whole level route, `[Repaso]` batches excluded
+  (same rule as the counting note at the top of Step 4). Add this batch's first-pass count to the
+  cell's current numerator; never recount the whole route from scratch.
+- **Target** = the sum of the `First-pass target` column of `{PLAN}` §5. It changes only when the
+  route itself is replanned — if you find it disagreeing with §5, fix it and say so in 4e.
+- **Steps closed** = steps whose done condition is met, i.e. the ones you would mark in §3. A step
+  closes only when *every* file of that step scored ≥ 80% — a step with two files does not close on
+  the first one.
 
-**If the table exists:** find the row **whose `Folder` cell is `{FILE}`** — match on the path, never on
-the `Topic` cell, which is free prose and has already drifted (`basics / SELECT (part 2)` is the row for
-`TOPIC = basics`). A name match misses it and appends a duplicate row for a file already tracked.
-Update that row's `Exercises` and `Status` columns:
-- Status: `solid ✅` if score ≥ 80%; `in progress ⏳` if score < 80%
-- Exercises: count all exercises in the reviewed file, including any previous batches
-- Leave the `Folder` column as-is (it is the file path, e.g. `practice/sql/junior/03-joins.sql`)
-- Then refresh the `X total exercises across Y topics` summary line above the table to match the
-  new column totals
+**Table 2 — the per-file detail, one row per file.** Find the row **whose `File` cell names `{FILE}`**
+— match on the file, never on a prose cell. Update its `Scored / target` and `Status`:
 
-**If no row has `{FILE}` in its `Folder` cell:** add one. Fill `Folder` with the file's
-path (`practice/sql/{LEVEL}/<NN>-<topic>.sql` — one file per topic inside the level's directory; a
-legacy flat path `practice/sql/<NN>-<topic>.sql` or a per-topic subfolder `practice/sql/<NN>-<topic>/`
-is a pre-2026-08-03 leftover, and the row is rewritten to the level path rather than preserved).
+- Status: `closed ✅` if score ≥ 80%; `in progress ⏳` if score < 80%; leave `not created` untouched
+  for files that do not exist yet.
+- `Scored / target`: this file's first-pass scored count over its §5 first-pass target.
+- Files not yet created may be collapsed into one summary row (e.g. `2–13 | 04- … 15- (12 files) | 0/148`).
+  When a collapsed file is first written, split its own row out of that summary and lower the summary's
+  target accordingly, so the two tables keep agreeing.
 
-**If the `### Exercises completed` table does not exist in PROGRESS.md:** create it under a new
-`### Exercises completed` heading, with the 4-column format and the summary line above. Insert it
-at the end of the `## SQL` section — after the last existing `###` heading in that section and
-before the next `##` heading.
+**If `{FILE}` has no row:** add one, in step order, with its §5 target.
+
+**If the `## Practice completed` section does not exist:** do not invent a layout — report it in 4e
+as a structural finding. It was added on 2026-08-03 and its absence means PROGRESS.md is stale or was
+reverted, which is worth knowing before writing into it.
 
 #### 4c — {PLAN} §3, the step row
 

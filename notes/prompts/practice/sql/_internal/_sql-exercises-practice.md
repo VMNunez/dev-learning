@@ -18,11 +18,10 @@ here applies unchanged except where a rule names that mode explicitly.
 
 ### Step 1 — Check existing state
 
-**PROGRESS.md:** read the SQL section. Find the `### Exercises completed` table and look for the row
-**whose `Folder` cell is `{FILE}`** — match on the path, never on the `Topic` cell. The Topic cell is
-free prose that has already drifted (`basics / SELECT (part 2)` is the row for `TOPIC = basics`), and a
-name match silently misses it and appends a duplicate row. If that row's Status begins with `solid ✅`
-or `closed ✅`, print:
+**PROGRESS.md:** read `## Practice completed` → `### Exercise route` (the section that replaced the old
+`## SQL` block on 2026-08-03). In its per-file table, find the row **whose `File` cell names `{FILE}`** —
+match on the file, never on a prose cell, which drifts. If that row's Status begins with `closed ✅` or
+`solid ✅`, print:
 "Este tema ya está marcado como sólido en PROGRESS.md. ¿Quieres más ejercicios de todos modos?
 Responde sí para continuar, o no para salir."
 Stop and wait for Victor's response. **Skip this question entirely when the shell resolved
