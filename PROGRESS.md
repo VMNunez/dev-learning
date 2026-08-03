@@ -113,7 +113,8 @@ Two different questions, so two different denominators — neither one alone is 
 - **Corrected** — of the exercises that *exist right now*, how many are graded. The denominator grows
   every time `sql-exercises` writes a batch, extras and `[Repaso]` included. This is the working rhythm.
 - **Route progress** — how much of the level's planned route is done. The denominator is fixed: the sum
-  of the `First-pass target` column of `practice/sql/PLANNING.md` §5, the **whole** route including the
+  of the `First-pass target` column of that level's route file, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
+  §1 — the **whole** route including the
   files not written yet. `[Repaso]` and extra batches do not count here — they are work on top of the
   route, and counting them would show progress the route never made.
 
@@ -128,10 +129,10 @@ exercise never counts toward the junior route, and a junior file never appears i
 
 | Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| **Junior** | 40/50 (80%) | 20/200 (10%) | 0/14 |
+| **Junior** | 40/50 (80%) | 20/207 (10%) | 0/14 |
 | **Middle** | — | — | — |
 | **Senior** | — | — | — |
-| **Total** | — | **20/200 (10%)** | **0/14** |
+| **Total** | — | **20/207 (10%)** | **0/14** |
 
 The `Total` row spans levels, so today its route figure equals Junior — the only planned route. It
 exists so the number stays honest the day a second route appears: middle exercises add to the total
@@ -141,14 +142,14 @@ without ever touching the junior row.
 when you generate and down when you grade, so an aggregate percentage of it measures nothing you would
 act on. Read it per level, where it tells you what is waiting to be graded.
 
-Middle and senior are blank because their routes are **not planned yet** — no coverage run, no `§5`
+Middle and senior are blank because their routes are **not planned yet** — no coverage run, no route
 target, so there is no denominator to divide by. A blank cell here means "no route exists", never
 "route exists and nothing done"; the day `sql-plan` writes one, its target fills in.
 
 #### Junior — `practice/sql/junior/`, 15 files across 14 steps
 
 Every file of the route has a row from the moment the route is planned, including the ones not written
-yet — the plan already knows their name, step and target (`practice/sql/PLANNING.md` §5), so a
+yet — the plan already knows their name, step and target (`practice/sql/junior/PLANNING-junior.md` §1), so a
 collapsed "12 files pending" row would hide exactly what is left to do. A row appears here when the
 **plan** declares the file, not when the file is created.
 
@@ -157,19 +158,19 @@ collapsed "12 files pending" row would hide exactly what is left to do. A row ap
 | 0 | `01-basics.sql` | 40/40 | 20/20 | closed ✅ — graded 2026-07-22; 20 first-pass + 20 `[Repaso]`, only the first-pass ones move the route |
 | 0 | `02-execution-order-set-ops.sql` | 0/10 | 0/10 | in progress ⏳ — written 2026-07-22, unanswered |
 | 1 | `03-joins.sql` | — | 0/22 | not started — file deleted 2026-07-22, to regenerate |
-| 2 | `04-aggregates.sql` | — | 0/12 | not created |
+| 2 | `04-aggregates.sql` | — | 0/14 | not created |
 | 3 | `05-join-pitfalls.sql` | — | 0/12 | not created |
 | 4 | `06-nulls.sql` | — | 0/12 | not created |
 | 5 | `07-subqueries-ctes.sql` | — | 0/16 | not created |
 | 6 | `08-dates-strings.sql` | — | 0/12 | not created |
 | 7 | `09-window-functions.sql` | — | 0/12 | not created |
 | 8 | `10-dml-transactions.sql` | — | 0/16 | not created |
-| 9 | `11-schema-design.sql` | — | 0/12 | not created |
-| 10 | `12-data-types-ddl.sql` | — | 0/12 | not created |
+| 9 | `11-schema-design.sql` | — | 0/15 | not created |
+| 10 | `12-data-types-ddl.sql` | — | 0/14 | not created |
 | 11 | `13-indexes.sql` | — | 0/12 | not created |
 | 12 | `14-live-database.sql` | — | 0/12 | not created |
 | 13 | `15-report-queries.sql` | — | 0/8 | not created |
-| **Total** | **15 files** | — | **20/200 (10%)** | **0/14 steps closed** |
+| **Total** | **15 files** | — | **20/207 (10%)** | **0/14 steps closed** |
 
 #### Middle — `practice/sql/middle/`
 
