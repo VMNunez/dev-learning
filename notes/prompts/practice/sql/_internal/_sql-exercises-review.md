@@ -427,16 +427,20 @@ Only when 4c set a row to `closed ✅`. Rewrite the §0 table:
 
 #### 4e — Report what is still manual
 
-The step-complete ritual is PLANNING.md §4, and it has **exactly one manual item** plus the exit
-question — both outside this prompt's reach:
-- **`notes/sql/coverage/{LEVEL}.md`** — if the batch surfaced a concept genuinely missing from coverage, Victor
-  adds it there (§4, item 3). This prompt never edits coverage.
-- **The exit question**, answered aloud from memory. §3 is explicit that a score alone never closes a
-  step.
+The step-complete ritual is PLANNING.md §4, and **one item of it is outside this prompt's reach**:
 
-So never print "step closed" on the strength of a score alone. If 4c set the row to `closed ✅`, print:
-"Ejercicios del paso [N] cerrados. Para cerrar el paso entero falta responder la exit question de
-memoria, y añadir a `notes/sql/coverage/{LEVEL}.md` cualquier concepto que haya salido aquí y no esté."
+- **`notes/sql/coverage/{LEVEL}.md`** — the `✅ sql:{file-slug}` markers on every bullet these exercises
+  drilled, and any concept that turned out to have no bullet at all. This prompt never edits coverage;
+  `sql-step-close` does, and it runs right after you.
+
+**The exit question is gone** (removed 2026-08-03). Doctrine §3 used to close a step on two conditions,
+the second being the question answered aloud from memory; retrieval practice moved to the interview-prep
+and `simulator` track (§Z), and a step now closes on its scored condition alone. Do not reintroduce it as
+a blocker, and do not print that a step is "not really closed" because of it.
+
+So if 4c set the row to `closed ✅`, print: "Ejercicios del paso [N] cerrados. Falta el paso de coverage —
+lo hace `sql-step-close` a continuación." The caller is `sql-grade`, which hands off automatically; you
+do not invoke anything yourself.
 
 **Do not name notes, Q&A or simulations as blockers.** They are separate tracks (PLANNING.md §Z), no
 step closes on one, and telling Victor a note is "missing to close the step" is precisely the scope
