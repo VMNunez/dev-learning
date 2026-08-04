@@ -11,12 +11,12 @@ Update this table at the start of every session. It is the authoritative pointer
 
 | | |
 |---|---|
-| **Current step** | G3 backend backlog fix (not a §15 step). **Every High task is closed and `reopen` is built — G3's sign-off condition is met.** Work continuing on the branch is Medium/Low backlog, which G3 does not require (G7 does). **Step 7a — Angular shell + auth is the next learning step, but one Medium gates it:** the account-password flow (`SecureRandom` + `CreateUserResponse` + `PATCH /api/users/me/password`) must be built and merged first — Step 7a's shell ships the dialog that calls it. Every *other* Medium/Low can wait for G7 |
-| **Current branch** | `fix/backend-backlog` (§22 "Backlog-fix branches" — `feat/angular-shell-auth` is not opened yet; it is created from `projects/07-timetrack` when this branch merges) |
-| **Done condition** | ✅ met — `Postman: PATCH /api/entries/{id}/reopen on a REJECTED own entry returns 200 — status DRAFT` (verified 2026-07-22), and every High backend task in `PROJECT-BACKLOG.md` is `[x]`. Step 7a's own done condition takes over next, exactly as §15 states it: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
-| **Next gate** | G3 sign-off — **unblocked**: the backend review has run and all its High tasks are fixed. Signing off = PR `fix/backend-backlog` into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges |
-| **Phase** | Backend backlog / G3 sign-off — Frontend (Phase 5) starts at Step 7a |
-| **Last updated** | 2026-07-29 |
+| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend phase. **Nothing gates it any more:** the account-password Medium it depended on closed 2026-07-29, so `PATCH /api/users/me/password` exists for the shell's change-password dialog to call. The backend backlog is not merely "Highs done" — **every backend task at every priority is closed**, and both frontend tiers are empty because no frontend code exists yet |
+| **Current branch** | `fix/backend-backlog`, **finished and awaiting its PR into `projects/07-timetrack`** (§22 "Backlog-fix branches"). `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge — opening it first would build Step 7a on a branch without the password endpoint |
+| **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
+| **Next gate** | G3 sign-off — **condition met, action pending**: PR `fix/backend-backlog` into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d. Note that G7's stricter bar — no open High **or** Medium — is already satisfied, ahead of schedule |
+| **Phase** | Frontend (Phase 5), starting at Step 7a — the backend phase and its backlog are closed |
+| **Last updated** | 2026-08-04 |
 
 ---
 
@@ -1418,12 +1418,13 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 
 #### Step 7a — Shell + auth
 
-> **Backend prerequisite — the one Medium that gates this step.** The toolbar dialog below calls
-> `PATCH /api/users/me/password`, which does not exist yet: the account-password flow (`SecureRandom`
-> generation · `CreateUserResponse` · the endpoint itself) is an open **Medium** in `PROJECT-BACKLOG.md`,
-> not a §15 step, and it must be built on `fix/backend-backlog` and merged **before**
-> `feat/angular-shell-auth` opens. No other Medium or Low blocks this step — only this one, because 7a
-> ships its consumer.
+> **Backend prerequisite — satisfied 2026-07-29.** The toolbar dialog below calls
+> `PATCH /api/users/me/password`. That endpoint did not exist when this step was planned: the
+> account-password flow (`SecureRandom` generation · `CreateUserResponse` · the endpoint itself) was an
+> open **Medium** in `PROJECT-BACKLOG.md`, not a §15 step, and it gated this step because 7a ships its
+> consumer. It is **built and closed** — see the ledger line dated 2026-07-29 — so the only thing left
+> between here and starting is merging `fix/backend-backlog` into `projects/07-timetrack`, which also
+> signs G3 off. Nothing else blocks this step.
 
 - Angular project with Angular Material; `environment.ts` with the API base URL
 - **The §14 design system is set up here, before any page exists** — `styles/material-theme.scss` with the
@@ -1759,21 +1760,19 @@ coverage table.
 The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
 open for the whole project. It only merges into `main` when Step 11 is done.
 
-**Immediate action (2026-07-29):** `feat/reports` has merged, so the backend feature branches are all
-closed. `fix/backend-backlog` is the live branch and **G3's condition is already met** — every High backend
-task is `[x]` and `reopen` passed its Postman check on 2026-07-22.
+**Immediate action (updated 2026-08-04):** `feat/reports` has merged, so the backend feature branches are
+all closed. `fix/backend-backlog` is the live branch and **its own closing condition is fully met** — every
+High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and the account-password flow
+(`PATCH /api/users/me/password`) closed on 2026-07-29.
 
-**One Medium is finished on this branch before it PRs: the account-password flow.** It is not a G3
-requirement — it is a **Step 7a requirement**, because 7a's shell ships the `change-password-dialog` that
-calls `PATCH /api/users/me/password`, an endpoint that does not exist yet. Building the consumer before
-the endpoint would leave the step unable to pass its own done condition. So: finish that Medium here → PR
-`fix/backend-backlog` into `projects/07-timetrack` (which also signs G3 off) → create
-`feat/angular-shell-auth` for Step 7a.
+**The branch went further than it had to, and that changes what is outstanding.** It closed not only the
+Highs G3 requires and the one Medium Step 7a depends on, but **every remaining Medium and Low as well**, in
+batches through 2026-08-01. So `PROJECT-BACKLOG.md` has no open task at any priority in either tier, and
+**G7's stricter bar — no open High *or* Medium — is satisfied months before the closing gate reads it.**
+The earlier plan for this branch anticipated leaving those tasks open for G7; that is no longer the state.
 
-The **remaining** Medium and Low tasks stay open and do not block the frontend. **G3 requires only the
-Highs**, while **G7 (`portfolio-audit`) blocks its ✅ Ready verdict on any open High *or* Medium** — so they
-must close before the project is declared finished, just not before Angular starts. The distinction that
-matters: the password Medium is sequenced by a *dependency*, the others only by the closing gate.
+Remaining sequence, with no backlog work left in it: PR `fix/backend-backlog` into `projects/07-timetrack`
+(which signs G3 off) → create `feat/angular-shell-auth` from `projects/07-timetrack` → Step 7a.
 
 ---
 
