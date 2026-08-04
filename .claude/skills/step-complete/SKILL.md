@@ -72,8 +72,8 @@ parent is now complete too.
 
 ## 2 — Extract the step's concepts, and update PROGRESS.md *status*
 
-**`_concept-extraction-standard.md` step 3 owns which field holds the concepts, per PLANNING format.
-Read it rather than assuming a field name** — this ritual and `progress-update` must extract from the
+**`notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md` step 3 owns which field
+holds the concepts, per PLANNING format. Read it rather than assuming a field name** — this ritual and `progress-update` must extract from the
 same place or the two records diverge. For project 07 (Format B) that means the step's
 `**New concepts:**` line, **plus** its `**Concept learned:**` line on the minority of steps that carry
 one, and **never** `**Review concepts:**`, which names concepts an earlier step already introduced.
