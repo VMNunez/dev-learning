@@ -188,8 +188,13 @@ project code and `practice/`, and nothing this skill writes is either.
 invented clause is worse than none because it looks equally checkable. A bare marker is old, not broken.
 If a *new* marker lands on a bullet in a file full of bare ones, that is expected; do not "even them up".
 
-Projects 01–07 predate this mechanism, so their demonstrations are unmarked. Do **not** backfill
-opportunistically while closing a step — a partial backfill is worse than none, because a low count then
-reads as a low-progress signal instead of an incomplete pass. Backfill is a deliberate, project-by-project
-run: for one project, read its README "What I learned" and its PROGRESS.md entries, and mark what the code
-actually demonstrates. If Victor has not asked for it, mention once that it is owed and move on.
+**The 01–07 backfill has largely run** — as of 2026-08-04 there are 533 markers across every project
+(07 281, 01 92, 05 48, 06 42, 02 32, 04 22, 03 16). Do not open a close by offering it as if it were
+pending, and do not read a bare marker, or an unmarked bullet, as proof a project was never backfilled.
+How much remains is unknown per project, so a gap noticed in passing is worth **one** sentence naming
+the project and the bullet — never a pass started mid-ritual.
+
+Backfill stays a deliberate, project-by-project run, and only when Victor asks for one: for that project,
+read its README "What I learned" and its PROGRESS.md entries, and mark what the code actually
+demonstrates. Do **not** backfill opportunistically while closing a step — a partial backfill is worse
+than none, because a low count then reads as a low-progress signal instead of an incomplete pass.
