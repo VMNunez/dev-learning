@@ -1,7 +1,7 @@
 # Last run — `sql-plan-audit`
 
 **Date:** 2026-08-04 · **Target:** `practice/sql/PLANNING.md` + `practice/sql/junior/PLANNING-junior.md` · **Scope:** `full` · **Level:** `junior`
-**Status:** applied in 5d252c6 · cold reviewer: approve-with-tightening
+**Status:** applied in 5d252c6 and 7348bad · cold reviewer: approve-with-tightening (both)
 
 1. **Plan vs reality** — the split held for the three route specialists but **failed on the doctrine**:
    the four `Edits` columns do not partition it, leaving §1, §5–§7, §8c, §9, §10 and §11 with no content
@@ -34,3 +34,14 @@
    restatement of prose already present, substituting a one-word tightening; it also caught that the
    finding's own list of unowned sections omitted §8c, whose "do not delete this section" instruction was
    unexecutable under the old fence. Prompt is 259 lines, under budget, so one-in-one-out did not apply.
+
+   **Second edit (7348bad), found while Victor reviewed the first.** Phase 2's "They all edit the same
+   file, so they **never overlap**" was false and had been before this run: three `Edits` cells share
+   `route §2`, two share `route §1`. I first rejected it under bar condition 3 — no output differed this
+   run — and reversed after Victor pushed. The reversal is recorded here because the reasoning matters
+   more than the edit: **condition 3 governs additions, not corrections of false statements**, and the
+   prompt already institutionalises that distinction by letting the orchestrator fix a verified factual
+   error unilaterally whether or not anything downstream depended on it. The cold reviewer confirmed the
+   category, **cut the drafted 33-word replacement to 15** as a restatement of the Hard rule at line 242,
+   and caught a second falsehood in the same seven words that I had missed: "the same **file**" is
+   singular where two files are open. Applied verbatim as the reviewer wrote it.
