@@ -1,12 +1,15 @@
 # SQL — mistake log
 
-**What this is:** every concept that came back ⚠️ or ❌ in a `sql-exercises MODE = review` run, one
-row each. Written by the prompt, never by hand during a session.
+**What this is:** every concept that came back ⚠️ or ❌ in a grading run (`sql-grade`), one row each,
+plus — since 2026-08-04, in its own section at the bottom — every concept that **cost time without ever
+being marked wrong**, logged by `sql-block-close`. Written by the prompts, never by hand during a
+session.
 
 **Why it exists:** the grading run used to name the conceptual gaps in the chat and nothing kept
-them. `PROGRESS.md` records what was learned; this file records what was *failed*, which is the
-more useful list. It is the `FOCUS` source for every revision batch — see `PLANNING.md` §8b,
-revision points **R1–R5**.
+them. `PROGRESS.md` records what was learned; this file records what was *failed* — and what merely
+*resisted* — which is the more useful list. It is the `FOCUS` source for every revision batch: the
+mechanism is doctrine `PLANNING.md` §8b, and which points exist, what each spans and what fires it are
+the level route's §1 revision table.
 
 **How to read it:** open rows are still owed a re-drill. A row closes only when a later review run
 scores its concept correct again — the closing run appends the date, it is never deleted.
@@ -45,3 +48,33 @@ split — `## Open` drains itself as rows close, and `## Closed` holds one row p
 | Logged | Closed | Times | Step | Coverage section | Concept |
 |--------|--------|-------|------|------------------|---------|
 | — | — | — | — | — | — |
+
+---
+
+## Fricción — lo que costó tiempo y no llegó a fallar
+
+**Written by `sql-block-close` at the end of a block, never by a grader.** The two sections above hold
+what a grading run marked ⚠️ or ❌. This one holds the other half, which nothing else in the track can
+see: **the concept that took twenty minutes, needed the notes open, or was rewritten three times — and
+then came out right.** It scores ✅ like any other exercise and disappears, even though it is precisely
+what stalls a whiteboard round. A ✅ obtained slowly and a ✅ obtained cold are not the same fact.
+
+**A friction row is never owed.** It closes nothing, blocks nothing, and is **not** part of the §11
+closure condition — that clause is about `## Open` rows. Nothing will ever nag about this table.
+
+- **One row per concept per day**, not an incrementing `Times`: the same concept on three consecutive
+  sessions is three rows, and that repetition is the signal. `## Open` counts with `Times`; this counts
+  with rows.
+- **A concept already in `## Open` is not written here.** A graded failure outranks friction — it is
+  already owed a re-drill.
+- **`Step` is level-qualified** (`junior:0`) and **`Coverage section` is verbatim** from
+  `notes/sql/coverage/{LEVEL}.md`, for the same reason as above: it makes the table aggregable and lets
+  a revision point filter it mechanically.
+
+**Who reads it:** a revision point whose span has **no open rows** derives its `FOCUS` from here — the
+concepts of that span that cost time, most recent first — instead of the old fallback, "the concepts
+appearing in the fewest exercises", which was a proxy for nothing.
+
+| Fecha | Step | Coverage section | Concepto | Qué te frenó | Resuelto |
+|-------|------|------------------|----------|--------------|----------|
+| — | — | — | *(nada aún — ningún bloque cerrado con `sql-block-close`)* | — | — |

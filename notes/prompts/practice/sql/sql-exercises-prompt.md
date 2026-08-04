@@ -184,7 +184,7 @@ more. It reads the **`practice` branch** and differs from it in four resolved va
 | `{FILE}` | the `FILE` key — **required here**, since nothing in the route selects it. Blank is an error, not a derivation. The batch appends to that same file, not to an `R{n}-repaso.sql`. |
 | `{COUNT}` | the `COUNT` key if Victor set it; otherwise `8`, as at a revision point. Not budgeted anywhere. |
 | `{REVIEW}` | always `yes` — no Intro tier, 60/40 Standard/Challenge, `[Repaso]` labels, repetition allowed. |
-| `{FOCUS}` | the open `MISTAKES.md` rows for that file's step — matched on the qualified `{LEVEL}:{n}`, never the bare number — highest `Times` first. With none open, the step's `**Concepts:**` that appear in the fewest exercises of the file. Say in one line which case applied. |
+| `{FOCUS}` | the open `MISTAKES.md` rows for that file's step — matched on the qualified `{LEVEL}:{n}`, never the bare number — highest `Times` first. With none open, its `## Fricción` rows for that step, most recent first. With neither, the step's `**Concepts:**` that appear in the fewest exercises of the file. Say in one line which case applied. |
 
 `{TOPIC}` still names the file's topic so the seed block resolves; it selects no step here.
 
@@ -200,10 +200,18 @@ which is the one place this mode is looser than `practice` — there is no targe
 failed three times earns the batch before one failed once — weight the exercise count towards the top
 of that list rather than splitting evenly.
 
-**If the span has no open rows, the point still fires** (§8b is explicit). `{FOCUS}` becomes the
-concepts of that span's steps that have appeared in the fewest exercises — read the route §2 `**Concepts:**`
-lines for those steps and the exercise files themselves. Say in one line which case applied: "R2: 3
-filas abiertas en MISTAKES.md" or "R2: sin filas abiertas — foco por cobertura más fina".
+**If the span has no open rows, the point still fires** (§8b is explicit), and it has a second source
+before it falls back to counting: **the `## Fricción` rows of `MISTAKES.md`** whose `Step` is
+`{LEVEL}:{n}` in the span — concepts that cost Victor time in a block without ever being graded wrong,
+logged by `sql-block-close`, most recent first, and a concept appearing on several dates before one
+appearing once. A ✅ obtained slowly and a ✅ obtained cold are not the same fact, and this is the only
+place the difference is recorded.
+
+Only with neither open nor friction rows does `{FOCUS}` become the concepts of that span's steps that
+have appeared in the fewest exercises — read the route §2 `**Concepts:**` lines and the exercise files.
+That last fallback is a proxy for nothing and is the case to avoid, not the default. Say in one line
+which of the three applied: "R2: 3 filas abiertas en MISTAKES.md", "R2: sin fallos abiertos — foco
+desde `## Fricción` (2 conceptos)", or "R2: sin fallos ni fricción — foco por cobertura más fina".
 
 Print the resolution block with `Punto de repaso {R}` in place of `Step {N}`, and list the concepts you
 took, with their `Times`.

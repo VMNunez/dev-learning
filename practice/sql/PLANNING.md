@@ -232,6 +232,25 @@ asked for. The one thing to check is its report table — a skipped item is stat
 
 ---
 
+### Moment 6 — End the block  ▶ RUN A SKILL
+
+**Trigger:** the hour is over, in whatever state the file is. **This is not Moment 5**: a step closes
+thirteen times at junior, a block ends every day, and almost always mid-file.
+**Skill:** `sql-block-close`. Say "cierro el bloque" and nothing else.
+
+It writes exactly one thing — the **`## Fricción` rows of `MISTAKES.md`**: the concepts that cost you
+time today and were never marked wrong. It asks you nothing; it takes them from what you already said
+while working. Everything else it does is read-only: today's delta, and where tomorrow starts in the
+shape `sql-block-open` will print it, so tomorrow's opener confirms rather than rediscovers.
+
+**Why a whole Moment for it.** Between Moment 3 and Moment 4 the track sees nothing. The grader records
+only what came back ⚠️/❌, so the concept you rewrote three times, or looked up in the notes, and then
+got right, scores ✅ and disappears — and it is the one that stalls a whiteboard round. A ✅ obtained
+slowly and a ✅ obtained cold are not the same fact. Skipping this Moment costs nothing today and
+returns an empty `FOCUS` at the next revision point whose span you happened to pass.
+
+---
+
 ## Section 3 — Done-condition format
 
 Every done condition in §0 and in a level’s route §2 uses **one** of these four formats exactly. Nothing else is valid —
@@ -268,14 +287,22 @@ done condition here.
 
 ## Section 4 — Step-complete ritual
 
-**The ritual is a skill, and the skill is the only way it is run.** Three of them cover the track, and
-they hand off to each other in one direction — you never invoke the second or the third yourself:
+**The ritual is a skill, and the skill is the only way it is run.** Four of them cover the track, and
+they hand off in one direction — you never invoke `sql-step-close` yourself:
 
 | Skill | Fires when | What it owns |
 |---|---|---|
 | `sql-block-open` | you start the 12:30 block | read-only orientation: current step, unanswered exercises, open `MISTAKES.md` rows, which Moment is next. Writes nothing. |
 | `sql-grade` | you finished answering a file | grades it, then the traffic light: failures → back to fixing; clean → hands off to `sql-step-close` **only if this was the step's last file** |
 | `sql-step-close` | handed the step by `sql-grade` | the closing ritual below, end to end, without asking anything |
+| `sql-block-close` | you end the block, whatever state it is in | the `## Fricción` rows of `MISTAKES.md` and where tomorrow starts. Writes no counter and closes no step. |
+
+**Two of these close different things, and conflating them is the mistake to avoid.** A *step* closes
+when its exercises are scored — rarely, thirteen times at junior. A *block* ends every single day,
+almost always mid-file. `sql-block-close` exists because everything between those two events used to be
+lost: the grader records only what came back ⚠️/❌, so a concept that cost twenty minutes and then came
+out right scored ✅ and vanished. That concept is the one that stalls an interview, and §8b's revision
+points now read it (`## Fricción`) when a span has no graded failures left.
 
 `sql-grade` does not re-implement grading: it runs
 `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` **in a cold subagent**, which is where
@@ -391,8 +418,16 @@ least one point every three files of the route §1, plus the two structural exce
 Every revision point runs Moment 2b with its `FOCUS` taken from the **open rows of
 `practice/sql/MISTAKES.md`** for the files in its span — the written record of what was actually
 answered wrong. Not "what feels rusty". **Order them by `Times` descending**: the concept failed three
-times earns the batch before the one failed once. If a span has no open rows, the point still fires, and `FOCUS`
-becomes the concepts of those files that have appeared in the fewest exercises.
+times earns the batch before the one failed once.
+
+If a span has no open rows the point still fires, and it has a **second record before it starts
+guessing: the `## Fricción` rows** of the same file, written by `sql-block-close` — concepts that cost
+time in a block and were never graded wrong, most recent first. A ✅ obtained slowly and a ✅ obtained
+cold are not the same fact, and until 2026-08-04 nothing in this track could tell them apart: the
+grader only ever sees what came back ⚠️/❌, so the concept you fought for twenty minutes and then got
+right left no trace at all. Only with neither open nor friction rows does `FOCUS` fall back to the
+concepts of those files that have appeared in the fewest exercises — a proxy for nothing, and the case
+to avoid rather than the default.
 
 **Y esto es ejecutable, no una intención.** Pegas `TOPIC = R2` y el prompt hace exactamente lo de
 arriba: filtra `## Open` por la columna `Step`, ordena por `Times`, y escribe en `R2-repaso.sql`. Los
