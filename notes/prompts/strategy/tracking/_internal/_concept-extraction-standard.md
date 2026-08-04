@@ -40,8 +40,8 @@ decide which one applies before extracting anything:
 
 - **Format A** — has a **"Key patterns introduced"** table (`| Pattern | Where used |`), no numbered
   Section 3. Angular projects 01–06.
-- **Format B** — has a **"Progressive learning plan"** where each step ends with a
-  `**Concept learned:**` line, no numbered Section 3. Project 07 and any project without a Section 3.
+- **Format B** — has a **"Progressive learning plan"** where each step carries a `**New concepts:**`
+  line, no numbered Section 3. Project 07 and any project without a Section 3.
 - **Format C** — has a numbered **Section 3 ("New concepts")** table
   (`| Concept | Topic | Why this project teaches it |`) plus a **Section 15** learning plan whose
   steps list which Section 3 concepts they introduce. Projects 08+.
@@ -80,7 +80,16 @@ low-confidence statuses in its report.
 - **Format A:** every row of "Key patterns introduced" is one concept. Also scan "Key features" and
   "State management" — they sometimes name patterns (e.g. `localStorage + effect()`,
   `computed()` for derived values) not listed in the patterns table.
-- **Format B:** for each completed step, take the concepts from its `**Concept learned:**` line.
+- **Format B:** for each completed step, take the concepts from its **`**New concepts:**` line — that
+  is the field every step carries, and it is the primary source.** Two neighbouring fields exist and
+  are not interchangeable with it:
+  - `**Concept learned:**` — a *retrospective addendum*, written after the step was built, on the
+    minority of steps where what the code taught diverged from what was planned (project 07 has it on
+    2 steps of 11). When a step has one, extract it **in addition to** `New concepts:` — it is the
+    richer source, and it names things the plan did not anticipate. Never treat its absence as the
+    step having no concepts.
+  - `**Review concepts:**` — concepts *re-applied* from an earlier step, not introduced here. Never
+    extract these: the concept already entered the record when the step that introduced it closed.
 - **Format C:** for each completed step in Section 15, take its "New concepts introduced" list, which
   references Section 3 rows.
 
