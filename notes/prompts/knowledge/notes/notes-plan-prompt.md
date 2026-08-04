@@ -197,9 +197,9 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
 
 ## Cold pedagogical review
 
-After drafting or reconciling the complete plan, dispatch one cold reviewer. Give it only the selected
-coverage, `_note-quality-standard.md`, existing note headings, and the proposed plan. It does not edit
-files. It must challenge:
+After drafting or reconciling the complete plan, dispatch **one cold reviewer**, `reasoning tier: deep`,
+`execution: foreground`. Give it only the selected coverage, `_note-quality-standard.md`, existing note
+headings, and the proposed plan. It does not edit files. It must challenge:
 
 - for junior, whether `00` fulfils the complete topic-introduction contract;
 - whether every learning outcome is achievable from the declared prerequisites;
