@@ -48,8 +48,12 @@ A backlog-task fix *is* code Victor wrote, so it does earn the marker.
 ## 2 — Find the bullet, in the right topic and level
 
 Route the concept to its owning `notes/` topic with **`_topic-ownership.md`**. The test is **altitude, not subject
-matter** — the same rule `backlog-task-close` step 1 applies, and if that ritual is what called you, reuse
-the topic it already determined rather than re-deriving it.
+matter** — the same rule `coverage-bullet-add` applies.
+
+**When a ritual called you — `backlog-task-close` or `step-complete`, either one — reuse the topic that
+`coverage-bullet-add` reported in the same run rather than re-deriving it.** The bullet was authored
+under that topic; re-deriving here is how a marker goes looking for a bullet in a topic that never
+received it, and reports "no bullet exists" for one written minutes earlier.
 
 If that topic's selected Coverage tracker cell has no completed run, stop: its files are scaffolding and
 there is no calibrated bullet to mark. Route the concept through `coverage-bullet-add`; the first

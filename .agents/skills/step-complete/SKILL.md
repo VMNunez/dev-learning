@@ -124,8 +124,9 @@ curriculum should absorb — a step that discovers a real concept and leaves no 
 ritual exists to close. Authoring stays inside the skill, under the coverage standard's contract; this
 ritual never writes a bullet inline.
 
-**3b — Mark it as demonstrated.** **Invoke the `coverage-mark` skill** with the same concepts, topic, level,
-and the project's folder name. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and
+**3b — Mark it as demonstrated.** **Invoke the `coverage-mark` skill** with the same concepts, **the topic
+`coverage-bullet-add` reported in 3a** (not a technology label, and not a topic re-derived here — the bullet
+was authored under that one), the level, and the project's folder name. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and
 the mirror, so the coverage file records how much of the hiring floor Victor can *prove* and not only what
 he planned. This runs on the already-covered path too — that is precisely where a close would otherwise
 leave no trace.
