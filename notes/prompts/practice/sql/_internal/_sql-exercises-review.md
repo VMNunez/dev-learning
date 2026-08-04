@@ -497,26 +497,34 @@ If every attempted exercise was ✅, skip the appending half but still run the c
 2026-07-14 — study materials follow the active branch; `main` only receives merges via PR). No
 branch switch, no separate SQL branch.
 
-**These are Victor's files — never run the commit yourself.** Print the commands below for him to
-copy-paste; `practice/sql/` and `practice/simulations/` are his work, outside every auto-commit
-exception.
+**The boundary is authorship, not the folder.** The exercise file is Victor's work even after you
+annotate it — the `-- ✅ Corregido` markers are an annotation on his answers, not authorship of them —
+so **he** commits it. The doc files you rewrote in Steps 4 and 5 were written by this run, not by him,
+so they are **not** his to commit and you must not hand him a command for them.
 
-List only files that were actually modified. Always one command per code block.
-
-Use the exact `{FILE}` path the shell resolved (under Resolution) for {TOPIC} — not `sql/{TOPIC}/`:
+**Print exactly one pair of commands, for the exercise file only.** Use the exact `{FILE}` path the
+shell resolved (under Resolution) for {TOPIC} — not `sql/{TOPIC}/`:
 
 ```
-git add [exact path from Step 4 table] PROGRESS.md practice/sql/{LEVEL}/PLANNING-{LEVEL}.md
-```
-
-If Step 5 touched the mistake log:
-```
-git add practice/sql/MISTAKES.md
+git add [exact {FILE} path from Step 4 table]
 ```
 
 ```
-git commit -m "docs: SQL {TOPIC} review — [X/Y correct], [main gap or 'all solid']"
+git commit -m "docs(sql): grade {FILE} — [X/Y correct]"
 ```
+
+**The doc files go back to your caller, uncommitted.** You run inside a subagent with no branch
+context of your own; the skill that invoked you (`sql-grade`) owns their commit. End your report with
+the exact list of what you modified, so it can stage them without re-deriving it:
+
+- `PROGRESS.md`
+- `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
+- `practice/sql/PLANNING.md` — **only if 4d fired.** Name it explicitly when it did. It is the one file
+  a caller does not expect to have changed, and the one `sql-block-open` reads first the next morning;
+  omitted from this list, its rewritten §0 is simply never committed.
+- `practice/sql/MISTAKES.md` — only if Step 5 touched it.
+
+List only files actually modified. Do not list files you merely read.
 
 ---
 
