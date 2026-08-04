@@ -258,7 +258,6 @@ lanza otro `practice` sobre este archivo.
 
 **Pending additions:** none
 
-**Q&A seed:** *why does an alias defined in `SELECT` work in `ORDER BY` but raise an error in `WHERE`?*
 **Done:** `Review: sql-grade scores ≥ 80% on 02-execution-order-set-ops.sql`
 
 ---
@@ -312,7 +311,6 @@ Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 es
 
 **Pending additions:** none
 
-**Q&A seed:** *write the query for "every author, including those with no books", then describe the row it returns for an author who has none.*
 **Done:** `Review: sql-grade scores ≥ 80% on 03-joins.sql`
 
 > Revision point **R1** (doctrine §8b) fires here, and it is the one with the most behind it: 52
@@ -359,7 +357,6 @@ with `CASE WHEN` and `FILTER (WHERE ...)`, `STRING_AGG`.
 
 **Pending additions:** none
 
-**Q&A seed:** *`WHERE` vs `HAVING` — which runs first, and why can't `WHERE` use `COUNT(*)`?*
 **Done:** `Review: sql-grade scores ≥ 80% on 04-aggregates.sql`
 
 ---
@@ -397,7 +394,6 @@ debugged a wrong report", and burying them inside the aggregation step loses the
 
 **Pending additions:** none
 
-**Q&A seed:** *a report total comes back exactly double the real number. What is the first thing you check?*
 **Done:** `Review: sql-grade scores ≥ 80% on 05-join-pitfalls.sql`
 
 ---
@@ -427,7 +423,6 @@ describing one he has not met — and `NOT IN` with a `NULL` is a standard scree
 
 **Pending additions:** none
 
-**Q&A seed:** *evaluate `WHERE price = NULL` step by step, and say what the query returns and why.*
 **Done:** `Review: sql-grade scores ≥ 80% on 06-nulls.sql`
 
 > **This closes the screening core.** Steps 1–4 are what a quickfire round asks — which is why
@@ -467,7 +462,6 @@ and why they do not scale, `WITH` and chained CTEs, `CREATE VIEW`.
 
 **Pending additions:** none
 
-**Q&A seed:** *rewrite a three-level nested subquery as chained CTEs, and say what that changes about how PostgreSQL runs it.*
 **Done:** `Review: sql-grade scores ≥ 80% on 07-subqueries-ctes.sql`
 
 ---
@@ -508,7 +502,6 @@ the capstone because a live exercise stalls on a raw `TIMESTAMP` long before it 
 
 **Pending additions:** none
 
-**Q&A seed:** *build a monthly total from a raw `TIMESTAMP` column. Which function, and why not `EXTRACT`?*
 **Done:** `Review: sql-grade scores ≥ 80% on 08-dates-strings.sql`
 
 ---
@@ -537,7 +530,6 @@ default frame, "the second highest value".
 
 **Pending additions:** none
 
-**Q&A seed:** *"the latest entry per user" — write the shape of the query and explain why you need a subquery around it.*
 **Done:** `Review: sql-grade scores ≥ 80% on 09-window-functions.sql`
 
 > Revision point **R3** (doctrine §8b) fires here: subqueries, dates and windows now sit on a core that
@@ -585,7 +577,6 @@ One step because in practice you learn transactions by wrapping a destructive `U
 
 **Pending additions:** none
 
-**Q&A seed:** *what happens if the second `save()` fails inside a `@Transactional` method, and what SQL is Spring actually issuing?*
 **Done:** `Review: sql-grade scores ≥ 80% on 10-dml-transactions.sql`
 
 ---
@@ -634,7 +625,6 @@ reading a schema's grain, and storing each fact once so an update cannot leave t
 
 **Pending additions:** none
 
-**Q&A seed:** *explain the TimeTrack data model out loud in three sentences, then say where each foreign key lives and why it cannot go on the other side.*
 **Done:** `Review: sql-grade scores ≥ 80% on 11-schema-design.sql`
 
 ---
@@ -679,7 +669,6 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 
 **Pending additions:** none
 
-**Q&A seed:** *name the type you would give every column of a `time_entries` table, and defend `NUMERIC` over `FLOAT` for the hours column.*
 **Done:** `pgAdmin: after 12-data-types-ddl.sql runs on an empty database, SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' returns users, projects and time_entries`
 
 ---
@@ -710,7 +699,6 @@ index, composite index column order, non-sargable predicates, leading-wildcard `
 
 **Pending additions:** none
 
-**Q&A seed:** *your two-column index on `(user_id, work_date)` is being ignored by a query filtering only on `work_date`. Why?*
 **Done:** `pgAdmin: EXPLAIN SELECT * FROM time_entries WHERE work_date = '2026-08-01' returns Seq Scan before CREATE INDEX and Index Scan after`
 
 ---
@@ -747,7 +735,6 @@ The one step where you deliberately leave pgAdmin: a server does not have a GUI,
 
 **Pending additions:** none
 
-**Q&A seed:** *`relation "users" does not exist` — name the three real causes.*
 **Done:** `Terminal: \dt inside psql produces the list of TimeTrack tables`
 
 > Revision point **R5** (doctrine §8b) fires here, over two files rather than three: the capstone that
@@ -790,7 +777,6 @@ for the four classic failures — join, predicate, mutation and pagination.
 
 **Pending additions:** none
 
-**Q&A seed:** *a report total comes back 12% higher than the control query at the same grain. Walk through how you find where it entered.*
 **Done:** `Timed: 3 queries from prose in under 10 minutes each, no reference open`
 
 ---
