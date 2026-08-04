@@ -10,7 +10,7 @@ that is reference-only lives in its own file and is linked from here.
 
 - **Explain before any code** — never hand over full code unprompted (classes, methods, config, even a dependency snippet). Concept first, let Victor try; give the code at once if he explicitly asks for it.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
-- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit` and the `backlog-task-close` skill, never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **The boundary is authorship, not folder: anything Victor produces himself — project code, and everything under `practice/` (SQL exercises, simulations, leetcode) — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery the agent writes (notes, prompts, skills, commands, session rules, tracking docs), never his work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
+- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill, never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **The boundary is authorship, not folder: anything Victor produces himself — project code, and everything under `practice/` (SQL exercises, simulations, leetcode) — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery the agent writes (notes, prompts, skills, commands, session rules, tracking docs), never his work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
 - **A skill edited in one adapter is edited in both** — `.claude/skills/` and `.agents/skills/` are mirrors of the same file, read by Claude Code and Codex respectively, and neither is the source of truth. Writing or changing a `SKILL.md` means writing the identical file to the other adapter in the **same commit**; adding a new skill means creating it in both. They drifted silently between 2026-07-30 and 2026-08-01 because only the Claude copy was edited, which left Codex running a ritual two revisions old — a mirror that is stale is worse than one that is missing, because nothing announces it. Verify before committing: `diff` the pair for every skill touched. (Launchers are *not* mirrored: `.claude/commands/` and `.codex/commands/` are genuinely platform-specific.)
 - **Never redirect** — don't comment on time spent or push Victor to "move on"; he decides what to work on.
 - **Do not correct his English during study sessions** — paused 2026-07-14 while sessions run in Spanish; see Language rules.
@@ -142,19 +142,41 @@ git commit -m "type: description"
 (The platform's `step-complete` skill fires on this event and walks this exact checklist —
 plus the README standard, which does not auto-load. This section remains the source of truth.)
 
+- **The step's `**Done condition:**` passed, clause by clause** — this is the *trigger* of the ritual
+  (PLANNING §23 gate G1), not a formality: a step is complete when its stated assertions were run, never
+  when the code merely compiles or feels finished. A clause that was never checked is checked now.
 - `PROGRESS.md` — **status only, never a concept list** (changed 2026-08-03: the per-technology concept
   sections were deleted because they duplicated the coverage files without evidence). Update the
   project's row in the `## Projects` table — its `Status` cell carries the step detail (e.g.
-  "In progress ⏳ — Steps 1–6 done, Step 7 next") — and the
-  `Coverage demonstrated` percentages if new markers were added. The concepts themselves go to the
-  coverage files below and nowhere else — never re-create a "## Angular"-style list of concepts here.
-- `notes/{topic}/coverage/{level}.md` **+ its global mirror `notes/coverage/{level}.md`** — append the
-  ` ✅ NN-slug — {evidence}` evidence marker to the bullet of every concept the step demonstrated in code, `NN-slug`
-  being the project's folder name (`07-timetrack`). The platform's `coverage-mark` skill owns this; the contract is "Evidence markers" in
-  `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`. Marking never adds a bullet — a
-  concept with no bullet is reported as a possible gap and left to `coverage`.
-- `projects/0X-projectname/README.md` — update the "What I learned" section
-- `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed
+  "In progress ⏳ — Steps 1–6 done, Step 7 next") — and the `Professional level by topic` evidence cell
+  if the step earns it. **The `Coverage demonstrated` table is not edited by the ritual**: the coverage
+  skills below recount and rewrite their own cells plus the `Total` row with their write, and two
+  writers on one table means the memory-derived copy overwrites the recounted one. The concepts
+  themselves go to the coverage files and nowhere else — never re-create a "## Angular"-style list here.
+- `notes/{topic}/coverage/{level}.md` **+ its global mirror `notes/coverage/{level}.md`** — **both halves
+  of the coverage contract, in this order** (changed 2026-07-30):
+  1. **Author the missing bullet** — a concept the step taught that the checklist does not have is
+     written into it, in concept form, by the `coverage-bullet-add` skill. A step that discovers a real
+     concept and leaves no bullet behind is the gap this closes; it supersedes the earlier rule that
+     only ever *flagged* the gap and left it to a `/coverage` run.
+  2. **Mark it demonstrated** — append the ` ✅ NN-slug — {evidence}` evidence marker to the bullet of
+     every concept the step demonstrated in code, `NN-slug` being the project's folder name
+     (`07-timetrack`), via the `coverage-mark` skill. This runs on the already-covered path too. The
+     contract is "Evidence markers" in
+     `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`.
+
+  The two stay separate: **marking never authors a bullet, and authoring never writes a marker.** A new
+  bullet a `/notes-plan` remap owes is reported and flagged in `_run-tracker.md`, never remapped by hand.
+- `projects/0X-projectname/README.md` — the concept's entry, routed **by audience** to the global /
+  backend / frontend README by the `readme-concept-add` skill under the README standard. "What I learned"
+  exists **only in the global README**; a tier-level concept lands in that tier's "Key patterns", and a
+  convention deliberately kept lands in "Tradeoffs". Never assume the section — the standard owns it.
+- `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed. On a **split step**, the ✅ goes on the sub-step (`#### Step 7a … ✅`) and the parent stays unmarked until every child has one.
+- `projects/0X-projectname/PLANNING.md` **§0 Session quick reference** — repoint it at the *next* step:
+  current step, branch, the next step's done condition verbatim, next gate, and `Last updated`. Nothing
+  else in the system writes §0, and it calls itself the authoritative pointer to the live step, so a
+  ritual that skips it leaves the next session opening on a finished step. If the close made a §23 gate
+  due, say so and name the prompt that gate runs.
 - When a project is fully done, remind Victor to update the "Current study progress" section in this file and the project table in PROGRESS.md
 
 **Interview-prep is not part of this ritual** (dropped 2026-07-13) — do not add interview questions automatically on step completion. Add them only when Victor asks, in session, or via `interview-prep-audit`.
@@ -163,15 +185,27 @@ plus the README standard, which does not auto-load. This section remains the sou
 
 (The platform's `backlog-task-open` skill fires on this event. Added 2026-08-01.)
 
-A backlog task is written by `review-audit`, which reads the **code** and never reads `PLANNING.md`,
-the closed ledger, or Victor's level and interview target. So every task is a *hypothesis about the
-code*, not a ruling about the project, and it is validated before anything is taught or written:
-read the code it names, the PLANNING section that governs it, the `## Closed` ledger, and every other
-consumer of the thing being changed. Reach one of four verdicts — valid as written, valid with a
-corrected scope, valid but the wrong moment, or a false positive — and state the evidence for it. A
-false positive is not fixed; it goes to the ledger as `DECISION, no code change` with the reason, which
-is what stops the next review re-raising it. Only after a verdict does the normal teach-first
-explanation begin.
+A backlog task is written by `review-audit`, which reads the **code** but reads `PLANNING.md` only in
+slices, and never the closed ledger or Victor's level and interview target. So every task is a
+*hypothesis about the code*, not a ruling about the project, and it is validated before anything is
+taught or written: read the code it names, the PLANNING section that governs it, the `## Closed` ledger,
+every other consumer of the thing being changed, and the other open tasks. Reach one of **five**
+verdicts — valid as written, valid with a corrected scope, valid but the wrong moment, already resolved
+by later work, or a false positive — and state the evidence for it.
+
+Three of those five write something, and each writes somewhere different:
+
+- **wrong moment → deferred** — the task stays open with a `⏸ Deferred YYYY-MM-DD — <reason>` marker on
+  its line naming **the gate that makes it due**, so it is not re-triaged from scratch next session.
+  That marker is this skill's only write, and it is committed, not left in the working tree.
+- **already resolved** — nothing is fixed and the concept is not taught as pending; it goes to
+  `backlog-task-close`, whose ledger line names the commit that fixed it. It is **not** a false
+  positive: the finding was real, so recording it as one would tell the next reviewer the code was
+  always right.
+- **false positive** — not fixed; to the ledger as `DECISION, no code change` with the reason, which is
+  what stops the next review re-raising it.
+
+Only after a verdict does the normal teach-first explanation begin.
 
 ### After every `PROJECT-BACKLOG.md` task is closed — the same discipline, one level down
 
@@ -183,16 +217,25 @@ pushing it back into the artefacts that did not know about it. Checking the box 
 never the only one:
 
 - `notes/{topic}/coverage/{level}.md` — if the concept is missing, add it, in concept form (never
-  "what Victor did in project 07"). Route the topic with the concept-extraction standard.
+  "what Victor did in project 07"), via `coverage-bullet-add`. Route the topic by **altitude** with
+  `_topic-ownership.md` — not with the concept-extraction standard's mapping table, which routes to a
+  PROGRESS.md section and files access-control concepts under `spring-boot` when `notes/security/` owns
+  them.
 - the same coverage bullet, **marked ` ✅ NN-slug — {evidence}`** with the project's folder name when the fix is code Victor wrote
   — on the "already covered" path too, which is the common one. A design decision with no code change
-  demonstrates nothing and is left unmarked. Same contract and same `coverage-mark` skill as above.
-- `projects/0X-name/README.md` — a short bullet in "What I learned", only if not already represented
+  demonstrates nothing and is left unmarked; an **already-resolved** task *is* marked, because code was
+  written, just in an earlier session. Same contract and same `coverage-mark` skill as above.
+- `projects/0X-name/README.md` — the concept's entry, routed **by audience** by `readme-concept-add`. A
+  backlog concept is almost always tier-level, so "Key patterns" in the tier README is the expected
+  answer and "What I learned" (global README only) is the exception, not the default.
 - `projects/0X-name/PLANNING.md` — if the concept belongs to the project's engineering contract, add it
   to the **rules section** it belongs to; never invent a retroactive step
-- `PROGRESS.md` — **status only** (see the rule above): the project's step/status line and the
-  `Coverage demonstrated` percentages if the close added markers. The concept itself lives in the
-  coverage file, not here.
+- `projects/0X-name/PLANNING.md` **§0** — `Last updated` on every close without exception, plus any cell
+  the close made false: `Current step` when the task was gating the next §15 step, `Next gate` and
+  `Done condition` when it was the last open **High** and a gate's sign-off condition is now met.
+- `PROGRESS.md` — **status only** (see the rule above): the `Professional level by topic` evidence cell
+  when the fix earns it. The `Coverage demonstrated` table belongs to the coverage skills, which recount
+  it from the files; the concept itself lives in the coverage file, not here.
 - `PROJECT-BACKLOG.md` — **only then** remove the verbose task entry and collapse it into one dated
   line in the `## Closed` ledger, ending in `→ where the concept landed`. This is what stops the
   backlog growing without bound. The ledger is append-only; a design decision closed with no code
