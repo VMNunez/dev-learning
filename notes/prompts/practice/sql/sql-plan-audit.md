@@ -107,7 +107,7 @@ it disagrees with it.
 
 ## Phase 2 — Specialists, one concern each, sequential
 
-They all edit the same file, so they **never overlap**. Dispatch in **this order — 2 → 1 → 3 → 4** —
+They edit the same two files, so they own **one concern each, never a section each**. Dispatch in **this order — 2 → 1 → 3 → 4** —
 waiting for each. None commits. `SCOPE = extend` runs the first two only, so it is a strict prefix of
 a full run, not a different sequence.
 
