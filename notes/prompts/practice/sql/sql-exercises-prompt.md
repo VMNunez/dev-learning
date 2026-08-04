@@ -153,9 +153,16 @@ the resulting file like any other.
 | `{FILE}` | the path table above: `practice/sql/{LEVEL}/R{n}-repaso.sql`. Its own file, never appended to a first-pass file — a repaso batch is uncounted (route §1) and mixing it into a step's file corrupts that step's score. |
 | `{COUNT}` | `8`, unless Victor overrode it. Revision batches are not budgeted in route §1. |
 | `{REVIEW}` | always `yes`. |
-| `{FOCUS}` | **the open rows of `practice/sql/MISTAKES.md` whose `Step` falls in the span**, ordered by `Times` descending. This is the whole point of the mechanism: the batch drills what the record says was answered wrong, not what feels rusty. |
+| `{FOCUS}` | **the open rows of `practice/sql/MISTAKES.md` whose `Step` is `{LEVEL}:{n}` with `n` in the span**, ordered by `Times` descending. This is the whole point of the mechanism: the batch drills what the record says was answered wrong, not what feels rusty. |
 
-Spans: `R1` → steps 0–1 · `R2` → steps 2–4 · `R3` → steps 5–7 · `R4` → steps 8–10 · `R5` → steps 11–12.
+Spans (junior): `R1` → steps 0–1 · `R2` → steps 2–4 · `R3` → steps 5–7 · `R4` → steps 8–10 · `R5` → steps 11–12.
+
+**Match the level, not just the number.** `MISTAKES.md` is one file for every level by design — a
+concept failed at junior and again at middle increments one row instead of opening two, and that
+recurrence is what the log is for. The cost is that `Step` numbers restart at 0 in each level and the
+R spans belong to the route, so `R2` at middle and `R2` at junior both claim "steps 2–4". Filter on the
+qualified value: at `{LEVEL} = junior`, `junior:3` is in span and `middle:3` is not. A filter written
+against the bare number drills another level's failures and looks completely normal doing it.
 
 ### `MODE = reinforce` — extra practice on one file, asked for on the day
 
@@ -167,7 +174,7 @@ more. It reads the **`practice` branch** and differs from it in four resolved va
 | `{FILE}` | the `FILE` key — **required here**, since nothing in the route selects it. Blank is an error, not a derivation. The batch appends to that same file, not to an `R{n}-repaso.sql`. |
 | `{COUNT}` | the `COUNT` key if Victor set it; otherwise `8`, as at a revision point. Not budgeted anywhere. |
 | `{REVIEW}` | always `yes` — no Intro tier, 60/40 Standard/Challenge, `[Repaso]` labels, repetition allowed. |
-| `{FOCUS}` | the open `MISTAKES.md` rows for that file's step, highest `Times` first. With none open, the step's `**Concepts:**` that appear in the fewest exercises of the file. Say in one line which case applied. |
+| `{FOCUS}` | the open `MISTAKES.md` rows for that file's step — matched on the qualified `{LEVEL}:{n}`, never the bare number — highest `Times` first. With none open, the step's `**Concepts:**` that appear in the fewest exercises of the file. Say in one line which case applied. |
 
 `{TOPIC}` still names the file's topic so the seed block resolves; it selects no step here.
 
@@ -178,7 +185,8 @@ exactly what must not be reopened by drilling it. A missing `{PLAN}` step is not
 which is the one place this mode is looser than `practice` — there is no target to plan against.
 
 **Read `practice/sql/MISTAKES.md` before anything else on these runs**, take the `## Open` rows whose
-`Step` is in the span, and build `{FOCUS}` from their `Concept` cells, highest `Times` first. A concept
+`Step` is `{LEVEL}:{n}` with `n` in the span, and build `{FOCUS}` from their `Concept` cells, highest
+`Times` first. A concept
 failed three times earns the batch before one failed once — weight the exercise count towards the top
 of that list rather than splitting evenly.
 

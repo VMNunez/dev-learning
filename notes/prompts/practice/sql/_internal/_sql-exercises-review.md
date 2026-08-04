@@ -464,8 +464,13 @@ that all failed on `WHERE` vs `HAVING` are one row, with all three numbers in `E
   `Last seen` to today, append the new exercise numbers, and raise `Sev` to ❌ if this run was worse.
   Recurrence is the whole point of the column — a second row destroys it.
 - **`Sev`** is the worst grade the concept has ever received, not this run's.
-- **`Step`** is the plan step number the reviewed file belongs to — the `{PLAN}` §2 step that claims
-  `{TOPIC}`. A bare number (`4`), not a name, so a revision point can filter its span mechanically.
+- **`Step`** is the plan step the reviewed file belongs to — the `{PLAN}` §2 step that claims
+  `{TOPIC}` — **qualified by its level**: `{LEVEL}:{n}`, e.g. `junior:4`. Never a bare number and never
+  a name, so a revision point can filter its span mechanically. The prefix is mandatory even while
+  `junior` is the only level on disk: step numbers restart at 0 in every level and the R spans belong
+  to the route, so an unqualified `4` is a collision waiting for `middle` to exist, and by then the
+  rows are already written. If you meet legacy rows with a bare number, leave them — a repair pass is
+  not this run's job — but say so in one line so it can be scheduled.
 - **The `## Closed` table has six columns** — `Logged | Closed | Times | Step | Coverage section |
   Concept`. Moving a row drops `Sev`, `What went wrong` and `Exercises` and adds `Closed`; carry the
   other five across verbatim.
