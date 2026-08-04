@@ -160,8 +160,9 @@ taught. Fold its report rows into this ritual's final table.
 ## 5 — PLANNING §0: repoint the session quick reference
 
 §0 calls itself *"the authoritative pointer to the live step"*, and completing a step is the single
-event that invalidates every one of its cells. Nothing else in the system writes it — `progress-update`
-reads PLANNING, it does not repair it — so a §0 left stale after a close stays stale until someone
+event that invalidates every one of its cells. Nothing else writes it **in a daily session** —
+`progress-update` reads PLANNING and does not repair it, and `plan-audit` rewrites §0 only inside a G2
+plan pass — so a §0 left stale after a close stays stale until someone
 notices by hand, and the next session opens on a pointer that names a step already finished.
 
 Rewrite these cells, and only these:

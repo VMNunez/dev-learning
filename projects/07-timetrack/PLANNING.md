@@ -7,7 +7,9 @@ Managers review the entries and approve or reject them.
 
 ## 0. Session quick reference
 
-Update this table at the start of every session. It is the authoritative pointer to the live step.
+Read this table at the start of every session — it is the authoritative pointer to the live step. It is
+written by the closing rituals (`step-complete` repoints every cell, `backlog-task-close` refreshes what
+a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do not hand-edit it here.
 
 | | |
 |---|---|

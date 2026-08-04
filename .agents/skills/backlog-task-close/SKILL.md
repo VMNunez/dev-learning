@@ -179,8 +179,9 @@ When you do edit PLANNING.md, keep it to the plan's own voice and format; do not
 
 §0 calls itself *"the authoritative pointer to the live step"*, and during a backlog-fix branch **the
 backlog is the live work** — §0's `Current step` reads `G3 backend backlog fix (not a §15 step)`
-precisely because that is where the project is. Nothing else in the system writes this table, so a run
-of closes that never touches it leaves the pointer dated to the first one.
+precisely because that is where the project is. Nothing else writes this table in a daily session
+(`plan-audit` rewrites it only inside a G2 plan pass), so a run of closes that never touches it leaves
+the pointer dated to the first one.
 
 Unlike `step-complete`, most closes move only part of it. Check each cell and change only what the
 close made false:
