@@ -9,7 +9,8 @@ description: >
   block starting with ten minutes of re-reading a 1000-line plan, or worse, starting on the wrong file
   because §0 was stale. It is READ-ONLY: it writes no file, commits nothing, and refuses no work. Do
   NOT use it to generate exercises (/sql-exercises), to grade (sql-grade), to close a step
-  (sql-step-close), or to update §0 — a stale §0 is reported, never silently repaired.
+  (sql-step-close), to end the block (sql-block-close), or to update §0 — a stale §0 is reported, never
+  silently repaired.
 ---
 
 # Open the SQL block (read-only)
@@ -30,7 +31,8 @@ line and name the skill that owns the repair — `sql-grade` for counters, `sql-
 - `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §2 and §3 — the current step and its real status. If this
   file does not exist, stop and say: "No existe la ruta de {LEVEL}. Corre `/sql-plan {LEVEL}`."
 - the current exercise file itself — the ground truth, and the only thing that cannot be stale.
-- `practice/sql/MISTAKES.md` — the open rows.
+- `practice/sql/MISTAKES.md` — the `## Open` rows, and the most recent `## Fricción` ones (what cost
+  him time without ever being graded wrong).
 
 **Prefer the file over the plan.** §0 is a copy; the `.sql` file is the fact. When they disagree, report
 the disagreement rather than picking a winner.
@@ -64,7 +66,7 @@ that has nothing to do with SQL.
 
 ---
 
-## 2 — Surface the open mistakes
+## 2 — Surface the open mistakes, and yesterday's friction
 
 The three or four open rows of `MISTAKES.md` with the highest `Times`, one line each: concept and what
 went wrong. Not the whole table.
@@ -73,9 +75,18 @@ This is the one piece of the block that is genuinely easy to forget: a failed co
 rusty, it feels learned. Naming them at the start of the block is the cheap version of the revision
 point.
 
+**Then the most recent `## Fricción` rows** — what cost him time in the last block or two without ever
+being graded wrong (written by `sql-block-close`). One line, prefixed `Ayer te frenó:`. It is the
+cheapest possible intervention: the concept is named while the file is still open in front of him, and
+it is the one class of weakness no grader can report.
+
 If a revision point is due, say which one, in one line, as **available** — never as owed. Read the
 points from the level's route §1 revision table (its span and its trigger); doctrine §8b owns only the
 cadence rule, not which points exist. He decides when to spend the block on it.
+
+**State the open-row count of its span as a number, not as a nudge** — `R1: 3 filas abiertas` is a
+fact he needs, because §11 will not let the level close with stale open rows and thirteen steps is a
+long way to carry that debt unseen. One number, no advice about when to spend the block on it.
 
 ---
 
@@ -87,9 +98,17 @@ with the block.
 ```
 Step 0 — Querying basics · junior · 20/30 first-pass puntuados
 Archivo: practice/sql/junior/02-execution-order-set-ops.sql — 10 escritos, 3 respondidos, 0 corregidos
-Siguiente: Moment 3 — responder los 7 que faltan en pgAdmin
+Siguiente: Moment 3 — responder los 7 que faltan en pgAdmin (~35 min al ritmo de este archivo)
+Ayer te frenó: `NULLS LAST` — abriste la nota para decidir dónde caen los NULL
 Ojo: el bloque SETUP de este archivo trae el esquema canónico; ejecútalo si no lo has hecho hoy
 ```
+
+**The pace estimate is a measurement, not a target.** Derive it from this file's own history — graded
+exercises over the sessions that produced them, from the `-- ✅ Corregido` dates — and print it in
+parentheses. With no history yet, write `(sin histórico)` rather than guessing a number. The block is
+60 minutes and Stage 2 is a timed test, so a track that never mentions the clock trains no pacing at
+all; but the estimate never becomes a quota, and a block that runs slower than it is not a finding.
+**Never comment on how long he took or suggest moving on** — he decides what the block is worth.
 
 | Fallos abiertos | Times | Qué pasó |
 |---|---|---|

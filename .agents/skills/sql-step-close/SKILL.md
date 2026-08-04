@@ -6,8 +6,9 @@ description: >
   step"). This is Moment 5 and Section 4 of practice/sql/PLANNING.md. Grading already moved the
   counters; what this owns is the part no grader can reach: the ✅ sql:{file-slug} drill markers on
   every coverage bullet the step's scored exercises actually drilled, the doctrine's §0 quick
-  reference, a re-check that PROGRESS.md's Total rows really add up, and the level-closed check that
-  nothing else in the track performs. The failure mode this exists for is a step whose exercises are
+  reference, a re-check that PROGRESS.md's Total rows really add up, the §8c readiness line saying
+  which techniques the close just unlocked for a simulation, and the level-closed check that nothing
+  else in the track performs. The failure mode this exists for is a step whose exercises are
   all green while notes/sql/coverage/{LEVEL}.md still reads as if the concepts were never touched. It
   asks Victor nothing — a step it cannot close is reported and left open, never blocked on an answer.
   Do NOT use it to grade (that is sql-grade), to close a project step (that is step-complete), to add
@@ -129,6 +130,29 @@ Neither of these is a question, and neither blocks the close.
 
 ---
 
+## 5 — What this step just unlocked
+
+Read the technique table in **doctrine §8c** and say, in one line, which techniques are now available
+given the steps that read `closed ✅` — and therefore what a simulation may ask for today:
+
+```
+Desbloqueado: JOINs + GROUP BY + HAVING. Una simulación SQL puede pedirte hasta agregación sobre join;
+todavía no window functions (Step 7).
+```
+
+**This is the only line in the track that connects it to Stage 2**, and it exists because of a real
+asymmetry: a step closes on a score obtained in pgAdmin, with the notes reachable and no clock, while
+the interview is the opposite of all three. §8c is the fact nobody else holds — a test demanding a
+technique from an unclosed step is not hard, it is impossible, and finding that out mid-timer teaches
+nothing.
+
+**Readiness only, and state it as available.** Which techniques are unlocked is a fact about his SQL
+knowledge and belongs here; what a test contains, how long it lasts, its bank and its tracker belong to
+`simulation-generator` (§Z). Do not run it, do not schedule it, do not describe the test, and never
+present the simulation as owed. He decides.
+
+---
+
 ## Commits
 
 Per CLAUDE.md and the shared session rules. **One atomic commit per concern**, on the **active branch**.
@@ -158,4 +182,5 @@ him a second command for it.
 | Doctrina §0 | verificada, `Last updated` corregido |
 | PROGRESS.md | filas `Total` cuadran (29 = 20+9); `Corrected` total en blanco, correcto |
 | Punto de repaso | R1 disponible (span 0–1) — `TOPIC = R1` cuando te apetezca |
+| Desbloqueado (§8c) | SELECT/WHERE/ORDER BY + set ops. Una simulación puede pedirte hasta ahí |
 | Nivel | junior sigue abierto — 13 steps por delante |
