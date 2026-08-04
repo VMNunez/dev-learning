@@ -77,7 +77,7 @@ audits it together with the level-neutral doctrine (`practice/sql/PLANNING.md`).
 
 | Level | SQL plan | sql-plan-audit | Exercises |
 |---|---|---|---|
-| junior | 2026-08-03 — completed (14 steps · 15 files · 207 first-pass · 149/149 bullets assigned; doctrine route migrated out) | | 0/14 steps closed |
+| junior | 2026-08-03 — completed (14 steps · 15 files · 207 first-pass · 149/149 bullets assigned; doctrine route migrated out) | 2026-08-04 — completed — `SCOPE = full`; fingerprint matched (route not stale); no new step owed (149/149 bullets, 18/18 sections already claimed); revision triggers migrated doctrine §8b → route §1 per REC-020; doctrine §1 gained its `ROADMAP.md` input row; 7 dead `coverage.md` paths and 3 §10 invariant contradictions fixed; history gate passed | 0/14 steps closed |
 | middle | | | |
 | senior | | | |
 
