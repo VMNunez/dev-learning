@@ -218,5 +218,23 @@ Then, and only then, start the explanation.
 
 ## Commits
 
-This skill writes nothing and commits nothing. A false positive's ledger line is written by
-`backlog-task-close`, under that skill's own authorization.
+This skill writes **exactly one thing, in exactly one case**: the `⏸ Deferred YYYY-MM-DD — <reason>`
+marker appended to a task line in `PROJECT-BACKLOG.md`, on the "valid, wrong moment → defer" route of
+step 3. Nothing else — no coverage, no PLANNING, no README, and never the project code.
+
+**You commit that marker yourself**, on the active branch. `PROJECT-BACKLOG.md` is authorized
+(2026-07-29): it is written by `review-audit`, by this skill and by `backlog-task-close`, never by
+Victor, so the authorship boundary puts it on your side. Apply the hygiene rule — `git status`
+immediately before the `add` and before the `commit`, so no project code is staged alongside it:
+
+```
+docs(backlog): defer <task> — <gate that makes it due>
+```
+
+Committing it is the whole point of writing it. A deferral that lives only in the working tree, or only
+in the chat, is re-triaged from scratch the next session the task is looked at — the exact cost this
+pass exists to avoid, and the reason the marker names the gate rather than just the date.
+
+**Every other verdict writes nothing here.** Dropped, already-resolved and false-positive tasks all go
+to `backlog-task-close`, which writes their ledger line under its own authorization; valid tasks are
+handed to the teach-first cycle untouched.
