@@ -241,7 +241,7 @@ never the only one:
   backlog growing without bound. The ledger is append-only; a design decision closed with no code
   change must say so, because that line is its only surviving record.
 
-If one of the five does not apply, say so out loud — a silent skip is the failure this ritual exists
+If one of the seven does not apply, say so out loud — a silent skip is the failure this ritual exists
 to prevent.
 
 ## Frontend sessions — how to guide a page step
