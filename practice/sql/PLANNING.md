@@ -254,9 +254,15 @@ done condition here.
 > from recalling it. That argument is sound, but it describes **retrieval practice, which is the
 > `simulator` and interview-prep track's job** (§Z), not this one. Keeping it here bought nothing the
 > Q&A bank does not already do, and it put a manual, unautomatable gate in the middle of a ritual that
-> is otherwise fully mechanical — which is exactly how a ritual stops being run. The exit questions
-> themselves were not deleted: they survive in the route §2 as inert **`**Q&A seed:**`** lines, kept so a good
-> question is not lost. They oblige nothing — see §Z.
+> is otherwise fully mechanical — which is exactly how a ritual stops being run.
+>
+> **And the `**Q&A seed:**` line that replaced it was removed on 2026-08-04.** The exit questions had
+> survived as inert seed lines in the route §2, on the argument that a good question should not be lost.
+> The cost was that the planner still had to *write an interview question per step* — question-authoring
+> inside a track whose entire subject is exercises, done without the interview-prep standard, without
+> its cold review, and owed to nobody once written. This track generates exercises, grades them and
+> tracks them; the questions are `/interview-prep-audit`'s output and are produced there, from the
+> coverage file, when Victor decides to (§Z). No step carries a question of any kind.
 
 ---
 
@@ -461,6 +467,7 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 | **G0 — Branch sync** ✅ 2026-07-22 | Before the first SQL session on any branch | *(no prompt — `git merge main` into the branch)* | Appending to a stale file loses exercises at merge time. Done once on `fix/backend-backlog`; re-check on every future branch. |
 | **G1 — Step ritual** | Every step's done conditions pass | *(no prompt — the §4 ritual, by hand)* | The `step-complete` skill only covers project steps and will not fire for SQL. Without this, every later gate reads a stale `PROGRESS.md`. |
 | **G1b — Plan al día** | Right after G1, when a step closes · when `notes/sql/coverage/{LEVEL}.md` grows (i.e. after G2) · when `sql-exercises-prompt.md` changes | `notes/prompts/practice/sql/sql-plan-audit.md` · `SCOPE = full` (`SCOPE = extend` when the only trigger was new coverage sections) | This file is the one that rots fastest — every closed step, every new coverage section and every prompt change leaves it slightly less true, and nothing else audits it. It runs *after* G1 so it reads the status G1 has just made accurate, and before the next step starts building on a stale plan. Safe to run repeatedly: a clean plan comes back unchanged. |
+| **G1c — Replan tras extender** | Only when G1b's last line says `⚠ /sql-plan {LEVEL} owed` — i.e. its extension engine added or re-pointed a step | `notes/prompts/practice/sql/sql-plan-prompt.md` · `LEVEL = {level}`, `MODE = update` | The audit may not refresh the route's `Coverage SHA-256` (a digest refreshed without remapping the bullets destroys the staleness signal) and may not write `PROGRESS.md` (invariant 15 is audited there, never repaired). So a run that grows the route leaves two things only the planner can close: the fingerprint and the projection's rows for the new files. Skip it and every `/sql-exercises` run warns "ruta desactualizada" forever, over a route that is in fact current. Not owed when G1b reports nothing added. |
 | **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before Step 0; again if a real job posting reveals a gap | `notes/prompts/knowledge/coverage/coverage-prompt.md` · `TOPIC = sql` (logged in `notes/prompts/_internal/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
 | **G3 — PROGRESS accurate** | After **Step 13** closes | `notes/prompts/strategy/tracking/progress-update-prompt.md` (it has a dedicated SQL subagent) | Reconciles the whole SQL section in one pass, catching anything the per-step ritual missed. Must precede G4. |
 | **G4 — Roadmap resync** | After G3 | `notes/prompts/strategy/tracking/roadmap-review-prompt.md` | The roadmap's SQL gate can only be marked cleared once `PROGRESS.md` says the track is finished. |
@@ -469,7 +476,8 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 level's route §1**, on the §8b cadence, and that table is the only place they are scheduled from.
 
 **Prerequisite chain (hard — a gate run out of order gives a wrong answer, not just a late one):**
-`G0 → G2 → steps (G1 then G1b each, with R1–R5 firing on the §8b cadence) → G3 → G4`.
+`G0 → G2 → steps (G1 then G1b each, plus G1c when G1b extended the route, with the route's revision
+points firing on the §8b cadence) → G3 → G4`.
 G0 before anything because a stale branch corrupts the exercise files themselves. **G1 before G1b**
 because `sql-plan-audit` audits §0 and the level's route §1 and §3 against `PROGRESS.md` — run it first and it faithfully
 certifies the numbers the ritual had not written yet. **G2 before G1b** for the same reason in the
@@ -481,9 +489,16 @@ must read the refreshed coverage, not the old one. G3 before G4 because `roadmap
 
 Cross-checks between sections. Verify these whenever this plan is edited:
 
-1. **Coverage vs steps** — every section of `notes/sql/coverage/{LEVEL}.md` is claimed by exactly one step in
-   that level’s route §2, or listed in §Z as deliberately excluded. No section unclaimed, none in two steps. (This is
-   about coverage **section names**, not the prompt's `TOPIC` values — two steps may share a `TOPIC`.)
+1. **Coverage vs steps** — every **bullet** of `notes/sql/coverage/{LEVEL}.md` is claimed by exactly one
+   step in that level’s route §2, or listed in that route's *Out of scope at this level* section with a
+   reason. None unclaimed, none claimed twice, none claimed by two levels. Its `**Coverage:**` field
+   names the sections the step claims and is the human-readable half; its `**Coverage bullets:**` list
+   is what this invariant is checked against — a step can name a section and still leave half its
+   bullets undrilled, and the section-level check cannot see it. (The section names are coverage's
+   vocabulary, not the exercise prompt's `TOPIC` values — two steps may share a `TOPIC`.)
+
+   **The exclusions are level-specific and live in the route, not in §Z** (see §Z's closing line): a
+   bullet skipped at junior may well be drilled at middle, so nothing is excluded doctrine-wide.
 2. **Steps vs exercise files** — every step in the route §2 names an exercise file that appears in the route §1's step
    table, and every file in that table belongs to a step. **Los `R{n}-repaso.sql` son la excepción
    declarada**: viven en su propia tabla de la ruta §1, pertenecen a un punto de repaso y no a un step, y ningún
@@ -551,11 +566,45 @@ Cross-checks between sections. Verify these whenever this plan is edited:
     case (adopted 2026-07-22). Appending to such a file produces exercises that do not run in Victor's
     pgAdmin, which is a worse failure than a longer file list.
 
-> **These eleven are numbered identically to Section D of
+12. **The route carries a live coverage fingerprint** — every `PLANNING-{LEVEL}.md` header states a
+    `Coverage SHA-256` over its coverage file's **scope bytes** (evidence markers stripped, canonical
+    command in `_coverage-standard.md`). A route whose digest no longer matches is **stale, not wrong**:
+    it maps a checklist that has since grown, so `sql-exercises` says so in one line and continues, and
+    `sql-plan-prompt` is owed a re-run. Only `sql-plan-prompt` recalculates it — `sql-plan-audit` reports
+    the mismatch and never refreshes it, because a digest refreshed without remapping the bullets
+    destroys the only signal that the remap is owed. Without the digest a coverage file can gain a whole
+    section and nothing anywhere notices.
+
+13. **Level isolation** — every level owns a directory, `practice/sql/{LEVEL}/`, holding its exercise
+    files, its revision files and its own `PLANNING-{LEVEL}.md`, each numbering from `01`. **No level is
+    flat**, so no numbering collides: the isolation is the folder, not the number. Junior's existing
+    files are never renumbered — they are Victor's authored work and several are closed; they were
+    relocated into `junior/` once, wholesale, when the layout was made symmetric (2026-08-03). Two files
+    stay at `practice/sql/` root because neither belongs to a level: this doctrine, and `MISTAKES.md`,
+    one shared log for the whole track — a concept failed at junior and re-failed at middle is one row,
+    not two, which is why its `Step` column is qualified (`junior:3`, never `3`).
+
+14. **A closed step is never reopened and never renumbered** — new coverage scope landing on a closed
+    step goes to its `**Pending additions:**` field, and a reinforcement run drills it. Reopening a step
+    whose exercises were answered and graded throws away the only record that they were.
+
+15. **The route has a projection in `PROGRESS.md`, and it is complete** — `## Practice completed` →
+    `### Exercise route` carries one roll-up row per level plus one detail table per level, and that
+    table holds **a row for every file the route declares**, including files not written yet, seeded by
+    `sql-plan-prompt` with `Corrected = —`, `First-pass / target = 0/{route §1 target}`,
+    `Status = not created`. Pending files are never collapsed into a "12 files remaining" row: seeing
+    what is left is the whole point. Both tables end in a derived `Total` row, recomputed from the rows
+    above by whoever last edited a cell — **except its `Corrected` cell, which stays `—`**, a correction
+    backlog having no meaningful aggregate. A replan updates the projection in the same run, and
+    preserves every graded figure already there (invariant 14 applies to the projection too).
+
+> **These fifteen are numbered identically to Section D of
 > `notes/prompts/practice/sql/_internal/_sql-plan-standard.md`**, because `sql-plan-audit` splits the work
 > between four specialists *by invariant number*. Until 2026-07-22 the two lists used different
 > numbering, which handed two of them each other's checks. Renumber one side and you must renumber the
-> other.
+> other — and **adding one counts as renumbering**: 12–15 arrived in the standard with the 2026-08-03
+> doctrine/route split and were missing here until 2026-08-04, so the audit was dispatching specialist 3
+> with invariants 13 and 15 and specialist 4 with 12 against a list that stopped at 11.
 
 ---
 
@@ -586,10 +635,12 @@ shipping.
   note, never lists a note file, and no step closes on one.
 - **SQL interview Q&A** (`notes/interview-prep/`) — run `/interview-prep-audit` when Victor decides to,
   and only then. Since 2026-08-03 this track owns something this one used to keep: **retrieval from
-  memory**. Each step's `**Q&A seed:**` line in the route §2 is a question that would be worth having in the bank
-  one day — nothing more. **A seed is inert.** It closes nothing (§3), it is never owed work, no ritual
-  reports it as pending, and no skill offers to run `/interview-prep-audit` off the back of it. It sits
-  in the plan so the question is not lost; picking it up is Victor's call, on his schedule.
+  memory**; since 2026-08-04 it owns the questions themselves. **No step here carries a question**, not
+  as a done condition and not as an inert seed: this plan generates exercises, gets them graded and
+  tracks the route, and that is its whole subject. A question worth asking about SQL is derived from
+  `notes/sql/coverage/{LEVEL}.md` by that track's own prompt, against its own standard — never drafted
+  here on the side. No ritual reports a question as pending and no skill offers to run
+  `/interview-prep-audit` off the back of a closed step.
 - **SQL simulations** (`practice/simulations/`) — run the simulation prompts. Same rule, **con una
   excepción acotada: §8c**, que dice qué técnicas tienes desbloqueadas y por tanto qué puedes pedir.
   Eso es un hecho sobre tu conocimiento de SQL y esta es la única tabla que lo tiene. El formato del

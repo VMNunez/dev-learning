@@ -144,18 +144,28 @@ last block in the step and its concepts have not yet been re-drilled since it wa
 
 ### `{TOPIC}` is a revision point (`R1`–`R5`) — resolve it from the mistake log
 
-A revision point is not a topic: it is a **span of steps** whose failures are re-drilled together
-(la doctrina (`{PLAN}` §8b)). Everything resolves differently, and **`practice` mode only** — `review` mode grades
-the resulting file like any other.
+A revision point is not a topic: it is a **span of steps** whose failures are re-drilled together. The
+mechanism — the every-three-files cadence and the failure-driven focus — is doctrine
+(`practice/sql/PLANNING.md` §8b); **which points exist at this level, what each one spans and what fires
+it are the route's, and live in `{PLAN}` §1's revision table.** Read that table: it is the only source,
+at every level, and it is why a route can be reordered without editing a level-neutral file. Everything
+resolves differently here, and **`practice` mode only** — `review` mode grades the resulting file like
+any other.
 
 | Value | Where it comes from |
 |-------|---------------------|
-| `{FILE}` | the path table above: `practice/sql/{LEVEL}/R{n}-repaso.sql`. Its own file, never appended to a first-pass file — a repaso batch is uncounted (route §1) and mixing it into a step's file corrupts that step's score. |
+| `{FILE}` | the `Archivo` cell of that point's row in `{PLAN}` §1's revision table — `practice/sql/{LEVEL}/R{n}-repaso.sql`. Its own file, never appended to a first-pass file: a repaso batch is uncounted (route §1) and mixing it into a step's file corrupts that step's score. |
+| `{SPAN}` | the `Span (steps)` cell of that same row. **Never a span remembered from another level** — the numbers restart at 0 in each route, so junior's `R2 → 2–4` says nothing about middle's `R2`. |
 | `{COUNT}` | `8`, unless Victor overrode it. Revision batches are not budgeted in route §1. |
 | `{REVIEW}` | always `yes`. |
-| `{FOCUS}` | **the open rows of `practice/sql/MISTAKES.md` whose `Step` is `{LEVEL}:{n}` with `n` in the span**, ordered by `Times` descending. This is the whole point of the mechanism: the batch drills what the record says was answered wrong, not what feels rusty. |
+| `{FOCUS}` | **the open rows of `practice/sql/MISTAKES.md` whose `Step` is `{LEVEL}:{n}` with `n` in `{SPAN}`**, ordered by `Times` descending. This is the whole point of the mechanism: the batch drills what the record says was answered wrong, not what feels rusty. |
 
-Spans (junior): `R1` → steps 0–1 · `R2` → steps 2–4 · `R3` → steps 5–7 · `R4` → steps 8–10 · `R5` → steps 11–12.
+**If `{TOPIC}` names a point that route §1 does not declare**, stop: print "Error: `{TOPIC}` no es un
+punto de repaso de la ruta `{LEVEL}`. Los que hay: [list]." Do not invent a span. How many points a
+level has is a decision of that route — junior declares five (`R1`–`R5`), another level may not.
+
+Spans at junior, as the route declares them today — a reading aid, not a second source: `R1` → steps 0–1 ·
+`R2` → steps 2–4 · `R3` → steps 5–7 · `R4` → steps 8–10 · `R5` → steps 11–12.
 
 **Match the level, not just the number.** `MISTAKES.md` is one file for every level by design — a
 concept failed at junior and again at middle increments one row instead of opening two, and that

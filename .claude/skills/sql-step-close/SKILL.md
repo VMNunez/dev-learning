@@ -117,7 +117,8 @@ many* lives here. Never re-create it.
 
 Two checks nothing else in the track performs:
 
-- **Revision point.** If this step ends a span in the doctrine §8b (R1–R5), say which point is now due
+- **Revision point.** If this step ends a span in `{PLAN}` §1's revision table — the route declares the
+  points, doctrine §8b only the cadence — say which point is now due
   and the one command that runs it: `/sql-exercises` with `MODE = practice`, `TOPIC = R{n}`. State it as
   available, not as owed — it is maintenance, on his schedule.
 - **Level closed.** If every step in `{PLAN}` §3 now reads `closed ✅`, say so plainly, and name the next

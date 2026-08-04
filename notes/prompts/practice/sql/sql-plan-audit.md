@@ -81,12 +81,15 @@ cold-reviewer property is gone.
 
 Gather the ground truth the specialists check the plan against. Counts, never contents:
 
-- `ls practice/sql/` — the files that exist.
+- `ls practice/sql/{LEVEL}/` — the files that exist. **The level's directory, never `practice/sql/`**
+  (invariant 13: every level owns a folder, no level is flat). Listing the root returns `junior/`,
+  `PLANNING.md` and `MISTAKES.md` and not one exercise file, which reads as "the route declares files
+  that do not exist" and is the single fastest way to make this pipeline delete a real route.
 - Per exercise file, **these exact commands** — both header formats live on disk, and a pattern that
   matches neither returns `0`, which `counts-and-truth` would then write into the plan as real:
   ```
-  grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' practice/sql/NN-name.sql   → written
-  grep -cE '^--.*✅ Corregido' practice/sql/NN-name.sql                      → scored
+  grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' practice/sql/{LEVEL}/NN-name.sql   → written
+  grep -cE '^--.*✅ Corregido' practice/sql/{LEVEL}/NN-name.sql                      → scored
   ```
   The marker always sits **at the end of the exercise's header line**, one per exercise, in both header
   formats (`_sql-exercises-review.md` Step 2b forbids it on a line of its own). If scored > written for
@@ -146,9 +149,9 @@ metadata is present and well-formed — it never edits a step.
 **`PROGRESS.md` is read-only for this pipeline.** Invariant 15 is audited here, never repaired here: the
 standard's Section E gives the route's projection to `sql-plan-prompt` (seeds and re-syncs it) and
 `sql-exercises-prompt` (moves the counts). #3 reports a broken or stale projection as a finding — naming
-the level and the exact rows that disagree with §5 — and closes with "run `/sql-plan {LEVEL}` to
-re-sync the projection". This is the one place where the "findings are fixed in place" rule yields to
-the ownership fence, because the fix belongs to a prompt that sees §5 as its own output.
+the level and the exact rows that disagree with the route's §1 — and closes with "run `/sql-plan
+{LEVEL}` to re-sync the projection". This is the one place where the "findings are fixed in place" rule
+yields to the ownership fence, because the fix belongs to a prompt that sees §1 as its own output.
 
 **Inside the route, #3 edits structure, never values.** Section E gives `§1` counts, `§3` statuses and
 `§2` `[x]` bullets to `sql-exercises-prompt` in review mode: **only a scored exercise moves them.** #3
@@ -247,6 +250,30 @@ renumbered. A specialist wanting an exercise file changed says so in its trace; 
 reports it as a recommendation. Same for `sql-exercises-prompt.md`: if specialist 4 concludes the
 prompt is the wrong side of a divergence, it reports it rather than editing another prompt's file
 mid-audit.
+
+## Phase 5 — The handoff this run cannot perform itself
+
+Two of this pipeline's outputs are deliberately incomplete, and the run is not finished until it says
+so **in its last line to Victor**, not only inside the self-report:
+
+- **Specialist 2 wrote or re-pointed a step.** The route now maps coverage that the header's
+  `Coverage SHA-256` does not, and `PROGRESS.md` has no rows for the new files — this pipeline may
+  refresh neither (Hard rules; invariant 15 is audited, never repaired here). Until `/sql-plan {LEVEL}`
+  runs, every `/sql-exercises` run prints "ruta desactualizada" and the route percentage is computed
+  over the old file list.
+- **The digest was already stale on arrival** and specialist 2 could not claim every new bullet.
+
+In either case close with exactly one line:
+
+```text
+⚠ /sql-plan {LEVEL} owed — N steps added/re-pointed · digest stale · PROGRESS.md not seeded for M new files
+```
+
+If neither applies, close with `route and projection consistent — nothing owed`. **This is the gap the
+prompt existed with until 2026-08-04:** the audit could grow the route and nothing in the chain said the
+planner had to run again, so a remapped route kept warning it was stale for weeks and the projection
+quietly described a route that no longer existed. The order is `/sql-plan` → `/sql-plan-audit` →
+**`/sql-plan` again when this line fires** → `/sql-exercises`, and it is doctrine §9's `G1c`.
 
 ## Hard rules
 

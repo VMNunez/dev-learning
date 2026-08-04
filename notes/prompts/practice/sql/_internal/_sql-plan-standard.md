@@ -115,9 +115,18 @@ composition.
 A revision batch is **extra**: it never counts toward a step's target and never flips a status.
 Without that rule the plan starts congratulating itself for repetition.
 
-**B5 — Every step ends in a question answered aloud, from memory, nothing open.** Exercises test
-construction; the spoken question tests retrieval under interview conditions. It is part of the done
-condition, not a nice-to-have.
+**B5 — A step ends when its exercises are scored, and this track writes no interview questions.**
+A step closes on its one scored done condition and nothing else.
+
+**No step carries a question of any kind** (amended 2026-08-04). Two versions of this preceded the rule
+and both are removed: the `Aloud:` second done condition, which made a step wait on a question answered
+from memory (dropped 2026-08-03), and the inert `**Q&A seed:**` line that replaced it, which asked the
+planner to *write* an interview question into every step. Both put question-authoring inside a track
+whose whole subject is exercises. **Retrieval practice and the question bank belong to the
+interview-prep and `simulator` track** (doctrine §Z), which owns its own standard, its own cold review
+and its own schedule — a question drafted here bypasses all three and, being owed to nobody, rots in a
+plan file. An audit that re-adds an `Aloud:` line or a `Q&A seed:` field has failed this check rather
+than passed it.
 
 **B6 — Done conditions are testable by someone else.** Each matches a §3 format.
 
@@ -158,7 +167,6 @@ Every route §2 entry has exactly these fields. A missing field is a finding.
 
 **Pending additions:** <none, or bullets coverage gained after this step closed>
 
-**Q&A seed:** <one question for the interview-prep track — closes nothing here>
 **Done:** <a doctrine §3 format, written out in full>
 ```
 
@@ -214,7 +222,10 @@ checks. Aligned 2026-07-22.
    has not fired.
 7. Every done condition matches a doctrine §3 format **verbatim**, not abbreviated.
    `Review: ... ≥ 80% on X.sql` is not the format;
-   `Review: sql-exercises MODE = review scores ≥ 80% on X.sql` is.
+   `Review: sql-grade scores ≥ 80% on X.sql` is. (Corrected 2026-08-04: this example still named
+   `sql-exercises MODE = review`, which doctrine §3 stopped listing when `sql-grade` became the only
+   door to grading on 2026-08-03 — an auditor applying it would have rewritten every correct `Done:`
+   line in the route into a format the doctrine does not have.)
 8. A revision point appears at least every 3 files in the route's §1 (B4), each naming `MISTAKES.md`
    open rows as its focus source, and no revision batch is counted in a §1 target or a §3 status.
 9. Every prompt named exists at the path given, and every config the plan says to paste uses that
@@ -246,7 +257,8 @@ checks. Aligned 2026-07-22.
 15. **The route has a projection in `PROGRESS.md`, and it is complete.** `## Practice completed` →
     `### Exercise route` carries one roll-up row per level plus one detail table per level, and that
     table holds **a row for every file the route declares** — including files not written yet, seeded by
-    `sql-plan-prompt` with `Corrected = —`, `First-pass / target = 0/{§5 target}`, `Status = not created`.
+    `sql-plan-prompt` with `Corrected = —`, `First-pass / target = 0/{route §1 target}`,
+    `Status = not created`.
     Pending files are never collapsed into a "12 files remaining" row: the whole point is seeing what is
     left. Both tables end in a derived `Total` row, recomputed from the rows above by whoever last
     edited a cell — except its `Corrected` cell, which stays `—`, a correction backlog having no

@@ -262,9 +262,11 @@ Print: "Siguiente tema: [next topic]. Ejecuta el prompt en modo practice con TOP
 If {TOPIC} is report-queries (the last topic): print "Has completado todos los temas SQL. Revisa
 practice/sql/PLANNING.md §9 — te toca el gate G3 (progress-update)."
 
-**Also name the revision point when one fires here.** PLANNING.md §8b hangs five revision points off a
-closing **step**, not off a topic — and two of those steps run more than one topic, so the trigger is
-the *last* topic of the step, never the first:
+**Also name the revision point when one fires here.** The junior route's `{PLAN}` §1 revision table
+hangs its five points off a closing **step**, not off a topic — the cadence that obliges them is
+doctrine §8b, but which points exist, what each spans and what fires it are the route's, so read that
+table rather than trusting the copy below at another level. Two of those steps run more than one topic,
+so the trigger is the *last* topic of the step, never the first:
 
 | Point | Fires when this step closes | i.e. the review run whose {TOPIC} is | Not on |
 |-------|-----------------------------|--------------------------------------|--------|
@@ -320,9 +322,9 @@ updates the roll-up row and the detail table **of `{LEVEL}` only**. Levels never
 middle exercise never moves the junior route, and a junior file never appears in the middle table. If
 `{LEVEL}`'s detail table does not exist yet (its route was just planned), create it under a
 `#### {Level} — practice/sql/{LEVEL}/` heading in the same shape as the junior one, and fill the
-level's roll-up row from `{PLAN}` §5 instead of leaving it blank.
+level's roll-up row from `{PLAN}` §1 instead of leaving it blank.
 
-Read the real figures from the file you just reviewed and from `{PLAN}` §5 — the shapes below are
+Read the real figures from the file you just reviewed and from `{PLAN}` §1 — the shapes below are
 placeholders, never copy an example number into PROGRESS.md.
 
 **Table 1 — the roll-up, one row per level:**
@@ -339,8 +341,8 @@ placeholders, never copy an example number into PROGRESS.md.
 - **Route progress** = first-pass exercises graded across the whole level route, `[Repaso]` and extra
   batches excluded (same rule as the counting note at the top of Step 4). Add this batch's first-pass
   count to the cell's current numerator; never recount the whole route from scratch.
-- **Target** = the sum of the `First-pass target` column of `{PLAN}` §5. It changes only when the
-  route itself is replanned — if you find it disagreeing with §5, fix it and say so in 4e.
+- **Target** = the sum of the `First-pass target` column of `{PLAN}` §1. It changes only when the
+  route itself is replanned — if you find it disagreeing with §1, fix it and say so in 4e.
 - **Steps closed** = steps whose done condition is met, i.e. the ones you would mark in §3. A step
   closes only when *every* file of that step scored ≥ 80% — a step with two files does not close on
   the first one.
@@ -351,13 +353,13 @@ placeholders, never copy an example number into PROGRESS.md.
 - Status: `closed ✅` if score ≥ 80%; `in progress ⏳` if score < 80%; leave `not created` untouched
   for files that do not exist yet.
 - `Corrected`: graded over written **in this file**, repaso included.
-- `First-pass / target`: this file's first-pass scored count over its §5 first-pass target.
+- `First-pass / target`: this file's first-pass scored count over its §1 first-pass target.
 
 **Every file of the route has its own row, including the ones not written yet** — `sql-plan` seeds them
 all when it plans the level. Never collapse pending files into a summary row: the point of the table is
 seeing exactly what is left.
 
-**If `{FILE}` has no row:** add one, in step order, with its §5 target, and say so in 4e — a missing row
+**If `{FILE}` has no row:** add one, in step order, with its §1 target, and say so in 4e — a missing row
 means the plan and PROGRESS.md disagree about the route.
 
 **Recompute the `Total` row of both tables** after editing any cell. They are the last row of each
@@ -420,10 +422,14 @@ a reinforcement run, and marking them all on close would erase exactly that sign
 Only when 4c set a row to `closed ✅`. Rewrite the §0 table:
 - **Current step** → the next row in {PLAN} §3 that is not ✅
 - **Done condition** → that step's done condition, copied from its {PLAN} §2 entry
-- **Next revision point** → the first of R1–R5 in §8b whose trigger has not fired yet. Steps 1, 4, 7,
-  10 and 12 each close one (R1–R5) — if this was one of them, the next one is the following R.
-  **The row is "Next revision point", never "Next gate"** — §0 has six named rows and this is one of
+- **Next revision point** → the first point in **`{PLAN}` §1's revision table** whose trigger has not
+  fired yet, named with the level's route, not with doctrine §8b — §8b owns the cadence rule, the route
+  owns which points exist and what fires each (junior: Steps 1, 4, 7, 10 and 12 each close one, R1–R5).
+  If this run closed one of them, the next one is the following R.
+  **The row is "Next revision point", never "Next gate"** — §0 has seven named rows and this is one of
   them; renaming it is how off-scope tracks creep back into the quick reference.
+- **Current level** → only if this run was the level's last step; otherwise leave it. It is the row the
+  other six are read against, so it names the route file, not just the word `junior`.
 - **Last updated** → today
 
 #### 4e — Report what is still manual
@@ -490,7 +496,7 @@ If the file does not exist, create it with the two tables and the header explain
 a grading run that also authors study
 material bypasses both standards and their cold reviewers. `MISTAKES.md` is not study material — it
 is this run's own output, the record of what it graded wrong. **This prompt is its only writer**; the
-revision points R1–R5 in `PLANNING.md` §8b read it to derive their focus.
+revision points declared in `{PLAN}` §1 read it to derive their focus, on the doctrine §8b mechanism.
 
 If every attempted exercise was ✅, skip the appending half but still run the closing half.
 

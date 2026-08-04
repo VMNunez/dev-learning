@@ -73,8 +73,9 @@ This is the one piece of the block that is genuinely easy to forget: a failed co
 rusty, it feels learned. Naming them at the start of the block is the cheap version of the revision
 point.
 
-If a revision point in the doctrine §8b is due, say which one, in one line, as **available** — never as
-owed. He decides when to spend the block on it.
+If a revision point is due, say which one, in one line, as **available** — never as owed. Read the
+points from the level's route §1 revision table (its span and its trigger); doctrine §8b owns only the
+cadence rule, not which points exist. He decides when to spend the block on it.
 
 ---
 

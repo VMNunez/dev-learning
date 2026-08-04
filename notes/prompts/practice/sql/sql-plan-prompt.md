@@ -83,34 +83,17 @@ exercise files, its steps, its progress table. **This prompt writes `PLAN` only.
    and middle. Planning a later level is blocked exactly as authoring it would be.
 7. Preserve unrelated working-tree changes.
 
-## The one-time legacy migration — junior only
+## The one-time legacy migration — done 2026-08-03
 
-Before building any entry, check whether `DOCTRINE` still contains the level route. Until this
-migration runs, `practice/sql/PLANNING.md` is a single 1000-line file holding both halves.
+`DOCTRINE` used to be a single ~1000-line file holding both halves. Its §5, §6 and §8 were moved
+verbatim into `practice/sql/junior/PLANNING-junior.md` as §1, §2 and §3, each old position keeping a
+one-line pointer, and that was **the only edit this prompt is ever allowed to make to `DOCTRINE`**.
 
-Run this stage **only** at `LEVEL = junior`, and only when `PLAN` does not yet exist:
-
-1. Move **Section 5**, **Section 6** and **Section 8** out of `DOCTRINE` and into `PLAN`, **verbatim** —
-   every step's `Why here`, `Concepts`, `Q&A seed` and `Done` line, every count in the file tables,
-   every status in the progress table, every dated annotation. This prose was written by hand and
-   justifies a route that works; it is migrated, not regenerated. Renumber the sections in `PLAN` as
-   §1 (files), §2 (steps), §3 (progress) and add the plan header below. Two normalisations are allowed
-   on the way through, and only these two: the legacy route writes a closed step as `done ✅`, which
-   becomes `closed ✅` — the three §3 values are the format's, and a fourth spelling silently breaks
-   every status check downstream; and migrated coverage bullets, which carry no checkbox at all, arrive
-   as `- [ ]`, since no scored exercise has been recorded against a specific bullet yet. Neither
-   normalisation may change which steps are closed.
-2. Leave every other section in `DOCTRINE`, unchanged, and add one line under each moved section's old
-   position pointing at `PLANNING-{LEVEL}.md`. Cross-references from `DOCTRINE` §4, §8b, §9, §10 and
-   §Z into "§5/§6/§8" are rewritten to name the level file's new section number. This is the only edit
-   to `DOCTRINE` this prompt may ever make, and it happens once.
-3. Fix the two dead paths on the way through: `DOCTRINE` §1 and §4 point at `notes/sql/coverage.md`,
-   which no longer exists. The file is `notes/sql/coverage/{LEVEL}.md`.
-4. Then continue with the normal algorithm below, which reconciles the migrated route against
-   `COVERAGE`. Every migrated step is `Action: audit`; nothing migrated starts as `create`.
-
-Report the migration as `migrated N steps · M exercise files · doctrine reduced from X to Y lines`. If
-`DOCTRINE` no longer holds a route, say `migration already done` in one line and continue.
+Check it in one line and move on: if `DOCTRINE` still contains a level route — a file table, step
+entries or a progress table rather than pointers — **stop and report it**, because the split is a
+structural change and re-deriving it inside a planning run would rewrite history. Otherwise say
+`migration already done` and continue with the algorithm below. Every doctrine finding from here on is
+reported for `sql-plan-audit`, never fixed.
 
 ## Coverage fingerprint
 
@@ -176,11 +159,12 @@ log for the whole track: a concept failed at junior and re-failed at middle is o
    `**Moment 2 config:**` line carrying `COUNT = n` and the literal `**Focus:**` line, because those two
    strings are what `sql-exercises` greps for. A step stating the same information in prose resolves to
    nothing and stops that run.
-9. Every step ends in a **`**Q&A seed:**` line** (B5) and a **done condition in a `DOCTRINE` §3 format,
-   written out verbatim** (B6, invariant 7). `Review: ... ≥ 80% on X.sql` is not the format;
-   `Review: sql-grade scores ≥ 80% on X.sql` is. The seed is **not** a done condition and closes nothing
-   — it is a question handed to the interview-prep track (`DOCTRINE` §Z). The `Aloud:` format and the
-   two-condition rule were removed on 2026-08-03; a step closes on its scored condition alone.
+9. Every step ends in **one done condition, in a `DOCTRINE` §3 format written out verbatim** (B6,
+   invariant 7). `Review: ... ≥ 80% on X.sql` is not the format; `Review: sql-grade scores ≥ 80% on
+   X.sql` is. **Write no question into a step** (B5): neither an `Aloud:` condition (removed
+   2026-08-03) nor a `**Q&A seed:**` line (removed 2026-08-04). Interview questions are the
+   interview-prep track's output, not this planner's — `DOCTRINE` §Z. A step closes on its scored
+   condition alone.
 10. Place a **revision point every three exercise files** (B4, invariant 8), each drawing its focus from
     the open rows of `MISTAKES`, each writing to its own uncounted file. A revision batch never counts
     toward a target and never flips a status.
@@ -227,8 +211,8 @@ forward. It does not edit files. It must challenge:
 - whether a step could have been done first — which would mean it teaches nothing about composition (B3);
 - steps grouped around a coverage section name rather than one drillable skill;
 - concepts an exercise would need before the step that teaches them;
-- `Q&A seed` questions that test recognition instead of retrieval;
 - done conditions another person could not run and get the same verdict from (B6);
+- any step that carries a question, a note task or a simulation task instead of an exercise one (B5);
 - whether the revision cadence actually holds at every third file (B4);
 - whether the route, drilled in order, produces someone who passes the SQL half of a screening at this
   level.
@@ -258,9 +242,13 @@ Generated: YYYY-MM-DD
 
 ### Revision files
 
-| File | Point | Span (steps) | Status |
-|------|-------|--------------|--------|
-| `R1-repaso.sql` | R1 | 0–1 | sin crear |
+| File | Point | Span (steps) | Fires when | Status |
+|------|-------|--------------|------------|--------|
+| `R1-repaso.sql` | R1 | 0–1 | Step 1 closes (`03-joins.sql` scored) | sin crear |
+
+**The `Fires when` column is required, not decorative** (`STANDARD` A2 §1): it is the trigger, and
+doctrine §0's *Next revision point* row, invariant 6 and `sql-exercises`'s `R{n}` resolution all read
+it from here. A revision table without it declares points nothing can schedule.
 
 ## §2 — The steps
 
@@ -281,7 +269,6 @@ Generated: YYYY-MM-DD
 
 **Pending additions:** none
 
-**Q&A seed:** one question worth handing to the interview-prep track — closes nothing here
 **Done:** a §3 format from the doctrine, written out in full
 
 ## §3 — Progress
@@ -307,8 +294,10 @@ Rules:
   closed step.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned to two steps.
 - Every path is repository-relative and inside this level's `EXERCISE_DIR`.
-- `Why here`, `Reinforces`, `Focus`, `Concepts`, `Q&A seed` and `Done` are non-empty and specific.
+- `Why here`, `Reinforces`, `Focus`, `Concepts` and `Done` are non-empty and specific.
   `none — the whole topic` is a value for `Focus`; a blank line is a finding.
+- **No step carries an interview question** (B5). A `**Q&A seed:**` line found in an existing route is
+  removed on the next reconciliation, not carried across.
 - The plan **names** the exercise prompt and points at it. It never describes exercise content, the
   difficulty split or the file format — `STANDARD` Section E decides who owns what.
 - Nothing about notes, interview Q&A or simulations appears here. That fence is the point of this track.
@@ -334,15 +323,15 @@ Write `PLAN`, plus the one-time `DOCTRINE` split when the migration stage ran, p
 tables in `PROGRESS.md`** → `## Practice completed` → `### Exercise route`. Do not touch a single `.sql`
 file or `MISTAKES`.
 
-**Why this prompt owns those tables (2026-08-03).** They are a projection of §5: one row per file of the
-route, with its step and its first-pass target, *including the files not written yet*. Nobody else can
-seed them — the exercise prompts see one file at a time — and a table that only lists what exists hides
-exactly what is left to do. So:
+**Why this prompt owns those tables (2026-08-03).** They are a projection of the route's **§1**: one row
+per file of the route, with its step and its first-pass target, *including the files not written yet*.
+Nobody else can seed them — the exercise prompts see one file at a time — and a table that only lists
+what exists hides exactly what is left to do. So:
 
-- **`{LEVEL}`'s detail table** — one row per §5 file, in step order: `Step`, `File`,
-  `Corrected` = `—`, `First-pass / target` = `0/{§5 target}`, `Status` = `not created`. Never collapse
+- **`{LEVEL}`'s detail table** — one row per §1 file, in step order: `Step`, `File`,
+  `Corrected` = `—`, `First-pass / target` = `0/{§1 target}`, `Status` = `not created`. Never collapse
   pending files into a summary row.
-- **`{LEVEL}`'s roll-up row** — `Corrected` and `Route progress` at `0/{sum of §5 targets}`,
+- **`{LEVEL}`'s roll-up row** — `Corrected` and `Route progress` at `0/{sum of §1 targets}`,
   `Steps closed` at `0/{§3 step count}`.
 - **Both `Total` rows** — the last row of each table. The roll-up's totals every level's figures (so a
   newly planned route raises the shared denominator without touching another level's row); the detail

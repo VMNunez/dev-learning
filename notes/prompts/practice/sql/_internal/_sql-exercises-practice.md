@@ -193,9 +193,10 @@ Two stop conditions, both silent-scope-loss bugs if allowed to fall through to t
   report it. It means the plan and coverage have drifted apart, and `sql-plan-audit` is what fixes
   that, not this run.
 
-A coverage section claimed by no step at all is likewise not this prompt's problem to paper over —
-see PLANNING.md §Z ("Coverage sections deliberately excluded from the steps") for the ones that are
-excluded on purpose, and run `sql-plan-audit` for the ones that are not.
+A coverage section claimed by no step at all is likewise not this prompt's problem to paper over — see
+**`{PLAN}`'s own *Out of scope at this level* section** for the ones excluded on purpose (the
+exclusions are level-specific, so they live in the route, not in doctrine §Z), and run `sql-plan-audit`
+for the ones that are not.
 
 **Difficulty distribution — applied to the batch of {COUNT} new exercises:**
 Calculate the split based on COUNT, then assign labels to the new exercises in order:
@@ -343,7 +344,7 @@ accumulated by hand. **`Corrected` has no total: leave its cell as `—`.**
 
 The file's row already exists — `sql-plan` seeds a row for every file of the route when it plans the
 level, written or not. You are flipping its `Corrected` cell from `—` to a real count, not creating it.
-If the row is genuinely missing, add it in step order with its `{PLAN}` §5 target and say so: the plan
+If the row is genuinely missing, add it in step order with its `{PLAN}` §1 target and say so: the plan
 and PROGRESS.md disagree about the route, which is worth surfacing. If `## Practice completed` does not exist, do not invent a layout — say so and carry on.
 
 PROGRESS.md commits on the active branch, in the **same commit** as the `.sql` file — the exercises and
