@@ -95,7 +95,7 @@ workflow to the first project that established it rather than to code inside tha
 | 04 | Meal finder | Route parameters, ActivatedRoute, effect(), computed(), localStorage, favourites | Done ✓ | [Live demo](https://04mealfinder.netlify.app/) |
 | 05 | Task manager | Angular Material, MatTable, MatDialog, CRUD, coordinator pattern, context-specific themes | Done ✓ | — |
 | 06 | HR portal | Route guards, lazy loading, HTTP interceptors, role-based access, MatSidenav, role-aware dashboard | Done ✓ | — |
-| 07 | TimeTrack | Spring Boot REST API, JWT, PostgreSQL, Angular full stack, TimeEntry workflow | In progress ⏳ — Steps 1–6 done, Step 7 next | — |
+| 07 | TimeTrack | Spring Boot REST API, JWT, PostgreSQL, Angular full stack, TimeEntry workflow | In progress ⏳ — Steps 1–6 done, backend backlog fully closed, Step 7a next | — |
 
 ---
 
