@@ -134,7 +134,7 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 |---|---------|------|-------|------------|
 | 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | route §2 | doctrine §2, §3, §7 · route §2 · `ROADMAP.md` (for B2) |
 | 2 | `coverage-and-steps` | **Invariants 1, 2, 10, 14** · **B10** | route §1, §2, its out-of-scope list | `notes/sql/coverage/{LEVEL}.md` · doctrine §Z · the Phase 1 section list |
-| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13, 15** | route §1, §2, §3 · doctrine §0 · **`PROGRESS.md` → `## Practice completed` → `### Exercise route`, this level's rows only** | `PROGRESS.md` · **the Phase 1 snapshot** |
+| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13, 15** | route §1, §2, §3 · doctrine §0 · **never `PROGRESS.md`** | `PROGRESS.md` · **the Phase 1 snapshot** |
 | 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **Section E** | **the doctrine — any section** · route header (metadata only) | `sql-exercises-prompt.md`, `sql-plan-prompt.md` |
 
 **The `Edits` column is a fence, not a hint.** Two files are open and four specialists run against them;
@@ -142,6 +142,19 @@ a specialist writing outside its column is how the doctrine acquires a level-spe
 #2 never touch the doctrine at all. #4 owns the **whole** doctrine — the other rows' sections are
 exhaustive, its are not — and touches the route only to check its header
 metadata is present and well-formed — it never edits a step.
+
+**`PROGRESS.md` is read-only for this pipeline.** Invariant 15 is audited here, never repaired here: the
+standard's Section E gives the route's projection to `sql-plan-prompt` (seeds and re-syncs it) and
+`sql-exercises-prompt` (moves the counts). #3 reports a broken or stale projection as a finding — naming
+the level and the exact rows that disagree with §5 — and closes with "run `/sql-plan {LEVEL}` to
+re-sync the projection". This is the one place where the "findings are fixed in place" rule yields to
+the ownership fence, because the fix belongs to a prompt that sees §5 as its own output.
+
+**Inside the route, #3 edits structure, never values.** Section E gives `§1` counts, `§3` statuses and
+`§2` `[x]` bullets to `sql-exercises-prompt` in review mode: **only a scored exercise moves them.** #3
+may add a missing row, a missing column or a missing field, and it may recompute a `Total` from the rows
+above; it may never lower a numerator, reset a `40/40`, or flip a `closed ✅` back. A figure that looks
+wrong is a finding against the grading run, not a cell to correct.
 
 **The invariant numbers are the standard's Section D numbers, and Section D is numbered identically to
 the plan's own §10** — they were two different numbering schemes until 2026-07-22, which handed
@@ -247,7 +260,9 @@ mid-audit.
 - **Never recompute the route's `Coverage SHA-256`.** Report the mismatch; the digest is the staleness
   signal, and refreshing it without remapping the bullets destroys it.
 - **Findings are fixed in place, not reported for later.** A report Victor must apply by hand is the
-  failure mode the whole system exists to avoid.
+  failure mode the whole system exists to avoid. **One exception, `PROGRESS.md`** — audited, never
+  edited, never staged; the projection belongs to `sql-plan-prompt`, so the finding hands off to
+  `/sql-plan {LEVEL}` instead of being applied here.
 - **Never schedule, run or edit the notes, Q&A or simulation tracks.**
 
 ## Final step — pipeline self-report
