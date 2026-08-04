@@ -3,9 +3,10 @@ name: sql-block-open
 description: >
   Orient the daily 12:30 SQL block before a single query is written, WHENEVER Victor opens it ("vamos
   con el SQL", "abro el bloque de SQL", "¿por dónde iba en SQL?", "what's next in SQL"). It reads
-  practice/sql/PLANNING.md §0, the level's route file, the current exercise file and MISTAKES.md, and
-  answers the four questions the block always starts with: which step is open, which file, how many
-  exercises are still unanswered, and which Moment comes next. The failure mode this exists for is the
+  practice/sql/PLANNING.md §0, the level's route file, the current exercise file, MISTAKES.md and the
+  notes plan, and answers the questions the block always starts with: which step is open, which file,
+  how many exercises are still unanswered, which Moment comes next, and whether this step's study note
+  is worth reading first or still needs /notes-audit. The failure mode this exists for is the
   block starting with ten minutes of re-reading a 1000-line plan, or worse, starting on the wrong file
   because §0 was stale. It is READ-ONLY: it writes no file, commits nothing, and refuses no work. Do
   NOT use it to generate exercises (/sql-exercises), to grade (sql-grade), to close a step
@@ -33,6 +34,8 @@ line and name the skill that owns the repair — `sql-grade` for counters, `sql-
 - the current exercise file itself — the ground truth, and the only thing that cannot be stale.
 - `practice/sql/MISTAKES.md` — the `## Open` rows, and the most recent `## Fricción` ones (what cost
   him time without ever being graded wrong).
+- `notes/sql/coverage/notes-plan-{LEVEL}.md` — only the entry that claims this step's coverage bullets,
+  for its `Status:` and its `Spanish:` path (step 2). Never the whole file.
 
 **Prefer the file over the plan.** §0 is a copy; the `.sql` file is the fact. When they disagree, report
 the disagreement rather than picking a winner.
@@ -66,7 +69,48 @@ that has nothing to do with SQL.
 
 ---
 
-## 2 — Surface the open mistakes, and yesterday's friction
+## 2 — The theory behind this step, and whether it is worth reading yet
+
+Exercises drill a concept; the note explains it. Reading the note first is the difference between
+solving the step and understanding it — but only if the note is actually written to standard, and today
+most SQL notes are not.
+
+Resolve it mechanically, never by guessing a filename:
+
+1. Take the current step's `**Coverage bullets:**` from `{PLAN}` §2 (or its `**Coverage:**` section
+   names if the bullets are ambiguous).
+2. Open `notes/sql/coverage/notes-plan-junior.md` — **the notes track's own plan**, at
+   `notes/sql/coverage/notes-plan-{LEVEL}.md` — and find the entry whose `Coverage concepts:` list
+   claims those same bullets. The two files quote the same coverage file verbatim, so the match is
+   textual, not interpretive. If several entries claim parts of the step, name the one that claims most
+   and say the step spans two chapters.
+3. Read that entry's `Status:` line and its `Spanish:` path.
+
+Then say exactly one of these, in one line:
+
+| Entry `Status:` | What you say |
+|---|---|
+| `complete` or `refined` | **"Antes de los ejercicios, estúdiate `notes/sql/junior/es/NN-x.md`"** — the note is built to standard, so there is nothing to run |
+| `pending` | **"La nota de este step aún no está escrita al estándar: `/notes-audit TOPIC=sql LEVEL=junior NOTE=NN`"** — give the exact command with the entry number, so it can be pasted without opening the plan |
+| no entry claims the step's bullets | Say so in one line and stop there. It is a gap in the notes plan, and `/notes-plan sql {LEVEL}` is what fixes it — do not invent a note file |
+
+**Name the Spanish file**, `notes/sql/{LEVEL}/es/`, because that is the one Victor studies from. The
+English file is the canonical source when the note is *written*; it is not the reading copy.
+
+**Three fences, and they are what keep this inside a read-only opener:**
+
+- **Never run `/notes-audit` and never invoke the notes track.** State the command; he pastes it if he
+  wants it. A note is never owed, never blocks the block, and never blocks a step from closing — that
+  is doctrine §Z, and it is why this is a line of information rather than a gate.
+- **Never write to the notes plan.** Not a status, not a checkbox. This skill writes no file at all.
+- **The SQL route still lists no note files.** The mapping is read out of the notes track's own plan,
+  in the notes track's own directory; nothing about it lands in `{PLAN}` or in the doctrine. That is
+  precisely what makes this legal under the §Z fence: the SQL plan is not scheduling a note, the opener
+  is reporting what the notes plan already says.
+
+---
+
+## 3 — Surface the open mistakes, and yesterday's friction
 
 The three or four open rows of `MISTAKES.md` with the highest `Times`, one line each: concept and what
 went wrong. Not the whole table.
@@ -99,6 +143,7 @@ with the block.
 Step 0 — Querying basics · junior · 20/30 first-pass puntuados
 Archivo: practice/sql/junior/02-execution-order-set-ops.sql — 10 escritos, 3 respondidos, 0 corregidos
 Siguiente: Moment 3 — responder los 7 que faltan en pgAdmin (~35 min al ritmo de este archivo)
+Teoría: la nota de este step (05-order-by-limit) sigue `pending` — `/notes-audit TOPIC=sql LEVEL=junior NOTE=05`
 Ayer te frenó: `NULLS LAST` — abriste la nota para decidir dónde caen los NULL
 Ojo: el bloque SETUP de este archivo trae el esquema canónico; ejecútalo si no lo has hecho hoy
 ```
