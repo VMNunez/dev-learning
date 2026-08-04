@@ -109,6 +109,10 @@ puts them on your side:
 
 - `practice/sql/MISTAKES.md` (authorized 2026-07-22)
 - `PROGRESS.md` and `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (same boundary — the ritual writes them)
+- `practice/sql/PLANNING.md`, **when the subagent's report says its 4d fired** — closing a step rewrites
+  the doctrine's §0 quick reference. Take the list from the subagent's report; it ends with the exact
+  files it modified. This one is easy to miss because a close reads like a route-file change, and §0 is
+  the first thing `sql-block-open` reads the next morning.
 
 **Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
 then `git commit` block), one command per block:
