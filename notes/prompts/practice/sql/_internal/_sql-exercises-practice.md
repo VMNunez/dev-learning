@@ -170,7 +170,8 @@ concept as an illustration, not as permission to add scope coverage/{LEVEL}.md d
 **Which sections to read — resolve them from the plan, never from a list kept here.** The {PLAN} §2 step
 that owns {TOPIC} already declares them:
 
-1. The path table in `sql-exercises-prompt.md` gives the **`Route step`** number for {TOPIC}.
+1. The **`{PLAN}` §2 step that claims {TOPIC}** gives the step number. At junior the shell's path table
+   carries the same number in its `Route step` column and is quicker to read; §1/§2 decide if they differ.
 2. That step's **`**Coverage:**`** line lists its coverage sections, verbatim. Those are the sections
    to read — all of them.
 3. When the step carries two runs with different TOPICs (Steps 5, 8, 9, 10), the run's own
@@ -297,8 +298,8 @@ hyphens **is** the block — do not report it as missing.
 **Flat files, numbered in study order.** Several topics share a file — that is deliberate, and the
 second topic appends to the first rather than creating a new file.
 
-The path table is in the shell (`sql-exercises-prompt.md`, under Resolution) — `{FILE}` was
-already resolved from it before this branch opened. Use the resolved value; do not re-derive it.
+`{FILE}` was already resolved by the shell (`sql-exercises-prompt.md`, under Resolution) from `{PLAN}`
+§1 before this branch opened. Use the resolved value; do not re-derive it.
 
 **One file, one schema (2026-07-22).** `practice/sql/junior/01-basics.sql` is closed and is not in this
 table: it carries the pre-canonical schema, so nothing is ever appended to it again. A file whose

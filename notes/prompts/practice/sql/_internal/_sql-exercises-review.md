@@ -15,7 +15,7 @@ Split out 2026-07-22: a run is either practice or review, never both, so carryin
 
 ### Step 1 — Read the file
 
-Read the file at {FILE} (already resolved by the shell, from its path table under Resolution).
+Read the file at {FILE} (already resolved by the shell, from `{PLAN}` §1, under Resolution).
 If Victor pasted a file at the end of the chat instead, use the pasted content — a paste always wins
 over {FILE}, because it may hold answers he has not saved to disk yet.
 Confirm in one line which one you used: "Reviso [path]" or "Reviso el archivo pegado".
@@ -372,7 +372,8 @@ reverted, which is worth knowing before writing into it.
 #### 4c — {PLAN} §3, the step row
 
 Open `{PLAN}` (`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`). Find the row in its §3 table for the step this {TOPIC} belongs to —
-**the shell's path table gives the step number for {TOPIC}**. Update its **Scored / target** cell with
+**the `{PLAN}` §2 step that claims {TOPIC} gives the step number** (at junior the shell's path table
+carries it too, in its `Route step` column). Update its **Scored / target** cell with
 the number of exercises this run actually graded ≥ 80%, and its **Status** cell:
 - score ≥ 80% **and** the step's target reached → `closed ✅`
 - otherwise → `in progress ⏳`
@@ -463,7 +464,7 @@ that all failed on `WHERE` vs `HAVING` are one row, with all three numbers in `E
   `Last seen` to today, append the new exercise numbers, and raise `Sev` to ❌ if this run was worse.
   Recurrence is the whole point of the column — a second row destroys it.
 - **`Sev`** is the worst grade the concept has ever received, not this run's.
-- **`Step`** is the plan step number the reviewed file belongs to — the shell's path table gives it for
+- **`Step`** is the plan step number the reviewed file belongs to — the `{PLAN}` §2 step that claims
   `{TOPIC}`. A bare number (`4`), not a name, so a revision point can filter its span mechanically.
 - **The `## Closed` table has six columns** — `Logged | Closed | Times | Step | Coverage section |
   Concept`. Moving a row drops `Sev`, `What went wrong` and `Exercises` and adds `Closed`; carry the
@@ -502,7 +503,7 @@ exception.
 
 List only files that were actually modified. Always one command per code block.
 
-Use the exact folder path from the shell's path table (under Resolution) for {TOPIC} — not `sql/{TOPIC}/`:
+Use the exact `{FILE}` path the shell resolved (under Resolution) for {TOPIC} — not `sql/{TOPIC}/`:
 
 ```
 git add [exact path from Step 4 table] PROGRESS.md practice/sql/{LEVEL}/PLANNING-{LEVEL}.md

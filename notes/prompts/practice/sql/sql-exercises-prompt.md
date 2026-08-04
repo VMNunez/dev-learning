@@ -14,7 +14,11 @@ Three modes:
 - **`review`** — checks your answers. Paste the exercise file at the very end of the prompt.
 - **`reinforce`** — extra practice over a file you name, counted against nothing.
 
-> **▶ Run first:** nothing — `practice` generates exercises from scratch; `review` reads the answered file from `{FILE}`.
+> **▶ Run first:** `/sql-plan {LEVEL}` — every run resolves `{FILE}`, `{COUNT}`, `{FOCUS}` and the
+> concept scope from `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`, and stops if that file does not exist.
+> Once the route exists it is not re-run per batch: a route that has gone stale against coverage is a
+> warning line, never a blocker. `MODE = reinforce` is the one exception — it takes its file from
+> `FILE` and needs no step.
 
 ---
 
@@ -76,7 +80,7 @@ the need to hand-tune anything *else* about a batch, the thing that needs changi
 | Value | Where it comes from |
 |-------|---------------------|
 | `{LEVEL}` | the `LEVEL` key if Victor set it; otherwise `junior`. It selects the route file: `{PLAN} = practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`. If that file does not exist, print "Error: no existe `{PLAN}`. Corre `/sql-plan {LEVEL}` antes de generar ejercicios." and stop. |
-| `{FILE}` | the `FILE` key if Victor set it; otherwise the path table below at junior, or `{PLAN}`'s §1 table at middle and senior. Never invent a path. |
+| `{FILE}` | the `FILE` key if Victor set it; otherwise **`{PLAN}`'s §1 table, at every level** — the row whose step matches the `{TOPIC}`. Never invent a path. At junior, cross-check the result against the path table below and, on a mismatch, use §1, print one line naming both paths, and say the table needs updating: §1 is the route, the table is a reading aid. |
 | `{COUNT}` | the `COUNT` key if Victor set it; otherwise the `COUNT = n` inside the **`**Moment 2 config:**`** line or block of the `{PLAN}` §2 step whose TOPIC matches. When the two differ, say so in one line ("COUNT del bloque = 6, el plan pide 10") and use his — the plan is the default, not a veto. |
 | `{FOCUS}` | the **`**Focus:**`** line of that same §2 step (every step has one; `none — the whole topic` is a real value, not a blank). |
 | `{REVIEW}` | `no`, unless `MODE = reinforce` (always `yes` — see its block below), or the §2 block picked is a **Moment 2b reinforcement block** — the one `MODE = review` appends when a score came back under 60%, headed `**Moment 2b reinforcement block:**` — which also sets it to `yes`. |
@@ -88,11 +92,12 @@ cambiado desde el último `/sql-plan {LEVEL}`" — and **continue**. A stale rou
 with a real count; it just may not map the newest bullets. That is a planning debt, not a reason to
 refuse a batch, and stopping here would block the daily block on a prompt run Victor has to schedule.
 
-**The path table — `{FILE}` resolves from here at `{LEVEL} = junior`, in both modes.** Files numbered in
-study order inside `practice/sql/junior/`; several topics share a file, and the second topic appends to
-the first rather than creating a new one. **At middle and senior this table does not apply**: those
-routes keep their own §1 table under `practice/sql/{LEVEL}/`, and it is authoritative there exactly as
-this one is here.
+**The path table — a readable projection of the junior route's §1, not a second source of truth.** It is
+here so a topic-to-file mapping can be read at a glance without opening the route; `{FILE}` still
+resolves from §1, and a disagreement is fixed in this file, never in the plan. Files numbered in study
+order inside `practice/sql/junior/`; several topics share a file, and the second topic appends to the
+first rather than creating a new one. **At middle and senior it does not apply at all** — no projection
+of those routes is kept here, so §1 is read directly and nothing cross-checks it.
 
 | Topic | Path | Route step |
 |-------|------|------------|
@@ -197,7 +202,8 @@ Focus: {FOCUS}
 Validation:
 - If MODE or TOPIC is blank: print "Error: MODE and TOPIC are required." and stop.
 - **In `reinforce` mode, if `FILE` is blank:** print "Error: `MODE = reinforce` necesita `FILE` — es el archivo que quieres repasar." and stop. Never fall back to the path table: the whole point of this mode is that Victor chose the file, and deriving one would silently drill something else. The `{PLAN}`-step errors below do not apply in this mode; a reinforce batch has no step to draw a COUNT or a target from.
-- If {TOPIC} is not in the path table above: stop and report it.
+- If no `{PLAN}` §2 step claims `{TOPIC}`: stop and report it. At junior, `{TOPIC}` missing from the path
+  table above is not this check — it is the projection being out of date, reported as a line, not a stop.
 - **If {TOPIC} is `R1`–`R5`:** the route-§2-step rules below do not apply — a revision point has no step of its own. Skip straight to the revision-point resolution above. In `review` mode a repaso file is graded normally, but **it never updates the route §3, §1 or a step status** (see the review branch): it is uncounted by design.
 - If {TOPIC} is `R1`–`R5` in `practice` mode and `practice/sql/MISTAKES.md` does not exist: print "Error: no existe `practice/sql/MISTAKES.md`. Un punto de repaso deriva su foco de sus filas abiertas." and stop — do not fall back to a generic batch over the span. Generating one anyway is exactly the "revise what feels rusty" behaviour §8b exists to replace.
 - If `{PLAN}` has no route §2 step for {TOPIC}: print "Error: {TOPIC} no tiene step en el plan. Añádelo a §2 de la ruta antes de correr esto." and stop — do not fall back to a default COUNT. A topic with no step is a planning gap, and silently generating 12 exercises hides it.
