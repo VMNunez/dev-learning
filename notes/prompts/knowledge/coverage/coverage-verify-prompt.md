@@ -41,17 +41,17 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 - `FINDINGS = notes/{topic}/coverage/verify-{LEVEL}.md`
 - `NOTES_PLANS = all existing notes-plan-{junior|middle|senior}.md files for this topic`
 - `LOCKED_BULLETS = [x] Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched
-  by exact scope text after stripping the checkbox and any trailing evidence marker; [ ] concepts are
-  not locked`
+  by exact scope text after stripping the checkbox and every trailing marker — project and drill alike,
+  both defined in "Evidence markers" in the standard; [ ] concepts are not locked`
 
 ## Required sources
 
 Count lines before every whole-file read and read to EOF:
 
 1. `_internal/_coverage-standard.md`
-2. `_session-rules.md`
-3. `_shared-context.md`
-4. `_internal/_job-market-evidence.md`
+2. `notes/prompts/_internal/_session-rules.md`
+3. `notes/prompts/_internal/_shared-context.md`
+4. `notes/prompts/_internal/_job-market-evidence.md`
 5. `COVERAGE` and both `SIBLINGS`
 6. `NOTES_PLANS` when present, to identify locked bullets
 7. the previous coverage-verify self-report
@@ -71,8 +71,9 @@ must not supply proposed gaps or raise the selected-level floor.
    difference means a mirror is stale, `coverage-prompt` has not finished, and there is nothing
    trustworthy to verify.
 4. Compute the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
-   trailing ` ✅ NN-slug — {evidence}` evidence marker stripped, per the canonical command in "Evidence markers" in
-   `_coverage-standard.md`. This is what the findings file stamps, so `coverage-prompt` can tell
+   trailing marker stripped, project and drill alike, using the canonical command in "Evidence markers" in
+   `_coverage-standard.md` rather than a hand-written pattern; its two expressions run in a load-bearing
+   order. This is what the findings file stamps, so `coverage-prompt` can tell
    whether its verify-gap fast path is judging today's scope. Fingerprint only `COVERAGE`; earlier
    levels are not fingerprinted.
 5. For middle, state that the junior gate must be consolidated; for senior, junior and middle. The gate
@@ -148,6 +149,7 @@ In update mode, write `FINDINGS` in this exact shape:
 Verdict: complete | gaps
 Coverage SHA-256: <64 lowercase hexadecimal characters>
 Verified: YYYY-MM-DD
+Superseded by Coverage SHA-256: <digest>   # only when Verdict is superseded
 
 ## Open gaps
 
@@ -160,6 +162,11 @@ Verified: YYYY-MM-DD
 
 `Coverage SHA-256` always fingerprints the selected file. It is the only fingerprint this prompt
 writes: earlier levels carry no field of their own.
+This prompt only ever writes `complete` or `gaps`. The schema's third verdict, `superseded`, and the
+`Superseded by Coverage SHA-256` line are written **only** by `coverage-prompt` when it consumes these
+gaps — they are declared here because this file's shape is declared here, and a state no schema admits
+is a state the next run has to guess at. A later verification of the same level overwrites the whole
+file and returns it to `complete` or `gaps`.
 When the verdict is `complete`, the `## Open gaps` body is exactly `*(none)*`. The level prefix is
 findings metadata, not part of the proposed coverage bullet; `coverage-prompt` removes it before
 judging the item.
@@ -197,7 +204,10 @@ launch it manually.
 - `Verdict = gaps`, a missing verdict, or a stale SHA does not stop `notes-plan` — the plan proceeds and
   records the degraded gate state in its report. The suggested manual next command is
   `coverage-prompt` in update mode: when Victor launches it, that separate run judges each open gap
-  through its own Step 2 classification and adds or discards it. Once that update marks the findings
+  through its own Step 2 classification and adds or discards it. A gap this run targeted at an **earlier**
+  level is reachable from both sides: a `coverage-prompt` run at the verified level adds it to that
+  earlier file through its prerequisite-integrity path, and a run at the earlier level reads it out of
+  this findings file as a sibling gap. Neither one strands it. Once that update marks the findings
   `superseded`, the review cycle is complete and the suggested manual next step is `notes-plan`.
   Re-running `coverage-verify` until it returns zero gaps is never required. Victor may start a fresh
   reassessment later when useful; that is a new optional pass, not continuation of the current loop.

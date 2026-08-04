@@ -37,8 +37,13 @@ reviewer when required cannot be dispatched, stop; there is no single-agent fall
 - `NOTES_PLANS = all existing notes-plan-{junior|middle|senior}.md files for this topic and every
   adjacent topic whose coverage may move`
 - `LOCKED_BULLETS = [x] Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched
-  by exact scope text after stripping the checkbox and any trailing evidence marker from plan and
+  by exact scope text after stripping the checkbox and every trailing MARKERS entry from plan and
   coverage copies; [ ] concepts are not locked`
+- `MARKERS = every trailing marker a bullet may carry: the project evidence marker
+  ✅ NN-slug — {evidence} and the drill marker ✅ sql:{file-slug}`. Both are defined in "Evidence
+  markers" in the standard, both are state rather than scope, and **every preservation, capture, and
+  validation rule below applies to both**. Naming only the project marker is how a redraft destroys the
+  drill markers: nothing else in the system records which coverage a graded exercise file drilled.
 - `TOPIC_BOUNDARY = this topic's row in _internal/_topic-ownership.md`
 - `ADJACENT_TOPICS = the complete comparison set declared by TOPIC_BOUNDARY`
 - `LEVEL_UNCALIBRATED = the selected Coverage tracker cell has no completed run` (scaffold files and
@@ -56,16 +61,20 @@ reviewer when required cannot be dispatched, stop; there is no single-agent fall
 Count lines before every whole-file read and read to EOF:
 
 1. `_internal/_coverage-standard.md`
-2. `_session-rules.md`
-3. `_shared-context.md`
-4. `_job-market-evidence.md`
+2. `notes/prompts/_internal/_session-rules.md`
+3. `notes/prompts/_internal/_shared-context.md`
+4. `notes/prompts/_internal/_job-market-evidence.md`
 5. `_internal/_topic-ownership.md`
 6. all three topic scope files when present
 7. `NOTES_PLANS` when present, including every complete `Status: refined` entry and its checkbox-marked
    `Coverage concepts` list
 8. this topic's heading in `_internal/_cross-topic-inbox.md`
 9. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
-   the completeness gate
+   the completeness gate. On full recalibration also read every sibling `verify-*.md` and take **only**
+   the open gaps whose metadata prefix targets `LEVEL`: a middle or senior verification raises
+   prerequisite gaps against an earlier level, and no other run would ever read them. They are judged by
+   the same Step 2 rules, but this run never edits a sibling findings file — an accepted gap becomes a
+   normal bullet, so the sibling's own next run rejects it as already present.
 10. the previous coverage-prompt self-report
 
 On full recalibration, also read all three coverage files of every `ADJACENT_TOPICS` entry to EOF.
@@ -117,7 +126,10 @@ Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, th
    the plan, and state that no adjacent-owner bullet will be copied into the new topic; an accepted
    ownership transfer is a move.
 8. For middle, inspect junior progression evidence. For senior, inspect both junior and middle
-   progression evidence. Mapping a later level is allowed before consolidation; downstream authoring is not.
+   progression evidence. The gate itself is defined in "Progression gate" in `_coverage-standard.md`;
+   its observable evidence is the earlier level's `Notes` and `Interview` cells in
+   `_internal/_run-tracker.md` reading complete over their plan denominators. Mapping a later level is
+   allowed before consolidation; downstream authoring is not.
    State the current gate explicitly. Treat those earlier coverage files as cumulative prerequisite
    floors: they are not only context for the selected level.
 9. Determine the run scope (full recalibration or verify-gap fast path — see "Run scope" above) and
@@ -194,7 +206,8 @@ valid evidence marker remains allowed and does not change the lock.
 
 Correct factual errors before making scope decisions. Apply this topic's inbox entries through the
 same classification and clear every processed entry. Apply each level-prefixed open gap from
-`verify-{LEVEL}.md` the same way: remove the metadata prefix, verify or correct its target level, then
+`verify-{LEVEL}.md`, and each `LEVEL`-targeted gap read from a sibling `verify-*.md`, the same way:
+remove the metadata prefix, verify or correct its target level, then
 add or discard it and say which in the summary. A gap the gate raised is a proposal, never a
 pre-approved item.
 
@@ -205,10 +218,12 @@ preserves its evidence marker verbatim, and records every affected topic and lev
 topic by copying an existing bullet or by leaving normalized twins on both sides.
 
 Before editing, capture every `LOCKED_BULLET` with its topic, level, section, byte-exact scope text
-(trailing evidence marker stripped), and
-relative order inside its refined entry. Also capture the complete trailing evidence marker from every marked bullet in every affected
+(every trailing `MARKERS` entry stripped), and
+relative order inside its refined entry. Also capture every trailing `MARKERS` entry, in its original
+order on the line, from every marked bullet in every affected
 topic file and mirror. After editing, compare those marker multisets byte-for-byte. Rewording, changing
-level, or changing topic never changes or drops a marker; any mismatch blocks the draft and commit.
+level, or changing topic never changes, reorders, or drops a marker of either kind; any mismatch blocks
+the draft and commit.
 
 ## Step 3 — Draft the selected level
 
@@ -219,10 +234,12 @@ reclassified material to the correct level file, and route other-topic proposals
 `FIRST_RUN`, also apply accepted boundary moves to adjacent topic files; the orchestrator remains
 the only repository editor.
 
-An existing bullet carrying a `✅ NN-slug — {evidence}` evidence marker keeps that marker verbatim through KEEP HERE, any
+An existing bullet carrying any `MARKERS` entry keeps every one of them verbatim and in their original
+order through KEEP HERE, any
 MOVE, ROUTE, or factual correction — including when the concept sentence is rewritten from scratch. This
 step is the one most likely to destroy markers, because it redrafts a whole level file: never author a
-marker here, and never drop one. Read "Evidence markers" in the standard first.
+marker here, and never drop one. Read "Evidence markers" in the standard first, including the drill
+marker subsection — a bullet may carry `✅ sql:{file-slug}` before its project marker.
 
 Apply the standard's item format, topic ownership, level definitions, and qualitative stopping rule. Never add or remove an item to satisfy a numeric count.
 
@@ -253,7 +270,8 @@ Reads all three topic level files, every adjacent topic's three level files, the
 - missing important confusable pairs;
 - duplicate or misplaced ownership;
 - unclear section structure;
-- evidence markers missing, altered, duplicated, or detached from a surviving moved concept;
+- `MARKERS` entries of either kind missing, altered, reordered, duplicated, or detached from a
+  surviving moved concept;
 - locked bullets altered, moved, reordered, duplicated, or detached from their refined plan entry;
 - confirmation: `N items reviewed`.
 
@@ -267,8 +285,8 @@ affected mirrors, and the pre-run versions from Git. It returns only:
 
 - concepts copied or left under more than one owner;
 - moves that violate the registered boundary;
-- marked concepts whose complete evidence marker is missing, altered, duplicated, or attached to the
-  wrong surviving concept;
+- marked concepts whose complete `MARKERS` set is missing, altered, reordered, duplicated, or attached
+  to the wrong surviving concept;
 - confirmation: `N moved concepts and M pre-run markers reviewed`.
 
 Its report must state every whole-file line count and EOF confirmation. Re-dispatch once if the proof is
@@ -296,8 +314,8 @@ mirror still contains a moved concept.
 
 Validate:
 
-1. local/mirror bullet text and order match — including each bullet's trailing `✅ NN-slug — {evidence}` evidence marker,
-   which is part of the bullet text and must appear identically in both files;
+1. local/mirror bullet text and order match — including every trailing `MARKERS` entry, which is part
+   of the bullet text and must appear identically, and in the same order, in both files;
 2. local/mirror headings match;
 3. expected top-level topics remain exactly once;
 4. no checkbox, numbered coverage item, or fenced code exists;
@@ -305,14 +323,17 @@ Validate:
 6. no normalized concept occurs in more than one of the three level files;
 7. the selected file contains no obvious other-topic section;
 8. no normalized concept occurs in the selected topic and any adjacent topic at any level;
-9. the pre/post evidence-marker multisets match exactly across every affected topic file and mirror;
+9. the pre/post `MARKERS` multisets — project and drill markers counted separately — match exactly
+   across every affected topic file and mirror;
 10. every locked bullet's scope text remains byte-identical in the same section, topic, level, and refined plan
     entry, with its relative locked-bullet order unchanged;
 11. `git diff --check` passes and the complete declared diff is inspected.
 12. For every affected notes plan, recalculate its stored coverage SHA-256 over its level file's scope bytes
-   (evidence markers stripped, per the standard's canonical command). A mismatch is the expected
+   (both marker kinds stripped, per the standard's canonical command). A mismatch is the expected
    refresh signal: report `notes-plan-prompt` as the next step so it can remap the final coverage
-   before another note is built. This is not a return to `coverage-verify`.
+   before another note is built, and record that debt on disk in Step 6 — a summary is read once, a
+   stale flag is read by every later session that asks whether the plan still maps coverage.
+   This is not a return to `coverage-verify`.
 
 ## Step 6 — Update mode
 
@@ -331,6 +352,11 @@ In update mode:
    execution history, not a new gate: continue directly to `notes-plan-prompt`. A fresh
    `coverage-verify` may be run later for new completeness evidence, but it is never required before
    planning or authoring notes.
+   Include in this same commit a `Plan status: stale` header edit for every notes plan whose fingerprint
+   mismatched in validation 12 — a metadata-only one-line change that touches no entry, status,
+   checkbox, or `Pending additions` queue, and that `notes-plan` resets to `current` on its next run. It
+   is what makes the `Plan status: current` guard in `notes-audit` and `interview-prep-audit` a live gate
+   instead of a field nothing ever writes.
 2. Refresh the `## Coverage demonstrated` table in `PROGRESS.md` for this topic and level, in the same
    commit as the coverage files. Authoring changes the denominator, so leaving the table alone makes it
    overstate the demonstrated share until the next `progress-update` run.
@@ -343,7 +369,12 @@ In update mode:
 3. Commit inbox routing separately only when another topic receives proposals.
 4. Before every add and commit, inspect status and stage only declared paths.
 5. Write the pipeline self-report.
-6. Update the run tracker cell for the topic and level.
+6. Update the run tracker: the Coverage cell for the topic and level; the Coverage cell of any sibling
+   level whose file a prerequisite-integrity finding or cross-level move changed, so it stops claiming a
+   state this run superseded; and the stale flag on the `Plan J|M|S` cell of every notes plan whose
+   fingerprint mismatched. Use the exact flag form and accumulation rule declared in `_run-tracker.md`:
+   `+N` is the running total of bullets added since that plan last ran, so add this run's additions to
+   any count already on the cell rather than writing a second flag beside it.
 7. Commit self-report and tracker together.
 8. Verify both commits with `git show --stat`.
 
@@ -364,12 +395,14 @@ Report:
 - all whole-file EOF confirmations;
 - kept, prerequisite gaps added by level, moved to junior/middle/senior, deleted, corrected, and routed counts;
 - locked-bullet count and every locked placement conflict;
+- markers preserved, counted by kind (project / drill), and gaps consumed from a sibling `verify-*.md`;
 - market analyst and reviewer completion;
 - first-run boundary reviewer completion or `n/a`;
 - qualitative stopping-rule result;
 - mirror parity;
-- notes-plan state (`missing`, `current`, or `refresh required`) and, for `refresh required`, name
-  `notes-plan-prompt` as the next step without sending the workflow back to `coverage-verify`;
+- notes-plan state (`missing`, `current`, or `refresh required`) and, for `refresh required`, the plans
+  set to `Plan status: stale`, the stale flag written on each `Plan` cell with its running `+N`, and
+  `notes-plan-prompt` named as the next step without sending the workflow back to `coverage-verify`;
 - files and commits;
 - unresolved risks or `none`.
 

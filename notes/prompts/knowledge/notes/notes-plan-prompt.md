@@ -61,15 +61,23 @@ belong there.
    step 6; it may not be relocated across levels without its Spanish counterpart. Follow the
    repository's line-count and read-to-EOF rule.
 3. Stop on `main`.
-4. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
-5. Read `VERIFY` but never stop on it, and never classify it into a stored status. Its verdict is
+4. Read this prompt's `_internal/_last-run-report-notes-plan.md` if it exists and look at its `Status:`
+   line, exactly as the run-start check in `_pipeline-self-report.md` requires. An `open` finding is
+   surfaced to Victor in one line and left alone; never apply it inside the run it would affect. This is
+   the trigger that keeps an earlier run's finding from rotting — three of this prompt's ledger entries
+   came out of `notes-plan` runs.
+5. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
+6. Read `VERIFY` but never stop on it, and never classify it into a stored status. Its verdict is
    history: an open `gaps` verdict, a `superseded` one, missing findings, or no `VERIFY` file at all
    all continue planning identically. Report the verdict you read in the final summary and move on.
    Zero gaps is never required before planning or authoring notes, and this prompt never requests
    another verification.
-6. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
-   middle to be closed. Planning later levels is blocked just like authoring them.
-7. Preserve unrelated working-tree changes.
+7. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
+   middle to be closed. Planning later levels is blocked just like authoring them. The gate is defined
+   in "Progression gate" in `_coverage-standard.md`; its observable evidence is the earlier level's
+   `Notes` and `Interview` cells in `_internal/_run-tracker.md` reading complete over their plan
+   denominators. State which evidence you read.
+8. Preserve unrelated working-tree changes.
 
 ## Legacy note classification and relocation
 
@@ -106,8 +114,10 @@ English-only note as `keep`, `move <current level> -> <correct level>`, `renumbe
 ## Coverage fingerprint
 
 Calculate the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
-trailing ` ✅ NN-slug — {evidence}` evidence marker stripped, using the canonical command in "Evidence markers" in
-`_coverage-standard.md`. Markers record where a concept was demonstrated, not what the scope is, so a
+trailing marker stripped, project (` ✅ NN-slug — {evidence}`) and drill (` ✅ sql:{file-slug}`) alike,
+using the canonical command in "Evidence markers" in `_coverage-standard.md` rather than a hand-written
+pattern: its two expressions run in a load-bearing order. Markers record where a concept was
+demonstrated or drilled, not what the scope is, so a
 closed step must never look like a stale plan.
 
 The plan stores it as:
@@ -170,7 +180,7 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    reports these as `refined + N additions`, never as reopened entries. A `refined` entry whose English
    or Spanish file is missing is reported as a broken freeze and left untouched for Victor to resolve.
    Every pre-existing `[x]` bullet under that entry's `Coverage concepts` is also a coverage lock. Compare
-   scope text with trailing evidence markers stripped: if coverage moved, reworded, deleted, split,
+   scope text with every trailing marker stripped, of either kind: if coverage moved, reworded, deleted, split,
    merged, routed, or reordered one, stop and report a broken coverage lock. Never reconcile the
    refined entry to the changed coverage and never treat the replacement as a `Pending addition`.
    Coverage-concept state is granular: preserve every existing `[x]`; add newly assigned concepts as
@@ -327,7 +337,9 @@ To hand a refined file back to the normal pipeline, Victor sets its status back 
 
 Write `PLAN` plus any unambiguous bilingual relocations, permitted same-level bilingual or English-only
 renumberings, required local-link corrections, and path reconciliations in already-existing affected
-sibling plans. Do not alter note prose. Before staging
+sibling plans. Do not alter note prose. Write `Plan status: current` in the header — this run is the
+only thing that clears a `stale` header set by `coverage-prompt`, and the plan it just rebuilt maps
+today's coverage by construction. Before staging
 and before committing, run `git status --short`; stage only these declared outputs and verify every
 moved pair and affected link. Commit:
 
@@ -338,7 +350,10 @@ docs(notes): plan {topic} {level} study files
 Dry run prints the complete proposed plan and reconciliation summary without writing or committing.
 
 After the plan commit, execute `_pipeline-self-report.md`: write
-`_internal/_last-run-report-notes-plan.md`, update the selected `Plan J/M/S` tracker cell, recalculate
+`_internal/_last-run-report-notes-plan.md`, update the selected `Plan J/M/S` tracker cell — rewriting it
+whole, so any ` · ⚠ stale` flag it carried disappears with the debt this run just paid — correct the
+`## Notes file executions` rows of every pair this run relocated or renumbered, since they are keyed by
+`TOPIC + LEVEL + NOTE` and would otherwise name files that no longer exist, recalculate
 the matching Notes J/M/S summary as `complete entries / total entries` — a `refined` entry counts as
 complete unless it carries unconsumed `Pending additions` — and commit the report and
 tracker together. Dry run does not write `PLAN`, but it still writes and commits its self-report plus

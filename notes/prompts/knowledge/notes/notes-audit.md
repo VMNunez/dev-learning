@@ -44,39 +44,53 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 - `EN_DIR = notes/{topic}/{LEVEL}/en/`
 - `ES_DIR = notes/{topic}/{LEVEL}/es/`
 
-Read the active adapter, `_session-rules.md`, `_note-quality-standard.md`, `COVERAGE`, and `PLAN`.
+Read the active adapter, `_session-rules.md`, `_note-quality-standard.md`, `COVERAGE`, `PLAN`, and both
+sibling-level coverage files — guard 8 below cannot clear a bullet as level-exclusive without them.
 
 Before dispatching any role:
 
 1. Stop on `main`.
-2. Require `NOTE` to be exactly two digits.
-3. Require exactly one `## {NOTE} — ...` entry in `PLAN`.
-4. Calculate SHA-256 over `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every trailing
-   ` ✅ NN-slug — {evidence}` evidence marker stripped, per the canonical command in "Evidence markers" in
+2. Read this prompt's `_internal/_last-run-report.md` if it exists and look at its `Status:` line, as
+   the run-start check in `_pipeline-self-report.md` requires: surface an `open` finding to Victor in
+   one line and leave it alone. Never apply it inside this run.
+3. Require `NOTE` to be exactly two digits.
+4. Require exactly one `## {NOTE} — ...` entry in `PLAN`.
+5. Calculate SHA-256 over `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every trailing
+   marker stripped, project (` ✅ NN-slug — {evidence}`) and drill (` ✅ sql:{file-slug}`) alike, using the
+   canonical command in "Evidence markers" in
    `_coverage-standard.md`. Stop with `run notes-plan-prompt` when it differs from `Coverage SHA-256` in
    `PLAN`, and say in the stop message that markers were stripped first.
-5. Require `Plan status: current`.
-6. Require the entry's English and Spanish paths to remain inside the selected topic and level.
-7. Require every assigned bullet, after stripping its plan `[ ]`/`[x]` prefix, to exist verbatim in
+6. Require `Plan status: current`. `coverage-prompt` sets `stale` on a plan whose coverage moved under
+   it, so this is a real gate, not a formality — a `stale` header stops the run with
+   `run notes-plan-prompt` even if the fingerprint somehow still matches.
+7. Require the entry's English and Spanish paths to remain inside the selected topic and level.
+8. Require every assigned bullet, after stripping its plan `[ ]`/`[x]` prefix, to exist verbatim in
    `COVERAGE`, exactly once in the complete plan, and in neither sibling-level coverage file.
-8. Require the selected entry to contain non-empty `Narrative role`, `Learning outcome`,
+9. Require the selected entry to contain non-empty `Narrative role`, `Learning outcome`,
    `Prerequisites`, `Must answer`, and `Handoff` fields. Require `Prerequisites` to contain only
    `none` or earlier entries and agree with the mechanical `Depends on` gate. Stop with
    `run notes-plan-prompt` when this pedagogical contract is absent or malformed.
-9. For entry `00`, require its plan contract to cover every topic-introduction invariant from
-   `_note-quality-standard.md`, regardless of Action.
-10. Require every dependency entry to be `complete`.
-11. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
-   middle to be closed.
-12. If the entry is already `complete`, require every assigned concept to be `[x]`, verify both files
+10. For entry `00`, require its plan contract to cover every topic-introduction invariant from
+    `_note-quality-standard.md`, regardless of Action.
+11. Require every dependency entry to be `complete` **or** `refined`. `refined` is the stronger
+    guarantee, not a different one: this gate exists so the prose a later chapter builds on already
+    exists, and a frozen pair's prose exists by definition. Unconsumed `Pending additions` on a
+    dependency are appended material, not missing foundation — report them and proceed. Requiring
+    literal `complete` would deadlock the whole route the moment Victor freezes its first chapter,
+    since no prompt may ever move an entry off `refined`.
+12. For `middle`, require the junior progression gate to be closed. For `senior`, require junior and
+    middle to be closed. The gate is defined in "Progression gate" in `_coverage-standard.md`; its
+    observable evidence is the earlier level's `Notes` and `Interview` tracker cells reading complete
+    over their plan denominators.
+13. If the entry is already `complete`, require every assigned concept to be `[x]`, verify both files
     exist, and report a no-op. A `complete` entry containing `[ ]` is malformed; stop with
     `run notes-plan-prompt`.
-13. If the entry is `refined`, verify both files exist. With `Pending additions: none`, report a no-op
+14. If the entry is `refined`, verify both files exist. With `Pending additions: none`, report a no-op
     only when every concept is `[x]`, and stop — a refined pair with nothing owed is never re-processed.
     Otherwise require the unchecked concept set to equal `Pending additions` exactly and run the whole
     pipeline in **append-only mode** for exactly those bullets. Never set, clear, or downgrade `refined`.
 
-Guards 8 and 9 do not reopen a `refined` entry: a missing or malformed pedagogical contract on a frozen
+Guards 9 and 10 do not reopen a `refined` entry: a missing or malformed pedagogical contract on a frozen
 pair is reported, not fixed, because fixing it would mean rewriting prose Victor has declared final.
 
 Never accept an arbitrary file path or create a note absent from the current plan.
@@ -201,7 +215,8 @@ observed in existing prose and deliberately left untouched, and the remaining `P
 
 After the content attempt, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in
 full. Write `_internal/_last-run-report.md`; upsert the exact `TOPIC + LEVEL + NOTE` row in
-`notes/prompts/_internal/_run-tracker.md` with both language paths, plan status, date, and
-`completed|blocked|dry-run`; then recalculate the matching Notes J/M/S summary cell from the plan.
+`notes/prompts/_internal/_run-tracker.md` with both language paths, plan status, date, and an outcome
+of `completed`, `completed — no-op` for a guard 13/14 entry that owed nothing, or `blocked`. This prompt
+has no dry-run mode and never records one. Then recalculate the matching Notes J/M/S summary cell from the plan.
 Commit report and tracker together. A failed content run remains `blocked` and never changes the plan
 entry to complete.
