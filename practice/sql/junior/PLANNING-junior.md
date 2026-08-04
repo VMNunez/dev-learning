@@ -67,7 +67,9 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 > path table was updated to match.
 
 **First-pass total when the track is done: 207 exercises across 15 files.** Review batches add on top
-and are deliberately not budgeted — 40 written today, 40 answered, 20 first-pass scored.
+and are deliberately not budgeted. Track-wide today: **50 written** (40 in `01-basics.sql` + 10 in
+`02-execution-order-set-ops.sql`), 40 answered, 20 first-pass scored — the 40/40/20 figures belong to
+`01-basics.sql` alone and are not the route's totals.
 
 **Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
 one by hand.
@@ -104,25 +106,33 @@ review run).
 
 ### Revision files — `practice/sql/junior/R{n}-repaso.sql`
 
-Uno por punto de repaso de la doctrina §8b, creado por su lote de Moment 2b (`TOPIC = R2`) y **no
-antes**. No están en la tabla de arriba porque no pertenecen a ningún step: **no tienen target, no
+Uno por punto de repaso de esta ruta — la cadencia que los obliga es doctrina §8b, pero **cuáles
+existen, qué abarcan y qué los dispara se deciden aquí** —, creado por su lote de Moment 2b
+(`TOPIC = R2`) y **no antes**. No están en la tabla de arriba porque no pertenecen a ningún step: **no tienen target, no
 cuentan para nada y nunca mueven un estado de §3** — por eso viven en archivo propio en vez de apilarse
 dentro del archivo de un step, donde inflarían su cuenta y ensuciarían su nota.
 
-| Archivo | Punto | Span (steps) | Estado |
-|---------|-------|--------------|--------|
-| `R1-repaso.sql` | R1 | 0–1 | sin crear |
-| `R2-repaso.sql` | R2 | 2–4 | sin crear |
-| `R3-repaso.sql` | R3 | 5–7 | sin crear |
-| `R4-repaso.sql` | R4 | 8–10 | sin crear |
-| `R5-repaso.sql` | R5 | 11–12 | sin crear |
+| Archivo | Punto | Span (steps) | Dispara cuando | Estado |
+|---------|-------|--------------|----------------|--------|
+| `R1-repaso.sql` | R1 | 0–1 | cierra el Step 1 (`03-joins.sql` scored) | sin crear |
+| `R2-repaso.sql` | R2 **hard checkpoint** | 2–4 | cierra el Step 4 (`06-nulls.sql` scored) | sin crear |
+| `R3-repaso.sql` | R3 **hard checkpoint** | 5–7 | cierra el Step 7 (`09-window-functions.sql` scored) | sin crear |
+| `R4-repaso.sql` | R4 | 8–10 | cierra el Step 10 (`12-data-types-ddl.sql` scored, run 2 de DDL) | sin crear |
+| `R5-repaso.sql` | R5 | 11–12 | cierra el Step 12 (`14-live-database.sql` scored) | sin crear |
+
+**Los dos hard checkpoints son R2 y R3** — los que la doctrina §8b declara no saltables. R2 cierra el
+núcleo de screening (Steps 1–4, lo que pregunta una ronda rápida) y R3 cierra el bloque que va justo
+detrás (subqueries, fechas y ventanas). Ninguno espera a que un tema *parezca* oxidado, y ninguno se
+salta porque el siguiente step tenga prisa. R5 abarca dos steps en vez de tres por la excepción de
+doctrina §8b: el capstone (`15-report-queries.sql`) es él mismo la pasada de integración, así que no
+lleva punto detrás.
 
 Todos llevan el esquema canónico, incluido `R1`, cuyo span toca `01-basics.sql` (esquema v1): los
 conceptos fallados se reexpresan contra el canónico en vez de resucitar un esquema cerrado.
 
 **El foco de cada punto sale de las filas abiertas de `practice/sql/MISTAKES.md`** cuyo `Step` cae en el
 span, ordenadas por `Times` descendente — nunca de una sensación. El mecanismo completo es doctrina
-(§8b); lo que es de esta ruta son los cinco puntos de arriba y sus spans.
+(§8b); lo que es de esta ruta son los cinco puntos de arriba, sus spans y sus triggers.
 
 **The mistake log is one file for the whole track** — `practice/sql/MISTAKES.md`, at the root, shared by
 every level. It is not listed among this level's files because it does not belong to a level.
@@ -139,9 +149,10 @@ other, and front-loads what a screening asks first.
 **Step sizing:** a step is a handful of 12:30 sessions, never weeks. **No single generation run asks
 for more than 12 exercises, and no step targets more than 22** — that ceiling is why schema design is
 split across Steps 9 and 10 instead of being one 36-exercise block. Any step targeting more than 12 is
-split into runs of 12 or fewer (Steps 1, 5, 8; Steps 9 and 10 sit exactly at 12 and are still split
-into two runs of 6 because each covers two distinct coverage sections), which also keeps each batch's
-difficulty split meaningful.
+split into runs of 12 or fewer — Steps 1 (11 + 11), 2 (7 + 7), 5 (8 + 8), 8 (8 + 8), 9 (8 + 7) and
+10 (7 + 7) — which also keeps each batch's difficulty split meaningful. In Steps 9 and 10 the split is
+doubly motivated: each is over the per-run ceiling *and* covers two distinct coverage sections, so the
+two runs fall on the section boundary rather than at an arbitrary halfway point.
 
 **Step 0 is the one step above the 22 ceiling, at 30, and it is a legacy artefact rather than a
 precedent.** Its first 20 exercises in `01-basics.sql` were hand-written before the exercise prompt
@@ -319,7 +330,7 @@ of a technical test.
 **Exercises:** `practice/sql/junior/04-aggregates.sql` — 14 (two runs of 7)
 **Coverage:** `Aggregates and grouping` (the pure-aggregation half — the three bullets about aggregating over a `LEFT JOIN` are Step 3)
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
-**Moment 2 config — run 1:** `TOPIC = group-by`, `COUNT = 7`
+**Moment 2 config — run 1:** `TOPIC = group-by`, `COUNT = 7` — **rango `#01–#07`**
 **Focus:** none — the counting and `NULL` half of the section
 **Moment 2 config — run 2:** `TOPIC = group-by`, `COUNT = 7` *(append al mismo archivo)* — **rango `#08–#14`**
 **Focus:** `HAVING` vs `WHERE`, conditional aggregation with `CASE WHEN` and `FILTER (WHERE ...)`, `STRING_AGG`
@@ -426,9 +437,11 @@ describing one he has not met — and `NOT IN` with a `NULL` is a standard scree
 
 ### Step 5 — Subqueries, CTEs, and views (0 scored / 16 target)
 
-**Why here:** it needs Step 3's pre-aggregation fix, which *is* a subquery in `FROM` — and it closes
-the set `ROADMAP.md` calls test-relevant (joins · aggregation · subqueries/CTEs), so it is the last
-step before the surface is wide enough for a realistic timed test.
+**Why here:** it needs Step 3's pre-aggregation fix, which *is* a subquery in `FROM` — and it is the
+last of the four *query-side* topics `ROADMAP.md` calls test-relevant (joins · aggregation ·
+NULL handling · subqueries/CTEs), so from here on a timed test can ask a whole realistic query.
+The fifth item on that list, **DML basics, is Step 8**, so the Stage-1 → Stage-2 switch gate is not
+fully open until Step 8 closes — Step 5 opens the query half of it, not the whole gate.
 **Exercises:** `practice/sql/junior/07-subqueries-ctes.sql` — 16 (two runs of 8)
 **Coverage:** `Subqueries, CTEs, and views`
 **Reinforces:** Step 3 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see
@@ -818,6 +831,6 @@ The exclusions this plan used to carry disappeared with the 2026-08-03 coverage 
 than being reversed: the old `Programmable database objects` section, deliberately skipped, was rewritten
 into two *recognition* bullets inside `Working with an existing database` (`Stored-procedure recognition`
 and `Trigger recognition`), and recognition is exactly what Step 12 drills — spotting a trigger as the
-cause of an unexplained side effect, not writing PL/pgSQL. Nothing in
-`notes/sql/future-learning.md` is part of this level's coverage file, so it is not excluded here either;
-it was never claimed.
+cause of an unexplained side effect, not writing PL/pgSQL. Scope beyond junior is not excluded here
+either — it was never claimed: it lives in `notes/sql/coverage/middle.md` and `senior.md`, which are
+other levels' routes to claim, not this one's to exclude.
