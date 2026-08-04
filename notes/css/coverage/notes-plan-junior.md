@@ -1,6 +1,6 @@
 # CSS Junior Notes Plan
 
-Plan status: current
+Plan status: stale
 Coverage: notes/css/coverage/junior.md
 Coverage SHA-256: c291d295cace8c5be26aa755626ff09456654946f816ae6d4fb93d474e886ce2
 Generated: 2026-07-24

@@ -1,6 +1,6 @@
 # Security Junior Notes Plan
 
-Plan status: current
+Plan status: stale
 Coverage: notes/security/coverage/junior.md
 Coverage SHA-256: d9af0b5456bcd328ef9347c2a1aa99eca9c025dce24510a4e576c2cc1dbc5eff
 Generated: 2026-07-29

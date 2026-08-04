@@ -1,6 +1,6 @@
 # TypeScript Junior Notes Plan
 
-Plan status: current
+Plan status: stale
 Coverage: notes/typescript/coverage/junior.md
 Coverage SHA-256: 88c63060f0a96cbd47372672a1eba37d0d79ebf9c11809d9e9fb84d0f6d3d9ed
 Generated: 2026-07-29

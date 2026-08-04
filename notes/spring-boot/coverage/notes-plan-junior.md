@@ -1,6 +1,6 @@
 # Spring Boot Junior Notes Plan
 
-Plan status: current
+Plan status: stale
 Coverage: notes/spring-boot/coverage/junior.md
 Coverage SHA-256: 118c7f0cce5856348b430491170ecd58d8b6bc284d7bedccdf536ab4aedb71d3
 Generated: 2026-08-02

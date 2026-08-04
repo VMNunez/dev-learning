@@ -1,6 +1,6 @@
 # Architecture Junior Notes Plan
 
-Plan status: current
+Plan status: stale
 Coverage: notes/architecture/coverage/junior.md
 Coverage SHA-256: 31dde116f1202ff22cc9355c684cbff9a9a88118a53d7356be2d6bb05dacc35e
 Generated: 2026-07-29

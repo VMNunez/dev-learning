@@ -1,6 +1,6 @@
 # Angular Junior Notes Plan
 
-Plan status: current
+Plan status: stale
 Coverage: notes/angular/coverage/junior.md
 Coverage SHA-256: fc92b61ea2a839c2fbf1263949fde22b07609c2ef58c957d924a676e8c8bb8e5
 Generated: 2026-08-02

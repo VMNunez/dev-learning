@@ -1,6 +1,6 @@
 # Git Junior Notes Plan
 
-Plan status: current
+Plan status: stale
 Coverage: notes/git/coverage/junior.md
 Coverage SHA-256: bb6eefef62cc36a63b873d8f06eafdb7395fb814745e39beb7754b00cef0d0f7
 Generated: 2026-07-24
