@@ -371,8 +371,10 @@ In update mode:
 5. Write the pipeline self-report.
 6. Update the run tracker: the Coverage cell for the topic and level; the Coverage cell of any sibling
    level whose file a prerequisite-integrity finding or cross-level move changed, so it stops claiming a
-   state this run superseded; and the stale flag on the `Plan J|M|S` cell of every notes plan whose
-   fingerprint mismatched. Use the exact flag form and accumulation rule declared in `_run-tracker.md`:
+   state this run superseded; the stale flag on the `Plan J|M|S` cell of every notes plan whose
+   fingerprint mismatched; and the same flag on the `coverage-audit` row when its recorded run for this
+   level predates this one — a convergence pass cannot still claim the level converges once a topic
+   moved under it. Use the exact flag form and accumulation rule declared in `_run-tracker.md`:
    `+N` is the running total of bullets added since that plan last ran, so add this run's additions to
    any count already on the cell rather than writing a second flag beside it.
 7. Commit self-report and tracker together.
