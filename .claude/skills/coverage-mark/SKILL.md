@@ -170,9 +170,11 @@ docs(coverage): mark <concept> as demonstrated in project NN
 and splitting them lets one land without the other.
 
 When called from `step-complete` or `backlog-task-close`, fold this into that ritual's coverage commit
-only if the same run also wrote the bullet; otherwise keep it separate. When the calling ritual hands
-its commits to Victor rather than running them (the in-session `backlog-task-close` rule), hand this
-one over too instead of committing behind it.
+only if the same run also wrote the bullet; otherwise keep it separate. **Both rituals commit their own
+doc files now** (authorized 2026-07-30 for `PROJECT-BACKLOG.md`, 2026-08-01 for `PLANNING.md` /
+`PROGRESS.md` / `README.md`), so there is no longer any flow that hands coverage commits back to Victor
+— the old "in-session `backlog-task-close` hands its commits over" carve-out is gone. His side is the
+project code and `practice/`, and nothing this skill writes is either.
 
 ## Backfill
 
