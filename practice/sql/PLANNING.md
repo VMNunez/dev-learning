@@ -27,11 +27,11 @@ report queries TimeTrack needs without looking anything up.
 | | |
 |---|---|
 | **Current level** | junior — route file `practice/sql/junior/PLANNING-junior.md` (the six rows below refer to it) |
-| **Current step** | Step 0 — Querying basics (`01-basics.sql` cerrado con 20 first-pass; `02-execution-order-set-ops.sql` con 10 sin responder, target 30) |
+| **Current step** | Step 0 — Querying basics (`01-basics.sql` cerrado con 20 first-pass; `02-execution-order-set-ops.sql` sin crear, target 30) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
 | **Done condition** | `Review: sql-grade scores ≥ 80% on 02-execution-order-set-ops.sql` |
 | **Next revision point** | R1 (route §1) — fires when Step 1 closes and `03-joins.sql` is scored |
-| **Blocked on** | nothing. Los 10 ejercicios ya están escritos en `02-execution-order-set-ops.sql`: toca ejecutar su bloque SETUP en pgAdmin, responderlos (Moment 3) y corregirlos con `sql-grade`. |
+| **Blocked on** | nothing. `02-execution-order-set-ops.sql` está sin crear: el bloque empieza en Moment 2 — `/sql-exercises` con `MODE = practice` y `TOPIC = basics`, que lo genera con su bloque SETUP. Se genera el día que se responde, no antes. |
 | **Last updated** | 2026-08-04 |
 
 ---

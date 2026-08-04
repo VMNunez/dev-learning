@@ -31,10 +31,15 @@ no level is flat). "Done" counts are what exists on `main` today.
 - *Written* = the prompt generated the statement.
 - *Answered* = the query is written under it. A file full of unanswered statements is worth nothing.
 - *Scored* = a `review` run has graded it ≥ 80%. **Only this one advances a step.**
-  `02-execution-order-set-ops.sql` is at the first rung today: 10 statements *written*, 0 *answered*, so
-  there is nothing to score yet and `sql-grade` will refuse the file rather than record a 0.
-  `01-basics.sql` is the opposite case — all 40 answers carry a
-  `-- ✅ Corregido` marker, but only its 20 first-pass exercises count toward Step 0's target.
+  `01-basics.sql` is the completed case — all 40 answers carry a `-- ✅ Corregido` marker, but only its
+  20 first-pass exercises count toward Step 0's target.
+
+**A file is generated on the day it is answered, not before** (2026-08-04). `02-execution-order-set-ops.sql`
+sat for two weeks with 10 statements *written* and 0 *answered*, which is worth exactly nothing: a batch
+that is not answered while its concepts are fresh is a batch that gets re-read cold later. It was
+deleted rather than left standing, exactly as `03-joins.sql` was on 2026-07-22, and its row below stays
+in the route with its target intact — the route declares the file, the file exists when the block that
+answers it starts. Run `/sql-exercises` when you sit down to answer, not in advance.
 - *Target* = the **first-pass** exercises the step needs. **Review batches (Moment 2b) are extra and
   uncounted** — a file legitimately grows past its target forever, and that is not drift.
 
@@ -45,7 +50,7 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | File | Step(s) | Written | Answered | Scored | First-pass target | Status |
 |------|---------|---------|----------|--------|-------------------|--------|
 | `01-basics.sql` | 0 | 40 *(20 review)* | 40 | **20** *(+20 review, uncounted)* | 20 | **closed** — all 40 answers graded correct on 2026-07-22 (40/40), of which the 20 first-pass ones are what the Scored column counts. Legacy schema (v1); no more exercises are added here |
-| `02-execution-order-set-ops.sql` | 0 | 10 | 0 | 0 | 10 | created 2026-07-22 — canonical schema, current format |
+| `02-execution-order-set-ops.sql` | 0 | 0 | 0 | 0 | 10 | deleted 2026-08-04 — to regenerate on the day it is answered |
 | `03-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
 | `04-aggregates.sql` | 2 | 0 | 0 | 0 | 14 | to create |
 | `05-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
@@ -67,9 +72,9 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 > path table was updated to match.
 
 **First-pass total when the track is done: 207 exercises across 15 files.** Review batches add on top
-and are deliberately not budgeted. Track-wide today: **50 written** (40 in `01-basics.sql` + 10 in
-`02-execution-order-set-ops.sql`), 40 answered, 20 first-pass scored — the 40/40/20 figures belong to
-`01-basics.sql` alone and are not the route's totals.
+and are deliberately not budgeted. Track-wide today: **40 written**, all of them in `01-basics.sql`, 40 answered, 20 first-pass scored —
+those 40/40/20 figures belong to that file alone and are not the route's totals. Every other file of
+the route is still to generate.
 
 **Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
 one by hand.
@@ -202,11 +207,11 @@ explained against.
 **Exercises:** dos archivos, uno por esquema.
 - `practice/sql/junior/01-basics.sql` — **cerrado**: 40 respondidas (20 first-pass #01–#20 + 20 de repaso
   #21–#40), **40/40 correctas** el 2026-07-22. Esquema v1 (el viejo). No se le añade nada más.
-- `practice/sql/junior/02-execution-order-set-ops.sql` — 10 first-pass, escritas el 2026-07-22 con el esquema
-  canónico y el formato actual. Sin responder todavía.
+- `practice/sql/junior/02-execution-order-set-ops.sql` — **sin crear**. Se generó el 2026-07-22 y se borró el
+  2026-08-04 sin responder: se regenera con `/sql-exercises` el día que se conteste, no antes.
 **Coverage:** `Querying basics`, `Ordering and pagination`, `Set operations`, `Filtering and NULL handling` (its four non-`NULL` bullets: alias visibility in `WHERE`, `LIKE`/`ILIKE`, `IN` vs `OR`, and `BETWEEN` ranges — every bullet about three-valued logic is Step 4)
 **Reinforces:** — (first step)
-**Moment 2 config:** `TOPIC = basics`, `COUNT = 10`  *(ya ejecutado el 2026-07-22 — ver abajo)*
+**Moment 2 config:** `TOPIC = basics`, `COUNT = 10`  *(pendiente: el lote se regenera el día que se responda)*
 **Focus:** SQL execution order and alias visibility, `CASE WHEN` in `SELECT`, `UNION`/`UNION ALL`/`INTERSECT`/`EXCEPT`, `NULLS FIRST`/`NULLS LAST` and non-deterministic `LIMIT`, stable ordering and `OFFSET` pagination
 
 **Concepts:** covered across both batches — `SELECT`, `WHERE` (`AND`/`OR`/`IN`/`NOT IN`/`LIKE`/
@@ -788,7 +793,7 @@ one. A row moves to `closed ✅` only after a `review` run has graded it.
 
 | Step | Topic | Exercises file | Scored / target | Status |
 |------|-------|----------------|-----------------|--------|
-| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: 0/10 answered)* | in progress ⏳ |
+| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: sin crear)* | in progress ⏳ |
 | 1 | JOINs | `03-joins.sql` | 0 / 22 | not started |
 | 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 14 | not started |
 | 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | not started |

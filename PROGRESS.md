@@ -129,7 +129,7 @@ exercise never counts toward the junior route, and a junior file never appears i
 
 | Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| **Junior** | 40/50 (80%) | 20/207 (10%) | 0/14 |
+| **Junior** | 40/40 (100%) | 20/207 (10%) | 0/14 |
 | **Middle** | — | — | — |
 | **Senior** | — | — | — |
 | **Total** | — | **20/207 (10%)** | **0/14** |
@@ -156,7 +156,7 @@ collapsed "12 files pending" row would hide exactly what is left to do. A row ap
 | Step | File | Corrected | First-pass / target | Status |
 |---|---|---|---|---|
 | 0 | `01-basics.sql` | 40/40 | 20/20 | closed ✅ — graded 2026-07-22; 20 first-pass + 20 `[Repaso]`, only the first-pass ones move the route |
-| 0 | `02-execution-order-set-ops.sql` | 0/10 | 0/10 | in progress ⏳ — written 2026-07-22, unanswered |
+| 0 | `02-execution-order-set-ops.sql` | — | 0/10 | not started — file deleted 2026-08-04, to regenerate |
 | 1 | `03-joins.sql` | — | 0/22 | not started — file deleted 2026-07-22, to regenerate |
 | 2 | `04-aggregates.sql` | — | 0/14 | not created |
 | 3 | `05-join-pitfalls.sql` | — | 0/12 | not created |
