@@ -16,9 +16,9 @@ description: >
 # Backlog-task closing ritual (daily session)
 
 A task from `{PROJECT_PATH}/PROJECT-BACKLOG.md` just finished. Checking its box is the *last* thing you
-do, not the first. Walk every step below in order (0 through 5, including sub-steps 1a and 1b), without
-being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead of
-silently skipping it.
+do, not the first. Walk every step below in order (0 through 5, including sub-steps 1a, 1b and 3b),
+without being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead
+of silently skipping it.
 
 The task should already carry a verdict from `backlog-task-open`, which validated it against PLANNING,
 the ledger and its real scope before any work started. If it does not — the task was worked on without
@@ -41,13 +41,22 @@ Quote the exact task line from `PROJECT-BACKLOG.md` back to Victor before doing 
 one sentence **the concept it taught**. Everything downstream keys off that concept, so getting it
 wrong poisons all five updates.
 
-Two kinds of task exist, and they close differently:
+Three kinds of task exist, and they close differently:
 
 - **Code task** — a fix landed in the project. Normal path, all steps below apply.
 - **Design decision (no code change)** — the task concluded "this is our convention, leave it"
   (e.g. project 07's fail-fast manual-check entry). Steps 1–2 still apply *if* the convention is a
   real concept; PLANNING.md gets the convention recorded in its rules section rather than as a step;
   PROGRESS.md is usually **n/a** (nothing was demonstrated). Say which ones you skipped and why.
+- **Already resolved** — `backlog-task-open` proved the finding was real when the review ran and that
+  later work has since fixed it. **This is a code task, not a design decision**, and the distinction is
+  load-bearing: code Victor wrote *does* demonstrate the concept, so steps 1 and 1a run in full and the
+  evidence marker is earned exactly as on the normal path. The only things that differ are that no fix
+  is written here, and that the ledger line carries `DECISION, no code change` with the **commit that
+  actually fixed it** in its `→` tail (that phrase describes *this close*, which changed no code — not
+  the project, which did). Filing it as a design decision instead is the trap: it would skip the marker
+  and lose the demonstration, which is precisely the "fixed in passing, recorded nowhere" debt that
+  `backlog-task-open` routes here to pay.
 
 Read `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` before invoking the coverage
 skills — the coverage topics distinguish `Spring` (container, beans, proxies, transactions) from
@@ -93,6 +102,11 @@ Two cases it will report back as skipped, both correct:
 
 - a **design decision with no code change** — nothing was built, so nothing is demonstrated;
 - a concept already marked from an earlier project — first project wins.
+
+**An "already resolved" task is not one of them.** Code was written; it just landed in an earlier
+session. Pass it to `coverage-mark` normally, and derive the evidence clause from the code as it stands
+today, not from the session that wrote it — the clause names what a reader could open and check, and
+the reader cannot see which commit produced it.
 
 Fold its report rows into this ritual's final table.
 
@@ -152,22 +166,49 @@ Search PLANNING.md for the concept. Three outcomes:
 When you do edit PLANNING.md, keep it to the plan's own voice and format; do not annotate it with
 "added because of backlog task X" — the ledger in step 5 already records that.
 
+### 3b — PLANNING §0: keep the session quick reference true
+
+§0 calls itself *"the authoritative pointer to the live step"*, and during a backlog-fix branch **the
+backlog is the live work** — §0's `Current step` reads `G3 backend backlog fix (not a §15 step)`
+precisely because that is where the project is. Nothing else in the system writes this table, so a run
+of closes that never touches it leaves the pointer dated to the first one.
+
+Unlike `step-complete`, most closes move only part of it. Check each cell and change only what the
+close made false:
+
+- **Last updated** — **always**, every close, today's date. This is the cell that makes the rest
+  trustworthy, and it is the one a close forgets. It is never n/a.
+- **Current step** — when the close changes *what is being worked on*: the last task at a priority
+  clears, or the task was the one gating the next §15 step (7a's account-password Medium is the live
+  example — closing it removes a documented blocker and that sentence in §0 becomes wrong).
+- **Done condition** and **Next gate** — when the close satisfies a gate's sign-off condition. Closing
+  the last open **High** is the case that matters: §23 signs G3 off only when every High is fixed and
+  merged, so that close is what turns the gate from blocked to due. Say it in §0, and say it in the
+  report.
+- **Current branch** — only if the close ends the branch's work per §22.
+
+A close that legitimately moves none of these still updates `Last updated`. State which cells you
+changed, and say "no other cell moved" rather than staying silent — silence here is indistinguishable
+from having skipped the step.
+
 ---
 
 ## 4 — PROGRESS.md: status only, never the concept
 
 **The concept does not go in PROGRESS.md** (changed 2026-08-03: its per-technology concept lists were
 deleted because they duplicated the coverage files without evidence). Step 1 put the concept on the
-coverage checklist and step 2 marked it — that is its only home. Never re-create a `## Angular`-style
+coverage checklist and step 1a marked it — that is its only home. Never re-create a `## Angular`-style
 list of concepts here.
 
-What you do update in PROGRESS.md:
+This ritual updates **one** thing in PROGRESS.md: the `Professional level by topic` row's
+practical-evidence cell, when this fix gives that table real evidence — a backlog task closed against a
+review finding is exactly that kind of demonstration. If it does not, PROGRESS.md is **n/a** for this
+close. Say so out loud.
 
-- the `## Coverage demonstrated` percentages, if step 1 or 2 added a bullet or a marker;
-- the `Professional level by topic` row's practical-evidence cell, if this fix gives it real evidence —
-  a backlog task closed against a review finding is exactly that kind of demonstration.
-
-If neither changed, PROGRESS.md is **n/a** for this close. Say so out loud.
+**Do not touch the `## Coverage demonstrated` table here.** `coverage-bullet-add` and `coverage-mark`
+recount their own cells and the `**Total**` row from the files in step 1, and they commit PROGRESS.md
+with that write. A second edit from this ritual is a second writer on one table, derived from memory
+rather than from a recount — read the figure back from their report for your final table instead.
 
 ---
 
@@ -247,11 +288,16 @@ Everything below lands on the **active branch** (`main` only receives merges via
 - `notes/**/coverage/*.md` — handled by `coverage-bullet-add` and `coverage-mark`, which commit their own
   writes under the standing `notes/` authorization. Do not re-stage those files here; if both skills ran in
   the same close, they fold the authoring and the marking into one coverage commit.
-- `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit` and by this skill,
-  never by Victor, so the authorship boundary puts it on your side. Its own atomic commit, separate
-  from the coverage one.
-- `PLANNING.md`, `PROGRESS.md`, `README.md` — authorized 2026-08-01. The ritual writes these entries
-  itself, so the authorship boundary puts them on your side too. One atomic commit each.
+- **`PROGRESS.md` rides in that coverage commit** when step 1 or 1a wrote anything — those skills edit the
+  `Coverage demonstrated` table and commit the file with their write. So make this ritual's own evidence-cell
+  edit (step 4) **before** invoking them, and let their commit carry it. Only when step 1 and 1a both wrote
+  nothing does PROGRESS.md take a commit of its own here.
+- `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit`, by `backlog-task-open`
+  (the `⏸ Deferred` marker) and by this skill, never by Victor, so the authorship boundary puts it on
+  your side. Its own atomic commit, separate from the coverage one.
+- `PLANNING.md`, `README.md` — authorized 2026-08-01. The ritual writes these entries itself, so the
+  authorship boundary puts them on your side too. One atomic commit each — and PLANNING's carries both
+  the rules-section entry (step 3) and the §0 refresh (step 3b), which are one logical change.
 
 **Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
 then `git commit` block), one command per block:
@@ -278,5 +324,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |
 | PLANNING.md | added to §6 engineering rules |
-| PROGRESS.md | n/a — no new marker, evidence cell unchanged |
+| PLANNING §0 | `Last updated` → today; no other cell moved (or: last open High cleared — `Next gate` now says G3 signable) |
+| PROGRESS.md | n/a — evidence cell unchanged (coverage table owned by the coverage skills) |
+| Gate due | none (or: G3 sign-off is now unblocked — PR `fix/backend-backlog` into `projects/07-timetrack`) |
 | Backlog | task collapsed into `## Closed` |
