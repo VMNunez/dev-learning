@@ -41,7 +41,7 @@ Quote the exact task line from `PROJECT-BACKLOG.md` back to Victor before doing 
 one sentence **the concept it taught**. Everything downstream keys off that concept, so getting it
 wrong poisons all five updates.
 
-Three kinds of task exist, and they close differently:
+Four kinds of task exist, and they close differently:
 
 - **Code task** — a fix landed in the project. Normal path, all steps below apply.
 - **Design decision (no code change)** — the task concluded "this is our convention, leave it"
@@ -57,6 +57,15 @@ Three kinds of task exist, and they close differently:
   the project, which did). Filing it as a design decision instead is the trap: it would skip the marker
   and lose the demonstration, which is precisely the "fixed in passing, recorded nowhere" debt that
   `backlog-task-open` routes here to pay.
+- **False positive, or dropped without a fix** — `backlog-task-open` proved either that the code is
+  correct as it stands and always was (false positive), or that the task will never be right *for this
+  project* (dropped). **Nothing was built and nothing was chosen**, so steps 1 through 4 are all
+  **n/a** — say so explicitly and go straight to step 5. The trap is filing these as a design decision:
+  that path authors a coverage bullet and a README **Tradeoffs** entry "if the convention is a real
+  concept", and a finding the reviewer got wrong is not a convention Victor decided to keep. The ledger
+  line still carries `DECISION, no code change`, and its `→` tail must say *why the code is right*
+  (false positive) or *why it will never be right here* (dropped) — that tail is the only thing standing
+  between the same finding and the next `review-audit` run re-raising it.
 
 Read `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` before invoking the coverage
 skills — the coverage topics distinguish `Spring` (container, beans, proxies, transactions) from
