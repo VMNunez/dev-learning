@@ -135,11 +135,12 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 | 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | route §2 | doctrine §2, §3, §7 · route §2 · `ROADMAP.md` (for B2) |
 | 2 | `coverage-and-steps` | **Invariants 1, 2, 10, 14** · **B10** | route §1, §2, its out-of-scope list | `notes/sql/coverage/{LEVEL}.md` · doctrine §Z · the Phase 1 section list |
 | 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13, 15** | route §1, §2, §3 · doctrine §0 · **`PROGRESS.md` → `## Practice completed` → `### Exercise route`, this level's rows only** | `PROGRESS.md` · **the Phase 1 snapshot** |
-| 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **Section E** | doctrine §0, §2, §3, §4, §8b, §Z · route header | `sql-exercises-prompt.md`, `sql-plan-prompt.md` |
+| 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **Section E** | **the doctrine — any section** · route header (metadata only) | `sql-exercises-prompt.md`, `sql-plan-prompt.md` |
 
 **The `Edits` column is a fence, not a hint.** Two files are open and four specialists run against them;
 a specialist writing outside its column is how the doctrine acquires a level-specific sentence. #1 and
-#2 never touch the doctrine at all. #4 owns the doctrine and touches the route only to check its header
+#2 never touch the doctrine at all. #4 owns the **whole** doctrine — the other rows' sections are
+exhaustive, its are not — and touches the route only to check its header
 metadata is present and well-formed — it never edits a step.
 
 **The invariant numbers are the standard's Section D numbers, and Section D is numbered identically to
