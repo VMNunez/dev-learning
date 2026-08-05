@@ -36,9 +36,11 @@ pattern in an interview**. An architecture he cannot explain is worse than a sim
 Before starting, read:
 - `notes/prompts/projects/plan/_internal/_planning-standard.md` — §6 (Architecture), §3 (New concepts), §20
   (Tradeoffs), and the "Design-correctness checks". This is the shape and the bar.
-- `PROGRESS.md` — what architecture and patterns Victor has **already** built and can be assumed known
-  (the previous project's layers, guards, coordinator pattern, layered backend, JWT filter, etc.).
-- `notes/coverage/junior.md` — the architecture section: which architectural concepts are still gaps.
+- `projects/briefs/project-brief-{NN}.md` — the gaps this project closes and its two concept lists.
+  What Victor has **already** built is what carries a `✅ NN-slug` marker there, and the architecture
+  gaps are the brief's — not yours to re-derive, or this flow runs two uncoordinated gap analyses.
+  `PROGRESS.md`'s `## Projects` table and level matrix for project history and level-appropriateness
+  only: its per-technology concept lists were deleted on 2026-08-03.
 - `{PROJECT}/PLANNING.md` — the draft the author just wrote. §6, §3, §7, §10, §20 are your focus.
   The Read tool truncates files over 2000 lines silently — check `wc -l` first and, if near or over
   2000, read in passes with `offset` to the real end (§20 lives in the tail).

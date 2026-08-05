@@ -56,12 +56,13 @@ merges"), so the checkpoint is visible from the step you are on rather than reme
 Plain language, says what the app does and who uses it.
 
 ### 2. Why this project
-3–4 bullets: the domain problem it solves · the technical gaps it closes (reference the gap
-analysis) · why a recruiter at NTT Data / Capgemini would recognise it as real enterprise work · what
-it adds that the previous project does not.
+3–4 bullets: the domain problem it solves · the technical gaps it closes (the brief's gap table is
+where they come from) · why a recruiter at NTT Data / Capgemini would recognise it as real enterprise
+work · what it adds that the previous project does not.
 
 ### 3. New concepts
-A table of every concept learned for the **first time** in this project.
+A table of every concept this project **demonstrates for the first time** — its coverage bullet carries
+no `✅ NN-slug` project marker yet. Unmarked means *not yet demonstrated*, never *not yet studied*.
 Columns: **Concept · Topic · Why this project teaches it**.
 
 The **Topic** column is a controlled vocabulary, not free text: it names the coverage file the
@@ -76,11 +77,13 @@ Boot** (`Optional<T>` is Java; `@Transactional` proxy behaviour is Spring; condi
 auto-configuration is Spring Boot).
 - **Pass:** each concept is specific ("pagination with `Pageable`" = good; "Spring Boot" = too vague),
   every Topic is one of the topic folders above (Java vs Spring vs Spring Boot split correctly), and
-  every row has a reason in the third column. Only concepts not yet in PROGRESS.md.
+  every row has a reason in the third column. Only undemonstrated concepts: a bare pre-2026-08-01
+  `✅ NN-slug` counts as demonstrated, a `✅ sql:` drill marker alone does not.
 
 ### 4. Review concepts
-A table of concepts from PROGRESS.md this project reinforces.
-Columns: **Concept · Originally learned in · How this project uses it again**. Limit to 8–12 that
+A table of concepts this project reinforces — each already carrying a `✅ NN-slug` marker from an
+earlier project, which is where the second column's value comes from.
+Columns: **Concept · Originally demonstrated in · How this project uses it again**. Limit to 8–12 that
 genuinely benefit from repetition.
 
 ### 5. Tech stack

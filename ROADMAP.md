@@ -204,9 +204,9 @@ No project is finished without tests. Tests are not a step — they are part of 
 
 ### Project 08 — after 07
 
-Planned using `notes/prompts/projects/plan/plan-audit.md` (`MODE = new`) — run it inside Claude Code when project 07 is complete. It reads `notes/coverage/junior.md`, `PROGRESS.md`, and `ROADMAP.md`, picks the best candidate from the list below, and writes a complete `PLANNING.md` for the new project — an author subagent drafts it and a cold reviewer audits and fixes it before it commits, hands-off. Run it once, get a full plan.
+Planned in two runs, both inside Claude Code once project 07 is complete. `project-brief` **picks** the candidate from the list below and records why — the gaps it closes, the alternatives rejected, the scope ceiling — in a dated one-page brief at `projects/briefs/project-brief-08.md`, contested by a cold second opinion. `plan-audit` (`MODE = new`) then **writes** the complete `PLANNING.md` for it, author + architecture advisor + seven cold specialists, hands-off; it dispatches the brief itself if you skipped that step.
 
-**Project 08 candidate ideas** — each names the `notes/coverage/junior.md` gaps it closes (gaps that project 07 does not touch):
+**Project 08 candidate ideas** — each names the `notes/coverage/junior.md` gaps it closes (gaps that project 07 does not touch). This list **proposes**; the brief decides and is where the reasons live:
 
 - **Invoice Manager** — clients, products, invoices. Covers: many-to-many, Pageable, `@Query`, PDF export.
   Closes: JPA pagination (`Page` vs `Slice`), owning side of a many-to-many, custom JPQL, N+1 and

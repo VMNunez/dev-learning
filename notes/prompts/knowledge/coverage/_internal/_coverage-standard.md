@@ -211,7 +211,7 @@ Rules:
 - **Markers written before 2026-08-01 carry no evidence clause**, and are valid without one — the clause
   was added to the format on that date and is not applied retroactively, because reconstructing why a
   project demonstrated a bullet months later invents a memory rather than recording one. A bare
-  `✅ NN-slug — {evidence}` is therefore an *old* marker, never a malformed one. Every tool that reads markers must
+  `✅ NN-slug` is therefore an *old* marker, never a malformed one. Every tool that reads markers must
   accept both forms; only newly written markers require the clause.
 - **Applied in project code only.** The marker means Victor wrote code that uses the concept in that
   project. Studying the concept in `notes/` does not earn it, and neither does reading about it in a

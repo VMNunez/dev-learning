@@ -5,8 +5,9 @@
 Run this **inside the supported agent runtime**. It is the only project-plan prompt Victor launches. It builds or
 audits a project's `PLANNING.md` to the full standard, hands-off, in two shapes:
 
-- `MODE = new` — plan the next project: gap-analyse PROGRESS vs coverage, pick the best next project,
-  write a complete PLANNING.md, then have an independent reviewer audit and fix it before it commits.
+- `MODE = new` — plan the next project: take the chosen project and its gap bullets from the
+  `project-brief` (dispatched as Phase 0 if none is current), write a complete PLANNING.md, then have
+  an independent reviewer audit and fix it before it commits.
 - `MODE = review` — audit an existing PLANNING.md against the standard, fix what falls short, and
   commit (one project, or `PROJECT = all` for every project in turn).
 
@@ -18,8 +19,10 @@ whole because a plan's sections cross-reference; review is split so each special
 it cannot skim, catching what the author trusted. No report to apply by hand, no per-file launching —
 one command does everything.
 
-> **▶ Run first (new mode only):** `progress-update` — the gap analysis reads `PROGRESS.md`; if it is
-> stale it picks the wrong next project. (`review` mode has no prerequisite.)
+> **▶ Run first (new mode only):** `progress-update`, then `project-brief` — the brief chooses the
+> project and carries the gap bullets this flow's author consumes, and its own gap analysis rests on
+> `PROGRESS.md`. Phase 0 below dispatches `project-brief` for you when no current brief exists.
+> (`review` mode has no prerequisite.)
 
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
 
@@ -43,7 +46,7 @@ fill only the config block, and let it run to the end. Pick the recipe:
 **A · Plan the next project** (a project just finished; plan the next one)
 ```
 MODE    = new
-PROJECT =            ← leave blank; new mode auto-detects from PROGRESS.md
+PROJECT =            ← leave blank; new mode takes the project from the brief (Phase 0)
 ```
 
 **B · Audit one existing plan** (also the recipe for **restructuring a pre-standard plan** — e.g. a
@@ -72,7 +75,7 @@ PROJECT = all
 MODE    = [new | review]
 
 ## new mode:
-PROJECT = [blank — auto-detects the next project from PROGRESS.md]
+PROJECT = [blank — Phase 0's brief names the project and its number]
 
 ## review mode:
 PROJECT = [folder path, e.g. projects/07-timetrack | projects/06-hr-portal | all]
@@ -101,27 +104,59 @@ audit the plan in your own context.
 
 ## If MODE = new
 
+### Phase 0 — The brief (the choice, before any design)
+
+Which project to build is decided by `notes/prompts/projects/plan/project-brief-prompt.md`, not here
+and not by the author: it is one decision worth more than the 24 sections it produces, so it is made
+on one page, contested by a cold second opinion, and committed as a durable record before anything is
+designed against it.
+
+Resolve `NUMBER` (the next number above the highest existing `projects/` folder) and look for
+`projects/briefs/project-brief-{NUMBER}.md`:
+
+- **It exists and is current** — its `Status:` is `current`, its `Second opinion:` is `endorse` or
+  `endorse-with-scope-change`, its stored `Coverage SHA-256` matches the scope digest of
+  `notes/coverage/junior.md` today, and the highest existing folder and last completed project still
+  match its header. Compute the digest with the canonical command in "Evidence markers" in
+  `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, never a plain `sha256sum`: markers
+  are excluded from that digest by design, so an unstripped hash marks every brief stale the first time
+  a step closes. Use it. If only `Project markers counted:` has moved, that is **soft stale** — bullets
+  were demonstrated since the decision: name the delta and pass it to the author, which is the only
+  staleness the digest cannot see.
+- **It is missing or hard-stale** — launch one `role-appropriate` subagent, `reasoning tier: deep`,
+  `execution: foreground`: *"Read `notes/prompts/projects/plan/project-brief-prompt.md` and execute it
+  in full. It commits its own brief. Report the project chosen, the second opinion's verdict, and the
+  brief's path."* Wait for it.
+- **Its second opinion is `wrong project`, or the brief was not committed** — stop and report. Two cold
+  judgements disagree about the month of work this plan encodes; that is Victor's call to settle, and
+  designing 24 sections first would only make it expensive.
+
+**Phase 0 acceptance check.** The brief's header must carry `Coverage read: {n} lines, read to EOF`
+and a `Coverage SHA-256`. That confirmation is the truncation guard for the one file in this pipeline
+already past 2000 lines — it now sits with the run that actually reads it whole. A brief missing either
+field is unusable: re-run the brief prompt once, and if it fails again, stop rather than design against
+a gap analysis that may have been built on a partial read.
+
 ### Phase 1 — Author (one writing subagent)
 
 Launch one `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`:
 
-> Read `notes/prompts/projects/plan/_internal/_plan-write-prompt.md` and execute it in full
-> (`PROJECT = {PROJECT}` — blank means auto-detect). Do the gap analysis, choose the next project,
-> design it, write the complete `PLANNING.md` to the contract in `_planning-standard.md`, and make the
-> ROADMAP.md + PROGRESS.md edits. **Do NOT commit** — an independent reviewer runs next and owns the
-> commit. Leave all three files in the working tree. **Open your report with the line count and
-> read-to-EOF confirmation for `notes/coverage/junior.md`**, then the project chosen, the files
-> touched, and the one-line commit message you'd use.
+> Read `notes/prompts/projects/plan/_internal/_plan-write-prompt.md` and execute it in full for
+> `BRIEF = projects/briefs/project-brief-{NUMBER}.md`. The brief is the decision — do not re-choose the
+> project and do not re-derive the gap analysis. Design it, write the complete `PLANNING.md` to the
+> contract in `_planning-standard.md`, and make the ROADMAP.md + PROGRESS.md edits. **Do NOT commit** —
+> an independent reviewer runs next and owns the commit. Leave all three files in the working tree.
+> **Open your report with the brief's path, its `Coverage SHA-256`, and confirmation you read the brief
+> end to end**, then the project, the files touched, and the one-line commit message you'd use.
 
-Wait for it. If it reports it could not choose or write a plan (blocked, missing context), stop and
+Wait for it. If it reports it could not write a plan (blocked, missing context, brief refused), stop and
 report — do not run the architecture advisor or reviewer on nothing.
 
-**Author acceptance check.** The report must open with that line count + read-to-EOF confirmation —
-the same truncation guard the specialists carry, applied to the one file in this pipeline that is
-already past 2000 lines. A silently truncated read drops whole topics from the gap analysis with no
-error and a plausible-looking result. If it is missing, re-dispatch once quoting what was missing; if
-it fails again, note the gap in the self-report and continue — never silently accept a gap analysis
-that may have been built on a partial read.
+**Author acceptance check.** The report must open with the brief's path and fingerprint. The author no
+longer loads `notes/coverage/junior.md` into context — the brief carries the gap bullets verbatim — so
+what is checked here is that it worked from the brief rather than from its own reconstruction of one. If the
+line is missing, re-dispatch once quoting what was missing; if it fails again, note the gap in the
+self-report and continue.
 
 ### Phase 1b — Architecture advisor (one architecture subagent)
 
@@ -132,7 +167,10 @@ Launch a `role-appropriate` subagent, `reasoning tier: deep`, `execution: foregr
 > architectural concept (§3), and the tradeoffs (§20) against Victor's current level and the coverage
 > gaps — fix over-engineering, under-engineering, and a misjudged new concept directly in those
 > sections. **Do NOT commit.** Report your architecture verdict, the one new concept, what you changed,
-> and any ripple the reviewer must reconcile.
+> and any ripple the reviewer must reconcile. In `new` mode read
+> `projects/briefs/project-brief-{NUMBER}.md` first: **its §3 list is the authority**, so if sharpening
+> §3 means dropping or replacing a concept the brief listed, report that as a ripple rather than editing
+> it away — `steps-tests` checks §3 against the brief.
 
 Wait for it. It only sharpens architecture; if it reports the architecture is already sound and changes
 nothing, that is fine — continue to the reviewer.
@@ -301,9 +339,9 @@ Report the commit made and each specialist's verdict/trace.
   branches-coverage), each owning a small slice it cannot skim and returning a check-by-check trace,
   **and closed by a seventh `whole-plan` pass that owns only what a slice structurally cannot see: the
   ten unowned sections, cross-section contradictions, and `PROJECT-BACKLOG.md`.**
-- **Strict sequence, never overlapping.** new mode: author → architecture advisor → the six
-  specialists (in order) → `whole-plan` → orchestrator commit; review mode: the six specialists →
-  `whole-plan` → orchestrator commit.
+- **Strict sequence, never overlapping.** new mode: brief (Phase 0, committed by its own prompt) →
+  author → architecture advisor → the six specialists (in order) → `whole-plan` → orchestrator commit;
+  review mode: the six specialists → `whole-plan` → orchestrator commit.
   Each must see the previous one's finished work, and they all edit the same file. (The architecture
   advisor is new-mode only, on the author side; the `architecture` specialist reviewer independently
   re-checks §6/§3/§20 in both modes.)

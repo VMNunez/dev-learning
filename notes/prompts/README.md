@@ -31,7 +31,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 - **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
   before dispatching any role.
 
-Both launcher catalogs contain exactly 27 files and must reference the same 27 canonical entry points.
+Both launcher catalogs contain exactly 28 files and must reference the same 28 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt.
 
 ---
@@ -55,12 +55,12 @@ the filenames anyway, so a file keeps its marking if it is ever moved or quoted 
 
 **Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 27 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 28 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation, or just use its slash command. **27 files, listed below.**
+  conversation, or just use its slash command. **28 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
   "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -70,23 +70,24 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 27 runnable prompts — each with a slash command of the same name
+### The 28 runnable prompts — each with a slash command of the same name
 
 | Group | Prompts |
 |---|---|
 | Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
-| Projects | `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
+| Projects | `project-brief-prompt`, `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
 | Practice | `sql-plan-prompt`, `sql-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
 
-Two flavors among these 27, both launched the same way (paste config into a new chat):
-- **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `plan-audit`, `readme-audit`,
+Two flavors among these 28, both launched the same way (paste config into a new chat):
+- **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `project-brief-prompt`,
+  `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
   `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt`,
   `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, and `sql-plan-audit` (they run the orchestrator contract
   even when the target is singular) — run entirely inside a supported agent runtime and hand you a
-  finished result (and, where noted, a commit) with no further input from you. **Fifteen prompts**, and
-  the set is defined by which self-report they run: these fifteen execute `_pipeline-self-report.md`.
+  finished result (and, where noted, a commit) with no further input from you. **Sixteen prompts**, and
+  the set is defined by which self-report they run: these sixteen execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
@@ -166,9 +167,10 @@ consume one of these sources of truth.
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `projects/plan/plan-audit.md` | **THE entry point — the only project-plan prompt you launch.** Runs **inside a supported agent runtime**, hands-off. `new` mode plans the next project (gap-analyses PROGRESS vs coverage, picks it, writes a full PLANNING.md), runs an **architecture advisor** on §6/§3/§20, then audits it with **seven cold specialist reviewers — six owning one concern each** (architecture · data-model-api · ui-design · rules-security · steps-tests · branches-coverage) **plus a final `whole-plan` pass** that reads the finished plan end to end for the sections no concern owns, cross-section contradictions and `PROJECT-BACKLOG.md` drift, before the orchestrator makes the single commit; `review` mode runs the same seven on an existing PLANNING.md (one project or `all`). Specialists never commit. The orchestrator always commits its own work; a failed acceptance or history-preservation gate aborts the run without committing. | its four internal pieces (below) | `{project}/PLANNING.md`; adds a row to `PROGRESS.md`; marks the choice in `ROADMAP.md`; one atomic commit |
+| `projects/plan/project-brief-prompt.md` | **The choice, before the plan.** Decides which project Victor builds next and records why, as a durable one-page brief: chosen project · the gaps it closes with their coverage bullets quoted verbatim · the §3/§4 concept lists · the alternatives rejected with reasons · the scope ceiling · the gaps left for the next brief. The gap analysis keys on the `✅ NN-slug` evidence markers (unmarked = not yet demonstrated), never on PROGRESS.md's deleted concept lists. Carries a `Coverage SHA-256` + last completed project so a consumer can refuse a stale brief, and a mandatory cold second opinion (`endorse` · `endorse-with-scope-change` · `wrong project`) settles it on one page before 24 sections are designed against it. A `wrong project` verdict blocks the commit and goes to Victor. Runs standalone to think ahead, or as `plan-audit`'s Phase 0. | `notes/coverage/junior.md` (whole), `PROGRESS.md` (projects table + level matrix + coverage-demonstrated), `ROADMAP.md` (candidates + gates), `projects/README.md`, `_shared-context.md`, `_job-market-evidence.md`, `_coverage-standard.md` | `projects/briefs/project-brief-{NN}.md` (its own atomic commit), `projects/plan/_internal/_last-run-report-project-brief.md` |
+| `projects/plan/plan-audit.md` | **THE entry point — the only project-plan prompt you launch.** Runs **inside a supported agent runtime**, hands-off. `new` mode plans the project the brief chose (Phase 0 dispatches `project-brief` when no current brief exists; a `wrong project` second opinion stops the run), writes a full PLANNING.md, runs an **architecture advisor** on §6/§3/§20, then audits it with **seven cold specialist reviewers — six owning one concern each** (architecture · data-model-api · ui-design · rules-security · steps-tests · branches-coverage) **plus a final `whole-plan` pass** that reads the finished plan end to end for the sections no concern owns, cross-section contradictions and `PROJECT-BACKLOG.md` drift, before the orchestrator makes the single commit; `review` mode runs the same seven on an existing PLANNING.md (one project or `all`). Specialists never commit. The orchestrator always commits its own work; a failed acceptance or history-preservation gate aborts the run without committing. | its four internal pieces (below) | `{project}/PLANNING.md`; adds a row to `PROGRESS.md`; marks the choice in `ROADMAP.md`; one atomic commit |
 | `projects/plan/_planning-standard.md` | *Internal.* The **shared PLANNING.md contract** both the author and reviewer read (the 24-section template + what makes each pass, done-condition formats, HTTP status conventions, professional implementation order, branch-strategy rules, quality-gate rules, consistency invariants, the two project formats). Not runnable. | — | — |
-| `projects/plan/_plan-write-prompt.md` | *Internal (author, new mode).* Gap-analyses, chooses the next project, designs it, and writes the complete PLANNING.md to the standard + the ROADMAP/PROGRESS edits. Does not commit. | `_planning-standard.md`, `PROGRESS.md`, `notes/coverage/junior.md`, `ROADMAP.md`, last project's `PLANNING.md` | `{project}/PLANNING.md`, `ROADMAP.md`, `PROGRESS.md` (working tree) |
+| `projects/plan/_plan-write-prompt.md` | *Internal (author, new mode).* Designs the project **the brief already chose** and writes the complete PLANNING.md to the standard + the ROADMAP/PROGRESS edits. It neither chooses nor gap-analyses, and never opens `notes/coverage/junior.md` — the brief carries those bullets verbatim. Does not commit. | `_planning-standard.md`, the brief, `PROGRESS.md` (projects table + level matrix), `ROADMAP.md` (phases + gates), highest-numbered `PLANNING.md` | `{project}/PLANNING.md`, `ROADMAP.md`, `PROGRESS.md` (working tree) |
 | `projects/plan/_plan-architecture-prompt.md` | *Internal (architecture advisor, new mode only).* Judges the drafted architecture (§6), the one new architectural concept (§3), and the tradeoffs (§20) against Victor's level and the coverage gaps; fixes over/under-engineering directly in those sections. Does not commit. | `_planning-standard.md` (its slice), `{project}/PLANNING.md` (§3/§6/§20), `PROGRESS.md` | the sharpened §3/§6/§20 (working tree) |
 | `projects/plan/_plan-review-prompt.md` | *Internal (specialist reviewer).* Dispatched **once per concern** by the orchestrator (`SCOPE` = architecture · data-model-api · rules-security · steps-tests · branches-coverage): audits only its slice against the standard, fixes directly, returns a check-by-check trace. Never commits — the orchestrator owns the single commit (a standalone `SCOPE = all` run doesn't commit either). | `_planning-standard.md` (its slice), `{project}/PLANNING.md`, `PROGRESS.md` (architecture scope only) | the audited slice of `PLANNING.md` (working tree) |
 | `projects/readme/readme-audit.md` | **THE entry point — the only readme prompt you launch.** Runs **inside a supported agent runtime**, hands-off. Reviews and fixes a project's README(s) to the standard — for full-stack, one author + cold-reviewer subagent pair **per README** (global / backend / frontend). Run before the portfolio gate (`portfolio-audit` reads the READMEs; `review-audit` does not). **Not auto-committed** — hands Victor the commit (project-folder files). Ends with a **pipeline self-report** written to `projects/readme/_internal/_last-run-report.md` (auto-committed — prompt-system machinery): five bullets on how the run itself went (report discipline, trace verification, coherence, failure protocol), read later to decide if these prompts need changing. | its three internal pieces (below) | `{project}/README.md` (+ `backend/README.md`, `frontend/README.md` for full-stack), `projects/readme/_internal/_last-run-report.md` |
@@ -253,6 +255,11 @@ Each generated file, with who writes it and who depends on it:
 - **`PROGRESS.md`** — written by `progress-update` (and by the coding agent after each step in the daily
   session) → read by `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`,
   `sql-exercises`. *Stale PROGRESS = wrong gap analysis in `plan-audit` and `roadmap-review`.*
+- **`projects/briefs/project-brief-{NN}.md`** — written by `project-brief` → read by `plan-audit`
+  (`MODE = new`, which refuses a hard-stale one), by its author half instead of the coverage mirror, and
+  by the `steps-tests` specialist as the authority for §3/§4. Its `## Gaps left for the next brief` is
+  the starting input for the following project's brief. *ROADMAP proposes · the brief decides ·
+  PLANNING builds.*
 - **`{project}/PLANNING.md`** — written by `plan-audit` (new mode) → read by `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review`. *It is the contract
   the whole project is checked against.*
@@ -319,11 +326,14 @@ Practice (its own loop, fed by coverage):
 
 **Starting a new project**
 1. `progress-update` — make PROGRESS.md accurate first
-2. `plan-audit` (`MODE = new`) — plan it, get PLANNING.md (author + reviewer, hands-off)
-3. build it, step by step (daily sessions)
-4. `readme-audit` — fix the README(s) after each big feature
-5. `review-audit` — code review when the project is complete
-6. `portfolio-audit` — final gate before adding it to CV/LinkedIn
+2. `project-brief` — decide *which* project, on one page, with a cold second opinion. Optional as a
+   separate run: `plan-audit` dispatches it as Phase 0 if you skip it. Run it separately when you want
+   to think a project ahead, or to contest a choice before any design work exists
+3. `plan-audit` (`MODE = new`) — plan it, get PLANNING.md (author + reviewer, hands-off)
+4. build it, step by step (daily sessions)
+5. `readme-audit` — fix the README(s) after each big feature
+6. `review-audit` — code review when the project is complete
+7. `portfolio-audit` — final gate before adding it to CV/LinkedIn
 
 **Auditing knowledge (one topic)**
 1. `coverage-prompt` — define/refresh exactly one topic and level (Angular and Angular Material separately)
@@ -389,7 +399,8 @@ processes every target in order, one commit per target. Full rules: `notes/promp
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**),
   `simulation-generator`, `code-review` (`TYPE = all`).
-- **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, and `notes-audit`.
+- **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`, and
+  `project-brief` (one decision per run — `all` would mean choosing several next projects at once).
 - **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `cv`,
   `linkedin`, and `simulator` full mode — these cover everything in one run by design.
   `progress-update` defaults to `MODE = active` (only the in-progress project); set `MODE = all`

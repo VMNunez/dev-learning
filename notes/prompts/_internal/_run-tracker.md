@@ -115,15 +115,21 @@ fails, since no daily-session skill touches this route.
 
 ## Per-project prompts
 
-| Project | plan-audit | review-audit | readme-audit | portfolio-audit |
-|---|---|---|---|---|
-| 01-todo-list | | | | |
-| 02-weather-app | | | | |
-| 03-expense-tracker | | | | |
-| 04-meal-finder | | | | |
-| 05-task-manager | | | | |
-| 06-hr-portal | | | | |
-| 07-timetrack | 2026-07-28 (review mode, completed — six-specialist pass: §1 added, §14 visual design system written from scratch, change-password dialog wired §10→§16) | | | |
+| Project | project-brief | plan-audit | review-audit | readme-audit | portfolio-audit |
+|---|---|---|---|---|---|
+| 01-todo-list | | | | | |
+| 02-weather-app | | | | | |
+| 03-expense-tracker | | | | | |
+| 04-meal-finder | | | | | |
+| 05-task-manager | | | | | |
+| 06-hr-portal | | | | | |
+| 07-timetrack | | 2026-07-28 (review mode, completed — six-specialist pass: §1 added, §14 visual design system written from scratch, change-password dialog wired §10→§16) | | | |
+
+Read left to right: the brief chose the project → the plan built it → review, README and portfolio
+closed it. **`project-brief` is the one column whose row may not exist yet**: it decides the *next*
+project, so its run creates that project's row before any folder does. Its cell's staleness is not
+tracked here — the brief carries its own `Coverage SHA-256`, marker count and `Status:` header, and its
+consumer reads freshness from the file itself.
 
 ## Global pipeline prompts (no per-target scope)
 
