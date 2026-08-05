@@ -159,7 +159,7 @@ rewrite good text to leave a mark.
 
 **If `{SCOPE}` ≠ all (dispatched by the orchestrator):** do **not** commit — the orchestrator commits
 once, after every concern's specialist has run. Leave your fixes in the working tree. Your report is
-**compact and bounded** — it lands in the orchestrator's context, and six verbose reports saturate it:
+**compact and bounded** — it lands in the orchestrator's context, and seven verbose reports saturate it:
 - Line 1 — verdict: `PASS` (no changes) or `FIXED: n fixes`.
 - The **check-by-check trace of your slice** as a table, **one line per check, ≤15 words per line**:
   `| check | ✅ / fix made |`. Every section/invariant/design check your `{SCOPE}` owns must have a

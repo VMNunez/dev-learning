@@ -147,7 +147,7 @@ specialists + the orchestrator commit) before starting the next — never overla
 commits per project and parallel commits race the git index. Put each project's report under a
 `### [project]` heading, and after the last one
 print the `_batch-mode.md` summary table (`Project | Result | Sections fixed`). **Condense as you go:**
-once a project is committed, its six specialist traces are spent — carry forward only one line per
+once a project is committed, its seven specialist traces are spent — carry forward only one line per
 project (`project · verdict · n fixes · commit hash`) and drop the traces from your working notes, or
 seven projects of traces will crowd out the later ones. If the run gets too
 long, finish the current project completely and stop with the "Completed / Remaining" line — a re-run
