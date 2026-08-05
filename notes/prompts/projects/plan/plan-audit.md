@@ -109,11 +109,19 @@ Launch one `role-appropriate` subagent, `reasoning tier: deep`, `execution: fore
 > (`PROJECT = {PROJECT}` — blank means auto-detect). Do the gap analysis, choose the next project,
 > design it, write the complete `PLANNING.md` to the contract in `_planning-standard.md`, and make the
 > ROADMAP.md + PROGRESS.md edits. **Do NOT commit** — an independent reviewer runs next and owns the
-> commit. Leave all three files in the working tree. Report the project chosen, the files touched, and
-> the one-line commit message you'd use.
+> commit. Leave all three files in the working tree. **Open your report with the line count and
+> read-to-EOF confirmation for `notes/coverage/junior.md`**, then the project chosen, the files
+> touched, and the one-line commit message you'd use.
 
 Wait for it. If it reports it could not choose or write a plan (blocked, missing context), stop and
 report — do not run the architecture advisor or reviewer on nothing.
+
+**Author acceptance check.** The report must open with that line count + read-to-EOF confirmation —
+the same truncation guard the specialists carry, applied to the one file in this pipeline that is
+already past 2000 lines. A silently truncated read drops whole topics from the gap analysis with no
+error and a plausible-looking result. If it is missing, re-dispatch once quoting what was missing; if
+it fails again, note the gap in the self-report and continue — never silently accept a gap analysis
+that may have been built on a partial read.
 
 ### Phase 1b — Architecture advisor (one architecture subagent)
 
@@ -243,10 +251,14 @@ specialist named** — before committing, rather than ship a line it knows is wr
 correction in the self-report.
 
 **Specialist acceptance check:** a specialist's report is acceptable only if it opens with the plan's
-line count + read-to-EOF confirmation (the reviewer prompt's truncation guard) **and** its trace has
-**one row per check its slice owns**. If either is missing or the report is unusable, re-dispatch that
-specialist once, quoting what was missing; if it fails again, note the gap in the self-report and
-continue — never silently accept a partial trace or a possibly truncated read.
+line count + read-to-EOF confirmation (the reviewer prompt's truncation guard), **declares
+`checks owned: n`**, **and** returns a trace of exactly `n` rows. You never read the reviewer prompt or
+the standard, so `n` is the specialist's own declaration — deliberately: it makes the count checkable
+here, and auditable against the reviewer's scope table afterwards, where a bare "one row per check its
+slice owns" was checkable nowhere. `whole-plan` is the one scope whose `n` you know independently:
+**twelve, always**. If anything is missing or the report is unusable, re-dispatch that specialist once,
+quoting what was missing; if it fails again, note the gap in the self-report and continue — never
+silently accept a partial trace or a possibly truncated read.
 
 ## Finishing
 

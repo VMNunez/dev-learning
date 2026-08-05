@@ -57,8 +57,10 @@ Read these in order. They are the inputs to every decision this prompt makes.
    read silently drops the later topics from the gap analysis.
 5. `ROADMAP.md` — the career plan: phase table, candidate project ideas for the next project, and the
    "What 'ready' means" gate list.
-6. The last completed project's `PLANNING.md` (check PROGRESS.md for the number, then read
-   `projects/0X-name/PLANNING.md`). This is the reference for depth and structure — match it.
+6. The **highest-numbered existing** `projects/0X-name/PLANNING.md` — in progress counts, completed is
+   not the test. This is the reference for depth and structure, and only a plan written to the current
+   24-section standard can serve as one; the last *completed* project may well be an Angular-only plan
+   that predates it. Match its depth (it is ~1800 lines: budget the read accordingly).
 7. **The §14 of every other published project** — read only that section (grep the "UI design" heading
    and read to the next one; do not load whole plans). You need the palette, density, shape, typography
    and layout skeleton each one already used, because 4g must differ from **all** of them, not just the
@@ -213,8 +215,12 @@ lists "test the services" has no test plan.
 
 ## Step 5 — Write PLANNING.md
 
-Write the file at `projects/0X-projectname/PLANNING.md`. Determine the project number from PROGRESS.md
-(last completed + 1) and a short folder name (`0X-projectname`, e.g. `08-invoice-manager`).
+Write the file at `projects/0X-projectname/PLANNING.md`. **The number is the next one above the highest
+that already exists** — list `projects/` and add 1 to the highest `NN`, never "last *completed* + 1":
+the project in flight is normally still open, so the completed count is one behind and resolves onto
+it. Pick a short folder name (`0X-projectname`, e.g. `08-invoice-manager`). Before writing, confirm the
+path is free — if `projects/0X-*/` or its `PLANNING.md` already exists, **stop and report** rather than
+write. This prompt only ever creates a new plan; editing an existing one is `MODE = review`.
 
 Write **all 24 sections in the exact order and to the contract defined in `_planning-standard.md`** —
 §0 through §23. Do not restate the contract here; follow it. Fold in every design decision from Step 4
@@ -240,6 +246,10 @@ Live`): `| 0X | [Project name] | [main concepts introduced] | Not started 🔜 |
 
 Do **not** commit and do **not** mark any worklist. Leave PLANNING.md, ROADMAP.md, and PROGRESS.md in
 the working tree. Print:
+
+**Inputs read whole:** `notes/coverage/junior.md` — {n} lines, read to EOF. State this **first**: it is
+the largest file this pipeline reads and the only one past the truncation cliff, and a gap analysis
+built on a silently truncated read is wrong in a way nothing downstream can detect.
 
 **Project chosen:** [name] — one sentence on what it is and why it was chosen.
 
