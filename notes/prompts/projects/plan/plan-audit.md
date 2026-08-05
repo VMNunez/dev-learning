@@ -201,8 +201,8 @@ For **each** concern in order, launch a fresh, independent `role-appropriate` su
 `reasoning tier: deep`, `execution: foreground`:
 
 > Read `notes/prompts/projects/plan/_internal/_plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
-> `SCOPE = «this concern»`, `DRY_RUN = true` (that is plan-review's own no-commit switch — the
-> orchestrator owns the single commit; it is unrelated to this orchestrator's retired config). Read
+> `SCOPE = «this concern»` (leave `DRY_RUN` unset — a dispatched concern never commits by contract, so
+> the flag has nothing to switch off). Read
 > **only the files and standard sections your
 > concern's row lists in that prompt's reading map** — never the whole standard. Audit **only your
 > concern's** sections/invariants/checks (the `{SCOPE}` table in that prompt), fix what falls short

@@ -30,6 +30,9 @@ SCOPE   = [all | architecture | data-model-api | ui-design | rules-security | st
            branches-coverage | whole-plan]
           → the audit orchestrator dispatches ONE concern per subagent; "all" is for a standalone run.
 DRY_RUN = [false | true]
+          → **`SCOPE = all` only.** It is not a no-commit switch: no path of this prompt ever commits.
+            All it decides is whether the standalone run prints its commit sequence as "ready to run"
+            or as a preview. A dispatched concern leaves it unset.
 
 Use PROJECT, SCOPE, and DRY_RUN wherever the prompt refers to {PROJECT}, {SCOPE}, and {DRY_RUN}.
 
