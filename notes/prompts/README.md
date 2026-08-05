@@ -31,7 +31,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 - **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
   before dispatching any role.
 
-Both launcher catalogs contain exactly 26 files and must reference the same 26 canonical entry points.
+Both launcher catalogs contain exactly 27 files and must reference the same 27 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt.
 
 ---
@@ -55,12 +55,12 @@ the filenames anyway, so a file keeps its marking if it is ever moved or quoted 
 
 **Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 26 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 27 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation, or just use its slash command. **26 files, listed below.**
+  conversation, or just use its slash command. **27 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
   "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -70,7 +70,7 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 26 runnable prompts — each with a slash command of the same name
+### The 27 runnable prompts — each with a slash command of the same name
 
 | Group | Prompts |
 |---|---|

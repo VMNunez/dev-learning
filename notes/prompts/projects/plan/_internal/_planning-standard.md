@@ -314,7 +314,7 @@ finishing) to the one prompt that runs there, so the coding agent can say *"this
 end. The closure checklist is what makes the project's own **definition of done** explicit: the project
 is not closed until every gate has run. Follows the quality-gate rules below.
 - **Pass:** present, with both the gate table and the closure checklist; every gate names a real
-  runnable prompt (one of the 23 in `notes/prompts/README.md`) and a concrete trigger tied to a §22
+  runnable prompt (one of those listed in `notes/prompts/README.md`) and a concrete trigger tied to a §22
   branch or §15 step (not "when the backend feels done"); the two review gates are tier-scoped
   (`REVIEW_SCOPE = backend` / `frontend`, never `full`); gates appear in build order; the prerequisite
   chain is respected (see the rules below).
