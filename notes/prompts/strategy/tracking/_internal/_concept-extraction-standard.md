@@ -1,26 +1,30 @@
 # Concept extraction standard — *internal, not runnable*
 
-The shared contract every **project-audit subagent** follows when `progress-update-prompt.md`
-(the orchestrator) fans out. One subagent runs this for **one** project and reports back. You never
-launch this file directly.
+The shared contract for reading a project's `PLANNING.md` and working out **which steps are complete**
+and **which concepts those steps teach**. It has two readers, and they do not use the same halves:
 
-**Your job:** read ONE project's `PLANNING.md`, work out which learning steps are complete, and
-return the concepts those completed steps teach — each tagged with the PROGRESS.md section it belongs
-to — plus the project's confirmed step status.
+| Reader | Runs | Why |
+|---|---|---|
+| a **project-audit subagent** dispatched by `progress-update-prompt.md` | **Steps 0, 1, 2** and the first half of Step 5 | it audits the step status; the concepts have no destination in that pipeline (see Step 4) |
+| the **`step-complete` skill**, in session | **Step 3** | it needs the field discipline — which line of a step actually holds its concepts — and routes them to the coverage checklist |
 
-**What you must NOT do:**
+You never launch this file directly. If you are the dispatched subagent, your launch instruction names
+the steps you run; do not run the others.
+
+**What a dispatched subagent must NOT do:**
 - Do **not** read anything beyond this standard and the project's `PLANNING.md` — not the project's
   code, README, or any other file. Everything you need is in the PLANNING.md and the `PROGRESS_HINT`.
-- Do **not** read or write `PROGRESS.md`. You cannot see it. Deduplication against what is already
-  recorded is the orchestrator's job, not yours — so extract the full concept list for completed
-  steps even if some concepts might already exist. The orchestrator drops the duplicates.
-- Do **not** commit anything. Report; the orchestrator merges and commits.
+- Do **not** read or write `PROGRESS.md`. You cannot see it.
+- Do **not** commit anything. Report; the orchestrator decides what the report means.
 
 **What the orchestrator gives you** (in your launch instruction):
 - `PROJECT_PATH` — the project to audit (e.g. `projects/07-timetrack`).
-- `PROGRESS_HINT` — a few lines lifted from PROGRESS.md for this project only: its `### Project NN`
-  summary heading and any `### Project NN` sub-heading inside a technology section. Used **only** for
-  the Format B step-status fallback below. Treat it as a hint, never as the concept source.
+- `PROGRESS_HINT` — **the `Status` cell of this project's row in the `## Projects` table of
+  PROGRESS.md, verbatim** (e.g. `In progress ⏳ — Steps 1–6 done, backend backlog fully closed, Step 7a
+  next`). That one cell is the whole hint. Used **only** for the Format B step-status fallback below.
+  Treat it as a hint, never as the concept source. *(Corrected 2026-08-05: this used to name a
+  `### Project NN` summary heading and technology sub-headings, a heading class deleted from
+  PROGRESS.md on 2026-08-03 — the fallback pointed at text that no longer exists.)*
 
 ---
 
@@ -56,26 +60,29 @@ decide which one applies before extracting anything:
 every Section 3 row counts.
 
 **Format B** — decide the completed steps like this:
-1. Look for step headings marked ✅ (e.g. `### Step 3 — Spring Security + JWT ✅`).
+1. Look for step headings marked ✅ (e.g. `### Step 3 — Spring Security + JWT ✅`). A **split step**
+   marks its children (`#### Step 7a … ✅`) and the parent stays unmarked until every child has one,
+   so read the sub-step level too.
    - **At least one ✅ present:** those ✅ steps are the primary truth; steps without ✅ are not
      complete. But if `PROGRESS_HINT` shows MORE steps done than the ✅ markers (e.g. ✅ on Steps 1–2
      but the hint says Steps 1–3 done), prefer the higher count — an in-session update may have
      advanced PROGRESS.md without adding the ✅.
-   - **No ✅ anywhere:** fall back to `PROGRESS_HINT`. Read the highest step count it shows across
-     (a) the `### Project NN` summary heading and (b) any `### Project NN` technology sub-heading.
-     Prefer the highest step count found.
-2. The step marked "in progress" is **not** complete — do not extract its concepts. No exceptions
-   for you: early-learned concepts already in PROGRESS.md are the orchestrator's job, not yours.
+   - **No ✅ anywhere:** fall back to `PROGRESS_HINT` — read the step count out of that `Status` cell.
+2. The step marked "in progress" is **not** complete.
 
 Record the confirmed step status as a short string — e.g. `Steps 1–3 done, Step 4 in progress` or
 `all steps complete` — and return it, **stating how you derived it**: `(from ✅ markers)`,
 `(from PROGRESS_HINT — no ✅ markers in PLANNING.md)`, or `(hint overrode ✅ markers)`. The
-orchestrator uses the status to fix the projects table and headings, and the derivation note to flag
-low-confidence statuses in its report.
+orchestrator compares the status against the projects table and flags low-confidence derivations in
+its report.
 
 ---
 
 ## Step 3 — Extract the concepts from completed steps
+
+**This step's live reader is the `step-complete` skill**, which runs it in session for the one step it
+is closing and routes what it finds to the coverage checklist. A `progress-update` subagent does
+**not** run it — see Step 4 for why that consumer disappeared.
 
 - **Format A:** every row of "Key patterns introduced" is one concept. Also scan "Key features" and
   "State management" — they sometimes name patterns (e.g. `localStorage + effect()`,
@@ -93,54 +100,49 @@ low-confidence statuses in its report.
 - **Format C:** for each completed step in Section 15, take its "New concepts introduced" list, which
   references Section 3 rows.
 
----
-
-## Step 4 — Tag each concept with its PROGRESS.md section
-
-Route every extracted concept to exactly one section using this mapping:
-
-| Concept looks like… | Section |
-|---------------------|---------|
-| Angular API (`@Component`, `signal()`, `HttpClient`, `MatTable`, guards, pipes, RxJS…) | Angular |
-| Frontend testing (Jasmine, TestBed, `HttpClientTestingModule`, spies…) | Angular |
-| CSS property, layout technique, animation | CSS |
-| TypeScript utility type (`Omit`, `??`, `?.`…) | TypeScript |
-| Core Spring container / bean / proxy / transaction mechanism (`ApplicationContext`, `@Component`, `@Bean`, scopes, `@Transactional`…) | Spring |
-| Spring Boot runtime or concrete integration (`@Value`, `@ConfigurationProperties`, auto-configuration, starters, Actuator, Spring Data JPA, `@PreAuthorize`…) | Spring Boot |
-| Backend testing (JUnit 5, Mockito, `@ExtendWith`, `@Mock`, `@InjectMocks`…) | Spring Boot |
-| **Pure** Java language construct (`Optional<T>`, `long` vs `Long`, wrapper classes, `try/catch`, access modifiers, default field values like `private Boolean active = true`) | Java |
-| Docker, containerisation, `docker-compose` | General |
-| Cloud hosting, build config, env vars, CI/CD (Netlify…) | Deployment |
-
-> **"Pure Java" vs "Spring" vs "Spring Boot" — the line that trips people up.** A concept is *pure Java* if
-> it exists in Java regardless of Spring. A Spring annotation that merely appears inside a `.java`
-> file is **not** pure Java. Core container/proxy/bean behaviour goes to Spring; Boot startup,
-> auto-configuration, externalized configuration and concrete Boot-stack integration go to Spring Boot.
-> `Optional<T>` is Java; `@Transactional` proxy semantics are Spring; conditional auto-configuration is Spring Boot.
-
-> **Format C shortcut:** the Section 3 "Topic" column already names the section — trust it over the
-> heuristics above when they disagree, **but only if the value is a valid section name** (Angular ·
-> CSS · TypeScript · Java · Spring · Spring Boot · Architecture · Security · Deployment · General · SQL —
-> the controlled vocabulary `_planning-standard.md` §3 requires). If a Topic value is anything else
-> ("Backend", "Java/Spring", blank), fall back to the heuristics for that row and flag the invalid
-> value in your report so the orchestrator can surface it.
+Write each concept as **one specific thing**, key syntax in backticks; never group two concepts in one
+line. A completed step whose extraction comes back empty is a defect in the plan, not a step with no
+concepts — say so rather than reporting nothing.
 
 ---
 
-## Step 5 — Report back to the orchestrator
+## Step 4 — Tombstone: routing a concept to a PROGRESS.md section
 
-Return, and nothing else:
+**Removed 2026-08-05. Do not restore it, and do not route concepts with it.**
+
+This step held a mapping table that tagged every extracted concept with the PROGRESS.md section it
+belonged to — Angular, CSS, TypeScript, Java, Spring, Spring Boot, Architecture, Security, Deployment,
+General, SQL. **Every one of those sections was deleted from PROGRESS.md on 2026-08-03**, when the
+per-technology concept lists were removed as a second, evidence-free copy of the coverage files. The
+table routed to nothing for two days short of two months, and its "Format C shortcut" cited
+`_planning-standard.md` §3's controlled vocabulary for a list that file no longer holds: §3 was
+re-anchored on 2026-08-05 to the 13 `notes/` topic folders that own a `coverage/{level}.md` — which
+**adds** Angular Material, JavaScript and Git and **drops Deployment** ("build and hosting concepts are
+General"). So the invalid-value flag this step told you to raise had inverted: it would have fired on
+three legitimate topics and waved through the one that is no longer valid.
+
+**Where routing happens now:** a concept is routed **by altitude** to its owning `notes/` topic by the
+`coverage-bullet-add` skill, using `_topic-ownership.md`. That skill already carries an explicit
+warning not to reuse this table. A concept has exactly one destination — the coverage checklist — and
+`PROGRESS.md` is never it.
+
+---
+
+## Step 5 — Report back
+
+**If you are a `progress-update` subagent** (Steps 0–2), return these three items and nothing else:
 
 1. **Read verification:** the PLANNING.md's total line count and confirmation you read to EOF (Step 0).
 2. **Format detected:** A / B / C.
-3. **Confirmed step status:** the short string from Step 2.
-4. **Concept list** — one row per concept from completed steps:
+3. **Confirmed step status:** the short string from Step 2, with its derivation note.
 
-   | Concept (key syntax/API in backticks) | Section | From step |
-   |---------------------------------------|---------|-----------|
-   | `@PreAuthorize("hasRole('X')")` | Spring Boot | Step 4 |
+Return no concept table, no PLANNING.md excerpts and no reasoning trace — those three lines are the
+entire report.
 
-Keep each concept to one line, key syntax in backticks — the same format PROGRESS.md uses. Do not add
-explanations longer than a short dash-clause. Do not decide whether a concept is "already present" —
-that is the orchestrator's merge step. Return no PLANNING.md excerpts and no reasoning trace — the
-four items above are the entire report.
+**If you are `step-complete`** (Step 3), the concepts stay in your own context for your coverage and
+README sub-steps; there is no report contract here to satisfy. The shape is one concept per line, key
+syntax in backticks:
+
+| Concept (key syntax/API in backticks) | From step |
+|---------------------------------------|-----------|
+| `@PreAuthorize("hasRole('X')")` | Step 4 |

@@ -131,7 +131,7 @@ consume one of these sources of truth.
 | `notes/coverage/junior.md` | **junior scope** | `coverage-prompt`, `coverage-audit-prompt` | current notes/interview-prep audits, `plan-audit`, `roadmap-review`, `sql-exercises` |
 | `notes/coverage/middle.md` | **middle scope after junior consolidation** | `coverage-prompt`, `coverage-audit-prompt` | level-aware notes/interview-prep audits |
 | `notes/coverage/senior.md` | **senior scope after middle consolidation** | `coverage-prompt`, `coverage-audit-prompt` | level-aware notes/interview-prep audits |
-| `PROGRESS.md` | **what I have learned and demonstrated level by topic** | `progress-update-prompt` (+ the coding agent per step in session) | `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`, `sql-exercises`, simulation/interview planning |
+| `PROGRESS.md` | **what I have learned and demonstrated level by topic** | the closing rituals per section, in session (`step-complete`, `coverage-mark`, `sql-grade`, `simulation-review`…) + `progress-update-prompt`, which writes only `Professional level by topic` and audits the rest | `plan-audit`, `roadmap-review`, `project-brief`, `review-audit`, `cv`, `linkedin`, `sql-exercises`, simulation/interview planning |
 | `{project}/PLANNING.md` | **what a project builds** | `plan-audit` | `readme-audit`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review` |
 
 ---
@@ -218,8 +218,8 @@ accurate; `apply/` produces the job-application material.
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `strategy/tracking/_concept-extraction-standard.md` | *Internal.* The Format A/B/C **concept-extraction contract** each per-project subagent runs when `progress-update` fans out. Not runnable. | — | — |
-| `strategy/tracking/progress-update-prompt.md` | Reconciles PROGRESS.md with what each PLANNING.md declares (never the code — it is blind to it by design) — an orchestrator that fans out one cold subagent per project (+ one for SQL; it reads the small simulations tracker itself), then merges. Run before `plan-audit`. | `_concept-extraction-standard.md`, all `PLANNING.md` files, `practice/sql/`, `practice/simulations/TRACKER.md` | `PROGRESS.md` |
+| `strategy/tracking/_concept-extraction-standard.md` | *Internal.* The Format A/B/C contract for reading a `PLANNING.md`. Two readers, different halves: `progress-update`'s per-project subagent runs Steps 0–2 (step status), `step-complete` runs Step 3 (which field holds a step's concepts). Step 4 is a tombstone. Not runnable. | — | — |
+| `strategy/tracking/progress-update-prompt.md` | **Auditor.** Measures PROGRESS.md against what each PLANNING.md declares (never the code — it is blind to it by design) — an orchestrator that fans out one cold subagent per project (+ one for SQL; it reads the small simulations tracker itself). **Writes `Professional level by topic` only**; every other section has its own writer and is reported as drift. An empty drift report closes gate G6. | `_concept-extraction-standard.md`, all `PLANNING.md` files, `practice/sql/`, `practice/simulations/TRACKER.md`, the per-topic coverage files | `PROGRESS.md` (`Professional level by topic` only) |
 | `strategy/tracking/_roadmap-standard.md` | *Internal.* The **shared roadmap contract** `roadmap-review` reads: what ROADMAP is vs PROGRESS/coverage, stable vs living sections, gate-based sequencing (no dates), canonical study-block orders. Not runnable. | — | — |
 | `strategy/tracking/roadmap-review-prompt.md` | Keeps ROADMAP forward-looking and gate-based (no stale dates); checks project sequence and study-block tables vs coverage. **Orchestrator:** two cold fact-gatherers (gap analysis + active-PLANNING summary) feed the doer so coverage-junior.md and PLANNING.md never load into its context; the doer applies edits, then two sequential cold reviewers — mechanical (date scan, study order, LeetCode gate; reads only ROADMAP + standard) and cross-file (gaps, gates, SQL table, phase markers) — re-verify the invariants and fix ROADMAP. | `_roadmap-standard.md`, `notes/coverage/junior.md`, `PROGRESS.md`, the active `PLANNING.md` | `ROADMAP.md` |
 | `strategy/apply/_application-standard.md` | *Internal.* The **shared job-application standard** both `cv` and `linkedin` read: expert stance, sources (incl. the existing CV in `personal/job-search`), bullet format, ATS/skills keyword pool, Spanish voice rules, defensibility rule, project-selection heuristic. Not runnable. | — | — |
@@ -252,9 +252,11 @@ Each generated file, with who writes it and who depends on it:
   `cv-prompt` (tailor mode, as it tailors to each offer) → read by `coverage-prompt`, `coverage-audit`,
   and both their subagents, plus `interview-prep-audit`'s market-analysis stage. *Real postings that
   anchor coverage and the interview Q&A to the market.*
-- **`PROGRESS.md`** — written by `progress-update` (and by the coding agent after each step in the daily
-  session) → read by `plan-audit`, `roadmap-review`, `portfolio-audit`, `cv`, `linkedin`,
-  `sql-exercises`. *Stale PROGRESS = wrong gap analysis in `plan-audit` and `roadmap-review`.*
+- **`PROGRESS.md`** — written **per section by the closing rituals** in the daily session, each owning its
+  own cell; `progress-update` writes only `Professional level by topic` and *audits* the rest, reporting
+  drift with the owner to re-run (demoted 2026-08-05, REC-039) → read by `plan-audit`, `roadmap-review`,
+  `project-brief`, `review-audit`, `cv`, `linkedin`, `sql-exercises`. *Stale PROGRESS = the wrong next
+  project in `project-brief` and a wrong gap analysis in `roadmap-review`.*
 - **`projects/briefs/project-brief-{NN}.md`** — written by `project-brief` → read by `plan-audit`
   (`MODE = new`, which refuses a hard-stale one), by its author half instead of the coverage mirror, and
   by the `steps-tests` specialist as the authority for §3/§4. Its `## Gaps left for the next brief` is
@@ -325,7 +327,8 @@ Practice (its own loop, fed by coverage):
 ## Typical run order
 
 **Starting a new project**
-1. `progress-update` — make PROGRESS.md accurate first
+1. `progress-update` — confirm PROGRESS.md is accurate first; repair anything its drift report names
+   before moving on, using the owner it names
 2. `project-brief` — decide *which* project, on one page, with a cold second opinion. Optional as a
    separate run: `plan-audit` dispatches it as Phase 0 if you skip it. Run it separately when you want
    to think a project ahead, or to contest a choice before any design work exists
