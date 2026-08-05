@@ -136,7 +136,7 @@ consumer reads freshness from the file itself.
 | Prompt | Last run |
 |---|---|
 | coverage-audit | 2026-08-01 — completed — junior update; 1,344-item floor converged; 497 markers preserved; mirror parity; cold review passed · ⚠ stale 2026-08-04 (+14 bullets) |
-| progress-update | |
+| progress-update | 2026-07-16 — completed — `MODE = active` (07-timetrack + SQL + simulations); backfilled 2026-08-05 from `_last-run-report.md`, which that run wrote while skipping this cell · ⚠ stale — predates the 2026-08-03 demotion and the 2026-08-05 rewrite to auditor (REC-039), so it exercised none of the current prompt |
 | roadmap-review | |
 
 ## Single-shot prompt executions

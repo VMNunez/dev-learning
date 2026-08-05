@@ -2,6 +2,13 @@
 
 **Date:** 2026-07-16 · **Target:** `MODE = active` — project 07-timetrack, plus SQL (Step B) and simulations (Step C)
 
+**Status:** applied — both Verdict findings are spent. (b) Step F's "lives on `main`" was corrected as
+REC-003. (a) D2's Java-section trigger no longer exists: `fad2ec5` deleted the per-technology concept
+sections on 2026-08-03 and the 2026-08-05 demotion (REC-039) turned D2 into a tombstone. *(This line
+was missing until 2026-08-05 — `_pipeline-self-report.md` requires it and this prompt's own step 0
+reads it, so its absence made every run-start check unresolvable. Backfilled from the report's own
+content; the five bullets below are unchanged and remain the immutable record of that run.)*
+
 1. **Plan vs reality** — split was right-sized: one project subagent + one SQL subagent, simulations read directly by the orchestrator; in `MODE = active` the parallel-launch instruction is moot but harmless.
 2. **Report discipline** — both subagents returned exactly the contracted items (format/status/concept table; topic rows) with no excerpts, dumps, or reasoning trace; nothing had to be trimmed.
 3. **Failures & retries** — none; no subagent failed or needed re-dispatch, and the SQL zero-file guard never tripped (both files found on `main`).
