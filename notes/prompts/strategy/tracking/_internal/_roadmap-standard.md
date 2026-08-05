@@ -14,10 +14,16 @@ gap analysis → update living sections → apply → independent review) on top
 
 ## What each file is for
 
-- `notes/coverage/junior.md` — SOURCE OF TRUTH for what Victor must learn. Every concept needed for a junior
-  Angular + Spring Boot role at a Spanish consultancy.
-- `PROGRESS.md` — SOURCE OF TRUTH for what he has already learned. Project status, completed steps,
-  concepts covered so far, and demonstrated professional level by topic.
+- `notes/coverage/junior.md` — SOURCE OF TRUTH for what Victor must learn **and for what he has already
+  demonstrated**: every concept needed for a junior Angular + Spring Boot role at a Spanish consultancy,
+  each bullet carrying a `✅ NN-slug` evidence marker once a project proves it. **An unmarked bullet is the
+  gap.** The rules — both marker forms, the drill marker that does not count, demonstration never study —
+  are in `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, "Evidence markers".
+- `PROGRESS.md` — SOURCE OF TRUTH for **status**: which project is active and at what phase, the
+  demonstrated professional level per topic with its next gate, the share of coverage marked, and how much
+  practice is done. It is **not an inventory of concepts** — the per-technology concept lists were deleted
+  on 2026-08-03 as an evidence-free duplicate of the coverage files. Never ask it which concepts are
+  covered; ask the markers.
 - `ROADMAP.md` — the forward-looking strategy: the path from where he is to where he needs to be,
   through projects and study blocks. It **references** the other two — it does not repeat them.
 
@@ -99,7 +105,11 @@ Rules for project sections:
 **12:30 block — SQL topic table.** Kept in sync against the SQL section of `notes/coverage/junior.md`:
 - Add any SQL topic present in coverage-junior.md but missing from the ROADMAP table.
 - Remove any topic that coverage-junior.md marks as out of scope.
-- Status markers (✅ / 🔜) must match what PROGRESS.md shows.
+- Status markers (✅ / 🔜) come from the step headings of `practice/sql/junior/PLANNING-junior.md` §2,
+  which carry the topic name together with its scored/target counts. **Not from `PROGRESS.md`**, whose
+  exercise table is keyed by *file*: it cannot resolve a topic row without the route, and syncing against
+  it is how the table drifted in both directions at once — row 1 left at ⏳ with `01-basics.sql` closed
+  40/40, JOINs left at ⏳ with `03-joins.sql` deleted and never regenerated.
 
 **13:30 block — Notes study order.** The order must be exactly:
 `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
@@ -113,7 +123,8 @@ order — angular, spring-boot, java, architecture, and any topics added between
 typescript (e.g. security). If a topic was added in that range and is missing from the gate, add it.
 **Do NOT add typescript, sql, javascript, css, or git** — those are lower priority and the gate must
 remain reachable before September. Do not change the other 4 gate conditions unless they are
-factually wrong per PROGRESS.md.
+factually wrong — all four resolve against `## Projects`, `Practice completed`, and the level matrix's
+`Knowledge consolidation` column, none of which is a concept list.
 
 ---
 
@@ -121,5 +132,7 @@ factually wrong per PROGRESS.md.
 
 No content in ROADMAP.md duplicates `PROGRESS.md` or `notes/coverage/junior.md` word-for-word — reference
 them instead. ROADMAP is a forward-looking strategy document, not a concept list and not a progress
-tracker. If a passage restates a concept list already owned by PROGRESS.md or coverage-junior.md, cut it and
-point to the source file.
+tracker. If a passage restates a concept list already owned by coverage-junior.md, or a status table owned
+by PROGRESS.md (the level matrix, the projects table, the practice counts), cut it and point to the source
+file. PROGRESS.md no longer owns any concept list, so against that file this check is about **tables**, not
+concepts.

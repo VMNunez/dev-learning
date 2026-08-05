@@ -9,7 +9,7 @@ This prompt updates `ROADMAP.md` so it shows the optimal path from current progr
 of `notes/coverage/junior.md` — through projects, study blocks, and practice. Run it whenever a project
 finishes, `notes/coverage/junior.md` changes significantly, or it has been a while since the last check.
 
-> **▶ Run first:** `progress-update` — the Step 2 gap analysis reads `PROGRESS.md` directly; a stale one produces wrong results.
+> **▶ Run first:** `progress-update` — it reports drift in the `## Projects` table and the level matrix, which Steps 1, 3 and 4 read as fact. It has been an **auditor** since 2026-08-05: it names what is stale, it does not repair it — a wrong project status is fixed by `step-complete`, a missing coverage marker by `coverage-mark`.
 
 > **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this orchestrator's own `_last-run-report-roadmap-review.md` (this folder is shared with `progress-update`, which owns the unsuffixed `_last-run-report.md`) and, if its `Status` is `open`, surface that finding in one line before proceeding — surface only, never apply it in this run.
 
@@ -21,10 +21,12 @@ invariants and fixing any it finds violated. That reviewer tail is the point of 
 verification always runs instead of being skipped at the end of a long single context, and each
 reviewer loads only the files its checks actually need.
 
-**Prerequisite:** PROGRESS.md must be current before running this prompt — the gap analysis in Step 2
-reads it directly. If you have finished a project or significant study sessions since the last
-PROGRESS.md update, run `progress-update-prompt` first. A stale PROGRESS.md will make the gap analysis
-produce wrong results.
+**What the gap analysis reads — not `PROGRESS.md`.** Since the per-technology concept lists were deleted
+on 2026-08-03, the only record of what Victor has demonstrated is the `✅ NN-slug` evidence marker on each
+coverage bullet: an unmarked bullet is the gap. Subagent 2a works from those markers. `PROGRESS.md`
+answers three narrower questions — which project is active, what level each topic sits at, how far the SQL
+route and the simulations have run — and nothing else. Asking it which *concepts* are covered returns
+nothing, which is why every bullet would read as a gap.
 
 **Internal piece this orchestrates** (never launched directly):
 `_roadmap-standard.md` — the stable ROADMAP contract (what each file is for, what ROADMAP contains,
@@ -63,7 +65,8 @@ Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, 
 (daily schedule, study order) is already loaded into your context by the supported agent runtime — do not re-read it.
 
 `ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
-references `notes/coverage/junior.md` (what I must learn) and `PROGRESS.md` (what I have learned); it does
+references `notes/coverage/junior.md` (what I must learn, and — through its evidence markers — what I have
+already demonstrated) and `PROGRESS.md` (status: active project, level per topic, practice done); it does
 not repeat them. What each file is for, what ROADMAP contains (stable vs living sections), and the
 gate-based sequencing rules are all defined in `_roadmap-standard.md` — read them there before
 editing.
@@ -75,9 +78,10 @@ editing.
 Read only these two — coverage-junior.md and the active PLANNING.md are gathered by subagents in Step 2,
 never by you:
 
-1. `PROGRESS.md` — what projects are done and what concepts are already covered. This is the
-   actual. The projects table is the source of truth for which project is active and at
-   what phase.
+1. `PROGRESS.md` — **three sections only**: `## Projects` (the source of truth for which project is
+   active and at what phase), `Professional level by topic` (the demonstrated level and each topic's
+   `Next gate`), and `Practice completed` (the SQL route and the simulation counts). It holds **no
+   concept list** — those were deleted on 2026-08-03; do not look for one here.
 2. `ROADMAP.md` — the current plan: strategic context, phase table, project sequence, and
    study block tables.
 
@@ -96,29 +100,55 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 (`reasoning tier: standard` for both — they cross-reference lists and report facts, no judgment;
 `execution: foreground`; they only read). Wait for both reports before Step 3.
 
-**Subagent 2a — gap analysis.** Its instruction:
+**Subagent 2a — gap analysis, from the coverage markers.** Its instruction:
 
-> Read `notes/coverage/junior.md` (the target: every concept required for the job) and `PROGRESS.md` (the
-> actual: what is already learned). Identify which concepts are still uncovered: present in
-> coverage-junior.md but not yet in PROGRESS.md — treat a concept as covered if PROGRESS.md has an
-> equivalent entry even with different wording. If you are **not sure** whether an entry really
-> covers a concept, do NOT silently drop it — list it in a separate "borderline" group with one
-> line saying which PROGRESS.md entry might cover it; a hidden gap is worse than a doubtful one.
-> Group by topic in the acyclic order derived from
-> `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md`; never maintain a second hard-coded list.
+> Read `notes/coverage/junior.md` — it is both the target (every concept required for the job) **and** the
+> record of what has been demonstrated, which the bullets carry themselves as evidence markers. Read the
+> "Evidence markers" section of `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` before
+> you start; the four rules below are the ones this analysis lives or dies by.
 >
-> Filter to what actually comes up in junior Angular + Spring Boot interviews at Spanish
+> 1. **A bullet with no `✅ NN-slug` project marker is the gap.** A bullet carrying one is covered, and its
+>    `NN-slug` names the project that covers it — say which when it matters.
+> 2. **Accept both marker forms.** Markers written before 2026-08-01 carry no ` — {evidence}` clause and
+>    count exactly the same. A bare `✅ 05-task-manager` is an *old* marker, never a malformed one.
+> 3. **A drill marker is not a project marker.** A bullet whose only marker is `✅ sql:{file-slug}` was
+>    drilled in graded exercises, not built. It is still a gap **for a project** and not a gap **for the
+>    12:30 SQL block** — say which of the two when you list it.
+> 4. **Markers record demonstration, never study.** An unmarked bullet means *not yet demonstrated*, not
+>    *not yet studied* — Victor may know it well from `notes/`. Never write "not yet learned".
+>
+> **The dated exception — the 07 Angular tier.** `PROGRESS.md`'s `Coverage demonstrated` paragraph records
+> which projects have been backfilled with markers, and you must **re-read that paragraph every run**.
+> While it still says the Angular tier of project 07 is not backfilled, an unmarked `Angular` or
+> `Angular Material` bullet that project 07's frontend already touches is a *missing marker*, not a gap:
+> exclude it and report how many you excluded. The exception dies the day the backfill lands, and an
+> analysis that keeps applying it afterwards under-counts Angular permanently.
+>
+> Filter what is left to what actually comes up in junior Angular + Spring Boot interviews at Spanish
 > consultancies. Skip: CQRS, event sourcing, JVM tuning, Kubernetes internals, Angular zone.js
 > internals, algorithms beyond basic data structures.
+>
+> Group by topic in the acyclic order derived from
+> `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md`; never maintain a second hard-coded list.
 >
 > Also return, verbatim, the SQL topic list from coverage-junior.md's SQL section (topic names + any
 > in/out-of-scope markers) — the doer needs it to reconcile a table without opening coverage-junior.md.
 >
 > Run `wc -l notes/coverage/junior.md` before reading it (silent 2000-line Read truncation — use `offset`
 > passes if needed) and include "N lines, read to EOF" in your report.
-> Return **only**: (1) the uncovered-concept list, one line per concept, grouped by topic; (2) the
-> borderline group (may be empty); (3) the SQL topic list; (4) the read-to-EOF line. No excerpts of
-> covered material, no reasoning trace.
+>
+> **Report size is contracted, and holding the contract is the hard part.** Roughly two thirds of the
+> ~1359 junior bullets are unmarked, so one line per gap is an unusable report that saturates the doer's
+> context. Return **only**:
+>
+> 1. One row per topic — `Topic | marked/total | one sentence naming what the unmarked remainder is
+>    about`. **All 13 topics**, including the ones no project will ever close.
+> 2. Per topic, **at most 8** unmarked bullets quoted verbatim, ranked by what those interviews ask
+>    first. These are the only ones the doer plans against.
+> 3. The SQL topic list.
+> 4. The read-to-EOF line and the Angular-exception count.
+>
+> No excerpts of covered material, no reasoning trace, no full enumeration.
 
 **Subagent 2b — active project summary.** Its instruction:
 
@@ -129,8 +159,10 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > Do not return full step descriptions or code.
 
 The 2a gap list drives Steps 3 and 4; the 2b summary replaces reading PLANNING.md yourself.
-Borderline concepts from 2a are NOT gaps for planning purposes (do not add project candidates for
-them) — carry them into the Step 7 report so Victor resolves them, marked `(borderline)`.
+The old "borderline" group is gone with the marker rewire — a bullet either carries a project marker or it
+does not, so there is nothing left to adjudicate by wording. Its one successor is the Angular-backfill
+exclusion: carry 2a's count of it into the Step 7 report, because until that backfill lands the Angular
+gap figure is knowingly under-reported and a reader must be told so.
 
 ---
 
@@ -157,19 +189,23 @@ since the last update, fix ROADMAP to match it.
 significant uncovered gaps from Step 2? If a significant gap has no candidate that covers it,
 add a new project idea to the candidate list.
 
-**Stale candidate removal:** For each candidate already in the list, check whether all the
-gaps it was designed to close are now covered by completed projects in PROGRESS.md. If a
-candidate's primary coverage areas are all already covered and it adds no uncovered gap,
-remove it from the list. Note each removal in the changes table with the reason.
+**Stale candidate removal:** For each candidate already in the list, check its stated gaps against 2a's
+report — a gap that now carries a project marker was closed by the project that marker names. If every
+gap a candidate was designed to close is marked and it adds no unmarked one, remove it from the list.
+Note each removal in the changes table, naming the project whose marker closed it.
 
 Project-section rules (sequential gate language, no calendar dates ever, new-candidate
 requirements) are defined in `_roadmap-standard.md` — follow them.
 
 **Phase table:** After updating the project sections, also update the phase table at the
 top of ROADMAP.md. Each row corresponds to a phase — promote it to ✅ if its gate
-conditions are clearly met per PROGRESS.md, mark it ⏳ if it is the active phase, and
-🔜 if it has not started. Do not leave a phase marked ⏳ if PROGRESS.md shows its goals
-are already complete.
+conditions are clearly met, mark it ⏳ if it is the active phase, and 🔜 if it has not
+started. Every gate on that table resolves against three `PROGRESS.md` sections and nothing
+else: `## Projects` (which project, which steps), `Practice completed` (the SQL route and
+the simulation counts), and the `Knowledge consolidation` column of the level matrix (the
+`Notes 0/9` figures and the Q&A state). None of them is a concept list, so the phase table
+survives the 2026-08-03 deletion intact. Do not leave a phase marked ⏳ if those three show
+its goals are already complete.
 
 ---
 
@@ -179,8 +215,12 @@ Update the three study-block sections to match the canonical values in `_roadmap
 ("Canonical study-block references"):
 
 **12:30 block — SQL then practice:** reconcile the SQL topic table against the SQL topic list that
-subagent 2a returned from coverage-junior.md (add missing topics, remove out-of-scope topics, sync ✅ / 🔜
-markers to PROGRESS.md).
+subagent 2a returned from coverage-junior.md — add missing topics, remove out-of-scope topics. For the
+✅ / 🔜 markers read `practice/sql/junior/PLANNING-junior.md` §2, whose step headings carry both the topic
+name and its scored/target counts: a step with its first-pass target scored is ✅, a step partly scored is
+⏳, an untouched step is 🔜. **Not `PROGRESS.md`** — its exercise table is keyed by *file*, so it cannot
+answer a topic row on its own, and syncing against it is how this table drifted in both directions at
+once.
 
 **13:30 block — Notes then interview prep:** confirm the notes study order matches the canonical
 string exactly; if the shared session rules differs, the shared session rules wins.
@@ -188,7 +228,8 @@ string exactly; if the shared session rules differs, the shared session rules wi
 **LeetCode gate conditions:** verify the topics in the study-order gate condition match the
 high-priority topics per the standard (angular, spring-boot, java, architecture, and any topic added
 between architecture and typescript such as security). Do not add typescript, sql, javascript, css,
-or git. Do not change the other 4 gate conditions unless they are factually wrong per PROGRESS.md.
+or git. Do not change the other 4 gate conditions unless they are factually wrong — all four resolve
+against `## Projects`, `Practice completed`, and the level matrix's `Knowledge consolidation` column.
 
 ---
 
@@ -199,8 +240,8 @@ whole file; wholesale rewrites waste output and risk silently dropping stable se
 
 Do NOT reword, restructure, or improve stable sections (per `_roadmap-standard.md`, "What ROADMAP.md
 contains"). Only touch them if something is factually wrong — for example, a project listed as future
-when it is already complete, or a technology listed as not yet learned when it clearly appears in
-PROGRESS.md. If a fact is wrong, fix the specific sentence. Nothing else.
+when it is already complete, or a technology listed as not yet learned when the level matrix or 2a's
+marker counts clearly show otherwise. If a fact is wrong, fix the specific sentence. Nothing else.
 
 After applying the edits, do a quick self-check against `_roadmap-standard.md`:
 - No calendar date in a project milestone, gate condition, or "CV rule" — only in the applications
@@ -249,22 +290,29 @@ NOT open PROGRESS.md or coverage-junior.md; its checks don't need them). Its ins
 **Reviewer 2 — cross-file consistency** (launch only after Reviewer 1 has finished). Its instruction:
 
 > You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
-> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, and `notes/coverage/junior.md`.
+> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, `notes/coverage/junior.md`
+> and `practice/sql/junior/PLANNING-junior.md` §2 (invariant 4 needs it; nothing else does).
 > Verify each invariant below **from scratch** — do not trust that the edits are correct. For each
 > violation, **fix it directly in ROADMAP.md**, then report what you changed and why.
 >
 > 1. **No duplication.** No passage duplicates PROGRESS.md or coverage-junior.md word-for-word — it must
 >    reference them instead. Cut any restated concept list and point to the source file.
 > 2. **Future projects (🔜) name their gaps.** Every future project in the sequence names which
->    specific coverage-junior.md gaps it closes. If one does not, add the gap mapping (compute it from
->    coverage-junior.md vs PROGRESS.md).
+>    specific coverage-junior.md gaps it closes. If one does not, add the gap mapping — compute it from
+>    the **evidence markers** in coverage-junior.md: a bullet with no `✅ NN-slug` project marker is a
+>    gap, a bare pre-2026-08-01 marker still counts as covered, and a `✅ sql:` drill marker alone does
+>    not cover anything. **Never from `PROGRESS.md`** — it has held no concept list since 2026-08-03, so
+>    every one of the ~1359 bullets would read as a gap.
 > 3. **Active project (⏳) gate.** The active project has a concrete, verifiable gate condition — a
 >    state that is true or false regardless of the date. If it is vague or date-based, rewrite it as a
 >    gate.
 > 4. **SQL table.** The SQL topic table matches the SQL section of coverage-junior.md (no missing topic, no
->    out-of-scope topic) and its ✅ / 🔜 markers agree with PROGRESS.md.
-> 5. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if PROGRESS.md shows its
->    goals complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
+>    out-of-scope topic) and its ✅ / 🔜 markers agree with the step headings of
+>    `practice/sql/junior/PLANNING-junior.md` §2 — not with `PROGRESS.md`, whose exercise table is keyed by
+>    file rather than by topic and cannot decide a topic row.
+> 5. **Phase-table markers agree with PROGRESS.md.** Each phase row is ✅ only if `## Projects`,
+>    `Practice completed` and the level matrix's `Knowledge consolidation` column show its goals
+>    complete, ⏳ only for the active phase, 🔜 if not started. Fix any marker that disagrees.
 >
 > Run `wc -l notes/coverage/junior.md` before reading it (silent 2000-line Read truncation — use `offset`
 > passes if needed) and include "N lines, read to EOF" in your report.
@@ -286,18 +334,21 @@ Fold both reviewers' fixes and findings into the report below.
 
 Include both the doer's edits (Steps 1–5) and the two reviewers' fixes (Step 6) in this table.
 
-**Remaining knowledge gaps** — concepts in coverage-junior.md not yet in PROGRESS.md. Split them into
-two groups; the split is the point, not the length:
+**Remaining knowledge gaps** — coverage-junior.md bullets carrying no `✅ NN-slug` project marker, as
+reported by 2a. Split them into two groups; the split is the point, not the length:
 
 - *Gaps the plan already owns* — for each, name what closes it (a project in the sequence, the SQL
   block, the notes block). Group by topic, max 3 per topic, ranked by what interviewers at NTT
   Data, Capgemini, and similar companies actually ask junior Angular + Spring Boot candidates.
   Nothing to decide here — this group is a status line.
-- *Gaps nothing in ROADMAP closes* — **no limit**. Any topic or concept that no project candidate
-  and no study block accounts for. These are holes in the plan, not in Victor's study, and they
-  are what this review exists to surface. If a whole topic has no PROGRESS.md section at all
-  (Architecture and Security were both in this state on 2026-07-21), say so as one line for the
-  topic rather than listing its concepts — coverage-junior.md owns the full list.
+- *Gaps nothing in ROADMAP closes* — **no limit**, but bounded by 2a's contracted report rather than by
+  the raw bullet count. Any topic or concept that no project candidate and no study block accounts for.
+  These are holes in the plan, not in Victor's study, and they are what this review exists to surface.
+  Where a topic is short **as a whole** — a low `marked/total` in 2a's row and no candidate or block
+  naming it — say so as one line for the topic *with that ratio*, instead of listing its bullets;
+  coverage-junior.md owns the full list. That one-line form is the normal case for the four topics no
+  project will ever close (CSS, Git, JavaScript, General), whose only route is the 13:30 block — which is
+  precisely why 2a reports all 13 topics and not just the nine a project could touch.
 
 Never restate coverage-junior.md — reference it for detail.
 
