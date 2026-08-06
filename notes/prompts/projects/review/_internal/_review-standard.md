@@ -83,16 +83,18 @@ the `frontend` line, and leave the backend line as `n/a — Angular-only`.
 The 30-day window exists to stop you re-reviewing the **same** code, not to stop you reviewing **new**
 code. So before applying it, compare the tier's date against the work done since:
 
-**If any step was completed after that tier's "Last Reviewed" date, the gate does not apply to that
-tier — continue, regardless of how recent the date is.** Read the ✅ steps in PLANNING.md's learning plan
-and the step-completion dates recorded in `PROGRESS.md` / the backlog's own task notes; if the tier has
-gained a step since it was last reviewed, it contains code no reviewer has ever seen. Say so and run.
+**If a tier gained code after its "Last Reviewed" date, the gate does not apply to that tier — continue,
+regardless of how recent the date is.** Two signals, either one enough: the ✅ steps in PLANNING.md's
+learning plan and the step-completion dates recorded in `PROGRESS.md`, and the `## Closed` ledger's dated
+lines for that tier — the fix campaign this review's own backlog generates moves no step, so the ✅ marks
+alone cannot see it. Either way the tier contains code no reviewer has ever seen. Say so and run.
 
 > A purely time-based gate punishes fast building: the more steps you finish inside the window, the more
 > unreviewed code it hides. (2026-07-14, 07-timetrack: gated at "reviewed 8 days ago" while Step 6 had
 > been built in those 8 days; forcing past it found a High correctness bug in that unreviewed step.)
 
-Only when the tier has gained **no** completed step since its last review does the 30-day window decide.
+Only when the tier has gained **neither** a completed step nor a closed backlog task since its last
+review does the 30-day window decide.
 
 ---
 

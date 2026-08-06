@@ -124,9 +124,11 @@ against `{PROJECT_PATH}/PROJECT-BACKLOG.md` — read its `**Last Reviewed — ba
 tier in scope was reviewed < 30 days ago, stop and offer FORCE; if only some are fresh, continue with
 the stale/`never` ones and say which you are skipping. A missing backlog = never reviewed → continue.
 **Before you gate on the date, apply the standard's "the gate measures unreviewed code, not elapsed
-time" rule** — if a tier has completed a step since its last review, it holds code no reviewer has seen,
-and the 30-day window does not apply to it. Check the ✅ steps against the tier's date first; only gate
-on the date when the tier has gained no step.
+time" rule** — if a tier has gained code no reviewer has seen since its last review, the 30-day window
+does not apply to it. **Two signals, either one enough:** a **✅ step** completed after that date, and
+**backlog tasks closed after it** (the `## Closed` ledger's dated lines for that tier). The fix campaign
+this pipeline's own output generates moves no step, so the ✅ marks alone cannot see it. Only gate on the
+date when the tier has gained neither.
 Then **map the review slices** — this is light structural work (you list slices, you do not review code).
 
 **Apply {REVIEW_SCOPE} first — map only the tiers it names:**
