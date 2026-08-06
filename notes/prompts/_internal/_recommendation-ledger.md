@@ -68,5 +68,57 @@ Self-report recommendations use one of four states:
 | REC-051 | Victor, 2026-08-06 | **The 30-day "Last Reviewed" window in `review-audit` is unwanted** — Victor reviews a project when he decides to, not when a timer allows it. Live in three places: `review-audit.md` L89 (applies to every project and per tier), L121-127 (stop-and-offer-FORCE when a tier was reviewed < 30 days ago), and `_review-standard.md` L50 (the per-tier gate itself) | open | Not applied. The distinction that matters when this is cut: the **date window** is the unwanted part, but the neighbouring rule at L127 — a tier that gained code no reviewer has seen since its last review — is the part with real value, and REC-044 has just been working on that same gate's blindness. So the likely fix is to demote the window from a **stop** to a one-line note ("this tier was reviewed N days ago") and keep the unreviewed-code test as the only thing that can change behaviour. Cutting both together would remove the only guard against re-reviewing byte-identical code |
 | REC-052 | Victor, 2026-08-06 | **Build the simulations track as a real plan-driven flow, mirroring `practice/sql/` but adapted to simulations, Victor's level and target.** What exists today is two prompts (`simulation-generator-prompt.md`, `simulation-review-prompt.md`), a flat bank (`practice/simulations/{angular,spring-boot,sql}/`), `TRACKER.md`, and an **empty** `notes/prompts/practice/simulations/_internal/`. What the SQL track has and this one does not: a doctrine `PLANNING.md`, a per-level route built **from the coverage file** (`PLANNING-{LEVEL}.md` with steps, targets and a `Coverage SHA-256`), an audit that keeps that route true (`sql-plan-audit`), opening and closing rituals (`sql-block-open` / `sql-block-close` / `sql-step-close`), a grader that is the only door to the close (`sql-grade`), a friction record (`MISTAKES.md`), and gates wired to `PROGRESS.md`. The ask includes extra/`[Repaso]`-style batches for revisiting a technique, and PROGRESS.md updates from the closing rituals | open | Not applied — the biggest build of the seven, and the only one that is new machinery rather than a correction. Two things to settle before copying the SQL shape: (1) **a simulation is not an exercise** — it is timed, it is graded against a rubric, and its unit of progress is a whole test rather than a query, so "steps with exercise targets" may not map and the route may need to be keyed to §8c-style *unlocked techniques* instead; (2) the SQL track's own doctrine was rebuilt twice before it settled, so lift the **structure** (route from coverage, ritual per boundary, gates that close on evidence) and not the section numbering. Depends on REC-048 for where the simulation counters land in PROGRESS.md |
 
+## Suggested order for the open items
+
+Added 2026-08-06. The rows above are the authority on *what* each item is; this is the order that keeps
+them from tripping over each other. Three rules produced it: **a correction that stops a wrong run comes
+before a build**, **an item blocked on evidence is run, not edited**, and **a chain is walked from its
+denominator up**, never from the visible end.
+
+**Wave 1 — the plan family, before project 08 is planned.** `REC-041` → `REC-036`. Both live in
+`plan-audit`'s specialists, both corrupt `MODE = new`, and `MODE = new` is what plans project 08 — the
+only pipeline in the system with a dated appointment. 041 first: it is a text fix to an unexecutable
+check, and 036's re-verification will read the same reviewer. Doing these after project 08 is planned
+means planning it twice.
+
+**Wave 2 — the two free corrections.** `REC-040`, `REC-051`. Independent of everything, minutes each,
+and 051 removes friction Victor meets the *next* time he wants a review rather than the next time he
+audits the system. No reason to sequence them against anything; do them whenever a session has a gap.
+
+**Wave 3 — run what is blocked on evidence.** `REC-050`. It is not an edit: `roadmap-review` was
+rewired by REC-042 and has never executed since, so the next honest step is firing it at G8 and judging
+the output. Editing it first destroys the only evidence its next run could produce.
+
+**Wave 4 — the tracking chain, in strict order.** This is `REC-048` and it cannot be started from the
+part that is visible:
+
+1. **`REC-048` ruling only, nothing written** — which table holds the new percentages (join
+   `Coverage demonstrated` or start a second one), what D6 forbids now that it can no longer forbid all
+   growth, and **whether a "studied" state for notes exists at all** — today nothing marks a note as
+   studied, only as authored, and the 15:30 study block has no closing ritual to set it. Every later
+   step needs this answer to know where it reports to.
+2. **`REC-047` part 1** — `/notes-plan` persists the assigned bullets per entry. This is the
+   denominator; without it no notes percentage is honest.
+3. **`REC-047` part 2** — `notes-audit` ticks them as it writes.
+4. **`REC-046`** — the interview-prep re-verification, then the marker-writing skill. It comes after the
+   ruling because the skill must report to a decided target, and it can run in parallel with 2–3.
+5. **`REC-048` wiring** — the rituals write their cells, and `progress-update`'s ownership table and
+   D-steps gain the new rows. Last, because it is the only step that needs all the others to exist.
+
+**Wave 5 — the consumers, re-read after the chain.** `REC-049`. `project-brief` chooses the next project
+from exactly the data Wave 4 changes, so fixing it first means fixing it twice. **Exception with teeth:**
+if project 08 is planned before Wave 4 lands, 049 moves up next to Wave 1 and is re-read afterwards — a
+brief built on a wrong picture is not caught by any later gate.
+
+**Wave 6 — new machinery.** `REC-052`. Last by dependency (it needs Wave 4's counters to know where a
+simulation's progress lands) and by cost. It is not blocking anything: the two existing simulation
+prompts already work, so this is a track being built around them, not a repair.
+
+**Two orderings that look right and are not.** Starting the chain at `REC-047` part 2 — the marking is
+the visible half, but it marks against a list that does not exist yet and reports to a target nobody has
+chosen. And building `REC-052` early because it is the most exciting — a simulation track whose closing
+ritual has no PROGRESS.md cell to write ends up with the same hand-maintained tracker it was meant to
+replace.
+
 New self-reports append or update a row here. A historical report remains immutable evidence; its
 wording does not determine current status. The ledger does.
