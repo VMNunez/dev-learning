@@ -34,8 +34,11 @@ The template below has 24 sections (0–23). Which of them apply depends on the 
 
 ## The 24-section template — exact order
 
-Every full-stack PLANNING.md must contain these sections, in this order. For each: **what it must
-contain** (the author writes this) and **what makes it pass** (the reviewer checks this). Sections are
+Every full-stack PLANNING.md must contain these sections, in this order. Each states **what it must
+contain** (the author writes this); those carrying real judgement add **what makes it pass**
+(`- **Pass:**`). **A section without one is still reviewed** — its spec is the shape it states: §12 is
+held to §13's bar, §20 to design check 5, §22 to the branch rules below, and the ten `whole-plan` owns
+to their column sets, counts and formats. Sections are
 matched by **heading text, not by number** — numbering is not guaranteed stable across projects, but
 the heading names are.
 
@@ -67,14 +70,13 @@ Columns: **Concept · Topic · Why this project teaches it**.
 
 The **Topic** column is a controlled vocabulary, not free text: it names the coverage file the
 concept's bullet belongs to, so a loose value ("Backend", "Java/Spring") routes it nowhere. Valid
-values are exactly the `notes/` topic folders that own a `coverage/{level}.md`: **Angular · Angular
+values are exactly the `notes/` topic folders that own a `coverage/{level}.md` — **Angular · Angular
 Material · Architecture · CSS · General · Git · Java · JavaScript · Security · Spring · Spring Boot ·
 SQL · TypeScript** — there is no Deployment topic; build and hosting concepts are **General**. One
 value per row. A concept is **Java** if it exists without Spring (`Optional<T>`,
-`BigDecimal.compareTo()`, `try/catch`); a core container, bean, proxy, or transaction mechanism is
-**Spring**, while Boot startup/auto-configuration and concrete Boot-stack integration are **Spring
-Boot** (`Optional<T>` is Java; `@Transactional` proxy behaviour is Spring; conditional
-auto-configuration is Spring Boot).
+`BigDecimal.compareTo()`, `try/catch`); a core container,
+bean, proxy, or transaction mechanism is **Spring** (`@Transactional` proxy behaviour); Boot
+startup/auto-configuration and concrete Boot-stack integration are **Spring Boot**.
 - **Pass:** each concept is specific ("pagination with `Pageable`" = good; "Spring Boot" = too vague),
   every Topic is one of the topic folders above (Java vs Spring vs Spring Boot split correctly), and
   every row has a reason in the third column. Only undemonstrated concepts: a bare pre-2026-08-01
