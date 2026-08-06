@@ -47,7 +47,7 @@ Derive the type from the project number (01–06 Angular-only, 07+ full-stack); 
 
 ---
 
-## The 30-day gate — per tier
+## The unreviewed-code gate — per tier
 
 `PROJECT-BACKLOG.md` lives inside the project folder (`{PROJECT_PATH}/PROJECT-BACKLOG.md`) and is the
 **single source of truth for whether a project has been reviewed**. There is no root-level index — the
@@ -64,37 +64,35 @@ it is tracked **per tier**. The backlog header carries one line per tier:
 `never` means that tier has never been reviewed. **A missing `PROJECT-BACKLOG.md` means the project has
 never been reviewed at all** — that is how "has this been reviewed?" is answered.
 
-**Apply the gate only to the tiers this run will actually review** (per `REVIEW_SCOPE`; a `full` run
-gates on both):
-- Every tier in scope was reviewed within the last 30 days → **stop**: "Backend last reviewed on [date],
-  < 30 days ago — skipping. Reply FORCE to run anyway."
-- Some tiers in scope are stale (> 30 days) or `never` → **continue, but only for those tiers**, and say
-  which ones you are skipping and why.
-- No header, no file, or the tier says `never` → continue.
+**What gates is unreviewed code, never elapsed time.** Victor reviews a project when he decides to; the
+only run worth stopping is one over code a reviewer has already read. The date is reported, never
+obeyed. **Apply the gate only to the tiers this run will review** (per `REVIEW_SCOPE`; `full` gates on
+both):
+- No header, no file, or the tier says `never` → **continue**.
+- The tier gained code after its date → **continue, however recent that date is.** Two signals, either
+  one enough: a **✅ step** completed after it (PLANNING.md's learning plan, completion dates in
+  `PROGRESS.md`), and a dated **`## Closed` line** for that tier — the fix campaign this review's own
+  backlog generates moves no step, so the ✅ marks alone cannot see it.
+- Neither signal fired → **stop that tier and offer FORCE**; the other tiers in scope continue. Name both
+  signals and the days since: "Backend last reviewed 2026-07-23 (14 days ago); no ✅ step and no closed
+  backlog task since. Reply FORCE to review it anyway."
 
-A tier is only "freshly reviewed" once a run actually covered it. A `backend` run never refreshes the
-frontend date, so it can never make the frontend look reviewed when it is not.
+Always report the days since the date. A tier is only "freshly reviewed" once a run actually covered it:
+a `backend` run never refreshes the frontend date, so it never makes the frontend look reviewed.
 
 On an **Angular-only project (01–06)** the same gate applies, but there is only one real tier: gate on
-the `frontend` line, and leave the backend line as `n/a — Angular-only`.
+the `frontend` line, backend stays `n/a — Angular-only`. **Neither signal can fire there today** — 01's
+✅ marks are undated, 02–06 have none, and no 01–06 backlog has a `## Closed` section — so say the stop
+rests on the format, not on the code, and expect FORCE on every one of them.
 
-### The gate measures *unreviewed code*, not elapsed time — check the steps before the date
+> A time gate punishes fast building — the more you finish inside the window, the more unreviewed code
+> it hides. (07-timetrack: 2026-07-14, gated at "8 days ago" with Step 6 built inside them, forced, found
+> a High; 2026-08-06, 76 commits and 49 closed tasks, no step moved, found two Highs.)
 
-The 30-day window exists to stop you re-reviewing the **same** code, not to stop you reviewing **new**
-code. So before applying it, compare the tier's date against the work done since:
-
-**If a tier gained code after its "Last Reviewed" date, the gate does not apply to that tier — continue,
-regardless of how recent the date is.** Two signals, either one enough: the ✅ steps in PLANNING.md's
-learning plan and the step-completion dates recorded in `PROGRESS.md`, and the `## Closed` ledger's dated
-lines for that tier — the fix campaign this review's own backlog generates moves no step, so the ✅ marks
-alone cannot see it. Either way the tier contains code no reviewer has ever seen. Say so and run.
-
-> A purely time-based gate punishes fast building: the more steps you finish inside the window, the more
-> unreviewed code it hides. (2026-07-14, 07-timetrack: gated at "reviewed 8 days ago" while Step 6 had
-> been built in those 8 days; forcing past it found a High correctness bug in that unreviewed step.)
-
-Only when the tier has gained **neither** a completed step nor a closed backlog task since its last
-review does the 30-day window decide.
+**Residue the two signals cannot see:** ordinary in-step commits move no step and close no task, so a
+tier can gain real code, read as clean, and — with no window left to expire — stay that way until a step
+or a task moves. FORCE is the only way past, deliberately: a third `git log` signal would turn a bounded
+test into a judgement the prompt has to make, so the judgement stays Victor's.
 
 ---
 

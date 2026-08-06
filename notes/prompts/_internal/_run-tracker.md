@@ -126,9 +126,10 @@ fails, since no daily-session skill touches this route.
 | 07-timetrack | | 2026-07-28 (review mode, completed — six-specialist pass: §1 added, §14 visual design system written from scratch, change-password dialog wired §10→§16) | 2026-08-06 (backend only, completed — 13 dispatches, all traced; 2 Highs: secrets in pushed history, `JwtFilter` blank-token 500; batch 3 killed by a session limit and re-dispatched in pairs; frontend tier still `never`) | | |
 
 Read left to right: the brief chose the project → the plan built it → review, README and portfolio
-closed it. **The `review-audit` cell is an execution record, not review state**: whether a tier is due
-for review is answered by `{project}/PROJECT-BACKLOG.md`'s per-tier `Last Reviewed` lines, which the
-30-day gate reads and this column never is. The seven 2026-07 cells were backfilled on 2026-08-06 from
+closed it. **The `review-audit` cell is an execution record, not review state**: whether a tier holds
+unreviewed code is answered by `{project}/PROJECT-BACKLOG.md`'s per-tier `Last Reviewed` lines, which the
+unreviewed-code gate reads and this column never is. The seven 2026-07 cells were backfilled on
+2026-08-06 from
 each backlog's own `Last Reviewed` lines — until then the column was empty although every project had
 been reviewed, because the prompt's own Step 6 never mentioned this file (REC-043). **`project-brief` is the one column whose row may not exist yet**: it decides the *next*
 project, so its run creates that project's row before any folder does. Its cell's staleness is not

@@ -65,7 +65,7 @@ REVIEW_SCOPE = backend
 **Rules of thumb:**
 - `REVIEW_SCOPE` defaults to `full`. Use `backend` / `frontend` when the whole-project run is too long —
   a partial run only touches its own tier's backlog tasks and only refreshes its own tier's
-  "Last Reviewed" date, so the other tier still shows as stale (or `never`) until you review it.
+  "Last Reviewed" date, so the other tier still shows as unreviewed (or `never`) until you review it.
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The project type is derived from the path — do not set it.
 - Angular projects 01–06 are frontend-only: they get the frontend flow slices, the learning-objectives
@@ -86,8 +86,8 @@ REVIEW_SCOPE = [full | backend | frontend]
 ## PROJECT_PATH = all runs the review on every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The project type is derived from the number (01–06 Angular-only, 07+ full-stack).
-## The 30-day "Last Reviewed" gate applies to every project and per tier — on 01–06 that is the
-## `frontend` line, so a recently reviewed Angular project is skipped exactly like a full-stack one.
+## The per-tier unreviewed-code gate applies to every project — on 01–06 that is the `frontend` line. It
+## stops and offers FORCE on every 01–06 project today: neither signal can fire in that older format.
 ##
 ## REVIEW_SCOPE limits the review to one tier so a big project can be split across sessions instead of
 ## one long run. Default = full. `backend` runs Steps 1–2 + 3b; `frontend` runs Step 3 + 3b — Step 3b is
@@ -118,17 +118,16 @@ its `PROJECT-BACKLOG.md`. This keeps a 7-project run from drowning your context 
 ## Single-project procedure
 
 ### Step 0 — Gate and map the slices (orchestrator)
-Derive the project type from the path. **Full-stack:** apply the standard's **per-tier 30-day gate**
-against `{PROJECT_PATH}/PROJECT-BACKLOG.md` — read its `**Last Reviewed — backend:**` /
-`**Last Reviewed — frontend:**` lines and gate **only the tiers {REVIEW_SCOPE} will review**. If every
-tier in scope was reviewed < 30 days ago, stop and offer FORCE; if only some are fresh, continue with
-the stale/`never` ones and say which you are skipping. A missing backlog = never reviewed → continue.
-**Before you gate on the date, apply the standard's "the gate measures unreviewed code, not elapsed
-time" rule** — if a tier has gained code no reviewer has seen since its last review, the 30-day window
-does not apply to it. **Two signals, either one enough:** a **✅ step** completed after that date, and
-**backlog tasks closed after it** (the `## Closed` ledger's dated lines for that tier). The fix campaign
-this pipeline's own output generates moves no step, so the ✅ marks alone cannot see it. Only gate on the
-date when the tier has gained neither.
+Derive the project type from the path. **Full-stack:** apply the standard's **per-tier unreviewed-code
+gate** against `{PROJECT_PATH}/PROJECT-BACKLOG.md` — read its `**Last Reviewed — backend:**` /
+`**Last Reviewed — frontend:**` lines and gate **only the tiers {REVIEW_SCOPE} will review**. A missing
+backlog, an absent header, or a tier line reading `never` → continue. **What decides is whether the tier
+gained code, never how old the date is. Two signals, either one enough:** a **✅ step** completed after that date, and **backlog tasks
+closed after it** (the `## Closed` ledger's dated lines for that tier). The fix campaign this pipeline's
+own output generates moves no step, so the ✅ marks alone cannot see it. If either fired, continue
+however recent the date is; if neither did, stop and offer FORCE, naming both signals and the days
+since. Always report the days since. If the gate stops only some of the tiers in scope, continue with
+the rest and say which you are skipping and why.
 Then **map the review slices** — this is light structural work (you list slices, you do not review code).
 
 **Apply {REVIEW_SCOPE} first — map only the tiers it names:**
