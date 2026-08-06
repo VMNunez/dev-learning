@@ -123,7 +123,7 @@ fails, since no daily-session skill touches this route.
 | 04-meal-finder | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | | |
 | 05-task-manager | | | 2026-07-16 (frontend only — Angular-only project; backfilled 2026-08-06; the `.btn-danger` cross-slice contradiction) | | |
 | 06-hr-portal | | | 2026-07-16 (frontend only — Angular-only project; backfilled 2026-08-06; the rounded-up ✅ on the app-shell scroll fix) | | |
-| 07-timetrack | | 2026-07-28 (review mode, completed — six-specialist pass: §1 added, §14 visual design system written from scratch, change-password dialog wired §10→§16) | 2026-07-23 (backend only, completed — 13 dispatches, all traced first time; 5 new contract-mismatch findings; frontend tier still `never`) | | |
+| 07-timetrack | | 2026-07-28 (review mode, completed — six-specialist pass: §1 added, §14 visual design system written from scratch, change-password dialog wired §10→§16) | 2026-08-06 (backend only, completed — 13 dispatches, all traced; 2 Highs: secrets in pushed history, `JwtFilter` blank-token 500; batch 3 killed by a session limit and re-dispatched in pairs; frontend tier still `never`) | | |
 
 Read left to right: the brief chose the project → the plan built it → review, README and portfolio
 closed it. **The `review-audit` cell is an execution record, not review state**: whether a tier is due
