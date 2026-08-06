@@ -12,6 +12,8 @@ $expectedRunnableCount = 28
 $promptRoot = Join-Path $RepositoryRoot 'notes\prompts'
 $claudeRoot = Join-Path $RepositoryRoot '.claude\commands'
 $codexRoot = Join-Path $RepositoryRoot '.codex\commands'
+$claudeSkills = Join-Path $RepositoryRoot '.claude\skills'
+$agentSkills = Join-Path $RepositoryRoot '.agents\skills'
 $errors = [System.Collections.Generic.List[string]]::new()
 
 function Add-ValidationError {
@@ -194,32 +196,80 @@ foreach ($requiredTrackerContract in @('## Notes file executions', '## Single-sh
     }
 }
 
-$markdownPathPattern = 'notes/prompts/[A-Za-z0-9_./-]+\.md'
-foreach ($file in Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '*.md') {
+# --- Invariant 4: no file points at a path that is not there -----------------
+# Two path forms are both legitimate and both must resolve: repository-relative,
+# and relative to notes/prompts/ (which is how README.md writes every prompt).
+# Checking only the first form left README.md — the one file whose whole job is
+# to inventory the others — structurally unverifiable, and it carried 30 paths
+# stranded by the 2026-07-22 _internal/ reorg while the validator stayed green.
+$referencePathPattern = '(?<![A-Za-z0-9_./-])(notes|practice|projects|personal|knowledge|strategy)/[A-Za-z0-9_./{}-]+\.(md|ps1|sql)'
+
+# A path a prompt is told to create. Same class as the _last-run-report exemption:
+# it is a declared output, so its absence means "not run yet", never "wrong path".
+$declaredOutputPatterns = @(
+    '^notes/cv/cv-bullets\.md$'                       # portfolio-audit
+    '^notes/interview-prep/(hr-screen|SESSION-LOG)\.md$'  # hr-screen, simulator
+    '^practice/sql/(junior|middle|senior)/.+\.sql$'    # sql-exercises
+    '^practice/simulations/[a-z-]+/[0-9]{2}-.+\.md$'   # simulation-generator
+)
+# Deliberately outside the repository; _external-path-preflight.md governs these.
+$externalPathPatterns = @('^personal/')
+# A dead path is legitimate when a file recounts history or names a legacy shape
+# it must still recognise. Scoped to the citing file on purpose: the same path in
+# a live instruction is still a defect.
+$historicalReferences = @{
+    'knowledge\coverage\_internal\_coverage-prompt-rationale.md' = @('notes/coverage.md')
+    '_internal\_recommendation-ledger.md'                        = @('notes/coverage.md')
+    'strategy\tracking\progress-update-prompt.md'                = @('practice/sql/01-basics.sql', 'practice/sql/02-joins/exercises.sql')
+    'practice\sql\_internal\_last-run-report-sql-exercises.md'   = @('practice/sql/01-basics.sql')
+}
+
+$referenceScan = @()
+$referenceScan += Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '*.md'
+foreach ($skillRoot in @($claudeSkills, $agentSkills)) {
+    $referenceScan += Get-ChildItem -LiteralPath $skillRoot -Recurse -File -Filter '*.md'
+}
+$referenceScan += @('CLAUDE.md', 'AGENTS.md' | ForEach-Object { Get-Item -LiteralPath (Join-Path $RepositoryRoot $_) })
+
+foreach ($file in $referenceScan) {
+    $relativeSource = $file.FullName.Substring($RepositoryRoot.Length + 1)
     $text = [System.IO.File]::ReadAllText($file.FullName)
-    foreach ($match in [regex]::Matches($text, $markdownPathPattern)) {
-        $relativePath = $match.Value.Replace('/', '\')
-        if ([System.IO.Path]::GetFileName($relativePath) -like '_last-run-report*') {
-            continue # Declared report outputs may legitimately not exist before their first run.
+    foreach ($match in [regex]::Matches($text, $referencePathPattern)) {
+        $reference = $match.Value
+        # Placeholders: a template stands for a path, it is not one.
+        if ($reference -match '[{}]|0X|NN-|\.\.\.') { continue }
+        if ([System.IO.Path]::GetFileName($reference) -like '_last-run-report*') { continue }
+        if ($declaredOutputPatterns | Where-Object { $reference -match $_ }) { continue }
+        if ($externalPathPatterns | Where-Object { $reference -match $_ }) { continue }
+        $exempt = $false
+        foreach ($citingFile in $historicalReferences.Keys) {
+            if ($relativeSource.EndsWith($citingFile) -and $reference -in $historicalReferences[$citingFile]) {
+                $exempt = $true
+                break
+            }
         }
-        $resolvedPath = Join-Path $RepositoryRoot $relativePath
-        if (-not (Test-Path -LiteralPath $resolvedPath -PathType Leaf)) {
-            Add-ValidationError "Missing internal Markdown reference: $relativePath (from $($file.FullName))."
-        }
+        if ($exempt) { continue }
+        $windowsPath = $reference.Replace('/', '\')
+        if (Test-Path -LiteralPath (Join-Path $RepositoryRoot $windowsPath) -PathType Leaf) { continue }
+        if (Test-Path -LiteralPath (Join-Path $promptRoot $windowsPath) -PathType Leaf) { continue }
+        Add-ValidationError "Dead path reference '$reference' resolves against neither the repository root nor notes/prompts/ (from $relativeSource)."
     }
 }
 
 # --- Invariant 1: the two skill adapters are one artifact -------------------
 # Editing one without the other let Codex run a ritual two revisions old for
 # three days in Jul 2026 with nothing announcing it.
-$claudeSkills = Join-Path $RepositoryRoot '.claude\skills'
-$agentSkills = Join-Path $RepositoryRoot '.agents\skills'
 function Get-SkillManifest {
     param([string]$SkillRoot)
     $manifest = @{}
     foreach ($file in Get-ChildItem -LiteralPath $SkillRoot -Recurse -File) {
         $relative = $file.FullName.Substring($SkillRoot.Length + 1)
-        $manifest[$relative] = Get-Sha256Hex ([System.IO.File]::ReadAllBytes($file.FullName))
+        # Hash the content, not the bytes: with core.autocrlf=true a file's line
+        # endings depend on whether git checked it out or a tool wrote it, so a
+        # raw byte compare reports drift between two identical files.
+        $latin1 = [System.Text.Encoding]::GetEncoding(28591)
+        $content = $latin1.GetString([System.IO.File]::ReadAllBytes($file.FullName)) -replace "`r`n", "`n"
+        $manifest[$relative] = Get-Sha256Hex ($latin1.GetBytes($content))
     }
     return $manifest
 }
@@ -389,6 +439,7 @@ Write-Output 'PASS: runnable prompt entry-point and self-report contracts'
 Write-Output 'PASS: representative contract dry runs'
 Write-Output 'PASS: external-path failure simulation'
 Write-Output 'PASS: thin session adapters share one rules source'
+Write-Output "PASS: path references resolve ($($referenceScan.Count) files scanned, both path forms)"
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 Write-Output "PASS: coverage mirror parity ($($topicCoverageRoots.Count) topics x $($coverageLevels.Count) levels)"
 if ($fingerprintReports.Count -eq 0) {

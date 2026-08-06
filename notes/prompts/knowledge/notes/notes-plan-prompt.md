@@ -234,12 +234,12 @@ Coverage: notes/angular/coverage/junior.md
 Coverage SHA-256: <digest>
 Generated: YYYY-MM-DD
 
-## 01 — Components and templates
+## 01 — Variables and types
 
 Status: pending
 Action: audit
-English: notes/angular/junior/en/01-components.md
-Spanish: notes/angular/junior/es/01-componentes.md
+English: notes/java/junior/en/01-variables-types.md
+Spanish: notes/java/junior/es/01-variables-tipos.md
 Depends on: none
 Pending additions: none
 

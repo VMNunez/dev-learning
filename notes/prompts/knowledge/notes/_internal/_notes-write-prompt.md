@@ -24,7 +24,7 @@ budget stays on writing that file well.
 **How to use:**
 
 1. Fill in `TOPIC`.
-2. Fill in `FILE` — the exact `en/` file to work on (e.g. `notes/angular/junior/en/06-http-rxjs.md`). For a
+2. Fill in `FILE` — the exact `en/` file to work on (e.g. `notes/angular/junior/en/08-http.md`). For a
    brand-new file that does not exist yet, still name its intended path here.
 3. Fill in `TASK` — the selected persistent-plan entry, including its exact assigned concepts.
 4. Fill in `REWRITE_MODE` — `standard` (protect existing prose) or `first-pass` (allow full rewrites).
