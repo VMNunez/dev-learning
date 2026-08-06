@@ -222,7 +222,11 @@ two signals, and the first one outranks the second:
   coverage-audit split lost two rules until the cold reviewer caught them). Prune first, extract second,
   and only very few prompts ever need it — the big orchestrators, which already have it.
 
-**Commit flow.** Apply the reviewer-approved edit, commit it on its own (`docs: <prompt> — refine from
+**Commit flow.** Apply the reviewer-approved edit, then run the two-map test in `_session-rules.md`
+→ "The two maps follow every change to the machinery": if the edit changed what a file contains, who
+writes it, when something runs, or which prompts and skills exist, the `README.md` / `_system-map.md`
+edit goes **in this same commit**; if it did not, say `maps unaffected` in the line you print below.
+Commit it on its own (`docs: <prompt> — refine from
 the run that just finished`), read the hash from `git log` (never from memory), set the report's
 `Status: applied in <hash>`, and commit the report + tracker together. Alongside the five bullets, print
 one line naming what changed and one naming what came *out* — that is the human's view of the edit.

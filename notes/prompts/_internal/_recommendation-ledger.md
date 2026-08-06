@@ -7,6 +7,12 @@ Self-report recommendations use one of four states:
 - `applied` — implemented and verified.
 - `rejected` — intentionally not implemented; the reason is recorded.
 
+**Moving an item to `applied` includes the two-map test** — `_session-rules.md` → "The two maps follow
+every change to the machinery". An item that changed what a file contains, who writes it, when something
+runs, or which prompts and skills exist carries its `README.md` / `_system-map.md` edit **in the same
+commit as the fix**; one that changed none of those is reported as `maps unaffected`. The `Resolution`
+cell says which of the two it was, so a later reader can tell a checked map from a forgotten one.
+
 | ID | Source | Recommendation | State | Resolution |
 |---|---|---|---|---|
 | REC-001 | notes audit self-report | Add a live-repo/dependency fact-check gate to the notes author | applied | `_notes-write-prompt.md` contains the fact-check gate |

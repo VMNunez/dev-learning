@@ -12,6 +12,7 @@ that is reference-only lives in its own file and is linked from here.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
 - **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill, never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **The boundary is authorship, not folder: anything Victor produces himself — project code, and everything under `practice/` (SQL exercises, simulations, leetcode) — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery the agent writes (notes, prompts, skills, commands, session rules, tracking docs), never his work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
 - **A skill edited in one adapter is edited in both** — `.claude/skills/` and `.agents/skills/` are mirrors of the same file, read by Claude Code and Codex respectively, and neither is the source of truth. Writing or changing a `SKILL.md` means writing the identical file to the other adapter in the **same commit**; adding a new skill means creating it in both. They drifted silently between 2026-07-30 and 2026-08-01 because only the Claude copy was edited, which left Codex running a ritual two revisions old — a mirror that is stale is worse than one that is missing, because nothing announces it. Verify before committing: `diff` the pair for every skill touched. (Launchers are *not* mirrored: `.claude/commands/` and `.codex/commands/` are genuinely platform-specific.)
+- **A change to the machinery is not finished until the two maps are checked** — `notes/prompts/README.md` and `_internal/_system-map.md` are hand-written and nothing regenerates them, so a prompt or skill edit that changes what a file contains, who writes it, when something runs, or which prompts and skills exist carries its map edit **in the same commit**; a change that affects neither is reported as "maps unaffected" out loud, never silently. Full test and the which-map table → "The two maps follow every change to the machinery" under The study system below.
 - **Never redirect** — don't comment on time spent or push Victor to "move on"; he decides what to work on.
 - **Do not correct his English during study sessions** — paused 2026-07-14 while sessions run in Spanish; see Language rules.
 - **Definition of done** — a unit of work is finished only when the code works, has at least one meaningful test, runs locally, and is committed atomically.
@@ -493,6 +494,36 @@ run practice, and keep ROADMAP.md / PROGRESS.md / the three coverage levels in s
 **Prompts *and* the in-session rituals in one wiring diagram, with the per-file writer registry and
 `PROGRESS.md` section by section → `notes/prompts/_internal/_system-map.md`.** Derived and
 reference-only: this file and the README outrank it.
+
+### The two maps follow every change to the machinery
+
+`notes/prompts/README.md` (the catalogue) and `_internal/_system-map.md` (the wiring) describe the system
+from the outside, and **nothing regenerates them**. A change that lands in a prompt or a skill and not in
+the map leaves a map that is confidently wrong — worse than no map, because it gets read *instead of* the
+file it describes.
+
+**Trigger — any edit to the machinery.** Applying an item from `_recommendation-ledger.md`, a
+self-report's at-end refinement, writing a new skill or prompt, changing or retiring an existing one,
+moving who writes a file, or changing a ritual's steps.
+
+**The test is one question:** *did this change what a file contains, who writes it, when something runs,
+or which prompts and skills exist?*
+
+- **Yes → the map edit lands in the same commit as the change.** Not a follow-up and not a note for
+  later: the commit that changes the behaviour is the only moment the correct wording is known, and a
+  map update deferred to "the next session" is the one that never happens.
+- **No → say "maps unaffected" out loud**, in the same breath as reporting the change. Afterwards a
+  silent skip and a genuine no-op are indistinguishable, and only one of the two is fine.
+
+| What changed | Which map |
+|---|---|
+| a prompt added, renamed or retired; its reads/generates; batch mode; run order; launcher parity | `README.md` |
+| a skill's trigger, what it writes, or what it hands off to · a file gaining or losing a writer · a chain's order · a gate · a new debt or flag | `_system-map.md` |
+| a new prompt or a new skill · a ritual moving between the two · anything that changes both a prompt's outputs and who consumes them | **both** |
+
+**The map is derived, so it is never where a decision gets made.** Fix the prompt or the skill first,
+then describe it. When the two disagree afterwards, the machinery wins and the map is the bug — the map
+never gets to be right by being edited.
 
 The system is built — **run the prompts, don't keep editing them.** If you feel the urge to polish
 the machinery, take it as the signal to go use it instead.

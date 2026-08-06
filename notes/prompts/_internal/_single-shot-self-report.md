@@ -123,7 +123,10 @@ rule); without it, treat the verdict as a reject — you cannot tell a whole-fil
 or spent incident comes *out* to make room, or rejects. Cite an incident in a clause, never a paragraph —
 the war-story belongs in the report, not in the prompt.
 
-**Commit flow.** Apply the approved edit, commit it alone (`docs: <prompt> — refine from the run that
+**Commit flow.** Apply the approved edit, then run the two-map test in `_session-rules.md` → "The two
+maps follow every change to the machinery": a `README.md` / `_system-map.md` edit the change earns goes
+**in this same commit**, and if it earns none, say `maps unaffected` in the line you print below. Commit
+it alone (`docs: <prompt> — refine from the run that
 just finished`), read the hash from `git log` (never memory), set the report's `Status: applied in
 <hash>`, and commit the report plus tracker together. When no prompt edit is approved, commit the
 report plus tracker as the run record. Immediately before staging and immediately before committing,

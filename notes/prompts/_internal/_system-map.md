@@ -17,8 +17,16 @@ in halves:
 | `notes/prompts/README.md` | the prompt catalogue: what each of the 28 prompts reads and generates, batch mode, run order |
 | each `SKILL.md` (`.claude/skills/` + `.agents/skills/`) | the exact steps of one ritual |
 
-If this map disagrees with any of them, they win and this file is wrong. Keep it in sync when a prompt
-or skill changes what it writes.
+If this map disagrees with any of them, they win and this file is wrong.
+
+**How it stays true.** It is hand-written and nothing regenerates it, so it is kept in sync by a rule
+rather than by a build step: `_session-rules.md` → **"The two maps follow every change to the machinery"**.
+Any edit to a prompt or a skill — a ledger item applied, a self-report's at-end refinement, a new or
+changed ritual — runs one test (*did this change what a file contains, who writes it, when something
+runs, or which prompts and skills exist?*) and, on a yes, carries the map edit **in the same commit as
+the change**. On a no, the run says `maps unaffected` out loud. Both self-report contracts
+(`_pipeline-self-report.md`, `_single-shot-self-report.md`) and the recommendation ledger point at that
+rule from their own commit flows, because those are the three places the machinery actually gets edited.
 
 ---
 
