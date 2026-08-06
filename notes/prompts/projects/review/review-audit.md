@@ -130,12 +130,11 @@ on the date when the tier has gained no step.
 Then **map the review slices** — this is light structural work (you list slices, you do not review code).
 
 **Apply {REVIEW_SCOPE} first — map only the tiers it names:**
-- `backend` → map only the backend slices; skip the frontend map, Step 3 and Step 4.
-- `frontend` → map only the frontend slices; skip the backend map, Steps 1–2 and Step 4.
+- `backend` → map only the backend slices; skip the frontend map, Step 3 and Step 4 — but **not Step
+  3b**, which is per-tier, not frontend, and runs on every scope (on Angular 01–06 there is no backend
+  tier, so `backend` stays a no-op).
+- `frontend` → map only the frontend slices; skip the backend map, Steps 1–2 and Step 4; Step 3b runs.
 - `full` (default) → map both tiers and run every step.
-
-**Step 3b runs on every scope** — it is a per-tier pass, not a frontend one, so a `backend` run still
-dispatches it for the backend tier. Its number puts it inside Step 3 only for reading order.
 
 Slices, per tier:
 - **Backend resources** — from `{PROJECT_PATH}/PLANNING.md` §7 (entities) / §10 (API), or by listing the
@@ -455,7 +454,9 @@ it commits directly, always **separate** from the backlog commit. Also print the
   is not that index** — its cell records that *this prompt executed* on this target, exactly like every
   other orchestrator's cell, and the Step 0 gate never reads it. When the two disagree, the backlog wins
   and the cell is simply behind.
-- **Security findings are always High**, and findings are deduplicated across every slice.
+- **Every *confirmed* security finding is High** (the standard defines confirmed) — a finding resting
+  only on a silent plan, such as a `localStorage` token PLANNING never rules on, is the Medium
+  "decide and document" it describes. Findings are deduplicated across every slice.
 - **Model per slice, always explicit** (see Model policy): backend flow + every security slice + the
   orchestrator run on **deep-reasoning**; frontend flow and learning-objectives on **standard-reasoning**. Never drop backend
   or security below deep-reasoning to save tokens — those are the passes that catch what blocks portfolio-ready.

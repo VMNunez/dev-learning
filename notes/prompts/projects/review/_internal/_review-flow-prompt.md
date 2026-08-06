@@ -74,8 +74,8 @@ Apply, to your slice only, the matching parts of the standard:
    on **every** frontend slice, 01–06 and 07+ alike, because the cold security pass audits only the
    backend — its **frontend security** greps (`[innerHTML]`, `bypassSecurityTrust*`, sensitive data in
    `localStorage`), reporting a clean grep as an explicit one-line "no findings". On a full-stack
-   project the live case is the JWT the auth service persists, and the standard says how to grade it
-   (High only where PLANNING promised otherwise, else Medium "decide and document"). Use the standard's
+   project the live case is the JWT the auth service persists. **Report it with its `file:line` and
+   leave the severity to the orchestrator** — only it has read the whole plan. Use the standard's
    bad-vs-good examples as the bar.
    **Skip the standard's "Pattern consistency across the project" block** — consistency is a between-slice
    property and you hold one slice; a separate cross-slice reviewer owns it. Judge your slice on its own

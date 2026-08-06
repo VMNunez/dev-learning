@@ -37,8 +37,9 @@ Chain: `plan-audit` → build → `readme-audit` → **this review** → `portfo
   backend code, the **cold security pass**, and a `PROJECT-BACKLOG.md`.
 - **Angular-only projects (01–06)** — feature-complete, but still portfolio pieces worth improving. They
   get the **frontend half** of the review: frontend flow slices, the learning-objectives pass, and a
-  `PROJECT-BACKLOG.md` of their own. **No security pass** — there is no backend to attack, and a
-  frontend-only Angular app has no server-side attack surface this review can meaningfully audit. Their
+  `PROJECT-BACKLOG.md` of their own. **No cold security pass** — there is no backend to attack, and a
+  frontend-only Angular app has no server-side attack surface this review can meaningfully audit (the
+  frontend-security greps still run, on the flow reviewer, exactly as on a full-stack frontend). Their
   backlog carries only `[frontend]` tasks and only a `**Last Reviewed — frontend:**` line (the backend
   line is written as `n/a — Angular-only`).
 
@@ -204,21 +205,22 @@ the template:
   a **Medium** finding; it should be a `<button>`.
 
 **Frontend security — every Angular tier, 01–06 and 07+ alike** — the flow reviewer runs it on each
-frontend slice. **The cold security pass audits the backend only**, so this is the one lens that ever
-reads frontend code with a security mind, and it is not a consolation prize for backend-less projects:
-removing the backend removes the *server-side* attack surface, never all of it, and on a full-stack
-project the frontend is where the **token** lives — the check has a real target there and none in
-01–06. Three targeted greps over the slice, and report what they hit:
+frontend slice. **The cold security pass audits the backend only** — its `SCOPE` admits a resource or
+`security-infra`, never a frontend feature — so this is the only lens in the pipeline that ever reads
+frontend code with a security mind: on 01–06 because no cold pass runs at all, on 07+ because the cold
+pass never comes here. Removing the backend removes the *server-side* attack surface, never all of it.
+Three targeted greps over the slice, and report what they hit:
 - `innerHTML` / `[innerHTML]` binding — the one Angular escape hatch that bypasses built-in escaping.
   Rendering anything user-supplied through it is an XSS hole and is **High**.
 - `bypassSecurityTrustHtml` / `bypassSecurityTrust*` — explicitly disables Angular's sanitizer. **High**
   unless the input is a hardcoded constant.
 - `localStorage` / `sessionStorage` — flag anything sensitive stored there (tokens, personal data); it is
-  readable by any script on the origin. Storing the app's own non-sensitive domain data is fine. On 07+
-  the live case is the JWT the auth service persists (`frontend-infra` owns it): grade it by the "what
-  confirmed means" rule below — a **High** where PLANNING promised otherwise, and otherwise the
-  **Medium "decide and document"** that a silent plan earns, since `localStorage` is the pattern every
-  junior tutorial teaches and the alternative is an interview answer before it is a code change.
+  readable by any script on the origin. Storing the app's own non-sensitive domain data is fine.
+  On 07+ the live case is the JWT the auth service persists (`frontend-infra` owns it); on 01–06 it is
+  whatever the app's own services persist — domain data is fine, personal data or credentials is a
+  finding (06-hr-portal's `auth.service.ts` persists the whole `currentUser`). **Report it; the
+  orchestrator grades it**, under the silent-plan rule: **High** where PLANNING promised otherwise,
+  otherwise the **Medium "decide and document"** a silent plan earns.
 Clean greps are a one-line "no findings", not a skipped check — the point is that the exclusion is
 verified, not assumed.
 
@@ -264,9 +266,8 @@ whole-project pass.
 ## Security scope — the cold pass
 
 The checklist above catches known failure modes but is a fixed list. Full-stack projects also get an
-**adversarial, systematic pass over the backend** (its slices are a resource's endpoints or
-`security-infra` — never a frontend feature, which is why the frontend-security greps above run on every
-tier): a cold reviewer with an attacker's mindset reads the real code against
+**adversarial, systematic pass over the backend**: a cold reviewer with an attacker's mindset reads the
+real code against
 the full junior security scope in `notes/security/coverage/junior.md` and hunts for what the checklist does not
 name — missing/inconsistent authorization, missing ownership checks (can user A read/edit user B's data
 by changing an id?), entities leaking past the DTO boundary (password hashes, internal fields), secrets
