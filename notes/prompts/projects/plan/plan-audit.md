@@ -265,9 +265,11 @@ checks:
 - **The ten sections no concern owns — §1, §2, §4, §5, §9, §11, §17, §18, §19, §21 — one check each.**
   These are the exception to "coherence, not conformance": they have no other owner, so for these ten it
   checks content against its **section spec** in the standard as well as against the rest of the plan.
-  None of the ten carries a `**Pass:**` line, so the spec is the shape the section itself states — column
-  sets, counts, formats. `branches-coverage` only checks that they exist, and §4's **rows** belong to
-  `steps-tests` (against the brief); `whole-plan` owns its shape.
+  Only §1 and §9 carry a `**Pass:**` line; for the other eight the spec is the shape the section itself
+  states — column sets, counts, formats. `branches-coverage` only checks that they exist. **§2 and §4 are
+  split**: their claims against the brief — §4's rows, §2's gap and delta bullets — belong to
+  `steps-tests`, the only scope that reads it; `whole-plan` owns both sections' shape (§2's 3–4 bullets
+  and four named contents, §4's three columns and 8–12 limit).
 - **Cross-section contradictions** — a rule stated in one section and broken by prose in another, where
   the second section's owner has no reason to read the first.
 - **`PROJECT-BACKLOG.md` against the plan** — the task list Victor actually executes is read by no other

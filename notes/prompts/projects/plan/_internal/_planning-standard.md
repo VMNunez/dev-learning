@@ -37,19 +37,16 @@ The template below has 24 sections (0–23). Which of them apply depends on the 
 Every full-stack PLANNING.md must contain these sections, in this order. Each states **what it must
 contain** (the author writes this); those carrying real judgement add **what makes it pass**
 (`- **Pass:**`). **A section without one is still reviewed** — its spec is the shape it states: §12 is
-held to §13's bar, §20 to design check 5, §22 to the branch rules below, and the ten `whole-plan` owns
-to their column sets, counts and formats. Sections are
-matched by **heading text, not by number** — numbering is not guaranteed stable across projects, but
-the heading names are.
+held to §13's bar, §20 to design check 5, §22 to the branch rules below, and a section stating only
+column sets, counts or formats to those. Sections are matched by **heading text, not by number** —
+numbering is not guaranteed stable across projects, but the heading names are.
 
 ### 0. Session quick reference
 A living table, updated at the start of every session. Columns: **Current step · Current branch · Done
 condition · Next gate · Phase · Last updated**. Write it with dashes when creating a new plan; the first
 session fills it in. The **Current branch** must be the exact `feat/…` branch from §22 that covers the
 current step — this is what the coding agent reads first each session, so the branch is right there next to the
-step instead of buried in §22. **Next gate** names the next §23 gate and what triggers it (e.g.
-"G3 — backend review (`review-audit`, `REVIEW_SCOPE = backend`), when `feat/timeentry-workflow`
-merges"), so the checkpoint is visible from the step you are on rather than remembered at the end.
+step instead of buried in §22. **Next gate** names the next §23 gate and what triggers it.
 - **Pass:** present. If the project is in progress, Current step names a real step, Current branch is
   the §22 branch whose range contains that step (not a dash, not `main`, not the project branch), Done
   condition is specific (not a dash) and follows the done-condition format below, and Next gate names a
@@ -57,6 +54,8 @@ merges"), so the checkpoint is visible from the step you are on rather than reme
 
 ### 1. Project title and one-line description
 Plain language, says what the app does and who uses it.
+- **Pass:** both halves present — "an invoice management application", with no who, fails. Where the
+  project has roles, the user types named here are §8's roles; one appearing only here is a contradiction.
 
 ### 2. Why this project
 3–4 bullets: the domain problem it solves · the technical gaps it closes (the brief's gap table is
@@ -100,11 +99,8 @@ previous project, say so — do not invent gaps.
 
 **Both tiers get engineering rules, not just a diagram.** After the diagram, the section states the
 backend layer rules (controller never calls the repository, entities never leave the service layer, …)
-**and an equivalent block of Angular rules**. The frontend half of the plan is what the coding agent
-reads every session once the backend is done, so it is held to the same bar: **every rule must be
-violable and detectable** — a reviewer can point at a file and say "this one breaks it". A label with
-no observable consequence is not a rule (design check 7 is where this is enforced). The Angular block
-covers at minimum:
+**and an equivalent block of Angular rules**, held to the same bar: every rule must be violable and
+detectable. The Angular block covers at minimum:
 - **State ownership** — where state lives, and who owns it when two pages read the same endpoint.
 - **Service boundary** — what a `core/services/` service may and may not do (HTTP call + mapping to the
   model; never UI concerns, never navigation).
@@ -132,6 +128,10 @@ If the domain has a state machine (e.g. Draft → Submitted → Approved), inclu
 
 ### 9. Seed data
 The first admin/manager account `data.sql` content, plus any data that must exist at startup.
+- **Pass:** if the project has logins, the seed account is present with its role, that role is one §8
+  and §10 use — a seed granting a role no rule mentions is the fastest way to a login nothing
+  authorizes — and its credentials are written out, since §15's deploy step owes them to the global
+  README and this is the only place they exist. Every lookup/enum row §7 requires at startup is listed.
 
 ### 10. REST API
 Every endpoint, grouped by resource (one subsection per controller). For each endpoint: **HTTP
