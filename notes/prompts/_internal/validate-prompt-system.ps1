@@ -48,6 +48,14 @@ function Get-LauncherTargets {
     return $targets
 }
 
+function Get-Sha256Hex {
+    # Windows PowerShell 5.1 runs on .NET Framework, which has no SHA256.HashData.
+    param([byte[]]$Bytes)
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try { $digest = $sha.ComputeHash($Bytes) } finally { $sha.Dispose() }
+    return (-join ($digest | ForEach-Object { $_.ToString('x2') }))
+}
+
 function Test-ExternalPathPreflight {
     param([string[]]$RequiredInputs)
 
@@ -201,6 +209,137 @@ foreach ($file in Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
     }
 }
 
+# --- Invariant 1: the two skill adapters are one artifact -------------------
+# Editing one without the other let Codex run a ritual two revisions old for
+# three days in Jul 2026 with nothing announcing it.
+$claudeSkills = Join-Path $RepositoryRoot '.claude\skills'
+$agentSkills = Join-Path $RepositoryRoot '.agents\skills'
+function Get-SkillManifest {
+    param([string]$SkillRoot)
+    $manifest = @{}
+    foreach ($file in Get-ChildItem -LiteralPath $SkillRoot -Recurse -File) {
+        $relative = $file.FullName.Substring($SkillRoot.Length + 1)
+        $manifest[$relative] = Get-Sha256Hex ([System.IO.File]::ReadAllBytes($file.FullName))
+    }
+    return $manifest
+}
+$claudeManifest = Get-SkillManifest $claudeSkills
+$agentManifest = Get-SkillManifest $agentSkills
+foreach ($relative in ($claudeManifest.Keys + $agentManifest.Keys | Sort-Object -Unique)) {
+    if (-not $claudeManifest.ContainsKey($relative)) {
+        Add-ValidationError "Skill mirror: .agents/skills/$relative has no .claude/skills counterpart."
+    } elseif (-not $agentManifest.ContainsKey($relative)) {
+        Add-ValidationError "Skill mirror: .claude/skills/$relative has no .agents/skills counterpart."
+    } elseif ($claudeManifest[$relative] -ne $agentManifest[$relative]) {
+        Add-ValidationError "Skill mirror: $relative differs between the two adapters."
+    }
+}
+
+# --- Invariant 2: topic coverage file and its global mirror section ----------
+# `_coverage-standard.md` calls the mirrors generated artifacts over the topic
+# sources; a writer that touches one and not the other introduces drift that
+# nothing else announces.
+$coverageLevels = @('junior', 'middle', 'senior')
+$topicCoverageRoots = @(
+    Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'notes') -Directory |
+        Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'coverage') -PathType Container } |
+        Where-Object { $_.Name -ne 'prompts' }
+)
+foreach ($level in $coverageLevels) {
+    $mirrorPath = Join-Path $RepositoryRoot "notes\coverage\$level.md"
+    $sectionBullets = @{}
+    $currentSection = $null
+    foreach ($line in [System.IO.File]::ReadAllLines($mirrorPath)) {
+        if ($line -match '^##\s+(?<name>[^#].*)$') {
+            # The folder name is the section name lowercased with spaces hyphenated,
+            # so the map stays true when a topic is added.
+            $currentSection = ($Matches['name'].Trim() -replace '\s+', '-').ToLowerInvariant()
+            if (-not $sectionBullets.ContainsKey($currentSection)) {
+                $sectionBullets[$currentSection] = [System.Collections.Generic.List[string]]::new()
+            }
+        } elseif ($null -ne $currentSection -and $line -like '- *') {
+            $sectionBullets[$currentSection].Add($line)
+        }
+    }
+    foreach ($topic in $topicCoverageRoots) {
+        $topicFile = Join-Path $topic.FullName "coverage\$level.md"
+        if (-not (Test-Path -LiteralPath $topicFile -PathType Leaf)) {
+            Add-ValidationError "Coverage mirror: notes/$($topic.Name)/coverage/$level.md is missing."
+            continue
+        }
+        if (-not $sectionBullets.ContainsKey($topic.Name)) {
+            Add-ValidationError "Coverage mirror: notes/coverage/$level.md has no section for topic '$($topic.Name)'."
+            continue
+        }
+        $topicRows = @([System.IO.File]::ReadAllLines($topicFile) | Where-Object { $_ -like '- *' })
+        $mirrorRows = @($sectionBullets[$topic.Name])
+        $drift = @(Compare-Object -ReferenceObject $topicRows -DifferenceObject $mirrorRows -SyncWindow ([int]::MaxValue))
+        if ($drift.Count -gt 0) {
+            $onlyTopic = @($drift | Where-Object { $_.SideIndicator -eq '<=' }).Count
+            $onlyMirror = @($drift | Where-Object { $_.SideIndicator -eq '=>' }).Count
+            Add-ValidationError "Coverage mirror drift at $level/$($topic.Name): $onlyTopic bullet(s) only in the topic file, $onlyMirror only in notes/coverage/$level.md."
+        }
+    }
+    foreach ($section in $sectionBullets.Keys) {
+        if ($section -notin $topicCoverageRoots.Name) {
+            Add-ValidationError "Coverage mirror: notes/coverage/$level.md section '$section' has no notes/{topic}/coverage/ source."
+        }
+    }
+}
+
+# --- Invariant 3: a notes plan's Plan status agrees with its fingerprint -----
+# Reports, never repairs: clearing a stale flag without running /notes-plan is
+# the exact lie the flag exists to prevent.
+function Get-CoverageDigest {
+    param([string]$Path)
+    # Byte-faithful reimplementation of the canonical command in
+    # `_coverage-standard.md`. That command is `sed | sha256sum` under Git Bash,
+    # whose sed does text-mode I/O and drops every CR before the expressions run,
+    # so the stored digests are over CR-free bytes. Reproduce it, do not "fix" it:
+    # this must agree with what every prompt computes, not with what is tidier.
+    $latin1 = [System.Text.Encoding]::GetEncoding(28591)
+    $text = $latin1.GetString([System.IO.File]::ReadAllBytes($Path)) -replace "`r", ''
+    $mark = [regex]::Escape($latin1.GetString([System.Text.Encoding]::UTF8.GetBytes([char]0x2705)))
+    $dash = [regex]::Escape($latin1.GetString([System.Text.Encoding]::UTF8.GetBytes([char]0x2014)))
+    $lines = $text -split "`n"
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        $lines[$i] = [regex]::Replace($lines[$i], " $mark [0-9]{2}-[a-z0-9-]+( $dash .*)?`$", '')
+        $lines[$i] = [regex]::Replace($lines[$i], " $mark sql:[0-9]{2}-[a-z0-9-]+`$", '')
+    }
+    return Get-Sha256Hex ($latin1.GetBytes($lines -join "`n"))
+}
+$fingerprintReports = [System.Collections.Generic.List[string]]::new()
+foreach ($topic in $topicCoverageRoots) {
+    foreach ($level in $coverageLevels) {
+        $planPath = Join-Path $topic.FullName "coverage\notes-plan-$level.md"
+        if (-not (Test-Path -LiteralPath $planPath -PathType Leaf)) { continue }
+        $coveragePath = Join-Path $topic.FullName "coverage\$level.md"
+        $planText = [System.IO.File]::ReadAllText($planPath)
+        $storedMatch = [regex]::Match($planText, '(?m)^Coverage SHA-256:\s*(?<sha>[0-9a-f]{64})\s*$')
+        $statusMatch = [regex]::Match($planText, '(?m)^Plan status:\s*(?<status>current|stale)\s*$')
+        $planName = "notes/$($topic.Name)/coverage/notes-plan-$level.md"
+        if (-not $storedMatch.Success) {
+            Add-ValidationError "Notes plan lacks a 64-character Coverage SHA-256: $planName."
+            continue
+        }
+        if (-not $statusMatch.Success) {
+            Add-ValidationError "Notes plan lacks a 'Plan status: current|stale' line: $planName."
+            continue
+        }
+        $matches = $storedMatch.Groups['sha'].Value -eq (Get-CoverageDigest $coveragePath)
+        $status = $statusMatch.Groups['status'].Value
+        if ($status -eq 'current' -and -not $matches) {
+            # Hard failure: notes-audit runs against this plan on the strength of
+            # the word `current`, and the scope it was mapped against has moved.
+            Add-ValidationError "Notes plan claims 'current' but its Coverage SHA-256 no longer matches its coverage file: $planName."
+        } elseif ($status -eq 'stale' -and $matches) {
+            # Not a failure: the flag may be owed to something other than the
+            # fingerprint, and clearing it here would be the forbidden repair.
+            $fingerprintReports.Add("$planName is flagged stale while its Coverage SHA-256 matches its coverage file.")
+        }
+    }
+}
+
 foreach ($adapterName in @('AGENTS.md', 'CLAUDE.md')) {
     $adapterPath = Join-Path $RepositoryRoot $adapterName
     $adapterText = [System.IO.File]::ReadAllText($adapterPath)
@@ -236,7 +375,9 @@ if (Test-Path -LiteralPath (Split-Path $missingProbe -Parent)) {
 }
 
 if ($errors.Count -gt 0) {
-    $errors | ForEach-Object { Write-Error $_ }
+    # -ErrorAction Continue, because the script-wide 'Stop' preference otherwise
+    # makes the first Write-Error terminating and hides every later finding.
+    $errors | ForEach-Object { Write-Error $_ -ErrorAction Continue }
     exit 1
 }
 
@@ -248,3 +389,11 @@ Write-Output 'PASS: runnable prompt entry-point and self-report contracts'
 Write-Output 'PASS: representative contract dry runs'
 Write-Output 'PASS: external-path failure simulation'
 Write-Output 'PASS: thin session adapters share one rules source'
+Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
+Write-Output "PASS: coverage mirror parity ($($topicCoverageRoots.Count) topics x $($coverageLevels.Count) levels)"
+if ($fingerprintReports.Count -eq 0) {
+    Write-Output 'PASS: every notes plan agrees with its coverage fingerprint'
+} else {
+    Write-Output "REPORT: $($fingerprintReports.Count) notes plan(s) disagree with their coverage fingerprint - reported, never repaired:"
+    $fingerprintReports | ForEach-Object { Write-Output "  - $_" }
+}

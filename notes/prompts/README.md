@@ -38,7 +38,14 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
   before dispatching any role.
 
 Both launcher catalogs contain exactly 28 files and must reference the same 28 canonical entry points.
-Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt.
+Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
+editing a skill, a coverage file, or a notes plan, since it also checks the three invariants nothing
+else can see: that `.claude/skills/` and `.agents/skills/` are byte-identical, that every
+`notes/{topic}/coverage/{LEVEL}.md` and its section of `notes/coverage/{LEVEL}.md` carry the same
+bullets, and that each plan's `Plan status` agrees with its `Coverage SHA-256`. The last one **reports
+and never repairs**: clearing a stale flag without running `/notes-plan` is the lie the flag exists to
+prevent, so a disagreement prints as `REPORT:` and only a plan claiming `current` against a moved
+fingerprint fails the run.
 
 ---
 
