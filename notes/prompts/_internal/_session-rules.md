@@ -490,6 +490,10 @@ run practice, and keep ROADMAP.md / PROGRESS.md / the three coverage levels in s
 
 **Full map of every prompt, how they connect, and the order to run them → `notes/prompts/README.md`.**
 
+**Prompts *and* the in-session rituals in one wiring diagram, with the per-file writer registry and
+`PROGRESS.md` section by section → `notes/prompts/_internal/_system-map.md`.** Derived and
+reference-only: this file and the README outrank it.
+
 The system is built — **run the prompts, don't keep editing them.** If you feel the urge to polish
 the machinery, take it as the signal to go use it instead.
 
