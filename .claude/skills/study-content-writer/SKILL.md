@@ -19,7 +19,7 @@ hit the exact same quality bar the pipeline would, so daily-session notes are ne
 
 ## Step 1 — Load the right standard FIRST (before writing a single line)
 
-- Writing or refining a **note** (`notes/{topic}/en|es/*.md`) →
+- Writing or refining a **note** (`notes/{topic}/{LEVEL}/en|es/*.md`) →
   read `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` in full.
 - Writing or refining an **interview question** (`notes/interview-prep/{LEVEL}/en|es/*.md`) →
   read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` in full.
@@ -44,10 +44,12 @@ sub-concept); a sentence explaining how to read every table; exact error message
 ## Step 3 — Honour the bilingual en/es contract
 
 - **`en/` is the canonical source; `es/` is its first-class translation.** Author and correct the
-  content in `en/` first, then translate into `es/`. Both must contain the same files with the same
-  structure and code blocks.
-- New file in `en/` → create the full `es/` translation (same filename). TODO resolved or section
-  added → do it in `en/`, then re-sync `es/`.
+  content in `en/` first, then translate into `es/`. Once a plan entry completes, both hold a matching
+  file per **number prefix**, with the same structure and code blocks.
+- New file in `en/` → create the full `es/` translation under a **Spanish** filename carrying the same
+  number prefix (`en/03-methods.md` → `es/03-metodos.md`) — never a copy of the English name. The
+  prefix is the only shared part; technical proper names with no Spanish equivalent (`maven`, `enums`,
+  `streams`, `lambdas`) keep theirs. TODO resolved or section added → do it in `en/`, then re-sync `es/`.
 - **A TODO Victor wrote in `es/`** is read as *input*: resolve the doubt in `en/`, then bring the
   answer into `es/` and clear the marker. The answer round-trips through English — that is expected.
 - **Intentional trims are made in `en/`.** If Victor cut something from `es/` (e.g. JS filler — never
@@ -58,9 +60,29 @@ sub-concept); a sentence explaining how to read every table; exact error message
   `File:` → `Archivo:`; `Docs:` stays).
 - Victor studies from `es/` — give it equal care, never a rushed translation.
 
-## Step 4 — Respect the folder counters
+## Step 4 — Numbering is not yours to invent
 
-Update the `next file:` counter for the topic in CLAUDE.md if you create a new numbered file.
+**There is no `next file:` counter.** It lived in the platform adapter before that became a thin
+delegator and went with it — do not look for one, and never write one back. A number is read from disk,
+never invented, and it takes both of these to read it:
+
+- **`notes/{topic}/coverage/notes-plan-{LEVEL}.md`** — the shared session rules make a plan entry "the
+  authority for both exact paths", so the plan is also the register of prefixes already **spoken for**,
+  including entries whose files do not exist on disk yet.
+- **The level's own `{LEVEL}/en/` folder** — what is already written (`_legacy/` sits outside the
+  numbering namespace; ignore it).
+
+Allocate by **appending**: one past the highest two-digit prefix appearing in either. **Never fill a gap
+in the folder** — a gap is almost always a reservation, not a vacancy (`notes/angular/junior/en/` skips
+`05` and `13` because the plan reserves `05-component-lifecycle.md` and `13-production-delivery.md`).
+
+If the note you were asked to write already *is* a plan entry, that entry — not this step — carries its
+number and its two filenames. Whether an inline write may execute a planned entry at all is an open
+ruling (`_recommendation-ledger.md` REC-053): do not settle it by acting. Name the entry to Victor and
+let him say whether it is written here or left to `/notes-audit`.
+
+**Say where your number came from.** A file created here does not update the plan, so the session must
+be able to tell an inline write apart from a planned one.
 
 ## What this skill does NOT do
 

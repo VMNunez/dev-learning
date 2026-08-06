@@ -188,8 +188,15 @@ note file. Use judgment — exact name matching is not required.
 of unbacked questions and, for each, decide its **target note file** — an existing file to extend
 (pick the closest-topic file from the headings read in Step 1) or a new file to create. Group the
 gaps by target file so each file is touched once. **Assign the concrete number to every new file here**
-(start from the "next file:" counter in the shared session rules and increment in study-sequence order) — the
-orchestrator owns numbering so sequential runs never collide. Do NOT write any note prose inline: a
+— there is no `next file:` counter (it lived in the platform adapter before that became a thin
+delegator). Read `notes/{topic}/coverage/notes-plan-{LEVEL}.md` for the topic being numbered: it is the
+register of prefixes already spoken for, including entries whose files do not exist yet
+(`notes/angular/junior/en/` skips `05` and `13` because the plan reserves them). Allocate by
+**appending** — one past the highest two-digit prefix appearing either in a plan entry for that level or
+directly in the `en/` folder the new file will live in (`_legacy/` is outside the numbering namespace;
+with a comma-separated {NOTES_PATH}, number against the folder you are writing into). **Never fill a
+folder gap** — it is a reservation, not a vacancy. The orchestrator owns numbering so sequential runs
+never collide. Do NOT write any note prose inline: a
 note file is one atomic unit and its writing bar is the deep work the Execution model reserves for a
 cold subagent.
 
@@ -204,8 +211,10 @@ cold `role-appropriate` subagent (`reasoning tier: deep`, `execution: foreground
 > before definition, context before any code block, personal-guide voice, mechanism not just behaviour,
 > the anticipate-the-TODO pass — in the correct mode for the folder (structured for
 > `notes/java/junior/en/` and `notes/spring-boot/junior/en/`, conversational otherwise). Author in `en/` first (the
-> canonical source), then re-sync the `es/` counterpart as native Spanish; create the full `es/` file
-> if it does not exist. If you create a new numbered file, bump the "next file:" counter in the shared session rules. Do NOT
+> canonical source), then re-sync the `es/` counterpart as native Spanish under a **Spanish filename with
+> the same number prefix** (`en/03-methods.md` → `es/03-metodos.md`, never a copy of the English name);
+> create the full `es/` file if it does not exist. Your number was assigned above — allocate none
+> yourself, and write no counter anywhere. Do NOT
 > commit. Return a **section-by-section trace** of the file (every `##`/`###` with PASS or what you
 > wrote) as proof you read it whole, plus which questions it now backs.
 > ```
@@ -253,12 +262,6 @@ List only files that were actually modified. Always one command per code block:
 
 ```
 git add <list only modified files — include en/{FILE}.md and es/{FILE}.md only if questions were added; include note files only if created or modified>
-```
-
-If the shared session rules was updated (new file counter), add it separately:
-
-```
-git add the shared session rules
 ```
 
 ```
