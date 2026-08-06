@@ -126,8 +126,18 @@ The root of everything. Coverage defines *what junior means*; every other chain 
    mirror (level boundaries, missing topics, ownership overlaps) — **then `/roadmap-review`**.
 
 **In-session on this chain:** the `study-content-writer` skill. The quality standard only auto-loads
-inside `/notes-audit`, so any note or Q&A written *outside* those runs would silently miss the bar;
-this skill loads it. It writes nothing of its own.
+inside `/notes-audit`, so any note or Q&A written *outside* those runs would silently miss the bar; this
+skill loads it, writes the `en/` + `es/` pair to that bar and commits it. It does **not** touch the notes
+plan — a note written this way leaves its plan entry untouched, which is the one thing `/notes-audit`
+does that this does not.
+
+**The sideways door: `_cross-topic-inbox.md`.** When any coverage run — or `coverage-bullet-add` in a
+daily session — finds a concept owned by a *different* topic, it never writes into that topic's file. It
+files a proposal under that topic's heading in
+`notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md`. Each `/coverage` run reads its own
+heading at Step 1 and clears what it consumed; `/coverage-audit` sweeps every heading. This is the only
+durable handoff *between* topics, and it is why an inline bullet that lands in the wrong topic is a real
+failure rather than a cosmetic one.
 
 ---
 
@@ -154,8 +164,27 @@ this skill loads it. It writes nothing of its own.
    → `notes/interview-prep/projects/{project}.md`, `notes/cv/cv-bullets.md`, and on ✅ Ready the profile
    README in the separate `dev/portfolio/VMNunez` repo.
 
-Gate order inside `PLANNING.md` §23: … G5 `readme-audit` → **G6 `progress-update`** → G7
-`portfolio-audit`. G6 closes on an **empty drift report**, not on the run having happened.
+**The gates (`PLANNING.md` §23), which are what actually sequences this chain:**
+
+| Gate | Fires when | Run |
+|---|---|---|
+| **G1** | every step's done condition passes | *no prompt* — the `step-complete` skill, in session |
+| **G2** | only if the plan or branch strategy moves mid-build | `/plan-audit MODE = review` |
+| **G3** | the backend is complete | `/review-audit REVIEW_SCOPE = backend` |
+| **G4** | the frontend steps are complete | `/review-audit REVIEW_SCOPE = frontend` |
+| **G5** | every **High** from G3/G4 is fixed | `/readme-audit` |
+| **G6** | after G5, before the portfolio gate | `/progress-update MODE = active` |
+| **G7** | after G5 **and** G6 | `/portfolio-audit` |
+| **G8** | G7 returned ✅ Ready | `/roadmap-review` |
+
+The chain is `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. **G6 closes on an empty drift report, not on
+the run having happened** — a run that names drift leaves it open until the owner it names has repaired
+it.
+
+> **Careful with the letter G.** The project gates above live in each `PLANNING.md` §23. The SQL track
+> has its *own* G1–G4 in `practice/sql/PLANNING.md` §9, and they are different gates: SQL's **G3** is
+> `progress-update` (project G3 is a backend review), SQL's **G4** is `roadmap-review` (project G4 is a
+> frontend review). Always say which §23/§9 you mean.
 
 ---
 
@@ -171,8 +200,12 @@ gates, revision cadence, the §8c technique table). `practice/sql/{LEVEL}/PLANNI
 3. **`/sql-plan-audit`** → audits *and extends* both files; writes steps for coverage sections nothing
    claims yet.
 4. **The block itself**, five moments:
-   - **`sql-block-open`** — read-only orientation (which step, which file, how many unanswered, whether
-     the study note is ready). Writes nothing; a stale §0 is *reported*, never silently repaired.
+   - **`sql-block-open`** — read-only orientation: which step, which file, how many unanswered, which
+     Moment comes next. It also reaches **into chain A** — it opens
+     `notes/sql/coverage/notes-plan-{LEVEL}.md`, finds the entry claiming this step's coverage bullets,
+     and says whether the theory note behind the step is worth reading first or still needs
+     `/notes-audit`. That is the only link between the exercise track and the notes track. Writes
+     nothing; a stale §0 is *reported*, never silently repaired.
    - **`/sql-exercises MODE = practice`** → `practice/sql/{LEVEL}/NN-name.sql`. Topic, count and focus
      come from the route, never pasted.
    - Victor answers them in pgAdmin. His file, his commit.
@@ -228,7 +261,8 @@ Every file with more than one potential writer, and who actually owns it.
 | `{project}/README.md` (+ backend/frontend) | `/readme-audit` (whole file) · `readme-concept-add` (one entry) | `/portfolio-audit`, recruiters |
 | `{project}/PROJECT-BACKLOG.md` | `/review-audit` (tasks) · `backlog-task-open` (`⏸ Deferred`) · `backlog-task-close` (`## Closed`) | `/portfolio-audit` (open High/Medium block the verdict), every session start |
 | `notes/cv/cv-bullets.md` | `/portfolio-audit` | `/cv` |
-| `practice/sql/PLANNING.md` (doctrine) | `/sql-plan-audit` · the grader's §0 rewrite · `sql-step-close` (§0 verify) | every SQL prompt and skill |
+| `practice/sql/PLANNING.md` (doctrine) | `/sql-plan-audit` · the grader's §0 rewrite · `sql-step-close` (§0 verify) · `/sql-plan` did the one-time split that created it | every SQL prompt and skill |
+| `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` | any coverage run · `coverage-bullet-add` (a concept another topic owns) | `/coverage` (its own heading, Step 1) · `/coverage-audit` (all headings) |
 | `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (route) | `/sql-plan` (creates) · `/sql-plan-audit` (extends) · `sql-grade`'s subagent (counts/status) | `/sql-exercises`, `sql-block-open`, `/simulation-generator` |
 | `practice/sql/MISTAKES.md` | `sql-grade`'s subagent (`## Open`) · `sql-block-close` (`## Fricción`) | the R1–R5 revision points |
 | `practice/sql/{LEVEL}/NN-*.sql` | **Victor** (the grader only appends `-- ✅ Corregido`) | `sql-grade` |
@@ -272,7 +306,7 @@ identical file to the other in the same commit.**
 | `readme-concept-add` | same event, README side | one entry, routed **by audience** to the global / backend / frontend README | — |
 | `backlog-task-open` | Victor picks up a backlog task | only a `⏸ Deferred YYYY-MM-DD — reason` marker, and only on that verdict | the teach-first explanation, or `backlog-task-close` |
 | `backlog-task-close` | a backlog task is done | coverage bullet + marker · README entry · `PLANNING.md` rules + §0 · `PROGRESS.md` · collapses the task into the `## Closed` ledger | `coverage-bullet-add`, `coverage-mark`, `readme-concept-add` |
-| `study-content-writer` | writing a note or Q&A **outside** the audit prompts | nothing itself — it loads the quality standard that would otherwise not load | — |
+| `study-content-writer` | writing a note or Q&A **outside** the audit prompts | the `en/` + `es/` files themselves, to the same bar the pipeline would, and it commits them | — |
 | `sql-block-open` | the 12:30 block starts | **nothing — read-only** | — |
 | `sql-grade` | "corrige el 02" | nothing directly; a **cold subagent** writes `MISTAKES.md`, `PROGRESS.md`, the route, the doctrine §0 | `sql-step-close` on ≥ 80% + last file |
 | `sql-step-close` | a step's last file scores ≥ 80% | `✅ sql:{file-slug}` drill markers on coverage + mirror · §0 verify · `Total` arithmetic · the §8c unlocked line | names the due gate / revision point |
