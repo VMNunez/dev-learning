@@ -219,7 +219,7 @@ $externalPathPatterns = @('^personal/')
 # a live instruction is still a defect.
 $historicalReferences = @{
     'knowledge\coverage\_internal\_coverage-prompt-rationale.md' = @('notes/coverage.md')
-    '_internal\_recommendation-ledger.md'                        = @('notes/coverage.md')
+    '_internal\_recommendation-ledger.md'                        = @('notes/coverage.md', 'practice/sql/01-basics.sql')
     'strategy\tracking\progress-update-prompt.md'                = @('practice/sql/01-basics.sql', 'practice/sql/02-joins/exercises.sql')
     'practice\sql\_internal\_last-run-report-sql-exercises.md'   = @('practice/sql/01-basics.sql')
 }
