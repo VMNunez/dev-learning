@@ -71,9 +71,12 @@ Apply, to your slice only, the matching parts of the standard:
    §14**, so apply the degraded form the standard describes: hardcoded hex vs theme token, and whether
    every page that can be empty or fail renders that state); its **accessibility** block (labels on
    inputs, accessible names on icon-only buttons, errors tied to their field, no `<div (click)>`); and —
-   **Angular-only 01–06 only**, where no cold security pass runs — its **frontend security** greps
-   (`[innerHTML]`, `bypassSecurityTrust*`, sensitive data in `localStorage`), reporting a clean grep as
-   an explicit one-line "no findings". Use the standard's bad-vs-good examples as the bar.
+   on **every** frontend slice, 01–06 and 07+ alike, because the cold security pass audits only the
+   backend — its **frontend security** greps (`[innerHTML]`, `bypassSecurityTrust*`, sensitive data in
+   `localStorage`), reporting a clean grep as an explicit one-line "no findings". On a full-stack
+   project the live case is the JWT the auth service persists, and the standard says how to grade it
+   (High only where PLANNING promised otherwise, else Medium "decide and document"). Use the standard's
+   bad-vs-good examples as the bar.
    **Skip the standard's "Pattern consistency across the project" block** — consistency is a between-slice
    property and you hold one slice; a separate cross-slice reviewer owns it. Judge your slice on its own
    merits and do not speculate about how the others do it.

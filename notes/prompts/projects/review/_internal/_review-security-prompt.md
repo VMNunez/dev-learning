@@ -79,7 +79,12 @@ Return, for **this slice only**, a findings table, most severe first:
 
 Then a one-line **trace**: for a resource, every endpoint you checked (✅ safe / ⚠️ finding); for
 `security-infra`, every area above — as proof you covered the whole slice. If an area is clean, say
-"clean" for it in one line. Hardening beyond junior scope goes in a short "beyond junior scope" line
+"clean" for it in one line. **Add one row per file you read**, in the flow reviewer's format —
+`file (N lines, ends: «…last real line…»)` — quoting its closing method, rule or export. An endpoint
+list proves you enumerated the controller; it does not prove you reached the bottom of the service or
+the DTO where the leak usually is, and a row you can only write from the end of the file cannot be
+written from the first screen. A file cited in a finding but absent from the trace does not count as
+read. Hardening beyond junior scope goes in a short "beyond junior scope" line
 under the table (the orchestrator puts those in the chat summary, not the backlog). Do **not** edit any
 file.
 

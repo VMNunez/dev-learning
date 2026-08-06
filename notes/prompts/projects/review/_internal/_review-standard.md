@@ -87,17 +87,11 @@ tier — continue, regardless of how recent the date is.** Read the ✅ steps in
 and the step-completion dates recorded in `PROGRESS.md` / the backlog's own task notes; if the tier has
 gained a step since it was last reviewed, it contains code no reviewer has ever seen. Say so and run.
 
-> **This is the failure the rule exists to prevent.** On 2026-07-14 a `backend` run on 07-timetrack was
-> gated at "reviewed 8 days ago" — but Step 6 (Reports) had been *built* in those 8 days and had never
-> been reviewed. Forcing past the gate found, in that unreviewed step, a High correctness bug (the report
-> aggregates summed DRAFT and REJECTED hours). A purely time-based gate punishes fast building: the more
-> steps you finish inside the window, the more unreviewed code it hides.
+> A purely time-based gate punishes fast building: the more steps you finish inside the window, the more
+> unreviewed code it hides. (2026-07-14, 07-timetrack: gated at "reviewed 8 days ago" while Step 6 had
+> been built in those 8 days; forcing past it found a High correctness bug in that unreviewed step.)
 
 Only when the tier has gained **no** completed step since its last review does the 30-day window decide.
-
-> **Migration:** a backlog still carrying the old single `**Last Reviewed:** [date]` line was written
-> before per-tier tracking. Read it as *both* tiers reviewed on that date, and rewrite the header into
-> the two-line form on the next run.
 
 ---
 
@@ -130,13 +124,12 @@ PATCH for state transitions.
 An inconsistent codebase reads as junior even when each piece is individually fine.
 
 > **Who runs this check: the dedicated consistency reviewer, not the slice reviewers.** Consistency is a
-> property *between* slices, so a reviewer holding one slice structurally cannot see it — the reviewer of
-> `dashboard-page` has no way to know that `add-transaction-page` solves the same problem differently.
-> This block sat in the standard unexecuted until 2026-07-14, when the 03-expense-tracker run made it
-> obvious: three slices came back individually fine and nobody was in a position to compare them. So the
-> orchestrator dispatches **one cross-slice consistency reviewer per tier** (`review-audit.md` Step 3b),
-> which reads *narrowly and across every slice* — only the axes below, never the full code — and it is
-> the **only** reviewer allowed to look outside a single slice. Slice reviewers skip this block entirely.
+> property *between* slices, so a reviewer holding one slice structurally cannot see it. The orchestrator
+> dispatches **one cross-slice consistency reviewer per tier** (`review-audit.md` Step 3b), reading
+> *narrowly and across every slice* — only the axes below, never the full code — and it is the **only**
+> reviewer allowed outside a single slice. Slice reviewers skip this block entirely. (It sat here
+> unexecuted until 2026-07-14, when 03-expense-tracker returned three individually fine slices and nobody
+> was positioned to compare them.)
 
 Check:
 - Every page that manages state uses the **same** approach (coordinator everywhere, not coordinator on
@@ -210,15 +203,22 @@ the template:
 - Interactive elements are real interactive elements — a `<div (click)>` is not keyboard-reachable and is
   a **Medium** finding; it should be a `<button>`.
 
-**Frontend security (Angular-only 01–06 — there is no cold security pass, so these live here)** — the
-absence of a backend removes the server-side attack surface, **not** all of it. Three targeted greps over
-the slice, and report what they hit:
+**Frontend security — every Angular tier, 01–06 and 07+ alike** — the flow reviewer runs it on each
+frontend slice. **The cold security pass audits the backend only**, so this is the one lens that ever
+reads frontend code with a security mind, and it is not a consolation prize for backend-less projects:
+removing the backend removes the *server-side* attack surface, never all of it, and on a full-stack
+project the frontend is where the **token** lives — the check has a real target there and none in
+01–06. Three targeted greps over the slice, and report what they hit:
 - `innerHTML` / `[innerHTML]` binding — the one Angular escape hatch that bypasses built-in escaping.
   Rendering anything user-supplied through it is an XSS hole and is **High**.
 - `bypassSecurityTrustHtml` / `bypassSecurityTrust*` — explicitly disables Angular's sanitizer. **High**
   unless the input is a hardcoded constant.
 - `localStorage` / `sessionStorage` — flag anything sensitive stored there (tokens, personal data); it is
-  readable by any script on the origin. Storing the app's own non-sensitive domain data is fine.
+  readable by any script on the origin. Storing the app's own non-sensitive domain data is fine. On 07+
+  the live case is the JWT the auth service persists (`frontend-infra` owns it): grade it by the "what
+  confirmed means" rule below — a **High** where PLANNING promised otherwise, and otherwise the
+  **Medium "decide and document"** that a silent plan earns, since `localStorage` is the pattern every
+  junior tutorial teaches and the alternative is an interview answer before it is a code change.
 Clean greps are a one-line "no findings", not a skipped check — the point is that the exclusion is
 verified, not assumed.
 
@@ -264,7 +264,9 @@ whole-project pass.
 ## Security scope — the cold pass
 
 The checklist above catches known failure modes but is a fixed list. Full-stack projects also get an
-**adversarial, systematic pass**: a cold reviewer with an attacker's mindset reads the real code against
+**adversarial, systematic pass over the backend** (its slices are a resource's endpoints or
+`security-infra` — never a frontend feature, which is why the frontend-security greps above run on every
+tier): a cold reviewer with an attacker's mindset reads the real code against
 the full junior security scope in `notes/security/coverage/junior.md` and hunts for what the checklist does not
 name — missing/inconsistent authorization, missing ownership checks (can user A read/edit user B's data
 by changing an id?), entities leaking past the DTO boundary (password hashes, internal fields), secrets
@@ -391,14 +393,10 @@ combination is **⚠️ Shallow, not ✅** — say which piece is missing, and f
 marking ✅, re-read the concept as the plan words it and check each piece it names separately; a
 partial match must never be rounded up to complete.
 
-> **The failure this exists to prevent.** On the 2026-07-16 run of 06-hr-portal, the plan's "App shell
-> scroll fix" is `html, body { height: 100% }` + `app-root { overflow: hidden }`. The reviewer found
-> `body { height: 100% }` and `app-root { overflow: hidden }`, matched two pieces out of three, and
-> marked the concept ✅ at `styles.css:23,32` — but `html` has no height anywhere, so the `body`
-> percentage never resolves and the fix does nothing. It was caught only because another slice
-> happened to read the same file and disagree. Nothing guarantees that second reader exists: a
-> rounded-up ✅ that no one contradicts reaches the backlog unchallenged, and a concept Victor never
-> actually finished gets recorded as learned.
+> A rounded-up ✅ that no second reader contradicts reaches the backlog unchallenged, and a concept
+> Victor never finished gets recorded as learned. (2026-07-16, 06-hr-portal: two of the three pieces of
+> the app-shell scroll fix were present and the concept was marked ✅ — the missing `html` height meant
+> the fix did nothing, caught only because another slice happened to read the same file.)
 
 ---
 
@@ -551,6 +549,8 @@ authoritative**: read it before writing findings and never re-raise a finding it
 especially a deliberate design decision, whose only surviving record is that line. A review run never
 deletes, rewrites or reorders ledger lines; it only adds new `[ ]` tasks. Any older backlog that still
 carries checked-off (✅) entries inline is fine — leave them where they are, they collapse as Victor
-closes the rest. The backlog
-lives in the project folder, so it follows the project's normal **feature-branch → PR → main** workflow
-— it is **not** a direct-to-main study file and is **not** auto-committed.
+closes the rest. The backlog lives in the project folder, so it follows the project's normal
+**feature-branch → PR → main** workflow and never lands on `main` directly — but it **is**
+auto-committed on the active branch by whoever writes it: this pipeline and the two backlog skills
+write it, Victor never does, which is exactly what the shared session rules' 2026-07-29 authorization
+turns on.

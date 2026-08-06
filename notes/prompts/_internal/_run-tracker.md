@@ -117,16 +117,20 @@ fails, since no daily-session skill touches this route.
 
 | Project | project-brief | plan-audit | review-audit | readme-audit | portfolio-audit |
 |---|---|---|---|---|---|
-| 01-todo-list | | | | | |
-| 02-weather-app | | | | | |
-| 03-expense-tracker | | | | | |
-| 04-meal-finder | | | | | |
-| 05-task-manager | | | | | |
-| 06-hr-portal | | | | | |
-| 07-timetrack | | 2026-07-28 (review mode, completed — six-specialist pass: §1 added, §14 visual design system written from scratch, change-password dialog wired §10→§16) | | | |
+| 01-todo-list | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | | |
+| 02-weather-app | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | | |
+| 03-expense-tracker | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06; the run that motivated the Step 3b consistency reviewer) | | |
+| 04-meal-finder | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | | |
+| 05-task-manager | | | 2026-07-16 (frontend only — Angular-only project; backfilled 2026-08-06; the `.btn-danger` cross-slice contradiction) | | |
+| 06-hr-portal | | | 2026-07-16 (frontend only — Angular-only project; backfilled 2026-08-06; the rounded-up ✅ on the app-shell scroll fix) | | |
+| 07-timetrack | | 2026-07-28 (review mode, completed — six-specialist pass: §1 added, §14 visual design system written from scratch, change-password dialog wired §10→§16) | 2026-07-23 (backend only, completed — 13 dispatches, all traced first time; 5 new contract-mismatch findings; frontend tier still `never`) | | |
 
 Read left to right: the brief chose the project → the plan built it → review, README and portfolio
-closed it. **`project-brief` is the one column whose row may not exist yet**: it decides the *next*
+closed it. **The `review-audit` cell is an execution record, not review state**: whether a tier is due
+for review is answered by `{project}/PROJECT-BACKLOG.md`'s per-tier `Last Reviewed` lines, which the
+30-day gate reads and this column never is. The seven 2026-07 cells were backfilled on 2026-08-06 from
+each backlog's own `Last Reviewed` lines — until then the column was empty although every project had
+been reviewed, because the prompt's own Step 6 never mentioned this file (REC-043). **`project-brief` is the one column whose row may not exist yet**: it decides the *next*
 project, so its run creates that project's row before any folder does. Its cell's staleness is not
 tracked here — the brief carries its own `Coverage SHA-256`, marker count and `Status:` header, and its
 consumer reads freshness from the file itself.
