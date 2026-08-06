@@ -462,7 +462,17 @@ everything commits on the branch you're on — is simpler to remember than a spl
 - Update PROGRESS.md when a learning plan step is completed — not on every commit, not just at session end (see "After every learning plan step is completed")
 - For SQL: update the SQL section immediately after a topic review gives a clear result
 - Commit PROGRESS.md from the root of the repo, not from inside the project folder
-- The `progress-update-prompt` is for periodic full audits — it complements this per-step tracking, it does not replace it
+- **`progress-update` is an auditor, not this file's writer** (demoted 2026-08-05). It writes exactly one
+  section — `Professional level by topic`, the table that needs all 13 topics at once and that no ritual
+  can compute — and *measures* every other section against its primary sources, reporting drift and
+  naming the ritual that owns the repair. It complements the per-step tracking above and never replaces
+  it: what it catches is a ritual that skipped a cell, not a cell nobody wrote.
+- **Say when it is due — do not wait to be asked.** Its scheduled points are gate **G6** of every
+  project's `PLANNING.md` §23 (after G5 `readme-audit`, before G7 `portfolio-audit`) and gate **G3** of
+  `practice/sql/PLANNING.md` §9 (after Step 13 closes), plus the `▶ Run first` of `cv-prompt`,
+  `linkedin-prompt`, `cover-letter-prompt`, `project-brief`, `plan-audit MODE = new` and `roadmap-review`.
+  Both gates close on an **empty drift report**, not on the run having happened: whatever the report
+  names is repaired by the owner it names, and only then does the gate sign off.
 
 ## Angular CLI conventions
 

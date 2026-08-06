@@ -504,7 +504,7 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 | **G1b — Plan al día** | Right after G1, when a step closes · when `notes/sql/coverage/{LEVEL}.md` grows (i.e. after G2) · when `sql-exercises-prompt.md` changes | `notes/prompts/practice/sql/sql-plan-audit.md` · `SCOPE = full` (`SCOPE = extend` when the only trigger was new coverage sections) | This file is the one that rots fastest — every closed step, every new coverage section and every prompt change leaves it slightly less true, and nothing else audits it. It runs *after* G1 so it reads the status G1 has just made accurate, and before the next step starts building on a stale plan. Safe to run repeatedly: a clean plan comes back unchanged. |
 | **G1c — Replan tras extender** | Only when G1b's last line says `⚠ /sql-plan {LEVEL} owed` — i.e. its extension engine added or re-pointed a step | `notes/prompts/practice/sql/sql-plan-prompt.md` · `LEVEL = {level}`, `MODE = update` | The audit may not refresh the route's `Coverage SHA-256` (a digest refreshed without remapping the bullets destroys the staleness signal) and may not write `PROGRESS.md` (invariant 15 is audited there, never repaired). So a run that grows the route leaves two things only the planner can close: the fingerprint and the projection's rows for the new files. Skip it and every `/sql-exercises` run warns "ruta desactualizada" forever, over a route that is in fact current. Not owed when G1b reports nothing added. |
 | **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before Step 0; again if a real job posting reveals a gap | `notes/prompts/knowledge/coverage/coverage-prompt.md` · `TOPIC = sql` (logged in `notes/prompts/_internal/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
-| **G3 — PROGRESS accurate** | After **Step 13** closes | `notes/prompts/strategy/tracking/progress-update-prompt.md` (it has a dedicated SQL subagent) | Reconciles the whole SQL section in one pass, catching anything the per-step ritual missed. Must precede G4. |
+| **G3 — PROGRESS accurate** | After **Step 13** closes | `notes/prompts/strategy/tracking/progress-update-prompt.md` · `MODE = active` (its dedicated SQL subagent counts the exercise files in committed history) | Measures the whole `Exercise route` section in one pass, catching anything the per-step ritual missed. **It reports that drift, it does not repair it** — auditor since 2026-08-05: a mismatch is fixed by the section's owner (`sql-exercises MODE = review` §4b, or `sql-step-close` for a `Total` row that no longer adds up), and the gate closes on a **clean drift report**, not on the run happening. Must precede G4. |
 | **G4 — Roadmap resync** | After G3 | `notes/prompts/strategy/tracking/roadmap-review-prompt.md` | The roadmap's SQL gate can only be marked cleared once `PROGRESS.md` says the track is finished. |
 
 **The mandatory revision checkpoints are not gates here — they are the revision points declared in the
@@ -656,7 +656,8 @@ shipping.
       batches are extra and uncounted) — 207 at junior
 - [ ] Every revision point the route §1 declares fired on cadence — no stale open rows in MISTAKES.md
 - [ ] Capstone timed condition met: 3 report queries from prose, under 10 minutes each
-- [ ] progress-update has run — PROGRESS.md SQL section reflects all 14 steps (G3)
+- [ ] progress-update has run **and its SQL drift report came back empty** — the `Exercise route` tables
+      reflect all 14 steps, and anything the report named was repaired by the owner it named (G3)
 - [ ] roadmap-review has run — the SQL gate in ROADMAP.md is marked cleared (G4)
 ```
 

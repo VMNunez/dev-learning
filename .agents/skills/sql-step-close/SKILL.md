@@ -114,9 +114,9 @@ many* lives here. Never re-create it.
 
 ---
 
-## 4 — Did this close the level, or fire a revision point?
+## 4 — Did this close the level, fire a revision point, or make a gate due?
 
-Two checks nothing else in the track performs:
+Three checks nothing else in the track performs:
 
 - **Revision point.** If this step ends a span in `{PLAN}` §1's revision table — the route declares the
   points, doctrine §8b only the cadence — say which point is now due
@@ -125,8 +125,15 @@ Two checks nothing else in the track performs:
 - **Level closed.** If every step in `{PLAN}` §3 now reads `closed ✅`, say so plainly, and name the next
   level's planning run (`/sql-plan middle`) as the door to it. Do not run it, and do not mark anything
   in `ROADMAP.md` — the roadmap is `roadmap-review`'s file.
+- **Gate due.** If the step you just closed is the level's **last** one (Step 13 at junior — the trigger
+  `practice/sql/PLANNING.md` §9 states for gate **G3**), say that G3 is now due and name its run:
+  `/progress-update` · `MODE = active`, whose SQL subagent measures the `Exercise route` tables against
+  the route §1. Say it closes on an **empty drift report** — it audits, it does not repair — and that
+  **G4** (`/roadmap-review`) follows it. **Nothing else in the track announces this gate**: the grader's
+  hand-off in `_sql-exercises-review.md` keys its message on the last *topic*, and steps span topics, so
+  a level whose last step closes on a mid-step topic reaches the end with no gate ever named.
 
-Neither of these is a question, and neither blocks the close.
+None of these is a question, and none blocks the close.
 
 ---
 
@@ -182,5 +189,6 @@ him a second command for it.
 | Doctrina §0 | verificada, `Last updated` corregido |
 | PROGRESS.md | filas `Total` cuadran (29 = 20+9); `Corrected` total en blanco, correcto |
 | Punto de repaso | R1 disponible (span 0–1) — `TOPIC = R1` cuando te apetezca |
+| Gate | ninguno (o: Step 13 cerrado → **G3 toca ya** — `/progress-update MODE = active`, cierra con drift report vacío; luego G4 `/roadmap-review`) |
 | Desbloqueado (§8c) | SELECT/WHERE/ORDER BY + set ops. Una simulación puede pedirte hasta ahí |
 | Nivel | junior sigue abierto — 13 steps por delante |

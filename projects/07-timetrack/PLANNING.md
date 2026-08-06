@@ -1792,7 +1792,7 @@ become accurate — not remembered at the very end. The project is not closed un
 | **G3 — Backend review** | `feat/reports` merges — backend complete (Steps 1–6), **before Step 7 (Angular frontend) starts**. Signed off only when every **High** backend task in `PROJECT-BACKLOG.md` — including the deferred `PATCH /api/entries/{id}/reopen` endpoint — is fixed on `fix/backend-backlog` and merged | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = backend` | Correctness + security on the API **before** the frontend is built against it. Fix the High tasks it writes to `PROJECT-BACKLOG.md` before moving on. |
 | **G4 — Frontend review** | `feat/angular-manager-pages` merges — Steps 7a–7d complete | `review-audit` · `PROJECT_PATH = projects/07-timetrack` · `REVIEW_SCOPE = frontend` | The backend is **not** re-reviewed (its tier is already dated in the backlog), so this costs a fraction of a `full` run. |
 | **G5 — READMEs** | Every **High** task from G3/G4 is fixed and committed | `readme-audit` · `PROJECT_PATH = projects/07-timetrack` | Hard prerequisite of G7: `portfolio-audit` reads the READMEs, so running it first would judge a document that is about to change. |
-| **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | G7 and `cv-prompt` both read `PROGRESS.md`. If it is stale, the portfolio verdict and the CV bullet are built on a wrong picture of what you learned. |
+| **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | G7 and `cv-prompt` both read `PROGRESS.md`. If it is stale, the portfolio verdict and the CV bullet are built on a wrong picture of what you learned. **The gate closes on a clean drift report, not on the run happening**: since 2026-08-05 the prompt writes only `Professional level by topic` and *reports* every other section, so a run that names drift leaves G6 open until the owner it names (`step-complete`, `coverage-mark`, `sql-grade`, `simulation-review`) has repaired it. |
 | **G7 — Portfolio go/no-go** | After G5 **and** G6 | `portfolio-audit` · `PROJECT_PATH = projects/07-timetrack` | The closing gate. Reads `PROJECT-BACKLOG.md` — an unfixed High/Medium from G3/G4 blocks the ✅ Ready verdict. Produces the CV bullet + the project question bank. |
 | **G8 — Roadmap resync** | After G7 returns ✅ Ready | `roadmap-review-prompt` | The project sequence just changed. This is what keeps `ROADMAP.md` from drifting into a stale plan. |
 
@@ -1810,7 +1810,7 @@ The project is never declared finished early — it is closed only when every bo
 - [ ] review-audit REVIEW_SCOPE=backend has run, and every High task it found is fixed (G3)
 - [ ] review-audit REVIEW_SCOPE=frontend has run, and every High task it found is fixed (G4)
 - [ ] readme-audit has run — global + backend + frontend READMEs at standard (G5)
-- [ ] progress-update MODE=active has run — PROGRESS.md reflects this project (G6)
+- [ ] progress-update MODE=active has run **and its drift report came back empty** — anything it named is repaired by the owner it named (G6)
 - [ ] portfolio-audit returns ✅ Ready — no open High/Medium in PROJECT-BACKLOG.md (G7)
 - [ ] roadmap-review has run — ROADMAP.md reflects the new project sequence (G8)
 - [ ] The project branch has been merged into `main` via PR
