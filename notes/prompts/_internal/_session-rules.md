@@ -497,6 +497,10 @@ reference-only: this file and the README outrank it.
 
 ### The two maps follow every change to the machinery
 
+(The platform's `map-sync` skill fires on both triggers below — the change and the whole read — and
+walks every row that mentions the thing that moved, because the observed failure is *partial* compliance.
+These two sections remain the source of truth.)
+
 `notes/prompts/README.md` (the catalogue) and `_internal/_system-map.md` (the wiring) describe the system
 from the outside, and **nothing regenerates them**. A change that lands in a prompt or a skill and not in
 the map leaves a map that is confidently wrong — worse than no map, because it gets read *instead of* the

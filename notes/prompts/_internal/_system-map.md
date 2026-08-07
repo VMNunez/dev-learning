@@ -37,6 +37,11 @@ correction lands in **its own commit** and the verdict is said out loud: `map: v
 `map: corrected — {row}` / `map: not verified — partial read`. It never blocks and never sweeps, so rows
 about prompts nobody opens stay unverified — that gap belongs to a sweep, not to this rule.
 
+**Both triggers are walked by the `map-sync` ritual** (§9), which exists for the same reason
+`step-complete` does: the rules above were already written and the observed failure is *partial*
+compliance — §7 gets corrected while the §9 row, the chain step and the §11 symptom row keep telling the
+old story, leaving the map contradicting itself with no way to tell which half is current.
+
 ---
 
 ## 1 — Two engines, one system
@@ -287,6 +292,7 @@ Every file with more than one potential writer, and who actually owns it.
 | `practice/simulations/TRACKER.md` | `/simulation-generator` (rows) · `/simulation-review` (status) | `/progress-update`, `/simulation-review` |
 | `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit` |
 | `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, and prompts that gate on it |
+| `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** · the `map-sync` ritual, which walks both triggers · never a prompt, never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
 
 ---
 
@@ -313,7 +319,7 @@ and nowhere else; only its *effect* on level, percentage or project status is re
 
 ## 9 — The skills, one row each
 
-All eleven are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
+All twelve are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
 identical file to the other in the same commit.**
 
 | Skill | Fires when | What it writes | Hands off to |
@@ -329,6 +335,7 @@ identical file to the other in the same commit.**
 | `sql-grade` | "corrige el 02" | nothing directly; a **cold subagent** writes `MISTAKES.md`, `PROGRESS.md`, the route, the doctrine §0 | `sql-step-close` on ≥ 80% + last file |
 | `sql-step-close` | a step's last file scores ≥ 80% | `✅ sql:{file-slug}` drill markers on coverage + mirror · §0 verify · `Total` arithmetic · the §8c unlocked line | names the due gate / revision point |
 | `sql-block-close` | the block ends | `MISTAKES.md` `## Fricción` only | — |
+| `map-sync` | machinery changed **or** a prompt / `SKILL.md` was read whole | the rows about *that* file in `README.md` and this map — every one of them, not the first that comes to mind · nothing else | — |
 
 **Rituals ask zero questions.** That is a design rule, not a style: a manual gate in the middle of a
 mechanical ritual is how the ritual stops being run. A step that cannot close is *reported* and left
@@ -380,3 +387,4 @@ The things a run leaves behind that are easy to miss.
 | the SQL route ran out of steps | `/sql-plan-audit` (extends), or `/sql-plan {next level}` |
 | a project is built but never reviewed | `/readme-audit` → `/review-audit` → `/portfolio-audit` |
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
+| a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |
