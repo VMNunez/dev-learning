@@ -456,15 +456,26 @@ $mapPath = Join-Path $promptRoot '_internal\_system-map.md'
 $mapText = [System.IO.File]::ReadAllText($mapPath)
 $readmeText = [System.IO.File]::ReadAllText((Join-Path $promptRoot 'README.md'))
 
+$diskSkills = @()
 $skillSection = [regex]::Match($mapText, '(?sm)^##\s*9\b.*?(?=^##\s*10\b)')
 if (-not $skillSection.Success) {
     Add-ValidationError '_system-map.md has no section 9 (the skills registry) to check the skill directories against.'
 } else {
+    # The name is the first backticked token in the row, wherever the row puts it.
+    # Anchoring it to column 1 meant that adding a column to the table - an ordinary
+    # editorial act - reported all twelve skills as missing while every row was present.
     $mapSkills = @(
-        [regex]::Matches($skillSection.Value, '(?m)^\|\s*`(?<name>[a-z0-9-]+)`\s*\|') |
+        [regex]::Matches($skillSection.Value, '(?m)^\|.*$') |
+            ForEach-Object { [regex]::Match($_.Value, '`(?<name>[a-z0-9-]+)`') } |
+            Where-Object { $_.Success } |
             ForEach-Object { $_.Groups['name'].Value }
     )
+    # .agents parity is invariant 1's job: it fails on any skill present in one adapter
+    # and not the other, so reading .claude alone here cannot hide an .agents-only
+    # directory. Weakening invariant 1 would silently open that hole.
     $diskSkills = @(Get-ChildItem -LiteralPath $claudeSkills -Directory | Select-Object -ExpandProperty Name)
+    # -SyncWindow is left at its default, which is already [int]::MaxValue; the coverage
+    # mirror sets it explicitly. Both are correct - do not "reconcile" them by guessing.
     foreach ($drift in @(Compare-Object -ReferenceObject @($mapSkills | Sort-Object) -DifferenceObject @($diskSkills | Sort-Object) -CaseSensitive)) {
         if ($drift.SideIndicator -eq '=>') {
             Add-ValidationError "Skill '$($drift.InputObject)' exists on disk but has no row in _system-map.md section 9."
@@ -478,7 +489,9 @@ if (-not $skillSection.Success) {
     $numberWords = @('zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
         'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
         'eighteen', 'nineteen', 'twenty')
-    $countClaim = [regex]::Match($skillSection.Value, '(?m)^All\s+(?<word>[a-z]+)\s+are mirrored')
+    # The number may be emphasised - _system-map.md bolds most of its load-bearing words -
+    # and a cosmetic `All **twelve**` must not read as "the count sentence is gone".
+    $countClaim = [regex]::Match($skillSection.Value, '(?m)^All\s+[*_]{0,2}(?<word>[a-z]+)[*_]{0,2}\s+are mirrored')
     if (-not $countClaim.Success) {
         Add-ValidationError '_system-map.md section 9 no longer states how many skills are mirrored.'
     } elseif ($diskSkills.Count -ge $numberWords.Count -or $countClaim.Groups['word'].Value -ne $numberWords[$diskSkills.Count]) {
@@ -486,15 +499,36 @@ if (-not $skillSection.Success) {
     }
 }
 
+# The slash command is the launcher's own filename, never the prompt name minus its
+# suffix. Guessing it is wrong for `code-review-prompt`, which launches deliberately as
+# `/code-review-practice` because `/code-review` is Claude Code's own built-in command.
+$launcherCommands = @{}
+foreach ($claudeLauncher in $claudeLaunchers) {
+    $launcherTarget = [regex]::Match(
+        [System.IO.File]::ReadAllText($claudeLauncher.FullName),
+        'notes/prompts/(?![A-Za-z0-9_./-]*_internal/)[A-Za-z0-9_./-]+\.md'
+    )
+    if ($launcherTarget.Success) {
+        $launcherCommands[[System.IO.Path]::GetFileName($launcherTarget.Value)] = $claudeLauncher.BaseName
+    }
+}
+
 foreach ($prompt in $runnable) {
     $stem = [System.IO.Path]::GetFileNameWithoutExtension($prompt.Name)
-    $command = $stem -replace '-prompt$', ''
+    $command = if ($launcherCommands.ContainsKey($prompt.Name)) { $launcherCommands[$prompt.Name] } else { $stem -replace '-prompt$', '' }
     # Either form counts as being on the map: the file's own name, or its slash command,
     # which is how the chain sections in 3-6 refer to a prompt.
-    if ($mapText -notmatch [regex]::Escape($stem) -and $mapText -notmatch "/$([regex]::Escape($command))\b") {
+    # Both tests are BOUNDED and CASE-SENSITIVE, and both had to be. A bare substring
+    # test let `sql-plan-audit` satisfy `plan-audit`, so every mention of the prompt that
+    # plans a project could leave both maps unnoticed; and -notmatch is case-insensitive
+    # by default, so `/tracker` was satisfied by the path `practice/simulations/TRACKER.md`
+    # in a different section - the same blindness the coverage mirror was caught with.
+    $bounded = "(?<![A-Za-z0-9-])$([regex]::Escape($stem))(?![A-Za-z0-9-])"
+    $boundedCommand = "/$([regex]::Escape($command))(?![A-Za-z0-9-])"
+    if ($mapText -cnotmatch $bounded -and $mapText -cnotmatch $boundedCommand) {
         Add-ValidationError "Runnable prompt '$stem' is named nowhere in _system-map.md."
     }
-    if ($readmeText -notmatch [regex]::Escape($prompt.Name)) {
+    if ($readmeText -cnotmatch "(?<![A-Za-z0-9-])$([regex]::Escape($prompt.Name))") {
         Add-ValidationError "Runnable prompt '$($prompt.Name)' has no entry in README.md."
     }
 }
@@ -551,7 +585,7 @@ Write-Output 'PASS: thin session adapters share one rules source'
 Write-Output "PASS: path references resolve ($($referenceScan.Count) files scanned, both path forms)"
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 Write-Output "PASS: coverage mirror parity ($($topicCoverageRoots.Count) topics x $($coverageLevels.Count) levels)"
-Write-Output "PASS: both maps know the machinery exists ($($claudeManifest.Count) skills, $expectedRunnableCount prompts registered)"
+Write-Output "PASS: both maps know the machinery exists ($($diskSkills.Count) skills, $expectedRunnableCount prompts registered)"
 if ($fingerprintReports.Count -eq 0) {
     Write-Output 'PASS: every notes plan agrees with its coverage fingerprint'
 } else {
