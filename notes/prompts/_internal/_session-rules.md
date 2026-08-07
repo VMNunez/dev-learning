@@ -525,6 +525,50 @@ or which prompts and skills exist?*
 then describe it. When the two disagree afterwards, the machinery wins and the map is the bug — the map
 never gets to be right by being edited.
 
+### The map is also verified on read, not only on write
+
+The rule above fires on a **change**, which leaves the map's largest failure mode uncovered: a cell that
+was true the day it was written, has not been edited since, and is quietly false today. Nothing changed,
+so nothing triggered a check, and the map rots precisely in the corners nobody is currently working on.
+So it has a second trigger, and it is a **read**.
+
+**Trigger — any prompt or `SKILL.md` read whole, in any session, for any reason.** Reading the file
+end-to-end is the entire cost of verifying what the map claims about it, and at that point it is already
+paid for. What remains is one comparison against rows you can already see.
+
+**What a read licenses a ruling on — and nothing past it:**
+
+| Read whole | May rule on |
+|---|---|
+| `{name}-prompt.md` | its `▶ Run first`, and every row about *it*: §7 `Written by` / `Read by`, its step in §3–§6, its §10 debt, its §11 symptom row |
+| a `SKILL.md` | its §9 row end to end (fires when · what it writes · hands off to), plus its cells in §7 |
+| a standard or other `_internal/` file | the §7 row for the file it governs |
+
+Never the rest of the map. A chain's *order*, §8's `PROGRESS.md` ownership and §1's two-engine
+properties are claims about several files at once, and a single file cannot falsify them.
+
+**A partial read rules on a contradiction, never on an absence.** If the section in front of you says
+the prompt writes a file the map does not list, the map is wrong and you fix it — a positive
+contradiction is valid evidence from any slice. If you merely did not *see* the write, you have found
+nothing; you read part of a file.
+
+**Direction is fixed: the machinery wins.** The map is derived, so a disagreement is always the map's
+bug. Never edit a prompt to match the map, and never "reconcile" the two into something neither said.
+
+**Say the verdict out loud**, in the same breath as the work — same discipline as `maps unaffected`, and
+for the same reason: afterwards a skip and a genuine no-op are indistinguishable.
+
+- `map: verified — {rows}` — checked against what was read, and correct.
+- `map: corrected — {row}` — fixed, in **its own commit**, never folded into the work that found it. A
+  map fix buried in a ledger item's commit hides both, and makes the item look more expensive than it was.
+- `map: not verified — partial read` — the honest default, and not a failure.
+
+**It never blocks and it never sweeps.** A verification that stops the work stops being run — the
+zero-questions rule that skills are built on, applied to the map. And it only ever reaches files a
+session happened to open: rows about prompts nobody runs stay unverified, and this rule cannot say which
+ones those are. Closing *that* gap is `/system-check`'s job and the whole-system review's, never this
+one's.
+
 The system is built — **run the prompts, don't keep editing them.** If you feel the urge to polish
 the machinery, take it as the signal to go use it instead.
 

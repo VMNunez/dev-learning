@@ -28,6 +28,15 @@ the change**. On a no, the run says `maps unaffected` out loud. Both self-report
 (`_pipeline-self-report.md`, `_single-shot-self-report.md`) and the recommendation ledger point at that
 rule from their own commit flows, because those are the three places the machinery actually gets edited.
 
+**And by a second rule with the opposite trigger** — `_session-rules.md` → **"The map is also verified on
+read, not only on write"**. A change-triggered rule cannot catch the cell that was true when it was
+written and rotted with nothing being edited, so any prompt or `SKILL.md` read **whole** licenses a
+ruling on the rows about *that* file (§7, its §9 row, its chain step, its §10 debt, its §11 symptom row)
+— never on a chain's order, §8's ownership or §1's properties, which no single file can falsify. A
+correction lands in **its own commit** and the verdict is said out loud: `map: verified — {rows}` /
+`map: corrected — {row}` / `map: not verified — partial read`. It never blocks and never sweeps, so rows
+about prompts nobody opens stay unverified — that gap belongs to a sweep, not to this rule.
+
 ---
 
 ## 1 — Two engines, one system
