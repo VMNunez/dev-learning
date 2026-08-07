@@ -199,8 +199,8 @@ foreach ($requiredTrackerContract in @('## Notes file executions', '## Single-sh
 # --- Invariant 4: no file points at a path that is not there -----------------
 # Two path forms are both legitimate and both must resolve: repository-relative,
 # and relative to notes/prompts/ (which is how README.md writes every prompt).
-# Checking only the first form left README.md — the one file whose whole job is
-# to inventory the others — structurally unverifiable, and it carried 30 paths
+# Checking only the first form left README.md - the one file whose whole job is
+# to inventory the others - structurally unverifiable, and it carried 30 paths
 # stranded by the 2026-07-22 _internal/ reorg while the validator stayed green.
 $referencePathPattern = '(?<![A-Za-z0-9_./-])(notes|practice|projects|personal|knowledge|strategy)/[A-Za-z0-9_./{}-]+\.(md|ps1|sql)'
 
@@ -209,8 +209,10 @@ $referencePathPattern = '(?<![A-Za-z0-9_./-])(notes|practice|projects|personal|k
 $declaredOutputPatterns = @(
     '^notes/cv/cv-bullets\.md$'                       # portfolio-audit
     '^notes/interview-prep/(hr-screen|SESSION-LOG)\.md$'  # hr-screen, simulator
-    '^practice/sql/(junior|middle|senior)/.+\.sql$'    # sql-exercises
-    '^practice/simulations/[a-z-]+/[0-9]{2}-.+\.md$'   # simulation-generator
+    # Both bounded to the real filename shape: an unbounded `.+` swallowed a typo or a rename in the
+    # very file names the SQL track resolves "the current exercise file" by.
+    '^practice/sql/(junior|middle|senior)/([0-9]{2}|R[1-9])-[a-z0-9-]+\.sql$'  # sql-exercises
+    '^practice/simulations/[a-z-]+/[0-9]{2}-[a-z0-9-]+\.md$'                   # simulation-generator
 )
 # Deliberately outside the repository; _external-path-preflight.md governs these.
 $externalPathPatterns = @('^personal/')
@@ -237,7 +239,9 @@ foreach ($file in $referenceScan) {
     foreach ($match in [regex]::Matches($text, $referencePathPattern)) {
         $reference = $match.Value
         # Placeholders: a template stands for a path, it is not one.
-        if ($reference -match '[{}]|0X|NN-|\.\.\.') { continue }
+        # `-...` is the only elision form on disk (practice/sql/{middle,senior}/01-....sql). A bare
+        # `...` anywhere in a path suppressed real dead references such as `.../en/...nope.md`.
+        if ($reference -cmatch '[{}]|0X|NN-|-\.\.\.') { continue }
         if ([System.IO.Path]::GetFileName($reference) -like '_last-run-report*') { continue }
         if ($declaredOutputPatterns | Where-Object { $reference -match $_ }) { continue }
         if ($externalPathPatterns | Where-Object { $reference -match $_ }) { continue }
@@ -323,7 +327,9 @@ foreach ($level in $coverageLevels) {
         }
         $topicRows = @([System.IO.File]::ReadAllLines($topicFile) | Where-Object { $_ -like '- *' })
         $mirrorRows = @($sectionBullets[$topic.Name])
-        $drift = @(Compare-Object -ReferenceObject $topicRows -DifferenceObject $mirrorRows -SyncWindow ([int]::MaxValue))
+        # -CaseSensitive: Compare-Object is case-insensitive by default, so without it a bullet
+        # differing only in capitalisation reads as identical and the mirror diverges in silence.
+        $drift = @(Compare-Object -ReferenceObject $topicRows -DifferenceObject $mirrorRows -CaseSensitive -SyncWindow ([int]::MaxValue))
         if ($drift.Count -gt 0) {
             $onlyTopic = @($drift | Where-Object { $_.SideIndicator -eq '<=' }).Count
             $onlyMirror = @($drift | Where-Object { $_.SideIndicator -eq '=>' }).Count
@@ -376,16 +382,64 @@ foreach ($topic in $topicCoverageRoots) {
             Add-ValidationError "Notes plan lacks a 'Plan status: current|stale' line: $planName."
             continue
         }
-        $matches = $storedMatch.Groups['sha'].Value -eq (Get-CoverageDigest $coveragePath)
+        # The digest is computed from the plan's location, never from its `Coverage:` line, so a wrong
+        # header would fingerprint one file while naming another.
+        $coverageMatch = [regex]::Match($planText, '(?m)^Coverage:\s*(?<path>\S+)\s*$')
+        $expectedCoverage = "notes/$($topic.Name)/coverage/$level.md"
+        if (-not $coverageMatch.Success -or $coverageMatch.Groups['path'].Value -ne $expectedCoverage) {
+            Add-ValidationError "Notes plan declares Coverage '$($coverageMatch.Groups['path'].Value)' but is fingerprinted against '$expectedCoverage': $planName."
+            continue
+        }
+        # Not $matches: that name shadows PowerShell's automatic regex-capture variable.
+        $digestAgrees = $storedMatch.Groups['sha'].Value -eq (Get-CoverageDigest $coveragePath)
         $status = $statusMatch.Groups['status'].Value
-        if ($status -eq 'current' -and -not $matches) {
+        if ($status -eq 'current' -and -not $digestAgrees) {
             # Hard failure: notes-audit runs against this plan on the strength of
             # the word `current`, and the scope it was mapped against has moved.
             Add-ValidationError "Notes plan claims 'current' but its Coverage SHA-256 no longer matches its coverage file: $planName."
-        } elseif ($status -eq 'stale' -and $matches) {
+        } elseif ($status -eq 'stale' -and $digestAgrees) {
             # Not a failure: the flag may be owed to something other than the
             # fingerprint, and clearing it here would be the forbidden repair.
             $fingerprintReports.Add("$planName is flagged stale while its Coverage SHA-256 matches its coverage file.")
+        }
+    }
+}
+
+# The same `Coverage SHA-256` contract lives in two shapes the loop above cannot reach.
+foreach ($routePlan in Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'practice\sql') -Recurse -File -Filter 'PLANNING-*.md') {
+    $routeName = $routePlan.FullName.Substring($RepositoryRoot.Length + 1).Replace('\', '/')
+    $routeText = [System.IO.File]::ReadAllText($routePlan.FullName)
+    $routeCoverage = [regex]::Match($routeText, '(?m)^Coverage:\s*(?<path>\S+)\s*$')
+    $routeSha = [regex]::Match($routeText, '(?m)^Coverage SHA-256:\s*(?<sha>[0-9a-f]{64})\s*$')
+    $routeStatus = [regex]::Match($routeText, '(?m)^Plan status:\s*(?<status>current|stale)\s*$')
+    if (-not ($routeCoverage.Success -and $routeSha.Success -and $routeStatus.Success)) {
+        Add-ValidationError "SQL route plan lacks Coverage / Coverage SHA-256 / Plan status: $routeName."
+        continue
+    }
+    $routeDigest = Get-CoverageDigest (Join-Path $RepositoryRoot $routeCoverage.Groups['path'].Value.Replace('/', '\'))
+    if ($routeStatus.Groups['status'].Value -eq 'current' -and $routeSha.Groups['sha'].Value -ne $routeDigest) {
+        Add-ValidationError "SQL route plan claims 'current' but its Coverage SHA-256 no longer matches its coverage file: $routeName."
+    }
+}
+
+# `superseded` is the schema's own word for "the digest moved" (`coverage-verify-prompt.md`). Claiming
+# `complete` against a moved digest is the same assertion as `Plan status: current` against one, so it
+# reports rather than repairs - only the owning prompt may re-verify.
+foreach ($topic in $topicCoverageRoots) {
+    foreach ($level in $coverageLevels) {
+        $verifyPath = Join-Path $topic.FullName "coverage\verify-$level.md"
+        if (-not (Test-Path -LiteralPath $verifyPath -PathType Leaf)) { continue }
+        $verifyName = "notes/$($topic.Name)/coverage/verify-$level.md"
+        $verifyText = [System.IO.File]::ReadAllText($verifyPath)
+        $verifyVerdict = [regex]::Match($verifyText, '(?m)^Verdict:\s*(?<verdict>complete|gaps|superseded)\s*$')
+        $verifySha = [regex]::Match($verifyText, '(?m)^Coverage SHA-256:\s*(?<sha>[0-9a-f]{64})\s*$')
+        if (-not ($verifyVerdict.Success -and $verifySha.Success)) {
+            Add-ValidationError "Coverage verification lacks a 'Verdict:' or a 64-character Coverage SHA-256: $verifyName."
+            continue
+        }
+        if ($verifyVerdict.Groups['verdict'].Value -ne 'superseded' -and
+            $verifySha.Groups['sha'].Value -ne (Get-CoverageDigest (Join-Path $topic.FullName "coverage\$level.md"))) {
+            $fingerprintReports.Add("$verifyName claims '$($verifyVerdict.Groups['verdict'].Value)' while its Coverage SHA-256 no longer matches its coverage file - the schema's word for that state is 'superseded'.")
         }
     }
 }

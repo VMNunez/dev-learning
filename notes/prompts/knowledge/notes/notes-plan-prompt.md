@@ -227,10 +227,10 @@ dispatched or fails twice, stop; there is no single-agent fallback.
 ## Required plan format
 
 ```markdown
-# Angular Junior Notes Plan
+# Java Junior Notes Plan
 
 Plan status: current
-Coverage: notes/angular/coverage/junior.md
+Coverage: notes/java/coverage/junior.md
 Coverage SHA-256: <digest>
 Generated: YYYY-MM-DD
 
