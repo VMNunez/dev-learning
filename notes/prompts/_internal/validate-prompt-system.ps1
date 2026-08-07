@@ -501,7 +501,8 @@ if (-not $skillSection.Success) {
 
 # The slash command is the launcher's own filename, never the prompt name minus its
 # suffix. Guessing it is wrong for `code-review-prompt`, which launches deliberately as
-# `/code-review-practice` because `/code-review` is Claude Code's own built-in command.
+# `/code-review-practice` because the host agent's own diff review already owns
+# `/code-review` - true of both adapters, see README.md "The 28 runnable prompts".
 $launcherCommands = @{}
 foreach ($claudeLauncher in $claudeLaunchers) {
     $launcherTarget = [regex]::Match(

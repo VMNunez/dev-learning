@@ -93,7 +93,21 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 28 runnable prompts — each with a slash command of the same name
+### The 28 runnable prompts — each with its own slash command
+
+**The command is the prompt's filename minus the `-prompt` suffix** — `coverage-prompt` → `/coverage`,
+`progress-update-prompt` → `/progress-update`. Twenty of the 28 work that way; seven files carry no
+`-prompt` suffix at all — the `*-audit.md` orchestrators — so their command *is* the filename
+(`/review-audit`). That is a *filename* glob and not a command one: `/coverage-audit` also ends in
+`-audit` and its file is `coverage-audit-prompt.md`, a suffix-drop like the other nineteen. **One
+deliberate exception, and it must not be "repaired":** `code-review-prompt` launches as
+**`/code-review-practice`**, because `/code-review` is the host agent's own built-in diff review —
+renaming it back re-collides with that command, and both launcher files state the reason in their own
+rules block. So the rule above describes the naming, it never derives it: **a prompt's slash command is
+read from its launcher's own filename**, and both catalogs are held to identical filenames, so
+`.claude/commands/` and `.codex/commands/` give the same answer. `validate-prompt-system.ps1` reads it
+that way, and falls back to dropping the suffix only for a prompt with no launcher at all — a state its
+own catalog check already fails on.
 
 | Group | Prompts |
 |---|---|
