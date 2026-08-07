@@ -101,6 +101,7 @@ the agent only prints the commands. Full rule in `_session-rules.md`.
   C. SQL             └──► /sql-plan ─► PLANNING-{LEVEL}.md              D. APPLY   /cv · /linkedin
                               ▲              │                                     /cover-letter
                      /sql-plan-audit    sql-block-open                              /tracker
+                                                                                    /profile-readme
                                              │                                          │
                           /sql-exercises ─► sql-grade ─► sql-step-close ─► drill markers │
                                              │                    │                      ▼
@@ -260,8 +261,14 @@ per offer: **`/cv tailor`** + **`/cover-letter`** → **`/tracker log`** → out
 
 That is the only closed loop in the system: what the market rejects you for becomes coverage scope.
 
-The apply prompts write **outside the repo**, into `personal/job-search/` — never committed, so their
-close-out checks the file's **mtime is from this run**, not merely that it exists.
+**`/profile-readme`** sits beside that line rather than on it — `sync` (fact deltas only) or `optimize`
+(a full re-evaluation against the job target) for the GitHub profile README, which lives in the separate
+`dev/portfolio/VMNunez` repo. `/portfolio-audit` writes that same README, but only on a ✅ Ready verdict,
+so the file has **two writers on different triggers** and §7 records both.
+
+The apply prompts write **outside the repo** — into `personal/job-search/`, and for `/profile-readme`
+into the separate portfolio repo — never committed from here, so their close-out checks the file's
+**mtime is from this run**, not merely that it exists.
 
 ---
 
@@ -284,6 +291,7 @@ Every file with more than one potential writer, and who actually owns it.
 | `{project}/README.md` (+ backend/frontend) | `/readme-audit` (whole file) · `readme-concept-add` (one entry) | `/portfolio-audit`, recruiters |
 | `{project}/PROJECT-BACKLOG.md` | `/review-audit` (tasks) · `backlog-task-open` (`⏸ Deferred`) · `backlog-task-close` (`## Closed`) | `/portfolio-audit` (open High/Medium block the verdict), every session start |
 | `notes/cv/cv-bullets.md` | `/portfolio-audit` | `/cv` |
+| `dev/portfolio/VMNunez/README.md` (**separate repo**, never committed from here) | `/profile-readme` (`sync` / `optimize`) · `/portfolio-audit` on a ✅ Ready verdict — two writers, two triggers | recruiters; the profile repo's own adapter carries the gap list |
 | `practice/sql/PLANNING.md` (doctrine) | `/sql-plan-audit` · the grader's §0 rewrite · `sql-step-close` (§0 verify) · `/sql-plan` did the one-time split that created it | every SQL prompt and skill |
 | `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` | any coverage run · `coverage-bullet-add` (a concept another topic owns) | `/coverage` (its own heading, Step 1) · `/coverage-audit` (all headings) |
 | `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (route) | `/sql-plan` (creates) · `/sql-plan-audit` (extends) · `sql-grade`'s subagent (counts/status) | `/sql-exercises`, `sql-block-open`, `/simulation-generator` |
