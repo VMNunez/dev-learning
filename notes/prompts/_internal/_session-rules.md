@@ -10,7 +10,7 @@ that is reference-only lives in its own file and is linked from here.
 
 - **Explain before any code** — never hand over full code unprompted (classes, methods, config, even a dependency snippet). Concept first, let Victor try; give the code at once if he explicitly asks for it.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
-- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill, never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **The boundary is authorship, not folder: anything Victor produces himself — project code, and everything under `practice/` (SQL exercises, simulations, leetcode) — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery the agent writes (notes, prompts, skills, commands, session rules, tracking docs), never his work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
+- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill, never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `ROADMAP.md` (granted 2026-07-09 to the `roadmap-review` orchestrator alone, and **conditionally**: only when both its reviewers finished and every fix landed cleanly — anything uncertain and it prints the command instead), `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **The boundary is authorship, not folder: anything Victor produces himself — project code, and everything under `practice/` (SQL exercises, simulations, leetcode) — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery the agent writes (notes, prompts, skills, commands, session rules, tracking docs), never his work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
 - **A skill edited in one adapter is edited in both** — `.claude/skills/` and `.agents/skills/` are mirrors of the same file, read by Claude Code and Codex respectively, and neither is the source of truth. Writing or changing a `SKILL.md` means writing the identical file to the other adapter in the **same commit**; adding a new skill means creating it in both. They drifted silently between 2026-07-30 and 2026-08-01 because only the Claude copy was edited, which left Codex running a ritual two revisions old — a mirror that is stale is worse than one that is missing, because nothing announces it. Verify before committing: `diff` the pair for every skill touched. (Launchers are *not* mirrored: `.claude/commands/` and `.codex/commands/` are genuinely platform-specific.)
 - **A change to the machinery is not finished until the two maps are checked** — `notes/prompts/README.md` and `_internal/_system-map.md` are hand-written and nothing regenerates them, so a prompt or skill edit that changes what a file contains, who writes it, when something runs, or which prompts and skills exist carries its map edit **in the same commit**; a change that affects neither is reported as "maps unaffected" out loud, never silently. Full test and the which-map table → "The two maps follow every change to the machinery" under The study system below.
 - **Never redirect** — don't comment on time spent or push Victor to "move on"; he decides what to work on.
@@ -544,17 +544,20 @@ paid for. What remains is one comparison against rows you can already see.
 
 | Read whole | May rule on |
 |---|---|
-| `{name}-prompt.md` | its `▶ Run first`, and every row about *it*: §7 `Written by` / `Read by`, its step in §3–§6, its §10 debt, its §11 symptom row |
-| a `SKILL.md` | its §9 row end to end (fires when · what it writes · hands off to), plus its cells in §7 |
-| a standard or other `_internal/` file | the §7 row for the file it governs |
+| `{name}-prompt.md` | §7 `Written by` / `Read by` for the files it touches, its step in §3–§6, its §10 debt, its §11 symptom row — **and in `README.md`**, its catalogue row's *reads* / *generates* cells and its prerequisite as "How the prompts feed each other" states it. **Not §9**, which is skills only |
+| a `SKILL.md` | its §9 row end to end (fires when · what it writes · hands off to), plus its cells in §7. **Not a chain step, a §10 debt or a §11 row** — a skill read cannot falsify those |
+| a standard or other `_internal/` file | the §7 row for the file it governs, **only where the standard states that ownership itself** — never the writer *list*, which names five writers for some files and is therefore a claim about all of them |
 
-Never the rest of the map. A chain's *order*, §8's `PROGRESS.md` ownership and §1's two-engine
-properties are claims about several files at once, and a single file cannot falsify them.
+The two licences are different on purpose and must not be merged into one list: §9 is skills-only, and
+the chain steps, debts and symptom rows belong to prompts. Never the rest of the map either — a chain's
+*order*, §8's `PROGRESS.md` ownership and §1's two-engine properties are claims about several files at
+once, and a single file cannot falsify them.
 
-**A partial read rules on a contradiction, never on an absence.** If the section in front of you says
-the prompt writes a file the map does not list, the map is wrong and you fix it — a positive
-contradiction is valid evidence from any slice. If you merely did not *see* the write, you have found
-nothing; you read part of a file.
+**A read of any depth rules on a contradiction; only a whole read rules on an absence.** If the section
+in front of you says the prompt writes a file the map does not list, the map is wrong and you fix it — a
+positive contradiction survives any slice, **including against §8 and §1**, which even a whole read may
+not touch. Not having *seen* the write is evidence of nothing: an absence is a finding only after a read
+to EOF, and only inside the rows licensed above.
 
 **Direction is fixed: the machinery wins.** The map is derived, so a disagreement is always the map's
 bug. Never edit a prompt to match the map, and never "reconcile" the two into something neither said.
@@ -570,8 +573,9 @@ for the same reason: afterwards a skip and a genuine no-op are indistinguishable
 **It never blocks and it never sweeps.** A verification that stops the work stops being run — the
 zero-questions rule that skills are built on, applied to the map. And it only ever reaches files a
 session happened to open: rows about prompts nobody runs stay unverified, and this rule cannot say which
-ones those are. Closing *that* gap is `/system-check`'s job and the whole-system review's, never this
-one's.
+ones those are. Closing *that* gap needs a sweep this rule is not — `REC-056`'s proposed `/system-check`
+and the whole-system review of `REC-054`. **Neither exists yet**, so that gap is simply open; do not
+write it as though it had an owner.
 
 The system is built — **run the prompts, don't keep editing them.** If you feel the urge to polish
 the machinery, take it as the signal to go use it instead.

@@ -10,9 +10,10 @@ description: >
   failure mode this exists for is a map that is confidently wrong — read *instead of* the file it
   describes. Partial compliance is the specific defect: §7 gets updated and the §9 row, the chain step
   and the §11 symptom row keep the old story. It rules only on the rows about the file in front of it,
-  never on a chain's order or §8's ownership, and it never edits a prompt to match a map. Do NOT trigger
-  on a partial read, on edits to project code, notes prose or `PLANNING.md`, or inside a prompt pipeline
-  run — those carry the two-map test in their own self-report contract.
+  never on a chain's order or §8's ownership, and it never edits a prompt to match a map. **A read of any
+  depth fires it on a positive contradiction; only a whole read fires it on an absence.** Do NOT trigger
+  on edits to project code, notes prose or `PLANNING.md`, or inside a prompt pipeline run — those carry
+  both map tests in their own self-report contract.
 ---
 
 # Map sync — the two maps follow the machinery
@@ -35,9 +36,11 @@ They license different scopes, so name the trigger out loud before touching anyt
 - **A whole read** — a prompt or `SKILL.md` was read end to end for some other reason. Go to step 2.
   The correction lands in **its own commit**, never folded into the work that found it.
 
-**A partial read fires nothing**, with one exception: a positive contradiction. If the section in front
-of you says the prompt writes a file the map does not list, the map is wrong and you fix it — a
-contradiction is valid evidence from any slice. Not having *seen* the write is not evidence of anything.
+**A read of any depth rules on a contradiction; only a whole read rules on an absence.** If the section
+in front of you says the prompt writes a file the map does not list, the map is wrong and you fix it — a
+positive contradiction survives any slice, **including against §8 and §1**, which a whole read may not
+touch. Not having *seen* the write is evidence of nothing: an absence is a finding only after a read to
+EOF, and only inside the rows step 2 licenses.
 
 ## 1 — Change path: run the test, then walk the rows
 
@@ -79,9 +82,9 @@ time this fires it is already paid for. What is left is one comparison.
 
 | Read whole | May rule on |
 |---|---|
-| `{name}-prompt.md` | its `▶ Run first` · §7 `Written by` / `Read by` for every file it touches · its step in §3–§6 · its §10 debt · its §11 symptom row · its `README.md` catalogue entry (reads / generates) |
-| a `SKILL.md` | its §9 row end to end (fires when · what it writes · hands off to) · its cells in §7 |
-| a standard or other `_internal/` file | the §7 row for the file it governs |
+| `{name}-prompt.md` | §7 `Written by` / `Read by` for every file it touches · its step in §3–§6 · its §10 debt · its §11 symptom row · **and in `README.md`**, its catalogue row's *reads* / *generates* cells and its prerequisite as "How the prompts feed each other" states it. **Not §9** — that section is skills only |
+| a `SKILL.md` | its §9 row end to end (fires when · what it writes · hands off to) · its cells in §7. **Not a chain step, not a §10 debt, not a §11 row** |
+| a standard or other `_internal/` file | the §7 row for the file it governs, **only where the standard states that ownership itself** (the way `notes-plan-{LEVEL}.md` is declared `/notes-plan`'s alone) — never the writer *list*, which names five writers for some files and is therefore a claim about all of them |
 
 **Never the rest of the map.** A chain's *order*, §8's `PROGRESS.md` ownership section by section, and
 §1's two-engine properties are claims about several files at once, and one file cannot falsify them.
@@ -122,9 +125,10 @@ Always close with the verdict, in this vocabulary — it is what makes a skip vi
 ## What this ritual cannot do
 
 **It never sweeps.** It only ever reaches the files a session happened to open or edit, so rows about
-prompts nobody runs stay unverified — and it cannot tell you which ones those are. Closing that gap is a
-full sweep's job (`/system-check`, and the whole-system review), never this one's. Say so rather than
-letting a `map: verified` be read as a freshness guarantee for the map as a whole.
+prompts nobody runs stay unverified — and it cannot tell you which ones those are. Closing that gap needs
+a sweep this ritual is not: `REC-056`'s proposed `/system-check` and the whole-system review of
+`REC-054`. **Neither exists yet** — until one does, that gap is simply open, and it must not be described
+as owned. Say so rather than letting a `map: verified` be read as a freshness guarantee for the whole map.
 
 **It never blocks.** A verification that stops the work stops being run — the zero-questions rule every
 skill is built on, applied to the maps. A row you cannot rule on is reported and left alone.

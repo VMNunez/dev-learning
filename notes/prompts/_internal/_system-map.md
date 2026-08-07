@@ -30,12 +30,17 @@ rule from their own commit flows, because those are the three places the machine
 
 **And by a second rule with the opposite trigger** — `_session-rules.md` → **"The map is also verified on
 read, not only on write"**. A change-triggered rule cannot catch the cell that was true when it was
-written and rotted with nothing being edited, so any prompt or `SKILL.md` read **whole** licenses a
-ruling on the rows about *that* file (§7, its §9 row, its chain step, its §10 debt, its §11 symptom row)
-— never on a chain's order, §8's ownership or §1's properties, which no single file can falsify. A
-correction lands in **its own commit** and the verdict is said out loud: `map: verified — {rows}` /
-`map: corrected — {row}` / `map: not verified — partial read`. It never blocks and never sweeps, so rows
-about prompts nobody opens stay unverified — that gap belongs to a sweep, not to this rule.
+written and rotted with nothing being edited, so a file read **whole** licenses a ruling on the rows
+about *that* file — and the licence differs by kind, so never merge the two: **a prompt** gets §7, its
+§3–§6 step, its §10 debt, its §11 symptom row and its `README.md` catalogue cells, but **not §9**, which
+is skills only; **a `SKILL.md`** gets its §9 row and its §7 cells, but **not** a chain step, a debt or a
+symptom row; **a standard** gets the §7 row for the file it governs only where it states that ownership
+itself. Never a chain's order, §8's ownership or §1's properties, which no single file can falsify. A
+read of any depth rules on a **contradiction**; only a whole read rules on an absence. A correction lands
+in **its own commit** and the verdict is said out loud: `map: verified — {rows}` / `map: corrected —
+{row}` / `map: not verified — partial read`. It never blocks and never sweeps, so rows about prompts
+nobody opens stay unverified — a gap that needs a sweep nobody has built yet (`REC-056`, `REC-054`), not
+one this rule can be read as covering.
 
 **Both triggers are walked by the `map-sync` ritual** (§9), which exists for the same reason
 `step-complete` does: the rules above were already written and the observed failure is *partial*
@@ -67,9 +72,11 @@ curriculum.
 **The commit boundary is authorship, not folder.** Machinery the agent writes commits itself
 (`notes/`, `notes/prompts/`, skills and commands, **the session-rule files themselves**, `PROGRESS.md`,
 any `PLANNING.md` / `README.md` / `PROJECT-BACKLOG.md`, `projects/briefs/`, `practice/sql/MISTAKES.md`
-and the SQL plan files). Anything
-Victor produces — project code, `.sql` exercises, everything under `practice/` — is never auto-committed;
-the agent only prints the commands. Full rule in `_session-rules.md`.
+and the SQL plan files, and `ROADMAP.md` — that last one by `roadmap-review` alone and only on a clean
+run). **Anything Victor produces himself** — project code, the `.sql` exercises, and everything *else*
+under `practice/` (simulations, leetcode) — is never auto-committed; the agent only prints the commands.
+The word doing the work is *himself*: the SQL plan files and `MISTAKES.md` also live under `practice/`
+and are the system's, not his. Full rule in `_session-rules.md`.
 
 ---
 
