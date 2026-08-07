@@ -40,15 +40,22 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 Both launcher catalogs contain exactly 28 files and must reference the same 28 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
-checks four invariants nothing else can see: that `.claude/skills/` and `.agents/skills/` hold the
+checks five invariants nothing else can see: that `.claude/skills/` and `.agents/skills/` hold the
 same files with the same content (compared line-ending-normalised, because `core.autocrlf` decides
 whether a working-tree file holds CRLF or LF, not its author); that every
 `notes/{topic}/coverage/{LEVEL}.md` and its section of `notes/coverage/{LEVEL}.md` carry the same
 bullets; that each plan's `Plan status` agrees with its `Coverage SHA-256`; and that every path a
 prompt, skill or adapter names resolves — against the repository root **or** against `notes/prompts/`,
-both of which are legitimate forms here. The fingerprint one **reports and never repairs**: clearing a
-stale flag without running `/notes-plan` is the lie the flag exists to prevent, so a disagreement
-prints as `REPORT:` and only a plan claiming `current` against a moved fingerprint fails the run.
+both of which are legitimate forms here; and that **both maps know the machinery exists** — every skill
+directory has a row in `_system-map.md` §9 and the reverse, §9's spelled-out count matches the
+directories on disk, and every runnable prompt is named somewhere in the map and has an entry in this
+file. That last one is the only layer that catches a *non-firing*: the two-map rule and the `map-sync`
+ritual both depend on someone noticing, so nothing else can see machinery that was added while a map
+never learned of it. It cannot tell whether a cell is *true* — only reading the file it describes can do
+that — and it found `profile-readme` missing from every section of the map on its first run. The
+fingerprint one **reports and never repairs**: clearing a stale flag without running `/notes-plan` is the
+lie the flag exists to prevent, so a disagreement prints as `REPORT:` and only a plan claiming `current`
+against a moved fingerprint fails the run.
 
 ---
 

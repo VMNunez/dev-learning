@@ -444,6 +444,61 @@ foreach ($topic in $topicCoverageRoots) {
     }
 }
 
+# --- Invariant 5: the maps know the machinery exists -------------------------
+# The two-map rule and the `map-sync` ritual both fire on judgement, so neither
+# can catch a run where they simply did not fire. This is the layer that can:
+# it never asks whether a cell is *true* - only a read can - but it does catch
+# machinery added while a map never learned of it. It found `profile-readme`
+# absent from every section of the map on its first run.
+# ASCII only: PowerShell 5.1 reads a BOM-less .ps1 as ANSI, so an em dash in a
+# pattern here silently becomes mojibake and the section match returns nothing.
+$mapPath = Join-Path $promptRoot '_internal\_system-map.md'
+$mapText = [System.IO.File]::ReadAllText($mapPath)
+$readmeText = [System.IO.File]::ReadAllText((Join-Path $promptRoot 'README.md'))
+
+$skillSection = [regex]::Match($mapText, '(?sm)^##\s*9\b.*?(?=^##\s*10\b)')
+if (-not $skillSection.Success) {
+    Add-ValidationError '_system-map.md has no section 9 (the skills registry) to check the skill directories against.'
+} else {
+    $mapSkills = @(
+        [regex]::Matches($skillSection.Value, '(?m)^\|\s*`(?<name>[a-z0-9-]+)`\s*\|') |
+            ForEach-Object { $_.Groups['name'].Value }
+    )
+    $diskSkills = @(Get-ChildItem -LiteralPath $claudeSkills -Directory | Select-Object -ExpandProperty Name)
+    foreach ($drift in @(Compare-Object -ReferenceObject @($mapSkills | Sort-Object) -DifferenceObject @($diskSkills | Sort-Object) -CaseSensitive)) {
+        if ($drift.SideIndicator -eq '=>') {
+            Add-ValidationError "Skill '$($drift.InputObject)' exists on disk but has no row in _system-map.md section 9."
+        } else {
+            Add-ValidationError "_system-map.md section 9 has a row for '$($drift.InputObject)', which is not a skill directory."
+        }
+    }
+
+    # The count is written as an English word, and it goes stale exactly one commit
+    # after a skill is added - the failure REC-057 caught in README.md's own prose.
+    $numberWords = @('zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+        'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
+        'eighteen', 'nineteen', 'twenty')
+    $countClaim = [regex]::Match($skillSection.Value, '(?m)^All\s+(?<word>[a-z]+)\s+are mirrored')
+    if (-not $countClaim.Success) {
+        Add-ValidationError '_system-map.md section 9 no longer states how many skills are mirrored.'
+    } elseif ($diskSkills.Count -ge $numberWords.Count -or $countClaim.Groups['word'].Value -ne $numberWords[$diskSkills.Count]) {
+        Add-ValidationError "_system-map.md section 9 claims 'All $($countClaim.Groups['word'].Value)' skills; $($diskSkills.Count) exist on disk."
+    }
+}
+
+foreach ($prompt in $runnable) {
+    $stem = [System.IO.Path]::GetFileNameWithoutExtension($prompt.Name)
+    $command = $stem -replace '-prompt$', ''
+    # Either form counts as being on the map: the file's own name, or its slash command,
+    # which is how the chain sections in 3-6 refer to a prompt.
+    if ($mapText -notmatch [regex]::Escape($stem) -and $mapText -notmatch "/$([regex]::Escape($command))\b") {
+        Add-ValidationError "Runnable prompt '$stem' is named nowhere in _system-map.md."
+    }
+    if ($readmeText -notmatch [regex]::Escape($prompt.Name)) {
+        Add-ValidationError "Runnable prompt '$($prompt.Name)' has no entry in README.md."
+    }
+}
+
 foreach ($adapterName in @('AGENTS.md', 'CLAUDE.md')) {
     $adapterPath = Join-Path $RepositoryRoot $adapterName
     $adapterText = [System.IO.File]::ReadAllText($adapterPath)
@@ -496,6 +551,7 @@ Write-Output 'PASS: thin session adapters share one rules source'
 Write-Output "PASS: path references resolve ($($referenceScan.Count) files scanned, both path forms)"
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 Write-Output "PASS: coverage mirror parity ($($topicCoverageRoots.Count) topics x $($coverageLevels.Count) levels)"
+Write-Output "PASS: both maps know the machinery exists ($($claudeManifest.Count) skills, $expectedRunnableCount prompts registered)"
 if ($fingerprintReports.Count -eq 0) {
     Write-Output 'PASS: every notes plan agrees with its coverage fingerprint'
 } else {
