@@ -31,9 +31,11 @@ next reader would otherwise re-apply changes that already existed). A clean run'
 stays `open` — there was nothing to apply.
 
 Before these bullets, reconcile every prompt-change recommendation from this run with
-`notes/prompts/_internal/_recommendation-ledger.md`. Create or update a row with state `open`,
-`accepted`, `applied`, or `rejected`. Historical reports remain unchanged; the ledger is the current
-status source.
+`notes/prompts/_internal/_recommendation-ledger.md`. A new or still-unresolved item is a row in its
+`## Open` table, state `open` or `accepted`. **An item this run resolved does not stay a row** — follow
+that file's own four-step procedure, which ends by collapsing it into a single `## Closed` line after
+promoting any rule it established into the preamble. Historical reports remain unchanged; the ledger is
+the current status source.
 
 Then these five bullets — honest, including "nothing to report". Keep each one short; a bullet only
 earns extra lines when it is reporting something that actually went wrong:
