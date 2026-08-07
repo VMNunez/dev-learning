@@ -4,13 +4,14 @@ description: >
   Keep `notes/prompts/README.md` and `_internal/_system-map.md` true, on BOTH of their triggers.
   **Trigger 1 — a change:** any edit to the machinery, the moment it lands — a prompt or `SKILL.md`
   written, changed or retired, a ledger item applied, a ritual's steps moved, a writer reassigned, a
-  gate added. **Trigger 2 — a whole read:** any prompt or `SKILL.md` read end to end, in any session,
-  for any reason, which is the only thing that catches the cell that was true the day it was written
-  and rotted with nothing being edited. The maps are hand-written and nothing regenerates them, so the
-  failure mode this exists for is a map that is confidently wrong — read *instead of* the file it
-  describes. Partial compliance is the specific defect: §7 gets updated and the §9 row, the chain step
-  and the §11 symptom row keep the old story. It rules only on the rows about the file in front of it,
-  never on a chain's order or §8's ownership, and it never edits a prompt to match a map. **A read of any
+  gate added. **Trigger 2 — a whole read:** any prompt, `SKILL.md`, standard or other `_internal/` file
+  read end to end, in any session, for any reason, which is the only thing that catches the cell that was
+  true the day it was written and rotted with nothing being edited. The maps are hand-written and nothing
+  regenerates them, so the failure mode this exists for is a map that is confidently wrong — read
+  *instead of* the file it describes. Partial compliance is the specific defect: §7 gets updated and the
+  §9 row, the chain step and the §11 symptom row keep the old story. It rules only on the rows about the
+  file in front of it — never a chain's order, §8's ownership or §1's properties, **except where the file
+  read positively contradicts one** — and it never edits a prompt to match a map. **A read of any
   depth fires it on a positive contradiction; only a whole read fires it on an absence.** Do NOT trigger
   on edits to project code, notes prose or `PLANNING.md`, or inside a prompt pipeline run — those carry
   both map tests in their own self-report contract.
@@ -33,8 +34,9 @@ They license different scopes, so name the trigger out loud before touching anyt
 
 - **A change** — something in the machinery was just edited. Go to step 1. The map edit lands **in the
   same commit as the change**, so this runs *before* that commit, not after it.
-- **A whole read** — a prompt or `SKILL.md` was read end to end for some other reason. Go to step 2.
-  The correction lands in **its own commit**, never folded into the work that found it.
+- **A whole read** — a prompt, `SKILL.md`, standard or other `_internal/` file was read end to end for
+  some other reason. Go to step 2, whose table licenses all three kinds. The correction lands in **its
+  own commit**, never folded into the work that found it.
 
 **A read of any depth rules on a contradiction; only a whole read rules on an absence.** If the section
 in front of you says the prompt writes a file the map does not list, the map is wrong and you fix it — a

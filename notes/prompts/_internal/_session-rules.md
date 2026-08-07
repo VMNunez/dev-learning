@@ -536,9 +536,13 @@ was true the day it was written, has not been edited since, and is quietly false
 so nothing triggered a check, and the map rots precisely in the corners nobody is currently working on.
 So it has a second trigger, and it is a **read**.
 
-**Trigger — any prompt or `SKILL.md` read whole, in any session, for any reason.** Reading the file
-end-to-end is the entire cost of verifying what the map claims about it, and at that point it is already
-paid for. What remains is one comparison against rows you can already see.
+**Trigger — any prompt, `SKILL.md`, standard or other `_internal/` file read whole, in any session, for
+any reason.** Reading the file end-to-end is the entire cost of verifying what the map claims about it,
+and at that point it is already paid for. What remains is one comparison against rows you can already
+see. **The trigger and the table below must name the same three kinds:** the table has always licensed a
+ruling from a standard, while this sentence named only two, so `study-content-writer` — which reads two
+standards in full on every run — could never fire the ritual that would exercise it. A licence nothing
+can reach is worse than no licence, because it reads as covered.
 
 **What a read licenses a ruling on — and nothing past it:**
 
@@ -548,7 +552,7 @@ paid for. What remains is one comparison against rows you can already see.
 | a `SKILL.md` | its §9 row end to end (fires when · what it writes · hands off to), plus its cells in §7. **Not a chain step, a §10 debt or a §11 row** — a skill read cannot falsify those |
 | a standard or other `_internal/` file | the §7 row for the file it governs, **only where the standard states that ownership itself** — never the writer *list*, which names five writers for some files and is therefore a claim about all of them |
 
-The two licences are different on purpose and must not be merged into one list: §9 is skills-only, and
+The three licences are different on purpose and must not be merged into one list: §9 is skills-only, and
 the chain steps, debts and symptom rows belong to prompts. Never the rest of the map either — a chain's
 *order*, §8's `PROGRESS.md` ownership and §1's two-engine properties are claims about several files at
 once, and a single file cannot falsify them.
