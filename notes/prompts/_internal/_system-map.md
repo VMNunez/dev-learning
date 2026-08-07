@@ -1,13 +1,15 @@
 # System map — every prompt, every skill, and the file each one writes
 
 **What this file is.** The wiring diagram of the whole study system: *producer → file → consumer*, with
-prompts and skills on the same page. It answers three questions the other reference files answer only
+prompts and skills on the same page. It answers four questions the other reference files answer only
 in halves:
 
 1. **What runs after what**, and why (the chains in §3–§6).
 2. **Who writes this file**, when several things can (the registry in §7, and `PROGRESS.md` section by
    section in §8 — the file with the most writers and the most confusion).
 3. **What a run leaves behind that nobody asked for** — the debts and flags in §10.
+4. **How the system improves itself** — why a prompt is frozen, what unfreezes one, and the single
+   automated check that guards the whole thing (§12).
 
 **It is derived, not authoritative.** Three files outrank it and each owns a different half:
 
@@ -281,7 +283,9 @@ into the separate portfolio repo — never committed from here, so their close-o
 
 ## 7 — The writer registry
 
-Every file with more than one potential writer, and who actually owns it.
+Every file whose ownership is contestable — **including the ones with exactly one writer**,
+where the row's whole job is to say *only this, never by hand*. The bottom block is the machinery's own
+files: the system that describes and checks the system, which has writers like everything else.
 
 | File | Written by | Read by |
 |---|---|---|
@@ -308,6 +312,13 @@ Every file with more than one potential writer, and who actually owns it.
 | `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit` |
 | `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, and prompts that gate on it |
 | `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** · the `map-sync` ritual, which walks both triggers · never a prompt, never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
+| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 13 of the 28 prompts also name it directly. It **outranks this map** |
+| `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
+| `{family}/_internal/_last-run-report*.md` | **its own prompt's close-out only** — one per runnable prompt, **overwritten** each run, never appended, and committed together with `_run-tracker.md` | that same prompt's step 0 run-start check (via the `Status:` line), and the ledger reconciliation |
+| `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | run by hand — see §12. The only automated check in the system |
+| `notes/prompts/_internal/_shared-context.md` | **by hand.** No prompt writes it; the market file beside it (`_job-market-evidence.md`) is the one that gets fed automatically | almost every prompt. `_session-rules.md`'s "Who I am" bullets are its condensed copy, so the two drift apart unless they are edited together |
+| `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` | **by hand, through its own admission contract, with explicit authorization.** A coverage run that meets an unregistered topic **stops** — it never infers a boundary and never registers one silently | `/coverage`, `/coverage-audit`, `/roadmap-review`, `coverage-bullet-add` (altitude routing), and every prompt whose `TOPIC` field reads "one registered topic" |
+| `personal/job-search/**` (**outside the repo**, never committed from here) | `/cv` (`master/`, `applications/`) · `/tracker` (`tracker.csv`, `applications/<empresa>-<puesto>/`) | the whole apply family — `/cv`, `/cover-letter` and `/linkedin` through `_application-standard.md`, `/profile-readme` for `internship-daw.md`. Existence proves nothing here: a close-out checks the **mtime is from this run** |
 
 ---
 
@@ -363,8 +374,8 @@ open, never blocked on an answer.
 The things a run leaves behind that are easy to miss.
 
 - **Every runnable prompt writes two extra files**: `_last-run-report*.md` in its own `_internal/`
-  folder, and its row in `_internal/_run-tracker.md`. They are auto-committed together and they are the
-  evidence used to decide whether a frozen prompt gets reopened.
+  folder, and its row in `_internal/_run-tracker.md`. They are auto-committed together, and they are what
+  feeds the improvement loop (**§12**) — the evidence that decides whether a frozen prompt gets reopened.
 - **The `/notes-plan` debt.** A bullet added in a daily session by `coverage-bullet-add` does **not**
   remap the notes plan — the plan and its `Coverage SHA-256` are never touched by hand. The skill
   reports `/notes-plan {topic} {level}` as owed and appends `⚠ stale YYYY-MM-DD (+N bullets)` to the
@@ -403,3 +414,75 @@ The things a run leaves behind that are easy to miss.
 | a project is built but never reviewed | `/readme-audit` → `/review-audit` → `/portfolio-audit` |
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
 | a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |
+| a prompt or skill was added, renamed or retired · a path may have gone dead · a map may never have learned the machinery exists | `_internal/validate-prompt-system.ps1` (§12) — the only check that can see a **non**-firing `map-sync` |
+
+---
+
+## 12 — How the system improves itself
+
+Every section above describes machinery that **runs**. This one describes the loop that **changes** it,
+which is the half no prompt can state about itself: **prompts are frozen by design.** Both self-report
+contracts open on that rule — a report showing a real failure is the only thing that reopens a prompt —
+and `_session-rules.md` says the same to the session: *"The system is built — run the prompts, don't keep
+editing them."* So an edit is never a decision someone makes; it is the last
+step of a chain that starts with a run, and every link exists because the previous one was skipped once.
+
+1. **A run ends by executing its self-report contract** — five bullets for the sixteen orchestrators
+   (`_pipeline-self-report.md`), three for the twelve single-shot prompts
+   (`_single-shot-self-report.md`). It reports the **machinery, never the content**, and carries a
+   `Status:` line — `open` or `applied in <hash>` — which is what makes a live finding distinguishable
+   from a settled one at a glance instead of by re-reading prose.
+2. **The close-out check runs first, and against disk.** Declared outputs from this prompt's `README.md`
+   row, probed with `git status` **and** `git log --name-only`; for an orchestrator, also the count of
+   mandated dispatches against the count actually dispatched — the half no file can prove. Nothing here
+   is answered from memory, because *the same saturated context that skips a step cannot see the skip*.
+3. **Findings are reconciled into `_recommendation-ledger.md`** before the bullets are written. A new or
+   unresolved one becomes a row in `## Open`, state `open` or `accepted`. The ledger's other two states
+   are resolutions rather than row states: reaching `applied` or `rejected` collapses the row into
+   `## Closed`.
+4. **The four-condition bar** decides whether it earns an edit at all: real evidence not theory · the
+   prompt was wrong or ambiguous rather than merely broken by the run · **it would have changed the
+   result, not just the cost** · not already covered somewhere the run failed to look. **Condition 3
+   kills most findings.** Friction is recorded in the Verdict and stops there, and a rejected finding
+   names its failed condition so the same zombie is not re-proposed next run.
+5. **A cold reviewer — mandatory, no exceptions.** The drafted edit goes to one cold subagent with four
+   inputs, the fourth being **the whole prompt file read to EOF**, which is what makes condition 4 and
+   the contradiction check answerable at all. It returns `approve` / `approve-with-tightening` / `reject`, and only what it
+   approves is applied. A reject — or a reviewer that could not be dispatched — leaves the finding
+   `open`: a postponed finding is recoverable through its `Status` line, a self-approved bad edit is not.
+   **The verdict line is the only trace the gate ran**; an applied edit without one is indistinguishable
+   on disk from a self-approval and must be read as one.
+6. **The edit lands under both map rules** — the change test and the read test in "How it stays true" —
+   the hash goes into the report's `Status:`, and the ledger row collapses into `## Closed` after any
+   rule it established is **promoted into the ledger's preamble**. A rule that governs future work must
+   not stay buried in a row about something else; that is how one precedent came to be cited seven times
+   and misread every time.
+7. **The run-start check closes the loop.** The at-end refinement only ever sees *this* run's report, so
+   step 0 of every prompt reads its own last report and prints one line when the `Status` is still
+   `open`. Without it a finding rots — the `notes-write` gate sat open four days for exactly that reason.
+   It **surfaces and never applies**: editing a prompt and then immediately running it entangles an
+   unverified edit with the run.
+
+**The skills have no half of this.** A prompt run leaves a report, a tracker row and a ledger row; a
+skill writes only the files of its ritual (§1), so a defective one can run for months and produce no
+evidence at all. Both known cases surfaced because a human asked, not because the system noticed. That
+asymmetry is a real gap with no owner yet — `REC-058`.
+
+### The one automated check
+
+`_internal/validate-prompt-system.ps1` is the **only** automated check in the system — there is no CI and
+no hook, so it runs when someone runs it. **`README.md` owns its trigger list and the full statement of
+its invariants**, and restating them here is how this section would fork from them; what belongs on the
+map is the one invariant that is *about* the map. **Both maps know the machinery exists** — every skill
+directory has a §9 row and the reverse, §9's spelled-out count matches disk, and every runnable prompt is
+named somewhere in this map and has a `README.md` entry.
+
+That one is the only layer that catches a **non-firing**: the two map rules and `map-sync` all depend on
+someone noticing, so nothing else can see machinery added while a map never learned of it. It found
+`profile-readme` missing from every section of this map on its first run.
+
+**What it cannot do is tell whether a cell is _true_** — only reading the file a row describes does that,
+which is why the read trigger exists at all. Nor does it repair: on the fingerprint contract it prints
+`REPORT:` for a `stale` plan whose digest still matches, because clearing that flag without running
+`/notes-plan` is the lie the flag exists to prevent — but a plan claiming `current` against a moved
+fingerprint **fails the run**.

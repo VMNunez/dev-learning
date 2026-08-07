@@ -13,9 +13,9 @@ This file is the map: what each prompt does, what it reads and generates, and ho
 
 > **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README covers the
 > 28 runnable prompts. The system map adds the in-session rituals (`step-complete`, `coverage-mark`,
-> `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, and the debts a run
-> leaves behind. Start there when the question is *"who writes this file?"* rather than *"what does
-> this prompt do?"*.
+> `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, the debts a run
+> leaves behind, and the improvement loop itself — why a prompt is frozen and what unfreezes one (§12).
+> Start there when the question is *"who writes this file?"* rather than *"what does this prompt do?"*.
 
 > **Shared runtime context.** Every session starts from its thin platform adapter (`CLAUDE.md` or
 > `AGENTS.md`), which delegates to `_internal/_session-rules.md`. Runnable prompts also read
