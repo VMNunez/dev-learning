@@ -60,8 +60,9 @@ session no prompt is running at all, and without it the concept ships in the cod
 curriculum.
 
 **The commit boundary is authorship, not folder.** Machinery the agent writes commits itself
-(`notes/`, `notes/prompts/`, skills and commands, `PROGRESS.md`, any `PLANNING.md` / `README.md` /
-`PROJECT-BACKLOG.md`, `projects/briefs/`, `practice/sql/MISTAKES.md` and the SQL plan files). Anything
+(`notes/`, `notes/prompts/`, skills and commands, **the session-rule files themselves**, `PROGRESS.md`,
+any `PLANNING.md` / `README.md` / `PROJECT-BACKLOG.md`, `projects/briefs/`, `practice/sql/MISTAKES.md`
+and the SQL plan files). Anything
 Victor produces — project code, `.sql` exercises, everything under `practice/` — is never auto-committed;
 the agent only prints the commands. Full rule in `_session-rules.md`.
 
