@@ -1,7 +1,7 @@
 # Single-shot self-report — shared final step for every non-orchestrator prompt
 
-**Internal component. Not runnable.** Twelve of the 25 runnable prompts end by executing this step; the
-other thirteen end by executing `_pipeline-self-report.md`. Same purpose: each real run
+**Internal component. Not runnable.** Twelve of the 28 runnable prompts end by executing this step; the
+other sixteen end by executing `_pipeline-self-report.md`. Same purpose: each real run
 leaves evidence about **how the prompt itself behaved**, so it improves from what went wrong instead of
 from theory. Prompts stay **frozen** between runs — a report showing a real failure is the only thing
 that reopens one.
