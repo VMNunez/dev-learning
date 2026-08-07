@@ -9,7 +9,7 @@ Self-report recommendations use one of four states:
 
 ## How an item is resolved
 
-Four steps, in order, fixed 2026-08-06. The ledger reached 127k characters before this was written
+Four steps, in order, fixed 2026-08-07. The ledger reached 127k characters before this was written
 down, and the three items before it each cost more than they were budgeted for.
 
 1. **Analyse the problem, never only the row.** A row records where a defect was *found*; it is
@@ -118,7 +118,7 @@ was already settled without reading 90k characters of history.
 - `REC-044` — the unreviewed-code gate gains a second signal: a dated `## Closed` backlog line, because a fix campaign moves no step — `b301d4b`
 - `REC-045` — `REC-039`'s demotion propagated: a gate closes on an empty drift report, not on the run happening — `3edfe77`
 - `REC-051` — the review gate measures **unreviewed code**, not a 30-day clock; the date is reported and never obeyed. The stop is strictly broader than the window it replaced — `70956ce`
-- `REC-057` — four declared-but-untested invariants become checks in `validate-prompt-system.ps1`: skill mirror, coverage mirror, plan fingerprints (reports, never repairs) and dead paths (both path forms). Found and repaired 30 paths stranded in `README.md` — `2a7a632`, `8e21ef0`
+- `REC-057` — four declared-but-untested invariants become checks in `validate-prompt-system.ps1`: skill mirror, coverage mirror, plan fingerprints (reports, never repairs) and dead paths (both path forms). Found and repaired 30 paths stranded in `README.md` — `2a7a632`, `8e21ef0`. **⚠ Cold review still owed** — it was applied before step 3 became mandatory, and three rulings are contestable: report-vs-fail on the fingerprint, the four allowlist classes, and hashing normalised content in the skill mirror. The same debt covers the ledger restructure in `9174073`
 
 ## Suggested order for the open items
 
