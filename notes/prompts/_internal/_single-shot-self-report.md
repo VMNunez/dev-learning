@@ -98,9 +98,10 @@ and a prompt under budget that skipped a step is still unhealthy.
 
 ## Step 3 — Commit it
 
-The report is prompt-system machinery under `notes/prompts/`, so **commit it directly**, on its own,
-never bundled into the run's content commit: `git status` → stage only the report → `git status` again →
-`docs: self-report for <prompt> run on <target>`. Then print the three bullets in chat.
+The report and `_run-tracker.md` update are prompt-system machinery under `notes/prompts/`, so **commit
+them directly**, together and on their own, never bundled into the run's content commit: `git status`
+→ stage only the report and `_run-tracker.md` → `git status` again → `docs: self-report for <prompt>
+run on <target>`. Then print the three bullets in chat.
 
 ## Step 4 — Refine the prompt, but only when the run earned it
 
