@@ -1,17 +1,17 @@
 # Roadmap — Victor's Learning Plan
 
-**Goal:** Junior / junior-mid Angular + Java Spring Boot developer at a Spanish consultancy — target window August/September 2026.
+**Goal:** Junior / junior-mid Angular + Java Spring Boot developer at a Spanish consultancy — achieved when a consultancy hires you into that role.
 
-**This goal does not expire.** September is a checkpoint that raises urgency, not a deadline that ends the search. If the goal is not met by then, the search continues — see "After September — three possible paths" near the end of this file for how the plan adapts.
+**This goal does not expire.** The full-application push is a checkpoint that raises urgency, not a deadline that ends the search. If the goal is not met after that push, the search continues and the same employment gates remain active; once hired, the post-job growth plan near the end of this file takes over.
 
 ---
 
 ## Who you are and where you stand
 
 - **31 years old.** More mature than a fresh graduate. Better soft skills, more motivation, more aware of what you want. Consultancies notice this — they work with clients, and a junior who communicates well is valuable.
-- **Real internship completed** (Next.js + TypeScript + MySQL, ended June 2026). Even though the stack is different, this is real team experience. Few self-taught juniors have this. It answers the question every recruiter asks first: _has this person ever worked in a real environment?_
+- **Real internship completed** (Next.js + TypeScript + MySQL). Even though the stack is different, this is real team experience. Few self-taught juniors have this. It answers the question every recruiter asks first: _has this person ever worked in a real environment?_
 - **Previous knowledge** (React, Node.js, Express, TypeScript, CSS). You are not starting from zero. This background accelerates your Spring Boot and Angular learning because the patterns are familiar — components, services, HTTP, async, routing.
-- **Full-time study from June 2.** Most self-learners study 2–3 hours a day after work. You are doing 6+ hours every day. This is a serious competitive advantage. By September you will have months of full-time practice — equivalent to several years of evening learning.
+- **Full-time study commitment.** Most self-learners study 2–3 hours a day after work. You are doing 6+ hours every day. This is a serious competitive advantage. By the full-application gate you will have months of full-time practice — equivalent to several years of evening learning.
 - **English at B1, targeting Cambridge First Certificate (B2).** Most junior candidates in Spain have weak or no English. B2 opens access to international project tracks at consultancies, which are better paid and more interesting.
 
 ---
@@ -28,7 +28,7 @@
 - Real team experience from day one — version control, code reviews, architecture discussions, delivery pressure
 - Startups often want senior developers who can work autonomously from the start
 
-**What they look for in a junior in 2026:**
+**What they look for in a junior:**
 
 - Stack match: Angular + Java Spring Boot + PostgreSQL
 - Real project — not a tutorial, not a course certificate
@@ -96,7 +96,7 @@ In order of impact:
 
 6. **Interview prep** — knowing how to answer _what is dependency injection, what is lazy loading, what is a JWT, what is a DTO_ fluently and with a project example. The notes/ folder and the simulator prompt exist for this.
 
-7. **More full-stack projects** — project 08 after 07, and more if time allows before September. Every project covers different challenges (many-to-many, pagination, file upload) and shows consistent effort, not a one-time build.
+7. **More full-stack projects** — project 08 after 07, and more once the higher-priority application gates are secure. Every project covers different challenges (many-to-many, pagination, file upload) and shows consistent effort, not a one-time build.
 
 ---
 
@@ -134,23 +134,23 @@ This produces two different decisions:
 
 | #   | Goal                                              | Project (08:00)                                                    | SQL → Practice (12:30)                                            | Interview prep (13:30)                        | Status     |
 | --- | ------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------------- | ---------- |
-| 1   | Angular foundation + CSS/Tailwind solid           | Angular 01–04 + CSS/Tailwind                                       | SELECT, WHERE, ORDER BY                                           | Angular notes                                 | ✅ Done    |
-| 2   | Angular complete + Java foundation                | Angular 05–06 + RxJS + Java foundation                             | SQL basics continued                                              | Angular notes + interview prep started        | ✅ Done    |
-| 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | SQL basics continued + JOINs started                              | Spring Boot notes                             | ✅ Done    |
-| 3b  | Project 07 demonstrable — frontend + tests        | Project 07 — Angular frontend (Steps 7a–7c) + backend/Angular tests | JOINs, GROUP BY, aggregates, subqueries                           | Java + Architecture notes                     | ⏳ Current |
+| 1   | Angular projects 01–04 delivered                  | Angular 01–04 + CSS/Tailwind                                       | SELECT, WHERE, ORDER BY                                           | Angular notes                                 | ✅ Done    |
+| 2   | Angular projects 05–06 delivered; Java introduced | Angular 05–06 + RxJS + Java foundation                             | SQL basics continued                                              | Angular notes + interview prep started        | ✅ Done    |
+| 3a  | Project 07 backend demonstrable                   | Project 07 backend — JWT auth + protected endpoint                 | SQL querying basics in progress                                   | Spring Boot notes                             | ✅ Done    |
+| 3b  | Project 07 demonstrable — frontend + tests        | Project 07 — Angular frontend (Steps 7a–7d) + backend/Angular tests | JOINs, GROUP BY, aggregates, subqueries                           | Java + Architecture notes                     | ⏳ Current |
 | 3c  | Consolidation — fluent without Claude             | Rebuild key 07 slices solo (no notes, no AI) + Docker + SQL complement | Remaining SQL topics → technical test simulation                  | Interview prep (es/) started                  | 🔜         |
 | 4   | Applications daily + simulations; 08 conditional  | Friday→daily applications; Project 08 **only once simulations are on track** | Technical test simulation                                         | TypeScript + CSS notes + interview prep (es/) | 🔜         |
 | 5   | Interview ready — full application push           | Final project polish + applications every day                      | Technical test simulation                                         | Interview prep full focus                     | 🔜         |
-| 6   | After the job — depends on outcome                | Branches by outcome — see "After September — three possible paths" | Depends on path                                                   | Depends on path                               | 🔜         |
+| 6   | After the application push — depends on outcome   | Continue the employment gates, or follow the post-job growth plan once hired | Depends on path                                                   | Depends on path                               | 🔜         |
 
-_Row 6 is intentionally open — what happens after September depends on whether the goal is met by then. See the dedicated section near the end of this file for the three paths and what each one requires._
+_Row 6 is intentionally open: if the employment gate is not met, the search and unfinished gates continue; once it is met, the post-job growth section applies._
 
-### Urgency order (set 2026-07-16) — urgent first, important-but-not-urgent after
+### Urgency order — urgent first, important-but-not-urgent after
 
 The hiring process above defines urgency: the real filter is a **technical test done alone, timed, no
 notes, no AI** — so fluency without Claude outranks adding more artifacts. In order:
 
-1. **Project 07 Angular frontend (Steps 7a–7c)** — the CV gate depends on it; nothing is applyable without it.
+1. **Project 07 Angular frontend (Steps 7a–7d)** — the CV gate depends on it; nothing is applyable without it.
 2. **Project 07 tests (JUnit 5 + Mockito, Jasmine services)** — the #2 differentiator in this file, and interview material in themselves. Part of finishing, not a phase after.
 3. **Consolidation (Phase 3c)** — rebuild key slices of 07 solo (a CRUD endpoint from scratch, a reactive form + service) under the same conditions as a real test. This is what the technical test measures; Claude-guided building does not train it.
 4. **Simulations + interview prep (es/)** — the 15-simulation target and fluent answers with project examples.
@@ -163,7 +163,7 @@ LeetCode stays behind its existing five gates — unchanged.
 
 ## Daily schedule (fixed from June 2)
 
-_This schedule is fixed for the full-time study window only — June 2 → September 2026. What replaces it afterward depends on which path applies once September ends: see "After September — three possible paths" near the end of this file._
+_This schedule is fixed for the full-time study window only — June 2 → September 2026. After that window, its available hours adapt to the outcome: unfinished employment gates continue until hiring, then the post-job growth plan applies._
 
 | Block                  | Time        | Focus                                                                              |
 | ---------------------- | ----------- | ---------------------------------------------------------------------------------- |
@@ -186,7 +186,7 @@ _This schedule is fixed for the full-time study window only — June 2 → Septe
 
 **Covers:** REST API, JWT auth, role-based authorization, JPA + Hibernate, TimeEntry workflow (DRAFT → SUBMITTED → APPROVED / REJECTED), reports, Angular frontend, JUnit 5 + Mockito, Jasmine + TestBed, Docker Compose, architecture README.
 
-**Demonstrable gate (Phase 3b):** Angular frontend live (Steps 7a–7c), all services have at least one unit test, README includes at least one architecture decision with a real tradeoff — and every line is explainable out loud in an interview. This is what unlocks the CV update and consolidation.
+**Demonstrable gate (Phase 3b):** Angular frontend live (Steps 7a–7d), all services have at least one unit test, README includes at least one architecture decision with a real tradeoff — and every line is explainable out loud in an interview. This is what unlocks the CV update and consolidation.
 
 **Full project gate (Phase 3c):** `docker-compose up` runs everything and the SQL complement is done — Docker closes the project (Step 11), deliberately after consolidation work has started, not before.
 
@@ -209,19 +209,18 @@ Planned in two runs, both inside Claude Code once project 07 is complete. `proje
 **Project 08 candidate ideas** — each names the `notes/coverage/junior.md` gaps it closes (gaps that project 07 does not touch). This list **proposes**; the brief decides and is where the reasons live:
 
 - **Invoice Manager** — clients, products, invoices. Covers: many-to-many, Pageable, `@Query`, PDF export.
-  Closes: JPA pagination (`Page` vs `Slice`), owning side of a many-to-many, custom JPQL, N+1 and
-  `open-in-view` awareness, Angular table pagination against a server-side page.
+  Closes: `Page<T>` vs `Slice<T>`, owning side of a many-to-many, `@Modifying` write queries,
+  and Angular server-side paginator state.
 - **Expense Reports** — submit and approve expenses. Covers: file upload, email, approval workflow, Flyway.
-  Closes: Flyway / schema evolution, multipart upload and download over `HttpClient`,
-  `@Transactional` propagation across a multi-step approval, `@Async` / `@Scheduled`.
+  Closes: Flyway / schema evolution, server-side file validation and safe storage/serving,
+  `@Transactional` propagation, and transaction limits around files or outbound calls.
 - **Library Catalog** — books, authors, members, loans. Covers: many-to-many, complex queries, component tests.
-  Closes: Jasmine + TestBed **component** testing (project-08 rule), `@DataJpaTest` repository tests,
-  aggregate/report SQL against a richer schema.
+  Closes: Jasmine + TestBed **component** behaviour through `ComponentFixture` (project-08 rule),
+  `@DataJpaTest` repository tests, many-to-many ownership, and report-total verification.
 - **Support Desk** — tickets with comments, search, and dynamic forms. Covers: typeahead search,
   dynamic form sections, status workflow with an audit trail.
-  Closes: the RxJS higher-order operators gap (`switchMap` / `debounceTime` typeahead pipeline,
-  `combineLatest`, `retry` / `finalize`), typed reactive forms + `FormArray` +
-  `ControlValueAccessor`, and `@WebMvcTest` slice tests on the backend.
+  Closes: the RxJS search-pipeline gap (`debounceTime`, `distinctUntilChanged`, `switchMap`),
+  inner-stream error handling and `finalize`, `FormArray`, and `@WebMvcTest` slice tests.
 
 ---
 
@@ -229,27 +228,26 @@ Planned in two runs, both inside Claude Code once project 07 is complete. `proje
 
 **Stage 1 — SQL (current):**
 
-| Topic                                                                  | Status  |
-| ---------------------------------------------------------------------- | ------- |
-| SELECT, WHERE, operators, ORDER BY, LIMIT                              | ⏳      |
-| JOINs (INNER, LEFT, RIGHT, FULL OUTER, self JOIN) + row multiplication  | ⏳      |
-| GROUP BY, HAVING, aggregate functions (incl. FILTER, CASE WHEN)        | 🔜      |
-| Set operations (UNION / UNION ALL, INTERSECT, EXCEPT)                  | 🔜      |
-| Filtering and NULL handling (IS NULL, COALESCE, NULLIF, LIKE, IN)     | 🔜      |
-| Type behaviour at runtime (integer division, casts, NUMERIC vs FLOAT)  | 🔜      |
-| Subqueries, CTEs, and views                                            | 🔜      |
-| DML — INSERT, UPDATE, DELETE, RETURNING, ON CONFLICT                  | 🔜      |
-| Transactions (BEGIN, COMMIT, ROLLBACK, ACID, isolation, locking)       | 🔜      |
-| Window functions (ROW_NUMBER, RANK, DENSE_RANK, LAG/LEAD, SUM OVER)   | 🔜      |
-| Date and string functions (DATE_TRUNC, EXTRACT, string toolkit)        | 🔜      |
-| Schema design (keys, constraints, relationships, normalization)         | 🔜      |
-| Data types (VARCHAR/TEXT, NUMERIC, TIMESTAMPTZ, BOOLEAN, JSONB)        | 🔜      |
-| DDL + working with a live database (psql, information_schema, grants)  | 🔜      |
-| Reading PostgreSQL errors                                              | 🔜      |
-| PostgreSQL specifics (::, ILIKE, DISTINCT ON, RETURNING)              | 🔜      |
-| Indexes, EXPLAIN / query plans, basic query performance                | 🔜      |
-| Programmable objects (triggers, stored procedures — recognition only)  | 🔜      |
-| Writing a report query (end-to-end)                                    | 🔜      |
+| Coverage heading                          | Status |
+| ----------------------------------------- | ------ |
+| JOINs                                     | 🔜     |
+| Aggregates and grouping                   | 🔜     |
+| Querying basics                           | ⏳     |
+| Ordering and pagination                   | ⏳     |
+| Set operations                            | ⏳     |
+| Filtering and NULL handling               | ⏳     |
+| Subqueries, CTEs, and views               | 🔜     |
+| Schema operations                         | 🔜     |
+| Working with an existing database         | 🔜     |
+| DML — modifying data                      | 🔜     |
+| Transactions                              | 🔜     |
+| Window functions                          | 🔜     |
+| Schema design                             | 🔜     |
+| Data types                                | 🔜     |
+| PostgreSQL specifics                      | 🔜     |
+| Common string functions                   | 🔜     |
+| Performance basics                        | 🔜     |
+| Query workflow and SQL review             | 🔜     |
 
 → **Switch to Stage 2 when the test-relevant topics are solid** — JOINs · GROUP BY/aggregates ·
 subqueries/CTEs · NULL handling · DML basics. Those are what consultancy tests actually ask; window
@@ -293,7 +291,7 @@ To do a simulation: open the spec file, set a timer, and build. No notes, no AI.
 | Notes complete for Angular, Spring Boot, Java, Architecture, Security      | Interview prep gaps matter more than algorithm practice                                                                                                                                                                                                                                      |
 | Interview prep (es/) solid for the main topics                             | Active recall ready before adding a new track                                                                                                                                                                                                                                                |
 
-If all five are done before September — start LeetCode Easy. If not — skip it and use that time to strengthen whatever gate is not yet complete.
+When all five gates are complete, start LeetCode Easy. Until then, use that time to strengthen whichever gate remains open.
 
 ---
 
