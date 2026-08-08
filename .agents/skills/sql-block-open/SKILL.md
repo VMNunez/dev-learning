@@ -16,6 +16,12 @@ description: >
 
 # Open the SQL block (read-only)
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 Victor is starting the 12:30 SQL block. Give him the state of the track in one screen, then get out of
 the way.
 

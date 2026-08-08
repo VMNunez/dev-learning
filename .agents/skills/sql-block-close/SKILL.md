@@ -15,6 +15,12 @@ description: >
 
 # Close the SQL block
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 The hour is over. Sixty seconds, then get out of the way.
 
 **One file is written: `practice/sql/MISTAKES.md`, and only its `## Fricción` section.** No counters,

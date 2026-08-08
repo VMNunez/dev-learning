@@ -62,7 +62,7 @@ Everything in the repo is written by one of two things, and they are built on op
 | Unit of work | one topic+level, one project, one note pair — or the whole machinery for explicit `/system-check` | one step, one task, one file, one block |
 | Questions | config up front, then hands-off to the end | **zero, by design** — a ritual that asks stops being run |
 | Depth | fans out cold subagents, one per concern | one pass down a mechanical checklist |
-| Trace it leaves | `_last-run-report*.md` + a row in `_run-tracker.md` | only the files of the ritual itself |
+| Trace it leaves | `_last-run-report*.md` + a row in `_run-tracker.md` | only the ritual's files on success / expected paths; one `_skill-friction.md` row when a declared step observably fails |
 
 **The division of labour:** *prompts author scope in bulk; skills record what one session actually
 produced, one item at a time.* The coverage files are the clearest case — `/coverage` writes a hundred
@@ -317,6 +317,7 @@ files: the system that describes and checks the system, which has writers like e
 | `practice/simulations/TRACKER.md` | `/simulation-generator` (rows) · `/simulation-review` (status) | `/progress-update`, `/simulation-review` |
 | `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit` |
 | `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, `/system-check`, and prompts that gate on it |
+| `notes/prompts/_internal/_skill-friction.md` | any of the thirteen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (every `open` row, before their own recommendations) · `/system-check` |
 | `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
 | `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
 | `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 13 of the 29 prompts also name it directly. It **outranks this map** |
@@ -372,6 +373,11 @@ identical file to the other in the same commit.**
 | `sql-block-close` | the block ends | `MISTAKES.md` `## Fricción` only | — |
 | `map-sync` | machinery changed **or** a prompt / `SKILL.md` / standard / other `_internal/` file was read whole | the rows about *that* file in `README.md` and this map — every one of them, not the first that comes to mind · nothing else | — |
 
+Every row inherits `_session-rules.md` → "When a skill cannot finish — durable friction". The table's
+write cells describe success and expected no-op / ineligibility paths; on an observable failed declared
+step, every skill additionally appends one `FRIC-NNNN` row without changing or partially closing its
+normal target.
+
 **Rituals ask zero questions.** That is a design rule, not a style: a manual gate in the middle of a
 mechanical ritual is how the ritual stops being run. A step that cannot close is *reported* and left
 open, never blocked on an answer.
@@ -385,6 +391,9 @@ The things a run leaves behind that are easy to miss.
 - **Every runnable prompt writes two extra files**: `_last-run-report*.md` in its own `_internal/`
   folder, and its row in `_internal/_run-tracker.md`. They are auto-committed together, and they are what
   feeds the improvement loop (**§12**) — the evidence that decides whether a frozen prompt gets reopened.
+- **Open skill friction is evidence, not yet a recommendation.** A qualifying failed ritual step appends
+  `FRIC-NNNN`; the next prompt close-out serially adjudicates it and changes only its disposition. A
+  promotion or dismissal commits before, and separately from, that prompt's report + tracker.
 - **The `/notes-plan` debt.** A bullet added in a daily session by `coverage-bullet-add` does **not**
   remap the notes plan — the plan and its `Coverage SHA-256` are never touched by hand. The skill
   reports `/notes-plan {topic} {level}` as owed and appends `⚠ stale YYYY-MM-DD (+N bullets)` to the
@@ -426,6 +435,7 @@ The things a run leaves behind that are easy to miss.
 | a project is built but never reviewed | `/readme-audit` → `/review-audit` → `/portfolio-audit` |
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
 | a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |
+| `_skill-friction.md` has an `open` row | run any runnable prompt; its close-out adjudicates the row before its own recommendations |
 | a prompt or skill was added, renamed or retired · a path may have gone dead · a map may never have learned the machinery exists | `_internal/validate-prompt-system.ps1` (§12) — the only check that can see a **non**-firing `map-sync` |
 | after substantial machinery changes, you need every prompt/skill claim and recorded debt checked together | `/system-check` — explicit global audit; never an ordinary-commit gate |
 
@@ -476,10 +486,17 @@ step of a chain that starts with a run, and every link exists because the previo
    It **surfaces and never applies**: editing a prompt and then immediately running it entangles an
    unverified edit with the run.
 
-**The skills have no half of this.** A prompt run leaves a report, a tracker row and a ledger row; a
-skill writes only the files of its ritual (§1), so a defective one can run for months and produce no
-evidence at all. Both known cases surfaced because a human asked, not because the system noticed. That
-asymmetry is a real gap with no owner yet — `REC-058`.
+**Skills contribute observable failure evidence through a smaller loop.** The source contract is
+`_session-rules.md` → "When a skill cannot finish — durable friction": a qualifying failed declared step
+appends one immutable `FRIC-NNNN` event with `Disposition: open`. The next prompt close-out serially
+applies its existing four-condition bar, links real machinery defects to one recommendation, dismisses
+non-defects by condition, and leaves insufficient evidence open. The reconciliation commits separately
+from report + tracker, so the prompt evidence check keeps its exact boundary.
+
+This is deliberately **not** prompt-style self-reporting per ritual, and it does not claim parity with
+it. A successful or expected path writes no paperwork. More importantly, the sink can only capture an
+observable failed step: a defective skill that completes silently with a wrong result still leaves no
+friction row and remains dependent on human review, `map-sync`, the validator, or `/system-check`.
 
 ### The one automated check
 

@@ -13,8 +13,9 @@ This file is the map: what each prompt does, what it reads and generates, and ho
 
 > **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README covers the
 > 29 runnable prompts. The system map adds the in-session rituals (`step-complete`, `coverage-mark`,
-> `study-block-close`, `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, the debts a run
-> leaves behind, and the improvement loop itself — why a prompt is frozen and what unfreezes one (§12).
+> `study-block-close`, `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, the debts and
+> observable skill failures a run leaves behind, and the improvement loop itself — why machinery is
+> reopened from evidence (§12).
 > Start there when the question is *"who writes this file?"* rather than *"what does this prompt do?"*.
 
 > **Shared runtime context.** Every session starts from its thin platform adapter (`CLAUDE.md` or
@@ -69,7 +70,7 @@ Markdown entry points from internal Markdown:
 
 **Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the thirteen families
 and this root, which holds the shared session/runtime contracts, preflight, recommendation ledger,
-self-report contracts, market context, batch rules and run tracker. Open any
+skill-friction sink, self-report contracts, market context, batch rules and run tracker. Open any
 folder under `notes/prompts/` and you see its runnable prompts and one `_internal/`, never a mix you
 have to read prefixes to sort. Standards, subagent steps and `_last-run-report*.md` files all live
 there; a new one goes in `_internal/` too, **including a report a pipeline has not written yet** — the
@@ -138,6 +139,12 @@ remain distinguishable. Both files count as declared outputs of every prompt and
 they are not repeated in the per-prompt rows below only because they are universal, not because they
 are exempt.
 
+Before reconciling recommendations from their own run, both close-outs also consume any `open`
+`FRIC-NNNN` rows in `_skill-friction.md`. They apply their existing four-condition bar, route a real
+defect to one `REC-NNN`, dismiss a non-defect with the failed condition, or leave insufficient evidence
+open. That conditional reconciliation is committed separately from report + tracker and is not a
+declared output of every prompt.
+
 ### The internal-only files (never launch these)
 
 `_coverage-standard.md`, `_note-quality-standard.md`, `_interview-prep-standard.md`,
@@ -145,13 +152,15 @@ are exempt.
 `_concept-extraction-standard.md`, `_roadmap-standard.md`, `_application-standard.md`,
 `_sql-plan-standard.md`, `_sql-exercise-seeds.md`, `_sql-exercises-practice.md`,
 `_sql-exercises-review.md`,
-`_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`,
+`_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`, `_skill-friction.md` (observable
+failed skill steps, consumed by the next prompt close-out),
 `system/_internal/_system-check-report.md` (the latest explicit whole-system audit: inventory coverage,
 map corrections, operational debt, architecture recommendations, and the cold-review verdict),
-`_single-shot-self-report.md` (the same contract for the twelve non-orchestrator prompts: close-out check against declared outputs, tracker update, three bullets, refinement behind a cold reviewer),
+`_single-shot-self-report.md` (the same contract for the twelve non-orchestrator prompts: skill-friction
+reconciliation, close-out check against declared outputs, tracker update, three bullets, refinement behind a cold reviewer),
 `_pipeline-self-report.md` (the shared final step every orchestrator runs: five bullets on how the run
 itself went, written to `_last-run-report*.md` in the orchestrator's own `_internal/` folder and
-auto-committed with `_run-tracker.md` — the
+auto-committed with `_run-tracker.md`, after any separate skill-friction reconciliation — the
 evidence that decides whether a frozen prompt gets reopened), plus every
 `_notes-write-prompt.md` / `_notes-review-prompt.md` / `_notes-translate-prompt.md` / `_notes-review-es-prompt.md`,
 `_interview-prep-write-prompt.md` / `_interview-prep-review-prompt.md`,

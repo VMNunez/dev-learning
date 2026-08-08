@@ -15,6 +15,12 @@ description: >
 
 # Backlog-task closing ritual (daily session)
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 A task from `{PROJECT_PATH}/PROJECT-BACKLOG.md` just finished. Checking its box is the *last* thing you
 do, not the first. Walk every step below in order (0 through 5, including sub-steps 1a, 1b and 3b),
 without being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead

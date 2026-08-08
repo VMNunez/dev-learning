@@ -18,6 +18,12 @@ description: >
 
 # Coverage bullet authoring
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 A concept was just applied in project code. This skill answers one question — **is it on the checklist,
 and if not, does it belong there?** — and writes the bullet when the answer is yes.
 

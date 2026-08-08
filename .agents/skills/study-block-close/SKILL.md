@@ -11,6 +11,12 @@ description: >
 
 # Close the notes + interview-prep study block
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 This is the 13:30 block's closing ritual. It records learning state, not content quality and not
 authoring progress. The source contract is the shared session rules, "Study state and the 13:30
 closing ritual".

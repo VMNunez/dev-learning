@@ -19,6 +19,12 @@ description: >
 
 # Map sync — the two maps follow the machinery
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 `notes/prompts/README.md` (the catalogue) and `notes/prompts/_internal/_system-map.md` (the wiring)
 describe the system from the outside, and **nothing regenerates them**. `_session-rules.md` → "The two
 maps follow every change to the machinery" and "The map is also verified on read, not only on write" are

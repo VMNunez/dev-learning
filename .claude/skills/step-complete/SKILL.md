@@ -19,6 +19,12 @@ description: >
 
 # Step-completion ritual (daily session)
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 A learning-plan step just finished. The shared session rules ("After every learning plan step is
 completed") require three updates — PLANNING.md, PROGRESS.md, the README — and this ritual adds three
 more: a **check that the step really passed** (step 0, gate G1's actual trigger), **coverage** (step 3),

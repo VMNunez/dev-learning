@@ -16,6 +16,12 @@ description: >
 
 # Backlog-task opening triage
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 A task from `{PROJECT_PATH}/PROJECT-BACKLOG.md` is about to be worked on. This skill answers one
 question — **does this finding actually hold in this project, and is what it asks for what should be
 done?** — and produces a verdict before a single line is taught or written.

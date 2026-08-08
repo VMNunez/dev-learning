@@ -17,6 +17,12 @@ description: >
 
 # SQL step-closing ritual (Moment 5)
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 A step's last exercise file just scored. Walk steps 0–5 in order, without being asked. If one
 genuinely does not apply, **say so in the report table** — a silent skip is the failure this ritual
 exists to prevent.

@@ -138,6 +138,37 @@ git commit -m "type: description"
 - As I progress, add interview questions to `notes/interview-prep/` adapted to my level and to the Spanish job market — for whatever we worked on that day (Angular, Spring Boot, Java, CSS, SQL, architecture, security, etc.). Always add to both `en/` and `es/` (see "Interview prep — in-session rules")
 - Naturally mention useful keyboard shortcuts as we work — don't explain them all at once, just when they are relevant
 
+### When a skill cannot finish — durable friction
+
+All thirteen in-session skills point here rather than restating this contract. A skill run writes
+friction only when the invoked ritual **cannot complete one of its declared steps** because a required
+input is missing or contradictory outside a declared normal gate, a dispatch / tool / runtime fails, or
+an ambiguous, contradictory or breached rule leaves the result incorrect or incomplete.
+
+Do **not** write friction for a successful run, an expected no-op, an ineligible target, a normal
+deferral or handoff, mere slowness, or stale state that the skill successfully reported while completing
+its job. Typical non-events include an already-covered bullet, a README concept already represented, a
+pending study target correctly left unchanged, a partially answered or already graded SQL file, and a
+block with no friction stated. The sink records failed ritual execution, not ordinary domain state.
+
+On a qualifying failure, after reporting it and leaving the affected target open:
+
+1. Append one row per failed declared step to
+   `notes/prompts/_internal/_skill-friction.md`, using the next `FRIC-NNNN` identifier. One invocation
+   writes that step once; a real later retry is new evidence and gets a new ID.
+2. Set `Disposition` to `open`. The ID, date, skill, target, failed step and evidence are immutable;
+   only `Disposition` may later change.
+3. Commit that sink-only write atomically under the standing prompt-system authorization, with
+   `git status` immediately before staging and committing. If writing the sink or Git is itself the
+   failure, make one best-effort attempt, report it in chat, and stop — never recurse by trying to log
+   the failure to log the failure.
+
+An `open` friction row is evidence, **not automatically a recommendation**. The next runnable prompt
+close-out adjudicates it against that close-out's existing four-condition bar and either links it to a
+`REC-NNN`, dismisses it with the failed condition, or leaves it open when evidence is insufficient. This
+loop catches observable failed steps only; a skill that finishes silently with a wrong result still
+needs human review, `map-sync`, the validator, or an explicit `/system-check` to expose it.
+
 ### After every learning plan step is completed — update these files without being asked
 
 (The platform's `step-complete` skill fires on this event and walks this exact checklist —

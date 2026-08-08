@@ -30,7 +30,27 @@ reader tell a live finding from a done one at a glance, instead of re-deriving i
 next reader would otherwise re-apply changes that already existed). A clean run's status is `open` and
 stays `open` — there was nothing to apply.
 
-Before these bullets, reconcile every prompt-change recommendation from this run with
+Before reconciling this run, consume any `open` rows in
+`notes/prompts/_internal/_skill-friction.md`. This is a serialized critical section: never delegate it
+or run it in parallel with another close-out, and re-read both the friction file and
+`_recommendation-ledger.md` immediately before editing or staging. For each `FRIC-NNNN`, apply this
+contract's four-condition bar below to the evidence, and locate the file that owns the defect — a
+runtime failure normally fails condition 2, while contradictory input may belong to its upstream
+producer rather than to the skill that exposed it.
+
+- If it clears the bar, first find an existing matching recommendation. Create or update exactly one
+  `REC-NNN`, cite the `FRIC-NNNN` as its source, then change only that friction row's `Disposition` to
+  the REC ID.
+- If it fails the bar, change only `Disposition` to `dismissed — condition N: reason`.
+- If the evidence is insufficient, leave it `open`. No changed row means no commit.
+
+Commit this reconciliation **before and separately from** the normal report + tracker commit: a REC
+promotion stages `_skill-friction.md` plus `_recommendation-ledger.md`; a dismissal stages only
+`_skill-friction.md`. Run `git status` immediately before staging and committing. This step records and
+routes evidence; it never edits a skill, and therefore does not replace the mandatory cold review when
+the recommendation is later resolved.
+
+Then reconcile every prompt-change recommendation from this run with
 `notes/prompts/_internal/_recommendation-ledger.md`. A new or still-unresolved item is a row in its
 `## Open` table, state `open` or `accepted`. **An item this run resolved does not stay a row** — follow
 that file's own four-step procedure, which ends by collapsing it into a single `## Closed` line after

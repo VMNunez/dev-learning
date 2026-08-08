@@ -14,6 +14,12 @@ description: >
 
 # Writing study content inline (notes & interview-prep)
 
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+
 When this skill fires, you are writing study content **outside** the audit pipeline. Your job is to
 hit the exact same quality bar the pipeline would, so daily-session notes are never second-class.
 
