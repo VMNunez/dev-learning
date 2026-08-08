@@ -359,7 +359,7 @@ identical file to the other in the same commit.**
 | Skill | Fires when | What it writes | Hands off to |
 |---|---|---|---|
 | `step-complete` | a learning-plan step is finished | the done-condition check (gate **G1**'s real trigger) · `PLANNING.md` ✅ · `PLANNING.md` **§0** repointed at the next step · `PROGRESS.md` Projects row **and the `Professional level by topic` evidence cell** when the step earns it (§8) | `coverage-bullet-add`, `coverage-mark`, `readme-concept-add` |
-| `coverage-bullet-add` | a step/task taught a concept the checklist lacks | the bullet, in **both** coverage files, routed by **altitude** via `_topic-ownership.md` · the `⚠ stale` flag in `_run-tracker.md` | reports the `/notes-plan` remap it owes |
+| `coverage-bullet-add` | a step/task taught a concept the checklist lacks | the bullet, in **both** coverage files, routed by **altitude** via `_topic-ownership.md` · a cross-topic proposal in `_cross-topic-inbox.md` when another topic owns it · the `⚠ stale` flag in `_run-tracker.md` · recounts `PROGRESS.md` `Coverage demonstrated` after a bullet write | reports the `/notes-plan` remap it owes |
 | `coverage-mark` | a concept was applied in project code | ` ✅ NN-slug — {evidence}` on the existing bullet, both files · recounts `Coverage demonstrated` | — |
 | `readme-concept-add` | same event, README side | one entry, routed **by audience** to the global / backend / frontend README | — |
 | `backlog-task-open` | Victor picks up a backlog task | only a `⏸ Deferred YYYY-MM-DD — reason` marker, and only on that verdict | the teach-first explanation, or `backlog-task-close` |
