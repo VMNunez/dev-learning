@@ -12,7 +12,7 @@ projects are completed.
 This file is the map: what each prompt does, what it reads and generates, and how the same workflows run in Claude Code and Codex.
 
 > **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README covers the
-> 28 runnable prompts. The system map adds the in-session rituals (`step-complete`, `coverage-mark`,
+> 29 runnable prompts. The system map adds the in-session rituals (`step-complete`, `coverage-mark`,
 > `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, the debts a run
 > leaves behind, and the improvement loop itself — why a prompt is frozen and what unfreezes one (§12).
 > Start there when the question is *"who writes this file?"* rather than *"what does this prompt do?"*.
@@ -37,7 +37,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 - **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
   before dispatching any role.
 
-Both launcher catalogs contain exactly 28 files and must reference the same 28 canonical entry points.
+Both launcher catalogs contain exactly 29 files and must reference the same 29 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
 checks five invariants nothing else can see: that `.claude/skills/` and `.agents/skills/` hold the
@@ -67,7 +67,7 @@ Markdown entry points from internal Markdown:
 
 > **A leading `_` means "never launch this".** No underscore, and it is yours to run.
 
-**Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the twelve families
+**Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the thirteen families
 and this root, which holds the shared session/runtime contracts, preflight, recommendation ledger,
 self-report contracts, market context, batch rules and run tracker. Open any
 folder under `notes/prompts/` and you see its runnable prompts and one `_internal/`, never a mix you
@@ -78,12 +78,12 @@ the filenames anyway, so a file keeps its marking if it is ever moved or quoted 
 
 **Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 28 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 29 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation, or just use its slash command. **28 files, listed below.**
+  conversation, or just use its slash command. **29 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
   "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -93,10 +93,10 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 28 runnable prompts — each with its own slash command
+### The 29 runnable prompts — each with its own slash command
 
 **The command is the prompt's filename minus the `-prompt` suffix** — `coverage-prompt` → `/coverage`,
-`progress-update-prompt` → `/progress-update`. Twenty of the 28 work that way; seven files carry no
+`progress-update-prompt` → `/progress-update`. Twenty-one of the 29 work that way; seven files carry no
 `-prompt` suffix at all — the `*-audit.md` orchestrators — so their command *is* the filename
 (`/review-audit`). That is a *filename* glob and not a command one: `/coverage-audit` also ends in
 `-audit` and its file is `coverage-audit-prompt.md`, a suffix-drop like the other nineteen. **One
@@ -115,16 +115,18 @@ own catalog check already fails on.
 | Projects | `project-brief-prompt`, `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
 | Practice | `sql-plan-prompt`, `sql-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
+| System | `system-check-prompt` |
 
-Two flavors among these 28, both launched the same way (paste config into a new chat):
+Two flavors among these 29, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `project-brief-prompt`,
   `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
   `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt`,
-  `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, and `sql-plan-audit` (they run the orchestrator contract
+  `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, `sql-plan-audit`, and
+  `system-check-prompt` (they run the orchestrator contract
   even when the target is singular) — run entirely inside a supported agent runtime and hand you a
-  finished result (and, where noted, a commit) with no further input from you. **Sixteen prompts**, and
-  the set is defined by which self-report they run: these sixteen execute `_pipeline-self-report.md`.
+  finished result (and, where noted, a commit) with no further input from you. **Seventeen prompts**, and
+  the set is defined by which self-report they run: these seventeen execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
@@ -144,6 +146,8 @@ are exempt.
 `_sql-plan-standard.md`, `_sql-exercise-seeds.md`, `_sql-exercises-practice.md`,
 `_sql-exercises-review.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`,
+`system/_internal/_system-check-report.md` (the latest explicit whole-system audit: inventory coverage,
+map corrections, operational debt, architecture recommendations, and the cold-review verdict),
 `_single-shot-self-report.md` (the same contract for the twelve non-orchestrator prompts: close-out check against declared outputs, tracker update, three bullets, refinement behind a cold reviewer),
 `_pipeline-self-report.md` (the shared final step every orchestrator runs: five bullets on how the run
 itself went, written to `_last-run-report*.md` in the orchestrator's own `_internal/` folder and
@@ -265,6 +269,12 @@ accurate; `apply/` produces the job-application material.
 | `strategy/apply/cover-letter-prompt.md` | `letter` (formal one-page *carta de presentación*) / `message` (short 5–6 line recruiter message) tailored to a pasted offer, in the same Spanish voice as the CV. | `_application-standard.md`, `PROGRESS.md`, `ROADMAP.md`, the pasted offer | **Output only** — cover-letter/message text (not stored in the repo). **No repo file, so the close-out names the mode's obligations instead: the letter/message itself, and that it was tailored to the pasted offer rather than generic.** |
 | `strategy/apply/profile-readme-prompt.md` | `sync` (pull in fact deltas only) / `optimize` (full re-evaluation against the job target) for the GitHub profile README. The repeatable entry point so the coding agent never needs to be re-briefed on that repo's context each time. | the profile repo's `{platform-adapter}` (standing context + gap list), that repo's `README.md`, `PROGRESS.md`, the active project's `PLANNING.md`, `personal/job-search/internship-daw.md` | Edits `dev/portfolio/VMNunez/README.md` + the external adapter's gap list directly (separate repo, never committed from here — the close-out checks both paths' **mtime is from this run**, not just that they exist) |
 | `strategy/apply/tracker-prompt.md` | `log` a new application / `update` an outcome + feedback / `analyze` the tracker for patterns. Records the job search as data and surfaces skill gaps to feed `evidence-intake`. | `_application-standard.md`, the local tracker in `personal/job-search/` | Writes `personal/job-search/tracker.csv` + `applications/<empresa>-<puesto>/` **outside the repo** (never committed — close-out checks **mtime is from this run**); `analyze` writes nothing, so it names its findings instead of passing on an empty list, and suggests `evidence-intake` |
+
+### System — audit the machinery (`system/`)
+
+| Prompt | What it does | Reads | Generates / updates |
+|--------|--------------|-------|---------------------|
+| `system/system-check-prompt.md` | **Explicit, global, on-demand audit — never a per-commit gate.** Builds a disk-derived manifest of every runnable prompt, internal component, launcher, and mirrored skill; proves every assigned file was read to EOF; checks every relevant catalogue, chain, writer, ownership, skill, debt, symptom, and improvement-loop claim; corrects only the two derived maps; then sweeps recorded operational debt and routes cross-system improvements to the recommendation ledger. A cold final reviewer must approve the complete reconciliation before it may publish a global verdict. | every prompt-system Markdown component except historical last-run reports, `validate-prompt-system.ps1`, both launcher catalogues, paired skills, `_run-tracker.md`, `_recommendation-ledger.md`, every project backlog and the project/SQL gate sections needed for the debt sweep | `notes/prompts/README.md`, `_internal/_system-map.md`, `system/_internal/_system-check-report.md`, and justified recommendation-ledger rows; never source prompts, skills, standards, plans, backlogs, or debt records |
 
 ---
 
@@ -426,6 +436,13 @@ finished—the complete selected-level notes plan is its prerequisite.
 3. Per offer: `cv-prompt` `tailor` + `cover-letter-prompt` → then `tracker-prompt` `log` to record it
 4. As results come in: `tracker-prompt` `update` (outcome + feedback), then `analyze` → gaps feed `evidence-intake`
 
+**Auditing the machinery**
+
+- Run `system-check` only when Victor explicitly asks for it, normally after a substantial group of
+  prompt/skill changes or before a deliberate whole-system refinement pass.
+- It is not part of the daily workflow and never runs before ordinary commits. `map-sync` remains the
+  incremental change/read ritual; the PowerShell validator remains the token-free structural check.
+
 ---
 
 ## Batch mode — run a prompt on every target at once
@@ -441,7 +458,7 @@ processes every target in order, one commit per target. Full rules: `notes/promp
   `simulation-generator`, `code-review` (`TYPE = all`).
 - **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`, and
   `project-brief` (one decision per run — `all` would mean choosing several next projects at once).
-- **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `cv`,
+- **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `system-check`, `cv`,
   `linkedin`, and `simulator` full mode — these cover everything in one run by design.
   `progress-update` defaults to `MODE = active` (only the in-progress project); set `MODE = all`
   for the full global pass.

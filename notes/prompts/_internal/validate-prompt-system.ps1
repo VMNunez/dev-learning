@@ -8,7 +8,7 @@ if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
     $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 }
 
-$expectedRunnableCount = 28
+$expectedRunnableCount = 29
 $promptRoot = Join-Path $RepositoryRoot 'notes\prompts'
 $claudeRoot = Join-Path $RepositoryRoot '.claude\commands'
 $codexRoot = Join-Path $RepositoryRoot '.codex\commands'
@@ -157,11 +157,12 @@ $pipelinePromptPaths = @(
     'projects\readme\readme-audit.md',
     'projects\review\review-audit.md',
     'strategy\tracking\progress-update-prompt.md',
-    'strategy\tracking\roadmap-review-prompt.md'
+    'strategy\tracking\roadmap-review-prompt.md',
+    'system\system-check-prompt.md'
 )
 
-if ($pipelinePromptPaths.Count -ne 16) {
-    Add-ValidationError "Expected 16 pipeline prompts; found $($pipelinePromptPaths.Count)."
+if ($pipelinePromptPaths.Count -ne 17) {
+    Add-ValidationError "Expected 17 pipeline prompts; found $($pipelinePromptPaths.Count)."
 }
 
 foreach ($prompt in $runnable) {
@@ -502,7 +503,7 @@ if (-not $skillSection.Success) {
 # The slash command is the launcher's own filename, never the prompt name minus its
 # suffix. Guessing it is wrong for `code-review-prompt`, which launches deliberately as
 # `/code-review-practice` because the host agent's own diff review already owns
-# `/code-review` - true of both adapters, see README.md "The 28 runnable prompts".
+# `/code-review` - true of both adapters, see README.md "The 29 runnable prompts".
 $launcherCommands = @{}
 foreach ($claudeLauncher in $claudeLaunchers) {
     $launcherTarget = [regex]::Match(

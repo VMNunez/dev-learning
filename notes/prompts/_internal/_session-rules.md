@@ -577,9 +577,10 @@ for the same reason: afterwards a skip and a genuine no-op are indistinguishable
 **It never blocks and it never sweeps.** A verification that stops the work stops being run — the
 zero-questions rule that skills are built on, applied to the map. And it only ever reaches files a
 session happened to open: rows about prompts nobody runs stay unverified, and this rule cannot say which
-ones those are. Closing *that* gap needs a sweep this rule is not — `REC-056`'s proposed `/system-check`
-and the whole-system review of `REC-054`. **Neither exists yet**, so that gap is simply open; do not
-write it as though it had an owner.
+ones those are. The explicit, token-intensive `/system-check` now owns that global sweep **only when
+Victor launches it**, normally after substantial machinery changes; it is never inferred, scheduled or
+run per commit. `REC-054` remains a different future review: whether the settled machinery adds up to a
+workable day, not whether the two maps describe it truthfully.
 
 The system is built — **run the prompts, don't keep editing them.** If you feel the urge to polish
 the machinery, take it as the signal to go use it instead.

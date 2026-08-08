@@ -16,7 +16,7 @@ in halves:
 | File | Owns |
 |---|---|
 | `notes/prompts/_internal/_session-rules.md` | the session contract: the rituals, the commit boundary, the non-negotiables |
-| `notes/prompts/README.md` | the prompt catalogue: what each of the 28 prompts reads and generates, batch mode, run order |
+| `notes/prompts/README.md` | the prompt catalogue: what each of the 29 prompts reads and generates, batch mode, run order |
 | each `SKILL.md` (`.claude/skills/` + `.agents/skills/`) | the exact steps of one ritual |
 
 If this map disagrees with any of them, they win and this file is wrong.
@@ -41,8 +41,8 @@ itself. Never a chain's order, §8's ownership or §1's properties, which no sin
 read of any depth rules on a **contradiction**; only a whole read rules on an absence. A correction lands
 in **its own commit** and the verdict is said out loud: `map: verified — {rows}` / `map: corrected —
 {row}` / `map: not verified — partial read`. It never blocks and never sweeps, so rows about prompts
-nobody opens stay unverified — a gap that needs a sweep nobody has built yet (`REC-056`, `REC-054`), not
-one this rule can be read as covering.
+nobody opens stay unverified between explicit global audits. `/system-check` is that on-demand sweep;
+`REC-054` remains the later review of whether the settled machinery adds up to a workable day.
 
 **Both triggers are walked by the `map-sync` ritual** (§9), which exists for the same reason
 `step-complete` does: the rules above were already written and the observed failure is *partial*
@@ -59,7 +59,7 @@ Everything in the repo is written by one of two things, and they are built on op
 |---|---|---|
 | Where it runs | a separate, **cold** conversation | inside the **daily session**, with full context |
 | How it starts | you launch it — `/name` or paste the config block | it **fires on an event**; you never launch it |
-| Unit of work | one topic+level, one project, one note pair | one step, one task, one file, one block |
+| Unit of work | one topic+level, one project, one note pair — or the whole machinery for explicit `/system-check` | one step, one task, one file, one block |
 | Questions | config up front, then hands-off to the end | **zero, by design** — a ritual that asks stops being run |
 | Depth | fans out cold subagents, one per concern | one pass down a mechanical checklist |
 | Trace it leaves | `_last-run-report*.md` + a row in `_run-tracker.md` | only the files of the ritual itself |
@@ -118,6 +118,9 @@ and are the system's, not his. Full rule in `_session-rules.md`.
                                              │                                     (loop closes)
                                         R1–R5 revision points
 ```
+
+`/system-check` sits outside Chains A–D. It consumes the machinery and both maps as one explicit global
+audit after substantial changes; it never becomes a prerequisite of their ordinary runs or commits.
 
 ---
 
@@ -310,12 +313,13 @@ files: the system that describes and checks the system, which has writers like e
 | `practice/sql/{LEVEL}/NN-*.sql` | **Victor** (the grader only appends `-- ✅ Corregido`) | `sql-grade` |
 | `practice/simulations/TRACKER.md` | `/simulation-generator` (rows) · `/simulation-review` (status) | `/progress-update`, `/simulation-review` |
 | `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit` |
-| `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, and prompts that gate on it |
-| `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** · the `map-sync` ritual, which walks both triggers · never a prompt, never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
-| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 13 of the 28 prompts also name it directly. It **outranks this map** |
-| `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
+| `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, `/system-check`, and prompts that gate on it |
+| `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
+| `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
+| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 13 of the 29 prompts also name it directly. It **outranks this map** |
+| `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · `/system-check` for cross-system audit findings · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item; `/system-check` includes its open/accepted rows in the operational-debt queue. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
 | `{family}/_internal/_last-run-report*.md` | **its own prompt's close-out only** — one per runnable prompt, **overwritten** each run, never appended, and committed together with `_run-tracker.md` | that same prompt's step 0 run-start check (via the `Status:` line), and the ledger reconciliation |
-| `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | run by hand — see §12. The only automated check in the system |
+| `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | run by hand and by `/system-check` before and after its semantic audit — see §12. The only automated check in the system |
 | `notes/prompts/_internal/_shared-context.md` | **by hand.** No prompt writes it; the market file beside it (`_job-market-evidence.md`) is the one that gets fed automatically | almost every prompt. `_session-rules.md`'s "Who I am" bullets are its condensed copy, so the two drift apart unless they are edited together |
 | `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` | **by hand, through its own admission contract, with explicit authorization.** A coverage run that meets an unregistered topic **stops** — it never infers a boundary and never registers one silently | `/coverage`, `/coverage-audit`, `/roadmap-review`, `coverage-bullet-add` (altitude routing), and every prompt whose `TOPIC` field reads "one registered topic" |
 | `personal/job-search/**` (**outside the repo**, never committed from here) | `/cv` (`master/`, `applications/`) · `/tracker` (`tracker.csv`, `applications/<empresa>-<puesto>/`) | the whole apply family — `/cv`, `/cover-letter` and `/linkedin` through `_application-standard.md`, `/profile-readme` for `internship-daw.md`. Existence proves nothing here: a close-out checks the **mtime is from this run** |
@@ -398,6 +402,9 @@ The things a run leaves behind that are easy to miss.
   written by the review prompt and the two backlog skills, never by Victor.
 - **A skill edited in one adapter is edited in both, in the same commit.** They drifted silently once
   (2026-07-30 → 2026-08-01) and Codex ran a ritual two revisions old. `diff` the pair before committing.
+- **The recorded-debt sweep is explicit, not continuous.** `/system-check` reads tracker flags, open or
+  accepted recommendations, project backlog priorities/deferred markers and due project/SQL gates into
+  one owner-routed queue. It reports and prioritises them; it never clears another owner's debt.
 
 ---
 
@@ -415,6 +422,7 @@ The things a run leaves behind that are easy to miss.
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
 | a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |
 | a prompt or skill was added, renamed or retired · a path may have gone dead · a map may never have learned the machinery exists | `_internal/validate-prompt-system.ps1` (§12) — the only check that can see a **non**-firing `map-sync` |
+| after substantial machinery changes, you need every prompt/skill claim and recorded debt checked together | `/system-check` — explicit global audit; never an ordinary-commit gate |
 
 ---
 
@@ -427,7 +435,7 @@ and `_session-rules.md` says the same to the session: *"The system is built — 
 editing them."* So an edit is never a decision someone makes; it is the last
 step of a chain that starts with a run, and every link exists because the previous one was skipped once.
 
-1. **A run ends by executing its self-report contract** — five bullets for the sixteen orchestrators
+1. **A run ends by executing its self-report contract** — five bullets for the seventeen orchestrators
    (`_pipeline-self-report.md`), three for the twelve single-shot prompts
    (`_single-shot-self-report.md`). It reports the **machinery, never the content**, and carries a
    `Status:` line — `open` or `applied in <hash>` — which is what makes a live finding distinguishable
@@ -486,3 +494,12 @@ which is why the read trigger exists at all. Nor does it repair: on the fingerpr
 `REPORT:` for a `stale` plan whose digest still matches, because clearing that flag without running
 `/notes-plan` is the lie the flag exists to prevent — but a plan claiming `current` against a moved
 fingerprint **fails the run**.
+
+### The explicit semantic sweep
+
+`/system-check` complements the validator and `map-sync`; it replaces neither. When Victor launches it
+after substantial machinery changes, cold family manifests read the complete prompt/skill system to EOF,
+the orchestrator reconciles every relevant claim in both maps, a cold final reviewer gates the global
+verdict, and the run writes the durable system-check report plus an owner-routed debt queue. It may correct
+the two derived maps and file recommendations, but never edits source machinery or clears recorded debt.
+Because it is token-intensive, it is **explicit only** — never scheduled, inferred, or run per commit.

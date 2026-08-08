@@ -127,10 +127,11 @@ Always close with the verdict, in this vocabulary — it is what makes a skip vi
 ## What this ritual cannot do
 
 **It never sweeps.** It only ever reaches the files a session happened to open or edit, so rows about
-prompts nobody runs stay unverified — and it cannot tell you which ones those are. Closing that gap needs
-a sweep this ritual is not: `REC-056`'s proposed `/system-check` and the whole-system review of
-`REC-054`. **Neither exists yet** — until one does, that gap is simply open, and it must not be described
-as owned. Say so rather than letting a `map: verified` be read as a freshness guarantee for the whole map.
+prompts nobody runs stay unverified — and it cannot tell you which ones those are. `/system-check` is the
+separate explicit sweep: Victor launches it after substantial machinery changes, never per commit or as
+an automatic extension of this ritual. `REC-054` remains the different future review of whether the
+settled machinery adds up to a workable day. A local `map: verified` still means only the licensed rows
+were checked; it is never a freshness guarantee for the whole map.
 
 **It never blocks.** A verification that stops the work stops being run — the zero-questions rule every
 skill is built on, applied to the maps. A row you cannot rule on is reported and left alone.
