@@ -295,7 +295,7 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/{topic}/coverage/{LEVEL}.md` **+ mirror** `notes/coverage/{LEVEL}.md` | `/coverage`, `/coverage-audit` (bulk) · `coverage-bullet-add` (one bullet) · `coverage-mark` (project markers) · `sql-step-close` (drill markers, SQL only) | everything downstream |
 | `notes/{topic}/coverage/verify-{LEVEL}.md` | `/coverage-verify` | `/notes-plan` (advisory), `/coverage` update |
 | `notes/{topic}/coverage/notes-plan-{LEVEL}.md` | **`/notes-plan` only** — never by hand, never by a skill | `/notes-audit` (fingerprint gate), `/coverage`, `/interview-prep-audit` |
-| `notes/{topic}/{level}/en|es/*.md` | `/notes-audit` · in session, guided by `study-content-writer` | `/notes-and-interview-prep`, Victor |
+| `notes/{topic}/{level}/en|es/*.md` | `/notes-audit` · `/notes-and-interview-prep` · in session, guided by `study-content-writer` | `/notes-and-interview-prep`, Victor |
 | `notes/interview-prep/{LEVEL}/en|es/*.md` | `/interview-prep-audit`, `/notes-and-interview-prep`, `/simulation-review`, `/code-review-practice` | `/simulator` |
 | `notes/interview-prep/projects/*.md` | `/portfolio-audit` | `/simulator` |
 | `PROGRESS.md` | **section by section — see §8** | `/plan-audit`, `/roadmap-review`, `/project-brief`, `/review-audit`, `/cv`, `/linkedin`, `/sql-exercises` |
