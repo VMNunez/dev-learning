@@ -393,6 +393,24 @@ notes/java/
 - Add questions naturally as concepts are learned — not in one batch at the end
 - Add to BOTH `en/` and `es/` at the same time — same question, same section, translated. Never add to one without the other
 
+### Study state and the 13:30 closing ritual
+
+Authored is not studied. The notes pipeline's `Status: complete/refined` says the bilingual artifact
+exists and passed its quality gates; it does not say Victor has studied it. Every notes-plan entry
+therefore has an independent `Studied: pending | YYYY-MM-DD` field. Interview prep keeps its existing
+question-level `[x]` marker as the studied state; no second Q&A tracker or planning prompt duplicates it.
+
+When Victor closes the 13:30 notes/interview-prep block, `study-block-close` records only the units the
+session proves he actively studied: it dates eligible complete/refined note entries, mirrors `[x]` on
+the exact bilingual questions worked, then recounts `PROGRESS.md` `## Study progress`. It asks nothing,
+never infers study from a file merely existing, and leaves a pending/stale target unchanged. A material
+note edit resets its `Studied` field to `pending`; the next active study pass sets the new date.
+
+`Study progress` is separate from `Coverage demonstrated`: the former measures consolidation, the
+latter measures concepts applied in code. SQL exercises and timed simulations remain separate under
+`Practice completed`, each split by professional level. A missing or stale route/fingerprint prints
+`—`, never a plausible `0%` over an incomplete denominator.
+
 ### README format
 
 All README format rules and quality standards live in `notes/prompts/projects/readme/_internal/_readme-standard.md`; run `readme-audit.md` in a supported agent runtime to apply them. Run in a separate conversation.

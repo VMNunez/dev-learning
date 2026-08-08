@@ -179,6 +179,11 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    appending to what is already there and never rewriting or dropping an unconsumed one. Reconciliation
    reports these as `refined + N additions`, never as reopened entries. A `refined` entry whose English
    or Spanish file is missing is reported as a broken freeze and left untouched for Victor to resolve.
+   `Studied` is a separate state: write `Studied: pending` on a new entry and treat a missing legacy
+   field as pending. Preserve a date only while the accepted bilingual pair and its pedagogical
+   contract remain materially unchanged. Reset it to `pending` when an entry is reopened, gains
+   `Pending additions`, loses either language, or its prose contract changes. A byte-preserving
+   same-level renumber or relocation preserves the date. This prompt never writes a date.
    Every pre-existing `[x]` bullet under that entry's `Coverage concepts` is also a coverage lock. Compare
    scope text with every trailing marker stripped, of either kind: if coverage moved, reworded, deleted, split,
    merged, routed, or reordered one, stop and report a broken coverage lock. Never reconcile the
@@ -237,6 +242,7 @@ Generated: YYYY-MM-DD
 ## 01 — Variables and types
 
 Status: pending
+Studied: pending
 Action: audit
 English: notes/java/junior/en/01-variables-types.md
 Spanish: notes/java/junior/es/01-variables-tipos.md
@@ -282,6 +288,9 @@ Rules:
 
 - Entry headings are unique and ordered numerically.
 - `Status` is exactly `pending`, `complete`, or `refined`.
+- `Studied` is exactly `pending` or an ISO date (`YYYY-MM-DD`). A legacy entry with no field is read
+  as pending and gains the field on its next reconciliation. A date is valid only on `complete` or
+  `refined`; authoring never sets it.
 - `Action` is exactly `create` or `audit`.
 - `Pending additions` is `none` or a list of coverage bullets quoted verbatim from `COVERAGE`. It is
   meaningful only on a `refined` entry; on `pending` and `complete` entries it is always `none`, because
@@ -364,7 +373,7 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 Report topic, level, coverage fingerprint, the `VERIFY` verdict as read (never prescribe repeated
 verification until zero gaps), entry count,
 concept count, create/audit counts,
-checked/unchecked concept counts, preserved-complete count, every `refined` entry with the count of `Pending additions` it now carries
+checked/unchecked concept counts, preserved-complete count, studied/pending entry counts, every `refined` entry with the count of `Pending additions` it now carries
 (and any broken freeze), every legacy classification decision, relocations, renumberings, split
 blockers,
 unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,

@@ -143,29 +143,32 @@ The root of everything. Coverage defines *what junior means*; every other chain 
 3. **`/notes-plan {topic} {level}`** — turns the checklist into a study map: which note file teaches
    which bullet, in what order, each bullet mapped **exactly once**.
    → writes `notes/{topic}/coverage/notes-plan-{LEVEL}.md`, carrying a `Coverage SHA-256` fingerprint of
-   the coverage file it was built from. It writes no prose.
+   the coverage file it was built from. Each entry separates authored `Status` from its independent
+   `Studied` date. It writes no prose.
 
 4. **`/notes-audit {topic} {level} {note}`** — builds **one** planned file pair through four cold stages
    (English author → English reviewer → translator → Spanish reviewer).
    → writes `notes/{topic}/{level}/en/NN-*.md` + `es/NN-*.md`, marks that entry's concepts `[x]` in the
-   plan, and commits the three atomically. Repeat once per pending entry until the plan is all
+   plan, resets `Studied` when prose changes, and commits the three atomically. Repeat once per pending entry until the plan is all
    `complete` / `refined`. It refuses to run on a plan whose fingerprint is stale — that is why step 3
    is not optional.
 
 5. **`/interview-prep-audit {level} {topic}`** — the Q&A bank for that topic and level. Its prerequisite
    is the **whole** notes plan being complete, not one note.
-   → writes `notes/interview-prep/{LEVEL}/en/*.md` + `es/*.md`.
+   → writes fingerprinted `notes/interview-prep/{LEVEL}/en/*.md` + `es/*.md`, including standalone
+   Spring; Angular Material deliberately shares Angular's bank.
 
-6. **`/notes-and-interview-prep {topic}`** — reconciles notes ↔ Q&A in both directions once both exist.
+6. **`/notes-and-interview-prep {topic}`** — closes notes → Q&A gaps in the bank; Q&A → notes gaps are
+   routed to coverage or the owning planned entry, never authored around `/notes-plan` + `/notes-audit`.
 
 7. **When every topic has that level: `/coverage-audit {level}`** — the convergence pass over the global
    mirror (level boundaries, missing topics, ownership overlaps) — **then `/roadmap-review`**.
 
-**In-session on this chain:** the `study-content-writer` skill. The quality standard only auto-loads
-inside `/notes-audit`, so any note or Q&A written *outside* those runs would silently miss the bar; this
-skill loads it, writes the `en/` + `es/` pair to that bar and commits it. It does **not** touch the notes
-plan — a note written this way leaves its plan entry untouched, which is the one thing `/notes-audit`
-does that this does not.
+**In-session on this chain:** `study-content-writer` may refine only an existing complete pair,
+loads the same standard, keeps both languages aligned, and resets that entry's `Studied` state. A
+missing or pending entry goes back to `/notes-plan` + `/notes-audit`; inline creation is forbidden.
+When the 13:30 block ends, `study-block-close` dates the exact notes studied, mirrors `[x]` on the exact
+Q&A worked, and recounts `PROGRESS.md` `Study progress`.
 
 **The sideways door: `_cross-topic-inbox.md`.** When any coverage run — or `coverage-bullet-add` in a
 daily session — finds a concept owned by a *different* topic, it never writes into that topic's file. It
@@ -294,9 +297,9 @@ files: the system that describes and checks the system, which has writers like e
 |---|---|---|
 | `notes/{topic}/coverage/{LEVEL}.md` **+ mirror** `notes/coverage/{LEVEL}.md` | `/coverage`, `/coverage-audit` (bulk) · `coverage-bullet-add` (one bullet) · `coverage-mark` (project markers) · `sql-step-close` (drill markers, SQL only) | everything downstream |
 | `notes/{topic}/coverage/verify-{LEVEL}.md` | `/coverage-verify` | `/notes-plan` (advisory), `/coverage` update |
-| `notes/{topic}/coverage/notes-plan-{LEVEL}.md` | **`/notes-plan` only** — never by hand, never by a skill | `/notes-audit` (fingerprint gate), `/coverage`, `/interview-prep-audit` |
-| `notes/{topic}/{level}/en|es/*.md` | `/notes-audit` · `/notes-and-interview-prep` · in session, guided by `study-content-writer` | `/notes-and-interview-prep`, Victor |
-| `notes/interview-prep/{LEVEL}/en|es/*.md` | `/interview-prep-audit`, `/notes-and-interview-prep`, `/simulation-review`, `/code-review-practice` | `/simulator` |
+| `notes/{topic}/coverage/notes-plan-{LEVEL}.md` | `/notes-plan` (whole route) · `/notes-audit` (concept/status + studied reset) · `study-content-writer` (studied reset only) · `study-block-close` (studied date only) | `/notes-audit` (fingerprint gate), `/coverage`, `/interview-prep-audit`, `/progress-update` |
+| `notes/{topic}/{level}/en|es/*.md` | `/notes-audit` · in session, guided by `study-content-writer` for an existing complete, non-frozen pair only | `/notes-and-interview-prep`, Victor |
+| `notes/interview-prep/{LEVEL}/en|es/*.md` | `/interview-prep-audit`, `/notes-and-interview-prep`, `/simulation-review`, `/code-review-practice`, `study-block-close` (`[x]` only) | `/simulator`, `/progress-update` |
 | `notes/interview-prep/projects/*.md` | `/portfolio-audit` | `/simulator` |
 | `PROGRESS.md` | **section by section — see §8** | `/plan-audit`, `/roadmap-review`, `/project-brief`, `/review-audit`, `/cv`, `/linkedin`, `/sql-exercises` |
 | `ROADMAP.md` | `/roadmap-review` (+ `/plan-audit` marks the chosen project) | `/project-brief`, `/hr-screen`, the SQL gates |
@@ -336,9 +339,10 @@ This is the file you asked about, and the one where "who writes it" is least obv
 |---|---|---|
 | `## Professional level by topic` | **`/progress-update`** — the only writer of the table | needs all 13 topics at once, which no ritual can compute. `step-complete` / `backlog-task-close` may update a single **evidence cell** when a step or fix earns it |
 | `## Coverage demonstrated` | **`coverage-mark` and `coverage-bullet-add`** | they **recount** their cells and the `Total` row from the coverage files with each write. `step-complete` deliberately does **not** touch this table: two writers means the memory-derived copy overwrites the recounted one |
+| `## Study progress` | **`study-block-close`** | dates / `[x]` are primary state; this section is their per-level roll-up. `/progress-update` measures it as D9 and reports drift |
 | `## Projects` | **`step-complete`** / **`backlog-task-close`** (the `Status` cell) | the row itself is created by `/plan-audit MODE = new` |
 | `## Practice completed → Exercise route` | **`sql-grade`'s cold subagent** | `sql-step-close` re-checks that the `Total` rows still add up. The `Corrected` total cell stays blank by design |
-| `→ Timed simulations` | counted from `practice/simulations/TRACKER.md` | which `/simulation-generator` and `/simulation-review` write |
+| `→ Timed simulations` | **`/simulation-review`** | counted by explicit level + track from `practice/simulations/TRACKER.md`; `/progress-update` audits it |
 | `→ LeetCode` | nothing yet — gated behind the ROADMAP gates | |
 
 **No concept lists.** The per-technology concept sections were deleted on 2026-08-03 because they were
@@ -349,7 +353,7 @@ and nowhere else; only its *effect* on level, percentage or project status is re
 
 ## 9 — The skills, one row each
 
-All twelve are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
+All thirteen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
 identical file to the other in the same commit.**
 
 | Skill | Fires when | What it writes | Hands off to |
@@ -360,7 +364,8 @@ identical file to the other in the same commit.**
 | `readme-concept-add` | same event, README side | one entry, routed **by audience** to the global / backend / frontend README | — |
 | `backlog-task-open` | Victor picks up a backlog task | only a `⏸ Deferred YYYY-MM-DD — reason` marker, and only on that verdict | the teach-first explanation, or `backlog-task-close` |
 | `backlog-task-close` | a backlog task is done | coverage bullet + marker · README entry · `PLANNING.md` rules + §0 · `PROGRESS.md` · collapses the task into the `## Closed` ledger | `coverage-bullet-add`, `coverage-mark`, `readme-concept-add` |
-| `study-content-writer` | writing a note or Q&A **outside** the audit prompts | the `en/` + `es/` files themselves, to the same bar the pipeline would, and it commits them | — |
+| `study-content-writer` | refining an existing complete note or writing Q&A **outside** the audit prompts | the `en/` + `es/` files to the same bar · notes-plan `Studied` reset after note prose changes | `/notes-plan` + `/notes-audit` when the note is missing/pending; Victor hand-back when refined |
+| `study-block-close` | Victor ends the 13:30 notes/interview-prep block | notes-plan `Studied` dates · exact bilingual Q&A `[x]` markers · `PROGRESS.md` Study progress | — |
 | `sql-block-open` | the 12:30 block starts | **nothing — read-only** | — |
 | `sql-grade` | "corrige el 02" | nothing directly; a **cold subagent** writes `MISTAKES.md`, `PROGRESS.md`, the route, the doctrine §0 | `sql-step-close` on ≥ 80% + last file |
 | `sql-step-close` | a step's last file scores ≥ 80% | `✅ sql:{file-slug}` drill markers on coverage + mirror · §0 verify · `Total` arithmetic · the §8c unlocked line | names the due gate / revision point |

@@ -8,7 +8,8 @@ can point a subagent at it; you can also run it standalone to build/audit a sing
 **What it does.** Takes one topic's Q&A files (`en/{FILE}.md` + `es/{FILE}.md`) and does the full
 audit: syncs the two languages, resolves TODOs, checks coverage, assigns priority markers, fixes
 format, and adds every realistic question the topic needs. It leaves the work in the tree — it does
-**not** commit; the reviewer owns that.
+**not** commit. Under `interview-prep-audit` the orchestrator owns the one topic commit; only the
+standalone author → reviewer flow lets the reviewer commit.
 
 **Why one topic at a time.** The quality bar (realistic questions, well-worded, answered in Victor's
 voice) is demanding. A cold subagent bounded to one topic keeps its full attention on that file, so the
@@ -30,7 +31,7 @@ bar actually gets applied every time.
 ## Replace the [ ] with your value and delete the brackets.
 
 LEVEL = [junior | middle | senior]
-FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
+FILE = [angular | css | javascript | typescript | sql | java | spring | spring-boot | architecture | git | general | security]
        → notes/interview-prep/{LEVEL}/en/{FILE}.md
        → notes/interview-prep/{LEVEL}/es/{FILE}.md
        → FILE can also be a path to ONE language file (e.g. notes/interview-prep/junior/en/angular.md):

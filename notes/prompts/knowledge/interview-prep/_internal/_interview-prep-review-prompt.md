@@ -22,7 +22,7 @@ prompt is subagent A). You can also run it standalone to audit a single topic's 
 ## Configuration — edit only this block
 
 LEVEL   = [junior | middle | senior]
-FILE    = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
+FILE    = [angular | css | javascript | typescript | sql | java | spring | spring-boot | architecture | git | general | security]
 SECTION = [all | ## Routing | ## Forms | ...]   ← must match the author's run
 DRY_RUN = [false | true]
 

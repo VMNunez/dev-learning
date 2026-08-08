@@ -48,7 +48,8 @@ is not.
 > frozen sections — a structural gap there is Victor's call, not a blocker. In the plan you change only
 > the consumed concepts from `[ ]` to `[x]` plus the same bullets in `Pending additions` (to `none`
 > when all are consumed), and you leave
-> `Status: refined` untouched; you never write `Status: complete` on a refined entry. Commit message:
+> `Status: refined` untouched; set `Studied: pending` because accepted prose changed, and never write
+> `Status: complete` on a refined entry. Commit message:
 > `docs(notes): extend refined {TOPIC} {LEVEL} note {NOTE} with {N} coverage additions`. Your report
 > must include a `git diff` over both files proving additions only.
 
@@ -134,7 +135,8 @@ You are the last stage in the chain, so you own the single atomic commit for thi
    `{ES_FILE}`. Mark every concept this successful run incorporated from `[ ]` to `[x]`. Change only
    that entry's `Status: pending` to `Status: complete` when no assigned `[ ]` concept remains — in
    `append-only` mode, mark only the consumed additions `[x]`, remove the same bullets from
-   `Pending additions`, and leave `Status: refined` as it is.
+   `Pending additions`, and leave `Status: refined` as it is. Set this entry's `Studied: pending`,
+   inserting the field after `Status` when the legacy plan lacks it; this run changed accepted prose.
 2. Commit `{FILE}`, `{ES_FILE}`, and `{PLAN}` atomically. Before `git add` and before `git commit`, run
    `git status --short`, confirm the exact intended paths, and stage no wildcard. Use:
    `docs(notes): complete {TOPIC} {LEVEL} note {NOTE}`.

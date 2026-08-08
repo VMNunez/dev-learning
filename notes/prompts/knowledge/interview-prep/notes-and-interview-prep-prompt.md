@@ -24,16 +24,18 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 LEVEL = [junior | middle | senior]
 TOPIC      = [one registered topic from `../coverage/_internal/_topic-ownership.md` | all]
 NOTES_PATH = [notes/{topic}/{LEVEL}/en/]
-FILE       = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security]
+FILE       = [angular | css | javascript | typescript | sql | java | spring | spring-boot | architecture | git | general | security]
              → notes/interview-prep/{LEVEL}/en/{FILE}.md
              → notes/interview-prep/{LEVEL}/es/{FILE}.md
 
 ## TOPIC = all runs every topic in turn (NOTES_PATH and FILE derived per topic) —
-## see notes/prompts/_internal/_batch-mode.md. Order: Angular, Angular Material, Spring Boot, Java,
+## see notes/prompts/_internal/_batch-mode.md. Order: Angular, Angular Material, Spring, Spring Boot, Java,
 ## Architecture, Security, TypeScript, JavaScript, CSS, SQL, Git, General.
 
 Notes on specific topics:
-- Spring Boot: set NOTES_PATH = notes/spring-boot/{LEVEL}/en/, notes/java/{LEVEL}/en/ (comma-separated — read both;
+- Spring: set NOTES_PATH = notes/spring/{LEVEL}/en/, FILE = spring.
+- Spring Boot: set NOTES_PATH = notes/spring-boot/{LEVEL}/en/, notes/spring/{LEVEL}/en/,
+  notes/java/{LEVEL}/en/ (comma-separated — read all three;
   Spring Boot code uses Java language concepts). Before marking a JWT or security question as
   unbacked, also check notes/security/{LEVEL}/en/ — JWT design and token invalidation concepts live
   there by folder convention.
@@ -84,16 +86,15 @@ Split this run into two kinds of work, and never mix them:
   topic (which note concept has no question, which question has no note, where a concept could sit).
   Build the concept map and the two gap lists (Steps 1–3) **in this orchestrator context**. This is
   the legitimate whole-file work, the same exception coverage-audit and notes-plan rely on.
-- **Closing a gap is DEEP per-unit work** — writing a Q&A answer to `_interview-prep-standard.md`, or
-  authoring a note file/section to `_note-quality-standard.md`, is exactly the writing bar the notes
-  and interview-prep pipelines split file-by-file. **Never write it inline here, and never batch it.**
-  Once the gap lists are ready, **dispatch one cold `role-appropriate` subagent per atomic unit, in
-  sequence, always `reasoning tier: deep`** (authoring to the notes/Q&A quality bar — judgment work, per the
-  model-tiering convention in `notes/prompts/README.md`; even at higher token cost) to author the fix:
+- **Closing a notes → prep gap is DEEP per-unit work** — writing a Q&A answer to
+  `_interview-prep-standard.md` is exactly the writing bar the interview-prep pipeline splits by
+  section. **Never write it inline here, and never batch it.** Once that gap list is ready, dispatch
+  one cold `role-appropriate` subagent per atomic unit, in sequence, always `reasoning tier: deep`:
   - **notes → prep** → the atomic unit is **one `##` section** of the topic's Q&A pair (`en/` +
     `es/`) — one subagent per target section, as Step 2 details (never the whole topic in one context).
-  - **prep → notes** → the atomic unit is one note file — **one** subagent per note file to create or
-    extend, dispatched one after another.
+
+  **Prep → notes is routing only.** Step 3 reports the owning coverage/plan/pipeline handoff and writes
+  no prose, so it dispatches no author.
 
   Each dispatched subagent must **read its whole unit top to bottom** and return a **section-by-section
   (or item-by-item) trace** — every `##`/`###` heading (or every gap it was handed) with PASS or the
@@ -184,61 +185,34 @@ that covers the concept this question is about?
 A question is "backed" if the concept appears as a section or sub-section in any numbered
 note file. Use judgment — exact name matching is not required.
 
-**Detect and route here; author one cold subagent per note file.** In this context, build the list
-of unbacked questions and, for each, decide its **target note file** — an existing file to extend
-(pick the closest-topic file from the headings read in Step 1) or a new file to create. Group the
-gaps by target file so each file is touched once. **Assign the concrete number to every new file here**
-— there is no `next file:` counter (it lived in the platform adapter before that became a thin
-delegator). Read `notes/{topic}/coverage/notes-plan-{LEVEL}.md` for the topic being numbered: it is the
-register of prefixes already spoken for, including entries whose files do not exist yet
-(`notes/angular/junior/en/` skips `05` and `13` because the plan reserves them). Allocate by
-**appending** — one past the highest two-digit prefix appearing either in a plan entry for that level or
-directly in the `en/` folder the new file will live in (`_legacy/` is outside the numbering namespace;
-with a comma-separated {NOTES_PATH}, number against the folder you are writing into). **Never fill a
-folder gap** — it is a reservation, not a vacancy. The orchestrator owns numbering so sequential runs
-never collide. Do NOT write any note prose inline: a
-note file is one atomic unit and its writing bar is the deep work the Execution model reserves for a
-cold subagent.
+**Detect and route; never author notes here.** For every unbacked question:
 
-Then, **one target note file at a time, sequentially** (never overlap — the runs commit), dispatch a
-cold `role-appropriate` subagent (`reasoning tier: deep`, `execution: foreground`):
+1. Check whether its concept exists in the selected topic's coverage.
+2. If coverage does not own it, report `coverage proposal` with the exact question; `/coverage` decides
+   whether it belongs at this topic and level.
+3. If coverage owns it, locate the one notes-plan entry whose `Coverage concepts` claims the bullet.
+   Report `notes-audit owed — {entry}` when it is pending, or `plan/note contradiction — {entry}` when
+   a complete/refined entry claims the concept but its accepted note does not teach it. A refined note
+   needs both Victor's TODO and his explicit `refined` → `pending` hand-back before `/notes-audit` may
+   change its prose.
 
-> Read `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` (the writing bar) and, before writing,
-> the first section of `notes/java/junior/es/08-excepciones.md` to calibrate. You are creating/extending ONE
-> note file: `«en/ path»` (number `«N»` if new). Read that file (and its `es/` counterpart, and the
-> sibling files in its `en/` folder) **in full, top to bottom** to avoid duplicating an example and to
-> wire references. Author the section(s) that back these questions to the full standard — problem
-> before definition, context before any code block, personal-guide voice, mechanism not just behaviour,
-> the anticipate-the-TODO pass — in the correct mode for the folder (structured for
-> `notes/java/junior/en/` and `notes/spring-boot/junior/en/`, conversational otherwise). Author in `en/` first (the
-> canonical source), then re-sync the `es/` counterpart as native Spanish under a **Spanish filename with
-> the same number prefix** (`en/03-methods.md` → `es/03-metodos.md`, never a copy of the English name);
-> create the full `es/` file if it does not exist. Your number was assigned above — allocate none
-> yourself, and write no counter anywhere. Do NOT
-> commit. Return a **section-by-section trace** of the file (every `##`/`###` with PASS or what you
-> wrote) as proof you read it whole, plus which questions it now backs.
-> ```
-> «paste the unbacked questions routed to this file»
-> ```
-
-Wait for each subagent before dispatching the next. Note each as "prep → notes — added" in the summary.
-
-**Cap:** create at most 3 new note files per run (extending existing files is uncapped). If more than 3
-new files are needed, dispatch the first 3 in study-sequence order and report the rest in the summary —
-they are addressed next run.
+This prompt never creates, numbers, extends or commits a note file. `/notes-plan` owns the route and
+`/notes-audit` owns planned prose; bypassing either would create authored content outside the notes
+denominator. Direction 2 therefore produces durable next-run findings in the self-report, not note
+edits. Note each as `prep → coverage` or `prep → notes-audit` in the summary.
 
 ---
 
 ## Execution
 
-Detection happens in this context; every fix is applied by the cold per-unit subagents dispatched in
-Steps 2–3 (which leave their work in the tree, uncommitted). The orchestrator waits for each subagent,
+Detection happens in this context; Q&A fixes are applied by the cold per-unit subagents dispatched in
+Step 2 (which leave their work in the tree, uncommitted). The orchestrator waits for each subagent,
 collects its trace, and then commits. **Acceptance gate:** a subagent's report counts only if its trace
 covers its whole unit (every heading/gap with PASS or the change made). If the trace is missing or
 partial, re-dispatch that subagent **once**, quoting what was missing; if it fails again, report the
-unit as incomplete in the summary — never mark it done on a partial trace. Do not report and leave gaps open — every genuine gap must be
-dispatched, not deferred (except the >3-new-note-files cap in Step 3). Never author a question or a
-note section in this orchestrator context.
+unit as incomplete in the summary — never mark it done on a partial trace. Every genuine notes → prep
+gap is dispatched; every prep → notes gap is routed through Step 3 and kept open for its owning
+pipeline. Never author a question or note section in this orchestrator context.
 
 ---
 
@@ -249,19 +223,19 @@ After all edits, report:
 **Notes → prep gaps closed:**
 - `[concept]` — `[question added, with priority marker]`
 
-**Prep → notes gaps closed:**
-- `[question topic]` — `[file or section created]`
-
-**Deferred note files** (more than 3 needed — address in next run):
-- `[concept]` — needs a note file
+**Prep → notes gaps routed:**
+- `[question topic]` — `[coverage proposal | notes-audit owed — entry | plan/note contradiction — entry]`
 
 If no gaps were found in either direction, print: "Files already in sync — no commit needed." and stop.
+
+If the only findings are prep → notes routes, make no content commit: the pipeline self-report is their
+durable handoff. The commit below exists only when Step 2 changed the bilingual Q&A pair.
 
 Otherwise, show the commit message. Replace {FILE} and {TOPIC} with the actual values.
 List only files that were actually modified. Always one command per code block:
 
 ```
-git add <list only modified files — include en/{FILE}.md and es/{FILE}.md only if questions were added; include note files only if created or modified>
+git add <list only modified files — en/{FILE}.md and es/{FILE}.md only when questions were added>
 ```
 
 ```

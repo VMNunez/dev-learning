@@ -15,7 +15,7 @@ Run this after you finish a timed simulation — no notes, no AI, timer stopped.
 **How to use:**
 
 1. In the configuration block: delete all `SIMULATION_FILE` lines except the one you are reviewing
-2. Fill in `TIME_USED` and `MODE`
+2. Fill in `TIME_USED`, `MODE`, and `LEVEL`
 3. Paste the entire prompt into a new chat
 4. Paste your code below it — after the last line of the prompt
 
@@ -55,6 +55,11 @@ TYPE is auto-detected from SIMULATION_FILE — do not fill it in:
 MODE behaviour:
 - review (default, blank): run after finishing the simulation — full scoring, feedback, ideal solution, interview questions, TRACKER update
 - hint: run when stuck mid-simulation — reads your partial code and guides you one step at a time; skip to the Hint mode section at the end of this prompt
+
+In review mode, require `LEVEL` to match both the simulation spec's `Level` field and its TRACKER row
+before scoring or writing. For an original-bank spec/row that predates the field, the only permitted
+migration is `junior`; any other missing field or disagreement is reported and the run stops without
+updates. Hint mode writes nothing and does not perform this migration.
 
 ---
 
@@ -212,10 +217,12 @@ decision ("I chose…", "I used…", not "it is used").
 Update three files:
 
 **practice/simulations/TRACKER.md** — find the row for {SIMULATION_FILE} and update:
+- **Level:** {LEVEL}; if an existing original-bank row lacks it, migrate that row as junior only
 - **Status:** ✅ Pass / ⚠️ Borderline / ❌ Fail (from Step 2 verdict)
 - **Date:** today's date
 
 **{SIMULATION_FILE}** — update the header fields at the top of the spec:
+- **Level:** {LEVEL} (insert it for an original-bank spec that predates the field)
 - **Status:** same value as TRACKER.md
 - **Date completed:** today's date
 
@@ -226,30 +233,24 @@ this prompt.
 section replaced the old `## Simulations` bullet list on 2026-08-03). Once the TRACKER.md row above is
 updated, recount from TRACKER.md itself (it is small and already open) and rewrite the table:
 
-```markdown
-| Track | Completed | Pass | Borderline | Fail |
-|---|---|---|---|---|
-| Angular | X/5 (X%) | X | X | X |
-| Spring Boot | X/5 (X%) | X | X | X |
-| SQL | X/5 (X%) | X | X | X |
-| **Total** | **X/15 (X%)** | **X** | **X** | **X** |
-```
-
-The denominators are the size of the test bank per track (5 each, 15 total) — if a track's bank ever
-grows, take the denominator from the number of rows in that TRACKER.md table, not from this example.
+Write a per-level roll-up first (`Junior`, `Middle`, `Senior`, `Total`), then one track table for every
+level that has rows. Each table keeps `Track | Completed | Pass | Borderline | Fail`; its denominators
+come from TRACKER rows matching both that level and track. A level with no rows is `—` in the roll-up,
+not `0/0`, and has no detail table. `Total` sums level numerators and denominators without merging the
+level rows themselves.
 
 Three counting rules, each easy to get silently wrong:
 - **Count the `Status` column, never `Self-assessment`.** The two columns use different scales —
   Status is Pass/Borderline/Fail, Self-assessment is Solid/Good/Weak/Failed. Counting the wrong one
   yields plausible numbers and no error.
 - **`X completed` = Pass + Borderline only.** A ❌ Fail appears in the breakdown but does not count
-  as completed. `Total` is the sum of the three `completed` values, against the 15 target.
+  as completed. `Total` sums the level numerators against the sum of the level denominators currently
+  present in TRACKER.md; it is `15` only while those are the only fifteen admitted rows.
 - **Rows still ⏳ Pending count as nothing** — skip them.
 
-This section has two writers: this prompt (primary — it holds the Step 2 verdict) and
-`progress-update-prompt.md` (safety net — its Steps C and D4 recount the same section from the same
-file). Their output must be **identical**; if the format or the three rules above ever drift apart,
-the two will overwrite each other on every run. Change them together or not at all.
+This section has one writer: this prompt, which holds the Step 2 verdict. `progress-update-prompt.md`
+Steps C and D4 independently recount and report drift but never overwrite it. Their counting and
+level-split rules must still remain identical.
 
 PROGRESS.md follows the active branch (the shared session rules 2026-07-14 — `main` only receives merges via PR),
 so it commits alongside the other two.

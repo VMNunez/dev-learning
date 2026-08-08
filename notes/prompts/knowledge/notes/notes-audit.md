@@ -89,6 +89,10 @@ Before dispatching any role:
     only when every concept is `[x]`, and stop — a refined pair with nothing owed is never re-processed.
     Otherwise require the unchecked concept set to equal `Pending additions` exactly and run the whole
     pipeline in **append-only mode** for exactly those bullets. Never set, clear, or downgrade `refined`.
+15. Read `Studied` independently from `Status`; a missing legacy field means `pending`. A dated marker
+    is valid only on a `complete` or `refined` entry. Any run that authors, audits, or appends prose
+    passes `Studied: pending` to Stage C, because the accepted content has changed and needs a new
+    active study pass. A guard 13/14 no-op preserves an existing date.
 
 Guards 9 and 10 do not reopen a `refined` entry: a missing or malformed pedagogical contract on a frozen
 pair is reported, not fixed, because fixing it would mean rewriting prose Victor has declared final.
@@ -175,6 +179,8 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
   entry's `Status: pending` to `Status: complete` when no `[ ]` remains — or, in append-only mode, to
   mark only the consumed additions `[x]` and clear those same bullets from `Pending additions` while
   `Status: refined` stays;
+- permission to set this entry's `Studied: pending` when the run changed prose, inserting the field
+  for a legacy entry when absent; a no-op preserves its current value;
 - the exact assigned concepts with checkbox metadata stripped, the unchecked concepts this run must
   incorporate, and the complete pedagogical contract;
 - `SCOPE = append-only` and the appended headings when the entry is `refined`.
@@ -209,7 +215,7 @@ stops the run. Never mark a partially verified or merely bullet-complete file co
 Report branch, topic, level, note, resolved paths, action, assigned-concept count, fingerprint match,
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, four stage results,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
-verdict, concept checkbox transitions, status transition, and commit. In append-only mode, also report the consumed bullets, the
+verdict, concept checkbox transitions, status transition, studied-state transition, and commit. In append-only mode, also report the consumed bullets, the
 appended headings in both languages, the additions-only diff proof for each file, any quality issue
 observed in existing prose and deliberately left untouched, and the remaining `Pending additions`.
 

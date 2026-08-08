@@ -60,29 +60,24 @@ sub-concept); a sentence explaining how to read every table; exact error message
   `File:` → `Archivo:`; `Docs:` stays).
 - Victor studies from `es/` — give it equal care, never a rushed translation.
 
-## Step 4 — Numbering is not yours to invent
+## Step 4 — A note edit must belong to the plan
 
-**There is no `next file:` counter.** It lived in the platform adapter before that became a thin
-delegator and went with it — do not look for one, and never write one back. A number is read from disk,
-never invented, and it takes both of these to read it:
+The notes plan is the register and the authoring pipeline. Before editing a note, locate its exact
+entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
 
-- **`notes/{topic}/coverage/notes-plan-{LEVEL}.md`** — the shared session rules make a plan entry "the
-  authority for both exact paths", so the plan is also the register of prefixes already **spoken for**,
-  including entries whose files do not exist on disk yet.
-- **The level's own `{LEVEL}/en/` folder** — what is already written (`_legacy/` sits outside the
-  numbering namespace; ignore it).
+- A missing entry or `Status: pending` means the content belongs to `/notes-plan` + `/notes-audit`.
+  Name that handoff and do not create or complete the file inline.
+- An existing `complete` pair may be refined inline or have a TODO resolved. Keep the
+  bilingual contract, then set that entry's `Studied:` field to `pending` (insert it when legacy),
+  because the accepted prose changed after its last study pass.
+- A `refined` pair remains frozen. Report the requested change and wait for Victor to set its status
+  back to `pending`; this skill never silently bypasses that hand-back gate.
+- Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
+  the dead counter but still created content outside the plan's denominator; that is the systemic
+  half of REC-053 and is now forbidden.
 
-Allocate by **appending**: one past the highest two-digit prefix appearing in either. **Never fill a gap
-in the folder** — a gap is almost always a reservation, not a vacancy (`notes/angular/junior/en/` skips
-`05` and `13` because the plan reserves `05-component-lifecycle.md` and `13-production-delivery.md`).
-
-If the note you were asked to write already *is* a plan entry, that entry — not this step — carries its
-number and its two filenames. Whether an inline write may execute a planned entry at all is an open
-ruling (`_recommendation-ledger.md` REC-053): do not settle it by acting. Name the entry to Victor and
-let him say whether it is written here or left to `/notes-audit`.
-
-**Say where your number came from.** A file created here does not update the plan, so the session must
-be able to tell an inline write apart from a planned one.
+Interview-prep has no per-file plan. Existing topic banks may still receive inline Q&A under the
+interview standard; the 13:30 closing ritual, not this writer, owns their `[x]` studied markers.
 
 ## What this skill does NOT do
 

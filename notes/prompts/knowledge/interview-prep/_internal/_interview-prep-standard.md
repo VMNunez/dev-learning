@@ -1,14 +1,15 @@
 # Interview-prep standard — what a good interview-prep file contains
 
 This is the **shared standard** for interview-prep Q&A files. It is not a runnable prompt — it holds
-no configuration and does nothing on its own. Three prompts read it:
+no configuration and does nothing on its own. Four prompts read it:
 
 - `_interview-prep-write-prompt.md` (author) reads it to **build/audit one topic's** Q&A to this bar.
 - `_interview-prep-review-prompt.md` (reviewer) reads it to **audit the authored Q&A** against this bar.
+- `interview-prep-audit.md` (orchestrator) reads it to enforce fingerprints, parity and section gates.
 - `notes-and-interview-prep-prompt.md` reads it to reuse the **question format** when it adds
   cross-reference questions.
 
-They used to carry their own copy of these rules; keeping them here once means the three can never
+They used to carry their own copy of these rules; keeping them here once means the four can never
 drift. Each prompt adds only its own *flow* (author vs cold review vs cross-reference) on top of this
 standard.
 
@@ -183,7 +184,7 @@ Optional elements after the answer, by type:
 
 ### Adding questions from outside the audit (practice prompts)
 
-The practice prompts (`sql-exercises`, `simulation-review`, `code-review`) add a question or two to a
+The practice prompts (`simulation-review`, `code-review-practice`) add a question or two to a
 Q&A file whenever a gap surfaces during practice — not through the full audit pipeline. They follow
 the **same** structure above (bold question + priority marker + blank line + answer in Victor's voice
 + the level-appropriate tip if Conceptual / Red flag if Decision-based or Pressure + a real cited code block where an

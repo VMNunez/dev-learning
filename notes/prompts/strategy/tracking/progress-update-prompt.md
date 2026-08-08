@@ -2,7 +2,7 @@
 
 > **This prompt writes one section (demoted 2026-08-05, REC-039).** `PROGRESS.md` is maintained
 > incrementally by the closing rituals (`step-complete`, `backlog-task-close`, `coverage-mark`,
-> `coverage-bullet-add`, `sql-grade`, `simulation-review`), each writing its own cell in the session
+> `coverage-bullet-add`, `study-block-close`, `sql-grade`, `simulation-review`), each writing its own cell in the session
 > that produced it. So this prompt **audits**: it measures every section against its real sources and
 > **reports the drift**, naming the writer that owns the repair. It edits exactly one section itself —
 > `Professional level by topic`, the one that needs all 13 topics at once and that no ritual can
@@ -79,6 +79,7 @@ contract each project subagent follows and the shape of what it returns.
 |---|---|---|
 | `Professional level by topic` | **this prompt** (the whole table) · `step-complete` and `backlog-task-close` (the `Practical evidence` cell only, in session) | **writes** — see D7 |
 | `Coverage demonstrated` | `coverage-mark` + `coverage-bullet-add` (the cells they touch, plus `Total`) · `coverage-prompt` (one topic+level) · `coverage-audit` (a whole level) | measures and reports (D8) |
+| `Study progress` | `study-block-close` (both rows, recounted at the end of the 13:30 block) | measures and reports (D9) |
 | `## Projects` | `step-complete` (the `Status` cell) · `plan-audit` (registers a new project's row) | measures and reports (D5) |
 | `Practice completed` → `Exercise route` | `sql-exercises` (both branches) · `sql-grade` · `sql-step-close` · `sql-plan` (seeds the rows) | measures and reports (D3) |
 | `Practice completed` → `Timed simulations` | `simulation-review` | measures and reports (D4) |
@@ -110,8 +111,8 @@ Read:
    (which project is active). the shared session rules is already loaded into your context by the supported agent runtime; do **not**
    re-read the file. It is updated by hand and may lag; do not treat it as authoritative.
 3. For each topic row in `Professional level by topic`, inspect the selected level's persistent notes
-   plan and interview-prep fingerprint/run state at headings/status level only. These artifacts prove
-   consolidation; do not load their prose.
+   plan at headings/status/studied-field level and the interview-prep fingerprint plus `[x]` counts.
+   These artifacts distinguish authored from studied consolidation; do not load their prose.
 
 Decide the project scope from `{MODE}`:
 - **active** — only the in-progress project (⏳). Find it in the PROGRESS.md projects table or the
@@ -198,9 +199,11 @@ Wait and collect.
 ## Step C — Audit simulations (orchestrator, directly)
 
 No subagent here — `practice/simulations/TRACKER.md` is one small file, and a subagent round-trip would cost
-more context than reading it. Read it yourself and note: total simulations completed (✅ Pass or
-⚠️ Borderline both count as completed), split by type — Angular / Spring Boot / SQL — each as
-`X Pass, X Borderline, X Fail`. Count the **`Status`** column, never `Self-assessment` — the two use
+more context than reading it. Read it yourself and note totals split first by the row's **Level**
+(junior / middle / senior), then by type — Angular / Spring Boot / SQL — each as
+`X Pass, X Borderline, X Fail`. A legacy row with no Level is junior only for the original 15-test
+bank; a newly generated row without Level is structural drift, not something to guess. Count
+completed as ✅ Pass + ⚠️ Borderline. Count the **`Status`** column, never `Self-assessment` — the two use
 different scales (Status is Pass/Borderline/Fail; Self-assessment is Solid/Good/Weak/Failed), so the
 wrong column yields plausible numbers and no error. Rows still ⏳ Pending count as nothing. If
 TRACKER.md does not exist, report that as a structural finding rather than a count of zeros.
@@ -251,9 +254,10 @@ never write a corrected figure — name it and let the owner re-run.
 ### D4 — `## Practice completed` → `### Timed simulations` (from the Step C counts)
 
 **Owner: `simulation-review` Step 5**, which holds the Pass/Borderline/Fail verdict — the thing that
-decides the numbers. Compare your Step C counts with the table and report any cell that disagrees,
-plus a missing track row. Denominators come from the number of rows per track in
-`practice/simulations/TRACKER.md`, never from an example.
+decides the numbers. Compare your Step C counts with the per-level roll-up and each level's track
+table; report any cell that disagrees, plus a missing level/track row. Denominators come from the
+number of TRACKER rows for that level and track, never from an example. A level with no rows is `—`,
+not `0/0`.
 
 ### D5 — `## Projects` (from the Step A step statuses)
 
@@ -277,16 +281,20 @@ re-create one, and do not look for one.
   PROGRESS.md and compared with itself always agrees.
 - **A section you cannot measure is a finding, not a silence.** A missing `## Practice completed`, an
   absent TRACKER.md, a level with no route file: report the structural gap.
-- **Never add or remove a section.** PROGRESS.md's sections are fixed: the level matrix,
-  `Coverage demonstrated`, `Projects`, `Practice completed`, `Useful resources`. Proposing any other —
-  above all a per-technology concept list — is a defect, not a finding.
+- **Never invent or recreate a concept section.** PROGRESS.md's declared status sections are the level
+  matrix, `Coverage demonstrated`, `Study progress`, `Projects`, `Practice completed`, and
+  `Useful resources`. A new section is legitimate only when its source, unit, writer, reader and audit
+  rule are added to the ownership contract in the same machinery change. Per-technology concept lists
+  remain forbidden: coverage owns concepts; PROGRESS records only their effects and track progress.
 
 ### D7 — `Professional level by topic` — **the one section this prompt writes**
 
 Refresh the matrix without duplicating coverage concepts:
 
-- `Knowledge consolidation`: count `complete` and total numbered entries in the active level's
-  persistent notes plan; report whether the selected-level Q&A fingerprint is current.
+- `Knowledge consolidation`: report notes **authored** (`complete`/`refined` over all plan entries)
+  separately from notes **studied** (`Studied: YYYY-MM-DD` over the same entries), then report whether
+  the selected-level Q&A fingerprint is current and its `[x] / total questions` studied count. A stale
+  or incomplete denominator is named as such, never rendered as `0%`.
 - `Practical evidence`: **preserve, then add.** `step-complete` and `backlog-task-close` write this
   cell in session, so what is already there is a record, not a draft — keep every explicit entry and
   append only project, exercise, simulation, or unaided-recall evidence this run verified. This is the
@@ -300,7 +308,8 @@ Refresh the matrix without duplicating coverage concepts:
   production, platform, or multi-team ownership; notes, interview prep, and personal projects alone
   can never produce `Senior — demonstrated`.
 - If evidence is insufficient, keep the existing conservative level and state what remains open.
-- **The D8 percentages never promote a level.** A topic at 100% demonstrated coverage stays
+- **The D8 and D9 percentages never promote a level by themselves.** A topic at 100% demonstrated
+  coverage or 100% study progress stays
   `building` until the unaided practical or explanation check in the rules above is met. The ratio is
   an instrument, not a gate; treating it as one would let file bookkeeping award a level that no
   demonstration backs.
@@ -344,6 +353,23 @@ mark. A `*` that should have been dropped — the tracker now records a run — 
 The table sits immediately after `Professional level by topic`, its topic rows in the same order, so
 the two read together.
 
+### D9 — `Study progress` — measured, never written here
+
+**Owner: `study-block-close`.** Recompute the two rows with the same contract the ritual uses:
+
+- Notes, per level: dated `Studied:` entries over all numbered entries, but only when every required
+  registered-topic plan exists, is `current`, and its coverage fingerprint matches. A missing legacy
+  `Studied` field is an unstudied entry, not a missing denominator.
+- Interview questions, per level: question identities carrying `[x]` in either language over all
+  English master question identities, using exactly the standard's bold `?**` + priority marker +
+  optional `[x]` shape (never every bold line). A one-sided marker counts once and is reported as
+  mirror drift for `study-block-close`; the audit itself does not repair it. Count only when every
+  required topic bank exists, both languages carry current coverage fingerprints, and
+  parity passes. Angular Material shares Angular's bank; all other registered topics own their file.
+
+Compare the result with `PROGRESS.md` and emit one drift row per mismatched cell. `—` is required when
+the denominator gate is not met; never sum only the current subset and present it as a level total.
+
 ---
 
 ## Step E — Write the matrix, then print the drift report
@@ -362,7 +388,7 @@ Then print two things.
 
 One row per edited cell; `—` and one line saying so if the matrix was already accurate.
 
-**2 — Drift report** — every mismatch D3, D4, D5 and D8 found:
+**2 — Drift report** — every mismatch D3, D4, D5, D8 and D9 found:
 
 | Section | What PROGRESS.md says | What the sources say | Owner to re-run |
 |---|---|---|---|

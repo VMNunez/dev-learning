@@ -24,7 +24,7 @@ everything.
 
 > **▶ Run first:** complete this exact topic and level through `coverage-prompt` →
 > `notes-plan-prompt` → one `notes-audit` per plan entry. Every entry in
-> `notes/{topic}/coverage/notes-plan-{LEVEL}.md` must be `complete`; otherwise this prompt stops.
+> `notes/{topic}/coverage/notes-plan-{LEVEL}.md` must be `complete` or `refined`; otherwise this prompt stops.
 > Angular also requires the Angular Material plan at the selected level because both topics share
 > `angular.md`. Optional: `evidence-intake` to refresh `_job-market-evidence.md`, which Stage M reads.
 
@@ -82,10 +82,10 @@ DRY_RUN = false
 ## Configuration — edit only this block
 
 LEVEL = [junior | middle | senior]
-FILE = [angular | css | javascript | typescript | sql | java | spring-boot | architecture | git | general | security | all]
+FILE = [angular | css | javascript | typescript | sql | java | spring | spring-boot | architecture | git | general | security | all]
        → notes/interview-prep/{LEVEL}/en/{FILE}.md + notes/interview-prep/{LEVEL}/es/{FILE}.md
        → FILE = all audits every topic in turn — see notes/prompts/_internal/_batch-mode.md. Order:
-         angular, spring-boot, java, architecture, security, typescript, sql, javascript, css, git, general.
+         angular, spring, spring-boot, java, architecture, security, typescript, sql, javascript, css, git, general.
        → Angular Material has no file of its own: the `angular` run also verifies
          notes/angular-material/coverage/{LEVEL}.md and places any Material questions in angular.md
          (the author handles this in its Step 3).
@@ -145,7 +145,7 @@ Before market analysis, verify the completed-notes prerequisite:
    Angular Material plans.
 2. Require `Plan status: current` and a plan coverage fingerprint matching the exact current
    coverage bytes.
-3. Require every numbered entry to have `Status: complete`.
+3. Require every numbered entry to have `Status: complete` or `Status: refined`.
 4. Require every completed entry's declared English and Spanish files to exist.
 5. If any check fails, stop that topic and report the exact pending/stale/missing entries. Never
    generate Q&A from a partially built topic.
@@ -153,7 +153,7 @@ Before market analysis, verify the completed-notes prerequisite:
 ## Decide the topic list
 
 - **`FILE` is one topic** → the list is just that topic (with `{SECTION}` and `{MODE}` as given).
-- **`FILE = all`** → the list is, in order: angular, spring-boot, java, architecture, security,
+- **`FILE = all`** → the list is, in order: angular, spring, spring-boot, java, architecture, security,
   typescript, sql, javascript, css, git, general. Force `SECTION = all` for every topic.
 
 Process topics **one at a time, sequentially** — never overlap them, because each topic's reviewer
@@ -369,7 +369,8 @@ detected (recommended standard rule additions).
   [per section: A → B] → commit. Sections are sequential, a section's A → B is sequential, and topics
   are sequential too — never overlap, because they edit the same files and parallel commits race the
   git index, and a reviewer must never audit an unfinished section.
-- Never skip the `es/` mirror, the market analysis, the gap-hunt, or the per-section reviewer pass.
+- Never skip the `es/` mirror or the per-section reviewer pass. In `MODE = full`, never skip market
+  analysis or the gap-hunt; `MODE = correct` deliberately omits those two read-only discovery stages.
 
 ### Final step — pipeline self-report
 

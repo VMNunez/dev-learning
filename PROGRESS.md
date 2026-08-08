@@ -4,7 +4,7 @@
 **Background:** React, Node.js, Express, TypeScript, Tailwind, CSS, HTML, JavaScript
 
 **What this file is.** A status instrument: demonstrated level per topic, share of coverage applied in
-code, projects, SQL exercises, simulations. It is **not** an inventory of concepts learned — that lives
+code, notes/interview study, projects, SQL exercises, simulations. It is **not** an inventory of concepts learned — that lives
 in `notes/{topic}/coverage/{level}.md` and its mirror `notes/coverage/{level}.md`, where every bullet
 carries its ` ✅ NN-slug — {evidence}` marker naming the project that proves it. The per-technology
 concept lists this file used to keep were a second, evidence-free copy of that inventory and were
@@ -82,6 +82,24 @@ The `✅ NN-slug` marker went live on 2026-07-30 (its `— {evidence}` clause wa
 unmarked bullet in a topic those projects would touch still means "not yet marked", not "not yet
 applied". Git is the one topic whose evidence is not project-shaped — its markers attribute the daily
 workflow to the first project that established it rather than to code inside that project.
+
+---
+
+## Study progress
+
+Share of the accepted study route Victor has actively studied. This is independent from authoring:
+a notes file can exist without having been studied, and a Q&A bank can be authored while its questions
+remain unpractised. `study-block-close` recounts these cells from notes-plan `Studied:` dates and Q&A
+`[x]` markers at the end of the 13:30 block.
+
+| Track | Junior | Middle | Senior |
+|---|---|---|---|
+| Notes studied | — | — | — |
+| Interview questions studied | — | — | — |
+
+`—` means the level has no complete, current denominator yet: at least one required notes plan or Q&A
+bank is missing, stale, or has not passed bilingual parity. It never means `0%`; once the route is
+current, an honest zero is printed as `0/N (0%)`.
 
 ---
 
@@ -182,7 +200,19 @@ Route not planned. No files.
 
 ### Timed simulations — `practice/simulations/`
 
-Denominator: the 15-test bank (5 per track). Counted from `practice/simulations/TRACKER.md`.
+Counted from the tracker row's explicit level. The original 15-test bank is Junior; future Middle
+and Senior banks keep their own denominators.
+
+#### Roll-up — one row per level
+
+| Level | Completed | Pass | Borderline | Fail |
+|---|---|---|---|---|
+| **Junior** | 0/15 (0%) | 0 | 0 | 0 |
+| **Middle** | — | — | — | — |
+| **Senior** | — | — | — | — |
+| **Total** | **0/15 (0%)** | **0** | **0** | **0** |
+
+#### Junior — by track
 
 | Track | Completed | Pass | Borderline | Fail |
 |---|---|---|---|---|

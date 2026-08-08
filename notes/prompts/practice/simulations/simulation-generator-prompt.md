@@ -15,7 +15,7 @@ It is the producer; `simulation-review-prompt` is the consumer that grades what 
 
 **How to use:**
 
-1. Fill in `TYPE`, and optionally `COUNT`, `DIFFICULTY`, and `FOCUS`
+1. Fill in `TYPE`, `LEVEL`, and optionally `COUNT`, `DIFFICULTY`, and `FOCUS`
 2. Paste the entire prompt into a new chat
 3. The new specs are saved to `practice/simulations/{type}/` and registered in `practice/simulations/TRACKER.md`
 
@@ -27,6 +27,7 @@ It is the producer; `simulation-review-prompt` is the consumer that grades what 
 TYPE       = [angular | spring-boot | sql | all]
              → TYPE = all generates for every type in turn — see notes/prompts/_internal/_batch-mode.md
                (order: angular, spring-boot, sql)
+LEVEL      = [junior | middle | senior]
 COUNT      = [how many new tests to generate]   → default: 2
 DIFFICULTY = [standard | challenge]             → default: standard
              (challenge = more business rules, more entities/queries, tighter time)
@@ -35,6 +36,7 @@ FOCUS      = [optional — a skill to target, e.g. "pagination", "JWT + roles", 
 
 Validation — before anything else:
 - If TYPE is blank: print "Error: TYPE is required (angular | spring-boot | sql)." and stop.
+- If LEVEL is blank: print "Error: LEVEL is required (junior | middle | senior)." and stop.
 - If COUNT is blank: use 2. If DIFFICULTY is blank: use standard.
 
 ---
@@ -88,6 +90,7 @@ Each file goes to `practice/simulations/{TYPE}/NN-short-name.md` and must follow
 ```
 # {Type} — Test NN: {Title}
 
+**Level:** {LEVEL}
 **Time limit:** {minutes} minutes
 **Status:** ⏳ Pending
 **Date completed:** —
@@ -129,7 +132,7 @@ tests) · `## Bonus (if done before time)`.
 ## Step 3 — Update the tracker
 
 In `practice/simulations/TRACKER.md`, add one row per new test under the {TYPE} section, matching the
-existing column format (`| # | [Title](path) | time | ⏳ Pending | — | — |`). Update the section
+existing column format (`| # | [Title](path) | {Level} | time | ⏳ Pending | — | — |`). Update the section
 count in the heading (e.g. "Angular (0 / 5)" → "Angular (0 / 7)"). Do not touch other sections or
 any existing row.
 

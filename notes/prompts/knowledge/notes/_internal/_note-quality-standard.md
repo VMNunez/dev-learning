@@ -174,6 +174,9 @@ transitions required to teach those concepts from zero.
 
 Every persistent-plan entry must therefore carry:
 
+- `Status:` whether the bilingual note has been authored and accepted by the notes pipeline;
+- `Studied:` `pending` or the date (`YYYY-MM-DD`) Victor completed an active study pass of the
+  current accepted pair;
 - `Narrative role:` why this chapter exists at this exact point in the journey;
 - `Learning outcome:` what Victor can understand, explain, or apply after studying it;
 - `Prerequisites:` earlier plan entries whose concepts the chapter may assume;
@@ -185,6 +188,13 @@ not yet incorporated into the bilingual note; `- [x] {exact bullet}` means the s
 commit confirmed that both languages contain it. Strip the checkbox before matching the exact
 coverage bullet. Planning never marks a newly assigned concept `[x]`; only the notes pipeline does
 after authoring and review succeed.
+
+`Status` and `Studied` are deliberately independent. `complete` / `refined` proves that the files
+exist and meet their contract; it does not prove Victor has studied them. `Studied: YYYY-MM-DD` may
+be written only for a `complete` or `refined` entry by the 13:30 closing ritual. A material contract
+change, a newly owed coverage concept, or any inline prose refinement resets it to `pending`; a pure
+path renumber that preserves the accepted bytes does not. A missing `Studied` field in a legacy plan
+means `pending` until the plan is reconciled or the entry is studied.
 
 These fields are acceptance criteria for authoring and review, not decorative metadata. Covering all
 assigned coverage bullets is necessary but insufficient when the file still cannot achieve its
