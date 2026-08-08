@@ -1,24 +1,25 @@
 # Pipeline self-report — roadmap-review
 
-**Date:** 2026-07-21 · **Target:** `ROADMAP.md` (branch `fix/backend-backlog`) · **Status:** applied in df91763
+**Date:** 2026-08-08 · **Target:** `ROADMAP.md` (branch `fix/backend-backlog`) · **Status:** applied in 4886805
 
-1. **Plan vs reality** — the 2-gatherer / 2-reviewer split held. Subagent 2a's brief ("one line per
-   concept") is mis-sized against a 3914-line coverage.md: it returned topic-cluster lines instead
-   and said so. That was the right call, but the prompt asks for something the file cannot produce.
-2. **Report discipline** — nothing had to be discarded. 2a's report was longer than contracted but
-   every line was load-bearing; 2b and both reviewers returned exactly the contracted table.
-3. **Failures & retries** — Reviewer 2 died mid-run on an API session limit and was re-dispatched
-   once; the retry completed and applied two fixes. The prompt has no failure protocol for a
-   reviewer that dies (as opposed to one that returns a bad report) — I applied the 2a/Reviewer-2
-   re-dispatch-once rule by analogy.
-4. **Rule friction and rule breaches** — **breach:** the step-0 run-start check never ran. The
-   prompt *did* state it (line 12), but outside the fenced block that is actually pasted in, so an
-   invoked run cannot see it; the cold reviewer corrected my initial read that the rule was absent.
-   Cost was nil this time — no prior roadmap-review report existed. **Friction:** the folder holds
-   `_last-run-report.md` owned by `progress-update`, and neither prompt named the filename it owns,
-   so this run had to derive its own from the shared spec's shared-folder rule.
-5. **Verdict** — applied: line 12 now names `_last-run-report-roadmap-review.md` and the ownership
-   split, and one pointer line inside the fence makes the check visible to an invoked run (cold
-   reviewer: approve-with-tightening — it rejected my 4-line draft as duplicating an existing rule).
-   Subagent 2a's "one line per concept" wording, mis-sized against a 3914-line coverage.md, is
-   friction only (#3 failed) — recorded, not applied.
+1. **Plan vs reality** — `progress-update` ran first, then the two fact-gatherers and two sequential
+   cold reviewers ran in the required order. Their evidence supports that the machinery ran: the
+   active plan was read to EOF (1,820 lines), junior coverage to EOF (2,094 lines), and both reviewer
+   trace tables were returned. Soundness rests on the final cross-file checks, not on those traces.
+2. **Report discipline** — the project summary and both reviewer tables matched their contracts. The
+   gap gatherer's first SQL answer used bullet-level concepts instead of the requested coverage
+   headings; a bounded follow-up returned the exact 18 headings and its EOF declaration. No report
+   prose was copied into `ROADMAP.md` without verification against the source files.
+3. **Failures & retries** — no agent or tool failed and no full re-dispatch was needed. One bounded
+   follow-up corrected the gap gatherer's SQL output grain. The prerequisite `progress-update` had
+   already recorded its own retry in its separate report, so it is not counted again here.
+4. **Rule friction and rule breaches** — no rule was breached. Final orchestration caught two small
+   residues after the reviewers: Phase 3a still claimed JOINs had started although the junior route
+   says 0/22, and several links named a nonexistent “three possible paths” section. Both were fixed
+   in `ROADMAP.md` before commit. This is output-validation work the current contracts already require,
+   not evidence for a new rule or prompt edit.
+5. **Verdict** — pipeline clean; no prompt change pending. `ROADMAP.md` now follows the current project
+   gate, exact SQL coverage headings and route statuses, gate-based timing, and unmarked Project 08
+   gap candidates. Two cold reviews passed with fixes applied; the mandatory cold ledger review then
+   approved closing `REC-050` with its Suggested-order tightening. `map: verified`: the catalogue and
+   system-map rows for this prompt remain true; only roadmap content and run records changed.
