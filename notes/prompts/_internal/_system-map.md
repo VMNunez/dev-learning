@@ -361,7 +361,7 @@ identical file to the other in the same commit.**
 | `sql-grade` | "corrige el 02" | nothing directly; a **cold subagent** writes `MISTAKES.md`, `PROGRESS.md`, the route, the doctrine §0 | `sql-step-close` on ≥ 80% + last file |
 | `sql-step-close` | a step's last file scores ≥ 80% | `✅ sql:{file-slug}` drill markers on coverage + mirror · §0 verify · `Total` arithmetic · the §8c unlocked line | names the due gate / revision point |
 | `sql-block-close` | the block ends | `MISTAKES.md` `## Fricción` only | — |
-| `map-sync` | machinery changed **or** a prompt / `SKILL.md` / standard was read whole | the rows about *that* file in `README.md` and this map — every one of them, not the first that comes to mind · nothing else | — |
+| `map-sync` | machinery changed **or** a prompt / `SKILL.md` / standard / other `_internal/` file was read whole | the rows about *that* file in `README.md` and this map — every one of them, not the first that comes to mind · nothing else | — |
 
 **Rituals ask zero questions.** That is a design rule, not a style: a manual gate in the middle of a
 mechanical ritual is how the ritual stops being run. A step that cannot close is *reported* and left
