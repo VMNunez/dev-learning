@@ -141,7 +141,7 @@ consumer reads freshness from the file itself.
 | Prompt | Last run |
 |---|---|
 | coverage-audit | 2026-08-01 — completed — junior update; 1,344-item floor converged; 497 markers preserved; mirror parity; cold review passed · ⚠ stale 2026-08-04 (+14 bullets) |
-| progress-update | 2026-07-16 — completed — `MODE = active` (07-timetrack + SQL + simulations); backfilled 2026-08-05 from `_last-run-report.md`, which that run wrote while skipping this cell · ⚠ stale — predates the 2026-08-03 demotion and the 2026-08-05 rewrite to auditor (REC-039), so it exercised none of the current prompt |
+| progress-update | 2026-08-08 — completed — `MODE = active` (07-timetrack + SQL + simulations); level matrix refreshed from the current notes plans; coverage, project status and simulation counts matched; no actionable drift |
 | roadmap-review | 2026-07-21 — applied in `df91763` (`ROADMAP.md`, branch `fix/backend-backlog`); backfilled 2026-08-05 from `_last-run-report-roadmap-review.md`, which that run wrote while skipping this cell · ⚠ stale — it predates the 2026-08-03 concept-list deletion and the 2026-08-05 marker rewire (REC-042), so it exercised the gap analysis this prompt no longer has |
 | system-check | never run — explicit global audit only |
 
