@@ -132,7 +132,9 @@ The root of everything. Coverage defines *what junior means*; every other chain 
    to real job postings in `_job-market-evidence.md`.
    → writes `notes/{topic}/coverage/{LEVEL}.md` **and its global mirror** `notes/coverage/{LEVEL}.md`
    (every coverage writer writes both), files gaps owned by other topics into `_cross-topic-inbox.md`,
-   and stamps `Plan status: stale` on every notes plan whose fingerprint it just invalidated.
+   consumes applicable `verify-{LEVEL}.md` gaps, stamps `Plan status: stale` on every notes plan whose
+   fingerprint it just invalidated, and recounts the affected `PROGRESS.md` `Coverage demonstrated`
+   cells because the denominator moved.
 
 2. **`/coverage-verify {topic} {level}`** — a cold reviewer checks that scope is *complete* for the job
    target, including the earlier levels it depends on.
@@ -174,7 +176,7 @@ Q&A worked, and recounts `PROGRESS.md` `Study progress`.
 daily session — finds a concept owned by a *different* topic, it never writes into that topic's file. It
 files a proposal under that topic's heading in
 `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md`. Each `/coverage` run reads its own
-heading at Step 1 and clears what it consumed; `/coverage-audit` sweeps every heading. This is the only
+heading and processes it in Step 2; `/coverage-audit` sweeps every heading. This is the only
 durable handoff *between* topics, and it is why an inline bullet that lands in the wrong topic is a real
 failure rather than a cosmetic one.
 
@@ -297,7 +299,7 @@ files: the system that describes and checks the system, which has writers like e
 |---|---|---|
 | `notes/{topic}/coverage/{LEVEL}.md` **+ mirror** `notes/coverage/{LEVEL}.md` | `/coverage`, `/coverage-audit` (bulk) · `coverage-bullet-add` (one bullet) · `coverage-mark` (project markers) · `sql-step-close` (drill markers, SQL only) | everything downstream |
 | `notes/{topic}/coverage/verify-{LEVEL}.md` | `/coverage-verify` | `/notes-plan` (advisory), `/coverage` update |
-| `notes/{topic}/coverage/notes-plan-{LEVEL}.md` | `/notes-plan` (whole route) · `/notes-audit` (concept/status + studied reset) · `study-content-writer` (studied reset only) · `study-block-close` (studied date only) | `/notes-audit` (fingerprint gate), `/coverage`, `/interview-prep-audit`, `/progress-update` |
+| `notes/{topic}/coverage/notes-plan-{LEVEL}.md` | `/notes-plan` (whole route) · `/coverage` (`Plan status: stale` only) · `/notes-audit` (concept/status + studied reset) · `study-content-writer` (studied reset only) · `study-block-close` (studied date only) | `/notes-audit` (fingerprint gate), `/coverage`, `/interview-prep-audit`, `/progress-update` |
 | `notes/{topic}/{level}/en|es/*.md` | `/notes-audit` · in session, guided by `study-content-writer` for an existing complete, non-frozen pair only | `/notes-and-interview-prep`, Victor |
 | `notes/interview-prep/{LEVEL}/en|es/*.md` | `/interview-prep-audit`, `/notes-and-interview-prep`, `/simulation-review`, `/code-review-practice`, `study-block-close` (`[x]` only) | `/simulator`, `/progress-update` |
 | `notes/interview-prep/projects/*.md` | `/portfolio-audit` | `/simulator` |
@@ -339,7 +341,7 @@ This is the file you asked about, and the one where "who writes it" is least obv
 | Section | Its writer | Notes |
 |---|---|---|
 | `## Professional level by topic` | **`/progress-update`** — the only writer of the table | needs all 13 topics at once, which no ritual can compute. `step-complete` / `backlog-task-close` may update a single **evidence cell** when a step or fix earns it |
-| `## Coverage demonstrated` | **`coverage-mark` and `coverage-bullet-add`** | they **recount** their cells and the `Total` row from the coverage files with each write. `step-complete` deliberately does **not** touch this table: two writers means the memory-derived copy overwrites the recounted one |
+| `## Coverage demonstrated` | **`/coverage`, `coverage-mark`, and `coverage-bullet-add`** | each **recounts** the affected cells and the `Total` row from the coverage files when it changes scope or markers. `step-complete` deliberately does **not** touch this table: a memory-derived copy would overwrite the recounted one |
 | `## Study progress` | **`study-block-close`** | dates / `[x]` are primary state; this section is their per-level roll-up. `/progress-update` measures it as D9 and reports drift |
 | `## Projects` | **`step-complete`** / **`backlog-task-close`** (the `Status` cell) | the row itself is created by `/plan-audit MODE = new` |
 | `## Practice completed → Exercise route` | **`sql-grade`'s cold subagent** | `sql-step-close` re-checks that the `Total` rows still add up. The `Corrected` total cell stays blank by design |
