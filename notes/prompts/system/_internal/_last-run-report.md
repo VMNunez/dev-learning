@@ -7,16 +7,18 @@ Status: open
 
 1. **Plan vs reality** — The 13 family manifests plus five cross-system concerns covered all 187
    frozen inventory paths to EOF with zero duplicate owners or omissions. There was no finished-artifact
-   reviewer because the mandatory Step 3 launcher gate failed before Step 7.
-2. **Report discipline** — Final analyst matrices were usable and bounded; preliminary progress messages
-   were ignored until their complete EOF manifests arrived.
+   reviewer because the mandatory launcher gate failed before Step 7.
+2. **Report discipline** — The EOF-first manifests were usable; two cold agents requested the exact
+   field schema before returning their final bounded matrices, and no preliminary message was treated
+   as completion evidence.
 3. **Failures & retries** — The first validator call hit local execution-policy blocking and succeeded
-   unchanged under per-process bypass. The launcher concern was cold re-dispatched once and confirmed the
-   same material argument-contract failure.
-4. **Rule friction and rule breaches** — The prompt inventories full project/SQL plan paths while assigning
-   only sections, and inventories both skill mirrors while asking for one semantic copy; the run expanded
-   both concerns to EOF to satisfy its acceptance gate. No mandatory step was skipped: map edits and the
-   final reviewer were correctly withheld after the blocking gate.
-5. **Verdict** — Change worth considering: make launcher argument-contract parity mechanically falsifiable
-   and reconcile the inventory's path-level EOF acceptance with its section/mirror assignments. The
-   system-check-specific boundary leaves this finding open; no prompt refinement ran inside the audit.
+   unchanged under per-process bypass. The launcher concern was cold re-dispatched once and confirmed
+   eight remaining public argument-contract mismatches; `coverage` passed the bounded re-check.
+4. **Rule friction and rule breaches** — The prompt calls the frozen snapshot the “Step 0 manifest” in
+   Steps 3 and 7 even though Step 0 says Step 1 builds it. This cost no result because the 187-path set
+   and digest were recomputed explicitly. No mandatory step was skipped: map/ledger edits and the final
+   reviewer were correctly withheld after the failed completeness gate.
+5. **Verdict** — Change worth considering: make launcher public argument contracts mechanically
+   falsifiable against canonical configuration. The same defect class survived the intervening launcher
+   fix, so prose-only parity review is not closing it. The system-check boundary leaves this finding open;
+   no prompt or launcher refinement ran inside the audit.
