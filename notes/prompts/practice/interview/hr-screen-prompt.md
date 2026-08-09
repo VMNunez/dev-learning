@@ -48,6 +48,8 @@ penalise grammar or fluency.
 Before starting, read `notes/prompts/_internal/_shared-context.md` (my profile and the "Where I stand"
 analysis — the internship, the career change, the differentiator) and `ROADMAP.md` (the
 applications strategy and timeline). Use them to probe realistically.
+Read `practice/interview/MISTAKES.md`. Ask open `hr-screen` concepts first, while keeping a natural
+recruiter order; they are durable evidence from earlier calls, not optional polished answers.
 
 ---
 
@@ -103,6 +105,18 @@ Red flags: naming a senior-level number, saying "lo que sea" (no self-worth), or
   (career-changer with real internship experience + the Angular/Java bet) — something I can reuse to
   open any HR call.
 
+Before the optional polished-answer offer, update `practice/interview/MISTAKES.md`:
+
+- upsert one monotonic `INT-NNNN` Open row for every Needs work or Red flag answer, keyed by
+  `hr-screen + junior + question concept`, with the exact weak phrase and feedback as evidence;
+- when a deliberately retried open concept earns Strong, move its row atomically to Closed with the
+  answer as resolution evidence;
+- verify that no closed ID remains in Open.
+
+This write is mandatory even when Victor declines to save polished answers. Commit it directly as
+system-owned practice tracking: `docs(interview): record HR screen gaps`. The optional answer file keeps
+its existing Victor-facing commit handoff.
+
 Then offer:
 "¿Quieres que guarde tus respuestas pulidas en `notes/interview-prep/hr-screen.md` para repasarlas?
 (sí / no)"
@@ -119,7 +133,7 @@ git add notes/interview-prep/hr-screen.md
 git commit -m "docs: HR screen prep — polished answers for stage-2 call"
 ```
 
-If no: end without writing anything.
+If no: skip the polished-answer file; the mandatory gap tracking above still remains.
 
 ---
 

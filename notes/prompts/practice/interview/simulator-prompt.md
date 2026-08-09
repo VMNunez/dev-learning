@@ -51,6 +51,8 @@ At the end of a full interview you close with an invitation to ask questions.
 
 Before starting, read the shared session rules for teaching context. (My profile and projects are in
 `notes/prompts/_internal/_shared-context.md` — see "Who I am" below.)
+Read `practice/interview/MISTAKES.md` too. Open `simulator` rows are the first technical concepts to
+revisit within the selected level; SESSION-LOG ordering applies after them.
 
 ---
 
@@ -133,9 +135,12 @@ the current selected-level coverage. If any is missing or stale, stop and name t
 Do this before the first question. Do not start until the sequence is planned.
 
 Order rules — apply in sequence:
-1. ⭐⭐⭐ questions first, then ⭐⭐, then ⭐
-2. Within each tier: questions with a previous Débil First Rating (from Step 1) come first
-3. Within the same tier and group: randomise to avoid repeating the same order across sessions
+1. Questions whose concept maps unambiguously to an Open `simulator` row for this level come first.
+   Within this retry group, order by ⭐⭐⭐/⭐⭐/⭐ and then previous Débil First Rating. If an
+   Open row maps to no source question, report it as unconsumed instead of silently dropping it.
+2. For all remaining questions: ⭐⭐⭐ first, then ⭐⭐, then ⭐.
+3. Within each remaining tier: questions with a previous Débil First Rating (from Step 1) come first.
+4. Within the same tier and group: randomise to avoid repeating the same order across sessions.
 
 Session size:
 - Full mode: 10–12 questions (or MAX_QUESTIONS if set). No more than 3 consecutive from the
@@ -385,6 +390,19 @@ git add notes/interview-prep/SESSION-LOG.md
 ```
 git commit -m "docs: interview session [date] — [MODE] [LANGUAGE], [X]F/[X]A/[X]D"
 ```
+
+### 5 — Update the durable gap loop
+
+In `practice/interview/MISTAKES.md`, upsert one `INT-NNNN` Open row for every first-attempt `Débil /
+Weak` concept and every follow-up whose answer still finished below Strong. Use surface `simulator`,
+the selected level, the question's underlying concept, and the exact weak phrase as evidence. Reuse the
+existing ID for the same surface + level + concept and append the new date/evidence.
+
+When a question deliberately selected for an open row earns a first-attempt Strong without a rescuing
+follow-up, move that row atomically from Open to Closed with the question/rating as resolution evidence.
+Verify that no closed ID remains under Open. This gap write is system-owned tracking evidence and is
+committed directly as `docs(interview): record simulator practice gaps`. The existing SESSION-LOG
+commit handoff remains Victor's and is not folded into this system-owned commit.
 
 ---
 

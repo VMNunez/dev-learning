@@ -256,13 +256,13 @@ down a flat list of ten files:
 | `practice/sql/_internal/_sql-exercise-seeds.md` | *Internal.* Per-topic **structure and concrete exercise ideas** for `sql-exercises` Step 3 — the traps worth building a question around and each topic's Challenge. A run reads **only its own topic's block**. Scope still comes from `coverage-junior.md`, never from here. Not runnable. | — | — |
 | `practice/sql/sql-plan-audit.md` | **Orchestrator.** Audits **and extends** the doctrine (`PLANNING.md`) and one level's route (`PLANNING-{LEVEL}.md`) against `_sql-plan-standard.md` — four cold specialists (learning-design · coverage-and-steps · counts-and-truth · loop-and-fence), each fenced to the file its `Edits` column names, history gate, single commit. `coverage-and-steps` writes the new steps for coverage sections nothing claims yet, so the plan grows as SQL grows. It never writes a route from nothing (that is `sql-plan-prompt`) and never recomputes the fingerprint. The plan it maintains covers **exercises only** — notes, Q&A and simulations are separate tracks Victor runs himself. | `_sql-plan-standard.md`, both plan files, `notes/sql/coverage/{LEVEL}.md`, `ROADMAP.md`, `PROGRESS.md`, `sql-exercises-prompt.md`, the exercise files (as evidence, never edited) | `practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` |
 | `practice/sql/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises for the current step. `review` mode: grades my answers, scores them, and logs every ⚠️/❌ concept. `reinforce` mode: extra `[Repaso]` practice over a file I name, counted against nothing and safe on a closed step. Config is exactly five keys — `MODE`, `TOPIC`, `LEVEL`, `COUNT`, `FILE`; focus and review come from the step in `PLANNING-{LEVEL}.md`, never pasted. **Writes no notes and no Q&A** — those are separate tracks. | `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (the step: topic, count, focus), `notes/sql/coverage/{LEVEL}.md`, `PROGRESS.md`, the exercise files `practice/sql/{LEVEL}/NN-name.sql` | **Mode-conditional — the close-out checks only its own mode's list.** `practice` mode: `practice/sql/{LEVEL}/NN-name.sql`. `review` mode: `practice/sql/MISTAKES.md`, the SQL table in `PROGRESS.md`, and `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` — §1 counts, §3 statuses and the §2 `[x]` bullets, the progress fields the planner only preserves. Naming the other mode's file as "not applicable" is required; silently counting it as satisfied is not. |
-| `practice/simulations/_internal/_simulation-plan-standard.md` | *Internal.* The doctrine/route split, evidence and readiness inputs, route schema, timed-verdict/correction semantics, and ten cross-file invariants. Not runnable. | — | — |
+| `practice/simulations/_internal/_simulation-plan-standard.md` | *Internal.* The doctrine/route split, evidence and readiness inputs, route schema, timed-verdict/correction/reinforcement semantics, freshness contract, and fourteen cross-file invariants. Not runnable. | — | — |
 | `practice/simulations/simulation-plan-prompt.md` | **Orchestrator.** Turns selected-level coverage plus demonstrated readiness into an ordered Angular / Spring Boot / SQL route. Coverage is the ceiling; project, progress and closed-SQL-step evidence decide what is ready. Preserves attempt history and uses one cold route reviewer. | `_simulation-plan-standard.md`, selected-level topic coverage, `_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, SQL doctrine/route, existing specs, TRACKER, MISTAKES | `practice/simulations/PLANNING.md` when missing; `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md` |
 | `practice/simulations/simulation-generator-prompt.md` | Materialises the current route step; focus, difficulty, time, track, and path come only from the selected-level route. | simulation doctrine + selected route, standard, existing specs, TRACKER; SQL §8/§8c fence | planned `practice/simulations/{type}/NN-*.md`; TRACKER row/count; route generation/state; doctrine/route §0 |
-| `practice/simulations/simulation-review-prompt.md` | Canonical cold reviewer used directly or by `simulation-grade`. First review preserves the timed verdict and opens mandatory corrections; correction mode closes only recorded gaps; hint mode makes the attempt Assisted. | doctrine + selected route, spec, TRACKER, MISTAKES, PROGRESS, selected-level Q&A, submitted solution/correction | spec + TRACKER history, route + §0, MISTAKES, `PROGRESS.md` timed simulations, selected-level Q&A pair |
-| `practice/interview/code-review-prompt.md` | Generates a flawed snippet to critique, grades the review, and records gaps only in the selected-level Q&A bank. | snippet generated fresh; selected-level Q&A | selected-level interview-prep pair |
-| `practice/interview/simulator-prompt.md` | Runs a live mock **technical** interview from one selected-level Q&A bank, scores each answer, and tracks weak areas. | `interview-prep/{LEVEL}/{lang}/*.md`, `interview-prep/projects/*`, session log | session log |
-| `practice/interview/hr-screen-prompt.md` | Runs a live mock **HR** call (stage 2): motivation, career-change story, availability, salary, "why us". Non-technical. | profile + situation from `_shared-context.md`, `ROADMAP.md` | `interview-prep/hr-screen.md` (polished answers) **when the run produced any — if it did not, the close-out says so explicitly rather than passing on an empty list** |
+| `practice/simulations/simulation-review-prompt.md` | Internal canonical cold reviewer dispatched only by `simulation-grade`; the public launcher routes through that skill. First review preserves the timed verdict and opens mandatory corrections; correction mode atomically closes recorded gaps; a Fail hands reinforcement authoring back to `/simulation-plan`; hint mode makes the attempt Assisted. | doctrine + selected route, spec, TRACKER, MISTAKES, PROGRESS, selected-level Q&A, submitted solution/correction | spec + TRACKER history, route + §0, MISTAKES, `PROGRESS.md` timed simulations, selected-level Q&A pair |
+| `practice/interview/code-review-prompt.md` | Generates a flawed snippet to critique, grades the review, records performance gaps in the shared interview sink, and turns missed concepts into selected-level Q&A. | snippet generated fresh; selected-level Q&A; `practice/interview/MISTAKES.md` | conditionally: shared interview MISTAKES when a row opens/closes; selected-level interview-prep pair when a current bank receives a missed-concept question; an all-clean run names both no-ops |
+| `practice/interview/simulator-prompt.md` | Runs a live mock **technical** interview from one selected-level Q&A bank, scores each answer, and retries durable weak areas first. | `interview-prep/{LEVEL}/{lang}/*.md`, `interview-prep/projects/*`, session log, shared interview MISTAKES | session log always; shared interview MISTAKES when a row opens/closes, otherwise an explicit no-op |
+| `practice/interview/hr-screen-prompt.md` | Runs a live mock **HR** call (stage 2), records weak/red-flag answers in the shared interview sink, and optionally saves polished answers. | profile + situation from `_shared-context.md`, `ROADMAP.md`, shared interview MISTAKES | conditionally: shared interview MISTAKES when a row opens/closes; `interview-prep/hr-screen.md` when Victor accepts polished answers; each no-op is explicit |
 
 ### Strategy — keep the plan accurate (`tracking/`) and apply (`apply/`)
 
@@ -357,6 +357,9 @@ Each generated file, with who writes it and who depends on it:
   `simulation-review` → read by `progress-update`, the plan, and the simulation rituals.
 - **`practice/simulations/MISTAKES.md`** — graded gaps from `simulation-review` plus friction-without-failure
   from `simulation-block-close` → read by planning, opening, correction review, and revision points.
+- **`practice/interview/MISTAKES.md`** — written and consumed by `simulator`, `hr-screen`, and
+  `code-review-practice`; each surface retries its own open rows and closes them only on demonstrated
+  clean performance. Timed build simulations remain in their rubric-specific sink above.
 - **`interview-prep/SESSION-LOG.md`** — written and read by `simulator` (tracks weak areas between
   sessions).
 - **`interview-prep/hr-screen.md`** — optionally written by `hr-screen` (polished stage-2 answers).
@@ -469,14 +472,17 @@ bank inventory. Authoring, refinement and study are deliberately separate states
 1. `progress-update` — repair its drift first; readiness cannot be planned from a stale level matrix
 2. `simulation-plan` (`LEVEL = junior`) — maps selected-level coverage plus demonstrated project/SQL
    evidence into `practice/simulations/junior/PLANNING-junior.md`
-3. `simulation-block-open` — names the one current step, spec, timer, conditions, and correction gate
+3. `simulation-block-open` — recomputes the route manifest/progress snapshot, then names the one current
+   step, spec, timer, conditions, and correction gate
 4. if the planned spec does not exist, `simulation-generator` materialises exactly that route step
-5. complete the test under timer conditions, then `simulation-block-close` records time,
-   self-assessment, attempt state, and friction already stated
-6. say `corrige la simulación` — `simulation-grade` dispatches the canonical reviewer cold. Pass closes
-   the step; Borderline/Fail opens correction rows without changing the timed verdict
-7. fix only those rows and say `corrige las correcciones`; a Fail additionally needs the route's later
-   reinforcement test to Pass before its learning step can close
+5. complete the test under timer conditions, then `simulation-block-close` records explicit
+   attempted/Assisted state, time, self-assessment, and friction already stated
+6. say `corrige la simulación` — `simulation-grade` is the only door and dispatches the canonical
+   reviewer cold. Pass closes; Borderline/Fail opens correction rows without changing timed evidence
+7. fix only those rows and say `corrige las correcciones`; a corrected Fail or reviewed Assisted attempt
+   becomes `reinforcement-required`. `simulation-plan` resolves the stable IDs from MISTAKES Closed (or
+   the original focus for a clean Assisted attempt), authors the linked successor, and that test's Pass
+   closes both learning states without rewriting the original verdict
 8. when every route step closes with no open correction and every admitted track has a Pass, run
    `progress-update`, then plan the next level
 

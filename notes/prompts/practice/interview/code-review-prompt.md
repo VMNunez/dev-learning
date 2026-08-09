@@ -49,6 +49,8 @@ Validation — before anything else:
 Before starting, read `notes/prompts/_internal/_session-rules.md` (teaching rules) and `notes/prompts/_internal/_shared-context.md`
 (my profile, and especially the **"Spanish job market 2026"** and **"AI factor 2026"** sections —
 they list the exact mistakes interviewers test for in the code-review step).
+Read `practice/interview/MISTAKES.md`. When FOCUS is blank, open `code-review` rows for the selected
+level supply the first concepts to plant; only then mix other market-relevant issues.
 
 The point of this exercise appears in the stage-3 technical test (a code-review step) and again live in stage 4. The underlying reality: a junior who can write code but cannot review
 it gets filtered out. I must learn to spot the bug, name *why* it is wrong, and say how I would fix
@@ -125,6 +127,12 @@ Then:
 One line on how I would phrase the most important finding out loud in an interview — the goal is not
 just spotting it, but explaining it like someone who understands the code.
 
+Update `practice/interview/MISTAKES.md`: upsert a monotonic `INT-NNNN` Open row for every distinct
+concept behind a missed issue or false positive, keyed by `code-review + LEVEL + concept`, with the
+snippet line and review miss as evidence. If an issue was deliberately planted from an open row and I
+identify and explain it correctly, move that row atomically to Closed with this review as resolution
+evidence. Verify that no closed ID remains under Open.
+
 ---
 
 ## Step 4 — Interview questions
@@ -152,7 +160,9 @@ project when the question is about a pattern or decision.
 
 ## Step 5 — Commit message
 
-Only if interview questions were added. One command per code block:
+The gap log is system-owned practice tracking and is committed directly as
+`docs(interview): record code-review practice gaps`. Separately, only if interview questions were
+added, give Victor the existing Q&A commit commands below, one command per code block:
 
 ```
 git add notes/interview-prep/{LEVEL}/en/{TYPE}.md notes/interview-prep/{LEVEL}/es/{TYPE}.md

@@ -15,9 +15,10 @@ Victor's solution code.
 
 ## 0 — Resolve or stop
 
-Resolve LEVEL, ROUTE, current step, spec, track, and mode (`review` or `correction`) from the route and
+Resolve LEVEL, ROUTE, current step, spec, track, and mode (`review`, `correction`, or `hint`) from the route and
 Victor's words. Require the solution to be attached, pasted, or available at an explicitly named path.
-For first review also require exact time used and a self-assessment already stated in the session/spec.
+For first review also require exact time used and a self-assessment already stated in the session/spec;
+hint mode requires only the partial solution.
 If one is missing, state the missing field and stop; do not score from a guess and do not ask a ritual
 question.
 
@@ -29,7 +30,8 @@ Dispatch one cold subagent with no conversation context beyond:
 
 - instruction to read `notes/prompts/practice/simulations/simulation-review-prompt.md` in full to EOF
   and execute it;
-- resolved LEVEL, ROUTE, STEP, SIMULATION_FILE, TIME_USED, SELF_ASSESSMENT, and MODE;
+- resolved LEVEL, ROUTE, STEP, SIMULATION_FILE, TIME_USED, SELF_ASSESSMENT, MODE, and the mandatory
+  out-of-band `ENTRYPOINT: simulation-grade` dispatch envelope;
 - the solution/corrections only.
 
 Do not tell it what was taught, what looked good, or the expected verdict. Reject a return that lacks
@@ -43,5 +45,7 @@ the prompt line count and `read to EOF`.
 - Correction clean: close the MISTAKES rows; Borderline may close its learning step, while a Fail still
   needs the reinforcement Pass. Never change the original tracker/spec verdict or time.
 - Correction incomplete: keep the step open and name only the remaining gaps.
+- Hint: the cold subagent writes nothing, explains the first unfinished concept, and labels the later
+  attempt Assisted.
 
 Report which branch ran. The review prompt owns all tracking writes and commits; do not reproduce them.

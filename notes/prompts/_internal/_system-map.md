@@ -292,17 +292,22 @@ This is a separate practice route, not an extension of the SQL exercise counters
    professional-level/evidence matrix.
 2. **`/simulation-plan {LEVEL}`** reads selected-level coverage, PROGRESS/project evidence, existing
    specs/TRACKER/MISTAKES, and SQL's unlocked-technique fence. It creates the level-neutral doctrine when
-   missing and the fingerprinted route for that level. Coverage is the ceiling; evidence decides ready.
-3. **`simulation-block-open`** reads the route pointer and gives one next moment. A missing planned spec
+   missing and the fingerprinted route for that level. It alone authors reinforcement successors.
+   Coverage is the ceiling; evidence decides ready.
+3. **`simulation-block-open`** recomputes the coverage manifest and progress snapshot before it gives one
+   next moment. A moved manifest or unadjudicated progress snapshot routes back to `/simulation-plan`.
+   A missing planned spec
    hands off to `/simulation-generator`; a ready spec hands off to the timed attempt; an open correction
    always wins over a new test.
 4. **`/simulation-generator`** materialises exactly one planned step. It cannot accept free-form focus,
    difficulty, time, or track.
-5. **`simulation-block-close`** records exact time, stated self-assessment, Assisted state, and friction
-   already spoken. It never grades.
-6. **`simulation-grade`** dispatches `/simulation-review` cold. Pass closes; Borderline/Fail opens
-   mandatory correction rows in simulation MISTAKES. Correction review never rewrites the timed verdict.
-   A corrected Fail still needs the later reinforcement test to Pass.
+5. **`simulation-block-close`** records explicit attempted/Assisted state, exact time, stated
+   self-assessment, and friction already spoken. It never grades.
+6. **`simulation-grade`** is the only review door and dispatches `/simulation-review` cold. Pass closes;
+   Borderline/Fail opens mandatory correction rows in simulation MISTAKES. Fixed rows move atomically to
+   Closed. A corrected Fail or reviewed Assisted attempt becomes reinforcement-required;
+   `/simulation-plan` resolves stable IDs from Closed (or the original Assisted focus) and authors the
+   linked test, whose unaided Pass closes both learning states without rewriting the original verdict or time.
 7. **Level close:** every route step closed, no open correction, and at least one Pass in every admitted
    track; then `/progress-update` audits the timed-simulation roll-up before the next level is planned.
 
@@ -315,7 +320,11 @@ per offer: **`/cv tailor`** + **`/cover-letter`** → **`/tracker log`** → out
 → **`/tracker analyze`** surfaces skill gaps → **`/evidence-intake`** turns real postings into
 `_job-market-evidence.md` → which is what **`/coverage`** reads to decide what junior means.
 
-That is the only closed loop in the system: what the market rejects you for becomes coverage scope.
+That is the market-to-coverage loop: what the market rejects you for becomes coverage scope. Practice
+has its own shorter feedback loops: SQL and timed simulations feed their MISTAKES rows into revision /
+reinforcement, while the three interview surfaces write and retry their own rows in
+`practice/interview/MISTAKES.md`. Practice gaps do not author coverage bullets; they point at existing
+scope or become Q&A through the owning prompt.
 
 **`/profile-readme`** sits beside that line rather than on it — `sync` (fact deltas only) or `optimize`
 (a full re-evaluation against the job target) for the GitHub profile README, which lives in the separate
@@ -357,10 +366,11 @@ files: the system that describes and checks the system, which has writers like e
 | `practice/sql/MISTAKES.md` | `sql-grade`'s subagent (`## Open`) · `sql-block-close` (`## Fricción`) | the R1–R5 revision points |
 | `practice/sql/{LEVEL}/NN-*.sql` | **Victor** (the grader only appends `-- ✅ Corregido`) | `sql-grade` |
 | `practice/simulations/PLANNING.md` (doctrine) | `/simulation-plan` (creates once) · `/simulation-generator`, `/simulation-review`, `simulation-block-close` (§0/state only) | every simulation prompt and skill |
-| `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md` (route) | `/simulation-plan` (creates/reconciles) · `/simulation-generator` (generation/state) · `/simulation-review` and `simulation-grade` (verdict/correction/history) · `simulation-block-close` (attempt handoff) | every simulation prompt and skill · `/progress-update` |
+| `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md` (route) | `/simulation-plan` (creates/reconciles + reinforcement steps) · `/simulation-generator` (generation/state) · `/simulation-review` (verdict/correction/redemption/history) · `simulation-block-close` (attempt handoff) | every simulation prompt and skill · `/progress-update` |
 | `practice/simulations/{type}/NN-*.md` (spec) | `/simulation-generator` (whole spec) · `simulation-block-close` and `/simulation-review` (attempt header only) | Victor · `simulation-block-open` · `simulation-grade` / `/simulation-review` |
 | `practice/simulations/TRACKER.md` | `/simulation-generator` (rows) · `simulation-block-close` (self-assessment/attempt) · `/simulation-review` (status/history) | `/simulation-plan`, `/progress-update`, every simulation skill |
 | `practice/simulations/MISTAKES.md` | `/simulation-review` (graded gaps/corrections) · `simulation-block-close` (friction) | `/simulation-plan`, `simulation-block-open`, `simulation-grade`, revision points |
+| `practice/interview/MISTAKES.md` | `/simulator` · `/hr-screen` · `/code-review-practice` (their own performance gaps) | the same three prompts, each consuming only its own surface rows |
 | `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit`, `/interview-prep-route` |
 | `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, `/system-check`, and prompts that gate on it |
 | `notes/prompts/_internal/_skill-friction.md` | any of the seventeen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (every `open` row, before their own recommendations) · `/system-check` |
@@ -418,9 +428,9 @@ identical file to the other in the same commit.**
 | `sql-grade` | "corrige el 02" | nothing directly; a **cold subagent** writes `MISTAKES.md`, `PROGRESS.md`, the route, the doctrine §0 | `sql-step-close` on ≥ 80% + last file |
 | `sql-step-close` | a step's last file scores ≥ 80% | `✅ sql:{file-slug}` drill markers on coverage + mirror · §0 verify · `Total` arithmetic · the §8c unlocked line | names the due gate / revision point |
 | `sql-block-close` | the block ends | `MISTAKES.md` `## Fricción` only | — |
-| `simulation-block-open` | a timed-simulation block starts | **nothing — read-only** | the one current route moment |
+| `simulation-block-open` | a timed-simulation block starts | **nothing — read-only**; verifies manifest + progress snapshot | `/simulation-plan` on drift, else the one current route moment |
 | `simulation-grade` | a planned attempt/correction is ready | nothing directly; one cold subagent executes `/simulation-review` and its tracking/correction writes | correction loop or next route step |
-| `simulation-block-close` | the timer/block ends | attempt handoff in doctrine/route/spec/TRACKER · simulation `MISTAKES.md` friction already stated | `simulation-grade` |
+| `simulation-block-close` | the timer/block ends | explicit attempted/Assisted handoff in doctrine/route/spec/TRACKER · simulation `MISTAKES.md` friction already stated | `simulation-grade` |
 | `map-sync` | machinery changed **or** a prompt / `SKILL.md` / standard / other `_internal/` file was read whole | the rows about *that* file in `README.md` and this map — every one of them, not the first that comes to mind · nothing else | — |
 
 Every row inherits `_session-rules.md` → "When a skill cannot finish — durable friction". The table's

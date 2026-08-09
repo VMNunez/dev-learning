@@ -3,9 +3,9 @@
 > **Runtime contract:** Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching any
 > role and use its active-platform mapping.
 
-This is the canonical cold reviewer for one planned timed simulation. It can be launched directly, but
-the daily-session entry point is `simulation-grade`, which resolves the route and dispatches this prompt
-without teaching context.
+This is the internal canonical cold reviewer for one planned timed simulation. It is never a direct
+state-writing entry point: `simulation-grade` resolves the route and dispatches this prompt without
+teaching context. A direct `/simulation-review` request is routed to that skill by the platform launcher.
 
 > **▶ Run first:** `simulation-plan-prompt` for this LEVEL, then complete/close the timed attempt.
 
@@ -19,15 +19,24 @@ MODE            = [review | correction | hint] -> default: review
 ```
 
 The solution or correction is pasted/attached after the prompt. Track is derived from the spec path.
+The dispatching skill also supplies an out-of-band envelope line `ENTRYPOINT: simulation-grade`; it is
+not user configuration and the platform launchers never accept it as an argument.
 
 ## 0 — Guards
 
 Read `_session-rules.md`, `_shared-context.md`, `_simulation-plan-standard.md`, doctrine, selected route,
 spec, TRACKER, MISTAKES, PROGRESS, selected-level Q&A pair, and the previous review self-report.
 
+Require the dispatch envelope `ENTRYPOINT: simulation-grade` before every mode. If absent, stop without grading or writing
+and instruct the caller to use `simulation-grade`. This is the only door to a state-writing review.
+
 Require route STEP to own SIMULATION_FILE and LEVEL to agree across route/spec/tracker. A legacy spec
 without level may migrate to junior only. In first review require exact time and self-assessment. In
 correction mode require an immutable prior verdict plus open MISTAKES rows. Hint writes nothing.
+
+First review additionally requires route `State: attempted` and matching spec/TRACKER
+`Attempted — awaiting review` or `Assisted — awaiting review` status written by
+`simulation-block-close`. A `ready` step has not closed its timer handoff and cannot be graded.
 
 Never review a different step because the named file looks similar. Never edit Victor's solution.
 
@@ -87,19 +96,24 @@ problematic code needed.
 ## 3 — Correction review
 
 Do not rescore the whole test. For each open MISTAKES row, mark `fixed` or `still open` against the
-submitted correction. Show only remaining defects and the minimal corrected reference.
+submitted correction. A fixed row moves atomically from `## Open` to `## Closed`; it never remains
+selectable by planning or opening. Show only remaining defects and the minimal corrected reference.
 
 Closing every row never changes the original tracker/spec verdict or TIME_USED:
 
 - a corrected Borderline closes its route learning step;
-- a corrected Fail remains open until the route's reinforcement step earns a Pass;
+- a corrected Fail moves to `reinforcement-required` until `/simulation-plan` authors a linked
+  reinforcement step and that step earns a Pass;
 - a partial correction leaves only unresolved rows open.
 
 ## 4 — Record gaps and Q&A
 
 On first review, upsert one `practice/simulations/MISTAKES.md` `## Open` row per unmet requirement or
-score-1 dimension: ID, date, level:step, track, concept, evidence, verdict, status open. Score-2 items are
-feedback, not mandatory correction rows. Correction mode changes only matching row status/evidence.
+score-1 dimension. IDs are monotonic `SIM-NNNN`, derived from the highest ID in both sections; never
+reuse an ID. Store ID, date, level:step, track, concept, evidence, verdict, status open. Score-2 items are
+feedback, not mandatory correction rows. Correction mode removes every fixed row from `## Open` and
+appends `ID | closed date | level:step | concept | correction evidence` to `## Closed`; unresolved rows
+remain byte-for-byte except for appended evidence. Verify that no closed ID remains under `## Open`.
 
 For Borderline/Fail add 2–3 targeted bilingual questions; for Pass add one. First require the selected-
 level bank fingerprints to match current coverage and follow the interview-prep standard's outside-audit
@@ -111,7 +125,8 @@ First review:
 
 - spec: Level, Route step, Status, Date completed, Time used, Self-assessment;
 - TRACKER: same level/status/date/self-assessment (add Time used only if the table carries that column);
-- route: review history and timed verdict; `closed ✅`, `correction-required`, or assisted state;
+- route: review history and timed verdict; `closed ✅`, `correction-required`, or
+  `reinforcement-required` for an Assisted attempt after any corrections;
 - doctrine/route §0: next correction moment or next open step;
 - PROGRESS timed simulations: recount from TRACKER by level and track. Completed = Pass + Borderline;
   Fail and Assisted appear in breakdown but do not count as completed.
@@ -119,9 +134,26 @@ First review:
 Correction mode updates only MISTAKES, route, and §0 pointers. It never increments PROGRESS or rewrites
 spec/TRACKER history.
 
-If first-review verdict is Fail, ensure the route has a later reinforcement step targeting its open
-gaps. Add the step without renumbering or rewriting prior history; if safe insertion is impossible,
-leave a route finding and keep the current step open.
+If first-review verdict is Fail, record `Reinforcement required: <SIM-NNNN IDs>` on the failed step. Do
+not add a step here: set or retain `correction-required`, and after corrections close set
+`reinforcement-required`. `/simulation-plan` is the only writer that may author the linked successor.
+
+Those IDs remain the stable pointer after correction moves their rows to MISTAKES Closed.
+
+An Assisted first review records timed verdict `Assisted` plus its quality verdict. If quality opens
+corrections, close those first; afterwards set `reinforcement-required`. If no mandatory correction
+opens, set it immediately with `Reinforcement required: assisted-attempt`. Never close an Assisted
+learning step without a later unaided Pass.
+
+On an unaided Pass for a step whose `Redeems` field names a Fail/Assisted step, close the reinforcement
+step and also set the linked step to `closed ✅` only when all its MISTAKES rows are closed. Record
+`Redeemed by: <current step> · <date>` on the linked step. Preserve its original timed verdict, time, review history,
+spec, TRACKER row, and PROGRESS statistics exactly.
+
+After every Pass/correction transition, evaluate the level-close condition. When every planned step is
+`closed ✅`, no MISTAKES row is open for the level, and every admitted track has a Pass, set
+`Level status: closed ✅`, repoint doctrine/route §0 to `/progress-update`, and name that audit as the
+next gate. Otherwise leave level status open.
 
 ## 6 — Commits and report
 

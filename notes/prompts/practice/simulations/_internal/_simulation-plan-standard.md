@@ -27,6 +27,8 @@ The plan is evidence-driven. For the selected level it reads:
 - `practice/sql/PLANNING.md` §8/§8c and the selected SQL route, because SQL simulations may use only
   techniques unlocked by closed exercise steps;
 - `practice/simulations/TRACKER.md`, `MISTAKES.md`, and all existing specs as inventory and evidence.
+- `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` for the canonical
+  evidence-marker stripping rule used by every coverage digest.
 
 Coverage defines possible scope. Evidence and gates define what is ready now. A plan must never turn an
 unmarked coverage bullet into a claim that Victor can perform it under time pressure.
@@ -40,15 +42,19 @@ Plan status: current | stale
 Level: junior | middle | senior
 Doctrine: practice/simulations/PLANNING.md
 Coverage manifest SHA-256: <digest>
-Progress snapshot: <git blob hash or SHA-256>
+Progress snapshot: <SHA-256 of PROGRESS.md bytes>
+Level status: open | closed ✅
 Generated: YYYY-MM-DD
 ```
 
 The coverage manifest is a deterministic list of `path<TAB>scope-digest`, sorted by path, for every
 coverage file the route actually uses. Evidence markers are stripped with the coverage standard's
-canonical rule before hashing. The manifest itself appears in §1 so a later run can name which input
-moved. `Progress snapshot` detects changed readiness, but it does not make the route stale by itself:
-the opener reports the drift and `/simulation-plan` decides whether sequencing must change.
+canonical rule before hashing. §1 stores it as a two-column `Coverage file | Scope SHA-256` table.
+The manifest digest is SHA-256 over the UTF-8, LF-terminated, path-sorted
+`path<TAB>scope-digest` rows. A later run can therefore name which input moved. `Progress snapshot` is
+the SHA-256 of `PROGRESS.md`. A changed snapshot does not by itself prove the route stale, but the
+opener must stop before an attempt and hand it to `/simulation-plan` for adjudication; a moved coverage
+digest is hard stale.
 
 ## 4 — Required doctrine sections
 
@@ -56,7 +62,8 @@ the opener reports the drift and `/simulation-plan` decides whether sequencing m
    gate, last updated.
 2. `§1 — Sources and ownership`: every input and every writer.
 3. `§2 — The five moments`: open → generate/admit → timed attempt → cold review/correction → close.
-4. `§3 — Status model`: `planned`, `ready`, `attempted`, `correction-required`, `closed ✅`, `blocked`.
+4. `§3 — Status model`: `planned`, `ready`, `attempted`, `correction-required`,
+   `reinforcement-required`, `closed ✅`, `blocked`.
 5. `§4 — Attempt integrity`: no notes/docs/AI, timer rules, hint consequence, immutable timed verdict.
 6. `§5 — Correction loop`: corrections are untimed, target only recorded gaps, and never rewrite the
    original verdict or time.
@@ -94,7 +101,10 @@ Rules:
   visible with its gate; it is not silently replaced by extra work from an easier track.
 - Existing pending specs are reused when they fit. The plan does not generate duplicates just to own
   the numbering.
-- Failed tests remain historical rows. Reinforcement is a new row/spec, linked to the gaps it targets.
+- Failed and Assisted tests remain historical rows. Reinforcement is a new row/spec authored only by
+  `/simulation-plan`, with `Redeems: <step>` and focus linked to the stable gap IDs recorded on that
+  step. After mandatory corrections, those IDs resolve from MISTAKES Closed, not Open. An Assisted
+  quality-Pass with no gap IDs reuses the original step's coverage focus.
 
 ### §3 — Step contracts
 
@@ -104,6 +114,7 @@ Each step contains:
 ### Step N — <track>: <title> <state>
 Spec: <path>
 Generation: admitted-existing | pending-generation | generated YYYY-MM-DD
+Redeems: — | <failed route step>
 Time limit: <minutes>
 Difficulty: standard | challenge
 Coverage focus:
@@ -112,6 +123,8 @@ Readiness evidence:
 - <source and falsifiable fact>
 Done condition: Review recorded; timed verdict preserved; every required correction closed.
 Review history: — | <date · verdict · time · correction state>
+Reinforcement required: — | <SIM-NNNN IDs> | assisted-attempt
+Redeemed by: — | <route step · date>
 ```
 
 ### §4 — Revision points and level close
@@ -119,8 +132,12 @@ Review history: — | <date · verdict · time · correction state>
 At least one revision point follows every three reviewed tests. It draws first from open `MISTAKES.md`
 rows, then recent friction. The level closes only when every planned step is `closed ✅`, no correction
 is open, and every track admitted by the route has at least one Pass. A Fail never counts as completed;
-a corrected Fail remains a Fail in timed statistics but may close its learning step after a separate
-reinforcement test passes.
+a corrected Fail or reviewed Assisted attempt moves to `reinforcement-required` and remains unchanged
+in timed statistics. When the
+linked reinforcement step passes, the cold reviewer closes both the reinforcement step and the failed
+step's learning state, records `Redeemed by`, and never changes the failed timed verdict or time. The
+review that satisfies the final level condition writes `Level status: closed ✅`, repoints §0 to the
+`/progress-update` audit gate, and reports that gate explicitly.
 
 ### §5 — Out of scope and deferred gates
 
@@ -135,7 +152,8 @@ them. Never hide deferred scope inside prose in a step.
 - `Fail`: same correction gate, then a new reinforcement step is required. Fixing the old solution does
   not convert the timed Fail into a Pass.
 - `hint` breaks unaided conditions. The attempt may still be reviewed for learning, but its timed
-  verdict is labelled `Assisted` and it does not count toward the level's Pass gate.
+  verdict is labelled `Assisted`, it moves through corrections when its quality verdict requires them,
+  then becomes `reinforcement-required`; it never counts toward the level's Pass gate.
 
 ## 7 — Invariants
 
@@ -149,3 +167,8 @@ them. Never hide deferred scope inside prose in a step.
 8. Existing history is preserved across plan updates.
 9. `simulation-block-open` and `simulation-block-close` ask zero questions and never start grading.
 10. Victor's solution code is never edited or committed by the system.
+11. Only `/simulation-plan` authors a reinforcement step; grading records the need and its stable gap IDs
+    or `assisted-attempt` reason.
+12. A reinforcement Pass closes its linked Fail/Assisted learning step without changing historical evidence.
+13. `simulation-grade` is the only entry point that may dispatch a state-writing review or correction.
+14. A `current` route is never attempted against a moved coverage manifest or unadjudicated progress snapshot.

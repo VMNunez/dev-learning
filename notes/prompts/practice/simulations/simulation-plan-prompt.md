@@ -23,6 +23,7 @@ Read, in full:
 - `notes/prompts/_internal/_session-rules.md`
 - `notes/prompts/_internal/_agent-runtime-standard.md`
 - `notes/prompts/_internal/_shared-context.md`
+- `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`
 - `notes/prompts/practice/simulations/_internal/_simulation-plan-standard.md`
 - the previous `_internal/_last-run-report-simulation-plan.md`, if it exists
 
@@ -43,8 +44,10 @@ it does not block planning the tracks whose sources exist.
 ## 1 — Build the evidence manifest
 
 For each selected-level coverage file that exists, compute the scope digest using the coverage
-standard's evidence-marker stripping rule. Sort `path<TAB>digest` rows and hash that manifest. Compute a
-separate SHA-256 of `PROGRESS.md` and record both in the route.
+standard's canonical evidence-marker stripping rule. Store the path and digest in the §1 table. Sort
+the exact `path<TAB>digest` rows, join them with LF including a final LF, hash those UTF-8 bytes, and
+record the manifest SHA-256. Compute a separate SHA-256 of `PROGRESS.md` and record it as the progress
+snapshot.
 
 Derive readiness independently per track:
 
@@ -72,6 +75,14 @@ Order steps by dependency and interview usefulness, not by filename. Never sched
 Keep its gate visible in §1 and §5. Add a revision point after every three reviewed tests and ensure the
 route contains a balanced mix of tracks that are genuinely ready.
 
+For each existing step in `reinforcement-required`, create exactly one later reinforcement step when
+none already names it in `Redeems`. Resolve every `SIM-NNNN` in `Reinforcement required` against
+MISTAKES Closed; reaching this state while one of those IDs remains Open is route corruption and blocks
+planning. Its focus comes from those stable Closed-row concepts. When the reason is `assisted-attempt`
+and there are no gap IDs, reuse the original step's coverage focus. The successor receives the full
+normal step contract and the same cold route review as every other planned test. Never let the grading
+prompt author or insert this step.
+
 ## 3 — Cold review
 
 Dispatch one cold `reviewer`, reasoning tier `deep`, with only:
@@ -80,7 +91,7 @@ Dispatch one cold `reviewer`, reasoning tier `deep`, with only:
 - the full simulation-plan standard;
 - the evidence manifest and readiness facts, without the author's rationale.
 
-It checks every required section, all ten invariants, history preservation, coverage traceability,
+It checks every required section, all fourteen invariants, history preservation, coverage traceability,
 readiness fences, route balance, existing-spec reuse, SQL limits, and whether each step is completable
 in its time limit. It returns `approve`, `approve-with-fixes`, or `reject`, beginning with line counts
 and `read to EOF` for every whole file. Apply approved fixes. A reject or unusable review blocks the run
@@ -96,6 +107,8 @@ Before writing in update mode, prove:
 - existing attempt history is unchanged;
 - SQL requirements fit the unlocked technique fence;
 - DOCTRINE and ROUTE satisfy the standard.
+- every reinforcement step has one valid `Redeems` target and every `reinforcement-required` step has
+  exactly one planned reinforcement successor.
 
 `MODE = dry-run` prints the proposed doctrine/route and reconciliation summary without writing either.
 

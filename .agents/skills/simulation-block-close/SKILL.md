@@ -21,8 +21,11 @@ self-assessment. Never infer any of them from code quality.
 ## 1 — Record state
 
 When exact time and self-assessment are present, update the route step's Review history with
-`attempted — awaiting review`, update doctrine/route §0 next moment to review, and copy the
-self-assessment into the spec and TRACKER row. If a hint was used, label the attempt `Assisted`.
+`attempted — awaiting review`, set its `State: attempted`, update doctrine/route §0 next moment to
+review, and copy the self-assessment into the spec and TRACKER row. Set the spec and TRACKER status to
+`Attempted — awaiting review`. If a hint was used, keep route `State: attempted` but label its Review
+history plus the spec/TRACKER statuses `Assisted — awaiting review`, preserving that a timed verdict has
+not yet been assigned.
 
 If either required fact is absent, do not partially write attempt state. Report `Falta para cerrar el
 intento: TIME_USED` and/or `SELF_ASSESSMENT`; this is an expected incomplete handoff, not friction.
@@ -38,6 +41,9 @@ evidence, resolved yes/no. Repeated friction on later dates gets a new row.
 Doctrine, route, MISTAKES, spec, and TRACKER are system/tracking artifacts under the session-rule
 exception; commit only files actually changed, with status immediately before staging and committing:
 `docs(simulations): close {track} attempt {NN}`.
+
+Before committing, re-open the route step, both §0 pointers, spec header, and TRACKER row and prove that
+all four agree on attempted/Assisted state, exact time, and self-assessment.
 
 End with: attempt facts, friction count, and exactly one next action — attach/paste the solution and say
 `corrige la simulación`, or provide the missing close field. Never grade here.

@@ -8,10 +8,13 @@ records that the concept was corrected later; it never rewrites the original res
 | ID | Date | Step | Track | Concept | Evidence | Timed verdict | Status |
 |---|---|---|---|---|---|---|---|
 
+IDs are monotonic `SIM-NNNN` across Open and Closed. A correction removes the row from this table and
+moves its stable ID to Closed; consumers select rows from this table only.
+
 ## Closed
 
-| ID | Closed | Correction evidence |
-|---|---|---|
+| ID | Closed | Step | Concept | Correction evidence |
+|---|---|---|---|---|
 
 ## Friction
 

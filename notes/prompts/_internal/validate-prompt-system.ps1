@@ -427,6 +427,81 @@ foreach ($routePlan in Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'pr
     }
 }
 
+# Simulation routes fingerprint a manifest rather than one coverage file. Each §1 row carries the
+# canonical scope digest, and the header hashes the sorted path<TAB>digest manifest. A literal
+# `Plan status: current` is a safety claim because the opener may allow a timed attempt on its strength.
+$simulationRoot = Join-Path $RepositoryRoot 'practice\simulations'
+if (Test-Path -LiteralPath $simulationRoot -PathType Container) {
+    foreach ($simulationRoute in Get-ChildItem -LiteralPath $simulationRoot -Recurse -File -Filter 'PLANNING-*.md') {
+        $routePathMatch = [regex]::Match(
+            $simulationRoute.FullName,
+            '[\\/](?<level>junior|middle|senior)[\\/]PLANNING-\k<level>\.md$'
+        )
+        if (-not $routePathMatch.Success) { continue }
+        $routeLevel = $routePathMatch.Groups['level'].Value
+        $simulationName = $simulationRoute.FullName.Substring($RepositoryRoot.Length + 1).Replace('\', '/')
+        $simulationText = [System.IO.File]::ReadAllText($simulationRoute.FullName)
+        $statusMatch = [regex]::Match($simulationText, '(?m)^Plan status:\s*(?<status>current|stale)\s*$')
+        $manifestMatch = [regex]::Match($simulationText, '(?m)^Coverage manifest SHA-256:\s*(?<sha>[0-9a-f]{64})\s*$')
+        $progressMatch = [regex]::Match($simulationText, '(?m)^Progress snapshot:\s*(?<sha>[0-9a-f]{64})\s*$')
+        $levelStatusMatch = [regex]::Match($simulationText, '(?m)^Level status:\s*(?<status>open|closed ✅)\s*$')
+        if (-not ($statusMatch.Success -and $manifestMatch.Success -and $progressMatch.Success -and $levelStatusMatch.Success)) {
+            Add-ValidationError "Simulation route lacks Plan status / manifest / progress snapshot / level status metadata: $simulationName."
+            continue
+        }
+
+        $rowMatches = [regex]::Matches(
+            $simulationText,
+            '(?m)^\|\s*(?<path>notes/[a-z0-9-]+/coverage/(junior|middle|senior)\.md)\s*\|\s*(?<sha>[0-9a-f]{64})\s*\|\s*$'
+        )
+        if ($rowMatches.Count -eq 0) {
+            Add-ValidationError "Simulation route has no parseable Coverage file | Scope SHA-256 manifest rows: $simulationName."
+            continue
+        }
+
+        $manifestRows = [System.Collections.Generic.List[string]]::new()
+        $seenCoveragePaths = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+        $scopeMoved = $false
+        foreach ($row in $rowMatches) {
+            $coverageRelative = $row.Groups['path'].Value
+            if (-not $seenCoveragePaths.Add($coverageRelative)) {
+                Add-ValidationError "Simulation route manifest repeats coverage path '$coverageRelative': $simulationName."
+                $scopeMoved = $true
+                continue
+            }
+            if ($coverageRelative -notmatch "/coverage/$([regex]::Escape($routeLevel))\.md$") {
+                Add-ValidationError "Simulation route level '$routeLevel' names cross-level coverage '$coverageRelative': $simulationName."
+                $scopeMoved = $true
+                continue
+            }
+            $coverageAbsolute = Join-Path $RepositoryRoot $coverageRelative.Replace('/', '\')
+            if (-not (Test-Path -LiteralPath $coverageAbsolute -PathType Leaf)) {
+                Add-ValidationError "Simulation route manifest names a missing coverage file '$coverageRelative': $simulationName."
+                $scopeMoved = $true
+                continue
+            }
+            $actualScope = Get-CoverageDigest $coverageAbsolute
+            if ($actualScope -ne $row.Groups['sha'].Value) { $scopeMoved = $true }
+            $manifestRows.Add("$coverageRelative`t$actualScope")
+        }
+
+        $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+        $manifestText = (($manifestRows | Sort-Object) -join "`n") + "`n"
+        $actualManifest = Get-Sha256Hex ($utf8NoBom.GetBytes($manifestText))
+        $manifestMoved = $scopeMoved -or $manifestMatch.Groups['sha'].Value -ne $actualManifest
+        if ($statusMatch.Groups['status'].Value -eq 'current' -and $manifestMoved) {
+            Add-ValidationError "Simulation route claims 'current' but its coverage manifest no longer matches disk: $simulationName."
+        } elseif ($statusMatch.Groups['status'].Value -eq 'stale' -and -not $manifestMoved) {
+            $fingerprintReports.Add("$simulationName is flagged stale while its coverage manifest matches disk.")
+        }
+
+        $actualProgress = Get-Sha256Hex ([System.IO.File]::ReadAllBytes((Join-Path $RepositoryRoot 'PROGRESS.md')))
+        if ($progressMatch.Groups['sha'].Value -ne $actualProgress) {
+            $fingerprintReports.Add("$simulationName has an unadjudicated PROGRESS.md snapshot; /simulation-plan must rule before the next attempt.")
+        }
+    }
+}
+
 # `superseded` is the schema's own word for "the digest moved" (`coverage-verify-prompt.md`). Claiming
 # `complete` against a moved digest is the same assertion as `Plan status: current` against one, so it
 # reports rather than repairs - only the owning prompt may re-verify.
