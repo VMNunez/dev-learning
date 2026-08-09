@@ -1,6 +1,6 @@
 ﻿---
 description: Global convergence pass for one coverage level (runs inside Codex)
-argument-hint: LEVEL=junior|middle|senior
+argument-hint: LEVEL=junior|middle|senior MODE=update|dry-run
 ---
 
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching roles; use its Codex mapping and do not invent model identifiers.

@@ -1,6 +1,6 @@
 ---
 description: Code + correctness + security + tests review of a built project (orchestrator, runs inside Claude Code)
-argument-hint: PROJECT_PATH=<path>|all
+argument-hint: PROJECT_PATH=<path>|all [REVIEW_SCOPE=full|backend|frontend]
 ---
 
 Read `notes/prompts/projects/review/review-audit.md` and execute it in full as the hands-off orchestrator it describes, running inside Claude Code.

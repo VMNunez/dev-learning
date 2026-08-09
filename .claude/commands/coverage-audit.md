@@ -1,6 +1,6 @@
 ---
 description: Global convergence pass for one coverage level (runs inside Claude Code)
-argument-hint: LEVEL=junior|middle|senior
+argument-hint: LEVEL=junior|middle|senior MODE=update|dry-run
 ---
 
 Read `notes/prompts/knowledge/coverage/coverage-audit-prompt.md` and execute it in full, running inside Claude Code.

@@ -1,6 +1,6 @@
 ---
 description: Code + correctness + security + tests review of a built project (orchestrator, runs inside Codex)
-argument-hint: PROJECT_PATH=<path>|all
+argument-hint: PROJECT_PATH=<path>|all [REVIEW_SCOPE=full|backend|frontend]
 ---
 
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching roles; use its Codex mapping and do not invent model identifiers.

@@ -1,6 +1,6 @@
 ---
-description: Generate SQL exercises for the current plan step, or grade the ones you answered (runs inside Codex)
-argument-hint: MODE=practice|review TOPIC=basics|joins|nulls|...  (LEVEL, COUNT and FILE optional — the plan supplies them)
+description: Generate SQL exercises, use the legacy grading path, or append a [Repaso] batch (runs inside Codex)
+argument-hint: MODE=practice|review|reinforce TOPIC=basics|joins|nulls|...  (LEVEL, COUNT and FILE optional — the plan supplies them)
 ---
 
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching roles; use its Codex mapping and do not invent model identifiers.
@@ -14,5 +14,6 @@ Rules:
 - Blank `LEVEL`/`COUNT`/`FILE` is the normal state — `LEVEL` defaults to `junior`, the rest resolve from the plan. Print what you derived and continue without asking.
 - If `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` does not exist, stop and tell the user to run `/sql-plan {LEVEL}` first.
 - A `Coverage SHA-256` mismatch against the coverage file is reported in one line and does **not** stop the run — it means `/sql-plan {LEVEL}` is owed, not that the batch is invalid.
-- Read only the branch the resolved `MODE` names (`_sql-exercises-practice.md` or `_sql-exercises-review.md`), and only the `{TOPIC}` block of `_sql-exercise-seeds.md`.
-- The exercise files are Victor's work: in `practice` mode append exercises, never rewrite his answers; in `review` mode write correction markers and `MISTAKES.md`, and give him the commit command rather than committing.
+- Read `_sql-exercises-practice.md` for `practice` or `reinforce`, and `_sql-exercises-review.md` for `review`; read only the `{TOPIC}` block of `_sql-exercise-seeds.md`.
+- The exercise files are Victor's work: in `practice`/`reinforce` append exercises, never rewrite his answers; in `review` write correction markers and `MISTAKES.md`, and give him the commit command rather than committing.
+- **Grading has its own door now: the `sql-grade` skill** (say "corrige el 02"), which runs the review branch in a cold subagent and hands off to `sql-step-close`. `MODE = review` here is the legacy path — it grades correctly but closes nothing. If the user passes it, run it and say so in one line.

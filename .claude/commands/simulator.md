@@ -1,6 +1,6 @@
 ---
 description: Run a live mock technical interview from your Q&A bank, scored, tracking weak areas across sessions
-argument-hint: MODE=full|topic [TOPIC=angular|sql|java|...] [SECTION=all|## Routing] [LANGUAGE=es|en]
+argument-hint: MODE=full|topic LEVEL=junior|middle|senior LANGUAGE=es|en [TOPIC=angular|sql|java|...] [SECTION=all|## Routing] [MAX_QUESTIONS=5]
 ---
 
 Read `notes/prompts/practice/interview/simulator-prompt.md` and execute it in full.
